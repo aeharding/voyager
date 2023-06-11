@@ -1,0 +1,7 @@
+{
+  "name": "wefwef",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
