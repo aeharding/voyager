@@ -1,0 +1,11 @@
+@media (min-width: 700px) {
+  ion-app {
+    width: 700px;
+    margin: auto;
+    position: relative;
+  }
+
+  .scroll-content {
+    overflow-y: auto;
+  }
+}
