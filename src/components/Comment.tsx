@@ -67,7 +67,10 @@ const Content = styled.div`
   line-height: 1.1;
 
   > *:first-child {
-    margin-top: 0;
+    &,
+    > p:first-child {
+      margin-top: 0;
+    }
   }
   > *:last-child {
     margin-bottom: 0;

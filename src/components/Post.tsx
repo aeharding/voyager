@@ -9,7 +9,6 @@ import {
   ItemSlidingCustomEvent,
 } from "@ionic/react";
 import { PostView } from "lemmy-js-client";
-import markdownToTxt from "markdown-to-txt";
 import {
   arrowDownSharp,
   arrowUpSharp,
@@ -21,18 +20,31 @@ import { useMemo, useRef, useState } from "react";
 import { css } from "@emotion/react";
 import { findLoneImage } from "../helpers/markdown";
 import { useParams } from "react-router";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { isUrlImage } from "../helpers/lemmy";
+
+const StyledIonItemSliding = styled(IonItemSliding)`
+  border-bottom: 8px solid rgba(255, 255, 255, 0.08);
+`;
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
   --inner-padding-end: 0;
+
+  --border-width: 0;
+  --border-style: none;
+  --background-hover: none;
 `;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 0.5rem;
-  padding: 1rem;
+  gap: 0.75rem;
+  padding: 0.75rem;
+
+  max-width: 700px;
+  margin: 0 auto;
 `;
 
 const Icon = styled.img`
@@ -116,9 +128,11 @@ interface PostProps {
    * Hide the community name, show author name
    */
   communityMode?: boolean;
+
+  className?: string;
 }
 
-export default function Post({ post, communityMode }: PostProps) {
+export default function Post({ post, communityMode, className }: PostProps) {
   const { actor } = useParams<{ actor: string }>();
   const [willUpvote, setWillUpvote] = useState(false);
   const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
@@ -126,13 +140,9 @@ export default function Post({ post, communityMode }: PostProps) {
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
+
   function renderPostBody() {
-    if (
-      post.post.url &&
-      (post.post.url.endsWith(".jpeg") ||
-        post.post.url.endsWith(".png") ||
-        post.post.url.endsWith(".gif"))
-    ) {
+    if (post.post.url && isUrlImage(post.post.url)) {
       return <PostImage src={post.post.url} />;
     }
 
@@ -149,7 +159,21 @@ export default function Post({ post, communityMode }: PostProps) {
     }
 
     if (post.post.body) {
-      return <PostBody>{markdownToTxt(post.post.body)}</PostBody>;
+      return (
+        <>
+          {post.post.url && <Embed post={post} />}
+
+          <PostBody>
+            <ReactMarkdown
+              skipHtml
+              allowedElements={["p", "a"]}
+              components={{ a: "span", p: "span" }}
+            >
+              {post.post.body}
+            </ReactMarkdown>
+          </PostBody>
+        </>
+      );
     }
 
     if (post.post.url) {
@@ -157,7 +181,7 @@ export default function Post({ post, communityMode }: PostProps) {
     }
   }
   return (
-    <IonItemSliding
+    <StyledIonItemSliding
       onIonDrag={async (e) => {
         dragRef.current = e;
         setWillUpvote((await e.target.getSlidingRatio()) <= -1);
@@ -178,6 +202,7 @@ export default function Post({ post, communityMode }: PostProps) {
       <CustomIonItem
         detail={false}
         routerLink={`/${actor}/c/${post.community.name}/comments/${post.post.id}`}
+        className={className}
       >
         <Container>
           <div>{post.post.name}</div>
@@ -216,6 +241,6 @@ export default function Post({ post, communityMode }: PostProps) {
         <IonItemOption>Favorite</IonItemOption>
         <IonItemOption color="danger">Delete</IonItemOption>
       </IonItemOptions>
-    </IonItemSliding>
+    </StyledIonItemSliding>
   );
 }

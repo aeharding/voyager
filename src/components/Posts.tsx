@@ -95,6 +95,7 @@ export default function Posts({ communityName }: PostsProps) {
         endReached={() => {
           fetchMore();
         }}
+        increaseViewportBy={800}
       />
     </>
   );

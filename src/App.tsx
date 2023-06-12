@@ -1,4 +1,4 @@
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route, useHistory, useLocation } from "react-router-dom";
 import {
   IonApp,
   IonIcon,
@@ -32,8 +32,6 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
-import "./App.css";
-
 /* Theme variables */
 import "./theme/variables.css";
 import PostDetail from "./components/PostDetail";
@@ -43,6 +41,8 @@ import ThemeColorUpdater from "./ThemeColorUpdater";
 import { isInstalled } from "./helpers/device";
 import Communities from "./pages/Communities";
 import Community from "./pages/Community";
+import React, { useEffect, useState } from "react";
+import Tabs from "./Tabs";
 
 setupIonicReact({
   rippleEffect: false,
@@ -53,6 +53,15 @@ setupIonicReact({
 function Router({ children }: { children: React.ReactNode }) {
   const history = createMemoryHistory();
 
+  useEffect(() => {
+    const unListen = history.listen(() => {
+      window.scrollTo(0, 0);
+    });
+    return () => {
+      unListen();
+    };
+  }, []);
+
   if (isInstalled())
     return (
       <IonReactMemoryRouter history={history}>{children}</IonReactMemoryRouter>
@@ -61,8 +70,6 @@ function Router({ children }: { children: React.ReactNode }) {
   return <IonReactRouter>{children}</IonReactRouter>;
 }
 
-const DEFAULT_ACTOR = "lemmy.ml";
-
 function App() {
   return (
     <>
@@ -70,52 +77,7 @@ function App() {
       <Provider store={store}>
         <IonApp>
           <Router>
-            <IonTabs>
-              <IonRouterOutlet>
-                <Route exact path="/">
-                  <Redirect to={`/${DEFAULT_ACTOR}/home`} />
-                </Route>
-                <Route exact path="/:actor/communities">
-                  <Communities />
-                </Route>
-                <Route
-                  exact
-                  path="/:actor/"
-                  render={(props) => (
-                    <Redirect to={`/${props.match.params.actor}/home`} />
-                  )}
-                ></Route>
-                <Route exact path="/:actor/home">
-                  <Home />
-                </Route>
-                <Route exact path="/:actor/c/:community">
-                  <Community />
-                </Route>
-                <Route exact path="/:actor/c/:community/comments/:id">
-                  <PostDetail />
-                </Route>
-                <Route exact path="/tab2">
-                  <Tab2 />
-                </Route>
-                <Route path="/tab3">
-                  <Tab3 />
-                </Route>
-              </IonRouterOutlet>
-              <IonTabBar slot="bottom">
-                <IonTabButton tab="posts" href={`/${DEFAULT_ACTOR}/home`}>
-                  <IonIcon aria-hidden="true" icon={logoWebComponent} />
-                  <IonLabel>Posts</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab2" href="/tab2">
-                  <IonIcon aria-hidden="true" icon={person} />
-                  <IonLabel>lemmy_user</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab="tab3" href="/tab3">
-                  <IonIcon aria-hidden="true" icon={settings} />
-                  <IonLabel>Settings</IonLabel>
-                </IonTabButton>
-              </IonTabBar>
-            </IonTabs>
+            <Tabs />
           </Router>
         </IonApp>
       </Provider>

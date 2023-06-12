@@ -134,3 +134,13 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
 
   return flattenedChildren;
 }
+
+export function isUrlImage(url: string): boolean {
+  return (
+    url.endsWith(".jpeg") ||
+    url.endsWith(".png") ||
+    url.endsWith(".gif") ||
+    url.endsWith(".jpg") ||
+    url.endsWith(".webp")
+  );
+}

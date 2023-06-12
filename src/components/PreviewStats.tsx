@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { arrowUpSharp, chatbubbleOutline, timeOutline } from "ionicons/icons";
 import { PostAggregates } from "lemmy-js-client";
+import Ago from "./Ago";
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +21,7 @@ export default function PreviewStats({ stats }: PreviewStatsProps) {
       <IonIcon icon={chatbubbleOutline} />
       {stats.comments}
       <IonIcon icon={timeOutline} />
-      2h
+      <Ago date={new Date(stats.published)} />
     </Container>
   );
 }

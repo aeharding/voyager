@@ -10,6 +10,7 @@ import {
 import Posts from "../components/Posts";
 import "./Tab1.css";
 import { useParams } from "react-router";
+import AppBackButton from "../components/AppBackButton";
 
 export default function Community() {
   const { actor, community } = useParams<{
@@ -21,16 +22,16 @@ export default function Community() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
-              text="Communities"
-              defaultHref={`/${actor}/communities`}
+            <AppBackButton
+              defaultText="Communities"
+              defaultHref={`/${actor}`}
             />
           </IonButtons>
 
           <IonTitle>{community}</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent>
         <Posts communityName={community} />
       </IonContent>
     </IonPage>

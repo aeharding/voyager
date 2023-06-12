@@ -1,5 +1,4 @@
 import {
-  IonContent,
   IonHeader,
   IonItem,
   IonList,
@@ -7,8 +6,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import AppContent from "../components/AppContent";
+import { useParams } from "react-router";
 
 export default function Communities() {
+  const { actor } = useParams<{ actor: string }>();
+
   return (
     <IonPage>
       <IonHeader>
@@ -16,11 +19,11 @@ export default function Communities() {
           <IonTitle>Communities</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <AppContent>
         <IonList>
-          <IonItem routerLink="../">Home</IonItem>
+          <IonItem routerLink={`/${actor}/home`}>Home</IonItem>
         </IonList>
-      </IonContent>
+      </AppContent>
     </IonPage>
   );
 }

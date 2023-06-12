@@ -2,13 +2,14 @@ import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { arrowUpSharp, happyOutline, timeOutline } from "ionicons/icons";
 import { PostAggregates } from "lemmy-js-client";
+import Ago from "./Ago";
 
 const Container = styled.div`
   display: flex;
   align-items: center;
   gap: 0.25rem;
 
-  font-size: 0.8em;
+  font-size: 0.8rem;
   color: var(--ion-color-medium);
 `;
 
@@ -28,7 +29,7 @@ export default function Stats({ stats }: StatsProps) {
       )}
       %
       <IonIcon icon={timeOutline} />
-      2h
+      <Ago date={new Date(stats.published)} />
     </Container>
   );
 }

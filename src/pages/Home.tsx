@@ -18,16 +18,13 @@ export default function Home() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
-              text="Communities"
-              defaultHref={`/${actor}/communities`}
-            />
+            <IonBackButton text="Communities" defaultHref={`/${actor}`} />
           </IonButtons>
 
           <IonTitle>Home</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent>
         <Posts />
       </IonContent>
     </IonPage>

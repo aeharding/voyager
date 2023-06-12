@@ -1,11 +1,6 @@
-import {
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import "./Tab2.css";
+import AppContent from "../components/AppContent";
 
 const Tab2: React.FC = () => {
   return (
@@ -15,14 +10,14 @@ const Tab2: React.FC = () => {
           <IonTitle>Tab 2</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <AppContent>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Tab 2</IonTitle>
           </IonToolbar>
         </IonHeader>
         {/* <ExploreContainer name="Tab 2 page" /> */}
-      </IonContent>
+      </AppContent>
     </IonPage>
   );
 };
