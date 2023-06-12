@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "deploy": "aws s3 sync --exclude index.html dist/ s3://wefwef.app && aws s3 sync --include index.html dist/ s3://wefwef.app",
     "preview": "vite preview",
     "test.e2e": "cypress run",
     "test.unit": "vitest",
