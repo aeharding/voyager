@@ -139,9 +139,6 @@ export default function PostDetail() {
           alt={markdownLoneImage.altText}
         />
       );
-
-    if (post.post.url && post.post.thumbnail_url)
-      return <StyledEmbed post={post} />;
   }
 
   function renderText() {

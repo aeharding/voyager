@@ -45,7 +45,13 @@ export const jwtIssSelector = (state: RootState) =>
 
 export const handleSelector = createSelector(
   [(state: RootState) => state.auth.site, jwtIssSelector],
-  (site, iss) => `${site?.my_user?.local_user_view.person.name}@${iss}`
+  (site, iss) => {
+    const username = site?.my_user?.local_user_view.person.name;
+
+    if (!username) return;
+
+    return `${username}@${iss}`;
+  }
 );
 
 export const clientSelector = createSelector(

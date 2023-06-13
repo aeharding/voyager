@@ -16,7 +16,14 @@ import {
   setupIonicReact,
   useIonRouter,
 } from "@ionic/react";
-import { logoWebComponent, settings, person } from "ionicons/icons";
+import {
+  logoWebComponent,
+  settings,
+  person,
+  albumsOutline,
+  globeOutline,
+  telescopeSharp,
+} from "ionicons/icons";
 import Home from "./pages/Home";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
@@ -92,7 +99,7 @@ export default function Tabs() {
             router.push(`/${DEFAULT_ACTOR}/home`, "back");
           }}
         >
-          <IonIcon aria-hidden="true" icon={logoWebComponent} />
+          <IonIcon aria-hidden="true" icon={telescopeSharp} />
           <IonLabel>Posts</IonLabel>
         </IonTabButton>
         <IonTabButton tab="tab2" href="/tab2">
