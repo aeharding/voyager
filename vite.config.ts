@@ -26,6 +26,12 @@ export default defineConfig({
         ws: true,
         rewrite: (path) => path.replace(/^\/api\/lemmy.world/, ""),
       },
+      "/api/lemmy.ml": {
+        target: "https://lemmy.ml",
+        changeOrigin: true,
+        ws: true,
+        rewrite: (path) => path.replace(/^\/api\/lemmy.ml/, ""),
+      },
     },
   },
 });

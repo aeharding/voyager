@@ -11,6 +11,7 @@ import {
 import { PostView } from "lemmy-js-client";
 import {
   arrowDownSharp,
+  arrowUndo,
   arrowUpSharp,
   ellipsisHorizontal,
 } from "ionicons/icons";
@@ -22,6 +23,8 @@ import { findLoneImage } from "../helpers/markdown";
 import { useParams } from "react-router";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { isUrlImage } from "../helpers/lemmy";
+import { useAppDispatch } from "../store";
+import { voteOnPost } from "../features/post/postSlice";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   border-bottom: 8px solid rgba(255, 255, 255, 0.08);
@@ -53,7 +56,7 @@ const Icon = styled.img`
   border-radius: 10px;
 `;
 
-const UpvoteArrow = styled(IonIcon)<{ willUpvote: boolean }>`
+export const UpvoteArrow = styled(IonIcon)<{ willUpvote: boolean }>`
   font-size: 2rem;
   width: 80px;
 
@@ -133,9 +136,10 @@ interface PostProps {
 }
 
 export default function Post({ post, communityMode, className }: PostProps) {
+  const dispatch = useAppDispatch();
   const { actor } = useParams<{ actor: string }>();
-  const [willUpvote, setWillUpvote] = useState(false);
   const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
+  const [ratio, setRatio] = useState(0);
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
@@ -184,18 +188,31 @@ export default function Post({ post, communityMode, className }: PostProps) {
     <StyledIonItemSliding
       onIonDrag={async (e) => {
         dragRef.current = e;
-        setWillUpvote((await e.target.getSlidingRatio()) <= -1);
+        const ratio = await e.target.getSlidingRatio();
+        setRatio(ratio);
       }}
       onTouchEnd={async () => {
         if (!dragRef.current) return;
         const ratio = await dragRef.current.target.getSlidingRatio();
 
-        if (ratio <= -1) dragRef.current.target.closeOpened();
+        if (ratio <= -1) dispatch(voteOnPost(post.post.id, 1));
+
+        setRatio(0);
+        dragRef.current.target.closeOpened();
+      }}
+      onMouseUp={async () => {
+        if (!dragRef.current) return;
+        const ratio = await dragRef.current.target.getSlidingRatio();
+
+        if (ratio <= -1) dispatch(voteOnPost(post.post.id, 1));
+
+        setRatio(0);
+        dragRef.current.target.closeOpened();
       }}
     >
       <IonItemOptions side="start">
-        <IonItemOption color="success">
-          <UpvoteArrow icon={arrowUpSharp} willUpvote={willUpvote} />
+        <IonItemOption color={ratio <= -1.5 ? "danger" : "primary"}>
+          <UpvoteArrow icon={arrowUpSharp} willUpvote={ratio <= -1} />
         </IonItemOption>
       </IonItemOptions>
 
@@ -238,8 +255,9 @@ export default function Post({ post, communityMode, className }: PostProps) {
       </CustomIonItem>
 
       <IonItemOptions side="end">
-        <IonItemOption>Favorite</IonItemOption>
-        <IonItemOption color="danger">Delete</IonItemOption>
+        <IonItemOption>
+          <IonIcon icon={arrowUndo} />
+        </IonItemOption>
       </IonItemOptions>
     </StyledIonItemSliding>
   );

@@ -3,6 +3,9 @@ import { IonIcon } from "@ionic/react";
 import { arrowUpSharp, chatbubbleOutline, timeOutline } from "ionicons/icons";
 import { PostAggregates } from "lemmy-js-client";
 import Ago from "./Ago";
+import { useAppSelector } from "../store";
+import { css } from "@emotion/react";
+import Vote from "./Vote";
 
 const Container = styled.div`
   display: flex;
@@ -17,7 +20,7 @@ interface PreviewStatsProps {
 export default function PreviewStats({ stats }: PreviewStatsProps) {
   return (
     <Container>
-      <IonIcon icon={arrowUpSharp} /> {stats.score}
+      <Vote stats={stats} />
       <IonIcon icon={chatbubbleOutline} />
       {stats.comments}
       <IonIcon icon={timeOutline} />

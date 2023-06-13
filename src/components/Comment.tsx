@@ -1,9 +1,19 @@
 import styled from "@emotion/styled";
-import { IonIcon, IonItem } from "@ionic/react";
+import {
+  IonIcon,
+  IonItem,
+  IonItemOption,
+  IonItemOptions,
+  IonItemSliding,
+  ItemSlidingCustomEvent,
+} from "@ionic/react";
 import { arrowUpSharp, chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
 import Markdown from "./Markdown";
+import { UpvoteArrow } from "./Post";
+import { useRef, useState } from "react";
+import Ago from "./Ago";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -84,7 +94,7 @@ const Votes = styled.div`
   opacity: 0.5;
 `;
 
-const Ago = styled.div`
+const StyledAgo = styled(Ago)`
   opacity: 0.5;
 `;
 
@@ -116,56 +126,83 @@ export default function Comment({
   collapsed,
   childCount,
 }: CommentProps) {
+  const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
+  const [willUpvote, setWillUpvote] = useState(false);
+
   return (
-    <CustomIonItem onClick={onClick}>
-      <Container depth={depth}>
-        <Header>
-          {comment.creator.name}
-          <Votes>
-            <IonIcon icon={arrowUpSharp} />
-            {comment.counts.score}
-          </Votes>
-          <div style={{ flex: 1 }} />
-          {!collapsed ? (
-            <>
-              <Ago>5h</Ago>
-            </>
-          ) : (
-            <>
-              <AmountCollapsed>{childCount}</AmountCollapsed>
-              <CollapsedIcon icon={chevronDownOutline} />
-            </>
-          )}
-        </Header>
-        {!collapsed && (
-          <Content
-            onClick={(e) => {
-              if (!(e.target instanceof HTMLElement)) return;
-              if (e.target.nodeName === "A") e.stopPropagation();
-            }}
-          >
-            {comment.comment.deleted ? (
-              <i>deleted by creator</i>
+    <IonItemSliding
+      onIonDrag={async (e) => {
+        dragRef.current = e;
+        setWillUpvote((await e.target.getSlidingRatio()) <= -1);
+      }}
+      onTouchEnd={async () => {
+        if (!dragRef.current) return;
+        const ratio = await dragRef.current.target.getSlidingRatio();
+
+        dragRef.current.target.closeOpened();
+      }}
+      onMouseUp={async () => {
+        if (!dragRef.current) return;
+        const ratio = await dragRef.current.target.getSlidingRatio();
+
+        dragRef.current.target.closeOpened();
+      }}
+    >
+      <IonItemOptions side="start">
+        <IonItemOption color="success">
+          <UpvoteArrow icon={arrowUpSharp} willUpvote={willUpvote} />
+        </IonItemOption>
+      </IonItemOptions>
+      <CustomIonItem onClick={onClick}>
+        <Container depth={depth}>
+          <Header>
+            {comment.creator.name}
+            <Votes>
+              <IonIcon icon={arrowUpSharp} />
+              {comment.counts.score}
+            </Votes>
+            <div style={{ flex: 1 }} />
+            {!collapsed ? (
+              <>
+                <StyledAgo date={new Date(comment.comment.published)} />
+              </>
             ) : (
-              <Markdown
-                components={{
-                  img: ({ node, ...props }) => (
-                    <a
-                      href={props.src}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {props.alt || "Image"}
-                    </a>
-                  ),
-                }}
-              >
-                {comment.comment.content}
-              </Markdown>
+              <>
+                <AmountCollapsed>{childCount}</AmountCollapsed>
+                <CollapsedIcon icon={chevronDownOutline} />
+              </>
             )}
-          </Content>
-        )}
-      </Container>
-    </CustomIonItem>
+          </Header>
+          {!collapsed && (
+            <Content
+              onClick={(e) => {
+                if (!(e.target instanceof HTMLElement)) return;
+                if (e.target.nodeName === "A") e.stopPropagation();
+              }}
+            >
+              {comment.comment.deleted ? (
+                <i>deleted by creator</i>
+              ) : (
+                <Markdown
+                  components={{
+                    img: ({ node, ...props }) => (
+                      <a
+                        href={props.src}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {props.alt || "Image"}
+                      </a>
+                    ),
+                  }}
+                >
+                  {comment.comment.content}
+                </Markdown>
+              )}
+            </Content>
+          )}
+        </Container>
+      </CustomIonItem>
+    </IonItemSliding>
   );
 }

@@ -12,7 +12,7 @@ export default function AppContent({
   children: React.ReactNode;
 }) {
   return (
-    <IonContent fullscreen style={{ width: "100%" }}>
+    <IonContent style={{ width: "100%" }}>
       <Container>{children}</Container>
     </IonContent>
   );

@@ -3,6 +3,7 @@ import { IonIcon } from "@ionic/react";
 import { arrowUpSharp, happyOutline, timeOutline } from "ionicons/icons";
 import { PostAggregates } from "lemmy-js-client";
 import Ago from "./Ago";
+import Vote from "./Vote";
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +21,7 @@ interface StatsProps {
 export default function Stats({ stats }: StatsProps) {
   return (
     <Container>
-      <IonIcon icon={arrowUpSharp} /> {stats.score}
+      <Vote stats={stats} />
       <IonIcon icon={happyOutline} />
       {Math.round(
         (stats.upvotes + stats.downvotes

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface ContainerProps {
   name: string;
@@ -7,7 +7,7 @@ interface ContainerProps {
 import { LemmyHttp, PostView } from "lemmy-js-client";
 import Post from "./Post";
 import { Virtuoso } from "react-virtuoso";
-import { useAppDispatch } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import { receivedPosts } from "../features/post/postSlice";
 import {
   IonRefresher,
@@ -24,8 +24,9 @@ interface PostsProps {
 export default function Posts({ communityName }: PostsProps) {
   const [page, setPage] = useState(0);
   const [posts, setPosts] = useState<PostView[]>([]);
-  const [loading, setLoading] = useState(false);
+  const loading = useRef(false);
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
+  const jwt = useAppSelector((state) => state.auth.jwt);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -33,8 +34,8 @@ export default function Posts({ communityName }: PostsProps) {
   }, []);
 
   async function fetchMore(refresh = false) {
-    if (loading) return;
-    setLoading(true);
+    if (loading.current) return;
+    loading.current = true;
 
     const currentPage = refresh ? 1 : page + 1;
 
@@ -45,11 +46,12 @@ export default function Posts({ communityName }: PostsProps) {
         limit: LIMIT,
         page: currentPage,
         community_name: communityName,
+        auth: jwt,
       }));
 
       // posts = posts.filter((post) => post.post.thumbnail_url && post.post.url); // testing
     } finally {
-      setLoading(false);
+      loading.current = false;
     }
 
     if (refresh) {

@@ -1,6 +1,7 @@
 import {
   IonBackButton,
   IonButtons,
+  IonContent,
   IonHeader,
   IonItem,
   IonPage,
@@ -17,15 +18,15 @@ import Embed from "./Embed";
 import Comments from "./Comments";
 import Markdown from "./Markdown";
 import PostActions from "./PostActions";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../helpers/markdown";
 import { client } from "../services/lemmy";
 import { receivedPosts } from "../features/post/postSlice";
 import { isUrlImage } from "../helpers/lemmy";
-import AppContent from "./AppContent";
 import AppBackButton from "./AppBackButton";
 import Img from "./Img";
 import { Link } from "react-router-dom";
+import { PageContext } from "../features/auth/PageContext";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -81,7 +82,8 @@ const PostDeets = styled.div`
 
 const Title = styled.div`
   font-size: 1.3em;
-  margin: 1rem 0;
+  padding: 1rem 0 0;
+  margin-bottom: 1rem;
 `;
 
 const By = styled.div`
@@ -98,22 +100,30 @@ const By = styled.div`
 
 export default function PostDetail() {
   const { id, actor } = useParams<{ id: string; actor: string }>();
+  const [collapsed, setCollapsed] = useState(false);
   const post = useAppSelector((state) => state.post.postById[id]);
   const dispatch = useAppDispatch();
   const markdownLoneImage = useMemo(
     () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
+  const jwt = useAppSelector((state) => state.auth.jwt);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<HTMLElement | undefined>();
 
   useEffect(() => {
     if (post) return;
 
     (async () => {
-      const result = await client.getPost({ id: +id });
+      const result = await client.getPost({ id: +id, auth: jwt });
 
       dispatch(receivedPosts([result.post_view]));
     })();
   }, [post]);
+
+  useEffect(() => {
+    titleRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [collapsed]);
 
   function renderImage() {
     if (!post) return;
@@ -156,7 +166,7 @@ export default function PostDetail() {
   if (!post) return <CenteredSpinner />;
 
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -168,31 +178,36 @@ export default function PostDetail() {
           <IonTitle>{post?.counts.comments} Comments</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <AppContent>
-        <BorderlessIonItem>
-          <Container>
-            {renderImage()}
-            <PostDeets>
-              <Title>{post.post.name}</Title>
-              {renderText()}
-              <By>
-                in{" "}
-                <Link to={`/${actor}/c/${post.community.name}`}>
-                  {post.community.name}
-                </Link>{" "}
-                by <strong>{post.creator.name}</strong>
-              </By>
-              <Stats stats={post.counts} />
-            </PostDeets>
-          </Container>
-        </BorderlessIonItem>
+      <IonContent>
+        <PageContext.Provider value={{ page: pageRef.current }}>
+          <BorderlessIonItem onClick={() => setCollapsed(!collapsed)}>
+            <Container>
+              <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
+              <PostDeets>
+                <Title ref={titleRef}>{post.post.name}</Title>
+                {!collapsed && renderText()}
+                <By>
+                  in{" "}
+                  <Link
+                    to={`/${actor}/c/${post.community.name}`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {post.community.name}
+                  </Link>{" "}
+                  by <strong>{post.creator.name}</strong>
+                </By>
+                <Stats stats={post.counts} />
+              </PostDeets>
+            </Container>
+          </BorderlessIonItem>
 
-        <BorderlessIonItem>
-          <PostActions />
-        </BorderlessIonItem>
+          <BorderlessIonItem>
+            <PostActions postId={post.post.id} />
+          </BorderlessIonItem>
 
-        <Comments postId={post.post.id} />
-      </AppContent>
+          <Comments postId={post.post.id} />
+        </PageContext.Provider>
+      </IonContent>
     </IonPage>
   );
 }

@@ -3,9 +3,10 @@ import { formatDistanceToNowStrict } from "date-fns";
 
 interface AgoProps {
   date: Date;
+  className?: string;
 }
 
-const Ago: React.FC<AgoProps> = ({ date }) => {
+const Ago: React.FC<AgoProps> = ({ date, className }) => {
   const relativeDate = formatDistanceToNowStrict(date, { addSuffix: false });
 
   const getRelativeDateString = (relativeDate: string) => {
@@ -17,18 +18,23 @@ const Ago: React.FC<AgoProps> = ({ date }) => {
     } else {
       switch (unit) {
         case "minutes":
+        case "minute":
           formattedString = `${value}m`;
           break;
         case "hours":
+        case "hour":
           formattedString = `${value}h`;
           break;
         case "days":
+        case "day":
           formattedString = `${value}d`;
           break;
         case "months":
+        case "month":
           formattedString = `${value}m`;
           break;
         case "years":
+        case "year":
           formattedString = `${value}y`;
           break;
         default:
@@ -39,7 +45,9 @@ const Ago: React.FC<AgoProps> = ({ date }) => {
     return formattedString;
   };
 
-  return <span>{getRelativeDateString(relativeDate)}</span>;
+  return (
+    <span className={className}>{getRelativeDateString(relativeDate)}</span>
+  );
 };
 
 export default Ago;

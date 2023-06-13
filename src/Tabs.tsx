@@ -16,25 +16,23 @@ import {
   setupIonicReact,
   useIonRouter,
 } from "@ionic/react";
-import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
 import { logoWebComponent, settings, person } from "ionicons/icons";
 import Home from "./pages/Home";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import PostDetail from "./components/PostDetail";
-import { Provider } from "react-redux";
-import store from "./store";
-import ThemeColorUpdater from "./ThemeColorUpdater";
-import { isInstalled } from "./helpers/device";
 import Communities from "./pages/Communities";
 import Community from "./pages/Community";
-import React, { useEffect, useState } from "react";
+import { useAppSelector } from "./store";
+import { handleSelector } from "./features/auth/authSlice";
 
 const DEFAULT_ACTOR = "lemmy.ml";
 
 export default function Tabs() {
   const location = useLocation();
   const router = useIonRouter();
+
+  const handle = useAppSelector(handleSelector);
 
   return (
     <IonTabs>
@@ -99,7 +97,7 @@ export default function Tabs() {
         </IonTabButton>
         <IonTabButton tab="tab2" href="/tab2">
           <IonIcon aria-hidden="true" icon={person} />
-          <IonLabel>lemmy_user</IonLabel>
+          <IonLabel>{handle}</IonLabel>
         </IonTabButton>
         <IonTabButton tab="tab3" href="/tab3">
           <IonIcon aria-hidden="true" icon={settings} />

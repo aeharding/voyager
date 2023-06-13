@@ -1,5 +1,13 @@
 import { Comment, CommentView } from "lemmy-js-client";
 
+export const SUPPORTED_SERVERS = ["lemmy.ml", "lemmy.world"];
+
+export interface LemmyJWT {
+  sub: number;
+  iss: string; // e.g. "lemmy.ml"
+  iat: number;
+}
+
 export interface CommentNodeI {
   comment_view: CommentView;
   children: Array<CommentNodeI>;

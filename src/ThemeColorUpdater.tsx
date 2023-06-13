@@ -26,19 +26,16 @@ const ThemeColorUpdater = () => {
       document.head.appendChild(metaThemeColor);
     }
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        // Update theme color when the app becomes visible
-        metaThemeColor?.setAttribute("content", themeColor);
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
     return () => {
       mediaQuery.removeEventListener("change", handleThemeChange);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
+  }, []);
+
+  useEffect(() => {
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", themeColor);
+    }
   }, [themeColor]);
 
   return null;

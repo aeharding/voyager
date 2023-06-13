@@ -36,13 +36,22 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import PostDetail from "./components/PostDetail";
 import { Provider } from "react-redux";
-import store from "./store";
+import store, { useAppDispatch, useAppSelector } from "./store";
 import ThemeColorUpdater from "./ThemeColorUpdater";
 import { isInstalled } from "./helpers/device";
 import Communities from "./pages/Communities";
 import Community from "./pages/Community";
-import React, { useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Tabs from "./Tabs";
+import Login from "./features/auth/Login";
+import { getSelf } from "./features/auth/authSlice";
+import Auth from "./Auth";
 
 setupIonicReact({
   rippleEffect: false,
@@ -75,11 +84,13 @@ function App() {
     <>
       <ThemeColorUpdater />
       <Provider store={store}>
-        <IonApp>
-          <Router>
-            <Tabs />
-          </Router>
-        </IonApp>
+        <Auth>
+          <IonApp>
+            <Router>
+              <Tabs />
+            </Router>
+          </IonApp>
+        </Auth>
       </Provider>
     </>
   );
