@@ -247,7 +247,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
 
         if (ratio <= -1) {
           if (jwt) dispatch(voteOnPost(post.post.id, ratio <= -1.5 ? -1 : 1));
-          dispatch(voteOnPost(post.post.id, 1));
+          else login({ presentingElement: pageContext.page });
         }
 
         setRatio(0);

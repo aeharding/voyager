@@ -61,6 +61,7 @@ const Content = styled.div`
 export default function Communities() {
   const { actor } = useParams<{ actor: string }>();
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
+  const jwt = useAppSelector((state) => state.auth.jwt);
 
   return (
     <IonPage>
@@ -72,15 +73,17 @@ export default function Communities() {
       <AppContent>
         <IonList>
           <IonItemGroup>
-            <IonItem routerLink={`/${actor}/home`}>
-              <Content>
-                <SubIcon icon={home} color="red" />
-                <div>
-                  Home
-                  <aside>Posts from subscriptions</aside>
-                </div>
-              </Content>
-            </IonItem>
+            {jwt && (
+              <IonItem routerLink={`/${actor}/home`}>
+                <Content>
+                  <SubIcon icon={home} color="red" />
+                  <div>
+                    Home
+                    <aside>Posts from subscriptions</aside>
+                  </div>
+                </Content>
+              </IonItem>
+            )}
             <IonItem routerLink={`/${actor}/all`}>
               <Content>
                 <SubIcon icon={library} color="#009dff" />

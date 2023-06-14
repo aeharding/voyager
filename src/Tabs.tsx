@@ -26,6 +26,7 @@ const DEFAULT_ACTOR = SUPPORTED_SERVERS[0];
 export default function Tabs() {
   const location = useLocation();
   const router = useIonRouter();
+  const jwt = useAppSelector((state) => state.auth.jwt);
 
   const handle = useAppSelector(handleSelector);
 
@@ -105,14 +106,17 @@ export default function Tabs() {
               return;
             }
 
-            if (location.pathname.endsWith("/home")) {
+            if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
               router.push(`/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
               return;
             }
             if (location.pathname === `/${actor ?? iss ?? DEFAULT_ACTOR}`)
               return;
 
-            router.push(`/${actor ?? iss ?? DEFAULT_ACTOR}/home`, "back");
+            router.push(
+              `/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
+              "back"
+            );
           }}
         >
           <IonIcon aria-hidden="true" icon={telescopeSharp} />
