@@ -7,6 +7,7 @@ import {
   IonItemSliding,
   IonRouterLink,
   ItemSlidingCustomEvent,
+  useIonModal,
 } from "@ionic/react";
 import { PostView } from "lemmy-js-client";
 import {
@@ -17,17 +18,21 @@ import {
 } from "ionicons/icons";
 import PreviewStats from "./PreviewStats";
 import Embed from "./Embed";
-import { useMemo, useRef, useState } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
 import { css } from "@emotion/react";
 import { findLoneImage } from "../helpers/markdown";
 import { useParams } from "react-router";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { isUrlImage } from "../helpers/lemmy";
-import { useAppDispatch } from "../store";
+import { getHandle, getItemActorName, isUrlImage } from "../helpers/lemmy";
+import { useAppDispatch, useAppSelector } from "../store";
 import { voteOnPost } from "../features/post/postSlice";
+import { maxWidthCss } from "./AppContent";
+import Login from "../features/auth/Login";
+import { PageContext } from "../features/auth/PageContext";
+import Nsfw, { isNsfw } from "./Nsfw";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
-  border-bottom: 8px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 8px solid var(--thick-separator-color);
 `;
 
 const CustomIonItem = styled(IonItem)`
@@ -46,8 +51,7 @@ const Container = styled.div`
   gap: 0.75rem;
   padding: 0.75rem;
 
-  max-width: 700px;
-  margin: 0 auto;
+  ${maxWidthCss}
 `;
 
 const Icon = styled.img`
@@ -101,10 +105,15 @@ const CommunityDetails = styled.div`
 `;
 
 const CommunityName = styled.div`
-  max-width: 10rem;
+  max-width: 14rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  aside {
+    display: inline;
+    opacity: 0.7;
+  }
 `;
 
 const PostBody = styled.div`
@@ -118,10 +127,20 @@ const PostBody = styled.div`
   overflow: hidden;
 `;
 
-const PostImage = styled.img`
+const ImageContainer = styled.div`
+  overflow: hidden;
   margin: 0 -1rem;
-  width: calc(100% + 2rem);
+`;
+
+const PostImage = styled.img<{ blur: boolean }>`
+  width: calc(100%);
   max-width: none;
+
+  ${({ blur }) =>
+    blur &&
+    css`
+      filter: blur(70px);
+    `}
 `;
 
 interface PostProps {
@@ -144,18 +163,49 @@ export default function Post({ post, communityMode, className }: PostProps) {
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
+  const [blur, setBlur] = useState(isNsfw(post));
+
+  const jwt = useAppSelector((state) => state.auth.jwt);
+  const [login, onDismiss] = useIonModal(Login, {
+    onDismiss: (data: string, role: string) => onDismiss(data, role),
+  });
+  const pageContext = useContext(PageContext);
 
   function renderPostBody() {
     if (post.post.url && isUrlImage(post.post.url)) {
-      return <PostImage src={post.post.url} />;
+      return (
+        <ImageContainer>
+          <PostImage
+            src={post.post.url}
+            draggable="false"
+            blur={blur}
+            onClick={(e) => {
+              if (isNsfw(post)) {
+                e.stopPropagation();
+                setBlur(!blur);
+              }
+            }}
+          />
+        </ImageContainer>
+      );
     }
 
     if (markdownLoneImage)
       return (
-        <PostImage
-          src={markdownLoneImage.url}
-          alt={markdownLoneImage.altText}
-        />
+        <ImageContainer>
+          {" "}
+          <PostImage
+            src={markdownLoneImage.url}
+            alt={markdownLoneImage.altText}
+            blur={blur}
+            onClick={(e) => {
+              if (isNsfw(post)) {
+                e.stopPropagation();
+                setBlur(!blur);
+              }
+            }}
+          />
+        </ImageContainer>
       );
 
     if (post.post.thumbnail_url && post.post.url) {
@@ -195,7 +245,10 @@ export default function Post({ post, communityMode, className }: PostProps) {
         if (!dragRef.current) return;
         const ratio = await dragRef.current.target.getSlidingRatio();
 
-        if (ratio <= -1) dispatch(voteOnPost(post.post.id, 1));
+        if (ratio <= -1) {
+          if (jwt) dispatch(voteOnPost(post.post.id, ratio <= -1.5 ? -1 : 1));
+          dispatch(voteOnPost(post.post.id, 1));
+        }
 
         setRatio(0);
         dragRef.current.target.closeOpened();
@@ -204,7 +257,10 @@ export default function Post({ post, communityMode, className }: PostProps) {
         if (!dragRef.current) return;
         const ratio = await dragRef.current.target.getSlidingRatio();
 
-        if (ratio <= -1) dispatch(voteOnPost(post.post.id, 1));
+        if (ratio <= -1) {
+          if (jwt) dispatch(voteOnPost(post.post.id, ratio <= -1.5 ? -1 : 1));
+          else login({ presentingElement: pageContext.page });
+        }
 
         setRatio(0);
         dragRef.current.target.closeOpened();
@@ -216,13 +272,19 @@ export default function Post({ post, communityMode, className }: PostProps) {
         </IonItemOption>
       </IonItemOptions>
 
+      {/* href=undefined: Prevent drag failure on firefox */}
       <CustomIonItem
         detail={false}
-        routerLink={`/${actor}/c/${post.community.name}/comments/${post.post.id}`}
+        routerLink={`/${actor}/c/${getHandle(post.community)}/comments/${
+          post.post.id
+        }`}
+        href={undefined}
         className={className}
       >
         <Container>
-          <div>{post.post.name}</div>
+          <div>
+            {post.post.name} {isNsfw(post) && <Nsfw />}
+          </div>
 
           {renderPostBody()}
 
@@ -230,16 +292,28 @@ export default function Post({ post, communityMode, className }: PostProps) {
             <LeftDetails>
               {communityMode ? (
                 <CommunityDetails>
-                  <CommunityName>by {post.creator.name}</CommunityName>
+                  <CommunityName>
+                    by {post.creator.name}
+                    {!post.creator.local && (
+                      <aside>@{getItemActorName(post.creator)}</aside>
+                    )}
+                  </CommunityName>
                 </CommunityDetails>
               ) : (
                 <IonRouterLink
-                  routerLink={`/${actor}/c/${post.community.name}`}
+                  routerLink={`/${actor}/c/${getHandle(post.community)}`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <CommunityDetails>
-                    {post.community.icon && <Icon src={post.community.icon} />}
-                    <CommunityName>{post.community.name}</CommunityName>
+                    {post.community.icon && (
+                      <Icon src={post.community.icon} draggable="false" />
+                    )}
+                    <CommunityName>
+                      {post.community.name}
+                      {!post.community.local && (
+                        <aside>@{getItemActorName(post.community)}</aside>
+                      )}
+                    </CommunityName>
                   </CommunityDetails>
                 </IonRouterLink>
               )}

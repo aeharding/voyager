@@ -2,52 +2,43 @@ import React from "react";
 import { formatDistanceToNowStrict } from "date-fns";
 
 interface AgoProps {
-  date: Date;
+  date: string;
   className?: string;
 }
 
-const Ago: React.FC<AgoProps> = ({ date, className }) => {
-  const relativeDate = formatDistanceToNowStrict(date, { addSuffix: false });
-
-  const getRelativeDateString = (relativeDate: string) => {
-    const [value, unit] = relativeDate.split(" ");
-    let formattedString = "";
-
-    if (unit === "seconds") {
-      formattedString = value === "less" ? "<1m" : `${value}s`;
-    } else {
-      switch (unit) {
-        case "minutes":
-        case "minute":
-          formattedString = `${value}m`;
-          break;
-        case "hours":
-        case "hour":
-          formattedString = `${value}h`;
-          break;
-        case "days":
-        case "day":
-          formattedString = `${value}d`;
-          break;
-        case "months":
-        case "month":
-          formattedString = `${value}m`;
-          break;
-        case "years":
-        case "year":
-          formattedString = `${value}y`;
-          break;
-        default:
-          formattedString = relativeDate;
-      }
-    }
-
-    return formattedString;
-  };
+export default function Ago({ date, className }: AgoProps) {
+  const relativeDate = formatDistanceToNowStrict(new Date(`${date}Z`), {
+    addSuffix: false,
+  });
 
   return (
     <span className={className}>{getRelativeDateString(relativeDate)}</span>
   );
-};
+}
 
-export default Ago;
+const getRelativeDateString = (relativeDate: string) => {
+  const [value, unit] = relativeDate.split(" ");
+
+  switch (unit) {
+    case "seconds":
+    case "second":
+      return "<1m";
+    case "minutes":
+    case "minute":
+      return `${value}m`;
+    case "hours":
+    case "hour":
+      return `${value}h`;
+    case "days":
+    case "day":
+      return `${value}d`;
+    case "months":
+    case "month":
+      return `${value}mo`;
+    case "years":
+    case "year":
+      return `${value}y`;
+    default:
+      return relativeDate;
+  }
+};

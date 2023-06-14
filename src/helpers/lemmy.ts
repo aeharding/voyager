@@ -1,6 +1,11 @@
-import { Comment, CommentView } from "lemmy-js-client";
+import { Comment, CommentView, Community } from "lemmy-js-client";
 
-export const SUPPORTED_SERVERS = ["lemmy.ml", "lemmy.world"];
+export const SUPPORTED_SERVERS = [
+  "lemmy.ml",
+  "lemmy.world",
+  "beehaw.org",
+  "lemmy.one",
+];
 
 export interface LemmyJWT {
   sub: number;
@@ -12,6 +17,22 @@ export interface CommentNodeI {
   comment_view: CommentView;
   children: Array<CommentNodeI>;
   depth: number;
+}
+
+/**
+ * @param item Community, Person, etc
+ */
+export function getItemActorName(item: Pick<Community, "actor_id">) {
+  return new URL(item.actor_id).hostname;
+}
+
+/**
+ * @param item Community, Person, etc
+ */
+export function getHandle(
+  item: Pick<Community, "name" | "actor_id" | "local">
+) {
+  return item.local ? item.name : `${item.name}@${getItemActorName(item)}`;
 }
 
 export function buildCommentsTree(

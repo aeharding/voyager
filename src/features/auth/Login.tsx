@@ -44,7 +44,7 @@ export default function Login({
 }) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const [server, setServer] = useState("lemmy.ml");
+  const [server, setServer] = useState(SUPPORTED_SERVERS[0]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const inputRef = useRef<HTMLIonInputElement>(null);
@@ -157,6 +157,7 @@ export default function Login({
                     value={password}
                     onIonChange={(e) => setPassword(e.target.value as string)}
                     disabled={loading}
+                    enterkeyhint="done"
                   />
                 </IonItem>
               </IonList>

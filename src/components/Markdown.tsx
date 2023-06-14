@@ -17,7 +17,9 @@ export default function Markdown(props: ReactMarkdownOptions) {
       linkTarget="_blank"
       {...props}
       components={{
-        img: (props: any) => <Img {...props} />,
+        img: (props: any) => (
+          <Img {...props} onClick={(e) => e.stopPropagation()} />
+        ),
         blockquote: (props) => <Blockquote {...props} />,
         ...props.components,
       }}

@@ -1,9 +1,16 @@
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonContent } from "@ionic/react";
 
-const Container = styled.div`
+export const maxWidthCss = css`
+  width: 100%;
   max-width: 700px;
-  margin: 0 auto;
+  margin-right: auto;
+  margin-left: auto;
+`;
+
+export const MaxWidthContainer = styled.div`
+  ${maxWidthCss}
 `;
 
 export default function AppContent({
@@ -13,7 +20,7 @@ export default function AppContent({
 }) {
   return (
     <IonContent style={{ width: "100%" }}>
-      <Container>{children}</Container>
+      <MaxWidthContainer>{children}</MaxWidthContainer>
     </IonContent>
   );
 }

@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
+import { useState } from "react";
 
 const Container = styled.a`
   display: flex;
@@ -15,7 +16,6 @@ const Container = styled.a`
 `;
 
 const Img = styled.img`
-  flex: 1;
   min-height: 0;
   aspect-ratio: 16 / 9;
 
@@ -52,6 +52,8 @@ interface EmbedProps {
 }
 
 export default function Embed({ post, className }: EmbedProps) {
+  const [error, setError] = useState(false);
+
   return (
     <Container
       className={className}
@@ -59,8 +61,15 @@ export default function Embed({ post, className }: EmbedProps) {
       target="_blank"
       rel="noopener noreferrer"
       onClick={(e) => e.stopPropagation()}
+      draggable="false"
     >
-      {post.post.thumbnail_url && <Img src={post.post.thumbnail_url} />}
+      {post.post.thumbnail_url && !error && (
+        <Img
+          src={post.post.thumbnail_url}
+          draggable="false"
+          onError={() => setError(true)}
+        />
+      )}
       <Bottom>
         <EmbedIcon icon={linkOutline} />
         <Url>{post.post.url}</Url>

@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { LIMIT, client } from "../services/lemmy";
+import { LIMIT, getClient } from "../services/lemmy";
 import { CommentNodeI, buildCommentsTree } from "../helpers/lemmy";
 import CommentTree from "./CommentTree";
 import { IonLoading, IonSpinner } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { CommentView } from "lemmy-js-client";
+import { CommentView, Person } from "lemmy-js-client";
 import ScrollObserver from "./ScrollObserver";
-import { uniqBy } from "lodash";
+import { pullAllBy, uniqBy } from "lodash";
+import { useLocation } from "react-router";
 
 const centerCss = css`
   position: relative;
@@ -37,9 +38,10 @@ const Empty = styled.div`
 
 interface CommentsProps {
   postId: number;
+  op: Person;
 }
 
-export default function Comments({ postId }: CommentsProps) {
+export default function Comments({ postId, op }: CommentsProps) {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [finishedPaging, setFinishedPaging] = useState(false);
@@ -48,8 +50,16 @@ export default function Comments({ postId }: CommentsProps) {
     () => buildCommentsTree(comments, false),
     [comments]
   );
+  const { pathname } = useLocation();
 
-  async function fetchComments() {
+  async function fetchComments(refresh = false) {
+    if (refresh) {
+      setLoading(false);
+      setFinishedPaging(false);
+      setPage(0);
+      setComments([]);
+    }
+
     let response;
 
     if (loading) return;
@@ -60,7 +70,7 @@ export default function Comments({ postId }: CommentsProps) {
     setLoading(true);
 
     try {
-      response = await client.getComments({
+      response = await getClient(pathname).getComments({
         post_id: postId,
         limit: 10,
         sort: "Hot",
@@ -73,16 +83,20 @@ export default function Comments({ postId }: CommentsProps) {
       setLoading(false);
     }
 
-    if (!response.comments.length) setFinishedPaging(true);
-    setComments(
-      uniqBy([...comments, ...response.comments], (c) => c.comment.id)
+    const existingComments = comments;
+    const newComments = pullAllBy(
+      response.comments,
+      existingComments,
+      "comment.id"
     );
+    if (!newComments.length) setFinishedPaging(true);
+    setComments(uniqBy([...comments, ...newComments], (c) => c.comment.id));
     setPage(currentPage);
   }
 
   useEffect(() => {
-    fetchComments();
-  }, []);
+    fetchComments(true);
+  }, [postId]);
 
   if (loading && !comments.length) return <StyledIonSpinner />;
 
@@ -96,8 +110,13 @@ export default function Comments({ postId }: CommentsProps) {
 
   return (
     <>
-      {commentTree.map((comment) => (
-        <CommentTree comment={comment} key={comment.comment_view.comment.id} />
+      {commentTree.map((comment, index) => (
+        <CommentTree
+          comment={comment}
+          key={comment.comment_view.comment.id}
+          first={index === 0}
+          op={op}
+        />
       ))}
       <ScrollObserver onScrollIntoView={fetchComments} />
     </>

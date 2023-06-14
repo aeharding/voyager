@@ -11,7 +11,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../store";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import Stats from "./Stats";
 import styled from "@emotion/styled";
 import Embed from "./Embed";
@@ -20,13 +20,22 @@ import Markdown from "./Markdown";
 import PostActions from "./PostActions";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../helpers/markdown";
-import { client } from "../services/lemmy";
 import { receivedPosts } from "../features/post/postSlice";
-import { isUrlImage } from "../helpers/lemmy";
+import { getHandle, getItemActorName, isUrlImage } from "../helpers/lemmy";
 import AppBackButton from "./AppBackButton";
 import Img from "./Img";
 import { Link } from "react-router-dom";
 import { PageContext } from "../features/auth/PageContext";
+import { maxWidthCss } from "./AppContent";
+import { getClient } from "../services/lemmy";
+import PersonLabel from "./PersonLabel";
+
+const BorderlessIonItem = styled(IonItem)`
+  --padding-start: 0;
+  --inner-padding-end: 0;
+
+  ${maxWidthCss}
+`;
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -47,11 +56,6 @@ const LightboxImg = styled(Img)`
   background: var(--lightroom-bg);
 `;
 
-const BorderlessIonItem = styled(IonItem)`
-  --padding-start: 0;
-  --inner-padding-end: 0;
-`;
-
 const StyledMarkdown = styled(Markdown as any)`
   img {
     display: block;
@@ -63,7 +67,7 @@ const StyledMarkdown = styled(Markdown as any)`
 `;
 
 const StyledEmbed = styled(Embed)`
-  margin: 1rem;
+  margin: 1rem 0;
 `;
 
 const PostDeets = styled.div`
@@ -98,6 +102,11 @@ const By = styled.div`
   }
 `;
 
+const Aside = styled.div`
+  display: inline;
+  opacity: 0.7;
+`;
+
 export default function PostDetail() {
   const { id, actor } = useParams<{ id: string; actor: string }>();
   const [collapsed, setCollapsed] = useState(false);
@@ -110,12 +119,13 @@ export default function PostDetail() {
   const jwt = useAppSelector((state) => state.auth.jwt);
   const titleRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLElement | undefined>();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     if (post) return;
 
     (async () => {
-      const result = await client.getPost({ id: +id, auth: jwt });
+      const result = await getClient(pathname).getPost({ id: +id, auth: jwt });
 
       dispatch(receivedPosts([result.post_view]));
     })();
@@ -147,9 +157,7 @@ export default function PostDetail() {
     if (post.post.body && !markdownLoneImage) {
       return (
         <>
-          {post.post.url &&
-            !post.post.thumbnail_url &&
-            !isUrlImage(post.post.url) && <StyledEmbed post={post} />}
+          {post.post.url && !isUrlImage(post.post.url) && <Embed post={post} />}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
         </>
       );
@@ -177,7 +185,14 @@ export default function PostDetail() {
       </IonHeader>
       <IonContent>
         <PageContext.Provider value={{ page: pageRef.current }}>
-          <BorderlessIonItem onClick={() => setCollapsed(!collapsed)}>
+          <BorderlessIonItem
+            onClick={(e) => {
+              if (e.target instanceof HTMLElement && e.target.nodeName === "A")
+                return;
+
+              setCollapsed(!collapsed);
+            }}
+          >
             <Container>
               <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
               <PostDeets>
@@ -186,12 +201,18 @@ export default function PostDetail() {
                 <By>
                   in{" "}
                   <Link
-                    to={`/${actor}/c/${post.community.name}`}
+                    to={`/${actor}/c/${getHandle(post.community)}`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     {post.community.name}
+                    {!post.community.local && (
+                      <Aside>@{getItemActorName(post.community)}</Aside>
+                    )}
                   </Link>{" "}
-                  by <strong>{post.creator.name}</strong>
+                  by{" "}
+                  <strong>
+                    <PersonLabel person={post.creator} />
+                  </strong>
                 </By>
                 <Stats stats={post.counts} />
               </PostDeets>
@@ -199,10 +220,10 @@ export default function PostDetail() {
           </BorderlessIonItem>
 
           <BorderlessIonItem>
-            <PostActions postId={post.post.id} />
+            <PostActions post={post} />
           </BorderlessIonItem>
 
-          <Comments postId={post.post.id} />
+          <Comments postId={post.post.id} op={post.creator} />
         </PageContext.Provider>
       </IonContent>
     </IonPage>

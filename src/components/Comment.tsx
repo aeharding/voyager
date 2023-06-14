@@ -8,12 +8,14 @@ import {
   ItemSlidingCustomEvent,
 } from "@ionic/react";
 import { arrowUpSharp, chevronDownOutline } from "ionicons/icons";
-import { CommentView } from "lemmy-js-client";
+import { CommentView, Person } from "lemmy-js-client";
 import { css } from "@emotion/react";
 import Markdown from "./Markdown";
 import { UpvoteArrow } from "./Post";
 import { useRef, useState } from "react";
 import Ago from "./Ago";
+import { maxWidthCss } from "./AppContent";
+import PersonLabel from "./PersonLabel";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -31,28 +33,42 @@ const rainbowColors = [
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
   --inner-padding-end: 0;
+  --border-style: none;
 `;
 
-const Container = styled.div<{ depth: number }>`
-  position: relative;
-  margin: 0.5rem 1rem;
-  width: 100%;
+const PositionedContainer = styled.div<{ depth: number }>`
+  ${maxWidthCss}
+
+  padding: 0.55rem 1rem;
 
   ${({ depth }) =>
     css`
-      margin-left: calc(0.5rem + ${depth * 8}px);
+      padding-left: calc(0.5rem + ${Math.max(0, depth - 1) * 10}px);
     `}
+`;
+
+const Container = styled.div<{ depth: number }>`
+  display: flex;
+
+  position: relative;
+  width: 100%;
 
   font-size: 0.9em;
 
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.55rem;
+
+  ${({ depth }) =>
+    depth &&
+    css`
+      padding-left: 1rem;
+    `}
 
   &:before {
     content: "";
     position: absolute;
-    left: -12px;
+    left: 0;
     top: 0;
     bottom: 0;
     width: 2px;
@@ -117,6 +133,7 @@ interface CommentProps {
   onClick?: () => void;
   collapsed?: boolean;
   childCount: number;
+  op: Person;
 }
 
 export default function Comment({
@@ -125,6 +142,7 @@ export default function Comment({
   onClick,
   collapsed,
   childCount,
+  op,
 }: CommentProps) {
   const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
   const [willUpvote, setWillUpvote] = useState(false);
@@ -154,54 +172,56 @@ export default function Comment({
         </IonItemOption>
       </IonItemOptions>
       <CustomIonItem onClick={onClick}>
-        <Container depth={depth}>
-          <Header>
-            {comment.creator.name}
-            <Votes>
-              <IonIcon icon={arrowUpSharp} />
-              {comment.counts.score}
-            </Votes>
-            <div style={{ flex: 1 }} />
-            {!collapsed ? (
-              <>
-                <StyledAgo date={new Date(comment.comment.published)} />
-              </>
-            ) : (
-              <>
-                <AmountCollapsed>{childCount}</AmountCollapsed>
-                <CollapsedIcon icon={chevronDownOutline} />
-              </>
-            )}
-          </Header>
-          {!collapsed && (
-            <Content
-              onClick={(e) => {
-                if (!(e.target instanceof HTMLElement)) return;
-                if (e.target.nodeName === "A") e.stopPropagation();
-              }}
-            >
-              {comment.comment.deleted ? (
-                <i>deleted by creator</i>
+        <PositionedContainer depth={depth}>
+          <Container depth={depth}>
+            <Header>
+              <PersonLabel person={comment.creator} op={op} />
+              <Votes>
+                <IonIcon icon={arrowUpSharp} />
+                {comment.counts.score}
+              </Votes>
+              <div style={{ flex: 1 }} />
+              {!collapsed ? (
+                <>
+                  <StyledAgo date={comment.comment.published} />
+                </>
               ) : (
-                <Markdown
-                  components={{
-                    img: ({ node, ...props }) => (
-                      <a
-                        href={props.src}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {props.alt || "Image"}
-                      </a>
-                    ),
-                  }}
-                >
-                  {comment.comment.content}
-                </Markdown>
+                <>
+                  <AmountCollapsed>{childCount}</AmountCollapsed>
+                  <CollapsedIcon icon={chevronDownOutline} />
+                </>
               )}
-            </Content>
-          )}
-        </Container>
+            </Header>
+            {!collapsed && (
+              <Content
+                onClick={(e) => {
+                  if (!(e.target instanceof HTMLElement)) return;
+                  if (e.target.nodeName === "A") e.stopPropagation();
+                }}
+              >
+                {comment.comment.deleted ? (
+                  <i>deleted by creator</i>
+                ) : (
+                  <Markdown
+                    components={{
+                      img: ({ node, ...props }) => (
+                        <a
+                          href={props.src}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {props.alt || "Image"}
+                        </a>
+                      ),
+                    }}
+                  >
+                    {comment.comment.content}
+                  </Markdown>
+                )}
+              </Content>
+            )}
+          </Container>
+        </PositionedContainer>
       </CustomIonItem>
     </IonItemSliding>
   );

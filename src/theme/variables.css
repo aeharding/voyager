@@ -76,6 +76,8 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-tint: #f5f6f9;
 
   --lightroom-bg: rgba(0, 0, 0, 0.08);
+
+  --thick-separator-color: rgba(0, 0, 0, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -151,6 +153,8 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-light-contrast-rgb: 255, 255, 255;
     --ion-color-light-shade: #1e2023;
     --ion-color-light-tint: #383a3e;
+
+    --thick-separator-color: rgba(255, 255, 255, 0.08);
   }
 
   /*

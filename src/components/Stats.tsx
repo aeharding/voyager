@@ -30,7 +30,7 @@ export default function Stats({ stats }: StatsProps) {
       )}
       %
       <IonIcon icon={timeOutline} />
-      <Ago date={new Date(stats.published)} />
+      <Ago date={stats.published} />
     </Container>
   );
 }

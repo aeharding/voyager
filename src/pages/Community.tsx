@@ -1,5 +1,4 @@
 import {
-  IonBackButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -11,6 +10,7 @@ import Posts from "../components/Posts";
 import "./Tab1.css";
 import { useParams } from "react-router";
 import AppBackButton from "../components/AppBackButton";
+import PostSort from "../components/PostSort";
 
 export default function Community() {
   const { actor, community } = useParams<{
@@ -29,6 +29,10 @@ export default function Community() {
           </IonButtons>
 
           <IonTitle>{community}</IonTitle>
+
+          <IonButtons slot="end">
+            <PostSort />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>

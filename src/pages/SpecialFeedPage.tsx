@@ -12,8 +12,15 @@ import "./Tab1.css";
 import { useParams } from "react-router";
 import { PageContext } from "../features/auth/PageContext";
 import { useRef } from "react";
+import PostSort from "../components/PostSort";
+import PostFilter from "../components/PostFilter";
+import { ListingType } from "lemmy-js-client";
 
-export default function Home() {
+interface SpecialFeedProps {
+  type: ListingType;
+}
+
+export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const { actor } = useParams<{ actor: string }>();
   const pageRef = useRef<HTMLElement | undefined>();
 
@@ -25,14 +32,29 @@ export default function Home() {
             <IonBackButton text="Communities" defaultHref={`/${actor}`} />
           </IonButtons>
 
-          <IonTitle>Home</IonTitle>
+          <IonTitle>{listingTypeTitle(type)}</IonTitle>
+
+          <IonButtons slot="end">
+            <PostSort />
+            <PostFilter />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <PageContext.Provider value={{ page: pageRef.current }}>
-          <Posts />
+          <Posts type={type} />
         </PageContext.Provider>
       </IonContent>
     </IonPage>
   );
+}
+
+function listingTypeTitle(type: ListingType): string {
+  switch (type) {
+    case "All":
+    case "Local":
+      return type;
+    case "Subscribed":
+      return "Home";
+  }
 }

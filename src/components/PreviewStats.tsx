@@ -24,7 +24,7 @@ export default function PreviewStats({ stats }: PreviewStatsProps) {
       <IonIcon icon={chatbubbleOutline} />
       {stats.comments}
       <IonIcon icon={timeOutline} />
-      <Ago date={new Date(stats.published)} />
+      <Ago date={stats.published} />
     </Container>
   );
 }

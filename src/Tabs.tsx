@@ -1,39 +1,27 @@
+import { Redirect, Route, useLocation } from "react-router-dom";
 import {
-  Redirect,
-  Route,
-  useHistory,
-  useLocation,
-  useParams,
-} from "react-router-dom";
-import {
-  IonApp,
   IonIcon,
   IonLabel,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
   IonTabs,
-  setupIonicReact,
   useIonRouter,
 } from "@ionic/react";
-import {
-  logoWebComponent,
-  settings,
-  person,
-  albumsOutline,
-  globeOutline,
-  telescopeSharp,
-} from "ionicons/icons";
-import Home from "./pages/Home";
+import { settings, person, telescopeSharp } from "ionicons/icons";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import PostDetail from "./components/PostDetail";
 import Communities from "./pages/Communities";
 import Community from "./pages/Community";
 import { useAppSelector } from "./store";
-import { handleSelector } from "./features/auth/authSlice";
+import { handleSelector, jwtIssSelector } from "./features/auth/authSlice";
+import { SUPPORTED_SERVERS } from "./helpers/lemmy";
+import ActorRedirect from "./ActorRedirect";
+import SpecialFeed from "./pages/SpecialFeedPage";
+import SpecialFeedPage from "./pages/SpecialFeedPage";
 
-const DEFAULT_ACTOR = "lemmy.ml";
+const DEFAULT_ACTOR = SUPPORTED_SERVERS[0];
 
 export default function Tabs() {
   const location = useLocation();
@@ -41,28 +29,55 @@ export default function Tabs() {
 
   const handle = useAppSelector(handleSelector);
 
+  const potentialActor = location.pathname.split("/")[1];
+  const iss = useAppSelector(jwtIssSelector);
+  const actor = SUPPORTED_SERVERS.includes(potentialActor)
+    ? potentialActor
+    : undefined;
+
   return (
     <IonTabs>
       <IonRouterOutlet>
         <Route exact path="/">
-          <Redirect to={`/${DEFAULT_ACTOR}/home`} />
+          <Redirect
+            to={`/${iss ?? DEFAULT_ACTOR}/${iss ? "home" : "all"}`}
+            push={false}
+          />
         </Route>
         <Route exact path="/:actor/home">
-          <Home />
+          <ActorRedirect>
+            <SpecialFeedPage type="Subscribed" />
+          </ActorRedirect>
+        </Route>
+        <Route exact path="/:actor/all">
+          <ActorRedirect>
+            <SpecialFeedPage type="All" />
+          </ActorRedirect>
+        </Route>
+        <Route exact path="/:actor/local">
+          <ActorRedirect>
+            <SpecialFeedPage type="Local" />
+          </ActorRedirect>
         </Route>
         <Route exact path="/:actor">
-          <Communities />
+          <ActorRedirect>
+            <Communities />
+          </ActorRedirect>
         </Route>
         <Route exact path="/:actor/c/:community">
-          <Community />
+          <ActorRedirect>
+            <Community />
+          </ActorRedirect>
         </Route>
         <Route exact path="/:actor/c/:community/comments/:id">
-          <PostDetail />
+          <ActorRedirect>
+            <PostDetail />
+          </ActorRedirect>
         </Route>
-        <Route exact path="/tab2">
+        <Route exact path="/profile">
           <Tab2 />
         </Route>
-        <Route path="/tab3">
+        <Route exact path="/settings">
           <Tab3 />
         </Route>
       </IonRouterOutlet>
@@ -70,8 +85,8 @@ export default function Tabs() {
         <IonTabButton
           tab="posts"
           selected={
-            !location.pathname.startsWith("/tab2") &&
-            !location.pathname.startsWith("/tab3")
+            location.pathname !== "/settings" &&
+            location.pathname !== "/profile"
           }
           onClick={() => {
             // Hacks on hacks on hacks
@@ -91,22 +106,23 @@ export default function Tabs() {
             }
 
             if (location.pathname.endsWith("/home")) {
-              router.push(`/${DEFAULT_ACTOR}`, "back");
+              router.push(`/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
               return;
             }
-            if (location.pathname === `/${DEFAULT_ACTOR}`) return;
+            if (location.pathname === `/${actor ?? iss ?? DEFAULT_ACTOR}`)
+              return;
 
-            router.push(`/${DEFAULT_ACTOR}/home`, "back");
+            router.push(`/${actor ?? iss ?? DEFAULT_ACTOR}/home`, "back");
           }}
         >
           <IonIcon aria-hidden="true" icon={telescopeSharp} />
           <IonLabel>Posts</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="tab2" href="/tab2">
+        <IonTabButton tab="profile" href="/profile">
           <IonIcon aria-hidden="true" icon={person} />
-          <IonLabel>{handle}</IonLabel>
+          <IonLabel>{handle ?? actor}</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="tab3" href="/tab3">
+        <IonTabButton tab="settings" href="/settings">
           <IonIcon aria-hidden="true" icon={settings} />
           <IonLabel>Settings</IonLabel>
         </IonTabButton>

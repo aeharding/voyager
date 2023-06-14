@@ -11,7 +11,6 @@ import {
 } from "@ionic/react";
 import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
 import { logoWebComponent, settings, person } from "ionicons/icons";
-import Home from "./pages/Home";
 import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import { createMemoryHistory } from "history";

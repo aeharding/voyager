@@ -10,9 +10,10 @@ interface ImgProps {
   src: string;
   alt?: string;
   className?: string;
+  onClick?: React.MouseEventHandler<HTMLImageElement>;
 }
 
-export default function Img({ src, alt, className }: ImgProps) {
+export default function Img({ src, alt, className, onClick }: ImgProps) {
   const [dim, setDim] = useState<{ w: number; h: number } | undefined>();
 
   return (
@@ -22,7 +23,10 @@ export default function Img({ src, alt, className }: ImgProps) {
           <img
             ref={ref as React.MutableRefObject<HTMLImageElement>}
             alt={alt}
-            onClick={open}
+            onClick={(e) => {
+              onClick?.(e);
+              open(e);
+            }}
             src={src}
             className={className}
             onLoad={(e) => {

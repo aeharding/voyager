@@ -1,14 +1,22 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { PostView } from "lemmy-js-client";
+import { PostView, SortType } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
+
+const POST_SORT_KEY = "post-sort";
 
 interface PostState {
   postById: Dictionary<PostView>;
   postVotesById: Dictionary<1 | -1 | 0>;
+
+  sort: SortType;
 }
 
-const initialState: PostState = { postById: {}, postVotesById: {} };
+const initialState: PostState = {
+  postById: {},
+  postVotesById: {},
+  sort: localStorage[POST_SORT_KEY] ?? "Hot",
+};
 
 export const postSlice = createSlice({
   name: "post",
@@ -28,11 +36,17 @@ export const postSlice = createSlice({
     ) => {
       state.postVotesById[action.payload.postId] = action.payload.vote;
     },
+    resetPosts: () => initialState,
+    updateSortType(state, action: PayloadAction<SortType>) {
+      state.sort = action.payload;
+      localStorage[POST_SORT_KEY] = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { receivedPosts, updatePostVote } = postSlice.actions;
+export const { receivedPosts, updatePostVote, resetPosts, updateSortType } =
+  postSlice.actions;
 
 export default postSlice.reducer;
 

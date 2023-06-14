@@ -3,6 +3,7 @@ import { GetSiteResponse, LemmyHttp } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import Cookies from "js-cookie";
 import { LemmyJWT } from "../../helpers/lemmy";
+import { resetPosts } from "../post/postSlice";
 
 interface PostState {
   jwt: string | undefined;
@@ -105,6 +106,7 @@ export const getSelf =
 export const logout = () => async (dispatch: AppDispatch) => {
   Cookies.remove(COOKIE_NAME);
   dispatch(reset());
+  dispatch(resetPosts());
 };
 
 function parseJWT(payload: string): LemmyJWT {
