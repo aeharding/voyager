@@ -1,34 +1,11 @@
 import styled from "@emotion/styled";
 import { CommentNodeI, getFlattenedChildren } from "../helpers/lemmy";
 import Comment from "./Comment";
-import { useMemo, useState } from "react";
-import { maxWidthCss } from "./AppContent";
-import { css } from "@emotion/react";
+import React, { useMemo, useState } from "react";
 import { Person } from "lemmy-js-client";
-
-const HrContainer = styled.div<{ depth: number }>`
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  ${maxWidthCss}
-  z-index: 100;
-
-  ${({ depth }) =>
-    css`
-      padding-left: calc(0.5rem + ${(depth - 1) * 10}px);
-    `}
-`;
-
-const Hr = styled.hr`
-  flex: 1;
-  height: 0.55px;
-  background-color: var(
-    --ion-item-border-color,
-    var(--ion-border-color, var(--ion-color-step-250, #c8c7cc))
-  );
-  width: 100%;
-  margin: 0;
-`;
+import CommentHr from "./CommentHr";
+import { useAppDispatch, useAppSelector } from "../store";
+import { updateCommentCollapseState } from "../features/comment/commentSlice";
 
 interface CommentTreeProps {
   comment: CommentNodeI;
@@ -37,19 +14,30 @@ interface CommentTreeProps {
 }
 
 export default function CommentTree({ comment, first, op }: CommentTreeProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const dispatch = useAppDispatch();
+  const commentCollapsedById = useAppSelector(
+    (state) => state.comment.commentCollapsedById
+  );
+
   const childCount = useMemo(
     () => getFlattenedChildren(comment).length,
     [comment]
   );
 
-  return (
-    <>
-      {!first && (
-        <HrContainer depth={comment.depth}>
-          <Hr />
-        </HrContainer>
-      )}
+  const collapsed = commentCollapsedById[comment.comment_view.comment.id];
+
+  function setCollapsed(collapsed: boolean) {
+    dispatch(
+      updateCommentCollapseState({
+        commentId: comment.comment_view.comment.id,
+        collapsed,
+      })
+    );
+  }
+
+  return [
+    <React.Fragment key={comment.comment_view.comment.id}>
+      {!first && <CommentHr depth={comment.depth} />}
       <Comment
         comment={comment.comment_view}
         depth={comment.depth}
@@ -58,19 +46,15 @@ export default function CommentTree({ comment, first, op }: CommentTreeProps) {
         childCount={childCount}
         op={op}
       />
-      {!collapsed &&
-        comment.children.map((comment) => (
+    </React.Fragment>,
+    ...(!collapsed
+      ? comment.children.map((comment) => (
           <CommentTree
             key={comment.comment_view.comment.id}
             comment={comment}
             op={op}
           />
-        ))}
-      {comment.comment_view.counts.child_count > childCount && (
-        <div>
-          {comment.comment_view.counts.child_count - childCount} more replies
-        </div>
-      )}
-    </>
-  );
+        ))
+      : []),
+  ];
 }

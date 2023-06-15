@@ -1,5 +1,3 @@
-/** @jsx jsx */
-
 import styled from "@emotion/styled";
 import { useState } from "react";
 import { Gallery, Item } from "react-photoswipe-gallery";

@@ -37,6 +37,13 @@ const EmbedIcon = styled(IonIcon)`
   font-size: 1.5rem;
 `;
 
+const Divider = styled.div`
+  width: 1px;
+  height: 1.3rem;
+  background: currentColor;
+  opacity: 0.5;
+`;
+
 const Url = styled.div`
   flex: 1;
   font-size: 0.9em;
@@ -72,6 +79,7 @@ export default function Embed({ post, className }: EmbedProps) {
       )}
       <Bottom>
         <EmbedIcon icon={linkOutline} />
+        <Divider />
         <Url>{post.post.url}</Url>
         <IonIcon icon={chevronForward} />
       </Bottom>

@@ -18,7 +18,7 @@ import {
 } from "ionicons/icons";
 import PreviewStats from "./PreviewStats";
 import Embed from "./Embed";
-import { useContext, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { css } from "@emotion/react";
 import { findLoneImage } from "../helpers/markdown";
 import { useParams } from "react-router";
@@ -139,7 +139,7 @@ const PostImage = styled.img<{ blur: boolean }>`
   ${({ blur }) =>
     blur &&
     css`
-      filter: blur(70px);
+      filter: blur(40px);
     `}
 `;
 
@@ -156,20 +156,27 @@ interface PostProps {
 
 export default function Post({ post, communityMode, className }: PostProps) {
   const dispatch = useAppDispatch();
-  const { actor } = useParams<{ actor: string }>();
-  const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
-  const [ratio, setRatio] = useState(0);
-  const markdownLoneImage = useMemo(
-    () => (post.post.body ? findLoneImage(post.post.body) : undefined),
-    [post]
-  );
-  const [blur, setBlur] = useState(isNsfw(post));
 
   const jwt = useAppSelector((state) => state.auth.jwt);
   const [login, onDismiss] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismiss(data, role),
   });
   const pageContext = useContext(PageContext);
+
+  const { actor } = useParams<{ actor: string }>();
+
+  const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
+  const [ratio, setRatio] = useState(0);
+
+  const markdownLoneImage = useMemo(
+    () => (post.post.body ? findLoneImage(post.post.body) : undefined),
+    [post]
+  );
+  const [blur, setBlur] = useState(isNsfw(post));
+
+  useEffect(() => {
+    setBlur(isNsfw(post));
+  }, [post]);
 
   function renderPostBody() {
     if (post.post.url && isUrlImage(post.post.url)) {
@@ -220,8 +227,14 @@ export default function Post({ post, communityMode, className }: PostProps) {
           <PostBody>
             <ReactMarkdown
               skipHtml
-              allowedElements={["p", "a"]}
-              components={{ a: "span", p: "span" }}
+              allowedElements={["p", "a", "li", "ul", "ol"]}
+              components={{
+                a: "span",
+                p: "span",
+                li: "span",
+                ul: "span",
+                ol: "span",
+              }}
             >
               {post.post.body}
             </ReactMarkdown>
@@ -234,6 +247,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
       return <Embed post={post} />;
     }
   }
+
   return (
     <StyledIonItemSliding
       onIonDrag={async (e) => {

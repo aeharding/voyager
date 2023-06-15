@@ -89,12 +89,18 @@ const Header = styled.div`
   gap: 0.5rem;
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ keyPressed: boolean }>`
   line-height: 1.1;
 
-  > *:first-child {
+  ${({ keyPressed }) =>
+    keyPressed &&
+    css`
+      user-select: text;
+    `}
+
+  > *:first-child ${ignoreSsrFlag} {
     &,
-    > p:first-child {
+    > p:first-child ${ignoreSsrFlag} {
       margin-top: 0;
     }
   }
@@ -136,6 +142,41 @@ interface CommentProps {
   op: Person;
 }
 
+import { useEffect } from "react";
+import { ignoreSsrFlag } from "../helpers/emotion";
+
+const useKeyPressed = (): boolean => {
+  const [pressed, setPressed] = useState(false);
+
+  useEffect(() => {
+    const handleDown = () => {
+      setPressed(true);
+    };
+    const handleUp = () => {
+      setPressed(false);
+    };
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setPressed(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleDown);
+    window.addEventListener("keyup", handleUp);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("blur", handleUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleDown);
+      window.removeEventListener("keyup", handleUp);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("blur", handleUp);
+    };
+  }, []);
+
+  return pressed;
+};
+
 export default function Comment({
   comment,
   depth,
@@ -146,9 +187,30 @@ export default function Comment({
 }: CommentProps) {
   const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
   const [willUpvote, setWillUpvote] = useState(false);
+  const keyPressed = useKeyPressed();
+
+  const content = (() => {
+    if (comment.comment.deleted) return <i>deleted by creator</i>;
+    if (comment.comment.removed) return <i>removed by mod</i>;
+
+    return (
+      <Markdown
+        components={{
+          img: ({ node, ...props }) => (
+            <a href={props.src} target="_blank" rel="noopener noreferrer">
+              {props.alt || "Image"}
+            </a>
+          ),
+        }}
+      >
+        {comment.comment.content}
+      </Markdown>
+    );
+  })();
 
   return (
     <IonItemSliding
+      disabled={keyPressed}
       onIonDrag={async (e) => {
         dragRef.current = e;
         setWillUpvote((await e.target.getSlidingRatio()) <= -1);
@@ -171,11 +233,15 @@ export default function Comment({
           <UpvoteArrow icon={arrowUpSharp} willUpvote={willUpvote} />
         </IonItemOption>
       </IonItemOptions>
-      <CustomIonItem onClick={onClick}>
+      <CustomIonItem onClick={() => !keyPressed && onClick?.()}>
         <PositionedContainer depth={depth}>
           <Container depth={depth}>
             <Header>
-              <PersonLabel person={comment.creator} op={op} />
+              <PersonLabel
+                person={comment.creator}
+                op={op}
+                distinguished={comment.comment.distinguished}
+              />
               <Votes>
                 <IonIcon icon={arrowUpSharp} />
                 {comment.counts.score}
@@ -194,30 +260,13 @@ export default function Comment({
             </Header>
             {!collapsed && (
               <Content
+                keyPressed={keyPressed}
                 onClick={(e) => {
                   if (!(e.target instanceof HTMLElement)) return;
                   if (e.target.nodeName === "A") e.stopPropagation();
                 }}
               >
-                {comment.comment.deleted ? (
-                  <i>deleted by creator</i>
-                ) : (
-                  <Markdown
-                    components={{
-                      img: ({ node, ...props }) => (
-                        <a
-                          href={props.src}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {props.alt || "Image"}
-                        </a>
-                      ),
-                    }}
-                  >
-                    {comment.comment.content}
-                  </Markdown>
-                )}
+                {content}
               </Content>
             )}
           </Container>

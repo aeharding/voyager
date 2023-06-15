@@ -26,7 +26,12 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const Item = styled.div<{ on?: boolean; onColor?: string }>`
+const Item = styled("div", {
+  shouldForwardProp: (prop) => prop !== "on" && prop !== "onColor",
+})<{
+  on?: boolean;
+  onColor?: string;
+}>`
   width: 2rem;
   height: 2rem;
 

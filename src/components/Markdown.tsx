@@ -4,6 +4,7 @@ import {
 } from "react-markdown/lib/react-markdown";
 import Img from "./Img";
 import styled from "@emotion/styled";
+import remarkGfm from "remark-gfm";
 
 const Blockquote = styled.blockquote`
   padding-left: 0.5rem;
@@ -23,6 +24,7 @@ export default function Markdown(props: ReactMarkdownOptions) {
         blockquote: (props) => <Blockquote {...props} />,
         ...props.components,
       }}
+      remarkPlugins={[remarkGfm]}
     />
   );
 }

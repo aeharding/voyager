@@ -170,6 +170,47 @@ export default function PostDetail() {
 
   if (!post) return <CenteredSpinner />;
 
+  const header = (
+    <>
+      <BorderlessIonItem
+        onClick={(e) => {
+          if (e.target instanceof HTMLElement && e.target.nodeName === "A")
+            return;
+
+          setCollapsed(!collapsed);
+        }}
+      >
+        <Container>
+          <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
+          <PostDeets>
+            <Title ref={titleRef}>{post.post.name}</Title>
+            {!collapsed && renderText()}
+            <By>
+              in{" "}
+              <Link
+                to={`/${actor}/c/${getHandle(post.community)}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {post.community.name}
+                {!post.community.local && (
+                  <Aside>@{getItemActorName(post.community)}</Aside>
+                )}
+              </Link>{" "}
+              by{" "}
+              <strong>
+                <PersonLabel person={post.creator} />
+              </strong>
+            </By>
+            <Stats stats={post.counts} />
+          </PostDeets>
+        </Container>
+      </BorderlessIonItem>
+      <BorderlessIonItem>
+        <PostActions post={post} />
+      </BorderlessIonItem>
+    </>
+  );
+
   return (
     <IonPage ref={pageRef}>
       <IonHeader>
@@ -184,47 +225,7 @@ export default function PostDetail() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <PageContext.Provider value={{ page: pageRef.current }}>
-          <BorderlessIonItem
-            onClick={(e) => {
-              if (e.target instanceof HTMLElement && e.target.nodeName === "A")
-                return;
-
-              setCollapsed(!collapsed);
-            }}
-          >
-            <Container>
-              <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
-              <PostDeets>
-                <Title ref={titleRef}>{post.post.name}</Title>
-                {!collapsed && renderText()}
-                <By>
-                  in{" "}
-                  <Link
-                    to={`/${actor}/c/${getHandle(post.community)}`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {post.community.name}
-                    {!post.community.local && (
-                      <Aside>@{getItemActorName(post.community)}</Aside>
-                    )}
-                  </Link>{" "}
-                  by{" "}
-                  <strong>
-                    <PersonLabel person={post.creator} />
-                  </strong>
-                </By>
-                <Stats stats={post.counts} />
-              </PostDeets>
-            </Container>
-          </BorderlessIonItem>
-
-          <BorderlessIonItem>
-            <PostActions post={post} />
-          </BorderlessIonItem>
-
-          <Comments postId={post.post.id} op={post.creator} />
-        </PageContext.Provider>
+        <Comments header={header} postId={post.post.id} op={post.creator} />
       </IonContent>
     </IonPage>
   );

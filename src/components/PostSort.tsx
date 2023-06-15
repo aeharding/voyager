@@ -20,9 +20,15 @@ import { updateSortType } from "../features/post/postSlice";
 import { startCase } from "lodash";
 import { useState } from "react";
 
-const BUTTONS: ActionSheetButton<SortType>[] = (
-  ["Hot", "Active", "New", "MostComments", "NewComments"] as const
-).map((sortType) => ({
+export const POST_SORTS = [
+  "Active",
+  "Hot",
+  "New",
+  "MostComments",
+  "NewComments",
+] as const;
+
+const BUTTONS: ActionSheetButton<SortType>[] = POST_SORTS.map((sortType) => ({
   text: startCase(sortType),
   data: sortType,
   icon: getSortIcon(sortType),

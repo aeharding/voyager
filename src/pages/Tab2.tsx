@@ -6,12 +6,11 @@ import {
   IonToolbar,
   useIonModal,
 } from "@ionic/react";
-import "./Tab2.css";
 import AppContent from "../components/AppContent";
 import { logout } from "../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../store";
 import Login from "../features/auth/Login";
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 
 const Tab2: React.FC = () => {
   const dispatch = useAppDispatch();

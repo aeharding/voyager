@@ -13,6 +13,7 @@ import {
   IonRefresher,
   IonRefresherContent,
   RefresherCustomEvent,
+  useIonToast,
 } from "@ionic/react";
 import { LIMIT, getClient } from "../services/lemmy";
 import { CenteredSpinner } from "./PostDetail";
@@ -40,6 +41,7 @@ export default function Posts({ communityName, type }: PostsProps) {
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
   const sort = useAppSelector((state) => state.post.sort);
+  const [present] = useIonToast();
 
   const items: Item[] = useMemo(
     () =>
@@ -71,8 +73,15 @@ export default function Posts({ communityName, type }: PostsProps) {
         type_: type,
         sort,
       }));
+    } catch (error) {
+      present({
+        message: "Problem fetching posts. Please try again.",
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
 
-      // posts = posts.filter((post) => post.post.thumbnail_url && post.post.url); // testing
+      throw error;
     } finally {
       loading.current = false;
     }

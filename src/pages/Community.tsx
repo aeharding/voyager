@@ -7,7 +7,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import Posts from "../components/Posts";
-import "./Tab1.css";
 import { useParams } from "react-router";
 import AppBackButton from "../components/AppBackButton";
 import PostSort from "../components/PostSort";
@@ -17,6 +16,7 @@ export default function Community() {
     actor: string;
     community: string;
   }>();
+
   return (
     <IonPage>
       <IonHeader>

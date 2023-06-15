@@ -36,6 +36,35 @@ export default function Tabs() {
     ? potentialActor
     : undefined;
 
+  function onPostsClick() {
+    // Hacks on hacks on hacks
+    const pages = document.querySelectorAll(
+      "div.ion-page:not(.ion-page.hidden)"
+    );
+    const page = pages[pages.length - 1];
+    const scroll =
+      page.querySelector('[data-virtuoso-scroller="true"]') ??
+      page
+        .querySelector("ion-content")
+        ?.shadowRoot?.querySelector(".inner-scroll");
+
+    if (scroll?.scrollTop) {
+      scroll.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
+      router.push(`/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
+      return;
+    }
+    if (location.pathname === `/${actor ?? iss ?? DEFAULT_ACTOR}`) return;
+
+    router.push(
+      `/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
+      "back"
+    );
+  }
+
   return (
     <IonTabs>
       <IonRouterOutlet>
@@ -89,35 +118,7 @@ export default function Tabs() {
             location.pathname !== "/settings" &&
             location.pathname !== "/profile"
           }
-          onClick={() => {
-            // Hacks on hacks on hacks
-            const pages = document.querySelectorAll(
-              "div.ion-page:not(.ion-page.hidden)"
-            );
-            const page = pages[pages.length - 1];
-            const scroll =
-              page.querySelector('[data-virtuoso-scroller="true"]') ??
-              page
-                .querySelector("ion-content")
-                ?.shadowRoot?.querySelector(".inner-scroll");
-
-            if (scroll?.scrollTop) {
-              scroll.scrollTo({ top: 0, behavior: "smooth" });
-              return;
-            }
-
-            if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
-              router.push(`/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
-              return;
-            }
-            if (location.pathname === `/${actor ?? iss ?? DEFAULT_ACTOR}`)
-              return;
-
-            router.push(
-              `/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
-              "back"
-            );
-          }}
+          onClick={onPostsClick}
         >
           <IonIcon aria-hidden="true" icon={telescopeSharp} />
           <IonLabel>Posts</IonLabel>

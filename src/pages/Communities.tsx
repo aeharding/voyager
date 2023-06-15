@@ -19,11 +19,13 @@ import styled from "@emotion/styled";
 import { sortBy } from "lodash";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
-  background: ${({ color }) => color};
   border-radius: 50%;
   padding: 6px;
   width: 1rem;
   height: 1rem;
+
+  background: ${({ color }) => color};
+  color: white;
 `;
 
 const SubImgIcon = styled.img`
@@ -42,6 +44,7 @@ const FakeIcon = styled.div<{ bg: string }>`
   justify-content: center;
 
   background-color: ${({ bg }) => bg};
+  color: white;
 `;
 
 const Content = styled.div`

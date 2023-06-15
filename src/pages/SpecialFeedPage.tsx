@@ -8,7 +8,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import Posts from "../components/Posts";
-import "./Tab1.css";
 import { useParams } from "react-router";
 import { PageContext } from "../features/auth/PageContext";
 import { useRef } from "react";

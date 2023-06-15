@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { LIMIT, getClient } from "../services/lemmy";
 import { CommentNodeI, buildCommentsTree } from "../helpers/lemmy";
 import CommentTree from "./CommentTree";
-import { IonLoading, IonSpinner } from "@ionic/react";
+import { IonLoading, IonSpinner, useIonToast } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { CommentView, Person } from "lemmy-js-client";
-import ScrollObserver from "./ScrollObserver";
 import { pullAllBy, uniqBy } from "lodash";
 import { useLocation } from "react-router";
+import { Virtuoso } from "react-virtuoso";
 
 const centerCss = css`
   position: relative;
@@ -37,11 +37,12 @@ const Empty = styled.div`
 `;
 
 interface CommentsProps {
+  header: React.ReactNode;
   postId: number;
   op: Person;
 }
 
-export default function Comments({ postId, op }: CommentsProps) {
+export default function Comments({ header, postId, op }: CommentsProps) {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [finishedPaging, setFinishedPaging] = useState(false);
@@ -51,6 +52,7 @@ export default function Comments({ postId, op }: CommentsProps) {
     [comments]
   );
   const { pathname } = useLocation();
+  const [present] = useIonToast();
 
   async function fetchComments(refresh = false) {
     if (refresh) {
@@ -79,6 +81,15 @@ export default function Comments({ postId, op }: CommentsProps) {
         saved_only: false,
         page: currentPage,
       });
+    } catch (error) {
+      present({
+        message: "Problem fetching posts. Please try again.",
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
+
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -98,27 +109,33 @@ export default function Comments({ postId, op }: CommentsProps) {
     fetchComments(true);
   }, [postId]);
 
-  if (loading && !comments.length) return <StyledIonSpinner />;
+  const allComments = (() => {
+    if (loading && !comments.length) return [<StyledIonSpinner />];
 
-  if (!comments.length)
-    return (
-      <Empty>
-        <div>No Comments</div>
-        <aside>It's quiet... too quiet...</aside>
-      </Empty>
-    );
+    if (!comments.length)
+      return [
+        <Empty>
+          <div>No Comments</div>
+          <aside>It's quiet... too quiet...</aside>
+        </Empty>,
+      ];
+
+    return commentTree.map((comment, index) => (
+      <CommentTree
+        comment={comment}
+        key={comment.comment_view.comment.id}
+        first={index === 0}
+        op={op}
+      />
+    ));
+  })();
 
   return (
-    <>
-      {commentTree.map((comment, index) => (
-        <CommentTree
-          comment={comment}
-          key={comment.comment_view.comment.id}
-          first={index === 0}
-          op={op}
-        />
-      ))}
-      <ScrollObserver onScrollIntoView={fetchComments} />
-    </>
+    <Virtuoso
+      style={{ height: "100%" }}
+      totalCount={allComments.length + 1}
+      itemContent={(index) => (index ? allComments[index - 1] : header)}
+      endReached={() => fetchComments()}
+    />
   );
 }
