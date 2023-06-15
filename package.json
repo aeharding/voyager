@@ -16,7 +16,7 @@
     "@emotion/css": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@ionic/core": "^7.0.12",
+    "@ionic/core": "^7.0.14",
     "@ionic/react": "^7.0.0",
     "@ionic/react-router": "^7.0.0",
     "@reduxjs/toolkit": "^1.9.5",

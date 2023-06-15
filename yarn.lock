@@ -837,7 +837,7 @@
     "@babel/helper-create-regexp-features-plugin" "^7.22.5"
     "@babel/helper-plugin-utils" "^7.22.5"
 
-"@babel/preset-env@^7.11.0", "@babel/preset-env@^7.21.4":
+"@babel/preset-env@^7.11.0":
   version "7.22.5"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.22.5.tgz#3da66078b181f3d62512c51cf7014392c511504e"
   integrity sha512-fj06hw89dpiZzGZtxn+QybifF07nNiZjZ7sazs2aVDcysAZVGjW7+7iFYxg6GLNM47R/thYfLdrXc+2f11Vi9A==
@@ -1296,12 +1296,21 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@ionic/core@7.0.13", "@ionic/core@^7.0.12":
+"@ionic/core@7.0.13":
   version "7.0.13"
   resolved "https://registry.yarnpkg.com/@ionic/core/-/core-7.0.13.tgz#0e871be710c6c6548bae6fc1d5012a28faa9cb27"
   integrity sha512-GDV4NQ+iTE8bEkHAqJEqfBR4eCtdkcs+iQ0pNfbif1ER6fYoj00aEtNcU2o9V9mwK/OyYkhW/IOa2EmNJQdrvg==
   dependencies:
     "@stencil/core" "^3.3.1"
+    ionicons "^7.1.0"
+    tslib "^2.1.0"
+
+"@ionic/core@^7.0.14":
+  version "7.0.14"
+  resolved "https://registry.yarnpkg.com/@ionic/core/-/core-7.0.14.tgz#6b27b11c37a6f57a5c1e1ed98ac733eee351c12a"
+  integrity sha512-M0su64amw6HsZwsmWuHE4Wr2mChQdvBI7JKZXYCrF2Acn7GTD5cjMw6o1cYzwzf0PEap/RQ0y4paU9lO4Lu+lA==
+  dependencies:
+    "@stencil/core" "^3.4.0"
     ionicons "^7.1.0"
     tslib "^2.1.0"
 
@@ -1471,7 +1480,7 @@
   resolved "https://registry.yarnpkg.com/@stencil/core/-/core-2.22.3.tgz#83987e20bba855c450f6d6780e3a20192603f13f"
   integrity sha512-kmVA0M/HojwsfkeHsifvHVIYe4l5tin7J5+DLgtl8h6WWfiMClND5K3ifCXXI2ETDNKiEk21p6jql3Fx9o2rng==
 
-"@stencil/core@^3.3.1":
+"@stencil/core@^3.3.1", "@stencil/core@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@stencil/core/-/core-3.4.0.tgz#8cdfccb5fa9fb3fd2fc63c60c5552b650e9eac21"
   integrity sha512-kEtPtV6QegME8YgMjWrhS7KktItbhqOpAuK9aXypDdI/7bLU9iM/4DtnQGWY/DARBophk+XRBfNXcE62Bmi0dw==
@@ -1757,19 +1766,6 @@
   integrity sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==
   dependencies:
     "@types/node" "*"
-
-"@vitejs/plugin-legacy@^4.0.2":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@vitejs/plugin-legacy/-/plugin-legacy-4.0.4.tgz#3b661ead636f55715c19dff833b71050f9d12974"
-  integrity sha512-UwVfkMfUEszbQ2vs3RDfiDxxvYnIjmtIrGxTnxRev5Sh8ZoDpieV2dwvTUB7zXKJpfRsOgimM6MxQ65VDHJeQw==
-  dependencies:
-    "@babel/core" "^7.21.4"
-    "@babel/preset-env" "^7.21.4"
-    browserslist "^4.21.5"
-    core-js "^3.30.1"
-    magic-string "^0.30.0"
-    regenerator-runtime "^0.13.11"
-    systemjs "^6.14.1"
 
 "@vitejs/plugin-react@^4.0.0":
   version "4.0.0"
@@ -2368,11 +2364,6 @@ core-js-compat@^3.30.1, core-js-compat@^3.30.2:
   integrity sha512-hM7YCu1cU6Opx7MXNu0NuumM0ezNeAeRKadixyiQELWY3vT3De9S4J5ZBMraWV2vZnrE1Cirl0GtFtDtMUXzPw==
   dependencies:
     browserslist "^4.21.5"
-
-core-js@^3.30.1:
-  version "3.31.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.31.0.tgz#4471dd33e366c79d8c0977ed2d940821719db344"
-  integrity sha512-NIp2TQSGfR6ba5aalZD+ZQ1fSxGhDo/s1w0nx3RYzf2pnJxt7YynxFlFScP6eV7+GZsKO95NSjGxyJsU3DZgeQ==
 
 core-util-is@1.0.2:
   version "1.0.2"
@@ -5622,11 +5613,6 @@ symbol-tree@^3.2.4:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
-
-systemjs@^6.14.1:
-  version "6.14.1"
-  resolved "https://registry.yarnpkg.com/systemjs/-/systemjs-6.14.1.tgz#95a580b91b50d0d69ff178ed4816f0ddbcea23c1"
-  integrity sha512-8ftwWd+XnQtZ/aGbatrN4QFNGrKJzmbtixW+ODpci7pyoTajg4sonPP8aFLESAcuVxaC1FyDESt+SpfFCH9rZQ==
 
 temp-dir@^2.0.0:
   version "2.0.0"
