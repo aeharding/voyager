@@ -69,11 +69,12 @@ export default function Comments({ header, postId, op }: CommentsProps) {
 
     const currentPage = page + 1;
 
+    const reqPostId = postId;
     setLoading(true);
 
     try {
       response = await getClient(pathname).getComments({
-        post_id: postId,
+        post_id: reqPostId,
         limit: 10,
         sort: "Hot",
         type_: "All",
@@ -82,17 +83,20 @@ export default function Comments({ header, postId, op }: CommentsProps) {
         page: currentPage,
       });
     } catch (error) {
-      present({
-        message: "Problem fetching posts. Please try again.",
-        duration: 3500,
-        position: "bottom",
-        color: "danger",
-      });
+      if (reqPostId === postId)
+        present({
+          message: "Problem fetching posts. Please try again.",
+          duration: 3500,
+          position: "bottom",
+          color: "danger",
+        });
 
       throw error;
     } finally {
       setLoading(false);
     }
+
+    if (reqPostId !== postId) return;
 
     const existingComments = comments;
     const newComments = pullAllBy(
