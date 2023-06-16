@@ -61,7 +61,14 @@ const Icon = styled.img`
   border-radius: 10px;
 `;
 
-export const UpvoteArrow = styled(IonIcon)<{ willUpvote: boolean }>`
+export const UpvoteArrow = styled(IonIcon)<{
+  willUpvote: boolean;
+  slash: boolean;
+  bgColor: string;
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 2rem;
   width: 80px;
 
@@ -71,6 +78,24 @@ export const UpvoteArrow = styled(IonIcon)<{ willUpvote: boolean }>`
     willUpvote &&
     css`
       opacity: 1;
+    `}
+
+  ${({ slash, bgColor }) =>
+    slash &&
+    css`
+      &::after {
+        content: "";
+        position: absolute;
+        height: 30px;
+        width: 3px;
+        background: white;
+        font-size: 1.7em;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        transform-origin: center;
+        box-shadow: 0 0 0 2px var(--ion-color-${bgColor});
+      }
     `}
 `;
 
@@ -181,9 +206,15 @@ export default function Post({ post, communityMode, className }: PostProps) {
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const currentVote = postVotesById[post.post.id];
 
+  const [staleCurrentVote, setStaleCurrentVote] = useState(currentVote);
+
   useEffect(() => {
     setBlur(isNsfw(post));
   }, [post]);
+
+  useEffect(() => {
+    setStaleCurrentVote(currentVote);
+  }, [ratio]);
 
   function vote(score: 1 | -1 | 0) {
     if (jwt) dispatch(voteOnPost(post.post.id, score));
@@ -192,15 +223,13 @@ export default function Post({ post, communityMode, className }: PostProps) {
 
   async function onVoteDragStop() {
     if (!dragRef.current) return;
-    const ratio = await dragRef.current.target.getSlidingRatio();
 
     if (ratio <= -1.5) {
       vote(currentVote === -1 ? 0 : -1);
-    } else if (ratio <= 1) {
+    } else if (ratio <= -1) {
       vote(currentVote === 1 ? 0 : 1);
     }
 
-    setRatio(0);
     dragRef.current.target.closeOpened();
   }
 
@@ -226,7 +255,6 @@ export default function Post({ post, communityMode, className }: PostProps) {
     if (markdownLoneImage)
       return (
         <ImageContainer>
-          {" "}
           <PostImage
             src={markdownLoneImage.url}
             alt={markdownLoneImage.altText}
@@ -279,6 +307,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
       onIonDrag={async (e) => {
         dragRef.current = e;
         const ratio = await e.target.getSlidingRatio();
+        if (Math.round(ratio) === ratio) return;
         setRatio(ratio);
       }}
       onTouchEnd={onVoteDragStop}
@@ -286,7 +315,14 @@ export default function Post({ post, communityMode, className }: PostProps) {
     >
       <IonItemOptions side="start">
         <IonItemOption color={ratio <= -1.5 ? "danger" : "primary"}>
-          <UpvoteArrow icon={arrowUpSharp} willUpvote={ratio <= -1} />
+          <UpvoteArrow
+            slash={
+              ratio <= -1.5 ? staleCurrentVote === -1 : staleCurrentVote === 1
+            }
+            willUpvote={ratio <= -1}
+            icon={ratio <= -1.5 ? arrowDownSharp : arrowUpSharp}
+            bgColor={ratio <= -1.5 ? "danger" : "primary"}
+          />
         </IonItemOption>
       </IonItemOptions>
 

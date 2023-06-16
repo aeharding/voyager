@@ -25,7 +25,7 @@ const SubIcon = styled(IonIcon)<{ color: string }>`
   height: 1rem;
 
   background: ${({ color }) => color};
-  color: white;
+  --ion-color-base: white;
 `;
 
 const SubImgIcon = styled.img`
