@@ -9,6 +9,8 @@ import { CommentView, Person } from "lemmy-js-client";
 import { pullAllBy, uniqBy } from "lodash";
 import { useLocation } from "react-router";
 import { Virtuoso } from "react-virtuoso";
+import { useAppDispatch, useAppSelector } from "../store";
+import { receivedComments } from "../features/comment/commentSlice";
 
 const centerCss = css`
   position: relative;
@@ -43,6 +45,8 @@ interface CommentsProps {
 }
 
 export default function Comments({ header, postId, op }: CommentsProps) {
+  const dispatch = useAppDispatch();
+  const jwt = useAppSelector((state) => state.auth.jwt);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [finishedPaging, setFinishedPaging] = useState(false);
@@ -81,6 +85,7 @@ export default function Comments({ header, postId, op }: CommentsProps) {
         max_depth: 8,
         saved_only: false,
         page: currentPage,
+        auth: jwt,
       });
     } catch (error) {
       if (reqPostId === postId)
@@ -95,6 +100,8 @@ export default function Comments({ header, postId, op }: CommentsProps) {
     } finally {
       setLoading(false);
     }
+
+    dispatch(receivedComments(response.comments));
 
     if (reqPostId !== postId) return;
 

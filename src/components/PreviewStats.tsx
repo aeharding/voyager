@@ -20,7 +20,7 @@ interface PreviewStatsProps {
 export default function PreviewStats({ stats }: PreviewStatsProps) {
   return (
     <Container>
-      <Vote stats={stats} />
+      <Vote stats={stats} id={stats.post_id} type="post" />
       <IonIcon icon={chatbubbleOutline} />
       {stats.comments}
       <IonIcon icon={timeOutline} />

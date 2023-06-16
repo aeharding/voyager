@@ -6,13 +6,13 @@ import {
   IonItemOptions,
   IonItemSliding,
   ItemSlidingCustomEvent,
+  useIonModal,
 } from "@ionic/react";
 import { arrowUpSharp, chevronDownOutline } from "ionicons/icons";
 import { CommentView, Person } from "lemmy-js-client";
 import { css } from "@emotion/react";
 import Markdown from "./Markdown";
-import { UpvoteArrow } from "./Post";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import Ago from "./Ago";
 import { maxWidthCss } from "./AppContent";
 import PersonLabel from "./PersonLabel";
@@ -87,6 +87,12 @@ const Header = styled.div`
   align-items: center;
 
   gap: 0.5rem;
+
+  color: var(--ion-color-medium);
+`;
+
+const StyledPersonLabel = styled(PersonLabel)`
+  color: var(--ion-text-color);
 `;
 
 const Content = styled.div<{ keyPressed: boolean }>`
@@ -109,20 +115,8 @@ const Content = styled.div<{ keyPressed: boolean }>`
   }
 `;
 
-const Votes = styled.div`
-  display: flex;
-  align-items: center;
-
-  opacity: 0.5;
-`;
-
-const StyledAgo = styled(Ago)`
-  opacity: 0.5;
-`;
-
 const CollapsedIcon = styled(IonIcon)`
   font-size: 1.2em;
-  opacity: 0.5;
 `;
 
 const AmountCollapsed = styled.div`
@@ -144,6 +138,12 @@ interface CommentProps {
 
 import { useEffect } from "react";
 import { ignoreSsrFlag } from "../helpers/emotion";
+import DraggingVote from "./DraggingVote";
+import { useAppDispatch, useAppSelector } from "../store";
+import Login from "../features/auth/Login";
+import { PageContext } from "../features/auth/PageContext";
+import { voteOnComment } from "../features/comment/commentSlice";
+import Vote from "./Vote";
 
 const useKeyPressed = (): boolean => {
   const [pressed, setPressed] = useState(false);
@@ -185,9 +185,22 @@ export default function Comment({
   childCount,
   op,
 }: CommentProps) {
-  const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
-  const [willUpvote, setWillUpvote] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const jwt = useAppSelector((state) => state.auth.jwt);
+  const [login, onDismiss] = useIonModal(Login, {
+    onDismiss: (data: string, role: string) => onDismiss(data, role),
+  });
+  const pageContext = useContext(PageContext);
+
   const keyPressed = useKeyPressed();
+
+  const commentVotesById = useAppSelector(
+    (state) => state.comment.commentVotesById
+  );
+  const currentVote = commentVotesById[comment.comment.id];
+
+  const score = comment.counts.score + (currentVote ?? 0);
 
   const content = (() => {
     if (comment.comment.deleted) return <i>deleted by creator</i>;
@@ -208,53 +221,31 @@ export default function Comment({
     );
   })();
 
+  function onVote(score: 1 | -1 | 0) {
+    if (jwt) dispatch(voteOnComment(comment.comment.id, score));
+    else login({ presentingElement: pageContext.page });
+  }
+
   return (
-    <IonItemSliding
-      disabled={keyPressed}
-      onIonDrag={async (e) => {
-        dragRef.current = e;
-        setWillUpvote((await e.target.getSlidingRatio()) <= -1);
-      }}
-      onTouchEnd={async () => {
-        if (!dragRef.current) return;
-        const ratio = await dragRef.current.target.getSlidingRatio();
-
-        dragRef.current.target.closeOpened();
-      }}
-      onMouseUp={async () => {
-        if (!dragRef.current) return;
-        const ratio = await dragRef.current.target.getSlidingRatio();
-
-        dragRef.current.target.closeOpened();
-      }}
-    >
-      <IonItemOptions side="start">
-        <IonItemOption color="success">
-          <UpvoteArrow
-            icon={arrowUpSharp}
-            willUpvote={willUpvote}
-            slash={false}
-            bgColor="primary"
-          />
-        </IonItemOption>
-      </IonItemOptions>
+    <DraggingVote onVote={onVote} currentVote={currentVote}>
       <CustomIonItem onClick={() => !keyPressed && onClick?.()}>
         <PositionedContainer depth={depth}>
           <Container depth={depth}>
             <Header>
-              <PersonLabel
+              <StyledPersonLabel
                 person={comment.creator}
                 op={op}
                 distinguished={comment.comment.distinguished}
               />
-              <Votes>
-                <IonIcon icon={arrowUpSharp} />
-                {comment.counts.score}
-              </Votes>
+              <Vote
+                stats={comment.counts}
+                id={comment.comment.id}
+                type="comment"
+              />
               <div style={{ flex: 1 }} />
               {!collapsed ? (
                 <>
-                  <StyledAgo date={comment.comment.published} />
+                  <Ago date={comment.comment.published} />
                 </>
               ) : (
                 <>
@@ -277,6 +268,6 @@ export default function Comment({
           </Container>
         </PositionedContainer>
       </CustomIonItem>
-    </IonItemSliding>
+    </DraggingVote>
   );
 }

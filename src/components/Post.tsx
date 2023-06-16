@@ -4,18 +4,11 @@ import {
   IonItem,
   IonItemOption,
   IonItemOptions,
-  IonItemSliding,
   IonRouterLink,
-  ItemSlidingCustomEvent,
   useIonModal,
 } from "@ionic/react";
 import { PostView } from "lemmy-js-client";
-import {
-  arrowDownSharp,
-  arrowUndo,
-  arrowUpSharp,
-  ellipsisHorizontal,
-} from "ionicons/icons";
+import { arrowUndo, ellipsisHorizontal } from "ionicons/icons";
 import PreviewStats from "./PreviewStats";
 import Embed from "./Embed";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -31,8 +24,9 @@ import Login from "../features/auth/Login";
 import { PageContext } from "../features/auth/PageContext";
 import Nsfw, { isNsfw } from "./Nsfw";
 import { VoteButton } from "./VoteButton";
+import DraggingVote from "./DraggingVote";
 
-const StyledIonItemSliding = styled(IonItemSliding)`
+const StyledDraggingVote = styled(DraggingVote)`
   border-bottom: 8px solid var(--thick-separator-color);
 `;
 
@@ -59,44 +53,6 @@ const Icon = styled.img`
   width: 20px;
   height: 20px;
   border-radius: 10px;
-`;
-
-export const UpvoteArrow = styled(IonIcon)<{
-  willUpvote: boolean;
-  slash: boolean;
-  bgColor: string;
-}>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  width: 80px;
-
-  opacity: 0.5;
-
-  ${({ willUpvote }) =>
-    willUpvote &&
-    css`
-      opacity: 1;
-    `}
-
-  ${({ slash, bgColor }) =>
-    slash &&
-    css`
-      &::after {
-        content: "";
-        position: absolute;
-        height: 30px;
-        width: 3px;
-        background: white;
-        font-size: 1.7em;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) rotate(-45deg);
-        transform-origin: center;
-        box-shadow: 0 0 0 2px var(--ion-color-${bgColor});
-      }
-    `}
 `;
 
 const Details = styled.div`
@@ -195,42 +151,22 @@ export default function Post({ post, communityMode, className }: PostProps) {
 
   const { actor } = useParams<{ actor: string }>();
 
-  const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
-  const [ratio, setRatio] = useState(0);
-
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
   const [blur, setBlur] = useState(isNsfw(post));
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
-  const currentVote = postVotesById[post.post.id];
-
-  const [staleCurrentVote, setStaleCurrentVote] = useState(currentVote);
+  const currentVote =
+    postVotesById[post.post.id] ?? (post.my_vote as 1 | -1 | 0 | undefined);
 
   useEffect(() => {
     setBlur(isNsfw(post));
   }, [post]);
 
-  useEffect(() => {
-    setStaleCurrentVote(currentVote);
-  }, [ratio]);
-
-  function vote(score: 1 | -1 | 0) {
+  function onVote(score: 1 | -1 | 0) {
     if (jwt) dispatch(voteOnPost(post.post.id, score));
     else login({ presentingElement: pageContext.page });
-  }
-
-  async function onVoteDragStop() {
-    if (!dragRef.current) return;
-
-    if (ratio <= -1.5) {
-      vote(currentVote === -1 ? 0 : -1);
-    } else if (ratio <= -1) {
-      vote(currentVote === 1 ? 0 : 1);
-    }
-
-    dragRef.current.target.closeOpened();
   }
 
   function renderPostBody() {
@@ -303,29 +239,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
   }
 
   return (
-    <StyledIonItemSliding
-      onIonDrag={async (e) => {
-        dragRef.current = e;
-        const ratio = await e.target.getSlidingRatio();
-        if (Math.round(ratio) === ratio) return;
-        setRatio(ratio);
-      }}
-      onTouchEnd={onVoteDragStop}
-      onMouseUp={onVoteDragStop}
-    >
-      <IonItemOptions side="start">
-        <IonItemOption color={ratio <= -1.5 ? "danger" : "primary"}>
-          <UpvoteArrow
-            slash={
-              ratio <= -1.5 ? staleCurrentVote === -1 : staleCurrentVote === 1
-            }
-            willUpvote={ratio <= -1}
-            icon={ratio <= -1.5 ? arrowDownSharp : arrowUpSharp}
-            bgColor={ratio <= -1.5 ? "danger" : "primary"}
-          />
-        </IonItemOption>
-      </IonItemOptions>
-
+    <StyledDraggingVote currentVote={currentVote} onVote={onVote}>
       {/* href=undefined: Prevent drag failure on firefox */}
       <CustomIonItem
         detail={false}
@@ -387,6 +301,6 @@ export default function Post({ post, communityMode, className }: PostProps) {
           <IonIcon icon={arrowUndo} />
         </IonItemOption>
       </IonItemOptions>
-    </StyledIonItemSliding>
+    </StyledDraggingVote>
   );
 }

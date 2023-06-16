@@ -5,12 +5,15 @@ interface PersonLabelProps {
   person: Person;
   op?: Person;
   distinguished?: boolean;
+
+  className?: string;
 }
 
 export default function PersonLabel({
   person,
   op,
   distinguished,
+  className,
 }: PersonLabelProps) {
   let color: string | undefined;
 
@@ -21,6 +24,7 @@ export default function PersonLabel({
 
   return (
     <span
+      className={className}
       css={
         color &&
         css`
