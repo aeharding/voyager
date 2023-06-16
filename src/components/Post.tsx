@@ -30,6 +30,7 @@ import { maxWidthCss } from "./AppContent";
 import Login from "../features/auth/Login";
 import { PageContext } from "../features/auth/PageContext";
 import Nsfw, { isNsfw } from "./Nsfw";
+import { VoteButton } from "./VoteButton";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -90,8 +91,12 @@ const LeftDetails = styled.div`
 
 const RightDetails = styled.div`
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
   font-size: 1.5rem;
+
+  > * {
+    padding: 0.5rem;
+  }
 `;
 
 const CommunityDetails = styled.div`
@@ -173,10 +178,31 @@ export default function Post({ post, communityMode, className }: PostProps) {
     [post]
   );
   const [blur, setBlur] = useState(isNsfw(post));
+  const postVotesById = useAppSelector((state) => state.post.postVotesById);
+  const currentVote = postVotesById[post.post.id];
 
   useEffect(() => {
     setBlur(isNsfw(post));
   }, [post]);
+
+  function vote(score: 1 | -1 | 0) {
+    if (jwt) dispatch(voteOnPost(post.post.id, score));
+    else login({ presentingElement: pageContext.page });
+  }
+
+  async function onVoteDragStop() {
+    if (!dragRef.current) return;
+    const ratio = await dragRef.current.target.getSlidingRatio();
+
+    if (ratio <= -1.5) {
+      vote(currentVote === -1 ? 0 : -1);
+    } else if (ratio <= 1) {
+      vote(currentVote === 1 ? 0 : 1);
+    }
+
+    setRatio(0);
+    dragRef.current.target.closeOpened();
+  }
 
   function renderPostBody() {
     if (post.post.url && isUrlImage(post.post.url)) {
@@ -255,30 +281,8 @@ export default function Post({ post, communityMode, className }: PostProps) {
         const ratio = await e.target.getSlidingRatio();
         setRatio(ratio);
       }}
-      onTouchEnd={async () => {
-        if (!dragRef.current) return;
-        const ratio = await dragRef.current.target.getSlidingRatio();
-
-        if (ratio <= -1) {
-          if (jwt) dispatch(voteOnPost(post.post.id, ratio <= -1.5 ? -1 : 1));
-          else login({ presentingElement: pageContext.page });
-        }
-
-        setRatio(0);
-        dragRef.current.target.closeOpened();
-      }}
-      onMouseUp={async () => {
-        if (!dragRef.current) return;
-        const ratio = await dragRef.current.target.getSlidingRatio();
-
-        if (ratio <= -1) {
-          if (jwt) dispatch(voteOnPost(post.post.id, ratio <= -1.5 ? -1 : 1));
-          else login({ presentingElement: pageContext.page });
-        }
-
-        setRatio(0);
-        dragRef.current.target.closeOpened();
-      }}
+      onTouchEnd={onVoteDragStop}
+      onMouseUp={onVoteDragStop}
     >
       <IonItemOptions side="start">
         <IonItemOption color={ratio <= -1.5 ? "danger" : "primary"}>
@@ -333,9 +337,9 @@ export default function Post({ post, communityMode, className }: PostProps) {
               )}
               <PreviewStats stats={post.counts} />
             </LeftDetails>
-            <RightDetails>
-              <IonIcon icon={arrowUpSharp} />
-              <IonIcon icon={arrowDownSharp} />
+            <RightDetails onClick={(e) => e.stopPropagation()}>
+              <VoteButton type="up" postId={post.post.id} />
+              <VoteButton type="down" postId={post.post.id} />
               <IonIcon icon={ellipsisHorizontal} />
             </RightDetails>
           </Details>
