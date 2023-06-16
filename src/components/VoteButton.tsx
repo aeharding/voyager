@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonModal } from "@ionic/react";
+import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
 import Login from "../features/auth/Login";
 import { useContext } from "react";
 import { PageContext } from "../features/auth/PageContext";
@@ -8,6 +8,7 @@ import { voteOnPost } from "../features/post/postSlice";
 import { css } from "@emotion/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "./post/actions/ActionButton";
+import { voteError } from "../helpers/toastMessages";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "onColor",
@@ -30,6 +31,7 @@ interface VoteButtonProps {
 }
 
 export function VoteButton({ type, postId }: VoteButtonProps) {
+  const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const pageContext = useContext(PageContext);
   const [login, onDismiss] = useIonModal(Login, {
@@ -70,12 +72,18 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   return (
     <Item
       on={myVote === selectedVote}
-      onClick={() => {
+      onClick={async () => {
         if (!jwt) return login({ presentingElement: pageContext.page });
 
-        dispatch(
-          voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote)
-        );
+        try {
+          await dispatch(
+            voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote)
+          );
+        } catch (error) {
+          present(voteError);
+
+          throw error;
+        }
       }}
       activeColor={activeColor}
     >

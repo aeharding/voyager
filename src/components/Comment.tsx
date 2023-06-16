@@ -238,7 +238,8 @@ export default function Comment({
                 distinguished={comment.comment.distinguished}
               />
               <Vote
-                stats={comment.counts}
+                voteFromServer={comment.my_vote as 1 | 0 | -1 | undefined}
+                score={comment.counts.score}
                 id={comment.comment.id}
                 type="comment"
               />

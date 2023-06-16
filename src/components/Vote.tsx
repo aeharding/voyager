@@ -1,6 +1,6 @@
 import { CommentAggregates, PostAggregates } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../store";
-import { IonIcon, useIonModal } from "@ionic/react";
+import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { voteOnPost } from "../features/post/postSlice";
@@ -8,6 +8,7 @@ import Login from "../features/auth/Login";
 import { useContext } from "react";
 import { PageContext } from "../features/auth/PageContext";
 import { voteOnComment } from "../features/comment/commentSlice";
+import { voteError } from "../helpers/toastMessages";
 
 const Container = styled.div<{ vote: 1 | -1 | 0 | undefined }>`
   display: flex;
@@ -27,12 +28,19 @@ const Container = styled.div<{ vote: 1 | -1 | 0 | undefined }>`
 `;
 
 interface VoteProps {
-  stats: PostAggregates | CommentAggregates;
   type: "comment" | "post";
   id: number;
+  score: number;
+  voteFromServer: 1 | -1 | 0 | undefined;
 }
 
-export default function Vote({ stats, type, id }: VoteProps) {
+export default function Vote({
+  type,
+  id,
+  voteFromServer,
+  score: existingScore,
+}: VoteProps) {
+  const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const votesById = useAppSelector((state) =>
     type === "comment"
@@ -40,8 +48,8 @@ export default function Vote({ stats, type, id }: VoteProps) {
       : state.post.postVotesById
   );
 
-  const myVote = votesById[type === "comment" ? id : id] ?? 0;
-  const score = stats.score + myVote;
+  const myVote = votesById[id] ?? voteFromServer;
+  const score = existingScore - (voteFromServer ?? 0) + (votesById[id] ?? 0);
 
   const jwt = useAppSelector((state) => state.auth.jwt);
   const [login, onDismiss] = useIonModal(Login, {
@@ -52,7 +60,7 @@ export default function Vote({ stats, type, id }: VoteProps) {
   return (
     <Container
       vote={myVote}
-      onClick={(e) => {
+      onClick={async (e) => {
         e.stopPropagation();
         e.preventDefault();
 
@@ -65,7 +73,13 @@ export default function Vote({ stats, type, id }: VoteProps) {
           dispatcherFn = voteOnPost;
         }
 
-        dispatch(dispatcherFn(id, myVote ? 0 : 1));
+        try {
+          await dispatch(dispatcherFn(id, myVote ? 0 : 1));
+        } catch (error) {
+          present(voteError);
+
+          throw error;
+        }
       }}
     >
       <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} /> {score}

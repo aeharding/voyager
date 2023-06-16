@@ -35,7 +35,7 @@ export const commentSlice = createSlice({
     },
     updateCommentVote: (
       state,
-      action: PayloadAction<{ commentId: number; vote: -1 | 1 | 0 }>
+      action: PayloadAction<{ commentId: number; vote: -1 | 1 | 0 | undefined }>
     ) => {
       state.commentVotesById[action.payload.commentId] = action.payload.vote;
     },
@@ -54,13 +54,21 @@ export default commentSlice.reducer;
 export const voteOnComment =
   (commentId: number, vote: 1 | -1 | 0) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const oldVote = getState().comment.commentVotesById[commentId];
+
     dispatch(updateCommentVote({ commentId, vote }));
 
     const jwt = getState().auth.jwt;
 
-    clientSelector(getState())?.likeComment({
-      comment_id: commentId,
-      score: vote,
-      auth: jwt!,
-    });
+    try {
+      await clientSelector(getState())?.likeComment({
+        comment_id: commentId,
+        score: vote,
+        auth: jwt!,
+      });
+    } catch (error) {
+      dispatch(updateCommentVote({ commentId, vote: oldVote }));
+
+      throw error;
+    }
   };

@@ -201,7 +201,7 @@ export default function PostDetail() {
                 <PersonLabel person={post.creator} />
               </strong>
             </By>
-            <Stats stats={post.counts} />
+            <Stats stats={post.counts} voteFromServer={post.my_vote} />
           </PostDeets>
         </Container>
       </BorderlessIonItem>

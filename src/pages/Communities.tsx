@@ -16,7 +16,9 @@ import { useAppSelector } from "../store";
 import { getHandle } from "../helpers/lemmy";
 import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
-import { sortBy } from "lodash";
+import { pull, pullAll, pullAllBy, sortBy, uniqBy } from "lodash";
+import { notEmpty } from "../helpers/array";
+import { useMemo } from "react";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -63,8 +65,37 @@ const Content = styled.div`
 
 export default function Communities() {
   const { actor } = useParams<{ actor: string }>();
-  const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
   const jwt = useAppSelector((state) => state.auth.jwt);
+
+  const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
+
+  const communityByHandle = useAppSelector(
+    (state) => state.community.communityByHandle
+  );
+
+  const communities = useMemo(() => {
+    const communities = uniqBy(
+      [
+        ...(follows || []).map((f) => f.community),
+        ...Object.values(communityByHandle).map(
+          (c) => c?.community_view.community
+        ),
+      ].filter(notEmpty),
+      "id"
+    );
+
+    pullAllBy(
+      communities,
+      Object.values(communityByHandle)
+        .filter(
+          (response) => response?.community_view.subscribed === "NotSubscribed"
+        )
+        .map((c) => c?.community_view.community),
+      "id"
+    );
+
+    return communities;
+  }, [follows, communityByHandle]);
 
   return (
     <IonPage>
@@ -111,20 +142,20 @@ export default function Communities() {
             </IonItemDivider>
           </IonItemGroup>
 
-          {sortBy(follows, "community.name")?.map((follow) => (
+          {sortBy(communities, "name")?.map((community) => (
             <IonItem
-              key={follow.community.id}
-              routerLink={`/${actor}/c/${getHandle(follow.community)}`}
+              key={community.id}
+              routerLink={`/${actor}/c/${getHandle(community)}`}
             >
               <Content>
-                {follow.community.icon ? (
-                  <SubImgIcon src={follow.community.icon} />
+                {community.icon ? (
+                  <SubImgIcon src={community.icon} />
                 ) : (
-                  <FakeIcon bg={generateRandomColor(follow.community.id)}>
-                    {follow.community.name.slice(0, 1).toUpperCase()}
+                  <FakeIcon bg={generateRandomColor(community.id)}>
+                    {community.name.slice(0, 1).toUpperCase()}
                   </FakeIcon>
                 )}
-                {getHandle(follow.community)}
+                {getHandle(community)}
               </Content>
             </IonItem>
           ))}

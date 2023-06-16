@@ -1,20 +1,11 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonModal } from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import {
-  arrowDownSharp,
   arrowUndoOutline,
-  arrowUpSharp,
   bookmarkOutline,
-  bookmarkSharp,
   linkOutline,
   shareOutline,
 } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../store";
-import { css } from "@emotion/react";
-import { voteOnPost } from "../features/post/postSlice";
-import { useContext } from "react";
-import Login from "../features/auth/Login";
-import { PageContext } from "../features/auth/PageContext";
 import { PostView } from "lemmy-js-client";
 import { VoteButton } from "./VoteButton";
 import { ActionButton } from "./post/actions/ActionButton";

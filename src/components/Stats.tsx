@@ -16,12 +16,18 @@ const Container = styled.div`
 
 interface StatsProps {
   stats: PostAggregates;
+  voteFromServer: number | undefined;
 }
 
-export default function Stats({ stats }: StatsProps) {
+export default function Stats({ stats, voteFromServer }: StatsProps) {
   return (
     <Container>
-      <Vote stats={stats} id={stats.post_id} type="post" />
+      <Vote
+        voteFromServer={voteFromServer as 1 | 0 | -1 | undefined}
+        score={stats.score}
+        id={stats.post_id}
+        type="post"
+      />
       <IonIcon icon={happyOutline} />
       {Math.round(
         (stats.upvotes + stats.downvotes

@@ -15,12 +15,21 @@ const Container = styled.div`
 
 interface PreviewStatsProps {
   stats: PostAggregates;
+  voteFromServer: number | undefined;
 }
 
-export default function PreviewStats({ stats }: PreviewStatsProps) {
+export default function PreviewStats({
+  stats,
+  voteFromServer,
+}: PreviewStatsProps) {
   return (
     <Container>
-      <Vote stats={stats} id={stats.post_id} type="post" />
+      <Vote
+        score={stats.score}
+        voteFromServer={voteFromServer as 1 | 0 | -1 | undefined}
+        id={stats.post_id}
+        type="post"
+      />
       <IonIcon icon={chatbubbleOutline} />
       {stats.comments}
       <IonIcon icon={timeOutline} />

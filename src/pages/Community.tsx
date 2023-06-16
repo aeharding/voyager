@@ -1,7 +1,9 @@
 import {
+  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -10,12 +12,27 @@ import Posts from "../components/Posts";
 import { useParams } from "react-router";
 import AppBackButton from "../components/AppBackButton";
 import PostSort from "../components/PostSort";
+import MoreActions from "../components/community/MoreActions";
+import { useAppDispatch, useAppSelector } from "../store";
+import { useEffect } from "react";
+import { getCommunity } from "../components/community/communitySlice";
 
 export default function Community() {
+  const dispatch = useAppDispatch();
   const { actor, community } = useParams<{
     actor: string;
     community: string;
   }>();
+
+  const communityByHandle = useAppSelector(
+    (state) => state.community.communityByHandle
+  );
+
+  useEffect(() => {
+    if (communityByHandle[community]) return;
+
+    dispatch(getCommunity(community));
+  }, [community]);
 
   return (
     <IonPage>
@@ -31,6 +48,7 @@ export default function Community() {
           <IonTitle>{community}</IonTitle>
 
           <IonButtons slot="end">
+            <MoreActions community={community} />
             <PostSort />
           </IonButtons>
         </IonToolbar>

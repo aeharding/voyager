@@ -6,6 +6,7 @@ import {
   IonItemOptions,
   IonRouterLink,
   useIonModal,
+  useIonToast,
 } from "@ionic/react";
 import { PostView } from "lemmy-js-client";
 import { arrowUndo, ellipsisHorizontal } from "ionicons/icons";
@@ -25,6 +26,7 @@ import { PageContext } from "../features/auth/PageContext";
 import Nsfw, { isNsfw } from "./Nsfw";
 import { VoteButton } from "./VoteButton";
 import DraggingVote from "./DraggingVote";
+import { voteError } from "../helpers/toastMessages";
 
 const StyledDraggingVote = styled(DraggingVote)`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -141,6 +143,7 @@ interface PostProps {
 }
 
 export default function Post({ post, communityMode, className }: PostProps) {
+  const [present] = useIonToast();
   const dispatch = useAppDispatch();
 
   const jwt = useAppSelector((state) => state.auth.jwt);
@@ -164,9 +167,14 @@ export default function Post({ post, communityMode, className }: PostProps) {
     setBlur(isNsfw(post));
   }, [post]);
 
-  function onVote(score: 1 | -1 | 0) {
-    if (jwt) dispatch(voteOnPost(post.post.id, score));
-    else login({ presentingElement: pageContext.page });
+  async function onVote(score: 1 | -1 | 0) {
+    if (jwt) {
+      try {
+        await dispatch(voteOnPost(post.post.id, score));
+      } catch (error) {
+        present(voteError);
+      }
+    } else login({ presentingElement: pageContext.page });
   }
 
   function renderPostBody() {
@@ -285,7 +293,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
                   </CommunityDetails>
                 </IonRouterLink>
               )}
-              <PreviewStats stats={post.counts} />
+              <PreviewStats stats={post.counts} voteFromServer={post.my_vote} />
             </LeftDetails>
             <RightDetails onClick={(e) => e.stopPropagation()}>
               <VoteButton type="up" postId={post.post.id} />

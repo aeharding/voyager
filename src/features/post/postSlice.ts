@@ -33,7 +33,7 @@ export const postSlice = createSlice({
     },
     updatePostVote: (
       state,
-      action: PayloadAction<{ postId: number; vote: -1 | 1 | 0 }>
+      action: PayloadAction<{ postId: number; vote: -1 | 1 | 0 | undefined }>
     ) => {
       state.postVotesById[action.payload.postId] = action.payload.vote;
     },
@@ -54,13 +54,21 @@ export default postSlice.reducer;
 export const voteOnPost =
   (postId: number, vote: 1 | -1 | 0) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const oldVote = getState().post.postVotesById[postId];
+
     dispatch(updatePostVote({ postId, vote }));
 
     const jwt = getState().auth.jwt;
 
-    clientSelector(getState())?.likePost({
-      post_id: postId,
-      score: vote,
-      auth: jwt!,
-    });
+    try {
+      await clientSelector(getState())?.likePost({
+        post_id: postId,
+        score: vote,
+        auth: jwt!,
+      });
+    } catch (error) {
+      dispatch(updatePostVote({ postId, vote: oldVote }));
+
+      throw error;
+    }
   };
