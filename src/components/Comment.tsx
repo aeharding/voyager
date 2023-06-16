@@ -230,7 +230,12 @@ export default function Comment({
     >
       <IonItemOptions side="start">
         <IonItemOption color="success">
-          <UpvoteArrow icon={arrowUpSharp} willUpvote={willUpvote} />
+          <UpvoteArrow
+            icon={arrowUpSharp}
+            willUpvote={willUpvote}
+            slash={false}
+            bgColor="primary"
+          />
         </IonItemOption>
       </IonItemOptions>
       <CustomIonItem onClick={() => !keyPressed && onClick?.()}>
