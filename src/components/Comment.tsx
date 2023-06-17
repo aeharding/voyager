@@ -34,12 +34,17 @@ const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
   --inner-padding-end: 0;
   --border-style: none;
+  --min-height: 0;
 `;
 
 const PositionedContainer = styled.div<{ depth: number }>`
   ${maxWidthCss}
 
   padding: 0.55rem 1rem;
+
+  @media (hover: none) {
+    padding: 0.75rem 1rem;
+  }
 
   ${({ depth }) =>
     css`
@@ -57,7 +62,6 @@ const Container = styled.div<{ depth: number }>`
 
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
 
   ${({ depth }) =>
     depth &&
@@ -96,6 +100,12 @@ const StyledPersonLabel = styled(PersonLabel)`
 `;
 
 const Content = styled.div<{ keyPressed: boolean }>`
+  padding-top: 0.35rem;
+
+  @media (hover: none) {
+    padding-top: 0.45rem;
+  }
+
   line-height: 1.1;
 
   ${({ keyPressed }) =>
@@ -122,6 +132,7 @@ const CollapsedIcon = styled(IonIcon)`
 const AmountCollapsed = styled.div`
   font-size: 0.9em;
   padding: 0.25rem 0.5rem;
+  margin: -0.25rem;
   border-radius: 1rem;
   color: var(--ion-color-medium);
   background: var(--ion-color-light);
@@ -134,6 +145,7 @@ interface CommentProps {
   collapsed?: boolean;
   childCount: number;
   op: Person;
+  fullyCollapsed: boolean;
 }
 
 import { useEffect } from "react";
@@ -144,6 +156,7 @@ import Login from "../features/auth/Login";
 import { PageContext } from "../features/auth/PageContext";
 import { voteOnComment } from "../features/comment/commentSlice";
 import Vote from "./Vote";
+import AnimateHeight from "react-animate-height";
 
 const useKeyPressed = (): boolean => {
   const [pressed, setPressed] = useState(false);
@@ -184,6 +197,7 @@ export default function Comment({
   collapsed,
   childCount,
   op,
+  fullyCollapsed,
 }: CommentProps) {
   const dispatch = useAppDispatch();
 
@@ -199,8 +213,6 @@ export default function Comment({
     (state) => state.comment.commentVotesById
   );
   const currentVote = commentVotesById[comment.comment.id];
-
-  const score = comment.counts.score + (currentVote ?? 0);
 
   const content = (() => {
     if (comment.comment.deleted) return <i>deleted by creator</i>;
@@ -227,48 +239,51 @@ export default function Comment({
   }
 
   return (
-    <DraggingVote onVote={onVote} currentVote={currentVote}>
-      <CustomIonItem onClick={() => !keyPressed && onClick?.()}>
-        <PositionedContainer depth={depth}>
-          <Container depth={depth}>
-            <Header>
-              <StyledPersonLabel
-                person={comment.creator}
-                op={op}
-                distinguished={comment.comment.distinguished}
-              />
-              <Vote
-                voteFromServer={comment.my_vote as 1 | 0 | -1 | undefined}
-                score={comment.counts.score}
-                id={comment.comment.id}
-                type="comment"
-              />
-              <div style={{ flex: 1 }} />
-              {!collapsed ? (
-                <>
-                  <Ago date={comment.comment.published} />
-                </>
-              ) : (
-                <>
-                  <AmountCollapsed>{childCount}</AmountCollapsed>
-                  <CollapsedIcon icon={chevronDownOutline} />
-                </>
-              )}
-            </Header>
-            {!collapsed && (
-              <Content
-                keyPressed={keyPressed}
-                onClick={(e) => {
-                  if (!(e.target instanceof HTMLElement)) return;
-                  if (e.target.nodeName === "A") e.stopPropagation();
-                }}
-              >
-                {content}
-              </Content>
-            )}
-          </Container>
-        </PositionedContainer>
-      </CustomIonItem>
-    </DraggingVote>
+    <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
+      <DraggingVote onVote={onVote} currentVote={currentVote}>
+        <CustomIonItem onClick={() => !keyPressed && onClick?.()}>
+          <PositionedContainer depth={depth}>
+            <Container depth={depth}>
+              <Header>
+                <StyledPersonLabel
+                  person={comment.creator}
+                  op={op}
+                  distinguished={comment.comment.distinguished}
+                />
+                <Vote
+                  voteFromServer={comment.my_vote as 1 | 0 | -1 | undefined}
+                  score={comment.counts.score}
+                  id={comment.comment.id}
+                  type="comment"
+                />
+                <div style={{ flex: 1 }} />
+                {!collapsed ? (
+                  <>
+                    <Ago date={comment.comment.published} />
+                  </>
+                ) : (
+                  <>
+                    <AmountCollapsed>{childCount}</AmountCollapsed>
+                    <CollapsedIcon icon={chevronDownOutline} />
+                  </>
+                )}
+              </Header>
+
+              <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
+                <Content
+                  keyPressed={keyPressed}
+                  onClick={(e) => {
+                    if (!(e.target instanceof HTMLElement)) return;
+                    if (e.target.nodeName === "A") e.stopPropagation();
+                  }}
+                >
+                  {content}
+                </Content>
+              </AnimateHeight>
+            </Container>
+          </PositionedContainer>
+        </CustomIonItem>
+      </DraggingVote>
+    </AnimateHeight>
   );
 }

@@ -1,8 +1,8 @@
 import { Comment, CommentView, Community } from "lemmy-js-client";
 
 export const SUPPORTED_SERVERS = [
-  "lemmy.ml",
   "lemmy.world",
+  "lemmy.ml",
   "beehaw.org",
   "lemmy.one",
 ];
