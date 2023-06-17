@@ -3,6 +3,7 @@ import { PostView, SortType } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
 import { POST_SORTS } from "../../components/PostSort";
+import { getClient } from "../../services/lemmy";
 
 const POST_SORT_KEY = "post-sort";
 
@@ -71,4 +72,16 @@ export const voteOnPost =
 
       throw error;
     }
+  };
+
+export const getPost =
+  (id: number) => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = getState().auth.jwt;
+
+    const result = await getClient(location.pathname).getPost({
+      id,
+      auth: jwt,
+    });
+
+    if (result) dispatch(receivedPosts([result.post_view]));
   };

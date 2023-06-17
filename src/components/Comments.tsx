@@ -2,7 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { LIMIT, getClient } from "../services/lemmy";
 import { CommentNodeI, buildCommentsTree } from "../helpers/lemmy";
 import CommentTree from "./CommentTree";
-import { IonLoading, IonSpinner, useIonToast } from "@ionic/react";
+import {
+  IonLoading,
+  IonRefresher,
+  IonRefresherContent,
+  IonSpinner,
+  useIonToast,
+} from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { CommentView, Person } from "lemmy-js-client";
@@ -11,6 +17,8 @@ import { useLocation } from "react-router";
 import { Virtuoso } from "react-virtuoso";
 import { useAppDispatch, useAppSelector } from "../store";
 import { receivedComments } from "../features/comment/commentSlice";
+import { RefresherCustomEvent } from "@ionic/core";
+import { getPost } from "../features/post/postSlice";
 
 const centerCss = css`
   position: relative;
@@ -55,6 +63,7 @@ export default function Comments({ header, postId, op }: CommentsProps) {
     () => buildCommentsTree(comments, false),
     [comments]
   );
+  const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const { pathname } = useLocation();
   const [present] = useIonToast();
 
@@ -63,7 +72,6 @@ export default function Comments({ header, postId, op }: CommentsProps) {
       setLoading(false);
       setFinishedPaging(false);
       setPage(0);
-      setComments([]);
     }
 
     let response;
@@ -90,7 +98,7 @@ export default function Comments({ header, postId, op }: CommentsProps) {
     } catch (error) {
       if (reqPostId === postId)
         present({
-          message: "Problem fetching posts. Please try again.",
+          message: "Problem fetching comments. Please try again.",
           duration: 3500,
           position: "bottom",
           color: "danger",
@@ -105,7 +113,7 @@ export default function Comments({ header, postId, op }: CommentsProps) {
 
     if (reqPostId !== postId) return;
 
-    const existingComments = comments;
+    const existingComments = refresh ? [] : comments;
     const newComments = pullAllBy(
       response.comments,
       existingComments,
@@ -114,6 +122,14 @@ export default function Comments({ header, postId, op }: CommentsProps) {
     if (!newComments.length) setFinishedPaging(true);
     setComments(uniqBy([...comments, ...newComments], (c) => c.comment.id));
     setPage(currentPage);
+  }
+
+  async function handleRefresh(event: RefresherCustomEvent) {
+    try {
+      await Promise.all([fetchComments(true), dispatch(getPost(postId))]);
+    } finally {
+      event.detail.complete();
+    }
   }
 
   useEffect(() => {
@@ -142,11 +158,21 @@ export default function Comments({ header, postId, op }: CommentsProps) {
   })();
 
   return (
-    <Virtuoso
-      style={{ height: "100%" }}
-      totalCount={allComments.length + 1}
-      itemContent={(index) => (index ? allComments[index - 1] : header)}
-      endReached={() => fetchComments()}
-    />
+    <>
+      <IonRefresher
+        slot="fixed"
+        onIonRefresh={handleRefresh}
+        disabled={!isListAtTop}
+      >
+        <IonRefresherContent />
+      </IonRefresher>
+      <Virtuoso
+        style={{ height: "100%" }}
+        totalCount={allComments.length + 1}
+        itemContent={(index) => (index ? allComments[index - 1] : header)}
+        endReached={() => fetchComments()}
+        atTopStateChange={setIsListAtTop}
+      />
+    </>
   );
 }

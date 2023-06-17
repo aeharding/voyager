@@ -5,6 +5,8 @@ import {
   IonHeader,
   IonItem,
   IonPage,
+  IonRefresher,
+  IonRefresherContent,
   IonRouterLink,
   IonSpinner,
   IonTitle,
@@ -20,7 +22,7 @@ import Markdown from "./Markdown";
 import PostActions from "./PostActions";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../helpers/markdown";
-import { receivedPosts } from "../features/post/postSlice";
+import { getPost, receivedPosts } from "../features/post/postSlice";
 import { getHandle, getItemActorName, isUrlImage } from "../helpers/lemmy";
 import AppBackButton from "./AppBackButton";
 import Img from "./Img";
@@ -116,19 +118,13 @@ export default function PostDetail() {
     () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
-  const jwt = useAppSelector((state) => state.auth.jwt);
   const titleRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLElement | undefined>();
-  const { pathname } = useLocation();
 
   useEffect(() => {
     if (post) return;
 
-    (async () => {
-      const result = await getClient(pathname).getPost({ id: +id, auth: jwt });
-
-      dispatch(receivedPosts([result.post_view]));
-    })();
+    dispatch(getPost(+id));
   }, [post]);
 
   useEffect(() => {
@@ -225,7 +221,9 @@ export default function PostDetail() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <Comments header={header} postId={post.post.id} op={post.creator} />
+        <PageContext.Provider value={{ page: pageRef.current }}>
+          <Comments header={header} postId={post.post.id} op={post.creator} />
+        </PageContext.Provider>
       </IonContent>
     </IonPage>
   );
