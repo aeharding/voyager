@@ -55,6 +55,9 @@ interface DraggingVoteProps {
   className?: string;
 }
 
+const UPVOTE_RATIO = -1;
+const DOWNVOTE_RATIO = -1.75;
+
 export default function DraggingVote({
   currentVote,
   children,
@@ -75,9 +78,9 @@ export default function DraggingVote({
     if (!dragRef.current) return;
     if (!dragging) return;
 
-    if (ratio <= -1.5) {
+    if (ratio <= DOWNVOTE_RATIO) {
       onVote(currentVote === -1 ? 0 : -1);
-    } else if (ratio <= -1) {
+    } else if (ratio <= UPVOTE_RATIO) {
       onVote(currentVote === 1 ? 0 : 1);
     }
 
@@ -99,14 +102,16 @@ export default function DraggingVote({
       className={className}
     >
       <IonItemOptions side="start">
-        <IonItemOption color={ratio <= -1.5 ? "danger" : "primary"}>
+        <IonItemOption color={ratio <= DOWNVOTE_RATIO ? "danger" : "primary"}>
           <UpvoteArrow
             slash={
-              ratio <= -1.5 ? staleCurrentVote === -1 : staleCurrentVote === 1
+              ratio <= DOWNVOTE_RATIO
+                ? staleCurrentVote === -1
+                : staleCurrentVote === 1
             }
-            willUpvote={ratio <= -1}
-            icon={ratio <= -1.5 ? arrowDownSharp : arrowUpSharp}
-            bgColor={ratio <= -1.5 ? "danger" : "primary"}
+            willUpvote={ratio <= UPVOTE_RATIO}
+            icon={ratio <= DOWNVOTE_RATIO ? arrowDownSharp : arrowUpSharp}
+            bgColor={ratio <= DOWNVOTE_RATIO ? "danger" : "primary"}
           />
         </IonItemOption>
       </IonItemOptions>

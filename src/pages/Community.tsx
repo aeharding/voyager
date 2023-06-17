@@ -48,8 +48,8 @@ export default function Community() {
           <IonTitle>{community}</IonTitle>
 
           <IonButtons slot="end">
-            <MoreActions community={community} />
             <PostSort />
+            <MoreActions community={community} />
           </IonButtons>
         </IonToolbar>
       </IonHeader>

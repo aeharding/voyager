@@ -1,4 +1,10 @@
-import { IonActionSheet, IonButton, IonIcon, useIonModal } from "@ionic/react";
+import {
+  IonActionSheet,
+  IonButton,
+  IonIcon,
+  useIonModal,
+  useIonToast,
+} from "@ionic/react";
 import { ellipsisHorizontal, heart, heartDislike } from "ionicons/icons";
 import { useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -13,6 +19,7 @@ interface MoreActionsProps {
 }
 
 export default function MoreActions({ community }: MoreActionsProps) {
+  const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const jwt = useAppSelector((state) => state.auth.jwt);
@@ -40,13 +47,34 @@ export default function MoreActions({ community }: MoreActionsProps) {
       </IonButton>
       <IonActionSheet
         isOpen={open}
-        onDidDismiss={(e) => {
+        onDidDismiss={async (e) => {
           setOpen(false);
 
           if (e.detail.role === "subscribe") {
             if (!jwt) return login({ presentingElement: pageContext.page });
 
-            dispatch(followCommunity(!isSubscribed, community));
+            try {
+              await dispatch(followCommunity(!isSubscribed, community));
+            } catch (error) {
+              present({
+                message: `Problem ${
+                  isSubscribed ? "unsubscribing from" : "subscribing to"
+                } c/${community}. Please try again.`,
+                duration: 3500,
+                position: "bottom",
+                color: "danger",
+              });
+              throw error;
+            }
+
+            present({
+              message: `${
+                isSubscribed ? "Unsubscribed from" : "Subscribed to"
+              } c/${community}.`,
+              duration: 3500,
+              position: "bottom",
+              color: "success",
+            });
           }
         }}
         buttons={[
