@@ -1,16 +1,5 @@
-import { Redirect, Route, useHistory, useLocation } from "react-router-dom";
-import {
-  IonApp,
-  IonIcon,
-  IonLabel,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  setupIonicReact,
-} from "@ionic/react";
+import { IonApp, setupIonicReact } from "@ionic/react";
 import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
-import { logoWebComponent, settings, person } from "ionicons/icons";
 import { createMemoryHistory } from "history";
 
 /* Core CSS required for Ionic components to work properly */
@@ -31,26 +20,14 @@ import "@ionic/react/css/display.css";
 
 /* Theme variables */
 import "./theme/variables.css";
-import PostDetail from "./components/PostDetail";
 import { Provider } from "react-redux";
-import store, { useAppDispatch, useAppSelector } from "./store";
+import store from "./store";
 import ThemeColorUpdater from "./ThemeColorUpdater";
 import { isInstalled } from "./helpers/device";
-import Communities from "./pages/Communities";
-import Community from "./pages/Community";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect } from "react";
 import Tabs from "./Tabs";
-import Login from "./features/auth/Login";
-import { getSelf } from "./features/auth/authSlice";
 import Auth from "./Auth";
-import { AppContext } from "./features/auth/AppContext";
-import { VirtuosoHandle } from "react-virtuoso";
+import { AppContextProvider } from "./features/auth/AppContext";
 
 setupIonicReact({
   rippleEffect: false,
@@ -78,13 +55,9 @@ function Router({ children }: { children: React.ReactNode }) {
   return <IonReactRouter>{children}</IonReactRouter>;
 }
 
-function App() {
-  const [activePage, setActivePage] = useState<
-    HTMLElement | React.RefObject<VirtuosoHandle> | undefined
-  >();
-
+export default function App() {
   return (
-    <AppContext.Provider value={{ activePage, setActivePage }}>
+    <AppContextProvider>
       <ThemeColorUpdater />
       <Provider store={store}>
         <IonApp>
@@ -95,8 +68,6 @@ function App() {
           </Router>
         </IonApp>
       </Provider>
-    </AppContext.Provider>
+    </AppContextProvider>
   );
 }
-
-export default App;
