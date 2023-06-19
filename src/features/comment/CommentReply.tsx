@@ -10,9 +10,9 @@ import {
   IonSpinner,
   useIonToast,
 } from "@ionic/react";
-import { Comment, CommentView } from "lemmy-js-client";
+import { Comment, CommentView, PostView } from "lemmy-js-client";
 import { useState } from "react";
-import CommentReplyingTo from "./CommentReplyingTo";
+import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../helpers/useClient";
 import { useAppSelector } from "../../store";
 import { Centered, Spinner } from "../auth/Login";
@@ -39,9 +39,11 @@ const Textarea = styled.textarea`
 export default function CommentReply({
   onDismiss,
   comment,
+  post,
 }: {
   onDismiss: (data?: string, role?: string) => void;
   comment: CommentView;
+  post: PostView;
 }) {
   const [replyContent, setReplyContent] = useState("");
   const client = useClient();
@@ -49,7 +51,7 @@ export default function CommentReply({
   const [present] = useIonToast();
   const [loading, setLoading] = useState(false);
 
-  async function post() {
+  async function submit() {
     if (!jwt) return;
 
     setLoading(true);
@@ -103,7 +105,7 @@ export default function CommentReply({
               strong={true}
               type="submit"
               disabled={!replyContent.trim() || loading}
-              onClick={post}
+              onClick={submit}
             >
               Post
             </IonButton>
@@ -116,7 +118,7 @@ export default function CommentReply({
             onChange={(e) => setReplyContent(e.target.value)}
             autoFocus
           />
-          <CommentReplyingTo comment={comment} />
+          <ItemReplyingTo item={comment ?? post} />
         </Container>
       </IonContent>
     </IonPage>

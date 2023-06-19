@@ -1,11 +1,7 @@
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
-import {
-  returnDownForward,
-  returnDownForwardOutline,
-  returnDownForwardSharp,
-} from "ionicons/icons";
-import { CommentView } from "lemmy-js-client";
+import { returnDownForwardSharp } from "ionicons/icons";
+import { CommentView, PostView } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
 import Vote from "../../components/Vote";
 import Ago from "../../components/Ago";
@@ -35,24 +31,26 @@ const StyledAgo = styled(Ago)`
   margin-left: auto;
 `;
 
-interface CommentReplyingToProps {
-  comment: CommentView;
+interface ItemReplyingToProps {
+  item: CommentView | PostView;
 }
 
-export default function CommentReplyingTo({ comment }: CommentReplyingToProps) {
+export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
+  const payload = "comment" in item ? item.comment : item.post;
+
   return (
     <Container>
       <Header>
-        <IonIcon icon={returnDownForwardSharp} /> {getHandle(comment.creator)}{" "}
+        <IonIcon icon={returnDownForwardSharp} /> {getHandle(item.creator)}{" "}
         <Vote
           type="comment"
-          id={comment.comment.id}
-          voteFromServer={comment.my_vote as -1 | 0 | 1 | undefined}
-          score={comment.counts.score}
+          id={payload.id}
+          voteFromServer={item.my_vote as -1 | 0 | 1 | undefined}
+          score={item.counts.score}
         />
-        <StyledAgo date={comment.comment.published} />
+        <StyledAgo date={payload.published} />
       </Header>
-      <CommentContent comment={comment} />
+      <CommentContent item={payload} />
     </Container>
   );
 }

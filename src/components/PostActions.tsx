@@ -27,9 +27,10 @@ const Link = styled.a`
 
 interface PostActionsProps {
   post: PostView;
+  onReply: () => void;
 }
 
-export default function PostActions({ post }: PostActionsProps) {
+export default function PostActions({ post, onReply }: PostActionsProps) {
   function share() {
     navigator.share({ url: post.post.ap_id });
   }
@@ -46,7 +47,7 @@ export default function PostActions({ post }: PostActionsProps) {
           <IonIcon icon={linkOutline} />
         </Link>
       </ActionButton>
-      <ActionButton>
+      <ActionButton onClick={onReply}>
         <IonIcon icon={arrowUndoOutline} />
       </ActionButton>
       <ActionButton>

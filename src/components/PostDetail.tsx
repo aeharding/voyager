@@ -11,6 +11,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  useIonModal,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { useLocation, useParams } from "react-router";
@@ -20,7 +21,7 @@ import Embed from "./Embed";
 import Comments from "./Comments";
 import Markdown from "./Markdown";
 import PostActions from "./PostActions";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../helpers/markdown";
 import { getPost, receivedPosts } from "../features/post/postSlice";
 import { getHandle, getItemActorName, isUrlImage } from "../helpers/lemmy";
@@ -34,6 +35,7 @@ import PersonLabel from "./PersonLabel";
 import { PostView } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../helpers/routes";
 import ViewAllComments from "./ViewAllComments";
+import CommentReply from "../features/comment/CommentReply";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -125,6 +127,16 @@ export default function PostDetail() {
   );
   const titleRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLElement | undefined>();
+  const [commentsKey, setCommentsKey] = useState(Date.now());
+
+  const [reply, onDismissReply] = useIonModal(CommentReply, {
+    onDismiss: (data: string, role: string) => {
+      if (role === "post") setCommentsKey(Date.now());
+      onDismissReply(data, role);
+    },
+    post,
+  });
+  const pageContext = useContext(PageContext);
 
   useEffect(() => {
     if (post) return;
@@ -211,7 +223,10 @@ export default function PostDetail() {
           </Container>
         </BorderlessIonItem>
         <BorderlessIonItem>
-          <PostActions post={post} />
+          <PostActions
+            post={post}
+            onReply={() => reply({ presentingElement: pageContext.page })}
+          />
         </BorderlessIonItem>
       </>
     );
@@ -234,6 +249,7 @@ export default function PostDetail() {
         <PageContext.Provider value={{ page: pageRef.current }}>
           {post ? (
             <Comments
+              key={commentsKey}
               header={renderHeader(post)}
               postId={post.post.id}
               commentId={commentId ? +commentId : undefined}

@@ -30,6 +30,7 @@ import { voteError } from "../helpers/toastMessages";
 import MoreActions from "../features/post/item/MoreActions";
 import { useBuildGeneralBrowseLink } from "../helpers/routes";
 import PersonLabel from "./PersonLabel";
+import CommentReply from "../features/comment/CommentReply";
 
 const StyledDraggingVote = styled(DraggingVote)`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -156,6 +157,11 @@ export default function Post({ post, communityMode, className }: PostProps) {
   });
   const pageContext = useContext(PageContext);
 
+  const [reply, onDismissReply] = useIonModal(CommentReply, {
+    onDismiss: (data: string, role: string) => onDismissReply(data, role),
+    post,
+  });
+
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
@@ -252,7 +258,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
     <StyledDraggingVote
       currentVote={currentVote}
       onVote={onVote}
-      onReply={() => {}}
+      onReply={() => reply({ presentingElement: pageContext.page })}
     >
       {/* href=undefined: Prevent drag failure on firefox */}
       <CustomIonItem

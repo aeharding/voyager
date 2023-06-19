@@ -1,13 +1,13 @@
-import { CommentView } from "lemmy-js-client";
+import { Comment, CommentView, Post } from "lemmy-js-client";
 import Markdown from "./Markdown";
 
 interface CommentContentProps {
-  comment: CommentView;
+  item: Comment | Post;
 }
 
-export default function CommentContent({ comment }: CommentContentProps) {
-  if (comment.comment.deleted) return <i>deleted by creator</i>;
-  if (comment.comment.removed) return <i>removed by mod</i>;
+export default function CommentContent({ item }: CommentContentProps) {
+  if (item.deleted) return <i>deleted by creator</i>;
+  if (item.removed) return <i>removed by mod</i>;
 
   return (
     <Markdown
@@ -19,7 +19,7 @@ export default function CommentContent({ comment }: CommentContentProps) {
         ),
       }}
     >
-      {comment.comment.content}
+      {"content" in item ? item.content : item.body ?? item.name}
     </Markdown>
   );
 }

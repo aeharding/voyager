@@ -281,7 +281,7 @@ export default function Comment({
                     if (e.target.nodeName === "A") e.stopPropagation();
                   }}
                 >
-                  <CommentContent comment={comment} />
+                  <CommentContent item={comment.comment} />
                   {context}
                 </Content>
               </AnimateHeight>
