@@ -27,6 +27,7 @@ import Nsfw, { isNsfw } from "./Nsfw";
 import { VoteButton } from "./VoteButton";
 import DraggingVote from "./DraggingVote";
 import { voteError } from "../helpers/toastMessages";
+import MoreActions from "../features/post/item/MoreActions";
 
 const StyledDraggingVote = styled(DraggingVote)`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -304,7 +305,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
             <RightDetails onClick={(e) => e.stopPropagation()}>
               <VoteButton type="up" postId={post.post.id} />
               <VoteButton type="down" postId={post.post.id} />
-              <IonIcon icon={ellipsisHorizontal} />
+              <MoreActions post={post} />
             </RightDetails>
           </Details>
         </Container>

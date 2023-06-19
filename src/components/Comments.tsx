@@ -82,6 +82,10 @@ export default function Comments({ header, postId, op }: CommentsProps) {
     setActivePage(virtuosoRef);
   });
 
+  useEffect(() => {
+    fetchComments(true);
+  }, [postId]);
+
   async function fetchComments(refresh = false) {
     if (refresh) {
       setLoading(false);
@@ -146,10 +150,6 @@ export default function Comments({ header, postId, op }: CommentsProps) {
       event.detail.complete();
     }
   }
-
-  useEffect(() => {
-    fetchComments(true);
-  }, [postId]);
 
   const allComments = (() => {
     if (loading && !comments.length) return [<StyledIonSpinner />];

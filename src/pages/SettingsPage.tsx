@@ -6,15 +6,16 @@ export default function SettingsPage() {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Tab 3</IonTitle>
+          <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </IonHeader>
       <AppContent>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Tab 3</IonTitle>
+            <IonTitle size="large">Settings</IonTitle>
           </IonToolbar>
         </IonHeader>
+        <div className="ion-padding">No settings yet. Check back later!</div>
       </AppContent>
     </IonPage>
   );

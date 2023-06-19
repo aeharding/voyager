@@ -8,8 +8,6 @@ import {
 import { ellipsisHorizontal, heart, heartDislike } from "ionicons/icons";
 import { useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { getHandle } from "../../helpers/lemmy";
-import { getClient } from "../../services/lemmy";
 import { followCommunity } from "./communitySlice";
 import { PageContext } from "../../features/auth/PageContext";
 import Login from "../../features/auth/Login";
@@ -47,7 +45,18 @@ export default function MoreActions({ community }: MoreActionsProps) {
       </IonButton>
       <IonActionSheet
         isOpen={open}
-        onDidDismiss={async (e) => {
+        buttons={[
+          {
+            text: !isSubscribed ? "Subscribe" : "Unsubscribe",
+            role: "subscribe",
+            icon: !isSubscribed ? heart : heartDislike,
+          },
+          {
+            text: "Cancel",
+            role: "cancel",
+          },
+        ]}
+        onWillDismiss={async (e) => {
           setOpen(false);
 
           if (e.detail.role === "subscribe") {
@@ -77,17 +86,6 @@ export default function MoreActions({ community }: MoreActionsProps) {
             });
           }
         }}
-        buttons={[
-          {
-            text: !isSubscribed ? "Subscribe" : "Unsubscribe",
-            role: "subscribe",
-            icon: !isSubscribed ? heart : heartDislike,
-          },
-          {
-            text: "Cancel",
-            role: "cancel",
-          },
-        ]}
       />
     </>
   );

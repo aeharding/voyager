@@ -13,7 +13,6 @@ import { useParams } from "react-router";
 import { PageContext } from "../features/auth/PageContext";
 import { useRef } from "react";
 import PostSort from "../components/PostSort";
-import PostFilter from "../components/PostFilter";
 import { ListingType } from "lemmy-js-client";
 
 interface SpecialFeedProps {
@@ -39,7 +38,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
           <IonButtons slot="end">
             <PostSort />
-            <PostFilter />
+            {/* <PostFilter /> */}
           </IonButtons>
         </IonToolbar>
       </IonHeader>

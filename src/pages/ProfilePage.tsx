@@ -13,7 +13,6 @@ import { handleSelector, logout } from "../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../store";
 import Login from "../features/auth/Login";
 import { useRef } from "react";
-import { SUPPORTED_SERVERS } from "../helpers/lemmy";
 import Profile from "../features/profile/Profile";
 import { ReactComponent as IncognitoSvg } from "../features/profile/incognito.svg";
 import styled from "@emotion/styled";
