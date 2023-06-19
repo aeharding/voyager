@@ -26,6 +26,7 @@ import { PostView } from "lemmy-js-client";
 import { voteOnPost } from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import CommentReply from "../../comment/CommentReply";
 
 interface MoreActionsProps {
   post: PostView;
@@ -43,6 +44,11 @@ export default function MoreActions({ post }: MoreActionsProps) {
   const pageContext = useContext(PageContext);
   const [login, onDismiss] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismiss(data, role),
+  });
+
+  const [reply, onDismissReply] = useIonModal(CommentReply, {
+    onDismiss: (data: string, role: string) => onDismissReply(data, role),
+    post,
   });
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
@@ -118,7 +124,9 @@ export default function MoreActions({ post }: MoreActionsProps) {
             }
             case "reply": {
               if (!jwt) return login({ presentingElement: pageContext.page });
-              // TODO
+
+              reply({ presentingElement: pageContext.page });
+
               break;
             }
             case "person": {

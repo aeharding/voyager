@@ -258,7 +258,10 @@ export default function Post({ post, communityMode, className }: PostProps) {
     <StyledDraggingVote
       currentVote={currentVote}
       onVote={onVote}
-      onReply={() => reply({ presentingElement: pageContext.page })}
+      onReply={() => {
+        if (!jwt) return login({ presentingElement: pageContext.page });
+        else reply({ presentingElement: pageContext.page });
+      }}
     >
       {/* href=undefined: Prevent drag failure on firefox */}
       <CustomIonItem

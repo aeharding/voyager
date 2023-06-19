@@ -42,8 +42,8 @@ export default function CommentReply({
   post,
 }: {
   onDismiss: (data?: string, role?: string) => void;
-  comment: CommentView;
-  post: PostView;
+  comment?: CommentView;
+  post?: PostView;
 }) {
   const [replyContent, setReplyContent] = useState("");
   const client = useClient();
@@ -59,8 +59,8 @@ export default function CommentReply({
     try {
       await client.createComment({
         content: replyContent,
-        parent_id: comment.comment.id,
-        post_id: comment.post.id,
+        parent_id: comment?.comment.id,
+        post_id: (comment?.post.id ?? post?.post.id)!,
         auth: jwt,
       });
     } catch (error) {
@@ -118,7 +118,7 @@ export default function CommentReply({
             onChange={(e) => setReplyContent(e.target.value)}
             autoFocus
           />
-          <ItemReplyingTo item={comment ?? post} />
+          <ItemReplyingTo item={(comment ?? post)!} />
         </Container>
       </IonContent>
     </IonPage>

@@ -36,6 +36,7 @@ import { PostView } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../helpers/routes";
 import ViewAllComments from "./ViewAllComments";
 import CommentReply from "../features/comment/CommentReply";
+import Login from "../features/auth/Login";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -136,6 +137,11 @@ export default function PostDetail() {
     },
     post,
   });
+
+  const [login, onDismissLogin] = useIonModal(Login, {
+    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
+  });
+
   const pageContext = useContext(PageContext);
 
   useEffect(() => {
@@ -225,7 +231,10 @@ export default function PostDetail() {
         <BorderlessIonItem>
           <PostActions
             post={post}
-            onReply={() => reply({ presentingElement: pageContext.page })}
+            onReply={() => {
+              if (!jwt) return login({ presentingElement: pageRef.current });
+              else reply({ presentingElement: pageRef.current });
+            }}
           />
         </BorderlessIonItem>
       </>
