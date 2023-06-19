@@ -9,7 +9,7 @@ import remarkGfm from "remark-gfm";
 const Blockquote = styled.blockquote`
   padding-left: 0.5rem;
   border-left: 3px solid var(--ion-color-light);
-  margin-left: 0.5rem;
+  margin-left: 0;
 `;
 
 export default function Markdown(props: ReactMarkdownOptions) {

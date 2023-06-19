@@ -27,6 +27,7 @@ import { RefresherCustomEvent } from "@ionic/core";
 import { getPost } from "../features/post/postSlice";
 import useClient from "../helpers/useClient";
 import { AppContext } from "../features/auth/AppContext";
+import { PostContext } from "../features/post/detail/PostContext";
 
 const centerCss = css`
   position: relative;
@@ -182,7 +183,7 @@ export default function Comments({
   })();
 
   return (
-    <>
+    <PostContext.Provider value={{ refreshPost: () => fetchComments(true) }}>
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
@@ -206,6 +207,6 @@ export default function Comments({
             : {}
         }
       />
-    </>
+    </PostContext.Provider>
   );
 }

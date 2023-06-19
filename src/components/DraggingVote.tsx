@@ -7,14 +7,10 @@ import {
   IonItemOptions,
   IonItemSliding,
 } from "@ionic/react";
-import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
+import { arrowDownSharp, arrowUndo, arrowUpSharp } from "ionicons/icons";
 import { useEffect, useRef, useState } from "react";
 
-const UpvoteArrow = styled(IonIcon)<{
-  willUpvote: boolean;
-  slash: boolean;
-  bgColor: string;
-}>`
+const Action = styled(IonIcon)<{ active: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,12 +19,17 @@ const UpvoteArrow = styled(IonIcon)<{
 
   opacity: 0.5;
 
-  ${({ willUpvote }) =>
-    willUpvote &&
+  ${({ active }) =>
+    active &&
     css`
       opacity: 1;
     `}
+`;
 
+const UpvoteArrow = styled(Action)<{
+  slash: boolean;
+  bgColor: string;
+}>`
   ${({ slash, bgColor }) =>
     slash &&
     css`
@@ -52,16 +53,20 @@ interface DraggingVoteProps {
   currentVote: 1 | 0 | -1 | undefined;
   children?: React.ReactNode;
   onVote: (vote: 1 | -1 | 0) => void;
+  onReply: () => void;
+
   className?: string;
 }
 
 const UPVOTE_RATIO = -1;
 const DOWNVOTE_RATIO = -1.75;
+const REPLY_RATIO = 1;
 
 export default function DraggingVote({
   currentVote,
   children,
   onVote,
+  onReply,
   className,
 }: DraggingVoteProps) {
   const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
@@ -82,6 +87,8 @@ export default function DraggingVote({
       onVote(currentVote === -1 ? 0 : -1);
     } else if (ratio <= UPVOTE_RATIO) {
       onVote(currentVote === 1 ? 0 : 1);
+    } else if (ratio >= REPLY_RATIO) {
+      onReply();
     }
 
     dragRef.current.target.closeOpened();
@@ -109,10 +116,16 @@ export default function DraggingVote({
                 ? staleCurrentVote === -1
                 : staleCurrentVote === 1
             }
-            willUpvote={ratio <= UPVOTE_RATIO}
+            active={ratio <= UPVOTE_RATIO}
             icon={ratio <= DOWNVOTE_RATIO ? arrowDownSharp : arrowUpSharp}
             bgColor={ratio <= DOWNVOTE_RATIO ? "danger" : "primary"}
           />
+        </IonItemOption>
+      </IonItemOptions>
+
+      <IonItemOptions side="end">
+        <IonItemOption>
+          <Action icon={arrowUndo} active={ratio >= REPLY_RATIO} />
         </IonItemOption>
       </IonItemOptions>
       {children}

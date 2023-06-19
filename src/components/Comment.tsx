@@ -121,7 +121,10 @@ const Content = styled.div<{ keyPressed: boolean }>`
     }
   }
   > *:last-child {
-    margin-bottom: 0;
+    &,
+    > p:last-child {
+      margin-bottom: 0;
+    }
   }
 `;
 
@@ -160,6 +163,9 @@ import { PageContext } from "../features/auth/PageContext";
 import { voteOnComment } from "../features/comment/commentSlice";
 import Vote from "./Vote";
 import AnimateHeight from "react-animate-height";
+import CommentReply from "../features/comment/CommentReply";
+import CommentContent from "./CommentContent";
+import { PostContext } from "../features/post/detail/PostContext";
 
 const useKeyPressed = (): boolean => {
   const [pressed, setPressed] = useState(false);
@@ -206,8 +212,16 @@ export default function Comment({
   const dispatch = useAppDispatch();
 
   const jwt = useAppSelector((state) => state.auth.jwt);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
+  const [login, onDismissLogin] = useIonModal(Login, {
+    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
+  });
+  const { refreshPost } = useContext(PostContext);
+  const [reply, onDismissReply] = useIonModal(CommentReply, {
+    onDismiss: (data: string, role: string) => {
+      if (role === "post") refreshPost();
+      onDismissReply(data, role);
+    },
+    comment,
   });
   const pageContext = useContext(PageContext);
 
@@ -218,33 +232,19 @@ export default function Comment({
   );
   const currentVote = commentVotesById[comment.comment.id];
 
-  const content = (() => {
-    if (comment.comment.deleted) return <i>deleted by creator</i>;
-    if (comment.comment.removed) return <i>removed by mod</i>;
-
-    return (
-      <Markdown
-        components={{
-          img: ({ node, ...props }) => (
-            <a href={props.src} target="_blank" rel="noopener noreferrer">
-              {props.alt || "Image"}
-            </a>
-          ),
-        }}
-      >
-        {comment.comment.content}
-      </Markdown>
-    );
-  })();
-
   function onVote(score: 1 | -1 | 0) {
     if (jwt) dispatch(voteOnComment(comment.comment.id, score));
     else login({ presentingElement: pageContext.page });
   }
 
+  function onReply() {
+    if (jwt) reply({ presentingElement: pageContext.page });
+    else login({ presentingElement: pageContext.page });
+  }
+
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
-      <DraggingVote onVote={onVote} currentVote={currentVote}>
+      <DraggingVote onVote={onVote} currentVote={currentVote} onReply={onReply}>
         <CustomIonItem onClick={() => !keyPressed && onClick?.()}>
           <PositionedContainer depth={depth}>
             <Container depth={depth}>
@@ -281,7 +281,7 @@ export default function Comment({
                     if (e.target.nodeName === "A") e.stopPropagation();
                   }}
                 >
-                  {content}
+                  <CommentContent comment={comment} />
                   {context}
                 </Content>
               </AnimateHeight>

@@ -156,8 +156,6 @@ export default function Post({ post, communityMode, className }: PostProps) {
   });
   const pageContext = useContext(PageContext);
 
-  const { actor } = useParams<{ actor: string }>();
-
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
@@ -251,7 +249,11 @@ export default function Post({ post, communityMode, className }: PostProps) {
   }
 
   return (
-    <StyledDraggingVote currentVote={currentVote} onVote={onVote}>
+    <StyledDraggingVote
+      currentVote={currentVote}
+      onVote={onVote}
+      onReply={() => {}}
+    >
       {/* href=undefined: Prevent drag failure on firefox */}
       <CustomIonItem
         detail={false}
@@ -314,12 +316,6 @@ export default function Post({ post, communityMode, className }: PostProps) {
           </Details>
         </Container>
       </CustomIonItem>
-
-      <IonItemOptions side="end">
-        <IonItemOption>
-          <IonIcon icon={arrowUndo} />
-        </IonItemOption>
-      </IonItemOptions>
     </StyledDraggingVote>
   );
 }

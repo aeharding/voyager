@@ -21,11 +21,11 @@ import { useAppDispatch } from "../../store";
 import { login } from "./authSlice";
 import { LemmyHttp } from "lemmy-js-client";
 
-const Spinner = styled(IonSpinner)`
+export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
 `;
 
-const Centered = styled.div`
+export const Centered = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

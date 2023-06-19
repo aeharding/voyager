@@ -1,7 +1,7 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
-import { CommentView, PersonSafe } from "lemmy-js-client";
+import { CommentView, PersonSafe, SortType } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
 import { LIMIT } from "../../services/lemmy";
 import { receivedPosts } from "../post/postSlice";
@@ -42,6 +42,7 @@ export const getUser =
       username: handle,
       auth: jwt!,
       limit: LIMIT,
+      sort: SortType.New,
     });
 
     dispatch(receivedUsers([personResponse.person_view.person]));
