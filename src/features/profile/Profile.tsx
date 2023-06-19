@@ -1,4 +1,11 @@
-import { IonIcon, IonItem, IonLabel, IonList, IonSpinner } from "@ionic/react";
+import {
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonRouterLink,
+  IonSpinner,
+} from "@ionic/react";
 import { useAppSelector } from "../../store";
 import styled from "@emotion/styled";
 import Scores from "./Scores";
@@ -10,6 +17,14 @@ import {
   chatbubbleOutline,
   chevronForward,
 } from "ionicons/icons";
+import { GetPersonDetailsResponse, PersonViewSafe } from "lemmy-js-client";
+import Comment from "../../components/Comment";
+import CommentHr from "../../components/CommentHr";
+import PostContext from "./PostContext";
+import React from "react";
+import { Link } from "react-router-dom";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { getHandle } from "../../helpers/lemmy";
 
 const StyledIonItem = styled(IonItem)`
   --background: var(
@@ -22,24 +37,22 @@ const Label = styled(IonLabel)`
   margin-left: 1rem;
 `;
 
-const PageContentIonSpinner = styled(IonSpinner)`
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-
-  margin-top: 5rem;
+const StyledLink = styled(Link)`
+  text-decoration: none;
 `;
 
-export default function Profile() {
-  const myUser = useAppSelector((state) => state.auth.site?.my_user);
+interface ProfileProps {
+  person: GetPersonDetailsResponse;
+}
 
-  if (!myUser) return <PageContentIonSpinner />;
+export default function Profile({ person }: ProfileProps) {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   return (
     <>
       <Scores
-        aggregates={myUser.local_user_view.counts}
-        accountCreated={myUser.local_user_view.person.published}
+        aggregates={person.person_view.counts}
+        accountCreated={person.person_view.person.published}
       />
       <IonList inset color="primary">
         <StyledIonItem>
@@ -57,6 +70,28 @@ export default function Profile() {
           <IonIcon icon={chevronForward} color="medium" />
         </StyledIonItem>
       </IonList>
+      {person.comments.map((c) => (
+        <React.Fragment key={c.comment.id}>
+          <StyledLink
+            to={buildGeneralBrowseLink(
+              `/c/${getHandle(c.community)}/comments/${c.post.id}/${
+                c.comment.id
+              }`
+            )}
+          >
+            <Comment
+              comment={c}
+              depth={0}
+              collapsed={false}
+              childCount={0}
+              opId={c.post.creator_id}
+              fullyCollapsed={false}
+              context={<PostContext post={c.post} community={c.community} />}
+            />
+            <CommentHr depth={0} />
+          </StyledLink>
+        </React.Fragment>
+      ))}
     </>
   );
 }

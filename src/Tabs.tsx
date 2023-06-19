@@ -24,6 +24,7 @@ import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import { useContext } from "react";
 import { AppContext } from "./features/auth/AppContext";
+import UserPage from "./pages/UserPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -31,7 +32,7 @@ const Interceptor = styled.div`
   pointer-events: all;
 `;
 
-const DEFAULT_ACTOR = SUPPORTED_SERVERS[0];
+export const DEFAULT_ACTOR = SUPPORTED_SERVERS[0];
 
 export default function Tabs() {
   const { activePage } = useContext(AppContext);
@@ -49,7 +50,14 @@ export default function Tabs() {
     : undefined;
 
   const isPostsButtonDisabled = (() => {
-    if (location.pathname === "/profile") return false;
+    if (location.pathname.startsWith("/profile")) return false;
+    if (location.pathname === "/settings") return false;
+
+    return true;
+  })();
+
+  const isProfileButtonDisabled = (() => {
+    if (location.pathname.startsWith("/posts")) return false;
     if (location.pathname === "/settings") return false;
 
     return true;
@@ -58,47 +66,79 @@ export default function Tabs() {
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
 
-    if (activePage) {
-      if ("querySelector" in activePage) {
-        const scroll =
-          activePage?.querySelector('[data-virtuoso-scroller="true"]') ??
-          activePage
-            ?.querySelector("ion-content")
-            ?.shadowRoot?.querySelector(".inner-scroll");
-
-        if (scroll?.scrollTop) {
-          scroll.scrollTo({ top: 0, behavior: "smooth" });
-          return;
-        }
-      } else {
-        const scrolled = await new Promise((resolve) =>
-          activePage.current?.getState((state) => {
-            if (state.scrollTop) {
-              activePage.current?.scrollToIndex({
-                index: 0,
-                behavior: "smooth",
-              });
-            }
-
-            resolve(!!state.scrollTop);
-          })
-        );
-
-        if (scrolled) return;
-      }
-    }
+    if (await scrollUpIfNeeded()) return;
 
     if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
-      router.push(`/instance/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
+      router.push(`/posts/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
       return;
     }
-    if (location.pathname === `/instance/${actor ?? iss ?? DEFAULT_ACTOR}`)
-      return;
+    if (location.pathname === `/posts/${actor ?? iss ?? DEFAULT_ACTOR}`) return;
 
     router.push(
-      `/instance/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
+      `/posts/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
       "back"
     );
+  }
+
+  async function onProfileClick() {
+    if (!isProfileButtonDisabled) return;
+
+    if (await scrollUpIfNeeded()) return;
+
+    router.push("/profile", "back");
+  }
+
+  async function scrollUpIfNeeded() {
+    if (!activePage) return false;
+
+    if ("querySelector" in activePage) {
+      const scroll =
+        activePage?.querySelector('[data-virtuoso-scroller="true"]') ??
+        activePage
+          ?.querySelector("ion-content")
+          ?.shadowRoot?.querySelector(".inner-scroll");
+
+      if (scroll?.scrollTop) {
+        scroll.scrollTo({ top: 0, behavior: "smooth" });
+        return true;
+      }
+    } else {
+      return new Promise((resolve) =>
+        activePage.current?.getState((state) => {
+          if (state.scrollTop) {
+            activePage.current?.scrollToIndex({
+              index: 0,
+              behavior: "smooth",
+            });
+          }
+
+          resolve(!!state.scrollTop);
+        })
+      );
+    }
+  }
+
+  function buildGeneralBrowseRoutes(tab: string) {
+    return [
+      <Route exact path={`/${tab}/:actor/c/:community`}>
+        <ActorRedirect>
+          <Community />
+        </ActorRedirect>
+      </Route>,
+      <Route
+        exact
+        path={`/${tab}/:actor/c/:community/comments/:id/:commentId?`}
+      >
+        <ActorRedirect>
+          <PostDetail />
+        </ActorRedirect>
+      </Route>,
+      <Route exact path={`/${tab}/:actor/u/:handle`}>
+        <ActorRedirect>
+          <UserPage />
+        </ActorRedirect>
+      </Route>,
+    ];
   }
 
   return (
@@ -106,43 +146,37 @@ export default function Tabs() {
       <IonRouterOutlet>
         <Route exact path="/">
           <Redirect
-            to={`/instance/${iss ?? DEFAULT_ACTOR}/${iss ? "home" : "all"}`}
+            to={`/posts/${iss ?? DEFAULT_ACTOR}/${iss ? "home" : "all"}`}
             push={false}
           />
         </Route>
-        <Route exact path="/instance/:actor/home">
+        <Route exact path="/posts/:actor/home">
           <ActorRedirect>
             <SpecialFeedPage type={ListingType.Subscribed} />
           </ActorRedirect>
         </Route>
-        <Route exact path="/instance/:actor/all">
+        <Route exact path="/posts/:actor/all">
           <ActorRedirect>
             <SpecialFeedPage type={ListingType.All} />
           </ActorRedirect>
         </Route>
-        <Route exact path="/instance/:actor/local">
+        <Route exact path="/posts/:actor/local">
           <ActorRedirect>
             <SpecialFeedPage type={ListingType.Local} />
           </ActorRedirect>
         </Route>
-        <Route exact path="/instance/:actor">
+        <Route exact path={`/posts/:actor`}>
           <ActorRedirect>
             <Communities />
           </ActorRedirect>
         </Route>
-        <Route exact path="/instance/:actor/c/:community">
-          <ActorRedirect>
-            <Community />
-          </ActorRedirect>
-        </Route>
-        <Route exact path="/instance/:actor/c/:community/comments/:id">
-          <ActorRedirect>
-            <PostDetail />
-          </ActorRedirect>
-        </Route>
+        {...buildGeneralBrowseRoutes("posts")}
+
         <Route exact path="/profile">
           <ProfilePage />
         </Route>
+        {...buildGeneralBrowseRoutes("profile")}
+
         <Route exact path="/settings">
           <SettingsPage />
         </Route>
@@ -150,17 +184,22 @@ export default function Tabs() {
       <IonTabBar slot="bottom">
         <IonTabButton
           disabled={isPostsButtonDisabled}
-          tab="instance"
+          tab="posts"
           // onClick={onPostsClick}
-          href={`/instance/${iss ?? actor ?? DEFAULT_ACTOR}`}
+          href={`/posts/${iss ?? actor ?? DEFAULT_ACTOR}`}
         >
           <IonIcon aria-hidden="true" icon={telescopeSharp} />
           <IonLabel>Posts</IonLabel>
           <Interceptor onClick={onPostsClick} />
         </IonTabButton>
-        <IonTabButton tab="profile" href="/profile">
+        <IonTabButton
+          disabled={isProfileButtonDisabled}
+          tab="profile"
+          href="/profile"
+        >
           <IonIcon aria-hidden="true" icon={person} />
           <IonLabel>{connectedInstance}</IonLabel>
+          <Interceptor onClick={onProfileClick} />
         </IonTabButton>
         <IonTabButton tab="settings" href="/settings">
           <IonIcon aria-hidden="true" icon={settings} />

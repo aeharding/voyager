@@ -9,7 +9,7 @@ import {
   useIonModal,
 } from "@ionic/react";
 import { arrowUpSharp, chevronDownOutline } from "ionicons/icons";
-import { CommentView, PersonSafe } from "lemmy-js-client";
+import { CommentView, PersonSafe, PostView } from "lemmy-js-client";
 import { css } from "@emotion/react";
 import Markdown from "./Markdown";
 import { useContext, useRef, useState } from "react";
@@ -43,7 +43,7 @@ const PositionedContainer = styled.div<{ depth: number }>`
   padding: 0.55rem 1rem;
 
   @media (hover: none) {
-    padding: 0.75rem 1rem;
+    padding: 0.65rem 1rem;
   }
 
   ${({ depth }) =>
@@ -64,7 +64,7 @@ const Container = styled.div<{ depth: number }>`
   flex-direction: column;
 
   ${({ depth }) =>
-    depth &&
+    depth > 0 &&
     css`
       padding-left: 1rem;
     `}
@@ -144,8 +144,11 @@ interface CommentProps {
   onClick?: () => void;
   collapsed?: boolean;
   childCount: number;
-  op: PersonSafe;
+  opId: number;
   fullyCollapsed: boolean;
+
+  /** On profile view, this is used to show post replying to */
+  context?: React.ReactNode;
 }
 
 import { useEffect } from "react";
@@ -196,8 +199,9 @@ export default function Comment({
   onClick,
   collapsed,
   childCount,
-  op,
+  opId,
   fullyCollapsed,
+  context,
 }: CommentProps) {
   const dispatch = useAppDispatch();
 
@@ -247,7 +251,7 @@ export default function Comment({
               <Header>
                 <StyledPersonLabel
                   person={comment.creator}
-                  op={op}
+                  opId={opId}
                   distinguished={comment.comment.distinguished}
                 />
                 <Vote
@@ -278,6 +282,7 @@ export default function Comment({
                   }}
                 >
                   {content}
+                  {context}
                 </Content>
               </AnimateHeight>
             </Container>

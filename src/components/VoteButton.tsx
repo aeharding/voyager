@@ -11,7 +11,7 @@ import { ActionButton } from "./post/actions/ActionButton";
 import { voteError } from "../helpers/toastMessages";
 
 export const Item = styled(ActionButton, {
-  shouldForwardProp: (prop) => prop !== "on" && prop !== "onColor",
+  shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
 })<{
   on?: boolean;
   activeColor?: string;

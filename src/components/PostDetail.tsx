@@ -32,6 +32,8 @@ import { maxWidthCss } from "./AppContent";
 import { getClient } from "../services/lemmy";
 import PersonLabel from "./PersonLabel";
 import { PostView } from "lemmy-js-client";
+import { useBuildGeneralBrowseLink } from "../helpers/routes";
+import ViewAllComments from "./ViewAllComments";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -111,9 +113,10 @@ const Aside = styled.div`
 `;
 
 export default function PostDetail() {
-  const { id, actor } = useParams<{ id: string; actor: string }>();
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const { id, commentId } = useParams<{ id: string; commentId?: string }>();
   const jwt = useAppSelector((state) => state.auth.jwt);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(!!commentId);
   const post = useAppSelector((state) => state.post.postById[id]);
   const dispatch = useAppDispatch();
   const markdownLoneImage = useMemo(
@@ -189,7 +192,7 @@ export default function PostDetail() {
               <By>
                 in{" "}
                 <Link
-                  to={`/instance/${actor}/c/${getHandle(post.community)}`}
+                  to={buildGeneralBrowseLink(`/c/${getHandle(post.community)}`)}
                   onClick={(e) => e.stopPropagation()}
                 >
                   {post.community.name}
@@ -197,10 +200,7 @@ export default function PostDetail() {
                     <Aside>@{getItemActorName(post.community)}</Aside>
                   )}
                 </Link>{" "}
-                by{" "}
-                <strong>
-                  <PersonLabel person={post.creator} />
-                </strong>
+                by <PersonLabel person={post.creator} />
               </By>
               <Stats
                 stats={post.counts}
@@ -236,12 +236,14 @@ export default function PostDetail() {
             <Comments
               header={renderHeader(post)}
               postId={post.post.id}
+              commentId={commentId ? +commentId : undefined}
               op={post.creator}
             />
           ) : (
             <CenteredSpinner />
           )}
         </PageContext.Provider>
+        {commentId && <ViewAllComments />}
       </IonContent>
     </IonPage>
   );

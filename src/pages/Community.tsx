@@ -16,11 +16,12 @@ import MoreActions from "../components/community/MoreActions";
 import { useAppDispatch, useAppSelector } from "../store";
 import { useEffect } from "react";
 import { getCommunity } from "../components/community/communitySlice";
+import { useBuildGeneralBrowseLink } from "../helpers/routes";
 
 export default function Community() {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const { actor, community } = useParams<{
-    actor: string;
+  const { community } = useParams<{
     community: string;
   }>();
 
@@ -41,7 +42,7 @@ export default function Community() {
           <IonButtons slot="start">
             <AppBackButton
               defaultText="Communities"
-              defaultHref={`/instance/${actor}`}
+              defaultHref={buildGeneralBrowseLink("")}
             />
           </IonButtons>
 

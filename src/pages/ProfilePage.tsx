@@ -7,15 +7,18 @@ import {
   IonTitle,
   IonToolbar,
   useIonModal,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import AppContent from "../components/AppContent";
 import { handleSelector, logout } from "../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../store";
 import Login from "../features/auth/Login";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import Profile from "../features/profile/Profile";
 import { ReactComponent as IncognitoSvg } from "../features/profile/incognito.svg";
 import styled from "@emotion/styled";
+import UserPage from "./UserPage";
+import { AppContext } from "../features/auth/AppContext";
 
 const Incognito = styled(IncognitoSvg)`
   opacity: 0.1;
@@ -29,6 +32,7 @@ const Incognito = styled(IncognitoSvg)`
 export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const pageRef = useRef();
+  const { setActivePage } = useContext(AppContext);
 
   const jwt = useAppSelector((state) => state.auth.jwt);
   const [login, onDismiss] = useIonModal(Login, {
@@ -37,35 +41,37 @@ export default function ProfilePage() {
 
   const handle = useAppSelector(handleSelector);
 
+  useIonViewWillEnter(() => {
+    if (pageRef.current) setActivePage(pageRef.current);
+  });
+
+  if (jwt)
+    return (
+      <UserPage
+        handle={handle}
+        toolbar={
+          <IonButton onClick={() => dispatch(logout())}>Logout</IonButton>
+        }
+      />
+    );
+
   return (
     <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>{handle ?? "Anonymous"}</IonTitle>
-
+          <IonTitle>Anonymous</IonTitle>
           <IonButtons slot="end">
-            {jwt ? (
-              <IonButton onClick={() => dispatch(logout())}>Logout</IonButton>
-            ) : (
-              <IonButton
-                onClick={() => login({ presentingElement: pageRef.current })}
-              >
-                Login
-              </IonButton>
-            )}
+            <IonButton
+              onClick={() => login({ presentingElement: pageRef.current })}
+            >
+              Login
+            </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <AppContent>
-        {jwt ? (
-          <Profile />
-        ) : (
-          <>
-            <p className="ion-padding-start">You're logged out.</p>
-
-            <Incognito />
-          </>
-        )}
+        <p className="ion-padding-start">You're logged out.</p>
+        <Incognito />
       </AppContent>
     </IonPage>
   );

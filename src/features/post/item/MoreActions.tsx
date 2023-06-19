@@ -25,20 +25,20 @@ import Login from "../../auth/Login";
 import { PostView } from "lemmy-js-client";
 import { voteOnPost } from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
-import { useParams } from "react-router";
+import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 
 interface MoreActionsProps {
   post: PostView;
 }
 
 export default function MoreActions({ post }: MoreActionsProps) {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const jwt = useAppSelector((state) => state.auth.jwt);
 
   const router = useIonRouter();
-  const { actor } = useParams<{ actor: string }>();
 
   const pageContext = useContext(PageContext);
   const [login, onDismiss] = useIonModal(Login, {
@@ -122,11 +122,15 @@ export default function MoreActions({ post }: MoreActionsProps) {
               break;
             }
             case "person": {
-              // TODO
+              router.push(
+                buildGeneralBrowseLink(`/u/${getHandle(post.creator)}`)
+              );
               break;
             }
             case "community": {
-              router.push(`/instance/${actor}/c/${getHandle(post.community)}`);
+              router.push(
+                buildGeneralBrowseLink(`/c/${getHandle(post.community)}`)
+              );
 
               break;
             }

@@ -57,10 +57,16 @@ const Empty = styled.div`
 interface CommentsProps {
   header: React.ReactNode;
   postId: number;
+  commentId?: number;
   op: PersonSafe;
 }
 
-export default function Comments({ header, postId, op }: CommentsProps) {
+export default function Comments({
+  header,
+  postId,
+  commentId,
+  op,
+}: CommentsProps) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector((state) => state.auth.jwt);
   const [page, setPage] = useState(0);
@@ -68,7 +74,7 @@ export default function Comments({ header, postId, op }: CommentsProps) {
   const [finishedPaging, setFinishedPaging] = useState(false);
   const [comments, setComments] = useState<CommentView[]>([]);
   const commentTree = useMemo(
-    () => buildCommentsTree(comments, false),
+    () => (comments.length ? buildCommentsTree(comments, !!commentId) : []),
     [comments]
   );
   const client = useClient();
@@ -84,13 +90,14 @@ export default function Comments({ header, postId, op }: CommentsProps) {
 
   useEffect(() => {
     fetchComments(true);
-  }, [postId]);
+  }, [postId, commentId]);
 
   async function fetchComments(refresh = false) {
     if (refresh) {
       setLoading(false);
       setFinishedPaging(false);
       setPage(0);
+      setComments([]);
     }
 
     let response;
@@ -101,11 +108,13 @@ export default function Comments({ header, postId, op }: CommentsProps) {
     const currentPage = page + 1;
 
     const reqPostId = postId;
+    const reqCommentId = commentId;
     setLoading(true);
 
     try {
       response = await client.getComments({
         post_id: reqPostId,
+        parent_id: commentId,
         limit: 10,
         sort: CommentSortType.Hot,
         type_: ListingType.All,
@@ -115,7 +124,7 @@ export default function Comments({ header, postId, op }: CommentsProps) {
         auth: jwt,
       });
     } catch (error) {
-      if (reqPostId === postId)
+      if (reqPostId === postId && reqCommentId === commentId)
         present({
           message: "Problem fetching comments. Please try again.",
           duration: 3500,
@@ -130,7 +139,7 @@ export default function Comments({ header, postId, op }: CommentsProps) {
 
     dispatch(receivedComments(response.comments));
 
-    if (reqPostId !== postId) return;
+    if (reqPostId !== postId || reqCommentId !== commentId) return;
 
     const existingComments = refresh ? [] : comments;
     const newComments = pullAllBy(
@@ -188,6 +197,14 @@ export default function Comments({ header, postId, op }: CommentsProps) {
         itemContent={(index) => (index ? allComments[index - 1] : header)}
         endReached={() => fetchComments()}
         atTopStateChange={setIsListAtTop}
+        components={
+          typeof commentId === "number"
+            ? {
+                // add space for the <ViewAllComments /> fixed component
+                Footer: () => <div style={{ height: "70px" }} />,
+              }
+            : {}
+        }
       />
     </>
   );

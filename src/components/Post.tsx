@@ -28,6 +28,8 @@ import { VoteButton } from "./VoteButton";
 import DraggingVote from "./DraggingVote";
 import { voteError } from "../helpers/toastMessages";
 import MoreActions from "../features/post/item/MoreActions";
+import { useBuildGeneralBrowseLink } from "../helpers/routes";
+import PersonLabel from "./PersonLabel";
 
 const StyledDraggingVote = styled(DraggingVote)`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -144,6 +146,7 @@ interface PostProps {
 }
 
 export default function Post({ post, communityMode, className }: PostProps) {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
 
@@ -252,9 +255,9 @@ export default function Post({ post, communityMode, className }: PostProps) {
       {/* href=undefined: Prevent drag failure on firefox */}
       <CustomIonItem
         detail={false}
-        routerLink={`/instance/${actor}/c/${getHandle(
-          post.community
-        )}/comments/${post.post.id}`}
+        routerLink={buildGeneralBrowseLink(
+          `/c/${getHandle(post.community)}/comments/${post.post.id}`
+        )}
         href={undefined}
         className={className}
       >
@@ -270,17 +273,18 @@ export default function Post({ post, communityMode, className }: PostProps) {
               {communityMode ? (
                 <CommunityDetails>
                   <CommunityName>
-                    by {post.creator.name}
-                    {!post.creator.local && (
-                      <aside>@{getItemActorName(post.creator)}</aside>
-                    )}
+                    by{" "}
+                    <PersonLabel
+                      person={post.creator}
+                      showAtInstanceWhenRemote
+                    />
                   </CommunityName>
                 </CommunityDetails>
               ) : (
                 <IonRouterLink
-                  routerLink={`/instance/${actor}/c/${getHandle(
-                    post.community
-                  )}`}
+                  routerLink={buildGeneralBrowseLink(
+                    `/c/${getHandle(post.community)}`
+                  )}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <CommunityDetails>

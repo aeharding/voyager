@@ -21,6 +21,7 @@ import { pull, pullAll, pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../helpers/array";
 import { useContext, useMemo, useRef } from "react";
 import { AppContext } from "../features/auth/AppContext";
+import { useBuildGeneralBrowseLink } from "../helpers/routes";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -66,6 +67,7 @@ const Content = styled.div`
 `;
 
 export default function Communities() {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { setActivePage } = useContext(AppContext);
   const { actor } = useParams<{ actor: string }>();
   const jwt = useAppSelector((state) => state.auth.jwt);
@@ -116,7 +118,7 @@ export default function Communities() {
         <IonList>
           <IonItemGroup>
             {jwt && (
-              <IonItem routerLink={`/instance/${actor}/home`}>
+              <IonItem routerLink={buildGeneralBrowseLink(`/home`)}>
                 <Content>
                   <SubIcon icon={home} color="red" />
                   <div>
@@ -126,7 +128,7 @@ export default function Communities() {
                 </Content>
               </IonItem>
             )}
-            <IonItem routerLink={`/instance/${actor}/all`}>
+            <IonItem routerLink={buildGeneralBrowseLink(`/all`)}>
               <Content>
                 <SubIcon icon={library} color="#009dff" />
                 <div>
@@ -134,7 +136,7 @@ export default function Communities() {
                 </div>
               </Content>
             </IonItem>
-            <IonItem routerLink={`/instance/${actor}/local`} lines="none">
+            <IonItem routerLink={buildGeneralBrowseLink(`/local`)} lines="none">
               <Content>
                 <SubIcon icon={people} color="#00f100" />
                 <div>
@@ -153,7 +155,7 @@ export default function Communities() {
           {sortBy(communities, "name")?.map((community) => (
             <IonItem
               key={community.id}
-              routerLink={`/instance/${actor}/c/${getHandle(community)}`}
+              routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
             >
               <Content>
                 {community.icon ? (

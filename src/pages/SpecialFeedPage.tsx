@@ -14,13 +14,14 @@ import { PageContext } from "../features/auth/PageContext";
 import { useRef } from "react";
 import PostSort from "../components/PostSort";
 import { ListingType } from "lemmy-js-client";
+import { useBuildGeneralBrowseLink } from "../helpers/routes";
 
 interface SpecialFeedProps {
   type: ListingType;
 }
 
 export default function SpecialFeedPage({ type }: SpecialFeedProps) {
-  const { actor } = useParams<{ actor: string }>();
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const pageRef = useRef<HTMLElement | undefined>();
 
   return (
@@ -30,7 +31,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
           <IonButtons slot="start">
             <IonBackButton
               text="Communities"
-              defaultHref={`/instance/${actor}`}
+              defaultHref={buildGeneralBrowseLink("")}
             />
           </IonButtons>
 
