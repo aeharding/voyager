@@ -78,7 +78,7 @@ export const getPost =
   (id: number) => async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwt = getState().auth.jwt;
 
-    const result = await getClient(location.pathname).getPost({
+    const result = await clientSelector(getState()).getPost({
       id,
       auth: jwt,
     });

@@ -17,9 +17,14 @@ const Container = styled.div`
 interface StatsProps {
   stats: PostAggregates;
   voteFromServer: number | undefined;
+  published: string;
 }
 
-export default function Stats({ stats, voteFromServer }: StatsProps) {
+export default function Stats({
+  stats,
+  voteFromServer,
+  published,
+}: StatsProps) {
   return (
     <Container>
       <Vote
@@ -36,7 +41,7 @@ export default function Stats({ stats, voteFromServer }: StatsProps) {
       )}
       %
       <IonIcon icon={timeOutline} />
-      <Ago date={stats.published} />
+      <Ago date={published} />
     </Container>
   );
 }

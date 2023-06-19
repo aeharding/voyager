@@ -9,6 +9,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import AppContent from "../components/AppContent";
 import { useParams } from "react-router";
@@ -18,7 +19,8 @@ import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pull, pullAll, pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../helpers/array";
-import { useMemo } from "react";
+import { useContext, useMemo, useRef } from "react";
+import { AppContext } from "../features/auth/AppContext";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -64,14 +66,20 @@ const Content = styled.div`
 `;
 
 export default function Communities() {
+  const { setActivePage } = useContext(AppContext);
   const { actor } = useParams<{ actor: string }>();
   const jwt = useAppSelector((state) => state.auth.jwt);
+  const pageRef = useRef();
 
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle
   );
+
+  useIonViewWillEnter(() => {
+    if (pageRef.current) setActivePage(pageRef.current);
+  });
 
   const communities = useMemo(() => {
     const communities = uniqBy(
@@ -98,7 +106,7 @@ export default function Communities() {
   }, [follows, communityByHandle]);
 
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Communities</IonTitle>
@@ -108,7 +116,7 @@ export default function Communities() {
         <IonList>
           <IonItemGroup>
             {jwt && (
-              <IonItem routerLink={`/${actor}/home`}>
+              <IonItem routerLink={`/instance/${actor}/home`}>
                 <Content>
                   <SubIcon icon={home} color="red" />
                   <div>
@@ -118,7 +126,7 @@ export default function Communities() {
                 </Content>
               </IonItem>
             )}
-            <IonItem routerLink={`/${actor}/all`}>
+            <IonItem routerLink={`/instance/${actor}/all`}>
               <Content>
                 <SubIcon icon={library} color="#009dff" />
                 <div>
@@ -126,7 +134,7 @@ export default function Communities() {
                 </div>
               </Content>
             </IonItem>
-            <IonItem routerLink={`/${actor}/local`} lines="none">
+            <IonItem routerLink={`/instance/${actor}/local`} lines="none">
               <Content>
                 <SubIcon icon={people} color="#00f100" />
                 <div>
@@ -145,7 +153,7 @@ export default function Communities() {
           {sortBy(communities, "name")?.map((community) => (
             <IonItem
               key={community.id}
-              routerLink={`/${actor}/c/${getHandle(community)}`}
+              routerLink={`/instance/${actor}/c/${getHandle(community)}`}
             >
               <Content>
                 {community.icon ? (

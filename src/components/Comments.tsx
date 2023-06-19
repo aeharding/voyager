@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { LIMIT, getClient } from "../services/lemmy";
 import { CommentNodeI, buildCommentsTree } from "../helpers/lemmy";
 import CommentTree from "./CommentTree";
@@ -8,17 +8,25 @@ import {
   IonRefresherContent,
   IonSpinner,
   useIonToast,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { CommentView, Person } from "lemmy-js-client";
+import {
+  CommentSortType,
+  CommentView,
+  ListingType,
+  PersonSafe,
+} from "lemmy-js-client";
 import { pullAllBy, uniqBy } from "lodash";
 import { useLocation } from "react-router";
-import { Virtuoso } from "react-virtuoso";
+import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import { useAppDispatch, useAppSelector } from "../store";
 import { receivedComments } from "../features/comment/commentSlice";
 import { RefresherCustomEvent } from "@ionic/core";
 import { getPost } from "../features/post/postSlice";
+import useClient from "../helpers/useClient";
+import { AppContext } from "../features/auth/AppContext";
 
 const centerCss = css`
   position: relative;
@@ -49,7 +57,7 @@ const Empty = styled.div`
 interface CommentsProps {
   header: React.ReactNode;
   postId: number;
-  op: Person;
+  op: PersonSafe;
 }
 
 export default function Comments({ header, postId, op }: CommentsProps) {
@@ -63,9 +71,16 @@ export default function Comments({ header, postId, op }: CommentsProps) {
     () => buildCommentsTree(comments, false),
     [comments]
   );
+  const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
-  const { pathname } = useLocation();
   const [present] = useIonToast();
+
+  const { setActivePage } = useContext(AppContext);
+  const virtuosoRef = useRef<VirtuosoHandle>(null);
+
+  useIonViewWillEnter(() => {
+    setActivePage(virtuosoRef);
+  });
 
   async function fetchComments(refresh = false) {
     if (refresh) {
@@ -85,11 +100,11 @@ export default function Comments({ header, postId, op }: CommentsProps) {
     setLoading(true);
 
     try {
-      response = await getClient(pathname).getComments({
+      response = await client.getComments({
         post_id: reqPostId,
         limit: 10,
-        sort: "Hot",
-        type_: "All",
+        sort: CommentSortType.Hot,
+        type_: ListingType.All,
         max_depth: 8,
         saved_only: false,
         page: currentPage,
@@ -167,6 +182,7 @@ export default function Comments({ header, postId, op }: CommentsProps) {
         <IonRefresherContent />
       </IonRefresher>
       <Virtuoso
+        ref={virtuosoRef}
         style={{ height: "100%" }}
         totalCount={allComments.length + 1}
         itemContent={(index) => (index ? allComments[index - 1] : header)}

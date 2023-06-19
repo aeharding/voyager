@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   IonButtons,
   IonButton,
@@ -45,13 +45,38 @@ export default function Login({
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const [server, setServer] = useState(SUPPORTED_SERVERS[0]);
+  const [serverConfirmed, setServerConfirmed] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const inputRef = useRef<HTMLIonInputElement>(null);
+  const usernameRef = useRef<HTMLIonInputElement>(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!serverConfirmed) return;
+
+    setTimeout(() => {
+      // This hack is incredibly annoying
+      usernameRef.current?.getInputElement().then((el) => el.focus());
+    }, 200);
+  }, [serverConfirmed]);
+
   async function submit() {
-    if (!server || !username || !password) return;
+    if (!server) return;
+
+    if (!serverConfirmed) {
+      setServerConfirmed(true);
+      return;
+    }
+
+    if (!server || !username || !password) {
+      present({
+        message: "Please fill out username and password fields",
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
+      return;
+    }
 
     setLoading(true);
 
@@ -60,21 +85,19 @@ export default function Login({
         login(new LemmyHttp(`/api/${server}`), username, password)
       );
     } catch (error) {
-      if (error === "couldnt_find_that_username_or_email")
-        present({
-          message:
-            "Could not find a username with those credentials. Please try again.",
-          duration: 3500,
-          position: "bottom",
-          color: "danger",
-        });
+      present({
+        message: "Please check your credentials and try again.",
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
 
       throw error;
     } finally {
       setLoading(false);
     }
 
-    onDismiss(inputRef.current?.value, "confirm");
+    onDismiss();
     present({
       message: "Login successful",
       duration: 2000,
@@ -97,85 +120,102 @@ export default function Login({
             <IonButtons slot="start">
               <IonButton
                 color="medium"
-                onClick={() => onDismiss(null, "cancel")}
+                onClick={() => {
+                  if (serverConfirmed) {
+                    setServerConfirmed(false);
+                    return;
+                  }
+
+                  onDismiss();
+                }}
               >
-                Cancel
+                {serverConfirmed ? "Back" : "Cancel"}
               </IonButton>
             </IonButtons>
             <IonTitle>
               <Centered>Login {loading && <Spinner color="dark" />}</Centered>
             </IonTitle>
             <IonButtons slot="end">
-              <IonButton strong={true} type="submit">
-                Confirm
+              <IonButton strong={true} type="submit" disabled={!server}>
+                {serverConfirmed ? "Confirm" : "Next"}
               </IonButton>
             </IonButtons>
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <HelperText>Choose your account's server</HelperText>
-          <IonRadioGroup
-            value={server}
-            onIonChange={(e) => setServer(e.target.value)}
-          >
-            <IonList inset>
-              {SUPPORTED_SERVERS.map((server) => (
-                <IonItem disabled={loading}>
-                  <IonRadio value={server} key={server}>
-                    {server}
-                  </IonRadio>
-                </IonItem>
-              ))}
-              <IonItem disabled={loading}>
-                <IonRadio value={undefined} color="danger">
-                  other
-                </IonRadio>
-              </IonItem>
-            </IonList>
-          </IonRadioGroup>
-          <br />
-          {server ? (
+          {!serverConfirmed && (
+            <>
+              <HelperText>Choose your account's server</HelperText>
+              <IonRadioGroup
+                value={server}
+                onIonChange={(e) => setServer(e.target.value)}
+              >
+                <IonList inset>
+                  {SUPPORTED_SERVERS.map((server) => (
+                    <IonItem disabled={loading} key={server}>
+                      <IonRadio value={server} key={server}>
+                        {server}
+                      </IonRadio>
+                    </IonItem>
+                  ))}
+                  <IonItem disabled={loading}>
+                    <IonRadio value={undefined} color="danger">
+                      other
+                    </IonRadio>
+                  </IonItem>
+                </IonList>
+              </IonRadioGroup>
+              {server ? (
+                <>
+                  <HelperText>
+                    Note: All requests to <strong>{server}</strong> will be
+                    proxied through <strong>{location.hostname}</strong>.
+                  </HelperText>
+                </>
+              ) : (
+                <>
+                  <HelperText>
+                    Unfortunately, we currently only support servers from this
+                    list because Lemmy does not support CORS, and we have to
+                    proxy every request made through wefwef.
+                  </HelperText>
+                  <HelperText>
+                    Proxying arbitrary requests to any server on the internet
+                    would be a liability for hosting.
+                  </HelperText>
+                  <HelperText>
+                    We will work to expand this list over time.
+                  </HelperText>
+                </>
+              )}
+            </>
+          )}
+          {serverConfirmed && (
             <>
               <HelperText>Login to {server}</HelperText>
               <IonList inset>
                 <IonItem>
                   <IonInput
-                    ref={inputRef}
+                    ref={usernameRef}
                     label="Username or email"
                     autocomplete="username"
                     inputMode="email"
                     value={username}
-                    onIonChange={(e) => setUsername(e.target.value as string)}
+                    onIonInput={(e) => setUsername(e.target.value as string)}
                     disabled={loading}
                   />
                 </IonItem>
                 <IonItem>
                   <IonInput
-                    ref={inputRef}
                     label="Password"
                     type="password"
                     value={password}
-                    onIonChange={(e) => setPassword(e.target.value as string)}
+                    onIonInput={(e) => setPassword(e.target.value as string)}
                     disabled={loading}
                     enterkeyhint="done"
                   />
                 </IonItem>
               </IonList>
-            </>
-          ) : (
-            <>
-              <HelperText>
-                Unfortunately, we currently only support servers from this list
-                because Lemmy does not support CORS, and we have to proxy every
-                request made through wefwef.
-              </HelperText>
-              <HelperText>
-                Proxying arbitrary requests to any server on the internet would
-                be a liability for hosting.
-              </HelperText>
-              <HelperText>
-                We will work to expand this list over time.
-              </HelperText>
             </>
           )}
         </IonContent>

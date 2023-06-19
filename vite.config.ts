@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 import { SUPPORTED_SERVERS } from "./src/helpers/lemmy";
 import _ from "lodash";
 import { VitePWA } from "vite-plugin-pwa";
+import svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,6 +14,7 @@ export default defineConfig({
         plugins: ["@emotion/babel-plugin"],
       },
     }),
+    svgr(),
     VitePWA({ registerType: "autoUpdate" }),
   ],
   server: {

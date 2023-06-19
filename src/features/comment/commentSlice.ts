@@ -39,6 +39,7 @@ export const commentSlice = createSlice({
     ) => {
       state.commentVotesById[action.payload.commentId] = action.payload.vote;
     },
+    resetComments: () => initialState,
   },
 });
 
@@ -47,6 +48,7 @@ export const {
   receivedComments,
   updateCommentCollapseState,
   updateCommentVote,
+  resetComments,
 } = commentSlice.actions;
 
 export default commentSlice.reducer;

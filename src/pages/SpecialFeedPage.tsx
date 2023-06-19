@@ -6,6 +6,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import Posts from "../components/Posts";
 import { useParams } from "react-router";
@@ -28,7 +29,10 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton text="Communities" defaultHref={`/${actor}`} />
+            <IonBackButton
+              text="Communities"
+              defaultHref={`/instance/${actor}`}
+            />
           </IonButtons>
 
           <IonTitle>{listingTypeTitle(type)}</IonTitle>
@@ -50,10 +54,12 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
 function listingTypeTitle(type: ListingType): string {
   switch (type) {
-    case "All":
-    case "Local":
+    case ListingType.All:
+    case ListingType.Local:
       return type;
-    case "Subscribed":
+    case ListingType.Subscribed:
       return "Home";
+    case ListingType.Community:
+      return "Community";
   }
 }

@@ -16,11 +16,13 @@ const Container = styled.div`
 interface PreviewStatsProps {
   stats: PostAggregates;
   voteFromServer: number | undefined;
+  published: string;
 }
 
 export default function PreviewStats({
   stats,
   voteFromServer,
+  published,
 }: PreviewStatsProps) {
   return (
     <Container>
@@ -33,7 +35,7 @@ export default function PreviewStats({
       <IonIcon icon={chatbubbleOutline} />
       {stats.comments}
       <IonIcon icon={timeOutline} />
-      <Ago date={stats.published} />
+      <Ago date={published} />
     </Container>
   );
 }

@@ -251,9 +251,9 @@ export default function Post({ post, communityMode, className }: PostProps) {
       {/* href=undefined: Prevent drag failure on firefox */}
       <CustomIonItem
         detail={false}
-        routerLink={`/${actor}/c/${getHandle(post.community)}/comments/${
-          post.post.id
-        }`}
+        routerLink={`/instance/${actor}/c/${getHandle(
+          post.community
+        )}/comments/${post.post.id}`}
         href={undefined}
         className={className}
       >
@@ -277,7 +277,9 @@ export default function Post({ post, communityMode, className }: PostProps) {
                 </CommunityDetails>
               ) : (
                 <IonRouterLink
-                  routerLink={`/${actor}/c/${getHandle(post.community)}`}
+                  routerLink={`/instance/${actor}/c/${getHandle(
+                    post.community
+                  )}`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <CommunityDetails>
@@ -293,7 +295,11 @@ export default function Post({ post, communityMode, className }: PostProps) {
                   </CommunityDetails>
                 </IonRouterLink>
               )}
-              <PreviewStats stats={post.counts} voteFromServer={post.my_vote} />
+              <PreviewStats
+                stats={post.counts}
+                voteFromServer={post.my_vote}
+                published={post.post.published}
+              />
             </LeftDetails>
             <RightDetails onClick={(e) => e.stopPropagation()}>
               <VoteButton type="up" postId={post.post.id} />

@@ -1,7 +1,7 @@
 import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import AppContent from "../components/AppContent";
 
-const Tab3: React.FC = () => {
+export default function SettingsPage() {
   return (
     <IonPage>
       <IonHeader>
@@ -18,6 +18,4 @@ const Tab3: React.FC = () => {
       </AppContent>
     </IonPage>
   );
-};
-
-export default Tab3;
+}

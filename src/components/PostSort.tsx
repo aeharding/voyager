@@ -21,12 +21,12 @@ import { startCase } from "lodash";
 import { useState } from "react";
 
 export const POST_SORTS = [
-  "Active",
-  "Hot",
-  "New",
-  "MostComments",
-  "NewComments",
-] as const;
+  SortType.Active,
+  SortType.Hot,
+  SortType.New,
+  SortType.MostComments,
+  SortType.NewComments,
+];
 
 const BUTTONS: ActionSheetButton<SortType>[] = POST_SORTS.map((sortType) => ({
   text: startCase(sortType),
@@ -63,22 +63,22 @@ export default function PostSort() {
 
 function getSortIcon(sort: SortType): string {
   switch (sort) {
-    case "Hot":
+    case SortType.Hot:
       return flameOutline;
-    case "Active":
+    case SortType.Active:
       return arrowUpCircleOutline;
-    case "New":
+    case SortType.New:
       return timeOutline;
-    case "MostComments":
+    case SortType.MostComments:
       return chatbubblesOutline;
-    case "NewComments":
+    case SortType.NewComments:
       return chatbubbleEllipsesOutline;
-    case "Old":
-    case "TopAll":
-    case "TopDay":
-    case "TopMonth":
-    case "TopWeek":
-    case "TopYear":
+    case SortType.Old:
+    case SortType.TopAll:
+    case SortType.TopDay:
+    case SortType.TopMonth:
+    case SortType.TopWeek:
+    case SortType.TopYear:
       return helpCircleOutline;
   }
 }

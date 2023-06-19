@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 
 interface ContainerProps {
   name: string;
@@ -6,7 +6,7 @@ interface ContainerProps {
 
 import { LemmyHttp, ListingType, PostView } from "lemmy-js-client";
 import Post from "./Post";
-import { Virtuoso } from "react-virtuoso";
+import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import { useAppDispatch, useAppSelector } from "../store";
 import { receivedPosts } from "../features/post/postSlice";
 import {
@@ -14,13 +14,17 @@ import {
   IonRefresherContent,
   RefresherCustomEvent,
   useIonToast,
+  useIonViewDidEnter,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { LIMIT, getClient } from "../services/lemmy";
 import { CenteredSpinner } from "./PostDetail";
 import EndPost from "./EndPost";
 import { pullAllBy } from "lodash";
 import { notEmpty } from "../helpers/array";
-import { useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
+import useClient from "../helpers/useClient";
+import { AppContext } from "../features/auth/AppContext";
 
 interface PostsProps {
   communityName?: string;
@@ -39,9 +43,16 @@ export default function Posts({ communityName, type }: PostsProps) {
   const jwt = useAppSelector((state) => state.auth.jwt);
   const [atEnd, setAtEnd] = useState(false);
   const dispatch = useAppDispatch();
-  const { pathname } = useLocation();
   const sort = useAppSelector((state) => state.post.sort);
   const [present] = useIonToast();
+  const client = useClient();
+
+  const { setActivePage } = useContext(AppContext);
+  const virtuosoRef = useRef<VirtuosoHandle>(null);
+
+  useIonViewDidEnter(() => {
+    setActivePage(virtuosoRef);
+  });
 
   const items: Item[] = useMemo(
     () =>
@@ -53,7 +64,7 @@ export default function Posts({ communityName, type }: PostsProps) {
 
   useEffect(() => {
     fetchMore(true);
-  }, [communityName, actor, sort]);
+  }, [communityName, actor, sort, jwt]);
 
   async function fetchMore(refresh = false) {
     if (loading.current) return;
@@ -65,7 +76,7 @@ export default function Posts({ communityName, type }: PostsProps) {
     let posts: PostView[];
 
     try {
-      ({ posts } = await getClient(pathname).getPosts({
+      ({ posts } = await client.getPosts({
         limit: LIMIT,
         page: currentPage,
         community_name: communityName,
@@ -123,6 +134,7 @@ export default function Posts({ communityName, type }: PostsProps) {
         <IonRefresherContent />
       </IonRefresher>
       <Virtuoso
+        ref={virtuosoRef}
         style={{ height: "100%" }}
         atTopStateChange={setIsListAtTop}
         totalCount={items.length}

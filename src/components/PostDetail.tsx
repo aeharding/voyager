@@ -31,6 +31,7 @@ import { PageContext } from "../features/auth/PageContext";
 import { maxWidthCss } from "./AppContent";
 import { getClient } from "../services/lemmy";
 import PersonLabel from "./PersonLabel";
+import { PostView } from "lemmy-js-client";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -111,6 +112,7 @@ const Aside = styled.div`
 
 export default function PostDetail() {
   const { id, actor } = useParams<{ id: string; actor: string }>();
+  const jwt = useAppSelector((state) => state.auth.jwt);
   const [collapsed, setCollapsed] = useState(false);
   const post = useAppSelector((state) => state.post.postById[id]);
   const dispatch = useAppDispatch();
@@ -126,6 +128,10 @@ export default function PostDetail() {
 
     dispatch(getPost(+id));
   }, [post]);
+
+  useEffect(() => {
+    dispatch(getPost(+id));
+  }, [jwt]);
 
   useEffect(() => {
     titleRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -164,48 +170,52 @@ export default function PostDetail() {
     }
   }
 
-  if (!post) return <CenteredSpinner />;
+  function renderHeader(post: PostView) {
+    return (
+      <>
+        <BorderlessIonItem
+          onClick={(e) => {
+            if (e.target instanceof HTMLElement && e.target.nodeName === "A")
+              return;
 
-  const header = (
-    <>
-      <BorderlessIonItem
-        onClick={(e) => {
-          if (e.target instanceof HTMLElement && e.target.nodeName === "A")
-            return;
-
-          setCollapsed(!collapsed);
-        }}
-      >
-        <Container>
-          <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
-          <PostDeets>
-            <Title ref={titleRef}>{post.post.name}</Title>
-            {!collapsed && renderText()}
-            <By>
-              in{" "}
-              <Link
-                to={`/${actor}/c/${getHandle(post.community)}`}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {post.community.name}
-                {!post.community.local && (
-                  <Aside>@{getItemActorName(post.community)}</Aside>
-                )}
-              </Link>{" "}
-              by{" "}
-              <strong>
-                <PersonLabel person={post.creator} />
-              </strong>
-            </By>
-            <Stats stats={post.counts} voteFromServer={post.my_vote} />
-          </PostDeets>
-        </Container>
-      </BorderlessIonItem>
-      <BorderlessIonItem>
-        <PostActions post={post} />
-      </BorderlessIonItem>
-    </>
-  );
+            setCollapsed(!collapsed);
+          }}
+        >
+          <Container>
+            <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
+            <PostDeets>
+              <Title ref={titleRef}>{post.post.name}</Title>
+              {!collapsed && renderText()}
+              <By>
+                in{" "}
+                <Link
+                  to={`/instance/${actor}/c/${getHandle(post.community)}`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {post.community.name}
+                  {!post.community.local && (
+                    <Aside>@{getItemActorName(post.community)}</Aside>
+                  )}
+                </Link>{" "}
+                by{" "}
+                <strong>
+                  <PersonLabel person={post.creator} />
+                </strong>
+              </By>
+              <Stats
+                stats={post.counts}
+                voteFromServer={post.my_vote}
+                published={post.post.published}
+              />
+            </PostDeets>
+          </Container>
+        </BorderlessIonItem>
+        <BorderlessIonItem>
+          <PostActions post={post} />
+        </BorderlessIonItem>
+      </>
+    );
+  }
 
   return (
     <IonPage ref={pageRef}>
@@ -214,7 +224,7 @@ export default function PostDetail() {
           <IonButtons slot="start">
             <AppBackButton
               defaultHref="../"
-              defaultText={post.community.name}
+              defaultText={post?.community.name}
             />
           </IonButtons>
           <IonTitle>{post?.counts.comments} Comments</IonTitle>
@@ -222,7 +232,15 @@ export default function PostDetail() {
       </IonHeader>
       <IonContent>
         <PageContext.Provider value={{ page: pageRef.current }}>
-          <Comments header={header} postId={post.post.id} op={post.creator} />
+          {post ? (
+            <Comments
+              header={renderHeader(post)}
+              postId={post.post.id}
+              op={post.creator}
+            />
+          ) : (
+            <CenteredSpinner />
+          )}
         </PageContext.Provider>
       </IonContent>
     </IonPage>

@@ -1,8 +1,6 @@
 import { Redirect, useLocation, useParams } from "react-router";
 import { useAppSelector } from "./store";
 import { jwtIssSelector } from "./features/auth/authSlice";
-import { useEffect } from "react";
-import { useIonRouter } from "@ionic/react";
 import { SUPPORTED_SERVERS } from "./helpers/lemmy";
 
 interface ActorRedirectProps {
@@ -17,11 +15,11 @@ export default function ActorRedirect({ children }: ActorRedirectProps) {
   if (!iss || !actor) return <>{children}</>;
   if (iss === actor) return <>{children}</>;
 
-  const [first, wrongActor, ...rest] = location.pathname.split("/");
+  const [first, second, wrongActor, ...rest] = location.pathname.split("/");
 
   if (!SUPPORTED_SERVERS.includes(actor)) return <UnsupportedServerMessage />;
 
-  return <Redirect to={[first, iss, ...rest].join("/")} push={false} />;
+  return <Redirect to={[first, second, iss, ...rest].join("/")} push={false} />;
 }
 
 function UnsupportedServerMessage() {

@@ -2,15 +2,15 @@ import styled from "@emotion/styled";
 import { CommentNodeI, getFlattenedChildren } from "../helpers/lemmy";
 import Comment from "./Comment";
 import React, { useMemo, useState } from "react";
-import { Person } from "lemmy-js-client";
 import CommentHr from "./CommentHr";
 import { useAppDispatch, useAppSelector } from "../store";
 import { updateCommentCollapseState } from "../features/comment/commentSlice";
+import { PersonSafe } from "lemmy-js-client";
 
 interface CommentTreeProps {
   comment: CommentNodeI;
   first?: boolean;
-  op: Person;
+  op: PersonSafe;
   fullyCollapsed?: boolean;
 }
 

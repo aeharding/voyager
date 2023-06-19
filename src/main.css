@@ -5,3 +5,7 @@ html {
 .ReactCollapse--collapse {
   transition: height 200ms;
 }
+
+ion-tab-button {
+  opacity: 1 !important;
+}

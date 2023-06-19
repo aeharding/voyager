@@ -1,9 +1,9 @@
 import { css } from "@emotion/react";
-import { Person } from "lemmy-js-client";
+import { PersonSafe } from "lemmy-js-client";
 
 interface PersonLabelProps {
-  person: Person;
-  op?: Person;
+  person: PersonSafe;
+  op?: PersonSafe;
   distinguished?: boolean;
 
   className?: string;

@@ -1,7 +1,7 @@
 import { LemmyHttp } from "lemmy-js-client";
 
-export function getClient(pathname: string): LemmyHttp {
-  let baseUrl = `/api/${pathname.split("/")[1]}`;
+export function getClient(url: string): LemmyHttp {
+  let baseUrl = `/api/${url}`;
   return new LemmyHttp(baseUrl);
 }
 

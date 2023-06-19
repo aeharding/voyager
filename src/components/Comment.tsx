@@ -9,7 +9,7 @@ import {
   useIonModal,
 } from "@ionic/react";
 import { arrowUpSharp, chevronDownOutline } from "ionicons/icons";
-import { CommentView, Person } from "lemmy-js-client";
+import { CommentView, PersonSafe } from "lemmy-js-client";
 import { css } from "@emotion/react";
 import Markdown from "./Markdown";
 import { useContext, useRef, useState } from "react";
@@ -144,7 +144,7 @@ interface CommentProps {
   onClick?: () => void;
   collapsed?: boolean;
   childCount: number;
-  op: Person;
+  op: PersonSafe;
   fullyCollapsed: boolean;
 }
 

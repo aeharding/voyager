@@ -41,7 +41,7 @@ export default function Community() {
           <IonButtons slot="start">
             <AppBackButton
               defaultText="Communities"
-              defaultHref={`/${actor}`}
+              defaultHref={`/instance/${actor}`}
             />
           </IonButtons>
 

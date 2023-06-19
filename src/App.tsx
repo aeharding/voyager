@@ -11,8 +11,6 @@ import {
 } from "@ionic/react";
 import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
 import { logoWebComponent, settings, person } from "ionicons/icons";
-import Tab2 from "./pages/Tab2";
-import Tab3 from "./pages/Tab3";
 import { createMemoryHistory } from "history";
 
 /* Core CSS required for Ionic components to work properly */
@@ -51,6 +49,8 @@ import Tabs from "./Tabs";
 import Login from "./features/auth/Login";
 import { getSelf } from "./features/auth/authSlice";
 import Auth from "./Auth";
+import { AppContext } from "./features/auth/AppContext";
+import { VirtuosoHandle } from "react-virtuoso";
 
 setupIonicReact({
   rippleEffect: false,
@@ -79,19 +79,23 @@ function Router({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  const [activePage, setActivePage] = useState<
+    HTMLElement | React.RefObject<VirtuosoHandle> | undefined
+  >();
+
   return (
-    <>
+    <AppContext.Provider value={{ activePage, setActivePage }}>
       <ThemeColorUpdater />
       <Provider store={store}>
-        <Auth>
-          <IonApp>
-            <Router>
+        <IonApp>
+          <Router>
+            <Auth>
               <Tabs />
-            </Router>
-          </IonApp>
-        </Auth>
+            </Auth>
+          </Router>
+        </IonApp>
       </Provider>
-    </>
+    </AppContext.Provider>
   );
 }
 

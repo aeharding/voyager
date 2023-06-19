@@ -1,4 +1,4 @@
-import { Comment, CommentView, Community } from "lemmy-js-client";
+import { Comment, CommentView, CommunitySafe } from "lemmy-js-client";
 
 export const SUPPORTED_SERVERS = [
   "lemmy.world",
@@ -22,7 +22,7 @@ export interface CommentNodeI {
 /**
  * @param item Community, Person, etc
  */
-export function getItemActorName(item: Pick<Community, "actor_id">) {
+export function getItemActorName(item: Pick<CommunitySafe, "actor_id">) {
   return new URL(item.actor_id).hostname;
 }
 
@@ -30,7 +30,7 @@ export function getItemActorName(item: Pick<Community, "actor_id">) {
  * @param item Community, Person, etc
  */
 export function getHandle(
-  item: Pick<Community, "name" | "actor_id" | "local">
+  item: Pick<CommunitySafe, "name" | "actor_id" | "local">
 ) {
   return item.local ? item.name : `${item.name}@${getItemActorName(item)}`;
 }
