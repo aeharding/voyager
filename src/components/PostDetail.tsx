@@ -117,7 +117,11 @@ const Aside = styled.div`
 
 export default function PostDetail() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { id, commentId } = useParams<{ id: string; commentId?: string }>();
+  const { id, commentId, community } = useParams<{
+    id: string;
+    commentId?: string;
+    community: string;
+  }>();
   const jwt = useAppSelector((state) => state.auth.jwt);
   const [collapsed, setCollapsed] = useState(!!commentId);
   const post = useAppSelector((state) => state.post.postById[id]);
@@ -247,7 +251,7 @@ export default function PostDetail() {
         <IonToolbar>
           <IonButtons slot="start">
             <AppBackButton
-              defaultHref="../"
+              defaultHref={buildGeneralBrowseLink(`/c/${community}`)}
               defaultText={post?.community.name}
             />
           </IonButtons>

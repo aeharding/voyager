@@ -1,21 +1,24 @@
 import styled from "@emotion/styled";
-import {
-  IonIcon,
-  IonItem,
-  IonItemOption,
-  IonItemOptions,
-  IonItemSliding,
-  ItemSlidingCustomEvent,
-  useIonModal,
-} from "@ionic/react";
-import { arrowUpSharp, chevronDownOutline } from "ionicons/icons";
-import { CommentView, PersonSafe, PostView } from "lemmy-js-client";
+import { IonIcon, IonItem, useIonModal } from "@ionic/react";
+import { chevronDownOutline } from "ionicons/icons";
+import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import Markdown from "./Markdown";
-import { useContext, useRef, useState } from "react";
+import { useContext } from "react";
 import Ago from "./Ago";
 import { maxWidthCss } from "./AppContent";
 import PersonLabel from "./PersonLabel";
+import { ignoreSsrFlag } from "../helpers/emotion";
+import DraggingVote from "./DraggingVote";
+import { useAppDispatch, useAppSelector } from "../store";
+import Login from "../features/auth/Login";
+import { PageContext } from "../features/auth/PageContext";
+import { voteOnComment } from "../features/comment/commentSlice";
+import Vote from "./Vote";
+import AnimateHeight from "react-animate-height";
+import CommentReply from "../features/comment/CommentReply";
+import CommentContent from "./CommentContent";
+import { PostContext } from "../features/post/detail/PostContext";
+import useKeyPressed from "../helpers/useKeyPressed";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -149,55 +152,11 @@ interface CommentProps {
   childCount: number;
   opId: number;
   fullyCollapsed: boolean;
+  routerLink?: string;
 
   /** On profile view, this is used to show post replying to */
   context?: React.ReactNode;
 }
-
-import { useEffect } from "react";
-import { ignoreSsrFlag } from "../helpers/emotion";
-import DraggingVote from "./DraggingVote";
-import { useAppDispatch, useAppSelector } from "../store";
-import Login from "../features/auth/Login";
-import { PageContext } from "../features/auth/PageContext";
-import { voteOnComment } from "../features/comment/commentSlice";
-import Vote from "./Vote";
-import AnimateHeight from "react-animate-height";
-import CommentReply from "../features/comment/CommentReply";
-import CommentContent from "./CommentContent";
-import { PostContext } from "../features/post/detail/PostContext";
-
-const useKeyPressed = (): boolean => {
-  const [pressed, setPressed] = useState(false);
-
-  useEffect(() => {
-    const handleDown = () => {
-      setPressed(true);
-    };
-    const handleUp = () => {
-      setPressed(false);
-    };
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setPressed(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleDown);
-    window.addEventListener("keyup", handleUp);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("blur", handleUp);
-
-    return () => {
-      window.removeEventListener("keydown", handleDown);
-      window.removeEventListener("keyup", handleUp);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("blur", handleUp);
-    };
-  }, []);
-
-  return pressed;
-};
 
 export default function Comment({
   comment,
@@ -208,6 +167,7 @@ export default function Comment({
   opId,
   fullyCollapsed,
   context,
+  routerLink,
 }: CommentProps) {
   const dispatch = useAppDispatch();
 
@@ -245,7 +205,11 @@ export default function Comment({
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
       <DraggingVote onVote={onVote} currentVote={currentVote} onReply={onReply}>
-        <CustomIonItem onClick={() => !keyPressed && onClick?.()}>
+        <CustomIonItem
+          routerLink={routerLink}
+          href={undefined}
+          onClick={() => !keyPressed && onClick?.()}
+        >
           <PositionedContainer depth={depth}>
             <Container depth={depth}>
               <Header>

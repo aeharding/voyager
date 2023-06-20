@@ -80,6 +80,8 @@ http://ionicframework.com/docs/theming/ */
   --lightroom-bg: rgba(0, 0, 0, 0.08);
 
   --thick-separator-color: rgba(0, 0, 0, 0.08);
+
+  --ion-color-step-100: #f3f3f3;
 }
 
 @media (prefers-color-scheme: dark) {

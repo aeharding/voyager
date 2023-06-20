@@ -48,6 +48,7 @@ export default function ProfilePage() {
   if (jwt)
     return (
       <UserPage
+        hideBack
         handle={handle}
         toolbar={
           <IonButton onClick={() => dispatch(logout())}>Logout</IonButton>

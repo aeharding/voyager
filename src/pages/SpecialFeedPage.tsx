@@ -6,10 +6,8 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonViewWillEnter,
 } from "@ionic/react";
 import Posts from "../components/Posts";
-import { useParams } from "react-router";
 import { PageContext } from "../features/auth/PageContext";
 import { useRef } from "react";
 import PostSort from "../components/PostSort";
@@ -39,7 +37,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
           <IonButtons slot="end">
             <PostSort />
-            {/* <PostFilter /> */}
           </IonButtons>
         </IonToolbar>
       </IonHeader>

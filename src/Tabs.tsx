@@ -74,10 +74,14 @@ export default function Tabs() {
     }
     if (location.pathname === `/posts/${actor ?? iss ?? DEFAULT_ACTOR}`) return;
 
-    router.push(
-      `/posts/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
-      "back"
-    );
+    if (router.canGoBack()) {
+      router.goBack();
+    } else {
+      router.push(
+        `/posts/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
+        "back"
+      );
+    }
   }
 
   async function onProfileClick() {
@@ -177,6 +181,10 @@ export default function Tabs() {
         </Route>
         {...buildGeneralBrowseRoutes("profile")}
 
+        <Route exact path="/profile/:actor">
+          <Redirect to="/profile" push={false} />
+        </Route>
+
         <Route exact path="/settings">
           <SettingsPage />
         </Route>
@@ -185,7 +193,6 @@ export default function Tabs() {
         <IonTabButton
           disabled={isPostsButtonDisabled}
           tab="posts"
-          // onClick={onPostsClick}
           href={`/posts/${iss ?? actor ?? DEFAULT_ACTOR}`}
         >
           <IonIcon aria-hidden="true" icon={telescopeSharp} />

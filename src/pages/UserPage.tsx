@@ -1,8 +1,12 @@
 import {
+  IonBackButton,
   IonButton,
   IonButtons,
+  IonContent,
   IonHeader,
   IonPage,
+  IonRefresher,
+  IonRefresherContent,
   IonSpinner,
   IonText,
   IonTitle,
@@ -10,7 +14,6 @@ import {
   useIonModal,
   useIonViewWillEnter,
 } from "@ionic/react";
-import AppContent from "../components/AppContent";
 import { useContext, useEffect, useRef, useState } from "react";
 import Profile from "../features/profile/Profile";
 import { useParams } from "react-router";
@@ -20,6 +23,7 @@ import styled from "@emotion/styled";
 import { useAppDispatch } from "../store";
 import { getUser } from "../features/user/userSlice";
 import { AppContext } from "../features/auth/AppContext";
+import { useBuildGeneralBrowseLink } from "../helpers/routes";
 
 const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
@@ -32,9 +36,11 @@ const PageContentIonSpinner = styled(IonSpinner)`
 interface UserPageProps {
   handle?: string;
   toolbar?: React.ReactNode;
+  hideBack?: boolean;
 }
 
 export default function UserPage(props: UserPageProps) {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const handle = useParams<{ handle: string }>().handle ?? props.handle;
   const dispatch = useAppDispatch();
   const [person, setPerson] = useState<GetPersonDetailsResponse | undefined>();
@@ -58,16 +64,32 @@ export default function UserPage(props: UserPageProps) {
     <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            {!props.hideBack && <IonBackButton />}
+          </IonButtons>
+
           <IonTitle>{handle}</IonTitle>
 
           <IonButtons slot="end">{props.toolbar}</IonButtons>
         </IonToolbar>
       </IonHeader>
-      <AppContent>
+      <IonContent>
+        <IonRefresher
+          slot="fixed"
+          onIonRefresh={async (e) => {
+            try {
+              await load();
+            } finally {
+              e.detail.complete();
+            }
+          }}
+        >
+          <IonRefresherContent />
+        </IonRefresher>
         <PageContext.Provider value={{ page: pageRef.current }}>
           {person ? <Profile person={person} /> : <PageContentIonSpinner />}
         </PageContext.Provider>
-      </AppContent>
+      </IonContent>
     </IonPage>
   );
 }

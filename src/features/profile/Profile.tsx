@@ -25,6 +25,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
+import { MaxWidthContainer, maxWidthCss } from "../../components/AppContent";
 
 const StyledIonItem = styled(IonItem)`
   --background: var(
@@ -50,46 +51,46 @@ export default function Profile({ person }: ProfileProps) {
 
   return (
     <>
-      <Scores
-        aggregates={person.person_view.counts}
-        accountCreated={person.person_view.person.published}
-      />
-      <IonList inset color="primary">
-        <StyledIonItem>
-          <IonIcon icon={albumsOutline} color="primary" /> <Label>Posts</Label>
-          <IonIcon icon={chevronForward} color="medium" />
-        </StyledIonItem>
-        <StyledIonItem>
-          <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
-          <Label>Comments</Label>
-          <IonIcon icon={chevronForward} color="medium" />
-        </StyledIonItem>
-        <StyledIonItem>
-          <IonIcon icon={bookmarkOutline} color="primary" />{" "}
-          <Label>Saved</Label>
-          <IonIcon icon={chevronForward} color="medium" />
-        </StyledIonItem>
-      </IonList>
+      <MaxWidthContainer>
+        <Scores
+          aggregates={person.person_view.counts}
+          accountCreated={person.person_view.person.published}
+        />
+        <IonList inset color="primary">
+          <StyledIonItem>
+            <IonIcon icon={albumsOutline} color="primary" />{" "}
+            <Label>Posts</Label>
+            <IonIcon icon={chevronForward} color="medium" />
+          </StyledIonItem>
+          <StyledIonItem>
+            <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
+            <Label>Comments</Label>
+            <IonIcon icon={chevronForward} color="medium" />
+          </StyledIonItem>
+          <StyledIonItem>
+            <IonIcon icon={bookmarkOutline} color="primary" />{" "}
+            <Label>Saved</Label>
+            <IonIcon icon={chevronForward} color="medium" />
+          </StyledIonItem>
+        </IonList>
+      </MaxWidthContainer>
       {person.comments.map((c) => (
         <React.Fragment key={c.comment.id}>
-          <StyledLink
-            to={buildGeneralBrowseLink(
+          <Comment
+            comment={c}
+            depth={0}
+            collapsed={false}
+            childCount={0}
+            opId={c.post.creator_id}
+            fullyCollapsed={false}
+            context={<PostContext post={c.post} community={c.community} />}
+            routerLink={buildGeneralBrowseLink(
               `/c/${getHandle(c.community)}/comments/${c.post.id}/${
                 c.comment.id
               }`
             )}
-          >
-            <Comment
-              comment={c}
-              depth={0}
-              collapsed={false}
-              childCount={0}
-              opId={c.post.creator_id}
-              fullyCollapsed={false}
-              context={<PostContext post={c.post} community={c.community} />}
-            />
-            <CommentHr depth={0} />
-          </StyledLink>
+          />
+          <CommentHr depth={0} />
         </React.Fragment>
       ))}
     </>

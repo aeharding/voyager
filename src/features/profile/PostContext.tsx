@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import { CommunitySafe, Post } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
-import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
@@ -9,15 +8,15 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 const ContainerLink = styled(Link)`
   padding: 0.5rem 0.75rem;
 
-  background: var(--ion-color-step-50);
-  color: var(--ion-color-medium);
+  background: var(--ion-tab-bar-background, var(--ion-color-step-50, #f7f7f7));
+  color: var(--ion-color-dark);
   border-radius: 0.5rem;
 
   font-size: 0.95em;
 
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.4rem;
 
   text-decoration: none;
 `;
@@ -47,6 +46,7 @@ export default function PostContext({ post, community }: PostContextProps) {
   return (
     <ContainerLink
       onClick={(e) => e.stopPropagation()}
+      draggable={false}
       to={buildGeneralBrowseLink(
         `/c/${getHandle(community)}/comments/${post.id}`
       )}
