@@ -117,13 +117,13 @@ const Aside = styled.div`
 
 export default function PostDetail() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { id, commentId, community } = useParams<{
+  const { id, commentPath, community } = useParams<{
     id: string;
-    commentId?: string;
+    commentPath?: string;
     community: string;
   }>();
   const jwt = useAppSelector((state) => state.auth.jwt);
-  const [collapsed, setCollapsed] = useState(!!commentId);
+  const [collapsed, setCollapsed] = useState(!!commentPath);
   const post = useAppSelector((state) => state.post.postById[id]);
   const dispatch = useAppDispatch();
   const markdownLoneImage = useMemo(
@@ -265,14 +265,14 @@ export default function PostDetail() {
               key={commentsKey}
               header={renderHeader(post)}
               postId={post.post.id}
-              commentId={commentId ? +commentId : undefined}
+              commentPath={commentPath}
               op={post.creator}
             />
           ) : (
             <CenteredSpinner />
           )}
         </PageContext.Provider>
-        {commentId && <ViewAllComments />}
+        {commentPath && <ViewAllComments />}
       </IonContent>
     </IonPage>
   );

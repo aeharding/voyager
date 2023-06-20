@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { PersonSafe } from "lemmy-js-client";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getHandle, getItemActorName } from "../helpers/lemmy";
 import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../helpers/routes";
@@ -32,7 +32,7 @@ export default function PersonLabel({
   if (distinguished) {
     if (person.admin) color = "#ff0000";
     else color = "#00e600";
-  } else if (opId && person.id === opId) color = "#00a2ff";
+  } else if (opId && person.id === opId) color = "var(--ion-color-primary)";
 
   return (
     <StyledLink
@@ -42,7 +42,9 @@ export default function PersonLabel({
       css={
         color
           ? css`
-              color: ${color};
+              && {
+                color: ${color};
+              }
             `
           : css`
               color: inherit;

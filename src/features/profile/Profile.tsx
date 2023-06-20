@@ -86,7 +86,7 @@ export default function Profile({ person }: ProfileProps) {
             context={<PostContext post={c.post} community={c.community} />}
             routerLink={buildGeneralBrowseLink(
               `/c/${getHandle(c.community)}/comments/${c.post.id}/${
-                c.comment.id
+                c.comment.path
               }`
             )}
           />

@@ -40,10 +40,16 @@ const CustomIonItem = styled(IonItem)`
   --min-height: 0;
 `;
 
-const PositionedContainer = styled.div<{ depth: number }>`
+const PositionedContainer = styled.div<{ depth: number; highlighted: boolean }>`
   ${maxWidthCss}
 
   padding: 0.55rem 1rem;
+
+  ${({ highlighted }) =>
+    highlighted &&
+    css`
+      background: var(--ion-color-light);
+    `}
 
   @media (hover: none) {
     padding: 0.65rem 1rem;
@@ -55,7 +61,7 @@ const PositionedContainer = styled.div<{ depth: number }>`
     `}
 `;
 
-const Container = styled.div<{ depth: number }>`
+const Container = styled.div<{ depth: number; highlighted?: boolean }>`
   display: flex;
 
   position: relative;
@@ -146,6 +152,7 @@ const AmountCollapsed = styled.div`
 
 interface CommentProps {
   comment: CommentView;
+  highlightedCommentId?: number;
   depth: number;
   onClick?: () => void;
   collapsed?: boolean;
@@ -160,6 +167,7 @@ interface CommentProps {
 
 export default function Comment({
   comment,
+  highlightedCommentId,
   depth,
   onClick,
   collapsed,
@@ -210,7 +218,10 @@ export default function Comment({
           href={undefined}
           onClick={() => !keyPressed && onClick?.()}
         >
-          <PositionedContainer depth={depth}>
+          <PositionedContainer
+            depth={depth}
+            highlighted={highlightedCommentId === comment.comment.id}
+          >
             <Container depth={depth}>
               <Header>
                 <StyledPersonLabel

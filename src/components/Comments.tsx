@@ -58,14 +58,14 @@ const Empty = styled.div`
 interface CommentsProps {
   header: React.ReactNode;
   postId: number;
-  commentId?: number;
+  commentPath?: string;
   op: PersonSafe;
 }
 
 export default function Comments({
   header,
   postId,
-  commentId,
+  commentPath,
   op,
 }: CommentsProps) {
   const dispatch = useAppDispatch();
@@ -75,12 +75,17 @@ export default function Comments({
   const [finishedPaging, setFinishedPaging] = useState(false);
   const [comments, setComments] = useState<CommentView[]>([]);
   const commentTree = useMemo(
-    () => (comments.length ? buildCommentsTree(comments, !!commentId) : []),
+    () => (comments.length ? buildCommentsTree(comments, !!commentPath) : []),
     [comments]
   );
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [present] = useIonToast();
+
+  const highlightedCommentId = commentPath
+    ? +commentPath.split(".").pop()!
+    : undefined;
+  const commentId = commentPath ? +commentPath.split(".")[1] : undefined;
 
   const { setActivePage } = useContext(AppContext);
   const virtuosoRef = useRef<VirtuosoHandle>(null);
@@ -149,7 +154,25 @@ export default function Comments({
       "comment.id"
     );
     if (!newComments.length) setFinishedPaging(true);
-    setComments(uniqBy([...comments, ...newComments], (c) => c.comment.id));
+
+    let potentialComments = uniqBy(
+      [...comments, ...newComments],
+      (c) => c.comment.id
+    );
+
+    // Filter context to a single comment chain (only show direct ancestors and children)
+    if (commentPath)
+      potentialComments = potentialComments.filter((c) => {
+        if (commentPath.split(".").includes(`${c.comment.id}`)) return true;
+        if (
+          highlightedCommentId &&
+          c.comment.path.split(".").includes(`${highlightedCommentId}`)
+        )
+          return true;
+        return false;
+      });
+
+    setComments(potentialComments);
     setPage(currentPage);
   }
 
@@ -175,6 +198,7 @@ export default function Comments({
     return commentTree.map((comment, index) => (
       <CommentTree
         comment={comment}
+        highlightedCommentId={highlightedCommentId}
         key={comment.comment_view.comment.id}
         first={index === 0}
         op={op}

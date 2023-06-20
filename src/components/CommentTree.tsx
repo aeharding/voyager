@@ -9,6 +9,7 @@ import { PersonSafe } from "lemmy-js-client";
 
 interface CommentTreeProps {
   comment: CommentNodeI;
+  highlightedCommentId?: number;
   first?: boolean;
   op: PersonSafe;
   fullyCollapsed?: boolean;
@@ -16,6 +17,7 @@ interface CommentTreeProps {
 
 export default function CommentTree({
   comment,
+  highlightedCommentId,
   first,
   op,
   fullyCollapsed,
@@ -46,6 +48,7 @@ export default function CommentTree({
       {!first && <CommentHr depth={comment.depth} />}
       <Comment
         comment={comment.comment_view}
+        highlightedCommentId={highlightedCommentId}
         depth={comment.depth}
         onClick={() => setCollapsed(!collapsed)}
         collapsed={collapsed}
@@ -57,6 +60,7 @@ export default function CommentTree({
     ...comment.children.map((comment) => (
       <CommentTree
         key={comment.comment_view.comment.id}
+        highlightedCommentId={highlightedCommentId}
         comment={comment}
         op={op}
         fullyCollapsed={collapsed || fullyCollapsed}

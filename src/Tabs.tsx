@@ -8,15 +8,19 @@ import {
   IonTabs,
   useIonRouter,
 } from "@ionic/react";
-import { settings, person, telescopeSharp } from "ionicons/icons";
+import {
+  settings,
+  telescopeSharp,
+  personCircleOutline,
+  cog,
+} from "ionicons/icons";
 import PostDetail from "./components/PostDetail";
 import Communities from "./pages/Communities";
 import Community from "./pages/Community";
 import { useAppSelector } from "./store";
-import { handleSelector, jwtIssSelector } from "./features/auth/authSlice";
+import { jwtIssSelector } from "./features/auth/authSlice";
 import { SUPPORTED_SERVERS } from "./helpers/lemmy";
 import ActorRedirect from "./ActorRedirect";
-import SpecialFeed from "./pages/SpecialFeedPage";
 import SpecialFeedPage from "./pages/SpecialFeedPage";
 import { ListingType } from "lemmy-js-client";
 import styled from "@emotion/styled";
@@ -129,9 +133,14 @@ export default function Tabs() {
           <Community />
         </ActorRedirect>
       </Route>,
+      <Route exact path={`/${tab}/:actor/c/:community/comments/:id`}>
+        <ActorRedirect>
+          <PostDetail />
+        </ActorRedirect>
+      </Route>,
       <Route
         exact
-        path={`/${tab}/:actor/c/:community/comments/:id/:commentId?`}
+        path={`/${tab}/:actor/c/:community/comments/:id/:commentPath`}
       >
         <ActorRedirect>
           <PostDetail />
@@ -204,12 +213,12 @@ export default function Tabs() {
           tab="profile"
           href="/profile"
         >
-          <IonIcon aria-hidden="true" icon={person} />
+          <IonIcon aria-hidden="true" icon={personCircleOutline} />
           <IonLabel>{connectedInstance}</IonLabel>
           <Interceptor onClick={onProfileClick} />
         </IonTabButton>
         <IonTabButton tab="settings" href="/settings">
-          <IonIcon aria-hidden="true" icon={settings} />
+          <IonIcon aria-hidden="true" icon={cog} />
           <IonLabel>Settings</IonLabel>
         </IonTabButton>
       </IonTabBar>

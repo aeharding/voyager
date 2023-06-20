@@ -12,6 +12,10 @@ const Blockquote = styled.blockquote`
   margin-left: 0;
 `;
 
+const Code = styled.code`
+  white-space: pre-wrap;
+`;
+
 export default function Markdown(props: ReactMarkdownOptions) {
   return (
     <ReactMarkdown
@@ -22,6 +26,7 @@ export default function Markdown(props: ReactMarkdownOptions) {
           <Img {...props} onClick={(e) => e.stopPropagation()} />
         ),
         blockquote: (props) => <Blockquote {...props} />,
+        code: (props) => <Code {...props} />,
         ...props.components,
       }}
       remarkPlugins={[remarkGfm]}
