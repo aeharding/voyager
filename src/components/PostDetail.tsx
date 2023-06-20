@@ -37,6 +37,7 @@ import { useBuildGeneralBrowseLink } from "../helpers/routes";
 import ViewAllComments from "./ViewAllComments";
 import CommentReply from "../features/comment/CommentReply";
 import Login from "../features/auth/Login";
+import InlineMarkdown from "./InlineMarkdown";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -209,7 +210,9 @@ export default function PostDetail() {
           <Container>
             <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
             <PostDeets>
-              <Title ref={titleRef}>{post.post.name}</Title>
+              <Title ref={titleRef}>
+                <InlineMarkdown>{post.post.name}</InlineMarkdown>
+              </Title>
               {!collapsed && renderText()}
               <By>
                 in{" "}

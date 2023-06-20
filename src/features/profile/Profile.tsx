@@ -1,10 +1,10 @@
 import {
   IonIcon,
-  IonItem,
   IonLabel,
   IonList,
   IonRouterLink,
   IonSpinner,
+  IonItem,
 } from "@ionic/react";
 import { useAppSelector } from "../../store";
 import styled from "@emotion/styled";
@@ -25,16 +25,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
-import { MaxWidthContainer, maxWidthCss } from "../../components/AppContent";
+import { MaxWidthContainer } from "../../components/AppContent";
 
-const StyledIonItem = styled(IonItem)`
-  --background: var(
-    --ion-tab-bar-background,
-    var(--ion-color-step-50, #f7f7f7)
-  );
+export const InsetIonItem = styled(IonItem)`
+  --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
 `;
 
-const Label = styled(IonLabel)`
+export const SettingLabel = styled(IonLabel)`
   margin-left: 1rem;
 `;
 
@@ -57,21 +54,18 @@ export default function Profile({ person }: ProfileProps) {
           accountCreated={person.person_view.person.published}
         />
         <IonList inset color="primary">
-          <StyledIonItem>
+          <InsetIonItem routerLink="/">
             <IonIcon icon={albumsOutline} color="primary" />{" "}
-            <Label>Posts</Label>
-            <IonIcon icon={chevronForward} color="medium" />
-          </StyledIonItem>
-          <StyledIonItem>
+            <SettingLabel>Posts</SettingLabel>
+          </InsetIonItem>
+          <InsetIonItem routerLink="/">
             <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
-            <Label>Comments</Label>
-            <IonIcon icon={chevronForward} color="medium" />
-          </StyledIonItem>
-          <StyledIonItem>
+            <SettingLabel>Comments</SettingLabel>
+          </InsetIonItem>
+          <InsetIonItem routerLink="/">
             <IonIcon icon={bookmarkOutline} color="primary" />{" "}
-            <Label>Saved</Label>
-            <IonIcon icon={chevronForward} color="medium" />
-          </StyledIonItem>
+            <SettingLabel>Saved</SettingLabel>
+          </InsetIonItem>
         </IonList>
       </MaxWidthContainer>
       {person.comments.map((c) => (

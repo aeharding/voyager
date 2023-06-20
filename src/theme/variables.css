@@ -79,7 +79,7 @@ http://ionicframework.com/docs/theming/ */
 
   --lightroom-bg: rgba(0, 0, 0, 0.08);
 
-  --thick-separator-color: rgba(0, 0, 0, 0.08);
+  --thick-separator-color: var(--ion-color-step-50, #f2f2f7);
 
   --ion-color-step-100: #f3f3f3;
 }

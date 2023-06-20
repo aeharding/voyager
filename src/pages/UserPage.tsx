@@ -40,7 +40,6 @@ interface UserPageProps {
 }
 
 export default function UserPage(props: UserPageProps) {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const handle = useParams<{ handle: string }>().handle ?? props.handle;
   const dispatch = useAppDispatch();
   const [person, setPerson] = useState<GetPersonDetailsResponse | undefined>();
@@ -61,7 +60,7 @@ export default function UserPage(props: UserPageProps) {
   }
 
   return (
-    <IonPage ref={pageRef}>
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

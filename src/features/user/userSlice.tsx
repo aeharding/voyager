@@ -5,6 +5,7 @@ import { CommentView, PersonSafe, SortType } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
 import { LIMIT } from "../../services/lemmy";
 import { receivedPosts } from "../post/postSlice";
+import { receivedComments } from "../comment/commentSlice";
 
 interface CommentState {
   userByHandle: Dictionary<PersonSafe>;
@@ -46,6 +47,7 @@ export const getUser =
     });
 
     dispatch(receivedUsers([personResponse.person_view.person]));
+    dispatch(receivedComments(personResponse.comments));
 
     return personResponse;
   };

@@ -31,6 +31,7 @@ import MoreActions from "../features/post/item/MoreActions";
 import { useBuildGeneralBrowseLink } from "../helpers/routes";
 import PersonLabel from "./PersonLabel";
 import CommentReply from "../features/comment/CommentReply";
+import InlineMarkdown from "./InlineMarkdown";
 
 const StyledDraggingVote = styled(DraggingVote)`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -231,19 +232,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
           {post.post.url && <Embed post={post} />}
 
           <PostBody>
-            <ReactMarkdown
-              skipHtml
-              allowedElements={["p", "a", "li", "ul", "ol"]}
-              components={{
-                a: "span",
-                p: "span",
-                li: "span",
-                ul: "span",
-                ol: "span",
-              }}
-            >
-              {post.post.body}
-            </ReactMarkdown>
+            <InlineMarkdown>{post.post.body}</InlineMarkdown>
           </PostBody>
         </>
       );
@@ -274,7 +263,8 @@ export default function Post({ post, communityMode, className }: PostProps) {
       >
         <Container>
           <div>
-            {post.post.name} {isNsfw(post) && <Nsfw />}
+            <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+            {isNsfw(post) && <Nsfw />}
           </div>
 
           {renderPostBody()}

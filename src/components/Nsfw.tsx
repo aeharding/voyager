@@ -7,7 +7,9 @@ const Container = styled.span`
   padding: 2px 4px;
   border-radius: 8px;
   margin-left: 4px;
-  background: var(--ion-color-danger);
+  background: #ff0000;
+  background: color(display-p3 1 0 0);
+  color: white;
 `;
 
 export default function Nsfw() {

@@ -1,9 +1,20 @@
-import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import {
+  IonBadge,
+  IonHeader,
+  IonIcon,
+  IonList,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import AppContent from "../components/AppContent";
+import { InsetIonItem, SettingLabel } from "../features/profile/Profile";
+import { apps } from "ionicons/icons";
+import { isInstalled } from "../helpers/device";
 
 export default function SettingsPage() {
   return (
-    <IonPage>
+    <IonPage className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Settings</IonTitle>
@@ -15,7 +26,14 @@ export default function SettingsPage() {
             <IonTitle size="large">Settings</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <div className="ion-padding">No settings yet. Check back later!</div>
+
+        <IonList inset color="primary">
+          <InsetIonItem routerLink="/settings/install">
+            <IonIcon icon={apps} color="primary" />
+            <SettingLabel>Install app</SettingLabel>
+            {!isInstalled() && <IonBadge color="danger">1</IonBadge>}
+          </InsetIonItem>
+        </IonList>
       </AppContent>
     </IonPage>
   );

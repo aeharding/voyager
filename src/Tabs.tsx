@@ -1,5 +1,6 @@
 import { Redirect, Route, useLocation } from "react-router-dom";
 import {
+  IonBadge,
   IonIcon,
   IonLabel,
   IonRouterOutlet,
@@ -29,6 +30,8 @@ import SettingsPage from "./pages/SettingsPage";
 import { useContext } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import UserPage from "./pages/UserPage";
+import InstallAppPage from "./pages/settings/InstallAppPage";
+import { isInstalled } from "./helpers/device";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -197,6 +200,9 @@ export default function Tabs() {
         <Route exact path="/settings">
           <SettingsPage />
         </Route>
+        <Route exact path="/settings/install">
+          <InstallAppPage />
+        </Route>
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
         <IonTabButton
@@ -220,6 +226,7 @@ export default function Tabs() {
         <IonTabButton tab="settings" href="/settings">
           <IonIcon aria-hidden="true" icon={cog} />
           <IonLabel>Settings</IonLabel>
+          {!isInstalled() && <IonBadge color="danger">1</IonBadge>}
         </IonTabButton>
       </IonTabBar>
     </IonTabs>
