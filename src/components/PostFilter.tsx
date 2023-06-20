@@ -11,6 +11,7 @@ export default function PostFilter() {
         <IonIcon icon={planetOutline} color="primary" />
       </IonButton>
       <IonActionSheet
+        cssClass="left-align-buttons"
         isOpen={open}
         onDidDismiss={() => setOpen(false)}
         header="Show..."

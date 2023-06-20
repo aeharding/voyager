@@ -60,6 +60,7 @@ export default function MoreActions({ post }: MoreActionsProps) {
       <IonIcon icon={ellipsisHorizontal} onClick={() => setOpen(true)} />
 
       <IonActionSheet
+        cssClass="left-align-buttons"
         isOpen={open}
         buttons={[
           {

@@ -45,6 +45,7 @@ export default function PostSort() {
         <IonIcon icon={getSortIcon(sort)} color="primary" />
       </IonButton>
       <IonActionSheet
+        cssClass="left-align-buttons"
         isOpen={open}
         onDidDismiss={() => setOpen(false)}
         onWillDismiss={(

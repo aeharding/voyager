@@ -44,6 +44,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
         <IonIcon icon={ellipsisHorizontal} color="primary" />
       </IonButton>
       <IonActionSheet
+        cssClass="left-align-buttons"
         isOpen={open}
         buttons={[
           {

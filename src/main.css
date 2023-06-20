@@ -9,3 +9,11 @@ html {
 ion-tab-button {
   opacity: 1 !important;
 }
+
+.left-align-buttons
+  .action-sheet-button:not(.action-sheet-cancel)
+  .action-sheet-button-inner.sc-ion-action-sheet-ios:not(
+    .action-sheet-group-cancel
+  ) {
+  justify-content: flex-start;
+}
