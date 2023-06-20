@@ -1,5 +1,4 @@
 import { IonApp, setupIonicReact } from "@ionic/react";
-import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
 import { createMemoryHistory } from "history";
 
 /* Core CSS required for Ionic components to work properly */
@@ -28,6 +27,7 @@ import React, { useEffect } from "react";
 import Tabs from "./Tabs";
 import Auth from "./Auth";
 import { AppContextProvider } from "./features/auth/AppContext";
+import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
 
 setupIonicReact({
   rippleEffect: false,

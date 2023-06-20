@@ -1,0 +1,112 @@
+import express from "express";
+import ViteExpress from "vite-express";
+import { createProxyMiddleware } from "http-proxy-middleware";
+
+// avoid issues where popular servers are flakey
+// and get blacklisted for a few minutes
+const LEMMY_WHITELIST = [
+  "lemmy.ml",
+  "lemmy.world",
+  "lemmy.one",
+  "beehaw.org",
+  "sh.itjust.works",
+  "lemm.ee",
+  "feddit.de",
+  "lemmy.blahaj.zone",
+  "midwest.social",
+  "lemmynsfw.com",
+  "lemmy.ca",
+  "lemmy.sdf.org",
+];
+
+const validLemmyServers = {};
+const badLemmyServers = {};
+
+LEMMY_WHITELIST.forEach((server) => (validLemmyServers[server] = true));
+
+const app = express();
+
+const PROXY_ENDPOINT = "/api/:actor";
+
+app.use(PROXY_ENDPOINT, async (req, res, next) => {
+  const actor = req.params.actor;
+
+  if (typeof validLemmyServers[actor] === "object") {
+    await validLemmyServers[actor];
+  }
+
+  if (validLemmyServers[actor] === true) return next();
+  if (
+    badLemmyServers[actor] &&
+    Date.now() - 1_000 * 60 * 3 < badLemmyServers[actor]
+  ) {
+    res.status(400);
+    res.send("not lemmy server");
+    return;
+  } else {
+    delete badLemmyServers[actor];
+  }
+
+  const parsedActor = (() => {
+    try {
+      const { hostname } = new URL(`https://${actor}`);
+      if (actor === hostname) return hostname;
+    } catch (error) {
+      console.error(`actor "${actor}" not valid hostname`);
+
+      return undefined;
+    }
+  })();
+
+  if (!parsedActor) {
+    res.status(400);
+    res.send("not lemmy server");
+    return;
+  }
+
+  const nodeinfo = (async () => {
+    try {
+      const response = await fetch(`https://${actor}/nodeinfo/2.0.json`);
+
+      return await response.json();
+    } catch (error) {
+      return {};
+    }
+  })();
+  validLemmyServers[actor] = nodeinfo;
+
+  const json = await nodeinfo;
+
+  if (json?.software?.name === "lemmy") {
+    validLemmyServers[actor] = true;
+    return next();
+  }
+
+  badLemmyServers[actor] = Date.now();
+
+  res.status(400);
+  res.send("not lemmy server");
+});
+
+app.use(
+  PROXY_ENDPOINT,
+  createProxyMiddleware({
+    target: "http://example.com",
+    router: (req) => `https://${req.params.actor}`,
+    changeOrigin: true,
+    secure: true,
+    pathRewrite: (path) => path.split("/").slice(3).join("/"),
+    onProxyReq: (clientReq, req) => {
+      clientReq.setHeader(
+        "user-agent",
+        `(${req.hostname}, ${process.env.EMAIL || "hello@wefwef.app"})`
+      );
+    },
+  })
+);
+
+const PORT = process.env.PORT || 3000;
+
+ViteExpress.listen(app, PORT, () =>
+  console.log(`Server is listening on port ${PORT}...`)
+);

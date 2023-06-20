@@ -2,7 +2,12 @@ import {
   IonButton,
   IonButtons,
   IonHeader,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
   IonPage,
+  IonPicker,
   IonText,
   IonTitle,
   IonToolbar,
@@ -10,15 +15,28 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import AppContent from "../components/AppContent";
-import { handleSelector, logout } from "../features/auth/authSlice";
+import {
+  handleSelector,
+  logout,
+  updateConnectedInstance,
+} from "../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../store";
 import Login from "../features/auth/Login";
-import { useContext, useRef } from "react";
-import Profile from "../features/profile/Profile";
+import { useContext, useRef, useState } from "react";
+import Profile, {
+  InsetIonItem,
+  SettingLabel,
+} from "../features/profile/Profile";
 import { ReactComponent as IncognitoSvg } from "../features/profile/incognito.svg";
 import styled from "@emotion/styled";
 import UserPage from "./UserPage";
 import { AppContext } from "../features/auth/AppContext";
+import {
+  serverOutline,
+  swapHorizontalOutline,
+  wifiOutline,
+} from "ionicons/icons";
+import { css } from "@emotion/react";
 
 const Incognito = styled(IncognitoSvg)`
   opacity: 0.1;
@@ -33,6 +51,10 @@ export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const pageRef = useRef();
   const { setActivePage } = useContext(AppContext);
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance
+  );
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const jwt = useAppSelector((state) => state.auth.jwt);
   const [login, onDismiss] = useIonModal(Login, {
@@ -71,7 +93,59 @@ export default function ProfilePage() {
         </IonToolbar>
       </IonHeader>
       <AppContent>
-        <p className="ion-padding-start">You're logged out.</p>
+        <IonText color="medium">
+          <p
+            css={css`
+              font-size: 0.9em;
+              padding: 1rem;
+            `}
+          >
+            Change the instance you're currently connected to below.
+            Alternatively, click <strong>login</strong> to join your instance
+            with your account.
+          </p>
+        </IonText>
+        <IonList inset>
+          <InsetIonItem
+            onClick={() => {
+              setPickerOpen(true);
+            }}
+            detail
+          >
+            <IonIcon icon={swapHorizontalOutline} color="primary" />
+            <SettingLabel>
+              Connected to {connectedInstance}{" "}
+              <IonText color="medium">(as guest)</IonText>
+            </SettingLabel>
+          </InsetIonItem>
+        </IonList>
+        <IonPicker
+          isOpen={pickerOpen}
+          onDidDismiss={() => setPickerOpen(false)}
+          columns={[
+            {
+              name: "server",
+              options: [
+                "lemmy.ml",
+                "lemmy.world",
+                "beehaw.org",
+                "sh.itjust.works",
+              ].map((server) => ({ text: server, value: server })),
+            },
+          ]}
+          buttons={[
+            {
+              text: "Cancel",
+              role: "cancel",
+            },
+            {
+              text: "Confirm",
+              handler: (value) => {
+                dispatch(updateConnectedInstance(value.server.value));
+              },
+            },
+          ]}
+        />
         <Incognito />
       </AppContent>
     </IonPage>

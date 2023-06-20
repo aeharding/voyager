@@ -1,14 +1,13 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
-import { CommentView, PersonSafe, SortType } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
 import { LIMIT } from "../../services/lemmy";
-import { receivedPosts } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
+import { Person } from "lemmy-js-client";
 
 interface CommentState {
-  userByHandle: Dictionary<PersonSafe>;
+  userByHandle: Dictionary<Person>;
 }
 
 const initialState: CommentState = {
@@ -19,7 +18,7 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    receivedUsers: (state, action: PayloadAction<PersonSafe[]>) => {
+    receivedUsers: (state, action: PayloadAction<Person[]>) => {
       for (const user of action.payload) {
         state.userByHandle[getHandle(user)] = user;
       }
@@ -43,7 +42,7 @@ export const getUser =
       username: handle,
       auth: jwt!,
       limit: LIMIT,
-      sort: SortType.New,
+      sort: "New",
     });
 
     dispatch(receivedUsers([personResponse.person_view.person]));

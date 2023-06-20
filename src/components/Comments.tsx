@@ -12,12 +12,7 @@ import {
 } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import {
-  CommentSortType,
-  CommentView,
-  ListingType,
-  PersonSafe,
-} from "lemmy-js-client";
+import { CommentView, ListingType, Person } from "lemmy-js-client";
 import { pullAllBy, uniqBy } from "lodash";
 import { useLocation } from "react-router";
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
@@ -59,7 +54,7 @@ interface CommentsProps {
   header: React.ReactNode;
   postId: number;
   commentPath?: string;
-  op: PersonSafe;
+  op: Person;
 }
 
 export default function Comments({
@@ -122,8 +117,8 @@ export default function Comments({
         post_id: reqPostId,
         parent_id: commentId,
         limit: 10,
-        sort: CommentSortType.Hot,
-        type_: ListingType.All,
+        sort: "Hot",
+        type_: "All",
         max_depth: 8,
         saved_only: false,
         page: currentPage,

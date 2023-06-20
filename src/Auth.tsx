@@ -40,5 +40,7 @@ export default function Auth({ children }: AuthProps) {
     dispatch(getSelf());
   }, [jwt]);
 
+  if (!connectedInstance) return;
+
   return <>{children}</>;
 }

@@ -14,12 +14,14 @@ import {
   IonSpinner,
   IonList,
   useIonToast,
+  IonText,
 } from "@ionic/react";
 import styled from "@emotion/styled";
-import { SUPPORTED_SERVERS } from "../../helpers/lemmy";
+import { POPULAR_SERVERS } from "../../helpers/lemmy";
 import { useAppDispatch } from "../../store";
 import { login } from "./authSlice";
 import { LemmyHttp } from "lemmy-js-client";
+import { getClient } from "../../services/lemmy";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -44,12 +46,27 @@ export default function Login({
 }) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const [server, setServer] = useState(SUPPORTED_SERVERS[0]);
+  const [server, setServer] = useState(POPULAR_SERVERS[0]);
+  const [customServer, setCustomServer] = useState("");
   const [serverConfirmed, setServerConfirmed] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const usernameRef = useRef<HTMLIonInputElement>(null);
   const [loading, setLoading] = useState(false);
+
+  const customServerHostname = (() => {
+    if (!customServer) return;
+
+    try {
+      return new URL(
+        customServer.startsWith("https://")
+          ? customServer
+          : `https://${customServer}`
+      ).hostname;
+    } catch (e) {
+      return undefined;
+    }
+  })();
 
   useEffect(() => {
     if (!serverConfirmed) return;
@@ -60,10 +77,43 @@ export default function Login({
     }, 200);
   }, [serverConfirmed]);
 
+  useEffect(() => {
+    setCustomServer("");
+  }, [server]);
+
   async function submit() {
-    if (!server) return;
+    if (!server && !customServer) return;
 
     if (!serverConfirmed) {
+      if (customServer) {
+        if (!customServerHostname) {
+          present({
+            message: `${customServer} is not a valid server URL. Please try again`,
+            duration: 3500,
+            position: "bottom",
+            color: "danger",
+          });
+
+          return;
+        }
+
+        setLoading(true);
+        try {
+          await getClient(customServerHostname).getSite({});
+        } catch (error) {
+          present({
+            message: `Problem connecting to ${customServerHostname}. Please try again`,
+            duration: 3500,
+            position: "bottom",
+            color: "danger",
+          });
+
+          throw error;
+        } finally {
+          setLoading(false);
+        }
+      }
+
       setServerConfirmed(true);
       return;
     }
@@ -82,7 +132,11 @@ export default function Login({
 
     try {
       await dispatch(
-        login(new LemmyHttp(`/api/${server}`), username, password)
+        login(
+          new LemmyHttp(`/api/${server ?? customServerHostname}`),
+          username,
+          password
+        )
       );
     } catch (error) {
       present({
@@ -136,7 +190,11 @@ export default function Login({
               <Centered>Login {loading && <Spinner color="dark" />}</Centered>
             </IonTitle>
             <IonButtons slot="end">
-              <IonButton strong={true} type="submit" disabled={!server}>
+              <IonButton
+                strong={true}
+                type="submit"
+                disabled={!server && !customServer}
+              >
                 {serverConfirmed ? "Confirm" : "Next"}
               </IonButton>
             </IonButtons>
@@ -151,7 +209,7 @@ export default function Login({
                 onIonChange={(e) => setServer(e.target.value)}
               >
                 <IonList inset>
-                  {SUPPORTED_SERVERS.map((server) => (
+                  {POPULAR_SERVERS.map((server) => (
                     <IonItem disabled={loading} key={server}>
                       <IonRadio value={server} key={server}>
                         {server}
@@ -166,33 +224,45 @@ export default function Login({
                 </IonList>
               </IonRadioGroup>
               {server ? (
-                <>
-                  <HelperText>
-                    Note: All requests to <strong>{server}</strong> will be
-                    proxied through <strong>{location.hostname}</strong>.
-                  </HelperText>
-                </>
+                <></>
               ) : (
                 <>
-                  <HelperText>
-                    Unfortunately, we currently only support servers from this
-                    list because Lemmy does not support CORS, and we have to
-                    proxy every request made through wefwef.
-                  </HelperText>
-                  <HelperText>
-                    Proxying arbitrary requests to any server on the internet
-                    would be a liability for hosting.
-                  </HelperText>
-                  <HelperText>
-                    We will work to expand this list over time.
-                  </HelperText>
+                  <IonList inset>
+                    <IonItem>
+                      <IonInput
+                        label="URL"
+                        inputMode="url"
+                        value={customServer}
+                        onIonInput={(e) =>
+                          setCustomServer(e.target.value as string)
+                        }
+                        disabled={loading}
+                      />
+                    </IonItem>
+                  </IonList>
                 </>
               )}
+
+              <HelperText>
+                Note: Due to CORS, all requests to{" "}
+                <strong>{server ?? customServer}</strong> will be proxied
+                through <strong>{location.hostname}</strong>.
+              </HelperText>
+
+              <HelperText>
+                <a
+                  href="https://join-lemmy.org/instances"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <IonText color="primary">Don't have an account?</IonText>
+                </a>
+              </HelperText>
             </>
           )}
           {serverConfirmed && (
             <>
-              <HelperText>Login to {server}</HelperText>
+              <HelperText>Login to {server ?? customServerHostname}</HelperText>
               <IonList inset>
                 <IonItem>
                   <IonInput

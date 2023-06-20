@@ -51,12 +51,10 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
 function listingTypeTitle(type: ListingType): string {
   switch (type) {
-    case ListingType.All:
-    case ListingType.Local:
+    case "All":
+    case "Local":
       return type;
-    case ListingType.Subscribed:
+    case "Subscribed":
       return "Home";
-    case ListingType.Community:
-      return "Community";
   }
 }

@@ -5,13 +5,13 @@ import React, { useMemo, useState } from "react";
 import CommentHr from "./CommentHr";
 import { useAppDispatch, useAppSelector } from "../store";
 import { updateCommentCollapseState } from "../features/comment/commentSlice";
-import { PersonSafe } from "lemmy-js-client";
+import { Person } from "lemmy-js-client";
 
 interface CommentTreeProps {
   comment: CommentNodeI;
   highlightedCommentId?: number;
   first?: boolean;
-  op: PersonSafe;
+  op: Person;
   fullyCollapsed?: boolean;
 }
 

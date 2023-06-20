@@ -1,16 +1,16 @@
 import { css } from "@emotion/react";
-import { PersonSafe } from "lemmy-js-client";
 import { Link } from "react-router-dom";
 import { getHandle, getItemActorName } from "../helpers/lemmy";
 import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../helpers/routes";
+import { Person } from "lemmy-js-client";
 
 const StyledLink = styled(Link)`
   text-decoration: none;
 `;
 
 interface PersonLabelProps {
-  person: PersonSafe;
+  person: Person;
   opId?: number;
   distinguished?: boolean;
   showAtInstanceWhenRemote?: boolean;

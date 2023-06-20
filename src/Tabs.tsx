@@ -20,7 +20,7 @@ import Communities from "./pages/Communities";
 import Community from "./pages/Community";
 import { useAppSelector } from "./store";
 import { jwtIssSelector } from "./features/auth/authSlice";
-import { SUPPORTED_SERVERS } from "./helpers/lemmy";
+import { POPULAR_SERVERS } from "./helpers/lemmy";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/SpecialFeedPage";
 import { ListingType } from "lemmy-js-client";
@@ -39,7 +39,7 @@ const Interceptor = styled.div`
   pointer-events: all;
 `;
 
-export const DEFAULT_ACTOR = SUPPORTED_SERVERS[0];
+export const DEFAULT_ACTOR = POPULAR_SERVERS[0];
 
 export default function Tabs() {
   const { activePage } = useContext(AppContext);
@@ -50,11 +50,8 @@ export default function Tabs() {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance
   );
-  const potentialActor = location.pathname.split("/")[2];
+  const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
-  const actor = SUPPORTED_SERVERS.includes(potentialActor)
-    ? potentialActor
-    : undefined;
 
   const isPostsButtonDisabled = (() => {
     if (location.pathname.startsWith("/profile")) return false;
@@ -168,17 +165,17 @@ export default function Tabs() {
         </Route>
         <Route exact path="/posts/:actor/home">
           <ActorRedirect>
-            <SpecialFeedPage type={ListingType.Subscribed} />
+            <SpecialFeedPage type="Subscribed" />
           </ActorRedirect>
         </Route>
         <Route exact path="/posts/:actor/all">
           <ActorRedirect>
-            <SpecialFeedPage type={ListingType.All} />
+            <SpecialFeedPage type="All" />
           </ActorRedirect>
         </Route>
         <Route exact path="/posts/:actor/local">
           <ActorRedirect>
-            <SpecialFeedPage type={ListingType.Local} />
+            <SpecialFeedPage type="Local" />
           </ActorRedirect>
         </Route>
         <Route exact path={`/posts/:actor`}>
@@ -208,7 +205,7 @@ export default function Tabs() {
         <IonTabButton
           disabled={isPostsButtonDisabled}
           tab="posts"
-          href={`/posts/${iss ?? actor ?? DEFAULT_ACTOR}`}
+          href={`/posts/${connectedInstance}`}
         >
           <IonIcon aria-hidden="true" icon={telescopeSharp} />
           <IonLabel>Posts</IonLabel>
