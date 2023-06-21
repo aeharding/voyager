@@ -7,15 +7,16 @@ import {
   IonToolbar,
   IonTitle,
   IonPage,
-  IonSpinner,
   useIonToast,
+  IonText,
 } from "@ionic/react";
-import { Comment, CommentView, PostView } from "lemmy-js-client";
+import { CommentView, PostView } from "lemmy-js-client";
 import { useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../helpers/useClient";
 import { useAppSelector } from "../../store";
 import { Centered, Spinner } from "../auth/Login";
+import { handleSelector } from "../auth/authSlice";
 
 const Container = styled.div`
   position: absolute;
@@ -36,6 +37,15 @@ const Textarea = styled.textarea`
   min-height: 7rem;
 `;
 
+const UsernameIonText = styled(IonText)`
+  font-size: 0.7em;
+  font-weight: normal;
+`;
+
+const TitleContainer = styled.div`
+  line-height: 1;
+`;
+
 export default function CommentReply({
   onDismiss,
   comment,
@@ -50,6 +60,7 @@ export default function CommentReply({
   const jwt = useAppSelector((state) => state.auth.jwt);
   const [present] = useIonToast();
   const [loading, setLoading] = useState(false);
+  const userHandle = useAppSelector(handleSelector);
 
   async function submit() {
     if (!jwt) return;
@@ -97,7 +108,13 @@ export default function CommentReply({
           </IonButtons>
           <IonTitle>
             <Centered>
-              New Comment {loading && <Spinner color="dark" />}
+              <TitleContainer>
+                <IonText>New Comment</IonText>
+                <div>
+                  <UsernameIonText color="medium">{userHandle}</UsernameIonText>
+                </div>
+              </TitleContainer>{" "}
+              {loading && <Spinner color="dark" />}
             </Centered>
           </IonTitle>
           <IonButtons slot="end">
