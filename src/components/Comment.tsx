@@ -52,7 +52,8 @@ const PositionedContainer = styled.div<{ depth: number; highlighted: boolean }>`
     `}
 
   @media (hover: none) {
-    padding: 0.65rem 1rem;
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
   }
 
   ${({ depth }) =>
