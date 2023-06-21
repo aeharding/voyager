@@ -22,6 +22,7 @@ import { useAppDispatch } from "../../store";
 import { login } from "./authSlice";
 import { LemmyHttp } from "lemmy-js-client";
 import { getClient } from "../../services/lemmy";
+import { IonInputCustomEvent } from "@ionic/core";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -51,7 +52,7 @@ export default function Login({
   const [serverConfirmed, setServerConfirmed] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const usernameRef = useRef<HTMLIonInputElement>(null);
+  const usernameRef = useRef<IonInputCustomEvent<never>["target"]>(null);
   const [loading, setLoading] = useState(false);
 
   const customServerHostname = (() => {
@@ -211,7 +212,7 @@ export default function Login({
         <IonContent>
           {!serverConfirmed && (
             <>
-              <HelperText>Choose your account's server</HelperText>
+              <HelperText>Choose your account&apos;s server</HelperText>
               <IonRadioGroup
                 value={server}
                 onIonChange={(e) => setServer(e.target.value)}
@@ -263,7 +264,7 @@ export default function Login({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <IonText color="primary">Don't have an account?</IonText>
+                  <IonText color="primary">Don&apos;t have an account?</IonText>
                 </a>
               </HelperText>
             </>

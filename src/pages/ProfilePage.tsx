@@ -3,8 +3,6 @@ import {
   IonButtons,
   IonHeader,
   IonIcon,
-  IonItem,
-  IonLabel,
   IonList,
   IonPage,
   IonPicker,
@@ -14,7 +12,7 @@ import {
   useIonModal,
   useIonViewWillEnter,
 } from "@ionic/react";
-import AppContent from "../components/AppContent";
+import AppContent from "../features/shared/AppContent";
 import {
   handleSelector,
   logout,
@@ -23,19 +21,12 @@ import {
 import { useAppDispatch, useAppSelector } from "../store";
 import Login from "../features/auth/Login";
 import { useContext, useRef, useState } from "react";
-import Profile, {
-  InsetIonItem,
-  SettingLabel,
-} from "../features/profile/Profile";
-import { ReactComponent as IncognitoSvg } from "../features/profile/incognito.svg";
+import { InsetIonItem, SettingLabel } from "../features/user/Profile";
+import { ReactComponent as IncognitoSvg } from "../features/user/incognito.svg";
 import styled from "@emotion/styled";
 import UserPage from "./UserPage";
 import { AppContext } from "../features/auth/AppContext";
-import {
-  serverOutline,
-  swapHorizontalOutline,
-  wifiOutline,
-} from "ionicons/icons";
+import { swapHorizontalOutline } from "ionicons/icons";
 import { css } from "@emotion/react";
 
 const Incognito = styled(IncognitoSvg)`
@@ -100,7 +91,7 @@ export default function ProfilePage() {
               padding: 1rem;
             `}
           >
-            Change the instance you're currently connected to below.
+            Change the instance you&apos;re currently connected to below.
             Alternatively, click <strong>login</strong> to join your instance
             with your account.
           </p>

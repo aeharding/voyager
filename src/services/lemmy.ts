@@ -1,7 +1,7 @@
 import { LemmyHttp } from "lemmy-js-client";
 
 export function getClient(url: string): LemmyHttp {
-  let baseUrl = `/api/${url}`;
+  const baseUrl = `${location.origin}/api/${url}`;
   return new LemmyHttp(baseUrl);
 }
 

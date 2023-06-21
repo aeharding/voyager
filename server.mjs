@@ -105,8 +105,9 @@ app.use(
   })
 );
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5173;
 
 ViteExpress.listen(app, PORT, () =>
-  console.log(`Server is listening on port ${PORT}...`)
+  // eslint-disable-next-line no-console
+  console.log(`Server is on http://localhost:${PORT}`)
 );

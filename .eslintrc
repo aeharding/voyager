@@ -1,0 +1,59 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2022": true
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["react", "@typescript-eslint", "@emotion"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module",
+    "ecmaVersion": 2022
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "no-console": ["warn", { "allow": ["warn", "error", "info"] }],
+    "linebreak-style": ["warn", "unix"],
+    "react/jsx-fragments": ["warn", "syntax"],
+    "no-undef": 1,
+    "@typescript-eslint/no-empty-function": 0,
+    "@typescript-eslint/no-empty-interface": 0,
+    "react/jsx-curly-brace-presence": ["warn", "never"],
+    "eqeqeq": ["warn", "smart"],
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }],
+    "@emotion/no-vanilla": "error",
+    "@emotion/import-from-emotion": "error",
+    "@emotion/styled-import": "error",
+    "@emotion/syntax-preference": [2, "string"],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "destructuredArrayIgnorePattern": "^_" }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "globals": {
+        "global": "writable"
+      },
+      "env": {
+        "jest": true
+      }
+    },
+    {
+      "files": ["server.mjs"],
+      "env": {
+        "node": true
+      }
+    }
+  ]
+}

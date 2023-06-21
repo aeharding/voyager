@@ -7,10 +7,10 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Posts from "../components/Posts";
+import Posts from "../features/post/inFeed/Posts";
 import { PageContext } from "../features/auth/PageContext";
 import { useRef } from "react";
-import PostSort from "../components/PostSort";
+import PostSort from "../features/post/inFeed/PostSort";
 import { ListingType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../helpers/routes";
 

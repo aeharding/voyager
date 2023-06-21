@@ -95,13 +95,13 @@ export const login =
     dispatch(updateToken(res.jwt));
   };
 
-export const getSelf =
+export const getSite =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwtPayload = jwtPayloadSelector(getState());
 
     if (!jwtPayload) return;
 
-    const { iss, sub } = jwtPayload;
+    const { iss } = jwtPayload;
 
     const details = await new LemmyHttp(`/api/${iss}`).getSite({
       auth: getState().auth.jwt,

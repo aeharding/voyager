@@ -62,11 +62,13 @@ export const voteOnComment =
 
     const jwt = getState().auth.jwt;
 
+    if (!jwt) throw new Error("Not authorized");
+
     try {
       await clientSelector(getState())?.likeComment({
         comment_id: commentId,
         score: vote,
-        auth: jwt!,
+        auth: jwt,
       });
     } catch (error) {
       dispatch(updateCommentVote({ commentId, vote: oldVote }));

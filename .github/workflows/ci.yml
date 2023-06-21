@@ -1,0 +1,36 @@
+name: ci
+
+permissions: {}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: corepack enable
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: 📦 Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: 🧪 Test project
+        run: yarn test
+
+      - name: 📝 Lint
+        run: yarn lint
+
+      - name: 💪 Type check
+        run: yarn test:typecheck

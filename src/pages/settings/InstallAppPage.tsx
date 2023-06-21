@@ -1,10 +1,8 @@
 import {
   IonBackButton,
-  IonBadge,
   IonButtons,
   IonHeader,
   IonIcon,
-  IonList,
   IonPage,
   IonText,
   IonTitle,
@@ -15,7 +13,7 @@ import {
   checkmarkCircleOutline,
   shareOutline,
 } from "ionicons/icons";
-import AppContent from "../../components/AppContent";
+import AppContent from "../../features/shared/AppContent";
 import styled from "@emotion/styled";
 import { isInstalled } from "../../helpers/device";
 
@@ -92,7 +90,7 @@ export default function InstallAppPage() {
                 Installed
               </h3>
               <IonText color="medium">
-                <p>Congrats, you're browsing from the app!</p>
+                <p>Congrats, you&apos;re browsing from the app!</p>
               </IonText>
             </>
           )}

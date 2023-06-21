@@ -1,4 +1,4 @@
-import { RefObject, createContext, useState } from "react";
+import React, { RefObject, createContext, useState } from "react";
 import { VirtuosoHandle } from "react-virtuoso";
 
 interface IAppContext {

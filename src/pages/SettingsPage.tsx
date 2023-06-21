@@ -7,8 +7,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../components/AppContent";
-import { InsetIonItem, SettingLabel } from "../features/profile/Profile";
+import AppContent from "../features/shared/AppContent";
+import { InsetIonItem, SettingLabel } from "../features/user/Profile";
 import { apps } from "ionicons/icons";
 import { isInstalled } from "../helpers/device";
 

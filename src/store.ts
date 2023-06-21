@@ -3,7 +3,7 @@ import postSlice from "./features/post/postSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import authSlice from "./features/auth/authSlice";
 import commentSlice from "./features/comment/commentSlice";
-import communitySlice from "./components/community/communitySlice";
+import communitySlice from "./features/community/communitySlice";
 import userSlice from "./features/user/userSlice";
 
 const store = configureStore({

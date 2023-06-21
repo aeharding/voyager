@@ -1,12 +1,12 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import {
-  getSelf,
+  getSite,
   jwtIssSelector,
   updateConnectedInstance,
 } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
-import { DEFAULT_ACTOR } from "./Tabs";
+import { DEFAULT_ACTOR } from "./TabbedRoutes";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -34,10 +34,12 @@ export default function Auth({ children }: AuthProps) {
 
     if (potentialConnectedInstance)
       dispatch(updateConnectedInstance(potentialConnectedInstance));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   useEffect(() => {
-    dispatch(getSelf());
+    dispatch(getSite());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt]);
 
   if (!connectedInstance) return;

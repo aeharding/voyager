@@ -1,5 +1,4 @@
 import { IonApp, setupIonicReact } from "@ionic/react";
-import { createMemoryHistory } from "history";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -21,13 +20,11 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import { Provider } from "react-redux";
 import store from "./store";
-import ThemeColorUpdater from "./ThemeColorUpdater";
 import { isInstalled } from "./helpers/device";
-import React, { useEffect } from "react";
-import Tabs from "./Tabs";
+import TabbedRoutes from "./TabbedRoutes";
 import Auth from "./Auth";
 import { AppContextProvider } from "./features/auth/AppContext";
-import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
+import Router from "./Router";
 
 setupIonicReact({
   rippleEffect: false,
@@ -35,35 +32,14 @@ setupIonicReact({
   swipeBackEnabled: isInstalled(),
 });
 
-function Router({ children }: { children: React.ReactNode }) {
-  const history = createMemoryHistory();
-
-  useEffect(() => {
-    const unListen = history.listen(() => {
-      window.scrollTo(0, 0);
-    });
-    return () => {
-      unListen();
-    };
-  }, []);
-
-  if (isInstalled())
-    return (
-      <IonReactMemoryRouter history={history}>{children}</IonReactMemoryRouter>
-    );
-
-  return <IonReactRouter>{children}</IonReactRouter>;
-}
-
 export default function App() {
   return (
     <AppContextProvider>
-      <ThemeColorUpdater />
       <Provider store={store}>
         <IonApp>
           <Router>
             <Auth>
-              <Tabs />
+              <TabbedRoutes />
             </Auth>
           </Router>
         </IonApp>

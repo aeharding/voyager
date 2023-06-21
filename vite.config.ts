@@ -1,6 +1,5 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
-import _ from "lodash";
+import { defineConfig } from "vitest/config";
 import { VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 
@@ -16,4 +15,9 @@ export default defineConfig({
     svgr(),
     VitePWA({ registerType: "autoUpdate" }),
   ],
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./src/setupTests.ts",
+  },
 });

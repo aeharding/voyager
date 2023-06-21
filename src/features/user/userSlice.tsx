@@ -40,7 +40,7 @@ export const getUser =
 
     const personResponse = await clientSelector(getState())?.getPersonDetails({
       username: handle,
-      auth: jwt!,
+      auth: jwt,
       limit: LIMIT,
       sort: "New",
     });
