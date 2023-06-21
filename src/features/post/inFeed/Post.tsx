@@ -73,21 +73,10 @@ const RightDetails = styled.div`
   }
 `;
 
-const CommunityName = styled.div`
-  display: flex;
-  align-items: center;
-
-  > span {
-    max-width: 14rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  aside {
-    display: inline;
-    opacity: 0.7;
-  }
+const CommunityName = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const PostBody = styled.div`
@@ -252,24 +241,25 @@ export default function Post({ post, communityMode, className }: PostProps) {
 
           <Details>
             <LeftDetails>
-              {communityMode ? (
-                <CommunityName>
-                  {post.counts.featured_community ||
-                  post.counts.featured_local ? (
-                    <AnnouncementIcon icon={megaphone} />
-                  ) : undefined}
+              <CommunityName>
+                {post.counts.featured_community ||
+                post.counts.featured_local ? (
+                  <AnnouncementIcon icon={megaphone} />
+                ) : undefined}
+                {communityMode ? (
                   <PersonLink
                     person={post.creator}
                     showInstanceWhenRemote
                     prefix="by"
                   />
-                </CommunityName>
-              ) : (
-                <CommunityLink
-                  community={post.community}
-                  showInstanceWhenRemote
-                />
-              )}
+                ) : (
+                  <CommunityLink
+                    community={post.community}
+                    showInstanceWhenRemote
+                  />
+                )}
+              </CommunityName>
+
               <PreviewStats
                 stats={post.counts}
                 voteFromServer={post.my_vote}

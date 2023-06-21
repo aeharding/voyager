@@ -99,10 +99,16 @@ const Title = styled.div`
 const By = styled.div`
   margin-bottom: 0.3rem;
   color: var(--ion-color-medium);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const AnnouncementIcon = styled(IonIcon)`
   font-size: 1.1rem;
+  margin-right: 0.3rem;
+  vertical-align: middle;
   color: var(--ion-color-success);
 `;
 
