@@ -34,7 +34,6 @@ import CommentReply from "../../comment/reply/CommentReply";
 import Login from "../../auth/Login";
 import InlineMarkdown from "../../shared/InlineMarkdown";
 import { megaphone } from "ionicons/icons";
-import CommunityIcon from "../../labels/img/CommunityIcon";
 import CommunityLink from "../../labels/links/CommunityLink";
 
 const BorderlessIonItem = styled(IonItem)`
@@ -98,12 +97,8 @@ const Title = styled.div`
 `;
 
 const By = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
+  margin-bottom: 0.3rem;
   color: var(--ion-color-medium);
-  margin: 0 0 0.5rem;
 `;
 
 export const AnnouncementIcon = styled(IonIcon)`
@@ -214,16 +209,11 @@ export default function PostDetail() {
                 post.counts.featured_local ? (
                   <AnnouncementIcon icon={megaphone} />
                 ) : undefined}
-
-                <CommunityIcon community={post.community} size={24} />
-
-                <div>
-                  <CommunityLink
-                    community={post.community}
-                    showInstanceWhenRemote
-                  />{" "}
-                  <PersonLink person={post.creator} prefix="by" />
-                </div>
+                <CommunityLink
+                  community={post.community}
+                  showInstanceWhenRemote
+                />{" "}
+                <PersonLink person={post.creator} prefix="by" />
               </By>
               <Stats
                 stats={post.counts}

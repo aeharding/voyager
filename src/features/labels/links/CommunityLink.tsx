@@ -3,6 +3,8 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Community } from "lemmy-js-client";
 import Handle from "../Handle";
 import { StyledLink } from "./shared";
+import CommunityIcon from "../img/CommunityIcon";
+import { css } from "@emotion/react";
 
 interface CommunityLinkProps {
   community: Community;
@@ -24,6 +26,15 @@ export default function CommunityLink({
       onClick={(e) => e.stopPropagation()}
       className={className}
     >
+      <CommunityIcon
+        community={community}
+        size={24}
+        css={css`
+          margin-right: 0.4rem;
+          vertical-align: middle;
+        `}
+      />
+
       <Handle
         item={community}
         showInstanceWhenRemote={showInstanceWhenRemote}

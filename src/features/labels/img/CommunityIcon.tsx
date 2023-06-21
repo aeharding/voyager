@@ -12,7 +12,7 @@ const FakeIcon = styled.div<{ bg: string; size: number }>`
   height: ${({ size }) => `${size}px`};
   border-radius: 50%;
 
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
@@ -23,15 +23,27 @@ const FakeIcon = styled.div<{ bg: string; size: number }>`
 interface CommunityIconProps {
   community: Community;
   size?: number;
+  className?: string;
 }
 
-export default function CommunityIcon({ community, size }: CommunityIconProps) {
+export default function CommunityIcon({
+  community,
+  size,
+  className,
+}: CommunityIconProps) {
   size = size ?? 28;
 
-  if (community.icon) return <SubImgIcon src={community.icon} size={size} />;
+  if (community.icon)
+    return (
+      <SubImgIcon src={community.icon} size={size} className={className} />
+    );
 
   return (
-    <FakeIcon bg={generateRandomColor(community.id)} size={size}>
+    <FakeIcon
+      bg={generateRandomColor(community.id)}
+      size={size}
+      className={className}
+    >
       {community.name.slice(0, 1).toUpperCase()}
     </FakeIcon>
   );
