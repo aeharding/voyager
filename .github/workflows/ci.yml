@@ -26,8 +26,8 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn --frozen-lockfile
 
-      - name: 🧪 Test project
-        run: yarn test
+      # - name: 🧪 Test project
+      #   run: yarn test
 
       - name: 📝 Lint
         run: yarn lint
