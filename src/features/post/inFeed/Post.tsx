@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { IonItem, IonRouterLink, useIonModal, useIonToast } from "@ionic/react";
+import { IonItem, useIonModal, useIonToast } from "@ionic/react";
 import { PostView } from "lemmy-js-client";
 import { megaphone } from "ionicons/icons";
 import PreviewStats from "./PreviewStats";
@@ -23,7 +23,6 @@ import PersonLink from "../../labels/links/PersonLink";
 import CommentReply from "../../comment/reply/CommentReply";
 import InlineMarkdown from "../../shared/InlineMarkdown";
 import { AnnouncementIcon } from "../detail/PostDetail";
-import CommunityIcon from "../../labels/img/CommunityIcon";
 import CommunityLink from "../../labels/links/CommunityLink";
 
 const StyledDraggingVote = styled(DraggingVote)`
@@ -74,20 +73,9 @@ const RightDetails = styled.div`
   }
 `;
 
-const CommunityDetails = styled.div`
-  display: flex;
-  align-items: center;
-
-  gap: 0.5rem;
-
-  color: var(--ion-color-medium);
-  text-decoration: none;
-`;
-
 const CommunityName = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 
   > span {
     max-width: 14rem;
@@ -265,35 +253,22 @@ export default function Post({ post, communityMode, className }: PostProps) {
           <Details>
             <LeftDetails>
               {communityMode ? (
-                <CommunityDetails>
-                  <CommunityName>
-                    {post.counts.featured_community ||
-                    post.counts.featured_local ? (
-                      <AnnouncementIcon icon={megaphone} />
-                    ) : undefined}
-                    <PersonLink
-                      person={post.creator}
-                      showInstanceWhenRemote
-                      prefix="by"
-                    />
-                  </CommunityName>
-                </CommunityDetails>
+                <CommunityName>
+                  {post.counts.featured_community ||
+                  post.counts.featured_local ? (
+                    <AnnouncementIcon icon={megaphone} />
+                  ) : undefined}
+                  <PersonLink
+                    person={post.creator}
+                    showInstanceWhenRemote
+                    prefix="by"
+                  />
+                </CommunityName>
               ) : (
-                <IonRouterLink
-                  routerLink={buildGeneralBrowseLink(
-                    `/c/${getHandle(post.community)}`
-                  )}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <CommunityDetails>
-                    <CommunityIcon community={post.community} size={24} />
-
-                    <CommunityLink
-                      community={post.community}
-                      showInstanceWhenRemote
-                    />
-                  </CommunityDetails>
-                </IonRouterLink>
+                <CommunityLink
+                  community={post.community}
+                  showInstanceWhenRemote
+                />
               )}
               <PreviewStats
                 stats={post.counts}
