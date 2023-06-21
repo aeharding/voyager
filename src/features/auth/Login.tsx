@@ -82,7 +82,15 @@ export default function Login({
   }, [server]);
 
   async function submit() {
-    if (!server && !customServer) return;
+    if (!server && !customServer) {
+      present({
+        message: `Please enter your instance domain name`,
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
+      return;
+    }
 
     if (!serverConfirmed) {
       if (customServer) {
@@ -118,7 +126,7 @@ export default function Login({
       return;
     }
 
-    if (!server || !username || !password) {
+    if (!username || !password) {
       present({
         message: "Please fill out username and password fields",
         duration: 3500,

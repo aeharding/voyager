@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  wefwef:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: ghcr.io/aeharding/wefwef:main
+    container_name: wefwef
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:mainline-alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - web-root:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - wefwef
+    networks:
+      - app-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - nginx
+    command: certonly --webroot --webroot-path=/var/www/html --email hello@wefwef.app --agree-tos --no-eff-email -d wefwef.app  -d www.wefwef.app
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/aeharding/node_project/views/
+      o: bind
+
+networks:
+  app-network:
+    driver: bridge
