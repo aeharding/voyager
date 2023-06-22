@@ -2,7 +2,7 @@ import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { PostView, SortType } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
-import { POST_SORTS } from "./inFeed/PostSort";
+import { POST_SORTS } from "../feed/PostSort";
 
 const POST_SORT_KEY = "post-sort";
 

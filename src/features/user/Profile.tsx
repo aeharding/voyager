@@ -1,19 +1,17 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { IonIcon, IonLabel, IonList, IonItem } from "@ionic/react";
 import styled from "@emotion/styled";
 import Scores from "./Scores";
-import {
-  albumsOutline,
-  bookmarkOutline,
-  chatbubbleOutline,
-} from "ionicons/icons";
+import { albumsOutline, chatbubbleOutline } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
-import Comment from "../comment/Comment";
-import CommentHr from "../comment/CommentHr";
-import PostContext from "./PostContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle } from "../../helpers/lemmy";
+import { getHandle, isPost } from "../../helpers/lemmy";
 import { MaxWidthContainer } from "../shared/AppContent";
+import { FetchFn } from "../feed/Feed";
+import useClient from "../../helpers/useClient";
+import { LIMIT } from "../../services/lemmy";
+import { useAppSelector } from "../../store";
+import PostCommentFeed, { PostCommentItem } from "../feed/PostCommentFeed";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -29,48 +27,63 @@ interface ProfileProps {
 
 export default function Profile({ person }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const jwt = useAppSelector((state) => state.auth.jwt);
+  const client = useClient();
 
-  return (
-    <>
+  const fetchFn: FetchFn<PostCommentItem> = useCallback(
+    async (page) => {
+      const response = await client.getPersonDetails({
+        limit: LIMIT,
+        username: getHandle(person.person_view.person),
+        page,
+        sort: "New",
+        auth: jwt,
+      });
+      return [...response.posts, ...response.comments].sort(
+        (a, b) => getCreatedDate(b) - getCreatedDate(a)
+      );
+    },
+    [person, client, jwt]
+  );
+
+  const header = useCallback(
+    () => (
       <MaxWidthContainer>
         <Scores
           aggregates={person.person_view.counts}
           accountCreated={person.person_view.person.published}
         />
         <IonList inset color="primary">
-          <InsetIonItem routerLink="/">
+          <InsetIonItem
+            routerLink={buildGeneralBrowseLink(
+              `/u/${getHandle(person.person_view.person)}/posts`
+            )}
+          >
             <IonIcon icon={albumsOutline} color="primary" />{" "}
             <SettingLabel>Posts</SettingLabel>
           </InsetIonItem>
-          <InsetIonItem routerLink="/">
+          <InsetIonItem
+            routerLink={buildGeneralBrowseLink(
+              `/u/${getHandle(person.person_view.person)}/comments`
+            )}
+          >
             <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
             <SettingLabel>Comments</SettingLabel>
           </InsetIonItem>
-          <InsetIonItem routerLink="/">
+          {/* <InsetIonItem routerLink="/">
             <IonIcon icon={bookmarkOutline} color="primary" />{" "}
             <SettingLabel>Saved</SettingLabel>
-          </InsetIonItem>
+          </InsetIonItem> */}
         </IonList>
       </MaxWidthContainer>
-      {person.comments.map((c) => (
-        <React.Fragment key={c.comment.id}>
-          <Comment
-            comment={c}
-            depth={0}
-            collapsed={false}
-            childCount={0}
-            opId={c.post.creator_id}
-            fullyCollapsed={false}
-            context={<PostContext post={c.post} community={c.community} />}
-            routerLink={buildGeneralBrowseLink(
-              `/c/${getHandle(c.community)}/comments/${c.post.id}/${
-                c.comment.path
-              }`
-            )}
-          />
-          <CommentHr depth={0} />
-        </React.Fragment>
-      ))}
-    </>
+    ),
+    [person, buildGeneralBrowseLink]
   );
+
+  return <PostCommentFeed fetchFn={fetchFn} header={header} />;
+}
+
+function getCreatedDate(item: PostCommentItem): number {
+  if (isPost(item)) return Date.parse(`${item.post.published}Z`);
+  return Date.parse(`${item.comment.published}Z`);
 }

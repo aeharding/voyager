@@ -53,7 +53,7 @@ export default function InstallAppPage() {
           <IonTitle>Install</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <AppContent>
+      <AppContent scrollY>
         <Container className="ion-padding">
           <AppContainer>
             <img src="/logo.jpg" alt="" />

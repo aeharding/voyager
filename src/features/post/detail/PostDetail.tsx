@@ -21,7 +21,7 @@ import PostActions from "../actions/PostActions";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../../../helpers/markdown";
 import { getPost } from "../postSlice";
-import { isUrlImage } from "../../../helpers/lemmy";
+import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
 import AppBackButton from "../../shared/AppBackButton";
 import Img from "./Img";
 import { PageContext } from "../../auth/PageContext";
@@ -35,6 +35,8 @@ import Login from "../../auth/Login";
 import InlineMarkdown from "../../shared/InlineMarkdown";
 import { megaphone } from "ionicons/icons";
 import CommunityLink from "../../labels/links/CommunityLink";
+import Video from "../../shared/Video";
+import { css } from "@emotion/react";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -55,14 +57,20 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const LightboxImg = styled(Img)`
+const lightboxCss = css`
   width: 100%;
   max-height: 50vh;
   object-fit: contain;
   background: var(--lightroom-bg);
 `;
 
+const LightboxImg = styled(Img)`
+  ${lightboxCss}
+`;
+
 const StyledMarkdown = styled(Markdown)`
+  margin: 1rem 0;
+
   img {
     display: block;
     max-width: 100%;
@@ -162,8 +170,11 @@ export default function PostDetail() {
   function renderImage() {
     if (!post) return;
 
-    if (post.post.url && isUrlImage(post.post.url)) {
-      return <LightboxImg src={post.post.url} />;
+    if (post.post.url) {
+      if (isUrlImage(post.post.url)) return <LightboxImg src={post.post.url} />;
+
+      if (isUrlVideo(post.post.url))
+        return <Video src={post.post.url} css={lightboxCss} />;
     }
 
     if (markdownLoneImage)
@@ -181,13 +192,19 @@ export default function PostDetail() {
     if (post.post.body && !markdownLoneImage) {
       return (
         <>
-          {post.post.url && !isUrlImage(post.post.url) && <Embed post={post} />}
+          {post.post.url &&
+            !isUrlImage(post.post.url) &&
+            !isUrlVideo(post.post.url) && <Embed post={post} />}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
         </>
       );
     }
 
-    if (post.post.url && !isUrlImage(post.post.url)) {
+    if (
+      post.post.url &&
+      !isUrlImage(post.post.url) &&
+      !isUrlVideo(post.post.url)
+    ) {
       return <StyledEmbed post={post} />;
     }
   }

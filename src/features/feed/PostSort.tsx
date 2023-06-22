@@ -14,8 +14,8 @@ import {
   helpCircleOutline,
   timeOutline,
 } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { updateSortType } from "../postSlice";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { updateSortType } from "../post/postSlice";
 import { useState } from "react";
 import { startCase } from "lodash";
 import { SortType } from "lemmy-js-client";

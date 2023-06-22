@@ -1,4 +1,5 @@
-import { Comment, CommentView, Community } from "lemmy-js-client";
+import { Comment, CommentView, Community, PostView } from "lemmy-js-client";
+import { FeedItem } from "../features/feed/Feed";
 
 export const POPULAR_SERVERS = ["lemmy.world", "lemmy.ml", "beehaw.org"];
 
@@ -12,6 +13,14 @@ export interface CommentNodeI {
   comment_view: CommentView;
   children: Array<CommentNodeI>;
   depth: number;
+}
+
+export function isPost(item: FeedItem): item is PostView {
+  return !isComment(item);
+}
+
+export function isComment(item: FeedItem): item is CommentView {
+  return "comment" in item;
 }
 
 /**
@@ -176,4 +185,17 @@ export function isUrlImage(url: string): boolean {
     parsedUrl.pathname.endsWith(".jpg") ||
     parsedUrl.pathname.endsWith(".webp")
   );
+}
+
+export function isUrlVideo(url: string): boolean {
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(url);
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+
+  return parsedUrl.pathname.endsWith(".mp4");
 }

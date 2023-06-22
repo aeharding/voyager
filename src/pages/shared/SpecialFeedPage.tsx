@@ -7,15 +7,18 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Posts, { PostsFetchFn } from "../../features/post/inFeed/Posts";
+import { FetchFn } from "../../features/feed/Feed";
 import { PageContext } from "../../features/auth/PageContext";
 import { useCallback, useRef } from "react";
-import PostSort from "../../features/post/inFeed/PostSort";
+import PostSort from "../../features/feed/PostSort";
 import { ListingType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
 import { useAppSelector } from "../../store";
+import PostCommentFeed, {
+  PostCommentItem,
+} from "../../features/feed/PostCommentFeed";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -29,7 +32,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector((state) => state.auth.jwt);
 
-  const fetchFn: PostsFetchFn = useCallback(
+  const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
       const response = await client.getPosts({
         limit: LIMIT,
@@ -61,9 +64,9 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent scrollY={false}>
         <PageContext.Provider value={{ page: pageRef.current }}>
-          <Posts fetchFn={fetchFn} />
+          <PostCommentFeed fetchFn={fetchFn} />
         </PageContext.Provider>
       </IonContent>
     </IonPage>

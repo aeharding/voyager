@@ -32,7 +32,9 @@ import UserPage from "./pages/shared/UserPage";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import { isInstalled } from "./helpers/device";
 import SearchPage from "./pages/search/SearchPage";
-import SearchPostsResults from "./pages/search/results/SearchPostsResults";
+import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
+import ProfileFeedItemsPage from "./pages/profile/ProfileFeedItemsPage";
+import SearchCommunitiesPage from "./pages/search/results/SearchCommunitiesPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -54,21 +56,9 @@ export default function TabbedRoutes() {
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
 
-  const isPostsButtonDisabled = (() => {
-    if (location.pathname.startsWith("/profile")) return false;
-    if (location.pathname.startsWith("/settings")) return false;
-    if (location.pathname.startsWith("/search")) return false;
-
-    return true;
-  })();
-
-  const isProfileButtonDisabled = (() => {
-    if (location.pathname.startsWith("/posts")) return false;
-    if (location.pathname.startsWith("/settings")) return false;
-    if (location.pathname.startsWith("/search")) return false;
-
-    return true;
-  })();
+  const isPostsButtonDisabled = location.pathname.startsWith("/posts");
+  const isProfileButtonDisabled = location.pathname.startsWith("/profile");
+  const isSearchButtonDisabled = location.pathname.startsWith("/search");
 
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
@@ -99,6 +89,14 @@ export default function TabbedRoutes() {
     router.push("/profile", "back");
   }
 
+  async function onSearchClick() {
+    if (!isSearchButtonDisabled) return;
+
+    if (await scrollUpIfNeeded()) return;
+
+    router.push(`/search`, "back");
+  }
+
   async function scrollUpIfNeeded() {
     if (!activePage) return false;
 
@@ -117,8 +115,8 @@ export default function TabbedRoutes() {
       return new Promise((resolve) =>
         activePage.current?.getState((state) => {
           if (state.scrollTop) {
-            activePage.current?.scrollToIndex({
-              index: 0,
+            activePage.current?.scrollTo({
+              top: 0,
               behavior: "smooth",
             });
           }
@@ -156,6 +154,18 @@ export default function TabbedRoutes() {
       <Route exact path={`/${tab}/:actor/u/:handle`}>
         <ActorRedirect>
           <UserPage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/posts`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Posts" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/comments`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Comments" />
         </ActorRedirect>
       </Route>,
     ];
@@ -205,9 +215,18 @@ export default function TabbedRoutes() {
           <SearchPage />
         </Route>
         <Route exact path="/search/posts/:search">
-          <SearchPostsResults />
+          <SearchPostsResultsPage type="Posts" />
+        </Route>
+        <Route exact path="/search/comments/:search">
+          <SearchPostsResultsPage type="Comments" />
+        </Route>
+        <Route exact path="/search/communities/:search">
+          <SearchCommunitiesPage />
         </Route>
         {...buildGeneralBrowseRoutes("search")}
+        <Route exact path="/search/:actor">
+          <Redirect to="/search" push={false} />
+        </Route>
         <Route exact path="/settings">
           <SettingsPage />
         </Route>
@@ -234,9 +253,14 @@ export default function TabbedRoutes() {
           <IonLabel>{connectedInstance}</IonLabel>
           <Interceptor onClick={onProfileClick} />
         </IonTabButton>
-        <IonTabButton tab="search" href="/search">
+        <IonTabButton
+          disabled={isSearchButtonDisabled}
+          tab="search"
+          href="/search"
+        >
           <IonIcon aria-hidden="true" icon={search} />
           <IonLabel>Search</IonLabel>
+          <Interceptor onClick={onSearchClick} />
         </IonTabButton>
         <IonTabButton tab="settings" href="/settings">
           <IonIcon aria-hidden="true" icon={cog} />

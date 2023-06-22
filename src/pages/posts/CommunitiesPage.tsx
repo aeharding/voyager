@@ -96,7 +96,7 @@ export default function CommunitiesPage() {
           <IonTitle>Communities</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <AppContent>
+      <AppContent scrollY>
         <IonList>
           <IonItemGroup>
             {jwt && (

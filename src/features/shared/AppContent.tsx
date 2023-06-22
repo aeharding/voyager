@@ -16,11 +16,13 @@ export const MaxWidthContainer = styled.div`
 
 export default function AppContent({
   children,
+  scrollY,
 }: {
   children: React.ReactNode;
+  scrollY?: boolean;
 }) {
   return (
-    <IonContent style={{ width: "100%" }}>
+    <IonContent style={{ width: "100%" }} scrollY={scrollY ?? false}>
       <MaxWidthContainer>{children}</MaxWidthContainer>
     </IonContent>
   );

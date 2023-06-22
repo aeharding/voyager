@@ -83,7 +83,7 @@ export default function ProfilePage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <AppContent>
+      <AppContent scrollY>
         <IonText color="medium">
           <p
             css={css`

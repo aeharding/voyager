@@ -10,32 +10,39 @@ import {
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useCallback, useRef } from "react";
 import { PageContext } from "../../../features/auth/PageContext";
-import Posts, { PostsFetchFn } from "../../../features/post/inFeed/Posts";
+import { FetchFn } from "../../../features/feed/Feed";
 import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
-import PostSort from "../../../features/post/inFeed/PostSort";
+import PostSort from "../../../features/feed/PostSort";
 import { useAppSelector } from "../../../store";
+import PostCommentFeed, {
+  PostCommentItem,
+} from "../../../features/feed/PostCommentFeed";
 
-export default function SearchPostsResults() {
+interface SearchPostsResultsProps {
+  type: "Posts" | "Comments";
+}
+
+export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
   const { search } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const pageRef = useRef<HTMLElement | undefined>();
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
 
-  const fetchFn: PostsFetchFn = useCallback(
+  const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
       const response = await client.search({
         limit: LIMIT,
         q: search,
-        type_: "Posts",
+        type_: type,
         page,
         sort,
       });
-      return response.posts;
+      return [...response.posts, ...response.comments];
     },
-    [search, client, sort]
+    [search, client, sort, type]
   );
 
   return (
@@ -56,9 +63,9 @@ export default function SearchPostsResults() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent scrollY={false}>
         <PageContext.Provider value={{ page: pageRef.current }}>
-          <Posts fetchFn={fetchFn} />
+          <PostCommentFeed fetchFn={fetchFn} />
         </PageContext.Provider>
       </IonContent>
     </IonPage>

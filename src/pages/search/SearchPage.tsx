@@ -25,7 +25,7 @@ export default function SearchPage() {
           />
         </IonToolbar>
       </IonHeader>
-      <AppContent>
+      <AppContent scrollY={!search}>
         {!search ? <TrendingCommunities /> : <SearchOptions search={search} />}
       </AppContent>
     </IonPage>

@@ -6,10 +6,10 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Posts, { PostsFetchFn } from "../../features/post/inFeed/Posts";
+import { FetchFn } from "../../features/feed/Feed";
 import { useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
-import PostSort from "../../features/post/inFeed/PostSort";
+import PostSort from "../../features/feed/PostSort";
 import MoreActions from "../../features/community/MoreActions";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useCallback, useEffect } from "react";
@@ -17,6 +17,9 @@ import { getCommunity } from "../../features/community/communitySlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
+import PostCommentFeed, {
+  PostCommentItem,
+} from "../../features/feed/PostCommentFeed";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -33,7 +36,7 @@ export default function CommunityPage() {
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector((state) => state.auth.jwt);
 
-  const fetchFn: PostsFetchFn = useCallback(
+  const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
       const response = await client.getPosts({
         limit: LIMIT,
@@ -61,7 +64,7 @@ export default function CommunityPage() {
           <IonButtons slot="start">
             <AppBackButton
               defaultText="Communities"
-              defaultHref={buildGeneralBrowseLink("")}
+              defaultHref={buildGeneralBrowseLink("/")}
             />
           </IonButtons>
 
@@ -73,8 +76,8 @@ export default function CommunityPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
-        <Posts fetchFn={fetchFn} communityName={community} />
+      <IonContent scrollY={false}>
+        <PostCommentFeed fetchFn={fetchFn} communityName={community} />
       </IonContent>
     </IonPage>
   );

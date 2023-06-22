@@ -1,9 +1,12 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { PostView } from "lemmy-js-client";
-import Post from "./Post";
+import React, {
+  ComponentType,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
-import { useAppDispatch } from "../../../store";
-import { receivedPosts } from "../postSlice";
 import {
   IonRefresher,
   IonRefresherContent,
@@ -11,31 +14,33 @@ import {
   useIonToast,
   useIonViewDidEnter,
 } from "@ionic/react";
-import { LIMIT } from "../../../services/lemmy";
-import { CenteredSpinner } from "../detail/PostDetail";
-import EndPost from "./EndPost";
+import { LIMIT } from "../../services/lemmy";
+import { CenteredSpinner } from "../post/detail/PostDetail";
 import { pullAllBy } from "lodash";
-import { notEmpty } from "../../../helpers/array";
-import { AppContext } from "../../auth/AppContext";
+import { AppContext } from "../auth/AppContext";
+import EndPost from "./EndPost";
 
-export type PostsFetchFn = (page: number) => Promise<PostView[]>;
+export type FetchFn<I> = (page: number) => Promise<I[]>;
 
-interface PostsProps {
-  fetchFn: PostsFetchFn;
+export interface FeedProps<I> {
+  fetchFn: FetchFn<I>;
+  renderItemContent: (item: I) => React.ReactNode;
+  header?: ComponentType<{ context?: unknown }>;
 
   communityName?: string;
 }
 
-type EndItem = { type: "AT_END " };
-type Item = PostView | EndItem;
-
-export default function Posts({ fetchFn, communityName }: PostsProps) {
+export default function Feed<I>({
+  fetchFn,
+  renderItemContent,
+  header,
+  communityName,
+}: FeedProps<I>) {
   const [page, setPage] = useState(0);
-  const [posts, setPosts] = useState<PostView[]>([]);
+  const [items, setitems] = useState<I[]>([]);
   const loading = useRef(false);
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
-  const dispatch = useAppDispatch();
   const [present] = useIonToast();
 
   const { setActivePage } = useContext(AppContext);
@@ -45,18 +50,15 @@ export default function Posts({ fetchFn, communityName }: PostsProps) {
     setActivePage(virtuosoRef);
   });
 
-  const items: Item[] = useMemo(
-    () =>
-      [...posts, atEnd ? ({ type: "AT_END " } as EndItem) : undefined].filter(
-        notEmpty
-      ),
-    [posts, atEnd]
-  );
-
   useEffect(() => {
     fetchMore(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchFn]);
+
+  const footer = useCallback(() => {
+    if (atEnd)
+      return <EndPost empty={!items.length} communityName={communityName} />;
+  }, [atEnd, communityName, items.length]);
 
   async function fetchMore(refresh = false) {
     if (loading.current) return;
@@ -65,10 +67,10 @@ export default function Posts({ fetchFn, communityName }: PostsProps) {
 
     const currentPage = refresh ? 1 : page + 1;
 
-    let posts: PostView[];
+    let items: I[];
 
     try {
-      posts = await fetchFn(page);
+      items = await fetchFn(currentPage);
     } catch (error) {
       present({
         message: "Problem fetching posts. Please try again.",
@@ -84,19 +86,19 @@ export default function Posts({ fetchFn, communityName }: PostsProps) {
 
     if (refresh) {
       setAtEnd(false);
-      setPosts(posts);
+      setitems(items);
     } else {
-      setPosts((existingPosts) => {
+      setitems((existingPosts) => {
         const result = [...existingPosts];
-        const newPosts = pullAllBy(posts, existingPosts, "post.id");
+        const newPosts = pullAllBy(items, existingPosts, "post.id");
         result.splice(currentPage * LIMIT, LIMIT, ...newPosts);
         return result;
       });
     }
 
-    if (!posts.length) setAtEnd(true);
+    if (!items.length) setAtEnd(true);
+
     setPage(currentPage);
-    dispatch(receivedPosts(posts));
   }
 
   async function handleRefresh(event: RefresherCustomEvent) {
@@ -107,7 +109,7 @@ export default function Posts({ fetchFn, communityName }: PostsProps) {
     }
   }
 
-  if (loading && !items.length) return <CenteredSpinner />;
+  if (loading.current && !items.length) return <CenteredSpinner />;
 
   return (
     <>
@@ -124,18 +126,14 @@ export default function Posts({ fetchFn, communityName }: PostsProps) {
         atTopStateChange={setIsListAtTop}
         totalCount={items.length}
         itemContent={(index) => {
-          const post = items[index];
+          const item = items[index];
 
-          if ("type" in post)
-            return (
-              <EndPost empty={!posts.length} communityName={communityName} />
-            );
-
-          return <Post post={post} communityMode={!!communityName} />;
+          return renderItemContent(item);
         }}
         endReached={() => {
           fetchMore();
         }}
+        components={{ Header: header, Footer: footer }}
         increaseViewportBy={800}
       />
     </>
