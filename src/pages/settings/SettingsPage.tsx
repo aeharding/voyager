@@ -7,10 +7,10 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../features/shared/AppContent";
-import { InsetIonItem, SettingLabel } from "../features/user/Profile";
+import AppContent from "../../features/shared/AppContent";
+import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
 import { apps } from "ionicons/icons";
-import { isInstalled } from "../helpers/device";
+import { isInstalled } from "../../helpers/device";
 
 export default function SettingsPage() {
   return (

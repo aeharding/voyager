@@ -11,18 +11,18 @@ import {
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
-import AppContent from "../features/shared/AppContent";
+import AppContent from "../../features/shared/AppContent";
 import { useParams } from "react-router";
-import { useAppSelector } from "../store";
-import { getHandle } from "../helpers/lemmy";
+import { useAppSelector } from "../../store";
+import { getHandle } from "../../helpers/lemmy";
 import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
-import { notEmpty } from "../helpers/array";
+import { notEmpty } from "../../helpers/array";
 import { useContext, useMemo, useRef } from "react";
-import { AppContext } from "../features/auth/AppContext";
-import { useBuildGeneralBrowseLink } from "../helpers/routes";
-import CommunityIcon from "../features/labels/img/CommunityIcon";
+import { AppContext } from "../../features/auth/AppContext";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import CommunityIcon from "../../features/labels/img/CommunityIcon";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;

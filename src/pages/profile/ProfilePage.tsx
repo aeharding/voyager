@@ -12,20 +12,20 @@ import {
   useIonModal,
   useIonViewWillEnter,
 } from "@ionic/react";
-import AppContent from "../features/shared/AppContent";
+import AppContent from "../../features/shared/AppContent";
 import {
   handleSelector,
   logout,
   updateConnectedInstance,
-} from "../features/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "../store";
-import Login from "../features/auth/Login";
+} from "../../features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../store";
+import Login from "../../features/auth/Login";
 import { useContext, useRef, useState } from "react";
-import { InsetIonItem, SettingLabel } from "../features/user/Profile";
-import { ReactComponent as IncognitoSvg } from "../features/user/incognito.svg";
+import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
+import { ReactComponent as IncognitoSvg } from "../../features/user/incognito.svg";
 import styled from "@emotion/styled";
-import UserPage from "./UserPage";
-import { AppContext } from "../features/auth/AppContext";
+import UserPage from "../shared/UserPage";
+import { AppContext } from "../../features/auth/AppContext";
 import { swapHorizontalOutline } from "ionicons/icons";
 import { css } from "@emotion/react";
 

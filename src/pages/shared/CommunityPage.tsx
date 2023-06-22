@@ -6,15 +6,17 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Posts from "../features/post/inFeed/Posts";
+import Posts, { PostsFetchFn } from "../../features/post/inFeed/Posts";
 import { useParams } from "react-router";
-import AppBackButton from "../features/shared/AppBackButton";
-import PostSort from "../features/post/inFeed/PostSort";
-import MoreActions from "../features/community/MoreActions";
-import { useAppDispatch, useAppSelector } from "../store";
-import { useEffect } from "react";
-import { getCommunity } from "../features/community/communitySlice";
-import { useBuildGeneralBrowseLink } from "../helpers/routes";
+import AppBackButton from "../../features/shared/AppBackButton";
+import PostSort from "../../features/post/inFeed/PostSort";
+import MoreActions from "../../features/community/MoreActions";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { useCallback, useEffect } from "react";
+import { getCommunity } from "../../features/community/communitySlice";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import useClient from "../../helpers/useClient";
+import { LIMIT } from "../../services/lemmy";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -25,6 +27,24 @@ export default function CommunityPage() {
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle
+  );
+
+  const client = useClient();
+  const sort = useAppSelector((state) => state.post.sort);
+  const jwt = useAppSelector((state) => state.auth.jwt);
+
+  const fetchFn: PostsFetchFn = useCallback(
+    async (page) => {
+      const response = await client.getPosts({
+        limit: LIMIT,
+        page,
+        community_name: community,
+        sort,
+        auth: jwt,
+      });
+      return response.posts;
+    },
+    [client, community, sort, jwt]
   );
 
   useEffect(() => {
@@ -54,7 +74,7 @@ export default function CommunityPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <Posts communityName={community} />
+        <Posts fetchFn={fetchFn} communityName={community} />
       </IonContent>
     </IonPage>
   );

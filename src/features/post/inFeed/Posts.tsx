@@ -1,8 +1,8 @@
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { ListingType, PostView } from "lemmy-js-client";
+import { PostView } from "lemmy-js-client";
 import Post from "./Post";
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppDispatch } from "../../../store";
 import { receivedPosts } from "../postSlice";
 import {
   IonRefresher,
@@ -16,30 +16,27 @@ import { CenteredSpinner } from "../detail/PostDetail";
 import EndPost from "./EndPost";
 import { pullAllBy } from "lodash";
 import { notEmpty } from "../../../helpers/array";
-import { useParams } from "react-router";
-import useClient from "../../../helpers/useClient";
 import { AppContext } from "../../auth/AppContext";
 
+export type PostsFetchFn = (page: number) => Promise<PostView[]>;
+
 interface PostsProps {
+  fetchFn: PostsFetchFn;
+
   communityName?: string;
-  type?: ListingType;
 }
 
 type EndItem = { type: "AT_END " };
 type Item = PostView | EndItem;
 
-export default function Posts({ communityName, type }: PostsProps) {
-  const { actor } = useParams<{ actor: string }>();
+export default function Posts({ fetchFn, communityName }: PostsProps) {
   const [page, setPage] = useState(0);
   const [posts, setPosts] = useState<PostView[]>([]);
   const loading = useRef(false);
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
-  const jwt = useAppSelector((state) => state.auth.jwt);
   const [atEnd, setAtEnd] = useState(false);
   const dispatch = useAppDispatch();
-  const sort = useAppSelector((state) => state.post.sort);
   const [present] = useIonToast();
-  const client = useClient();
 
   const { setActivePage } = useContext(AppContext);
   const virtuosoRef = useRef<VirtuosoHandle>(null);
@@ -59,7 +56,7 @@ export default function Posts({ communityName, type }: PostsProps) {
   useEffect(() => {
     fetchMore(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [communityName, actor, sort, jwt]);
+  }, [fetchFn]);
 
   async function fetchMore(refresh = false) {
     if (loading.current) return;
@@ -71,14 +68,7 @@ export default function Posts({ communityName, type }: PostsProps) {
     let posts: PostView[];
 
     try {
-      ({ posts } = await client.getPosts({
-        limit: LIMIT,
-        page: currentPage,
-        community_name: communityName,
-        auth: jwt,
-        type_: type,
-        sort,
-      }));
+      posts = await fetchFn(page);
     } catch (error) {
       present({
         message: "Problem fetching posts. Please try again.",

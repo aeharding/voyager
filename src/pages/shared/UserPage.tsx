@@ -13,14 +13,14 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useContext, useEffect, useRef, useState } from "react";
-import Profile from "../features/user/Profile";
+import Profile from "../../features/user/Profile";
 import { useParams } from "react-router";
-import { PageContext } from "../features/auth/PageContext";
+import { PageContext } from "../../features/auth/PageContext";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import styled from "@emotion/styled";
-import { useAppDispatch } from "../store";
-import { getUser } from "../features/user/userSlice";
-import { AppContext } from "../features/auth/AppContext";
+import { useAppDispatch } from "../../store";
+import { getUser } from "../../features/user/userSlice";
+import { AppContext } from "../../features/auth/AppContext";
 
 const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
