@@ -3,7 +3,6 @@ import Feed, { FeedProps, FetchFn } from "./Feed";
 import FeedComment from "../comment/inFeed/FeedComment";
 import Post from "../post/inFeed/Post";
 import { CommentView, PostView } from "lemmy-js-client";
-import { isComment, isPost } from "../../helpers/lemmy";
 import { useAppDispatch } from "../../store";
 import { css } from "@emotion/react";
 import { receivedPosts } from "../post/postSlice";
@@ -14,6 +13,14 @@ const itemCss = css`
 `;
 
 export type PostCommentItem = PostView | CommentView;
+
+export function isPost(item: PostCommentItem): item is PostView {
+  return !isComment(item);
+}
+
+export function isComment(item: PostCommentItem): item is CommentView {
+  return "comment" in item;
+}
 
 interface PostCommentFeed
   extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {

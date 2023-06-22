@@ -1,5 +1,4 @@
-import { Comment, CommentView, Community, PostView } from "lemmy-js-client";
-import { FeedItem } from "../features/feed/Feed";
+import { Comment, CommentView, Community } from "lemmy-js-client";
 
 export const POPULAR_SERVERS = ["lemmy.world", "lemmy.ml", "beehaw.org"];
 
@@ -13,14 +12,6 @@ export interface CommentNodeI {
   comment_view: CommentView;
   children: Array<CommentNodeI>;
   depth: number;
-}
-
-export function isPost(item: FeedItem): item is PostView {
-  return !isComment(item);
-}
-
-export function isComment(item: FeedItem): item is CommentView {
-  return "comment" in item;
 }
 
 /**
