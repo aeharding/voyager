@@ -177,3 +177,16 @@ export function isUrlImage(url: string): boolean {
     parsedUrl.pathname.endsWith(".webp")
   );
 }
+
+export function isUrlVideo(url: string): boolean {
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(url);
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+
+  return parsedUrl.pathname.endsWith(".mp4");
+}

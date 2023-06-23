@@ -1,9 +1,12 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { ListingType, PostView } from "lemmy-js-client";
-import Post from "./Post";
+import React, {
+  ComponentType,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { receivedPosts } from "../postSlice";
 import {
   IonRefresher,
   IonRefresherContent,
@@ -11,35 +14,34 @@ import {
   useIonToast,
   useIonViewDidEnter,
 } from "@ionic/react";
-import { LIMIT } from "../../../services/lemmy";
-import { CenteredSpinner } from "../detail/PostDetail";
-import EndPost from "./EndPost";
+import { LIMIT } from "../../services/lemmy";
+import { CenteredSpinner } from "../post/detail/PostDetail";
 import { pullAllBy } from "lodash";
-import { notEmpty } from "../../../helpers/array";
-import { useParams } from "react-router";
-import useClient from "../../../helpers/useClient";
-import { AppContext } from "../../auth/AppContext";
+import { AppContext } from "../auth/AppContext";
+import EndPost from "./EndPost";
 
-interface PostsProps {
+export type FetchFn<I> = (page: number) => Promise<I[]>;
+
+export interface FeedProps<I> {
+  fetchFn: FetchFn<I>;
+  renderItemContent: (item: I) => React.ReactNode;
+  header?: ComponentType<{ context?: unknown }>;
+
   communityName?: string;
-  type?: ListingType;
 }
 
-type EndItem = { type: "AT_END " };
-type Item = PostView | EndItem;
-
-export default function Posts({ communityName, type }: PostsProps) {
-  const { actor } = useParams<{ actor: string }>();
+export default function Feed<I>({
+  fetchFn,
+  renderItemContent,
+  header,
+  communityName,
+}: FeedProps<I>) {
   const [page, setPage] = useState(0);
-  const [posts, setPosts] = useState<PostView[]>([]);
+  const [items, setitems] = useState<I[]>([]);
   const loading = useRef(false);
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
-  const jwt = useAppSelector((state) => state.auth.jwt);
   const [atEnd, setAtEnd] = useState(false);
-  const dispatch = useAppDispatch();
-  const sort = useAppSelector((state) => state.post.sort);
   const [present] = useIonToast();
-  const client = useClient();
 
   const { setActivePage } = useContext(AppContext);
   const virtuosoRef = useRef<VirtuosoHandle>(null);
@@ -48,18 +50,15 @@ export default function Posts({ communityName, type }: PostsProps) {
     setActivePage(virtuosoRef);
   });
 
-  const items: Item[] = useMemo(
-    () =>
-      [...posts, atEnd ? ({ type: "AT_END " } as EndItem) : undefined].filter(
-        notEmpty
-      ),
-    [posts, atEnd]
-  );
-
   useEffect(() => {
     fetchMore(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [communityName, actor, sort, jwt]);
+  }, [fetchFn]);
+
+  const footer = useCallback(() => {
+    if (atEnd)
+      return <EndPost empty={!items.length} communityName={communityName} />;
+  }, [atEnd, communityName, items.length]);
 
   async function fetchMore(refresh = false) {
     if (loading.current) return;
@@ -68,17 +67,10 @@ export default function Posts({ communityName, type }: PostsProps) {
 
     const currentPage = refresh ? 1 : page + 1;
 
-    let posts: PostView[];
+    let items: I[];
 
     try {
-      ({ posts } = await client.getPosts({
-        limit: LIMIT,
-        page: currentPage,
-        community_name: communityName,
-        auth: jwt,
-        type_: type,
-        sort,
-      }));
+      items = await fetchFn(currentPage);
     } catch (error) {
       present({
         message: "Problem fetching posts. Please try again.",
@@ -94,19 +86,19 @@ export default function Posts({ communityName, type }: PostsProps) {
 
     if (refresh) {
       setAtEnd(false);
-      setPosts(posts);
+      setitems(items);
     } else {
-      setPosts((existingPosts) => {
+      setitems((existingPosts) => {
         const result = [...existingPosts];
-        const newPosts = pullAllBy(posts, existingPosts, "post.id");
+        const newPosts = pullAllBy(items, existingPosts, "post.id");
         result.splice(currentPage * LIMIT, LIMIT, ...newPosts);
         return result;
       });
     }
 
-    if (!posts.length) setAtEnd(true);
+    if (!items.length) setAtEnd(true);
+
     setPage(currentPage);
-    dispatch(receivedPosts(posts));
   }
 
   async function handleRefresh(event: RefresherCustomEvent) {
@@ -117,7 +109,7 @@ export default function Posts({ communityName, type }: PostsProps) {
     }
   }
 
-  if (loading && !items.length) return <CenteredSpinner />;
+  if (loading.current && !items.length) return <CenteredSpinner />;
 
   return (
     <>
@@ -134,18 +126,14 @@ export default function Posts({ communityName, type }: PostsProps) {
         atTopStateChange={setIsListAtTop}
         totalCount={items.length}
         itemContent={(index) => {
-          const post = items[index];
+          const item = items[index];
 
-          if ("type" in post)
-            return (
-              <EndPost empty={!posts.length} communityName={communityName} />
-            );
-
-          return <Post post={post} communityMode={!!communityName} />;
+          return renderItemContent(item);
         }}
         endReached={() => {
           fetchMore();
         }}
+        components={{ Header: header, Footer: footer }}
         increaseViewportBy={800}
       />
     </>

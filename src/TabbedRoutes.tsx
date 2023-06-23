@@ -9,23 +9,32 @@ import {
   IonTabs,
   useIonRouter,
 } from "@ionic/react";
-import { telescopeSharp, personCircleOutline, cog } from "ionicons/icons";
+import {
+  telescopeSharp,
+  personCircleOutline,
+  cog,
+  search,
+} from "ionicons/icons";
 import PostDetail from "./features/post/detail/PostDetail";
-import CommunitiesPage from "./pages/CommunitiesPage";
-import CommunityPage from "./pages/CommunityPage";
+import CommunitiesPage from "./pages/posts/CommunitiesPage";
+import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppSelector } from "./store";
 import { jwtIssSelector } from "./features/auth/authSlice";
 import { POPULAR_SERVERS } from "./helpers/lemmy";
 import ActorRedirect from "./ActorRedirect";
-import SpecialFeedPage from "./pages/SpecialFeedPage";
+import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
-import ProfilePage from "./pages/ProfilePage";
-import SettingsPage from "./pages/SettingsPage";
+import ProfilePage from "./pages/profile/ProfilePage";
+import SettingsPage from "./pages/settings/SettingsPage";
 import { useContext } from "react";
 import { AppContext } from "./features/auth/AppContext";
-import UserPage from "./pages/UserPage";
+import UserPage from "./pages/shared/UserPage";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import { isInstalled } from "./helpers/device";
+import SearchPage from "./pages/search/SearchPage";
+import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
+import ProfileFeedItemsPage from "./pages/profile/ProfileFeedItemsPage";
+import SearchCommunitiesPage from "./pages/search/results/SearchCommunitiesPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -47,19 +56,9 @@ export default function TabbedRoutes() {
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
 
-  const isPostsButtonDisabled = (() => {
-    if (location.pathname.startsWith("/profile")) return false;
-    if (location.pathname === "/settings") return false;
-
-    return true;
-  })();
-
-  const isProfileButtonDisabled = (() => {
-    if (location.pathname.startsWith("/posts")) return false;
-    if (location.pathname === "/settings") return false;
-
-    return true;
-  })();
+  const isPostsButtonDisabled = location.pathname.startsWith("/posts");
+  const isProfileButtonDisabled = location.pathname.startsWith("/profile");
+  const isSearchButtonDisabled = location.pathname.startsWith("/search");
 
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
@@ -90,6 +89,14 @@ export default function TabbedRoutes() {
     router.push("/profile", "back");
   }
 
+  async function onSearchClick() {
+    if (!isSearchButtonDisabled) return;
+
+    if (await scrollUpIfNeeded()) return;
+
+    router.push(`/search`, "back");
+  }
+
   async function scrollUpIfNeeded() {
     if (!activePage) return false;
 
@@ -108,8 +115,8 @@ export default function TabbedRoutes() {
       return new Promise((resolve) =>
         activePage.current?.getState((state) => {
           if (state.scrollTop) {
-            activePage.current?.scrollToIndex({
-              index: 0,
+            activePage.current?.scrollTo({
+              top: 0,
               behavior: "smooth",
             });
           }
@@ -147,6 +154,18 @@ export default function TabbedRoutes() {
       <Route exact path={`/${tab}/:actor/u/:handle`}>
         <ActorRedirect>
           <UserPage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/posts`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Posts" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/comments`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Comments" />
         </ActorRedirect>
       </Route>,
     ];
@@ -192,6 +211,22 @@ export default function TabbedRoutes() {
           <Redirect to="/profile" push={false} />
         </Route>
 
+        <Route exact path="/search">
+          <SearchPage />
+        </Route>
+        <Route exact path="/search/posts/:search">
+          <SearchPostsResultsPage type="Posts" />
+        </Route>
+        <Route exact path="/search/comments/:search">
+          <SearchPostsResultsPage type="Comments" />
+        </Route>
+        <Route exact path="/search/communities/:search">
+          <SearchCommunitiesPage />
+        </Route>
+        {...buildGeneralBrowseRoutes("search")}
+        <Route exact path="/search/:actor">
+          <Redirect to="/search" push={false} />
+        </Route>
         <Route exact path="/settings">
           <SettingsPage />
         </Route>
@@ -217,6 +252,15 @@ export default function TabbedRoutes() {
           <IonIcon aria-hidden="true" icon={personCircleOutline} />
           <IonLabel>{connectedInstance}</IonLabel>
           <Interceptor onClick={onProfileClick} />
+        </IonTabButton>
+        <IonTabButton
+          disabled={isSearchButtonDisabled}
+          tab="search"
+          href="/search"
+        >
+          <IonIcon aria-hidden="true" icon={search} />
+          <IonLabel>Search</IonLabel>
+          <Interceptor onClick={onSearchClick} />
         </IonTabButton>
         <IonTabButton tab="settings" href="/settings">
           <IonIcon aria-hidden="true" icon={cog} />

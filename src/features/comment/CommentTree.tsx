@@ -52,7 +52,6 @@ export default function CommentTree({
         onClick={() => setCollapsed(!collapsed)}
         collapsed={collapsed}
         childCount={childCount}
-        opId={op.id}
         fullyCollapsed={!!fullyCollapsed}
       />
     </React.Fragment>,

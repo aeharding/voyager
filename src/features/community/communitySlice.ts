@@ -1,15 +1,17 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
-import { CommunityResponse } from "lemmy-js-client";
+import { CommunityResponse, CommunityView } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
 
 interface CommentState {
   communityByHandle: Dictionary<CommunityResponse>;
+  trendingCommunities: CommunityView[];
 }
 
 const initialState: CommentState = {
   communityByHandle: {},
+  trendingCommunities: [],
 };
 
 export const communitySlice = createSlice({
@@ -21,11 +23,18 @@ export const communitySlice = createSlice({
         getHandle(action.payload.community_view.community)
       ] = action.payload;
     },
+    recievedTrendingCommunities: (
+      state,
+      action: PayloadAction<CommunityView[]>
+    ) => {
+      state.trendingCommunities = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { receivedCommunity } = communitySlice.actions;
+export const { receivedCommunity, recievedTrendingCommunities } =
+  communitySlice.actions;
 
 export default communitySlice.reducer;
 
@@ -60,4 +69,17 @@ export const followCommunity =
     });
 
     if (community) dispatch(receivedCommunity(community));
+  };
+
+export const getTrendingCommunities =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const trendingCommunities = await clientSelector(
+      getState()
+    )?.listCommunities({
+      type_: "All",
+      sort: "Hot",
+      limit: 6,
+    });
+
+    dispatch(recievedTrendingCommunities(trendingCommunities.communities));
   };

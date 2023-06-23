@@ -10,17 +10,20 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  useIonAlert,
+  useIonRouter,
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useContext, useEffect, useRef, useState } from "react";
-import Profile from "../features/user/Profile";
+import Profile from "../../features/user/Profile";
 import { useParams } from "react-router";
-import { PageContext } from "../features/auth/PageContext";
+import { PageContext } from "../../features/auth/PageContext";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import styled from "@emotion/styled";
-import { useAppDispatch } from "../store";
-import { getUser } from "../features/user/userSlice";
-import { AppContext } from "../features/auth/AppContext";
+import { useAppDispatch } from "../../store";
+import { getUser } from "../../features/user/userSlice";
+import { AppContext } from "../../features/auth/AppContext";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 
 const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
@@ -37,11 +40,14 @@ interface UserPageProps {
 }
 
 export default function UserPage(props: UserPageProps) {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const handle = useParams<{ handle: string }>().handle ?? props.handle;
   const dispatch = useAppDispatch();
   const [person, setPerson] = useState<GetPersonDetailsResponse | undefined>();
   const pageRef = useRef();
   const { setActivePage } = useContext(AppContext);
+  const router = useIonRouter();
+  const [present] = useIonAlert();
 
   useEffect(() => {
     if (handle) load();
@@ -53,7 +59,22 @@ export default function UserPage(props: UserPageProps) {
   });
 
   async function load() {
-    const data = await dispatch(getUser(handle));
+    let data;
+
+    try {
+      data = await dispatch(getUser(handle));
+    } catch (error) {
+      await present(`Huh, u/${handle} doesn't exist. Mysterious...`);
+
+      if (router.canGoBack()) {
+        router.goBack();
+      } else {
+        router.push(buildGeneralBrowseLink("/"));
+      }
+
+      throw error;
+    }
+
     setPerson(data);
   }
 

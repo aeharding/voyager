@@ -7,7 +7,7 @@ import Embed from "../shared/Embed";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { css } from "@emotion/react";
 import { findLoneImage } from "../../../helpers/markdown";
-import { getHandle, isUrlImage } from "../../../helpers/lemmy";
+import { getHandle, isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { voteOnPost } from "../postSlice";
 import { maxWidthCss } from "../../shared/AppContent";
@@ -24,10 +24,7 @@ import CommentReply from "../../comment/reply/CommentReply";
 import InlineMarkdown from "../../shared/InlineMarkdown";
 import { AnnouncementIcon } from "../detail/PostDetail";
 import CommunityLink from "../../labels/links/CommunityLink";
-
-const StyledDraggingVote = styled(DraggingVote)`
-  border-bottom: 8px solid var(--thick-separator-color);
-`;
+import Video from "../../shared/Video";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -96,7 +93,7 @@ const ImageContainer = styled.div`
 `;
 
 const PostImage = styled.img<{ blur: boolean }>`
-  width: calc(100%);
+  width: 100%;
   max-width: none;
 
   ${({ blur }) =>
@@ -157,22 +154,31 @@ export default function Post({ post, communityMode, className }: PostProps) {
   }
 
   function renderPostBody() {
-    if (post.post.url && isUrlImage(post.post.url)) {
-      return (
-        <ImageContainer>
-          <PostImage
-            src={post.post.url}
-            draggable="false"
-            blur={blur}
-            onClick={(e) => {
-              if (isNsfw(post)) {
-                e.stopPropagation();
-                setBlur(!blur);
-              }
-            }}
-          />
-        </ImageContainer>
-      );
+    if (post.post.url) {
+      if (isUrlImage(post.post.url)) {
+        return (
+          <ImageContainer>
+            <PostImage
+              src={post.post.url}
+              draggable="false"
+              blur={blur}
+              onClick={(e) => {
+                if (isNsfw(post)) {
+                  e.stopPropagation();
+                  setBlur(!blur);
+                }
+              }}
+            />
+          </ImageContainer>
+        );
+      }
+      if (isUrlVideo(post.post.url)) {
+        return (
+          <ImageContainer>
+            <Video src={post.post.url} />
+          </ImageContainer>
+        );
+      }
     }
 
     if (markdownLoneImage)
@@ -214,7 +220,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
   }
 
   return (
-    <StyledDraggingVote
+    <DraggingVote
       currentVote={currentVote}
       onVote={onVote}
       onReply={() => {
@@ -274,6 +280,6 @@ export default function Post({ post, communityMode, className }: PostProps) {
           </Details>
         </Container>
       </CustomIonItem>
-    </StyledDraggingVote>
+    </DraggingVote>
   );
 }

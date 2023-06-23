@@ -93,6 +93,7 @@ export const login =
       sameSite: "strict",
     });
     dispatch(updateToken(res.jwt));
+    dispatch(updateConnectedInstance(parseJWT(res.jwt).iss));
   };
 
 export const getSite =

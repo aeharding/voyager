@@ -154,16 +154,17 @@ const AmountCollapsed = styled.div`
 interface CommentProps {
   comment: CommentView;
   highlightedCommentId?: number;
-  depth: number;
+  depth?: number;
   onClick?: () => void;
   collapsed?: boolean;
-  childCount: number;
-  opId: number;
-  fullyCollapsed: boolean;
+  childCount?: number;
+  fullyCollapsed?: boolean;
   routerLink?: string;
 
   /** On profile view, this is used to show post replying to */
   context?: React.ReactNode;
+
+  className?: string;
 }
 
 export default function Comment({
@@ -173,10 +174,10 @@ export default function Comment({
   onClick,
   collapsed,
   childCount,
-  opId,
   fullyCollapsed,
   context,
   routerLink,
+  className,
 }: CommentProps) {
   const dispatch = useAppDispatch();
 
@@ -212,7 +213,11 @@ export default function Comment({
   }
 
   return (
-    <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
+    <AnimateHeight
+      duration={200}
+      height={fullyCollapsed ? 0 : "auto"}
+      className={className}
+    >
       <DraggingVote onVote={onVote} currentVote={currentVote} onReply={onReply}>
         <CustomIonItem
           routerLink={routerLink}
@@ -220,14 +225,14 @@ export default function Comment({
           onClick={() => !keyPressed && onClick?.()}
         >
           <PositionedContainer
-            depth={depth}
+            depth={depth || 0}
             highlighted={highlightedCommentId === comment.comment.id}
           >
-            <Container depth={depth}>
+            <Container depth={depth || 0}>
               <Header>
                 <StyledPersonLabel
                   person={comment.creator}
-                  opId={opId}
+                  opId={comment.post.creator_id}
                   distinguished={comment.comment.distinguished}
                 />
                 <Vote
