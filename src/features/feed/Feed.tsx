@@ -38,7 +38,7 @@ export default function Feed<I>({
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
-  const loading = useRef(false);
+  const [loading, setLoading] = useState(false);
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
   const [present] = useIonToast();
@@ -61,9 +61,9 @@ export default function Feed<I>({
   }, [atEnd, communityName, items.length]);
 
   async function fetchMore(refresh = false) {
-    if (loading.current) return;
+    if (loading) return;
     if (atEnd && !refresh) return;
-    loading.current = true;
+    setLoading(true);
 
     const currentPage = refresh ? 1 : page + 1;
 
@@ -81,7 +81,7 @@ export default function Feed<I>({
 
       throw error;
     } finally {
-      loading.current = false;
+      setLoading(false);
     }
 
     if (refresh) {
@@ -109,7 +109,7 @@ export default function Feed<I>({
     }
   }
 
-  if (loading.current && !items.length) return <CenteredSpinner />;
+  if (loading && !items.length) return <CenteredSpinner />;
 
   return (
     <>

@@ -4,7 +4,7 @@ import {
   PrivateMessageView,
 } from "lemmy-js-client";
 import CommentMarkdown from "../comment/CommentMarkdown";
-import { IonIcon, IonItem } from "@ionic/react";
+import { IonIcon, IonItem, useIonToast } from "@ionic/react";
 import styled from "@emotion/styled";
 import { ellipsisHorizontal } from "ionicons/icons";
 import Ago from "../labels/Ago";
@@ -12,7 +12,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import useClient from "../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { getInboxCounts } from "./inboxSlice";
+import { getInboxCounts, getInboxItemId, setReadStatus } from "./inboxSlice";
 import { css } from "@emotion/react";
 
 const StyledIonItem = styled(IonItem)<{ read: boolean }>`
@@ -75,6 +75,10 @@ export default function InboxItem({ item }: InboxItemProps) {
   const jwt = useAppSelector((state) => state.auth.jwt);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
+  const readByInboxItemId = useAppSelector(
+    (state) => state.inbox.readByInboxItemId
+  );
+  const [present] = useIonToast();
 
   function renderHeader() {
     if ("person_mention" in item) {
@@ -125,27 +129,31 @@ export default function InboxItem({ item }: InboxItemProps) {
   async function markRead() {
     if (!jwt) throw new Error("needs auth");
 
+    const initialRead = !!readByInboxItemId[getInboxItemId(item)];
+
+    dispatch(setReadStatus({ item, read: true }));
+
     if ("person_mention" in item) {
-      await client.markPersonMentionAsRead({
-        read: true,
-        person_mention_id: item.person_mention.id,
-        auth: jwt,
-      });
+      try {
+        await client.markPersonMentionAsRead({
+          read: true,
+          person_mention_id: item.person_mention.id,
+          auth: jwt,
+        });
+      } catch (error) {
+        dispatch(setReadStatus({ item, read: initialRead }));
+        present({
+          message: "Failed to mark item as read",
+          duration: 3500,
+          position: "bottom",
+          color: "danger",
+        });
+
+        throw error;
+      }
     }
 
     dispatch(getInboxCounts());
-  }
-
-  function isRead() {
-    if ("person_mention" in item) {
-      return item.person_mention.read;
-    }
-
-    if ("private_message" in item) {
-      return item.private_message.read;
-    }
-
-    return item.comment_reply.read;
   }
 
   return (
@@ -153,7 +161,7 @@ export default function InboxItem({ item }: InboxItemProps) {
       routerLink={getLink()}
       detail={false}
       onClick={markRead}
-      read={isRead()}
+      read={!!readByInboxItemId[getInboxItemId(item)]}
     >
       <Content>
         <Header>{renderHeader()}</Header>

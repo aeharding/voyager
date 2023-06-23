@@ -40,6 +40,7 @@ import TermsPage from "./pages/settings/TermsPage";
 import BoxesPage from "./pages/inbox/BoxesPage";
 import { totalUnreadSelector } from "./features/inbox/inboxSlice";
 import MentionsPage from "./pages/inbox/MentionsPage";
+import RepliesPage from "./pages/inbox/RepliesPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -213,6 +214,12 @@ export default function TabbedRoutes() {
         </Route>
         <Route exact path="/inbox/mentions">
           <MentionsPage />
+        </Route>
+        <Route exact path="/inbox/comment-replies">
+          <RepliesPage type="Comment" />
+        </Route>
+        <Route exact path="/inbox/post-replies">
+          <RepliesPage type="Post" />
         </Route>
         {...buildGeneralBrowseRoutes("inbox")}
 

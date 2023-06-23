@@ -44,11 +44,11 @@ export default function BoxesPage() {
         </IonList>
 
         <IonList inset color="primary">
-          <InsetIonItem routerLink="/settings/install">
+          <InsetIonItem routerLink="/inbox/post-replies">
             <IonIcon icon={albumsOutline} color="primary" />
             <SettingLabel>Post Replies</SettingLabel>
           </InsetIonItem>
-          <InsetIonItem routerLink="/settings/install">
+          <InsetIonItem routerLink="/inbox/comment-replies">
             <IonIcon icon={chatbubbleOutline} color="primary" />
             <SettingLabel>Comment Replies</SettingLabel>
           </InsetIonItem>
