@@ -213,12 +213,13 @@ export default function Comment({
   }
 
   return (
-    <AnimateHeight
-      duration={200}
-      height={fullyCollapsed ? 0 : "auto"}
-      className={className}
-    >
-      <DraggingVote onVote={onVote} currentVote={currentVote} onReply={onReply}>
+    <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
+      <DraggingVote
+        onVote={onVote}
+        currentVote={currentVote}
+        onReply={onReply}
+        className={className}
+      >
         <CustomIonItem
           routerLink={routerLink}
           href={undefined}
