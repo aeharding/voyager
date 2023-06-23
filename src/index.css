@@ -22,7 +22,7 @@ ion-tab-button {
   .ios .grey-bg {
     --ion-background-color: var(--ion-color-step-50, #f2f2f7);
   }
-  .ios body:has(.grey-bg:not([aria-hidden="true"])) {
+  .ios body:has(.grey-bg:not([aria-hidden="true"]):not([style*="pointer"])) {
     --ion-background-color: var(--ion-color-step-50, #f2f2f7);
   }
   .ios .grey-bg ion-header {
