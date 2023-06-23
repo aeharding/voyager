@@ -42,7 +42,6 @@ wefwef is an [Apollo-like](https://apolloapp.io/) open source web client for [Le
 - Android theme
 - Inbox tab, private messaging
 - Notifications and badging
-- Search tab
 - ...and more!
 
 ## 💪 Mobile webapps are awesome

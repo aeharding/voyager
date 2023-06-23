@@ -7,6 +7,7 @@ import {
 } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
 import { DEFAULT_ACTOR } from "./TabbedRoutes";
+import { getInboxCounts } from "./features/inbox/inboxSlice";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -39,6 +40,7 @@ export default function Auth({ children }: AuthProps) {
 
   useEffect(() => {
     dispatch(getSite());
+    dispatch(getInboxCounts());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt]);
 

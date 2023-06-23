@@ -1,6 +1,6 @@
 import { Comment, Post } from "lemmy-js-client";
-import Markdown from "../shared/Markdown";
 import { useMemo } from "react";
+import CommentMarkdown from "./CommentMarkdown";
 
 interface CommentContentProps {
   item: Comment | Post;
@@ -12,17 +12,9 @@ export default function CommentContent({ item }: CommentContentProps) {
     if (item.removed) return <i>removed by mod</i>;
 
     return (
-      <Markdown
-        components={{
-          img: (props) => (
-            <a href={props.src} target="_blank" rel="noopener noreferrer">
-              {props.alt || "Image"}
-            </a>
-          ),
-        }}
-      >
+      <CommentMarkdown>
         {"content" in item ? item.content : item.body ?? item.name}
-      </Markdown>
+      </CommentMarkdown>
     );
   }, [item]);
 

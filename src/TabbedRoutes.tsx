@@ -10,10 +10,11 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import {
-  telescopeSharp,
   personCircleOutline,
   cog,
   search,
+  fileTray,
+  telescope,
 } from "ionicons/icons";
 import PostDetail from "./features/post/detail/PostDetail";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
@@ -36,6 +37,9 @@ import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage
 import ProfileFeedItemsPage from "./pages/profile/ProfileFeedItemsPage";
 import SearchCommunitiesPage from "./pages/search/results/SearchCommunitiesPage";
 import TermsPage from "./pages/settings/TermsPage";
+import BoxesPage from "./pages/inbox/BoxesPage";
+import { totalUnreadSelector } from "./features/inbox/inboxSlice";
+import MentionsPage from "./pages/inbox/MentionsPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -50,6 +54,7 @@ export default function TabbedRoutes() {
   const location = useLocation();
   const router = useIonRouter();
   const jwt = useAppSelector((state) => state.auth.jwt);
+  const totalUnread = useAppSelector(totalUnreadSelector);
 
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance
@@ -203,6 +208,14 @@ export default function TabbedRoutes() {
         </Route>
         {...buildGeneralBrowseRoutes("posts")}
 
+        <Route exact path="/inbox">
+          <BoxesPage />
+        </Route>
+        <Route exact path="/inbox/mentions">
+          <MentionsPage />
+        </Route>
+        {...buildGeneralBrowseRoutes("inbox")}
+
         <Route exact path="/profile">
           <ProfilePage />
         </Route>
@@ -244,9 +257,21 @@ export default function TabbedRoutes() {
           tab="posts"
           href={`/posts/${connectedInstance}`}
         >
-          <IonIcon aria-hidden="true" icon={telescopeSharp} />
+          <IonIcon aria-hidden="true" icon={telescope} />
           <IonLabel>Posts</IonLabel>
           <Interceptor onClick={onPostsClick} />
+        </IonTabButton>
+        <IonTabButton
+          // disabled={isSearchButtonDisabled}
+          tab="inbox"
+          href="/inbox"
+        >
+          <IonIcon aria-hidden="true" icon={fileTray} />
+          <IonLabel>Inbox</IonLabel>
+          <Interceptor onClick={onSearchClick} />
+          {totalUnread ? (
+            <IonBadge color="danger">{totalUnread}</IonBadge>
+          ) : undefined}
         </IonTabButton>
         <IonTabButton
           disabled={isProfileButtonDisabled}

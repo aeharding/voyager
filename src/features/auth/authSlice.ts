@@ -7,6 +7,7 @@ import { resetPosts } from "../post/postSlice";
 import { getClient } from "../../services/lemmy";
 import { resetComments } from "../comment/commentSlice";
 import { resetUsers } from "../user/userSlice";
+import { resetInbox } from "../inbox/inboxSlice";
 
 interface PostState {
   jwt: string | undefined;
@@ -117,6 +118,7 @@ export const logout = () => async (dispatch: AppDispatch) => {
   dispatch(resetPosts());
   dispatch(resetComments());
   dispatch(resetUsers());
+  dispatch(resetInbox());
 };
 
 function parseJWT(payload: string): LemmyJWT {
