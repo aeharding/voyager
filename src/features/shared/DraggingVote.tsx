@@ -10,6 +10,10 @@ import {
 import { arrowDownSharp, arrowUndo, arrowUpSharp } from "ionicons/icons";
 import React, { useEffect, useRef, useState } from "react";
 
+const StyledIonItemSliding = styled(IonItemSliding)`
+  --ion-item-border-color: transparent;
+`;
+
 const Action = styled(IonIcon)<{ active: boolean }>`
   display: flex;
   align-items: center;
@@ -97,7 +101,7 @@ export default function DraggingVote({
   }
 
   return (
-    <IonItemSliding
+    <StyledIonItemSliding
       onIonDrag={async (e) => {
         dragRef.current = e;
         const ratio = await e.target.getSlidingRatio();
@@ -130,6 +134,6 @@ export default function DraggingVote({
         </IonItemOption>
       </IonItemOptions>
       {children}
-    </IonItemSliding>
+    </StyledIonItemSliding>
   );
 }

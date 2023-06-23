@@ -227,6 +227,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
         if (!jwt) return login({ presentingElement: pageContext.page });
         else reply({ presentingElement: pageContext.page });
       }}
+      className={className}
     >
       {/* href=undefined: Prevent drag failure on firefox */}
       <CustomIonItem
@@ -235,7 +236,6 @@ export default function Post({ post, communityMode, className }: PostProps) {
           `/c/${getHandle(post.community)}/comments/${post.post.id}`
         )}
         href={undefined}
-        className={className}
       >
         <Container>
           <div>
