@@ -101,6 +101,9 @@ app.use(
         "user-agent",
         `(${req.hostname}, ${process.env.EMAIL || "hello@wefwef.app"})`
       );
+
+      // Fake it to get around Lemmy API connection issue
+      clientReq.setHeader("origin", `https://${req.params.actor}`);
     },
   })
 );
