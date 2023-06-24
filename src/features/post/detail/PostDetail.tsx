@@ -144,7 +144,7 @@ export default function PostDetail() {
       if (role === "post") setCommentsKey(Date.now());
       onDismissReply(data, role);
     },
-    post,
+    item: post,
   });
 
   const [login, onDismissLogin] = useIonModal(Login, {

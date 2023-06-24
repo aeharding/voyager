@@ -43,7 +43,7 @@ export default function MoreActions({ post }: MoreActionsProps) {
 
   const [reply, onDismissReply] = useIonModal(CommentReply, {
     onDismiss: (data: string, role: string) => onDismissReply(data, role),
-    post,
+    item: post,
   });
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
