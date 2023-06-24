@@ -9,7 +9,13 @@ import {
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
-import { apps, logoGithub, mailOutline, openOutline } from "ionicons/icons";
+import {
+  apps,
+  logoGithub,
+  mailOutline,
+  openOutline,
+  shieldCheckmarkOutline,
+} from "ionicons/icons";
 import { isInstalled } from "../../helpers/device";
 
 export default function SettingsPage() {
@@ -36,6 +42,10 @@ export default function SettingsPage() {
         </IonList>
 
         <IonList inset color="primary">
+          <InsetIonItem routerLink="/settings/terms">
+            <IonIcon icon={shieldCheckmarkOutline} color="primary" />
+            <SettingLabel>Terms &amp; Privacy</SettingLabel>
+          </InsetIonItem>
           <InsetIonItem
             href="https://github.com/aeharding/wefwef"
             target="_blank"

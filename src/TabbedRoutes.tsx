@@ -35,6 +35,7 @@ import SearchPage from "./pages/search/SearchPage";
 import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
 import ProfileFeedItemsPage from "./pages/profile/ProfileFeedItemsPage";
 import SearchCommunitiesPage from "./pages/search/results/SearchCommunitiesPage";
+import TermsPage from "./pages/settings/TermsPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -229,6 +230,9 @@ export default function TabbedRoutes() {
         </Route>
         <Route exact path="/settings">
           <SettingsPage />
+        </Route>
+        <Route exact path="/settings/terms">
+          <TermsPage />
         </Route>
         <Route exact path="/settings/install">
           <InstallAppPage />
