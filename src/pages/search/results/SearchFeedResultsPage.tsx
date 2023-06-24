@@ -63,7 +63,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent scrollY={false}>
+      <IonContent>
         <PageContext.Provider value={{ page: pageRef.current }}>
           <PostCommentFeed fetchFn={fetchFn} />
         </PageContext.Provider>

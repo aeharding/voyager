@@ -67,7 +67,7 @@ export default function ProfileFeedItemsPage({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent scrollY={false}>
+      <IonContent>
         <PostCommentFeed fetchFn={fetchFn} />
       </IonContent>
     </IonPage>

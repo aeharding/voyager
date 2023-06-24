@@ -58,7 +58,7 @@ export default function SearchCommunitiesPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent scrollY={false}>
+      <IonContent>
         <PageContext.Provider value={{ page: pageRef.current }}>
           <CommunityFeed fetchFn={fetchFn} />
         </PageContext.Provider>
