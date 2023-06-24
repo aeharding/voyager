@@ -25,7 +25,7 @@ import { getUser } from "../../features/user/userSlice";
 import { AppContext } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 
-const PageContentIonSpinner = styled(IonSpinner)`
+export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
   left: 50%;
   transform: translateX(-50%);

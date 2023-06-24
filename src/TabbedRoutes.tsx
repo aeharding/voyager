@@ -41,6 +41,8 @@ import BoxesPage from "./pages/inbox/BoxesPage";
 import { totalUnreadSelector } from "./features/inbox/inboxSlice";
 import MentionsPage from "./pages/inbox/MentionsPage";
 import RepliesPage from "./pages/inbox/RepliesPage";
+import MessagesPage from "./pages/inbox/MessagesPage";
+import ConversationPage from "./pages/inbox/ConversationPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -220,6 +222,12 @@ export default function TabbedRoutes() {
         </Route>
         <Route exact path="/inbox/post-replies">
           <RepliesPage type="Post" />
+        </Route>
+        <Route exact path="/inbox/messages">
+          <MessagesPage />
+        </Route>
+        <Route exact path="/inbox/messages/:handle">
+          <ConversationPage />
         </Route>
         {...buildGeneralBrowseRoutes("inbox")}
 

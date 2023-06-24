@@ -59,7 +59,7 @@ export default function BoxesPage() {
         </IonList>
 
         <IonList inset color="primary">
-          <InsetIonItem routerLink="/settings/install">
+          <InsetIonItem routerLink="/inbox/messages">
             <IonIcon icon={mail} color="primary" />
             <SettingLabel>Messages</SettingLabel>
           </InsetIonItem>

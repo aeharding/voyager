@@ -84,6 +84,10 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-step-100: #f3f3f3;
 }
 
+.ios body {
+  --ion-background-color: #fff;
+}
+
 @media (prefers-color-scheme: dark) {
   /*
    * Dark Colors

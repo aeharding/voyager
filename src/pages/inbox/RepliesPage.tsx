@@ -14,6 +14,7 @@ import { useCallback } from "react";
 import { CommentReplyView } from "lemmy-js-client";
 import InboxFeed from "../../features/feed/InboxFeed";
 import { receivedInboxItems } from "../../features/inbox/inboxSlice";
+import MarkAllAsReadButton from "./MarkAllAsReadButton";
 
 interface RepliesPageProps {
   type: "Comment" | "Post";
@@ -58,6 +59,10 @@ export default function RepliesPage({ type }: RepliesPageProps) {
           </IonButtons>
 
           <IonTitle>{type} Replies</IonTitle>
+
+          <IonButtons slot="end">
+            <MarkAllAsReadButton />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent scrollY={false}>
@@ -67,7 +72,7 @@ export default function RepliesPage({ type }: RepliesPageProps) {
   );
 }
 
-function isPostReply(reply: CommentReplyView): boolean {
+export function isPostReply(reply: CommentReplyView): boolean {
   // path = 0.xxxxx is a reply to a post
   return reply.comment.path.split(".").length === 2;
 }

@@ -1,21 +1,31 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { GetUnreadCountResponse } from "lemmy-js-client";
+import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
 import { InboxItemView } from "./InboxItem";
+import { differenceBy, uniqBy } from "lodash";
+import { receivedUsers } from "../user/userSlice";
 
 interface PostState {
-  mentions: number;
-  messages: number;
-  replies: number;
+  counts: {
+    mentions: number;
+    messages: number;
+    replies: number;
+  };
   readByInboxItemId: Dictionary<boolean>;
+  messageSyncState: "init" | "syncing" | "synced";
+  messages: PrivateMessageView[];
 }
 
 const initialState: PostState = {
-  mentions: 0,
-  messages: 0,
-  replies: 0,
+  counts: {
+    mentions: 0,
+    messages: 0,
+    replies: 0,
+  },
   readByInboxItemId: {},
+  messageSyncState: "init",
+  messages: [],
 };
 
 export const inboxSlice = createSlice({
@@ -26,9 +36,9 @@ export const inboxSlice = createSlice({
       state,
       action: PayloadAction<GetUnreadCountResponse>
     ) => {
-      state.mentions = action.payload.mentions;
-      state.messages = action.payload.private_messages;
-      state.replies = action.payload.replies;
+      state.counts.mentions = action.payload.mentions;
+      state.counts.messages = action.payload.private_messages;
+      state.counts.replies = action.payload.replies;
     },
     receivedInboxItems: (state, action: PayloadAction<InboxItemView[]>) => {
       for (const item of action.payload) {
@@ -43,6 +53,21 @@ export const inboxSlice = createSlice({
       state.readByInboxItemId[getInboxItemId(action.payload.item)] =
         action.payload.read;
     },
+    receivedMessages: (state, action: PayloadAction<PrivateMessageView[]>) => {
+      state.messages = uniqBy(
+        [...action.payload, ...state.messages],
+        (m) => m.private_message.id
+      );
+    },
+    sync: (state) => {
+      state.messageSyncState = "syncing";
+    },
+    syncComplete: (state) => {
+      state.messageSyncState = "synced";
+    },
+    syncFail: (state) => {
+      if (state.messageSyncState === "syncing") state.messageSyncState = "init";
+    },
     resetInbox: () => initialState,
   },
 });
@@ -52,13 +77,20 @@ export const {
   receivedInboxCounts,
   receivedInboxItems,
   setReadStatus,
+  receivedMessages,
   resetInbox,
+
+  sync,
+  syncComplete,
+  syncFail,
 } = inboxSlice.actions;
 
 export default inboxSlice.reducer;
 
 export const totalUnreadSelector = (state: RootState) =>
-  state.inbox.mentions + state.inbox.messages + state.inbox.replies;
+  state.inbox.counts.mentions +
+  state.inbox.counts.messages +
+  state.inbox.counts.replies;
 
 export const getInboxCounts =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -76,21 +108,92 @@ export const getInboxCounts =
     if (result) dispatch(receivedInboxCounts(result));
   };
 
+export const syncMessages =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = getState().auth.jwt;
+
+    if (!jwt) {
+      dispatch(resetInbox());
+      return;
+    }
+
+    const syncState = getState().inbox.messageSyncState;
+
+    switch (syncState) {
+      case "syncing":
+        break;
+      case "init":
+      case "synced": {
+        dispatch(sync());
+
+        let page = 1;
+
+        while (true) {
+          let privateMessages;
+
+          try {
+            const results = await clientSelector(getState()).getPrivateMessages(
+              {
+                auth: jwt,
+                limit: syncState === "init" ? 50 : page === 1 ? 1 : 20,
+                page,
+              }
+            );
+            privateMessages = results.private_messages;
+          } catch (e) {
+            dispatch(syncFail());
+            throw e;
+          }
+
+          const newMessages = differenceBy(
+            privateMessages,
+            getState().inbox.messages,
+            (msg) => msg.private_message.id
+          );
+
+          dispatch(receivedMessages(privateMessages));
+          dispatch(receivedUsers(privateMessages.map((msg) => msg.creator)));
+          dispatch(receivedUsers(privateMessages.map((msg) => msg.recipient)));
+
+          if (!newMessages.length || page > 10) break;
+          page++;
+        }
+
+        dispatch(syncComplete());
+      }
+    }
+  };
+
+export const markAllRead =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = getState().auth.jwt;
+
+    if (!jwt) return;
+
+    await clientSelector(getState()).markAllAsRead({ auth: jwt });
+
+    dispatch(getInboxCounts());
+  };
+
 export function getInboxItemId(item: InboxItemView): string {
+  if ("comment_reply" in item) {
+    return `repl_${item.comment_reply.id}`;
+  }
+
   if ("private_message" in item) {
     return `dm_${item.private_message.id}`;
-  } else if ("comment_reply" in item) {
-    return `repl_${item.comment_reply.id}`;
   }
 
   return `mention_${item.person_mention.id}`;
 }
 
 export function getInboxItemReadStatus(item: InboxItemView): boolean {
+  if ("comment_reply" in item) {
+    return item.comment_reply.read;
+  }
+
   if ("private_message" in item) {
     return item.private_message.read;
-  } else if ("comment_reply" in item) {
-    return item.comment_reply.read;
   }
 
   return item.person_mention.read;

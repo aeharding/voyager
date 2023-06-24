@@ -7,7 +7,8 @@ import {
 } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
 import { DEFAULT_ACTOR } from "./TabbedRoutes";
-import { getInboxCounts } from "./features/inbox/inboxSlice";
+import { getInboxCounts, syncMessages } from "./features/inbox/inboxSlice";
+import { useInterval } from "usehooks-ts";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -43,6 +44,13 @@ export default function Auth({ children }: AuthProps) {
     dispatch(getInboxCounts());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt]);
+
+  useInterval(
+    () => {
+      dispatch(syncMessages());
+    },
+    jwt && location.pathname.startsWith("/inbox/messages") ? 1_000 * 15 : null
+  );
 
   if (!connectedInstance) return;
 

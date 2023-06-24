@@ -939,7 +939,7 @@
   resolved "https://registry.yarnpkg.com/@babel/regjsgen/-/regjsgen-0.8.0.tgz#f0ba69b075e1f05fb2825b7fad991e7adbb18310"
   integrity sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.18.3", "@babel/runtime@^7.21.0", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.18.3", "@babel/runtime@^7.20.13", "@babel/runtime@^7.21.0", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.22.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.5.tgz#8564dd588182ce0047d55d7a75e93921107b57ec"
   integrity sha512-ecjvYlnAaZ/KVneE/OdKYBYfgXV3Ptu6zQWmgEF7vwKhQnvVS6bjMD2XYgj+SNvQ1GfK/pjgokfPkC/2CO8CuA==
@@ -3934,10 +3934,10 @@ kleur@^4.0.3:
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-4.1.5.tgz#95106101795f7050c6c650f350c683febddb1780"
   integrity sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==
 
-lemmy-js-client@0.18.0-rc.1:
-  version "0.18.0-rc.1"
-  resolved "https://registry.yarnpkg.com/lemmy-js-client/-/lemmy-js-client-0.18.0-rc.1.tgz#fd0c88810572d90413696011ebaed19e3b8162d8"
-  integrity sha512-lQe443Nr5UCSoY+IxmT7mBe0IRF6EAZ/4PJSRoPSL+U8A+egMMBPbuxnisHzLsC+eDOWRUIgOqZlwlaRnbmuig==
+lemmy-js-client@0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/lemmy-js-client/-/lemmy-js-client-0.18.0.tgz#aebe8c7bd57c303ae6bb990bc5effde930d792ca"
+  integrity sha512-FhG2929Cwoh7vHUXC1CuvG0GrNdJmrVhpKbAo+gbGLuHXjkaziX4xfWl1dkuckylVFlloHiST4lXUX2iyvBAog==
   dependencies:
     cross-fetch "^3.1.5"
     form-data "^4.0.0"
@@ -5042,6 +5042,15 @@ react-router@5.3.4, react-router@^5.3.4:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
+react-textarea-autosize@^8.5.0:
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-8.5.0.tgz#bb0f7faf9849850f1c20b6e7fac0309d4b92f87b"
+  integrity sha512-cp488su3U9RygmHmGpJp0KEt0i/+57KCK33XVPH+50swVRBhIZYh0fGduz2YLKXwl9vSKBZ9HUXcg9PQXUXqIw==
+  dependencies:
+    "@babel/runtime" "^7.20.13"
+    use-composed-ref "^1.3.0"
+    use-latest "^1.2.1"
+
 react-virtuoso@^4.3.10:
   version "4.3.10"
   resolved "https://registry.yarnpkg.com/react-virtuoso/-/react-virtuoso-4.3.10.tgz#5f4c41c23f94b9bfbcef80fc5cdb1b59aca258fc"
@@ -5887,10 +5896,32 @@ url-parse@^1.5.3:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
+use-composed-ref@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/use-composed-ref/-/use-composed-ref-1.3.0.tgz#3d8104db34b7b264030a9d916c5e94fbe280dbda"
+  integrity sha512-GLMG0Jc/jiKov/3Ulid1wbv3r54K9HlMW29IWcDFPEqFkSO2nS0MuefWgMJpeHQ9YJeXDL3ZUF+P3jdXlZX/cQ==
+
+use-isomorphic-layout-effect@^1.1.1:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/use-isomorphic-layout-effect/-/use-isomorphic-layout-effect-1.1.2.tgz#497cefb13d863d687b08477d9e5a164ad8c1a6fb"
+  integrity sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==
+
+use-latest@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/use-latest/-/use-latest-1.2.1.tgz#d13dfb4b08c28e3e33991546a2cee53e14038cf2"
+  integrity sha512-xA+AVm/Wlg3e2P/JiItTziwS7FK92LWrDB0p+hgXloIMuVCeJJ8v6f0eeHyPZaJrM+usM1FkFfbNCrJGs8A/zw==
+  dependencies:
+    use-isomorphic-layout-effect "^1.1.1"
+
 use-sync-external-store@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
+
+usehooks-ts@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/usehooks-ts/-/usehooks-ts-2.9.1.tgz#953d3284851ffd097432379e271ce046a8180b37"
+  integrity sha512-2FAuSIGHlY+apM9FVlj8/oNhd+1y+Uwv5QNkMQz1oSfdHk4PXo1qoCw9I5M7j0vpH8CSWFJwXbVPeYDjLCx9PA==
 
 utils-merge@1.0.1:
   version "1.0.1"

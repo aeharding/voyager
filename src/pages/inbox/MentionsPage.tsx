@@ -15,6 +15,7 @@ import { useCallback } from "react";
 import { PersonMentionView } from "lemmy-js-client";
 import InboxFeed from "../../features/feed/InboxFeed";
 import { receivedInboxItems } from "../../features/inbox/inboxSlice";
+import MarkAllAsReadButton from "./MarkAllAsReadButton";
 
 export default function MentionsPage() {
   const dispatch = useAppDispatch();
@@ -49,6 +50,10 @@ export default function MentionsPage() {
           </IonButtons>
 
           <IonTitle>Mentions</IonTitle>
+
+          <IonButtons slot="end">
+            <MarkAllAsReadButton />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent scrollY={false}>

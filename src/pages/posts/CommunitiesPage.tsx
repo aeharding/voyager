@@ -22,7 +22,7 @@ import { notEmpty } from "../../helpers/array";
 import { useContext, useMemo, useRef } from "react";
 import { AppContext } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import CommunityIcon from "../../features/labels/img/CommunityIcon";
+import ItemIcon from "../../features/labels/img/ItemIcon";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -140,7 +140,7 @@ export default function CommunitiesPage() {
               routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
             >
               <Content>
-                <CommunityIcon community={community} size={28} />
+                <ItemIcon item={community} size={28} />
                 {getHandle(community)}
               </Content>
             </IonItem>

@@ -14,6 +14,7 @@ import useClient from "../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getInboxCounts, getInboxItemId, setReadStatus } from "./inboxSlice";
 import { css } from "@emotion/react";
+import { isPostReply } from "../../pages/inbox/RepliesPage";
 
 const StyledIonItem = styled(IonItem)<{ read: boolean }>`
   ${({ read }) =>
@@ -89,6 +90,23 @@ export default function InboxItem({ item }: InboxItemProps) {
         </>
       );
     }
+    if ("comment_reply" in item) {
+      if (isPostReply(item)) {
+        return (
+          <>
+            <strong>{item.creator.name}</strong> replied to your post{" "}
+            <strong>{item.post.name}</strong>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <strong>{item.creator.name}</strong> replied to your comment in{" "}
+            <strong>{item.post.name}</strong>
+          </>
+        );
+      }
+    }
   }
 
   function renderContents() {
@@ -133,24 +151,36 @@ export default function InboxItem({ item }: InboxItemProps) {
 
     dispatch(setReadStatus({ item, read: true }));
 
-    if ("person_mention" in item) {
-      try {
+    try {
+      if ("person_mention" in item) {
         await client.markPersonMentionAsRead({
           read: true,
           person_mention_id: item.person_mention.id,
           auth: jwt,
         });
-      } catch (error) {
-        dispatch(setReadStatus({ item, read: initialRead }));
-        present({
-          message: "Failed to mark item as read",
-          duration: 3500,
-          position: "bottom",
-          color: "danger",
+      } else if ("comment_reply" in item) {
+        await client.markCommentReplyAsRead({
+          read: true,
+          comment_reply_id: item.comment_reply.id,
+          auth: jwt,
         });
-
-        throw error;
+      } else if ("private_message" in item) {
+        await client.markPrivateMessageAsRead({
+          read: true,
+          private_message_id: item.private_message.id,
+          auth: jwt,
+        });
       }
+    } catch (error) {
+      dispatch(setReadStatus({ item, read: initialRead }));
+      present({
+        message: "Failed to mark item as read",
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
+
+      throw error;
     }
 
     dispatch(getInboxCounts());
@@ -166,7 +196,7 @@ export default function InboxItem({ item }: InboxItemProps) {
       <Content>
         <Header>{renderHeader()}</Header>
         <Body>
-          <CommentMarkdown>{`${renderContents()} wefjweof jiweoifj weofi  wejfowef j\n\nwefowejfiwoefj`}</CommentMarkdown>
+          <CommentMarkdown>{renderContents()}</CommentMarkdown>
         </Body>
         <Footer>
           <div>{renderFooterDetails()}</div>
