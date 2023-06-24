@@ -76,7 +76,7 @@ export default function CommunityPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent scrollY={false}>
+      <IonContent>
         <PostCommentFeed fetchFn={fetchFn} communityName={community} />
       </IonContent>
     </IonPage>

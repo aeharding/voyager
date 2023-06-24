@@ -64,7 +64,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent scrollY={false}>
+      <IonContent>
         <PageContext.Provider value={{ page: pageRef.current }}>
           <PostCommentFeed fetchFn={fetchFn} />
         </PageContext.Provider>
