@@ -15,6 +15,8 @@ import {
   IonList,
   useIonToast,
   IonText,
+  IonRouterLink,
+  useIonModal,
 } from "@ionic/react";
 import styled from "@emotion/styled";
 import { POPULAR_SERVERS } from "../../helpers/lemmy";
@@ -23,6 +25,7 @@ import { login } from "./authSlice";
 import { LemmyHttp } from "lemmy-js-client";
 import { getClient } from "../../services/lemmy";
 import { IonInputCustomEvent } from "@ionic/core";
+import TermsSheet from "../settings/terms/TermsSheet";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -54,6 +57,11 @@ export default function Login({
   const [password, setPassword] = useState("");
   const usernameRef = useRef<IonInputCustomEvent<never>["target"]>(null);
   const [loading, setLoading] = useState(false);
+  const pageRef = useRef();
+
+  const [presentTerms, onDismissTerms] = useIonModal(TermsSheet, {
+    onDismiss: (data: string, role: string) => onDismissTerms(data, role),
+  });
 
   const customServerHostname = (() => {
     if (!customServer) return;
@@ -177,7 +185,7 @@ export default function Login({
       }}
     >
       <input type="submit" /> {/* Hack */}
-      <IonPage>
+      <IonPage ref={pageRef}>
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
@@ -253,19 +261,19 @@ export default function Login({
               )}
 
               <HelperText>
-                Note: Due to CORS, all requests to{" "}
-                <strong>{server ?? customServer}</strong> will be proxied
-                through <strong>{location.hostname}</strong>.
+                <IonRouterLink onClick={() => presentTerms()}>
+                  Privacy &amp; Terms
+                </IonRouterLink>
               </HelperText>
 
               <HelperText>
-                <a
+                <IonRouterLink
                   href="https://join-lemmy.org/instances"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <IonText color="primary">Don&apos;t have an account?</IonText>
-                </a>
+                </IonRouterLink>
               </HelperText>
             </>
           )}
