@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import {
   getSite,
@@ -9,6 +9,7 @@ import { useLocation } from "react-router";
 import { DEFAULT_ACTOR } from "./TabbedRoutes";
 import { getInboxCounts, syncMessages } from "./features/inbox/inboxSlice";
 import { useInterval } from "usehooks-ts";
+import usePageVisibility from "./helpers/usePageVisibility";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ export default function Auth({ children }: AuthProps) {
     (state) => state.auth.connectedInstance
   );
   const location = useLocation();
+  const pageVisibility = usePageVisibility();
 
   useEffect(() => {
     if (!location.pathname.startsWith("/posts")) {
@@ -45,12 +47,26 @@ export default function Auth({ children }: AuthProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt]);
 
+  const shouldSyncMessages = useCallback(() => {
+    return jwt && location.pathname.startsWith("/inbox/messages");
+  }, [jwt, location]);
+
   useInterval(
     () => {
+      if (!shouldSyncMessages()) return;
+
       dispatch(syncMessages());
     },
-    jwt && location.pathname.startsWith("/inbox/messages") ? 1_000 * 15 : null
+    shouldSyncMessages() ? 1_000 * 15 : null
   );
+
+  useEffect(() => {
+    if (!pageVisibility) return;
+    if (!shouldSyncMessages()) return;
+
+    dispatch(syncMessages());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageVisibility]);
 
   if (!connectedInstance) return;
 

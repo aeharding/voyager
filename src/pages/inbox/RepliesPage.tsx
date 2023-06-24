@@ -51,7 +51,7 @@ export default function RepliesPage({ type }: RepliesPageProps) {
   );
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

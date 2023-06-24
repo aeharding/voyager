@@ -12,7 +12,7 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { jwtPayloadSelector } from "../../features/auth/authSlice";
 import {
@@ -189,6 +189,13 @@ export default function ConversationPage() {
     setValue("");
   }
 
+  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (!e.ctrlKey && !e.metaKey) return;
+    if (e.key !== "Enter") return;
+
+    send();
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -235,6 +242,7 @@ export default function ConversationPage() {
                 value={value}
                 rows={1}
                 maxRows={5}
+                onKeyDown={onKeyDown}
               />
               {value.trim() && !loading && (
                 <SendButton icon={arrowUp} onClick={send} />

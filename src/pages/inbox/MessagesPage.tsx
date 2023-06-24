@@ -4,6 +4,8 @@ import {
   IonHeader,
   IonList,
   IonPage,
+  IonRefresher,
+  IonRefresherContent,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -68,6 +70,18 @@ export default function MessagesPage() {
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY>
+        <IonRefresher
+          slot="fixed"
+          onIonRefresh={async (e) => {
+            try {
+              await dispatch(syncMessages());
+            } finally {
+              e.detail.complete();
+            }
+          }}
+        >
+          <IonRefresherContent />
+        </IonRefresher>
         {(!messages.length && loading) || !myUserId ? (
           <PageContentIonSpinner />
         ) : (

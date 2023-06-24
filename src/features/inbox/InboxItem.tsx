@@ -28,6 +28,8 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
 
+  width: 100%;
+
   padding: 0.5rem 0;
 
   font-size: 0.9em;
@@ -107,6 +109,13 @@ export default function InboxItem({ item }: InboxItemProps) {
         );
       }
     }
+    if ("private_message" in item) {
+      return (
+        <>
+          <strong>{getHandle(item.creator)}</strong> sent you a private message
+        </>
+      );
+    }
   }
 
   function renderContents() {
@@ -136,6 +145,8 @@ export default function InboxItem({ item }: InboxItemProps) {
         }`
       );
     }
+
+    return `/inbox/messages/${getHandle(item.creator)}`;
   }
 
   function getDate() {

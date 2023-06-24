@@ -33,11 +33,11 @@ export default function BoxesPage() {
         </IonHeader>
 
         <IonList inset color="primary">
-          <InsetIonItem routerLink="/settings/install">
+          <InsetIonItem routerLink="/inbox/all">
             <IonIcon icon={fileTray} color="primary" />
             <SettingLabel>Inbox (All)</SettingLabel>
           </InsetIonItem>
-          <InsetIonItem routerLink="/settings/install">
+          <InsetIonItem routerLink="/inbox/unread">
             <IonIcon icon={ellipseOutline} color="primary" />
             <SettingLabel>Unread</SettingLabel>
           </InsetIonItem>

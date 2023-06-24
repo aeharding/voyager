@@ -42,7 +42,7 @@ export default function MentionsPage() {
   );
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
