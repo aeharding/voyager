@@ -46,6 +46,7 @@ import ConversationPage from "./pages/inbox/ConversationPage";
 import InboxPage from "./pages/inbox/InboxPage";
 import { PageContext } from "./features/auth/PageContext";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
+import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -221,25 +222,39 @@ export default function TabbedRoutes() {
             <BoxesPage />
           </Route>
           <Route exact path="/inbox/all">
-            <InboxPage showRead />
+            <InboxAuthRequired>
+              <InboxPage showRead />
+            </InboxAuthRequired>
           </Route>
           <Route exact path="/inbox/unread">
-            <InboxPage />
+            <InboxAuthRequired>
+              <InboxPage />
+            </InboxAuthRequired>
           </Route>
           <Route exact path="/inbox/mentions">
-            <MentionsPage />
+            <InboxAuthRequired>
+              <MentionsPage />
+            </InboxAuthRequired>
           </Route>
           <Route exact path="/inbox/comment-replies">
-            <RepliesPage type="Comment" />
+            <InboxAuthRequired>
+              <RepliesPage type="Comment" />
+            </InboxAuthRequired>
           </Route>
           <Route exact path="/inbox/post-replies">
-            <RepliesPage type="Post" />
+            <InboxAuthRequired>
+              <RepliesPage type="Post" />
+            </InboxAuthRequired>
           </Route>
           <Route exact path="/inbox/messages">
-            <MessagesPage />
+            <InboxAuthRequired>
+              <MessagesPage />
+            </InboxAuthRequired>
           </Route>
           <Route exact path="/inbox/messages/:handle">
-            <ConversationPage />
+            <InboxAuthRequired>
+              <ConversationPage />
+            </InboxAuthRequired>
           </Route>
           {...buildGeneralBrowseRoutes("inbox")}
 

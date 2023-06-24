@@ -65,7 +65,7 @@ export default function RepliesPage({ type }: RepliesPageProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent scrollY={false}>
+      <IonContent>
         <InboxFeed fetchFn={fetchFn} />
       </IonContent>
     </IonPage>

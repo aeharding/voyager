@@ -88,7 +88,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent scrollY={false}>
+      <IonContent>
         <InboxFeed fetchFn={fetchFn} />
       </IonContent>
     </IonPage>
