@@ -22,7 +22,7 @@ export default function AppContent({
   scrollY?: boolean;
 }) {
   return (
-    <IonContent style={{ width: "100%" }} scrollY={scrollY ?? false}>
+    <IonContent style={{ width: "100%" }} scrollY={scrollY ?? false} fullscreen>
       <MaxWidthContainer>{children}</MaxWidthContainer>
     </IonContent>
   );

@@ -1,13 +1,6 @@
 import styled from "@emotion/styled";
-import { Community } from "lemmy-js-client";
 
-const SubImgIcon = styled.img<{ size: number }>`
-  width: ${({ size }) => `${size}px`};
-  height: ${({ size }) => `${size}px`};
-  border-radius: 50%;
-`;
-
-const FakeIcon = styled.div<{ bg: string; size: number }>`
+const FakeIconContainer = styled.div<{ bg: string; size: number }>`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: 50%;
@@ -20,32 +13,27 @@ const FakeIcon = styled.div<{ bg: string; size: number }>`
   color: white;
 `;
 
-interface CommunityIconProps {
-  community: Community;
+interface FakeIconProps {
+  seed: string | number;
   size?: number;
+  name: string;
   className?: string;
 }
 
-export default function CommunityIcon({
-  community,
+export default function FakeIcon({
+  seed,
   size,
   className,
-}: CommunityIconProps) {
-  size = size ?? 28;
-
-  if (community.icon)
-    return (
-      <SubImgIcon src={community.icon} size={size} className={className} />
-    );
-
+  name,
+}: FakeIconProps) {
   return (
-    <FakeIcon
-      bg={generateRandomColor(community.id)}
-      size={size}
+    <FakeIconContainer
+      bg={generateRandomColor(seed)}
+      size={size ?? 20}
       className={className}
     >
-      {community.name.slice(0, 1).toUpperCase()}
-    </FakeIcon>
+      {name.slice(0, 1).toUpperCase()}
+    </FakeIconContainer>
   );
 }
 

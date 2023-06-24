@@ -39,10 +39,9 @@ wefwef is an [Apollo-like](https://apolloapp.io/) open source web client for [Le
 **What is on the roadmap?**
 
 - Multi account support
+- Creating posts
 - Android theme
-- Inbox tab, private messaging
-- Notifications and badging
-- Search tab
+- Native notifications and badging
 - ...and more!
 
 ## 💪 Mobile webapps are awesome

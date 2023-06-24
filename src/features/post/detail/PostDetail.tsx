@@ -18,13 +18,12 @@ import Embed from "../shared/Embed";
 import Comments from "../../comment/Comments";
 import Markdown from "../../shared/Markdown";
 import PostActions from "../actions/PostActions";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../../../helpers/markdown";
 import { getPost } from "../postSlice";
 import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
 import AppBackButton from "../../shared/AppBackButton";
 import Img from "./Img";
-import { PageContext } from "../../auth/PageContext";
 import { maxWidthCss } from "../../shared/AppContent";
 import PersonLink from "../../labels/links/PersonLink";
 import { PostView } from "lemmy-js-client";
@@ -37,6 +36,7 @@ import { megaphone } from "ionicons/icons";
 import CommunityLink from "../../labels/links/CommunityLink";
 import Video from "../../shared/Video";
 import { css } from "@emotion/react";
+import { PageContext } from "../../auth/PageContext";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -136,7 +136,7 @@ export default function PostDetail() {
     [post]
   );
   const titleRef = useRef<HTMLDivElement>(null);
-  const pageRef = useRef<HTMLElement | undefined>();
+  const pageContext = useContext(PageContext);
   const [commentsKey, setCommentsKey] = useState(Date.now());
 
   const [reply, onDismissReply] = useIonModal(CommentReply, {
@@ -250,8 +250,8 @@ export default function PostDetail() {
           <PostActions
             post={post}
             onReply={() => {
-              if (!jwt) return login({ presentingElement: pageRef.current });
-              else reply({ presentingElement: pageRef.current });
+              if (!jwt) return login({ presentingElement: pageContext.page });
+              else reply({ presentingElement: pageContext.page });
             }}
           />
         </BorderlessIonItem>
@@ -260,7 +260,7 @@ export default function PostDetail() {
   }
 
   return (
-    <IonPage ref={pageRef}>
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -273,19 +273,17 @@ export default function PostDetail() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <PageContext.Provider value={{ page: pageRef.current }}>
-          {post ? (
-            <Comments
-              key={commentsKey}
-              header={renderHeader(post)}
-              postId={post.post.id}
-              commentPath={commentPath}
-              op={post.creator}
-            />
-          ) : (
-            <CenteredSpinner />
-          )}
-        </PageContext.Provider>
+        {post ? (
+          <Comments
+            key={commentsKey}
+            header={renderHeader(post)}
+            postId={post.post.id}
+            commentPath={commentPath}
+            op={post.creator}
+          />
+        ) : (
+          <CenteredSpinner />
+        )}
         {commentPath && <ViewAllComments />}
       </IonContent>
     </IonPage>

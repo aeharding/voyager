@@ -17,7 +17,6 @@ import {
 import { useContext, useEffect, useRef, useState } from "react";
 import Profile from "../../features/user/Profile";
 import { useParams } from "react-router";
-import { PageContext } from "../../features/auth/PageContext";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import styled from "@emotion/styled";
 import { useAppDispatch } from "../../store";
@@ -25,7 +24,7 @@ import { getUser } from "../../features/user/userSlice";
 import { AppContext } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 
-const PageContentIonSpinner = styled(IonSpinner)`
+export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
   left: 50%;
   transform: translateX(-50%);
@@ -104,9 +103,7 @@ export default function UserPage(props: UserPageProps) {
         >
           <IonRefresherContent />
         </IonRefresher>
-        <PageContext.Provider value={{ page: pageRef.current }}>
-          {person ? <Profile person={person} /> : <PageContentIonSpinner />}
-        </PageContext.Provider>
+        {person ? <Profile person={person} /> : <PageContentIonSpinner />}
       </IonContent>
     </IonPage>
   );

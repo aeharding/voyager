@@ -8,8 +8,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
-import { PageContext } from "../../features/auth/PageContext";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import PostSort from "../../features/feed/PostSort";
 import { ListingType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
@@ -26,7 +25,6 @@ interface SpecialFeedProps {
 
 export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const pageRef = useRef<HTMLElement | undefined>();
 
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
@@ -47,7 +45,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   );
 
   return (
-    <IonPage ref={pageRef}>
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -65,9 +63,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <PageContext.Provider value={{ page: pageRef.current }}>
-          <PostCommentFeed fetchFn={fetchFn} />
-        </PageContext.Provider>
+        <PostCommentFeed fetchFn={fetchFn} />
       </IonContent>
     </IonPage>
   );

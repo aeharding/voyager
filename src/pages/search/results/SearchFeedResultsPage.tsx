@@ -8,8 +8,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useCallback, useRef } from "react";
-import { PageContext } from "../../../features/auth/PageContext";
+import { useCallback } from "react";
 import { FetchFn } from "../../../features/feed/Feed";
 import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
@@ -27,7 +26,6 @@ interface SearchPostsResultsProps {
 export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
   const { search } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const pageRef = useRef<HTMLElement | undefined>();
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
 
@@ -46,7 +44,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
   );
 
   return (
-    <IonPage ref={pageRef}>
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -64,9 +62,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <PageContext.Provider value={{ page: pageRef.current }}>
-          <PostCommentFeed fetchFn={fetchFn} />
-        </PageContext.Provider>
+        <PostCommentFeed fetchFn={fetchFn} />
       </IonContent>
     </IonPage>
   );

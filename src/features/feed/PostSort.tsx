@@ -75,11 +75,14 @@ function getSortIcon(sort: SortType): string {
     case "NewComments":
       return chatbubbleEllipsesOutline;
     case "Old":
-    case "TopAll":
+    case "TopAll": // Top is TODO
     case "TopDay":
     case "TopMonth":
     case "TopWeek":
     case "TopYear":
+    case "TopHour":
+    case "TopSixHour":
+    case "TopTwelveHour":
       return helpCircleOutline;
   }
 }

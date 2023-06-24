@@ -10,7 +10,12 @@ import {
   useIonToast,
   IonText,
 } from "@ionic/react";
-import { CommentView, PostView } from "lemmy-js-client";
+import {
+  CommentReplyView,
+  CommentView,
+  PersonMentionView,
+  PostView,
+} from "lemmy-js-client";
 import { useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../helpers/useClient";
@@ -48,14 +53,11 @@ const TitleContainer = styled.div`
 
 type CommentReplyProps = {
   onDismiss: (data?: string, role?: string) => void;
-} & ({ comment: CommentView } | { post: PostView });
+  item: CommentView | PostView | PersonMentionView | CommentReplyView;
+};
 
-export default function CommentReply({
-  onDismiss,
-  ...rest
-}: CommentReplyProps) {
-  const item = "comment" in rest ? rest.comment : rest.post;
-  const comment = "comment" in rest ? rest.comment : undefined;
+export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
+  const comment = "comment" in item ? item.comment : undefined;
 
   const [replyContent, setReplyContent] = useState("");
   const client = useClient();
@@ -72,7 +74,7 @@ export default function CommentReply({
     try {
       await client.createComment({
         content: replyContent,
-        parent_id: comment?.comment.id,
+        parent_id: comment?.id,
         post_id: item.post.id,
         auth: jwt,
       });

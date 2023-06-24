@@ -1,23 +1,17 @@
 import styled from "@emotion/styled";
-import { IonIcon, IonItem, useIonModal } from "@ionic/react";
+import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React, { useContext } from "react";
+import React from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
 import { ignoreSsrFlag } from "../../helpers/emotion";
-import DraggingVote from "../shared/DraggingVote";
-import { useAppDispatch, useAppSelector } from "../../store";
-import Login from "../auth/Login";
-import { PageContext } from "../auth/PageContext";
-import { voteOnComment } from "./commentSlice";
+import SlidingVote from "../shared/sliding/SlidingVote";
 import Vote from "../labels/Vote";
 import AnimateHeight from "react-animate-height";
-import CommentReply from "./reply/CommentReply";
 import CommentContent from "./CommentContent";
-import { PostContext } from "../post/detail/PostContext";
 import useKeyPressed from "../../helpers/useKeyPressed";
 
 const rainbowColors = [
@@ -179,47 +173,11 @@ export default function Comment({
   routerLink,
   className,
 }: CommentProps) {
-  const dispatch = useAppDispatch();
-
-  const jwt = useAppSelector((state) => state.auth.jwt);
-  const [login, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
-  const { refreshPost } = useContext(PostContext);
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => {
-      if (role === "post") refreshPost();
-      onDismissReply(data, role);
-    },
-    comment,
-  });
-  const pageContext = useContext(PageContext);
-
   const keyPressed = useKeyPressed();
-
-  const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById
-  );
-  const currentVote = commentVotesById[comment.comment.id];
-
-  function onVote(score: 1 | -1 | 0) {
-    if (jwt) dispatch(voteOnComment(comment.comment.id, score));
-    else login({ presentingElement: pageContext.page });
-  }
-
-  function onReply() {
-    if (jwt) reply({ presentingElement: pageContext.page });
-    else login({ presentingElement: pageContext.page });
-  }
 
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
-      <DraggingVote
-        onVote={onVote}
-        currentVote={currentVote}
-        onReply={onReply}
-        className={className}
-      >
+      <SlidingVote item={comment} className={className}>
         <CustomIonItem
           routerLink={routerLink}
           href={undefined}
@@ -270,7 +228,7 @@ export default function Comment({
             </Container>
           </PositionedContainer>
         </CustomIonItem>
-      </DraggingVote>
+      </SlidingVote>
     </AnimateHeight>
   );
 }
