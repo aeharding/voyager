@@ -15,6 +15,8 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { getInboxCounts, getInboxItemId, setReadStatus } from "./inboxSlice";
 import { css } from "@emotion/react";
 import { isPostReply } from "../../pages/inbox/RepliesPage";
+import DraggingVote from "../shared/DraggingVote";
+import { MaxWidthContainer } from "../shared/AppContent";
 
 const StyledIonItem = styled(IonItem)<{ read: boolean }>`
   ${({ read }) =>
@@ -198,24 +200,30 @@ export default function InboxItem({ item }: InboxItemProps) {
   }
 
   return (
-    <StyledIonItem
-      routerLink={getLink()}
-      detail={false}
-      onClick={markRead}
-      read={!!readByInboxItemId[getInboxItemId(item)]}
-    >
-      <Content>
-        <Header>{renderHeader()}</Header>
-        <Body>
-          <CommentMarkdown>{renderContents()}</CommentMarkdown>
-        </Body>
-        <Footer>
-          <div>{renderFooterDetails()}</div>
-          <aside>
-            <EllipsisIcon icon={ellipsisHorizontal} /> <Ago date={getDate()} />
-          </aside>
-        </Footer>
-      </Content>
-    </StyledIonItem>
+    <DraggingVote onVote={() => {}} currentVote={0} onReply={() => {}}>
+      <StyledIonItem
+        routerLink={getLink()}
+        href={undefined}
+        detail={false}
+        onClick={markRead}
+        read={!!readByInboxItemId[getInboxItemId(item)]}
+      >
+        <MaxWidthContainer>
+          <Content>
+            <Header>{renderHeader()}</Header>
+            <Body>
+              <CommentMarkdown>{renderContents()}</CommentMarkdown>
+            </Body>
+            <Footer>
+              <div>{renderFooterDetails()}</div>
+              <aside>
+                <EllipsisIcon icon={ellipsisHorizontal} />{" "}
+                <Ago date={getDate()} />
+              </aside>
+            </Footer>
+          </Content>
+        </MaxWidthContainer>
+      </StyledIonItem>
+    </DraggingVote>
   );
 }

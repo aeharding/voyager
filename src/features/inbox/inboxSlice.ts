@@ -12,6 +12,7 @@ interface PostState {
     messages: number;
     replies: number;
   };
+  lastUpdatedCounts: number;
   readByInboxItemId: Dictionary<boolean>;
   messageSyncState: "init" | "syncing" | "synced";
   messages: PrivateMessageView[];
@@ -23,6 +24,7 @@ const initialState: PostState = {
     messages: 0,
     replies: 0,
   },
+  lastUpdatedCounts: 0,
   readByInboxItemId: {},
   messageSyncState: "init",
   messages: [],
@@ -39,6 +41,7 @@ export const inboxSlice = createSlice({
       state.counts.mentions = action.payload.mentions;
       state.counts.messages = action.payload.private_messages;
       state.counts.replies = action.payload.replies;
+      state.lastUpdatedCounts = Date.now();
     },
     receivedInboxItems: (state, action: PayloadAction<InboxItemView[]>) => {
       for (const item of action.payload) {
@@ -100,6 +103,10 @@ export const getInboxCounts =
       dispatch(resetInbox());
       return;
     }
+
+    const lastUpdatedCounts = getState().inbox.lastUpdatedCounts;
+
+    if (Date.now() - lastUpdatedCounts < 3_000) return;
 
     const result = await clientSelector(getState()).getUnreadCount({
       auth: jwt,

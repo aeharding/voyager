@@ -5,6 +5,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
@@ -16,8 +17,16 @@ import {
   mail,
   personCircleOutline,
 } from "ionicons/icons";
+import { useAppDispatch } from "../../store";
+import { getInboxCounts } from "../../features/inbox/inboxSlice";
 
 export default function BoxesPage() {
+  const dispatch = useAppDispatch();
+
+  useIonViewWillEnter(() => {
+    dispatch(getInboxCounts());
+  });
+
   return (
     <IonPage className="grey-bg">
       <IonHeader>

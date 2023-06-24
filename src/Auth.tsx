@@ -53,12 +53,26 @@ export default function Auth({ children }: AuthProps) {
 
   useInterval(
     () => {
+      if (!pageVisibility) return;
       if (!shouldSyncMessages()) return;
 
       dispatch(syncMessages());
     },
     shouldSyncMessages() ? 1_000 * 15 : null
   );
+
+  useInterval(() => {
+    if (!pageVisibility) return;
+    if (!jwt) return;
+
+    dispatch(getInboxCounts());
+  }, 1_000 * 60);
+
+  useEffect(() => {
+    if (!pageVisibility) return;
+
+    dispatch(getInboxCounts());
+  }, [pageVisibility, dispatch]);
 
   useEffect(() => {
     if (!pageVisibility) return;
