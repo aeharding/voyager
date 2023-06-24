@@ -217,3 +217,45 @@ export function getInboxItemPublished(item: InboxItemView): string {
 
   return item.person_mention.published;
 }
+
+export const markRead =
+  (item: InboxItemView, read: boolean) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = getState().auth.jwt;
+    const client = clientSelector(getState());
+
+    if (!jwt) throw new Error("needs auth");
+
+    const initialRead =
+      !!getState().inbox.readByInboxItemId[getInboxItemId(item)];
+
+    dispatch(setReadStatus({ item, read }));
+
+    try {
+      if ("person_mention" in item) {
+        await client.markPersonMentionAsRead({
+          read,
+          person_mention_id: item.person_mention.id,
+          auth: jwt,
+        });
+      } else if ("comment_reply" in item) {
+        await client.markCommentReplyAsRead({
+          read,
+          comment_reply_id: item.comment_reply.id,
+          auth: jwt,
+        });
+      } else if ("private_message" in item) {
+        await client.markPrivateMessageAsRead({
+          read,
+          private_message_id: item.private_message.id,
+          auth: jwt,
+        });
+      }
+    } catch (error) {
+      dispatch(setReadStatus({ item, read: initialRead }));
+
+      throw error;
+    }
+
+    dispatch(getInboxCounts());
+  };

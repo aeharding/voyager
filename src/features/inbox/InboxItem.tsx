@@ -6,19 +6,51 @@ import {
 import CommentMarkdown from "../comment/CommentMarkdown";
 import { IonIcon, IonItem, useIonToast } from "@ionic/react";
 import styled from "@emotion/styled";
-import { ellipsisHorizontal } from "ionicons/icons";
+import {
+  albums,
+  chatbubble,
+  ellipsisHorizontal,
+  mail,
+  personCircle,
+} from "ionicons/icons";
 import Ago from "../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import useClient from "../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { getInboxCounts, getInboxItemId, setReadStatus } from "./inboxSlice";
+import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
 import { css } from "@emotion/react";
 import { isPostReply } from "../../pages/inbox/RepliesPage";
-import DraggingVote from "../shared/DraggingVote";
-import { MaxWidthContainer } from "../shared/AppContent";
+import { maxWidthCss } from "../shared/AppContent";
+import VoteArrow from "./VoteArrow";
+import SlidingInbox from "../shared/sliding/SlidingInbox";
+
+const Hr = styled.div`
+  ${maxWidthCss}
+
+  position: relative;
+  height: 1px;
+
+  &::after {
+    content: "";
+    position: absolute;
+
+    --right-offset: 1.8rem;
+
+    width: calc(100% - var(--right-offset));
+    left: var(--right-offset);
+    top: 0;
+    border-bottom: 0.55px solid
+      var(
+        --ion-item-border-color,
+        var(--ion-border-color, var(--ion-color-step-250, #c8c7cc))
+      );
+  }
+`;
 
 const StyledIonItem = styled(IonItem)<{ read: boolean }>`
+  --ion-item-border-color: transparent;
+
   ${({ read }) =>
     !read &&
     css`
@@ -26,11 +58,11 @@ const StyledIonItem = styled(IonItem)<{ read: boolean }>`
     `}
 `;
 
-const Content = styled.div`
+const Container = styled.div`
   display: flex;
-  flex-direction: column;
+  gap: 1rem;
 
-  width: 100%;
+  ${maxWidthCss}
 
   padding: 0.5rem 0;
 
@@ -39,6 +71,16 @@ const Content = styled.div`
   strong {
     font-weight: 500;
   }
+`;
+
+const StartContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const Content = styled.div`
+  flex: 1;
 `;
 
 const Header = styled.div``;
@@ -76,14 +118,21 @@ interface InboxItemProps {
 }
 
 export default function InboxItem({ item }: InboxItemProps) {
-  const client = useClient();
-  const jwt = useAppSelector((state) => state.auth.jwt);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId
   );
   const [present] = useIonToast();
+  const commentVotesById = useAppSelector(
+    (state) => state.comment.commentVotesById
+  );
+
+  const vote =
+    "comment" in item
+      ? commentVotesById[item.comment.id] ??
+        (item.my_vote as 1 | 0 | -1 | undefined)
+      : undefined;
 
   function renderHeader() {
     if ("person_mention" in item) {
@@ -157,35 +206,19 @@ export default function InboxItem({ item }: InboxItemProps) {
     return item.private_message.published;
   }
 
+  function getIcon() {
+    if ("person_mention" in item) return personCircle;
+    if ("comment_reply" in item) {
+      if (isPostReply(item)) return albums;
+      return chatbubble;
+    }
+    if ("private_message" in item) return mail;
+  }
+
   async function markRead() {
-    if (!jwt) throw new Error("needs auth");
-
-    const initialRead = !!readByInboxItemId[getInboxItemId(item)];
-
-    dispatch(setReadStatus({ item, read: true }));
-
     try {
-      if ("person_mention" in item) {
-        await client.markPersonMentionAsRead({
-          read: true,
-          person_mention_id: item.person_mention.id,
-          auth: jwt,
-        });
-      } else if ("comment_reply" in item) {
-        await client.markCommentReplyAsRead({
-          read: true,
-          comment_reply_id: item.comment_reply.id,
-          auth: jwt,
-        });
-      } else if ("private_message" in item) {
-        await client.markPrivateMessageAsRead({
-          read: true,
-          private_message_id: item.private_message.id,
-          auth: jwt,
-        });
-      }
+      await dispatch(markReadAction(item, true));
     } catch (error) {
-      dispatch(setReadStatus({ item, read: initialRead }));
       present({
         message: "Failed to mark item as read",
         duration: 3500,
@@ -195,35 +228,50 @@ export default function InboxItem({ item }: InboxItemProps) {
 
       throw error;
     }
-
-    dispatch(getInboxCounts());
   }
 
+  const contents = (
+    <StyledIonItem
+      routerLink={getLink()}
+      href={undefined}
+      detail={false}
+      onClick={markRead}
+      read={!!readByInboxItemId[getInboxItemId(item)]}
+    >
+      <Container>
+        <StartContent>
+          <IonIcon icon={getIcon()} color="medium" />
+          <VoteArrow vote={vote} />
+        </StartContent>
+        <Content>
+          <Header>{renderHeader()}</Header>
+          <Body>
+            <CommentMarkdown>{renderContents()}</CommentMarkdown>
+          </Body>
+          <Footer>
+            <div>{renderFooterDetails()}</div>
+            <aside>
+              <EllipsisIcon icon={ellipsisHorizontal} />{" "}
+              <Ago date={getDate()} />
+            </aside>
+          </Footer>
+        </Content>
+      </Container>
+    </StyledIonItem>
+  );
+
+  if ("comment" in item)
+    return (
+      <>
+        <SlidingInbox item={item}>{contents}</SlidingInbox>
+        <Hr />
+      </>
+    );
+
   return (
-    <DraggingVote onVote={() => {}} currentVote={0} onReply={() => {}}>
-      <StyledIonItem
-        routerLink={getLink()}
-        href={undefined}
-        detail={false}
-        onClick={markRead}
-        read={!!readByInboxItemId[getInboxItemId(item)]}
-      >
-        <MaxWidthContainer>
-          <Content>
-            <Header>{renderHeader()}</Header>
-            <Body>
-              <CommentMarkdown>{renderContents()}</CommentMarkdown>
-            </Body>
-            <Footer>
-              <div>{renderFooterDetails()}</div>
-              <aside>
-                <EllipsisIcon icon={ellipsisHorizontal} />{" "}
-                <Ago date={getDate()} />
-              </aside>
-            </Footer>
-          </Content>
-        </MaxWidthContainer>
-      </StyledIonItem>
-    </DraggingVote>
+    <>
+      {contents}
+      <Hr />
+    </>
   );
 }

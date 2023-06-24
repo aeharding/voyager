@@ -8,8 +8,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useCallback, useRef } from "react";
-import { PageContext } from "../../../features/auth/PageContext";
+import { useCallback } from "react";
 import { FetchFn } from "../../../features/feed/Feed";
 import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
@@ -22,7 +21,6 @@ import CommunityFeed from "../../../features/feed/CommunityFeed";
 export default function SearchCommunitiesPage() {
   const { search } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const pageRef = useRef<HTMLElement | undefined>();
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
 
@@ -41,7 +39,7 @@ export default function SearchCommunitiesPage() {
   );
 
   return (
-    <IonPage ref={pageRef}>
+    <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -59,9 +57,7 @@ export default function SearchCommunitiesPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <PageContext.Provider value={{ page: pageRef.current }}>
-          <CommunityFeed fetchFn={fetchFn} />
-        </PageContext.Provider>
+        <CommunityFeed fetchFn={fetchFn} />
       </IonContent>
     </IonPage>
   );
