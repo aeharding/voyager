@@ -1,5 +1,6 @@
 import {
   IonBackButton,
+  IonButton,
   IonButtons,
   IonHeader,
   IonIcon,
@@ -11,11 +12,15 @@ import {
 import {
   addOutline,
   checkmarkCircleOutline,
+  download,
   shareOutline,
 } from "ionicons/icons";
 import AppContent from "../../features/shared/AppContent";
 import styled from "@emotion/styled";
-import { isInstalled } from "../../helpers/device";
+import { isInstallable, isInstalled, ua } from "../../helpers/device";
+import { useContext } from "react";
+import { BeforeInstallPromptContext } from "../../BeforeInstallPromptProvider";
+import { css } from "@emotion/react";
 
 const Container = styled.div`
   line-height: 1.5;
@@ -42,6 +47,125 @@ const AppContainer = styled.div`
 `;
 
 export default function InstallAppPage() {
+  const beforeInstallPrompt = useContext(BeforeInstallPromptContext);
+
+  function renderGuidance() {
+    const why = (
+      <>
+        <h3>Why</h3>
+        <ol>
+          <li>Easy access from your home screen</li>
+          <li>Less Jank — Better page transitions and gestures</li>
+          <li>Push notifications and badging — coming soon!</li>
+        </ol>
+      </>
+    );
+
+    if (isInstalled()) {
+      return (
+        <>
+          <h3>
+            <IonIcon icon={checkmarkCircleOutline} color="success" /> App
+            Installed
+          </h3>
+          <IonText color="medium">
+            <p>Congrats, you&apos;re browsing from the app!</p>
+          </IonText>
+        </>
+      );
+    }
+
+    if (beforeInstallPrompt.event) {
+      return (
+        <>
+          <h3>How to get the App</h3>
+
+          <p>
+            <IonButton
+              color="primary"
+              onClick={async () => {
+                try {
+                  await beforeInstallPrompt.event?.prompt();
+                } finally {
+                  beforeInstallPrompt.clearEvent();
+                }
+              }}
+            >
+              <IonIcon
+                icon={download}
+                css={css`
+                  margin-right: 0.65rem;
+                `}
+              />{" "}
+              Install App
+            </IonButton>
+          </p>
+
+          {why}
+        </>
+      );
+    }
+
+    if (ua.getDevice().vendor === "Apple" && navigator.maxTouchPoints > 1) {
+      return (
+        <>
+          <h3>How to get the App</h3>
+          <ol>
+            <li>
+              Tap <IonIcon icon={shareOutline} color="primary" /> from the
+              Safari tab bar
+            </li>
+            <li>
+              Scroll and tap Add to Home Screen <IonIcon icon={addOutline} />
+            </li>
+          </ol>
+
+          {why}
+        </>
+      );
+    }
+
+    if (isInstallable) {
+      return (
+        <>
+          <h3>How to get the App</h3>
+          <ol>
+            <li>
+              You may have the app already installed. Check your homescreen!
+            </li>
+            <li>
+              If not, check for an &quot;install app&quot; button in your
+              browser&apos;s controls
+            </li>
+          </ol>
+
+          {why}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <h3>How to get the App</h3>
+        <ol>
+          <li>
+            Install the app by visiting{" "}
+            <span
+              css={css`
+                text-decoration: underline;
+              `}
+            >
+              https://wefwef.app/settings/install
+            </span>{" "}
+            from your phone or tablet.
+          </li>
+        </ol>
+
+        {why}
+      </>
+    );
+  }
+
   return (
     <IonPage className="grey-bg">
       <IonHeader>
@@ -56,44 +180,13 @@ export default function InstallAppPage() {
       <AppContent scrollY>
         <Container className="ion-padding">
           <AppContainer>
-            <img src="/logo.jpg" alt="" />
+            <img src="/logo.png" alt="" />
             <div>
               wefwef<aside>by Alexander Harding</aside>
             </div>
           </AppContainer>
 
-          {!isInstalled() ? (
-            <>
-              <h3>How to get the App</h3>
-              <ol>
-                <li>
-                  Tap <IonIcon icon={shareOutline} color="primary" /> from the
-                  Safari tab bar
-                </li>
-                <li>
-                  Scroll and tap Add to Home Screen{" "}
-                  <IonIcon icon={addOutline} />
-                </li>
-              </ol>
-
-              <h3>Why</h3>
-              <ol>
-                <li>Easy access from your home screen</li>
-                <li>Less Jank — Better page transitions and gestures</li>
-                <li>Push notifications and badging — coming soon!</li>
-              </ol>
-            </>
-          ) : (
-            <>
-              <h3>
-                <IonIcon icon={checkmarkCircleOutline} color="success" /> App
-                Installed
-              </h3>
-              <IonText color="medium">
-                <p>Congrats, you&apos;re browsing from the app!</p>
-              </IonText>
-            </>
-          )}
+          {renderGuidance()}
         </Container>
       </AppContent>
     </IonPage>

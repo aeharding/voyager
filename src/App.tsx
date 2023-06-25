@@ -25,24 +25,28 @@ import TabbedRoutes from "./TabbedRoutes";
 import Auth from "./Auth";
 import { AppContextProvider } from "./features/auth/AppContext";
 import Router from "./Router";
+import BeforeInstallPromptProvider from "./BeforeInstallPromptProvider";
 
 setupIonicReact({
   rippleEffect: false,
   mode: "ios",
   swipeBackEnabled: isInstalled(),
+  hardwareBackButton: true,
 });
 
 export default function App() {
   return (
     <AppContextProvider>
       <Provider store={store}>
-        <IonApp>
-          <Router>
-            <Auth>
-              <TabbedRoutes />
-            </Auth>
-          </Router>
-        </IonApp>
+        <BeforeInstallPromptProvider>
+          <IonApp>
+            <Router>
+              <Auth>
+                <TabbedRoutes />
+              </Auth>
+            </Router>
+          </IonApp>
+        </BeforeInstallPromptProvider>
       </Provider>
     </AppContextProvider>
   );

@@ -5,3 +5,10 @@ export function isInstalled(): boolean {
 }
 
 export const ua = new UAParser(navigator.userAgent);
+
+export const isInstallable =
+  ua.getDevice().type === "mobile" || ua.getDevice().type === "tablet";
+
+export function isAppleDeviceInstalledToHomescreen(): boolean {
+  return ua.getDevice().vendor === "Apple" && isInstalled();
+}

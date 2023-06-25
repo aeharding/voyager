@@ -3,19 +3,46 @@
   "name": "wefwef",
   "icons": [
     {
-      "src": "/logo.jpg",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "/logo.jpg",
+      "src": "/logo.png",
       "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
+      "sizes": "256x256",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff"
+  "theme_color": "#000",
+  "background_color": "#000",
+  "description": "wefwef is a beautiful mobile web client for lemmy. Enjoy a seamless experience browsing the fediverse.",
+  "categories": ["social", "news"],
+  "screenshots": [
+    {
+      "src": "/screenshots/android/1.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Subscribe across the Fediverse"
+    },
+    {
+      "src": "/screenshots/android/2.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "All your feeds with infinite scrolling"
+    },
+    {
+      "src": "/screenshots/android/3.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Gestures. Tapping is meh."
+    },
+    {
+      "src": "/screenshots/android/4.png",
+      "sizes": "1284x2778",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "View profile and say hi"
+    }
+  ]
 }

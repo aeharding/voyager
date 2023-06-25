@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://wefwef.app" target="_blank" rel="noopener noreferrer">
-    <img width="160" height="160" src="./public/logo.jpg" alt="wefwef logo">
+    <img width="160" height="160" src="./public/logo.png" alt="wefwef logo">
   </a>
 </p>
 
