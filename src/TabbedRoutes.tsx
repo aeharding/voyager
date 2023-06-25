@@ -72,6 +72,7 @@ export default function TabbedRoutes() {
   const iss = useAppSelector(jwtIssSelector);
 
   const isPostsButtonDisabled = location.pathname.startsWith("/posts");
+  const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
   const isProfileButtonDisabled = location.pathname.startsWith("/profile");
   const isSearchButtonDisabled = location.pathname.startsWith("/search");
 
@@ -94,6 +95,14 @@ export default function TabbedRoutes() {
         "back"
       );
     }
+  }
+
+  async function onInboxClick() {
+    if (!isInboxButtonDisabled) return;
+
+    if (await scrollUpIfNeeded()) return;
+
+    router.push(`/inbox`, "back");
   }
 
   async function onProfileClick() {
@@ -306,12 +315,17 @@ export default function TabbedRoutes() {
             <IonLabel>Posts</IonLabel>
             <Interceptor onClick={onPostsClick} />
           </IonTabButton>
-          <IonTabButton tab="inbox" href="/inbox">
+          <IonTabButton
+            disabled={isInboxButtonDisabled}
+            tab="inbox"
+            href="/inbox"
+          >
             <IonIcon aria-hidden="true" icon={fileTray} />
             <IonLabel>Inbox</IonLabel>
             {totalUnread ? (
               <IonBadge color="danger">{totalUnread}</IonBadge>
             ) : undefined}
+            <Interceptor onClick={onInboxClick} />
           </IonTabButton>
           <IonTabButton
             disabled={isProfileButtonDisabled}
