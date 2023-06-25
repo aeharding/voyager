@@ -2,25 +2,36 @@ import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { GetSiteResponse, LemmyHttp } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import Cookies from "js-cookie";
-import { LemmyJWT } from "../../helpers/lemmy";
+import { LemmyJWT, getRemoteHandle } from "../../helpers/lemmy";
 import { resetPosts } from "../post/postSlice";
 import { getClient } from "../../services/lemmy";
 import { resetComments } from "../comment/commentSlice";
 import { resetUsers } from "../user/userSlice";
 import { resetInbox } from "../inbox/inboxSlice";
+import { differenceWith, uniqBy } from "lodash";
+
+const MULTI_ACCOUNT_COOKIE_NAME = "credentials";
+
+interface Credential {
+  jwt: string;
+  handle: string;
+}
+
+type CookiePayload = {
+  accounts: Credential[];
+  activeAccountHandle: string;
+};
 
 interface PostState {
-  jwt: string | undefined;
+  accountData: CookiePayload | undefined;
   site: GetSiteResponse | undefined;
   connectedInstance: string;
 }
 
-const COOKIE_NAME = "jwt";
-
 const initialState: (connectedInstance?: string) => PostState = (
   connectedInstance = ""
 ) => ({
-  jwt: Cookies.get(COOKIE_NAME),
+  accountData: getCookie(),
   site: undefined,
   connectedInstance,
 });
@@ -29,10 +40,59 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    updateToken: (state, action: PayloadAction<string>) => {
-      state.jwt = action.payload;
+    addAccount: (state, action: PayloadAction<Credential>) => {
+      if (!state.accountData) {
+        state.accountData = {
+          accounts: [action.payload],
+          activeAccountHandle: action.payload.handle,
+        };
+      }
+
+      const accounts = uniqBy(
+        [action.payload, ...state.accountData.accounts],
+        (c) => c.handle
+      );
+
+      state.accountData = {
+        accounts,
+        activeAccountHandle: action.payload.handle,
+      };
+
+      updateCookie(state.accountData);
     },
-    reset: (state) => initialState(state.connectedInstance),
+    removeAccount: (state, action: PayloadAction<string>) => {
+      if (!state.accountData) return;
+
+      const accounts = differenceWith(
+        state.accountData.accounts,
+        [action.payload],
+        (a, b) => a.handle === b
+      );
+
+      if (accounts.length === 0) {
+        state.accountData = undefined;
+        updateCookie(undefined);
+        return;
+      }
+
+      state.accountData.accounts = accounts;
+      if (state.accountData.activeAccountHandle === action.payload) {
+        state.accountData.activeAccountHandle = accounts[0].handle;
+      }
+
+      updateCookie(state.accountData);
+    },
+    setPrimaryAccount: (state, action: PayloadAction<string>) => {
+      if (!state.accountData) return;
+
+      state.accountData.activeAccountHandle = action.payload;
+    },
+
+    reset: (state) => {
+      Cookies.remove(MULTI_ACCOUNT_COOKIE_NAME);
+      return initialState(state.connectedInstance);
+    },
+
     updateUserDetails(state, action: PayloadAction<GetSiteResponse>) {
       state.site = action.payload;
     },
@@ -44,7 +104,9 @@ export const authSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-  updateToken,
+  addAccount,
+  removeAccount,
+  setPrimaryAccount,
   reset,
   updateUserDetails,
   updateConnectedInstance,
@@ -52,9 +114,18 @@ export const {
 
 export default authSlice.reducer;
 
-export const jwtPayloadSelector = createSelector(
-  [(state: RootState) => state.auth.jwt],
-  (jwt) => (jwt ? parseJWT(jwt) : undefined)
+export const jwtSelector = createSelector(
+  [
+    (state: RootState) => state.auth.accountData?.accounts,
+    (state: RootState) => state.auth.accountData?.activeAccountHandle,
+  ],
+  (accounts, activeAccountHandle) => {
+    return accounts?.find(({ handle }) => handle === activeAccountHandle)?.jwt;
+  }
+);
+
+export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
+  jwt ? parseJWT(jwt) : undefined
 );
 
 export const jwtIssSelector = (state: RootState) =>
@@ -88,12 +159,12 @@ export const login =
       throw new Error("broke");
     }
 
-    Cookies.set(COOKIE_NAME, res.jwt, {
-      expires: 365,
-      secure: import.meta.env.PROD,
-      sameSite: "strict",
-    });
-    dispatch(updateToken(res.jwt));
+    const site = await client.getSite({ auth: res.jwt });
+    const myUser = site.my_user?.local_user_view?.person;
+
+    if (!myUser) throw new Error("broke");
+
+    dispatch(addAccount({ jwt: res.jwt, handle: getRemoteHandle(myUser) }));
     dispatch(updateConnectedInstance(parseJWT(res.jwt).iss));
   };
 
@@ -106,20 +177,42 @@ export const getSite =
     const { iss } = jwtPayload;
 
     const details = await new LemmyHttp(`/api/${iss}`).getSite({
-      auth: getState().auth.jwt,
+      auth: jwtSelector(getState()),
     });
 
     dispatch(updateUserDetails(details));
   };
 
-export const logout = () => async (dispatch: AppDispatch) => {
-  Cookies.remove(COOKIE_NAME);
+export const logoutEverything = () => async (dispatch: AppDispatch) => {
   dispatch(reset());
   dispatch(resetPosts());
   dispatch(resetComments());
   dispatch(resetUsers());
   dispatch(resetInbox());
 };
+
+export const changeAccount =
+  (handle: string) => async (dispatch: AppDispatch) => {
+    dispatch(resetPosts());
+    dispatch(resetComments());
+    dispatch(resetUsers());
+    dispatch(resetInbox());
+    dispatch(setPrimaryAccount(handle));
+  };
+
+export const logoutAccount =
+  (handle: string) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    // Going to need to change active accounts
+    if (handle === getState().auth.accountData?.activeAccountHandle) {
+      dispatch(resetPosts());
+      dispatch(resetComments());
+      dispatch(resetUsers());
+      dispatch(resetInbox());
+    }
+
+    dispatch(removeAccount(handle));
+  };
 
 function parseJWT(payload: string): LemmyJWT {
   const base64 = payload.split(".")[1];
@@ -134,3 +227,22 @@ export const clientSelector = createSelector(
     return getClient(iss ?? connectedInstance);
   }
 );
+
+function updateCookie(accounts: CookiePayload | undefined) {
+  if (!accounts) {
+    Cookies.remove(MULTI_ACCOUNT_COOKIE_NAME);
+    return;
+  }
+
+  Cookies.set(MULTI_ACCOUNT_COOKIE_NAME, JSON.stringify(accounts), {
+    expires: 365,
+    secure: import.meta.env.PROD,
+    sameSite: "strict",
+  });
+}
+
+function getCookie(): CookiePayload | undefined {
+  const cookie = Cookies.get(MULTI_ACCOUNT_COOKIE_NAME);
+  if (!cookie) return;
+  return JSON.parse(cookie);
+}

@@ -19,6 +19,7 @@ import Login from "../../auth/Login";
 import { voteOnPost } from "../../post/postSlice";
 import { voteError } from "../../../helpers/toastMessages";
 import { voteOnComment } from "../../comment/commentSlice";
+import { jwtSelector } from "../../auth/authSlice";
 
 const VoteArrow = styled(IonIcon)<{
   slash: boolean;
@@ -59,7 +60,7 @@ export default function BaseSlidingVote({
   const pageContext = useContext(PageContext);
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById

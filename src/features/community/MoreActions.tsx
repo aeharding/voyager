@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { followCommunity } from "./communitySlice";
 import { PageContext } from "../auth/PageContext";
 import Login from "../auth/Login";
+import { jwtSelector } from "../auth/authSlice";
 
 interface MoreActionsProps {
   community: string;
@@ -20,7 +21,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
 
   const pageContext = useContext(PageContext);
   const [login, onDismiss] = useIonModal(Login, {

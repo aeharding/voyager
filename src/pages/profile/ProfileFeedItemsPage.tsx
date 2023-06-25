@@ -20,6 +20,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
+import { jwtSelector } from "../../features/auth/authSlice";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -37,7 +38,7 @@ export default function ProfileFeedItemsPage({
 }: ProfileFeedItemsPageProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { handle } = useParams<{ handle: string }>();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(

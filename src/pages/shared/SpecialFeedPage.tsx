@@ -18,6 +18,7 @@ import { useAppSelector } from "../../store";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
+import { jwtSelector } from "../../features/auth/authSlice";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -28,7 +29,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {

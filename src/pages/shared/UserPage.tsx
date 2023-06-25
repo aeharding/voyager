@@ -35,7 +35,6 @@ export const PageContentIonSpinner = styled(IonSpinner)`
 interface UserPageProps {
   handle?: string;
   toolbar?: React.ReactNode;
-  hideBack?: boolean;
 }
 
 export default function UserPage(props: UserPageProps) {
@@ -82,12 +81,10 @@ export default function UserPage(props: UserPageProps) {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            {!props.hideBack && <IonBackButton />}
+            {!props.toolbar ? <IonBackButton /> : props.toolbar}
           </IonButtons>
 
           <IonTitle>{handle}</IonTitle>
-
-          <IonButtons slot="end">{props.toolbar}</IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>

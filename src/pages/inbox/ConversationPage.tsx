@@ -14,7 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store";
 import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
-import { jwtPayloadSelector } from "../../features/auth/authSlice";
+import { jwtPayloadSelector, jwtSelector } from "../../features/auth/authSlice";
 import {
   receivedMessages,
   syncMessages,
@@ -114,7 +114,7 @@ export default function ConversationPage() {
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
   );

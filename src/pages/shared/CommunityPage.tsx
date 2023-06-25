@@ -20,6 +20,7 @@ import { LIMIT } from "../../services/lemmy";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
+import { jwtSelector } from "../../features/auth/authSlice";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -34,7 +35,7 @@ export default function CommunityPage() {
 
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {

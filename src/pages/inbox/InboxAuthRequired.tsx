@@ -2,6 +2,7 @@ import React from "react";
 import { useAppSelector } from "../../store";
 import { Redirect } from "react-router";
 import UseIonViewIsVisible from "../../helpers/useIonViewIsVisible";
+import { jwtSelector } from "../../features/auth/authSlice";
 
 interface InboxAuthRequiredProps {
   children: React.ReactNode;
@@ -10,7 +11,7 @@ interface InboxAuthRequiredProps {
 export default function InboxAuthRequired({
   children,
 }: InboxAuthRequiredProps) {
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
 
   const isVisible = UseIonViewIsVisible();
 

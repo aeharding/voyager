@@ -27,7 +27,13 @@ export function getItemActorName(item: Pick<Community, "actor_id">) {
 export function getHandle(
   item: Pick<Community, "name" | "actor_id" | "local">
 ) {
-  return item.local ? item.name : `${item.name}@${getItemActorName(item)}`;
+  return item.local ? item.name : getRemoteHandle(item);
+}
+
+export function getRemoteHandle(
+  item: Pick<Community, "name" | "actor_id" | "local">
+) {
+  return `${item.name}@${getItemActorName(item)}`;
 }
 
 export function buildCommentsTree(

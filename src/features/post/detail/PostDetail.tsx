@@ -37,6 +37,7 @@ import CommunityLink from "../../labels/links/CommunityLink";
 import Video from "../../shared/Video";
 import { css } from "@emotion/react";
 import { PageContext } from "../../auth/PageContext";
+import { jwtSelector } from "../../auth/authSlice";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -127,7 +128,7 @@ export default function PostDetail() {
     commentPath?: string;
     community: string;
   }>();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const [collapsed, setCollapsed] = useState(!!commentPath);
   const post = useAppSelector((state) => state.post.postById[id]);
   const dispatch = useAppDispatch();

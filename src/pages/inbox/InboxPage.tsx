@@ -18,6 +18,7 @@ import {
 } from "../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { InboxItemView } from "../../features/inbox/InboxItem";
+import { jwtSelector } from "../../features/auth/authSlice";
 
 interface InboxPageProps {
   showRead?: boolean;
@@ -25,7 +26,7 @@ interface InboxPageProps {
 
 export default function InboxPage({ showRead }: InboxPageProps) {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id

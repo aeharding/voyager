@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { PageContext } from "../auth/PageContext";
 import { voteOnComment } from "../comment/commentSlice";
 import { voteError } from "../../helpers/toastMessages";
+import { jwtSelector } from "../auth/authSlice";
 
 const Container = styled.div<{ vote: 1 | -1 | 0 | undefined }>`
   display: flex;
@@ -50,7 +51,7 @@ export default function Vote({
   const myVote = votesById[id] ?? voteFromServer;
   const score = existingScore - (voteFromServer ?? 0) + (votesById[id] ?? 0);
 
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const [login, onDismiss] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismiss(data, role),
   });
