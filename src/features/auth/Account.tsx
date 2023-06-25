@@ -37,21 +37,14 @@ export default function Account({ editing, account }: AccountProps) {
   const dispatch = useAppDispatch();
   const slidingRef = useRef<ItemSlidingCustomEvent["target"]>(null);
 
+  function logout() {
+    dispatch(logoutAccount(account.handle));
+  }
+
   return (
     <IonItemSliding ref={slidingRef}>
-      <IonItemOptions
-        side="end"
-        onIonSwipe={(e) => {
-          dispatch(logoutAccount(e.detail.value));
-        }}
-      >
-        <IonItemOption
-          color="danger"
-          expandable
-          onClick={() => {
-            dispatch(logoutAccount(account.handle));
-          }}
-        >
+      <IonItemOptions side="end" onIonSwipe={logout}>
+        <IonItemOption color="danger" expandable onClick={logout}>
           Log out
         </IonItemOption>
       </IonItemOptions>

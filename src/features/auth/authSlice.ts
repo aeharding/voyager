@@ -200,12 +200,16 @@ export const logoutEverything = () => async (dispatch: AppDispatch) => {
 };
 
 export const changeAccount =
-  (handle: string) => async (dispatch: AppDispatch) => {
+  (handle: string) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
     dispatch(resetPosts());
     dispatch(resetComments());
     dispatch(resetUsers());
     dispatch(resetInbox());
     dispatch(setPrimaryAccount(handle));
+
+    const iss = jwtIssSelector(getState());
+    if (iss) dispatch(updateConnectedInstance(iss));
   };
 
 export const logoutAccount =

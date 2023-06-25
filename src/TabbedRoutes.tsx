@@ -262,7 +262,7 @@ export default function TabbedRoutes() {
           {...buildGeneralBrowseRoutes("inbox")}
 
           <Route exact path="/profile">
-            <ProfilePage />
+            <ProfilePage key={jwt} />
           </Route>
           {...buildGeneralBrowseRoutes("profile")}
 
