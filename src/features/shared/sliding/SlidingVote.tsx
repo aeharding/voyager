@@ -7,6 +7,9 @@ import CommentReply from "../../comment/reply/CommentReply";
 import { PageContext } from "../../auth/PageContext";
 import { PostContext } from "../../post/detail/PostContext";
 import BaseSlidingVote from "./BaseSlidingVote";
+import { useAppSelector } from "../../../store";
+import { jwtSelector } from "../../auth/authSlice";
+import Login from "../../auth/Login";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -21,6 +24,11 @@ export default function SlidingVote({
 }: SlidingVoteProps) {
   const { refreshPost } = useContext(PostContext);
   const pageContext = useContext(PageContext);
+  const jwt = useAppSelector(jwtSelector);
+
+  const [login, onDismissLogin] = useIonModal(Login, {
+    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
+  });
 
   const [reply, onDismissReply] = useIonModal(CommentReply, {
     onDismiss: (data: string, role: string) => {
@@ -34,11 +42,15 @@ export default function SlidingVote({
     return [
       {
         render: arrowUndo,
-        trigger: () => reply({ presentingElement: pageContext.page }),
+        trigger: () => {
+          if (!jwt) return login({ presentingElement: pageContext.page });
+
+          reply({ presentingElement: pageContext.page });
+        },
         bgColor: "primary",
       },
     ];
-  }, [pageContext.page, reply]);
+  }, [pageContext.page, reply, jwt, login]);
 
   return (
     <BaseSlidingVote endActions={endActions} className={className} item={item}>
