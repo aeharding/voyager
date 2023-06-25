@@ -1,6 +1,6 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSlice";
+import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { CommentView } from "lemmy-js-client";
 
 interface CommentState {
@@ -60,7 +60,7 @@ export const voteOnComment =
 
     dispatch(updateCommentVote({ commentId, vote }));
 
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
 
     if (!jwt) throw new Error("Not authorized");
 

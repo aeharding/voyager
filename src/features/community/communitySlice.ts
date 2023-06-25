@@ -1,6 +1,6 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSlice";
+import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { CommunityResponse, CommunityView } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
 
@@ -41,7 +41,7 @@ export default communitySlice.reducer;
 export const getCommunity =
   (handle: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
 
     const community = await clientSelector(getState())?.getCommunity({
       name: handle,
@@ -53,7 +53,7 @@ export const getCommunity =
 export const followCommunity =
   (follow: boolean, handle: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
 
     const id =
       getState().community.communityByHandle[handle]?.community_view.community

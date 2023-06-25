@@ -1,7 +1,7 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSlice";
+import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { InboxItemView } from "./InboxItem";
 import { differenceBy, uniqBy } from "lodash";
 import { receivedUsers } from "../user/userSlice";
@@ -97,7 +97,7 @@ export const totalUnreadSelector = (state: RootState) =>
 
 export const getInboxCounts =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
 
     if (!jwt) {
       dispatch(resetInbox());
@@ -117,7 +117,7 @@ export const getInboxCounts =
 
 export const syncMessages =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
 
     if (!jwt) {
       dispatch(resetInbox());
@@ -173,7 +173,7 @@ export const syncMessages =
 
 export const markAllRead =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
 
     if (!jwt) return;
 
@@ -221,7 +221,7 @@ export function getInboxItemPublished(item: InboxItemView): string {
 export const markRead =
   (item: InboxItemView, read: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
     const client = clientSelector(getState());
 
     if (!jwt) throw new Error("needs auth");

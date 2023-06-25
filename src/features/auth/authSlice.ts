@@ -86,6 +86,8 @@ export const authSlice = createSlice({
       if (!state.accountData) return;
 
       state.accountData.activeAccountHandle = action.payload;
+
+      updateCookie(state.accountData);
     },
 
     reset: (state) => {

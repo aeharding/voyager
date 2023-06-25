@@ -1,7 +1,7 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { PostView, SortType } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSlice";
+import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { POST_SORTS } from "../feed/PostSort";
 
 const POST_SORT_KEY = "post-sort";
@@ -58,7 +58,7 @@ export const voteOnPost =
 
     dispatch(updatePostVote({ postId, vote }));
 
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
 
     if (!jwt) throw new Error("Not authorized");
 
@@ -77,7 +77,7 @@ export const voteOnPost =
 
 export const getPost =
   (id: number) => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
 
     const result = await clientSelector(getState()).getPost({
       id,

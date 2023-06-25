@@ -16,7 +16,6 @@ import {
 import Ago from "../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
-import useClient from "../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
 import { css } from "@emotion/react";
