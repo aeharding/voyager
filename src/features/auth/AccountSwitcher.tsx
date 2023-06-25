@@ -4,13 +4,8 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
-  IonItem,
-  IonItemOption,
-  IonItemOptions,
-  IonItemSliding,
   IonList,
   IonPage,
-  IonRadio,
   IonRadioGroup,
   IonTitle,
   IonToolbar,
@@ -18,8 +13,10 @@ import {
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { changeAccount, logoutAccount } from "./authSlice";
+import { changeAccount } from "./authSlice";
 import Login from "./Login";
+import { useEffect, useState } from "react";
+import Account from "./Account";
 
 interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
@@ -32,61 +29,59 @@ export default function AccountSwitcher({
 }: AccountSwitcherProps) {
   const dispatch = useAppDispatch();
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
-  const activeAccountHandle = useAppSelector(
-    (state) => state.auth.accountData?.activeAccountHandle
+  const activeHandle = useAppSelector(
+    (state) => state.auth.accountData?.activeHandle
   );
+  const [editing, setEditing] = useState(false);
 
   const [login, onDismissLogin] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismissLogin(data, role),
   });
+
+  useEffect(() => {
+    if (accounts?.length) return;
+
+    onDismiss();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accounts]);
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => onDismiss()}>
-              Cancel
-            </IonButton>
+            {editing ? (
+              <IonButton onClick={() => login({ presentingElement: page })}>
+                <IonIcon icon={add} />
+              </IonButton>
+            ) : (
+              <IonButton onClick={() => onDismiss()}>Cancel</IonButton>
+            )}
           </IonButtons>
           <IonTitle>Accounts</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={() => login({ presentingElement: page })}>
-              <IonIcon icon={add} />
-            </IonButton>
+            {editing ? (
+              <IonButton onClick={() => setEditing(false)}>Done</IonButton>
+            ) : (
+              <IonButton onClick={() => setEditing(true)}>Edit</IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <IonRadioGroup
-          value={activeAccountHandle}
+          value={activeHandle}
           onIonChange={(e) => {
             dispatch(changeAccount(e.target.value));
           }}
         >
           <IonList>
             {accounts?.map((account) => (
-              <IonItemSliding key={account.handle}>
-                <IonItemOptions
-                  side="end"
-                  onIonSwipe={(e) => {
-                    dispatch(logoutAccount(e.detail.value));
-                  }}
-                >
-                  <IonItemOption
-                    color="danger"
-                    expandable
-                    onClick={() => {
-                      dispatch(logoutAccount(account.handle));
-                    }}
-                  >
-                    Log out
-                  </IonItemOption>
-                </IonItemOptions>
-                <IonItem>
-                  <IonRadio value={account.handle}>{account.handle}</IonRadio>
-                </IonItem>
-              </IonItemSliding>
+              <Account
+                key={account.handle}
+                account={account}
+                editing={editing}
+              />
             ))}
           </IonList>
         </IonRadioGroup>

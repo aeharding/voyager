@@ -27,9 +27,8 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
   left: 50%;
-  transform: translateX(-50%);
-
-  margin-top: 5rem;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 interface UserPageProps {

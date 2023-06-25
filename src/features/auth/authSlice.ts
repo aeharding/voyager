@@ -10,16 +10,25 @@ import { resetUsers } from "../user/userSlice";
 import { resetInbox } from "../inbox/inboxSlice";
 import { differenceWith, uniqBy } from "lodash";
 
+// 2023-06-25 clean up cookie used for old versions
+Cookies.remove("jwt");
+
 const MULTI_ACCOUNT_COOKIE_NAME = "credentials";
 
-interface Credential {
+/**
+ * DO NOT CHANGE this type. It is persisted in the login cookie
+ */
+export interface Credential {
   jwt: string;
   handle: string;
 }
 
+/**
+ * DO NOT CHANGE this type. It is persisted in the login cookie
+ */
 type CookiePayload = {
   accounts: Credential[];
-  activeAccountHandle: string;
+  activeHandle: string;
 };
 
 interface PostState {
@@ -44,7 +53,7 @@ export const authSlice = createSlice({
       if (!state.accountData) {
         state.accountData = {
           accounts: [action.payload],
-          activeAccountHandle: action.payload.handle,
+          activeHandle: action.payload.handle,
         };
       }
 
@@ -55,7 +64,7 @@ export const authSlice = createSlice({
 
       state.accountData = {
         accounts,
-        activeAccountHandle: action.payload.handle,
+        activeHandle: action.payload.handle,
       };
 
       updateCookie(state.accountData);
@@ -76,8 +85,8 @@ export const authSlice = createSlice({
       }
 
       state.accountData.accounts = accounts;
-      if (state.accountData.activeAccountHandle === action.payload) {
-        state.accountData.activeAccountHandle = accounts[0].handle;
+      if (state.accountData.activeHandle === action.payload) {
+        state.accountData.activeHandle = accounts[0].handle;
       }
 
       updateCookie(state.accountData);
@@ -85,7 +94,7 @@ export const authSlice = createSlice({
     setPrimaryAccount: (state, action: PayloadAction<string>) => {
       if (!state.accountData) return;
 
-      state.accountData.activeAccountHandle = action.payload;
+      state.accountData.activeHandle = action.payload;
 
       updateCookie(state.accountData);
     },
@@ -116,15 +125,19 @@ export const {
 
 export default authSlice.reducer;
 
-export const jwtSelector = createSelector(
+export const activeAccount = createSelector(
   [
     (state: RootState) => state.auth.accountData?.accounts,
-    (state: RootState) => state.auth.accountData?.activeAccountHandle,
+    (state: RootState) => state.auth.accountData?.activeHandle,
   ],
-  (accounts, activeAccountHandle) => {
-    return accounts?.find(({ handle }) => handle === activeAccountHandle)?.jwt;
+  (accounts, activeHandle) => {
+    return accounts?.find(({ handle }) => handle === activeHandle);
   }
 );
+
+export const jwtSelector = createSelector([activeAccount], (account) => {
+  return account?.jwt;
+});
 
 export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
   jwt ? parseJWT(jwt) : undefined
@@ -133,16 +146,9 @@ export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
 export const jwtIssSelector = (state: RootState) =>
   jwtPayloadSelector(state)?.iss;
 
-export const handleSelector = createSelector(
-  [(state: RootState) => state.auth.site, jwtIssSelector],
-  (site, iss) => {
-    const username = site?.my_user?.local_user_view.person.name;
-
-    if (!username) return;
-
-    return `${username}@${iss}`;
-  }
-);
+export const handleSelector = createSelector([activeAccount], (account) => {
+  return account?.handle;
+});
 
 export const login =
   (client: LemmyHttp, username: string, password: string) =>
@@ -206,7 +212,7 @@ export const logoutAccount =
   (handle: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     // Going to need to change active accounts
-    if (handle === getState().auth.accountData?.activeAccountHandle) {
+    if (handle === getState().auth.accountData?.activeHandle) {
       dispatch(resetPosts());
       dispatch(resetComments());
       dispatch(resetUsers());

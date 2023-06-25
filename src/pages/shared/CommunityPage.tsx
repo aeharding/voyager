@@ -7,7 +7,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
-import { useParams } from "react-router";
+import { Redirect, useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
 import PostSort from "../../features/feed/PostSort";
 import MoreActions from "../../features/community/MoreActions";
@@ -25,8 +25,9 @@ import { jwtSelector } from "../../features/auth/authSlice";
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const { community } = useParams<{
+  const { community, actor } = useParams<{
     community: string;
+    actor: string;
   }>();
 
   const communityByHandle = useAppSelector(
@@ -57,6 +58,14 @@ export default function CommunityPage() {
     dispatch(getCommunity(community));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [community]);
+
+  if (community.includes("@") && community.split("@")[1] === actor)
+    return (
+      <Redirect
+        to={buildGeneralBrowseLink(`/c/${community.split("@")[0]}`)}
+        push={false}
+      />
+    );
 
   return (
     <IonPage>
