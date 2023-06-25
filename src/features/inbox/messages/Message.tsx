@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import useClient from "../../../helpers/useClient";
 import { getInboxCounts, receivedMessages } from "../inboxSlice";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { jwtSelector } from "../../auth/authSlice";
 
 const Container = styled.div<{ type: "sent" | "recieved" }>`
   position: relative; /* Setup a relative container for our psuedo elements */
@@ -102,7 +103,7 @@ export default function Message({ message }: MessageProps) {
   const thisIsMyMessage = message.private_message.creator_id === myUserId;
   const [loading, setLoading] = useState(false);
   const client = useClient();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
 
   const containerRef = useRef<HTMLDivElement>(null);
 

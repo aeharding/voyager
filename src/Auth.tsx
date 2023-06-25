@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "./store";
 import {
   getSite,
   jwtIssSelector,
+  jwtSelector,
   updateConnectedInstance,
 } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
@@ -17,7 +18,7 @@ interface AuthProps {
 
 export default function Auth({ children }: AuthProps) {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const iss = useAppSelector(jwtIssSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance

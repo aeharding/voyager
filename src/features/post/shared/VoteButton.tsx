@@ -9,6 +9,7 @@ import { css } from "@emotion/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
+import { jwtSelector } from "../../auth/authSlice";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -37,7 +38,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   const [login, onDismiss] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismiss(data, role),
   });
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const myVote = postVotesById[postId];

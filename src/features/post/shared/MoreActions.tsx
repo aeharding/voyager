@@ -23,6 +23,7 @@ import { voteOnPost } from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentReply from "../../comment/reply/CommentReply";
+import { jwtSelector } from "../../auth/authSlice";
 
 interface MoreActionsProps {
   post: PostView;
@@ -32,7 +33,7 @@ export default function MoreActions({ post }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
 
   const router = useIonRouter();
 

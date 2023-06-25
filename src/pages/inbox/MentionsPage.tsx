@@ -16,10 +16,11 @@ import { PersonMentionView } from "lemmy-js-client";
 import InboxFeed from "../../features/feed/InboxFeed";
 import { receivedInboxItems } from "../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
+import { jwtSelector } from "../../features/auth/authSlice";
 
 export default function MentionsPage() {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
 
   const fetchFn: FetchFn<PersonMentionView> = useCallback(

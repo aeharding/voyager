@@ -27,15 +27,13 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
   left: 50%;
-  transform: translateX(-50%);
-
-  margin-top: 5rem;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 interface UserPageProps {
   handle?: string;
   toolbar?: React.ReactNode;
-  hideBack?: boolean;
 }
 
 export default function UserPage(props: UserPageProps) {
@@ -82,12 +80,10 @@ export default function UserPage(props: UserPageProps) {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            {!props.hideBack && <IonBackButton />}
+            {!props.toolbar ? <IonBackButton /> : props.toolbar}
           </IonButtons>
 
           <IonTitle>{handle}</IonTitle>
-
-          <IonButtons slot="end">{props.toolbar}</IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>

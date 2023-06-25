@@ -20,7 +20,7 @@ import PostDetail from "./features/post/detail/PostDetail";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppSelector } from "./store";
-import { jwtIssSelector } from "./features/auth/authSlice";
+import { jwtIssSelector, jwtSelector } from "./features/auth/authSlice";
 import { POPULAR_SERVERS } from "./helpers/lemmy";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
@@ -60,7 +60,7 @@ export default function TabbedRoutes() {
   const { activePage } = useContext(AppContext);
   const location = useLocation();
   const router = useIonRouter();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
 
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
@@ -188,7 +188,10 @@ export default function TabbedRoutes() {
 
   return (
     <PageContext.Provider value={{ page: pageRef.current as HTMLElement }}>
-      <IonTabs>
+      {/* TODO key={} resets the tab route stack whenever your instance changes. */}
+      {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
+      {/* But this isn't trivial with needing to rewrite URLs... */}
+      <IonTabs key={iss ?? DEFAULT_ACTOR}>
         <IonRouterOutlet ref={pageRef}>
           <Route exact path="/">
             <Redirect

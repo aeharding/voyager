@@ -23,6 +23,7 @@ import { useContext, useMemo, useRef } from "react";
 import { AppContext } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
+import { jwtSelector } from "../../features/auth/authSlice";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -52,7 +53,7 @@ export default function CommunitiesPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { setActivePage } = useContext(AppContext);
   const { actor } = useParams<{ actor: string }>();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const pageRef = useRef();
 
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);

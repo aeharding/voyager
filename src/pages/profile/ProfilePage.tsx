@@ -15,7 +15,7 @@ import {
 import AppContent from "../../features/shared/AppContent";
 import {
   handleSelector,
-  logout,
+  jwtSelector,
   updateConnectedInstance,
 } from "../../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -28,6 +28,8 @@ import UserPage from "../shared/UserPage";
 import { AppContext } from "../../features/auth/AppContext";
 import { swapHorizontalOutline } from "ionicons/icons";
 import { css } from "@emotion/react";
+import AccountSwitcher from "../../features/auth/AccountSwitcher";
+import { PageContext } from "../../features/auth/PageContext";
 
 const Incognito = styled(IncognitoSvg)`
   opacity: 0.1;
@@ -47,12 +49,22 @@ export default function ProfilePage() {
   );
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const [login, onDismiss] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismiss(data, role),
   });
 
+  const pageContext = useContext(PageContext);
   const handle = useAppSelector(handleSelector);
+
+  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
+    AccountSwitcher,
+    {
+      onDismiss: (data: string, role: string) =>
+        onDismissAccountSwitcher(data, role),
+      page: pageContext.page,
+    }
+  );
 
   useIonViewWillEnter(() => {
     if (pageRef.current) setActivePage(pageRef.current);
@@ -61,10 +73,13 @@ export default function ProfilePage() {
   if (jwt)
     return (
       <UserPage
-        hideBack
         handle={handle}
         toolbar={
-          <IonButton onClick={() => dispatch(logout())}>Logout</IonButton>
+          <IonButton
+            onClick={() => presentAccountSwitcher({ cssClass: "small" })}
+          >
+            Accounts
+          </IonButton>
         }
       />
     );

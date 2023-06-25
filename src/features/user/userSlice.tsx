@@ -1,6 +1,6 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSlice";
+import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { getHandle } from "../../helpers/lemmy";
 import { LIMIT } from "../../services/lemmy";
 import { receivedComments } from "../comment/commentSlice";
@@ -36,7 +36,7 @@ export default userSlice.reducer;
 export const getUser =
   (handle: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = getState().auth.jwt;
+    const jwt = jwtSelector(getState());
 
     const personResponse = await clientSelector(getState())?.getPersonDetails({
       username: handle,

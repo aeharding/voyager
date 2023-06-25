@@ -23,10 +23,11 @@ import { getInboxCounts } from "../../features/inbox/inboxSlice";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../features/auth/PageContext";
 import Login from "../../features/auth/Login";
+import { jwtSelector } from "../../features/auth/authSlice";
 
 export default function BoxesPage() {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
 
   const pageContext = useContext(PageContext);
   const [login, onDismiss] = useIonModal(Login, {

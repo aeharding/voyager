@@ -15,6 +15,7 @@ import PostCommentFeed, {
   PostCommentItem,
   isPost,
 } from "../feed/PostCommentFeed";
+import { jwtSelector } from "../auth/authSlice";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -30,7 +31,7 @@ interface ProfileProps {
 
 export default function Profile({ person }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(

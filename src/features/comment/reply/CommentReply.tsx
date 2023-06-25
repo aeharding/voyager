@@ -21,7 +21,7 @@ import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../helpers/useClient";
 import { useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
-import { handleSelector } from "../../auth/authSlice";
+import { handleSelector, jwtSelector } from "../../auth/authSlice";
 
 const Container = styled.div`
   position: absolute;
@@ -61,7 +61,7 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
 
   const [replyContent, setReplyContent] = useState("");
   const client = useClient();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const [present] = useIonToast();
   const [loading, setLoading] = useState(false);
   const userHandle = useAppSelector(handleSelector);

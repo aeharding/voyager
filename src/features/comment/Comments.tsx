@@ -20,6 +20,7 @@ import { getPost } from "../post/postSlice";
 import useClient from "../../helpers/useClient";
 import { AppContext } from "../auth/AppContext";
 import { PostContext } from "../post/detail/PostContext";
+import { jwtSelector } from "../auth/authSlice";
 
 const centerCss = css`
   position: relative;
@@ -61,7 +62,7 @@ export default function Comments({
   op,
 }: CommentsProps) {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector((state) => state.auth.jwt);
+  const jwt = useAppSelector(jwtSelector);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [finishedPaging, setFinishedPaging] = useState(false);

@@ -38,7 +38,7 @@ export default function Feed<I>({
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean | undefined>();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
   const [present] = useIonToast();
@@ -109,7 +109,8 @@ export default function Feed<I>({
     }
   }
 
-  if (loading && !items.length) return <CenteredSpinner />;
+  if ((loading && !items.length) || loading === undefined)
+    return <CenteredSpinner />;
 
   return (
     <>
