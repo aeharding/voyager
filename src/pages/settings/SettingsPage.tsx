@@ -14,11 +14,16 @@ import {
   logoGithub,
   mailOutline,
   openOutline,
+  reload,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { isInstalled } from "../../helpers/device";
+import { useContext } from "react";
+import { UpdateContext } from "./update/UpdateContext";
 
 export default function SettingsPage() {
+  const { status: updateStatus } = useContext(UpdateContext);
+
   return (
     <IonPage className="grey-bg">
       <IonHeader>
@@ -38,6 +43,13 @@ export default function SettingsPage() {
             <IonIcon icon={apps} color="primary" />
             <SettingLabel>Install app</SettingLabel>
             {!isInstalled() && <IonBadge color="danger">1</IonBadge>}
+          </InsetIonItem>
+          <InsetIonItem routerLink="/settings/update">
+            <IonIcon icon={reload} color="primary" />
+            <SettingLabel>Check for updates</SettingLabel>
+            {updateStatus === "outdated" && (
+              <IonBadge color="danger">1</IonBadge>
+            )}
           </InsetIonItem>
         </IonList>
 

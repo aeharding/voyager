@@ -14,11 +14,15 @@ export default defineConfig({
       },
     }),
     svgr(),
-    VitePWA({ registerType: "autoUpdate" }),
+    VitePWA({ registerType: "prompt" }),
     legacy({
       modernPolyfills: ["es.array.at"],
     }),
   ],
+  define: {
+    // eslint-disable-next-line no-undef
+    APP_VERSION: JSON.stringify(process.env.npm_package_version),
+  },
   test: {
     globals: true,
     environment: "jsdom",

@@ -47,6 +47,8 @@ import InboxPage from "./pages/inbox/InboxPage";
 import { PageContext } from "./features/auth/PageContext";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
 import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
+import UpdateAppPage from "./pages/settings/UpdateAppPage";
+import { UpdateContext } from "./pages/settings/update/UpdateContext";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -62,6 +64,10 @@ export default function TabbedRoutes() {
   const router = useIonRouter();
   const jwt = useAppSelector(jwtSelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
+  const { status: updateStatus } = useContext(UpdateContext);
+
+  const settingsNotificationCount =
+    (isInstalled() ? 0 : 1) + (updateStatus === "outdated" ? 1 : 0);
 
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
 
@@ -304,6 +310,9 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/install">
             <InstallAppPage />
           </Route>
+          <Route exact path="/settings/update">
+            <UpdateAppPage />
+          </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton
@@ -348,7 +357,9 @@ export default function TabbedRoutes() {
           <IonTabButton tab="settings" href="/settings">
             <IonIcon aria-hidden="true" icon={cog} />
             <IonLabel>Settings</IonLabel>
-            {!isInstalled() && <IonBadge color="danger">1</IonBadge>}
+            {settingsNotificationCount && (
+              <IonBadge color="danger">{settingsNotificationCount}</IonBadge>
+            )}
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
