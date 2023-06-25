@@ -29,16 +29,17 @@ wefwef is an [Apollo-like](https://apolloapp.io/) open source web client for [Le
 **What does wefwef currently support?**
 
 - Light/dark mode
-- Single thread context view
 - View and subscribe to communities
+- Multi account support
+- Single comment thread context view
 - Upvote, downvote and reply to threads and comments
 - Interact with user profiles
 - Comment thread collapsing
 - A bunch of swipe gestures
+- Messaging, mentions and replies
 
 **What is on the roadmap?**
 
-- Multi account support
 - Creating posts
 - Android theme
 - Native notifications and badging
