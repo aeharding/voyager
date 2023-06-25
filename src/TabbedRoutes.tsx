@@ -306,14 +306,9 @@ export default function TabbedRoutes() {
             <IonLabel>Posts</IonLabel>
             <Interceptor onClick={onPostsClick} />
           </IonTabButton>
-          <IonTabButton
-            // disabled={isSearchButtonDisabled}
-            tab="inbox"
-            href="/inbox"
-          >
+          <IonTabButton tab="inbox" href="/inbox">
             <IonIcon aria-hidden="true" icon={fileTray} />
             <IonLabel>Inbox</IonLabel>
-            <Interceptor onClick={onSearchClick} />
             {totalUnread ? (
               <IonBadge color="danger">{totalUnread}</IonBadge>
             ) : undefined}
