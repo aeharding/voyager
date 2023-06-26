@@ -3,7 +3,12 @@ import { useInterval } from "usehooks-ts";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import usePageVisibility from "../../../helpers/usePageVisibility";
 
-type UpdateStatus = "loading" | "current" | "outdated" | "error";
+type UpdateStatus =
+  | "not-enabled"
+  | "loading"
+  | "current"
+  | "outdated"
+  | "error";
 
 interface IUpdateContext {
   // used for determining whether page needs to be scrolled up first
@@ -24,13 +29,14 @@ export function UpdateContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [status, setStatus] = useState<UpdateStatus>("loading");
+  const [status, setStatus] = useState<UpdateStatus>("not-enabled");
   const pageVisibility = usePageVisibility();
 
   const registration = useRef<ServiceWorkerRegistration>();
 
   const registerSW = useRegisterSW({
     onRegistered(r) {
+      setStatus("loading");
       if (!r) return;
 
       registration.current = r;
@@ -56,7 +62,7 @@ export function UpdateContextProvider({
     const r = registration.current;
 
     if (!r) {
-      if (status === "loading") return;
+      if (status === "not-enabled") return;
       setStatus("error");
       return;
     }

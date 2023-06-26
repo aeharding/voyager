@@ -11,8 +11,8 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000",
-  "background_color": "#000",
+  "theme_color": "#000000",
+  "background_color": "#000000",
   "description": "wefwef is a beautiful mobile web client for lemmy. Enjoy a seamless experience browsing the fediverse.",
   "categories": ["social", "news"],
   "screenshots": [

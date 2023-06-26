@@ -103,6 +103,9 @@ export default function UpdateAppPage() {
           </MaxWidthContainer>
 
           {status === "loading" && <PageContentIonSpinner />}
+          {status === "not-enabled" && (
+            <UpToDateText>Not installed.</UpToDateText>
+          )}
           {status === "error" && (
             <UpToDateText>
               Error checking for updates.
