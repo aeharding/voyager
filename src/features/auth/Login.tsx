@@ -58,6 +58,8 @@ export default function Login({
   const usernameRef = useRef<IonInputCustomEvent<never>["target"]>(null);
   const [loading, setLoading] = useState(false);
   const pageRef = useRef();
+  const [needsTotp, setNeedsTotp] = useState(false);
+  const [totp, setTotp] = useState("");
 
   const [presentTerms, onDismissTerms] = useIonModal(TermsSheet, {
     onDismiss: (data: string, role: string) => onDismissTerms(data, role),
@@ -145,6 +147,16 @@ export default function Login({
       return;
     }
 
+    if (!totp && needsTotp) {
+      present({
+        message: `Please enter your second factor authentication code for ${username}`,
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -152,10 +164,16 @@ export default function Login({
         login(
           new LemmyHttp(`/api/${server ?? customServerHostname}`),
           username,
-          password
+          password,
+          totp
         )
       );
     } catch (error) {
+      if (error === "missing_totp_token") {
+        setNeedsTotp(true);
+        return;
+      }
+
       present({
         message: "Please check your credentials and try again.",
         duration: 3500,
@@ -194,6 +212,10 @@ export default function Login({
                 onClick={() => {
                   if (serverConfirmed) {
                     setServerConfirmed(false);
+                    setNeedsTotp(false);
+                    setUsername("");
+                    setPassword("");
+                    setTotp("");
                     return;
                   }
 
@@ -279,30 +301,53 @@ export default function Login({
           )}
           {serverConfirmed && (
             <>
-              <HelperText>Login to {server ?? customServerHostname}</HelperText>
-              <IonList inset>
-                <IonItem>
-                  <IonInput
-                    ref={usernameRef}
-                    label="Username or email"
-                    autocomplete="username"
-                    inputMode="email"
-                    value={username}
-                    onIonInput={(e) => setUsername(e.target.value as string)}
-                    disabled={loading}
-                  />
-                </IonItem>
-                <IonItem>
-                  <IonInput
-                    label="Password"
-                    type="password"
-                    value={password}
-                    onIonInput={(e) => setPassword(e.target.value as string)}
-                    disabled={loading}
-                    enterkeyhint="done"
-                  />
-                </IonItem>
-              </IonList>
+              <HelperText>
+                {needsTotp ? (
+                  <>
+                    Enter 2nd factor auth code for {username}@
+                    {server ?? customServer}
+                  </>
+                ) : (
+                  <>Login to {server ?? customServerHostname}</>
+                )}
+              </HelperText>
+              {!needsTotp ? (
+                <IonList inset>
+                  <IonItem>
+                    <IonInput
+                      ref={usernameRef}
+                      label="Username or email"
+                      autocomplete="username"
+                      inputMode="email"
+                      value={username}
+                      onIonInput={(e) => setUsername(e.target.value as string)}
+                      disabled={loading}
+                    />
+                  </IonItem>
+                  <IonItem>
+                    <IonInput
+                      label="Password"
+                      type="password"
+                      value={password}
+                      onIonInput={(e) => setPassword(e.target.value as string)}
+                      disabled={loading}
+                      enterkeyhint="done"
+                    />
+                  </IonItem>
+                </IonList>
+              ) : (
+                <IonList inset>
+                  <IonItem>
+                    <IonInput
+                      label="2fa code"
+                      value={totp}
+                      onIonInput={(e) => setTotp(e.target.value as string)}
+                      disabled={loading}
+                      enterkeyhint="done"
+                    />
+                  </IonItem>
+                </IonList>
+              )}
             </>
           )}
         </IonContent>

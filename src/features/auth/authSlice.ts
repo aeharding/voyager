@@ -151,12 +151,16 @@ export const handleSelector = createSelector([activeAccount], (account) => {
 });
 
 export const login =
-  (client: LemmyHttp, username: string, password: string) =>
+  (client: LemmyHttp, username: string, password: string, totp?: string) =>
   async (dispatch: AppDispatch) => {
     let res;
 
     try {
-      res = await client.login({ username_or_email: username, password });
+      res = await client.login({
+        username_or_email: username,
+        password,
+        totp_2fa_token: totp || undefined,
+      });
     } catch (error) {
       // todo
       throw error;
