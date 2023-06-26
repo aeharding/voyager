@@ -25,6 +25,6 @@ export default defineConfig({
     setupFiles: "./src/setupTests.ts",
   },
   optimizeDeps: {
-    exclude: ["mdast-util-gfm-autolink-literal"],
+    exclude: ["mdast-util-gfm-autolink-literal-lemmy"],
   },
 });

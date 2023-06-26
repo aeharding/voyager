@@ -22,10 +22,6 @@ export default function customRemarkGfm(
   add("fromMarkdownExtensions", gfmFromMarkdown());
   add("toMarkdownExtensions", gfmToMarkdown(options));
 
-  /**
-   * @param {string} field
-   * @param {unknown} value
-   */
   function add(field: string, value: unknown) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const list: any = data[field] ? data[field] : (data[field] = []);

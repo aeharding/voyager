@@ -39,9 +39,12 @@ export default function buildCommunityPlugin(connectedInstance: string) {
               newTextNodes.push({ type: "text", value: before });
             }
 
+            const atDomain =
+              connectedInstance === handleDomain ? "" : `@${handleDomain}`;
+
             const linkNode: CustomLink = {
               type: "link",
-              url: `https://${connectedInstance}/c/${communityHandle}@${handleDomain}`,
+              url: `https://${connectedInstance}/c/${communityHandle}${atDomain}`,
               children: [
                 {
                   type: "text",

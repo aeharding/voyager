@@ -3,6 +3,9 @@ import { useAppSelector } from "../../../store";
 import { useIonRouter } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 
+const COMMUNITY_RELATIVE_URL =
+  /^\/c\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
+
 export default function LinkInterceptor(
   props: LinkHTMLAttributes<HTMLAnchorElement>
 ) {
@@ -25,7 +28,10 @@ export default function LinkInterceptor(
 
         const [communityName, domain] = matchedCommunityHandle;
 
-        if (domain === url.hostname && domain === connectedInstance) {
+        if (
+          !domain ||
+          (domain === url.hostname && domain === connectedInstance)
+        ) {
           router.push(buildGeneralBrowseLink(`/c/${communityName}`));
           return;
         }
@@ -40,14 +46,15 @@ export default function LinkInterceptor(
     [buildGeneralBrowseLink, connectedInstance, props.href, router]
   );
 
-  return <a {...props} onClick={onClick} />;
+  return (
+    <a {...props} target="_blank" rel="noopener noreferrer" onClick={onClick} />
+  );
 }
 
 function matchLemmyCommunity(
   urlPathname: string
 ): [string, string] | [string] | null {
-  const pattern = /^\/c\/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\/?$/;
-  const matches = urlPathname.match(pattern);
+  const matches = urlPathname.match(COMMUNITY_RELATIVE_URL);
   if (matches && matches[1]) {
     const [communityName, domain] = matches[1].split("@");
     if (!domain) return [communityName];
