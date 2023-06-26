@@ -837,7 +837,7 @@
     "@babel/helper-create-regexp-features-plugin" "^7.22.5"
     "@babel/helper-plugin-utils" "^7.22.5"
 
-"@babel/preset-env@^7.11.0":
+"@babel/preset-env@^7.11.0", "@babel/preset-env@^7.22.5":
   version "7.22.5"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.22.5.tgz#3da66078b181f3d62512c51cf7014392c511504e"
   integrity sha512-fj06hw89dpiZzGZtxn+QybifF07nNiZjZ7sazs2aVDcysAZVGjW7+7iFYxg6GLNM47R/thYfLdrXc+2f11Vi9A==
@@ -1910,6 +1910,19 @@
     "@typescript-eslint/types" "5.60.0"
     eslint-visitor-keys "^3.3.0"
 
+"@vitejs/plugin-legacy@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-legacy/-/plugin-legacy-4.0.5.tgz#3937d8141c09dafc6fb0bb14e4b96ac4d493cff9"
+  integrity sha512-0N1CSAHjFTaxcKC9IcKDWMapmAfGn2mNdbROMf6UW0kypYLzDK8vAAbJIFW0jWvkv2aZfTgNs4KmQxoQDupUuQ==
+  dependencies:
+    "@babel/core" "^7.22.5"
+    "@babel/preset-env" "^7.22.5"
+    browserslist "^4.21.9"
+    core-js "^3.31.0"
+    magic-string "^0.30.0"
+    regenerator-runtime "^0.13.11"
+    systemjs "^6.14.1"
+
 "@vitejs/plugin-react@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-react/-/plugin-react-4.0.1.tgz#793aa790633433558da7ac0a38c58ddf47dff518"
@@ -2225,7 +2238,7 @@ braces@^3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browserslist@^4.21.3, browserslist@^4.21.5:
+browserslist@^4.21.3, browserslist@^4.21.5, browserslist@^4.21.9:
   version "4.21.9"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.21.9.tgz#e11bdd3c313d7e2a9e87e8b4b0c7872b13897635"
   integrity sha512-M0MFoZzbUrRU4KNfCrDLnvyE7gub+peetoTid3TBIqtunaDJyXlwhakT+/VkvSXcfIzFfK/nkCs4nmyTmxdNSg==
@@ -2434,6 +2447,11 @@ core-js-compat@^3.30.1, core-js-compat@^3.30.2:
   integrity sha512-hM7YCu1cU6Opx7MXNu0NuumM0ezNeAeRKadixyiQELWY3vT3De9S4J5ZBMraWV2vZnrE1Cirl0GtFtDtMUXzPw==
   dependencies:
     browserslist "^4.21.5"
+
+core-js@^3.31.0:
+  version "3.31.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.31.0.tgz#4471dd33e366c79d8c0977ed2d940821719db344"
+  integrity sha512-NIp2TQSGfR6ba5aalZD+ZQ1fSxGhDo/s1w0nx3RYzf2pnJxt7YynxFlFScP6eV7+GZsKO95NSjGxyJsU3DZgeQ==
 
 cosmiconfig@^7.0.0:
   version "7.1.0"
@@ -5578,6 +5596,11 @@ symbol-tree@^3.2.4:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
+
+systemjs@^6.14.1:
+  version "6.14.1"
+  resolved "https://registry.yarnpkg.com/systemjs/-/systemjs-6.14.1.tgz#95a580b91b50d0d69ff178ed4816f0ddbcea23c1"
+  integrity sha512-8ftwWd+XnQtZ/aGbatrN4QFNGrKJzmbtixW+ODpci7pyoTajg4sonPP8aFLESAcuVxaC1FyDESt+SpfFCH9rZQ==
 
 temp-dir@^2.0.0:
   version "2.0.0"
