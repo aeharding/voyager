@@ -19,6 +19,16 @@ export default defineConfig({
       modernPolyfills: ["es.array.at"],
     }),
   ],
+  // TODO: Outdated clients trying to access stale codesplit js chucks
+  // break. This breaks iOS transitions.
+  // Put everything into one chunk for now.
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: () => "index.js",
+      },
+    },
+  },
   define: {
     // eslint-disable-next-line no-undef
     APP_VERSION: JSON.stringify(process.env.npm_package_version),

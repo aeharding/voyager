@@ -357,9 +357,9 @@ export default function TabbedRoutes() {
           <IonTabButton tab="settings" href="/settings">
             <IonIcon aria-hidden="true" icon={cog} />
             <IonLabel>Settings</IonLabel>
-            {settingsNotificationCount && (
+            {settingsNotificationCount ? (
               <IonBadge color="danger">{settingsNotificationCount}</IonBadge>
-            )}
+            ) : undefined}
           </IonTabButton>
         </IonTabBar>
       </IonTabs>

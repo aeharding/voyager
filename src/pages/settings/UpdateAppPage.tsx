@@ -14,7 +14,7 @@ import {
 } from "@ionic/react";
 import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../profile/ProfileFeedItemsPage";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { PageContentIonSpinner } from "../shared/UserPage";
 import styled from "@emotion/styled";
 import { UpdateContext } from "./update/UpdateContext";
@@ -39,6 +39,10 @@ const Container = styled.div`
 export default function UpdateAppPage() {
   const { status, checkForUpdates, updateServiceWorker } =
     useContext(UpdateContext);
+
+  useEffect(() => {
+    checkForUpdates();
+  }, [checkForUpdates]);
 
   return (
     <IonPage className="grey-bg">
@@ -72,6 +76,13 @@ export default function UpdateAppPage() {
                 <SettingLabel slot="end" color="medium">
                   {APP_VERSION}
                 </SettingLabel>
+              </InsetIonItem>
+              <InsetIonItem
+                href="https://github.com/aeharding/wefwef/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IonLabel>Release notes</IonLabel>
               </InsetIonItem>
             </IonList>
 

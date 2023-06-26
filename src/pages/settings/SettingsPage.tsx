@@ -18,11 +18,15 @@ import {
   shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { isInstalled } from "../../helpers/device";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UpdateContext } from "./update/UpdateContext";
 
 export default function SettingsPage() {
-  const { status: updateStatus } = useContext(UpdateContext);
+  const { status: updateStatus, checkForUpdates } = useContext(UpdateContext);
+
+  useEffect(() => {
+    checkForUpdates();
+  }, [checkForUpdates]);
 
   return (
     <IonPage className="grey-bg">
