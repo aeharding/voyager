@@ -36,6 +36,9 @@ export function UpdateContextProvider({
       registration.current = r;
       checkForUpdates();
     },
+    onRegisterError() {
+      setStatus("error");
+    },
   });
 
   useInterval(() => {
@@ -46,12 +49,14 @@ export function UpdateContextProvider({
     if (!pageVisibility) return;
 
     checkForUpdates();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageVisibility]);
 
   async function checkForUpdates() {
     const r = registration.current;
 
     if (!r) {
+      if (status === "loading") return;
       setStatus("error");
       return;
     }
