@@ -53,6 +53,7 @@
     "jsdom": "^22.1.0",
     "lemmy-js-client": "0.18.0",
     "lodash": "^4.17.21",
+    "mdast-util-gfm-autolink-literal-lemmy": "^1.0.3",
     "photoswipe": "^5.3.7",
     "prettier": "^2.8.8",
     "react": "^18.2.0",

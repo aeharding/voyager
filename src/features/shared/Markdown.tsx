@@ -4,7 +4,11 @@ import {
 } from "react-markdown/lib/react-markdown";
 import Img from "../post/detail/Img";
 import styled from "@emotion/styled";
-import remarkGfm from "remark-gfm";
+import { useAppSelector } from "../../store";
+import LinkInterceptor from "./markdown/LinkInterceptor";
+import buildCommunityPlugin from "./markdown/buildCommunityPlugin";
+import customRemarkGfm from "./markdown/customRemarkGfm";
+import { useMemo } from "react";
 
 const Blockquote = styled.blockquote`
   padding-left: 0.5rem;
@@ -46,6 +50,15 @@ const TableContainer = styled.div`
 `;
 
 export default function Markdown(props: ReactMarkdownOptions) {
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance
+  );
+
+  const communityPlugin = useMemo(
+    () => buildCommunityPlugin(connectedInstance),
+    [connectedInstance]
+  );
+
   return (
     <ReactMarkdown
       linkTarget="_blank"
@@ -59,9 +72,10 @@ export default function Markdown(props: ReactMarkdownOptions) {
             <table {...props} />
           </TableContainer>
         ),
+        a: (props) => <LinkInterceptor {...props} />,
         ...props.components,
       }}
-      remarkPlugins={[remarkGfm]}
+      remarkPlugins={[communityPlugin, customRemarkGfm]}
     />
   );
 }
