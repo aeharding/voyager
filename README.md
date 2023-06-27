@@ -66,18 +66,25 @@ The wefwef team maintains a deployment at:
 In order to host wefwef yourself you can use the provided Dockerfile to build a container with wefwef. The Docker container itself does not provide any SSL/TLS handling. You'll have to add this bit yourself.
 One could put wefwef behind popular reverse proxies with SSL Handling like Traefik, NGINX etc.
 
+#### From source
+
 1. checkout source `git clone https://github.com/aeharding/wefwef.git`
-1. got into new source dir: `cd wefwef`
-1. build Docker image: `docker build .`
-1. start container: `docker-compose up -d`
+1. go into new source dir: `cd wefwef`
+1. build Docker image: `docker build . -t wefwef`
+1. start container: `docker run --rm -it -p 5314:5314 wefwef`
+
+#### Prebuilt
+
+1. pull image `docker pull ghcr.io/aeharding/wefwef:latest`
+1. start container: `docker run --rm -it -p 5314:5314 wefwef`
 
 Note: The provided Dockerfile creates a container which will eventually run wefwef as non-root user.
 
 ### Ecosystem
 
-These are currently not any known deployments using wefwef. Be the first and make a PR!
+These are currently no known community deployments using wefwef.
 
-- [example.com](https://example.com) - Your deployed wefwef client here!
+<!-- - [example.com](https://example.com) - Your deployed wefwef client here! -->
 
 > **Note**: Community deployments are **NOT** maintained by the wefwef team. They may not be synced with wefwef's source code. Please do your own research about the host servers before using them.
 
