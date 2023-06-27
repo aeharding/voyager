@@ -26,6 +26,7 @@ import Auth from "./Auth";
 import { AppContextProvider } from "./features/auth/AppContext";
 import Router from "./Router";
 import BeforeInstallPromptProvider from "./BeforeInstallPromptProvider";
+import { UpdateContextProvider } from "./pages/settings/update/UpdateContext";
 
 setupIonicReact({
   rippleEffect: false,
@@ -39,13 +40,15 @@ export default function App() {
     <AppContextProvider>
       <Provider store={store}>
         <BeforeInstallPromptProvider>
-          <IonApp>
-            <Router>
-              <Auth>
-                <TabbedRoutes />
-              </Auth>
-            </Router>
-          </IonApp>
+          <UpdateContextProvider>
+            <IonApp>
+              <Router>
+                <Auth>
+                  <TabbedRoutes />
+                </Auth>
+              </Router>
+            </IonApp>
+          </UpdateContextProvider>
         </BeforeInstallPromptProvider>
       </Provider>
     </AppContextProvider>

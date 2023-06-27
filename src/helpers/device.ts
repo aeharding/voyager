@@ -12,3 +12,11 @@ export const isInstallable =
 export function isAppleDeviceInstalledToHomescreen(): boolean {
   return ua.getDevice().vendor === "Apple" && isInstalled();
 }
+
+export function isAppleDeviceInstallable(): boolean {
+  return ua.getDevice().vendor === "Apple" && isTouchDevice();
+}
+
+export function isTouchDevice() {
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+}

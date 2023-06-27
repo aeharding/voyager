@@ -31,7 +31,6 @@ import { useContext, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import UserPage from "./pages/shared/UserPage";
 import InstallAppPage from "./pages/settings/InstallAppPage";
-import { isInstalled } from "./helpers/device";
 import SearchPage from "./pages/search/SearchPage";
 import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
 import ProfileFeedItemsPage from "./pages/profile/ProfileFeedItemsPage";
@@ -47,6 +46,9 @@ import InboxPage from "./pages/inbox/InboxPage";
 import { PageContext } from "./features/auth/PageContext";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
 import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
+import UpdateAppPage from "./pages/settings/UpdateAppPage";
+import useShouldInstall from "./features/pwa/useShouldInstall";
+import { UpdateContext } from "./pages/settings/update/UpdateContext";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -62,6 +64,11 @@ export default function TabbedRoutes() {
   const router = useIonRouter();
   const jwt = useAppSelector(jwtSelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
+  const { status: updateStatus } = useContext(UpdateContext);
+  const shouldInstall = useShouldInstall();
+
+  const settingsNotificationCount =
+    (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
 
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
 
@@ -304,6 +311,9 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/install">
             <InstallAppPage />
           </Route>
+          <Route exact path="/settings/update">
+            <UpdateAppPage />
+          </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton
@@ -348,7 +358,9 @@ export default function TabbedRoutes() {
           <IonTabButton tab="settings" href="/settings">
             <IonIcon aria-hidden="true" icon={cog} />
             <IonLabel>Settings</IonLabel>
-            {!isInstalled() && <IonBadge color="danger">1</IonBadge>}
+            {settingsNotificationCount ? (
+              <IonBadge color="danger">{settingsNotificationCount}</IonBadge>
+            ) : undefined}
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
