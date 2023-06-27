@@ -5,13 +5,19 @@ import {
   useIonModal,
   useIonToast,
 } from "@ionic/react";
-import { ellipsisHorizontal, heart, heartDislike } from "ionicons/icons";
+import {
+  createOutline,
+  ellipsisHorizontal,
+  heartDislikeOutline,
+  heartOutline,
+} from "ionicons/icons";
 import { useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { followCommunity } from "./communitySlice";
 import { PageContext } from "../auth/PageContext";
 import Login from "../auth/Login";
 import { jwtSelector } from "../auth/authSlice";
+import { NewPostContext } from "../post/new/NewPostModal";
 
 interface MoreActionsProps {
   community: string;
@@ -24,13 +30,16 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const jwt = useAppSelector(jwtSelector);
 
   const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
+  const [login, onDismissLogin] = useIonModal(Login, {
+    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
   });
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle
   );
+
+  const { presentNewPost } = useContext(NewPostContext);
+
   const isSubscribed =
     communityByHandle[community]?.community_view.subscribed === "Subscribed" ||
     communityByHandle[community]?.community_view.subscribed === "Pending";
@@ -49,9 +58,14 @@ export default function MoreActions({ community }: MoreActionsProps) {
         isOpen={open}
         buttons={[
           {
+            text: "Submit Post",
+            role: "post",
+            icon: createOutline,
+          },
+          {
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
             role: "subscribe",
-            icon: !isSubscribed ? heart : heartDislike,
+            icon: !isSubscribed ? heartOutline : heartDislikeOutline,
           },
           {
             text: "Cancel",
@@ -61,31 +75,39 @@ export default function MoreActions({ community }: MoreActionsProps) {
         onWillDismiss={async (e) => {
           setOpen(false);
 
-          if (e.detail.role === "subscribe") {
-            if (!jwt) return login({ presentingElement: pageContext.page });
+          switch (e.detail.role) {
+            case "subscribe": {
+              if (!jwt) return login({ presentingElement: pageContext.page });
 
-            try {
-              await dispatch(followCommunity(!isSubscribed, community));
-            } catch (error) {
+              try {
+                await dispatch(followCommunity(!isSubscribed, community));
+              } catch (error) {
+                present({
+                  message: `Problem ${
+                    isSubscribed ? "unsubscribing from" : "subscribing to"
+                  } c/${community}. Please try again.`,
+                  duration: 3500,
+                  position: "bottom",
+                  color: "danger",
+                });
+                throw error;
+              }
+
               present({
-                message: `Problem ${
-                  isSubscribed ? "unsubscribing from" : "subscribing to"
-                } c/${community}. Please try again.`,
+                message: `${
+                  isSubscribed ? "Unsubscribed from" : "Subscribed to"
+                } c/${community}.`,
                 duration: 3500,
                 position: "bottom",
-                color: "danger",
+                color: "success",
               });
-              throw error;
+              break;
             }
+            case "post": {
+              if (!jwt) return login({ presentingElement: pageContext.page });
 
-            present({
-              message: `${
-                isSubscribed ? "Unsubscribed from" : "Subscribed to"
-              } c/${community}.`,
-              duration: 3500,
-              position: "bottom",
-              color: "success",
-            });
+              presentNewPost();
+            }
           }
         }}
       />
