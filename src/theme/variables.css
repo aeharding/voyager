@@ -82,6 +82,8 @@ http://ionicframework.com/docs/theming/ */
   --thick-separator-color: var(--ion-color-step-50, #f2f2f7);
 
   --ion-color-step-100: #f3f3f3;
+
+  --unread-item-background-color: #fffcd9;
 }
 
 .ios body {
@@ -163,6 +165,8 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-light-tint: #383a3e;
 
     --thick-separator-color: rgba(255, 255, 255, 0.08);
+
+    --unread-item-background-color: #1e1c00;
   }
 
   /*
