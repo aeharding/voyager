@@ -10,10 +10,21 @@ import { resetUsers } from "../user/userSlice";
 import { resetInbox } from "../inbox/inboxSlice";
 import { differenceWith, uniqBy } from "lodash";
 
-// 2023-06-25 clean up cookie used for old versions
-Cookies.remove("jwt");
+const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
-const MULTI_ACCOUNT_COOKIE_NAME = "credentials";
+// Migrations
+(() => {
+  // 2023-06-25 clean up cookie used for old versions
+  Cookies.remove("jwt");
+
+  // 2023-06-26 prefer localStorage to avoid sending to proxy server
+  const cookie = Cookies.get(MULTI_ACCOUNT_STORAGE_NAME);
+
+  if (cookie && !localStorage.getItem(MULTI_ACCOUNT_STORAGE_NAME)) {
+    localStorage.setItem(MULTI_ACCOUNT_STORAGE_NAME, cookie);
+    Cookies.remove(MULTI_ACCOUNT_STORAGE_NAME);
+  }
+})();
 
 /**
  * DO NOT CHANGE this type. It is persisted in the login cookie
@@ -24,15 +35,15 @@ export interface Credential {
 }
 
 /**
- * DO NOT CHANGE this type. It is persisted in the login cookie
+ * DO NOT CHANGE this type. It is persisted in localStorage
  */
-type CookiePayload = {
+type CredentialStoragePayload = {
   accounts: Credential[];
   activeHandle: string;
 };
 
 interface PostState {
-  accountData: CookiePayload | undefined;
+  accountData: CredentialStoragePayload | undefined;
   site: GetSiteResponse | undefined;
   connectedInstance: string;
 }
@@ -40,7 +51,7 @@ interface PostState {
 const initialState: (connectedInstance?: string) => PostState = (
   connectedInstance = ""
 ) => ({
-  accountData: getCookie(),
+  accountData: getCredentialsFromStorage(),
   site: undefined,
   connectedInstance,
 });
@@ -67,7 +78,7 @@ export const authSlice = createSlice({
         activeHandle: action.payload.handle,
       };
 
-      updateCookie(state.accountData);
+      updateCredentialsStorage(state.accountData);
     },
     removeAccount: (state, action: PayloadAction<string>) => {
       if (!state.accountData) return;
@@ -80,7 +91,7 @@ export const authSlice = createSlice({
 
       if (accounts.length === 0) {
         state.accountData = undefined;
-        updateCookie(undefined);
+        updateCredentialsStorage(undefined);
         return;
       }
 
@@ -89,18 +100,17 @@ export const authSlice = createSlice({
         state.accountData.activeHandle = accounts[0].handle;
       }
 
-      updateCookie(state.accountData);
+      updateCredentialsStorage(state.accountData);
     },
     setPrimaryAccount: (state, action: PayloadAction<string>) => {
       if (!state.accountData) return;
 
       state.accountData.activeHandle = action.payload;
 
-      updateCookie(state.accountData);
+      updateCredentialsStorage(state.accountData);
     },
 
     reset: (state) => {
-      Cookies.remove(MULTI_ACCOUNT_COOKIE_NAME);
       return initialState(state.connectedInstance);
     },
 
@@ -244,21 +254,21 @@ export const clientSelector = createSelector(
   }
 );
 
-function updateCookie(accounts: CookiePayload | undefined) {
+function updateCredentialsStorage(
+  accounts: CredentialStoragePayload | undefined
+) {
   if (!accounts) {
-    Cookies.remove(MULTI_ACCOUNT_COOKIE_NAME);
+    localStorage.removeItem(MULTI_ACCOUNT_STORAGE_NAME);
     return;
   }
 
-  Cookies.set(MULTI_ACCOUNT_COOKIE_NAME, JSON.stringify(accounts), {
-    expires: 365,
-    secure: import.meta.env.PROD,
-    sameSite: "strict",
-  });
+  localStorage.setItem(MULTI_ACCOUNT_STORAGE_NAME, JSON.stringify(accounts));
 }
 
-function getCookie(): CookiePayload | undefined {
-  const cookie = Cookies.get(MULTI_ACCOUNT_COOKIE_NAME);
-  if (!cookie) return;
-  return JSON.parse(cookie);
+function getCredentialsFromStorage(): CredentialStoragePayload | undefined {
+  const serializedCredentials = localStorage.getItem(
+    MULTI_ACCOUNT_STORAGE_NAME
+  );
+  if (!serializedCredentials) return;
+  return JSON.parse(serializedCredentials);
 }

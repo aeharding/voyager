@@ -101,9 +101,13 @@ app.use(
         "user-agent",
         `(${req.hostname}, ${process.env.EMAIL || "hello@wefwef.app"})`
       );
+      clientReq.removeHeader("cookie");
 
       // Fake it to get around Lemmy API connection issue
       clientReq.setHeader("origin", `https://${req.params.actor}`);
+    },
+    onProxyRes: (proxyRes, req, res) => {
+      res.removeHeader("cookie");
     },
   })
 );
