@@ -31,7 +31,6 @@ import { useContext, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import UserPage from "./pages/shared/UserPage";
 import InstallAppPage from "./pages/settings/InstallAppPage";
-import { isInstalled } from "./helpers/device";
 import SearchPage from "./pages/search/SearchPage";
 import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
 import ProfileFeedItemsPage from "./pages/profile/ProfileFeedItemsPage";
@@ -48,6 +47,7 @@ import { PageContext } from "./features/auth/PageContext";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
 import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
 import UpdateAppPage from "./pages/settings/UpdateAppPage";
+import useShouldInstall from "./features/pwa/useShouldInstall";
 import { UpdateContext } from "./pages/settings/update/UpdateContext";
 
 const Interceptor = styled.div`
@@ -65,9 +65,10 @@ export default function TabbedRoutes() {
   const jwt = useAppSelector(jwtSelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
   const { status: updateStatus } = useContext(UpdateContext);
+  const shouldInstall = useShouldInstall();
 
   const settingsNotificationCount =
-    (isInstalled() ? 0 : 1) + (updateStatus === "outdated" ? 1 : 0);
+    (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
 
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
 
