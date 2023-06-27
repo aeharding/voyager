@@ -37,7 +37,7 @@ export default function Auth({ children }: AuthProps) {
 
     if (connectedInstance === potentialConnectedInstance) return;
 
-    if (potentialConnectedInstance)
+    if (potentialConnectedInstance?.includes("."))
       dispatch(updateConnectedInstance(potentialConnectedInstance));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
