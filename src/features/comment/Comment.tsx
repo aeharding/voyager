@@ -2,18 +2,16 @@ import styled from "@emotion/styled";
 import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import { css, keyframes } from "@emotion/react";
-import React, { useCallback, useRef, useState } from "react";
+import { css } from "@emotion/react";
+import React from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
 import { ignoreSsrFlag } from "../../helpers/emotion";
-import SlidingVote from "../shared/sliding/SlidingPostVote";
 import Vote from "../labels/Vote";
 import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
 import useKeyPressed from "../../helpers/useKeyPressed";
-import { useTimeout } from "usehooks-ts";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 
 const rainbowColors = [
