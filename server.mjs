@@ -105,6 +105,16 @@ app.use(
 
       // Fake it to get around Lemmy API connection issue
       clientReq.setHeader("origin", `https://${req.params.actor}`);
+
+      // Hack to get around pictrs endpoint not allowing auth in pathname and/or body
+      if (
+        req.method === "POST" &&
+        req.path === "pictrs/image" &&
+        req.query?.auth
+      ) {
+        clientReq.setHeader("cookie", `jwt=${req.query.auth}`);
+        delete req.query.auth;
+      }
     },
     onProxyRes: (proxyRes, req, res) => {
       res.removeHeader("cookie");

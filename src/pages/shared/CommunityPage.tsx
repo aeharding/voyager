@@ -21,6 +21,7 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
+import { NewPostContextProvider } from "../../features/post/new/NewPostModal";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -68,27 +69,29 @@ export default function CommunityPage() {
     );
 
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <AppBackButton
-              defaultText="Communities"
-              defaultHref={buildGeneralBrowseLink("/")}
-            />
-          </IonButtons>
+    <NewPostContextProvider community={community}>
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <AppBackButton
+                defaultText="Communities"
+                defaultHref={buildGeneralBrowseLink("/")}
+              />
+            </IonButtons>
 
-          <IonTitle>{community}</IonTitle>
+            <IonTitle>{community}</IonTitle>
 
-          <IonButtons slot="end">
-            <PostSort />
-            <MoreActions community={community} />
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <PostCommentFeed fetchFn={fetchFn} communityName={community} />
-      </IonContent>
-    </IonPage>
+            <IonButtons slot="end">
+              <PostSort />
+              <MoreActions community={community} />
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <PostCommentFeed fetchFn={fetchFn} communityName={community} />
+        </IonContent>
+      </IonPage>
+    </NewPostContextProvider>
   );
 }

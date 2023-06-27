@@ -9,6 +9,7 @@ import { resetComments } from "../comment/commentSlice";
 import { resetUsers } from "../user/userSlice";
 import { resetInbox } from "../inbox/inboxSlice";
 import { differenceWith, uniqBy } from "lodash";
+import { resetCommunities } from "../community/communitySlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -220,6 +221,7 @@ export const changeAccount =
     dispatch(resetComments());
     dispatch(resetUsers());
     dispatch(resetInbox());
+    dispatch(resetCommunities());
     dispatch(setPrimaryAccount(handle));
 
     const iss = jwtIssSelector(getState());
@@ -246,13 +248,18 @@ function parseJWT(payload: string): LemmyJWT {
   return JSON.parse(jsonPayload);
 }
 
-export const clientSelector = createSelector(
+export const urlSelector = createSelector(
   [(state: RootState) => state.auth.connectedInstance, jwtIssSelector],
   (connectedInstance, iss) => {
     // never leak the jwt to the incorrect server
-    return getClient(iss ?? connectedInstance);
+    return iss ?? connectedInstance;
   }
 );
+
+export const clientSelector = createSelector([urlSelector], (url) => {
+  // never leak the jwt to the incorrect server
+  return getClient(url);
+});
 
 function updateCredentialsStorage(
   accounts: CredentialStoragePayload | undefined

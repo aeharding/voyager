@@ -29,12 +29,16 @@ export const communitySlice = createSlice({
     ) => {
       state.trendingCommunities = action.payload;
     },
+    resetCommunities: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { receivedCommunity, recievedTrendingCommunities } =
-  communitySlice.actions;
+export const {
+  receivedCommunity,
+  recievedTrendingCommunities,
+  resetCommunities,
+} = communitySlice.actions;
 
 export default communitySlice.reducer;
 
