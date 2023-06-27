@@ -2,23 +2,25 @@ import styled from "@emotion/styled";
 import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import { css } from "@emotion/react";
-import React from "react";
+import { css, keyframes } from "@emotion/react";
+import React, { useCallback, useRef, useState } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
 import { ignoreSsrFlag } from "../../helpers/emotion";
-import SlidingVote from "../shared/sliding/SlidingVote";
+import SlidingVote from "../shared/sliding/SlidingPostVote";
 import Vote from "../labels/Vote";
 import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
 import useKeyPressed from "../../helpers/useKeyPressed";
+import { useTimeout } from "usehooks-ts";
+import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 
 const rainbowColors = [
   "#FF0000", // Red
   "#FF7F00", // Orange
-  "#FFFF00", // Yellow
-  "#00FF00", // Green
+  "#e1ca00", // Yellow
+  "#00dd00", // Green
   "#0000FF", // Blue
   "#4B0082", // Indigo
   "#8B00FF", // Violet
@@ -34,7 +36,10 @@ const CustomIonItem = styled(IonItem)`
   --min-height: 0;
 `;
 
-const PositionedContainer = styled.div<{ depth: number; highlighted: boolean }>`
+const PositionedContainer = styled.div<{
+  depth: number;
+  highlighted: boolean;
+}>`
   ${maxWidthCss}
 
   padding: 0.55rem 1rem;
@@ -62,7 +67,7 @@ const Container = styled.div<{ depth: number; highlighted?: boolean }>`
   position: relative;
   width: 100%;
 
-  font-size: 0.9em;
+  font-size: 0.88em;
 
   display: flex;
   flex-direction: column;
@@ -81,6 +86,10 @@ const Container = styled.div<{ depth: number; highlighted?: boolean }>`
     bottom: 0;
     width: 2px;
     filter: brightness(0.7);
+
+    @media (prefers-color-scheme: light) {
+      filter: none;
+    }
 
     ${({ depth }) =>
       depth &&
@@ -110,7 +119,7 @@ const Content = styled.div<{ keyPressed: boolean }>`
     padding-top: 0.45rem;
   }
 
-  line-height: 1.1;
+  line-height: 1.25;
 
   ${({ keyPressed }) =>
     keyPressed &&
@@ -177,11 +186,18 @@ export default function Comment({
 
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
-      <SlidingVote item={comment} className={className}>
+      <SlidingNestedCommentVote
+        item={comment}
+        className={className}
+        collapse={() => onClick?.()}
+        collapsed={!!collapsed}
+      >
         <CustomIonItem
           routerLink={routerLink}
           href={undefined}
-          onClick={() => !keyPressed && onClick?.()}
+          onClick={() => {
+            if (!keyPressed) onClick?.();
+          }}
         >
           <PositionedContainer
             depth={depth || 0}
@@ -228,7 +244,7 @@ export default function Comment({
             </Container>
           </PositionedContainer>
         </CustomIonItem>
-      </SlidingVote>
+      </SlidingNestedCommentVote>
     </AnimateHeight>
   );
 }

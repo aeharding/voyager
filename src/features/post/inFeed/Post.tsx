@@ -11,7 +11,7 @@ import { getHandle, isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
 import { maxWidthCss } from "../../shared/AppContent";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { VoteButton } from "../shared/VoteButton";
-import SlidingVote from "../../shared/sliding/SlidingVote";
+import SlidingVote from "../../shared/sliding/SlidingPostVote";
 import MoreActions from "../shared/MoreActions";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PersonLink from "../../labels/links/PersonLink";

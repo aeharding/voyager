@@ -53,7 +53,7 @@ const StyledIonItem = styled(IonItem)<{ read: boolean }>`
   ${({ read }) =>
     !read &&
     css`
-      --background: rgba(255, 238, 0, 0.1);
+      --background: var(--unread-item-background-color);
     `}
 `;
 
