@@ -41,13 +41,13 @@ export default function App() {
       <Provider store={store}>
         <BeforeInstallPromptProvider>
           <UpdateContextProvider>
-            <IonApp>
-              <Router>
+            <Router>
+              <IonApp>
                 <Auth>
                   <TabbedRoutes />
                 </Auth>
-              </Router>
-            </IonApp>
+              </IonApp>
+            </Router>
           </UpdateContextProvider>
         </BeforeInstallPromptProvider>
       </Provider>
