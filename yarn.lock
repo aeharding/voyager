@@ -4120,6 +4120,16 @@ mdast-util-from-markdown@^1.0.0:
     unist-util-stringify-position "^3.0.0"
     uvu "^0.5.0"
 
+mdast-util-gfm-autolink-literal-lemmy@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/mdast-util-gfm-autolink-literal-lemmy/-/mdast-util-gfm-autolink-literal-lemmy-1.0.3.tgz#c0b5bbf5718546ac9b38817cf64d9518eeca35f8"
+  integrity sha512-++DZgjmTxa0WVAOZM5Crq9M+H0f8CKE82vR33bUYxeiXhVhLAjhRSbAUNzOpSC+d9KxKgxV+ptdhVrh7aRyxnQ==
+  dependencies:
+    "@types/mdast" "^3.0.0"
+    ccount "^2.0.0"
+    mdast-util-find-and-replace "^2.0.0"
+    micromark-util-character "^1.0.0"
+
 mdast-util-gfm-autolink-literal@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/mdast-util-gfm-autolink-literal/-/mdast-util-gfm-autolink-literal-1.0.3.tgz#67a13abe813d7eba350453a5333ae1bc0ec05c06"
