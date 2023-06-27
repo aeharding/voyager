@@ -88,13 +88,7 @@ export default function UpdateAppPage() {
 
             {status === "outdated" && (
               <IonList inset color="primary">
-                <InsetIonItem
-                  detail
-                  onClick={async () => {
-                    await updateServiceWorker();
-                    location.reload();
-                  }}
-                >
+                <InsetIonItem detail onClick={() => updateServiceWorker()}>
                   <IonLabel>Install new update</IonLabel>
                   <IonBadge color="danger">1</IonBadge>
                 </InsetIonItem>

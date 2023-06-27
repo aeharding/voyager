@@ -74,6 +74,8 @@ export function UpdateContextProvider({
       throw error;
     }
 
+    if (status === "outdated") return;
+
     setStatus(!!(r.waiting || r.installing) ? "outdated" : "current");
   }
 
