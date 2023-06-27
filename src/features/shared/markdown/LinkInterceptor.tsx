@@ -25,6 +25,7 @@ export default function LinkInterceptor(
       const matchedCommunityHandle = matchLemmyCommunity(url.pathname);
       if (url.hostname === connectedInstance && matchedCommunityHandle) {
         e.preventDefault();
+        e.stopPropagation();
 
         const [communityName, domain] = matchedCommunityHandle;
 
