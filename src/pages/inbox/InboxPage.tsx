@@ -59,7 +59,9 @@ export default function InboxPage({ showRead }: InboxPageProps) {
         ...replies.replies,
         ...mentions.mentions,
         ...privateMessages.private_messages.filter(
-          (message) => message.creator.id !== myUserId
+          (message) =>
+            message.creator.id !== myUserId ||
+            message.creator.id === message.recipient.id // if you message yourself, show it (lemmy returns as a notification)
         ),
       ].sort(
         (a, b) =>
