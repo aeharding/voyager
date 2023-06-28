@@ -40,6 +40,12 @@ const Textarea = styled.textarea`
 
   flex: 1 0 0;
   min-height: 7rem;
+
+  @media (prefers-color-scheme: light) {
+    .ios & {
+      background: var(--ion-item-background);
+    }
+  }
 `;
 
 const UsernameIonText = styled(IonText)`
