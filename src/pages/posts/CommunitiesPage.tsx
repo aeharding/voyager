@@ -9,7 +9,6 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonViewWillEnter,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { useParams } from "react-router";
@@ -19,8 +18,8 @@ import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../helpers/array";
-import { useContext, useMemo, useRef } from "react";
-import { AppContext } from "../../features/auth/AppContext";
+import { useMemo, useRef } from "react";
+import { useSetActivePage } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
 import { jwtSelector } from "../../features/auth/authSlice";
@@ -51,7 +50,6 @@ const Content = styled.div`
 
 export default function CommunitiesPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { setActivePage } = useContext(AppContext);
   const { actor } = useParams<{ actor: string }>();
   const jwt = useAppSelector(jwtSelector);
   const pageRef = useRef();
@@ -62,9 +60,7 @@ export default function CommunitiesPage() {
     (state) => state.community.communityByHandle
   );
 
-  useIonViewWillEnter(() => {
-    if (pageRef.current) setActivePage(pageRef.current);
-  });
+  useSetActivePage(pageRef.current);
 
   const communities = useMemo(() => {
     const communities = uniqBy(

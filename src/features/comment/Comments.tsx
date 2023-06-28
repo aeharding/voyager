@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { buildCommentsTree } from "../../helpers/lemmy";
 import CommentTree from "./CommentTree";
 import {
@@ -6,7 +6,6 @@ import {
   IonRefresherContent,
   IonSpinner,
   useIonToast,
-  useIonViewWillEnter,
 } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
@@ -18,7 +17,7 @@ import { receivedComments } from "./commentSlice";
 import { RefresherCustomEvent } from "@ionic/core";
 import { getPost } from "../post/postSlice";
 import useClient from "../../helpers/useClient";
-import { AppContext } from "../auth/AppContext";
+import { useSetActivePage } from "../auth/AppContext";
 import { PostContext } from "../post/detail/PostContext";
 import { jwtSelector } from "../auth/authSlice";
 
@@ -85,12 +84,9 @@ export default function Comments({
     : undefined;
   const commentId = commentPath ? +commentPath.split(".")[1] : undefined;
 
-  const { setActivePage } = useContext(AppContext);
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
-  useIonViewWillEnter(() => {
-    setActivePage(virtuosoRef);
-  });
+  useSetActivePage(virtuosoRef);
 
   useEffect(() => {
     fetchComments(true);
@@ -199,6 +195,7 @@ export default function Comments({
         key={comment.comment_view.comment.id}
         first={index === 0}
         op={op}
+        rootIndex={index + 1} /* Plus header index = 0 */
       />
     ));
   }, [commentTree, comments.length, highlightedCommentId, loading, op]);

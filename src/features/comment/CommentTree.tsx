@@ -12,6 +12,7 @@ interface CommentTreeProps {
   first?: boolean;
   op: Person;
   fullyCollapsed?: boolean;
+  rootIndex: number;
 }
 
 export default function CommentTree({
@@ -20,6 +21,7 @@ export default function CommentTree({
   first,
   op,
   fullyCollapsed,
+  rootIndex,
 }: CommentTreeProps) {
   const dispatch = useAppDispatch();
   const commentCollapsedById = useAppSelector(
@@ -53,6 +55,7 @@ export default function CommentTree({
         collapsed={collapsed}
         childCount={childCount}
         fullyCollapsed={!!fullyCollapsed}
+        rootIndex={rootIndex}
       />
     </React.Fragment>,
     ...comment.children.map((comment) => (
@@ -62,6 +65,7 @@ export default function CommentTree({
         comment={comment}
         op={op}
         fullyCollapsed={collapsed || fullyCollapsed}
+        rootIndex={rootIndex}
       />
     )),
     ,

@@ -10,7 +10,6 @@ import {
   IonTitle,
   IonToolbar,
   useIonModal,
-  useIonViewWillEnter,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import {
@@ -25,7 +24,7 @@ import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
 import { ReactComponent as IncognitoSvg } from "../../features/user/incognito.svg";
 import styled from "@emotion/styled";
 import UserPage from "../shared/UserPage";
-import { AppContext } from "../../features/auth/AppContext";
+import { useSetActivePage } from "../../features/auth/AppContext";
 import { swapHorizontalOutline } from "ionicons/icons";
 import { css } from "@emotion/react";
 import AccountSwitcher from "../../features/auth/AccountSwitcher";
@@ -43,7 +42,6 @@ const Incognito = styled(IncognitoSvg)`
 export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const pageRef = useRef();
-  const { setActivePage } = useContext(AppContext);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance
   );
@@ -66,9 +64,7 @@ export default function ProfilePage() {
     }
   );
 
-  useIonViewWillEnter(() => {
-    if (pageRef.current) setActivePage(pageRef.current);
-  });
+  useSetActivePage(pageRef.current);
 
   if (jwt)
     return (

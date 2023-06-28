@@ -1,6 +1,6 @@
 import { useIonModal } from "@ionic/react";
 import { arrowUndo, chevronCollapse, chevronExpand } from "ionicons/icons";
-import React, { useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentView } from "lemmy-js-client";
 import CommentReply from "../../comment/reply/CommentReply";
@@ -10,12 +10,15 @@ import BaseSlidingVote from "./BaseSlidingVote";
 import { useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
 import Login from "../../auth/Login";
+import { AppContext } from "../../auth/AppContext";
+import { useDispatch } from "react-redux";
+import { toggleCommentCollapseState } from "../../comment/commentSlice";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
   className?: string;
   item: CommentView;
-  collapse: () => void;
+  rootIndex: number | undefined;
   collapsed: boolean;
 }
 
@@ -23,12 +26,14 @@ export default function SlidingNestedCommentVote({
   children,
   className,
   item,
-  collapse,
+  rootIndex,
   collapsed,
 }: SlidingVoteProps) {
+  const dispatch = useDispatch();
   const { refreshPost } = useContext(PostContext);
   const pageContext = useContext(PageContext);
   const jwt = useAppSelector(jwtSelector);
+  const { activePage } = useContext(AppContext);
 
   const [login, onDismissLogin] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismissLogin(data, role),
@@ -42,12 +47,27 @@ export default function SlidingNestedCommentVote({
     item,
   });
 
+  const collapseRootComment = useCallback(() => {
+    if (!rootIndex) return;
+
+    const rootCommentId = +item.comment.path.split(".")[1];
+
+    dispatch(toggleCommentCollapseState(rootCommentId));
+
+    if (!activePage || !("current" in activePage)) return;
+
+    activePage.current?.scrollToIndex({
+      index: rootIndex,
+      behavior: "smooth",
+    });
+  }, [activePage, dispatch, item.comment.path, rootIndex]);
+
   const endActions: [SlidingItemAction, SlidingItemAction] = useMemo(() => {
     return [
       {
         render: collapsed ? chevronExpand : chevronCollapse,
         trigger: () => {
-          collapse();
+          collapseRootComment();
         },
         bgColor: "tertiary",
       },
@@ -61,7 +81,7 @@ export default function SlidingNestedCommentVote({
         bgColor: "primary",
       },
     ];
-  }, [pageContext.page, reply, jwt, login, collapse, collapsed]);
+  }, [collapsed, collapseRootComment, jwt, login, pageContext.page, reply]);
 
   return (
     <BaseSlidingVote endActions={endActions} className={className} item={item}>

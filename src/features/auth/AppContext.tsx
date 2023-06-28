@@ -1,10 +1,19 @@
-import React, { RefObject, createContext, useState } from "react";
+import { useIonViewDidEnter } from "@ionic/react";
+import React, {
+  RefObject,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { VirtuosoHandle } from "react-virtuoso";
+
+type Page = HTMLElement | RefObject<VirtuosoHandle>;
 
 interface IAppContext {
   // used for determining whether page needs to be scrolled up first
-  activePage: HTMLElement | RefObject<VirtuosoHandle> | undefined;
-  setActivePage: (activePage: HTMLElement | RefObject<VirtuosoHandle>) => void;
+  activePage: Page | undefined;
+  setActivePage: (activePage: Page) => void;
 }
 
 export const AppContext = createContext<IAppContext>({
@@ -26,4 +35,17 @@ export function AppContextProvider({
       {children}
     </AppContext.Provider>
   );
+}
+
+export function useSetActivePage(page?: Page) {
+  const { activePage, setActivePage } = useContext(AppContext);
+
+  useIonViewDidEnter(() => {
+    if (page) setActivePage(page);
+  });
+
+  useEffect(() => {
+    if (!activePage && page) setActivePage(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 }
