@@ -101,6 +101,8 @@ export default function Message({ message }: MessageProps) {
   );
 
   const thisIsMyMessage = message.private_message.creator_id === myUserId;
+  const thisIsASelfMessage =
+    message.private_message.creator_id === message.private_message.recipient_id;
   const [loading, setLoading] = useState(false);
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
@@ -113,7 +115,12 @@ export default function Message({ message }: MessageProps) {
   useIonViewDidLeave(() => setFocused(false));
 
   useEffect(() => {
-    if (message.private_message.read || thisIsMyMessage || !focused) return;
+    if (
+      message.private_message.read ||
+      (thisIsMyMessage && !thisIsASelfMessage) ||
+      !focused
+    )
+      return;
 
     setRead();
     // eslint-disable-next-line react-hooks/exhaustive-deps
