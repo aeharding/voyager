@@ -1,6 +1,7 @@
 import {
   IonBackButton,
   IonButtons,
+  IonContent,
   IonHeader,
   IonList,
   IonPage,
@@ -15,9 +16,10 @@ import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { groupBy } from "lodash";
 import { jwtPayloadSelector } from "../../features/auth/authSlice";
 import ConversationItem from "../../features/inbox/messages/ConversationItem";
-import AppContent from "../../features/shared/AppContent";
-import { PageContentIonSpinner } from "../shared/UserPage";
+import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { syncMessages } from "../../features/inbox/inboxSlice";
+import ComposeButton from "./ComposeButton";
+import { CenteredSpinner } from "../../features/post/detail/PostDetail";
 
 export default function MessagesPage() {
   const dispatch = useAppDispatch();
@@ -66,10 +68,11 @@ export default function MessagesPage() {
 
           <IonButtons slot="end">
             <MarkAllAsReadButton />
+            <ComposeButton />
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <AppContent scrollY>
+      <IonContent>
         <IonRefresher
           slot="fixed"
           onIonRefresh={async (e) => {
@@ -83,15 +86,17 @@ export default function MessagesPage() {
           <IonRefresherContent />
         </IonRefresher>
         {(!messages.length && loading) || !myUserId ? (
-          <PageContentIonSpinner />
+          <CenteredSpinner />
         ) : (
-          <IonList>
-            {messagesByCreator.map((conversationMessages, index) => (
-              <ConversationItem key={index} messages={conversationMessages} />
-            ))}
-          </IonList>
+          <MaxWidthContainer>
+            <IonList>
+              {messagesByCreator.map((conversationMessages, index) => (
+                <ConversationItem key={index} messages={conversationMessages} />
+              ))}
+            </IonList>
+          </MaxWidthContainer>
         )}
-      </AppContent>
+      </IonContent>
     </IonPage>
   );
 }

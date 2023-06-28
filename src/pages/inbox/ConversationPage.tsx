@@ -33,6 +33,7 @@ import {
 import { IonContentCustomEvent } from "@ionic/core";
 import { css } from "@emotion/react";
 import { PageContentIonSpinner } from "../shared/UserPage";
+import { getUser } from "../../features/user/userSlice";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -130,6 +131,12 @@ export default function ConversationPage() {
   useIonViewWillEnter(() => {
     contentRef.current?.scrollToBottom();
   });
+
+  useEffect(() => {
+    if (userByHandle[handle]) return;
+
+    dispatch(getUser(handle));
+  }, [dispatch, handle, userByHandle]);
 
   useEffect(() => {
     contentRef.current?.scrollToBottom();
