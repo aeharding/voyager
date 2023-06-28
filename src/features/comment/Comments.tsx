@@ -99,9 +99,7 @@ export default function Comments({
 
   async function fetchComments(refresh = false) {
     if (refresh) {
-      setLoading(false);
       setFinishedPaging(false);
-      setPage(0);
     } else {
       if (loading) return;
       if (finishedPaging) return;
@@ -109,7 +107,7 @@ export default function Comments({
 
     let response;
 
-    const currentPage = page + 1;
+    const currentPage = refresh ? 1 : page + 1;
 
     const reqPostId = postId;
     const reqCommentId = commentId;
