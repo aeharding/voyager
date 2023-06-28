@@ -10,7 +10,7 @@ import {
 } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { CommentView, Person } from "lemmy-js-client";
+import { CommentSortType, CommentView, Person } from "lemmy-js-client";
 import { pullAllBy, uniqBy } from "lodash";
 import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -53,6 +53,8 @@ interface CommentsProps {
   postId: number;
   commentPath?: string;
   op: Person;
+  sort: CommentSortType;
+  commentsLastUpdated: number;
 }
 
 export default function Comments({
@@ -60,6 +62,8 @@ export default function Comments({
   postId,
   commentPath,
   op,
+  sort,
+  commentsLastUpdated,
 }: CommentsProps) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
@@ -91,22 +95,19 @@ export default function Comments({
   useEffect(() => {
     fetchComments(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [postId, commentId]);
+  }, [sort, commentPath, jwt, postId, commentsLastUpdated]);
 
   async function fetchComments(refresh = false) {
     if (refresh) {
-      setLoading(false);
       setFinishedPaging(false);
-      setPage(0);
-      setComments([]);
+    } else {
+      if (loading) return;
+      if (finishedPaging) return;
     }
 
     let response;
 
-    if (loading) return;
-    if (finishedPaging) return;
-
-    const currentPage = page + 1;
+    const currentPage = refresh ? 1 : page + 1;
 
     const reqPostId = postId;
     const reqCommentId = commentId;
@@ -117,7 +118,7 @@ export default function Comments({
         post_id: reqPostId,
         parent_id: commentId,
         limit: 10,
-        sort: "Hot",
+        sort,
         type_: "All",
         max_depth: 8,
         saved_only: false,
@@ -151,7 +152,7 @@ export default function Comments({
     if (!newComments.length) setFinishedPaging(true);
 
     let potentialComments = uniqBy(
-      [...comments, ...newComments],
+      [...existingComments, ...newComments],
       (c) => c.comment.id
     );
 
