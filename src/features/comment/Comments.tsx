@@ -179,7 +179,7 @@ export default function Comments({
     }
   }
 
-  const allComments = (() => {
+  const allComments = useMemo(() => {
     if (loading && !comments.length)
       return [<StyledIonSpinner key="spinner" />];
 
@@ -200,7 +200,7 @@ export default function Comments({
         op={op}
       />
     ));
-  })();
+  }, [commentTree, comments.length, highlightedCommentId, loading, op]);
 
   return (
     <PostContext.Provider value={{ refreshPost: () => fetchComments(true) }}>
