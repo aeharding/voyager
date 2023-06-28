@@ -26,7 +26,7 @@ import AppBackButton from "../../shared/AppBackButton";
 import Img from "./Img";
 import { maxWidthCss } from "../../shared/AppContent";
 import PersonLink from "../../labels/links/PersonLink";
-import { PostView } from "lemmy-js-client";
+import { CommentSortType, PostView } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import ViewAllComments from "./ViewAllComments";
 import CommentReply from "../../comment/reply/CommentReply";
@@ -38,6 +38,7 @@ import Video from "../../shared/Video";
 import { css } from "@emotion/react";
 import { PageContext } from "../../auth/PageContext";
 import { jwtSelector } from "../../auth/authSlice";
+import CommentSort from "../../comment/CommentSort";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -138,11 +139,12 @@ export default function PostDetail() {
   );
   const titleRef = useRef<HTMLDivElement>(null);
   const pageContext = useContext(PageContext);
-  const [commentsKey, setCommentsKey] = useState(Date.now());
+  const [commentsLastUpdated, setCommentsLastUpdated] = useState(Date.now());
+  const [sort, setSort] = useState<CommentSortType>("Hot");
 
   const [reply, onDismissReply] = useIonModal(CommentReply, {
     onDismiss: (data: string, role: string) => {
-      if (role === "post") setCommentsKey(Date.now());
+      if (role === "post") setCommentsLastUpdated(Date.now());
       onDismissReply(data, role);
     },
     item: post,
@@ -156,13 +158,7 @@ export default function PostDetail() {
     if (post) return;
 
     dispatch(getPost(+id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [post]);
-
-  useEffect(() => {
-    dispatch(getPost(+id));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jwt]);
+  }, [post, jwt, dispatch, id]);
 
   useEffect(() => {
     titleRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -271,16 +267,20 @@ export default function PostDetail() {
             />
           </IonButtons>
           <IonTitle>{post?.counts.comments} Comments</IonTitle>
+          <IonButtons slot="end">
+            <CommentSort sort={sort} setSort={setSort} />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
         {post ? (
           <Comments
-            key={commentsKey}
             header={renderHeader(post)}
             postId={post.post.id}
             commentPath={commentPath}
             op={post.creator}
+            sort={sort}
+            commentsLastUpdated={commentsLastUpdated}
           />
         ) : (
           <CenteredSpinner />
