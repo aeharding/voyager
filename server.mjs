@@ -2,9 +2,13 @@ import express from "express";
 import ViteExpress from "vite-express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
+const CUSTOM_LEMMY_SERVERS = process.env.CUSTOM_LEMMY_SERVERS
+  ? process.env.CUSTOM_LEMMY_SERVERS.split(",").map((s) => s.trim())
+  : [];
+
 // avoid issues where popular servers are flakey
 // and get blacklisted for a few minutes
-const LEMMY_WHITELIST = [
+const INITIAL_VALID_LEMMY_SERVERS = [
   "lemmy.ml",
   "lemmy.world",
   "lemmy.one",
@@ -17,12 +21,14 @@ const LEMMY_WHITELIST = [
   "lemmynsfw.com",
   "lemmy.ca",
   "lemmy.sdf.org",
-];
+].concat(CUSTOM_LEMMY_SERVERS);
 
 const validLemmyServers = {};
 const badLemmyServers = {};
 
-LEMMY_WHITELIST.forEach((server) => (validLemmyServers[server] = true));
+INITIAL_VALID_LEMMY_SERVERS.forEach(
+  (server) => (validLemmyServers[server] = true)
+);
 
 const app = express();
 
@@ -121,6 +127,23 @@ app.use(
     },
   })
 );
+
+function transformer(html) {
+  return html.replace(
+    "<!-- runtime_config -->",
+    `<script>${
+      CUSTOM_LEMMY_SERVERS.length
+        ? `window.CUSTOM_LEMMY_SERVERS = ${JSON.stringify(
+            CUSTOM_LEMMY_SERVERS
+          )}`
+        : ""
+    }</script>`
+  );
+}
+
+ViteExpress.config({
+  transformer,
+});
 
 const PORT = process.env.PORT || 5173;
 

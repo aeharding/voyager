@@ -30,6 +30,7 @@ import { swapHorizontalOutline } from "ionicons/icons";
 import { css } from "@emotion/react";
 import AccountSwitcher from "../../features/auth/AccountSwitcher";
 import { PageContext } from "../../features/auth/PageContext";
+import { LEMMY_SERVERS } from "../../helpers/lemmy";
 
 const Incognito = styled(IncognitoSvg)`
   opacity: 0.1;
@@ -131,12 +132,10 @@ export default function ProfilePage() {
           columns={[
             {
               name: "server",
-              options: [
-                "lemmy.ml",
-                "lemmy.world",
-                "beehaw.org",
-                "sh.itjust.works",
-              ].map((server) => ({ text: server, value: server })),
+              options: LEMMY_SERVERS.map((server) => ({
+                text: server,
+                value: server,
+              })),
             },
           ]}
           buttons={[
