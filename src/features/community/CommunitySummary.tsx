@@ -6,6 +6,7 @@ import CommunityLink from "../labels/links/CommunityLink";
 import Ago from "../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
+import InlineMarkdown from "../shared/InlineMarkdown";
 
 const Container = styled(IonItem)`
   ${maxWidthCss}
@@ -27,7 +28,11 @@ const Stats = styled.div`
 
 const Description = styled.div`
   font-size: 0.9em;
-  white-space: pre-wrap;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
 interface CommunitySummaryProps {
@@ -52,7 +57,11 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
           {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
           <Ago date={community.community.published} /> Old{" "}
         </Stats>
-        <Description>{community.community.description}</Description>
+        {community.community.description && (
+          <Description>
+            <InlineMarkdown>{community.community.description}</InlineMarkdown>
+          </Description>
+        )}
       </Contents>
     </Container>
   );
