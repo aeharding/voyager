@@ -3,7 +3,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
@@ -13,6 +13,9 @@ import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
 import useKeyPressed from "../../helpers/useKeyPressed";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
+import { useDispatch } from "react-redux";
+import { toggleCommentCollapseState } from "./commentSlice";
+import { AppContext } from "../auth/AppContext";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -28,6 +31,8 @@ const rainbowColors = [
 ];
 
 const CustomIonItem = styled(IonItem)`
+  scroll-margin-bottom: 35vh;
+
   --padding-start: 0;
   --inner-padding-end: 0;
   --border-style: none;
@@ -166,6 +171,8 @@ interface CommentProps {
   context?: React.ReactNode;
 
   className?: string;
+
+  rootIndex: number;
 }
 
 export default function Comment({
@@ -179,15 +186,46 @@ export default function Comment({
   context,
   routerLink,
   className,
+  rootIndex,
 }: CommentProps) {
   const keyPressed = useKeyPressed();
+  const dispatch = useDispatch();
+  // eslint-disable-next-line no-undef
+  const commentRef = useRef<HTMLIonItemElement>(null);
+
+  const { activePage } = useContext(AppContext);
+
+  function collapseRootComment() {
+    const rootCommentId = +comment.comment.path.split(".")[1];
+
+    dispatch(toggleCommentCollapseState(rootCommentId));
+
+    if (!activePage || !("current" in activePage)) return;
+
+    activePage.current?.scrollToIndex({
+      index: rootIndex,
+      behavior: "smooth",
+    });
+  }
+
+  useEffect(() => {
+    if (highlightedCommentId !== comment.comment.id) return;
+
+    setTimeout(() => {
+      commentRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "nearest",
+      });
+    }, 100);
+  }, [highlightedCommentId, comment]);
 
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
       <SlidingNestedCommentVote
         item={comment}
         className={className}
-        collapse={() => onClick?.()}
+        collapse={collapseRootComment}
         collapsed={!!collapsed}
       >
         <CustomIonItem
@@ -196,6 +234,7 @@ export default function Comment({
           onClick={() => {
             if (!keyPressed) onClick?.();
           }}
+          ref={commentRef}
         >
           <PositionedContainer
             depth={depth || 0}

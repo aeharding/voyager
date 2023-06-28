@@ -1,7 +1,6 @@
 import React, {
   ComponentType,
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -12,12 +11,11 @@ import {
   IonRefresherContent,
   RefresherCustomEvent,
   useIonToast,
-  useIonViewDidEnter,
 } from "@ionic/react";
 import { LIMIT } from "../../services/lemmy";
 import { CenteredSpinner } from "../post/detail/PostDetail";
 import { pullAllBy } from "lodash";
-import { AppContext } from "../auth/AppContext";
+import { useSetActivePage } from "../auth/AppContext";
 import EndPost from "./EndPost";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
@@ -43,12 +41,9 @@ export default function Feed<I>({
   const [atEnd, setAtEnd] = useState(false);
   const [present] = useIonToast();
 
-  const { setActivePage } = useContext(AppContext);
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
-  useIonViewDidEnter(() => {
-    setActivePage(virtuosoRef);
-  });
+  useSetActivePage(virtuosoRef);
 
   useEffect(() => {
     fetchMore(true);
@@ -121,6 +116,7 @@ export default function Feed<I>({
       >
         <IonRefresherContent />
       </IonRefresher>
+
       <Virtuoso
         ref={virtuosoRef}
         style={{ height: "100%" }}

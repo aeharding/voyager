@@ -12,16 +12,15 @@ import {
   IonToolbar,
   useIonAlert,
   useIonRouter,
-  useIonViewWillEnter,
 } from "@ionic/react";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Profile from "../../features/user/Profile";
 import { useParams } from "react-router";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import styled from "@emotion/styled";
 import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
-import { AppContext } from "../../features/auth/AppContext";
+import { useSetActivePage } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
@@ -42,7 +41,6 @@ export default function UserPage(props: UserPageProps) {
   const dispatch = useAppDispatch();
   const [person, setPerson] = useState<GetPersonDetailsResponse | undefined>();
   const pageRef = useRef();
-  const { setActivePage } = useContext(AppContext);
   const router = useIonRouter();
   const [present] = useIonAlert();
 
@@ -51,9 +49,7 @@ export default function UserPage(props: UserPageProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handle]);
 
-  useIonViewWillEnter(() => {
-    if (pageRef.current) setActivePage(pageRef.current);
-  });
+  useSetActivePage(pageRef.current);
 
   async function load() {
     let data;

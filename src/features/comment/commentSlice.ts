@@ -33,6 +33,10 @@ export const commentSlice = createSlice({
       state.commentCollapsedById[action.payload.commentId] =
         action.payload.collapsed;
     },
+    toggleCommentCollapseState: (state, action: PayloadAction<number>) => {
+      state.commentCollapsedById[action.payload] =
+        !state.commentCollapsedById[action.payload];
+    },
     updateCommentVote: (
       state,
       action: PayloadAction<{ commentId: number; vote: -1 | 1 | 0 | undefined }>
@@ -47,6 +51,7 @@ export const commentSlice = createSlice({
 export const {
   receivedComments,
   updateCommentCollapseState,
+  toggleCommentCollapseState,
   updateCommentVote,
   resetComments,
 } = commentSlice.actions;
