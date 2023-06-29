@@ -21,7 +21,6 @@ import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppSelector } from "./store";
 import { jwtIssSelector, jwtSelector } from "./features/auth/authSlice";
-import { POPULAR_SERVERS } from "./helpers/lemmy";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
@@ -49,6 +48,7 @@ import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
 import UpdateAppPage from "./pages/settings/UpdateAppPage";
 import useShouldInstall from "./features/pwa/useShouldInstall";
 import { UpdateContext } from "./pages/settings/update/UpdateContext";
+import { LEMMY_SERVERS } from "./helpers/lemmy";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -56,7 +56,7 @@ const Interceptor = styled.div`
   pointer-events: all;
 `;
 
-export const DEFAULT_ACTOR = POPULAR_SERVERS[0];
+export const DEFAULT_ACTOR = LEMMY_SERVERS[0];
 
 export default function TabbedRoutes() {
   const { activePage } = useContext(AppContext);

@@ -37,11 +37,12 @@ wefwef is an [Apollo-like](https://apolloapp.io/) open source web client for [Le
 - Comment thread collapsing
 - A bunch of swipe gestures
 - Messaging, mentions and replies
+- Creating new posts (url/photo/text)
 
 **What is on the roadmap?**
 
-- Creating posts
 - Android theme
+- Deleting/editing posts/comments
 - Native notifications and badging
 - ...and more!
 
@@ -65,6 +66,10 @@ The wefwef team maintains a deployment at:
 
 In order to host wefwef yourself you can use the provided Dockerfile to build a container with wefwef. The Docker container itself does not provide any SSL/TLS handling. You'll have to add this bit yourself.
 One could put wefwef behind popular reverse proxies with SSL Handling like Traefik, NGINX etc.
+
+#### Environment variables
+
+- `CUSTOM_LEMMY_SERVERS` (optional) e.g. `lemmy.world,lemmy.ml,sh.itjust.works` - a comma separated list of suggested servers. The first will be used as default view for logged out users. You can specify only one if you want.
 
 #### From source
 

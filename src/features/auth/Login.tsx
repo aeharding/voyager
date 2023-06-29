@@ -19,13 +19,13 @@ import {
   useIonModal,
 } from "@ionic/react";
 import styled from "@emotion/styled";
-import { POPULAR_SERVERS } from "../../helpers/lemmy";
 import { useAppDispatch } from "../../store";
 import { login } from "./authSlice";
 import { LemmyHttp } from "lemmy-js-client";
 import { getClient } from "../../services/lemmy";
 import { IonInputCustomEvent } from "@ionic/core";
 import TermsSheet from "../settings/terms/TermsSheet";
+import { LEMMY_SERVERS } from "../../helpers/lemmy";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -50,7 +50,7 @@ export default function Login({
 }) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const [server, setServer] = useState(POPULAR_SERVERS[0]);
+  const [server, setServer] = useState(LEMMY_SERVERS[0]);
   const [customServer, setCustomServer] = useState("");
   const [serverConfirmed, setServerConfirmed] = useState(false);
   const [username, setUsername] = useState("");
@@ -248,7 +248,7 @@ export default function Login({
                 onIonChange={(e) => setServer(e.target.value)}
               >
                 <IonList inset>
-                  {POPULAR_SERVERS.map((server) => (
+                  {LEMMY_SERVERS.slice(0, 3).map((server) => (
                     <IonItem disabled={loading} key={server}>
                       <IonRadio value={server} key={server}>
                         {server}

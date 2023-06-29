@@ -1,6 +1,9 @@
 import { Comment, CommentView, Community } from "lemmy-js-client";
 
-export const POPULAR_SERVERS = ["lemmy.world", "lemmy.ml", "beehaw.org"];
+export const LEMMY_SERVERS =
+  "CUSTOM_LEMMY_SERVERS" in window
+    ? (window.CUSTOM_LEMMY_SERVERS as string[])
+    : ["lemmy.world", "lemmy.ml", "beehaw.org", "sh.itjust.works"];
 
 export interface LemmyJWT {
   sub: number;
