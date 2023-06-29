@@ -6,6 +6,7 @@ import {
   IonHeader,
   IonLabel,
   IonList,
+  IonLoading,
   IonPage,
   IonRefresher,
   IonRefresherContent,
@@ -14,7 +15,7 @@ import {
 } from "@ionic/react";
 import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../profile/ProfileFeedItemsPage";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PageContentIonSpinner } from "../shared/UserPage";
 import styled from "@emotion/styled";
 import { UpdateContext } from "./update/UpdateContext";
@@ -37,12 +38,27 @@ const Container = styled.div`
 `;
 
 export default function UpdateAppPage() {
+  const [loading, setLoading] = useState(false);
   const { status, checkForUpdates, updateServiceWorker } =
     useContext(UpdateContext);
 
   useEffect(() => {
     checkForUpdates();
   }, [checkForUpdates]);
+
+  async function onInstallUpdate() {
+    setLoading(true);
+
+    try {
+      await updateServiceWorker();
+    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Sometimes updateServiceWorker() doesn't refresh in Safari,
+      // even though the page needs refresh?!
+      location.reload();
+    }
+  }
 
   return (
     <IonPage className="grey-bg">
@@ -56,6 +72,7 @@ export default function UpdateAppPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
+        <IonLoading isOpen={loading} message="Updating" />
         <IonRefresher
           slot="fixed"
           onIonRefresh={async (e) => {
@@ -88,16 +105,7 @@ export default function UpdateAppPage() {
 
             {status === "outdated" && (
               <IonList inset color="primary">
-                <InsetIonItem
-                  detail
-                  onClick={async () => {
-                    try {
-                      await updateServiceWorker();
-                    } finally {
-                      location.reload();
-                    }
-                  }}
-                >
+                <InsetIonItem detail onClick={onInstallUpdate}>
                   <IonLabel>Install new update</IonLabel>
                   <IonBadge color="danger">1</IonBadge>
                 </InsetIonItem>
