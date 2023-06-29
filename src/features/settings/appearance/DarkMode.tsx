@@ -1,12 +1,6 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import {
-  IonButton,
-  IonLabel,
-  IonList,
-  IonRange,
-  IonToggle,
-} from "@ionic/react";
+import { IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setUserDarkMode, setUseSystemDarkMode } from "./appearanceSlice";
