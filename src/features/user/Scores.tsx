@@ -44,18 +44,25 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
 
   const postScore = aggregates.post_score;
   const commentScore = aggregates.comment_score;
+  const totalScore = postScore + commentScore;
 
   const showScoreAlert = async (focus: "post" | "comment") => {
-    const subHeader = `${focus === "post" ? commentScore : postScore} ${
-      focus === "post" ? "Comment" : "Post"
-    } Points`;
-    const message = `${postScore + commentScore} Total Points`;
+    const postPointsLine = `${postScore.toLocaleString()} Post Points`;
+    const commentPointsLine = `${commentScore.toLocaleString()} Comment Points`;
+
+    const totalScoreLine = `${totalScore.toLocaleString()} Total Points`;
+
+    const header = focus === "post" ? postPointsLine : commentPointsLine;
+
+    const message = [
+      focus === "post" ? commentPointsLine : postPointsLine,
+      totalScoreLine,
+    ];
 
     await present({
-      header: `${focus === "post" ? postScore : commentScore} ${focus} points`,
-      htmlAttributes: { style: "white-space: pre-line;" },
-      subHeader,
-      message,
+      header,
+      cssClass: "preserve-newlines",
+      message: message.join("\n"),
       buttons: [{ text: "OK" }],
     });
   };
