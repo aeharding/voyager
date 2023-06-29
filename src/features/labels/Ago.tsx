@@ -15,7 +15,7 @@ export default function Ago({ date, className }: AgoProps) {
   );
 }
 
-export const getRelativeDateString = (relativeDate: string) => {
+const getRelativeDateString = (relativeDate: string) => {
   const [value, unit] = relativeDate.split(" ");
 
   switch (unit) {
