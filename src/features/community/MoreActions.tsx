@@ -13,9 +13,13 @@ import {
   starOutline,
   starSharp,
 } from "ionicons/icons";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { followCommunity, updateFavouriteCommunities } from "./communitySlice";
+import {
+  followCommunity,
+  getFavouriteCommunities,
+  updateFavouriteCommunities,
+} from "./communitySlice";
 import { PageContext } from "../auth/PageContext";
 import Login from "../auth/Login";
 import { jwtSelector } from "../auth/authSlice";
@@ -40,19 +44,31 @@ export default function MoreActions({ community }: MoreActionsProps) {
     (state) => state.community.communityByHandle
   );
 
-  const favouriteCommunityHandles = useAppSelector(
-    (state) => state.community.favouriteCommunityHandles
-  );
-
   const { presentNewPost } = useContext(NewPostContext);
 
   const isSubscribed =
     communityByHandle[community]?.community_view.subscribed === "Subscribed" ||
     communityByHandle[community]?.community_view.subscribed === "Pending";
 
-  const isFavourite = favouriteCommunityHandles.find(
-    (handle) => handle === community
+  const [isFavourite, setIsFavourite] = useState(false);
+
+  const favouriteCommunityHandles = useAppSelector(
+    (state) => state.community.favouriteCommunityHandles
   );
+
+  useEffect(() => {
+    if (!jwt) return;
+
+    dispatch(getFavouriteCommunities());
+  }, [dispatch, jwt]);
+
+  useEffect(() => {
+    if (!jwt) return;
+
+    setIsFavourite(favouriteCommunityHandles.includes(community));
+
+    return () => setIsFavourite(false);
+  }, [community, favouriteCommunityHandles, jwt]);
 
   return (
     <>

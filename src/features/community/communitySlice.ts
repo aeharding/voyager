@@ -3,6 +3,8 @@ import { AppDispatch, RootState } from "../../store";
 import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { CommunityResponse, CommunityView } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
+import { merge } from "lodash";
+import { set } from "../settings/storage";
 
 interface CommentState {
   communityByHandle: Dictionary<CommunityResponse>;
@@ -15,6 +17,25 @@ const initialState: CommentState = {
   trendingCommunities: [],
   favouriteCommunityHandles: [],
 };
+
+interface FavouriteCommunityState {
+  [userHandle: string]: string[];
+}
+
+const initialFavouriteCommunityState: FavouriteCommunityState = {};
+
+const STORAGE_KEYS = {
+  favouriteCommunityHandles: "favouriteCommunityHandles",
+};
+
+export const getFavouriteCommunityStateFromStorage =
+  (): FavouriteCommunityState =>
+    merge(
+      initialFavouriteCommunityState,
+      JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.favouriteCommunityHandles) || "{}"
+      )
+    );
 
 export const communitySlice = createSlice({
   name: "community",
@@ -32,7 +53,7 @@ export const communitySlice = createSlice({
       state.trendingCommunities = action.payload;
     },
     resetCommunities: () => initialState,
-    updateFavouriteCommunities: (state, action: PayloadAction<string[]>) => {
+    setFavouriteCommunityHandles: (state, action: PayloadAction<string[]>) => {
       state.favouriteCommunityHandles = action.payload;
     },
   },
@@ -43,7 +64,7 @@ export const {
   receivedCommunity,
   recievedTrendingCommunities,
   resetCommunities,
-  updateFavouriteCommunities,
+  setFavouriteCommunityHandles,
 } = communitySlice.actions;
 
 export default communitySlice.reducer;
@@ -58,6 +79,33 @@ export const getCommunity =
       auth: jwt,
     });
     if (community) dispatch(receivedCommunity(community));
+  };
+
+export const updateFavouriteCommunities =
+  (handles: string[]) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    if (!userHandle) return;
+
+    set(STORAGE_KEYS.favouriteCommunityHandles, {
+      [getState().auth.accountData?.activeHandle as string]: handles,
+    });
+
+    dispatch(setFavouriteCommunityHandles(handles));
+  };
+
+export const getFavouriteCommunities =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    if (!userHandle) return;
+
+    const favouriteCommunityHandles = getFavouriteCommunityStateFromStorage();
+
+    dispatch(
+      setFavouriteCommunityHandles(favouriteCommunityHandles[userHandle])
+    );
   };
 
 export const followCommunity =
