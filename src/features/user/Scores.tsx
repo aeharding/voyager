@@ -2,9 +2,8 @@ import styled from "@emotion/styled";
 import { PersonAggregates } from "lemmy-js-client";
 import { formatNumber } from "../../helpers/number";
 import Ago from "../labels/Ago";
-import AccountAgeAlert from "./AgeAlert";
-import { useState } from "react";
-import ScoreAlert from "./ScoreAlert";
+import { useIonAlert } from "@ionic/react";
+import { formatDistanceToNowStrict } from "date-fns";
 
 const Container = styled.div`
   display: flex;
@@ -33,19 +32,40 @@ interface ScoreProps {
 }
 
 export default function Scores({ aggregates, accountCreated }: ScoreProps) {
-  const [accountAgeAlertOpen, setAccountAgeAlertOpen] = useState(false);
-  const [scoreAlertOpen, setScoreAlertOpen] = useState(false);
-  const [scoreAlertFocus, setScoreAlertFocus] = useState<"comment" | "post">(
-    "comment",
+  const [present] = useIonAlert();
+
+  const relativeDate = formatDistanceToNowStrict(
+    new Date(`${accountCreated}Z`),
+    {
+      addSuffix: false,
+    }
   );
+  const creationDate = new Date(accountCreated);
+
+  const postScore = aggregates.post_score;
+  const commentScore = aggregates.comment_score;
+
+  const showScoreAlert = async (focus: "post" | "comment") => {
+    const subHeader = `${focus === "post" ? commentScore : postScore} ${
+      focus === "post" ? "Comment" : "Post"
+    } Points`;
+    const message = `${postScore + commentScore} Total Points`;
+
+    await present({
+      header: `${focus === "post" ? postScore : commentScore} ${focus} points`,
+      htmlAttributes: { style: "white-space: pre-line;" },
+      subHeader,
+      message,
+      buttons: [{ text: "OK" }],
+    });
+  };
 
   return (
     <>
       <Container>
         <Score
           onClick={() => {
-            setScoreAlertOpen(true);
-            setScoreAlertFocus("comment");
+            showScoreAlert("comment");
           }}
         >
           {formatNumber(aggregates.comment_score)}
@@ -53,8 +73,7 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
         </Score>
         <Score
           onClick={() => {
-            setScoreAlertOpen(true);
-            setScoreAlertFocus("post");
+            showScoreAlert("post");
           }}
         >
           {formatNumber(aggregates.post_score)}
@@ -62,25 +81,17 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
         </Score>
         <Score
           onClick={() => {
-            setAccountAgeAlertOpen(true);
+            present({
+              header: `Account is ${relativeDate} old`,
+              message: `Created on ${creationDate.toDateString()} at ${creationDate.toLocaleTimeString()}`,
+              buttons: [{ text: "OK" }],
+            });
           }}
         >
           <Ago date={accountCreated} />
           <aside>Account age</aside>
         </Score>
       </Container>
-      <AccountAgeAlert
-        isOpen={accountAgeAlertOpen}
-        setIsOpen={setAccountAgeAlertOpen}
-        accountCreated={accountCreated}
-      />
-      <ScoreAlert
-        isOpen={scoreAlertOpen}
-        setIsOpen={setScoreAlertOpen}
-        focus={scoreAlertFocus}
-        postScore={aggregates.post_score}
-        commentScore={aggregates.comment_score}
-      />
     </>
   );
 }
