@@ -102,7 +102,7 @@ export default function CommunitiesPage() {
   const favouriteCommunities = useMemo(() => {
     // get the community obj from the handle from communities
     return communities.filter((c) =>
-      favouriteCommunityHandles.includes(getHandle(c))
+      favouriteCommunityHandles?.includes(getHandle(c))
     );
   }, [favouriteCommunityHandles, communityByHandle, communities]);
 
@@ -145,7 +145,7 @@ export default function CommunitiesPage() {
             </IonItem>
           </IonItemGroup>
 
-          {favouriteCommunityHandles.length > 0 && (
+          {(favouriteCommunityHandles || []).length > 0 && (
             <>
               <IonItemGroup>
                 <IonItemDivider>

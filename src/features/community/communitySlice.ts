@@ -3,16 +3,15 @@ import { AppDispatch, RootState } from "../../store";
 import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { CommunityResponse, CommunityView } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
-import { merge } from "lodash";
 import { set } from "../settings/storage";
 
-interface CommentState {
+interface CommunityState {
   communityByHandle: Dictionary<CommunityResponse>;
   trendingCommunities: CommunityView[];
-  favouriteCommunityHandles: string[];
+  favouriteCommunityHandles: string[] | undefined;
 }
 
-const initialState: CommentState = {
+const initialState: CommunityState = {
   communityByHandle: {},
   trendingCommunities: [],
   favouriteCommunityHandles: [],
@@ -30,12 +29,9 @@ const STORAGE_KEYS = {
 
 export const getFavouriteCommunityStateFromStorage =
   (): FavouriteCommunityState =>
-    merge(
-      initialFavouriteCommunityState,
-      JSON.parse(
-        localStorage.getItem(STORAGE_KEYS.favouriteCommunityHandles) || "{}"
-      )
-    );
+    JSON.parse(
+      localStorage.getItem(STORAGE_KEYS.favouriteCommunityHandles) || "{}"
+    ) || initialFavouriteCommunityState;
 
 export const communitySlice = createSlice({
   name: "community",

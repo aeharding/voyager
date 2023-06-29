@@ -65,7 +65,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
   useEffect(() => {
     if (!jwt) return;
 
-    setIsFavourite(favouriteCommunityHandles.includes(community));
+    setIsFavourite(favouriteCommunityHandles?.includes(community) ?? false);
 
     return () => setIsFavourite(false);
   }, [community, favouriteCommunityHandles, jwt]);
@@ -146,14 +146,14 @@ export default function MoreActions({ community }: MoreActionsProps) {
                 if (!isFavourite) {
                   dispatch(
                     updateFavouriteCommunities([
-                      ...favouriteCommunityHandles,
+                      ...(favouriteCommunityHandles || []),
                       community,
                     ])
                   );
                 } else {
                   dispatch(
                     updateFavouriteCommunities(
-                      favouriteCommunityHandles.filter(
+                      (favouriteCommunityHandles || []).filter(
                         (handle) => handle !== community
                       )
                     )
