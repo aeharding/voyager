@@ -27,7 +27,7 @@ const validLemmyServers = {};
 const badLemmyServers = {};
 
 INITIAL_VALID_LEMMY_SERVERS.forEach(
-  (server) => (validLemmyServers[server] = true)
+  (server) => (validLemmyServers[server] = true),
 );
 
 const app = express();
@@ -105,7 +105,7 @@ app.use(
     onProxyReq: (clientReq, req) => {
       clientReq.setHeader(
         "user-agent",
-        `(${req.hostname}, ${process.env.EMAIL || "hello@wefwef.app"})`
+        `(${req.hostname}, ${process.env.EMAIL || "hello@wefwef.app"})`,
       );
       clientReq.removeHeader("cookie");
 
@@ -125,7 +125,7 @@ app.use(
     onProxyRes: (proxyRes, req, res) => {
       res.removeHeader("cookie");
     },
-  })
+  }),
 );
 
 function transformer(html) {
@@ -134,10 +134,10 @@ function transformer(html) {
     `<script>${
       CUSTOM_LEMMY_SERVERS.length
         ? `window.CUSTOM_LEMMY_SERVERS = ${JSON.stringify(
-            CUSTOM_LEMMY_SERVERS
+            CUSTOM_LEMMY_SERVERS,
           )}`
         : ""
-    }</script>`
+    }</script>`,
   );
 }
 
@@ -149,5 +149,5 @@ const PORT = process.env.PORT || 5173;
 
 ViteExpress.listen(app, PORT, () =>
   // eslint-disable-next-line no-console
-  console.log(`Server is on http://localhost:${PORT}`)
+  console.log(`Server is on http://localhost:${PORT}`),
 );

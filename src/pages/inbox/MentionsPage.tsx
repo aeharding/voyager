@@ -39,7 +39,7 @@ export default function MentionsPage() {
 
       return response.mentions;
     },
-    [client, jwt, dispatch]
+    [client, jwt, dispatch],
   );
 
   return (

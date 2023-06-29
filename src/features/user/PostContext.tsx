@@ -44,7 +44,7 @@ export default function PostContext({ post, community }: PostContextProps) {
       onClick={(e) => e.stopPropagation()}
       draggable={false}
       to={buildGeneralBrowseLink(
-        `/c/${getHandle(community)}/comments/${post.id}`
+        `/c/${getHandle(community)}/comments/${post.id}`,
       )}
     >
       <Name>{post.name}</Name>

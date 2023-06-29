@@ -72,7 +72,7 @@ export default function Comments({
   const [comments, setComments] = useState<CommentView[]>([]);
   const commentTree = useMemo(
     () => (comments.length ? buildCommentsTree(comments, !!commentPath) : []),
-    [commentPath, comments]
+    [commentPath, comments],
   );
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
@@ -143,13 +143,13 @@ export default function Comments({
     const newComments = pullAllBy(
       response.comments,
       existingComments,
-      "comment.id"
+      "comment.id",
     );
     if (!newComments.length) setFinishedPaging(true);
 
     let potentialComments = uniqBy(
       [...existingComments, ...newComments],
-      (c) => c.comment.id
+      (c) => c.comment.id,
     );
 
     // Filter context to a single comment chain (only show direct ancestors and children)

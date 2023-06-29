@@ -35,7 +35,7 @@ export default function SearchCommunitiesPage() {
       });
       return response.communities;
     },
-    [search, client, sort]
+    [search, client, sort],
   );
 
   return (

@@ -32,7 +32,7 @@ export default function CommunityPage() {
   }>();
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const client = useClient();
@@ -50,7 +50,7 @@ export default function CommunityPage() {
       });
       return response.posts;
     },
-    [client, community, sort, jwt]
+    [client, community, sort, jwt],
   );
 
   useEffect(() => {

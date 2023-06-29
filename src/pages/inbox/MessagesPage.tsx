@@ -26,7 +26,7 @@ export default function MessagesPage() {
   const messages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
   const myUserId = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
+    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
   const [loading, setLoading] = useState(false);
 
@@ -50,10 +50,10 @@ export default function MessagesPage() {
         groupBy(messages, (m) =>
           m.private_message.creator_id === myUserId
             ? m.private_message.recipient_id
-            : m.private_message.creator_id
-        )
+            : m.private_message.creator_id,
+        ),
       ),
-    [messages, myUserId]
+    [messages, myUserId],
   );
 
   return (

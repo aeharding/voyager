@@ -37,7 +37,7 @@ export default function Stats({
       {Math.round(
         (stats.upvotes + stats.downvotes
           ? stats.upvotes / (stats.upvotes + stats.downvotes)
-          : 1) * 100
+          : 1) * 100,
       )}
       %
       <IonIcon icon={timeOutline} />

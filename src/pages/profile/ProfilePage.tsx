@@ -44,7 +44,7 @@ export default function ProfilePage() {
   const dispatch = useAppDispatch();
   const pageRef = useRef();
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const [pickerOpen, setPickerOpen] = useState(false);
 
@@ -62,7 +62,7 @@ export default function ProfilePage() {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
       page: pageContext.page,
-    }
+    },
   );
 
   useSetActivePage(pageRef.current);

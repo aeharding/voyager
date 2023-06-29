@@ -7,10 +7,10 @@ const COMMUNITY_RELATIVE_URL =
   /^\/c\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
 
 export default function LinkInterceptor(
-  props: LinkHTMLAttributes<HTMLAnchorElement>
+  props: LinkHTMLAttributes<HTMLAnchorElement>,
 ) {
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -39,12 +39,12 @@ export default function LinkInterceptor(
 
         router.push(
           buildGeneralBrowseLink(
-            `/c/${communityName}@${domain ?? url.hostname}`
-          )
+            `/c/${communityName}@${domain ?? url.hostname}`,
+          ),
         );
       }
     },
-    [buildGeneralBrowseLink, connectedInstance, props.href, router]
+    [buildGeneralBrowseLink, connectedInstance, props.href, router],
   );
 
   return (
@@ -53,7 +53,7 @@ export default function LinkInterceptor(
 }
 
 function matchLemmyCommunity(
-  urlPathname: string
+  urlPathname: string,
 ): [string, string] | [string] | null {
   const matches = urlPathname.match(COMMUNITY_RELATIVE_URL);
   if (matches && matches[1]) {

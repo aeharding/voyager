@@ -49,7 +49,7 @@ export default function PostSort() {
         isOpen={open}
         onDidDismiss={() => setOpen(false)}
         onWillDismiss={(
-          e: IonActionSheetCustomEvent<OverlayEventDetail<SortType>>
+          e: IonActionSheetCustomEvent<OverlayEventDetail<SortType>>,
         ) => {
           if (e.detail.data) {
             dispatch(updateSortType(e.detail.data));

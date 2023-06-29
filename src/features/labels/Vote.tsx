@@ -45,7 +45,7 @@ export default function Vote({
   const votesById = useAppSelector((state) =>
     type === "comment"
       ? state.comment.commentVotesById
-      : state.post.postVotesById
+      : state.post.postVotesById,
   );
 
   const myVote = votesById[id] ?? voteFromServer;

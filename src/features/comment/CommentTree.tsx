@@ -25,12 +25,12 @@ export default function CommentTree({
 }: CommentTreeProps) {
   const dispatch = useAppDispatch();
   const commentCollapsedById = useAppSelector(
-    (state) => state.comment.commentCollapsedById
+    (state) => state.comment.commentCollapsedById,
   );
 
   const childCount = useMemo(
     () => getFlattenedChildren(comment).length,
-    [comment]
+    [comment],
   );
 
   const collapsed = commentCollapsedById[comment.comment_view.comment.id];
@@ -40,7 +40,7 @@ export default function CommentTree({
       updateCommentCollapseState({
         commentId: comment.comment_view.comment.id,
         collapsed,
-      })
+      }),
     );
   }
 

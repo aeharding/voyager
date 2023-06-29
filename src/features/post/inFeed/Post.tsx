@@ -112,7 +112,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
-    [post]
+    [post],
   );
   const [blur, setBlur] = useState(isNsfw(post));
 
@@ -192,7 +192,7 @@ export default function Post({ post, communityMode, className }: PostProps) {
       <CustomIonItem
         detail={false}
         routerLink={buildGeneralBrowseLink(
-          `/c/${getHandle(post.community)}/comments/${post.post.id}`
+          `/c/${getHandle(post.community)}/comments/${post.post.id}`,
         )}
         href={undefined}
       >
