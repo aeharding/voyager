@@ -27,6 +27,7 @@ import { AppContextProvider } from "./features/auth/AppContext";
 import Router from "./Router";
 import BeforeInstallPromptProvider from "./BeforeInstallPromptProvider";
 import { UpdateContextProvider } from "./pages/settings/update/UpdateContext";
+import GlobalStyles from "./GlobalStyles";
 
 setupIonicReact({
   rippleEffect: false,
@@ -39,6 +40,7 @@ export default function App() {
   return (
     <AppContextProvider>
       <Provider store={store}>
+        <GlobalStyles />
         <BeforeInstallPromptProvider>
           <UpdateContextProvider>
             <Router>
