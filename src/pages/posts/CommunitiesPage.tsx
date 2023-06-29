@@ -63,8 +63,8 @@ export default function CommunitiesPage() {
 
   const dispatch = useAppDispatch();
 
-  const favouriteCommunityHandles = useAppSelector(
-    (state) => state.community.favouriteCommunityHandles
+  const favouriteCommunityActorIDs = useAppSelector(
+    (state) => state.community.favouriteCommunityActorIDs
   );
 
   useEffect(() => {
@@ -102,9 +102,9 @@ export default function CommunitiesPage() {
   const favouriteCommunities = useMemo(() => {
     // get the community obj from the handle from communities
     return communities.filter((c) =>
-      favouriteCommunityHandles?.includes(getHandle(c))
+      favouriteCommunityActorIDs?.includes(c.actor_id)
     );
-  }, [favouriteCommunityHandles, communities]);
+  }, [favouriteCommunityActorIDs, communities]);
 
   return (
     <IonPage ref={pageRef}>
@@ -145,7 +145,7 @@ export default function CommunitiesPage() {
             </IonItem>
           </IonItemGroup>
 
-          {(favouriteCommunityHandles || []).length > 0 && (
+          {(favouriteCommunityActorIDs || []).length > 0 && (
             <>
               <IonItemGroup>
                 <IonItemDivider>

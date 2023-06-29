@@ -52,8 +52,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
 
   const [isFavourite, setIsFavourite] = useState(false);
 
-  const favouriteCommunityHandles = useAppSelector(
-    (state) => state.community.favouriteCommunityHandles
+  const favouriteCommunityActorIDs = useAppSelector(
+    (state) => state.community.favouriteCommunityActorIDs
   );
 
   useEffect(() => {
@@ -65,10 +65,14 @@ export default function MoreActions({ community }: MoreActionsProps) {
   useEffect(() => {
     if (!jwt) return;
 
-    setIsFavourite(favouriteCommunityHandles?.includes(community) ?? false);
+    setIsFavourite(
+      favouriteCommunityActorIDs?.includes(
+        communityByHandle[community]?.community_view.community.actor_id!
+      ) ?? false
+    );
 
     return () => setIsFavourite(false);
-  }, [community, favouriteCommunityHandles, jwt]);
+  }, [community, favouriteCommunityActorIDs, jwt]);
 
   return (
     <>
@@ -142,19 +146,23 @@ export default function MoreActions({ community }: MoreActionsProps) {
             }
             case "favourite": {
               try {
-                // add to favouriteCommunityHandles if not already there
+                // add to favouriteCommunityActorIDs if not already there
                 if (!isFavourite) {
                   dispatch(
                     updateFavouriteCommunities([
-                      ...(favouriteCommunityHandles || []),
-                      community,
+                      ...(favouriteCommunityActorIDs || []),
+                      communityByHandle[community]?.community_view.community
+                        .actor_id!,
                     ])
                   );
                 } else {
                   dispatch(
                     updateFavouriteCommunities(
-                      (favouriteCommunityHandles || []).filter(
-                        (handle) => handle !== community
+                      (favouriteCommunityActorIDs || []).filter(
+                        (actorID) =>
+                          actorID !==
+                          communityByHandle[community]?.community_view.community
+                            .actor_id!
                       )
                     )
                   );

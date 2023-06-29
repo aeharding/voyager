@@ -8,13 +8,13 @@ import { set } from "../settings/storage";
 interface CommunityState {
   communityByHandle: Dictionary<CommunityResponse>;
   trendingCommunities: CommunityView[];
-  favouriteCommunityHandles: string[] | undefined;
+  favouriteCommunityActorIDs: string[] | undefined;
 }
 
 const initialState: CommunityState = {
   communityByHandle: {},
   trendingCommunities: [],
-  favouriteCommunityHandles: [],
+  favouriteCommunityActorIDs: [],
 };
 
 interface FavouriteCommunityState {
@@ -24,13 +24,13 @@ interface FavouriteCommunityState {
 const initialFavouriteCommunityState: FavouriteCommunityState = {};
 
 const STORAGE_KEYS = {
-  favouriteCommunityHandles: "favouriteCommunityHandles",
+  favouriteCommunityActorIDs: "favouriteCommunityActorIDs",
 };
 
 export const getFavouriteCommunityStateFromStorage =
   (): FavouriteCommunityState =>
     JSON.parse(
-      localStorage.getItem(STORAGE_KEYS.favouriteCommunityHandles) || "{}"
+      localStorage.getItem(STORAGE_KEYS.favouriteCommunityActorIDs) || "{}"
     ) || initialFavouriteCommunityState;
 
 export const communitySlice = createSlice({
@@ -49,8 +49,8 @@ export const communitySlice = createSlice({
       state.trendingCommunities = action.payload;
     },
     resetCommunities: () => initialState,
-    setFavouriteCommunityHandles: (state, action: PayloadAction<string[]>) => {
-      state.favouriteCommunityHandles = action.payload;
+    setfavouriteCommunityActorIDs: (state, action: PayloadAction<string[]>) => {
+      state.favouriteCommunityActorIDs = action.payload;
     },
   },
 });
@@ -60,7 +60,7 @@ export const {
   receivedCommunity,
   recievedTrendingCommunities,
   resetCommunities,
-  setFavouriteCommunityHandles,
+  setfavouriteCommunityActorIDs,
 } = communitySlice.actions;
 
 export default communitySlice.reducer;
@@ -84,11 +84,11 @@ export const updateFavouriteCommunities =
 
     if (!userHandle) return;
 
-    set(STORAGE_KEYS.favouriteCommunityHandles, {
+    set(STORAGE_KEYS.favouriteCommunityActorIDs, {
       [getState().auth.accountData?.activeHandle as string]: handles,
     });
 
-    dispatch(setFavouriteCommunityHandles(handles));
+    dispatch(setfavouriteCommunityActorIDs(handles));
   };
 
 export const getFavouriteCommunities =
@@ -97,10 +97,10 @@ export const getFavouriteCommunities =
 
     if (!userHandle) return;
 
-    const favouriteCommunityHandles = getFavouriteCommunityStateFromStorage();
+    const favouriteCommunityActorIDs = getFavouriteCommunityStateFromStorage();
 
     dispatch(
-      setFavouriteCommunityHandles(favouriteCommunityHandles[userHandle])
+      setfavouriteCommunityActorIDs(favouriteCommunityActorIDs[userHandle])
     );
   };
 
