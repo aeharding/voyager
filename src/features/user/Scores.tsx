@@ -4,6 +4,7 @@ import { formatNumber } from "../../helpers/number";
 import Ago from "../labels/Ago";
 import AccountAgeAlert from "./AgeAlert";
 import { useState } from "react";
+import ScoreAlert from "./ScoreAlert";
 
 const Container = styled.div`
   display: flex;
@@ -33,15 +34,29 @@ interface ScoreProps {
 
 export default function Scores({ aggregates, accountCreated }: ScoreProps) {
   const [accountAgeAlertOpen, setAccountAgeAlertOpen] = useState(false);
+  const [scoreAlertOpen, setScoreAlertOpen] = useState(false);
+  const [scoreAlertFocus, setScoreAlertFocus] = useState<"comment" | "post">(
+    "comment",
+  );
 
   return (
     <>
       <Container>
-        <Score>
+        <Score
+          onClick={() => {
+            setScoreAlertOpen(true);
+            setScoreAlertFocus("comment");
+          }}
+        >
           {formatNumber(aggregates.comment_score)}
           <aside>Comment score</aside>
         </Score>
-        <Score>
+        <Score
+          onClick={() => {
+            setScoreAlertOpen(true);
+            setScoreAlertFocus("post");
+          }}
+        >
           {formatNumber(aggregates.post_score)}
           <aside>Post score</aside>
         </Score>
@@ -58,6 +73,13 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
         isOpen={accountAgeAlertOpen}
         setIsOpen={setAccountAgeAlertOpen}
         accountCreated={accountCreated}
+      />
+      <ScoreAlert
+        isOpen={scoreAlertOpen}
+        setIsOpen={setScoreAlertOpen}
+        focus={scoreAlertFocus}
+        postScore={aggregates.post_score}
+        commentScore={aggregates.comment_score}
       />
     </>
   );
