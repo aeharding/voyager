@@ -67,12 +67,13 @@ export default function MoreActions({ community }: MoreActionsProps) {
 
     setIsFavourite(
       favouriteCommunityActorIDs?.includes(
-        communityByHandle[community]?.community_view.community.actor_id!
+        communityByHandle[community]?.community_view.community
+          .actor_id as string
       ) ?? false
     );
 
     return () => setIsFavourite(false);
-  }, [community, favouriteCommunityActorIDs, jwt]);
+  }, [community, communityByHandle, favouriteCommunityActorIDs, jwt]);
 
   return (
     <>
@@ -152,7 +153,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
                     updateFavouriteCommunities([
                       ...(favouriteCommunityActorIDs || []),
                       communityByHandle[community]?.community_view.community
-                        .actor_id!,
+                        .actor_id as string,
                     ])
                   );
                 } else {
@@ -161,8 +162,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
                       (favouriteCommunityActorIDs || []).filter(
                         (actorID) =>
                           actorID !==
-                          communityByHandle[community]?.community_view.community
-                            .actor_id!
+                          (communityByHandle[community]?.community_view
+                            .community.actor_id as string)
                       )
                     )
                   );
