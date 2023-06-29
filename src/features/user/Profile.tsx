@@ -22,7 +22,7 @@ export const InsetIonItem = styled(IonItem)`
 `;
 
 export const SettingLabel = styled(IonLabel)`
-  margin-left: 1rem;
+  margin-left: 16px;
 `;
 
 interface ProfileProps {

@@ -49,6 +49,7 @@ import UpdateAppPage from "./pages/settings/UpdateAppPage";
 import useShouldInstall from "./features/pwa/useShouldInstall";
 import { UpdateContext } from "./pages/settings/update/UpdateContext";
 import { LEMMY_SERVERS } from "./helpers/lemmy";
+import AppearancePage from "./pages/settings/AppearancePage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -313,6 +314,9 @@ export default function TabbedRoutes() {
           </Route>
           <Route exact path="/settings/update">
             <UpdateAppPage />
+          </Route>
+          <Route exact path="/settings/appearance">
+            <AppearancePage />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">

@@ -6,6 +6,7 @@ import commentSlice from "./features/comment/commentSlice";
 import communitySlice from "./features/community/communitySlice";
 import userSlice from "./features/user/userSlice";
 import inboxSlice from "./features/inbox/inboxSlice";
+import appearanceSlice from "./features/settings/appearance/appearanceSlice";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     community: communitySlice,
     user: userSlice,
     inbox: inboxSlice,
+    appearance: appearanceSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
