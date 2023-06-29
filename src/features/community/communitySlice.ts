@@ -7,11 +7,13 @@ import { getHandle } from "../../helpers/lemmy";
 interface CommentState {
   communityByHandle: Dictionary<CommunityResponse>;
   trendingCommunities: CommunityView[];
+  favouriteCommunityHandles: string[];
 }
 
 const initialState: CommentState = {
   communityByHandle: {},
   trendingCommunities: [],
+  favouriteCommunityHandles: [],
 };
 
 export const communitySlice = createSlice({
@@ -30,6 +32,9 @@ export const communitySlice = createSlice({
       state.trendingCommunities = action.payload;
     },
     resetCommunities: () => initialState,
+    updateFavouriteCommunities: (state, action: PayloadAction<string[]>) => {
+      state.favouriteCommunityHandles = action.payload;
+    },
   },
 });
 
@@ -38,6 +43,7 @@ export const {
   receivedCommunity,
   recievedTrendingCommunities,
   resetCommunities,
+  updateFavouriteCommunities,
 } = communitySlice.actions;
 
 export default communitySlice.reducer;

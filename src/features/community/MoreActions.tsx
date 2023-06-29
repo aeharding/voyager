@@ -10,10 +10,12 @@ import {
   ellipsisHorizontal,
   heartDislikeOutline,
   heartOutline,
+  starOutline,
+  starSharp,
 } from "ionicons/icons";
 import { useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { followCommunity } from "./communitySlice";
+import { followCommunity, updateFavouriteCommunities } from "./communitySlice";
 import { PageContext } from "../auth/PageContext";
 import Login from "../auth/Login";
 import { jwtSelector } from "../auth/authSlice";
@@ -38,11 +40,19 @@ export default function MoreActions({ community }: MoreActionsProps) {
     (state) => state.community.communityByHandle
   );
 
+  const favouriteCommunityHandles = useAppSelector(
+    (state) => state.community.favouriteCommunityHandles
+  );
+
   const { presentNewPost } = useContext(NewPostContext);
 
   const isSubscribed =
     communityByHandle[community]?.community_view.subscribed === "Subscribed" ||
     communityByHandle[community]?.community_view.subscribed === "Pending";
+
+  const isFavourite = favouriteCommunityHandles.find(
+    (handle) => handle === community
+  );
 
   return (
     <>
@@ -66,6 +76,11 @@ export default function MoreActions({ community }: MoreActionsProps) {
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
             role: "subscribe",
             icon: !isSubscribed ? heartOutline : heartDislikeOutline,
+          },
+          {
+            text: !isFavourite ? "Favourite" : "Unfavourite",
+            role: "favourite",
+            icon: !isFavourite ? starOutline : starSharp,
           },
           {
             text: "Cancel",
@@ -107,6 +122,39 @@ export default function MoreActions({ community }: MoreActionsProps) {
               if (!jwt) return login({ presentingElement: pageContext.page });
 
               presentNewPost();
+              break;
+            }
+            case "favourite": {
+              try {
+                // add to favouriteCommunityHandles if not already there
+                if (!isFavourite) {
+                  dispatch(
+                    updateFavouriteCommunities([
+                      ...favouriteCommunityHandles,
+                      community,
+                    ])
+                  );
+                } else {
+                  dispatch(
+                    updateFavouriteCommunities(
+                      favouriteCommunityHandles.filter(
+                        (handle) => handle !== community
+                      )
+                    )
+                  );
+                }
+              } catch (error) {
+                present({
+                  message: `Problem ${
+                    isFavourite ? "unfavouriting" : "favouriting"
+                  } c/${community}. Please try again.`,
+                  duration: 3500,
+                  position: "bottom",
+                  color: "danger",
+                });
+                throw error;
+              }
+              break;
             }
           }
         }}
