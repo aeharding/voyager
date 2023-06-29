@@ -41,14 +41,14 @@ export default function RepliesPage({ type }: RepliesPageProps) {
       });
 
       const replies = response.replies.filter((reply) =>
-        type === "Post" ? isPostReply(reply) : !isPostReply(reply),
+        type === "Post" ? isPostReply(reply) : !isPostReply(reply)
       );
 
       dispatch(receivedInboxItems(replies));
 
       return replies;
     },
-    [client, jwt, dispatch, type],
+    [client, jwt, dispatch, type]
   );
 
   return (

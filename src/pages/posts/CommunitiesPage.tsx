@@ -57,7 +57,7 @@ export default function CommunitiesPage() {
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle,
+    (state) => state.community.communityByHandle
   );
 
   useSetActivePage(pageRef.current);
@@ -67,20 +67,20 @@ export default function CommunitiesPage() {
       [
         ...(follows || []).map((f) => f.community),
         ...Object.values(communityByHandle).map(
-          (c) => c?.community_view.community,
+          (c) => c?.community_view.community
         ),
       ].filter(notEmpty),
-      "id",
+      "id"
     );
 
     pullAllBy(
       communities,
       Object.values(communityByHandle)
         .filter(
-          (response) => response?.community_view.subscribed === "NotSubscribed",
+          (response) => response?.community_view.subscribed === "NotSubscribed"
         )
         .map((c) => c?.community_view.community),
-      "id",
+      "id"
     );
 
     return communities;

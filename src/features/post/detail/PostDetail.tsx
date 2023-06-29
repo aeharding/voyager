@@ -135,7 +135,7 @@ export default function PostDetail() {
   const dispatch = useAppDispatch();
   const markdownLoneImage = useMemo(
     () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
-    [post],
+    [post]
   );
   const titleRef = useRef<HTMLDivElement>(null);
   const pageContext = useContext(PageContext);

@@ -51,12 +51,12 @@ const TableContainer = styled.div`
 
 export default function Markdown(props: ReactMarkdownOptions) {
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance,
+    (state) => state.auth.connectedInstance
   );
 
   const communityPlugin = useMemo(
     () => buildCommunityPlugin(connectedInstance),
-    [connectedInstance],
+    [connectedInstance]
   );
 
   return (

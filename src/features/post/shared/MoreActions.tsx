@@ -128,14 +128,14 @@ export default function MoreActions({ post }: MoreActionsProps) {
             }
             case "person": {
               router.push(
-                buildGeneralBrowseLink(`/u/${getHandle(post.creator)}`),
+                buildGeneralBrowseLink(`/u/${getHandle(post.creator)}`)
               );
 
               break;
             }
             case "community": {
               router.push(
-                buildGeneralBrowseLink(`/c/${getHandle(post.community)}`),
+                buildGeneralBrowseLink(`/c/${getHandle(post.community)}`)
               );
 
               break;

@@ -14,7 +14,7 @@ import { Options } from "remark-gfm";
 
 export default function customRemarkGfm(
   this: import("unified").Processor,
-  options = {},
+  options = {}
 ) {
   const data = this.data();
 

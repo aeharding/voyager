@@ -29,7 +29,7 @@ export async function uploadImage(url: string, auth: string, image: File) {
     {
       method: "POST",
       body: formData,
-    },
+    }
   );
 
   const json = await response.json();

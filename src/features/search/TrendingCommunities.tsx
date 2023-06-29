@@ -12,7 +12,7 @@ export default function TrendingCommunities() {
   const dispatch = useAppDispatch();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const trendingCommunities = useAppSelector(
-    (state) => state.community.trendingCommunities,
+    (state) => state.community.trendingCommunities
   );
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export default function TrendingCommunities() {
       {trendingCommunities.map((community) => (
         <InsetIonItem
           routerLink={buildGeneralBrowseLink(
-            `/c/${getHandle(community.community)}`,
+            `/c/${getHandle(community.community)}`
           )}
           key={community.community.id}
         >

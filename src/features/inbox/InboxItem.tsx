@@ -120,11 +120,11 @@ export default function InboxItem({ item }: InboxItemProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const readByInboxItemId = useAppSelector(
-    (state) => state.inbox.readByInboxItemId,
+    (state) => state.inbox.readByInboxItemId
   );
   const [present] = useIonToast();
   const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById,
+    (state) => state.comment.commentVotesById
   );
 
   const vote =
@@ -192,7 +192,7 @@ export default function InboxItem({ item }: InboxItemProps) {
       return buildGeneralBrowseLink(
         `/c/${getHandle(item.community)}/comments/${item.post.id}/${
           item.comment.path
-        }`,
+        }`
       );
     }
 

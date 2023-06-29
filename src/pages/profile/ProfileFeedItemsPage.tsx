@@ -52,7 +52,7 @@ export default function ProfileFeedItemsPage({
       });
       return type === "Comments" ? response.comments : response.posts;
     },
-    [client, handle, jwt, type],
+    [client, handle, jwt, type]
   );
 
   return (

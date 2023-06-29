@@ -72,7 +72,7 @@ export default function Login({
       return new URL(
         customServer.startsWith("https://")
           ? customServer
-          : `https://${customServer}`,
+          : `https://${customServer}`
       ).hostname;
     } catch (e) {
       return undefined;
@@ -165,8 +165,8 @@ export default function Login({
           new LemmyHttp(`/api/${server ?? customServerHostname}`),
           username,
           password,
-          totp,
-        ),
+          totp
+        )
       );
     } catch (error) {
       if (error === "missing_totp_token") {

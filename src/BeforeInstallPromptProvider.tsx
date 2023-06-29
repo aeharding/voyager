@@ -25,25 +25,25 @@ export default function BeforeInstallPromptProvider({
       event.preventDefault();
       setBeforeInstallPromptEvent(event);
     },
-    [],
+    []
   );
 
   useEffect(() => {
     const handleBeforeInstallPromptEvent = (
-      event: BeforeInstallPromptEvent,
+      event: BeforeInstallPromptEvent
     ) => {
       handleBeforeInstallPrompt(event);
     };
 
     window.addEventListener(
       "beforeinstallprompt",
-      handleBeforeInstallPromptEvent as never,
+      handleBeforeInstallPromptEvent as never
     );
 
     return () => {
       window.removeEventListener(
         "beforeinstallprompt",
-        handleBeforeInstallPromptEvent as never,
+        handleBeforeInstallPromptEvent as never
       );
     };
   }, [handleBeforeInstallPrompt]);

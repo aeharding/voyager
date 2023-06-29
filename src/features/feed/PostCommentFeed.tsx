@@ -43,7 +43,7 @@ export default function PostCommentFeed({
 
       return <FeedComment comment={item} css={itemCss} />;
     },
-    [communityName],
+    [communityName]
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
@@ -55,7 +55,7 @@ export default function PostCommentFeed({
 
       return items;
     },
-    [_fetchFn, dispatch],
+    [_fetchFn, dispatch]
   );
 
   return (

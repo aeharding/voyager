@@ -97,7 +97,7 @@ interface MessageProps {
 export default function Message({ message }: MessageProps) {
   const dispatch = useAppDispatch();
   const myUserId = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
+    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
   );
 
   const thisIsMyMessage = message.private_message.creator_id === myUserId;

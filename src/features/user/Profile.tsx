@@ -44,10 +44,10 @@ export default function Profile({ person }: ProfileProps) {
         auth: jwt,
       });
       return [...response.posts, ...response.comments].sort(
-        (a, b) => getCreatedDate(b) - getCreatedDate(a),
+        (a, b) => getCreatedDate(b) - getCreatedDate(a)
       );
     },
-    [person, client, jwt],
+    [person, client, jwt]
   );
 
   const header = useCallback(
@@ -60,7 +60,7 @@ export default function Profile({ person }: ProfileProps) {
         <IonList inset color="primary">
           <InsetIonItem
             routerLink={buildGeneralBrowseLink(
-              `/u/${getHandle(person.person_view.person)}/posts`,
+              `/u/${getHandle(person.person_view.person)}/posts`
             )}
           >
             <IonIcon icon={albumsOutline} color="primary" />{" "}
@@ -68,7 +68,7 @@ export default function Profile({ person }: ProfileProps) {
           </InsetIonItem>
           <InsetIonItem
             routerLink={buildGeneralBrowseLink(
-              `/u/${getHandle(person.person_view.person)}/comments`,
+              `/u/${getHandle(person.person_view.person)}/comments`
             )}
           >
             <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
@@ -81,7 +81,7 @@ export default function Profile({ person }: ProfileProps) {
         </IonList>
       </MaxWidthContainer>
     ),
-    [person, buildGeneralBrowseLink],
+    [person, buildGeneralBrowseLink]
   );
 
   return <PostCommentFeed fetchFn={fetchFn} header={header} />;
