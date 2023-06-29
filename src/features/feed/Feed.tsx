@@ -2,10 +2,11 @@ import React, {
   ComponentType,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
-import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
+import { Virtuoso, VirtuosoHandle, VirtuosoProps } from "react-virtuoso";
 import {
   IonRefresher,
   IonRefresherContent,
@@ -22,6 +23,8 @@ export type FetchFn<I> = (page: number) => Promise<I[]>;
 
 export interface FeedProps<I> {
   fetchFn: FetchFn<I>;
+  filterFn?: (item: I) => boolean;
+  getIndex?: (item: I) => number | string;
   renderItemContent: (item: I) => React.ReactNode;
   header?: ComponentType<{ context?: unknown }>;
 
@@ -30,9 +33,11 @@ export interface FeedProps<I> {
 
 export default function Feed<I>({
   fetchFn,
+  filterFn,
   renderItemContent,
   header,
   communityName,
+  getIndex,
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
@@ -40,6 +45,11 @@ export default function Feed<I>({
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
   const [present] = useIonToast();
+
+  const filteredItems = useMemo(
+    () => (filterFn ? items.filter(filterFn) : items),
+    [filterFn, items]
+  );
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
@@ -104,6 +114,14 @@ export default function Feed<I>({
     }
   }
 
+  // TODO looks like a Virtuoso bug where virtuoso checks if computeItemKey exists,
+  // not if it's not undefined (needs report)
+  const computeProp: Partial<VirtuosoProps<unknown, unknown>> = getIndex
+    ? {
+        computeItemKey: (index) => getIndex(filteredItems[index]),
+      }
+    : {};
+
   if ((loading && !items.length) || loading === undefined)
     return <CenteredSpinner />;
 
@@ -121,9 +139,10 @@ export default function Feed<I>({
         ref={virtuosoRef}
         style={{ height: "100%" }}
         atTopStateChange={setIsListAtTop}
-        totalCount={items.length}
+        {...computeProp}
+        totalCount={filteredItems.length}
         itemContent={(index) => {
-          const item = items[index];
+          const item = filteredItems[index];
 
           return renderItemContent(item);
         }}

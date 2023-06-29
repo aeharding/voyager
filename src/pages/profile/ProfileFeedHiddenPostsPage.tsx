@@ -31,13 +31,13 @@ export const SettingLabel = styled(IonLabel)`
   margin-left: 1rem;
 `;
 
-interface ProfileFeedItemsPageProps {}
-export default function ProfileFeeHiddenPostsPage({}: ProfileFeedItemsPageProps) {
+export default function ProfileFeeHiddenPostsPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { handle } = useParams<{ handle: string }>();
   const jwt = useAppSelector(jwtSelector);
   const client = useClient();
   const hiddenPosts = useAppSelector(hiddenPostsSelector);
+  const postById = useAppSelector((state) => state.post.postById);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
@@ -47,14 +47,19 @@ export default function ProfileFeeHiddenPostsPage({}: ProfileFeedItemsPageProps)
       );
 
       const result = await Promise.all(
-        currentPageItems.map((postId) =>
-          client.getPost({ id: postId, auth: jwt })
-        )
+        currentPageItems.map((postId) => {
+          const potentialPost = postById[postId];
+          if (potentialPost) return potentialPost;
+
+          return client.getPost({ id: postId, auth: jwt });
+        })
       );
 
-      return result.map((post) => post.post_view);
+      return result.map((post) =>
+        "post_view" in post ? post.post_view : post
+      );
     },
-    [client, hiddenPosts, jwt]
+    [client, hiddenPosts, jwt, postById]
   );
 
   return (

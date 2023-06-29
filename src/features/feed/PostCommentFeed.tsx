@@ -83,14 +83,22 @@ export default function PostCommentFeed({
       dispatch(receivedPosts(items.filter(isPost)));
       dispatch(receivedComments(items.filter(isComment)));
 
-      return filterHiddenPosts
-        ? items.filter((item) => !hiddenPosts.includes(item.post.id))
-        : items;
+      return items;
     },
-    [_fetchFn, dispatch, filterHiddenPosts, hiddenPosts]
+    [_fetchFn, dispatch]
   );
 
   return (
-    <Feed fetchFn={fetchFn} renderItemContent={renderItemContent} {...rest} />
+    <Feed
+      fetchFn={fetchFn}
+      filterFn={
+        filterHiddenPosts
+          ? (item) => !hiddenPosts.includes(item.post.id)
+          : undefined
+      }
+      getIndex={(item) => ("comment" in item ? item.comment.id : item.post.id)}
+      renderItemContent={renderItemContent}
+      {...rest}
+    />
   );
 }
