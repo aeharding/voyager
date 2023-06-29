@@ -104,7 +104,7 @@ export default function CommunitiesPage() {
     return communities.filter((c) =>
       favouriteCommunityHandles?.includes(getHandle(c))
     );
-  }, [favouriteCommunityHandles, communityByHandle, communities]);
+  }, [favouriteCommunityHandles, communities]);
 
   return (
     <IonPage ref={pageRef}>
