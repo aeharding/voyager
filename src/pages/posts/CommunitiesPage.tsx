@@ -12,17 +12,18 @@ import {
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { useParams } from "react-router";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { getHandle } from "../../helpers/lemmy";
 import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../helpers/array";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
 import { jwtSelector } from "../../features/auth/authSlice";
+import { getFavouriteCommunities } from "../../features/community/communitySlice";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -60,6 +61,18 @@ export default function CommunitiesPage() {
     (state) => state.community.communityByHandle
   );
 
+  const dispatch = useAppDispatch();
+
+  const favouriteCommunityHandles = useAppSelector(
+    (state) => state.community.favouriteCommunityHandles
+  );
+
+  useEffect(() => {
+    if (!jwt) return;
+
+    dispatch(getFavouriteCommunities());
+  }, [dispatch, jwt]);
+
   useSetActivePage(pageRef.current);
 
   const communities = useMemo(() => {
@@ -85,6 +98,13 @@ export default function CommunitiesPage() {
 
     return communities;
   }, [follows, communityByHandle]);
+
+  const favouriteCommunities = useMemo(() => {
+    // get the community obj from the handle from communities
+    return communities.filter((c) =>
+      favouriteCommunityHandles.includes(getHandle(c))
+    );
+  }, [favouriteCommunityHandles, communityByHandle, communities]);
 
   return (
     <IonPage ref={pageRef}>
@@ -124,6 +144,30 @@ export default function CommunitiesPage() {
               </Content>
             </IonItem>
           </IonItemGroup>
+
+          {favouriteCommunityHandles.length > 0 && (
+            <>
+              <IonItemGroup>
+                <IonItemDivider>
+                  <IonLabel>Favourites</IonLabel>
+                </IonItemDivider>
+              </IonItemGroup>
+
+              {sortBy(favouriteCommunities, "name")?.map((community) => (
+                <IonItem
+                  key={community.id}
+                  routerLink={buildGeneralBrowseLink(
+                    `/c/${getHandle(community)}`
+                  )}
+                >
+                  <Content>
+                    <ItemIcon item={community} size={28} />
+                    {getHandle(community)}
+                  </Content>
+                </IonItem>
+              ))}
+            </>
+          )}
 
           <IonItemGroup>
             <IonItemDivider>
