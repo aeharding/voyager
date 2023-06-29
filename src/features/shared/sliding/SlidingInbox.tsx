@@ -26,7 +26,7 @@ export default function SlidingInbox({
   const { refreshPost } = useContext(PostContext);
   const pageContext = useContext(PageContext);
   const readByInboxItemId = useAppSelector(
-    (state) => state.inbox.readByInboxItemId
+    (state) => state.inbox.readByInboxItemId,
   );
 
   const [reply, onDismissReply] = useIonModal(CommentReply, {

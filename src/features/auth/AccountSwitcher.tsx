@@ -30,7 +30,7 @@ export default function AccountSwitcher({
   const dispatch = useAppDispatch();
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
   const activeHandle = useAppSelector(
-    (state) => state.auth.accountData?.activeHandle
+    (state) => state.auth.accountData?.activeHandle,
   );
   const [editing, setEditing] = useState(false);
 

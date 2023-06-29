@@ -35,7 +35,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
   });
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const { presentNewPost } = useContext(NewPostContext);

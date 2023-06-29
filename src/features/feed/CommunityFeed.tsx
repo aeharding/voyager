@@ -9,7 +9,7 @@ interface PostCommentFeed
 export default function CommunityFeed({ ...rest }: PostCommentFeed) {
   const renderItemContent = useCallback(
     (community: CommunityView) => <CommunitySummary community={community} />,
-    []
+    [],
   );
 
   return <Feed renderItemContent={renderItemContent} {...rest} />;

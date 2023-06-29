@@ -23,7 +23,7 @@ const BUTTONS: ActionSheetButton<CommentSortType>[] = COMMENT_SORTS.map(
     text: startCase(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
-  })
+  }),
 );
 
 interface CommentSortProps {
@@ -44,7 +44,7 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
         isOpen={open}
         onDidDismiss={() => setOpen(false)}
         onWillDismiss={(
-          e: IonActionSheetCustomEvent<OverlayEventDetail<CommentSortType>>
+          e: IonActionSheetCustomEvent<OverlayEventDetail<CommentSortType>>,
         ) => {
           if (e.detail.data) {
             setSort(e.detail.data);

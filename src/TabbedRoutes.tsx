@@ -74,7 +74,7 @@ export default function TabbedRoutes() {
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
 
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
@@ -100,7 +100,7 @@ export default function TabbedRoutes() {
     } else {
       router.push(
         `/posts/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
-        "back"
+        "back",
       );
     }
   }
@@ -154,7 +154,7 @@ export default function TabbedRoutes() {
           }
 
           resolve(!!state.scrollTop);
-        })
+        }),
       );
     }
   }

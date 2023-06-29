@@ -40,7 +40,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
       });
       return [...response.posts, ...response.comments];
     },
-    [search, client, sort, type]
+    [search, client, sort, type],
   );
 
   return (

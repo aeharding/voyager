@@ -63,7 +63,7 @@ export default function BaseSlidingVote({
   const jwt = useAppSelector(jwtSelector);
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById
+    (state) => state.comment.commentVotesById,
   );
   const typedMyVote = item.my_vote as 1 | -1 | 0 | undefined;
   const isPost = "unread_comments" in item;

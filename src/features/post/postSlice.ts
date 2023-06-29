@@ -33,7 +33,7 @@ export const postSlice = createSlice({
     },
     updatePostVote: (
       state,
-      action: PayloadAction<{ postId: number; vote: -1 | 1 | 0 | undefined }>
+      action: PayloadAction<{ postId: number; vote: -1 | 1 | 0 | undefined }>,
     ) => {
       state.postVotesById[action.payload.postId] = action.payload.vote;
     },

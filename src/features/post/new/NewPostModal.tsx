@@ -59,7 +59,7 @@ function NewPostModal({ community, setIsOpen, isOpen }: NewPostModalProps) {
   const canDismissRef = useRef(canDismiss);
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const [presentActionSheet] = useIonActionSheet();

@@ -36,7 +36,7 @@ export const inboxSlice = createSlice({
   reducers: {
     receivedInboxCounts: (
       state,
-      action: PayloadAction<GetUnreadCountResponse>
+      action: PayloadAction<GetUnreadCountResponse>,
     ) => {
       state.counts.mentions = action.payload.mentions;
       state.counts.messages = action.payload.private_messages;
@@ -51,7 +51,7 @@ export const inboxSlice = createSlice({
     },
     setReadStatus: (
       state,
-      action: PayloadAction<{ item: InboxItemView; read: boolean }>
+      action: PayloadAction<{ item: InboxItemView; read: boolean }>,
     ) => {
       state.readByInboxItemId[getInboxItemId(action.payload.item)] =
         action.payload.read;
@@ -59,7 +59,7 @@ export const inboxSlice = createSlice({
     receivedMessages: (state, action: PayloadAction<PrivateMessageView[]>) => {
       state.messages = uniqBy(
         [...action.payload, ...state.messages],
-        (m) => m.private_message.id
+        (m) => m.private_message.id,
       );
     },
     sync: (state) => {
@@ -144,7 +144,7 @@ export const syncMessages =
                 auth: jwt,
                 limit: syncState === "init" ? 50 : page === 1 ? 1 : 20,
                 page,
-              }
+              },
             );
             privateMessages = results.private_messages;
           } catch (e) {
@@ -155,7 +155,7 @@ export const syncMessages =
           const newMessages = differenceBy(
             privateMessages,
             getState().inbox.messages,
-            (msg) => msg.private_message.id
+            (msg) => msg.private_message.id,
           );
 
           dispatch(receivedMessages(privateMessages));

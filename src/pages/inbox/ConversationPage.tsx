@@ -117,7 +117,7 @@ export default function ConversationPage() {
   const jwtPayload = useAppSelector(jwtPayloadSelector);
   const jwt = useAppSelector(jwtSelector);
   const myUserId = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
+    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
   const { handle } = useParams<{ handle: string }>();
   const [value, setValue] = useState("");
@@ -152,15 +152,15 @@ export default function ConversationPage() {
         .filter((m) =>
           m.private_message.creator_id === myUserId
             ? getHandle(m.recipient) === handle
-            : getHandle(m.creator) === handle
+            : getHandle(m.creator) === handle,
         )
         .sort(
           (a, b) =>
             Date.parse(b.private_message.published) -
-            Date.parse(a.private_message.published)
+            Date.parse(a.private_message.published),
         )
         .reverse(),
-    [handle, allMessages, myUserId]
+    [handle, allMessages, myUserId],
   );
 
   async function send() {

@@ -50,7 +50,7 @@ interface PostState {
 }
 
 const initialState: (connectedInstance?: string) => PostState = (
-  connectedInstance = ""
+  connectedInstance = "",
 ) => ({
   accountData: getCredentialsFromStorage(),
   site: undefined,
@@ -71,7 +71,7 @@ export const authSlice = createSlice({
 
       const accounts = uniqBy(
         [action.payload, ...state.accountData.accounts],
-        (c) => c.handle
+        (c) => c.handle,
       );
 
       state.accountData = {
@@ -87,7 +87,7 @@ export const authSlice = createSlice({
       const accounts = differenceWith(
         state.accountData.accounts,
         [action.payload],
-        (a, b) => a.handle === b
+        (a, b) => a.handle === b,
       );
 
       if (accounts.length === 0) {
@@ -143,7 +143,7 @@ export const activeAccount = createSelector(
   ],
   (accounts, activeHandle) => {
     return accounts?.find(({ handle }) => handle === activeHandle);
-  }
+  },
 );
 
 export const jwtSelector = createSelector([activeAccount], (account) => {
@@ -151,7 +151,7 @@ export const jwtSelector = createSelector([activeAccount], (account) => {
 });
 
 export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
-  jwt ? parseJWT(jwt) : undefined
+  jwt ? parseJWT(jwt) : undefined,
 );
 
 export const jwtIssSelector = (state: RootState) =>
@@ -253,7 +253,7 @@ export const urlSelector = createSelector(
   (connectedInstance, iss) => {
     // never leak the jwt to the incorrect server
     return iss ?? connectedInstance;
-  }
+  },
 );
 
 export const clientSelector = createSelector([urlSelector], (url) => {
@@ -262,7 +262,7 @@ export const clientSelector = createSelector([urlSelector], (url) => {
 });
 
 function updateCredentialsStorage(
-  accounts: CredentialStoragePayload | undefined
+  accounts: CredentialStoragePayload | undefined,
 ) {
   if (!accounts) {
     localStorage.removeItem(MULTI_ACCOUNT_STORAGE_NAME);
@@ -274,7 +274,7 @@ function updateCredentialsStorage(
 
 function getCredentialsFromStorage(): CredentialStoragePayload | undefined {
   const serializedCredentials = localStorage.getItem(
-    MULTI_ACCOUNT_STORAGE_NAME
+    MULTI_ACCOUNT_STORAGE_NAME,
   );
   if (!serializedCredentials) return;
   return JSON.parse(serializedCredentials);

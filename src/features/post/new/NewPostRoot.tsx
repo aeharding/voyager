@@ -93,7 +93,7 @@ export default function NewPostRoot({
 
   const [photoUrl, setPhotoUrl] = useState("");
   const [photoPreviewURL, setPhotoPreviewURL] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [photoUploading, setPhotoUploading] = useState(false);
 
@@ -131,7 +131,7 @@ export default function NewPostRoot({
       setText((text) => {
         resolve(text);
         return text;
-      })
+      }),
     );
 
     const postUrl = (() => {
@@ -211,8 +211,8 @@ export default function NewPostRoot({
       buildGeneralBrowseLink(
         `/c/${getHandle(community.community_view.community)}/comments/${
           postResponse.post_view.post.id
-        }`
-      )
+        }`,
+      ),
     );
   }
 
