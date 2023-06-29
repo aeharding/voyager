@@ -10,7 +10,11 @@ import BaseSlidingVote from "./BaseSlidingVote";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
 import Login from "../../auth/Login";
-import { hidePost, unhidePost } from "../../post/postSlice";
+import {
+  hiddenPostsSelector,
+  hidePost,
+  unhidePost,
+} from "../../post/postSlice";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -27,9 +31,7 @@ export default function SlidingVote({
   const pageContext = useContext(PageContext);
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
-  const isHidden = useAppSelector((state) =>
-    state.post.hiddenPosts.includes(item.post?.id)
-  );
+  const isHidden = useAppSelector(hiddenPostsSelector).includes(item.post?.id);
 
   const [login, onDismissLogin] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismissLogin(data, role),

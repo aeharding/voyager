@@ -22,7 +22,12 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { PageContext } from "../../auth/PageContext";
 import Login from "../../auth/Login";
 import { PostView } from "lemmy-js-client";
-import { hidePost, unhidePost, voteOnPost } from "../postSlice";
+import {
+  hiddenPostsSelector,
+  hidePost,
+  unhidePost,
+  voteOnPost,
+} from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentReply from "../../comment/reply/CommentReply";
@@ -41,9 +46,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const jwt = useAppSelector(jwtSelector);
-  const isHidden = useAppSelector((state) =>
-    state.post.hiddenPosts.includes(post.post.id)
-  );
+  const isHidden = useAppSelector(hiddenPostsSelector).includes(post.post.id);
 
   const router = useIonRouter();
 

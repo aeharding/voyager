@@ -4,7 +4,7 @@ import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
-import { receivedPosts } from "../post/postSlice";
+import { hiddenPostsSelector, receivedPosts } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
@@ -39,7 +39,7 @@ export default function PostCommentFeed({
   const postAppearanceType = useAppSelector(
     (state) => state.appearance.posts.type
   );
-  const hiddenPosts = useAppSelector((state) => state.post.hiddenPosts);
+  const hiddenPosts = useAppSelector(hiddenPostsSelector);
 
   const borderCss = (() => {
     switch (postAppearanceType) {

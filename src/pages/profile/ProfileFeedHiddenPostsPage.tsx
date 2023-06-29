@@ -21,6 +21,7 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
+import { hiddenPostsSelector } from "../../features/post/postSlice";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -36,7 +37,7 @@ export default function ProfileFeeHiddenPostsPage({}: ProfileFeedItemsPageProps)
   const { handle } = useParams<{ handle: string }>();
   const jwt = useAppSelector(jwtSelector);
   const client = useClient();
-  const hiddenPosts = useAppSelector((state) => state.post.hiddenPosts);
+  const hiddenPosts = useAppSelector(hiddenPostsSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
