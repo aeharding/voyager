@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { IonLabel, IonList, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { setUserDarkMode, setUseSystemDarkMode } from "./appearanceSlice";
+import { setUseSystemDarkMode } from "./appearanceSlice";
+import UserDarkMode from "./UserDarkMode";
 
 const ListHeader = styled.div`
   font-size: 0.8em;
@@ -14,8 +14,9 @@ const ListHeader = styled.div`
 
 export default function DarkMode() {
   const dispatch = useAppDispatch();
-  const { userDarkMode, usingDeviceDarkMode: useSystemDarkMode } =
-    useAppSelector((state) => state.appearance.dark);
+  const { usingDeviceDarkMode } = useAppSelector(
+    (state) => state.appearance.dark
+  );
 
   return (
     <>
@@ -26,20 +27,15 @@ export default function DarkMode() {
         <InsetIonItem>
           <IonLabel>Use System Light/Dark Mode</IonLabel>
           <IonToggle
-            checked={useSystemDarkMode}
+            checked={usingDeviceDarkMode}
             onIonChange={(e) =>
               dispatch(setUseSystemDarkMode(e.detail.checked))
             }
           />
         </InsetIonItem>
-        <InsetIonItem disabled={useSystemDarkMode}>
-          <IonLabel>Always Use Dark Mode</IonLabel>
-          <IonToggle
-            checked={userDarkMode}
-            onIonChange={(e) => dispatch(setUserDarkMode(e.detail.checked))}
-          />
-        </InsetIonItem>
       </IonList>
+
+      {!usingDeviceDarkMode && <UserDarkMode />}
     </>
   );
 }
