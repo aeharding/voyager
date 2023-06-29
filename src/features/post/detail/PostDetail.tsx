@@ -55,7 +55,7 @@ export const CenteredSpinner = styled(IonSpinner)`
 `;
 
 const Container = styled.div`
-  margin: 0 0 1rem;
+  margin: 0 0 16px;
   width: 100%;
 `;
 
@@ -71,7 +71,7 @@ const LightboxImg = styled(Img)`
 `;
 
 const StyledMarkdown = styled(Markdown)`
-  margin: 1rem 0;
+  margin: 16px 0;
 
   img {
     display: block;
@@ -83,11 +83,11 @@ const StyledMarkdown = styled(Markdown)`
 `;
 
 const StyledEmbed = styled(Embed)`
-  margin: 1rem 0;
+  margin: 16px 0;
 `;
 
 const PostDeets = styled.div`
-  margin: 0 1rem;
+  margin: 0 16px;
   font-size: 0.9em;
 
   h1,
@@ -102,12 +102,12 @@ const PostDeets = styled.div`
 
 const Title = styled.div`
   font-size: 1.3em;
-  padding: 1rem 0 0;
-  margin-bottom: 1rem;
+  padding: 16px 0 0;
+  margin-bottom: 16px;
 `;
 
 const By = styled.div`
-  margin-bottom: 0.3rem;
+  margin-bottom: 5px;
   color: var(--ion-color-medium);
 
   white-space: nowrap;
@@ -117,7 +117,7 @@ const By = styled.div`
 
 export const AnnouncementIcon = styled(IonIcon)`
   font-size: 1.1rem;
-  margin-right: 0.3rem;
+  margin-right: 5px;
   vertical-align: middle;
   color: var(--ion-color-success);
 `;
