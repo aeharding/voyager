@@ -17,12 +17,14 @@ import PostSort from "../../../features/feed/PostSort";
 import { useAppSelector } from "../../../store";
 import { CommunityView } from "lemmy-js-client";
 import CommunityFeed from "../../../features/feed/CommunityFeed";
+import { jwtSelector } from "../../../features/auth/authSlice";
 
 export default function SearchCommunitiesPage() {
   const { search } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
+  const jwt = useAppSelector(jwtSelector);
 
   const fetchFn: FetchFn<CommunityView> = useCallback(
     async (page) => {
@@ -32,10 +34,11 @@ export default function SearchCommunitiesPage() {
         type_: "Communities",
         page,
         sort,
+        auth: jwt,
       });
       return response.communities;
     },
-    [search, client, sort]
+    [client, search, sort, jwt]
   );
 
   return (
