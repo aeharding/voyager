@@ -73,9 +73,9 @@ const CommunityName = styled.span`
 `;
 
 const PostBody = styled.div`
-  font-size: 0.8em !important;
-  line-height: 1.3;
-  opacity: 0.5;
+  font-size: 0.88em;
+  line-height: 1.25;
+  opacity: 0.6;
 
   display: -webkit-box;
   -webkit-line-clamp: 3;
