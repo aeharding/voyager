@@ -53,6 +53,7 @@ import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
 import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
+import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -207,6 +208,12 @@ export default function TabbedRoutes() {
       <Route exact path={`/${tab}/:actor/u/:handle/comments`}>
         <ActorRedirect>
           <ProfileFeedItemsPage type="Comments" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
+        <ActorRedirect>
+          <ProfileFeedHiddenPostsPage />
         </ActorRedirect>
       </Route>,
     ];

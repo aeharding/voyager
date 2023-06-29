@@ -26,17 +26,20 @@ export function isComment(item: PostCommentItem): item is CommentView {
 interface PostCommentFeed
   extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {
   communityName?: string;
+  filterHiddenPosts?: boolean;
 }
 
 export default function PostCommentFeed({
   communityName,
   fetchFn: _fetchFn,
+  filterHiddenPosts = true,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
   const postAppearanceType = useAppSelector(
     (state) => state.appearance.posts.type
   );
+  const hiddenPosts = useAppSelector((state) => state.post.hiddenPosts);
 
   const borderCss = (() => {
     switch (postAppearanceType) {
@@ -77,13 +80,14 @@ export default function PostCommentFeed({
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
       const items = await _fetchFn(page);
-
       dispatch(receivedPosts(items.filter(isPost)));
       dispatch(receivedComments(items.filter(isComment)));
 
-      return items;
+      return filterHiddenPosts
+        ? items.filter((item) => !hiddenPosts.includes(item.post.id))
+        : items;
     },
-    [_fetchFn, dispatch]
+    [_fetchFn, dispatch, filterHiddenPosts, hiddenPosts]
   );
 
   return (

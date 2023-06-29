@@ -1,5 +1,5 @@
 import { useIonModal } from "@ionic/react";
-import { arrowUndo } from "ionicons/icons";
+import { arrowUndo, eyeOffOutline, eyeOutline } from "ionicons/icons";
 import React, { useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentView, PostView } from "lemmy-js-client";
@@ -7,9 +7,10 @@ import CommentReply from "../../comment/reply/CommentReply";
 import { PageContext } from "../../auth/PageContext";
 import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
-import { useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
 import Login from "../../auth/Login";
+import { hidePost, unhidePost } from "../../post/postSlice";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -24,7 +25,11 @@ export default function SlidingVote({
 }: SlidingVoteProps) {
   const { refresh: refreshPost } = useContext(FeedContext);
   const pageContext = useContext(PageContext);
+  const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
+  const isHidden = useAppSelector((state) =>
+    state.post.hiddenPosts.includes(item.post?.id)
+  );
 
   const [login, onDismissLogin] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismissLogin(data, role),
@@ -38,8 +43,8 @@ export default function SlidingVote({
     item,
   });
 
-  const endActions: [SlidingItemAction] = useMemo(() => {
-    return [
+  const endActions = useMemo(() => {
+    const actionsList = [
       {
         render: arrowUndo,
         trigger: () => {
@@ -50,7 +55,25 @@ export default function SlidingVote({
         bgColor: "primary",
       },
     ];
-  }, [pageContext.page, reply, jwt, login]);
+
+    if ("post" in item) {
+      actionsList.push({
+        render: isHidden ? eyeOutline : eyeOffOutline,
+        trigger: () => {
+          if (isHidden) {
+            dispatch(unhidePost(item.post.id));
+          } else {
+            dispatch(hidePost(item.post.id));
+          }
+        },
+        bgColor: "danger",
+      });
+    }
+
+    return actionsList as
+      | [SlidingItemAction, SlidingItemAction]
+      | [SlidingItemAction];
+  }, [dispatch, isHidden, item, jwt, login, pageContext.page, reply]);
 
   return (
     <BaseSlidingVote endActions={endActions} className={className} item={item}>

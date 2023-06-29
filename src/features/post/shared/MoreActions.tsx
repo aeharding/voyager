@@ -10,6 +10,8 @@ import {
   arrowUpOutline,
   bookmarkOutline,
   ellipsisHorizontal,
+  eyeOffOutline,
+  eyeOutline,
   peopleOutline,
   personOutline,
   shareOutline,
@@ -20,7 +22,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { PageContext } from "../../auth/PageContext";
 import Login from "../../auth/Login";
 import { PostView } from "lemmy-js-client";
-import { voteOnPost } from "../postSlice";
+import { hidePost, unhidePost, voteOnPost } from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentReply from "../../comment/reply/CommentReply";
@@ -39,6 +41,9 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const jwt = useAppSelector(jwtSelector);
+  const isHidden = useAppSelector((state) =>
+    state.post.hiddenPosts.includes(post.post.id)
+  );
 
   const router = useIonRouter();
 
@@ -115,6 +120,11 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             icon: textOutline,
           },
           {
+            text: isHidden ? "Unhide" : "Hide",
+            role: isHidden ? "unhide" : "hide",
+            icon: isHidden ? eyeOutline : eyeOffOutline,
+          },
+          {
             text: "Share",
             role: "share",
             icon: shareOutline,
@@ -168,6 +178,16 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             }
             case "select": {
               return selectText({ presentingElement: pageContext.page });
+            }
+            case "hide": {
+              dispatch(hidePost(post.post.id));
+
+              break;
+            }
+            case "unhide": {
+              dispatch(unhidePost(post.post.id));
+
+              break;
             }
             case "share": {
               navigator.share({ url: post.post.url ?? post.post.ap_id });

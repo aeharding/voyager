@@ -2,7 +2,11 @@ import React, { useCallback } from "react";
 import { IonIcon, IonLabel, IonList, IonItem } from "@ionic/react";
 import styled from "@emotion/styled";
 import Scores from "./Scores";
-import { albumsOutline, chatbubbleOutline } from "ionicons/icons";
+import {
+  albumsOutline,
+  chatbubbleOutline,
+  eyeOffOutline,
+} from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
@@ -73,6 +77,14 @@ export default function Profile({ person }: ProfileProps) {
           >
             <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
             <SettingLabel>Comments</SettingLabel>
+          </InsetIonItem>
+          <InsetIonItem
+            routerLink={buildGeneralBrowseLink(
+              `/u/${getHandle(person.person_view.person)}/hidden`
+            )}
+          >
+            <IonIcon icon={eyeOffOutline} color="primary" />{" "}
+            <SettingLabel>Hidden</SettingLabel>
           </InsetIonItem>
           {/* <InsetIonItem routerLink="/">
             <IonIcon icon={bookmarkOutline} color="primary" />{" "}

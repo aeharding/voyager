@@ -5,18 +5,22 @@ import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { POST_SORTS } from "../feed/PostSort";
 
 const POST_SORT_KEY = "post-sort";
+const HIDDEN_POSTS_KEY = "hidden-posts";
 
 interface PostState {
   postById: Dictionary<PostView>;
   postVotesById: Dictionary<1 | -1 | 0>;
 
   sort: SortType;
+
+  hiddenPosts: number[];
 }
 
 const initialState: PostState = {
   postById: {},
   postVotesById: {},
   sort: localStorage[POST_SORT_KEY] ?? POST_SORTS[0],
+  hiddenPosts: JSON.parse(localStorage[HIDDEN_POSTS_KEY] || "[]"),
 };
 
 export const postSlice = createSlice({
@@ -42,12 +46,38 @@ export const postSlice = createSlice({
       state.sort = action.payload;
       localStorage[POST_SORT_KEY] = action.payload;
     },
+    updatePostHidden: (
+      state,
+      action: PayloadAction<{ postId: number; hidden: boolean }>
+    ) => {
+      if (action.payload.hidden) {
+        state.hiddenPosts.push(action.payload.postId);
+
+        localStorage[HIDDEN_POSTS_KEY] = JSON.stringify([
+          ...state.hiddenPosts,
+          action.payload.postId,
+        ]);
+      } else {
+        state.hiddenPosts = state.hiddenPosts.filter(
+          (p) => p !== action.payload.postId
+        );
+
+        localStorage[HIDDEN_POSTS_KEY] = JSON.stringify(
+          state.hiddenPosts.filter((p) => p !== action.payload.postId)
+        );
+      }
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { receivedPosts, updatePostVote, resetPosts, updateSortType } =
-  postSlice.actions;
+export const {
+  receivedPosts,
+  updatePostVote,
+  resetPosts,
+  updateSortType,
+  updatePostHidden,
+} = postSlice.actions;
 
 export default postSlice.reducer;
 
@@ -86,3 +116,11 @@ export const getPost =
 
     if (result) dispatch(receivedPosts([result.post_view]));
   };
+
+export const hidePost = (postId: number) => async (dispatch: AppDispatch) => {
+  dispatch(updatePostHidden({ postId, hidden: true }));
+};
+
+export const unhidePost = (postId: number) => async (dispatch: AppDispatch) => {
+  dispatch(updatePostHidden({ postId, hidden: false }));
+};
