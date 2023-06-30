@@ -11,6 +11,7 @@ import AppContent from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
 import {
   apps,
+  bagCheckOutline,
   colorPalette,
   logoGithub,
   mailOutline,
@@ -92,6 +93,15 @@ export default function SettingsPage() {
               <IonIcon icon={colorPalette} />
             </IconBg>
             <SettingLabel>Appearance</SettingLabel>
+          </InsetIonItem>
+        </IonList>
+
+        <IonList inset color="primary">
+          <InsetIonItem routerLink="/settings/apollo-migrate">
+            <IconBg color="color(display-p3 1 0 1)">
+              <IonIcon icon={bagCheckOutline} />
+            </IconBg>
+            <SettingLabel>Migrate Apollo export</SettingLabel>
           </InsetIonItem>
         </IonList>
 
