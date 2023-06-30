@@ -50,7 +50,10 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
     >
       <Contents>
         <div>
-          <CommunityLink community={community.community} />
+          <CommunityLink
+            community={community.community}
+            showInstanceWhenRemote
+          />
         </div>
         <Stats>
           {community.counts.subscribers} Subscriber

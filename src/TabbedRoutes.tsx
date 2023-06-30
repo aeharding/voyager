@@ -51,6 +51,7 @@ import { UpdateContext } from "./pages/settings/update/UpdateContext";
 import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
+import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -325,6 +326,14 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/appearance">
             <AppearancePage />
           </Route>
+          <Route exact path="/settings/apollo-migrate">
+            <ApolloMigratePage />
+          </Route>
+          <Route exact path="/settings/apollo-migrate/:search">
+            <SearchCommunitiesPage />
+          </Route>
+          {/* general routes for settings is only for apollo-migrate */}
+          {...buildGeneralBrowseRoutes("settings")}
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton
