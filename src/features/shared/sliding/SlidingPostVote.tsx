@@ -5,7 +5,7 @@ import { SlidingItemAction } from "./SlidingItem";
 import { CommentView, PostView } from "lemmy-js-client";
 import CommentReply from "../../comment/reply/CommentReply";
 import { PageContext } from "../../auth/PageContext";
-import { PostContext } from "../../post/detail/PostContext";
+import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import { useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
@@ -22,7 +22,7 @@ export default function SlidingVote({
   className,
   item,
 }: SlidingVoteProps) {
-  const { refreshPost } = useContext(PostContext);
+  const { refresh: refreshPost } = useContext(FeedContext);
   const pageContext = useContext(PageContext);
   const jwt = useAppSelector(jwtSelector);
 

@@ -1,16 +1,22 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, jwtSelector } from "../auth/authSlice";
-import { CommentView } from "lemmy-js-client";
+import { Comment, CommentView } from "lemmy-js-client";
 
 interface CommentState {
   commentCollapsedById: Dictionary<boolean>;
   commentVotesById: Dictionary<1 | -1 | 0>;
+  commentById: Dictionary<Comment>;
 }
 
 const initialState: CommentState = {
   commentCollapsedById: {},
   commentVotesById: {},
+
+  /**
+   * surgical changes received after user edits or deletes comment
+   */
+  commentById: {},
 };
 
 export const commentSlice = createSlice({
@@ -19,11 +25,25 @@ export const commentSlice = createSlice({
   reducers: {
     receivedComments: (state, action: PayloadAction<CommentView[]>) => {
       for (const comment of action.payload) {
+        // If the store has a mutated copy (e.g. user edit, delete) and later we get a change, update
+        // We do this a bit surgically so we're not throwing every comment ever fetched in the store.
+        if (state.commentById[comment.comment.id])
+          state.commentById[comment.comment.id] = comment.comment;
+
         if (comment.my_vote)
           state.commentVotesById[comment.comment.id] = comment.my_vote as
             | 1
             | -1;
       }
+    },
+
+    // For edits and deletes
+    mutatedComment: (state, action: PayloadAction<CommentView>) => {
+      const comment = action.payload;
+      state.commentById[comment.comment.id] = comment.comment;
+
+      if (comment.my_vote)
+        state.commentVotesById[comment.comment.id] = comment.my_vote as 1 | -1;
     },
 
     updateCommentCollapseState: (
@@ -50,6 +70,7 @@ export const commentSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   receivedComments,
+  mutatedComment,
   updateCommentCollapseState,
   toggleCommentCollapseState,
   updateCommentVote,
@@ -80,4 +101,36 @@ export const voteOnComment =
 
       throw error;
     }
+  };
+
+export const deleteComment =
+  (commentId: number) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = jwtSelector(getState());
+
+    if (!jwt) throw new Error("Not authorized");
+
+    const response = await clientSelector(getState())?.deleteComment({
+      comment_id: commentId,
+      deleted: true,
+      auth: jwt,
+    });
+
+    dispatch(mutatedComment(response.comment_view));
+  };
+
+export const editComment =
+  (commentId: number, content: string) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = jwtSelector(getState());
+
+    if (!jwt) throw new Error("Not authorized");
+
+    const response = await clientSelector(getState())?.editComment({
+      comment_id: commentId,
+      content,
+      auth: jwt,
+    });
+
+    dispatch(mutatedComment(response.comment_view));
   };

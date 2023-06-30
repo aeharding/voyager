@@ -1,18 +1,16 @@
 import { useIonModal } from "@ionic/react";
 import { arrowUndo, chevronCollapse, chevronExpand } from "ionicons/icons";
-import React, { useCallback, useContext, useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentView } from "lemmy-js-client";
 import CommentReply from "../../comment/reply/CommentReply";
 import { PageContext } from "../../auth/PageContext";
-import { PostContext } from "../../post/detail/PostContext";
+import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import { useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
 import Login from "../../auth/Login";
-import { AppContext } from "../../auth/AppContext";
-import { useDispatch } from "react-redux";
-import { toggleCommentCollapseState } from "../../comment/commentSlice";
+import useCollapseRootComment from "../../comment/useCollapseRootComment";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -29,11 +27,10 @@ export default function SlidingNestedCommentVote({
   rootIndex,
   collapsed,
 }: SlidingVoteProps) {
-  const dispatch = useDispatch();
-  const { refreshPost } = useContext(PostContext);
+  const { refresh: refreshPost } = useContext(FeedContext);
   const pageContext = useContext(PageContext);
   const jwt = useAppSelector(jwtSelector);
-  const { activePage } = useContext(AppContext);
+  const collapseRootComment = useCollapseRootComment(item, rootIndex);
 
   const [login, onDismissLogin] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismissLogin(data, role),
@@ -46,21 +43,6 @@ export default function SlidingNestedCommentVote({
     },
     item,
   });
-
-  const collapseRootComment = useCallback(() => {
-    if (!rootIndex) return;
-
-    const rootCommentId = +item.comment.path.split(".")[1];
-
-    dispatch(toggleCommentCollapseState(rootCommentId));
-
-    if (!activePage || !("current" in activePage)) return;
-
-    activePage.current?.scrollToIndex({
-      index: rootIndex,
-      behavior: "smooth",
-    });
-  }, [activePage, dispatch, item.comment.path, rootIndex]);
 
   const endActions: [SlidingItemAction, SlidingItemAction] = useMemo(() => {
     return [
