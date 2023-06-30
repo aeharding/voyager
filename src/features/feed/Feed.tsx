@@ -51,6 +51,14 @@ export default function Feed<I>({
     [filterFn, items]
   );
 
+  useEffect(() => {
+    // Check if everything in this page is filtered out and if so, fetch more
+    if (filteredItems.length === 0 && items.length > 0 && !loading) {
+      fetchMore();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredItems, items.length, loading]);
+
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
   useSetActivePage(virtuosoRef);
