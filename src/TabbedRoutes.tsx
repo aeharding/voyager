@@ -50,6 +50,7 @@ import useShouldInstall from "./features/pwa/useShouldInstall";
 import { UpdateContext } from "./pages/settings/update/UpdateContext";
 import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
+import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -165,6 +166,12 @@ export default function TabbedRoutes() {
       <Route exact path={`/${tab}/:actor/c/:community`}>
         <ActorRedirect>
           <CommunityPage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/c/:community/sidebar`}>
+        <ActorRedirect>
+          <CommunitySidebarPage />
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key

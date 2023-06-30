@@ -40,6 +40,8 @@ import { FeedContext } from "../feed/FeedContext";
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
   margin: -8px -12px;
+
+  font-size: 1.2em;
 `;
 
 interface MoreActionsProps {

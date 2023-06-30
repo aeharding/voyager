@@ -107,7 +107,7 @@ const Header = styled.div`
 
   gap: 0.5rem;
 
-  color: var(--ion-color-medium);
+  color: var(--ion-color-medium2);
 `;
 
 const StyledPersonLabel = styled(PersonLink)`
