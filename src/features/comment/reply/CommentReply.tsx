@@ -85,8 +85,13 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
         auth: jwt,
       });
     } catch (error) {
+      const errorDescription =
+        error === "language_not_allowed"
+          ? "Please select a language in your lemmy profile settings."
+          : "Please try again.";
+
       present({
-        message: "Problem posting your comment. Please try again.",
+        message: `Problem posting your comment. ${errorDescription}`,
         duration: 3500,
         position: "bottom",
         color: "danger",

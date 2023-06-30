@@ -52,6 +52,7 @@ import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
+import PostAppearancePage from "./pages/settings/PostAppearancePage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -334,6 +335,9 @@ export default function TabbedRoutes() {
           </Route>
           {/* general routes for settings is only for apollo-migrate */}
           {...buildGeneralBrowseRoutes("settings")}
+          <Route exact path="/settings/appearance/posts">
+            <PostAppearancePage />
+          </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton
