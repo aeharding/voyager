@@ -23,10 +23,7 @@ export default function UserDarkMode() {
       <IonList inset>
         <IonRadioGroup
           value={userDarkMode}
-          onIonChange={(e) => {
-            console.log(e.detail.value);
-            dispatch(setUserDarkMode(e.detail.value));
-          }}
+          onIonChange={(e) => dispatch(setUserDarkMode(e.detail.value))}
         >
           <InsetIonItem>
             <IonLabel>Light</IonLabel>
