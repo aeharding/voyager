@@ -51,13 +51,18 @@ export default function Feed<I>({
     [filterFn, items]
   );
 
+  // If there are too less items, fetch more
   useEffect(() => {
-    // Check if everything in this page is filtered out and if so, fetch more
-    if (filteredItems.length === 0 && items.length > 0 && !loading) {
+    const expectedItemCount = LIMIT * page;
+
+    if (
+      filteredItems.length < expectedItemCount &&
+      items.length === expectedItemCount
+    ) {
       fetchMore();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredItems, items.length, loading]);
+  }, [filteredItems.length, items.length, page]);
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
