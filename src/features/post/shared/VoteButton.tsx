@@ -73,7 +73,9 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   return (
     <Item
       on={myVote === selectedVote}
-      onClick={async () => {
+      onClick={async (e) => {
+        e.stopPropagation();
+
         if (!jwt) return login({ presentingElement: pageContext.page });
 
         try {

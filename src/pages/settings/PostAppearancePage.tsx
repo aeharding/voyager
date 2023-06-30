@@ -7,24 +7,25 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import TextSize from "../../features/settings/appearance/TextSize";
-import PostView from "../../features/settings/appearance/PostView";
+import PostsViewSelection from "../../features/settings/appearance/posts/PostsViewSelection";
 
-export default function AppearancePage() {
+export default function PostAppearancePage() {
   return (
     <IonPage className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/settings" text="Settings" />
+            <IonBackButton
+              defaultHref="/settings/appearance"
+              text="Appearance"
+            />
           </IonButtons>
 
-          <IonTitle>Appearance</IonTitle>
+          <IonTitle>Posts</IonTitle>
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY>
-        <TextSize />
-        <PostView />
+        <PostsViewSelection />
       </AppContent>
     </IonPage>
   );
