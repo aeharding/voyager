@@ -105,18 +105,26 @@ export default function ApolloMigratePage() {
   );
 }
 
+interface ApolloUserData {
+  subscribed_subreddits: string[];
+  favorites: string[];
+}
+
 async function getSubreddits(file: File): Promise<string[]> {
+  const dataByUser = Object.values(
+    await convertFileToJson(file)
+  ) as ApolloUserData[];
+
   return sortBy(
     uniq(
       flatten(
-        Object.values(await convertFileToJson(file)).map(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (user) => (user as any).subscribed_subreddits
-        )
+        dataByUser
+          .map((user) => user.subscribed_subreddits)
+          .concat(dataByUser.map((user) => user.favorites))
       )
     ).filter(notEmpty),
     identity
-  ) as string[];
+  );
 }
 
 function convertFileToJson(file: File): Promise<never> {
