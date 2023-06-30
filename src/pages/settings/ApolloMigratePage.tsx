@@ -53,8 +53,11 @@ export default function ApolloMigratePage() {
                   const file = (e.target as HTMLInputElement).files?.[0];
                   if (!file) return;
 
+                  let potentialSubs;
+
                   try {
-                    setSubs(await getSubreddits(file));
+                    potentialSubs = await getSubreddits(file);
+                    if (!potentialSubs.length) throw new Error("empty");
                   } catch (error) {
                     present({
                       message: "Hmmmm. That file doesn't look right.",
@@ -62,9 +65,9 @@ export default function ApolloMigratePage() {
                       position: "bottom",
                       color: "danger",
                     });
-
-                    throw error;
                   }
+
+                  setSubs(potentialSubs);
                 }}
               />
             </InsetIonItem>
