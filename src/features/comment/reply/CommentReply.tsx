@@ -23,7 +23,7 @@ import { useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { handleSelector, jwtSelector } from "../../auth/authSlice";
 
-const Container = styled.div`
+export const Container = styled.div`
   position: absolute;
   inset: 0;
 
@@ -31,7 +31,7 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Textarea = styled.textarea`
+export const Textarea = styled.textarea`
   border: 0;
   background: none;
   resize: none;

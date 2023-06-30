@@ -14,16 +14,19 @@ import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
 import PostSort from "../../../features/feed/PostSort";
-import { useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../../features/feed/PostCommentFeed";
+import { receivedPosts } from "../../../features/post/postSlice";
+import { receivedComments } from "../../../features/comment/commentSlice";
 
 interface SearchPostsResultsProps {
   type: "Posts" | "Comments";
 }
 
 export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
+  const dispatch = useAppDispatch();
   const { search } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
@@ -38,9 +41,11 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
         page,
         sort,
       });
+      dispatch(receivedPosts(response.posts));
+      dispatch(receivedComments(response.comments));
       return [...response.posts, ...response.comments];
     },
-    [search, client, sort, type]
+    [search, client, sort, type, dispatch]
   );
 
   return (
