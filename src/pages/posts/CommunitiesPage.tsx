@@ -87,8 +87,24 @@ export default function CommunitiesPage() {
     return communities;
   }, [follows, communityByHandle]);
 
-  const alphabeticallySortedCommunities = useMemo(() => {
-    return sortBy(communities, (c) => c.name.toLowerCase());
+  const communitiesGroupedByLetter = useMemo(() => {
+    const alphabeticallySortedCommunities = sortBy(communities, (c) =>
+      c.name.toLowerCase()
+    );
+
+    return Object.entries(
+      alphabeticallySortedCommunities.reduce<Record<string, Community[]>>(
+        (acc, community) => {
+          const firstLetter = community.name[0].toUpperCase();
+          if (!acc[firstLetter]) {
+            acc[firstLetter] = [];
+          }
+          acc[firstLetter].push(community);
+          return acc;
+        },
+        {}
+      )
+    );
   }, [communities]);
 
   return (
@@ -130,39 +146,28 @@ export default function CommunitiesPage() {
             </IonItem>
           </IonItemGroup>
 
-          <div>
-            {Object.entries(
-              alphabeticallySortedCommunities.reduce((acc, community) => {
-                const firstLetter = community.name[0].toUpperCase();
-                if (!acc[firstLetter]) {
-                  acc[firstLetter] = [];
-                }
-                acc[firstLetter].push(community);
-                return acc;
-              }, {} as Record<string, Community[]>)
-            ).map(([letter, communities]) => (
-              <Fragment key={letter}>
-                <IonItemGroup>
-                  <IonItemDivider>
-                    <IonLabel>{letter}</IonLabel>
-                  </IonItemDivider>
-                </IonItemGroup>
-                {communities.map((community) => (
-                  <IonItem
-                    key={community.id}
-                    routerLink={buildGeneralBrowseLink(
-                      `/c/${getHandle(community)}`
-                    )}
-                  >
-                    <Content>
-                      <ItemIcon item={community} size={28} />
-                      {getHandle(community)}
-                    </Content>
-                  </IonItem>
-                ))}
-              </Fragment>
-            ))}
-          </div>
+          {communitiesGroupedByLetter.map(([letter, communities]) => (
+            <Fragment key={letter}>
+              <IonItemGroup>
+                <IonItemDivider>
+                  <IonLabel>{letter}</IonLabel>
+                </IonItemDivider>
+              </IonItemGroup>
+              {communities.map((community) => (
+                <IonItem
+                  key={community.id}
+                  routerLink={buildGeneralBrowseLink(
+                    `/c/${getHandle(community)}`
+                  )}
+                >
+                  <Content>
+                    <ItemIcon item={community} size={28} />
+                    {getHandle(community)}
+                  </Content>
+                </IonItem>
+              ))}
+            </Fragment>
+          ))}
         </IonList>
       </AppContent>
     </IonPage>
