@@ -55,7 +55,7 @@ export default function Thumbnail({ post }: ImgProps) {
 
     if (markdownLoneImage) return markdownLoneImage.url;
 
-    post.post.thumbnail_url;
+    return post.post.thumbnail_url;
   })();
 
   return (
