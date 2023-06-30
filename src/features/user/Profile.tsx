@@ -31,9 +31,10 @@ export const SettingLabel = styled(IonLabel)`
 
 interface ProfileProps {
   person: GetPersonDetailsResponse;
+  isSelf?: boolean;
 }
 
-export default function Profile({ person }: ProfileProps) {
+export default function Profile({ person, isSelf }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const jwt = useAppSelector(jwtSelector);
   const client = useClient();
@@ -78,14 +79,16 @@ export default function Profile({ person }: ProfileProps) {
             <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
             <SettingLabel>Comments</SettingLabel>
           </InsetIonItem>
-          <InsetIonItem
-            routerLink={buildGeneralBrowseLink(
-              `/u/${getHandle(person.person_view.person)}/hidden`
-            )}
-          >
-            <IonIcon icon={eyeOffOutline} color="primary" />{" "}
-            <SettingLabel>Hidden</SettingLabel>
-          </InsetIonItem>
+          {isSelf && (
+            <InsetIonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person_view.person)}/hidden`
+              )}
+            >
+              <IonIcon icon={eyeOffOutline} color="primary" />{" "}
+              <SettingLabel>Hidden</SettingLabel>
+            </InsetIonItem>
+          )}
           {/* <InsetIonItem routerLink="/">
             <IonIcon icon={bookmarkOutline} color="primary" />{" "}
             <SettingLabel>Saved</SettingLabel>
@@ -93,7 +96,7 @@ export default function Profile({ person }: ProfileProps) {
         </IonList>
       </MaxWidthContainer>
     ),
-    [person, buildGeneralBrowseLink]
+    [person, buildGeneralBrowseLink, isSelf]
   );
 
   return <PostCommentFeed fetchFn={fetchFn} header={header} />;

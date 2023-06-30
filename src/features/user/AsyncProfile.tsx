@@ -10,9 +10,10 @@ import { useEffect, useState } from "react";
 import Profile from "../../features/user/Profile";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import styled from "@emotion/styled";
-import { useAppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { getUser } from "../../features/user/userSlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { handleSelector } from "../../features/auth/authSlice";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
@@ -32,6 +33,7 @@ interface AsyncProfileProps {
 }
 
 export default function AsyncProfile({ handle }: AsyncProfileProps) {
+  const activeUserHandle = useAppSelector(handleSelector);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [person, setPerson] = useState<
@@ -77,7 +79,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     if (person === "failed")
       return <FailedMessage>failed to load user profile 😢</FailedMessage>;
 
-    return <Profile person={person} />;
+    return <Profile person={person} isSelf={activeUserHandle === handle} />;
   }
 
   return (

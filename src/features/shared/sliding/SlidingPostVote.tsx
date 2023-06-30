@@ -55,7 +55,7 @@ export default function SlidingVote({
       },
     ];
 
-    if ("post" in item) {
+    if (jwt && "post" in item) {
       actionsList.push({
         render: isHidden ? eyeOutline : eyeOffOutline,
         trigger: onHide,
