@@ -1,4 +1,6 @@
 import { Redirect, Route, useLocation } from "react-router-dom";
+import Hammer from "react-hammerjs";
+import AccountSwitcher from "./features/auth/AccountSwitcher";
 import {
   IonBadge,
   IonIcon,
@@ -8,6 +10,7 @@ import {
   IonTabButton,
   IonTabs,
   useIonRouter,
+  useIonModal,
 } from "@ionic/react";
 import {
   personCircleOutline,
@@ -61,6 +64,14 @@ const Interceptor = styled.div`
 export const DEFAULT_ACTOR = LEMMY_SERVERS[0];
 
 export default function TabbedRoutes() {
+  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
+    AccountSwitcher,
+    {
+      onDismiss: (data: string, role: string) =>
+        onDismissAccountSwitcher(data, role),
+      page: "",
+    }
+  );
   const { activePage } = useContext(AppContext);
   const location = useLocation();
   const router = useIonRouter();
@@ -355,7 +366,12 @@ export default function TabbedRoutes() {
           >
             <IonIcon aria-hidden="true" icon={personCircleOutline} />
             <IonLabel>{connectedInstance}</IonLabel>
-            <Interceptor onClick={onProfileClick} />
+            <Hammer
+              onTap={onProfileClick}
+              onPress={() => presentAccountSwitcher({ cssClass: "small" })}
+            >
+              <Interceptor />
+            </Hammer>
           </IonTabButton>
           <IonTabButton
             disabled={isSearchButtonDisabled}
