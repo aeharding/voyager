@@ -87,6 +87,10 @@ export default function CommunitiesPage() {
     return communities;
   }, [follows, communityByHandle]);
 
+  const alphabeticallySortedCommunities = useMemo(() => {
+    return sortBy(communities, (c) => c.name.toLowerCase());
+  }, [communities]);
+
   return (
     <IonPage ref={pageRef}>
       <IonHeader>
@@ -128,17 +132,14 @@ export default function CommunitiesPage() {
 
           <div>
             {Object.entries(
-              sortBy(communities, (c) => c.name.toLowerCase()).reduce(
-                (acc, community) => {
-                  const firstLetter = community.name[0].toUpperCase();
-                  if (!acc[firstLetter]) {
-                    acc[firstLetter] = [];
-                  }
-                  acc[firstLetter].push(community);
-                  return acc;
-                },
-                {} as Record<string, Community[]>
-              )
+              alphabeticallySortedCommunities.reduce((acc, community) => {
+                const firstLetter = community.name[0].toUpperCase();
+                if (!acc[firstLetter]) {
+                  acc[firstLetter] = [];
+                }
+                acc[firstLetter].push(community);
+                return acc;
+              }, {} as Record<string, Community[]>)
             ).map(([letter, communities]) => (
               <Fragment key={letter}>
                 <IonItemGroup>
