@@ -25,27 +25,17 @@ export function getItemActorName(item: Pick<Community, "actor_id">) {
 }
 
 /**
- * @param actorId The actor id of a community
- * @returns The url, the community name, and the server
+ * @param actorId The actor id of a community or person
+ * @returns The name, and the server
  */
-export function breakDownCommunityActorId(actorId: string) {
-  const url = new URL(actorId);
-  const hostname = url.hostname;
-  const path = url.pathname;
-  const split = path.split("/");
-  const communityName = split[split.length - 1];
-  return { url, hostname, communityName };
-}
+export function breakDownActorID(actorId: string) {
+  // split @
+  const split = actorId.split("@");
 
-/**
- *
- * @param name The name of a community
- * @returns The instance of the community
- */
-export function getInstance(name: string) {
-  // return the stuff after @
-  const split = name.split("@");
-  return split[split.length - 1];
+  return {
+    instance: split[1],
+    name: split[0],
+  };
 }
 
 /**

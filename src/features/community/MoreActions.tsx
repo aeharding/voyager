@@ -52,8 +52,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
 
   const [isFavourite, setIsFavourite] = useState(false);
 
-  const favouriteCommunityActorIDs = useAppSelector(
-    (state) => state.community.favouriteCommunityActorIDs
+  const favouriteCommunities = useAppSelector(
+    (state) => state.community.favouriteCommunities
   );
 
   useEffect(() => {
@@ -66,14 +66,13 @@ export default function MoreActions({ community }: MoreActionsProps) {
     if (!jwt) return;
 
     setIsFavourite(
-      favouriteCommunityActorIDs?.includes(
-        communityByHandle[community]?.community_view.community
-          .actor_id as string
-      ) ?? false
+      (favouriteCommunities || []).some(
+        (favouriteCommunity) => favouriteCommunity.actorId === community
+      )
     );
 
     return () => setIsFavourite(false);
-  }, [community, communityByHandle, favouriteCommunityActorIDs, jwt]);
+  }, [community, communityByHandle, favouriteCommunities, jwt]);
 
   return (
     <>
@@ -146,24 +145,37 @@ export default function MoreActions({ community }: MoreActionsProps) {
               break;
             }
             case "favourite": {
+              const communityFromState = communityByHandle[community];
+
+              if (!communityFromState) {
+                return;
+              }
+
+              const currentCommunity =
+                communityFromState.community_view.community;
+
+              if (!currentCommunity.id) {
+                return;
+              }
+
               try {
-                // add to favouriteCommunityActorIDs if not already there
+                // add to favouriteCommunities if not already there
                 if (!isFavourite) {
                   dispatch(
                     updateFavouriteCommunities([
-                      ...(favouriteCommunityActorIDs || []),
-                      communityByHandle[community]?.community_view.community
-                        .actor_id as string,
+                      ...(favouriteCommunities || []),
+                      {
+                        actorId: community,
+                        id: currentCommunity.id,
+                      },
                     ])
                   );
                 } else {
                   dispatch(
                     updateFavouriteCommunities(
-                      (favouriteCommunityActorIDs || []).filter(
-                        (actorID) =>
-                          actorID !==
-                          (communityByHandle[community]?.community_view
-                            .community.actor_id as string)
+                      (favouriteCommunities || []).filter(
+                        (favouriteCommunity) =>
+                          favouriteCommunity.actorId !== community
                       )
                     )
                   );

@@ -8,17 +8,22 @@ import { set } from "../settings/storage";
 interface CommunityState {
   communityByHandle: Dictionary<CommunityResponse>;
   trendingCommunities: CommunityView[];
-  favouriteCommunityActorIDs: string[] | undefined;
+  favouriteCommunities: FavouriteCommunity[] | undefined;
 }
 
 const initialState: CommunityState = {
   communityByHandle: {},
   trendingCommunities: [],
-  favouriteCommunityActorIDs: [],
+  favouriteCommunities: [],
 };
 
 interface FavouriteCommunityState {
-  [userHandle: string]: string[];
+  [userHandle: string]: FavouriteCommunity[];
+}
+
+interface FavouriteCommunity {
+  actorId: string;
+  id: number;
 }
 
 const initialFavouriteCommunityState: FavouriteCommunityState = {};
@@ -49,8 +54,11 @@ export const communitySlice = createSlice({
       state.trendingCommunities = action.payload;
     },
     resetCommunities: () => initialState,
-    setfavouriteCommunityActorIDs: (state, action: PayloadAction<string[]>) => {
-      state.favouriteCommunityActorIDs = action.payload;
+    setfavouriteCommunityActorIDs: (
+      state,
+      action: PayloadAction<FavouriteCommunity[]>
+    ) => {
+      state.favouriteCommunities = action.payload;
     },
   },
 });
@@ -78,7 +86,7 @@ export const getCommunity =
   };
 
 export const updateFavouriteCommunities =
-  (handles: string[]) =>
+  (handles: FavouriteCommunity[]) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
 

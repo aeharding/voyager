@@ -13,11 +13,7 @@ import {
 import AppContent from "../../features/shared/AppContent";
 import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../store";
-import {
-  breakDownCommunityActorId,
-  getHandle,
-  getInstance,
-} from "../../helpers/lemmy";
+import { breakDownActorID, getHandle } from "../../helpers/lemmy";
 import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
@@ -68,8 +64,8 @@ export default function CommunitiesPage() {
 
   const dispatch = useAppDispatch();
 
-  const favouriteCommunityActorIDs = useAppSelector(
-    (state) => state.community.favouriteCommunityActorIDs
+  const favouriteCommunitiesFromState = useAppSelector(
+    (state) => state.community.favouriteCommunities
   );
 
   const activeHandle = useAppSelector(
@@ -113,33 +109,36 @@ export default function CommunitiesPage() {
     // if the community is not in the subscribed list, we should display it anyways, but without a sub icon.
 
     const subscribedFavourites = communities.filter((c) =>
-      favouriteCommunityActorIDs?.includes(c.actor_id)
+      favouriteCommunitiesFromState?.find((fc) => fc.id === c.id)
     );
 
-    const unsubscribedFavourites = favouriteCommunityActorIDs?.filter(
-      (id) => !communities.find((c) => c.actor_id === id)
+    // get the favourite subs from the state that are not in the communities list
+    const unsubscribedFavourites = favouriteCommunitiesFromState?.filter(
+      (fc) => !communities.find((c) => c.id === fc.id)
     );
 
     if (!unsubscribedFavourites || !activeHandle) return subscribedFavourites;
 
-    const userInstance = getInstance(activeHandle);
+    const userInstance = breakDownActorID(activeHandle).instance;
 
     // create a basic community object for the unsubscribed favourites
     const unsubscribedFavouritesCommunities = unsubscribedFavourites.map(
-      (id) => {
-        const brokenDownCommunity = breakDownCommunityActorId(id);
+      (c) => {
+        const brokenDownCommunity = breakDownActorID(c.actorId);
 
-        return {
-          id: 1000,
-          actor_id: id,
-          name: brokenDownCommunity.communityName,
-          local: userInstance === brokenDownCommunity.hostname,
+        const mockCommunity = {
+          id: c.id,
+          actor_id: `https://${brokenDownCommunity.instance}/c/${brokenDownCommunity.name}}`,
+          name: brokenDownCommunity.name,
+          local: userInstance === brokenDownCommunity.instance,
         } as Community;
+
+        return mockCommunity;
       }
     );
 
     return [...subscribedFavourites, ...unsubscribedFavouritesCommunities];
-  }, [favouriteCommunityActorIDs, communities, activeHandle]);
+  }, [favouriteCommunitiesFromState, communities, activeHandle]);
 
   return (
     <IonPage ref={pageRef}>
@@ -180,7 +179,7 @@ export default function CommunitiesPage() {
             </IonItem>
           </IonItemGroup>
 
-          {(favouriteCommunityActorIDs || []).length > 0 && (
+          {(favouriteCommunitiesFromState || []).length > 0 && (
             <>
               <IonItemGroup>
                 <IonItemDivider>
