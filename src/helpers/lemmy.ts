@@ -1,8 +1,8 @@
 import { Comment, CommentView, Community } from "lemmy-js-client";
 
 export const LEMMY_SERVERS =
-  "CUSTOM_LEMMY_SERVERS" in window
-    ? (window.CUSTOM_LEMMY_SERVERS as string[])
+  typeof CUSTOM_LEMMY_SERVERS !== "undefined"
+    ? (CUSTOM_LEMMY_SERVERS as string).split(",")
     : ["lemmy.world", "lemmy.ml", "beehaw.org", "sh.itjust.works"];
 
 export interface LemmyJWT {

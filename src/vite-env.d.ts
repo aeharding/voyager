@@ -3,3 +3,4 @@
 /// <reference types="vite-plugin-pwa/react" />
 
 declare const APP_VERSION: string;
+declare const CUSTOM_LEMMY_SERVERS: string;
