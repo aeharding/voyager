@@ -14,15 +14,15 @@ import {
 } from "../auth/authSlice";
 import { POST_SORTS } from "../feed/PostSort";
 import { getRemoteHandle } from "../../helpers/lemmy";
-import { get, set } from "../settings/storage";
+import { set } from "../settings/storage";
+import { pull } from "lodash";
+import {
+  buildHiddenPostsByIdFromArray,
+  getStoredHiddenPosts,
+  updateStoredHiddenPosts,
+} from "./hidden/hiddenStorage";
 
 const POST_SORT_KEY = "post-sort";
-
-const HIDDEN_POSTS_KEY_PREFIX = "hidden-posts-";
-
-function getHiddenPostsKey(handle: string) {
-  return `${HIDDEN_POSTS_KEY_PREFIX}${handle}`;
-}
 
 interface PostState {
   postById: Dictionary<PostView>;
@@ -30,9 +30,19 @@ interface PostState {
 
   sort: SortType;
 
-  hiddenPosts: {
-    [handle: string]: number[];
-  };
+  hiddenPosts: Dictionary<{
+    /**
+     * Storage array of hidden posts, ordered new to old
+     */
+    storedHiddenPosts: number[];
+
+    /**
+     * Upon page load, this dictionary is hydrated so that post
+     * hidden lookups remain fast, even with tens of thousands
+     * of hidden posts
+     */
+    byPostId: Dictionary<true>;
+  }>;
 }
 
 const initialState: PostState = {
@@ -71,15 +81,21 @@ export const postSlice = createSlice({
     ) => {
       const handle = action.payload.handle;
       const userHiddenPosts = state.hiddenPosts[handle];
-      const index = userHiddenPosts.indexOf(action.payload.postId);
 
-      if (action.payload.hidden && index === -1) {
-        userHiddenPosts.unshift(action.payload.postId);
+      if (!userHiddenPosts) return;
+
+      if (action.payload.hidden) {
+        userHiddenPosts.byPostId[action.payload.postId] = true;
+        userHiddenPosts.storedHiddenPosts.unshift(action.payload.postId);
       } else {
-        userHiddenPosts.splice(index, 1);
+        delete userHiddenPosts.byPostId[action.payload.postId];
+        pull(userHiddenPosts.storedHiddenPosts, action.payload.postId);
       }
 
-      set(getHiddenPostsKey(handle), userHiddenPosts);
+      updateStoredHiddenPosts(
+        action.payload.handle,
+        userHiddenPosts.storedHiddenPosts
+      );
     },
   },
   extraReducers: (builder) => {
@@ -93,11 +109,16 @@ export const postSlice = createSlice({
 
       const handle = getRemoteHandle(person);
 
+      const storedHiddenPosts = getStoredHiddenPosts(handle);
+
       return {
         ...state,
         hiddenPosts: {
           ...state.hiddenPosts,
-          [handle]: get(getHiddenPostsKey(handle)) || [],
+          [handle]: {
+            storedHiddenPosts,
+            byPostId: buildHiddenPostsByIdFromArray(storedHiddenPosts),
+          },
         },
       };
     });
@@ -115,12 +136,21 @@ export const {
 
 export default postSlice.reducer;
 
-export const hiddenPostsSelector = createSelector(
+export const hiddenPostsByIdSelector = createSelector(
   [
     (state: RootState) => handleSelector(state),
     (state: RootState) => state.post.hiddenPosts,
   ],
-  (handle, hiddenPosts) => (handle && hiddenPosts[handle]) || []
+  (handle, hiddenPosts) => (handle && hiddenPosts[handle]?.byPostId) || {}
+);
+
+export const storedHiddenPostsSelector = createSelector(
+  [
+    (state: RootState) => handleSelector(state),
+    (state: RootState) => state.post.hiddenPosts,
+  ],
+  (handle, hiddenPosts) =>
+    (handle && hiddenPosts[handle]?.storedHiddenPosts) || []
 );
 
 export const voteOnPost =

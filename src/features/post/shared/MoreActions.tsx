@@ -23,7 +23,7 @@ import { PageContext } from "../../auth/PageContext";
 import Login from "../../auth/Login";
 import { PostView } from "lemmy-js-client";
 import {
-  hiddenPostsSelector,
+  hiddenPostsByIdSelector,
   hidePost,
   unhidePost,
   voteOnPost,
@@ -47,7 +47,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const jwt = useAppSelector(jwtSelector);
-  const isHidden = useAppSelector(hiddenPostsSelector).includes(post.post.id);
+  const isHidden = useAppSelector(hiddenPostsByIdSelector)[post.post.id];
 
   const router = useIonRouter();
 

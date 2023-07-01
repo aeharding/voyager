@@ -4,7 +4,7 @@ import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
-import { hiddenPostsSelector, receivedPosts } from "../post/postSlice";
+import { hiddenPostsByIdSelector, receivedPosts } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
@@ -39,7 +39,7 @@ export default function PostCommentFeed({
   const postAppearanceType = useAppSelector(
     (state) => state.appearance.posts.type
   );
-  const hiddenPosts = useAppSelector(hiddenPostsSelector);
+  const hiddenPosts = useAppSelector(hiddenPostsByIdSelector);
 
   const borderCss = (() => {
     switch (postAppearanceType) {
@@ -88,14 +88,15 @@ export default function PostCommentFeed({
     [_fetchFn, dispatch]
   );
 
+  const filterFn = useCallback(
+    (item: PostCommentItem) => !hiddenPosts[item.post.id],
+    [hiddenPosts]
+  );
+
   return (
     <Feed
       fetchFn={fetchFn}
-      filterFn={
-        filterHiddenPosts
-          ? (item) => !hiddenPosts.includes(item.post.id)
-          : undefined
-      }
+      filterFn={filterHiddenPosts ? filterFn : undefined}
       getIndex={(item) => ("comment" in item ? item.comment.id : item.post.id)}
       renderItemContent={renderItemContent}
       {...rest}
