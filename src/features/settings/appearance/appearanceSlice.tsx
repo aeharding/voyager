@@ -55,13 +55,13 @@ const initialState: AppearanceState = {
 const stateFromStorage: AppearanceState = merge(initialState, {
   font: {
     fontSizeMultiplier: get(STORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
-    usingDeviceDarkMode: get(STORAGE_KEYS.FONT.USE_SYSTEM),
+    useSystemFontSize: get(STORAGE_KEYS.FONT.USE_SYSTEM),
   },
   posts: {
     type: get(STORAGE_KEYS.POSTS.TYPE),
   },
   dark: {
-    usingDeviceDarkMode: get(STORAGE_KEYS.DARK.USE_SYSTEM),
+    usingSystemDarkMode: get(STORAGE_KEYS.DARK.USE_SYSTEM),
     userDarkMode: get(STORAGE_KEYS.DARK.USER_MODE),
   },
 });

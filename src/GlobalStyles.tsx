@@ -1,6 +1,6 @@
 import { Global, ThemeProvider, css } from "@emotion/react";
 import { useAppSelector } from "./store";
-import useDeviceDarkMode from "./helpers/useDeviceDarkMode";
+import useSystemDarkMode from "./helpers/useSystemDarkMode";
 import {
   baseVariables,
   darkVariables,
@@ -13,7 +13,7 @@ interface GlobalStylesProps {
 }
 
 export default function GlobalStyles({ children }: GlobalStylesProps) {
-  const deviceDarkMode = useDeviceDarkMode();
+  const deviceDarkMode = useSystemDarkMode();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
     (state) => state.appearance.font
   );
