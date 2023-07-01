@@ -7,6 +7,9 @@ const STORAGE_KEYS = {
     FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
     USE_SYSTEM: "appearance--font-use-system",
   },
+  COMMENTS: {
+    IS_COMMENTS_COLLAPSED: "appearance--comments-is-comments-collapsed",
+  },
   POSTS: {
     TYPE: "appearance--post-type",
   },
@@ -29,6 +32,9 @@ interface AppearanceState {
     fontSizeMultiplier: number;
     useSystemFontSize: boolean;
   };
+  comments: {
+    isCommentsCollapsed: boolean;
+  };
   posts: {
     type: PostAppearanceType;
   };
@@ -43,6 +49,9 @@ const initialState: AppearanceState = {
     fontSizeMultiplier: 1,
     useSystemFontSize: false,
   },
+  comments: {
+    isCommentsCollapsed: false,
+  },
   posts: {
     type: "large",
   },
@@ -56,6 +65,9 @@ const stateFromStorage: AppearanceState = merge(initialState, {
   font: {
     fontSizeMultiplier: get(STORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
     useSystemFontSize: get(STORAGE_KEYS.FONT.USE_SYSTEM),
+  },
+  comments: {
+    isCommentsCollapsed: get(STORAGE_KEYS.COMMENTS.IS_COMMENTS_COLLAPSED),
   },
   posts: {
     type: get(STORAGE_KEYS.POSTS.TYPE),
@@ -80,6 +92,11 @@ export const appearanceSlice = createSlice({
 
       set(STORAGE_KEYS.FONT.USE_SYSTEM, action.payload);
     },
+    setCommentsCollapsed(state, action: PayloadAction<boolean>) {
+      state.comments.isCommentsCollapsed = action.payload;
+
+      set(STORAGE_KEYS.COMMENTS.IS_COMMENTS_COLLAPSED, action.payload);
+    },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.posts.type = action.payload;
 
@@ -103,6 +120,7 @@ export const appearanceSlice = createSlice({
 export const {
   setFontSizeMultiplier,
   setUseSystemFontSize,
+  setCommentsCollapsed,
   setPostAppearance,
   setUserDarkMode,
   setUseSystemDarkMode,
