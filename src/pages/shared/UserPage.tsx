@@ -30,6 +30,12 @@ export const PageContentIonSpinner = styled(IonSpinner)`
   transform: translate(-50%, -50%);
 `;
 
+const FailedMessage = styled.div`
+  margin-top: 25vh;
+  text-align: center;
+  color: var(--ion-color-medium);
+`;
+
 interface UserPageProps {
   handle?: string;
   toolbar?: React.ReactNode;
@@ -39,7 +45,9 @@ export default function UserPage(props: UserPageProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const handle = useParams<{ handle: string }>().handle ?? props.handle;
   const dispatch = useAppDispatch();
-  const [person, setPerson] = useState<GetPersonDetailsResponse | undefined>();
+  const [person, setPerson] = useState<
+    GetPersonDetailsResponse | "failed" | undefined
+  >();
   const pageRef = useRef();
   const router = useIonRouter();
   const [present] = useIonAlert();
@@ -57,18 +65,33 @@ export default function UserPage(props: UserPageProps) {
     try {
       data = await dispatch(getUser(handle));
     } catch (error) {
-      await present(`Huh, u/${handle} doesn't exist. Mysterious...`);
+      if (error === "couldnt_find_that_username_or_email") {
+        await present(`Huh, u/${handle} doesn't exist. Mysterious...`);
 
-      if (router.canGoBack()) {
-        router.goBack();
-      } else {
-        router.push(buildGeneralBrowseLink("/"));
+        if (router.canGoBack()) {
+          router.goBack();
+        } else {
+          router.push(buildGeneralBrowseLink("/"));
+        }
+
+        throw error;
       }
+
+      setPerson("failed");
 
       throw error;
     }
 
     setPerson(data);
+  }
+
+  function renderContents() {
+    if (!person) return <PageContentIonSpinner />;
+
+    if (person === "failed")
+      return <FailedMessage>failed to load user profile 😢</FailedMessage>;
+
+    return <Profile person={person} />;
   }
 
   return (
@@ -95,7 +118,7 @@ export default function UserPage(props: UserPageProps) {
         >
           <IonRefresherContent />
         </IonRefresher>
-        {person ? <Profile person={person} /> : <PageContentIonSpinner />}
+        {renderContents()}
       </IonContent>
     </IonPage>
   );
