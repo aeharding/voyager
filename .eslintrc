@@ -60,7 +60,8 @@
     {
       "files": ["src/**"],
       "globals": {
-        "APP_VERSION": true
+        "APP_VERSION": true,
+        "CUSTOM_LEMMY_SERVERS": true
       }
     }
   ]
