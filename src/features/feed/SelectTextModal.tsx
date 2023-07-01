@@ -1,18 +1,13 @@
-import { dismiss, present } from "@ionic/core/dist/types/utils/overlays";
 import {
-  IonModal,
   IonHeader,
   IonToolbar,
   IonTitle,
   IonButtons,
   IonButton,
   IonContent,
-  IonItem,
-  IonLabel,
-  IonCheckbox,
   IonPage,
 } from "@ionic/react";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { Centered } from "../auth/Login";
 
 interface SelectTextProps {
@@ -42,7 +37,9 @@ export default function SelectText({ text, onDismiss }: SelectTextProps) {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <p className="ion-padding-horizontal selectable preserve-newlines">{text}</p>
+        <p className="ion-padding-horizontal selectable preserve-newlines">
+          {text}
+        </p>
       </IonContent>
     </IonPage>
   );
