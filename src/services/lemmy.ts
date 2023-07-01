@@ -1,9 +1,9 @@
 import { LemmyHttp } from "lemmy-js-client";
 
 function buildBaseUrl(url: string): string {
-  if (url === "lemmy.world") {
-    return `https://lemmy.world`;
-  }
+  // if (url === "lemmy.world") {
+  //   return `https://lemmy.world`;
+  // }
 
   return `${location.origin}/api/${url}`;
 }
