@@ -142,11 +142,13 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             role: "reply",
             icon: arrowUndoOutline,
           },
-          {
-            text: "Select Text",
-            role: "select-text",
-            icon: textOutline,
-          },
+          comment.comment.content
+            ? {
+                text: "Select Text",
+                role: "select-text",
+                icon: textOutline,
+              }
+            : undefined,
           {
             text: getHandle(comment.creator),
             role: "person",

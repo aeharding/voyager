@@ -26,6 +26,7 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentReply from "../../comment/reply/CommentReply";
 import { jwtSelector } from "../../auth/authSlice";
 import SelectText from "../../../pages/shared/SelectTextModal";
+import { notEmpty } from "../../../helpers/array";
 
 interface MoreActionsProps {
   post: PostView;
@@ -102,11 +103,13 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             role: "community",
             icon: peopleOutline,
           },
-          {
-            text: "Select Text",
-            role: "select",
-            icon: textOutline,
-          },
+          !!post.post.body
+            ? {
+                text: "Select Text",
+                role: "select",
+                icon: textOutline,
+              }
+            : undefined,
           {
             text: "Share",
             role: "share",
@@ -116,7 +119,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             text: "Cancel",
             role: "cancel",
           },
-        ]}
+        ].filter(notEmpty)}
         onWillDismiss={async (e) => {
           setOpen(false);
 
