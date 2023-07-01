@@ -49,5 +49,7 @@ COPY --from=builder /wefwef/dist ./dist
 EXPOSE 5314/tcp
 
 ENV PORT=5314
+ENV CUSTOM_LEMMY_SERVERS=
+ENV ALLOWED_LEMMY_SERVERS=
 
 CMD ["node", "./server.mjs"]
