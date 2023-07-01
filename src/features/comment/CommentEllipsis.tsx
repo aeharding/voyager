@@ -19,7 +19,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import { useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { handleSelector, jwtSelector } from "../auth/authSlice";
@@ -37,7 +37,6 @@ import { notEmpty } from "../../helpers/array";
 import CommentEditing from "./edit/CommentEdit";
 import useCollapseRootComment from "./useCollapseRootComment";
 import { FeedContext } from "../feed/FeedContext";
-import SelectText from "../../pages/shared/SelectTextModal";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -49,9 +48,14 @@ const StyledIonIcon = styled(IonIcon)`
 interface MoreActionsProps {
   comment: CommentView;
   rootIndex: number | undefined;
+  setSelectTextModalIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
+export default function MoreActions({
+  comment,
+  rootIndex,
+  setSelectTextModalIsOpen,
+}: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -82,8 +86,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
     },
     item: comment,
   });
-
-  const [selectTextModalIsOpen, setSelectTextModalIsOpen] = useState(false);
 
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById
@@ -236,13 +238,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
           }
         }}
       />
-      {comment.comment.content && (
-        <SelectText
-          text={comment.comment.content}
-          isOpen={selectTextModalIsOpen}
-          onDismiss={() => setSelectTextModalIsOpen(false)}
-        />
-      )}
     </>
   );
 }

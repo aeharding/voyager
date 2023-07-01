@@ -3,7 +3,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
@@ -15,6 +15,7 @@ import useKeyPressed from "../../helpers/useKeyPressed";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
+import SelectText from "../../pages/shared/SelectTextModal";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -197,6 +198,8 @@ export default function Comment({
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentById[commentView.comment.id] ?? commentView.comment;
 
+  const [selectTextModalIsOpen, setSelectTextModalIsOpen] = useState(false);
+
   useEffect(() => {
     if (highlightedCommentId !== comment.id) return;
 
@@ -210,71 +213,84 @@ export default function Comment({
   }, [highlightedCommentId, comment]);
 
   return (
-    <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
-      <SlidingNestedCommentVote
-        item={commentView}
-        className={className}
-        rootIndex={rootIndex}
-        collapsed={!!collapsed}
-      >
-        <CustomIonItem
-          routerLink={routerLink}
-          href={undefined}
-          onClick={() => {
-            if (!keyPressed) onClick?.();
-          }}
-          ref={commentRef}
+    <>
+      <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
+        <SlidingNestedCommentVote
+          item={commentView}
+          className={className}
+          rootIndex={rootIndex}
+          collapsed={!!collapsed}
         >
-          <PositionedContainer
-            depth={depth || 0}
-            highlighted={highlightedCommentId === comment.id}
+          <CustomIonItem
+            routerLink={routerLink}
+            href={undefined}
+            onClick={() => {
+              if (!keyPressed) onClick?.();
+            }}
+            ref={commentRef}
           >
-            <Container depth={depth || 0}>
-              <Header>
-                <StyledPersonLabel
-                  person={commentView.creator}
-                  opId={commentView.post.creator_id}
-                  distinguished={comment.distinguished}
-                />
-                <Vote
-                  voteFromServer={commentView.my_vote as 1 | 0 | -1 | undefined}
-                  score={commentView.counts.score}
-                  id={commentView.comment.id}
-                  type="comment"
-                />
-                <div style={{ flex: 1 }} />
-                {!collapsed ? (
-                  <>
-                    <CommentEllipsis
-                      comment={commentView}
-                      rootIndex={rootIndex}
-                    />
-                    <Ago date={comment.published} />
-                  </>
-                ) : (
-                  <>
-                    <AmountCollapsed>{childCount}</AmountCollapsed>
-                    <CollapsedIcon icon={chevronDownOutline} />
-                  </>
-                )}
-              </Header>
+            <PositionedContainer
+              depth={depth || 0}
+              highlighted={highlightedCommentId === comment.id}
+            >
+              <Container depth={depth || 0}>
+                <Header>
+                  <StyledPersonLabel
+                    person={commentView.creator}
+                    opId={commentView.post.creator_id}
+                    distinguished={comment.distinguished}
+                  />
+                  <Vote
+                    voteFromServer={
+                      commentView.my_vote as 1 | 0 | -1 | undefined
+                    }
+                    score={commentView.counts.score}
+                    id={commentView.comment.id}
+                    type="comment"
+                  />
+                  <div style={{ flex: 1 }} />
+                  {!collapsed ? (
+                    <>
+                      <CommentEllipsis
+                        comment={commentView}
+                        rootIndex={rootIndex}
+                        selectTextModalIsOpen={selectTextModalIsOpen}
+                        setSelectTextModalIsOpen={setSelectTextModalIsOpen}
+                      />
+                      <Ago date={comment.published} />
+                    </>
+                  ) : (
+                    <>
+                      <AmountCollapsed>{childCount}</AmountCollapsed>
+                      <CollapsedIcon icon={chevronDownOutline} />
+                    </>
+                  )}
+                </Header>
 
-              <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
-                <Content
-                  keyPressed={keyPressed}
-                  onClick={(e) => {
-                    if (!(e.target instanceof HTMLElement)) return;
-                    if (e.target.nodeName === "A") e.stopPropagation();
-                  }}
-                >
-                  <CommentContent item={comment} />
-                  {context}
-                </Content>
-              </AnimateHeight>
-            </Container>
-          </PositionedContainer>
-        </CustomIonItem>
-      </SlidingNestedCommentVote>
-    </AnimateHeight>
+                <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
+                  <Content
+                    keyPressed={keyPressed}
+                    onClick={(e) => {
+                      if (!(e.target instanceof HTMLElement)) return;
+                      if (e.target.nodeName === "A") e.stopPropagation();
+                    }}
+                  >
+                    <CommentContent item={comment} />
+                    {context}
+                  </Content>
+                </AnimateHeight>
+              </Container>
+            </PositionedContainer>
+          </CustomIonItem>
+        </SlidingNestedCommentVote>
+      </AnimateHeight>
+      {comment.content && (
+        <SelectText
+          text={comment.content}
+          isOpen={selectTextModalIsOpen}
+          onDismiss={() => setSelectTextModalIsOpen(false)}
+        />
+      )}
+    </>
   );
 }
