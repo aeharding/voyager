@@ -22,11 +22,11 @@ export default function UserDarkMode() {
       <ListHeader>
         <IonLabel>Light/Dark Mode</IonLabel>
       </ListHeader>
-      <IonList inset>
-        <IonRadioGroup
-          value={userDarkMode}
-          onIonChange={(e) => dispatch(setUserDarkMode(e.detail.value))}
-        >
+      <IonRadioGroup
+        value={userDarkMode}
+        onIonChange={(e) => dispatch(setUserDarkMode(e.detail.value))}
+      >
+        <IonList inset>
           <InsetIonItem>
             <IonLabel>Light</IonLabel>
             <IonRadio value={false} />
@@ -35,8 +35,8 @@ export default function UserDarkMode() {
             <IonLabel>Dark</IonLabel>
             <IonRadio value={true} />
           </InsetIonItem>
-        </IonRadioGroup>
-      </IonList>
+        </IonList>
+      </IonRadioGroup>
     </>
   );
 }
