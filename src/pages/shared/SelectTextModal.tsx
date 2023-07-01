@@ -6,13 +6,16 @@ import {
   IonButton,
   IonContent,
   IonPage,
+  IonModal,
 } from "@ionic/react";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { Centered } from "../../features/auth/Login";
 import styled from "@emotion/styled";
+import { PageContext } from "../../features/auth/PageContext";
 
 interface SelectTextProps {
   text: string;
+  isOpen: boolean;
   onDismiss: (data?: string | null | undefined | number, role?: string) => void;
 }
 
@@ -22,11 +25,17 @@ const SelectableText = styled.p`
   white-space: pre-wrap;
 `;
 
-export default function SelectText({ text, onDismiss }: SelectTextProps) {
-  const pageRef = useRef();
+export default function SelectText(props: SelectTextProps) {
+  const pageContext = useContext(PageContext);
 
   return (
-    <IonPage ref={pageRef}>
+    <IonModal
+      isOpen={props.isOpen}
+      canDismiss={async (_: any, role?: string) => {
+        return role !== "gesture";
+      }}
+      presentingElement={pageContext.page}
+    >
       <IonHeader>
         <IonToolbar>
           <IonTitle>
@@ -35,7 +44,7 @@ export default function SelectText({ text, onDismiss }: SelectTextProps) {
           <IonButtons slot="end">
             <IonButton
               onClick={() => {
-                onDismiss();
+                props.onDismiss();
               }}
             >
               Dismiss
@@ -44,8 +53,10 @@ export default function SelectText({ text, onDismiss }: SelectTextProps) {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <SelectableText>{text}</SelectableText>
+        <SelectableText className="ion-padding-horizontal">
+          {props.text}
+        </SelectableText>
       </IonContent>
-    </IonPage>
+    </IonModal>
   );
 }

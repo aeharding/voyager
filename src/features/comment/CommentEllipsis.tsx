@@ -83,10 +83,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
     item: comment,
   });
 
-  const [selectText, onDismissSelectText] = useIonModal(SelectText, {
-    text: comment.comment.content,
-    onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
-  });
+  const [selectTextModalIsOpen, setSelectTextModalIsOpen] = useState(false);
 
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById
@@ -222,9 +219,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
               reply({ presentingElement: pageContext.page });
               break;
             case "select-text":
-              return selectText({
-                presentingElement: pageContext.page,
-              });
+              return setSelectTextModalIsOpen(true);
             case "person":
               router.push(
                 buildGeneralBrowseLink(`/u/${getHandle(comment.creator)}`)
@@ -239,6 +234,13 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
           }
         }}
       />
+      {comment.comment.content && (
+        <SelectText
+          text={comment.comment.content}
+          isOpen={selectTextModalIsOpen}
+          onDismiss={() => setSelectTextModalIsOpen(false)}
+        />
+      )}
     </>
   );
 }

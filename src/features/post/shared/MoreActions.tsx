@@ -50,10 +50,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
     item: post,
   });
 
-  const [selectText, onDismissSelectText] = useIonModal(SelectText, {
-    text: post.post.body,
-    onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
-  });
+  const [selectTextModalIsOpen, setSelectTextModalIsOpen] = useState(false);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
 
@@ -163,7 +160,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
               break;
             }
             case "select": {
-              return selectText({ presentingElement: pageContext.page });
+              return setSelectTextModalIsOpen(true);
             }
             case "share": {
               navigator.share({ url: post.post.url ?? post.post.ap_id });
@@ -173,6 +170,13 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
           }
         }}
       />
+      {post.post.body && (
+        <SelectText
+          isOpen={selectTextModalIsOpen}
+          onDismiss={() => setSelectTextModalIsOpen(false)}
+          text={post.post.body}
+        />
+      )}
     </>
   );
 }
