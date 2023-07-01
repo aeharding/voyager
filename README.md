@@ -67,6 +67,8 @@ The wefwef team maintains a deployment at:
 In order to host wefwef yourself you can use the provided Dockerfile to build a container with wefwef. The Docker container itself does not provide any SSL/TLS handling. You'll have to add this bit yourself.
 One could put wefwef behind popular reverse proxies with SSL Handling like Traefik, NGINX etc.
 
+> **Tip:** Use [Watchtower](https://github.com/containrrr/watchtower) to keep your deployment automatically up to date!
+
 #### Environment variables
 
 - `CUSTOM_LEMMY_SERVERS` (optional) e.g. `lemmy.world,lemmy.ml,sh.itjust.works` - a comma separated list of suggested servers. The first will be used as default view for logged out users. You can specify only one if you want.

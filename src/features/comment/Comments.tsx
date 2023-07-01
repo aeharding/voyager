@@ -18,7 +18,7 @@ import { RefresherCustomEvent } from "@ionic/core";
 import { getPost } from "../post/postSlice";
 import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
-import { PostContext } from "../post/detail/PostContext";
+import { FeedContext } from "../feed/FeedContext";
 import { jwtSelector } from "../auth/authSlice";
 
 const centerCss = css`
@@ -201,7 +201,7 @@ export default function Comments({
   }, [commentTree, comments.length, highlightedCommentId, loading, op]);
 
   return (
-    <PostContext.Provider value={{ refreshPost: () => fetchComments(true) }}>
+    <FeedContext.Provider value={{ refresh: () => fetchComments(true) }}>
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
@@ -225,6 +225,6 @@ export default function Comments({
             : {}
         }
       />
-    </PostContext.Provider>
+    </FeedContext.Provider>
   );
 }

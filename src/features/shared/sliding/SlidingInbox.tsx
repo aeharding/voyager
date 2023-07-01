@@ -5,7 +5,7 @@ import { SlidingItemAction } from "./SlidingItem";
 import { CommentReplyView, PersonMentionView } from "lemmy-js-client";
 import CommentReply from "../../comment/reply/CommentReply";
 import { PageContext } from "../../auth/PageContext";
-import { PostContext } from "../../post/detail/PostContext";
+import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -23,7 +23,7 @@ export default function SlidingInbox({
 }: SlidingInboxProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const { refreshPost } = useContext(PostContext);
+  const { refresh: refreshPost } = useContext(FeedContext);
   const pageContext = useContext(PageContext);
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId

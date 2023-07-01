@@ -13,6 +13,8 @@ import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
 import useKeyPressed from "../../helpers/useKeyPressed";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
+import CommentEllipsis from "./CommentEllipsis";
+import { useAppSelector } from "../../store";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -105,7 +107,7 @@ const Header = styled.div`
 
   gap: 0.5rem;
 
-  color: var(--ion-color-medium);
+  color: var(--ion-color-medium2);
 `;
 
 const StyledPersonLabel = styled(PersonLink)`
@@ -173,7 +175,7 @@ interface CommentProps {
 }
 
 export default function Comment({
-  comment,
+  comment: commentView,
   highlightedCommentId,
   depth,
   onClick,
@@ -185,12 +187,16 @@ export default function Comment({
   className,
   rootIndex,
 }: CommentProps) {
+  const commentById = useAppSelector((state) => state.comment.commentById);
   const keyPressed = useKeyPressed();
   // eslint-disable-next-line no-undef
   const commentRef = useRef<HTMLIonItemElement>(null);
 
+  // Comment from slice might be more up to date, e.g. edits
+  const comment = commentById[commentView.comment.id] ?? commentView.comment;
+
   useEffect(() => {
-    if (highlightedCommentId !== comment.comment.id) return;
+    if (highlightedCommentId !== comment.id) return;
 
     setTimeout(() => {
       commentRef.current?.scrollIntoView({
@@ -204,7 +210,7 @@ export default function Comment({
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
       <SlidingNestedCommentVote
-        item={comment}
+        item={commentView}
         className={className}
         rootIndex={rootIndex}
         collapsed={!!collapsed}
@@ -219,25 +225,29 @@ export default function Comment({
         >
           <PositionedContainer
             depth={depth || 0}
-            highlighted={highlightedCommentId === comment.comment.id}
+            highlighted={highlightedCommentId === comment.id}
           >
             <Container depth={depth || 0}>
               <Header>
                 <StyledPersonLabel
-                  person={comment.creator}
-                  opId={comment.post.creator_id}
-                  distinguished={comment.comment.distinguished}
+                  person={commentView.creator}
+                  opId={commentView.post.creator_id}
+                  distinguished={comment.distinguished}
                 />
                 <Vote
-                  voteFromServer={comment.my_vote as 1 | 0 | -1 | undefined}
-                  score={comment.counts.score}
-                  id={comment.comment.id}
+                  voteFromServer={commentView.my_vote as 1 | 0 | -1 | undefined}
+                  score={commentView.counts.score}
+                  id={commentView.comment.id}
                   type="comment"
                 />
                 <div style={{ flex: 1 }} />
                 {!collapsed ? (
                   <>
-                    <Ago date={comment.comment.published} />
+                    <CommentEllipsis
+                      comment={commentView}
+                      rootIndex={rootIndex}
+                    />
+                    <Ago date={comment.published} />
                   </>
                 ) : (
                   <>
@@ -255,7 +265,7 @@ export default function Comment({
                     if (e.target.nodeName === "A") e.stopPropagation();
                   }}
                 >
-                  <CommentContent item={comment.comment} />
+                  <CommentContent item={comment} />
                   {context}
                 </Content>
               </AnimateHeight>

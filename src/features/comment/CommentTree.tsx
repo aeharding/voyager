@@ -44,6 +44,7 @@ export default function CommentTree({
     );
   }
 
+  // eslint-disable-next-line no-sparse-arrays
   return [
     <React.Fragment key={comment.comment_view.comment.id}>
       {!first && <CommentHr depth={comment.depth} />}

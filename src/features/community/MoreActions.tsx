@@ -3,6 +3,7 @@ import {
   IonButton,
   IonIcon,
   useIonModal,
+  useIonRouter,
   useIonToast,
 } from "@ionic/react";
 import {
@@ -12,6 +13,7 @@ import {
   heartOutline,
   starOutline,
   starSharp,
+  tabletPortraitOutline,
 } from "ionicons/icons";
 import { useContext, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -24,6 +26,7 @@ import { PageContext } from "../auth/PageContext";
 import Login from "../auth/Login";
 import { jwtSelector } from "../auth/authSlice";
 import { NewPostContext } from "../post/new/NewPostModal";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 
 interface MoreActionsProps {
   community: string;
@@ -31,9 +34,11 @@ interface MoreActionsProps {
 
 export default function MoreActions({ community }: MoreActionsProps) {
   const [present] = useIonToast();
+  const router = useIonRouter();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const jwt = useAppSelector(jwtSelector);
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const pageContext = useContext(PageContext);
   const [login, onDismissLogin] = useIonModal(Login, {
@@ -101,6 +106,11 @@ export default function MoreActions({ community }: MoreActionsProps) {
             text: !isFavourite ? "Favourite" : "Unfavourite",
             role: "favourite",
             icon: !isFavourite ? starOutline : starSharp,
+          },
+          {
+            text: "Sidebar",
+            role: "sidebar",
+            icon: tabletPortraitOutline,
           },
           {
             text: "Cancel",
@@ -202,6 +212,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
               });
 
               break;
+            case "sidebar": {
+              router.push(buildGeneralBrowseLink(`/c/${community}/sidebar`));
             }
           }
         }}

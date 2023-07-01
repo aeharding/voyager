@@ -5,9 +5,9 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import {
-  arrowDown,
+  arrowDownOutline,
   arrowUndoOutline,
-  arrowUp,
+  arrowUpOutline,
   bookmarkOutline,
   ellipsisHorizontal,
   peopleOutline,
@@ -27,9 +27,10 @@ import { jwtSelector } from "../../auth/authSlice";
 
 interface MoreActionsProps {
   post: PostView;
+  className?: string;
 }
 
-export default function MoreActions({ post }: MoreActionsProps) {
+export default function MoreActions({ post, className }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -53,21 +54,29 @@ export default function MoreActions({ post }: MoreActionsProps) {
 
   return (
     <>
-      <IonIcon icon={ellipsisHorizontal} onClick={() => setOpen(true)} />
+      <IonIcon
+        className={className}
+        icon={ellipsisHorizontal}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen(true);
+        }}
+      />
 
       <IonActionSheet
         cssClass="left-align-buttons"
         isOpen={open}
+        onClick={(e) => e.stopPropagation()}
         buttons={[
           {
             text: myVote !== 1 ? "Upvote" : "Undo Upvote",
             role: "upvote",
-            icon: arrowUp,
+            icon: arrowUpOutline,
           },
           {
             text: myVote !== -1 ? "Downvote" : "Undo Downvote",
             role: "downvote",
-            icon: arrowDown,
+            icon: arrowDownOutline,
           },
           {
             text: "Save",
@@ -113,6 +122,7 @@ export default function MoreActions({ post }: MoreActionsProps) {
               if (!jwt) return login({ presentingElement: pageContext.page });
 
               dispatch(voteOnPost(post.post.id, myVote === -1 ? 0 : -1));
+              break;
             }
             case "save": {
               if (!jwt) return login({ presentingElement: pageContext.page });

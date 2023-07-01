@@ -50,6 +50,9 @@ import useShouldInstall from "./features/pwa/useShouldInstall";
 import { UpdateContext } from "./pages/settings/update/UpdateContext";
 import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
+import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
+import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
+import PostAppearancePage from "./pages/settings/PostAppearancePage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -165,6 +168,12 @@ export default function TabbedRoutes() {
       <Route exact path={`/${tab}/:actor/c/:community`}>
         <ActorRedirect>
           <CommunityPage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/c/:community/sidebar`}>
+        <ActorRedirect>
+          <CommunitySidebarPage />
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
@@ -317,6 +326,17 @@ export default function TabbedRoutes() {
           </Route>
           <Route exact path="/settings/appearance">
             <AppearancePage />
+          </Route>
+          <Route exact path="/settings/apollo-migrate">
+            <ApolloMigratePage />
+          </Route>
+          <Route exact path="/settings/apollo-migrate/:search">
+            <SearchCommunitiesPage />
+          </Route>
+          {/* general routes for settings is only for apollo-migrate */}
+          {...buildGeneralBrowseRoutes("settings")}
+          <Route exact path="/settings/appearance/posts">
+            <PostAppearancePage />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">

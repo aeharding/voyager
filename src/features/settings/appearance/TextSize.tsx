@@ -5,7 +5,7 @@ import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setFontSizeMultiplier, setUseSystemFontSize } from "./appearanceSlice";
 
-const ListHeader = styled.div`
+export const ListHeader = styled.div`
   font-size: 0.8em;
   margin: 32px 0 -8px 32px;
   text-transform: uppercase;

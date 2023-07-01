@@ -32,6 +32,7 @@ interface VoteProps {
   id: number;
   score: number;
   voteFromServer: 1 | -1 | 0 | undefined;
+  className?: string;
 }
 
 export default function Vote({
@@ -39,6 +40,7 @@ export default function Vote({
   id,
   voteFromServer,
   score: existingScore,
+  className,
 }: VoteProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
@@ -59,6 +61,7 @@ export default function Vote({
 
   return (
     <Container
+      className={className}
       vote={myVote}
       onClick={async (e) => {
         e.stopPropagation();

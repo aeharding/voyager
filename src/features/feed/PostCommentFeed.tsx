@@ -1,14 +1,15 @@
 import { useCallback } from "react";
 import Feed, { FeedProps, FetchFn } from "./Feed";
 import FeedComment from "../comment/inFeed/FeedComment";
-import Post from "../post/inFeed/Post";
 import { CommentView, PostView } from "lemmy-js-client";
-import { useAppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
 import { receivedPosts } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
+import Post from "../post/inFeed/Post";
+import CommentHr from "../comment/CommentHr";
 
-const itemCss = css`
+const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
 `;
 
@@ -33,17 +34,44 @@ export default function PostCommentFeed({
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
+  const postAppearanceType = useAppSelector(
+    (state) => state.appearance.posts.type
+  );
 
-  const renderItemContent = useCallback(
+  const borderCss = (() => {
+    switch (postAppearanceType) {
+      case "compact":
+        return undefined;
+      case "large":
+        return thickBorderCss;
+    }
+  })();
+
+  const renderItem = useCallback(
     (item: PostCommentItem) => {
       if (isPost(item))
         return (
-          <Post post={item} communityMode={!!communityName} css={itemCss} />
+          <Post post={item} communityMode={!!communityName} css={borderCss} />
         );
 
-      return <FeedComment comment={item} css={itemCss} />;
+      return <FeedComment comment={item} css={borderCss} />;
     },
-    [communityName]
+    [communityName, borderCss]
+  );
+
+  const renderItemContent = useCallback(
+    (item: PostCommentItem) => {
+      if (postAppearanceType === "compact")
+        return (
+          <>
+            {renderItem(item)}
+            <CommentHr depth={0} />
+          </>
+        );
+
+      return renderItem(item);
+    },
+    [postAppearanceType, renderItem]
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
