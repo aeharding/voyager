@@ -15,6 +15,7 @@ import {
   pencilOutline,
   personOutline,
   shareOutline,
+  textOutline,
   trashOutline,
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
@@ -36,6 +37,7 @@ import { notEmpty } from "../../helpers/array";
 import CommentEditing from "./edit/CommentEdit";
 import useCollapseRootComment from "./useCollapseRootComment";
 import { FeedContext } from "../feed/FeedContext";
+import SelectText from "../../pages/shared/SelectTextModal";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -79,6 +81,11 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
       onDismissEdit(data, role);
     },
     item: comment,
+  });
+
+  const [selectText, onDismissSelectText] = useIonModal(SelectText, {
+    text: comment.comment.content,
+    onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
   });
 
   const commentVotesById = useAppSelector(
@@ -137,6 +144,11 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             text: "Reply",
             role: "reply",
             icon: arrowUndoOutline,
+          },
+          {
+            text: "Select Text",
+            role: "select-text",
+            icon: textOutline,
           },
           {
             text: getHandle(comment.creator),
@@ -209,6 +221,10 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
               reply({ presentingElement: pageContext.page });
               break;
+            case "select-text":
+              return selectText({
+                presentingElement: pageContext.page,
+              });
             case "person":
               router.push(
                 buildGeneralBrowseLink(`/u/${getHandle(comment.creator)}`)
