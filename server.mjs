@@ -6,22 +6,30 @@ const CUSTOM_LEMMY_SERVERS = process.env.CUSTOM_LEMMY_SERVERS
   ? process.env.CUSTOM_LEMMY_SERVERS.split(",").map((s) => s.trim())
   : [];
 
+// the only servers that are allowed for proxying
+// whitelist is disabled if empty
+const ALLOWED_LEMMY_SERVERS = process.env.ALLOWED_LEMMY_SERVERS
+  ? new Set(process.env.ALLOWED_LEMMY_SERVERS.split(",").map((s) => s.trim()))
+  : new Set();
+
 // avoid issues where popular servers are flakey
 // and get blacklisted for a few minutes
-const INITIAL_VALID_LEMMY_SERVERS = [
-  "lemmy.ml",
-  "lemmy.world",
-  "lemmy.one",
-  "beehaw.org",
-  "sh.itjust.works",
-  "lemm.ee",
-  "feddit.de",
-  "lemmy.blahaj.zone",
-  "midwest.social",
-  "lemmynsfw.com",
-  "lemmy.ca",
-  "lemmy.sdf.org",
-].concat(CUSTOM_LEMMY_SERVERS);
+const INITIAL_VALID_LEMMY_SERVERS = (ALLOWED_LEMMY_SERVERS.size > 0
+  ? []
+  : [
+    "lemmy.ml",
+    "lemmy.world",
+    "lemmy.one",
+    "beehaw.org",
+    "sh.itjust.works",
+    "lemm.ee",
+    "feddit.de",
+    "lemmy.blahaj.zone",
+    "midwest.social",
+    "lemmynsfw.com",
+    "lemmy.ca",
+    "lemmy.sdf.org",
+  ]).concat(CUSTOM_LEMMY_SERVERS);
 
 const validLemmyServers = {};
 const badLemmyServers = {};
@@ -36,6 +44,12 @@ const PROXY_ENDPOINT = "/api/:actor";
 
 app.use(PROXY_ENDPOINT, async (req, res, next) => {
   const actor = req.params.actor;
+
+  if (ALLOWED_LEMMY_SERVERS.size > 0 && !ALLOWED_LEMMY_SERVERS.has(actor)) {
+    res.status(401);
+    res.send("not whitelisted lemmy server");
+    return;
+  }
 
   if (typeof validLemmyServers[actor] === "object") {
     await validLemmyServers[actor];
@@ -147,7 +161,12 @@ ViteExpress.config({
 
 const PORT = process.env.PORT || 5173;
 
-ViteExpress.listen(app, PORT, () =>
+ViteExpress.listen(app, PORT, () => {
+  if (ALLOWED_LEMMY_SERVERS.size > 0) {
+    // eslint-disable-next-line no-console
+    console.log(`Whitelisted Lemmy servers: ${[...ALLOWED_LEMMY_SERVERS].join(", ")}`)
+  }
+
   // eslint-disable-next-line no-console
   console.log(`Server is on http://localhost:${PORT}`)
-);
+});
