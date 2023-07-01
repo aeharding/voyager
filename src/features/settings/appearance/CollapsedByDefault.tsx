@@ -36,7 +36,7 @@ export default function CollapsedByDefault() {
       </ListHeader>
       <IonList inset>
         <InsetIonItem>
-          <IonLabel>Automatically collapse comments</IonLabel>
+          <IonLabel>Automatically collapse comments threads</IonLabel>
           <IonToggle
             checked={isCommentsCollapsed}
             onIonChange={(e) =>
