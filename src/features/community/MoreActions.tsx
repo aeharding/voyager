@@ -191,6 +191,16 @@ export default function MoreActions({ community }: MoreActionsProps) {
                 });
                 throw error;
               }
+
+              present({
+                message: `${
+                  isFavourite ? "Unfavourited" : "Favourited"
+                } c/${community}.`,
+                duration: 3500,
+                position: "bottom",
+                color: "success",
+              });
+
               break;
             }
           }
