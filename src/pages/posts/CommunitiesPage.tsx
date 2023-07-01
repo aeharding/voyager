@@ -18,7 +18,7 @@ import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../helpers/array";
-import { useEffect, Fragment, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
@@ -38,6 +38,7 @@ const SubIcon = styled(IonIcon)<{ color: string }>`
 
 const Content = styled.div`
   margin: 0.7rem 0;
+
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -73,6 +74,7 @@ export default function CommunitiesPage() {
 
   useEffect(() => {
     if (!jwt) return;
+
     dispatch(getFavouriteCommunities());
   }, [dispatch, jwt]);
 
@@ -102,25 +104,41 @@ export default function CommunitiesPage() {
     return communities;
   }, [follows, communityByHandle]);
 
-  const communitiesGroupedByLetter = useMemo(() => {
-    const alphabeticallySortedCommunities = sortBy(communities, (c) =>
-      c.name.toLowerCase()
+  const favouriteCommunities = useMemo(() => {
+    // get the community obj from the handle from communities.
+    // if the community is not in the subscribed list, we should display it anyways, but without a sub icon.
+
+    const subscribedFavourites = communities.filter((c) =>
+      favouriteCommunitiesFromState?.find((fc) => fc.id === c.id)
     );
 
-    return Object.entries(
-      alphabeticallySortedCommunities.reduce<Record<string, Community[]>>(
-        (acc, community) => {
-          const firstLetter = community.name[0].toUpperCase();
-          if (!acc[firstLetter]) {
-            acc[firstLetter] = [];
-          }
-          acc[firstLetter].push(community);
-          return acc;
-        },
-        {}
-      )
+    // get the favourite subs from the state that are not in the communities list
+    const unsubscribedFavourites = favouriteCommunitiesFromState?.filter(
+      (fc) => !communities.find((c) => c.id === fc.id)
     );
-  }, [communities]);
+
+    if (!unsubscribedFavourites || !activeHandle) return subscribedFavourites;
+
+    const userInstance = breakDownActorID(activeHandle).instance;
+
+    // create a basic community object for the unsubscribed favourites
+    const unsubscribedFavouritesCommunities = unsubscribedFavourites.map(
+      (c) => {
+        const brokenDownCommunity = breakDownActorID(c.actorId);
+
+        const mockCommunity = {
+          id: c.id,
+          actor_id: `https://${brokenDownCommunity.instance}/c/${brokenDownCommunity.name}}`,
+          name: brokenDownCommunity.name,
+          local: userInstance === brokenDownCommunity.instance,
+        } as Community;
+
+        return mockCommunity;
+      }
+    );
+
+    return [...subscribedFavourites, ...unsubscribedFavouritesCommunities];
+  }, [favouriteCommunitiesFromState, communities, activeHandle]);
 
   return (
     <IonPage ref={pageRef}>
@@ -169,7 +187,7 @@ export default function CommunitiesPage() {
                 </IonItemDivider>
               </IonItemGroup>
 
-              {sortBy(communities, "name")?.map((community) => (
+              {sortBy(favouriteCommunities, "name")?.map((community) => (
                 <IonItem
                   key={community.id}
                   routerLink={buildGeneralBrowseLink(
@@ -191,27 +209,16 @@ export default function CommunitiesPage() {
             </IonItemDivider>
           </IonItemGroup>
 
-          {communitiesGroupedByLetter.map(([letter, communities]) => (
-            <Fragment key={letter}>
-              <IonItemGroup>
-                <IonItemDivider>
-                  <IonLabel>{letter}</IonLabel>
-                </IonItemDivider>
-              </IonItemGroup>
-              {communities.map((community) => (
-                <IonItem
-                  key={community.id}
-                  routerLink={buildGeneralBrowseLink(
-                    `/c/${getHandle(community)}`
-                  )}
-                >
-                  <Content>
-                    <ItemIcon item={community} size={28} />
-                    {getHandle(community)}
-                  </Content>
-                </IonItem>
-              ))}
-            </Fragment>
+          {sortBy(communities, "name")?.map((community) => (
+            <IonItem
+              key={community.id}
+              routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
+            >
+              <Content>
+                <ItemIcon item={community} size={28} />
+                {getHandle(community)}
+              </Content>
+            </IonItem>
           ))}
         </IonList>
       </AppContent>

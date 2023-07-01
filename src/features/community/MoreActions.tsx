@@ -212,6 +212,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
               });
 
               break;
+            }
             case "sidebar": {
               router.push(buildGeneralBrowseLink(`/c/${community}/sidebar`));
             }
