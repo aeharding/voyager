@@ -13,7 +13,11 @@ import {
 import AppContent from "../../features/shared/AppContent";
 import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { getHandle } from "../../helpers/lemmy";
+import {
+  breakDownCommunityActorId,
+  getHandle,
+  getInstance,
+} from "../../helpers/lemmy";
 import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
@@ -24,6 +28,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
 import { jwtSelector } from "../../features/auth/authSlice";
 import { getFavouriteCommunities } from "../../features/community/communitySlice";
+import { Community } from "lemmy-js-client";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -67,6 +72,10 @@ export default function CommunitiesPage() {
     (state) => state.community.favouriteCommunityActorIDs
   );
 
+  const activeHandle = useAppSelector(
+    (state) => state.auth.accountData?.activeHandle
+  );
+
   useEffect(() => {
     if (!jwt) return;
 
@@ -100,11 +109,37 @@ export default function CommunitiesPage() {
   }, [follows, communityByHandle]);
 
   const favouriteCommunities = useMemo(() => {
-    // get the community obj from the handle from communities
-    return communities.filter((c) =>
+    // get the community obj from the handle from communities.
+    // if the community is not in the subscribed list, we should display it anyways, but without a sub icon.
+
+    const subscribedFavourites = communities.filter((c) =>
       favouriteCommunityActorIDs?.includes(c.actor_id)
     );
-  }, [favouriteCommunityActorIDs, communities]);
+
+    const unsubscribedFavourites = favouriteCommunityActorIDs?.filter(
+      (id) => !communities.find((c) => c.actor_id === id)
+    );
+
+    if (!unsubscribedFavourites || !activeHandle) return subscribedFavourites;
+
+    const userInstance = getInstance(activeHandle);
+
+    // create a basic community object for the unsubscribed favourites
+    const unsubscribedFavouritesCommunities = unsubscribedFavourites.map(
+      (id) => {
+        const brokenDownCommunity = breakDownCommunityActorId(id);
+
+        return {
+          id: 1000,
+          actor_id: id,
+          name: brokenDownCommunity.communityName,
+          local: userInstance === brokenDownCommunity.hostname,
+        } as Community;
+      }
+    );
+
+    return [...subscribedFavourites, ...unsubscribedFavouritesCommunities];
+  }, [favouriteCommunityActorIDs, communities, activeHandle]);
 
   return (
     <IonPage ref={pageRef}>
