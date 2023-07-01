@@ -154,6 +154,11 @@ export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
   jwt ? parseJWT(jwt) : undefined
 );
 
+export const isSiteAdminSelector = createSelector(
+  [(state: RootState) => state.auth.site],
+  (site) => !!site?.my_user?.local_user_view.person.admin
+);
+
 export const jwtIssSelector = (state: RootState) =>
   jwtPayloadSelector(state)?.iss;
 

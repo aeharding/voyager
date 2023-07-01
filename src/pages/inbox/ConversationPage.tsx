@@ -35,11 +35,11 @@ import { css } from "@emotion/react";
 import { PageContentIonSpinner } from "../shared/UserPage";
 import { getUser } from "../../features/user/userSlice";
 
-const MaxSizeContainer = styled(MaxWidthContainer)`
+export const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
 `;
 
-const Container = styled.div`
+export const Container = styled.div`
   ${maxWidthCss}
 
   height: 100%;
@@ -53,7 +53,7 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Messages = styled.div`
+export const Messages = styled.div`
   flex: 1;
 
   display: flex;
@@ -61,7 +61,7 @@ const Messages = styled.div`
   justify-content: flex-end;
 `;
 
-const SendContainer = styled.div`
+export const SendContainer = styled.div`
   position: relative;
 
   padding: 0.5rem;
@@ -74,13 +74,13 @@ const SendContainer = styled.div`
     );
 `;
 
-const InputContainer = styled.div`
+export const InputContainer = styled.div`
   position: relative;
 
   display: flex;
 `;
 
-const Input = styled(TextareaAutosize)`
+export const Input = styled(TextareaAutosize)`
   border: 0.55px solid var(--ion-color-medium);
   border-radius: 1rem;
 
@@ -98,7 +98,7 @@ const Input = styled(TextareaAutosize)`
   appearance: none;
 `;
 
-const SendButton = styled(IonIcon)`
+export const SendButton = styled(IonIcon)`
   position: absolute;
   bottom: calc(36px / 2);
   transform: translateY(50%);

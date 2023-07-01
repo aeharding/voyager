@@ -8,7 +8,7 @@ import { getInboxCounts, receivedMessages } from "../inboxSlice";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { jwtSelector } from "../../auth/authSlice";
 
-const Container = styled.div<{ type: "sent" | "recieved" }>`
+export const MessageContainer = styled.div<{ type: "sent" | "recieved" }>`
   position: relative; /* Setup a relative container for our psuedo elements */
   max-width: min(75%, 400px);
   margin-bottom: 15px;
@@ -149,8 +149,11 @@ export default function Message({ message }: MessageProps) {
   }
 
   return (
-    <Container type={thisIsMyMessage ? "sent" : "recieved"} ref={containerRef}>
+    <MessageContainer
+      type={thisIsMyMessage ? "sent" : "recieved"}
+      ref={containerRef}
+    >
       {message.private_message.content}
-    </Container>
+    </MessageContainer>
   );
 }

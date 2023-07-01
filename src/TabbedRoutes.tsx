@@ -53,6 +53,8 @@ import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
 import PostAppearancePage from "./pages/settings/PostAppearancePage";
+import ApplicationsPage from "./pages/inbox/ApplicationsPage";
+import ApplicationMessagePage from "./pages/inbox/ApplicationMessagePage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -283,6 +285,21 @@ export default function TabbedRoutes() {
           <Route exact path="/inbox/messages/:handle">
             <InboxAuthRequired>
               <ConversationPage />
+            </InboxAuthRequired>
+          </Route>
+          <Route exact path="/inbox/applications">
+            <InboxAuthRequired>
+              <ApplicationsPage />
+            </InboxAuthRequired>
+          </Route>
+          <Route exact path="/inbox/applications/unread">
+            <InboxAuthRequired>
+              <ApplicationsPage unreadOnly />
+            </InboxAuthRequired>
+          </Route>
+          <Route exact path="/inbox/applications/application/:handle">
+            <InboxAuthRequired>
+              <ApplicationMessagePage />
             </InboxAuthRequired>
           </Route>
           {...buildGeneralBrowseRoutes("inbox")}

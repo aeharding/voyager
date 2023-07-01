@@ -7,11 +7,11 @@ import ItemIcon from "../../labels/img/ItemIcon";
 import { chevronForwardOutline } from "ionicons/icons";
 import Time from "./Time";
 
-const StyledItemIcon = styled(ItemIcon)`
+export const StyledItemIcon = styled(ItemIcon)`
   margin: 0.75rem 0;
 `;
 
-const MessageContent = styled.div`
+export const MessageContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -21,14 +21,14 @@ const MessageContent = styled.div`
   min-width: 0;
 `;
 
-const MessageLine = styled.div`
+export const MessageLine = styled.div`
   display: flex;
   gap: 0.3rem;
   min-width: 0;
   white-space: nowrap;
 `;
 
-const PersonLabel = styled.h3`
+export const PersonLabel = styled.h3`
   flex: 1;
 
   font-size: 1rem;
@@ -42,7 +42,7 @@ const PersonLabel = styled.h3`
   text-overflow: ellipsis;
 `;
 
-const OpenDetails = styled.span`
+export const OpenDetails = styled.span`
   flex: 0;
 
   font-size: 0.9em;
@@ -54,7 +54,7 @@ const OpenDetails = styled.span`
   color: var(--ion-color-medium);
 `;
 
-const MessagePreview = styled.div`
+export const MessagePreview = styled.div`
   --line-height: 1.3rem;
   --num-lines: 2;
 
@@ -71,7 +71,7 @@ const MessagePreview = styled.div`
   overflow: hidden;
 `;
 
-const Dot = styled.div`
+export const Dot = styled.div`
   position: absolute;
   top: 50%;
   left: 0.25rem;

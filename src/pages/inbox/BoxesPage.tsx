@@ -13,6 +13,7 @@ import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
 import {
   albumsOutline,
   chatbubbleOutline,
+  clipboard,
   ellipseOutline,
   fileTray,
   mail,
@@ -23,11 +24,15 @@ import { getInboxCounts } from "../../features/inbox/inboxSlice";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../features/auth/PageContext";
 import Login from "../../features/auth/Login";
-import { jwtSelector } from "../../features/auth/authSlice";
+import {
+  isSiteAdminSelector,
+  jwtSelector,
+} from "../../features/auth/authSlice";
 
 export default function BoxesPage() {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
+  const isSiteAdmin = useAppSelector(isSiteAdminSelector);
 
   const pageContext = useContext(PageContext);
   const [login, onDismiss] = useIonModal(Login, {
@@ -106,6 +111,25 @@ export default function BoxesPage() {
             <SettingLabel>Messages</SettingLabel>
           </InsetIonItem>
         </IonList>
+
+        {isSiteAdmin && (
+          <IonList inset color="primary">
+            <InsetIonItem
+              routerLink="/inbox/applications"
+              onClick={interceptIfLoggedOut}
+            >
+              <IonIcon icon={clipboard} color="primary" />
+              <SettingLabel>Registration Applications</SettingLabel>
+            </InsetIonItem>
+            <InsetIonItem
+              routerLink="/inbox/applications/unread"
+              onClick={interceptIfLoggedOut}
+            >
+              <IonIcon icon={ellipseOutline} color="primary" />
+              <SettingLabel>Unread</SettingLabel>
+            </InsetIonItem>
+          </IonList>
+        )}
       </AppContent>
     </IonPage>
   );
