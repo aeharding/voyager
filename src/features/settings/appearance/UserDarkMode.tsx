@@ -13,7 +13,9 @@ const ListHeader = styled.div`
 
 export default function UserDarkMode() {
   const dispatch = useAppDispatch();
-  const { userDarkMode } = useAppSelector((state) => state.appearance.dark);
+  const userDarkMode = useAppSelector(
+    (state) => state.appearance.dark.userDarkMode
+  );
 
   return (
     <>
@@ -27,11 +29,11 @@ export default function UserDarkMode() {
         >
           <InsetIonItem>
             <IonLabel>Light</IonLabel>
-            <IonRadio value="light" />
+            <IonRadio value={false} />
           </InsetIonItem>
           <InsetIonItem>
             <IonLabel>Dark</IonLabel>
-            <IonRadio value="dark" />
+            <IonRadio value={true} />
           </InsetIonItem>
         </IonRadioGroup>
       </IonList>

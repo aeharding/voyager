@@ -1,26 +1,26 @@
 import { useEffect, useState } from "react";
 
+const DARK_MEDIA_SELECTOR = "(prefers-color-scheme: dark)";
+
 export default function useDeviceDarkMode() {
   const [prefersDarkMode, setPrefersDarkMode] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
+    window.matchMedia(DARK_MEDIA_SELECTOR).matches
   );
 
   useEffect(() => {
-    function handleDarkModePrefferedChange() {
-      const doesMatch = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
+    function handleDarkModeChange() {
+      const doesMatch = window.matchMedia(DARK_MEDIA_SELECTOR).matches;
       setPrefersDarkMode(doesMatch);
     }
 
     window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", handleDarkModePrefferedChange);
+      .matchMedia(DARK_MEDIA_SELECTOR)
+      .addEventListener("change", handleDarkModeChange);
 
     return () => {
       window
-        .matchMedia("(prefers-color-scheme: dark)")
-        .removeEventListener("change", handleDarkModePrefferedChange);
+        .matchMedia(DARK_MEDIA_SELECTOR)
+        .removeEventListener("change", handleDarkModeChange);
     };
   }, []);
 

@@ -38,18 +38,19 @@ export default function App() {
   return (
     <AppContextProvider>
       <Provider store={store}>
-        <GlobalStyles />
-        <BeforeInstallPromptProvider>
-          <UpdateContextProvider>
-            <Router>
-              <IonApp>
-                <Auth>
-                  <TabbedRoutes />
-                </Auth>
-              </IonApp>
-            </Router>
-          </UpdateContextProvider>
-        </BeforeInstallPromptProvider>
+        <GlobalStyles>
+          <BeforeInstallPromptProvider>
+            <UpdateContextProvider>
+              <Router>
+                <IonApp>
+                  <Auth>
+                    <TabbedRoutes />
+                  </Auth>
+                </IonApp>
+              </Router>
+            </UpdateContextProvider>
+          </BeforeInstallPromptProvider>
+        </GlobalStyles>
       </Provider>
     </AppContextProvider>
   );

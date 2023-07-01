@@ -1,4 +1,4 @@
-import { Global, css } from "@emotion/react";
+import { Global, ThemeProvider, css } from "@emotion/react";
 import { useAppSelector } from "./store";
 import useDeviceDarkMode from "./helpers/useDeviceDarkMode";
 import {
@@ -6,9 +6,14 @@ import {
   darkVariables,
   lightVariables,
 } from "./theme/variables";
+import React from "react";
 
-export default function GlobalStyles() {
-  const systemDarkMode = useDeviceDarkMode();
+interface GlobalStylesProps {
+  children: React.ReactNode;
+}
+
+export default function GlobalStyles({ children }: GlobalStylesProps) {
+  const deviceDarkMode = useDeviceDarkMode();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
     (state) => state.appearance.font
   );
@@ -25,23 +30,26 @@ export default function GlobalStyles() {
     (state) => state.appearance.dark
   );
 
-  const isDark = usingDeviceDarkMode ? systemDarkMode : userDarkMode;
+  const isDark = usingDeviceDarkMode ? deviceDarkMode : userDarkMode;
 
   return (
-    <Global
-      styles={css`
-        html {
-          ${baseFontStyles}
+    <ThemeProvider theme={{ dark: isDark }}>
+      <Global
+        styles={css`
+          html {
+            ${baseFontStyles}
 
-          ion-content ion-item {
-            font-size: 1rem;
+            ion-content ion-item {
+              font-size: 1rem;
+            }
           }
-        }
 
-        ${baseVariables}
+          ${baseVariables}
 
-        ${isDark ? darkVariables : lightVariables}
-      `}
-    />
+          ${isDark ? darkVariables : lightVariables}
+        `}
+      />
+      {children}
+    </ThemeProvider>
   );
 }
