@@ -9,6 +9,7 @@ import {
 import AppContent from "../../features/shared/AppContent";
 import TextSize from "../../features/settings/appearance/TextSize";
 import PostView from "../../features/settings/appearance/PostView";
+import DarkMode from "../../features/settings/appearance/DarkMode";
 
 export default function AppearancePage() {
   return (
@@ -25,6 +26,7 @@ export default function AppearancePage() {
       <AppContent scrollY>
         <TextSize />
         <PostView />
+        <DarkMode />
       </AppContent>
     </IonPage>
   );

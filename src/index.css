@@ -18,24 +18,6 @@ ion-tab-button {
   justify-content: flex-start;
 }
 
-@media (prefers-color-scheme: light) {
-  .ios .grey-bg {
-    --ion-background-color: var(--ion-color-step-50, #f2f2f7);
-  }
-  .ios .grey-bg ion-header {
-    --opacity: 0;
-  }
-  .ios .grey-bg ion-modal ion-content {
-    --background: #fff;
-  }
-  .ios .grey-bg ion-item {
-    --ion-background-color: #fff;
-  }
-  .ios .grey-bg ion-item-sliding {
-    background: #fff;
-  }
-}
-
 ion-modal.small {
   --height: 50%;
   --width: 85%;

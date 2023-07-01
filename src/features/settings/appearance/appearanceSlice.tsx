@@ -10,6 +10,10 @@ const STORAGE_KEYS = {
   POSTS: {
     TYPE: "appearance--post-type",
   },
+  DARK: {
+    USE_SYSTEM: "appearance--dark-use-system",
+    USER_MODE: "appearance--dark-user-mode",
+  },
 } as const;
 
 export const OPostAppearanceType = {
@@ -28,6 +32,10 @@ interface AppearanceState {
   posts: {
     type: PostAppearanceType;
   };
+  dark: {
+    usingSystemDarkMode: boolean;
+    userDarkMode: boolean;
+  };
 }
 
 const initialState: AppearanceState = {
@@ -38,6 +46,10 @@ const initialState: AppearanceState = {
   posts: {
     type: "large",
   },
+  dark: {
+    usingSystemDarkMode: true,
+    userDarkMode: false,
+  },
 };
 
 const stateFromStorage: AppearanceState = merge(initialState, {
@@ -47,6 +59,10 @@ const stateFromStorage: AppearanceState = merge(initialState, {
   },
   posts: {
     type: get(STORAGE_KEYS.POSTS.TYPE),
+  },
+  dark: {
+    usingSystemDarkMode: get(STORAGE_KEYS.DARK.USE_SYSTEM),
+    userDarkMode: get(STORAGE_KEYS.DARK.USER_MODE),
   },
 });
 
@@ -69,6 +85,16 @@ export const appearanceSlice = createSlice({
 
       set(STORAGE_KEYS.POSTS.TYPE, action.payload);
     },
+    setUserDarkMode(state, action: PayloadAction<boolean>) {
+      state.dark.userDarkMode = action.payload;
+
+      set(STORAGE_KEYS.DARK.USER_MODE, action.payload);
+    },
+    setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
+      state.dark.usingSystemDarkMode = action.payload;
+
+      set(STORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
+    },
 
     resetAppearance: () => initialState,
   },
@@ -78,6 +104,8 @@ export const {
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setPostAppearance,
+  setUserDarkMode,
+  setUseSystemDarkMode,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

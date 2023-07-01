@@ -89,9 +89,11 @@ const Container = styled.div<{ depth: number; highlighted?: boolean }>`
     width: 2px;
     filter: brightness(0.7);
 
-    @media (prefers-color-scheme: light) {
-      filter: none;
-    }
+    ${({ theme }) =>
+      !theme.dark &&
+      css`
+        filter: none;
+      `}
 
     ${({ depth }) =>
       depth &&

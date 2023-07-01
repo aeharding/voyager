@@ -22,6 +22,7 @@ import useClient from "../../../helpers/useClient";
 import { useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { handleSelector, jwtSelector } from "../../auth/authSlice";
+import { css } from "@emotion/react";
 
 export const Container = styled.div`
   position: absolute;
@@ -41,11 +42,13 @@ export const Textarea = styled.textarea`
   flex: 1 0 0;
   min-height: 7rem;
 
-  @media (prefers-color-scheme: light) {
-    .ios & {
-      background: var(--ion-item-background);
-    }
-  }
+  ${({ theme }) =>
+    !theme.dark &&
+    css`
+      .ios & {
+        background: var(--ion-item-background);
+      }
+    `}
 `;
 
 const UsernameIonText = styled(IonText)`
