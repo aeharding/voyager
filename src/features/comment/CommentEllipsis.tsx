@@ -61,11 +61,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
 
-  const [selectText, onDismissSelectText] = useIonModal(SelectText, {
-    text: comment.comment.content,
-    onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
-  });
-
   const router = useIonRouter();
 
   const pageContext = useContext(PageContext);
@@ -88,6 +83,11 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
     item: comment,
   });
 
+  const [selectText, onDismissSelectText] = useIonModal(SelectText, {
+    text: comment.comment.content,
+    onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
+  });
+
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById
   );
@@ -95,8 +95,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const myVote = commentVotesById[comment.comment.id] ?? comment.my_vote;
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
-
-  const [selectTextModalIsOpen, setSelectTextModalIsOpen] = useState(false);
 
   return (
     <>

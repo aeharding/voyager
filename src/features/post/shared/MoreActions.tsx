@@ -13,6 +13,7 @@ import {
   peopleOutline,
   personOutline,
   shareOutline,
+  textOutline,
 } from "ionicons/icons";
 import { useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -24,6 +25,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentReply from "../../comment/reply/CommentReply";
 import { jwtSelector } from "../../auth/authSlice";
+import SelectText from "../../feed/SelectTextModal";
 
 interface MoreActionsProps {
   post: PostView;
@@ -46,6 +48,11 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   const [reply, onDismissReply] = useIonModal(CommentReply, {
     onDismiss: (data: string, role: string) => onDismissReply(data, role),
     item: post,
+  });
+
+  const [selectText, onDismissSelectText] = useIonModal(SelectText, {
+    text: post.post.body,
+    onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
   });
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
@@ -99,6 +106,11 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             icon: peopleOutline,
           },
           {
+            text: "Select Text",
+            role: "select",
+            icon: textOutline,
+          },
+          {
             text: "Share",
             role: "share",
             icon: shareOutline,
@@ -149,6 +161,9 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
               );
 
               break;
+            }
+            case "select": {
+              return selectText({ presentingElement: pageContext.page });
             }
             case "share": {
               navigator.share({ url: post.post.url ?? post.post.ap_id });
