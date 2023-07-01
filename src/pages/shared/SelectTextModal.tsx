@@ -5,10 +5,9 @@ import {
   IonButtons,
   IonButton,
   IonContent,
-  IonPage,
   IonModal,
 } from "@ionic/react";
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import { Centered } from "../../features/auth/Login";
 import styled from "@emotion/styled";
 import { PageContext } from "../../features/auth/PageContext";
@@ -31,7 +30,7 @@ export default function SelectText(props: SelectTextProps) {
   return (
     <IonModal
       isOpen={props.isOpen}
-      canDismiss={async (_: any, role?: string) => {
+      canDismiss={async (_, role?: string) => {
         return role !== "gesture";
       }}
       presentingElement={pageContext.page}

@@ -103,7 +103,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             role: "community",
             icon: peopleOutline,
           },
-          !!post.post.body
+          post.post.body
             ? {
                 text: "Select Text",
                 role: "select",
