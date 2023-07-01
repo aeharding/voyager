@@ -8,6 +8,7 @@ import {
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import {
   arrowUpCircleOutline,
+  calendarOutline,
   chatbubbleEllipsesOutline,
   chatbubblesOutline,
   flameOutline,
@@ -24,6 +25,11 @@ export const POST_SORTS = [
   "Active",
   "Hot",
   "New",
+  "TopHour",
+  "TopDay",
+  "TopWeek",
+  "TopMonth",
+  "TopYear",
   "MostComments",
   "NewComments",
 ] as const;
@@ -74,13 +80,14 @@ function getSortIcon(sort: SortType): string {
       return chatbubblesOutline;
     case "NewComments":
       return chatbubbleEllipsesOutline;
-    case "Old":
-    case "TopAll": // Top is TODO
+    case "TopHour":
     case "TopDay":
     case "TopMonth":
     case "TopWeek":
     case "TopYear":
-    case "TopHour":
+      return calendarOutline;
+    case "Old":
+    case "TopAll": // Top is TODO
     case "TopSixHour":
     case "TopTwelveHour":
       return helpCircleOutline;
