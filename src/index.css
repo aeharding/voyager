@@ -49,10 +49,6 @@ ion-modal.small ion-header ion-toolbar:first-of-type {
   padding-top: 0px;
 }
 
-.preserve-newlines {
+ion-alert.preserve-newlines {
   white-space: pre-line;
-}
-
-p.selectable {
-  user-select: text;
 }
