@@ -25,7 +25,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentReply from "../../comment/reply/CommentReply";
 import { jwtSelector } from "../../auth/authSlice";
-import SelectText from "../../feed/SelectTextModal";
+import SelectText from "../../../pages/shared/SelectTextModal";
 
 interface MoreActionsProps {
   post: PostView;

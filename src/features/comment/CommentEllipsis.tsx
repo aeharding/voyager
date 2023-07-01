@@ -37,7 +37,7 @@ import { notEmpty } from "../../helpers/array";
 import CommentEditing from "./edit/CommentEdit";
 import useCollapseRootComment from "./useCollapseRootComment";
 import { FeedContext } from "../feed/FeedContext";
-import SelectText from "../feed/SelectTextModal";
+import SelectText from "../../pages/shared/SelectTextModal";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;

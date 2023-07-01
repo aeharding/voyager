@@ -8,7 +8,7 @@ import {
   IonPage,
 } from "@ionic/react";
 import { useRef } from "react";
-import { Centered } from "../auth/Login";
+import { Centered } from "../../features/auth/Login";
 
 interface SelectTextProps {
   text: string;
