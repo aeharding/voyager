@@ -14,7 +14,7 @@ const ListHeader = styled.div`
 
 export default function DarkMode() {
   const dispatch = useAppDispatch();
-  const { usingDeviceDarkMode } = useAppSelector(
+  const { usingSystemDarkMode } = useAppSelector(
     (state) => state.appearance.dark
   );
 
@@ -27,7 +27,7 @@ export default function DarkMode() {
         <InsetIonItem>
           <IonLabel>Use System Light/Dark Mode</IonLabel>
           <IonToggle
-            checked={usingDeviceDarkMode}
+            checked={usingSystemDarkMode}
             onIonChange={(e) =>
               dispatch(setUseSystemDarkMode(e.detail.checked))
             }
@@ -35,7 +35,7 @@ export default function DarkMode() {
         </InsetIonItem>
       </IonList>
 
-      {!usingDeviceDarkMode && <UserDarkMode />}
+      {!usingSystemDarkMode && <UserDarkMode />}
     </>
   );
 }

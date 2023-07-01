@@ -13,7 +13,7 @@ interface GlobalStylesProps {
 }
 
 export default function GlobalStyles({ children }: GlobalStylesProps) {
-  const deviceDarkMode = useSystemDarkMode();
+  const systemDarkMode = useSystemDarkMode();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
     (state) => state.appearance.font
   );
@@ -26,11 +26,11 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
         font-size: ${fontSizeMultiplier}rem;
       `;
 
-  const { userDarkMode, usingDeviceDarkMode } = useAppSelector(
+  const { userDarkMode, usingSystemDarkMode } = useAppSelector(
     (state) => state.appearance.dark
   );
 
-  const isDark = usingDeviceDarkMode ? deviceDarkMode : userDarkMode;
+  const isDark = usingSystemDarkMode ? systemDarkMode : userDarkMode;
 
   return (
     <ThemeProvider theme={{ dark: isDark }}>

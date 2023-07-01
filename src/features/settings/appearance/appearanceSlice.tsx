@@ -33,7 +33,7 @@ interface AppearanceState {
     type: PostAppearanceType;
   };
   dark: {
-    usingDeviceDarkMode: boolean;
+    usingSystemDarkMode: boolean;
     userDarkMode: boolean;
   };
 }
@@ -47,7 +47,7 @@ const initialState: AppearanceState = {
     type: "large",
   },
   dark: {
-    usingDeviceDarkMode: true,
+    usingSystemDarkMode: true,
     userDarkMode: false,
   },
 };
@@ -91,7 +91,7 @@ export const appearanceSlice = createSlice({
       set(STORAGE_KEYS.DARK.USER_MODE, action.payload);
     },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
-      state.dark.usingDeviceDarkMode = action.payload;
+      state.dark.usingSystemDarkMode = action.payload;
 
       set(STORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
     },
