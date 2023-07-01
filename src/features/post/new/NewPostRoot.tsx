@@ -198,7 +198,7 @@ export default function NewPostRoot({
     }
 
     present({
-      message: "Posted created!",
+      message: "Post created!",
       duration: 3500,
       position: "bottom",
       color: "success",
