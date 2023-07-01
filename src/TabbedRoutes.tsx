@@ -30,7 +30,7 @@ import { useContext, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import UserPage from "./pages/shared/UserPage";
 import InstallAppPage from "./pages/settings/InstallAppPage";
-import SearchPage from "./pages/search/SearchPage";
+import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
 import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
 import ProfileFeedItemsPage from "./pages/profile/ProfileFeedItemsPage";
 import SearchCommunitiesPage from "./pages/search/results/SearchCommunitiesPage";
@@ -126,6 +126,9 @@ export default function TabbedRoutes() {
 
   async function onSearchClick() {
     if (!isSearchButtonDisabled) return;
+
+    // if the search page is already open, focus the search bar
+    focusSearchBar();
 
     if (await scrollUpIfNeeded()) return;
 
