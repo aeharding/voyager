@@ -21,11 +21,13 @@ import Account from "./Account";
 interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
   page: HTMLElement | undefined;
+  onSuccess?: () => void;
 }
 
 export default function AccountSwitcher({
   onDismiss,
   page,
+  onSuccess,
 }: AccountSwitcherProps) {
   const dispatch = useAppDispatch();
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
@@ -73,6 +75,7 @@ export default function AccountSwitcher({
           value={activeHandle}
           onIonChange={(e) => {
             dispatch(changeAccount(e.target.value));
+            if (onSuccess) onSuccess();
           }}
         >
           <IonList>

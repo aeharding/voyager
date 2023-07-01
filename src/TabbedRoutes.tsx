@@ -64,14 +64,6 @@ const Interceptor = styled.div`
 export const DEFAULT_ACTOR = LEMMY_SERVERS[0];
 
 export default function TabbedRoutes() {
-  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
-    AccountSwitcher,
-    {
-      onDismiss: (data: string, role: string) =>
-        onDismissAccountSwitcher(data, role),
-      page: "",
-    }
-  );
   const { activePage } = useContext(AppContext);
   const location = useLocation();
   const router = useIonRouter();
@@ -88,6 +80,22 @@ export default function TabbedRoutes() {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance
   );
+
+  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
+    AccountSwitcher,
+    {
+      onDismiss: (data: string, role: string) => {
+        onDismissAccountSwitcher(data, role);
+      },
+      page: null,
+      onSuccess: () => {
+        if (location.pathname.split("/").indexOf("posts") !== -1) {
+          router.push(`/posts/${connectedInstance}`);
+        }
+      },
+    }
+  );
+
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
 
