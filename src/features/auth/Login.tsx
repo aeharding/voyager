@@ -21,7 +21,6 @@ import {
 import styled from "@emotion/styled";
 import { useAppDispatch } from "../../store";
 import { login } from "./authSlice";
-import { LemmyHttp } from "lemmy-js-client";
 import { getClient } from "../../services/lemmy";
 import { IonInputCustomEvent } from "@ionic/core";
 import TermsSheet from "../settings/terms/TermsSheet";
@@ -162,7 +161,7 @@ export default function Login({
     try {
       await dispatch(
         login(
-          new LemmyHttp(`/api/${server ?? customServerHostname}`),
+          getClient(server ?? customServerHostname),
           username,
           password,
           totp
