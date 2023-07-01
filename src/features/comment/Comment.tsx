@@ -254,7 +254,6 @@ export default function Comment({
                       <CommentEllipsis
                         comment={commentView}
                         rootIndex={rootIndex}
-                        selectTextModalIsOpen={selectTextModalIsOpen}
                         setSelectTextModalIsOpen={setSelectTextModalIsOpen}
                       />
                       <Ago date={comment.published} />
