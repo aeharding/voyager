@@ -15,6 +15,7 @@ import {
   pencilOutline,
   personOutline,
   shareOutline,
+  textOutline,
   trashOutline,
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
@@ -36,6 +37,7 @@ import { notEmpty } from "../../helpers/array";
 import CommentEditing from "./edit/CommentEdit";
 import useCollapseRootComment from "./useCollapseRootComment";
 import { FeedContext } from "../feed/FeedContext";
+import SelectText from "../feed/SelectTextModal";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -58,6 +60,11 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
+
+  const [selectText, onDismissSelectText] = useIonModal(SelectText, {
+    text: comment.comment.content,
+    onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
+  });
 
   const router = useIonRouter();
 
@@ -88,6 +95,8 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const myVote = commentVotesById[comment.comment.id] ?? comment.my_vote;
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
+
+  const [selectTextModalIsOpen, setSelectTextModalIsOpen] = useState(false);
 
   return (
     <>
@@ -137,6 +146,11 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             text: "Reply",
             role: "reply",
             icon: arrowUndoOutline,
+          },
+          {
+            text: "Select Text",
+            role: "select-text",
+            icon: textOutline,
           },
           {
             text: getHandle(comment.creator),
@@ -209,6 +223,10 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
               reply({ presentingElement: pageContext.page });
               break;
+            case "select-text":
+              return selectText({
+                presentingElement: pageContext.page,
+              });
             case "person":
               router.push(
                 buildGeneralBrowseLink(`/u/${getHandle(comment.creator)}`)
