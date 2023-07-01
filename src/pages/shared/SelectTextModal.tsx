@@ -24,6 +24,13 @@ const SelectableText = styled.p`
   white-space: pre-wrap;
 `;
 
+const InvisibleTextarea = styled.textarea`
+  all: unset;
+  white-space: pre-wrap;
+  height: fit-content;
+  width: 100%;
+`;
+
 export default function SelectText(props: SelectTextProps) {
   const pageContext = useContext(PageContext);
 
@@ -53,7 +60,7 @@ export default function SelectText(props: SelectTextProps) {
       </IonHeader>
       <IonContent>
         <SelectableText className="ion-padding-horizontal">
-          {props.text}
+          <InvisibleTextarea value={props.text} disabled={true} />
         </SelectableText>
       </IonContent>
     </IonModal>
