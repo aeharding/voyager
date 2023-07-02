@@ -99,6 +99,10 @@ export default function LargePost({ post, communityMode }: PostProps) {
     setBlur(isNsfw(post));
   }, [post]);
 
+  function shouldBlur(){
+    return (useAppSelector((state) => state.appearance.posts.blur));
+  }
+
   function renderPostBody() {
     if (post.post.url) {
       if (isUrlImage(post.post.url)) {
@@ -107,9 +111,9 @@ export default function LargePost({ post, communityMode }: PostProps) {
             <PostImage
               src={post.post.url}
               draggable="false"
-              blur={blur && (useAppSelector((state) => state.appearance.posts.blur))}
+              blur={blur && shouldBlur()}
               onClick={(e) => {
-                if (isNsfw(post) && (useAppSelector((state) => state.appearance.posts.blur))) {
+                if (isNsfw(post) && shouldBlur()) {
                   e.stopPropagation();
                   setBlur(!blur);
                 }
@@ -133,9 +137,9 @@ export default function LargePost({ post, communityMode }: PostProps) {
           <PostImage
             src={markdownLoneImage.url}
             alt={markdownLoneImage.altText}
-            blur={blur && (useAppSelector((state) => state.appearance.posts.blur))}
+            blur={blur && shouldBlur()}
             onClick={(e) => {
-              if (isNsfw(post) && (useAppSelector((state) => state.appearance.posts.blur))) {
+              if (isNsfw(post) && shouldBlur()) {
                 e.stopPropagation();
                 setBlur(!blur);
               }
