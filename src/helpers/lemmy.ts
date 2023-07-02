@@ -1,4 +1,9 @@
-import { Comment, CommentView, Community } from "lemmy-js-client";
+import {
+  Comment,
+  CommentView,
+  Community,
+  GetSiteResponse,
+} from "lemmy-js-client";
 
 export const LEMMY_SERVERS =
   "CUSTOM_LEMMY_SERVERS" in window
@@ -24,6 +29,12 @@ export const MAX_DEFAULT_COMMENT_DEPTH = 5;
  */
 export function getItemActorName(item: Pick<Community, "actor_id">) {
   return new URL(item.actor_id).hostname;
+}
+
+export function checkIsMod(communityHandle: string, site: GetSiteResponse) {
+  return site?.my_user?.moderates.find(
+    (m) => getHandle(m.community) === communityHandle
+  );
 }
 
 /**

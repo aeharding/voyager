@@ -161,6 +161,9 @@ export const handleSelector = createSelector([activeAccount], (account) => {
   return account?.handle;
 });
 
+export const isAdminSelector = (state: RootState) =>
+  state.auth.site?.my_user?.local_user_view.person.admin;
+
 export const login =
   (client: LemmyHttp, username: string, password: string, totp?: string) =>
   async (dispatch: AppDispatch) => {
