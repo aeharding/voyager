@@ -20,6 +20,7 @@ import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
 import { FeedContext } from "../feed/FeedContext";
 import { jwtSelector } from "../auth/authSlice";
+import { defaultCommentDepthSelector } from "../settings/appearance/appearanceSlice";
 
 const centerCss = css`
   position: relative;
@@ -77,6 +78,7 @@ export default function Comments({
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [present] = useIonToast();
+  const defaultCommentDepth = useAppSelector(defaultCommentDepthSelector);
 
   const highlightedCommentId = commentPath
     ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -116,7 +118,7 @@ export default function Comments({
         limit: 10,
         sort,
         type_: "All",
-        max_depth: 8,
+        max_depth: defaultCommentDepth,
         saved_only: false,
         page: currentPage,
         auth: jwt,
@@ -168,6 +170,12 @@ export default function Comments({
     setPage(currentPage);
   }
 
+  async function appendComments(comments: CommentView[]) {
+    setComments((existingComments) =>
+      uniqBy([...existingComments, ...comments], (c) => c.comment.id)
+    );
+  }
+
   async function handleRefresh(event: RefresherCustomEvent) {
     try {
       await Promise.all([fetchComments(true), dispatch(getPost(postId))]);
@@ -201,7 +209,9 @@ export default function Comments({
   }, [commentTree, comments.length, highlightedCommentId, loading, op]);
 
   return (
-    <FeedContext.Provider value={{ refresh: () => fetchComments(true) }}>
+    <FeedContext.Provider
+      value={{ refresh: () => fetchComments(true), appendComments }}
+    >
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
