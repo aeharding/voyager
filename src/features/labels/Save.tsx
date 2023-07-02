@@ -12,9 +12,8 @@ interface SaveProps {
 export default function Save({ type, id, savedFromServer }: SaveProps) {
   const savedById = useAppSelector((state) =>
     type === "comment"
-      ? {}
-      : // ? state.comment.commentSavedById
-        state.post.postSavedById
+      ? state.comment.commentSavedById
+      : state.post.postSavedById
   );
 
   const mySaved = savedById[id] ?? savedFromServer;

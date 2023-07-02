@@ -31,7 +31,7 @@ import {
   getRemoteHandle,
   canModify as isCommentMutable,
 } from "../../helpers/lemmy";
-import { deleteComment, voteOnComment } from "./commentSlice";
+import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import styled from "@emotion/styled";
 import { notEmpty } from "../../helpers/array";
 import CommentEditing from "./edit/CommentEdit";
@@ -91,8 +91,12 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById
   );
+  const commentSavedById = useAppSelector(
+    (state) => state.comment.commentSavedById
+  );
 
   const myVote = commentVotesById[comment.comment.id] ?? comment.my_vote;
+  const mySaved = commentSavedById[comment.comment.id] ?? comment.saved;
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
 
@@ -122,7 +126,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             icon: arrowDownOutline,
           },
           {
-            text: "Save",
+            text: !mySaved ? "Save" : "Unsave",
             role: "save",
             icon: bookmarkOutline,
           },
@@ -190,7 +194,8 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
               break;
             case "save":
               if (!jwt) return login({ presentingElement: pageContext.page });
-              // TODO
+
+              dispatch(saveComment(comment.comment.id, !mySaved));
               break;
             case "edit":
               edit({ presentingElement: pageContext.page });

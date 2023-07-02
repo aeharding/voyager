@@ -15,6 +15,7 @@ import useKeyPressed from "../../helpers/useKeyPressed";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
+import Save from "../labels/Save";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -239,6 +240,11 @@ export default function Comment({
                   score={commentView.counts.score}
                   id={commentView.comment.id}
                   type="comment"
+                />
+                <Save
+                  type="comment"
+                  id={commentView.comment.id}
+                  savedFromServer={commentView.saved}
                 />
                 <div style={{ flex: 1 }} />
                 {!collapsed ? (
