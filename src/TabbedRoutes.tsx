@@ -54,6 +54,7 @@ import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
+import ProfileLabelSelectionPage from "./pages/settings/ProfileLabelSelectionPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -347,6 +348,9 @@ export default function TabbedRoutes() {
           {...buildGeneralBrowseRoutes("settings")}
           <Route exact path="/settings/appearance/posts">
             <PostAppearancePage />
+          </Route>
+          <Route exact path="/settings/appearance/profile-label">
+            <ProfileLabelSelectionPage />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">

@@ -15,6 +15,9 @@ const STORAGE_KEYS = {
   POSTS: {
     TYPE: "appearance--post-type",
   },
+  PROFILE: {
+    LABEL: "appearance--profile-label",
+  },
   DARK: {
     USE_SYSTEM: "appearance--dark-use-system",
     USER_MODE: "appearance--dark-user-mode",
@@ -25,6 +28,15 @@ export const OPostAppearanceType = {
   Compact: "compact",
   Large: "large",
 } as const;
+
+export const OProfileLabelType = {
+  InstanceUrl: "instance_url",
+  Username: "username",
+  Hide: "hide",
+} as const;
+
+export type ProfileLabelType =
+  (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
 export type PostAppearanceType =
   (typeof OPostAppearanceType)[keyof typeof OPostAppearanceType];
@@ -49,6 +61,9 @@ interface AppearanceState {
   posts: {
     type: PostAppearanceType;
   };
+  profile: {
+    label: ProfileLabelType;
+  };
   dark: {
     usingSystemDarkMode: boolean;
     userDarkMode: boolean;
@@ -66,6 +81,9 @@ const initialState: AppearanceState = {
   posts: {
     type: OPostAppearanceType.Large,
   },
+  profile: {
+    label: OProfileLabelType.InstanceUrl,
+  },
   dark: {
     usingSystemDarkMode: true,
     userDarkMode: false,
@@ -82,6 +100,9 @@ const stateFromStorage: AppearanceState = merge(initialState, {
   },
   posts: {
     type: get(STORAGE_KEYS.POSTS.TYPE),
+  },
+  profile: {
+    label: get(STORAGE_KEYS.PROFILE.LABEL),
   },
   dark: {
     usingSystemDarkMode: get(STORAGE_KEYS.DARK.USE_SYSTEM),
@@ -130,6 +151,11 @@ export const appearanceSlice = createSlice({
 
       set(STORAGE_KEYS.DARK.USER_MODE, action.payload);
     },
+    setProfileLabel(state, action: PayloadAction<ProfileLabelType>) {
+      state.profile.label = action.payload;
+
+      set(STORAGE_KEYS.PROFILE.LABEL, action.payload);
+    },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.usingSystemDarkMode = action.payload;
 
@@ -145,6 +171,7 @@ export const {
   setUseSystemFontSize,
   setCommentsCollapsed,
   setPostAppearance,
+  setProfileLabel,
   setUserDarkMode,
   setUseSystemDarkMode,
 } = appearanceSlice.actions;
