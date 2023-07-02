@@ -209,6 +209,12 @@ export default function TabbedRoutes() {
           <ProfileFeedItemsPage type="Comments" />
         </ActorRedirect>
       </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Saved" />
+        </ActorRedirect>
+      </Route>,
     ];
   }
 
