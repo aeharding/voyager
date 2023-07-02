@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { buildCommentsTree } from "../../helpers/lemmy";
+import {
+  MAX_DEFAULT_COMMENT_DEPTH,
+  buildCommentsTree,
+} from "../../helpers/lemmy";
 import CommentTree from "./CommentTree";
 import {
   IonRefresher,
@@ -85,6 +88,7 @@ export default function Comments({
       +commentPath.split(".").pop()!
     : undefined;
   const commentId = commentPath ? +commentPath.split(".")[1] : undefined;
+  const commentDepth = commentPath ? commentPath.split(".").length : undefined;
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
@@ -118,7 +122,12 @@ export default function Comments({
         limit: 10,
         sort,
         type_: "All",
-        max_depth: defaultCommentDepth,
+
+        // Viewing a single thread should always show highlighted comment, regardless of depth
+        max_depth: commentDepth
+          ? Math.max(MAX_DEFAULT_COMMENT_DEPTH, commentDepth)
+          : defaultCommentDepth,
+
         saved_only: false,
         page: currentPage,
         auth: jwt,
