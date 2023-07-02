@@ -40,6 +40,7 @@ export default function CommentExpander({
   const { appendComments } = useContext(FeedContext);
   const client = useClient();
   const [loading, setLoading] = useState(false);
+  const plurality = (missing === 1) ? "1 more reply": `${missing} more replies`;
 
   async function fetchChildren() {
     if (loading) return;
@@ -87,7 +88,7 @@ export default function CommentExpander({
           <Container depth={depth || 0}>
             <MoreRepliesBlock>
               {!loading ? (
-                <>{missing} more replies</>
+                <>{plurality}</>
               ) : (
                 <IonText color="medium">loading...</IonText>
               )}
