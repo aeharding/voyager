@@ -10,8 +10,7 @@ const searchBarRef = createRef<HTMLIonSearchbarElement>();
 /**
  * Focuses on the search bar input element.
  */
-export const focusSearchBar = () =>
-  searchBarRef.current?.querySelector("input")?.focus();
+export const focusSearchBar = () => searchBarRef.current?.setFocus();
 
 export default function SearchPage() {
   const [search, setSearch] = useState("");
