@@ -146,4 +146,4 @@ wefwef works best added to the homescreen. There are certain features that only 
 
 ## 📄 License
 
-[MIT](./LICENSE) &copy; wefwef contributors
+[AGPL-3.0](./LICENSE) &copy; wefwef contributors
