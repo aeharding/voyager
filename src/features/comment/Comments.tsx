@@ -88,6 +88,7 @@ export default function Comments({
       +commentPath.split(".").pop()!
     : undefined;
   const commentId = commentPath ? +commentPath.split(".")[1] : undefined;
+  const commentDepth = commentPath ? commentPath.split(".").length : undefined;
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
@@ -122,8 +123,10 @@ export default function Comments({
         sort,
         type_: "All",
 
-        // Viewing a single thread should always show nested comments
-        max_depth: commentId ? MAX_DEFAULT_COMMENT_DEPTH : defaultCommentDepth,
+        // Viewing a single thread should always show highlighted comment, regardless of depth
+        max_depth: commentDepth
+          ? Math.max(MAX_DEFAULT_COMMENT_DEPTH, commentDepth)
+          : defaultCommentDepth,
 
         saved_only: false,
         page: currentPage,
