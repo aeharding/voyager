@@ -3,7 +3,7 @@ import { IonIcon, useIonToast } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
 import { voteError } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
@@ -47,30 +47,33 @@ export default function Vote({ item, className }: VoteProps) {
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
+  async function do_vote(e: React.MouseEvent, vote: 0 | 1 | -1) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (presentLoginIfNeeded()) return;
+
+    let dispatcherFn;
+    if ("comment" in item) {
+      dispatcherFn = voteOnComment;
+    } else {
+      dispatcherFn = voteOnPost;
+    }
+
+    try {
+      await dispatch(dispatcherFn(id, vote));
+    } catch (error) {
+      present(voteError);
+      throw error;
+    }
+  }
+
   return (
     <Container
       className={className}
       vote={myVote as 1 | 0 | -1}
       onClick={async (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-
-        if (presentLoginIfNeeded()) return;
-
-        let dispatcherFn;
-        if ("comment" in item) {
-          dispatcherFn = voteOnComment;
-        } else {
-          dispatcherFn = voteOnPost;
-        }
-
-        try {
-          await dispatch(dispatcherFn(id, myVote ? 0 : 1));
-        } catch (error) {
-          present(voteError);
-
-          throw error;
-        }
+        await do_vote(e, myVote ? 0 : 1);
       }}
     >
       <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} /> {score}
