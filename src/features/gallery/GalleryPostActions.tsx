@@ -43,7 +43,7 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
     `/c/${getHandle(post.community)}/comments/${post.post.id}`
   );
   const router = useIonRouter();
-  const score = calculateCurrentVotesCount(post, postVotesById);
+  const { score } = calculateCurrentVotesCount(post, postVotesById);
   const location = useLocation();
   const { close } = useContext(GalleryContext);
 
