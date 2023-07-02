@@ -35,6 +35,10 @@ ion-alert.preserve-newlines {
   white-space: pre-line;
 }
 
+.pswp__img {
+  -webkit-touch-callout: default;
+}
+
 ion-action-sheet .detail::before {
   content: "";
   z-index: 1;
