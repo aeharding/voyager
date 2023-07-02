@@ -27,7 +27,7 @@ const PICTRS_URL = "/pictrs/image";
 export async function uploadImage(url: string, auth: string, image: File) {
   const compressedImageIfNeeded = await reduceFileSize(
     image,
-    1_500_000,
+    990_000, // 990 kB - Lemmy's default limit is 1MB
     1500,
     1500,
     0.9
