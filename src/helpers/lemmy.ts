@@ -17,6 +17,8 @@ export interface CommentNodeI {
   depth: number;
 }
 
+export const MAX_DEFAULT_COMMENT_DEPTH = 5;
+
 /**
  * @param item Community, Person, etc
  */
@@ -170,6 +172,19 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
   flattenChildren(comment);
 
   return flattenedChildren;
+}
+
+/**
+ * NOTE: This assumes NO missing siblings
+ */
+export function countMissingDirectChildComments(
+  commentNode: CommentNodeI
+): number {
+  if (commentNode.children.length) {
+    return 0;
+  }
+
+  return commentNode.comment_view.counts.child_count;
 }
 
 export function isUrlImage(url: string): boolean {

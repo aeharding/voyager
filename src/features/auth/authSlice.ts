@@ -192,7 +192,7 @@ export const getSite =
 
     const { iss } = jwtPayload;
 
-    const details = await new LemmyHttp(`/api/${iss}`).getSite({
+    const details = await getClient(iss).getSite({
       auth: jwtSelector(getState()),
     });
 

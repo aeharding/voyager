@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { buildCommentsTree } from "../../helpers/lemmy";
+import {
+  MAX_DEFAULT_COMMENT_DEPTH,
+  buildCommentsTree,
+} from "../../helpers/lemmy";
 import CommentTree from "./CommentTree";
 import {
   IonRefresher,
@@ -20,6 +23,7 @@ import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
 import { FeedContext } from "../feed/FeedContext";
 import { jwtSelector } from "../auth/authSlice";
+import { defaultCommentDepthSelector } from "../settings/appearance/appearanceSlice";
 
 const centerCss = css`
   position: relative;
@@ -77,12 +81,14 @@ export default function Comments({
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [present] = useIonToast();
+  const defaultCommentDepth = useAppSelector(defaultCommentDepthSelector);
 
   const highlightedCommentId = commentPath
     ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       +commentPath.split(".").pop()!
     : undefined;
   const commentId = commentPath ? +commentPath.split(".")[1] : undefined;
+  const commentDepth = commentPath ? commentPath.split(".").length : undefined;
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
@@ -116,7 +122,12 @@ export default function Comments({
         limit: 10,
         sort,
         type_: "All",
-        max_depth: 8,
+
+        // Viewing a single thread should always show highlighted comment, regardless of depth
+        max_depth: commentDepth
+          ? Math.max(MAX_DEFAULT_COMMENT_DEPTH, commentDepth)
+          : defaultCommentDepth,
+
         saved_only: false,
         page: currentPage,
         auth: jwt,
@@ -168,6 +179,12 @@ export default function Comments({
     setPage(currentPage);
   }
 
+  async function appendComments(comments: CommentView[]) {
+    setComments((existingComments) =>
+      uniqBy([...existingComments, ...comments], (c) => c.comment.id)
+    );
+  }
+
   async function handleRefresh(event: RefresherCustomEvent) {
     try {
       await Promise.all([fetchComments(true), dispatch(getPost(postId))]);
@@ -201,7 +218,9 @@ export default function Comments({
   }, [commentTree, comments.length, highlightedCommentId, loading, op]);
 
   return (
-    <FeedContext.Provider value={{ refresh: () => fetchComments(true) }}>
+    <FeedContext.Provider
+      value={{ refresh: () => fetchComments(true), appendComments }}
+    >
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}

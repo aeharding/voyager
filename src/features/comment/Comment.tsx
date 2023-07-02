@@ -29,7 +29,7 @@ const rainbowColors = [
   "#00FFFF", // Cyan
 ];
 
-const CustomIonItem = styled(IonItem)`
+export const CustomIonItem = styled(IonItem)`
   scroll-margin-bottom: 35vh;
 
   --padding-start: 0;
@@ -38,7 +38,7 @@ const CustomIonItem = styled(IonItem)`
   --min-height: 0;
 `;
 
-const PositionedContainer = styled.div<{
+export const PositionedContainer = styled.div<{
   depth: number;
   highlighted: boolean;
 }>`
@@ -63,7 +63,7 @@ const PositionedContainer = styled.div<{
     `}
 `;
 
-const Container = styled.div<{ depth: number; highlighted?: boolean }>`
+export const Container = styled.div<{ depth: number; highlighted?: boolean }>`
   display: flex;
 
   position: relative;
@@ -89,9 +89,11 @@ const Container = styled.div<{ depth: number; highlighted?: boolean }>`
     width: 2px;
     filter: brightness(0.7);
 
-    @media (prefers-color-scheme: light) {
-      filter: none;
-    }
+    ${({ theme }) =>
+      !theme.dark &&
+      css`
+        filter: none;
+      `}
 
     ${({ depth }) =>
       depth &&
@@ -162,7 +164,6 @@ interface CommentProps {
   depth?: number;
   onClick?: () => void;
   collapsed?: boolean;
-  childCount?: number;
   fullyCollapsed?: boolean;
   routerLink?: string;
 
@@ -180,7 +181,6 @@ export default function Comment({
   depth,
   onClick,
   collapsed,
-  childCount,
   fullyCollapsed,
   context,
   routerLink,
@@ -251,7 +251,9 @@ export default function Comment({
                   </>
                 ) : (
                   <>
-                    <AmountCollapsed>{childCount}</AmountCollapsed>
+                    <AmountCollapsed>
+                      {commentView.counts.child_count + 1}
+                    </AmountCollapsed>
                     <CollapsedIcon icon={chevronDownOutline} />
                   </>
                 )}

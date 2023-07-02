@@ -26,9 +26,11 @@ const Container = styled.div<{ type: "sent" | "recieved" }>`
   --sentColor: var(--ion-color-primary);
   --receiveColor: var(--ion-color-medium);
 
-  @media (prefers-color-scheme: light) {
-    --receiveColor: #eee;
-  }
+  ${({ theme }) =>
+    !theme.dark &&
+    css`
+      --receiveColor: #eee;
+    `}
 
   &:before {
     width: 20px;

@@ -2,7 +2,7 @@
   "name": "wefwef",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "0.8.2",
+  "version": "0.10.4",
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:typecheck": "tsc",
-    "lint": "eslint src --max-warnings=0"
+    "lint": "eslint src --max-warnings=0",
+    "lint:formatting": "prettier --check ."
   },
   "dependencies": {
     "express": "^4.18.2",
