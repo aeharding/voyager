@@ -9,6 +9,7 @@ import {
 import AppContent from "../../features/shared/AppContent";
 import TextSize from "../../features/settings/appearance/TextSize";
 import PostView from "../../features/settings/appearance/PostView";
+import NsfwBlur from "../../features/settings/appearance/NsfwBlur";
 import DarkMode from "../../features/settings/appearance/DarkMode";
 import CollapsedByDefault from "../../features/settings/appearance/CollapsedByDefault";
 
@@ -28,6 +29,7 @@ export default function AppearancePage() {
         <TextSize />
         <CollapsedByDefault />
         <PostView />
+        <NsfwBlur />
         <DarkMode />
       </AppContent>
     </IonPage>

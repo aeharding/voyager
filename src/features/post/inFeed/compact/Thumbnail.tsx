@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { css } from "@emotion/react";
 import { isNsfw } from "../../../labels/Nsfw";
+import { useAppSelector } from "../../../../store";
 
 const Container = styled.div`
   display: flex;
@@ -60,7 +61,7 @@ export default function Thumbnail({ post }: ImgProps) {
 
   return (
     <Container onClick={(e) => src && e.stopPropagation()}>
-      {src ? <StyledImg src={src} blur={isNsfw(post)} /> : <SelfSvg />}
+      {src ? <StyledImg src={src} blur={isNsfw(post) && (useAppSelector((state) => state.appearance.posts.blur))} /> : <SelfSvg />}
     </Container>
   );
 }

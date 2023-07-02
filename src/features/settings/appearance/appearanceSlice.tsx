@@ -14,6 +14,7 @@ const STORAGE_KEYS = {
   },
   POSTS: {
     TYPE: "appearance--post-type",
+    BLUR: "appearance--blur-nsfw"
   },
   DARK: {
     USE_SYSTEM: "appearance--dark-use-system",
@@ -48,6 +49,7 @@ interface AppearanceState {
   };
   posts: {
     type: PostAppearanceType;
+    blur: boolean;
   };
   dark: {
     usingSystemDarkMode: boolean;
@@ -65,6 +67,7 @@ const initialState: AppearanceState = {
   },
   posts: {
     type: OPostAppearanceType.Large,
+    blur: true,
   },
   dark: {
     usingSystemDarkMode: true,
@@ -82,6 +85,7 @@ const stateFromStorage: AppearanceState = merge(initialState, {
   },
   posts: {
     type: get(STORAGE_KEYS.POSTS.TYPE),
+    blur: get(STORAGE_KEYS.POSTS.BLUR),
   },
   dark: {
     usingSystemDarkMode: get(STORAGE_KEYS.DARK.USE_SYSTEM),
@@ -125,6 +129,11 @@ export const appearanceSlice = createSlice({
 
       set(STORAGE_KEYS.POSTS.TYPE, action.payload);
     },
+    setPostBlur(state, action: PayloadAction<boolean>) {
+      state.posts.blur = action.payload;
+
+      set(STORAGE_KEYS.POSTS.BLUR, action.payload);
+    },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
 
@@ -145,6 +154,7 @@ export const {
   setUseSystemFontSize,
   setCommentsCollapsed,
   setPostAppearance,
+  setPostBlur,
   setUserDarkMode,
   setUseSystemDarkMode,
 } = appearanceSlice.actions;

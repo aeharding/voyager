@@ -16,6 +16,7 @@ import { AnnouncementIcon } from "../../detail/PostDetail";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
+import { useAppSelector } from "../../../../store";
 
 const Container = styled.div`
   display: flex;
@@ -106,9 +107,9 @@ export default function LargePost({ post, communityMode }: PostProps) {
             <PostImage
               src={post.post.url}
               draggable="false"
-              blur={blur}
+              blur={blur && (useAppSelector((state) => state.appearance.posts.blur))}
               onClick={(e) => {
-                if (isNsfw(post)) {
+                if (isNsfw(post) && (useAppSelector((state) => state.appearance.posts.blur))) {
                   e.stopPropagation();
                   setBlur(!blur);
                 }
@@ -132,9 +133,9 @@ export default function LargePost({ post, communityMode }: PostProps) {
           <PostImage
             src={markdownLoneImage.url}
             alt={markdownLoneImage.altText}
-            blur={blur}
+            blur={blur && (useAppSelector((state) => state.appearance.posts.blur))}
             onClick={(e) => {
-              if (isNsfw(post)) {
+              if (isNsfw(post) && (useAppSelector((state) => state.appearance.posts.blur))) {
                 e.stopPropagation();
                 setBlur(!blur);
               }
