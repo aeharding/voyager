@@ -1,5 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { buildCommentsTree } from "../../helpers/lemmy";
+import {
+  MAX_DEFAULT_COMMENT_DEPTH,
+  buildCommentsTree,
+} from "../../helpers/lemmy";
 import CommentTree from "./CommentTree";
 import {
   IonRefresher,
@@ -118,7 +121,10 @@ export default function Comments({
         limit: 10,
         sort,
         type_: "All",
-        max_depth: defaultCommentDepth,
+
+        // Viewing a single thread should always show nested comments
+        max_depth: commentId ? MAX_DEFAULT_COMMENT_DEPTH : defaultCommentDepth,
+
         saved_only: false,
         page: currentPage,
         auth: jwt,
