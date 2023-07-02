@@ -6,3 +6,10 @@ export const voteError: ToastOptions = {
   position: "bottom",
   color: "danger",
 };
+
+export const saveError: ToastOptions = {
+  message: "Problem saving. Please try again.",
+  duration: 3500,
+  position: "bottom",
+  color: "danger",
+};

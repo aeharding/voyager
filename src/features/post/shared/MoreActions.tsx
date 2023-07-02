@@ -20,7 +20,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { PageContext } from "../../auth/PageContext";
 import Login from "../../auth/Login";
 import { PostView } from "lemmy-js-client";
-import { voteOnPost } from "../postSlice";
+import { savePost, voteOnPost } from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentReply from "../../comment/reply/CommentReply";
@@ -56,8 +56,10 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   });
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
+  const postSavedById = useAppSelector((state) => state.post.postSavedById);
 
   const myVote = postVotesById[post.post.id] ?? post.my_vote;
+  const mySaved = postSavedById[post.post.id] ?? post.saved;
 
   return (
     <>
@@ -86,7 +88,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             icon: arrowDownOutline,
           },
           {
-            text: "Save",
+            text: !mySaved ? "Save" : "Unsave",
             role: "save",
             icon: bookmarkOutline,
           },
@@ -138,7 +140,8 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             }
             case "save": {
               if (!jwt) return login({ presentingElement: pageContext.page });
-              // TODO
+
+              dispatch(savePost(post.post.id, !mySaved));
               break;
             }
             case "reply": {

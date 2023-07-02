@@ -80,6 +80,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
               stats={post.counts}
               published={post.post.published}
               voteFromServer={post.my_vote}
+              savedFromServer={post.saved}
             />
             <StyledMoreActions post={post} />
           </Actions>

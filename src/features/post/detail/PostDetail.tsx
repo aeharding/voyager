@@ -238,6 +238,7 @@ export default function PostDetail() {
               <Stats
                 stats={post.counts}
                 voteFromServer={post.my_vote}
+                savedFromServer={post.saved}
                 published={post.post.published}
               />
             </PostDeets>
