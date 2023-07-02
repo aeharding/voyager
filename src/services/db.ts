@@ -57,9 +57,18 @@ export const OInstanceUrlDisplayMode = {
 export type InstanceUrlDisplayMode =
   (typeof OInstanceUrlDisplayMode)[keyof typeof OInstanceUrlDisplayMode];
 
+export const OVoteDisplayMode = {
+  SingleScore: "single-score",
+  Separate: "separate",
+} as const;
+
+export type VoteDisplayMode =
+  (typeof OVoteDisplayMode)[keyof typeof OVoteDisplayMode];
+
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
+  vote_display_mode: VoteDisplayMode;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_show_voting_buttons: boolean;
