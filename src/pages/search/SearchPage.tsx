@@ -5,6 +5,7 @@ import { css } from "@emotion/react";
 import TrendingCommunities from "../../features/search/TrendingCommunities";
 import SearchOptions from "../../features/search/SearchOptions";
 
+// eslint-disable-next-line no-undef -- I can't work out where to import this type from
 const searchBarRef = createRef<HTMLIonSearchbarElement>();
 
 /**
