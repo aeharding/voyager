@@ -4,7 +4,7 @@ import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
-import { hiddenPostsByIdSelector, receivedPosts } from "../post/postSlice";
+import { postMetadataByIdSelector, receivedPosts } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
@@ -39,7 +39,7 @@ export default function PostCommentFeed({
   const postAppearanceType = useAppSelector(
     (state) => state.appearance.posts.type
   );
-  const hiddenPosts = useAppSelector(hiddenPostsByIdSelector);
+  const postMetadataById = useAppSelector(postMetadataByIdSelector);
 
   const borderCss = (() => {
     switch (postAppearanceType) {
@@ -80,7 +80,11 @@ export default function PostCommentFeed({
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
       const items = await _fetchFn(page);
-      dispatch(receivedPosts(items.filter(isPost)));
+
+      /* receivedPosts needs to be awaited so that we fetch post metadatas
+         from the db before showing them to prevent flickering
+      */
+      await dispatch(receivedPosts(items.filter(isPost)));
       dispatch(receivedComments(items.filter(isComment)));
 
       return items;
@@ -89,8 +93,8 @@ export default function PostCommentFeed({
   );
 
   const filterFn = useCallback(
-    (item: PostCommentItem) => !hiddenPosts[item.post.id],
-    [hiddenPosts]
+    (item: PostCommentItem) => !postMetadataById[item.post.id]?.hidden,
+    [postMetadataById]
   );
 
   return (

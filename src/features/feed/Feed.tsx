@@ -27,9 +27,12 @@ export interface FeedProps<I> {
   getIndex?: (item: I) => number | string;
   renderItemContent: (item: I) => React.ReactNode;
   header?: ComponentType<{ context?: unknown }>;
+  forceLoading?: boolean;
 
   communityName?: string;
 }
+
+const FETCH_MORE_THRESHOLD = LIMIT / 2;
 
 export default function Feed<I>({
   fetchFn,
@@ -38,6 +41,7 @@ export default function Feed<I>({
   header,
   communityName,
   getIndex,
+  forceLoading,
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
@@ -51,18 +55,25 @@ export default function Feed<I>({
     [filterFn, items]
   );
 
-  // If there are too less items, fetch more
+  // Fetch more items if there are less than FETCH_MORE_THRESHOLD items left due to filtering
   useEffect(() => {
-    const expectedItemCount = LIMIT * page;
+    const currentPageItems = items.slice((page - 1) * LIMIT, page * LIMIT);
+
+    const currentPageFilteredItems = filteredItems.filter(
+      (item) => currentPageItems.indexOf(item) !== -1
+    );
 
     if (
-      filteredItems.length < expectedItemCount &&
-      items.length === expectedItemCount
-    ) {
-      fetchMore();
-    }
+      loading ||
+      currentPageItems.length - currentPageFilteredItems.length <
+        FETCH_MORE_THRESHOLD
+    )
+      return;
+
+    fetchMore();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredItems.length, items.length, page]);
+  }, [filteredItems, filteredItems, items, items, page, loading]);
 
   const virtuosoRef = useRef<VirtuosoHandle>(null);
 
@@ -135,7 +146,7 @@ export default function Feed<I>({
       }
     : {};
 
-  if ((loading && !items.length) || loading === undefined)
+  if ((loading && !items.length) || loading === undefined || forceLoading)
     return <CenteredSpinner />;
 
   return (

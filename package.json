@@ -14,6 +14,8 @@
     "lint:formatting": "prettier --check ."
   },
   "dependencies": {
+    "dexie": "^3.2.4",
+    "dexie-react-hooks": "^1.1.6",
     "express": "^4.18.2",
     "http-proxy-middleware": "^2.0.6",
     "react-textarea-autosize": "^8.5.0",

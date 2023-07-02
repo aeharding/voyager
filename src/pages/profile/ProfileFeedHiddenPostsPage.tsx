@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
 import {
   IonLabel,
   IonItem,
@@ -10,18 +11,18 @@ import {
   IonBackButton,
   IonContent,
 } from "@ionic/react";
+import { useParams } from "react-router";
 import styled from "@emotion/styled";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
 import { FetchFn } from "../../features/feed/Feed";
-import { useParams } from "react-router";
 import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
-import { jwtSelector } from "../../features/auth/authSlice";
-import { storedHiddenPostsSelector } from "../../features/post/postSlice";
+import { handleSelector, jwtSelector } from "../../features/auth/authSlice";
+import { db } from "../../services/db";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -31,20 +32,26 @@ export const SettingLabel = styled(IonLabel)`
   margin-left: 1rem;
 `;
 
-export default function ProfileFeeHiddenPostsPage() {
+export default function ProfileFeedHiddenPostsPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { handle } = useParams<{ handle: string }>();
+  const handle = useAppSelector(handleSelector);
+  const { handle: handleWithoutServer } = useParams<{ handle: string }>();
   const jwt = useAppSelector(jwtSelector);
   const client = useClient();
-  const hiddenPosts = useAppSelector(storedHiddenPostsSelector);
   const postById = useAppSelector((state) => state.post.postById);
+
+  const hiddenPosts = useLiveQuery(() => {
+    if (!jwt || !handle) return [];
+
+    return db
+      .getHiddenPostMetadatas(handle)
+      .then((metadatas) => metadatas.map((metadata) => metadata.post_id));
+  }, [jwt]);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
-      const currentPageItems = hiddenPosts.slice(
-        (page - 1) * LIMIT,
-        page * LIMIT
-      );
+      const currentPageItems =
+        hiddenPosts?.slice((page - 1) * LIMIT, page * LIMIT) || [];
 
       const result = await Promise.all(
         currentPageItems.map((postId) => {
@@ -69,14 +76,18 @@ export default function ProfileFeeHiddenPostsPage() {
           <IonTitle>Hidden Posts</IonTitle>
           <IonButtons slot="start">
             <IonBackButton
-              text={handle}
-              defaultHref={buildGeneralBrowseLink(`/u/${handle}`)}
+              text={handleWithoutServer}
+              defaultHref={buildGeneralBrowseLink(`/u/${handleWithoutServer}`)}
             />
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <PostCommentFeed filterHiddenPosts={false} fetchFn={fetchFn} />
+        <PostCommentFeed
+          forceLoading={!hiddenPosts}
+          filterHiddenPosts={false}
+          fetchFn={fetchFn}
+        />
       </IonContent>
     </IonPage>
   );
