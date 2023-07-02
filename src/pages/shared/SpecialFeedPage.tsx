@@ -8,7 +8,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
-import { useCallback } from "react";
+import { useCallback, useContext, useState } from "react";
 import PostSort from "../../features/feed/PostSort";
 import { ListingType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
@@ -19,12 +19,21 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
+import { AppContext } from "../../features/auth/AppContext";
+import {
+  activateFabOnPagePosition,
+  scrollFabIfNeeded,
+} from "../../features/shared/scroll/scrollUtils";
+import ScrollToTopFab from "../../features/shared/scroll/ScrollToTopFab";
 
 interface SpecialFeedProps {
   type: ListingType;
 }
 
 export default function SpecialFeedPage({ type }: SpecialFeedProps) {
+  const { activePage } = useContext(AppContext);
+  const [previousTop, setPreviousTop] = useState(0);
+  const [fabActivated, setFabActivated] = useState(false);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
@@ -46,7 +55,16 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   );
 
   return (
-    <IonPage>
+    <IonPage
+      onScrollCapture={() =>
+        activateFabOnPagePosition(
+          activePage,
+          previousTop,
+          fabActivated,
+          setFabActivated
+        )
+      }
+    >
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -65,6 +83,17 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
       </IonHeader>
       <IonContent>
         <PostCommentFeed fetchFn={fetchFn} />
+        <ScrollToTopFab
+          activated={fabActivated}
+          onClick={() =>
+            scrollFabIfNeeded(
+              activePage,
+              previousTop,
+              setPreviousTop,
+              setFabActivated
+            )
+          }
+        />
       </IonContent>
     </IonPage>
   );
