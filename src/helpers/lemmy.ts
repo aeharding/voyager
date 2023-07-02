@@ -17,6 +17,8 @@ export interface CommentNodeI {
   depth: number;
 }
 
+export const MAX_DEFAULT_COMMENT_DEPTH = 8;
+
 /**
  * @param item Community, Person, etc
  */
@@ -170,6 +172,27 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
   flattenChildren(comment);
 
   return flattenedChildren;
+}
+
+export function countMissingDirectChildComments(
+  commentNode: CommentNodeI
+): number {
+  if (commentNode.children.length === 0) {
+    return commentNode.comment_view.counts.child_count;
+  }
+
+  let missingChildComments =
+    commentNode.comment_view.counts.child_count -
+    getFlattenedChildren(commentNode).length;
+
+  if (commentNode.children.length > 0) {
+    // Recursively calculate the missing direct child comments for each child node
+    for (const child of commentNode.children) {
+      missingChildComments -= countMissingDirectChildComments(child);
+    }
+  }
+
+  return missingChildComments;
 }
 
 export function isUrlImage(url: string): boolean {

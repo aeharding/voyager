@@ -29,7 +29,7 @@ const rainbowColors = [
   "#00FFFF", // Cyan
 ];
 
-const CustomIonItem = styled(IonItem)`
+export const CustomIonItem = styled(IonItem)`
   scroll-margin-bottom: 35vh;
 
   --padding-start: 0;
@@ -38,7 +38,7 @@ const CustomIonItem = styled(IonItem)`
   --min-height: 0;
 `;
 
-const PositionedContainer = styled.div<{
+export const PositionedContainer = styled.div<{
   depth: number;
   highlighted: boolean;
 }>`
@@ -63,7 +63,7 @@ const PositionedContainer = styled.div<{
     `}
 `;
 
-const Container = styled.div<{ depth: number; highlighted?: boolean }>`
+export const Container = styled.div<{ depth: number; highlighted?: boolean }>`
   display: flex;
 
   position: relative;
