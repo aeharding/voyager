@@ -50,6 +50,9 @@ export default function Thumbnail({ post }: ImgProps) {
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
+  const shouldBlur = useAppSelector(
+    (state) => state.appearance.posts.blur
+  );
 
   const src = (() => {
     if (post.post.url && isUrlImage(post.post.url)) return post.post.url;
@@ -61,7 +64,7 @@ export default function Thumbnail({ post }: ImgProps) {
 
   return (
     <Container onClick={(e) => src && e.stopPropagation()}>
-      {src ? <StyledImg src={src} blur={isNsfw(post) && (useAppSelector((state) => state.appearance.posts.blur))} /> : <SelfSvg />}
+      {src ? <StyledImg src={src} blur={isNsfw(post) && shouldBlur} /> : <SelfSvg />}
     </Container>
   );
 }
