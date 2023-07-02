@@ -34,3 +34,7 @@ ion-modal.small ion-header ion-toolbar:first-of-type {
 ion-alert.preserve-newlines {
   white-space: pre-line;
 }
+
+.pswp__img {
+  -webkit-touch-callout: default;
+}
