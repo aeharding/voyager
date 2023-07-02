@@ -39,6 +39,7 @@ import { css } from "@emotion/react";
 import { PageContext } from "../../auth/PageContext";
 import { jwtSelector } from "../../auth/authSlice";
 import CommentSort from "../../comment/CommentSort";
+import Nsfw, { isNsfw } from "../../labels/Nsfw";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -221,7 +222,8 @@ export default function PostDetail() {
             <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
             <PostDeets>
               <Title ref={titleRef}>
-                <InlineMarkdown>{post.post.name}</InlineMarkdown>
+                <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+                {isNsfw(post) && <Nsfw />}
               </Title>
               {!collapsed && renderText()}
               <By>
