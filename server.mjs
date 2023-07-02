@@ -1,7 +1,6 @@
 import express from "express";
 import ViteExpress from "vite-express";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import fetch from "node-fetch";
 
 const CUSTOM_LEMMY_SERVERS = process.env.CUSTOM_LEMMY_SERVERS
   ? process.env.CUSTOM_LEMMY_SERVERS.split(",").map((s) => s.trim())
