@@ -3,15 +3,9 @@
   "name": "wefwef",
   "icons": [
     {
-      "src": "/logo_minified.svg",
+      "src": "/logo_maskable_minified.svg",
       "type": "image/svg+xml",
-      "sizes": "any"
-    },
-    {
-      "src": "/logo.png",
-      "type": "image/png",
-      "sizes": "256x256",
-      "purpose": "any maskable"
+      "sizes": "any maskable"
     },
     {
       "src": "/favicons/192.png",
@@ -20,27 +14,9 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/favicons/apple-touch-icon-180.png",
-      "sizes": "180x180",
+      "src": "/favicons/512.png",
       "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/favicons/apple-touch-icon-167.png",
-      "sizes": "167x167",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/favicons/apple-touch-icon-152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/favicons/apple-touch-icon-120.png",
-      "sizes": "120x120",
-      "type": "image/png",
+      "sizes": "512x512",
       "purpose": "any maskable"
     }
   ],
