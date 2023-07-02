@@ -1,7 +1,6 @@
 import {
   CommentNodeI,
   countMissingDirectChildComments,
-  getFlattenedChildren,
 } from "../../helpers/lemmy";
 import Comment from "./Comment";
 import React, { useMemo } from "react";
@@ -33,11 +32,6 @@ export default function CommentTree({
     (state) => state.comment.commentCollapsedById
   );
 
-  const childCount = useMemo(
-    () => getFlattenedChildren(comment).length,
-    [comment]
-  );
-
   const missingChildren = useMemo(
     () => countMissingDirectChildComments(comment),
     [comment]
@@ -64,7 +58,6 @@ export default function CommentTree({
         depth={comment.depth}
         onClick={() => setCollapsed(!collapsed)}
         collapsed={collapsed}
-        childCount={childCount}
         fullyCollapsed={!!fullyCollapsed}
         rootIndex={rootIndex}
       />

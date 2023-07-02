@@ -164,7 +164,6 @@ interface CommentProps {
   depth?: number;
   onClick?: () => void;
   collapsed?: boolean;
-  childCount?: number;
   fullyCollapsed?: boolean;
   routerLink?: string;
 
@@ -182,7 +181,6 @@ export default function Comment({
   depth,
   onClick,
   collapsed,
-  childCount,
   fullyCollapsed,
   context,
   routerLink,
@@ -253,7 +251,9 @@ export default function Comment({
                   </>
                 ) : (
                   <>
-                    <AmountCollapsed>{childCount}</AmountCollapsed>
+                    <AmountCollapsed>
+                      {commentView.counts.child_count}
+                    </AmountCollapsed>
                     <CollapsedIcon icon={chevronDownOutline} />
                   </>
                 )}

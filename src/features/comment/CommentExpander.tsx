@@ -19,6 +19,10 @@ const MoreRepliesBlock = styled.div`
   color: var(--ion-color-primary);
 `;
 
+const ChevronIcon = styled(IonIcon)`
+  font-size: 1rem;
+`;
+
 interface CommentExpanderProps {
   depth: number;
   comment: CommentView;
@@ -81,15 +85,14 @@ export default function CommentExpander({
       <CustomIonItem href={undefined} onClick={fetchChildren}>
         <PositionedContainer depth={depth || 0} highlighted={false}>
           <Container depth={depth || 0}>
-            {!loading ? (
-              <MoreRepliesBlock>
-                {missing} more replies <IonIcon icon={chevronDown} />
-              </MoreRepliesBlock>
-            ) : (
-              <MoreRepliesBlock>
-                <IonText color="medium">loading...</IonText>{" "}
-              </MoreRepliesBlock>
-            )}
+            <MoreRepliesBlock>
+              {!loading ? (
+                <>{missing} more replies</>
+              ) : (
+                <IonText color="medium">loading...</IonText>
+              )}
+              <ChevronIcon icon={chevronDown} />
+            </MoreRepliesBlock>
           </Container>
         </PositionedContainer>
       </CustomIonItem>
