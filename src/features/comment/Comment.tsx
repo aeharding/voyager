@@ -252,7 +252,7 @@ export default function Comment({
                 ) : (
                   <>
                     <AmountCollapsed>
-                      {commentView.counts.child_count}
+                      {commentView.counts.child_count + 1}
                     </AmountCollapsed>
                     <CollapsedIcon icon={chevronDownOutline} />
                   </>
