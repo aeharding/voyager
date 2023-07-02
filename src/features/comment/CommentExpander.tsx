@@ -87,7 +87,9 @@ export default function CommentExpander({
           <Container depth={depth || 0}>
             <MoreRepliesBlock>
               {!loading ? (
-                <>{missing} more {missing === 1 ? "reply" : "replies"}</>
+                <>
+                  {missing} more {missing === 1 ? "reply" : "replies"}
+                </>
               ) : (
                 <IonText color="medium">loading...</IonText>
               )}
