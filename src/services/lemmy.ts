@@ -30,7 +30,7 @@ export async function uploadImage(url: string, auth: string, image: File) {
     990_000, // 990 kB - Lemmy's default limit is 1MB
     1500,
     1500,
-    0.9
+    0.85
   );
 
   const formData = new FormData();
