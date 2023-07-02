@@ -13,14 +13,15 @@ import {
   heartOutline,
   tabletPortraitOutline,
 } from "ionicons/icons";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { followCommunity } from "./communitySlice";
 import { PageContext } from "../auth/PageContext";
 import Login from "../auth/Login";
-import { jwtSelector } from "../auth/authSlice";
+import { isAdminSelector, jwtSelector } from "../auth/authSlice";
 import { NewPostContext } from "../post/new/NewPostModal";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { checkIsMod } from "../../helpers/lemmy";
 
 interface MoreActionsProps {
   community: string;
@@ -33,6 +34,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const [open, setOpen] = useState(false);
   const jwt = useAppSelector(jwtSelector);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const site = useAppSelector((state) => state.auth.site);
+  const isAdmin = useAppSelector(isAdminSelector);
 
   const pageContext = useContext(PageContext);
   const [login, onDismissLogin] = useIonModal(Login, {
@@ -48,6 +51,18 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const isSubscribed =
     communityByHandle[community]?.community_view.subscribed === "Subscribed" ||
     communityByHandle[community]?.community_view.subscribed === "Pending";
+
+  const canPost = useMemo(() => {
+    const isMod = site ? checkIsMod(community, site) : false;
+
+    const canPost =
+      !communityByHandle[community]?.community_view.community
+        .posting_restricted_to_mods ||
+      isMod ||
+      isAdmin;
+
+    return canPost;
+  }, [community, communityByHandle, isAdmin, site]);
 
   return (
     <>
@@ -115,6 +130,16 @@ export default function MoreActions({ community }: MoreActionsProps) {
             }
             case "post": {
               if (!jwt) return login({ presentingElement: pageContext.page });
+
+              if (!canPost) {
+                present({
+                  message: "This community has disabled new posts",
+                  duration: 3500,
+                  position: "bottom",
+                  color: "warning",
+                });
+                return;
+              }
 
               presentNewPost();
               break;
