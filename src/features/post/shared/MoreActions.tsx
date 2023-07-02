@@ -26,6 +26,8 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentReply from "../../comment/reply/CommentReply";
 import { jwtSelector } from "../../auth/authSlice";
 import SelectText from "../../../pages/shared/SelectTextModal";
+import { ActionButton } from "../actions/ActionButton";
+import { css } from "@emotion/react";
 
 interface MoreActionsProps {
   post: PostView;
@@ -61,15 +63,17 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
 
   return (
     <>
-      <IonIcon
-        className={className}
-        icon={ellipsisHorizontal}
+      <ActionButton
+        css={css`
+          margin-right: 3px;
+        `}
         onClick={(e) => {
           e.stopPropagation();
           setOpen(true);
         }}
-      />
-
+      >
+        <IonIcon className={className} icon={ellipsisHorizontal} />
+      </ActionButton>
       <IonActionSheet
         cssClass="left-align-buttons"
         isOpen={open}
