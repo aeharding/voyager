@@ -7,7 +7,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import ProfileLabelSelection from "../../features/settings/appearance/profile/profileLabelSelection";
+import ProfileLabelSelection from "../../features/settings/appearance/profile/ProfileLabelSelection";
 
 export default function ProfileLabelSelectionPage() {
   return (

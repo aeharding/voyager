@@ -2,9 +2,11 @@ import { IonList, IonRadio, IonRadioGroup } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { InsetIonItem } from "../../../user/Profile";
 import { OProfileLabelType, setProfileLabel } from "../appearanceSlice";
+import { jwtSelector } from "../../../../features/auth/authSlice";
 
 export default function ProfileLabelSelection() {
   const dispatch = useAppDispatch();
+  const jwt = useAppSelector(jwtSelector);
   const profileLabelType = useAppSelector(
     (state) => state.appearance.profile.label
   );
@@ -23,7 +25,9 @@ export default function ProfileLabelSelection() {
           </IonRadio>
         </InsetIonItem>
         <InsetIonItem>
-          <IonRadio value={OProfileLabelType.Username}>Show username</IonRadio>
+          <IonRadio value={OProfileLabelType.Username} disabled={!jwt}>
+            Show username
+          </IonRadio>
         </InsetIonItem>
         <InsetIonItem>
           <IonRadio value={OProfileLabelType.Hide}>Hide</IonRadio>

@@ -20,13 +20,17 @@ import PostDetail from "./features/post/detail/PostDetail";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppSelector } from "./store";
-import { jwtIssSelector, jwtSelector } from "./features/auth/authSlice";
+import {
+  jwtIssSelector,
+  jwtSelector,
+  handleSelector,
+} from "./features/auth/authSlice";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useContext, useRef } from "react";
+import { useCallback, useContext, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
@@ -55,6 +59,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
 import ProfileLabelSelectionPage from "./pages/settings/ProfileLabelSelectionPage";
+import { OProfileLabelType } from "./features/settings/appearance/appearanceSlice";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -83,6 +88,28 @@ export default function TabbedRoutes() {
   );
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
+
+  const userHandle = useAppSelector(handleSelector);
+  const profileLabelType = useAppSelector(
+    (state) => state.appearance.profile.label
+  );
+
+  const getProfileLabel = useCallback(() => {
+    switch (profileLabelType) {
+      case OProfileLabelType.Hide:
+        return "Profile";
+      case OProfileLabelType.Username:
+        if (jwt && userHandle) {
+          // if the user is not logged in but the setting was selected, it will fall-through to the default case.
+          return userHandle;
+        }
+      // eslint-disable-next-line no-fallthrough
+      case OProfileLabelType.InstanceUrl:
+      // eslint-disable-next-line no-fallthrough
+      default:
+        return connectedInstance;
+    }
+  }, [profileLabelType, jwt, userHandle, connectedInstance]);
 
   const isPostsButtonDisabled = location.pathname.startsWith("/posts");
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
@@ -381,7 +408,7 @@ export default function TabbedRoutes() {
             href="/profile"
           >
             <IonIcon aria-hidden="true" icon={personCircleOutline} />
-            <IonLabel>{connectedInstance}</IonLabel>
+            <IonLabel>{getProfileLabel()}</IonLabel>
             <Interceptor onClick={onProfileClick} />
           </IonTabButton>
           <IonTabButton
