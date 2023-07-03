@@ -48,10 +48,6 @@ export default function Post(props: PostProps) {
       {/* href=undefined: Prevent drag failure on firefox */}
       <CustomIonItem
         detail={false}
-        onClick={(e) => {
-          const target = e.target as HTMLElement;
-          if (target.id === "image-gallery") e.preventDefault();
-        }}
         routerLink={buildGeneralBrowseLink(
           `/c/${getHandle(props.post.community)}/comments/${props.post.post.id}`
         )}

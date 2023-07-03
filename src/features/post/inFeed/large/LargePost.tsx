@@ -109,12 +109,11 @@ export default function LargePost({ post, communityMode }: PostProps) {
               {({ ref, open }) => (
                 <PostImage
                   blur={blur}
-                  id="image-gallery"
                   ref={ref as React.MutableRefObject<HTMLImageElement>}
                   alt={post.post.embed_title}
                   onClick={(e) => {
+                    e.stopPropagation();
                     if (isNsfw(post)) {
-                      e.stopPropagation();
                       setBlur(!blur);
                     }
                     open(e);
