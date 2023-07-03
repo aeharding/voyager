@@ -31,9 +31,7 @@ interface PostActionsProps {
 export default function PostActions({ post, onReply }: PostActionsProps) {
   const share: React.MutableRefObject<(() => void) | null> = React.useRef(null);
   function share_internal() {
-    if (share.current != null) {
-      share.current();
-    }
+    share.current?.();
   }
 
   return (
