@@ -9,7 +9,7 @@ import { AppDispatch, RootState } from "../../store";
 import { clientSelector, handleSelector, jwtSelector } from "../auth/authSlice";
 import { POST_SORTS } from "../feed/PostSort";
 import { get, set } from "../settings/storage";
-import { db } from "../../services/db";
+import { IPostMetadata, db } from "../../services/db";
 
 const POST_SORT_KEY = "post-sort-v2";
 
@@ -73,10 +73,11 @@ export const updatePostHidden = createAsyncThunk(
 
     if (!handle) return;
 
-    const newPostMetadata = {
+    const newPostMetadata: IPostMetadata = {
       post_id: postId,
       user_handle: handle,
       hidden: hidden ? 1 : 0,
+      hidden_updated_at: Date.now(),
     };
 
     await db.upsertPostMetadata(newPostMetadata);

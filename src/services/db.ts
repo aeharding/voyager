@@ -3,7 +3,8 @@ import Dexie, { Table } from "dexie";
 export interface IPostMetadata {
   post_id: number;
   user_handle: string;
-  hidden: number; // Not boolean because dexie doesn't support booleans for indexes
+  hidden: 0 | 1; // Not boolean because dexie doesn't support booleans for indexes
+  hidden_updated_at?: number;
 }
 
 export const CompoundKeys = {
@@ -30,7 +31,8 @@ export class WefwefDB extends Dexie {
         ${CompoundKeys.postMetadata.user_handle_and_hidden},
         post_id, 
         user_handle,
-        hidden
+        hidden,
+        hidden_updated_at
       `,
     });
   }
@@ -55,22 +57,65 @@ export class WefwefDB extends Dexie {
       const item = await query.first();
 
       if (item) {
-        await query.delete();
+        await query.modify(postMetadata);
+        return;
       }
 
       await this.postMetadatas.add(postMetadata);
     });
   }
 
-  // Currently, we have to fetch each post with a separate API call.
-  // That's why the page size is only 10
-  async getHiddenPostMetadatas(user_handle: string, page: number) {
+  // This is a very specific method to get the hidden posts of a user in a paginated manner.
+  // It's efficient when used in a feed style pagination where pages are fetched
+  // one after the other. It's not efficient if you want to jump to a specific page
+  // because it has to fetch all the previous pages and run a filter on them.
+  async getHiddenPostMetadatasPaginated(
+    user_handle: string,
+    page: number,
+    limit: number,
+    lastPageItems?: IPostMetadata[]
+  ) {
+    const filterFn = (metadata: IPostMetadata) =>
+      metadata.user_handle === user_handle && metadata.hidden === 1;
+
+    if (page === 1) {
+      // First page, no need to check lastPageItems. We know we're at the beginning
+      return await this.postMetadatas
+        .orderBy("hidden_updated_at")
+        .reverse()
+        .filter(filterFn)
+        .limit(limit)
+        .toArray();
+    }
+
+    if (!lastPageItems) {
+      // Ideally tis should never happen. It's very not efficient.
+      // It runs filterFn on all of the table's items
+      return await this.postMetadatas
+        .orderBy("hidden_updated_at")
+        .reverse()
+        .filter(filterFn)
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .toArray();
+    }
+
+    if (lastPageItems?.length < limit) {
+      // We've reached the end
+      return [];
+    }
+
+    // We're in the middle of the list
+    // We can use the last item of the previous page to get the next page
+
+    const lastPageLastEntry = lastPageItems?.[lastPageItems.length - 1];
+
     return await this.postMetadatas
-      .where(CompoundKeys.postMetadata.user_handle_and_hidden)
-      .equals([user_handle, 1])
+      .where("hidden_updated_at")
+      .below(lastPageLastEntry.hidden_updated_at)
       .reverse()
-      .offset(10 * (page - 1))
-      .limit(10)
+      .filter(filterFn)
+      .limit(limit)
       .toArray();
   }
 }

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import {
   IonLabel,
   IonItem,
@@ -20,7 +20,7 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
 import { handleSelector, jwtSelector } from "../../features/auth/authSlice";
-import { db } from "../../services/db";
+import { IPostMetadata, db } from "../../services/db";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -30,6 +30,10 @@ export const SettingLabel = styled(IonLabel)`
   margin-left: 1rem;
 `;
 
+// Currently, we have to fetch each post with a separate API call.
+// That's why the page size is only 10
+const LIMIT = 10;
+
 export default function ProfileFeedHiddenPostsPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const handle = useAppSelector(handleSelector);
@@ -38,13 +42,31 @@ export default function ProfileFeedHiddenPostsPage() {
   const client = useClient();
   const postById = useAppSelector((state) => state.post.postById);
 
+  const lastPageNumberRef = useRef(1);
+  const lastPageItemsRef = useRef<IPostMetadata[]>([]);
+
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
       if (!handle) return [];
 
-      const postIds = await db
-        .getHiddenPostMetadatas(handle, page)
-        .then((metadatas) => metadatas.map((metadata) => metadata.post_id));
+      const hiddenPostMetadatas = await db.getHiddenPostMetadatasPaginated(
+        handle,
+        page,
+        LIMIT,
+        // If we're switching to the next page then we can pass the last page's
+        // items to the db so that it can use them to determine the next page's
+        // items. This is a performance optimization. If we're jumping to a
+        // random page then we can't do this. Normally this shouldn't happen
+        // because we're only ever fetching the next page. But just in case...
+        lastPageNumberRef.current + 1 === page
+          ? lastPageItemsRef.current
+          : undefined
+      );
+
+      lastPageNumberRef.current = page;
+      lastPageItemsRef.current = hiddenPostMetadatas;
+
+      const postIds = hiddenPostMetadatas.map((metadata) => metadata.post_id);
 
       const result = await Promise.all(
         postIds.map((postId) => {
@@ -77,7 +99,11 @@ export default function ProfileFeedHiddenPostsPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <PostCommentFeed filterHiddenPosts={false} fetchFn={fetchFn} />
+        <PostCommentFeed
+          filterHiddenPosts={false}
+          fetchFn={fetchFn}
+          limit={LIMIT}
+        />
       </IonContent>
     </IonPage>
   );

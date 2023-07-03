@@ -13,7 +13,7 @@ import {
   RefresherCustomEvent,
   useIonToast,
 } from "@ionic/react";
-import { LIMIT } from "../../services/lemmy";
+import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
 import { CenteredSpinner } from "../post/detail/PostDetail";
 import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
@@ -27,11 +27,10 @@ export interface FeedProps<I> {
   getIndex?: (item: I) => number | string;
   renderItemContent: (item: I) => React.ReactNode;
   header?: ComponentType<{ context?: unknown }>;
+  limit?: number;
 
   communityName?: string;
 }
-
-const FETCH_MORE_THRESHOLD = LIMIT / 2;
 
 export default function Feed<I>({
   fetchFn,
@@ -40,6 +39,7 @@ export default function Feed<I>({
   header,
   communityName,
   getIndex,
+  limit = DEFAULT_LIMIT,
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
@@ -55,7 +55,8 @@ export default function Feed<I>({
 
   // Fetch more items if there are less than FETCH_MORE_THRESHOLD items left due to filtering
   useEffect(() => {
-    const currentPageItems = items.slice((page - 1) * LIMIT, page * LIMIT);
+    const fetchMoreThreshold = limit / 2;
+    const currentPageItems = items.slice((page - 1) * limit, page * limit);
 
     const currentPageFilteredItems = filteredItems.filter(
       (item) => currentPageItems.indexOf(item) !== -1
@@ -64,7 +65,7 @@ export default function Feed<I>({
     if (
       loading ||
       currentPageItems.length - currentPageFilteredItems.length <
-        FETCH_MORE_THRESHOLD
+        fetchMoreThreshold
     )
       return;
 
@@ -118,7 +119,7 @@ export default function Feed<I>({
       setitems((existingPosts) => {
         const result = [...existingPosts];
         const newPosts = pullAllBy(items.slice(), existingPosts, "post.id");
-        result.splice(currentPage * LIMIT, LIMIT, ...newPosts);
+        result.splice(currentPage * limit, limit, ...newPosts);
         return result;
       });
     }
