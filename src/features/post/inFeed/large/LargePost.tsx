@@ -16,6 +16,7 @@ import { AnnouncementIcon } from "../../detail/PostDetail";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
+import { Gallery, Item } from "react-photoswipe-gallery";
 
 const Container = styled.div`
   display: flex;
@@ -93,6 +94,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
     [post]
   );
   const [blur, setBlur] = useState(isNsfw(post));
+  const [dim, setDim] = useState<{ w: number; h: number } | undefined>();
 
   useEffect(() => {
     setBlur(isNsfw(post));
@@ -102,19 +104,34 @@ export default function LargePost({ post, communityMode }: PostProps) {
     if (post.post.url) {
       if (isUrlImage(post.post.url)) {
         return (
-          <ImageContainer>
-            <PostImage
-              src={post.post.url}
-              draggable="false"
-              blur={blur}
-              onClick={(e) => {
-                if (isNsfw(post)) {
-                  e.stopPropagation();
-                  setBlur(!blur);
-                }
-              }}
-            />
-          </ImageContainer>
+          <Gallery options={{ showHideAnimationType: "fade" }}>
+            <Item original={post.post.url} width={dim?.w} height={dim?.h}>
+              {({ ref, open }) => (
+                <PostImage
+                  blur={blur}
+                  id="image-gallery"
+                  ref={ref as React.MutableRefObject<HTMLImageElement>}
+                  alt={post.post.embed_title}
+                  onClick={(e) => {
+                    if (isNsfw(post)) {
+                      e.stopPropagation();
+                      setBlur(!blur);
+                    }
+                    open(e);
+                  }}
+                  src={post.post.url}
+                  onLoad={(e) => {
+                    if (!(e.target instanceof HTMLImageElement)) return;
+
+                    setDim({
+                      w: e.target.naturalWidth,
+                      h: e.target.naturalHeight,
+                    });
+                  }}
+                />
+              )}
+            </Item>
+          </Gallery>
         );
       }
       if (isUrlVideo(post.post.url)) {
