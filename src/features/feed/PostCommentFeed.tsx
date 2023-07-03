@@ -101,7 +101,11 @@ export default function PostCommentFeed({
     <Feed
       fetchFn={fetchFn}
       filterFn={filterHiddenPosts ? filterFn : undefined}
-      getIndex={(item) => ("comment" in item ? item.comment.id : item.post.id)}
+      getIndex={(item) =>
+        "comment" in item
+          ? `comment-${item.comment.id}`
+          : `post-${item.post.id}`
+      }
       renderItemContent={renderItemContent}
       {...rest}
     />
