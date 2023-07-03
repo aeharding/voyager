@@ -16,6 +16,8 @@ import {
   logoGithub,
   mailOutline,
   openOutline,
+  peopleCircle,
+  person,
   reloadCircle,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
@@ -24,6 +26,7 @@ import { UpdateContext } from "./update/UpdateContext";
 import useShouldInstall from "../../features/pwa/useShouldInstall";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
+import { useAppSelector } from "../../store";
 
 const IconBg = styled.div<{ color: string }>`
   width: 30px;
@@ -46,6 +49,7 @@ const IconBg = styled.div<{ color: string }>`
 export default function SettingsPage() {
   const { status: updateStatus, checkForUpdates } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
+  const accountData = useAppSelector((state) => state.auth.accountData);
 
   useEffect(() => {
     checkForUpdates();
@@ -94,6 +98,12 @@ export default function SettingsPage() {
             </IconBg>
             <SettingLabel>Appearance</SettingLabel>
           </InsetIonItem>
+          <InsetIonItem routerLink="/settings/apollo-migrate">
+            <IconBg color="color(display-p3 0 0.2 0.6)">
+              <IonIcon icon={peopleCircle} />
+            </IconBg>
+            <SettingLabel>Account settings</SettingLabel>
+          </InsetIonItem>
         </IonList>
 
         <IonList inset color="primary">
@@ -104,6 +114,22 @@ export default function SettingsPage() {
             <SettingLabel>Migrate Apollo export</SettingLabel>
           </InsetIonItem>
         </IonList>
+
+        {accountData && (
+          <IonList inset color="primary">
+            {accountData.accounts.map((account) => (
+              <InsetIonItem
+                routerLink="/settings/apollo-migrate"
+                key={account.handle}
+              >
+                <IconBg color="color(display-p3 0 0.5 0.8)">
+                  <IonIcon icon={person} />
+                </IconBg>
+                <SettingLabel>{account.handle}</SettingLabel>
+              </InsetIonItem>
+            ))}
+          </IonList>
+        )}
 
         <IonList inset color="primary">
           <InsetIonItem routerLink="/settings/terms">

@@ -1,16 +1,11 @@
-import { useIonModal } from "@ionic/react";
 import { arrowUndo, chevronCollapse, chevronExpand } from "ionicons/icons";
-import React, { useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentView } from "lemmy-js-client";
-import CommentReply from "../../comment/reply/CommentReply";
-import { PageContext } from "../../auth/PageContext";
 import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
-import { useAppSelector } from "../../../store";
-import { jwtSelector } from "../../auth/authSlice";
-import Login from "../../auth/Login";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
+import { PageContext } from "../../auth/PageContext";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -28,21 +23,14 @@ export default function SlidingNestedCommentVote({
   collapsed,
 }: SlidingVoteProps) {
   const { refresh: refreshPost } = useContext(FeedContext);
-  const pageContext = useContext(PageContext);
-  const jwt = useAppSelector(jwtSelector);
+  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const collapseRootComment = useCollapseRootComment(item, rootIndex);
 
-  const [login, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
+  const reply = useCallback(async () => {
+    const commented = await presentCommentReply(item);
 
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => {
-      if (role === "post") refreshPost();
-      onDismissReply(data, role);
-    },
-    item,
-  });
+    if (commented) refreshPost();
+  }, [item, presentCommentReply, refreshPost]);
 
   const endActions: [SlidingItemAction, SlidingItemAction] = useMemo(() => {
     return [
@@ -56,14 +44,14 @@ export default function SlidingNestedCommentVote({
       {
         render: arrowUndo,
         trigger: () => {
-          if (!jwt) return login({ presentingElement: pageContext.page });
+          if (presentLoginIfNeeded()) return;
 
-          reply({ presentingElement: pageContext.page });
+          reply();
         },
         bgColor: "primary",
       },
     ];
-  }, [collapsed, collapseRootComment, jwt, login, pageContext.page, reply]);
+  }, [collapsed, collapseRootComment, presentLoginIfNeeded, reply]);
 
   return (
     <BaseSlidingVote endActions={endActions} className={className} item={item}>

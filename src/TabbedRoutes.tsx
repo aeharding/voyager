@@ -41,7 +41,6 @@ import RepliesPage from "./pages/inbox/RepliesPage";
 import MessagesPage from "./pages/inbox/MessagesPage";
 import ConversationPage from "./pages/inbox/ConversationPage";
 import InboxPage from "./pages/inbox/InboxPage";
-import { PageContext } from "./features/auth/PageContext";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
 import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
 import UpdateAppPage from "./pages/settings/UpdateAppPage";
@@ -53,6 +52,7 @@ import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
 import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
+import { PageContextProvider } from "./features/auth/PageContext";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -213,7 +213,7 @@ export default function TabbedRoutes() {
   }
 
   return (
-    <PageContext.Provider value={{ page: pageRef.current as HTMLElement }}>
+    <PageContextProvider value={{ page: pageRef.current as HTMLElement }}>
       {/* TODO key={} resets the tab route stack whenever your instance changes. */}
       {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
       {/* But this isn't trivial with needing to rewrite URLs... */}
@@ -388,6 +388,6 @@ export default function TabbedRoutes() {
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
-    </PageContext.Provider>
+    </PageContextProvider>
   );
 }

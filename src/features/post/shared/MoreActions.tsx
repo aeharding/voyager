@@ -17,17 +17,14 @@ import {
 } from "ionicons/icons";
 import { useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { PageContext } from "../../auth/PageContext";
-import Login from "../../auth/Login";
 import { PostView } from "lemmy-js-client";
 import { voteOnPost } from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import CommentReply from "../../comment/reply/CommentReply";
-import { jwtSelector } from "../../auth/authSlice";
 import SelectText from "../../../pages/shared/SelectTextModal";
 import { ActionButton } from "../actions/ActionButton";
 import { css } from "@emotion/react";
+import { PageContext } from "../../auth/PageContext";
 
 interface MoreActionsProps {
   post: PostView;
@@ -38,19 +35,11 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const jwt = useAppSelector(jwtSelector);
 
   const router = useIonRouter();
 
-  const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
-
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => onDismissReply(data, role),
-    item: post,
-  });
+  const { page, presentLoginIfNeeded, presentCommentReply } =
+    useContext(PageContext);
 
   const [selectText, onDismissSelectText] = useIonModal(SelectText, {
     text: post.post.body,
@@ -129,26 +118,27 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
 
           switch (e.detail.role) {
             case "upvote": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
               dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
               break;
             }
             case "downvote": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
               dispatch(voteOnPost(post.post.id, myVote === -1 ? 0 : -1));
               break;
             }
             case "save": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
               // TODO
               break;
             }
             case "reply": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
-              reply({ presentingElement: pageContext.page });
+              // Not viewing comments, so no feed update
+              presentCommentReply(post);
 
               break;
             }
@@ -167,7 +157,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
               break;
             }
             case "select": {
-              return selectText({ presentingElement: pageContext.page });
+              return selectText({ presentingElement: page });
             }
             case "share": {
               navigator.share({ url: post.post.url ?? post.post.ap_id });
