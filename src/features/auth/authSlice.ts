@@ -171,6 +171,9 @@ export const isAdminSelector = (state: RootState) =>
 export const localUserSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.local_user;
 
+export const personSelector = (state: RootState) =>
+  state.auth.site?.my_user?.local_user_view.person;
+
 export const login =
   (client: LemmyHttp, username: string, password: string, totp?: string) =>
   async (dispatch: AppDispatch) => {

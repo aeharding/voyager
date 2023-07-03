@@ -5,6 +5,7 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Person } from "lemmy-js-client";
 import Handle from "../Handle";
 import { StyledLink } from "./shared";
+import { personSelector } from "../../auth/authSlice";
 import { useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
 
@@ -20,6 +21,8 @@ interface PersonLinkProps {
   prefix?: string;
 
   className?: string;
+
+  noUserHighlight?: boolean;
 }
 
 export default function PersonLink({
@@ -29,6 +32,7 @@ export default function PersonLink({
   className,
   showInstanceWhenRemote,
   prefix,
+  noUserHighlight,
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
@@ -39,7 +43,12 @@ export default function PersonLink({
       (state) => state.settings.appearance.general.userInstanceUrlDisplay
     ) === OInstanceUrlDisplayMode.WhenRemote;
 
-  if (person.admin) color = "var(--ion-color-danger)";
+  const user = useAppSelector(personSelector);
+  const same_user =
+    user && user.instance_id === person.instance_id && user.id === person.id;
+
+  if (!noUserHighlight && same_user) color = "var(--ion-color-warning-shade)";
+  else if (!noUserHighlight && person.admin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary)";
 
@@ -48,25 +57,28 @@ export default function PersonLink({
       to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
       onClick={(e) => e.stopPropagation()}
       className={className}
-      css={
-        color
-          ? css`
-              && {
-                color: ${color};
-              }
-            `
-          : undefined
-      }
     >
       {prefix ? (
         <>
           <Prefix>{prefix}</Prefix>{" "}
         </>
       ) : undefined}
-      <Handle
-        item={person}
-        showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
-      />
+      <span
+        css={
+          color
+            ? css`
+                && {
+                  color: ${color};
+                }
+              `
+            : undefined
+        }
+      >
+        <Handle
+          item={person}
+          showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
+        />
+      </span>
     </StyledLink>
   );
 }
