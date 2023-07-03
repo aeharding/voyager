@@ -117,7 +117,7 @@ export default function Feed<I>({
     } else {
       setitems((existingPosts) => {
         const result = [...existingPosts];
-        const newPosts = pullAllBy(items, existingPosts, "post.id");
+        const newPosts = pullAllBy(items.slice(), existingPosts, "post.id");
         result.splice(currentPage * LIMIT, LIMIT, ...newPosts);
         return result;
       });
