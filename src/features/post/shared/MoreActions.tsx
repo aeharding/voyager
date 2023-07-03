@@ -18,7 +18,6 @@ import {
 import { useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { PageContext } from "../../auth/PageContext";
-import Login from "../../auth/Login";
 import { PostView } from "lemmy-js-client";
 import { voteOnPost } from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
@@ -28,6 +27,7 @@ import { jwtSelector } from "../../auth/authSlice";
 import SelectText from "../../../pages/shared/SelectTextModal";
 import { ActionButton } from "../actions/ActionButton";
 import { css } from "@emotion/react";
+import { ModalContext } from "../../../pages/shared/ModalContext";
 
 interface MoreActionsProps {
   post: PostView;
@@ -43,9 +43,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   const router = useIonRouter();
 
   const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
+  const { login } = useContext(ModalContext);
 
   const [reply, onDismissReply] = useIonModal(CommentReply, {
     onDismiss: (data: string, role: string) => onDismissReply(data, role),

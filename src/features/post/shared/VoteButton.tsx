@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
-import Login from "../../auth/Login";
+import { IonIcon, useIonToast } from "@ionic/react";
 import { useContext } from "react";
 import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -10,6 +9,7 @@ import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
 import { jwtSelector } from "../../auth/authSlice";
+import { ModalContext } from "../../../pages/shared/ModalContext";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -35,9 +35,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
+  const { login } = useContext(ModalContext);
   const jwt = useAppSelector(jwtSelector);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);

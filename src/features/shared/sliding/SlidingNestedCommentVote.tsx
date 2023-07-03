@@ -9,8 +9,8 @@ import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import { useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
-import Login from "../../auth/Login";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
+import { ModalContext } from "../../../pages/shared/ModalContext";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -29,12 +29,9 @@ export default function SlidingNestedCommentVote({
 }: SlidingVoteProps) {
   const { refresh: refreshPost } = useContext(FeedContext);
   const pageContext = useContext(PageContext);
+  const { login } = useContext(ModalContext);
   const jwt = useAppSelector(jwtSelector);
   const collapseRootComment = useCollapseRootComment(item, rootIndex);
-
-  const [login, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
 
   const [reply, onDismissReply] = useIonModal(CommentReply, {
     onDismiss: (data: string, role: string) => {
