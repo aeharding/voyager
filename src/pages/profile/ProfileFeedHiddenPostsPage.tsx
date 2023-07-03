@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { useLiveQuery } from "dexie-react-hooks";
 import {
   IonLabel,
   IonItem,
@@ -14,7 +13,6 @@ import {
 import { useParams } from "react-router";
 import styled from "@emotion/styled";
 import useClient from "../../helpers/useClient";
-import { LIMIT } from "../../services/lemmy";
 import { FetchFn } from "../../features/feed/Feed";
 import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
@@ -40,21 +38,16 @@ export default function ProfileFeedHiddenPostsPage() {
   const client = useClient();
   const postById = useAppSelector((state) => state.post.postById);
 
-  const hiddenPosts = useLiveQuery(() => {
-    if (!jwt || !handle) return [];
-
-    return db
-      .getHiddenPostMetadatas(handle)
-      .then((metadatas) => metadatas.map((metadata) => metadata.post_id));
-  }, [jwt]);
-
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
-      const currentPageItems =
-        hiddenPosts?.slice((page - 1) * LIMIT, page * LIMIT) || [];
+      if (!handle) return [];
+
+      const postIds = await db
+        .getHiddenPostMetadatas(handle, page)
+        .then((metadatas) => metadatas.map((metadata) => metadata.post_id));
 
       const result = await Promise.all(
-        currentPageItems.map((postId) => {
+        postIds.map((postId) => {
           const potentialPost = postById[postId];
           if (potentialPost) return potentialPost;
 
@@ -66,7 +59,7 @@ export default function ProfileFeedHiddenPostsPage() {
         "post_view" in post ? post.post_view : post
       );
     },
-    [client, hiddenPosts, jwt, postById]
+    [client, handle, jwt, postById]
   );
 
   return (
@@ -83,11 +76,7 @@ export default function ProfileFeedHiddenPostsPage() {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <PostCommentFeed
-          forceLoading={!hiddenPosts}
-          filterHiddenPosts={false}
-          fetchFn={fetchFn}
-        />
+        <PostCommentFeed filterHiddenPosts={false} fetchFn={fetchFn} />
       </IonContent>
     </IonPage>
   );

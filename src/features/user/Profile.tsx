@@ -9,7 +9,7 @@ import {
 } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle } from "../../helpers/lemmy";
+import { getHandle, getRemoteHandle } from "../../helpers/lemmy";
 import { MaxWidthContainer } from "../shared/AppContent";
 import { FetchFn } from "../feed/Feed";
 import useClient from "../../helpers/useClient";
@@ -19,7 +19,7 @@ import PostCommentFeed, {
   PostCommentItem,
   isPost,
 } from "../feed/PostCommentFeed";
-import { jwtSelector } from "../auth/authSlice";
+import { handleSelector, jwtSelector } from "../auth/authSlice";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -31,13 +31,15 @@ export const SettingLabel = styled(IonLabel)`
 
 interface ProfileProps {
   person: GetPersonDetailsResponse;
-  isSelf?: boolean;
 }
 
-export default function Profile({ person, isSelf }: ProfileProps) {
+export default function Profile({ person }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const jwt = useAppSelector(jwtSelector);
   const client = useClient();
+  const myHandle = useAppSelector(handleSelector);
+
+  const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {

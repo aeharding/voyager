@@ -27,7 +27,6 @@ export interface FeedProps<I> {
   getIndex?: (item: I) => number | string;
   renderItemContent: (item: I) => React.ReactNode;
   header?: ComponentType<{ context?: unknown }>;
-  forceLoading?: boolean;
 
   communityName?: string;
 }
@@ -41,7 +40,6 @@ export default function Feed<I>({
   header,
   communityName,
   getIndex,
-  forceLoading,
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
@@ -146,7 +144,7 @@ export default function Feed<I>({
       }
     : {};
 
-  if ((loading && !items.length) || loading === undefined || forceLoading)
+  if ((loading && !items.length) || loading === undefined)
     return <CenteredSpinner />;
 
   return (

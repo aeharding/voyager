@@ -1,4 +1,5 @@
 import Dexie, { Table } from "dexie";
+import { LIMIT } from "./lemmy";
 
 export interface IPostMetadata {
   post_id: number;
@@ -55,17 +56,20 @@ export class WefwefDB extends Dexie {
       const item = await query.first();
 
       if (item) {
-        await query.modify(postMetadata);
-      } else {
-        await this.postMetadatas.add(postMetadata);
+        await query.delete();
       }
+
+      await this.postMetadatas.add(postMetadata);
     });
   }
 
-  async getHiddenPostMetadatas(user_handle: string) {
+  async getHiddenPostMetadatas(user_handle: string, page: number) {
     return await this.postMetadatas
       .where(CompoundKeys.postMetadata.user_handle_and_hidden)
       .equals([user_handle, 1])
+      .reverse()
+      .offset(LIMIT * (page - 1))
+      .limit(LIMIT)
       .toArray();
   }
 }
