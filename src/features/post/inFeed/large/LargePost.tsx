@@ -79,6 +79,7 @@ const ImageContainer = styled.div`
 const PostImage = styled.img<{ blur: boolean }>`
   width: 100%;
   max-width: none;
+  -webkit-touch-callout: default;
 
   ${({ blur }) =>
     blur &&
