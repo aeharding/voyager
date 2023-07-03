@@ -22,7 +22,7 @@ import {
   textOutline,
   trashOutline,
 } from "ionicons/icons";
-import { useContext, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { PostView } from "lemmy-js-client";
 import {
@@ -40,6 +40,7 @@ import { PageContext } from "../../auth/PageContext";
 import { saveError, voteError } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
 import { handleSelector } from "../../auth/authSlice";
+import { Share } from "./Share";
 
 interface MoreActionsProps {
   post: PostView;
@@ -168,6 +169,8 @@ export default function MoreActions({
 
   const Button = onFeed ? ActionButton : IonButton;
 
+  const share: React.MutableRefObject<(() => void) | null> = React.useRef(null);
+
   return (
     <>
       <Button
@@ -266,8 +269,9 @@ export default function MoreActions({
               break;
             }
             case "share": {
-              navigator.share({ url: post.post.url ?? post.post.ap_id });
-
+              if (share.current != null) {
+                share.current();
+              }
               break;
             }
             case "report": {
@@ -307,6 +311,7 @@ export default function MoreActions({
           }
         }}
       />
+      <Share share={share} post={post} />
     </>
   );
 }

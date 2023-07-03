@@ -5,6 +5,8 @@ import { PostView } from "lemmy-js-client";
 import { VoteButton } from "../shared/VoteButton";
 import { ActionButton } from "./ActionButton";
 import { SaveButton } from "../shared/SaveButton";
+import { Share } from "../shared/Share";
+import React from "react";
 
 const Container = styled.div`
   display: flex;
@@ -27,8 +29,11 @@ interface PostActionsProps {
 }
 
 export default function PostActions({ post, onReply }: PostActionsProps) {
-  function share() {
-    navigator.share({ url: post.post.ap_id });
+  const share: React.MutableRefObject<(() => void) | null> = React.useRef(null);
+  function share_internal() {
+    if (share.current != null) {
+      share.current();
+    }
   }
 
   return (
@@ -45,8 +50,9 @@ export default function PostActions({ post, onReply }: PostActionsProps) {
         <IonIcon icon={arrowUndoOutline} />
       </ActionButton>
       <ActionButton>
-        <IonIcon icon={shareOutline} onClick={share} />
+        <IonIcon icon={shareOutline} onClick={share_internal} />
       </ActionButton>
+      <Share share={share} post={post} />
     </Container>
   );
 }
