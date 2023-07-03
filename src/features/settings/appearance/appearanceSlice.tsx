@@ -17,6 +17,7 @@ const STORAGE_KEYS = {
   },
   PROFILE: {
     LABEL: "appearance--profile-label",
+    HIDE_INSTANCE_URL: "appearance--profile-hide-instance-url",
   },
   DARK: {
     USE_SYSTEM: "appearance--dark-use-system",
@@ -63,6 +64,7 @@ interface AppearanceState {
   };
   profile: {
     label: ProfileLabelType;
+    hideInstanceUrl: boolean;
   };
   dark: {
     usingSystemDarkMode: boolean;
@@ -83,6 +85,7 @@ const initialState: AppearanceState = {
   },
   profile: {
     label: OProfileLabelType.InstanceUrl,
+    hideInstanceUrl: false,
   },
   dark: {
     usingSystemDarkMode: true,
@@ -103,6 +106,7 @@ const stateFromStorage: AppearanceState = merge(initialState, {
   },
   profile: {
     label: get(STORAGE_KEYS.PROFILE.LABEL),
+    hideInstanceUrl: get(STORAGE_KEYS.PROFILE.HIDE_INSTANCE_URL),
   },
   dark: {
     usingSystemDarkMode: get(STORAGE_KEYS.DARK.USE_SYSTEM),
@@ -156,6 +160,11 @@ export const appearanceSlice = createSlice({
 
       set(STORAGE_KEYS.PROFILE.LABEL, action.payload);
     },
+    setProfileHideInstanceUrl(state, action: PayloadAction<boolean>) {
+      state.profile.hideInstanceUrl = action.payload;
+
+      set(STORAGE_KEYS.PROFILE.HIDE_INSTANCE_URL, action.payload);
+    },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.usingSystemDarkMode = action.payload;
 
@@ -172,6 +181,7 @@ export const {
   setCommentsCollapsed,
   setPostAppearance,
   setProfileLabel,
+  setProfileHideInstanceUrl,
   setUserDarkMode,
   setUseSystemDarkMode,
 } = appearanceSlice.actions;
