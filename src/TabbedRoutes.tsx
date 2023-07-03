@@ -88,10 +88,14 @@ export default function TabbedRoutes() {
   );
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
+  const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
 
   const userHandle = useAppSelector(handleSelector);
   const profileLabelType = useAppSelector(
     (state) => state.appearance.profile.label
+  );
+  const hideInstanceUrl = useAppSelector(
+    (state) => state.appearance.profile.hideInstanceUrl
   );
 
   const getProfileLabel = useCallback(() => {
@@ -99,8 +103,26 @@ export default function TabbedRoutes() {
       case OProfileLabelType.Hide:
         return "Profile";
       case OProfileLabelType.Username:
-        if (jwt && userHandle) {
-          // if the user is not logged in but the setting was selected, it will fall-through to the default case.
+        // if the user is not logged in but the setting was selected, it will fall-through to the default case.
+        if (accounts && userHandle) {
+          if (hideInstanceUrl) {
+            const activeUsername = userHandle.slice(
+              0,
+              userHandle.lastIndexOf("@")
+            );
+            if (
+              !accounts.some(({ handle: username }) => {
+                if (username === userHandle) return false; // this means we are checking the current active account
+                const accountUsername = username.slice(
+                  0,
+                  username.lastIndexOf("@")
+                );
+                if (accountUsername === activeUsername) return true;
+              })
+            ) {
+              return activeUsername;
+            }
+          }
           return userHandle;
         }
       // eslint-disable-next-line no-fallthrough
@@ -109,7 +131,13 @@ export default function TabbedRoutes() {
       default:
         return connectedInstance;
     }
-  }, [profileLabelType, jwt, userHandle, connectedInstance]);
+  }, [
+    profileLabelType,
+    userHandle,
+    connectedInstance,
+    hideInstanceUrl,
+    accounts,
+  ]);
 
   const isPostsButtonDisabled = location.pathname.startsWith("/posts");
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");

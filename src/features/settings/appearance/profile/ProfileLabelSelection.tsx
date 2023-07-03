@@ -1,10 +1,4 @@
-import {
-  IonList,
-  IonRadio,
-  IonRadioGroup,
-  IonLabel,
-  IonToggle,
-} from "@ionic/react";
+import { IonList, IonRadio, IonRadioGroup, IonToggle } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { InsetIonItem } from "../../../user/Profile";
 import {
