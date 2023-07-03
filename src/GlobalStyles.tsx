@@ -44,6 +44,10 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
             }
           }
 
+          ion-toast {
+            transform: translateY(-6.9ex);
+          }
+
           ${baseVariables}
 
           ${isDark ? darkVariables : lightVariables}
