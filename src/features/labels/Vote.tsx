@@ -1,9 +1,8 @@
 import { useAppDispatch, useAppSelector } from "../../store";
-import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
+import { IonIcon, useIonToast } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
-import Login from "../auth/Login";
 import { useContext } from "react";
 import { PageContext } from "../auth/PageContext";
 import { voteOnComment } from "../comment/commentSlice";

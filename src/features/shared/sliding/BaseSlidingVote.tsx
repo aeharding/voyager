@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
+import { IonIcon, useIonToast } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import React, { useCallback, useContext, useMemo } from "react";
 import SlidingItem, {
@@ -15,7 +15,6 @@ import {
 } from "lemmy-js-client";
 import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import Login from "../../auth/Login";
 import { voteOnPost } from "../../post/postSlice";
 import { voteError } from "../../../helpers/toastMessages";
 import { voteOnComment } from "../../comment/commentSlice";
