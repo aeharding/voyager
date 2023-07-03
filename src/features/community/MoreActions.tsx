@@ -2,7 +2,6 @@ import {
   IonActionSheet,
   IonButton,
   IonIcon,
-  useIonModal,
   useIonRouter,
   useIonToast,
 } from "@ionic/react";
@@ -17,11 +16,11 @@ import { useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { followCommunity } from "./communitySlice";
 import { PageContext } from "../auth/PageContext";
-import Login from "../auth/Login";
 import { isAdminSelector, jwtSelector } from "../auth/authSlice";
 import { NewPostContext } from "../post/new/NewPostModal";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { checkIsMod } from "../../helpers/lemmy";
+import { ModalContext } from "../../pages/shared/ModalContext";
 
 interface MoreActionsProps {
   community: string;
@@ -38,9 +37,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const isAdmin = useAppSelector(isAdminSelector);
 
   const pageContext = useContext(PageContext);
-  const [login, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
+  const { login } = useContext(ModalContext);
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle

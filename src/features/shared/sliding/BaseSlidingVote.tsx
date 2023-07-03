@@ -20,6 +20,7 @@ import { voteOnPost } from "../../post/postSlice";
 import { voteError } from "../../../helpers/toastMessages";
 import { voteOnComment } from "../../comment/commentSlice";
 import { jwtSelector } from "../../auth/authSlice";
+import { ModalContext } from "../../../pages/shared/ModalContext";
 
 const VoteArrow = styled(IonIcon)<{
   slash: boolean;
@@ -71,9 +72,7 @@ export default function BaseSlidingVote({
     ? postVotesById[item.post.id] ?? typedMyVote
     : commentVotesById[item.comment.id] ?? typedMyVote;
 
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
+  const { login } = useContext(ModalContext);
 
   const onVote = useCallback(
     async (score: 1 | -1 | 0) => {

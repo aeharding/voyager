@@ -5,6 +5,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonModal,
 } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
@@ -22,6 +23,8 @@ import PostCommentFeed, {
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
 import { NewPostContextProvider } from "../../features/post/new/NewPostModal";
+import { ModalContext } from "./ModalContext";
+import Login from "../../features/auth/Login";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -60,6 +63,10 @@ export default function CommunityPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [community]);
 
+  const [login, onDismissLogin] = useIonModal(Login, {
+    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
+  });
+
   if (community.includes("@") && community.split("@")[1] === actor)
     return (
       <Redirect
@@ -70,28 +77,30 @@ export default function CommunityPage() {
 
   return (
     <NewPostContextProvider community={community}>
-      <IonPage>
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <AppBackButton
-                defaultText="Communities"
-                defaultHref={buildGeneralBrowseLink("/")}
-              />
-            </IonButtons>
+      <ModalContext.Provider value={{ login }}>
+        <IonPage>
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <AppBackButton
+                  defaultText="Communities"
+                  defaultHref={buildGeneralBrowseLink("/")}
+                />
+              </IonButtons>
 
-            <IonTitle>{community}</IonTitle>
+              <IonTitle>{community}</IonTitle>
 
-            <IonButtons slot="end">
-              <PostSort />
-              <MoreActions community={community} />
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <PostCommentFeed fetchFn={fetchFn} communityName={community} />
-        </IonContent>
-      </IonPage>
+              <IonButtons slot="end">
+                <PostSort />
+                <MoreActions community={community} />
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            <PostCommentFeed fetchFn={fetchFn} communityName={community} />
+          </IonContent>
+        </IonPage>
+      </ModalContext.Provider>
     </NewPostContextProvider>
   );
 }

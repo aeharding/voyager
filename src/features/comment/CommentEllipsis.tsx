@@ -24,7 +24,6 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { handleSelector, jwtSelector } from "../auth/authSlice";
 import { PageContext } from "../auth/PageContext";
-import Login from "../auth/Login";
 import CommentReply from "./reply/CommentReply";
 import {
   getHandle,
@@ -38,6 +37,7 @@ import CommentEditing from "./edit/CommentEdit";
 import useCollapseRootComment from "./useCollapseRootComment";
 import { FeedContext } from "../feed/FeedContext";
 import SelectText from "../../pages/shared/SelectTextModal";
+import { ModalContext } from "../../pages/shared/ModalContext";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -64,9 +64,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const router = useIonRouter();
 
   const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
+  const { login } = useContext(ModalContext);
 
   const [reply, onDismissReply] = useIonModal(CommentReply, {
     onDismiss: (data: string, role: string) => {
@@ -105,7 +103,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
           e.stopPropagation();
         }}
       />
-
       <IonActionSheet
         cssClass="left-align-buttons"
         onClick={(e) => e.stopPropagation()}

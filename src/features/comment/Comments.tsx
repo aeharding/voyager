@@ -8,6 +8,7 @@ import {
   IonRefresher,
   IonRefresherContent,
   IonSpinner,
+  useIonModal,
   useIonToast,
 } from "@ionic/react";
 import styled from "@emotion/styled";
@@ -24,6 +25,8 @@ import { useSetActivePage } from "../auth/AppContext";
 import { FeedContext } from "../feed/FeedContext";
 import { jwtSelector } from "../auth/authSlice";
 import { defaultCommentDepthSelector } from "../settings/appearance/appearanceSlice";
+import Login from "../auth/Login";
+import { ModalContext } from "../../pages/shared/ModalContext";
 
 const centerCss = css`
   position: relative;
@@ -217,33 +220,39 @@ export default function Comments({
     ));
   }, [commentTree, comments.length, highlightedCommentId, loading, op]);
 
+  const [login, onDismissLogin] = useIonModal(Login, {
+    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
+  });
+
   return (
     <FeedContext.Provider
       value={{ refresh: () => fetchComments(true), appendComments }}
     >
-      <IonRefresher
-        slot="fixed"
-        onIonRefresh={handleRefresh}
-        disabled={!isListAtTop}
-      >
-        <IonRefresherContent />
-      </IonRefresher>
-      <Virtuoso
-        ref={virtuosoRef}
-        style={{ height: "100%" }}
-        totalCount={allComments.length + 1}
-        itemContent={(index) => (index ? allComments[index - 1] : header)}
-        endReached={() => fetchComments()}
-        atTopStateChange={setIsListAtTop}
-        components={
-          typeof commentId === "number"
-            ? {
-                // add space for the <ViewAllComments /> fixed component
-                Footer: () => <div style={{ height: "70px" }} />,
-              }
-            : {}
-        }
-      />
+      <ModalContext.Provider value={{ login }}>
+        <IonRefresher
+          slot="fixed"
+          onIonRefresh={handleRefresh}
+          disabled={!isListAtTop}
+        >
+          <IonRefresherContent />
+        </IonRefresher>
+        <Virtuoso
+          ref={virtuosoRef}
+          style={{ height: "100%" }}
+          totalCount={allComments.length + 1}
+          itemContent={(index) => (index ? allComments[index - 1] : header)}
+          endReached={() => fetchComments()}
+          atTopStateChange={setIsListAtTop}
+          components={
+            typeof commentId === "number"
+              ? {
+                  // add space for the <ViewAllComments /> fixed component
+                  Footer: () => <div style={{ height: "70px" }} />,
+                }
+              : {}
+          }
+        />
+      </ModalContext.Provider>
     </FeedContext.Provider>
   );
 }

@@ -8,6 +8,9 @@ import { receivedPosts } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
+import { useIonModal } from "@ionic/react";
+import Login from "../auth/Login";
+import { ModalContext } from "../../pages/shared/ModalContext";
 
 const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -86,7 +89,13 @@ export default function PostCommentFeed({
     [_fetchFn, dispatch]
   );
 
+  const [login, onDismissLogin] = useIonModal(Login, {
+    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
+  });
+
   return (
-    <Feed fetchFn={fetchFn} renderItemContent={renderItemContent} {...rest} />
+    <ModalContext.Provider value={{ login }}>
+      <Feed fetchFn={fetchFn} renderItemContent={renderItemContent} {...rest} />
+    </ModalContext.Provider>
   );
 }
