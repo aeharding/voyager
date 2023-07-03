@@ -1,5 +1,4 @@
 import Dexie, { Table } from "dexie";
-import { LIMIT } from "./lemmy";
 
 export interface IPostMetadata {
   post_id: number;
@@ -63,13 +62,15 @@ export class WefwefDB extends Dexie {
     });
   }
 
+  // Currently, we have to fetch each post with a separate API call.
+  // That's why the page size is only 10
   async getHiddenPostMetadatas(user_handle: string, page: number) {
     return await this.postMetadatas
       .where(CompoundKeys.postMetadata.user_handle_and_hidden)
       .equals([user_handle, 1])
       .reverse()
-      .offset(LIMIT * (page - 1))
-      .limit(LIMIT)
+      .offset(10 * (page - 1))
+      .limit(10)
       .toArray();
   }
 }

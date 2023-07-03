@@ -144,7 +144,7 @@ export default function Feed<I>({
       }
     : {};
 
-  if ((loading && !items.length) || loading === undefined)
+  if ((loading && !filteredItems.length) || loading === undefined)
     return <CenteredSpinner />;
 
   return (

@@ -8,14 +8,14 @@ import { PostView, SortType } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, handleSelector, jwtSelector } from "../auth/authSlice";
 import { POST_SORTS } from "../feed/PostSort";
-import { set } from "../settings/storage";
-import { IPostMetadata, db } from "../../services/db";
+import { get, set } from "../settings/storage";
+import { db } from "../../services/db";
 
-const POST_SORT_KEY = "post-sort";
+const POST_SORT_KEY = "post-sort-v2";
 
 interface PostState {
   postById: Dictionary<PostView>;
-  postMetadataById: Dictionary<IPostMetadata>;
+  postHiddenById: Dictionary<boolean>;
   postVotesById: Dictionary<1 | -1 | 0>;
 
   sort: SortType;
@@ -23,9 +23,9 @@ interface PostState {
 
 const initialState: PostState = {
   postById: {},
-  postMetadataById: {},
+  postHiddenById: {},
   postVotesById: {},
-  sort: localStorage[POST_SORT_KEY] ?? POST_SORTS[0],
+  sort: get(POST_SORT_KEY) ?? POST_SORTS[0],
 };
 
 export const postSlice = createSlice({
@@ -47,11 +47,11 @@ export const postSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(receivedPosts.fulfilled, (state, action) => {
-        const { posts, postMetadataById } = action.payload;
+        const { posts, postHiddenById } = action.payload;
 
         for (const post of posts) {
           state.postById[post.post.id] = post;
-          state.postMetadataById[post.post.id] = postMetadataById[post.post.id];
+          state.postHiddenById[post.post.id] = postHiddenById[post.post.id];
 
           if (post.my_vote)
             state.postVotesById[post.post.id] = post.my_vote as 1 | -1;
@@ -60,7 +60,7 @@ export const postSlice = createSlice({
       .addCase(updatePostHidden.fulfilled, (state, action) => {
         if (!action.payload) return;
 
-        state.postMetadataById[action.payload.post_id] = action.payload;
+        state.postHiddenById[action.payload.post_id] = !!action.payload.hidden;
       });
   },
 });
@@ -73,10 +73,7 @@ export const updatePostHidden = createAsyncThunk(
 
     if (!handle) return;
 
-    const currentPostMetadata = rootState.post.postMetadataById[postId] || {};
-
     const newPostMetadata = {
-      ...currentPostMetadata,
       post_id: postId,
       user_handle: handle,
       hidden: hidden ? 1 : 0,
@@ -93,24 +90,24 @@ export const receivedPosts = createAsyncThunk(
   async (posts: PostView[], thunkAPI) => {
     const rootState = thunkAPI.getState() as RootState;
     const handle = handleSelector(rootState);
-    const postMetadataById: Dictionary<IPostMetadata> = {};
+    const postHiddenById: Dictionary<boolean> = {};
 
     if (!handle)
       return {
         posts,
-        postMetadataById,
+        postHiddenById,
       };
 
     const receivedPostsIds = posts.map((post) => post.post.id);
     const postMetadatas = await db.getPostMetadatas(receivedPostsIds, handle);
 
     for (const postMetadata of postMetadatas) {
-      postMetadataById[postMetadata.post_id] = postMetadata;
+      postHiddenById[postMetadata.post_id] = !!postMetadata.hidden;
     }
 
     return {
       posts,
-      postMetadataById,
+      postHiddenById,
     };
   }
 );
@@ -164,6 +161,6 @@ export const unhidePost = (postId: number) => async (dispatch: AppDispatch) => {
   dispatch(updatePostHidden({ postId, hidden: false }));
 };
 
-export const postMetadataByIdSelector = (state: RootState) => {
-  return state.post.postMetadataById;
+export const postHiddenByIdSelector = (state: RootState) => {
+  return state.post.postHiddenById;
 };

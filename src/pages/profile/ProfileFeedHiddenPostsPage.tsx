@@ -59,7 +59,8 @@ export default function ProfileFeedHiddenPostsPage() {
         "post_view" in post ? post.post_view : post
       );
     },
-    [client, handle, jwt, postById]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [client, handle, jwt]
   );
 
   return (

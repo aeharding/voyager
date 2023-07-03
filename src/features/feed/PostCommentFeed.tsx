@@ -4,7 +4,7 @@ import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
-import { postMetadataByIdSelector, receivedPosts } from "../post/postSlice";
+import { postHiddenByIdSelector, receivedPosts } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
@@ -39,7 +39,7 @@ export default function PostCommentFeed({
   const postAppearanceType = useAppSelector(
     (state) => state.appearance.posts.type
   );
-  const postMetadataById = useAppSelector(postMetadataByIdSelector);
+  const postHiddenById = useAppSelector(postHiddenByIdSelector);
 
   const borderCss = (() => {
     switch (postAppearanceType) {
@@ -93,8 +93,8 @@ export default function PostCommentFeed({
   );
 
   const filterFn = useCallback(
-    (item: PostCommentItem) => !postMetadataById[item.post.id]?.hidden,
-    [postMetadataById]
+    (item: PostCommentItem) => !postHiddenById[item.post.id],
+    [postHiddenById]
   );
 
   return (

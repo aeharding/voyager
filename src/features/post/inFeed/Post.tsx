@@ -8,7 +8,7 @@ import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { postMetadataByIdSelector, hidePost, unhidePost } from "../postSlice";
+import { postHiddenByIdSelector, hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
 
 const CustomIonItem = styled(IonItem)`
@@ -34,8 +34,7 @@ export interface PostProps {
 export default function Post(props: PostProps) {
   const dispatch = useAppDispatch();
   const [shouldHide, setShouldHide] = useState(false);
-  const isHidden = useAppSelector(postMetadataByIdSelector)[props.post.post.id]
-    ?.hidden;
+  const isHidden = useAppSelector(postHiddenByIdSelector)[props.post.post.id];
   const hideCompleteRef = useRef(false);
 
   const onFinishHide = useCallback(() => {
