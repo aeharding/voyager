@@ -5,6 +5,8 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Person } from "lemmy-js-client";
 import Handle from "../Handle";
 import { StyledLink } from "./shared";
+import { useAppSelector } from "../../../store";
+import { OInstanceUrlDisplayMode } from "../../../services/db";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -32,6 +34,11 @@ export default function PersonLink({
 
   let color: string | undefined;
 
+  const force_instance_url =
+    useAppSelector(
+      (state) => state.settings.appearance.general.userInstanceUrlDisplay
+    ) === OInstanceUrlDisplayMode.WhenRemote;
+
   if (person.admin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary)";
@@ -56,7 +63,10 @@ export default function PersonLink({
           <Prefix>{prefix}</Prefix>{" "}
         </>
       ) : undefined}
-      <Handle item={person} showInstanceWhenRemote={showInstanceWhenRemote} />
+      <Handle
+        item={person}
+        showInstanceWhenRemote={showInstanceWhenRemote || force_instance_url}
+      />
     </StyledLink>
   );
 }
