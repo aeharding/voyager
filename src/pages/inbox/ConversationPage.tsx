@@ -32,8 +32,8 @@ import {
 } from "../../features/shared/AppContent";
 import { IonContentCustomEvent } from "@ionic/core";
 import { css } from "@emotion/react";
-import { PageContentIonSpinner } from "../shared/UserPage";
 import { getUser } from "../../features/user/userSlice";
+import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
