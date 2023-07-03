@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
-import React, { useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import SlidingItem, {
   SlidingItemAction,
   SlidingItemProps,
@@ -75,16 +75,19 @@ export default function BaseSlidingVote({
     onDismiss: (data: string, role: string) => onDismiss(data, role),
   });
 
-  async function onVote(score: 1 | -1 | 0) {
-    if (jwt) {
-      try {
-        if (isPost) await dispatch(voteOnPost(item.post.id, score));
-        else await dispatch(voteOnComment(item.comment.id, score));
-      } catch (error) {
-        present(voteError);
-      }
-    } else login({ presentingElement: pageContext.page });
-  }
+  const onVote = useCallback(
+    async (score: 1 | -1 | 0) => {
+      if (jwt) {
+        try {
+          if (isPost) await dispatch(voteOnPost(item.post.id, score));
+          else await dispatch(voteOnComment(item.comment.id, score));
+        } catch (error) {
+          present(voteError);
+        }
+      } else login({ presentingElement: pageContext.page });
+    },
+    [dispatch, isPost, item, jwt, login, pageContext.page, present]
+  );
 
   const startActions: [SlidingItemAction, SlidingItemAction] = useMemo(() => {
     return [
@@ -115,8 +118,7 @@ export default function BaseSlidingVote({
         bgColor: "danger",
       },
     ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentVote]);
+  }, [currentVote, onVote]);
 
   return (
     <SlidingItem
