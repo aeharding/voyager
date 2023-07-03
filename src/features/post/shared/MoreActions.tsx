@@ -3,6 +3,7 @@ import {
   IonIcon,
   useIonModal,
   useIonRouter,
+  useIonToast,
 } from "@ionic/react";
 import {
   arrowDownOutline,
@@ -14,6 +15,8 @@ import {
   personOutline,
   shareOutline,
   textOutline,
+  heartOutline,
+  heartDislikeOutline,
 } from "ionicons/icons";
 import { useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -28,6 +31,7 @@ import { jwtSelector } from "../../auth/authSlice";
 import SelectText from "../../../pages/shared/SelectTextModal";
 import { ActionButton } from "../actions/ActionButton";
 import { css } from "@emotion/react";
+import { followCommunity } from "../../community/communitySlice";
 
 interface MoreActionsProps {
   post: PostView;
@@ -39,6 +43,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const jwt = useAppSelector(jwtSelector);
+  const [present] = useIonToast();
 
   const router = useIonRouter();
 
@@ -56,6 +61,16 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
     text: post.post.body,
     onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
   });
+
+  const communityByHandle = useAppSelector(
+    (state) => state.community.communityByHandle
+  );
+
+  const isSubscribed =
+    communityByHandle[getHandle(post.community)]?.community_view.subscribed ===
+      "Subscribed" ||
+    communityByHandle[getHandle(post.community)]?.community_view.subscribed ===
+      "Pending";
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
 
@@ -108,6 +123,14 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             text: getHandle(post.community),
             role: "community",
             icon: peopleOutline,
+          },
+          {
+            text:
+              (!isSubscribed ? "Subscribe" : "Unsubscribe") +
+              " to " +
+              getHandle(post.community),
+            role: "subscribe",
+            icon: !isSubscribed ? heartOutline : heartDislikeOutline,
           },
           {
             text: "Select Text",
@@ -164,6 +187,35 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
                 buildGeneralBrowseLink(`/c/${getHandle(post.community)}`)
               );
 
+              break;
+            }
+            case "subscribe": {
+              if (!jwt) return login({ presentingElement: pageContext.page });
+
+              try {
+                await dispatch(
+                  followCommunity(!isSubscribed, getHandle(post.community))
+                );
+              } catch (error) {
+                present({
+                  message: `Problem ${
+                    isSubscribed ? "unsubscribing from" : "subscribing to"
+                  } c/${getHandle(post.community)}. Please try again.`,
+                  duration: 3500,
+                  position: "bottom",
+                  color: "danger",
+                });
+                throw error;
+              }
+
+              present({
+                message: `${
+                  isSubscribed ? "Unsubscribed from" : "Subscribed to"
+                } c/${getHandle(post.community)}.`,
+                duration: 3500,
+                position: "bottom",
+                color: "success",
+              });
               break;
             }
             case "select": {
