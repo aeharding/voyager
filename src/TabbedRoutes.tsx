@@ -75,6 +75,7 @@ export default function TabbedRoutes() {
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
 
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
+  const searchInput = useRef<HTMLIonSearchbarElement>(null);
 
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance
@@ -128,6 +129,11 @@ export default function TabbedRoutes() {
     if (!isSearchButtonDisabled) return;
 
     if (await scrollUpIfNeeded()) return;
+
+    if (location.pathname === "/search" && searchInput.current) {
+      searchInput.current.setFocus();
+      return;
+    }
 
     router.push(`/search`, "back");
   }
@@ -297,7 +303,7 @@ export default function TabbedRoutes() {
           </Route>
 
           <Route exact path="/search">
-            <SearchPage />
+            <SearchPage ref={searchInput} />
           </Route>
           <Route exact path="/search/posts/:search">
             <SearchPostsResultsPage type="Posts" />
