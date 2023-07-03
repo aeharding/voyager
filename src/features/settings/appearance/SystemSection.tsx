@@ -17,8 +17,8 @@ export default function SystemSection() {
         <IonLabel>System</IonLabel>
       </ListHeader>
       <IonList inset>
-        <DarkMode />
         <ProfileLabel />
+        <DarkMode />
       </IonList>
     </>
   );

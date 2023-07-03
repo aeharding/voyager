@@ -10,7 +10,7 @@ import AppContent from "../../features/shared/AppContent";
 import TextSize from "../../features/settings/appearance/TextSize";
 import PostView from "../../features/settings/appearance/PostView";
 import CollapsedByDefault from "../../features/settings/appearance/CollapsedByDefault";
-import SystemSection from "../../features/settings/appearance/System";
+import SystemSection from "../../features/settings/appearance/SystemSection";
 
 export default function AppearancePage() {
   return (
