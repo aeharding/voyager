@@ -7,20 +7,27 @@ export default function useSystemDarkMode() {
     window.matchMedia(DARK_MEDIA_SELECTOR).matches
   );
 
+  const mediaQuery = window
+    .matchMedia(DARK_MEDIA_SELECTOR);
+
   useEffect(() => {
     function handleDarkModeChange() {
-      const doesMatch = window.matchMedia(DARK_MEDIA_SELECTOR).matches;
+      const doesMatch = mediaQuery.matches;
       setPrefersDarkMode(doesMatch);
     }
 
-    window
-      .matchMedia(DARK_MEDIA_SELECTOR)
-      .addEventListener("change", handleDarkModeChange);
+    if (mediaQuery?.addEventListener) {
+      mediaQuery.addEventListener("change", handleDarkModeChange);
+    } else {
+      mediaQuery.addListener(handleDarkModeChange);
+    }
 
     return () => {
-      window
-        .matchMedia(DARK_MEDIA_SELECTOR)
-        .removeEventListener("change", handleDarkModeChange);
+      if (mediaQuery?.removeEventListener) {
+        mediaQuery.removeEventListener("change", handleDarkModeChange);
+      } else {
+        mediaQuery.removeListener(handleDarkModeChange);
+      }
     };
   }, []);
 
