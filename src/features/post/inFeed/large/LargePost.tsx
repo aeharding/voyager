@@ -143,20 +143,15 @@ export default function LargePost({ post, communityMode }: PostProps) {
         </ImageContainer>
       );
 
-      /**
-       * Embedded video, image with a thumbanil
-       */
+    /**
+     * Embedded video, image with a thumbanil
+     */
     if (post.post.thumbnail_url && post.post.url) {
-      return (
-        blur ?
-        (
-          <PostImage src={post.post.thumbnail_url} blur={blur} />
-        )
-        :
-        (
-          <Embed post={post} />
-        )
-      )
+      return blur ? (
+        <PostImage src={post.post.thumbnail_url} blur={blur} />
+      ) : (
+        <Embed post={post} />
+      );
     }
 
     /**
