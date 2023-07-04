@@ -21,7 +21,6 @@ import {
 import styled from "@emotion/styled";
 import { useAppDispatch } from "../../store";
 import { login } from "./authSlice";
-import { LemmyHttp } from "lemmy-js-client";
 import { getClient } from "../../services/lemmy";
 import { IonInputCustomEvent } from "@ionic/core";
 import TermsSheet from "../settings/terms/TermsSheet";
@@ -162,7 +161,7 @@ export default function Login({
     try {
       await dispatch(
         login(
-          new LemmyHttp(`/api/${server ?? customServerHostname}`),
+          getClient(server ?? customServerHostname),
           username,
           password,
           totp
@@ -174,8 +173,12 @@ export default function Login({
         return;
       }
 
+      if (error === "password_incorrect") {
+        setPassword("");
+      }
+
       present({
-        message: "Please check your credentials and try again.",
+        message: getLoginErrorMessage(error, server ?? customServer),
         duration: 3500,
         position: "bottom",
         color: "danger",
@@ -354,4 +357,24 @@ export default function Login({
       </IonPage>
     </form>
   );
+}
+
+function getLoginErrorMessage(error: unknown, instanceActorId: string): string {
+  switch (error) {
+    case "incorrect_totp token": // This might be a typo? Included "correct" case below
+    case "incorrect_totp_token":
+      return "Incorrect 2nd factor code. Please try again.";
+    case "couldnt_find_that_username_or_email":
+      return `User not found. Is your account on ${instanceActorId}?`;
+    case "password_incorrect":
+      return "Incorrect password. Please try again.";
+    case "email_not_verified":
+      return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
+    case "site_ban":
+      return "You have been banned.";
+    case "deleted":
+      return "Account deleted.";
+    default:
+      return "Connection error, please try again.";
+  }
 }

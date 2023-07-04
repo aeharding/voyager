@@ -8,7 +8,6 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
-  useIonModal,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useParams } from "react-router";
@@ -29,16 +28,15 @@ import PersonLink from "../../labels/links/PersonLink";
 import { CommentSortType, PostView } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import ViewAllComments from "./ViewAllComments";
-import CommentReply from "../../comment/reply/CommentReply";
-import Login from "../../auth/Login";
 import InlineMarkdown from "../../shared/InlineMarkdown";
 import { megaphone } from "ionicons/icons";
 import CommunityLink from "../../labels/links/CommunityLink";
 import Video from "../../shared/Video";
 import { css } from "@emotion/react";
-import { PageContext } from "../../auth/PageContext";
 import { jwtSelector } from "../../auth/authSlice";
 import CommentSort from "../../comment/CommentSort";
+import Nsfw, { isNsfw } from "../../labels/Nsfw";
+import { PageContext } from "../../auth/PageContext";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -138,21 +136,9 @@ export default function PostDetail() {
     [post]
   );
   const titleRef = useRef<HTMLDivElement>(null);
-  const pageContext = useContext(PageContext);
+  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const [commentsLastUpdated, setCommentsLastUpdated] = useState(Date.now());
   const [sort, setSort] = useState<CommentSortType>("Hot");
-
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => {
-      if (role === "post") setCommentsLastUpdated(Date.now());
-      onDismissReply(data, role);
-    },
-    item: post,
-  });
-
-  const [login, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
 
   useEffect(() => {
     if (post) return;
@@ -221,7 +207,8 @@ export default function PostDetail() {
             <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
             <PostDeets>
               <Title ref={titleRef}>
-                <InlineMarkdown>{post.post.name}</InlineMarkdown>
+                <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+                {isNsfw(post) && <Nsfw />}
               </Title>
               {!collapsed && renderText()}
               <By>
@@ -247,9 +234,12 @@ export default function PostDetail() {
         <BorderlessIonItem>
           <PostActions
             post={post}
-            onReply={() => {
-              if (!jwt) return login({ presentingElement: pageContext.page });
-              else reply({ presentingElement: pageContext.page });
+            onReply={async () => {
+              if (presentLoginIfNeeded()) return;
+
+              const replied = await presentCommentReply(post);
+
+              if (replied) setCommentsLastUpdated(Date.now());
             }}
           />
         </BorderlessIonItem>

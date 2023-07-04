@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
+import { IonIcon, useIonToast } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
-import React, { useContext, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import SlidingItem, {
   SlidingItemAction,
   SlidingItemProps,
@@ -13,13 +13,11 @@ import {
   PersonMentionView,
   PostView,
 } from "lemmy-js-client";
-import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import Login from "../../auth/Login";
 import { voteOnPost } from "../../post/postSlice";
 import { voteError } from "../../../helpers/toastMessages";
 import { voteOnComment } from "../../comment/commentSlice";
-import { jwtSelector } from "../../auth/authSlice";
+import { PageContext } from "../../auth/PageContext";
 
 const VoteArrow = styled(IonIcon)<{
   slash: boolean;
@@ -57,10 +55,9 @@ export default function BaseSlidingVote({
   item,
   endActions,
 }: BaseSlidingVoteProps) {
-  const pageContext = useContext(PageContext);
+  const { presentLoginIfNeeded } = useContext(PageContext);
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector(jwtSelector);
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById
@@ -71,20 +68,19 @@ export default function BaseSlidingVote({
     ? postVotesById[item.post.id] ?? typedMyVote
     : commentVotesById[item.comment.id] ?? typedMyVote;
 
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
+  const onVote = useCallback(
+    async (score: 1 | -1 | 0) => {
+      if (presentLoginIfNeeded()) return;
 
-  async function onVote(score: 1 | -1 | 0) {
-    if (jwt) {
       try {
         if (isPost) await dispatch(voteOnPost(item.post.id, score));
         else await dispatch(voteOnComment(item.comment.id, score));
       } catch (error) {
         present(voteError);
       }
-    } else login({ presentingElement: pageContext.page });
-  }
+    },
+    [dispatch, isPost, item, present, presentLoginIfNeeded]
+  );
 
   const startActions: [SlidingItemAction, SlidingItemAction] = useMemo(() => {
     return [
@@ -115,8 +111,7 @@ export default function BaseSlidingVote({
         bgColor: "danger",
       },
     ];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentVote]);
+  }, [currentVote, onVote]);
 
   return (
     <SlidingItem
