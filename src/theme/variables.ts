@@ -99,6 +99,10 @@ export const baseVariables = css`
     --ion-background-color: var(--ion-color-step-50, #f2f2f7);
     --ion-item-background: #fff;
   }
+
+  ion-icon {
+    -webkit-transform: translate3d(0, 0, 0);
+  }
 `;
 
 export const lightVariables = css`
