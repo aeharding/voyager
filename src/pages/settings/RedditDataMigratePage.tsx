@@ -11,9 +11,7 @@ import {
   useIonToast,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import { flatten, identity, sortBy, uniq } from "lodash";
 import { useState } from "react";
-import { notEmpty } from "../../helpers/array";
 import { InsetIonItem } from "../profile/ProfileFeedItemsPage";
 import { css } from "@emotion/react";
 
@@ -125,18 +123,9 @@ interface ApolloUserData {
 async function getSubreddits(file: File): Promise<string[]> {
   const subreddits = (await parseFile(file)) as string[];
   return subreddits;
-
-  // return sortBy(
-  //   uniq(
-  //     dataByUser
-  //       .map((user) => user.subscribed_subreddits)
-  //       .concat(dataByUser.map((user) => user.favorites))
-  //   ).filter(notEmpty),
-  //   identity
-  // );
 }
 
-function parseFile(file: File): Promise<never> {
+function parseFile(file: File): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -144,12 +133,10 @@ function parseFile(file: File): Promise<never> {
       try {
         const csv_raw = event.target?.result as string;
         const split = csv_raw.split(/\r\n|\n/);
-        console.log(split);
-        // First entry should say "subreddits"
         const header = split.shift();
-        console.log("Header", header);
+        // First entry should say "subreddit"
         if (header !== "subreddit") {
-          reject();
+          reject("Invalid CSV");
         }
         resolve(split);
       } catch (error) {
