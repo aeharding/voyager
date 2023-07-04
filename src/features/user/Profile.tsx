@@ -86,19 +86,19 @@ export default function Profile({ person }: ProfileProps) {
             <>
               <InsetIonItem
                 routerLink={buildGeneralBrowseLink(
-                  `/u/${getHandle(person.person_view.person)}/hidden`
-                )}
-              >
-                <IonIcon icon={eyeOffOutline} color="primary" />{" "}
-                <SettingLabel>Hidden</SettingLabel>
-              </InsetIonItem>
-              <InsetIonItem
-                routerLink={buildGeneralBrowseLink(
                   `/u/${getHandle(person.person_view.person)}/saved`
                 )}
               >
                 <IonIcon icon={bookmarkOutline} color="primary" />{" "}
                 <SettingLabel>Saved</SettingLabel>
+              </InsetIonItem>
+              <InsetIonItem
+                routerLink={buildGeneralBrowseLink(
+                  `/u/${getHandle(person.person_view.person)}/hidden`
+                )}
+              >
+                <IonIcon icon={eyeOffOutline} color="primary" />{" "}
+                <SettingLabel>Hidden</SettingLabel>
               </InsetIonItem>
             </>
           )}
