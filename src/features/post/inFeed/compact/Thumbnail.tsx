@@ -37,6 +37,9 @@ const StyledImg = styled(Img)<{ blur: boolean }>`
     blur &&
     css`
       filter: blur(6px);
+
+      // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
+      transform: translate3d(0, 0, 0);
     `}
 `;
 
