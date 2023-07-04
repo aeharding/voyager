@@ -62,7 +62,11 @@ export const PositionedContainer = styled.div<{
     `}
 `;
 
-export const Container = styled.div<{ depth: number; highlighted?: boolean }>`
+export const Container = styled.div<{
+  depth: number;
+  highlighted?: boolean;
+  hidden?: boolean;
+}>`
   display: flex;
 
   position: relative;
@@ -98,6 +102,12 @@ export const Container = styled.div<{ depth: number; highlighted?: boolean }>`
       depth &&
       css`
         background: ${rainbowColors[depth % rainbowColors.length]};
+      `}
+
+      ${({ hidden }) =>
+      hidden &&
+      css`
+        opacity: 0;
       `}
   }
 `;
