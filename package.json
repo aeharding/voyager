@@ -2,7 +2,7 @@
   "name": "wefwef",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "0.12.1",
+  "version": "0.13.0",
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
