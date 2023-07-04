@@ -23,8 +23,8 @@ export default function SearchPage() {
           <IonSearchbar
             ref={searchBarRef}
             placeholder="Search posts, communities, users"
-            showCancelButton={search ? "always" : "never"}
-            showClearButton="never"
+            showCancelButton={search ? "always" : "focus"}
+            showClearButton={search ? "always" : "never"}
             css={css`
               padding-top: 0 !important;
               padding-bottom: 0 !important;
