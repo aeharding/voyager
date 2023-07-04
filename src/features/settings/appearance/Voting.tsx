@@ -1,22 +1,31 @@
-import styled from "@emotion/styled";
-import { IonLabel, IonList, IonToggle } from "@ionic/react";
+import { IonActionSheet, IonLabel, IonList } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { OVoteDisplayMode } from "../../../services/db";
+import { startCase } from "lodash";
+import { useState } from "react";
+import {
+  ActionSheetButton,
+  IonActionSheetCustomEvent,
+  OverlayEventDetail,
+} from "@ionic/core";
+import { OVoteDisplayMode, VoteDisplayMode } from "../../../services/db";
+import { ListHeader } from "./TextSize";
 import { setVoteDisplayMode } from "../settingsSlice";
 
-export const ListHeader = styled.div`
-  font-size: 0.8em;
-  margin: 32px 0 -8px 32px;
-  text-transform: uppercase;
-  color: var(--ion-color-medium);
-`;
+const BUTTONS: ActionSheetButton<VoteDisplayMode>[] = Object.values(
+  OVoteDisplayMode
+).map(function (voteDisplayMode) {
+  return {
+    text: startCase(voteDisplayMode),
+    data: voteDisplayMode,
+  } as ActionSheetButton<VoteDisplayMode>;
+});
 
 export default function CollapsedByDefault() {
+  const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
-  const { voteDisplayMode } = useAppSelector(
-    // this needs a better naming
-    (state) => state.settings.appearance.voting
+  const voteDisplayMode = useAppSelector(
+    (state) => state.settings.appearance.voting.voteDisplayMode
   );
 
   return (
@@ -25,19 +34,27 @@ export default function CollapsedByDefault() {
         <IonLabel>Voting</IonLabel>
       </ListHeader>
       <IonList inset>
-        <InsetIonItem>
-          <IonLabel>Show downvotes separately</IonLabel>
-          <IonToggle
-            checked={voteDisplayMode === OVoteDisplayMode.Separate}
-            onIonChange={(e) =>
-              dispatch(
-                setVoteDisplayMode(
-                  e.detail.checked
-                    ? OVoteDisplayMode.Separate
-                    : OVoteDisplayMode.SingleScore
-                )
-              )
-            }
+        <InsetIonItem button onClick={() => setOpen(true)}>
+          <IonLabel>Vote Display Mode</IonLabel>
+          <IonLabel slot="end" color="medium">
+            {startCase(voteDisplayMode)}
+          </IonLabel>
+          <IonActionSheet
+            cssClass="left-align-buttons"
+            isOpen={open}
+            onDidDismiss={() => setOpen(false)}
+            onWillDismiss={(
+              e: IonActionSheetCustomEvent<OverlayEventDetail<VoteDisplayMode>>
+            ) => {
+              if (e.detail.data) {
+                dispatch(setVoteDisplayMode(e.detail.data));
+              }
+            }}
+            header="Post Size"
+            buttons={BUTTONS.map((b) => ({
+              ...b,
+              role: voteDisplayMode === b.data ? "selected" : undefined,
+            }))}
           />
         </InsetIonItem>
       </IonList>

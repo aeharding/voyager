@@ -9,7 +9,7 @@ import { voteError } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
 import { calculateCurrentVotesCount } from "../../helpers/vote";
 import { CommentView, PostView } from "lemmy-js-client";
-import { separateDownvotesSelector } from "../settings/appearance/appearanceSlice";
+import { OVoteDisplayMode } from "../../services/db";
 
 const Container = styled.div<{
   vote?: 1 | -1 | 0;
@@ -77,42 +77,60 @@ export default function Vote({ item, className }: VoteProps) {
     }
   }
 
-  if (useAppSelector(separateDownvotesSelector)) {
-    return (
-      <>
+  const voteDisplayMode = useAppSelector(
+    (state) => state.settings.appearance.voting.voteDisplayMode
+  );
+
+  switch (voteDisplayMode) {
+    case OVoteDisplayMode.SeparateScores:
+      return (
+        <>
+          <Container
+            className={className + "-up"}
+            vote={myVote}
+            voteRepresented={1}
+            onClick={async (e) => {
+              await do_vote(e, myVote === 1 ? 0 : 1);
+            }}
+          >
+            <IonIcon icon={arrowUpSharp} /> {upvotes}
+          </Container>
+          <Container
+            className={className + "-down"}
+            vote={myVote}
+            voteRepresented={-1}
+            onClick={async (e) => {
+              await do_vote(e, myVote === -1 ? 0 : -1);
+            }}
+          >
+            <IonIcon icon={arrowDownSharp} /> {downvotes}
+          </Container>
+        </>
+      );
+    case OVoteDisplayMode.NoScores:
+      return (
         <Container
-          className={className + "-up"}
+          className={className}
           vote={myVote}
-          voteRepresented={1}
           onClick={async (e) => {
-            await do_vote(e, myVote === 1 ? 0 : 1);
+            await do_vote(e, myVote ? 0 : 1);
           }}
         >
-          <IonIcon icon={arrowUpSharp} /> {upvotes}
+          <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} />
         </Container>
+      );
+    default:
+      return (
         <Container
-          className={className + "-down"}
+          className={className}
           vote={myVote}
-          voteRepresented={-1}
           onClick={async (e) => {
-            await do_vote(e, myVote === -1 ? 0 : -1);
+            await do_vote(e, myVote ? 0 : 1);
           }}
         >
-          <IonIcon icon={arrowDownSharp} /> {downvotes}
+          <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} />{" "}
+          {score}
         </Container>
-      </>
-    );
-  } else {
-    return (
-      <Container
-        className={className}
-        vote={myVote}
-        onClick={async (e) => {
-          await do_vote(e, myVote ? 0 : 1);
-        }}
-      >
-        <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} /> {score}
-      </Container>
-    );
+      );
   }
 }
