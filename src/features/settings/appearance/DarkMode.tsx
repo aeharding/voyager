@@ -2,7 +2,6 @@ import { IonLabel, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setUseSystemDarkMode } from "./appearanceSlice";
-import UserDarkMode from "./UserDarkMode";
 
 export default function DarkMode() {
   const dispatch = useAppDispatch();
@@ -19,8 +18,6 @@ export default function DarkMode() {
           onIonChange={(e) => dispatch(setUseSystemDarkMode(e.detail.checked))}
         />
       </InsetIonItem>
-
-      {!usingSystemDarkMode && <UserDarkMode />}
     </>
   );
 }
