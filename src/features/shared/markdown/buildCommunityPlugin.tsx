@@ -29,29 +29,27 @@ export default function buildCommunityPlugin(connectedInstance: string) {
           const newTextNodes: (Text | CustomLink)[] = [];
 
           while ((match = regex.exec(value))) {
+            // Prevents double-nesting of links.
+            if (parent.type === "link") {
+              continue;
+            }
+
             const [fullMatch, communityHandle, handleDomain] = match;
             const start = match.index;
             const end = start + fullMatch.length;
 
             const before = value.slice(lastIndex, start);
 
-            const atDomain =
-              connectedInstance === handleDomain ? "" : `@${handleDomain}`;
-            const url =
-              `https://${connectedInstance}/c/${communityHandle}${atDomain}`;
-
-            // Prevents double-nesting of links.
-            if (parent.type === "link" && parent.url === url) {
-              continue
-            }
-
             if (before) {
               newTextNodes.push({ type: "text", value: before });
             }
 
+            const atDomain =
+              connectedInstance === handleDomain ? "" : `@${handleDomain}`;
+
             const linkNode: CustomLink = {
               type: "link",
-              url,
+              url: `https://${connectedInstance}/c/${communityHandle}${atDomain}`,
               children: [
                 {
                   type: "text",
