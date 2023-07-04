@@ -1,9 +1,13 @@
+import {
+  IonIcon,
+} from "@ionic/react";
 import styled from "@emotion/styled";
 import { PostProps } from "../Post";
 import Thumbnail from "./Thumbnail";
 import { maxWidthCss } from "../../../shared/AppContent";
 import PreviewStats from "../PreviewStats";
 import MoreActions from "../../shared/MoreActions";
+import { megaphone } from "ionicons/icons";
 import PersonLink from "../../../labels/links/PersonLink";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { VoteButton } from "../../shared/VoteButton";
@@ -32,6 +36,13 @@ const Aside = styled.div`
 
   color: var(--ion-color-medium);
   font-size: 0.8em;
+`;
+
+export const AnnouncementIcon = styled(IonIcon)`
+  font-size: 1.1rem;
+  margin-right: 5px;
+  vertical-align: middle;
+  color: var(--ion-color-success);
 `;
 
 const Actions = styled.div`
@@ -66,6 +77,10 @@ export default function CompactPost({ post, communityMode }: PostProps) {
       <Content>
         {post.post.name}
         <Aside>
+          {post.counts.featured_community ||
+          post.counts.featured_local ? (
+            <AnnouncementIcon icon={megaphone} />
+          ) : undefined}
           {communityMode ? (
             <PersonLink
               person={post.creator}
