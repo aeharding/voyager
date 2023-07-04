@@ -28,13 +28,14 @@ import {
   getRemoteHandle,
   canModify as isCommentMutable,
 } from "../../helpers/lemmy";
-import { deleteComment, voteOnComment } from "./commentSlice";
+import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import styled from "@emotion/styled";
 import { notEmpty } from "../../helpers/array";
 import useCollapseRootComment from "./useCollapseRootComment";
 import { FeedContext } from "../feed/FeedContext";
 import SelectText from "../../pages/shared/SelectTextModal";
 import { PageContext } from "../auth/PageContext";
+import { saveError, voteError } from "../../helpers/toastMessages";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -74,8 +75,12 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById
   );
+  const commentSavedById = useAppSelector(
+    (state) => state.comment.commentSavedById
+  );
 
   const myVote = commentVotesById[comment.comment.id] ?? comment.my_vote;
+  const mySaved = commentSavedById[comment.comment.id] ?? comment.saved;
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
 
@@ -105,7 +110,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             icon: arrowDownOutline,
           },
           {
-            text: "Save",
+            text: !mySaved ? "Save" : "Unsave",
             role: "save",
             icon: bookmarkOutline,
           },
@@ -162,18 +167,35 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             case "upvote":
               if (presentLoginIfNeeded()) return;
 
-              dispatch(voteOnComment(comment.comment.id, myVote === 1 ? 0 : 1));
+              try {
+                await dispatch(
+                  voteOnComment(comment.comment.id, myVote === 1 ? 0 : 1)
+                );
+              } catch (error) {
+                present(voteError);
+              }
+
               break;
             case "downvote":
               if (presentLoginIfNeeded()) return;
 
-              dispatch(
-                voteOnComment(comment.comment.id, myVote === -1 ? 0 : -1)
-              );
+              try {
+                await dispatch(
+                  voteOnComment(comment.comment.id, myVote === -1 ? 0 : -1)
+                );
+              } catch (error) {
+                present(voteError);
+              }
+
               break;
             case "save":
               if (presentLoginIfNeeded()) return;
-              // TODO
+
+              try {
+                await dispatch(saveComment(comment.comment.id, !mySaved));
+              } catch (error) {
+                present(saveError);
+              }
               break;
             case "edit":
               presentCommentEdit(comment);

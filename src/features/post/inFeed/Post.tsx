@@ -10,6 +10,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { postHiddenByIdSelector, hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
+import Save from "../../labels/Save";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -93,6 +94,7 @@ export default function Post(props: PostProps) {
           href={undefined}
         >
           {postBody}
+          <Save type="post" id={props.post.post.id} />
         </CustomIonItem>
       </SlidingVote>
     </AnimateHeight>

@@ -14,6 +14,7 @@ import CommentContent from "./CommentContent";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
+import Save from "../labels/Save";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -276,6 +277,7 @@ export default function Comment({
               </AnimateHeight>
             </Container>
           </PositionedContainer>
+          <Save type="comment" id={commentView.comment.id} />
         </CustomIonItem>
       </SlidingNestedCommentVote>
     </AnimateHeight>

@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import Scores from "./Scores";
 import {
   albumsOutline,
+  bookmarkOutline,
   chatbubbleOutline,
   eyeOffOutline,
 } from "ionicons/icons";
@@ -82,19 +83,25 @@ export default function Profile({ person }: ProfileProps) {
             <SettingLabel>Comments</SettingLabel>
           </InsetIonItem>
           {isSelf && (
-            <InsetIonItem
-              routerLink={buildGeneralBrowseLink(
-                `/u/${getHandle(person.person_view.person)}/hidden`
-              )}
-            >
-              <IonIcon icon={eyeOffOutline} color="primary" />{" "}
-              <SettingLabel>Hidden</SettingLabel>
-            </InsetIonItem>
+            <>
+              <InsetIonItem
+                routerLink={buildGeneralBrowseLink(
+                  `/u/${getHandle(person.person_view.person)}/saved`
+                )}
+              >
+                <IonIcon icon={bookmarkOutline} color="primary" />{" "}
+                <SettingLabel>Saved</SettingLabel>
+              </InsetIonItem>
+              <InsetIonItem
+                routerLink={buildGeneralBrowseLink(
+                  `/u/${getHandle(person.person_view.person)}/hidden`
+                )}
+              >
+                <IonIcon icon={eyeOffOutline} color="primary" />{" "}
+                <SettingLabel>Hidden</SettingLabel>
+              </InsetIonItem>
+            </>
           )}
-          {/* <InsetIonItem routerLink="/">
-            <IonIcon icon={bookmarkOutline} color="primary" />{" "}
-            <SettingLabel>Saved</SettingLabel>
-          </InsetIonItem> */}
         </IonList>
       </MaxWidthContainer>
     ),

@@ -3,6 +3,7 @@ import {
   IonIcon,
   useIonModal,
   useIonRouter,
+  useIonToast,
 } from "@ionic/react";
 import {
   arrowDownOutline,
@@ -25,6 +26,7 @@ import {
   hidePost,
   unhidePost,
   voteOnPost,
+  savePost,
 } from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -33,6 +35,7 @@ import { ActionButton } from "../actions/ActionButton";
 import { css } from "@emotion/react";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
+import { saveError, voteError } from "../../../helpers/toastMessages";
 
 interface MoreActionsProps {
   post: PostView;
@@ -40,6 +43,7 @@ interface MoreActionsProps {
 }
 
 export default function MoreActions({ post, className }: MoreActionsProps) {
+  const [present] = useIonToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -56,8 +60,10 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   });
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
+  const postSavedById = useAppSelector((state) => state.post.postSavedById);
 
   const myVote = postVotesById[post.post.id] ?? post.my_vote;
+  const mySaved = postSavedById[post.post.id] ?? post.saved;
 
   const buttons = useMemo(
     () =>
@@ -73,7 +79,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
           icon: arrowDownOutline,
         },
         {
-          text: "Save",
+          text: !mySaved ? "Save" : "Unsave",
           role: "save",
           icon: bookmarkOutline,
         },
@@ -112,7 +118,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
           role: "cancel",
         },
       ].filter(notEmpty),
-    [isHidden, myVote, post.community, post.creator]
+    [isHidden, myVote, mySaved, post.community, post.creator]
   );
 
   return (
@@ -139,18 +145,39 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             case "upvote": {
               if (presentLoginIfNeeded()) return;
 
-              dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
+              try {
+                await dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
+              } catch (error) {
+                present(voteError);
+
+                throw error;
+              }
               break;
             }
             case "downvote": {
               if (presentLoginIfNeeded()) return;
 
-              dispatch(voteOnPost(post.post.id, myVote === -1 ? 0 : -1));
+              try {
+                await dispatch(
+                  voteOnPost(post.post.id, myVote === -1 ? 0 : -1)
+                );
+              } catch (error) {
+                present(voteError);
+
+                throw error;
+              }
               break;
             }
             case "save": {
               if (presentLoginIfNeeded()) return;
-              // TODO
+
+              try {
+                await dispatch(savePost(post.post.id, !mySaved));
+              } catch (error) {
+                present(saveError);
+
+                throw error;
+              }
               break;
             }
             case "reply": {
