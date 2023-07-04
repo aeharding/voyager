@@ -1,25 +1,12 @@
-import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { get, set } from "../storage";
-import { merge } from "lodash";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { RootState } from "../../../store";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "../../../helpers/lemmy";
-
-const STORAGE_KEYS = {
-  FONT: {
-    FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
-    USE_SYSTEM: "appearance--font-use-system",
-  },
-  COMMENTS: {
-    COLLAPSE_COMMENT_THREADS: "appearance--collapse-comment-threads",
-  },
-  POSTS: {
-    TYPE: "appearance--post-type",
-  },
-  DARK: {
-    USE_SYSTEM: "appearance--dark-use-system",
-    USER_MODE: "appearance--dark-user-mode",
-  },
-} as const;
+import { db } from "../../../services/db";
 
 export const OPostAppearanceType = {
   Compact: "compact",
@@ -72,23 +59,6 @@ const initialState: AppearanceState = {
   },
 };
 
-const stateFromStorage: AppearanceState = merge(initialState, {
-  font: {
-    fontSizeMultiplier: get(STORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
-    useSystemFontSize: get(STORAGE_KEYS.FONT.USE_SYSTEM),
-  },
-  comments: {
-    collapseCommentThreads: get(STORAGE_KEYS.COMMENTS.COLLAPSE_COMMENT_THREADS),
-  },
-  posts: {
-    type: get(STORAGE_KEYS.POSTS.TYPE),
-  },
-  dark: {
-    usingSystemDarkMode: get(STORAGE_KEYS.DARK.USE_SYSTEM),
-    userDarkMode: get(STORAGE_KEYS.DARK.USER_MODE),
-  },
-});
-
 export const defaultCommentDepthSelector = createSelector(
   [(state: RootState) => state.appearance.comments.collapseCommentThreads],
   (collapseCommentThreads): number => {
@@ -103,42 +73,79 @@ export const defaultCommentDepthSelector = createSelector(
 
 export const appearanceSlice = createSlice({
   name: "appearance",
-  initialState: stateFromStorage,
+  initialState,
+  extraReducers: (builder) => {
+    builder.addCase(
+      fetchSettingsFromStorage.fulfilled,
+      (_, action: PayloadAction<AppearanceState>) => action.payload
+    );
+  },
   reducers: {
     setFontSizeMultiplier(state, action: PayloadAction<number>) {
       state.font.fontSizeMultiplier = action.payload;
 
-      set(STORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER, action.payload);
+      db.setSetting("font_size_multiplier", action.payload);
     },
     setUseSystemFontSize(state, action: PayloadAction<boolean>) {
       state.font.useSystemFontSize = action.payload;
 
-      set(STORAGE_KEYS.FONT.USE_SYSTEM, action.payload);
+      db.setSetting("use_system_font_size", action.payload);
     },
     setCommentsCollapsed(state, action: PayloadAction<CommentThreadCollapse>) {
       state.comments.collapseCommentThreads = action.payload;
 
-      set(STORAGE_KEYS.COMMENTS.COLLAPSE_COMMENT_THREADS, action.payload);
+      db.setSetting("collapse_comment_threads", action.payload);
     },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.posts.type = action.payload;
 
-      set(STORAGE_KEYS.POSTS.TYPE, action.payload);
+      db.setSetting("post_appearance_type", action.payload);
     },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
 
-      set(STORAGE_KEYS.DARK.USER_MODE, action.payload);
+      db.setSetting("user_dark_mode", action.payload);
     },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.usingSystemDarkMode = action.payload;
 
-      set(STORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
+      db.setSetting("use_system_dark_mode", action.payload);
     },
 
     resetAppearance: () => initialState,
   },
 });
+
+export const fetchSettingsFromStorage = createAsyncThunk<AppearanceState>(
+  "appearance/fetchSettingsFromStorage",
+  async () => {
+    const font_size_multiplier = await db.getSetting("font_size_multiplier");
+    const use_system_font_size = await db.getSetting("use_system_font_size");
+    const collapse_comment_threads = await db.getSetting(
+      "collapse_comment_threads"
+    );
+    const post_appearance_type = await db.getSetting("post_appearance_type");
+    const use_system_dark_mode = await db.getSetting("use_system_dark_mode");
+    const user_dark_mode = await db.getSetting("user_dark_mode");
+
+    return {
+      font: {
+        fontSizeMultiplier: font_size_multiplier,
+        useSystemFontSize: use_system_font_size,
+      },
+      comments: {
+        collapseCommentThreads: collapse_comment_threads,
+      },
+      posts: {
+        type: post_appearance_type,
+      },
+      dark: {
+        usingSystemDarkMode: use_system_dark_mode,
+        userDarkMode: user_dark_mode,
+      },
+    };
+  }
+);
 
 export const {
   setFontSizeMultiplier,
