@@ -51,7 +51,10 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
           }
         }}
         header="Sort by..."
-        buttons={BUTTONS}
+        buttons={BUTTONS.map((b) => ({
+          ...b,
+          role: sort === b.data ? "selected" : undefined,
+        }))}
       />
     </>
   );

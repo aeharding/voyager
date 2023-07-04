@@ -22,10 +22,7 @@ import { CommentView } from "lemmy-js-client";
 import { useContext, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { handleSelector, jwtSelector } from "../auth/authSlice";
-import { PageContext } from "../auth/PageContext";
-import Login from "../auth/Login";
-import CommentReply from "./reply/CommentReply";
+import { handleSelector } from "../auth/authSlice";
 import {
   getHandle,
   getRemoteHandle,
@@ -34,10 +31,10 @@ import {
 import { deleteComment, voteOnComment } from "./commentSlice";
 import styled from "@emotion/styled";
 import { notEmpty } from "../../helpers/array";
-import CommentEditing from "./edit/CommentEdit";
 import useCollapseRootComment from "./useCollapseRootComment";
 import { FeedContext } from "../feed/FeedContext";
 import SelectText from "../../pages/shared/SelectTextModal";
+import { PageContext } from "../auth/PageContext";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -55,7 +52,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const jwt = useAppSelector(jwtSelector);
   const { refresh: refreshPost } = useContext(FeedContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
@@ -63,25 +59,12 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
   const router = useIonRouter();
 
-  const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
-
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => {
-      if (role === "post") refreshPost();
-      onDismissReply(data, role);
-    },
-    item: comment,
-  });
-
-  const [edit, onDismissEdit] = useIonModal(CommentEditing, {
-    onDismiss: (data: string, role: string) => {
-      onDismissEdit(data, role);
-    },
-    item: comment,
-  });
+  const {
+    page,
+    presentLoginIfNeeded,
+    presentCommentReply,
+    presentCommentEdit,
+  } = useContext(PageContext);
 
   const [selectText, onDismissSelectText] = useIonModal(SelectText, {
     text: comment.comment.content,
@@ -177,23 +160,23 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
           switch (e.detail.role) {
             case "upvote":
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
               dispatch(voteOnComment(comment.comment.id, myVote === 1 ? 0 : 1));
               break;
             case "downvote":
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
               dispatch(
                 voteOnComment(comment.comment.id, myVote === -1 ? 0 : -1)
               );
               break;
             case "save":
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
               // TODO
               break;
             case "edit":
-              edit({ presentingElement: pageContext.page });
+              presentCommentEdit(comment);
               break;
             case "delete":
               try {
@@ -216,14 +199,17 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
                 color: "primary",
               });
               break;
-            case "reply":
-              if (!jwt) return login({ presentingElement: pageContext.page });
+            case "reply": {
+              if (presentLoginIfNeeded()) return;
 
-              reply({ presentingElement: pageContext.page });
+              const replied = await presentCommentReply(comment);
+
+              if (replied) refreshPost();
               break;
+            }
             case "select-text":
               return selectText({
-                presentingElement: pageContext.page,
+                presentingElement: page,
               });
             case "person":
               router.push(

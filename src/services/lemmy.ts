@@ -1,9 +1,10 @@
 import { LemmyHttp } from "lemmy-js-client";
+import { reduceFileSize } from "../helpers/imageCompress";
 
 function buildBaseUrl(url: string): string {
-  if (url === "lemmy.world") {
-    return `https://lemmy.world`;
-  }
+  // if (url === "lemmy.world") {
+  //   return `https://lemmy.world`;
+  // }
 
   return `${location.origin}/api/${url}`;
 }
@@ -24,9 +25,17 @@ const PICTRS_URL = "/pictrs/image";
  * @returns relative pictrs URL
  */
 export async function uploadImage(url: string, auth: string, image: File) {
+  const compressedImageIfNeeded = await reduceFileSize(
+    image,
+    990_000, // 990 kB - Lemmy's default limit is 1MB
+    1500,
+    1500,
+    0.85
+  );
+
   const formData = new FormData();
 
-  formData.append("images[]", image);
+  formData.append("images[]", compressedImageIfNeeded);
 
   const response = await fetch(
     `${buildBaseUrl(url)}${PICTRS_URL}?${new URLSearchParams({ auth })}`,

@@ -103,7 +103,9 @@ We would also appreciate sponsoring other contributors to wefwef. If someone hel
 
 ## 🧑‍💻 Contributing
 
-We're really excited that you're interested in contributing to wefwef! Before submitting your contribution, please read through the following guide.
+We're really excited that you're interested in contributing to wefwef!
+
+> **NOTE** wefwef is receiving a lot of new users and interest in contributing. Before contributing, [please read this](https://github.com/aeharding/wefwef/discussions/180). 🙂
 
 ### Local Setup
 
@@ -144,4 +146,4 @@ wefwef works best added to the homescreen. There are certain features that only 
 
 ## 📄 License
 
-[MIT](./LICENSE) &copy; wefwef contributors
+[AGPL-3.0](./LICENSE) &copy; wefwef contributors

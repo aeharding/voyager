@@ -101,6 +101,7 @@ app.use(
     router: (req) => `https://${req.params.actor}`,
     changeOrigin: true,
     secure: true,
+    xfwd: true,
     pathRewrite: (path) => path.split("/").slice(3).join("/"),
     onProxyReq: (clientReq, req) => {
       clientReq.setHeader(

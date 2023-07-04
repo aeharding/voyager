@@ -32,5 +32,8 @@ jobs:
       - name: 📝 Lint
         run: yarn lint
 
+      - name: 📝 Prettier formatting
+        run: yarn lint:formatting
+
       - name: 💪 Type check
         run: yarn test:typecheck

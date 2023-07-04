@@ -10,22 +10,29 @@ import {
   arrowUpOutline,
   bookmarkOutline,
   ellipsisHorizontal,
+  eyeOffOutline,
+  eyeOutline,
   peopleOutline,
   personOutline,
   shareOutline,
   textOutline,
 } from "ionicons/icons";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { PageContext } from "../../auth/PageContext";
-import Login from "../../auth/Login";
 import { PostView } from "lemmy-js-client";
-import { voteOnPost } from "../postSlice";
+import {
+  postHiddenByIdSelector,
+  hidePost,
+  unhidePost,
+  voteOnPost,
+} from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import CommentReply from "../../comment/reply/CommentReply";
-import { jwtSelector } from "../../auth/authSlice";
 import SelectText from "../../../pages/shared/SelectTextModal";
+import { ActionButton } from "../actions/ActionButton";
+import { css } from "@emotion/react";
+import { notEmpty } from "../../../helpers/array";
+import { PageContext } from "../../auth/PageContext";
 
 interface MoreActionsProps {
   post: PostView;
@@ -36,19 +43,12 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const jwt = useAppSelector(jwtSelector);
+  const isHidden = useAppSelector(postHiddenByIdSelector)[post.post.id];
 
   const router = useIonRouter();
 
-  const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
-
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => onDismissReply(data, role),
-    item: post,
-  });
+  const { page, presentLoginIfNeeded, presentCommentReply } =
+    useContext(PageContext);
 
   const [selectText, onDismissSelectText] = useIonModal(SelectText, {
     text: post.post.body,
@@ -59,92 +59,105 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
 
   const myVote = postVotesById[post.post.id] ?? post.my_vote;
 
+  const buttons = useMemo(
+    () =>
+      [
+        {
+          text: myVote !== 1 ? "Upvote" : "Undo Upvote",
+          role: "upvote",
+          icon: arrowUpOutline,
+        },
+        {
+          text: myVote !== -1 ? "Downvote" : "Undo Downvote",
+          role: "downvote",
+          icon: arrowDownOutline,
+        },
+        {
+          text: "Save",
+          role: "save",
+          icon: bookmarkOutline,
+        },
+        {
+          text: "Reply",
+          role: "reply",
+          icon: arrowUndoOutline,
+        },
+        {
+          text: getHandle(post.creator),
+          role: "person",
+          icon: personOutline,
+        },
+        {
+          text: getHandle(post.community),
+          role: "community",
+          icon: peopleOutline,
+        },
+        {
+          text: "Select Text",
+          role: "select",
+          icon: textOutline,
+        },
+        {
+          text: isHidden ? "Unhide" : "Hide",
+          role: isHidden ? "unhide" : "hide",
+          icon: isHidden ? eyeOutline : eyeOffOutline,
+        },
+        {
+          text: "Share",
+          role: "share",
+          icon: shareOutline,
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ].filter(notEmpty),
+    [isHidden, myVote, post.community, post.creator]
+  );
+
   return (
     <>
-      <IonIcon
-        className={className}
-        icon={ellipsisHorizontal}
+      <ActionButton
+        css={css`
+          margin-right: 3px;
+        `}
         onClick={(e) => {
           e.stopPropagation();
           setOpen(true);
         }}
-      />
-
+      >
+        <IonIcon className={className} icon={ellipsisHorizontal} />
+      </ActionButton>
       <IonActionSheet
         cssClass="left-align-buttons"
         isOpen={open}
-        onClick={(e) => e.stopPropagation()}
-        buttons={[
-          {
-            text: myVote !== 1 ? "Upvote" : "Undo Upvote",
-            role: "upvote",
-            icon: arrowUpOutline,
-          },
-          {
-            text: myVote !== -1 ? "Downvote" : "Undo Downvote",
-            role: "downvote",
-            icon: arrowDownOutline,
-          },
-          {
-            text: "Save",
-            role: "save",
-            icon: bookmarkOutline,
-          },
-          {
-            text: "Reply",
-            role: "reply",
-            icon: arrowUndoOutline,
-          },
-          {
-            text: getHandle(post.creator),
-            role: "person",
-            icon: personOutline,
-          },
-          {
-            text: getHandle(post.community),
-            role: "community",
-            icon: peopleOutline,
-          },
-          {
-            text: "Select Text",
-            role: "select",
-            icon: textOutline,
-          },
-          {
-            text: "Share",
-            role: "share",
-            icon: shareOutline,
-          },
-          {
-            text: "Cancel",
-            role: "cancel",
-          },
-        ]}
+        buttons={buttons}
         onWillDismiss={async (e) => {
           setOpen(false);
 
           switch (e.detail.role) {
             case "upvote": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
               dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
               break;
             }
             case "downvote": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
               dispatch(voteOnPost(post.post.id, myVote === -1 ? 0 : -1));
               break;
             }
             case "save": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
               // TODO
               break;
             }
             case "reply": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
-              reply({ presentingElement: pageContext.page });
+              // Not viewing comments, so no feed update
+              presentCommentReply(post);
 
               break;
             }
@@ -163,7 +176,21 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
               break;
             }
             case "select": {
-              return selectText({ presentingElement: pageContext.page });
+              return selectText({ presentingElement: page });
+            }
+            case "hide": {
+              if (presentLoginIfNeeded()) return;
+
+              dispatch(hidePost(post.post.id));
+
+              break;
+            }
+            case "unhide": {
+              if (presentLoginIfNeeded()) return;
+
+              dispatch(unhidePost(post.post.id));
+
+              break;
             }
             case "share": {
               navigator.share({ url: post.post.url ?? post.post.ap_id });
