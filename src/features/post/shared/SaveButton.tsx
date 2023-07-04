@@ -41,13 +41,13 @@ export function SaveButton({ postId }: SaveButtonProps) {
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
   const mySaved = postSavedById[postId];
 
-  function onSavePost(e: MouseEvent) {
+  async function onSavePost(e: MouseEvent) {
     e.stopPropagation();
 
     if (!jwt) return login({ presentingElement: pageContext.page });
 
     try {
-      dispatch(savePost(postId, !postSavedById[postId]));
+      await dispatch(savePost(postId, !postSavedById[postId]));
     } catch (error) {
       present(saveError);
 
