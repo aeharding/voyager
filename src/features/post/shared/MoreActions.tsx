@@ -97,7 +97,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
           role: "select",
           icon: textOutline,
         },
-        jwt && {
+        {
           text: isHidden ? "Unhide" : "Hide",
           role: isHidden ? "unhide" : "hide",
           icon: isHidden ? eyeOutline : eyeOffOutline,
@@ -112,7 +112,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
           role: "cancel",
         },
       ].filter(notEmpty),
-    [isHidden, jwt, myVote, post.community, post.creator]
+    [isHidden, myVote, post.community, post.creator]
   );
 
   return (
@@ -179,11 +179,15 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
               return selectText({ presentingElement: page });
             }
             case "hide": {
+              if (presentLoginIfNeeded()) return;
+
               dispatch(hidePost(post.post.id));
 
               break;
             }
             case "unhide": {
+              if (presentLoginIfNeeded()) return;
+
               dispatch(unhidePost(post.post.id));
 
               break;

@@ -1,14 +1,10 @@
-import { useIonModal } from "@ionic/react";
 import { arrowUndo, eyeOffOutline, eyeOutline } from "ionicons/icons";
-import { arrowUndo } from "ionicons/icons";
 import React, { useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentView, PostView } from "lemmy-js-client";
 import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import { useAppSelector } from "../../../store";
-import { jwtSelector } from "../../auth/authSlice";
-import Login from "../../auth/Login";
 import { postHiddenByIdSelector } from "../../post/postSlice";
 import { PageContext } from "../../auth/PageContext";
 
@@ -26,13 +22,14 @@ export default function SlidingVote({
   onHide,
 }: SlidingVoteProps) {
   const { refresh: refreshPost } = useContext(FeedContext);
-  const pageContext = useContext(PageContext);
   const isHidden = useAppSelector(postHiddenByIdSelector)[item.post?.id];
 
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
 
   const endActions = useMemo(() => {
-    const actionsList = [
+    const actionsList:
+      | [SlidingItemAction, SlidingItemAction]
+      | [SlidingItemAction] = [
       {
         render: arrowUndo,
         trigger: async () => {
@@ -49,15 +46,24 @@ export default function SlidingVote({
     if ("post" in item) {
       actionsList.push({
         render: isHidden ? eyeOutline : eyeOffOutline,
-        trigger: onHide,
+        trigger: () => {
+          if (presentLoginIfNeeded()) return;
+
+          onHide();
+        },
         bgColor: isHidden ? "tertiary" : "danger",
       });
     }
 
-    return actionsList as
-      | [SlidingItemAction, SlidingItemAction]
-      | [SlidingItemAction];
-  }, [isHidden, presentLoginIfNeeded, presentCommentReply, item, refreshPost]);
+    return actionsList;
+  }, [
+    item,
+    presentLoginIfNeeded,
+    presentCommentReply,
+    refreshPost,
+    isHidden,
+    onHide,
+  ]);
 
   return (
     <BaseSlidingVote endActions={endActions} className={className} item={item}>
