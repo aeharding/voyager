@@ -35,16 +35,23 @@ export default function buildCommunityPlugin(connectedInstance: string) {
 
             const before = value.slice(lastIndex, start);
 
+            const atDomain =
+              connectedInstance === handleDomain ? "" : `@${handleDomain}`;
+            const url =
+              `https://${connectedInstance}/c/${communityHandle}${atDomain}`;
+
+            // Prevents double-nesting of links.
+            if (parent.type === "link" && parent.url === url) {
+              continue
+            }
+
             if (before) {
               newTextNodes.push({ type: "text", value: before });
             }
 
-            const atDomain =
-              connectedInstance === handleDomain ? "" : `@${handleDomain}`;
-
             const linkNode: CustomLink = {
               type: "link",
-              url: `https://${connectedInstance}/c/${communityHandle}${atDomain}`,
+              url,
               children: [
                 {
                   type: "text",
