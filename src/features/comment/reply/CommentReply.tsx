@@ -122,9 +122,10 @@ export default function CommentReply({
       color: "success",
     });
 
-    // TODO is there a way to avoid a timeout here?
     setCanDismiss(true);
-    setTimeout(() => dismiss(true), 100);
+    // TODO is there a way to avoid a timeout here?
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    dismiss(true);
   }
 
   useEffect(() => {
