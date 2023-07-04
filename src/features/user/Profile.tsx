@@ -7,6 +7,7 @@ import {
   bookmarkOutline,
   chatbubbleOutline,
   eyeOffOutline,
+  mail,
 } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
@@ -102,6 +103,14 @@ export default function Profile({ person }: ProfileProps) {
               </InsetIonItem>
             </>
           )}
+          <InsetIonItem
+            routerLink={`/inbox/messages/${getHandle(
+              person.person_view.person
+            )}`}
+          >
+            <IonIcon icon={mail} color="primary" />{" "}
+            <SettingLabel>Send message</SettingLabel>
+          </InsetIonItem>
         </IonList>
       </MaxWidthContainer>
     ),
