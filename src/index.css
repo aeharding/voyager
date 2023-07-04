@@ -77,12 +77,6 @@ ion-action-sheet .action-sheet-selected .action-sheet-button-inner::after {
   height: 24px;
 }
 
-ion-icon {
-  /* Fixes ionicon appearing jagged in safari/webkit browsers. 
-  This workaround can be removed if this issue is resolved: https://github.com/ionic-team/ionicons/issues/1176 */
-  -webkit-transform: translate3d(0, 0, 0);
-}
-
 ion-action-sheet
   .action-sheet-selected.detail
   .action-sheet-button-inner::after {
