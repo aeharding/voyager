@@ -103,6 +103,12 @@ export default function SettingsPage() {
             </IconBg>
             <SettingLabel>Migrate Apollo export</SettingLabel>
           </InsetIonItem>
+          <InsetIonItem routerLink="/settings/reddit-data-migrate">
+            <IconBg color="color(display-p3 0.5 0 0)">
+              <IonIcon icon={bagCheckOutline} />
+            </IconBg>
+            <SettingLabel>Migrate Reddit export</SettingLabel>
+          </InsetIonItem>
         </IonList>
 
         <IonList inset color="primary">

@@ -50,6 +50,7 @@ import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
+import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
 import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
@@ -345,6 +346,9 @@ export default function TabbedRoutes() {
           </Route>
           <Route exact path="/settings/apollo-migrate">
             <ApolloMigratePage />
+          </Route>
+          <Route exact path="/settings/reddit-data-migrate">
+            <RedditMigratePage />
           </Route>
           <Route exact path="/settings/apollo-migrate/:search">
             <SearchCommunitiesPage />
