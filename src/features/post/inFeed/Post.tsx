@@ -94,11 +94,7 @@ export default function Post(props: PostProps) {
           href={undefined}
         >
           {postBody}
-          <Save
-            type="post"
-            id={props.post.post.id}
-            savedFromServer={props.post.saved}
-          />
+          <Save type="post" id={props.post.post.id} />
         </CustomIonItem>
       </SlidingVote>
     </AnimateHeight>

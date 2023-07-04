@@ -200,7 +200,6 @@ export default function LargePost({ post, communityMode }: PostProps) {
             stats={post.counts}
             voteFromServer={post.my_vote}
             published={post.post.published}
-            savedFromServer={post.saved}
           />
         </LeftDetails>
         <RightDetails onClick={(e) => e.stopPropagation()}>

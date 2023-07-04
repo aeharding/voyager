@@ -35,6 +35,10 @@ export const commentSlice = createSlice({
           state.commentVotesById[comment.comment.id] = comment.my_vote as
             | 1
             | -1;
+
+        if (comment.saved) {
+          state.commentSavedById[comment.comment.id] = comment.saved;
+        }
       }
     },
 

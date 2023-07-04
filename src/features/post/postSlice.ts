@@ -63,7 +63,7 @@ export const postSlice = createSlice({
           if (post.my_vote)
             state.postVotesById[post.post.id] = post.my_vote as 1 | -1;
 
-          state.postSavedById[post.post.id] = post.saved;
+          if (post.saved) state.postSavedById[post.post.id] = post.saved;
         }
       })
       .addCase(updatePostHidden.fulfilled, (state, action) => {

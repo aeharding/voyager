@@ -14,7 +14,6 @@ const Container = styled.div`
 interface PreviewStatsProps {
   stats: PostAggregates;
   voteFromServer: number | undefined;
-  savedFromServer: boolean;
   published: string;
 }
 

@@ -8,7 +8,7 @@ export const voteError: ToastOptions = {
 };
 
 export const saveError: ToastOptions = {
-  message: "Problem saving. Please try again.",
+  message: "Problem bookmarking. Please try again.",
   duration: 3500,
   position: "bottom",
   color: "danger",

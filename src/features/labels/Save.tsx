@@ -19,17 +19,14 @@ const Marker = styled.div`
 interface SaveProps {
   type: "comment" | "post";
   id: number;
-  savedFromServer: boolean;
 }
 
-export default function Save({ type, id, savedFromServer }: SaveProps) {
+export default function Save({ type, id }: SaveProps) {
   const savedById = useAppSelector((state) =>
     type === "comment"
       ? state.comment.commentSavedById
       : state.post.postSavedById
   );
 
-  const mySaved = savedById[id] ?? savedFromServer;
-
-  return mySaved ? <Marker /> : null;
+  return savedById[id] ? <Marker /> : null;
 }
