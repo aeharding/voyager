@@ -1,14 +1,13 @@
-import { useIonModal, useIonToast } from "@ionic/react";
+import { useIonToast } from "@ionic/react";
 import { arrowUndo, mailUnread } from "ionicons/icons";
 import React, { useCallback, useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentReplyView, PersonMentionView } from "lemmy-js-client";
-import CommentReply from "../../comment/reply/CommentReply";
-import { PageContext } from "../../auth/PageContext";
 import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { useAppDispatch, useAppSelector } from "../../../store";
+import { PageContext } from "../../auth/PageContext";
 
 interface SlidingInboxProps {
   children: React.ReactNode;
@@ -24,18 +23,10 @@ export default function SlidingInbox({
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const { refresh: refreshPost } = useContext(FeedContext);
-  const pageContext = useContext(PageContext);
+  const { presentCommentReply } = useContext(PageContext);
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId
   );
-
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => {
-      if (role === "post") refreshPost();
-      onDismissReply(data, role);
-    },
-    item,
-  });
 
   const markUnread = useCallback(async () => {
     try {
@@ -61,11 +52,14 @@ export default function SlidingInbox({
       },
       {
         render: arrowUndo,
-        trigger: () => reply({ presentingElement: pageContext.page }),
+        trigger: async () => {
+          const replied = await presentCommentReply(item);
+          if (replied) refreshPost();
+        },
         bgColor: "primary",
       },
     ];
-  }, [markUnread, pageContext.page, reply]);
+  }, [item, markUnread, presentCommentReply, refreshPost]);
 
   return (
     <BaseSlidingVote endActions={endActions} className={className} item={item}>

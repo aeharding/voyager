@@ -1,15 +1,13 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
-import Login from "../../auth/Login";
+import { IonIcon, useIonToast } from "@ionic/react";
 import { useContext } from "react";
-import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { voteOnPost } from "../postSlice";
 import { css } from "@emotion/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
-import { jwtSelector } from "../../auth/authSlice";
+import { PageContext } from "../../auth/PageContext";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -34,11 +32,7 @@ interface VoteButtonProps {
 export function VoteButton({ type, postId }: VoteButtonProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
-  const jwt = useAppSelector(jwtSelector);
+  const { presentLoginIfNeeded } = useContext(PageContext);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const myVote = postVotesById[postId];
@@ -76,7 +70,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
       onClick={async (e) => {
         e.stopPropagation();
 
-        if (!jwt) return login({ presentingElement: pageContext.page });
+        if (presentLoginIfNeeded()) return;
 
         try {
           await dispatch(

@@ -5,7 +5,6 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonModal,
   useIonViewWillEnter,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
@@ -18,31 +17,22 @@ import {
   mail,
   personCircleOutline,
 } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppDispatch } from "../../store";
 import { getInboxCounts } from "../../features/inbox/inboxSlice";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../features/auth/PageContext";
-import Login from "../../features/auth/Login";
-import { jwtSelector } from "../../features/auth/authSlice";
 
 export default function BoxesPage() {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector(jwtSelector);
 
-  const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
+  const { presentLoginIfNeeded } = useContext(PageContext);
 
   useIonViewWillEnter(() => {
     dispatch(getInboxCounts());
   });
 
   function interceptIfLoggedOut(e: MouseEvent) {
-    if (jwt) return;
-
-    e.preventDefault();
-    login({ presentingElement: pageContext.page });
+    if (presentLoginIfNeeded()) e.preventDefault();
   }
 
   return (
