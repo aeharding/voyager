@@ -1,16 +1,16 @@
 import { useIonModal } from "@ionic/react";
 import { arrowUndo, eyeOffOutline, eyeOutline } from "ionicons/icons";
+import { arrowUndo } from "ionicons/icons";
 import React, { useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentView, PostView } from "lemmy-js-client";
-import CommentReply from "../../comment/reply/CommentReply";
-import { PageContext } from "../../auth/PageContext";
 import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import { useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
 import Login from "../../auth/Login";
 import { postHiddenByIdSelector } from "../../post/postSlice";
+import { PageContext } from "../../auth/PageContext";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -27,34 +27,26 @@ export default function SlidingVote({
 }: SlidingVoteProps) {
   const { refresh: refreshPost } = useContext(FeedContext);
   const pageContext = useContext(PageContext);
-  const jwt = useAppSelector(jwtSelector);
   const isHidden = useAppSelector(postHiddenByIdSelector)[item.post?.id];
-  const [login, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
 
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => {
-      if (role === "post") refreshPost();
-      onDismissReply(data, role);
-    },
-    item,
-  });
+  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
 
   const endActions = useMemo(() => {
     const actionsList = [
       {
         render: arrowUndo,
-        trigger: () => {
-          if (!jwt) return login({ presentingElement: pageContext.page });
+        trigger: async () => {
+          if (presentLoginIfNeeded()) return;
 
-          reply({ presentingElement: pageContext.page });
+          const replied = await presentCommentReply(item);
+
+          if (replied) refreshPost();
         },
         bgColor: "primary",
       },
     ];
 
-    if (jwt && "post" in item) {
+    if ("post" in item) {
       actionsList.push({
         render: isHidden ? eyeOutline : eyeOffOutline,
         trigger: onHide,
@@ -65,7 +57,7 @@ export default function SlidingVote({
     return actionsList as
       | [SlidingItemAction, SlidingItemAction]
       | [SlidingItemAction];
-  }, [isHidden, item, jwt, login, onHide, pageContext.page, reply]);
+  }, [isHidden, presentLoginIfNeeded, presentCommentReply, item, refreshPost]);
 
   return (
     <BaseSlidingVote endActions={endActions} className={className} item={item}>

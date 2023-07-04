@@ -6,7 +6,6 @@ import {
   IonContent,
   IonToolbar,
   IonTitle,
-  IonPage,
   useIonToast,
   IonText,
 } from "@ionic/react";
@@ -16,7 +15,7 @@ import {
   PersonMentionView,
   PostView,
 } from "lemmy-js-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../helpers/useClient";
 import { useAppSelector } from "../../../store";
@@ -60,12 +59,23 @@ const TitleContainer = styled.div`
   line-height: 1;
 `;
 
+export type CommentReplyItem =
+  | CommentView
+  | PostView
+  | PersonMentionView
+  | CommentReplyView;
+
 type CommentReplyProps = {
-  onDismiss: (data?: string, role?: string) => void;
-  item: CommentView | PostView | PersonMentionView | CommentReplyView;
+  dismiss: (replied: boolean) => void;
+  setCanDismiss: (canDismiss: boolean) => void;
+  item: CommentReplyItem;
 };
 
-export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
+export default function CommentReply({
+  dismiss,
+  setCanDismiss,
+  item,
+}: CommentReplyProps) {
   const comment = "comment" in item ? item.comment : undefined;
 
   const [replyContent, setReplyContent] = useState("");
@@ -112,15 +122,21 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
       color: "success",
     });
 
-    onDismiss(undefined, "post");
+    // TODO is there a way to avoid a timeout here?
+    setCanDismiss(true);
+    setTimeout(() => dismiss(true), 100);
   }
 
+  useEffect(() => {
+    setCanDismiss(!replyContent);
+  }, [replyContent, setCanDismiss]);
+
   return (
-    <IonPage>
+    <>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => onDismiss()}>
+            <IonButton color="medium" onClick={() => dismiss(false)}>
               Cancel
             </IonButton>
           </IonButtons>
@@ -156,6 +172,6 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
           <ItemReplyingTo item={item} />
         </Container>
       </IonContent>
-    </IonPage>
+    </>
   );
 }

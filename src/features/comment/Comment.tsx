@@ -11,7 +11,6 @@ import { ignoreSsrFlag } from "../../helpers/emotion";
 import Vote from "../labels/Vote";
 import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
-import useKeyPressed from "../../helpers/useKeyPressed";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
@@ -63,7 +62,11 @@ export const PositionedContainer = styled.div<{
     `}
 `;
 
-export const Container = styled.div<{ depth: number; highlighted?: boolean }>`
+export const Container = styled.div<{
+  depth: number;
+  highlighted?: boolean;
+  hidden?: boolean;
+}>`
   display: flex;
 
   position: relative;
@@ -100,6 +103,12 @@ export const Container = styled.div<{ depth: number; highlighted?: boolean }>`
       css`
         background: ${rainbowColors[depth % rainbowColors.length]};
       `}
+
+      ${({ hidden }) =>
+      hidden &&
+      css`
+        opacity: 0;
+      `}
   }
 `;
 
@@ -116,7 +125,7 @@ const StyledPersonLabel = styled(PersonLink)`
   color: var(--ion-text-color);
 `;
 
-const Content = styled.div<{ keyPressed: boolean }>`
+const Content = styled.div`
   padding-top: 0.35rem;
 
   @media (hover: none) {
@@ -124,12 +133,6 @@ const Content = styled.div<{ keyPressed: boolean }>`
   }
 
   line-height: 1.25;
-
-  ${({ keyPressed }) =>
-    keyPressed &&
-    css`
-      user-select: text;
-    `}
 
   > *:first-child ${ignoreSsrFlag} {
     &,
@@ -188,7 +191,6 @@ export default function Comment({
   rootIndex,
 }: CommentProps) {
   const commentById = useAppSelector((state) => state.comment.commentById);
-  const keyPressed = useKeyPressed();
   // eslint-disable-next-line no-undef
   const commentRef = useRef<HTMLIonItemElement>(null);
 
@@ -218,9 +220,7 @@ export default function Comment({
         <CustomIonItem
           routerLink={routerLink}
           href={undefined}
-          onClick={() => {
-            if (!keyPressed) onClick?.();
-          }}
+          onClick={() => onClick?.()}
           ref={commentRef}
         >
           <PositionedContainer
@@ -240,7 +240,11 @@ export default function Comment({
                   id={commentView.comment.id}
                   type="comment"
                 />
-                <div style={{ flex: 1 }} />
+                <div
+                  css={css`
+                    flex: 1;
+                  `}
+                />
                 {!collapsed ? (
                   <>
                     <CommentEllipsis
@@ -261,7 +265,6 @@ export default function Comment({
 
               <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
                 <Content
-                  keyPressed={keyPressed}
                   onClick={(e) => {
                     if (!(e.target instanceof HTMLElement)) return;
                     if (e.target.nodeName === "A") e.stopPropagation();
