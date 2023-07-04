@@ -241,11 +241,6 @@ export default function Comment({
                   id={commentView.comment.id}
                   type="comment"
                 />
-                <Save
-                  type="comment"
-                  id={commentView.comment.id}
-                  savedFromServer={commentView.saved}
-                />
                 <div style={{ flex: 1 }} />
                 <div
                   css={css`
@@ -283,6 +278,11 @@ export default function Comment({
               </AnimateHeight>
             </Container>
           </PositionedContainer>
+          <Save
+            type="comment"
+            id={commentView.comment.id}
+            savedFromServer={commentView.saved}
+          />
         </CustomIonItem>
       </SlidingNestedCommentVote>
     </AnimateHeight>

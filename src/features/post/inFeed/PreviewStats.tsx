@@ -4,7 +4,6 @@ import { chatbubbleOutline, timeOutline } from "ionicons/icons";
 import { PostAggregates } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
-import Save from "../../labels/Save";
 
 const Container = styled.div`
   display: flex;
@@ -22,7 +21,6 @@ interface PreviewStatsProps {
 export default function PreviewStats({
   stats,
   voteFromServer,
-  savedFromServer,
   published,
 }: PreviewStatsProps) {
   return (
@@ -37,8 +35,6 @@ export default function PreviewStats({
       {stats.comments}
       <IonIcon icon={timeOutline} />
       <Ago date={published} />
-
-      <Save type="post" id={stats.post_id} savedFromServer={savedFromServer} />
     </Container>
   );
 }

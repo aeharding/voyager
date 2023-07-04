@@ -4,7 +4,6 @@ import { happyOutline, timeOutline } from "ionicons/icons";
 import { PostAggregates } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
-import Save from "../../labels/Save";
 
 const Container = styled.div`
   display: flex;
@@ -25,7 +24,6 @@ interface StatsProps {
 export default function Stats({
   stats,
   voteFromServer,
-  savedFromServer,
   published,
 }: StatsProps) {
   return (
@@ -45,7 +43,6 @@ export default function Stats({
       %
       <IonIcon icon={timeOutline} />
       <Ago date={published} />
-      <Save type="post" id={stats.post_id} savedFromServer={savedFromServer} />
     </Container>
   );
 }

@@ -1,7 +1,20 @@
 import { useAppSelector } from "../../store";
-import { IonIcon } from "@ionic/react";
-import { bookmark } from "ionicons/icons";
-import { css } from "@emotion/react";
+import styled from "@emotion/styled";
+
+const Marker = styled.div`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+  --size: 18px;
+
+  width: 0;
+  height: 0;
+  border-left: var(--size) solid transparent;
+  border-right: 0 solid transparent;
+
+  border-bottom: var(--size) solid var(--ion-color-success);
+`;
 
 interface SaveProps {
   type: "comment" | "post";
@@ -18,12 +31,5 @@ export default function Save({ type, id, savedFromServer }: SaveProps) {
 
   const mySaved = savedById[id] ?? savedFromServer;
 
-  return mySaved ? (
-    <IonIcon
-      icon={bookmark}
-      css={css`
-        color: var(--ion-color-success);
-      `}
-    />
-  ) : null;
+  return mySaved ? <Marker /> : null;
 }

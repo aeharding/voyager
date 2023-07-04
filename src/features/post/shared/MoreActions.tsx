@@ -3,6 +3,7 @@ import {
   IonIcon,
   useIonModal,
   useIonRouter,
+  useIonToast,
 } from "@ionic/react";
 import {
   arrowDownOutline,
@@ -34,6 +35,7 @@ import { ActionButton } from "../actions/ActionButton";
 import { css } from "@emotion/react";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
+import { saveError, voteError } from "../../../helpers/toastMessages";
 
 interface MoreActionsProps {
   post: PostView;
@@ -41,6 +43,7 @@ interface MoreActionsProps {
 }
 
 export default function MoreActions({ post, className }: MoreActionsProps) {
+  const [present] = useIonToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -142,19 +145,39 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             case "upvote": {
               if (presentLoginIfNeeded()) return;
 
-              dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
+              try {
+                await dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
+              } catch (error) {
+                present(voteError);
+
+                throw error;
+              }
               break;
             }
             case "downvote": {
               if (presentLoginIfNeeded()) return;
 
-              dispatch(voteOnPost(post.post.id, myVote === -1 ? 0 : -1));
+              try {
+                await dispatch(
+                  voteOnPost(post.post.id, myVote === -1 ? 0 : -1)
+                );
+              } catch (error) {
+                present(voteError);
+
+                throw error;
+              }
               break;
             }
             case "save": {
               if (presentLoginIfNeeded()) return;
 
-              dispatch(savePost(post.post.id, !mySaved));
+              try {
+                await dispatch(savePost(post.post.id, !mySaved));
+              } catch (error) {
+                present(saveError);
+
+                throw error;
+              }
               break;
             }
             case "reply": {
