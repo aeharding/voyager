@@ -214,6 +214,12 @@ export default function TabbedRoutes() {
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Saved" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
         <ActorRedirect>
           <ProfileFeedHiddenPostsPage />

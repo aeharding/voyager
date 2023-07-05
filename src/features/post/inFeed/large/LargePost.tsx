@@ -16,6 +16,7 @@ import { AnnouncementIcon } from "../../detail/PostDetail";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
+import Save from "../../../labels/Save";
 
 const Container = styled.div`
   display: flex;
@@ -23,6 +24,8 @@ const Container = styled.div`
   width: 100%;
   gap: 0.75rem;
   padding: 0.75rem;
+
+  position: relative;
 
   ${maxWidthCss}
 `;
@@ -50,7 +53,7 @@ const RightDetails = styled.div`
   font-size: 1.5rem;
 
   > * {
-    padding: 0.5rem;
+    padding: 0.5rem !important;
   }
 `;
 
@@ -202,12 +205,14 @@ export default function LargePost({ post, communityMode }: PostProps) {
             published={post.post.published}
           />
         </LeftDetails>
-        <RightDetails onClick={(e) => e.stopPropagation()}>
-          <MoreActions post={post} />
+        <RightDetails>
+          <MoreActions post={post} onFeed />
           <VoteButton type="up" postId={post.post.id} />
           <VoteButton type="down" postId={post.post.id} />
         </RightDetails>
       </Details>
+
+      <Save type="post" id={post.post.id} />
     </Container>
   );
 }

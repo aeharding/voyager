@@ -1,8 +1,10 @@
 import {
   IonActionSheet,
+  IonButton,
   IonIcon,
   useIonModal,
   useIonRouter,
+  useIonToast,
 } from "@ionic/react";
 import {
   arrowDownOutline,
@@ -12,6 +14,7 @@ import {
   ellipsisHorizontal,
   eyeOffOutline,
   eyeOutline,
+  flagOutline,
   peopleOutline,
   personOutline,
   shareOutline,
@@ -25,21 +28,28 @@ import {
   hidePost,
   unhidePost,
   voteOnPost,
+  savePost,
 } from "../postSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import SelectText from "../../../pages/shared/SelectTextModal";
-import { ActionButton } from "../actions/ActionButton";
-import { css } from "@emotion/react";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
+import { saveError, voteError } from "../../../helpers/toastMessages";
+import { ActionButton } from "../actions/ActionButton";
 
 interface MoreActionsProps {
   post: PostView;
   className?: string;
+  onFeed?: boolean;
 }
 
-export default function MoreActions({ post, className }: MoreActionsProps) {
+export default function MoreActions({
+  post,
+  className,
+  onFeed,
+}: MoreActionsProps) {
+  const [present] = useIonToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -47,7 +57,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
 
   const router = useIonRouter();
 
-  const { page, presentLoginIfNeeded, presentCommentReply } =
+  const { page, presentLoginIfNeeded, presentCommentReply, presentReport } =
     useContext(PageContext);
 
   const [selectText, onDismissSelectText] = useIonModal(SelectText, {
@@ -56,8 +66,10 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
   });
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
+  const postSavedById = useAppSelector((state) => state.post.postSavedById);
 
   const myVote = postVotesById[post.post.id] ?? post.my_vote;
+  const mySaved = postSavedById[post.post.id] ?? post.saved;
 
   const buttons = useMemo(
     () =>
@@ -73,7 +85,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
           icon: arrowDownOutline,
         },
         {
-          text: "Save",
+          text: !mySaved ? "Save" : "Unsave",
           role: "save",
           icon: bookmarkOutline,
         },
@@ -97,41 +109,48 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
           role: "select",
           icon: textOutline,
         },
-        {
-          text: isHidden ? "Unhide" : "Hide",
-          role: isHidden ? "unhide" : "hide",
-          icon: isHidden ? eyeOutline : eyeOffOutline,
-        },
+        onFeed
+          ? {
+              text: isHidden ? "Unhide" : "Hide",
+              role: isHidden ? "unhide" : "hide",
+              icon: isHidden ? eyeOutline : eyeOffOutline,
+            }
+          : undefined,
         {
           text: "Share",
           role: "share",
           icon: shareOutline,
         },
         {
+          text: "Report",
+          role: "report",
+          icon: flagOutline,
+        },
+        {
           text: "Cancel",
           role: "cancel",
         },
       ].filter(notEmpty),
-    [isHidden, myVote, post.community, post.creator]
+    [isHidden, myVote, mySaved, post.community, post.creator, onFeed]
   );
+
+  const Button = onFeed ? ActionButton : IonButton;
 
   return (
     <>
-      <ActionButton
-        css={css`
-          margin-right: 3px;
-        `}
+      <Button
         onClick={(e) => {
           e.stopPropagation();
           setOpen(true);
         }}
       >
         <IonIcon className={className} icon={ellipsisHorizontal} />
-      </ActionButton>
+      </Button>
       <IonActionSheet
         cssClass="left-align-buttons"
         isOpen={open}
         buttons={buttons}
+        onClick={(e) => e.stopPropagation()}
         onWillDismiss={async (e) => {
           setOpen(false);
 
@@ -139,18 +158,39 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
             case "upvote": {
               if (presentLoginIfNeeded()) return;
 
-              dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
+              try {
+                await dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
+              } catch (error) {
+                present(voteError);
+
+                throw error;
+              }
               break;
             }
             case "downvote": {
               if (presentLoginIfNeeded()) return;
 
-              dispatch(voteOnPost(post.post.id, myVote === -1 ? 0 : -1));
+              try {
+                await dispatch(
+                  voteOnPost(post.post.id, myVote === -1 ? 0 : -1)
+                );
+              } catch (error) {
+                present(voteError);
+
+                throw error;
+              }
               break;
             }
             case "save": {
               if (presentLoginIfNeeded()) return;
-              // TODO
+
+              try {
+                await dispatch(savePost(post.post.id, !mySaved));
+              } catch (error) {
+                present(saveError);
+
+                throw error;
+              }
               break;
             }
             case "reply": {
@@ -196,6 +236,9 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
               navigator.share({ url: post.post.url ?? post.post.ap_id });
 
               break;
+            }
+            case "report": {
+              presentReport(post);
             }
           }
         }}

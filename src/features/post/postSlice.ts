@@ -17,7 +17,7 @@ interface PostState {
   postById: Dictionary<PostView>;
   postHiddenById: Dictionary<boolean>;
   postVotesById: Dictionary<1 | -1 | 0>;
-
+  postSavedById: Dictionary<boolean>;
   sort: SortType;
 }
 
@@ -25,6 +25,7 @@ const initialState: PostState = {
   postById: {},
   postHiddenById: {},
   postVotesById: {},
+  postSavedById: {},
   sort: get(POST_SORT_KEY) ?? POST_SORTS[0],
 };
 
@@ -37,6 +38,12 @@ export const postSlice = createSlice({
       action: PayloadAction<{ postId: number; vote: -1 | 1 | 0 | undefined }>
     ) => {
       state.postVotesById[action.payload.postId] = action.payload.vote;
+    },
+    updatePostSaved: (
+      state,
+      action: PayloadAction<{ postId: number; saved: boolean | undefined }>
+    ) => {
+      state.postSavedById[action.payload.postId] = action.payload.saved;
     },
     resetPosts: () => initialState,
     updateSortType(state, action: PayloadAction<SortType>) {
@@ -55,6 +62,8 @@ export const postSlice = createSlice({
 
           if (post.my_vote)
             state.postVotesById[post.post.id] = post.my_vote as 1 | -1;
+
+          if (post.saved) state.postSavedById[post.post.id] = post.saved;
         }
       })
       .addCase(updatePostHidden.fulfilled, (state, action) => {
@@ -114,9 +123,34 @@ export const receivedPosts = createAsyncThunk(
 );
 
 // Action creators are generated for each case reducer function
-export const { updatePostVote, resetPosts, updateSortType } = postSlice.actions;
+export const { updatePostVote, resetPosts, updateSortType, updatePostSaved } =
+  postSlice.actions;
 
 export default postSlice.reducer;
+
+export const savePost =
+  (postId: number, save: boolean) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const oldSaved = getState().post.postSavedById[postId];
+
+    dispatch(updatePostSaved({ postId, saved: save }));
+
+    const jwt = jwtSelector(getState());
+
+    if (!jwt) throw new Error("Not authorized");
+
+    try {
+      await clientSelector(getState())?.savePost({
+        post_id: postId,
+        save,
+        auth: jwt,
+      });
+    } catch (error) {
+      dispatch(updatePostSaved({ postId, saved: oldSaved }));
+
+      throw error;
+    }
+  };
 
 export const voteOnPost =
   (postId: number, vote: 1 | -1 | 0) =>

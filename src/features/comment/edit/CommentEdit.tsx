@@ -63,7 +63,8 @@ export default function CommentEdit({
     });
 
     setCanDismiss(true);
-    setTimeout(() => dismiss(), 100);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    dismiss();
   }
 
   return (

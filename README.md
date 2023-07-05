@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://wefwef.app" target="_blank" rel="noopener noreferrer">
-    <img width="160" height="160" src="./public/logo.png" alt="wefwef logo">
+    <img width="160" height="160" src="./public/logo_minified.svg" alt="wefwef logo">
   </a>
 </p>
 
@@ -38,12 +38,19 @@ wefwef is an [Apollo-like](https://apolloapp.io/) open source web client for [Le
 - A bunch of swipe gestures
 - Messaging, mentions and replies
 - Creating new posts (url/photo/text)
+- Deleting/editing comments
+- Swipe to hide posts
 
 **What is on the roadmap?**
 
+- Deleting/editing posts
+- Saving/bookmarking
+- Better splash screens
+- Favorites
+- More customization
 - Android theme
-- Deleting/editing posts/comments
 - Native notifications and badging
+- Translations
 - ...and more!
 
 ## 💪 Mobile webapps are awesome
