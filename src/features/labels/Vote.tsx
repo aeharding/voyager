@@ -1,14 +1,12 @@
 import { useAppDispatch, useAppSelector } from "../../store";
-import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
+import { IonIcon, useIonToast } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
-import Login from "../auth/Login";
 import { useContext } from "react";
-import { PageContext } from "../auth/PageContext";
 import { voteOnComment } from "../comment/commentSlice";
 import { voteError } from "../../helpers/toastMessages";
-import { jwtSelector } from "../auth/authSlice";
+import { PageContext } from "../auth/PageContext";
 
 const Container = styled.div<{ vote: 1 | -1 | 0 | undefined }>`
   display: flex;
@@ -53,11 +51,7 @@ export default function Vote({
   const myVote = votesById[id] ?? voteFromServer;
   const score = existingScore - (voteFromServer ?? 0) + (votesById[id] ?? 0);
 
-  const jwt = useAppSelector(jwtSelector);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
-  const pageContext = useContext(PageContext);
+  const { presentLoginIfNeeded } = useContext(PageContext);
 
   return (
     <Container
@@ -67,7 +61,7 @@ export default function Vote({
         e.stopPropagation();
         e.preventDefault();
 
-        if (!jwt) return login({ presentingElement: pageContext.page });
+        if (presentLoginIfNeeded()) return;
 
         let dispatcherFn;
         if (type === "comment") {

@@ -9,7 +9,7 @@ import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { jwtSelector } from "../../auth/authSlice";
 
 const Container = styled.div<{ type: "sent" | "recieved" }>`
-  position: relative; /* Setup a relative container for our psuedo elements */
+  position: relative; /* Setup a relative container for our pseudo elements */
   max-width: min(75%, 400px);
   margin-bottom: 15px;
   padding: 10px 20px;

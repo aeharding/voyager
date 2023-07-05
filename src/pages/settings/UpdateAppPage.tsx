@@ -16,9 +16,9 @@ import {
 import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../profile/ProfileFeedItemsPage";
 import { useContext, useEffect, useState } from "react";
-import { PageContentIonSpinner } from "../shared/UserPage";
 import styled from "@emotion/styled";
 import { UpdateContext } from "./update/UpdateContext";
+import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
 
 const UpToDateText = styled.div`
   margin: auto;

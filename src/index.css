@@ -34,3 +34,55 @@ ion-modal.small ion-header ion-toolbar:first-of-type {
 ion-alert.preserve-newlines {
   white-space: pre-line;
 }
+
+.pswp__img {
+  -webkit-touch-callout: default;
+}
+
+ion-action-sheet .detail::before {
+  content: "";
+  z-index: 1;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  /* Ion chevron right icon */
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="%2392949c44" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M184 112l144 144-144 144"/></svg>');
+  width: 24px;
+  height: 24px;
+}
+
+ion-action-sheet .action-sheet-selected {
+  font-weight: normal !important;
+}
+
+ion-action-sheet .action-sheet-selected.action-sheet-selected:after {
+  background: none;
+}
+
+/* Double class to override ionic specificity */
+ion-action-sheet .action-sheet-selected .action-sheet-button-inner::after {
+  content: "";
+  z-index: 1;
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  /* Ion check icon */
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="%233880ff" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M416 128L192 384l-96-96"/></svg>');
+
+  width: 24px;
+  height: 24px;
+}
+
+ion-action-sheet
+  .action-sheet-selected.detail
+  .action-sheet-button-inner::after {
+  right: 26px;
+}
+
+ion-action-sheet ion-icon {
+  margin-inline-end: 16px !important;
+}

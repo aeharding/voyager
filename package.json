@@ -2,7 +2,7 @@
   "name": "wefwef",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "0.10.4",
+  "version": "0.13.1",
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
@@ -17,6 +17,8 @@
     "generate:splash": "yarn generate:splash:dark && yarn generate:splash:light"
   },
   "dependencies": {
+    "dexie": "^3.2.4",
+    "dexie-react-hooks": "^1.1.6",
     "express": "^4.18.2",
     "http-proxy-middleware": "^2.0.6",
     "react-textarea-autosize": "^8.5.0",

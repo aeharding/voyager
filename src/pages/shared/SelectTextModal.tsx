@@ -5,9 +5,7 @@ import {
   IonButtons,
   IonButton,
   IonContent,
-  IonPage,
 } from "@ionic/react";
-import { useRef } from "react";
 import { Centered } from "../../features/auth/Login";
 import styled from "@emotion/styled";
 
@@ -23,10 +21,8 @@ const SelectableText = styled.p`
 `;
 
 export default function SelectText({ text, onDismiss }: SelectTextProps) {
-  const pageRef = useRef();
-
   return (
-    <IonPage ref={pageRef}>
+    <>
       <IonHeader>
         <IonToolbar>
           <IonTitle>
@@ -46,6 +42,6 @@ export default function SelectText({ text, onDismiss }: SelectTextProps) {
       <IonContent>
         <SelectableText>{text}</SelectableText>
       </IonContent>
-    </IonPage>
+    </>
   );
 }

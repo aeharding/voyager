@@ -1,26 +1,17 @@
 import React from "react";
 import {
-  IonBackButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonPage,
   IonRefresher,
   IonRefresherContent,
   IonSpinner,
-  IonTitle,
-  IonToolbar,
   useIonAlert,
   useIonRouter,
 } from "@ionic/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Profile from "../../features/user/Profile";
-import { useParams } from "react-router";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import styled from "@emotion/styled";
 import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
-import { useSetActivePage } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
@@ -36,19 +27,16 @@ const FailedMessage = styled.div`
   color: var(--ion-color-medium);
 `;
 
-interface UserPageProps {
-  handle?: string;
-  toolbar?: React.ReactNode;
+interface AsyncProfileProps {
+  handle: string;
 }
 
-export default function UserPage(props: UserPageProps) {
+export default function AsyncProfile({ handle }: AsyncProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const handle = useParams<{ handle: string }>().handle ?? props.handle;
   const dispatch = useAppDispatch();
   const [person, setPerson] = useState<
     GetPersonDetailsResponse | "failed" | undefined
   >();
-  const pageRef = useRef();
   const router = useIonRouter();
   const [present] = useIonAlert();
 
@@ -56,8 +44,6 @@ export default function UserPage(props: UserPageProps) {
     if (handle) load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [handle]);
-
-  useSetActivePage(pageRef.current);
 
   async function load() {
     let data;
@@ -95,31 +81,20 @@ export default function UserPage(props: UserPageProps) {
   }
 
   return (
-    <IonPage ref={pageRef} className="grey-bg">
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            {!props.toolbar ? <IonBackButton /> : props.toolbar}
-          </IonButtons>
-
-          <IonTitle>{handle}</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <IonRefresher
-          slot="fixed"
-          onIonRefresh={async (e) => {
-            try {
-              await load();
-            } finally {
-              e.detail.complete();
-            }
-          }}
-        >
-          <IonRefresherContent />
-        </IonRefresher>
-        {renderContents()}
-      </IonContent>
-    </IonPage>
+    <>
+      <IonRefresher
+        slot="fixed"
+        onIonRefresh={async (e) => {
+          try {
+            await load();
+          } finally {
+            e.detail.complete();
+          }
+        }}
+      >
+        <IonRefresherContent />
+      </IonRefresher>
+      {renderContents()}
+    </>
   );
 }
