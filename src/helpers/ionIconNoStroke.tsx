@@ -27,10 +27,7 @@ interface IonIconProps {
 /**
  * **Do not use if icon needs a stroke!** Fixes jagged icon appearance on iOS for filled icons.
  */
-export default function IonIconNoStroke({
-  icon,
-  ...props
-}: typeof IonIcon.defaultProps & IonIconProps) {
+export default function IonIconNoStroke({ icon, ...props }: IonIconProps) {
   const iconWithoutStrokeStyle = useMemo(() => {
     if (icon) {
       return removeStrokeStyleFromIcon(icon);
