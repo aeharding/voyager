@@ -42,6 +42,8 @@ export const PositionedContainer = styled.div<{
   depth: number;
   highlighted: boolean;
 }>`
+  position: relative;
+
   ${maxWidthCss}
 
   padding: 0.55rem 1rem;
@@ -276,8 +278,8 @@ export default function Comment({
                 </Content>
               </AnimateHeight>
             </Container>
+            <Save type="comment" id={commentView.comment.id} />
           </PositionedContainer>
-          <Save type="comment" id={commentView.comment.id} />
         </CustomIonItem>
       </SlidingNestedCommentVote>
     </AnimateHeight>

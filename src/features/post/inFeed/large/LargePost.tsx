@@ -16,6 +16,7 @@ import { AnnouncementIcon } from "../../detail/PostDetail";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
+import Save from "../../../labels/Save";
 
 const Container = styled.div`
   display: flex;
@@ -23,6 +24,8 @@ const Container = styled.div`
   width: 100%;
   gap: 0.75rem;
   padding: 0.75rem;
+
+  position: relative;
 
   ${maxWidthCss}
 `;
@@ -208,6 +211,8 @@ export default function LargePost({ post, communityMode }: PostProps) {
           <VoteButton type="down" postId={post.post.id} />
         </RightDetails>
       </Details>
+
+      <Save type="post" id={post.post.id} />
     </Container>
   );
 }
