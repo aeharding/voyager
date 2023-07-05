@@ -202,7 +202,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
             published={post.post.published}
           />
         </LeftDetails>
-        <RightDetails onClick={(e) => e.stopPropagation()}>
+        <RightDetails>
           <MoreActions post={post} onFeed />
           <VoteButton type="up" postId={post.post.id} />
           <VoteButton type="down" postId={post.post.id} />
