@@ -1,6 +1,3 @@
-import {
-  IonIcon,
-} from "@ionic/react";
 import styled from "@emotion/styled";
 import { PostProps } from "../Post";
 import Thumbnail from "./Thumbnail";
