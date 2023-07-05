@@ -16,6 +16,8 @@ export default function useSystemDarkMode() {
       setPrefersDarkMode(doesMatch);
     }
 
+    // Fallback to addListener/removeListener for older browser support
+    // See https://github.com/aeharding/wefwef/pull/264
     if (mediaQuery?.addEventListener) {
       mediaQuery.addEventListener("change", handleDarkModeChange);
     } else {
