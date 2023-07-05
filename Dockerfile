@@ -13,9 +13,9 @@ RUN apk add git --no-cache
 
 # Prepare build deps ( ignore postinstall scripts for now )
 COPY package.json ./
-COPY yarn.lock ./
-RUN yarn config set network-timeout 300000
-RUN yarn --frozen-lockfile --ignore-scripts
+COPY pnpm-lock.yaml ./
+RUN pnpm config set network-timeout 300000
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy all source files
 COPY . ./
