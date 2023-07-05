@@ -8,6 +8,7 @@ import PersonLink from "../../../labels/links/PersonLink";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { VoteButton } from "../../shared/VoteButton";
 import Save from "../../../labels/Save";
+import Nsfw, { isNsfw } from "../../../labels/Nsfw";
 
 const Container = styled.div`
   display: flex;
@@ -67,7 +68,9 @@ export default function CompactPost({ post, communityMode }: PostProps) {
     <Container>
       <Thumbnail post={post} />
       <Content>
-        {post.post.name}
+        <span>
+          {post.post.name} {isNsfw(post) && <Nsfw />}
+        </span>
         <Aside>
           {communityMode ? (
             <PersonLink
