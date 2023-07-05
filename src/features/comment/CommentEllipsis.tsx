@@ -12,6 +12,7 @@ import {
   bookmarkOutline,
   chevronCollapseOutline,
   ellipsisHorizontal,
+  flagOutline,
   pencilOutline,
   personOutline,
   shareOutline,
@@ -65,6 +66,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
     presentLoginIfNeeded,
     presentCommentReply,
     presentCommentEdit,
+    presentReport,
   } = useContext(PageContext);
 
   const [selectText, onDismissSelectText] = useIonModal(SelectText, {
@@ -156,6 +158,11 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
               }
             : undefined,
           {
+            text: "Report",
+            role: "report",
+            icon: flagOutline,
+          },
+          {
             text: "Cancel",
             role: "cancel",
           },
@@ -243,6 +250,9 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
               break;
             case "collapse":
               collapseRootComment();
+              break;
+            case "report":
+              presentReport(comment);
               break;
           }
         }}

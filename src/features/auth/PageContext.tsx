@@ -13,6 +13,7 @@ import { jwtSelector } from "../auth/authSlice";
 import CommentReplyModal from "../comment/reply/CommentReplyModal";
 import { CommentView } from "lemmy-js-client";
 import CommentEditModal from "../comment/edit/CommentEditModal";
+import { Report, ReportHandle, ReportableItem } from "../report/Report";
 
 interface IPageContext {
   // used for ion presentingElement
@@ -33,6 +34,8 @@ interface IPageContext {
    * That's why this does not return anything
    */
   presentCommentEdit: (item: CommentView) => void;
+
+  presentReport: (item: ReportableItem) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -40,6 +43,7 @@ export const PageContext = createContext<IPageContext>({
   presentLoginIfNeeded: () => false,
   presentCommentReply: async () => false,
   presentCommentEdit: () => false,
+  presentReport: () => {},
 });
 
 interface PageContextProvider {
@@ -52,6 +56,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   const [presentLogin, onDismissLogin] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismissLogin(data, role),
   });
+  const reportRef = useRef<ReportHandle>(null);
 
   const presentLoginIfNeeded = useCallback(() => {
     if (jwt) return false;
@@ -93,6 +98,10 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   }, []);
   // Edit comment end
 
+  const presentReport = (item: ReportableItem) => {
+    reportRef.current?.present(item);
+  };
+
   return (
     <PageContext.Provider
       value={{
@@ -100,6 +109,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         presentLoginIfNeeded,
         presentCommentReply,
         presentCommentEdit,
+        presentReport,
       }}
     >
       {children}
@@ -120,6 +130,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         isOpen={isEditCommentOpen}
         setIsOpen={setIsEditCommentOpen}
       />
+      <Report ref={reportRef} />
     </PageContext.Provider>
   );
 }

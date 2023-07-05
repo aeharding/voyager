@@ -37,6 +37,7 @@ import { jwtSelector } from "../../auth/authSlice";
 import CommentSort from "../../comment/CommentSort";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { PageContext } from "../../auth/PageContext";
+import MoreActions from "../shared/MoreActions";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -259,6 +260,7 @@ export default function PostDetail() {
           <IonTitle>{post?.counts.comments} Comments</IonTitle>
           <IonButtons slot="end">
             <CommentSort sort={sort} setSort={setSort} />
+            {post && <MoreActions post={post} />}
           </IonButtons>
         </IonToolbar>
       </IonHeader>
