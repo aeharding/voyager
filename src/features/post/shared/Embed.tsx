@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
+import { IonIcon } from "@ionic/react";
 import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { useState } from "react";
 import IonIconNoStroke from "../../../helpers/ionIconNoStroke";
-import { IonIcon } from "@ionic/react";
 
 const Container = styled.a`
   display: flex;

@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
+import { IonIcon } from "@ionic/react";
 import { arrowUndoOutline, linkOutline, shareOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { VoteButton } from "../shared/VoteButton";
 import { ActionButton } from "./ActionButton";
 import { SaveButton } from "../shared/SaveButton";
-import { IonIcon } from "@ionic/react";
 
 const Container = styled.div`
   display: flex;

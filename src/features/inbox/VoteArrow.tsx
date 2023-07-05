@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { arrowDown, arrowUp } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
+import { arrowDown, arrowUp } from "ionicons/icons";
 
 const Container = styled.div`
   font-size: 1.4em;

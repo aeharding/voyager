@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { IonLabel, IonList, IonItem, IonIcon } from "@ionic/react";
+import { IonIcon, IonLabel, IonList, IonItem } from "@ionic/react";
 import styled from "@emotion/styled";
 import Scores from "./Scores";
 import {

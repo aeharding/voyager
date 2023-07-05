@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
+import { IonIcon } from "@ionic/react";
 import { chatbubbleOutline, timeOutline } from "ionicons/icons";
 import { PostAggregates } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
-import { IonIcon } from "@ionic/react";
 
 const Container = styled.div`
   display: flex;
