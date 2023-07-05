@@ -1,5 +1,6 @@
 import {
   IonHeader,
+  IonIcon,
   IonList,
   IonPage,
   IonTitle,
@@ -58,7 +59,7 @@ export default function BoxesPage() {
             routerLink="/inbox/unread"
             onClick={interceptIfLoggedOut}
           >
-            <IonIconWrapper icon={ellipseOutline} color="primary" />
+            <IonIcon icon={ellipseOutline} color="primary" />
             <SettingLabel>Unread</SettingLabel>
           </InsetIonItem>
         </IonList>
@@ -68,14 +69,14 @@ export default function BoxesPage() {
             routerLink="/inbox/post-replies"
             onClick={interceptIfLoggedOut}
           >
-            <IonIconWrapper icon={albumsOutline} color="primary" />
+            <IonIcon icon={albumsOutline} color="primary" />
             <SettingLabel>Post Replies</SettingLabel>
           </InsetIonItem>
           <InsetIonItem
             routerLink="/inbox/comment-replies"
             onClick={interceptIfLoggedOut}
           >
-            <IonIconWrapper icon={chatbubbleOutline} color="primary" />
+            <IonIcon icon={chatbubbleOutline} color="primary" />
             <SettingLabel>Comment Replies</SettingLabel>
           </InsetIonItem>
           <InsetIonItem

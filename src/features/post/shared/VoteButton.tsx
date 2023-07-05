@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useIonToast } from "@ionic/react";
+import { IonIcon, useIonToast } from "@ionic/react";
 import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { voteOnPost } from "../postSlice";
@@ -8,7 +8,6 @@ import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
 import { PageContext } from "../../auth/PageContext";
-import IonIconWrapper from "../../../helpers/ionIconWrapper";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -85,7 +84,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
       }}
       activeColor={activeColor}
     >
-      <IonIconWrapper icon={icon} />
+      <IonIcon icon={icon} />
     </Item>
   );
 }

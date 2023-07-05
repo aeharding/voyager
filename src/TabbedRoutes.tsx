@@ -1,6 +1,7 @@
 import { Redirect, Route, useLocation } from "react-router-dom";
 import {
   IonBadge,
+  IonIcon,
   IonLabel,
   IonRouterOutlet,
   IonTabBar,
@@ -382,7 +383,7 @@ export default function TabbedRoutes() {
             tab="profile"
             href="/profile"
           >
-            <IonIconWrapper aria-hidden="true" icon={personCircleOutline} />
+            <IonIcon aria-hidden="true" icon={personCircleOutline} />
             <IonLabel>{connectedInstance}</IonLabel>
             <Interceptor onClick={onProfileClick} />
           </IonTabButton>

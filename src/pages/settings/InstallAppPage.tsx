@@ -21,7 +21,6 @@ import { isInstallable, isInstalled, ua } from "../../helpers/device";
 import { useContext } from "react";
 import { BeforeInstallPromptContext } from "../../BeforeInstallPromptProvider";
 import { css } from "@emotion/react";
-import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 const Container = styled.div`
   line-height: 1.5;
@@ -66,7 +65,7 @@ export default function InstallAppPage() {
       return (
         <>
           <h3>
-            <IonIconWrapper icon={checkmarkCircleOutline} color="success" /> App
+            <IonIcon icon={checkmarkCircleOutline} color="success" /> App
             Installed
           </h3>
           <IonText color="medium">
@@ -113,12 +112,11 @@ export default function InstallAppPage() {
           <h3>How to get the App</h3>
           <ol>
             <li>
-              Tap <IonIconWrapper icon={shareOutline} color="primary" /> from
-              the Safari tab bar
+              Tap <IonIcon icon={shareOutline} color="primary" /> from the
+              Safari tab bar
             </li>
             <li>
-              Scroll and tap Add to Home Screen{" "}
-              <IonIconWrapper icon={addOutline} />
+              Scroll and tap Add to Home Screen <IonIcon icon={addOutline} />
             </li>
           </ol>
 

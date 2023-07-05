@@ -3,7 +3,7 @@ import { chatbubbleOutline, timeOutline } from "ionicons/icons";
 import { PostAggregates } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
-import IonIconWrapper from "../../../helpers/ionIconWrapper";
+import { IonIcon } from "@ionic/react";
 
 const Container = styled.div`
   display: flex;
@@ -30,9 +30,9 @@ export default function PreviewStats({
         id={stats.post_id}
         type="post"
       />
-      <IonIconWrapper icon={chatbubbleOutline} />
+      <IonIcon icon={chatbubbleOutline} />
       {stats.comments}
-      <IonIconWrapper icon={timeOutline} />
+      <IonIcon icon={timeOutline} />
       <Ago date={published} />
     </Container>
   );

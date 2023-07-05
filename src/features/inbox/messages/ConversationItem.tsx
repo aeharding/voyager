@@ -1,12 +1,11 @@
 import styled from "@emotion/styled";
-import { IonItem } from "@ionic/react";
+import { IonIcon, IonItem } from "@ionic/react";
 import { PrivateMessageView } from "lemmy-js-client";
 import { useAppSelector } from "../../../store";
 import { getHandle } from "../../../helpers/lemmy";
 import ItemIcon from "../../labels/img/ItemIcon";
 import { chevronForwardOutline } from "ionicons/icons";
 import Time from "./Time";
-import IonIconWrapper from "../../../helpers/ionIconWrapper";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin: 0.75rem 0;
@@ -123,7 +122,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
             <span>
               <Time date={previewMsg.private_message.published} />
             </span>
-            <IonIconWrapper icon={chevronForwardOutline} />
+            <IonIcon icon={chevronForwardOutline} />
           </OpenDetails>
         </MessageLine>
         <MessagePreview color="medium">

@@ -1,6 +1,7 @@
 import {
   IonAlert,
   IonButton,
+  IonIcon,
   IonLoading,
   useIonRouter,
   useIonToast,
@@ -10,7 +11,6 @@ import { useState } from "react";
 import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
 import { getHandle } from "../../helpers/lemmy";
-import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 export default function ComposeButton() {
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,7 @@ export default function ComposeButton() {
         buttons={[{ text: "OK" }, { text: "Cancel", role: "cancel" }]}
       />
       <IonButton onClick={() => setIsAlertOpen(true)}>
-        <IonIconWrapper icon={createOutline} />
+        <IonIcon icon={createOutline} />
       </IonButton>
     </>
   );

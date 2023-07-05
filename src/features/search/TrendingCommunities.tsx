@@ -1,4 +1,4 @@
-import { IonLabel, IonList, IonListHeader } from "@ionic/react";
+import { IonIcon, IonLabel, IonList, IonListHeader } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
@@ -7,7 +7,6 @@ import { getHandle } from "../../helpers/lemmy";
 import { trendingUp } from "ionicons/icons";
 import { useEffect } from "react";
 import { getTrendingCommunities } from "../community/communitySlice";
-import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 export default function TrendingCommunities() {
   const dispatch = useAppDispatch();
@@ -38,7 +37,7 @@ export default function TrendingCommunities() {
           )}
           key={community.community.id}
         >
-          <IonIconWrapper icon={trendingUp} color="primary" />
+          <IonIcon icon={trendingUp} color="primary" />
           <SettingLabel>{getHandle(community.community)}</SettingLabel>
         </InsetIonItem>
       ))}

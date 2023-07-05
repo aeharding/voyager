@@ -3,6 +3,7 @@ import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { useState } from "react";
 import IonIconWrapper from "../../../helpers/ionIconWrapper";
+import { IonIcon } from "@ionic/react";
 
 const Container = styled.a`
   display: flex;
@@ -33,7 +34,7 @@ const Bottom = styled.div`
   background: var(--ion-color-light);
 `;
 
-const EmbedIcon = styled(IonIconWrapper)`
+const EmbedIcon = styled(IonIcon)`
   font-size: 1.5rem;
 `;
 

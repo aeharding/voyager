@@ -1,5 +1,10 @@
 import type { IonActionSheetCustomEvent } from "@ionic/core";
-import { ActionSheetButton, IonActionSheet, IonButton } from "@ionic/react";
+import {
+  ActionSheetButton,
+  IonActionSheet,
+  IonButton,
+  IonIcon,
+} from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import {
   arrowUpCircleOutline,
@@ -16,7 +21,6 @@ import { updateSortType } from "../post/postSlice";
 import { useState } from "react";
 import { startCase } from "lodash";
 import { SortType } from "lemmy-js-client";
-import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 type ExtendedSortType = SortType | "Top";
 
@@ -65,7 +69,7 @@ export default function PostSort() {
   return (
     <>
       <IonButton fill="default" onClick={() => setOpen(true)}>
-        <IonIconWrapper icon={getSortIcon(sort)} color="primary" />
+        <IonIcon icon={getSortIcon(sort)} color="primary" />
       </IonButton>
       <IonActionSheet
         cssClass="left-align-buttons"

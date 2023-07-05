@@ -100,7 +100,7 @@ export default function SettingsPage() {
         <IonList inset color="primary">
           <InsetIonItem routerLink="/settings/apollo-migrate">
             <IconBg color="color(display-p3 1 0 1)">
-              <IonIconWrapper icon={bagCheckOutline} />
+              <IonIcon icon={bagCheckOutline} />
             </IconBg>
             <SettingLabel>Migrate Apollo export</SettingLabel>
           </InsetIonItem>
@@ -108,7 +108,7 @@ export default function SettingsPage() {
 
         <IonList inset color="primary">
           <InsetIonItem routerLink="/settings/terms">
-            <IonIconWrapper icon={shieldCheckmarkOutline} color="primary" />
+            <IonIcon icon={shieldCheckmarkOutline} color="primary" />
             <SettingLabel>Terms &amp; Privacy</SettingLabel>
           </InsetIonItem>
           <InsetIonItem
@@ -120,16 +120,16 @@ export default function SettingsPage() {
             <SettingLabel>
               Github{" "}
               <sup>
-                <IonIconWrapper icon={openOutline} color="medium" />
+                <IonIcon icon={openOutline} color="medium" />
               </sup>
             </SettingLabel>
           </InsetIonItem>
           <InsetIonItem href="mailto:hello@wefwef.app">
-            <IonIconWrapper icon={mailOutline} color="primary" />
+            <IonIcon icon={mailOutline} color="primary" />
             <SettingLabel>
               Contact us{" "}
               <sup>
-                <IonIconWrapper icon={openOutline} color="medium" />
+                <IonIcon icon={openOutline} color="medium" />
               </sup>
             </SettingLabel>
           </InsetIonItem>

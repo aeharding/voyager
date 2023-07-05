@@ -24,7 +24,7 @@ interface IonIconProps {
 }
 
 /**
- * Wrapper for IonIcon that removes stroke style from svg icons to fix jagged icon appearance on iOS
+ * Wrapper for IonIcon that removes stroke style from svg icons to fix jagged icon appearance on iOS. Do not use for outlined icons.
  */
 export default function IonIconWrapper({
   icon,
