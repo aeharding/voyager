@@ -81,7 +81,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
               published={post.post.published}
               voteFromServer={post.my_vote}
             />
-            <StyledMoreActions post={post} />
+            <StyledMoreActions post={post} onFeed />
           </Actions>
         </Aside>
       </Content>

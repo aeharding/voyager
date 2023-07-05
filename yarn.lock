@@ -5965,6 +5965,11 @@ use-latest@^1.2.1:
   dependencies:
     use-isomorphic-layout-effect "^1.1.1"
 
+use-long-press@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/use-long-press/-/use-long-press-3.1.5.tgz#2b3b9013ed1770e5e9d3f2d4b349c74d92cb4bd0"
+  integrity sha512-bnwk2SlvLLpeJPkNYSGkc59q5YNV9V/fLDkSOAF2p7Xt0zw3iYHEmgEGkNYkK7zEIEyRFi5CczKsT7MN99UzVQ==
+
 use-sync-external-store@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"

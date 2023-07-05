@@ -50,7 +50,7 @@ const RightDetails = styled.div`
   font-size: 1.5rem;
 
   > * {
-    padding: 0.5rem;
+    padding: 0.5rem !important;
   }
 `;
 
@@ -203,7 +203,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
           />
         </LeftDetails>
         <RightDetails onClick={(e) => e.stopPropagation()}>
-          <MoreActions post={post} />
+          <MoreActions post={post} onFeed />
           <VoteButton type="up" postId={post.post.id} />
           <VoteButton type="down" postId={post.post.id} />
         </RightDetails>

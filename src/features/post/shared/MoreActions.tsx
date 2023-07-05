@@ -1,5 +1,6 @@
 import {
   IonActionSheet,
+  IonButton,
   IonIcon,
   useIonModal,
   useIonRouter,
@@ -13,6 +14,7 @@ import {
   ellipsisHorizontal,
   eyeOffOutline,
   eyeOutline,
+  flagOutline,
   peopleOutline,
   personOutline,
   shareOutline,
@@ -31,18 +33,22 @@ import {
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import SelectText from "../../../pages/shared/SelectTextModal";
-import { ActionButton } from "../actions/ActionButton";
-import { css } from "@emotion/react";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
 import { saveError, voteError } from "../../../helpers/toastMessages";
+import { ActionButton } from "../actions/ActionButton";
 
 interface MoreActionsProps {
   post: PostView;
   className?: string;
+  onFeed?: boolean;
 }
 
-export default function MoreActions({ post, className }: MoreActionsProps) {
+export default function MoreActions({
+  post,
+  className,
+  onFeed,
+}: MoreActionsProps) {
   const [present] = useIonToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
@@ -51,7 +57,7 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
 
   const router = useIonRouter();
 
-  const { page, presentLoginIfNeeded, presentCommentReply } =
+  const { page, presentLoginIfNeeded, presentCommentReply, presentReport } =
     useContext(PageContext);
 
   const [selectText, onDismissSelectText] = useIonModal(SelectText, {
@@ -103,37 +109,43 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
           role: "select",
           icon: textOutline,
         },
-        {
-          text: isHidden ? "Unhide" : "Hide",
-          role: isHidden ? "unhide" : "hide",
-          icon: isHidden ? eyeOutline : eyeOffOutline,
-        },
+        onFeed
+          ? {
+              text: isHidden ? "Unhide" : "Hide",
+              role: isHidden ? "unhide" : "hide",
+              icon: isHidden ? eyeOutline : eyeOffOutline,
+            }
+          : undefined,
         {
           text: "Share",
           role: "share",
           icon: shareOutline,
         },
         {
+          text: "Report",
+          role: "report",
+          icon: flagOutline,
+        },
+        {
           text: "Cancel",
           role: "cancel",
         },
       ].filter(notEmpty),
-    [isHidden, myVote, mySaved, post.community, post.creator]
+    [isHidden, myVote, mySaved, post.community, post.creator, onFeed]
   );
+
+  const Button = onFeed ? ActionButton : IonButton;
 
   return (
     <>
-      <ActionButton
-        css={css`
-          margin-right: 3px;
-        `}
+      <Button
         onClick={(e) => {
           e.stopPropagation();
           setOpen(true);
         }}
       >
         <IonIcon className={className} icon={ellipsisHorizontal} />
-      </ActionButton>
+      </Button>
       <IonActionSheet
         cssClass="left-align-buttons"
         isOpen={open}
@@ -223,6 +235,9 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
               navigator.share({ url: post.post.url ?? post.post.ap_id });
 
               break;
+            }
+            case "report": {
+              presentReport(post);
             }
           }
         }}
