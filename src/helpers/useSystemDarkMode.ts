@@ -7,9 +7,9 @@ export default function useSystemDarkMode() {
     window.matchMedia(DARK_MEDIA_SELECTOR).matches
   );
 
-  const mediaQuery = window.matchMedia(DARK_MEDIA_SELECTOR);
-
   useEffect(() => {
+    const mediaQuery = window.matchMedia(DARK_MEDIA_SELECTOR);
+
     function handleDarkModeChange() {
       const doesMatch = mediaQuery.matches;
       setPrefersDarkMode(doesMatch);
@@ -30,7 +30,7 @@ export default function useSystemDarkMode() {
         mediaQuery.removeListener(handleDarkModeChange);
       }
     };
-  }, [mediaQuery]);
+  }, []);
 
   return prefersDarkMode;
 }
