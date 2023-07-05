@@ -5,7 +5,14 @@
     {
       "src": "/logo_maskable_minified.svg",
       "type": "image/svg+xml",
-      "sizes": "any maskable"
+      "sizes": "any",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo_minified.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
     },
     {
       "src": "/favicons/192.png",
@@ -17,7 +24,7 @@
       "src": "/favicons/512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "start_url": "/",
