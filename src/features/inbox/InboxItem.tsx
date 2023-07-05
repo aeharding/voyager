@@ -23,6 +23,7 @@ import { isPostReply } from "../../pages/inbox/RepliesPage";
 import { maxWidthCss } from "../shared/AppContent";
 import VoteArrow from "./VoteArrow";
 import SlidingInbox from "../shared/sliding/SlidingInbox";
+import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 const Hr = styled.div`
   ${maxWidthCss}
@@ -239,7 +240,7 @@ export default function InboxItem({ item }: InboxItemProps) {
     >
       <Container>
         <StartContent>
-          <IonIcon icon={getIcon()} color="medium" />
+          <IonIconWrapper icon={getIcon()} color="medium" />
           <VoteArrow vote={vote} />
         </StartContent>
         <Content>

@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
-import { IonIcon } from "@ionic/react";
 import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { useState } from "react";
+import IonIconWrapper from "../../../helpers/ionIconWrapper";
 
 const Container = styled.a`
   display: flex;
@@ -33,7 +33,7 @@ const Bottom = styled.div`
   background: var(--ion-color-light);
 `;
 
-const EmbedIcon = styled(IonIcon)`
+const EmbedIcon = styled(IonIconWrapper)`
   font-size: 1.5rem;
 `;
 
@@ -81,7 +81,7 @@ export default function Embed({ post, className }: EmbedProps) {
         <EmbedIcon icon={linkOutline} />
         <Divider />
         <Url>{post.post.url}</Url>
-        <IonIcon icon={chevronForward} />
+        <IonIconWrapper icon={chevronForward} />
       </Bottom>
     </Container>
   );

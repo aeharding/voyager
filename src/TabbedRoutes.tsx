@@ -1,7 +1,6 @@
 import { Redirect, Route, useLocation } from "react-router-dom";
 import {
   IonBadge,
-  IonIcon,
   IonLabel,
   IonRouterOutlet,
   IonTabBar,
@@ -54,6 +53,7 @@ import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
+import IonIconWrapper from "./helpers/ionIconWrapper";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -361,7 +361,7 @@ export default function TabbedRoutes() {
             tab="posts"
             href={`/posts/${connectedInstance}`}
           >
-            <IonIcon aria-hidden="true" icon={telescope} />
+            <IonIconWrapper aria-hidden="true" icon={telescope} />
             <IonLabel>Posts</IonLabel>
             <Interceptor onClick={onPostsClick} />
           </IonTabButton>
@@ -370,7 +370,7 @@ export default function TabbedRoutes() {
             tab="inbox"
             href="/inbox"
           >
-            <IonIcon aria-hidden="true" icon={fileTray} />
+            <IonIconWrapper aria-hidden="true" icon={fileTray} />
             <IonLabel>Inbox</IonLabel>
             {totalUnread ? (
               <IonBadge color="danger">{totalUnread}</IonBadge>
@@ -382,7 +382,7 @@ export default function TabbedRoutes() {
             tab="profile"
             href="/profile"
           >
-            <IonIcon aria-hidden="true" icon={personCircleOutline} />
+            <IonIconWrapper aria-hidden="true" icon={personCircleOutline} />
             <IonLabel>{connectedInstance}</IonLabel>
             <Interceptor onClick={onProfileClick} />
           </IonTabButton>
@@ -391,12 +391,12 @@ export default function TabbedRoutes() {
             tab="search"
             href="/search"
           >
-            <IonIcon aria-hidden="true" icon={search} />
+            <IonIconWrapper aria-hidden="true" icon={search} />
             <IonLabel>Search</IonLabel>
             <Interceptor onClick={onSearchClick} />
           </IonTabButton>
           <IonTabButton tab="settings" href="/settings">
-            <IonIcon aria-hidden="true" icon={cog} />
+            <IonIconWrapper aria-hidden="true" icon={cog} />
             <IonLabel>Settings</IonLabel>
             {settingsNotificationCount ? (
               <IonBadge color="danger">{settingsNotificationCount}</IonBadge>

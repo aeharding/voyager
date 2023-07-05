@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
-import { IonIcon } from "@ionic/react";
 import { arrowUndoOutline, linkOutline, shareOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { VoteButton } from "../shared/VoteButton";
 import { ActionButton } from "./ActionButton";
 import { SaveButton } from "../shared/SaveButton";
+import IonIconWrapper from "../../../helpers/ionIconWrapper";
 
 const Container = styled.div`
   display: flex;
@@ -38,14 +38,14 @@ export default function PostActions({ post, onReply }: PostActionsProps) {
       <SaveButton postId={post.post.id} />
       <ActionButton>
         <Link href={post.post.ap_id} target="_blank" rel="noopener noreferrer">
-          <IonIcon icon={linkOutline} />
+          <IonIconWrapper icon={linkOutline} />
         </Link>
       </ActionButton>
       <ActionButton onClick={onReply}>
-        <IonIcon icon={arrowUndoOutline} />
+        <IonIconWrapper icon={arrowUndoOutline} />
       </ActionButton>
       <ActionButton>
-        <IonIcon icon={shareOutline} onClick={share} />
+        <IonIconWrapper icon={shareOutline} onClick={share} />
       </ActionButton>
     </Container>
   );

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { IonIcon } from "@ionic/react";
 import { arrowDown, arrowUp } from "ionicons/icons";
+import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 const Container = styled.div`
   font-size: 1.4em;
@@ -11,7 +11,7 @@ const Container = styled.div`
   position: relative;
 `;
 
-const VoteIcon = styled(IonIcon)`
+const VoteIcon = styled(IonIconWrapper)`
   position: absolute;
   left: 50%;
   top: 50%;

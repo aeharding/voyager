@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../store";
-import { IonIcon, useIonToast } from "@ionic/react";
+import { useIonToast } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
@@ -7,6 +7,7 @@ import { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
 import { voteError } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
+import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 const Container = styled.div<{ vote: 1 | -1 | 0 | undefined }>`
   display: flex;
@@ -79,7 +80,8 @@ export default function Vote({
         }
       }}
     >
-      <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} /> {score}
+      <IonIconWrapper icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} />{" "}
+      {score}
     </Container>
   );
 }

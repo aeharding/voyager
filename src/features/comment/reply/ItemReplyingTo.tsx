@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
-import { IonIcon } from "@ionic/react";
 import { returnDownForwardSharp } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
 import { getHandle } from "../../../helpers/lemmy";
 import Vote from "../../labels/Vote";
 import Ago from "../../labels/Ago";
 import CommentContent from "../CommentContent";
+import IonIconWrapper from "../../../helpers/ionIconWrapper";
 
 const Container = styled.div`
   padding: 1rem;
@@ -41,7 +41,8 @@ export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
   return (
     <Container>
       <Header>
-        <IonIcon icon={returnDownForwardSharp} /> {getHandle(item.creator)}{" "}
+        <IonIconWrapper icon={returnDownForwardSharp} />{" "}
+        {getHandle(item.creator)}{" "}
         <Vote
           type="comment"
           id={payload.id}

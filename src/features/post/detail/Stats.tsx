@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
-import { IonIcon } from "@ionic/react";
 import { happyOutline, timeOutline } from "ionicons/icons";
 import { PostAggregates } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
+import IonIconWrapper from "../../../helpers/ionIconWrapper";
 
 const Container = styled.div`
   display: flex;
@@ -33,14 +33,14 @@ export default function Stats({
         id={stats.post_id}
         type="post"
       />
-      <IonIcon icon={happyOutline} />
+      <IonIconWrapper icon={happyOutline} />
       {Math.round(
         (stats.upvotes + stats.downvotes
           ? stats.upvotes / (stats.upvotes + stats.downvotes)
           : 1) * 100
       )}
       %
-      <IonIcon icon={timeOutline} />
+      <IonIconWrapper icon={timeOutline} />
       <Ago date={published} />
     </Container>
   );

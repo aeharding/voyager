@@ -3,7 +3,6 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonIcon,
   IonList,
   IonPage,
   IonRadioGroup,
@@ -17,6 +16,7 @@ import { changeAccount } from "./authSlice";
 import Login from "./Login";
 import { useEffect, useState } from "react";
 import Account from "./Account";
+import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
@@ -53,7 +53,7 @@ export default function AccountSwitcher({
           <IonButtons slot="start">
             {editing ? (
               <IonButton onClick={() => login({ presentingElement: page })}>
-                <IonIcon icon={add} />
+                <IonIconWrapper icon={add} />
               </IonButton>
             ) : (
               <IonButton onClick={() => onDismiss()}>Cancel</IonButton>

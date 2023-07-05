@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
+import { useIonModal, useIonToast } from "@ionic/react";
 import Login from "../../auth/Login";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../auth/PageContext";
@@ -10,6 +10,7 @@ import { bookmarkOutline } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { saveError } from "../../../helpers/toastMessages";
 import { jwtSelector } from "../../auth/authSlice";
+import IonIconWrapper from "../../../helpers/ionIconWrapper";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on",
@@ -57,7 +58,7 @@ export function SaveButton({ postId }: SaveButtonProps) {
 
   return (
     <Item on={mySaved} onClick={onSavePost}>
-      <IonIcon icon={bookmarkOutline} />
+      <IonIconWrapper icon={bookmarkOutline} />
     </Item>
   );
 }

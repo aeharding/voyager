@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { IonIcon, IonLabel, IonList, IonItem } from "@ionic/react";
+import { IonLabel, IonList, IonItem } from "@ionic/react";
 import styled from "@emotion/styled";
 import Scores from "./Scores";
 import {
@@ -21,6 +21,7 @@ import PostCommentFeed, {
   isPost,
 } from "../feed/PostCommentFeed";
 import { handleSelector, jwtSelector } from "../auth/authSlice";
+import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -71,7 +72,7 @@ export default function Profile({ person }: ProfileProps) {
               `/u/${getHandle(person.person_view.person)}/posts`
             )}
           >
-            <IonIcon icon={albumsOutline} color="primary" />{" "}
+            <IonIconWrapper icon={albumsOutline} color="primary" />{" "}
             <SettingLabel>Posts</SettingLabel>
           </InsetIonItem>
           <InsetIonItem
@@ -79,7 +80,7 @@ export default function Profile({ person }: ProfileProps) {
               `/u/${getHandle(person.person_view.person)}/comments`
             )}
           >
-            <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
+            <IonIconWrapper icon={chatbubbleOutline} color="primary" />{" "}
             <SettingLabel>Comments</SettingLabel>
           </InsetIonItem>
           {isSelf && (
@@ -89,7 +90,7 @@ export default function Profile({ person }: ProfileProps) {
                   `/u/${getHandle(person.person_view.person)}/saved`
                 )}
               >
-                <IonIcon icon={bookmarkOutline} color="primary" />{" "}
+                <IonIconWrapper icon={bookmarkOutline} color="primary" />{" "}
                 <SettingLabel>Saved</SettingLabel>
               </InsetIonItem>
               <InsetIonItem
@@ -97,7 +98,7 @@ export default function Profile({ person }: ProfileProps) {
                   `/u/${getHandle(person.person_view.person)}/hidden`
                 )}
               >
-                <IonIcon icon={eyeOffOutline} color="primary" />{" "}
+                <IonIconWrapper icon={eyeOffOutline} color="primary" />{" "}
                 <SettingLabel>Hidden</SettingLabel>
               </InsetIonItem>
             </>

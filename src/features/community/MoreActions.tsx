@@ -1,7 +1,6 @@
 import {
   IonActionSheet,
   IonButton,
-  IonIcon,
   useIonRouter,
   useIonToast,
 } from "@ionic/react";
@@ -20,6 +19,7 @@ import { NewPostContext } from "../post/new/NewPostModal";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { checkIsMod } from "../../helpers/lemmy";
 import { PageContext } from "../auth/PageContext";
+import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 interface MoreActionsProps {
   community: string;
@@ -65,7 +65,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
         fill="default"
         onClick={() => setOpen(true)}
       >
-        <IonIcon icon={ellipsisHorizontal} color="primary" />
+        <IonIconWrapper icon={ellipsisHorizontal} color="primary" />
       </IonButton>
       <IonActionSheet
         cssClass="left-align-buttons"

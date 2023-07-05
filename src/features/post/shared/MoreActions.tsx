@@ -1,7 +1,6 @@
 import {
   IonActionSheet,
   IonButton,
-  IonIcon,
   useIonModal,
   useIonRouter,
   useIonToast,
@@ -37,6 +36,7 @@ import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
 import { saveError, voteError } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
+import IonIconWrapper from "../../../helpers/ionIconWrapper";
 
 interface MoreActionsProps {
   post: PostView;
@@ -144,7 +144,7 @@ export default function MoreActions({
           setOpen(true);
         }}
       >
-        <IonIcon className={className} icon={ellipsisHorizontal} />
+        <IonIconWrapper className={className} icon={ellipsisHorizontal} />
       </Button>
       <IonActionSheet
         cssClass="left-align-buttons"

@@ -1,4 +1,4 @@
-import { IonIcon, IonList, IonPicker, IonText } from "@ionic/react";
+import { IonList, IonPicker, IonText } from "@ionic/react";
 import { css } from "@emotion/react";
 import { InsetIonItem, SettingLabel } from "./Profile";
 import styled from "@emotion/styled";
@@ -8,6 +8,7 @@ import { useState } from "react";
 import { updateConnectedInstance } from "../auth/authSlice";
 import { swapHorizontalOutline } from "ionicons/icons";
 import { LEMMY_SERVERS } from "../../helpers/lemmy";
+import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 const Incognito = styled(IncognitoSvg)`
   opacity: 0.1;
@@ -46,7 +47,7 @@ export default function LoggedOut() {
           }}
           detail
         >
-          <IonIcon icon={swapHorizontalOutline} color="primary" />
+          <IonIconWrapper icon={swapHorizontalOutline} color="primary" />
           <SettingLabel>
             Connected to {connectedInstance}{" "}
             <IonText color="medium">(as guest)</IonText>

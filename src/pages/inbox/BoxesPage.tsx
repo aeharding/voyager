@@ -1,6 +1,5 @@
 import {
   IonHeader,
-  IonIcon,
   IonList,
   IonPage,
   IonTitle,
@@ -21,6 +20,7 @@ import { useAppDispatch } from "../../store";
 import { getInboxCounts } from "../../features/inbox/inboxSlice";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../features/auth/PageContext";
+import IonIconWrapper from "../../helpers/ionIconWrapper";
 
 export default function BoxesPage() {
   const dispatch = useAppDispatch();
@@ -51,14 +51,14 @@ export default function BoxesPage() {
 
         <IonList inset color="primary">
           <InsetIonItem routerLink="/inbox/all" onClick={interceptIfLoggedOut}>
-            <IonIcon icon={fileTray} color="primary" />
+            <IonIconWrapper icon={fileTray} color="primary" />
             <SettingLabel>Inbox (All)</SettingLabel>
           </InsetIonItem>
           <InsetIonItem
             routerLink="/inbox/unread"
             onClick={interceptIfLoggedOut}
           >
-            <IonIcon icon={ellipseOutline} color="primary" />
+            <IonIconWrapper icon={ellipseOutline} color="primary" />
             <SettingLabel>Unread</SettingLabel>
           </InsetIonItem>
         </IonList>
@@ -68,21 +68,21 @@ export default function BoxesPage() {
             routerLink="/inbox/post-replies"
             onClick={interceptIfLoggedOut}
           >
-            <IonIcon icon={albumsOutline} color="primary" />
+            <IonIconWrapper icon={albumsOutline} color="primary" />
             <SettingLabel>Post Replies</SettingLabel>
           </InsetIonItem>
           <InsetIonItem
             routerLink="/inbox/comment-replies"
             onClick={interceptIfLoggedOut}
           >
-            <IonIcon icon={chatbubbleOutline} color="primary" />
+            <IonIconWrapper icon={chatbubbleOutline} color="primary" />
             <SettingLabel>Comment Replies</SettingLabel>
           </InsetIonItem>
           <InsetIonItem
             routerLink="/inbox/mentions"
             onClick={interceptIfLoggedOut}
           >
-            <IonIcon icon={personCircleOutline} color="primary" />
+            <IonIconWrapper icon={personCircleOutline} color="primary" />
             <SettingLabel>Mentions</SettingLabel>
           </InsetIonItem>
         </IonList>
@@ -92,7 +92,7 @@ export default function BoxesPage() {
             routerLink="/inbox/messages"
             onClick={interceptIfLoggedOut}
           >
-            <IonIcon icon={mail} color="primary" />
+            <IonIconWrapper icon={mail} color="primary" />
             <SettingLabel>Messages</SettingLabel>
           </InsetIonItem>
         </IonList>
