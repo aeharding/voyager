@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
+import { IonIcon } from "@ionic/react";
 import { returnDownForwardSharp } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
 import { getHandle } from "../../../helpers/lemmy";
 import Vote from "../../labels/Vote";
 import Ago from "../../labels/Ago";
 import CommentContent from "../CommentContent";
-import { IonIcon } from "@ionic/react";
 
 const Container = styled.div`
   padding: 1rem;
