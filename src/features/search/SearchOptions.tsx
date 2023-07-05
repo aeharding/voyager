@@ -17,6 +17,8 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
 
   const searchURI = encodeURIComponent(search);
 
+  const sanitizedUser = search.replace(/\/|#|\?|\\/g, "");
+
   return (
     <IonList inset color="primary">
       <InsetIonItem routerLink={`/search/posts/${searchURI}`}>
@@ -31,7 +33,7 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
         <IonIcon icon={searchOutline} color="primary" />
         <SettingLabel>Communities with “{search}”</SettingLabel>
       </InsetIonItem>
-      <InsetIonItem routerLink={buildGeneralBrowseLink(`/u/${searchURI}`)}>
+      <InsetIonItem routerLink={buildGeneralBrowseLink(`/u/${sanitizedUser}`)}>
         <IonIcon icon={personOutline} color="primary" />
         <SettingLabel>Go to User “{search}”</SettingLabel>
       </InsetIonItem>
