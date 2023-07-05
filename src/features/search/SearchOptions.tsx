@@ -17,7 +17,7 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
 
   const searchURI = encodeURIComponent(search);
 
-  const sanitizedUser = search.replace(/\/|#|\?|\\/g, "");
+  const sanitizedUser = search.replace(/|\/|#|\?|\\/g, "").replace(/^@/, "");
 
   return (
     <IonList inset color="primary">
