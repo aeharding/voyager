@@ -266,7 +266,7 @@ export class WefwefDB extends Dexie {
     );
   }
 
-  async getSetting<T extends keyof SettingValueTypes>(
+  getSetting<T extends keyof SettingValueTypes>(
     key: T,
     specificity?: {
       user_handle?: string;
@@ -275,17 +275,43 @@ export class WefwefDB extends Dexie {
   ) {
     const { user_handle = "", community = "" } = specificity || {};
 
-    const query = this.settings
-      .where(CompoundKeys.settings.key_and_user_handle_and_community)
-      .equals([key, user_handle, community]);
+    return this.transaction("r", this.settings, async () => {
+      let setting = await this.settings
+        // Everything matches
+        .where(CompoundKeys.settings.key_and_user_handle_and_community)
+        .equals([key, user_handle, community])
+        .first();
 
-    const setting = await query.first();
+      if (!setting && user_handle !== "") {
+        // Fall back to user settings if no specific setting for the community is found
+        setting = await this.settings
+          .where(CompoundKeys.settings.key_and_user_handle_and_community)
+          .equals([key, user_handle, ""])
+          .first();
+      }
 
-    if (!setting) {
-      throw new Error(`Setting ${key} not found`);
-    }
+      if (!setting && community !== "") {
+        // Fall back to community settings if no specific setting for the user is found
+        setting = await this.settings
+          .where(CompoundKeys.settings.key_and_user_handle_and_community)
+          .equals([key, "", community])
+          .first();
+      }
 
-    return setting.value as SettingValueTypes[T];
+      if (!setting) {
+        // Fall back to global settings if no specific setting for the user is found
+        setting = await this.settings
+          .where(CompoundKeys.settings.key_and_user_handle_and_community)
+          .equals([key, "", ""])
+          .first();
+      }
+
+      if (!setting) {
+        throw new Error(`Setting ${key} not found`);
+      }
+
+      return setting.value as SettingValueTypes[T];
+    });
   }
 
   async setSetting<T extends keyof SettingValueTypes>(
