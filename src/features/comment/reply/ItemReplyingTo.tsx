@@ -5,7 +5,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import Vote from "../../labels/Vote";
 import Ago from "../../labels/Ago";
 import CommentContent from "../CommentContent";
-import IonIconWrapper from "../../../helpers/ionIconWrapper";
+import IonIconNoStroke from "../../../helpers/ionIconNoStroke";
 
 const Container = styled.div`
   padding: 1rem;
@@ -41,7 +41,7 @@ export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
   return (
     <Container>
       <Header>
-        <IonIconWrapper icon={returnDownForwardSharp} />{" "}
+        <IonIconNoStroke icon={returnDownForwardSharp} />{" "}
         {getHandle(item.creator)}{" "}
         <Vote
           type="comment"

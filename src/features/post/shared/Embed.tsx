@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { useState } from "react";
-import IonIconWrapper from "../../../helpers/ionIconWrapper";
+import IonIconNoStroke from "../../../helpers/ionIconNoStroke";
 import { IonIcon } from "@ionic/react";
 
 const Container = styled.a`
@@ -82,7 +82,7 @@ export default function Embed({ post, className }: EmbedProps) {
         <EmbedIcon icon={linkOutline} />
         <Divider />
         <Url>{post.post.url}</Url>
-        <IonIconWrapper icon={chevronForward} />
+        <IonIconNoStroke icon={chevronForward} />
       </Bottom>
     </Container>
   );

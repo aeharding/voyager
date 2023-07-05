@@ -21,7 +21,7 @@ import { useAppDispatch } from "../../store";
 import { getInboxCounts } from "../../features/inbox/inboxSlice";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../features/auth/PageContext";
-import IonIconWrapper from "../../helpers/ionIconWrapper";
+import IonIconNoStroke from "../../helpers/ionIconNoStroke";
 
 export default function BoxesPage() {
   const dispatch = useAppDispatch();
@@ -52,7 +52,7 @@ export default function BoxesPage() {
 
         <IonList inset color="primary">
           <InsetIonItem routerLink="/inbox/all" onClick={interceptIfLoggedOut}>
-            <IonIconWrapper icon={fileTray} color="primary" />
+            <IonIconNoStroke icon={fileTray} color="primary" />
             <SettingLabel>Inbox (All)</SettingLabel>
           </InsetIonItem>
           <InsetIonItem
@@ -83,7 +83,7 @@ export default function BoxesPage() {
             routerLink="/inbox/mentions"
             onClick={interceptIfLoggedOut}
           >
-            <IonIconWrapper icon={personCircleOutline} color="primary" />
+            <IonIconNoStroke icon={personCircleOutline} color="primary" />
             <SettingLabel>Mentions</SettingLabel>
           </InsetIonItem>
         </IonList>
@@ -93,7 +93,7 @@ export default function BoxesPage() {
             routerLink="/inbox/messages"
             onClick={interceptIfLoggedOut}
           >
-            <IonIconWrapper icon={mail} color="primary" />
+            <IonIconNoStroke icon={mail} color="primary" />
             <SettingLabel>Messages</SettingLabel>
           </InsetIonItem>
         </IonList>

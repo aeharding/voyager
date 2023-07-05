@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { IonItemSlidingCustomEvent, ItemSlidingCustomEvent } from "@ionic/core";
 import { IonItemOption, IonItemOptions, IonItemSliding } from "@ionic/react";
 import React, { useMemo, useRef, useState } from "react";
-import IonIconWrapper from "../../../helpers/ionIconWrapper";
+import IonIconNoStroke from "../../../helpers/ionIconNoStroke";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   --ion-item-border-color: transparent;
@@ -81,7 +81,7 @@ export default function SlidingItem({
     const render = startActions[currentStartActionIndex]?.render;
 
     if (!render) return;
-    if (typeof render === "string") return <IonIconWrapper icon={render} />;
+    if (typeof render === "string") return <IonIconNoStroke icon={render} />;
     return render();
 
     // NOTE: This caches the content so that it doesn't re-render until completely closed
@@ -104,7 +104,7 @@ export default function SlidingItem({
     const render = endActions[currentEndActionIndex]?.render;
 
     if (!render) return;
-    if (typeof render === "string") return <IonIconWrapper icon={render} />;
+    if (typeof render === "string") return <IonIconNoStroke icon={render} />;
     return render();
 
     // NOTE: This caches the content so that it doesn't re-render until completely closed

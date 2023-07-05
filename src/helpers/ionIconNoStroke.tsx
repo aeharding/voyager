@@ -7,7 +7,8 @@ This wrapper can be removed if:
 - Safari fixes svg rendering
 
 This wrapper can be replaced by something like `ion-icon::part(svg) { stroke: unset }` in index.css, 
-if ion-icon gets a shadow part that allows css access to the svg element
+if ion-icon gets a shadow part that allows css access to the svg element. Some icons rely on a stroke,
+so this needs to be done on a per-icon basis.
 */
 
 interface IonIconProps {
@@ -24,9 +25,9 @@ interface IonIconProps {
 }
 
 /**
- * Wrapper for IonIcon that removes stroke style from svg icons to fix jagged icon appearance on iOS. Do not use for outlined icons.
+ * **Do not use if icon needs a stroke!** Fixes jagged icon appearance on iOS for filled icons.
  */
-export default function IonIconWrapper({
+export default function IonIconNoStroke({
   icon,
   ...props
 }: typeof IonIcon.defaultProps & IonIconProps) {

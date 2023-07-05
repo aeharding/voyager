@@ -23,9 +23,9 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
 import { jwtSelector } from "../../features/auth/authSlice";
 import { Community } from "lemmy-js-client";
-import IonIconWrapper from "../../helpers/ionIconWrapper";
+import IonIconNoStroke from "../../helpers/ionIconNoStroke";
 
-const SubIcon = styled(IonIconWrapper)<{ color: string }>`
+const SubIcon = styled(IonIconNoStroke)<{ color: string }>`
   border-radius: 50%;
   padding: 6px;
   width: 1rem;

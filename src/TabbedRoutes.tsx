@@ -54,7 +54,7 @@ import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
-import IonIconWrapper from "./helpers/ionIconWrapper";
+import IonIconNoStroke from "./helpers/ionIconNoStroke";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -362,7 +362,7 @@ export default function TabbedRoutes() {
             tab="posts"
             href={`/posts/${connectedInstance}`}
           >
-            <IonIconWrapper aria-hidden="true" icon={telescope} />
+            <IonIconNoStroke aria-hidden="true" icon={telescope} />
             <IonLabel>Posts</IonLabel>
             <Interceptor onClick={onPostsClick} />
           </IonTabButton>
@@ -371,7 +371,7 @@ export default function TabbedRoutes() {
             tab="inbox"
             href="/inbox"
           >
-            <IonIconWrapper aria-hidden="true" icon={fileTray} />
+            <IonIconNoStroke aria-hidden="true" icon={fileTray} />
             <IonLabel>Inbox</IonLabel>
             {totalUnread ? (
               <IonBadge color="danger">{totalUnread}</IonBadge>
@@ -392,12 +392,12 @@ export default function TabbedRoutes() {
             tab="search"
             href="/search"
           >
-            <IonIconWrapper aria-hidden="true" icon={search} />
+            <IonIconNoStroke aria-hidden="true" icon={search} />
             <IonLabel>Search</IonLabel>
             <Interceptor onClick={onSearchClick} />
           </IonTabButton>
           <IonTabButton tab="settings" href="/settings">
-            <IonIconWrapper aria-hidden="true" icon={cog} />
+            <IonIconNoStroke aria-hidden="true" icon={cog} />
             <IonLabel>Settings</IonLabel>
             {settingsNotificationCount ? (
               <IonBadge color="danger">{settingsNotificationCount}</IonBadge>

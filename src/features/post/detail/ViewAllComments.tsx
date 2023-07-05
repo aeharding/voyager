@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { chevronForward } from "ionicons/icons";
 import { Link, useParams } from "react-router-dom";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import IonIconWrapper from "../../../helpers/ionIconWrapper";
+import IonIconNoStroke from "../../../helpers/ionIconNoStroke";
 
 const ContainerLink = styled(Link)`
   position: absolute;
@@ -38,7 +38,7 @@ const Text = styled.div`
   }
 `;
 
-const Chevron = styled(IonIconWrapper)`
+const Chevron = styled(IonIconNoStroke)`
   margin-left: auto;
   font-size: 1.5rem;
 `;

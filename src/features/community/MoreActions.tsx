@@ -19,7 +19,7 @@ import { NewPostContext } from "../post/new/NewPostModal";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { checkIsMod } from "../../helpers/lemmy";
 import { PageContext } from "../auth/PageContext";
-import IonIconWrapper from "../../helpers/ionIconWrapper";
+import IonIconNoStroke from "../../helpers/ionIconNoStroke";
 
 interface MoreActionsProps {
   community: string;
@@ -65,7 +65,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
         fill="default"
         onClick={() => setOpen(true)}
       >
-        <IonIconWrapper icon={ellipsisHorizontal} color="primary" />
+        <IonIconNoStroke icon={ellipsisHorizontal} color="primary" />
       </IonButton>
       <IonActionSheet
         cssClass="left-align-buttons"

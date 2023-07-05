@@ -24,7 +24,7 @@ import { UpdateContext } from "./update/UpdateContext";
 import useShouldInstall from "../../features/pwa/useShouldInstall";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import IonIconWrapper from "../../helpers/ionIconWrapper";
+import IonIconNoStroke from "../../helpers/ionIconNoStroke";
 
 const IconBg = styled.div<{ color: string }>`
   width: 30px;
@@ -81,7 +81,7 @@ export default function SettingsPage() {
           </InsetIonItem>
           <InsetIonItem routerLink="/settings/update">
             <IconBg color="color(display-p3 0 0.8 0)">
-              <IonIconWrapper icon={reloadCircle} />
+              <IonIconNoStroke icon={reloadCircle} />
             </IconBg>
             <SettingLabel>Check for updates</SettingLabel>
             {updateStatus === "outdated" && (
@@ -91,7 +91,7 @@ export default function SettingsPage() {
 
           <InsetIonItem routerLink="/settings/appearance">
             <IconBg color="color(display-p3 1 0 0)">
-              <IonIconWrapper icon={colorPalette} />
+              <IonIconNoStroke icon={colorPalette} />
             </IconBg>
             <SettingLabel>Appearance</SettingLabel>
           </InsetIonItem>
@@ -116,7 +116,7 @@ export default function SettingsPage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <IonIconWrapper icon={logoGithub} color="primary" />
+            <IonIconNoStroke icon={logoGithub} color="primary" />
             <SettingLabel>
               Github{" "}
               <sup>
