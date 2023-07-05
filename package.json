@@ -2,7 +2,7 @@
   "name": "wefwef",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "0.13.1",
+  "version": "0.14.0",
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
@@ -11,7 +11,10 @@
     "test": "vitest",
     "test:typecheck": "tsc",
     "lint": "eslint src --max-warnings=0",
-    "lint:formatting": "prettier --check ."
+    "lint:formatting": "prettier --check .",
+    "generate:splash:dark": "pwa-asset-generator --type png --index index.html --dark-mode --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
+    "generate:splash:light": "pwa-asset-generator --type png --index index.html --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
+    "generate:splash": "yarn generate:splash:dark && yarn generate:splash:light"
   },
   "dependencies": {
     "dexie": "^3.2.4",
@@ -59,6 +62,7 @@
     "mdast-util-gfm-autolink-literal-lemmy": "^1.0.3",
     "photoswipe": "^5.3.7",
     "prettier": "^2.8.8",
+    "pwa-asset-generator": "^6.3.1",
     "react": "^18.2.0",
     "react-animate-height": "^3.1.1",
     "react-dom": "^18.2.0",

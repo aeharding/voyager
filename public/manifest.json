@@ -3,10 +3,28 @@
   "name": "wefwef",
   "icons": [
     {
-      "src": "/logo.png",
-      "type": "image/png",
-      "sizes": "256x256",
+      "src": "/logo_maskable_minified.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
       "purpose": "any maskable"
+    },
+    {
+      "src": "logo_minified.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicons/192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicons/512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
     }
   ],
   "start_url": "/",

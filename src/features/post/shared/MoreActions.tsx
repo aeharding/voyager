@@ -150,6 +150,7 @@ export default function MoreActions({
         cssClass="left-align-buttons"
         isOpen={open}
         buttons={buttons}
+        onClick={(e) => e.stopPropagation()}
         onWillDismiss={async (e) => {
           setOpen(false);
 

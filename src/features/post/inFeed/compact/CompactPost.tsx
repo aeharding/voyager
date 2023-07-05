@@ -7,6 +7,7 @@ import MoreActions from "../../shared/MoreActions";
 import PersonLink from "../../../labels/links/PersonLink";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { VoteButton } from "../../shared/VoteButton";
+import Save from "../../../labels/Save";
 
 const Container = styled.div`
   display: flex;
@@ -14,6 +15,8 @@ const Container = styled.div`
   padding: 12px;
   gap: 12px;
   line-height: 1.15;
+
+  position: relative;
 
   ${maxWidthCss}
 `;
@@ -89,6 +92,8 @@ export default function CompactPost({ post, communityMode }: PostProps) {
         <VoteButton type="up" postId={post.post.id} />
         <VoteButton type="down" postId={post.post.id} />
       </EndDetails>
+
+      <Save type="post" id={post.post.id} />
     </Container>
   );
 }

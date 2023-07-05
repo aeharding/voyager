@@ -27,10 +27,12 @@ interface SearchPostsResultsProps {
 
 export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
   const dispatch = useAppDispatch();
-  const { search } = useParams<{ search: string }>();
+  const { search: _encodedSearch } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
+
+  const search = decodeURIComponent(_encodedSearch);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
