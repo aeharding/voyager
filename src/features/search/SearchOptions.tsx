@@ -33,7 +33,7 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
       </InsetIonItem>
       <InsetIonItem routerLink={buildGeneralBrowseLink(`/u/${searchURI}`)}>
         <IonIcon icon={personOutline} color="primary" />
-        <SettingLabel>Go to User “{searchURI}”</SettingLabel>
+        <SettingLabel>Go to User “{search}”</SettingLabel>
       </InsetIonItem>
     </IonList>
   );
