@@ -48,7 +48,8 @@ interface TitleSearchProps {
 }
 
 export default function TitleSearch({ name, children }: TitleSearchProps) {
-  const { setSearch, searching, setSearching } = useContext(TitleSearchContext);
+  const { setSearch, searching, setSearching, onSubmit } =
+    useContext(TitleSearchContext);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -69,7 +70,10 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
               if (e.key === "Escape" || e.key === "Tab") {
                 setSearching(false);
               }
+
+              if (e.key === "Enter") onSubmit();
             }}
+            enterKeyHint="go"
           />
         </IonTitle>
 

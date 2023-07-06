@@ -1,4 +1,11 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
 import styled from "@emotion/styled";
 import { useDebounce } from "usehooks-ts";
@@ -29,6 +36,8 @@ const Backdrop = styled.div`
 
 const KeyboardContent = styled.div`
   display: flex;
+
+  transition: max-height 150ms ease-out;
 `;
 
 const Contents = styled.div`
@@ -76,7 +85,7 @@ type Result = Community | SpecialFeed;
 
 export default function TitleSearchResults() {
   const router = useIonRouter();
-  const { search, setSearch, searching, setSearching } =
+  const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
   const debouncedSearch = useDebounce(search, 500);
   const [searchPayload, setSearchPayload] = useState<CommunityView[]>([]);
@@ -112,25 +121,59 @@ export default function TitleSearchResults() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
 
+  const onSelect = useCallback(
+    (c: Result) => {
+      let route;
+
+      if ("type" in c) {
+        route = buildGeneralBrowseLink(`/${c.type}`);
+      } else {
+        route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
+      }
+
+      router.push(route, undefined, undefined, undefined, () =>
+        createAnimation()
+      );
+    },
+    [buildGeneralBrowseLink, router]
+  );
+
+  useEffect(() => {
+    setOnSubmit(() => {
+      if (!results.length) return;
+
+      onSelect(results[0]);
+      setSearching(false);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [results, setSearching]);
+
   useEffect(() => {
     if (!searching) {
       setSearch("");
     }
-  });
+  }, [searching, setSearch]);
 
   useEffect(() => {
-    const onResize = () => {
+    const updateViewport = () => {
       // For the rare legacy browsers that don't support it
       if (!window.visualViewport || !contentRef.current) {
         return;
       }
-
       setViewportHeight(
-        window.visualViewport.height -
-          contentRef.current.getBoundingClientRect().top -
-          16
+        Math.min(
+          window.visualViewport.height -
+            contentRef.current.getBoundingClientRect().top,
+          document.documentElement.clientHeight - 200
+        ) - 16
       );
     };
+
+    const onResize = () => {
+      updateViewport();
+    };
+
+    updateViewport();
 
     window.visualViewport?.addEventListener("resize", onResize);
 
@@ -166,17 +209,7 @@ export default function TitleSearchResults() {
                 onClick={() => {
                   setSearching(false);
 
-                  let route;
-
-                  if ("type" in c) {
-                    route = buildGeneralBrowseLink(`/${c.type}`);
-                  } else {
-                    route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
-                  }
-
-                  router.push(route, undefined, undefined, undefined, () =>
-                    createAnimation()
-                  );
+                  onSelect(c);
                 }}
                 key={c.id}
                 routerDirection="none"
