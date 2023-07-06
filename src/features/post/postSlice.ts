@@ -18,6 +18,7 @@ interface PostState {
   postHiddenById: Dictionary<boolean>;
   postVotesById: Dictionary<1 | -1 | 0>;
   postSavedById: Dictionary<boolean>;
+  postReadById: Dictionary<boolean>;
   sort: SortType;
 }
 
@@ -26,6 +27,7 @@ const initialState: PostState = {
   postHiddenById: {},
   postVotesById: {},
   postSavedById: {},
+  postReadById: {},
   sort: get(POST_SORT_KEY) ?? POST_SORTS[0],
 };
 
@@ -49,6 +51,9 @@ export const postSlice = createSlice({
     updateSortType(state, action: PayloadAction<SortType>) {
       state.sort = action.payload;
       set(POST_SORT_KEY, action.payload);
+    },
+    updatePostRead: (state, action: PayloadAction<{ postId: number }>) => {
+      state.postReadById[action.payload.postId] = true;
     },
   },
   extraReducers: (builder) => {
@@ -123,8 +128,13 @@ export const receivedPosts = createAsyncThunk(
 );
 
 // Action creators are generated for each case reducer function
-export const { updatePostVote, resetPosts, updateSortType, updatePostSaved } =
-  postSlice.actions;
+export const {
+  updatePostVote,
+  resetPosts,
+  updateSortType,
+  updatePostSaved,
+  updatePostRead,
+} = postSlice.actions;
 
 export default postSlice.reducer;
 
@@ -150,6 +160,22 @@ export const savePost =
 
       throw error;
     }
+  };
+
+export const setPostRead =
+  (postId: number) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(updatePostRead({ postId }));
+
+    const jwt = jwtSelector(getState());
+
+    if (!jwt) throw new Error("Not authorized");
+
+    await clientSelector(getState())?.markPostAsRead({
+      post_id: postId,
+      read: true,
+      auth: jwt,
+    });
   };
 
 export const voteOnPost =
