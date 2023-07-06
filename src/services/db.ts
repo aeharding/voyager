@@ -290,19 +290,12 @@ export class WefwefDB extends Dexie {
         throw new Error(`Setting ${key} not found`);
       }
 
-      if (!setting && community !== "") {
-        // Fall back to user settings if no specific setting for the community is found
-        setting = await this.findSetting(key, user_handle, "");
-      }
-
-      if (!setting && user_handle !== "") {
-        // Fall back to community settings if no specific setting for the user is found
-        setting = await this.findSetting(key, "", community);
-      }
-
-      if (!setting) {
-        // Fall back to global settings if no specific setting for the user is found
-        setting = await this.findSetting(key, "", "");
+      if (!setting && user_handle !== "" && community !== "") {
+        // Try to find the setting with user_handle only, community only and no specificity
+        setting =
+          (await this.findSetting(key, user_handle, "")) ||
+          (await this.findSetting(key, "", community)) ||
+          (await this.findSetting(key, "", ""));
       }
 
       if (!setting) {
