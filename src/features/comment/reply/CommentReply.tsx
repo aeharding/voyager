@@ -22,6 +22,7 @@ import { useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { handleSelector, jwtSelector } from "../../auth/authSlice";
 import { css } from "@emotion/react";
+import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/Gallery";
 
 export const Container = styled.div`
   position: absolute;
@@ -164,7 +165,7 @@ export default function CommentReply({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent {...preventPhotoswipeGalleryFocusTrap}>
         <Container>
           <Textarea
             onChange={(e) => setReplyContent(e.target.value)}

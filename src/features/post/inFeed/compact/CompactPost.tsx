@@ -79,11 +79,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
             <CommunityLink community={post.community} />
           )}
           <Actions>
-            <PreviewStats
-              stats={post.counts}
-              published={post.post.published}
-              voteFromServer={post.my_vote}
-            />
+            <PreviewStats post={post} />
             <StyledMoreActions post={post} onFeed />
           </Actions>
         </Aside>

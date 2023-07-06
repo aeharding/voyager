@@ -27,7 +27,7 @@ import { defaultCommentDepthSelector } from "../settings/appearance/appearanceSl
 
 const centerCss = css`
   position: relative;
-  margin: 4rem 0 4rem;
+  padding: 4rem 0 4rem;
   left: 50%;
   transform: translateX(-50%);
 `;
