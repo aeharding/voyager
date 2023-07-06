@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { megaphone } from "ionicons/icons";
 import PreviewStats from "../PreviewStats";
 import Embed from "../../shared/Embed";
@@ -17,6 +18,9 @@ import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
 import { Image } from "./Image";
+import { useAppSelector } from "../../../../store";
+
+const readOpacity = 0.6;
 
 const Container = styled.div`
   display: flex;
@@ -30,13 +34,27 @@ const Container = styled.div`
   ${maxWidthCss}
 `;
 
-const Details = styled.div`
+const Title = styled.div<{ isRead: boolean }>`
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      opacity: ${readOpacity};
+    `}
+`;
+
+const Details = styled.div<{ isRead: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   font-size: 0.8em;
   color: var(--ion-color-medium);
+
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      opacity: ${readOpacity};
+    `};
 `;
 
 const LeftDetails = styled.div`
@@ -74,12 +92,29 @@ const PostBody = styled.div`
   overflow: hidden;
 `;
 
-const ImageContainer = styled.div`
+const ImageContainer = styled.div<{ isRead: boolean }>`
   overflow: hidden;
   margin: 0 -1rem;
+
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      opacity: ${readOpacity};
+    `}
+`;
+
+const EmbedWrapper = styled(Embed)<{ isRead: boolean }>`
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      opacity: ${readOpacity};
+    `}
 `;
 
 export default function LargePost({ post, communityMode }: PostProps) {
+  const hasBeenRead: boolean =
+    useAppSelector((state) => state.post.postReadById[post.post.id]) ||
+    post.read;
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
@@ -89,14 +124,14 @@ export default function LargePost({ post, communityMode }: PostProps) {
     if (post.post.url) {
       if (isUrlImage(post.post.url)) {
         return (
-          <ImageContainer>
+          <ImageContainer isRead={hasBeenRead}>
             <Image blur={isNsfw(post)} post={post} animationType="zoom" />
           </ImageContainer>
         );
       }
       if (isUrlVideo(post.post.url)) {
         return (
-          <ImageContainer>
+          <ImageContainer isRead={hasBeenRead}>
             <Video src={post.post.url} />
           </ImageContainer>
         );
@@ -105,7 +140,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
 
     if (markdownLoneImage)
       return (
-        <ImageContainer>
+        <ImageContainer isRead={hasBeenRead}>
           <Image blur={isNsfw(post)} post={post} animationType="zoom" />
         </ImageContainer>
       );
@@ -114,7 +149,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
      * Embedded video, image with a thumbanil
      */
     if (post.post.thumbnail_url && post.post.url) {
-      return <Embed post={post} />;
+      return <EmbedWrapper isRead={hasBeenRead} post={post} />;
     }
 
     /**
@@ -123,7 +158,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
     if (post.post.body) {
       return (
         <>
-          {post.post.url && <Embed post={post} />}
+          {post.post.url && <EmbedWrapper isRead={hasBeenRead} post={post} />}
 
           <PostBody>
             <InlineMarkdown>{post.post.body}</InlineMarkdown>
@@ -133,16 +168,16 @@ export default function LargePost({ post, communityMode }: PostProps) {
     }
 
     if (post.post.url) {
-      return <Embed post={post} />;
+      return <EmbedWrapper isRead={hasBeenRead} post={post} />;
     }
   }
 
   return (
     <Container>
-      <div>
+      <Title isRead={hasBeenRead}>
         <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
         {isNsfw(post) && <Nsfw />}
-      </div>
+      </Title>
 
       {renderPostBody()}
 
