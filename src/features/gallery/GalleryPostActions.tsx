@@ -1,4 +1,4 @@
-import { IonIcon, IonRouterLink } from "@ionic/react";
+import { IonIcon, useIonRouter } from "@ionic/react";
 import { VoteButton } from "../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline, shareOutline } from "ionicons/icons";
@@ -6,7 +6,6 @@ import styled from "@emotion/styled";
 import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
-import { css } from "@emotion/react";
 import MoreActions from "../post/shared/MoreActions";
 
 const Container = styled.div`
@@ -43,7 +42,7 @@ export default function GalleryPostActions({
   const link = buildGeneralBrowseLink(
     `/c/${getHandle(post.community)}/comments/${post.post.id}`
   );
-
+  const router = useIonRouter();
   const score =
     post.counts.score -
     (post.my_vote ?? 0) +
@@ -54,28 +53,24 @@ export default function GalleryPostActions({
   }
 
   return (
-    <Container>
+    <Container onClick={(e) => e.stopPropagation()}>
       <Section>
         <VoteButton type="up" postId={post.post.id} />
         <Amount>{score}</Amount>
         <VoteButton type="down" postId={post.post.id} />
       </Section>
-      <IonRouterLink
-        css={css`
-          color: inherit;
-        `}
-        onClick={(e) => {
-          e.preventDefault();
-
+      <div
+        onClick={() => {
           close();
+
+          setTimeout(() => router.push(link), 10);
         }}
-        routerLink={link}
       >
         <Section>
           <IonIcon icon={chatbubbleOutline} />
           <Amount>{post.counts.comments}</Amount>
         </Section>
-      </IonRouterLink>
+      </div>
       <IonIcon icon={shareOutline} onClick={share} />
       <MoreActions post={post} onFeed />
     </Container>
