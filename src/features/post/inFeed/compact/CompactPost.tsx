@@ -68,8 +68,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
       <Content>
         {post.post.name}
         <Aside>
-          {post.counts.featured_community ||
-          post.counts.featured_local ? (
+          {post.counts.featured_community || post.counts.featured_local ? (
             <AnnouncementIcon icon={megaphone} />
           ) : undefined}
           {communityMode ? (
