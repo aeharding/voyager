@@ -45,7 +45,7 @@ export type GalleryHandle = {
  * from detecting that we're changing focus. It's not great.. but it's what we got
  * https://github.com/dimsemenov/PhotoSwipe/issues/1968
  */
-export const photoswipeGalleryPreventFocusTrap = {
+export const preventPhotoswipeGalleryFocusTrap = {
   onFocusCapture: (e: FocusEvent) => e.stopPropagation(),
   onKeyDown: (e: KeyboardEvent) => e.stopPropagation(),
 };

@@ -7,6 +7,7 @@ import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import MoreActions from "../post/shared/MoreActions";
+import { calculateCurrentVotesCount } from "../../helpers/vote";
 
 const Container = styled.div`
   display: flex;
@@ -43,10 +44,7 @@ export default function GalleryPostActions({
     `/c/${getHandle(post.community)}/comments/${post.post.id}`
   );
   const router = useIonRouter();
-  const score =
-    post.counts.score -
-    (post.my_vote ?? 0) +
-    (postVotesById[post.post.id] ?? 0);
+  const score = calculateCurrentVotesCount(post, postVotesById);
 
   function share() {
     navigator.share({ url: post.post.ap_id });

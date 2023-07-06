@@ -7,6 +7,8 @@ import { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
 import { voteError } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
+import { calculateCurrentVotesCount } from "../../helpers/vote";
+import { CommentView, PostView } from "lemmy-js-client";
 
 const Container = styled.div<{ vote: 1 | -1 | 0 | undefined }>`
   display: flex;
@@ -26,37 +28,29 @@ const Container = styled.div<{ vote: 1 | -1 | 0 | undefined }>`
 `;
 
 interface VoteProps {
-  type: "comment" | "post";
-  id: number;
-  score: number;
-  voteFromServer: 1 | -1 | 0 | undefined;
+  item: PostView | CommentView;
   className?: string;
 }
 
-export default function Vote({
-  type,
-  id,
-  voteFromServer,
-  score: existingScore,
-  className,
-}: VoteProps) {
+export default function Vote({ item, className }: VoteProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const votesById = useAppSelector((state) =>
-    type === "comment"
+    "comment" in item
       ? state.comment.commentVotesById
       : state.post.postVotesById
   );
+  const id = "comment" in item ? item.comment.id : item.post.id;
 
-  const myVote = votesById[id] ?? voteFromServer;
-  const score = existingScore - (voteFromServer ?? 0) + (votesById[id] ?? 0);
+  const myVote = votesById[id] ?? item.my_vote;
+  const score = calculateCurrentVotesCount(item, votesById);
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
   return (
     <Container
       className={className}
-      vote={myVote}
+      vote={myVote as 1 | 0 | -1}
       onClick={async (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -64,7 +58,7 @@ export default function Vote({
         if (presentLoginIfNeeded()) return;
 
         let dispatcherFn;
-        if (type === "comment") {
+        if ("comment" in item) {
           dispatcherFn = voteOnComment;
         } else {
           dispatcherFn = voteOnPost;

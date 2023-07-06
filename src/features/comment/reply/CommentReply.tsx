@@ -22,7 +22,7 @@ import { useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { handleSelector, jwtSelector } from "../../auth/authSlice";
 import { css } from "@emotion/react";
-import { photoswipeGalleryPreventFocusTrap as preventPhotoswipeGalleryFocusTrap } from "../../gallery/Gallery";
+import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/Gallery";
 
 export const Container = styled.div`
   position: absolute;

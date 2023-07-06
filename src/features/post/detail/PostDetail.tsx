@@ -161,7 +161,7 @@ export default function PostDetail() {
         return <Video src={post.post.url} css={lightboxCss} controls />;
     }
 
-    if (markdownLoneImage) return <PostGallery post={post} />;
+    if (markdownLoneImage) return <LightboxImg post={post} />;
   }
 
   function renderText() {
@@ -217,11 +217,7 @@ export default function PostDetail() {
                 />{" "}
                 <PersonLink person={post.creator} prefix="by" />
               </By>
-              <Stats
-                stats={post.counts}
-                voteFromServer={post.my_vote}
-                published={post.post.published}
-              />
+              <Stats post={post} />
             </PostDeets>
           </Container>
         </BorderlessIonItem>

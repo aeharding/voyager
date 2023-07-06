@@ -160,11 +160,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
             )}
           </CommunityName>
 
-          <PreviewStats
-            stats={post.counts}
-            voteFromServer={post.my_vote}
-            published={post.post.published}
-          />
+          <PreviewStats post={post} />
         </LeftDetails>
         <RightDetails>
           <MoreActions post={post} onFeed />
