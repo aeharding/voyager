@@ -228,18 +228,40 @@ function searchCommunityByName(
   communities: Community[],
   query: string
 ): Community[] {
-  return communities.filter(
-    (c) =>
-      c.name.toLowerCase().includes(query.toLowerCase()) ||
-      c.title.toLowerCase().includes(query.toLowerCase())
-  );
+  return communities
+    .map((c) => ({
+      community: c,
+      score: scoreSearch([c.name, c.title], query),
+    }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(({ community }) => community);
 }
 
 function searchSpecialByName(
   specialFeeds: typeof SPECIAL_FEEDS,
   query: string
 ): SpecialFeed[] {
-  return specialFeeds.filter(({ label }) =>
-    label.toLowerCase().includes(query.toLowerCase())
-  );
+  return specialFeeds
+    .map((f) => ({
+      feed: f,
+      score: scoreSearch([f.label], query),
+    }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(({ feed }) => feed);
+}
+
+function scoreSearch(names: string[], search: string) {
+  const s = search.toLowerCase();
+
+  for (const nameRaw of names) {
+    const name = nameRaw.toLowerCase();
+    if (name.startsWith(s)) {
+      return 2;
+    } else if (name.includes(s)) {
+      return 1;
+    }
+  }
+  return 0;
 }
