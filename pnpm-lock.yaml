@@ -61,6 +61,9 @@ devDependencies:
   '@testing-library/user-event':
     specifier: ^14.4.3
     version: 14.4.3(@testing-library/dom@9.3.1)
+  '@types/history':
+    specifier: ^4.7.11
+    version: 4.7.11
   '@types/jest':
     specifier: ^29.5.2
     version: 29.5.2
@@ -70,6 +73,9 @@ devDependencies:
   '@types/lodash':
     specifier: ^4.14.195
     version: 4.14.195
+  '@types/mdast':
+    specifier: ^3.0.11
+    version: 3.0.11
   '@types/react':
     specifier: ^18.2.14
     version: 18.2.14
@@ -202,6 +208,9 @@ devDependencies:
   ua-parser-js:
     specifier: ^1.0.35
     version: 1.0.35
+  unified:
+    specifier: ^10.1.2
+    version: 10.1.2
   unist-util-visit:
     specifier: ^4.1.2
     version: 4.1.2
