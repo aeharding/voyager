@@ -113,6 +113,8 @@ export default function TitleSearchResults() {
       q: debouncedSearch,
       limit: 20,
       type_: "Communities",
+      listing_type: "All",
+      sort: "TopAll",
     });
 
     setSearchPayload(result.communities);
