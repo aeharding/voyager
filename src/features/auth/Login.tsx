@@ -25,6 +25,7 @@ import { getClient } from "../../services/lemmy";
 import { IonInputCustomEvent } from "@ionic/core";
 import TermsSheet from "../settings/terms/TermsSheet";
 import { LEMMY_SERVERS } from "../../helpers/lemmy";
+import { photoswipeGalleryPreventFocusTrap } from "../gallery/Gallery";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -200,6 +201,7 @@ export default function Login({
 
   return (
     <form
+      {...photoswipeGalleryPreventFocusTrap}
       onSubmit={(event) => {
         event.preventDefault();
         submit();

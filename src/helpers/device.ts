@@ -20,3 +20,18 @@ export function isAppleDeviceInstallable(): boolean {
 export function isTouchDevice() {
   return "ontouchstart" in window || navigator.maxTouchPoints > 0;
 }
+
+export function getSafeArea() {
+  const style = getComputedStyle(document.documentElement);
+
+  function parseValue(val: string): number {
+    return +val.slice(0, -2);
+  }
+
+  return {
+    top: parseValue(style.getPropertyValue("--sat")),
+    right: parseValue(style.getPropertyValue("--sar")),
+    bottom: parseValue(style.getPropertyValue("--sab")),
+    left: parseValue(style.getPropertyValue("--sal")),
+  };
+}
