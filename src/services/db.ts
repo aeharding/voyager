@@ -291,11 +291,15 @@ export class WefwefDB extends Dexie {
       }
 
       if (!setting && user_handle !== "" && community !== "") {
-        // Try to find the setting with user_handle only, community only and no specificity
+        // Try to find the setting with user_handle only, community only
         setting =
           (await this.findSetting(key, user_handle, "")) ||
-          (await this.findSetting(key, "", community)) ||
-          (await this.findSetting(key, "", ""));
+          (await this.findSetting(key, "", community));
+      }
+
+      if (!setting) {
+        // Try to find the global setting
+        setting = await this.findSetting(key, "", "");
       }
 
       if (!setting) {
