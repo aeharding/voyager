@@ -6,6 +6,7 @@ import {
   useIonToast,
 } from "@ionic/react";
 import {
+  closeCircleOutline,
   createOutline,
   ellipsisHorizontal,
   heartDislikeOutline,
@@ -46,6 +47,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
     communityByHandle[community]?.community_view.subscribed === "Subscribed" ||
     communityByHandle[community]?.community_view.subscribed === "Pending";
 
+  const isBlocked = communityByHandle[community]?.community_view.blocked;
+
   const canPost = useMemo(() => {
     const isMod = site ? checkIsMod(community, site) : false;
 
@@ -80,6 +83,11 @@ export default function MoreActions({ community }: MoreActionsProps) {
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
             role: "subscribe",
             icon: !isSubscribed ? heartOutline : heartDislikeOutline,
+          },
+          {
+            text: !isBlocked ? "Block Community" : "Unblock Community",
+            role: "block",
+            icon: closeCircleOutline,
           },
           {
             text: "Sidebar",
