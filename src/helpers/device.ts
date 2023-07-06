@@ -35,3 +35,7 @@ export function getSafeArea() {
     left: parseValue(style.getPropertyValue("--sal")),
   };
 }
+
+export function isAndroid() {
+  return /android/i.test(navigator.userAgent);
+}

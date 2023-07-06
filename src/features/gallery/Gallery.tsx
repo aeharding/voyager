@@ -12,7 +12,7 @@ import "photoswipe/dist/photoswipe.css";
 import { createPortal } from "react-dom";
 import styled from "@emotion/styled";
 import PhotoSwipe, { PreparedPhotoSwipeOptions } from "photoswipe";
-import { getSafeArea } from "../../helpers/device";
+import { getSafeArea, isAndroid } from "../../helpers/device";
 import { v4 as uuidv4 } from "uuid";
 
 const Container = styled.div`
@@ -60,7 +60,9 @@ export const Gallery = forwardRef<GalleryHandle, ImgProps>(function Gallery(
   );
   const photoswipeRef = useRef<PhotoSwipe>();
 
-  const [id] = useState(uuidv4());
+  // Adding a ID to photoswipe creates hash URL, which allows back button
+  // to close the dialog
+  const [id] = useState(isAndroid() ? uuidv4() : undefined);
 
   useImperativeHandle(ref, () => ({
     close: () => {
