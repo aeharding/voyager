@@ -12,8 +12,8 @@ import "photoswipe/dist/photoswipe.css";
 import { createPortal } from "react-dom";
 import styled from "@emotion/styled";
 import PhotoSwipe, { PreparedPhotoSwipeOptions } from "photoswipe";
-import { uniqueId } from "lodash";
 import { getSafeArea } from "../../helpers/device";
+import { v4 as uuidv4 } from "uuid";
 
 const Container = styled.div`
   position: absolute;
@@ -60,7 +60,7 @@ export const Gallery = forwardRef<GalleryHandle, ImgProps>(function Gallery(
   );
   const photoswipeRef = useRef<PhotoSwipe>();
 
-  const [id] = useState(uniqueId());
+  const [id] = useState(uuidv4());
 
   useImperativeHandle(ref, () => ({
     close: () => {
