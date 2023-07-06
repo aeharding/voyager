@@ -8,6 +8,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import MoreActions from "../post/shared/MoreActions";
 import { calculateCurrentVotesCount } from "../../helpers/vote";
+import { useLocation } from "react-router";
 
 const Container = styled.div`
   display: flex;
@@ -45,6 +46,7 @@ export default function GalleryPostActions({
   );
   const router = useIonRouter();
   const score = calculateCurrentVotesCount(post, postVotesById);
+  const location = useLocation();
 
   function share() {
     navigator.share({ url: post.post.ap_id });
@@ -60,6 +62,8 @@ export default function GalleryPostActions({
       <div
         onClick={() => {
           close();
+
+          if (location.pathname.startsWith(link)) return;
 
           setTimeout(() => router.push(link), 10);
         }}
