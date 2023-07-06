@@ -229,12 +229,12 @@ export class WefwefDB extends Dexie {
    * Settings
    */
 
-  async populateDefaultSettings(tx: Transaction) {
+  private async populateDefaultSettings(tx: Transaction) {
     const settingsTable = tx.table("settings");
     settingsTable.bulkAdd(defaultSettings);
   }
 
-  async migrateFromLocalStorageSettings(tx: Transaction) {
+  private async migrateFromLocalStorageSettings(tx: Transaction) {
     const localStorageMigrationKeys = {
       font_size_multiplier: "appearance--font-size-multiplier",
       use_system_font_size: "appearance--font-use-system",
@@ -266,6 +266,13 @@ export class WefwefDB extends Dexie {
     );
   }
 
+  private findSetting(key: string, user_handle: string, community: string) {
+    return this.settings
+      .where(CompoundKeys.settings.key_and_user_handle_and_community)
+      .equals([key, user_handle, community])
+      .first();
+  }
+
   getSetting<T extends keyof SettingValueTypes>(
     key: T,
     specificity?: {
@@ -276,34 +283,26 @@ export class WefwefDB extends Dexie {
     const { user_handle = "", community = "" } = specificity || {};
 
     return this.transaction("r", this.settings, async () => {
-      let setting = await this.settings
-        // Everything matches
-        .where(CompoundKeys.settings.key_and_user_handle_and_community)
-        .equals([key, user_handle, community])
-        .first();
+      let setting = await this.findSetting(key, user_handle, community);
 
-      if (!setting && user_handle !== "") {
-        // Fall back to user settings if no specific setting for the community is found
-        setting = await this.settings
-          .where(CompoundKeys.settings.key_and_user_handle_and_community)
-          .equals([key, user_handle, ""])
-          .first();
+      if (!setting && user_handle === "" && community === "") {
+        // Already requested the global setting and it's not found, we can stop here
+        throw new Error(`Setting ${key} not found`);
       }
 
       if (!setting && community !== "") {
+        // Fall back to user settings if no specific setting for the community is found
+        setting = await this.findSetting(key, user_handle, "");
+      }
+
+      if (!setting && user_handle !== "") {
         // Fall back to community settings if no specific setting for the user is found
-        setting = await this.settings
-          .where(CompoundKeys.settings.key_and_user_handle_and_community)
-          .equals([key, "", community])
-          .first();
+        setting = await this.findSetting(key, "", community);
       }
 
       if (!setting) {
         // Fall back to global settings if no specific setting for the user is found
-        setting = await this.settings
-          .where(CompoundKeys.settings.key_and_user_handle_and_community)
-          .equals([key, "", ""])
-          .first();
+        setting = await this.findSetting(key, "", "");
       }
 
       if (!setting) {
