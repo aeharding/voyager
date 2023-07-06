@@ -96,13 +96,7 @@ export const Gallery = forwardRef<GalleryHandle, ImgProps>(function Gallery(
           },
         ]}
       >
-        <Item
-          original={src}
-          thumbnail={src}
-          width={dim?.w}
-          height={dim?.h}
-          id={src}
-        >
+        <Item original={src} thumbnail={src} width={dim?.w} height={dim?.h}>
           {({ ref, open }) => (
             <img
               draggable="false"
