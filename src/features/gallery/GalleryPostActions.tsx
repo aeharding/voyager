@@ -1,3 +1,4 @@
+import React, { useContext } from "react";
 import { IonIcon, useIonRouter } from "@ionic/react";
 import { VoteButton } from "../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
@@ -12,9 +13,9 @@ import {
   calculateSeparateScore,
 } from "../../helpers/vote";
 import { useLocation } from "react-router";
-import React, { useContext } from "react";
 import { GalleryContext } from "./GalleryProvider";
 import { OVoteDisplayMode } from "../../services/db";
+import { Share } from "../post/shared/Share";
 
 const Container = styled.div`
   display: flex;
@@ -49,8 +50,9 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
   const location = useLocation();
   const { close } = useContext(GalleryContext);
 
-  function share() {
-    navigator.share({ url: post.post.ap_id });
+  const share: React.MutableRefObject<(() => void) | null> = React.useRef(null);
+  function share_internal() {
+    share.current?.();
   }
 
   return (
@@ -70,8 +72,9 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
           <Amount>{post.counts.comments}</Amount>
         </Section>
       </div>
-      <IonIcon icon={shareOutline} onClick={share} />
+      <IonIcon icon={shareOutline} onClick={share_internal} />
       <MoreActions post={post} onFeed />
+      <Share share={share} post={post} />
     </Container>
   );
 }
