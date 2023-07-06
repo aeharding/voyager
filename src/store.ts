@@ -7,7 +7,7 @@ import communitySlice from "./features/community/communitySlice";
 import userSlice from "./features/user/userSlice";
 import inboxSlice from "./features/inbox/inboxSlice";
 import appearanceSlice, {
-  fetchSettingsFromStorage,
+  fetchSettingsFromDatabase,
 } from "./features/settings/appearance/appearanceSlice";
 
 const store = configureStore({
@@ -28,6 +28,6 @@ export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // Load settings from DB into the store
-store.dispatch(fetchSettingsFromStorage());
+store.dispatch(fetchSettingsFromDatabase());
 
 export default store;

@@ -24,12 +24,8 @@ export type CommentThreadCollapse =
   (typeof OCommentThreadCollapse)[keyof typeof OCommentThreadCollapse];
 
 export type SettingValueTypes = {
-  font_size_multiplier: number;
-  use_system_font_size: boolean;
   collapse_comment_threads: CommentThreadCollapse;
   post_appearance_type: PostAppearanceType;
-  use_system_dark_mode: boolean;
-  user_dark_mode: boolean;
   blur_nsfw: boolean;
 };
 
@@ -42,18 +38,6 @@ export interface ISettingItem<T extends keyof SettingValueTypes> {
 
 const defaultSettings: ISettingItem<keyof SettingValueTypes>[] = [
   {
-    key: "font_size_multiplier",
-    value: 1,
-    user_handle: "",
-    community: "",
-  },
-  {
-    key: "use_system_font_size",
-    value: false,
-    user_handle: "",
-    community: "",
-  },
-  {
     key: "collapse_comment_threads",
     value: OCommentThreadCollapse.Never,
     user_handle: "",
@@ -62,18 +46,6 @@ const defaultSettings: ISettingItem<keyof SettingValueTypes>[] = [
   {
     key: "post_appearance_type",
     value: OPostAppearanceType.Large,
-    user_handle: "",
-    community: "",
-  },
-  {
-    key: "use_system_dark_mode",
-    value: true,
-    user_handle: "",
-    community: "",
-  },
-  {
-    key: "user_dark_mode",
-    value: false,
     user_handle: "",
     community: "",
   },
@@ -236,12 +208,8 @@ export class WefwefDB extends Dexie {
 
   private async migrateFromLocalStorageSettings(tx: Transaction) {
     const localStorageMigrationKeys = {
-      font_size_multiplier: "appearance--font-size-multiplier",
-      use_system_font_size: "appearance--font-use-system",
       collapse_comment_threads: "appearance--collapse-comment-threads",
       post_appearance_type: "appearance--post-type",
-      use_system_dark_mode: "appearance--dark-use-system",
-      user_dark_mode: "appearance--dark-user-mode",
     };
 
     const settingsTable = tx.table("settings");

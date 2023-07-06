@@ -4,26 +4,24 @@ import {
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
+import { merge } from "lodash";
 import { RootState } from "../../../store";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "../../../helpers/lemmy";
-import { db } from "../../../services/db";
+import {
+  CommentThreadCollapse,
+  OCommentThreadCollapse,
+  OPostAppearanceType,
+  PostAppearanceType,
+  db,
+} from "../../../services/db";
+import { get, set } from "../storage";
 
-export const OPostAppearanceType = {
-  Compact: "compact",
-  Large: "large",
-} as const;
-
-export type PostAppearanceType =
-  (typeof OPostAppearanceType)[keyof typeof OPostAppearanceType];
-
-export const OCommentThreadCollapse = {
-  Always: "always",
-  Never: "never",
-  // TODO- remember per subreddit
-} as const;
-
-export type CommentThreadCollapse =
-  (typeof OCommentThreadCollapse)[keyof typeof OCommentThreadCollapse];
+export {
+  type CommentThreadCollapse,
+  type PostAppearanceType,
+  OCommentThreadCollapse,
+  OPostAppearanceType,
+} from "../../../services/db";
 
 interface AppearanceState {
   font: {
@@ -42,6 +40,17 @@ interface AppearanceState {
   };
 }
 
+const LOCALSTORAGE_KEYS = {
+  FONT: {
+    FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
+    USE_SYSTEM: "appearance--font-use-system",
+  },
+  DARK: {
+    USE_SYSTEM: "appearance--dark-use-system",
+    USER_MODE: "appearance--dark-user-mode",
+  },
+} as const;
+
 const initialState: AppearanceState = {
   font: {
     fontSizeMultiplier: 1,
@@ -59,6 +68,19 @@ const initialState: AppearanceState = {
   },
 };
 
+// We continue using localstorage for specific items because indexeddb is slow
+// and we don't want to wait for it to load before rendering the app and cause flickering
+const stateWithLocalstorageItems: AppearanceState = merge(initialState, {
+  font: {
+    fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
+    useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
+  },
+  dark: {
+    usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
+    userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+  },
+});
+
 export const defaultCommentDepthSelector = createSelector(
   [(state: RootState) => state.appearance.comments.collapseCommentThreads],
   (collapseCommentThreads): number => {
@@ -73,10 +95,10 @@ export const defaultCommentDepthSelector = createSelector(
 
 export const appearanceSlice = createSlice({
   name: "appearance",
-  initialState,
+  initialState: stateWithLocalstorageItems,
   extraReducers: (builder) => {
     builder.addCase(
-      fetchSettingsFromStorage.fulfilled,
+      fetchSettingsFromDatabase.fulfilled,
       (_, action: PayloadAction<AppearanceState>) => action.payload
     );
   },
@@ -84,12 +106,12 @@ export const appearanceSlice = createSlice({
     setFontSizeMultiplier(state, action: PayloadAction<number>) {
       state.font.fontSizeMultiplier = action.payload;
 
-      db.setSetting("font_size_multiplier", action.payload);
+      set(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER, action.payload);
     },
     setUseSystemFontSize(state, action: PayloadAction<boolean>) {
       state.font.useSystemFontSize = action.payload;
 
-      db.setSetting("use_system_font_size", action.payload);
+      set(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM, action.payload);
     },
     setCommentsCollapsed(state, action: PayloadAction<CommentThreadCollapse>) {
       state.comments.collapseCommentThreads = action.payload;
@@ -104,46 +126,38 @@ export const appearanceSlice = createSlice({
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
 
-      db.setSetting("user_dark_mode", action.payload);
+      set(LOCALSTORAGE_KEYS.DARK.USER_MODE, action.payload);
     },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.usingSystemDarkMode = action.payload;
 
-      db.setSetting("use_system_dark_mode", action.payload);
+      set(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
     },
 
     resetAppearance: () => initialState,
   },
 });
 
-export const fetchSettingsFromStorage = createAsyncThunk<AppearanceState>(
-  "appearance/fetchSettingsFromStorage",
-  async () => {
-    const font_size_multiplier = await db.getSetting("font_size_multiplier");
-    const use_system_font_size = await db.getSetting("use_system_font_size");
-    const collapse_comment_threads = await db.getSetting(
-      "collapse_comment_threads"
-    );
-    const post_appearance_type = await db.getSetting("post_appearance_type");
-    const use_system_dark_mode = await db.getSetting("use_system_dark_mode");
-    const user_dark_mode = await db.getSetting("user_dark_mode");
+export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
+  "appearance/fetchSettingsFromDatabase",
+  async (_, thunkApi) => {
+    return db.transaction("r", db.settings, async () => {
+      const state = thunkApi.getState() as RootState;
+      const collapse_comment_threads = await db.getSetting(
+        "collapse_comment_threads"
+      );
+      const post_appearance_type = await db.getSetting("post_appearance_type");
 
-    return {
-      font: {
-        fontSizeMultiplier: font_size_multiplier,
-        useSystemFontSize: use_system_font_size,
-      },
-      comments: {
-        collapseCommentThreads: collapse_comment_threads,
-      },
-      posts: {
-        type: post_appearance_type,
-      },
-      dark: {
-        usingSystemDarkMode: use_system_dark_mode,
-        userDarkMode: user_dark_mode,
-      },
-    };
+      return {
+        ...state.appearance,
+        comments: {
+          collapseCommentThreads: collapse_comment_threads,
+        },
+        posts: {
+          type: post_appearance_type,
+        },
+      };
+    });
   }
 );
 
