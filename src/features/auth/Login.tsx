@@ -330,6 +330,7 @@ export default function Login({
                   <IonItem>
                     <IonInput
                       label="Password"
+                      autocomplete="current-password"
                       type="password"
                       value={password}
                       onIonInput={(e) => setPassword(e.target.value as string)}
