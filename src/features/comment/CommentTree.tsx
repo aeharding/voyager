@@ -24,6 +24,10 @@ export default function CommentTree({
   fullyCollapsed,
   rootIndex,
 }: CommentTreeProps) {
+  const showCollapsedComment = useAppSelector(
+    (state) => state.settings.general.comments.showCollapsedComment
+  );
+
   const dispatch = useAppDispatch();
   const commentCollapsedById = useAppSelector(
     (state) => state.comment.commentCollapsedById
@@ -62,7 +66,14 @@ export default function CommentTree({
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
         depth={comment.depth}
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={() => {
+          if (
+            !showCollapsedComment ||
+            comment.comment_view.counts.child_count ||
+            collapsed
+          )
+            setCollapsed(!collapsed);
+        }}
         collapsed={collapsed}
         fullyCollapsed={!!fullyCollapsed}
         rootIndex={rootIndex}
