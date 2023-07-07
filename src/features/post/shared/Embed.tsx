@@ -1,8 +1,10 @@
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { useState } from "react";
+import { isNsfw } from "../../labels/Nsfw";
 
 const Container = styled.a`
   display: flex;
@@ -15,11 +17,20 @@ const Container = styled.a`
   text-decoration: none;
 `;
 
-const Img = styled.img`
+const Img = styled.img<{ blur: boolean }>`
   min-height: 0;
   aspect-ratio: 16 / 9;
 
   object-fit: cover;
+
+  ${({ blur }) =>
+    blur &&
+    css`
+      filter: blur(40px);
+
+      // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
+      transform: translate3d(0, 0, 0);
+    `}
 `;
 
 const Bottom = styled.div`
@@ -74,6 +85,7 @@ export default function Embed({ post, className }: EmbedProps) {
         <Img
           src={post.post.thumbnail_url}
           draggable="false"
+          blur={isNsfw(post)}
           onError={() => setError(true)}
         />
       )}
