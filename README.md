@@ -85,12 +85,12 @@ One could put wefwef behind popular reverse proxies with SSL Handling like Traef
 1. checkout source `git clone https://github.com/aeharding/wefwef.git`
 1. go into new source dir: `cd wefwef`
 1. build Docker image: `docker build . -t wefwef`
-1. start container: `docker run --rm -it -p 5314:5314 wefwef`
+1. start container: `docker run --init --rm -it -p 5314:5314 wefwef`
 
 #### Prebuilt
 
 1. pull image `docker pull ghcr.io/aeharding/wefwef:latest`
-1. start container: `docker run --rm -it -p 5314:5314 wefwef`
+1. start container: `docker run --init --rm -it -p 5314:5314 wefwef`
 
 Note: The provided Dockerfile creates a container which will eventually run wefwef as non-root user.
 
