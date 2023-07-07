@@ -9,6 +9,8 @@ import { getHandle } from "../../helpers/lemmy";
 import MoreActions from "../post/shared/MoreActions";
 import { calculateCurrentVotesCount } from "../../helpers/vote";
 import { useLocation } from "react-router";
+import { useContext } from "react";
+import { GalleryContext } from "./GalleryProvider";
 
 const Container = styled.div`
   display: flex;
@@ -43,6 +45,7 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
   const router = useIonRouter();
   const score = calculateCurrentVotesCount(post, postVotesById);
   const location = useLocation();
+  const { close } = useContext(GalleryContext);
 
   function share() {
     navigator.share({ url: post.post.ap_id });
@@ -57,7 +60,7 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
       </Section>
       <div
         onClick={() => {
-          // close();
+          close();
 
           if (location.pathname.startsWith(link)) return;
 

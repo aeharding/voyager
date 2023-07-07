@@ -1,15 +1,17 @@
-import React, { FocusEvent, KeyboardEvent } from "react";
+import React, { FocusEvent, KeyboardEvent, useContext, useRef } from "react";
 import "photoswipe/dist/photoswipe.css";
 import { useAppDispatch } from "../../store";
 import { imageLoaded } from "./gallerySlice";
+import { PostView } from "lemmy-js-client";
+import { GalleryContext } from "./GalleryProvider";
+import { PreparedPhotoSwipeOptions } from "photoswipe";
 
-interface GalleryProps {
+export interface GalleryImgProps {
   src?: string;
-  id: string | number;
   alt?: string;
   className?: string;
-  onClick?: React.MouseEventHandler<HTMLImageElement>;
-  footer?: React.ReactElement;
+  post?: PostView;
+  animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"];
 }
 
 /**
@@ -22,20 +24,37 @@ export const preventPhotoswipeGalleryFocusTrap = {
   onKeyDown: (e: KeyboardEvent) => e.stopPropagation(),
 };
 
-export function Gallery({ src, alt, className, onClick, id }: GalleryProps) {
+export function GalleryImg({
+  src,
+  alt,
+  className,
+  post,
+  animationType,
+}: GalleryImgProps) {
   const dispatch = useAppDispatch();
+  const loaded = useRef(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const { open } = useContext(GalleryContext);
 
   return (
     <img
+      ref={imgRef}
       draggable="false"
-      data-photoswipe-id={id}
       alt={alt}
-      onClick={onClick}
+      onClick={(e) => {
+        if (!loaded.current) return;
+
+        e.stopPropagation();
+
+        open(e.currentTarget, post, animationType);
+      }}
       src={src}
       className={className}
       onLoad={(e) => {
         if (!(e.target instanceof HTMLImageElement)) return;
         if (!src) return;
+
+        loaded.current = true;
 
         dispatch(
           imageLoaded({

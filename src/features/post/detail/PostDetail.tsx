@@ -37,7 +37,7 @@ import CommentSort from "../../comment/CommentSort";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { PageContext } from "../../auth/PageContext";
 import MoreActions from "../shared/MoreActions";
-import PostGallery from "../../gallery/PostGallery";
+import PostGalleryImg from "../../gallery/PostGalleryImg";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -65,7 +65,7 @@ const lightboxCss = css`
   background: var(--lightroom-bg);
 `;
 
-const LightboxImg = styled(PostGallery)`
+const LightboxImg = styled(PostGalleryImg)`
   ${lightboxCss}
 `;
 
