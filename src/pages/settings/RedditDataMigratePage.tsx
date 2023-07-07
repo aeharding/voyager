@@ -91,7 +91,7 @@ export default function RedditMigratePage() {
     return (
       <IonList>
         {subs?.map((sub) => (
-          <IonItem key={sub} routerLink={`/settings/apollo-migrate/${sub}`}>
+          <IonItem key={sub} routerLink={`/settings/reddit-migrate/${sub}`}>
             r/{sub}
           </IonItem>
         ))}
@@ -113,11 +113,6 @@ export default function RedditMigratePage() {
       <AppContent scrollY>{!subs ? renderUpload() : renderSubs()}</AppContent>
     </IonPage>
   );
-}
-
-interface ApolloUserData {
-  subscribed_subreddits: string[];
-  favorites: string[];
 }
 
 async function getSubreddits(file: File): Promise<string[]> {

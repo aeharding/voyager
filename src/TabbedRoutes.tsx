@@ -344,13 +344,10 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/appearance">
             <AppearancePage />
           </Route>
-          <Route exact path="/settings/apollo-migrate">
-            <ApolloMigratePage />
-          </Route>
-          <Route exact path="/settings/reddit-data-migrate">
+          <Route exact path="/settings/reddit-migrate">
             <RedditMigratePage />
           </Route>
-          <Route exact path="/settings/apollo-migrate/:search">
+          <Route exact path="/settings/reddit-migrate/:search">
             <SearchCommunitiesPage />
           </Route>
           {/* general routes for settings is only for apollo-migrate */}
