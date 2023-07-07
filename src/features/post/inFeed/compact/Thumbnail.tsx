@@ -8,6 +8,11 @@ import { css } from "@emotion/react";
 import { isNsfw } from "../../../labels/Nsfw";
 import PostGallery from "../../../gallery/PostGallery";
 
+type IContainerProps = Record<
+  string,
+  ((e: MouseEvent) => void) | string | undefined
+>;
+
 const Container = styled.div`
   display: flex;
   align-items: center;
@@ -53,7 +58,7 @@ export default function Thumbnail({ post }: ImgProps) {
     [post]
   );
 
-  const src = (() => {
+  const postImageSrc = (() => {
     if (post.post.url && isUrlImage(post.post.url)) return post.post.url;
 
     if (markdownLoneImage) return markdownLoneImage.url;
@@ -61,9 +66,31 @@ export default function Thumbnail({ post }: ImgProps) {
     return post.post.thumbnail_url;
   })();
 
+  const getContainerProps = (): IContainerProps => {
+    let containerProps: IContainerProps = {
+      onClick: (e: MouseEvent) => e.stopPropagation(),
+    };
+
+    if (!postImageSrc && post.post.url) {
+      containerProps = {
+        as: "a",
+        href: post.post.url,
+        target: "_blank",
+        rel: "noopener noreferrer",
+        ...containerProps,
+      };
+    }
+
+    return containerProps;
+  };
+
   return (
-    <Container onClick={(e) => src && e.stopPropagation()}>
-      {src ? <StyledImg post={post} blur={isNsfw(post)} /> : <SelfSvg />}
+    <Container {...getContainerProps()}>
+      {postImageSrc ? (
+        <StyledImg post={post} blur={isNsfw(post)} />
+      ) : (
+        <SelfSvg />
+      )}
     </Container>
   );
 }
