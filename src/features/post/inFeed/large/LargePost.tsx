@@ -86,15 +86,9 @@ const PostBody = styled.div`
   overflow: hidden;
 `;
 
-const ImageContainer = styled.div<{ isRead: boolean }>`
+const ImageContainer = styled.div`
   overflow: hidden;
   margin: 0 -1rem;
-
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      opacity: ${readOpacity};
-    `}
 `;
 
 const EmbedWrapper = styled(Embed)<{ isRead: boolean }>`
@@ -118,14 +112,14 @@ export default function LargePost({ post, communityMode }: PostProps) {
     if (post.post.url) {
       if (isUrlImage(post.post.url)) {
         return (
-          <ImageContainer isRead={hasBeenRead}>
+          <ImageContainer>
             <Image blur={isNsfw(post)} post={post} animationType="zoom" />
           </ImageContainer>
         );
       }
       if (isUrlVideo(post.post.url)) {
         return (
-          <ImageContainer isRead={hasBeenRead}>
+          <ImageContainer>
             <Video src={post.post.url} />
           </ImageContainer>
         );
@@ -134,7 +128,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
 
     if (markdownLoneImage)
       return (
-        <ImageContainer isRead={hasBeenRead}>
+        <ImageContainer>
           <Image blur={isNsfw(post)} post={post} animationType="zoom" />
         </ImageContainer>
       );
