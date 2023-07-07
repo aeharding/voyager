@@ -46,4 +46,6 @@ function getImages(post: PostView): string[] | undefined {
 
   const loneImage = post.post.body && findLoneImage(post.post.body);
   if (loneImage) return [loneImage.url];
+
+  if (post.post.thumbnail_url) return [post.post.thumbnail_url];
 }
