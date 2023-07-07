@@ -108,7 +108,13 @@ export default function Profile({ person }: ProfileProps) {
     [person, buildGeneralBrowseLink, isSelf]
   );
 
-  return <PostCommentFeed fetchFn={fetchFn} header={header} />;
+  return (
+    <PostCommentFeed
+      fetchFn={fetchFn}
+      header={header}
+      filterHiddenPosts={false}
+    />
+  );
 }
 
 function getCreatedDate(item: PostCommentItem): number {
