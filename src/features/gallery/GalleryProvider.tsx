@@ -147,7 +147,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
         const hasHash = !!getHashValue();
 
-        // was opened by react-photoswipe-gallery's open() method call (click on thumbnail, for example)
+        // was opened by open() method call (click on thumbnail, for example)
         // we need to create new history record to store hash navigation state
         if (!hasHash) {
           window.history.pushState(getHistoryState(), document.title);
