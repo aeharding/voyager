@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { PostProps } from "../Post";
 import Thumbnail from "./Thumbnail";
 import { maxWidthCss } from "../../../shared/AppContent";
@@ -9,6 +10,9 @@ import CommunityLink from "../../../labels/links/CommunityLink";
 import { VoteButton } from "../../shared/VoteButton";
 import Save from "../../../labels/Save";
 import Nsfw, { isNsfw } from "../../../labels/Nsfw";
+import { useAppSelector } from "../../../../store";
+
+const readOpacity = 0.6;
 
 const Container = styled.div`
   display: flex;
@@ -26,6 +30,14 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+`;
+
+const Title = styled.span<{ isRead: boolean }>`
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      opacity: ${readOpacity};
+    `}
 `;
 
 const Aside = styled.div`
@@ -64,13 +76,17 @@ const EndDetails = styled.div`
 `;
 
 export default function CompactPost({ post, communityMode }: PostProps) {
+  const hasBeenRead: boolean =
+    useAppSelector((state) => state.post.postReadById[post.post.id]) ||
+    post.read;
+
   return (
     <Container>
       <Thumbnail post={post} />
       <Content>
-        <span>
+        <Title isRead={hasBeenRead}>
           {post.post.name} {isNsfw(post) && <Nsfw />}
-        </span>
+        </Title>
         <Aside>
           {communityMode ? (
             <PersonLink
