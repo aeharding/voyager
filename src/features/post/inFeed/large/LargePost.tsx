@@ -2,8 +2,7 @@ import styled from "@emotion/styled";
 import { megaphone } from "ionicons/icons";
 import PreviewStats from "../PreviewStats";
 import Embed from "../../shared/Embed";
-import { useEffect, useMemo, useState } from "react";
-import { css } from "@emotion/react";
+import { useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { isUrlImage, isUrlVideo } from "../../../../helpers/lemmy";
 import { maxWidthCss } from "../../../shared/AppContent";
@@ -16,6 +15,8 @@ import { AnnouncementIcon } from "../../detail/PostDetail";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
+import Save from "../../../labels/Save";
+import { Image } from "./Image";
 
 const Container = styled.div`
   display: flex;
@@ -23,6 +24,8 @@ const Container = styled.div`
   width: 100%;
   gap: 0.75rem;
   padding: 0.75rem;
+
+  position: relative;
 
   ${maxWidthCss}
 `;
@@ -50,7 +53,7 @@ const RightDetails = styled.div`
   font-size: 1.5rem;
 
   > * {
-    padding: 0.5rem;
+    padding: 0.5rem !important;
   }
 `;
 
@@ -76,44 +79,18 @@ const ImageContainer = styled.div`
   margin: 0 -1rem;
 `;
 
-const PostImage = styled.img<{ blur: boolean }>`
-  width: 100%;
-  max-width: none;
-
-  ${({ blur }) =>
-    blur &&
-    css`
-      filter: blur(40px);
-    `}
-`;
-
 export default function LargePost({ post, communityMode }: PostProps) {
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
-  const [blur, setBlur] = useState(isNsfw(post));
-
-  useEffect(() => {
-    setBlur(isNsfw(post));
-  }, [post]);
 
   function renderPostBody() {
     if (post.post.url) {
       if (isUrlImage(post.post.url)) {
         return (
           <ImageContainer>
-            <PostImage
-              src={post.post.url}
-              draggable="false"
-              blur={blur}
-              onClick={(e) => {
-                if (isNsfw(post)) {
-                  e.stopPropagation();
-                  setBlur(!blur);
-                }
-              }}
-            />
+            <Image blur={isNsfw(post)} post={post} animationType="zoom" />
           </ImageContainer>
         );
       }
@@ -129,17 +106,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
     if (markdownLoneImage)
       return (
         <ImageContainer>
-          <PostImage
-            src={markdownLoneImage.url}
-            alt={markdownLoneImage.altText}
-            blur={blur}
-            onClick={(e) => {
-              if (isNsfw(post)) {
-                e.stopPropagation();
-                setBlur(!blur);
-              }
-            }}
-          />
+          <Image blur={isNsfw(post)} post={post} animationType="zoom" />
         </ImageContainer>
       );
 
@@ -199,18 +166,16 @@ export default function LargePost({ post, communityMode }: PostProps) {
             )}
           </CommunityName>
 
-          <PreviewStats
-            stats={post.counts}
-            voteFromServer={post.my_vote}
-            published={post.post.published}
-          />
+          <PreviewStats post={post} />
         </LeftDetails>
-        <RightDetails onClick={(e) => e.stopPropagation()}>
-          <MoreActions post={post} />
+        <RightDetails>
+          <MoreActions post={post} onFeed />
           <VoteButton type="up" postId={post.post.id} />
           <VoteButton type="down" postId={post.post.id} />
         </RightDetails>
       </Details>
+
+      <Save type="post" id={post.post.id} />
     </Container>
   );
 }

@@ -11,6 +11,7 @@ import {
 } from "@ionic/react";
 import { useState } from "react";
 import { Centered, Spinner } from "../../auth/Login";
+import { css } from "@emotion/react";
 
 const Container = styled.div`
   position: absolute;
@@ -30,11 +31,13 @@ const Textarea = styled.textarea`
   flex: 1 0 0;
   min-height: 7rem;
 
-  @media (prefers-color-scheme: light) {
-    .ios & {
-      background: var(--ion-item-background);
-    }
-  }
+  ${({ theme }) =>
+    !theme.dark &&
+    css`
+      .ios & {
+        background: var(--ion-item-background);
+      }
+    `}
 `;
 
 interface NewPostTextProps {

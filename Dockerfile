@@ -14,6 +14,7 @@ RUN apk add git --no-cache
 # Prepare build deps ( ignore postinstall scripts for now )
 COPY package.json ./
 COPY yarn.lock ./
+RUN yarn config set network-timeout 300000
 RUN yarn --frozen-lockfile --ignore-scripts
 
 # Copy all source files
@@ -33,6 +34,7 @@ COPY package.json ./
 COPY yarn.lock ./
 COPY server.mjs ./
 
+RUN yarn config set network-timeout 300000
 RUN yarn --prod --frozen-lockfile --ignore-scripts
 
 # Create a dedicated user and group

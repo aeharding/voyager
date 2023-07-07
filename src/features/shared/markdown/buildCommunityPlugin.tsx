@@ -29,6 +29,11 @@ export default function buildCommunityPlugin(connectedInstance: string) {
           const newTextNodes: (Text | CustomLink)[] = [];
 
           while ((match = regex.exec(value))) {
+            // Prevents double-nesting of links.
+            if (parent.type === "link") {
+              continue;
+            }
+
             const [fullMatch, communityHandle, handleDomain] = match;
             const start = match.index;
             const end = start + fullMatch.length;

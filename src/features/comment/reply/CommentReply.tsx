@@ -6,7 +6,6 @@ import {
   IonContent,
   IonToolbar,
   IonTitle,
-  IonPage,
   useIonToast,
   IonText,
 } from "@ionic/react";
@@ -16,12 +15,14 @@ import {
   PersonMentionView,
   PostView,
 } from "lemmy-js-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../helpers/useClient";
 import { useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { handleSelector, jwtSelector } from "../../auth/authSlice";
+import { css } from "@emotion/react";
+import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/Gallery";
 
 export const Container = styled.div`
   position: absolute;
@@ -41,11 +42,13 @@ export const Textarea = styled.textarea`
   flex: 1 0 0;
   min-height: 7rem;
 
-  @media (prefers-color-scheme: light) {
-    .ios & {
-      background: var(--ion-item-background);
-    }
-  }
+  ${({ theme }) =>
+    !theme.dark &&
+    css`
+      .ios & {
+        background: var(--ion-item-background);
+      }
+    `}
 `;
 
 const UsernameIonText = styled(IonText)`
@@ -57,12 +60,23 @@ const TitleContainer = styled.div`
   line-height: 1;
 `;
 
+export type CommentReplyItem =
+  | CommentView
+  | PostView
+  | PersonMentionView
+  | CommentReplyView;
+
 type CommentReplyProps = {
-  onDismiss: (data?: string, role?: string) => void;
-  item: CommentView | PostView | PersonMentionView | CommentReplyView;
+  dismiss: (replied: boolean) => void;
+  setCanDismiss: (canDismiss: boolean) => void;
+  item: CommentReplyItem;
 };
 
-export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
+export default function CommentReply({
+  dismiss,
+  setCanDismiss,
+  item,
+}: CommentReplyProps) {
   const comment = "comment" in item ? item.comment : undefined;
 
   const [replyContent, setReplyContent] = useState("");
@@ -109,15 +123,22 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
       color: "success",
     });
 
-    onDismiss(undefined, "post");
+    setCanDismiss(true);
+    // TODO is there a way to avoid a timeout here?
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    dismiss(true);
   }
 
+  useEffect(() => {
+    setCanDismiss(!replyContent);
+  }, [replyContent, setCanDismiss]);
+
   return (
-    <IonPage>
+    <>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => onDismiss()}>
+            <IonButton color="medium" onClick={() => dismiss(false)}>
               Cancel
             </IonButton>
           </IonButtons>
@@ -144,7 +165,7 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent {...preventPhotoswipeGalleryFocusTrap}>
         <Container>
           <Textarea
             onChange={(e) => setReplyContent(e.target.value)}
@@ -153,6 +174,6 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
           <ItemReplyingTo item={item} />
         </Container>
       </IonContent>
-    </IonPage>
+    </>
   );
 }

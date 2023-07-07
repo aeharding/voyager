@@ -42,12 +42,7 @@ export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
     <Container>
       <Header>
         <IonIcon icon={returnDownForwardSharp} /> {getHandle(item.creator)}{" "}
-        <Vote
-          type="comment"
-          id={payload.id}
-          voteFromServer={item.my_vote as -1 | 0 | 1 | undefined}
-          score={item.counts.score}
-        />
+        <Vote item={item} />
         <StyledAgo date={payload.published} />
       </Header>
       <CommentContent item={payload} />
