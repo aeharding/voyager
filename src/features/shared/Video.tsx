@@ -9,13 +9,14 @@ const VideoEl = styled.video`
 
 interface VideoProps {
   src: string;
+  controls?: boolean;
 
   className?: string;
 }
 
 const videoPlaybackPlace: Dictionary<number> = {};
 
-export default function Video({ src, className }: VideoProps) {
+export default function Video({ src, className, controls }: VideoProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useIonViewWillLeave(() => {
@@ -54,10 +55,10 @@ export default function Video({ src, className }: VideoProps) {
       className={className}
       ref={videoRef}
       src={src}
-      width="100%"
-      controls
       loop
       muted
+      playsInline
+      controls={controls}
     />
   );
 }

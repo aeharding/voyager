@@ -237,12 +237,7 @@ export default function Comment({
                   opId={commentView.post.creator_id}
                   distinguished={comment.distinguished}
                 />
-                <Vote
-                  voteFromServer={commentView.my_vote as 1 | 0 | -1 | undefined}
-                  score={commentView.counts.score}
-                  id={commentView.comment.id}
-                  type="comment"
-                />
+                <Vote item={commentView} />
                 <div
                   css={css`
                     flex: 1;
