@@ -181,9 +181,6 @@ devDependencies:
   react-markdown:
     specifier: ^8.0.7
     version: 8.0.7(@types/react@18.2.14)(react@18.2.0)
-  react-photoswipe-gallery:
-    specifier: ^2.2.7
-    version: 2.2.7(photoswipe@5.3.7)(prop-types@15.8.1)(react@18.2.0)
   react-redux:
     specifier: ^8.1.1
     version: 8.1.1(@types/react-dom@18.2.6)(@types/react@18.2.14)(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
@@ -6240,18 +6237,6 @@ packages:
       vfile: 5.3.7
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /react-photoswipe-gallery@2.2.7(photoswipe@5.3.7)(prop-types@15.8.1)(react@18.2.0):
-    resolution: {integrity: sha512-AEYNoL4/IIRosIUonn4haaFQNn1ui4vdVgAY9LHd/imVamNCkqUcyWeT6317UILp/yJI2gohsd3lWmcJEbjCag==}
-    peerDependencies:
-      photoswipe: '>= 5.2.2'
-      prop-types: '>= 15.7.0'
-      react: '>= 16.8.0'
-    dependencies:
-      photoswipe: 5.3.7
-      prop-types: 15.8.1
-      react: 18.2.0
     dev: true
 
   /react-redux@8.1.1(@types/react-dom@18.2.6)(@types/react@18.2.14)(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1):
