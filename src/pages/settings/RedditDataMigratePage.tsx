@@ -2,6 +2,7 @@ import {
   IonBackButton,
   IonButtons,
   IonHeader,
+  IonInput,
   IonItem,
   IonLabel,
   IonList,
@@ -11,74 +12,73 @@ import {
   useIonToast,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { InsetIonItem } from "../profile/ProfileFeedItemsPage";
-import { css } from "@emotion/react";
+import { isValidUrl } from "../../helpers/url";
 
 export default function RedditMigratePage() {
   const [present] = useIonToast();
   const [subs, setSubs] = useState<string[] | undefined>();
+  const [link, setLink] = useState("");
+
+  useEffect(() => {
+    if (!isValidUrl(link)) return;
+
+    const subs = parseSubsFromLink(link);
+
+    if (!subs.length) {
+      present({
+        message:
+          "Problem parsing link. Please make sure the link you entered is correct.",
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
+      setLink("");
+      return;
+    }
+
+    setSubs(subs);
+  }, [link, present]);
 
   function renderUpload() {
     return (
       <>
         <div className="ion-padding">
           <p>
-            This tool is designed for Reddit users migrating to Lemmy. Upload
-            your export to easily search for your Reddit subs with a similar
-            name.
+            This tool is designed for Reddit users migrating to Lemmy to easily
+            search for communities similar to subscribed subreddits.
           </p>
           <ul>
             <li>
-              Request a{" "}
-              <a href="https://www.reddit.com/settings/data-request">
-                full export of your user data from reddit
+              Visit{" "}
+              <a
+                href="https://www.reddit.com/subreddits/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                https://www.reddit.com/subreddits
               </a>
-              .
             </li>
+            <li>If iOS, open in Safari so you can copy links to clipboard</li>
+            <li>Login</li>
             <li>
-              Note this may take several weeks, and you can only submit one
-              request every 30 days.
+              Copy the link for &quot;multireddit of your subscriptions&quot; in
+              the sidebar
             </li>
-            <li>You will be notified via DM once it is complete.</li>
-            <li>Download zip archive of CSV files with your user data</li>
-            <li>
-              Unzip, then come back to wefwef and upload the file
-              `subscribed_subreddits.csv` below
-            </li>
+            <li>Paste below</li>
           </ul>
         </div>
         <IonList inset>
           <label htmlFor="upload-csv">
-            <InsetIonItem detail>
-              <IonLabel>Upload CSV file</IonLabel>
-              <input
-                id="upload-csv"
-                css={css`
-                  display: none;
-                `}
-                type="file"
-                accept=".csv"
-                onInput={async (e) => {
-                  const file = (e.target as HTMLInputElement).files?.[0];
-                  if (!file) return;
+            <InsetIonItem>
+              <IonLabel>Paste multireddit link</IonLabel>
 
-                  let potentialSubs;
-
-                  try {
-                    potentialSubs = await getSubreddits(file);
-                    if (!potentialSubs.length) throw new Error("empty");
-                  } catch (error) {
-                    present({
-                      message: "Hmmmm. That file doesn't look right.",
-                      duration: 3500,
-                      position: "bottom",
-                      color: "danger",
-                    });
-                  }
-
-                  setSubs(potentialSubs);
-                }}
+              <IonInput
+                label="Multireddit link"
+                type="text"
+                value={link}
+                onIonInput={(e) => setLink(e.target.value as string)}
               />
             </InsetIonItem>
           </label>
@@ -115,34 +115,10 @@ export default function RedditMigratePage() {
   );
 }
 
-async function getSubreddits(file: File): Promise<string[]> {
-  const subreddits = (await parseFile(file)) as string[];
-  return subreddits;
-}
+function parseSubsFromLink(multiredditUrl: string) {
+  const { pathname } = new URL(multiredditUrl);
 
-function parseFile(file: File): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+  if (!pathname.startsWith("/r/")) return [];
 
-    reader.onload = (event: ProgressEvent<FileReader>) => {
-      try {
-        const csv_raw = event.target?.result as string;
-        const split = csv_raw.split(/\r\n|\n/);
-        const header = split.shift();
-        // First entry should say "subreddit"
-        if (header !== "subreddit") {
-          reject("Invalid CSV");
-        }
-        resolve(split);
-      } catch (error) {
-        reject(error);
-      }
-    };
-
-    reader.onerror = (event: ProgressEvent<FileReader>) => {
-      reject(event.target?.error);
-    };
-
-    reader.readAsText(file);
-  });
+  return pathname.slice(3).split("+");
 }
