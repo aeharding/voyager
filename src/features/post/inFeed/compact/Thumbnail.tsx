@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import styled from "@emotion/styled";
 import { ReactComponent as SelfSvg } from "./self.svg";
 import { PostView } from "lemmy-js-client";
@@ -7,11 +8,6 @@ import { findLoneImage } from "../../../../helpers/markdown";
 import { css } from "@emotion/react";
 import { isNsfw } from "../../../labels/Nsfw";
 import PostGallery from "../../../gallery/PostGallery";
-
-type IContainerProps = Record<
-  string,
-  ((e: MouseEvent) => void) | string | undefined
->;
 
 const Container = styled.div`
   display: flex;
@@ -66,31 +62,32 @@ export default function Thumbnail({ post }: ImgProps) {
     return post.post.thumbnail_url;
   })();
 
-  const getContainerProps = (): IContainerProps => {
-    let containerProps: IContainerProps = {
-      onClick: (e: MouseEvent) => e.stopPropagation(),
-    };
+  const ThumbnailContainer = (props: { children: ReactNode }): ReactNode => {
+    let maybeLinkProps = {};
 
     if (!postImageSrc && post.post.url) {
-      containerProps = {
+      maybeLinkProps = {
         as: "a",
         href: post.post.url,
         target: "_blank",
         rel: "noopener noreferrer",
-        ...containerProps,
       };
     }
 
-    return containerProps;
+    return (
+      <Container onClick={(e) => e.stopPropagation()} {...maybeLinkProps}>
+        {props.children}
+      </Container>
+    );
   };
 
   return (
-    <Container {...getContainerProps()}>
+    <ThumbnailContainer>
       {postImageSrc ? (
         <StyledImg post={post} blur={isNsfw(post)} />
       ) : (
         <SelfSvg />
       )}
-    </Container>
+    </ThumbnailContainer>
   );
 }
