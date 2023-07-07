@@ -1,4 +1,4 @@
-import Dexie, { Table } from "dexie";
+import Dexie, { Table, Transaction } from "dexie";
 
 export interface IPostMetadata {
   post_id: number;
@@ -7,25 +7,81 @@ export interface IPostMetadata {
   hidden_updated_at?: number;
 }
 
+export const OPostAppearanceType = {
+  Compact: "compact",
+  Large: "large",
+} as const;
+
+export type PostAppearanceType =
+  (typeof OPostAppearanceType)[keyof typeof OPostAppearanceType];
+
+export const OCommentThreadCollapse = {
+  Always: "always",
+  Never: "never",
+} as const;
+
+export type CommentThreadCollapse =
+  (typeof OCommentThreadCollapse)[keyof typeof OCommentThreadCollapse];
+
+export type SettingValueTypes = {
+  collapse_comment_threads: CommentThreadCollapse;
+  post_appearance_type: PostAppearanceType;
+  blur_nsfw: boolean;
+};
+
+export interface ISettingItem<T extends keyof SettingValueTypes> {
+  key: T;
+  value: SettingValueTypes[T];
+  user_handle: string;
+  community: string;
+}
+
+const defaultSettings: ISettingItem<keyof SettingValueTypes>[] = [
+  {
+    key: "collapse_comment_threads",
+    value: OCommentThreadCollapse.Never,
+    user_handle: "",
+    community: "",
+  },
+  {
+    key: "post_appearance_type",
+    value: OPostAppearanceType.Large,
+    user_handle: "",
+    community: "",
+  },
+  {
+    key: "blur_nsfw",
+    value: true,
+    user_handle: "",
+    community: "",
+  },
+];
+
 export const CompoundKeys = {
   postMetadata: {
     post_id_and_user_handle: "[post_id+user_handle]",
     user_handle_and_hidden: "[user_handle+hidden]",
   },
+  settings: {
+    key_and_user_handle_and_community: "[key+user_handle+community]",
+  },
 };
 
 export class WefwefDB extends Dexie {
   postMetadatas!: Table<IPostMetadata, number>;
+  settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
 
   constructor() {
     super("WefwefDB");
 
-    /* IMPORTANT: Do not alter the version. If you want to change the schema,
-       create a higher version and provide migration logic.
+    /* IMPORTANT: Do not alter the version if you're changing an existing schema.
+       If you want to change the schema, create a higher version and provide migration logic.
        Always assume there is a device out there with the first version of the app.
+       Also please read the Dexie documentation about versioning.
     */
-    this.version(1).stores({
-      postMetadatas: `
+    this.version(2)
+      .stores({
+        postMetadatas: `
         ++,
         ${CompoundKeys.postMetadata.post_id_and_user_handle},
         ${CompoundKeys.postMetadata.user_handle_and_hidden},
@@ -34,9 +90,31 @@ export class WefwefDB extends Dexie {
         hidden,
         hidden_updated_at
       `,
+        settings: `
+        ++,
+        key,
+        ${CompoundKeys.settings.key_and_user_handle_and_community},
+        value,
+        user_handle,
+        community
+      `,
+      })
+      .upgrade(async (tx) => {
+        await this.populateDefaultSettings(tx);
+        await this.migrateFromLocalStorageSettings(tx);
+      });
+
+    this.on("populate", async () => {
+      this.transaction("rw", this.settings, async (tx) => {
+        await this.populateDefaultSettings(tx);
+        await this.migrateFromLocalStorageSettings(tx);
+      });
     });
   }
 
+  /*
+   * Post Metadata
+   */
   async getPostMetadatas(post_id: number | number[], user_handle: string) {
     const post_ids = Array.isArray(post_id) ? post_id : [post_id];
 
@@ -117,6 +195,117 @@ export class WefwefDB extends Dexie {
       .filter(filterFn)
       .limit(limit)
       .toArray();
+  }
+
+  /*
+   * Settings
+   */
+
+  private async populateDefaultSettings(tx: Transaction) {
+    const settingsTable = tx.table("settings");
+    settingsTable.bulkAdd(defaultSettings);
+  }
+
+  private async migrateFromLocalStorageSettings(tx: Transaction) {
+    const localStorageMigrationKeys = {
+      collapse_comment_threads: "appearance--collapse-comment-threads",
+      post_appearance_type: "appearance--post-type",
+    };
+
+    const settingsTable = tx.table("settings");
+
+    return await Promise.all(
+      Object.entries(localStorageMigrationKeys).map(
+        ([key, localStorageKey]) => {
+          const localStorageValue = localStorage.getItem(localStorageKey);
+
+          if (!localStorageValue) {
+            return Promise.resolve();
+          }
+
+          return settingsTable
+            .where(CompoundKeys.settings.key_and_user_handle_and_community)
+            .equals([key, "", ""])
+            .modify({
+              value: JSON.parse(localStorageValue),
+            });
+        }
+      )
+    );
+  }
+
+  private findSetting(key: string, user_handle: string, community: string) {
+    return this.settings
+      .where(CompoundKeys.settings.key_and_user_handle_and_community)
+      .equals([key, user_handle, community])
+      .first();
+  }
+
+  getSetting<T extends keyof SettingValueTypes>(
+    key: T,
+    specificity?: {
+      user_handle?: string;
+      community?: string;
+    }
+  ) {
+    const { user_handle = "", community = "" } = specificity || {};
+
+    return this.transaction("r", this.settings, async () => {
+      let setting = await this.findSetting(key, user_handle, community);
+
+      if (!setting && user_handle === "" && community === "") {
+        // Already requested the global setting and it's not found, we can stop here
+        throw new Error(`Setting ${key} not found`);
+      }
+
+      if (!setting && user_handle !== "" && community !== "") {
+        // Try to find the setting with user_handle only, community only
+        setting =
+          (await this.findSetting(key, user_handle, "")) ||
+          (await this.findSetting(key, "", community));
+      }
+
+      if (!setting) {
+        // Try to find the global setting
+        setting = await this.findSetting(key, "", "");
+      }
+
+      if (!setting) {
+        throw new Error(`Setting ${key} not found`);
+      }
+
+      return setting.value as SettingValueTypes[T];
+    });
+  }
+
+  async setSetting<T extends keyof SettingValueTypes>(
+    key: T,
+    value: SettingValueTypes[T],
+    specificity?: {
+      user_handle?: string;
+      community?: string;
+    }
+  ) {
+    const { user_handle = "", community = "" } = specificity || {};
+
+    this.transaction("rw", this.settings, async () => {
+      const query = this.settings
+        .where(CompoundKeys.settings.key_and_user_handle_and_community)
+        .equals([key, user_handle, community]);
+
+      const item = await query.first();
+
+      if (item) {
+        return await query.modify({ value });
+      }
+
+      return await this.settings.add({
+        key,
+        value,
+        user_handle,
+        community,
+      });
+    });
   }
 }
 

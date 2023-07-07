@@ -21,19 +21,19 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: yarn
+          cache: pnpm
 
       - name: 📦 Install dependencies
-        run: yarn --frozen-lockfile
+        run: pnpm install  --frozen-lockfile
 
       # - name: 🧪 Test project
-      #   run: yarn test
+      #   run: pnpm test
 
       - name: 📝 Lint
-        run: yarn lint
+        run: pnpm lint
 
       - name: 📝 Prettier formatting
-        run: yarn lint:formatting
+        run: pnpm lint:formatting
 
       - name: 💪 Type check
-        run: yarn test:typecheck
+        run: pnpm test:typecheck

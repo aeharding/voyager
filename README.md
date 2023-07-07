@@ -119,8 +119,8 @@ We're really excited that you're interested in contributing to wefwef!
 Clone the repository and run on the root folder:
 
 ```
-yarn
-yarn run dev
+pnpm install
+pnpm run dev
 ```
 
 `Warning`: you will need `corepack` enabled.
@@ -130,7 +130,7 @@ yarn run dev
 wefwef uses [Vitest](https://vitest.dev). You can run the test suite with:
 
 ```
-yarn test
+pnpm test
 ```
 
 ## 📲 PWA

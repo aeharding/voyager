@@ -13,15 +13,15 @@ RUN apk add git --no-cache
 
 # Prepare build deps ( ignore postinstall scripts for now )
 COPY package.json ./
-COPY yarn.lock ./
-RUN yarn config set network-timeout 300000
-RUN yarn --frozen-lockfile --ignore-scripts
+COPY pnpm-lock.yaml ./
+RUN pnpm config set network-timeout 300000
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy all source files
 COPY . ./
 
 # Build
-RUN yarn build
+RUN pnpm build
 
 FROM base AS runner
 
@@ -31,11 +31,11 @@ ARG GID=911
 RUN corepack enable
 
 COPY package.json ./
-COPY yarn.lock ./
+COPY pnpm-lock.yaml ./
 COPY server.mjs ./
 
-RUN yarn config set network-timeout 300000
-RUN yarn --prod --frozen-lockfile --ignore-scripts
+RUN pnpm config set network-timeout 300000
+RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Create a dedicated user and group
 RUN set -eux; \
