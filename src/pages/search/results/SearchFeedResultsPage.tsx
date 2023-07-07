@@ -8,29 +8,41 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { FetchFn } from "../../../features/feed/Feed";
 import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
-import PostSort from "../../../features/feed/PostSort";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import PostSort from "../../../features/feed/postSort/PostSort";
+import { useAppDispatch } from "../../../store";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../../features/feed/PostCommentFeed";
 import { receivedPosts } from "../../../features/post/postSlice";
 import { receivedComments } from "../../../features/comment/commentSlice";
+import {
+  PostSortContext,
+  PostSortContextProvider,
+} from "../../../features/feed/postSort/PostSortProvider";
 
 interface SearchPostsResultsProps {
   type: "Posts" | "Comments";
 }
 
-export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
+export default function SearchPostsResults(props: SearchPostsResultsProps) {
+  return (
+    <PostSortContextProvider>
+      <SearchPostsResultsWithSort {...props} />
+    </PostSortContextProvider>
+  );
+}
+
+function SearchPostsResultsWithSort({ type }: SearchPostsResultsProps) {
   const dispatch = useAppDispatch();
   const { search: _encodedSearch } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const sort = useAppSelector((state) => state.post.sort);
+  const { sort } = useContext(PostSortContext);
 
   const search = decodeURIComponent(_encodedSearch);
 

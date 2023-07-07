@@ -4,21 +4,16 @@ import {
   createAsyncThunk,
   createSlice,
 } from "@reduxjs/toolkit";
-import { PostView, SortType } from "lemmy-js-client";
+import { PostView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, handleSelector, jwtSelector } from "../auth/authSlice";
-import { POST_SORTS } from "../feed/PostSort";
-import { get, set } from "../settings/storage";
 import { IPostMetadata, db } from "../../services/db";
-
-const POST_SORT_KEY = "post-sort-v2";
 
 interface PostState {
   postById: Dictionary<PostView>;
   postHiddenById: Dictionary<boolean>;
   postVotesById: Dictionary<1 | -1 | 0>;
   postSavedById: Dictionary<boolean>;
-  sort: SortType;
 }
 
 const initialState: PostState = {
@@ -26,7 +21,6 @@ const initialState: PostState = {
   postHiddenById: {},
   postVotesById: {},
   postSavedById: {},
-  sort: get(POST_SORT_KEY) ?? POST_SORTS[0],
 };
 
 export const postSlice = createSlice({
@@ -46,10 +40,6 @@ export const postSlice = createSlice({
       state.postSavedById[action.payload.postId] = action.payload.saved;
     },
     resetPosts: () => initialState,
-    updateSortType(state, action: PayloadAction<SortType>) {
-      state.sort = action.payload;
-      set(POST_SORT_KEY, action.payload);
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -123,7 +113,7 @@ export const receivedPosts = createAsyncThunk(
 );
 
 // Action creators are generated for each case reducer function
-export const { updatePostVote, resetPosts, updateSortType, updatePostSaved } =
+export const { updatePostVote, resetPosts, updatePostSaved } =
   postSlice.actions;
 
 export default postSlice.reducer;

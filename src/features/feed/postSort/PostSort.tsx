@@ -16,11 +16,10 @@ import {
   helpCircleOutline,
   timeOutline,
 } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { updateSortType } from "../post/postSlice";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { startCase } from "lodash";
 import { SortType } from "lemmy-js-client";
+import { PostSortContext } from "./PostSortProvider";
 
 type ExtendedSortType = SortType | "Top";
 
@@ -61,8 +60,7 @@ const TOP_BUTTONS: ActionSheetButton<SortType>[] = TOP_POST_SORTS.map(
 );
 
 export default function PostSort() {
-  const dispatch = useAppDispatch();
-  const sort = useAppSelector((state) => state.post.sort);
+  const { sort, setSort } = useContext(PostSortContext);
   const [open, setOpen] = useState(false);
   const [topOpen, setTopOpen] = useState(false);
 
@@ -83,7 +81,7 @@ export default function PostSort() {
             return;
           }
           if (e.detail.data) {
-            dispatch(updateSortType(e.detail.data));
+            setSort(e.detail.data);
           }
         }}
         header="Sort by..."
@@ -104,7 +102,7 @@ export default function PostSort() {
           e: IonActionSheetCustomEvent<OverlayEventDetail<SortType>>
         ) => {
           if (e.detail.data) {
-            dispatch(updateSortType(e.detail.data));
+            setSort(e.detail.data);
           }
         }}
         header="Sort by Top for..."

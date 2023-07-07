@@ -8,10 +8,10 @@ import {
 import { FetchFn } from "../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
-import PostSort from "../../features/feed/PostSort";
+import PostSort from "../../features/feed/postSort/PostSort";
 import MoreActions from "../../features/community/MoreActions";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { useCallback, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { getCommunity } from "../../features/community/communitySlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useClient from "../../helpers/useClient";
@@ -24,8 +24,20 @@ import { NewPostContextProvider } from "../../features/post/new/NewPostModal";
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
+import {
+  PostSortContext,
+  PostSortContextProvider,
+} from "../../features/feed/postSort/PostSortProvider";
 
-export default function CommunityPage() {
+export default function CommunityPageWithSort() {
+  return (
+    <PostSortContextProvider>
+      <CommunityPage />
+    </PostSortContextProvider>
+  );
+}
+
+function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const { community, actor } = useParams<{
@@ -38,7 +50,7 @@ export default function CommunityPage() {
   );
 
   const client = useClient();
-  const sort = useAppSelector((state) => state.post.sort);
+  const { sort } = useContext(PostSortContext);
   const jwt = useAppSelector(jwtSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(

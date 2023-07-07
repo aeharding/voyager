@@ -8,23 +8,35 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { FetchFn } from "../../../features/feed/Feed";
 import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
-import PostSort from "../../../features/feed/PostSort";
+import PostSort from "../../../features/feed/postSort/PostSort";
 import { useAppSelector } from "../../../store";
 import { CommunityView, LemmyHttp } from "lemmy-js-client";
 import CommunityFeed from "../../../features/feed/CommunityFeed";
 import { jwtSelector } from "../../../features/auth/authSlice";
 import { notEmpty } from "../../../helpers/array";
+import {
+  PostSortContext,
+  PostSortContextProvider,
+} from "../../../features/feed/postSort/PostSortProvider";
 
 export default function SearchCommunitiesPage() {
+  return (
+    <PostSortContextProvider>
+      <SearchCommunitiesPageWithSort />
+    </PostSortContextProvider>
+  );
+}
+
+function SearchCommunitiesPageWithSort() {
   const { search: _encodedSearch } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const sort = useAppSelector((state) => state.post.sort);
+  const { sort } = useContext(PostSortContext);
   const jwt = useAppSelector(jwtSelector);
 
   const search = decodeURIComponent(_encodedSearch);
