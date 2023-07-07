@@ -114,7 +114,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
      * Embedded video, image with a thumbanil
      */
     if (post.post.thumbnail_url && post.post.url) {
-      return <Embed post={post} blur={blur} />;
+      return <Embed post={post} />;
     }
 
     /**

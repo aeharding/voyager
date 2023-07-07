@@ -4,6 +4,7 @@ import { IonIcon } from "@ionic/react";
 import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { useState } from "react";
+import { isNsfw } from "../../labels/Nsfw";
 
 const Container = styled.a`
   display: flex;
@@ -68,7 +69,7 @@ interface EmbedProps {
   className?: string;
 }
 
-export default function Embed({ post, blur, className }: EmbedProps) {
+export default function Embed({ post, className }: EmbedProps) {
   const [error, setError] = useState(false);
 
   return (
@@ -84,7 +85,7 @@ export default function Embed({ post, blur, className }: EmbedProps) {
         <Img
           src={post.post.thumbnail_url}
           draggable="false"
-          blur={blur}
+          blur={isNsfw(post)}
           onError={() => setError(true)}
         />
       )}
