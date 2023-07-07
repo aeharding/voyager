@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { css } from "@emotion/react";
 import { isNsfw } from "../../../labels/Nsfw";
-import PostGallery from "../../../gallery/PostGallery";
+import PostGalleryImg from "../../../gallery/PostGalleryImg";
 
 const Container = styled.div`
   display: flex;
@@ -28,7 +28,7 @@ const Container = styled.div`
   }
 `;
 
-const StyledImg = styled(PostGallery)<{ blur: boolean }>`
+const StyledImg = styled(PostGalleryImg)<{ blur: boolean }>`
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -63,7 +63,11 @@ export default function Thumbnail({ post }: ImgProps) {
 
   return (
     <Container onClick={(e) => src && e.stopPropagation()}>
-      {src ? <StyledImg post={post} blur={isNsfw(post)} /> : <SelfSvg />}
+      {src ? (
+        <StyledImg post={post} blur={isNsfw(post)} animationType="zoom" />
+      ) : (
+        <SelfSvg />
+      )}
     </Container>
   );
 }

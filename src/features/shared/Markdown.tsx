@@ -8,7 +8,7 @@ import LinkInterceptor from "./markdown/LinkInterceptor";
 import buildCommunityPlugin from "./markdown/buildCommunityPlugin";
 import customRemarkGfm from "./markdown/customRemarkGfm";
 import { useMemo } from "react";
-import { Gallery } from "../gallery/Gallery";
+import { GalleryImg } from "../gallery/GalleryImg";
 
 const Blockquote = styled.blockquote`
   padding-left: 0.5rem;
@@ -64,13 +64,7 @@ export default function Markdown(props: ReactMarkdownOptions) {
       linkTarget="_blank"
       {...props}
       components={{
-        img: (props) => (
-          <Gallery
-            {...props}
-            onClick={(e) => e.stopPropagation()}
-            animationType="zoom"
-          />
-        ),
+        img: (props) => <GalleryImg {...props} animationType="zoom" />,
         blockquote: (props) => <Blockquote {...props} />,
         code: (props) => <Code {...props} />,
         table: (props) => (

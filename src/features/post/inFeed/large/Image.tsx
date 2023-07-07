@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
-import PostGallery from "../../../gallery/PostGallery";
 import { css } from "@emotion/react";
+import PostGalleryImg from "../../../gallery/PostGalleryImg";
 
-export const Image = styled(PostGallery)<{ blur: boolean }>`
+export const Image = styled(PostGalleryImg)<{ blur: boolean }>`
   width: 100%;
   max-width: none;
+  max-height: max(200vh, 2000px);
+  object-fit: contain;
 
   ${({ blur }) =>
     blur &&
