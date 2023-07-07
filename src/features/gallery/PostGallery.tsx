@@ -1,10 +1,11 @@
-import { useMemo, useRef } from "react";
+import { useContext, useMemo } from "react";
 import GalleryPostActions from "./GalleryPostActions";
-import { Gallery, GalleryHandle } from "./Gallery";
+import { Gallery } from "./Gallery";
 import { PostView } from "lemmy-js-client";
 import { findLoneImage } from "../../helpers/markdown";
 import { isUrlImage } from "../../helpers/lemmy";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
+import { GalleryContext } from "./GalleryProvider";
 
 interface PostGalleryProps {
   post: PostView;
@@ -18,7 +19,7 @@ export default function PostGallery({
   className,
   animationType,
 }: PostGalleryProps) {
-  const galleryRef = useRef<GalleryHandle>(null);
+  const { open } = useContext(GalleryContext);
 
   const images = useMemo(() => getImages(post), [post]);
 
@@ -26,16 +27,14 @@ export default function PostGallery({
 
   return (
     <Gallery
-      onClick={(e) => e.stopPropagation()}
-      ref={galleryRef}
+      id={post.post.id}
+      onClick={(e) => {
+        e.stopPropagation();
+
+        open(post, animationType);
+      }}
       src={images[0]}
-      footer={
-        <GalleryPostActions
-          post={post}
-          close={() => galleryRef.current?.close()}
-        />
-      }
-      animationType={animationType}
+      footer={<GalleryPostActions post={post} />}
       className={className}
     />
   );

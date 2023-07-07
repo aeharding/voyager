@@ -32,13 +32,9 @@ const Amount = styled.div`
 
 interface GalleryPostActionsProps {
   post: PostView;
-  close: () => void;
 }
 
-export default function GalleryPostActions({
-  post,
-  close,
-}: GalleryPostActionsProps) {
+export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const link = buildGeneralBrowseLink(
@@ -61,7 +57,7 @@ export default function GalleryPostActions({
       </Section>
       <div
         onClick={() => {
-          close();
+          // close();
 
           if (location.pathname.startsWith(link)) return;
 
