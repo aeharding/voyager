@@ -1,0 +1,6 @@
+*.swp
+.git/
+.github/
+.gitignore
+.prettierignore
+.vscode/
