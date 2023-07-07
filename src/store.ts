@@ -6,7 +6,6 @@ import commentSlice from "./features/comment/commentSlice";
 import communitySlice from "./features/community/communitySlice";
 import userSlice from "./features/user/userSlice";
 import inboxSlice from "./features/inbox/inboxSlice";
-import appearanceSlice from "./features/settings/appearance/appearanceSlice";
 import gallerySlice from "./features/gallery/gallerySlice";
 import appearanceSlice, {
   fetchSettingsFromDatabase,
