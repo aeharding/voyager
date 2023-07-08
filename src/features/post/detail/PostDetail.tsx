@@ -19,7 +19,7 @@ import Markdown from "../../shared/Markdown";
 import PostActions from "../actions/PostActions";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../../../helpers/markdown";
-import { getPost } from "../postSlice";
+import { getPost, setPostRead } from "../postSlice";
 import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
 import AppBackButton from "../../shared/AppBackButton";
 import { maxWidthCss } from "../../shared/AppContent";
@@ -107,7 +107,7 @@ const Title = styled.div`
 
 const By = styled.div`
   margin-bottom: 5px;
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
 
   white-space: nowrap;
   overflow: hidden;
@@ -142,7 +142,11 @@ export default function PostDetail() {
   const [sort, setSort] = useState<CommentSortType>("Hot");
 
   useEffect(() => {
-    if (post) return;
+    if (post) {
+      dispatch(setPostRead(+id));
+
+      return;
+    }
 
     dispatch(getPost(+id));
   }, [post, jwt, dispatch, id]);
