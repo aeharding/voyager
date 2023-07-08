@@ -107,7 +107,7 @@ const Title = styled.div`
 
 const By = styled.div`
   margin-bottom: 5px;
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
 
   white-space: nowrap;
   overflow: hidden;

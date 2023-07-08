@@ -36,7 +36,7 @@ const Title = styled.div<{ isRead: boolean }>`
   ${({ isRead }) =>
     isRead &&
     css`
-      color: var(--ion-color-medium);
+      color: var(--read-color);
     `}
 `;
 
@@ -46,15 +46,21 @@ const Details = styled.div`
   justify-content: space-between;
 
   font-size: 0.8em;
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
 `;
 
-const LeftDetails = styled.div`
+const LeftDetails = styled.div<{ isRead: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 
   min-width: 0;
+
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      color: var(--read-color-medium);
+    `}
 `;
 
 const RightDetails = styled.div`
@@ -73,10 +79,18 @@ const CommunityName = styled.span`
   white-space: nowrap;
 `;
 
-const PostBody = styled.div`
+const PostBody = styled.div<{ isRead: boolean }>`
   font-size: 0.88em;
   line-height: 1.25;
-  opacity: 0.6;
+
+  ${({ isRead }) =>
+    isRead
+      ? css`
+          color: var(--read-color-medium);
+        `
+      : css`
+          opacity: 0.6;
+        `}
 
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -138,7 +152,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
         <>
           {post.post.url && <Embed post={post} />}
 
-          <PostBody>
+          <PostBody isRead={hasBeenRead}>
             <InlineMarkdown>{post.post.body}</InlineMarkdown>
           </PostBody>
         </>
@@ -160,7 +174,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
       {renderPostBody()}
 
       <Details>
-        <LeftDetails>
+        <LeftDetails isRead={hasBeenRead}>
           <CommunityName>
             {post.counts.featured_community || post.counts.featured_local ? (
               <AnnouncementIcon icon={megaphone} />

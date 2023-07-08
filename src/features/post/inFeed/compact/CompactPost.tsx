@@ -35,18 +35,24 @@ const Title = styled.span<{ isRead: boolean }>`
   ${({ isRead }) =>
     isRead &&
     css`
-      color: var(--ion-color-medium);
+      color: var(--read-color);
     `}
 `;
 
-const Aside = styled.div`
+const Aside = styled.div<{ isRead: boolean }>`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5em;
 
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
   font-size: 0.8em;
+
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      color: var(--read-color);
+    `}
 `;
 
 const Actions = styled.div`
@@ -62,6 +68,8 @@ const StyledMoreActions = styled(MoreActions)`
 
   margin: -0.5rem;
   padding: 0.5rem;
+
+  color: var(--ion-color-text-aside);
 `;
 
 const EndDetails = styled.div`
@@ -69,7 +77,7 @@ const EndDetails = styled.div`
   flex-direction: column;
   font-size: 1.2rem;
 
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
 
   margin-left: auto;
 `;
@@ -87,7 +95,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
         <Title isRead={hasBeenRead}>
           {post.post.name} {nsfw && <Nsfw />}
         </Title>
-        <Aside>
+        <Aside isRead={hasBeenRead}>
           {communityMode ? (
             <PersonLink
               person={post.creator}
