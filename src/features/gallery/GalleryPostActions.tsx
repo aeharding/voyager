@@ -9,6 +9,8 @@ import { getHandle } from "../../helpers/lemmy";
 import MoreActions from "../post/shared/MoreActions";
 import { calculateCurrentVotesCount } from "../../helpers/vote";
 import { useLocation } from "react-router";
+import { useContext } from "react";
+import { GalleryContext } from "./GalleryProvider";
 
 const Container = styled.div`
   display: flex;
@@ -32,13 +34,9 @@ const Amount = styled.div`
 
 interface GalleryPostActionsProps {
   post: PostView;
-  close: () => void;
 }
 
-export default function GalleryPostActions({
-  post,
-  close,
-}: GalleryPostActionsProps) {
+export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const link = buildGeneralBrowseLink(
@@ -47,6 +45,7 @@ export default function GalleryPostActions({
   const router = useIonRouter();
   const score = calculateCurrentVotesCount(post, postVotesById);
   const location = useLocation();
+  const { close } = useContext(GalleryContext);
 
   function share() {
     navigator.share({ url: post.post.ap_id });

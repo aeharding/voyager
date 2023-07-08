@@ -7,9 +7,9 @@ import { useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { css } from "@emotion/react";
 import { isNsfw } from "../../../labels/Nsfw";
-import PostGallery from "../../../gallery/PostGallery";
 import { globeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
+import PostGalleryImg from "../../../gallery/PostGalleryImg";
 
 const Container = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ const imgStyles = (blur: boolean) => css`
   `}
 `;
 
-const StyledPostGallery = styled(PostGallery)<{ blur: boolean }>`
+const StyledPostGallery = styled(PostGalleryImg)<{ blur: boolean }>`
   ${({ blur }) => imgStyles(blur)}
 `;
 
@@ -118,7 +118,13 @@ export default function Thumbnail({ post }: ImgProps) {
     }
 
     if (postImageSrc) {
-      return <StyledPostGallery post={post} blur={isNsfw(post)} />;
+      return (
+        <StyledPostGallery
+          post={post}
+          blur={isNsfw(post)}
+          animationType="zoom"
+        />
+      );
     }
 
     return <SelfSvg />;

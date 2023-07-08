@@ -85,12 +85,12 @@ One could put wefwef behind popular reverse proxies with SSL Handling like Traef
 1. checkout source `git clone https://github.com/aeharding/wefwef.git`
 1. go into new source dir: `cd wefwef`
 1. build Docker image: `docker build . -t wefwef`
-1. start container: `docker run --rm -it -p 5314:5314 wefwef`
+1. start container: `docker run --init --rm -it -p 5314:5314 wefwef`
 
 #### Prebuilt
 
 1. pull image `docker pull ghcr.io/aeharding/wefwef:latest`
-1. start container: `docker run --rm -it -p 5314:5314 wefwef`
+1. start container: `docker run --init --rm -it -p 5314:5314 wefwef`
 
 Note: The provided Dockerfile creates a container which will eventually run wefwef as non-root user.
 
@@ -119,8 +119,8 @@ We're really excited that you're interested in contributing to wefwef!
 Clone the repository and run on the root folder:
 
 ```
-yarn
-yarn run dev
+pnpm install
+pnpm run dev
 ```
 
 `Warning`: you will need `corepack` enabled.
@@ -130,7 +130,7 @@ yarn run dev
 wefwef uses [Vitest](https://vitest.dev). You can run the test suite with:
 
 ```
-yarn test
+pnpm test
 ```
 
 ## 📲 PWA

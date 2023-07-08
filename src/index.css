@@ -94,7 +94,7 @@ ion-action-sheet ion-icon {
   margin-inline-end: 16px !important;
 }
 
-/* react-photoswipe */
+/* photoswipe */
 
 .pswp__top-bar {
   top: env(safe-area-inset-top, 0);
