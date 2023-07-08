@@ -23,9 +23,7 @@ import { Centered, Spinner } from "../../auth/Login";
 import { handleSelector, jwtSelector } from "../../auth/authSlice";
 import { css } from "@emotion/react";
 import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
-import TextareaAutosize from "react-textarea-autosize";
-import { fixSafariAutoscroll } from "../../../helpers/safari";
-import { isAppleDeviceInstalledToHomescreen } from "../../../helpers/device";
+import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 
 export const Container = styled.div`
   min-height: 100%;
@@ -34,7 +32,7 @@ export const Container = styled.div`
   flex-direction: column;
 `;
 
-export const Textarea = styled(TextareaAutosize)`
+export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
   border: 0;
   background: none;
   resize: none;
@@ -172,16 +170,6 @@ export default function CommentReply({
         <Container>
           <Textarea
             onChange={(e) => setReplyContent(e.target.value)}
-            onFocus={(e) => {
-              if (!isAppleDeviceInstalledToHomescreen()) return;
-
-              // https://stackoverflow.com/a/74902393/1319878
-              const target = e.currentTarget;
-              target.style.opacity = "0";
-              setTimeout(() => (target.style.opacity = "1"));
-
-              fixSafariAutoscroll();
-            }}
             autoFocus
           />
           <ItemReplyingTo item={item} />

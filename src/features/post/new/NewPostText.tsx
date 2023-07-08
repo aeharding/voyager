@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import { Centered, Spinner } from "../../auth/Login";
 import { css } from "@emotion/react";
-import TextareaAutosize from "react-textarea-autosize";
+import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 
 const Container = styled.div`
   min-height: 100%;
@@ -21,7 +21,7 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const Textarea = styled(TextareaAutosize)`
+const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
   border: 0;
   background: none;
   resize: none;
