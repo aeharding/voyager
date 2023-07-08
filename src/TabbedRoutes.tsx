@@ -321,7 +321,6 @@ export default function TabbedRoutes() {
           </Route>
           {/* general routes for settings is only for reddit-migrate */}
           {...buildGeneralBrowseRoutes("settings")}
-          <Route exact path="/settings/appearance/posts"></Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton
