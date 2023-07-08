@@ -173,7 +173,7 @@ export default function Feed<I>({
           fetchMore();
         }}
         components={{ Header: header, Footer: footer }}
-        increaseViewportBy={5000}
+        increaseViewportBy={800}
       />
     </>
   );
