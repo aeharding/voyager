@@ -154,8 +154,8 @@ export default function TabbedRoutes() {
       return new Promise((resolve) =>
         activePage.current?.getState((state) => {
           if (state.scrollTop) {
-            activePage.current?.scrollTo({
-              top: 0,
+            activePage.current?.scrollToIndex({
+              index: 0,
               behavior: "smooth",
             });
           }
