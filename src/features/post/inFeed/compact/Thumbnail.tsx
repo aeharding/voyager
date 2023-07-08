@@ -8,6 +8,8 @@ import { findLoneImage } from "../../../../helpers/markdown";
 import { css } from "@emotion/react";
 import { isNsfw } from "../../../labels/Nsfw";
 import PostGallery from "../../../gallery/PostGallery";
+import { globeOutline } from "ionicons/icons";
+import { IonIcon } from "@ionic/react";
 
 const Container = styled.div`
   display: flex;
@@ -21,7 +23,10 @@ const Container = styled.div`
   background: var(--ion-color-light);
   border-radius: 8px;
 
+  position: relative;
+
   overflow: hidden;
+  color: inherit;
 
   svg {
     width: 60%;
@@ -29,19 +34,39 @@ const Container = styled.div`
   }
 `;
 
-const StyledImg = styled(PostGallery)<{ blur: boolean }>`
+const LinkIcon = styled(IonIcon)`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 4px;
+  font-size: 0.9em;
+
+  opacity: 0.5;
+  border-top-left-radius: 8px;
+
+  background: rgba(0, 0, 0, 0.4);
+`;
+
+const imgStyles = (blur: boolean) => css`
   width: 100%;
   height: 100%;
   object-fit: cover;
 
-  ${({ blur }) =>
-    blur &&
-    css`
-      filter: blur(6px);
+  ${blur &&
+  css`
+    filter: blur(6px);
 
-      // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-      transform: translate3d(0, 0, 0);
-    `}
+    // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
+    transform: translate3d(0, 0, 0);
+  `}
+`;
+
+const StyledPostGallery = styled(PostGallery)<{ blur: boolean }>`
+  ${({ blur }) => imgStyles(blur)}
+`;
+
+const Img = styled.img<{ blur: boolean }>`
+  ${({ blur }) => imgStyles(blur)}
 `;
 
 interface ImgProps {
@@ -58,36 +83,46 @@ export default function Thumbnail({ post }: ImgProps) {
     if (post.post.url && isUrlImage(post.post.url)) return post.post.url;
 
     if (markdownLoneImage) return markdownLoneImage.url;
-
-    return post.post.thumbnail_url;
   })();
+
+  const isLink = !postImageSrc && post.post.url;
 
   const ThumbnailContainer = (props: { children: ReactNode }): ReactNode => {
     let maybeLinkProps = {};
 
-    if (!postImageSrc && post.post.url) {
+    if (isLink) {
       maybeLinkProps = {
         as: "a",
         href: post.post.url,
         target: "_blank",
         rel: "noopener noreferrer",
+        onClick: (e: MouseEvent) => e.stopPropagation(),
       };
     }
 
-    return (
-      <Container onClick={(e) => e.stopPropagation()} {...maybeLinkProps}>
-        {props.children}
-      </Container>
-    );
+    return <Container {...maybeLinkProps}>{props.children}</Container>;
   };
 
-  return (
-    <ThumbnailContainer>
-      {postImageSrc ? (
-        <StyledImg post={post} blur={isNsfw(post)} />
-      ) : (
-        <SelfSvg />
-      )}
-    </ThumbnailContainer>
-  );
+  function renderContents() {
+    if (isLink) {
+      return (
+        <>
+          {post.post.thumbnail_url ? (
+            <Img src={post.post.thumbnail_url} blur={isNsfw(post)} />
+          ) : (
+            <SelfSvg />
+          )}
+          <LinkIcon icon={globeOutline} />
+        </>
+      );
+    }
+
+    if (postImageSrc) {
+      return <StyledPostGallery post={post} blur={isNsfw(post)} />;
+    }
+
+    return <SelfSvg />;
+  }
+
+  return <ThumbnailContainer>{renderContents()}</ThumbnailContainer>;
 }
