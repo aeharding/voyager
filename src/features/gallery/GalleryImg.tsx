@@ -1,7 +1,5 @@
 import React, { FocusEvent, KeyboardEvent, useContext, useRef } from "react";
 import "photoswipe/dist/photoswipe.css";
-import { useAppDispatch } from "../../store";
-import { imageLoaded } from "./gallerySlice";
 import { PostView } from "lemmy-js-client";
 import { GalleryContext } from "./GalleryProvider";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
@@ -31,7 +29,6 @@ export function GalleryImg({
   post,
   animationType,
 }: GalleryImgProps) {
-  const dispatch = useAppDispatch();
   const loaded = useRef(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const { open } = useContext(GalleryContext);
@@ -55,14 +52,6 @@ export function GalleryImg({
         if (!src) return;
 
         loaded.current = true;
-
-        dispatch(
-          imageLoaded({
-            src,
-            width: e.target.naturalWidth,
-            height: e.target.naturalHeight,
-          })
-        );
       }}
     />
   );

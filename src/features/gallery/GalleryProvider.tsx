@@ -10,7 +10,6 @@ import GalleryPostActions from "./GalleryPostActions";
 import { createPortal } from "react-dom";
 import { PostView } from "lemmy-js-client";
 import PhotoSwipeLightbox, { PreparedPhotoSwipeOptions } from "photoswipe";
-import { useAppSelector } from "../../store";
 import { getSafeArea, isAndroid } from "../../helpers/device";
 
 import "photoswipe/style.css";
@@ -52,9 +51,6 @@ interface GalleryProviderProps {
 }
 
 export default function GalleryProvider({ children }: GalleryProviderProps) {
-  const imageDimensionsBySrc = useAppSelector(
-    (state) => state.gallery.imageDimensionsBySrc
-  );
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null
   );
@@ -90,7 +86,6 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"]
     ) => {
       if (lightboxRef.current) return;
-      if (!imageDimensionsBySrc[img.src]) return;
 
       setPost(post);
 
@@ -98,7 +93,8 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         dataSource: [
           {
             src: img.src,
-            ...imageDimensionsBySrc[img.src],
+            height: img.naturalHeight,
+            width: img.naturalWidth,
           },
         ],
         showHideAnimationType: animationType ?? "fade",
@@ -229,7 +225,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       instance.init();
       lightboxRef.current = instance;
     },
-    [imageDimensionsBySrc]
+    []
   );
 
   return (
