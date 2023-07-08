@@ -97,6 +97,7 @@ Note: The provided Dockerfile creates a container which will eventually run wefw
 ### Ecosystem
 
 - 🇸🇬 [w.opnxng.com](https://w.opnxng.com) - wefwef hosted by Opnxng in Singapore. [Contact/privacy](https://about.opnxng.com)
+- 🇲🇽 [wefwef.nohost.network](https://wefwef.nohost.network) - wefwef hosted by Nohost in Mexico. [Contact/privacy](https://nohost.network)
 
 > **Note**: Community deployments are **NOT** maintained by the wefwef team. They may not be synced with wefwef's source code. Please do your own research about the host servers before using them.
 
