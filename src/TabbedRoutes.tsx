@@ -49,7 +49,7 @@ import { UpdateContext } from "./pages/settings/update/UpdateContext";
 import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
-import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
+import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
 import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
@@ -344,13 +344,13 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/appearance">
             <AppearancePage />
           </Route>
-          <Route exact path="/settings/apollo-migrate">
-            <ApolloMigratePage />
+          <Route exact path="/settings/reddit-migrate">
+            <RedditMigratePage />
           </Route>
-          <Route exact path="/settings/apollo-migrate/:search">
+          <Route exact path="/settings/reddit-migrate/:search">
             <SearchCommunitiesPage />
           </Route>
-          {/* general routes for settings is only for apollo-migrate */}
+          {/* general routes for settings is only for reddit-migrate */}
           {...buildGeneralBrowseRoutes("settings")}
           <Route exact path="/settings/appearance/posts">
             <PostAppearancePage />

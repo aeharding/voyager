@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { megaphone } from "ionicons/icons";
 import PreviewStats from "../PreviewStats";
 import Embed from "../../shared/Embed";
-import { useEffect, useMemo, useState } from "react";
-import { css } from "@emotion/react";
+import { useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { isUrlImage, isUrlVideo } from "../../../../helpers/lemmy";
 import { maxWidthCss } from "../../../shared/AppContent";
@@ -17,6 +17,8 @@ import CommunityLink from "../../../labels/links/CommunityLink";
 import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
+import { Image } from "./Image";
+import { useAppSelector } from "../../../../store";
 
 const Container = styled.div`
   display: flex;
@@ -30,21 +32,35 @@ const Container = styled.div`
   ${maxWidthCss}
 `;
 
+const Title = styled.div<{ isRead: boolean }>`
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      color: var(--read-color);
+    `}
+`;
+
 const Details = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   font-size: 0.8em;
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
 `;
 
-const LeftDetails = styled.div`
+const LeftDetails = styled.div<{ isRead: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 
   min-width: 0;
+
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      color: var(--read-color-medium);
+    `}
 `;
 
 const RightDetails = styled.div`
@@ -63,10 +79,18 @@ const CommunityName = styled.span`
   white-space: nowrap;
 `;
 
-const PostBody = styled.div`
+const PostBody = styled.div<{ isRead: boolean }>`
   font-size: 0.88em;
   line-height: 1.25;
-  opacity: 0.6;
+
+  ${({ isRead }) =>
+    isRead
+      ? css`
+          color: var(--read-color-medium);
+        `
+      : css`
+          opacity: 0.6;
+        `}
 
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -79,47 +103,21 @@ const ImageContainer = styled.div`
   margin: 0 -1rem;
 `;
 
-const PostImage = styled.img<{ blur: boolean }>`
-  width: 100%;
-  max-width: none;
-
-  ${({ blur }) =>
-    blur &&
-    css`
-      filter: blur(40px);
-
-      // // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-      transform: translate3d(0, 0, 0);
-    `}
-`;
-
 export default function LargePost({ post, communityMode }: PostProps) {
+  const hasBeenRead: boolean =
+    useAppSelector((state) => state.post.postReadById[post.post.id]) ||
+    post.read;
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
-  const [blur, setBlur] = useState(isNsfw(post));
-
-  useEffect(() => {
-    setBlur(isNsfw(post));
-  }, [post]);
 
   function renderPostBody() {
     if (post.post.url) {
       if (isUrlImage(post.post.url)) {
         return (
           <ImageContainer>
-            <PostImage
-              src={post.post.url}
-              draggable="false"
-              blur={blur}
-              onClick={(e) => {
-                if (isNsfw(post)) {
-                  e.stopPropagation();
-                  setBlur(!blur);
-                }
-              }}
-            />
+            <Image blur={isNsfw(post)} post={post} animationType="zoom" />
           </ImageContainer>
         );
       }
@@ -135,30 +133,26 @@ export default function LargePost({ post, communityMode }: PostProps) {
     if (markdownLoneImage)
       return (
         <ImageContainer>
-          <PostImage
-            src={markdownLoneImage.url}
-            alt={markdownLoneImage.altText}
-            blur={blur}
-            onClick={(e) => {
-              if (isNsfw(post)) {
-                e.stopPropagation();
-                setBlur(!blur);
-              }
-            }}
-          />
+          <Image blur={isNsfw(post)} post={post} animationType="zoom" />
         </ImageContainer>
       );
 
+    /**
+     * Embedded video, image with a thumbanil
+     */
     if (post.post.thumbnail_url && post.post.url) {
       return <Embed post={post} />;
     }
 
+    /**
+     * text image with captions
+     */
     if (post.post.body) {
       return (
         <>
           {post.post.url && <Embed post={post} />}
 
-          <PostBody>
+          <PostBody isRead={hasBeenRead}>
             <InlineMarkdown>{post.post.body}</InlineMarkdown>
           </PostBody>
         </>
@@ -172,15 +166,15 @@ export default function LargePost({ post, communityMode }: PostProps) {
 
   return (
     <Container>
-      <div>
+      <Title isRead={hasBeenRead}>
         <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
         {isNsfw(post) && <Nsfw />}
-      </div>
+      </Title>
 
       {renderPostBody()}
 
       <Details>
-        <LeftDetails>
+        <LeftDetails isRead={hasBeenRead}>
           <CommunityName>
             {post.counts.featured_community || post.counts.featured_local ? (
               <AnnouncementIcon icon={megaphone} />
@@ -199,11 +193,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
             )}
           </CommunityName>
 
-          <PreviewStats
-            stats={post.counts}
-            voteFromServer={post.my_vote}
-            published={post.post.published}
-          />
+          <PreviewStats post={post} />
         </LeftDetails>
         <RightDetails>
           <MoreActions post={post} onFeed />

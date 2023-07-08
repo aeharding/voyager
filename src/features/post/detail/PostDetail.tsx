@@ -19,10 +19,9 @@ import Markdown from "../../shared/Markdown";
 import PostActions from "../actions/PostActions";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../../../helpers/markdown";
-import { getPost } from "../postSlice";
+import { getPost, setPostRead } from "../postSlice";
 import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
 import AppBackButton from "../../shared/AppBackButton";
-import Img from "./Img";
 import { maxWidthCss } from "../../shared/AppContent";
 import PersonLink from "../../labels/links/PersonLink";
 import { CommentSortType, PostView } from "lemmy-js-client";
@@ -38,6 +37,7 @@ import CommentSort from "../../comment/CommentSort";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { PageContext } from "../../auth/PageContext";
 import MoreActions from "../shared/MoreActions";
+import PostGalleryImg from "../../gallery/PostGalleryImg";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -65,7 +65,7 @@ const lightboxCss = css`
   background: var(--lightroom-bg);
 `;
 
-const LightboxImg = styled(Img)`
+const LightboxImg = styled(PostGalleryImg)`
   ${lightboxCss}
 `;
 
@@ -107,7 +107,7 @@ const Title = styled.div`
 
 const By = styled.div`
   margin-bottom: 5px;
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
 
   white-space: nowrap;
   overflow: hidden;
@@ -142,7 +142,11 @@ export default function PostDetail() {
   const [sort, setSort] = useState<CommentSortType>("Hot");
 
   useEffect(() => {
-    if (post) return;
+    if (post) {
+      dispatch(setPostRead(+id));
+
+      return;
+    }
 
     dispatch(getPost(+id));
   }, [post, jwt, dispatch, id]);
@@ -155,19 +159,13 @@ export default function PostDetail() {
     if (!post) return;
 
     if (post.post.url) {
-      if (isUrlImage(post.post.url)) return <LightboxImg src={post.post.url} />;
+      if (isUrlImage(post.post.url)) return <LightboxImg post={post} />;
 
       if (isUrlVideo(post.post.url))
-        return <Video src={post.post.url} css={lightboxCss} />;
+        return <Video src={post.post.url} css={lightboxCss} controls />;
     }
 
-    if (markdownLoneImage)
-      return (
-        <LightboxImg
-          src={markdownLoneImage.url}
-          alt={markdownLoneImage.altText}
-        />
-      );
+    if (markdownLoneImage) return <LightboxImg post={post} />;
   }
 
   function renderText() {
@@ -223,11 +221,7 @@ export default function PostDetail() {
                 />{" "}
                 <PersonLink person={post.creator} prefix="by" />
               </By>
-              <Stats
-                stats={post.counts}
-                voteFromServer={post.my_vote}
-                published={post.post.published}
-              />
+              <Stats post={post} />
             </PostDeets>
           </Container>
         </BorderlessIonItem>

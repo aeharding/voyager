@@ -26,6 +26,7 @@ import Router from "./Router";
 import BeforeInstallPromptProvider from "./BeforeInstallPromptProvider";
 import { UpdateContextProvider } from "./pages/settings/update/UpdateContext";
 import GlobalStyles from "./GlobalStyles";
+import GalleryProvider from "./features/gallery/GalleryProvider";
 
 setupIonicReact({
   rippleEffect: false,
@@ -44,7 +45,9 @@ export default function App() {
               <Router>
                 <IonApp>
                   <Auth>
-                    <TabbedRoutes />
+                    <GalleryProvider>
+                      <TabbedRoutes />
+                    </GalleryProvider>
                   </Auth>
                 </IonApp>
               </Router>

@@ -21,6 +21,7 @@ import PostCommentFeed, {
 } from "../../features/feed/PostCommentFeed";
 import { handleSelector, jwtSelector } from "../../features/auth/authSlice";
 import { IPostMetadata, db } from "../../services/db";
+import { postHiddenByIdSelector } from "../../features/post/postSlice";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -41,6 +42,9 @@ export default function ProfileFeedHiddenPostsPage() {
   const jwt = useAppSelector(jwtSelector);
   const client = useClient();
   const postById = useAppSelector((state) => state.post.postById);
+
+  // This is just used to trigger a re-render when the list changes
+  const postHiddenById = useAppSelector(postHiddenByIdSelector);
 
   const lastPageNumberRef = useRef(1);
   const lastPageItemsRef = useRef<IPostMetadata[]>([]);
@@ -82,7 +86,7 @@ export default function ProfileFeedHiddenPostsPage() {
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [client, handle, jwt]
+    [client, handle, jwt, postHiddenById]
   );
 
   return (
