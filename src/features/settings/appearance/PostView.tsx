@@ -56,7 +56,10 @@ export default function PostView() {
               }
             }}
             header="Post Size"
-            buttons={BUTTONS}
+            buttons={BUTTONS.map((b) => ({
+              ...b,
+              role: postsAppearanceType === b.data ? "selected" : undefined,
+            }))}
           />
         </InsetIonItem>
       </IonList>
