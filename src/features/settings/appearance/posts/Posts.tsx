@@ -1,5 +1,5 @@
 import { IonLabel, IonList } from "@ionic/react";
-import { ListHeader } from "../TextSize";
+import { ListHeader } from "../../shared/formatting";
 import BlurNsfw from "./BlurNsfw";
 import PostSize from "./PostSize";
 

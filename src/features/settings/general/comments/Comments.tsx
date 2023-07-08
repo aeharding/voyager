@@ -1,8 +1,7 @@
 import { IonLabel, IonList } from "@ionic/react";
-import CollapsedByDefault, {
-  ListHeader,
-} from "../../general/comments/CollapsedByDefault";
+import CollapsedByDefault from "../../general/comments/CollapsedByDefault";
 import DefaultSort from "./DefaultSort";
+import { ListHeader } from "../../shared/formatting";
 
 export default function Comments() {
   return (

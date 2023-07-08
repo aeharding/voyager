@@ -1,6 +1,6 @@
 import { IonLabel, IonList } from "@ionic/react";
 import DarkMode from "./DarkMode";
-import { ListHeader } from "../TextSize";
+import { ListHeader } from "../../shared/formatting";
 import DeviceMode from "./DeviceMode";
 import { useAppSelector } from "../../../../store";
 import UserDarkMode from "./UserDarkMode";

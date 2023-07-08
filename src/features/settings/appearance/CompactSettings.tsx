@@ -6,7 +6,6 @@ import {
   IonActionSheet,
   IonToggle,
 } from "@ionic/react";
-import { ListHeader } from "./TextSize";
 import { InsetIonItem } from "../../user/Profile";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import { useState } from "react";
@@ -17,6 +16,7 @@ import {
   CompactThumbnailPositionType,
 } from "../../../services/db";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
+import { ListHeader } from "../shared/formatting";
 
 const BUTTONS: ActionSheetButton<CompactThumbnailPositionType>[] =
   Object.values(OCompactThumbnailPositionType).map(function (

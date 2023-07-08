@@ -1,32 +1,16 @@
-import { IonActionSheet, IonLabel, IonList } from "@ionic/react";
-import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { startCase } from "lodash";
-import { useState } from "react";
-import {
-  ActionSheetButton,
-  IonActionSheetCustomEvent,
-  OverlayEventDetail,
-} from "@ionic/core";
-import { OVoteDisplayMode, VoteDisplayMode } from "../../../services/db";
-import { ListHeader } from "./TextSize";
+import { IonLabel, IonList } from "@ionic/react";
+import { useAppSelector } from "../../../store";
 import { setVoteDisplayMode } from "../settingsSlice";
-
-const BUTTONS: ActionSheetButton<VoteDisplayMode>[] = Object.values(
-  OVoteDisplayMode
-).map(function (voteDisplayMode) {
-  return {
-    text: startCase(voteDisplayMode),
-    data: voteDisplayMode,
-  } as ActionSheetButton<VoteDisplayMode>;
-});
+import { OVoteDisplayMode, VoteDisplayMode } from "../../../services/db";
+import SettingSelector from "../shared/SettingSelector";
+import { ListHeader } from "../shared/formatting";
 
 export default function CollapsedByDefault() {
-  const [open, setOpen] = useState(false);
-  const dispatch = useAppDispatch();
   const voteDisplayMode = useAppSelector(
     (state) => state.settings.appearance.voting.voteDisplayMode
   );
+
+  const Selector = SettingSelector<VoteDisplayMode>;
 
   return (
     <>
@@ -34,29 +18,12 @@ export default function CollapsedByDefault() {
         <IonLabel>Voting</IonLabel>
       </ListHeader>
       <IonList inset>
-        <InsetIonItem button onClick={() => setOpen(true)}>
-          <IonLabel>Vote Display Mode</IonLabel>
-          <IonLabel slot="end" color="medium">
-            {startCase(voteDisplayMode)}
-          </IonLabel>
-          <IonActionSheet
-            cssClass="left-align-buttons"
-            isOpen={open}
-            onDidDismiss={() => setOpen(false)}
-            onWillDismiss={(
-              e: IonActionSheetCustomEvent<OverlayEventDetail<VoteDisplayMode>>
-            ) => {
-              if (e.detail.data) {
-                dispatch(setVoteDisplayMode(e.detail.data));
-              }
-            }}
-            header="Post Size"
-            buttons={BUTTONS.map((b) => ({
-              ...b,
-              role: voteDisplayMode === b.data ? "selected" : undefined,
-            }))}
-          />
-        </InsetIonItem>
+        <Selector
+          title="Voting Display Mode"
+          selected={voteDisplayMode}
+          set_selected={setVoteDisplayMode}
+          options={OVoteDisplayMode}
+        />
       </IonList>
     </>
   );
