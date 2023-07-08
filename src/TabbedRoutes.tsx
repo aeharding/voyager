@@ -224,6 +224,15 @@ export default function TabbedRoutes() {
           <ProfileFeedHiddenPostsPage />
         </ActorRedirect>
       </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route
+        exact
+        path={`/${tab === "posts" ? "posts/other" : tab}/messages/:handle`}
+      >
+        <InboxAuthRequired>
+          <ConversationPage />
+        </InboxAuthRequired>
+      </Route>,
     ];
   }
 
@@ -293,11 +302,6 @@ export default function TabbedRoutes() {
           <Route exact path="/inbox/messages">
             <InboxAuthRequired>
               <MessagesPage />
-            </InboxAuthRequired>
-          </Route>
-          <Route exact path="/inbox/messages/:handle">
-            <InboxAuthRequired>
-              <ConversationPage />
             </InboxAuthRequired>
           </Route>
           {...buildGeneralBrowseRoutes("inbox")}

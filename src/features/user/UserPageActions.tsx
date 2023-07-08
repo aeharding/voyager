@@ -9,6 +9,7 @@ interface UserPageActionsProps {
 export default function UserPageActions({ handle }: UserPageActionsProps) {
   const [open, setOpen] = useState(false);
   const router = useIonRouter();
+  const tab = location.pathname.split("/")[1];
 
   return (
     <>
@@ -38,7 +39,9 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
 
           switch (e.detail.role) {
             case "message": {
-              router.push(`/inbox/messages/${handle}`);
+              router.push(
+                `/${tab === "posts" ? "posts/other" : tab}/messages/${handle}`
+              );
               break;
             }
             default: {
