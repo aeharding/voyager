@@ -19,6 +19,7 @@ RUN apk add --no-cache git
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
+
 # Copy all source files
 COPY . ./
 
