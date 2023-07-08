@@ -50,7 +50,6 @@ import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
-import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
@@ -351,9 +350,6 @@ export default function TabbedRoutes() {
           </Route>
           {/* general routes for settings is only for reddit-migrate */}
           {...buildGeneralBrowseRoutes("settings")}
-          <Route exact path="/settings/appearance/posts">
-            <PostAppearancePage />
-          </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton
