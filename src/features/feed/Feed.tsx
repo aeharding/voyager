@@ -18,6 +18,8 @@ import { CenteredSpinner } from "../post/detail/PostDetail";
 import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
 import EndPost from "./EndPost";
+import { useAppSelector } from "../../store";
+import { OPostAppearanceType } from "../../services/db";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
@@ -47,6 +49,9 @@ export default function Feed<I>({
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
   const [present] = useIonToast();
+  const postAppearanceType = useAppSelector(
+    (state) => state.appearance.posts.type
+  );
 
   const filteredItems = useMemo(
     () => (filterFn ? items.filter(filterFn) : items),
@@ -173,7 +178,15 @@ export default function Feed<I>({
           fetchMore();
         }}
         components={{ Header: header, Footer: footer }}
-        increaseViewportBy={800}
+        increaseViewportBy={
+          postAppearanceType === OPostAppearanceType.Compact
+            ? 0 // Compact posts have fixed size, so we don't need to proactively render
+            : {
+                // Height of post depends on image aspect ratio, so load extra off screen
+                top: 200,
+                bottom: 800,
+              }
+        }
       />
     </>
   );
