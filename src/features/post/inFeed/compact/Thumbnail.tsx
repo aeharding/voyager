@@ -34,7 +34,7 @@ const Container = styled.div`
   }
 `;
 
-const LinkIcon = styled(IonIcon)`
+const LinkIcon = styled(IonIcon)<{ bg: boolean }>`
   position: absolute;
   bottom: 0;
   right: 0;
@@ -44,7 +44,11 @@ const LinkIcon = styled(IonIcon)`
   opacity: 0.5;
   border-top-left-radius: 8px;
 
-  background: rgba(0, 0, 0, 0.4);
+  ${({ bg }) =>
+    bg &&
+    css`
+      background: rgba(0, 0, 0, 0.4);
+    `}
 `;
 
 const imgStyles = (blur: boolean) => css`
@@ -112,19 +116,13 @@ export default function Thumbnail({ post }: ImgProps) {
           ) : (
             <SelfSvg />
           )}
-          <LinkIcon icon={globeOutline} />
+          <LinkIcon icon={globeOutline} bg={!!post.post.thumbnail_url} />
         </>
       );
     }
 
     if (postImageSrc) {
-      return (
-        <StyledPostGallery
-          post={post}
-          blur={isNsfw(post)}
-          animationType="zoom"
-        />
-      );
+      return <StyledPostGallery post={post} blur={isNsfw(post)} />;
     }
 
     return <SelfSvg />;
