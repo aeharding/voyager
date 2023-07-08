@@ -54,6 +54,7 @@ import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
+import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -91,7 +92,7 @@ export default function TabbedRoutes() {
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
       router.push(`/posts/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
@@ -112,7 +113,7 @@ export default function TabbedRoutes() {
   async function onInboxClick() {
     if (!isInboxButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push(`/inbox`, "back");
   }
@@ -120,7 +121,7 @@ export default function TabbedRoutes() {
   async function onProfileClick() {
     if (!isProfileButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push("/profile", "back");
   }
@@ -131,39 +132,9 @@ export default function TabbedRoutes() {
     // if the search page is already open, focus the search bar
     focusSearchBar();
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push(`/search`, "back");
-  }
-
-  async function scrollUpIfNeeded() {
-    if (!activePage) return false;
-
-    if ("querySelector" in activePage) {
-      const scroll =
-        activePage?.querySelector('[data-virtuoso-scroller="true"]') ??
-        activePage
-          ?.querySelector("ion-content")
-          ?.shadowRoot?.querySelector(".inner-scroll");
-
-      if (scroll?.scrollTop) {
-        scroll.scrollTo({ top: 0, behavior: "smooth" });
-        return true;
-      }
-    } else {
-      return new Promise((resolve) =>
-        activePage.current?.getState((state) => {
-          if (state.scrollTop) {
-            activePage.current?.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            });
-          }
-
-          resolve(!!state.scrollTop);
-        })
-      );
-    }
   }
 
   function buildGeneralBrowseRoutes(tab: string) {
