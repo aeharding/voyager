@@ -11,8 +11,7 @@ import { VoteButton } from "../../shared/VoteButton";
 import Save from "../../../labels/Save";
 import Nsfw, { isNsfw } from "../../../labels/Nsfw";
 import { useAppSelector } from "../../../../store";
-
-const readOpacity = 0.6;
+import { useMemo } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -36,7 +35,7 @@ const Title = styled.span<{ isRead: boolean }>`
   ${({ isRead }) =>
     isRead &&
     css`
-      opacity: ${readOpacity};
+      color: var(--ion-color-medium);
     `}
 `;
 
@@ -79,13 +78,14 @@ export default function CompactPost({ post, communityMode }: PostProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
+  const nsfw = useMemo(() => isNsfw(post), [post]);
 
   return (
     <Container>
       <Thumbnail post={post} />
       <Content>
         <Title isRead={hasBeenRead}>
-          {post.post.name} {isNsfw(post) && <Nsfw />}
+          {post.post.name} {nsfw && <Nsfw />}
         </Title>
         <Aside>
           {communityMode ? (

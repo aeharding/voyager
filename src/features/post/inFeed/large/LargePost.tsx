@@ -20,8 +20,6 @@ import Save from "../../../labels/Save";
 import { Image } from "./Image";
 import { useAppSelector } from "../../../../store";
 
-const readOpacity = 0.6;
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -38,7 +36,7 @@ const Title = styled.div<{ isRead: boolean }>`
   ${({ isRead }) =>
     isRead &&
     css`
-      opacity: ${readOpacity};
+      color: var(--ion-color-medium);
     `}
 `;
 
@@ -91,14 +89,6 @@ const ImageContainer = styled.div`
   margin: 0 -1rem;
 `;
 
-const EmbedWrapper = styled(Embed)<{ isRead: boolean }>`
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      opacity: ${readOpacity};
-    `}
-`;
-
 export default function LargePost({ post, communityMode }: PostProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
@@ -137,7 +127,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
      * Embedded video, image with a thumbanil
      */
     if (post.post.thumbnail_url && post.post.url) {
-      return <EmbedWrapper isRead={hasBeenRead} post={post} />;
+      return <Embed post={post} />;
     }
 
     /**
@@ -146,7 +136,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
     if (post.post.body) {
       return (
         <>
-          {post.post.url && <EmbedWrapper isRead={hasBeenRead} post={post} />}
+          {post.post.url && <Embed post={post} />}
 
           <PostBody>
             <InlineMarkdown>{post.post.body}</InlineMarkdown>
@@ -156,7 +146,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
     }
 
     if (post.post.url) {
-      return <EmbedWrapper isRead={hasBeenRead} post={post} />;
+      return <Embed post={post} />;
     }
   }
 
