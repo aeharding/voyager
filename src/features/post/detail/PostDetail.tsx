@@ -8,6 +8,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  useIonViewDidEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useParams } from "react-router";
@@ -140,16 +141,26 @@ export default function PostDetail() {
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const [commentsLastUpdated, setCommentsLastUpdated] = useState(Date.now());
   const [sort, setSort] = useState<CommentSortType>("Hot");
+  const [ionViewEntered, setIonViewEntered] = useState(false);
 
   useEffect(() => {
-    if (post) {
-      dispatch(setPostRead(+id));
-
-      return;
-    }
+    if (post) return;
 
     dispatch(getPost(+id));
   }, [post, jwt, dispatch, id]);
+
+  // Avoid rerender from marking a post as read until the page
+  // has fully transitioned in.
+  // This keeps the page transition as performant as possible
+  useEffect(() => {
+    if (!post || !ionViewEntered) return;
+
+    dispatch(setPostRead(+id));
+  }, [post, ionViewEntered, dispatch, id]);
+
+  useIonViewDidEnter(() => {
+    setIonViewEntered(true);
+  });
 
   useEffect(() => {
     titleRef.current?.scrollIntoView({ behavior: "smooth" });
