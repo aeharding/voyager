@@ -9,6 +9,7 @@ import CommunityLink from "../../../labels/links/CommunityLink";
 import { VoteButton } from "../../shared/VoteButton";
 import Save from "../../../labels/Save";
 import Nsfw, { isNsfw } from "../../../labels/Nsfw";
+import { useMemo } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -64,12 +65,14 @@ const EndDetails = styled.div`
 `;
 
 export default function CompactPost({ post, communityMode }: PostProps) {
+  const nsfw = useMemo(() => isNsfw(post), [post]);
+
   return (
     <Container>
       <Thumbnail post={post} />
       <Content>
         <span>
-          {post.post.name} {isNsfw(post) && <Nsfw />}
+          {post.post.name} {nsfw && <Nsfw />}
         </span>
         <Aside>
           {communityMode ? (

@@ -1,9 +1,8 @@
-import { type ReactNode } from "react";
 import styled from "@emotion/styled";
 import { ReactComponent as SelfSvg } from "./self.svg";
 import { PostView } from "lemmy-js-client";
 import { isUrlImage } from "../../../../helpers/lemmy";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { css } from "@emotion/react";
 import { isNsfw } from "../../../labels/Nsfw";
@@ -11,7 +10,7 @@ import { globeOutline } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
 import PostGalleryImg from "../../../gallery/PostGalleryImg";
 
-const Container = styled.div`
+const containerCss = css`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,6 +31,14 @@ const Container = styled.div`
     width: 60%;
     opacity: 0.5;
   }
+`;
+
+const ContainerLink = styled.a`
+  ${containerCss}
+`;
+
+const Container = styled.div`
+  ${containerCss}
 `;
 
 const LinkIcon = styled(IonIcon)<{ bg: boolean }>`
@@ -89,30 +96,16 @@ export default function Thumbnail({ post }: ImgProps) {
     if (markdownLoneImage) return markdownLoneImage.url;
   })();
 
+  const nsfw = useMemo(() => isNsfw(post), [post]);
+
   const isLink = !postImageSrc && post.post.url;
 
-  const ThumbnailContainer = (props: { children: ReactNode }): ReactNode => {
-    let maybeLinkProps = {};
-
-    if (isLink) {
-      maybeLinkProps = {
-        as: "a",
-        href: post.post.url,
-        target: "_blank",
-        rel: "noopener noreferrer",
-        onClick: (e: MouseEvent) => e.stopPropagation(),
-      };
-    }
-
-    return <Container {...maybeLinkProps}>{props.children}</Container>;
-  };
-
-  function renderContents() {
+  const renderContents = useCallback(() => {
     if (isLink) {
       return (
         <>
           {post.post.thumbnail_url ? (
-            <Img src={post.post.thumbnail_url} blur={isNsfw(post)} />
+            <Img src={post.post.thumbnail_url} blur={nsfw} />
           ) : (
             <SelfSvg />
           )}
@@ -122,11 +115,23 @@ export default function Thumbnail({ post }: ImgProps) {
     }
 
     if (postImageSrc) {
-      return <StyledPostGallery post={post} blur={isNsfw(post)} />;
+      return <StyledPostGallery post={post} blur={nsfw} />;
     }
 
     return <SelfSvg />;
-  }
+  }, [isLink, nsfw, post, postImageSrc]);
 
-  return <ThumbnailContainer>{renderContents()}</ThumbnailContainer>;
+  if (isLink)
+    return (
+      <ContainerLink
+        href={post.post.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {renderContents()}
+      </ContainerLink>
+    );
+
+  return <Container>{renderContents()}</Container>;
 }
