@@ -2,6 +2,10 @@ import express from "express";
 import ViteExpress from "vite-express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
+const UNPROXIED_LEMMY_SERVERS = process.env.UNPROXIED_LEMMY_SERVERS
+  ? process.env.UNPROXIED_LEMMY_SERVERS.split(",").map((s) => s.trim())
+  : [];
+
 const CUSTOM_LEMMY_SERVERS = process.env.CUSTOM_LEMMY_SERVERS
   ? process.env.CUSTOM_LEMMY_SERVERS.split(",").map((s) => s.trim())
   : [];
@@ -136,7 +140,13 @@ function transformer(html) {
       CUSTOM_LEMMY_SERVERS.length
         ? `window.CUSTOM_LEMMY_SERVERS = ${JSON.stringify(
             CUSTOM_LEMMY_SERVERS
-          )}`
+          )};`
+        : ""
+    }${
+      UNPROXIED_LEMMY_SERVERS.length
+        ? `window.UNPROXIED_LEMMY_SERVERS = ${JSON.stringify(
+            UNPROXIED_LEMMY_SERVERS
+          )};`
         : ""
     }</script>`
   );

@@ -1,10 +1,11 @@
 import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
+import { UNPROXIED_LEMMY_SERVERS } from "../helpers/lemmy";
 
 function buildBaseUrl(url: string): string {
-  // if (url === "lemmy.world") {
-  //   return `https://lemmy.world`;
-  // }
+  if (UNPROXIED_LEMMY_SERVERS.includes(url)) {
+    return `https://${url}`;
+  }
 
   return `${location.origin}/api/${url}`;
 }

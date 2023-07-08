@@ -10,6 +10,21 @@ export const LEMMY_SERVERS =
     ? (window.CUSTOM_LEMMY_SERVERS as string[])
     : ["lemmy.world", "lemmy.ml", "beehaw.org", "sh.itjust.works"];
 
+export const UNPROXIED_LEMMY_SERVERS =
+  "UNPROXIED_LEMMY_SERVERS" in window
+    ? (window.UNPROXIED_LEMMY_SERVERS as string[])
+    : [
+        "lemmy.ml",
+        "beehaw.org",
+        "sh.itjust.works",
+        "lemm.ee",
+        "feddit.de",
+        "midwest.social",
+        "lemmynsfw.com",
+        "lemmy.ca",
+        "lemmy.sdf.org",
+      ];
+
 export interface LemmyJWT {
   sub: number;
   iss: string; // e.g. "lemmy.ml"
