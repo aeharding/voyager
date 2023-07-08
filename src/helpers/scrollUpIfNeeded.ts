@@ -3,7 +3,10 @@ import { VirtuosoHandle } from "react-virtuoso";
 
 type Page = HTMLElement | RefObject<VirtuosoHandle>;
 
-export function scrollUpIfNeeded(activePage: Page | undefined) {
+export function scrollUpIfNeeded(
+  activePage: Page | undefined,
+  index: number | undefined = 0
+) {
   if (!activePage) return false;
 
   if ("querySelector" in activePage) {
@@ -14,7 +17,7 @@ export function scrollUpIfNeeded(activePage: Page | undefined) {
         ?.shadowRoot?.querySelector(".inner-scroll");
 
     if (scroll?.scrollTop) {
-      scroll.scrollTo({ top: 0, behavior: "smooth" });
+      scroll.scrollTo({ top: index, behavior: "smooth" });
       return true;
     }
   } else {
@@ -22,7 +25,7 @@ export function scrollUpIfNeeded(activePage: Page | undefined) {
       activePage.current?.getState((state) => {
         if (state.scrollTop) {
           activePage.current?.scrollToIndex({
-            index: 0,
+            index: index,
             behavior: "smooth",
           });
         }

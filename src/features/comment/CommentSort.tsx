@@ -51,7 +51,7 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
         ) => {
           if (e.detail.data) {
             setSort(e.detail.data);
-            scrollUpIfNeeded(activePage);
+            scrollUpIfNeeded(activePage, 1);
           }
         }}
         header="Sort by..."
