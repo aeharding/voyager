@@ -20,7 +20,11 @@ import PostDetail from "./features/post/detail/PostDetail";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppDispatch, useAppSelector } from "./store";
-import { jwtIssSelector, jwtSelector } from "./features/auth/authSlice";
+import {
+  handleSelector,
+  jwtIssSelector,
+  jwtSelector,
+} from "./features/auth/authSlice";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
@@ -73,6 +77,7 @@ export default function TabbedRoutes() {
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
   const dispatch = useAppDispatch();
+  const activeHandle = useAppSelector(handleSelector);
 
   const settingsNotificationCount =
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
@@ -92,7 +97,7 @@ export default function TabbedRoutes() {
 
   useEffect(() => {
     dispatch(getFavoriteCommunities());
-  }, [dispatch, jwt]);
+  }, [dispatch, activeHandle]);
 
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
