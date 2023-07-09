@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 import { PostProps } from "../Post";
 import Thumbnail from "./Thumbnail";
 import { maxWidthCss } from "../../../shared/AppContent";
@@ -7,6 +8,10 @@ import MoreActions from "../../shared/MoreActions";
 import PersonLink from "../../../labels/links/PersonLink";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { VoteButton } from "../../shared/VoteButton";
+import Save from "../../../labels/Save";
+import Nsfw, { isNsfw } from "../../../labels/Nsfw";
+import { useAppSelector } from "../../../../store";
+import { useMemo } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -14,6 +19,8 @@ const Container = styled.div`
   padding: 12px;
   gap: 12px;
   line-height: 1.15;
+
+  position: relative;
 
   ${maxWidthCss}
 `;
@@ -24,14 +31,28 @@ const Content = styled.div`
   gap: 0.5em;
 `;
 
-const Aside = styled.div`
+const Title = styled.span<{ isRead: boolean }>`
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      color: var(--read-color);
+    `}
+`;
+
+const Aside = styled.div<{ isRead: boolean }>`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5em;
 
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
   font-size: 0.8em;
+
+  ${({ isRead }) =>
+    isRead &&
+    css`
+      color: var(--read-color);
+    `}
 `;
 
 const Actions = styled.div`
@@ -47,6 +68,8 @@ const StyledMoreActions = styled(MoreActions)`
 
   margin: -0.5rem;
   padding: 0.5rem;
+
+  color: var(--ion-color-text-aside);
 `;
 
 const EndDetails = styled.div`
@@ -54,18 +77,25 @@ const EndDetails = styled.div`
   flex-direction: column;
   font-size: 1.2rem;
 
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
 
   margin-left: auto;
 `;
 
 export default function CompactPost({ post, communityMode }: PostProps) {
+  const hasBeenRead: boolean =
+    useAppSelector((state) => state.post.postReadById[post.post.id]) ||
+    post.read;
+  const nsfw = useMemo(() => isNsfw(post), [post]);
+
   return (
     <Container>
       <Thumbnail post={post} />
       <Content>
-        {post.post.name}
-        <Aside>
+        <Title isRead={hasBeenRead}>
+          {post.post.name} {nsfw && <Nsfw />}
+        </Title>
+        <Aside isRead={hasBeenRead}>
           {communityMode ? (
             <PersonLink
               person={post.creator}
@@ -76,12 +106,8 @@ export default function CompactPost({ post, communityMode }: PostProps) {
             <CommunityLink community={post.community} />
           )}
           <Actions>
-            <PreviewStats
-              stats={post.counts}
-              published={post.post.published}
-              voteFromServer={post.my_vote}
-            />
-            <StyledMoreActions post={post} />
+            <PreviewStats post={post} />
+            <StyledMoreActions post={post} onFeed />
           </Actions>
         </Aside>
       </Content>
@@ -89,6 +115,8 @@ export default function CompactPost({ post, communityMode }: PostProps) {
         <VoteButton type="up" postId={post.post.id} />
         <VoteButton type="down" postId={post.post.id} />
       </EndDetails>
+
+      <Save type="post" id={post.post.id} />
     </Container>
   );
 }

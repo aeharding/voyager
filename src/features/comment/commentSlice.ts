@@ -6,13 +6,14 @@ import { Comment, CommentView } from "lemmy-js-client";
 interface CommentState {
   commentCollapsedById: Dictionary<boolean>;
   commentVotesById: Dictionary<1 | -1 | 0>;
+  commentSavedById: Dictionary<boolean>;
   commentById: Dictionary<Comment>;
 }
 
 const initialState: CommentState = {
   commentCollapsedById: {},
   commentVotesById: {},
-
+  commentSavedById: {},
   /**
    * surgical changes received after user edits or deletes comment
    */
@@ -34,6 +35,10 @@ export const commentSlice = createSlice({
           state.commentVotesById[comment.comment.id] = comment.my_vote as
             | 1
             | -1;
+
+        if (comment.saved) {
+          state.commentSavedById[comment.comment.id] = comment.saved;
+        }
       }
     },
 
@@ -63,6 +68,12 @@ export const commentSlice = createSlice({
     ) => {
       state.commentVotesById[action.payload.commentId] = action.payload.vote;
     },
+    updateCommentSaved: (
+      state,
+      action: PayloadAction<{ commentId: number; saved: boolean | undefined }>
+    ) => {
+      state.commentSavedById[action.payload.commentId] = action.payload.saved;
+    },
     resetComments: () => initialState,
   },
 });
@@ -74,6 +85,7 @@ export const {
   updateCommentCollapseState,
   toggleCommentCollapseState,
   updateCommentVote,
+  updateCommentSaved,
   resetComments,
 } = commentSlice.actions;
 
@@ -98,6 +110,30 @@ export const voteOnComment =
       });
     } catch (error) {
       dispatch(updateCommentVote({ commentId, vote: oldVote }));
+
+      throw error;
+    }
+  };
+
+export const saveComment =
+  (commentId: number, save: boolean) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const oldSaved = getState().comment.commentSavedById[commentId];
+
+    dispatch(updateCommentSaved({ commentId, saved: save }));
+
+    const jwt = jwtSelector(getState());
+
+    if (!jwt) throw new Error("Not authorized");
+
+    try {
+      await clientSelector(getState())?.saveComment({
+        comment_id: commentId,
+        save,
+        auth: jwt,
+      });
+    } catch (error) {
+      dispatch(updateCommentSaved({ commentId, saved: oldSaved }));
 
       throw error;
     }

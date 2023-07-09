@@ -8,7 +8,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
-  useIonModal,
+  useIonViewDidEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useParams } from "react-router";
@@ -20,26 +20,25 @@ import Markdown from "../../shared/Markdown";
 import PostActions from "../actions/PostActions";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../../../helpers/markdown";
-import { getPost } from "../postSlice";
+import { getPost, setPostRead } from "../postSlice";
 import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
 import AppBackButton from "../../shared/AppBackButton";
-import Img from "./Img";
 import { maxWidthCss } from "../../shared/AppContent";
 import PersonLink from "../../labels/links/PersonLink";
 import { CommentSortType, PostView } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import ViewAllComments from "./ViewAllComments";
-import CommentReply from "../../comment/reply/CommentReply";
-import Login from "../../auth/Login";
 import InlineMarkdown from "../../shared/InlineMarkdown";
 import { megaphone } from "ionicons/icons";
 import CommunityLink from "../../labels/links/CommunityLink";
 import Video from "../../shared/Video";
 import { css } from "@emotion/react";
-import { PageContext } from "../../auth/PageContext";
 import { jwtSelector } from "../../auth/authSlice";
 import CommentSort from "../../comment/CommentSort";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
+import { PageContext } from "../../auth/PageContext";
+import MoreActions from "../shared/MoreActions";
+import PostGalleryImg from "../../gallery/PostGalleryImg";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -67,7 +66,7 @@ const lightboxCss = css`
   background: var(--lightroom-bg);
 `;
 
-const LightboxImg = styled(Img)`
+const LightboxImg = styled(PostGalleryImg)`
   -webkit-touch-callout: default;
 
   ${lightboxCss}
@@ -111,7 +110,7 @@ const Title = styled.div`
 
 const By = styled.div`
   margin-bottom: 5px;
-  color: var(--ion-color-medium);
+  color: var(--ion-color-text-aside);
 
   white-space: nowrap;
   overflow: hidden;
@@ -141,27 +140,29 @@ export default function PostDetail() {
     [post]
   );
   const titleRef = useRef<HTMLDivElement>(null);
-  const pageContext = useContext(PageContext);
+  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const [commentsLastUpdated, setCommentsLastUpdated] = useState(Date.now());
   const [sort, setSort] = useState<CommentSortType>("Hot");
-
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => {
-      if (role === "post") setCommentsLastUpdated(Date.now());
-      onDismissReply(data, role);
-    },
-    item: post,
-  });
-
-  const [login, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
+  const [ionViewEntered, setIonViewEntered] = useState(false);
 
   useEffect(() => {
     if (post) return;
 
     dispatch(getPost(+id));
   }, [post, jwt, dispatch, id]);
+
+  // Avoid rerender from marking a post as read until the page
+  // has fully transitioned in.
+  // This keeps the page transition as performant as possible
+  useEffect(() => {
+    if (!post || !ionViewEntered) return;
+
+    dispatch(setPostRead(+id));
+  }, [post, ionViewEntered, dispatch, id]);
+
+  useIonViewDidEnter(() => {
+    setIonViewEntered(true);
+  });
 
   useEffect(() => {
     titleRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -171,19 +172,13 @@ export default function PostDetail() {
     if (!post) return;
 
     if (post.post.url) {
-      if (isUrlImage(post.post.url)) return <LightboxImg src={post.post.url} />;
+      if (isUrlImage(post.post.url)) return <LightboxImg post={post} />;
 
       if (isUrlVideo(post.post.url))
-        return <Video src={post.post.url} css={lightboxCss} />;
+        return <Video src={post.post.url} css={lightboxCss} controls />;
     }
 
-    if (markdownLoneImage)
-      return (
-        <LightboxImg
-          src={markdownLoneImage.url}
-          alt={markdownLoneImage.altText}
-        />
-      );
+    if (markdownLoneImage) return <LightboxImg post={post} />;
   }
 
   function renderText() {
@@ -239,20 +234,19 @@ export default function PostDetail() {
                 />{" "}
                 <PersonLink person={post.creator} prefix="by" />
               </By>
-              <Stats
-                stats={post.counts}
-                voteFromServer={post.my_vote}
-                published={post.post.published}
-              />
+              <Stats post={post} />
             </PostDeets>
           </Container>
         </BorderlessIonItem>
         <BorderlessIonItem>
           <PostActions
             post={post}
-            onReply={() => {
-              if (!jwt) return login({ presentingElement: pageContext.page });
-              else reply({ presentingElement: pageContext.page });
+            onReply={async () => {
+              if (presentLoginIfNeeded()) return;
+
+              const replied = await presentCommentReply(post);
+
+              if (replied) setCommentsLastUpdated(Date.now());
             }}
           />
         </BorderlessIonItem>
@@ -273,6 +267,7 @@ export default function PostDetail() {
           <IonTitle>{post?.counts.comments} Comments</IonTitle>
           <IonButtons slot="end">
             <CommentSort sort={sort} setSort={setSort} />
+            {post && <MoreActions post={post} />}
           </IonButtons>
         </IonToolbar>
       </IonHeader>

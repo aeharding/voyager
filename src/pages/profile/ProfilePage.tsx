@@ -13,10 +13,10 @@ import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
 import LoggedOut from "../../features/user/LoggedOut";
 import AccountSwitcher from "../../features/auth/AccountSwitcher";
-import { useRef } from "react";
-import Login from "../../features/auth/Login";
+import { useContext, useRef } from "react";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import AppContent from "../../features/shared/AppContent";
+import { PageContext } from "../../features/auth/PageContext";
 
 export default function ProfilePage() {
   const pageRef = useRef();
@@ -30,10 +30,7 @@ export default function ProfilePage() {
       page: pageRef.current,
     }
   );
-
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
+  const { presentLoginIfNeeded } = useContext(PageContext);
 
   useSetActivePage(pageRef.current);
 
@@ -57,9 +54,7 @@ export default function ProfilePage() {
             <>
               <IonTitle>Anonymous</IonTitle>
               <IonButtons slot="end">
-                <IonButton
-                  onClick={() => login({ presentingElement: pageRef.current })}
-                >
+                <IonButton onClick={() => presentLoginIfNeeded()}>
                   Login
                 </IonButton>
               </IonButtons>
