@@ -21,6 +21,13 @@ export const allNSFWHidden: ToastOptions = {
   color: "success",
 };
 
+export const problemBlockingUser: ToastOptions = {
+  message: "Problem blocking user. Please try again.",
+  duration: 3500,
+  position: "bottom",
+  color: "danger",
+};
+
 export function buildBlocked(blocked: boolean, handle: string): ToastOptions {
   return {
     message: `${handle} has been ${blocked ? "blocked" : "unblocked"}`,
