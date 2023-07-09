@@ -67,6 +67,8 @@ const lightboxCss = css`
 `;
 
 const LightboxImg = styled(PostGalleryImg)`
+  -webkit-touch-callout: default;
+
   ${lightboxCss}
 `;
 
