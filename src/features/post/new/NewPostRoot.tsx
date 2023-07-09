@@ -184,7 +184,7 @@ export default function NewPostRoot({
 
     try {
       postResponse = await client.createPost({
-        community_id: community.community_view.community.id,
+        community_id: community.community.id,
         name: title,
         url: postUrl,
         body: text || undefined,
@@ -219,7 +219,7 @@ export default function NewPostRoot({
     dismiss();
     router.push(
       buildGeneralBrowseLink(
-        `/c/${getHandle(community.community_view.community)}/comments/${
+        `/c/${getHandle(community.community)}/comments/${
           postResponse.post_view.post.id
         }`
       )
@@ -385,7 +385,7 @@ export default function NewPostRoot({
           </IonList>
 
           <PostingIn>
-            Posting in {getRemoteHandle(community.community_view.community)}
+            Posting in {getRemoteHandle(community.community)}
           </PostingIn>
         </Container>
       </IonContent>
