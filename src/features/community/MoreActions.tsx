@@ -14,16 +14,10 @@ import {
   starSharp,
   tabletPortraitOutline,
 } from "ionicons/icons";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import {
-  addFavorite,
-  followCommunity,
-  getFavoriteCommunities,
-  removeFavorite,
-} from "./communitySlice";
+import { addFavorite, followCommunity, removeFavorite } from "./communitySlice";
 import { PageContext } from "../auth/PageContext";
-import { jwtSelector } from "../auth/authSlice";
 import { isAdminSelector } from "../auth/authSlice";
 import { NewPostContext } from "../post/new/NewPostModal";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
@@ -41,7 +35,6 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const site = useAppSelector((state) => state.auth.site);
   const isAdmin = useAppSelector(isAdminSelector);
-  const jwt = useAppSelector(jwtSelector);
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
@@ -63,12 +56,6 @@ export default function MoreActions({ community }: MoreActionsProps) {
     () => favoriteCommunities.includes(community),
     [community, favoriteCommunities]
   );
-
-  useEffect(() => {
-    if (!jwt) return;
-
-    dispatch(getFavoriteCommunities());
-  }, [community, communityByHandle, dispatch, favoriteCommunities, jwt]);
 
   const canPost = useMemo(() => {
     const isMod = site ? checkIsMod(community, site) : false;

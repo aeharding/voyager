@@ -12,18 +12,17 @@ import {
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { useParams } from "react-router";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
 import { getHandle } from "../../helpers/lemmy";
 import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../helpers/array";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
 import { jwtSelector } from "../../features/auth/authSlice";
-import { getFavoriteCommunities } from "../../features/community/communitySlice";
 import { Community } from "lemmy-js-client";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
@@ -62,15 +61,7 @@ export default function CommunitiesPage() {
     (state) => state.community.communityByHandle
   );
 
-  const dispatch = useAppDispatch();
-
   const favorites = useAppSelector((state) => state.community.favorites);
-
-  useEffect(() => {
-    if (!jwt) return;
-
-    dispatch(getFavoriteCommunities());
-  }, [dispatch, jwt]);
 
   useSetActivePage(pageRef.current);
 
