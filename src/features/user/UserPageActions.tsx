@@ -1,6 +1,7 @@
 import { IonActionSheet, IonButton, IonIcon, useIonRouter } from "@ionic/react";
 import { ellipsisHorizontal, mail } from "ionicons/icons";
 import { useState } from "react";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 
 interface UserPageActionsProps {
   handle: string;
@@ -9,7 +10,7 @@ interface UserPageActionsProps {
 export default function UserPageActions({ handle }: UserPageActionsProps) {
   const [open, setOpen] = useState(false);
   const router = useIonRouter();
-  const tab = location.pathname.split("/")[1];
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   return (
     <>
@@ -39,9 +40,7 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
 
           switch (e.detail.role) {
             case "message": {
-              router.push(
-                `/${tab === "posts" ? "posts/other" : tab}/messages/${handle}`
-              );
+              router.push(buildGeneralBrowseLink(`/u/${handle}/message`));
               break;
             }
             default: {

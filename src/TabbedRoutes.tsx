@@ -226,10 +226,7 @@ export default function TabbedRoutes() {
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
-      <Route
-        exact
-        path={`/${tab === "posts" ? "posts/other" : tab}/messages/:handle`}
-      >
+      <Route exact path={`/${tab}/:actor/u/:handle/message`}>
         <InboxAuthRequired>
           <ConversationPage />
         </InboxAuthRequired>
@@ -271,7 +268,6 @@ export default function TabbedRoutes() {
             </ActorRedirect>
           </Route>
           {...buildGeneralBrowseRoutes("posts")}
-
           <Route exact path="/inbox">
             <BoxesPage />
           </Route>
@@ -305,17 +301,19 @@ export default function TabbedRoutes() {
               <MessagesPage />
             </InboxAuthRequired>
           </Route>
+          <Route exact path="/inbox/messages/:handle">
+            <InboxAuthRequired>
+              <ConversationPage />
+            </InboxAuthRequired>
+          </Route>
           {...buildGeneralBrowseRoutes("inbox")}
-
           <Route exact path="/profile">
             <ProfilePage />
           </Route>
           {...buildGeneralBrowseRoutes("profile")}
-
           <Route exact path="/profile/:actor">
             <Redirect to="/profile" push={false} />
           </Route>
-
           <Route exact path="/search">
             <SearchPage />
           </Route>

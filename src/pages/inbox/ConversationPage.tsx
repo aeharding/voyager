@@ -212,7 +212,7 @@ export default function ConversationPage() {
             <IonBackButton
               defaultHref="/inbox/messages"
               text={
-                location.pathname.startsWith("/posts") ? "Back" : "Messages"
+                location.pathname.startsWith("/inbox") ? "Messages" : "Back"
               }
             />
           </IonButtons>

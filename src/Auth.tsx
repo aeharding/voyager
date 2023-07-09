@@ -27,11 +27,9 @@ export default function Auth({ children }: AuthProps) {
   const pageVisibility = usePageVisibility();
 
   useEffect(() => {
-    if (
-      !location.pathname.startsWith("/posts") ||
-      location.pathname.startsWith("/posts/other")
-    ) {
+    if (!location.pathname.startsWith("/posts")) {
       if (connectedInstance) return;
+
       dispatch(updateConnectedInstance(iss ?? DEFAULT_ACTOR));
     }
 
