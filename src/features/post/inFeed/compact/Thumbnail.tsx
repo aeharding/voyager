@@ -46,7 +46,7 @@ const LinkIcon = styled(IonIcon)<{ bg: boolean }>`
   bottom: 0;
   right: 0;
   padding: 4px;
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   opacity: 0.5;
   border-top-left-radius: 8px;

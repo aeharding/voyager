@@ -88,7 +88,7 @@ const StyledEmbed = styled(Embed)`
 
 const PostDeets = styled.div`
   margin: 0 8px;
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   h1,
   h2,

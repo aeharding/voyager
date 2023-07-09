@@ -80,7 +80,7 @@ const CommunityName = styled.span`
 `;
 
 const PostBody = styled.div<{ isRead: boolean }>`
-  font-size: 0.88em;
+  font-size: 0.875em;
   line-height: 1.25;
 
   ${({ isRead }) =>

@@ -57,7 +57,7 @@ const IonInputTitle = styled(IonInput)`
 `;
 
 const PostingIn = styled.div`
-  font-size: 0.9em;
+  font-size: 0.875em;
   margin: 0.5rem 0;
   text-align: center;
   color: var(--ion-color-medium);
