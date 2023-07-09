@@ -268,6 +268,7 @@ export default function TabbedRoutes() {
             </ActorRedirect>
           </Route>
           {...buildGeneralBrowseRoutes("posts")}
+
           <Route exact path="/inbox">
             <BoxesPage />
           </Route>
@@ -307,6 +308,7 @@ export default function TabbedRoutes() {
             </InboxAuthRequired>
           </Route>
           {...buildGeneralBrowseRoutes("inbox")}
+
           <Route exact path="/profile">
             <ProfilePage />
           </Route>
@@ -314,6 +316,7 @@ export default function TabbedRoutes() {
           <Route exact path="/profile/:actor">
             <Redirect to="/profile" push={false} />
           </Route>
+
           <Route exact path="/search">
             <SearchPage />
           </Route>
@@ -330,6 +333,7 @@ export default function TabbedRoutes() {
           <Route exact path="/search/:actor">
             <Redirect to="/search" push={false} />
           </Route>
+
           <Route exact path="/settings">
             <SettingsPage />
           </Route>
