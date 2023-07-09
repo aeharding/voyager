@@ -12,10 +12,18 @@ import AsyncProfile from "../../features/user/AsyncProfile";
 import { useRef } from "react";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import UserPageActions from "../../features/user/UserPageActions";
+import { useAppSelector } from "../../store";
+import {
+  handleSelector,
+  usernameSelector,
+} from "../../features/auth/authSlice";
 
 export default function UserPage() {
   const handle = useParams<{ handle: string }>().handle;
   const pageRef = useRef();
+  const myUsername = useAppSelector(usernameSelector);
+  const myHandle = useAppSelector(handleSelector);
+  const isSelf = handle === myUsername || handle === myHandle;
 
   useSetActivePage(pageRef.current);
 
@@ -29,9 +37,11 @@ export default function UserPage() {
 
           <IonTitle>{handle}</IonTitle>
 
-          <IonButtons slot="end">
-            <UserPageActions handle={handle} />
-          </IonButtons>
+          {!isSelf && (
+            <IonButtons slot="end">
+              <UserPageActions handle={handle} />
+            </IonButtons>
+          )}
         </IonToolbar>
       </IonHeader>
       <IonContent>

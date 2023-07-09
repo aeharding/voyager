@@ -161,6 +161,10 @@ export const handleSelector = createSelector([activeAccount], (account) => {
   return account?.handle;
 });
 
+export const usernameSelector = createSelector([handleSelector], (handle) => {
+  return handle?.split("@")[0];
+});
+
 export const isAdminSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.person.admin;
 
