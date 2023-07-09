@@ -11,7 +11,7 @@ const Container = styled.div`
   padding: 1rem;
   background: var(--ion-color-light);
   pointer-events: none;
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   a {
     color: inherit !important;
@@ -23,7 +23,7 @@ const Header = styled.div`
   align-items: center;
   gap: 0.5rem;
   color: var(--ion-color-medium);
-  font-size: 0.9em;
+  font-size: 0.875em;
   margin-bottom: 0.5rem;
 `;
 
@@ -42,12 +42,7 @@ export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
     <Container>
       <Header>
         <IonIcon icon={returnDownForwardSharp} /> {getHandle(item.creator)}{" "}
-        <Vote
-          type="comment"
-          id={payload.id}
-          voteFromServer={item.my_vote as -1 | 0 | 1 | undefined}
-          score={item.counts.score}
-        />
+        <Vote item={item} />
         <StyledAgo date={payload.published} />
       </Header>
       <CommentContent item={payload} />

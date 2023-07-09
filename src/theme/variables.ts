@@ -89,6 +89,11 @@ export const baseVariables = css`
     --ion-color-step-100: #f3f3f3;
 
     --unread-item-background-color: #fffcd9;
+
+    --ion-color-text-aside: rgba(0, 0, 0, 0.55);
+
+    --read-color: rgba(0, 0, 0, 0.45);
+    --read-color-medium: rgba(0, 0, 0, 0.4);
   }
 
   .ios body {
@@ -194,6 +199,11 @@ export const darkVariables = css`
     --thick-separator-color: rgba(255, 255, 255, 0.08);
 
     --unread-item-background-color: #1e1c00;
+
+    --ion-color-text-aside: rgba(255, 255, 255, 0.65);
+
+    --read-color: rgba(255, 255, 255, 0.6);
+    --read-color-medium: rgba(255, 255, 255, 0.4);
   }
 
   // iOS Dark Theme

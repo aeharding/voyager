@@ -49,8 +49,7 @@ import { UpdateContext } from "./pages/settings/update/UpdateContext";
 import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
-import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
-import PostAppearancePage from "./pages/settings/PostAppearancePage";
+import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
@@ -155,8 +154,8 @@ export default function TabbedRoutes() {
       return new Promise((resolve) =>
         activePage.current?.getState((state) => {
           if (state.scrollTop) {
-            activePage.current?.scrollTo({
-              top: 0,
+            activePage.current?.scrollToIndex({
+              index: 0,
               behavior: "smooth",
             });
           }
@@ -347,17 +346,14 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/blocks">
             <BlocksSettingsPage />
           </Route>
-          <Route exact path="/settings/apollo-migrate">
-            <ApolloMigratePage />
+          <Route exact path="/settings/reddit-migrate">
+            <RedditMigratePage />
           </Route>
-          <Route exact path="/settings/apollo-migrate/:search">
+          <Route exact path="/settings/reddit-migrate/:search">
             <SearchCommunitiesPage />
           </Route>
-          {/* general routes for settings is only for apollo-migrate */}
+          {/* general routes for settings is only for reddit-migrate */}
           {...buildGeneralBrowseRoutes("settings")}
-          <Route exact path="/settings/appearance/posts">
-            <PostAppearancePage />
-          </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton

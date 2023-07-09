@@ -3,18 +3,6 @@
   "name": "wefwef",
   "icons": [
     {
-      "src": "/logo_maskable_minified.svg",
-      "type": "image/svg+xml",
-      "sizes": "any",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "logo_minified.svg",
-      "type": "image/svg+xml",
-      "sizes": "any",
-      "purpose": "any"
-    },
-    {
       "src": "/favicons/192.png",
       "type": "image/png",
       "sizes": "192x192",
