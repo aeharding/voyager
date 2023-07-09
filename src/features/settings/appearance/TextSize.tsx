@@ -34,7 +34,7 @@ const A = styled.div<{ small?: boolean }>`
 
 const HelperText = styled.div`
   margin: 0 32px;
-  font-size: 0.9em;
+  font-size: 0.875em;
   color: var(--ion-color-medium);
 `;
 
