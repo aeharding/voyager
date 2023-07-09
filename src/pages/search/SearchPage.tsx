@@ -32,7 +32,7 @@ export default function SearchPage() {
               e.preventDefault();
               const el = await searchBarRef.current?.getInputElement();
               el?.blur();
-              router.push(`/search/posts/${search}`);
+              router.push(`/search/posts/${encodeURIComponent(search)}`);
             }}
           >
             <IonSearchbar
