@@ -2,25 +2,31 @@ import {
   IonActionSheet,
   IonButton,
   IonIcon,
+  useIonActionSheet,
   useIonRouter,
   useIonToast,
 } from "@ionic/react";
 import {
-  closeCircleOutline,
   createOutline,
   ellipsisHorizontal,
   heartDislikeOutline,
   heartOutline,
+  removeCircleOutline,
   tabletPortraitOutline,
 } from "ionicons/icons";
 import { useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { followCommunity } from "./communitySlice";
-import { isAdminSelector } from "../auth/authSlice";
+import { blockCommunity, followCommunity } from "./communitySlice";
+import {
+  isAdminSelector,
+  localUserSelector,
+  showNsfw,
+} from "../auth/authSlice";
 import { NewPostContext } from "../post/new/NewPostModal";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { checkIsMod } from "../../helpers/lemmy";
 import { PageContext } from "../auth/PageContext";
+import { allNSFWHidden, buildBlocked } from "../../helpers/toastMessages";
 
 interface MoreActionsProps {
   community: string;
@@ -34,6 +40,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const site = useAppSelector((state) => state.auth.site);
   const isAdmin = useAppSelector(isAdminSelector);
+  const localUser = useAppSelector(localUserSelector);
+  const [presentActionSheet] = useIonActionSheet();
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
@@ -44,17 +52,17 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const { presentNewPost } = useContext(NewPostContext);
 
   const isSubscribed =
-    communityByHandle[community]?.community_view.subscribed === "Subscribed" ||
-    communityByHandle[community]?.community_view.subscribed === "Pending";
+    communityByHandle[community]?.subscribed === "Subscribed" ||
+    communityByHandle[community]?.subscribed === "Pending";
 
-  const isBlocked = communityByHandle[community]?.community_view.blocked;
+  const isBlocked = communityByHandle[community]?.blocked;
+  const communityId = communityByHandle[community]?.community.id;
 
   const canPost = useMemo(() => {
     const isMod = site ? checkIsMod(community, site) : false;
 
     const canPost =
-      !communityByHandle[community]?.community_view.community
-        .posting_restricted_to_mods ||
+      !communityByHandle[community]?.community.posting_restricted_to_mods ||
       isMod ||
       isAdmin;
 
@@ -76,23 +84,24 @@ export default function MoreActions({ community }: MoreActionsProps) {
         buttons={[
           {
             text: "Submit Post",
-            role: "post",
+            data: "post",
             icon: createOutline,
           },
           {
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
-            role: "subscribe",
+            data: "subscribe",
             icon: !isSubscribed ? heartOutline : heartDislikeOutline,
           },
           {
-            text: !isBlocked ? "Block Community" : "Unblock Community",
-            role: "block",
-            icon: closeCircleOutline,
+            text: "Sidebar",
+            data: "sidebar",
+            icon: tabletPortraitOutline,
           },
           {
-            text: "Sidebar",
-            role: "sidebar",
-            icon: tabletPortraitOutline,
+            text: !isBlocked ? "Block Community" : "Unblock Community",
+            role: !isBlocked ? "destructive" : undefined,
+            data: "block",
+            icon: removeCircleOutline,
           },
           {
             text: "Cancel",
@@ -102,7 +111,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
         onWillDismiss={async (e) => {
           setOpen(false);
 
-          switch (e.detail.role) {
+          switch (e.detail.data) {
             case "subscribe": {
               if (presentLoginIfNeeded()) return;
 
@@ -148,6 +157,59 @@ export default function MoreActions({ community }: MoreActionsProps) {
             }
             case "sidebar": {
               router.push(buildGeneralBrowseLink(`/c/${community}/sidebar`));
+              break;
+            }
+            case "block": {
+              if (typeof communityId !== "number") return;
+
+              if (
+                !communityByHandle[community]?.blocked &&
+                communityByHandle[community]?.community.nsfw &&
+                localUser?.show_nsfw
+              ) {
+                // User wants to block a NSFW community when account is set to show NSFW. Ask them
+                // if they want to hide all NSFW instead of blocking on a per community basis
+                presentActionSheet({
+                  header: "Block everything NSFW?",
+                  subHeader:
+                    "Your choice will only affect your current account",
+                  cssClass: "left-align-buttons",
+                  buttons: [
+                    {
+                      text: "Block everything NSFW",
+                      role: "destructive",
+                      handler: () => {
+                        (async () => {
+                          await dispatch(showNsfw(false));
+
+                          present(allNSFWHidden);
+                        })();
+                      },
+                    },
+                    {
+                      text: "Only this community",
+                      role: "destructive",
+                      handler: () => {
+                        (async () => {
+                          await dispatch(
+                            blockCommunity(!isBlocked, communityId)
+                          );
+
+                          present(buildBlocked(!isBlocked, community));
+                        })();
+                      },
+                    },
+                    {
+                      text: "Cancel",
+                      role: "cancel",
+                    },
+                  ],
+                });
+              } else {
+                await dispatch(blockCommunity(!isBlocked, communityId));
+
+                present(buildBlocked(!isBlocked, community));
+              }
             }
           }
         }}

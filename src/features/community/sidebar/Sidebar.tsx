@@ -1,4 +1,4 @@
-import { BlockCommunityResponse, CommunityResponse } from "lemmy-js-client";
+import { CommunityResponse } from "lemmy-js-client";
 import Markdown from "../../shared/Markdown";
 import { IonBadge } from "@ionic/react";
 import styled from "@emotion/styled";
@@ -9,7 +9,7 @@ const Container = styled.div`
 `;
 
 interface SidebarProps {
-  community: CommunityResponse | BlockCommunityResponse;
+  community: CommunityResponse;
 }
 
 export default function Sidebar({ community }: SidebarProps) {

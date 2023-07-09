@@ -54,6 +54,7 @@ import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
+import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -342,6 +343,9 @@ export default function TabbedRoutes() {
           </Route>
           <Route exact path="/settings/appearance">
             <AppearancePage />
+          </Route>
+          <Route exact path="/settings/blocks">
+            <BlocksSettingsPage />
           </Route>
           <Route exact path="/settings/apollo-migrate">
             <ApolloMigratePage />

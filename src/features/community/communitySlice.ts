@@ -1,21 +1,15 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, jwtSelector } from "../auth/authSlice";
-import {
-  BlockCommunityResponse,
-  CommunityResponse,
-  CommunityView,
-} from "lemmy-js-client";
+import { clientSelector, getSite, jwtSelector } from "../auth/authSlice";
+import { CommunityView } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
 
-interface CommentState {
-  communityByHandle:
-    | Dictionary<CommunityResponse>
-    | Dictionary<BlockCommunityResponse>;
+interface CommunityState {
+  communityByHandle: Dictionary<CommunityView>;
   trendingCommunities: CommunityView[];
 }
 
-const initialState: CommentState = {
+const initialState: CommunityState = {
   communityByHandle: {},
   trendingCommunities: [],
 };
@@ -24,24 +18,15 @@ export const communitySlice = createSlice({
   name: "community",
   initialState,
   reducers: {
-    receivedCommunity: (state, action: PayloadAction<CommunityResponse>) => {
-      state.communityByHandle[
-        getHandle(action.payload.community_view.community)
-      ] = action.payload;
+    receivedCommunity: (state, action: PayloadAction<CommunityView>) => {
+      state.communityByHandle[getHandle(action.payload.community)] =
+        action.payload;
     },
     recievedTrendingCommunities: (
       state,
       action: PayloadAction<CommunityView[]>
     ) => {
       state.trendingCommunities = action.payload;
-    },
-    blockedCommunity: (
-      state,
-      action: PayloadAction<BlockCommunityResponse>
-    ) => {
-      state.communityByHandle[
-        getHandle(action.payload.community_view.community)
-      ] = action.payload;
     },
     resetCommunities: () => initialState,
   },
@@ -50,7 +35,6 @@ export const communitySlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   receivedCommunity,
-  blockedCommunity,
   recievedTrendingCommunities,
   resetCommunities,
 } = communitySlice.actions;
@@ -66,7 +50,7 @@ export const getCommunity =
       name: handle,
       auth: jwt,
     });
-    if (community) dispatch(receivedCommunity(community));
+    if (community) dispatch(receivedCommunity(community.community_view));
   };
 
 export const followCommunity =
@@ -74,9 +58,7 @@ export const followCommunity =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwt = jwtSelector(getState());
 
-    const id =
-      getState().community.communityByHandle[handle]?.community_view.community
-        .id;
+    const id = getState().community.communityByHandle[handle]?.community.id;
 
     if (!id) return;
     if (!jwt) throw new Error("Not authorized");
@@ -87,28 +69,27 @@ export const followCommunity =
       auth: jwt,
     });
 
-    if (community) dispatch(receivedCommunity(community));
+    if (community) dispatch(receivedCommunity(community.community_view));
   };
+
 export const blockCommunity =
-  (block: boolean, handle: string) =>
+  (block: boolean, id: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwt = jwtSelector(getState());
-
-    const id =
-      getState().community.communityByHandle[handle]?.community_view.community
-        .id;
 
     if (!id) return;
     if (!jwt) throw new Error("Not authorized");
 
-    const community = await clientSelector(getState())?.blockCommunity({
+    const response = await clientSelector(getState())?.blockCommunity({
       community_id: id,
       block,
       auth: jwt,
     });
 
-    if (community) dispatch(blockedCommunity(community));
+    dispatch(receivedCommunity(response.community_view));
+    await dispatch(getSite());
   };
+
 export const getTrendingCommunities =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const trendingCommunities = await clientSelector(
