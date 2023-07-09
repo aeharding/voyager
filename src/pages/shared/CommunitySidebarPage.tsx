@@ -28,13 +28,13 @@ export default function CommunitySidebarPage() {
     (state) => state.community.communityByHandle
   );
 
-  const communityResponse = communityByHandle[community];
+  const communityView = communityByHandle[community];
 
   useEffect(() => {
-    if (communityResponse) return;
+    if (communityView) return;
 
     dispatch(getCommunity(community));
-  }, [community, dispatch, communityResponse]);
+  }, [community, dispatch, communityView]);
 
   return (
     <NewPostContextProvider community={community}>
@@ -56,8 +56,8 @@ export default function CommunitySidebarPage() {
           </IonToolbar>
         </IonHeader>
         <AppContent scrollY>
-          {communityResponse ? (
-            <Sidebar community={communityResponse} />
+          {communityView ? (
+            <Sidebar community={communityView} />
           ) : (
             <CenteredSpinner />
           )}

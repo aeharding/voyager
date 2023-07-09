@@ -164,6 +164,9 @@ export const handleSelector = createSelector([activeAccount], (account) => {
 export const isAdminSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.person.admin;
 
+export const localUserSelector = (state: RootState) =>
+  state.auth.site?.my_user?.local_user_view.local_user;
+
 export const login =
   (client: LemmyHttp, username: string, password: string, totp?: string) =>
   async (dispatch: AppDispatch) => {
@@ -275,3 +278,22 @@ function getCredentialsFromStorage(): CredentialStoragePayload | undefined {
   if (!serializedCredentials) return;
   return JSON.parse(serializedCredentials);
 }
+
+export const showNsfw =
+  (show: boolean) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = jwtSelector(getState());
+
+    // https://github.com/LemmyNet/lemmy/issues/3565
+    const person = getState().auth.site?.my_user?.local_user_view.person;
+
+    if (!jwt) throw new Error("Not authorized");
+
+    await clientSelector(getState())?.saveUserSettings({
+      avatar: person?.avatar,
+      show_nsfw: show,
+      auth: jwt,
+    });
+
+    await dispatch(getSite());
+  };

@@ -52,12 +52,12 @@ export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
     `}
 `;
 
-const UsernameIonText = styled(IonText)`
+export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
   font-weight: normal;
 `;
 
-const TitleContainer = styled.div`
+export const TitleContainer = styled.div`
   line-height: 1;
 `;
 
