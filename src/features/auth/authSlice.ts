@@ -288,9 +288,11 @@ export const showNsfw =
     const person = getState().auth.site?.my_user?.local_user_view.person;
 
     if (!jwt) throw new Error("Not authorized");
+    if (!person || handleSelector(getState()) !== getRemoteHandle(person))
+      throw new Error("user mismatch");
 
     await clientSelector(getState())?.saveUserSettings({
-      avatar: person?.avatar,
+      avatar: person?.avatar || "",
       show_nsfw: show,
       auth: jwt,
     });
