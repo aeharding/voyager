@@ -3,15 +3,19 @@ import { AppDispatch, RootState } from "../../store";
 import { clientSelector, getSite, jwtSelector } from "../auth/authSlice";
 import { CommunityView } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
+import { db } from "../../services/db";
+import { without } from "lodash";
 
 interface CommunityState {
   communityByHandle: Dictionary<CommunityView>;
   trendingCommunities: CommunityView[];
+  favorites: string[];
 }
 
 const initialState: CommunityState = {
   communityByHandle: {},
   trendingCommunities: [],
+  favorites: [],
 };
 
 export const communitySlice = createSlice({
@@ -29,6 +33,9 @@ export const communitySlice = createSlice({
       state.trendingCommunities = action.payload;
     },
     resetCommunities: () => initialState,
+    setFavorites: (state, action: PayloadAction<string[]>) => {
+      state.favorites = action.payload;
+    },
   },
 });
 
@@ -37,6 +44,7 @@ export const {
   receivedCommunity,
   recievedTrendingCommunities,
   resetCommunities,
+  setFavorites,
 } = communitySlice.actions;
 
 export default communitySlice.reducer;
@@ -51,6 +59,49 @@ export const getCommunity =
       auth: jwt,
     });
     if (community) dispatch(receivedCommunity(community.community_view));
+  };
+
+export const addFavorite =
+  (community: string) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+    const favorites = [...getState().community.favorites, community];
+
+    if (!userHandle) return;
+
+    dispatch(setFavorites(favorites));
+
+    db.setSetting("favorite_communities", favorites, {
+      user_handle: userHandle,
+    });
+  };
+
+export const removeFavorite =
+  (community: string) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+    const favorites = without(getState().community.favorites, community);
+
+    if (!userHandle) return;
+
+    dispatch(setFavorites(favorites));
+
+    db.setSetting("favorite_communities", favorites, {
+      user_handle: userHandle,
+    });
+  };
+
+export const getFavoriteCommunities =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    if (!userHandle) return;
+
+    const communities = await db.getSetting("favorite_communities", {
+      user_handle: userHandle,
+    });
+
+    dispatch(setFavorites(communities));
   };
 
 export const followCommunity =

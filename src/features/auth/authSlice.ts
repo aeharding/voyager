@@ -161,6 +161,10 @@ export const handleSelector = createSelector([activeAccount], (account) => {
   return account?.handle;
 });
 
+export const usernameSelector = createSelector([handleSelector], (handle) => {
+  return handle?.split("@")[0];
+});
+
 export const isAdminSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.person.admin;
 
@@ -288,9 +292,11 @@ export const showNsfw =
     const person = getState().auth.site?.my_user?.local_user_view.person;
 
     if (!jwt) throw new Error("Not authorized");
+    if (!person || handleSelector(getState()) !== getRemoteHandle(person))
+      throw new Error("user mismatch");
 
     await clientSelector(getState())?.saveUserSettings({
-      avatar: person?.avatar,
+      avatar: person?.avatar || "",
       show_nsfw: show,
       auth: jwt,
     });

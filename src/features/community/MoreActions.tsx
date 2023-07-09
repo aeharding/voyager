@@ -11,12 +11,19 @@ import {
   ellipsisHorizontal,
   heartDislikeOutline,
   heartOutline,
+  starOutline,
+  starSharp,
   removeCircleOutline,
   tabletPortraitOutline,
 } from "ionicons/icons";
 import { useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { blockCommunity, followCommunity } from "./communitySlice";
+import {
+  addFavorite,
+  blockCommunity,
+  followCommunity,
+  removeFavorite,
+} from "./communitySlice";
 import {
   isAdminSelector,
   localUserSelector,
@@ -58,6 +65,15 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const isBlocked = communityByHandle[community]?.blocked;
   const communityId = communityByHandle[community]?.community.id;
 
+  const favoriteCommunities = useAppSelector(
+    (state) => state.community.favorites
+  );
+
+  const isFavorite = useMemo(
+    () => favoriteCommunities.includes(community),
+    [community, favoriteCommunities]
+  );
+
   const canPost = useMemo(() => {
     const isMod = site ? checkIsMod(community, site) : false;
 
@@ -91,6 +107,11 @@ export default function MoreActions({ community }: MoreActionsProps) {
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
             data: "subscribe",
             icon: !isSubscribed ? heartOutline : heartDislikeOutline,
+          },
+          {
+            text: !isFavorite ? "Favorite" : "Unfavorite",
+            data: "favorite",
+            icon: !isFavorite ? starOutline : starSharp,
           },
           {
             text: "Sidebar",
@@ -153,6 +174,24 @@ export default function MoreActions({ community }: MoreActionsProps) {
               }
 
               presentNewPost();
+              break;
+            }
+            case "favorite": {
+              if (!isFavorite) {
+                dispatch(addFavorite(community));
+              } else {
+                dispatch(removeFavorite(community));
+              }
+
+              present({
+                message: `${
+                  isFavorite ? "Unfavorited" : "Favorited"
+                } c/${community}.`,
+                duration: 3500,
+                position: "bottom",
+                color: "success",
+              });
+
               break;
             }
             case "sidebar": {
