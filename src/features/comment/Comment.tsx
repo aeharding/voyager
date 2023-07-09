@@ -75,7 +75,7 @@ export const Container = styled.div<{
   position: relative;
   width: 100%;
 
-  font-size: 0.88em;
+  font-size: 0.875em;
 
   display: flex;
   flex-direction: column;
@@ -156,7 +156,7 @@ const CollapsedIcon = styled(IonIcon)`
 `;
 
 const AmountCollapsed = styled.div`
-  font-size: 0.9em;
+  font-size: 0.875em;
   padding: 0.25rem 0.5rem;
   margin: -0.25rem;
   border-radius: 1rem;

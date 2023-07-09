@@ -1,6 +1,6 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, jwtSelector } from "../auth/authSlice";
+import { clientSelector, getSite, jwtSelector } from "../auth/authSlice";
 import { getHandle } from "../../helpers/lemmy";
 import { LIMIT } from "../../services/lemmy";
 import { receivedComments } from "../comment/commentSlice";
@@ -49,4 +49,22 @@ export const getUser =
     dispatch(receivedComments(personResponse.comments));
 
     return personResponse;
+  };
+
+export const blockUser =
+  (block: boolean, id: number) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = jwtSelector(getState());
+
+    if (!id) return;
+    if (!jwt) throw new Error("Not authorized");
+
+    const response = await clientSelector(getState())?.blockPerson({
+      person_id: id,
+      block,
+      auth: jwt,
+    });
+
+    dispatch(receivedUsers([response.person_view.person]));
+    await dispatch(getSite());
   };

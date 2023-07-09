@@ -57,7 +57,7 @@ const Divider = styled.div`
 
 const Url = styled.div`
   flex: 1;
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   white-space: nowrap;
   overflow: hidden;

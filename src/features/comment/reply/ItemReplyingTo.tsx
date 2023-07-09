@@ -11,7 +11,7 @@ const Container = styled.div`
   padding: 1rem;
   background: var(--ion-color-light);
   pointer-events: none;
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   a {
     color: inherit !important;
@@ -23,7 +23,7 @@ const Header = styled.div`
   align-items: center;
   gap: 0.5rem;
   color: var(--ion-color-medium);
-  font-size: 0.9em;
+  font-size: 0.875em;
   margin-bottom: 0.5rem;
 `;
 

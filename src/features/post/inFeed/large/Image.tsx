@@ -7,6 +7,7 @@ export const Image = styled(PostGalleryImg)<{ blur: boolean }>`
   max-width: none;
   max-height: max(200vh, 2000px);
   object-fit: contain;
+  -webkit-touch-callout: default;
 
   ${({ blur }) =>
     blur &&
