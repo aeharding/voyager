@@ -1,4 +1,9 @@
-import { Comment, CommentView, Community } from "lemmy-js-client";
+import {
+  Comment,
+  CommentView,
+  Community,
+  GetSiteResponse,
+} from "lemmy-js-client";
 
 export const LEMMY_SERVERS =
   "CUSTOM_LEMMY_SERVERS" in window
@@ -17,6 +22,8 @@ export interface CommentNodeI {
   depth: number;
 }
 
+export const MAX_DEFAULT_COMMENT_DEPTH = 5;
+
 /**
  * @param item Community, Person, etc
  */
@@ -24,18 +31,10 @@ export function getItemActorName(item: Pick<Community, "actor_id">) {
   return new URL(item.actor_id).hostname;
 }
 
-/**
- * @param actorId The actor id of a community or person
- * @returns The name, and the server
- */
-export function breakDownActorID(actorId: string) {
-  // split @
-  const split = actorId.split("@");
-
-  return {
-    instance: split[1],
-    name: split[0],
-  };
+export function checkIsMod(communityHandle: string, site: GetSiteResponse) {
+  return site?.my_user?.moderates.find(
+    (m) => getHandle(m.community) === communityHandle
+  );
 }
 
 /**
@@ -184,6 +183,19 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
   flattenChildren(comment);
 
   return flattenedChildren;
+}
+
+/**
+ * NOTE: This assumes NO missing siblings
+ */
+export function countMissingDirectChildComments(
+  commentNode: CommentNodeI
+): number {
+  if (commentNode.children.length) {
+    return 0;
+  }
+
+  return commentNode.comment_view.counts.child_count;
 }
 
 export function isUrlImage(url: string): boolean {

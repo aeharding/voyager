@@ -3,40 +3,20 @@ import { AppDispatch, RootState } from "../../store";
 import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { CommunityResponse, CommunityView } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
-import { set } from "../settings/storage";
+import { db } from "../../services/db";
+import { without } from "lodash";
 
 interface CommunityState {
   communityByHandle: Dictionary<CommunityResponse>;
   trendingCommunities: CommunityView[];
-  favouriteCommunities: FavouriteCommunity[] | undefined;
+  favorites: string[];
 }
 
 const initialState: CommunityState = {
   communityByHandle: {},
   trendingCommunities: [],
-  favouriteCommunities: [],
+  favorites: [],
 };
-
-interface FavouriteCommunityState {
-  [userHandle: string]: FavouriteCommunity[];
-}
-
-interface FavouriteCommunity {
-  actorId: string;
-  id: number;
-}
-
-const initialFavouriteCommunityState: FavouriteCommunityState = {};
-
-const STORAGE_KEYS = {
-  favouriteCommunityActorIDs: "favouriteCommunityActorIDs",
-};
-
-export const getFavouriteCommunityStateFromStorage =
-  (): FavouriteCommunityState =>
-    JSON.parse(
-      localStorage.getItem(STORAGE_KEYS.favouriteCommunityActorIDs) || "{}"
-    ) || initialFavouriteCommunityState;
 
 export const communitySlice = createSlice({
   name: "community",
@@ -54,11 +34,8 @@ export const communitySlice = createSlice({
       state.trendingCommunities = action.payload;
     },
     resetCommunities: () => initialState,
-    setfavouriteCommunityActorIDs: (
-      state,
-      action: PayloadAction<FavouriteCommunity[]>
-    ) => {
-      state.favouriteCommunities = action.payload;
+    setFavorites: (state, action: PayloadAction<string[]>) => {
+      state.favorites = action.payload;
     },
   },
 });
@@ -68,7 +45,7 @@ export const {
   receivedCommunity,
   recievedTrendingCommunities,
   resetCommunities,
-  setfavouriteCommunityActorIDs,
+  setFavorites,
 } = communitySlice.actions;
 
 export default communitySlice.reducer;
@@ -85,31 +62,47 @@ export const getCommunity =
     if (community) dispatch(receivedCommunity(community));
   };
 
-export const updateFavouriteCommunities =
-  (handles: FavouriteCommunity[]) =>
+export const addFavorite =
+  (community: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
+    const favorites = [...getState().community.favorites, community];
 
     if (!userHandle) return;
 
-    set(STORAGE_KEYS.favouriteCommunityActorIDs, {
-      [getState().auth.accountData?.activeHandle as string]: handles,
-    });
+    dispatch(setFavorites(favorites));
 
-    dispatch(setfavouriteCommunityActorIDs(handles));
+    db.setSetting("favorite_communities", favorites, {
+      user_handle: userHandle,
+    });
   };
 
-export const getFavouriteCommunities =
+export const removeFavorite =
+  (community: string) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+    const favorites = without(getState().community.favorites, community);
+
+    if (!userHandle) return;
+
+    dispatch(setFavorites(favorites));
+
+    db.setSetting("favorite_communities", favorites, {
+      user_handle: userHandle,
+    });
+  };
+
+export const getFavoriteCommunities =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
 
     if (!userHandle) return;
 
-    const favouriteCommunityActorIDs = getFavouriteCommunityStateFromStorage();
+    const communities = await db.getSetting("favorite_communities", {
+      user_handle: userHandle,
+    });
 
-    dispatch(
-      setfavouriteCommunityActorIDs(favouriteCommunityActorIDs[userHandle])
-    );
+    dispatch(setFavorites(communities));
   };
 
 export const followCommunity =

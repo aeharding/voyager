@@ -17,6 +17,7 @@ import {
   IonIcon,
   IonNavLink,
   useIonRouter,
+  IonToggle,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
 import useClient from "../../../helpers/useClient";
@@ -90,6 +91,7 @@ export default function NewPostRoot({
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [text, setText] = useState("");
+  const [nsfw, setNsfw] = useState(false);
 
   const [photoUrl, setPhotoUrl] = useState("");
   const [photoPreviewURL, setPhotoPreviewURL] = useState<string | undefined>(
@@ -103,8 +105,13 @@ export default function NewPostRoot({
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   useEffect(() => {
-    setCanDismiss(!text && !title && !url);
-  }, [setCanDismiss, text, title, url]);
+    setCanDismiss(!text && !title && !url && !photoPreviewURL);
+  }, [setCanDismiss, text, title, url, photoPreviewURL]);
+
+  const showNsfwToggle = !!(
+    (postType === "photo" && photoPreviewURL) ||
+    (postType === "link" && url)
+  );
 
   function canSubmit() {
     if (!title) return false;
@@ -181,6 +188,7 @@ export default function NewPostRoot({
         name: title,
         url: postUrl,
         body: text || undefined,
+        nsfw: showNsfwToggle && nsfw,
 
         auth: jwt,
       });
@@ -205,8 +213,10 @@ export default function NewPostRoot({
     });
 
     setCanDismiss(true);
-    setTimeout(() => dismiss(), 100);
 
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    dismiss();
     router.push(
       buildGeneralBrowseLink(
         `/c/${getHandle(community.community_view.community)}/comments/${
@@ -341,6 +351,16 @@ export default function NewPostRoot({
                   clearInput
                   value={url}
                   onIonInput={(e) => setUrl(e.detail.value ?? "")}
+                />
+              </IonItem>
+            )}
+            {showNsfwToggle && (
+              <IonItem>
+                <IonText color="medium">NSFW</IonText>{" "}
+                <IonToggle
+                  slot="end"
+                  checked={nsfw}
+                  onIonChange={(e) => setNsfw(e.detail.checked)}
                 />
               </IonItem>
             )}

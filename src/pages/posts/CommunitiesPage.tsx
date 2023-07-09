@@ -13,7 +13,7 @@ import {
 import AppContent from "../../features/shared/AppContent";
 import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { breakDownActorID, getHandle } from "../../helpers/lemmy";
+import { getHandle } from "../../helpers/lemmy";
 import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
@@ -23,7 +23,7 @@ import { useSetActivePage } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
 import { jwtSelector } from "../../features/auth/authSlice";
-import { getFavouriteCommunities } from "../../features/community/communitySlice";
+import { getFavoriteCommunities } from "../../features/community/communitySlice";
 import { Community } from "lemmy-js-client";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
@@ -64,18 +64,12 @@ export default function CommunitiesPage() {
 
   const dispatch = useAppDispatch();
 
-  const favouriteCommunitiesFromState = useAppSelector(
-    (state) => state.community.favouriteCommunities
-  );
-
-  const activeHandle = useAppSelector(
-    (state) => state.auth.accountData?.activeHandle
-  );
+  const favorites = useAppSelector((state) => state.community.favorites);
 
   useEffect(() => {
     if (!jwt) return;
 
-    dispatch(getFavouriteCommunities());
+    dispatch(getFavoriteCommunities());
   }, [dispatch, jwt]);
 
   useSetActivePage(pageRef.current);
@@ -104,41 +98,28 @@ export default function CommunitiesPage() {
     return communities;
   }, [follows, communityByHandle]);
 
-  const favouriteCommunities = useMemo(() => {
-    // get the community obj from the handle from communities.
-    // if the community is not in the subscribed list, we should display it anyways, but without a sub icon.
+  const favoritesAsCommunitiesIfFound = useMemo(
+    () =>
+      favorites.map(
+        (community) =>
+          communities.find((c) => community === getHandle(c)) || community
+      ),
+    [communities, favorites]
+  );
 
-    const subscribedFavourites = communities.filter((c) =>
-      favouriteCommunitiesFromState?.find((fc) => fc.id === c.id)
+  function renderCommunity(community: Community) {
+    return (
+      <IonItem
+        key={community.id}
+        routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
+      >
+        <Content>
+          <ItemIcon item={community} size={28} />
+          {getHandle(community)}
+        </Content>
+      </IonItem>
     );
-
-    // get the favourite subs from the state that are not in the communities list
-    const unsubscribedFavourites = favouriteCommunitiesFromState?.filter(
-      (fc) => !communities.find((c) => c.id === fc.id)
-    );
-
-    if (!unsubscribedFavourites || !activeHandle) return subscribedFavourites;
-
-    const userInstance = breakDownActorID(activeHandle).instance;
-
-    // create a basic community object for the unsubscribed favourites
-    const unsubscribedFavouritesCommunities = unsubscribedFavourites.map(
-      (c) => {
-        const brokenDownCommunity = breakDownActorID(c.actorId);
-
-        const mockCommunity = {
-          id: c.id,
-          actor_id: `https://${brokenDownCommunity.instance}/c/${brokenDownCommunity.name}}`,
-          name: brokenDownCommunity.name,
-          local: userInstance === brokenDownCommunity.instance,
-        } as Community;
-
-        return mockCommunity;
-      }
-    );
-
-    return [...subscribedFavourites, ...unsubscribedFavouritesCommunities];
-  }, [favouriteCommunitiesFromState, communities, activeHandle]);
+  }
 
   return (
     <IonPage ref={pageRef}>
@@ -179,27 +160,29 @@ export default function CommunitiesPage() {
             </IonItem>
           </IonItemGroup>
 
-          {(favouriteCommunitiesFromState || []).length > 0 && (
+          {favoritesAsCommunitiesIfFound.length > 0 && (
             <>
               <IonItemGroup>
                 <IonItemDivider>
-                  <IonLabel>Favourites</IonLabel>
+                  <IonLabel>Favorites</IonLabel>
                 </IonItemDivider>
               </IonItemGroup>
 
-              {sortBy(favouriteCommunities, "name")?.map((community) => (
-                <IonItem
-                  key={community.id}
-                  routerLink={buildGeneralBrowseLink(
-                    `/c/${getHandle(community)}`
-                  )}
-                >
-                  <Content>
-                    <ItemIcon item={community} size={28} />
-                    {getHandle(community)}
-                  </Content>
-                </IonItem>
-              ))}
+              {favoritesAsCommunitiesIfFound.map((favorite) =>
+                typeof favorite === "string" ? (
+                  <IonItem
+                    key={favorite}
+                    routerLink={buildGeneralBrowseLink(`/c/${favorite}`)}
+                  >
+                    <Content>
+                      <ItemIcon item={favorite} size={28} />
+                      {favorite}
+                    </Content>
+                  </IonItem>
+                ) : (
+                  renderCommunity(favorite)
+                )
+              )}
             </>
           )}
 
@@ -209,17 +192,9 @@ export default function CommunitiesPage() {
             </IonItemDivider>
           </IonItemGroup>
 
-          {sortBy(communities, "name")?.map((community) => (
-            <IonItem
-              key={community.id}
-              routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
-            >
-              <Content>
-                <ItemIcon item={community} size={28} />
-                {getHandle(community)}
-              </Content>
-            </IonItem>
-          ))}
+          {sortBy(communities, "name")?.map((community) =>
+            renderCommunity(community)
+          )}
         </IonList>
       </AppContent>
     </IonPage>

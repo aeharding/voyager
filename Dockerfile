@@ -1,53 +1,51 @@
+# stage 0: set base image w/common customizations
 FROM docker.io/library/node:lts-alpine AS base
 
 # Prepare work directory
 WORKDIR /wefwef
 
+# enable corepack & set network-timeout
+RUN corepack enable &&\
+  pnpm config set network-timeout 300000
+
+
+# stage 1: build
 FROM base AS builder
 
-RUN corepack enable
-
 # Prepare deps
-RUN apk update
-RUN apk add git --no-cache
+RUN apk add --no-cache git
 
 # Prepare build deps ( ignore postinstall scripts for now )
-COPY package.json ./
-COPY yarn.lock ./
-RUN yarn --frozen-lockfile --ignore-scripts
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy all source files
 COPY . ./
 
 # Build
-RUN yarn build
+RUN pnpm build
 
+
+# stage 2: runtime
 FROM base AS runner
 
-ARG UID=911
-ARG GID=911
+ARG UID=911 GID=911
 
-RUN corepack enable
+COPY package.json pnpm-lock.yaml server.mjs ./
 
-COPY package.json ./
-COPY yarn.lock ./
-COPY server.mjs ./
-
-RUN yarn --prod --frozen-lockfile --ignore-scripts
+RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Create a dedicated user and group
 RUN set -eux; \
-    addgroup -g $GID wefwef; \
-    adduser -u $UID -D -G wefwef wefwef;
+    addgroup -g "${GID}" wefwef; \
+    adduser -u "${UID}" -D -G wefwef wefwef
 
 USER wefwef
 
-ENV NODE_ENV=production
+ENV NODE_ENV=production PORT=5314
 
 COPY --from=builder /wefwef/dist ./dist
 
 EXPOSE 5314/tcp
 
-ENV PORT=5314
-
-CMD ["node", "./server.mjs"]
+CMD ["node","./server.mjs"]

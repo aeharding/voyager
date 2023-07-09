@@ -1,5 +1,7 @@
 {
-    "recommendations": [
-        "ionic.ionic"
-    ]
+  "recommendations": [
+    "ionic.ionic",
+    "esbenp.prettier-vscode",
+    "styled-components.vscode-styled-components"
+  ]
 }

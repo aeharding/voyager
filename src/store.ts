@@ -6,7 +6,9 @@ import commentSlice from "./features/comment/commentSlice";
 import communitySlice from "./features/community/communitySlice";
 import userSlice from "./features/user/userSlice";
 import inboxSlice from "./features/inbox/inboxSlice";
-import appearanceSlice from "./features/settings/appearance/appearanceSlice";
+import appearanceSlice, {
+  fetchSettingsFromDatabase,
+} from "./features/settings/appearance/appearanceSlice";
 
 const store = configureStore({
   reducer: {
@@ -24,5 +26,8 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+// Load settings from DB into the store
+store.dispatch(fetchSettingsFromDatabase());
 
 export default store;

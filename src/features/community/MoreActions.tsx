@@ -2,7 +2,6 @@ import {
   IonActionSheet,
   IonButton,
   IonIcon,
-  useIonModal,
   useIonRouter,
   useIonToast,
 } from "@ionic/react";
@@ -15,18 +14,20 @@ import {
   starSharp,
   tabletPortraitOutline,
 } from "ionicons/icons";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import {
+  addFavorite,
   followCommunity,
-  getFavouriteCommunities,
-  updateFavouriteCommunities,
+  getFavoriteCommunities,
+  removeFavorite,
 } from "./communitySlice";
 import { PageContext } from "../auth/PageContext";
-import Login from "../auth/Login";
 import { jwtSelector } from "../auth/authSlice";
+import { isAdminSelector } from "../auth/authSlice";
 import { NewPostContext } from "../post/new/NewPostModal";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { checkIsMod } from "../../helpers/lemmy";
 
 interface MoreActionsProps {
   community: string;
@@ -37,13 +38,12 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const router = useIonRouter();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const jwt = useAppSelector(jwtSelector);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const site = useAppSelector((state) => state.auth.site);
+  const isAdmin = useAppSelector(isAdminSelector);
+  const jwt = useAppSelector(jwtSelector);
 
-  const pageContext = useContext(PageContext);
-  const [login, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
+  const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle
@@ -55,29 +55,32 @@ export default function MoreActions({ community }: MoreActionsProps) {
     communityByHandle[community]?.community_view.subscribed === "Subscribed" ||
     communityByHandle[community]?.community_view.subscribed === "Pending";
 
-  const [isFavourite, setIsFavourite] = useState(false);
+  const favoriteCommunities = useAppSelector(
+    (state) => state.community.favorites
+  );
 
-  const favouriteCommunities = useAppSelector(
-    (state) => state.community.favouriteCommunities
+  const isFavorite = useMemo(
+    () => favoriteCommunities.includes(community),
+    [community, favoriteCommunities]
   );
 
   useEffect(() => {
     if (!jwt) return;
 
-    dispatch(getFavouriteCommunities());
-  }, [dispatch, jwt]);
+    dispatch(getFavoriteCommunities());
+  }, [community, communityByHandle, dispatch, favoriteCommunities, jwt]);
 
-  useEffect(() => {
-    if (!jwt) return;
+  const canPost = useMemo(() => {
+    const isMod = site ? checkIsMod(community, site) : false;
 
-    setIsFavourite(
-      (favouriteCommunities || []).some(
-        (favouriteCommunity) => favouriteCommunity.actorId === community
-      )
-    );
+    const canPost =
+      !communityByHandle[community]?.community_view.community
+        .posting_restricted_to_mods ||
+      isMod ||
+      isAdmin;
 
-    return () => setIsFavourite(false);
-  }, [community, communityByHandle, favouriteCommunities, jwt]);
+    return canPost;
+  }, [community, communityByHandle, isAdmin, site]);
 
   return (
     <>
@@ -103,9 +106,9 @@ export default function MoreActions({ community }: MoreActionsProps) {
             icon: !isSubscribed ? heartOutline : heartDislikeOutline,
           },
           {
-            text: !isFavourite ? "Favourite" : "Unfavourite",
-            role: "favourite",
-            icon: !isFavourite ? starOutline : starSharp,
+            text: !isFavorite ? "Favorite" : "Unfavorite",
+            role: "favorite",
+            icon: !isFavorite ? starOutline : starSharp,
           },
           {
             text: "Sidebar",
@@ -122,7 +125,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
 
           switch (e.detail.role) {
             case "subscribe": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
               try {
                 await dispatch(followCommunity(!isSubscribed, community));
@@ -149,62 +152,31 @@ export default function MoreActions({ community }: MoreActionsProps) {
               break;
             }
             case "post": {
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
+
+              if (!canPost) {
+                present({
+                  message: "This community has disabled new posts",
+                  duration: 3500,
+                  position: "bottom",
+                  color: "warning",
+                });
+                return;
+              }
 
               presentNewPost();
               break;
             }
-            case "favourite": {
-              const communityFromState = communityByHandle[community];
-
-              if (!communityFromState) {
-                return;
-              }
-
-              const currentCommunity =
-                communityFromState.community_view.community;
-
-              if (!currentCommunity.id) {
-                return;
-              }
-
-              try {
-                // add to favouriteCommunities if not already there
-                if (!isFavourite) {
-                  dispatch(
-                    updateFavouriteCommunities([
-                      ...(favouriteCommunities || []),
-                      {
-                        actorId: community,
-                        id: currentCommunity.id,
-                      },
-                    ])
-                  );
-                } else {
-                  dispatch(
-                    updateFavouriteCommunities(
-                      (favouriteCommunities || []).filter(
-                        (favouriteCommunity) =>
-                          favouriteCommunity.actorId !== community
-                      )
-                    )
-                  );
-                }
-              } catch (error) {
-                present({
-                  message: `Problem ${
-                    isFavourite ? "unfavouriting" : "favouriting"
-                  } c/${community}. Please try again.`,
-                  duration: 3500,
-                  position: "bottom",
-                  color: "danger",
-                });
-                throw error;
+            case "favorite": {
+              if (!isFavorite) {
+                dispatch(addFavorite(community));
+              } else {
+                dispatch(removeFavorite(community));
               }
 
               present({
                 message: `${
-                  isFavourite ? "Unfavourited" : "Favourited"
+                  isFavorite ? "Unfavorited" : "Favorited"
                 } c/${community}.`,
                 duration: 3500,
                 position: "bottom",

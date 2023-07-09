@@ -3,10 +3,16 @@
   "name": "wefwef",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/favicons/192.png",
       "type": "image/png",
-      "sizes": "256x256",
+      "sizes": "192x192",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/favicons/512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
     }
   ],
   "start_url": "/",

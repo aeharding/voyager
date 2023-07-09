@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://wefwef.app" target="_blank" rel="noopener noreferrer">
-    <img width="160" height="160" src="./public/logo.png" alt="wefwef logo">
+    <img width="160" height="160" src="./public/logo_minified.svg" alt="wefwef logo">
   </a>
 </p>
 
@@ -38,12 +38,19 @@ wefwef is an [Apollo-like](https://apolloapp.io/) open source web client for [Le
 - A bunch of swipe gestures
 - Messaging, mentions and replies
 - Creating new posts (url/photo/text)
+- Deleting/editing comments
+- Swipe to hide posts
 
 **What is on the roadmap?**
 
+- Deleting/editing posts
+- Saving/bookmarking
+- Better splash screens
+- Favorites
+- More customization
 - Android theme
-- Deleting/editing posts/comments
 - Native notifications and badging
+- Translations
 - ...and more!
 
 ## 💪 Mobile webapps are awesome
@@ -78,18 +85,19 @@ One could put wefwef behind popular reverse proxies with SSL Handling like Traef
 1. checkout source `git clone https://github.com/aeharding/wefwef.git`
 1. go into new source dir: `cd wefwef`
 1. build Docker image: `docker build . -t wefwef`
-1. start container: `docker run --rm -it -p 5314:5314 wefwef`
+1. start container: `docker run --init --rm -it -p 5314:5314 wefwef`
 
 #### Prebuilt
 
 1. pull image `docker pull ghcr.io/aeharding/wefwef:latest`
-1. start container: `docker run --rm -it -p 5314:5314 wefwef`
+1. start container: `docker run --init --rm -it -p 5314:5314 wefwef`
 
 Note: The provided Dockerfile creates a container which will eventually run wefwef as non-root user.
 
 ### Ecosystem
 
 - 🇸🇬 [w.opnxng.com](https://w.opnxng.com) - wefwef hosted by Opnxng in Singapore. [Contact/privacy](https://about.opnxng.com)
+- 🇲🇽 [wefwef.nohost.network](https://wefwef.nohost.network) - wefwef hosted by Nohost in Mexico. [Contact/privacy](https://nohost.network)
 
 > **Note**: Community deployments are **NOT** maintained by the wefwef team. They may not be synced with wefwef's source code. Please do your own research about the host servers before using them.
 
@@ -103,15 +111,17 @@ We would also appreciate sponsoring other contributors to wefwef. If someone hel
 
 ## 🧑‍💻 Contributing
 
-We're really excited that you're interested in contributing to wefwef! Before submitting your contribution, please read through the following guide.
+We're really excited that you're interested in contributing to wefwef!
+
+> **NOTE** wefwef is receiving a lot of new users and interest in contributing. Before contributing, [please read this](https://github.com/aeharding/wefwef/discussions/180). 🙂
 
 ### Local Setup
 
 Clone the repository and run on the root folder:
 
 ```
-yarn
-yarn run dev
+pnpm install
+pnpm run dev
 ```
 
 `Warning`: you will need `corepack` enabled.
@@ -121,7 +131,7 @@ yarn run dev
 wefwef uses [Vitest](https://vitest.dev). You can run the test suite with:
 
 ```
-yarn test
+pnpm test
 ```
 
 ## 📲 PWA
@@ -144,4 +154,4 @@ wefwef works best added to the homescreen. There are certain features that only 
 
 ## 📄 License
 
-[MIT](./LICENSE) &copy; wefwef contributors
+[AGPL-3.0](./LICENSE) &copy; wefwef contributors
