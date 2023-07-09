@@ -45,7 +45,7 @@ const PersonLabel = styled.h3`
 const OpenDetails = styled.span`
   flex: 0;
 
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   display: inline-flex;
   align-items: center;
@@ -60,7 +60,7 @@ const MessagePreview = styled.div`
 
   height: 2.5rem;
   line-height: var(--line-height);
-  font-size: 0.9em;
+  font-size: 0.875em;
   height: calc(var(--line-height) * var(--num-lines));
 
   color: var(--ion-color-medium);
