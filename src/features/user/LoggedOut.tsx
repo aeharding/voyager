@@ -30,7 +30,7 @@ export default function LoggedOut() {
       <IonText color="medium">
         <p
           css={css`
-            font-size: 0.9em;
+            font-size: 0.875em;
             padding: 1rem;
           `}
         >

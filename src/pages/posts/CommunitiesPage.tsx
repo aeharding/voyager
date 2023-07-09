@@ -69,9 +69,7 @@ export default function CommunitiesPage() {
     const communities = uniqBy(
       [
         ...(follows || []).map((f) => f.community),
-        ...Object.values(communityByHandle).map(
-          (c) => c?.community_view.community
-        ),
+        ...Object.values(communityByHandle).map((c) => c?.community),
       ].filter(notEmpty),
       "id"
     );
@@ -79,10 +77,8 @@ export default function CommunitiesPage() {
     pullAllBy(
       communities,
       Object.values(communityByHandle)
-        .filter(
-          (response) => response?.community_view.subscribed === "NotSubscribed"
-        )
-        .map((c) => c?.community_view.community),
+        .filter((response) => response?.subscribed === "NotSubscribed")
+        .map((c) => c?.community),
       "id"
     );
 

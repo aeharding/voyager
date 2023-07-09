@@ -1,11 +1,11 @@
 import { IonNav } from "@ionic/react";
-import { CommunityResponse } from "lemmy-js-client";
+import { CommunityView } from "lemmy-js-client";
 import NewPostRoot from "./NewPostRoot";
 import { useCallback } from "react";
 
 export type NewPostProps = {
   setCanDismiss: (canDismiss: boolean) => void;
-  community: CommunityResponse | undefined;
+  community: CommunityView | undefined;
   dismiss: () => void;
 };
 

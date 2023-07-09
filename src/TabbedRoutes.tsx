@@ -54,6 +54,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
 import { getFavoriteCommunities } from "./features/community/communitySlice";
+import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -230,6 +231,12 @@ export default function TabbedRoutes() {
           <ProfileFeedHiddenPostsPage />
         </ActorRedirect>
       </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/message`}>
+        <InboxAuthRequired>
+          <ConversationPage />
+        </InboxAuthRequired>
+      </Route>,
     ];
   }
 
@@ -312,7 +319,6 @@ export default function TabbedRoutes() {
             <ProfilePage />
           </Route>
           {...buildGeneralBrowseRoutes("profile")}
-
           <Route exact path="/profile/:actor">
             <Redirect to="/profile" push={false} />
           </Route>
@@ -333,6 +339,7 @@ export default function TabbedRoutes() {
           <Route exact path="/search/:actor">
             <Redirect to="/search" push={false} />
           </Route>
+
           <Route exact path="/settings">
             <SettingsPage />
           </Route>
@@ -347,6 +354,9 @@ export default function TabbedRoutes() {
           </Route>
           <Route exact path="/settings/appearance">
             <AppearancePage />
+          </Route>
+          <Route exact path="/settings/blocks">
+            <BlocksSettingsPage />
           </Route>
           <Route exact path="/settings/reddit-migrate">
             <RedditMigratePage />
