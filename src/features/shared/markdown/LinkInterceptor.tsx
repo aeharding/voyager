@@ -2,13 +2,16 @@ import { LinkHTMLAttributes, MouseEvent, useCallback } from "react";
 import { useAppSelector } from "../../../store";
 import { useIonRouter } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import styled from "@emotion/styled";
 
 const COMMUNITY_RELATIVE_URL =
   /^\/c\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
 
-export default function LinkInterceptor(
-  props: LinkHTMLAttributes<HTMLAnchorElement>
-) {
+const LinkInterceptor = styled(LinkInterceptorUnstyled)`
+  -webkit-touch-callout: default;
+`;
+
+function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance
   );
@@ -63,3 +66,5 @@ function matchLemmyCommunity(
   }
   return null;
 }
+
+export default LinkInterceptor;
