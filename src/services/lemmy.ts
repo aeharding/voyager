@@ -1,10 +1,22 @@
 import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
 
+const UNPROXIED_LEMMY_SERVERS = [
+  "lemmy.ml",
+  "beehaw.org",
+  "sh.itjust.works",
+  "lemm.ee",
+  "feddit.de",
+  "midwest.social",
+  "lemmynsfw.com",
+  "lemmy.ca",
+  "lemmy.sdf.org",
+];
+
 function buildBaseUrl(url: string): string {
-  // if (url === "lemmy.world") {
-  //   return `https://lemmy.world`;
-  // }
+  if (UNPROXIED_LEMMY_SERVERS.includes(url)) {
+    return `https://${url}`;
+  }
 
   return `${location.origin}/api/${url}`;
 }
