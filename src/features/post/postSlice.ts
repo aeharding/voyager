@@ -165,11 +165,10 @@ export const savePost =
 export const setPostRead =
   (postId: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    dispatch(updatePostRead({ postId }));
-
     const jwt = jwtSelector(getState());
+    if (!jwt) return;
 
-    if (!jwt) throw new Error("Not authorized");
+    dispatch(updatePostRead({ postId }));
 
     await clientSelector(getState())?.markPostAsRead({
       post_id: postId,
