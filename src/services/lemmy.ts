@@ -18,6 +18,10 @@ function buildBaseUrl(url: string): string {
     return `https://${url}`;
   }
 
+  return buildProxiedBaseUrl(url);
+}
+
+function buildProxiedBaseUrl(url: string): string {
   return `${location.origin}/api/${url}`;
 }
 
@@ -49,8 +53,10 @@ export async function uploadImage(url: string, auth: string, image: File) {
 
   formData.append("images[]", compressedImageIfNeeded);
 
+  // All requests for image upload must be proxied due to Lemmy not accepting
+  // parameterized JWT for this request (see: https://github.com/LemmyNet/lemmy/issues/3567)
   const response = await fetch(
-    `${buildBaseUrl(url)}${PICTRS_URL}?${new URLSearchParams({ auth })}`,
+    `${buildProxiedBaseUrl(url)}${PICTRS_URL}?${new URLSearchParams({ auth })}`,
     {
       method: "POST",
       body: formData,
