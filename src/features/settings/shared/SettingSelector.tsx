@@ -1,17 +1,13 @@
-import styled from "@emotion/styled";
 import {
   ActionSheetButton,
   IonActionSheetCustomEvent,
   OverlayEventDetail,
 } from "@ionic/core";
-import { IonActionSheet, IonItem, IonLabel } from "@ionic/react";
+import { IonActionSheet, IonLabel } from "@ionic/react";
 import { Dictionary, startCase } from "lodash";
 import { useState } from "react";
 import { Dispatchable, useAppDispatch } from "../../../store";
-
-const InsetIonItem = styled(IonItem)`
-  --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
-`;
+import { InsetIonItem } from "./formatting";
 
 export interface SettingSelectorProps<T> {
   title: string;

@@ -82,6 +82,14 @@ export const gestureSlice = createSlice({
       state.swipe.inbox.far_end = action.payload;
       db.setSetting("gesture_swipe_inbox", { ...state.swipe.inbox });
     },
+    setAllSwipesToDefault(state) {
+      state.swipe.post = default_swipe_actions_post;
+      state.swipe.comment = default_swipe_actions_comment;
+      state.swipe.inbox = default_swipe_actions_inbox;
+      db.setSetting("gesture_swipe_post", { ...state.swipe.post });
+      db.setSetting("gesture_swipe_comment", { ...state.swipe.comment });
+      db.setSetting("gesture_swipe_inbox", { ...state.swipe.inbox });
+    },
     resetGestures: () => initialState,
   },
 });
@@ -120,6 +128,7 @@ export const {
   setInboxSwipeActionFarStart,
   setInboxSwipeActionEnd,
   setInboxSwipeActionStart,
+  setAllSwipesToDefault,
 } = gestureSlice.actions;
 
 export default gestureSlice.reducer;

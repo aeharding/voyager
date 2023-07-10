@@ -1,6 +1,6 @@
-import { IonLabel, IonList } from "@ionic/react";
-import { ListHeader } from "../shared/formatting";
-import { useAppSelector } from "../../../store";
+import { IonActionSheet, IonLabel, IonList } from "@ionic/react";
+import { InsetIonItem, ListHeader } from "../shared/formatting";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import {
   OSwipeActionPost,
   OSwipeActionComment,
@@ -22,11 +22,17 @@ import {
   setInboxSwipeActionFarStart,
   setInboxSwipeActionEnd,
   setInboxSwipeActionStart,
+  setAllSwipesToDefault,
 } from "./gesturesSlice";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { Dictionary } from "lodash";
+import { useState } from "react";
+import { IonActionSheetCustomEvent, OverlayEventDetail } from "@ionic/core";
 
 export default function SwipeSettings() {
+  const [open, setOpen] = useState(false);
+  const dispatch = useAppDispatch();
+
   const post = useAppSelector((state) => state.gestures.swipe.post);
   const comment = useAppSelector((state) => state.gestures.swipe.comment);
   const inbox = useAppSelector((state) => state.gestures.swipe.inbox);
@@ -60,6 +66,41 @@ export default function SwipeSettings() {
         end={setInboxSwipeActionEnd}
         far_end={setInboxSwipeActionFarEnd}
       />
+      <>
+        <ListHeader>
+          <IonLabel>Reset</IonLabel>
+        </ListHeader>
+        <IonList inset>
+          <InsetIonItem button onClick={() => setOpen(true)}>
+            <IonLabel>Reset All Gestures</IonLabel>
+            <IonActionSheet
+              cssClass="left-align-buttons"
+              isOpen={open}
+              onDidDismiss={() => setOpen(false)}
+              onWillDismiss={(
+                e: IonActionSheetCustomEvent<OverlayEventDetail>
+              ) => {
+                if (e.detail.data) {
+                  dispatch(setAllSwipesToDefault());
+                }
+              }}
+              header="Reset"
+              buttons={[
+                {
+                  text: "Reset All",
+                  data: true,
+                  role: "destructive",
+                },
+                {
+                  text: "Cancel",
+                  data: false,
+                  role: "cancel",
+                },
+              ]}
+            />
+          </InsetIonItem>
+        </IonList>
+      </>
     </>
   );
 }
