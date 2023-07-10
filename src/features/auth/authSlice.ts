@@ -197,14 +197,21 @@ export const login =
 export const getSite =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwtPayload = jwtPayloadSelector(getState());
+    const handle = handleSelector(getState());
 
-    if (!jwtPayload) return;
+    if (!jwtPayload || !handle) return;
 
     const { iss } = jwtPayload;
 
     const details = await getClient(iss).getSite({
       auth: jwtSelector(getState()),
     });
+
+    // JWT was revoked or invalid, log out user
+    if (!details.my_user) {
+      await dispatch(logoutAccount(handle));
+      return;
+    }
 
     dispatch(updateUserDetails(details));
   };
