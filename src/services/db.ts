@@ -82,6 +82,7 @@ const OSwipeActionBase = {
   Downvote: "downvote",
   Upvote: "upvote",
   Reply: "reply",
+  Save: "save",
 } as const;
 
 export const OSwipeActionPost = {

@@ -1,7 +1,7 @@
 import React from "react";
 import { CommentView, PostView } from "lemmy-js-client";
 import BaseSlidingVote from "./BaseSlidingVote";
-import { default_swipe_actions_post } from "../../../services/db";
+import { useAppSelector } from "../../../store";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -16,9 +16,11 @@ export default function SlidingVote({
   item,
   onHide,
 }: SlidingVoteProps) {
+  const post = useAppSelector((state) => state.gestures.swipe.post);
+
   return (
     <BaseSlidingVote
-      actions={default_swipe_actions_post}
+      actions={post}
       className={className}
       item={item}
       onHide={onHide}

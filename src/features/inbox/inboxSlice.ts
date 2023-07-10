@@ -218,7 +218,11 @@ export function getInboxItemId(item: InboxItemView): string {
     return `dm_${item.private_message.id}`;
   }
 
-  return `mention_${item.person_mention.id}`;
+  if ("person_mention" in item) {
+    return `mention_${item.person_mention.id}`;
+  }
+
+  return "";
 }
 
 export function getInboxItemReadStatus(item: InboxItemView): boolean {

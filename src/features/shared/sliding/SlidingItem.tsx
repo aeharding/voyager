@@ -7,6 +7,8 @@ import {
   IonItemOptions,
   IonItemSliding,
 } from "@ionic/react";
+import { Dictionary } from "@reduxjs/toolkit";
+import { bookmarkOutline, mailUnread } from "ionicons/icons";
 import React, { useMemo, useRef, useState } from "react";
 import { bounceAnimation } from "../animations";
 
@@ -49,13 +51,43 @@ const OptionContainer = styled.div<{ active: boolean }>`
     `}
 `;
 
+const custom_slash_lengths: Dictionary<number> = {
+  [bookmarkOutline]: 35,
+  [mailUnread]: 40,
+};
+
+const SlashedIcon = styled(IonIcon)<{
+  icon: string;
+  slash: boolean;
+  bgColor: string;
+}>`
+  ${({ icon, slash, bgColor }) =>
+    slash &&
+    css`
+      &::after {
+        content: "";
+        position: absolute;
+        height: ${custom_slash_lengths[icon] ?? 30}px;
+        width: 3px;
+        background: var(--ion-color-${bgColor}-contrast);
+        font-size: 1.7em;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        transform-origin: center;
+        box-shadow: 0 0 0 2px var(--ion-color-${bgColor});
+      }
+    `}
+`;
+
 export type SlidingItemAction = {
   /**
    * If `string`, it's passed to IonIcon as an icon value
    */
-  render: (() => React.ReactNode) | string;
+  icon: string;
   trigger: () => void;
   bgColor: string;
+  slash?: boolean;
 };
 
 type ActionList = [
@@ -107,11 +139,17 @@ export default function SlidingItem({
   const startActionColor = startActions[currentStartActionIndex]?.bgColor;
 
   const startActionContents = useMemo(() => {
-    const render = startActions[currentStartActionIndex]?.render;
+    const action = startActions[currentStartActionIndex];
+    if (!action) return;
 
-    if (!render) return;
-    if (typeof render === "string") return <IonIcon icon={render} />;
-    return render();
+    const icon = action.icon;
+    return (
+      <SlashedIcon
+        icon={icon}
+        slash={action.slash ?? false}
+        bgColor={action.bgColor}
+      />
+    );
 
     // NOTE: This caches the content so that it doesn't re-render until completely closed
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -130,23 +168,36 @@ export default function SlidingItem({
   const endActionColor = endActions[currentEndActionIndex]?.bgColor;
 
   const endActionContents = useMemo(() => {
-    const render = endActions[currentEndActionIndex]?.render;
+    const action = endActions[currentEndActionIndex];
+    if (!action) return;
 
-    if (!render) return;
-    if (typeof render === "string") return <IonIcon icon={render} />;
-    return render();
+    const icon = action.icon;
+    return (
+      <SlashedIcon
+        icon={icon}
+        slash={action.slash ?? false}
+        bgColor={action.bgColor}
+      />
+    );
 
     // NOTE: This caches the content so that it doesn't re-render until completely closed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentEndActionIndex, ratio]);
 
+  const startRatio = useMemo(() => {
+    return startActions[0] ? -FIRST_ACTION_RATIO : -SECOND_ACTION_RATIO;
+  }, [startActions]);
+  const endRatio = useMemo(() => {
+    return endActions[0] ? FIRST_ACTION_RATIO : SECOND_ACTION_RATIO;
+  }, [endActions]);
+
   async function onDragStop() {
     if (!dragRef.current) return;
     if (!dragging) return;
 
-    if (ratio <= -FIRST_ACTION_RATIO) {
+    if (ratio <= startRatio) {
       startActions[currentStartActionIndex]?.trigger();
-    } else if (ratio >= FIRST_ACTION_RATIO) {
+    } else if (ratio >= endRatio) {
       endActions[currentEndActionIndex]?.trigger();
     }
 
@@ -163,7 +214,7 @@ export default function SlidingItem({
     >
       <IonItemOptions side="start">
         <StyledIonItemOption color={startActionColor}>
-          <OptionContainer active={ratio <= -FIRST_ACTION_RATIO}>
+          <OptionContainer active={ratio <= startRatio}>
             {startActionContents}
           </OptionContainer>
         </StyledIonItemOption>
@@ -171,7 +222,7 @@ export default function SlidingItem({
 
       <IonItemOptions side="end">
         <StyledIonItemOption color={endActionColor}>
-          <OptionContainer active={ratio >= FIRST_ACTION_RATIO}>
+          <OptionContainer active={ratio >= endRatio}>
             {endActionContents}
           </OptionContainer>
         </StyledIonItemOption>

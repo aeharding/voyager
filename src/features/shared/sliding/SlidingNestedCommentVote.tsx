@@ -1,7 +1,7 @@
 import React from "react";
 import { CommentView } from "lemmy-js-client";
 import BaseSlidingVote from "./BaseSlidingVote";
-import { default_swipe_actions_comment } from "../../../services/db";
+import { useAppSelector } from "../../../store";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -18,9 +18,11 @@ export default function SlidingNestedCommentVote({
   rootIndex,
   collapsed,
 }: SlidingVoteProps) {
+  const comment = useAppSelector((state) => state.gestures.swipe.comment);
+
   return (
     <BaseSlidingVote
-      actions={default_swipe_actions_comment}
+      actions={comment}
       className={className}
       item={item}
       rootIndex={rootIndex}

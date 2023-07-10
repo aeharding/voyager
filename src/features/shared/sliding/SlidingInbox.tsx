@@ -1,7 +1,7 @@
 import React from "react";
 import { CommentReplyView, PersonMentionView } from "lemmy-js-client";
 import BaseSlidingVote from "./BaseSlidingVote";
-import { default_swipe_actions_inbox } from "../../../services/db";
+import { useAppSelector } from "../../../store";
 
 interface SlidingInboxProps {
   children: React.ReactNode;
@@ -14,12 +14,10 @@ export default function SlidingInbox({
   className,
   item,
 }: SlidingInboxProps) {
+  const inbox = useAppSelector((state) => state.gestures.swipe.inbox);
+
   return (
-    <BaseSlidingVote
-      actions={default_swipe_actions_inbox}
-      className={className}
-      item={item}
-    >
+    <BaseSlidingVote actions={inbox} className={className} item={item}>
       {children}
     </BaseSlidingVote>
   );

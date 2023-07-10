@@ -1,10 +1,9 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
-import { IonIcon, useIonToast } from "@ionic/react";
+import { useIonToast } from "@ionic/react";
 import {
   arrowDownSharp,
   arrowUndo,
   arrowUpSharp,
+  bookmarkOutline,
   chevronCollapse,
   chevronExpand,
   eyeOffOutline,
@@ -20,38 +19,19 @@ import {
   PostView,
 } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { postHiddenByIdSelector, voteOnPost } from "../../post/postSlice";
+import {
+  postHiddenByIdSelector,
+  savePost,
+  voteOnPost,
+} from "../../post/postSlice";
 import { voteError } from "../../../helpers/toastMessages";
-import { voteOnComment } from "../../comment/commentSlice";
+import { saveComment, voteOnComment } from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { InboxItemView } from "../../inbox/InboxItem";
 import { CommentsContext } from "../../comment/CommentsContext";
-
-const VoteArrow = styled(IonIcon)<{
-  slash: boolean;
-  bgColor: string;
-}>`
-  ${({ slash, bgColor }) =>
-    slash &&
-    css`
-      &::after {
-        content: "";
-        position: absolute;
-        height: 30px;
-        width: 3px;
-        background: white;
-        font-size: 1.7em;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) rotate(-45deg);
-        transform-origin: center;
-        box-shadow: 0 0 0 2px var(--ion-color-${bgColor});
-      }
-    `}
-`;
 
 interface BaseSlidingVoteProps {
   children: React.ReactNode;
@@ -87,6 +67,12 @@ export default function BaseSlidingVote({
   const currentVote = isPost
     ? postVotesById[item.post.id] ?? typedMyVote
     : commentVotesById[item.comment.id] ?? typedMyVote;
+
+  const postSavedById = useAppSelector((state) => state.post.postSavedById);
+  const commentSavedById = useAppSelector(
+    (state) => state.comment.commentSavedById
+  );
+
   const isHidden = useAppSelector(postHiddenByIdSelector)[item.post?.id];
 
   const readByInboxItemId = useAppSelector(
@@ -119,30 +105,44 @@ export default function BaseSlidingVote({
     prependComments,
   ]);
 
-  const markUnread = useCallback(async () => {
+  const { id, isSaved } = useMemo(() => {
+    if (isPost) {
+      const id = item.post.id;
+      return { id: id, isSaved: postSavedById[id] };
+    } else {
+      const id = item.comment.id;
+      return { id: id, isSaved: commentSavedById[id] };
+    }
+  }, [item, isPost, postSavedById, commentSavedById]);
+
+  const save = useCallback(async () => {
+    if (presentLoginIfNeeded()) return;
     try {
-      await dispatch(
-        markRead(
-          item as InboxItemView,
-          !readByInboxItemId[getInboxItemId(item as InboxItemView)]
-        )
-      );
+      await dispatch((isPost ? savePost : saveComment)(id, !isSaved));
     } catch (error) {
       present({
-        message: "Failed to mark item as unread",
+        message: "Failed to mark item as saved",
         duration: 3500,
         position: "bottom",
         color: "danger",
       });
-
       throw error;
     }
-  }, [dispatch, item, present, readByInboxItemId]);
+  }, [presentLoginIfNeeded, dispatch, isPost, id, isSaved, present]);
+
+  const saveAction = useMemo(() => {
+    return {
+      icon: bookmarkOutline,
+      trigger: save,
+      bgColor: "success",
+      slash: isSaved,
+    };
+  }, [save, isSaved]);
 
   const hideAction = useMemo(() => {
     return onHide
       ? {
-          render: isHidden ? eyeOutline : eyeOffOutline,
+          icon: isHidden ? eyeOutline : eyeOffOutline,
           trigger: () => {
             if (presentLoginIfNeeded()) return;
             onHide();
@@ -159,12 +159,39 @@ export default function BaseSlidingVote({
   const collapseAction = useMemo(() => {
     return collapseRootComment
       ? {
-          render: collapsed ? chevronExpand : chevronCollapse,
+          icon: collapsed ? chevronExpand : chevronCollapse,
           trigger: collapseRootComment,
           bgColor: "tertiary",
         }
       : undefined;
   }, [collapsed, collapseRootComment]);
+
+  const isRead = useMemo(() => {
+    return readByInboxItemId[getInboxItemId(item as InboxItemView)] ?? false;
+  }, [item, readByInboxItemId]);
+
+  const markUnread = useCallback(async () => {
+    try {
+      await dispatch(markRead(item as InboxItemView, !isRead));
+    } catch (error) {
+      present({
+        message: "Failed to mark item as unread",
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
+      throw error;
+    }
+  }, [dispatch, present, item, isRead]);
+
+  const markUnreadAction = useMemo(() => {
+    return {
+      icon: mailUnread,
+      trigger: markUnread,
+      bgColor: "primary",
+      slash: !isRead,
+    };
+  }, [markUnread, isRead]);
 
   const all_actions: {
     [id in SwipeAction]: SlidingItemAction | undefined;
@@ -172,45 +199,40 @@ export default function BaseSlidingVote({
     return {
       none: undefined,
       upvote: {
-        render: () => (
-          <VoteArrow
-            slash={currentVote === 1}
-            bgColor="primary"
-            icon={arrowUpSharp}
-          />
-        ),
+        icon: arrowUpSharp,
         trigger: () => {
           vote(currentVote === 1 ? 0 : 1);
         },
         bgColor: "primary",
+        slash: currentVote === 1,
       },
       downvote: {
-        render: () => (
-          <VoteArrow
-            slash={currentVote === -1}
-            bgColor="danger"
-            icon={arrowDownSharp}
-          />
-        ),
+        icon: arrowDownSharp,
         trigger: () => {
           vote(currentVote === -1 ? 0 : -1);
         },
         bgColor: "danger",
+        slash: currentVote === -1,
       },
       reply: {
-        render: arrowUndo,
+        icon: arrowUndo,
         trigger: reply,
         bgColor: "primary",
       },
+      save: saveAction,
       hide: hideAction,
       collapse: collapseAction,
-      mark_unread: {
-        render: mailUnread,
-        trigger: markUnread,
-        bgColor: "primary",
-      },
+      mark_unread: markUnreadAction,
     };
-  }, [currentVote, reply, hideAction, collapseAction, markUnread, vote]);
+  }, [
+    currentVote,
+    reply,
+    saveAction,
+    hideAction,
+    collapseAction,
+    markUnreadAction,
+    vote,
+  ]);
 
   return (
     <SlidingItem
