@@ -11,6 +11,7 @@ const UNPROXIED_LEMMY_SERVERS = [
   "lemmynsfw.com",
   "lemmy.ca",
   "lemmy.sdf.org",
+  "lemmy.world",
 ];
 
 function buildBaseUrl(url: string): string {
