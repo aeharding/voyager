@@ -1,11 +1,7 @@
-import { arrowUndo, chevronCollapse, chevronExpand } from "ionicons/icons";
-import React, { useCallback, useContext, useMemo } from "react";
-import { SlidingItemAction } from "./SlidingItem";
+import React from "react";
 import { CommentView } from "lemmy-js-client";
-import { CommentsContext } from "../../comment/CommentsContext";
 import BaseSlidingVote from "./BaseSlidingVote";
-import useCollapseRootComment from "../../comment/useCollapseRootComment";
-import { PageContext } from "../../auth/PageContext";
+import { default_swipe_actions_comment } from "../../../services/db";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -22,39 +18,14 @@ export default function SlidingNestedCommentVote({
   rootIndex,
   collapsed,
 }: SlidingVoteProps) {
-  const { prependComments } = useContext(CommentsContext);
-  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
-  const collapseRootComment = useCollapseRootComment(item, rootIndex);
-
-  const reply = useCallback(async () => {
-    const reply = await presentCommentReply(item);
-
-    if (reply) prependComments([reply]);
-  }, [item, presentCommentReply, prependComments]);
-
-  const endActions: [SlidingItemAction, SlidingItemAction] = useMemo(() => {
-    return [
-      {
-        render: collapsed ? chevronExpand : chevronCollapse,
-        trigger: () => {
-          collapseRootComment();
-        },
-        bgColor: "tertiary",
-      },
-      {
-        render: arrowUndo,
-        trigger: () => {
-          if (presentLoginIfNeeded()) return;
-
-          reply();
-        },
-        bgColor: "primary",
-      },
-    ];
-  }, [collapsed, collapseRootComment, presentLoginIfNeeded, reply]);
-
   return (
-    <BaseSlidingVote endActions={endActions} className={className} item={item}>
+    <BaseSlidingVote
+      actions={default_swipe_actions_comment}
+      className={className}
+      item={item}
+      rootIndex={rootIndex}
+      collapsed={collapsed}
+    >
       {children}
     </BaseSlidingVote>
   );

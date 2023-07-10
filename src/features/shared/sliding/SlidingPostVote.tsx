@@ -1,11 +1,7 @@
-import { arrowUndo, eyeOffOutline, eyeOutline } from "ionicons/icons";
-import React, { useContext, useMemo } from "react";
-import { SlidingItemAction } from "./SlidingItem";
+import React from "react";
 import { CommentView, PostView } from "lemmy-js-client";
 import BaseSlidingVote from "./BaseSlidingVote";
-import { useAppSelector } from "../../../store";
-import { postHiddenByIdSelector } from "../../post/postSlice";
-import { PageContext } from "../../auth/PageContext";
+import { default_swipe_actions_post } from "../../../services/db";
 
 interface SlidingVoteProps {
   children: React.ReactNode;
@@ -20,42 +16,13 @@ export default function SlidingVote({
   item,
   onHide,
 }: SlidingVoteProps) {
-  const isHidden = useAppSelector(postHiddenByIdSelector)[item.post?.id];
-
-  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
-
-  const endActions = useMemo(() => {
-    const actionsList:
-      | [SlidingItemAction, SlidingItemAction]
-      | [SlidingItemAction] = [
-      {
-        render: arrowUndo,
-        trigger: async () => {
-          if (presentLoginIfNeeded()) return;
-
-          presentCommentReply(item);
-        },
-        bgColor: "primary",
-      },
-    ];
-
-    if ("post" in item) {
-      actionsList.push({
-        render: isHidden ? eyeOutline : eyeOffOutline,
-        trigger: () => {
-          if (presentLoginIfNeeded()) return;
-
-          onHide();
-        },
-        bgColor: isHidden ? "tertiary" : "danger",
-      });
-    }
-
-    return actionsList;
-  }, [item, presentLoginIfNeeded, presentCommentReply, isHidden, onHide]);
-
   return (
-    <BaseSlidingVote endActions={endActions} className={className} item={item}>
+    <BaseSlidingVote
+      actions={default_swipe_actions_post}
+      className={className}
+      item={item}
+      onHide={onHide}
+    >
       {children}
     </BaseSlidingVote>
   );

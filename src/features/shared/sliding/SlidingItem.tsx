@@ -58,10 +58,15 @@ export type SlidingItemAction = {
   bgColor: string;
 };
 
+type ActionList = [
+  SlidingItemAction | undefined,
+  SlidingItemAction | undefined
+];
+
 export interface SlidingItemProps {
   className?: string;
-  startActions: [SlidingItemAction, SlidingItemAction] | [SlidingItemAction];
-  endActions: [SlidingItemAction, SlidingItemAction] | [SlidingItemAction];
+  startActions: ActionList;
+  endActions: ActionList;
   children?: React.ReactNode;
 }
 
@@ -94,10 +99,10 @@ export default function SlidingItem({
    */
 
   const currentStartActionIndex = useMemo(() => {
-    if (startActions.length === 1) return 0;
-
-    return ratio <= -SECOND_ACTION_RATIO ? 1 : 0;
-  }, [ratio, startActions.length]);
+    if (!startActions[1]) return 0;
+    else if (!startActions[0]) return 1;
+    else return ratio <= -SECOND_ACTION_RATIO ? 1 : 0;
+  }, [ratio, startActions]);
 
   const startActionColor = startActions[currentStartActionIndex]?.bgColor;
 
@@ -117,10 +122,10 @@ export default function SlidingItem({
    */
 
   const currentEndActionIndex = useMemo(() => {
-    if (endActions.length === 1) return 0;
-
-    return ratio >= SECOND_ACTION_RATIO ? 1 : 0;
-  }, [ratio, endActions.length]);
+    if (!endActions[1]) return 0;
+    else if (!endActions[0]) return 1;
+    else return ratio >= SECOND_ACTION_RATIO ? 1 : 0;
+  }, [ratio, endActions]);
 
   const endActionColor = endActions[currentEndActionIndex]?.bgColor;
 
