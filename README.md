@@ -10,6 +10,10 @@
 A mobile-first Lemmy web client
 </p>
 
+<p align="center">
+(formerly wefwef)
+</p>
+
 <br/>
 <p align="center">
   <a href="https://matrix.to/#/#wefwef.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat&logo=matrix" alt="matrix chat"></a>
