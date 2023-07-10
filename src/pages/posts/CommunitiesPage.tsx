@@ -9,12 +9,13 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonToast,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { useParams } from "react-router";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { getHandle } from "../../helpers/lemmy";
-import { home, library, people } from "ionicons/icons";
+import { home, library, people, star, starOutline } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../helpers/array";
@@ -24,6 +25,11 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
 import { jwtSelector } from "../../features/auth/authSlice";
 import { Community } from "lemmy-js-client";
+import { ActionButton } from "../../features/post/actions/ActionButton";
+import {
+  addFavorite,
+  removeFavorite,
+} from "../../features/community/communitySlice";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -114,7 +120,12 @@ export default function CommunitiesPage() {
     );
   }, [communities]);
 
+  const dispatch = useAppDispatch();
+  const [present] = useIonToast();
+
   function renderCommunity(community: Community) {
+    const isFavorite = favorites.includes(getHandle(community));
+
     return (
       <IonItem
         key={community.id}
@@ -124,6 +135,32 @@ export default function CommunitiesPage() {
           <ItemIcon item={community} size={28} />
           {getHandle(community)}
         </Content>
+        <ActionButton
+          slot="end"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+
+            const handle = getHandle(community);
+
+            if (!isFavorite) {
+              dispatch(addFavorite(handle));
+            } else {
+              dispatch(removeFavorite(handle));
+            }
+
+            present({
+              message: `${
+                isFavorite ? "Unfavorited" : "Favorited"
+              } c/${handle}.`,
+              duration: 3500,
+              position: "bottom",
+              color: "success",
+            });
+          }}
+        >
+          <IonIcon icon={isFavorite ? star : starOutline} />
+        </ActionButton>
       </IonItem>
     );
   }
@@ -200,19 +237,7 @@ export default function CommunitiesPage() {
                   <IonLabel>{letter}</IonLabel>
                 </IonItemDivider>
               </IonItemGroup>
-              {communities.map((community) => (
-                <IonItem
-                  key={community.id}
-                  routerLink={buildGeneralBrowseLink(
-                    `/c/${getHandle(community)}`
-                  )}
-                >
-                  <Content>
-                    <ItemIcon item={community} size={28} />
-                    {getHandle(community)}
-                  </Content>
-                </IonItem>
-              ))}
+              {communities.map((community) => renderCommunity(community))}
             </Fragment>
           ))}
         </IonList>
