@@ -30,6 +30,9 @@ export default function SearchPage() {
           <form
             onSubmit={async (e) => {
               e.preventDefault();
+
+              if (!search.trim()) return;
+
               const el = await searchBarRef.current?.getInputElement();
               el?.blur();
               router.push(`/search/posts/${encodeURIComponent(search)}`);
@@ -46,6 +49,7 @@ export default function SearchPage() {
               `}
               value={search}
               onIonInput={(e) => setSearch(e.detail.value ?? "")}
+              enterkeyhint="search"
             />
           </form>
         </IonToolbar>
