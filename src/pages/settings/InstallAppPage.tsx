@@ -155,7 +155,7 @@ export default function InstallAppPage() {
                 text-decoration: underline;
               `}
             >
-              https://wefwef.app/settings/install
+              https://vger.app/settings/install
             </span>{" "}
             from your phone or tablet.
           </li>
@@ -182,7 +182,7 @@ export default function InstallAppPage() {
           <AppContainer>
             <img src="/logo.png" alt="" />
             <div>
-              wefwef<aside>by Alexander Harding</aside>
+              Voyager<aside>by Alexander Harding</aside>
             </div>
           </AppContainer>
 

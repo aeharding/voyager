@@ -125,7 +125,7 @@ export default function SettingsPage() {
             <SettingLabel>Terms &amp; Privacy</SettingLabel>
           </InsetIonItem>
           <InsetIonItem
-            href="https://github.com/aeharding/wefwef"
+            href="https://github.com/aeharding/voyager"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -137,7 +137,7 @@ export default function SettingsPage() {
               </sup>
             </SettingLabel>
           </InsetIonItem>
-          <InsetIonItem href="mailto:hello@wefwef.app">
+          <InsetIonItem href="mailto:hello@vger.app">
             <IonIcon icon={mailOutline} color="primary" />
             <SettingLabel>
               Contact us{" "}

@@ -2,7 +2,7 @@
 FROM docker.io/library/node:lts-alpine AS base
 
 # Prepare work directory
-WORKDIR /wefwef
+WORKDIR /voyager
 
 # enable corepack & set network-timeout
 RUN corepack enable &&\
@@ -37,14 +37,14 @@ RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Create a dedicated user and group
 RUN set -eux; \
-    addgroup -g "${GID}" wefwef; \
-    adduser -u "${UID}" -D -G wefwef wefwef
+    addgroup -g "${GID}" voyager; \
+    adduser -u "${UID}" -D -G voyager voyager
 
-USER wefwef
+USER voyager
 
 ENV NODE_ENV=production PORT=5314
 
-COPY --from=builder /wefwef/dist ./dist
+COPY --from=builder /voyager/dist ./dist
 
 EXPOSE 5314/tcp
 

@@ -1,10 +1,10 @@
 <p align="center">
-  <a href="https://wefwef.app" target="_blank" rel="noopener noreferrer">
-    <img width="160" height="160" src="./public/logo_minified.svg" alt="wefwef logo">
+  <a href="https://vger.app" target="_blank" rel="noopener noreferrer">
+    <img width="160" height="160" src="./public/logo_minified.svg" alt="Voyager logo">
   </a>
 </p>
 
-<h1 align="center"/>wefwef <sup><em>alpha</em></sup></h1>
+<h1 align="center"/>Voyager <sup><em>alpha</em></sup></h1>
 
 <p align="center">
 A mobile-first Lemmy web client
@@ -17,16 +17,16 @@ A mobile-first Lemmy web client
 <br/>
 
 <p align="center">
-  <a href="https://wefwef.app/" target="_blank" rel="noopener noreferrer" >
-    <img src="./public/promo.png" alt="wefwef screenshots" width="600" height="auto">
+  <a href="https://vger.app/" target="_blank" rel="noopener noreferrer" >
+    <img src="./public/promo.png" alt="Voyager screenshots" width="600" height="auto">
   </a>
 </p>
 
-## ⚠️ wefwef is in Alpha
+## ⚠️ Voyager is in Alpha
 
-wefwef is an [Apollo-like](https://apolloapp.io/) open source web client for [Lemmy](https://join-lemmy.org/). It's a mobile-first app, but works great on desktop devices, too. Please feel free to try it out, but be aware you will likely encounter bugs and missing functionality.
+Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [Lemmy](https://join-lemmy.org/). It's a mobile-first app, but works great on desktop devices, too. Please feel free to try it out, but be aware you will likely encounter bugs and missing functionality.
 
-**What does wefwef currently support?**
+**What does Voyager currently support?**
 
 - Light/dark mode
 - View and subscribe to communities
@@ -40,13 +40,12 @@ wefwef is an [Apollo-like](https://apolloapp.io/) open source web client for [Le
 - Creating new posts (url/photo/text)
 - Deleting/editing comments
 - Swipe to hide posts
+- Saving/bookmarking
+- Favorites
 
 **What is on the roadmap?**
 
 - Deleting/editing posts
-- Saving/bookmarking
-- Better splash screens
-- Favorites
 - More customization
 - Android theme
 - Native notifications and badging
@@ -57,7 +56,7 @@ wefwef is an [Apollo-like](https://apolloapp.io/) open source web client for [Le
 
 Native apps can be great, but we believe in the strengths of the web. Why use a web-based Lemmy client?
 
-- **Cross-platform** Use the familiar wefwef interface on your phone, tablet, desktop computer, and more!
+- **Cross-platform** Use the familiar Voyager interface on your phone, tablet, desktop computer, and more!
 - **Self-hostable** No worries about your favorite app getting taken down, and you can customize to your desire!
 - **Lightweight** No large installation bundles - and it's easy to try it out
 
@@ -65,14 +64,14 @@ Native apps can be great, but we believe in the strengths of the web. Why use a 
 
 ### Official Deployment
 
-The wefwef team maintains a deployment at:
+The Voyager team maintains a deployment at:
 
-- 🐭 Production: [wefwef.app](https://wefwef.app)
+- 🐭 Production: [vger.app](https://vger.app)
 
 ### Self-Host Docker Deployment
 
-In order to host wefwef yourself you can use the provided Dockerfile to build a container with wefwef. The Docker container itself does not provide any SSL/TLS handling. You'll have to add this bit yourself.
-One could put wefwef behind popular reverse proxies with SSL Handling like Traefik, NGINX etc.
+In order to host Voyager yourself you can use the provided Dockerfile to build a container with Voyager. The Docker container itself does not provide any SSL/TLS handling. You'll have to add this bit yourself.
+One could put Voyager behind popular reverse proxies with SSL Handling like Traefik, NGINX etc.
 
 > **Tip:** Use [Watchtower](https://github.com/containrrr/watchtower) to keep your deployment automatically up to date!
 
@@ -82,38 +81,38 @@ One could put wefwef behind popular reverse proxies with SSL Handling like Traef
 
 #### From source
 
-1. checkout source `git clone https://github.com/aeharding/wefwef.git`
-1. go into new source dir: `cd wefwef`
-1. build Docker image: `docker build . -t wefwef`
-1. start container: `docker run --init --rm -it -p 5314:5314 wefwef`
+1. checkout source `git clone https://github.com/aeharding/voyager.git`
+1. go into new source dir: `cd voyager`
+1. build Docker image: `docker build . -t voyager`
+1. start container: `docker run --init --rm -it -p 5314:5314 voyager`
 
 #### Prebuilt
 
-1. pull image `docker pull ghcr.io/aeharding/wefwef:latest`
-1. start container: `docker run --init --rm -it -p 5314:5314 wefwef`
+1. pull image `docker pull ghcr.io/aeharding/voyager:latest`
+1. start container: `docker run --init --rm -it -p 5314:5314 voyager`
 
-Note: The provided Dockerfile creates a container which will eventually run wefwef as non-root user.
+Note: The provided Dockerfile creates a container which will eventually run Voyager as non-root user.
 
 ### Ecosystem
 
-- 🇸🇬 [w.opnxng.com](https://w.opnxng.com) - wefwef hosted by Opnxng in Singapore. [Contact/privacy](https://about.opnxng.com)
-- 🇲🇽 [wefwef.nohost.network](https://wefwef.nohost.network) - wefwef hosted by Nohost in Mexico. [Contact/privacy](https://nohost.network)
+- 🇸🇬 [w.opnxng.com](https://w.opnxng.com) - Voyager hosted by Opnxng in Singapore. [Contact/privacy](https://about.opnxng.com)
+- 🇲🇽 [wefwef.nohost.network](https://wefwef.nohost.network) - Voyager hosted by Nohost in Mexico. [Contact/privacy](https://nohost.network)
 
-> **Note**: Community deployments are **NOT** maintained by the wefwef team. They may not be synced with wefwef's source code. Please do your own research about the host servers before using them.
+> **Note**: Community deployments are **NOT** maintained by the Voyager team. They may not be synced with Voyager's source code. Please do your own research about the host servers before using them.
 
 ## 💖 Sponsors
 
-If you're enjoying wefwef, you can sponsor it:
+If you're enjoying Voyager, you can sponsor it:
 
 - [Alexander Harding](https://github.com/sponsors/aeharding)
 
-We would also appreciate sponsoring other contributors to wefwef. If someone helps you solve an issue or implement a feature you wanted, supporting them would help make this project and OS more sustainable.
+We would also appreciate sponsoring other contributors to Voyager. If someone helps you solve an issue or implement a feature you wanted, supporting them would help make this project and OS more sustainable.
 
 ## 🧑‍💻 Contributing
 
-We're really excited that you're interested in contributing to wefwef!
+We're really excited that you're interested in contributing to Voyager!
 
-> **NOTE** wefwef is receiving a lot of new users and interest in contributing. Before contributing, [please read this](https://github.com/aeharding/wefwef/discussions/180). 🙂
+> **NOTE** Voyager is receiving a lot of new users and interest in contributing. Before contributing, [please read this](https://github.com/aeharding/voyager/discussions/180). 🙂
 
 ### Local Setup
 
@@ -128,7 +127,7 @@ pnpm run dev
 
 ### Testing
 
-wefwef uses [Vitest](https://vitest.dev). You can run the test suite with:
+Voyager uses [Vitest](https://vitest.dev). You can run the test suite with:
 
 ```
 pnpm test
@@ -136,7 +135,7 @@ pnpm test
 
 ## 📲 PWA
 
-wefwef works best added to the homescreen. There are certain features that only work there, like badging and smooth page transitions.
+Voyager works best added to the homescreen. There are certain features that only work there, like badging and smooth page transitions.
 
 ## 🦄 Stack
 
@@ -148,10 +147,10 @@ wefwef works best added to the homescreen. There are certain features that only 
 
 ## 👨‍💻 Contributors
 
-<a href="https://github.com/aeharding/wefwef/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=aeharding/wefwef" />   
+<a href="https://github.com/aeharding/voyager/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=aeharding/voyager" />   
 </a>
 
 ## 📄 License
 
-[AGPL-3.0](./LICENSE) &copy; wefwef contributors
+[AGPL-3.0](./LICENSE) &copy; Voyager contributors
