@@ -197,21 +197,14 @@ export const login =
 export const getSite =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwtPayload = jwtPayloadSelector(getState());
-    const handle = handleSelector(getState());
 
-    if (!jwtPayload || !handle) return;
+    if (!jwtPayload) return;
 
     const { iss } = jwtPayload;
 
     const details = await getClient(iss).getSite({
       auth: jwtSelector(getState()),
     });
-
-    // JWT was revoked or invalid, log out user
-    if (!details.my_user) {
-      await dispatch(logoutAccount(handle));
-      return;
-    }
 
     dispatch(updateUserDetails(details));
   };
@@ -250,6 +243,9 @@ export const logoutAccount =
     }
 
     dispatch(removeAccount(handle));
+
+    const iss = jwtIssSelector(getState());
+    if (iss) dispatch(updateConnectedInstance(iss));
   };
 
 function parseJWT(payload: string): LemmyJWT {
