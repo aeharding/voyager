@@ -130,6 +130,13 @@ export default function SlidingItem({
    * Start Actions
    */
 
+  const canSwipeStart = useMemo(() => {
+    return startActions[0] || startActions[1];
+  }, [startActions]);
+  const canSwipeEnd = useMemo(() => {
+    return endActions[0] || endActions[1];
+  }, [endActions]);
+
   const currentStartActionIndex = useMemo(() => {
     if (!startActions[1]) return 0;
     else if (!startActions[0]) return 1;
@@ -212,21 +219,26 @@ export default function SlidingItem({
       onMouseUp={onDragStop}
       className={className}
     >
-      <IonItemOptions side="start">
-        <StyledIonItemOption color={startActionColor}>
-          <OptionContainer active={ratio <= startRatio}>
-            {startActionContents}
-          </OptionContainer>
-        </StyledIonItemOption>
-      </IonItemOptions>
+      {canSwipeStart && (
+        <IonItemOptions side="start">
+          <StyledIonItemOption color={startActionColor}>
+            <OptionContainer active={ratio <= startRatio}>
+              {startActionContents}
+            </OptionContainer>
+          </StyledIonItemOption>
+        </IonItemOptions>
+      )}
 
-      <IonItemOptions side="end">
-        <StyledIonItemOption color={endActionColor}>
-          <OptionContainer active={ratio >= endRatio}>
-            {endActionContents}
-          </OptionContainer>
-        </StyledIonItemOption>
-      </IonItemOptions>
+      {canSwipeEnd && (
+        <IonItemOptions side="end">
+          <StyledIonItemOption color={endActionColor}>
+            <OptionContainer active={ratio >= endRatio}>
+              {endActionContents}
+            </OptionContainer>
+          </StyledIonItemOption>
+        </IonItemOptions>
+      )}
+
       {children}
     </StyledIonItemSliding>
   );
