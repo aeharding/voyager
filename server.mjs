@@ -101,11 +101,12 @@ app.use(
     router: (req) => `https://${req.params.actor}`,
     changeOrigin: true,
     secure: true,
+    xfwd: true,
     pathRewrite: (path) => path.split("/").slice(3).join("/"),
     onProxyReq: (clientReq, req) => {
       clientReq.setHeader(
         "user-agent",
-        `(${req.hostname}, ${process.env.EMAIL || "hello@wefwef.app"})`
+        `(${req.hostname}, ${process.env.EMAIL || "hello@vger.app"})`
       );
       clientReq.removeHeader("cookie");
 
@@ -146,6 +147,20 @@ ViteExpress.config({
 });
 
 const PORT = process.env.PORT || 5173;
+
+// Tell search engines about new site
+app.use("*", (req, res, next) => {
+  if (req.hostname === "wefwef.app") {
+    res.setHeader(
+      "Link",
+      `<https://vger.app${
+        req.originalUrl === "/" ? "" : req.originalUrl
+      }>; rel="canonical"`
+    );
+  }
+
+  next();
+});
 
 ViteExpress.listen(app, PORT, () =>
   // eslint-disable-next-line no-console

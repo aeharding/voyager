@@ -17,6 +17,7 @@ import {
   IonIcon,
   IonNavLink,
   useIonRouter,
+  IonToggle,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
 import useClient from "../../../helpers/useClient";
@@ -56,7 +57,7 @@ const IonInputTitle = styled(IonInput)`
 `;
 
 const PostingIn = styled.div`
-  font-size: 0.9em;
+  font-size: 0.875em;
   margin: 0.5rem 0;
   text-align: center;
   color: var(--ion-color-medium);
@@ -90,6 +91,7 @@ export default function NewPostRoot({
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [text, setText] = useState("");
+  const [nsfw, setNsfw] = useState(false);
 
   const [photoUrl, setPhotoUrl] = useState("");
   const [photoPreviewURL, setPhotoPreviewURL] = useState<string | undefined>(
@@ -103,8 +105,13 @@ export default function NewPostRoot({
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   useEffect(() => {
-    setCanDismiss(!text && !title && !url);
-  }, [setCanDismiss, text, title, url]);
+    setCanDismiss(!text && !title && !url && !photoPreviewURL);
+  }, [setCanDismiss, text, title, url, photoPreviewURL]);
+
+  const showNsfwToggle = !!(
+    (postType === "photo" && photoPreviewURL) ||
+    (postType === "link" && url)
+  );
 
   function canSubmit() {
     if (!title) return false;
@@ -177,10 +184,11 @@ export default function NewPostRoot({
 
     try {
       postResponse = await client.createPost({
-        community_id: community.community_view.community.id,
+        community_id: community.community.id,
         name: title,
         url: postUrl,
         body: text || undefined,
+        nsfw: showNsfwToggle && nsfw,
 
         auth: jwt,
       });
@@ -198,18 +206,20 @@ export default function NewPostRoot({
     }
 
     present({
-      message: "Posted created!",
+      message: "Post created!",
       duration: 3500,
       position: "bottom",
       color: "success",
     });
 
     setCanDismiss(true);
-    setTimeout(() => dismiss(), 100);
 
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    dismiss();
     router.push(
       buildGeneralBrowseLink(
-        `/c/${getHandle(community.community_view.community)}/comments/${
+        `/c/${getHandle(community.community)}/comments/${
           postResponse.post_view.post.id
         }`
       )
@@ -344,6 +354,16 @@ export default function NewPostRoot({
                 />
               </IonItem>
             )}
+            {showNsfwToggle && (
+              <IonItem>
+                <IonText color="medium">NSFW</IonText>{" "}
+                <IonToggle
+                  slot="end"
+                  checked={nsfw}
+                  onIonChange={(e) => setNsfw(e.detail.checked)}
+                />
+              </IonItem>
+            )}
             <IonNavLink
               routerDirection="forward"
               component={() => (
@@ -365,7 +385,7 @@ export default function NewPostRoot({
           </IonList>
 
           <PostingIn>
-            Posting in {getRemoteHandle(community.community_view.community)}
+            Posting in {getRemoteHandle(community.community)}
           </PostingIn>
         </Container>
       </IonContent>

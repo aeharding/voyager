@@ -11,10 +11,10 @@ import { ignoreSsrFlag } from "../../helpers/emotion";
 import Vote from "../labels/Vote";
 import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
-import useKeyPressed from "../../helpers/useKeyPressed";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
+import Save from "../labels/Save";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -29,7 +29,7 @@ const rainbowColors = [
   "#00FFFF", // Cyan
 ];
 
-const CustomIonItem = styled(IonItem)`
+export const CustomIonItem = styled(IonItem)`
   scroll-margin-bottom: 35vh;
 
   --padding-start: 0;
@@ -38,10 +38,12 @@ const CustomIonItem = styled(IonItem)`
   --min-height: 0;
 `;
 
-const PositionedContainer = styled.div<{
+export const PositionedContainer = styled.div<{
   depth: number;
   highlighted: boolean;
 }>`
+  position: relative;
+
   ${maxWidthCss}
 
   padding: 0.55rem 1rem;
@@ -63,13 +65,17 @@ const PositionedContainer = styled.div<{
     `}
 `;
 
-const Container = styled.div<{ depth: number; highlighted?: boolean }>`
+export const Container = styled.div<{
+  depth: number;
+  highlighted?: boolean;
+  hidden?: boolean;
+}>`
   display: flex;
 
   position: relative;
   width: 100%;
 
-  font-size: 0.88em;
+  font-size: 0.875em;
 
   display: flex;
   flex-direction: column;
@@ -89,14 +95,22 @@ const Container = styled.div<{ depth: number; highlighted?: boolean }>`
     width: 2px;
     filter: brightness(0.7);
 
-    @media (prefers-color-scheme: light) {
-      filter: none;
-    }
+    ${({ theme }) =>
+      !theme.dark &&
+      css`
+        filter: none;
+      `}
 
     ${({ depth }) =>
       depth &&
       css`
         background: ${rainbowColors[depth % rainbowColors.length]};
+      `}
+
+      ${({ hidden }) =>
+      hidden &&
+      css`
+        opacity: 0;
       `}
   }
 `;
@@ -114,7 +128,7 @@ const StyledPersonLabel = styled(PersonLink)`
   color: var(--ion-text-color);
 `;
 
-const Content = styled.div<{ keyPressed: boolean }>`
+const Content = styled.div`
   padding-top: 0.35rem;
 
   @media (hover: none) {
@@ -122,12 +136,6 @@ const Content = styled.div<{ keyPressed: boolean }>`
   }
 
   line-height: 1.25;
-
-  ${({ keyPressed }) =>
-    keyPressed &&
-    css`
-      user-select: text;
-    `}
 
   > *:first-child ${ignoreSsrFlag} {
     &,
@@ -148,7 +156,7 @@ const CollapsedIcon = styled(IonIcon)`
 `;
 
 const AmountCollapsed = styled.div`
-  font-size: 0.9em;
+  font-size: 0.875em;
   padding: 0.25rem 0.5rem;
   margin: -0.25rem;
   border-radius: 1rem;
@@ -162,7 +170,6 @@ interface CommentProps {
   depth?: number;
   onClick?: () => void;
   collapsed?: boolean;
-  childCount?: number;
   fullyCollapsed?: boolean;
   routerLink?: string;
 
@@ -180,7 +187,6 @@ export default function Comment({
   depth,
   onClick,
   collapsed,
-  childCount,
   fullyCollapsed,
   context,
   routerLink,
@@ -188,7 +194,6 @@ export default function Comment({
   rootIndex,
 }: CommentProps) {
   const commentById = useAppSelector((state) => state.comment.commentById);
-  const keyPressed = useKeyPressed();
   // eslint-disable-next-line no-undef
   const commentRef = useRef<HTMLIonItemElement>(null);
 
@@ -218,9 +223,7 @@ export default function Comment({
         <CustomIonItem
           routerLink={routerLink}
           href={undefined}
-          onClick={() => {
-            if (!keyPressed) onClick?.();
-          }}
+          onClick={() => onClick?.()}
           ref={commentRef}
         >
           <PositionedContainer
@@ -234,13 +237,12 @@ export default function Comment({
                   opId={commentView.post.creator_id}
                   distinguished={comment.distinguished}
                 />
-                <Vote
-                  voteFromServer={commentView.my_vote as 1 | 0 | -1 | undefined}
-                  score={commentView.counts.score}
-                  id={commentView.comment.id}
-                  type="comment"
+                <Vote item={commentView} />
+                <div
+                  css={css`
+                    flex: 1;
+                  `}
                 />
-                <div style={{ flex: 1 }} />
                 {!collapsed ? (
                   <>
                     <CommentEllipsis
@@ -251,7 +253,9 @@ export default function Comment({
                   </>
                 ) : (
                   <>
-                    <AmountCollapsed>{childCount}</AmountCollapsed>
+                    <AmountCollapsed>
+                      {commentView.counts.child_count + 1}
+                    </AmountCollapsed>
                     <CollapsedIcon icon={chevronDownOutline} />
                   </>
                 )}
@@ -259,7 +263,6 @@ export default function Comment({
 
               <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
                 <Content
-                  keyPressed={keyPressed}
                   onClick={(e) => {
                     if (!(e.target instanceof HTMLElement)) return;
                     if (e.target.nodeName === "A") e.stopPropagation();
@@ -270,6 +273,7 @@ export default function Comment({
                 </Content>
               </AnimateHeight>
             </Container>
+            <Save type="comment" id={commentView.comment.id} />
           </PositionedContainer>
         </CustomIonItem>
       </SlidingNestedCommentVote>

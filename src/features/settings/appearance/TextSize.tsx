@@ -5,7 +5,7 @@ import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setFontSizeMultiplier, setUseSystemFontSize } from "./appearanceSlice";
 
-const ListHeader = styled.div`
+export const ListHeader = styled.div`
   font-size: 0.8em;
   margin: 32px 0 -8px 32px;
   text-transform: uppercase;
@@ -34,7 +34,7 @@ const A = styled.div<{ small?: boolean }>`
 
 const HelperText = styled.div`
   margin: 0 32px;
-  font-size: 0.9em;
+  font-size: 0.875em;
   color: var(--ion-color-medium);
 `;
 

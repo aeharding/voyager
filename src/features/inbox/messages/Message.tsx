@@ -2,14 +2,16 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { PrivateMessageView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import useClient from "../../../helpers/useClient";
 import { getInboxCounts, receivedMessages } from "../inboxSlice";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { jwtSelector } from "../../auth/authSlice";
+import { PageContext } from "../../auth/PageContext";
+import { useLongPress } from "use-long-press";
 
 const Container = styled.div<{ type: "sent" | "recieved" }>`
-  position: relative; /* Setup a relative container for our psuedo elements */
+  position: relative; /* Setup a relative container for our pseudo elements */
   max-width: min(75%, 400px);
   margin-bottom: 15px;
   padding: 10px 20px;
@@ -26,9 +28,11 @@ const Container = styled.div<{ type: "sent" | "recieved" }>`
   --sentColor: var(--ion-color-primary);
   --receiveColor: var(--ion-color-medium);
 
-  @media (prefers-color-scheme: light) {
-    --receiveColor: #eee;
-  }
+  ${({ theme }) =>
+    !theme.dark &&
+    css`
+      --receiveColor: #eee;
+    `}
 
   &:before {
     width: 20px;
@@ -96,6 +100,7 @@ interface MessageProps {
 
 export default function Message({ message }: MessageProps) {
   const dispatch = useAppDispatch();
+  const { presentReport } = useContext(PageContext);
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
   );
@@ -113,6 +118,10 @@ export default function Message({ message }: MessageProps) {
 
   useIonViewWillEnter(() => setFocused(true));
   useIonViewDidLeave(() => setFocused(false));
+
+  const bind = useLongPress(() => {
+    presentReport(message);
+  });
 
   useEffect(() => {
     if (
@@ -149,7 +158,11 @@ export default function Message({ message }: MessageProps) {
   }
 
   return (
-    <Container type={thisIsMyMessage ? "sent" : "recieved"} ref={containerRef}>
+    <Container
+      type={thisIsMyMessage ? "sent" : "recieved"}
+      ref={containerRef}
+      {...bind()}
+    >
       {message.private_message.content}
     </Container>
   );

@@ -27,7 +27,7 @@ const Stats = styled.div`
 `;
 
 const Description = styled.div`
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -50,7 +50,10 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
     >
       <Contents>
         <div>
-          <CommunityLink community={community.community} />
+          <CommunityLink
+            community={community.community}
+            showInstanceWhenRemote
+          />
         </div>
         <Stats>
           {community.counts.subscribers} Subscriber

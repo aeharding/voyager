@@ -1,10 +1,14 @@
-import { CommentNodeI, getFlattenedChildren } from "../../helpers/lemmy";
+import {
+  CommentNodeI,
+  countMissingDirectChildComments,
+} from "../../helpers/lemmy";
 import Comment from "./Comment";
 import React, { useMemo } from "react";
 import CommentHr from "./CommentHr";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { updateCommentCollapseState } from "./commentSlice";
 import { Person } from "lemmy-js-client";
+import CommentExpander from "./CommentExpander";
 
 interface CommentTreeProps {
   comment: CommentNodeI;
@@ -28,8 +32,8 @@ export default function CommentTree({
     (state) => state.comment.commentCollapsedById
   );
 
-  const childCount = useMemo(
-    () => getFlattenedChildren(comment).length,
+  const missingChildren = useMemo(
+    () => countMissingDirectChildComments(comment),
     [comment]
   );
 
@@ -45,7 +49,7 @@ export default function CommentTree({
   }
 
   // eslint-disable-next-line no-sparse-arrays
-  return [
+  const payload = [
     <React.Fragment key={comment.comment_view.comment.id}>
       {!first && <CommentHr depth={comment.depth} />}
       <Comment
@@ -54,7 +58,6 @@ export default function CommentTree({
         depth={comment.depth}
         onClick={() => setCollapsed(!collapsed)}
         collapsed={collapsed}
-        childCount={childCount}
         fullyCollapsed={!!fullyCollapsed}
         rootIndex={rootIndex}
       />
@@ -69,6 +72,19 @@ export default function CommentTree({
         rootIndex={rootIndex}
       />
     )),
-    ,
   ];
+
+  if (missingChildren > 0) {
+    payload.push(
+      <CommentExpander
+        key={`${comment.comment_view.comment.id}--expand`}
+        comment={comment.comment_view}
+        depth={comment.depth + 1}
+        missing={missingChildren}
+        collapsed={collapsed || fullyCollapsed}
+      />
+    );
+  }
+
+  return payload;
 }

@@ -12,30 +12,31 @@ import {
   bookmarkOutline,
   chevronCollapseOutline,
   ellipsisHorizontal,
+  flagOutline,
   pencilOutline,
   personOutline,
   shareOutline,
+  textOutline,
   trashOutline,
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { useContext, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { handleSelector, jwtSelector } from "../auth/authSlice";
-import { PageContext } from "../auth/PageContext";
-import Login from "../auth/Login";
-import CommentReply from "./reply/CommentReply";
+import { handleSelector } from "../auth/authSlice";
 import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
 } from "../../helpers/lemmy";
-import { deleteComment, voteOnComment } from "./commentSlice";
+import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import styled from "@emotion/styled";
 import { notEmpty } from "../../helpers/array";
-import CommentEditing from "./edit/CommentEdit";
 import useCollapseRootComment from "./useCollapseRootComment";
 import { FeedContext } from "../feed/FeedContext";
+import SelectText from "../../pages/shared/SelectTextModal";
+import { PageContext } from "../auth/PageContext";
+import { saveError, voteError } from "../../helpers/toastMessages";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -53,7 +54,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const jwt = useAppSelector(jwtSelector);
   const { refresh: refreshPost } = useContext(FeedContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
@@ -61,31 +61,28 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
   const router = useIonRouter();
 
-  const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
+  const {
+    page,
+    presentLoginIfNeeded,
+    presentCommentReply,
+    presentCommentEdit,
+    presentReport,
+  } = useContext(PageContext);
 
-  const [reply, onDismissReply] = useIonModal(CommentReply, {
-    onDismiss: (data: string, role: string) => {
-      if (role === "post") refreshPost();
-      onDismissReply(data, role);
-    },
-    item: comment,
-  });
-
-  const [edit, onDismissEdit] = useIonModal(CommentEditing, {
-    onDismiss: (data: string, role: string) => {
-      onDismissEdit(data, role);
-    },
-    item: comment,
+  const [selectText, onDismissSelectText] = useIonModal(SelectText, {
+    text: comment.comment.content,
+    onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
   });
 
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById
   );
+  const commentSavedById = useAppSelector(
+    (state) => state.comment.commentSavedById
+  );
 
   const myVote = commentVotesById[comment.comment.id] ?? comment.my_vote;
+  const mySaved = commentSavedById[comment.comment.id] ?? comment.saved;
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
 
@@ -115,7 +112,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             icon: arrowDownOutline,
           },
           {
-            text: "Save",
+            text: !mySaved ? "Save" : "Unsave",
             role: "save",
             icon: bookmarkOutline,
           },
@@ -139,6 +136,11 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             icon: arrowUndoOutline,
           },
           {
+            text: "Select Text",
+            role: "select-text",
+            icon: textOutline,
+          },
+          {
             text: getHandle(comment.creator),
             role: "person",
             icon: personOutline,
@@ -156,6 +158,11 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
               }
             : undefined,
           {
+            text: "Report",
+            role: "report",
+            icon: flagOutline,
+          },
+          {
             text: "Cancel",
             role: "cancel",
           },
@@ -165,23 +172,40 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
           switch (e.detail.role) {
             case "upvote":
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
-              dispatch(voteOnComment(comment.comment.id, myVote === 1 ? 0 : 1));
+              try {
+                await dispatch(
+                  voteOnComment(comment.comment.id, myVote === 1 ? 0 : 1)
+                );
+              } catch (error) {
+                present(voteError);
+              }
+
               break;
             case "downvote":
-              if (!jwt) return login({ presentingElement: pageContext.page });
+              if (presentLoginIfNeeded()) return;
 
-              dispatch(
-                voteOnComment(comment.comment.id, myVote === -1 ? 0 : -1)
-              );
+              try {
+                await dispatch(
+                  voteOnComment(comment.comment.id, myVote === -1 ? 0 : -1)
+                );
+              } catch (error) {
+                present(voteError);
+              }
+
               break;
             case "save":
-              if (!jwt) return login({ presentingElement: pageContext.page });
-              // TODO
+              if (presentLoginIfNeeded()) return;
+
+              try {
+                await dispatch(saveComment(comment.comment.id, !mySaved));
+              } catch (error) {
+                present(saveError);
+              }
               break;
             case "edit":
-              edit({ presentingElement: pageContext.page });
+              presentCommentEdit(comment);
               break;
             case "delete":
               try {
@@ -204,11 +228,18 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
                 color: "primary",
               });
               break;
-            case "reply":
-              if (!jwt) return login({ presentingElement: pageContext.page });
+            case "reply": {
+              if (presentLoginIfNeeded()) return;
 
-              reply({ presentingElement: pageContext.page });
+              const replied = await presentCommentReply(comment);
+
+              if (replied) refreshPost();
               break;
+            }
+            case "select-text":
+              return selectText({
+                presentingElement: page,
+              });
             case "person":
               router.push(
                 buildGeneralBrowseLink(`/u/${getHandle(comment.creator)}`)
@@ -219,6 +250,9 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
               break;
             case "collapse":
               collapseRootComment();
+              break;
+            case "report":
+              presentReport(comment);
               break;
           }
         }}
