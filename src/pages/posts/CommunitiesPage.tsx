@@ -193,12 +193,6 @@ export default function CommunitiesPage() {
             </>
           )}
 
-          <IonItemGroup>
-            <IonItemDivider>
-              <IonLabel>Communities</IonLabel>
-            </IonItemDivider>
-          </IonItemGroup>
-
           {communitiesGroupedByLetter.map(([letter, communities]) => (
             <Fragment key={letter}>
               <IonItemGroup>
