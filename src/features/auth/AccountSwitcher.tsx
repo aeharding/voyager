@@ -21,7 +21,6 @@ import Account from "./Account";
 interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
   page: HTMLElement | undefined;
-  onSuccess?: () => void;
 }
 
 export default function AccountSwitcher({
