@@ -88,11 +88,6 @@ export default function TabbedRoutes() {
         onDismissAccountSwitcher(data, role);
       },
       page: null,
-      onSuccess: () => {
-        if (location.pathname.split("/").indexOf("posts") !== -1) {
-          router.push(`/posts/${connectedInstance}`);
-        }
-      },
     }
   );
 

@@ -20,6 +20,12 @@ export default function ActorRedirect({ children }: ActorRedirectProps) {
 
   const [first, second, _wrongActor, ...urlEnd] = location.pathname.split("/");
 
+  const redirectToHomeUrls = ["posts", "comments"];
+
+  if (redirectToHomeUrls.includes(second)) {
+    return <Redirect to={[first, "posts", iss].join("/")} push={false} />;
+  }
+
   return (
     <Redirect to={[first, second, iss, ...urlEnd].join("/")} push={false} />
   );
