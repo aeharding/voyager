@@ -153,7 +153,9 @@ app.use("*", (req, res, next) => {
   if (req.hostname === "wefwef.app") {
     res.setHeader(
       "Link",
-      `<https://vger.app${req.originalUrl}>; rel="canonical"`
+      `<https://vger.app${
+        req.originalUrl === "/" ? "" : req.originalUrl
+      }>; rel="canonical"`
     );
   }
 
