@@ -18,7 +18,7 @@ import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../helpers/array";
-import { useMemo, useRef } from "react";
+import { Fragment, useMemo, useRef } from "react";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
@@ -93,6 +93,26 @@ export default function CommunitiesPage() {
       ),
     [communities, favorites]
   );
+
+  const communitiesGroupedByLetter = useMemo(() => {
+    const alphabeticallySortedCommunities = sortBy(communities, (c) =>
+      c.name.toLowerCase()
+    );
+
+    return Object.entries(
+      alphabeticallySortedCommunities.reduce<Record<string, Community[]>>(
+        (acc, community) => {
+          const firstLetter = community.name[0].toUpperCase();
+          if (!acc[firstLetter]) {
+            acc[firstLetter] = [];
+          }
+          acc[firstLetter].push(community);
+          return acc;
+        },
+        {}
+      )
+    );
+  }, [communities]);
 
   function renderCommunity(community: Community) {
     return (
@@ -179,9 +199,28 @@ export default function CommunitiesPage() {
             </IonItemDivider>
           </IonItemGroup>
 
-          {sortBy(communities, "name")?.map((community) =>
-            renderCommunity(community)
-          )}
+          {communitiesGroupedByLetter.map(([letter, communities]) => (
+            <Fragment key={letter}>
+              <IonItemGroup>
+                <IonItemDivider>
+                  <IonLabel>{letter}</IonLabel>
+                </IonItemDivider>
+              </IonItemGroup>
+              {communities.map((community) => (
+                <IonItem
+                  key={community.id}
+                  routerLink={buildGeneralBrowseLink(
+                    `/c/${getHandle(community)}`
+                  )}
+                >
+                  <Content>
+                    <ItemIcon item={community} size={28} />
+                    {getHandle(community)}
+                  </Content>
+                </IonItem>
+              ))}
+            </Fragment>
+          ))}
         </IonList>
       </AppContent>
     </IonPage>
