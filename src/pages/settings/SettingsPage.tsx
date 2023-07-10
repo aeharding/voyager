@@ -27,6 +27,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
+import IonIconNoStroke from "../../helpers/ionIconNoStroke";
 
 const IconBg = styled.div<{ color: string }>`
   width: 30px;
