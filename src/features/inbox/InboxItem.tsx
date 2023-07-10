@@ -66,7 +66,7 @@ const Container = styled.div`
 
   padding: 0.5rem 0;
 
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   strong {
     font-weight: 500;

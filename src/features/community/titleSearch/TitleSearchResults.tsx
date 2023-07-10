@@ -81,7 +81,7 @@ const SPECIAL_FEEDS = [
 ] as const;
 
 type SpecialFeed = (typeof SPECIAL_FEEDS)[number];
-type Result = Community | SpecialFeed;
+type Result = Community | SpecialFeed | string;
 
 export default function TitleSearchResults() {
   const router = useIonRouter();
@@ -96,20 +96,25 @@ export default function TitleSearchResults() {
     document.documentElement.clientHeight
   );
   const contentRef = useRef<HTMLDivElement>(null);
+  const favorites = useAppSelector((state) => state.community.favorites);
 
   const results: Result[] = useMemo(() => {
+    const results = [
+      ...searchCommunityByName(
+        (follows || []).map((f) => f.community),
+        search
+      ),
+      ...searchPayload.map((p) => p.community),
+    ];
+
     return uniqBy(
       [
         ...searchSpecialByName(SPECIAL_FEEDS, search),
-        ...searchCommunityByName(
-          (follows || []).map((f) => f.community),
-          search
-        ),
-        ...searchPayload.map((p) => p.community),
+        ...(search ? results : favorites),
       ].filter(notEmpty),
-      (c) => c.id
+      (c) => (typeof c === "string" ? c : c.id)
     ).slice(0, 15);
-  }, [follows, searchPayload, search]);
+  }, [follows, searchPayload, search, favorites]);
 
   useEffect(() => {
     if (!debouncedSearch) {
@@ -125,7 +130,10 @@ export default function TitleSearchResults() {
     (c: Result) => {
       let route;
 
-      if ("type" in c) {
+      if (typeof c === "string") {
+        // favorite
+        route = buildGeneralBrowseLink(`/c/${c}`);
+      } else if ("type" in c) {
         route = buildGeneralBrowseLink(`/${c.type}`);
       } else {
         route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
@@ -211,10 +219,14 @@ export default function TitleSearchResults() {
 
                   onSelect(c);
                 }}
-                key={c.id}
+                key={typeof c === "string" ? c : c.id}
                 routerDirection="none"
               >
-                {"type" in c ? c.label : getHandle(c)}
+                {typeof c === "string"
+                  ? c
+                  : "type" in c
+                  ? c.label
+                  : getHandle(c)}
               </IonItem>
             ))}
           </IonList>

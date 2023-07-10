@@ -8,6 +8,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  useIonViewDidEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useParams } from "react-router";
@@ -66,6 +67,8 @@ const lightboxCss = css`
 `;
 
 const LightboxImg = styled(PostGalleryImg)`
+  -webkit-touch-callout: default;
+
   ${lightboxCss}
 `;
 
@@ -87,7 +90,7 @@ const StyledEmbed = styled(Embed)`
 
 const PostDeets = styled.div`
   margin: 0 8px;
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   h1,
   h2,
@@ -140,16 +143,26 @@ export default function PostDetail() {
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const [commentsLastUpdated, setCommentsLastUpdated] = useState(Date.now());
   const [sort, setSort] = useState<CommentSortType>("Hot");
+  const [ionViewEntered, setIonViewEntered] = useState(false);
 
   useEffect(() => {
-    if (post) {
-      dispatch(setPostRead(+id));
-
-      return;
-    }
+    if (post) return;
 
     dispatch(getPost(+id));
   }, [post, jwt, dispatch, id]);
+
+  // Avoid rerender from marking a post as read until the page
+  // has fully transitioned in.
+  // This keeps the page transition as performant as possible
+  useEffect(() => {
+    if (!post || !ionViewEntered) return;
+
+    dispatch(setPostRead(+id));
+  }, [post, ionViewEntered, dispatch, id]);
+
+  useIonViewDidEnter(() => {
+    setIonViewEntered(true);
+  });
 
   useEffect(() => {
     titleRef.current?.scrollIntoView({ behavior: "smooth" });

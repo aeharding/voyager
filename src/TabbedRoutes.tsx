@@ -1,7 +1,6 @@
 import { Redirect, Route, useLocation } from "react-router-dom";
 import {
   IonBadge,
-  IonIcon,
   IonLabel,
   IonRouterOutlet,
   IonTabBar,
@@ -19,14 +18,18 @@ import {
 import PostDetail from "./features/post/detail/PostDetail";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
-import { useAppSelector } from "./store";
-import { jwtIssSelector, jwtSelector } from "./features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "./store";
+import {
+  handleSelector,
+  jwtIssSelector,
+  jwtSelector,
+} from "./features/auth/authSlice";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
@@ -50,10 +53,11 @@ import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
-import PostAppearancePage from "./pages/settings/PostAppearancePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
+import { getFavoriteCommunities } from "./features/community/communitySlice";
+import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
 import IonIconNoStroke from "./helpers/ionIconNoStroke";
 
 const Interceptor = styled.div`
@@ -72,6 +76,8 @@ export default function TabbedRoutes() {
   const totalUnread = useAppSelector(totalUnreadSelector);
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
+  const dispatch = useAppDispatch();
+  const activeHandle = useAppSelector(handleSelector);
 
   const settingsNotificationCount =
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
@@ -88,6 +94,10 @@ export default function TabbedRoutes() {
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
   const isProfileButtonDisabled = location.pathname.startsWith("/profile");
   const isSearchButtonDisabled = location.pathname.startsWith("/search");
+
+  useEffect(() => {
+    dispatch(getFavoriteCommunities());
+  }, [dispatch, activeHandle]);
 
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
@@ -155,8 +165,8 @@ export default function TabbedRoutes() {
       return new Promise((resolve) =>
         activePage.current?.getState((state) => {
           if (state.scrollTop) {
-            activePage.current?.scrollTo({
-              top: 0,
+            activePage.current?.scrollToIndex({
+              index: 0,
               behavior: "smooth",
             });
           }
@@ -225,6 +235,12 @@ export default function TabbedRoutes() {
         <ActorRedirect>
           <ProfileFeedHiddenPostsPage />
         </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/message`}>
+        <InboxAuthRequired>
+          <ConversationPage />
+        </InboxAuthRequired>
       </Route>,
     ];
   }
@@ -308,7 +324,6 @@ export default function TabbedRoutes() {
             <ProfilePage />
           </Route>
           {...buildGeneralBrowseRoutes("profile")}
-
           <Route exact path="/profile/:actor">
             <Redirect to="/profile" push={false} />
           </Route>
@@ -329,6 +344,7 @@ export default function TabbedRoutes() {
           <Route exact path="/search/:actor">
             <Redirect to="/search" push={false} />
           </Route>
+
           <Route exact path="/settings">
             <SettingsPage />
           </Route>
@@ -344,6 +360,9 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/appearance">
             <AppearancePage />
           </Route>
+          <Route exact path="/settings/blocks">
+            <BlocksSettingsPage />
+          </Route>
           <Route exact path="/settings/reddit-migrate">
             <RedditMigratePage />
           </Route>
@@ -352,9 +371,6 @@ export default function TabbedRoutes() {
           </Route>
           {/* general routes for settings is only for reddit-migrate */}
           {...buildGeneralBrowseRoutes("settings")}
-          <Route exact path="/settings/appearance/posts">
-            <PostAppearancePage />
-          </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton
@@ -383,7 +399,7 @@ export default function TabbedRoutes() {
             tab="profile"
             href="/profile"
           >
-            <IonIcon aria-hidden="true" icon={personCircleOutline} />
+            <IonIconNoStroke aria-hidden="true" icon={personCircleOutline} />
             <IonLabel>{connectedInstance}</IonLabel>
             <Interceptor onClick={onProfileClick} />
           </IonTabButton>

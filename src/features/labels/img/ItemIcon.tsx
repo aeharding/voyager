@@ -9,13 +9,18 @@ const SubImgIcon = styled.img<{ size: number }>`
 `;
 
 interface ItemIconProps {
-  item: Community | Person;
+  item: Community | Person | string;
   size?: number;
   className?: string;
 }
 
 export default function ItemIcon({ item, size, className }: ItemIconProps) {
   size = size ?? 28;
+
+  if (typeof item === "string")
+    return (
+      <FakeIcon seed={item} name={item} className={className} size={size} />
+    );
 
   const icon = "posting_restricted_to_mods" in item ? item.icon : item.avatar;
 

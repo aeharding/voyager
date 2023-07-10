@@ -1,19 +1,19 @@
 export default function Terms() {
   return (
     <div className="ion-padding">
-      <h3>wefwef.app Privacy Policy</h3>
+      <h3>vger.app Privacy Policy</h3>
 
       <p>Last updated: June 24, 2023</p>
 
       <p>
-        We respect your privacy. When you use wefwef.app, we proxy information
-        to your Lemmy instance in order to overcome CORS restrictions with
-        Lemmy. However, we want to assure you that we do not log, sell, or
-        inspect any of the data proxied.
+        We respect your privacy. When you use vger.app, we proxy information to
+        your Lemmy instance in order to overcome CORS restrictions with Lemmy.
+        However, we want to assure you that we do not log, sell, or inspect any
+        of the data proxied.
       </p>
 
       <p>
-        In order to maintain wefwef.app functionality, we may collect aggregated
+        In order to maintain vger.app functionality, we may collect aggregated
         and anonymized analytics. This data is solely used for the purpose of
         improving and enhancing our services.
       </p>
@@ -30,7 +30,7 @@ export default function Terms() {
         your data.
       </p>
 
-      <h3>wefwef.app Terms of Use</h3>
+      <h3>vger.app Terms of Use</h3>
 
       <p>Last updated: June 24, 2023</p>
 

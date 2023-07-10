@@ -17,7 +17,7 @@ import { home, library, people } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../helpers/array";
-import { Fragment, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ItemIcon from "../../features/labels/img/ItemIcon";
@@ -61,15 +61,15 @@ export default function CommunitiesPage() {
     (state) => state.community.communityByHandle
   );
 
+  const favorites = useAppSelector((state) => state.community.favorites);
+
   useSetActivePage(pageRef.current);
 
   const communities = useMemo(() => {
     const communities = uniqBy(
       [
         ...(follows || []).map((f) => f.community),
-        ...Object.values(communityByHandle).map(
-          (c) => c?.community_view.community
-        ),
+        ...Object.values(communityByHandle).map((c) => c?.community),
       ].filter(notEmpty),
       "id"
     );
@@ -77,35 +77,36 @@ export default function CommunitiesPage() {
     pullAllBy(
       communities,
       Object.values(communityByHandle)
-        .filter(
-          (response) => response?.community_view.subscribed === "NotSubscribed"
-        )
-        .map((c) => c?.community_view.community),
+        .filter((response) => response?.subscribed === "NotSubscribed")
+        .map((c) => c?.community),
       "id"
     );
 
     return communities;
   }, [follows, communityByHandle]);
 
-  const communitiesGroupedByLetter = useMemo(() => {
-    const alphabeticallySortedCommunities = sortBy(communities, (c) =>
-      c.name.toLowerCase()
-    );
+  const favoritesAsCommunitiesIfFound = useMemo(
+    () =>
+      favorites.map(
+        (community) =>
+          communities.find((c) => community === getHandle(c)) || community
+      ),
+    [communities, favorites]
+  );
 
-    return Object.entries(
-      alphabeticallySortedCommunities.reduce<Record<string, Community[]>>(
-        (acc, community) => {
-          const firstLetter = community.name[0].toUpperCase();
-          if (!acc[firstLetter]) {
-            acc[firstLetter] = [];
-          }
-          acc[firstLetter].push(community);
-          return acc;
-        },
-        {}
-      )
+  function renderCommunity(community: Community) {
+    return (
+      <IonItem
+        key={community.id}
+        routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
+      >
+        <Content>
+          <ItemIcon item={community} size={28} />
+          {getHandle(community)}
+        </Content>
+      </IonItem>
     );
-  }, [communities]);
+  }
 
   return (
     <IonPage ref={pageRef}>
@@ -146,28 +147,41 @@ export default function CommunitiesPage() {
             </IonItem>
           </IonItemGroup>
 
-          {communitiesGroupedByLetter.map(([letter, communities]) => (
-            <Fragment key={letter}>
+          {favoritesAsCommunitiesIfFound.length > 0 && (
+            <>
               <IonItemGroup>
                 <IonItemDivider>
-                  <IonLabel>{letter}</IonLabel>
+                  <IonLabel>Favorites</IonLabel>
                 </IonItemDivider>
               </IonItemGroup>
-              {communities.map((community) => (
-                <IonItem
-                  key={community.id}
-                  routerLink={buildGeneralBrowseLink(
-                    `/c/${getHandle(community)}`
-                  )}
-                >
-                  <Content>
-                    <ItemIcon item={community} size={28} />
-                    {getHandle(community)}
-                  </Content>
-                </IonItem>
-              ))}
-            </Fragment>
-          ))}
+
+              {favoritesAsCommunitiesIfFound.map((favorite) =>
+                typeof favorite === "string" ? (
+                  <IonItem
+                    key={favorite}
+                    routerLink={buildGeneralBrowseLink(`/c/${favorite}`)}
+                  >
+                    <Content>
+                      <ItemIcon item={favorite} size={28} />
+                      {favorite}
+                    </Content>
+                  </IonItem>
+                ) : (
+                  renderCommunity(favorite)
+                )
+              )}
+            </>
+          )}
+
+          <IonItemGroup>
+            <IonItemDivider>
+              <IonLabel>Communities</IonLabel>
+            </IonItemDivider>
+          </IonItemGroup>
+
+          {sortBy(communities, "name")?.map((community) =>
+            renderCommunity(community)
+          )}
         </IonList>
       </AppContent>
     </IonPage>
