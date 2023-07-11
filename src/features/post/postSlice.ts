@@ -196,8 +196,9 @@ export const voteOnPost =
       });
     } catch (error) {
       dispatch(updatePostVote({ postId, vote: oldVote }));
-
       throw error;
+    } finally {
+      dispatch(setPostRead(postId));
     }
   };
 
