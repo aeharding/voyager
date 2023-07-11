@@ -70,7 +70,7 @@ Native apps can be great, but we believe in the strengths of the web. Why use a 
 
 The Voyager team maintains a deployment at:
 
-- 🐭 Production: [vger.app](https://vger.app)
+- 🇺🇸 Production: [vger.app](https://vger.app)
 
 ### Self-Host Docker Deployment
 
@@ -99,6 +99,7 @@ Note: The provided Dockerfile creates a container which will eventually run Voya
 
 ### Ecosystem
 
+- 🇫🇮 [m.lemmy.world](https://m.lemmy.world) — lemmy.world official Voyager deployment hosted in Finland. [Contact](https://mastodon.world/about)/[privacy](https://mastodon.world/privacy-policy)
 - 🇸🇬 [w.opnxng.com](https://w.opnxng.com) - Voyager hosted by Opnxng in Singapore. [Contact/privacy](https://about.opnxng.com)
 - 🇲🇽 [voyager.nohost.network](https://voyager.nohost.network) - Voyager hosted by Nohost in Mexico. [Contact/privacy](https://nohost.network)
 
