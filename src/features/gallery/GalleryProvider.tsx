@@ -90,10 +90,6 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
     ) => {
       if (lightboxRef.current) return;
 
-      if (post) {
-        dispatch(setPostRead(post.post.id));
-      }
-
       setPost(post);
 
       const instance = new PhotoSwipeLightbox({
@@ -120,6 +116,12 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
       instance.addFilter("placeholderSrc", () => {
         return img.src;
+      });
+
+      instance.on("openingAnimationEnd", () => {
+        if (!post) return;
+
+        dispatch(setPostRead(post.post.id));
       });
 
       instance.on("closingAnimationEnd", () => setPost(undefined));
