@@ -5,6 +5,8 @@ import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { useState } from "react";
 import { isNsfw } from "../../labels/Nsfw";
+import { useAppDispatch } from "../../../store";
+import { setPostRead } from "../postSlice";
 
 const Container = styled.a`
   display: flex;
@@ -71,6 +73,12 @@ interface EmbedProps {
 
 export default function Embed({ post, className }: EmbedProps) {
   const [error, setError] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const handleLinkClick = (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    dispatch(setPostRead(post.post.id));
+  };
 
   return (
     <Container
@@ -78,7 +86,7 @@ export default function Embed({ post, className }: EmbedProps) {
       href={post.post.url}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={(e) => e.stopPropagation()}
+      onClick={handleLinkClick}
       draggable="false"
     >
       {post.post.thumbnail_url && !error && (

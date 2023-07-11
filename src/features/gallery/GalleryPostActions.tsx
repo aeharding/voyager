@@ -3,7 +3,7 @@ import { VoteButton } from "../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline, shareOutline } from "ionicons/icons";
 import styled from "@emotion/styled";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import MoreActions from "../post/shared/MoreActions";
@@ -11,6 +11,7 @@ import { calculateCurrentVotesCount } from "../../helpers/vote";
 import { useLocation } from "react-router";
 import { useContext } from "react";
 import { GalleryContext } from "./GalleryProvider";
+import { setPostRead } from "../post/postSlice";
 
 const Container = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
   const score = calculateCurrentVotesCount(post, postVotesById);
   const location = useLocation();
   const { close } = useContext(GalleryContext);
+  const dispatch = useAppDispatch();
 
   function share() {
     navigator.share({ url: post.post.ap_id });
@@ -60,6 +62,7 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
       </Section>
       <div
         onClick={() => {
+          dispatch(setPostRead(post.post.id));
           close();
 
           if (location.pathname.startsWith(link)) return;
