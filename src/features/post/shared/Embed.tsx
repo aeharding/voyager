@@ -1,3 +1,4 @@
+import { MouseEvent } from "react";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
@@ -75,7 +76,7 @@ export default function Embed({ post, className }: EmbedProps) {
   const [error, setError] = useState(false);
   const dispatch = useAppDispatch();
 
-  const handleLinkClick = (e: { stopPropagation: () => void }) => {
+  const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
     dispatch(setPostRead(post.post.id));
   };

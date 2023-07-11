@@ -89,10 +89,12 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"]
     ) => {
       if (lightboxRef.current) return;
-      if (!post) return;
+
+      if (post) {
+        dispatch(setPostRead(post.post.id));
+      }
 
       setPost(post);
-      dispatch(setPostRead(post.post.id));
 
       const instance = new PhotoSwipeLightbox({
         dataSource: [
