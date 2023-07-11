@@ -120,51 +120,6 @@ export default function CommunitiesPage() {
     );
   }, [communities]);
 
-  const dispatch = useAppDispatch();
-  const [present] = useIonToast();
-
-  function renderCommunity(community: Community) {
-    const isFavorite = favorites.includes(getHandle(community));
-
-    return (
-      <IonItem
-        key={community.id}
-        routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
-      >
-        <Content>
-          <ItemIcon item={community} size={28} />
-          {getHandle(community)}
-        </Content>
-        <ActionButton
-          slot="end"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-
-            const handle = getHandle(community);
-
-            if (!isFavorite) {
-              dispatch(addFavorite(handle));
-            } else {
-              dispatch(removeFavorite(handle));
-            }
-
-            present({
-              message: `${
-                isFavorite ? "Unfavorited" : "Favorited"
-              } c/${handle}.`,
-              duration: 3500,
-              position: "bottom",
-              color: "success",
-            });
-          }}
-        >
-          <IonIcon icon={isFavorite ? star : starOutline} />
-        </ActionButton>
-      </IonItem>
-    );
-  }
-
   return (
     <IonPage ref={pageRef}>
       <IonHeader>
@@ -224,7 +179,11 @@ export default function CommunitiesPage() {
                     </Content>
                   </IonItem>
                 ) : (
-                  renderCommunity(favorite)
+                  <RenderCommunity
+                    key={favorite.id}
+                    community={favorite}
+                    favorites={favorites}
+                  />
                 )
               )}
             </>
@@ -237,11 +196,70 @@ export default function CommunitiesPage() {
                   <IonLabel>{letter}</IonLabel>
                 </IonItemDivider>
               </IonItemGroup>
-              {communities.map((community) => renderCommunity(community))}
+              {communities.map((community) => (
+                <RenderCommunity
+                  key={community.id}
+                  community={community}
+                  favorites={favorites}
+                />
+              ))}
             </Fragment>
           ))}
         </IonList>
       </AppContent>
     </IonPage>
+  );
+}
+
+function RenderCommunity({
+  community,
+  favorites,
+}: {
+  community: Community;
+  favorites?: string[];
+}) {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const dispatch = useAppDispatch();
+  const [present] = useIonToast();
+
+  const isFavorite = useMemo(
+    () => favorites?.includes(getHandle(community)) ?? false,
+    [favorites, community]
+  );
+
+  return (
+    <IonItem
+      key={community.id}
+      routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
+    >
+      <Content>
+        <ItemIcon item={community} size={28} />
+        {getHandle(community)}
+      </Content>
+      <ActionButton
+        slot="end"
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+
+          const handle = getHandle(community);
+
+          if (!isFavorite) {
+            dispatch(addFavorite(handle));
+          } else {
+            dispatch(removeFavorite(handle));
+          }
+
+          present({
+            message: `${isFavorite ? "Unfavorited" : "Favorited"} c/${handle}.`,
+            duration: 3500,
+            position: "bottom",
+            color: "success",
+          });
+        }}
+      >
+        <IonIcon icon={isFavorite ? star : starOutline} />
+      </ActionButton>
+    </IonItem>
   );
 }
