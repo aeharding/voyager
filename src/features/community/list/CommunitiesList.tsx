@@ -11,7 +11,7 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useParams } from "react-router";
 import { useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
-import { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../../helpers/array";
 import { getHandle } from "../../../helpers/lemmy";
@@ -139,12 +139,10 @@ export default function CommunitiesList() {
       </IonItemGroup>
 
       {favoritesAsCommunitiesIfFound.length > 0 && (
-        <>
-          <IonItemGroup>
-            <IonItemDivider>
-              <IonLabel>Favorites</IonLabel>
-            </IonItemDivider>
-          </IonItemGroup>
+        <IonItemGroup>
+          <IonItemDivider sticky>
+            <IonLabel>Favorites</IonLabel>
+          </IonItemDivider>
 
           {favoritesAsCommunitiesIfFound.map((favorite) =>
             typeof favorite === "string" ? (
@@ -165,16 +163,14 @@ export default function CommunitiesList() {
               />
             )
           )}
-        </>
+        </IonItemGroup>
       )}
 
       {communitiesGroupedByLetter.map(([letter, communities]) => (
-        <Fragment key={letter}>
-          <IonItemGroup>
-            <IonItemDivider>
-              <IonLabel>{letter}</IonLabel>
-            </IonItemDivider>
-          </IonItemGroup>
+        <IonItemGroup key={letter}>
+          <IonItemDivider sticky>
+            <IonLabel>{letter}</IonLabel>
+          </IonItemDivider>
           {communities.map((community) => (
             <CommunityListItem
               key={community.id}
@@ -182,7 +178,7 @@ export default function CommunitiesList() {
               favorites={favorites}
             />
           ))}
-        </Fragment>
+        </IonItemGroup>
       ))}
     </IonList>
   );
