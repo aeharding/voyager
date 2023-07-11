@@ -16,7 +16,7 @@ A mobile-first Lemmy web client
 
 <br/>
 <p align="center">
-  <a href="https://matrix.to/#/#wefwef.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat&logo=matrix" alt="matrix chat"></a>
+  <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat&logo=matrix" alt="matrix chat"></a>
 </p>
 <br/>
 
