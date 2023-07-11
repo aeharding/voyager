@@ -9,13 +9,12 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonToast,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { useParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getHandle } from "../../helpers/lemmy";
-import { home, library, people, star, starOutline } from "ionicons/icons";
+import { home, library, people, star } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../helpers/array";
@@ -30,6 +29,7 @@ import {
   addFavorite,
   removeFavorite,
 } from "../../features/community/communitySlice";
+import { css } from "@emotion/react";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -220,7 +220,6 @@ function RenderCommunity({
 }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const [present] = useIonToast();
 
   const isFavorite = useMemo(
     () => favorites?.includes(getHandle(community)) ?? false,
@@ -249,16 +248,15 @@ function RenderCommunity({
           } else {
             dispatch(removeFavorite(handle));
           }
-
-          present({
-            message: `${isFavorite ? "Unfavorited" : "Favorited"} c/${handle}.`,
-            duration: 3500,
-            position: "bottom",
-            color: "success",
-          });
         }}
       >
-        <IonIcon icon={isFavorite ? star : starOutline} />
+        <IonIcon
+          icon={star}
+          color={isFavorite ? "primary" : "light"}
+          css={css`
+            font-size: 24px;
+          `}
+        />
       </ActionButton>
     </IonItem>
   );
