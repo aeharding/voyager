@@ -194,11 +194,12 @@ export const voteOnPost =
         score: vote,
         auth: jwt,
       });
-      dispatch(setPostRead(postId));
     } catch (error) {
       dispatch(updatePostVote({ postId, vote: oldVote }));
       dispatch(setPostRead(postId));
       throw error;
+    } finally {
+      dispatch(setPostRead(postId));
     }
   };
 
