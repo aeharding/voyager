@@ -26,9 +26,8 @@ export default function MarkAllAsReadButton() {
             role: "cancel",
           },
         ]}
+        onDidDismiss={() => setOpen(false)}
         onWillDismiss={async (e) => {
-          setOpen(false);
-
           if (e.detail.role === "read") {
             dispatch(markAllRead());
           }
