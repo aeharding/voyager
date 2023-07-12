@@ -29,6 +29,8 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+
+  min-width: 0;
 `;
 
 const Title = styled.span<{ isRead: boolean }>`
