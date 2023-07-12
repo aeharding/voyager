@@ -66,9 +66,8 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
             role: "cancel",
           },
         ]}
+        onDidDismiss={() => setOpen(false)}
         onWillDismiss={async (e) => {
-          setOpen(false);
-
           switch (e.detail.data) {
             case "message": {
               router.push(buildGeneralBrowseLink(`/u/${handle}/message`));

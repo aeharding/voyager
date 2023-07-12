@@ -129,9 +129,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
             role: "cancel",
           },
         ]}
+        onDidDismiss={() => setOpen(false)}
         onWillDismiss={async (e) => {
-          setOpen(false);
-
           switch (e.detail.data) {
             case "subscribe": {
               if (presentLoginIfNeeded()) return;

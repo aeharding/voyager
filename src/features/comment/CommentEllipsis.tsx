@@ -167,9 +167,8 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             role: "cancel",
           },
         ].filter(notEmpty)}
+        onDidDismiss={() => setOpen(false)}
         onWillDismiss={async (e) => {
-          setOpen(false);
-
           switch (e.detail.role) {
             case "upvote":
               if (presentLoginIfNeeded()) return;

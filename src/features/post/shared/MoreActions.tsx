@@ -166,9 +166,8 @@ export default function MoreActions({
         isOpen={open}
         buttons={buttons}
         onClick={(e) => e.stopPropagation()}
+        onDidDismiss={() => setOpen(false)}
         onWillDismiss={async (e) => {
-          setOpen(false);
-
           switch (e.detail.data) {
             case "upvote": {
               if (presentLoginIfNeeded()) return;
