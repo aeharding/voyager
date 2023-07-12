@@ -13,26 +13,25 @@ import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
 import LoggedOut from "../../features/user/LoggedOut";
 import AccountSwitcher from "../../features/auth/AccountSwitcher";
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import AppContent from "../../features/shared/AppContent";
 import { PageContext } from "../../features/auth/PageContext";
 
 export default function ProfilePage() {
-  const pageRef = useRef();
   const handle = useAppSelector(handleSelector);
+  const { page, presentLoginIfNeeded } = useContext(PageContext);
 
   const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
     {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
-      page: pageRef.current,
+      page,
     }
   );
-  const { presentLoginIfNeeded } = useContext(PageContext);
 
   return (
-    <IonPage className="grey-bg" ref={pageRef}>
+    <IonPage className="grey-bg">
       <IonHeader>
         <IonToolbar>
           {handle ? (
