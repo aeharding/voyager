@@ -5,9 +5,9 @@ import { IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 
 export default function CommunitiesPage() {
-  const pageRef = useRef();
+  const pageRef = useRef<HTMLElement>(null);
 
-  useSetActivePage(pageRef.current);
+  useSetActivePage(pageRef);
 
   return (
     <IonPage ref={pageRef}>
