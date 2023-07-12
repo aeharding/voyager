@@ -74,6 +74,7 @@ export default function AccountSwitcher({
           value={activeHandle}
           onIonChange={(e) => {
             dispatch(changeAccount(e.target.value));
+            onDismiss();
           }}
         >
           <IonList>
