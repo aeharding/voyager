@@ -7,6 +7,7 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
+  useIonModal,
   useIonRouter,
 } from "@ionic/react";
 import {
@@ -31,6 +32,7 @@ import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
 import { useContext, useEffect, useRef } from "react";
+import { useLongPress } from "use-long-press";
 import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
@@ -59,6 +61,7 @@ import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPa
 import { PageContextProvider } from "./features/auth/PageContext";
 import { getFavoriteCommunities } from "./features/community/communitySlice";
 import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
+import AccountSwitcher from "./features/auth/AccountSwitcher";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -119,6 +122,19 @@ export default function TabbedRoutes() {
       );
     }
   }
+
+  const longPressProfile = useLongPress(() => {
+    presentAccountSwitcher({ cssClass: "small" });
+  });
+
+  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
+    AccountSwitcher,
+    {
+      onDismiss: (data: string, role: string) =>
+        onDismissAccountSwitcher(data, role),
+      page: pageRef.current,
+    }
+  );
 
   async function onInboxClick() {
     if (!isInboxButtonDisabled) return;
@@ -398,6 +414,7 @@ export default function TabbedRoutes() {
             disabled={isProfileButtonDisabled}
             tab="profile"
             href="/profile"
+            {...longPressProfile()}
           >
             <IonIcon aria-hidden="true" icon={personCircleOutline} />
             <IonLabel>{connectedInstance}</IonLabel>
