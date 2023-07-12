@@ -83,7 +83,7 @@ export default function PostPage() {
     [refresh]
   );
 
-  const renderPost = useCallback(() => {
+  function renderPost() {
     if (!post) return <CenteredSpinner />;
     if (post === "not-found")
       return buildWithRefresher(
@@ -95,7 +95,7 @@ export default function PostPage() {
       );
 
     return <PostDetail post={post} commentPath={commentPath} sort={sort} />;
-  }, [buildWithRefresher, commentPath, post, sort]);
+  }
 
   return (
     <IonPage>

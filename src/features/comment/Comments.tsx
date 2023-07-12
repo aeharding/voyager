@@ -24,7 +24,6 @@ import { useSetActivePage } from "../auth/AppContext";
 import { FeedContext } from "../feed/FeedContext";
 import { jwtSelector } from "../auth/authSlice";
 import { defaultCommentDepthSelector } from "../settings/appearance/appearanceSlice";
-import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
 
 const centerCss = css`
   position: relative;
@@ -96,9 +95,7 @@ export default function Comments({
   useSetActivePage(virtuosoRef);
 
   useEffect(() => {
-    fetchComments(true).then(() => {
-      scrollUpIfNeeded(virtuosoRef, 1, "auto");
-    });
+    fetchComments(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort, commentPath, jwt, postId, commentsLastUpdated]);
 
