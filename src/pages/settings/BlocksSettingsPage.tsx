@@ -20,7 +20,7 @@ import {
 } from "../../features/auth/authSlice";
 import FilterNsfw from "../../features/settings/blocks/FilterNsfw";
 import BlockedCommunities from "../../features/settings/blocks/BlockedCommunities";
-import { CenteredSpinner } from "../../features/post/detail/PostDetail";
+import { CenteredSpinner } from "../posts/PostPage";
 import BlockedUsers from "../../features/settings/blocks/BlockedUsers";
 
 export default function BlocksSettingsPage() {

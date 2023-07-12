@@ -14,7 +14,7 @@ import { IPostMetadata, db } from "../../services/db";
 const POST_SORT_KEY = "post-sort-v2";
 
 interface PostState {
-  postById: Dictionary<PostView>;
+  postById: Dictionary<PostView | "not-found">;
   postHiddenById: Dictionary<boolean>;
   postVotesById: Dictionary<1 | -1 | 0>;
   postSavedById: Dictionary<boolean>;
@@ -54,6 +54,9 @@ export const postSlice = createSlice({
     },
     updatePostRead: (state, action: PayloadAction<{ postId: number }>) => {
       state.postReadById[action.payload.postId] = true;
+    },
+    receivedPostNotFound: (state, action: PayloadAction<number>) => {
+      state.postById[action.payload] = "not-found";
     },
   },
   extraReducers: (builder) => {
@@ -134,6 +137,7 @@ export const {
   updateSortType,
   updatePostSaved,
   updatePostRead,
+  receivedPostNotFound,
 } = postSlice.actions;
 
 export default postSlice.reducer;
@@ -206,12 +210,48 @@ export const getPost =
   (id: number) => async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwt = jwtSelector(getState());
 
-    const result = await clientSelector(getState()).getPost({
-      id,
-      auth: jwt,
-    });
+    let result;
+
+    try {
+      result = await clientSelector(getState()).getPost({
+        id,
+        auth: jwt,
+      });
+    } catch (error) {
+      // I think there is a bug in lemmy-js-client where it tries to parse 404 with non-json body
+      if (error === "couldnt_find_post" || error instanceof SyntaxError) {
+        dispatch(receivedPostNotFound(id));
+      }
+
+      throw error;
+    }
 
     if (result) dispatch(receivedPosts([result.post_view]));
+  };
+
+export const deletePost =
+  (id: number) => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = jwtSelector(getState());
+    if (!jwt) return;
+
+    try {
+      await clientSelector(getState()).deletePost({
+        post_id: id,
+        deleted: true,
+        auth: jwt,
+      });
+    } catch (error) {
+      // I think there is a bug in lemmy-js-client where it tries to parse 404 with non-json body
+      if (error === "couldnt_find_post" || error instanceof SyntaxError) {
+        dispatch(receivedPostNotFound(id));
+
+        return;
+      }
+
+      throw error;
+    }
+
+    dispatch(receivedPostNotFound(id));
   };
 
 export const hidePost = (postId: number) => async (dispatch: AppDispatch) => {

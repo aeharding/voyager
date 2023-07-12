@@ -12,7 +12,7 @@ import { VoteButton } from "../../shared/VoteButton";
 import MoreActions from "../../shared/MoreActions";
 import PersonLink from "../../../labels/links/PersonLink";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
-import { AnnouncementIcon } from "../../detail/PostDetail";
+import { AnnouncementIcon } from "../../../../pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import Video from "../../../shared/Video";
 import { PostProps } from "../Post";

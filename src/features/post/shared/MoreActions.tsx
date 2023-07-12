@@ -2,6 +2,7 @@ import {
   IonActionSheet,
   IonButton,
   IonIcon,
+  useIonActionSheet,
   useIonModal,
   useIonRouter,
   useIonToast,
@@ -19,6 +20,7 @@ import {
   personOutline,
   shareOutline,
   textOutline,
+  trashOutline,
 } from "ionicons/icons";
 import { useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -29,14 +31,16 @@ import {
   unhidePost,
   voteOnPost,
   savePost,
+  deletePost,
 } from "../postSlice";
-import { getHandle } from "../../../helpers/lemmy";
+import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import SelectText from "../../../pages/shared/SelectTextModal";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
 import { saveError, voteError } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
+import { handleSelector } from "../../auth/authSlice";
 
 interface MoreActionsProps {
   post: PostView;
@@ -49,11 +53,13 @@ export default function MoreActions({
   className,
   onFeed,
 }: MoreActionsProps) {
+  const [presentActionSheet] = useIonActionSheet();
   const [present] = useIonToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const isHidden = useAppSelector(postHiddenByIdSelector)[post.post.id];
+  const myHandle = useAppSelector(handleSelector);
 
   const router = useIonRouter();
 
@@ -71,67 +77,76 @@ export default function MoreActions({
   const myVote = postVotesById[post.post.id] ?? post.my_vote;
   const mySaved = postSavedById[post.post.id] ?? post.saved;
 
+  const isMyPost = getRemoteHandle(post.creator) === myHandle;
+
   const buttons = useMemo(
     () =>
       [
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
-          role: "upvote",
+          data: "upvote",
           icon: arrowUpOutline,
         },
         {
           text: myVote !== -1 ? "Downvote" : "Undo Downvote",
-          role: "downvote",
+          data: "downvote",
           icon: arrowDownOutline,
         },
         {
           text: !mySaved ? "Save" : "Unsave",
-          role: "save",
+          data: "save",
           icon: bookmarkOutline,
         },
+        isMyPost
+          ? {
+              text: "Delete",
+              data: "delete",
+              icon: trashOutline,
+            }
+          : undefined,
         {
           text: "Reply",
-          role: "reply",
+          data: "reply",
           icon: arrowUndoOutline,
         },
         {
           text: getHandle(post.creator),
-          role: "person",
+          data: "person",
           icon: personOutline,
         },
         {
           text: getHandle(post.community),
-          role: "community",
+          data: "community",
           icon: peopleOutline,
         },
         {
           text: "Select Text",
-          role: "select",
+          data: "select",
           icon: textOutline,
         },
         onFeed
           ? {
               text: isHidden ? "Unhide" : "Hide",
-              role: isHidden ? "unhide" : "hide",
+              data: isHidden ? "unhide" : "hide",
               icon: isHidden ? eyeOutline : eyeOffOutline,
             }
           : undefined,
         {
           text: "Share",
-          role: "share",
+          data: "share",
           icon: shareOutline,
         },
         {
           text: "Report",
-          role: "report",
+          data: "report",
           icon: flagOutline,
         },
         {
           text: "Cancel",
-          role: "cancel",
+          data: "cancel",
         },
       ].filter(notEmpty),
-    [isHidden, myVote, mySaved, post.community, post.creator, onFeed]
+    [isHidden, myVote, mySaved, post.community, post.creator, onFeed, isMyPost]
   );
 
   const Button = onFeed ? ActionButton : IonButton;
@@ -154,7 +169,7 @@ export default function MoreActions({
         onWillDismiss={async (e) => {
           setOpen(false);
 
-          switch (e.detail.role) {
+          switch (e.detail.data) {
             case "upvote": {
               if (presentLoginIfNeeded()) return;
 
@@ -239,6 +254,33 @@ export default function MoreActions({
             }
             case "report": {
               presentReport(post);
+              break;
+            }
+            case "delete": {
+              presentActionSheet({
+                buttons: [
+                  {
+                    text: "Delete",
+                    role: "destructive",
+                    handler: () => {
+                      (async () => {
+                        await dispatch(deletePost(post.post.id));
+
+                        present({
+                          message: "Post deleted",
+                          duration: 3500,
+                          position: "bottom",
+                          color: "success",
+                        });
+                      })();
+                    },
+                  },
+                  {
+                    text: "Cancel",
+                    role: "cancel",
+                  },
+                ],
+              });
             }
           }
         }}

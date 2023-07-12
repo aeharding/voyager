@@ -14,7 +14,7 @@ import {
   useIonToast,
 } from "@ionic/react";
 import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
-import { CenteredSpinner } from "../post/detail/PostDetail";
+import { CenteredSpinner } from "../../pages/posts/PostPage";
 import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
 import EndPost from "./EndPost";

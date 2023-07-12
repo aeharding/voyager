@@ -16,7 +16,7 @@ import {
   fileTray,
   telescope,
 } from "ionicons/icons";
-import PostDetail from "./features/post/detail/PostDetail";
+import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppDispatch, useAppSelector } from "./store";
