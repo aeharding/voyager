@@ -122,7 +122,7 @@ export default function BoxesPage() {
           >
             <IonIcon icon={chatbubbleOutline} color="primary" />
             <SettingLabel>Comment Replies</SettingLabel>
-            <UnreadBubble count={unreadReplies} />
+            <UnreadBubble count={unreadReplies - unreadPostReplies} />
           </InsetIonItem>
           <InsetIonItem
             routerLink="/inbox/mentions"
