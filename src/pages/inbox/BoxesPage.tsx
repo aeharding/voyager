@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { type FC, MouseEvent, useContext, useState } from "react";
 import {
   IonBadge,
   IonHeader,
@@ -9,8 +9,7 @@ import {
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
-import AppContent from "../../features/shared/AppContent";
-import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
+
 import {
   albumsOutline,
   chatbubbleOutline,
@@ -19,32 +18,61 @@ import {
   mail,
   personCircleOutline,
 } from "ionicons/icons";
-import { useAppDispatch } from "../../store";
-import { getInboxCounts } from "../../features/inbox/inboxSlice";
-import { MouseEvent, useContext } from "react";
-import { PageContext } from "../../features/auth/PageContext";
-import { useAppSelector } from "../../store";
 
-const UnreadBubble: FC<{ count: number }> = ({ count }) =>
-  count ? (
-    <IonBadge color="danger" slot="end">
-      {count}
-    </IonBadge>
-  ) : null;
+import { isPostReply } from "./RepliesPage";
+import { jwtSelector } from "../../features/auth/authSlice";
+import { PageContext } from "../../features/auth/PageContext";
+import AppContent from "../../features/shared/AppContent";
+import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
+import { getInboxCounts } from "../../features/inbox/inboxSlice";
+import useClient from "../../helpers/useClient";
+import { useAppDispatch, useAppSelector } from "../../store";
 
 export default function BoxesPage() {
+  const client = useClient();
+  const jwt = useAppSelector(jwtSelector);
+  const dispatch = useAppDispatch();
   const {
     mentions: unreadMentions,
     messages: unreadMessages,
     replies: unreadReplies,
   } = useAppSelector((state) => state.inbox.counts);
+  const [unreadPostReplies, setUnreadPostReplies] = useState(0);
+  const [unreadCountsResolved, setUnreadCountsResolved] = useState(false);
 
-  const dispatch = useAppDispatch();
+  const UnreadBubble: FC<{ count: number }> = ({ count }) =>
+    unreadCountsResolved && count ? (
+      <IonBadge color="danger" slot="end">
+        {count}
+      </IonBadge>
+    ) : null;
+
+  const getUnreadPostReplyCount = async (): Promise<void> => {
+    if (!jwt) return;
+
+    const allUnreads = await client.getReplies({
+      limit: 50,
+      page: 1,
+      auth: jwt,
+      unread_only: true,
+    });
+
+    const unreadPostReplies =
+      allUnreads?.replies.reduce(
+        (acc, item) =>
+          "comment_reply" in item && isPostReply(item) ? acc + 1 : acc,
+        0
+      ) ?? 0;
+
+    setUnreadPostReplies(unreadPostReplies);
+    setUnreadCountsResolved(true);
+  };
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
   useIonViewWillEnter(() => {
     dispatch(getInboxCounts());
+    getUnreadPostReplyCount();
   });
 
   function interceptIfLoggedOut(e: MouseEvent) {
@@ -86,6 +114,7 @@ export default function BoxesPage() {
           >
             <IonIcon icon={albumsOutline} color="primary" />
             <SettingLabel>Post Replies</SettingLabel>
+            <UnreadBubble count={unreadPostReplies} />
           </InsetIonItem>
           <InsetIonItem
             routerLink="/inbox/comment-replies"
