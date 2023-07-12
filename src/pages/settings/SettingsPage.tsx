@@ -27,6 +27,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
+import { isNative } from "../../helpers/device";
 
 const IconBg = styled.div<{ color: string }>`
   width: 30px;
@@ -69,30 +70,32 @@ export default function SettingsPage() {
           </IonToolbar>
         </IonHeader>
 
-        <IonList inset color="primary">
-          <InsetIonItem routerLink="/settings/install">
-            <IconBg color="color(display-p3 0 0.6 1)">
-              <IonIcon
-                icon={apps}
-                css={css`
-                  padding: 5px;
-                `}
-              />
-            </IconBg>
-            <SettingLabel>Install app</SettingLabel>
-            {shouldInstall && <IonBadge color="danger">1</IonBadge>}
-          </InsetIonItem>
-          <InsetIonItem routerLink="/settings/update">
-            <IconBg color="color(display-p3 0 0.8 0)">
-              <IonIcon icon={reloadCircle} />
-            </IconBg>
-            <SettingLabel>Check for updates</SettingLabel>
-            {updateStatus === "outdated" && (
-              <IonBadge color="danger">1</IonBadge>
-            )}
-          </InsetIonItem>
-        </IonList>
+        {!isNative() && (
+          <IonList inset color="primary">
+            <InsetIonItem routerLink="/settings/install">
+              <IconBg color="color(display-p3 0 0.6 1)">
+                <IonIcon
+                  icon={apps}
+                  css={css`
+                    padding: 5px;
+                  `}
+                />
+              </IconBg>
+              <SettingLabel>Install app</SettingLabel>
+              {shouldInstall && <IonBadge color="danger">1</IonBadge>}
+            </InsetIonItem>
 
+            <InsetIonItem routerLink="/settings/update">
+              <IconBg color="color(display-p3 0 0.8 0)">
+                <IonIcon icon={reloadCircle} />
+              </IconBg>
+              <SettingLabel>Check for updates</SettingLabel>
+              {updateStatus === "outdated" && (
+                <IonBadge color="danger">1</IonBadge>
+              )}
+            </InsetIonItem>
+          </IonList>
+        )}
         <IonList inset color="primary">
           <InsetIonItem routerLink="/settings/appearance">
             <IconBg color="color(display-p3 1 0 0)">

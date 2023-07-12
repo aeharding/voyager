@@ -1,7 +1,12 @@
 import UAParser from "ua-parser-js";
+import { Capacitor } from "@capacitor/core";
+
+export function isNative() {
+  return Capacitor.isNativePlatform();
+}
 
 export function isInstalled(): boolean {
-  return window.matchMedia("(display-mode: standalone)").matches;
+  return window.matchMedia("(display-mode: standalone)").matches || isNative();
 }
 
 export const ua = new UAParser(navigator.userAgent);
