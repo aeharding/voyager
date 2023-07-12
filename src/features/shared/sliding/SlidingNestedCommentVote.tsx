@@ -22,15 +22,15 @@ export default function SlidingNestedCommentVote({
   rootIndex,
   collapsed,
 }: SlidingVoteProps) {
-  const { refresh: refreshPost } = useContext(FeedContext);
+  const { appendComments } = useContext(FeedContext);
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const collapseRootComment = useCollapseRootComment(item, rootIndex);
 
   const reply = useCallback(async () => {
-    const commented = await presentCommentReply(item);
+    const reply = await presentCommentReply(item);
 
-    if (commented) refreshPost();
-  }, [item, presentCommentReply, refreshPost]);
+    if (reply) appendComments([reply]);
+  }, [item, presentCommentReply, appendComments]);
 
   const endActions: [SlidingItemAction, SlidingItemAction] = useMemo(() => {
     return [

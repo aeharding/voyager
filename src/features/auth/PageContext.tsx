@@ -25,9 +25,11 @@ interface IPageContext {
   presentLoginIfNeeded: () => boolean;
 
   /**
-   * @returns true if replied (requires feed refresh)
+   * @returns comment payload if replied
    */
-  presentCommentReply: (item: CommentReplyItem) => Promise<boolean>;
+  presentCommentReply: (
+    item: CommentReplyItem
+  ) => Promise<CommentView | undefined>;
 
   /**
    * Will mutate comment in store, which view should be linked to for updates
@@ -41,7 +43,7 @@ interface IPageContext {
 export const PageContext = createContext<IPageContext>({
   page: undefined,
   presentLoginIfNeeded: () => false,
-  presentCommentReply: async () => false,
+  presentCommentReply: async () => undefined,
   presentCommentEdit: () => false,
   presentReport: () => {},
 });
@@ -67,10 +69,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
 
   // Comment reply start
   const commentReplyItem = useRef<CommentReplyItem>();
-  const commentReplyCb = useRef<((replied: boolean) => void) | undefined>();
+  const commentReplyCb = useRef<
+    ((replied: CommentView | undefined) => void) | undefined
+  >();
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const presentCommentReply = useCallback((item: CommentReplyItem) => {
-    const promise = new Promise<boolean>(
+    const promise = new Promise<CommentView | undefined>(
       (resolve) => (commentReplyCb.current = resolve)
     );
 
@@ -83,7 +87,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   useEffect(() => {
     if (isReplyOpen) return;
 
-    commentReplyCb.current?.(false);
+    commentReplyCb.current?.(undefined);
     commentReplyCb.current = undefined;
     return;
   }, [isReplyOpen]);
@@ -119,8 +123,8 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         item={commentReplyItem.current!}
         isOpen={isReplyOpen}
         setIsOpen={setIsReplyOpen}
-        onReply={(replied) => {
-          commentReplyCb.current?.(replied);
+        onReply={(reply) => {
+          commentReplyCb.current?.(reply);
           commentReplyCb.current = undefined;
         }}
       />

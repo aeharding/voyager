@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   MAX_DEFAULT_COMMENT_DEPTH,
   buildCommentsTree,
@@ -51,23 +58,22 @@ const Empty = styled.div`
   }
 `;
 
+export type CommentsHandle = {
+  appendComments: (comments: CommentView[]) => void;
+};
+
 interface CommentsProps {
   header: React.ReactNode;
   postId: number;
   commentPath?: string;
   op: Person;
   sort: CommentSortType;
-  commentsLastUpdated: number;
 }
 
-export default function Comments({
-  header,
-  postId,
-  commentPath,
-  op,
-  sort,
-  commentsLastUpdated,
-}: CommentsProps) {
+export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
+  { header, postId, commentPath, op, sort },
+  ref
+) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const [page, setPage] = useState(0);
@@ -94,10 +100,14 @@ export default function Comments({
 
   useSetActivePage(virtuosoRef);
 
+  useImperativeHandle(ref, () => ({
+    appendComments,
+  }));
+
   useEffect(() => {
     fetchComments(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, commentPath, jwt, postId, commentsLastUpdated]);
+  }, [sort, commentPath, jwt, postId]);
 
   async function fetchComments(refresh = false) {
     if (refresh) {
@@ -181,7 +191,7 @@ export default function Comments({
 
   async function appendComments(comments: CommentView[]) {
     setComments((existingComments) =>
-      uniqBy([...existingComments, ...comments], (c) => c.comment.id)
+      uniqBy([...comments, ...existingComments], (c) => c.comment.id)
     );
   }
 
@@ -246,4 +256,4 @@ export default function Comments({
       />
     </FeedContext.Provider>
   );
-}
+});

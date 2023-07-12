@@ -3,7 +3,7 @@ import { useAppDispatch } from "../../../store";
 import Stats from "./Stats";
 import styled from "@emotion/styled";
 import Embed from "../shared/Embed";
-import Comments from "../../comment/Comments";
+import Comments, { CommentsHandle } from "../../comment/Comments";
 import Markdown from "../../shared/Markdown";
 import PostActions from "../actions/PostActions";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -126,8 +126,8 @@ export default function PostDetail({
   );
   const titleRef = useRef<HTMLDivElement>(null);
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
-  const [commentsLastUpdated, setCommentsLastUpdated] = useState(Date.now());
   const [ionViewEntered, setIonViewEntered] = useState(false);
+  const commentsRef = useRef<CommentsHandle>(null);
 
   // Avoid rerender from marking a post as read until the page
   // has fully transitioned in.
@@ -222,9 +222,9 @@ export default function PostDetail({
             onReply={async () => {
               if (presentLoginIfNeeded()) return;
 
-              const replied = await presentCommentReply(post);
+              const reply = await presentCommentReply(post);
 
-              if (replied) setCommentsLastUpdated(Date.now());
+              if (reply) commentsRef.current?.appendComments([reply]);
             }}
           />
         </BorderlessIonItem>
@@ -235,12 +235,12 @@ export default function PostDetail({
   return (
     <>
       <Comments
+        ref={commentsRef}
         header={renderHeader(post)}
         postId={post.post.id}
         commentPath={commentPath}
         op={post.creator}
         sort={sort}
-        commentsLastUpdated={commentsLastUpdated}
       />
       {commentPath && <ViewAllComments />}
     </>
