@@ -18,9 +18,10 @@ export default function useCollapseRootComment(
 
     dispatch(toggleCommentCollapseState(rootCommentId));
 
-    if (!activePage || !("current" in activePage)) return;
+    const currentActivePage = activePage?.current;
+    if (!currentActivePage || !("scrollToIndex" in currentActivePage)) return;
 
-    activePage.current?.scrollToIndex({
+    currentActivePage.scrollToIndex({
       index: rootIndex,
       behavior: "smooth",
     });

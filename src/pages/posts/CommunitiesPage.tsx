@@ -53,7 +53,7 @@ export default function CommunitiesPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { actor } = useParams<{ actor: string }>();
   const jwt = useAppSelector(jwtSelector);
-  const pageRef = useRef();
+  const pageRef = useRef<HTMLElement>(null);
 
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
 
@@ -63,7 +63,7 @@ export default function CommunitiesPage() {
 
   const favorites = useAppSelector((state) => state.community.favorites);
 
-  useSetActivePage(pageRef.current);
+  useSetActivePage(pageRef);
 
   const communities = useMemo(() => {
     const communities = uniqBy(

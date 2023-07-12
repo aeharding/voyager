@@ -14,7 +14,6 @@ import { handleSelector } from "../../features/auth/authSlice";
 import LoggedOut from "../../features/user/LoggedOut";
 import AccountSwitcher from "../../features/auth/AccountSwitcher";
 import { useContext, useRef } from "react";
-import { useSetActivePage } from "../../features/auth/AppContext";
 import AppContent from "../../features/shared/AppContent";
 import { PageContext } from "../../features/auth/PageContext";
 
@@ -31,8 +30,6 @@ export default function ProfilePage() {
     }
   );
   const { presentLoginIfNeeded } = useContext(PageContext);
-
-  useSetActivePage(pageRef.current);
 
   return (
     <IonPage className="grey-bg" ref={pageRef}>

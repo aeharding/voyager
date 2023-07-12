@@ -109,7 +109,13 @@ export default function TabbedRoutes() {
       router.push(`/posts/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
       return;
     }
-    if (location.pathname === `/posts/${actor ?? iss ?? DEFAULT_ACTOR}`) return;
+
+    const communitiesPath = `/posts/${actor ?? iss ?? DEFAULT_ACTOR}`;
+    if (
+      location.pathname === communitiesPath ||
+      location.pathname === `${communitiesPath}/`
+    )
+      return;
 
     if (router.canGoBack()) {
       router.goBack();

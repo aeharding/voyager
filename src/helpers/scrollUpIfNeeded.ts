@@ -1,37 +1,46 @@
-import { RefObject } from "react";
-import { VirtuosoHandle } from "react-virtuoso";
+import { Page } from "../features/auth/AppContext";
 
-type Page = HTMLElement | RefObject<VirtuosoHandle>;
-
-export function scrollUpIfNeeded(
+export async function scrollUpIfNeeded(
   activePage: Page | undefined,
-  index: number | undefined = 0
+  index: number | undefined = undefined,
+  behavior: "auto" | "smooth" = "smooth"
 ) {
-  if (!activePage) return false;
+  if (!activePage?.current) return false;
 
-  if ("querySelector" in activePage) {
+  const current = activePage.current;
+
+  if ("querySelector" in current) {
     const scroll =
-      activePage?.querySelector('[data-virtuoso-scroller="true"]') ??
-      activePage
-        ?.querySelector("ion-content")
+      current.querySelector('[data-virtuoso-scroller="true"]') ??
+      current
+        .querySelector("ion-content")
         ?.shadowRoot?.querySelector(".inner-scroll");
 
     if (scroll?.scrollTop) {
-      scroll.scrollTo({ top: index, behavior: "smooth" });
+      scroll.scrollTo({ top: 0, behavior });
       return true;
     }
   } else {
-    return new Promise((resolve) =>
-      activePage.current?.getState((state) => {
+    return new Promise<boolean>((resolve) =>
+      current.getState((state) => {
         if (state.scrollTop) {
-          activePage.current?.scrollToIndex({
-            index: index,
-            behavior: "smooth",
-          });
+          if (index != null) {
+            current.scrollToIndex({
+              index,
+              behavior,
+            });
+          } else {
+            current.scrollTo({
+              top: 0,
+              behavior,
+            });
+          }
         }
 
         resolve(!!state.scrollTop);
       })
     );
   }
+
+  return false;
 }

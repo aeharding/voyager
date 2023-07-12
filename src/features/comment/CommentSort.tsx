@@ -12,11 +12,9 @@ import {
   hourglassOutline,
   timeOutline,
 } from "ionicons/icons";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { startCase } from "lodash";
 import { CommentSortType } from "lemmy-js-client";
-import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
-import { AppContext } from "../auth/AppContext";
 
 export const COMMENT_SORTS = ["Hot", "Top", "New", "Old"] as const;
 
@@ -35,7 +33,6 @@ interface CommentSortProps {
 
 export default function CommentSort({ sort, setSort }: CommentSortProps) {
   const [open, setOpen] = useState(false);
-  const { activePage } = useContext(AppContext);
 
   return (
     <>
@@ -51,7 +48,6 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
         ) => {
           if (e.detail.data) {
             setSort(e.detail.data);
-            scrollUpIfNeeded(activePage, 1);
           }
         }}
         header="Sort by..."
