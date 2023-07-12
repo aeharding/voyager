@@ -103,7 +103,7 @@ const PostDeets = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 1.3em;
+  font-size: 1.125rem;
   padding: 16px 0 0;
   margin-bottom: 16px;
 `;

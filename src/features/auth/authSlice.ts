@@ -243,6 +243,9 @@ export const logoutAccount =
     }
 
     dispatch(removeAccount(handle));
+
+    const iss = jwtIssSelector(getState());
+    if (iss) dispatch(updateConnectedInstance(iss));
   };
 
 function parseJWT(payload: string): LemmyJWT {

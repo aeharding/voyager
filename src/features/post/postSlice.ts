@@ -188,6 +188,8 @@ export const voteOnPost =
 
     if (!jwt) throw new Error("Not authorized");
 
+    dispatch(setPostRead(postId));
+
     try {
       await clientSelector(getState())?.likePost({
         post_id: postId,
@@ -196,7 +198,6 @@ export const voteOnPost =
       });
     } catch (error) {
       dispatch(updatePostVote({ postId, vote: oldVote }));
-
       throw error;
     }
   };
