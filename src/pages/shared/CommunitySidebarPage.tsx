@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { getCommunity } from "../../features/community/communitySlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { NewPostContextProvider } from "../../features/post/new/NewPostModal";
-import { CenteredSpinner } from "../../features/post/detail/PostDetail";
+import { CenteredSpinner } from "../posts/PostPage";
 import Sidebar from "../../features/community/sidebar/Sidebar";
 import AppContent from "../../features/shared/AppContent";
 

@@ -75,7 +75,7 @@ export default function ProfileFeedHiddenPostsPage() {
       const result = await Promise.all(
         postIds.map((postId) => {
           const potentialPost = postById[postId];
-          if (potentialPost) return potentialPost;
+          if (typeof potentialPost === "object") return potentialPost;
 
           return client.getPost({ id: postId, auth: jwt });
         })
