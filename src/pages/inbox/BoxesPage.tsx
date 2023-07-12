@@ -1,4 +1,6 @@
+import { type FC } from "react";
 import {
+  IonBadge,
   IonHeader,
   IonIcon,
   IonList,
@@ -21,8 +23,22 @@ import { useAppDispatch } from "../../store";
 import { getInboxCounts } from "../../features/inbox/inboxSlice";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../features/auth/PageContext";
+import { useAppSelector } from "../../store";
+
+const UnreadBubble: FC<{ count: number }> = ({ count }) =>
+  count ? (
+    <IonBadge color="danger" slot="end">
+      {count}
+    </IonBadge>
+  ) : null;
 
 export default function BoxesPage() {
+  const {
+    mentions: unreadMentions,
+    messages: unreadMessages,
+    replies: unreadReplies,
+  } = useAppSelector((state) => state.inbox.counts);
+
   const dispatch = useAppDispatch();
 
   const { presentLoginIfNeeded } = useContext(PageContext);
@@ -77,6 +93,7 @@ export default function BoxesPage() {
           >
             <IonIcon icon={chatbubbleOutline} color="primary" />
             <SettingLabel>Comment Replies</SettingLabel>
+            <UnreadBubble count={unreadReplies} />
           </InsetIonItem>
           <InsetIonItem
             routerLink="/inbox/mentions"
@@ -84,6 +101,7 @@ export default function BoxesPage() {
           >
             <IonIcon icon={personCircleOutline} color="primary" />
             <SettingLabel>Mentions</SettingLabel>
+            <UnreadBubble count={unreadMentions} />
           </InsetIonItem>
         </IonList>
 
@@ -94,6 +112,7 @@ export default function BoxesPage() {
           >
             <IonIcon icon={mail} color="primary" />
             <SettingLabel>Messages</SettingLabel>
+            <UnreadBubble count={unreadMessages} />
           </InsetIonItem>
         </IonList>
       </AppContent>
