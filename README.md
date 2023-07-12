@@ -16,7 +16,7 @@ A mobile-first Lemmy web client
 
 <br/>
 <p align="center">
-  <a href="https://matrix.to/#/#wefwef.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat&logo=matrix" alt="matrix chat"></a>
+  <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat&logo=matrix" alt="matrix chat"></a>
 </p>
 <br/>
 
@@ -100,7 +100,7 @@ Note: The provided Dockerfile creates a container which will eventually run Voya
 ### Ecosystem
 
 - 🇸🇬 [w.opnxng.com](https://w.opnxng.com) - Voyager hosted by Opnxng in Singapore. [Contact/privacy](https://about.opnxng.com)
-- 🇲🇽 [wefwef.nohost.network](https://wefwef.nohost.network) - Voyager hosted by Nohost in Mexico. [Contact/privacy](https://nohost.network)
+- 🇲🇽 [voyager.nohost.network](https://voyager.nohost.network) - Voyager hosted by Nohost in Mexico. [Contact/privacy](https://nohost.network)
 
 > **Note**: Community deployments are **NOT** maintained by the Voyager team. They may not be synced with Voyager's source code. Please do your own research about the host servers before using them.
 

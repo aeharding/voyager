@@ -14,6 +14,8 @@ import { getSafeArea, isAndroid } from "../../helpers/device";
 
 import "photoswipe/style.css";
 import { useLocation } from "react-router";
+import { useAppDispatch } from "../../store";
+import { setPostRead } from "../post/postSlice";
 
 const Container = styled.div`
   position: absolute;
@@ -57,6 +59,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     return () => {
@@ -113,6 +116,12 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
       instance.addFilter("placeholderSrc", () => {
         return img.src;
+      });
+
+      instance.on("openingAnimationEnd", () => {
+        if (!post) return;
+
+        dispatch(setPostRead(post.post.id));
       });
 
       instance.on("closingAnimationEnd", () => setPost(undefined));
@@ -225,7 +234,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       instance.init();
       lightboxRef.current = instance;
     },
-    []
+    [dispatch]
   );
 
   return (
