@@ -31,7 +31,7 @@ import GalleryProvider from "./features/gallery/GalleryProvider";
 setupIonicReact({
   rippleEffect: false,
   mode: "ios",
-  // swipeBackEnabled: isInstalled(),
+  swipeBackEnabled: isInstalled(),
   hardwareBackButton: true,
 });
 
