@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 import Feed, { FeedProps, FetchFn } from "./Feed";
 import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
@@ -8,8 +8,6 @@ import { postHiddenByIdSelector, receivedPosts } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
-import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
-import { AppContext } from "../auth/AppContext";
 
 const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -42,7 +40,6 @@ export default function PostCommentFeed({
     (state) => state.appearance.posts.type
   );
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
-  const { activePage } = useContext(AppContext);
 
   const borderCss = (() => {
     switch (postAppearanceType) {
@@ -83,8 +80,6 @@ export default function PostCommentFeed({
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
       const items = await _fetchFn(page);
-
-      if (page === 1) scrollUpIfNeeded(activePage, 0, "auto");
 
       /* receivedPosts needs to be awaited so that we fetch post metadatas
          from the db before showing them to prevent flickering
