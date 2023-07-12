@@ -7,7 +7,8 @@ import {
   IonItemOptions,
   IonItemSliding,
 } from "@ionic/react";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   --ion-item-border-color: transparent;
@@ -48,6 +49,14 @@ export interface SlidingItemProps {
 const FIRST_ACTION_RATIO = 1;
 const SECOND_ACTION_RATIO = 1.75;
 
+function getActiveItem(ratio: number) {
+  ratio = Math.abs(ratio);
+
+  if (ratio > SECOND_ACTION_RATIO) return 2;
+  if (ratio > FIRST_ACTION_RATIO) return 1;
+  return 0;
+}
+
 export default function SlidingItem({
   startActions,
   endActions,
@@ -58,6 +67,8 @@ export default function SlidingItem({
   const [ratio, setRatio] = useState(0);
   const [dragging, setDragging] = useState(false);
 
+  const activeActionRef = useRef(0);
+
   async function onIonDrag(e: IonItemSlidingCustomEvent<unknown>) {
     dragRef.current = e;
 
@@ -67,6 +78,12 @@ export default function SlidingItem({
 
     setRatio(ratio);
     setDragging(true);
+
+    if (getActiveItem(ratio) > activeActionRef.current) {
+      Haptics.impact({ style: ImpactStyle.Light });
+    }
+
+    activeActionRef.current = getActiveItem(ratio);
   }
 
   /*

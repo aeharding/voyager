@@ -17,11 +17,18 @@
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light"
   },
   "dependencies": {
+    "@capacitor/app": "^5.0.6",
+    "@capacitor/core": "5.1.1",
+    "@capacitor/haptics": "^5.0.6",
+    "@capacitor/ios": "5.1.1",
+    "@capacitor/keyboard": "^5.0.6",
+    "@capacitor/status-bar": "^5.0.6",
     "express": "^4.18.2",
     "http-proxy-middleware": "^2.0.6",
     "vite-express": "^0.9.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "5.1.1",
     "@emotion/babel-plugin": "^11.11.0",
     "@emotion/css": "^11.11.2",
     "@emotion/eslint-plugin": "^11.11.0",
@@ -64,13 +71,13 @@
     "lemmy-js-client": "0.18.0",
     "lodash": "^4.17.21",
     "mdast-util-gfm-autolink-literal-lemmy": "^1.0.3",
-    "photoswipe": "^5.3.8",
     "mdast-util-gfm-strikethrough": "^1.0.3",
     "mdast-util-gfm-table": "^1.0.7",
     "micromark": "^3.0.0",
     "micromark-extension-gfm-strikethrough": "^1.0.0",
     "micromark-extension-gfm-table": "^1.0.0",
     "micromark-util-combine-extensions": "^1.0.0",
+    "photoswipe": "^5.3.8",
     "prettier": "^2.8.8",
     "pwa-asset-generator": "^6.3.1",
     "react": "^18.2.0",

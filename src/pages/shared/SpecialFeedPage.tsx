@@ -66,7 +66,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
             </TitleSearch>
           </IonToolbar>
         </IonHeader>
-        <IonContent>
+        <IonContent scrollY={false} fullscreen>
           <PostCommentFeed fetchFn={fetchFn} />
           <TitleSearchResults />
         </IonContent>

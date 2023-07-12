@@ -158,15 +158,16 @@ export default function Feed<I>({
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
-        disabled={!isListAtTop}
+        // disabled={!isListAtTop}
       >
         <IonRefresherContent />
       </IonRefresher>
 
       <Virtuoso
+        className="ion-content-scroll-host"
         ref={virtuosoRef}
         style={{ height: "100%" }}
-        atTopStateChange={setIsListAtTop}
+        // atTopStateChange={setIsListAtTop}
         {...computeProp}
         totalCount={filteredItems.length}
         itemContent={(index) => {
