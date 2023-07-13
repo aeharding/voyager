@@ -124,7 +124,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
       if (isUrlVideo(post.post.url)) {
         return (
           <ImageContainer>
-            <Video src={post.post.url} />
+            <Video src={post.post.url} blur={isNsfw(post)} />
           </ImageContainer>
         );
       }
