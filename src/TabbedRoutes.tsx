@@ -16,17 +16,21 @@ import {
   fileTray,
   telescope,
 } from "ionicons/icons";
-import PostDetail from "./features/post/detail/PostDetail";
+import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
-import { useAppSelector } from "./store";
-import { jwtIssSelector, jwtSelector } from "./features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "./store";
+import {
+  handleSelector,
+  jwtIssSelector,
+  jwtSelector,
+} from "./features/auth/authSlice";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
@@ -49,11 +53,13 @@ import { UpdateContext } from "./pages/settings/update/UpdateContext";
 import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
-import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
-import PostAppearancePage from "./pages/settings/PostAppearancePage";
+import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
+import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
+import { getFavoriteCommunities } from "./features/community/communitySlice";
+import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -71,6 +77,8 @@ export default function TabbedRoutes() {
   const totalUnread = useAppSelector(totalUnreadSelector);
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
+  const dispatch = useAppDispatch();
+  const activeHandle = useAppSelector(handleSelector);
 
   const settingsNotificationCount =
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
@@ -88,16 +96,26 @@ export default function TabbedRoutes() {
   const isProfileButtonDisabled = location.pathname.startsWith("/profile");
   const isSearchButtonDisabled = location.pathname.startsWith("/search");
 
+  useEffect(() => {
+    dispatch(getFavoriteCommunities());
+  }, [dispatch, activeHandle]);
+
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
       router.push(`/posts/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
       return;
     }
-    if (location.pathname === `/posts/${actor ?? iss ?? DEFAULT_ACTOR}`) return;
+
+    const communitiesPath = `/posts/${actor ?? iss ?? DEFAULT_ACTOR}`;
+    if (
+      location.pathname === communitiesPath ||
+      location.pathname === `${communitiesPath}/`
+    )
+      return;
 
     if (router.canGoBack()) {
       router.goBack();
@@ -112,7 +130,7 @@ export default function TabbedRoutes() {
   async function onInboxClick() {
     if (!isInboxButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push(`/inbox`, "back");
   }
@@ -120,7 +138,7 @@ export default function TabbedRoutes() {
   async function onProfileClick() {
     if (!isProfileButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push("/profile", "back");
   }
@@ -131,39 +149,9 @@ export default function TabbedRoutes() {
     // if the search page is already open, focus the search bar
     focusSearchBar();
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push(`/search`, "back");
-  }
-
-  async function scrollUpIfNeeded() {
-    if (!activePage) return false;
-
-    if ("querySelector" in activePage) {
-      const scroll =
-        activePage?.querySelector('[data-virtuoso-scroller="true"]') ??
-        activePage
-          ?.querySelector("ion-content")
-          ?.shadowRoot?.querySelector(".inner-scroll");
-
-      if (scroll?.scrollTop) {
-        scroll.scrollTo({ top: 0, behavior: "smooth" });
-        return true;
-      }
-    } else {
-      return new Promise((resolve) =>
-        activePage.current?.getState((state) => {
-          if (state.scrollTop) {
-            activePage.current?.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            });
-          }
-
-          resolve(!!state.scrollTop);
-        })
-      );
-    }
   }
 
   function buildGeneralBrowseRoutes(tab: string) {
@@ -214,10 +202,22 @@ export default function TabbedRoutes() {
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Saved" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
         <ActorRedirect>
           <ProfileFeedHiddenPostsPage />
         </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/message`}>
+        <InboxAuthRequired>
+          <ConversationPage />
+        </InboxAuthRequired>
       </Route>,
     ];
   }
@@ -301,7 +301,6 @@ export default function TabbedRoutes() {
             <ProfilePage />
           </Route>
           {...buildGeneralBrowseRoutes("profile")}
-
           <Route exact path="/profile/:actor">
             <Redirect to="/profile" push={false} />
           </Route>
@@ -322,6 +321,7 @@ export default function TabbedRoutes() {
           <Route exact path="/search/:actor">
             <Redirect to="/search" push={false} />
           </Route>
+
           <Route exact path="/settings">
             <SettingsPage />
           </Route>
@@ -337,17 +337,17 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/appearance">
             <AppearancePage />
           </Route>
-          <Route exact path="/settings/apollo-migrate">
-            <ApolloMigratePage />
+          <Route exact path="/settings/blocks">
+            <BlocksSettingsPage />
           </Route>
-          <Route exact path="/settings/apollo-migrate/:search">
+          <Route exact path="/settings/reddit-migrate">
+            <RedditMigratePage />
+          </Route>
+          <Route exact path="/settings/reddit-migrate/:search">
             <SearchCommunitiesPage />
           </Route>
-          {/* general routes for settings is only for apollo-migrate */}
+          {/* general routes for settings is only for reddit-migrate */}
           {...buildGeneralBrowseRoutes("settings")}
-          <Route exact path="/settings/appearance/posts">
-            <PostAppearancePage />
-          </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton

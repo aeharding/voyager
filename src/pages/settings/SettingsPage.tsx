@@ -17,6 +17,7 @@ import {
   mailOutline,
   openOutline,
   reloadCircle,
+  removeCircle,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { useContext, useEffect } from "react";
@@ -24,6 +25,8 @@ import { UpdateContext } from "./update/UpdateContext";
 import useShouldInstall from "../../features/pwa/useShouldInstall";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
+import { useAppSelector } from "../../store";
+import { handleSelector } from "../../features/auth/authSlice";
 
 const IconBg = styled.div<{ color: string }>`
   width: 30px;
@@ -46,6 +49,7 @@ const IconBg = styled.div<{ color: string }>`
 export default function SettingsPage() {
   const { status: updateStatus, checkForUpdates } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
+  const currentHandle = useAppSelector(handleSelector);
 
   useEffect(() => {
     checkForUpdates();
@@ -87,21 +91,31 @@ export default function SettingsPage() {
               <IonBadge color="danger">1</IonBadge>
             )}
           </InsetIonItem>
+        </IonList>
 
+        <IonList inset color="primary">
           <InsetIonItem routerLink="/settings/appearance">
             <IconBg color="color(display-p3 1 0 0)">
               <IonIcon icon={colorPalette} />
             </IconBg>
             <SettingLabel>Appearance</SettingLabel>
           </InsetIonItem>
+          {currentHandle && (
+            <InsetIonItem routerLink="/settings/blocks">
+              <IconBg color="color(display-p3 0 0.6 1)">
+                <IonIcon icon={removeCircle} />
+              </IconBg>
+              <SettingLabel>Filters & Blocks</SettingLabel>
+            </InsetIonItem>
+          )}
         </IonList>
 
         <IonList inset color="primary">
-          <InsetIonItem routerLink="/settings/apollo-migrate">
-            <IconBg color="color(display-p3 1 0 1)">
+          <InsetIonItem routerLink="/settings/reddit-migrate">
+            <IconBg color="color(display-p3 0.7 0 0)">
               <IonIcon icon={bagCheckOutline} />
             </IconBg>
-            <SettingLabel>Migrate Apollo export</SettingLabel>
+            <SettingLabel>Migrate subreddits</SettingLabel>
           </InsetIonItem>
         </IonList>
 
@@ -111,7 +125,7 @@ export default function SettingsPage() {
             <SettingLabel>Terms &amp; Privacy</SettingLabel>
           </InsetIonItem>
           <InsetIonItem
-            href="https://github.com/aeharding/wefwef"
+            href="https://github.com/aeharding/voyager"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -123,7 +137,7 @@ export default function SettingsPage() {
               </sup>
             </SettingLabel>
           </InsetIonItem>
-          <InsetIonItem href="mailto:hello@wefwef.app">
+          <InsetIonItem href="mailto:hello@vger.app">
             <IonIcon icon={mailOutline} color="primary" />
             <SettingLabel>
               Contact us{" "}

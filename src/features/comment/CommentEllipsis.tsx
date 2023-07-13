@@ -12,6 +12,7 @@ import {
   bookmarkOutline,
   chevronCollapseOutline,
   ellipsisHorizontal,
+  flagOutline,
   pencilOutline,
   personOutline,
   shareOutline,
@@ -28,13 +29,14 @@ import {
   getRemoteHandle,
   canModify as isCommentMutable,
 } from "../../helpers/lemmy";
-import { deleteComment, voteOnComment } from "./commentSlice";
+import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import styled from "@emotion/styled";
 import { notEmpty } from "../../helpers/array";
 import useCollapseRootComment from "./useCollapseRootComment";
 import { FeedContext } from "../feed/FeedContext";
 import SelectText from "../../pages/shared/SelectTextModal";
 import { PageContext } from "../auth/PageContext";
+import { saveError, voteError } from "../../helpers/toastMessages";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -52,7 +54,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const { refresh: refreshPost } = useContext(FeedContext);
+  const { appendComments } = useContext(FeedContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
@@ -64,6 +66,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
     presentLoginIfNeeded,
     presentCommentReply,
     presentCommentEdit,
+    presentReport,
   } = useContext(PageContext);
 
   const [selectText, onDismissSelectText] = useIonModal(SelectText, {
@@ -74,8 +77,12 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById
   );
+  const commentSavedById = useAppSelector(
+    (state) => state.comment.commentSavedById
+  );
 
   const myVote = commentVotesById[comment.comment.id] ?? comment.my_vote;
+  const mySaved = commentSavedById[comment.comment.id] ?? comment.saved;
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
 
@@ -105,7 +112,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             icon: arrowDownOutline,
           },
           {
-            text: "Save",
+            text: !mySaved ? "Save" : "Unsave",
             role: "save",
             icon: bookmarkOutline,
           },
@@ -151,29 +158,50 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
               }
             : undefined,
           {
+            text: "Report",
+            role: "report",
+            icon: flagOutline,
+          },
+          {
             text: "Cancel",
             role: "cancel",
           },
         ].filter(notEmpty)}
+        onDidDismiss={() => setOpen(false)}
         onWillDismiss={async (e) => {
-          setOpen(false);
-
           switch (e.detail.role) {
             case "upvote":
               if (presentLoginIfNeeded()) return;
 
-              dispatch(voteOnComment(comment.comment.id, myVote === 1 ? 0 : 1));
+              try {
+                await dispatch(
+                  voteOnComment(comment.comment.id, myVote === 1 ? 0 : 1)
+                );
+              } catch (error) {
+                present(voteError);
+              }
+
               break;
             case "downvote":
               if (presentLoginIfNeeded()) return;
 
-              dispatch(
-                voteOnComment(comment.comment.id, myVote === -1 ? 0 : -1)
-              );
+              try {
+                await dispatch(
+                  voteOnComment(comment.comment.id, myVote === -1 ? 0 : -1)
+                );
+              } catch (error) {
+                present(voteError);
+              }
+
               break;
             case "save":
               if (presentLoginIfNeeded()) return;
-              // TODO
+
+              try {
+                await dispatch(saveComment(comment.comment.id, !mySaved));
+              } catch (error) {
+                present(saveError);
+              }
               break;
             case "edit":
               presentCommentEdit(comment);
@@ -202,9 +230,9 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             case "reply": {
               if (presentLoginIfNeeded()) return;
 
-              const replied = await presentCommentReply(comment);
+              const reply = await presentCommentReply(comment);
 
-              if (replied) refreshPost();
+              if (reply) appendComments([reply]);
               break;
             }
             case "select-text":
@@ -221,6 +249,9 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
               break;
             case "collapse":
               collapseRootComment();
+              break;
+            case "report":
+              presentReport(comment);
               break;
           }
         }}

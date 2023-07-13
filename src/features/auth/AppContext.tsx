@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { VirtuosoHandle } from "react-virtuoso";
 
-type Page = HTMLElement | RefObject<VirtuosoHandle>;
+export type Page = RefObject<VirtuosoHandle | HTMLElement>;
 
 interface IAppContext {
   // used for determining whether page needs to be scrolled up first
@@ -26,9 +26,7 @@ export function AppContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [activePage, setActivePage] = useState<
-    HTMLElement | React.RefObject<VirtuosoHandle> | undefined
-  >();
+  const [activePage, setActivePage] = useState<Page | undefined>();
 
   return (
     <AppContext.Provider value={{ activePage, setActivePage }}>
@@ -37,15 +35,43 @@ export function AppContextProvider({
   );
 }
 
-export function useSetActivePage(page?: Page) {
+export function useSetActivePage(page?: Page, enabled = true) {
   const { activePage, setActivePage } = useContext(AppContext);
 
+  useEffect(() => {
+    if (!enabled) return;
+
+    if (page) setActivePage(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useIonViewDidEnter(() => {
+    if (!enabled) return;
+
     if (page) setActivePage(page);
   });
 
   useEffect(() => {
-    if (!activePage && page) setActivePage(page);
+    if (!enabled) return;
+    if (!page) return;
+
+    if (!activePage) {
+      setActivePage(page);
+      return;
+    }
+
+    const current = activePage.current;
+
+    if (current && "querySelector" in current) {
+      if (current.classList.contains("ion-page-hidden")) {
+        setActivePage(page);
+      }
+      return;
+    }
+
+    if (!current) {
+      setActivePage(page);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 }

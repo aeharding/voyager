@@ -21,18 +21,19 @@ import {
 } from "@ionic/react";
 import { useEffect, useState } from "react";
 import useClient from "../../../helpers/useClient";
-import { useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { jwtSelector, urlSelector } from "../../auth/authSlice";
 import { startCase } from "lodash";
 import { css } from "@emotion/react";
-import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
+import { getHandle, getRemoteHandle, isUrlImage } from "../../../helpers/lemmy";
 import { cameraOutline } from "ionicons/icons";
-import { NewPostProps } from "./NewPost";
+import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PhotoPreview from "./PhotoPreview";
 import { uploadImage } from "../../../services/lemmy";
+import { receivedPosts } from "../postSlice";
 
 const Container = styled.div`
   position: absolute;
@@ -57,7 +58,7 @@ const IonInputTitle = styled(IonInput)`
 `;
 
 const PostingIn = styled.div`
-  font-size: 0.9em;
+  font-size: 0.875em;
   margin: 0.5rem 0;
   text-align: center;
   color: var(--ion-color-medium);
@@ -76,26 +77,58 @@ const HiddenInput = styled.input`
 
 type PostType = "photo" | "link" | "text";
 
-export default function NewPostRoot({
+export default function PostEditorRoot({
   setCanDismiss,
-  community,
   dismiss,
-}: NewPostProps) {
+  ...props
+}: PostEditorProps) {
+  const community =
+    "existingPost" in props
+      ? props.existingPost.community
+      : props.community?.community;
+
   if (!community) throw new Error("community must be defined");
 
-  const [postType, setPostType] = useState<PostType>("photo");
+  const existingPost = "existingPost" in props ? props.existingPost : undefined;
+
+  const dispatch = useAppDispatch();
+
+  const initialImage =
+    existingPost?.post.url && isUrlImage(existingPost.post.url)
+      ? existingPost.post.url
+      : undefined;
+
+  const initialPostType = (() => {
+    if (!existingPost) return "photo";
+
+    if (initialImage) return "photo";
+
+    if (existingPost.post.url) return "link";
+
+    return "text";
+  })();
+
+  const initialTitle = existingPost?.post.name ?? "";
+
+  const initialUrl = initialImage ? "" : existingPost?.post.url ?? "";
+
+  const initialText = existingPost?.post.body ?? "";
+
+  const initialNsfw = existingPost?.post.nsfw ?? false;
+
+  const [postType, setPostType] = useState<PostType>(initialPostType);
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
   const [present] = useIonToast();
   const [loading, setLoading] = useState(false);
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-  const [text, setText] = useState("");
-  const [nsfw, setNsfw] = useState(false);
+  const [title, setTitle] = useState(initialTitle);
+  const [url, setUrl] = useState(initialUrl);
+  const [text, setText] = useState(initialText);
+  const [nsfw, setNsfw] = useState(initialNsfw);
 
-  const [photoUrl, setPhotoUrl] = useState("");
+  const [photoUrl, setPhotoUrl] = useState(initialImage ?? "");
   const [photoPreviewURL, setPhotoPreviewURL] = useState<string | undefined>(
-    undefined
+    initialImage
   );
   const [photoUploading, setPhotoUploading] = useState(false);
 
@@ -104,14 +137,36 @@ export default function NewPostRoot({
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
-  useEffect(() => {
-    setCanDismiss(!text && !title && !url && !photoPreviewURL);
-  }, [setCanDismiss, text, title, url, photoPreviewURL]);
-
   const showNsfwToggle = !!(
     (postType === "photo" && photoPreviewURL) ||
     (postType === "link" && url)
   );
+
+  useEffect(() => {
+    setCanDismiss(
+      initialPostType === postType &&
+        text === initialText &&
+        title === initialTitle &&
+        url === initialUrl &&
+        photoPreviewURL === initialImage &&
+        initialNsfw === (showNsfwToggle && nsfw) // if not showing toggle, it's not nsfw
+    );
+  }, [
+    initialPostType,
+    postType,
+    setCanDismiss,
+    text,
+    title,
+    url,
+    photoPreviewURL,
+    initialText,
+    initialTitle,
+    initialUrl,
+    initialImage,
+    initialNsfw,
+    showNsfwToggle,
+    nsfw,
+  ]);
 
   function canSubmit() {
     if (!title) return false;
@@ -182,16 +237,27 @@ export default function NewPostRoot({
 
     let postResponse;
 
-    try {
-      postResponse = await client.createPost({
-        community_id: community.community_view.community.id,
-        name: title,
-        url: postUrl,
-        body: text || undefined,
-        nsfw: showNsfwToggle && nsfw,
+    const payload = {
+      name: title,
+      url: postUrl,
+      body: text || undefined,
+      nsfw: showNsfwToggle && nsfw,
 
-        auth: jwt,
-      });
+      auth: jwt,
+    };
+
+    try {
+      if (existingPost) {
+        postResponse = await client.editPost({
+          post_id: existingPost.post.id,
+          ...payload,
+        });
+      } else {
+        postResponse = await client.createPost({
+          community_id: community.id,
+          ...payload,
+        });
+      }
     } catch (error) {
       present({
         message: "Problem submitting your post. Please try again.",
@@ -205,8 +271,10 @@ export default function NewPostRoot({
       setLoading(false);
     }
 
+    dispatch(receivedPosts([postResponse.post_view]));
+
     present({
-      message: "Post created!",
+      message: existingPost ? "Post edited!" : "Post created!",
       duration: 3500,
       position: "bottom",
       color: "success",
@@ -217,13 +285,15 @@ export default function NewPostRoot({
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     dismiss();
-    router.push(
-      buildGeneralBrowseLink(
-        `/c/${getHandle(community.community_view.community)}/comments/${
-          postResponse.post_view.post.id
-        }`
-      )
-    );
+
+    if (!existingPost)
+      router.push(
+        buildGeneralBrowseLink(
+          `/c/${getHandle(community)}/comments/${
+            postResponse.post_view.post.id
+          }`
+        )
+      );
   }
 
   async function receivedImage(image: File) {
@@ -269,7 +339,9 @@ export default function NewPostRoot({
           </IonButtons>
           <IonTitle>
             <Centered>
-              <IonText>{startCase(postType)} Post</IonText>
+              <IonText>
+                {existingPost ? "Edit Post" : <>{startCase(postType)} Post</>}
+              </IonText>
               {loading && <Spinner color="dark" />}
             </Centered>
           </IonTitle>
@@ -384,9 +456,7 @@ export default function NewPostRoot({
             </IonNavLink>
           </IonList>
 
-          <PostingIn>
-            Posting in {getRemoteHandle(community.community_view.community)}
-          </PostingIn>
+          <PostingIn>Posting in {getRemoteHandle(community)}</PostingIn>
         </Container>
       </IonContent>
     </>

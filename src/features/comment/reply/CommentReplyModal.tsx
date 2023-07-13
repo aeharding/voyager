@@ -1,12 +1,13 @@
 import CommentReply, { CommentReplyItem } from "./CommentReply";
 import React from "react";
 import { DynamicDismissableModal } from "../../shared/DynamicDismissableModal";
+import { CommentView } from "lemmy-js-client";
 
 interface CommentReplyModalProps {
   item: CommentReplyItem;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  onReply: (replied: boolean) => void;
+  onReply: (reply: CommentView | undefined) => void;
 }
 
 export default function CommentReplyModal({
