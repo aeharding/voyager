@@ -5,7 +5,9 @@ import Thumbnail from "./Thumbnail";
 import { maxWidthCss } from "../../../shared/AppContent";
 import PreviewStats from "../PreviewStats";
 import MoreActions from "../../shared/MoreActions";
+import { megaphone } from "ionicons/icons";
 import PersonLink from "../../../labels/links/PersonLink";
+import { AnnouncementIcon } from "../../detail/PostDetail";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { VoteButton } from "../../shared/VoteButton";
 import Save from "../../../labels/Save";
@@ -57,6 +59,13 @@ const Aside = styled.div<{ isRead: boolean }>`
     `}
 `;
 
+const From = styled.div`
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const Actions = styled.div`
   display: flex;
   align-items: center;
@@ -98,15 +107,20 @@ export default function CompactPost({ post, communityMode }: PostProps) {
           {post.post.name} {nsfw && <Nsfw />}
         </Title>
         <Aside isRead={hasBeenRead}>
-          {communityMode ? (
-            <PersonLink
-              person={post.creator}
-              showInstanceWhenRemote
-              prefix="by"
-            />
-          ) : (
-            <CommunityLink community={post.community} />
-          )}
+          <From>
+            {post.counts.featured_community || post.counts.featured_local ? (
+              <AnnouncementIcon icon={megaphone} />
+            ) : undefined}
+            {communityMode ? (
+              <PersonLink
+                person={post.creator}
+                showInstanceWhenRemote
+                prefix="by"
+              />
+            ) : (
+              <CommunityLink community={post.community} />
+            )}
+          </From>
           <Actions>
             <PreviewStats post={post} />
             <StyledMoreActions post={post} onFeed />
