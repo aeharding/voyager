@@ -156,7 +156,7 @@ export default function MoreActions({
         },
         {
           text: "Cancel",
-          data: "cancel",
+          role: "cancel",
         },
       ].filter(notEmpty),
     [isHidden, myVote, mySaved, post.community, post.creator, onFeed, isMyPost]
