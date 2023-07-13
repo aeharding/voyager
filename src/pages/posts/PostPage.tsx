@@ -14,7 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useParams } from "react-router";
 import styled from "@emotion/styled";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { getPost } from "../../features/post/postSlice";
 import AppBackButton from "../../features/shared/AppBackButton";
 import { CommentSortType } from "lemmy-js-client";
@@ -23,6 +23,8 @@ import { jwtSelector } from "../../features/auth/authSlice";
 import CommentSort from "../../features/comment/CommentSort";
 import MoreActions from "../../features/post/shared/MoreActions";
 import PostDetail from "../../features/post/detail/PostDetail";
+import { AppContext } from "../../features/auth/AppContext";
+import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -51,6 +53,8 @@ export default function PostPage() {
   const [sort, setSort] = useState<CommentSortType>("Hot");
 
   const postIfFound = typeof post === "object" ? post : undefined;
+
+  const { activePage } = useContext(AppContext);
 
   useEffect(() => {
     if (post) return;
@@ -107,7 +111,9 @@ export default function PostPage() {
               defaultText={postIfFound?.community.name}
             />
           </IonButtons>
-          <IonTitle>{postIfFound?.counts.comments} Comments</IonTitle>
+          <span onClick={() => scrollUpIfNeeded(activePage)}>
+            <IonTitle>{postIfFound?.counts.comments} Comments</IonTitle>
+          </span>
           <IonButtons slot="end">
             <CommentSort sort={sort} setSort={setSort} />
             {postIfFound && <MoreActions post={postIfFound} />}
