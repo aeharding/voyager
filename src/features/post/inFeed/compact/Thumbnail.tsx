@@ -45,17 +45,15 @@ const LinkIcon = styled(IonIcon)<{ bg: boolean }>`
   position: absolute;
   bottom: 0;
   right: 0;
-  padding: 4px;
-  font-size: 0.875em;
+  padding: 8px;
+  font-size: 1em;
+  color: white;
 
-  opacity: 0.5;
-  border-top-left-radius: 8px;
+  background: ${({ bg }) => (bg ? "rgba(0, 0, 0, 0.8)" : "transparent")};
+  border-radius: 50%;
+  opacity: 0.9;
 
-  ${({ bg }) =>
-    bg &&
-    css`
-      background: rgba(0, 0, 0, 0.4);
-    `}
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 const imgStyles = (blur: boolean) => css`
