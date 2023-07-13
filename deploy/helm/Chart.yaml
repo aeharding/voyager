@@ -1,0 +1,6 @@
+apiVersion: v2
+name: voyager
+description: A Helm chart for Voyager
+type: application
+version: 0.0.1
+appVersion: ""

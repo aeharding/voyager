@@ -97,6 +97,18 @@ One could put Voyager behind popular reverse proxies with SSL Handling like Trae
 
 Note: The provided Dockerfile creates a container which will eventually run Voyager as non-root user.
 
+### Self-Host via Kubernetes Helm-Chart
+
+In order to host Voyager yourself via Kubernetes, use the helm-chart.
+
+Clone the repository and run on the root folder:
+
+```
+helm upgrade --install voyager deploy/charts/
+```
+
+Similar to the Docker deployment, you can configure `CUSTOM_LEMMY_SERVERS` via the `values.yaml` (See lines 11-12 for an example)
+
 ### Ecosystem
 
 - 🇸🇬 [w.opnxng.com](https://w.opnxng.com) - Voyager hosted by Opnxng in Singapore. [Contact/privacy](https://about.opnxng.com)
@@ -152,7 +164,7 @@ Voyager works best added to the homescreen. There are certain features that only
 ## 👨‍💻 Contributors
 
 <a href="https://github.com/aeharding/voyager/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=aeharding/voyager" />   
+  <img src="https://contrib.rocks/image?repo=aeharding/voyager" />
 </a>
 
 ## 📄 License

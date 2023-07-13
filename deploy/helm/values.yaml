@@ -1,0 +1,67 @@
+replicaCount: 1
+
+image:
+  registry: "ghcr.io"
+  repository: "aeharding/voyager"
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+# Enable if you want to set custom Lemmy servers, see: https://github.com/aeharding/voyager#environment-variables
+environment: {}
+  # - name: CUSTOM_LEMMY_SERVERS
+  #   value: "lemmy.world,lemmy.ml,sh.itjust.works"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 911
+  runAsGroup: 911
+
+service:
+  type: ClusterIP
+  port: 5314
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
