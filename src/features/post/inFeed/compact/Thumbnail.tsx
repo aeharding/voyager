@@ -49,7 +49,8 @@ const LinkIcon = styled(IonIcon)<{ bg: boolean }>`
   font-size: 1em;
   color: var(--ion-color-dark);
 
-  background: ${({ bg }) => (bg ? "rgba(var(--ion-color-dark-contrast-rgb), 0.6)" : "transparent")};
+  background: ${({ bg }) =>
+    bg ? "rgba(var(--ion-color-dark-contrast-rgb), 0.6)" : "transparent"};
   border-radius: 50%;
   opacity: 0.9;
 `;
