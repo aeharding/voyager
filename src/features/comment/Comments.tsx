@@ -189,10 +189,25 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     setPage(currentPage);
   }
 
-  async function appendComments(comments: CommentView[]) {
-    setComments((existingComments) =>
-      uniqBy([...comments, ...existingComments], (c) => c.comment.id)
-    );
+  function appendComments(comments: CommentView[]) {
+    setComments((existingComments) => {
+      let commentsResult;
+
+      // We want to *unshift* comments, so that they appear as first child(ren) of a given node
+
+      // if `commentPath` exists, we call `buildCommentsTree` with `true`
+      if (commentPath) {
+        // The first comment is considered the root (see `buildCommentsTree(comments, true)`),
+        // so have to insert at root + 1 instead of at beginning
+        commentsResult = existingComments.slice(); // don't mutate existing
+        commentsResult.splice(1, 0, ...comments); // insert after root
+      } else {
+        // doesn't matter where inserted into array, put them first
+        commentsResult = [...comments, ...existingComments];
+      }
+
+      return uniqBy(commentsResult, (c) => c.comment.id);
+    });
   }
 
   async function handleRefresh(event: RefresherCustomEvent) {
