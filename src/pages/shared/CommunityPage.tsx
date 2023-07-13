@@ -20,7 +20,6 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
-import { NewPostContextProvider } from "../../features/post/new/NewPostModal";
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
@@ -71,32 +70,30 @@ export default function CommunityPage() {
     );
 
   return (
-    <NewPostContextProvider community={community}>
-      <TitleSearchProvider>
-        <IonPage>
-          <IonHeader>
-            <IonToolbar>
-              <IonButtons slot="start">
-                <AppBackButton
-                  defaultText="Communities"
-                  defaultHref={buildGeneralBrowseLink("/")}
-                />
-              </IonButtons>
+    <TitleSearchProvider>
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <AppBackButton
+                defaultText="Communities"
+                defaultHref={buildGeneralBrowseLink("/")}
+              />
+            </IonButtons>
 
-              <TitleSearch name={community}>
-                <IonButtons slot="end">
-                  <PostSort />
-                  <MoreActions community={community} />
-                </IonButtons>
-              </TitleSearch>
-            </IonToolbar>
-          </IonHeader>
-          <IonContent>
-            <PostCommentFeed fetchFn={fetchFn} communityName={community} />
-            <TitleSearchResults />
-          </IonContent>
-        </IonPage>
-      </TitleSearchProvider>
-    </NewPostContextProvider>
+            <TitleSearch name={community}>
+              <IonButtons slot="end">
+                <PostSort />
+                <MoreActions community={community} />
+              </IonButtons>
+            </TitleSearch>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          <PostCommentFeed fetchFn={fetchFn} communityName={community} />
+          <TitleSearchResults />
+        </IonContent>
+      </IonPage>
+    </TitleSearchProvider>
   );
 }

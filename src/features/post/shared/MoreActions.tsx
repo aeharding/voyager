@@ -16,6 +16,7 @@ import {
   eyeOffOutline,
   eyeOutline,
   flagOutline,
+  pencilOutline,
   peopleOutline,
   personOutline,
   shareOutline,
@@ -63,8 +64,13 @@ export default function MoreActions({
 
   const router = useIonRouter();
 
-  const { page, presentLoginIfNeeded, presentCommentReply, presentReport } =
-    useContext(PageContext);
+  const {
+    page,
+    presentLoginIfNeeded,
+    presentCommentReply,
+    presentReport,
+    presentPostEditor,
+  } = useContext(PageContext);
 
   const [selectText, onDismissSelectText] = useIonModal(SelectText, {
     text: post.post.body,
@@ -102,6 +108,13 @@ export default function MoreActions({
               text: "Delete",
               data: "delete",
               icon: trashOutline,
+            }
+          : undefined,
+        isMyPost
+          ? {
+              text: "Edit",
+              data: "edit",
+              icon: pencilOutline,
             }
           : undefined,
         {
@@ -143,7 +156,7 @@ export default function MoreActions({
         },
         {
           text: "Cancel",
-          data: "cancel",
+          role: "cancel",
         },
       ].filter(notEmpty),
     [isHidden, myVote, mySaved, post.community, post.creator, onFeed, isMyPost]
@@ -280,6 +293,10 @@ export default function MoreActions({
                   },
                 ],
               });
+              break;
+            }
+            case "edit": {
+              presentPostEditor(post);
             }
           }
         }}

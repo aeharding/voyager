@@ -36,6 +36,10 @@ export default function Post(props: PostProps) {
   const [shouldHide, setShouldHide] = useState(false);
   const isHidden = useAppSelector(postHiddenByIdSelector)[props.post.post.id];
   const hideCompleteRef = useRef(false);
+  const postById = useAppSelector((state) => state.post.postById);
+  const possiblyPost = postById[props.post.post.id];
+  const potentialPost =
+    typeof possiblyPost === "object" ? possiblyPost : undefined;
 
   const onFinishHide = useCallback(() => {
     hideCompleteRef.current = true;
@@ -65,9 +69,9 @@ export default function Post(props: PostProps) {
   const postBody = (() => {
     switch (postAppearanceType) {
       case "large":
-        return <LargePost {...props} />;
+        return <LargePost {...props} post={potentialPost ?? props.post} />;
       case "compact":
-        return <CompactPost {...props} />;
+        return <CompactPost {...props} post={potentialPost ?? props.post} />;
     }
   })();
 
