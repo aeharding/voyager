@@ -43,17 +43,15 @@ const Container = styled.div`
 
 const LinkIcon = styled(IonIcon)<{ bg: boolean }>`
   position: absolute;
-  bottom: 0;
-  right: 0;
-  padding: 8px;
+  bottom: 3px;
+  right: 3px;
+  padding: 1.5px;
   font-size: 1em;
-  color: white;
+  color: var(--ion-color-dark);
 
-  background: ${({ bg }) => (bg ? "rgba(0, 0, 0, 0.8)" : "transparent")};
+  background: ${({ bg }) => (bg ? "rgba(var(--ion-color-dark-contrast-rgb), 0.6)" : "transparent")};
   border-radius: 50%;
   opacity: 0.9;
-
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 const imgStyles = (blur: boolean) => css`
