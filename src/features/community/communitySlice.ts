@@ -97,11 +97,15 @@ export const getFavoriteCommunities =
 
     if (!userHandle) return;
 
-    const communities = await db.getSetting("favorite_communities", {
-      user_handle: userHandle,
-    });
+    try {
+      const communities = await db.getSetting("favorite_communities", {
+        user_handle: userHandle,
+      });
 
-    dispatch(setFavorites(communities));
+      dispatch(setFavorites(communities));
+    } catch (e) {
+      // swallow the error, probably "Setting not found"
+    }
   };
 
 export const followCommunity =
