@@ -14,7 +14,18 @@ export default defineConfig({
       },
     }),
     svgr(),
-    VitePWA({ registerType: "prompt" }),
+    VitePWA({
+      registerType: "prompt",
+      workbox: {
+        runtimeCaching: [
+          {
+            handler: "StaleWhileRevalidate",
+            urlPattern: /\/_config/,
+            method: "GET",
+          },
+        ],
+      },
+    }),
     legacy({
       modernPolyfills: ["es.array.at"],
     }),
