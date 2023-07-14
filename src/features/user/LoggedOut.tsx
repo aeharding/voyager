@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { useState } from "react";
 import { updateConnectedInstance } from "../auth/authSlice";
 import { swapHorizontalOutline } from "ionicons/icons";
-import { LEMMY_SERVERS } from "../../helpers/lemmy";
+import { getCustomServers } from "../../services/app";
 
 const Incognito = styled(IncognitoSvg)`
   opacity: 0.1;
@@ -59,7 +59,7 @@ export default function LoggedOut() {
         columns={[
           {
             name: "server",
-            options: LEMMY_SERVERS.map((server) => ({
+            options: getCustomServers().map((server) => ({
               text: server,
               value: server,
             })),
