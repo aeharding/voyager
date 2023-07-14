@@ -20,6 +20,7 @@ import {
   peopleOutline,
   personOutline,
   shareOutline,
+  copyOutline,
   textOutline,
   trashOutline,
 } from "ionicons/icons";
@@ -150,6 +151,11 @@ export default function MoreActions({
           icon: shareOutline,
         },
         {
+          text: "Copy Link",
+          data: "copylink",
+          icon: copyOutline,
+        },
+        {
           text: "Report",
           data: "report",
           icon: flagOutline,
@@ -261,6 +267,11 @@ export default function MoreActions({
             }
             case "share": {
               navigator.share({ url: post.post.url ?? post.post.ap_id });
+
+              break;
+            }
+            case "copylink": {
+              navigator.clipboard.writeText(post.post.ap_id);
 
               break;
             }
