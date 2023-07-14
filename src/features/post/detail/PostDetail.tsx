@@ -224,7 +224,7 @@ export default function PostDetail({
 
               const reply = await presentCommentReply(post);
 
-              if (reply) commentsRef.current?.appendComments([reply]);
+              if (reply) commentsRef.current?.prependComments([reply]);
             }}
           />
         </BorderlessIonItem>
