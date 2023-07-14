@@ -22,7 +22,7 @@ import { getInboxCounts } from "../../features/inbox/inboxSlice";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../features/auth/PageContext";
 
-export default function ReportsPage() {
+export default function ReportBoxesPage() {
   const dispatch = useAppDispatch();
 
   const { presentLoginIfNeeded } = useContext(PageContext);
@@ -48,6 +48,21 @@ export default function ReportsPage() {
             <IonTitle size="large">Reports</IonTitle>
           </IonToolbar>
         </IonHeader>
+
+        <IonList inset color="primary">
+          <InsetIonItem routerLink="/inbox/all" onClick={interceptIfLoggedOut}>
+            <IonIcon icon={fileTray} color="primary" />
+            <SettingLabel>Unread</SettingLabel>
+          </InsetIonItem>
+          <InsetIonItem
+            routerLink="/reports/unread"
+            onClick={interceptIfLoggedOut}
+          >
+            <IonIcon icon={ellipseOutline} color="primary" />
+            <SettingLabel>All</SettingLabel>
+          </InsetIonItem>
+        </IonList>
+
         <IonList inset color="primary">
           <InsetIonItem
             routerLink="/inbox/post-replies"

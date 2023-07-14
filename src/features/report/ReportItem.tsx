@@ -1,6 +1,9 @@
 import {
   CommentReplyView,
+  CommentReportView,
   PersonMentionView,
+  PostReportView,
+  PrivateMessageReportView,
   PrivateMessageView,
 } from "lemmy-js-client";
 import CommentMarkdown from "../comment/CommentMarkdown";
@@ -107,16 +110,16 @@ const EllipsisIcon = styled(IonIcon)`
   font-size: 1.2rem;
 `;
 
-export type InboxItemView =
-  | PersonMentionView
-  | CommentReplyView
-  | PrivateMessageView;
+export type ReportItemView =
+  | PostReportView
+  | CommentReportView
+  | PrivateMessageReportView;
 
-interface InboxItemProps {
-  item: InboxItemView;
+interface ReportItemProps {
+  item: ReportItemView;
 }
 
-export default function InboxItem({ item }: InboxItemProps) {
+export default function ReportItem({ item }: ReportItemProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const readByInboxItemId = useAppSelector(

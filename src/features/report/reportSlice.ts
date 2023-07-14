@@ -6,6 +6,7 @@ import {
   isModeratorSelector,
   jwtSelector,
 } from "../auth/authSlice";
+import { ReportItemView } from "./ReportItem";
 
 interface PostState {
   counts: {
@@ -112,3 +113,15 @@ export const getReportCounts =
 
     if (result) dispatch(receivedReportCounts(result));
   };
+
+export function getReportItemPublished(item: ReportItemView): string {
+  if ("post_report" in item) {
+    return item.post_report.published;
+  }
+
+  if ("comment_report" in item) {
+    return item.comment_report.published;
+  }
+
+  return item.private_message_report.published;
+}

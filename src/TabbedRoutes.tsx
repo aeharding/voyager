@@ -1,4 +1,5 @@
-import { Redirect, Route, useLocation } from "react-router-dom";
+import styled from "@emotion/styled";
+import { IonRouterOutletCustomEvent } from "@ionic/core";
 import {
   IonBadge,
   IonIcon,
@@ -10,59 +11,58 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import {
-  personCircleOutline,
   cog,
-  search,
   fileTray,
+  personCircleOutline,
+  search,
+  shieldOutline,
   telescope,
-  shield,
 } from "ionicons/icons";
-import PostDetail from "./pages/posts/PostPage";
-import CommunitiesPage from "./pages/posts/CommunitiesPage";
-import CommunityPage from "./pages/shared/CommunityPage";
-import { useAppDispatch, useAppSelector } from "./store";
+import { useContext, useEffect, useRef } from "react";
+import { Redirect, Route, useLocation } from "react-router-dom";
+import ActorRedirect from "./ActorRedirect";
+import { AppContext } from "./features/auth/AppContext";
+import { PageContextProvider } from "./features/auth/PageContext";
 import {
   handleSelector,
   isModeratorSelector,
   jwtIssSelector,
   jwtSelector,
 } from "./features/auth/authSlice";
-import ActorRedirect from "./ActorRedirect";
-import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
-import styled from "@emotion/styled";
-import UserPage from "./pages/profile/UserPage";
-import SettingsPage from "./pages/settings/SettingsPage";
-import { useContext, useEffect, useRef } from "react";
-import { AppContext } from "./features/auth/AppContext";
-import InstallAppPage from "./pages/settings/InstallAppPage";
-import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
-import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
-import ProfileFeedItemsPage from "./pages/profile/ProfileFeedItemsPage";
-import SearchCommunitiesPage from "./pages/search/results/SearchCommunitiesPage";
-import TermsPage from "./pages/settings/TermsPage";
-import BoxesPage from "./pages/inbox/BoxesPage";
-import { totalUnreadSelector } from "./features/inbox/inboxSlice";
-import MentionsPage from "./pages/inbox/MentionsPage";
-import RepliesPage from "./pages/inbox/RepliesPage";
-import MessagesPage from "./pages/inbox/MessagesPage";
-import ConversationPage from "./pages/inbox/ConversationPage";
-import InboxPage from "./pages/inbox/InboxPage";
-import { IonRouterOutletCustomEvent } from "@ionic/core";
-import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
-import UpdateAppPage from "./pages/settings/UpdateAppPage";
-import useShouldInstall from "./features/pwa/useShouldInstall";
-import { UpdateContext } from "./pages/settings/update/UpdateContext";
-import { LEMMY_SERVERS } from "./helpers/lemmy";
-import AppearancePage from "./pages/settings/AppearancePage";
-import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
-import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
-import ProfilePage from "./pages/profile/ProfilePage";
-import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
-import { PageContextProvider } from "./features/auth/PageContext";
-import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
 import { getFavoriteCommunities } from "./features/community/communitySlice";
+import { totalUnreadSelector } from "./features/inbox/inboxSlice";
+import useShouldInstall from "./features/pwa/useShouldInstall";
+import { LEMMY_SERVERS } from "./helpers/lemmy";
+import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
+import BoxesPage from "./pages/inbox/BoxesPage";
+import ConversationPage from "./pages/inbox/ConversationPage";
+import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
+import InboxPage from "./pages/inbox/InboxPage";
+import MentionsPage from "./pages/inbox/MentionsPage";
+import MessagesPage from "./pages/inbox/MessagesPage";
+import RepliesPage from "./pages/inbox/RepliesPage";
+import CommunitiesPage from "./pages/posts/CommunitiesPage";
+import PostDetail from "./pages/posts/PostPage";
+import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
+import ProfileFeedItemsPage from "./pages/profile/ProfileFeedItemsPage";
+import ProfilePage from "./pages/profile/ProfilePage";
+import UserPage from "./pages/profile/UserPage";
+import ReportsPage from "./pages/reports/ReportBoxesPage";
+import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
+import SearchCommunitiesPage from "./pages/search/results/SearchCommunitiesPage";
+import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
+import AppearancePage from "./pages/settings/AppearancePage";
 import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
-import ReportsPage from "./pages/inbox/ReportsPage";
+import InstallAppPage from "./pages/settings/InstallAppPage";
+import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
+import SettingsPage from "./pages/settings/SettingsPage";
+import TermsPage from "./pages/settings/TermsPage";
+import UpdateAppPage from "./pages/settings/UpdateAppPage";
+import { UpdateContext } from "./pages/settings/update/UpdateContext";
+import CommunityPage from "./pages/shared/CommunityPage";
+import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
+import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
+import { useAppDispatch, useAppSelector } from "./store";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -411,7 +411,7 @@ export default function TabbedRoutes() {
               tab="reports"
               href="/reports"
             >
-              <IonIcon aria-hidden="true" icon={shield} />
+              <IonIcon aria-hidden="true" icon={shieldOutline} />
               <IonLabel>Reports</IonLabel>
               {!isModerator ? (
                 <IonBadge color="danger">{isModerator}</IonBadge>
