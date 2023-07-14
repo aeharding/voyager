@@ -209,7 +209,7 @@ export default function Comment({
         block: "nearest",
         inline: "nearest",
       });
-    }, 100);
+    }, 600);
   }, [highlightedCommentId, comment]);
 
   return (
