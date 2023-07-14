@@ -271,7 +271,7 @@ export default function MoreActions({
               break;
             }
             case "copylink": {
-              navigator.clipboard.writeText(post.post.ap_id);
+              navigator.clipboard.writeText(post.post.url ?? post.post.ap_id);
 
               break;
             }
