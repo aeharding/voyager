@@ -52,7 +52,7 @@ const LOCALSTORAGE_KEYS = {
     USER_MODE: "appearance--dark-user-mode",
   },
   POST: {
-    BLUR_NSFW: "asdf",
+    BLUR_NSFW: "appearance--blur-nsfw",
   },
 } as const;
 
@@ -84,6 +84,9 @@ const stateWithLocalstorageItems: AppearanceState = merge(initialState, {
   dark: {
     usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
     userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+  },
+  posts: {
+    blur_nsfw: get(LOCALSTORAGE_KEYS.POST.BLUR_NSFW),
   },
 });
 
