@@ -15,6 +15,22 @@ export const OPostAppearanceType = {
 export type PostAppearanceType =
   (typeof OPostAppearanceType)[keyof typeof OPostAppearanceType];
 
+export const OThumbnailPositionType = {
+  Left: "left",
+  Right: "right",
+} as const;
+
+export type ThumbnailPositionType =
+  (typeof OThumbnailPositionType)[keyof typeof OThumbnailPositionType];
+
+export const OShowVotingButtons = {
+  Always: "always",
+  Never: "never",
+} as const;
+
+export type ShowVotingButtons =
+  (typeof OShowVotingButtons)[keyof typeof OShowVotingButtons];
+
 export const OCommentThreadCollapse = {
   Always: "always",
   Never: "never",
@@ -26,6 +42,8 @@ export type CommentThreadCollapse =
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   post_appearance_type: PostAppearanceType;
+  thumbnail_position_type: ThumbnailPositionType;
+  show_voting_buttons: ShowVotingButtons;
   blur_nsfw: boolean;
   favorite_communities: string[];
 };
@@ -211,6 +229,8 @@ export class WefwefDB extends Dexie {
     const localStorageMigrationKeys = {
       collapse_comment_threads: "appearance--collapse-comment-threads",
       post_appearance_type: "appearance--post-type",
+      thumbnail_position_type: "appearance--thumbnail_position_type",
+      show_voting_buttons: "appearance--show_voting_buttons"
     };
 
     const settingsTable = tx.table("settings");
