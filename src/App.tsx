@@ -27,6 +27,7 @@ import BeforeInstallPromptProvider from "./BeforeInstallPromptProvider";
 import { UpdateContextProvider } from "./pages/settings/update/UpdateContext";
 import GlobalStyles from "./GlobalStyles";
 import GalleryProvider from "./features/gallery/GalleryProvider";
+import ConfigProvider from "./services/app";
 
 setupIonicReact({
   rippleEffect: false,
@@ -37,24 +38,26 @@ setupIonicReact({
 
 export default function App() {
   return (
-    <AppContextProvider>
-      <Provider store={store}>
-        <GlobalStyles>
-          <BeforeInstallPromptProvider>
-            <UpdateContextProvider>
-              <Router>
-                <IonApp>
-                  <Auth>
-                    <GalleryProvider>
-                      <TabbedRoutes />
-                    </GalleryProvider>
-                  </Auth>
-                </IonApp>
-              </Router>
-            </UpdateContextProvider>
-          </BeforeInstallPromptProvider>
-        </GlobalStyles>
-      </Provider>
-    </AppContextProvider>
+    <ConfigProvider>
+      <AppContextProvider>
+        <Provider store={store}>
+          <GlobalStyles>
+            <BeforeInstallPromptProvider>
+              <UpdateContextProvider>
+                <Router>
+                  <IonApp>
+                    <Auth>
+                      <GalleryProvider>
+                        <TabbedRoutes />
+                      </GalleryProvider>
+                    </Auth>
+                  </IonApp>
+                </Router>
+              </UpdateContextProvider>
+            </BeforeInstallPromptProvider>
+          </GlobalStyles>
+        </Provider>
+      </AppContextProvider>
+    </ConfigProvider>
   );
 }

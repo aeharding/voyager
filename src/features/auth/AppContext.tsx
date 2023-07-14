@@ -7,10 +7,6 @@ import React, {
   useState,
 } from "react";
 import { VirtuosoHandle } from "react-virtuoso";
-import getConfig from "../../services/app";
-
-// Only needs to be done once for app load
-const config = getConfig();
 
 export type Page = RefObject<VirtuosoHandle | HTMLElement>;
 
@@ -31,17 +27,10 @@ export function AppContextProvider({
   children: React.ReactNode;
 }) {
   const [activePage, setActivePage] = useState<Page | undefined>();
-  const [configLoaded, setConfigLoaded] = useState(false);
-
-  useEffect(() => {
-    config.finally(() => {
-      setConfigLoaded(true);
-    });
-  }, []);
 
   return (
     <AppContext.Provider value={{ activePage, setActivePage }}>
-      {configLoaded ? children : ""}
+      {children}
     </AppContext.Provider>
   );
 }
