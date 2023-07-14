@@ -15,7 +15,6 @@ import {
   fileTray,
   personCircleOutline,
   search,
-  shieldOutline,
   telescope,
 } from "ionicons/icons";
 import { useContext, useEffect, useRef } from "react";
@@ -25,7 +24,6 @@ import { AppContext } from "./features/auth/AppContext";
 import { PageContextProvider } from "./features/auth/PageContext";
 import {
   handleSelector,
-  isModeratorSelector,
   jwtIssSelector,
   jwtSelector,
 } from "./features/auth/authSlice";
@@ -63,6 +61,7 @@ import CommunityPage from "./pages/shared/CommunityPage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import { useAppDispatch, useAppSelector } from "./store";
+import ReportAuthRequired from "./pages/reports/ReportsAuthRequired";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -78,7 +77,6 @@ export default function TabbedRoutes() {
   const router = useIonRouter();
   const jwt = useAppSelector(jwtSelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
-  const isModerator = useAppSelector(isModeratorSelector);
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
   const dispatch = useAppDispatch();
@@ -99,7 +97,6 @@ export default function TabbedRoutes() {
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
   const isProfileButtonDisabled = location.pathname.startsWith("/profile");
   const isSearchButtonDisabled = location.pathname.startsWith("/search");
-  const isReportsButtonDisabled = location.pathname.startsWith("/reports");
 
   useEffect(() => {
     dispatch(getFavoriteCommunities());
@@ -139,15 +136,6 @@ export default function TabbedRoutes() {
 
     router.push(`/inbox`, "back");
   }
-
-  async function onReportsClick() {
-    if (!isReportsButtonDisabled) return;
-
-    if (await scrollUpIfNeeded(activePage)) return;
-
-    router.push(`/reports`, "back");
-  }
-
   async function onProfileClick() {
     if (!isProfileButtonDisabled) return;
 
@@ -281,6 +269,21 @@ export default function TabbedRoutes() {
               <InboxPage showRead />
             </InboxAuthRequired>
           </Route>
+          <Route exact path="/reports/posts">
+            <ReportAuthRequired>
+              <InboxPage showRead />
+            </ReportAuthRequired>
+          </Route>
+          <Route exact path="/reports/comments">
+            <ReportAuthRequired>
+              <InboxPage showRead />
+            </ReportAuthRequired>
+          </Route>
+          <Route exact path="/reports/private_messages">
+            <ReportAuthRequired>
+              <InboxPage showRead />
+            </ReportAuthRequired>
+          </Route>
           <Route exact path="/inbox/unread">
             <InboxAuthRequired>
               <InboxPage />
@@ -405,20 +408,7 @@ export default function TabbedRoutes() {
             <IonLabel>Search</IonLabel>
             <Interceptor onClick={onSearchClick} />
           </IonTabButton>
-          {isModerator ? (
-            <IonTabButton
-              disabled={isReportsButtonDisabled}
-              tab="reports"
-              href="/reports"
-            >
-              <IonIcon aria-hidden="true" icon={shieldOutline} />
-              <IonLabel>Reports</IonLabel>
-              {!isModerator ? (
-                <IonBadge color="danger">{isModerator}</IonBadge>
-              ) : undefined}
-              <Interceptor onClick={onReportsClick} />
-            </IonTabButton>
-          ) : undefined}
+
           <IonTabButton tab="settings" href="/settings">
             <IonIcon aria-hidden="true" icon={cog} />
             <IonLabel>Settings</IonLabel>

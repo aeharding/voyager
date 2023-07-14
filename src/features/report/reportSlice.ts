@@ -15,7 +15,7 @@ interface PostState {
     private_message_reports: number | undefined;
   };
   lastUpdatedCounts: number;
-  readByInboxItemId: Dictionary<boolean>;
+  resolvedByReportItemId: Dictionary<boolean>;
   messageSyncState: "init" | "syncing" | "synced";
   messages: PrivateMessageView[];
 }
@@ -27,13 +27,13 @@ const initialState: PostState = {
     private_message_reports: 0,
   },
   lastUpdatedCounts: 0,
-  readByInboxItemId: {},
+  resolvedByReportItemId: {},
   messageSyncState: "init",
   messages: [],
 };
 
 export const reportSlice = createSlice({
-  name: "inbox",
+  name: "report",
   initialState,
   reducers: {
     receivedReportCounts: (
@@ -46,12 +46,12 @@ export const reportSlice = createSlice({
         action.payload.private_message_reports;
       state.lastUpdatedCounts = Date.now();
     },
-    // receivedInboxItems: (state, action: PayloadAction<InboxItemView[]>) => {
-    //   for (const item of action.payload) {
-    //     state.readByInboxItemId[getInboxItemId(item)] =
-    //       getInboxItemReadStatus(item);
-    //   }
-    // },
+    receivedReportItems: (state, action: PayloadAction<ReportItemView[]>) => {
+      for (const item of action.payload) {
+        state.resolvedByReportItemId[getReportItemId(item)] =
+          getReportResolvedStatus(item);
+      }
+    },
     // setReadStatus: (
     //   state,
     //   action: PayloadAction<{ item: InboxItemView; read: boolean }>
@@ -79,7 +79,8 @@ export const reportSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { receivedReportCounts, resetReports } = reportSlice.actions;
+export const { receivedReportCounts, receivedReportItems, resetReports } =
+  reportSlice.actions;
 
 export default reportSlice.reducer;
 
@@ -87,6 +88,9 @@ export const totalReportsSelector = (state: RootState) =>
   state.report.counts.comment_reports +
   state.report.counts.post_reports +
   (state.report.counts.private_message_reports || 0);
+export const reportCountSelector = (state: RootState) => ({
+  ...state.report.counts,
+});
 
 export const getReportCounts =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -114,6 +118,18 @@ export const getReportCounts =
     if (result) dispatch(receivedReportCounts(result));
   };
 
+export function getReportResolvedStatus(item: ReportItemView): boolean {
+  if ("post_report" in item) {
+    return item.post_report.resolved;
+  }
+
+  if ("comment_report" in item) {
+    return item.comment_report.resolved;
+  }
+
+  return item.private_message_report.resolved;
+}
+
 export function getReportItemPublished(item: ReportItemView): string {
   if ("post_report" in item) {
     return item.post_report.published;
@@ -124,4 +140,16 @@ export function getReportItemPublished(item: ReportItemView): string {
   }
 
   return item.private_message_report.published;
+}
+
+export function getReportItemId(item: ReportItemView): string {
+  if ("post_report" in item) {
+    return `post_report_${item.post_report.id}`;
+  }
+
+  if ("comment_report" in item) {
+    return `comment_report_${item.comment_report.id}`;
+  }
+
+  return `private_message_report_${item.private_message_report.id}`;
 }

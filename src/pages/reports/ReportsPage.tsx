@@ -7,24 +7,23 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../store";
-import useClient from "../../helpers/useClient";
-import { FetchFn } from "../../features/feed/Feed";
 import { useCallback } from "react";
-import InboxFeed from "../../features/feed/InboxFeed";
-import {
-  getInboxItemPublished,
-  receivedInboxItems,
-} from "../../features/inbox/inboxSlice";
-import { InboxItemView } from "../../features/inbox/InboxItem";
 import { jwtSelector } from "../../features/auth/authSlice";
+import { FetchFn } from "../../features/feed/Feed";
 import ReportFeed from "../../features/report/ReportFeed";
+import { ReportItemView } from "../../features/report/ReportItem";
+import {
+  getReportItemPublished,
+  receivedReportItems,
+} from "../../features/report/reportSlice";
+import useClient from "../../helpers/useClient";
+import { useAppDispatch, useAppSelector } from "../../store";
 
-interface InboxPageProps {
+interface ReportsPageProps {
   showRead?: boolean;
 }
 
-export default function ReportsPage({ showRead }: InboxPageProps) {
+export default function ReportsPage({ showRead }: ReportsPageProps) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const client = useClient();
@@ -32,7 +31,7 @@ export default function ReportsPage({ showRead }: InboxPageProps) {
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
   );
 
-  const fetchFn: FetchFn<InboxItemView> = useCallback(
+  const fetchFn: FetchFn<ReportItemView> = useCallback(
     async (page) => {
       if (!jwt) throw new Error("user must be authed");
 
@@ -55,15 +54,15 @@ export default function ReportsPage({ showRead }: InboxPageProps) {
         ...privateMessages.private_message_reports,
       ].sort(
         (a, b) =>
-          Date.parse(getInboxItemPublished(b)) -
-          Date.parse(getInboxItemPublished(a))
+          Date.parse(getReportItemPublished(b)) -
+          Date.parse(getReportItemPublished(a))
       );
 
-      dispatch(receivedInboxItems(everything));
+      dispatch(receivedReportItems(everything));
 
       return everything;
     },
-    [client, dispatch, jwt, myUserId, showRead]
+    [client, dispatch, jwt, showRead]
   );
 
   return (
@@ -71,14 +70,10 @@ export default function ReportsPage({ showRead }: InboxPageProps) {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/inbox" text="Boxes" />
+            <IonBackButton defaultHref="/reports" text="Boxes" />
           </IonButtons>
 
-          <IonTitle>{showRead ? "Inbox" : "Unread"}</IonTitle>
-
-          {/* <IonButtons slot="end">
-            <MarkAllAsReadButton />
-          </IonButtons> */}
+          <IonTitle>{showRead ? "All" : "Unread"}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
