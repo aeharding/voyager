@@ -20,7 +20,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             handler: "StaleWhileRevalidate",
-            urlPattern: /\/_config/,
+            urlPattern: ({ url }) => url.pathname === "/_config",
             method: "GET",
           },
         ],
