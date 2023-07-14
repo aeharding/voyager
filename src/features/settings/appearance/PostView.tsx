@@ -71,7 +71,7 @@ export default function PostView() {
           />
         </InsetIonItem>
         <InsetIonItem>
-          <IonLabel>Blur NSFW</IonLabel>
+          <IonLabel>Blur nsfw images in feed</IonLabel>
           <IonToggle
             checked={nsfwBlurred === OPostBlurNsfw.Always}
             onIonChange={(e) => {
