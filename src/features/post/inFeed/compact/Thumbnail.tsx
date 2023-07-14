@@ -1,14 +1,15 @@
-import styled from "@emotion/styled";
-import { ReactComponent as SelfSvg } from "./self.svg";
-import { PostView } from "lemmy-js-client";
-import { isUrlImage } from "../../../../helpers/lemmy";
-import { useCallback, useMemo } from "react";
-import { findLoneImage } from "../../../../helpers/markdown";
 import { css } from "@emotion/react";
-import { isNsfw } from "../../../labels/Nsfw";
-import { globeOutline } from "ionicons/icons";
+import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
+import { globeOutline } from "ionicons/icons";
+import { PostView } from "lemmy-js-client";
+import { useCallback, useMemo } from "react";
+import { isUrlImage } from "../../../../helpers/lemmy";
+import { findLoneImage } from "../../../../helpers/markdown";
+import { useAppSelector } from "../../../../store";
 import PostGalleryImg from "../../../gallery/PostGalleryImg";
+import { isNsfwBlurred } from "../../../labels/Nsfw";
+import { ReactComponent as SelfSvg } from "./self.svg";
 
 const containerCss = css`
   display: flex;
@@ -95,8 +96,9 @@ export default function Thumbnail({ post }: ImgProps) {
 
     if (markdownLoneImage) return markdownLoneImage.url;
   })();
+  const blurNsfw = useAppSelector((state) => state.appearance.posts.blur_nsfw);
 
-  const nsfw = useMemo(() => isNsfw(post), [post]);
+  const nsfw = useMemo(() => isNsfwBlurred(post, blurNsfw), [post, blurNsfw]);
 
   const isLink = !postImageSrc && post.post.url;
 

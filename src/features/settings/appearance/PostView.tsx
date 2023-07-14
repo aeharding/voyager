@@ -4,14 +4,19 @@ import {
   IonLabel,
   IonList,
   IonActionSheet,
+  IonToggle,
 } from "@ionic/react";
 import { ListHeader } from "./TextSize";
 import { InsetIonItem } from "../../user/Profile";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import { useState } from "react";
 import { startCase } from "lodash";
-import { OPostAppearanceType, setPostAppearance } from "./appearanceSlice";
-import { PostAppearanceType } from "../../../services/db";
+import {
+  OPostAppearanceType,
+  setNsfwBlur,
+  setPostAppearance,
+} from "./appearanceSlice";
+import { OPostBlurNsfw, PostAppearanceType } from "../../../services/db";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 
 const BUTTONS: ActionSheetButton<PostAppearanceType>[] = Object.values(
@@ -29,6 +34,9 @@ export default function PostView() {
   const dispatch = useAppDispatch();
   const postsAppearanceType = useAppSelector(
     (state) => state.appearance.posts.type
+  );
+  const nsfwBlurred = useAppSelector(
+    (state) => state.appearance.posts.blur_nsfw
   );
 
   return (
@@ -60,6 +68,19 @@ export default function PostView() {
               ...b,
               role: postsAppearanceType === b.data ? "selected" : undefined,
             }))}
+          />
+        </InsetIonItem>
+        <InsetIonItem>
+          <IonLabel>Blur NSFW</IonLabel>
+          <IonToggle
+            checked={nsfwBlurred === OPostBlurNsfw.Always}
+            onIonChange={(e) => {
+              dispatch(
+                setNsfwBlur(
+                  e.detail.checked ? OPostBlurNsfw.Always : OPostBlurNsfw.Never
+                )
+              );
+            }}
           />
         </InsetIonItem>
       </IonList>

@@ -11,6 +11,7 @@ import {
   CommentThreadCollapse,
   OCommentThreadCollapse,
   OPostAppearanceType,
+  OPostBlurNsfw,
   PostAppearanceType,
   db,
 } from "../../../services/db";
@@ -32,6 +33,7 @@ interface AppearanceState {
     collapseCommentThreads: CommentThreadCollapse;
   };
   posts: {
+    blur_nsfw: OPostBlurNsfw;
     type: PostAppearanceType;
   };
   dark: {
@@ -49,6 +51,9 @@ const LOCALSTORAGE_KEYS = {
     USE_SYSTEM: "appearance--dark-use-system",
     USER_MODE: "appearance--dark-user-mode",
   },
+  POST: {
+    BLUR_NSFW: "asdf",
+  },
 } as const;
 
 const initialState: AppearanceState = {
@@ -60,6 +65,7 @@ const initialState: AppearanceState = {
     collapseCommentThreads: OCommentThreadCollapse.Never,
   },
   posts: {
+    blur_nsfw: OPostBlurNsfw.Always,
     type: OPostAppearanceType.Large,
   },
   dark: {
@@ -123,6 +129,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("post_appearance_type", action.payload);
     },
+    setNsfwBlur(state, action: PayloadAction<OPostBlurNsfw>) {
+      state.posts.blur_nsfw = action.payload;
+
+      db.setSetting("blur_nsfw", action.payload);
+    },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
 
@@ -147,6 +158,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
+      const blur_nsfw = await db.getSetting("blur_nsfw");
 
       return {
         ...state.appearance,
@@ -155,6 +167,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         },
         posts: {
           type: post_appearance_type,
+          blur_nsfw,
         },
       };
     });
@@ -165,6 +178,7 @@ export const {
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setCommentsCollapsed,
+  setNsfwBlur,
   setPostAppearance,
   setUserDarkMode,
   setUseSystemDarkMode,

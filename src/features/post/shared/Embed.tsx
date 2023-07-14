@@ -1,12 +1,11 @@
-import { MouseEvent } from "react";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { useState } from "react";
-import { isNsfw } from "../../labels/Nsfw";
-import { useAppDispatch } from "../../../store";
+import { MouseEvent, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { isNsfwBlurred } from "../../labels/Nsfw";
 import { setPostRead } from "../postSlice";
 
 const Container = styled.a`
@@ -80,6 +79,7 @@ export default function Embed({ post, className }: EmbedProps) {
     e.stopPropagation();
     dispatch(setPostRead(post.post.id));
   };
+  const blurNsfw = useAppSelector((state) => state.appearance.posts.blur_nsfw);
 
   return (
     <Container
@@ -94,7 +94,7 @@ export default function Embed({ post, className }: EmbedProps) {
         <Img
           src={post.post.thumbnail_url}
           draggable="false"
-          blur={isNsfw(post)}
+          blur={isNsfwBlurred(post, blurNsfw)}
           onError={() => setError(true)}
         />
       )}
