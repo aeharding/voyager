@@ -9,6 +9,7 @@ import inboxSlice from "./features/inbox/inboxSlice";
 import appearanceSlice, {
   fetchSettingsFromDatabase,
 } from "./features/settings/appearance/appearanceSlice";
+import reportSlice from "./features/report/reportSlice";
 
 const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ const store = configureStore({
     user: userSlice,
     inbox: inboxSlice,
     appearance: appearanceSlice,
+    report: reportSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

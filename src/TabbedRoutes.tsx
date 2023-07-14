@@ -15,6 +15,7 @@ import {
   search,
   fileTray,
   telescope,
+  shield,
 } from "ionicons/icons";
 import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
@@ -22,6 +23,7 @@ import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppDispatch, useAppSelector } from "./store";
 import {
   handleSelector,
+  isModeratorSelector,
   jwtIssSelector,
   jwtSelector,
 } from "./features/auth/authSlice";
@@ -60,6 +62,7 @@ import { PageContextProvider } from "./features/auth/PageContext";
 import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
 import { getFavoriteCommunities } from "./features/community/communitySlice";
 import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
+import ReportsPage from "./pages/inbox/ReportsPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -75,6 +78,7 @@ export default function TabbedRoutes() {
   const router = useIonRouter();
   const jwt = useAppSelector(jwtSelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
+  const isModerator = useAppSelector(isModeratorSelector);
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
   const dispatch = useAppDispatch();
@@ -95,6 +99,7 @@ export default function TabbedRoutes() {
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
   const isProfileButtonDisabled = location.pathname.startsWith("/profile");
   const isSearchButtonDisabled = location.pathname.startsWith("/search");
+  const isReportsButtonDisabled = location.pathname.startsWith("/reports");
 
   useEffect(() => {
     dispatch(getFavoriteCommunities());
@@ -133,6 +138,14 @@ export default function TabbedRoutes() {
     if (await scrollUpIfNeeded(activePage)) return;
 
     router.push(`/inbox`, "back");
+  }
+
+  async function onReportsClick() {
+    if (!isReportsButtonDisabled) return;
+
+    if (await scrollUpIfNeeded(activePage)) return;
+
+    router.push(`/reports`, "back");
   }
 
   async function onProfileClick() {
@@ -234,6 +247,9 @@ export default function TabbedRoutes() {
               to={`/posts/${iss ?? DEFAULT_ACTOR}/${iss ? "home" : "all"}`}
               push={false}
             />
+          </Route>
+          <Route exact path="/reports">
+            <ReportsPage />
           </Route>
           <Route exact path="/posts/:actor/home">
             <ActorRedirect>
@@ -389,6 +405,20 @@ export default function TabbedRoutes() {
             <IonLabel>Search</IonLabel>
             <Interceptor onClick={onSearchClick} />
           </IonTabButton>
+          {isModerator ? (
+            <IonTabButton
+              disabled={isReportsButtonDisabled}
+              tab="reports"
+              href="/reports"
+            >
+              <IonIcon aria-hidden="true" icon={shield} />
+              <IonLabel>Reports</IonLabel>
+              {!isModerator ? (
+                <IonBadge color="danger">{isModerator}</IonBadge>
+              ) : undefined}
+              <Interceptor onClick={onReportsClick} />
+            </IonTabButton>
+          ) : undefined}
           <IonTabButton tab="settings" href="/settings">
             <IonIcon aria-hidden="true" icon={cog} />
             <IonLabel>Settings</IonLabel>

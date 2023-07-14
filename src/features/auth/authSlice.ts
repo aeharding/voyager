@@ -168,6 +168,16 @@ export const usernameSelector = createSelector([handleSelector], (handle) => {
 export const isAdminSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.person.admin;
 
+export const isModeratorSelector = (state: RootState) => {
+  if (isAdminSelector(state)) {
+    return true;
+  }
+  if (!localUserSelector(state)) {
+    return false;
+  }
+  return state.auth.site?.my_user?.moderates.length !== 0;
+};
+
 export const localUserSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.local_user;
 

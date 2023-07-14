@@ -11,6 +11,7 @@ import { DEFAULT_ACTOR } from "./TabbedRoutes";
 import { getInboxCounts, syncMessages } from "./features/inbox/inboxSlice";
 import { useInterval } from "usehooks-ts";
 import usePageVisibility from "./helpers/usePageVisibility";
+import { getReportCounts } from "./features/report/reportSlice";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -45,6 +46,7 @@ export default function Auth({ children }: AuthProps) {
   useEffect(() => {
     dispatch(getSite());
     dispatch(getInboxCounts());
+    dispatch(getReportCounts());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt]);
 
@@ -67,6 +69,7 @@ export default function Auth({ children }: AuthProps) {
     if (!jwt) return;
 
     dispatch(getInboxCounts());
+    dispatch(getReportCounts());
   }, 1_000 * 60);
 
   useEffect(() => {
