@@ -28,7 +28,7 @@ export default function CollapsedByDefault() {
       </ListHeader>
       <IonList inset>
         <InsetIonItem>
-          <IonLabel>Collapse comment threads</IonLabel>
+          <IonLabel>Collapse Comment Threads</IonLabel>
           <IonToggle
             checked={collapseCommentThreads === OCommentThreadCollapse.Always}
             onIonChange={(e) =>
