@@ -17,6 +17,7 @@ const Container = styled.a`
 
   color: inherit;
   text-decoration: none;
+  -webkit-touch-callout: default;
 `;
 
 const Img = styled.img<{ blur: boolean }>`
