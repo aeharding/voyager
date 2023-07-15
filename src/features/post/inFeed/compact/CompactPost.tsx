@@ -137,7 +137,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
         </Aside>
       </Content>
       {compactThumbnailPositionType === "right" && <Thumbnail post={post} />}
-      {compactShowVotingButtons === "always" && (
+      {compactShowVotingButtons === true && (
         <EndDetails>
           <VoteButton type="up" postId={post.post.id} />
           <VoteButton type="down" postId={post.post.id} />

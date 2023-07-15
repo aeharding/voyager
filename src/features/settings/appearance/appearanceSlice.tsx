@@ -14,8 +14,6 @@ import {
   PostAppearanceType,
   OCompactThumbnailPositionType,
   CompactThumbnailPositionType,
-  OCompactShowVotingButtons,
-  CompactShowVotingButtons,
   db,
 } from "../../../services/db";
 import { get, set } from "../storage";
@@ -24,11 +22,9 @@ export {
   type CommentThreadCollapse,
   type PostAppearanceType,
   type CompactThumbnailPositionType,
-  type CompactShowVotingButtons,
   OCommentThreadCollapse,
   OPostAppearanceType,
-  OCompactThumbnailPositionType as OThumbnailPositionType,
-  OCompactShowVotingButtons as OShowVotingButtons,
+  OCompactThumbnailPositionType,
 } from "../../../services/db";
 
 interface AppearanceState {
@@ -44,7 +40,7 @@ interface AppearanceState {
   };
   compact: {
     thumbnailsPosition: CompactThumbnailPositionType;
-    showVotingButtons: CompactShowVotingButtons;
+    showVotingButtons: boolean;
   };
   dark: {
     usingSystemDarkMode: boolean;
@@ -76,7 +72,7 @@ const initialState: AppearanceState = {
   },
   compact: {
     thumbnailsPosition: OCompactThumbnailPositionType.Left,
-    showVotingButtons: OCompactShowVotingButtons.Always,
+    showVotingButtons: true,
   },
   dark: {
     usingSystemDarkMode: true,
@@ -139,10 +135,7 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("post_appearance_type", action.payload);
     },
-    setShowVotingButtons(
-      state,
-      action: PayloadAction<CompactShowVotingButtons>
-    ) {
+    setShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.compact.showVotingButtons = action.payload;
 
       db.setSetting("compact_show_voting_buttons", action.payload);

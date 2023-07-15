@@ -23,14 +23,6 @@ export const OCompactThumbnailPositionType = {
 export type CompactThumbnailPositionType =
   (typeof OCompactThumbnailPositionType)[keyof typeof OCompactThumbnailPositionType];
 
-export const OCompactShowVotingButtons = {
-  Always: "always",
-  Never: "never",
-} as const;
-
-export type CompactShowVotingButtons =
-  (typeof OCompactShowVotingButtons)[keyof typeof OCompactShowVotingButtons];
-
 export const OCommentThreadCollapse = {
   Always: "always",
   Never: "never",
@@ -43,7 +35,7 @@ export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
-  compact_show_voting_buttons: CompactShowVotingButtons;
+  compact_show_voting_buttons: boolean;
   blur_nsfw: boolean;
   favorite_communities: string[];
 };
@@ -70,6 +62,18 @@ const defaultSettings: ISettingItem<keyof SettingValueTypes>[] = [
   },
   {
     key: "blur_nsfw",
+    value: true,
+    user_handle: "",
+    community: "",
+  },
+  {
+    key: "compact_thumbnail_position_type",
+    value: OCompactThumbnailPositionType.Left,
+    user_handle: "",
+    community: "",
+  },
+  {
+    key: "compact_show_voting_buttons",
     value: true,
     user_handle: "",
     community: "",
@@ -229,8 +233,9 @@ export class WefwefDB extends Dexie {
     const localStorageMigrationKeys = {
       collapse_comment_threads: "appearance--collapse-comment-threads",
       post_appearance_type: "appearance--post-type",
-      thumbnail_position_type: "appearance--thumbnail_position_type",
-      show_voting_buttons: "appearance--show_voting_buttons",
+      compact_thumbnail_position_type:
+        "appearance--compact_thumbnail_position_type",
+      compact_show_voting_buttons: "appearance--compact_show_voting_buttons",
     };
 
     const settingsTable = tx.table("settings");

@@ -13,7 +13,6 @@ import { useState } from "react";
 import { startCase } from "lodash";
 import { setShowVotingButtons, setThumbnailPosition } from "./appearanceSlice";
 import {
-  OCompactShowVotingButtons,
   OCompactThumbnailPositionType,
   CompactThumbnailPositionType,
 } from "../../../services/db";
@@ -78,17 +77,9 @@ export default function CompactSettings() {
         <InsetIonItem>
           <IonLabel>Show Voting Buttons</IonLabel>
           <IonToggle
-            checked={
-              compactShowVotingButtons === OCompactShowVotingButtons.Always
-            }
+            checked={compactShowVotingButtons === true}
             onIonChange={(e) =>
-              dispatch(
-                setShowVotingButtons(
-                  e.detail.checked
-                    ? OCompactShowVotingButtons.Always
-                    : OCompactShowVotingButtons.Never
-                )
-              )
+              dispatch(setShowVotingButtons(e.detail.checked ? true : false))
             }
           />
         </InsetIonItem>
