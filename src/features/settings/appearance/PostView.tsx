@@ -1,23 +1,23 @@
 import type { IonActionSheetCustomEvent } from "@ionic/core";
 import {
   ActionSheetButton,
+  IonActionSheet,
   IonLabel,
   IonList,
-  IonActionSheet,
   IonToggle,
 } from "@ionic/react";
-import { ListHeader } from "./TextSize";
-import { InsetIonItem } from "../../user/Profile";
-import { useAppSelector, useAppDispatch } from "../../../store";
-import { useState } from "react";
+import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { startCase } from "lodash";
+import { useState } from "react";
+import { OPostBlurNsfw, PostAppearanceType } from "../../../services/db";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { InsetIonItem } from "../../user/Profile";
+import { ListHeader } from "./TextSize";
 import {
   OPostAppearanceType,
-  setNsfwBlur,
+  setBlurNsfwState,
   setPostAppearance,
 } from "./appearanceSlice";
-import { OPostBlurNsfw, PostAppearanceType } from "../../../services/db";
-import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 
 const BUTTONS: ActionSheetButton<PostAppearanceType>[] = Object.values(
   OPostAppearanceType
@@ -76,7 +76,7 @@ export default function PostView() {
             checked={nsfwBlurred === OPostBlurNsfw.Always}
             onIonChange={(e) => {
               dispatch(
-                setNsfwBlur(
+                setBlurNsfwState(
                   e.detail.checked ? OPostBlurNsfw.Always : OPostBlurNsfw.Never
                 )
               );

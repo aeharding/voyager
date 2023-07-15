@@ -5,7 +5,7 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import { RootState } from "../../../store";
+import { AppDispatch, RootState } from "../../../store";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "../../../helpers/lemmy";
 import {
   CommentThreadCollapse,
@@ -128,8 +128,6 @@ export const appearanceSlice = createSlice({
     },
     setNsfwBlur(state, action: PayloadAction<OPostBlurNsfw>) {
       state.posts.blur_nsfw = action.payload;
-
-      db.setSetting("blur_nsfw", action.payload);
     },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
@@ -146,6 +144,40 @@ export const appearanceSlice = createSlice({
   },
 });
 
+export const setBlurNsfwState =
+  (blurNsfw: OPostBlurNsfw) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+    if (!userHandle) return;
+
+    dispatch(setNsfwBlur(blurNsfw));
+
+    db.setSetting("blur_nsfw", blurNsfw, {
+      user_handle: userHandle,
+    });
+  };
+
+export const getBlurNsfw =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+    if (!userHandle) {
+      dispatch(setNsfwBlur(OPostBlurNsfw.Always));
+      return;
+    }
+
+    try {
+      const blurNsfw = await db.getSetting("blur_nsfw", {
+        user_handle: userHandle,
+      });
+
+      dispatch(setNsfwBlur(blurNsfw));
+    } catch (e) {
+      dispatch(setNsfwBlur(OPostBlurNsfw.Always));
+
+      // swallow the error, probably "Setting not found"
+    }
+  };
+
 export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
@@ -155,7 +187,6 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
-      const blur_nsfw = await db.getSetting("blur_nsfw");
 
       return {
         ...state.appearance,
@@ -164,7 +195,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         },
         posts: {
           type: post_appearance_type,
-          blur_nsfw,
+          blur_nsfw: state.appearance.posts.blur_nsfw,
         },
       };
     });

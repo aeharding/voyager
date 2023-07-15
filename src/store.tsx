@@ -16,6 +16,7 @@ import userSlice from "./features/user/userSlice";
 import inboxSlice from "./features/inbox/inboxSlice";
 import appearanceSlice, {
   fetchSettingsFromDatabase,
+  getBlurNsfw,
 } from "./features/settings/appearance/appearanceSlice";
 
 const store = configureStore({
@@ -44,6 +45,7 @@ const activeHandleChange = () => {
 
   if (activeHandle !== lastActiveHandle) {
     store.dispatch(getFavoriteCommunities());
+    store.dispatch(getBlurNsfw());
     lastActiveHandle = activeHandle;
   }
 };
