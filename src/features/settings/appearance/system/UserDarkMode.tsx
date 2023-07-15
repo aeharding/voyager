@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { IonLabel, IonList, IonRadio, IonRadioGroup } from "@ionic/react";
-import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { setUserDarkMode } from "./appearanceSlice";
+import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
+import { useAppDispatch, useAppSelector } from "../../../../store";
+import { setUserDarkMode } from "../appearanceSlice";
 
 const ListHeader = styled.div`
   font-size: 0.8em;
