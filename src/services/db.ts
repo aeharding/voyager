@@ -58,12 +58,6 @@ const defaultSettings: ISettingItem<keyof SettingValueTypes>[] = [
     user_handle: "",
     community: "",
   },
-  {
-    key: "blur_nsfw",
-    value: OPostBlurNsfw.Always,
-    user_handle: "",
-    community: "",
-  },
 ];
 
 export const CompoundKeys = {
