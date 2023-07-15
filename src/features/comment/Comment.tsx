@@ -15,6 +15,7 @@ import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote
 import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
+import Edited from "../labels/Edited";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -238,6 +239,7 @@ export default function Comment({
                   distinguished={comment.distinguished}
                 />
                 <Vote item={commentView} />
+                <Edited item={commentView} />
                 <div
                   css={css`
                     flex: 1;
