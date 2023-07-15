@@ -95,12 +95,12 @@ const EndDetails = styled.div`
 `;
 
 export default function CompactPost({ post, communityMode }: PostProps) {
-  const thumbnailPositionType = useAppSelector(
-    (state) => state.appearance.thumbnails.position
+  const compactThumbnailPositionType = useAppSelector(
+    (state) => state.appearance.compact.thumbnailsPosition
   );
 
-  const showVotingButtons = useAppSelector(
-    (state) => state.appearance.votingButtons.show
+  const compactShowVotingButtons = useAppSelector(
+    (state) => state.appearance.compact.showVotingButtons
   );
 
   const hasBeenRead: boolean =
@@ -110,7 +110,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
 
   return (
     <Container>
-      {thumbnailPositionType === "left" && <Thumbnail post={post} />}
+      {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
       <Content>
         <Title isRead={hasBeenRead}>
           {post.post.name} {nsfw && <Nsfw />}
@@ -136,8 +136,8 @@ export default function CompactPost({ post, communityMode }: PostProps) {
           </Actions>
         </Aside>
       </Content>
-      {thumbnailPositionType === "right" && <Thumbnail post={post} />}
-      {showVotingButtons === "always" && (
+      {compactThumbnailPositionType === "right" && <Thumbnail post={post} />}
+      {compactShowVotingButtons === "always" && (
         <EndDetails>
           <VoteButton type="up" postId={post.post.id} />
           <VoteButton type="down" postId={post.post.id} />

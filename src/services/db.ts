@@ -15,21 +15,21 @@ export const OPostAppearanceType = {
 export type PostAppearanceType =
   (typeof OPostAppearanceType)[keyof typeof OPostAppearanceType];
 
-export const OThumbnailPositionType = {
+export const OCompactThumbnailPositionType = {
   Left: "left",
   Right: "right",
 } as const;
 
-export type ThumbnailPositionType =
-  (typeof OThumbnailPositionType)[keyof typeof OThumbnailPositionType];
+export type CompactThumbnailPositionType =
+  (typeof OCompactThumbnailPositionType)[keyof typeof OCompactThumbnailPositionType];
 
-export const OShowVotingButtons = {
+export const OCompactShowVotingButtons = {
   Always: "always",
   Never: "never",
 } as const;
 
-export type ShowVotingButtons =
-  (typeof OShowVotingButtons)[keyof typeof OShowVotingButtons];
+export type CompactShowVotingButtons =
+  (typeof OCompactShowVotingButtons)[keyof typeof OCompactShowVotingButtons];
 
 export const OCommentThreadCollapse = {
   Always: "always",
@@ -42,8 +42,8 @@ export type CommentThreadCollapse =
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   post_appearance_type: PostAppearanceType;
-  thumbnail_position_type: ThumbnailPositionType;
-  show_voting_buttons: ShowVotingButtons;
+  compact_thumbnail_position_type: CompactThumbnailPositionType;
+  compact_show_voting_buttons: CompactShowVotingButtons;
   blur_nsfw: boolean;
   favorite_communities: string[];
 };

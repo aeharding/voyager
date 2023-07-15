@@ -12,10 +12,10 @@ import {
   OCommentThreadCollapse,
   OPostAppearanceType,
   PostAppearanceType,
-  OThumbnailPositionType,
-  ThumbnailPositionType,
-  OShowVotingButtons,
-  ShowVotingButtons,
+  OCompactThumbnailPositionType,
+  CompactThumbnailPositionType,
+  OCompactShowVotingButtons,
+  CompactShowVotingButtons,
   db,
 } from "../../../services/db";
 import { get, set } from "../storage";
@@ -23,12 +23,12 @@ import { get, set } from "../storage";
 export {
   type CommentThreadCollapse,
   type PostAppearanceType,
-  type ThumbnailPositionType,
-  type ShowVotingButtons,
+  type CompactThumbnailPositionType,
+  type CompactShowVotingButtons,
   OCommentThreadCollapse,
   OPostAppearanceType,
-  OThumbnailPositionType,
-  OShowVotingButtons,
+  OCompactThumbnailPositionType as OThumbnailPositionType,
+  OCompactShowVotingButtons as OShowVotingButtons,
 } from "../../../services/db";
 
 interface AppearanceState {
@@ -42,11 +42,9 @@ interface AppearanceState {
   posts: {
     type: PostAppearanceType;
   };
-  thumbnails: {
-    position: ThumbnailPositionType;
-  };
-  votingButtons: {
-    show: ShowVotingButtons;
+  compact: {
+    thumbnailsPosition: CompactThumbnailPositionType;
+    showVotingButtons: CompactShowVotingButtons;
   };
   dark: {
     usingSystemDarkMode: boolean;
@@ -76,11 +74,9 @@ const initialState: AppearanceState = {
   posts: {
     type: OPostAppearanceType.Large,
   },
-  votingButtons: {
-    show: OShowVotingButtons.Always,
-  },
-  thumbnails: {
-    position: OThumbnailPositionType.Left,
+  compact: {
+    thumbnailsPosition: OCompactThumbnailPositionType.Left,
+    showVotingButtons: OCompactShowVotingButtons.Always,
   },
   dark: {
     usingSystemDarkMode: true,
@@ -143,15 +139,21 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("post_appearance_type", action.payload);
     },
-    setShowVotingButtons(state, action: PayloadAction<ShowVotingButtons>) {
-      state.votingButtons.show = action.payload;
+    setShowVotingButtons(
+      state,
+      action: PayloadAction<CompactShowVotingButtons>
+    ) {
+      state.compact.showVotingButtons = action.payload;
 
-      db.setSetting("show_voting_buttons", action.payload);
+      db.setSetting("compact_show_voting_buttons", action.payload);
     },
-    setThumbnailPosition(state, action: PayloadAction<ThumbnailPositionType>) {
-      state.thumbnails.position = action.payload;
+    setThumbnailPosition(
+      state,
+      action: PayloadAction<CompactThumbnailPositionType>
+    ) {
+      state.compact.thumbnailsPosition = action.payload;
 
-      db.setSetting("thumbnail_position_type", action.payload);
+      db.setSetting("compact_thumbnail_position_type", action.payload);
     },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
@@ -177,10 +179,12 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
-      const thumbnail_position_type = await db.getSetting(
-        "thumbnail_position_type"
+      const compact_thumbnail_position_type = await db.getSetting(
+        "compact_thumbnail_position_type"
       );
-      const show_voting_buttons = await db.getSetting("show_voting_buttons");
+      const compact_show_voting_buttons = await db.getSetting(
+        "compact_show_voting_buttons"
+      );
 
       return {
         ...state.appearance,
@@ -190,11 +194,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         posts: {
           type: post_appearance_type,
         },
-        thumbnails: {
-          position: thumbnail_position_type,
-        },
-        votingButtons: {
-          show: show_voting_buttons,
+        compact: {
+          thumbnailsPosition: compact_thumbnail_position_type,
+          showVotingButtons: compact_show_voting_buttons,
         },
       };
     });

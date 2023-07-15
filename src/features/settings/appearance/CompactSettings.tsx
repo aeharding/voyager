@@ -13,31 +13,32 @@ import { useState } from "react";
 import { startCase } from "lodash";
 import { setShowVotingButtons, setThumbnailPosition } from "./appearanceSlice";
 import {
-  OShowVotingButtons,
-  OThumbnailPositionType,
-  ThumbnailPositionType,
+  OCompactShowVotingButtons,
+  OCompactThumbnailPositionType,
+  CompactThumbnailPositionType,
 } from "../../../services/db";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 
-const BUTTONS: ActionSheetButton<ThumbnailPositionType>[] = Object.values(
-  OThumbnailPositionType
-).map(function (thumbnailPositionType) {
-  return {
-    text: startCase(thumbnailPositionType),
-    data: thumbnailPositionType,
-  } as ActionSheetButton<ThumbnailPositionType>;
-});
+const BUTTONS: ActionSheetButton<CompactThumbnailPositionType>[] =
+  Object.values(OCompactThumbnailPositionType).map(function (
+    compactThumbnailPositionType
+  ) {
+    return {
+      text: startCase(compactThumbnailPositionType),
+      data: compactThumbnailPositionType,
+    } as ActionSheetButton<CompactThumbnailPositionType>;
+  });
 
 export default function CompactSettings() {
   const [open, setOpen] = useState(false);
 
   const dispatch = useAppDispatch();
-  const thumbnailsPositionType = useAppSelector(
-    (state) => state.appearance.thumbnails.position
+  const compactThumbnailsPositionType = useAppSelector(
+    (state) => state.appearance.compact.thumbnailsPosition
   );
 
-  const showVotingButtons = useAppSelector(
-    (state) => state.appearance.votingButtons.show
+  const compactShowVotingButtons = useAppSelector(
+    (state) => state.appearance.compact.showVotingButtons
   );
 
   return (
@@ -49,7 +50,7 @@ export default function CompactSettings() {
         <InsetIonItem button onClick={() => setOpen(true)}>
           <IonLabel>Thumbnail Position</IonLabel>
           <IonLabel slot="end" color="medium">
-            {startCase(thumbnailsPositionType)}
+            {startCase(compactThumbnailsPositionType)}
           </IonLabel>
           <IonActionSheet
             cssClass="left-align-buttons"
@@ -57,7 +58,7 @@ export default function CompactSettings() {
             onDidDismiss={() => setOpen(false)}
             onWillDismiss={(
               e: IonActionSheetCustomEvent<
-                OverlayEventDetail<ThumbnailPositionType>
+                OverlayEventDetail<CompactThumbnailPositionType>
               >
             ) => {
               if (e.detail.data) {
@@ -67,20 +68,25 @@ export default function CompactSettings() {
             header="Position"
             buttons={BUTTONS.map((b) => ({
               ...b,
-              role: thumbnailsPositionType === b.data ? "selected" : undefined,
+              role:
+                compactThumbnailsPositionType === b.data
+                  ? "selected"
+                  : undefined,
             }))}
           />
         </InsetIonItem>
         <InsetIonItem>
           <IonLabel>Show Voting Buttons</IonLabel>
           <IonToggle
-            checked={showVotingButtons === OShowVotingButtons.Always}
+            checked={
+              compactShowVotingButtons === OCompactShowVotingButtons.Always
+            }
             onIonChange={(e) =>
               dispatch(
                 setShowVotingButtons(
                   e.detail.checked
-                    ? OShowVotingButtons.Always
-                    : OShowVotingButtons.Never
+                    ? OCompactShowVotingButtons.Always
+                    : OCompactShowVotingButtons.Never
                 )
               )
             }
