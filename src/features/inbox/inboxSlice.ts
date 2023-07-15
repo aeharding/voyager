@@ -1,9 +1,9 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { logoutAccount } from "../auth/authSlice";
 import { InboxItemView } from "./InboxItem";
-import { differenceBy, uniqBy } from "lodash";
+import { differenceBy, groupBy, sortBy, uniqBy } from "lodash";
 import { receivedUsers } from "../user/userSlice";
 import { isLemmyError } from "../../helpers/lemmy";
 import {
@@ -78,6 +78,10 @@ export const inboxSlice = createSlice({
       if (state.messageSyncState === "syncing") state.messageSyncState = "init";
     },
     resetInbox: () => initialState,
+    resetMessages: (state) => {
+      state.messageSyncState = "init";
+      state.messages = [];
+    },
   },
 });
 
@@ -88,7 +92,7 @@ export const {
   setReadStatus,
   receivedMessages,
   resetInbox,
-
+  resetMessages,
   sync,
   syncComplete,
   syncFail,
@@ -205,6 +209,30 @@ export const markAllRead =
 
     dispatch(getInboxCounts());
   };
+
+export const conversationsByPersonIdSelector = createSelector(
+  [
+    (state: RootState) => state.inbox.messages,
+    (state: RootState) =>
+      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+  ],
+  (messages, myUserId) => {
+    if (!myUserId) return {};
+
+    return sortBy(
+      Object.values(
+        groupBy(messages, (m) =>
+          m.private_message.creator_id === myUserId
+            ? m.private_message.recipient_id
+            : m.private_message.creator_id,
+        ),
+      ).map((messages) =>
+        sortBy(messages, (m) => -Date.parse(m.private_message.published)),
+      ),
+      (group) => -Date.parse(group[0]!.private_message.published),
+    );
+  },
+);
 
 export function getInboxItemId(item: InboxItemView): string {
   if ("comment_reply" in item) {

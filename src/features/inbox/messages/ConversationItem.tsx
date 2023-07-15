@@ -1,11 +1,23 @@
 import styled from "@emotion/styled";
-import { IonIcon, IonItem } from "@ionic/react";
+import {
+  IonIcon,
+  IonItem,
+  IonItemOption,
+  IonItemOptions,
+  IonItemSliding,
+  IonLoading,
+  useIonAlert,
+} from "@ionic/react";
 import { PrivateMessageView } from "lemmy-js-client";
-import { useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { getHandle } from "../../../helpers/lemmy";
 import ItemIcon from "../../labels/img/ItemIcon";
-import { chevronForwardOutline } from "ionicons/icons";
+import { chevronForwardOutline, trashOutline } from "ionicons/icons";
 import Time from "./Time";
+import { css } from "@emotion/react";
+import { clientSelector, jwtSelector } from "../../auth/authSlice";
+import { resetMessages, syncMessages } from "../inboxSlice";
+import { useState } from "react";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin: 0.75rem 0;
@@ -87,15 +99,24 @@ const Dot = styled.div`
   height: var(--size);
 `;
 
+const SquareIonItemOption = styled(IonItemOption)`
+  width: 85px;
+`;
+
 interface ConversationItemProps {
   messages: PrivateMessageView[];
 }
 
 export default function ConversationItem({ messages }: ConversationItemProps) {
+  const dispatch = useAppDispatch();
+  const [present] = useIonAlert();
+  const [loading, setLoading] = useState(false);
   const myUserId = useAppSelector(
     (state) =>
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   );
+  const client = useAppSelector(clientSelector);
+  const jwt = useAppSelector(jwtSelector);
 
   const previewMsg = messages[0]!; // presorted, newest => oldest
 
@@ -106,26 +127,113 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
 
   const unread = !!messages.find((msg) => !msg.private_message.read);
 
+  async function onDelete() {
+    if (!jwt) return;
+    const mine = messages.filter((m) => m.creator.id === myUserId);
+    const theirs = messages.filter((m) => m.creator.id !== myUserId);
+
+    if (mine.length <= 1) {
+      await present("Block and report conversation?", [
+        {
+          text: "Just delete",
+          handler: () => {
+            removeMessages(mine);
+          },
+        },
+        {
+          text: "Block + Report",
+          role: "destructive",
+          handler: async () => {
+            const theirRecentMessage = theirs.pop();
+            if (!theirRecentMessage) return;
+
+            await client.createPrivateMessageReport({
+              private_message_id: theirRecentMessage.private_message.id,
+              auth: jwt,
+              reason: "Spam or abuse",
+            });
+
+            await client.blockPerson({
+              person_id: theirRecentMessage.creator.id,
+              auth: jwt,
+              block: true,
+            });
+
+            removeMessages(mine);
+          },
+        },
+      ]);
+    }
+  }
+
+  async function removeMessages(messages: PrivateMessageView[]) {
+    if (!jwt) return;
+
+    setLoading(true);
+
+    // Can only delete my own messages
+    const toDelete = messages.map((m) => m.private_message.id);
+
+    let id;
+
+    try {
+      while ((id = toDelete.pop())) {
+        await client.deletePrivateMessage({
+          private_message_id: id,
+          auth: jwt,
+          deleted: true,
+        });
+      }
+
+      dispatch(resetMessages());
+      await dispatch(syncMessages());
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <IonItem routerLink={`/inbox/messages/${getHandle(person)}`} detail={false}>
-      <div slot="start">
-        {unread ? <Dot /> : ""}
-        <StyledItemIcon item={person} size={44} />
-      </div>
-      <MessageContent>
-        <MessageLine>
-          <PersonLabel>{person.display_name ?? getHandle(person)}</PersonLabel>
-          <OpenDetails>
-            <span>
-              <Time date={previewMsg.private_message.published} />
-            </span>
-            <IonIcon icon={chevronForwardOutline} />
-          </OpenDetails>
-        </MessageLine>
-        <MessagePreview color="medium">
-          {previewMsg.private_message.content}
-        </MessagePreview>
-      </MessageContent>
-    </IonItem>
+    <>
+      <IonLoading isOpen={loading} />
+      <IonItemSliding>
+        <IonItemOptions side="end" onIonSwipe={onDelete}>
+          <SquareIonItemOption color="danger" expandable onClick={onDelete}>
+            <IonIcon
+              icon={trashOutline}
+              css={css`
+                font-size: 1.4em;
+              `}
+            />
+          </SquareIonItemOption>
+        </IonItemOptions>
+
+        <IonItem
+          routerLink={`/inbox/messages/${getHandle(person)}`}
+          draggable={false}
+          detail={false}
+        >
+          <div slot="start">
+            {unread ? <Dot /> : ""}
+            <StyledItemIcon item={person} size={44} />
+          </div>
+          <MessageContent>
+            <MessageLine>
+              <PersonLabel>
+                {person.display_name ?? getHandle(person)}
+              </PersonLabel>
+              <OpenDetails>
+                <span>
+                  <Time date={previewMsg.private_message.published} />
+                </span>
+                <IonIcon icon={chevronForwardOutline} />
+              </OpenDetails>
+            </MessageLine>
+            <MessagePreview color="medium">
+              {previewMsg.private_message.content}
+            </MessagePreview>
+          </MessageContent>
+        </IonItem>
+      </IonItemSliding>
+    </>
   );
 }
