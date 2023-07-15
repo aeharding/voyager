@@ -95,13 +95,22 @@ export const getFavoriteCommunities =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
 
-    if (!userHandle) return;
+    if (!userHandle) {
+      dispatch(setFavorites([]));
+      return;
+    }
 
-    const communities = await db.getSetting("favorite_communities", {
-      user_handle: userHandle,
-    });
+    try {
+      const communities = await db.getSetting("favorite_communities", {
+        user_handle: userHandle,
+      });
 
-    dispatch(setFavorites(communities));
+      dispatch(setFavorites(communities));
+    } catch (e) {
+      dispatch(setFavorites([]));
+
+      // swallow the error, probably "Setting not found"
+    }
   };
 
 export const followCommunity =

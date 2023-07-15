@@ -54,7 +54,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const { appendComments } = useContext(FeedContext);
+  const { prependComments } = useContext(FeedContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
@@ -232,7 +232,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
               const reply = await presentCommentReply(comment);
 
-              if (reply) appendComments([reply]);
+              if (reply) prependComments([reply]);
               break;
             }
             case "select-text":
