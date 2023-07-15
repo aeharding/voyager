@@ -128,6 +128,8 @@ export const appearanceSlice = createSlice({
     },
     setNsfwBlur(state, action: PayloadAction<OPostBlurNsfw>) {
       state.posts.blur_nsfw = action.payload;
+
+      db.setSetting("blur_nsfw", action.payload);
     },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
@@ -187,6 +189,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
+      const blur_nsfw = await db.getSetting("blur_nsfw");
 
       return {
         ...state.appearance,
@@ -195,7 +198,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         },
         posts: {
           type: post_appearance_type,
-          blur_nsfw: state.appearance.posts.blur_nsfw,
+          blur_nsfw,
         },
       };
     });
