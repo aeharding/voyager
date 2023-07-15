@@ -7,7 +7,7 @@ import {
   OPostAppearanceType,
   PostAppearanceType,
   setPostAppearance,
-} from "../appearanceSlice";
+} from "../../settingsSlice";
 import { startCase } from "lodash";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
@@ -28,7 +28,7 @@ export default function PostSize() {
 
   const dispatch = useAppDispatch();
   const postsAppearanceType = useAppSelector(
-    (state) => state.appearance.posts.type
+    (state) => state.settings.appearance.posts.type
   );
 
   return (

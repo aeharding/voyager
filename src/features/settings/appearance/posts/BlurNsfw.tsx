@@ -9,7 +9,7 @@ import {
   OverlayEventDetail,
 } from "@ionic/core";
 import { OPostBlurNsfw, PostBlurNsfwType } from "../../../../services/db";
-import { setBlurNsfwState } from "../appearanceSlice";
+import { setBlurNsfwState } from "../../settingsSlice";
 
 const BUTTONS: ActionSheetButton<PostBlurNsfwType>[] = Object.values(
   OPostBlurNsfw
@@ -25,7 +25,7 @@ export default function BlurNsfw() {
 
   const dispatch = useAppDispatch();
   const nsfwBlurred = useAppSelector(
-    (state) => state.appearance.posts.blurNsfw
+    (state) => state.settings.appearance.posts.blurNsfw
   );
 
   return (

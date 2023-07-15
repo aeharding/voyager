@@ -37,7 +37,7 @@ export default function PostCommentFeed({
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
   const postAppearanceType = useAppSelector(
-    (state) => state.appearance.posts.type
+    (state) => state.settings.appearance.posts.type
   );
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
 

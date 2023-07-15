@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../../../store";
 import {
   OCommentThreadCollapse,
   setCommentsCollapsed,
-} from "../appearanceSlice";
+} from "../../settingsSlice";
 
 export const ListHeader = styled.div`
   font-size: 0.8em;
@@ -18,7 +18,7 @@ export default function CollapsedByDefault() {
   const dispatch = useAppDispatch();
   const { collapseCommentThreads } = useAppSelector(
     // this needs a better naming
-    (state) => state.appearance.comments
+    (state) => state.settings.general.comments
   );
 
   return (

@@ -111,7 +111,9 @@ export default function LargePost({ post, communityMode }: PostProps) {
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
-  const blurNsfw = useAppSelector((state) => state.appearance.posts.blurNsfw);
+  const blurNsfw = useAppSelector(
+    (state) => state.settings.appearance.posts.blurNsfw
+  );
 
   function renderPostBody() {
     if (post.post.url) {

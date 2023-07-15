@@ -48,7 +48,10 @@ export default function PostPage() {
   const post = useAppSelector((state) => state.post.postById[id]);
   const jwt = useAppSelector(jwtSelector);
   const dispatch = useAppDispatch();
-  const [sort, setSort] = useState<CommentSortType>("Hot");
+  const defaultSort = useAppSelector(
+    (state) => state.settings.general.comments.sort
+  );
+  const [sort, setSort] = useState<CommentSortType>(defaultSort);
 
   const postIfFound = typeof post === "object" ? post : undefined;
 

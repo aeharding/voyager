@@ -50,7 +50,7 @@ export default function Feed<I>({
   const [atEnd, setAtEnd] = useState(false);
   const [present] = useIonToast();
   const postAppearanceType = useAppSelector(
-    (state) => state.appearance.posts.type
+    (state) => state.settings.appearance.posts.type
   );
 
   const filteredItems = useMemo(

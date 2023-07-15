@@ -30,7 +30,7 @@ import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
 import { FeedContext } from "../feed/FeedContext";
 import { jwtSelector } from "../auth/authSlice";
-import { defaultCommentDepthSelector } from "../settings/appearance/appearanceSlice";
+import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 
 const centerCss = css`
   position: relative;
