@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { PostView } from "lemmy-js-client";
 import { getItemActorName } from "../../helpers/lemmy";
-import { OPostBlurNsfw } from "../../services/db";
+import { OPostBlurNsfw, PostBlurNsfwType } from "../../services/db";
 
 const Container = styled.span`
   font-size: 0.8rem;
@@ -30,7 +30,7 @@ export function isNsfw(post: PostView): boolean {
 
 export function isNsfwBlurred(
   post: PostView,
-  blurNsfw: OPostBlurNsfw
+  blurNsfw: PostBlurNsfwType
 ): boolean {
   if (blurNsfw === OPostBlurNsfw.Never) return false;
 

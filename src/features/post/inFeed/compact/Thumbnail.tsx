@@ -96,7 +96,7 @@ export default function Thumbnail({ post }: ImgProps) {
 
     if (markdownLoneImage) return markdownLoneImage.url;
   })();
-  const blurNsfw = useAppSelector((state) => state.appearance.posts.blur_nsfw);
+  const blurNsfw = useAppSelector((state) => state.appearance.posts.blurNsfw);
 
   const nsfw = useMemo(() => isNsfwBlurred(post, blurNsfw), [post, blurNsfw]);
 

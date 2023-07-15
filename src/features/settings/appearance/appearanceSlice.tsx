@@ -11,9 +11,10 @@ import {
   CommentThreadCollapse,
   OCommentThreadCollapse,
   OPostAppearanceType,
-  OPostBlurNsfw,
+  PostBlurNsfwType,
   PostAppearanceType,
   db,
+  OPostBlurNsfw,
 } from "../../../services/db";
 import { get, set } from "../storage";
 
@@ -33,7 +34,7 @@ interface AppearanceState {
     collapseCommentThreads: CommentThreadCollapse;
   };
   posts: {
-    blur_nsfw: OPostBlurNsfw;
+    blurNsfw: PostBlurNsfwType;
     type: PostAppearanceType;
   };
   dark: {
@@ -62,7 +63,7 @@ const initialState: AppearanceState = {
     collapseCommentThreads: OCommentThreadCollapse.Never,
   },
   posts: {
-    blur_nsfw: OPostBlurNsfw.Always,
+    blurNsfw: OPostBlurNsfw.InFeed,
     type: OPostAppearanceType.Large,
   },
   dark: {
@@ -126,10 +127,8 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("post_appearance_type", action.payload);
     },
-    setNsfwBlur(state, action: PayloadAction<OPostBlurNsfw>) {
-      state.posts.blur_nsfw = action.payload;
-
-      db.setSetting("blur_nsfw", action.payload);
+    setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
+      state.posts.blurNsfw = action.payload;
     },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
@@ -147,10 +146,9 @@ export const appearanceSlice = createSlice({
 });
 
 export const setBlurNsfwState =
-  (blurNsfw: OPostBlurNsfw) =>
+  (blurNsfw: PostBlurNsfwType) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
-    if (!userHandle) return;
 
     dispatch(setNsfwBlur(blurNsfw));
 
@@ -162,22 +160,12 @@ export const setBlurNsfwState =
 export const getBlurNsfw =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
-    if (!userHandle) {
-      dispatch(setNsfwBlur(OPostBlurNsfw.Always));
-      return;
-    }
 
-    try {
-      const blurNsfw = await db.getSetting("blur_nsfw", {
-        user_handle: userHandle,
-      });
+    const blurNsfw = await db.getSetting("blur_nsfw", {
+      user_handle: userHandle,
+    });
 
-      dispatch(setNsfwBlur(blurNsfw));
-    } catch (e) {
-      dispatch(setNsfwBlur(OPostBlurNsfw.Always));
-
-      // swallow the error, probably "Setting not found"
-    }
+    dispatch(setNsfwBlur(blurNsfw));
   };
 
 export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
@@ -189,7 +177,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
-      const blur_nsfw = await db.getSetting("blur_nsfw");
+      const blurNsfw = await db.getSetting("blur_nsfw");
 
       return {
         ...state.appearance,
@@ -198,7 +186,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         },
         posts: {
           type: post_appearance_type,
-          blur_nsfw,
+          blurNsfw,
         },
       };
     });

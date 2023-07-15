@@ -20,21 +20,21 @@ export const OCommentThreadCollapse = {
   Never: "never",
 } as const;
 
-export const OPostBlurNsfw = {
-  Always: "always",
-  Never: "never",
-} as const;
-
 export type CommentThreadCollapse =
   (typeof OCommentThreadCollapse)[keyof typeof OCommentThreadCollapse];
 
-export type OPostBlurNsfw =
-  (typeof OCommentThreadCollapse)[keyof typeof OCommentThreadCollapse];
+export const OPostBlurNsfw = {
+  InFeed: "in_feed",
+  Never: "never",
+} as const;
+
+export type PostBlurNsfwType =
+  (typeof OPostBlurNsfw)[keyof typeof OPostBlurNsfw];
 
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   post_appearance_type: PostAppearanceType;
-  blur_nsfw: OPostBlurNsfw;
+  blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
 };
 
@@ -60,7 +60,7 @@ const defaultSettings: ISettingItem<keyof SettingValueTypes>[] = [
   },
   {
     key: "blur_nsfw",
-    value: OPostBlurNsfw.Always,
+    value: OPostBlurNsfw.InFeed,
     user_handle: "",
     community: "",
   },

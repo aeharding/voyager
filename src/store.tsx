@@ -43,21 +43,26 @@ const activeHandleChange = () => {
   const state = store.getState();
   const activeHandle = handleSelector(state);
 
-  if (activeHandle !== lastActiveHandle) {
-    store.dispatch(getFavoriteCommunities());
-    store.dispatch(getBlurNsfw());
-    lastActiveHandle = activeHandle;
-  }
+  if (activeHandle === lastActiveHandle) return;
+
+  lastActiveHandle = activeHandle;
+
+  store.dispatch(getFavoriteCommunities());
+  store.dispatch(getBlurNsfw());
 };
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
-    // Load settings from DB into the store
-    store.dispatch(fetchSettingsFromDatabase());
-
-    // Subscribe to actions to handle handle changes, this can be used to react to other changes as well
-    // to coordinate side effects between slices.
-    store.subscribe(activeHandleChange);
+    (async () => {
+      try {
+        // Load initial settings from DB into the store
+        await store.dispatch(fetchSettingsFromDatabase());
+      } finally {
+        // Subscribe to actions to handle handle changes, this can be used to react to other changes as well
+        // to coordinate side effects between slices.
+        store.subscribe(activeHandleChange);
+      }
+    })();
   }, []);
 
   return <Provider store={store}>{children}</Provider>;
