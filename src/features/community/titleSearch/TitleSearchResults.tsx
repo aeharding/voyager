@@ -11,7 +11,7 @@ import styled from "@emotion/styled";
 import { useDebounce } from "usehooks-ts";
 import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
-import { IonItem, IonList, createAnimation, useIonRouter } from "@ionic/react";
+import { IonItem, IonList, useIonRouter } from "@ionic/react";
 import { useAppSelector } from "../../../store";
 import { notEmpty } from "../../../helpers/array";
 import { uniqBy } from "lodash";
@@ -141,9 +141,7 @@ export default function TitleSearchResults() {
         route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
       }
 
-      router.push(route, undefined, undefined, undefined, () =>
-        createAnimation()
-      );
+      router.push(route, undefined, "replace");
     },
     [buildGeneralBrowseLink, router]
   );
