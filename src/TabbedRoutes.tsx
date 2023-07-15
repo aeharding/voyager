@@ -19,18 +19,14 @@ import {
 import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
-import { useAppDispatch, useAppSelector } from "./store";
-import {
-  handleSelector,
-  jwtIssSelector,
-  jwtSelector,
-} from "./features/auth/authSlice";
+import { useAppSelector } from "./store";
+import { jwtIssSelector, jwtSelector } from "./features/auth/authSlice";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
@@ -57,7 +53,6 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
 import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
-import { getFavoriteCommunities } from "./features/community/communitySlice";
 import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
 import { getDefaultServer } from "./services/app";
 
@@ -75,8 +70,6 @@ export default function TabbedRoutes() {
   const totalUnread = useAppSelector(totalUnreadSelector);
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
-  const dispatch = useAppDispatch();
-  const activeHandle = useAppSelector(handleSelector);
 
   const settingsNotificationCount =
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
@@ -93,10 +86,6 @@ export default function TabbedRoutes() {
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
   const isProfileButtonDisabled = location.pathname.startsWith("/profile");
   const isSearchButtonDisabled = location.pathname.startsWith("/search");
-
-  useEffect(() => {
-    dispatch(getFavoriteCommunities());
-  }, [dispatch, activeHandle]);
 
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;

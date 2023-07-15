@@ -6,13 +6,15 @@ interface AgoProps {
 }
 
 export default function Ago({ date, className }: AgoProps) {
+  return <span className={className}>{formatRelative(date)}</span>;
+}
+
+export function formatRelative(date: string): string {
   const relativeDate = formatDistanceToNowStrict(new Date(`${date}Z`), {
     addSuffix: false,
   });
 
-  return (
-    <span className={className}>{getRelativeDateString(relativeDate)}</span>
-  );
+  return getRelativeDateString(relativeDate);
 }
 
 const getRelativeDateString = (relativeDate: string) => {

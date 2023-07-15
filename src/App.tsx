@@ -16,8 +16,7 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
-import { Provider } from "react-redux";
-import store from "./store";
+import { StoreProvider } from "./store";
 import { isInstalled } from "./helpers/device";
 import TabbedRoutes from "./TabbedRoutes";
 import Auth from "./Auth";
@@ -40,7 +39,7 @@ export default function App() {
   return (
     <ConfigProvider>
       <AppContextProvider>
-        <Provider store={store}>
+        <StoreProvider>
           <GlobalStyles>
             <BeforeInstallPromptProvider>
               <UpdateContextProvider>
@@ -56,7 +55,7 @@ export default function App() {
               </UpdateContextProvider>
             </BeforeInstallPromptProvider>
           </GlobalStyles>
-        </Provider>
+        </StoreProvider>
       </AppContextProvider>
     </ConfigProvider>
   );

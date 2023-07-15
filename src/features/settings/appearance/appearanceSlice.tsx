@@ -5,16 +5,18 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import { RootState } from "../../../store";
+import { AppDispatch, RootState } from "../../../store";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "../../../helpers/lemmy";
 import {
   CommentThreadCollapse,
   OCommentThreadCollapse,
   OPostAppearanceType,
+  PostBlurNsfwType,
   PostAppearanceType,
   OCompactThumbnailPositionType,
   CompactThumbnailPositionType,
   db,
+  OPostBlurNsfw,
 } from "../../../services/db";
 import { get, set } from "../storage";
 
@@ -36,6 +38,7 @@ interface AppearanceState {
     collapseCommentThreads: CommentThreadCollapse;
   };
   posts: {
+    blurNsfw: PostBlurNsfwType;
     type: PostAppearanceType;
   };
   compact: {
@@ -68,6 +71,7 @@ const initialState: AppearanceState = {
     collapseCommentThreads: OCommentThreadCollapse.Never,
   },
   posts: {
+    blurNsfw: OPostBlurNsfw.InFeed,
     type: OPostAppearanceType.Large,
   },
   compact: {
@@ -135,6 +139,9 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("post_appearance_type", action.payload);
     },
+    setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
+      state.posts.blurNsfw = action.payload;
+    },
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.compact.showVotingButtons = action.payload;
 
@@ -163,6 +170,29 @@ export const appearanceSlice = createSlice({
   },
 });
 
+export const setBlurNsfwState =
+  (blurNsfw: PostBlurNsfwType) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setNsfwBlur(blurNsfw));
+
+    db.setSetting("blur_nsfw", blurNsfw, {
+      user_handle: userHandle,
+    });
+  };
+
+export const getBlurNsfw =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const blurNsfw = await db.getSetting("blur_nsfw", {
+      user_handle: userHandle,
+    });
+
+    dispatch(setNsfwBlur(blurNsfw));
+  };
+
 export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
@@ -172,6 +202,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
+      const blurNsfw = await db.getSetting("blur_nsfw");
       const compact_thumbnail_position_type = await db.getSetting(
         "compact_thumbnail_position_type"
       );
@@ -186,6 +217,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         },
         posts: {
           type: post_appearance_type,
+          blurNsfw,
         },
         compact: {
           thumbnailsPosition: compact_thumbnail_position_type,
@@ -200,6 +232,7 @@ export const {
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setCommentsCollapsed,
+  setNsfwBlur,
   setPostAppearance,
   setThumbnailPosition,
   setShowVotingButtons,
