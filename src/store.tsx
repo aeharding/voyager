@@ -38,7 +38,7 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export default store;
 
 let lastActiveHandle: string | undefined = undefined;
-const handleHandleChange = () => {
+const activeHandleChange = () => {
   const state = store.getState();
   const activeHandle = handleSelector(state);
 
@@ -55,7 +55,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     // Subscribe to actions to handle handle changes, this can be used to react to other changes as well
     // to coordinate side effects between slices.
-    store.subscribe(handleHandleChange);
+    store.subscribe(activeHandleChange);
   }, []);
 
   return <Provider store={store}>{children}</Provider>;
