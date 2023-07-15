@@ -1,4 +1,4 @@
-import Dexie, { Table, Transaction } from "dexie";
+import Dexie, { Table } from "dexie";
 
 export interface IPostMetadata {
   post_id: number;
@@ -14,6 +14,14 @@ export const OPostAppearanceType = {
 
 export type PostAppearanceType =
   (typeof OPostAppearanceType)[keyof typeof OPostAppearanceType];
+
+export const OCompactThumbnailPositionType = {
+  Left: "left",
+  Right: "right",
+} as const;
+
+export type CompactThumbnailPositionType =
+  (typeof OCompactThumbnailPositionType)[keyof typeof OCompactThumbnailPositionType];
 
 export const OCommentThreadCollapse = {
   Always: "always",
@@ -34,6 +42,8 @@ export type PostBlurNsfwType =
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   post_appearance_type: PostAppearanceType;
+  compact_thumbnail_position_type: CompactThumbnailPositionType;
+  compact_show_voting_buttons: boolean;
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
 };
@@ -44,27 +54,6 @@ export interface ISettingItem<T extends keyof SettingValueTypes> {
   user_handle: string;
   community: string;
 }
-
-const defaultSettings: ISettingItem<keyof SettingValueTypes>[] = [
-  {
-    key: "collapse_comment_threads",
-    value: OCommentThreadCollapse.Never,
-    user_handle: "",
-    community: "",
-  },
-  {
-    key: "post_appearance_type",
-    value: OPostAppearanceType.Large,
-    user_handle: "",
-    community: "",
-  },
-  {
-    key: "blur_nsfw",
-    value: OPostBlurNsfw.InFeed,
-    user_handle: "",
-    community: "",
-  },
-];
 
 export const CompoundKeys = {
   postMetadata: {
@@ -88,9 +77,8 @@ export class WefwefDB extends Dexie {
        Always assume there is a device out there with the first version of the app.
        Also please read the Dexie documentation about versioning.
     */
-    this.version(2)
-      .stores({
-        postMetadatas: `
+    this.version(2).stores({
+      postMetadatas: `
         ++,
         ${CompoundKeys.postMetadata.post_id_and_user_handle},
         ${CompoundKeys.postMetadata.user_handle_and_hidden},
@@ -99,7 +87,7 @@ export class WefwefDB extends Dexie {
         hidden,
         hidden_updated_at
       `,
-        settings: `
+      settings: `
         ++,
         key,
         ${CompoundKeys.settings.key_and_user_handle_and_community},
@@ -107,17 +95,6 @@ export class WefwefDB extends Dexie {
         user_handle,
         community
       `,
-      })
-      .upgrade(async (tx) => {
-        await this.populateDefaultSettings(tx);
-        await this.migrateFromLocalStorageSettings(tx);
-      });
-
-    this.on("populate", async () => {
-      this.transaction("rw", this.settings, async (tx) => {
-        await this.populateDefaultSettings(tx);
-        await this.migrateFromLocalStorageSettings(tx);
-      });
     });
   }
 
@@ -210,39 +187,6 @@ export class WefwefDB extends Dexie {
    * Settings
    */
 
-  private async populateDefaultSettings(tx: Transaction) {
-    const settingsTable = tx.table("settings");
-    settingsTable.bulkAdd(defaultSettings);
-  }
-
-  private async migrateFromLocalStorageSettings(tx: Transaction) {
-    const localStorageMigrationKeys = {
-      collapse_comment_threads: "appearance--collapse-comment-threads",
-      post_appearance_type: "appearance--post-type",
-    };
-
-    const settingsTable = tx.table("settings");
-
-    return await Promise.all(
-      Object.entries(localStorageMigrationKeys).map(
-        ([key, localStorageKey]) => {
-          const localStorageValue = localStorage.getItem(localStorageKey);
-
-          if (!localStorageValue) {
-            return Promise.resolve();
-          }
-
-          return settingsTable
-            .where(CompoundKeys.settings.key_and_user_handle_and_community)
-            .equals([key, "", ""])
-            .modify({
-              value: JSON.parse(localStorageValue),
-            });
-        }
-      )
-    );
-  }
-
   private findSetting(key: string, user_handle: string, community: string) {
     return this.settings
       .where(CompoundKeys.settings.key_and_user_handle_and_community)
@@ -264,7 +208,7 @@ export class WefwefDB extends Dexie {
 
       if (!setting && user_handle === "" && community === "") {
         // Already requested the global setting and it's not found, we can stop here
-        throw new Error(`Setting ${key} not found`);
+        return;
       }
 
       if (!setting && user_handle !== "" && community !== "") {
@@ -280,7 +224,7 @@ export class WefwefDB extends Dexie {
       }
 
       if (!setting) {
-        throw new Error(`Setting ${key} not found`);
+        return;
       }
 
       return setting.value as SettingValueTypes[T];

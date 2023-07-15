@@ -13,6 +13,8 @@ import {
   OPostAppearanceType,
   PostBlurNsfwType,
   PostAppearanceType,
+  OCompactThumbnailPositionType,
+  CompactThumbnailPositionType,
   db,
   OPostBlurNsfw,
 } from "../../../services/db";
@@ -21,8 +23,10 @@ import { get, set } from "../storage";
 export {
   type CommentThreadCollapse,
   type PostAppearanceType,
+  type CompactThumbnailPositionType,
   OCommentThreadCollapse,
   OPostAppearanceType,
+  OCompactThumbnailPositionType,
 } from "../../../services/db";
 
 interface AppearanceState {
@@ -36,6 +40,10 @@ interface AppearanceState {
   posts: {
     blurNsfw: PostBlurNsfwType;
     type: PostAppearanceType;
+  };
+  compact: {
+    thumbnailsPosition: CompactThumbnailPositionType;
+    showVotingButtons: boolean;
   };
   dark: {
     usingSystemDarkMode: boolean;
@@ -65,6 +73,10 @@ const initialState: AppearanceState = {
   posts: {
     blurNsfw: OPostBlurNsfw.InFeed,
     type: OPostAppearanceType.Large,
+  },
+  compact: {
+    thumbnailsPosition: OCompactThumbnailPositionType.Left,
+    showVotingButtons: true,
   },
   dark: {
     usingSystemDarkMode: true,
@@ -130,6 +142,19 @@ export const appearanceSlice = createSlice({
     setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
       state.posts.blurNsfw = action.payload;
     },
+    setShowVotingButtons(state, action: PayloadAction<boolean>) {
+      state.compact.showVotingButtons = action.payload;
+
+      db.setSetting("compact_show_voting_buttons", action.payload);
+    },
+    setThumbnailPosition(
+      state,
+      action: PayloadAction<CompactThumbnailPositionType>
+    ) {
+      state.compact.thumbnailsPosition = action.payload;
+
+      db.setSetting("compact_thumbnail_position_type", action.payload);
+    },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
 
@@ -165,7 +190,7 @@ export const getBlurNsfw =
       user_handle: userHandle,
     });
 
-    dispatch(setNsfwBlur(blurNsfw));
+    dispatch(setNsfwBlur(blurNsfw ?? initialState.posts.blurNsfw));
   };
 
 export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
@@ -177,16 +202,32 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
-      const blurNsfw = await db.getSetting("blur_nsfw");
+      const blur_nsfw = await db.getSetting("blur_nsfw");
+      const compact_thumbnail_position_type = await db.getSetting(
+        "compact_thumbnail_position_type"
+      );
+      const compact_show_voting_buttons = await db.getSetting(
+        "compact_show_voting_buttons"
+      );
 
       return {
         ...state.appearance,
         comments: {
-          collapseCommentThreads: collapse_comment_threads,
+          collapseCommentThreads:
+            collapse_comment_threads ??
+            initialState.comments.collapseCommentThreads,
         },
         posts: {
-          type: post_appearance_type,
-          blurNsfw,
+          type: post_appearance_type ?? initialState.posts.type,
+          blurNsfw: blur_nsfw ?? initialState.posts.blurNsfw,
+        },
+        compact: {
+          thumbnailsPosition:
+            compact_thumbnail_position_type ??
+            initialState.compact.thumbnailsPosition,
+          showVotingButtons:
+            compact_show_voting_buttons ??
+            initialState.compact.showVotingButtons,
         },
       };
     });
@@ -199,6 +240,8 @@ export const {
   setCommentsCollapsed,
   setNsfwBlur,
   setPostAppearance,
+  setThumbnailPosition,
+  setShowVotingButtons,
   setUserDarkMode,
   setUseSystemDarkMode,
 } = appearanceSlice.actions;
