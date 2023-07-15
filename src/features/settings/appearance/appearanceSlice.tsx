@@ -5,14 +5,16 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { merge } from "lodash";
-import { RootState } from "../../../store";
+import { AppDispatch, RootState } from "../../../store";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "../../../helpers/lemmy";
 import {
   CommentThreadCollapse,
   OCommentThreadCollapse,
   OPostAppearanceType,
+  PostBlurNsfwType,
   PostAppearanceType,
   db,
+  OPostBlurNsfw,
 } from "../../../services/db";
 import { get, set } from "../storage";
 
@@ -32,6 +34,7 @@ interface AppearanceState {
     collapseCommentThreads: CommentThreadCollapse;
   };
   posts: {
+    blurNsfw: PostBlurNsfwType;
     type: PostAppearanceType;
   };
   dark: {
@@ -60,6 +63,7 @@ const initialState: AppearanceState = {
     collapseCommentThreads: OCommentThreadCollapse.Never,
   },
   posts: {
+    blurNsfw: OPostBlurNsfw.InFeed,
     type: OPostAppearanceType.Large,
   },
   dark: {
@@ -123,6 +127,9 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("post_appearance_type", action.payload);
     },
+    setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
+      state.posts.blurNsfw = action.payload;
+    },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.dark.userDarkMode = action.payload;
 
@@ -138,6 +145,29 @@ export const appearanceSlice = createSlice({
   },
 });
 
+export const setBlurNsfwState =
+  (blurNsfw: PostBlurNsfwType) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setNsfwBlur(blurNsfw));
+
+    db.setSetting("blur_nsfw", blurNsfw, {
+      user_handle: userHandle,
+    });
+  };
+
+export const getBlurNsfw =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const blurNsfw = await db.getSetting("blur_nsfw", {
+      user_handle: userHandle,
+    });
+
+    dispatch(setNsfwBlur(blurNsfw));
+  };
+
 export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
@@ -147,6 +177,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
+      const blurNsfw = await db.getSetting("blur_nsfw");
 
       return {
         ...state.appearance,
@@ -155,6 +186,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         },
         posts: {
           type: post_appearance_type,
+          blurNsfw,
         },
       };
     });
@@ -165,6 +197,7 @@ export const {
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setCommentsCollapsed,
+  setNsfwBlur,
   setPostAppearance,
   setUserDarkMode,
   setUseSystemDarkMode,

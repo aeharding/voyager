@@ -23,10 +23,18 @@ export const OCommentThreadCollapse = {
 export type CommentThreadCollapse =
   (typeof OCommentThreadCollapse)[keyof typeof OCommentThreadCollapse];
 
+export const OPostBlurNsfw = {
+  InFeed: "in_feed",
+  Never: "never",
+} as const;
+
+export type PostBlurNsfwType =
+  (typeof OPostBlurNsfw)[keyof typeof OPostBlurNsfw];
+
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   post_appearance_type: PostAppearanceType;
-  blur_nsfw: boolean;
+  blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
 };
 
@@ -52,7 +60,7 @@ const defaultSettings: ISettingItem<keyof SettingValueTypes>[] = [
   },
   {
     key: "blur_nsfw",
-    value: true,
+    value: OPostBlurNsfw.InFeed,
     user_handle: "",
     community: "",
   },
@@ -86,7 +94,7 @@ export class WefwefDB extends Dexie {
         ++,
         ${CompoundKeys.postMetadata.post_id_and_user_handle},
         ${CompoundKeys.postMetadata.user_handle_and_hidden},
-        post_id, 
+        post_id,
         user_handle,
         hidden,
         hidden_updated_at
