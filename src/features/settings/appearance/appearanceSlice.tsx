@@ -190,7 +190,7 @@ export const getBlurNsfw =
       user_handle: userHandle,
     });
 
-    dispatch(setNsfwBlur(blurNsfw));
+    dispatch(setNsfwBlur(blurNsfw ?? initialState.posts.blurNsfw));
   };
 
 export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
@@ -202,7 +202,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
-      const blurNsfw = await db.getSetting("blur_nsfw");
+      const blur_nsfw = await db.getSetting("blur_nsfw");
       const compact_thumbnail_position_type = await db.getSetting(
         "compact_thumbnail_position_type"
       );
@@ -213,15 +213,21 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
       return {
         ...state.appearance,
         comments: {
-          collapseCommentThreads: collapse_comment_threads,
+          collapseCommentThreads:
+            collapse_comment_threads ??
+            initialState.comments.collapseCommentThreads,
         },
         posts: {
-          type: post_appearance_type,
-          blurNsfw,
+          type: post_appearance_type ?? initialState.posts.type,
+          blurNsfw: blur_nsfw ?? initialState.posts.blurNsfw,
         },
         compact: {
-          thumbnailsPosition: compact_thumbnail_position_type,
-          showVotingButtons: compact_show_voting_buttons,
+          thumbnailsPosition:
+            compact_thumbnail_position_type ??
+            initialState.compact.thumbnailsPosition,
+          showVotingButtons:
+            compact_show_voting_buttons ??
+            initialState.compact.showVotingButtons,
         },
       };
     });
