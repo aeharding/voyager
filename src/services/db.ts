@@ -230,7 +230,7 @@ export class WefwefDB extends Dexie {
       collapse_comment_threads: "appearance--collapse-comment-threads",
       post_appearance_type: "appearance--post-type",
       thumbnail_position_type: "appearance--thumbnail_position_type",
-      show_voting_buttons: "appearance--show_voting_buttons"
+      show_voting_buttons: "appearance--show_voting_buttons",
     };
 
     const settingsTable = tx.table("settings");

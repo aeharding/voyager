@@ -28,7 +28,7 @@ export {
   OCommentThreadCollapse,
   OPostAppearanceType,
   OThumbnailPositionType,
-  OShowVotingButtons
+  OShowVotingButtons,
 } from "../../../services/db";
 
 interface AppearanceState {
@@ -44,7 +44,7 @@ interface AppearanceState {
   };
   thumbnails: {
     position: ThumbnailPositionType;
-  },
+  };
   votingButtons: {
     show: ShowVotingButtons;
   };
@@ -177,7 +177,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
         "collapse_comment_threads"
       );
       const post_appearance_type = await db.getSetting("post_appearance_type");
-      const thumbnail_position_type = await db.getSetting("thumbnail_position_type");
+      const thumbnail_position_type = await db.getSetting(
+        "thumbnail_position_type"
+      );
       const show_voting_buttons = await db.getSetting("show_voting_buttons");
 
       return {
@@ -192,8 +194,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<AppearanceState>(
           position: thumbnail_position_type,
         },
         votingButtons: {
-          show: show_voting_buttons
-        }
+          show: show_voting_buttons,
+        },
       };
     });
   }

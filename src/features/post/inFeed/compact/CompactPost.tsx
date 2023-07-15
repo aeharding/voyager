@@ -33,7 +33,7 @@ const Content = styled.div`
   gap: 0.5em;
 
   min-width: 0;
-  flex:1;
+  flex: 1;
 `;
 
 const Title = styled.span<{ isRead: boolean }>`
@@ -110,7 +110,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
 
   return (
     <Container>
-      {thumbnailPositionType == "left" && <Thumbnail post={post} />}
+      {thumbnailPositionType === "left" && <Thumbnail post={post} />}
       <Content>
         <Title isRead={hasBeenRead}>
           {post.post.name} {nsfw && <Nsfw />}
@@ -136,13 +136,13 @@ export default function CompactPost({ post, communityMode }: PostProps) {
           </Actions>
         </Aside>
       </Content>
-      {thumbnailPositionType == "right" && <Thumbnail post={post} />}
-      {showVotingButtons == "always" &&
+      {thumbnailPositionType === "right" && <Thumbnail post={post} />}
+      {showVotingButtons === "always" && (
         <EndDetails>
           <VoteButton type="up" postId={post.post.id} />
           <VoteButton type="down" postId={post.post.id} />
         </EndDetails>
-      }
+      )}
       <Save type="post" id={post.post.id} />
     </Container>
   );
