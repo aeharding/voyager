@@ -118,7 +118,7 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
             data: "Spam or Abuse",
           },
           {
-            text: "Custom Response",
+            text: "Custom Report",
             data: "other",
           },
           {
