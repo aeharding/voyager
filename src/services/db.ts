@@ -1,4 +1,5 @@
 import Dexie, { Table } from "dexie";
+import { CommentSortType } from "lemmy-js-client";
 
 export interface IPostMetadata {
   post_id: number;
@@ -36,6 +37,15 @@ export const OPostBlurNsfw = {
   Never: "never",
 } as const;
 
+export const OCommentDefaultSort: Record<string, CommentSortType> = {
+  Hot: "Hot",
+  Top: "Top",
+  New: "New",
+  Old: "Old",
+} as const;
+
+export type CommentDefaultSort = CommentSortType;
+
 export type PostBlurNsfwType =
   (typeof OPostBlurNsfw)[keyof typeof OPostBlurNsfw];
 
@@ -46,6 +56,7 @@ export type SettingValueTypes = {
   compact_show_voting_buttons: boolean;
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
+  default_comment_sort: CommentDefaultSort;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

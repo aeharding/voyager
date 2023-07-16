@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { setFontSizeMultiplier, setUseSystemFontSize } from "./appearanceSlice";
+import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
 
 export const ListHeader = styled.div`
   font-size: 0.8em;
@@ -44,7 +44,7 @@ const MIN_LARGER_FONT_ADJUSTMENT = 2;
 export default function TextSize() {
   const dispatch = useAppDispatch();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
-    (state) => state.appearance.font
+    (state) => state.settings.appearance.font
   );
 
   const ranges =

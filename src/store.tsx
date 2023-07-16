@@ -14,10 +14,10 @@ import communitySlice, {
 } from "./features/community/communitySlice";
 import userSlice from "./features/user/userSlice";
 import inboxSlice from "./features/inbox/inboxSlice";
-import appearanceSlice, {
+import settingsSlice, {
   fetchSettingsFromDatabase,
   getBlurNsfw,
-} from "./features/settings/appearance/appearanceSlice";
+} from "./features/settings/settingsSlice";
 
 const store = configureStore({
   reducer: {
@@ -27,7 +27,7 @@ const store = configureStore({
     community: communitySlice,
     user: userSlice,
     inbox: inboxSlice,
-    appearance: appearanceSlice,
+    settings: settingsSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

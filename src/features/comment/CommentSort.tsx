@@ -65,7 +65,7 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
   );
 }
 
-function getSortIcon(sort: CommentSortType): string {
+export function getSortIcon(sort: CommentSortType): string {
   switch (sort) {
     case "Hot":
       return flameOutline;

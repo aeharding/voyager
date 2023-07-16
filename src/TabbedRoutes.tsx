@@ -55,6 +55,7 @@ import { PageContextProvider } from "./features/auth/PageContext";
 import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
 import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
 import { getDefaultServer } from "./services/app";
+import GeneralPage from "./pages/settings/GeneralPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -70,6 +71,7 @@ export default function TabbedRoutes() {
   const totalUnread = useAppSelector(totalUnreadSelector);
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
+  const ready = useAppSelector((state) => state.settings.ready);
 
   const settingsNotificationCount =
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
@@ -209,6 +211,8 @@ export default function TabbedRoutes() {
     ];
   }
 
+  if (!ready) return;
+
   return (
     <PageContextProvider value={{ page: pageRef.current as HTMLElement }}>
       {/* TODO key={} resets the tab route stack whenever your instance changes. */}
@@ -320,6 +324,9 @@ export default function TabbedRoutes() {
           </Route>
           <Route exact path="/settings/update">
             <UpdateAppPage />
+          </Route>
+          <Route exact path="/settings/general">
+            <GeneralPage />
           </Route>
           <Route exact path="/settings/appearance">
             <AppearancePage />

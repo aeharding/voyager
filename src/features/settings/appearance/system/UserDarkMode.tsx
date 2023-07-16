@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { IonLabel, IonList, IonRadio, IonRadioGroup } from "@ionic/react";
 import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { setUserDarkMode } from "../appearanceSlice";
+import { setUserDarkMode } from "../../settingsSlice";
 
 const ListHeader = styled.div`
   font-size: 0.8em;
@@ -14,7 +14,7 @@ const ListHeader = styled.div`
 export default function UserDarkMode() {
   const dispatch = useAppDispatch();
   const userDarkMode = useAppSelector(
-    (state) => state.appearance.dark.userDarkMode
+    (state) => state.settings.appearance.dark.userDarkMode
   );
 
   return (

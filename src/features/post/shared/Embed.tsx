@@ -80,7 +80,9 @@ export default function Embed({ post, className }: EmbedProps) {
     e.stopPropagation();
     dispatch(setPostRead(post.post.id));
   };
-  const blurNsfw = useAppSelector((state) => state.appearance.posts.blurNsfw);
+  const blurNsfw = useAppSelector(
+    (state) => state.settings.appearance.posts.blurNsfw
+  );
 
   return (
     <Container

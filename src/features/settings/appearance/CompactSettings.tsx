@@ -11,7 +11,7 @@ import { InsetIonItem } from "../../user/Profile";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import { useState } from "react";
 import { startCase } from "lodash";
-import { setShowVotingButtons, setThumbnailPosition } from "./appearanceSlice";
+import { setShowVotingButtons, setThumbnailPosition } from "../settingsSlice";
 import {
   OCompactThumbnailPositionType,
   CompactThumbnailPositionType,
@@ -33,11 +33,11 @@ export default function CompactSettings() {
 
   const dispatch = useAppDispatch();
   const compactThumbnailsPositionType = useAppSelector(
-    (state) => state.appearance.compact.thumbnailsPosition
+    (state) => state.settings.appearance.compact.thumbnailsPosition
   );
 
   const compactShowVotingButtons = useAppSelector(
-    (state) => state.appearance.compact.showVotingButtons
+    (state) => state.settings.appearance.compact.showVotingButtons
   );
 
   return (
