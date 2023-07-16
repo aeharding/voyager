@@ -91,6 +91,7 @@ const Input = styled(TextareaAutosize)`
   font-size: 16px;
 
   background: var(--ion-background-color);
+  color: var(--ion-text-color);
   outline: none;
 
   width: 100%;
