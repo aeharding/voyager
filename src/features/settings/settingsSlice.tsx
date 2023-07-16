@@ -221,6 +221,13 @@ export const appearanceSlice = createSlice({
   },
 });
 
+export const markReadOnScrollSelector = (state: RootState) => {
+  return (
+    !state.settings.general.posts.disableMarkingRead &&
+    state.settings.general.posts.markReadOnScroll
+  );
+};
+
 export const setBlurNsfwState =
   (blurNsfw: PostBlurNsfwType) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {

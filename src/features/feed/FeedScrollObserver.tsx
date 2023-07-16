@@ -52,7 +52,10 @@ export default function FeedScrollObserver({
             intersectingById.current[id] === !entry.isIntersecting
           ) {
             if (!document.body.contains(entry.target)) return;
-            if (entry.target.getBoundingClientRect().top > 0) return;
+
+            // 16 instead of 0 for weird Safari bug where intersection observer reports
+            // hidden earlier than expected (usually like 8px)
+            if (entry.target.getBoundingClientRect().top > 16) return;
 
             const idAsNumber = +id;
             if (!isNaN(idAsNumber)) dispatch(setPostRead(idAsNumber));

@@ -24,6 +24,7 @@ import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
 import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
+import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -41,9 +42,7 @@ export default function CommunityPage() {
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector(jwtSelector);
 
-  const { markReadOnScroll, disableMarkingRead } = useAppSelector(
-    (state) => state.settings.general.posts
-  );
+  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
@@ -97,7 +96,7 @@ export default function CommunityPage() {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          {!disableMarkingRead && markReadOnScroll ? (
+          {markReadOnScroll ? (
             <FeedScrollObserver>{feed}</FeedScrollObserver>
           ) : (
             feed
