@@ -58,6 +58,7 @@ export type SettingValueTypes = {
   favorite_communities: string[];
   default_comment_sort: CommentDefaultSort;
   disable_marking_posts_read: boolean;
+  mark_read_on_scroll: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

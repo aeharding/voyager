@@ -58,6 +58,7 @@ interface SettingsState {
     };
     posts: {
       disableMarkingRead: boolean;
+      markReadOnScroll: boolean;
     };
   };
 }
@@ -100,6 +101,7 @@ const initialState: SettingsState = {
     },
     posts: {
       disableMarkingRead: false,
+      markReadOnScroll: false,
     },
   },
 };
@@ -202,6 +204,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("disable_marking_posts_read", action.payload);
     },
+    setMarkPostsReadOnScroll(state, action: PayloadAction<boolean>) {
+      state.general.posts.markReadOnScroll = action.payload;
+
+      db.setSetting("mark_read_on_scroll", action.payload);
+    },
 
     resetSettings: () => ({
       ...initialState,
@@ -257,6 +264,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const disable_marking_posts_read = await db.getSetting(
         "disable_marking_posts_read"
       );
+      const mark_read_on_scroll = await db.getSetting("mark_read_on_scroll");
 
       return {
         ...state.settings,
@@ -287,6 +295,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             disableMarkingRead:
               disable_marking_posts_read ??
               initialState.general.posts.disableMarkingRead,
+            markReadOnScroll:
+              mark_read_on_scroll ??
+              initialState.general.posts.markReadOnScroll,
           },
         },
       };
@@ -316,6 +327,7 @@ export const {
   setDefaultCommentSort,
   settingsReady,
   setDisableMarkingPostsRead,
+  setMarkPostsReadOnScroll,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
