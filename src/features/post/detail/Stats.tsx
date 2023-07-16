@@ -4,6 +4,7 @@ import { happyOutline, timeOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
+import Edited from "../../labels/Edited";
 
 const Container = styled.div`
   display: flex;
@@ -31,6 +32,7 @@ export default function Stats({ post }: StatsProps) {
       %
       <IonIcon icon={timeOutline} />
       <Ago date={post.post.published} />
+      <Edited item={post} showDate />
     </Container>
   );
 }

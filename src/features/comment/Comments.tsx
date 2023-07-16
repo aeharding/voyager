@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import {
   MAX_DEFAULT_COMMENT_DEPTH,
-  buildCommentsTree,
+  buildCommentsTreeWithMissing,
 } from "../../helpers/lemmy";
 import CommentTree from "./CommentTree";
 import {
@@ -30,7 +30,7 @@ import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
 import { FeedContext } from "../feed/FeedContext";
 import { jwtSelector } from "../auth/authSlice";
-import { defaultCommentDepthSelector } from "../settings/appearance/appearanceSlice";
+import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 
 const centerCss = css`
   position: relative;
@@ -60,6 +60,7 @@ const Empty = styled.div`
 
 export type CommentsHandle = {
   appendComments: (comments: CommentView[]) => void;
+  prependComments: (comments: CommentView[]) => void;
 };
 
 interface CommentsProps {
@@ -81,7 +82,10 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   const [finishedPaging, setFinishedPaging] = useState(false);
   const [comments, setComments] = useState<CommentView[]>([]);
   const commentTree = useMemo(
-    () => (comments.length ? buildCommentsTree(comments, !!commentPath) : []),
+    () =>
+      comments.length
+        ? buildCommentsTreeWithMissing(comments, !!commentPath)
+        : [],
     [commentPath, comments]
   );
   const client = useClient();
@@ -102,6 +106,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   useImperativeHandle(ref, () => ({
     appendComments,
+    prependComments,
   }));
 
   useEffect(() => {
@@ -189,7 +194,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     setPage(currentPage);
   }
 
-  function appendComments(comments: CommentView[]) {
+  function prependComments(comments: CommentView[]) {
     setComments((existingComments) => {
       let commentsResult;
 
@@ -206,8 +211,36 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         commentsResult = [...comments, ...existingComments];
       }
 
-      return uniqBy(commentsResult, (c) => c.comment.id);
+      const newComments = uniqBy(commentsResult, (c) => c.comment.id);
+
+      // Increase the child_count as appropriate
+      comments.forEach((c) => {
+        if (existingComments.some((d) => d.comment.id === c.comment.id)) return;
+
+        const parentIndex = newComments.findIndex((d) => {
+          const path = c.comment.path.split(".");
+          return d.comment.id === +(path[path.length - 2] ?? -1);
+        });
+        const parent = newComments[parentIndex];
+        if (parent) {
+          newComments.splice(parentIndex, 1, {
+            ...parent,
+            counts: {
+              ...parent.counts,
+              child_count: parent.counts.child_count + 1,
+            },
+          });
+        }
+      });
+
+      return newComments;
     });
+  }
+
+  function appendComments(comments: CommentView[]) {
+    setComments((existingComments) =>
+      uniqBy([...existingComments, ...comments], (c) => c.comment.id)
+    );
   }
 
   async function handleRefresh(event: RefresherCustomEvent) {
@@ -244,7 +277,11 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   return (
     <FeedContext.Provider
-      value={{ refresh: () => fetchComments(true), appendComments }}
+      value={{
+        refresh: () => fetchComments(true),
+        appendComments,
+        prependComments,
+      }}
     >
       <IonRefresher
         slot="fixed"

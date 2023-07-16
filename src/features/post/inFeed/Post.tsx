@@ -63,7 +63,7 @@ export default function Post(props: PostProps) {
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const postAppearanceType = useAppSelector(
-    (state) => state.appearance.posts.type
+    (state) => state.settings.appearance.posts.type
   );
 
   const postBody = (() => {

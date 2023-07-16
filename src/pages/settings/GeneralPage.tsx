@@ -7,9 +7,9 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import AppearanceSettings from "../../features/settings/appearance/AppearanceSettings";
+import GeneralSettings from "../../features/settings/general/GeneralSettings";
 
-export default function AppearancePage() {
+export default function GeneralPage() {
   return (
     <IonPage className="grey-bg">
       <IonHeader>
@@ -18,11 +18,11 @@ export default function AppearancePage() {
             <IonBackButton defaultHref="/settings" text="Settings" />
           </IonButtons>
 
-          <IonTitle>Appearance</IonTitle>
+          <IonTitle>General</IonTitle>
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY>
-        <AppearanceSettings />
+        <GeneralSettings />
       </AppContent>
     </IonPage>
   );

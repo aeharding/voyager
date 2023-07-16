@@ -128,9 +128,12 @@ export default function Message({ message }: MessageProps) {
   useIonViewWillEnter(() => setFocused(true));
   useIonViewDidLeave(() => setFocused(false));
 
-  const bind = useLongPress(() => {
-    presentReport(message);
-  });
+  const bind = useLongPress(
+    () => {
+      presentReport(message);
+    },
+    { cancelOnMovement: true }
+  );
 
   useEffect(() => {
     if (

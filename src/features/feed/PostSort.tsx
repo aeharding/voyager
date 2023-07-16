@@ -110,6 +110,7 @@ export default function PostSort() {
         ) => {
           if (e.detail.data) {
             dispatch(updateSortType(e.detail.data));
+            scrollUpIfNeeded(activePage, 0, "auto");
           }
         }}
         header="Sort by Top for..."
