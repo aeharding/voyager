@@ -30,6 +30,8 @@ export interface PostProps {
   communityMode?: boolean;
 
   className?: string;
+
+  noUserHighlight?: boolean;
 }
 
 export default function Post(props: PostProps) {

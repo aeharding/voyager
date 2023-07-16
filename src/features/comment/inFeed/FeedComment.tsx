@@ -8,9 +8,14 @@ import { getHandle } from "../../../helpers/lemmy";
 interface FeedCommentProps {
   comment: CommentView;
   className?: string;
+  noUserHighlight?: boolean;
 }
 
-export default function FeedComment({ comment, className }: FeedCommentProps) {
+export default function FeedComment({
+  comment,
+  className,
+  noUserHighlight,
+}: FeedCommentProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useIonRouter();
 
@@ -21,6 +26,7 @@ export default function FeedComment({ comment, className }: FeedCommentProps) {
         <PostContext post={comment.post} community={comment.community} />
       }
       className={className}
+      noUserHighlight={noUserHighlight}
       onClick={() =>
         router.push(
           buildGeneralBrowseLink(

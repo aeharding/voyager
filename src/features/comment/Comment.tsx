@@ -180,6 +180,8 @@ interface CommentProps {
   className?: string;
 
   rootIndex?: number;
+
+  noUserHighlight?: boolean;
 }
 
 export default function Comment({
@@ -193,6 +195,7 @@ export default function Comment({
   routerLink,
   className,
   rootIndex,
+  noUserHighlight,
 }: CommentProps) {
   const commentById = useAppSelector((state) => state.comment.commentById);
   // eslint-disable-next-line no-undef
@@ -237,6 +240,7 @@ export default function Comment({
                   person={commentView.creator}
                   opId={commentView.post.creator_id}
                   distinguished={comment.distinguished}
+                  noUserHighlight={noUserHighlight}
                 />
                 <Vote item={commentView} />
                 <Edited item={commentView} />

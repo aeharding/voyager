@@ -113,6 +113,7 @@ export default function Profile({ person }: ProfileProps) {
       fetchFn={fetchFn}
       header={header}
       filterHiddenPosts={false}
+      noUserHighlight={isSelf}
     />
   );
 }

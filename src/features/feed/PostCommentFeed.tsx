@@ -28,12 +28,14 @@ interface PostCommentFeed
   extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {
   communityName?: string;
   filterHiddenPosts?: boolean;
+  noUserHighlight?: boolean;
 }
 
 export default function PostCommentFeed({
   communityName,
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
+  noUserHighlight,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
@@ -67,12 +69,23 @@ export default function PostCommentFeed({
     (item: PostCommentItem) => {
       if (isPost(item))
         return (
-          <Post post={item} communityMode={!!communityName} css={borderCss} />
+          <Post
+            post={item}
+            communityMode={!!communityName}
+            css={borderCss}
+            noUserHighlight={noUserHighlight}
+          />
         );
 
-      return <FeedComment comment={item} css={borderCss} />;
+      return (
+        <FeedComment
+          comment={item}
+          css={borderCss}
+          noUserHighlight={noUserHighlight}
+        />
+      );
     },
-    [communityName, borderCss]
+    [communityName, borderCss, noUserHighlight]
   );
 
   const renderItemContent = useCallback(

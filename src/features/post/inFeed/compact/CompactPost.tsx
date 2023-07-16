@@ -94,7 +94,11 @@ const EndDetails = styled.div`
   margin-left: auto;
 `;
 
-export default function CompactPost({ post, communityMode }: PostProps) {
+export default function CompactPost({
+  post,
+  communityMode,
+  noUserHighlight,
+}: PostProps) {
   const compactThumbnailPositionType = useAppSelector(
     (state) => state.settings.appearance.compact.thumbnailsPosition
   );
@@ -125,6 +129,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
                 person={post.creator}
                 showInstanceWhenRemote
                 prefix="by"
+                noUserHighlight={noUserHighlight}
               />
             ) : (
               <CommunityLink community={post.community} />

@@ -103,7 +103,11 @@ const ImageContainer = styled.div`
   margin: 0 -1rem;
 `;
 
-export default function LargePost({ post, communityMode }: PostProps) {
+export default function LargePost({
+  post,
+  communityMode,
+  noUserHighlight,
+}: PostProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
@@ -195,6 +199,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
                 person={post.creator}
                 showInstanceWhenRemote
                 prefix="by"
+                noUserHighlight={noUserHighlight}
               />
             ) : (
               <CommunityLink
