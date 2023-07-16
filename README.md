@@ -43,15 +43,15 @@ Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [L
 - Messaging, mentions and replies
 - Creating new posts (url/photo/text)
 - Deleting/editing comments
+- Deleting/editing posts
 - Swipe to hide posts
 - Saving/bookmarking
 - Favorites
+- Android theme (beta)
 
 **What is on the roadmap?**
 
-- Deleting/editing posts
 - More customization
-- Android theme
 - Native notifications and badging
 - Translations
 - ...and more!
@@ -99,6 +99,7 @@ Note: The provided Dockerfile creates a container which will eventually run Voya
 
 ### Ecosystem
 
+- 🇫🇮 [m.lemmy.world](https://m.lemmy.world) - Voyager hosted by the mastodon.world team. [Contact/privacy](https://mastodon.world/about)
 - 🇸🇬 [v.opnxng.com](https://v.opnxng.com) - Voyager hosted by Opnxng in Singapore. [Contact/privacy](https://about.opnxng.com)
 - 🇲🇽 [voyager.nohost.network](https://voyager.nohost.network) - Voyager hosted by Nohost in Mexico. [Contact/privacy](https://nohost.network)
 
