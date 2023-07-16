@@ -95,13 +95,16 @@ export const getFavoriteCommunities =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
 
-    if (!userHandle) return;
+    if (!userHandle) {
+      dispatch(setFavorites([]));
+      return;
+    }
 
     const communities = await db.getSetting("favorite_communities", {
       user_handle: userHandle,
     });
 
-    dispatch(setFavorites(communities));
+    dispatch(setFavorites(communities || []));
   };
 
 export const followCommunity =

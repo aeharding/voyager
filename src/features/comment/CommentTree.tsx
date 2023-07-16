@@ -1,7 +1,4 @@
-import {
-  CommentNodeI,
-  countMissingDirectChildComments,
-} from "../../helpers/lemmy";
+import { CommentNodeI } from "../../helpers/lemmy";
 import Comment from "./Comment";
 import React, { useMemo } from "react";
 import CommentHr from "./CommentHr";
@@ -32,12 +29,21 @@ export default function CommentTree({
     (state) => state.comment.commentCollapsedById
   );
 
-  const missingChildren = useMemo(
-    () => countMissingDirectChildComments(comment),
-    [comment]
-  );
-
   const collapsed = commentCollapsedById[comment.comment_view.comment.id];
+
+  // Comment context chains don't show missing for parents
+  const showMissing = useMemo(() => {
+    if (!highlightedCommentId) return true;
+
+    if (
+      comment.comment_view.comment.path
+        .split(".")
+        .includes(`${highlightedCommentId}`)
+    )
+      return true;
+
+    return false;
+  }, [comment.comment_view.comment.path, highlightedCommentId]);
 
   function setCollapsed(collapsed: boolean) {
     dispatch(
@@ -74,13 +80,13 @@ export default function CommentTree({
     )),
   ];
 
-  if (missingChildren > 0) {
+  if (showMissing && comment.missing && comment.missing > 0) {
     payload.push(
       <CommentExpander
         key={`${comment.comment_view.comment.id}--expand`}
         comment={comment.comment_view}
         depth={comment.depth + 1}
-        missing={missingChildren}
+        missing={comment.missing}
         collapsed={collapsed || fullyCollapsed}
       />
     );

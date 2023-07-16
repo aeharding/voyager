@@ -16,21 +16,17 @@ import {
   fileTray,
   telescope,
 } from "ionicons/icons";
-import PostDetail from "./features/post/detail/PostDetail";
+import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
-import { useAppDispatch, useAppSelector } from "./store";
-import {
-  handleSelector,
-  jwtIssSelector,
-  jwtSelector,
-} from "./features/auth/authSlice";
+import { useAppSelector } from "./store";
+import { jwtIssSelector, jwtSelector } from "./features/auth/authSlice";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
@@ -50,23 +46,23 @@ import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
 import UpdateAppPage from "./pages/settings/UpdateAppPage";
 import useShouldInstall from "./features/pwa/useShouldInstall";
 import { UpdateContext } from "./pages/settings/update/UpdateContext";
-import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
 import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
-import { getFavoriteCommunities } from "./features/community/communitySlice";
+import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
 import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
+import { getDefaultServer } from "./services/app";
+import GeneralPage from "./pages/settings/GeneralPage";
+import HidingSettingsPage from "./pages/settings/HidingSettingsPage";
 
 const Interceptor = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: all;
 `;
-
-export const DEFAULT_ACTOR = LEMMY_SERVERS[0];
 
 export default function TabbedRoutes() {
   const { activePage } = useContext(AppContext);
@@ -76,8 +72,7 @@ export default function TabbedRoutes() {
   const totalUnread = useAppSelector(totalUnreadSelector);
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
-  const dispatch = useAppDispatch();
-  const activeHandle = useAppSelector(handleSelector);
+  const ready = useAppSelector((state) => state.settings.ready);
 
   const settingsNotificationCount =
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
@@ -95,26 +90,28 @@ export default function TabbedRoutes() {
   const isProfileButtonDisabled = location.pathname.startsWith("/profile");
   const isSearchButtonDisabled = location.pathname.startsWith("/search");
 
-  useEffect(() => {
-    dispatch(getFavoriteCommunities());
-  }, [dispatch, activeHandle]);
-
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
-      router.push(`/posts/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
+      router.push(`/posts/${actor ?? iss ?? getDefaultServer()}`, "back");
       return;
     }
-    if (location.pathname === `/posts/${actor ?? iss ?? DEFAULT_ACTOR}`) return;
+
+    const communitiesPath = `/posts/${actor ?? iss ?? getDefaultServer()}`;
+    if (
+      location.pathname === communitiesPath ||
+      location.pathname === `${communitiesPath}/`
+    )
+      return;
 
     if (router.canGoBack()) {
       router.goBack();
     } else {
       router.push(
-        `/posts/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
+        `/posts/${actor ?? iss ?? getDefaultServer()}/${jwt ? "home" : "all"}`,
         "back"
       );
     }
@@ -123,7 +120,7 @@ export default function TabbedRoutes() {
   async function onInboxClick() {
     if (!isInboxButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push(`/inbox`, "back");
   }
@@ -131,7 +128,7 @@ export default function TabbedRoutes() {
   async function onProfileClick() {
     if (!isProfileButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push("/profile", "back");
   }
@@ -142,39 +139,9 @@ export default function TabbedRoutes() {
     // if the search page is already open, focus the search bar
     focusSearchBar();
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push(`/search`, "back");
-  }
-
-  async function scrollUpIfNeeded() {
-    if (!activePage) return false;
-
-    if ("querySelector" in activePage) {
-      const scroll =
-        activePage?.querySelector('[data-virtuoso-scroller="true"]') ??
-        activePage
-          ?.querySelector("ion-content")
-          ?.shadowRoot?.querySelector(".inner-scroll");
-
-      if (scroll?.scrollTop) {
-        scroll.scrollTo({ top: 0, behavior: "smooth" });
-        return true;
-      }
-    } else {
-      return new Promise((resolve) =>
-        activePage.current?.getState((state) => {
-          if (state.scrollTop) {
-            activePage.current?.scrollToIndex({
-              index: 0,
-              behavior: "smooth",
-            });
-          }
-
-          resolve(!!state.scrollTop);
-        })
-      );
-    }
   }
 
   function buildGeneralBrowseRoutes(tab: string) {
@@ -245,16 +212,18 @@ export default function TabbedRoutes() {
     ];
   }
 
+  if (!ready) return;
+
   return (
     <PageContextProvider value={{ page: pageRef.current as HTMLElement }}>
       {/* TODO key={} resets the tab route stack whenever your instance changes. */}
       {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
       {/* But this isn't trivial with needing to rewrite URLs... */}
-      <IonTabs key={iss ?? DEFAULT_ACTOR}>
+      <IonTabs key={iss ?? getDefaultServer()}>
         <IonRouterOutlet ref={pageRef}>
           <Route exact path="/">
             <Redirect
-              to={`/posts/${iss ?? DEFAULT_ACTOR}/${iss ? "home" : "all"}`}
+              to={`/posts/${iss ?? getDefaultServer()}/${iss ? "home" : "all"}`}
               push={false}
             />
           </Route>
@@ -356,6 +325,12 @@ export default function TabbedRoutes() {
           </Route>
           <Route exact path="/settings/update">
             <UpdateAppPage />
+          </Route>
+          <Route exact path="/settings/general">
+            <GeneralPage />
+          </Route>
+          <Route exact path="/settings/general/hiding">
+            <HidingSettingsPage />
           </Route>
           <Route exact path="/settings/appearance">
             <AppearancePage />

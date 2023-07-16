@@ -18,12 +18,13 @@ import {
 import { useEffect, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../helpers/useClient";
-import { useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { handleSelector, jwtSelector } from "../../auth/authSlice";
 import { css } from "@emotion/react";
 import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
+import { receivedComments } from "../commentSlice";
 
 export const Container = styled.div`
   min-height: 100%;
@@ -68,7 +69,7 @@ export type CommentReplyItem =
   | CommentReplyView;
 
 type CommentReplyProps = {
-  dismiss: (replied: boolean) => void;
+  dismiss: (reply?: CommentView | undefined) => void;
   setCanDismiss: (canDismiss: boolean) => void;
   item: CommentReplyItem;
 };
@@ -80,6 +81,7 @@ export default function CommentReply({
 }: CommentReplyProps) {
   const comment = "comment" in item ? item.comment : undefined;
 
+  const dispatch = useAppDispatch();
   const [replyContent, setReplyContent] = useState("");
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
@@ -92,8 +94,10 @@ export default function CommentReply({
 
     setLoading(true);
 
+    let reply;
+
     try {
-      await client.createComment({
+      reply = await client.createComment({
         content: replyContent,
         parent_id: comment?.id,
         post_id: item.post.id,
@@ -124,10 +128,11 @@ export default function CommentReply({
       color: "success",
     });
 
+    dispatch(receivedComments([reply.comment_view]));
     setCanDismiss(true);
     // TODO is there a way to avoid a timeout here?
     await new Promise((resolve) => setTimeout(resolve, 100));
-    dismiss(true);
+    dismiss(reply.comment_view);
   }
 
   useEffect(() => {
@@ -139,7 +144,7 @@ export default function CommentReply({
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => dismiss(false)}>
+            <IonButton color="medium" onClick={() => dismiss()}>
               Cancel
             </IonButton>
           </IonButtons>

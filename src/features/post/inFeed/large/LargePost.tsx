@@ -7,12 +7,12 @@ import { useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { isUrlImage, isUrlVideo } from "../../../../helpers/lemmy";
 import { maxWidthCss } from "../../../shared/AppContent";
-import Nsfw, { isNsfw } from "../../../labels/Nsfw";
+import Nsfw, { isNsfw, isNsfwBlurred } from "../../../labels/Nsfw";
 import { VoteButton } from "../../shared/VoteButton";
 import MoreActions from "../../shared/MoreActions";
 import PersonLink from "../../../labels/links/PersonLink";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
-import { AnnouncementIcon } from "../../detail/PostDetail";
+import { AnnouncementIcon } from "../../../../pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
@@ -111,20 +111,27 @@ export default function LargePost({ post, communityMode }: PostProps) {
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post]
   );
+  const blurNsfw = useAppSelector(
+    (state) => state.settings.appearance.posts.blurNsfw
+  );
 
   function renderPostBody() {
     if (post.post.url) {
       if (isUrlImage(post.post.url)) {
         return (
           <ImageContainer>
-            <Image blur={isNsfw(post)} post={post} animationType="zoom" />
+            <Image
+              blur={isNsfwBlurred(post, blurNsfw)}
+              post={post}
+              animationType="zoom"
+            />
           </ImageContainer>
         );
       }
       if (isUrlVideo(post.post.url)) {
         return (
           <ImageContainer>
-            <Video src={post.post.url} />
+            <Video src={post.post.url} blur={isNsfwBlurred(post, blurNsfw)} />
           </ImageContainer>
         );
       }
@@ -133,7 +140,11 @@ export default function LargePost({ post, communityMode }: PostProps) {
     if (markdownLoneImage)
       return (
         <ImageContainer>
-          <Image blur={isNsfw(post)} post={post} animationType="zoom" />
+          <Image
+            blur={isNsfwBlurred(post, blurNsfw)}
+            post={post}
+            animationType="zoom"
+          />
         </ImageContainer>
       );
 

@@ -9,6 +9,7 @@ import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { jwtSelector } from "../../auth/authSlice";
 import { PageContext } from "../../auth/PageContext";
 import { useLongPress } from "use-long-press";
+import Markdown from "../../shared/Markdown";
 
 const Container = styled.div<{ type: "sent" | "recieved" }>`
   position: relative; /* Setup a relative container for our pseudo elements */
@@ -41,6 +42,14 @@ const Container = styled.div<{ type: "sent" | "recieved" }>`
   &:after {
     width: 26px;
     background-color: var(--bg); /* All tails have the same bg cutout */
+  }
+
+  a {
+    color: white;
+  }
+
+  p {
+    margin: unset;
   }
 
   &:before,
@@ -119,9 +128,12 @@ export default function Message({ message }: MessageProps) {
   useIonViewWillEnter(() => setFocused(true));
   useIonViewDidLeave(() => setFocused(false));
 
-  const bind = useLongPress(() => {
-    presentReport(message);
-  });
+  const bind = useLongPress(
+    () => {
+      presentReport(message);
+    },
+    { cancelOnMovement: true }
+  );
 
   useEffect(() => {
     if (
@@ -163,7 +175,7 @@ export default function Message({ message }: MessageProps) {
       ref={containerRef}
       {...bind()}
     >
-      {message.private_message.content}
+      <Markdown>{message.private_message.content}</Markdown>
     </Container>
   );
 }

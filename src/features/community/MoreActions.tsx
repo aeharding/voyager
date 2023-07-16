@@ -29,7 +29,6 @@ import {
   localUserSelector,
   showNsfw,
 } from "../auth/authSlice";
-import { NewPostContext } from "../post/new/NewPostModal";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { checkIsMod } from "../../helpers/lemmy";
 import { PageContext } from "../auth/PageContext";
@@ -49,14 +48,13 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const isAdmin = useAppSelector(isAdminSelector);
   const localUser = useAppSelector(localUserSelector);
   const [presentActionSheet] = useIonActionSheet();
+  const { presentPostEditor } = useContext(PageContext);
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle
   );
-
-  const { presentNewPost } = useContext(NewPostContext);
 
   const isSubscribed =
     communityByHandle[community]?.subscribed === "Subscribed" ||
@@ -129,9 +127,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
             role: "cancel",
           },
         ]}
+        onDidDismiss={() => setOpen(false)}
         onWillDismiss={async (e) => {
-          setOpen(false);
-
           switch (e.detail.data) {
             case "subscribe": {
               if (presentLoginIfNeeded()) return;
@@ -173,7 +170,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
                 return;
               }
 
-              presentNewPost();
+              presentPostEditor(community);
               break;
             }
             case "favorite": {

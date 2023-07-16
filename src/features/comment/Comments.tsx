@@ -1,7 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   MAX_DEFAULT_COMMENT_DEPTH,
-  buildCommentsTree,
+  buildCommentsTreeWithMissing,
 } from "../../helpers/lemmy";
 import CommentTree from "./CommentTree";
 import {
@@ -23,7 +30,7 @@ import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
 import { FeedContext } from "../feed/FeedContext";
 import { jwtSelector } from "../auth/authSlice";
-import { defaultCommentDepthSelector } from "../settings/appearance/appearanceSlice";
+import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 
 const centerCss = css`
   position: relative;
@@ -51,23 +58,23 @@ const Empty = styled.div`
   }
 `;
 
+export type CommentsHandle = {
+  appendComments: (comments: CommentView[]) => void;
+  prependComments: (comments: CommentView[]) => void;
+};
+
 interface CommentsProps {
   header: React.ReactNode;
   postId: number;
   commentPath?: string;
   op: Person;
   sort: CommentSortType;
-  commentsLastUpdated: number;
 }
 
-export default function Comments({
-  header,
-  postId,
-  commentPath,
-  op,
-  sort,
-  commentsLastUpdated,
-}: CommentsProps) {
+export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
+  { header, postId, commentPath, op, sort },
+  ref
+) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const [page, setPage] = useState(0);
@@ -75,7 +82,10 @@ export default function Comments({
   const [finishedPaging, setFinishedPaging] = useState(false);
   const [comments, setComments] = useState<CommentView[]>([]);
   const commentTree = useMemo(
-    () => (comments.length ? buildCommentsTree(comments, !!commentPath) : []),
+    () =>
+      comments.length
+        ? buildCommentsTreeWithMissing(comments, !!commentPath)
+        : [],
     [commentPath, comments]
   );
   const client = useClient();
@@ -94,10 +104,15 @@ export default function Comments({
 
   useSetActivePage(virtuosoRef);
 
+  useImperativeHandle(ref, () => ({
+    appendComments,
+    prependComments,
+  }));
+
   useEffect(() => {
     fetchComments(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, commentPath, jwt, postId, commentsLastUpdated]);
+  }, [sort, commentPath, jwt, postId]);
 
   async function fetchComments(refresh = false) {
     if (refresh) {
@@ -179,7 +194,50 @@ export default function Comments({
     setPage(currentPage);
   }
 
-  async function appendComments(comments: CommentView[]) {
+  function prependComments(comments: CommentView[]) {
+    setComments((existingComments) => {
+      let commentsResult;
+
+      // We want to *unshift* comments, so that they appear as first child(ren) of a given node
+
+      // if `commentPath` exists, we call `buildCommentsTree` with `true`
+      if (commentPath) {
+        // The first comment is considered the root (see `buildCommentsTree(comments, true)`),
+        // so have to insert at root + 1 instead of at beginning
+        commentsResult = existingComments.slice(); // don't mutate existing
+        commentsResult.splice(1, 0, ...comments); // insert after root
+      } else {
+        // doesn't matter where inserted into array, put them first
+        commentsResult = [...comments, ...existingComments];
+      }
+
+      const newComments = uniqBy(commentsResult, (c) => c.comment.id);
+
+      // Increase the child_count as appropriate
+      comments.forEach((c) => {
+        if (existingComments.some((d) => d.comment.id === c.comment.id)) return;
+
+        const parentIndex = newComments.findIndex((d) => {
+          const path = c.comment.path.split(".");
+          return d.comment.id === +(path[path.length - 2] ?? -1);
+        });
+        const parent = newComments[parentIndex];
+        if (parent) {
+          newComments.splice(parentIndex, 1, {
+            ...parent,
+            counts: {
+              ...parent.counts,
+              child_count: parent.counts.child_count + 1,
+            },
+          });
+        }
+      });
+
+      return newComments;
+    });
+  }
+
+  function appendComments(comments: CommentView[]) {
     setComments((existingComments) =>
       uniqBy([...existingComments, ...comments], (c) => c.comment.id)
     );
@@ -219,7 +277,11 @@ export default function Comments({
 
   return (
     <FeedContext.Provider
-      value={{ refresh: () => fetchComments(true), appendComments }}
+      value={{
+        refresh: () => fetchComments(true),
+        appendComments,
+        prependComments,
+      }}
     >
       <IonRefresher
         slot="fixed"
@@ -246,4 +308,4 @@ export default function Comments({
       />
     </FeedContext.Provider>
   );
-}
+});

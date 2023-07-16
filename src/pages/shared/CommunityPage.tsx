@@ -20,10 +20,11 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
-import { NewPostContextProvider } from "../../features/post/new/NewPostModal";
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
+import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
+import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -40,6 +41,8 @@ export default function CommunityPage() {
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector(jwtSelector);
+
+  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
@@ -70,33 +73,37 @@ export default function CommunityPage() {
       />
     );
 
-  return (
-    <NewPostContextProvider community={community}>
-      <TitleSearchProvider>
-        <IonPage>
-          <IonHeader>
-            <IonToolbar>
-              <IonButtons slot="start">
-                <AppBackButton
-                  defaultText="Communities"
-                  defaultHref={buildGeneralBrowseLink("/")}
-                />
-              </IonButtons>
+  const feed = <PostCommentFeed fetchFn={fetchFn} communityName={community} />;
 
-              <TitleSearch name={community}>
-                <IonButtons slot="end">
-                  <PostSort />
-                  <MoreActions community={community} />
-                </IonButtons>
-              </TitleSearch>
-            </IonToolbar>
-          </IonHeader>
-          <IonContent>
-            <PostCommentFeed fetchFn={fetchFn} communityName={community} />
-            <TitleSearchResults />
-          </IonContent>
-        </IonPage>
-      </TitleSearchProvider>
-    </NewPostContextProvider>
+  return (
+    <TitleSearchProvider>
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <AppBackButton
+                defaultText="Communities"
+                defaultHref={buildGeneralBrowseLink("/")}
+              />
+            </IonButtons>
+
+            <TitleSearch name={community}>
+              <IonButtons slot="end">
+                <PostSort />
+                <MoreActions community={community} />
+              </IonButtons>
+            </TitleSearch>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent>
+          {markReadOnScroll ? (
+            <FeedScrollObserver>{feed}</FeedScrollObserver>
+          ) : (
+            feed
+          )}
+          <TitleSearchResults />
+        </IonContent>
+      </IonPage>
+    </TitleSearchProvider>
   );
 }

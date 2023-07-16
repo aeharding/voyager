@@ -2,7 +2,6 @@ import { arrowUndo, eyeOffOutline, eyeOutline } from "ionicons/icons";
 import React, { useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentView, PostView } from "lemmy-js-client";
-import { FeedContext } from "../../feed/FeedContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import { useAppSelector } from "../../../store";
 import { postHiddenByIdSelector } from "../../post/postSlice";
@@ -21,7 +20,6 @@ export default function SlidingVote({
   item,
   onHide,
 }: SlidingVoteProps) {
-  const { refresh: refreshPost } = useContext(FeedContext);
   const isHidden = useAppSelector(postHiddenByIdSelector)[item.post?.id];
 
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
@@ -35,9 +33,7 @@ export default function SlidingVote({
         trigger: async () => {
           if (presentLoginIfNeeded()) return;
 
-          const replied = await presentCommentReply(item);
-
-          if (replied) refreshPost();
+          presentCommentReply(item);
         },
         bgColor: "primary",
       },
@@ -56,14 +52,7 @@ export default function SlidingVote({
     }
 
     return actionsList;
-  }, [
-    item,
-    presentLoginIfNeeded,
-    presentCommentReply,
-    refreshPost,
-    isHidden,
-    onHide,
-  ]);
+  }, [item, presentLoginIfNeeded, presentCommentReply, isHidden, onHide]);
 
   return (
     <BaseSlidingVote endActions={endActions} className={className} item={item}>
