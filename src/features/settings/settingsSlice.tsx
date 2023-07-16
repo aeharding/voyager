@@ -56,6 +56,9 @@ interface SettingsState {
       collapseCommentThreads: CommentThreadCollapse;
       sort: CommentDefaultSort;
     };
+    posts: {
+      disableMarkingRead: boolean;
+    };
   };
 }
 
@@ -94,6 +97,9 @@ const initialState: SettingsState = {
     comments: {
       collapseCommentThreads: OCommentThreadCollapse.Never,
       sort: OCommentDefaultSort.Hot,
+    },
+    posts: {
+      disableMarkingRead: false,
     },
   },
 };
@@ -191,6 +197,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("default_comment_sort", action.payload);
     },
+    setDisableMarkingPostsRead(state, action: PayloadAction<boolean>) {
+      state.general.posts.disableMarkingRead = action.payload;
+
+      db.setSetting("disable_marking_posts_read", action.payload);
+    },
 
     resetSettings: () => ({
       ...initialState,
@@ -243,6 +254,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "compact_show_voting_buttons"
       );
       const default_comment_sort = await db.getSetting("default_comment_sort");
+      const disable_marking_posts_read = await db.getSetting(
+        "disable_marking_posts_read"
+      );
 
       return {
         ...state.settings,
@@ -268,6 +282,11 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               collapse_comment_threads ??
               initialState.general.comments.collapseCommentThreads,
             sort: default_comment_sort ?? initialState.general.comments.sort,
+          },
+          posts: {
+            disableMarkingRead:
+              disable_marking_posts_read ??
+              initialState.general.posts.disableMarkingRead,
           },
         },
       };
@@ -296,6 +315,7 @@ export const {
   setUseSystemDarkMode,
   setDefaultCommentSort,
   settingsReady,
+  setDisableMarkingPostsRead,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

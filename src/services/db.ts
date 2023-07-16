@@ -57,6 +57,7 @@ export type SettingValueTypes = {
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
   default_comment_sort: CommentDefaultSort;
+  disable_marking_posts_read: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
