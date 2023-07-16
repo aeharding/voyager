@@ -44,7 +44,6 @@ export default function Auth({ children }: AuthProps) {
 
   useEffect(() => {
     dispatch(getSite());
-    dispatch(getInboxCounts());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt]);
 
@@ -73,7 +72,7 @@ export default function Auth({ children }: AuthProps) {
     if (!pageVisibility) return;
 
     dispatch(getInboxCounts());
-  }, [pageVisibility, dispatch]);
+  }, [pageVisibility, dispatch, jwt]);
 
   useEffect(() => {
     if (!pageVisibility) return;
