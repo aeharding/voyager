@@ -194,6 +194,10 @@ export const appearanceSlice = createSlice({
       ...initialState,
       ready: true,
     }),
+
+    settingsReady: (state) => {
+      state.ready = true;
+    },
   },
 });
 
@@ -223,7 +227,7 @@ export const getBlurNsfw =
 export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
-    return db.transaction("r", db.settings, async () => {
+    const result = db.transaction("r", db.settings, async () => {
       const state = thunkApi.getState() as RootState;
       const collapse_comment_threads = await db.getSetting(
         "collapse_comment_threads"
@@ -266,6 +270,15 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         },
       };
     });
+
+    try {
+      return await result;
+    } catch (error) {
+      // In the event of a database error, attempt to render the UI anyways
+      thunkApi.dispatch(settingsReady());
+
+      throw error;
+    }
   }
 );
 
@@ -280,6 +293,7 @@ export const {
   setUserDarkMode,
   setUseSystemDarkMode,
   setDefaultCommentSort,
+  settingsReady,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
