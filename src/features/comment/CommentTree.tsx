@@ -80,7 +80,7 @@ export default function CommentTree({
     )),
   ];
 
-  if (showMissing && comment.missing) {
+  if (showMissing && comment.missing && comment.missing > 0) {
     payload.push(
       <CommentExpander
         key={`${comment.comment_view.comment.id}--expand`}
