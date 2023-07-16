@@ -107,6 +107,10 @@ export class WefwefDB extends Dexie {
         community
       `,
     });
+
+    this.version(3).upgrade(async () => {
+      await this.setSetting("blur_nsfw", OPostBlurNsfw.InFeed);
+    });
   }
 
   /*
