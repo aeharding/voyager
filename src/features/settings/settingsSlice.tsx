@@ -101,13 +101,15 @@ const initialState: SettingsState = {
 // We continue using localstorage for specific items because indexeddb is slow
 // and we don't want to wait for it to load before rendering the app and cause flickering
 const stateWithLocalstorageItems: SettingsState = merge(initialState, {
-  font: {
-    fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
-    useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
-  },
-  dark: {
-    usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
-    userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+  appearance: {
+    font: {
+      fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
+      useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
+    },
+    dark: {
+      usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
+      userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+    },
   },
 });
 
