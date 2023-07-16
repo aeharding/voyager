@@ -1,21 +1,21 @@
 import { IonLabel, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { setDisableMarkingPostsRead } from "../../settingsSlice";
+import { setMarkPostsReadOnScroll } from "../../settingsSlice";
 
-export default function DisableMarkingRead() {
+export default function MarkReadOnScroll() {
   const dispatch = useAppDispatch();
-  const { disableMarkingRead } = useAppSelector(
+  const { markReadOnScroll } = useAppSelector(
     (state) => state.settings.general.posts
   );
 
   return (
     <InsetIonItem>
-      <IonLabel>Disable Marking Posts Read</IonLabel>
+      <IonLabel>Mark Read on Scroll</IonLabel>
       <IonToggle
-        checked={disableMarkingRead}
+        checked={markReadOnScroll}
         onIonChange={(e) =>
-          dispatch(setDisableMarkingPostsRead(e.detail.checked))
+          dispatch(setMarkPostsReadOnScroll(e.detail.checked))
         }
       />
     </InsetIonItem>
