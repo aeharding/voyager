@@ -2,7 +2,7 @@ import { arrowUndo, chevronCollapse, chevronExpand } from "ionicons/icons";
 import React, { useCallback, useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentView } from "lemmy-js-client";
-import { FeedContext } from "../../feed/FeedContext";
+import { CommentsContext } from "../../comment/CommentsContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
 import { PageContext } from "../../auth/PageContext";
@@ -22,7 +22,7 @@ export default function SlidingNestedCommentVote({
   rootIndex,
   collapsed,
 }: SlidingVoteProps) {
-  const { prependComments } = useContext(FeedContext);
+  const { prependComments } = useContext(CommentsContext);
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const collapseRootComment = useCollapseRootComment(item, rootIndex);
 
