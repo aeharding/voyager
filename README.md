@@ -70,7 +70,7 @@ Native apps can be great, but we believe in the strengths of the web. Why use a 
 
 The Voyager team maintains a deployment at:
 
-- 🇺🇸 Production: [vger.app](https://vger.app)
+- 🐭 Production: [vger.app](https://vger.app)
 
 ### Self-Host Docker Deployment
 
