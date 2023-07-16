@@ -21,6 +21,7 @@ import {
   OCommentDefaultSort,
 } from "../../services/db";
 import { get, set } from "./storage";
+import { Mode } from "@ionic/core";
 
 export {
   type CommentThreadCollapse,
@@ -50,6 +51,7 @@ interface SettingsState {
       usingSystemDarkMode: boolean;
       userDarkMode: boolean;
     };
+    deviceMode: Mode;
   };
   general: {
     comments: {
@@ -72,6 +74,7 @@ const LOCALSTORAGE_KEYS = {
     USE_SYSTEM: "appearance--dark-use-system",
     USER_MODE: "appearance--dark-user-mode",
   },
+  DEVICE_MODE: "appearance--device-mode",
 } as const;
 
 const initialState: SettingsState = {
@@ -93,6 +96,7 @@ const initialState: SettingsState = {
       usingSystemDarkMode: true,
       userDarkMode: false,
     },
+    deviceMode: "ios",
   },
   general: {
     comments: {
@@ -118,6 +122,7 @@ const stateWithLocalstorageItems: SettingsState = merge(initialState, {
       usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
       userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
     },
+    deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
   },
 });
 
@@ -193,6 +198,11 @@ export const appearanceSlice = createSlice({
       state.appearance.dark.usingSystemDarkMode = action.payload;
 
       set(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
+    },
+    setDeviceMode(state, action: PayloadAction<Mode>) {
+      state.appearance.deviceMode = action.payload;
+
+      set(LOCALSTORAGE_KEYS.DEVICE_MODE, action.payload);
     },
     setDefaultCommentSort(state, action: PayloadAction<CommentDefaultSort>) {
       state.general.comments.sort = action.payload;
@@ -331,6 +341,7 @@ export const {
   setShowVotingButtons,
   setUserDarkMode,
   setUseSystemDarkMode,
+  setDeviceMode,
   setDefaultCommentSort,
   settingsReady,
   setDisableMarkingPostsRead,
@@ -338,3 +349,8 @@ export const {
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
+
+export function getDeviceMode(): Mode {
+  // md mode is beta, so default ios for all devices
+  return get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios";
+}
