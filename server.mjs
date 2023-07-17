@@ -129,21 +129,10 @@ app.use(
   })
 );
 
-function transformer(html) {
-  return html.replace(
-    "<!-- runtime_config -->",
-    `<script>${
-      CUSTOM_LEMMY_SERVERS.length
-        ? `window.CUSTOM_LEMMY_SERVERS = ${JSON.stringify(
-            CUSTOM_LEMMY_SERVERS
-          )}`
-        : ""
-    }</script>`
-  );
-}
-
-ViteExpress.config({
-  transformer,
+app.get("/_config", (req, res) => {
+  res.send({
+    customServers: CUSTOM_LEMMY_SERVERS,
+  });
 });
 
 const PORT = process.env.PORT || 5173;

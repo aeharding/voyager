@@ -21,6 +21,8 @@ import { jwtSelector } from "../../features/auth/authSlice";
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
+import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
+import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -32,6 +34,8 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector(jwtSelector);
+
+  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
@@ -46,6 +50,8 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     },
     [client, sort, type, jwt]
   );
+
+  const feed = <PostCommentFeed fetchFn={fetchFn} />;
 
   return (
     <TitleSearchProvider>
@@ -67,7 +73,11 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
           </IonToolbar>
         </IonHeader>
         <IonContent scrollY={false} fullscreen>
-          <PostCommentFeed fetchFn={fetchFn} />
+          {markReadOnScroll ? (
+            <FeedScrollObserver>{feed}</FeedScrollObserver>
+          ) : (
+            feed
+          )}
           <TitleSearchResults />
         </IonContent>
       </IonPage>

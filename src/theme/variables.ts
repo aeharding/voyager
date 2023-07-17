@@ -252,7 +252,7 @@ export const darkVariables = css`
   // Material Design Dark Theme
 
   .md body {
-    --ion-background-color: #121212;
+    --ion-background-color: black;
     --ion-background-color-rgb: 18, 18, 18;
 
     --ion-text-color: #ffffff;
@@ -260,7 +260,7 @@ export const darkVariables = css`
 
     --ion-border-color: #222222;
 
-    --ion-color-step-50: #1e1e1e;
+    --ion-color-step-50: #121212;
     --ion-color-step-100: #2a2a2a;
     --ion-color-step-150: #363636;
     --ion-color-step-200: #414141;
@@ -280,13 +280,16 @@ export const darkVariables = css`
     --ion-color-step-900: #e7e7e7;
     --ion-color-step-950: #f3f3f3;
 
-    --ion-item-background: #1e1e1e;
+    --ion-item-background: black;
 
     --ion-toolbar-background: #1f1f1f;
 
     --ion-tab-bar-background: #1f1f1f;
 
-    --ion-card-background: #1e1e1e;
+    --ion-card-background: black;
+
+    --ion-toolbar-background: #121212;
+    --ion-tab-bar-background: #121212;
   }
 
   @media (max-width: 767px) {

@@ -12,6 +12,7 @@ import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
 import {
   apps,
   bagCheckOutline,
+  cog,
   colorPalette,
   logoGithub,
   mailOutline,
@@ -97,6 +98,12 @@ export default function SettingsPage() {
           </IonList>
         )}
         <IonList inset color="primary">
+          <InsetIonItem routerLink="/settings/general">
+            <IconBg color="color(display-p3 0.5 0.5 0.5)">
+              <IonIcon icon={cog} />
+            </IconBg>
+            <SettingLabel>General</SettingLabel>
+          </InsetIonItem>
           <InsetIonItem routerLink="/settings/appearance">
             <IconBg color="color(display-p3 1 0 0)">
               <IonIcon icon={colorPalette} />

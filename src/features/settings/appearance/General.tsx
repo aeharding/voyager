@@ -2,10 +2,8 @@ import styled from "@emotion/styled";
 import { IonLabel, IonList, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import {
-  OCommentThreadCollapse,
-  setCommentsCollapsed,
-} from "./appearanceSlice";
+import { setUserInstanceUrlDisplay } from "../settingsSlice";
+import { OInstanceUrlDisplayMode } from "../../../services/db";
 
 export const ListHeader = styled.div`
   font-size: 0.8em;
@@ -14,29 +12,30 @@ export const ListHeader = styled.div`
   color: var(--ion-color-medium);
 `;
 
-export default function CollapsedByDefault() {
+export default function GeneralAppearance() {
   const dispatch = useAppDispatch();
-  const { collapseCommentThreads } = useAppSelector(
-    // this needs a better naming
-    (state) => state.appearance.comments
+  const userInstanceUrlDisplay = useAppSelector(
+    (state) => state.settings.appearance.general.userInstanceUrlDisplay
   );
 
   return (
     <>
       <ListHeader>
-        <IonLabel>Comments</IonLabel>
+        <IonLabel>General</IonLabel>
       </ListHeader>
       <IonList inset>
         <InsetIonItem>
-          <IonLabel>Collapse comment threads</IonLabel>
+          <IonLabel>Show user instance</IonLabel>
           <IonToggle
-            checked={collapseCommentThreads === OCommentThreadCollapse.Always}
+            checked={
+              userInstanceUrlDisplay === OInstanceUrlDisplayMode.WhenRemote
+            }
             onIonChange={(e) =>
               dispatch(
-                setCommentsCollapsed(
+                setUserInstanceUrlDisplay(
                   e.detail.checked
-                    ? OCommentThreadCollapse.Always
-                    : OCommentThreadCollapse.Never
+                    ? OInstanceUrlDisplayMode.WhenRemote
+                    : OInstanceUrlDisplayMode.Never
                 )
               )
             }
