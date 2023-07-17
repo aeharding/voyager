@@ -1,5 +1,6 @@
 import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
+import { isNative } from "../helpers/device";
 
 const UNPROXIED_LEMMY_SERVERS = [
   "lemmy.ml",
@@ -15,14 +16,22 @@ const UNPROXIED_LEMMY_SERVERS = [
 ];
 
 function buildBaseUrl(url: string): string {
+  if (isNative()) return buildDirectConnectBaseUrl(url);
+
   if (UNPROXIED_LEMMY_SERVERS.includes(url)) {
-    return `https://${url}`;
+    return buildDirectConnectBaseUrl(url);
   }
 
   return buildProxiedBaseUrl(url);
 }
 
+function buildDirectConnectBaseUrl(url: string): string {
+  return `https://${url}`;
+}
+
 function buildProxiedBaseUrl(url: string): string {
+  if (isNative()) return buildDirectConnectBaseUrl(url);
+
   return `${location.origin}/api/${url}`;
 }
 
