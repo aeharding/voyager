@@ -34,7 +34,7 @@ export default function PersonLink({
 
   let color: string | undefined;
 
-  const force_instance_url =
+  const forceInstanceUrl =
     useAppSelector(
       (state) => state.settings.appearance.general.userInstanceUrlDisplay
     ) === OInstanceUrlDisplayMode.WhenRemote;
@@ -65,7 +65,7 @@ export default function PersonLink({
       ) : undefined}
       <Handle
         item={person}
-        showInstanceWhenRemote={showInstanceWhenRemote || force_instance_url}
+        showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
       />
     </StyledLink>
   );
