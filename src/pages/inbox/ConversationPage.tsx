@@ -34,6 +34,8 @@ import { IonContentCustomEvent } from "@ionic/core";
 import { css } from "@emotion/react";
 import { getUser } from "../../features/user/userSlice";
 import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
+import { StyledLink } from "../../features/labels/links/shared";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -129,6 +131,7 @@ export default function ConversationPage() {
   const [present] = useIonToast();
 
   const contentRef = useRef<IonContentCustomEvent<never>["target"]>(null);
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   useIonViewWillEnter(() => {
     contentRef.current?.scrollToBottom();
@@ -224,7 +227,12 @@ export default function ConversationPage() {
               padding-inline-end: 120px;
             `}
           >
-            {handle}
+            <StyledLink
+              to={buildGeneralBrowseLink(`/u/${handle}`)}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {handle}
+            </StyledLink>
           </IonTitle>
 
           <IonButtons slot="end">
