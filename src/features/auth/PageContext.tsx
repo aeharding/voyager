@@ -11,7 +11,7 @@ import Login from "../auth/Login";
 import { useAppSelector } from "../../store";
 import { jwtSelector } from "../auth/authSlice";
 import CommentReplyModal from "../comment/reply/CommentReplyModal";
-import { CommentView, PostView } from "lemmy-js-client";
+import { Comment, CommentView, PostView } from "lemmy-js-client";
 import CommentEditModal from "../comment/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
@@ -36,7 +36,7 @@ interface IPageContext {
    * Will mutate comment in store, which view should be linked to for updates
    * That's why this does not return anything
    */
-  presentCommentEdit: (item: CommentView) => void;
+  presentCommentEdit: (item: Comment) => void;
 
   presentReport: (item: ReportableItem) => void;
 
@@ -102,9 +102,9 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   // Comment reply end
 
   // Edit comment start
-  const commentEditItem = useRef<CommentView>();
+  const commentEditItem = useRef<Comment>();
   const [isEditCommentOpen, setIsEditCommentOpen] = useState(false);
-  const presentCommentEdit = useCallback((item: CommentView) => {
+  const presentCommentEdit = useCallback((item: Comment) => {
     commentEditItem.current = item;
     setIsEditCommentOpen(true);
   }, []);
