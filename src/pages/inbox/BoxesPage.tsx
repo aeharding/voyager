@@ -28,6 +28,13 @@ import { getInboxCounts } from "../../features/inbox/inboxSlice";
 import useClient from "../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../store";
 
+const UnreadBubble: FC<{ count: number }> = ({ count }) =>
+  count ? (
+    <IonBadge color="danger" slot="end">
+      {count}
+    </IonBadge>
+  ) : null;
+
 export default function BoxesPage() {
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
@@ -39,13 +46,6 @@ export default function BoxesPage() {
   } = useAppSelector((state) => state.inbox.counts);
   const [unreadPostReplies, setUnreadPostReplies] = useState(0);
   const [unreadCountsResolved, setUnreadCountsResolved] = useState(false);
-
-  const UnreadBubble: FC<{ count: number }> = ({ count }) =>
-    unreadCountsResolved && count ? (
-      <IonBadge color="danger" slot="end">
-        {count}
-      </IonBadge>
-    ) : null;
 
   const getUnreadPostReplyCount = async (): Promise<void> => {
     if (!jwt) return;
@@ -114,7 +114,7 @@ export default function BoxesPage() {
           >
             <IonIcon icon={albumsOutline} color="primary" />
             <SettingLabel>Post Replies</SettingLabel>
-            <UnreadBubble count={unreadPostReplies} />
+            {unreadCountsResolved && <UnreadBubble count={unreadPostReplies} />}
           </InsetIonItem>
           <InsetIonItem
             routerLink="/inbox/comment-replies"
@@ -122,7 +122,9 @@ export default function BoxesPage() {
           >
             <IonIcon icon={chatbubbleOutline} color="primary" />
             <SettingLabel>Comment Replies</SettingLabel>
-            <UnreadBubble count={unreadReplies - unreadPostReplies} />
+            {unreadCountsResolved && (
+              <UnreadBubble count={unreadReplies - unreadPostReplies} />
+            )}
           </InsetIonItem>
           <InsetIonItem
             routerLink="/inbox/mentions"
@@ -130,7 +132,7 @@ export default function BoxesPage() {
           >
             <IonIcon icon={personCircleOutline} color="primary" />
             <SettingLabel>Mentions</SettingLabel>
-            <UnreadBubble count={unreadMentions} />
+            {unreadCountsResolved && <UnreadBubble count={unreadMentions} />}
           </InsetIonItem>
         </IonList>
 
@@ -141,7 +143,7 @@ export default function BoxesPage() {
           >
             <IonIcon icon={mail} color="primary" />
             <SettingLabel>Messages</SettingLabel>
-            <UnreadBubble count={unreadMessages} />
+            {unreadCountsResolved && <UnreadBubble count={unreadMessages} />}
           </InsetIonItem>
         </IonList>
       </AppContent>
