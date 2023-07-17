@@ -59,6 +59,8 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
 
+  const commentById = useAppSelector((state) => state.comment.commentById);
+
   const router = useIonRouter();
 
   const {
@@ -203,9 +205,13 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
                 present(saveError);
               }
               break;
-            case "edit":
-              presentCommentEdit(comment);
+            case "edit": {
+              // Comment from slice might be more up to date, e.g. edits
+              const _comment =
+                commentById[comment.comment.id] ?? comment.comment;
+              presentCommentEdit(_comment);
               break;
+            }
             case "delete":
               try {
                 await dispatch(deleteComment(comment.comment.id));
