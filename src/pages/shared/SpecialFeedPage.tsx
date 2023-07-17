@@ -3,6 +3,7 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonIcon,
   IonPage,
   IonToolbar,
 } from "@ionic/react";
@@ -23,6 +24,8 @@ import { TitleSearchProvider } from "../../features/community/titleSearch/TitleS
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
 import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
+import FeedContextProvider from "../../features/feed/FeedContext";
+import HideReadPosts from "../../features/feed/HideReadPosts";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -55,32 +58,35 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
   return (
     <TitleSearchProvider>
-      <IonPage>
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <IonBackButton
-                text="Communities"
-                defaultHref={buildGeneralBrowseLink("")}
-              />
-            </IonButtons>
-
-            <TitleSearch name={listingTypeTitle(type)}>
-              <IonButtons slot="end">
-                <PostSort />
+      <FeedContextProvider>
+        <IonPage>
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonBackButton
+                  text="Communities"
+                  defaultHref={buildGeneralBrowseLink("")}
+                />
               </IonButtons>
-            </TitleSearch>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          {markReadOnScroll ? (
-            <FeedScrollObserver>{feed}</FeedScrollObserver>
-          ) : (
-            feed
-          )}
-          <TitleSearchResults />
-        </IonContent>
-      </IonPage>
+
+              <TitleSearch name={listingTypeTitle(type)}>
+                <IonButtons slot="end">
+                  <PostSort />
+                  <HideReadPosts />
+                </IonButtons>
+              </TitleSearch>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent>
+            {markReadOnScroll ? (
+              <FeedScrollObserver>{feed}</FeedScrollObserver>
+            ) : (
+              feed
+            )}
+            <TitleSearchResults />
+          </IonContent>
+        </IonPage>
+      </FeedContextProvider>
     </TitleSearchProvider>
   );
 }

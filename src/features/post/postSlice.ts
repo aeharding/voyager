@@ -67,6 +67,7 @@ export const postSlice = createSlice({
         for (const post of posts) {
           state.postById[post.post.id] = post;
           state.postHiddenById[post.post.id] = postHiddenById[post.post.id];
+          if (post.read) state.postReadById[post.post.id] = post.read;
 
           if (post.my_vote)
             state.postVotesById[post.post.id] = post.my_vote as 1 | -1;
