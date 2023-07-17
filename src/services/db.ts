@@ -49,8 +49,17 @@ export type CommentDefaultSort = CommentSortType;
 export type PostBlurNsfwType =
   (typeof OPostBlurNsfw)[keyof typeof OPostBlurNsfw];
 
+export const OInstanceUrlDisplayMode = {
+  WhenRemote: "when-remote",
+  Never: "never",
+} as const;
+
+export type InstanceUrlDisplayMode =
+  (typeof OInstanceUrlDisplayMode)[keyof typeof OInstanceUrlDisplayMode];
+
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
+  user_instance_url_display: InstanceUrlDisplayMode;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_show_voting_buttons: boolean;
@@ -58,6 +67,7 @@ export type SettingValueTypes = {
   favorite_communities: string[];
   default_comment_sort: CommentDefaultSort;
   disable_marking_posts_read: boolean;
+  mark_read_on_scroll: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

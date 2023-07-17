@@ -23,6 +23,8 @@ import { jwtSelector } from "../../features/auth/authSlice";
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
+import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
+import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -39,6 +41,8 @@ export default function CommunityPage() {
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector(jwtSelector);
+
+  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
@@ -69,6 +73,8 @@ export default function CommunityPage() {
       />
     );
 
+  const feed = <PostCommentFeed fetchFn={fetchFn} communityName={community} />;
+
   return (
     <TitleSearchProvider>
       <IonPage>
@@ -90,7 +96,11 @@ export default function CommunityPage() {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          <PostCommentFeed fetchFn={fetchFn} communityName={community} />
+          {markReadOnScroll ? (
+            <FeedScrollObserver>{feed}</FeedScrollObserver>
+          ) : (
+            feed
+          )}
           <TitleSearchResults />
         </IonContent>
       </IonPage>

@@ -19,8 +19,11 @@ import {
   OPostBlurNsfw,
   CommentDefaultSort,
   OCommentDefaultSort,
+  InstanceUrlDisplayMode,
+  OInstanceUrlDisplayMode,
 } from "../../services/db";
 import { get, set } from "./storage";
+import { Mode } from "@ionic/core";
 
 export {
   type CommentThreadCollapse,
@@ -38,6 +41,9 @@ interface SettingsState {
       fontSizeMultiplier: number;
       useSystemFontSize: boolean;
     };
+    general: {
+      userInstanceUrlDisplay: InstanceUrlDisplayMode;
+    };
     posts: {
       blurNsfw: PostBlurNsfwType;
       type: PostAppearanceType;
@@ -50,6 +56,7 @@ interface SettingsState {
       usingSystemDarkMode: boolean;
       userDarkMode: boolean;
     };
+    deviceMode: Mode;
   };
   general: {
     comments: {
@@ -58,6 +65,7 @@ interface SettingsState {
     };
     posts: {
       disableMarkingRead: boolean;
+      markReadOnScroll: boolean;
     };
   };
 }
@@ -71,6 +79,7 @@ const LOCALSTORAGE_KEYS = {
     USE_SYSTEM: "appearance--dark-use-system",
     USER_MODE: "appearance--dark-user-mode",
   },
+  DEVICE_MODE: "appearance--device-mode",
 } as const;
 
 const initialState: SettingsState = {
@@ -79,6 +88,9 @@ const initialState: SettingsState = {
     font: {
       fontSizeMultiplier: 1,
       useSystemFontSize: false,
+    },
+    general: {
+      userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
     },
     posts: {
       blurNsfw: OPostBlurNsfw.InFeed,
@@ -92,6 +104,7 @@ const initialState: SettingsState = {
       usingSystemDarkMode: true,
       userDarkMode: false,
     },
+    deviceMode: "ios",
   },
   general: {
     comments: {
@@ -100,6 +113,7 @@ const initialState: SettingsState = {
     },
     posts: {
       disableMarkingRead: false,
+      markReadOnScroll: false,
     },
   },
 };
@@ -116,6 +130,7 @@ const stateWithLocalstorageItems: SettingsState = merge(initialState, {
       usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
       userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
     },
+    deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
   },
 });
 
@@ -146,32 +161,33 @@ export const appearanceSlice = createSlice({
   reducers: {
     setFontSizeMultiplier(state, action: PayloadAction<number>) {
       state.appearance.font.fontSizeMultiplier = action.payload;
-
       set(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER, action.payload);
     },
     setUseSystemFontSize(state, action: PayloadAction<boolean>) {
       state.appearance.font.useSystemFontSize = action.payload;
-
       set(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM, action.payload);
+    },
+    setUserInstanceUrlDisplay(
+      state,
+      action: PayloadAction<InstanceUrlDisplayMode>
+    ) {
+      state.appearance.general.userInstanceUrlDisplay = action.payload;
+      db.setSetting("user_instance_url_display", action.payload);
     },
     setCommentsCollapsed(state, action: PayloadAction<CommentThreadCollapse>) {
       state.general.comments.collapseCommentThreads = action.payload;
-
       db.setSetting("collapse_comment_threads", action.payload);
     },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
-
       db.setSetting("post_appearance_type", action.payload);
     },
     setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
       state.appearance.posts.blurNsfw = action.payload;
-
       // Per user setting is updated in StoreProvider
     },
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.compact.showVotingButtons = action.payload;
-
       db.setSetting("compact_show_voting_buttons", action.payload);
     },
     setThumbnailPosition(
@@ -179,28 +195,33 @@ export const appearanceSlice = createSlice({
       action: PayloadAction<CompactThumbnailPositionType>
     ) {
       state.appearance.compact.thumbnailsPosition = action.payload;
-
       db.setSetting("compact_thumbnail_position_type", action.payload);
     },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.appearance.dark.userDarkMode = action.payload;
-
       set(LOCALSTORAGE_KEYS.DARK.USER_MODE, action.payload);
     },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
       state.appearance.dark.usingSystemDarkMode = action.payload;
-
       set(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
+    },
+    setDeviceMode(state, action: PayloadAction<Mode>) {
+      state.appearance.deviceMode = action.payload;
+
+      set(LOCALSTORAGE_KEYS.DEVICE_MODE, action.payload);
     },
     setDefaultCommentSort(state, action: PayloadAction<CommentDefaultSort>) {
       state.general.comments.sort = action.payload;
-
       db.setSetting("default_comment_sort", action.payload);
     },
     setDisableMarkingPostsRead(state, action: PayloadAction<boolean>) {
       state.general.posts.disableMarkingRead = action.payload;
-
       db.setSetting("disable_marking_posts_read", action.payload);
+    },
+    setMarkPostsReadOnScroll(state, action: PayloadAction<boolean>) {
+      state.general.posts.markReadOnScroll = action.payload;
+
+      db.setSetting("mark_read_on_scroll", action.payload);
     },
 
     resetSettings: () => ({
@@ -213,6 +234,13 @@ export const appearanceSlice = createSlice({
     },
   },
 });
+
+export const markReadOnScrollSelector = (state: RootState) => {
+  return (
+    !state.settings.general.posts.disableMarkingRead &&
+    state.settings.general.posts.markReadOnScroll
+  );
+};
 
 export const setBlurNsfwState =
   (blurNsfw: PostBlurNsfwType) =>
@@ -245,6 +273,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const collapse_comment_threads = await db.getSetting(
         "collapse_comment_threads"
       );
+      const user_instance_url_display = await db.getSetting(
+        "user_instance_url_display"
+      );
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const compact_thumbnail_position_type = await db.getSetting(
@@ -257,12 +288,18 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const disable_marking_posts_read = await db.getSetting(
         "disable_marking_posts_read"
       );
+      const mark_read_on_scroll = await db.getSetting("mark_read_on_scroll");
 
       return {
         ...state.settings,
         ready: true,
         appearance: {
           ...state.settings.appearance,
+          general: {
+            userInstanceUrlDisplay:
+              user_instance_url_display ??
+              initialState.appearance.general.userInstanceUrlDisplay,
+          },
           posts: {
             type: post_appearance_type ?? initialState.appearance.posts.type,
             blurNsfw: blur_nsfw ?? initialState.appearance.posts.blurNsfw,
@@ -287,6 +324,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             disableMarkingRead:
               disable_marking_posts_read ??
               initialState.general.posts.disableMarkingRead,
+            markReadOnScroll:
+              mark_read_on_scroll ??
+              initialState.general.posts.markReadOnScroll,
           },
         },
       };
@@ -306,6 +346,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 export const {
   setFontSizeMultiplier,
   setUseSystemFontSize,
+  setUserInstanceUrlDisplay,
   setCommentsCollapsed,
   setNsfwBlur,
   setPostAppearance,
@@ -313,9 +354,16 @@ export const {
   setShowVotingButtons,
   setUserDarkMode,
   setUseSystemDarkMode,
+  setDeviceMode,
   setDefaultCommentSort,
   settingsReady,
   setDisableMarkingPostsRead,
+  setMarkPostsReadOnScroll,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
+
+export function getDeviceMode(): Mode {
+  // md mode is beta, so default ios for all devices
+  return get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios";
+}

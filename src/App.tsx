@@ -27,12 +27,12 @@ import { UpdateContextProvider } from "./pages/settings/update/UpdateContext";
 import GlobalStyles from "./GlobalStyles";
 import GalleryProvider from "./features/gallery/GalleryProvider";
 import ConfigProvider from "./services/app";
+import { getDeviceMode } from "./features/settings/settingsSlice";
 
 setupIonicReact({
   rippleEffect: false,
-  mode: "ios",
-  swipeBackEnabled: isInstalled(),
-  hardwareBackButton: true,
+  mode: getDeviceMode(),
+  swipeBackEnabled: isInstalled() && getDeviceMode() === "ios",
 });
 
 export default function App() {
