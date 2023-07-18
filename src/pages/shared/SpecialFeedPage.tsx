@@ -24,7 +24,7 @@ import TitleSearchResults from "../../features/community/titleSearch/TitleSearch
 import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
 import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 import FeedContextProvider from "../../features/feed/FeedContext";
-import HideReadPosts from "../../features/feed/HideReadPosts";
+import SpecialFeedMoreActions from "../../features/feed/SpecialFeedMoreActions";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
 
 interface SpecialFeedProps {
@@ -72,7 +72,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               <TitleSearch name={listingTypeTitle(type)}>
                 <IonButtons slot="end">
                   <PostSort />
-                  <HideReadPosts />
+                  <SpecialFeedMoreActions />
                 </IonButtons>
               </TitleSearch>
             </IonToolbar>
