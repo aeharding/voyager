@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
-import { globeOutline } from "ionicons/icons";
+import { link, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { useCallback, useMemo } from "react";
 import { isUrlImage } from "../../../../helpers/lemmy";
@@ -42,18 +42,22 @@ const Container = styled.div`
   ${containerCss}
 `;
 
-const LinkIcon = styled(IonIcon)<{ bg: boolean }>`
+const LinkIcon = styled(IonIcon)`
   position: absolute;
   bottom: 3px;
   right: 3px;
-  padding: 1.5px;
-  font-size: 1em;
-  color: var(--ion-color-dark);
+  padding: 2px;
+  font-size: 14px;
+  color: #444;
 
-  background: ${({ bg }) =>
-    bg ? "rgba(var(--ion-color-dark-contrast-rgb), 0.6)" : "transparent"};
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   opacity: 0.9;
+`;
+
+const FullsizeIcon = styled(IonIcon)`
+  font-size: 2.5em;
+  opacity: 0.3;
 `;
 
 const imgStyles = (blur: boolean) => css`
@@ -106,11 +110,15 @@ export default function Thumbnail({ post }: ImgProps) {
       return (
         <>
           {post.post.thumbnail_url ? (
-            <Img src={post.post.thumbnail_url} blur={nsfw} />
+            <>
+              <Img src={post.post.thumbnail_url} blur={nsfw} />
+              <LinkIcon icon={linkOutline} />
+            </>
+          ) : isLink ? (
+            <FullsizeIcon icon={link} />
           ) : (
             <SelfSvg />
           )}
-          <LinkIcon icon={globeOutline} bg={!!post.post.thumbnail_url} />
         </>
       );
     }
