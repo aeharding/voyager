@@ -17,6 +17,7 @@ import { notEmpty } from "../../../helpers/array";
 import { uniqBy } from "lodash";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { jwtSelector } from "../../auth/authSlice";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -85,6 +86,7 @@ type Result = Community | SpecialFeed | string;
 
 export default function TitleSearchResults() {
   const router = useIonRouter();
+  const jwt = useAppSelector(jwtSelector);
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
   const debouncedSearch = useDebounce(search, 500);
@@ -197,6 +199,7 @@ export default function TitleSearchResults() {
       type_: "Communities",
       listing_type: "All",
       sort: "TopAll",
+      auth: jwt,
     });
 
     setSearchPayload(result.communities);

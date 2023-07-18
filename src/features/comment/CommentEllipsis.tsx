@@ -54,10 +54,12 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const { appendComments } = useContext(FeedContext);
+  const { prependComments } = useContext(FeedContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
+
+  const commentById = useAppSelector((state) => state.comment.commentById);
 
   const router = useIonRouter();
 
@@ -203,9 +205,13 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
                 present(saveError);
               }
               break;
-            case "edit":
-              presentCommentEdit(comment);
+            case "edit": {
+              // Comment from slice might be more up to date, e.g. edits
+              const _comment =
+                commentById[comment.comment.id] ?? comment.comment;
+              presentCommentEdit(_comment);
               break;
+            }
             case "delete":
               try {
                 await dispatch(deleteComment(comment.comment.id));
@@ -232,7 +238,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
               const reply = await presentCommentReply(comment);
 
-              if (reply) appendComments([reply]);
+              if (reply) prependComments([reply]);
               break;
             }
             case "select-text":

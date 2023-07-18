@@ -7,10 +7,10 @@ import {
   updateConnectedInstance,
 } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
-import { DEFAULT_ACTOR } from "./TabbedRoutes";
 import { getInboxCounts, syncMessages } from "./features/inbox/inboxSlice";
 import { useInterval } from "usehooks-ts";
 import usePageVisibility from "./helpers/usePageVisibility";
+import { getDefaultServer } from "./services/app";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -30,7 +30,7 @@ export default function Auth({ children }: AuthProps) {
     if (!location.pathname.startsWith("/posts")) {
       if (connectedInstance) return;
 
-      dispatch(updateConnectedInstance(iss ?? DEFAULT_ACTOR));
+      dispatch(updateConnectedInstance(iss ?? getDefaultServer()));
     }
 
     const potentialConnectedInstance = location.pathname.split("/")[2];
@@ -44,7 +44,6 @@ export default function Auth({ children }: AuthProps) {
 
   useEffect(() => {
     dispatch(getSite());
-    dispatch(getInboxCounts());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt]);
 
@@ -73,7 +72,7 @@ export default function Auth({ children }: AuthProps) {
     if (!pageVisibility) return;
 
     dispatch(getInboxCounts());
-  }, [pageVisibility, dispatch]);
+  }, [pageVisibility, dispatch, jwt]);
 
   useEffect(() => {
     if (!pageVisibility) return;

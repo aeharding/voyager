@@ -6,6 +6,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import Vote from "../../labels/Vote";
 import Ago from "../../labels/Ago";
 import CommentContent from "../CommentContent";
+import Edited from "../../labels/Edited";
 
 const Container = styled.div`
   padding: 1rem;
@@ -43,6 +44,7 @@ export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
       <Header>
         <IonIcon icon={returnDownForwardSharp} /> {getHandle(item.creator)}{" "}
         <Vote item={item} />
+        <Edited item={item} />
         <StyledAgo date={payload.published} />
       </Header>
       <CommentContent item={payload} />

@@ -11,9 +11,10 @@ import Login from "../auth/Login";
 import { useAppSelector } from "../../store";
 import { jwtSelector } from "../auth/authSlice";
 import CommentReplyModal from "../comment/reply/CommentReplyModal";
-import { CommentView } from "lemmy-js-client";
+import { Comment, CommentView, PostView } from "lemmy-js-client";
 import CommentEditModal from "../comment/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
+import PostEditorModal from "../post/new/PostEditorModal";
 
 interface IPageContext {
   // used for ion presentingElement
@@ -35,9 +36,15 @@ interface IPageContext {
    * Will mutate comment in store, which view should be linked to for updates
    * That's why this does not return anything
    */
-  presentCommentEdit: (item: CommentView) => void;
+  presentCommentEdit: (item: Comment) => void;
 
   presentReport: (item: ReportableItem) => void;
+
+  /**
+   * @param postOrCommunity An existing post to be edited, or the community handle
+   * to submit the new post to
+   */
+  presentPostEditor: (postOrCommunity: PostView | string) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -46,6 +53,7 @@ export const PageContext = createContext<IPageContext>({
   presentCommentReply: async () => undefined,
   presentCommentEdit: () => false,
   presentReport: () => {},
+  presentPostEditor: () => {},
 });
 
 interface PageContextProvider {
@@ -94,13 +102,25 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   // Comment reply end
 
   // Edit comment start
-  const commentEditItem = useRef<CommentView>();
+  const commentEditItem = useRef<Comment>();
   const [isEditCommentOpen, setIsEditCommentOpen] = useState(false);
-  const presentCommentEdit = useCallback((item: CommentView) => {
+  const presentCommentEdit = useCallback((item: Comment) => {
     commentEditItem.current = item;
     setIsEditCommentOpen(true);
   }, []);
   // Edit comment end
+
+  // Edit/new post start
+  const postItem = useRef<PostView | string>();
+  const [isPostOpen, setIsPostOpen] = useState(false);
+  const presentPostEditor = useCallback(
+    (postOrCommunity: PostView | string) => {
+      postItem.current = postOrCommunity;
+      setIsPostOpen(true);
+    },
+    []
+  );
+  // Edit/new post end
 
   const presentReport = (item: ReportableItem) => {
     reportRef.current?.present(item);
@@ -114,6 +134,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         presentCommentReply,
         presentCommentEdit,
         presentReport,
+        presentPostEditor,
       }}
     >
       {children}
@@ -135,6 +156,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         setIsOpen={setIsEditCommentOpen}
       />
       <Report ref={reportRef} />
+      <PostEditorModal
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        postOrCommunity={postItem.current!}
+        isOpen={isPostOpen}
+        setIsOpen={setIsPostOpen}
+      />
     </PageContext.Provider>
   );
 }
