@@ -25,6 +25,7 @@ import { markReadOnScrollSelector } from "../settings/settingsSlice";
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
 export interface FeedProps<I> {
+  itemsRef?: React.MutableRefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
   filterFn?: (item: I) => boolean;
   getIndex?: (item: I) => number | string;
@@ -36,6 +37,7 @@ export interface FeedProps<I> {
 }
 
 export default function Feed<I>({
+  itemsRef,
   fetchFn,
   filterFn,
   renderItemContent,
@@ -60,6 +62,12 @@ export default function Feed<I>({
   );
 
   const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+
+  useEffect(() => {
+    if (!itemsRef) return;
+
+    itemsRef.current = items;
+  }, [items, itemsRef]);
 
   // Fetch more items if there are less than FETCH_MORE_THRESHOLD items left due to filtering
   useEffect(() => {

@@ -37,7 +37,7 @@ import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import styled from "@emotion/styled";
 import { notEmpty } from "../../helpers/array";
 import useCollapseRootComment from "./useCollapseRootComment";
-import { FeedContext } from "../feed/FeedContext";
+import { CommentsContext } from "./CommentsContext";
 import SelectText from "../../pages/shared/SelectTextModal";
 import { PageContext } from "../auth/PageContext";
 import { saveError, voteError } from "../../helpers/toastMessages";
@@ -58,7 +58,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const { prependComments } = useContext(FeedContext);
+  const { prependComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
   const isAdmin = useAppSelector(isAdminSelector);
   const isLocalModerator = useAppSelector(isLocalModeratorSelector);
