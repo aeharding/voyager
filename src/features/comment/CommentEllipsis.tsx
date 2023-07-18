@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import {
   IonActionSheet,
   IonIcon,
@@ -21,26 +22,21 @@ import {
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { useContext, useState } from "react";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { useAppDispatch, useAppSelector } from "../../store";
-import {
-  handleSelector,
-  isAdminSelector,
-  isLocalModeratorSelector,
-} from "../auth/authSlice";
+import { notEmpty } from "../../helpers/array";
 import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
 } from "../../helpers/lemmy";
-import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
-import styled from "@emotion/styled";
-import { notEmpty } from "../../helpers/array";
-import useCollapseRootComment from "./useCollapseRootComment";
-import { CommentsContext } from "./CommentsContext";
-import SelectText from "../../pages/shared/SelectTextModal";
-import { PageContext } from "../auth/PageContext";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { saveError, voteError } from "../../helpers/toastMessages";
+import SelectText from "../../pages/shared/SelectTextModal";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { PageContext } from "../auth/PageContext";
+import { handleSelector, isLocalModeratorSelector } from "../auth/authSlice";
+import { CommentsContext } from "./CommentsContext";
+import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
+import useCollapseRootComment from "./useCollapseRootComment";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -60,7 +56,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const [open, setOpen] = useState(false);
   const { prependComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
-  const isAdmin = useAppSelector(isAdminSelector);
   const isLocalModerator = useAppSelector(isLocalModeratorSelector);
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
@@ -94,7 +89,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
   const commentExists = !comment.comment.deleted && !comment.comment.removed;
-  const localMod = isLocalModerator(comment.community) || isAdmin;
+  const localMod = isLocalModerator(comment.community);
 
   let selectTextOption = undefined;
   if (commentExists) {
