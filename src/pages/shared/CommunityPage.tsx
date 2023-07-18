@@ -26,6 +26,7 @@ import { TitleSearchProvider } from "../../features/community/titleSearch/TitleS
 import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
 import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 import FeedContextProvider from "../../features/feed/FeedContext";
+import PostFabs from "../../features/feed/postFabs/PostFabs";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -104,6 +105,7 @@ export default function CommunityPage() {
               feed
             )}
             <TitleSearchResults />
+            <PostFabs />
           </IonContent>
         </IonPage>
       </TitleSearchProvider>

@@ -1,13 +1,14 @@
-import React, { createContext, useRef } from "react";
+import React, { MutableRefObject, createContext, useRef } from "react";
+import { PostCommentItem } from "./PostCommentFeed";
 
-type ItemsRef<I> = React.MutableRefObject<I[]>;
+type ItemsRef = MutableRefObject<PostCommentItem[] | undefined>;
 
-interface IFeedContext<I> {
-  setItemsRef: (ref: ItemsRef<I> | undefined) => void;
-  getCurrentItems: ItemsRef<I> | undefined;
+interface IFeedContext {
+  setItemsRef: (ref: ItemsRef | undefined) => void;
+  itemsRef: ItemsRef | undefined;
 }
 
-export const FeedContext = createContext<IFeedContext<I>>({
+export const FeedContext = createContext<IFeedContext>({
   setItemsRef: () => undefined,
   itemsRef: undefined,
 });
@@ -19,7 +20,7 @@ interface FeedContextProviderProps {
 export default function FeedContextProvider({
   children,
 }: FeedContextProviderProps) {
-  const itemsRef = useRef(null);
+  const itemsRef = useRef<ItemsRef>();
 
   return (
     <FeedContext.Provider

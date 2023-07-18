@@ -1,7 +1,6 @@
 import React, {
   ComponentType,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -22,11 +21,11 @@ import EndPost from "./EndPost";
 import { useAppSelector } from "../../store";
 import { OPostAppearanceType } from "../../services/db";
 import { markReadOnScrollSelector } from "../settings/settingsSlice";
-import { FeedContext } from "./FeedContext";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
 export interface FeedProps<I> {
+  itemsRef: React.MutableRefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
   filterFn?: (item: I) => boolean;
   getIndex?: (item: I) => number | string;
@@ -38,6 +37,7 @@ export interface FeedProps<I> {
 }
 
 export default function Feed<I>({
+  itemsRef,
   fetchFn,
   filterFn,
   renderItemContent,
@@ -61,22 +61,11 @@ export default function Feed<I>({
     [filterFn, items]
   );
 
-  const itemsRef = useRef<I[]>(items);
+  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+
   useEffect(() => {
     itemsRef.current = items;
-  }, [items]);
-
-  const { setItemsRef } = useContext(FeedContext);
-
-  useEffect(() => {
-    setItemsRef(itemsRef);
-
-    return () => {
-      setItemsRef(undefined);
-    };
-  }, []);
-
-  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+  }, [items, itemsRef]);
 
   // Fetch more items if there are less than FETCH_MORE_THRESHOLD items left due to filtering
   useEffect(() => {

@@ -3,7 +3,6 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonIcon,
   IonPage,
   IonToolbar,
 } from "@ionic/react";
@@ -26,6 +25,7 @@ import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
 import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import HideReadPosts from "../../features/feed/HideReadPosts";
+import PostFabs from "../../features/feed/postFabs/PostFabs";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -84,6 +84,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               feed
             )}
             <TitleSearchResults />
+            <PostFabs />
           </IonContent>
         </IonPage>
       </FeedContextProvider>
