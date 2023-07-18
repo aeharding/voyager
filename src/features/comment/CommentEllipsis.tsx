@@ -23,7 +23,11 @@ import { CommentView } from "lemmy-js-client";
 import { useContext, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { handleSelector } from "../auth/authSlice";
+import {
+  handleSelector,
+  isAdminSelector,
+  isLocalModeratorSelector,
+} from "../auth/authSlice";
 import {
   getHandle,
   getRemoteHandle,
@@ -56,6 +60,8 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const [open, setOpen] = useState(false);
   const { prependComments } = useContext(FeedContext);
   const myHandle = useAppSelector(handleSelector);
+  const isAdmin = useAppSelector(isAdminSelector);
+  const isLocalModerator = useAppSelector(isLocalModeratorSelector);
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
 
@@ -87,6 +93,23 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const mySaved = commentSavedById[comment.comment.id] ?? comment.saved;
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
+  const commentExists = !comment.comment.deleted && !comment.comment.removed;
+  const localMod = isLocalModerator(comment.community) || isAdmin;
+
+  let selectTextOption = undefined;
+  if (commentExists) {
+    selectTextOption = {
+      text: "Select Text",
+      role: "select-text",
+      icon: textOutline,
+    };
+  } else if (isMyComment || localMod) {
+    selectTextOption = {
+      text: "Select Deleted Text",
+      role: "select-text",
+      icon: textOutline,
+    };
+  }
 
   return (
     <>
@@ -137,11 +160,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             role: "reply",
             icon: arrowUndoOutline,
           },
-          {
-            text: "Select Text",
-            role: "select-text",
-            icon: textOutline,
-          },
+          selectTextOption,
           {
             text: getHandle(comment.creator),
             role: "person",

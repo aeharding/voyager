@@ -1,5 +1,5 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { GetSiteResponse, LemmyHttp } from "lemmy-js-client";
+import { Community, GetSiteResponse, LemmyHttp } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import Cookies from "js-cookie";
 import { LemmyJWT, getRemoteHandle } from "../../helpers/lemmy";
@@ -167,6 +167,14 @@ export const usernameSelector = createSelector([handleSelector], (handle) => {
 
 export const isAdminSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.person.admin;
+
+export const isLocalModeratorSelector =
+  (state: RootState) => (community: Community) =>
+    localUserSelector(state) &&
+    community.local &&
+    state.auth.site?.my_user?.moderates.some(
+      (i) => i.community.id === community.id
+    );
 
 export const localUserSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.local_user;
