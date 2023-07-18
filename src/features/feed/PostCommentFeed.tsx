@@ -25,7 +25,7 @@ export function isComment(item: PostCommentItem): item is CommentView {
 }
 
 interface PostCommentFeed
-  extends Omit<FeedProps<PostCommentItem>, "renderItemContent" | "itemsRef"> {
+  extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {
   communityName?: string;
   filterHiddenPosts?: boolean;
 }
@@ -113,7 +113,6 @@ export default function PostCommentFeed({
 
   return (
     <Feed
-      itemsRef={itemsRef}
       fetchFn={fetchFn}
       filterFn={filterHiddenPosts ? filterFn : undefined}
       getIndex={(item) =>
@@ -123,6 +122,7 @@ export default function PostCommentFeed({
       }
       renderItemContent={renderItemContent}
       {...rest}
+      itemsRef={itemsRef}
     />
   );
 }
