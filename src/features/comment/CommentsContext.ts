@@ -1,13 +1,13 @@
 import { CommentView } from "lemmy-js-client";
 import { createContext } from "react";
 
-interface IFeedContext {
+interface ICommentsContext {
   refresh: () => void;
   prependComments: (comments: CommentView[]) => void;
   appendComments: (comments: CommentView[]) => void;
 }
 
-export const FeedContext = createContext<IFeedContext>({
+export const CommentsContext = createContext<ICommentsContext>({
   refresh: () => {},
   appendComments: () => {},
   prependComments: () => {},

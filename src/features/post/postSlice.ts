@@ -67,6 +67,7 @@ export const postSlice = createSlice({
         for (const post of posts) {
           state.postById[post.post.id] = post;
           state.postHiddenById[post.post.id] = postHiddenById[post.post.id];
+          if (post.read) state.postReadById[post.post.id] = post.read;
 
           if (post.my_vote)
             state.postVotesById[post.post.id] = post.my_vote as 1 | -1;
@@ -78,6 +79,13 @@ export const postSlice = createSlice({
         if (!action.payload) return;
 
         state.postHiddenById[action.payload.post_id] = !!action.payload.hidden;
+      })
+      .addCase(bulkUpdatePostsHidden.fulfilled, (state, action) => {
+        if (!action.payload) return;
+
+        for (const metadata of action.payload) {
+          state.postHiddenById[metadata.post_id] = !!metadata.hidden;
+        }
       });
   },
 });
@@ -98,6 +106,32 @@ export const updatePostHidden = createAsyncThunk(
     };
 
     await db.upsertPostMetadata(newPostMetadata);
+
+    return newPostMetadata;
+  }
+);
+
+export const bulkUpdatePostsHidden = createAsyncThunk(
+  "post/bulkUpdatePostsHidden",
+  async (
+    { postIds, hidden }: { postIds: number[]; hidden: boolean },
+    thunkAPI
+  ) => {
+    const rootState = thunkAPI.getState() as RootState;
+    const handle = handleSelector(rootState);
+
+    if (!handle) return;
+
+    const newPostMetadata: IPostMetadata[] = postIds.map((postId) => ({
+      post_id: postId,
+      user_handle: handle,
+      hidden: hidden ? 1 : 0,
+      hidden_updated_at: Date.now(),
+    }));
+
+    await Promise.all(
+      newPostMetadata.map((metadata) => db.upsertPostMetadata(metadata))
+    );
 
     return newPostMetadata;
   }
@@ -257,11 +291,16 @@ export const deletePost =
   };
 
 export const hidePost = (postId: number) => async (dispatch: AppDispatch) => {
-  dispatch(updatePostHidden({ postId, hidden: true }));
+  await dispatch(updatePostHidden({ postId, hidden: true }));
 };
 
+export const hidePosts =
+  (postIds: number[]) => async (dispatch: AppDispatch) => {
+    await dispatch(bulkUpdatePostsHidden({ postIds, hidden: true }));
+  };
+
 export const unhidePost = (postId: number) => async (dispatch: AppDispatch) => {
-  dispatch(updatePostHidden({ postId, hidden: false }));
+  await dispatch(updatePostHidden({ postId, hidden: false }));
 };
 
 export const postHiddenByIdSelector = (state: RootState) => {

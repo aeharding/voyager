@@ -2,6 +2,7 @@ import { IonList } from "@ionic/react";
 import DisableMarkingRead from "./DisableMarkingRead";
 import MarkReadOnScroll from "./MarkReadOnScroll";
 import { useAppSelector } from "../../../../store";
+import ShowHideReadButton from "./ShowHideReadButton";
 
 export default function HidingSettings() {
   const disableMarkingRead = useAppSelector(
@@ -15,6 +16,7 @@ export default function HidingSettings() {
         {!disableMarkingRead && (
           <>
             <MarkReadOnScroll />
+            <ShowHideReadButton />
           </>
         )}
       </IonList>
