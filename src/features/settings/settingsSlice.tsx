@@ -52,10 +52,7 @@ interface SettingsState {
       thumbnailsPosition: CompactThumbnailPositionType;
       showVotingButtons: boolean;
     };
-    dark: {
-      usingSystemDarkMode: boolean;
-      userDarkMode: boolean;
-    };
+    theme: string;
     deviceMode: Mode;
   };
   general: {
@@ -76,10 +73,7 @@ const LOCALSTORAGE_KEYS = {
     FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
     USE_SYSTEM: "appearance--font-use-system",
   },
-  DARK: {
-    USE_SYSTEM: "appearance--dark-use-system",
-    USER_MODE: "appearance--dark-user-mode",
-  },
+  THEME: "system",
   DEVICE_MODE: "appearance--device-mode",
 } as const;
 
@@ -101,10 +95,7 @@ const initialState: SettingsState = {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
       showVotingButtons: true,
     },
-    dark: {
-      usingSystemDarkMode: true,
-      userDarkMode: false,
-    },
+    theme: "system",
     deviceMode: "ios",
   },
   general: {
@@ -128,10 +119,7 @@ const stateWithLocalstorageItems: SettingsState = merge(initialState, {
       fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
       useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
     },
-    dark: {
-      usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
-      userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
-    },
+    theme: get(LOCALSTORAGE_KEYS.THEME),
     deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
   },
 });
@@ -199,13 +187,9 @@ export const appearanceSlice = createSlice({
       state.appearance.compact.thumbnailsPosition = action.payload;
       db.setSetting("compact_thumbnail_position_type", action.payload);
     },
-    setUserDarkMode(state, action: PayloadAction<boolean>) {
-      state.appearance.dark.userDarkMode = action.payload;
-      set(LOCALSTORAGE_KEYS.DARK.USER_MODE, action.payload);
-    },
-    setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
-      state.appearance.dark.usingSystemDarkMode = action.payload;
-      set(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
+    setTheme(state, action: PayloadAction<string>) {
+      state.appearance.theme = action.payload;
+      set(LOCALSTORAGE_KEYS.THEME, action.payload);
     },
     setDeviceMode(state, action: PayloadAction<Mode>) {
       state.appearance.deviceMode = action.payload;
@@ -365,8 +349,7 @@ export const {
   setPostAppearance,
   setThumbnailPosition,
   setShowVotingButtons,
-  setUserDarkMode,
-  setUseSystemDarkMode,
+  setTheme,
   setDeviceMode,
   setDefaultCommentSort,
   settingsReady,
