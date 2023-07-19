@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { IonLabel, IonList, IonRadio, IonRadioGroup } from "@ionic/react";
 import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { setUserDarkMode } from "../../settingsSlice";
+import { setTheme } from "../../settingsSlice";
 
 const ListHeader = styled.div`
   font-size: 0.8em;
@@ -11,29 +11,35 @@ const ListHeader = styled.div`
   color: var(--ion-color-medium);
 `;
 
-export default function UserDarkMode() {
+export default function ThemeSelector() {
   const dispatch = useAppDispatch();
-  const userDarkMode = useAppSelector(
-    (state) => state.settings.appearance.dark.userDarkMode
-  );
+  const theme = useAppSelector((state) => state.settings.appearance.theme);
 
   return (
     <>
       <ListHeader>
-        <IonLabel>Light/Dark Mode</IonLabel>
+        <IonLabel>Theme</IonLabel>
       </ListHeader>
       <IonRadioGroup
-        value={userDarkMode}
-        onIonChange={(e) => dispatch(setUserDarkMode(e.detail.value))}
+        value={theme}
+        onIonChange={(e) => dispatch(setTheme(e.detail.value))}
       >
         <IonList inset>
           <InsetIonItem>
+            <IonLabel>System</IonLabel>
+            <IonRadio value="system" />
+          </InsetIonItem>
+          <InsetIonItem>
             <IonLabel>Light</IonLabel>
-            <IonRadio value={false} />
+            <IonRadio value="light" />
           </InsetIonItem>
           <InsetIonItem>
             <IonLabel>Dark</IonLabel>
-            <IonRadio value={true} />
+            <IonRadio value="dark" />
+          </InsetIonItem>
+          <InsetIonItem>
+            <IonLabel>Black</IonLabel>
+            <IonRadio value="black" />
           </InsetIonItem>
         </IonList>
       </IonRadioGroup>
