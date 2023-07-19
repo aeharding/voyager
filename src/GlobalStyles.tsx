@@ -1,11 +1,7 @@
 import { Global, ThemeProvider, css } from "@emotion/react";
 import { useAppSelector } from "./store";
 import useSystemDarkMode from "./helpers/useSystemDarkMode";
-import {
-  baseVariables,
-  darkVariables,
-  lightVariables,
-} from "./theme/variables";
+import { baseVariables, themes } from "./theme/variables";
 import React from "react";
 
 interface GlobalStylesProps {
@@ -13,7 +9,7 @@ interface GlobalStylesProps {
 }
 
 export default function GlobalStyles({ children }: GlobalStylesProps) {
-  const systemDarkMode = useSystemDarkMode();
+  const systemDarkMode = useSystemDarkMode() ? "black" : "light";
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
     (state) => state.settings.appearance.font
   );
@@ -26,14 +22,13 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
         font-size: ${fontSizeMultiplier}rem;
       `;
 
-  const { userDarkMode, usingSystemDarkMode } = useAppSelector(
-    (state) => state.settings.appearance.dark
-  );
+  const { theme } = useAppSelector((state) => state.settings.appearance);
 
-  const isDark = usingSystemDarkMode ? systemDarkMode : userDarkMode;
+  const selectedTheme =
+    theme === "system" ? themes[systemDarkMode] : themes[theme];
 
   return (
-    <ThemeProvider theme={{ dark: isDark }}>
+    <ThemeProvider theme={{}}>
       <Global
         styles={css`
           html {
@@ -46,7 +41,7 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
 
           ${baseVariables}
 
-          ${isDark ? darkVariables : lightVariables}
+          ${selectedTheme}
         `}
       />
       {children}
