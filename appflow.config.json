@@ -1,7 +1,7 @@
 {
   "apps": [
     {
-      "appId": "app.vger",
+      "appId": "app.vger.voyager",
       "dependencyInstallCommand": "corepack enable && pnpm i",
       "webBuildCommand": "pnpm build"
     }
