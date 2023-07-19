@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import {
   IonActionSheet,
   IonIcon,
@@ -21,22 +22,21 @@ import {
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { useContext, useState } from "react";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { handleSelector } from "../auth/authSlice";
+import { notEmpty } from "../../helpers/array";
 import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
 } from "../../helpers/lemmy";
-import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
-import styled from "@emotion/styled";
-import { notEmpty } from "../../helpers/array";
-import useCollapseRootComment from "./useCollapseRootComment";
-import { CommentsContext } from "./CommentsContext";
-import SelectText from "../../pages/shared/SelectTextModal";
-import { PageContext } from "../auth/PageContext";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { saveError, voteError } from "../../helpers/toastMessages";
+import SelectText from "../../pages/shared/SelectTextModal";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { PageContext } from "../auth/PageContext";
+import { handleSelector } from "../auth/authSlice";
+import { CommentsContext } from "./CommentsContext";
+import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
+import useCollapseRootComment from "./useCollapseRootComment";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -87,6 +87,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const mySaved = commentSavedById[comment.comment.id] ?? comment.saved;
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
+  const commentExists = !comment.comment.deleted && !comment.comment.removed;
 
   return (
     <>
@@ -137,11 +138,13 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             role: "reply",
             icon: arrowUndoOutline,
           },
-          {
-            text: "Select Text",
-            role: "select-text",
-            icon: textOutline,
-          },
+          commentExists
+            ? {
+                text: "Select Text",
+                role: "select-text",
+                icon: textOutline,
+              }
+            : undefined,
           {
             text: getHandle(comment.creator),
             role: "person",
