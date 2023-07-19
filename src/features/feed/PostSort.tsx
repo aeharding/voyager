@@ -95,6 +95,10 @@ export default function PostSort() {
         buttons={BUTTONS.map((b) => ({
           ...b,
           cssClass: b.data === "Top" ? "detail" : undefined,
+          text:
+            isTopSort(sort) && b.data === "Top"
+              ? `${b.text} (${formatTopLabel(sort)})`
+              : b.text,
           role:
             sort === b.data || (sort.startsWith("Top") && b.data === "Top")
               ? "selected"
@@ -170,4 +174,8 @@ function formatTopLabel(sort: (typeof TOP_POST_SORTS)[number]): string {
     case "TopAll":
       return "All Time";
   }
+}
+
+function isTopSort(sort: SortType): sort is (typeof TOP_POST_SORTS)[number] {
+  return (TOP_POST_SORTS as unknown as string[]).includes(sort as string);
 }
