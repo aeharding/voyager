@@ -208,7 +208,7 @@ export default function TitleSearchResults() {
   if (!searching) return null;
 
   return (
-    <Backdrop onClick={() => setSearching(false)}>
+    <Backdrop onClick={() => setSearching(false)} slot="fixed">
       <KeyboardContent
         ref={contentRef}
         style={{ maxHeight: `${viewportHeight}px` }}

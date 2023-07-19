@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonToolbar,
@@ -23,6 +22,7 @@ import { TitleSearchProvider } from "../../features/community/titleSearch/TitleS
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
 import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
+import FeedContent from "./FeedContent";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -72,14 +72,14 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
             </TitleSearch>
           </IonToolbar>
         </IonHeader>
-        <IonContent scrollY={false} fullscreen>
+        <FeedContent>
           {markReadOnScroll ? (
             <FeedScrollObserver>{feed}</FeedScrollObserver>
           ) : (
             feed
           )}
           <TitleSearchResults />
-        </IonContent>
+        </FeedContent>
       </IonPage>
     </TitleSearchProvider>
   );

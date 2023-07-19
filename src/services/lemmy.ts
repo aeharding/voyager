@@ -36,7 +36,11 @@ function buildProxiedBaseUrl(url: string): string {
 }
 
 export function getClient(url: string): LemmyHttp {
-  return new LemmyHttp(buildBaseUrl(url));
+  return new LemmyHttp(buildBaseUrl(url), {
+    // Capacitor http plugin is not compatible with cross-fetch.
+    // Bind to globalThis or lemmy-js-client will bind incorrectly
+    fetchFunction: fetch.bind(globalThis),
+  });
 }
 
 export const LIMIT = 30;

@@ -1,10 +1,4 @@
-import {
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButtons, IonHeader, IonPage, IonToolbar } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
@@ -25,6 +19,7 @@ import TitleSearchResults from "../../features/community/titleSearch/TitleSearch
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
 import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
 import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
+import FeedContent from "./FeedContent";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -95,14 +90,14 @@ export default function CommunityPage() {
             </TitleSearch>
           </IonToolbar>
         </IonHeader>
-        <IonContent>
+        <FeedContent>
           {markReadOnScroll ? (
             <FeedScrollObserver>{feed}</FeedScrollObserver>
           ) : (
             feed
           )}
           <TitleSearchResults />
-        </IonContent>
+        </FeedContent>
       </IonPage>
     </TitleSearchProvider>
   );
