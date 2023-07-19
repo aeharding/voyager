@@ -59,6 +59,7 @@ export type InstanceUrlDisplayMode =
 
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
+  show_collapsed_comment: boolean;
   user_instance_url_display: InstanceUrlDisplayMode;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;

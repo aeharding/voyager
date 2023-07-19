@@ -61,6 +61,7 @@ interface SettingsState {
   general: {
     comments: {
       collapseCommentThreads: CommentThreadCollapse;
+      showCollapsedComment: boolean;
       sort: CommentDefaultSort;
     };
     posts: {
@@ -110,6 +111,7 @@ const initialState: SettingsState = {
   general: {
     comments: {
       collapseCommentThreads: OCommentThreadCollapse.Never,
+      showCollapsedComment: false,
       sort: OCommentDefaultSort.Hot,
     },
     posts: {
@@ -179,6 +181,10 @@ export const appearanceSlice = createSlice({
     setCommentsCollapsed(state, action: PayloadAction<CommentThreadCollapse>) {
       state.general.comments.collapseCommentThreads = action.payload;
       db.setSetting("collapse_comment_threads", action.payload);
+    },
+    setShowCollapsedComment(state, action: PayloadAction<boolean>) {
+      state.general.comments.showCollapsedComment = action.payload;
+      db.setSetting("show_collapsed_comment", action.payload);
     },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
@@ -280,6 +286,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const collapse_comment_threads = await db.getSetting(
         "collapse_comment_threads"
       );
+      const show_collapsed_comment = await db.getSetting(
+        "show_collapsed_comment"
+      );
       const user_instance_url_display = await db.getSetting(
         "user_instance_url_display"
       );
@@ -328,6 +337,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             collapseCommentThreads:
               collapse_comment_threads ??
               initialState.general.comments.collapseCommentThreads,
+            showCollapsedComment:
+              show_collapsed_comment ??
+              initialState.general.comments.showCollapsedComment,
             sort: default_comment_sort ?? initialState.general.comments.sort,
           },
           posts: {
@@ -361,6 +373,7 @@ export const {
   setUseSystemFontSize,
   setUserInstanceUrlDisplay,
   setCommentsCollapsed,
+  setShowCollapsedComment,
   setNsfwBlur,
   setPostAppearance,
   setThumbnailPosition,

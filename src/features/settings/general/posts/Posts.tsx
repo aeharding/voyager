@@ -1,5 +1,5 @@
 import { IonLabel, IonList } from "@ionic/react";
-import { ListHeader } from "../comments/CollapsedByDefault";
+import { ListHeader } from "../comments/Comments";
 import { InsetIonItem } from "../../../user/Profile";
 
 export default function Posts() {

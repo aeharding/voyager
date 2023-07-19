@@ -194,6 +194,10 @@ export default function Comment({
   className,
   rootIndex,
 }: CommentProps) {
+  const showCollapsedComment = useAppSelector(
+    (state) => state.settings.general.comments.showCollapsedComment
+  );
+
   const commentById = useAppSelector((state) => state.comment.commentById);
   // eslint-disable-next-line no-undef
   const commentRef = useRef<HTMLIonItemElement>(null);
@@ -256,14 +260,18 @@ export default function Comment({
                 ) : (
                   <>
                     <AmountCollapsed>
-                      {commentView.counts.child_count + 1}
+                      {commentView.counts.child_count +
+                        (showCollapsedComment ? 0 : 1)}
                     </AmountCollapsed>
                     <CollapsedIcon icon={chevronDownOutline} />
                   </>
                 )}
               </Header>
 
-              <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
+              <AnimateHeight
+                duration={200}
+                height={!showCollapsedComment && collapsed ? 0 : "auto"}
+              >
                 <Content
                   onClick={(e) => {
                     if (!(e.target instanceof HTMLElement)) return;
