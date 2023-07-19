@@ -33,7 +33,7 @@ import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import styled from "@emotion/styled";
 import { notEmpty } from "../../helpers/array";
 import useCollapseRootComment from "./useCollapseRootComment";
-import { FeedContext } from "../feed/FeedContext";
+import { CommentsContext } from "./CommentsContext";
 import SelectText from "../../pages/shared/SelectTextModal";
 import { PageContext } from "../auth/PageContext";
 import { saveError, voteError } from "../../helpers/toastMessages";
@@ -54,10 +54,12 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
-  const { prependComments } = useContext(FeedContext);
+  const { prependComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
+
+  const commentById = useAppSelector((state) => state.comment.commentById);
 
   const router = useIonRouter();
 
@@ -203,9 +205,13 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
                 present(saveError);
               }
               break;
-            case "edit":
-              presentCommentEdit(comment);
+            case "edit": {
+              // Comment from slice might be more up to date, e.g. edits
+              const _comment =
+                commentById[comment.comment.id] ?? comment.comment;
+              presentCommentEdit(_comment);
               break;
+            }
             case "delete":
               try {
                 await dispatch(deleteComment(comment.comment.id));

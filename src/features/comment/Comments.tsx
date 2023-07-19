@@ -28,7 +28,7 @@ import { RefresherCustomEvent } from "@ionic/core";
 import { getPost } from "../post/postSlice";
 import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
-import { FeedContext } from "../feed/FeedContext";
+import { CommentsContext } from "./CommentsContext";
 import { jwtSelector } from "../auth/authSlice";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
@@ -277,7 +277,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   }, [commentTree, comments.length, highlightedCommentId, loading, op]);
 
   return (
-    <FeedContext.Provider
+    <CommentsContext.Provider
       value={{
         refresh: () => fetchComments(true),
         appendComments,
@@ -310,6 +310,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
             : {}
         }
       />
-    </FeedContext.Provider>
+    </CommentsContext.Provider>
   );
 });

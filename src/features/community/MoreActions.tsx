@@ -15,6 +15,7 @@ import {
   starSharp,
   removeCircleOutline,
   tabletPortraitOutline,
+  eyeOffOutline,
 } from "ionicons/icons";
 import { useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -33,6 +34,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { checkIsMod } from "../../helpers/lemmy";
 import { PageContext } from "../auth/PageContext";
 import { allNSFWHidden, buildBlocked } from "../../helpers/toastMessages";
+import useHidePosts from "../feed/useHidePosts";
 
 interface MoreActionsProps {
   community: string;
@@ -49,6 +51,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const localUser = useAppSelector(localUserSelector);
   const [presentActionSheet] = useIonActionSheet();
   const { presentPostEditor } = useContext(PageContext);
+
+  const hidePosts = useHidePosts();
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
@@ -100,6 +104,11 @@ export default function MoreActions({ community }: MoreActionsProps) {
             text: "Submit Post",
             data: "post",
             icon: createOutline,
+          },
+          {
+            text: "Hide Read Posts",
+            data: "hide-read",
+            icon: eyeOffOutline,
           },
           {
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
@@ -171,6 +180,10 @@ export default function MoreActions({ community }: MoreActionsProps) {
               }
 
               presentPostEditor(community);
+              break;
+            }
+            case "hide-read": {
+              hidePosts();
               break;
             }
             case "favorite": {
