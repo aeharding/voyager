@@ -33,7 +33,7 @@ import { saveError, voteError } from "../../helpers/toastMessages";
 import SelectText from "../../pages/shared/SelectTextModal";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
-import { handleSelector, isLocalModeratorSelector } from "../auth/authSlice";
+import { handleSelector } from "../auth/authSlice";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
@@ -56,7 +56,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
   const [open, setOpen] = useState(false);
   const { prependComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
-  const isLocalModerator = useAppSelector(isLocalModeratorSelector);
   const [present] = useIonToast();
   const collapseRootComment = useCollapseRootComment(comment, rootIndex);
 
@@ -89,22 +88,6 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
   const commentExists = !comment.comment.deleted && !comment.comment.removed;
-  const localMod = isLocalModerator(comment.community);
-
-  let selectTextOption = undefined;
-  if (commentExists) {
-    selectTextOption = {
-      text: "Select Text",
-      role: "select-text",
-      icon: textOutline,
-    };
-  } else if (isMyComment || localMod) {
-    selectTextOption = {
-      text: "Select Deleted Text",
-      role: "select-text",
-      icon: textOutline,
-    };
-  }
 
   return (
     <>
@@ -155,7 +138,13 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             role: "reply",
             icon: arrowUndoOutline,
           },
-          selectTextOption,
+          commentExists
+            ? {
+                text: "Select Text",
+                role: "select-text",
+                icon: textOutline,
+              }
+            : undefined,
           {
             text: getHandle(comment.creator),
             role: "person",
