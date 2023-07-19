@@ -1,4 +1,9 @@
-import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import {
+  Dictionary,
+  PayloadAction,
+  createSelector,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import {
@@ -8,7 +13,7 @@ import {
   logoutAccount,
 } from "../auth/authSlice";
 import { InboxItemView } from "./InboxItem";
-import { differenceBy, uniqBy } from "lodash";
+import { differenceBy, groupBy, uniqBy } from "lodash";
 import { receivedUsers } from "../user/userSlice";
 
 interface PostState {
@@ -77,6 +82,10 @@ export const inboxSlice = createSlice({
       if (state.messageSyncState === "syncing") state.messageSyncState = "init";
     },
     resetInbox: () => initialState,
+    resetMessages: (state) => {
+      state.messageSyncState = "init";
+      state.messages = [];
+    },
   },
 });
 
@@ -87,7 +96,7 @@ export const {
   setReadStatus,
   receivedMessages,
   resetInbox,
-
+  resetMessages,
   sync,
   syncComplete,
   syncFail,
@@ -199,6 +208,34 @@ export const syncMessages =
   };
 
 export const markAllRead =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = jwtSelector(getState());
+
+    if (!jwt) return;
+
+    await clientSelector(getState()).markAllAsRead({ auth: jwt });
+
+    dispatch(getInboxCounts());
+  };
+
+export const conversationsByPersonIdSelector = createSelector(
+  [
+    (state: RootState) => state.inbox.messages,
+    (state: RootState) =>
+      state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
+  ],
+  (messages, myUserId) => {
+    if (!myUserId) return {};
+
+    return groupBy(messages, (m) =>
+      m.private_message.creator_id === myUserId
+        ? m.private_message.recipient_id
+        : m.private_message.creator_id
+    );
+  }
+);
+
+export const removeAllPrivateMessages =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwt = jwtSelector(getState());
 
