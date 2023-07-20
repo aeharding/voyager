@@ -6,7 +6,14 @@ import Embed from "../shared/Embed";
 import Comments, { CommentsHandle } from "../../comment/Comments";
 import Markdown from "../../shared/Markdown";
 import PostActions from "../actions/PostActions";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { findLoneImage } from "../../../helpers/markdown";
 import { setPostRead } from "../postSlice";
 import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
@@ -129,6 +136,8 @@ export default function PostDetail({
   const [ionViewEntered, setIonViewEntered] = useState(false);
   const commentsRef = useRef<CommentsHandle>(null);
 
+  const [viewAllCommentsSpace, setViewAllCommentsSpace] = useState(70); // px
+
   // Avoid rerender from marking a post as read until the page
   // has fully transitioned in.
   // This keeps the page transition as performant as possible
@@ -145,6 +154,11 @@ export default function PostDetail({
   useEffect(() => {
     titleRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [collapsed]);
+
+  const onHeight = useCallback(
+    (height: number) => setViewAllCommentsSpace(height),
+    []
+  );
 
   function renderImage() {
     if (!post) return;
@@ -241,8 +255,9 @@ export default function PostDetail({
         commentPath={commentPath}
         op={post.creator}
         sort={sort}
+        bottomPadding={commentPath ? viewAllCommentsSpace + 12 : 0}
       />
-      {commentPath && <ViewAllComments />}
+      {commentPath && <ViewAllComments onHeight={onHeight} />}
     </>
   );
 }
