@@ -5,9 +5,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { IonModal, useIonActionSheet } from "@ionic/react";
+import { useIonActionSheet } from "@ionic/react";
 import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
+import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
 
 export interface DismissableProps {
   dismiss: () => void;
@@ -82,7 +83,7 @@ export function DynamicDismissableModal({
         when={!canDismiss}
         message="Are you sure you want to discard your work?"
       />
-      <IonModal
+      <IonModalAutosizedForOnScreenKeyboard
         isOpen={isOpen}
         canDismiss={canDismiss ? canDismiss : onDismissAttemptCb}
         onDidDismiss={() => setIsOpen(false)}
@@ -99,7 +100,7 @@ export function DynamicDismissableModal({
             onDismissAttemptCb();
           },
         })}
-      </IonModal>
+      </IonModalAutosizedForOnScreenKeyboard>
     </>
   );
 }

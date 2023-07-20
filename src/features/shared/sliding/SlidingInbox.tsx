@@ -3,7 +3,7 @@ import { arrowUndo, mailUnread } from "ionicons/icons";
 import React, { useCallback, useContext, useMemo } from "react";
 import { SlidingItemAction } from "./SlidingItem";
 import { CommentReplyView, PersonMentionView } from "lemmy-js-client";
-import { FeedContext } from "../../feed/FeedContext";
+import { CommentsContext } from "../../comment/CommentsContext";
 import BaseSlidingVote from "./BaseSlidingVote";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -22,7 +22,7 @@ export default function SlidingInbox({
 }: SlidingInboxProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const { refresh: refreshPost } = useContext(FeedContext);
+  const { refresh: refreshPost } = useContext(CommentsContext);
   const { presentCommentReply } = useContext(PageContext);
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId

@@ -19,7 +19,7 @@ import ConversationItem from "../../features/inbox/messages/ConversationItem";
 import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { syncMessages } from "../../features/inbox/inboxSlice";
 import ComposeButton from "./ComposeButton";
-import { CenteredSpinner } from "../../features/post/detail/PostDetail";
+import { CenteredSpinner } from "../posts/PostPage";
 
 export default function MessagesPage() {
   const dispatch = useAppDispatch();

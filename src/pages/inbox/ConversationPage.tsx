@@ -19,7 +19,7 @@ import {
   receivedMessages,
   syncMessages,
 } from "../../features/inbox/inboxSlice";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { getHandle } from "../../helpers/lemmy";
 import Message from "../../features/inbox/messages/Message";
 import styled from "@emotion/styled";
@@ -91,6 +91,7 @@ const Input = styled(TextareaAutosize)`
   font-size: 16px;
 
   background: var(--ion-background-color);
+  color: var(--ion-text-color);
   outline: none;
 
   width: 100%;
@@ -115,6 +116,7 @@ export default function ConversationPage() {
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
+  const location = useLocation();
   const jwt = useAppSelector(jwtSelector);
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
@@ -208,7 +210,12 @@ export default function ConversationPage() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/inbox/messages" text="Messages" />
+            <IonBackButton
+              defaultHref="/inbox/messages"
+              text={
+                location.pathname.startsWith("/inbox") ? "Messages" : "Back"
+              }
+            />
           </IonButtons>
 
           <IonTitle

@@ -12,23 +12,23 @@ import {
 import { useState } from "react";
 import { Centered, Spinner } from "../../auth/Login";
 import { css } from "@emotion/react";
+import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 
 const Container = styled.div`
-  position: absolute;
-  inset: 0;
+  min-height: 100%;
 
   display: flex;
   flex-direction: column;
 `;
 
-const Textarea = styled.textarea`
+const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
   border: 0;
   background: none;
   resize: none;
   outline: 0;
   padding: 1rem;
 
-  flex: 1 0 0;
+  flex: 1 0 auto;
   min-height: 7rem;
 
   ${({ theme }) =>

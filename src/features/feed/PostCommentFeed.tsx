@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import Feed, { FeedProps, FetchFn } from "./Feed";
 import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
@@ -8,6 +8,7 @@ import { postHiddenByIdSelector, receivedPosts } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
+import { FeedContext } from "./FeedContext";
 
 const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -37,9 +38,21 @@ export default function PostCommentFeed({
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
   const postAppearanceType = useAppSelector(
-    (state) => state.appearance.posts.type
+    (state) => state.settings.appearance.posts.type
   );
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
+
+  const itemsRef = useRef<PostCommentItem[]>();
+
+  const { setItemsRef } = useContext(FeedContext);
+
+  useEffect(() => {
+    setItemsRef(itemsRef);
+
+    return () => {
+      setItemsRef(undefined);
+    };
+  }, [setItemsRef]);
 
   const borderCss = (() => {
     switch (postAppearanceType) {
@@ -89,6 +102,7 @@ export default function PostCommentFeed({
 
       return items;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [_fetchFn, dispatch]
   );
 
@@ -108,6 +122,7 @@ export default function PostCommentFeed({
       }
       renderItemContent={renderItemContent}
       {...rest}
+      itemsRef={itemsRef}
     />
   );
 }

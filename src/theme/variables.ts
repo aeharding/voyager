@@ -89,6 +89,11 @@ export const baseVariables = css`
     --ion-color-step-100: #f3f3f3;
 
     --unread-item-background-color: #fffcd9;
+
+    --ion-color-text-aside: rgba(0, 0, 0, 0.55);
+
+    --read-color: rgba(0, 0, 0, 0.45);
+    --read-color-medium: rgba(0, 0, 0, 0.4);
   }
 
   .ios body {
@@ -194,6 +199,11 @@ export const darkVariables = css`
     --thick-separator-color: rgba(255, 255, 255, 0.08);
 
     --unread-item-background-color: #1e1c00;
+
+    --ion-color-text-aside: rgba(255, 255, 255, 0.65);
+
+    --read-color: rgba(255, 255, 255, 0.6);
+    --read-color-medium: rgba(255, 255, 255, 0.4);
   }
 
   // iOS Dark Theme
@@ -242,7 +252,7 @@ export const darkVariables = css`
   // Material Design Dark Theme
 
   .md body {
-    --ion-background-color: #121212;
+    --ion-background-color: black;
     --ion-background-color-rgb: 18, 18, 18;
 
     --ion-text-color: #ffffff;
@@ -250,7 +260,7 @@ export const darkVariables = css`
 
     --ion-border-color: #222222;
 
-    --ion-color-step-50: #1e1e1e;
+    --ion-color-step-50: #121212;
     --ion-color-step-100: #2a2a2a;
     --ion-color-step-150: #363636;
     --ion-color-step-200: #414141;
@@ -270,13 +280,16 @@ export const darkVariables = css`
     --ion-color-step-900: #e7e7e7;
     --ion-color-step-950: #f3f3f3;
 
-    --ion-item-background: #1e1e1e;
+    --ion-item-background: black;
 
     --ion-toolbar-background: #1f1f1f;
 
     --ion-tab-bar-background: #1f1f1f;
 
-    --ion-card-background: #1e1e1e;
+    --ion-card-background: black;
+
+    --ion-toolbar-background: #121212;
+    --ion-tab-bar-background: #121212;
   }
 
   @media (max-width: 767px) {

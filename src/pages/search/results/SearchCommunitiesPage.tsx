@@ -15,27 +15,36 @@ import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
 import PostSort from "../../../features/feed/PostSort";
 import { useAppSelector } from "../../../store";
-import { CommunityView } from "lemmy-js-client";
+import { CommunityView, LemmyHttp } from "lemmy-js-client";
 import CommunityFeed from "../../../features/feed/CommunityFeed";
 import { jwtSelector } from "../../../features/auth/authSlice";
+import { notEmpty } from "../../../helpers/array";
 
 export default function SearchCommunitiesPage() {
-  const { search } = useParams<{ search: string }>();
+  const { search: _encodedSearch } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector(jwtSelector);
 
+  const search = decodeURIComponent(_encodedSearch);
+
   const fetchFn: FetchFn<CommunityView> = useCallback(
     async (page) => {
+      if (page === 1 && search.includes("@")) {
+        return [await findExactCommunity(search, client, jwt)].filter(notEmpty);
+      }
+
       const response = await client.search({
         limit: LIMIT,
         q: search,
         type_: "Communities",
+        listing_type: "All",
         page,
         sort,
         auth: jwt,
       });
+
       return response.communities;
     },
     [client, search, sort, jwt]
@@ -64,4 +73,21 @@ export default function SearchCommunitiesPage() {
       </IonContent>
     </IonPage>
   );
+}
+
+async function findExactCommunity(
+  name: string,
+  client: LemmyHttp,
+  jwt?: string
+): Promise<CommunityView | undefined> {
+  const sanitizedName = name.startsWith("!") ? name.slice(1) : name;
+
+  try {
+    return (await client.getCommunity({ name: sanitizedName, auth: jwt }))
+      .community_view;
+  } catch (error) {
+    if (error === "couldnt_find_community") return;
+
+    throw error;
+  }
 }

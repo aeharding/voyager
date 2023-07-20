@@ -14,6 +14,8 @@ import CommentContent from "./CommentContent";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
+import Save from "../labels/Save";
+import Edited from "../labels/Edited";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -41,6 +43,8 @@ export const PositionedContainer = styled.div<{
   depth: number;
   highlighted: boolean;
 }>`
+  position: relative;
+
   ${maxWidthCss}
 
   padding: 0.55rem 1rem;
@@ -72,7 +76,7 @@ export const Container = styled.div<{
   position: relative;
   width: 100%;
 
-  font-size: 0.88em;
+  font-size: 0.875em;
 
   display: flex;
   flex-direction: column;
@@ -153,7 +157,7 @@ const CollapsedIcon = styled(IonIcon)`
 `;
 
 const AmountCollapsed = styled.div`
-  font-size: 0.9em;
+  font-size: 0.875em;
   padding: 0.25rem 0.5rem;
   margin: -0.25rem;
   border-radius: 1rem;
@@ -206,7 +210,7 @@ export default function Comment({
         block: "nearest",
         inline: "nearest",
       });
-    }, 100);
+    }, 600);
   }, [highlightedCommentId, comment]);
 
   return (
@@ -234,12 +238,8 @@ export default function Comment({
                   opId={commentView.post.creator_id}
                   distinguished={comment.distinguished}
                 />
-                <Vote
-                  voteFromServer={commentView.my_vote as 1 | 0 | -1 | undefined}
-                  score={commentView.counts.score}
-                  id={commentView.comment.id}
-                  type="comment"
-                />
+                <Vote item={commentView} />
+                <Edited item={commentView} />
                 <div
                   css={css`
                     flex: 1;
@@ -275,6 +275,7 @@ export default function Comment({
                 </Content>
               </AnimateHeight>
             </Container>
+            <Save type="comment" id={commentView.comment.id} />
           </PositionedContainer>
         </CustomIonItem>
       </SlidingNestedCommentVote>
