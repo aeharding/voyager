@@ -8,7 +8,6 @@ import { IonActionSheet, IonItem, IonLabel } from "@ionic/react";
 import { Dictionary, startCase } from "lodash";
 import { useState } from "react";
 import { useAppDispatch } from "../../../store";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
 const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -17,7 +16,8 @@ const InsetIonItem = styled(IonItem)`
 export interface SettingSelectorProps<T> {
   title: string;
   selected: T;
-  setSelected: ActionCreatorWithPayload<T>;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  setSelected: Function;
   options: Dictionary<string>;
 }
 
