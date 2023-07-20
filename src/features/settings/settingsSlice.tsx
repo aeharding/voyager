@@ -107,7 +107,7 @@ const initialState: SettingsState = {
       showVotingButtons: true,
     },
     voting: {
-      voteDisplayMode: OVoteDisplayMode.SingleScore,
+      voteDisplayMode: OVoteDisplayMode.Total,
     },
     dark: {
       usingSystemDarkMode: true,

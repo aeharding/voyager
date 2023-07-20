@@ -58,9 +58,20 @@ export type InstanceUrlDisplayMode =
   (typeof OInstanceUrlDisplayMode)[keyof typeof OInstanceUrlDisplayMode];
 
 export const OVoteDisplayMode = {
-  NoScores: "hide",
-  SingleScore: "total",
-  SeparateScores: "separate",
+  /**
+   * Show total score (upvotes + downvotes)
+   */
+  Total: "total",
+
+  /**
+   * Show upvotes and downvotes separately
+   */
+  Separate: "separate",
+
+  /**
+   * Hide scores
+   */
+  Hide: "hide",
 } as const;
 
 export type VoteDisplayMode =
