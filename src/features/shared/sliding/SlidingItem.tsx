@@ -8,6 +8,7 @@ import {
   IonItemSliding,
 } from "@ionic/react";
 import React, { useMemo, useRef, useState } from "react";
+import { bounceAnimation } from "../animations";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   --ion-item-border-color: transparent;
@@ -39,6 +40,8 @@ const OptionContainer = styled.div<{ active: boolean }>`
     active &&
     css`
       opacity: 1;
+
+      ${bounceAnimation}
     `}
 `;
 
