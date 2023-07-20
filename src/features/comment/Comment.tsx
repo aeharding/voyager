@@ -127,6 +127,9 @@ const Header = styled.div`
 
 const StyledPersonLabel = styled(PersonLink)`
   color: var(--ion-text-color);
+
+  min-width: 0;
+  overflow: hidden;
 `;
 
 const Content = styled.div`
