@@ -18,6 +18,7 @@ import { voteOnPost } from "../../post/postSlice";
 import { voteError } from "../../../helpers/toastMessages";
 import { voteOnComment } from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
+import { isDownvoteEnabledSelector } from "../../auth/authSlice";
 
 const VoteArrow = styled(IonIcon)<{
   slash: boolean;
@@ -67,6 +68,7 @@ export default function BaseSlidingVote({
   const currentVote = isPost
     ? postVotesById[item.post.id] ?? typedMyVote
     : commentVotesById[item.comment.id] ?? typedMyVote;
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const onVote = useCallback(
     async (score: 1 | -1 | 0) => {
@@ -82,36 +84,41 @@ export default function BaseSlidingVote({
     [dispatch, isPost, item, present, presentLoginIfNeeded]
   );
 
-  const startActions: [SlidingItemAction, SlidingItemAction] = useMemo(() => {
-    return [
-      {
-        render: () => (
-          <VoteArrow
-            slash={currentVote === 1}
-            bgColor="primary"
-            icon={arrowUpSharp}
-          />
-        ),
-        trigger: () => {
-          onVote(currentVote === 1 ? 0 : 1);
-        },
-        bgColor: "primary",
+  const startActions:
+    | [SlidingItemAction, SlidingItemAction]
+    | [SlidingItemAction] = useMemo(() => {
+    const up = {
+      render: () => (
+        <VoteArrow
+          slash={currentVote === 1}
+          bgColor="primary"
+          icon={arrowUpSharp}
+        />
+      ),
+      trigger: () => {
+        onVote(currentVote === 1 ? 0 : 1);
       },
-      {
-        render: () => (
-          <VoteArrow
-            slash={currentVote === -1}
-            bgColor="danger"
-            icon={arrowDownSharp}
-          />
-        ),
-        trigger: () => {
-          onVote(currentVote === -1 ? 0 : -1);
-        },
-        bgColor: "danger",
+      bgColor: "primary",
+    };
+    const down = {
+      render: () => (
+        <VoteArrow
+          slash={currentVote === -1}
+          bgColor="danger"
+          icon={arrowDownSharp}
+        />
+      ),
+      trigger: () => {
+        onVote(currentVote === -1 ? 0 : -1);
       },
-    ];
-  }, [currentVote, onVote]);
+      bgColor: "danger",
+    };
+
+    if (downvoteAllowed) {
+      return [up, down];
+    }
+    return [up];
+  }, [currentVote, onVote, downvoteAllowed]);
 
   return (
     <SlidingItem

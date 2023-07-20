@@ -33,7 +33,7 @@ import { saveError, voteError } from "../../helpers/toastMessages";
 import SelectText from "../../pages/shared/SelectTextModal";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
-import { handleSelector } from "../auth/authSlice";
+import { handleSelector, isDownvoteEnabledSelector } from "../auth/authSlice";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
@@ -88,6 +88,7 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
 
   const isMyComment = getRemoteHandle(comment.creator) === myHandle;
   const commentExists = !comment.comment.deleted && !comment.comment.removed;
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   return (
     <>
@@ -109,11 +110,13 @@ export default function MoreActions({ comment, rootIndex }: MoreActionsProps) {
             role: "upvote",
             icon: arrowUpOutline,
           },
-          {
-            text: myVote !== -1 ? "Downvote" : "Undo Downvote",
-            role: "downvote",
-            icon: arrowDownOutline,
-          },
+          downvoteAllowed
+            ? {
+                text: myVote !== -1 ? "Downvote" : "Undo Downvote",
+                role: "downvote",
+                icon: arrowDownOutline,
+              }
+            : undefined,
           {
             text: !mySaved ? "Save" : "Unsave",
             role: "save",

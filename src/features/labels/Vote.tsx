@@ -13,6 +13,7 @@ import {
 } from "../../helpers/vote";
 import { CommentView, PostView } from "lemmy-js-client";
 import { OVoteDisplayMode } from "../../services/db";
+import { isDownvoteEnabledSelector } from "../auth/authSlice";
 
 const Container = styled.div<{
   vote?: 1 | -1 | 0;
@@ -51,6 +52,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
   const id = "comment" in item ? item.comment.id : item.post.id;
 
   const myVote = votesById[id] ?? (item.my_vote as -1 | 0 | 1 | undefined) ?? 0;
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
@@ -93,15 +95,17 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
           >
             <IonIcon icon={arrowUpSharp} /> {upvotes}
           </Container>
-          <Container
-            vote={myVote}
-            voteRepresented={-1}
-            onClick={async (e) => {
-              await onVote(e, myVote === -1 ? 0 : -1);
-            }}
-          >
-            <IonIcon icon={arrowDownSharp} /> {downvotes}
-          </Container>
+          {downvoteAllowed ? (
+            <Container
+              vote={myVote}
+              voteRepresented={-1}
+              onClick={async (e) => {
+                await onVote(e, myVote === -1 ? 0 : -1);
+              }}
+            >
+              <IonIcon icon={arrowDownSharp} /> {downvotes}
+            </Container>
+          ) : undefined}
         </>
       );
     }

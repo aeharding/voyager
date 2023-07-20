@@ -8,6 +8,7 @@ import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
 import { PageContext } from "../../auth/PageContext";
+import { isDownvoteEnabledSelector } from "../../auth/authSlice";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -33,9 +34,14 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const { presentLoginIfNeeded } = useContext(PageContext);
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const myVote = postVotesById[postId];
+
+  if (type === "down" && !downvoteAllowed) {
+    return undefined;
+  }
 
   const icon = (() => {
     switch (type) {
