@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from "react";
-import { configureStore } from "@reduxjs/toolkit";
+import { ActionCreatorWithPayload, configureStore } from "@reduxjs/toolkit";
 import postSlice from "./features/post/postSlice";
 import {
   Provider,
@@ -35,6 +35,10 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+export type Dispatchable<T> =
+  | ((val: T) => (dispatch: AppDispatch, getState: () => RootState) => void)
+  | ActionCreatorWithPayload<T>;
 
 export default store;
 

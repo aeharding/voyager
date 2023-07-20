@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import {
   IonItemOption,
   IonItemOptions,
@@ -13,13 +12,7 @@ import { useState } from "react";
 import { getHandle } from "../../../helpers/lemmy";
 import { PersonBlockView } from "lemmy-js-client";
 import { blockUser } from "../../user/userSlice";
-
-export const ListHeader = styled.div`
-  font-size: 0.8em;
-  margin: 32px 0 -8px 32px;
-  text-transform: uppercase;
-  color: var(--ion-color-medium);
-`;
+import { ListHeader } from "../shared/formatting";
 
 export default function BlockedUsers() {
   const dispatch = useAppDispatch();

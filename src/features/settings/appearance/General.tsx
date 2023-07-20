@@ -1,16 +1,9 @@
-import styled from "@emotion/styled";
 import { IonLabel, IonList, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setUserInstanceUrlDisplay } from "../settingsSlice";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
-
-export const ListHeader = styled.div`
-  font-size: 0.8em;
-  margin: 32px 0 -8px 32px;
-  text-transform: uppercase;
-  color: var(--ion-color-medium);
-`;
+import { ListHeader } from "../shared/formatting";
 
 export default function GeneralAppearance() {
   const dispatch = useAppDispatch();
