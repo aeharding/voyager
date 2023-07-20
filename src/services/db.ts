@@ -58,8 +58,8 @@ export type InstanceUrlDisplayMode =
   (typeof OInstanceUrlDisplayMode)[keyof typeof OInstanceUrlDisplayMode];
 
 export const OVoteDisplayMode = {
-  NoScores: "none",
-  SingleScore: "single-score",
+  NoScores: "hide",
+  SingleScore: "total",
   SeparateScores: "separate",
 } as const;
 

@@ -7,10 +7,11 @@ import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import MoreActions from "../post/shared/MoreActions";
-import { calculateCurrentVotesCount } from "../../helpers/vote";
+import { calculateNetVoteCount, calculateVoteCounts } from "../../helpers/vote";
 import { useLocation } from "react-router";
 import { useContext } from "react";
 import { GalleryContext } from "./GalleryProvider";
+import { OVoteDisplayMode } from "../../services/db";
 
 const Container = styled.div`
   display: flex;
@@ -37,13 +38,11 @@ interface GalleryPostActionsProps {
 }
 
 export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
-  const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const link = buildGeneralBrowseLink(
     `/c/${getHandle(post.community)}/comments/${post.post.id}`
   );
   const router = useIonRouter();
-  const { score } = calculateCurrentVotesCount(post, postVotesById);
   const location = useLocation();
   const { close } = useContext(GalleryContext);
 
@@ -53,11 +52,7 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
 
   return (
     <Container onClick={(e) => e.stopPropagation()}>
-      <Section>
-        <VoteButton type="up" postId={post.post.id} />
-        <Amount>{score}</Amount>
-        <VoteButton type="down" postId={post.post.id} />
-      </Section>
+      <Voting post={post} />
       <div
         onClick={() => {
           close();
@@ -76,4 +71,45 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
       <MoreActions post={post} onFeed />
     </Container>
   );
+}
+
+function Voting({ post }: GalleryPostActionsProps) {
+  const postVotesById = useAppSelector((state) => state.post.postVotesById);
+
+  const voteDisplayMode = useAppSelector(
+    (state) => state.settings.appearance.voting.voteDisplayMode
+  );
+
+  switch (voteDisplayMode) {
+    case OVoteDisplayMode.SeparateScores: {
+      const { upvotes, downvotes } = calculateVoteCounts(post, postVotesById);
+
+      return (
+        <Section>
+          <VoteButton type="up" postId={post.post.id} />
+          <Amount>{upvotes}</Amount>
+          <VoteButton type="down" postId={post.post.id} />
+          <Amount>{downvotes}</Amount>
+        </Section>
+      );
+    }
+    case OVoteDisplayMode.NoScores:
+      return (
+        <Section>
+          <VoteButton type="up" postId={post.post.id} />
+          <VoteButton type="down" postId={post.post.id} />
+        </Section>
+      );
+    default: {
+      const score = calculateNetVoteCount(post, postVotesById);
+
+      return (
+        <Section>
+          <VoteButton type="up" postId={post.post.id} />
+          <Amount>{score}</Amount>
+          <VoteButton type="down" postId={post.post.id} />
+        </Section>
+      );
+    }
+  }
 }

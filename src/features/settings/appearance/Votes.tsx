@@ -5,7 +5,7 @@ import { OVoteDisplayMode, VoteDisplayMode } from "../../../services/db";
 import SettingSelector from "../shared/SettingSelector";
 import { ListHeader } from "../shared/formatting";
 
-export default function CollapsedByDefault() {
+export default function Votes() {
   const voteDisplayMode = useAppSelector(
     (state) => state.settings.appearance.voting.voteDisplayMode
   );
@@ -15,13 +15,13 @@ export default function CollapsedByDefault() {
   return (
     <>
       <ListHeader>
-        <IonLabel>Voting</IonLabel>
+        <IonLabel>Votes</IonLabel>
       </ListHeader>
       <IonList inset>
         <Selector
-          title="Voting Display Mode"
+          title="Display Votes"
           selected={voteDisplayMode}
-          set_selected={setVoteDisplayMode}
+          setSelected={setVoteDisplayMode}
           options={OVoteDisplayMode}
         />
       </IonList>

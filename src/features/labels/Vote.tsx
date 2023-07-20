@@ -7,7 +7,7 @@ import React, { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
 import { voteError } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
-import { calculateCurrentVotesCount } from "../../helpers/vote";
+import { calculateNetVoteCount, calculateVoteCounts } from "../../helpers/vote";
 import { CommentView, PostView } from "lemmy-js-client";
 import { OVoteDisplayMode } from "../../services/db";
 
@@ -49,14 +49,10 @@ export default function Vote({ item, className }: VoteProps) {
   const id = "comment" in item ? item.comment.id : item.post.id;
 
   const myVote = votesById[id] ?? (item.my_vote as -1 | 0 | 1 | undefined) ?? 0;
-  const { score, upvotes, downvotes } = calculateCurrentVotesCount(
-    item,
-    votesById
-  );
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
-  async function do_vote(e: React.MouseEvent, vote: 0 | 1 | -1) {
+  async function onVote(e: React.MouseEvent, vote: 0 | 1 | -1) {
     e.stopPropagation();
     e.preventDefault();
 
@@ -82,7 +78,8 @@ export default function Vote({ item, className }: VoteProps) {
   );
 
   switch (voteDisplayMode) {
-    case OVoteDisplayMode.SeparateScores:
+    case OVoteDisplayMode.SeparateScores: {
+      const { upvotes, downvotes } = calculateVoteCounts(item, votesById);
       return (
         <>
           <Container
@@ -90,7 +87,7 @@ export default function Vote({ item, className }: VoteProps) {
             vote={myVote}
             voteRepresented={1}
             onClick={async (e) => {
-              await do_vote(e, myVote === 1 ? 0 : 1);
+              await onVote(e, myVote === 1 ? 0 : 1);
             }}
           >
             <IonIcon icon={arrowUpSharp} /> {upvotes}
@@ -100,37 +97,40 @@ export default function Vote({ item, className }: VoteProps) {
             vote={myVote}
             voteRepresented={-1}
             onClick={async (e) => {
-              await do_vote(e, myVote === -1 ? 0 : -1);
+              await onVote(e, myVote === -1 ? 0 : -1);
             }}
           >
             <IonIcon icon={arrowDownSharp} /> {downvotes}
           </Container>
         </>
       );
+    }
     case OVoteDisplayMode.NoScores:
       return (
         <Container
           className={className}
           vote={myVote}
           onClick={async (e) => {
-            await do_vote(e, myVote ? 0 : 1);
+            await onVote(e, myVote ? 0 : 1);
           }}
         >
           <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} />
         </Container>
       );
-    default:
+    default: {
+      const score = calculateNetVoteCount(item, votesById);
       return (
         <Container
           className={className}
           vote={myVote}
           onClick={async (e) => {
-            await do_vote(e, myVote ? 0 : 1);
+            await onVote(e, myVote ? 0 : 1);
           }}
         >
           <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} />{" "}
           {score}
         </Container>
       );
+    }
   }
 }

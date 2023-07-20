@@ -17,14 +17,14 @@ const InsetIonItem = styled(IonItem)`
 export interface SettingSelectorProps<T> {
   title: string;
   selected: T;
-  set_selected: ActionCreatorWithPayload<T>;
+  setSelected: ActionCreatorWithPayload<T>;
   options: Dictionary<string>;
 }
 
 export default function SettingSelector<T extends string>({
   title,
   selected,
-  set_selected,
+  setSelected,
   options,
 }: SettingSelectorProps<T>) {
   const [open, setOpen] = useState(false);
@@ -51,7 +51,7 @@ export default function SettingSelector<T extends string>({
         onDidDismiss={() => setOpen(false)}
         onWillDismiss={(e: IonActionSheetCustomEvent<OverlayEventDetail>) => {
           if (e.detail.data) {
-            dispatch(set_selected(e.detail.data));
+            dispatch(setSelected(e.detail.data));
           }
         }}
         header={title}
