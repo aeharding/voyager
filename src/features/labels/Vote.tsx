@@ -105,7 +105,11 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
             >
               <IonIcon icon={arrowDownSharp} /> {downvotes}
             </Container>
-          ) : undefined}
+          ) : (
+            <>
+              <IonIcon icon={arrowDownSharp} /> {downvotes}
+            </>
+          )}
         </>
       );
     }
