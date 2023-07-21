@@ -106,9 +106,10 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
               <IonIcon icon={arrowDownSharp} /> {downvotes}
             </Container>
           ) : (
-            <>
+            // Externally provided downvotes, any user might have voted prior to downvotes being disabled
+            <Container vote={myVote} voteRepresented={-1}>
               <IonIcon icon={arrowDownSharp} /> {downvotes}
-            </>
+            </Container>
           )}
         </>
       );
