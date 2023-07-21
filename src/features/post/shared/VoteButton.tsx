@@ -43,9 +43,6 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const myVote = postVotesById[postId];
 
-  if (type === "down" && !downvoteAllowed) {
-    return undefined;
-  }
   const [state, toggle] = useTransition({
     timeout: bounceMs,
   });
@@ -82,6 +79,10 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   useEffect(() => {
     if (!on) toggle(false);
   }, [on, toggle]);
+
+  if (type === "down" && !downvoteAllowed) {
+    return undefined;
+  }
 
   return (
     <Item
