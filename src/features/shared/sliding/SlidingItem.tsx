@@ -17,6 +17,8 @@ const StyledIonItemSliding = styled(IonItemSliding)`
 const StyledIonItemOption = styled(IonItemOption)`
   width: 100%;
   align-items: flex-end;
+
+  margin-bottom: 0.5px; // subpixel rounding causes background color to show through
 `;
 
 const OptionContainer = styled.div<{ active: boolean }>`
