@@ -8,9 +8,17 @@ import {
   IonItemSliding,
 } from "@ionic/react";
 import React, { useMemo, useRef, useState } from "react";
+import { bounceAnimation } from "../animations";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   --ion-item-border-color: transparent;
+`;
+
+const StyledIonItemOption = styled(IonItemOption)`
+  width: 100%;
+  align-items: flex-end;
+
+  margin-bottom: 0.5px; // subpixel rounding causes background color to show through
 `;
 
 const OptionContainer = styled.div<{ active: boolean }>`
@@ -22,10 +30,20 @@ const OptionContainer = styled.div<{ active: boolean }>`
 
   opacity: 0.5;
 
+  .item-options-start & {
+    margin-right: auto;
+  }
+
+  .item-options-end & {
+    margin-left: auto;
+  }
+
   ${({ active }) =>
     active &&
     css`
       opacity: 1;
+
+      ${bounceAnimation}
     `}
 `;
 
@@ -137,19 +155,19 @@ export default function SlidingItem({
       className={className}
     >
       <IonItemOptions side="start">
-        <IonItemOption color={startActionColor}>
+        <StyledIonItemOption color={startActionColor}>
           <OptionContainer active={ratio <= -FIRST_ACTION_RATIO}>
             {startActionContents}
           </OptionContainer>
-        </IonItemOption>
+        </StyledIonItemOption>
       </IonItemOptions>
 
       <IonItemOptions side="end">
-        <IonItemOption color={endActionColor}>
+        <StyledIonItemOption color={endActionColor}>
           <OptionContainer active={ratio >= FIRST_ACTION_RATIO}>
             {endActionContents}
           </OptionContainer>
-        </IonItemOption>
+        </StyledIonItemOption>
       </IonItemOptions>
       {children}
     </StyledIonItemSliding>
