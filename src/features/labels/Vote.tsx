@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
 import React, { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
-import { voteError } from "../../helpers/toastMessages";
+import { downvotesDisabled, voteError } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
 import {
   calculateTotalScore,
@@ -52,7 +52,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
   const id = "comment" in item ? item.comment.id : item.post.id;
 
   const myVote = votesById[id] ?? (item.my_vote as -1 | 0 | 1 | undefined) ?? 0;
-  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
+  const canDownvote = useAppSelector(isDownvoteEnabledSelector);
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
@@ -61,6 +61,12 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
     e.preventDefault();
 
     if (presentLoginIfNeeded()) return;
+
+    // you are allowed to un-downvote if they are disabled
+    if (!canDownvote && vote === -1) {
+      present(downvotesDisabled);
+      return;
+    }
 
     let dispatcherFn;
     if ("comment" in item) {
@@ -95,22 +101,15 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
           >
             <IonIcon icon={arrowUpSharp} /> {upvotes}
           </Container>
-          {downvoteAllowed ? (
-            <Container
-              vote={myVote}
-              voteRepresented={-1}
-              onClick={async (e) => {
-                await onVote(e, myVote === -1 ? 0 : -1);
-              }}
-            >
-              <IonIcon icon={arrowDownSharp} /> {downvotes}
-            </Container>
-          ) : (
-            // Externally provided downvotes, any user might have voted prior to downvotes being disabled
-            <Container vote={myVote} voteRepresented={-1}>
-              <IonIcon icon={arrowDownSharp} /> {downvotes}
-            </Container>
-          )}
+          <Container
+            vote={myVote}
+            voteRepresented={-1}
+            onClick={async (e) => {
+              await onVote(e, myVote === -1 ? 0 : -1);
+            }}
+          >
+            <IonIcon icon={arrowDownSharp} /> {downvotes}
+          </Container>
         </>
       );
     }
