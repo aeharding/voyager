@@ -76,7 +76,7 @@ export const Container = styled.div<{
   position: relative;
   width: 100%;
 
-  font-size: 0.875em;
+  font-size: 0.9375em;
 
   display: flex;
   flex-direction: column;
@@ -119,6 +119,8 @@ export const Container = styled.div<{
 const Header = styled.div`
   display: flex;
   align-items: center;
+
+  font-size: 0.875rem;
 
   gap: 0.5rem;
 

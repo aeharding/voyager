@@ -107,6 +107,10 @@ export const baseVariables = css`
 `;
 
 export const lightVariables = css`
+  :root {
+    --ion-item-border-color: rgba(0, 0, 0, 0.1);
+  }
+
   :root.ios .grey-bg {
     --ion-background-color: var(--ion-color-step-50, #f2f2f7);
   }
@@ -128,6 +132,8 @@ export const darkVariables = css`
   // Dark Colors
   :root {
     --lightroom-bg: rgba(255, 255, 255, 0.08);
+
+    --ion-item-border-color: rgba(255, 255, 255, 0.2);
   }
 
   body {
