@@ -144,10 +144,11 @@ export default function Feed<I>({
   }, [fetchFn]);
 
   const footer = useCallback(() => {
-    if (loadFailed) return <FeedLoadMoreFailed fetchMore={fetchMore} />;
+    if (loadFailed)
+      return <FeedLoadMoreFailed fetchMore={fetchMore} loading={!!loading} />;
     else if (atEnd)
       return <EndPost empty={!items.length} communityName={communityName} />;
-  }, [atEnd, communityName, items.length, loadFailed, fetchMore]);
+  }, [atEnd, communityName, items.length, loadFailed, fetchMore, loading]);
 
   async function handleRefresh(event: RefresherCustomEvent) {
     try {
