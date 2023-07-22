@@ -7,8 +7,7 @@ import {
 import { IonActionSheet, IonItem, IonLabel } from "@ionic/react";
 import { Dictionary, startCase } from "lodash";
 import { useState } from "react";
-import { useAppDispatch } from "../../../store";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import { Dispatchable, useAppDispatch } from "../../../store";
 
 const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -17,7 +16,7 @@ const InsetIonItem = styled(IonItem)`
 export interface SettingSelectorProps<T> {
   title: string;
   selected: T;
-  setSelected: ActionCreatorWithPayload<T>;
+  setSelected: Dispatchable<T>;
   options: Dictionary<string>;
 }
 
@@ -49,7 +48,9 @@ export default function SettingSelector<T extends string>({
         cssClass="left-align-buttons"
         isOpen={open}
         onDidDismiss={() => setOpen(false)}
-        onWillDismiss={(e: IonActionSheetCustomEvent<OverlayEventDetail>) => {
+        onWillDismiss={(
+          e: IonActionSheetCustomEvent<OverlayEventDetail<T>>
+        ) => {
           if (e.detail.data) {
             dispatch(setSelected(e.detail.data));
           }

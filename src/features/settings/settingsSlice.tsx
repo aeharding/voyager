@@ -23,8 +23,8 @@ import {
   OInstanceUrlDisplayMode,
   VoteDisplayMode,
   OVoteDisplayMode,
-  ProfileLabelType,
   OProfileLabelType,
+  ProfileLabelType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -111,7 +111,7 @@ const initialState: SettingsState = {
       showVotingButtons: true,
     },
     voting: {
-      voteDisplayMode: OVoteDisplayMode.SingleScore,
+      voteDisplayMode: OVoteDisplayMode.Total,
     },
     dark: {
       usingSystemDarkMode: true,

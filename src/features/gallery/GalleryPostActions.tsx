@@ -7,9 +7,12 @@ import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import MoreActions from "../post/shared/MoreActions";
-import { calculateNetVoteCount, calculateVoteCounts } from "../../helpers/vote";
+import {
+  calculateTotalScore,
+  calculateSeparateScore,
+} from "../../helpers/vote";
 import { useLocation } from "react-router";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { GalleryContext } from "./GalleryProvider";
 import { OVoteDisplayMode } from "../../services/db";
 
@@ -73,7 +76,7 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
   );
 }
 
-function Voting({ post }: GalleryPostActionsProps) {
+function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
 
   const voteDisplayMode = useAppSelector(
@@ -81,8 +84,22 @@ function Voting({ post }: GalleryPostActionsProps) {
   );
 
   switch (voteDisplayMode) {
-    case OVoteDisplayMode.SeparateScores: {
-      const { upvotes, downvotes } = calculateVoteCounts(post, postVotesById);
+    case OVoteDisplayMode.Total: {
+      const score = calculateTotalScore(post, postVotesById);
+
+      return (
+        <Section>
+          <VoteButton type="up" postId={post.post.id} />
+          <Amount>{score}</Amount>
+          <VoteButton type="down" postId={post.post.id} />
+        </Section>
+      );
+    }
+    case OVoteDisplayMode.Separate: {
+      const { upvotes, downvotes } = calculateSeparateScore(
+        post,
+        postVotesById
+      );
 
       return (
         <Section>
@@ -93,23 +110,12 @@ function Voting({ post }: GalleryPostActionsProps) {
         </Section>
       );
     }
-    case OVoteDisplayMode.NoScores:
+    case OVoteDisplayMode.Hide:
       return (
         <Section>
           <VoteButton type="up" postId={post.post.id} />
           <VoteButton type="down" postId={post.post.id} />
         </Section>
       );
-    default: {
-      const score = calculateNetVoteCount(post, postVotesById);
-
-      return (
-        <Section>
-          <VoteButton type="up" postId={post.post.id} />
-          <Amount>{score}</Amount>
-          <VoteButton type="down" postId={post.post.id} />
-        </Section>
-      );
-    }
   }
 }

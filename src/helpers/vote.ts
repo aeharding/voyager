@@ -1,7 +1,7 @@
 import { Dictionary } from "@reduxjs/toolkit";
 import { CommentView, PostView } from "lemmy-js-client";
 
-export function calculateNetVoteCount(
+export function calculateTotalScore(
   item: PostView | CommentView,
   votesById: Dictionary<0 | 1 | -1>
 ) {
@@ -9,7 +9,7 @@ export function calculateNetVoteCount(
   return item.counts.score - (item.my_vote ?? 0) + (votesById[id] ?? 0);
 }
 
-export function calculateVoteCounts(
+export function calculateSeparateScore(
   item: PostView | CommentView,
   votesById: Dictionary<0 | 1 | -1>
 ) {

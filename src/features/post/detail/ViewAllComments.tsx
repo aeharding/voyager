@@ -1,12 +1,13 @@
 import styled from "@emotion/styled";
-import { IonIcon } from "@ionic/react";
+import { IonIcon, useIonViewDidEnter } from "@ionic/react";
 import { chevronForward } from "ionicons/icons";
 import { Link, useParams } from "react-router-dom";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { useCallback, useRef } from "react";
 
 const ContainerLink = styled(Link)`
   position: absolute;
-  bottom: 0.5rem;
+  bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
   max-width: 700px;
@@ -43,12 +44,28 @@ const Chevron = styled(IonIcon)`
   font-size: 1.5rem;
 `;
 
-export default function ViewAllComments() {
+interface ViewAllCommentsProps {
+  onHeight?: (height: number) => void;
+}
+
+export default function ViewAllComments({ onHeight }: ViewAllCommentsProps) {
   const { community, id } = useParams<{ community: string; id: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const ref = useRef<HTMLAnchorElement>(null);
+
+  useIonViewDidEnter(() => {
+    heightChange();
+  });
+
+  const heightChange = useCallback(() => {
+    if (!ref.current) return;
+
+    onHeight?.(ref.current.getBoundingClientRect().height);
+  }, [onHeight]);
 
   return (
     <ContainerLink
+      ref={ref}
       slot="fixed"
       to={buildGeneralBrowseLink(`/c/${community}/comments/${id}`)}
     >

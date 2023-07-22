@@ -58,9 +58,20 @@ export type InstanceUrlDisplayMode =
   (typeof OInstanceUrlDisplayMode)[keyof typeof OInstanceUrlDisplayMode];
 
 export const OVoteDisplayMode = {
-  NoScores: "hide",
-  SingleScore: "total",
-  SeparateScores: "separate",
+  /**
+   * Show total score (upvotes + downvotes)
+   */
+  Total: "total",
+
+  /**
+   * Show upvotes and downvotes separately
+   */
+  Separate: "separate",
+
+  /**
+   * Hide scores
+   */
+  Hide: "hide",
 } as const;
 
 export type VoteDisplayMode =
@@ -79,8 +90,8 @@ export type ProfileLabelType =
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
-  profile_label: ProfileLabelType;
   vote_display_mode: VoteDisplayMode;
+  profile_label: ProfileLabelType;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_show_voting_buttons: boolean;
