@@ -34,6 +34,8 @@ const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
   --inner-padding-end: 0;
 
+  --inner-border-width: 0 0 1px 0;
+
   ${maxWidthCss}
 `;
 
@@ -80,7 +82,7 @@ const StyledEmbed = styled(Embed)`
 
 const PostDeets = styled.div`
   margin: 0 8px;
-  font-size: 0.875em;
+  font-size: 0.9375em;
 
   h1,
   h2,
@@ -99,6 +101,8 @@ const Title = styled.div`
 `;
 
 const By = styled.div`
+  font-size: 0.875em;
+
   margin-bottom: 5px;
   color: var(--ion-color-text-aside);
 

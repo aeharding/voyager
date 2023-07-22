@@ -37,6 +37,8 @@ const Content = styled.div`
 `;
 
 const Title = styled.span<{ isRead: boolean }>`
+  font-size: 0.9375em;
+
   ${({ isRead }) =>
     isRead &&
     css`

@@ -18,7 +18,9 @@ const StyledIonItemOption = styled(IonItemOption)`
   width: 100%;
   align-items: flex-end;
 
-  margin-bottom: 0.5px; // subpixel rounding causes background color to show through
+  // ensure subpixel rounding never causes background color to show through
+  margin-bottom: 0.5px;
+  margin-top: 0.5px;
 `;
 
 const OptionContainer = styled.div<{ active: boolean }>`
