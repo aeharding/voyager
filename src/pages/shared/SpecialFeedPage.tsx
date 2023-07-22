@@ -49,6 +49,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
         type_: type,
         auth: jwt,
       });
+
       return response.posts;
     },
     [client, sort, type, jwt]
