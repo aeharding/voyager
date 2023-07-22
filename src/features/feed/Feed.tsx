@@ -11,16 +11,17 @@ import {
   IonRefresher,
   IonRefresherContent,
   RefresherCustomEvent,
-  useIonToast,
 } from "@ionic/react";
 import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
 import { CenteredSpinner } from "../../pages/posts/PostPage";
 import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
-import EndPost from "./EndPost";
+import EndPost from "./endItems/EndPost";
 import { useAppSelector } from "../../store";
 import { OPostAppearanceType } from "../../services/db";
 import { markReadOnScrollSelector } from "../settings/settingsSlice";
+import useFeedOnScroll from "./useFeedOnScroll";
+import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
@@ -51,10 +52,10 @@ export default function Feed<I>({
   const [loading, setLoading] = useState<boolean | undefined>();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
-  const [present] = useIonToast();
   const postAppearanceType = useAppSelector(
     (state) => state.settings.appearance.posts.type
   );
+  const [loadFailed, setLoadFailed] = useState(true);
 
   const filteredItems = useMemo(
     () => (filterFn ? items.filter(filterFn) : items),
@@ -62,6 +63,49 @@ export default function Feed<I>({
   );
 
   const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+
+  const fetchMore = useCallback(
+    async (refresh = false) => {
+      if (loading) return;
+      if (atEnd && !refresh) return;
+      setLoading(true);
+
+      const currentPage = refresh ? 1 : page + 1;
+
+      let items: I[];
+
+      try {
+        items = await fetchFn(currentPage);
+      } catch (error) {
+        setLoadFailed(true);
+
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+
+      setLoadFailed(false);
+
+      if (refresh) {
+        setAtEnd(false);
+        setitems(items);
+      } else {
+        setitems((existingPosts) => {
+          const result = [...existingPosts];
+          const newPosts = pullAllBy(items.slice(), existingPosts, "post.id");
+          result.splice(currentPage * limit, limit, ...newPosts);
+          return result;
+        });
+      }
+
+      if (!items.length) setAtEnd(true);
+
+      setPage(currentPage);
+    },
+    [atEnd, fetchFn, limit, loading, page]
+  );
+
+  const { onScroll } = useFeedOnScroll({ fetchMore });
 
   useEffect(() => {
     if (!itemsRef) return;
@@ -100,50 +144,10 @@ export default function Feed<I>({
   }, [fetchFn]);
 
   const footer = useCallback(() => {
-    if (atEnd)
+    if (loadFailed) return <FeedLoadMoreFailed fetchMore={fetchMore} />;
+    else if (atEnd)
       return <EndPost empty={!items.length} communityName={communityName} />;
-  }, [atEnd, communityName, items.length]);
-
-  async function fetchMore(refresh = false) {
-    if (loading) return;
-    if (atEnd && !refresh) return;
-    setLoading(true);
-
-    const currentPage = refresh ? 1 : page + 1;
-
-    let items: I[];
-
-    try {
-      items = await fetchFn(currentPage);
-    } catch (error) {
-      present({
-        message: "Problem fetching posts. Please try again.",
-        duration: 3500,
-        position: "bottom",
-        color: "danger",
-      });
-
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-
-    if (refresh) {
-      setAtEnd(false);
-      setitems(items);
-    } else {
-      setitems((existingPosts) => {
-        const result = [...existingPosts];
-        const newPosts = pullAllBy(items.slice(), existingPosts, "post.id");
-        result.splice(currentPage * limit, limit, ...newPosts);
-        return result;
-      });
-    }
-
-    if (!items.length) setAtEnd(true);
-
-    setPage(currentPage);
-  }
+  }, [atEnd, communityName, items.length, loadFailed, fetchMore]);
 
   async function handleRefresh(event: RefresherCustomEvent) {
     try {
@@ -185,10 +189,8 @@ export default function Feed<I>({
 
           return renderItemContent(item);
         }}
-        endReached={() => {
-          fetchMore();
-        }}
         components={{ Header: header, Footer: footer }}
+        onScroll={onScroll}
         increaseViewportBy={
           postAppearanceType === OPostAppearanceType.Compact
             ? // Compact posts have fixed size, so we don't need to proactively render
