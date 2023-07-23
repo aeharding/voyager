@@ -15,6 +15,7 @@ import { Comment, CommentView, PostView } from "lemmy-js-client";
 import CommentEditModal from "../comment/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
+import SelectTextModal from "../../pages/shared/SelectTextModal";
 
 interface IPageContext {
   // used for ion presentingElement
@@ -45,6 +46,8 @@ interface IPageContext {
    * to submit the new post to
    */
   presentPostEditor: (postOrCommunity: PostView | string) => void;
+
+  presentSelectText: (text: string) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -54,6 +57,7 @@ export const PageContext = createContext<IPageContext>({
   presentCommentEdit: () => false,
   presentReport: () => {},
   presentPostEditor: () => {},
+  presentSelectText: () => {},
 });
 
 interface PageContextProvider {
@@ -122,6 +126,15 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   );
   // Edit/new post end
 
+  // Select text start
+  const selectTextItem = useRef<string | string>();
+  const [isSelectTextOpen, setIsSelectTextOpen] = useState(false);
+  const presentSelectText = useCallback((text: string) => {
+    selectTextItem.current = text;
+    setIsSelectTextOpen(true);
+  }, []);
+  // Select text end
+
   const presentReport = (item: ReportableItem) => {
     reportRef.current?.present(item);
   };
@@ -135,6 +148,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         presentCommentEdit,
         presentReport,
         presentPostEditor,
+        presentSelectText,
       }}
     >
       {children}
@@ -161,6 +175,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         postOrCommunity={postItem.current!}
         isOpen={isPostOpen}
         setIsOpen={setIsPostOpen}
+      />
+      <SelectTextModal
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        text={selectTextItem.current!}
+        isOpen={isSelectTextOpen}
+        setIsOpen={setIsSelectTextOpen}
       />
     </PageContext.Provider>
   );
