@@ -1,11 +1,11 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  OSwipeActionComment,
+  OSwipeActionInbox,
+  OSwipeActionPost,
   SwipeAction,
   SwipeActions,
   db,
-  default_swipe_actions_post,
-  default_swipe_actions_comment,
-  default_swipe_actions_inbox,
 } from "../../../services/db";
 
 interface GestureState {
@@ -18,11 +18,32 @@ interface GestureState {
   };
 }
 
+const defaultSwipeActionsPost: SwipeActions = {
+  farStart: OSwipeActionPost.Downvote,
+  start: OSwipeActionPost.Upvote,
+  end: OSwipeActionPost.Reply,
+  farEnd: OSwipeActionPost.Hide,
+} as const;
+
+const defaultSwipeActionsComment: SwipeActions = {
+  farStart: OSwipeActionComment.Downvote,
+  start: OSwipeActionComment.Upvote,
+  end: OSwipeActionComment.Collapse,
+  farEnd: OSwipeActionComment.Reply,
+} as const;
+
+const defaultSwipeActionsInbox: SwipeActions = {
+  farStart: OSwipeActionInbox.Downvote,
+  start: OSwipeActionInbox.Upvote,
+  end: OSwipeActionInbox.MarkUnread,
+  farEnd: OSwipeActionInbox.Reply,
+} as const;
+
 const initialState: GestureState = {
   swipe: {
-    post: default_swipe_actions_post,
-    comment: default_swipe_actions_comment,
-    inbox: default_swipe_actions_inbox,
+    post: defaultSwipeActionsPost,
+    comment: defaultSwipeActionsComment,
+    inbox: defaultSwipeActionsInbox,
     disableLeftSwipes: false,
     disableRightSwipes: false,
   },
@@ -39,7 +60,7 @@ export const gestureSlice = createSlice({
   },
   reducers: {
     setPostSwipeActionFarStart(state, action: PayloadAction<SwipeAction>) {
-      state.swipe.post.far_start = action.payload;
+      state.swipe.post.farStart = action.payload;
       db.setSetting("gesture_swipe_post", { ...state.swipe.post });
     },
     setPostSwipeActionStart(state, action: PayloadAction<SwipeAction>) {
@@ -51,11 +72,11 @@ export const gestureSlice = createSlice({
       db.setSetting("gesture_swipe_post", { ...state.swipe.post });
     },
     setPostSwipeActionFarEnd(state, action: PayloadAction<SwipeAction>) {
-      state.swipe.post.far_end = action.payload;
+      state.swipe.post.farEnd = action.payload;
       db.setSetting("gesture_swipe_post", { ...state.swipe.post });
     },
     setCommentSwipeActionFarStart(state, action: PayloadAction<SwipeAction>) {
-      state.swipe.comment.far_start = action.payload;
+      state.swipe.comment.farStart = action.payload;
       db.setSetting("gesture_swipe_comment", { ...state.swipe.comment });
     },
     setCommentSwipeActionStart(state, action: PayloadAction<SwipeAction>) {
@@ -67,11 +88,11 @@ export const gestureSlice = createSlice({
       db.setSetting("gesture_swipe_comment", { ...state.swipe.comment });
     },
     setCommentSwipeActionFarEnd(state, action: PayloadAction<SwipeAction>) {
-      state.swipe.comment.far_end = action.payload;
+      state.swipe.comment.farEnd = action.payload;
       db.setSetting("gesture_swipe_comment", { ...state.swipe.comment });
     },
     setInboxSwipeActionFarStart(state, action: PayloadAction<SwipeAction>) {
-      state.swipe.inbox.far_start = action.payload;
+      state.swipe.inbox.farStart = action.payload;
       db.setSetting("gesture_swipe_inbox", { ...state.swipe.inbox });
     },
     setInboxSwipeActionStart(state, action: PayloadAction<SwipeAction>) {
@@ -83,7 +104,7 @@ export const gestureSlice = createSlice({
       db.setSetting("gesture_swipe_inbox", { ...state.swipe.inbox });
     },
     setInboxSwipeActionFarEnd(state, action: PayloadAction<SwipeAction>) {
-      state.swipe.inbox.far_end = action.payload;
+      state.swipe.inbox.farEnd = action.payload;
       db.setSetting("gesture_swipe_inbox", { ...state.swipe.inbox });
     },
     setDisableLeftSwipes(state, action: PayloadAction<boolean>) {
@@ -95,9 +116,9 @@ export const gestureSlice = createSlice({
       db.setSetting("disable_right_swipes", action.payload);
     },
     setAllSwipesToDefault(state) {
-      state.swipe.post = default_swipe_actions_post;
-      state.swipe.comment = default_swipe_actions_comment;
-      state.swipe.inbox = default_swipe_actions_inbox;
+      state.swipe.post = defaultSwipeActionsPost;
+      state.swipe.comment = defaultSwipeActionsComment;
+      state.swipe.inbox = defaultSwipeActionsInbox;
       db.setSetting("gesture_swipe_post", { ...state.swipe.post });
       db.setSetting("gesture_swipe_comment", { ...state.swipe.comment });
       db.setSetting("gesture_swipe_inbox", { ...state.swipe.inbox });

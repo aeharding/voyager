@@ -3,7 +3,7 @@ import {
   arrowDownSharp,
   arrowUndo,
   arrowUpSharp,
-  bookmarkOutline,
+  bookmark,
   chevronCollapse,
   chevronExpand,
   eyeOffOutline,
@@ -110,7 +110,7 @@ function BaseSlidingVoteInternal({
     (state) => state.gestures.swipe.disableRightSwipes
   );
 
-  const vote = useCallback(
+  const onVote = useCallback(
     async (score: 1 | -1 | 0) => {
       if (presentLoginIfNeeded()) return;
 
@@ -163,7 +163,7 @@ function BaseSlidingVoteInternal({
 
   const saveAction = useMemo(() => {
     return {
-      icon: bookmarkOutline,
+      icon: bookmark,
       trigger: save,
       bgColor: "success",
       slash: isSaved,
@@ -224,7 +224,7 @@ function BaseSlidingVoteInternal({
     };
   }, [markUnread, isRead]);
 
-  const all_actions: {
+  const allActions: {
     [id in SwipeAction]: SlidingItemAction | undefined;
   } = useMemo(() => {
     return {
@@ -232,7 +232,7 @@ function BaseSlidingVoteInternal({
       upvote: {
         icon: arrowUpSharp,
         trigger: () => {
-          vote(currentVote === 1 ? 0 : 1);
+          onVote(currentVote === 1 ? 0 : 1);
         },
         bgColor: "primary",
         slash: currentVote === 1,
@@ -240,7 +240,7 @@ function BaseSlidingVoteInternal({
       downvote: {
         icon: arrowDownSharp,
         trigger: () => {
-          vote(currentVote === -1 ? 0 : -1);
+          onVote(currentVote === -1 ? 0 : -1);
         },
         bgColor: "danger",
         slash: currentVote === -1,
@@ -262,23 +262,23 @@ function BaseSlidingVoteInternal({
     hideAction,
     collapseAction,
     markUnreadAction,
-    vote,
+    onVote,
   ]);
 
   const startActions: ActionList = useMemo(
     () =>
       !disableLeftSwipes
-        ? [all_actions[actions["start"]], all_actions[actions["far_start"]]]
+        ? [allActions[actions.start], allActions[actions.farStart]]
         : [undefined, undefined],
-    [disableLeftSwipes, all_actions, actions]
+    [disableLeftSwipes, allActions, actions]
   );
 
   const endActions: ActionList = useMemo(
     () =>
       !disableRightSwipes
-        ? [all_actions[actions["end"]], all_actions[actions["far_end"]]]
+        ? [allActions[actions.end], allActions[actions.farEnd]]
         : [undefined, undefined],
-    [disableRightSwipes, all_actions, actions]
+    [disableRightSwipes, allActions, actions]
   );
 
   return (

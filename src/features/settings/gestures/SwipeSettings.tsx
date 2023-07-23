@@ -64,28 +64,28 @@ export default function SwipeSettings() {
         name="Posts"
         selector={post}
         options={OSwipeActionPost}
-        far_start={setPostSwipeActionFarStart}
+        farStart={setPostSwipeActionFarStart}
         start={setPostSwipeActionStart}
         end={setPostSwipeActionEnd}
-        far_end={setPostSwipeActionFarEnd}
+        farEnd={setPostSwipeActionFarEnd}
       />
       <SwipeList
         name="Comments"
         selector={comment}
         options={OSwipeActionComment}
-        far_start={setCommentSwipeActionFarStart}
+        farStart={setCommentSwipeActionFarStart}
         start={setCommentSwipeActionStart}
         end={setCommentSwipeActionEnd}
-        far_end={setCommentSwipeActionFarEnd}
+        farEnd={setCommentSwipeActionFarEnd}
       />
       <SwipeList
         name="Inbox"
         selector={inbox}
         options={OSwipeActionInbox}
-        far_start={setInboxSwipeActionFarStart}
+        farStart={setInboxSwipeActionFarStart}
         start={setInboxSwipeActionStart}
         end={setInboxSwipeActionEnd}
-        far_end={setInboxSwipeActionFarEnd}
+        farEnd={setInboxSwipeActionFarEnd}
       />
       <>
         <ListHeader>
@@ -158,20 +158,20 @@ interface SwipeListProps {
   name: string;
   selector: SwipeActions;
   options: Dictionary<SwipeAction>;
-  far_start: ActionCreatorWithPayload<SwipeAction>;
+  farStart: ActionCreatorWithPayload<SwipeAction>;
   start: ActionCreatorWithPayload<SwipeAction>;
   end: ActionCreatorWithPayload<SwipeAction>;
-  far_end: ActionCreatorWithPayload<SwipeAction>;
+  farEnd: ActionCreatorWithPayload<SwipeAction>;
 }
 
 function SwipeList({
   name,
   selector,
   options,
-  far_start,
+  farStart,
   start,
   end,
-  far_end,
+  farEnd,
 }: SwipeListProps) {
   const Selector = SettingSelector<SwipeAction>;
 
@@ -200,8 +200,8 @@ function SwipeList({
         <Selector
           icon={LongSwipeSvg}
           title="Left Long Swipe"
-          selected={selector.far_start ?? options.None}
-          setSelected={far_start}
+          selected={selector.farStart ?? options.None}
+          setSelected={farStart}
           options={options}
           optionIcons={swipeIcons}
           disabled={disableLeftSwipes}
@@ -220,8 +220,8 @@ function SwipeList({
           icon={LongSwipeSvg}
           iconMirrored
           title="Right Long Swipe"
-          selected={selector.far_end ?? options.None}
-          setSelected={far_end}
+          selected={selector.farEnd ?? options.None}
+          setSelected={farEnd}
           options={options}
           optionIcons={swipeIcons}
           disabled={disableRightSwipes}

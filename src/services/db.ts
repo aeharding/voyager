@@ -109,29 +109,8 @@ export const OSwipeActionAll = {
 export type SwipeAction =
   (typeof OSwipeActionAll)[keyof typeof OSwipeActionAll];
 
-export type SwipeDirection = "far_start" | "start" | "end" | "far_end";
+export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
 export type SwipeActions = { [id in SwipeDirection]: SwipeAction };
-
-export const default_swipe_actions_post: SwipeActions = {
-  far_start: OSwipeActionPost.Downvote,
-  start: OSwipeActionPost.Upvote,
-  end: OSwipeActionPost.Reply,
-  far_end: OSwipeActionPost.Hide,
-} as const;
-
-export const default_swipe_actions_comment: SwipeActions = {
-  far_start: OSwipeActionComment.Downvote,
-  start: OSwipeActionComment.Upvote,
-  end: OSwipeActionComment.Collapse,
-  far_end: OSwipeActionComment.Reply,
-} as const;
-
-export const default_swipe_actions_inbox: SwipeActions = {
-  far_start: OSwipeActionInbox.Downvote,
-  start: OSwipeActionInbox.Upvote,
-  end: OSwipeActionInbox.MarkUnread,
-  far_end: OSwipeActionInbox.Reply,
-} as const;
 
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;

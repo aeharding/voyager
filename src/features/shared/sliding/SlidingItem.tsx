@@ -8,7 +8,7 @@ import {
   IonItemSliding,
 } from "@ionic/react";
 import { Dictionary } from "@reduxjs/toolkit";
-import { bookmarkOutline, mailUnread } from "ionicons/icons";
+import { bookmark, mailUnread } from "ionicons/icons";
 import React, { useMemo, useRef, useState } from "react";
 import { bounceAnimation } from "../animations";
 
@@ -52,7 +52,7 @@ const OptionContainer = styled.div<{ active: boolean }>`
 `;
 
 const custom_slash_lengths: Dictionary<number> = {
-  [bookmarkOutline]: 35,
+  [bookmark]: 35,
   [mailUnread]: 40,
 };
 
