@@ -11,7 +11,7 @@ import {
   mailUnread,
 } from "ionicons/icons";
 import React, { useCallback, useContext, useMemo } from "react";
-import SlidingItem, { SlidingItemAction } from "./SlidingItem";
+import SlidingItem, { ActionList, SlidingItemAction } from "./SlidingItem";
 import {
   CommentReplyView,
   CommentView,
@@ -32,6 +32,11 @@ import useCollapseRootComment from "../../comment/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { InboxItemView } from "../../inbox/InboxItem";
 import { CommentsContext } from "../../comment/CommentsContext";
+import styled from "@emotion/styled";
+
+const StyledItemContainer = styled.div`
+  --ion-item-border-color: transparent;
+`;
 
 interface BaseSlidingVoteProps {
   children: React.ReactNode;
@@ -43,7 +48,26 @@ interface BaseSlidingVoteProps {
   onHide?: () => void;
 }
 
-export default function BaseSlidingVote({
+export default function BaseSlidingVote(props: BaseSlidingVoteProps) {
+  const disableSwipes = useAppSelector(
+    (state) =>
+      state.gestures.swipe.disableLeftSwipes &&
+      state.gestures.swipe.disableRightSwipes
+  );
+
+  if (!disableSwipes) {
+    return <BaseSlidingVoteInternal {...props} />;
+  } else {
+    // don't initialize all the sliding stuff if it's completely unused
+    return (
+      <StyledItemContainer className={props.className}>
+        {props.children}
+      </StyledItemContainer>
+    );
+  }
+}
+
+function BaseSlidingVoteInternal({
   children,
   className,
   item,
@@ -77,6 +101,13 @@ export default function BaseSlidingVote({
 
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId
+  );
+
+  const disableLeftSwipes = useAppSelector(
+    (state) => state.gestures.swipe.disableLeftSwipes
+  );
+  const disableRightSwipes = useAppSelector(
+    (state) => state.gestures.swipe.disableRightSwipes
   );
 
   const vote = useCallback(
@@ -234,16 +265,26 @@ export default function BaseSlidingVote({
     vote,
   ]);
 
+  const startActions: ActionList = useMemo(
+    () =>
+      !disableLeftSwipes
+        ? [all_actions[actions["start"]], all_actions[actions["far_start"]]]
+        : [undefined, undefined],
+    [disableLeftSwipes, all_actions, actions]
+  );
+
+  const endActions: ActionList = useMemo(
+    () =>
+      !disableRightSwipes
+        ? [all_actions[actions["end"]], all_actions[actions["far_end"]]]
+        : [undefined, undefined],
+    [disableRightSwipes, all_actions, actions]
+  );
+
   return (
     <SlidingItem
-      startActions={[
-        all_actions[actions["start"]],
-        all_actions[actions["far_start"]],
-      ]}
-      endActions={[
-        all_actions[actions["end"]],
-        all_actions[actions["far_end"]],
-      ]}
+      startActions={startActions}
+      endActions={endActions}
       className={className}
     >
       {children}

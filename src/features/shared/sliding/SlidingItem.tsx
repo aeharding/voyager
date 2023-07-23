@@ -90,7 +90,7 @@ export type SlidingItemAction = {
   slash?: boolean;
 };
 
-type ActionList = [
+export type ActionList = [
   SlidingItemAction | undefined,
   SlidingItemAction | undefined
 ];

@@ -13,6 +13,8 @@ interface GestureState {
     post: SwipeActions;
     comment: SwipeActions;
     inbox: SwipeActions;
+    disableLeftSwipes: boolean;
+    disableRightSwipes: boolean;
   };
 }
 
@@ -21,6 +23,8 @@ const initialState: GestureState = {
     post: default_swipe_actions_post,
     comment: default_swipe_actions_comment,
     inbox: default_swipe_actions_inbox,
+    disableLeftSwipes: false,
+    disableRightSwipes: false,
   },
 };
 
@@ -82,6 +86,14 @@ export const gestureSlice = createSlice({
       state.swipe.inbox.far_end = action.payload;
       db.setSetting("gesture_swipe_inbox", { ...state.swipe.inbox });
     },
+    setDisableLeftSwipes(state, action: PayloadAction<boolean>) {
+      state.swipe.disableLeftSwipes = action.payload;
+      db.setSetting("disable_left_swipes", action.payload);
+    },
+    setDisableRightSwipes(state, action: PayloadAction<boolean>) {
+      state.swipe.disableRightSwipes = action.payload;
+      db.setSetting("disable_right_swipes", action.payload);
+    },
     setAllSwipesToDefault(state) {
       state.swipe.post = default_swipe_actions_post;
       state.swipe.comment = default_swipe_actions_comment;
@@ -103,12 +115,18 @@ export const fetchGesturesFromDatabase = createAsyncThunk<GestureState>(
         "gesture_swipe_comment"
       );
       const gesture_swipe_inbox = await db.getSetting("gesture_swipe_inbox");
+      const disable_left_swipes = await db.getSetting("disable_left_swipes");
+      const disable_right_swipes = await db.getSetting("disable_right_swipes");
 
       return {
         swipe: {
           post: gesture_swipe_post ?? initialState.swipe.post,
           comment: gesture_swipe_comment ?? initialState.swipe.comment,
           inbox: gesture_swipe_inbox ?? initialState.swipe.inbox,
+          disableLeftSwipes:
+            disable_left_swipes ?? initialState.swipe.disableLeftSwipes,
+          disableRightSwipes:
+            disable_right_swipes ?? initialState.swipe.disableRightSwipes,
         },
       };
     });
@@ -128,6 +146,8 @@ export const {
   setInboxSwipeActionFarStart,
   setInboxSwipeActionEnd,
   setInboxSwipeActionStart,
+  setDisableLeftSwipes,
+  setDisableRightSwipes,
   setAllSwipesToDefault,
 } = gestureSlice.actions;
 

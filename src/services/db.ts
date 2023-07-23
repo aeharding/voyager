@@ -79,8 +79,8 @@ export type VoteDisplayMode =
 
 const OSwipeActionBase = {
   None: "none",
-  Downvote: "downvote",
   Upvote: "upvote",
+  Downvote: "downvote",
   Reply: "reply",
   Save: "save",
 } as const;
@@ -149,6 +149,8 @@ export type SettingValueTypes = {
   gesture_swipe_post: SwipeActions;
   gesture_swipe_comment: SwipeActions;
   gesture_swipe_inbox: SwipeActions;
+  disable_left_swipes: boolean;
+  disable_right_swipes: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

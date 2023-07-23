@@ -1,4 +1,4 @@
-import { IonActionSheet, IonLabel, IonList } from "@ionic/react";
+import { IonActionSheet, IonLabel, IonList, IonToggle } from "@ionic/react";
 import { InsetIonItem, ListHeader } from "../shared/formatting";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import {
@@ -7,6 +7,7 @@ import {
   SwipeAction,
   SwipeActions,
   OSwipeActionInbox,
+  OSwipeActionAll,
 } from "../../../services/db";
 import SettingSelector from "../shared/SettingSelector";
 import {
@@ -23,11 +24,24 @@ import {
   setInboxSwipeActionEnd,
   setInboxSwipeActionStart,
   setAllSwipesToDefault,
+  setDisableLeftSwipes,
+  setDisableRightSwipes,
 } from "./gesturesSlice";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { Dictionary } from "lodash";
 import { useState } from "react";
 import { IonActionSheetCustomEvent, OverlayEventDetail } from "@ionic/core";
+import { ReactComponent as ShortSwipeSvg } from "./swipe_short.svg";
+import { ReactComponent as LongSwipeSvg } from "./swipe_long.svg";
+import {
+  arrowDownOutline,
+  arrowUndoOutline,
+  arrowUpOutline,
+  bookmarkOutline,
+  chevronCollapseOutline,
+  eyeOffOutline,
+  mailUnreadOutline,
+} from "ionicons/icons";
 
 export default function SwipeSettings() {
   const [open, setOpen] = useState(false);
@@ -36,6 +50,13 @@ export default function SwipeSettings() {
   const post = useAppSelector((state) => state.gestures.swipe.post);
   const comment = useAppSelector((state) => state.gestures.swipe.comment);
   const inbox = useAppSelector((state) => state.gestures.swipe.inbox);
+
+  const disableLeftSwipes = useAppSelector(
+    (state) => state.gestures.swipe.disableLeftSwipes
+  );
+  const disableRightSwipes = useAppSelector(
+    (state) => state.gestures.swipe.disableRightSwipes
+  );
 
   return (
     <>
@@ -68,9 +89,27 @@ export default function SwipeSettings() {
       />
       <>
         <ListHeader>
-          <IonLabel>Reset</IonLabel>
+          <IonLabel>Other</IonLabel>
         </ListHeader>
         <IonList inset>
+          <InsetIonItem>
+            <IonLabel>Disable Left Swipes</IonLabel>
+            <IonToggle
+              checked={disableLeftSwipes === true}
+              onIonChange={(e) =>
+                dispatch(setDisableLeftSwipes(e.detail.checked))
+              }
+            />
+          </InsetIonItem>
+          <InsetIonItem>
+            <IonLabel>Disable Right Swipes</IonLabel>
+            <IonToggle
+              checked={disableRightSwipes === true}
+              onIonChange={(e) =>
+                dispatch(setDisableRightSwipes(e.detail.checked))
+              }
+            />
+          </InsetIonItem>
           <InsetIonItem button onClick={() => setOpen(true)}>
             <IonLabel>Reset All Gestures</IonLabel>
             <IonActionSheet
@@ -105,6 +144,16 @@ export default function SwipeSettings() {
   );
 }
 
+const swipeIcons = {
+  [OSwipeActionAll.Upvote]: arrowUpOutline,
+  [OSwipeActionAll.Downvote]: arrowDownOutline,
+  [OSwipeActionAll.Reply]: arrowUndoOutline,
+  [OSwipeActionAll.Save]: bookmarkOutline,
+  [OSwipeActionAll.Hide]: eyeOffOutline,
+  [OSwipeActionAll.Collapse]: chevronCollapseOutline,
+  [OSwipeActionAll.MarkUnread]: mailUnreadOutline,
+};
+
 interface SwipeListProps {
   name: string;
   selector: SwipeActions;
@@ -125,6 +174,14 @@ function SwipeList({
   far_end,
 }: SwipeListProps) {
   const Selector = SettingSelector<SwipeAction>;
+
+  const disableLeftSwipes = useAppSelector(
+    (state) => state.gestures.swipe.disableLeftSwipes
+  );
+  const disableRightSwipes = useAppSelector(
+    (state) => state.gestures.swipe.disableRightSwipes
+  );
+
   return (
     <>
       <ListHeader>
@@ -132,28 +189,42 @@ function SwipeList({
       </ListHeader>
       <IonList inset>
         <Selector
-          title="Far right"
-          selected={selector.far_start ?? options.None}
-          setSelected={far_start}
-          options={options}
-        />
-        <Selector
-          title="Left"
+          icon={ShortSwipeSvg}
+          title="Left Short Swipe"
           selected={selector.start ?? options.None}
           setSelected={start}
           options={options}
+          optionIcons={swipeIcons}
+          disabled={disableLeftSwipes}
         />
         <Selector
-          title="Right"
+          icon={LongSwipeSvg}
+          title="Left Long Swipe"
+          selected={selector.far_start ?? options.None}
+          setSelected={far_start}
+          options={options}
+          optionIcons={swipeIcons}
+          disabled={disableLeftSwipes}
+        />
+        <Selector
+          icon={ShortSwipeSvg}
+          iconMirrored
+          title="Right Short Swipe"
           selected={selector.end ?? options.None}
           setSelected={end}
           options={options}
+          optionIcons={swipeIcons}
+          disabled={disableRightSwipes}
         />
         <Selector
-          title="Far left"
+          icon={LongSwipeSvg}
+          iconMirrored
+          title="Right Long Swipe"
           selected={selector.far_end ?? options.None}
           setSelected={far_end}
           options={options}
+          optionIcons={swipeIcons}
+          disabled={disableRightSwipes}
         />
       </IonList>
     </>
