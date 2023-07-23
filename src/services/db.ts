@@ -88,6 +88,7 @@ const OSwipeActionBase = {
 export const OSwipeActionPost = {
   ...OSwipeActionBase,
   Hide: "hide",
+  Share: "share",
 } as const;
 
 export const OSwipeActionComment = {

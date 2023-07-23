@@ -9,6 +9,7 @@ import {
   eyeOffOutline,
   eyeOutline,
   mailUnread,
+  shareOutline,
 } from "ionicons/icons";
 import React, { useCallback, useContext, useMemo } from "react";
 import SlidingItem, { ActionList, SlidingItemAction } from "./SlidingItem";
@@ -27,11 +28,16 @@ import {
 import { voteError } from "../../../helpers/toastMessages";
 import { saveComment, voteOnComment } from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
-import { SwipeAction, SwipeActions } from "../../../services/db";
+import {
+  OSwipeActionAll,
+  SwipeAction,
+  SwipeActions,
+} from "../../../services/db";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { CommentsContext } from "../../comment/CommentsContext";
 import styled from "@emotion/styled";
+import { Share } from "../../post/shared/Share";
 
 const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
@@ -196,6 +202,9 @@ function BaseSlidingVoteInternal({
       : undefined;
   }, [presentLoginIfNeeded, isHidden, onHide]);
 
+  const shareAction: React.MutableRefObject<(() => void) | null> =
+    React.useRef(null);
+
   const collapseRootComment = useCollapseRootComment(
     !isPost ? item : undefined,
     rootIndex
@@ -266,6 +275,11 @@ function BaseSlidingVoteInternal({
         },
         save: saveAction,
         hide: hideAction,
+        share: {
+          icon: shareOutline,
+          trigger: () => shareAction.current?.(),
+          bgColor: "secondary",
+        },
         collapse: collapseAction,
         mark_unread: markUnreadAction,
       };
@@ -295,13 +309,25 @@ function BaseSlidingVoteInternal({
     [disableRightSwipes, allActions, actions]
   );
 
+  const shareUsed = useMemo(
+    () =>
+      actions.start === OSwipeActionAll.Share ||
+      actions.farStart === OSwipeActionAll.Share ||
+      actions.end === OSwipeActionAll.Share ||
+      actions.farEnd === OSwipeActionAll.Share,
+    [actions]
+  );
+
   return (
-    <SlidingItem
-      startActions={startActions}
-      endActions={endActions}
-      className={className}
-    >
-      {children}
-    </SlidingItem>
+    <>
+      <SlidingItem
+        startActions={startActions}
+        endActions={endActions}
+        className={className}
+      >
+        {children}
+      </SlidingItem>
+      {shareUsed && isPost && <Share share={shareAction} post={item} />}
+    </>
   );
 }
