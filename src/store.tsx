@@ -20,7 +20,7 @@ import settingsSlice, {
 } from "./features/settings/settingsSlice";
 import gestureSlice, {
   fetchGesturesFromDatabase,
-} from "./features/settings/gestures/gesturesSlice";
+} from "./features/settings/gestures/gestureSlice";
 
 const store = configureStore({
   reducer: {
@@ -31,7 +31,7 @@ const store = configureStore({
     user: userSlice,
     inbox: inboxSlice,
     settings: settingsSlice,
-    gestures: gestureSlice,
+    gesture: gestureSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

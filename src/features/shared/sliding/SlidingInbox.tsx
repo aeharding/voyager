@@ -14,7 +14,7 @@ export default function SlidingInbox({
   className,
   item,
 }: SlidingInboxProps) {
-  const inbox = useAppSelector((state) => state.gestures.swipe.inbox);
+  const inbox = useAppSelector((state) => state.gesture.swipe.inbox);
 
   return (
     <BaseSlidingVote actions={inbox} className={className} item={item}>

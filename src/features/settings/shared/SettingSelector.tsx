@@ -68,7 +68,12 @@ export default function SettingSelector<T extends string>({
     : undefined;
 
   return (
-    <InsetIonItem button onClick={() => setOpen(true)} disabled={disabled}>
+    <InsetIonItem
+      button
+      onClick={() => setOpen(true)}
+      disabled={disabled}
+      detail={false}
+    >
       {Icon && <Icon mirror={iconMirrored} />}
       <IonLabel>{title}</IonLabel>
       <IonLabel slot="end" color="medium">

@@ -61,6 +61,7 @@ const SlashedIcon = styled(IonIcon)<{
   slash: boolean;
   bgColor: string;
 }>`
+  color: white;
   ${({ icon, slash, bgColor }) =>
     slash &&
     css`
@@ -69,7 +70,7 @@ const SlashedIcon = styled(IonIcon)<{
         position: absolute;
         height: ${custom_slash_lengths[icon] ?? 30}px;
         width: 3px;
-        background: var(--ion-color-${bgColor}-contrast);
+        background: white;
         font-size: 1.7em;
         left: 50%;
         top: 50%;
@@ -91,7 +92,9 @@ export type SlidingItemAction = {
 };
 
 export type ActionList = [
+  // short swipe action
   SlidingItemAction | undefined,
+  // long swipe action
   SlidingItemAction | undefined
 ];
 

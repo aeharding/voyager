@@ -18,7 +18,7 @@ export default function SlidingNestedCommentVote({
   rootIndex,
   collapsed,
 }: SlidingVoteProps) {
-  const comment = useAppSelector((state) => state.gestures.swipe.comment);
+  const comment = useAppSelector((state) => state.gesture.swipe.comment);
 
   return (
     <BaseSlidingVote

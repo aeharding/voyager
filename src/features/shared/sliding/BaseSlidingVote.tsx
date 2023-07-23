@@ -30,7 +30,6 @@ import { PageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
-import { InboxItemView } from "../../inbox/InboxItem";
 import { CommentsContext } from "../../comment/CommentsContext";
 import styled from "@emotion/styled";
 
@@ -38,10 +37,24 @@ const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
 `;
 
+type SlideableItem =
+  | CommentView
+  | PostView
+  | PersonMentionView
+  | CommentReplyView;
+
+function isInboxItem(
+  item: SlideableItem
+): item is PersonMentionView | CommentReplyView {
+  if ("person_mention" in item) return true;
+  if ("comment_reply" in item) return true;
+  return false;
+}
+
 interface BaseSlidingVoteProps {
   children: React.ReactNode;
   className?: string;
-  item: CommentView | PostView | PersonMentionView | CommentReplyView;
+  item: SlideableItem;
   rootIndex?: number;
   collapsed?: boolean;
   actions: SwipeActions;
@@ -51,8 +64,8 @@ interface BaseSlidingVoteProps {
 export default function BaseSlidingVote(props: BaseSlidingVoteProps) {
   const disableSwipes = useAppSelector(
     (state) =>
-      state.gestures.swipe.disableLeftSwipes &&
-      state.gestures.swipe.disableRightSwipes
+      state.gesture.swipe.disableLeftSwipes &&
+      state.gesture.swipe.disableRightSwipes
   );
 
   if (!disableSwipes) {
@@ -104,10 +117,10 @@ function BaseSlidingVoteInternal({
   );
 
   const disableLeftSwipes = useAppSelector(
-    (state) => state.gestures.swipe.disableLeftSwipes
+    (state) => state.gesture.swipe.disableLeftSwipes
   );
   const disableRightSwipes = useAppSelector(
-    (state) => state.gestures.swipe.disableRightSwipes
+    (state) => state.gesture.swipe.disableRightSwipes
   );
 
   const onVote = useCallback(
@@ -198,12 +211,14 @@ function BaseSlidingVoteInternal({
   }, [collapsed, collapseRootComment]);
 
   const isRead = useMemo(() => {
-    return readByInboxItemId[getInboxItemId(item as InboxItemView)] ?? false;
+    return isInboxItem(item) ? readByInboxItemId[getInboxItemId(item)] : false;
   }, [item, readByInboxItemId]);
 
   const markUnread = useCallback(async () => {
+    if (!isInboxItem(item)) return;
+
     try {
-      await dispatch(markRead(item as InboxItemView, !isRead));
+      await dispatch(markRead(item, !isRead));
     } catch (error) {
       present({
         message: "Failed to mark item as unread",
@@ -224,46 +239,45 @@ function BaseSlidingVoteInternal({
     };
   }, [markUnread, isRead]);
 
-  const allActions: {
-    [id in SwipeAction]: SlidingItemAction | undefined;
-  } = useMemo(() => {
-    return {
-      none: undefined,
-      upvote: {
-        icon: arrowUpSharp,
-        trigger: () => {
-          onVote(currentVote === 1 ? 0 : 1);
+  const allActions: Record<SwipeAction, SlidingItemAction | undefined> =
+    useMemo(() => {
+      return {
+        none: undefined,
+        upvote: {
+          icon: arrowUpSharp,
+          trigger: () => {
+            onVote(currentVote === 1 ? 0 : 1);
+          },
+          bgColor: "primary",
+          slash: currentVote === 1,
         },
-        bgColor: "primary",
-        slash: currentVote === 1,
-      },
-      downvote: {
-        icon: arrowDownSharp,
-        trigger: () => {
-          onVote(currentVote === -1 ? 0 : -1);
+        downvote: {
+          icon: arrowDownSharp,
+          trigger: () => {
+            onVote(currentVote === -1 ? 0 : -1);
+          },
+          bgColor: "danger",
+          slash: currentVote === -1,
         },
-        bgColor: "danger",
-        slash: currentVote === -1,
-      },
-      reply: {
-        icon: arrowUndo,
-        trigger: reply,
-        bgColor: "primary",
-      },
-      save: saveAction,
-      hide: hideAction,
-      collapse: collapseAction,
-      mark_unread: markUnreadAction,
-    };
-  }, [
-    currentVote,
-    reply,
-    saveAction,
-    hideAction,
-    collapseAction,
-    markUnreadAction,
-    onVote,
-  ]);
+        reply: {
+          icon: arrowUndo,
+          trigger: reply,
+          bgColor: "primary",
+        },
+        save: saveAction,
+        hide: hideAction,
+        collapse: collapseAction,
+        mark_unread: markUnreadAction,
+      };
+    }, [
+      currentVote,
+      reply,
+      saveAction,
+      hideAction,
+      collapseAction,
+      markUnreadAction,
+      onVote,
+    ]);
 
   const startActions: ActionList = useMemo(
     () =>

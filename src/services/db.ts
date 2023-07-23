@@ -110,7 +110,7 @@ export type SwipeAction =
   (typeof OSwipeActionAll)[keyof typeof OSwipeActionAll];
 
 export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
-export type SwipeActions = { [id in SwipeDirection]: SwipeAction };
+export type SwipeActions = Record<SwipeDirection, SwipeAction>;
 
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;

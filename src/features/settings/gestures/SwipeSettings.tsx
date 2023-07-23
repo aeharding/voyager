@@ -26,7 +26,7 @@ import {
   setAllSwipesToDefault,
   setDisableLeftSwipes,
   setDisableRightSwipes,
-} from "./gesturesSlice";
+} from "./gestureSlice";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { Dictionary } from "lodash";
 import { useState } from "react";
@@ -47,15 +47,15 @@ export default function SwipeSettings() {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
 
-  const post = useAppSelector((state) => state.gestures.swipe.post);
-  const comment = useAppSelector((state) => state.gestures.swipe.comment);
-  const inbox = useAppSelector((state) => state.gestures.swipe.inbox);
+  const post = useAppSelector((state) => state.gesture.swipe.post);
+  const comment = useAppSelector((state) => state.gesture.swipe.comment);
+  const inbox = useAppSelector((state) => state.gesture.swipe.inbox);
 
   const disableLeftSwipes = useAppSelector(
-    (state) => state.gestures.swipe.disableLeftSwipes
+    (state) => state.gesture.swipe.disableLeftSwipes
   );
   const disableRightSwipes = useAppSelector(
-    (state) => state.gestures.swipe.disableRightSwipes
+    (state) => state.gesture.swipe.disableRightSwipes
   );
 
   return (
@@ -145,6 +145,7 @@ export default function SwipeSettings() {
 }
 
 const swipeIcons = {
+  [OSwipeActionAll.None]: " ",
   [OSwipeActionAll.Upvote]: arrowUpOutline,
   [OSwipeActionAll.Downvote]: arrowDownOutline,
   [OSwipeActionAll.Reply]: arrowUndoOutline,
@@ -176,10 +177,10 @@ function SwipeList({
   const Selector = SettingSelector<SwipeAction>;
 
   const disableLeftSwipes = useAppSelector(
-    (state) => state.gestures.swipe.disableLeftSwipes
+    (state) => state.gesture.swipe.disableLeftSwipes
   );
   const disableRightSwipes = useAppSelector(
-    (state) => state.gestures.swipe.disableRightSwipes
+    (state) => state.gesture.swipe.disableRightSwipes
   );
 
   return (

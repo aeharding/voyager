@@ -16,7 +16,7 @@ export default function SlidingVote({
   item,
   onHide,
 }: SlidingVoteProps) {
-  const post = useAppSelector((state) => state.gestures.swipe.post);
+  const post = useAppSelector((state) => state.gesture.swipe.post);
 
   return (
     <BaseSlidingVote

@@ -22,7 +22,7 @@ const defaultSwipeActionsPost: SwipeActions = {
   farStart: OSwipeActionPost.Downvote,
   start: OSwipeActionPost.Upvote,
   end: OSwipeActionPost.Reply,
-  farEnd: OSwipeActionPost.Hide,
+  farEnd: OSwipeActionPost.Save,
 } as const;
 
 const defaultSwipeActionsComment: SwipeActions = {
