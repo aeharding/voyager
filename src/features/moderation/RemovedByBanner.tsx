@@ -73,13 +73,15 @@ export function getItemModState(item: Comment): ItemModState {
   return ItemModState.None;
 }
 
-export function getModStateBackgroundColor(modState: ItemModState): string {
+export function getModStateBackgroundColor(
+  modState: ItemModState
+): string | undefined {
   switch (modState) {
     case ItemModState.Flagged:
       return "rgba(255, 255, 0, 0.3)";
     case ItemModState.RemovedByMod:
       return "rgba(255, 0, 0, 0.3)";
     case ItemModState.None:
-      return "transparent";
+      return undefined;
   }
 }

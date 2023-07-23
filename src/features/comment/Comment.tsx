@@ -48,7 +48,7 @@ export const CustomIonItem = styled(IonItem)`
 export const PositionedContainer = styled.div<{
   depth: number;
   highlighted: boolean;
-  modState: ItemModState;
+  modState?: ItemModState;
 }>`
   position: relative;
 
@@ -62,7 +62,15 @@ export const PositionedContainer = styled.div<{
       background: var(--ion-color-light);
     `}
 
-  background: ${({ modState }) => getModStateBackgroundColor(modState)};
+  ${({ modState }) => {
+    const color =
+      modState !== undefined ? getModStateBackgroundColor(modState) : undefined;
+
+    if (color)
+      return css`
+        background: ${color};
+      `;
+  }};
 
   @media (hover: none) {
     padding-top: 0.65rem;

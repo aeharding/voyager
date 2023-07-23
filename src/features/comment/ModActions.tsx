@@ -2,7 +2,6 @@ import { IonActionSheet, IonIcon, IonLoading, useIonAlert } from "@ionic/react";
 import {
   checkmarkCircleOutline,
   colorWandOutline,
-  personRemoveOutline,
   shield,
   shieldCheckmarkOutline,
   trashOutline,
