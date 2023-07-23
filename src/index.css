@@ -33,6 +33,10 @@ ion-router-outlet > .ion-page > ion-header ion-title {
   ) {
   justify-content: flex-start;
 }
+.mod .action-sheet-button,
+.mod .action-sheet-button:hover {
+  color: var(--ion-color-success-shade);
+}
 
 /* https://github.com/ionic-team/ionic-framework/issues/27777#issuecomment-1631522283 */
 .action-sheet-height-fix {

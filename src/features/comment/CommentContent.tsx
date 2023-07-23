@@ -7,10 +7,12 @@ import { useAppSelector } from "../../store";
 interface CommentContentProps {
   item: Comment | Post;
   showTouchFriendlyLinks?: boolean;
+  isMod?: boolean;
 }
 
 export default function CommentContent({
   item,
+  isMod,
   showTouchFriendlyLinks = true,
 }: CommentContentProps) {
   const touchFriendlyLinks = useAppSelector(
@@ -19,7 +21,7 @@ export default function CommentContent({
 
   const content = useMemo(() => {
     if (item.deleted) return <i>deleted by creator</i>;
-    if (item.removed) return <i>removed by mod</i>;
+    if (item.removed && !isMod) return <i>removed by mod</i>;
 
     return (
       <>
@@ -33,7 +35,7 @@ export default function CommentContent({
         )}
       </>
     );
-  }, [item, showTouchFriendlyLinks, touchFriendlyLinks]);
+  }, [item, showTouchFriendlyLinks, touchFriendlyLinks, isMod]);
 
   return content;
 }

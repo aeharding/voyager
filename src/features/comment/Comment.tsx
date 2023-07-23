@@ -3,7 +3,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useMemo } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
@@ -16,6 +16,12 @@ import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
+import RemovedByBanner, {
+  ItemModState,
+  getItemModState,
+  getModStateBackgroundColor,
+} from "../moderation/RemovedByBanner";
+import ModActions from "./ModActions";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -42,6 +48,7 @@ export const CustomIonItem = styled(IonItem)`
 export const PositionedContainer = styled.div<{
   depth: number;
   highlighted: boolean;
+  modState: ItemModState;
 }>`
   position: relative;
 
@@ -54,6 +61,8 @@ export const PositionedContainer = styled.div<{
     css`
       background: var(--ion-color-light);
     `}
+
+  background: ${({ modState }) => getModStateBackgroundColor(modState)};
 
   @media (hover: none) {
     padding-top: 0.65rem;
@@ -207,6 +216,19 @@ export default function Comment({
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentFromStore ?? commentView.comment;
 
+  const moderates = useAppSelector(
+    (state) => state.auth.site?.my_user?.moderates,
+  );
+
+  const isMod = useMemo(
+    () =>
+      moderates &&
+      moderates.some((m) => m.community.id === commentView.community.id),
+    [moderates, commentView],
+  );
+
+  const modState = getItemModState(comment);
+
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
       <SlidingNestedCommentVote
@@ -224,8 +246,10 @@ export default function Comment({
           <PositionedContainer
             depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
             highlighted={highlightedCommentId === comment.id}
+            modState={modState}
           >
             <Container depth={absoluteDepth ?? depth ?? 0}>
+              {isMod && <RemovedByBanner modState={modState} item={comment} />}
               <Header>
                 <StyledPersonLabel
                   person={commentView.creator}
@@ -242,6 +266,12 @@ export default function Comment({
                 />
                 {!collapsed ? (
                   <>
+                    {isMod && (
+                      <ModActions
+                        comment={comment}
+                        counts={commentView.counts}
+                      />
+                    )}
                     <CommentEllipsis
                       comment={commentView}
                       rootIndex={rootIndex}
@@ -268,6 +298,7 @@ export default function Comment({
                   <CommentContent
                     item={comment}
                     showTouchFriendlyLinks={!context}
+                    isMod={isMod}
                   />
                   {context}
                 </Content>
