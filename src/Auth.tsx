@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import {
-  getSite,
+  getSiteIfNeeded,
   jwtIssSelector,
   jwtSelector,
   updateConnectedInstance,
@@ -43,9 +43,9 @@ export default function Auth({ children }: AuthProps) {
   }, [location.pathname]);
 
   useEffect(() => {
-    dispatch(getSite());
+    dispatch(getSiteIfNeeded());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jwt]);
+  }, [jwt, connectedInstance]);
 
   const shouldSyncMessages = useCallback(() => {
     return jwt && location.pathname.startsWith("/inbox/messages");
