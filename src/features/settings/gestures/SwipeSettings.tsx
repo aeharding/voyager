@@ -31,8 +31,8 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { Dictionary } from "lodash";
 import { useState } from "react";
 import { IonActionSheetCustomEvent, OverlayEventDetail } from "@ionic/core";
-import { ReactComponent as ShortSwipeSvg } from "./swipe_short.svg";
-import { ReactComponent as LongSwipeSvg } from "./swipe_long.svg";
+import { ReactComponent as ShortSwipeSvg } from "./swipeShort.svg";
+import { ReactComponent as LongSwipeSvg } from "./swipeLong.svg";
 import {
   arrowDownOutline,
   arrowUndoOutline,
