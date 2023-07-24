@@ -59,6 +59,7 @@ import { getDefaultServer } from "./services/app";
 import GeneralPage from "./pages/settings/GeneralPage";
 import HidingSettingsPage from "./pages/settings/HidingSettingsPage";
 import DeviceModeSettingsPage from "./pages/settings/DeviceModeSettingsPage";
+import InstanceSidebarPage from "./pages/shared/InstanceSidebarPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -210,6 +211,12 @@ export default function TabbedRoutes() {
         <InboxAuthRequired>
           <ConversationPage />
         </InboxAuthRequired>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/sidebar`}>
+        <ActorRedirect>
+          <InstanceSidebarPage />
+        </ActorRedirect>
       </Route>,
     ];
   }
