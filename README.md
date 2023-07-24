@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://vger.app" target="_blank" rel="noopener noreferrer">
-    <img width="160" height="160" src="./public/logo_minified.svg" alt="Voyager logo">
+    <img width="160" height="160" src="./public/logo-minified.svg" alt="Voyager logo">
   </a>
 </p>
 
