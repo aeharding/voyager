@@ -36,7 +36,9 @@ export default function InstanceSidebar() {
   return (
     <>
       <Container className="ion-padding-start ion-padding-end ion-padding-top">
-        <BannerImg src={site.banner} alt={`Banner for ${site.actor_id}`} />
+        {site.banner && (
+          <BannerImg src={site.banner} alt={`Banner for ${site.actor_id}`} />
+        )}
         <Markdown>{site.sidebar ?? ""}</Markdown>
         <CommunityCounts counts={counts} />
       </Container>
