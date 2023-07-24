@@ -39,7 +39,7 @@ export default function InstanceSidebar() {
         {site.banner && (
           <BannerImg src={site.banner} alt={`Banner for ${site.actor_id}`} />
         )}
-        <Markdown>{site.sidebar ?? ""}</Markdown>
+        <Markdown>{site.sidebar ?? site.description ?? ""}</Markdown>
         <CommunityCounts counts={counts} />
       </Container>
       <InstanceAdmins admins={admins} />
