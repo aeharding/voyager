@@ -19,6 +19,7 @@ import {
   openOutline,
   reloadCircle,
   removeCircle,
+  returnUpForwardOutline,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { useContext, useEffect } from "react";
@@ -101,12 +102,14 @@ export default function SettingsPage() {
             </IconBg>
             <SettingLabel>General</SettingLabel>
           </InsetIonItem>
+
           <InsetIonItem routerLink="/settings/appearance">
             <IconBg color="color(display-p3 1 0 0)">
               <IonIcon icon={colorPalette} />
             </IconBg>
             <SettingLabel>Appearance</SettingLabel>
           </InsetIonItem>
+
           {currentHandle && (
             <InsetIonItem routerLink="/settings/blocks">
               <IconBg color="color(display-p3 0 0.6 1)">
@@ -115,6 +118,13 @@ export default function SettingsPage() {
               <SettingLabel>Filters & Blocks</SettingLabel>
             </InsetIonItem>
           )}
+
+          <InsetIonItem routerLink="/settings/gestures">
+            <IconBg color="color(display-p3 0.95 0.65 0)">
+              <IonIcon icon={returnUpForwardOutline} />
+            </IconBg>
+            <SettingLabel>Gestures</SettingLabel>
+          </InsetIonItem>
         </IonList>
 
         <IonList inset color="primary">
