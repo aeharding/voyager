@@ -70,10 +70,11 @@ interface CommentsProps {
   commentPath?: string;
   op: Person;
   sort: CommentSortType;
+  bottomPadding?: number;
 }
 
 export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
-  { header, postId, commentPath, op, sort },
+  { header, postId, commentPath, op, sort, bottomPadding },
   ref
 ) {
   const dispatch = useAppDispatch();
@@ -305,7 +306,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
           typeof commentId === "number"
             ? {
                 // add space for the <ViewAllComments /> fixed component
-                Footer: () => <div style={{ height: "70px" }} />,
+                Footer: () => <div style={{ height: `${bottomPadding}px` }} />,
               }
             : {}
         }

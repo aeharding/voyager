@@ -21,6 +21,8 @@ import {
   OCommentDefaultSort,
   InstanceUrlDisplayMode,
   OInstanceUrlDisplayMode,
+  VoteDisplayMode,
+  OVoteDisplayMode,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -51,6 +53,9 @@ interface SettingsState {
     compact: {
       thumbnailsPosition: CompactThumbnailPositionType;
       showVotingButtons: boolean;
+    };
+    voting: {
+      voteDisplayMode: VoteDisplayMode;
     };
     dark: {
       usingSystemDarkMode: boolean;
@@ -100,6 +105,9 @@ const initialState: SettingsState = {
     compact: {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
       showVotingButtons: true,
+    },
+    voting: {
+      voteDisplayMode: OVoteDisplayMode.Total,
     },
     dark: {
       usingSystemDarkMode: true,
@@ -199,6 +207,10 @@ export const appearanceSlice = createSlice({
       state.appearance.compact.thumbnailsPosition = action.payload;
       db.setSetting("compact_thumbnail_position_type", action.payload);
     },
+    setVoteDisplayMode(state, action: PayloadAction<VoteDisplayMode>) {
+      state.appearance.voting.voteDisplayMode = action.payload;
+      db.setSetting("vote_display_mode", action.payload);
+    },
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.appearance.dark.userDarkMode = action.payload;
       set(LOCALSTORAGE_KEYS.DARK.USER_MODE, action.payload);
@@ -291,6 +303,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const compact_show_voting_buttons = await db.getSetting(
         "compact_show_voting_buttons"
       );
+      const vote_display_mode = await db.getSetting("vote_display_mode");
       const default_comment_sort = await db.getSetting("default_comment_sort");
       const disable_marking_posts_read = await db.getSetting(
         "disable_marking_posts_read"
@@ -321,6 +334,11 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showVotingButtons:
               compact_show_voting_buttons ??
               initialState.appearance.compact.showVotingButtons,
+          },
+          voting: {
+            voteDisplayMode:
+              vote_display_mode ??
+              initialState.appearance.voting.voteDisplayMode,
           },
         },
         general: {
@@ -365,6 +383,7 @@ export const {
   setPostAppearance,
   setThumbnailPosition,
   setShowVotingButtons,
+  setVoteDisplayMode,
   setUserDarkMode,
   setUseSystemDarkMode,
   setDeviceMode,

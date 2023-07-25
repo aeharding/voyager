@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://vger.app" target="_blank" rel="noopener noreferrer">
-    <img width="160" height="160" src="./public/logo_minified.svg" alt="Voyager logo">
+    <img width="160" height="160" src="./public/logo-minified.svg" alt="Voyager logo">
   </a>
 </p>
 
@@ -152,10 +152,18 @@ Voyager works best added to the homescreen. There are certain features that only
 
 ## 👨‍💻 Contributors
 
+Shoutout to [@fer0n](https://github.com/fer0n) for the great logo and splashscreen! And thank you 💙 all of our contributors to the codebase:
+
 <a href="https://github.com/aeharding/voyager/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=aeharding/voyager" />   
 </a>
 
 ## 📄 License
+
+### Logo & Splashscreen
+
+CC BY-SA 4.0 &copy; [@fer0n](https://github.com/fer0n)
+
+### Code
 
 [AGPL-3.0](./LICENSE) &copy; Voyager contributors

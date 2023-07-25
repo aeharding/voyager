@@ -17,7 +17,7 @@ const HrContainer = styled.div<{ depth: number }>`
 
 const Hr = styled.hr`
   flex: 1;
-  height: 0.55px;
+  height: 1px;
   background-color: var(
     --ion-item-border-color,
     var(--ion-border-color, var(--ion-color-step-250, #c8c7cc))

@@ -4,13 +4,7 @@ import { IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
-
-export const ListHeader = styled.div`
-  font-size: 0.8em;
-  margin: 32px 0 -8px 32px;
-  text-transform: uppercase;
-  color: var(--ion-color-medium);
-`;
+import { ListHeader } from "../shared/formatting";
 
 const Range = styled(IonRange)`
   --bar-background: var(--ion-color-medium);

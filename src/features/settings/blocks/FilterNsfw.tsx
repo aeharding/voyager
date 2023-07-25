@@ -1,16 +1,9 @@
-import styled from "@emotion/styled";
 import { IonLabel, IonList, IonLoading, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { localUserSelector, showNsfw } from "../../auth/authSlice";
 import { useState } from "react";
-
-export const ListHeader = styled.div`
-  font-size: 0.8em;
-  margin: 32px 0 -8px 32px;
-  text-transform: uppercase;
-  color: var(--ion-color-medium);
-`;
+import { ListHeader } from "../shared/formatting";
 
 export default function FilterNsfw() {
   const dispatch = useAppDispatch();

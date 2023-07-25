@@ -6,7 +6,14 @@ import Embed from "../shared/Embed";
 import Comments, { CommentsHandle } from "../../comment/Comments";
 import Markdown from "../../shared/Markdown";
 import PostActions from "../actions/PostActions";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { findLoneImage } from "../../../helpers/markdown";
 import { setPostRead } from "../postSlice";
 import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
@@ -26,6 +33,8 @@ import PostGalleryImg from "../../gallery/PostGalleryImg";
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
   --inner-padding-end: 0;
+
+  --inner-border-width: 0 0 1px 0;
 
   ${maxWidthCss}
 `;
@@ -73,7 +82,7 @@ const StyledEmbed = styled(Embed)`
 
 const PostDeets = styled.div`
   margin: 0 8px;
-  font-size: 0.875em;
+  font-size: 0.9375em;
 
   h1,
   h2,
@@ -92,6 +101,8 @@ const Title = styled.div`
 `;
 
 const By = styled.div`
+  font-size: 0.875em;
+
   margin-bottom: 5px;
   color: var(--ion-color-text-aside);
 
@@ -129,6 +140,8 @@ export default function PostDetail({
   const [ionViewEntered, setIonViewEntered] = useState(false);
   const commentsRef = useRef<CommentsHandle>(null);
 
+  const [viewAllCommentsSpace, setViewAllCommentsSpace] = useState(70); // px
+
   // Avoid rerender from marking a post as read until the page
   // has fully transitioned in.
   // This keeps the page transition as performant as possible
@@ -145,6 +158,11 @@ export default function PostDetail({
   useEffect(() => {
     titleRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [collapsed]);
+
+  const onHeight = useCallback(
+    (height: number) => setViewAllCommentsSpace(height),
+    []
+  );
 
   function renderImage() {
     if (!post) return;
@@ -241,8 +259,9 @@ export default function PostDetail({
         commentPath={commentPath}
         op={post.creator}
         sort={sort}
+        bottomPadding={commentPath ? viewAllCommentsSpace + 12 : 0}
       />
-      {commentPath && <ViewAllComments />}
+      {commentPath && <ViewAllComments onHeight={onHeight} />}
     </>
   );
 }

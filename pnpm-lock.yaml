@@ -214,6 +214,9 @@ devDependencies:
   react-textarea-autosize:
     specifier: ^8.5.2
     version: 8.5.2(@types/react@18.2.14)(react@18.2.0)
+  react-transition-state:
+    specifier: ^2.1.1
+    version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
   react-virtuoso:
     specifier: ^4.3.11
     version: 4.3.11(react-dom@18.2.0)(react@18.2.0)
@@ -6712,6 +6715,16 @@ packages:
       use-latest: 1.2.1(@types/react@18.2.14)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
+    dev: true
+
+  /react-transition-state@2.1.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-kQx5g1FVu9knoz1T1WkapjUgFz08qQ/g1OmuWGi3/AoEFfS0kStxrPlZx81urjCXdz2d+1DqLpU6TyLW/Ro04Q==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: true
 
   /react-virtuoso@4.3.11(react-dom@18.2.0)(react@18.2.0):

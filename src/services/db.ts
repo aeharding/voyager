@@ -57,9 +57,65 @@ export const OInstanceUrlDisplayMode = {
 export type InstanceUrlDisplayMode =
   (typeof OInstanceUrlDisplayMode)[keyof typeof OInstanceUrlDisplayMode];
 
+export const OVoteDisplayMode = {
+  /**
+   * Show upvotes and downvotes separately
+   */
+  Separate: "separate",
+
+  /**
+   * Show total score (upvotes + downvotes)
+   */
+  Total: "total",
+
+  /**
+   * Hide scores
+   */
+  Hide: "hide",
+} as const;
+
+export type VoteDisplayMode =
+  (typeof OVoteDisplayMode)[keyof typeof OVoteDisplayMode];
+
+const OSwipeActionBase = {
+  None: "none",
+  Upvote: "upvote",
+  Downvote: "downvote",
+  Reply: "reply",
+  Save: "save",
+} as const;
+
+export const OSwipeActionPost = {
+  ...OSwipeActionBase,
+  Hide: "hide",
+} as const;
+
+export const OSwipeActionComment = {
+  ...OSwipeActionBase,
+  Collapse: "collapse",
+} as const;
+
+export const OSwipeActionInbox = {
+  ...OSwipeActionBase,
+  MarkUnread: "mark_unread",
+} as const;
+
+export const OSwipeActionAll = {
+  ...OSwipeActionPost,
+  ...OSwipeActionComment,
+  ...OSwipeActionInbox,
+} as const;
+
+export type SwipeAction =
+  (typeof OSwipeActionAll)[keyof typeof OSwipeActionAll];
+
+export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
+export type SwipeActions = Record<SwipeDirection, SwipeAction>;
+
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
+  vote_display_mode: VoteDisplayMode;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_show_voting_buttons: boolean;
@@ -69,6 +125,11 @@ export type SettingValueTypes = {
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
   show_hide_read_button: boolean;
+  gesture_swipe_post: SwipeActions;
+  gesture_swipe_comment: SwipeActions;
+  gesture_swipe_inbox: SwipeActions;
+  disable_left_swipes: boolean;
+  disable_right_swipes: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

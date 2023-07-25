@@ -2,7 +2,7 @@
   "name": "voyager",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "0.25.1",
+  "version": "0.28.1",
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
@@ -88,6 +88,7 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-textarea-autosize": "^8.5.2",
+    "react-transition-state": "^2.1.1",
     "react-virtuoso": "^4.3.11",
     "remark-gfm": "^3.0.1",
     "terser": "^5.18.1",

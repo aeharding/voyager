@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { IonIcon, useIonToast } from "@ionic/react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { voteOnPost } from "../postSlice";
 import { css } from "@emotion/react";
@@ -8,6 +8,8 @@ import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
 import { PageContext } from "../../auth/PageContext";
+import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
+import { useTransition } from "react-transition-state";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -15,6 +17,8 @@ export const Item = styled(ActionButton, {
   on?: boolean;
   activeColor?: string;
 }>`
+  ${bounceAnimationOnTransition}
+
   ${({ on, activeColor }) =>
     on
       ? css`
@@ -36,6 +40,10 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const myVote = postVotesById[postId];
+
+  const [state, toggle] = useTransition({
+    timeout: bounceMs,
+  });
 
   const icon = (() => {
     switch (type) {
@@ -64,13 +72,24 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
     }
   })();
 
+  const on = myVote === selectedVote;
+
+  useEffect(() => {
+    if (!on) toggle(false);
+  }, [on, toggle]);
+
   return (
     <Item
-      on={myVote === selectedVote}
+      on={on}
+      className={state.status}
       onClick={async (e) => {
         e.stopPropagation();
 
         if (presentLoginIfNeeded()) return;
+
+        if (!on) {
+          toggle(true);
+        }
 
         try {
           await dispatch(

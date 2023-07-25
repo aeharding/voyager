@@ -2,27 +2,8 @@ import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
 import { isNative } from "../helpers/device";
 
-const UNPROXIED_LEMMY_SERVERS = [
-  "lemmy.ml",
-  "beehaw.org",
-  "sh.itjust.works",
-  "lemm.ee",
-  "feddit.de",
-  "midwest.social",
-  "lemmynsfw.com",
-  "lemmy.ca",
-  "lemmy.sdf.org",
-  "lemmy.world",
-];
-
 function buildBaseUrl(url: string): string {
-  if (isNative()) return buildDirectConnectBaseUrl(url);
-
-  if (UNPROXIED_LEMMY_SERVERS.includes(url)) {
-    return buildDirectConnectBaseUrl(url);
-  }
-
-  return buildProxiedBaseUrl(url);
+  return buildDirectConnectBaseUrl(url);
 }
 
 function buildDirectConnectBaseUrl(url: string): string {
