@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h1 align="center"/>Voyager <sup><em>alpha</em></sup></h1>
+<h1 align="center"/>Voyager</h1>
 
 <p align="center">
 A mobile-first Lemmy web client
@@ -26,9 +26,9 @@ A mobile-first Lemmy web client
   </a>
 </p>
 
-## ⚠️ Voyager is in Alpha
+## Voyager for Lemmy
 
-Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [Lemmy](https://join-lemmy.org/). It's a mobile-first app, but works great on desktop devices, too. Please feel free to try it out, but be aware you will likely encounter bugs and missing functionality.
+Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [Lemmy](https://join-lemmy.org/). It's a mobile-first app, but works great on desktop devices, too. Please feel free to try it out!
 
 **What does Voyager currently support?**
 
@@ -53,6 +53,8 @@ Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [L
 
 - More customization
 - Native notifications and badging
+- Mod features
+- Native apps
 - Translations
 - ...and more!
 
