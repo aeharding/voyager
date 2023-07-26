@@ -15,6 +15,7 @@ def capacitor_pods
   pod 'CapacitorHaptics', :path => '../../node_modules/.pnpm/@capacitor+haptics@5.0.6_@capacitor+core@5.1.1/node_modules/@capacitor/haptics'
   pod 'CapacitorKeyboard', :path => '../../node_modules/.pnpm/@capacitor+keyboard@5.0.6_@capacitor+core@5.1.1/node_modules/@capacitor/keyboard'
   pod 'CapacitorStatusBar', :path => '../../node_modules/.pnpm/@capacitor+status-bar@5.0.6_@capacitor+core@5.1.1/node_modules/@capacitor/status-bar'
+  pod 'CapacitorBrowser', :path => '../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.1.1/node_modules/@capacitor/browser'
 end
 
 target 'App' do

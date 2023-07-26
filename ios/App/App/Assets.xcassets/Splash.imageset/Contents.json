@@ -1,23 +1,16 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
-      "filename" : "splash-2732x2732-2.png",
-      "scale" : "1x"
+      "filename" : "apple-splash-1242-2688.png",
+      "idiom" : "iphone"
     },
     {
-      "idiom" : "universal",
-      "filename" : "splash-2732x2732-1.png",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "filename" : "splash-2732x2732.png",
-      "scale" : "3x"
+      "filename" : "apple-splash-1620-2160.png",
+      "idiom" : "ipad"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

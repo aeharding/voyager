@@ -34,6 +34,9 @@ dependencies:
     version: 0.9.1(express@4.18.2)(vite@4.3.9)
 
 devDependencies:
+  '@capacitor/browser':
+    specifier: ^5.0.6
+    version: 5.0.6(@capacitor/core@5.1.1)
   '@capacitor/cli':
     specifier: 5.1.1
     version: 5.1.1
@@ -1528,6 +1531,14 @@ packages:
       '@capacitor/core': 5.1.1
     dev: false
 
+  /@capacitor/browser@5.0.6(@capacitor/core@5.1.1):
+    resolution: {integrity: sha512-wEI7Na6PVzSP/00ud7pjbBwXwVG7HywCdy2fJT/hzF6yuHn4tDirbOvbr1JKd9LZqKs2Xn+TapV38JhBRhX6YA==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.1.1
+    dev: true
+
   /@capacitor/cli@5.1.1:
     resolution: {integrity: sha512-q9yg4P+UsmEpNNTza040gxHtN7MvbHCaow2hi/podQ37sPxzpycg179tyYDjss07N02Qe3M/ReO42TgjAy27DQ==}
     engines: {node: '>=16.0.0'}
@@ -1558,7 +1569,6 @@ packages:
     resolution: {integrity: sha512-17rZMGpZYQgBAmUS1uAS1GrRkPAQiUfpTfvd2wWS9z87GoTL/5vtpPAtI0/XLtr4eve2TsATY2r8BaW2NfEO6Q==}
     dependencies:
       tslib: 2.6.0
-    dev: false
 
   /@capacitor/haptics@5.0.6(@capacitor/core@5.1.1):
     resolution: {integrity: sha512-UrMcR7p2X10ql4VLlowUuH/VckTeu0lj+RQpekxox14uxDmu5AGIFDK/iDTi8W6QZkxTJRZK6sbCjgwYgNJ7Pw==}

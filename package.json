@@ -28,6 +28,7 @@
     "vite-express": "^0.9.1"
   },
   "devDependencies": {
+    "@capacitor/browser": "^5.0.6",
     "@capacitor/cli": "5.1.1",
     "@emotion/babel-plugin": "^11.11.0",
     "@emotion/css": "^11.11.2",
