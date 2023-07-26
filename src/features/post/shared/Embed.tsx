@@ -7,8 +7,9 @@ import { MouseEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { isNsfwBlurred } from "../../labels/Nsfw";
 import { setPostRead } from "../postSlice";
+import InAppExternalLink from "../../shared/InAppExternalLink";
 
-const Container = styled.a`
+const Container = styled(InAppExternalLink)`
   display: flex;
   flex-direction: column;
 

@@ -1,5 +1,6 @@
 import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
+import { isNative } from "../helpers/device";
 
 function buildBaseUrl(url: string): string {
   return buildDirectConnectBaseUrl(url);
@@ -10,11 +11,17 @@ function buildDirectConnectBaseUrl(url: string): string {
 }
 
 function buildProxiedBaseUrl(url: string): string {
+  if (isNative()) return buildDirectConnectBaseUrl(url);
+
   return `${location.origin}/api/${url}`;
 }
 
 export function getClient(url: string): LemmyHttp {
-  return new LemmyHttp(buildBaseUrl(url));
+  return new LemmyHttp(buildBaseUrl(url), {
+    // Capacitor http plugin is not compatible with cross-fetch.
+    // Bind to globalThis or lemmy-js-client will bind incorrectly
+    fetchFunction: fetch.bind(globalThis),
+  });
 }
 
 export const LIMIT = 30;

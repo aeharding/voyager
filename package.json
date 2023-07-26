@@ -22,6 +22,14 @@
     "vite-express": "^0.9.1"
   },
   "devDependencies": {
+    "@capacitor/app": "^5.0.6",
+    "@capacitor/core": "5.1.1",
+    "@capacitor/haptics": "^5.0.6",
+    "@capacitor/ios": "5.1.1",
+    "@capacitor/keyboard": "^5.0.6",
+    "@capacitor/status-bar": "^5.0.6",
+    "@capacitor/browser": "^5.0.6",
+    "@capacitor/cli": "5.1.1",
     "@emotion/babel-plugin": "^11.11.0",
     "@emotion/css": "^11.11.2",
     "@emotion/eslint-plugin": "^11.11.0",

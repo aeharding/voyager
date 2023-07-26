@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonToolbar,
@@ -23,6 +22,7 @@ import { TitleSearchProvider } from "../../features/community/titleSearch/TitleS
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
 import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
+import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import SpecialFeedMoreActions from "../../features/feed/SpecialFeedMoreActions";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
@@ -78,7 +78,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               </TitleSearch>
             </IonToolbar>
           </IonHeader>
-          <IonContent>
+          <FeedContent>
             {markReadOnScroll ? (
               <FeedScrollObserver>{feed}</FeedScrollObserver>
             ) : (
@@ -86,7 +86,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
             )}
             <TitleSearchResults />
             <PostFabs />
-          </IonContent>
+          </FeedContent>
         </IonPage>
       </FeedContextProvider>
     </TitleSearchProvider>

@@ -16,6 +16,7 @@ import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
+import { isNative } from "../../helpers/device";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -208,6 +209,7 @@ export default function Comment({
 
   useEffect(() => {
     if (highlightedCommentId !== comment.id) return;
+    if (isNative()) return;
 
     setTimeout(() => {
       commentRef.current?.scrollIntoView({

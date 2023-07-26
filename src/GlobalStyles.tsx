@@ -6,7 +6,8 @@ import {
   darkVariables,
   lightVariables,
 } from "./theme/variables";
-import React from "react";
+import React, { useEffect } from "react";
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 interface GlobalStylesProps {
   children: React.ReactNode;
@@ -31,6 +32,10 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
   );
 
   const isDark = usingSystemDarkMode ? systemDarkMode : userDarkMode;
+
+  useEffect(() => {
+    StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
+  }, [isDark]);
 
   return (
     <ThemeProvider theme={{ dark: isDark }}>

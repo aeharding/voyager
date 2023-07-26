@@ -1,2 +1,4 @@
 dist/
 pnpm-lock.yaml
+ios/
+vite.config.ts.timestamp-*

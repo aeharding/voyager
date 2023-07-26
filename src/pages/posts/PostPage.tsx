@@ -1,6 +1,5 @@
 import {
   IonButtons,
-  IonContent,
   IonHeader,
   IonIcon,
   IonPage,
@@ -23,6 +22,7 @@ import { jwtSelector } from "../../features/auth/authSlice";
 import CommentSort from "../../features/comment/CommentSort";
 import MoreActions from "../../features/post/shared/MoreActions";
 import PostDetail from "../../features/post/detail/PostDetail";
+import FeedContent from "../shared/FeedContent";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -117,7 +117,7 @@ export default function PostPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>{renderPost()}</IonContent>
+      <FeedContent>{renderPost()}</FeedContent>
     </IonPage>
   );
 }

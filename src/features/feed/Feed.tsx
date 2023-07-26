@@ -20,6 +20,7 @@ import EndPost from "./endItems/EndPost";
 import { useAppSelector } from "../../store";
 import { OPostAppearanceType } from "../../services/db";
 import { markReadOnScrollSelector } from "../settings/settingsSlice";
+import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import useFeedOnScroll from "./useFeedOnScroll";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 
@@ -174,12 +175,15 @@ export default function Feed<I>({
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
-        disabled={!isListAtTop}
+        disabled={isSafariFeedHackEnabled && !isListAtTop}
       >
         <IonRefresherContent />
       </IonRefresher>
 
       <Virtuoso
+        className={
+          isSafariFeedHackEnabled ? undefined : "ion-content-scroll-host"
+        }
         ref={virtuosoRef}
         style={{ height: "100%" }}
         atTopStateChange={setIsListAtTop}
