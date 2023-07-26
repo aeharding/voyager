@@ -18,12 +18,12 @@ import {
   trophyOutline,
 } from "ionicons/icons";
 
-import calendarWeekIconSvg from './icons/calendarWeek.svg';
-import calendarSingleDaySvg from './icons/calendarSingleDay.svg';
-import clockBadgeOneSvg from './icons/clockBadgeOne.svg';
-import clockBadgeSixSvg from './icons/clockBadgeSix.svg';
-import clockBadgeTwelveSvg from './icons/clockBadgeTwelve.svg';
-import calendarYearSvg from './icons/calendarYear.svg';
+import calendarWeekIconSvg from "./icons/calendarWeek.svg";
+import calendarSingleDaySvg from "./icons/calendarSingleDay.svg";
+import clockBadgeOneSvg from "./icons/clockBadgeOne.svg";
+import clockBadgeSixSvg from "./icons/clockBadgeSix.svg";
+import clockBadgeTwelveSvg from "./icons/clockBadgeTwelve.svg";
+import calendarYearSvg from "./icons/calendarYear.svg";
 
 import { useAppDispatch, useAppSelector } from "../../store";
 import { updateSortType } from "../post/postSlice";
