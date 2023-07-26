@@ -15,7 +15,16 @@ import {
   flameOutline,
   helpCircleOutline,
   timeOutline,
+  trophyOutline,
 } from "ionicons/icons";
+
+import calendarWeekIconSvg from "./icons/calendarWeek.svg";
+import calendarSingleDaySvg from "./icons/calendarSingleDay.svg";
+import clockBadgeOneSvg from "./icons/clockBadgeOne.svg";
+import clockBadgeSixSvg from "./icons/clockBadgeSix.svg";
+import clockBadgeTwelveSvg from "./icons/clockBadgeTwelve.svg";
+import calendarYearSvg from "./icons/calendarYear.svg";
+
 import { useAppDispatch, useAppSelector } from "../../store";
 import { updateSortType } from "../post/postSlice";
 import { useContext, useState } from "react";
@@ -140,14 +149,21 @@ function getSortIcon(sort: ExtendedSortType): string {
     case "NewComments":
       return chatbubbleEllipsesOutline;
     case "TopHour":
+      return clockBadgeOneSvg;
     case "TopSixHour":
+      return clockBadgeSixSvg;
     case "TopTwelveHour":
+      return clockBadgeTwelveSvg;
     case "TopDay":
+      return calendarSingleDaySvg;
     case "TopMonth":
-    case "TopWeek":
-    case "TopYear":
-    case "TopAll":
       return calendarOutline;
+    case "TopWeek":
+      return calendarWeekIconSvg;
+    case "TopYear":
+      return calendarYearSvg;
+    case "TopAll":
+      return trophyOutline;
     case "Top":
       return barChartOutline;
     case "Old":
