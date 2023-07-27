@@ -20,17 +20,21 @@ import PostCommentFeed, {
 } from "../../../features/feed/PostCommentFeed";
 import { receivedPosts } from "../../../features/post/postSlice";
 import { receivedComments } from "../../../features/comment/commentSlice";
+import { jwtSelector } from "../../../features/auth/authSlice";
 
 interface SearchPostsResultsProps {
   type: "Posts" | "Comments";
 }
 
 export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
+  const jwt = useAppSelector(jwtSelector);
   const dispatch = useAppDispatch();
-  const { search } = useParams<{ search: string }>();
+  const { search: _encodedSearch } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
+
+  const search = decodeURIComponent(_encodedSearch);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
@@ -40,12 +44,13 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
         type_: type,
         page,
         sort,
+        auth: jwt,
       });
       dispatch(receivedPosts(response.posts));
       dispatch(receivedComments(response.comments));
       return [...response.posts, ...response.comments];
     },
-    [search, client, sort, type, dispatch]
+    [search, client, sort, type, dispatch, jwt]
   );
 
   return (

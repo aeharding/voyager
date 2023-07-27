@@ -18,28 +18,31 @@ import {
 import { useEffect, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../helpers/useClient";
-import { useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { handleSelector, jwtSelector } from "../../auth/authSlice";
 import { css } from "@emotion/react";
+import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
+import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
+import { receivedComments } from "../commentSlice";
 
 export const Container = styled.div`
-  position: absolute;
-  inset: 0;
+  min-height: 100%;
 
   display: flex;
   flex-direction: column;
 `;
 
-export const Textarea = styled.textarea`
+export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
   border: 0;
   background: none;
   resize: none;
   outline: 0;
   padding: 1rem;
 
-  flex: 1 0 0;
-  min-height: 7rem;
+  min-height: 200px;
+
+  flex: 1 0 auto;
 
   ${({ theme }) =>
     !theme.dark &&
@@ -50,12 +53,12 @@ export const Textarea = styled.textarea`
     `}
 `;
 
-const UsernameIonText = styled(IonText)`
+export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
   font-weight: normal;
 `;
 
-const TitleContainer = styled.div`
+export const TitleContainer = styled.div`
   line-height: 1;
 `;
 
@@ -66,7 +69,7 @@ export type CommentReplyItem =
   | CommentReplyView;
 
 type CommentReplyProps = {
-  dismiss: (replied: boolean) => void;
+  dismiss: (reply?: CommentView | undefined) => void;
   setCanDismiss: (canDismiss: boolean) => void;
   item: CommentReplyItem;
 };
@@ -78,6 +81,7 @@ export default function CommentReply({
 }: CommentReplyProps) {
   const comment = "comment" in item ? item.comment : undefined;
 
+  const dispatch = useAppDispatch();
   const [replyContent, setReplyContent] = useState("");
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
@@ -90,8 +94,10 @@ export default function CommentReply({
 
     setLoading(true);
 
+    let reply;
+
     try {
-      await client.createComment({
+      reply = await client.createComment({
         content: replyContent,
         parent_id: comment?.id,
         post_id: item.post.id,
@@ -122,9 +128,11 @@ export default function CommentReply({
       color: "success",
     });
 
-    // TODO is there a way to avoid a timeout here?
+    dispatch(receivedComments([reply.comment_view]));
     setCanDismiss(true);
-    setTimeout(() => dismiss(true), 100);
+    // TODO is there a way to avoid a timeout here?
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    dismiss(reply.comment_view);
   }
 
   useEffect(() => {
@@ -136,7 +144,7 @@ export default function CommentReply({
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => dismiss(false)}>
+            <IonButton color="medium" onClick={() => dismiss()}>
               Cancel
             </IonButton>
           </IonButtons>
@@ -163,7 +171,7 @@ export default function CommentReply({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent {...preventPhotoswipeGalleryFocusTrap}>
         <Container>
           <Textarea
             onChange={(e) => setReplyContent(e.target.value)}

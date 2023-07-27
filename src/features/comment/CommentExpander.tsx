@@ -3,7 +3,7 @@ import { Container, CustomIonItem, PositionedContainer } from "./Comment";
 import styled from "@emotion/styled";
 import CommentHr from "./CommentHr";
 import { useContext, useState } from "react";
-import { FeedContext } from "../feed/FeedContext";
+import { CommentsContext } from "./CommentsContext";
 import useClient from "../../helpers/useClient";
 import { IonIcon, IonSpinner, useIonToast } from "@ionic/react";
 import { chevronDown } from "ionicons/icons";
@@ -54,7 +54,7 @@ export default function CommentExpander({
   collapsed,
 }: CommentExpanderProps) {
   const [present] = useIonToast();
-  const { appendComments } = useContext(FeedContext);
+  const { appendComments } = useContext(CommentsContext);
   const client = useClient();
   const [loading, setLoading] = useState(false);
 

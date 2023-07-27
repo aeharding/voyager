@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { PostView } from "lemmy-js-client";
 import { getItemActorName } from "../../helpers/lemmy";
+import { OPostBlurNsfw, PostBlurNsfwType } from "../../services/db";
 
 const Container = styled.span`
   font-size: 0.8rem;
@@ -20,9 +21,18 @@ export default function Nsfw() {
 const NSFW_INSTANCES = ["lemmynsfw.com"];
 
 export function isNsfw(post: PostView): boolean {
-  if (post.post.nsfw) return true;
+  if (post.post.nsfw || post.community.nsfw) return true;
 
   if (NSFW_INSTANCES.includes(getItemActorName(post.community))) return true;
 
   return false;
+}
+
+export function isNsfwBlurred(
+  post: PostView,
+  blurNsfw: PostBlurNsfwType
+): boolean {
+  if (blurNsfw === OPostBlurNsfw.Never) return false;
+
+  return isNsfw(post);
 }

@@ -1,13 +1,13 @@
 import React from "react";
 import { DynamicDismissableModal } from "../../shared/DynamicDismissableModal";
-import { CommentView } from "lemmy-js-client";
 import CommentEdit from "./CommentEdit";
+import { Comment } from "lemmy-js-client";
 
 interface CommentEditModalProps {
   /**
    * Comment to be edited
    */
-  item: CommentView;
+  item: Comment;
 
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;

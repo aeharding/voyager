@@ -1,8 +1,12 @@
+import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { chevronForward, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { isNsfwBlurred } from "../../labels/Nsfw";
+import { setPostRead } from "../postSlice";
 
 const Container = styled.a`
   display: flex;
@@ -13,13 +17,23 @@ const Container = styled.a`
 
   color: inherit;
   text-decoration: none;
+  -webkit-touch-callout: default;
 `;
 
-const Img = styled.img`
+const Img = styled.img<{ blur: boolean }>`
   min-height: 0;
   aspect-ratio: 16 / 9;
 
   object-fit: cover;
+
+  ${({ blur }) =>
+    blur &&
+    css`
+      filter: blur(40px);
+
+      // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
+      transform: translate3d(0, 0, 0);
+    `}
 `;
 
 const Bottom = styled.div`
@@ -46,7 +60,7 @@ const Divider = styled.div`
 
 const Url = styled.div`
   flex: 1;
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   white-space: nowrap;
   overflow: hidden;
@@ -60,6 +74,15 @@ interface EmbedProps {
 
 export default function Embed({ post, className }: EmbedProps) {
   const [error, setError] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const handleLinkClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    dispatch(setPostRead(post.post.id));
+  };
+  const blurNsfw = useAppSelector(
+    (state) => state.settings.appearance.posts.blurNsfw
+  );
 
   return (
     <Container
@@ -67,13 +90,14 @@ export default function Embed({ post, className }: EmbedProps) {
       href={post.post.url}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={(e) => e.stopPropagation()}
+      onClick={handleLinkClick}
       draggable="false"
     >
       {post.post.thumbnail_url && !error && (
         <Img
           src={post.post.thumbnail_url}
           draggable="false"
+          blur={isNsfwBlurred(post, blurNsfw)}
           onError={() => setError(true)}
         />
       )}

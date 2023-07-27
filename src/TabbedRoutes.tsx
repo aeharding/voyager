@@ -16,7 +16,7 @@ import {
   fileTray,
   telescope,
 } from "ionicons/icons";
-import PostDetail from "./features/post/detail/PostDetail";
+import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppSelector } from "./store";
@@ -50,24 +50,25 @@ import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
 import UpdateAppPage from "./pages/settings/UpdateAppPage";
 import useShouldInstall from "./features/pwa/useShouldInstall";
 import { UpdateContext } from "./pages/settings/update/UpdateContext";
-import { LEMMY_SERVERS } from "./helpers/lemmy";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
-import ApolloMigratePage from "./pages/settings/ApolloMigratePage";
-import PostAppearancePage from "./pages/settings/PostAppearancePage";
+import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
-import ProfileLabelSelectionPage from "./pages/settings/ProfileLabelSelectionPage";
-import { OProfileLabelType } from "./features/settings/appearance/appearanceSlice";
+import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
+import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
+import { getDefaultServer } from "./services/app";
+import GeneralPage from "./pages/settings/GeneralPage";
+import HidingSettingsPage from "./pages/settings/HidingSettingsPage";
+import DeviceModeSettingsPage from "./pages/settings/DeviceModeSettingsPage";
+import { OProfileLabelType } from "./services/db";
 
 const Interceptor = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: all;
 `;
-
-export const DEFAULT_ACTOR = LEMMY_SERVERS[0];
 
 export default function TabbedRoutes() {
   const { activePage } = useContext(AppContext);
@@ -77,6 +78,7 @@ export default function TabbedRoutes() {
   const totalUnread = useAppSelector(totalUnreadSelector);
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
+  const ready = useAppSelector((state) => state.settings.ready);
 
   const settingsNotificationCount =
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
@@ -92,20 +94,19 @@ export default function TabbedRoutes() {
 
   const userHandle = useAppSelector(handleSelector);
   const profileLabelType = useAppSelector(
-    (state) => state.appearance.profile.label
-  );
-  const hideInstanceUrl = useAppSelector(
-    (state) => state.appearance.profile.hideInstanceUrl
+    (state) => state.settings.appearance.general.profileLabel
   );
 
   const getProfileLabel = useCallback(() => {
     switch (profileLabelType) {
       case OProfileLabelType.Hide:
         return "Profile";
-      case OProfileLabelType.Username:
+      // eslint-disable-next-line no-fallthrough
+      case OProfileLabelType.UsernameAndUrl:
+      case OProfileLabelType.UsernameMinimumUrl:
         // if the user is not logged in but the setting was selected, it will fall-through to the default case.
         if (accounts && userHandle) {
-          if (hideInstanceUrl) {
+          if (profileLabelType === OProfileLabelType.UsernameMinimumUrl) {
             const activeUsername = userHandle.slice(
               0,
               userHandle.lastIndexOf("@")
@@ -126,18 +127,10 @@ export default function TabbedRoutes() {
           return userHandle;
         }
       // eslint-disable-next-line no-fallthrough
-      case OProfileLabelType.InstanceUrl:
-      // eslint-disable-next-line no-fallthrough
-      default:
+      default: // also covers instance URL
         return connectedInstance;
     }
-  }, [
-    profileLabelType,
-    userHandle,
-    connectedInstance,
-    hideInstanceUrl,
-    accounts,
-  ]);
+  }, [profileLabelType, userHandle, connectedInstance, accounts]);
 
   const isPostsButtonDisabled = location.pathname.startsWith("/posts");
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
@@ -147,19 +140,25 @@ export default function TabbedRoutes() {
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
-      router.push(`/posts/${actor ?? iss ?? DEFAULT_ACTOR}`, "back");
+      router.push(`/posts/${actor ?? iss ?? getDefaultServer()}`, "back");
       return;
     }
-    if (location.pathname === `/posts/${actor ?? iss ?? DEFAULT_ACTOR}`) return;
+
+    const communitiesPath = `/posts/${actor ?? iss ?? getDefaultServer()}`;
+    if (
+      location.pathname === communitiesPath ||
+      location.pathname === `${communitiesPath}/`
+    )
+      return;
 
     if (router.canGoBack()) {
       router.goBack();
     } else {
       router.push(
-        `/posts/${actor ?? iss ?? DEFAULT_ACTOR}/${jwt ? "home" : "all"}`,
+        `/posts/${actor ?? iss ?? getDefaultServer()}/${jwt ? "home" : "all"}`,
         "back"
       );
     }
@@ -168,7 +167,7 @@ export default function TabbedRoutes() {
   async function onInboxClick() {
     if (!isInboxButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push(`/inbox`, "back");
   }
@@ -176,7 +175,7 @@ export default function TabbedRoutes() {
   async function onProfileClick() {
     if (!isProfileButtonDisabled) return;
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push("/profile", "back");
   }
@@ -187,39 +186,9 @@ export default function TabbedRoutes() {
     // if the search page is already open, focus the search bar
     focusSearchBar();
 
-    if (await scrollUpIfNeeded()) return;
+    if (await scrollUpIfNeeded(activePage)) return;
 
     router.push(`/search`, "back");
-  }
-
-  async function scrollUpIfNeeded() {
-    if (!activePage) return false;
-
-    if ("querySelector" in activePage) {
-      const scroll =
-        activePage?.querySelector('[data-virtuoso-scroller="true"]') ??
-        activePage
-          ?.querySelector("ion-content")
-          ?.shadowRoot?.querySelector(".inner-scroll");
-
-      if (scroll?.scrollTop) {
-        scroll.scrollTo({ top: 0, behavior: "smooth" });
-        return true;
-      }
-    } else {
-      return new Promise((resolve) =>
-        activePage.current?.getState((state) => {
-          if (state.scrollTop) {
-            activePage.current?.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            });
-          }
-
-          resolve(!!state.scrollTop);
-        })
-      );
-    }
   }
 
   function buildGeneralBrowseRoutes(tab: string) {
@@ -270,24 +239,38 @@ export default function TabbedRoutes() {
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Saved" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
         <ActorRedirect>
           <ProfileFeedHiddenPostsPage />
         </ActorRedirect>
       </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/message`}>
+        <InboxAuthRequired>
+          <ConversationPage />
+        </InboxAuthRequired>
+      </Route>,
     ];
   }
+
+  if (!ready) return;
 
   return (
     <PageContextProvider value={{ page: pageRef.current as HTMLElement }}>
       {/* TODO key={} resets the tab route stack whenever your instance changes. */}
       {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
       {/* But this isn't trivial with needing to rewrite URLs... */}
-      <IonTabs key={iss ?? DEFAULT_ACTOR}>
+      <IonTabs key={iss ?? getDefaultServer()}>
         <IonRouterOutlet ref={pageRef}>
           <Route exact path="/">
             <Redirect
-              to={`/posts/${iss ?? DEFAULT_ACTOR}/${iss ? "home" : "all"}`}
+              to={`/posts/${iss ?? getDefaultServer()}/${iss ? "home" : "all"}`}
               push={false}
             />
           </Route>
@@ -357,7 +340,6 @@ export default function TabbedRoutes() {
             <ProfilePage />
           </Route>
           {...buildGeneralBrowseRoutes("profile")}
-
           <Route exact path="/profile/:actor">
             <Redirect to="/profile" push={false} />
           </Route>
@@ -378,6 +360,7 @@ export default function TabbedRoutes() {
           <Route exact path="/search/:actor">
             <Redirect to="/search" push={false} />
           </Route>
+
           <Route exact path="/settings">
             <SettingsPage />
           </Route>
@@ -390,23 +373,29 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/update">
             <UpdateAppPage />
           </Route>
+          <Route exact path="/settings/general">
+            <GeneralPage />
+          </Route>
+          <Route exact path="/settings/general/hiding">
+            <HidingSettingsPage />
+          </Route>
           <Route exact path="/settings/appearance">
             <AppearancePage />
           </Route>
-          <Route exact path="/settings/apollo-migrate">
-            <ApolloMigratePage />
+          <Route exact path="/settings/appearance/mode">
+            <DeviceModeSettingsPage />
           </Route>
-          <Route exact path="/settings/apollo-migrate/:search">
+          <Route exact path="/settings/blocks">
+            <BlocksSettingsPage />
+          </Route>
+          <Route exact path="/settings/reddit-migrate">
+            <RedditMigratePage />
+          </Route>
+          <Route exact path="/settings/reddit-migrate/:search">
             <SearchCommunitiesPage />
           </Route>
-          {/* general routes for settings is only for apollo-migrate */}
+          {/* general routes for settings is only for reddit-migrate */}
           {...buildGeneralBrowseRoutes("settings")}
-          <Route exact path="/settings/appearance/posts">
-            <PostAppearancePage />
-          </Route>
-          <Route exact path="/settings/appearance/profile-label">
-            <ProfileLabelSelectionPage />
-          </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton

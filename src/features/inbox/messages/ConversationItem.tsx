@@ -45,7 +45,7 @@ const PersonLabel = styled.h3`
 const OpenDetails = styled.span`
   flex: 0;
 
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   display: inline-flex;
   align-items: center;
@@ -60,7 +60,7 @@ const MessagePreview = styled.div`
 
   height: 2.5rem;
   line-height: var(--line-height);
-  font-size: 0.9em;
+  font-size: 0.875em;
   height: calc(var(--line-height) * var(--num-lines));
 
   color: var(--ion-color-medium);
@@ -96,11 +96,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
   );
 
-  const previewMsg = messages.sort(
-    (a, b) =>
-      Date.parse(b.private_message.published) -
-      Date.parse(a.private_message.published)
-  )[0];
+  const previewMsg = messages[0]; // presorted, newest => oldest
 
   const person =
     previewMsg.creator.id === myUserId

@@ -14,14 +14,18 @@ import {
   useIonToast,
 } from "@ionic/react";
 import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
-import { CenteredSpinner } from "../post/detail/PostDetail";
+import { CenteredSpinner } from "../../pages/posts/PostPage";
 import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
 import EndPost from "./EndPost";
+import { useAppSelector } from "../../store";
+import { OPostAppearanceType } from "../../services/db";
+import { markReadOnScrollSelector } from "../settings/settingsSlice";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
 export interface FeedProps<I> {
+  itemsRef?: React.MutableRefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
   filterFn?: (item: I) => boolean;
   getIndex?: (item: I) => number | string;
@@ -33,6 +37,7 @@ export interface FeedProps<I> {
 }
 
 export default function Feed<I>({
+  itemsRef,
   fetchFn,
   filterFn,
   renderItemContent,
@@ -47,11 +52,22 @@ export default function Feed<I>({
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
   const [present] = useIonToast();
+  const postAppearanceType = useAppSelector(
+    (state) => state.settings.appearance.posts.type
+  );
 
   const filteredItems = useMemo(
     () => (filterFn ? items.filter(filterFn) : items),
     [filterFn, items]
   );
+
+  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+
+  useEffect(() => {
+    if (!itemsRef) return;
+
+    itemsRef.current = items;
+  }, [items, itemsRef]);
 
   // Fetch more items if there are less than FETCH_MORE_THRESHOLD items left due to filtering
   useEffect(() => {
@@ -173,7 +189,24 @@ export default function Feed<I>({
           fetchMore();
         }}
         components={{ Header: header, Footer: footer }}
-        increaseViewportBy={800}
+        increaseViewportBy={
+          postAppearanceType === OPostAppearanceType.Compact
+            ? // Compact posts have fixed size, so we don't need to proactively render
+              markReadOnScroll
+              ? {
+                  // Intersection observer needs time to work when quickly scrolling
+                  // TODO it would be nice if we could just detect if removed from top or bottom of
+                  // page on unmount
+                  top: 150,
+                  bottom: 0,
+                }
+              : 0
+            : {
+                // Height of post depends on image aspect ratio, so load extra off screen
+                top: 200,
+                bottom: 800,
+              }
+        }
       />
     </>
   );

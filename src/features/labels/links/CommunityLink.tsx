@@ -5,6 +5,11 @@ import Handle from "../Handle";
 import { StyledLink } from "./shared";
 import ItemIcon from "../img/ItemIcon";
 import { css } from "@emotion/react";
+import { useAppDispatch } from "../../../store";
+import { useIonActionSheet, useIonToast } from "@ionic/react";
+import { useLongPress } from "use-long-press";
+import { blockCommunity } from "../../community/communitySlice";
+import { buildBlocked } from "../../../helpers/toastMessages";
 
 interface CommunityLinkProps {
   community: Community;
@@ -15,9 +20,36 @@ interface CommunityLinkProps {
 
 export default function CommunityLink({
   community,
-  className,
   showInstanceWhenRemote,
+  className,
 }: CommunityLinkProps) {
+  const dispatch = useAppDispatch();
+  const [present] = useIonActionSheet();
+  const [presentToast] = useIonToast();
+
+  const bind = useLongPress(
+    () => {
+      present([
+        {
+          text: "Block Community",
+          role: "destructive",
+          handler: () => {
+            (async () => {
+              await dispatch(blockCommunity(true, community.id));
+
+              presentToast(buildBlocked(true, getHandle(community)));
+            })();
+          },
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ]);
+    },
+    { cancelOnMovement: true }
+  );
+
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   return (
@@ -25,6 +57,7 @@ export default function CommunityLink({
       to={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
       onClick={(e) => e.stopPropagation()}
       className={className}
+      {...bind()}
     >
       <ItemIcon
         item={community}

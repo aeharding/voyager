@@ -13,13 +13,13 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useEffect, useMemo, useState } from "react";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
-import { groupBy } from "lodash";
+import { groupBy, sortBy } from "lodash";
 import { jwtPayloadSelector } from "../../features/auth/authSlice";
 import ConversationItem from "../../features/inbox/messages/ConversationItem";
 import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { syncMessages } from "../../features/inbox/inboxSlice";
 import ComposeButton from "./ComposeButton";
-import { CenteredSpinner } from "../../features/post/detail/PostDetail";
+import { CenteredSpinner } from "../posts/PostPage";
 
 export default function MessagesPage() {
   const dispatch = useAppDispatch();
@@ -46,12 +46,17 @@ export default function MessagesPage() {
 
   const messagesByCreator = useMemo(
     () =>
-      Object.values(
-        groupBy(messages, (m) =>
-          m.private_message.creator_id === myUserId
-            ? m.private_message.recipient_id
-            : m.private_message.creator_id
-        )
+      sortBy(
+        Object.values(
+          groupBy(messages, (m) =>
+            m.private_message.creator_id === myUserId
+              ? m.private_message.recipient_id
+              : m.private_message.creator_id
+          )
+        ).map((messages) =>
+          sortBy(messages, (m) => -Date.parse(m.private_message.published))
+        ),
+        (group) => -Date.parse(group[0].private_message.published)
       ),
     [messages, myUserId]
   );
