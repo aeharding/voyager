@@ -10,6 +10,7 @@ import { voteError } from "../../../helpers/toastMessages";
 import { PageContext } from "../../auth/PageContext";
 import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
 import { useTransition } from "react-transition-state";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -84,6 +85,8 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
       className={state.status}
       onClick={async (e) => {
         e.stopPropagation();
+
+        Haptics.impact({ style: ImpactStyle.Light });
 
         if (presentLoginIfNeeded()) return;
 

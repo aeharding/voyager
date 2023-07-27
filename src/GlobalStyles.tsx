@@ -8,6 +8,7 @@ import {
 } from "./theme/variables";
 import React, { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import { isNative } from "./helpers/device";
 
 interface GlobalStylesProps {
   children: React.ReactNode;
@@ -34,6 +35,8 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
   const isDark = usingSystemDarkMode ? systemDarkMode : userDarkMode;
 
   useEffect(() => {
+    if (!isNative()) return;
+
     StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
   }, [isDark]);
 

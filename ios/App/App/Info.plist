@@ -45,6 +45,10 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Attach photo to a new post</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save photos to device</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>

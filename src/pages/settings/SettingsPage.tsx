@@ -14,6 +14,7 @@ import {
   bagCheckOutline,
   cog,
   colorPalette,
+  gitCompareOutline,
   logoGithub,
   mailOutline,
   openOutline,
@@ -168,6 +169,20 @@ export default function SettingsPage() {
               </sup>
             </SettingLabel>
           </InsetIonItem>
+          {isNative() && (
+            <InsetIonItem
+              href="https://github.com/aeharding/voyager/releases"
+              target="_blank"
+              rel="noopener noreferrer"
+              detail={false}
+            >
+              <IonIcon icon={gitCompareOutline} color="medium" />
+              <SettingLabel>Release</SettingLabel>
+              <SettingLabel color="medium" slot="end">
+                {APP_VERSION}
+              </SettingLabel>
+            </InsetIonItem>
+          )}
         </IonList>
       </AppContent>
     </IonPage>
