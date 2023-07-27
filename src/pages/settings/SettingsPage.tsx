@@ -140,10 +140,12 @@ export default function SettingsPage() {
         </IonList>
 
         <IonList inset color="primary">
-          <InsetIonItem routerLink="/settings/terms">
-            <IonIcon icon={shieldCheckmarkOutline} color="primary" />
-            <SettingLabel>Terms &amp; Privacy</SettingLabel>
-          </InsetIonItem>
+          {!isNative() ? (
+            <InsetIonItem routerLink="/settings/terms">
+              <IonIcon icon={shieldCheckmarkOutline} color="primary" />
+              <SettingLabel>Terms &amp; Privacy</SettingLabel>
+            </InsetIonItem>
+          ) : undefined}
           <InsetIonItem
             href="https://github.com/aeharding/voyager"
             target="_blank"
