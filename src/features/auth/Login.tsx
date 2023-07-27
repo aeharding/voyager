@@ -26,6 +26,7 @@ import { IonInputCustomEvent } from "@ionic/core";
 import TermsSheet from "../settings/terms/TermsSheet";
 import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
 import { getCustomServers } from "../../services/app";
+import { isNative } from "../../helpers/device";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -288,11 +289,13 @@ export default function Login({
                 </>
               )}
 
-              <HelperText>
-                <IonRouterLink onClick={() => presentTerms()}>
-                  Privacy &amp; Terms
-                </IonRouterLink>
-              </HelperText>
+              {!isNative() ? (
+                <HelperText>
+                  <IonRouterLink onClick={() => presentTerms()}>
+                    Privacy &amp; Terms
+                  </IonRouterLink>
+                </HelperText>
+              ) : undefined}
 
               <HelperText>
                 <IonRouterLink
