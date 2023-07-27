@@ -29,6 +29,7 @@ import { css } from "@emotion/react";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { PageContext } from "../../auth/PageContext";
 import PostGalleryImg from "../../gallery/PostGalleryImg";
+import { scrollIntoView } from "../../../helpers/dom";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -156,7 +157,9 @@ export default function PostDetail({
   });
 
   useEffect(() => {
-    titleRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!titleRef.current) return;
+
+    scrollIntoView(titleRef.current);
   }, [collapsed]);
 
   const onHeight = useCallback(

@@ -16,7 +16,7 @@ import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
-import { isNative } from "../../helpers/device";
+import { scrollIntoView as scrollIntoView } from "../../helpers/dom";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -209,15 +209,12 @@ export default function Comment({
 
   useEffect(() => {
     if (highlightedCommentId !== comment.id) return;
-    if (isNative()) return;
 
     setTimeout(() => {
-      commentRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "nearest",
-      });
-    }, 600);
+      if (!commentRef.current) return;
+
+      scrollIntoView(commentRef.current, 100);
+    }, 50);
   }, [highlightedCommentId, comment]);
 
   return (
