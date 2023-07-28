@@ -38,6 +38,7 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
     if (!isNative()) return;
 
     StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
+    StatusBar.setBackgroundColor({ color: isDark ? "#000" : "#f7f7f7" }); // android only
   }, [isDark]);
 
   return (
