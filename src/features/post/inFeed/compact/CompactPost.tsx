@@ -14,6 +14,7 @@ import Save from "../../../labels/Save";
 import Nsfw, { isNsfw } from "../../../labels/Nsfw";
 import { useAppSelector } from "../../../../store";
 import { useMemo } from "react";
+import InlineMarkdown from "../../../shared/InlineMarkdown";
 
 const Container = styled.div`
   display: flex;
@@ -37,6 +38,8 @@ const Content = styled.div`
 `;
 
 const Title = styled.span<{ isRead: boolean }>`
+  font-size: 0.9375em;
+
   ${({ isRead }) =>
     isRead &&
     css`
@@ -113,7 +116,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
       {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
       <Content>
         <Title isRead={hasBeenRead}>
-          {post.post.name} {nsfw && <Nsfw />}
+          <InlineMarkdown>{post.post.name}</InlineMarkdown> {nsfw && <Nsfw />}
         </Title>
         <Aside isRead={hasBeenRead}>
           <From>

@@ -48,8 +48,8 @@ export function getRemoteHandle(
   return `${item.name}@${getItemActorName(item)}`;
 }
 
-export function canModify(comment: CommentView) {
-  return !comment.comment.deleted && !comment.comment.removed;
+export function canModify(comment: Comment) {
+  return !comment.deleted && !comment.removed;
 }
 
 export function buildCommentsTree(

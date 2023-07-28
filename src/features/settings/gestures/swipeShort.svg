@@ -1,0 +1,25 @@
+<svg
+  version="1.1" xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 128 128"
+  preserveAspectRatio="xMidYMid meet"
+>
+  <rect
+    x="18"
+    y="34"
+    width="35"
+    height="60"
+    stroke-width="2"
+    fill-opacity="30%"
+  />
+
+  <path
+    stroke-width="2"
+    fill="none"
+    d="M 110 34 H 53"
+  />
+  <path
+    stroke-width="2"
+    fill="none"
+    d="M 110 94 H 53"
+  />
+</svg>

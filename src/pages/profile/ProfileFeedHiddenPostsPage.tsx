@@ -8,7 +8,6 @@ import {
   IonTitle,
   IonButtons,
   IonBackButton,
-  IonContent,
 } from "@ionic/react";
 import { useParams } from "react-router";
 import styled from "@emotion/styled";
@@ -22,6 +21,7 @@ import PostCommentFeed, {
 import { handleSelector, jwtSelector } from "../../features/auth/authSlice";
 import { IPostMetadata, db } from "../../services/db";
 import { postHiddenByIdSelector } from "../../features/post/postSlice";
+import FeedContent from "../shared/FeedContent";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -102,13 +102,13 @@ export default function ProfileFeedHiddenPostsPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <FeedContent>
         <PostCommentFeed
           filterHiddenPosts={false}
           fetchFn={fetchFn}
           limit={LIMIT}
         />
-      </IonContent>
+      </FeedContent>
     </IonPage>
   );
 }

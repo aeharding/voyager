@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 import ViteExpress from "vite-express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
@@ -33,6 +34,8 @@ INITIAL_VALID_LEMMY_SERVERS.forEach(
 const app = express();
 
 const PROXY_ENDPOINT = "/api/:actor";
+
+app.use(compression());
 
 app.use(PROXY_ENDPOINT, async (req, res, next) => {
   const actor = req.params.actor;

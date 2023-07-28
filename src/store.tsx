@@ -18,6 +18,9 @@ import settingsSlice, {
   fetchSettingsFromDatabase,
   getBlurNsfw,
 } from "./features/settings/settingsSlice";
+import gestureSlice, {
+  fetchGesturesFromDatabase,
+} from "./features/settings/gestures/gestureSlice";
 
 const store = configureStore({
   reducer: {
@@ -28,6 +31,7 @@ const store = configureStore({
     user: userSlice,
     inbox: inboxSlice,
     settings: settingsSlice,
+    gesture: gestureSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
@@ -61,6 +65,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       try {
         // Load initial settings from DB into the store
         await store.dispatch(fetchSettingsFromDatabase());
+        await store.dispatch(fetchGesturesFromDatabase());
       } finally {
         // Subscribe to actions to handle handle changes, this can be used to react to other changes as well
         // to coordinate side effects between slices.

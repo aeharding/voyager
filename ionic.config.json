@@ -1,0 +1,7 @@
+{
+  "name": "Voyager",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

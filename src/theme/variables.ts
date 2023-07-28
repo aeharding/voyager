@@ -33,12 +33,12 @@ export const baseVariables = css`
     --ion-color-tertiary-tint: #6370ff;
 
     /** success **/
-    --ion-color-success: #2dd36f;
-    --ion-color-success-rgb: 45, 211, 111;
+    --ion-color-success: #07be02;
+    --ion-color-success-rgb: 7, 190, 2;
     --ion-color-success-contrast: #ffffff;
     --ion-color-success-contrast-rgb: 255, 255, 255;
-    --ion-color-success-shade: #28ba62;
-    --ion-color-success-tint: #42d77d;
+    --ion-color-success-shade: #06a702;
+    --ion-color-success-tint: #20c51b;
 
     /** warning **/
     --ion-color-warning: #ffc409;
@@ -107,6 +107,10 @@ export const baseVariables = css`
 `;
 
 export const lightVariables = css`
+  :root {
+    --ion-item-border-color: #ddd;
+  }
+
   :root.ios .grey-bg {
     --ion-background-color: var(--ion-color-step-50, #f2f2f7);
   }
@@ -128,6 +132,8 @@ export const darkVariables = css`
   // Dark Colors
   :root {
     --lightroom-bg: rgba(255, 255, 255, 0.08);
+
+    --ion-item-border-color: #333;
   }
 
   body {
@@ -152,12 +158,12 @@ export const darkVariables = css`
     --ion-color-tertiary-shade: #5d58e0;
     --ion-color-tertiary-tint: #7974ff;
 
-    --ion-color-success: #2fdf75;
-    --ion-color-success-rgb: 47, 223, 117;
-    --ion-color-success-contrast: #000000;
-    --ion-color-success-contrast-rgb: 0, 0, 0;
-    --ion-color-success-shade: #29c467;
-    --ion-color-success-tint: #44e283;
+    --ion-color-success: #00940c;
+    --ion-color-success-rgb: 0, 148, 12;
+    --ion-color-success-contrast: #ffffff;
+    --ion-color-success-contrast-rgb: 255, 255, 255;
+    --ion-color-success-shade: #00820b;
+    --ion-color-success-tint: #1a9f24;
 
     --ion-color-warning: #ffd534;
     --ion-color-warning-rgb: 255, 213, 52;

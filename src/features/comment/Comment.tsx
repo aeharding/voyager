@@ -16,6 +16,7 @@ import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
+import { scrollIntoView as scrollIntoView } from "../../helpers/dom";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -76,7 +77,7 @@ export const Container = styled.div<{
   position: relative;
   width: 100%;
 
-  font-size: 0.875em;
+  font-size: 0.9375em;
 
   display: flex;
   flex-direction: column;
@@ -119,6 +120,8 @@ export const Container = styled.div<{
 const Header = styled.div`
   display: flex;
   align-items: center;
+
+  font-size: 0.875rem;
 
   gap: 0.5rem;
 
@@ -208,12 +211,10 @@ export default function Comment({
     if (highlightedCommentId !== comment.id) return;
 
     setTimeout(() => {
-      commentRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "nearest",
-      });
-    }, 600);
+      if (!commentRef.current) return;
+
+      scrollIntoView(commentRef.current, 100);
+    }, 50);
   }, [highlightedCommentId, comment]);
 
   return (
