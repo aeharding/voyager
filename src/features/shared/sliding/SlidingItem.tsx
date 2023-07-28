@@ -109,11 +109,15 @@ export interface SlidingItemProps {
 const FIRST_ACTION_RATIO = 1;
 const SECOND_ACTION_RATIO = 1.75;
 
-function getActiveItem(ratio: number) {
+function getActiveItem(
+  ratio: number,
+  hasNearSwipe: boolean,
+  hasFarSwipe: boolean
+) {
   ratio = Math.abs(ratio);
 
-  if (ratio > SECOND_ACTION_RATIO) return 2;
-  if (ratio > FIRST_ACTION_RATIO) return 1;
+  if (ratio > SECOND_ACTION_RATIO && hasFarSwipe) return 2;
+  if (ratio > FIRST_ACTION_RATIO && hasNearSwipe) return 1;
   return 0;
 }
 
@@ -139,11 +143,16 @@ export default function SlidingItem({
     setRatio(ratio);
     setDragging(true);
 
-    if (getActiveItem(ratio) > activeActionRef.current) {
+    const hasNearSwipe = !!(ratio < 0 ? startActions[0] : endActions[0]);
+    const hasFarSwipe = !!(ratio < 0 ? startActions[1] : endActions[1]);
+
+    const activeItem = getActiveItem(ratio, hasNearSwipe, hasFarSwipe);
+
+    if (activeItem > activeActionRef.current) {
       Haptics.impact({ style: ImpactStyle.Light });
     }
 
-    activeActionRef.current = getActiveItem(ratio);
+    activeActionRef.current = activeItem;
   }
 
   /*
