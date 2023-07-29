@@ -1,6 +1,6 @@
 import { CommunityView } from "lemmy-js-client";
-import CommunitySidebar from "./CommunitySidebar";
-import InstanceSidebar from "./InstanceSidebar";
+import CommunitySidebar from "./internal/CommunitySidebar";
+import InstanceSidebar from "./internal/InstanceSidebar";
 
 interface SidebarProps {
   community?: CommunityView;

@@ -1,8 +1,8 @@
 import { Person } from "lemmy-js-client";
-import { getHandle } from "../../helpers/lemmy";
-import ItemIcon from "../labels/img/ItemIcon";
+import { getHandle } from "../../../helpers/lemmy";
+import ItemIcon from "../../labels/img/ItemIcon";
 import { IonItem, IonList } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import styled from "@emotion/styled";
 
 const Content = styled.div`

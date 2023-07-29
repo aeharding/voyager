@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
-import { useAppSelector } from "../../store";
-import { CenteredSpinner } from "../post/detail/PostDetail";
+import { useAppSelector } from "../../../store";
+import { CenteredSpinner } from "../../post/detail/PostDetail";
 import GenericSidebar from "./GenericSidebar";
 import styled from "@emotion/styled";
 

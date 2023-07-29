@@ -1,6 +1,6 @@
 import { CommunityView } from "lemmy-js-client";
-import { useAppSelector } from "../../store";
-import { getHandle } from "../../helpers/lemmy";
+import { useAppSelector } from "../../../store";
+import { getHandle } from "../../../helpers/lemmy";
 import GenericSidebar from "./GenericSidebar";
 
 interface CommunitySidebarProps {
