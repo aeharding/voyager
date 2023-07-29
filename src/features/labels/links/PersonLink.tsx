@@ -41,7 +41,7 @@ export default function PersonLink({
 
   if (person.admin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
-  else if (opId && person.id === opId) color = "var(--ion-color-primary)";
+  else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
   return (
     <StyledLink

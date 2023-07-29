@@ -3,8 +3,8 @@ import { useAppSelector } from "./store";
 import useSystemDarkMode from "./helpers/useSystemDarkMode";
 import {
   baseVariables,
-  darkVariables,
-  lightVariables,
+  buildDarkVariables,
+  buildLightVariables,
 } from "./theme/variables";
 import React, { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
@@ -28,9 +28,10 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
         font-size: ${fontSizeMultiplier}rem;
       `;
 
-  const { userDarkMode, usingSystemDarkMode } = useAppSelector(
+  const { userDarkMode, usingSystemDarkMode, pureBlack } = useAppSelector(
     (state) => state.settings.appearance.dark
   );
+  const theme = useAppSelector((state) => state.settings.appearance.theme);
 
   const isDark = usingSystemDarkMode ? systemDarkMode : userDarkMode;
 
@@ -54,7 +55,9 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
 
           ${baseVariables}
 
-          ${isDark ? darkVariables : lightVariables}
+          ${isDark
+            ? buildDarkVariables(theme, pureBlack)
+            : buildLightVariables(theme)}
         `}
       />
       {children}

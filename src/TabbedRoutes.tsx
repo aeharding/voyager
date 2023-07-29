@@ -60,6 +60,7 @@ import GeneralPage from "./pages/settings/GeneralPage";
 import HidingSettingsPage from "./pages/settings/HidingSettingsPage";
 import DeviceModeSettingsPage from "./pages/settings/DeviceModeSettingsPage";
 import InstanceSidebarPage from "./pages/shared/InstanceSidebarPage";
+import AppearanceThemePage from "./pages/settings/AppearanceThemePage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -344,7 +345,10 @@ export default function TabbedRoutes() {
           <Route exact path="/settings/appearance">
             <AppearancePage />
           </Route>
-          <Route exact path="/settings/appearance/mode">
+          <Route exact path="/settings/appearance/theme">
+            <AppearanceThemePage />
+          </Route>
+          <Route exact path="/settings/appearance/theme/mode">
             <DeviceModeSettingsPage />
           </Route>
           <Route exact path="/settings/gestures">

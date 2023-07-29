@@ -7,25 +7,22 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import SelectDeviceMode from "../../features/settings/appearance/themes/system/SelectDeviceMode";
+import Theme from "../../features/settings/appearance/themes/Theme";
 
-export default function DeviceModeSettingsPage() {
+export default function AppearanceThemePage() {
   return (
     <IonPage className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
-              defaultHref="/settings/appearance"
-              text="Appearance"
-            />
+            <IonBackButton defaultHref="/settings" text="Settings" />
           </IonButtons>
 
-          <IonTitle>Device Mode</IonTitle>
+          <IonTitle>Theme</IonTitle>
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY>
-        <SelectDeviceMode />
+        <Theme />
       </AppContent>
     </IonPage>
   );

@@ -1,9 +1,9 @@
 import { IonLabel, IonList, IonRadio, IonRadioGroup } from "@ionic/react";
-import { InsetIonItem } from "../../../user/Profile";
+import { InsetIonItem } from "../../../../user/Profile";
 import { getDeviceModeLabel } from "./DeviceMode";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { useState } from "react";
-import { setDeviceMode } from "../../settingsSlice";
+import { setDeviceMode } from "../../../settingsSlice";
 
 const MODES = ["ios", "md"] as const;
 
