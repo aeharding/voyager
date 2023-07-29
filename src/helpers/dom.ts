@@ -1,6 +1,6 @@
 import { ua } from "./device";
 
-const useScrollIntoViewWorkaround = ua.getEngine().name === "WebKit";
+export const useScrollIntoViewWorkaround = ua.getEngine().name === "WebKit";
 
 // Safari's implementation of scrollIntoView is super glitchy
 // so just do our own thing 🤷‍♂️
