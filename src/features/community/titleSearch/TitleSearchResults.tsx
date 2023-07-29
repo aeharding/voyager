@@ -11,7 +11,7 @@ import styled from "@emotion/styled";
 import { useDebounce } from "usehooks-ts";
 import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
-import { IonItem, IonList, useIonRouter } from "@ionic/react";
+import { IonItem, IonList, createAnimation, useIonRouter } from "@ionic/react";
 import { useAppSelector } from "../../../store";
 import { notEmpty } from "../../../helpers/array";
 import { uniqBy } from "lodash";
@@ -141,7 +141,13 @@ export default function TitleSearchResults() {
         route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
       }
 
-      router.push(route, undefined, "replace");
+      // TODO - there is an Ionic bug where routerDirection="none" isn't
+      // being respected when routeAction="replace"
+      // https://github.com/ionic-team/ionic-framework/issues/24260
+      // So as a workaround, use blank animation builder.
+      // Unfortunately, this workaround breaks swipe back animation.
+      // Once this is fixed, remove last two parameters
+      router.push(route, "none", "replace", undefined, () => createAnimation());
     },
     [buildGeneralBrowseLink, router]
   );
