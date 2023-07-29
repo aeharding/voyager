@@ -36,3 +36,31 @@ export function buildBlocked(blocked: boolean, handle: string): ToastOptions {
     color: "success",
   };
 }
+
+export function buildProblemSubscribing(
+  isSubscribed: boolean,
+  community: string
+): ToastOptions {
+  return {
+    message: `Problem ${
+      isSubscribed ? "unsubscribing from" : "subscribing to"
+    } c/${community}. Please try again.`,
+    duration: 3500,
+    position: "bottom",
+    color: "danger",
+  };
+}
+
+export function buildSuccessSubscribing(
+  isSubscribed: boolean,
+  community: string
+): ToastOptions {
+  return {
+    message: `${
+      isSubscribed ? "Unsubscribed from" : "Subscribed to"
+    } c/${community}.`,
+    duration: 3500,
+    position: "bottom",
+    color: "success",
+  };
+}

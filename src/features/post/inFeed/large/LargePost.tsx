@@ -200,6 +200,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
               <CommunityLink
                 community={post.community}
                 showInstanceWhenRemote
+                subscribed={post.subscribed}
               />
             )}
           </CommunityName>
