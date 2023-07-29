@@ -1,12 +1,12 @@
 import { IonBadge } from "@ionic/react";
-import { formatNumber } from "../../../helpers/number";
 import { CommunityAggregates, SiteAggregates } from "lemmy-js-client";
+import { formatNumber } from "../../helpers/number";
 
-interface CommunityCountsProps {
+interface SidebarCountsProps {
   counts: CommunityAggregates | SiteAggregates;
 }
 
-export default function CommunityCounts({ counts }: CommunityCountsProps) {
+export default function SidebarCounts({ counts }: SidebarCountsProps) {
   return (
     <>
       {"subscribers" in counts ? (
