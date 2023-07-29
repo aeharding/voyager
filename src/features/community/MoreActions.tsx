@@ -142,8 +142,13 @@ export default function MoreActions({ community }: MoreActionsProps) {
             case "subscribe": {
               if (presentLoginIfNeeded()) return;
 
+              const communityId = communityByHandle[community]?.community.id;
+
+              if (communityId === undefined)
+                throw new Error("community not found");
+
               try {
-                await dispatch(followCommunity(!isSubscribed, community));
+                await dispatch(followCommunity(!isSubscribed, communityId));
               } catch (error) {
                 present({
                   message: `Problem ${

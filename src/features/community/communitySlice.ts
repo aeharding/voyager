@@ -124,17 +124,14 @@ export const getFavoriteCommunities =
   };
 
 export const followCommunity =
-  (follow: boolean, handle: string) =>
+  (follow: boolean, communityId: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwt = jwtSelector(getState());
 
-    const id = getState().community.communityByHandle[handle]?.community.id;
-
-    if (!id) return;
     if (!jwt) throw new Error("Not authorized");
 
     const community = await clientSelector(getState())?.followCommunity({
-      community_id: id,
+      community_id: communityId,
       follow,
       auth: jwt,
     });

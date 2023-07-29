@@ -53,6 +53,7 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
           <CommunityLink
             community={community.community}
             showInstanceWhenRemote
+            subscribed={community.subscribed}
           />
         </div>
         <Stats>

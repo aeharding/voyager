@@ -130,7 +130,10 @@ export default function CompactPost({ post, communityMode }: PostProps) {
                 prefix="by"
               />
             ) : (
-              <CommunityLink community={post.community} />
+              <CommunityLink
+                community={post.community}
+                subscribed={post.subscribed}
+              />
             )}
           </From>
           <Actions>

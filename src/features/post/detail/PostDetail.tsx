@@ -230,6 +230,7 @@ export default function PostDetail({
                 <CommunityLink
                   community={post.community}
                   showInstanceWhenRemote
+                  subscribed={post.subscribed}
                 />{" "}
                 <PersonLink person={post.creator} prefix="by" />
               </By>
