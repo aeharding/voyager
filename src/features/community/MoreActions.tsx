@@ -33,7 +33,12 @@ import {
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { checkIsMod } from "../../helpers/lemmy";
 import { PageContext } from "../auth/PageContext";
-import { allNSFWHidden, buildBlocked } from "../../helpers/toastMessages";
+import {
+  allNSFWHidden,
+  buildBlocked,
+  buildProblemSubscribing,
+  buildSuccessSubscribing,
+} from "../../helpers/toastMessages";
 import useHidePosts from "../feed/useHidePosts";
 
 interface MoreActionsProps {
@@ -150,25 +155,11 @@ export default function MoreActions({ community }: MoreActionsProps) {
               try {
                 await dispatch(followCommunity(!isSubscribed, communityId));
               } catch (error) {
-                present({
-                  message: `Problem ${
-                    isSubscribed ? "unsubscribing from" : "subscribing to"
-                  } c/${community}. Please try again.`,
-                  duration: 3500,
-                  position: "bottom",
-                  color: "danger",
-                });
+                present(buildProblemSubscribing(isSubscribed, community));
                 throw error;
               }
 
-              present({
-                message: `${
-                  isSubscribed ? "Unsubscribed from" : "Subscribed to"
-                } c/${community}.`,
-                duration: 3500,
-                position: "bottom",
-                color: "success",
-              });
+              present(buildSuccessSubscribing(isSubscribed, community));
               break;
             }
             case "post": {

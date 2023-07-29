@@ -12,7 +12,11 @@ import {
   blockCommunity,
   followCommunity,
 } from "../../community/communitySlice";
-import { buildBlocked } from "../../../helpers/toastMessages";
+import {
+  buildBlocked,
+  buildProblemSubscribing,
+  buildSuccessSubscribing,
+} from "../../../helpers/toastMessages";
 import {
   heartDislikeOutline,
   heartOutline,
@@ -79,25 +83,15 @@ export default function CommunityLink({
                 try {
                   await dispatch(followCommunity(!isSubscribed, community.id));
                 } catch (error) {
-                  presentToast({
-                    message: `Problem ${
-                      isSubscribed ? "unsubscribing from" : "subscribing to"
-                    } c/${getHandle(community)}. Please try again.`,
-                    duration: 3500,
-                    position: "bottom",
-                    color: "danger",
-                  });
+                  presentToast(
+                    buildProblemSubscribing(isSubscribed, getHandle(community))
+                  );
                   throw error;
                 }
 
-                presentToast({
-                  message: `${
-                    isSubscribed ? "Unsubscribed from" : "Subscribed to"
-                  } c/${getHandle(community)}.`,
-                  duration: 3500,
-                  position: "bottom",
-                  color: "success",
-                });
+                presentToast(
+                  buildSuccessSubscribing(isSubscribed, getHandle(community))
+                );
               })();
             },
           },
