@@ -1,16 +1,27 @@
 import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
+import { isNative } from "../helpers/device";
 
 function buildBaseUrl(url: string): string {
-  // if (url === "lemmy.world") {
-  //   return `https://lemmy.world`;
-  // }
+  return buildDirectConnectBaseUrl(url);
+}
+
+function buildDirectConnectBaseUrl(url: string): string {
+  return `https://${url}`;
+}
+
+function buildProxiedBaseUrl(url: string): string {
+  if (isNative()) return buildDirectConnectBaseUrl(url);
 
   return `${location.origin}/api/${url}`;
 }
 
 export function getClient(url: string): LemmyHttp {
-  return new LemmyHttp(buildBaseUrl(url));
+  return new LemmyHttp(buildBaseUrl(url), {
+    // Capacitor http plugin is not compatible with cross-fetch.
+    // Bind to globalThis or lemmy-js-client will bind incorrectly
+    fetchFunction: fetch.bind(globalThis),
+  });
 }
 
 export const LIMIT = 30;
@@ -33,12 +44,26 @@ export async function uploadImage(url: string, auth: string, image: File) {
     0.85
   );
 
+  // Cookie header can only be set by native code (Capacitor http plugin)
+  if (isNative()) {
+    const response = await getClient(url).uploadImage({
+      image: compressedImageIfNeeded as File,
+      auth,
+    });
+
+    if (!response.url) throw new Error("unknown native image upload error");
+
+    return response.url;
+  }
+
   const formData = new FormData();
 
   formData.append("images[]", compressedImageIfNeeded);
 
+  // All requests for image upload must be proxied due to Lemmy not accepting
+  // parameterized JWT for this request (see: https://github.com/LemmyNet/lemmy/issues/3567)
   const response = await fetch(
-    `${buildBaseUrl(url)}${PICTRS_URL}?${new URLSearchParams({ auth })}`,
+    `${buildProxiedBaseUrl(url)}${PICTRS_URL}?${new URLSearchParams({ auth })}`,
     {
       method: "POST",
       body: formData,

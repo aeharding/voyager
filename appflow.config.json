@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "appId": "9f0851ec",
+      "dependencyInstallCommand": "corepack enable && pnpm i",
+      "webBuildCommand": "pnpm build"
+    }
+  ]
+}

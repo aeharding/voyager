@@ -1,15 +1,16 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
-import Login from "../../auth/Login";
-import { useContext } from "react";
-import { PageContext } from "../../auth/PageContext";
+import { IonIcon, useIonToast } from "@ionic/react";
+import { useContext, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { voteOnPost } from "../postSlice";
 import { css } from "@emotion/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
-import { jwtSelector } from "../../auth/authSlice";
+import { PageContext } from "../../auth/PageContext";
+import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
+import { useTransition } from "react-transition-state";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -17,6 +18,8 @@ export const Item = styled(ActionButton, {
   on?: boolean;
   activeColor?: string;
 }>`
+  ${bounceAnimationOnTransition}
+
   ${({ on, activeColor }) =>
     on
       ? css`
@@ -34,14 +37,14 @@ interface VoteButtonProps {
 export function VoteButton({ type, postId }: VoteButtonProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const pageContext = useContext(PageContext);
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
-  const jwt = useAppSelector(jwtSelector);
+  const { presentLoginIfNeeded } = useContext(PageContext);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const myVote = postVotesById[postId];
+
+  const [state, toggle] = useTransition({
+    timeout: bounceMs,
+  });
 
   const icon = (() => {
     switch (type) {
@@ -70,13 +73,26 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
     }
   })();
 
+  const on = myVote === selectedVote;
+
+  useEffect(() => {
+    if (!on) toggle(false);
+  }, [on, toggle]);
+
   return (
     <Item
-      on={myVote === selectedVote}
+      on={on}
+      className={state.status}
       onClick={async (e) => {
         e.stopPropagation();
 
-        if (!jwt) return login({ presentingElement: pageContext.page });
+        Haptics.impact({ style: ImpactStyle.Light });
+
+        if (presentLoginIfNeeded()) return;
+
+        if (!on) {
+          toggle(true);
+        }
 
         try {
           await dispatch(

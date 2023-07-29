@@ -46,6 +46,7 @@ type CredentialStoragePayload = {
 interface PostState {
   accountData: CredentialStoragePayload | undefined;
   site: GetSiteResponse | undefined;
+  loadingSite: string;
   connectedInstance: string;
 }
 
@@ -54,6 +55,7 @@ const initialState: (connectedInstance?: string) => PostState = (
 ) => ({
   accountData: getCredentialsFromStorage(),
   site: undefined,
+  loadingSite: "",
   connectedInstance,
 });
 
@@ -121,6 +123,9 @@ export const authSlice = createSlice({
     updateConnectedInstance(state, action: PayloadAction<string>) {
       state.connectedInstance = action.payload;
     },
+    loadingSite(state, action: PayloadAction<string>) {
+      state.loadingSite = action.payload;
+    },
   },
 });
 
@@ -132,6 +137,7 @@ export const {
   reset,
   updateUserDetails,
   updateConnectedInstance,
+  loadingSite,
 } = authSlice.actions;
 
 export default authSlice.reducer;
@@ -161,8 +167,15 @@ export const handleSelector = createSelector([activeAccount], (account) => {
   return account?.handle;
 });
 
+export const usernameSelector = createSelector([handleSelector], (handle) => {
+  return handle?.split("@")[0];
+});
+
 export const isAdminSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.person.admin;
+
+export const localUserSelector = (state: RootState) =>
+  state.auth.site?.my_user?.local_user_view.local_user;
 
 export const login =
   (client: LemmyHttp, username: string, password: string, totp?: string) =>
@@ -187,15 +200,27 @@ export const login =
     dispatch(updateConnectedInstance(parseJWT(res.jwt).iss));
   };
 
+export const getSiteIfNeeded =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwtPayload = jwtPayloadSelector(getState());
+    const instance = jwtPayload?.iss ?? getState().auth.connectedInstance;
+
+    const handle = handleSelector(getState());
+
+    if (getLoadingSiteId(instance, handle) === getState().auth.loadingSite)
+      return;
+
+    dispatch(loadingSite(getLoadingSiteId(instance, handle)));
+
+    dispatch(getSite());
+  };
+
 export const getSite =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwtPayload = jwtPayloadSelector(getState());
+    const instance = jwtPayload?.iss ?? getState().auth.connectedInstance;
 
-    if (!jwtPayload) return;
-
-    const { iss } = jwtPayload;
-
-    const details = await getClient(iss).getSite({
+    const details = await getClient(instance).getSite({
       auth: jwtSelector(getState()),
     });
 
@@ -236,6 +261,9 @@ export const logoutAccount =
     }
 
     dispatch(removeAccount(handle));
+
+    const iss = jwtIssSelector(getState());
+    if (iss) dispatch(updateConnectedInstance(iss));
   };
 
 function parseJWT(payload: string): LemmyJWT {
@@ -274,4 +302,31 @@ function getCredentialsFromStorage(): CredentialStoragePayload | undefined {
   );
   if (!serializedCredentials) return;
   return JSON.parse(serializedCredentials);
+}
+
+export const showNsfw =
+  (show: boolean) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwt = jwtSelector(getState());
+
+    // https://github.com/LemmyNet/lemmy/issues/3565
+    const person = getState().auth.site?.my_user?.local_user_view.person;
+
+    if (!jwt) throw new Error("Not authorized");
+    if (!person || handleSelector(getState()) !== getRemoteHandle(person))
+      throw new Error("user mismatch");
+
+    await clientSelector(getState())?.saveUserSettings({
+      avatar: person?.avatar || "",
+      show_nsfw: show,
+      auth: jwt,
+    });
+
+    await dispatch(getSite());
+  };
+
+function getLoadingSiteId(instance: string, handle: string | undefined) {
+  if (!handle) return instance;
+
+  return `${instance}-${handle}`;
 }

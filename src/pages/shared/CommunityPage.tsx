@@ -1,11 +1,4 @@
-import {
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButtons, IonHeader, IonPage, IonToolbar } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
@@ -21,7 +14,14 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
-import { NewPostContextProvider } from "../../features/post/new/NewPostModal";
+import TitleSearch from "../../features/community/titleSearch/TitleSearch";
+import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
+import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
+import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
+import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
+import FeedContent from "./FeedContent";
+import FeedContextProvider from "../../features/feed/FeedContext";
+import PostFabs from "../../features/feed/postFabs/PostFabs";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -38,6 +38,8 @@ export default function CommunityPage() {
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector(jwtSelector);
+
+  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
@@ -68,30 +70,40 @@ export default function CommunityPage() {
       />
     );
 
+  const feed = <PostCommentFeed fetchFn={fetchFn} communityName={community} />;
+
   return (
-    <NewPostContextProvider community={community}>
-      <IonPage>
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="start">
-              <AppBackButton
-                defaultText="Communities"
-                defaultHref={buildGeneralBrowseLink("/")}
-              />
-            </IonButtons>
+    <FeedContextProvider>
+      <TitleSearchProvider>
+        <IonPage>
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <AppBackButton
+                  defaultText="Communities"
+                  defaultHref={buildGeneralBrowseLink("/")}
+                />
+              </IonButtons>
 
-            <IonTitle>{community}</IonTitle>
-
-            <IonButtons slot="end">
-              <PostSort />
-              <MoreActions community={community} />
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent>
-          <PostCommentFeed fetchFn={fetchFn} communityName={community} />
-        </IonContent>
-      </IonPage>
-    </NewPostContextProvider>
+              <TitleSearch name={community}>
+                <IonButtons slot="end">
+                  <PostSort />
+                  <MoreActions community={community} />
+                </IonButtons>
+              </TitleSearch>
+            </IonToolbar>
+          </IonHeader>
+          <FeedContent>
+            {markReadOnScroll ? (
+              <FeedScrollObserver>{feed}</FeedScrollObserver>
+            ) : (
+              feed
+            )}
+            <TitleSearchResults />
+            <PostFabs />
+          </FeedContent>
+        </IonPage>
+      </TitleSearchProvider>
+    </FeedContextProvider>
   );
 }

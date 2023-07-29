@@ -3,24 +3,41 @@ import { Container, CustomIonItem, PositionedContainer } from "./Comment";
 import styled from "@emotion/styled";
 import CommentHr from "./CommentHr";
 import { useContext, useState } from "react";
-import { FeedContext } from "../feed/FeedContext";
+import { CommentsContext } from "./CommentsContext";
 import useClient from "../../helpers/useClient";
-import { IonIcon, IonText, useIonToast } from "@ionic/react";
+import { IonIcon, IonSpinner, useIonToast } from "@ionic/react";
 import { chevronDown } from "ionicons/icons";
 import AnimateHeight from "react-animate-height";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "../../helpers/lemmy";
+import { css } from "@emotion/react";
 
-const MoreRepliesBlock = styled.div`
+const MoreRepliesBlock = styled.div<{ hidden: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
 
   color: var(--ion-color-primary);
+
+  ${({ hidden }) =>
+    hidden &&
+    css`
+      opacity: 0;
+    `}
 `;
 
 const ChevronIcon = styled(IonIcon)`
   font-size: 1rem;
+`;
+
+const StyledIonSpinner = styled(IonSpinner)`
+  width: 1.25rem;
+  opacity: 0.6;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 interface CommentExpanderProps {
@@ -37,7 +54,7 @@ export default function CommentExpander({
   collapsed,
 }: CommentExpanderProps) {
   const [present] = useIonToast();
-  const { appendComments } = useContext(FeedContext);
+  const { appendComments } = useContext(CommentsContext);
   const client = useClient();
   const [loading, setLoading] = useState(false);
 
@@ -84,17 +101,12 @@ export default function CommentExpander({
       <CommentHr depth={depth - 1} />
       <CustomIonItem href={undefined} onClick={fetchChildren}>
         <PositionedContainer depth={depth || 0} highlighted={false}>
-          <Container depth={depth || 0}>
-            <MoreRepliesBlock>
-              {!loading ? (
-                <>
-                  {missing} more {missing === 1 ? "reply" : "replies"}
-                </>
-              ) : (
-                <IonText color="medium">loading...</IonText>
-              )}
+          <Container depth={depth || 0} hidden={loading}>
+            <MoreRepliesBlock hidden={loading}>
+              {missing} more {missing === 1 ? "reply" : "replies"}
               <ChevronIcon icon={chevronDown} />
             </MoreRepliesBlock>
+            {loading && <StyledIonSpinner />}
           </Container>
         </PositionedContainer>
       </CustomIonItem>

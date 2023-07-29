@@ -6,7 +6,6 @@ import {
   IonContent,
   IonToolbar,
   IonTitle,
-  IonPage,
   useIonToast,
   IonText,
 } from "@ionic/react";
@@ -16,31 +15,34 @@ import {
   PersonMentionView,
   PostView,
 } from "lemmy-js-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../helpers/useClient";
-import { useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { handleSelector, jwtSelector } from "../../auth/authSlice";
 import { css } from "@emotion/react";
+import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
+import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
+import { receivedComments } from "../commentSlice";
 
 export const Container = styled.div`
-  position: absolute;
-  inset: 0;
+  min-height: 100%;
 
   display: flex;
   flex-direction: column;
 `;
 
-export const Textarea = styled.textarea`
+export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
   border: 0;
   background: none;
   resize: none;
   outline: 0;
   padding: 1rem;
 
-  flex: 1 0 0;
-  min-height: 7rem;
+  min-height: 200px;
+
+  flex: 1 0 auto;
 
   ${({ theme }) =>
     !theme.dark &&
@@ -51,23 +53,35 @@ export const Textarea = styled.textarea`
     `}
 `;
 
-const UsernameIonText = styled(IonText)`
+export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
   font-weight: normal;
 `;
 
-const TitleContainer = styled.div`
+export const TitleContainer = styled.div`
   line-height: 1;
 `;
 
+export type CommentReplyItem =
+  | CommentView
+  | PostView
+  | PersonMentionView
+  | CommentReplyView;
+
 type CommentReplyProps = {
-  onDismiss: (data?: string, role?: string) => void;
-  item: CommentView | PostView | PersonMentionView | CommentReplyView;
+  dismiss: (reply?: CommentView | undefined) => void;
+  setCanDismiss: (canDismiss: boolean) => void;
+  item: CommentReplyItem;
 };
 
-export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
+export default function CommentReply({
+  dismiss,
+  setCanDismiss,
+  item,
+}: CommentReplyProps) {
   const comment = "comment" in item ? item.comment : undefined;
 
+  const dispatch = useAppDispatch();
   const [replyContent, setReplyContent] = useState("");
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
@@ -80,8 +94,10 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
 
     setLoading(true);
 
+    let reply;
+
     try {
-      await client.createComment({
+      reply = await client.createComment({
         content: replyContent,
         parent_id: comment?.id,
         post_id: item.post.id,
@@ -112,15 +128,23 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
       color: "success",
     });
 
-    onDismiss(undefined, "post");
+    dispatch(receivedComments([reply.comment_view]));
+    setCanDismiss(true);
+    // TODO is there a way to avoid a timeout here?
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    dismiss(reply.comment_view);
   }
 
+  useEffect(() => {
+    setCanDismiss(!replyContent);
+  }, [replyContent, setCanDismiss]);
+
   return (
-    <IonPage>
+    <>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => onDismiss()}>
+            <IonButton color="medium" onClick={() => dismiss()}>
               Cancel
             </IonButton>
           </IonButtons>
@@ -147,7 +171,7 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent {...preventPhotoswipeGalleryFocusTrap}>
         <Container>
           <Textarea
             onChange={(e) => setReplyContent(e.target.value)}
@@ -156,6 +180,6 @@ export default function CommentReply({ onDismiss, item }: CommentReplyProps) {
           <ItemReplyingTo item={item} />
         </Container>
       </IonContent>
-    </IonPage>
+    </>
   );
 }

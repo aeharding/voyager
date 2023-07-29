@@ -95,7 +95,7 @@ export default function UpdateAppPage() {
                 </SettingLabel>
               </InsetIonItem>
               <InsetIonItem
-                href="https://github.com/aeharding/wefwef/releases"
+                href="https://github.com/aeharding/voyager/releases"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -126,7 +126,7 @@ export default function UpdateAppPage() {
             </UpToDateText>
           )}
           {status === "current" && (
-            <UpToDateText>wefwef is up to date</UpToDateText>
+            <UpToDateText>Voyager is up to date</UpToDateText>
           )}
         </Container>
       </IonContent>

@@ -34,6 +34,7 @@ export default function AccountSwitcher({
   );
   const [editing, setEditing] = useState(false);
 
+  // Modals don't access to PageContext, so just inject the login modal manually
   const [login, onDismissLogin] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismissLogin(data, role),
   });
@@ -73,6 +74,7 @@ export default function AccountSwitcher({
           value={activeHandle}
           onIonChange={(e) => {
             dispatch(changeAccount(e.target.value));
+            onDismiss();
           }}
         >
           <IonList>

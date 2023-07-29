@@ -39,7 +39,7 @@ const Hr = styled.div`
     width: calc(100% - var(--right-offset));
     left: var(--right-offset);
     top: 0;
-    border-bottom: 0.55px solid
+    border-bottom: 1px solid
       var(
         --ion-item-border-color,
         var(--ion-border-color, var(--ion-color-step-250, #c8c7cc))
@@ -65,7 +65,7 @@ const Container = styled.div`
 
   padding: 0.5rem 0;
 
-  font-size: 0.9em;
+  font-size: 0.875em;
 
   strong {
     font-weight: 500;

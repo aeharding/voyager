@@ -6,7 +6,9 @@ import {
   darkVariables,
   lightVariables,
 } from "./theme/variables";
-import React from "react";
+import React, { useEffect } from "react";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { isNative } from "./helpers/device";
 
 interface GlobalStylesProps {
   children: React.ReactNode;
@@ -15,7 +17,7 @@ interface GlobalStylesProps {
 export default function GlobalStyles({ children }: GlobalStylesProps) {
   const systemDarkMode = useSystemDarkMode();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
-    (state) => state.appearance.font
+    (state) => state.settings.appearance.font
   );
 
   const baseFontStyles = useSystemFontSize
@@ -27,10 +29,16 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
       `;
 
   const { userDarkMode, usingSystemDarkMode } = useAppSelector(
-    (state) => state.appearance.dark
+    (state) => state.settings.appearance.dark
   );
 
   const isDark = usingSystemDarkMode ? systemDarkMode : userDarkMode;
+
+  useEffect(() => {
+    if (!isNative()) return;
+
+    StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
+  }, [isDark]);
 
   return (
     <ThemeProvider theme={{ dark: isDark }}>

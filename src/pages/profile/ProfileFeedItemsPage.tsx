@@ -8,7 +8,6 @@ import {
   IonTitle,
   IonButtons,
   IonBackButton,
-  IonContent,
 } from "@ionic/react";
 import styled from "@emotion/styled";
 import useClient from "../../helpers/useClient";
@@ -19,8 +18,10 @@ import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
+  isPost,
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
+import FeedContent from "../shared/FeedContent";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -30,8 +31,16 @@ export const SettingLabel = styled(IonLabel)`
   margin-left: 16px;
 `;
 
+const getPublishedDate = (item: PostCommentItem) => {
+  if (isPost(item)) {
+    return item.post.published;
+  } else {
+    return item.comment.published;
+  }
+};
+
 interface ProfileFeedItemsPageProps {
-  type: "Comments" | "Posts";
+  type: "Comments" | "Posts" | "Saved";
 }
 export default function ProfileFeedItemsPage({
   type,
@@ -49,7 +58,15 @@ export default function ProfileFeedItemsPage({
         page,
         sort: "New",
         auth: jwt,
+        saved_only: type === "Saved",
       });
+
+      if (type === "Saved") {
+        return [...response.comments, ...response.posts].sort((a, b) =>
+          getPublishedDate(b).localeCompare(getPublishedDate(a))
+        );
+      }
+
       return type === "Comments" ? response.comments : response.posts;
     },
     [client, handle, jwt, type]
@@ -68,9 +85,9 @@ export default function ProfileFeedItemsPage({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
-        <PostCommentFeed fetchFn={fetchFn} />
-      </IonContent>
+      <FeedContent>
+        <PostCommentFeed fetchFn={fetchFn} filterHiddenPosts={false} />
+      </FeedContent>
     </IonPage>
   );
 }

@@ -1,7 +1,6 @@
 import {
   IonButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
@@ -13,32 +12,26 @@ import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
 import LoggedOut from "../../features/user/LoggedOut";
 import AccountSwitcher from "../../features/auth/AccountSwitcher";
-import { useRef } from "react";
-import Login from "../../features/auth/Login";
-import { useSetActivePage } from "../../features/auth/AppContext";
+import { useContext } from "react";
 import AppContent from "../../features/shared/AppContent";
+import { PageContext } from "../../features/auth/PageContext";
+import FeedContent from "../shared/FeedContent";
 
 export default function ProfilePage() {
-  const pageRef = useRef();
   const handle = useAppSelector(handleSelector);
+  const { page, presentLoginIfNeeded } = useContext(PageContext);
 
   const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
     {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
-      page: pageRef.current,
+      page,
     }
   );
 
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
-
-  useSetActivePage(pageRef.current);
-
   return (
-    <IonPage className="grey-bg" ref={pageRef}>
+    <IonPage className="grey-bg">
       <IonHeader>
         <IonToolbar>
           {handle ? (
@@ -57,9 +50,7 @@ export default function ProfilePage() {
             <>
               <IonTitle>Anonymous</IonTitle>
               <IonButtons slot="end">
-                <IonButton
-                  onClick={() => login({ presentingElement: pageRef.current })}
-                >
+                <IonButton onClick={() => presentLoginIfNeeded()}>
                   Login
                 </IonButton>
               </IonButtons>
@@ -69,9 +60,9 @@ export default function ProfilePage() {
       </IonHeader>
 
       {handle ? (
-        <IonContent>
+        <FeedContent>
           <AsyncProfile handle={handle} />
-        </IonContent>
+        </FeedContent>
       ) : (
         <AppContent>
           <LoggedOut />

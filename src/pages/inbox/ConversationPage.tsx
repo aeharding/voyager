@@ -19,7 +19,7 @@ import {
   receivedMessages,
   syncMessages,
 } from "../../features/inbox/inboxSlice";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { getHandle } from "../../helpers/lemmy";
 import Message from "../../features/inbox/messages/Message";
 import styled from "@emotion/styled";
@@ -67,7 +67,7 @@ const SendContainer = styled.div`
   padding: 0.5rem;
 
   background: var(--ion-tab-bar-background, var(--ion-color-step-50, #f7f7f7));
-  border-top: 0.55px solid
+  border-top: 1px solid
     var(
       --ion-tab-bar-border-color,
       var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.2)))
@@ -81,7 +81,7 @@ const InputContainer = styled.div`
 `;
 
 const Input = styled(TextareaAutosize)`
-  border: 0.55px solid var(--ion-color-medium);
+  border: 1px solid var(--ion-color-medium);
   border-radius: 1rem;
 
   // Exact px measurements to prevent
@@ -91,6 +91,7 @@ const Input = styled(TextareaAutosize)`
   font-size: 16px;
 
   background: var(--ion-background-color);
+  color: var(--ion-text-color);
   outline: none;
 
   width: 100%;
@@ -115,6 +116,7 @@ export default function ConversationPage() {
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
+  const location = useLocation();
   const jwt = useAppSelector(jwtSelector);
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
@@ -208,7 +210,12 @@ export default function ConversationPage() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/inbox/messages" text="Messages" />
+            <IonBackButton
+              defaultHref="/inbox/messages"
+              text={
+                location.pathname.startsWith("/inbox") ? "Messages" : "Back"
+              }
+            />
           </IonButtons>
 
           <IonTitle

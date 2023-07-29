@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 import ViteExpress from "vite-express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
@@ -33,6 +34,8 @@ INITIAL_VALID_LEMMY_SERVERS.forEach(
 const app = express();
 
 const PROXY_ENDPOINT = "/api/:actor";
+
+app.use(compression());
 
 app.use(PROXY_ENDPOINT, async (req, res, next) => {
   const actor = req.params.actor;
@@ -106,7 +109,7 @@ app.use(
     onProxyReq: (clientReq, req) => {
       clientReq.setHeader(
         "user-agent",
-        `(${req.hostname}, ${process.env.EMAIL || "hello@wefwef.app"})`
+        `(${req.hostname}, ${process.env.EMAIL || "hello@vger.app"})`
       );
       clientReq.removeHeader("cookie");
 
@@ -129,24 +132,27 @@ app.use(
   })
 );
 
-function transformer(html) {
-  return html.replace(
-    "<!-- runtime_config -->",
-    `<script>${
-      CUSTOM_LEMMY_SERVERS.length
-        ? `window.CUSTOM_LEMMY_SERVERS = ${JSON.stringify(
-            CUSTOM_LEMMY_SERVERS
-          )}`
-        : ""
-    }</script>`
-  );
-}
-
-ViteExpress.config({
-  transformer,
+app.get("/_config", (req, res) => {
+  res.send({
+    customServers: CUSTOM_LEMMY_SERVERS,
+  });
 });
 
 const PORT = process.env.PORT || 5173;
+
+// Tell search engines about new site
+app.use("*", (req, res, next) => {
+  if (req.hostname === "wefwef.app") {
+    res.setHeader(
+      "Link",
+      `<https://vger.app${
+        req.originalUrl === "/" ? "" : req.originalUrl
+      }>; rel="canonical"`
+    );
+  }
+
+  next();
+});
 
 ViteExpress.listen(app, PORT, () =>
   // eslint-disable-next-line no-console

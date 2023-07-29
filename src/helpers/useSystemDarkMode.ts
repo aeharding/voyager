@@ -8,19 +8,27 @@ export default function useSystemDarkMode() {
   );
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia(DARK_MEDIA_SELECTOR);
+
     function handleDarkModeChange() {
-      const doesMatch = window.matchMedia(DARK_MEDIA_SELECTOR).matches;
+      const doesMatch = mediaQuery.matches;
       setPrefersDarkMode(doesMatch);
     }
 
-    window
-      .matchMedia(DARK_MEDIA_SELECTOR)
-      .addEventListener("change", handleDarkModeChange);
+    // Fallback to addListener/removeListener for older browser support
+    // See https://github.com/aeharding/voyager/pull/264
+    if (mediaQuery?.addEventListener) {
+      mediaQuery.addEventListener("change", handleDarkModeChange);
+    } else {
+      mediaQuery.addListener(handleDarkModeChange);
+    }
 
     return () => {
-      window
-        .matchMedia(DARK_MEDIA_SELECTOR)
-        .removeEventListener("change", handleDarkModeChange);
+      if (mediaQuery?.removeEventListener) {
+        mediaQuery.removeEventListener("change", handleDarkModeChange);
+      } else {
+        mediaQuery.removeListener(handleDarkModeChange);
+      }
     };
   }, []);
 

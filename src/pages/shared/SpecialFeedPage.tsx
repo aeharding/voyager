@@ -1,10 +1,8 @@
 import {
   IonBackButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
-  IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
@@ -19,6 +17,15 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
+import TitleSearch from "../../features/community/titleSearch/TitleSearch";
+import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
+import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
+import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
+import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
+import FeedContent from "./FeedContent";
+import FeedContextProvider from "../../features/feed/FeedContext";
+import SpecialFeedMoreActions from "../../features/feed/SpecialFeedMoreActions";
+import PostFabs from "../../features/feed/postFabs/PostFabs";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -31,6 +38,8 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector(jwtSelector);
 
+  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
       const response = await client.getPosts({
@@ -40,33 +49,47 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
         type_: type,
         auth: jwt,
       });
+
       return response.posts;
     },
     [client, sort, type, jwt]
   );
 
+  const feed = <PostCommentFeed fetchFn={fetchFn} />;
+
   return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton
-              text="Communities"
-              defaultHref={buildGeneralBrowseLink("")}
-            />
-          </IonButtons>
+    <TitleSearchProvider>
+      <FeedContextProvider>
+        <IonPage>
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonBackButton
+                  text="Communities"
+                  defaultHref={buildGeneralBrowseLink("")}
+                />
+              </IonButtons>
 
-          <IonTitle>{listingTypeTitle(type)}</IonTitle>
-
-          <IonButtons slot="end">
-            <PostSort />
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <PostCommentFeed fetchFn={fetchFn} />
-      </IonContent>
-    </IonPage>
+              <TitleSearch name={listingTypeTitle(type)}>
+                <IonButtons slot="end">
+                  <PostSort />
+                  <SpecialFeedMoreActions />
+                </IonButtons>
+              </TitleSearch>
+            </IonToolbar>
+          </IonHeader>
+          <FeedContent>
+            {markReadOnScroll ? (
+              <FeedScrollObserver>{feed}</FeedScrollObserver>
+            ) : (
+              feed
+            )}
+            <TitleSearchResults />
+            <PostFabs />
+          </FeedContent>
+        </IonPage>
+      </FeedContextProvider>
+    </TitleSearchProvider>
   );
 }
 

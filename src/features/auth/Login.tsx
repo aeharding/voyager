@@ -24,7 +24,9 @@ import { login } from "./authSlice";
 import { getClient } from "../../services/lemmy";
 import { IonInputCustomEvent } from "@ionic/core";
 import TermsSheet from "../settings/terms/TermsSheet";
-import { LEMMY_SERVERS } from "../../helpers/lemmy";
+import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
+import { getCustomServers } from "../../services/app";
+import { isNative } from "../../helpers/device";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -49,7 +51,8 @@ export default function Login({
 }) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const [server, setServer] = useState(LEMMY_SERVERS[0]);
+  const [servers] = useState(getCustomServers());
+  const [server, setServer] = useState(servers[0]);
   const [customServer, setCustomServer] = useState("");
   const [serverConfirmed, setServerConfirmed] = useState(false);
   const [username, setUsername] = useState("");
@@ -200,6 +203,7 @@ export default function Login({
 
   return (
     <form
+      {...preventPhotoswipeGalleryFocusTrap}
       onSubmit={(event) => {
         event.preventDefault();
         submit();
@@ -251,7 +255,7 @@ export default function Login({
                 onIonChange={(e) => setServer(e.target.value)}
               >
                 <IonList inset>
-                  {LEMMY_SERVERS.slice(0, 3).map((server) => (
+                  {servers.slice(0, 3).map((server) => (
                     <IonItem disabled={loading} key={server}>
                       <IonRadio value={server} key={server}>
                         {server}
@@ -285,11 +289,13 @@ export default function Login({
                 </>
               )}
 
-              <HelperText>
-                <IonRouterLink onClick={() => presentTerms()}>
-                  Privacy &amp; Terms
-                </IonRouterLink>
-              </HelperText>
+              {!isNative() ? (
+                <HelperText>
+                  <IonRouterLink onClick={() => presentTerms()}>
+                    Privacy &amp; Terms
+                  </IonRouterLink>
+                </HelperText>
+              ) : undefined}
 
               <HelperText>
                 <IonRouterLink
@@ -330,6 +336,7 @@ export default function Login({
                   <IonItem>
                     <IonInput
                       label="Password"
+                      autocomplete="current-password"
                       type="password"
                       value={password}
                       onIonInput={(e) => setPassword(e.target.value as string)}

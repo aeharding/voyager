@@ -16,7 +16,6 @@ import styled from "@emotion/styled";
 
 const RemoveIcon = styled(IonIcon)`
   position: relative;
-  font-size: 1.5rem;
 
   &:after {
     z-index: -1;
@@ -57,7 +56,7 @@ export default function Account({ editing, account }: AccountProps) {
               slidingRef.current?.open("end");
             }}
           >
-            <RemoveIcon icon={removeCircle} color="danger" />
+            <RemoveIcon icon={removeCircle} color="danger" slot="icon-only" />
           </IonButton>
         )}
         <IonRadio value={account.handle}>{account.handle}</IonRadio>

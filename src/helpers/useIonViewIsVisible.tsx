@@ -1,7 +1,7 @@
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { useState } from "react";
 
-export default function UseIonViewIsVisible() {
+export default function useIonViewIsVisible() {
   const [visible, setVisible] = useState(false);
 
   useIonViewWillEnter(() => {
