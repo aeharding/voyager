@@ -13,8 +13,8 @@ import { useEffect } from "react";
 import { getCommunity } from "../../features/community/communitySlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { CenteredSpinner } from "../posts/PostPage";
-import Sidebar from "../../features/community/sidebar/Sidebar";
 import AppContent from "../../features/shared/AppContent";
+import Sidebar from "../../features/sidebar/Sidebar";
 
 export default function CommunitySidebarPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();

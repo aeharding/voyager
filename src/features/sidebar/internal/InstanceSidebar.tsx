@@ -1,14 +1,8 @@
-import styled from "@emotion/styled";
-import { useAppSelector } from "../../store";
-import Markdown from "../shared/Markdown";
-import { CenteredSpinner } from "../post/detail/PostDetail";
 import { css } from "@emotion/react";
-import CommunityCounts from "../community/sidebar/CommunityCounts";
-import InstanceAdmins from "./InstanceAdmins";
-
-const Container = styled.div`
-  line-height: 1.5;
-`;
+import { useAppSelector } from "../../../store";
+import { CenteredSpinner } from "../../post/detail/PostDetail";
+import GenericSidebar from "./GenericSidebar";
+import styled from "@emotion/styled";
 
 const BannerImg = styled.img`
   margin-top: calc(var(--padding-top) * -1);
@@ -34,15 +28,16 @@ export default function InstanceSidebar() {
   const { site, counts } = siteView;
 
   return (
-    <>
-      <Container className="ion-padding-start ion-padding-end ion-padding-top">
-        {site.banner && (
+    <GenericSidebar
+      type="instance"
+      sidebar={site.sidebar ?? site.description ?? ""}
+      people={admins.map((a) => a.person)}
+      counts={counts}
+      beforeMarkdown={
+        site.banner ? (
           <BannerImg src={site.banner} alt={`Banner for ${site.actor_id}`} />
-        )}
-        <Markdown>{site.sidebar ?? site.description ?? ""}</Markdown>
-        <CommunityCounts counts={counts} />
-      </Container>
-      <InstanceAdmins admins={admins} />
-    </>
+        ) : undefined
+      }
+    />
   );
 }
