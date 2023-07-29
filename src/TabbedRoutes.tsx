@@ -30,7 +30,7 @@ import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useCallback, useContext, useRef } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
@@ -63,13 +63,17 @@ import { getDefaultServer } from "./services/app";
 import GeneralPage from "./pages/settings/GeneralPage";
 import HidingSettingsPage from "./pages/settings/HidingSettingsPage";
 import DeviceModeSettingsPage from "./pages/settings/DeviceModeSettingsPage";
-import { OProfileLabelType } from "./services/db";
 import InstanceSidebarPage from "./pages/shared/InstanceSidebarPage";
+import { getProfileTabLabel } from "./features/settings/general/other/ProfileTabLabel";
 
 const Interceptor = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: all;
+`;
+
+const ProfileLabel = styled(IonLabel)`
+  max-width: 20vw;
 `;
 
 export default function TabbedRoutes() {
@@ -92,47 +96,16 @@ export default function TabbedRoutes() {
   );
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
-  const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
 
   const userHandle = useAppSelector(handleSelector);
   const profileLabelType = useAppSelector(
     (state) => state.settings.appearance.general.profileLabel
   );
 
-  const getProfileLabel = useCallback(() => {
-    switch (profileLabelType) {
-      case OProfileLabelType.Hide:
-        return "Profile";
-      // eslint-disable-next-line no-fallthrough
-      case OProfileLabelType.UsernameAndUrl:
-      case OProfileLabelType.UsernameMinimumUrl:
-        // if the user is not logged in but the setting was selected, it will fall-through to the default case.
-        if (accounts && userHandle) {
-          if (profileLabelType === OProfileLabelType.UsernameMinimumUrl) {
-            const activeUsername = userHandle.slice(
-              0,
-              userHandle.lastIndexOf("@")
-            );
-            if (
-              !accounts.some(({ handle: username }) => {
-                if (username === userHandle) return false; // this means we are checking the current active account
-                const accountUsername = username.slice(
-                  0,
-                  username.lastIndexOf("@")
-                );
-                if (accountUsername === activeUsername) return true;
-              })
-            ) {
-              return activeUsername;
-            }
-          }
-          return userHandle;
-        }
-      // eslint-disable-next-line no-fallthrough
-      default: // also covers instance URL
-        return connectedInstance;
-    }
-  }, [profileLabelType, userHandle, connectedInstance, accounts]);
+  const profileTabLabel = useMemo(
+    () => getProfileTabLabel(profileLabelType, userHandle, connectedInstance),
+    [profileLabelType, userHandle, connectedInstance]
+  );
 
   const isPostsButtonDisabled = location.pathname.startsWith("/posts");
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
@@ -436,7 +409,7 @@ export default function TabbedRoutes() {
             href="/profile"
           >
             <IonIcon aria-hidden="true" icon={personCircleOutline} />
-            <IonLabel>{getProfileLabel()}</IonLabel>
+            <ProfileLabel>{profileTabLabel}</ProfileLabel>
             <Interceptor onClick={onProfileClick} />
           </IonTabButton>
           <IonTabButton

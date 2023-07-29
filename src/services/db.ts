@@ -78,9 +78,24 @@ export type VoteDisplayMode =
   (typeof OVoteDisplayMode)[keyof typeof OVoteDisplayMode];
 
 export const OProfileLabelType = {
-  UsernameAndUrl: "handle",
-  UsernameMinimumUrl: "username",
-  InstanceUrl: "url",
+  /**
+   * e.g. aeharding@lemmy.world
+   */
+  Handle: "handle",
+
+  /**
+   * e.g. aeharding
+   */
+  Username: "username",
+
+  /**
+   * e.g. lemmy.world
+   */
+  Instance: "instance",
+
+  /**
+   * e.g. Profile
+   */
   Hide: "hide",
 } as const;
 
