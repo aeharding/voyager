@@ -1,7 +1,6 @@
 import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
 import { isNative } from "../helpers/device";
-import { omitUndefinedValues } from "../helpers/object";
 
 function buildBaseUrl(url: string): string {
   return buildDirectConnectBaseUrl(url);
@@ -78,28 +77,4 @@ export async function uploadImage(url: string, auth: string, image: File) {
   }
 
   throw new Error("unknown image upload error");
-}
-
-interface ImageOptions {
-  /**
-   * maximum image dimension
-   */
-  size?: number;
-}
-
-export function getImageSrc(url: string, options?: ImageOptions) {
-  if (!options || !options.size) return url;
-
-  const urlParams = options
-    ? new URLSearchParams(
-        omitUndefinedValues({
-          thumbnail: options.size
-            ? `${options.size * window.devicePixelRatio}`
-            : undefined,
-          format: "jpg",
-        })
-      )
-    : undefined;
-
-  return `${url}${urlParams ? `?${urlParams}` : ""}`;
 }

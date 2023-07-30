@@ -10,7 +10,6 @@ import { useAppSelector } from "../../../../store";
 import PostGalleryImg from "../../../gallery/PostGalleryImg";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import { ReactComponent as SelfSvg } from "./self.svg";
-import { getImageSrc } from "../../../../services/lemmy";
 
 const containerCss = css`
   display: flex;
@@ -112,10 +111,7 @@ export default function Thumbnail({ post }: ImgProps) {
         <>
           {post.post.thumbnail_url ? (
             <>
-              <Img
-                src={getImageSrc(post.post.thumbnail_url, { size: 100 })}
-                blur={nsfw}
-              />
+              <Img src={post.post.thumbnail_url} blur={nsfw} />
               <LinkIcon icon={linkOutline} />
             </>
           ) : isLink ? (
