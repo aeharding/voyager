@@ -117,7 +117,7 @@ const initialState: SettingsState = {
     dark: {
       usingSystemDarkMode: true,
       userDarkMode: false,
-      pureBlack: false,
+      pureBlack: true,
     },
     deviceMode: "ios",
     theme: "default",

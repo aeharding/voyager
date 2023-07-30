@@ -26,7 +26,7 @@ export function getTheme(appTheme: AppThemeType): Theme {
           primary: "color(display-p3 1 0 0)",
         },
         dark: {
-          primary: "color(display-p3 1 0 0)",
+          primary: "color(display-p3 0.85 0.15 0)",
         },
       };
     case "pistachio":
@@ -35,7 +35,7 @@ export function getTheme(appTheme: AppThemeType): Theme {
           primary: "color(display-p3 0 0.7 0)",
         },
         dark: {
-          primary: "color(display-p3 0 0.8 0)",
+          primary: "color(display-p3 0 0.6 0)",
         },
       };
     case "pumpkin":

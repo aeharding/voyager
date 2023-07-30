@@ -151,7 +151,7 @@ export const buildDarkVariables = (
   return css`
     // Dark Colors
     :root {
-      --ion-color-primaryfixed: #428cff; // always blue always blue!
+      --ion-color-primary-fixed: #428cff; // always blue always blue!
 
       --lightroom-bg: rgba(255, 255, 255, 0.08);
 
@@ -237,8 +237,22 @@ export const buildDarkVariables = (
     // iOS Dark Theme
 
     .ios body {
-      --ion-background-color: #000000;
-      --ion-background-color-rgb: 0, 0, 0;
+      ${pureBlack
+        ? css`
+            --ion-background-color: #000000;
+            --ion-background-color-rgb: 0, 0, 0;
+          `
+        : css`
+            --ion-background-color: #22252f;
+            --ion-background-color-rgb: 34, 37, 47;
+            --ion-tab-bar-background: rgba(0, 0, 0, 0.2);
+            --ion-toolbar-border-color: #444;
+
+            ion-tab-bar {
+              --ion-tab-bar-background: var(--ion-background-color);
+              --ion-tab-bar-border-color: #444;
+            }
+          `}
 
       --ion-text-color: #ddd;
       --ion-text-color-rgb: 255, 255, 255;
@@ -263,11 +277,11 @@ export const buildDarkVariables = (
       --ion-color-step-900: #e6e6e6;
       --ion-color-step-950: #f2f2f2;
 
-      --ion-item-background: #000000;
+      --ion-item-background: var(--ion-background-color);
 
       --ion-card-background: #1c1c1d;
 
-      --ion-toolbar-background: #000000;
+      --ion-toolbar-background: var(--ion-background-color);
     }
 
     .ios ion-modal {
