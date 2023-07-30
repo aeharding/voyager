@@ -17,13 +17,13 @@
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light"
   },
   "dependencies": {
-    "@capacitor/android": "5.2.2",
     "compression": "^1.7.4",
     "express": "^4.18.2",
     "http-proxy-middleware": "^2.0.6",
     "vite-express": "^0.9.1"
   },
   "devDependencies": {
+    "@capacitor/android": "5.2.2",
     "@capacitor/app": "^5.0.6",
     "@capacitor/assets": "^2.0.4",
     "@capacitor/browser": "^5.0.6",
