@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def sysBuildNumber = System.getenv("CI_BUILD_NUMBER")
+
 android {
     namespace "app.vger.voyager"
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -7,8 +9,8 @@ android {
         applicationId "app.vger.voyager"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode Integer.valueOf(sysBuildNumber)
+        versionName "1.0." + sysBuildNumber
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -52,7 +54,3 @@ try {
 } catch(Exception e) {
     logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
 }
-
-def sysBuildNumber = System.getenv("CI_BUILD_NUMBER")
-versionCode Integer.valueOf(sysBuildNumber)
-versionName "1.0." + sysBuildNumber
