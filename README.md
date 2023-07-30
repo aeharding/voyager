@@ -14,6 +14,11 @@ A mobile-first Lemmy web client
 (formerly wefwef)
 </p>
 
+<p align="center">
+<a href="https://vger.app"><img src="public/badges/pwa.svg" height="45"></a>&nbsp;&nbsp;
+<a href="https://apps.apple.com/app/6451429762"><img src="public/badges/ios.svg" height="45"></a>&nbsp;&nbsp;
+<a href="https://apps.apple.com/app/6451429762"><img src="public/badges/play.svg" height="45"></a>
+</p>
 <br/>
 <p align="center">
   <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat&logo=matrix" alt="matrix chat"></a>
