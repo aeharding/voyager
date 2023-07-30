@@ -94,7 +94,7 @@ export function getImageSrc(url: string, options?: ImageOptions) {
     ? new URLSearchParams(
         omitUndefinedValues({
           thumbnail: options.size
-            ? `${options.size * window.devicePixelRatio}`
+            ? `${Math.round(options.size * window.devicePixelRatio)}`
             : undefined,
           format: "jpg",
         })
