@@ -10,12 +10,13 @@ import {
   mailOutline,
   removeCircleOutline,
 } from "ionicons/icons";
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { blockUser } from "./userSlice";
 import { getHandle } from "../../helpers/lemmy";
 import { buildBlocked, problemBlockingUser } from "../../helpers/toastMessages";
+import { PageContext } from "../auth/PageContext";
 
 interface UserPageActionsProps {
   handle: string;
@@ -23,6 +24,7 @@ interface UserPageActionsProps {
 
 export default function UserPageActions({ handle }: UserPageActionsProps) {
   const [open, setOpen] = useState(false);
+  const { presentLoginIfNeeded } = useContext(PageContext);
   const [present] = useIonToast();
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -70,10 +72,13 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
         onWillDismiss={async (e) => {
           switch (e.detail.data) {
             case "message": {
+              if (presentLoginIfNeeded()) return;
+
               router.push(buildGeneralBrowseLink(`/u/${handle}/message`));
               break;
             }
             case "block": {
+              if (presentLoginIfNeeded()) return;
               if (!user) return;
 
               try {

@@ -46,6 +46,7 @@ type CredentialStoragePayload = {
 interface PostState {
   accountData: CredentialStoragePayload | undefined;
   site: GetSiteResponse | undefined;
+  loadingSite: string;
   connectedInstance: string;
 }
 
@@ -54,6 +55,7 @@ const initialState: (connectedInstance?: string) => PostState = (
 ) => ({
   accountData: getCredentialsFromStorage(),
   site: undefined,
+  loadingSite: "",
   connectedInstance,
 });
 
@@ -121,6 +123,9 @@ export const authSlice = createSlice({
     updateConnectedInstance(state, action: PayloadAction<string>) {
       state.connectedInstance = action.payload;
     },
+    loadingSite(state, action: PayloadAction<string>) {
+      state.loadingSite = action.payload;
+    },
   },
 });
 
@@ -132,6 +137,7 @@ export const {
   reset,
   updateUserDetails,
   updateConnectedInstance,
+  loadingSite,
 } = authSlice.actions;
 
 export default authSlice.reducer;
@@ -197,15 +203,27 @@ export const login =
     dispatch(updateConnectedInstance(parseJWT(res.jwt).iss));
   };
 
+export const getSiteIfNeeded =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwtPayload = jwtPayloadSelector(getState());
+    const instance = jwtPayload?.iss ?? getState().auth.connectedInstance;
+
+    const handle = handleSelector(getState());
+
+    if (getLoadingSiteId(instance, handle) === getState().auth.loadingSite)
+      return;
+
+    dispatch(loadingSite(getLoadingSiteId(instance, handle)));
+
+    dispatch(getSite());
+  };
+
 export const getSite =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwtPayload = jwtPayloadSelector(getState());
+    const instance = jwtPayload?.iss ?? getState().auth.connectedInstance;
 
-    if (!jwtPayload) return;
-
-    const { iss } = jwtPayload;
-
-    const details = await getClient(iss).getSite({
+    const details = await getClient(instance).getSite({
       auth: jwtSelector(getState()),
     });
 
@@ -309,3 +327,9 @@ export const showNsfw =
 
     await dispatch(getSite());
   };
+
+function getLoadingSiteId(instance: string, handle: string | undefined) {
+  if (!handle) return instance;
+
+  return `${instance}-${handle}`;
+}

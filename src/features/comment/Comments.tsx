@@ -31,6 +31,7 @@ import { useSetActivePage } from "../auth/AppContext";
 import { CommentsContext } from "./CommentsContext";
 import { jwtSelector } from "../auth/authSlice";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
+import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 
 const centerCss = css`
   position: relative;
@@ -287,11 +288,14 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
-        disabled={!isListAtTop}
+        disabled={isSafariFeedHackEnabled && !isListAtTop}
       >
         <IonRefresherContent />
       </IonRefresher>
       <Virtuoso
+        className={
+          isSafariFeedHackEnabled ? undefined : "ion-content-scroll-host"
+        }
         ref={virtuosoRef}
         style={{ height: "100%" }}
         totalCount={allComments.length + 1}

@@ -10,6 +10,7 @@ import { bookmarkOutline } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { saveError } from "../../../helpers/toastMessages";
 import { jwtSelector } from "../../auth/authSlice";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on",
@@ -43,6 +44,8 @@ export function SaveButton({ postId }: SaveButtonProps) {
 
   async function onSavePost(e: MouseEvent) {
     e.stopPropagation();
+
+    Haptics.impact({ style: ImpactStyle.Light });
 
     if (!jwt) return login({ presentingElement: pageContext.page });
 

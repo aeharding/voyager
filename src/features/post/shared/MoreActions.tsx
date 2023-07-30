@@ -3,7 +3,6 @@ import {
   IonButton,
   IonIcon,
   useIonActionSheet,
-  useIonModal,
   useIonRouter,
   useIonToast,
 } from "@ionic/react";
@@ -36,7 +35,6 @@ import {
 } from "../postSlice";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import SelectText from "../../../pages/shared/SelectTextModal";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
 import { saveError, voteError } from "../../../helpers/toastMessages";
@@ -68,17 +66,12 @@ export default function MoreActions({
   const router = useIonRouter();
 
   const {
-    page,
     presentLoginIfNeeded,
     presentCommentReply,
     presentReport,
     presentPostEditor,
+    presentSelectText,
   } = useContext(PageContext);
-
-  const [selectText, onDismissSelectText] = useIonModal(SelectText, {
-    text: post.post.body,
-    onDismiss: (data: string, role: string) => onDismissSelectText(data, role),
-  });
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
@@ -138,11 +131,13 @@ export default function MoreActions({
           data: "community",
           icon: peopleOutline,
         },
-        {
-          text: "Select Text",
-          data: "select",
-          icon: textOutline,
-        },
+        post.post.body
+          ? {
+              text: "Select Text",
+              data: "select",
+              icon: textOutline,
+            }
+          : undefined,
         onFeed
           ? {
               text: isHidden ? "Unhide" : "Hide",
@@ -166,14 +161,15 @@ export default function MoreActions({
         },
       ].filter(notEmpty),
     [
-      isHidden,
-      myVote,
-      mySaved,
       downvoteAllowed,
+      isHidden,
+      isMyPost,
+      mySaved,
+      myVote,
+      onFeed,
       post.community,
       post.creator,
-      onFeed,
-      isMyPost,
+      post.post.body,
     ]
   );
 
@@ -258,7 +254,9 @@ export default function MoreActions({
               break;
             }
             case "select": {
-              return selectText({ presentingElement: page });
+              if (!post.post.body) break;
+
+              return presentSelectText(post.post.body);
             }
             case "hide": {
               if (presentLoginIfNeeded()) return;

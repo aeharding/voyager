@@ -53,11 +53,13 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
 import { PageContextProvider } from "./features/auth/PageContext";
 import { scrollUpIfNeeded } from "./helpers/scrollUpIfNeeded";
+import GesturesPage from "./pages/settings/GesturesPage";
 import BlocksSettingsPage from "./pages/settings/BlocksSettingsPage";
 import { getDefaultServer } from "./services/app";
 import GeneralPage from "./pages/settings/GeneralPage";
 import HidingSettingsPage from "./pages/settings/HidingSettingsPage";
 import DeviceModeSettingsPage from "./pages/settings/DeviceModeSettingsPage";
+import InstanceSidebarPage from "./pages/shared/InstanceSidebarPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -210,6 +212,12 @@ export default function TabbedRoutes() {
           <ConversationPage />
         </InboxAuthRequired>
       </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/sidebar`}>
+        <ActorRedirect>
+          <InstanceSidebarPage />
+        </ActorRedirect>
+      </Route>,
     ];
   }
 
@@ -338,6 +346,9 @@ export default function TabbedRoutes() {
           </Route>
           <Route exact path="/settings/appearance/mode">
             <DeviceModeSettingsPage />
+          </Route>
+          <Route exact path="/settings/gestures">
+            <GesturesPage />
           </Route>
           <Route exact path="/settings/blocks">
             <BlocksSettingsPage />

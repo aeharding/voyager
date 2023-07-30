@@ -1,19 +1,25 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, getSite, jwtSelector } from "../auth/authSlice";
-import { CommunityView } from "lemmy-js-client";
+import {
+  CommunityModeratorView,
+  CommunityView,
+  GetCommunityResponse,
+} from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
 import { db } from "../../services/db";
 import { without } from "lodash";
 
 interface CommunityState {
   communityByHandle: Dictionary<CommunityView>;
+  modsByHandle: Dictionary<CommunityModeratorView[]>;
   trendingCommunities: CommunityView[];
   favorites: string[];
 }
 
 const initialState: CommunityState = {
   communityByHandle: {},
+  modsByHandle: {},
   trendingCommunities: [],
   favorites: [],
 };
@@ -36,6 +42,15 @@ export const communitySlice = createSlice({
     setFavorites: (state, action: PayloadAction<string[]>) => {
       state.favorites = action.payload;
     },
+    receivedCommunityResponse: (
+      state,
+      action: PayloadAction<GetCommunityResponse>
+    ) => {
+      const handle = getHandle(action.payload.community_view.community);
+
+      state.communityByHandle[handle] = action.payload.community_view;
+      state.modsByHandle[handle] = action.payload.moderators;
+    },
   },
 });
 
@@ -45,6 +60,7 @@ export const {
   recievedTrendingCommunities,
   resetCommunities,
   setFavorites,
+  receivedCommunityResponse,
 } = communitySlice.actions;
 
 export default communitySlice.reducer;
@@ -58,7 +74,7 @@ export const getCommunity =
       name: handle,
       auth: jwt,
     });
-    if (community) dispatch(receivedCommunity(community.community_view));
+    if (community) dispatch(receivedCommunityResponse(community));
   };
 
 export const addFavorite =
@@ -108,17 +124,14 @@ export const getFavoriteCommunities =
   };
 
 export const followCommunity =
-  (follow: boolean, handle: string) =>
+  (follow: boolean, communityId: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwt = jwtSelector(getState());
 
-    const id = getState().community.communityByHandle[handle]?.community.id;
-
-    if (!id) return;
     if (!jwt) throw new Error("Not authorized");
 
     const community = await clientSelector(getState())?.followCommunity({
-      community_id: id,
+      community_id: communityId,
       follow,
       auth: jwt,
     });

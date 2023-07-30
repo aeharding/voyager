@@ -1,10 +1,10 @@
 <p align="center">
   <a href="https://vger.app" target="_blank" rel="noopener noreferrer">
-    <img width="160" height="160" src="./public/logo_minified.svg" alt="Voyager logo">
+    <img width="160" height="160" src="./public/logo-minified.svg" alt="Voyager logo">
   </a>
 </p>
 
-<h1 align="center"/>Voyager <sup><em>alpha</em></sup></h1>
+<h1 align="center"/>Voyager</h1>
 
 <p align="center">
 A mobile-first Lemmy web client
@@ -26,9 +26,9 @@ A mobile-first Lemmy web client
   </a>
 </p>
 
-## ⚠️ Voyager is in Alpha
+## Voyager for Lemmy
 
-Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [Lemmy](https://join-lemmy.org/). It's a mobile-first app, but works great on desktop devices, too. Please feel free to try it out, but be aware you will likely encounter bugs and missing functionality.
+Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [Lemmy](https://join-lemmy.org/). It's a mobile-first app, but works great on desktop devices, too. Please feel free to try it out!
 
 **What does Voyager currently support?**
 
@@ -53,6 +53,8 @@ Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [L
 
 - More customization
 - Native notifications and badging
+- Mod features
+- Native apps
 - Translations
 - ...and more!
 
@@ -152,10 +154,18 @@ Voyager works best added to the homescreen. There are certain features that only
 
 ## 👨‍💻 Contributors
 
+Shoutout to [@fer0n](https://github.com/fer0n) for the great logo and splashscreen! And thank you 💙 all of our contributors to the codebase:
+
 <a href="https://github.com/aeharding/voyager/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=aeharding/voyager" />   
 </a>
 
 ## 📄 License
+
+### Logo & Splashscreen
+
+CC BY-SA 4.0 &copy; [@fer0n](https://github.com/fer0n)
+
+### Code
 
 [AGPL-3.0](./LICENSE) &copy; Voyager contributors

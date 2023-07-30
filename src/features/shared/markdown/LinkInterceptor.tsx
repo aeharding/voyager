@@ -3,6 +3,7 @@ import { useAppSelector } from "../../../store";
 import { useIonRouter } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import styled from "@emotion/styled";
+import InAppExternalLink from "../InAppExternalLink";
 
 const COMMUNITY_RELATIVE_URL =
   /^\/c\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
@@ -50,7 +51,12 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
   );
 
   return (
-    <a {...props} target="_blank" rel="noopener noreferrer" onClick={onClick} />
+    <InAppExternalLink
+      {...props}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={onClick}
+    />
   );
 }
 

@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
@@ -19,6 +18,7 @@ import {
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { InboxItemView } from "../../features/inbox/InboxItem";
 import { jwtSelector } from "../../features/auth/authSlice";
+import FeedContent from "../shared/FeedContent";
 
 interface InboxPageProps {
   showRead?: boolean;
@@ -91,9 +91,9 @@ export default function InboxPage({ showRead }: InboxPageProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
-      </IonContent>
+      </FeedContent>
     </IonPage>
   );
 }
