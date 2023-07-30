@@ -278,7 +278,7 @@ export default function MoreActions({
               presentActionSheet({
                 buttons: [
                   {
-                    text: "Delete",
+                    text: "Delete Post",
                     role: "destructive",
                     handler: () => {
                       (async () => {
