@@ -266,7 +266,7 @@ export default function MoreActions({
               break;
             }
             case "share": {
-              navigator.share({ url: post.post.url ?? post.post.ap_id });
+              navigator.share({ url: post.post.ap_id });
 
               break;
             }
