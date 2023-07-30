@@ -23,7 +23,9 @@
     "vite-express": "^0.9.1"
   },
   "devDependencies": {
+    "@capacitor/android": "5.2.2",
     "@capacitor/app": "^5.0.6",
+    "@capacitor/assets": "^2.0.4",
     "@capacitor/browser": "^5.0.6",
     "@capacitor/cli": "5.2.2",
     "@capacitor/core": "5.2.2",
