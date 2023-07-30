@@ -15,6 +15,8 @@ export default function PostGalleryImg({
 }
 
 function getPostImage(post: PostView): string | undefined {
+  if (post.post.thumbnail_url) return post.post.thumbnail_url;
+
   if (post.post.url && isUrlImage(post.post.url)) return post.post.url;
 
   const loneImage = post.post.body && findLoneImage(post.post.body);
