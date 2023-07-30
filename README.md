@@ -74,30 +74,44 @@ The Voyager team maintains a deployment at:
 
 - 🐭 Production: [vger.app](https://vger.app)
 
-### Self-Host Docker Deployment
+### Self-Host
+
+There are two ways you can run Voyager as a PWA in a production environment. The recommended method is using **docker**. We also support a **traditional** deployment method without docker. Read below to see how to get each method set up.
+
+#### Environment variables
+
+- `CUSTOM_LEMMY_SERVERS` (optional) e.g. `lemmy.world,lemmy.ml,sh.itjust.works` - a comma separated list of suggested servers. The first will be used as default view for logged out users. You can specify only one if you want.
+
+#### Docker Deployment
 
 In order to host Voyager yourself you can use the provided Dockerfile to build a container with Voyager. The Docker container itself does not provide any SSL/TLS handling. You'll have to add this bit yourself.
 One could put Voyager behind popular reverse proxies with SSL Handling like Traefik, NGINX etc.
 
 > **Tip:** Use [Watchtower](https://github.com/containrrr/watchtower) to keep your deployment automatically up to date!
 
-#### Environment variables
-
-- `CUSTOM_LEMMY_SERVERS` (optional) e.g. `lemmy.world,lemmy.ml,sh.itjust.works` - a comma separated list of suggested servers. The first will be used as default view for logged out users. You can specify only one if you want.
-
-#### From source
+##### From source
 
 1. checkout source `git clone https://github.com/aeharding/voyager.git`
 1. go into new source dir: `cd voyager`
 1. build Docker image: `docker build . -t voyager`
 1. start container: `docker run --init --rm -it -p 5314:5314 voyager`
 
-#### Prebuilt
+##### Prebuilt
 
 1. pull image `docker pull ghcr.io/aeharding/voyager:latest`
 1. start container: `docker run --init --rm -it -p 5314:5314 voyager`
 
 Note: The provided Dockerfile creates a container which will eventually run Voyager as non-root user.
+
+#### Traditional Deployment
+
+If you want to run a production build without Docker, you can build from source and run with the following commands (change `PORT` to whatever you prefer):
+
+```sh
+pnpm install
+pnpm build
+NODE_ENV=production PORT=5106 node server.mjs
+```
 
 ### Ecosystem
 
@@ -117,9 +131,7 @@ We would also appreciate sponsoring other contributors to Voyager. If someone he
 
 ## 🧑‍💻 Contributing
 
-We're really excited that you're interested in contributing to Voyager!
-
-> **NOTE** Voyager is receiving a lot of new users and interest in contributing. Before contributing, [please read this](https://github.com/aeharding/voyager/discussions/180). 🙂
+We're really excited that you're interested in contributing to Voyager! Before contributing, make sure you read through existing issues. Before working on a large PR, please open an issue to discuss first.
 
 ### Local Setup
 
@@ -131,6 +143,27 @@ pnpm run dev
 ```
 
 `Warning`: you will need `corepack` enabled.
+
+### iOS Native App
+
+To build the iOS native app, make sure you have [Xcode](https://developer.apple.com/xcode/), [Cocoapods](https://cocoapods.org/) and the [Ionic CLI](https://ionicframework.com/docs/cli) installed, and have run `pnpm install` from the _Local Setup_ instructions above.
+
+You will then need to install Podfile dependencies:
+
+```sh
+cd ios/App
+pod install
+```
+
+Then, build the project and copy web dependencies over:
+
+```sh
+ionic capacitor build ios
+```
+
+Once Xcode opens, navigate to the `Info.plist` file and change `Bundle version` to `1` for local builds.
+
+Finally, can run the project with `CMD+R`.
 
 ### Testing
 
