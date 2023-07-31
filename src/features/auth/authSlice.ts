@@ -175,7 +175,7 @@ export const isAdminSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.person.admin;
 
 export const isDownvoteEnabledSelector = (state: RootState) =>
-  state.auth.site?.site_view.local_site.enable_downvotes;
+  state.auth.site?.site_view.local_site.enable_downvotes !== false;
 
 export const localUserSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.local_user;
