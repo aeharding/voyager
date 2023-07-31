@@ -39,7 +39,10 @@ import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
 import { saveError, voteError } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
-import { handleSelector } from "../../auth/authSlice";
+import {
+  handleSelector,
+  isDownvoteEnabledSelector,
+} from "../../auth/authSlice";
 
 interface MoreActionsProps {
   post: PostView;
@@ -77,6 +80,7 @@ export default function MoreActions({
   const mySaved = postSavedById[post.post.id] ?? post.saved;
 
   const isMyPost = getRemoteHandle(post.creator) === myHandle;
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const buttons = useMemo(
     () =>
@@ -86,11 +90,13 @@ export default function MoreActions({
           data: "upvote",
           icon: arrowUpOutline,
         },
-        {
-          text: myVote !== -1 ? "Downvote" : "Undo Downvote",
-          data: "downvote",
-          icon: arrowDownOutline,
-        },
+        downvoteAllowed
+          ? {
+              text: myVote !== -1 ? "Downvote" : "Undo Downvote",
+              data: "downvote",
+              icon: arrowDownOutline,
+            }
+          : undefined,
         {
           text: !mySaved ? "Save" : "Unsave",
           data: "save",
@@ -155,14 +161,15 @@ export default function MoreActions({
         },
       ].filter(notEmpty),
     [
-      myVote,
-      mySaved,
-      isMyPost,
-      post.creator,
-      post.community,
-      post.post.body,
-      onFeed,
+      downvoteAllowed,
       isHidden,
+      isMyPost,
+      mySaved,
+      myVote,
+      onFeed,
+      post.community,
+      post.creator,
+      post.post.body,
     ]
   );
 

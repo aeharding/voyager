@@ -8,6 +8,7 @@ import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
 import { PageContext } from "../../auth/PageContext";
+import { isDownvoteEnabledSelector } from "../../auth/authSlice";
 import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
 import { useTransition } from "react-transition-state";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
@@ -38,6 +39,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const { presentLoginIfNeeded } = useContext(PageContext);
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const myVote = postVotesById[postId];
@@ -78,6 +80,10 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   useEffect(() => {
     if (!on) toggle(false);
   }, [on, toggle]);
+
+  if (type === "down" && !downvoteAllowed) {
+    return undefined;
+  }
 
   return (
     <Item

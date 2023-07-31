@@ -7,6 +7,13 @@ export const voteError: ToastOptions = {
   color: "danger",
 };
 
+export const downvotesDisabled: ToastOptions = {
+  message: "Downvotes have been disabled by your server admins.",
+  duration: 3500,
+  position: "bottom",
+  color: "warning",
+};
+
 export const saveError: ToastOptions = {
   message: "Problem bookmarking. Please try again.",
   duration: 3500,
