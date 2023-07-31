@@ -5,7 +5,27 @@
       "idiom" : "iphone"
     },
     {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "apple-splash-dark-1242-2688.png",
+      "idiom" : "iphone"
+    },
+    {
       "filename" : "apple-splash-1620-2160.png",
+      "idiom" : "ipad"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "apple-splash-dark-1620-2160.png",
       "idiom" : "ipad"
     }
   ],
