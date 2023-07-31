@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import {
   IonActionSheet,
   IonIcon,
+  useIonActionSheet,
   useIonRouter,
   useIonToast,
 } from "@ionic/react";
@@ -26,6 +27,7 @@ import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
+  share,
 } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { saveError, voteError } from "../../helpers/toastMessages";
@@ -58,6 +60,7 @@ export default function MoreActions({
   const { prependComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
+  const [presentActionSheet] = useIonActionSheet();
   const collapseRootComment = useCollapseRootComment(commentView, rootIndex);
 
   const commentById = useAppSelector((state) => state.comment.commentById);
@@ -210,25 +213,43 @@ export default function MoreActions({
               break;
             }
             case "delete":
-              try {
-                await dispatch(deleteComment(comment.id));
-              } catch (error) {
-                present({
-                  message: "Problem deleting comment. Please try again.",
-                  duration: 3500,
-                  position: "bottom",
-                  color: "danger",
-                });
+              presentActionSheet({
+                buttons: [
+                  {
+                    text: "Delete Comment",
+                    role: "destructive",
+                    handler: () => {
+                      (async () => {
+                        try {
+                          await dispatch(deleteComment(comment.id));
+                        } catch (error) {
+                          present({
+                            message:
+                              "Problem deleting comment. Please try again.",
+                            duration: 3500,
+                            position: "bottom",
+                            color: "danger",
+                          });
 
-                throw error;
-              }
+                          throw error;
+                        }
 
-              present({
-                message: "Comment deleted!",
-                duration: 3500,
-                position: "bottom",
-                color: "primary",
+                        present({
+                          message: "Comment deleted!",
+                          duration: 3500,
+                          position: "bottom",
+                          color: "primary",
+                        });
+                      })();
+                    },
+                  },
+                  {
+                    text: "Cancel",
+                    role: "cancel",
+                  },
+                ],
               });
+
               break;
             case "reply": {
               if (presentLoginIfNeeded()) return;
@@ -246,7 +267,7 @@ export default function MoreActions({
               );
               break;
             case "share":
-              navigator.share({ url: comment.ap_id });
+              share(comment);
               break;
             case "collapse":
               collapseRootComment();

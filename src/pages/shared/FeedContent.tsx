@@ -1,6 +1,6 @@
 import { IonContent } from "@ionic/react";
 import React from "react";
-import { isNative } from "../../helpers/device";
+import { isAndroid, isNative } from "../../helpers/device";
 
 interface FeedContentProps {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ interface FeedContentProps {
 
 // There is some strange behavior that needs to be sorted before this
 // can be enabled
-export const isSafariFeedHackEnabled = !isNative();
+export const isSafariFeedHackEnabled = !isNative() || isAndroid();
 
 // All of this terrible code is to deal with safari being safari >:(
 // https://bugs.webkit.org/show_bug.cgi?id=222654

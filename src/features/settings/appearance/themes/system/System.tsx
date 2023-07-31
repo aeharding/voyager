@@ -4,7 +4,7 @@ import { ListHeader } from "../../../shared/formatting";
 import DeviceMode from "./DeviceMode";
 import { useAppSelector } from "../../../../../store";
 import UserDarkMode from "./UserDarkMode";
-import { isNative } from "../../../../../helpers/device";
+import { isAndroid, isNative } from "../../../../../helpers/device";
 
 export default function System() {
   const { usingSystemDarkMode } = useAppSelector(
@@ -17,7 +17,7 @@ export default function System() {
         <IonLabel>System</IonLabel>
       </ListHeader>
       <IonList inset>
-        {!isNative() ? <DeviceMode /> : undefined}
+        {!isNative() || isAndroid() ? <DeviceMode /> : undefined}
         <DarkMode />
       </IonList>
 

@@ -2,7 +2,7 @@
   "name": "voyager",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.1.1",
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
@@ -23,13 +23,16 @@
     "vite-express": "^0.9.1"
   },
   "devDependencies": {
+    "@capacitor/android": "5.2.2",
     "@capacitor/app": "^5.0.6",
+    "@capacitor/assets": "^2.0.4",
     "@capacitor/browser": "^5.0.6",
     "@capacitor/cli": "5.2.2",
     "@capacitor/core": "5.2.2",
     "@capacitor/haptics": "^5.0.6",
     "@capacitor/ios": "5.2.2",
     "@capacitor/keyboard": "^5.0.6",
+    "@capacitor/share": "^5.0.6",
     "@capacitor/status-bar": "^5.0.6",
     "@emotion/babel-plugin": "^11.11.0",
     "@emotion/css": "^11.11.2",

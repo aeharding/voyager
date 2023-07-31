@@ -5,7 +5,7 @@ import { chatbubbleOutline, shareOutline } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle } from "../../helpers/lemmy";
+import { getHandle, share } from "../../helpers/lemmy";
 import MoreActions from "../post/shared/MoreActions";
 import {
   calculateTotalScore,
@@ -49,10 +49,6 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
   const location = useLocation();
   const { close } = useContext(GalleryContext);
 
-  function share() {
-    navigator.share({ url: post.post.ap_id });
-  }
-
   return (
     <Container onClick={(e) => e.stopPropagation()}>
       <Voting post={post} />
@@ -70,7 +66,7 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
           <Amount>{post.counts.comments}</Amount>
         </Section>
       </div>
-      <IonIcon icon={shareOutline} onClick={share} />
+      <IonIcon icon={shareOutline} onClick={() => share(post.post)} />
       <MoreActions post={post} onFeed />
     </Container>
   );

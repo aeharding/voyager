@@ -1,11 +1,13 @@
 import styled from "@emotion/styled";
 import { Community, Person } from "lemmy-js-client";
 import FakeIcon from "../../shared/FakeIcon";
+import { getImageSrc } from "../../../services/lemmy";
 
 const SubImgIcon = styled.img<{ size: number }>`
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: 50%;
+  object-fit: cover;
 `;
 
 interface ItemIconProps {
@@ -24,7 +26,14 @@ export default function ItemIcon({ item, size, className }: ItemIconProps) {
 
   const icon = "posting_restricted_to_mods" in item ? item.icon : item.avatar;
 
-  if (icon) return <SubImgIcon src={icon} size={size} className={className} />;
+  if (icon)
+    return (
+      <SubImgIcon
+        src={getImageSrc(icon, { size })}
+        size={size}
+        className={className}
+      />
+    );
 
   return (
     <FakeIcon
