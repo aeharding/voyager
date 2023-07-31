@@ -63,6 +63,7 @@ const SlashedIcon = styled(IonIcon)<{
   bgColor: string;
 }>`
   color: white;
+
   ${({ icon, slash, bgColor }) =>
     slash &&
     css`

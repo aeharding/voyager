@@ -29,7 +29,7 @@ const Container = styled.div<{
       if (voteRepresented === undefined || vote === voteRepresented) {
         switch (vote) {
           case 1:
-            return "var(--ion-color-primary)";
+            return "var(--ion-color-primary-fixed)";
           case -1:
             return "var(--ion-color-danger)";
         }

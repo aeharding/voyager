@@ -234,7 +234,7 @@ function BaseSlidingVoteInternal({
     return {
       icon: mailUnread,
       trigger: markUnread,
-      bgColor: "primary",
+      bgColor: "primaryfixed",
       slash: !isRead,
     };
   }, [markUnread, isRead]);
@@ -248,7 +248,7 @@ function BaseSlidingVoteInternal({
           trigger: () => {
             onVote(currentVote === 1 ? 0 : 1);
           },
-          bgColor: "primary",
+          bgColor: "primary-fixed",
           slash: currentVote === 1,
         },
         downvote: {
@@ -262,7 +262,7 @@ function BaseSlidingVoteInternal({
         reply: {
           icon: arrowUndo,
           trigger: reply,
-          bgColor: "primary",
+          bgColor: "primary-fixed",
         },
         save: saveAction,
         hide: hideAction,

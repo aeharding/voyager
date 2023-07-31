@@ -8,6 +8,16 @@ export interface IPostMetadata {
   hidden_updated_at?: number;
 }
 
+export const OAppThemeType = {
+  Default: "default",
+  FieryMario: "mario",
+  Pistachio: "pistachio",
+  SpookyPumpkin: "pumpkin",
+  UV: "uv",
+} as const;
+
+export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
+
 export const OPostAppearanceType = {
   Compact: "compact",
   Large: "large",
