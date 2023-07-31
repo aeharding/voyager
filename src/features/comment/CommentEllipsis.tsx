@@ -27,6 +27,7 @@ import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
+  share,
 } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { saveError, voteError } from "../../helpers/toastMessages";
@@ -266,7 +267,7 @@ export default function MoreActions({
               );
               break;
             case "share":
-              navigator.share({ url: comment.ap_id });
+              share(comment);
               break;
             case "collapse":
               collapseRootComment();
