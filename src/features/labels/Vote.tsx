@@ -14,7 +14,8 @@ import {
 import { CommentView, PostView } from "lemmy-js-client";
 import { OVoteDisplayMode } from "../../services/db";
 import { isDownvoteEnabledSelector } from "../auth/authSlice";
-import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { ImpactStyle } from "@capacitor/haptics";
+import useHapticFeedback from "../../helpers/useHapticFeedback";
 
 const Container = styled.div<{
   vote?: 1 | -1 | 0;
@@ -56,12 +57,13 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
   const canDownvote = useAppSelector(isDownvoteEnabledSelector);
 
   const { presentLoginIfNeeded } = useContext(PageContext);
+  const vibrate = useHapticFeedback();
 
   async function onVote(e: React.MouseEvent, vote: 0 | 1 | -1) {
     e.stopPropagation();
     e.preventDefault();
 
-    Haptics.impact({ style: ImpactStyle.Light });
+    vibrate({ style: ImpactStyle.Light });
 
     if (presentLoginIfNeeded()) return;
 
