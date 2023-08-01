@@ -170,11 +170,13 @@ export default function PostDetail({
   function renderImage() {
     if (!post) return;
 
-    if (post.post.url) {
-      if (isUrlImage(post.post.url)) return <LightboxImg post={post} />;
+    if (post.post.url && isUrlImage(post.post.url)) {
+      return <LightboxImg post={post} />;
+    }
 
-      if (isUrlVideo(post.post.url))
-        return <Video src={post.post.url} css={lightboxCss} controls />;
+    const videoUrl = post.post.embed_video_url || post.post.url;
+    if (videoUrl && isUrlVideo(videoUrl)) {
+      return <Video src={videoUrl} css={lightboxCss} controls />;
     }
 
     if (markdownLoneImage) return <LightboxImg post={post} />;
@@ -188,7 +190,9 @@ export default function PostDetail({
         <>
           {post.post.url &&
             !isUrlImage(post.post.url) &&
-            !isUrlVideo(post.post.url) && <Embed post={post} />}
+            !isUrlVideo(post.post.embed_video_url || post.post.url) && (
+              <Embed post={post} />
+            )}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
         </>
       );
@@ -197,7 +201,7 @@ export default function PostDetail({
     if (
       post.post.url &&
       !isUrlImage(post.post.url) &&
-      !isUrlVideo(post.post.url)
+      !isUrlVideo(post.post.embed_video_url || post.post.url)
     ) {
       return <StyledEmbed post={post} />;
     }
