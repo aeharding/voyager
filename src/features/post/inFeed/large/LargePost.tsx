@@ -116,25 +116,28 @@ export default function LargePost({ post, communityMode }: PostProps) {
   );
 
   function renderPostBody() {
-    if (post.post.url) {
-      if (isUrlImage(post.post.url)) {
-        return (
-          <ImageContainer>
-            <Image
-              blur={isNsfwBlurred(post, blurNsfw)}
-              post={post}
-              animationType="zoom"
-            />
-          </ImageContainer>
-        );
-      }
-      if (isUrlVideo(post.post.url)) {
-        return (
-          <ImageContainer>
-            <Video src={post.post.url} blur={isNsfwBlurred(post, blurNsfw)} />
-          </ImageContainer>
-        );
-      }
+    if (post.post.url && isUrlImage(post.post.url)) {
+      return (
+        <ImageContainer>
+          <Image
+            blur={isNsfwBlurred(post, blurNsfw)}
+            post={post}
+            animationType="zoom"
+          />
+        </ImageContainer>
+      );
+    }
+
+    /**
+     * The lemmy api returns an embed_video_url for some urls, try loading those here
+     */
+    const videoUrl = post.post.embed_video_url || post.post.url;
+    if (videoUrl && isUrlVideo(videoUrl)) {
+      return (
+        <ImageContainer>
+          <Video src={videoUrl} blur={isNsfwBlurred(post, blurNsfw)} />
+        </ImageContainer>
+      );
     }
 
     if (markdownLoneImage)
