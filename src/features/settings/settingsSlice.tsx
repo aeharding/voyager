@@ -23,6 +23,8 @@ import {
   OInstanceUrlDisplayMode,
   VoteDisplayMode,
   OVoteDisplayMode,
+  OProfileLabelType,
+  ProfileLabelType,
   AppThemeType,
 } from "../../services/db";
 import { get, set } from "./storage";
@@ -46,6 +48,7 @@ interface SettingsState {
     };
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
+      profileLabel: ProfileLabelType;
     };
     posts: {
       blurNsfw: PostBlurNsfwType;
@@ -103,6 +106,7 @@ const initialState: SettingsState = {
     },
     general: {
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
+      profileLabel: OProfileLabelType.Instance,
     },
     posts: {
       blurNsfw: OPostBlurNsfw.InFeed,
@@ -194,6 +198,10 @@ export const appearanceSlice = createSlice({
     ) {
       state.appearance.general.userInstanceUrlDisplay = action.payload;
       db.setSetting("user_instance_url_display", action.payload);
+    },
+    setProfileLabel(state, action: PayloadAction<ProfileLabelType>) {
+      state.appearance.general.profileLabel = action.payload;
+      db.setSetting("profile_label", action.payload);
     },
     setCommentsCollapsed(state, action: PayloadAction<CommentThreadCollapse>) {
       state.general.comments.collapseCommentThreads = action.payload;
@@ -319,6 +327,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const user_instance_url_display = await db.getSetting(
         "user_instance_url_display"
       );
+      const profile_label = await db.getSetting("profile_label");
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const compact_thumbnail_position_type = await db.getSetting(
@@ -349,6 +358,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             userInstanceUrlDisplay:
               user_instance_url_display ??
               initialState.appearance.general.userInstanceUrlDisplay,
+            profileLabel:
+              profile_label ?? initialState.appearance.general.profileLabel,
           },
           posts: {
             type: post_appearance_type ?? initialState.appearance.posts.type,
@@ -407,6 +418,7 @@ export const {
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setUserInstanceUrlDisplay,
+  setProfileLabel,
   setCommentsCollapsed,
   setNsfwBlur,
   setPostAppearance,

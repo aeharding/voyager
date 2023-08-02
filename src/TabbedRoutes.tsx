@@ -20,13 +20,17 @@ import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppSelector } from "./store";
-import { jwtIssSelector, jwtSelector } from "./features/auth/authSlice";
+import {
+  jwtIssSelector,
+  jwtSelector,
+  handleSelector,
+} from "./features/auth/authSlice";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useContext, useRef } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
@@ -60,12 +64,17 @@ import GeneralPage from "./pages/settings/GeneralPage";
 import HidingSettingsPage from "./pages/settings/HidingSettingsPage";
 import DeviceModeSettingsPage from "./pages/settings/DeviceModeSettingsPage";
 import InstanceSidebarPage from "./pages/shared/InstanceSidebarPage";
+import { getProfileTabLabel } from "./features/settings/general/other/ProfileTabLabel";
 import AppearanceThemePage from "./pages/settings/AppearanceThemePage";
 
 const Interceptor = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: all;
+`;
+
+const ProfileLabel = styled(IonLabel)`
+  max-width: 20vw;
 `;
 
 export default function TabbedRoutes() {
@@ -88,6 +97,16 @@ export default function TabbedRoutes() {
   );
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
+
+  const userHandle = useAppSelector(handleSelector);
+  const profileLabelType = useAppSelector(
+    (state) => state.settings.appearance.general.profileLabel
+  );
+
+  const profileTabLabel = useMemo(
+    () => getProfileTabLabel(profileLabelType, userHandle, connectedInstance),
+    [profileLabelType, userHandle, connectedInstance]
+  );
 
   const isPostsButtonDisabled = location.pathname.startsWith("/posts");
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
@@ -394,7 +413,7 @@ export default function TabbedRoutes() {
             href="/profile"
           >
             <IonIcon aria-hidden="true" icon={personCircleOutline} />
-            <IonLabel>{connectedInstance}</IonLabel>
+            <ProfileLabel>{profileTabLabel}</ProfileLabel>
             <Interceptor onClick={onProfileClick} />
           </IonTabButton>
           <IonTabButton
