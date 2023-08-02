@@ -87,6 +87,31 @@ export const OVoteDisplayMode = {
 export type VoteDisplayMode =
   (typeof OVoteDisplayMode)[keyof typeof OVoteDisplayMode];
 
+export const OProfileLabelType = {
+  /**
+   * e.g. aeharding@lemmy.world
+   */
+  Handle: "handle",
+
+  /**
+   * e.g. aeharding
+   */
+  Username: "username",
+
+  /**
+   * e.g. lemmy.world
+   */
+  Instance: "instance",
+
+  /**
+   * e.g. Profile
+   */
+  Hide: "hide",
+} as const;
+
+export type ProfileLabelType =
+  (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
+
 const OSwipeActionBase = {
   None: "none",
   Upvote: "upvote",
@@ -126,6 +151,7 @@ export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;
+  profile_label: ProfileLabelType;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_show_voting_buttons: boolean;

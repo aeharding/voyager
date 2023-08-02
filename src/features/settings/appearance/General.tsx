@@ -7,6 +7,7 @@ import { ListHeader } from "../shared/formatting";
 
 export default function GeneralAppearance() {
   const dispatch = useAppDispatch();
+
   const userInstanceUrlDisplay = useAppSelector(
     (state) => state.settings.appearance.general.userInstanceUrlDisplay
   );
