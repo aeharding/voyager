@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
 import React, { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
-import { voteError } from "../../helpers/toastMessages";
+import { downvotesDisabled, voteError } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
 import {
   calculateTotalScore,
@@ -13,6 +13,7 @@ import {
 } from "../../helpers/vote";
 import { CommentView, PostView } from "lemmy-js-client";
 import { OVoteDisplayMode } from "../../services/db";
+import { isDownvoteEnabledSelector } from "../auth/authSlice";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 const Container = styled.div<{
@@ -28,7 +29,7 @@ const Container = styled.div<{
       if (voteRepresented === undefined || vote === voteRepresented) {
         switch (vote) {
           case 1:
-            return "var(--ion-color-primary)";
+            return "var(--ion-color-primary-fixed)";
           case -1:
             return "var(--ion-color-danger)";
         }
@@ -52,6 +53,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
   const id = "comment" in item ? item.comment.id : item.post.id;
 
   const myVote = votesById[id] ?? (item.my_vote as -1 | 0 | 1 | undefined) ?? 0;
+  const canDownvote = useAppSelector(isDownvoteEnabledSelector);
 
   const { presentLoginIfNeeded } = useContext(PageContext);
 
@@ -62,6 +64,12 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
     Haptics.impact({ style: ImpactStyle.Light });
 
     if (presentLoginIfNeeded()) return;
+
+    // you are allowed to un-downvote if they are disabled
+    if (!canDownvote && vote === -1) {
+      present(downvotesDisabled);
+      return;
+    }
 
     let dispatcherFn;
     if ("comment" in item) {

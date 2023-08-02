@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import {
   IonActionSheet,
   IonIcon,
+  useIonActionSheet,
   useIonRouter,
   useIonToast,
 } from "@ionic/react";
@@ -26,12 +27,13 @@ import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
+  share,
 } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { saveError, voteError } from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
-import { handleSelector } from "../auth/authSlice";
+import { handleSelector, isDownvoteEnabledSelector } from "../auth/authSlice";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
@@ -58,6 +60,7 @@ export default function MoreActions({
   const { prependComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
+  const [presentActionSheet] = useIonActionSheet();
   const collapseRootComment = useCollapseRootComment(commentView, rootIndex);
 
   const commentById = useAppSelector((state) => state.comment.commentById);
@@ -85,6 +88,7 @@ export default function MoreActions({
   const myVote = commentVotesById[comment.id] ?? commentView.my_vote;
   const mySaved = commentSavedById[comment.id] ?? commentView.saved;
 
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
   const isMyComment = getRemoteHandle(commentView.creator) === myHandle;
   const commentExists = !comment.deleted && !comment.removed;
 
@@ -108,11 +112,13 @@ export default function MoreActions({
             role: "upvote",
             icon: arrowUpOutline,
           },
-          {
-            text: myVote !== -1 ? "Downvote" : "Undo Downvote",
-            role: "downvote",
-            icon: arrowDownOutline,
-          },
+          downvoteAllowed
+            ? {
+                text: myVote !== -1 ? "Downvote" : "Undo Downvote",
+                role: "downvote",
+                icon: arrowDownOutline,
+              }
+            : undefined,
           {
             text: !mySaved ? "Save" : "Unsave",
             role: "save",
@@ -210,25 +216,43 @@ export default function MoreActions({
               break;
             }
             case "delete":
-              try {
-                await dispatch(deleteComment(comment.id));
-              } catch (error) {
-                present({
-                  message: "Problem deleting comment. Please try again.",
-                  duration: 3500,
-                  position: "bottom",
-                  color: "danger",
-                });
+              presentActionSheet({
+                buttons: [
+                  {
+                    text: "Delete Comment",
+                    role: "destructive",
+                    handler: () => {
+                      (async () => {
+                        try {
+                          await dispatch(deleteComment(comment.id));
+                        } catch (error) {
+                          present({
+                            message:
+                              "Problem deleting comment. Please try again.",
+                            duration: 3500,
+                            position: "bottom",
+                            color: "danger",
+                          });
 
-                throw error;
-              }
+                          throw error;
+                        }
 
-              present({
-                message: "Comment deleted!",
-                duration: 3500,
-                position: "bottom",
-                color: "primary",
+                        present({
+                          message: "Comment deleted!",
+                          duration: 3500,
+                          position: "bottom",
+                          color: "primary",
+                        });
+                      })();
+                    },
+                  },
+                  {
+                    text: "Cancel",
+                    role: "cancel",
+                  },
+                ],
               });
+
               break;
             case "reply": {
               if (presentLoginIfNeeded()) return;
@@ -246,7 +270,7 @@ export default function MoreActions({
               );
               break;
             case "share":
-              navigator.share({ url: comment.ap_id });
+              share(comment);
               break;
             case "collapse":
               collapseRootComment();

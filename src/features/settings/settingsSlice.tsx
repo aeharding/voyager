@@ -25,6 +25,7 @@ import {
   OVoteDisplayMode,
   OProfileLabelType,
   ProfileLabelType,
+  AppThemeType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -63,8 +64,10 @@ interface SettingsState {
     dark: {
       usingSystemDarkMode: boolean;
       userDarkMode: boolean;
+      pureBlack: boolean;
     };
     deviceMode: Mode;
+    theme: AppThemeType;
   };
   general: {
     comments: {
@@ -87,8 +90,10 @@ const LOCALSTORAGE_KEYS = {
   DARK: {
     USE_SYSTEM: "appearance--dark-use-system",
     USER_MODE: "appearance--dark-user-mode",
+    PURE_BLACK: "appearance--pure-black",
   },
   DEVICE_MODE: "appearance--device-mode",
+  THEME: "appearance--theme",
 } as const;
 
 const initialState: SettingsState = {
@@ -116,8 +121,10 @@ const initialState: SettingsState = {
     dark: {
       usingSystemDarkMode: true,
       userDarkMode: false,
+      pureBlack: true,
     },
     deviceMode: "ios",
+    theme: "default",
   },
   general: {
     comments: {
@@ -143,8 +150,10 @@ const stateWithLocalstorageItems: SettingsState = merge(initialState, {
     dark: {
       usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
       userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+      pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK),
     },
     deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
+    theme: get(LOCALSTORAGE_KEYS.THEME),
   },
 });
 
@@ -223,6 +232,10 @@ export const appearanceSlice = createSlice({
       state.appearance.dark.userDarkMode = action.payload;
       set(LOCALSTORAGE_KEYS.DARK.USER_MODE, action.payload);
     },
+    setPureBlack(state, action: PayloadAction<boolean>) {
+      state.appearance.dark.pureBlack = action.payload;
+      set(LOCALSTORAGE_KEYS.DARK.PURE_BLACK, action.payload);
+    },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
       state.appearance.dark.usingSystemDarkMode = action.payload;
       set(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
@@ -249,6 +262,10 @@ export const appearanceSlice = createSlice({
       state.general.posts.showHideReadButton = action.payload;
 
       db.setSetting("show_hide_read_button", action.payload);
+    },
+    setTheme(state, action: PayloadAction<AppThemeType>) {
+      state.appearance.theme = action.payload;
+      set(LOCALSTORAGE_KEYS.THEME, action.payload);
     },
 
     resetSettings: () => ({
@@ -404,6 +421,8 @@ export const {
   setDisableMarkingPostsRead,
   setMarkPostsReadOnScroll,
   setShowHideReadButton,
+  setTheme,
+  setPureBlack,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

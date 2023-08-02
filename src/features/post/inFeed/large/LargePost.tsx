@@ -100,7 +100,7 @@ const PostBody = styled.div<{ isRead: boolean }>`
 
 const ImageContainer = styled.div`
   overflow: hidden;
-  margin: 0 -1rem;
+  margin: 0 -0.75rem;
 `;
 
 export default function LargePost({ post, communityMode }: PostProps) {
@@ -200,6 +200,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
               <CommunityLink
                 community={post.community}
                 showInstanceWhenRemote
+                subscribed={post.subscribed}
               />
             )}
           </CommunityName>

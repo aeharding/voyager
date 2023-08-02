@@ -2,20 +2,16 @@ import { useRef } from "react";
 import CommunitiesList from "../../features/community/list/CommunitiesList";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import {
-  IonButton,
   IonButtons,
   IonHeader,
-  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import { tabletPortraitOutline } from "ionicons/icons";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import CommunitiesMoreActions from "../../features/community/list/InstanceMoreActions";
 
 export default function CommunitiesPage() {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const pageRef = useRef<HTMLElement>(null);
 
   useSetActivePage(pageRef);
@@ -26,9 +22,7 @@ export default function CommunitiesPage() {
         <IonToolbar>
           <IonTitle>Communities</IonTitle>
           <IonButtons slot="end">
-            <IonButton routerLink={buildGeneralBrowseLink("/sidebar")}>
-              <IonIcon icon={tabletPortraitOutline} />
-            </IonButton>
+            <CommunitiesMoreActions />
           </IonButtons>
         </IonToolbar>
       </IonHeader>

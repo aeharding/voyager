@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Voyager</string>
+    <string name="title_activity_main">Voyager</string>
+    <string name="package_name">app.vger.voyager</string>
+    <string name="custom_url_scheme">app.vger.voyager</string>
+</resources>

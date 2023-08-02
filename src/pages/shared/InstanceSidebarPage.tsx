@@ -11,9 +11,9 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import { useSetActivePage } from "../../features/auth/AppContext";
-import InstanceSidebar from "../../features/instance/InstanceSidebar";
 import { useAppSelector } from "../../store";
 import AppContent from "../../features/shared/AppContent";
+import Sidebar from "../../features/sidebar/Sidebar";
 
 export default function InstanceSidebarPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -40,7 +40,7 @@ export default function InstanceSidebarPage() {
             </IonToolbar>
           </IonHeader>
           <AppContent scrollY>
-            <InstanceSidebar />
+            <Sidebar />
           </AppContent>
         </IonPage>
       </TitleSearchProvider>

@@ -3,7 +3,9 @@ import {
   CommentView,
   Community,
   GetSiteResponse,
+  Post,
 } from "lemmy-js-client";
+import { Share } from "@capacitor/share";
 
 export interface LemmyJWT {
   sub: number;
@@ -256,4 +258,8 @@ export function isUrlVideo(url: string): boolean {
   }
 
   return parsedUrl.pathname.endsWith(".mp4");
+}
+
+export function share(item: Post | Comment) {
+  return Share.share({ url: item.ap_id });
 }

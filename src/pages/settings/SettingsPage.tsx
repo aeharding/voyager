@@ -32,7 +32,7 @@ import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
 import { isNative } from "../../helpers/device";
 
-const IconBg = styled.div<{ color: string }>`
+export const IconBg = styled.div<{ color: string }>`
   width: 30px;
   height: 30px;
 
