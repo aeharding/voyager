@@ -3,6 +3,8 @@ PODS:
     - CapacitorCordova
   - CapacitorApp (5.0.6):
     - Capacitor
+  - CapacitorApplicationContext (0.0.1):
+    - Capacitor
   - CapacitorBrowser (5.0.6):
     - Capacitor
   - CapacitorCordova (5.2.2)
@@ -18,6 +20,7 @@ PODS:
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@5.2.2_@capacitor+core@5.2.2/node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/app`)"
+  - CapacitorApplicationContext (from `../../../application-context`)
   - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/browser`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@5.2.2_@capacitor+core@5.2.2/node_modules/@capacitor/ios`)"
   - "CapacitorHaptics (from `../../node_modules/.pnpm/@capacitor+haptics@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/haptics`)"
@@ -30,6 +33,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/@capacitor+ios@5.2.2_@capacitor+core@5.2.2/node_modules/@capacitor/ios"
   CapacitorApp:
     :path: "../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/app"
+  CapacitorApplicationContext:
+    :path: "../../../application-context"
   CapacitorBrowser:
     :path: "../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/browser"
   CapacitorCordova:
@@ -46,6 +51,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Capacitor: 070b18988e0f566728ae9a5eb3a7a974595f1626
   CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
+  CapacitorApplicationContext: 487dced4aebde33c94a3bf8fd0e519ab59a17eb8
   CapacitorBrowser: 6192948e0ce804fd72aaf77f4114a3ad2e08c760
   CapacitorCordova: 3773395d5331add072300ff6041ca2cf7b93cb0b
   CapacitorHaptics: 1fffc1217c7e64a472d7845be50fb0c2f7d4204c
@@ -53,6 +59,6 @@ SPEC CHECKSUMS:
   CapacitorShare: cd41743331cb71d217c029de54b681cbd91e0fcc
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
 
-PODFILE CHECKSUM: 578740b7995d60744fbaa7d7e00da7748da6d994
+PODFILE CHECKSUM: 994161a2ff4d39be6692398d853e0bb1001f5390
 
 COCOAPODS: 1.12.1
