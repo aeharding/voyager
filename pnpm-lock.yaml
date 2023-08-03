@@ -133,6 +133,9 @@ devDependencies:
   '@vitejs/plugin-react':
     specifier: ^4.0.1
     version: 4.0.1(vite@4.3.9)
+  capacitor-application-context:
+    specifier: ^0.0.1
+    version: 0.0.1(@capacitor/core@5.2.2)
   date-fns:
     specifier: ^2.30.0
     version: 2.30.0
@@ -4667,6 +4670,14 @@ packages:
 
   /caniuse-lite@1.0.30001512:
     resolution: {integrity: sha512-2S9nK0G/mE+jasCUsMPlARhRCts1ebcp2Ji8Y8PWi4NDE1iRdLCnEPHkEfeBrGC45L4isBx5ur3IQ6yTE2mRZw==}
+    dev: true
+
+  /capacitor-application-context@0.0.1(@capacitor/core@5.2.2):
+    resolution: {integrity: sha512-XYHvn01l3VxbGh/fs77aBTyEW54TOoEDlXYkAEeRe7PQCwU8EfVCX5MLvuWVCoIzpRlEWYNCFCS1TvLkmV7IsQ==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.2
     dev: true
 
   /ccount@2.0.1:
