@@ -27,6 +27,9 @@ import TermsSheet from "../settings/terms/TermsSheet";
 import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
 import { getCustomServers } from "../../services/app";
 import { isNative } from "../../helpers/device";
+import { Browser } from "@capacitor/browser";
+
+const JOIN_LEMMY_URL = "https://join-lemmy.org/instances";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -299,9 +302,16 @@ export default function Login({
 
               <HelperText>
                 <IonRouterLink
-                  href="https://join-lemmy.org/instances"
+                  href={JOIN_LEMMY_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!isNative()) return;
+
+                    e.preventDefault();
+
+                    Browser.open({ url: JOIN_LEMMY_URL });
+                  }}
                 >
                   <IonText color="primary">Don&apos;t have an account?</IonText>
                 </IonRouterLink>
