@@ -20,7 +20,7 @@ PODS:
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@5.2.2_@capacitor+core@5.2.2/node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/app`)"
-  - CapacitorApplicationContext (from `../../../application-context`)
+  - "CapacitorApplicationContext (from `../../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.2.2/node_modules/capacitor-application-context`)"
   - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/browser`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@5.2.2_@capacitor+core@5.2.2/node_modules/@capacitor/ios`)"
   - "CapacitorHaptics (from `../../node_modules/.pnpm/@capacitor+haptics@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/haptics`)"
@@ -34,7 +34,7 @@ EXTERNAL SOURCES:
   CapacitorApp:
     :path: "../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/app"
   CapacitorApplicationContext:
-    :path: "../../../application-context"
+    :path: "../../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.2.2/node_modules/capacitor-application-context"
   CapacitorBrowser:
     :path: "../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/browser"
   CapacitorCordova:
@@ -59,6 +59,6 @@ SPEC CHECKSUMS:
   CapacitorShare: cd41743331cb71d217c029de54b681cbd91e0fcc
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
 
-PODFILE CHECKSUM: 994161a2ff4d39be6692398d853e0bb1001f5390
+PODFILE CHECKSUM: 707b8fe7a8e4e2291562870477bab59c5be7490c
 
 COCOAPODS: 1.12.1
