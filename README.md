@@ -146,24 +146,44 @@ pnpm run dev
 
 ### iOS Native App
 
-To build the iOS native app, make sure you have [Xcode](https://developer.apple.com/xcode/), [Cocoapods](https://cocoapods.org/) and the [Ionic CLI](https://ionicframework.com/docs/cli) installed, and have run `pnpm install` from the _Local Setup_ instructions above.
+To build the iOS native app:
 
-You will then need to install Podfile dependencies:
-
-```sh
-cd ios/App
-pod install
-```
+1. Install [Node](https://nodejs.org/en)
+2. Install [Ionic CLI](https://ionicframework.com/docs/cli)
+3. Install [Xcode](https://developer.apple.com/xcode/)
+4. [Cocoapods](https://cocoapods.org/)
 
 Then, build the project and copy web dependencies over:
 
 ```sh
+corepack enable
+pnpm install
 ionic capacitor build ios
 ```
 
-Once Xcode opens, navigate to the `Info.plist` file and change `Bundle version` to `1` for local builds.
-
 Finally, can run the project with `CMD+R`.
+
+### Android Native App
+
+To build the Android native app:
+
+1. Install [Node](https://nodejs.org/en)
+2. Install [Ionic CLI](https://ionicframework.com/docs/cli)
+3. Install [Android Studio](https://developer.android.com/studio)
+
+In Voyager source code directory:
+
+```sh
+corepack enable
+pnpm install
+ionic capacitor build android
+```
+
+Android Studio should open.
+
+You may need to sync. `File -> Sync Project with Gradle Files`
+
+Finally, can run the project with `Ctrl+R`.
 
 ### Testing
 
@@ -172,6 +192,18 @@ Voyager uses [Vitest](https://vitest.dev). You can run the test suite with:
 ```
 pnpm test
 ```
+
+### 🚀 Releasing
+
+To release a new version:
+
+```sh
+BUILD=123; npx release-it
+```
+
+Make sure the build number is incremental. This is used for F-droid.
+
+Voyager uses [Ionic App Flow](https://ionic.io/appflow) for Apple App Store and Android Play Store builds. Unfortunately, there's no way to provide public access to build logs and artifacts. Hopefully someday. :-)
 
 ## 📲 PWA
 
