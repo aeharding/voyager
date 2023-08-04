@@ -37,8 +37,8 @@ RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Create a dedicated user and group
 RUN set -eux; \
-    addgroup -g "${GID}" voyager; \
-    adduser -u "${UID}" -D -G voyager voyager
+  addgroup -g "${GID}" voyager; \
+  adduser -u "${UID}" -D -G voyager voyager
 
 USER voyager
 
