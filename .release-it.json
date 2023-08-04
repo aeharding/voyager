@@ -1,5 +1,5 @@
 {
   "hooks": {
-    "before:bump": "npx capacitor-set-version -v ${version} -b $BUILD"
+    "before:bump": "npx capacitor-set-version -v ${version} -b \"$(echo ${version} | tr -d '.')\""
   }
 }
