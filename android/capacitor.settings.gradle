@@ -19,3 +19,6 @@ project(':capacitor-share').projectDir = new File('../node_modules/.pnpm/@capaci
 
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/status-bar/android')
+
+include ':capacitor-application-context'
+project(':capacitor-application-context').projectDir = new File('../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.2.2/node_modules/capacitor-application-context/android')
