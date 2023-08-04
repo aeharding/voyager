@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 
-def sysBuildNumber = System.getenv("CI_BUILD_NUMBER")
+def sysBuildNumber = 1
+
+if (System.getenv("CI_BUILD_NUMBER")) {
+    sysBuildNumber = Integer.parseInt(System.getenv("CI_BUILD_NUMBER"))
+}
 
 android {
     namespace "app.vger.voyager"

@@ -165,6 +165,20 @@ Once Xcode opens, navigate to the `Info.plist` file and change `Bundle version` 
 
 Finally, can run the project with `CMD+R`.
 
+### Android Native App
+
+To build the Android native app, make sure you have [Android Studio](https://developer.android.com/studio) and the [Ionic CLI](https://ionicframework.com/docs/cli) installed, and have run `pnpm install` from the _Local Setup_ instructions above.
+
+Then, build the project and copy web dependencies over:
+
+```sh
+ionic capacitor build android
+```
+
+Once Android Studio opens, navigate to the `Info.plist` file and change `Bundle version` to `1` for local builds.
+
+Finally, can run the project with `CMD+R`.
+
 ### Testing
 
 Voyager uses [Vitest](https://vitest.dev). You can run the test suite with:
