@@ -61,7 +61,6 @@
     "@typescript-eslint/parser": "^5.60.0",
     "@vitejs/plugin-legacy": "^4.0.5",
     "@vitejs/plugin-react": "^4.0.1",
-    "capacitor-application-context": "^0.0.1",
     "date-fns": "^2.30.0",
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.6",
