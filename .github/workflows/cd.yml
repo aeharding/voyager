@@ -20,6 +20,7 @@ jobs:
           certificate: Distribution
           build-stack: macOS - 2023.03
           destinations: Voyager App Store
+          filename: iOS-${{ github.ref_name }}-${{ github.run_id }}
           upload-artifact: iOS-Build.zip
 
   build_android:
@@ -35,6 +36,7 @@ jobs:
           build-type: release
           certificate: Voyager Play Store
           destinations: Voyager Play Store
+          filename: Android-${{ github.ref_name }}-${{ github.run_id }}
           upload-artifact: Android-Build.zip
 
   create_release:
@@ -43,28 +45,16 @@ jobs:
 
     steps:
       - name: Download iOS Artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: iOS-Build.zip
           path: artifacts/ios
 
       - name: Download Android Artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: Android-Build.zip
           path: artifacts/android
-
-      - name: Unzip iOS Artifact
-        run: unzip artifacts/ios/iOS-Build.zip -d artifacts/ios/
-
-      - name: Unzip Android Artifact
-        run: unzip artifacts/android/Android-Build.zip -d artifacts/android/
-
-      - name: Remove iOS Artifact ZIP
-        run: rm artifacts/ios/iOS-Build.zip
-
-      - name: Remove Android Artifact ZIP
-        run: rm artifacts/android/Android-Build.zip
 
       - name: Release
         uses: softprops/action-gh-release@v1
