@@ -1,0 +1,31 @@
+name: Build Apps
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  cd:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build iOS on Appflow
+        uses: ionic-team/appflow-build@v1
+        with:
+          token: ${{ secrets.APPFLOW_TOKEN }}
+          app-id: 9f0851ec
+          platform: iOS
+          build-type: app-store
+          certificate: Distribution
+          upload-artifact: iOS-Build.zip
+
+      - name: Build Android on Appflow
+        uses: ionic-team/appflow-build@v1
+        with:
+          token: ${{ secrets.APPFLOW_TOKEN }}
+          app-id: 9f0851ec
+          platform: Android
+          build-type: release
+          certificate: Voyager Play Store
+          upload-artifact: Android-Build.zip
