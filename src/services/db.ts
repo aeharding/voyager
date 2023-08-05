@@ -166,6 +166,7 @@ export type SettingValueTypes = {
   gesture_swipe_inbox: SwipeActions;
   disable_left_swipes: boolean;
   disable_right_swipes: boolean;
+  enable_haptic_feedback: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

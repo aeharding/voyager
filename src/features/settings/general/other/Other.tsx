@@ -1,5 +1,6 @@
 import { IonLabel, IonList } from "@ionic/react";
 import { ListHeader } from "../../shared/formatting";
+import Haptics from "./Haptics";
 import ProfileTabLabel from "./ProfileTabLabel";
 
 export default function Other() {
@@ -10,6 +11,7 @@ export default function Other() {
       </ListHeader>
       <IonList inset>
         <ProfileTabLabel />
+        <Haptics />
       </IonList>
     </>
   );

@@ -1,3 +1,4 @@
+import { ImpactStyle } from "@capacitor/haptics";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonItemSlidingCustomEvent, ItemSlidingCustomEvent } from "@ionic/core";
@@ -10,7 +11,7 @@ import {
 import { Dictionary } from "@reduxjs/toolkit";
 import { bookmark, mailUnread } from "ionicons/icons";
 import React, { useMemo, useRef, useState } from "react";
-import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { bounceAnimation } from "../animations";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
@@ -130,6 +131,7 @@ export default function SlidingItem({
 }: SlidingItemProps) {
   const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
   const [ratio, setRatio] = useState(0);
+  const vibrate = useHapticFeedback();
   const [dragging, setDragging] = useState(false);
 
   const activeActionRef = useRef(0);
@@ -150,7 +152,7 @@ export default function SlidingItem({
     const activeItem = getActiveItem(ratio, hasNearSwipe, hasFarSwipe);
 
     if (activeItem > activeActionRef.current) {
-      Haptics.impact({ style: ImpactStyle.Light });
+      vibrate({ style: ImpactStyle.Light });
     }
 
     activeActionRef.current = activeItem;

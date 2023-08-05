@@ -79,6 +79,7 @@ interface SettingsState {
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
     };
+    enableHapticFeedback: boolean;
   };
 }
 
@@ -136,6 +137,7 @@ const initialState: SettingsState = {
       markReadOnScroll: false,
       showHideReadButton: false,
     },
+    enableHapticFeedback: true,
   },
 };
 
@@ -267,6 +269,11 @@ export const appearanceSlice = createSlice({
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
     },
+    setEnableHapticFeedback(state, action: PayloadAction<boolean>) {
+      state.general.enableHapticFeedback = action.payload;
+
+      db.setSetting("enable_haptic_feedback", action.payload);
+    },
 
     resetSettings: () => ({
       ...initialState,
@@ -338,6 +345,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const show_hide_read_button = await db.getSetting(
         "show_hide_read_button"
       );
+      const enable_haptic_feedback = await db.getSetting(
+        "enable_haptic_feedback"
+      );
 
       return {
         ...state.settings,
@@ -387,6 +397,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               show_hide_read_button ??
               initialState.general.posts.showHideReadButton,
           },
+          enableHapticFeedback:
+            enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
         },
       };
     });
@@ -422,6 +434,7 @@ export const {
   setMarkPostsReadOnScroll,
   setShowHideReadButton,
   setTheme,
+  setEnableHapticFeedback,
   setPureBlack,
 } = appearanceSlice.actions;
 
