@@ -4,6 +4,9 @@ FROM docker.io/library/node:lts-alpine AS base
 # Prepare work directory
 WORKDIR /voyager
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 # enable corepack & set network-timeout
 RUN corepack enable &&\
   pnpm config set network-timeout 300000
@@ -17,7 +20,7 @@ RUN apk add --no-cache git
 
 # Prepare build deps ( ignore postinstall scripts for now )
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy all source files
 COPY . ./
@@ -33,12 +36,12 @@ ARG UID=911 GID=911
 
 COPY package.json pnpm-lock.yaml server.mjs ./
 
-RUN pnpm install --prod --frozen-lockfile --ignore-scripts
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Create a dedicated user and group
 RUN set -eux; \
-    addgroup -g "${GID}" voyager; \
-    adduser -u "${UID}" -D -G voyager voyager
+  addgroup -g "${GID}" voyager; \
+  adduser -u "${UID}" -D -G voyager voyager
 
 USER voyager
 
