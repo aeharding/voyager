@@ -6,7 +6,7 @@ on:
       - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
-  cd:
+  build_ios:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,8 +19,13 @@ jobs:
           build-type: app-store
           certificate: Distribution
           build-stack: macOS - 2023.03
+          destinations: Voyager App Store
           upload-artifact: iOS-Build.zip
 
+  build_android:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Build Android on Appflow
         uses: ionic-team/appflow-build@v1
         with:
@@ -29,4 +34,5 @@ jobs:
           platform: Android
           build-type: release
           certificate: Voyager Play Store
+          destinations: Voyager Play Store
           upload-artifact: Android-Build.zip
