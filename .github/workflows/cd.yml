@@ -1,0 +1,67 @@
+name: Build Apps and Create Release
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  build_ios:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build iOS on Appflow
+        uses: ionic-team/appflow-build@v1
+        with:
+          token: ${{ secrets.APPFLOW_TOKEN }}
+          app-id: 9f0851ec
+          platform: iOS
+          build-type: app-store
+          certificate: Distribution
+          build-stack: macOS - 2023.03
+          destinations: Voyager App Store
+          filename: iOS-${{ github.ref_name }}-${{ github.run_id }}
+          upload-artifact: iOS-Build.zip
+
+  build_android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build Android on Appflow
+        uses: ionic-team/appflow-build@v1
+        with:
+          token: ${{ secrets.APPFLOW_TOKEN }}
+          app-id: 9f0851ec
+          platform: Android
+          build-type: release
+          certificate: Voyager Play Store
+          destinations: Voyager Play Store
+          filename: Android-${{ github.ref_name }}-${{ github.run_id }}
+          upload-artifact: Android-Build.zip
+
+  create_release:
+    needs: [build_ios, build_android]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download iOS Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: iOS-Build.zip
+          path: artifacts/ios
+
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Android-Build.zip
+          path: artifacts/android
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/ios/*
+            artifacts/android/*

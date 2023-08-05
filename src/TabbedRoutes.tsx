@@ -9,6 +9,7 @@ import {
   IonTabs,
   useIonRouter,
 } from "@ionic/react";
+import { App } from "@capacitor/app";
 import {
   personCircleOutline,
   cog,
@@ -30,7 +31,7 @@ import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useContext, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
@@ -45,7 +46,7 @@ import RepliesPage from "./pages/inbox/RepliesPage";
 import MessagesPage from "./pages/inbox/MessagesPage";
 import ConversationPage from "./pages/inbox/ConversationPage";
 import InboxPage from "./pages/inbox/InboxPage";
-import { IonRouterOutletCustomEvent } from "@ionic/core";
+import { BackButtonEventDetail, IonRouterOutletCustomEvent } from "@ionic/core";
 import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
 import UpdateAppPage from "./pages/settings/UpdateAppPage";
 import useShouldInstall from "./features/pwa/useShouldInstall";
@@ -97,6 +98,31 @@ export default function TabbedRoutes() {
   );
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
+
+  // Back button handling for Android native app
+  useEffect(() => {
+    const backButtonHandler = (ev: CustomEvent<BackButtonEventDetail>) => {
+      ev.detail.register(-1, () => {
+        if (!router.canGoBack()) {
+          App.exitApp();
+        }
+      });
+    };
+
+    document.addEventListener(
+      "ionBackButton",
+      // eslint-disable-next-line no-undef
+      backButtonHandler as EventListener
+    );
+
+    return () => {
+      document.removeEventListener(
+        "ionBackButton",
+        // eslint-disable-next-line no-undef
+        backButtonHandler as EventListener
+      );
+    };
+  }, [router]);
 
   const userHandle = useAppSelector(handleSelector);
   const profileLabelType = useAppSelector(

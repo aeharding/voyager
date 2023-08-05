@@ -27,6 +27,9 @@ import TermsSheet from "../settings/terms/TermsSheet";
 import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
 import { getCustomServers } from "../../services/app";
 import { isNative } from "../../helpers/device";
+import { Browser } from "@capacitor/browser";
+
+const JOIN_LEMMY_URL = "https://join-lemmy.org/instances";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -40,8 +43,9 @@ export const Centered = styled.div`
 `;
 
 const HelperText = styled.p`
-  margin-left: 2rem;
-  margin-right: 2rem;
+  font-size: 0.9375em;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
 `;
 
 export default function Login({
@@ -66,6 +70,10 @@ export default function Login({
   const [presentTerms, onDismissTerms] = useIonModal(TermsSheet, {
     onDismiss: (data: string, role: string) => onDismissTerms(data, role),
   });
+
+  function presentNativeTerms() {
+    Browser.open({ url: "https://getvoyager.app/terms.html" });
+  }
 
   const customServerHostname = (() => {
     if (!customServer) return;
@@ -289,19 +297,33 @@ export default function Login({
                 </>
               )}
 
-              {!isNative() ? (
+              {isNative() ? (
+                <HelperText>
+                  By using Voyager, you agree to the{" "}
+                  <IonRouterLink onClick={presentNativeTerms}>
+                    Terms of Use
+                  </IonRouterLink>
+                </HelperText>
+              ) : (
                 <HelperText>
                   <IonRouterLink onClick={() => presentTerms()}>
                     Privacy &amp; Terms
                   </IonRouterLink>
                 </HelperText>
-              ) : undefined}
+              )}
 
               <HelperText>
                 <IonRouterLink
-                  href="https://join-lemmy.org/instances"
+                  href={JOIN_LEMMY_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!isNative()) return;
+
+                    e.preventDefault();
+
+                    Browser.open({ url: JOIN_LEMMY_URL });
+                  }}
                 >
                   <IonText color="primary">Don&apos;t have an account?</IonText>
                 </IonRouterLink>

@@ -1,0 +1,16 @@
+Voyager is a free and open source client for Lemmy. Voyager respects your privacy: no trackers and no advertisements.
+
+App development is driven by the community. Get involved on Github!
+
+What does Voyager offer?
+
+- No trackers or advertisements, ever
+- Multi-account support
+- Gesture-driven UI
+- Compact and large post feed mode
+- Mark posts as read on scroll
+- Hide read posts, or hide individually
+- A beautiful private messages UI
+- Settings to customize Voyager to your desire
+- Quick community switcher
+- Open source: code is available on Github
