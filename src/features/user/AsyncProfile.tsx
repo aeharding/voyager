@@ -71,30 +71,26 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     setPerson(data);
   }
 
-  function renderContents() {
-    if (!person) return <PageContentIonSpinner />;
+  if (!person) return <PageContentIonSpinner />;
 
-    if (person === "failed")
-      return <FailedMessage>failed to load user profile 😢</FailedMessage>;
+  if (person === "failed")
+    return (
+      <>
+        <IonRefresher
+          slot="fixed"
+          onIonRefresh={async (e) => {
+            try {
+              await load();
+            } finally {
+              e.detail.complete();
+            }
+          }}
+        >
+          <IonRefresherContent />
+        </IonRefresher>
+        <FailedMessage>failed to load user profile 😢</FailedMessage>
+      </>
+    );
 
-    return <Profile person={person} />;
-  }
-
-  return (
-    <>
-      <IonRefresher
-        slot="fixed"
-        onIonRefresh={async (e) => {
-          try {
-            await load();
-          } finally {
-            e.detail.complete();
-          }
-        }}
-      >
-        <IonRefresherContent />
-      </IonRefresher>
-      {renderContents()}
-    </>
-  );
+  return <Profile person={person} />;
 }
