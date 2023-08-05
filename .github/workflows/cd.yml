@@ -1,4 +1,4 @@
-name: Build Apps
+name: Build Apps and Create Release
 
 on:
   push:
@@ -36,3 +36,39 @@ jobs:
           certificate: Voyager Play Store
           destinations: Voyager Play Store
           upload-artifact: Android-Build.zip
+
+  create_release:
+    needs: [build_ios, build_android]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download iOS Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: iOS-Build
+          path: artifacts/ios
+
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Android-Build
+          path: artifacts/android
+
+      - name: Unzip iOS Artifact
+        run: unzip artifacts/ios/iOS-Build.zip -d artifacts/ios/
+
+      - name: Unzip Android Artifact
+        run: unzip artifacts/android/Android-Build.zip -d artifacts/android/
+
+      - name: Remove iOS Artifact ZIP
+        run: rm artifacts/ios/iOS-Build.zip
+
+      - name: Remove Android Artifact ZIP
+        run: rm artifacts/android/Android-Build.zip
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/ios/*
+            artifacts/android/*
