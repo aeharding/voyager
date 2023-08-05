@@ -43,6 +43,9 @@ jobs:
     needs: [build_ios, build_android]
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Download iOS Artifact
         uses: actions/download-artifact@v3
