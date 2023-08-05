@@ -6,11 +6,12 @@ export default function useHapticFeedback() {
   const enabled = useAppSelector(
     (state) => state.settings.general.enableHapticFeedback
   );
+
   return useCallback(
     (options: ImpactOptions) => {
-      if (enabled) {
-        Haptics.impact(options);
-      }
+      if (!enabled) return;
+
+      Haptics.impact(options);
     },
     [enabled]
   );
