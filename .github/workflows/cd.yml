@@ -45,13 +45,13 @@ jobs:
       - name: Download iOS Artifact
         uses: actions/download-artifact@v2
         with:
-          name: iOS-Build
+          name: iOS-Build.zip
           path: artifacts/ios
 
       - name: Download Android Artifact
         uses: actions/download-artifact@v2
         with:
-          name: Android-Build
+          name: Android-Build.zip
           path: artifacts/android
 
       - name: Unzip iOS Artifact
