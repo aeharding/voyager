@@ -43,8 +43,9 @@ export const Centered = styled.div`
 `;
 
 const HelperText = styled.p`
-  margin-left: 2rem;
-  margin-right: 2rem;
+  font-size: 0.9375em;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
 `;
 
 export default function Login({
@@ -69,6 +70,10 @@ export default function Login({
   const [presentTerms, onDismissTerms] = useIonModal(TermsSheet, {
     onDismiss: (data: string, role: string) => onDismissTerms(data, role),
   });
+
+  function presentNativeTerms() {
+    Browser.open({ url: "https://getvoyager.app/terms.html" });
+  }
 
   const customServerHostname = (() => {
     if (!customServer) return;
@@ -292,13 +297,20 @@ export default function Login({
                 </>
               )}
 
-              {!isNative() ? (
+              {isNative() ? (
+                <HelperText>
+                  By using Voyager, you agree to the{" "}
+                  <IonRouterLink onClick={presentNativeTerms}>
+                    Terms of Use
+                  </IonRouterLink>
+                </HelperText>
+              ) : (
                 <HelperText>
                   <IonRouterLink onClick={() => presentTerms()}>
                     Privacy &amp; Terms
                   </IonRouterLink>
                 </HelperText>
-              ) : undefined}
+              )}
 
               <HelperText>
                 <IonRouterLink
