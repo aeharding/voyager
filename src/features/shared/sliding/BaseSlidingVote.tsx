@@ -8,6 +8,7 @@ import {
   chevronExpand,
   eyeOffOutline,
   eyeOutline,
+  mailOpen,
   mailUnread,
 } from "ionicons/icons";
 import React, { useCallback, useContext, useMemo } from "react";
@@ -232,10 +233,9 @@ function BaseSlidingVoteInternal({
 
   const markUnreadAction = useMemo(() => {
     return {
-      icon: mailUnread,
+      icon: isRead ? mailUnread : mailOpen,
       trigger: markUnread,
-      bgColor: "primaryfixed",
-      slash: !isRead,
+      bgColor: "primary-fixed",
     };
   }, [markUnread, isRead]);
 
