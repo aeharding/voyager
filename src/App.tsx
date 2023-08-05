@@ -25,7 +25,6 @@ import Router from "./Router";
 import BeforeInstallPromptProvider from "./BeforeInstallPromptProvider";
 import { UpdateContextProvider } from "./pages/settings/update/UpdateContext";
 import GlobalStyles from "./GlobalStyles";
-import GalleryProvider from "./features/gallery/GalleryProvider";
 import ConfigProvider from "./services/app";
 import { getDeviceMode } from "./features/settings/settingsSlice";
 
@@ -46,9 +45,7 @@ export default function App() {
                 <Router>
                   <IonApp>
                     <Auth>
-                      <GalleryProvider>
-                        <TabbedRoutes />
-                      </GalleryProvider>
+                      <TabbedRoutes />
                     </Auth>
                   </IonApp>
                 </Router>

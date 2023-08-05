@@ -67,6 +67,7 @@ import DeviceModeSettingsPage from "./pages/settings/DeviceModeSettingsPage";
 import InstanceSidebarPage from "./pages/shared/InstanceSidebarPage";
 import { getProfileTabLabel } from "./features/settings/general/other/ProfileTabLabel";
 import AppearanceThemePage from "./pages/settings/AppearanceThemePage";
+import GalleryProvider from "./features/gallery/GalleryProvider";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -271,195 +272,199 @@ export default function TabbedRoutes() {
 
   return (
     <PageContextProvider value={{ page: pageRef.current as HTMLElement }}>
-      {/* TODO key={} resets the tab route stack whenever your instance changes. */}
-      {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
-      {/* But this isn't trivial with needing to rewrite URLs... */}
-      <IonTabs key={iss ?? getDefaultServer()}>
-        <IonRouterOutlet ref={pageRef}>
-          <Route exact path="/">
-            <Redirect
-              to={`/posts/${iss ?? getDefaultServer()}/${iss ? "home" : "all"}`}
-              push={false}
-            />
-          </Route>
-          <Route exact path="/posts/:actor/home">
-            <ActorRedirect>
-              <SpecialFeedPage type="Subscribed" />
-            </ActorRedirect>
-          </Route>
-          <Route exact path="/posts/:actor/all">
-            <ActorRedirect>
-              <SpecialFeedPage type="All" />
-            </ActorRedirect>
-          </Route>
-          <Route exact path="/posts/:actor/local">
-            <ActorRedirect>
-              <SpecialFeedPage type="Local" />
-            </ActorRedirect>
-          </Route>
-          <Route exact path="/posts/:actor">
-            <ActorRedirect>
-              <CommunitiesPage />
-            </ActorRedirect>
-          </Route>
-          {...buildGeneralBrowseRoutes("posts")}
+      <GalleryProvider>
+        {/* TODO key={} resets the tab route stack whenever your instance changes. */}
+        {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
+        {/* But this isn't trivial with needing to rewrite URLs... */}
+        <IonTabs key={iss ?? getDefaultServer()}>
+          <IonRouterOutlet ref={pageRef}>
+            <Route exact path="/">
+              <Redirect
+                to={`/posts/${iss ?? getDefaultServer()}/${
+                  iss ? "home" : "all"
+                }`}
+                push={false}
+              />
+            </Route>
+            <Route exact path="/posts/:actor/home">
+              <ActorRedirect>
+                <SpecialFeedPage type="Subscribed" />
+              </ActorRedirect>
+            </Route>
+            <Route exact path="/posts/:actor/all">
+              <ActorRedirect>
+                <SpecialFeedPage type="All" />
+              </ActorRedirect>
+            </Route>
+            <Route exact path="/posts/:actor/local">
+              <ActorRedirect>
+                <SpecialFeedPage type="Local" />
+              </ActorRedirect>
+            </Route>
+            <Route exact path="/posts/:actor">
+              <ActorRedirect>
+                <CommunitiesPage />
+              </ActorRedirect>
+            </Route>
+            {...buildGeneralBrowseRoutes("posts")}
 
-          <Route exact path="/inbox">
-            <BoxesPage />
-          </Route>
-          <Route exact path="/inbox/all">
-            <InboxAuthRequired>
-              <InboxPage showRead />
-            </InboxAuthRequired>
-          </Route>
-          <Route exact path="/inbox/unread">
-            <InboxAuthRequired>
-              <InboxPage />
-            </InboxAuthRequired>
-          </Route>
-          <Route exact path="/inbox/mentions">
-            <InboxAuthRequired>
-              <MentionsPage />
-            </InboxAuthRequired>
-          </Route>
-          <Route exact path="/inbox/comment-replies">
-            <InboxAuthRequired>
-              <RepliesPage type="Comment" />
-            </InboxAuthRequired>
-          </Route>
-          <Route exact path="/inbox/post-replies">
-            <InboxAuthRequired>
-              <RepliesPage type="Post" />
-            </InboxAuthRequired>
-          </Route>
-          <Route exact path="/inbox/messages">
-            <InboxAuthRequired>
-              <MessagesPage />
-            </InboxAuthRequired>
-          </Route>
-          <Route exact path="/inbox/messages/:handle">
-            <InboxAuthRequired>
-              <ConversationPage />
-            </InboxAuthRequired>
-          </Route>
-          {...buildGeneralBrowseRoutes("inbox")}
+            <Route exact path="/inbox">
+              <BoxesPage />
+            </Route>
+            <Route exact path="/inbox/all">
+              <InboxAuthRequired>
+                <InboxPage showRead />
+              </InboxAuthRequired>
+            </Route>
+            <Route exact path="/inbox/unread">
+              <InboxAuthRequired>
+                <InboxPage />
+              </InboxAuthRequired>
+            </Route>
+            <Route exact path="/inbox/mentions">
+              <InboxAuthRequired>
+                <MentionsPage />
+              </InboxAuthRequired>
+            </Route>
+            <Route exact path="/inbox/comment-replies">
+              <InboxAuthRequired>
+                <RepliesPage type="Comment" />
+              </InboxAuthRequired>
+            </Route>
+            <Route exact path="/inbox/post-replies">
+              <InboxAuthRequired>
+                <RepliesPage type="Post" />
+              </InboxAuthRequired>
+            </Route>
+            <Route exact path="/inbox/messages">
+              <InboxAuthRequired>
+                <MessagesPage />
+              </InboxAuthRequired>
+            </Route>
+            <Route exact path="/inbox/messages/:handle">
+              <InboxAuthRequired>
+                <ConversationPage />
+              </InboxAuthRequired>
+            </Route>
+            {...buildGeneralBrowseRoutes("inbox")}
 
-          <Route exact path="/profile">
-            <ProfilePage />
-          </Route>
-          {...buildGeneralBrowseRoutes("profile")}
-          <Route exact path="/profile/:actor">
-            <Redirect to="/profile" push={false} />
-          </Route>
+            <Route exact path="/profile">
+              <ProfilePage />
+            </Route>
+            {...buildGeneralBrowseRoutes("profile")}
+            <Route exact path="/profile/:actor">
+              <Redirect to="/profile" push={false} />
+            </Route>
 
-          <Route exact path="/search">
-            <SearchPage />
-          </Route>
-          <Route exact path="/search/posts/:search">
-            <SearchPostsResultsPage type="Posts" />
-          </Route>
-          <Route exact path="/search/comments/:search">
-            <SearchPostsResultsPage type="Comments" />
-          </Route>
-          <Route exact path="/search/communities/:search">
-            <SearchCommunitiesPage />
-          </Route>
-          {...buildGeneralBrowseRoutes("search")}
-          <Route exact path="/search/:actor">
-            <Redirect to="/search" push={false} />
-          </Route>
+            <Route exact path="/search">
+              <SearchPage />
+            </Route>
+            <Route exact path="/search/posts/:search">
+              <SearchPostsResultsPage type="Posts" />
+            </Route>
+            <Route exact path="/search/comments/:search">
+              <SearchPostsResultsPage type="Comments" />
+            </Route>
+            <Route exact path="/search/communities/:search">
+              <SearchCommunitiesPage />
+            </Route>
+            {...buildGeneralBrowseRoutes("search")}
+            <Route exact path="/search/:actor">
+              <Redirect to="/search" push={false} />
+            </Route>
 
-          <Route exact path="/settings">
-            <SettingsPage />
-          </Route>
-          <Route exact path="/settings/terms">
-            <TermsPage />
-          </Route>
-          <Route exact path="/settings/install">
-            <InstallAppPage />
-          </Route>
-          <Route exact path="/settings/update">
-            <UpdateAppPage />
-          </Route>
-          <Route exact path="/settings/general">
-            <GeneralPage />
-          </Route>
-          <Route exact path="/settings/general/hiding">
-            <HidingSettingsPage />
-          </Route>
-          <Route exact path="/settings/appearance">
-            <AppearancePage />
-          </Route>
-          <Route exact path="/settings/appearance/theme">
-            <AppearanceThemePage />
-          </Route>
-          <Route exact path="/settings/appearance/theme/mode">
-            <DeviceModeSettingsPage />
-          </Route>
-          <Route exact path="/settings/gestures">
-            <GesturesPage />
-          </Route>
-          <Route exact path="/settings/blocks">
-            <BlocksSettingsPage />
-          </Route>
-          <Route exact path="/settings/reddit-migrate">
-            <RedditMigratePage />
-          </Route>
-          <Route exact path="/settings/reddit-migrate/:search">
-            <SearchCommunitiesPage />
-          </Route>
-          {/* general routes for settings is only for reddit-migrate */}
-          {...buildGeneralBrowseRoutes("settings")}
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton
-            disabled={isPostsButtonDisabled}
-            tab="posts"
-            href={`/posts/${connectedInstance}`}
-          >
-            <IonIcon aria-hidden="true" icon={telescope} />
-            <IonLabel>Posts</IonLabel>
-            <Interceptor onClick={onPostsClick} />
-          </IonTabButton>
-          <IonTabButton
-            disabled={isInboxButtonDisabled}
-            tab="inbox"
-            href="/inbox"
-          >
-            <IonIcon aria-hidden="true" icon={fileTray} />
-            <IonLabel>Inbox</IonLabel>
-            {totalUnread ? (
-              <IonBadge color="danger">{totalUnread}</IonBadge>
-            ) : undefined}
-            <Interceptor onClick={onInboxClick} />
-          </IonTabButton>
-          <IonTabButton
-            disabled={isProfileButtonDisabled}
-            tab="profile"
-            href="/profile"
-          >
-            <IonIcon aria-hidden="true" icon={personCircleOutline} />
-            <ProfileLabel>{profileTabLabel}</ProfileLabel>
-            <Interceptor onClick={onProfileClick} />
-          </IonTabButton>
-          <IonTabButton
-            disabled={isSearchButtonDisabled}
-            tab="search"
-            href="/search"
-          >
-            <IonIcon aria-hidden="true" icon={search} />
-            <IonLabel>Search</IonLabel>
-            <Interceptor onClick={onSearchClick} />
-          </IonTabButton>
-          <IonTabButton tab="settings" href="/settings">
-            <IonIcon aria-hidden="true" icon={cog} />
-            <IonLabel>Settings</IonLabel>
-            {settingsNotificationCount ? (
-              <IonBadge color="danger">{settingsNotificationCount}</IonBadge>
-            ) : undefined}
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
+            <Route exact path="/settings">
+              <SettingsPage />
+            </Route>
+            <Route exact path="/settings/terms">
+              <TermsPage />
+            </Route>
+            <Route exact path="/settings/install">
+              <InstallAppPage />
+            </Route>
+            <Route exact path="/settings/update">
+              <UpdateAppPage />
+            </Route>
+            <Route exact path="/settings/general">
+              <GeneralPage />
+            </Route>
+            <Route exact path="/settings/general/hiding">
+              <HidingSettingsPage />
+            </Route>
+            <Route exact path="/settings/appearance">
+              <AppearancePage />
+            </Route>
+            <Route exact path="/settings/appearance/theme">
+              <AppearanceThemePage />
+            </Route>
+            <Route exact path="/settings/appearance/theme/mode">
+              <DeviceModeSettingsPage />
+            </Route>
+            <Route exact path="/settings/gestures">
+              <GesturesPage />
+            </Route>
+            <Route exact path="/settings/blocks">
+              <BlocksSettingsPage />
+            </Route>
+            <Route exact path="/settings/reddit-migrate">
+              <RedditMigratePage />
+            </Route>
+            <Route exact path="/settings/reddit-migrate/:search">
+              <SearchCommunitiesPage />
+            </Route>
+            {/* general routes for settings is only for reddit-migrate */}
+            {...buildGeneralBrowseRoutes("settings")}
+          </IonRouterOutlet>
+          <IonTabBar slot="bottom">
+            <IonTabButton
+              disabled={isPostsButtonDisabled}
+              tab="posts"
+              href={`/posts/${connectedInstance}`}
+            >
+              <IonIcon aria-hidden="true" icon={telescope} />
+              <IonLabel>Posts</IonLabel>
+              <Interceptor onClick={onPostsClick} />
+            </IonTabButton>
+            <IonTabButton
+              disabled={isInboxButtonDisabled}
+              tab="inbox"
+              href="/inbox"
+            >
+              <IonIcon aria-hidden="true" icon={fileTray} />
+              <IonLabel>Inbox</IonLabel>
+              {totalUnread ? (
+                <IonBadge color="danger">{totalUnread}</IonBadge>
+              ) : undefined}
+              <Interceptor onClick={onInboxClick} />
+            </IonTabButton>
+            <IonTabButton
+              disabled={isProfileButtonDisabled}
+              tab="profile"
+              href="/profile"
+            >
+              <IonIcon aria-hidden="true" icon={personCircleOutline} />
+              <ProfileLabel>{profileTabLabel}</ProfileLabel>
+              <Interceptor onClick={onProfileClick} />
+            </IonTabButton>
+            <IonTabButton
+              disabled={isSearchButtonDisabled}
+              tab="search"
+              href="/search"
+            >
+              <IonIcon aria-hidden="true" icon={search} />
+              <IonLabel>Search</IonLabel>
+              <Interceptor onClick={onSearchClick} />
+            </IonTabButton>
+            <IonTabButton tab="settings" href="/settings">
+              <IonIcon aria-hidden="true" icon={cog} />
+              <IonLabel>Settings</IonLabel>
+              {settingsNotificationCount ? (
+                <IonBadge color="danger">{settingsNotificationCount}</IonBadge>
+              ) : undefined}
+            </IonTabButton>
+          </IonTabBar>
+        </IonTabs>
+      </GalleryProvider>
     </PageContextProvider>
   );
 }
