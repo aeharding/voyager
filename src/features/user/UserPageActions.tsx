@@ -1,22 +1,13 @@
-import {
-  IonActionSheet,
-  IonButton,
-  IonIcon,
-  useIonRouter,
-  useIonToast,
-} from "@ionic/react";
+import { IonActionSheet, IonButton, IonIcon, useIonRouter } from "@ionic/react";
 import {
   ellipsisHorizontal,
   mailOutline,
   removeCircleOutline,
 } from "ionicons/icons";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { blockUser } from "./userSlice";
-import { getHandle } from "../../helpers/lemmy";
-import { buildBlocked, problemBlockingUser } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
+import { useUserDetails } from "./useUserDetails";
 
 interface UserPageActionsProps {
   handle: string;
@@ -25,19 +16,9 @@ interface UserPageActionsProps {
 export default function UserPageActions({ handle }: UserPageActionsProps) {
   const [open, setOpen] = useState(false);
   const { presentLoginIfNeeded } = useContext(PageContext);
-  const [present] = useIonToast();
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const dispatch = useAppDispatch();
-  const blocks = useAppSelector(
-    (state) => state.auth.site?.my_user?.person_blocks
-  );
-  const isBlocked = useMemo(
-    () => blocks?.some((b) => getHandle(b.target) === handle),
-    [blocks, handle]
-  );
-  const userByHandle = useAppSelector((state) => state.user.userByHandle);
-  const user = userByHandle[handle];
+  const { isBlocked, blockOrUnblock } = useUserDetails(handle);
 
   return (
     <>
@@ -78,18 +59,7 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
               break;
             }
             case "block": {
-              if (presentLoginIfNeeded()) return;
-              if (!user) return;
-
-              try {
-                await dispatch(blockUser(!isBlocked, user.id));
-              } catch (error) {
-                present(problemBlockingUser);
-
-                throw error;
-              }
-
-              present(buildBlocked(!isBlocked, handle));
+              await blockOrUnblock();
             }
           }
         }}
