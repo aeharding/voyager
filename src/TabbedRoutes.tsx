@@ -104,7 +104,9 @@ export default function TabbedRoutes() {
   useEffect(() => {
     const backButtonHandler = (ev: CustomEvent<BackButtonEventDetail>) => {
       ev.detail.register(-1, () => {
-        if (!router.canGoBack()) {
+        // pswp is the gallery component. It pushes state, but the router isn't aware.
+        // So if that's open, don't close the app just yet
+        if (!router.canGoBack() && !document.querySelector(".pswp--open")) {
           App.exitApp();
         }
       });
