@@ -21,12 +21,10 @@ import {
   Dispatch,
   RefObject,
   SetStateAction,
-  useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { PageContext } from "../../../auth/PageContext";
 import { css } from "@emotion/react";
 import { uploadImage } from "../../../../services/lemmy";
 import { useAppSelector } from "../../../../store";
@@ -64,27 +62,29 @@ const Button = styled.button`
 `;
 
 interface MarkdownToolbarProps {
+  type: "comment" | "post";
   text: string;
   setText: Dispatch<SetStateAction<string>>;
   textareaRef: RefObject<HTMLTextAreaElement>;
 }
 
 export default function MarkdownToolbar({
+  type,
   text,
   setText,
   textareaRef,
 }: MarkdownToolbarProps) {
-  const { page } = useContext(PageContext);
   const [presentActionSheet] = useIonActionSheet();
   const [presentAlert] = useIonToast();
   const keyboardHeight = useKeyboardHeight();
   const [imageUploading, setImageUploading] = useState(false);
   const jwt = useAppSelector(jwtSelector);
   const instanceUrl = useAppSelector(urlSelector);
+  const toolbarRef = useRef<HTMLDivElement>(null);
 
   const [presentPreview, onDismissPreview] = useIonModal(PreviewModal, {
     onDismiss: (data: string, role: string) => onDismissPreview(data, role),
-    type: "comment",
+    type,
     text,
   });
   const selectionLocation = useRef(0);
@@ -108,7 +108,7 @@ export default function MarkdownToolbar({
         {
           text: "Preview",
           icon: glassesOutline,
-          handler: () => presentPreview({ presentingElement: page }),
+          handler: presentPreview,
         },
         {
           text: "Cancel",
@@ -152,7 +152,7 @@ export default function MarkdownToolbar({
       <IonLoading isOpen={imageUploading} message="Uploading image..." />
 
       <markdown-toolbar for={TOOLBAR_TARGET_ID}>
-        <Toolbar keyboardHeight={keyboardHeight}>
+        <Toolbar keyboardHeight={keyboardHeight} ref={toolbarRef}>
           <label htmlFor="photo-upload">
             <Button as="div">
               <IonIcon icon={image} color="primary" />

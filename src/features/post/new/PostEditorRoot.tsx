@@ -441,9 +441,7 @@ export default function PostEditorRoot({
               component={() => (
                 <NewPostText
                   value={text}
-                  setValue={(value) => {
-                    setText(value);
-                  }}
+                  setValue={setText}
                   onSubmit={submit}
                 />
               )}

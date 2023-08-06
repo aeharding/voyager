@@ -34,9 +34,9 @@ export default function PreviewModal({
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => onDismiss()}>
-              Cancel
+          <IonButtons slot="end">
+            <IonButton color="primary" strong onClick={() => onDismiss()}>
+              Done
             </IonButton>
           </IonButtons>
           <IonTitle>Preview</IonTitle>

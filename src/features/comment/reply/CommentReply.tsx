@@ -173,7 +173,7 @@ export default function CommentReply({
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
-              strong={true}
+              strong
               type="submit"
               disabled={!replyContent.trim() || loading}
               onClick={submit}
@@ -194,13 +194,14 @@ export default function CommentReply({
           />
           <ItemReplyingTo item={item} />
         </Container>
-
-        <MarkdownToolbar
-          text={replyContent}
-          setText={setReplyContent}
-          textareaRef={textareaRef}
-        />
       </IonContent>
+
+      <MarkdownToolbar
+        type="comment"
+        text={replyContent}
+        setText={setReplyContent}
+        textareaRef={textareaRef}
+      />
     </>
   );
 }
