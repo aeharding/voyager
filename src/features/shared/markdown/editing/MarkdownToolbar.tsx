@@ -36,13 +36,19 @@ export const TOOLBAR_HEIGHT = "50px";
 
 const Toolbar = styled.div<{ keyboardHeight: number }>`
   position: fixed;
-  bottom: ${({ keyboardHeight }) => `${keyboardHeight}px`};
-  height: ${({ keyboardHeight }) =>
-    !keyboardHeight
-      ? `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`
-      : TOOLBAR_HEIGHT};
-  padding-bottom: ${({ keyboardHeight }) =>
-    !keyboardHeight ? "env(safe-area-inset-bottom)" : 0};
+  bottom: 0;
+  height: 50px;
+
+  @media screen and (max-width: 767px) {
+    bottom: ${({ keyboardHeight }) => `${keyboardHeight}px`};
+    height: ${({ keyboardHeight }) =>
+      !keyboardHeight
+        ? `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`
+        : TOOLBAR_HEIGHT};
+    padding-bottom: ${({ keyboardHeight }) =>
+      !keyboardHeight ? "env(safe-area-inset-bottom)" : 0};
+  }
+
   width: 100%;
   background: var(--ion-background-color);
   border-top: 1px solid var(--ion-item-border-color);

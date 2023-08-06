@@ -16,10 +16,14 @@ export const Container = styled.div<{ keyboardHeight: number }>`
   display: flex;
   flex-direction: column;
 
-  padding-bottom: ${({ keyboardHeight }) =>
-    keyboardHeight
-      ? TOOLBAR_HEIGHT
-      : `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`};
+  padding-bottom: ${TOOLBAR_HEIGHT};
+
+  @media screen and (max-width: 767px) {
+    padding-bottom: ${({ keyboardHeight }) =>
+      keyboardHeight
+        ? TOOLBAR_HEIGHT
+        : `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`};
+  }
 `;
 
 export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
