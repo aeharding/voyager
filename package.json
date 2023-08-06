@@ -39,6 +39,7 @@
     "@emotion/eslint-plugin": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@github/markdown-toolbar-element": "^2.2.0",
     "@ionic/core": "^7.2.1",
     "@ionic/react": "^7.2.1",
     "@ionic/react-router": "^7.2.1",

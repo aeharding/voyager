@@ -9,16 +9,26 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Centered, Spinner } from "../../auth/Login";
 import { css } from "@emotion/react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
+import useKeyboardHeight from "../../../helpers/useKeyboardHeight";
+import MarkdownToolbar, {
+  TOOLBAR_HEIGHT,
+  TOOLBAR_TARGET_ID,
+} from "../../shared/markdown/editing/MarkdownToolbar";
 
-const Container = styled.div`
+const Container = styled.div<{ keyboardHeight: number }>`
   min-height: 100%;
 
   display: flex;
   flex-direction: column;
+
+  padding-bottom: ${({ keyboardHeight }) =>
+    keyboardHeight
+      ? TOOLBAR_HEIGHT
+      : `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`};
 `;
 
 const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
@@ -42,7 +52,7 @@ const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
 
 interface NewPostTextProps {
   value: string;
-  setValue: (value: string) => void;
+  setValue: Dispatch<SetStateAction<string>>;
   onSubmit: () => void;
 }
 
@@ -52,6 +62,15 @@ export default function NewPostText({
   onSubmit,
 }: NewPostTextProps) {
   const [loading, setLoading] = useState(false);
+
+  const keyboardHeight = useKeyboardHeight();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [text, setText] = useState(value);
+
+  useEffect(() => {
+    setValue(text);
+  }, [setValue, text]);
 
   async function submit() {
     setLoading(true);
@@ -84,14 +103,23 @@ export default function NewPostText({
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <Container>
+        <Container keyboardHeight={keyboardHeight}>
           <Textarea
-            defaultValue={value}
-            onInput={(e) => setValue((e.target as HTMLInputElement).value)}
+            id={TOOLBAR_TARGET_ID}
+            ref={textareaRef}
+            value={text}
+            onInput={(e) => setText((e.target as HTMLInputElement).value)}
             autoFocus
           />
         </Container>
       </IonContent>
+
+      <MarkdownToolbar
+        type="post"
+        text={text}
+        setText={setText}
+        textareaRef={textareaRef}
+      />
     </>
   );
 }

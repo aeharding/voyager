@@ -1,5 +1,5 @@
 import React from "react";
-import { DynamicDismissableModal } from "../../shared/DynamicDismissableModal";
+import { DynamicDismissableModal } from "../../../shared/DynamicDismissableModal";
 import CommentEdit from "./CommentEdit";
 import { Comment } from "lemmy-js-client";
 

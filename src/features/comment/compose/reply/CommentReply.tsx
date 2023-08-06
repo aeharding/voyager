@@ -3,7 +3,6 @@ import {
   IonButtons,
   IonButton,
   IonHeader,
-  IonContent,
   IonToolbar,
   IonTitle,
   useIonToast,
@@ -17,41 +16,12 @@ import {
 } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
-import useClient from "../../../helpers/useClient";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { Centered, Spinner } from "../../auth/Login";
-import { handleSelector, jwtSelector } from "../../auth/authSlice";
-import { css } from "@emotion/react";
-import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
-import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
-import { receivedComments } from "../commentSlice";
-
-export const Container = styled.div`
-  min-height: 100%;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
-  border: 0;
-  background: none;
-  resize: none;
-  outline: 0;
-  padding: 1rem;
-
-  min-height: 200px;
-
-  flex: 1 0 auto;
-
-  ${({ theme }) =>
-    !theme.dark &&
-    css`
-      .ios & {
-        background: var(--ion-item-background);
-      }
-    `}
-`;
+import useClient from "../../../../helpers/useClient";
+import { useAppDispatch, useAppSelector } from "../../../../store";
+import { Centered, Spinner } from "../../../auth/Login";
+import { handleSelector, jwtSelector } from "../../../auth/authSlice";
+import { receivedComments } from "../../commentSlice";
+import CommentContent from "../shared";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -74,6 +44,9 @@ type CommentReplyProps = {
   item: CommentReplyItem;
 };
 
+/**
+ * New comment replying to something
+ */
 export default function CommentReply({
   dismiss,
   setCanDismiss,
@@ -161,7 +134,7 @@ export default function CommentReply({
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
-              strong={true}
+              strong
               type="submit"
               disabled={!replyContent.trim() || loading}
               onClick={submit}
@@ -171,15 +144,10 @@ export default function CommentReply({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent {...preventPhotoswipeGalleryFocusTrap}>
-        <Container>
-          <Textarea
-            onChange={(e) => setReplyContent(e.target.value)}
-            autoFocus
-          />
-          <ItemReplyingTo item={item} />
-        </Container>
-      </IonContent>
+
+      <CommentContent text={replyContent} setText={setReplyContent}>
+        <ItemReplyingTo item={item} />
+      </CommentContent>
     </>
   );
 }

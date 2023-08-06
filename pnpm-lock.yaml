@@ -67,6 +67,9 @@ devDependencies:
   '@emotion/styled':
     specifier: ^11.11.0
     version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.14)(react@18.2.0)
+  '@github/markdown-toolbar-element':
+    specifier: ^2.2.0
+    version: 2.2.0
   '@ionic/core':
     specifier: ^7.2.1
     version: 7.2.1
@@ -3105,6 +3108,10 @@ packages:
   /@eslint/js@8.43.0:
     resolution: {integrity: sha512-s2UHCoiXfxMvmfzqoN+vrQ84ahUSYde9qNO1MdxmoEhyHWsfmwOpFlwYV+ePJEVc7gFnATGUi376WowX1N7tFg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dev: true
+
+  /@github/markdown-toolbar-element@2.2.0:
+    resolution: {integrity: sha512-/IHUYo1qEJVF9RXdf/Ay1KsJXoDTbHroVwCKhBHbfKTcvg1JgkyBvInxyERxaSAXsBdJXzEQbLB02UG17TMNww==}
     dev: true
 
   /@humanwhocodes/config-array@0.11.10:

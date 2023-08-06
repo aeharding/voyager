@@ -397,6 +397,8 @@ function getLoginErrorMessage(error: unknown, instanceActorId: string): string {
       return `User not found. Is your account on ${instanceActorId}?`;
     case "password_incorrect":
       return "Incorrect password. Please try again.";
+    case "incorrect_login":
+      return "Incorrect login credentials. Please try again.";
     case "email_not_verified":
       return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
     case "site_ban":

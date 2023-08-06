@@ -2,19 +2,18 @@ import {
   IonButtons,
   IonButton,
   IonHeader,
-  IonContent,
   IonToolbar,
   IonTitle,
   useIonToast,
 } from "@ionic/react";
 import { Comment } from "lemmy-js-client";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { Centered, Spinner } from "../../auth/Login";
-import { jwtSelector } from "../../auth/authSlice";
-import { editComment } from "../commentSlice";
-import { Container, Textarea } from "../reply/CommentReply";
-import { DismissableProps } from "../../shared/DynamicDismissableModal";
+import { useAppDispatch, useAppSelector } from "../../../../store";
+import { Centered, Spinner } from "../../../auth/Login";
+import { jwtSelector } from "../../../auth/authSlice";
+import { editComment } from "../../commentSlice";
+import { DismissableProps } from "../../../shared/DynamicDismissableModal";
+import CommentContent from "../shared";
 
 type CommentEditingProps = DismissableProps & {
   item: Comment;
@@ -96,15 +95,8 @@ export default function CommentEdit({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
-        <Container>
-          <Textarea
-            onChange={(e) => setReplyContent(e.target.value)}
-            value={replyContent}
-            autoFocus
-          />
-        </Container>
-      </IonContent>
+
+      <CommentContent text={replyContent} setText={setReplyContent} />
     </>
   );
 }
