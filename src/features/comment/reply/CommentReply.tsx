@@ -8,6 +8,7 @@ import {
   IonTitle,
   useIonToast,
   IonText,
+  IonIcon,
 } from "@ionic/react";
 import {
   CommentReplyView,
@@ -25,12 +26,18 @@ import { css } from "@emotion/react";
 import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 import { receivedComments } from "../commentSlice";
+import MarkdownToolbar, {
+  TOOLBAR_HEIGHT,
+  TOOLBAR_TARGET_ID,
+} from "../../shared/markdown/editing/MarkdownToolbar";
 
 export const Container = styled.div`
   min-height: 100%;
 
   display: flex;
   flex-direction: column;
+
+  padding-bottom: ${TOOLBAR_HEIGHT};
 `;
 
 export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
@@ -176,9 +183,12 @@ export default function CommentReply({
           <Textarea
             onChange={(e) => setReplyContent(e.target.value)}
             autoFocus
+            id={TOOLBAR_TARGET_ID}
           />
           <ItemReplyingTo item={item} />
         </Container>
+
+        <MarkdownToolbar />
       </IonContent>
     </>
   );

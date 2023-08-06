@@ -12,7 +12,12 @@ const dotPathFixPlugin = () => ({
   configureServer: (server) => {
     server.middlewares.use((req, _, next) => {
       const reqPath = req.url.split("?", 2)[0];
-      if (!req.url.startsWith("/@") && !fs.existsSync(`.${reqPath}`)) {
+
+      if (
+        !req.url.startsWith("/@") &&
+        !fs.existsSync(`.${reqPath}`) &&
+        !fs.existsSync(`./public${reqPath}`)
+      ) {
         req.url = "/";
       }
       next();
