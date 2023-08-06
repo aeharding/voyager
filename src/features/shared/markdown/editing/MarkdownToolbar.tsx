@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import bold from "../../../shared/icon/icons/bold.svg";
-import italic from "../../../shared/icon/icons/italic.svg";
+import bold from "./icons/bold.svg";
+import italic from "./icons/italic.svg";
 import {
   IonIcon,
   IonLoading,
