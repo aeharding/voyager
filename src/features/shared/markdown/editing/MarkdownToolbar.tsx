@@ -154,7 +154,7 @@ export default function MarkdownToolbar({
       <markdown-toolbar for={TOOLBAR_TARGET_ID}>
         <Toolbar keyboardHeight={keyboardHeight} ref={toolbarRef}>
           <label htmlFor="photo-upload">
-            <Button as="div">
+            <Button as="div" onClick={() => textareaRef.current?.focus()}>
               <IonIcon icon={image} color="primary" />
             </Button>
 

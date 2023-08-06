@@ -6,13 +6,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { CommentReplyItem } from "../comment/reply/CommentReply";
+import { CommentReplyItem } from "../comment/compose/reply/CommentReply";
 import Login from "../auth/Login";
 import { useAppSelector } from "../../store";
 import { jwtSelector } from "../auth/authSlice";
-import CommentReplyModal from "../comment/reply/CommentReplyModal";
+import CommentReplyModal from "../comment/compose/reply/CommentReplyModal";
 import { Comment, CommentView, PostView } from "lemmy-js-client";
-import CommentEditModal from "../comment/edit/CommentEditModal";
+import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
 import SelectTextModal from "../../pages/shared/SelectTextModal";

@@ -12,7 +12,7 @@ import AppContent from "../../features/shared/AppContent";
 import {
   TitleContainer,
   UsernameIonText,
-} from "../../features/comment/reply/CommentReply";
+} from "../../features/comment/compose/reply/CommentReply";
 import { useAppSelector } from "../../store";
 import {
   handleSelector,

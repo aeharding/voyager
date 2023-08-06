@@ -1,6 +1,6 @@
 import CommentReply, { CommentReplyItem } from "./CommentReply";
 import React from "react";
-import { DynamicDismissableModal } from "../../shared/DynamicDismissableModal";
+import { DynamicDismissableModal } from "../../../shared/DynamicDismissableModal";
 import { CommentView } from "lemmy-js-client";
 
 interface CommentReplyModalProps {
