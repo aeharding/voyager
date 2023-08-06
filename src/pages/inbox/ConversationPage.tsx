@@ -13,7 +13,6 @@ import {
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { jwtPayloadSelector, jwtSelector } from "../../features/auth/authSlice";
 import {
   receivedMessages,
