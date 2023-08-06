@@ -11,6 +11,7 @@ import PostGalleryImg from "../../../gallery/PostGalleryImg";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import { ReactComponent as SelfSvg } from "./self.svg";
 import { getImageSrc } from "../../../../services/lemmy";
+import InAppExternalLink from "../../../shared/InAppExternalLink";
 
 const containerCss = css`
   display: flex;
@@ -35,7 +36,7 @@ const containerCss = css`
   }
 `;
 
-const ContainerLink = styled.a`
+const ContainerLink = styled(InAppExternalLink)`
   ${containerCss}
 `;
 
