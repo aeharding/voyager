@@ -1,9 +1,4 @@
-import {
-  IonButton,
-  IonIcon,
-  useIonActionSheet,
-  useIonRouter,
-} from "@ionic/react";
+import { IonActionSheet, IonButton, IonIcon, useIonRouter } from "@ionic/react";
 import {
   ellipsisHorizontal,
   personCircleOutline,
@@ -12,9 +7,10 @@ import {
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useParams } from "react-router";
 import { useUserDetails } from "../user/useUserDetails";
+import { useState } from "react";
 
 export default function ConversationsMoreActions() {
-  const [presentActionSheet] = useIonActionSheet();
+  const [open, setOpen] = useState(false);
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useIonRouter();
@@ -22,34 +18,42 @@ export default function ConversationsMoreActions() {
   const { handle } = useParams<{ handle: string }>();
   const { isBlocked, blockOrUnblock } = useUserDetails(handle);
 
-  function present() {
-    presentActionSheet([
-      {
-        text: handle,
-        icon: personCircleOutline,
-        handler: () => {
-          router.push(buildGeneralBrowseLink(`/u/${handle}`));
-        },
-      },
-      {
-        text: !isBlocked ? "Block User" : "Unblock User",
-        data: "block",
-        role: !isBlocked ? "destructive" : undefined,
-        icon: removeCircleOutline,
-        handler: async () => {
-          await blockOrUnblock();
-        },
-      },
-      {
-        text: "Cancel",
-        role: "cancel",
-      },
-    ]);
-  }
-
   return (
-    <IonButton fill="default" onClick={present}>
-      <IonIcon icon={ellipsisHorizontal} color="primary" />
-    </IonButton>
+    <>
+      <IonButton
+        disabled={!handle}
+        fill="default"
+        onClick={() => setOpen(true)}
+      >
+        <IonIcon icon={ellipsisHorizontal} color="primary" />
+      </IonButton>
+      <IonActionSheet
+        cssClass="left-align-buttons"
+        isOpen={open}
+        buttons={[
+          {
+            text: handle,
+            icon: personCircleOutline,
+            handler: () => {
+              router.push(buildGeneralBrowseLink(`/u/${handle}`));
+            },
+          },
+          {
+            text: !isBlocked ? "Block User" : "Unblock User",
+            data: "block",
+            role: !isBlocked ? "destructive" : undefined,
+            icon: removeCircleOutline,
+            handler: async () => {
+              await blockOrUnblock();
+            },
+          },
+          {
+            text: "Cancel",
+            role: "cancel",
+          },
+        ]}
+        onDidDismiss={() => setOpen(false)}
+      />
+    </>
   );
 }
