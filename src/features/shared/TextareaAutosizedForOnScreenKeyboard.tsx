@@ -1,18 +1,17 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { isAppleDeviceInstalledToHomescreen } from "../../helpers/device";
 import { fixSafariAutoscroll } from "../../helpers/safari";
 import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
 
-export default function TextareaAutosizedForOnScreenKeyboard(
-  props: Omit<
-    TextareaAutosizeProps & React.RefAttributes<HTMLTextAreaElement>,
-    "onFocus"
-  >
-) {
+const TextareaAutosizedForOnScreenKeyboard = forwardRef<
+  HTMLTextAreaElement,
+  Omit<TextareaAutosizeProps, "onFocus">
+>((props, ref) => {
   return (
     <TextareaAutosize
+      ref={ref}
       onFocus={(e) => {
         if (!isAppleDeviceInstalledToHomescreen()) return;
 
@@ -26,4 +25,9 @@ export default function TextareaAutosizedForOnScreenKeyboard(
       {...props}
     />
   );
-}
+});
+
+TextareaAutosizedForOnScreenKeyboard.displayName =
+  "TextareaAutosizedForOnScreenKeyboard";
+
+export default TextareaAutosizedForOnScreenKeyboard;

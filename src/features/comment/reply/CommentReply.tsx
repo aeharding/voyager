@@ -8,7 +8,6 @@ import {
   IonTitle,
   useIonToast,
   IonText,
-  IonIcon,
 } from "@ionic/react";
 import {
   CommentReplyView,
@@ -16,7 +15,7 @@ import {
   PersonMentionView,
   PostView,
 } from "lemmy-js-client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -30,14 +29,18 @@ import MarkdownToolbar, {
   TOOLBAR_HEIGHT,
   TOOLBAR_TARGET_ID,
 } from "../../shared/markdown/editing/MarkdownToolbar";
+import useKeyboardHeight from "../../../helpers/useKeyboardHeight";
 
-export const Container = styled.div`
+export const Container = styled.div<{ keyboardHeight: number }>`
   min-height: 100%;
 
   display: flex;
   flex-direction: column;
 
-  padding-bottom: ${TOOLBAR_HEIGHT};
+  padding-bottom: ${({ keyboardHeight }) =>
+    keyboardHeight
+      ? TOOLBAR_HEIGHT
+      : `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`};
 `;
 
 export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
@@ -95,6 +98,8 @@ export default function CommentReply({
   const [present] = useIonToast();
   const [loading, setLoading] = useState(false);
   const userHandle = useAppSelector(handleSelector);
+  const keyboardHeight = useKeyboardHeight();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   async function submit() {
     if (!jwt) return;
@@ -179,8 +184,10 @@ export default function CommentReply({
         </IonToolbar>
       </IonHeader>
       <IonContent {...preventPhotoswipeGalleryFocusTrap}>
-        <Container>
+        <Container keyboardHeight={keyboardHeight}>
           <Textarea
+            ref={textareaRef}
+            value={replyContent}
             onChange={(e) => setReplyContent(e.target.value)}
             autoFocus
             id={TOOLBAR_TARGET_ID}
@@ -188,7 +195,11 @@ export default function CommentReply({
           <ItemReplyingTo item={item} />
         </Container>
 
-        <MarkdownToolbar />
+        <MarkdownToolbar
+          text={replyContent}
+          setText={setReplyContent}
+          textareaRef={textareaRef}
+        />
       </IonContent>
     </>
   );
