@@ -34,13 +34,22 @@ import { insert } from "../../../../helpers/string";
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";
 
+const ToolbarContainer = styled.div`
+  height: 100%;
+  width: 100%;
+
+  pointer-events: none;
+`;
+
 const Toolbar = styled.div<{ keyboardHeight: number }>`
-  position: fixed;
+  pointer-events: all;
+
+  position: absolute;
   bottom: 0;
-  height: 50px;
+
+  height: ${TOOLBAR_HEIGHT};
 
   @media screen and (max-width: 767px) {
-    bottom: ${({ keyboardHeight }) => `${keyboardHeight}px`};
     height: ${({ keyboardHeight }) =>
       !keyboardHeight
         ? `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`
@@ -50,12 +59,24 @@ const Toolbar = styled.div<{ keyboardHeight: number }>`
   }
 
   width: 100%;
-  background: var(--ion-background-color);
   border-top: 1px solid var(--ion-item-border-color);
 
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+  ${({ theme }) =>
+    theme.dark
+      ? css`
+          background: var(--ion-background-color);
+        `
+      : css`
+          background: var(--ion-item-background, #fff);
+        `}
+
+  markdown-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    height: 100%;
+  }
 `;
 
 const Button = styled.button`
@@ -72,6 +93,7 @@ interface MarkdownToolbarProps {
   text: string;
   setText: Dispatch<SetStateAction<string>>;
   textareaRef: RefObject<HTMLTextAreaElement>;
+  slot?: string;
 }
 
 export default function MarkdownToolbar({
@@ -79,6 +101,7 @@ export default function MarkdownToolbar({
   text,
   setText,
   textareaRef,
+  slot,
 }: MarkdownToolbarProps) {
   const [presentActionSheet] = useIonActionSheet();
   const [presentAlert] = useIonToast();
@@ -157,52 +180,54 @@ export default function MarkdownToolbar({
     <>
       <IonLoading isOpen={imageUploading} message="Uploading image..." />
 
-      <markdown-toolbar for={TOOLBAR_TARGET_ID}>
+      <ToolbarContainer className="fixed-toolbar-container" slot={slot}>
         <Toolbar keyboardHeight={keyboardHeight} ref={toolbarRef}>
-          <label htmlFor="photo-upload">
-            <Button as="div" onClick={() => textareaRef.current?.focus()}>
-              <IonIcon icon={image} color="primary" />
-            </Button>
+          <markdown-toolbar for={TOOLBAR_TARGET_ID}>
+            <label htmlFor="photo-upload">
+              <Button as="div" onClick={() => textareaRef.current?.focus()}>
+                <IonIcon icon={image} color="primary" />
+              </Button>
 
-            <input
-              css={css`
-                display: none;
-              `}
-              type="file"
-              accept="image/jpeg, image/x-png, image/gif"
-              id="photo-upload"
-              onInput={(e) => {
-                const image = (e.target as HTMLInputElement).files?.[0];
-                if (!image) return;
+              <input
+                css={css`
+                  display: none;
+                `}
+                type="file"
+                accept="image/jpeg, image/x-png, image/gif"
+                id="photo-upload"
+                onInput={(e) => {
+                  const image = (e.target as HTMLInputElement).files?.[0];
+                  if (!image) return;
 
-                receivedImage(image);
-              }}
-            />
-          </label>
-          <md-link>
-            <Button>
-              <IonIcon icon={link} color="primary" />
+                  receivedImage(image);
+                }}
+              />
+            </label>
+            <md-link>
+              <Button>
+                <IonIcon icon={link} color="primary" />
+              </Button>
+            </md-link>
+            <md-bold>
+              <Button>
+                <IonIcon icon={bold} color="primary" />
+              </Button>
+            </md-bold>
+            <md-italic>
+              <Button>
+                <IonIcon icon={italic} color="primary" />
+              </Button>
+            </md-italic>
+            <Button onClick={presentMoreOptions}>
+              <IonIcon
+                icon={ellipsisHorizontal}
+                color="primary"
+                onClick={(e) => e.preventDefault()}
+              />
             </Button>
-          </md-link>
-          <md-bold>
-            <Button>
-              <IonIcon icon={bold} color="primary" />
-            </Button>
-          </md-bold>
-          <md-italic>
-            <Button>
-              <IonIcon icon={italic} color="primary" />
-            </Button>
-          </md-italic>
-          <Button onClick={presentMoreOptions}>
-            <IonIcon
-              icon={ellipsisHorizontal}
-              color="primary"
-              onClick={(e) => e.preventDefault()}
-            />
-          </Button>
+          </markdown-toolbar>
         </Toolbar>
-      </markdown-toolbar>
+      </ToolbarContainer>
     </>
   );
 }

@@ -112,14 +112,15 @@ export default function NewPostText({
             autoFocus
           />
         </Container>
-      </IonContent>
 
-      <MarkdownToolbar
-        type="post"
-        text={text}
-        setText={setText}
-        textareaRef={textareaRef}
-      />
+        <MarkdownToolbar
+          slot="fixed"
+          type="post"
+          text={text}
+          setText={setText}
+          textareaRef={textareaRef}
+        />
+      </IonContent>
     </>
   );
 }

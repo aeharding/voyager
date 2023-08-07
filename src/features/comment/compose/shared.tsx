@@ -74,14 +74,15 @@ export default function CommentContent({
           />
           {children}
         </Container>
-      </IonContent>
 
-      <MarkdownToolbar
-        type="comment"
-        text={text}
-        setText={setText}
-        textareaRef={textareaRef}
-      />
+        <MarkdownToolbar
+          type="comment"
+          text={text}
+          setText={setText}
+          textareaRef={textareaRef}
+          slot="fixed"
+        />
+      </IonContent>
     </>
   );
 }
