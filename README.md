@@ -12,7 +12,7 @@ A mobile-first Lemmy web client
 
 <p align="center">
 &nbsp;<a href="https://vger.app"><img src="public/badges/pwa.svg" height="45"></a>&nbsp;&#8203;&nbsp;
-<!-- <a href="https://apps.apple.com/app/6451429762"><img src="public/badges/ios.svg" height="45"></a>&nbsp;&nbsp; -->
+<a href="https://apps.apple.com/us/app/voyager-for-lemmy/id6451429762"><img src="public/badges/ios.svg" height="45"></a>&nbsp;&nbsp;
 <a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;
 </p>
 <p align="center">
