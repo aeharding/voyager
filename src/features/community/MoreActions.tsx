@@ -183,6 +183,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
               break;
             }
             case "favorite": {
+              if (presentLoginIfNeeded()) return;
+
               if (!isFavorite) {
                 dispatch(addFavorite(community));
               } else {
