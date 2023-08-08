@@ -18,7 +18,6 @@ jobs:
           platform: iOS
           build-type: app-store
           certificate: Distribution
-          build-stack: macOS - 2023.03
           destinations: Voyager App Store
           filename: iOS-${{ github.ref_name }}-${{ github.run_id }}
           upload-artifact: iOS-Build.zip
