@@ -43,6 +43,12 @@ export default function PersonLink({
   else if (distinguished) color = "var(--ion-color-success)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
+  const today = new Date();
+  const cakeDate = new Date(person.published);
+  const isCakeDay =
+    today.getDate() == cakeDate.getDate() &&
+    today.getMonth() == cakeDate.getMonth();
+
   return (
     <StyledLink
       to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
@@ -67,6 +73,7 @@ export default function PersonLink({
         item={person}
         showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
       />
+      {isCakeDay && " 🍰"}
     </StyledLink>
   );
 }
