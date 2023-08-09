@@ -56,6 +56,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null
   );
+  const imgRef = useRef<HTMLImageElement>();
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
@@ -90,6 +91,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
     ) => {
       if (lightboxRef.current) return;
 
+      imgRef.current = img;
       setPost(post);
 
       const instance = new PhotoSwipeLightbox({
@@ -243,7 +245,9 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         post &&
         createPortal(
           <Container>
-            <GalleryPostActions post={post} />
+            {imgRef.current && (
+              <GalleryPostActions post={post} imgSrc={imgRef.current.src} />
+            )}
           </Container>,
           actionContainer
         )}
