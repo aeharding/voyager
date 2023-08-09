@@ -15,6 +15,8 @@ import { useLocation } from "react-router";
 import React, { useContext } from "react";
 import { GalleryContext } from "./GalleryProvider";
 import { OVoteDisplayMode } from "../../services/db";
+import { isNative } from "../../helpers/device";
+import GalleryMoreActions from "./GalleryMoreActions";
 
 const Container = styled.div`
   display: flex;
@@ -38,9 +40,13 @@ const Amount = styled.div`
 
 interface GalleryPostActionsProps {
   post: PostView;
+  imgSrc: string;
 }
 
-export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
+export default function GalleryPostActions({
+  post,
+  imgSrc,
+}: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const link = buildGeneralBrowseLink(
     `/c/${getHandle(post.community)}/comments/${post.post.id}`
@@ -51,7 +57,7 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
 
   return (
     <Container onClick={(e) => e.stopPropagation()}>
-      <Voting post={post} />
+      <Voting post={post} imgSrc={imgSrc} />
       <div
         onClick={() => {
           close();
@@ -67,7 +73,11 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
         </Section>
       </div>
       <IonIcon icon={shareOutline} onClick={() => share(post.post)} />
-      <MoreActions post={post} onFeed />
+      {isNative() ? (
+        <GalleryMoreActions post={post} imgSrc={imgSrc} />
+      ) : (
+        <MoreActions post={post} onFeed />
+      )}
     </Container>
   );
 }
