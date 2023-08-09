@@ -46,8 +46,8 @@ export default function PersonLink({
   const today = new Date();
   const cakeDate = new Date(person.published);
   const isCakeDay =
-    today.getDate() == cakeDate.getDate() &&
-    today.getMonth() == cakeDate.getMonth();
+    today.getDate() === cakeDate.getDate() &&
+    today.getMonth() === cakeDate.getMonth();
 
   return (
     <StyledLink
