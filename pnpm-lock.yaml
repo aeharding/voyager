@@ -146,8 +146,8 @@ devDependencies:
     specifier: ^2.0.13
     version: 2.0.13(@types/node@20.4.5)(typescript@5.1.3)
   capacitor-stash-media:
-    specifier: ^0.0.1
-    version: 0.0.1(@capacitor/core@5.2.2)
+    specifier: ^0.0.3
+    version: 0.0.3(@capacitor/core@5.2.2)
   date-fns:
     specifier: ^2.30.0
     version: 2.30.0
@@ -5303,8 +5303,8 @@ packages:
       - typescript
     dev: true
 
-  /capacitor-stash-media@0.0.1(@capacitor/core@5.2.2):
-    resolution: {integrity: sha512-4cglgHgNIjtzyI8imQ6F6fdLAGRVKp1J5+SFx7grSZV6K3GNDk6eCxHJiFFQZFZbxXfVeR0/jf7YnV7wWBPVJw==}
+  /capacitor-stash-media@0.0.3(@capacitor/core@5.2.2):
+    resolution: {integrity: sha512-3qKXcHYTQYU6ce/CfbX+g3SduMvaXnA4mcZhjM3OimO6+5SRNC/gWKJM3QjZb7L3ik6D/kOIGj+oB6suyrSg5A==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
