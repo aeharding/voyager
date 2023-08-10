@@ -26,6 +26,8 @@ import {
   OProfileLabelType,
   ProfileLabelType,
   AppThemeType,
+  CompactThumbnailSizeType,
+  OCompactThumbnailSizeType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -57,6 +59,7 @@ interface SettingsState {
     compact: {
       thumbnailsPosition: CompactThumbnailPositionType;
       showVotingButtons: boolean;
+      thumbnailSize: CompactThumbnailSizeType;
     };
     voting: {
       voteDisplayMode: VoteDisplayMode;
@@ -115,6 +118,7 @@ const initialState: SettingsState = {
     compact: {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
       showVotingButtons: true,
+      thumbnailSize: OCompactThumbnailSizeType.Small,
     },
     voting: {
       voteDisplayMode: OVoteDisplayMode.Total,
@@ -218,6 +222,13 @@ export const appearanceSlice = createSlice({
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.compact.showVotingButtons = action.payload;
       db.setSetting("compact_show_voting_buttons", action.payload);
+    },
+    setCompactThumbnailSize(
+      state,
+      action: PayloadAction<CompactThumbnailSizeType>
+    ) {
+      state.appearance.compact.thumbnailSize = action.payload;
+      db.setSetting("compact_thumbnail_size", action.payload);
     },
     setThumbnailPosition(
       state,
@@ -336,6 +347,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const compact_show_voting_buttons = await db.getSetting(
         "compact_show_voting_buttons"
       );
+      const compact_thumbnail_size = await db.getSetting(
+        "compact_thumbnail_size"
+      );
       const vote_display_mode = await db.getSetting("vote_display_mode");
       const default_comment_sort = await db.getSetting("default_comment_sort");
       const disable_marking_posts_read = await db.getSetting(
@@ -372,6 +386,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showVotingButtons:
               compact_show_voting_buttons ??
               initialState.appearance.compact.showVotingButtons,
+            thumbnailSize:
+              compact_thumbnail_size ??
+              initialState.appearance.compact.thumbnailSize,
           },
           voting: {
             voteDisplayMode:
@@ -424,6 +441,7 @@ export const {
   setPostAppearance,
   setThumbnailPosition,
   setShowVotingButtons,
+  setCompactThumbnailSize,
   setVoteDisplayMode,
   setUserDarkMode,
   setUseSystemDarkMode,

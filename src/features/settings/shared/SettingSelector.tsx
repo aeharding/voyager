@@ -20,6 +20,7 @@ export interface SettingSelectorProps<T> {
   icon?: React.FunctionComponent;
   iconMirrored?: boolean;
   disabled?: boolean;
+  getOptionLabel?: (option: string) => string | undefined;
 }
 
 export default function SettingSelector<T extends string>({
@@ -31,6 +32,7 @@ export default function SettingSelector<T extends string>({
   icon,
   iconMirrored,
   disabled,
+  getOptionLabel,
 }: SettingSelectorProps<T>) {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
@@ -38,9 +40,11 @@ export default function SettingSelector<T extends string>({
   const buttons: ActionSheetButton<T>[] = Object.values(options).map(function (
     v
   ) {
+    const customLabel = getOptionLabel?.(v);
+
     return {
       icon: optionIcons ? optionIcons[v] : undefined,
-      text: startCase(v),
+      text: customLabel ?? startCase(v),
       data: v,
       role: selected === v ? "selected" : undefined,
     } as ActionSheetButton<T>;

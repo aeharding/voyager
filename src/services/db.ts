@@ -34,6 +34,21 @@ export const OCompactThumbnailPositionType = {
 export type CompactThumbnailPositionType =
   (typeof OCompactThumbnailPositionType)[keyof typeof OCompactThumbnailPositionType];
 
+export const OCompactThumbnailSizeType = {
+  Hidden: "hidden",
+
+  /**
+   * Default
+   */
+  Small: "small",
+
+  Medium: "medium",
+  Large: "large",
+} as const;
+
+export type CompactThumbnailSizeType =
+  (typeof OCompactThumbnailSizeType)[keyof typeof OCompactThumbnailSizeType];
+
 export const OCommentThreadCollapse = {
   Always: "always",
   Never: "never",
@@ -155,6 +170,7 @@ export type SettingValueTypes = {
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_show_voting_buttons: boolean;
+  compact_thumbnail_size: CompactThumbnailSizeType;
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
   default_comment_sort: CommentDefaultSort;
