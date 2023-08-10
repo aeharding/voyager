@@ -29,7 +29,9 @@ export default function ItemIcon({ item, size, className }: ItemIconProps) {
   if (icon)
     return (
       <SubImgIcon
-        src={getImageSrc(icon, { size })}
+        src={getImageSrc(icon, {
+          size,
+        })}
         size={size}
         className={className}
       />

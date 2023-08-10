@@ -1,6 +1,6 @@
 import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
-import { isNative } from "../helpers/device";
+import { isNative, supportsWebp } from "../helpers/device";
 import { omitUndefinedValues } from "../helpers/object";
 
 function buildBaseUrl(url: string): string {
@@ -85,7 +85,11 @@ interface ImageOptions {
    * maximum image dimension
    */
   size?: number;
+
+  format?: "jpg" | "png" | "webp";
 }
+
+const defaultFormat = supportsWebp() ? "webp" : "jpg";
 
 export function getImageSrc(url: string, options?: ImageOptions) {
   if (!options || !options.size) return url;
@@ -96,7 +100,7 @@ export function getImageSrc(url: string, options?: ImageOptions) {
           thumbnail: options.size
             ? `${Math.round(options.size * window.devicePixelRatio)}`
             : undefined,
-          format: "jpg",
+          format: options.format ?? defaultFormat,
         })
       )
     : undefined;
