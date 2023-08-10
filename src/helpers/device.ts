@@ -44,3 +44,9 @@ export function getSafeArea() {
 export function isAndroid() {
   return /android/i.test(navigator.userAgent);
 }
+
+export function supportsWebp() {
+  const { name, version } = ua.getOS();
+
+  return name !== "iOS" || (version && +version >= 14);
+}
