@@ -44,7 +44,7 @@ export default function ConversationsMoreActions() {
             role: !isBlocked ? "destructive" : undefined,
             icon: removeCircleOutline,
             handler: async () => {
-              await blockOrUnblock();
+              blockOrUnblock();
             },
           },
           {

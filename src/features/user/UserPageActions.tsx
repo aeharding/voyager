@@ -59,7 +59,7 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
               break;
             }
             case "block": {
-              await blockOrUnblock();
+              blockOrUnblock();
             }
           }
         }}
