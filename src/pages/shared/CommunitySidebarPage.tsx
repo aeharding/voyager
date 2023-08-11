@@ -7,7 +7,6 @@ import {
 } from "@ionic/react";
 import { useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
-import PostSort from "../../features/feed/PostSort";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useEffect } from "react";
 import { getCommunity } from "../../features/community/communitySlice";
@@ -47,10 +46,6 @@ export default function CommunitySidebarPage() {
           </IonButtons>
 
           <IonTitle>{community}</IonTitle>
-
-          <IonButtons slot="end">
-            <PostSort />
-          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY>
