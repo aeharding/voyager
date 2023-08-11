@@ -17,16 +17,16 @@ import {
   OCompactThumbnailSizeType,
 } from "../../../../services/db";
 
-function getWidthForSize(thumbnailSize: CompactThumbnailSizeType): string {
+function getWidthForSize(thumbnailSize: CompactThumbnailSizeType): number {
   switch (thumbnailSize) {
     case OCompactThumbnailSizeType.Hidden:
-      return "0";
+      return 0;
     case OCompactThumbnailSizeType.Small:
-      return "max(11%, 60px)";
+      return 60;
     case OCompactThumbnailSizeType.Medium:
-      return "max(11%, 75px)";
+      return 75;
     case OCompactThumbnailSizeType.Large:
-      return "max(11%, 90px)";
+      return 90;
   }
 }
 
@@ -37,7 +37,7 @@ const buildContainerCss = (thumbnailSize: CompactThumbnailSizeType) => css`
 
   flex: 0 0 auto;
 
-  width: ${getWidthForSize(thumbnailSize)};
+  width: ${getWidthForSize(thumbnailSize)}px;
   aspect-ratio: 1;
   background: var(--ion-color-light);
   border-radius: 8px;
@@ -53,7 +53,9 @@ const buildContainerCss = (thumbnailSize: CompactThumbnailSizeType) => css`
   }
 `;
 
-const ContainerLink = styled(InAppExternalLink)<{
+const ContainerLink = styled(InAppExternalLink, {
+  shouldForwardProp: (prop) => prop !== "thumbnailSize",
+})<{
   thumbnailSize: CompactThumbnailSizeType;
 }>`
   ${({ thumbnailSize }) => buildContainerCss(thumbnailSize)}
