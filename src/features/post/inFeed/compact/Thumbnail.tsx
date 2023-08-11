@@ -17,8 +17,8 @@ import {
   OCompactThumbnailSizeType,
 } from "../../../../services/db";
 
-function getWidthForSize(thumbnailSize: CompactThumbnailSizeType): number {
-  switch (thumbnailSize) {
+function getWidthForSize(size: CompactThumbnailSizeType): number {
+  switch (size) {
     case OCompactThumbnailSizeType.Hidden:
       return 0;
     case OCompactThumbnailSizeType.Small:
