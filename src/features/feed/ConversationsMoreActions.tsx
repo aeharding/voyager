@@ -1,23 +1,21 @@
 import { IonActionSheet, IonButton, IonIcon, useIonRouter } from "@ionic/react";
 import {
   ellipsisHorizontal,
-  mailOutline,
+  personCircleOutline,
   removeCircleOutline,
 } from "ionicons/icons";
-import { useContext, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { PageContext } from "../auth/PageContext";
-import { useUserDetails } from "./useUserDetails";
+import { useParams } from "react-router";
+import { useUserDetails } from "../user/useUserDetails";
+import { useState } from "react";
 
-interface UserPageActionsProps {
-  handle: string;
-}
-
-export default function UserPageActions({ handle }: UserPageActionsProps) {
+export default function ConversationsMoreActions() {
   const [open, setOpen] = useState(false);
-  const { presentLoginIfNeeded } = useContext(PageContext);
-  const router = useIonRouter();
+
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const router = useIonRouter();
+
+  const { handle } = useParams<{ handle: string }>();
   const { isBlocked, blockOrUnblock } = useUserDetails(handle);
 
   return (
@@ -34,15 +32,20 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
         isOpen={open}
         buttons={[
           {
-            text: "Send Message",
-            data: "message",
-            icon: mailOutline,
+            text: handle,
+            icon: personCircleOutline,
+            handler: () => {
+              router.push(buildGeneralBrowseLink(`/u/${handle}`));
+            },
           },
           {
             text: !isBlocked ? "Block User" : "Unblock User",
             data: "block",
             role: !isBlocked ? "destructive" : undefined,
             icon: removeCircleOutline,
+            handler: async () => {
+              blockOrUnblock();
+            },
           },
           {
             text: "Cancel",
@@ -50,19 +53,6 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
           },
         ]}
         onDidDismiss={() => setOpen(false)}
-        onWillDismiss={async (e) => {
-          switch (e.detail.data) {
-            case "message": {
-              if (presentLoginIfNeeded()) return;
-
-              router.push(buildGeneralBrowseLink(`/u/${handle}/message`));
-              break;
-            }
-            case "block": {
-              blockOrUnblock();
-            }
-          }
-        }}
       />
     </>
   );
