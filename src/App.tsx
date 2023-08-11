@@ -17,7 +17,7 @@ import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
 import { StoreProvider } from "./store";
-import { isInstalled } from "./helpers/device";
+import { isAndroid, isInstalled, isNative } from "./helpers/device";
 import TabbedRoutes from "./TabbedRoutes";
 import Auth from "./Auth";
 import { AppContextProvider } from "./features/auth/AppContext";
@@ -27,12 +27,27 @@ import { UpdateContextProvider } from "./pages/settings/update/UpdateContext";
 import GlobalStyles from "./GlobalStyles";
 import ConfigProvider from "./services/app";
 import { getDeviceMode } from "./features/settings/settingsSlice";
+import { SafeArea, SafeAreaInsets } from "capacitor-plugin-safe-area";
 
 setupIonicReact({
   rippleEffect: false,
   mode: getDeviceMode(),
   swipeBackEnabled: isInstalled() && getDeviceMode() === "ios",
 });
+
+if (isNative() && isAndroid()) {
+  const updateInsets = ({ insets }: SafeAreaInsets) => {
+    for (const [key, value] of Object.entries(insets)) {
+      document.documentElement.style.setProperty(
+        `--ion-safe-area-${key}`,
+        `${value}px`
+      );
+    }
+  };
+
+  SafeArea.getSafeAreaInsets().then(updateInsets);
+  SafeArea.addListener("safeAreaChanged", updateInsets);
+}
 
 export default function App() {
   return (
