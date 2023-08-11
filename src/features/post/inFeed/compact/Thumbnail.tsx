@@ -12,15 +12,32 @@ import { isNsfwBlurred } from "../../../labels/Nsfw";
 import { ReactComponent as SelfSvg } from "./self.svg";
 import { getImageSrc } from "../../../../services/lemmy";
 import InAppExternalLink from "../../../shared/InAppExternalLink";
+import {
+  CompactThumbnailSizeType,
+  OCompactThumbnailSizeType,
+} from "../../../../services/db";
 
-const containerCss = css`
+function getWidthForSize(size: CompactThumbnailSizeType): number {
+  switch (size) {
+    case OCompactThumbnailSizeType.Hidden:
+      return 0;
+    case OCompactThumbnailSizeType.Small:
+      return 60;
+    case OCompactThumbnailSizeType.Medium:
+      return 75;
+    case OCompactThumbnailSizeType.Large:
+      return 90;
+  }
+}
+
+const buildContainerCss = (thumbnailSize: CompactThumbnailSizeType) => css`
   display: flex;
   align-items: center;
   justify-content: center;
 
   flex: 0 0 auto;
 
-  width: max(11%, 60px);
+  width: ${getWidthForSize(thumbnailSize)}px;
   aspect-ratio: 1;
   background: var(--ion-color-light);
   border-radius: 8px;
@@ -36,12 +53,18 @@ const containerCss = css`
   }
 `;
 
-const ContainerLink = styled(InAppExternalLink)`
-  ${containerCss}
+const ContainerLink = styled(InAppExternalLink, {
+  shouldForwardProp: (prop) => prop !== "thumbnailSize",
+})<{
+  thumbnailSize: CompactThumbnailSizeType;
+}>`
+  ${({ thumbnailSize }) => buildContainerCss(thumbnailSize)}
 `;
 
-const Container = styled.div`
-  ${containerCss}
+const Container = styled.div<{
+  thumbnailSize: CompactThumbnailSizeType;
+}>`
+  ${({ thumbnailSize }) => buildContainerCss(thumbnailSize)}
 `;
 
 const LinkIcon = styled(IonIcon)`
@@ -102,6 +125,9 @@ export default function Thumbnail({ post }: ImgProps) {
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw
   );
+  const thumbnailSize = useAppSelector(
+    (state) => state.settings.appearance.compact.thumbnailSize
+  );
 
   const nsfw = useMemo(() => isNsfwBlurred(post, blurNsfw), [post, blurNsfw]);
 
@@ -135,6 +161,8 @@ export default function Thumbnail({ post }: ImgProps) {
     return <SelfSvg />;
   }, [isLink, nsfw, post, postImageSrc]);
 
+  if (thumbnailSize === OCompactThumbnailSizeType.Hidden) return;
+
   if (isLink)
     return (
       <ContainerLink
@@ -142,10 +170,13 @@ export default function Thumbnail({ post }: ImgProps) {
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => e.stopPropagation()}
+        thumbnailSize={thumbnailSize}
       >
         {renderContents()}
       </ContainerLink>
     );
 
-  return <Container>{renderContents()}</Container>;
+  return (
+    <Container thumbnailSize={thumbnailSize}>{renderContents()}</Container>
+  );
 }
