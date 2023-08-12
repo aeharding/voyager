@@ -21,6 +21,7 @@ public class MainActivity extends BridgeActivity {
             getWindow().setDecorFitsSystemWindows(false);
             getWindow().setStatusBarColor(0);
             getWindow().setNavigationBarColor(0);
+            getWindow().setNavigationBarContrastEnforced(true);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // On older versions of android setDecorFitsSystemWindows doesn't exist yet, but it can
             // be emulated with flags.
