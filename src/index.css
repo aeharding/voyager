@@ -25,6 +25,11 @@ ion-tab-button {
   justify-content: flex-start;
 }
 
+/* https://github.com/ionic-team/ionic-framework/issues/27777#issuecomment-1631522283 */
+.action-sheet-height-fix {
+  --height: 100%;
+}
+
 ion-modal.small {
   --height: 50%;
   --width: 85%;
