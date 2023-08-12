@@ -34,7 +34,7 @@ const sharedSelectStyles = css`
 
   user-select: text;
 
-  margin-bottom: env(safe-area-inset-bottom);
+  margin-bottom: var(--ion-safe-area-bottom, env(safe-area-inset-bottom));
 `;
 
 const InvisibleTextarea = styled(TextareaAutosize)`

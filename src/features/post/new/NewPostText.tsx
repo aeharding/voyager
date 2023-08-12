@@ -13,22 +13,22 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Centered, Spinner } from "../../auth/Login";
 import { css } from "@emotion/react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
-import useKeyboardHeight from "../../../helpers/useKeyboardHeight";
 import MarkdownToolbar, {
   TOOLBAR_HEIGHT,
   TOOLBAR_TARGET_ID,
 } from "../../shared/markdown/editing/MarkdownToolbar";
+import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
 
-const Container = styled.div<{ keyboardHeight: number }>`
+const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
 
   display: flex;
   flex-direction: column;
 
-  padding-bottom: ${({ keyboardHeight }) =>
-    keyboardHeight
+  padding-bottom: ${({ keyboardOpen }) =>
+    keyboardOpen
       ? TOOLBAR_HEIGHT
-      : `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`};
+      : `calc(${TOOLBAR_HEIGHT} + var(--ion-safe-area-bottom, env(safe-area-inset-bottom)))`};
 `;
 
 const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
@@ -63,7 +63,7 @@ export default function NewPostText({
 }: NewPostTextProps) {
   const [loading, setLoading] = useState(false);
 
-  const keyboardHeight = useKeyboardHeight();
+  const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [text, setText] = useState(value);
@@ -103,7 +103,7 @@ export default function NewPostText({
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <Container keyboardHeight={keyboardHeight}>
+        <Container keyboardOpen={keyboardOpen}>
           <Textarea
             id={TOOLBAR_TARGET_ID}
             ref={textareaRef}
