@@ -11,6 +11,7 @@ import {
 import {
   ellipsisHorizontal,
   glassesOutline,
+  happyOutline,
   image,
   link,
 } from "ionicons/icons";
@@ -18,6 +19,7 @@ import "@github/markdown-toolbar-element";
 import PreviewModal from "./PreviewModal";
 import {
   Dispatch,
+  MouseEvent,
   RefObject,
   SetStateAction,
   useEffect,
@@ -30,6 +32,7 @@ import { useAppSelector } from "../../../../store";
 import { jwtSelector, urlSelector } from "../../../auth/authSlice";
 import { insert } from "../../../../helpers/string";
 import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
+import textFaces from "./textFaces.txt?raw";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";
@@ -106,6 +109,7 @@ export default function MarkdownToolbar({
   slot,
 }: MarkdownToolbarProps) {
   const [presentActionSheet] = useIonActionSheet();
+  const [presentTextFaceActionSheet] = useIonActionSheet();
   const [presentAlert] = useIonToast();
   const keyboardOpen = useKeyboardOpen();
   const [imageUploading, setImageUploading] = useState(false);
@@ -132,7 +136,9 @@ export default function MarkdownToolbar({
     };
   }, [textareaRef]);
 
-  function presentMoreOptions() {
+  function presentMoreOptions(e: MouseEvent) {
+    e.preventDefault();
+
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: [
@@ -140,6 +146,11 @@ export default function MarkdownToolbar({
           text: "Preview",
           icon: glassesOutline,
           handler: presentPreview,
+        },
+        {
+          text: "Text Faces",
+          icon: happyOutline,
+          handler: presentTextFaces,
         },
         {
           text: "Cancel",
@@ -176,6 +187,43 @@ export default function MarkdownToolbar({
     setText((text) =>
       insert(text, selectionLocation.current, `\n![](${imageUrl})\n`)
     );
+  }
+
+  function presentTextFaces() {
+    presentTextFaceActionSheet({
+      cssClass: "left-align-buttons action-sheet-height-fix",
+      keyboardClose: false,
+      buttons: [
+        ...textFaces.split("\n").map((face) => ({
+          text: formatTextFace(face),
+          data: face,
+        })),
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ],
+      onWillDismiss: (event) => {
+        if (!event.detail.data) return;
+
+        const currentSelectionLocation =
+          selectionLocation.current + event.detail.data.length;
+
+        setText((text) =>
+          insert(text, selectionLocation.current, event.detail.data)
+        );
+
+        if (textareaRef.current) {
+          textareaRef.current.focus();
+
+          setTimeout(() => {
+            if (!textareaRef.current) return;
+
+            textareaRef.current.selectionEnd = currentSelectionLocation;
+          }, 10);
+        }
+      },
+    });
   }
 
   return (
@@ -221,15 +269,16 @@ export default function MarkdownToolbar({
               </Button>
             </md-italic>
             <Button onClick={presentMoreOptions}>
-              <IonIcon
-                icon={ellipsisHorizontal}
-                color="primary"
-                onClick={(e) => e.preventDefault()}
-              />
+              <IonIcon icon={ellipsisHorizontal} color="primary" />
             </Button>
           </markdown-toolbar>
         </Toolbar>
       </ToolbarContainer>
     </>
   );
+}
+
+// Rudimentary parsing to remove recurring back slashes for display
+function formatTextFace(input: string): string {
+  return input.replace(/(?:\\(.))/g, "$1");
 }
