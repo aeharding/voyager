@@ -24,7 +24,9 @@ const Container = styled.div`
   left: 0;
   padding: 1rem;
   padding-top: 4rem;
-  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0));
+  padding-bottom: calc(
+    1rem + var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0))
+  );
 
   color: white;
   background: linear-gradient(0deg, rgba(0, 0, 0, 1), transparent);

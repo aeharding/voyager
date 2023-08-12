@@ -15,7 +15,6 @@ import {
   link,
 } from "ionicons/icons";
 import "@github/markdown-toolbar-element";
-import useKeyboardHeight from "../../../../helpers/useKeyboardHeight";
 import PreviewModal from "./PreviewModal";
 import {
   Dispatch,
@@ -30,6 +29,7 @@ import { uploadImage } from "../../../../services/lemmy";
 import { useAppSelector } from "../../../../store";
 import { jwtSelector, urlSelector } from "../../../auth/authSlice";
 import { insert } from "../../../../helpers/string";
+import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";
@@ -41,7 +41,7 @@ const ToolbarContainer = styled.div`
   pointer-events: none;
 `;
 
-const Toolbar = styled.div<{ keyboardHeight: number }>`
+const Toolbar = styled.div<{ keyboardOpen: boolean }>`
   pointer-events: all;
 
   position: absolute;
@@ -50,12 +50,14 @@ const Toolbar = styled.div<{ keyboardHeight: number }>`
   height: ${TOOLBAR_HEIGHT};
 
   @media screen and (max-width: 767px) {
-    height: ${({ keyboardHeight }) =>
-      !keyboardHeight
-        ? `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`
+    height: ${({ keyboardOpen }) =>
+      !keyboardOpen
+        ? `calc(${TOOLBAR_HEIGHT} + var(--ion-safe-area-bottom, env(safe-area-inset-bottom)))`
         : TOOLBAR_HEIGHT};
-    padding-bottom: ${({ keyboardHeight }) =>
-      !keyboardHeight ? "env(safe-area-inset-bottom)" : 0};
+    padding-bottom: ${({ keyboardOpen }) =>
+      !keyboardOpen
+        ? "var(--ion-safe-area-bottom, env(safe-area-inset-bottom))"
+        : 0};
   }
 
   width: 100%;
@@ -105,7 +107,7 @@ export default function MarkdownToolbar({
 }: MarkdownToolbarProps) {
   const [presentActionSheet] = useIonActionSheet();
   const [presentAlert] = useIonToast();
-  const keyboardHeight = useKeyboardHeight();
+  const keyboardOpen = useKeyboardOpen();
   const [imageUploading, setImageUploading] = useState(false);
   const jwt = useAppSelector(jwtSelector);
   const instanceUrl = useAppSelector(urlSelector);
@@ -181,7 +183,7 @@ export default function MarkdownToolbar({
       <IonLoading isOpen={imageUploading} message="Uploading image..." />
 
       <ToolbarContainer className="fixed-toolbar-container" slot={slot}>
-        <Toolbar keyboardHeight={keyboardHeight} ref={toolbarRef}>
+        <Toolbar keyboardOpen={keyboardOpen} ref={toolbarRef}>
           <markdown-toolbar for={TOOLBAR_TARGET_ID}>
             <label htmlFor="photo-upload">
               <Button as="div" onClick={() => textareaRef.current?.focus()}>

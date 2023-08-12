@@ -5,12 +5,12 @@ import MarkdownToolbar, {
 } from "../../shared/markdown/editing/MarkdownToolbar";
 import { IonContent } from "@ionic/react";
 import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
-import useKeyboardHeight from "../../../helpers/useKeyboardHeight";
 import React, { Dispatch, SetStateAction, useRef } from "react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 import { css } from "@emotion/react";
+import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
 
-export const Container = styled.div<{ keyboardHeight: number }>`
+export const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
 
   display: flex;
@@ -19,10 +19,10 @@ export const Container = styled.div<{ keyboardHeight: number }>`
   padding-bottom: ${TOOLBAR_HEIGHT};
 
   @media screen and (max-width: 767px) {
-    padding-bottom: ${({ keyboardHeight }) =>
-      keyboardHeight
+    padding-bottom: ${({ keyboardOpen }) =>
+      keyboardOpen
         ? TOOLBAR_HEIGHT
-        : `calc(${TOOLBAR_HEIGHT} + env(safe-area-inset-bottom))`};
+        : `calc(${TOOLBAR_HEIGHT} + var(--ion-safe-area-bottom, env(safe-area-inset-bottom)))`};
   }
 `;
 
@@ -58,13 +58,13 @@ export default function CommentContent({
   setText,
   children,
 }: CommentContentProps) {
-  const keyboardHeight = useKeyboardHeight();
+  const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   return (
     <>
       <IonContent {...preventPhotoswipeGalleryFocusTrap}>
-        <Container keyboardHeight={keyboardHeight}>
+        <Container keyboardOpen={keyboardOpen}>
           <Textarea
             ref={textareaRef}
             value={text}

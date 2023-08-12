@@ -142,6 +142,9 @@ devDependencies:
   capacitor-application-context:
     specifier: ^0.0.1
     version: 0.0.1(@capacitor/core@5.2.2)
+  capacitor-plugin-safe-area:
+    specifier: ^2.0.5
+    version: 2.0.5(@capacitor/core@5.2.2)
   capacitor-set-version:
     specifier: ^2.0.13
     version: 2.0.13(@types/node@20.4.5)(typescript@5.1.3)
@@ -5275,6 +5278,14 @@ packages:
 
   /capacitor-application-context@0.0.1(@capacitor/core@5.2.2):
     resolution: {integrity: sha512-XYHvn01l3VxbGh/fs77aBTyEW54TOoEDlXYkAEeRe7PQCwU8EfVCX5MLvuWVCoIzpRlEWYNCFCS1TvLkmV7IsQ==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.2
+    dev: true
+
+  /capacitor-plugin-safe-area@2.0.5(@capacitor/core@5.2.2):
+    resolution: {integrity: sha512-Lg3P+/aW2/+C3gz2/xZFdfjgkOJ/ZSFTmZSxLaSY6lIudOTjwVpjoxhAyKUz1tc13Carjqdlq01yRrr++XOzAg==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
