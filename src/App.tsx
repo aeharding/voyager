@@ -34,7 +34,7 @@ import { Keyboard } from "@capacitor/keyboard";
 setupIonicReact({
   rippleEffect: false,
   mode: getDeviceMode(),
-  swipeBackEnabled: isInstalled() && getDeviceMode() === "ios",
+  swipeBackEnabled: isInstalled() && getDeviceMode() === "ios" && !isAndroid(),
 });
 
 // Android safe area inset management is bad, we have to do it manually
