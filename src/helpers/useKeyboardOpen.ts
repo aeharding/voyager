@@ -5,8 +5,15 @@ import BooleanWatcher from "./BooleanWatcher";
 
 const keyboardWatcher = new BooleanWatcher(false);
 
-Keyboard.addListener("keyboardWillShow", () => keyboardWatcher.setValue(true));
-Keyboard.addListener("keyboardWillShow", () => keyboardWatcher.setValue(false));
+if (isNative()) {
+  Keyboard.addListener("keyboardWillShow", () =>
+    keyboardWatcher.setValue(true)
+  );
+
+  Keyboard.addListener("keyboardWillShow", () =>
+    keyboardWatcher.setValue(false)
+  );
+}
 
 export default function useKeyboardOpen() {
   const [keyboardOpen, setKeyboardOpen] = useState(

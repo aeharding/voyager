@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Virtuoso, VirtuosoHandle, VirtuosoProps } from "react-virtuoso";
+import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import {
   IonRefresher,
   IonRefresherContent,
@@ -159,13 +159,19 @@ export default function Feed<I>({
     }
   }
 
-  // TODO looks like a Virtuoso bug where virtuoso checks if computeItemKey exists,
-  // not if it's not undefined (needs report)
-  const computeProp: Partial<VirtuosoProps<unknown, unknown>> = getIndex
-    ? {
-        computeItemKey: (index) => getIndex(filteredItems[index]),
-      }
-    : {};
+  const itemContent = useCallback(
+    (index: number) => {
+      const item = filteredItems[index];
+
+      return renderItemContent(item);
+    },
+    [filteredItems, renderItemContent]
+  );
+
+  const computeItemKey = useCallback(
+    (index: number) => (getIndex ? getIndex(filteredItems[index]) : index),
+    [filteredItems, getIndex]
+  );
 
   if ((loading && !filteredItems.length) || loading === undefined)
     return <CenteredSpinner />;
@@ -187,13 +193,9 @@ export default function Feed<I>({
         ref={virtuosoRef}
         style={{ height: "100%" }}
         atTopStateChange={setIsListAtTop}
-        {...computeProp}
+        computeItemKey={computeItemKey}
         totalCount={filteredItems.length}
-        itemContent={(index) => {
-          const item = filteredItems[index];
-
-          return renderItemContent(item);
-        }}
+        itemContent={itemContent}
         components={{ Header: header, Footer: footer }}
         onScroll={onScroll}
         increaseViewportBy={

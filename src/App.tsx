@@ -30,6 +30,7 @@ import { getDeviceMode } from "./features/settings/settingsSlice";
 import { SafeArea, SafeAreaInsets } from "capacitor-plugin-safe-area";
 import { StatusBar } from "@capacitor/status-bar";
 import { Keyboard } from "@capacitor/keyboard";
+import { TabContextProvider } from "./TabContext";
 
 setupIonicReact({
   rippleEffect: false,
@@ -74,11 +75,13 @@ export default function App() {
             <BeforeInstallPromptProvider>
               <UpdateContextProvider>
                 <Router>
-                  <IonApp>
-                    <Auth>
-                      <TabbedRoutes />
-                    </Auth>
-                  </IonApp>
+                  <TabContextProvider>
+                    <IonApp>
+                      <Auth>
+                        <TabbedRoutes />
+                      </Auth>
+                    </IonApp>
+                  </TabContextProvider>
                 </Router>
               </UpdateContextProvider>
             </BeforeInstallPromptProvider>

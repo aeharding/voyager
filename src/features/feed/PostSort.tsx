@@ -76,7 +76,7 @@ export default function PostSort() {
   const sort = useAppSelector((state) => state.post.sort);
   const [open, setOpen] = useState(false);
   const [topOpen, setTopOpen] = useState(false);
-  const { activePage } = useContext(AppContext);
+  const { activePageRef } = useContext(AppContext);
 
   return (
     <>
@@ -98,7 +98,7 @@ export default function PostSort() {
             dispatch(updateSortType(e.detail.data));
           }
 
-          scrollUpIfNeeded(activePage, 0, "auto");
+          scrollUpIfNeeded(activePageRef?.current, 0, "auto");
         }}
         header="Sort by..."
         buttons={BUTTONS.map((b) => ({
@@ -123,7 +123,7 @@ export default function PostSort() {
         ) => {
           if (e.detail.data) {
             dispatch(updateSortType(e.detail.data));
-            scrollUpIfNeeded(activePage, 0, "auto");
+            scrollUpIfNeeded(activePageRef?.current, 0, "auto");
           }
         }}
         header="Sort by Top for..."

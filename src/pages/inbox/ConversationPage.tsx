@@ -12,13 +12,20 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import {
+  KeyboardEvent,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { jwtPayloadSelector, jwtSelector } from "../../features/auth/authSlice";
 import {
   receivedMessages,
   syncMessages,
 } from "../../features/inbox/inboxSlice";
-import { useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
 import { getHandle } from "../../helpers/lemmy";
 import Message from "../../features/inbox/messages/Message";
 import styled from "@emotion/styled";
@@ -36,6 +43,7 @@ import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
 import { StyledLink } from "../../features/labels/links/shared";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ConversationsMoreActions from "../../features/feed/ConversationsMoreActions";
+import { TabContext } from "../../TabContext";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -118,7 +126,7 @@ export default function ConversationPage() {
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
-  const location = useLocation();
+  const { tab } = useContext(TabContext);
   const jwt = useAppSelector(jwtSelector);
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
@@ -215,9 +223,7 @@ export default function ConversationPage() {
           <IonButtons slot="start">
             <IonBackButton
               defaultHref="/inbox/messages"
-              text={
-                location.pathname.startsWith("/inbox") ? "Messages" : "Back"
-              }
+              text={tab === "inbox" ? "Messages" : "Back"}
             />
           </IonButtons>
 
