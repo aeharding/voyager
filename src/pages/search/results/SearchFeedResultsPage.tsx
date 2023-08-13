@@ -50,7 +50,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
       dispatch(receivedComments(response.comments));
       return [...response.posts, ...response.comments];
     },
-    [search, client, sort, type, dispatch, jwt]
+    [search, client, sort, type, dispatch, jwt],
   );
 
   return (

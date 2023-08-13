@@ -19,7 +19,7 @@ export default function InstanceSidebarPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const pageRef = useRef<HTMLElement>(null);
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
 
   useSetActivePage(pageRef);

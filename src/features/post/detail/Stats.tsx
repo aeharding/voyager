@@ -27,7 +27,7 @@ export default function Stats({ post }: StatsProps) {
       {Math.round(
         (post.counts.upvotes + post.counts.downvotes
           ? post.counts.upvotes / (post.counts.upvotes + post.counts.downvotes)
-          : 1) * 100
+          : 1) * 100,
       )}
       %
       <IonIcon icon={timeOutline} />

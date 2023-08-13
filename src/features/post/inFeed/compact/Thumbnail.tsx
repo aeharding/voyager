@@ -114,7 +114,7 @@ interface ImgProps {
 export default function Thumbnail({ post }: ImgProps) {
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
-    [post]
+    [post],
   );
 
   const postImageSrc = (() => {
@@ -123,10 +123,10 @@ export default function Thumbnail({ post }: ImgProps) {
     if (markdownLoneImage) return markdownLoneImage.url;
   })();
   const blurNsfw = useAppSelector(
-    (state) => state.settings.appearance.posts.blurNsfw
+    (state) => state.settings.appearance.posts.blurNsfw,
   );
   const thumbnailSize = useAppSelector(
-    (state) => state.settings.appearance.compact.thumbnailSize
+    (state) => state.settings.appearance.compact.thumbnailSize,
   );
 
   const nsfw = useMemo(() => isNsfwBlurred(post, blurNsfw), [post, blurNsfw]);

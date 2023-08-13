@@ -75,7 +75,7 @@ interface CommentsProps {
 
 export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   { header, postId, commentPath, op, sort, bottomPadding },
-  ref
+  ref,
 ) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
@@ -88,7 +88,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       comments.length
         ? buildCommentsTreeWithMissing(comments, !!commentPath)
         : [],
-    [commentPath, comments]
+    [commentPath, comments],
   );
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
@@ -171,13 +171,13 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     const newComments = pullAllBy(
       response.comments,
       existingComments,
-      "comment.id"
+      "comment.id",
     );
     if (!newComments.length) setFinishedPaging(true);
 
     let potentialComments = uniqBy(
       [...existingComments, ...newComments],
-      (c) => c.comment.id
+      (c) => c.comment.id,
     );
 
     // Filter context to a single comment chain (only show direct ancestors and children)
@@ -241,7 +241,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   function appendComments(comments: CommentView[]) {
     setComments((existingComments) =>
-      uniqBy([...existingComments, ...comments], (c) => c.comment.id)
+      uniqBy([...existingComments, ...comments], (c) => c.comment.id),
     );
   }
 

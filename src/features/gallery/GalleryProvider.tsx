@@ -38,7 +38,7 @@ interface IGalleryContext {
   open: (
     img: HTMLImageElement,
     post?: PostView,
-    animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"]
+    animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
   ) => void;
   close: () => void;
 }
@@ -57,7 +57,7 @@ interface GalleryProviderProps {
 
 export default function GalleryProvider({ children }: GalleryProviderProps) {
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
-    null
+    null,
   );
   const imgRef = useRef<HTMLImageElement>();
   const [post, setPost] = useState<PostView>();
@@ -90,7 +90,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
     (
       img: HTMLImageElement,
       post?: PostView,
-      animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"]
+      animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
     ) => {
       if (lightboxRef.current) return;
 
@@ -194,13 +194,13 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         window.history.replaceState(
           window.history.state,
           document.title,
-          urlWithoutOpenedSlide
+          urlWithoutOpenedSlide,
         );
         // then we need to create new history record to store hash navigation state
         window.history.pushState(
           getHistoryState(),
           document.title,
-          urlWithOpenedSlide
+          urlWithOpenedSlide,
         );
       });
 
@@ -215,7 +215,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         window.history.replaceState(
           getHistoryState(),
           document.title,
-          urlWithOpenedSlide
+          urlWithOpenedSlide,
         );
       });
 
@@ -249,7 +249,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       instance.init();
       lightboxRef.current = instance;
     },
-    [dispatch]
+    [dispatch],
   );
 
   return (
@@ -262,7 +262,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
               <GalleryPostActions post={post} imgSrc={imgRef.current.src} />
             )}
           </Container>,
-          actionContainer
+          actionContainer,
         )}
 
       {children}

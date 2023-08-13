@@ -6,7 +6,7 @@ import { setPureBlack } from "../../../settingsSlice";
 export default function PureBlack() {
   const dispatch = useAppDispatch();
   const { pureBlack } = useAppSelector(
-    (state) => state.settings.appearance.dark
+    (state) => state.settings.appearance.dark,
   );
 
   return (

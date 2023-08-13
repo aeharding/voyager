@@ -37,18 +37,18 @@ export default function SettingSelector<T extends string>({
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
 
-  const buttons: ActionSheetButton<T>[] = Object.values(options).map(function (
-    v
-  ) {
-    const customLabel = getOptionLabel?.(v);
+  const buttons: ActionSheetButton<T>[] = Object.values(options).map(
+    function (v) {
+      const customLabel = getOptionLabel?.(v);
 
-    return {
-      icon: optionIcons ? optionIcons[v] : undefined,
-      text: customLabel ?? startCase(v),
-      data: v,
-      role: selected === v ? "selected" : undefined,
-    } as ActionSheetButton<T>;
-  });
+      return {
+        icon: optionIcons ? optionIcons[v] : undefined,
+        text: customLabel ?? startCase(v),
+        data: v,
+        role: selected === v ? "selected" : undefined,
+      } as ActionSheetButton<T>;
+    },
+  );
 
   const Icon = icon
     ? styled(icon)<{ mirror?: boolean }>`
@@ -88,7 +88,7 @@ export default function SettingSelector<T extends string>({
         isOpen={open}
         onDidDismiss={() => setOpen(false)}
         onWillDismiss={(
-          e: IonActionSheetCustomEvent<OverlayEventDetail<T>>
+          e: IonActionSheetCustomEvent<OverlayEventDetail<T>>,
         ) => {
           if (e.detail.data) {
             dispatch(setSelected(e.detail.data));

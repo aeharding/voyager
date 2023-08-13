@@ -49,7 +49,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
   const votesById = useAppSelector((state) =>
     "comment" in item
       ? state.comment.commentVotesById
-      : state.post.postVotesById
+      : state.post.postVotesById,
   );
   const id = "comment" in item ? item.comment.id : item.post.id;
 
@@ -89,7 +89,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
   }
 
   const voteDisplayMode = useAppSelector(
-    (state) => state.settings.appearance.voting.voteDisplayMode
+    (state) => state.settings.appearance.voting.voteDisplayMode,
   );
 
   switch (voteDisplayMode) {

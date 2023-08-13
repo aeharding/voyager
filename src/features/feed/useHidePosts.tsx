@@ -15,7 +15,7 @@ export default function useHidePosts() {
     if ("querySelector" in activePageRef.current.current) return;
 
     const postIds: number[] | undefined = itemsRef?.current?.map(
-      (item) => item.post.id
+      (item) => item.post.id,
     );
 
     if (!postIds) return;

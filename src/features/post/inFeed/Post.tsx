@@ -81,7 +81,7 @@ export default function Post(props: PostProps) {
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const postAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type
+    (state) => state.settings.appearance.posts.type,
   );
 
   const postBody = (() => {
@@ -110,7 +110,7 @@ export default function Post(props: PostProps) {
           routerLink={buildGeneralBrowseLink(
             `/c/${getHandle(props.post.community)}/comments/${
               props.post.post.id
-            }`
+            }`,
           )}
           href={undefined}
           ref={targetIntersectionRef}

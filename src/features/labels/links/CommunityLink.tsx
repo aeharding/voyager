@@ -45,7 +45,7 @@ export default function CommunityLink({
   const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const _subscribed =
@@ -84,13 +84,13 @@ export default function CommunityLink({
                   await dispatch(followCommunity(!isSubscribed, community.id));
                 } catch (error) {
                   presentToast(
-                    buildProblemSubscribing(isSubscribed, getHandle(community))
+                    buildProblemSubscribing(isSubscribed, getHandle(community)),
                   );
                   throw error;
                 }
 
                 presentToast(
-                  buildSuccessSubscribing(isSubscribed, getHandle(community))
+                  buildSuccessSubscribing(isSubscribed, getHandle(community)),
                 );
               })();
             },
@@ -102,7 +102,7 @@ export default function CommunityLink({
         ],
       });
     },
-    { cancelOnMovement: true }
+    { cancelOnMovement: true },
   );
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();

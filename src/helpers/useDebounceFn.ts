@@ -3,7 +3,7 @@ import * as React from "react";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function useDebounceFn<T extends (...args: any) => any>(
   fn: T,
-  delay: number
+  delay: number,
 ): T {
   const timeoutId = React.useRef<number | undefined>();
   const originalFn = React.useRef<T | null>(null);
@@ -32,6 +32,6 @@ export default function useDebounceFn<T extends (...args: any) => any>(
           }
         }, delay);
       }) as unknown as T,
-    [delay]
+    [delay],
   );
 }

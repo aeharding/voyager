@@ -6,7 +6,7 @@ import ShowHideReadButton from "./ShowHideReadButton";
 
 export default function HidingSettings() {
   const disableMarkingRead = useAppSelector(
-    (state) => state.settings.general.posts.disableMarkingRead
+    (state) => state.settings.general.posts.disableMarkingRead,
   );
 
   return (

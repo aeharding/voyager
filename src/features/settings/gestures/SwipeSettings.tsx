@@ -52,10 +52,10 @@ export default function SwipeSettings() {
   const inbox = useAppSelector((state) => state.gesture.swipe.inbox);
 
   const disableLeftSwipes = useAppSelector(
-    (state) => state.gesture.swipe.disableLeftSwipes
+    (state) => state.gesture.swipe.disableLeftSwipes,
   );
   const disableRightSwipes = useAppSelector(
-    (state) => state.gesture.swipe.disableRightSwipes
+    (state) => state.gesture.swipe.disableRightSwipes,
   );
 
   return (
@@ -117,7 +117,7 @@ export default function SwipeSettings() {
               isOpen={open}
               onDidDismiss={() => setOpen(false)}
               onWillDismiss={(
-                e: IonActionSheetCustomEvent<OverlayEventDetail>
+                e: IonActionSheetCustomEvent<OverlayEventDetail>,
               ) => {
                 if (e.detail.data) {
                   dispatch(setAllSwipesToDefault());
@@ -177,10 +177,10 @@ function SwipeList({
   const Selector = SettingSelector<SwipeAction>;
 
   const disableLeftSwipes = useAppSelector(
-    (state) => state.gesture.swipe.disableLeftSwipes
+    (state) => state.gesture.swipe.disableLeftSwipes,
   );
   const disableRightSwipes = useAppSelector(
-    (state) => state.gesture.swipe.disableRightSwipes
+    (state) => state.gesture.swipe.disableRightSwipes,
   );
 
   return (

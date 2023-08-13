@@ -8,11 +8,11 @@ import { buildBlocked, problemBlockingUser } from "../../helpers/toastMessages";
 
 export function useUserDetails(handle: string) {
   const blocks = useAppSelector(
-    (state) => state.auth.site?.my_user?.person_blocks
+    (state) => state.auth.site?.my_user?.person_blocks,
   );
   const isBlocked = useMemo(
     () => blocks?.some((b) => getHandle(b.target) === handle),
-    [blocks, handle]
+    [blocks, handle],
   );
   const userByHandle = useAppSelector((state) => state.user.userByHandle);
   const user = userByHandle[handle];

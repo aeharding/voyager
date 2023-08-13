@@ -185,7 +185,7 @@ export default function MarkdownToolbar({
     if (!textareaRef.current) return;
 
     setText((text) =>
-      insert(text, selectionLocation.current, `\n![](${imageUrl})\n`)
+      insert(text, selectionLocation.current, `\n![](${imageUrl})\n`),
     );
   }
 
@@ -210,7 +210,7 @@ export default function MarkdownToolbar({
           selectionLocation.current + event.detail.data.length;
 
         setText((text) =>
-          insert(text, selectionLocation.current, event.detail.data)
+          insert(text, selectionLocation.current, event.detail.data),
         );
 
         if (textareaRef.current) {

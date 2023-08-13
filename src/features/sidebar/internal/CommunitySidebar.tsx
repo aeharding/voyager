@@ -9,7 +9,7 @@ interface CommunitySidebarProps {
 
 export default function CommunitySidebar({ community }: CommunitySidebarProps) {
   const mods = useAppSelector(
-    (state) => state.community.modsByHandle[getHandle(community.community)]
+    (state) => state.community.modsByHandle[getHandle(community.community)],
   );
 
   return (

@@ -3,7 +3,7 @@ import MarkReadFab from "./MarkReadFab";
 
 export default function PostFabs() {
   const showHideReadButton = useAppSelector(
-    (state) => state.settings.general.posts.showHideReadButton
+    (state) => state.settings.general.posts.showHideReadButton,
   );
 
   return <>{showHideReadButton && <MarkReadFab />}</>;

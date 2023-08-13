@@ -77,10 +77,10 @@ export default function MoreActions({
   } = useContext(PageContext);
 
   const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById
+    (state) => state.comment.commentVotesById,
   );
   const commentSavedById = useAppSelector(
-    (state) => state.comment.commentSavedById
+    (state) => state.comment.commentSavedById,
   );
 
   const myVote = commentVotesById[comment.id] ?? commentView.my_vote;
@@ -119,7 +119,7 @@ export default function MoreActions({
 
                   try {
                     await dispatch(
-                      voteOnComment(comment.id, myVote === -1 ? 0 : -1)
+                      voteOnComment(comment.id, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
                     present(voteError);
@@ -223,7 +223,7 @@ export default function MoreActions({
           icon: personOutline,
           handler: () => {
             router.push(
-              buildGeneralBrowseLink(`/u/${getHandle(commentView.creator)}`)
+              buildGeneralBrowseLink(`/u/${getHandle(commentView.creator)}`),
             );
           },
         },

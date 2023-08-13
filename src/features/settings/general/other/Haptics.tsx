@@ -7,7 +7,7 @@ import { isNative } from "../../../../helpers/device";
 export default function Haptics() {
   const dispatch = useAppDispatch();
   const enableHapticFeedback = useAppSelector(
-    (state) => state.settings.general.enableHapticFeedback
+    (state) => state.settings.general.enableHapticFeedback,
   );
 
   // Some devices do not support haptics

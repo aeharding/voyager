@@ -98,7 +98,7 @@ export type ActionList = [
   // short swipe action
   SlidingItemAction | undefined,
   // long swipe action
-  SlidingItemAction | undefined
+  SlidingItemAction | undefined,
 ];
 
 export interface SlidingItemProps {
@@ -114,7 +114,7 @@ const SECOND_ACTION_RATIO = 1.75;
 function getActiveItem(
   ratio: number,
   hasNearSwipe: boolean,
-  hasFarSwipe: boolean
+  hasFarSwipe: boolean,
 ) {
   ratio = Math.abs(ratio);
 

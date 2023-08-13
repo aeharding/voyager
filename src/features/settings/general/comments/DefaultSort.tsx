@@ -12,7 +12,7 @@ import { setDefaultCommentSort } from "../../settingsSlice";
 import { getSortIcon } from "../../../comment/CommentSort";
 
 const BUTTONS: ActionSheetButton<CommentDefaultSort>[] = Object.values(
-  OCommentDefaultSort
+  OCommentDefaultSort,
 ).map(function (commentSort) {
   return {
     text: startCase(commentSort),
@@ -26,7 +26,7 @@ export default function DefaultSort() {
 
   const dispatch = useAppDispatch();
   const postsAppearanceType = useAppSelector(
-    (state) => state.settings.general.comments.sort
+    (state) => state.settings.general.comments.sort,
   );
 
   return (
@@ -41,7 +41,9 @@ export default function DefaultSort() {
           isOpen={open}
           onDidDismiss={() => setOpen(false)}
           onWillDismiss={(
-            e: IonActionSheetCustomEvent<OverlayEventDetail<CommentDefaultSort>>
+            e: IonActionSheetCustomEvent<
+              OverlayEventDetail<CommentDefaultSort>
+            >,
           ) => {
             if (e.detail.data) {
               dispatch(setDefaultCommentSort(e.detail.data));

@@ -278,7 +278,7 @@ export class WefwefDB extends Dexie {
     user_handle: string,
     page: number,
     limit: number,
-    lastPageItems?: IPostMetadata[]
+    lastPageItems?: IPostMetadata[],
   ) {
     const filterFn = (metadata: IPostMetadata) =>
       metadata.user_handle === user_handle && metadata.hidden === 1;
@@ -340,7 +340,7 @@ export class WefwefDB extends Dexie {
     specificity?: {
       user_handle?: string;
       community?: string;
-    }
+    },
   ) {
     const { user_handle = "", community = "" } = specificity || {};
 
@@ -378,7 +378,7 @@ export class WefwefDB extends Dexie {
     specificity?: {
       user_handle?: string;
       community?: string;
-    }
+    },
   ) {
     const { user_handle = "", community = "" } = specificity || {};
 

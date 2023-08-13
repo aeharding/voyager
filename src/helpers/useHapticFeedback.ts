@@ -4,7 +4,7 @@ import { useAppSelector } from "../store";
 
 export default function useHapticFeedback() {
   const enabled = useAppSelector(
-    (state) => state.settings.general.enableHapticFeedback
+    (state) => state.settings.general.enableHapticFeedback,
   );
 
   return useCallback(
@@ -13,6 +13,6 @@ export default function useHapticFeedback() {
 
       Haptics.impact(options);
     },
-    [enabled]
+    [enabled],
   );
 }

@@ -9,10 +9,9 @@ const HrContainer = styled.div<{ depth: number }>`
   ${maxWidthCss}
   z-index: 100;
 
-  ${({ depth }) =>
-    css`
-      padding-left: calc(0.5rem + ${(depth - 1) * 10}px);
-    `}
+  ${({ depth }) => css`
+    padding-left: calc(0.5rem + ${(depth - 1) * 10}px);
+  `}
 `;
 
 const Hr = styled.hr`

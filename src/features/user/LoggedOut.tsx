@@ -21,7 +21,7 @@ const Incognito = styled(IncognitoSvg)`
 export default function LoggedOut() {
   const dispatch = useAppDispatch();
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const [pickerOpen, setPickerOpen] = useState(false);
 

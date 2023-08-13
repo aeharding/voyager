@@ -64,7 +64,7 @@ export default function ProfileFeedHiddenPostsPage() {
         // because we're only ever fetching the next page. But just in case...
         lastPageNumberRef.current + 1 === page
           ? lastPageItemsRef.current
-          : undefined
+          : undefined,
       );
 
       lastPageNumberRef.current = page;
@@ -78,15 +78,15 @@ export default function ProfileFeedHiddenPostsPage() {
           if (typeof potentialPost === "object") return potentialPost;
 
           return client.getPost({ id: postId, auth: jwt });
-        })
+        }),
       );
 
       return result.map((post) =>
-        "post_view" in post ? post.post_view : post
+        "post_view" in post ? post.post_view : post,
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [client, handle, jwt, postHiddenById]
+    [client, handle, jwt, postHiddenById],
   );
 
   return (

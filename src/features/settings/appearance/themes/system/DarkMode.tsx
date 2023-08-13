@@ -6,7 +6,7 @@ import { setUseSystemDarkMode } from "../../../settingsSlice";
 export default function DarkMode() {
   const dispatch = useAppDispatch();
   const { usingSystemDarkMode } = useAppSelector(
-    (state) => state.settings.appearance.dark
+    (state) => state.settings.appearance.dark,
   );
 
   return (

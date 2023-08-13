@@ -7,17 +7,17 @@ const keyboardWatcher = new BooleanWatcher(false);
 
 if (isNative()) {
   Keyboard.addListener("keyboardWillShow", () =>
-    keyboardWatcher.setValue(true)
+    keyboardWatcher.setValue(true),
   );
 
   Keyboard.addListener("keyboardWillShow", () =>
-    keyboardWatcher.setValue(false)
+    keyboardWatcher.setValue(false),
   );
 }
 
 export default function useKeyboardOpen() {
   const [keyboardOpen, setKeyboardOpen] = useState(
-    keyboardWatcher.getValue() ?? false
+    keyboardWatcher.getValue() ?? false,
   );
 
   useEffect(() => {

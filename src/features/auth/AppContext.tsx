@@ -34,7 +34,7 @@ export function AppContextProvider({
       activePageRef,
       setActivePage: (page: Page) => (activePageRef.current = page),
     }),
-    []
+    [],
   );
 
   return (

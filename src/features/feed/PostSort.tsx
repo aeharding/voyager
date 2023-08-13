@@ -60,7 +60,7 @@ const BUTTONS: ActionSheetButton<ExtendedSortType>[] = POST_SORTS.map(
     text: startCase(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
-  })
+  }),
 );
 
 const TOP_BUTTONS: ActionSheetButton<SortType>[] = TOP_POST_SORTS.map(
@@ -68,7 +68,7 @@ const TOP_BUTTONS: ActionSheetButton<SortType>[] = TOP_POST_SORTS.map(
     text: formatTopLabel(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
-  })
+  }),
 );
 
 export default function PostSort() {
@@ -88,7 +88,7 @@ export default function PostSort() {
         isOpen={open}
         onDidDismiss={() => setOpen(false)}
         onWillDismiss={(
-          e: IonActionSheetCustomEvent<OverlayEventDetail<ExtendedSortType>>
+          e: IonActionSheetCustomEvent<OverlayEventDetail<ExtendedSortType>>,
         ) => {
           if (e.detail.data === "Top") {
             setTopOpen(true);
@@ -119,7 +119,7 @@ export default function PostSort() {
         isOpen={topOpen}
         onDidDismiss={() => setTopOpen(false)}
         onWillDismiss={(
-          e: IonActionSheetCustomEvent<OverlayEventDetail<SortType>>
+          e: IonActionSheetCustomEvent<OverlayEventDetail<SortType>>,
         ) => {
           if (e.detail.data) {
             dispatch(updateSortType(e.detail.data));

@@ -104,7 +104,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
 
         try {
           await dispatch(
-            voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote)
+            voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote),
           );
         } catch (error) {
           present(voteError);

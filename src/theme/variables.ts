@@ -144,7 +144,7 @@ export const buildLightVariables = (appTheme: AppThemeType) => {
 
 export const buildDarkVariables = (
   appTheme: AppThemeType,
-  pureBlack: boolean
+  pureBlack: boolean,
 ) => {
   const { primary } = getThemeByStyle(appTheme, "dark");
 

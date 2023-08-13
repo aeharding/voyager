@@ -10,7 +10,7 @@ const MODES = ["ios", "md"] as const;
 export default function SelectDeviceMode() {
   const dispatch = useAppDispatch();
   const deviceMode = useAppSelector(
-    (state) => state.settings.appearance.deviceMode
+    (state) => state.settings.appearance.deviceMode,
   );
   const [selectedDeviceMode, setSelectedDeviceMode] = useState(deviceMode);
 

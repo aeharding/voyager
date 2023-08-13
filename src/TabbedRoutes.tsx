@@ -95,7 +95,7 @@ export default function TabbedRoutes() {
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
 
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
@@ -115,26 +115,26 @@ export default function TabbedRoutes() {
     document.addEventListener(
       "ionBackButton",
       // eslint-disable-next-line no-undef
-      backButtonHandler as EventListener
+      backButtonHandler as EventListener,
     );
 
     return () => {
       document.removeEventListener(
         "ionBackButton",
         // eslint-disable-next-line no-undef
-        backButtonHandler as EventListener
+        backButtonHandler as EventListener,
       );
     };
   }, [router]);
 
   const userHandle = useAppSelector(handleSelector);
   const profileLabelType = useAppSelector(
-    (state) => state.settings.appearance.general.profileLabel
+    (state) => state.settings.appearance.general.profileLabel,
   );
 
   const profileTabLabel = useMemo(
     () => getProfileTabLabel(profileLabelType, userHandle, connectedInstance),
-    [profileLabelType, userHandle, connectedInstance]
+    [profileLabelType, userHandle, connectedInstance],
   );
 
   const isPostsButtonDisabled = location.pathname.startsWith("/posts");
@@ -164,7 +164,7 @@ export default function TabbedRoutes() {
     } else {
       router.push(
         `/posts/${actor ?? iss ?? getDefaultServer()}/${jwt ? "home" : "all"}`,
-        "back"
+        "back",
       );
     }
   }
@@ -414,7 +414,7 @@ export default function TabbedRoutes() {
         {...buildGeneralBrowseRoutes("settings")}
       </IonRouterOutlet>
     ),
-    [iss]
+    [iss],
   );
 
   if (!ready) return;

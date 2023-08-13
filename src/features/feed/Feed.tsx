@@ -54,13 +54,13 @@ export default function Feed<I>({
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
   const postAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type
+    (state) => state.settings.appearance.posts.type,
   );
   const [loadFailed, setLoadFailed] = useState(true);
 
   const filteredItems = useMemo(
     () => (filterFn ? items.filter(filterFn) : items),
-    [filterFn, items]
+    [filterFn, items],
   );
 
   const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
@@ -103,7 +103,7 @@ export default function Feed<I>({
 
       setPage(currentPage);
     },
-    [atEnd, fetchFn, limit, loading, page]
+    [atEnd, fetchFn, limit, loading, page],
   );
 
   const { onScroll } = useFeedOnScroll({ fetchMore });
@@ -120,7 +120,7 @@ export default function Feed<I>({
     const currentPageItems = items.slice((page - 1) * limit, page * limit);
 
     const currentPageFilteredItems = filteredItems.filter(
-      (item) => currentPageItems.indexOf(item) !== -1
+      (item) => currentPageItems.indexOf(item) !== -1,
     );
 
     if (
@@ -165,12 +165,12 @@ export default function Feed<I>({
 
       return renderItemContent(item);
     },
-    [filteredItems, renderItemContent]
+    [filteredItems, renderItemContent],
   );
 
   const computeItemKey = useCallback(
     (index: number) => (getIndex ? getIndex(filteredItems[index]) : index),
-    [filteredItems, getIndex]
+    [filteredItems, getIndex],
   );
 
   if ((loading && !filteredItems.length) || loading === undefined)

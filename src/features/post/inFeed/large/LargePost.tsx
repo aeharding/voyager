@@ -109,10 +109,10 @@ export default function LargePost({ post, communityMode }: PostProps) {
     post.read;
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
-    [post]
+    [post],
   );
   const blurNsfw = useAppSelector(
-    (state) => state.settings.appearance.posts.blurNsfw
+    (state) => state.settings.appearance.posts.blurNsfw,
   );
 
   function renderPostBody() {

@@ -7,7 +7,7 @@ import { ListHeader } from "../../../shared/formatting";
 export default function UserDarkMode() {
   const dispatch = useAppDispatch();
   const userDarkMode = useAppSelector(
-    (state) => state.settings.appearance.dark.userDarkMode
+    (state) => state.settings.appearance.dark.userDarkMode,
   );
 
   return (

@@ -62,7 +62,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const isSubscribed =
@@ -73,12 +73,12 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const communityId = communityByHandle[community]?.community.id;
 
   const favoriteCommunities = useAppSelector(
-    (state) => state.community.favorites
+    (state) => state.community.favorites,
   );
 
   const isFavorite = useMemo(
     () => favoriteCommunities.includes(community),
-    [community, favoriteCommunities]
+    [community, favoriteCommunities],
   );
 
   const canPost = useMemo(() => {
@@ -239,7 +239,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
                       handler: () => {
                         (async () => {
                           await dispatch(
-                            blockCommunity(!isBlocked, communityId)
+                            blockCommunity(!isBlocked, communityId),
                           );
 
                           present(buildBlocked(!isBlocked, community));

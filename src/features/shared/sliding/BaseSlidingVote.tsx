@@ -45,7 +45,7 @@ type SlideableItem =
   | CommentReplyView;
 
 function isInboxItem(
-  item: SlideableItem
+  item: SlideableItem,
 ): item is PersonMentionView | CommentReplyView {
   if ("person_mention" in item) return true;
   if ("comment_reply" in item) return true;
@@ -66,7 +66,7 @@ export default function BaseSlidingVote(props: BaseSlidingVoteProps) {
   const disableSwipes = useAppSelector(
     (state) =>
       state.gesture.swipe.disableLeftSwipes &&
-      state.gesture.swipe.disableRightSwipes
+      state.gesture.swipe.disableRightSwipes,
   );
 
   if (!disableSwipes) {
@@ -98,7 +98,7 @@ function BaseSlidingVoteInternal({
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById
+    (state) => state.comment.commentVotesById,
   );
   const typedMyVote = item.my_vote as 1 | -1 | 0 | undefined;
   const isPost = "unread_comments" in item;
@@ -108,20 +108,20 @@ function BaseSlidingVoteInternal({
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
   const commentSavedById = useAppSelector(
-    (state) => state.comment.commentSavedById
+    (state) => state.comment.commentSavedById,
   );
 
   const isHidden = useAppSelector(postHiddenByIdSelector)[item.post?.id];
 
   const readByInboxItemId = useAppSelector(
-    (state) => state.inbox.readByInboxItemId
+    (state) => state.inbox.readByInboxItemId,
   );
 
   const disableLeftSwipes = useAppSelector(
-    (state) => state.gesture.swipe.disableLeftSwipes
+    (state) => state.gesture.swipe.disableLeftSwipes,
   );
   const disableRightSwipes = useAppSelector(
-    (state) => state.gesture.swipe.disableRightSwipes
+    (state) => state.gesture.swipe.disableRightSwipes,
   );
 
   const onVote = useCallback(
@@ -135,7 +135,7 @@ function BaseSlidingVoteInternal({
         present(voteError);
       }
     },
-    [dispatch, isPost, item, present, presentLoginIfNeeded]
+    [dispatch, isPost, item, present, presentLoginIfNeeded],
   );
 
   const reply = useCallback(async () => {
@@ -199,7 +199,7 @@ function BaseSlidingVoteInternal({
 
   const collapseRootComment = useCollapseRootComment(
     !isPost ? item : undefined,
-    rootIndex
+    rootIndex,
   );
   const collapseAction = useMemo(() => {
     return collapseRootComment
@@ -284,7 +284,7 @@ function BaseSlidingVoteInternal({
       !disableLeftSwipes
         ? [allActions[actions.start], allActions[actions.farStart]]
         : [undefined, undefined],
-    [disableLeftSwipes, allActions, actions]
+    [disableLeftSwipes, allActions, actions],
   );
 
   const endActions: ActionList = useMemo(
@@ -292,7 +292,7 @@ function BaseSlidingVoteInternal({
       !disableRightSwipes
         ? [allActions[actions.end], allActions[actions.farEnd]]
         : [undefined, undefined],
-    [disableRightSwipes, allActions, actions]
+    [disableRightSwipes, allActions, actions],
   );
 
   return (

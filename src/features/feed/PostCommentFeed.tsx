@@ -38,7 +38,7 @@ export default function PostCommentFeed({
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
   const postAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type
+    (state) => state.settings.appearance.posts.type,
   );
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
 
@@ -72,7 +72,7 @@ export default function PostCommentFeed({
 
       return <FeedComment comment={item} css={borderCss} />;
     },
-    [communityName, borderCss]
+    [communityName, borderCss],
   );
 
   const renderItemContent = useCallback(
@@ -87,7 +87,7 @@ export default function PostCommentFeed({
 
       return renderItem(item);
     },
-    [postAppearanceType, renderItem]
+    [postAppearanceType, renderItem],
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
@@ -103,18 +103,18 @@ export default function PostCommentFeed({
       return items;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [_fetchFn, dispatch]
+    [_fetchFn, dispatch],
   );
 
   const filterFn = useCallback(
     (item: PostCommentItem) => !postHiddenById[item.post.id],
-    [postHiddenById]
+    [postHiddenById],
   );
 
   const getIndex = useCallback(
     (item: PostCommentItem) =>
       "comment" in item ? `comment-${item.comment.id}` : `post-${item.post.id}`,
-    []
+    [],
   );
 
   return (

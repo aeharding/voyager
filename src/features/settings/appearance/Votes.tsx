@@ -7,7 +7,7 @@ import { ListHeader } from "../shared/formatting";
 
 export default function Votes() {
   const voteDisplayMode = useAppSelector(
-    (state) => state.settings.appearance.voting.voteDisplayMode
+    (state) => state.settings.appearance.voting.voteDisplayMode,
   );
 
   const Selector = SettingSelector<VoteDisplayMode>;

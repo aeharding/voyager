@@ -31,7 +31,7 @@ export function getItemActorName(item: Pick<Community, "actor_id">) {
 
 export function checkIsMod(communityHandle: string, site: GetSiteResponse) {
   return site?.my_user?.moderates.find(
-    (m) => getHandle(m.community) === communityHandle
+    (m) => getHandle(m.community) === communityHandle,
   );
 }
 
@@ -39,13 +39,13 @@ export function checkIsMod(communityHandle: string, site: GetSiteResponse) {
  * @param item Community, Person, etc
  */
 export function getHandle(
-  item: Pick<Community, "name" | "actor_id" | "local">
+  item: Pick<Community, "name" | "actor_id" | "local">,
 ) {
   return item.local ? item.name : getRemoteHandle(item);
 }
 
 export function getRemoteHandle(
-  item: Pick<Community, "name" | "actor_id" | "local">
+  item: Pick<Community, "name" | "actor_id" | "local">,
 ) {
   return `${item.name}@${getItemActorName(item)}`;
 }
@@ -56,7 +56,7 @@ export function canModify(comment: Comment) {
 
 export function buildCommentsTree(
   comments: CommentView[],
-  parentComment: boolean
+  parentComment: boolean,
 ): CommentNodeI[] {
   const map = new Map<number, CommentNodeI>();
   const depthOffset = !parentComment
@@ -113,7 +113,7 @@ export function buildCommentsTree(
  */
 export function buildCommentsTreeWithMissing(
   comments: CommentView[],
-  parentComment: boolean
+  parentComment: boolean,
 ): CommentNodeI[] {
   const tree = buildCommentsTree(comments, parentComment);
 
@@ -168,7 +168,7 @@ export function getDepthFromComment(comment?: Comment): number | undefined {
 export function insertCommentIntoTree(
   tree: CommentNodeI[],
   cv: CommentView,
-  parentComment: boolean
+  parentComment: boolean,
 ) {
   // Building a fake node to be used for later
   const node: CommentNodeI = {
@@ -191,7 +191,7 @@ export function insertCommentIntoTree(
 
 export function searchCommentTree(
   tree: CommentNodeI[],
-  id: number
+  id: number,
 ): CommentNodeI | undefined {
   for (const node of tree) {
     if (node.comment_view.comment.id === id) {

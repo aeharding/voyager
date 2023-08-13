@@ -38,7 +38,7 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
     new Date(`${accountCreated}Z`),
     {
       addSuffix: false,
-    }
+    },
   );
   const creationDate = new Date(accountCreated);
 

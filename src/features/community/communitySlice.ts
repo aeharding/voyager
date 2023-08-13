@@ -34,7 +34,7 @@ export const communitySlice = createSlice({
     },
     recievedTrendingCommunities: (
       state,
-      action: PayloadAction<CommunityView[]>
+      action: PayloadAction<CommunityView[]>,
     ) => {
       state.trendingCommunities = action.payload;
     },
@@ -44,7 +44,7 @@ export const communitySlice = createSlice({
     },
     receivedCommunityResponse: (
       state,
-      action: PayloadAction<GetCommunityResponse>
+      action: PayloadAction<GetCommunityResponse>,
     ) => {
       const handle = getHandle(action.payload.community_view.community);
 
@@ -160,7 +160,7 @@ export const blockCommunity =
 export const getTrendingCommunities =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const trendingCommunities = await clientSelector(
-      getState()
+      getState(),
     )?.listCommunities({
       type_: "All",
       sort: "Hot",
