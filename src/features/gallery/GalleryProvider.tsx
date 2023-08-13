@@ -10,12 +10,13 @@ import GalleryPostActions from "./GalleryPostActions";
 import { createPortal } from "react-dom";
 import { PostView } from "lemmy-js-client";
 import PhotoSwipeLightbox, { PreparedPhotoSwipeOptions } from "photoswipe";
-import { getSafeArea, isAndroid } from "../../helpers/device";
+import { getSafeArea, isAndroid, isNative } from "../../helpers/device";
 
 import "photoswipe/style.css";
 import { useLocation } from "react-router";
 import { useAppDispatch } from "../../store";
 import { setPostRead } from "../post/postSlice";
+import { StatusBar } from "@capacitor/status-bar";
 
 const Container = styled.div`
   position: absolute;
@@ -128,7 +129,17 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         dispatch(setPostRead(post.post.id));
       });
 
-      instance.on("closingAnimationEnd", () => setPost(undefined));
+      instance.on("openingAnimationStart", () => {
+        if (isNative()) StatusBar.hide();
+      });
+
+      instance.on("close", () => {
+        if (isNative()) StatusBar.show();
+      });
+
+      instance.on("closingAnimationEnd", () => {
+        setPost(undefined);
+      });
 
       instance.on("uiRegister", function () {
         instance.ui?.registerElement({
