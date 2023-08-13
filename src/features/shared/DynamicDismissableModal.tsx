@@ -9,6 +9,8 @@ import { useIonActionSheet } from "@ionic/react";
 import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
+import { useAppSelector } from "../../store";
+import { jwtIssSelector } from "../auth/authSlice";
 
 export interface DismissableProps {
   dismiss: () => void;
@@ -29,11 +31,24 @@ export function DynamicDismissableModal({
 }: DynamicDismissableModalProps) {
   const pageContext = useContext(PageContext);
   const location = useLocation();
+  const iss = useAppSelector(jwtIssSelector);
 
   const [canDismiss, setCanDismiss] = useState(true);
   const canDismissRef = useRef(canDismiss);
 
   const [presentActionSheet] = useIonActionSheet();
+
+  const [presentingElement, setPresentingElement] = useState<
+    HTMLElement | undefined
+  >();
+
+  useEffect(() => {
+    setPresentingElement(pageContext.pageRef?.current ?? undefined);
+
+    // In <TabbedRoutes>, <IonRouterOutlet> rebuilds (see `key`) when iss changes,
+    // so grab new IonRouterOutlet
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageContext.pageRef, iss]);
 
   const onDismissAttemptCb = useCallback(async () => {
     await presentActionSheet([
@@ -87,7 +102,7 @@ export function DynamicDismissableModal({
         isOpen={isOpen}
         canDismiss={canDismiss ? canDismiss : onDismissAttemptCb}
         onDidDismiss={() => setIsOpen(false)}
-        presentingElement={pageContext.page}
+        presentingElement={presentingElement}
       >
         {renderModalContents({
           setCanDismiss,

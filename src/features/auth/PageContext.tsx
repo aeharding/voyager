@@ -1,8 +1,10 @@
 import { useIonModal } from "@ionic/react";
 import React, {
+  RefObject,
   createContext,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -19,7 +21,7 @@ import SelectTextModal from "../../pages/shared/SelectTextModal";
 
 interface IPageContext {
   // used for ion presentingElement
-  page: HTMLElement | undefined;
+  pageRef: RefObject<HTMLElement | undefined> | undefined;
 
   /**
    * @returns true if login dialog was presented
@@ -51,7 +53,7 @@ interface IPageContext {
 }
 
 export const PageContext = createContext<IPageContext>({
-  page: undefined,
+  pageRef: undefined,
   presentLoginIfNeeded: () => false,
   presentCommentReply: async () => undefined,
   presentCommentEdit: () => false,
@@ -61,7 +63,7 @@ export const PageContext = createContext<IPageContext>({
 });
 
 interface PageContextProvider {
-  value: Pick<IPageContext, "page">;
+  value: Pick<IPageContext, "pageRef">;
   children: React.ReactNode;
 }
 
@@ -75,9 +77,9 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   const presentLoginIfNeeded = useCallback(() => {
     if (jwt) return false;
 
-    presentLogin({ presentingElement: value.page });
+    presentLogin({ presentingElement: value.pageRef?.current ?? undefined });
     return true;
-  }, [jwt, presentLogin, value.page]);
+  }, [jwt, presentLogin, value.pageRef]);
 
   // Comment reply start
   const commentReplyItem = useRef<CommentReplyItem>();
@@ -135,22 +137,33 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   }, []);
   // Select text end
 
-  const presentReport = (item: ReportableItem) => {
+  const presentReport = useCallback((item: ReportableItem) => {
     reportRef.current?.present(item);
-  };
+  }, []);
+
+  const currentValue = useMemo(
+    () => ({
+      ...value,
+      presentLoginIfNeeded,
+      presentCommentReply,
+      presentCommentEdit,
+      presentReport,
+      presentPostEditor,
+      presentSelectText,
+    }),
+    [
+      presentCommentEdit,
+      presentCommentReply,
+      presentLoginIfNeeded,
+      presentPostEditor,
+      presentReport,
+      presentSelectText,
+      value,
+    ]
+  );
 
   return (
-    <PageContext.Provider
-      value={{
-        ...value,
-        presentLoginIfNeeded,
-        presentCommentReply,
-        presentCommentEdit,
-        presentReport,
-        presentPostEditor,
-        presentSelectText,
-      }}
-    >
+    <PageContext.Provider value={currentValue}>
       {children}
 
       <CommentReplyModal

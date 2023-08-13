@@ -19,14 +19,14 @@ import FeedContent from "../shared/FeedContent";
 
 export default function ProfilePage() {
   const handle = useAppSelector(handleSelector);
-  const { page, presentLoginIfNeeded } = useContext(PageContext);
+  const { pageRef, presentLoginIfNeeded } = useContext(PageContext);
 
   const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
     {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
-      page,
+      pageRef,
     }
   );
 

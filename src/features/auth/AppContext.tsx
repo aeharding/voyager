@@ -4,7 +4,8 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useState,
+  useMemo,
+  useRef,
 } from "react";
 import { VirtuosoHandle } from "react-virtuoso";
 
@@ -12,7 +13,7 @@ export type Page = RefObject<VirtuosoHandle | HTMLElement>;
 
 interface IAppContext {
   // used for determining whether page needs to be scrolled up first
-  activePage: Page | undefined;
+  activePage: RefObject<Page | undefined> | undefined;
   setActivePage: (activePage: Page) => void;
 }
 
@@ -26,12 +27,18 @@ export function AppContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [activePage, setActivePage] = useState<Page | undefined>();
+  const activePageRef = useRef<Page>();
+
+  const currentValue = useMemo(
+    () => ({
+      activePage: activePageRef,
+      setActivePage: (page: Page) => (activePageRef.current = page),
+    }),
+    []
+  );
 
   return (
-    <AppContext.Provider value={{ activePage, setActivePage }}>
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={currentValue}>{children}</AppContext.Provider>
   );
 }
 
@@ -60,7 +67,7 @@ export function useSetActivePage(page?: Page, enabled = true) {
       return;
     }
 
-    const current = activePage.current;
+    const current = activePage.current?.current;
 
     if (current && "querySelector" in current) {
       if (current.classList.contains("ion-page-hidden")) {
