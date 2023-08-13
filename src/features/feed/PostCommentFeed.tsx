@@ -111,15 +111,17 @@ export default function PostCommentFeed({
     [postHiddenById]
   );
 
+  const getIndex = useCallback(
+    (item: PostCommentItem) =>
+      "comment" in item ? `comment-${item.comment.id}` : `post-${item.post.id}`,
+    []
+  );
+
   return (
     <Feed
       fetchFn={fetchFn}
       filterFn={filterHiddenPosts ? filterFn : undefined}
-      getIndex={(item) =>
-        "comment" in item
-          ? `comment-${item.comment.id}`
-          : `post-${item.post.id}`
-      }
+      getIndex={getIndex}
       renderItemContent={renderItemContent}
       {...rest}
       itemsRef={itemsRef}
