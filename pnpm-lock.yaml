@@ -139,6 +139,9 @@ devDependencies:
   '@vitejs/plugin-react':
     specifier: ^4.0.1
     version: 4.0.1(vite@4.3.9)
+  capacitor-android-nav-mode:
+    specifier: ^0.0.1
+    version: 0.0.1(@capacitor/core@5.2.2)
   capacitor-application-context:
     specifier: ^0.0.1
     version: 0.0.1(@capacitor/core@5.2.2)
@@ -5274,6 +5277,14 @@ packages:
 
   /caniuse-lite@1.0.30001512:
     resolution: {integrity: sha512-2S9nK0G/mE+jasCUsMPlARhRCts1ebcp2Ji8Y8PWi4NDE1iRdLCnEPHkEfeBrGC45L4isBx5ur3IQ6yTE2mRZw==}
+    dev: true
+
+  /capacitor-android-nav-mode@0.0.1(@capacitor/core@5.2.2):
+    resolution: {integrity: sha512-cnEk7CqDCjNokhDr/DTY/w/qgZqUr/+tTqavjl5PIBCXNkqUCHAP/nBFebZN5wZfAwD9WaXJp67Q1MtfaQNpVw==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.2
     dev: true
 
   /capacitor-application-context@0.0.1(@capacitor/core@5.2.2):

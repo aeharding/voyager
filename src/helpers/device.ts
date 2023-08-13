@@ -1,5 +1,6 @@
 import UAParser from "ua-parser-js";
 import { Capacitor } from "@capacitor/core";
+import { NavMode, NavModes } from "capacitor-android-nav-mode";
 
 export function isNative() {
   return Capacitor.isNativePlatform();
@@ -49,4 +50,15 @@ export function supportsWebp() {
   const { name, version } = ua.getOS();
 
   return name !== "iOS" || (version && +version >= 14);
+}
+
+export let androidNavMode: Promise<NavModes> | undefined;
+
+export function getAndroidNavMode() {
+  if (androidNavMode !== undefined) return androidNavMode;
+  if (!isAndroid() || !isNative()) return;
+
+  const promise = NavMode.getNavigationMode().then(({ mode }) => mode);
+  androidNavMode = promise;
+  return promise;
 }

@@ -17,7 +17,12 @@ import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
 import { StoreProvider } from "./store";
-import { isAndroid, isInstalled, isNative } from "./helpers/device";
+import {
+  getAndroidNavMode,
+  isAndroid,
+  isInstalled,
+  isNative,
+} from "./helpers/device";
 import TabbedRoutes from "./TabbedRoutes";
 import Auth from "./Auth";
 import { AppContextProvider } from "./features/auth/AppContext";
@@ -31,12 +36,26 @@ import { SafeArea, SafeAreaInsets } from "capacitor-plugin-safe-area";
 import { StatusBar } from "@capacitor/status-bar";
 import { Keyboard } from "@capacitor/keyboard";
 import { TabContextProvider } from "./TabContext";
+import { NavModes } from "capacitor-android-nav-mode";
 
-setupIonicReact({
-  rippleEffect: false,
-  mode: getDeviceMode(),
-  swipeBackEnabled: isInstalled() && getDeviceMode() === "ios",
-});
+// index.tsx ensurxes android nav mode resolves before app is rendered
+(async () => {
+  let navMode;
+  try {
+    navMode = await getAndroidNavMode();
+  } catch (e) {
+    // ignore errors
+  }
+
+  setupIonicReact({
+    rippleEffect: false,
+    mode: getDeviceMode(),
+    swipeBackEnabled:
+      isInstalled() &&
+      getDeviceMode() === "ios" &&
+      navMode !== NavModes.Gesture,
+  });
+})();
 
 // Android safe area inset management is bad, we have to do it manually
 if (isNative() && isAndroid()) {
