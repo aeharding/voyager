@@ -63,6 +63,7 @@
     "@typescript-eslint/parser": "^5.60.0",
     "@vitejs/plugin-legacy": "^4.0.5",
     "@vitejs/plugin-react": "^4.0.1",
+    "capacitor-android-nav-mode": "^0.0.1",
     "capacitor-application-context": "^0.0.1",
     "capacitor-plugin-safe-area": "^2.0.5",
     "capacitor-set-version": "^2.0.13",

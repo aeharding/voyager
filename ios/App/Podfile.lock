@@ -1,6 +1,8 @@
 PODS:
   - Capacitor (5.2.2):
     - CapacitorCordova
+  - CapacitorAndroidNavMode (0.0.1):
+    - Capacitor
   - CapacitorApp (5.0.6):
     - Capacitor
   - CapacitorApplicationContext (0.0.1):
@@ -27,6 +29,7 @@ PODS:
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@5.2.2_@capacitor+core@5.2.2/node_modules/@capacitor/ios`)"
+  - "CapacitorAndroidNavMode (from `../../node_modules/.pnpm/capacitor-android-nav-mode@0.0.1_@capacitor+core@5.2.2/node_modules/capacitor-android-nav-mode`)"
   - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/app`)"
   - "CapacitorApplicationContext (from `../../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.2.2/node_modules/capacitor-application-context`)"
   - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/browser`)"
@@ -45,6 +48,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/.pnpm/@capacitor+ios@5.2.2_@capacitor+core@5.2.2/node_modules/@capacitor/ios"
+  CapacitorAndroidNavMode:
+    :path: "../../node_modules/.pnpm/capacitor-android-nav-mode@0.0.1_@capacitor+core@5.2.2/node_modules/capacitor-android-nav-mode"
   CapacitorApp:
     :path: "../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.2.2/node_modules/@capacitor/app"
   CapacitorApplicationContext:
@@ -68,6 +73,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Capacitor: 070b18988e0f566728ae9a5eb3a7a974595f1626
+  CapacitorAndroidNavMode: b7bc1b2505e8991bb71999565b9ef3124a42e414
   CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
   CapacitorApplicationContext: 487dced4aebde33c94a3bf8fd0e519ab59a17eb8
   CapacitorBrowser: 6192948e0ce804fd72aaf77f4114a3ad2e08c760
@@ -80,6 +86,6 @@ SPEC CHECKSUMS:
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: 64aed244866097bf21833d6fbb682b5d31e29b18
+PODFILE CHECKSUM: b8e7c3f88041ca6d3a54b6d338c63b3d039cf987
 
 COCOAPODS: 1.12.1
