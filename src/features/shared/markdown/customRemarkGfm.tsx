@@ -31,7 +31,7 @@ export default function customRemarkGfm(
 }
 
 function gfm(options?: Options) {
-  return combineExtensions([gfmStrikethrough(options), gfmTable]);
+  return combineExtensions([gfmStrikethrough(options), gfmTable()]);
 }
 
 function gfmFromMarkdown() {
