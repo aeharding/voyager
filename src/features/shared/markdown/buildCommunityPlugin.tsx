@@ -16,7 +16,7 @@ export default function buildCommunityPlugin(connectedInstance: string) {
     const transformer: CustomTransformer = (tree) => {
       const visitor = (
         node: CustomNode | Parent,
-        index: number | null,
+        index: number | undefined,
         parent: Parent | undefined
       ) => {
         if (node?.type === "text" && parent) {
@@ -71,7 +71,7 @@ export default function buildCommunityPlugin(connectedInstance: string) {
               });
             }
 
-            if (index !== null) {
+            if (index !== undefined) {
               parent.children.splice(index, 1, ...newTextNodes);
             } else {
               parent.children.push(...newTextNodes);
