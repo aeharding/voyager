@@ -272,6 +272,151 @@ export default function TabbedRoutes() {
 
   const pageContextValue = useMemo(() => ({ pageRef }), []);
 
+  // Ideally this would be a separate component,
+  // but that is not currently supported in Ionic React
+  // So memoize instead (since this is expensive to build)
+  const routes = useMemo(
+    () => (
+      <IonRouterOutlet ref={pageRef}>
+        <Route exact path="/">
+          <Redirect
+            to={`/posts/${iss ?? getDefaultServer()}/${iss ? "home" : "all"}`}
+            push={false}
+          />
+        </Route>
+        <Route exact path="/posts/:actor/home">
+          <ActorRedirect>
+            <SpecialFeedPage type="Subscribed" />
+          </ActorRedirect>
+        </Route>
+        <Route exact path="/posts/:actor/all">
+          <ActorRedirect>
+            <SpecialFeedPage type="All" />
+          </ActorRedirect>
+        </Route>
+        <Route exact path="/posts/:actor/local">
+          <ActorRedirect>
+            <SpecialFeedPage type="Local" />
+          </ActorRedirect>
+        </Route>
+        <Route exact path="/posts/:actor">
+          <ActorRedirect>
+            <CommunitiesPage />
+          </ActorRedirect>
+        </Route>
+        {...buildGeneralBrowseRoutes("posts")}
+
+        <Route exact path="/inbox">
+          <BoxesPage />
+        </Route>
+        <Route exact path="/inbox/all">
+          <InboxAuthRequired>
+            <InboxPage showRead />
+          </InboxAuthRequired>
+        </Route>
+        <Route exact path="/inbox/unread">
+          <InboxAuthRequired>
+            <InboxPage />
+          </InboxAuthRequired>
+        </Route>
+        <Route exact path="/inbox/mentions">
+          <InboxAuthRequired>
+            <MentionsPage />
+          </InboxAuthRequired>
+        </Route>
+        <Route exact path="/inbox/comment-replies">
+          <InboxAuthRequired>
+            <RepliesPage type="Comment" />
+          </InboxAuthRequired>
+        </Route>
+        <Route exact path="/inbox/post-replies">
+          <InboxAuthRequired>
+            <RepliesPage type="Post" />
+          </InboxAuthRequired>
+        </Route>
+        <Route exact path="/inbox/messages">
+          <InboxAuthRequired>
+            <MessagesPage />
+          </InboxAuthRequired>
+        </Route>
+        <Route exact path="/inbox/messages/:handle">
+          <InboxAuthRequired>
+            <ConversationPage />
+          </InboxAuthRequired>
+        </Route>
+        {...buildGeneralBrowseRoutes("inbox")}
+
+        <Route exact path="/profile">
+          <ProfilePage />
+        </Route>
+        {...buildGeneralBrowseRoutes("profile")}
+        <Route exact path="/profile/:actor">
+          <Redirect to="/profile" push={false} />
+        </Route>
+
+        <Route exact path="/search">
+          <SearchPage />
+        </Route>
+        <Route exact path="/search/posts/:search">
+          <SearchPostsResultsPage type="Posts" />
+        </Route>
+        <Route exact path="/search/comments/:search">
+          <SearchPostsResultsPage type="Comments" />
+        </Route>
+        <Route exact path="/search/communities/:search">
+          <SearchCommunitiesPage />
+        </Route>
+        {...buildGeneralBrowseRoutes("search")}
+        <Route exact path="/search/:actor">
+          <Redirect to="/search" push={false} />
+        </Route>
+
+        <Route exact path="/settings">
+          <SettingsPage />
+        </Route>
+        <Route exact path="/settings/terms">
+          <TermsPage />
+        </Route>
+        <Route exact path="/settings/install">
+          <InstallAppPage />
+        </Route>
+        <Route exact path="/settings/update">
+          <UpdateAppPage />
+        </Route>
+        <Route exact path="/settings/general">
+          <GeneralPage />
+        </Route>
+        <Route exact path="/settings/general/hiding">
+          <HidingSettingsPage />
+        </Route>
+        <Route exact path="/settings/appearance">
+          <AppearancePage />
+        </Route>
+        <Route exact path="/settings/appearance/theme">
+          <AppearanceThemePage />
+        </Route>
+        <Route exact path="/settings/appearance/theme/mode">
+          <DeviceModeSettingsPage />
+        </Route>
+        <Route exact path="/settings/gestures">
+          <GesturesPage />
+        </Route>
+        <Route exact path="/settings/blocks">
+          <BlocksSettingsPage />
+        </Route>
+        <Route exact path="/settings/reddit-migrate">
+          <RedditMigratePage />
+        </Route>
+        <Route exact path="/settings/reddit-migrate/:search">
+          <SearchCommunitiesPage />
+        </Route>
+        {/* general routes for settings is only for reddit-migrate */}
+        {...buildGeneralBrowseRoutes("settings")}
+      </IonRouterOutlet>
+    ),
+    [iss]
+  );
+
   if (!ready) return;
 
   return (
@@ -281,144 +426,7 @@ export default function TabbedRoutes() {
         {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
         {/* But this isn't trivial with needing to rewrite URLs... */}
         <IonTabs key={iss ?? getDefaultServer()}>
-          <IonRouterOutlet ref={pageRef}>
-            <Route exact path="/">
-              <Redirect
-                to={`/posts/${iss ?? getDefaultServer()}/${
-                  iss ? "home" : "all"
-                }`}
-                push={false}
-              />
-            </Route>
-            <Route exact path="/posts/:actor/home">
-              <ActorRedirect>
-                <SpecialFeedPage type="Subscribed" />
-              </ActorRedirect>
-            </Route>
-            <Route exact path="/posts/:actor/all">
-              <ActorRedirect>
-                <SpecialFeedPage type="All" />
-              </ActorRedirect>
-            </Route>
-            <Route exact path="/posts/:actor/local">
-              <ActorRedirect>
-                <SpecialFeedPage type="Local" />
-              </ActorRedirect>
-            </Route>
-            <Route exact path="/posts/:actor">
-              <ActorRedirect>
-                <CommunitiesPage />
-              </ActorRedirect>
-            </Route>
-            {...buildGeneralBrowseRoutes("posts")}
-
-            <Route exact path="/inbox">
-              <BoxesPage />
-            </Route>
-            <Route exact path="/inbox/all">
-              <InboxAuthRequired>
-                <InboxPage showRead />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/unread">
-              <InboxAuthRequired>
-                <InboxPage />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/mentions">
-              <InboxAuthRequired>
-                <MentionsPage />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/comment-replies">
-              <InboxAuthRequired>
-                <RepliesPage type="Comment" />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/post-replies">
-              <InboxAuthRequired>
-                <RepliesPage type="Post" />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/messages">
-              <InboxAuthRequired>
-                <MessagesPage />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/messages/:handle">
-              <InboxAuthRequired>
-                <ConversationPage />
-              </InboxAuthRequired>
-            </Route>
-            {...buildGeneralBrowseRoutes("inbox")}
-
-            <Route exact path="/profile">
-              <ProfilePage />
-            </Route>
-            {...buildGeneralBrowseRoutes("profile")}
-            <Route exact path="/profile/:actor">
-              <Redirect to="/profile" push={false} />
-            </Route>
-
-            <Route exact path="/search">
-              <SearchPage />
-            </Route>
-            <Route exact path="/search/posts/:search">
-              <SearchPostsResultsPage type="Posts" />
-            </Route>
-            <Route exact path="/search/comments/:search">
-              <SearchPostsResultsPage type="Comments" />
-            </Route>
-            <Route exact path="/search/communities/:search">
-              <SearchCommunitiesPage />
-            </Route>
-            {...buildGeneralBrowseRoutes("search")}
-            <Route exact path="/search/:actor">
-              <Redirect to="/search" push={false} />
-            </Route>
-
-            <Route exact path="/settings">
-              <SettingsPage />
-            </Route>
-            <Route exact path="/settings/terms">
-              <TermsPage />
-            </Route>
-            <Route exact path="/settings/install">
-              <InstallAppPage />
-            </Route>
-            <Route exact path="/settings/update">
-              <UpdateAppPage />
-            </Route>
-            <Route exact path="/settings/general">
-              <GeneralPage />
-            </Route>
-            <Route exact path="/settings/general/hiding">
-              <HidingSettingsPage />
-            </Route>
-            <Route exact path="/settings/appearance">
-              <AppearancePage />
-            </Route>
-            <Route exact path="/settings/appearance/theme">
-              <AppearanceThemePage />
-            </Route>
-            <Route exact path="/settings/appearance/theme/mode">
-              <DeviceModeSettingsPage />
-            </Route>
-            <Route exact path="/settings/gestures">
-              <GesturesPage />
-            </Route>
-            <Route exact path="/settings/blocks">
-              <BlocksSettingsPage />
-            </Route>
-            <Route exact path="/settings/reddit-migrate">
-              <RedditMigratePage />
-            </Route>
-            <Route exact path="/settings/reddit-migrate/:search">
-              <SearchCommunitiesPage />
-            </Route>
-            {/* general routes for settings is only for reddit-migrate */}
-            {...buildGeneralBrowseRoutes("settings")}
-          </IonRouterOutlet>
+          {routes}
           <IonTabBar slot="bottom">
             <IonTabButton
               disabled={isPostsButtonDisabled}
