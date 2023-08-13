@@ -20,7 +20,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { notEmpty } from "../../helpers/array";
 import {
   getHandle,
@@ -55,7 +55,6 @@ export default function MoreActions({
 }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const [open, setOpen] = useState(false);
   const { prependComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
