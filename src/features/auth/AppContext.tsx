@@ -13,12 +13,12 @@ export type Page = RefObject<VirtuosoHandle | HTMLElement>;
 
 interface IAppContext {
   // used for determining whether page needs to be scrolled up first
-  activePage: RefObject<Page | undefined> | undefined;
+  activePageRef: RefObject<Page | undefined> | undefined;
   setActivePage: (activePage: Page) => void;
 }
 
 export const AppContext = createContext<IAppContext>({
-  activePage: undefined,
+  activePageRef: undefined,
   setActivePage: () => {},
 });
 
@@ -31,7 +31,7 @@ export function AppContextProvider({
 
   const currentValue = useMemo(
     () => ({
-      activePage: activePageRef,
+      activePageRef,
       setActivePage: (page: Page) => (activePageRef.current = page),
     }),
     []
@@ -43,7 +43,7 @@ export function AppContextProvider({
 }
 
 export function useSetActivePage(page?: Page, enabled = true) {
-  const { activePage, setActivePage } = useContext(AppContext);
+  const { activePageRef, setActivePage } = useContext(AppContext);
 
   useEffect(() => {
     if (!enabled) return;
@@ -62,12 +62,12 @@ export function useSetActivePage(page?: Page, enabled = true) {
     if (!enabled) return;
     if (!page) return;
 
-    if (!activePage) {
+    if (!activePageRef?.current) {
       setActivePage(page);
       return;
     }
 
-    const current = activePage.current?.current;
+    const current = activePageRef.current?.current;
 
     if (current && "querySelector" in current) {
       if (current.classList.contains("ion-page-hidden")) {

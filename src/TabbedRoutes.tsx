@@ -80,7 +80,7 @@ const ProfileLabel = styled(IonLabel)`
 `;
 
 export default function TabbedRoutes() {
-  const { activePage } = useContext(AppContext);
+  const { activePageRef } = useContext(AppContext);
   const location = useLocation();
   const router = useIonRouter();
   const jwt = useAppSelector(jwtSelector);
@@ -145,7 +145,7 @@ export default function TabbedRoutes() {
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
 
-    if (await scrollUpIfNeeded(activePage?.current)) return;
+    if (await scrollUpIfNeeded(activePageRef?.current)) return;
 
     if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
       router.push(`/posts/${actor ?? iss ?? getDefaultServer()}`, "back");
@@ -172,7 +172,7 @@ export default function TabbedRoutes() {
   async function onInboxClick() {
     if (!isInboxButtonDisabled) return;
 
-    if (await scrollUpIfNeeded(activePage?.current)) return;
+    if (await scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push(`/inbox`, "back");
   }
@@ -180,7 +180,7 @@ export default function TabbedRoutes() {
   async function onProfileClick() {
     if (!isProfileButtonDisabled) return;
 
-    if (await scrollUpIfNeeded(activePage?.current)) return;
+    if (await scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push("/profile", "back");
   }
@@ -191,7 +191,7 @@ export default function TabbedRoutes() {
     // if the search page is already open, focus the search bar
     focusSearchBar();
 
-    if (await scrollUpIfNeeded(activePage?.current)) return;
+    if (await scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push(`/search`, "back");
   }

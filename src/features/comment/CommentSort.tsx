@@ -35,7 +35,7 @@ interface CommentSortProps {
 
 export default function CommentSort({ sort, setSort }: CommentSortProps) {
   const [open, setOpen] = useState(false);
-  const { activePage } = useContext(AppContext);
+  const { activePageRef } = useContext(AppContext);
 
   return (
     <>
@@ -53,7 +53,7 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
             setSort(e.detail.data);
           }
 
-          scrollUpIfNeeded(activePage, 1, "auto");
+          scrollUpIfNeeded(activePageRef?.current, 1, "auto");
         }}
         header="Sort by..."
         buttons={BUTTONS.map((b) => ({

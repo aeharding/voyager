@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonModal, useIonToast } from "@ionic/react";
-import Login from "../../auth/Login";
+import { IonIcon, useIonToast } from "@ionic/react";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -9,7 +8,6 @@ import { css } from "@emotion/react";
 import { bookmarkOutline } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { saveError } from "../../../helpers/toastMessages";
-import { jwtSelector } from "../../auth/authSlice";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 
@@ -34,12 +32,8 @@ interface SaveButtonProps {
 export function SaveButton({ postId }: SaveButtonProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const pageContext = useContext(PageContext);
+  const { presentLoginIfNeeded } = useContext(PageContext);
   const vibrate = useHapticFeedback();
-  const [login, onDismiss] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismiss(data, role),
-  });
-  const jwt = useAppSelector(jwtSelector);
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
   const mySaved = postSavedById[postId];
@@ -49,7 +43,7 @@ export function SaveButton({ postId }: SaveButtonProps) {
 
     vibrate({ style: ImpactStyle.Light });
 
-    if (!jwt) return login({ presentingElement: pageContext.page });
+    if (presentLoginIfNeeded()) return;
 
     try {
       await dispatch(savePost(postId, !postSavedById[postId]));
