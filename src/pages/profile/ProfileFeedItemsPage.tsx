@@ -63,13 +63,13 @@ export default function ProfileFeedItemsPage({
 
       if (type === "Saved") {
         return [...response.comments, ...response.posts].sort((a, b) =>
-          getPublishedDate(b).localeCompare(getPublishedDate(a))
+          getPublishedDate(b).localeCompare(getPublishedDate(a)),
         );
       }
 
       return type === "Comments" ? response.comments : response.posts;
     },
-    [client, handle, jwt, type]
+    [client, handle, jwt, type],
   );
 
   return (

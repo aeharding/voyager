@@ -47,9 +47,12 @@ export function UpdateContextProvider({
     },
   });
 
-  useInterval(() => {
-    checkForUpdates();
-  }, 1_000 * 60 * 60);
+  useInterval(
+    () => {
+      checkForUpdates();
+    },
+    1_000 * 60 * 60,
+  );
 
   useEffect(() => {
     if (!pageVisibility) return;

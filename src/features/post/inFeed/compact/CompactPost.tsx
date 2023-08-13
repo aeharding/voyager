@@ -99,11 +99,11 @@ const EndDetails = styled.div`
 
 export default function CompactPost({ post, communityMode }: PostProps) {
   const compactThumbnailPositionType = useAppSelector(
-    (state) => state.settings.appearance.compact.thumbnailsPosition
+    (state) => state.settings.appearance.compact.thumbnailsPosition,
   );
 
   const compactShowVotingButtons = useAppSelector(
-    (state) => state.settings.appearance.compact.showVotingButtons
+    (state) => state.settings.appearance.compact.showVotingButtons,
   );
 
   const hasBeenRead: boolean =

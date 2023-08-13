@@ -3,7 +3,7 @@ import { Page } from "../features/auth/AppContext";
 export async function scrollUpIfNeeded(
   activePage: Page | null | undefined,
   index: number | undefined = undefined,
-  behavior: "auto" | "smooth" = "smooth"
+  behavior: "auto" | "smooth" = "smooth",
 ) {
   if (!activePage?.current) return false;
 
@@ -38,7 +38,7 @@ export async function scrollUpIfNeeded(
         }
 
         resolve(!!state.scrollTop);
-      })
+      }),
     );
   }
 

@@ -29,7 +29,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
   const jwt = useAppSelector(jwtSelector);
   const client = useClient();
   const myUserId = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
+    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
 
   const fetchFn: FetchFn<InboxItemView> = useCallback(
@@ -61,19 +61,19 @@ export default function InboxPage({ showRead }: InboxPageProps) {
         ...privateMessages.private_messages.filter(
           (message) =>
             message.creator.id !== myUserId ||
-            message.creator.id === message.recipient.id // if you message yourself, show it (lemmy returns as a notification)
+            message.creator.id === message.recipient.id, // if you message yourself, show it (lemmy returns as a notification)
         ),
       ].sort(
         (a, b) =>
           Date.parse(getInboxItemPublished(b)) -
-          Date.parse(getInboxItemPublished(a))
+          Date.parse(getInboxItemPublished(a)),
       );
 
       dispatch(receivedInboxItems(everything));
 
       return everything;
     },
-    [client, dispatch, jwt, myUserId, showRead]
+    [client, dispatch, jwt, myUserId, showRead],
   );
 
   return (

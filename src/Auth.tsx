@@ -21,7 +21,7 @@ export default function Auth({ children }: AuthProps) {
   const jwt = useAppSelector(jwtSelector);
   const iss = useAppSelector(jwtIssSelector);
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const location = useLocation();
   const pageVisibility = usePageVisibility();
@@ -58,7 +58,7 @@ export default function Auth({ children }: AuthProps) {
 
       dispatch(syncMessages());
     },
-    shouldSyncMessages() ? 1_000 * 15 : null
+    shouldSyncMessages() ? 1_000 * 15 : null,
   );
 
   useInterval(() => {

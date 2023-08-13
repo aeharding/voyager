@@ -45,7 +45,7 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
   return (
     <Container
       routerLink={buildGeneralBrowseLink(
-        `/c/${getHandle(community.community)}`
+        `/c/${getHandle(community.community)}`,
       )}
     >
       <Contents>

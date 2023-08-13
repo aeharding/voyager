@@ -37,13 +37,13 @@ export const postSlice = createSlice({
   reducers: {
     updatePostVote: (
       state,
-      action: PayloadAction<{ postId: number; vote: -1 | 1 | 0 | undefined }>
+      action: PayloadAction<{ postId: number; vote: -1 | 1 | 0 | undefined }>,
     ) => {
       state.postVotesById[action.payload.postId] = action.payload.vote;
     },
     updatePostSaved: (
       state,
-      action: PayloadAction<{ postId: number; saved: boolean | undefined }>
+      action: PayloadAction<{ postId: number; saved: boolean | undefined }>,
     ) => {
       state.postSavedById[action.payload.postId] = action.payload.saved;
     },
@@ -108,14 +108,14 @@ export const updatePostHidden = createAsyncThunk(
     await db.upsertPostMetadata(newPostMetadata);
 
     return newPostMetadata;
-  }
+  },
 );
 
 export const bulkUpdatePostsHidden = createAsyncThunk(
   "post/bulkUpdatePostsHidden",
   async (
     { postIds, hidden }: { postIds: number[]; hidden: boolean },
-    thunkAPI
+    thunkAPI,
   ) => {
     const rootState = thunkAPI.getState() as RootState;
     const handle = handleSelector(rootState);
@@ -130,11 +130,11 @@ export const bulkUpdatePostsHidden = createAsyncThunk(
     }));
 
     await Promise.all(
-      newPostMetadata.map((metadata) => db.upsertPostMetadata(metadata))
+      newPostMetadata.map((metadata) => db.upsertPostMetadata(metadata)),
     );
 
     return newPostMetadata;
-  }
+  },
 );
 
 export const receivedPosts = createAsyncThunk(
@@ -161,7 +161,7 @@ export const receivedPosts = createAsyncThunk(
       posts,
       postHiddenById,
     };
-  }
+  },
 );
 
 // Action creators are generated for each case reducer function

@@ -27,7 +27,7 @@ export default function ProfilePage() {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
       pageRef,
-    }
+    },
   );
 
   return (

@@ -32,7 +32,7 @@ interface IPageContext {
    * @returns comment payload if replied
    */
   presentCommentReply: (
-    item: CommentReplyItem
+    item: CommentReplyItem,
   ) => Promise<CommentView | undefined>;
 
   /**
@@ -89,7 +89,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const presentCommentReply = useCallback((item: CommentReplyItem) => {
     const promise = new Promise<CommentView | undefined>(
-      (resolve) => (commentReplyCb.current = resolve)
+      (resolve) => (commentReplyCb.current = resolve),
     );
 
     commentReplyItem.current = item;
@@ -124,7 +124,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       postItem.current = postOrCommunity;
       setIsPostOpen(true);
     },
-    []
+    [],
   );
   // Edit/new post end
 
@@ -159,7 +159,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentReport,
       presentSelectText,
       value,
-    ]
+    ],
   );
 
   return (

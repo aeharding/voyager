@@ -6,7 +6,7 @@ import { setDisableMarkingPostsRead } from "../../settingsSlice";
 export default function DisableMarkingRead() {
   const dispatch = useAppDispatch();
   const { disableMarkingRead } = useAppSelector(
-    (state) => state.settings.general.posts
+    (state) => state.settings.general.posts,
   );
 
   return (

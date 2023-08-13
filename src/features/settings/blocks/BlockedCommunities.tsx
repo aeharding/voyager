@@ -18,7 +18,7 @@ export default function BlockedCommunities() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const communities = useAppSelector(
-    (state) => state.auth.site?.my_user?.community_blocks
+    (state) => state.auth.site?.my_user?.community_blocks,
   );
 
   async function remove(community: CommunityBlockView) {

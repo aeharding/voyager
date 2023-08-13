@@ -55,7 +55,7 @@ export const gestureSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       fetchGesturesFromDatabase.fulfilled,
-      (_, action: PayloadAction<GestureState>) => action.payload
+      (_, action: PayloadAction<GestureState>) => action.payload,
     );
   },
   reducers: {
@@ -133,7 +133,7 @@ export const fetchGesturesFromDatabase = createAsyncThunk<GestureState>(
     return db.transaction("r", db.settings, async () => {
       const gesture_swipe_post = await db.getSetting("gesture_swipe_post");
       const gesture_swipe_comment = await db.getSetting(
-        "gesture_swipe_comment"
+        "gesture_swipe_comment",
       );
       const gesture_swipe_inbox = await db.getSetting("gesture_swipe_inbox");
       const disable_left_swipes = await db.getSetting("disable_left_swipes");
@@ -151,7 +151,7 @@ export const fetchGesturesFromDatabase = createAsyncThunk<GestureState>(
         },
       };
     });
-  }
+  },
 );
 
 export const {

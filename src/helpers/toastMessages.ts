@@ -46,7 +46,7 @@ export function buildBlocked(blocked: boolean, handle: string): ToastOptions {
 
 export function buildProblemSubscribing(
   isSubscribed: boolean,
-  community: string
+  community: string,
 ): ToastOptions {
   return {
     message: `Problem ${
@@ -60,7 +60,7 @@ export function buildProblemSubscribing(
 
 export function buildSuccessSubscribing(
   isSubscribed: boolean,
-  community: string
+  community: string,
 ): ToastOptions {
   return {
     message: `${

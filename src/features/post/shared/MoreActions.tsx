@@ -111,7 +111,7 @@ export default function MoreActions({
 
                   try {
                     await dispatch(
-                      voteOnPost(post.post.id, myVote === -1 ? 0 : -1)
+                      voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
                     present(voteError);
@@ -195,7 +195,7 @@ export default function MoreActions({
           icon: personOutline,
           handler: () => {
             router.push(
-              buildGeneralBrowseLink(`/u/${getHandle(post.creator)}`)
+              buildGeneralBrowseLink(`/u/${getHandle(post.creator)}`),
             );
           },
         },
@@ -204,7 +204,7 @@ export default function MoreActions({
           icon: peopleOutline,
           handler: () => {
             router.push(
-              buildGeneralBrowseLink(`/c/${getHandle(post.community)}`)
+              buildGeneralBrowseLink(`/c/${getHandle(post.community)}`),
             );
           },
         },

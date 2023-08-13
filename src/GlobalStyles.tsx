@@ -17,7 +17,7 @@ interface GlobalStylesProps {
 export default function GlobalStyles({ children }: GlobalStylesProps) {
   const systemDarkMode = useSystemDarkMode();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
-    (state) => state.settings.appearance.font
+    (state) => state.settings.appearance.font,
   );
 
   const baseFontStyles = useSystemFontSize
@@ -29,7 +29,7 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
       `;
 
   const { userDarkMode, usingSystemDarkMode, pureBlack } = useAppSelector(
-    (state) => state.settings.appearance.dark
+    (state) => state.settings.appearance.dark,
   );
   const theme = useAppSelector((state) => state.settings.appearance.theme);
 

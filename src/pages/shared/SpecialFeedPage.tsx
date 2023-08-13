@@ -52,7 +52,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
       return response.posts;
     },
-    [client, sort, type, jwt]
+    [client, sort, type, jwt],
   );
 
   const feed = <PostCommentFeed fetchFn={fetchFn} />;

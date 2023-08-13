@@ -9,7 +9,7 @@ export default function GeneralAppearance() {
   const dispatch = useAppDispatch();
 
   const userInstanceUrlDisplay = useAppSelector(
-    (state) => state.settings.appearance.general.userInstanceUrlDisplay
+    (state) => state.settings.appearance.general.userInstanceUrlDisplay,
   );
 
   return (
@@ -29,8 +29,8 @@ export default function GeneralAppearance() {
                 setUserInstanceUrlDisplay(
                   e.detail.checked
                     ? OInstanceUrlDisplayMode.WhenRemote
-                    : OInstanceUrlDisplayMode.Never
-                )
+                    : OInstanceUrlDisplayMode.Never,
+                ),
               )
             }
           />

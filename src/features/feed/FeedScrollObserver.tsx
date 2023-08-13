@@ -69,7 +69,7 @@ export default function FeedScrollObserver({
       },
       {
         rootMargin: "0px",
-      }
+      },
     );
 
     return () => {

@@ -49,7 +49,7 @@ export default function GalleryPostActions({
 }: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const link = buildGeneralBrowseLink(
-    `/c/${getHandle(post.community)}/comments/${post.post.id}`
+    `/c/${getHandle(post.community)}/comments/${post.post.id}`,
   );
   const router = useIonRouter();
   const location = useLocation();
@@ -86,7 +86,7 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
 
   const voteDisplayMode = useAppSelector(
-    (state) => state.settings.appearance.voting.voteDisplayMode
+    (state) => state.settings.appearance.voting.voteDisplayMode,
   );
 
   switch (voteDisplayMode) {
@@ -104,7 +104,7 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
     case OVoteDisplayMode.Separate: {
       const { upvotes, downvotes } = calculateSeparateScore(
         post,
-        postVotesById
+        postVotesById,
       );
 
       return (

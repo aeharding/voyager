@@ -61,7 +61,7 @@ export function getTheme(appTheme: AppThemeType): Theme {
 
 export function getThemeByStyle(
   appTheme: AppThemeType,
-  style: "light" | "dark"
+  style: "light" | "dark",
 ): Colors {
   return getTheme(appTheme)[style];
 }

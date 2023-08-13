@@ -5,7 +5,7 @@ import SettingSelector from "../../shared/SettingSelector";
 
 export default function ProfileTabLabel() {
   const profileLabel = useAppSelector(
-    (state) => state.settings.appearance.general.profileLabel
+    (state) => state.settings.appearance.general.profileLabel,
   );
 
   return (
@@ -21,7 +21,7 @@ export default function ProfileTabLabel() {
 export function getProfileTabLabel(
   profileLabelType: ProfileLabelType,
   handle: string | undefined,
-  connectedInstance: string
+  connectedInstance: string,
 ) {
   switch (profileLabelType) {
     case OProfileLabelType.Hide:

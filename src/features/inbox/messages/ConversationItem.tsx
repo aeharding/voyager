@@ -93,7 +93,7 @@ interface ConversationItemProps {
 
 export default function ConversationItem({ messages }: ConversationItemProps) {
   const myUserId = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
+    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
 
   const previewMsg = messages[0]; // presorted, newest => oldest

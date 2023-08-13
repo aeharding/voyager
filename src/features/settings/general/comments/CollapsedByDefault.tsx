@@ -10,7 +10,7 @@ export default function CollapsedByDefault() {
   const dispatch = useAppDispatch();
   const { collapseCommentThreads } = useAppSelector(
     // this needs a better naming
-    (state) => state.settings.general.comments
+    (state) => state.settings.general.comments,
   );
 
   return (
@@ -23,8 +23,8 @@ export default function CollapsedByDefault() {
             setCommentsCollapsed(
               e.detail.checked
                 ? OCommentThreadCollapse.Always
-                : OCommentThreadCollapse.Never
-            )
+                : OCommentThreadCollapse.Never,
+            ),
           )
         }
       />

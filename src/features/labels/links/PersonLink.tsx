@@ -36,7 +36,7 @@ export default function PersonLink({
 
   const forceInstanceUrl =
     useAppSelector(
-      (state) => state.settings.appearance.general.userInstanceUrlDisplay
+      (state) => state.settings.appearance.general.userInstanceUrlDisplay,
     ) === OInstanceUrlDisplayMode.WhenRemote;
 
   if (person.admin) color = "var(--ion-color-danger)";

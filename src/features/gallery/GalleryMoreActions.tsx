@@ -141,7 +141,7 @@ export default function GalleryMoreActions({
           icon: personOutline,
           handler: () => {
             router.push(
-              buildGeneralBrowseLink(`/u/${getHandle(post.creator)}`)
+              buildGeneralBrowseLink(`/u/${getHandle(post.creator)}`),
             );
           },
         },
@@ -150,7 +150,7 @@ export default function GalleryMoreActions({
           icon: peopleOutline,
           handler: () => {
             router.push(
-              buildGeneralBrowseLink(`/c/${getHandle(post.community)}`)
+              buildGeneralBrowseLink(`/c/${getHandle(post.community)}`),
             );
           },
         },

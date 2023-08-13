@@ -6,7 +6,7 @@ import { setShowHideReadButton } from "../../settingsSlice";
 export default function ShowHideReadButton() {
   const dispatch = useAppDispatch();
   const { showHideReadButton } = useAppSelector(
-    (state) => state.settings.general.posts
+    (state) => state.settings.general.posts,
   );
 
   return (

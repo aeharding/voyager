@@ -5,7 +5,7 @@ import { IonLabel } from "@ionic/react";
 
 export default function DeviceMode() {
   const deviceMode = useAppSelector(
-    (state) => state.settings.appearance.deviceMode
+    (state) => state.settings.appearance.deviceMode,
   );
 
   return (

@@ -23,7 +23,7 @@ export default function CommunitySidebarPage() {
   }>();
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const communityView = communityByHandle[community];

@@ -42,7 +42,7 @@ export async function uploadImage(url: string, auth: string, image: File) {
     990_000, // 990 kB - Lemmy's default limit is 1MB
     1500,
     1500,
-    0.85
+    0.85,
   );
 
   // Cookie header can only be set by native code (Capacitor http plugin)
@@ -68,7 +68,7 @@ export async function uploadImage(url: string, auth: string, image: File) {
     {
       method: "POST",
       body: formData,
-    }
+    },
   );
 
   const json = await response.json();
@@ -101,7 +101,7 @@ export function getImageSrc(url: string, options?: ImageOptions) {
             ? `${Math.round(options.size * window.devicePixelRatio)}`
             : undefined,
           format: options.format ?? defaultFormat,
-        })
+        }),
       )
     : undefined;
 

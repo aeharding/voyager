@@ -53,7 +53,7 @@ export const commentSlice = createSlice({
 
     updateCommentCollapseState: (
       state,
-      action: PayloadAction<{ commentId: number; collapsed: boolean }>
+      action: PayloadAction<{ commentId: number; collapsed: boolean }>,
     ) => {
       state.commentCollapsedById[action.payload.commentId] =
         action.payload.collapsed;
@@ -64,13 +64,16 @@ export const commentSlice = createSlice({
     },
     updateCommentVote: (
       state,
-      action: PayloadAction<{ commentId: number; vote: -1 | 1 | 0 | undefined }>
+      action: PayloadAction<{
+        commentId: number;
+        vote: -1 | 1 | 0 | undefined;
+      }>,
     ) => {
       state.commentVotesById[action.payload.commentId] = action.payload.vote;
     },
     updateCommentSaved: (
       state,
-      action: PayloadAction<{ commentId: number; saved: boolean | undefined }>
+      action: PayloadAction<{ commentId: number; saved: boolean | undefined }>,
     ) => {
       state.commentSavedById[action.payload.commentId] = action.payload.saved;
     },

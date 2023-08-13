@@ -6,7 +6,7 @@ import { AppContext } from "../auth/AppContext";
 
 export default function useCollapseRootComment(
   item: CommentView | undefined,
-  rootIndex: number | undefined
+  rootIndex: number | undefined,
 ) {
   const dispatch = useAppDispatch();
   const { activePageRef } = useContext(AppContext);

@@ -66,7 +66,7 @@ if (isNative() && isAndroid()) {
       document.documentElement.style.setProperty(
         `--ion-safe-area-${key}`,
         // if keyboard open, assume no safe area inset
-        `${keyboardShowing && key === "bottom" ? 0 : value}px`
+        `${keyboardShowing && key === "bottom" ? 0 : value}px`,
       );
     }
   };

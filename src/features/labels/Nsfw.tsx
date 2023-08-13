@@ -30,7 +30,7 @@ export function isNsfw(post: PostView): boolean {
 
 export function isNsfwBlurred(
   post: PostView,
-  blurNsfw: PostBlurNsfwType
+  blurNsfw: PostBlurNsfwType,
 ): boolean {
   if (blurNsfw === OPostBlurNsfw.Never) return false;
 

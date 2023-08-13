@@ -28,7 +28,7 @@ const validLemmyServers = {};
 const badLemmyServers = {};
 
 INITIAL_VALID_LEMMY_SERVERS.forEach(
-  (server) => (validLemmyServers[server] = true)
+  (server) => (validLemmyServers[server] = true),
 );
 
 const app = express();
@@ -109,7 +109,7 @@ app.use(
     onProxyReq: (clientReq, req) => {
       clientReq.setHeader(
         "user-agent",
-        `(${req.hostname}, ${process.env.EMAIL || "hello@vger.app"})`
+        `(${req.hostname}, ${process.env.EMAIL || "hello@vger.app"})`,
       );
       clientReq.removeHeader("cookie");
 
@@ -129,7 +129,7 @@ app.use(
     onProxyRes: (proxyRes, req, res) => {
       res.removeHeader("cookie");
     },
-  })
+  }),
 );
 
 app.get("/_config", (req, res) => {
@@ -147,7 +147,7 @@ app.use("*", (req, res, next) => {
       "Link",
       `<https://vger.app${
         req.originalUrl === "/" ? "" : req.originalUrl
-      }>; rel="canonical"`
+      }>; rel="canonical"`,
     );
   }
 
@@ -156,5 +156,5 @@ app.use("*", (req, res, next) => {
 
 ViteExpress.listen(app, PORT, () =>
   // eslint-disable-next-line no-console
-  console.log(`Server is on http://localhost:${PORT}`)
+  console.log(`Server is on http://localhost:${PORT}`),
 );

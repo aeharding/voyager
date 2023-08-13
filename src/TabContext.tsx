@@ -28,7 +28,7 @@ export function TabContextProvider({
         {children}
       </TabContextProviderInternals>
     ),
-    [tab, children]
+    [tab, children],
   );
 
   return memoized;

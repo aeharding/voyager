@@ -6,7 +6,7 @@ import { setMarkPostsReadOnScroll } from "../../settingsSlice";
 export default function MarkReadOnScroll() {
   const dispatch = useAppDispatch();
   const { markReadOnScroll } = useAppSelector(
-    (state) => state.settings.general.posts
+    (state) => state.settings.general.posts,
   );
 
   return (

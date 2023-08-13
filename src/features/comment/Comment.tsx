@@ -64,10 +64,9 @@ export const PositionedContainer = styled.div<{
     padding-bottom: 0.65rem;
   }
 
-  ${({ depth }) =>
-    css`
-      padding-left: calc(0.5rem + ${Math.max(0, depth - 1) * 10}px);
-    `}
+  ${({ depth }) => css`
+    padding-left: calc(0.5rem + ${Math.max(0, depth - 1) * 10}px);
+  `}
 `;
 
 export const Container = styled.div<{
@@ -219,7 +218,7 @@ export default function Comment({
 
         scrollIntoView(commentRef.current, 100);
       },
-      useScrollIntoViewWorkaround ? 50 : 600
+      useScrollIntoViewWorkaround ? 50 : 600,
     );
   }, [highlightedCommentId, comment]);
 

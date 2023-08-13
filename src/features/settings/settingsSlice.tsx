@@ -175,7 +175,7 @@ export const defaultCommentDepthSelector = createSelector(
       case OCommentThreadCollapse.Never:
         return MAX_DEFAULT_COMMENT_DEPTH;
     }
-  }
+  },
 );
 
 export const appearanceSlice = createSlice({
@@ -184,7 +184,7 @@ export const appearanceSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       fetchSettingsFromDatabase.fulfilled,
-      (_, action: PayloadAction<SettingsState>) => action.payload
+      (_, action: PayloadAction<SettingsState>) => action.payload,
     );
   },
   reducers: {
@@ -198,7 +198,7 @@ export const appearanceSlice = createSlice({
     },
     setUserInstanceUrlDisplay(
       state,
-      action: PayloadAction<InstanceUrlDisplayMode>
+      action: PayloadAction<InstanceUrlDisplayMode>,
     ) {
       state.appearance.general.userInstanceUrlDisplay = action.payload;
       db.setSetting("user_instance_url_display", action.payload);
@@ -225,14 +225,14 @@ export const appearanceSlice = createSlice({
     },
     setCompactThumbnailSize(
       state,
-      action: PayloadAction<CompactThumbnailSizeType>
+      action: PayloadAction<CompactThumbnailSizeType>,
     ) {
       state.appearance.compact.thumbnailSize = action.payload;
       db.setSetting("compact_thumbnail_size", action.payload);
     },
     setThumbnailPosition(
       state,
-      action: PayloadAction<CompactThumbnailPositionType>
+      action: PayloadAction<CompactThumbnailPositionType>,
     ) {
       state.appearance.compact.thumbnailsPosition = action.payload;
       db.setSetting("compact_thumbnail_position_type", action.payload);
@@ -333,34 +333,34 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
     const result = db.transaction("r", db.settings, async () => {
       const state = thunkApi.getState() as RootState;
       const collapse_comment_threads = await db.getSetting(
-        "collapse_comment_threads"
+        "collapse_comment_threads",
       );
       const user_instance_url_display = await db.getSetting(
-        "user_instance_url_display"
+        "user_instance_url_display",
       );
       const profile_label = await db.getSetting("profile_label");
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const compact_thumbnail_position_type = await db.getSetting(
-        "compact_thumbnail_position_type"
+        "compact_thumbnail_position_type",
       );
       const compact_show_voting_buttons = await db.getSetting(
-        "compact_show_voting_buttons"
+        "compact_show_voting_buttons",
       );
       const compact_thumbnail_size = await db.getSetting(
-        "compact_thumbnail_size"
+        "compact_thumbnail_size",
       );
       const vote_display_mode = await db.getSetting("vote_display_mode");
       const default_comment_sort = await db.getSetting("default_comment_sort");
       const disable_marking_posts_read = await db.getSetting(
-        "disable_marking_posts_read"
+        "disable_marking_posts_read",
       );
       const mark_read_on_scroll = await db.getSetting("mark_read_on_scroll");
       const show_hide_read_button = await db.getSetting(
-        "show_hide_read_button"
+        "show_hide_read_button",
       );
       const enable_haptic_feedback = await db.getSetting(
-        "enable_haptic_feedback"
+        "enable_haptic_feedback",
       );
 
       return {
@@ -428,7 +428,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 
       throw error;
     }
-  }
+  },
 );
 
 export const {

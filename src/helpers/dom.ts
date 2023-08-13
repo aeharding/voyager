@@ -7,7 +7,7 @@ export const useScrollIntoViewWorkaround = ua.getEngine().name === "WebKit";
 export function scrollIntoView(
   element: HTMLElement,
   bottomOffset?: number,
-  smooth = true
+  smooth = true,
 ): void {
   // Don't use this hacky workaround for user agents with sane scrollIntoView implementation
   if (!useScrollIntoViewWorkaround) {
@@ -23,7 +23,7 @@ export function scrollIntoView(
 
   const scrollPaddingTop = parseInt(
     getComputedStyle(parentScroll).scrollPaddingTop || "0",
-    10
+    10,
   );
   const scrollPaddingBottom =
     bottomOffset !== undefined
@@ -32,14 +32,14 @@ export function scrollIntoView(
           getComputedStyle(parentScroll).scrollPaddingBottom ||
             getComputedStyle(parentScroll).scrollMarginBottom ||
             "0",
-          10
+          10,
         );
 
   const scrollTop = calculateScrollTop(
     element,
     parentScroll,
     scrollPaddingTop,
-    scrollPaddingBottom
+    scrollPaddingBottom,
   );
 
   parentScroll.scrollTo({
@@ -52,7 +52,7 @@ function calculateScrollTop(
   element: HTMLElement,
   parentScroll: HTMLElement,
   scrollPaddingTop: number,
-  scrollPaddingBottom: number
+  scrollPaddingBottom: number,
 ): number {
   const elementRect = element.getBoundingClientRect();
   const parentRect = parentScroll.getBoundingClientRect();
@@ -80,7 +80,7 @@ function calculateScrollTop(
 }
 
 export function getScrollParent(
-  node: HTMLElement | undefined
+  node: HTMLElement | undefined,
 ): HTMLElement | undefined {
   if (!node) return;
 

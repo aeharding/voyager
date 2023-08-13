@@ -18,7 +18,7 @@ export default function BlockedUsers() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const users = useAppSelector(
-    (state) => state.auth.site?.my_user?.person_blocks
+    (state) => state.auth.site?.my_user?.person_blocks,
   );
 
   async function remove(user: PersonBlockView) {

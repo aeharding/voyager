@@ -14,7 +14,7 @@ const LinkInterceptor = styled(LinkInterceptorUnstyled)`
 
 function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -44,10 +44,10 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
       }
 
       router.push(
-        buildGeneralBrowseLink(`/c/${communityName}@${domain ?? url.hostname}`)
+        buildGeneralBrowseLink(`/c/${communityName}@${domain ?? url.hostname}`),
       );
     },
-    [buildGeneralBrowseLink, connectedInstance, props.href, router]
+    [buildGeneralBrowseLink, connectedInstance, props.href, router],
   );
 
   return (
@@ -61,7 +61,7 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
 }
 
 function matchLemmyCommunity(
-  urlPathname: string
+  urlPathname: string,
 ): [string, string] | [string] | null {
   const matches = urlPathname.match(COMMUNITY_RELATIVE_URL);
   if (matches && matches[1]) {

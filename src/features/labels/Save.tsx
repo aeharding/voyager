@@ -25,7 +25,7 @@ export default function Save({ type, id }: SaveProps) {
   const savedById = useAppSelector((state) =>
     type === "comment"
       ? state.comment.commentSavedById
-      : state.post.postSavedById
+      : state.post.postSavedById,
   );
 
   return savedById[id] ? <Marker /> : null;

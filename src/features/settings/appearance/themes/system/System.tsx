@@ -8,7 +8,7 @@ import { isAndroid, isNative } from "../../../../../helpers/device";
 
 export default function System() {
   const { usingSystemDarkMode } = useAppSelector(
-    (state) => state.settings.appearance.dark
+    (state) => state.settings.appearance.dark,
   );
 
   return (

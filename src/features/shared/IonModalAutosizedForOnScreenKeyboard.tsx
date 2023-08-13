@@ -27,10 +27,10 @@ const StyledIonModal = styled(IonModal)<{ viewportHeight: number }>`
 `;
 
 export default function IonModalAutosizedForOnScreenKeyboard(
-  props: React.ComponentProps<typeof IonModal>
+  props: React.ComponentProps<typeof IonModal>,
 ) {
   const [viewportHeight, setViewportHeight] = useState(
-    document.documentElement.clientHeight
+    document.documentElement.clientHeight,
   );
   const isVisible = usePageVisibility();
   // eslint-disable-next-line no-undef
@@ -45,13 +45,13 @@ export default function IonModalAutosizedForOnScreenKeyboard(
     }
 
     const page = modalRef.current?.querySelector(
-      ".ion-page:not(.ion-page-hidden)"
+      ".ion-page:not(.ion-page-hidden)",
     );
 
     setViewportHeight(
       window.visualViewport.height -
         (page instanceof HTMLElement ? cumulativeOffset(page).top : 0) -
-        FIXED_HEADER_HEIGHT
+        FIXED_HEADER_HEIGHT,
     );
   }, [props.isOpen]);
 
