@@ -294,14 +294,6 @@ export const buildDarkVariables = (
     // Material Design Dark Theme
 
     .md body {
-      --ion-background-color: black;
-      --ion-background-color-rgb: 18, 18, 18;
-
-      --ion-text-color: #ffffff;
-      --ion-text-color-rgb: 255, 255, 255;
-
-      --ion-border-color: #222222;
-
       --ion-color-step-50: #121212;
       --ion-color-step-100: #2a2a2a;
       --ion-color-step-150: #363636;
@@ -322,16 +314,44 @@ export const buildDarkVariables = (
       --ion-color-step-900: #e7e7e7;
       --ion-color-step-950: #f3f3f3;
 
-      --ion-item-background: black;
+      ${pureBlack
+        ? css`
+            --ion-background-color: black;
+            --ion-background-color-rgb: 18, 18, 18;
 
-      --ion-toolbar-background: #1f1f1f;
+            --ion-text-color: #ffffff;
+            --ion-text-color-rgb: 255, 255, 255;
 
-      --ion-tab-bar-background: #1f1f1f;
+            --ion-border-color: #222222;
 
-      --ion-card-background: black;
+            --ion-item-background: black;
 
-      --ion-toolbar-background: #121212;
-      --ion-tab-bar-background: #121212;
+            --ion-toolbar-background: #1f1f1f;
+
+            --ion-tab-bar-background: #1f1f1f;
+
+            --ion-card-background: black;
+
+            --ion-toolbar-background: #121212;
+            --ion-tab-bar-background: #121212;
+          `
+        : css`
+            --ion-background-color: #1e1e1e;
+            --ion-background-color-rgb: 18, 18, 18;
+
+            --ion-text-color: #ffffff;
+            --ion-text-color-rgb: 255, 255, 255;
+
+            --ion-border-color: #222222;
+
+            --ion-item-background: #1e1e1e;
+
+            --ion-toolbar-background: #1f1f1f;
+
+            --ion-tab-bar-background: #1f1f1f;
+
+            --ion-card-background: #1e1e1e;
+          `}
     }
 
     @media (max-width: 767px) {
