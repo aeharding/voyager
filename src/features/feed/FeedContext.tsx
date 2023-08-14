@@ -5,12 +5,16 @@ type ItemsRef = MutableRefObject<PostCommentItem[] | undefined>;
 
 interface IFeedContext {
   setItemsRef: (ref: ItemsRef | undefined) => void;
-  itemsRef: ItemsRef | undefined;
+
+  /**
+   * yodawg
+   */
+  itemsRefRef: React.MutableRefObject<ItemsRef | undefined> | undefined;
 }
 
 export const FeedContext = createContext<IFeedContext>({
   setItemsRef: () => undefined,
-  itemsRef: undefined,
+  itemsRefRef: undefined,
 });
 
 interface FeedContextProviderProps {
@@ -20,13 +24,13 @@ interface FeedContextProviderProps {
 export default function FeedContextProvider({
   children,
 }: FeedContextProviderProps) {
-  const itemsRef = useRef<ItemsRef>();
+  const itemsRef = useRef<ItemsRef | undefined>();
 
   return (
     <FeedContext.Provider
       value={{
         setItemsRef: (ref) => (itemsRef.current = ref),
-        itemsRef: itemsRef.current,
+        itemsRefRef: itemsRef,
       }}
     >
       {children}

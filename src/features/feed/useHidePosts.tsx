@@ -6,15 +6,15 @@ import { hidePosts } from "../post/postSlice";
 
 export default function useHidePosts() {
   const dispatch = useAppDispatch();
-  const { itemsRef } = useContext(FeedContext);
+  const { itemsRefRef } = useContext(FeedContext);
   const { activePageRef } = useContext(AppContext);
   const postReadById = useAppSelector((state) => state.post.postReadById);
 
   const onHide = useCallback(async () => {
     if (!activePageRef?.current?.current) return;
-    if ("querySelector" in activePageRef.current.current) return;
+    if (!("scrollToIndex" in activePageRef.current.current)) return;
 
-    const postIds: number[] | undefined = itemsRef?.current?.map(
+    const postIds: number[] | undefined = itemsRefRef?.current?.current?.map(
       (item) => item.post.id,
     );
 
@@ -25,7 +25,7 @@ export default function useHidePosts() {
     await dispatch(hidePosts(toHide));
 
     activePageRef.current.current.scrollToIndex({ index: 0, behavior: "auto" });
-  }, [activePageRef, dispatch, itemsRef, postReadById]);
+  }, [activePageRef, dispatch, itemsRefRef, postReadById]);
 
   return onHide;
 }
