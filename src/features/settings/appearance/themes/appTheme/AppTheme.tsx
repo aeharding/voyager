@@ -53,6 +53,8 @@ function getThemeName(appTheme: AppThemeType): string {
       return "Pumpkin";
     case "uv":
       return "Ultraviolet";
+    case "mint":
+      return "Mint";
   }
 }
 
@@ -68,5 +70,7 @@ function getThemeDescription(appTheme: AppThemeType): string {
       return "for your retina-burning pleasure";
     case "pumpkin":
       return "Windows logo jack-o-lantern?";
+    case "mint":
+      return "Life is mint to be refreshing!";
   }
 }
