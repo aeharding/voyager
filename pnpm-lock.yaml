@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ionic/core': npm:voyager-ionic-core@^7.2.3
+  '@ionic/core': npm:voyager-ionic-core@^7.2.3-tweak.1
 
 dependencies:
   compression:
@@ -74,8 +74,8 @@ devDependencies:
     specifier: ^2.2.0
     version: 2.2.0
   '@ionic/core':
-    specifier: npm:voyager-ionic-core@^7.2.3
-    version: /voyager-ionic-core@7.2.3
+    specifier: npm:voyager-ionic-core@^7.2.3-tweak.1
+    version: /voyager-ionic-core@7.2.3-tweak.1
   '@ionic/react':
     specifier: ^7.2.3
     version: 7.2.3(react-dom@18.2.0)(react@18.2.0)
@@ -99,7 +99,7 @@ devDependencies:
     version: 7.0.10(@types/node@20.5.0)(typescript@5.1.6)
   '@types/history':
     specifier: ^4.0.0
-    version: 4.7.11
+    version: 4.5.0
   '@types/jest':
     specifier: ^29.5.3
     version: 29.5.3
@@ -2078,7 +2078,7 @@ packages:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
     dependencies:
-      '@ionic/core': /voyager-ionic-core@7.2.3
+      '@ionic/core': /voyager-ionic-core@7.2.3-tweak.1
       ionicons: 7.1.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -3139,6 +3139,10 @@ packages:
     resolution: {integrity: sha512-SvQi0L/lNpThgPoleH53cdjB3y9zpLlVjRbqB3rH8hx1jiRSBGAhyjV3H+URFjNVRqt2EdYNrbZE5IsGlNfpRg==}
     dependencies:
       '@types/unist': 2.0.7
+    dev: true
+
+  /@types/history@4.5.0:
+    resolution: {integrity: sha512-hj2IP3u0ys/rtU5mEsFhxsGddBRetlhXto2qVuIL7W3Zd+k9hheFKUV2su0KvZaSBXpoS/Jq26pfJDf+vfZ0oA==}
     dev: true
 
   /@types/history@4.7.11:
@@ -11552,8 +11556,8 @@ packages:
       - terser
     dev: true
 
-  /voyager-ionic-core@7.2.3:
-    resolution: {integrity: sha512-nAeBkaqIA0A9TuIv7sk/pt7MOCNVSmvET6cgA1lm7YMy/CY83KYac8W48QCkn1ZdEXcVUVG7NpIJA+YCJdn4TQ==}
+  /voyager-ionic-core@7.2.3-tweak.1:
+    resolution: {integrity: sha512-nzUuU7O1DE3b0Lc75QBuXXsP2GR1rUk2Ye1xmBJCEqDMG105U7YQH8eH98kZRVudD0jJ0WH6WmmDsqoe/+leTA==}
     dependencies:
       '@stencil/core': 3.4.2
       ionicons: 7.1.0
