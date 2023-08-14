@@ -18,7 +18,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@ionic/core": "npm:voyager-ionic-core@^7.2.3"
+      "@ionic/core": "npm:voyager-ionic-core@^7.2.3-tweak.1"
     }
   },
   "dependencies": {
@@ -45,7 +45,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@github/markdown-toolbar-element": "^2.2.0",
-    "@ionic/core": "npm:voyager-ionic-core@^7.2.3",
+    "@ionic/core": "npm:voyager-ionic-core@^7.2.3-tweak.1",
     "@ionic/react": "^7.2.3",
     "@ionic/react-router": "^7.2.3",
     "@reduxjs/toolkit": "^1.9.5",
