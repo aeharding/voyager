@@ -56,6 +56,15 @@ export function getTheme(appTheme: AppThemeType): Theme {
           primary: "color(display-p3 0.57 0 1)",
         },
       };
+    case "mint":
+      return {
+        light: {
+          primary: "#36BB97",
+        },
+        dark: {
+          primary: "#62DFA7",
+        },
+      };
   }
 }
 

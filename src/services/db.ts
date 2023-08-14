@@ -14,6 +14,7 @@ export const OAppThemeType = {
   Pistachio: "pistachio",
   SpookyPumpkin: "pumpkin",
   UV: "uv",
+  Mint: "mint",
 } as const;
 
 export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
