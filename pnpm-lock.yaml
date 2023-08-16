@@ -41,8 +41,8 @@ devDependencies:
     specifier: 5.2.3
     version: 5.2.3
   '@capacitor/haptics':
-    specifier: ^5.0.6
-    version: 5.0.6(@capacitor/core@5.2.3)
+    specifier: npm:voyager-capacitor-haptics@^5.0.6
+    version: /voyager-capacitor-haptics@5.0.6(@capacitor/core@5.2.3)
   '@capacitor/ios':
     specifier: 5.2.3
     version: 5.2.3(@capacitor/core@5.2.3)
@@ -1615,14 +1615,6 @@ packages:
     resolution: {integrity: sha512-Q1zbgt3Mvldy7six2/GX54kTL0ozgnR37jeDUAXL/fOJBF4Iorr/8A0OjGEAnwEjpR1la7uFZUunESMFyMLhEQ==}
     dependencies:
       tslib: 2.6.1
-    dev: true
-
-  /@capacitor/haptics@5.0.6(@capacitor/core@5.2.3):
-    resolution: {integrity: sha512-UrMcR7p2X10ql4VLlowUuH/VckTeu0lj+RQpekxox14uxDmu5AGIFDK/iDTi8W6QZkxTJRZK6sbCjgwYgNJ7Pw==}
-    peerDependencies:
-      '@capacitor/core': ^5.0.0
-    dependencies:
-      '@capacitor/core': 5.2.3
     dev: true
 
   /@capacitor/ios@5.2.3(@capacitor/core@5.2.3):
@@ -11554,6 +11546,14 @@ packages:
       - sugarss
       - supports-color
       - terser
+    dev: true
+
+  /voyager-capacitor-haptics@5.0.6(@capacitor/core@5.2.3):
+    resolution: {integrity: sha512-zpL8heWWrOMaLb1XOGLRrrXjC7CRSbVOHg5caZWxXRbJXZ9tltGbnMmqWdo2Emr5dCzMC8tXMsZtttchbbI3Yw==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.3
     dev: true
 
   /voyager-ionic-core@7.2.3-tweak.1:
