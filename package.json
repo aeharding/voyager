@@ -14,7 +14,8 @@
     "lint:formatting": "prettier --check .",
     "generate:splash:dark": "pwa-asset-generator --type png --index index.html --dark-mode --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
     "generate:splash:light": "pwa-asset-generator --type png --index index.html --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
-    "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light"
+    "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
+    "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots"
   },
   "pnpm": {
     "overrides": {
@@ -46,6 +47,7 @@
     "@emotion/styled": "^11.11.0",
     "@github/markdown-toolbar-element": "^2.2.0",
     "@ionic/core": "npm:voyager-ionic-core@^7.2.3-tweak.1",
+    "@capacitor-community/app-icon": "npm:voyager-capacitor-app-icon@^4.1.0",
     "@ionic/react": "^7.2.3",
     "@ionic/react-router": "^7.2.3",
     "@reduxjs/toolkit": "^1.9.5",

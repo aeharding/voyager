@@ -9,6 +9,8 @@ PODS:
     - Capacitor
   - CapacitorBrowser (5.0.6):
     - Capacitor
+  - CapacitorCommunityAppIcon (4.1.0):
+    - Capacitor
   - CapacitorCordova (5.2.3)
   - CapacitorHaptics (5.0.6):
     - Capacitor
@@ -33,6 +35,7 @@ DEPENDENCIES:
   - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/app`)"
   - "CapacitorApplicationContext (from `../../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.2.3/node_modules/capacitor-application-context`)"
   - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/browser`)"
+  - "CapacitorCommunityAppIcon (from `../../node_modules/.pnpm/voyager-capacitor-app-icon@4.1.0_@capacitor+core@5.2.3/node_modules/voyager-capacitor-app-icon`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@5.2.3_@capacitor+core@5.2.3/node_modules/@capacitor/ios`)"
   - "CapacitorHaptics (from `../../node_modules/.pnpm/voyager-capacitor-haptics@5.0.6_@capacitor+core@5.2.3/node_modules/voyager-capacitor-haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/.pnpm/@capacitor+keyboard@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/keyboard`)"
@@ -56,6 +59,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.2.3/node_modules/capacitor-application-context"
   CapacitorBrowser:
     :path: "../../node_modules/.pnpm/@capacitor+browser@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/browser"
+  CapacitorCommunityAppIcon:
+    :path: "../../node_modules/.pnpm/voyager-capacitor-app-icon@4.1.0_@capacitor+core@5.2.3/node_modules/voyager-capacitor-app-icon"
   CapacitorCordova:
     :path: "../../node_modules/.pnpm/@capacitor+ios@5.2.3_@capacitor+core@5.2.3/node_modules/@capacitor/ios"
   CapacitorHaptics:
@@ -77,6 +82,7 @@ SPEC CHECKSUMS:
   CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
   CapacitorApplicationContext: 487dced4aebde33c94a3bf8fd0e519ab59a17eb8
   CapacitorBrowser: 6192948e0ce804fd72aaf77f4114a3ad2e08c760
+  CapacitorCommunityAppIcon: c2d7ddab91cbdb2e5b68b84703e1882676ba6a37
   CapacitorCordova: 35def3ebfdef491f0a7b652816eb873ff4b20bbf
   CapacitorHaptics: 5412b8e45ff49505e931f34ff55792c6c838ffb4
   CapacitorKeyboard: b978154b024a5f65e044908e37d15b7de58b9d12
@@ -86,6 +92,6 @@ SPEC CHECKSUMS:
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: ba8f6282e529894b4b631213db7eaa701f72e337
+PODFILE CHECKSUM: 9dcd9a19d8ef302519c25e29f7f6d977f02ba7ed
 
 COCOAPODS: 1.12.1

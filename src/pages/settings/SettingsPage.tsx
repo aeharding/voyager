@@ -31,6 +31,7 @@ import { css } from "@emotion/react";
 import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
 import { isNative } from "../../helpers/device";
+import { getIconSrc } from "../../features/settings/app-icon/AppIcon";
 
 export const IconBg = styled.div<{ color: string }>`
   width: 30px;
@@ -50,10 +51,17 @@ export const IconBg = styled.div<{ color: string }>`
   color: white;
 `;
 
+const AppIcon = styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+`;
+
 export default function SettingsPage() {
   const { status: updateStatus, checkForUpdates } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
   const currentHandle = useAppSelector(handleSelector);
+  const icon = useAppSelector((state) => state.appIcon.icon);
 
   useEffect(() => {
     checkForUpdates();
@@ -113,6 +121,13 @@ export default function SettingsPage() {
             </IconBg>
             <SettingLabel>Appearance</SettingLabel>
           </InsetIonItem>
+
+          {isNative() && (
+            <InsetIonItem routerLink="/settings/app-icon">
+              <AppIcon src={getIconSrc(icon)} />
+              <SettingLabel>App Icon</SettingLabel>
+            </InsetIonItem>
+          )}
 
           {currentHandle && (
             <InsetIonItem routerLink="/settings/blocks">
