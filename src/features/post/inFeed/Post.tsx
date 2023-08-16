@@ -11,6 +11,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { postHiddenByIdSelector, hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
 import { FeedScrollObserverContext } from "../../feed/FeedScrollObserver";
+import { PostContext } from "../../../helpers/postContext";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -23,6 +24,7 @@ const CustomIonItem = styled(IonItem)`
 
 export interface PostProps {
   post: PostView;
+  postContext: PostContext;
 
   /**
    * Hide the community name, show author name

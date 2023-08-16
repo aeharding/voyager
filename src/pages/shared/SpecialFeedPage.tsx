@@ -55,7 +55,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     [client, sort, type, jwt],
   );
 
-  const feed = <PostCommentFeed fetchFn={fetchFn} />;
+  const feed = <PostCommentFeed postContext="SpecialFeed" fetchFn={fetchFn} />;
 
   return (
     <TitleSearchProvider>

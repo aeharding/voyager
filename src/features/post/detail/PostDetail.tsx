@@ -188,7 +188,9 @@ export default function PostDetail({
         <>
           {post.post.url &&
             !isUrlImage(post.post.url) &&
-            !isUrlVideo(post.post.url) && <Embed post={post} />}
+            !isUrlVideo(post.post.url) && (
+              <Embed post={post} postContext="Post" />
+            )}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
         </>
       );
@@ -199,7 +201,7 @@ export default function PostDetail({
       !isUrlImage(post.post.url) &&
       !isUrlVideo(post.post.url)
     ) {
-      return <StyledEmbed post={post} />;
+      return <StyledEmbed post={post} postContext="Post" />;
     }
   }
 

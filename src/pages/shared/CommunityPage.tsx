@@ -70,7 +70,13 @@ export default function CommunityPage() {
       />
     );
 
-  const feed = <PostCommentFeed fetchFn={fetchFn} communityName={community} />;
+  const feed = (
+    <PostCommentFeed
+      postContext="CommunityFeed"
+      fetchFn={fetchFn}
+      communityName={community}
+    />
+  );
 
   return (
     <FeedContextProvider>

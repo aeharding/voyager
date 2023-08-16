@@ -59,7 +59,8 @@ export type CommentThreadCollapse =
   (typeof OCommentThreadCollapse)[keyof typeof OCommentThreadCollapse];
 
 export const OPostBlurNsfw = {
-  InFeed: "in_feed",
+  Always: "always",
+  SfwFeeds: "in_feed",
   Never: "never",
 } as const;
 
@@ -236,7 +237,7 @@ export class WefwefDB extends Dexie {
     });
 
     this.version(3).upgrade(async () => {
-      await this.setSetting("blur_nsfw", OPostBlurNsfw.InFeed);
+      await this.setSetting("blur_nsfw", OPostBlurNsfw.SfwFeeds);
     });
   }
 

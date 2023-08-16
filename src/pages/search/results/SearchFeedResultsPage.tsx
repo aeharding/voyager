@@ -72,7 +72,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
         </IonToolbar>
       </IonHeader>
       <FeedContent>
-        <PostCommentFeed fetchFn={fetchFn} />
+        <PostCommentFeed postContext="SpecialFeed" fetchFn={fetchFn} />
       </FeedContent>
     </IonPage>
   );

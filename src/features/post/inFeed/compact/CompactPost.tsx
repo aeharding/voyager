@@ -97,7 +97,11 @@ const EndDetails = styled.div`
   margin-left: auto;
 `;
 
-export default function CompactPost({ post, communityMode }: PostProps) {
+export default function CompactPost({
+  post,
+  postContext,
+  communityMode,
+}: PostProps) {
   const compactThumbnailPositionType = useAppSelector(
     (state) => state.settings.appearance.compact.thumbnailsPosition,
   );
@@ -113,7 +117,9 @@ export default function CompactPost({ post, communityMode }: PostProps) {
 
   return (
     <Container>
-      {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
+      {compactThumbnailPositionType === "left" && (
+        <Thumbnail post={post} postContext={postContext} />
+      )}
       <Content>
         <Title isRead={hasBeenRead}>
           <InlineMarkdown>{post.post.name}</InlineMarkdown> {nsfw && <Nsfw />}
@@ -142,7 +148,9 @@ export default function CompactPost({ post, communityMode }: PostProps) {
           </Actions>
         </Aside>
       </Content>
-      {compactThumbnailPositionType === "right" && <Thumbnail post={post} />}
+      {compactThumbnailPositionType === "right" && (
+        <Thumbnail post={post} postContext={postContext} />
+      )}
       {compactShowVotingButtons === true && (
         <EndDetails>
           <VoteButton type="up" postId={post.post.id} />

@@ -9,6 +9,7 @@ import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
 import { FeedContext } from "./FeedContext";
+import { PostContext } from "../../helpers/postContext";
 
 const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -28,12 +29,14 @@ interface PostCommentFeed
   extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {
   communityName?: string;
   filterHiddenPosts?: boolean;
+  postContext: PostContext;
 }
 
 export default function PostCommentFeed({
   communityName,
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
+  postContext,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
@@ -67,12 +70,17 @@ export default function PostCommentFeed({
     (item: PostCommentItem) => {
       if (isPost(item))
         return (
-          <Post post={item} communityMode={!!communityName} css={borderCss} />
+          <Post
+            post={item}
+            postContext={postContext}
+            communityMode={!!communityName}
+            css={borderCss}
+          />
         );
 
       return <FeedComment comment={item} css={borderCss} />;
     },
-    [communityName, borderCss],
+    [postContext, communityName, borderCss],
   );
 
   const renderItemContent = useCallback(

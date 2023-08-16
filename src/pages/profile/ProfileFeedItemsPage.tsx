@@ -86,7 +86,11 @@ export default function ProfileFeedItemsPage({
         </IonToolbar>
       </IonHeader>
       <FeedContent>
-        <PostCommentFeed fetchFn={fetchFn} filterHiddenPosts={false} />
+        <PostCommentFeed
+          postContext="CommunityFeed"
+          fetchFn={fetchFn}
+          filterHiddenPosts={false}
+        />
       </FeedContent>
     </IonPage>
   );
