@@ -28,6 +28,8 @@ import {
   AppThemeType,
   CompactThumbnailSizeType,
   OCompactThumbnailSizeType,
+  LinkHandlerType,
+  OLinkHandlerType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -83,6 +85,7 @@ interface SettingsState {
       showHideReadButton: boolean;
     };
     enableHapticFeedback: boolean;
+    linkHandler: LinkHandlerType;
   };
 }
 
@@ -142,6 +145,7 @@ const initialState: SettingsState = {
       showHideReadButton: false,
     },
     enableHapticFeedback: true,
+    linkHandler: OLinkHandlerType.InApp,
   },
 };
 
@@ -285,6 +289,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("enable_haptic_feedback", action.payload);
     },
+    setLinkHandler(state, action: PayloadAction<LinkHandlerType>) {
+      state.general.linkHandler = action.payload;
+
+      db.setSetting("link_handler", action.payload);
+    },
 
     resetSettings: () => ({
       ...initialState,
@@ -362,6 +371,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
+      const link_handler = await db.getSetting("link_handler");
 
       return {
         ...state.settings,
@@ -414,6 +424,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               show_hide_read_button ??
               initialState.general.posts.showHideReadButton,
           },
+          linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
         },
@@ -453,6 +464,7 @@ export const {
   setShowHideReadButton,
   setTheme,
   setEnableHapticFeedback,
+  setLinkHandler,
   setPureBlack,
 } = appearanceSlice.actions;
 
