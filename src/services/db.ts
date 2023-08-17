@@ -125,6 +125,14 @@ export const OProfileLabelType = {
   Hide: "hide",
 } as const;
 
+export type LinkHandlerType =
+  (typeof OLinkHandlerType)[keyof typeof OLinkHandlerType];
+
+export const OLinkHandlerType = {
+  DefaultBrowser: "default-browser",
+  InApp: "in-app",
+} as const;
+
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
@@ -184,6 +192,7 @@ export type SettingValueTypes = {
   disable_left_swipes: boolean;
   disable_right_swipes: boolean;
   enable_haptic_feedback: boolean;
+  link_handler: LinkHandlerType;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
