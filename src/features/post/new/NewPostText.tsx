@@ -18,6 +18,7 @@ import MarkdownToolbar, {
   TOOLBAR_TARGET_ID,
 } from "../../shared/markdown/editing/MarkdownToolbar";
 import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
+import useTextRecovery from "../../../helpers/useTextRecovery";
 
 const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -54,12 +55,14 @@ interface NewPostTextProps {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
   onSubmit: () => void;
+  editing: boolean;
 }
 
 export default function NewPostText({
   value,
   setValue,
   onSubmit,
+  editing,
 }: NewPostTextProps) {
   const [loading, setLoading] = useState(false);
 
@@ -71,6 +74,8 @@ export default function NewPostText({
   useEffect(() => {
     setValue(text);
   }, [setValue, text]);
+
+  useTextRecovery(text, setText, editing);
 
   async function submit() {
     setLoading(true);

@@ -22,6 +22,9 @@ import { Centered, Spinner } from "../../../auth/Login";
 import { handleSelector, jwtSelector } from "../../../auth/authSlice";
 import { receivedComments } from "../../commentSlice";
 import CommentContent from "../shared";
+import useTextRecovery, {
+  clearRecoveredText,
+} from "../../../../helpers/useTextRecovery";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -106,11 +109,14 @@ export default function CommentReply({
     // TODO is there a way to avoid a timeout here?
     await new Promise((resolve) => setTimeout(resolve, 100));
     dismiss(reply.comment_view);
+    clearRecoveredText();
   }
 
   useEffect(() => {
     setCanDismiss(!replyContent);
   }, [replyContent, setCanDismiss]);
+
+  useTextRecovery(replyContent, setReplyContent);
 
   return (
     <>
