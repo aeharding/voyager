@@ -22,6 +22,9 @@ dependencies:
     version: 0.9.2(express@4.18.2)(vite@4.4.9)
 
 devDependencies:
+  '@capacitor-community/app-icon':
+    specifier: npm:voyager-capacitor-app-icon@^4.1.0
+    version: /voyager-capacitor-app-icon@4.1.0(@capacitor/core@5.2.3)
   '@capacitor/android':
     specifier: 5.2.3
     version: 5.2.3(@capacitor/core@5.2.3)
@@ -11546,6 +11549,14 @@ packages:
       - sugarss
       - supports-color
       - terser
+    dev: true
+
+  /voyager-capacitor-app-icon@4.1.0(@capacitor/core@5.2.3):
+    resolution: {integrity: sha512-caPpeIi4lx94OwTNcUjdmsAPa7qA2Awq3CTKqjug2aVWA6aSBAgMMuGy3uQas8K+lpMK/gE3ZjpeLmy9bEZw7A==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.3
     dev: true
 
   /voyager-capacitor-haptics@5.0.6(@capacitor/core@5.2.3):

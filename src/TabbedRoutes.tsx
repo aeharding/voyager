@@ -68,6 +68,7 @@ import InstanceSidebarPage from "./pages/shared/InstanceSidebarPage";
 import { getProfileTabLabel } from "./features/settings/general/other/ProfileTabLabel";
 import AppearanceThemePage from "./pages/settings/AppearanceThemePage";
 import GalleryProvider from "./features/gallery/GalleryProvider";
+import AppIconPage from "./pages/settings/AppIconPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -397,6 +398,9 @@ export default function TabbedRoutes() {
         </Route>
         <Route exact path="/settings/appearance/theme/mode">
           <DeviceModeSettingsPage />
+        </Route>
+        <Route exact path="/settings/app-icon">
+          <AppIconPage />
         </Route>
         <Route exact path="/settings/gestures">
           <GesturesPage />

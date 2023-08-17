@@ -21,6 +21,9 @@ import settingsSlice, {
 import gestureSlice, {
   fetchGesturesFromDatabase,
 } from "./features/settings/gestures/gestureSlice";
+import appIconSlice, {
+  fetchAppIcon,
+} from "./features/settings/app-icon/appIconSlice";
 
 const store = configureStore({
   reducer: {
@@ -32,6 +35,7 @@ const store = configureStore({
     inbox: inboxSlice,
     settings: settingsSlice,
     gesture: gestureSlice,
+    appIcon: appIconSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
@@ -64,8 +68,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     (async () => {
       try {
         // Load initial settings from DB into the store
-        await store.dispatch(fetchSettingsFromDatabase());
-        await store.dispatch(fetchGesturesFromDatabase());
+        await Promise.all([
+          store.dispatch(fetchSettingsFromDatabase()),
+          store.dispatch(fetchGesturesFromDatabase()),
+          store.dispatch(fetchAppIcon()),
+        ]);
       } finally {
         // Subscribe to actions to handle handle changes, this can be used to react to other changes as well
         // to coordinate side effects between slices.
