@@ -1,6 +1,6 @@
-import { Plugin, Transformer } from "unified";
 import { visit } from "unist-util-visit";
-import { Parent, Text, Link } from "mdast";
+import type { Plugin, Transformer } from "unified";
+import type { Parent, Text, Link } from "mdast";
 
 interface CustomNode extends Text {}
 
