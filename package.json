@@ -2,7 +2,7 @@
   "name": "voyager",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "1.9.2",
+  "version": "1.10.0",
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
