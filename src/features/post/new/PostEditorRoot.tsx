@@ -443,6 +443,7 @@ export default function PostEditorRoot({
                   value={text}
                   setValue={setText}
                   onSubmit={submit}
+                  editing={"existingPost" in props}
                 />
               )}
             >

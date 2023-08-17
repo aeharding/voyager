@@ -11,6 +11,7 @@ import { Prompt, useLocation } from "react-router";
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
 import { useAppSelector } from "../../store";
 import { jwtIssSelector } from "../auth/authSlice";
+import { clearRecoveredText } from "../../helpers/useTextRecovery";
 
 export interface DismissableProps {
   dismiss: () => void;
@@ -56,6 +57,7 @@ export function DynamicDismissableModal({
         text: "Delete",
         role: "destructive",
         handler: () => {
+          clearRecoveredText();
           setCanDismiss(true);
           setTimeout(() => setIsOpen(false), 100);
         },

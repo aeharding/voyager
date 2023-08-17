@@ -37,6 +37,7 @@ import { StatusBar } from "@capacitor/status-bar";
 import { Keyboard } from "@capacitor/keyboard";
 import { TabContextProvider } from "./TabContext";
 import { NavModes } from "capacitor-android-nav-mode";
+import { TextRecoveryStartupPrompt } from "./helpers/useTextRecovery";
 
 // index.tsx ensurxes android nav mode resolves before app is rendered
 (async () => {
@@ -96,6 +97,7 @@ export default function App() {
                 <Router>
                   <TabContextProvider>
                     <IonApp>
+                      <TextRecoveryStartupPrompt />
                       <Auth>
                         <TabbedRoutes />
                       </Auth>
