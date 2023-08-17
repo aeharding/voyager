@@ -6,9 +6,10 @@ import { without } from "lodash";
 
 export const APP_ICONS = [
   "default",
-  "color",
+  "planetary",
   "psych",
   "space",
+  "galactic",
   "original",
 ] as const;
 

@@ -75,13 +75,13 @@
 		</dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
-			<key>color</key>
+			<key>planetary</key>
 			<dict>
 				<key>UIPrerenderedIcon</key>
 				<true/>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>color</string>
+					<string>planetary</string>
 				</array>
 			</dict>
 			<key>psych</key>
@@ -109,6 +109,15 @@
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>original</string>
+				</array>
+			</dict>
+			<key>galactic</key>
+			<dict>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>galactic</string>
 				</array>
 			</dict>
 		</dict>
@@ -139,13 +148,13 @@
 		</dict>
 		<key>CFBundleAlternateIcons</key>
 		<dict>
-			<key>color</key>
+			<key>planetary</key>
 			<dict>
 				<key>UIPrerenderedIcon</key>
 				<true/>
 				<key>CFBundleIconFiles</key>
 				<array>
-					<string>color</string>
+					<string>planetary</string>
 				</array>
 			</dict>
 			<key>psych</key>
@@ -173,6 +182,15 @@
 				<key>CFBundleIconFiles</key>
 				<array>
 					<string>original</string>
+				</array>
+			</dict>
+			<key>galactic</key>
+			<dict>
+				<key>UIPrerenderedIcon</key>
+				<true/>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>galactic</string>
 				</array>
 			</dict>
 		</dict>

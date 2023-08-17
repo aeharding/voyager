@@ -14,7 +14,7 @@ import { APP_ICONS, AppIcon, updateAppIcon } from "./appIconSlice";
 const StyledIonThumbnail = styled(IonThumbnail)`
   margin: 1rem 1rem 1rem 0;
 
-  --size: 5em;
+  --size: 4.75em;
 `;
 
 const Img = styled.img`
@@ -63,24 +63,28 @@ function getIconName(icon: AppIcon): string {
       return "Default";
     case "space":
       return "The Final Frontier";
-    case "color":
+    case "planetary":
       return "Planetary";
     case "psych":
       return "Psychedelic!";
     case "original":
       return "O.G.";
+    case "galactic":
+      return "Enter Galactic";
   }
 }
 
 function getIconAuthor(icon: AppIcon): string | null {
   switch (icon) {
     case "default":
-    case "color":
+    case "planetary":
     case "psych":
       return "fer0n";
     case "space":
       return "ripened_avacado";
     case "original":
       return "nathanielcwm";
+    case "galactic":
+      return "L1C4U5E";
   }
 }

@@ -21,8 +21,8 @@
 
         <activity-alias
             android:label="@string/title_activity_main"
-            android:icon="@mipmap/color"
-            android:name=".color"
+            android:icon="@mipmap/planetary"
+            android:name=".planetary"
             android:enabled="false"
             android:exported="true"
             android:targetActivity=".MainActivity">
@@ -62,6 +62,19 @@
             android:label="@string/title_activity_main"
             android:icon="@mipmap/original"
             android:name=".original"
+            android:enabled="false"
+            android:exported="true"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:label="@string/title_activity_main"
+            android:icon="@mipmap/galactic"
+            android:name=".galactic"
             android:enabled="false"
             android:exported="true"
             android:targetActivity=".MainActivity">
