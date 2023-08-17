@@ -10,7 +10,7 @@ import {
   gfmStrikethroughToMarkdown,
 } from "mdast-util-gfm-strikethrough";
 import { gfmTableFromMarkdown, gfmTableToMarkdown } from "mdast-util-gfm-table";
-import { Options } from "remark-gfm";
+import type { Options } from "remark-gfm";
 
 export default function customRemarkGfm(
   this: import("unified").Processor,
@@ -31,7 +31,7 @@ export default function customRemarkGfm(
 }
 
 function gfm(options?: Options) {
-  return combineExtensions([gfmStrikethrough(options), gfmTable()]);
+  return combineExtensions([gfmStrikethrough(options), gfmTable]);
 }
 
 function gfmFromMarkdown() {
