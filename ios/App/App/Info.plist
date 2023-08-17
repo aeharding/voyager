@@ -51,28 +51,6 @@
     <string>Save photos to device</string>
     <key>CFBundleIcons</key>
     <dict>
-      <key>CFBundlePrimaryIcon</key>
-      <dict>
-        <key>CFBundleIconName</key>
-        <string/>
-        <key>CFBundleIconFiles</key>
-        <array>
-          <string/>
-        </array>
-        <key>UIPrerenderedIcon</key>
-        <false/>
-      </dict>
-      <key>UINewsstandIcon</key>
-      <dict>
-        <key>CFBundleIconFiles</key>
-        <array>
-          <string/>
-        </array>
-        <key>UINewsstandBindingType</key>
-        <string>UINewsstandBindingTypeMagazine</string>
-        <key>UINewsstandBindingEdge</key>
-        <string>UINewsstandBindingEdgeLeft</string>
-      </dict>
       <key>CFBundleAlternateIcons</key>
       <dict>
         <key>planetary</key>
@@ -124,28 +102,6 @@
     </dict>
     <key>CFBundleIcons~ipad</key>
     <dict>
-      <key>CFBundlePrimaryIcon</key>
-      <dict>
-        <key>CFBundleIconName</key>
-        <string/>
-        <key>CFBundleIconFiles</key>
-        <array>
-          <string/>
-        </array>
-        <key>UIPrerenderedIcon</key>
-        <false/>
-      </dict>
-      <key>UINewsstandIcon</key>
-      <dict>
-        <key>CFBundleIconFiles</key>
-        <array>
-          <string/>
-        </array>
-        <key>UINewsstandBindingType</key>
-        <string>UINewsstandBindingTypeMagazine</string>
-        <key>UINewsstandBindingEdge</key>
-        <string>UINewsstandBindingEdgeLeft</string>
-      </dict>
       <key>CFBundleAlternateIcons</key>
       <dict>
         <key>planetary</key>
