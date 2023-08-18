@@ -303,7 +303,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         endReached={() => fetchComments()}
         atTopStateChange={setIsListAtTop}
         components={
-          typeof commentId === "number"
+          bottomPadding
             ? {
                 // add space for the <ViewAllComments /> fixed component
                 Footer: () => <div style={{ height: `${bottomPadding}px` }} />,

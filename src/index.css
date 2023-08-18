@@ -129,3 +129,13 @@ ion-action-sheet ion-icon {
 .ion-content-scroll-host::after {
   bottom: -1px;
 }
+
+ion-fab-button {
+  --background-focused: var(--ion-color-primary);
+  --background-activated: var(--ion-color-primary);
+  --background-hover: var(--ion-color-primary);
+}
+
+ion-fab.fab-vertical-top {
+  top: 15vh;
+}
