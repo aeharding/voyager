@@ -108,7 +108,7 @@ export default function JumpFab() {
 
     if (isNative()) vibrate({ style: ImpactStyle.Light });
 
-    virtuosoRef.scrollToIndex({ index: index, behavior: "smooth" });
+    virtuosoRef.scrollToIndex({ index, behavior: "smooth" });
   }
 
   return (
