@@ -36,7 +36,7 @@
     "@capacitor/browser": "^5.0.6",
     "@capacitor/cli": "5.2.3",
     "@capacitor/core": "5.2.3",
-    "@capacitor/haptics": "npm:voyager-capacitor-haptics@^5.0.6",
+    "@capacitor/haptics": "npm:voyager-capacitor-haptics@^5.0.7",
     "@capacitor/ios": "5.2.3",
     "@capacitor/keyboard": "^5.0.6",
     "@capacitor/share": "^5.0.6",
