@@ -16,6 +16,7 @@ import {
   CompactThumbnailSizeType,
   OCompactThumbnailSizeType,
 } from "../../../../services/db";
+import { PostContext } from "../../../../helpers/postContext";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {
@@ -109,9 +110,10 @@ const Img = styled.img<{ blur: boolean }>`
 
 interface ImgProps {
   post: PostView;
+  postContext: PostContext;
 }
 
-export default function Thumbnail({ post }: ImgProps) {
+export default function Thumbnail({ post, postContext }: ImgProps) {
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post],
@@ -129,7 +131,10 @@ export default function Thumbnail({ post }: ImgProps) {
     (state) => state.settings.appearance.compact.thumbnailSize,
   );
 
-  const nsfw = useMemo(() => isNsfwBlurred(post, blurNsfw), [post, blurNsfw]);
+  const nsfw = useMemo(
+    () => isNsfwBlurred(post, postContext, blurNsfw),
+    [post, postContext, blurNsfw],
+  );
 
   const isLink = !postImageSrc && post.post.url;
 

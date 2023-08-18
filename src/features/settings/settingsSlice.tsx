@@ -119,7 +119,7 @@ const initialState: SettingsState = {
       profileLabel: OProfileLabelType.Instance,
     },
     posts: {
-      blurNsfw: OPostBlurNsfw.InFeed,
+      blurNsfw: OPostBlurNsfw.Always,
       type: OPostAppearanceType.Large,
     },
     compact: {

@@ -110,6 +110,7 @@ export default function Profile({ person }: ProfileProps) {
 
   return (
     <PostCommentFeed
+      postContext="CommunityFeed"
       fetchFn={fetchFn}
       header={header}
       filterHiddenPosts={false}

@@ -103,7 +103,11 @@ const ImageContainer = styled.div`
   margin: 0 -0.75rem;
 `;
 
-export default function LargePost({ post, communityMode }: PostProps) {
+export default function LargePost({
+  post,
+  postContext,
+  communityMode,
+}: PostProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
@@ -121,7 +125,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
         return (
           <ImageContainer>
             <Image
-              blur={isNsfwBlurred(post, blurNsfw)}
+              blur={isNsfwBlurred(post, postContext, blurNsfw)}
               post={post}
               animationType="zoom"
             />
@@ -131,7 +135,10 @@ export default function LargePost({ post, communityMode }: PostProps) {
       if (isUrlVideo(post.post.url)) {
         return (
           <ImageContainer>
-            <Video src={post.post.url} blur={isNsfwBlurred(post, blurNsfw)} />
+            <Video
+              src={post.post.url}
+              blur={isNsfwBlurred(post, postContext, blurNsfw)}
+            />
           </ImageContainer>
         );
       }
@@ -141,7 +148,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
       return (
         <ImageContainer>
           <Image
-            blur={isNsfwBlurred(post, blurNsfw)}
+            blur={isNsfwBlurred(post, postContext, blurNsfw)}
             post={post}
             animationType="zoom"
           />
@@ -152,7 +159,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
      * Embedded video, image with a thumbanil
      */
     if (post.post.thumbnail_url && post.post.url) {
-      return <Embed post={post} />;
+      return <Embed post={post} postContext={postContext} />;
     }
 
     /**
@@ -161,7 +168,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
     if (post.post.body) {
       return (
         <>
-          {post.post.url && <Embed post={post} />}
+          {post.post.url && <Embed post={post} postContext={postContext} />}
 
           <PostBody isRead={hasBeenRead}>
             <InlineMarkdown>{post.post.body}</InlineMarkdown>
@@ -171,7 +178,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
     }
 
     if (post.post.url) {
-      return <Embed post={post} />;
+      return <Embed post={post} postContext={postContext} />;
     }
   }
 

@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { isNsfwBlurred } from "../../labels/Nsfw";
 import { setPostRead } from "../postSlice";
 import InAppExternalLink from "../../shared/InAppExternalLink";
+import { PostContext } from "../../../helpers/postContext";
 
 const Container = styled(InAppExternalLink)`
   display: flex;
@@ -70,10 +71,11 @@ const Url = styled.div`
 
 interface EmbedProps {
   post: PostView;
+  postContext: PostContext;
   className?: string;
 }
 
-export default function Embed({ post, className }: EmbedProps) {
+export default function Embed({ post, postContext, className }: EmbedProps) {
   const [error, setError] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -98,7 +100,7 @@ export default function Embed({ post, className }: EmbedProps) {
         <Img
           src={post.post.thumbnail_url}
           draggable="false"
-          blur={isNsfwBlurred(post, blurNsfw)}
+          blur={isNsfwBlurred(post, postContext, blurNsfw)}
           onError={() => setError(true)}
         />
       )}
