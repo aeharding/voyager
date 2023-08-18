@@ -133,6 +133,19 @@ export const OLinkHandlerType = {
   InApp: "in-app",
 } as const;
 
+export type JumpButtonPositionType =
+  (typeof OJumpButtonPositionType)[keyof typeof OJumpButtonPositionType];
+
+export const OJumpButtonPositionType = {
+  LeftTop: "left-top",
+  LeftMiddle: "left-middle",
+  LeftBottom: "left-bottom",
+  Center: "center",
+  RightTop: "right-top",
+  RightMiddle: "right-middle",
+  RightBottom: "right-bottom",
+} as const;
+
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
@@ -193,6 +206,8 @@ export type SettingValueTypes = {
   disable_right_swipes: boolean;
   enable_haptic_feedback: boolean;
   link_handler: LinkHandlerType;
+  show_jump_button: boolean;
+  jump_button_position: JumpButtonPositionType;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

@@ -2,6 +2,8 @@ import { IonLabel, IonList } from "@ionic/react";
 import CollapsedByDefault from "../../general/comments/CollapsedByDefault";
 import DefaultSort from "./DefaultSort";
 import { ListHeader } from "../../shared/formatting";
+import ShowJumpButton from "./ShowJumpButton";
+import JumpButtonPosition from "./JumpButtonPosition";
 
 export default function Comments() {
   return (
@@ -12,6 +14,8 @@ export default function Comments() {
       <IonList inset>
         <CollapsedByDefault />
         <DefaultSort />
+        <ShowJumpButton />
+        <JumpButtonPosition />
       </IonList>
     </>
   );
