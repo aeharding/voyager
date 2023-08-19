@@ -55,6 +55,7 @@ export default function MoreActions({
   onFeed,
 }: MoreActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
+  const [presentSecondaryActionSheet] = useIonActionSheet();
   const [present] = useIonToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
@@ -144,7 +145,7 @@ export default function MoreActions({
               text: "Delete",
               icon: trashOutline,
               handler: () => {
-                presentActionSheet({
+                presentSecondaryActionSheet({
                   buttons: [
                     {
                       text: "Delete Post",

@@ -59,6 +59,7 @@ export default function MoreActions({
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
   const [presentActionSheet] = useIonActionSheet();
+  const [presentSecondaryActionSheet] = useIonActionSheet();
   const collapseRootComment = useCollapseRootComment(commentView, rootIndex);
 
   const commentById = useAppSelector((state) => state.comment.commentById);
@@ -157,7 +158,7 @@ export default function MoreActions({
               text: "Delete",
               icon: trashOutline,
               handler: () => {
-                presentActionSheet({
+                presentSecondaryActionSheet({
                   buttons: [
                     {
                       text: "Delete Comment",
