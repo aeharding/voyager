@@ -3,10 +3,10 @@ import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { link, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { useCallback, useMemo } from "react";
+import { MouseEvent, useCallback, useMemo } from "react";
 import { isUrlImage } from "../../../../helpers/lemmy";
 import { findLoneImage } from "../../../../helpers/markdown";
-import { useAppSelector } from "../../../../store";
+import { useAppDispatch, useAppSelector } from "../../../../store";
 import PostGalleryImg from "../../../gallery/PostGalleryImg";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import { ReactComponent as SelfSvg } from "./self.svg";
@@ -16,6 +16,7 @@ import {
   CompactThumbnailSizeType,
   OCompactThumbnailSizeType,
 } from "../../../../services/db";
+import { setPostRead } from "../../postSlice";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {
@@ -112,6 +113,7 @@ interface ImgProps {
 }
 
 export default function Thumbnail({ post }: ImgProps) {
+  const dispatch = useAppDispatch();
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post],
@@ -132,6 +134,11 @@ export default function Thumbnail({ post }: ImgProps) {
   const nsfw = useMemo(() => isNsfwBlurred(post, blurNsfw), [post, blurNsfw]);
 
   const isLink = !postImageSrc && post.post.url;
+
+  const handleLinkClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    dispatch(setPostRead(post.post.id));
+  };
 
   const renderContents = useCallback(() => {
     if (isLink) {
@@ -169,7 +176,7 @@ export default function Thumbnail({ post }: ImgProps) {
         href={post.post.url}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleLinkClick}
         thumbnailSize={thumbnailSize}
       >
         {renderContents()}
