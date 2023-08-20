@@ -23,9 +23,10 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { savePost } from "../post/postSlice";
 import { saveError } from "../../helpers/toastMessages";
 import { Browser } from "@capacitor/browser";
-import { Share } from "@capacitor/share";
 import { ActionButton } from "../post/actions/ActionButton";
 import { StashMedia } from "capacitor-stash-media";
+import { isNative } from "../../helpers/device";
+import { Share } from "@capacitor/share";
 
 interface GalleryMoreActionsProps {
   post: PostView;
@@ -55,7 +56,28 @@ export default function GalleryMoreActions({
           text: "Share",
           icon: shareOutline,
           handler: () => {
-            Share.share({ url: imgSrc });
+            (async () => {
+              if (!isNative()) {
+                Share.share({ url: imgSrc });
+                return;
+              }
+
+              try {
+                await StashMedia.shareImage({
+                  url: imgSrc,
+                  title: post.post.name,
+                });
+              } catch (error) {
+                presentToast({
+                  message: "Error sharing photo",
+                  duration: 3500,
+                  position: "bottom",
+                  color: "danger",
+                });
+
+                throw error;
+              }
+            })();
           },
         },
         {
