@@ -5,7 +5,7 @@ import { chatbubbleOutline, shareOutline } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle, share } from "../../helpers/lemmy";
+import { getHandle } from "../../helpers/lemmy";
 import MoreActions from "../post/shared/MoreActions";
 import {
   calculateTotalScore,
@@ -18,6 +18,7 @@ import { OVoteDisplayMode } from "../../services/db";
 import { isNative } from "../../helpers/device";
 import GalleryMoreActions from "./GalleryMoreActions";
 import { StashMedia } from "capacitor-stash-media";
+import { Share } from "@capacitor/share";
 
 const Container = styled.div`
   display: flex;
@@ -59,7 +60,7 @@ export default function GalleryPostActions({
 
   async function shareImage() {
     if (!isNative()) {
-      share(post.post);
+      Share.share({ url: imgSrc });
       return;
     }
 

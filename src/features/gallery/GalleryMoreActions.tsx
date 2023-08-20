@@ -15,7 +15,7 @@ import {
   shareOutline,
 } from "ionicons/icons";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle, share } from "../../helpers/lemmy";
+import { getHandle } from "../../helpers/lemmy";
 import { PostView } from "lemmy-js-client";
 import { PageContext } from "../auth/PageContext";
 import { useContext } from "react";
@@ -26,6 +26,7 @@ import { Browser } from "@capacitor/browser";
 import { ActionButton } from "../post/actions/ActionButton";
 import { StashMedia } from "capacitor-stash-media";
 import { isNative } from "../../helpers/device";
+import { Share } from "@capacitor/share";
 
 interface GalleryMoreActionsProps {
   post: PostView;
@@ -57,7 +58,7 @@ export default function GalleryMoreActions({
           handler: () => {
             (async () => {
               if (!isNative()) {
-                share(post.post);
+                Share.share({ url: imgSrc });
                 return;
               }
 
