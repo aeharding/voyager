@@ -1,4 +1,4 @@
-import { IonIcon, useIonRouter } from "@ionic/react";
+import { IonIcon, useIonRouter, useIonToast } from "@ionic/react";
 import { VoteButton } from "../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline, shareOutline } from "ionicons/icons";
@@ -17,6 +17,7 @@ import { GalleryContext } from "./GalleryProvider";
 import { OVoteDisplayMode } from "../../services/db";
 import { isNative } from "../../helpers/device";
 import GalleryMoreActions from "./GalleryMoreActions";
+import { StashMedia } from "capacitor-stash-media";
 
 const Container = styled.div`
   display: flex;
@@ -53,7 +54,31 @@ export default function GalleryPostActions({
   );
   const router = useIonRouter();
   const location = useLocation();
+  const [presentToast] = useIonToast();
   const { close } = useContext(GalleryContext);
+
+  async function shareImage() {
+    if (!isNative()) {
+      share(post.post);
+      return;
+    }
+
+    try {
+      await StashMedia.shareImage({
+        url: imgSrc,
+        title: post.post.name,
+      });
+    } catch (error) {
+      presentToast({
+        message: "Error sharing photo",
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
+
+      throw error;
+    }
+  }
 
   return (
     <Container onClick={(e) => e.stopPropagation()}>
@@ -72,7 +97,7 @@ export default function GalleryPostActions({
           <Amount>{post.counts.comments}</Amount>
         </Section>
       </div>
-      <IonIcon icon={shareOutline} onClick={() => share(post.post)} />
+      <IonIcon icon={shareOutline} onClick={shareImage} />
       {isNative() ? (
         <GalleryMoreActions post={post} imgSrc={imgSrc} />
       ) : (

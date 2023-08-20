@@ -15,7 +15,7 @@ import {
   shareOutline,
 } from "ionicons/icons";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle } from "../../helpers/lemmy";
+import { getHandle, share } from "../../helpers/lemmy";
 import { PostView } from "lemmy-js-client";
 import { PageContext } from "../auth/PageContext";
 import { useContext } from "react";
@@ -23,9 +23,9 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { savePost } from "../post/postSlice";
 import { saveError } from "../../helpers/toastMessages";
 import { Browser } from "@capacitor/browser";
-import { Share } from "@capacitor/share";
 import { ActionButton } from "../post/actions/ActionButton";
 import { StashMedia } from "capacitor-stash-media";
+import { isNative } from "../../helpers/device";
 
 interface GalleryMoreActionsProps {
   post: PostView;
@@ -55,7 +55,28 @@ export default function GalleryMoreActions({
           text: "Share",
           icon: shareOutline,
           handler: () => {
-            Share.share({ url: imgSrc });
+            (async () => {
+              if (!isNative()) {
+                share(post.post);
+                return;
+              }
+
+              try {
+                await StashMedia.shareImage({
+                  url: imgSrc,
+                  title: post.post.name,
+                });
+              } catch (error) {
+                presentToast({
+                  message: "Error sharing photo",
+                  duration: 3500,
+                  position: "bottom",
+                  color: "danger",
+                });
+
+                throw error;
+              }
+            })();
           },
         },
         {

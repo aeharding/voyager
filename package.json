@@ -74,7 +74,7 @@
     "capacitor-application-context": "^0.0.1",
     "capacitor-plugin-safe-area": "^2.0.5",
     "capacitor-set-version": "^2.0.13",
-    "capacitor-stash-media": "^0.0.4",
+    "capacitor-stash-media": "^0.0.6",
     "date-fns": "^2.30.0",
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.6",
