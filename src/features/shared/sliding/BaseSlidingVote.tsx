@@ -9,6 +9,7 @@ import {
   eyeOutline,
   mailOpen,
   mailUnread,
+  shareSharp,
 } from "ionicons/icons";
 import React, { useCallback, useContext, useMemo } from "react";
 import SlidingItem, { ActionList, SlidingItemAction } from "./SlidingItem";
@@ -37,6 +38,7 @@ import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { CommentsContext } from "../../comment/CommentsContext";
 import styled from "@emotion/styled";
 import useAppToast from "../../../helpers/useAppToast";
+import { share } from "../../../helpers/lemmy";
 
 const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
@@ -247,6 +249,14 @@ function BaseSlidingVoteInternal({
     };
   }, [markUnread, isRead]);
 
+  const shareTrigger = useCallback(async () => {
+    try {
+      await share(isPost ? item.post : item.comment);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [isPost, item]);
+
   const allActions: Record<SwipeAction, SlidingItemAction | undefined> =
     useMemo(() => {
       return {
@@ -276,6 +286,11 @@ function BaseSlidingVoteInternal({
         hide: hideAction,
         collapse: collapseAction,
         mark_unread: markUnreadAction,
+        share: {
+          icon: shareSharp,
+          trigger: shareTrigger,
+          bgColor: "primary-fixed",
+        },
       };
     }, [
       currentVote,
@@ -285,6 +300,7 @@ function BaseSlidingVoteInternal({
       collapseAction,
       markUnreadAction,
       onVote,
+      shareTrigger,
     ]);
 
   const startActions: ActionList = useMemo(
