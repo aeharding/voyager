@@ -64,8 +64,10 @@ export default function CommentReply({
   const [present] = useIonToast();
   const [loading, setLoading] = useState(false);
   const userHandle = useAppSelector(handleSelector);
+  const isSubmitDisabled = !replyContent.trim() || loading;
 
   async function submit() {
+    if (isSubmitDisabled) return;
     if (!jwt) return;
 
     setLoading(true);
@@ -142,7 +144,7 @@ export default function CommentReply({
             <IonButton
               strong
               type="submit"
-              disabled={!replyContent.trim() || loading}
+              disabled={isSubmitDisabled}
               onClick={submit}
             >
               Post
@@ -151,7 +153,11 @@ export default function CommentReply({
         </IonToolbar>
       </IonHeader>
 
-      <CommentContent text={replyContent} setText={setReplyContent}>
+      <CommentContent
+        text={replyContent}
+        setText={setReplyContent}
+        submit={submit}
+      >
         <ItemReplyingTo item={item} />
       </CommentContent>
     </>

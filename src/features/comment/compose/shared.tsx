@@ -49,6 +49,7 @@ export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
 interface CommentContentProps {
   text: string;
   setText: Dispatch<SetStateAction<string>>;
+  submit?: () => void | Promise<void>;
 
   children?: React.ReactNode;
 }
@@ -57,6 +58,7 @@ export default function CommentContent({
   text,
   setText,
   children,
+  submit,
 }: CommentContentProps) {
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -71,6 +73,15 @@ export default function CommentContent({
             onChange={(e) => setText(e.target.value)}
             autoFocus
             id={TOOLBAR_TARGET_ID}
+            onKeyDown={(e) => {
+              if (
+                (e.ctrlKey || e.metaKey) &&
+                (e.keyCode === 10 || e.keyCode === 13) &&
+                submit
+              ) {
+                submit();
+              }
+            }}
           />
           {children}
         </Container>
