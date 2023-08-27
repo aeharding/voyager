@@ -1,4 +1,4 @@
-import { ToastOptions } from "@ionic/core";
+import { ToastButton, ToastOptions } from "@ionic/core";
 
 export const voteError: ToastOptions = {
   message: "Problem voting. Please try again.",
@@ -61,6 +61,7 @@ export function buildProblemSubscribing(
 export function buildSuccessSubscribing(
   isSubscribed: boolean,
   community: string,
+  undoCallback: ToastButton["handler"],
 ): ToastOptions {
   return {
     message: `${
@@ -69,5 +70,11 @@ export function buildSuccessSubscribing(
     duration: 3500,
     position: "bottom",
     color: "success",
+    buttons: [
+      {
+        text: "Undo",
+        handler: undoCallback,
+      },
+    ],
   };
 }

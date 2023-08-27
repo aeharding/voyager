@@ -97,7 +97,11 @@ function useCommunityActions(communityHandle: string) {
       throw error;
     }
 
-    present(buildSuccessSubscribing(isSubscribed, communityHandle));
+    present(
+      buildSuccessSubscribing(isSubscribed, communityHandle, async () => {
+        await dispatch(followCommunity(isSubscribed, communityId));
+      }),
+    );
   }
 
   function favorite() {
