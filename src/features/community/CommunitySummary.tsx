@@ -1,15 +1,27 @@
 import styled from "@emotion/styled";
-import { IonItem } from "@ionic/react";
+import { IonButton, IonIcon, IonItem } from "@ionic/react";
 import { CommunityView } from "lemmy-js-client";
 import { maxWidthCss } from "../shared/AppContent";
 import CommunityLink from "../labels/links/CommunityLink";
 import Ago from "../labels/Ago";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import InlineMarkdown from "../shared/InlineMarkdown";
+import { heartDislikeOutline, heartOutline } from "ionicons/icons";
+import useCommunityActions from "./useCommunityActions";
 
 const Container = styled(IonItem)`
   ${maxWidthCss}
+`;
+
+const RightContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const Title = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Contents = styled.div`
@@ -40,29 +52,41 @@ interface CommunitySummaryProps {
 }
 
 export default function CommunitySummary({ community }: CommunitySummaryProps) {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const handle = getHandle(community.community);
+  const { isSubscribed, subscribe, view } = useCommunityActions(handle);
 
   return (
-    <Container
-      routerLink={buildGeneralBrowseLink(
-        `/c/${getHandle(community.community)}`,
-      )}
-    >
+    <Container>
       <Contents>
-        <div>
+        <Title>
           <CommunityLink
             community={community.community}
             showInstanceWhenRemote
             subscribed={community.subscribed}
           />
-        </div>
-        <Stats>
-          {community.counts.subscribers} Subscriber
-          {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
-          <Ago date={community.community.published} /> Old{" "}
-        </Stats>
+          <RightContainer>
+            <Stats onClick={view}>
+              {community.counts.subscribers} Subscriber
+              {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
+              <Ago date={community.community.published} /> Old{" "}
+            </Stats>
+            <IonButton
+              color={isSubscribed ? "danger" : "primary"}
+              size="small"
+              onClick={(e) => {
+                subscribe();
+                e.stopPropagation();
+              }}
+            >
+              <IonIcon
+                icon={isSubscribed ? heartDislikeOutline : heartOutline}
+              />
+            </IonButton>
+          </RightContainer>
+        </Title>
+
         {community.community.description && (
-          <Description>
+          <Description onClick={view}>
             <InlineMarkdown>{community.community.description}</InlineMarkdown>
           </Description>
         )}

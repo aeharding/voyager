@@ -6,13 +6,14 @@ import {
   localUserSelector,
   showNsfw,
 } from "../auth/authSlice";
-import { useContext, useMemo } from "react";
+import { useContext, useEffect } from "react";
 import { PageContext } from "../auth/PageContext";
 import { checkIsMod } from "../../helpers/lemmy";
 import {
   addFavorite,
   blockCommunity,
   followCommunity,
+  getCommunity,
   removeFavorite,
 } from "./communitySlice";
 import {
@@ -26,7 +27,6 @@ function useCommunityActions(communityHandle: string) {
   const [present] = useIonToast();
   const router = useIonRouter();
   const dispatch = useAppDispatch();
-  //   const [open, setOpen] = useState(false);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const site = useAppSelector((state) => state.auth.site);
   const isAdmin = useAppSelector(isAdminSelector);
@@ -34,13 +34,18 @@ function useCommunityActions(communityHandle: string) {
   const [presentActionSheet] = useIonActionSheet();
   const { presentPostEditor } = useContext(PageContext);
 
-  //   const hidePosts = useHidePosts();
-
   const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle
   );
+
+  useEffect(() => {
+    if (communityByHandle[communityHandle]) return;
+
+    dispatch(getCommunity(communityHandle));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [communityHandle]);
 
   const isSubscribed =
     communityByHandle[communityHandle]?.subscribed === "Subscribed" ||
@@ -53,22 +58,14 @@ function useCommunityActions(communityHandle: string) {
     (state) => state.community.favorites
   );
 
-  const isFavorite = useMemo(
-    () => favoriteCommunities.includes(communityHandle),
-    [communityHandle, favoriteCommunities]
-  );
+  const isFavorite = favoriteCommunities.includes(communityHandle);
 
-  const canPost = useMemo(() => {
-    const isMod = site ? checkIsMod(communityHandle, site) : false;
+  const isMod = site ? checkIsMod(communityHandle, site) : false;
 
-    const canPost =
-      !communityByHandle[communityHandle]?.community
-        .posting_restricted_to_mods ||
-      isMod ||
-      isAdmin;
-
-    return canPost;
-  }, [communityHandle, communityByHandle, isAdmin, site]);
+  const canPost =
+    !communityByHandle[communityHandle]?.community.posting_restricted_to_mods ||
+    isMod ||
+    isAdmin;
 
   function post() {
     if (presentLoginIfNeeded()) return;
@@ -124,6 +121,10 @@ function useCommunityActions(communityHandle: string) {
 
   function sidebar() {
     router.push(buildGeneralBrowseLink(`/c/${communityHandle}/sidebar`));
+  }
+
+  function view() {
+    router.push(buildGeneralBrowseLink(`/c/${communityHandle}`));
   }
 
   async function block() {
@@ -185,6 +186,7 @@ function useCommunityActions(communityHandle: string) {
     subscribe,
     favorite,
     sidebar,
+    view,
     block,
   };
 }
