@@ -22,6 +22,7 @@ const RightContainer = styled.div`
 const Title = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const Contents = styled.div`
