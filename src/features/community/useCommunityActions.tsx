@@ -164,7 +164,11 @@ export default function useCommunityActions(communityHandle: string) {
               (async () => {
                 await dispatch(blockCommunity(!isBlocked, communityId));
 
-                present(buildBlocked(!isBlocked, communityHandle));
+                present(
+                  buildBlocked(!isBlocked, communityHandle, () => {
+                    dispatch(blockCommunity(isBlocked!, communityId));
+                  }),
+                );
               })();
             },
           },
@@ -177,7 +181,11 @@ export default function useCommunityActions(communityHandle: string) {
     } else {
       await dispatch(blockCommunity(!isBlocked, communityId));
 
-      present(buildBlocked(!isBlocked, communityHandle));
+      present(
+        buildBlocked(!isBlocked, communityHandle, () => {
+          dispatch(blockCommunity(isBlocked!, communityId));
+        }),
+      );
     }
   }
 

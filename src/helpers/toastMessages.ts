@@ -35,12 +35,22 @@ export const problemBlockingUser: ToastOptions = {
   color: "danger",
 };
 
-export function buildBlocked(blocked: boolean, handle: string): ToastOptions {
+export function buildBlocked(
+  blocked: boolean,
+  handle: string,
+  undoCallback: ToastButton["handler"],
+): ToastOptions {
   return {
     message: `${handle} has been ${blocked ? "blocked" : "unblocked"}`,
     duration: 3500,
     position: "bottom",
     color: "success",
+    buttons: [
+      {
+        text: "Undo",
+        handler: undoCallback,
+      },
+    ],
   };
 }
 
