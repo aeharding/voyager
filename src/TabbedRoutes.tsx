@@ -1,4 +1,5 @@
 import { Redirect, Route, useLocation } from "react-router-dom";
+import Hammer from "react-hammerjs";
 import {
   IonBadge,
   IonIcon,
@@ -8,6 +9,7 @@ import {
   IonTabButton,
   IonTabs,
   useIonRouter,
+  useIonModal,
 } from "@ionic/react";
 import { App } from "@capacitor/app";
 import {
@@ -69,6 +71,7 @@ import { getProfileTabLabel } from "./features/settings/general/other/ProfileTab
 import AppearanceThemePage from "./pages/settings/AppearanceThemePage";
 import GalleryProvider from "./features/gallery/GalleryProvider";
 import AppIconPage from "./pages/settings/AppIconPage";
+import AccountSwitcher from "./features/auth/AccountSwitcher";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -98,6 +101,17 @@ export default function TabbedRoutes() {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+
+  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
+    AccountSwitcher,
+    {
+      onDismiss: (data: string, role: string) => {
+        onDismissAccountSwitcher(data, role);
+      },
+      page: null,
+    },
+  );
+
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
 
@@ -460,7 +474,12 @@ export default function TabbedRoutes() {
             >
               <IonIcon aria-hidden="true" icon={personCircleOutline} />
               <ProfileLabel>{profileTabLabel}</ProfileLabel>
-              <Interceptor onClick={onProfileClick} />
+              <Hammer
+                onTap={onProfileClick}
+                onPress={() => presentAccountSwitcher({ cssClass: "small" })}
+              >
+                <Interceptor />
+              </Hammer>
             </IonTabButton>
             <IonTabButton
               disabled={isSearchButtonDisabled}

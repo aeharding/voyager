@@ -62,13 +62,10 @@ export default function CommunityPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [community]);
 
-  if (community.includes("@") && community.split("@")[1] === actor)
-    return (
-      <Redirect
-        to={buildGeneralBrowseLink(`/c/${community.split("@")[0]}`)}
-        push={false}
-      />
-    );
+  const communityDisplayName =
+    community.includes("@") && community.split("@")[1] === actor
+      ? community.split("@")[0]
+      : community;
 
   const feed = <PostCommentFeed fetchFn={fetchFn} communityName={community} />;
 
@@ -85,7 +82,7 @@ export default function CommunityPage() {
                 />
               </IonButtons>
 
-              <TitleSearch name={community}>
+              <TitleSearch name={communityDisplayName}>
                 <IonButtons slot="end">
                   <PostSort />
                   <MoreActions community={community} />

@@ -1,4 +1,5 @@
 import {
+  createAnimation,
   IonButton,
   IonButtons,
   IonContent,
@@ -10,8 +11,10 @@ import {
   IonTitle,
   IonToolbar,
   useIonModal,
+  useIonRouter,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
+import { useParams, useHistory } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { changeAccount } from "./authSlice";
 import Login from "./Login";
@@ -29,6 +32,7 @@ export default function AccountSwitcher({
 }: AccountSwitcherProps) {
   const dispatch = useAppDispatch();
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
+  const router = useIonRouter();
   const activeHandle = useAppSelector(
     (state) => state.auth.accountData?.activeHandle,
   );
@@ -54,7 +58,7 @@ export default function AccountSwitcher({
             {editing ? (
               <IonButton
                 onClick={() =>
-                  login({ presentingElement: pageRef.current ?? undefined })
+                  login({ presentingElement: pageRef?.current ?? undefined })
                 }
               >
                 <IonIcon icon={add} />
@@ -77,7 +81,17 @@ export default function AccountSwitcher({
         <IonRadioGroup
           value={activeHandle}
           onIonChange={(e) => {
-            dispatch(changeAccount(e.target.value));
+            dispatch(
+              changeAccount(e.target.value, (newLink: string) => {
+                router.push(
+                  newLink,
+                  "back",
+                  "replace",
+                  {},
+                  () => createAnimation(), // this is to disable the page animation
+                );
+              }),
+            );
             onDismiss();
           }}
         >
