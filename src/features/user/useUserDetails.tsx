@@ -32,7 +32,11 @@ export function useUserDetails(handle: string) {
       throw error;
     }
 
-    present(buildBlocked(!isBlocked, handle));
+    present(
+      buildBlocked(!isBlocked, handle, () => {
+        dispatch(blockUser(isBlocked!, user.id));
+      }),
+    );
   }
 
   return { isBlocked, user, blockOrUnblock };
