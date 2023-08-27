@@ -37,7 +37,7 @@ function useCommunityActions(communityHandle: string) {
   const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   useEffect(() => {
@@ -55,7 +55,7 @@ function useCommunityActions(communityHandle: string) {
   const communityId = communityByHandle[communityHandle]?.community.id;
 
   const favoriteCommunities = useAppSelector(
-    (state) => state.community.favorites
+    (state) => state.community.favorites,
   );
 
   const isFavorite = favoriteCommunities.includes(communityHandle);
