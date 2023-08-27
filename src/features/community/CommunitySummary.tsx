@@ -65,11 +65,6 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
             subscribed={community.subscribed}
           />
           <RightContainer>
-            <Stats onClick={view}>
-              {community.counts.subscribers} Subscriber
-              {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
-              <Ago date={community.community.published} /> Old{" "}
-            </Stats>
             <IonButton
               color={isSubscribed ? "danger" : "primary"}
               size="small"
@@ -84,7 +79,11 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
             </IonButton>
           </RightContainer>
         </Title>
-
+        <Stats onClick={view}>
+          {community.counts.subscribers} Subscriber
+          {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
+          <Ago date={community.community.published} /> Old{" "}
+        </Stats>
         {community.community.description && (
           <Description onClick={view}>
             <InlineMarkdown>{community.community.description}</InlineMarkdown>
