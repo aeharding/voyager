@@ -22,7 +22,7 @@ import {
   buildSuccessSubscribing,
 } from "../../helpers/toastMessages";
 
-function useCommunityActions(community: string) {
+function useCommunityActions(communityHandle: string) {
   const [present] = useIonToast();
   const router = useIonRouter();
   const dispatch = useAppDispatch();
@@ -43,31 +43,32 @@ function useCommunityActions(community: string) {
   );
 
   const isSubscribed =
-    communityByHandle[community]?.subscribed === "Subscribed" ||
-    communityByHandle[community]?.subscribed === "Pending";
+    communityByHandle[communityHandle]?.subscribed === "Subscribed" ||
+    communityByHandle[communityHandle]?.subscribed === "Pending";
 
-  const isBlocked = communityByHandle[community]?.blocked;
-  const communityId = communityByHandle[community]?.community.id;
+  const isBlocked = communityByHandle[communityHandle]?.blocked;
+  const communityId = communityByHandle[communityHandle]?.community.id;
 
   const favoriteCommunities = useAppSelector(
     (state) => state.community.favorites
   );
 
   const isFavorite = useMemo(
-    () => favoriteCommunities.includes(community),
-    [community, favoriteCommunities]
+    () => favoriteCommunities.includes(communityHandle),
+    [communityHandle, favoriteCommunities]
   );
 
   const canPost = useMemo(() => {
-    const isMod = site ? checkIsMod(community, site) : false;
+    const isMod = site ? checkIsMod(communityHandle, site) : false;
 
     const canPost =
-      !communityByHandle[community]?.community.posting_restricted_to_mods ||
+      !communityByHandle[communityHandle]?.community
+        .posting_restricted_to_mods ||
       isMod ||
       isAdmin;
 
     return canPost;
-  }, [community, communityByHandle, isAdmin, site]);
+  }, [communityHandle, communityByHandle, isAdmin, site]);
 
   function post() {
     if (presentLoginIfNeeded()) return;
@@ -82,37 +83,39 @@ function useCommunityActions(community: string) {
       return;
     }
 
-    presentPostEditor(community);
+    presentPostEditor(communityHandle);
   }
 
   async function subscribe() {
     if (presentLoginIfNeeded()) return;
 
-    const communityId = communityByHandle[community]?.community.id;
+    const communityId = communityByHandle[communityHandle]?.community.id;
 
     if (communityId === undefined) throw new Error("community not found");
 
     try {
       await dispatch(followCommunity(!isSubscribed, communityId));
     } catch (error) {
-      present(buildProblemSubscribing(isSubscribed, community));
+      present(buildProblemSubscribing(isSubscribed, communityHandle));
       throw error;
     }
 
-    present(buildSuccessSubscribing(isSubscribed, community));
+    present(buildSuccessSubscribing(isSubscribed, communityHandle));
   }
 
   function favorite() {
     if (presentLoginIfNeeded()) return;
 
     if (!isFavorite) {
-      dispatch(addFavorite(community));
+      dispatch(addFavorite(communityHandle));
     } else {
-      dispatch(removeFavorite(community));
+      dispatch(removeFavorite(communityHandle));
     }
 
     present({
-      message: `${isFavorite ? "Unfavorited" : "Favorited"} c/${community}.`,
+      message: `${
+        isFavorite ? "Unfavorited" : "Favorited"
+      } c/${communityHandle}.`,
       duration: 3500,
       position: "bottom",
       color: "success",
@@ -120,15 +123,15 @@ function useCommunityActions(community: string) {
   }
 
   function sidebar() {
-    router.push(buildGeneralBrowseLink(`/c/${community}/sidebar`));
+    router.push(buildGeneralBrowseLink(`/c/${communityHandle}/sidebar`));
   }
 
   async function block() {
     if (typeof communityId !== "number") return;
 
     if (
-      !communityByHandle[community]?.blocked &&
-      communityByHandle[community]?.community.nsfw &&
+      !communityByHandle[communityHandle]?.blocked &&
+      communityByHandle[communityHandle]?.community.nsfw &&
       localUser?.show_nsfw
     ) {
       // User wants to block a NSFW community when account is set to show NSFW. Ask them
@@ -156,7 +159,7 @@ function useCommunityActions(community: string) {
               (async () => {
                 await dispatch(blockCommunity(!isBlocked, communityId));
 
-                present(buildBlocked(!isBlocked, community));
+                present(buildBlocked(!isBlocked, communityHandle));
               })();
             },
           },
@@ -169,7 +172,7 @@ function useCommunityActions(community: string) {
     } else {
       await dispatch(blockCommunity(!isBlocked, communityId));
 
-      present(buildBlocked(!isBlocked, community));
+      present(buildBlocked(!isBlocked, communityHandle));
     }
   }
 
