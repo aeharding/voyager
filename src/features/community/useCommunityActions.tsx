@@ -98,8 +98,8 @@ function useCommunityActions(communityHandle: string) {
     }
 
     present(
-      buildSuccessSubscribing(isSubscribed, communityHandle, async () => {
-        await dispatch(followCommunity(isSubscribed, communityId));
+      buildSuccessSubscribing(isSubscribed, communityHandle, () => {
+        dispatch(followCommunity(isSubscribed, communityId));
       }),
     );
   }
