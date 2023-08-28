@@ -14,7 +14,6 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { useParams, useHistory } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { changeAccount } from "./authSlice";
 import Login from "./Login";
