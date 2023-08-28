@@ -248,7 +248,6 @@ export const changeAccount =
     dispatch(setPrimaryAccount(handle));
 
     const iss = jwtIssSelector(getState());
-
     if (iss) dispatch(updateConnectedInstance(iss));
   };
 

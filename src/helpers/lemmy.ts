@@ -267,7 +267,3 @@ export function isUrlVideo(url: string): boolean {
 export function share(item: Post | Comment) {
   return Share.share({ url: item.ap_id });
 }
-
-export function getPostApID(item: Post): string {
-  return item.ap_id;
-}

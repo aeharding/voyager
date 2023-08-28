@@ -1,5 +1,4 @@
 import {
-  createAnimation,
   IonButton,
   IonButtons,
   IonContent,
@@ -11,7 +10,6 @@ import {
   IonTitle,
   IonToolbar,
   useIonModal,
-  useIonRouter,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -31,7 +29,6 @@ export default function AccountSwitcher({
 }: AccountSwitcherProps) {
   const dispatch = useAppDispatch();
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
-  const router = useIonRouter();
   const activeHandle = useAppSelector(
     (state) => state.auth.accountData?.activeHandle,
   );
