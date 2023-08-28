@@ -242,6 +242,11 @@ export const logoutEverything = () => async (dispatch: AppDispatch) => {
 export const changeAccount =
   (handle: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    if (window.location.pathname.split("/")[1] !== "posts") {
+      // if in posts view reset happens after we resolve the new post
+      dispatch(resetPosts());
+      dispatch(resetComments());
+    }
     dispatch(resetUsers());
     dispatch(resetInbox());
     dispatch(resetCommunities());

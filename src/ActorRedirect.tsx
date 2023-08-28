@@ -103,6 +103,8 @@ export default function ActorRedirect({ children }: ActorRedirectProps) {
       const newLink = [first, second, iss, ...urlEnd].join("/");
       if (window.location.pathname !== newLink) {
         replaceRouteWithoutAnimation(newLink);
+        dispatch(resetPosts());
+        dispatch(resetComments());
       }
     }
   }
