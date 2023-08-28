@@ -80,17 +80,7 @@ export default function AccountSwitcher({
         <IonRadioGroup
           value={activeHandle}
           onIonChange={(e) => {
-            dispatch(
-              changeAccount(e.target.value, (newLink: string) => {
-                router.push(
-                  newLink,
-                  "back",
-                  "replace",
-                  {},
-                  () => createAnimation(), // this is to disable the page animation
-                );
-              }),
-            );
+            dispatch(changeAccount(e.target.value));
             onDismiss();
           }}
         >

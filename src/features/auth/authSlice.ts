@@ -240,7 +240,7 @@ export const logoutEverything = () => async (dispatch: AppDispatch) => {
 };
 
 export const changeAccount =
-  (handle: string, callBack: (newLink: string) => void) =>
+  (handle: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     dispatch(resetUsers());
     dispatch(resetInbox());
@@ -248,48 +248,6 @@ export const changeAccount =
     dispatch(setPrimaryAccount(handle));
 
     const iss = jwtIssSelector(getState());
-    const pathnameArray = window.location.pathname.split("/");
-    if (pathnameArray[1] === "posts" && pathnameArray[5] === "comments") {
-      // we're inside comments view, so we need to update the comments
-      const id = pathnameArray[6];
-      const post = getState().post.postById[id];
-
-      if (post !== "not-found") {
-        const apId = post?.post?.ap_id;
-
-        let newLink = null;
-        try {
-          if (apId) {
-            const jwt = jwtSelector(getState());
-            if (jwt) {
-              const result = await clientSelector(getState()).resolveObject({
-                q: apId,
-                auth: jwt,
-              });
-
-              if (result) {
-                const postId = result.post?.post?.id;
-                const communityLinkArray =
-                  result.post?.community?.actor_id.split("/");
-                if (communityLinkArray) {
-                  const communityInstance = communityLinkArray[2];
-                  const communityName = communityLinkArray[4];
-                  newLink = `/posts/${iss}/c/${communityName}@${communityInstance}/comments/${postId}`;
-                }
-              }
-            }
-          }
-        } catch (error) {
-          console.error("error in getNewPost", error);
-        } finally {
-          dispatch(resetPosts());
-          dispatch(resetComments());
-          if (typeof newLink === "string") {
-            callBack(newLink);
-          }
-        }
-      }
-    }
 
     if (iss) dispatch(updateConnectedInstance(iss));
   };
