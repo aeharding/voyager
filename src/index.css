@@ -5,6 +5,12 @@
   --sal: env(safe-area-inset-left);
 }
 
+.ios .tab-bar-translucent {
+  --background: inherit;
+  --background-focused: inherit;
+  background: --tabbar-background;
+}
+
 html {
   -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape while allowing user zoom */
 }

@@ -431,7 +431,7 @@ export default function TabbedRoutes() {
         {/* But this isn't trivial with needing to rewrite URLs... */}
         <IonTabs key={iss ?? getDefaultServer()}>
           {routes}
-          <IonTabBar slot="bottom">
+          <IonTabBar slot="bottom" translucent>
             <IonTabButton
               disabled={isPostsButtonDisabled}
               tab="posts"
