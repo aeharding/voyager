@@ -12,7 +12,7 @@ import Theme from "../../features/settings/appearance/themes/Theme";
 export default function AppearanceThemePage() {
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/settings" text="Settings" />

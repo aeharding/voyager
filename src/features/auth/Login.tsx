@@ -219,7 +219,7 @@ export default function Login({
     >
       <input type="submit" /> {/* Hack */}
       <IonPage ref={pageRef}>
-        <IonHeader>
+        <IonHeader translucent>
           <IonToolbar>
             <IonButtons slot="start">
               <IonButton

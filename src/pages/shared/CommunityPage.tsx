@@ -76,7 +76,7 @@ export default function CommunityPage() {
     <FeedContextProvider>
       <TitleSearchProvider>
         <IonPage>
-          <IonHeader>
+          <IonHeader translucent>
             <IonToolbar>
               <IonButtons slot="start">
                 <AppBackButton

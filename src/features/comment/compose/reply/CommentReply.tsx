@@ -120,7 +120,7 @@ export default function CommentReply({
 
   return (
     <>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton color="medium" onClick={() => dismiss()}>

@@ -12,7 +12,7 @@ import HidingSettings from "../../features/settings/general/hiding/HidingSetting
 export default function HidingSettingsPage() {
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/settings/general" text="General" />

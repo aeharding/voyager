@@ -69,13 +69,13 @@ export default function SettingsPage() {
 
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY>
-        <IonHeader collapse="condense">
+        <IonHeader translucent collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Settings</IonTitle>
           </IonToolbar>

@@ -61,7 +61,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     <TitleSearchProvider>
       <FeedContextProvider>
         <IonPage>
-          <IonHeader>
+          <IonHeader translucent>
             <IonToolbar>
               <IonButtons slot="start">
                 <IonBackButton

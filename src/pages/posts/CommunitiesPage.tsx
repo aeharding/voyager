@@ -18,7 +18,7 @@ export default function CommunitiesPage() {
 
   return (
     <IonPage ref={pageRef}>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonTitle>Communities</IonTitle>
           <IonButtons slot="end">

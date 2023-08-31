@@ -12,7 +12,7 @@ import SelectDeviceMode from "../../features/settings/appearance/themes/system/S
 export default function DeviceModeSettingsPage() {
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton

@@ -32,7 +32,7 @@ export default function ProfilePage() {
 
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           {handle ? (
             <>

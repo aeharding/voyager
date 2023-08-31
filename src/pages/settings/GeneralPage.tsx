@@ -12,7 +12,7 @@ import GeneralSettings from "../../features/settings/general/GeneralSettings";
 export default function GeneralPage() {
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/settings" text="Settings" />

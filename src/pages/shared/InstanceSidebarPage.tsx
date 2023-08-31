@@ -28,7 +28,7 @@ export default function InstanceSidebarPage() {
     <FeedContextProvider>
       <TitleSearchProvider>
         <IonPage>
-          <IonHeader>
+          <IonHeader translucent>
             <IonToolbar>
               <IonButtons slot="start">
                 <AppBackButton

@@ -12,7 +12,7 @@ import AppIcon from "../../features/settings/app-icon/AppIcon";
 export default function AppIconPage() {
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/settings" text="Settings" />

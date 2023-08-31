@@ -91,7 +91,7 @@ export default function ProfileFeedHiddenPostsPage() {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonTitle>Hidden Posts</IonTitle>
           <IonButtons slot="start">

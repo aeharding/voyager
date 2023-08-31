@@ -16,7 +16,7 @@ interface TermsSheetProps {
 export default function TermsSheet({ onDismiss }: TermsSheetProps) {
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton color="medium" onClick={() => onDismiss()}>

@@ -44,7 +44,7 @@ export default function MentionsPage() {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/inbox" text="Boxes" />

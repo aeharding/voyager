@@ -37,13 +37,13 @@ export default function BoxesPage() {
 
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonTitle>Boxes</IonTitle>
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY>
-        <IonHeader collapse="condense">
+        <IonHeader translucent collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Boxes</IonTitle>
           </IonToolbar>

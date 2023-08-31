@@ -55,7 +55,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton

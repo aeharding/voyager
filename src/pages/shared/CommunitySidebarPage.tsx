@@ -36,7 +36,7 @@ export default function CommunitySidebarPage() {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <AppBackButton

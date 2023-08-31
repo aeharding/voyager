@@ -87,7 +87,7 @@ export default function SelectTextModal({
       breakpoints={[0, 0.5, 1]}
       autoFocus
     >
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonTitle>
             <Centered>Select Text</Centered>

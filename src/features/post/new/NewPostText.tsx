@@ -89,7 +89,7 @@ export default function NewPostText({
 
   return (
     <>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton disabled={loading} />

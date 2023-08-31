@@ -12,7 +12,7 @@ import Terms from "../../features/settings/terms/Terms";
 export default function TermsPage() {
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/settings" text="Settings" />

@@ -78,7 +78,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/inbox" text="Boxes" />

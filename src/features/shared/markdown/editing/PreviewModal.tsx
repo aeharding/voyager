@@ -32,7 +32,7 @@ export default function PreviewModal({
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="end">
             <IonButton color="primary" strong onClick={() => onDismiss()}>

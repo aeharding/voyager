@@ -8,7 +8,19 @@
 .ios .tab-bar-translucent {
   --background: inherit;
   --background-focused: inherit;
+  background: inherit;
+}
+
+/* .ios .header-translucent {
+  --background: inherit;
+  --background-focused: inherit;
   background: --tabbar-background;
+} */
+
+.ios .toolbar-title-default {
+  --background: inherit;
+  --background-focused: inherit;
+  background: inherit;
 }
 
 html {

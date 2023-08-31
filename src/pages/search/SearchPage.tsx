@@ -25,7 +25,7 @@ export default function SearchPage() {
 
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <form
             onSubmit={async (e) => {

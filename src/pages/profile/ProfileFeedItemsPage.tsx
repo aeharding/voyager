@@ -74,7 +74,7 @@ export default function ProfileFeedItemsPage({
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonTitle>{type}</IonTitle>
           <IonButtons slot="start">

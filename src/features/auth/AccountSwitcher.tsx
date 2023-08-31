@@ -48,7 +48,7 @@ export default function AccountSwitcher({
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             {editing ? (

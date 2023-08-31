@@ -53,7 +53,7 @@ export default function RepliesPage({ type }: RepliesPageProps) {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/inbox" text="Boxes" />

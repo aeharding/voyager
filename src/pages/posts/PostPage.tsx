@@ -102,7 +102,7 @@ export default function PostPage() {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader translucent>
         <IonToolbar>
           <IonButtons slot="start">
             <AppBackButton
