@@ -4,6 +4,7 @@ import { pencil } from "ionicons/icons";
 import { MouseEvent, useMemo } from "react";
 import { formatRelative } from "./Ago";
 import styled from "@emotion/styled";
+import { fixLemmyDateString } from "../../helpers/date";
 
 const Container = styled.div`
   display: flex;
@@ -46,7 +47,9 @@ export default function Edited({ item, showDate, className }: EditedProps) {
 
     present({
       header: `Edited ${formatRelative(edited)} Ago`,
-      message: `Last edited on ${new Date(`${edited}Z`).toLocaleTimeString()}`,
+      message: `Last edited on ${new Date(
+        fixLemmyDateString(edited),
+      ).toLocaleTimeString()}`,
       buttons: ["OK"],
     });
   }
