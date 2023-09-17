@@ -7,6 +7,7 @@ import Handle from "../Handle";
 import { StyledLink } from "./shared";
 import { useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
+import { fixLemmyDateString } from "../../../helpers/date";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -44,7 +45,7 @@ export default function PersonLink({
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
   const today = new Date();
-  const cakeDate = new Date(person.published);
+  const cakeDate = new Date(fixLemmyDateString(person.published));
   const isCakeDay =
     today.getDate() === cakeDate.getDate() &&
     today.getMonth() === cakeDate.getMonth();
