@@ -1,5 +1,5 @@
 # stage 0: set base image w/common customizations
-FROM docker.io/library/node:lts-alpine AS base
+FROM docker.io/library/node:lts-alpine@sha256:619ce27eb37c7c0476bd518085bf1ba892e2148fc1ab5dbaff2f20c56e50444d AS base
 
 # Prepare work directory
 WORKDIR /voyager

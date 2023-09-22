@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Build iOS on Appflow
-        uses: ionic-team/appflow-build@v1
+        uses: ionic-team/appflow-build@71a31db2d31237f18473cb3235fa7c27302136dc # v1
         with:
           token: ${{ secrets.APPFLOW_TOKEN }}
           app-id: 9f0851ec
@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Build Android on Appflow
-        uses: ionic-team/appflow-build@v1
+        uses: ionic-team/appflow-build@71a31db2d31237f18473cb3235fa7c27302136dc # v1
         with:
           token: ${{ secrets.APPFLOW_TOKEN }}
           app-id: 9f0851ec
@@ -47,19 +47,19 @@ jobs:
 
     steps:
       - name: Download iOS Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
         with:
           name: iOS-Build.zip
           path: artifacts/ios
 
       - name: Download Android Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
         with:
           name: Android-Build.zip
           path: artifacts/android
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
         with:
           generate_release_notes: true
           files: |

@@ -23,19 +23,19 @@ dependencies:
 
 devDependencies:
   '@capacitor-community/app-icon':
-    specifier: npm:voyager-capacitor-app-icon@^4.1.0
+    specifier: npm:voyager-capacitor-app-icon@4.1.0
     version: /voyager-capacitor-app-icon@4.1.0(@capacitor/core@5.2.3)
   '@capacitor/android':
     specifier: 5.2.3
     version: 5.2.3(@capacitor/core@5.2.3)
   '@capacitor/app':
-    specifier: ^5.0.6
+    specifier: 5.0.6
     version: 5.0.6(@capacitor/core@5.2.3)
   '@capacitor/assets':
-    specifier: ^2.0.4
+    specifier: 2.0.4
     version: 2.0.4(@types/node@20.5.0)(typescript@5.1.6)
   '@capacitor/browser':
-    specifier: ^5.0.6
+    specifier: 5.0.6
     version: 5.0.6(@capacitor/core@5.2.3)
   '@capacitor/cli':
     specifier: 5.2.3
@@ -44,76 +44,76 @@ devDependencies:
     specifier: 5.2.3
     version: 5.2.3
   '@capacitor/haptics':
-    specifier: npm:voyager-capacitor-haptics@^5.0.7
+    specifier: npm:voyager-capacitor-haptics@5.0.7
     version: /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.2.3)
   '@capacitor/ios':
     specifier: 5.2.3
     version: 5.2.3(@capacitor/core@5.2.3)
   '@capacitor/keyboard':
-    specifier: ^5.0.6
+    specifier: 5.0.6
     version: 5.0.6(@capacitor/core@5.2.3)
   '@capacitor/share':
-    specifier: ^5.0.6
+    specifier: 5.0.6
     version: 5.0.6(@capacitor/core@5.2.3)
   '@capacitor/status-bar':
-    specifier: ^5.0.6
+    specifier: 5.0.6
     version: 5.0.6(@capacitor/core@5.2.3)
   '@emotion/babel-plugin':
-    specifier: ^11.11.0
+    specifier: 11.11.0
     version: 11.11.0
   '@emotion/css':
-    specifier: ^11.11.2
+    specifier: 11.11.2
     version: 11.11.2
   '@emotion/eslint-plugin':
-    specifier: ^11.11.0
+    specifier: 11.11.0
     version: 11.11.0(eslint@8.47.0)
   '@emotion/react':
-    specifier: ^11.11.1
+    specifier: 11.11.1
     version: 11.11.1(@types/react@18.2.20)(react@18.2.0)
   '@emotion/styled':
-    specifier: ^11.11.0
+    specifier: 11.11.0
     version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.20)(react@18.2.0)
   '@github/markdown-toolbar-element':
-    specifier: ^2.2.0
+    specifier: 2.2.0
     version: 2.2.0
   '@ionic/core':
     specifier: npm:voyager-ionic-core@^7.2.3-tweak.1
     version: /voyager-ionic-core@7.2.3-tweak.1
   '@ionic/react':
-    specifier: ^7.2.3
+    specifier: 7.2.3
     version: 7.2.3(react-dom@18.2.0)(react@18.2.0)
   '@ionic/react-router':
-    specifier: ^7.2.3
+    specifier: 7.2.3
     version: 7.2.3(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
   '@reduxjs/toolkit':
-    specifier: ^1.9.5
+    specifier: 1.9.5
     version: 1.9.5(react-redux@8.1.2)(react@18.2.0)
   '@testing-library/jest-dom':
-    specifier: ^6.0.0
+    specifier: 6.0.0
     version: 6.0.0(@types/jest@29.5.3)(vitest@0.34.1)
   '@testing-library/react':
-    specifier: ^14.0.0
+    specifier: 14.0.0
     version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
   '@testing-library/user-event':
-    specifier: ^14.4.3
+    specifier: 14.4.3
     version: 14.4.3(@testing-library/dom@9.3.1)
   '@trapezedev/configure':
-    specifier: ^7.0.10
+    specifier: 7.0.10
     version: 7.0.10(@types/node@20.5.0)(typescript@5.1.6)
   '@types/history':
-    specifier: ^4.0.0
+    specifier: 4.5.0
     version: 4.5.0
   '@types/jest':
-    specifier: ^29.5.3
+    specifier: 29.5.3
     version: 29.5.3
   '@types/js-cookie':
-    specifier: ^3.0.3
+    specifier: 3.0.3
     version: 3.0.3
   '@types/lodash':
-    specifier: ^4.14.197
+    specifier: 4.14.197
     version: 4.14.197
   '@types/mdast':
-    specifier: ^4.0.0
+    specifier: 4.0.0
     version: 4.0.0
   '@types/react':
     specifier: ^18.2.20
@@ -122,190 +122,190 @@ devDependencies:
     specifier: ^18.2.7
     version: 18.2.7
   '@types/react-router':
-    specifier: ^5.1.20
+    specifier: 5.1.20
     version: 5.1.20
   '@types/react-router-dom':
-    specifier: ^5.3.3
+    specifier: 5.3.3
     version: 5.3.3
   '@types/ua-parser-js':
-    specifier: ^0.7.36
+    specifier: 0.7.36
     version: 0.7.36
   '@types/uuid':
-    specifier: ^9.0.2
+    specifier: 9.0.2
     version: 9.0.2
   '@typescript-eslint/eslint-plugin':
-    specifier: ^6.3.0
+    specifier: 6.3.0
     version: 6.3.0(@typescript-eslint/parser@6.3.0)(eslint@8.47.0)(typescript@5.1.6)
   '@typescript-eslint/parser':
-    specifier: ^6.3.0
+    specifier: 6.3.0
     version: 6.3.0(eslint@8.47.0)(typescript@5.1.6)
   '@vitejs/plugin-legacy':
-    specifier: ^4.1.1
+    specifier: 4.1.1
     version: 4.1.1(terser@5.19.2)(vite@4.4.9)
   '@vitejs/plugin-react':
-    specifier: ^4.0.4
+    specifier: 4.0.4
     version: 4.0.4(vite@4.4.9)
   capacitor-android-nav-mode:
-    specifier: ^0.0.1
+    specifier: 0.0.1
     version: 0.0.1(@capacitor/core@5.2.3)
   capacitor-application-context:
-    specifier: ^0.0.1
+    specifier: 0.0.1
     version: 0.0.1(@capacitor/core@5.2.3)
   capacitor-plugin-safe-area:
-    specifier: ^2.0.5
+    specifier: 2.0.5
     version: 2.0.5(@capacitor/core@5.2.3)
   capacitor-set-version:
-    specifier: ^2.0.13
+    specifier: 2.0.13
     version: 2.0.13(@types/node@20.5.0)(typescript@5.1.6)
   capacitor-stash-media:
-    specifier: ^0.0.6
+    specifier: 0.0.6
     version: 0.0.6(@capacitor/core@5.2.3)
   date-fns:
-    specifier: ^2.30.0
+    specifier: 2.30.0
     version: 2.30.0
   dexie:
-    specifier: ^3.2.4
+    specifier: 3.2.4
     version: 3.2.4
   dexie-react-hooks:
-    specifier: ^1.1.6
+    specifier: 1.1.6
     version: 1.1.6(@types/react@18.2.20)(dexie@3.2.4)(react@18.2.0)
   eslint:
-    specifier: ^8.47.0
+    specifier: 8.47.0
     version: 8.47.0
   eslint-config-prettier:
-    specifier: ^9.0.0
+    specifier: 9.0.0
     version: 9.0.0(eslint@8.47.0)
   eslint-plugin-prettier:
-    specifier: ^5.0.0
+    specifier: 5.0.0
     version: 5.0.0(eslint-config-prettier@9.0.0)(eslint@8.47.0)(prettier@3.0.1)
   eslint-plugin-react:
-    specifier: ^7.33.1
+    specifier: 7.33.1
     version: 7.33.1(eslint@8.47.0)
   eslint-plugin-react-hooks:
-    specifier: ^4.6.0
+    specifier: 4.6.0
     version: 4.6.0(eslint@8.47.0)
   history:
-    specifier: ^4.9.0
+    specifier: 4.9.0
     version: 4.9.0
   ionicons:
-    specifier: ^7.1.2
+    specifier: 7.1.2
     version: 7.1.2
   js-cookie:
-    specifier: ^3.0.5
+    specifier: 3.0.5
     version: 3.0.5
   jsdom:
-    specifier: ^22.1.0
+    specifier: 22.1.0
     version: 22.1.0
   lemmy-js-client:
     specifier: 0.18.0
     version: 0.18.0
   lodash:
-    specifier: ^4.17.21
+    specifier: 4.17.21
     version: 4.17.21
   mdast-util-gfm-autolink-literal-lemmy:
-    specifier: ^1.0.0
+    specifier: 1.0.3
     version: 1.0.3
   mdast-util-gfm-strikethrough:
-    specifier: ^1.0.0
+    specifier: 1.0.3
     version: 1.0.3
   mdast-util-gfm-table:
-    specifier: ^1.0.0
+    specifier: 1.0.7
     version: 1.0.7
   micromark:
-    specifier: ^3.0.0
+    specifier: 3.2.0
     version: 3.2.0
   micromark-extension-gfm-strikethrough:
-    specifier: ^1.0.0
+    specifier: 1.0.7
     version: 1.0.7
   micromark-extension-gfm-table:
-    specifier: ^1.0.0
+    specifier: 1.0.7
     version: 1.0.7
   micromark-util-combine-extensions:
-    specifier: ^1.0.0
+    specifier: 1.1.0
     version: 1.1.0
   photoswipe:
-    specifier: ^5.3.8
+    specifier: 5.3.8
     version: 5.3.8
   prettier:
-    specifier: ^3.0.1
+    specifier: 3.0.1
     version: 3.0.1
   pwa-asset-generator:
-    specifier: ^6.3.1
+    specifier: 6.3.1
     version: 6.3.1
   react:
-    specifier: ^18.2.0
+    specifier: 18.2.0
     version: 18.2.0
   react-animate-height:
-    specifier: ^3.2.2
+    specifier: 3.2.2
     version: 3.2.2(react-dom@18.2.0)(react@18.2.0)
   react-dom:
-    specifier: ^18.2.0
+    specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
   react-markdown:
-    specifier: ^8.0.7
+    specifier: 8.0.7
     version: 8.0.7(@types/react@18.2.20)(react@18.2.0)
   react-redux:
-    specifier: ^8.1.2
+    specifier: 8.1.2
     version: 8.1.2(@types/react-dom@18.2.7)(@types/react@18.2.20)(react-dom@18.2.0)(react@18.2.0)(redux@4.2.1)
   react-router:
-    specifier: ^5.3.4
+    specifier: 5.3.4
     version: 5.3.4(react@18.2.0)
   react-router-dom:
-    specifier: ^5.3.4
+    specifier: 5.3.4
     version: 5.3.4(react@18.2.0)
   react-textarea-autosize:
-    specifier: ^8.5.2
+    specifier: 8.5.2
     version: 8.5.2(@types/react@18.2.20)(react@18.2.0)
   react-transition-state:
-    specifier: ^2.1.1
+    specifier: 2.1.1
     version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
   react-virtuoso:
-    specifier: ^4.5.0
+    specifier: 4.5.0
     version: 4.5.0(react-dom@18.2.0)(react@18.2.0)
   release-it:
-    specifier: ^16.1.5
+    specifier: 16.1.5
     version: 16.1.5
   remark-gfm:
-    specifier: ^3.0.1
+    specifier: 3.0.1
     version: 3.0.1
   terser:
-    specifier: ^5.19.2
+    specifier: 5.19.2
     version: 5.19.2
   typescript:
-    specifier: ^5.1.6
+    specifier: 5.1.6
     version: 5.1.6
   ua-parser-js:
-    specifier: ^1.0.35
+    specifier: 1.0.35
     version: 1.0.35
   unified:
-    specifier: ^10.1.2
+    specifier: 10.1.2
     version: 10.1.2
   unist-util-visit:
-    specifier: ^5.0.0
+    specifier: 5.0.0
     version: 5.0.0
   use-long-press:
-    specifier: ^3.1.5
+    specifier: 3.1.5
     version: 3.1.5(react@18.2.0)
   usehooks-ts:
-    specifier: ^2.9.1
+    specifier: 2.9.1
     version: 2.9.1(react-dom@18.2.0)(react@18.2.0)
   uuid:
-    specifier: ^9.0.0
+    specifier: 9.0.0
     version: 9.0.0
   vite:
-    specifier: ^4.4.9
+    specifier: 4.4.9
     version: 4.4.9(@types/node@20.5.0)(terser@5.19.2)
   vite-plugin-pwa:
-    specifier: ^0.16.4
+    specifier: 0.16.4
     version: 0.16.4(vite@4.4.9)(workbox-build@7.0.0)(workbox-window@7.0.0)
   vite-plugin-svgr:
-    specifier: ^3.2.0
+    specifier: 3.2.0
     version: 3.2.0(rollup@2.79.1)(vite@4.4.9)
   vitest:
-    specifier: ^0.34.1
+    specifier: 0.34.1
     version: 0.34.1(jsdom@22.1.0)(terser@5.19.2)
   workbox-window:
-    specifier: ^7.0.0
+    specifier: 7.0.0
     version: 7.0.0
 
 packages:
@@ -2262,6 +2262,7 @@ packages:
   /@oclif/color@1.0.10:
     resolution: {integrity: sha512-INWEDAL3SzzR3pIhkrqk22HV6JravLUeRZXAIpoQqIeLReauaibCVcNTzOlt0z0S8YrqRhksc54ZxZC4Oa8xBw==}
     engines: {node: '>=12.0.0'}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     dependencies:
       ansi-styles: 4.3.0
       chalk: 4.1.2
