@@ -254,8 +254,8 @@ devDependencies:
     specifier: 5.3.4
     version: 5.3.4(react@18.2.0)
   react-textarea-autosize:
-    specifier: 8.5.2
-    version: 8.5.2(@types/react@18.2.20)(react@18.2.0)
+    specifier: 8.5.3
+    version: 8.5.3(@types/react@18.2.20)(react@18.2.0)
   react-transition-state:
     specifier: 2.1.1
     version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
@@ -9429,8 +9429,8 @@ packages:
       tiny-warning: 1.0.3
     dev: true
 
-  /react-textarea-autosize@8.5.2(@types/react@18.2.20)(react@18.2.0):
-    resolution: {integrity: sha512-uOkyjkEl0ByEK21eCJMHDGBAAd/BoFQBawYK5XItjAmCTeSbjxghd8qnt7nzsLYzidjnoObu6M26xts0YGKsGg==}
+  /react-textarea-autosize@8.5.3(@types/react@18.2.20)(react@18.2.0):
+    resolution: {integrity: sha512-XT1024o2pqCuZSuBt9FwHlaDeNtVrtCXu0Rnz88t1jUGheCLa3PhjE1GH8Ctm2axEtvdCl5SUHYschyQ0L5QHQ==}
     engines: {node: '>=10'}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0

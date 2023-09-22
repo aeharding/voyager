@@ -106,7 +106,7 @@
     "react-redux": "8.1.2",
     "react-router": "5.3.4",
     "react-router-dom": "5.3.4",
-    "react-textarea-autosize": "8.5.2",
+    "react-textarea-autosize": "8.5.3",
     "react-transition-state": "2.1.1",
     "react-virtuoso": "4.5.0",
     "release-it": "16.1.5",
