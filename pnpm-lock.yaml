@@ -90,7 +90,7 @@ devDependencies:
     version: 1.9.5(react-redux@8.1.2)(react@18.2.0)
   '@testing-library/jest-dom':
     specifier: 6.0.0
-    version: 6.0.0(@types/jest@29.5.3)(vitest@0.34.1)
+    version: 6.0.0(@types/jest@29.5.5)(vitest@0.34.1)
   '@testing-library/react':
     specifier: 14.0.0
     version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
@@ -104,8 +104,8 @@ devDependencies:
     specifier: 4.5.0
     version: 4.5.0
   '@types/jest':
-    specifier: 29.5.3
-    version: 29.5.3
+    specifier: 29.5.5
+    version: 29.5.5
   '@types/js-cookie':
     specifier: 3.0.3
     version: 3.0.3
@@ -2866,7 +2866,7 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@testing-library/jest-dom@6.0.0(@types/jest@29.5.3)(vitest@0.34.1):
+  /@testing-library/jest-dom@6.0.0(@types/jest@29.5.5)(vitest@0.34.1):
     resolution: {integrity: sha512-Ye2R3+/oM27jir8CzYPmuWdavTaKwNZcu0d22L9pO/vnOYE0wmrtpw79TQJa8H6gV8/i7yd+pLaqeLlA0rTMfg==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
     peerDependencies:
@@ -2886,7 +2886,7 @@ packages:
     dependencies:
       '@adobe/css-tools': 4.3.1
       '@babel/runtime': 7.22.10
-      '@types/jest': 29.5.3
+      '@types/jest': 29.5.5
       aria-query: 5.3.0
       chalk: 3.0.0
       css.escape: 1.5.1
@@ -3189,8 +3189,8 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@types/jest@29.5.3:
-    resolution: {integrity: sha512-1Nq7YrO/vJE/FYnqYyw0FS8LdrjExSgIiHyKg7xPpn+yi8Q4huZryKnkJatN1ZRH89Kw2v33/8ZMB7DuZeSLlA==}
+  /@types/jest@29.5.5:
+    resolution: {integrity: sha512-ebylz2hnsWR9mYvmBFbXJXr+33UPc4+ZdxyDXh5w0FlPBTfCVN3wPL+kuOiQt3xvrK419v7XWeAs+AeOksafXg==}
     dependencies:
       expect: 29.6.2
       pretty-format: 29.6.2
