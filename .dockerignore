@@ -3,6 +3,7 @@
 .github/
 .gitignore
 .prettierignore
+.pnpm-store
 .vscode/
 
 node_modules
