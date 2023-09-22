@@ -62,6 +62,12 @@ export const PageContext = createContext<IPageContext>({
   presentSelectText: () => {},
 });
 
+export function usePageContext() {
+  const pageConext = React.useContext(PageContext);
+
+  return pageConext;
+}
+
 interface PageContextProvider {
   value: Pick<IPageContext, "pageRef">;
   children: React.ReactNode;

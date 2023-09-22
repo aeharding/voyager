@@ -1,6 +1,11 @@
 import styled from "@emotion/styled";
 import { IonIcon, IonItem } from "@ionic/react";
-import { chevronDownOutline } from "ionicons/icons";
+import {
+  arrowUndoOutline,
+  bookmark,
+  bookmarkOutline,
+  chevronDownOutline,
+} from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
 import React, { useEffect, useRef } from "react";
@@ -13,13 +18,14 @@ import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 import CommentEllipsis from "./CommentEllipsis";
-import { useAppSelector } from "../../store";
+import { useAppSelector, useComment } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
 import {
   scrollIntoView as scrollIntoView,
   useScrollIntoViewWorkaround,
 } from "../../helpers/dom";
+import { usePageContext } from "../auth/PageContext";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -193,7 +199,7 @@ interface CommentProps {
 export default function Comment({
   comment: commentView,
   highlightedCommentId,
-  depth,
+  depth = 0,
   onClick,
   collapsed,
   fullyCollapsed,
@@ -209,6 +215,8 @@ export default function Comment({
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentById[commentView.comment.id] ?? commentView.comment;
 
+  // Effects
+  // ------------------------------------------------------------------------ //
   useEffect(() => {
     if (highlightedCommentId !== comment.id) return;
 
@@ -233,21 +241,19 @@ export default function Comment({
         <CustomIonItem
           routerLink={routerLink}
           href={undefined}
-          onClick={() => onClick?.()}
           ref={commentRef}
         >
           <PositionedContainer
-            depth={depth || 0}
+            depth={depth}
             highlighted={highlightedCommentId === comment.id}
           >
-            <Container depth={depth || 0}>
-              <Header>
+            <Container depth={depth}>
+              <Header onClick={() => onClick?.()}>
                 <StyledPersonLabel
                   person={commentView.creator}
                   opId={commentView.post.creator_id}
                   distinguished={comment.distinguished}
                 />
-                <Vote item={commentView} />
                 <Edited item={commentView} />
                 <div
                   css={css`
@@ -281,6 +287,16 @@ export default function Comment({
                 >
                   <CommentContent item={comment} />
                   {context}
+                  <Header>
+                    <Vote item={commentView} />
+                    <div
+                      css={css`
+                        flex: 1;
+                      `}
+                    />
+                    <Bookmark commentView={commentView} />
+                    <Reply commentView={commentView} />
+                  </Header>
                 </Content>
               </AnimateHeight>
             </Container>
@@ -290,4 +306,65 @@ export default function Comment({
       </SlidingNestedCommentVote>
     </AnimateHeight>
   );
+}
+
+interface BookmarkProps {
+  commentView: CommentView;
+}
+
+function Bookmark({ commentView }: BookmarkProps) {
+  const { commentSavedById, commentById } = useComment();
+  const { presentLoginIfNeeded } = usePageContext();
+
+  const comment = commentById[commentView.comment.id] ?? commentView.comment;
+
+  const isSaved = commentSavedById[comment.id] ?? commentView.saved;
+
+  // HTMLIonIconElement is a global type for some reaseon 😑
+  // eslint-disable-next-line no-undef
+  const handleClick: React.MouseEventHandler<HTMLIonIconElement> =
+    React.useCallback(
+      (event) => {
+        if (presentLoginIfNeeded()) {
+          return;
+        }
+
+        event.stopPropagation();
+        event.preventDefault();
+      },
+      [presentLoginIfNeeded],
+    );
+
+  return (
+    <IonIcon
+      onClick={handleClick}
+      icon={isSaved ? bookmark : bookmarkOutline}
+    />
+  );
+}
+
+interface ReplyProps {
+  commentView: CommentView;
+}
+
+function Reply({ commentView }: ReplyProps) {
+  const { presentCommentReply, presentLoginIfNeeded } = usePageContext();
+
+  // HTMLIonIconElement is a global type for some reaseon 😑
+  // eslint-disable-next-line no-undef
+  const handleClick: React.MouseEventHandler<HTMLIonIconElement> =
+    React.useCallback(
+      (event) => {
+        if (presentLoginIfNeeded()) {
+          return;
+        }
+
+        event.stopPropagation();
+        event.preventDefault();
+        presentCommentReply(commentView);
+      },
+      [commentView, presentCommentReply, presentLoginIfNeeded],
+    );
+
+  return <IonIcon onClick={handleClick} icon={arrowUndoOutline} />;
 }

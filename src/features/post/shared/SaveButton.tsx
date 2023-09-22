@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { IonIcon, useIonToast } from "@ionic/react";
-import { MouseEvent, useContext } from "react";
-import { PageContext } from "../../auth/PageContext";
+import { MouseEvent } from "react";
+import { usePageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { savePost } from "../postSlice";
 import { css } from "@emotion/react";
@@ -32,7 +32,7 @@ interface SaveButtonProps {
 export function SaveButton({ postId }: SaveButtonProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = usePageContext();
   const vibrate = useHapticFeedback();
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);

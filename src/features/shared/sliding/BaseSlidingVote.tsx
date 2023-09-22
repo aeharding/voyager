@@ -27,7 +27,7 @@ import {
 } from "../../post/postSlice";
 import { voteError } from "../../../helpers/toastMessages";
 import { saveComment, voteOnComment } from "../../comment/commentSlice";
-import { PageContext } from "../../auth/PageContext";
+import { usePageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
@@ -90,7 +90,7 @@ function BaseSlidingVoteInternal({
   actions,
   onHide,
 }: BaseSlidingVoteProps) {
-  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
+  const { presentLoginIfNeeded, presentCommentReply } = usePageContext();
   const { prependComments } = useContext(CommentsContext);
 
   const [present] = useIonToast();

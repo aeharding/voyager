@@ -19,13 +19,13 @@ import {
 } from "ionicons/icons";
 import { useAppDispatch } from "../../store";
 import { getInboxCounts } from "../../features/inbox/inboxSlice";
-import { MouseEvent, useContext } from "react";
-import { PageContext } from "../../features/auth/PageContext";
+import { MouseEvent } from "react";
+import { usePageContext } from "../../features/auth/PageContext";
 
 export default function BoxesPage() {
   const dispatch = useAppDispatch();
 
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = usePageContext();
 
   useIonViewWillEnter(() => {
     dispatch(getInboxCounts());

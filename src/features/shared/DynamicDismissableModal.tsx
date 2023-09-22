@@ -1,12 +1,6 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useIonActionSheet } from "@ionic/react";
-import { PageContext } from "../auth/PageContext";
+import { usePageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
 import { useAppSelector } from "../../store";
@@ -30,7 +24,7 @@ export function DynamicDismissableModal({
   isOpen,
   children: renderModalContents,
 }: DynamicDismissableModalProps) {
-  const pageContext = useContext(PageContext);
+  const pageContext = usePageContext();
   const location = useLocation();
   const iss = useAppSelector(jwtIssSelector);
 

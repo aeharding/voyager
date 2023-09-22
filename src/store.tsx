@@ -83,3 +83,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return <Provider store={store}>{children}</Provider>;
 }
+
+export function useComment() {
+  const comment = useAppSelector((state) => state.comment);
+
+  return comment;
+}

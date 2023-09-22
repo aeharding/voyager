@@ -46,17 +46,21 @@ export default function UpdateAppPage() {
     checkForUpdates();
   }, [checkForUpdates]);
 
+  // Update when outdated and on home
+  useEffect(() => {
+    const paths = location.pathname.split("/");
+    if (status === "outdated" && paths[1] === "posts" && paths[3] === "home") {
+      updateServiceWorker();
+    }
+  }, [status, updateServiceWorker]);
+
   async function onInstallUpdate() {
     setLoading(true);
 
     try {
       await updateServiceWorker();
     } finally {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Sometimes updateServiceWorker() doesn't refresh in Safari,
-      // even though the page needs refresh?!
-      location.reload();
+      setTimeout(() => location.reload(), 1000);
     }
   }
 

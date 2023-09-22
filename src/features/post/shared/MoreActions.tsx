@@ -21,7 +21,6 @@ import {
   textOutline,
   trashOutline,
 } from "ionicons/icons";
-import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { PostView } from "lemmy-js-client";
 import {
@@ -35,7 +34,7 @@ import {
 import { getHandle, getRemoteHandle, share } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { notEmpty } from "../../../helpers/array";
-import { PageContext } from "../../auth/PageContext";
+import { usePageContext } from "../../auth/PageContext";
 import { saveError, voteError } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
 import {
@@ -70,7 +69,7 @@ export default function MoreActions({
     presentReport,
     presentPostEditor,
     presentSelectText,
-  } = useContext(PageContext);
+  } = usePageContext();
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const postSavedById = useAppSelector((state) => state.post.postSavedById);

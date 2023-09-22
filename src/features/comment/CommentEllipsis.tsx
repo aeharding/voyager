@@ -31,7 +31,7 @@ import {
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { saveError, voteError } from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { PageContext } from "../auth/PageContext";
+import { usePageContext } from "../auth/PageContext";
 import { handleSelector, isDownvoteEnabledSelector } from "../auth/authSlice";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
@@ -49,7 +49,7 @@ interface MoreActionsProps {
   rootIndex: number | undefined;
 }
 
-export default function MoreActions({
+export default function CommentEllipsis({
   comment: commentView,
   rootIndex,
 }: MoreActionsProps) {
@@ -75,7 +75,7 @@ export default function MoreActions({
     presentCommentEdit,
     presentReport,
     presentSelectText,
-  } = useContext(PageContext);
+  } = usePageContext();
 
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById,

@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
 import { IonIcon, useIonToast } from "@ionic/react";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { voteOnPost } from "../postSlice";
 import { css } from "@emotion/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
-import { PageContext } from "../../auth/PageContext";
+import { usePageContext } from "../../auth/PageContext";
 import { isDownvoteEnabledSelector } from "../../auth/authSlice";
 import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
 import { useTransition } from "react-transition-state";
@@ -40,7 +40,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
   const vibrate = useHapticFeedback();
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = usePageContext();
   const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);

@@ -2,12 +2,12 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { PrivateMessageView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useClient from "../../../helpers/useClient";
 import { getInboxCounts, receivedMessages } from "../inboxSlice";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { jwtSelector } from "../../auth/authSlice";
-import { PageContext } from "../../auth/PageContext";
+import { usePageContext } from "../../auth/PageContext";
 import { useLongPress } from "use-long-press";
 import Markdown from "../../shared/Markdown";
 
@@ -109,7 +109,7 @@ interface MessageProps {
 
 export default function Message({ message }: MessageProps) {
   const dispatch = useAppDispatch();
-  const { presentReport } = useContext(PageContext);
+  const { presentReport } = usePageContext();
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );

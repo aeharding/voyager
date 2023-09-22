@@ -17,8 +17,7 @@ import {
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import { PostView } from "lemmy-js-client";
-import { PageContext } from "../auth/PageContext";
-import { useContext } from "react";
+import { usePageContext } from "../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { savePost } from "../post/postSlice";
 import { saveError } from "../../helpers/toastMessages";
@@ -41,7 +40,7 @@ export default function GalleryMoreActions({
   const [presentActionSheet] = useIonActionSheet();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = usePageContext();
   const [presentToast] = useIonToast();
   const dispatch = useAppDispatch();
 

@@ -6,14 +6,7 @@ import Embed from "../shared/Embed";
 import Comments, { CommentsHandle } from "../../comment/Comments";
 import Markdown from "../../shared/Markdown";
 import PostActions from "../actions/PostActions";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { findLoneImage } from "../../../helpers/markdown";
 import { setPostRead } from "../postSlice";
 import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
@@ -27,7 +20,7 @@ import CommunityLink from "../../labels/links/CommunityLink";
 import Video from "../../shared/Video";
 import { css } from "@emotion/react";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
-import { PageContext } from "../../auth/PageContext";
+import { usePageContext } from "../../auth/PageContext";
 import PostGalleryImg from "../../gallery/PostGalleryImg";
 import { scrollIntoView } from "../../../helpers/dom";
 import JumpFab from "../../comment/JumpFab";
@@ -141,7 +134,7 @@ export default function PostDetail({
     (state) => state.settings.general.comments,
   );
   const titleRef = useRef<HTMLDivElement>(null);
-  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
+  const { presentLoginIfNeeded, presentCommentReply } = usePageContext();
   const [ionViewEntered, setIonViewEntered] = useState(false);
   const commentsRef = useRef<CommentsHandle>(null);
 

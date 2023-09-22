@@ -17,7 +17,7 @@ import {
   tabletPortraitOutline,
   eyeOffOutline,
 } from "ionicons/icons";
-import { useContext, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import {
   addFavorite,
@@ -32,7 +32,7 @@ import {
 } from "../auth/authSlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { checkIsMod } from "../../helpers/lemmy";
-import { PageContext } from "../auth/PageContext";
+import { usePageContext } from "../auth/PageContext";
 import {
   allNSFWHidden,
   buildBlocked,
@@ -55,11 +55,9 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const isAdmin = useAppSelector(isAdminSelector);
   const localUser = useAppSelector(localUserSelector);
   const [presentActionSheet] = useIonActionSheet();
-  const { presentPostEditor } = useContext(PageContext);
+  const { presentPostEditor, presentLoginIfNeeded } = usePageContext();
 
   const hidePosts = useHidePosts();
-
-  const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle,

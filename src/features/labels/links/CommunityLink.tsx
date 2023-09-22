@@ -22,8 +22,7 @@ import {
   heartOutline,
   removeCircleOutline,
 } from "ionicons/icons";
-import { useContext } from "react";
-import { PageContext } from "../../auth/PageContext";
+import { usePageContext } from "../../auth/PageContext";
 
 interface CommunityLinkProps {
   community: Community;
@@ -42,7 +41,7 @@ export default function CommunityLink({
   const dispatch = useAppDispatch();
   const [present] = useIonActionSheet();
   const [presentToast] = useIonToast();
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = usePageContext();
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle,

@@ -4,9 +4,9 @@ import {
   mailOutline,
   removeCircleOutline,
 } from "ionicons/icons";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { PageContext } from "../auth/PageContext";
+import { usePageContext } from "../auth/PageContext";
 import { useUserDetails } from "./useUserDetails";
 
 interface UserPageActionsProps {
@@ -15,7 +15,7 @@ interface UserPageActionsProps {
 
 export default function UserPageActions({ handle }: UserPageActionsProps) {
   const [open, setOpen] = useState(false);
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = usePageContext();
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { isBlocked, blockOrUnblock } = useUserDetails(handle);

@@ -1,7 +1,7 @@
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getHandle } from "../../helpers/lemmy";
-import { PageContext } from "../auth/PageContext";
+import { usePageContext } from "../auth/PageContext";
 import { blockUser } from "./userSlice";
 import { useIonToast } from "@ionic/react";
 import { buildBlocked, problemBlockingUser } from "../../helpers/toastMessages";
@@ -16,7 +16,7 @@ export function useUserDetails(handle: string) {
   );
   const userByHandle = useAppSelector((state) => state.user.userByHandle);
   const user = userByHandle[handle];
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = usePageContext();
   const dispatch = useAppDispatch();
   const [present] = useIonToast();
 

@@ -24,12 +24,10 @@ const INITIAL_VALID_LEMMY_SERVERS = [
   "lemmy.sdf.org",
 ].concat(CUSTOM_LEMMY_SERVERS);
 
-const validLemmyServers = {};
-const badLemmyServers = {};
-
-INITIAL_VALID_LEMMY_SERVERS.forEach(
-  (server) => (validLemmyServers[server] = true),
+const validLemmyServers = Object.fromEntries(
+  INITIAL_VALID_LEMMY_SERVERS.map((server) => [server, true]),
 );
+const badLemmyServers = {};
 
 const app = express();
 
@@ -40,7 +38,8 @@ app.use(compression());
 app.use(PROXY_ENDPOINT, async (req, res, next) => {
   const actor = req.params.actor;
 
-  if (typeof validLemmyServers[actor] === "object") {
+  // Hack to make multiple requests wait until server is validated
+  if (validLemmyServers[actor] instanceof Promise) {
     await validLemmyServers[actor];
   }
 
@@ -82,6 +81,8 @@ app.use(PROXY_ENDPOINT, async (req, res, next) => {
       return {};
     }
   })();
+  // Hack to make multiple requests wait until server is validated
+  // Sets promise to in progress server
   validLemmyServers[actor] = nodeinfo;
 
   const json = await nodeinfo;

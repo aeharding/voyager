@@ -3,10 +3,10 @@ import { IonIcon, useIonToast } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
-import React, { useContext } from "react";
+import React from "react";
 import { voteOnComment } from "../comment/commentSlice";
 import { downvotesDisabled, voteError } from "../../helpers/toastMessages";
-import { PageContext } from "../auth/PageContext";
+import { usePageContext } from "../auth/PageContext";
 import {
   calculateTotalScore,
   calculateSeparateScore,
@@ -56,7 +56,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
   const myVote = votesById[id] ?? (item.my_vote as -1 | 0 | 1 | undefined) ?? 0;
   const canDownvote = useAppSelector(isDownvoteEnabledSelector);
 
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = usePageContext();
   const vibrate = useHapticFeedback();
 
   async function onVote(e: React.MouseEvent, vote: 0 | 1 | -1) {
@@ -118,6 +118,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
         </>
       );
     }
+
     case OVoteDisplayMode.Hide:
       return (
         <Container
@@ -129,6 +130,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
           <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} />
         </Container>
       );
+
     // Total score
     default: {
       const score = calculateTotalScore(item, votesById);
