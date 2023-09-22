@@ -87,7 +87,7 @@
     "ionicons": "7.1.2",
     "js-cookie": "3.0.5",
     "jsdom": "22.1.0",
-    "lemmy-js-client": "0.18.0",
+    "lemmy-js-client": "0.18.1",
     "lodash": "4.17.21",
     "mdast-util-gfm-autolink-literal-lemmy": "1.0.3",
     "mdast-util-gfm-strikethrough": "1.0.3",
