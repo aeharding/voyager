@@ -160,6 +160,12 @@ function getSortIcon(sort: ExtendedSortType): string {
       return calendarOutline;
     case "TopWeek":
       return calendarWeekIconSvg;
+    case "TopThreeMonths":
+      return calendarYearSvg;
+    case "TopSixMonths":
+      return calendarYearSvg;
+    case "TopNineMonths":
+      return calendarYearSvg;
     case "TopYear":
       return calendarYearSvg;
     case "TopAll":
