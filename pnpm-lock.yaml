@@ -275,8 +275,8 @@ devDependencies:
     specifier: 5.1.6
     version: 5.1.6
   ua-parser-js:
-    specifier: 1.0.35
-    version: 1.0.35
+    specifier: 1.0.36
+    version: 1.0.36
   unified:
     specifier: 10.1.2
     version: 10.1.2
@@ -10861,8 +10861,8 @@ packages:
     hasBin: true
     dev: true
 
-  /ua-parser-js@1.0.35:
-    resolution: {integrity: sha512-fKnGuqmTBnIE+/KXSzCn4db8RTigUzw1AN0DmdU6hJovUTbYJKyqj+8Mt1c4VfRDnOVJnENmfYkIPZ946UrSAA==}
+  /ua-parser-js@1.0.36:
+    resolution: {integrity: sha512-znuyCIXzl8ciS3+y3fHJI/2OhQIXbXw9MWC/o3qwyR+RGppjZHrM27CGFSKCJXi2Kctiz537iOu2KnXs1lMQhw==}
     dev: true
 
   /ufo@1.2.0:
