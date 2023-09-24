@@ -209,8 +209,8 @@ devDependencies:
     specifier: 1.1.0
     version: 1.1.0
   photoswipe:
-    specifier: 5.3.8
-    version: 5.3.8
+    specifier: 5.4.1
+    version: 5.4.1
   prettier:
     specifier: 3.0.3
     version: 3.0.3
@@ -8676,8 +8676,8 @@ packages:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
     dev: true
 
-  /photoswipe@5.3.8:
-    resolution: {integrity: sha512-4vTzOQt8GP4Chsm0s+8j2xDtVHAEN252PxrU12A1zXauNn0zD5HRHgjALKO2GKTyBnTnOrJUOxbV8LTrFIMrYw==}
+  /photoswipe@5.4.1:
+    resolution: {integrity: sha512-iauO0fP4oMdZvjlXzeIe8um1fZatkGE0bqdoIwpb65jlo/KK1KhfD7Z51+0YhS2tC4FOoOtE1p0c4o/HbY1s2Q==}
     engines: {node: '>= 0.12.0'}
     dev: true
 
