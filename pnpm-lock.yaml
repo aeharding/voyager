@@ -269,8 +269,8 @@ devDependencies:
     specifier: 5.0.0
     version: 5.0.0
   use-long-press:
-    specifier: 3.1.5
-    version: 3.1.5(react@18.2.0)
+    specifier: 3.2.0
+    version: 3.2.0(react@18.2.0)
   usehooks-ts:
     specifier: 2.9.1
     version: 2.9.1(react-dom@18.2.0)(react@18.2.0)
@@ -10869,10 +10869,10 @@ packages:
       use-isomorphic-layout-effect: 1.1.2(@types/react@18.2.22)(react@18.2.0)
     dev: true
 
-  /use-long-press@3.1.5(react@18.2.0):
-    resolution: {integrity: sha512-bnwk2SlvLLpeJPkNYSGkc59q5YNV9V/fLDkSOAF2p7Xt0zw3iYHEmgEGkNYkK7zEIEyRFi5CczKsT7MN99UzVQ==}
+  /use-long-press@3.2.0(react@18.2.0):
+    resolution: {integrity: sha512-uq5o2qFR1VRjHn8Of7Fl344/AGvgk7C5Mcb4aSb1ZRVp6PkgdXJJLdRrlSTJQVkkQcDuqFbFc3mDX4COg7mRTA==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react: '>=16.8.0'
     dependencies:
       react: 18.2.0
     dev: true
