@@ -80,8 +80,8 @@ devDependencies:
     specifier: npm:voyager-ionic-core@^7.2.3-tweak.1
     version: /voyager-ionic-core@7.2.3-tweak.1
   '@ionic/react':
-    specifier: 7.2.3
-    version: 7.2.3(react-dom@18.2.0)(react@18.2.0)
+    specifier: 7.4.1
+    version: 7.4.1(react-dom@18.2.0)(react@18.2.0)
   '@ionic/react-router':
     specifier: 7.2.3
     version: 7.2.3(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
@@ -2069,6 +2069,19 @@ packages:
 
   /@ionic/react@7.2.3(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-yynxE2AdTd05wtYT1Cw3Gf2qSGy4VuUDk42M12CEtX00929oFDzbVATNnNqOOD14Kjwb9OUGJWYDzxS/VqqQxg==}
+    peerDependencies:
+      react: '>=16.8.6'
+      react-dom: '>=16.8.6'
+    dependencies:
+      '@ionic/core': /voyager-ionic-core@7.2.3-tweak.1
+      ionicons: 7.1.2
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      tslib: 2.6.1
+    dev: true
+
+  /@ionic/react@7.4.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-9ByyybeNJfchPCk7tz8/beKarjzF1yG7KZS1s2DMyUSFt7x2y3F3v6WrwG0xQgoYLNJYJIPmR+CKc/4eQeMbXA==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
