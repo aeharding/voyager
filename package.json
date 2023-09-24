@@ -99,7 +99,7 @@
     "react-textarea-autosize": "8.5.3",
     "react-transition-state": "2.1.1",
     "react-virtuoso": "4.6.0",
-    "release-it": "16.1.5",
+    "release-it": "16.2.0",
     "remark-gfm": "3.0.1",
     "terser": "5.20.0",
     "typescript": "5.2.2",
