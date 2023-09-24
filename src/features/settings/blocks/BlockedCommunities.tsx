@@ -5,6 +5,8 @@ import {
   IonLabel,
   IonList,
   IonLoading,
+  IonSegment,
+  IonSegmentButton,
 } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -17,9 +19,14 @@ import { ListHeader } from "../shared/formatting";
 export default function BlockedCommunities() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
+  const [sortOption, setSortOption] = useState<'default' | 'alphabetical'>('default');
   const communities = useAppSelector(
     (state) => state.auth.site?.my_user?.community_blocks
   );
+
+  const sortedCommunities = sortOption === 'alphabetical'
+    ? [...(communities || [])].sort((a, b) => a.community.name.localeCompare(b.community.name))
+    : communities || [];
 
   async function remove(community: CommunityBlockView) {
     setLoading(true);
@@ -36,9 +43,23 @@ export default function BlockedCommunities() {
       <ListHeader>
         <IonLabel>Blocked Communities</IonLabel>
       </ListHeader>
+      {/* Sorting Options */}
       <IonList inset>
-        {communities?.length ? (
-          communities.map((community) => (
+        <IonSegment
+          value={sortOption}
+          onIonChange={e => {
+            setSortOption(e.detail.value as 'default' | 'alphabetical');
+          }}
+        >
+          <IonSegmentButton value="default">
+            <IonLabel>Most Recent</IonLabel>
+          </IonSegmentButton>
+          <IonSegmentButton value="alphabetical">
+            <IonLabel>Alphabetical</IonLabel>
+          </IonSegmentButton>
+        </IonSegment>
+        {sortedCommunities?.length ? (
+          sortedCommunities.map((community) => (
             <IonItemSliding key={community.community.id}>
               <IonItemOptions side="end" onIonSwipe={() => remove(community)}>
                 <IonItemOption
