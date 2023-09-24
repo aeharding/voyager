@@ -245,8 +245,8 @@ devDependencies:
     specifier: 2.1.1
     version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
   react-virtuoso:
-    specifier: 4.5.0
-    version: 4.5.0(react-dom@18.2.0)(react@18.2.0)
+    specifier: 4.6.0
+    version: 4.6.0(react-dom@18.2.0)(react@18.2.0)
   release-it:
     specifier: 16.1.5
     version: 16.1.5
@@ -9178,8 +9178,8 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: true
 
-  /react-virtuoso@4.5.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-OMP6XrzJMMos1vbJZC16RxGW7utAxUMP7i5PNPi6epBNVH7nz+CF/DlmecNBep5wyjLud51dQ5epjb2A0w9W/Q==}
+  /react-virtuoso@4.6.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-paQbkLA8U6dRe9srltWgPeoFCtNKqUYIcOpUR01JyznzaXWVzgZQE0M9KGi9vMoq8vHvHkGzuxJ6jDCS6uzePg==}
     engines: {node: '>=10'}
     peerDependencies:
       react: '>=16 || >=17 || >= 18'

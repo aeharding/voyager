@@ -98,7 +98,7 @@
     "react-router-dom": "5.3.4",
     "react-textarea-autosize": "8.5.3",
     "react-transition-state": "2.1.1",
-    "react-virtuoso": "4.5.0",
+    "react-virtuoso": "4.6.0",
     "release-it": "16.1.5",
     "remark-gfm": "3.0.1",
     "terser": "5.19.2",
