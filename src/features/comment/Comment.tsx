@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { IonIcon, IonItem } from "@ionic/react";
+import { IonIcon, IonItem, useIonToast } from "@ionic/react";
 import {
   arrowUndoOutline,
   bookmark,
@@ -18,7 +18,7 @@ import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
 import CommentEllipsis from "./CommentEllipsis";
-import { useAppSelector, useComment } from "../../store";
+import { useAppDispatch, useAppSelector, useComment } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
 import {
@@ -26,6 +26,8 @@ import {
   useScrollIntoViewWorkaround,
 } from "../../helpers/dom";
 import { usePageContext } from "../auth/PageContext";
+import { saveComment } from "./commentSlice";
+import { saveError } from "../../helpers/toastMessages";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -315,9 +317,10 @@ interface BookmarkProps {
 function Bookmark({ commentView }: BookmarkProps) {
   const { commentSavedById, commentById } = useComment();
   const { presentLoginIfNeeded } = usePageContext();
+  const dispatch = useAppDispatch();
+  const [present] = useIonToast();
 
   const comment = commentById[commentView.comment.id] ?? commentView.comment;
-
   const isSaved = commentSavedById[comment.id] ?? commentView.saved;
 
   // HTMLIonIconElement is a global type for some reaseon 😑
@@ -331,8 +334,14 @@ function Bookmark({ commentView }: BookmarkProps) {
 
         event.stopPropagation();
         event.preventDefault();
+
+        try {
+          dispatch(saveComment(comment.id, !isSaved));
+        } catch (error) {
+          present(saveError);
+        }
       },
-      [presentLoginIfNeeded],
+      [comment.id, dispatch, isSaved, present, presentLoginIfNeeded],
     );
 
   return (
