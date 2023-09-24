@@ -101,7 +101,7 @@
     "react-virtuoso": "4.6.0",
     "release-it": "16.1.5",
     "remark-gfm": "3.0.1",
-    "terser": "5.19.2",
+    "terser": "5.20.0",
     "typescript": "5.1.6",
     "ua-parser-js": "1.0.36",
     "unified": "10.1.2",
