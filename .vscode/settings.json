@@ -2,6 +2,9 @@
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[jsonc]": {
+    "editor.formatOnSave": false
+  },
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": true

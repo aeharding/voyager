@@ -66,11 +66,6 @@ export default defineConfig({
     // eslint-disable-next-line no-undef
     APP_VERSION: JSON.stringify(process.env.npm_package_version),
   },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: "./src/setupTests.ts",
-  },
   optimizeDeps: {
     exclude: ["mdast-util-gfm-autolink-literal-lemmy"],
   },

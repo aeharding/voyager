@@ -26,6 +26,7 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install  --frozen-lockfile
 
+      # TODO: make tests?
       # - name: 🧪 Test project
       #   run: pnpm test
 

@@ -8,7 +8,6 @@
     "dev": "node server.mjs",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest",
     "test:typecheck": "tsc",
     "lint": "eslint src --max-warnings=0",
     "lint:formatting": "prettier --check .",
@@ -16,11 +15,6 @@
     "generate:splash:light": "pwa-asset-generator --type png --index index.html --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots"
-  },
-  "pnpm": {
-    "overrides": {
-      "@ionic/core": "npm:voyager-ionic-core@^7.2.3-tweak.1"
-    }
   },
   "dependencies": {
     "compression": "^1.7.4",
@@ -47,16 +41,12 @@
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@github/markdown-toolbar-element": "2.2.0",
-    "@ionic/core": "npm:voyager-ionic-core@7.2.3-tweak.1",
+    "@ionic/core": "7.4.1",
     "@ionic/react": "7.4.1",
     "@ionic/react-router": "7.4.1",
     "@reduxjs/toolkit": "1.9.5",
-    "@testing-library/jest-dom": "6.0.0",
-    "@testing-library/react": "14.0.0",
-    "@testing-library/user-event": "14.4.3",
     "@trapezedev/configure": "7.0.10",
     "@types/history": "4.5.0",
-    "@types/jest": "29.5.5",
     "@types/js-cookie": "3.0.4",
     "@types/lodash": "4.14.198",
     "@types/mdast": "4.0.0",
