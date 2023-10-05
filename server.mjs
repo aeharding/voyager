@@ -122,7 +122,8 @@ app.use(
         req.path === "pictrs/image" &&
         req.query?.auth
       ) {
-        clientReq.setHeader("cookie", `jwt=${req.query.auth}`);
+        clientReq.setHeader("cookie", `jwt=${req.query.auth}`); // lemmy <=v0.18
+        clientReq.setHeader("Authorization", `Bearer ${req.query.auth}`); // lemmy >=v0.19
         delete req.query.auth;
       }
     },
