@@ -171,12 +171,7 @@ export default function Login({
 
     try {
       await dispatch(
-        login(
-          getClient(server ?? customServerHostname),
-          username,
-          password,
-          totp,
-        ),
+        login(server ?? customServerHostname, username, password, totp),
       );
     } catch (error) {
       if (error === "missing_totp_token") {
