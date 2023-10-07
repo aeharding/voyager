@@ -6,8 +6,10 @@ import CommunityLink from "../labels/links/CommunityLink";
 import Ago from "../labels/Ago";
 import { getHandle } from "../../helpers/lemmy";
 import InlineMarkdown from "../shared/InlineMarkdown";
-import { heartDislikeOutline, heartOutline } from "ionicons/icons";
+import { heart, heartDislikeOutline, heartOutline } from "ionicons/icons";
 import useCommunityActions from "./useCommunityActions";
+import { css } from "@emotion/react";
+import { ActionButton } from "../post/actions/ActionButton";
 
 const Container = styled(IonItem)`
   ${maxWidthCss}
@@ -48,6 +50,19 @@ const Description = styled.div`
   overflow: hidden;
 `;
 
+const HeartIcon = styled(IonIcon)<{ selected: boolean }>`
+  font-size: 24px;
+
+  ${({ selected }) =>
+    selected
+      ? css`
+          color: var(--ion-color-primary);
+        `
+      : css`
+          opacity: 0.08;
+        `}
+`;
+
 interface CommunitySummaryProps {
   community: CommunityView;
 }
@@ -66,18 +81,15 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
             subscribed={community.subscribed}
           />
           <RightContainer>
-            <IonButton
+            <ActionButton
               color={isSubscribed ? "danger" : "primary"}
-              size="small"
               onClick={(e) => {
                 subscribe();
                 e.stopPropagation();
               }}
             >
-              <IonIcon
-                icon={isSubscribed ? heartDislikeOutline : heartOutline}
-              />
-            </IonButton>
+              <HeartIcon icon={heart} selected={isSubscribed} />
+            </ActionButton>
           </RightContainer>
         </Title>
         <Stats onClick={view}>
