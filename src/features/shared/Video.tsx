@@ -1,7 +1,14 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Dictionary } from "@reduxjs/toolkit";
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  ReactEventHandler,
+} from "react";
 import { useInView } from "react-intersection-observer";
 import { isAppleDeviceInstallable } from "../../helpers/device";
 
@@ -73,11 +80,18 @@ interface VideoProps {
   blur?: boolean;
 
   className?: string;
+  onError?: ReactEventHandler<HTMLVideoElement> | undefined;
 }
 
 const videoPlaybackPlace: Dictionary<number> = {};
 
-export default function Video({ src, controls, blur, className }: VideoProps) {
+export default function Video({
+  src,
+  controls,
+  blur,
+  className,
+  onError,
+}: VideoProps) {
   const [inViewRef, inView] = useInView({
     threshold: 0.5,
   });
@@ -134,6 +148,7 @@ export default function Video({ src, controls, blur, className }: VideoProps) {
         playsInline
         autoPlay={false}
         controls={controls}
+        onError={onError}
         onTimeUpdate={(e: ChangeEvent<HTMLVideoElement>) => {
           setProgress(e.target.currentTime / e.target.duration);
         }}
