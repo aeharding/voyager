@@ -4,7 +4,6 @@ import { IonIcon } from "@ionic/react";
 import { link, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { MouseEvent, useCallback, useMemo } from "react";
-import { isUrlImage } from "../../../../helpers/lemmy";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import PostGalleryImg from "../../../gallery/PostGalleryImg";
@@ -17,6 +16,7 @@ import {
   OCompactThumbnailSizeType,
 } from "../../../../services/db";
 import { setPostRead } from "../../postSlice";
+import { isUrlImage } from "../../../../helpers/url";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {

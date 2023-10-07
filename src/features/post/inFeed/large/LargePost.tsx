@@ -5,7 +5,6 @@ import PreviewStats from "../PreviewStats";
 import Embed from "../../shared/Embed";
 import { useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
-import { isUrlImage, isUrlVideo } from "../../../../helpers/lemmy";
 import { maxWidthCss } from "../../../shared/AppContent";
 import Nsfw, { isNsfw, isNsfwBlurred } from "../../../labels/Nsfw";
 import { VoteButton } from "../../shared/VoteButton";
@@ -19,6 +18,7 @@ import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
 import { Image } from "./Image";
 import { useAppSelector } from "../../../../store";
+import { isUrlVideo, isUrlImage } from "../../../../helpers/url";
 
 const Container = styled.div`
   display: flex;

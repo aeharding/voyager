@@ -16,7 +16,6 @@ import {
 } from "react";
 import { findLoneImage } from "../../../helpers/markdown";
 import { setPostRead } from "../postSlice";
-import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
 import { maxWidthCss } from "../../shared/AppContent";
 import PersonLink from "../../labels/links/PersonLink";
 import { CommentSortType, PostView } from "lemmy-js-client";
@@ -35,6 +34,7 @@ import { OTapToCollapseType } from "../../../services/db";
 import Locked from "./Locked";
 import useAppToast from "../../../helpers/useAppToast";
 import { postLocked } from "../../../helpers/toastMessages";
+import { isUrlMedia } from "../../../helpers/url";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -192,8 +192,7 @@ export default function PostDetail({
       return (
         <>
           {post.post.url &&
-            !isUrlImage(post.post.url) &&
-            !isUrlVideo(post.post.embed_video_url || post.post.url) && (
+            !isUrlMedia(post.post.embed_video_url || post.post.url) && (
               <Embed post={post} />
             )}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
@@ -203,8 +202,7 @@ export default function PostDetail({
 
     if (
       post.post.url &&
-      !isUrlImage(post.post.url) &&
-      !isUrlVideo(post.post.embed_video_url || post.post.url)
+      !isUrlMedia(post.post.embed_video_url || post.post.url)
     ) {
       return <StyledEmbed post={post} />;
     }

@@ -1,7 +1,7 @@
 import { PostView } from "lemmy-js-client";
-import { isUrlImage } from "../../helpers/lemmy";
 import { findLoneImage } from "../../helpers/markdown";
 import { GalleryImg, GalleryImgProps } from "./GalleryImg";
+import { isUrlImage } from "../../helpers/url";
 
 export interface PostGalleryImgProps extends Omit<GalleryImgProps, "src"> {
   post: PostView;

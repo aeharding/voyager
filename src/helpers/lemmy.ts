@@ -230,38 +230,6 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
   return flattenedChildren;
 }
 
-export function isUrlImage(url: string): boolean {
-  let parsedUrl;
-
-  try {
-    parsedUrl = new URL(url);
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-
-  return (
-    parsedUrl.pathname.endsWith(".jpeg") ||
-    parsedUrl.pathname.endsWith(".png") ||
-    parsedUrl.pathname.endsWith(".gif") ||
-    parsedUrl.pathname.endsWith(".jpg") ||
-    parsedUrl.pathname.endsWith(".webp")
-  );
-}
-
-export function isUrlVideo(url: string): boolean {
-  let parsedUrl;
-
-  try {
-    parsedUrl = new URL(url);
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-
-  return parsedUrl.pathname.endsWith(".mp4");
-}
-
 export function share(item: Post | Comment) {
   return Share.share({ url: item.ap_id });
 }
