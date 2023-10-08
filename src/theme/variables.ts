@@ -146,7 +146,8 @@ export const buildDarkVariables = (
   appTheme: AppThemeType,
   pureBlack: boolean,
 ) => {
-  const { primary } = getThemeByStyle(appTheme, "dark");
+  const { primary, background, insetItemBackground, tabBarBackground } =
+    getThemeByStyle(appTheme, "dark");
 
   return css`
     // Dark Colors
@@ -361,5 +362,25 @@ export const buildDarkVariables = (
         --ion-toolbar-border-color: var(--ion-color-step-150);
       }
     }
+
+    ${background
+      ? css`
+          .ios body,
+          .md body {
+            --ion-background-color: ${background};
+            --ion-item-background: ${background};
+            --ion-color-step-50: ${insetItemBackground};
+            --ion-color-step-100: ${tabBarBackground};
+            --ion-tab-bar-background: ${tabBarBackground};
+            --ion-toolbar-background: ${tabBarBackground};
+          }
+
+          .ios ion-modal:not(.small) {
+            --ion-background-color: ${background};
+            --ion-toolbar-background: ${tabBarBackground};
+            --ion-toolbar-border-color: var(--ion-color-step-150);
+          }
+        `
+      : ""}
   `;
 };
