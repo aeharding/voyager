@@ -94,11 +94,12 @@ export default function PostSort() {
             setTopOpen(true);
             return;
           }
+
           if (e.detail.data) {
             dispatch(updateSortType(e.detail.data));
-          }
 
-          scrollUpIfNeeded(activePageRef?.current, 0, "auto");
+            scrollUpIfNeeded(activePageRef?.current, 0, "auto");
+          }
         }}
         header="Sort by..."
         buttons={BUTTONS.map((b) => ({
