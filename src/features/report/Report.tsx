@@ -4,7 +4,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import useClient from "../../helpers/useClient";
 import { useAppSelector } from "../../store";
 import { jwtSelector } from "../auth/authSlice";
-import useDebounceFn from "../../helpers/useDebounceFn";
+import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 
 export type ReportableItem = CommentView | PostView | PrivateMessageView;
 
@@ -83,15 +83,16 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
     });
   }
 
-  // Workaround for Ionic bug where onDidDismiss is called twice
-  const submitCustomReason = useDebounceFn(async (e) => {
+  const submitCustomReason = async function (
+    e: IonAlertCustomEvent<OverlayEventDetail>,
+  ) {
     setCustomOpen(false);
 
     if (e.detail.role === "cancel" || e.detail.role === "backdrop") return;
 
     await submitReport(e.detail.data.values.reason);
     setCustomOpen(false);
-  }, 50);
+  };
 
   return (
     <>
