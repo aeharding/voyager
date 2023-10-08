@@ -9,7 +9,7 @@ import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import PostGalleryImg from "../../../gallery/PostGalleryImg";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
-import { ReactComponent as SelfSvg } from "./self.svg";
+import SelfSvg from "./self.svg?react";
 import { getImageSrc } from "../../../../services/lemmy";
 import InAppExternalLink from "../../../shared/InAppExternalLink";
 import {
