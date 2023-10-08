@@ -106,6 +106,6 @@ function getThemeDescription(appTheme: AppThemeType): string {
     case "dracula":
       return "Your Phone, Now Undeadly Cool";
     case "tangerine":
-      return "From the app that shall not be named...";
+      return "Like oranges, but better!";
   }
 }
