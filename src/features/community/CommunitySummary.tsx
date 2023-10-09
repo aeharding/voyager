@@ -1,12 +1,12 @@
 import styled from "@emotion/styled";
-import { IonButton, IonIcon, IonItem } from "@ionic/react";
+import { IonIcon, IonItem } from "@ionic/react";
 import { CommunityView } from "lemmy-js-client";
 import { maxWidthCss } from "../shared/AppContent";
 import CommunityLink from "../labels/links/CommunityLink";
 import Ago from "../labels/Ago";
 import { getHandle } from "../../helpers/lemmy";
 import InlineMarkdown from "../shared/InlineMarkdown";
-import { heart, heartDislike, heartOutline } from "ionicons/icons";
+import { heart, heartOutline } from "ionicons/icons";
 import useCommunityActions from "./useCommunityActions";
 import { ActionButton } from "../post/actions/ActionButton";
 
