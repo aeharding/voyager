@@ -80,6 +80,15 @@ export function getTheme(appTheme: AppThemeType): Theme {
           tabBarBackground: "#12141C",
         },
       };
+    case "tangerine":
+      return {
+        light: {
+          primary: "#FF4500",
+        },
+        dark: {
+          primary: "#FF4500",
+        },
+      };
   }
 }
 
