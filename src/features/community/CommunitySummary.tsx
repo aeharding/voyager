@@ -6,9 +6,8 @@ import CommunityLink from "../labels/links/CommunityLink";
 import Ago from "../labels/Ago";
 import { getHandle } from "../../helpers/lemmy";
 import InlineMarkdown from "../shared/InlineMarkdown";
-import { heart, heartDislikeOutline, heartOutline } from "ionicons/icons";
+import { heart, heartDislike, heartOutline } from "ionicons/icons";
 import useCommunityActions from "./useCommunityActions";
-import { css } from "@emotion/react";
 import { ActionButton } from "../post/actions/ActionButton";
 
 const Container = styled(IonItem)`
@@ -50,17 +49,9 @@ const Description = styled.div`
   overflow: hidden;
 `;
 
-const HeartIcon = styled(IonIcon)<{ selected: boolean }>`
+const HeartIcon = styled(IonIcon)`
   font-size: 24px;
-
-  ${({ selected }) =>
-    selected
-      ? css`
-          color: var(--ion-color-primary);
-        `
-      : css`
-          opacity: 0.08;
-        `}
+  color: var(--ion-color-primary);
 `;
 
 interface CommunitySummaryProps {
@@ -88,7 +79,7 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
                 e.stopPropagation();
               }}
             >
-              <HeartIcon icon={heart} selected={isSubscribed} />
+              <HeartIcon icon={isSubscribed ? heart : heartOutline} />
             </ActionButton>
           </RightContainer>
         </Title>
