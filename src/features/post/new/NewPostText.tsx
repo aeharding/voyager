@@ -123,10 +123,7 @@ export default function NewPostText({
             onInput={(e) => setText((e.target as HTMLInputElement).value)}
             autoFocus
             onKeyDown={(e) => {
-              if (
-                (e.ctrlKey || e.metaKey) &&
-                (e.keyCode === 10 || e.keyCode === 13)
-              ) {
+              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
                 submit();
               }
             }}

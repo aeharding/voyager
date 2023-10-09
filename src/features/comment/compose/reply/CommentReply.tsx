@@ -156,7 +156,7 @@ export default function CommentReply({
       <CommentContent
         text={replyContent}
         setText={setReplyContent}
-        submit={submit}
+        onSubmit={submit}
       >
         <ItemReplyingTo item={item} />
       </CommentContent>

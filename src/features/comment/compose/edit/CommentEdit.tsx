@@ -100,7 +100,7 @@ export default function CommentEdit({
       <CommentContent
         text={replyContent}
         setText={setReplyContent}
-        submit={submit}
+        onSubmit={submit}
       />
     </>
   );
