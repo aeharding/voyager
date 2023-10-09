@@ -210,6 +210,7 @@ export type SettingValueTypes = {
   link_handler: LinkHandlerType;
   show_jump_button: boolean;
   jump_button_position: JumpButtonPositionType;
+  filtered_keywords: string[];
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef } from "react";
 import Feed, { FeedProps, FetchFn } from "./Feed";
 import FeedComment from "../comment/inFeed/FeedComment";
-import { CommentView, PostView } from "lemmy-js-client";
+import { CommentView, Post as PostType, PostView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
 import { postHiddenByIdSelector, receivedPosts } from "../post/postSlice";
@@ -41,6 +41,9 @@ export default function PostCommentFeed({
     (state) => state.settings.appearance.posts.type,
   );
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
+  const filteredKeywords = useAppSelector(
+    (state) => state.settings.blocks.keywords,
+  );
 
   const itemsRef = useRef<PostCommentItem[]>();
 
@@ -107,8 +110,10 @@ export default function PostCommentFeed({
   );
 
   const filterFn = useCallback(
-    (item: PostCommentItem) => !postHiddenById[item.post.id],
-    [postHiddenById],
+    (item: PostCommentItem) =>
+      !postHiddenById[item.post.id] &&
+      !postHasFilteredKeywords(item.post, filteredKeywords),
+    [postHiddenById, filteredKeywords],
   );
 
   const getIndex = useCallback(
@@ -127,4 +132,20 @@ export default function PostCommentFeed({
       itemsRef={itemsRef}
     />
   );
+}
+
+function postHasFilteredKeywords(post: PostType, keywords: string[]): boolean {
+  for (const keyword of keywords) {
+    if (keywordFoundInSentence(keyword, post.name)) return true;
+  }
+
+  return false;
+}
+
+function keywordFoundInSentence(keyword: string, sentence: string): boolean {
+  // Create a regular expression pattern to match the keyword as a whole word
+  const pattern = new RegExp(`\\b${keyword}\\b`, "i");
+
+  // Use the RegExp test method to check if the pattern is found in the sentence
+  return pattern.test(sentence);
 }
