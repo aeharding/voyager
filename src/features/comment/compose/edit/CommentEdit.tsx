@@ -29,12 +29,15 @@ export default function CommentEdit({
   const jwt = useAppSelector(jwtSelector);
   const [present] = useIonToast();
   const [loading, setLoading] = useState(false);
+  const isSubmitDisabled =
+    !replyContent.trim() || item.content === replyContent || loading;
 
   useEffect(() => {
     setCanDismiss(item.content === replyContent);
   }, [replyContent, item, setCanDismiss]);
 
   async function submit() {
+    if (isSubmitDisabled) return;
     if (!jwt) return;
 
     setLoading(true);
@@ -85,9 +88,7 @@ export default function CommentEdit({
             <IonButton
               strong={true}
               type="submit"
-              disabled={
-                !replyContent.trim() || item.content === replyContent || loading
-              }
+              disabled={isSubmitDisabled}
               onClick={submit}
             >
               Save
@@ -96,7 +97,11 @@ export default function CommentEdit({
         </IonToolbar>
       </IonHeader>
 
-      <CommentContent text={replyContent} setText={setReplyContent} />
+      <CommentContent
+        text={replyContent}
+        setText={setReplyContent}
+        onSubmit={submit}
+      />
     </>
   );
 }
