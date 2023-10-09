@@ -23,8 +23,8 @@ dependencies:
 
 devDependencies:
   '@capacitor-community/app-icon':
-    specifier: npm:voyager-capacitor-app-icon@^4.1.0
-    version: /voyager-capacitor-app-icon@4.1.0(@capacitor/core@5.2.3)
+    specifier: ^4.1.1
+    version: 4.1.1(@capacitor/core@5.2.3)
   '@capacitor/android':
     specifier: 5.2.3
     version: 5.2.3(@capacitor/core@5.2.3)
@@ -1511,6 +1511,14 @@ packages:
       '@babel/helper-string-parser': 7.22.5
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+    dev: true
+
+  /@capacitor-community/app-icon@4.1.1(@capacitor/core@5.2.3):
+    resolution: {integrity: sha512-76oedS4WnilQEoMszraBVMZIx52H5zNFHHsBuwMKARGrp1fkjOJpmxIYuuwmJSr2KojXllPMSskS43Yf8XdGbA==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.3
     dev: true
 
   /@capacitor/android@5.2.3(@capacitor/core@5.2.3):
@@ -11426,14 +11434,6 @@ packages:
       - sugarss
       - supports-color
       - terser
-    dev: true
-
-  /voyager-capacitor-app-icon@4.1.0(@capacitor/core@5.2.3):
-    resolution: {integrity: sha512-caPpeIi4lx94OwTNcUjdmsAPa7qA2Awq3CTKqjug2aVWA6aSBAgMMuGy3uQas8K+lpMK/gE3ZjpeLmy9bEZw7A==}
-    peerDependencies:
-      '@capacitor/core': ^5.0.0
-    dependencies:
-      '@capacitor/core': 5.2.3
     dev: true
 
   /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.2.3):
