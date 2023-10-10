@@ -91,6 +91,9 @@ interface SettingsState {
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
   };
+  blocks: {
+    keywords: string[];
+  };
 }
 
 const LOCALSTORAGE_KEYS = {
@@ -152,6 +155,9 @@ const initialState: SettingsState = {
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
+  },
+  blocks: {
+    keywords: [],
   },
 };
 
@@ -238,6 +244,10 @@ export const appearanceSlice = createSlice({
     },
     setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
       state.appearance.posts.blurNsfw = action.payload;
+      // Per user setting is updated in StoreProvider
+    },
+    setFilteredKeywords(state, action: PayloadAction<string[]>) {
+      state.blocks.keywords = action.payload;
       // Per user setting is updated in StoreProvider
     },
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
@@ -353,6 +363,31 @@ export const getBlurNsfw =
     dispatch(setNsfwBlur(blurNsfw ?? initialState.appearance.posts.blurNsfw));
   };
 
+export const getFilteredKeywords =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const filteredKeywords = await db.getSetting("filtered_keywords", {
+      user_handle: userHandle,
+    });
+
+    dispatch(
+      setFilteredKeywords(filteredKeywords ?? initialState.blocks.keywords),
+    );
+  };
+
+export const updateFilteredKeywords =
+  (filteredKeywords: string[]) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setFilteredKeywords(filteredKeywords));
+
+    db.setSetting("filtered_keywords", filteredKeywords, {
+      user_handle: userHandle,
+    });
+  };
+
 export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
@@ -391,6 +426,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "enable_haptic_feedback",
       );
       const link_handler = await db.getSetting("link_handler");
+      const filtered_keywords = await db.getSetting("filtered_keywords");
 
       return {
         ...state.settings,
@@ -452,6 +488,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
         },
+        blocks: {
+          keywords: filtered_keywords ?? initialState.blocks.keywords,
+        },
       };
     });
 
@@ -475,6 +514,7 @@ export const {
   setShowJumpButton,
   setJumpButtonPosition,
   setNsfwBlur,
+  setFilteredKeywords,
   setPostAppearance,
   setThumbnailPosition,
   setShowVotingButtons,
