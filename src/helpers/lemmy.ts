@@ -263,3 +263,22 @@ export function isUrlVideo(url: string): boolean {
 export function share(item: Post | Comment) {
   return Share.share({ url: item.ap_id });
 }
+
+export function postHasFilteredKeywords(
+  post: Post,
+  keywords: string[],
+): boolean {
+  for (const keyword of keywords) {
+    if (keywordFoundInSentence(keyword, post.name)) return true;
+  }
+
+  return false;
+}
+
+function keywordFoundInSentence(keyword: string, sentence: string): boolean {
+  // Create a regular expression pattern to match the keyword as a whole word
+  const pattern = new RegExp(`\\b${keyword}\\b`, "i");
+
+  // Use the RegExp test method to check if the pattern is found in the sentence
+  return pattern.test(sentence);
+}
