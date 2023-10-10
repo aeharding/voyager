@@ -275,7 +275,10 @@ export function postHasFilteredKeywords(
   return false;
 }
 
-function keywordFoundInSentence(keyword: string, sentence: string): boolean {
+export function keywordFoundInSentence(
+  keyword: string,
+  sentence: string,
+): boolean {
   // Create a regular expression pattern to match the keyword as a whole word
   const pattern = new RegExp(`\\b${keyword}\\b`, "i");
 

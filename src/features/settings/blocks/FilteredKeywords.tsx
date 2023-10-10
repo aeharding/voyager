@@ -30,10 +30,12 @@ export default function FilteredKeywords() {
         {
           text: "OK",
           handler: ({ keyword }) => {
-            if (!keyword) return;
+            if (!keyword.trim()) return;
 
             dispatch(
-              updateFilteredKeywords(uniq([...filteredKeywords, keyword])),
+              updateFilteredKeywords(
+                uniq([...filteredKeywords, keyword.trim()]),
+              ),
             );
           },
         },
