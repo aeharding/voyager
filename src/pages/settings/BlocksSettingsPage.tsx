@@ -12,7 +12,7 @@ import AppContent from "../../features/shared/AppContent";
 import {
   TitleContainer,
   UsernameIonText,
-} from "../../features/comment/reply/CommentReply";
+} from "../../features/comment/compose/reply/CommentReply";
 import { useAppSelector } from "../../store";
 import {
   handleSelector,
@@ -22,6 +22,7 @@ import FilterNsfw from "../../features/settings/blocks/FilterNsfw";
 import BlockedCommunities from "../../features/settings/blocks/BlockedCommunities";
 import { CenteredSpinner } from "../posts/PostPage";
 import BlockedUsers from "../../features/settings/blocks/BlockedUsers";
+import FilteredKeywords from "../../features/settings/blocks/FilteredKeywords";
 
 export default function BlocksSettingsPage() {
   const userHandle = useAppSelector(handleSelector);
@@ -48,6 +49,7 @@ export default function BlocksSettingsPage() {
       {localUser ? (
         <AppContent scrollY>
           <FilterNsfw />
+          <FilteredKeywords />
           <BlockedCommunities />
           <BlockedUsers />
         </AppContent>

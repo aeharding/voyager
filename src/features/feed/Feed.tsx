@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Virtuoso, VirtuosoHandle, VirtuosoProps } from "react-virtuoso";
+import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import {
   IonRefresher,
   IonRefresherContent,
@@ -20,6 +20,7 @@ import EndPost from "./endItems/EndPost";
 import { useAppSelector } from "../../store";
 import { OPostAppearanceType } from "../../services/db";
 import { markReadOnScrollSelector } from "../settings/settingsSlice";
+import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import useFeedOnScroll from "./useFeedOnScroll";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 
@@ -53,13 +54,13 @@ export default function Feed<I>({
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
   const postAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type
+    (state) => state.settings.appearance.posts.type,
   );
   const [loadFailed, setLoadFailed] = useState(true);
 
   const filteredItems = useMemo(
     () => (filterFn ? items.filter(filterFn) : items),
-    [filterFn, items]
+    [filterFn, items],
   );
 
   const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
@@ -102,7 +103,7 @@ export default function Feed<I>({
 
       setPage(currentPage);
     },
-    [atEnd, fetchFn, limit, loading, page]
+    [atEnd, fetchFn, limit, loading, page],
   );
 
   const { onScroll } = useFeedOnScroll({ fetchMore });
@@ -119,7 +120,7 @@ export default function Feed<I>({
     const currentPageItems = items.slice((page - 1) * limit, page * limit);
 
     const currentPageFilteredItems = filteredItems.filter(
-      (item) => currentPageItems.indexOf(item) !== -1
+      (item) => currentPageItems.indexOf(item) !== -1,
     );
 
     if (
@@ -158,13 +159,19 @@ export default function Feed<I>({
     }
   }
 
-  // TODO looks like a Virtuoso bug where virtuoso checks if computeItemKey exists,
-  // not if it's not undefined (needs report)
-  const computeProp: Partial<VirtuosoProps<unknown, unknown>> = getIndex
-    ? {
-        computeItemKey: (index) => getIndex(filteredItems[index]),
-      }
-    : {};
+  const itemContent = useCallback(
+    (index: number) => {
+      const item = filteredItems[index];
+
+      return renderItemContent(item);
+    },
+    [filteredItems, renderItemContent],
+  );
+
+  const computeItemKey = useCallback(
+    (index: number) => (getIndex ? getIndex(filteredItems[index]) : index),
+    [filteredItems, getIndex],
+  );
 
   if ((loading && !filteredItems.length) || loading === undefined)
     return <CenteredSpinner />;
@@ -174,22 +181,21 @@ export default function Feed<I>({
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
-        disabled={!isListAtTop}
+        disabled={isSafariFeedHackEnabled && !isListAtTop}
       >
         <IonRefresherContent />
       </IonRefresher>
 
       <Virtuoso
+        className={
+          isSafariFeedHackEnabled ? undefined : "ion-content-scroll-host"
+        }
         ref={virtuosoRef}
         style={{ height: "100%" }}
         atTopStateChange={setIsListAtTop}
-        {...computeProp}
+        computeItemKey={computeItemKey}
         totalCount={filteredItems.length}
-        itemContent={(index) => {
-          const item = filteredItems[index];
-
-          return renderItemContent(item);
-        }}
+        itemContent={itemContent}
         components={{ Header: header, Footer: footer }}
         onScroll={onScroll}
         increaseViewportBy={

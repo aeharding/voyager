@@ -4,3 +4,10 @@
 .gitignore
 .prettierignore
 .vscode/
+
+node_modules
+*.md
+dist
+
+android/
+ios/

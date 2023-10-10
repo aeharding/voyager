@@ -2,6 +2,8 @@ import { IonModal } from "@ionic/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import usePageVisibility from "../../helpers/usePageVisibility";
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import { isNative } from "../../helpers/device";
 
 // TODO it's a bit buggy trying to compute this
 // in realtime with the new post dialog + comment dialogs
@@ -9,16 +11,26 @@ import styled from "@emotion/styled";
 const FIXED_HEADER_HEIGHT = 56;
 
 const StyledIonModal = styled(IonModal)<{ viewportHeight: number }>`
-  ion-content::part(scroll) {
-    max-height: ${({ viewportHeight }) => viewportHeight}px;
-  }
+  /* Capacitor inside native web view resizes for on-screen keyboard, so we don't need bespoke layout management */
+  ${({ viewportHeight }) =>
+    isNative()
+      ? ""
+      : css`
+          ion-content::part(scroll) {
+            max-height: ${viewportHeight}px;
+          }
+
+          ion-content .fixed-toolbar-container {
+            max-height: ${viewportHeight}px;
+          }
+        `}
 `;
 
 export default function IonModalAutosizedForOnScreenKeyboard(
-  props: React.ComponentProps<typeof IonModal>
+  props: React.ComponentProps<typeof IonModal>,
 ) {
   const [viewportHeight, setViewportHeight] = useState(
-    document.documentElement.clientHeight
+    document.documentElement.clientHeight,
   );
   const isVisible = usePageVisibility();
   // eslint-disable-next-line no-undef
@@ -33,13 +45,13 @@ export default function IonModalAutosizedForOnScreenKeyboard(
     }
 
     const page = modalRef.current?.querySelector(
-      ".ion-page:not(.ion-page-hidden)"
+      ".ion-page:not(.ion-page-hidden)",
     );
 
     setViewportHeight(
       window.visualViewport.height -
         (page instanceof HTMLElement ? cumulativeOffset(page).top : 0) -
-        FIXED_HEADER_HEIGHT
+        FIXED_HEADER_HEIGHT,
     );
   }, [props.isOpen]);
 

@@ -33,7 +33,12 @@ import {
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { checkIsMod } from "../../helpers/lemmy";
 import { PageContext } from "../auth/PageContext";
-import { allNSFWHidden, buildBlocked } from "../../helpers/toastMessages";
+import {
+  allNSFWHidden,
+  buildBlocked,
+  buildProblemSubscribing,
+  buildSuccessSubscribing,
+} from "../../helpers/toastMessages";
 import useHidePosts from "../feed/useHidePosts";
 
 interface MoreActionsProps {
@@ -57,7 +62,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const isSubscribed =
@@ -68,12 +73,12 @@ export default function MoreActions({ community }: MoreActionsProps) {
   const communityId = communityByHandle[community]?.community.id;
 
   const favoriteCommunities = useAppSelector(
-    (state) => state.community.favorites
+    (state) => state.community.favorites,
   );
 
   const isFavorite = useMemo(
     () => favoriteCommunities.includes(community),
-    [community, favoriteCommunities]
+    [community, favoriteCommunities],
   );
 
   const canPost = useMemo(() => {
@@ -142,28 +147,19 @@ export default function MoreActions({ community }: MoreActionsProps) {
             case "subscribe": {
               if (presentLoginIfNeeded()) return;
 
+              const communityId = communityByHandle[community]?.community.id;
+
+              if (communityId === undefined)
+                throw new Error("community not found");
+
               try {
-                await dispatch(followCommunity(!isSubscribed, community));
+                await dispatch(followCommunity(!isSubscribed, communityId));
               } catch (error) {
-                present({
-                  message: `Problem ${
-                    isSubscribed ? "unsubscribing from" : "subscribing to"
-                  } c/${community}. Please try again.`,
-                  duration: 3500,
-                  position: "bottom",
-                  color: "danger",
-                });
+                present(buildProblemSubscribing(isSubscribed, community));
                 throw error;
               }
 
-              present({
-                message: `${
-                  isSubscribed ? "Unsubscribed from" : "Subscribed to"
-                } c/${community}.`,
-                duration: 3500,
-                position: "bottom",
-                color: "success",
-              });
+              present(buildSuccessSubscribing(isSubscribed, community));
               break;
             }
             case "post": {
@@ -187,6 +183,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
               break;
             }
             case "favorite": {
+              if (presentLoginIfNeeded()) return;
+
               if (!isFavorite) {
                 dispatch(addFavorite(community));
               } else {
@@ -241,7 +239,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
                       handler: () => {
                         (async () => {
                           await dispatch(
-                            blockCommunity(!isBlocked, communityId)
+                            blockCommunity(!isBlocked, communityId),
                           );
 
                           present(buildBlocked(!isBlocked, community));

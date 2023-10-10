@@ -8,7 +8,6 @@ import {
   IonTitle,
   IonButtons,
   IonBackButton,
-  IonContent,
 } from "@ionic/react";
 import styled from "@emotion/styled";
 import useClient from "../../helpers/useClient";
@@ -22,6 +21,7 @@ import PostCommentFeed, {
   isPost,
 } from "../../features/feed/PostCommentFeed";
 import { jwtSelector } from "../../features/auth/authSlice";
+import FeedContent from "../shared/FeedContent";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -63,13 +63,13 @@ export default function ProfileFeedItemsPage({
 
       if (type === "Saved") {
         return [...response.comments, ...response.posts].sort((a, b) =>
-          getPublishedDate(b).localeCompare(getPublishedDate(a))
+          getPublishedDate(b).localeCompare(getPublishedDate(a)),
         );
       }
 
       return type === "Comments" ? response.comments : response.posts;
     },
-    [client, handle, jwt, type]
+    [client, handle, jwt, type],
   );
 
   return (
@@ -85,9 +85,13 @@ export default function ProfileFeedItemsPage({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
-        <PostCommentFeed fetchFn={fetchFn} filterHiddenPosts={false} />
-      </IonContent>
+      <FeedContent>
+        <PostCommentFeed
+          fetchFn={fetchFn}
+          filterHiddenPosts={false}
+          filterKeywords={false}
+        />
+      </FeedContent>
     </IonPage>
   );
 }

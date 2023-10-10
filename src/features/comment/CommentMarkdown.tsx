@@ -1,3 +1,4 @@
+import InAppExternalLink from "../shared/InAppExternalLink";
 import Markdown from "../shared/Markdown";
 
 interface CommentMarkdownProps {
@@ -9,9 +10,13 @@ export default function CommentMarkdown({ children }: CommentMarkdownProps) {
     <Markdown
       components={{
         img: (props) => (
-          <a href={props.src} target="_blank" rel="noopener noreferrer">
+          <InAppExternalLink
+            href={props.src}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {props.alt || "Image"}
-          </a>
+          </InAppExternalLink>
         ),
       }}
     >

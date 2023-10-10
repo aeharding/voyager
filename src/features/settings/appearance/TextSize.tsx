@@ -38,7 +38,7 @@ const MIN_LARGER_FONT_ADJUSTMENT = 2;
 export default function TextSize() {
   const dispatch = useAppDispatch();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
-    (state) => state.settings.appearance.font
+    (state) => state.settings.appearance.font,
   );
 
   const ranges =
@@ -96,8 +96,8 @@ export default function TextSize() {
                   setFontSizeMultiplier(
                     fontSizeMultiplier >= MIN_LARGER_FONT_ADJUSTMENT
                       ? MAX_REGULAR_FONT_ADJUSTMENT
-                      : MIN_LARGER_FONT_ADJUSTMENT
-                  )
+                      : MIN_LARGER_FONT_ADJUSTMENT,
+                  ),
                 )
               }
             />

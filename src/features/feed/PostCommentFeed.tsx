@@ -9,6 +9,7 @@ import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
 import { FeedContext } from "./FeedContext";
+import { postHasFilteredKeywords } from "../../helpers/lemmy";
 
 const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -28,19 +29,24 @@ interface PostCommentFeed
   extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {
   communityName?: string;
   filterHiddenPosts?: boolean;
+  filterKeywords?: boolean;
 }
 
 export default function PostCommentFeed({
   communityName,
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
+  filterKeywords = true,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
   const postAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type
+    (state) => state.settings.appearance.posts.type,
   );
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
+  const filteredKeywords = useAppSelector(
+    (state) => state.settings.blocks.keywords,
+  );
 
   const itemsRef = useRef<PostCommentItem[]>();
 
@@ -72,7 +78,7 @@ export default function PostCommentFeed({
 
       return <FeedComment comment={item} css={borderCss} />;
     },
-    [communityName, borderCss]
+    [communityName, borderCss],
   );
 
   const renderItemContent = useCallback(
@@ -87,7 +93,7 @@ export default function PostCommentFeed({
 
       return renderItem(item);
     },
-    [postAppearanceType, renderItem]
+    [postAppearanceType, renderItem],
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
@@ -103,23 +109,30 @@ export default function PostCommentFeed({
       return items;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [_fetchFn, dispatch]
+    [_fetchFn, dispatch],
   );
 
   const filterFn = useCallback(
-    (item: PostCommentItem) => !postHiddenById[item.post.id],
-    [postHiddenById]
+    (item: PostCommentItem) =>
+      !postHiddenById[item.post.id] &&
+      !postHasFilteredKeywords(
+        item.post,
+        filterKeywords ? filteredKeywords : [],
+      ),
+    [postHiddenById, filteredKeywords, filterKeywords],
+  );
+
+  const getIndex = useCallback(
+    (item: PostCommentItem) =>
+      "comment" in item ? `comment-${item.comment.id}` : `post-${item.post.id}`,
+    [],
   );
 
   return (
     <Feed
       fetchFn={fetchFn}
       filterFn={filterHiddenPosts ? filterFn : undefined}
-      getIndex={(item) =>
-        "comment" in item
-          ? `comment-${item.comment.id}`
-          : `post-${item.post.id}`
-      }
+      getIndex={getIndex}
       renderItemContent={renderItemContent}
       {...rest}
       itemsRef={itemsRef}

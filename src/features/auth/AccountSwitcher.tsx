@@ -15,22 +15,22 @@ import { add } from "ionicons/icons";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { changeAccount } from "./authSlice";
 import Login from "./Login";
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import Account from "./Account";
 
 interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
-  page: HTMLElement | undefined;
+  pageRef: RefObject<HTMLElement | undefined>;
 }
 
 export default function AccountSwitcher({
   onDismiss,
-  page,
+  pageRef,
 }: AccountSwitcherProps) {
   const dispatch = useAppDispatch();
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
   const activeHandle = useAppSelector(
-    (state) => state.auth.accountData?.activeHandle
+    (state) => state.auth.accountData?.activeHandle,
   );
   const [editing, setEditing] = useState(false);
 
@@ -52,7 +52,11 @@ export default function AccountSwitcher({
         <IonToolbar>
           <IonButtons slot="start">
             {editing ? (
-              <IonButton onClick={() => login({ presentingElement: page })}>
+              <IonButton
+                onClick={() =>
+                  login({ presentingElement: pageRef.current ?? undefined })
+                }
+              >
                 <IonIcon icon={add} />
               </IonButton>
             ) : (

@@ -4,7 +4,7 @@ const DARK_MEDIA_SELECTOR = "(prefers-color-scheme: dark)";
 
 export default function useSystemDarkMode() {
   const [prefersDarkMode, setPrefersDarkMode] = useState(
-    window.matchMedia(DARK_MEDIA_SELECTOR).matches
+    window.matchMedia(DARK_MEDIA_SELECTOR).matches,
   );
 
   useEffect(() => {

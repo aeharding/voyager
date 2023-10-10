@@ -44,7 +44,7 @@ export default function InlineMarkdown({ children }: InlineMarkdownProps) {
         {children}
       </ReactMarkdown>
     ),
-    [children]
+    [children],
   );
 
   return content;

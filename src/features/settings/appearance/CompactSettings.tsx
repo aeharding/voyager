@@ -1,26 +1,22 @@
 import { IonLabel, IonList, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../user/Profile";
 import { useAppSelector, useAppDispatch } from "../../../store";
-import { setShowVotingButtons, setThumbnailPosition } from "../settingsSlice";
+import {
+  setCompactThumbnailSize,
+  setShowVotingButtons,
+  setThumbnailPosition,
+} from "../settingsSlice";
 import {
   OCompactThumbnailPositionType,
-  CompactThumbnailPositionType,
+  OCompactThumbnailSizeType,
 } from "../../../services/db";
 import { ListHeader } from "../shared/formatting";
 import SettingSelector from "../shared/SettingSelector";
 
 export default function CompactSettings() {
   const dispatch = useAppDispatch();
-  const compactThumbnailsPosition = useAppSelector(
-    (state) => state.settings.appearance.compact.thumbnailsPosition
-  );
-
-  const compactShowVotingButtons = useAppSelector(
-    (state) => state.settings.appearance.compact.showVotingButtons
-  );
-
-  const ThumbnailPositionSelector =
-    SettingSelector<CompactThumbnailPositionType>;
+  const { thumbnailsPosition, showVotingButtons, thumbnailSize } =
+    useAppSelector((state) => state.settings.appearance.compact);
 
   return (
     <>
@@ -28,16 +24,25 @@ export default function CompactSettings() {
         <IonLabel>Compact Posts</IonLabel>
       </ListHeader>
       <IonList inset>
-        <ThumbnailPositionSelector
+        <SettingSelector
+          title="Thumbnail Size"
+          selected={thumbnailSize}
+          setSelected={setCompactThumbnailSize}
+          options={OCompactThumbnailSizeType}
+          getOptionLabel={(o) => {
+            if (o === OCompactThumbnailSizeType.Small) return "Small (default)";
+          }}
+        />
+        <SettingSelector
           title="Thumbnail Position"
-          selected={compactThumbnailsPosition}
+          selected={thumbnailsPosition}
           setSelected={setThumbnailPosition}
           options={OCompactThumbnailPositionType}
         />
         <InsetIonItem>
           <IonLabel>Show Voting Buttons</IonLabel>
           <IonToggle
-            checked={compactShowVotingButtons === true}
+            checked={showVotingButtons}
             onIonChange={(e) =>
               dispatch(setShowVotingButtons(e.detail.checked ? true : false))
             }

@@ -9,16 +9,27 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Centered, Spinner } from "../../auth/Login";
 import { css } from "@emotion/react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
+import MarkdownToolbar, {
+  TOOLBAR_HEIGHT,
+  TOOLBAR_TARGET_ID,
+} from "../../shared/markdown/editing/MarkdownToolbar";
+import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
+import useTextRecovery from "../../../helpers/useTextRecovery";
 
-const Container = styled.div`
+const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
 
   display: flex;
   flex-direction: column;
+
+  padding-bottom: ${({ keyboardOpen }) =>
+    keyboardOpen
+      ? TOOLBAR_HEIGHT
+      : `calc(${TOOLBAR_HEIGHT} + var(--ion-safe-area-bottom, env(safe-area-inset-bottom)))`};
 `;
 
 const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
@@ -42,18 +53,33 @@ const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
 
 interface NewPostTextProps {
   value: string;
-  setValue: (value: string) => void;
+  setValue: Dispatch<SetStateAction<string>>;
   onSubmit: () => void;
+  editing: boolean;
 }
 
 export default function NewPostText({
   value,
   setValue,
   onSubmit,
+  editing,
 }: NewPostTextProps) {
   const [loading, setLoading] = useState(false);
 
+  const keyboardOpen = useKeyboardOpen();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const [text, setText] = useState(value);
+  const isSubmitDisabled = loading;
+
+  useEffect(() => {
+    setValue(text);
+  }, [setValue, text]);
+
+  useTextRecovery(text, setText, editing);
+
   async function submit() {
+    if (isSubmitDisabled) return;
     setLoading(true);
 
     try {
@@ -77,20 +103,40 @@ export default function NewPostText({
             </Centered>
           </IonTitle>
           <IonButtons slot="end">
-            <IonButton strong type="submit" onClick={submit} disabled={loading}>
+            <IonButton
+              strong
+              type="submit"
+              onClick={submit}
+              disabled={isSubmitDisabled}
+            >
               Post
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <Container>
+        <Container keyboardOpen={keyboardOpen}>
           <Textarea
-            defaultValue={value}
-            onInput={(e) => setValue((e.target as HTMLInputElement).value)}
+            id={TOOLBAR_TARGET_ID}
+            ref={textareaRef}
+            value={text}
+            onInput={(e) => setText((e.target as HTMLInputElement).value)}
             autoFocus
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                submit();
+              }
+            }}
           />
         </Container>
+
+        <MarkdownToolbar
+          slot="fixed"
+          type="post"
+          text={text}
+          setText={setText}
+          textareaRef={textareaRef}
+        />
       </IonContent>
     </>
   );

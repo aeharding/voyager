@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
@@ -17,6 +16,7 @@ import InboxFeed from "../../features/feed/InboxFeed";
 import { receivedInboxItems } from "../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { jwtSelector } from "../../features/auth/authSlice";
+import FeedContent from "../shared/FeedContent";
 
 export default function MentionsPage() {
   const dispatch = useAppDispatch();
@@ -39,7 +39,7 @@ export default function MentionsPage() {
 
       return response.mentions;
     },
-    [client, jwt, dispatch]
+    [client, jwt, dispatch],
   );
 
   return (
@@ -57,9 +57,9 @@ export default function MentionsPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
-      </IonContent>
+      </FeedContent>
     </IonPage>
   );
 }

@@ -8,7 +8,7 @@ import SettingSelector from "../../shared/SettingSelector";
 
 export default function PostSize() {
   const postsAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type
+    (state) => state.settings.appearance.posts.type,
   );
 
   const PostSizeSelector = SettingSelector<PostAppearanceType>;

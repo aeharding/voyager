@@ -5,7 +5,7 @@ import SettingSelector from "../../shared/SettingSelector";
 
 export default function BlurNsfw() {
   const nsfwBlurred = useAppSelector(
-    (state) => state.settings.appearance.posts.blurNsfw
+    (state) => state.settings.appearance.posts.blurNsfw,
   );
 
   const BlurSelector = SettingSelector<PostBlurNsfwType>;

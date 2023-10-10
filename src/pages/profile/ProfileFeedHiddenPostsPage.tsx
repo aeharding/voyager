@@ -8,7 +8,6 @@ import {
   IonTitle,
   IonButtons,
   IonBackButton,
-  IonContent,
 } from "@ionic/react";
 import { useParams } from "react-router";
 import styled from "@emotion/styled";
@@ -22,6 +21,7 @@ import PostCommentFeed, {
 import { handleSelector, jwtSelector } from "../../features/auth/authSlice";
 import { IPostMetadata, db } from "../../services/db";
 import { postHiddenByIdSelector } from "../../features/post/postSlice";
+import FeedContent from "../shared/FeedContent";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -64,7 +64,7 @@ export default function ProfileFeedHiddenPostsPage() {
         // because we're only ever fetching the next page. But just in case...
         lastPageNumberRef.current + 1 === page
           ? lastPageItemsRef.current
-          : undefined
+          : undefined,
       );
 
       lastPageNumberRef.current = page;
@@ -78,15 +78,15 @@ export default function ProfileFeedHiddenPostsPage() {
           if (typeof potentialPost === "object") return potentialPost;
 
           return client.getPost({ id: postId, auth: jwt });
-        })
+        }),
       );
 
       return result.map((post) =>
-        "post_view" in post ? post.post_view : post
+        "post_view" in post ? post.post_view : post,
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [client, handle, jwt, postHiddenById]
+    [client, handle, jwt, postHiddenById],
   );
 
   return (
@@ -102,13 +102,14 @@ export default function ProfileFeedHiddenPostsPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <FeedContent>
         <PostCommentFeed
-          filterHiddenPosts={false}
           fetchFn={fetchFn}
           limit={LIMIT}
+          filterHiddenPosts={false}
+          filterKeywords={false}
         />
-      </IonContent>
+      </FeedContent>
     </IonPage>
   );
 }

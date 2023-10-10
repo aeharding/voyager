@@ -25,7 +25,7 @@ const BUTTONS: ActionSheetButton<CommentSortType>[] = COMMENT_SORTS.map(
     text: startCase(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
-  })
+  }),
 );
 
 interface CommentSortProps {
@@ -35,7 +35,7 @@ interface CommentSortProps {
 
 export default function CommentSort({ sort, setSort }: CommentSortProps) {
   const [open, setOpen] = useState(false);
-  const { activePage } = useContext(AppContext);
+  const { activePageRef } = useContext(AppContext);
 
   return (
     <>
@@ -47,13 +47,13 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
         isOpen={open}
         onDidDismiss={() => setOpen(false)}
         onWillDismiss={(
-          e: IonActionSheetCustomEvent<OverlayEventDetail<CommentSortType>>
+          e: IonActionSheetCustomEvent<OverlayEventDetail<CommentSortType>>,
         ) => {
           if (e.detail.data) {
             setSort(e.detail.data);
           }
 
-          scrollUpIfNeeded(activePage, 1, "auto");
+          scrollUpIfNeeded(activePageRef?.current, 1, "auto");
         }}
         header="Sort by..."
         buttons={BUTTONS.map((b) => ({

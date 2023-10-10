@@ -26,7 +26,7 @@ export default function BlockedUsers() {
 
 
   const users = useAppSelector(
-    (state) => state.auth.site?.my_user?.person_blocks
+    (state) => state.auth.site?.my_user?.person_blocks,
   );
 
   const sortedUsers = sortOption === 'alphabetical'

@@ -1,6 +1,5 @@
 import {
   IonButtons,
-  IonContent,
   IonHeader,
   IonIcon,
   IonPage,
@@ -23,6 +22,7 @@ import { jwtSelector } from "../../features/auth/authSlice";
 import CommentSort from "../../features/comment/CommentSort";
 import MoreActions from "../../features/post/shared/MoreActions";
 import PostDetail from "../../features/post/detail/PostDetail";
+import FeedContent from "../shared/FeedContent";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -49,7 +49,7 @@ export default function PostPage() {
   const jwt = useAppSelector(jwtSelector);
   const dispatch = useAppDispatch();
   const defaultSort = useAppSelector(
-    (state) => state.settings.general.comments.sort
+    (state) => state.settings.general.comments.sort,
   );
   const [sort, setSort] = useState<CommentSortType>(defaultSort);
 
@@ -69,7 +69,7 @@ export default function PostPage() {
         event.detail.complete();
       }
     },
-    [dispatch, id]
+    [dispatch, id],
   );
 
   const buildWithRefresher = useCallback(
@@ -83,18 +83,18 @@ export default function PostPage() {
         </>
       );
     },
-    [refresh]
+    [refresh],
   );
 
   function renderPost() {
     if (!post) return <CenteredSpinner />;
     if (post === "not-found")
       return buildWithRefresher(
-        <div className="ion-padding">Post not found</div>
+        <div className="ion-padding">Post not found</div>,
       );
     if (post.post.deleted)
       return buildWithRefresher(
-        <div className="ion-padding">Post deleted</div>
+        <div className="ion-padding">Post deleted</div>,
       );
 
     return <PostDetail post={post} commentPath={commentPath} sort={sort} />;
@@ -117,7 +117,7 @@ export default function PostPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>{renderPost()}</IonContent>
+      <FeedContent>{renderPost()}</FeedContent>
     </IonPage>
   );
 }

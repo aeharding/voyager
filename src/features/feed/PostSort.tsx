@@ -15,7 +15,16 @@ import {
   flameOutline,
   helpCircleOutline,
   timeOutline,
+  trophyOutline,
 } from "ionicons/icons";
+
+import calendarWeekIconSvg from "./icons/calendarWeek.svg";
+import calendarSingleDaySvg from "./icons/calendarSingleDay.svg";
+import clockBadgeOneSvg from "./icons/clockBadgeOne.svg";
+import clockBadgeSixSvg from "./icons/clockBadgeSix.svg";
+import clockBadgeTwelveSvg from "./icons/clockBadgeTwelve.svg";
+import calendarYearSvg from "./icons/calendarYear.svg";
+
 import { useAppDispatch, useAppSelector } from "../../store";
 import { updateSortType } from "../post/postSlice";
 import { useContext, useState } from "react";
@@ -51,7 +60,7 @@ const BUTTONS: ActionSheetButton<ExtendedSortType>[] = POST_SORTS.map(
     text: startCase(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
-  })
+  }),
 );
 
 const TOP_BUTTONS: ActionSheetButton<SortType>[] = TOP_POST_SORTS.map(
@@ -59,7 +68,7 @@ const TOP_BUTTONS: ActionSheetButton<SortType>[] = TOP_POST_SORTS.map(
     text: formatTopLabel(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
-  })
+  }),
 );
 
 export default function PostSort() {
@@ -67,7 +76,7 @@ export default function PostSort() {
   const sort = useAppSelector((state) => state.post.sort);
   const [open, setOpen] = useState(false);
   const [topOpen, setTopOpen] = useState(false);
-  const { activePage } = useContext(AppContext);
+  const { activePageRef } = useContext(AppContext);
 
   return (
     <>
@@ -79,17 +88,18 @@ export default function PostSort() {
         isOpen={open}
         onDidDismiss={() => setOpen(false)}
         onWillDismiss={(
-          e: IonActionSheetCustomEvent<OverlayEventDetail<ExtendedSortType>>
+          e: IonActionSheetCustomEvent<OverlayEventDetail<ExtendedSortType>>,
         ) => {
           if (e.detail.data === "Top") {
             setTopOpen(true);
             return;
           }
+
           if (e.detail.data) {
             dispatch(updateSortType(e.detail.data));
-          }
 
-          scrollUpIfNeeded(activePage, 0, "auto");
+            scrollUpIfNeeded(activePageRef?.current, 0, "auto");
+          }
         }}
         header="Sort by..."
         buttons={BUTTONS.map((b) => ({
@@ -110,11 +120,11 @@ export default function PostSort() {
         isOpen={topOpen}
         onDidDismiss={() => setTopOpen(false)}
         onWillDismiss={(
-          e: IonActionSheetCustomEvent<OverlayEventDetail<SortType>>
+          e: IonActionSheetCustomEvent<OverlayEventDetail<SortType>>,
         ) => {
           if (e.detail.data) {
             dispatch(updateSortType(e.detail.data));
-            scrollUpIfNeeded(activePage, 0, "auto");
+            scrollUpIfNeeded(activePageRef?.current, 0, "auto");
           }
         }}
         header="Sort by Top for..."
@@ -140,14 +150,21 @@ function getSortIcon(sort: ExtendedSortType): string {
     case "NewComments":
       return chatbubbleEllipsesOutline;
     case "TopHour":
+      return clockBadgeOneSvg;
     case "TopSixHour":
+      return clockBadgeSixSvg;
     case "TopTwelveHour":
+      return clockBadgeTwelveSvg;
     case "TopDay":
+      return calendarSingleDaySvg;
     case "TopMonth":
-    case "TopWeek":
-    case "TopYear":
-    case "TopAll":
       return calendarOutline;
+    case "TopWeek":
+      return calendarWeekIconSvg;
+    case "TopYear":
+      return calendarYearSvg;
+    case "TopAll":
+      return trophyOutline;
     case "Top":
       return barChartOutline;
     case "Old":

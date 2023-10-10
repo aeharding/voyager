@@ -7,6 +7,8 @@ import Handle from "../Handle";
 import { StyledLink } from "./shared";
 import { useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
+import { calculateIsCakeDay, fixLemmyDateString } from "../../../helpers/date";
+import { useMemo } from "react";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -36,12 +38,17 @@ export default function PersonLink({
 
   const forceInstanceUrl =
     useAppSelector(
-      (state) => state.settings.appearance.general.userInstanceUrlDisplay
+      (state) => state.settings.appearance.general.userInstanceUrlDisplay,
     ) === OInstanceUrlDisplayMode.WhenRemote;
 
   if (person.admin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
-  else if (opId && person.id === opId) color = "var(--ion-color-primary)";
+  else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
+
+  const isCakeDay = useMemo(
+    () => calculateIsCakeDay(new Date(fixLemmyDateString(person.published))),
+    [person.published],
+  );
 
   return (
     <StyledLink
@@ -67,6 +74,7 @@ export default function PersonLink({
         item={person}
         showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
       />
+      {isCakeDay && " 🍰"}
     </StyledLink>
   );
 }

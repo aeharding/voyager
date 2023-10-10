@@ -16,6 +16,10 @@ import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
+import {
+  scrollIntoView as scrollIntoView,
+  useScrollIntoViewWorkaround,
+} from "../../helpers/dom";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -60,10 +64,9 @@ export const PositionedContainer = styled.div<{
     padding-bottom: 0.65rem;
   }
 
-  ${({ depth }) =>
-    css`
-      padding-left: calc(0.5rem + ${Math.max(0, depth - 1) * 10}px);
-    `}
+  ${({ depth }) => css`
+    padding-left: calc(0.5rem + ${Math.max(0, depth - 1) * 10}px);
+  `}
 `;
 
 export const Container = styled.div<{
@@ -209,13 +212,14 @@ export default function Comment({
   useEffect(() => {
     if (highlightedCommentId !== comment.id) return;
 
-    setTimeout(() => {
-      commentRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-        inline: "nearest",
-      });
-    }, 600);
+    setTimeout(
+      () => {
+        if (!commentRef.current) return;
+
+        scrollIntoView(commentRef.current, 100);
+      },
+      useScrollIntoViewWorkaround ? 50 : 600,
+    );
   }, [highlightedCommentId, comment]);
 
   return (

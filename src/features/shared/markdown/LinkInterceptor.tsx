@@ -3,6 +3,7 @@ import { useAppSelector } from "../../../store";
 import { useIonRouter } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import styled from "@emotion/styled";
+import InAppExternalLink from "../InAppExternalLink";
 
 const COMMUNITY_RELATIVE_URL =
   /^\/c\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
@@ -13,7 +14,7 @@ const LinkInterceptor = styled(LinkInterceptorUnstyled)`
 
 function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -43,19 +44,24 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
       }
 
       router.push(
-        buildGeneralBrowseLink(`/c/${communityName}@${domain ?? url.hostname}`)
+        buildGeneralBrowseLink(`/c/${communityName}@${domain ?? url.hostname}`),
       );
     },
-    [buildGeneralBrowseLink, connectedInstance, props.href, router]
+    [buildGeneralBrowseLink, connectedInstance, props.href, router],
   );
 
   return (
-    <a {...props} target="_blank" rel="noopener noreferrer" onClick={onClick} />
+    <InAppExternalLink
+      {...props}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={onClick}
+    />
   );
 }
 
 function matchLemmyCommunity(
-  urlPathname: string
+  urlPathname: string,
 ): [string, string] | [string] | null {
   const matches = urlPathname.match(COMMUNITY_RELATIVE_URL);
   if (matches && matches[1]) {

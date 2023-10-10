@@ -17,7 +17,7 @@ export default function useFeedOnScroll({ fetchMore }: UseFeedOnScrollProps) {
           Math.abs(
             scrollView.scrollHeight -
               scrollView.scrollTop -
-              scrollView.clientHeight
+              scrollView.clientHeight,
           ) <
           document.body.clientHeight * 2;
 
@@ -25,7 +25,7 @@ export default function useFeedOnScroll({ fetchMore }: UseFeedOnScrollProps) {
 
         fetchMore();
       }, 500),
-    [fetchMore]
+    [fetchMore],
   );
 
   return { onScroll: throttledOnScroll };

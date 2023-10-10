@@ -15,7 +15,7 @@ export default function PostEditorModal({
   postOrCommunity,
 }: PostEditorModalProps) {
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const editOrCreateProps =

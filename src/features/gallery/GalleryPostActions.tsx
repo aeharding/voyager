@@ -1,4 +1,4 @@
-import { IonIcon, useIonRouter } from "@ionic/react";
+import { IonIcon, useIonRouter, useIonToast } from "@ionic/react";
 import { VoteButton } from "../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline, shareOutline } from "ionicons/icons";
@@ -15,6 +15,10 @@ import { useLocation } from "react-router";
 import React, { useContext } from "react";
 import { GalleryContext } from "./GalleryProvider";
 import { OVoteDisplayMode } from "../../services/db";
+import { isNative } from "../../helpers/device";
+import GalleryMoreActions from "./GalleryMoreActions";
+import { StashMedia } from "capacitor-stash-media";
+import { Share } from "@capacitor/share";
 
 const Container = styled.div`
   display: flex;
@@ -38,24 +42,48 @@ const Amount = styled.div`
 
 interface GalleryPostActionsProps {
   post: PostView;
+  imgSrc: string;
 }
 
-export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
+export default function GalleryPostActions({
+  post,
+  imgSrc,
+}: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const link = buildGeneralBrowseLink(
-    `/c/${getHandle(post.community)}/comments/${post.post.id}`
+    `/c/${getHandle(post.community)}/comments/${post.post.id}`,
   );
   const router = useIonRouter();
   const location = useLocation();
+  const [presentToast] = useIonToast();
   const { close } = useContext(GalleryContext);
 
-  function share() {
-    navigator.share({ url: post.post.ap_id });
+  async function shareImage() {
+    if (!isNative()) {
+      Share.share({ url: imgSrc });
+      return;
+    }
+
+    try {
+      await StashMedia.shareImage({
+        url: imgSrc,
+        title: post.post.name,
+      });
+    } catch (error) {
+      presentToast({
+        message: "Error sharing photo",
+        duration: 3500,
+        position: "bottom",
+        color: "danger",
+      });
+
+      throw error;
+    }
   }
 
   return (
     <Container onClick={(e) => e.stopPropagation()}>
-      <Voting post={post} />
+      <Voting post={post} imgSrc={imgSrc} />
       <div
         onClick={() => {
           close();
@@ -70,8 +98,12 @@ export default function GalleryPostActions({ post }: GalleryPostActionsProps) {
           <Amount>{post.counts.comments}</Amount>
         </Section>
       </div>
-      <IonIcon icon={shareOutline} onClick={share} />
-      <MoreActions post={post} onFeed />
+      <IonIcon icon={shareOutline} onClick={shareImage} />
+      {isNative() ? (
+        <GalleryMoreActions post={post} imgSrc={imgSrc} />
+      ) : (
+        <MoreActions post={post} onFeed />
+      )}
     </Container>
   );
 }
@@ -80,7 +112,7 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
 
   const voteDisplayMode = useAppSelector(
-    (state) => state.settings.appearance.voting.voteDisplayMode
+    (state) => state.settings.appearance.voting.voteDisplayMode,
   );
 
   switch (voteDisplayMode) {
@@ -98,7 +130,7 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
     case OVoteDisplayMode.Separate: {
       const { upvotes, downvotes } = calculateSeparateScore(
         post,
-        postVotesById
+        postVotesById,
       );
 
       return (

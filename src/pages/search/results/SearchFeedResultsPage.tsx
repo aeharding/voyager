@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
@@ -21,6 +20,7 @@ import PostCommentFeed, {
 import { receivedPosts } from "../../../features/post/postSlice";
 import { receivedComments } from "../../../features/comment/commentSlice";
 import { jwtSelector } from "../../../features/auth/authSlice";
+import FeedContent from "../../shared/FeedContent";
 
 interface SearchPostsResultsProps {
   type: "Posts" | "Comments";
@@ -50,7 +50,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
       dispatch(receivedComments(response.comments));
       return [...response.posts, ...response.comments];
     },
-    [search, client, sort, type, dispatch, jwt]
+    [search, client, sort, type, dispatch, jwt],
   );
 
   return (
@@ -71,9 +71,9 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <FeedContent>
         <PostCommentFeed fetchFn={fetchFn} />
-      </IonContent>
+      </FeedContent>
     </IonPage>
   );
 }

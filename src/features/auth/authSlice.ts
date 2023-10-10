@@ -1,5 +1,5 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { GetSiteResponse, LemmyHttp } from "lemmy-js-client";
+import { GetSiteResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import Cookies from "js-cookie";
 import { LemmyJWT, getRemoteHandle } from "../../helpers/lemmy";
@@ -10,6 +10,7 @@ import { resetUsers } from "../user/userSlice";
 import { resetInbox } from "../inbox/inboxSlice";
 import { differenceWith, uniqBy } from "lodash";
 import { resetCommunities } from "../community/communitySlice";
+import { ApplicationContext } from "capacitor-application-context";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -46,14 +47,16 @@ type CredentialStoragePayload = {
 interface PostState {
   accountData: CredentialStoragePayload | undefined;
   site: GetSiteResponse | undefined;
+  loadingSite: string;
   connectedInstance: string;
 }
 
 const initialState: (connectedInstance?: string) => PostState = (
-  connectedInstance = ""
+  connectedInstance = "",
 ) => ({
   accountData: getCredentialsFromStorage(),
   site: undefined,
+  loadingSite: "",
   connectedInstance,
 });
 
@@ -71,7 +74,7 @@ export const authSlice = createSlice({
 
       const accounts = uniqBy(
         [action.payload, ...state.accountData.accounts],
-        (c) => c.handle
+        (c) => c.handle,
       );
 
       state.accountData = {
@@ -87,7 +90,7 @@ export const authSlice = createSlice({
       const accounts = differenceWith(
         state.accountData.accounts,
         [action.payload],
-        (a, b) => a.handle === b
+        (a, b) => a.handle === b,
       );
 
       if (accounts.length === 0) {
@@ -121,6 +124,9 @@ export const authSlice = createSlice({
     updateConnectedInstance(state, action: PayloadAction<string>) {
       state.connectedInstance = action.payload;
     },
+    loadingSite(state, action: PayloadAction<string>) {
+      state.loadingSite = action.payload;
+    },
   },
 });
 
@@ -132,6 +138,7 @@ export const {
   reset,
   updateUserDetails,
   updateConnectedInstance,
+  loadingSite,
 } = authSlice.actions;
 
 export default authSlice.reducer;
@@ -143,7 +150,7 @@ export const activeAccount = createSelector(
   ],
   (accounts, activeHandle) => {
     return accounts?.find(({ handle }) => handle === activeHandle);
-  }
+  },
 );
 
 export const jwtSelector = createSelector([activeAccount], (account) => {
@@ -151,7 +158,7 @@ export const jwtSelector = createSelector([activeAccount], (account) => {
 });
 
 export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
-  jwt ? parseJWT(jwt) : undefined
+  jwt ? parseJWT(jwt) : undefined,
 );
 
 export const jwtIssSelector = (state: RootState) =>
@@ -168,12 +175,17 @@ export const usernameSelector = createSelector([handleSelector], (handle) => {
 export const isAdminSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.person.admin;
 
+export const isDownvoteEnabledSelector = (state: RootState) =>
+  state.auth.site?.site_view.local_site.enable_downvotes !== false;
+
 export const localUserSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.local_user;
 
 export const login =
-  (client: LemmyHttp, username: string, password: string, totp?: string) =>
+  (baseUrl: string, username: string, password: string, totp?: string) =>
   async (dispatch: AppDispatch) => {
+    const client = getClient(baseUrl);
+
     const res = await client.login({
       username_or_email: username,
       password,
@@ -185,7 +197,9 @@ export const login =
       throw new Error("broke");
     }
 
-    const site = await client.getSite({ auth: res.jwt });
+    const authenticatedClient = getClient(baseUrl, res.jwt);
+
+    const site = await authenticatedClient.getSite({ auth: res.jwt });
     const myUser = site.my_user?.local_user_view?.person;
 
     if (!myUser) throw new Error("broke");
@@ -194,15 +208,27 @@ export const login =
     dispatch(updateConnectedInstance(parseJWT(res.jwt).iss));
   };
 
+export const getSiteIfNeeded =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const jwtPayload = jwtPayloadSelector(getState());
+    const instance = jwtPayload?.iss ?? getState().auth.connectedInstance;
+
+    const handle = handleSelector(getState());
+
+    if (getLoadingSiteId(instance, handle) === getState().auth.loadingSite)
+      return;
+
+    dispatch(loadingSite(getLoadingSiteId(instance, handle)));
+
+    dispatch(getSite());
+  };
+
 export const getSite =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwtPayload = jwtPayloadSelector(getState());
+    const instance = jwtPayload?.iss ?? getState().auth.connectedInstance;
 
-    if (!jwtPayload) return;
-
-    const { iss } = jwtPayload;
-
-    const details = await getClient(iss).getSite({
+    const details = await getClient(instance, jwtSelector(getState())).getSite({
       auth: jwtSelector(getState()),
     });
 
@@ -259,17 +285,22 @@ export const urlSelector = createSelector(
   (connectedInstance, iss) => {
     // never leak the jwt to the incorrect server
     return iss ?? connectedInstance;
-  }
+  },
 );
 
-export const clientSelector = createSelector([urlSelector], (url) => {
-  // never leak the jwt to the incorrect server
-  return getClient(url);
-});
+export const clientSelector = createSelector(
+  [urlSelector, jwtSelector],
+  (url, jwt) => {
+    // never leak the jwt to the incorrect server
+    return getClient(url, jwt);
+  },
+);
 
 function updateCredentialsStorage(
-  accounts: CredentialStoragePayload | undefined
+  accounts: CredentialStoragePayload | undefined,
 ) {
+  updateApplicationContextIfNeeded(accounts);
+
   if (!accounts) {
     localStorage.removeItem(MULTI_ACCOUNT_STORAGE_NAME);
     return;
@@ -280,7 +311,7 @@ function updateCredentialsStorage(
 
 function getCredentialsFromStorage(): CredentialStoragePayload | undefined {
   const serializedCredentials = localStorage.getItem(
-    MULTI_ACCOUNT_STORAGE_NAME
+    MULTI_ACCOUNT_STORAGE_NAME,
   );
   if (!serializedCredentials) return;
   return JSON.parse(serializedCredentials);
@@ -306,3 +337,29 @@ export const showNsfw =
 
     await dispatch(getSite());
   };
+
+function getLoadingSiteId(instance: string, handle: string | undefined) {
+  if (!handle) return instance;
+
+  return `${instance}-${handle}`;
+}
+
+// Run once on app load to sync state if needed
+updateApplicationContextIfNeeded(getCredentialsFromStorage());
+
+/**
+ * This syncs application state for the Apple Watch App
+ */
+function updateApplicationContextIfNeeded(
+  accounts: CredentialStoragePayload | undefined,
+) {
+  ApplicationContext.updateApplicationContext({
+    connectedInstance: accounts
+      ? accounts.activeHandle.slice(accounts.activeHandle.lastIndexOf("@") + 1)
+      : "lemmy.world",
+    authToken: accounts
+      ? accounts.accounts.find((a) => a.handle === accounts.activeHandle)
+          ?.jwt ?? ""
+      : "",
+  });
+}

@@ -31,6 +31,7 @@ import { useSetActivePage } from "../auth/AppContext";
 import { CommentsContext } from "./CommentsContext";
 import { jwtSelector } from "../auth/authSlice";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
+import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 
 const centerCss = css`
   position: relative;
@@ -74,7 +75,7 @@ interface CommentsProps {
 
 export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   { header, postId, commentPath, op, sort, bottomPadding },
-  ref
+  ref,
 ) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
@@ -87,7 +88,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       comments.length
         ? buildCommentsTreeWithMissing(comments, !!commentPath)
         : [],
-    [commentPath, comments]
+    [commentPath, comments],
   );
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
@@ -170,13 +171,13 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     const newComments = pullAllBy(
       response.comments,
       existingComments,
-      "comment.id"
+      "comment.id",
     );
     if (!newComments.length) setFinishedPaging(true);
 
     let potentialComments = uniqBy(
       [...existingComments, ...newComments],
-      (c) => c.comment.id
+      (c) => c.comment.id,
     );
 
     // Filter context to a single comment chain (only show direct ancestors and children)
@@ -240,7 +241,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   function appendComments(comments: CommentView[]) {
     setComments((existingComments) =>
-      uniqBy([...existingComments, ...comments], (c) => c.comment.id)
+      uniqBy([...existingComments, ...comments], (c) => c.comment.id),
     );
   }
 
@@ -287,11 +288,14 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
-        disabled={!isListAtTop}
+        disabled={isSafariFeedHackEnabled && !isListAtTop}
       >
         <IonRefresherContent />
       </IonRefresher>
       <Virtuoso
+        className={
+          isSafariFeedHackEnabled ? undefined : "ion-content-scroll-host"
+        }
         ref={virtuosoRef}
         style={{ height: "100%" }}
         totalCount={allComments.length + 1}
@@ -299,7 +303,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         endReached={() => fetchComments()}
         atTopStateChange={setIsListAtTop}
         components={
-          typeof commentId === "number"
+          bottomPadding
             ? {
                 // add space for the <ViewAllComments /> fixed component
                 Footer: () => <div style={{ height: `${bottomPadding}px` }} />,

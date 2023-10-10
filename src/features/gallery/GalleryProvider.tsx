@@ -10,12 +10,13 @@ import GalleryPostActions from "./GalleryPostActions";
 import { createPortal } from "react-dom";
 import { PostView } from "lemmy-js-client";
 import PhotoSwipeLightbox, { PreparedPhotoSwipeOptions } from "photoswipe";
-import { getSafeArea, isAndroid } from "../../helpers/device";
+import { getSafeArea, isAndroid, isNative } from "../../helpers/device";
 
 import "photoswipe/style.css";
 import { useLocation } from "react-router";
 import { useAppDispatch } from "../../store";
 import { setPostRead } from "../post/postSlice";
+import { StatusBar } from "@capacitor/status-bar";
 
 const Container = styled.div`
   position: absolute;
@@ -24,7 +25,9 @@ const Container = styled.div`
   left: 0;
   padding: 1rem;
   padding-top: 4rem;
-  padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0));
+  padding-bottom: calc(
+    1rem + var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0))
+  );
 
   color: white;
   background: linear-gradient(0deg, rgba(0, 0, 0, 1), transparent);
@@ -35,7 +38,7 @@ interface IGalleryContext {
   open: (
     img: HTMLImageElement,
     post?: PostView,
-    animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"]
+    animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
   ) => void;
   close: () => void;
 }
@@ -54,8 +57,9 @@ interface GalleryProviderProps {
 
 export default function GalleryProvider({ children }: GalleryProviderProps) {
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
-    null
+    null,
   );
+  const imgRef = useRef<HTMLImageElement>();
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
@@ -86,10 +90,11 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
     (
       img: HTMLImageElement,
       post?: PostView,
-      animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"]
+      animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
     ) => {
       if (lightboxRef.current) return;
 
+      imgRef.current = img;
       setPost(post);
 
       const instance = new PhotoSwipeLightbox({
@@ -124,7 +129,17 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         dispatch(setPostRead(post.post.id));
       });
 
-      instance.on("closingAnimationEnd", () => setPost(undefined));
+      instance.on("openingAnimationStart", () => {
+        if (isNative()) StatusBar.hide();
+      });
+
+      instance.on("close", () => {
+        if (isNative()) StatusBar.show();
+      });
+
+      instance.on("closingAnimationEnd", () => {
+        setPost(undefined);
+      });
 
       instance.on("uiRegister", function () {
         instance.ui?.registerElement({
@@ -179,13 +194,13 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         window.history.replaceState(
           window.history.state,
           document.title,
-          urlWithoutOpenedSlide
+          urlWithoutOpenedSlide,
         );
         // then we need to create new history record to store hash navigation state
         window.history.pushState(
           getHistoryState(),
           document.title,
-          urlWithOpenedSlide
+          urlWithOpenedSlide,
         );
       });
 
@@ -200,7 +215,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         window.history.replaceState(
           getHistoryState(),
           document.title,
-          urlWithOpenedSlide
+          urlWithOpenedSlide,
         );
       });
 
@@ -234,7 +249,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       instance.init();
       lightboxRef.current = instance;
     },
-    [dispatch]
+    [dispatch],
   );
 
   return (
@@ -243,9 +258,11 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         post &&
         createPortal(
           <Container>
-            <GalleryPostActions post={post} />
+            {imgRef.current && (
+              <GalleryPostActions post={post} imgSrc={imgRef.current.src} />
+            )}
           </Container>,
-          actionContainer
+          actionContainer,
         )}
 
       {children}

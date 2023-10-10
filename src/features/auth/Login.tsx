@@ -26,6 +26,10 @@ import { IonInputCustomEvent } from "@ionic/core";
 import TermsSheet from "../settings/terms/TermsSheet";
 import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
 import { getCustomServers } from "../../services/app";
+import { isNative } from "../../helpers/device";
+import { Browser } from "@capacitor/browser";
+
+const JOIN_LEMMY_URL = "https://join-lemmy.org/instances";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -39,8 +43,9 @@ export const Centered = styled.div`
 `;
 
 const HelperText = styled.p`
-  margin-left: 2rem;
-  margin-right: 2rem;
+  font-size: 0.9375em;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
 `;
 
 export default function Login({
@@ -66,6 +71,10 @@ export default function Login({
     onDismiss: (data: string, role: string) => onDismissTerms(data, role),
   });
 
+  function presentNativeTerms() {
+    Browser.open({ url: "https://getvoyager.app/terms.html" });
+  }
+
   const customServerHostname = (() => {
     if (!customServer) return;
 
@@ -73,7 +82,7 @@ export default function Login({
       return new URL(
         customServer.startsWith("https://")
           ? customServer
-          : `https://${customServer}`
+          : `https://${customServer}`,
       ).hostname;
     } catch (e) {
       return undefined;
@@ -162,12 +171,7 @@ export default function Login({
 
     try {
       await dispatch(
-        login(
-          getClient(server ?? customServerHostname),
-          username,
-          password,
-          totp
-        )
+        login(server ?? customServerHostname, username, password, totp),
       );
     } catch (error) {
       if (error === "missing_totp_token") {
@@ -288,17 +292,33 @@ export default function Login({
                 </>
               )}
 
-              <HelperText>
-                <IonRouterLink onClick={() => presentTerms()}>
-                  Privacy &amp; Terms
-                </IonRouterLink>
-              </HelperText>
+              {isNative() ? (
+                <HelperText>
+                  By using Voyager, you agree to the{" "}
+                  <IonRouterLink onClick={presentNativeTerms}>
+                    Terms of Use
+                  </IonRouterLink>
+                </HelperText>
+              ) : (
+                <HelperText>
+                  <IonRouterLink onClick={() => presentTerms()}>
+                    Privacy &amp; Terms
+                  </IonRouterLink>
+                </HelperText>
+              )}
 
               <HelperText>
                 <IonRouterLink
-                  href="https://join-lemmy.org/instances"
+                  href={JOIN_LEMMY_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={(e) => {
+                    if (!isNative()) return;
+
+                    e.preventDefault();
+
+                    Browser.open({ url: JOIN_LEMMY_URL });
+                  }}
                 >
                   <IonText color="primary">Don&apos;t have an account?</IonText>
                 </IonRouterLink>
@@ -372,6 +392,8 @@ function getLoginErrorMessage(error: unknown, instanceActorId: string): string {
       return `User not found. Is your account on ${instanceActorId}?`;
     case "password_incorrect":
       return "Incorrect password. Please try again.";
+    case "incorrect_login":
+      return "Incorrect login credentials. Please try again.";
     case "email_not_verified":
       return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
     case "site_ban":

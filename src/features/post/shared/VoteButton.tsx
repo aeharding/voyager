@@ -8,8 +8,11 @@ import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
 import { PageContext } from "../../auth/PageContext";
+import { isDownvoteEnabledSelector } from "../../auth/authSlice";
 import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
 import { useTransition } from "react-transition-state";
+import { ImpactStyle } from "@capacitor/haptics";
+import useHapticFeedback from "../../../helpers/useHapticFeedback";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -36,7 +39,9 @@ interface VoteButtonProps {
 export function VoteButton({ type, postId }: VoteButtonProps) {
   const [present] = useIonToast();
   const dispatch = useAppDispatch();
+  const vibrate = useHapticFeedback();
   const { presentLoginIfNeeded } = useContext(PageContext);
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const myVote = postVotesById[postId];
@@ -78,12 +83,18 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
     if (!on) toggle(false);
   }, [on, toggle]);
 
+  if (type === "down" && !downvoteAllowed) {
+    return undefined;
+  }
+
   return (
     <Item
       on={on}
       className={state.status}
       onClick={async (e) => {
         e.stopPropagation();
+
+        vibrate({ style: ImpactStyle.Light });
 
         if (presentLoginIfNeeded()) return;
 
@@ -93,7 +104,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
 
         try {
           await dispatch(
-            voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote)
+            voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote),
           );
         } catch (error) {
           present(voteError);

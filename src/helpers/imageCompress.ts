@@ -5,7 +5,7 @@
 function imgToCanvas(
   img: HTMLImageElement,
   rawWidth: number,
-  rawHeight: number
+  rawHeight: number,
 ): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
 
@@ -24,7 +24,7 @@ export async function reduceFileSize(
   acceptFileSize: number,
   maxWidth: number,
   maxHeight: number,
-  quality = 0.7
+  quality = 0.7,
 ): Promise<Blob | File> {
   return new Promise((resolve) => {
     if (file.size <= acceptFileSize) {
@@ -59,13 +59,13 @@ export async function reduceFileSize(
               h +
               ", " +
               (blob ? blob.size >> 10 : "???") +
-              "kB"
+              "kB",
           );
           if (blob) resolve(blob);
           else resolve(file);
         },
         "image/jpeg",
-        quality
+        quality,
       );
     });
 

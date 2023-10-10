@@ -7,7 +7,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import SelectDeviceMode from "../../features/settings/appearance/system/SelectDeviceMode";
+import SelectDeviceMode from "../../features/settings/appearance/themes/system/SelectDeviceMode";
 
 export default function DeviceModeSettingsPage() {
   return (

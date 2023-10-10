@@ -8,6 +8,19 @@ export interface IPostMetadata {
   hidden_updated_at?: number;
 }
 
+export const OAppThemeType = {
+  Default: "default",
+  FieryMario: "mario",
+  Pistachio: "pistachio",
+  SpookyPumpkin: "pumpkin",
+  UV: "uv",
+  Mint: "mint",
+  Dracula: "dracula",
+  Tangerine: "tangerine",
+} as const;
+
+export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
+
 export const OPostAppearanceType = {
   Compact: "compact",
   Large: "large",
@@ -23,6 +36,21 @@ export const OCompactThumbnailPositionType = {
 
 export type CompactThumbnailPositionType =
   (typeof OCompactThumbnailPositionType)[keyof typeof OCompactThumbnailPositionType];
+
+export const OCompactThumbnailSizeType = {
+  Hidden: "hidden",
+
+  /**
+   * Default
+   */
+  Small: "small",
+
+  Medium: "medium",
+  Large: "large",
+} as const;
+
+export type CompactThumbnailSizeType =
+  (typeof OCompactThumbnailSizeType)[keyof typeof OCompactThumbnailSizeType];
 
 export const OCommentThreadCollapse = {
   Always: "always",
@@ -59,14 +87,14 @@ export type InstanceUrlDisplayMode =
 
 export const OVoteDisplayMode = {
   /**
-   * Show total score (upvotes + downvotes)
-   */
-  Total: "total",
-
-  /**
    * Show upvotes and downvotes separately
    */
   Separate: "separate",
+
+  /**
+   * Show total score (upvotes + downvotes)
+   */
+  Total: "total",
 
   /**
    * Hide scores
@@ -77,19 +105,112 @@ export const OVoteDisplayMode = {
 export type VoteDisplayMode =
   (typeof OVoteDisplayMode)[keyof typeof OVoteDisplayMode];
 
+export const OProfileLabelType = {
+  /**
+   * e.g. aeharding@lemmy.world
+   */
+  Handle: "handle",
+
+  /**
+   * e.g. aeharding
+   */
+  Username: "username",
+
+  /**
+   * e.g. lemmy.world
+   */
+  Instance: "instance",
+
+  /**
+   * e.g. Profile
+   */
+  Hide: "hide",
+} as const;
+
+export type LinkHandlerType =
+  (typeof OLinkHandlerType)[keyof typeof OLinkHandlerType];
+
+export const OLinkHandlerType = {
+  DefaultBrowser: "default-browser",
+  InApp: "in-app",
+} as const;
+
+export type JumpButtonPositionType =
+  (typeof OJumpButtonPositionType)[keyof typeof OJumpButtonPositionType];
+
+export const OJumpButtonPositionType = {
+  LeftTop: "left-top",
+  LeftMiddle: "left-middle",
+  LeftBottom: "left-bottom",
+  Center: "center",
+  RightTop: "right-top",
+  RightMiddle: "right-middle",
+  RightBottom: "right-bottom",
+} as const;
+
+export type ProfileLabelType =
+  (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
+
+const OSwipeActionBase = {
+  None: "none",
+  Upvote: "upvote",
+  Downvote: "downvote",
+  Reply: "reply",
+  Save: "save",
+} as const;
+
+export const OSwipeActionPost = {
+  ...OSwipeActionBase,
+  Hide: "hide",
+} as const;
+
+export const OSwipeActionComment = {
+  ...OSwipeActionBase,
+  Collapse: "collapse",
+} as const;
+
+export const OSwipeActionInbox = {
+  ...OSwipeActionBase,
+  MarkUnread: "mark_unread",
+} as const;
+
+export const OSwipeActionAll = {
+  ...OSwipeActionPost,
+  ...OSwipeActionComment,
+  ...OSwipeActionInbox,
+} as const;
+
+export type SwipeAction =
+  (typeof OSwipeActionAll)[keyof typeof OSwipeActionAll];
+
+export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
+export type SwipeActions = Record<SwipeDirection, SwipeAction>;
+
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;
+  profile_label: ProfileLabelType;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_show_voting_buttons: boolean;
+  compact_thumbnail_size: CompactThumbnailSizeType;
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
   default_comment_sort: CommentDefaultSort;
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
   show_hide_read_button: boolean;
+  gesture_swipe_post: SwipeActions;
+  gesture_swipe_comment: SwipeActions;
+  gesture_swipe_inbox: SwipeActions;
+  disable_left_swipes: boolean;
+  disable_right_swipes: boolean;
+  enable_haptic_feedback: boolean;
+  link_handler: LinkHandlerType;
+  show_jump_button: boolean;
+  jump_button_position: JumpButtonPositionType;
+  filtered_keywords: string[];
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
@@ -185,7 +306,7 @@ export class WefwefDB extends Dexie {
     user_handle: string,
     page: number,
     limit: number,
-    lastPageItems?: IPostMetadata[]
+    lastPageItems?: IPostMetadata[],
   ) {
     const filterFn = (metadata: IPostMetadata) =>
       metadata.user_handle === user_handle && metadata.hidden === 1;
@@ -247,7 +368,7 @@ export class WefwefDB extends Dexie {
     specificity?: {
       user_handle?: string;
       community?: string;
-    }
+    },
   ) {
     const { user_handle = "", community = "" } = specificity || {};
 
@@ -285,7 +406,7 @@ export class WefwefDB extends Dexie {
     specificity?: {
       user_handle?: string;
       community?: string;
-    }
+    },
   ) {
     const { user_handle = "", community = "" } = specificity || {};
 

@@ -1,25 +1,27 @@
 import { useIonModal } from "@ionic/react";
 import React, {
+  RefObject,
   createContext,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
-import { CommentReplyItem } from "../comment/reply/CommentReply";
+import { CommentReplyItem } from "../comment/compose/reply/CommentReply";
 import Login from "../auth/Login";
 import { useAppSelector } from "../../store";
 import { jwtSelector } from "../auth/authSlice";
-import CommentReplyModal from "../comment/reply/CommentReplyModal";
+import CommentReplyModal from "../comment/compose/reply/CommentReplyModal";
 import { Comment, CommentView, PostView } from "lemmy-js-client";
-import CommentEditModal from "../comment/edit/CommentEditModal";
+import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
 import SelectTextModal from "../../pages/shared/SelectTextModal";
 
 interface IPageContext {
   // used for ion presentingElement
-  page: HTMLElement | undefined;
+  pageRef: RefObject<HTMLElement | undefined> | undefined;
 
   /**
    * @returns true if login dialog was presented
@@ -30,7 +32,7 @@ interface IPageContext {
    * @returns comment payload if replied
    */
   presentCommentReply: (
-    item: CommentReplyItem
+    item: CommentReplyItem,
   ) => Promise<CommentView | undefined>;
 
   /**
@@ -51,7 +53,7 @@ interface IPageContext {
 }
 
 export const PageContext = createContext<IPageContext>({
-  page: undefined,
+  pageRef: undefined,
   presentLoginIfNeeded: () => false,
   presentCommentReply: async () => undefined,
   presentCommentEdit: () => false,
@@ -61,7 +63,7 @@ export const PageContext = createContext<IPageContext>({
 });
 
 interface PageContextProvider {
-  value: Pick<IPageContext, "page">;
+  value: Pick<IPageContext, "pageRef">;
   children: React.ReactNode;
 }
 
@@ -75,9 +77,9 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   const presentLoginIfNeeded = useCallback(() => {
     if (jwt) return false;
 
-    presentLogin({ presentingElement: value.page });
+    presentLogin({ presentingElement: value.pageRef?.current ?? undefined });
     return true;
-  }, [jwt, presentLogin, value.page]);
+  }, [jwt, presentLogin, value.pageRef]);
 
   // Comment reply start
   const commentReplyItem = useRef<CommentReplyItem>();
@@ -87,7 +89,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const presentCommentReply = useCallback((item: CommentReplyItem) => {
     const promise = new Promise<CommentView | undefined>(
-      (resolve) => (commentReplyCb.current = resolve)
+      (resolve) => (commentReplyCb.current = resolve),
     );
 
     commentReplyItem.current = item;
@@ -122,7 +124,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       postItem.current = postOrCommunity;
       setIsPostOpen(true);
     },
-    []
+    [],
   );
   // Edit/new post end
 
@@ -135,22 +137,33 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   }, []);
   // Select text end
 
-  const presentReport = (item: ReportableItem) => {
+  const presentReport = useCallback((item: ReportableItem) => {
     reportRef.current?.present(item);
-  };
+  }, []);
+
+  const currentValue = useMemo(
+    () => ({
+      ...value,
+      presentLoginIfNeeded,
+      presentCommentReply,
+      presentCommentEdit,
+      presentReport,
+      presentPostEditor,
+      presentSelectText,
+    }),
+    [
+      presentCommentEdit,
+      presentCommentReply,
+      presentLoginIfNeeded,
+      presentPostEditor,
+      presentReport,
+      presentSelectText,
+      value,
+    ],
+  );
 
   return (
-    <PageContext.Provider
-      value={{
-        ...value,
-        presentLoginIfNeeded,
-        presentCommentReply,
-        presentCommentEdit,
-        presentReport,
-        presentPostEditor,
-        presentSelectText,
-      }}
-    >
+    <PageContext.Provider value={currentValue}>
       {children}
 
       <CommentReplyModal

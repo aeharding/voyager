@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
 import React, { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
-import { voteError } from "../../helpers/toastMessages";
+import { downvotesDisabled, voteError } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
 import {
   calculateTotalScore,
@@ -13,6 +13,9 @@ import {
 } from "../../helpers/vote";
 import { CommentView, PostView } from "lemmy-js-client";
 import { OVoteDisplayMode } from "../../services/db";
+import { isDownvoteEnabledSelector } from "../auth/authSlice";
+import { ImpactStyle } from "@capacitor/haptics";
+import useHapticFeedback from "../../helpers/useHapticFeedback";
 
 const Container = styled.div<{
   vote?: 1 | -1 | 0;
@@ -27,7 +30,7 @@ const Container = styled.div<{
       if (voteRepresented === undefined || vote === voteRepresented) {
         switch (vote) {
           case 1:
-            return "var(--ion-color-primary)";
+            return "var(--ion-color-primary-fixed)";
           case -1:
             return "var(--ion-color-danger)";
         }
@@ -46,19 +49,29 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
   const votesById = useAppSelector((state) =>
     "comment" in item
       ? state.comment.commentVotesById
-      : state.post.postVotesById
+      : state.post.postVotesById,
   );
   const id = "comment" in item ? item.comment.id : item.post.id;
 
   const myVote = votesById[id] ?? (item.my_vote as -1 | 0 | 1 | undefined) ?? 0;
+  const canDownvote = useAppSelector(isDownvoteEnabledSelector);
 
   const { presentLoginIfNeeded } = useContext(PageContext);
+  const vibrate = useHapticFeedback();
 
   async function onVote(e: React.MouseEvent, vote: 0 | 1 | -1) {
     e.stopPropagation();
     e.preventDefault();
 
+    vibrate({ style: ImpactStyle.Light });
+
     if (presentLoginIfNeeded()) return;
+
+    // you are allowed to un-downvote if they are disabled
+    if (!canDownvote && vote === -1) {
+      present(downvotesDisabled);
+      return;
+    }
 
     let dispatcherFn;
     if ("comment" in item) {
@@ -76,7 +89,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
   }
 
   const voteDisplayMode = useAppSelector(
-    (state) => state.settings.appearance.voting.voteDisplayMode
+    (state) => state.settings.appearance.voting.voteDisplayMode,
   );
 
   switch (voteDisplayMode) {

@@ -26,7 +26,7 @@ export default function CommentTree({
 }: CommentTreeProps) {
   const dispatch = useAppDispatch();
   const commentCollapsedById = useAppSelector(
-    (state) => state.comment.commentCollapsedById
+    (state) => state.comment.commentCollapsedById,
   );
 
   const collapsed = commentCollapsedById[comment.comment_view.comment.id];
@@ -50,7 +50,7 @@ export default function CommentTree({
       updateCommentCollapseState({
         commentId: comment.comment_view.comment.id,
         collapsed,
-      })
+      }),
     );
   }
 
@@ -88,7 +88,7 @@ export default function CommentTree({
         depth={comment.depth + 1}
         missing={comment.missing}
         collapsed={collapsed || fullyCollapsed}
-      />
+      />,
     );
   }
 

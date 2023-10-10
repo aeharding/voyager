@@ -3,7 +3,7 @@ import { CommentView, PostView } from "lemmy-js-client";
 
 export function calculateTotalScore(
   item: PostView | CommentView,
-  votesById: Dictionary<0 | 1 | -1>
+  votesById: Dictionary<0 | 1 | -1>,
 ) {
   const id = "comment" in item ? item.comment.id : item.post.id;
   return item.counts.score - (item.my_vote ?? 0) + (votesById[id] ?? 0);
@@ -11,7 +11,7 @@ export function calculateTotalScore(
 
 export function calculateSeparateScore(
   item: PostView | CommentView,
-  votesById: Dictionary<0 | 1 | -1>
+  votesById: Dictionary<0 | 1 | -1>,
 ) {
   const id = "comment" in item ? item.comment.id : item.post.id;
 

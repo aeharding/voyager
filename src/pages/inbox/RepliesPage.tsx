@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
@@ -16,6 +15,7 @@ import InboxFeed from "../../features/feed/InboxFeed";
 import { receivedInboxItems } from "../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { jwtSelector } from "../../features/auth/authSlice";
+import FeedContent from "../shared/FeedContent";
 
 interface RepliesPageProps {
   type: "Comment" | "Post";
@@ -41,14 +41,14 @@ export default function RepliesPage({ type }: RepliesPageProps) {
       });
 
       const replies = response.replies.filter((reply) =>
-        type === "Post" ? isPostReply(reply) : !isPostReply(reply)
+        type === "Post" ? isPostReply(reply) : !isPostReply(reply),
       );
 
       dispatch(receivedInboxItems(replies));
 
       return replies;
     },
-    [client, jwt, dispatch, type]
+    [client, jwt, dispatch, type],
   );
 
   return (
@@ -66,9 +66,9 @@ export default function RepliesPage({ type }: RepliesPageProps) {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
-      </IonContent>
+      </FeedContent>
     </IonPage>
   );
 }

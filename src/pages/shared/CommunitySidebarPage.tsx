@@ -7,14 +7,13 @@ import {
 } from "@ionic/react";
 import { useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
-import PostSort from "../../features/feed/PostSort";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useEffect } from "react";
 import { getCommunity } from "../../features/community/communitySlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { CenteredSpinner } from "../posts/PostPage";
-import Sidebar from "../../features/community/sidebar/Sidebar";
 import AppContent from "../../features/shared/AppContent";
+import Sidebar from "../../features/sidebar/Sidebar";
 
 export default function CommunitySidebarPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -24,7 +23,7 @@ export default function CommunitySidebarPage() {
   }>();
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const communityView = communityByHandle[community];
@@ -47,10 +46,6 @@ export default function CommunitySidebarPage() {
           </IonButtons>
 
           <IonTitle>{community}</IonTitle>
-
-          <IonButtons slot="end">
-            <PostSort />
-          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY>

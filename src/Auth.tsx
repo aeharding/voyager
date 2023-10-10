@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import {
-  getSite,
+  getSiteIfNeeded,
   jwtIssSelector,
   jwtSelector,
   updateConnectedInstance,
@@ -21,7 +21,7 @@ export default function Auth({ children }: AuthProps) {
   const jwt = useAppSelector(jwtSelector);
   const iss = useAppSelector(jwtIssSelector);
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const location = useLocation();
   const pageVisibility = usePageVisibility();
@@ -43,9 +43,9 @@ export default function Auth({ children }: AuthProps) {
   }, [location.pathname]);
 
   useEffect(() => {
-    dispatch(getSite());
+    dispatch(getSiteIfNeeded());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jwt]);
+  }, [jwt, connectedInstance]);
 
   const shouldSyncMessages = useCallback(() => {
     return jwt && location.pathname.startsWith("/inbox/messages");
@@ -58,7 +58,7 @@ export default function Auth({ children }: AuthProps) {
 
       dispatch(syncMessages());
     },
-    shouldSyncMessages() ? 1_000 * 15 : null
+    shouldSyncMessages() ? 1_000 * 15 : null,
   );
 
   useInterval(() => {

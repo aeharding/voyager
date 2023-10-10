@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import {
-  IonActionSheet,
   IonIcon,
+  useIonActionSheet,
   useIonRouter,
   useIonToast,
 } from "@ionic/react";
@@ -20,18 +20,19 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { notEmpty } from "../../helpers/array";
 import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
+  share,
 } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { saveError, voteError } from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
-import { handleSelector } from "../auth/authSlice";
+import { handleSelector, isDownvoteEnabledSelector } from "../auth/authSlice";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
@@ -54,10 +55,11 @@ export default function MoreActions({
 }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const [open, setOpen] = useState(false);
   const { prependComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
   const [present] = useIonToast();
+  const [presentActionSheet] = useIonActionSheet();
+  const [presentSecondaryActionSheet] = useIonActionSheet();
   const collapseRootComment = useCollapseRootComment(commentView, rootIndex);
 
   const commentById = useAppSelector((state) => state.comment.commentById);
@@ -76,105 +78,28 @@ export default function MoreActions({
   } = useContext(PageContext);
 
   const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById
+    (state) => state.comment.commentVotesById,
   );
   const commentSavedById = useAppSelector(
-    (state) => state.comment.commentSavedById
+    (state) => state.comment.commentSavedById,
   );
 
   const myVote = commentVotesById[comment.id] ?? commentView.my_vote;
   const mySaved = commentSavedById[comment.id] ?? commentView.saved;
 
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
   const isMyComment = getRemoteHandle(commentView.creator) === myHandle;
   const commentExists = !comment.deleted && !comment.removed;
 
-  return (
-    <>
-      <StyledIonIcon
-        icon={ellipsisHorizontal}
-        onClick={(e) => {
-          setOpen(true);
-          e.stopPropagation();
-        }}
-      />
-
-      <IonActionSheet
-        cssClass="left-align-buttons"
-        onClick={(e) => e.stopPropagation()}
-        isOpen={open}
-        buttons={[
-          {
-            text: myVote !== 1 ? "Upvote" : "Undo Upvote",
-            role: "upvote",
-            icon: arrowUpOutline,
-          },
-          {
-            text: myVote !== -1 ? "Downvote" : "Undo Downvote",
-            role: "downvote",
-            icon: arrowDownOutline,
-          },
-          {
-            text: !mySaved ? "Save" : "Unsave",
-            role: "save",
-            icon: bookmarkOutline,
-          },
-          isMyComment && isCommentMutable(comment)
-            ? {
-                text: "Edit",
-                role: "edit",
-                icon: pencilOutline,
-              }
-            : undefined,
-          isMyComment && isCommentMutable(comment)
-            ? {
-                text: "Delete",
-                role: "delete",
-                icon: trashOutline,
-              }
-            : undefined,
-          {
-            text: "Reply",
-            role: "reply",
-            icon: arrowUndoOutline,
-          },
-          commentExists && comment.content
-            ? {
-                text: "Select Text",
-                role: "select-text",
-                icon: textOutline,
-              }
-            : undefined,
-          {
-            text: getHandle(commentView.creator),
-            role: "person",
-            icon: personOutline,
-          },
-          {
-            text: "Share",
-            role: "share",
-            icon: shareOutline,
-          },
-          rootIndex !== undefined
-            ? {
-                text: "Collapse to Top",
-                role: "collapse",
-                icon: chevronCollapseOutline,
-              }
-            : undefined,
-          {
-            text: "Report",
-            role: "report",
-            icon: flagOutline,
-          },
-          {
-            text: "Cancel",
-            role: "cancel",
-          },
-        ].filter(notEmpty)}
-        onDidDismiss={() => setOpen(false)}
-        onWillDismiss={async (e) => {
-          switch (e.detail.role) {
-            case "upvote":
+  function onClick() {
+    presentActionSheet({
+      cssClass: "left-align-buttons",
+      buttons: [
+        {
+          text: myVote !== 1 ? "Upvote" : "Undo Upvote",
+          icon: arrowUpOutline,
+          handler: () => {
+            (async () => {
               if (presentLoginIfNeeded()) return;
 
               try {
@@ -182,21 +107,33 @@ export default function MoreActions({
               } catch (error) {
                 present(voteError);
               }
+            })();
+          },
+        },
+        downvoteAllowed
+          ? {
+              text: myVote !== -1 ? "Downvote" : "Undo Downvote",
+              icon: arrowDownOutline,
+              handler: () => {
+                (async () => {
+                  if (presentLoginIfNeeded()) return;
 
-              break;
-            case "downvote":
-              if (presentLoginIfNeeded()) return;
-
-              try {
-                await dispatch(
-                  voteOnComment(comment.id, myVote === -1 ? 0 : -1)
-                );
-              } catch (error) {
-                present(voteError);
-              }
-
-              break;
-            case "save":
+                  try {
+                    await dispatch(
+                      voteOnComment(comment.id, myVote === -1 ? 0 : -1),
+                    );
+                  } catch (error) {
+                    present(voteError);
+                  }
+                })();
+              },
+            }
+          : undefined,
+        {
+          text: !mySaved ? "Save" : "Unsave",
+          icon: bookmarkOutline,
+          handler: () => {
+            (async () => {
               if (presentLoginIfNeeded()) return;
 
               try {
@@ -204,59 +141,132 @@ export default function MoreActions({
               } catch (error) {
                 present(saveError);
               }
-              break;
-            case "edit": {
-              presentCommentEdit(comment);
-              break;
+            })();
+          },
+        },
+        isMyComment && isCommentMutable(comment)
+          ? {
+              text: "Edit",
+              icon: pencilOutline,
+              handler: () => {
+                presentCommentEdit(comment);
+              },
             }
-            case "delete":
-              try {
-                await dispatch(deleteComment(comment.id));
-              } catch (error) {
-                present({
-                  message: "Problem deleting comment. Please try again.",
-                  duration: 3500,
-                  position: "bottom",
-                  color: "danger",
+          : undefined,
+        isMyComment && isCommentMutable(comment)
+          ? {
+              text: "Delete",
+              icon: trashOutline,
+              handler: () => {
+                presentSecondaryActionSheet({
+                  buttons: [
+                    {
+                      text: "Delete Comment",
+                      role: "destructive",
+                      handler: () => {
+                        (async () => {
+                          try {
+                            await dispatch(deleteComment(comment.id));
+                          } catch (error) {
+                            present({
+                              message:
+                                "Problem deleting comment. Please try again.",
+                              duration: 3500,
+                              position: "bottom",
+                              color: "danger",
+                            });
+
+                            throw error;
+                          }
+
+                          present({
+                            message: "Comment deleted!",
+                            duration: 3500,
+                            position: "bottom",
+                            color: "primary",
+                          });
+                        })();
+                      },
+                    },
+                    {
+                      text: "Cancel",
+                      role: "cancel",
+                    },
+                  ],
                 });
-
-                throw error;
-              }
-
-              present({
-                message: "Comment deleted!",
-                duration: 3500,
-                position: "bottom",
-                color: "primary",
-              });
-              break;
-            case "reply": {
+              },
+            }
+          : undefined,
+        {
+          text: "Reply",
+          icon: arrowUndoOutline,
+          handler: () => {
+            (async () => {
               if (presentLoginIfNeeded()) return;
 
               const reply = await presentCommentReply(commentView);
 
               if (reply) prependComments([reply]);
-              break;
+            })();
+          },
+        },
+        commentExists && comment.content
+          ? {
+              text: "Select Text",
+              icon: textOutline,
+              handler: () => {
+                presentSelectText(comment.content);
+              },
             }
-            case "select-text":
-              return presentSelectText(comment.content);
-            case "person":
-              router.push(
-                buildGeneralBrowseLink(`/u/${getHandle(commentView.creator)}`)
-              );
-              break;
-            case "share":
-              navigator.share({ url: comment.ap_id });
-              break;
-            case "collapse":
-              collapseRootComment();
-              break;
-            case "report":
-              presentReport(commentView);
-              break;
-          }
-        }}
-      />
-    </>
+          : undefined,
+        {
+          text: getHandle(commentView.creator),
+          icon: personOutline,
+          handler: () => {
+            router.push(
+              buildGeneralBrowseLink(`/u/${getHandle(commentView.creator)}`),
+            );
+          },
+        },
+        {
+          text: "Share",
+          icon: shareOutline,
+          handler: () => {
+            share(comment);
+          },
+        },
+        rootIndex !== undefined
+          ? {
+              text: "Collapse to Top",
+              icon: chevronCollapseOutline,
+              handler: () => {
+                collapseRootComment();
+              },
+            }
+          : undefined,
+        {
+          text: "Report",
+          role: "report",
+          icon: flagOutline,
+          handler: () => {
+            presentReport(commentView);
+          },
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ].filter(notEmpty),
+    });
+  }
+
+  return (
+    <StyledIonIcon
+      icon={ellipsisHorizontal}
+      onClick={(e) => {
+        onClick();
+        e.stopPropagation();
+      }}
+    />
   );
 }

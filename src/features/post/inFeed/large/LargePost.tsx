@@ -100,7 +100,7 @@ const PostBody = styled.div<{ isRead: boolean }>`
 
 const ImageContainer = styled.div`
   overflow: hidden;
-  margin: 0 -1rem;
+  margin: 0 -0.75rem;
 `;
 
 export default function LargePost({ post, communityMode }: PostProps) {
@@ -109,10 +109,10 @@ export default function LargePost({ post, communityMode }: PostProps) {
     post.read;
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
-    [post]
+    [post],
   );
   const blurNsfw = useAppSelector(
-    (state) => state.settings.appearance.posts.blurNsfw
+    (state) => state.settings.appearance.posts.blurNsfw,
   );
 
   function renderPostBody() {
@@ -200,6 +200,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
               <CommunityLink
                 community={post.community}
                 showInstanceWhenRemote
+                subscribed={post.subscribed}
               />
             )}
           </CommunityName>

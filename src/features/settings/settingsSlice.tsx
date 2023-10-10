@@ -23,6 +23,15 @@ import {
   OInstanceUrlDisplayMode,
   VoteDisplayMode,
   OVoteDisplayMode,
+  OProfileLabelType,
+  ProfileLabelType,
+  AppThemeType,
+  CompactThumbnailSizeType,
+  OCompactThumbnailSizeType,
+  LinkHandlerType,
+  OLinkHandlerType,
+  JumpButtonPositionType,
+  OJumpButtonPositionType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -45,6 +54,7 @@ interface SettingsState {
     };
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
+      profileLabel: ProfileLabelType;
     };
     posts: {
       blurNsfw: PostBlurNsfwType;
@@ -53,6 +63,7 @@ interface SettingsState {
     compact: {
       thumbnailsPosition: CompactThumbnailPositionType;
       showVotingButtons: boolean;
+      thumbnailSize: CompactThumbnailSizeType;
     };
     voting: {
       voteDisplayMode: VoteDisplayMode;
@@ -60,19 +71,28 @@ interface SettingsState {
     dark: {
       usingSystemDarkMode: boolean;
       userDarkMode: boolean;
+      pureBlack: boolean;
     };
     deviceMode: Mode;
+    theme: AppThemeType;
   };
   general: {
     comments: {
       collapseCommentThreads: CommentThreadCollapse;
       sort: CommentDefaultSort;
+      showJumpButton: boolean;
+      jumpButtonPosition: JumpButtonPositionType;
     };
     posts: {
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
     };
+    enableHapticFeedback: boolean;
+    linkHandler: LinkHandlerType;
+  };
+  blocks: {
+    keywords: string[];
   };
 }
 
@@ -84,8 +104,10 @@ const LOCALSTORAGE_KEYS = {
   DARK: {
     USE_SYSTEM: "appearance--dark-use-system",
     USER_MODE: "appearance--dark-user-mode",
+    PURE_BLACK: "appearance--pure-black",
   },
   DEVICE_MODE: "appearance--device-mode",
+  THEME: "appearance--theme",
 } as const;
 
 const initialState: SettingsState = {
@@ -97,6 +119,7 @@ const initialState: SettingsState = {
     },
     general: {
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
+      profileLabel: OProfileLabelType.Instance,
     },
     posts: {
       blurNsfw: OPostBlurNsfw.InFeed,
@@ -105,6 +128,7 @@ const initialState: SettingsState = {
     compact: {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
       showVotingButtons: true,
+      thumbnailSize: OCompactThumbnailSizeType.Small,
     },
     voting: {
       voteDisplayMode: OVoteDisplayMode.Total,
@@ -112,19 +136,28 @@ const initialState: SettingsState = {
     dark: {
       usingSystemDarkMode: true,
       userDarkMode: false,
+      pureBlack: true,
     },
     deviceMode: "ios",
+    theme: "default",
   },
   general: {
     comments: {
       collapseCommentThreads: OCommentThreadCollapse.Never,
       sort: OCommentDefaultSort.Hot,
+      showJumpButton: false,
+      jumpButtonPosition: OJumpButtonPositionType.RightBottom,
     },
     posts: {
       disableMarkingRead: false,
       markReadOnScroll: false,
       showHideReadButton: false,
     },
+    enableHapticFeedback: true,
+    linkHandler: OLinkHandlerType.InApp,
+  },
+  blocks: {
+    keywords: [],
   },
 };
 
@@ -139,8 +172,10 @@ const stateWithLocalstorageItems: SettingsState = merge(initialState, {
     dark: {
       usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
       userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+      pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK),
     },
     deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
+    theme: get(LOCALSTORAGE_KEYS.THEME),
   },
 });
 
@@ -156,7 +191,7 @@ export const defaultCommentDepthSelector = createSelector(
       case OCommentThreadCollapse.Never:
         return MAX_DEFAULT_COMMENT_DEPTH;
     }
-  }
+  },
 );
 
 export const appearanceSlice = createSlice({
@@ -165,7 +200,7 @@ export const appearanceSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(
       fetchSettingsFromDatabase.fulfilled,
-      (_, action: PayloadAction<SettingsState>) => action.payload
+      (_, action: PayloadAction<SettingsState>) => action.payload,
     );
   },
   reducers: {
@@ -179,14 +214,29 @@ export const appearanceSlice = createSlice({
     },
     setUserInstanceUrlDisplay(
       state,
-      action: PayloadAction<InstanceUrlDisplayMode>
+      action: PayloadAction<InstanceUrlDisplayMode>,
     ) {
       state.appearance.general.userInstanceUrlDisplay = action.payload;
       db.setSetting("user_instance_url_display", action.payload);
     },
+    setProfileLabel(state, action: PayloadAction<ProfileLabelType>) {
+      state.appearance.general.profileLabel = action.payload;
+      db.setSetting("profile_label", action.payload);
+    },
     setCommentsCollapsed(state, action: PayloadAction<CommentThreadCollapse>) {
       state.general.comments.collapseCommentThreads = action.payload;
       db.setSetting("collapse_comment_threads", action.payload);
+    },
+    setShowJumpButton(state, action: PayloadAction<boolean>) {
+      state.general.comments.showJumpButton = action.payload;
+      db.setSetting("show_jump_button", action.payload);
+    },
+    setJumpButtonPosition(
+      state,
+      action: PayloadAction<JumpButtonPositionType>,
+    ) {
+      state.general.comments.jumpButtonPosition = action.payload;
+      db.setSetting("jump_button_position", action.payload);
     },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
@@ -196,13 +246,24 @@ export const appearanceSlice = createSlice({
       state.appearance.posts.blurNsfw = action.payload;
       // Per user setting is updated in StoreProvider
     },
+    setFilteredKeywords(state, action: PayloadAction<string[]>) {
+      state.blocks.keywords = action.payload;
+      // Per user setting is updated in StoreProvider
+    },
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.compact.showVotingButtons = action.payload;
       db.setSetting("compact_show_voting_buttons", action.payload);
     },
+    setCompactThumbnailSize(
+      state,
+      action: PayloadAction<CompactThumbnailSizeType>,
+    ) {
+      state.appearance.compact.thumbnailSize = action.payload;
+      db.setSetting("compact_thumbnail_size", action.payload);
+    },
     setThumbnailPosition(
       state,
-      action: PayloadAction<CompactThumbnailPositionType>
+      action: PayloadAction<CompactThumbnailPositionType>,
     ) {
       state.appearance.compact.thumbnailsPosition = action.payload;
       db.setSetting("compact_thumbnail_position_type", action.payload);
@@ -214,6 +275,10 @@ export const appearanceSlice = createSlice({
     setUserDarkMode(state, action: PayloadAction<boolean>) {
       state.appearance.dark.userDarkMode = action.payload;
       set(LOCALSTORAGE_KEYS.DARK.USER_MODE, action.payload);
+    },
+    setPureBlack(state, action: PayloadAction<boolean>) {
+      state.appearance.dark.pureBlack = action.payload;
+      set(LOCALSTORAGE_KEYS.DARK.PURE_BLACK, action.payload);
     },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
       state.appearance.dark.usingSystemDarkMode = action.payload;
@@ -241,6 +306,20 @@ export const appearanceSlice = createSlice({
       state.general.posts.showHideReadButton = action.payload;
 
       db.setSetting("show_hide_read_button", action.payload);
+    },
+    setTheme(state, action: PayloadAction<AppThemeType>) {
+      state.appearance.theme = action.payload;
+      set(LOCALSTORAGE_KEYS.THEME, action.payload);
+    },
+    setEnableHapticFeedback(state, action: PayloadAction<boolean>) {
+      state.general.enableHapticFeedback = action.payload;
+
+      db.setSetting("enable_haptic_feedback", action.payload);
+    },
+    setLinkHandler(state, action: PayloadAction<LinkHandlerType>) {
+      state.general.linkHandler = action.payload;
+
+      db.setSetting("link_handler", action.payload);
     },
 
     resetSettings: () => ({
@@ -284,34 +363,70 @@ export const getBlurNsfw =
     dispatch(setNsfwBlur(blurNsfw ?? initialState.appearance.posts.blurNsfw));
   };
 
+export const getFilteredKeywords =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const filteredKeywords = await db.getSetting("filtered_keywords", {
+      user_handle: userHandle,
+    });
+
+    dispatch(
+      setFilteredKeywords(filteredKeywords ?? initialState.blocks.keywords),
+    );
+  };
+
+export const updateFilteredKeywords =
+  (filteredKeywords: string[]) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setFilteredKeywords(filteredKeywords));
+
+    db.setSetting("filtered_keywords", filteredKeywords, {
+      user_handle: userHandle,
+    });
+  };
+
 export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
     const result = db.transaction("r", db.settings, async () => {
       const state = thunkApi.getState() as RootState;
       const collapse_comment_threads = await db.getSetting(
-        "collapse_comment_threads"
+        "collapse_comment_threads",
       );
+      const show_jump_button = await db.getSetting("show_jump_button");
+      const jump_button_position = await db.getSetting("jump_button_position");
       const user_instance_url_display = await db.getSetting(
-        "user_instance_url_display"
+        "user_instance_url_display",
       );
+      const profile_label = await db.getSetting("profile_label");
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const compact_thumbnail_position_type = await db.getSetting(
-        "compact_thumbnail_position_type"
+        "compact_thumbnail_position_type",
       );
       const compact_show_voting_buttons = await db.getSetting(
-        "compact_show_voting_buttons"
+        "compact_show_voting_buttons",
+      );
+      const compact_thumbnail_size = await db.getSetting(
+        "compact_thumbnail_size",
       );
       const vote_display_mode = await db.getSetting("vote_display_mode");
       const default_comment_sort = await db.getSetting("default_comment_sort");
       const disable_marking_posts_read = await db.getSetting(
-        "disable_marking_posts_read"
+        "disable_marking_posts_read",
       );
       const mark_read_on_scroll = await db.getSetting("mark_read_on_scroll");
       const show_hide_read_button = await db.getSetting(
-        "show_hide_read_button"
+        "show_hide_read_button",
       );
+      const enable_haptic_feedback = await db.getSetting(
+        "enable_haptic_feedback",
+      );
+      const link_handler = await db.getSetting("link_handler");
+      const filtered_keywords = await db.getSetting("filtered_keywords");
 
       return {
         ...state.settings,
@@ -322,6 +437,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             userInstanceUrlDisplay:
               user_instance_url_display ??
               initialState.appearance.general.userInstanceUrlDisplay,
+            profileLabel:
+              profile_label ?? initialState.appearance.general.profileLabel,
           },
           posts: {
             type: post_appearance_type ?? initialState.appearance.posts.type,
@@ -334,6 +451,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showVotingButtons:
               compact_show_voting_buttons ??
               initialState.appearance.compact.showVotingButtons,
+            thumbnailSize:
+              compact_thumbnail_size ??
+              initialState.appearance.compact.thumbnailSize,
           },
           voting: {
             voteDisplayMode:
@@ -347,6 +467,11 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               collapse_comment_threads ??
               initialState.general.comments.collapseCommentThreads,
             sort: default_comment_sort ?? initialState.general.comments.sort,
+            showJumpButton:
+              show_jump_button ?? initialState.general.comments.showJumpButton,
+            jumpButtonPosition:
+              jump_button_position ??
+              initialState.general.comments.jumpButtonPosition,
           },
           posts: {
             disableMarkingRead:
@@ -359,6 +484,12 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               show_hide_read_button ??
               initialState.general.posts.showHideReadButton,
           },
+          linkHandler: link_handler ?? initialState.general.linkHandler,
+          enableHapticFeedback:
+            enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
+        },
+        blocks: {
+          keywords: filtered_keywords ?? initialState.blocks.keywords,
         },
       };
     });
@@ -371,18 +502,23 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 
       throw error;
     }
-  }
+  },
 );
 
 export const {
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setUserInstanceUrlDisplay,
+  setProfileLabel,
   setCommentsCollapsed,
+  setShowJumpButton,
+  setJumpButtonPosition,
   setNsfwBlur,
+  setFilteredKeywords,
   setPostAppearance,
   setThumbnailPosition,
   setShowVotingButtons,
+  setCompactThumbnailSize,
   setVoteDisplayMode,
   setUserDarkMode,
   setUseSystemDarkMode,
@@ -392,6 +528,10 @@ export const {
   setDisableMarkingPostsRead,
   setMarkPostsReadOnScroll,
   setShowHideReadButton,
+  setTheme,
+  setEnableHapticFeedback,
+  setLinkHandler,
+  setPureBlack,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

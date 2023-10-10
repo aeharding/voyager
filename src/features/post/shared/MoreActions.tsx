@@ -1,5 +1,4 @@
 import {
-  IonActionSheet,
   IonButton,
   IonIcon,
   useIonActionSheet,
@@ -22,7 +21,7 @@ import {
   textOutline,
   trashOutline,
 } from "ionicons/icons";
-import { useContext, useMemo, useState } from "react";
+import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { PostView } from "lemmy-js-client";
 import {
@@ -33,13 +32,16 @@ import {
   savePost,
   deletePost,
 } from "../postSlice";
-import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
+import { getHandle, getRemoteHandle, share } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
 import { saveError, voteError } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
-import { handleSelector } from "../../auth/authSlice";
+import {
+  handleSelector,
+  isDownvoteEnabledSelector,
+} from "../../auth/authSlice";
 
 interface MoreActionsProps {
   post: PostView;
@@ -53,10 +55,10 @@ export default function MoreActions({
   onFeed,
 }: MoreActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
+  const [presentSecondaryActionSheet] = useIonActionSheet();
   const [present] = useIonToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const [open, setOpen] = useState(false);
   const isHidden = useAppSelector(postHiddenByIdSelector)[post.post.id];
   const myHandle = useAppSelector(handleSelector);
 
@@ -77,116 +79,17 @@ export default function MoreActions({
   const mySaved = postSavedById[post.post.id] ?? post.saved;
 
   const isMyPost = getRemoteHandle(post.creator) === myHandle;
+  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
-  const buttons = useMemo(
-    () =>
-      [
+  function onClick() {
+    presentActionSheet({
+      cssClass: "left-align-buttons",
+      buttons: [
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
-          data: "upvote",
           icon: arrowUpOutline,
-        },
-        {
-          text: myVote !== -1 ? "Downvote" : "Undo Downvote",
-          data: "downvote",
-          icon: arrowDownOutline,
-        },
-        {
-          text: !mySaved ? "Save" : "Unsave",
-          data: "save",
-          icon: bookmarkOutline,
-        },
-        isMyPost
-          ? {
-              text: "Delete",
-              data: "delete",
-              icon: trashOutline,
-            }
-          : undefined,
-        isMyPost
-          ? {
-              text: "Edit",
-              data: "edit",
-              icon: pencilOutline,
-            }
-          : undefined,
-        {
-          text: "Reply",
-          data: "reply",
-          icon: arrowUndoOutline,
-        },
-        {
-          text: getHandle(post.creator),
-          data: "person",
-          icon: personOutline,
-        },
-        {
-          text: getHandle(post.community),
-          data: "community",
-          icon: peopleOutline,
-        },
-        post.post.body
-          ? {
-              text: "Select Text",
-              data: "select",
-              icon: textOutline,
-            }
-          : undefined,
-        onFeed
-          ? {
-              text: isHidden ? "Unhide" : "Hide",
-              data: isHidden ? "unhide" : "hide",
-              icon: isHidden ? eyeOutline : eyeOffOutline,
-            }
-          : undefined,
-        {
-          text: "Share",
-          data: "share",
-          icon: shareOutline,
-        },
-        {
-          text: "Report",
-          data: "report",
-          icon: flagOutline,
-        },
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
-      ].filter(notEmpty),
-    [
-      myVote,
-      mySaved,
-      isMyPost,
-      post.creator,
-      post.community,
-      post.post.body,
-      onFeed,
-      isHidden,
-    ]
-  );
-
-  const Button = onFeed ? ActionButton : IonButton;
-
-  return (
-    <>
-      <Button
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen(true);
-        }}
-      >
-        <IonIcon className={className} icon={ellipsisHorizontal} />
-      </Button>
-      <IonActionSheet
-        cssClass="left-align-buttons"
-        isOpen={open}
-        buttons={buttons}
-        onClick={(e) => e.stopPropagation()}
-        onDidDismiss={() => setOpen(false)}
-        onWillDismiss={async (e) => {
-          switch (e.detail.data) {
-            case "upvote": {
+          handler: () => {
+            (async () => {
               if (presentLoginIfNeeded()) return;
 
               try {
@@ -196,23 +99,35 @@ export default function MoreActions({
 
                 throw error;
               }
-              break;
-            }
-            case "downvote": {
-              if (presentLoginIfNeeded()) return;
+            })();
+          },
+        },
+        downvoteAllowed
+          ? {
+              text: myVote !== -1 ? "Downvote" : "Undo Downvote",
+              icon: arrowDownOutline,
+              handler: () => {
+                (async () => {
+                  if (presentLoginIfNeeded()) return;
 
-              try {
-                await dispatch(
-                  voteOnPost(post.post.id, myVote === -1 ? 0 : -1)
-                );
-              } catch (error) {
-                present(voteError);
+                  try {
+                    await dispatch(
+                      voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
+                    );
+                  } catch (error) {
+                    present(voteError);
 
-                throw error;
-              }
-              break;
+                    throw error;
+                  }
+                })();
+              },
             }
-            case "save": {
+          : undefined,
+        {
+          text: !mySaved ? "Save" : "Unsave",
+          icon: bookmarkOutline,
+          handler: () => {
+            (async () => {
               if (presentLoginIfNeeded()) return;
 
               try {
@@ -222,91 +137,138 @@ export default function MoreActions({
 
                 throw error;
               }
-              break;
-            }
-            case "reply": {
-              if (presentLoginIfNeeded()) return;
+            })();
+          },
+        },
+        isMyPost
+          ? {
+              text: "Delete",
+              icon: trashOutline,
+              handler: () => {
+                presentSecondaryActionSheet({
+                  buttons: [
+                    {
+                      text: "Delete Post",
+                      role: "destructive",
+                      handler: () => {
+                        (async () => {
+                          await dispatch(deletePost(post.post.id));
 
-              // Not viewing comments, so no feed update
-              presentCommentReply(post);
-
-              break;
-            }
-            case "person": {
-              router.push(
-                buildGeneralBrowseLink(`/u/${getHandle(post.creator)}`)
-              );
-
-              break;
-            }
-            case "community": {
-              router.push(
-                buildGeneralBrowseLink(`/c/${getHandle(post.community)}`)
-              );
-
-              break;
-            }
-            case "select": {
-              if (!post.post.body) break;
-
-              return presentSelectText(post.post.body);
-            }
-            case "hide": {
-              if (presentLoginIfNeeded()) return;
-
-              dispatch(hidePost(post.post.id));
-
-              break;
-            }
-            case "unhide": {
-              if (presentLoginIfNeeded()) return;
-
-              dispatch(unhidePost(post.post.id));
-
-              break;
-            }
-            case "share": {
-              navigator.share({ url: post.post.url ?? post.post.ap_id });
-
-              break;
-            }
-            case "report": {
-              presentReport(post);
-              break;
-            }
-            case "delete": {
-              presentActionSheet({
-                buttons: [
-                  {
-                    text: "Delete",
-                    role: "destructive",
-                    handler: () => {
-                      (async () => {
-                        await dispatch(deletePost(post.post.id));
-
-                        present({
-                          message: "Post deleted",
-                          duration: 3500,
-                          position: "bottom",
-                          color: "success",
-                        });
-                      })();
+                          present({
+                            message: "Post deleted",
+                            duration: 3500,
+                            position: "bottom",
+                            color: "success",
+                          });
+                        })();
+                      },
                     },
-                  },
-                  {
-                    text: "Cancel",
-                    role: "cancel",
-                  },
-                ],
-              });
-              break;
+                    {
+                      text: "Cancel",
+                      role: "cancel",
+                    },
+                  ],
+                });
+              },
             }
-            case "edit": {
-              presentPostEditor(post);
+          : undefined,
+        isMyPost
+          ? {
+              text: "Edit",
+              icon: pencilOutline,
+              handler: () => {
+                presentPostEditor(post);
+              },
             }
-          }
+          : undefined,
+        {
+          text: "Reply",
+          icon: arrowUndoOutline,
+          handler: () => {
+            if (presentLoginIfNeeded()) return;
+
+            // Not viewing comments, so no feed update
+            presentCommentReply(post);
+          },
+        },
+        {
+          text: getHandle(post.creator),
+          icon: personOutline,
+          handler: () => {
+            router.push(
+              buildGeneralBrowseLink(`/u/${getHandle(post.creator)}`),
+            );
+          },
+        },
+        {
+          text: getHandle(post.community),
+          icon: peopleOutline,
+          handler: () => {
+            router.push(
+              buildGeneralBrowseLink(`/c/${getHandle(post.community)}`),
+            );
+          },
+        },
+        post.post.body
+          ? {
+              text: "Select Text",
+              icon: textOutline,
+              handler: () => {
+                if (!post.post.body) return;
+
+                presentSelectText(post.post.body);
+              },
+            }
+          : undefined,
+        onFeed
+          ? {
+              text: isHidden ? "Unhide" : "Hide",
+              icon: isHidden ? eyeOutline : eyeOffOutline,
+              handler: () => {
+                if (presentLoginIfNeeded()) return;
+
+                const fn = isHidden ? unhidePost : hidePost;
+
+                dispatch(fn(post.post.id));
+              },
+            }
+          : undefined,
+        {
+          text: "Share",
+          data: "share",
+          icon: shareOutline,
+          handler: () => {
+            share(post.post);
+          },
+        },
+        {
+          text: "Report",
+          data: "report",
+          icon: flagOutline,
+          handler: () => {
+            presentReport(post);
+          },
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ].filter(notEmpty),
+    });
+  }
+
+  const Button = onFeed ? ActionButton : IonButton;
+
+  return (
+    <>
+      <Button
+        onClick={(e) => {
+          e.stopPropagation();
+          onClick();
         }}
-      />
+      >
+        <IonIcon className={className} icon={ellipsisHorizontal} />
+      </Button>
     </>
   );
 }

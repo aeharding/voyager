@@ -52,7 +52,7 @@ export default function CommunitiesList() {
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const favorites = useAppSelector((state) => state.community.favorites);
@@ -63,7 +63,7 @@ export default function CommunitiesList() {
         ...(follows || []).map((f) => f.community),
         ...Object.values(communityByHandle).map((c) => c?.community),
       ].filter(notEmpty),
-      "id"
+      "id",
     );
 
     pullAllBy(
@@ -71,7 +71,7 @@ export default function CommunitiesList() {
       Object.values(communityByHandle)
         .filter((response) => response?.subscribed === "NotSubscribed")
         .map((c) => c?.community),
-      "id"
+      "id",
     );
 
     return communities;
@@ -81,14 +81,14 @@ export default function CommunitiesList() {
     () =>
       favorites.map(
         (community) =>
-          communities.find((c) => community === getHandle(c)) || community
+          communities.find((c) => community === getHandle(c)) || community,
       ),
-    [communities, favorites]
+    [communities, favorites],
   );
 
   const communitiesGroupedByLetter = useMemo(() => {
     const alphabeticallySortedCommunities = sortBy(communities, (c) =>
-      c.name.toLowerCase()
+      c.name.toLowerCase(),
     );
 
     return Object.entries(
@@ -101,8 +101,8 @@ export default function CommunitiesList() {
           acc[firstLetter].push(community);
           return acc;
         },
-        {}
-      )
+        {},
+      ),
     );
   }, [communities]);
 
@@ -161,7 +161,7 @@ export default function CommunitiesList() {
                 community={favorite}
                 favorites={favorites}
               />
-            )
+            ),
           )}
         </IonItemGroup>
       )}

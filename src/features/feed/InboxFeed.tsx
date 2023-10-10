@@ -8,7 +8,7 @@ interface PostCommentFeed
 export default function InboxFeed({ ...rest }: PostCommentFeed) {
   const renderItemContent = useCallback(
     (item: InboxItemView) => <InboxItem item={item} />,
-    []
+    [],
   );
 
   return <Feed renderItemContent={renderItemContent} {...rest} />;

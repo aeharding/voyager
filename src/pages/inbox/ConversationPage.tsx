@@ -12,14 +12,20 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import MarkAllAsReadButton from "./MarkAllAsReadButton";
+import {
+  KeyboardEvent,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { jwtPayloadSelector, jwtSelector } from "../../features/auth/authSlice";
 import {
   receivedMessages,
   syncMessages,
 } from "../../features/inbox/inboxSlice";
-import { useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
 import { getHandle } from "../../helpers/lemmy";
 import Message from "../../features/inbox/messages/Message";
 import styled from "@emotion/styled";
@@ -34,6 +40,10 @@ import { IonContentCustomEvent } from "@ionic/core";
 import { css } from "@emotion/react";
 import { getUser } from "../../features/user/userSlice";
 import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
+import { StyledLink } from "../../features/labels/links/shared";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import ConversationsMoreActions from "../../features/feed/ConversationsMoreActions";
+import { TabContext } from "../../TabContext";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -116,10 +126,10 @@ export default function ConversationPage() {
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
-  const location = useLocation();
+  const { tab } = useContext(TabContext);
   const jwt = useAppSelector(jwtSelector);
   const myUserId = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id
+    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
   const { handle } = useParams<{ handle: string }>();
   const [value, setValue] = useState("");
@@ -129,6 +139,7 @@ export default function ConversationPage() {
   const [present] = useIonToast();
 
   const contentRef = useRef<IonContentCustomEvent<never>["target"]>(null);
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   useIonViewWillEnter(() => {
     contentRef.current?.scrollToBottom();
@@ -154,15 +165,15 @@ export default function ConversationPage() {
         .filter((m) =>
           m.private_message.creator_id === myUserId
             ? getHandle(m.recipient) === handle
-            : getHandle(m.creator) === handle
+            : getHandle(m.creator) === handle,
         )
         .sort(
           (a, b) =>
             Date.parse(b.private_message.published) -
-            Date.parse(a.private_message.published)
+            Date.parse(a.private_message.published),
         )
         .reverse(),
-    [handle, allMessages, myUserId]
+    [handle, allMessages, myUserId],
   );
 
   async function send() {
@@ -212,9 +223,7 @@ export default function ConversationPage() {
           <IonButtons slot="start">
             <IonBackButton
               defaultHref="/inbox/messages"
-              text={
-                location.pathname.startsWith("/inbox") ? "Messages" : "Back"
-              }
+              text={tab === "inbox" ? "Messages" : "Back"}
             />
           </IonButtons>
 
@@ -224,11 +233,16 @@ export default function ConversationPage() {
               padding-inline-end: 120px;
             `}
           >
-            {handle}
+            <StyledLink
+              to={buildGeneralBrowseLink(`/u/${handle}`)}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {handle}
+            </StyledLink>
           </IonTitle>
 
           <IonButtons slot="end">
-            <MarkAllAsReadButton />
+            <ConversationsMoreActions />
           </IonButtons>
         </IonToolbar>
       </IonHeader>

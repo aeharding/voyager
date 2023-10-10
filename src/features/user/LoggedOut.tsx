@@ -2,7 +2,7 @@ import { IonIcon, IonList, IonPicker, IonText } from "@ionic/react";
 import { css } from "@emotion/react";
 import { InsetIonItem, SettingLabel } from "./Profile";
 import styled from "@emotion/styled";
-import { ReactComponent as IncognitoSvg } from "./incognito.svg";
+import IncognitoSvg from "./incognito.svg?react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useState } from "react";
 import { updateConnectedInstance } from "../auth/authSlice";
@@ -21,7 +21,7 @@ const Incognito = styled(IncognitoSvg)`
 export default function LoggedOut() {
   const dispatch = useAppDispatch();
   const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance
+    (state) => state.auth.connectedInstance,
   );
   const [pickerOpen, setPickerOpen] = useState(false);
 

@@ -95,7 +95,7 @@ export default function TitleSearchResults() {
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [viewportHeight, setViewportHeight] = useState(
-    document.documentElement.clientHeight
+    document.documentElement.clientHeight,
   );
   const contentRef = useRef<HTMLDivElement>(null);
   const favorites = useAppSelector((state) => state.community.favorites);
@@ -104,7 +104,7 @@ export default function TitleSearchResults() {
     const results = [
       ...searchCommunityByName(
         (follows || []).map((f) => f.community),
-        search
+        search,
       ),
       ...searchPayload.map((p) => p.community),
     ];
@@ -114,7 +114,7 @@ export default function TitleSearchResults() {
         ...searchSpecialByName(SPECIAL_FEEDS, search),
         ...(search ? results : favorites),
       ].filter(notEmpty),
-      (c) => (typeof c === "string" ? c : c.id)
+      (c) => (typeof c === "string" ? c : c.id),
     ).slice(0, 15);
   }, [follows, searchPayload, search, favorites]);
 
@@ -141,11 +141,15 @@ export default function TitleSearchResults() {
         route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
       }
 
-      router.push(route, undefined, undefined, undefined, () =>
-        createAnimation()
-      );
+      // TODO - there is an Ionic bug where routerDirection="none" isn't
+      // being respected when routeAction="replace"
+      // https://github.com/ionic-team/ionic-framework/issues/24260
+      // So as a workaround, use blank animation builder.
+      // Unfortunately, this workaround breaks swipe back animation.
+      // Once this is fixed, remove last two parameters
+      router.push(route, "none", "replace", undefined, () => createAnimation());
     },
-    [buildGeneralBrowseLink, router]
+    [buildGeneralBrowseLink, router],
   );
 
   useEffect(() => {
@@ -174,8 +178,8 @@ export default function TitleSearchResults() {
         Math.min(
           window.visualViewport.height -
             contentRef.current.getBoundingClientRect().top,
-          document.documentElement.clientHeight - 200
-        ) - 16
+          document.documentElement.clientHeight - 200,
+        ) - 16,
       );
     };
 
@@ -208,7 +212,7 @@ export default function TitleSearchResults() {
   if (!searching) return null;
 
   return (
-    <Backdrop onClick={() => setSearching(false)}>
+    <Backdrop onClick={() => setSearching(false)} slot="fixed">
       <KeyboardContent
         ref={contentRef}
         style={{ maxHeight: `${viewportHeight}px` }}
@@ -241,7 +245,7 @@ export default function TitleSearchResults() {
 
 function searchCommunityByName(
   communities: Community[],
-  query: string
+  query: string,
 ): Community[] {
   return communities
     .map((c) => ({
@@ -255,7 +259,7 @@ function searchCommunityByName(
 
 function searchSpecialByName(
   specialFeeds: typeof SPECIAL_FEEDS,
-  query: string
+  query: string,
 ): SpecialFeed[] {
   return specialFeeds
     .map((f) => ({

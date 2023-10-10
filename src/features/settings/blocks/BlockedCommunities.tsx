@@ -22,7 +22,7 @@ export default function BlockedCommunities() {
   const [sortOption, setSortOption] = useState<'default' | 'alphabetical'>('default');
 
   const communities = useAppSelector(
-    (state) => state.auth.site?.my_user?.community_blocks
+    (state) => state.auth.site?.my_user?.community_blocks,
   );
 
   const sortedCommunities = sortOption === 'alphabetical'

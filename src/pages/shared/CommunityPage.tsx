@@ -1,10 +1,4 @@
-import {
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButtons, IonHeader, IonPage, IonToolbar } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
@@ -25,6 +19,7 @@ import TitleSearchResults from "../../features/community/titleSearch/TitleSearch
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
 import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
 import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
+import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
 
@@ -37,7 +32,7 @@ export default function CommunityPage() {
   }>();
 
   const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle
+    (state) => state.community.communityByHandle,
   );
 
   const client = useClient();
@@ -57,7 +52,7 @@ export default function CommunityPage() {
       });
       return response.posts;
     },
-    [client, community, sort, jwt]
+    [client, community, sort, jwt],
   );
 
   useEffect(() => {
@@ -98,7 +93,7 @@ export default function CommunityPage() {
               </TitleSearch>
             </IonToolbar>
           </IonHeader>
-          <IonContent>
+          <FeedContent>
             {markReadOnScroll ? (
               <FeedScrollObserver>{feed}</FeedScrollObserver>
             ) : (
@@ -106,7 +101,7 @@ export default function CommunityPage() {
             )}
             <TitleSearchResults />
             <PostFabs />
-          </IonContent>
+          </FeedContent>
         </IonPage>
       </TitleSearchProvider>
     </FeedContextProvider>

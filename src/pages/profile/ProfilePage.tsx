@@ -1,7 +1,6 @@
 import {
   IonButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
@@ -16,18 +15,19 @@ import AccountSwitcher from "../../features/auth/AccountSwitcher";
 import { useContext } from "react";
 import AppContent from "../../features/shared/AppContent";
 import { PageContext } from "../../features/auth/PageContext";
+import FeedContent from "../shared/FeedContent";
 
 export default function ProfilePage() {
   const handle = useAppSelector(handleSelector);
-  const { page, presentLoginIfNeeded } = useContext(PageContext);
+  const { pageRef, presentLoginIfNeeded } = useContext(PageContext);
 
   const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
     {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
-      page,
-    }
+      pageRef,
+    },
   );
 
   return (
@@ -60,9 +60,9 @@ export default function ProfilePage() {
       </IonHeader>
 
       {handle ? (
-        <IonContent>
+        <FeedContent>
           <AsyncProfile handle={handle} />
-        </IonContent>
+        </FeedContent>
       ) : (
         <AppContent>
           <LoggedOut />

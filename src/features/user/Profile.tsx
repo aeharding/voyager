@@ -21,6 +21,7 @@ import PostCommentFeed, {
   isPost,
 } from "../feed/PostCommentFeed";
 import { handleSelector, jwtSelector } from "../auth/authSlice";
+import { fixLemmyDateString } from "../../helpers/date";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -52,10 +53,10 @@ export default function Profile({ person }: ProfileProps) {
         auth: jwt,
       });
       return [...response.posts, ...response.comments].sort(
-        (a, b) => getCreatedDate(b) - getCreatedDate(a)
+        (a, b) => getCreatedDate(b) - getCreatedDate(a),
       );
     },
-    [person, client, jwt]
+    [person, client, jwt],
   );
 
   const header = useCallback(
@@ -68,7 +69,7 @@ export default function Profile({ person }: ProfileProps) {
         <IonList inset color="primary">
           <InsetIonItem
             routerLink={buildGeneralBrowseLink(
-              `/u/${getHandle(person.person_view.person)}/posts`
+              `/u/${getHandle(person.person_view.person)}/posts`,
             )}
           >
             <IonIcon icon={albumsOutline} color="primary" />{" "}
@@ -76,7 +77,7 @@ export default function Profile({ person }: ProfileProps) {
           </InsetIonItem>
           <InsetIonItem
             routerLink={buildGeneralBrowseLink(
-              `/u/${getHandle(person.person_view.person)}/comments`
+              `/u/${getHandle(person.person_view.person)}/comments`,
             )}
           >
             <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
@@ -86,7 +87,7 @@ export default function Profile({ person }: ProfileProps) {
             <>
               <InsetIonItem
                 routerLink={buildGeneralBrowseLink(
-                  `/u/${getHandle(person.person_view.person)}/saved`
+                  `/u/${getHandle(person.person_view.person)}/saved`,
                 )}
               >
                 <IonIcon icon={bookmarkOutline} color="primary" />{" "}
@@ -94,7 +95,7 @@ export default function Profile({ person }: ProfileProps) {
               </InsetIonItem>
               <InsetIonItem
                 routerLink={buildGeneralBrowseLink(
-                  `/u/${getHandle(person.person_view.person)}/hidden`
+                  `/u/${getHandle(person.person_view.person)}/hidden`,
                 )}
               >
                 <IonIcon icon={eyeOffOutline} color="primary" />{" "}
@@ -105,7 +106,7 @@ export default function Profile({ person }: ProfileProps) {
         </IonList>
       </MaxWidthContainer>
     ),
-    [person, buildGeneralBrowseLink, isSelf]
+    [person, buildGeneralBrowseLink, isSelf],
   );
 
   return (
@@ -113,11 +114,12 @@ export default function Profile({ person }: ProfileProps) {
       fetchFn={fetchFn}
       header={header}
       filterHiddenPosts={false}
+      filterKeywords={false}
     />
   );
 }
 
 function getCreatedDate(item: PostCommentItem): number {
-  if (isPost(item)) return Date.parse(`${item.post.published}Z`);
-  return Date.parse(`${item.comment.published}Z`);
+  if (isPost(item)) return Date.parse(fixLemmyDateString(item.post.published));
+  return Date.parse(fixLemmyDateString(item.comment.published));
 }

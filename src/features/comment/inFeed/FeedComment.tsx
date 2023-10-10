@@ -26,8 +26,8 @@ export default function FeedComment({ comment, className }: FeedCommentProps) {
           buildGeneralBrowseLink(
             `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${
               comment.comment.path
-            }`
-          )
+            }`,
+          ),
         )
       }
     />

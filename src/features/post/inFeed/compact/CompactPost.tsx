@@ -14,6 +14,7 @@ import Save from "../../../labels/Save";
 import Nsfw, { isNsfw } from "../../../labels/Nsfw";
 import { useAppSelector } from "../../../../store";
 import { useMemo } from "react";
+import InlineMarkdown from "../../../shared/InlineMarkdown";
 
 const Container = styled.div`
   display: flex;
@@ -98,11 +99,11 @@ const EndDetails = styled.div`
 
 export default function CompactPost({ post, communityMode }: PostProps) {
   const compactThumbnailPositionType = useAppSelector(
-    (state) => state.settings.appearance.compact.thumbnailsPosition
+    (state) => state.settings.appearance.compact.thumbnailsPosition,
   );
 
   const compactShowVotingButtons = useAppSelector(
-    (state) => state.settings.appearance.compact.showVotingButtons
+    (state) => state.settings.appearance.compact.showVotingButtons,
   );
 
   const hasBeenRead: boolean =
@@ -115,7 +116,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
       {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
       <Content>
         <Title isRead={hasBeenRead}>
-          {post.post.name} {nsfw && <Nsfw />}
+          <InlineMarkdown>{post.post.name}</InlineMarkdown> {nsfw && <Nsfw />}
         </Title>
         <Aside isRead={hasBeenRead}>
           <From>
@@ -129,7 +130,10 @@ export default function CompactPost({ post, communityMode }: PostProps) {
                 prefix="by"
               />
             ) : (
-              <CommunityLink community={post.community} />
+              <CommunityLink
+                community={post.community}
+                subscribed={post.subscribed}
+              />
             )}
           </From>
           <Actions>

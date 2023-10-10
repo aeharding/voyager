@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
@@ -15,6 +14,7 @@ import {
   handleSelector,
   usernameSelector,
 } from "../../features/auth/authSlice";
+import FeedContent from "../shared/FeedContent";
 
 export default function UserPage() {
   const handle = useParams<{ handle: string }>().handle;
@@ -39,9 +39,9 @@ export default function UserPage() {
           )}
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <FeedContent>
         <AsyncProfile handle={handle} />
-      </IonContent>
+      </FeedContent>
     </IonPage>
   );
 }

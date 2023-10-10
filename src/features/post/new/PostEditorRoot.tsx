@@ -128,7 +128,7 @@ export default function PostEditorRoot({
 
   const [photoUrl, setPhotoUrl] = useState(initialImage ?? "");
   const [photoPreviewURL, setPhotoPreviewURL] = useState<string | undefined>(
-    initialImage
+    initialImage,
   );
   const [photoUploading, setPhotoUploading] = useState(false);
 
@@ -149,7 +149,7 @@ export default function PostEditorRoot({
         title === initialTitle &&
         url === initialUrl &&
         photoPreviewURL === initialImage &&
-        initialNsfw === (showNsfwToggle && nsfw) // if not showing toggle, it's not nsfw
+        initialNsfw === (showNsfwToggle && nsfw), // if not showing toggle, it's not nsfw
     );
   }, [
     initialPostType,
@@ -193,7 +193,7 @@ export default function PostEditorRoot({
       setText((text) => {
         resolve(text);
         return text;
-      })
+      }),
     );
 
     const postUrl = (() => {
@@ -291,8 +291,8 @@ export default function PostEditorRoot({
         buildGeneralBrowseLink(
           `/c/${getHandle(community)}/comments/${
             postResponse.post_view.post.id
-          }`
-        )
+          }`,
+        ),
       );
   }
 
@@ -441,10 +441,9 @@ export default function PostEditorRoot({
               component={() => (
                 <NewPostText
                   value={text}
-                  setValue={(value) => {
-                    setText(value);
-                  }}
+                  setValue={setText}
                   onSubmit={submit}
+                  editing={"existingPost" in props}
                 />
               )}
             >

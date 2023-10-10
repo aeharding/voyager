@@ -37,7 +37,7 @@ export default function CommunityListItem({
 
   const isFavorite = useMemo(
     () => favorites?.includes(getHandle(community)) ?? false,
-    [favorites, community]
+    [favorites, community],
   );
 
   return (

@@ -1,5 +1,5 @@
 import { IonIcon, IonItem, IonSpinner, useIonViewDidEnter } from "@ionic/react";
-import { useAppDispatch } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import Stats from "./Stats";
 import styled from "@emotion/styled";
 import Embed from "../shared/Embed";
@@ -29,6 +29,8 @@ import { css } from "@emotion/react";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { PageContext } from "../../auth/PageContext";
 import PostGalleryImg from "../../gallery/PostGalleryImg";
+import { scrollIntoView } from "../../../helpers/dom";
+import JumpFab from "../../comment/JumpFab";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -133,7 +135,10 @@ export default function PostDetail({
   const dispatch = useAppDispatch();
   const markdownLoneImage = useMemo(
     () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
-    [post]
+    [post],
+  );
+  const { showJumpButton, jumpButtonPosition } = useAppSelector(
+    (state) => state.settings.general.comments,
   );
   const titleRef = useRef<HTMLDivElement>(null);
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
@@ -156,12 +161,14 @@ export default function PostDetail({
   });
 
   useEffect(() => {
-    titleRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!titleRef.current) return;
+
+    scrollIntoView(titleRef.current);
   }, [collapsed]);
 
   const onHeight = useCallback(
     (height: number) => setViewAllCommentsSpace(height),
-    []
+    [],
   );
 
   function renderImage() {
@@ -227,6 +234,7 @@ export default function PostDetail({
                 <CommunityLink
                   community={post.community}
                   showInstanceWhenRemote
+                  subscribed={post.subscribed}
                 />{" "}
                 <PersonLink person={post.creator} prefix="by" />
               </By>
@@ -250,6 +258,20 @@ export default function PostDetail({
     );
   }
 
+  const bottomPadding: number = (() => {
+    if (commentPath) return viewAllCommentsSpace + 12;
+
+    if (
+      showJumpButton &&
+      (jumpButtonPosition === "left-bottom" ||
+        jumpButtonPosition === "center" ||
+        jumpButtonPosition === "right-bottom")
+    )
+      return 75;
+
+    return 0;
+  })();
+
   return (
     <>
       <Comments
@@ -259,9 +281,10 @@ export default function PostDetail({
         commentPath={commentPath}
         op={post.creator}
         sort={sort}
-        bottomPadding={commentPath ? viewAllCommentsSpace + 12 : 0}
+        bottomPadding={bottomPadding}
       />
       {commentPath && <ViewAllComments onHeight={onHeight} />}
+      {!commentPath && showJumpButton && <JumpFab />}
     </>
   );
 }

@@ -14,11 +14,13 @@ import {
   bagCheckOutline,
   cog,
   colorPalette,
+  gitCompareOutline,
   logoGithub,
   mailOutline,
   openOutline,
   reloadCircle,
   removeCircle,
+  returnUpForwardOutline,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { useContext, useEffect } from "react";
@@ -28,8 +30,10 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
+import { isNative } from "../../helpers/device";
+import { getIconSrc } from "../../features/settings/app-icon/AppIcon";
 
-const IconBg = styled.div<{ color: string }>`
+export const IconBg = styled.div<{ color: string }>`
   width: 30px;
   height: 30px;
 
@@ -47,10 +51,17 @@ const IconBg = styled.div<{ color: string }>`
   color: white;
 `;
 
+const AppIcon = styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+`;
+
 export default function SettingsPage() {
   const { status: updateStatus, checkForUpdates } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
   const currentHandle = useAppSelector(handleSelector);
+  const icon = useAppSelector((state) => state.appIcon.icon);
 
   useEffect(() => {
     checkForUpdates();
@@ -70,30 +81,32 @@ export default function SettingsPage() {
           </IonToolbar>
         </IonHeader>
 
-        <IonList inset color="primary">
-          <InsetIonItem routerLink="/settings/install">
-            <IconBg color="color(display-p3 0 0.6 1)">
-              <IonIcon
-                icon={apps}
-                css={css`
-                  padding: 5px;
-                `}
-              />
-            </IconBg>
-            <SettingLabel>Install app</SettingLabel>
-            {shouldInstall && <IonBadge color="danger">1</IonBadge>}
-          </InsetIonItem>
-          <InsetIonItem routerLink="/settings/update">
-            <IconBg color="color(display-p3 0 0.8 0)">
-              <IonIcon icon={reloadCircle} />
-            </IconBg>
-            <SettingLabel>Check for updates</SettingLabel>
-            {updateStatus === "outdated" && (
-              <IonBadge color="danger">1</IonBadge>
-            )}
-          </InsetIonItem>
-        </IonList>
+        {!isNative() && (
+          <IonList inset color="primary">
+            <InsetIonItem routerLink="/settings/install">
+              <IconBg color="color(display-p3 0 0.6 1)">
+                <IonIcon
+                  icon={apps}
+                  css={css`
+                    padding: 5px;
+                  `}
+                />
+              </IconBg>
+              <SettingLabel>Install app</SettingLabel>
+              {shouldInstall && <IonBadge color="danger">1</IonBadge>}
+            </InsetIonItem>
 
+            <InsetIonItem routerLink="/settings/update">
+              <IconBg color="color(display-p3 0 0.8 0)">
+                <IonIcon icon={reloadCircle} />
+              </IconBg>
+              <SettingLabel>Check for updates</SettingLabel>
+              {updateStatus === "outdated" && (
+                <IonBadge color="danger">1</IonBadge>
+              )}
+            </InsetIonItem>
+          </IonList>
+        )}
         <IonList inset color="primary">
           <InsetIonItem routerLink="/settings/general">
             <IconBg color="color(display-p3 0.5 0.5 0.5)">
@@ -101,12 +114,21 @@ export default function SettingsPage() {
             </IconBg>
             <SettingLabel>General</SettingLabel>
           </InsetIonItem>
+
           <InsetIonItem routerLink="/settings/appearance">
             <IconBg color="color(display-p3 1 0 0)">
               <IonIcon icon={colorPalette} />
             </IconBg>
             <SettingLabel>Appearance</SettingLabel>
           </InsetIonItem>
+
+          {isNative() && (
+            <InsetIonItem routerLink="/settings/app-icon">
+              <AppIcon src={getIconSrc(icon)} />
+              <SettingLabel>App Icon</SettingLabel>
+            </InsetIonItem>
+          )}
+
           {currentHandle && (
             <InsetIonItem routerLink="/settings/blocks">
               <IconBg color="color(display-p3 0 0.6 1)">
@@ -115,6 +137,13 @@ export default function SettingsPage() {
               <SettingLabel>Filters & Blocks</SettingLabel>
             </InsetIonItem>
           )}
+
+          <InsetIonItem routerLink="/settings/gestures">
+            <IconBg color="color(display-p3 0.95 0.65 0)">
+              <IonIcon icon={returnUpForwardOutline} />
+            </IconBg>
+            <SettingLabel>Gestures</SettingLabel>
+          </InsetIonItem>
         </IonList>
 
         <IonList inset color="primary">
@@ -127,10 +156,12 @@ export default function SettingsPage() {
         </IonList>
 
         <IonList inset color="primary">
-          <InsetIonItem routerLink="/settings/terms">
-            <IonIcon icon={shieldCheckmarkOutline} color="primary" />
-            <SettingLabel>Terms &amp; Privacy</SettingLabel>
-          </InsetIonItem>
+          {!isNative() ? (
+            <InsetIonItem routerLink="/settings/terms">
+              <IonIcon icon={shieldCheckmarkOutline} color="primary" />
+              <SettingLabel>Terms &amp; Privacy</SettingLabel>
+            </InsetIonItem>
+          ) : undefined}
           <InsetIonItem
             href="https://github.com/aeharding/voyager"
             target="_blank"
@@ -153,6 +184,20 @@ export default function SettingsPage() {
               </sup>
             </SettingLabel>
           </InsetIonItem>
+          {isNative() && (
+            <InsetIonItem
+              href="https://github.com/aeharding/voyager/releases"
+              target="_blank"
+              rel="noopener noreferrer"
+              detail={false}
+            >
+              <IonIcon icon={gitCompareOutline} color="medium" />
+              <SettingLabel>Release</SettingLabel>
+              <SettingLabel color="medium" slot="end">
+                {APP_VERSION}
+              </SettingLabel>
+            </InsetIonItem>
+          )}
         </IonList>
       </AppContent>
     </IonPage>

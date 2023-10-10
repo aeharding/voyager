@@ -4,6 +4,7 @@ import { formatNumber } from "../../helpers/number";
 import Ago from "../labels/Ago";
 import { useIonAlert } from "@ionic/react";
 import { formatDistanceToNowStrict } from "date-fns";
+import { fixLemmyDateString } from "../../helpers/date";
 
 const Container = styled.div`
   display: flex;
@@ -35,10 +36,10 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
   const [present] = useIonAlert();
 
   const relativeDate = formatDistanceToNowStrict(
-    new Date(`${accountCreated}Z`),
+    new Date(fixLemmyDateString(accountCreated)),
     {
       addSuffix: false,
-    }
+    },
   );
   const creationDate = new Date(accountCreated);
 

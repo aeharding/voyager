@@ -7,8 +7,9 @@ import { MouseEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { isNsfwBlurred } from "../../labels/Nsfw";
 import { setPostRead } from "../postSlice";
+import InAppExternalLink from "../../shared/InAppExternalLink";
 
-const Container = styled.a`
+const Container = styled(InAppExternalLink)`
   display: flex;
   flex-direction: column;
 
@@ -81,7 +82,7 @@ export default function Embed({ post, className }: EmbedProps) {
     dispatch(setPostRead(post.post.id));
   };
   const blurNsfw = useAppSelector(
-    (state) => state.settings.appearance.posts.blurNsfw
+    (state) => state.settings.appearance.posts.blurNsfw,
   );
 
   return (

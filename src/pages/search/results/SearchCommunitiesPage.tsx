@@ -47,7 +47,7 @@ export default function SearchCommunitiesPage() {
 
       return response.communities;
     },
-    [client, search, sort, jwt]
+    [client, search, sort, jwt],
   );
 
   return (
@@ -78,7 +78,7 @@ export default function SearchCommunitiesPage() {
 async function findExactCommunity(
   name: string,
   client: LemmyHttp,
-  jwt?: string
+  jwt?: string,
 ): Promise<CommunityView | undefined> {
   const sanitizedName = name.startsWith("!") ? name.slice(1) : name;
 
