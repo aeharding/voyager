@@ -6,7 +6,6 @@ import {
   IonList,
   IonLoading,
   IonSegment,
-  IonSegmentButton,
 } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -15,11 +14,13 @@ import { getHandle } from "../../../helpers/lemmy";
 import { CommunityBlockView } from "lemmy-js-client";
 import { blockCommunity } from "../../community/communitySlice";
 import { ListHeader } from "../shared/formatting";
+import BlockedEntititiesSorter from "./BlockedEntitiesSorter";
 
 export default function BlockedCommunities() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [sortOption, setSortOption] = useState<'default' | 'alphabetical'>('default');
+
   const communities = useAppSelector(
     (state) => state.auth.site?.my_user?.community_blocks
   );
@@ -43,7 +44,6 @@ export default function BlockedCommunities() {
       <ListHeader>
         <IonLabel>Blocked Communities</IonLabel>
       </ListHeader>
-      {/* Sorting Options */}
       <IonList inset>
         <IonSegment
           value={sortOption}
@@ -51,12 +51,7 @@ export default function BlockedCommunities() {
             setSortOption(e.detail.value as 'default' | 'alphabetical');
           }}
         >
-          <IonSegmentButton value="default">
-            <IonLabel>Most Recent</IonLabel>
-          </IonSegmentButton>
-          <IonSegmentButton value="alphabetical">
-            <IonLabel>Alphabetical</IonLabel>
-          </IonSegmentButton>
+          <BlockedEntititiesSorter setSortOption={setSortOption} sortOption={sortOption} />
         </IonSegment>
         {sortedCommunities?.length ? (
           sortedCommunities.map((community) => (
