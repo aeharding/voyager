@@ -211,6 +211,7 @@ export type SettingValueTypes = {
   show_jump_button: boolean;
   jump_button_position: JumpButtonPositionType;
   filtered_keywords: string[];
+  highlight_new_account: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

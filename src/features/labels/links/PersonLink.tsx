@@ -7,8 +7,7 @@ import Handle from "../Handle";
 import { StyledLink } from "./shared";
 import { useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
-import { calculateIsCakeDay, fixLemmyDateString } from "../../../helpers/date";
-import { useMemo } from "react";
+import AgeBadge from "./AgeBadge";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -45,11 +44,6 @@ export default function PersonLink({
   else if (distinguished) color = "var(--ion-color-success)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
-  const isCakeDay = useMemo(
-    () => calculateIsCakeDay(new Date(fixLemmyDateString(person.published))),
-    [person.published],
-  );
-
   return (
     <StyledLink
       to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
@@ -74,7 +68,7 @@ export default function PersonLink({
         item={person}
         showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
       />
-      {isCakeDay && " 🍰"}
+      <AgeBadge published={person.published} />
     </StyledLink>
   );
 }
