@@ -6,10 +6,10 @@ import CommunityLink from "../labels/links/CommunityLink";
 import Ago from "../labels/Ago";
 import { getHandle } from "../../helpers/lemmy";
 import InlineMarkdown from "../shared/InlineMarkdown";
-import { heart, heartOutline } from "ionicons/icons";
+import { heart } from "ionicons/icons";
 import useCommunityActions from "./useCommunityActions";
 import { ActionButton } from "../post/actions/ActionButton";
-import { PrimaryIcon } from "./PrimaryIcon";
+import { ToggleIcon } from "../../components/ToggleIcon";
 
 const Container = styled(IonItem)`
   ${maxWidthCss}
@@ -75,7 +75,7 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
                 e.stopPropagation();
               }}
             >
-              <PrimaryIcon icon={isSubscribed ? heart : heartOutline} />
+              <ToggleIcon icon={heart} selected={isSubscribed} />
             </ActionButton>
           </RightContainer>
         </Title>
