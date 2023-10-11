@@ -1,3 +1,5 @@
+import { differenceInDays } from "date-fns";
+
 /**
  * Lemmy <= 0.18.3 has a bug where the Z isn't appended
  *
@@ -40,4 +42,18 @@ export function calculateIsCakeDay(creationDate: Date) {
   );
 
   return currentUTCDate >= cakeDayStart && currentUTCDate < cakeDayEnd;
+}
+
+/**
+ * Determine if a Lemmy user is newly created
+ *
+ * @param creationDate User created date
+ * @returns age of the account in days (if found)
+ */
+export function calculateNewAccount(creationDate: Date): number | undefined {
+  const days = differenceInDays(new Date(), creationDate);
+
+  if (days > 30) return;
+
+  return days;
 }
