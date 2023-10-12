@@ -135,6 +135,21 @@ export const OLinkHandlerType = {
   InApp: "in-app",
 } as const;
 
+export type DefaultFeedType = {
+  type:
+    | typeof ODefaultFeedType.All
+    | typeof ODefaultFeedType.Home
+    | typeof ODefaultFeedType.Local
+    | typeof ODefaultFeedType.CommunityList;
+}; // Future support: add specific community type with payload of the community name
+
+export const ODefaultFeedType = {
+  Home: "home",
+  All: "all",
+  Local: "local",
+  CommunityList: "community-list",
+} as const;
+
 export type JumpButtonPositionType =
   (typeof OJumpButtonPositionType)[keyof typeof OJumpButtonPositionType];
 
@@ -212,6 +227,7 @@ export type SettingValueTypes = {
   jump_button_position: JumpButtonPositionType;
   filtered_keywords: string[];
   highlight_new_account: boolean;
+  default_feed: DefaultFeedType;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
