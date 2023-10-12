@@ -8,7 +8,6 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonToast,
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -44,6 +43,7 @@ import { StyledLink } from "../../features/labels/links/shared";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ConversationsMoreActions from "../../features/feed/ConversationsMoreActions";
 import { TabContext } from "../../TabContext";
+import useAppToast from "../../helpers/useAppToast";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -136,7 +136,7 @@ export default function ConversationPage() {
   const client = useClient();
   const userByHandle = useAppSelector((state) => state.user.userByHandle);
   const [loading, setLoading] = useState(false);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
 
   const contentRef = useRef<IonContentCustomEvent<never>["target"]>(null);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -193,10 +193,8 @@ export default function ConversationPage() {
         auth: jwt,
       });
     } catch (error) {
-      present({
+      presentToast({
         message: `Message failed to send. Please try again`,
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
       setLoading(false);

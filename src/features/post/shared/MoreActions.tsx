@@ -3,7 +3,6 @@ import {
   IonIcon,
   useIonActionSheet,
   useIonRouter,
-  useIonToast,
 } from "@ionic/react";
 import {
   arrowDownOutline,
@@ -42,6 +41,7 @@ import {
   handleSelector,
   isDownvoteEnabledSelector,
 } from "../../auth/authSlice";
+import useAppToast from "../../../helpers/useAppToast";
 
 interface MoreActionsProps {
   post: PostView;
@@ -56,7 +56,7 @@ export default function MoreActions({
 }: MoreActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const isHidden = useAppSelector(postHiddenByIdSelector)[post.post.id];
@@ -95,7 +95,7 @@ export default function MoreActions({
               try {
                 await dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
               } catch (error) {
-                present(voteError);
+                presentToast(voteError);
 
                 throw error;
               }
@@ -115,7 +115,7 @@ export default function MoreActions({
                       voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
-                    present(voteError);
+                    presentToast(voteError);
 
                     throw error;
                   }
@@ -133,7 +133,7 @@ export default function MoreActions({
               try {
                 await dispatch(savePost(post.post.id, !mySaved));
               } catch (error) {
-                present(saveError);
+                presentToast(saveError);
 
                 throw error;
               }
@@ -154,10 +154,8 @@ export default function MoreActions({
                         (async () => {
                           await dispatch(deletePost(post.post.id));
 
-                          present({
+                          presentToast({
                             message: "Post deleted",
-                            duration: 3500,
-                            position: "bottom",
                             color: "success",
                           });
                         })();

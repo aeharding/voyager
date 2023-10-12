@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ionic/core': npm:voyager-ionic-core@^7.4.3
+  '@ionic/core': npm:voyager-ionic-core@^7.5.0
 
 dependencies:
   compression:
@@ -77,14 +77,14 @@ devDependencies:
     specifier: ^2.2.1
     version: 2.2.1
   '@ionic/core':
-    specifier: npm:voyager-ionic-core@^7.4.3
-    version: /voyager-ionic-core@7.4.3
+    specifier: npm:voyager-ionic-core@^7.5.0
+    version: /voyager-ionic-core@7.5.0
   '@ionic/react':
-    specifier: ^7.4.3
-    version: 7.4.3(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^7.5.0
+    version: 7.5.0(react-dom@18.2.0)(react@18.2.0)
   '@ionic/react-router':
-    specifier: ^7.4.3
-    version: 7.4.3(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
+    specifier: ^7.5.0
+    version: 7.5.0(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
   '@reduxjs/toolkit':
     specifier: ^1.9.7
     version: 1.9.7(react-redux@8.1.3)(react@18.2.0)
@@ -2059,15 +2059,15 @@ packages:
       - supports-color
     dev: true
 
-  /@ionic/react-router@7.4.3(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
-    resolution: {integrity: sha512-ixQE30XQF409BkgdQGmcEPHvc0K8zuj9v7XBNKMEDyhsohpRSladO4K6w+lusLheT0SdtUqZod8n9KuJ/sXFFA==}
+  /@ionic/react-router@7.5.0(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
+    resolution: {integrity: sha512-/lOyxQIMIAY1eQgJ0x+NGOgyVpKJW57WMge9uSwduumSutUrPENPRF2c6BqPLxowwHVX0alKm8xy69ON2q+xug==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
       react-router: ^5.0.1
       react-router-dom: ^5.0.1
     dependencies:
-      '@ionic/react': 7.4.3(react-dom@18.2.0)(react@18.2.0)
+      '@ionic/react': 7.5.0(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-router: 5.3.4(react@18.2.0)
@@ -2075,14 +2075,14 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@ionic/react@7.4.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-j33s8CFe3Cu3AQtIlZdI/W4+e5hDzjRcX6uwqRrizcMQS66Sj9Ik9RN5v3jV/9R8MHLElXZof/AhofNEhe7BTw==}
+  /@ionic/react@7.5.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-hNpaKHrEtCKKbobV8Caf6aQB1rECNz7VBeCvfyH45UXkiP3EGjtZO8rkG43ej5KT+tNA8y4iJOw43A0C3sfB6Q==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
     dependencies:
-      '@ionic/core': /voyager-ionic-core@7.4.3
-      ionicons: 7.1.2
+      '@ionic/core': /voyager-ionic-core@7.5.0
+      ionicons: 7.2.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       tslib: 2.6.2
@@ -2714,8 +2714,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@stencil/core@4.4.0:
-    resolution: {integrity: sha512-YlLyCqGBsMEuZb3XTO/STT0TX9eSwjoVhCJgtjVfQOF+ebIMVlojTh40CmDveWiWbth687cbr6S2heeussV8Sg==}
+  /@stencil/core@4.4.1:
+    resolution: {integrity: sha512-SirGcrb5yKHCn2BwdM7HGVXuvCdmwiXlVczEj8jJxQIm42CAUQCUECxtZidTzp+oZBZnWLnoAvfanchJsgkQzA==}
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
     dev: true
@@ -6781,16 +6781,16 @@ packages:
     engines: {node: '>= 0.10'}
     dev: true
 
-  /ionicons@7.1.0:
-    resolution: {integrity: sha512-iE4GuEdEHARJpp0sWL7WJZCzNCf5VxpNRhAjW0fLnZPnNL5qZOJUcfup2Z2Ty7Jk8Q5hacrHfGEB1lCwOdXqGg==}
-    dependencies:
-      '@stencil/core': 2.22.3
-    dev: true
-
   /ionicons@7.1.2:
     resolution: {integrity: sha512-zZ4njAqSP39H8RRvZhJvkHsv7cBjYE/VfInH218Osf2UVxJITSOutTTd25MW+tAXKN5fheYzclUXUsF55JHUDg==}
     dependencies:
       '@stencil/core': 2.22.3
+    dev: true
+
+  /ionicons@7.2.1:
+    resolution: {integrity: sha512-2pvCM7DGVEtbbj48PJzQrCADCQrqjU1nUYX9l9PyEWz3ZfdnLdAouqwPxLdl8tbaF9cE7OZRSlyQD7oLOLnGoQ==}
+    dependencies:
+      '@stencil/core': 4.4.1
     dev: true
 
   /ip@1.1.8:
@@ -11444,11 +11444,11 @@ packages:
       '@capacitor/core': 5.2.3
     dev: true
 
-  /voyager-ionic-core@7.4.3:
-    resolution: {integrity: sha512-fG9M+gZVQ1/eMeDm4WFMNoxii7bHRIn8GFWnyRFHB9M2knQO0cWgUZMTlFalal3N0OAzIfLFL4xTGNI+n8e57A==}
+  /voyager-ionic-core@7.5.0:
+    resolution: {integrity: sha512-3Jd8Vcg+qByWP5vwn9J6iNFegPzOHJ3Z3hInEf7esmzWKn6AKrrTwARC3dR3RVIJ3U6boaYicyQmdEshMhbfAg==}
     dependencies:
-      '@stencil/core': 4.4.0
-      ionicons: 7.1.0
+      '@stencil/core': 4.4.1
+      ionicons: 7.2.1
       tslib: 2.6.2
     dev: true
 

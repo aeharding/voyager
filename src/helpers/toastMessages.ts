@@ -1,45 +1,36 @@
-import { ToastOptions } from "@ionic/core";
+import { AppToastOptions } from "./useAppToast";
 
-export const voteError: ToastOptions = {
+export const voteError: AppToastOptions = {
   message: "Problem voting. Please try again.",
-  duration: 3500,
-  position: "bottom",
   color: "danger",
 };
 
-export const downvotesDisabled: ToastOptions = {
+export const downvotesDisabled: AppToastOptions = {
   message: "Downvotes have been disabled by your server admins.",
-  duration: 3500,
-  position: "bottom",
   color: "warning",
 };
 
-export const saveError: ToastOptions = {
+export const saveError: AppToastOptions = {
   message: "Problem bookmarking. Please try again.",
-  duration: 3500,
-  position: "bottom",
   color: "danger",
 };
 
-export const allNSFWHidden: ToastOptions = {
+export const allNSFWHidden: AppToastOptions = {
   message: "All NSFW content is now hidden for your account.",
-  duration: 3500,
-  position: "bottom",
   color: "success",
 };
 
-export const problemBlockingUser: ToastOptions = {
+export const problemBlockingUser: AppToastOptions = {
   message: "Problem blocking user. Please try again.",
-  duration: 3500,
-  position: "bottom",
   color: "danger",
 };
 
-export function buildBlocked(blocked: boolean, handle: string): ToastOptions {
+export function buildBlocked(
+  blocked: boolean,
+  handle: string,
+): AppToastOptions {
   return {
     message: `${handle} has been ${blocked ? "blocked" : "unblocked"}`,
-    duration: 3500,
-    position: "bottom",
     color: "success",
   };
 }
@@ -47,13 +38,11 @@ export function buildBlocked(blocked: boolean, handle: string): ToastOptions {
 export function buildProblemSubscribing(
   isSubscribed: boolean,
   community: string,
-): ToastOptions {
+): AppToastOptions {
   return {
     message: `Problem ${
       isSubscribed ? "unsubscribing from" : "subscribing to"
     } c/${community}. Please try again.`,
-    duration: 3500,
-    position: "bottom",
     color: "danger",
   };
 }
@@ -61,13 +50,11 @@ export function buildProblemSubscribing(
 export function buildSuccessSubscribing(
   isSubscribed: boolean,
   community: string,
-): ToastOptions {
+): AppToastOptions {
   return {
     message: `${
       isSubscribed ? "Unsubscribed from" : "Subscribed to"
     } c/${community}.`,
-    duration: 3500,
-    position: "bottom",
     color: "success",
   };
 }

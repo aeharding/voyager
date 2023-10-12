@@ -5,11 +5,12 @@ import CommentHr from "./CommentHr";
 import { useContext, useState } from "react";
 import { CommentsContext } from "./CommentsContext";
 import useClient from "../../helpers/useClient";
-import { IonIcon, IonSpinner, useIonToast } from "@ionic/react";
+import { IonIcon, IonSpinner } from "@ionic/react";
 import { chevronDown } from "ionicons/icons";
 import AnimateHeight from "react-animate-height";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "../../helpers/lemmy";
 import { css } from "@emotion/react";
+import useAppToast from "../../helpers/useAppToast";
 
 const MoreRepliesBlock = styled.div<{ hidden: boolean }>`
   display: flex;
@@ -53,7 +54,7 @@ export default function CommentExpander({
   missing,
   collapsed,
 }: CommentExpanderProps) {
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const { appendComments } = useContext(CommentsContext);
   const client = useClient();
   const [loading, setLoading] = useState(false);
@@ -72,10 +73,8 @@ export default function CommentExpander({
         max_depth: Math.max((depth += 2), MAX_DEFAULT_COMMENT_DEPTH),
       });
     } catch (error) {
-      present({
+      presentToast({
         message: "Problem fetching more comments. Please try again.",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
       throw error;
@@ -84,10 +83,8 @@ export default function CommentExpander({
     }
 
     if (response.comments.length === 0) {
-      present({
+      presentToast({
         message: `Uh-oh. Looks like Lemmy returned 0 comments, but there's actually ${missing}`,
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
       return;

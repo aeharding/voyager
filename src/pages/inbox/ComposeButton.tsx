@@ -4,20 +4,20 @@ import {
   IonIcon,
   IonLoading,
   useIonRouter,
-  useIonToast,
 } from "@ionic/react";
 import { createOutline } from "ionicons/icons";
 import { useState } from "react";
 import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
 import { getHandle } from "../../helpers/lemmy";
+import useAppToast from "../../helpers/useAppToast";
 
 export default function ComposeButton() {
   const [loading, setLoading] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const router = useIonRouter();
   const dispatch = useAppDispatch();
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
 
   async function composeNew(handle: string) {
     setLoading(true);
@@ -27,13 +27,11 @@ export default function ComposeButton() {
     try {
       user = await dispatch(getUser(handle));
     } catch (error) {
-      present({
+      presentToast({
         message:
           error === "couldnt_find_that_username_or_email"
             ? `Could not find user with handle ${handle}`
             : "Server error. Please try again.",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
 

@@ -1,4 +1,8 @@
-import { Haptics, ImpactOptions } from "@capacitor/haptics";
+import {
+  Haptics,
+  ImpactOptions,
+  NotificationOptions,
+} from "@capacitor/haptics";
 import { useCallback } from "react";
 import { useAppSelector } from "../store";
 
@@ -8,10 +12,11 @@ export default function useHapticFeedback() {
   );
 
   return useCallback(
-    (options: ImpactOptions) => {
+    (options: ImpactOptions | NotificationOptions) => {
       if (!enabled) return;
 
-      Haptics.impact(options);
+      if ("style" in options) Haptics.impact(options);
+      else Haptics.notification(options);
     },
     [enabled],
   );

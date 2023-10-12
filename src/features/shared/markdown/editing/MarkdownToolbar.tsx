@@ -6,7 +6,6 @@ import {
   IonLoading,
   useIonActionSheet,
   useIonModal,
-  useIonToast,
 } from "@ionic/react";
 import {
   ellipsisHorizontal,
@@ -33,6 +32,7 @@ import { jwtSelector, urlSelector } from "../../../auth/authSlice";
 import { insert } from "../../../../helpers/string";
 import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 import textFaces from "./textFaces.txt?raw";
+import useAppToast from "../../../../helpers/useAppToast";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";
@@ -110,7 +110,7 @@ export default function MarkdownToolbar({
 }: MarkdownToolbarProps) {
   const [presentActionSheet] = useIonActionSheet();
   const [presentTextFaceActionSheet] = useIonActionSheet();
-  const [presentAlert] = useIonToast();
+  const presentToast = useAppToast();
   const keyboardOpen = useKeyboardOpen();
   const [imageUploading, setImageUploading] = useState(false);
   const jwt = useAppSelector(jwtSelector);
@@ -170,11 +170,10 @@ export default function MarkdownToolbar({
     try {
       imageUrl = await uploadImage(instanceUrl, jwt, image);
     } catch (error) {
-      presentAlert({
+      presentToast({
         message: "Problem uploading image. Please try again.",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;

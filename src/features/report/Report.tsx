@@ -1,10 +1,11 @@
-import { IonActionSheet, IonAlert, useIonToast } from "@ionic/react";
+import { IonActionSheet, IonAlert } from "@ionic/react";
 import { CommentView, PostView, PrivateMessageView } from "lemmy-js-client";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import useClient from "../../helpers/useClient";
 import { useAppSelector } from "../../store";
 import { jwtSelector } from "../auth/authSlice";
 import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
+import useAppToast from "../../helpers/useAppToast";
 
 export type ReportableItem = CommentView | PostView | PrivateMessageView;
 
@@ -14,7 +15,7 @@ export type ReportHandle = {
 
 export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
   const jwt = useAppSelector(jwtSelector);
-  const [presentToast] = useIonToast();
+  const presentToast = useAppToast();
   const [item, setItem] = useState<ReportableItem | undefined>();
   const [reportOptionsOpen, setReportOptionsOpen] = useState(false);
   const [customOpen, setCustomOpen] = useState(false);
@@ -67,8 +68,6 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
 
       presentToast({
         message: `Failed to report ${type?.toLowerCase()}. ${errorDetail}`,
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
 
@@ -77,9 +76,6 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
 
     presentToast({
       message: `${type} reported!`,
-      duration: 3500,
-      position: "bottom",
-      color: "primary",
     });
   }
 

@@ -5,7 +5,6 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  useIonToast,
   IonText,
 } from "@ionic/react";
 import {
@@ -25,6 +24,7 @@ import CommentContent from "../shared";
 import useTextRecovery, {
   clearRecoveredText,
 } from "../../../../helpers/useTextRecovery";
+import useAppToast from "../../../../helpers/useAppToast";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -61,7 +61,7 @@ export default function CommentReply({
   const [replyContent, setReplyContent] = useState("");
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const userHandle = useAppSelector(handleSelector);
   const isSubmitDisabled = !replyContent.trim() || loading;
@@ -87,11 +87,10 @@ export default function CommentReply({
           ? "Please select a language in your lemmy profile settings."
           : "Please try again.";
 
-      present({
+      presentToast({
         message: `Problem posting your comment. ${errorDescription}`,
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;
@@ -99,10 +98,8 @@ export default function CommentReply({
       setLoading(false);
     }
 
-    present({
+    presentToast({
       message: "Comment posted!",
-      duration: 3500,
-      position: "bottom",
       color: "success",
     });
 
