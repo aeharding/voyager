@@ -23,7 +23,9 @@ export default function BlockedCommunities() {
   );
 
   const sortedCommunities = communities && communities.length > 0
-    ? [...(communities || [])].sort((a, b) => a.community.name.localeCompare(b.community.name))
+    ? [...(communities || [])].sort((a, b) =>
+      a.community.name.localeCompare(b.community.name)
+    )
     : communities || [];
 
   async function remove(community: CommunityBlockView) {

@@ -14,7 +14,6 @@ import { PersonBlockView } from "lemmy-js-client";
 import { blockUser } from "../../user/userSlice";
 import { ListHeader } from "../shared/formatting";
 
-
 export default function BlockedUsers() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
@@ -25,7 +24,7 @@ export default function BlockedUsers() {
 
   const sortedUsers = users && users.length > 0
     ? [...users].sort((a, b) =>
-      (a.target?.name || '').localeCompare(b.target?.name || '')
+      (a.target?.name || "").localeCompare(b.target?.name || "")
     )
     : [];
 
@@ -41,7 +40,7 @@ export default function BlockedUsers() {
 
   return (
     <>
-      <ListHeader style={{ marginBottom: '20px' }} className="ion-margin-bottom">
+      <ListHeader style={{ marginBottom: "20px" }} className="ion-margin-bottom">
         <IonLabel>Blocked Users</IonLabel>
       </ListHeader>
 
