@@ -13,26 +13,21 @@ import { getHandle } from "../../../helpers/lemmy";
 import { PersonBlockView } from "lemmy-js-client";
 import { blockUser } from "../../user/userSlice";
 import { ListHeader } from "../shared/formatting";
-import BlockedEntititiesSorter from "./BlockedEntitiesSorter";
-import { SortOptionType } from "./Types";
+
 
 export default function BlockedUsers() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
-
-
-  const [sortOption, setSortOption] = useState<SortOptionType>('default');
-
-
   const users = useAppSelector(
     (state) => state.auth.site?.my_user?.person_blocks,
   );
 
-  const sortedUsers = sortOption === 'alphabetical'
-    ? [...(users || [])].sort((a, b) => a.target.name.localeCompare(b.target.name))
-    : users || [];
-
+  const sortedUsers = users && users.length > 0
+    ? [...users].sort((a, b) =>
+      (a.target?.name || '').localeCompare(b.target?.name || '')
+    )
+    : [];
 
   async function remove(user: PersonBlockView) {
     setLoading(true);
@@ -50,9 +45,7 @@ export default function BlockedUsers() {
         <IonLabel>Blocked Users</IonLabel>
       </ListHeader>
 
-      <BlockedEntititiesSorter setSortOption={setSortOption} sortOption={sortOption} />
-
-      <IonList inset key={sortOption}>
+      <IonList inset key="blocked_users">
         {sortedUsers?.length ? (
           sortedUsers.map((user) => (
             <IonItemSliding key={user.target.id}>
