@@ -11,12 +11,7 @@ import {
   buildCommentsTreeWithMissing,
 } from "../../helpers/lemmy";
 import CommentTree from "./CommentTree";
-import {
-  IonRefresher,
-  IonRefresherContent,
-  IonSpinner,
-  useIonToast,
-} from "@ionic/react";
+import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { CommentSortType, CommentView, Person } from "lemmy-js-client";
@@ -32,6 +27,7 @@ import { CommentsContext } from "./CommentsContext";
 import { jwtSelector } from "../auth/authSlice";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
+import useAppToast from "../../helpers/useAppToast";
 
 const centerCss = css`
   position: relative;
@@ -92,7 +88,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   );
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const defaultCommentDepth = useAppSelector(defaultCommentDepthSelector);
 
   const highlightedCommentId = commentPath
@@ -151,10 +147,8 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       });
     } catch (error) {
       if (reqPostId === postId && reqCommentId === commentId)
-        present({
+        presentToast({
           message: "Problem fetching comments. Please try again.",
-          duration: 3500,
-          position: "bottom",
           color: "danger",
         });
 

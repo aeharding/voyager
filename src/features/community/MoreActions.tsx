@@ -4,7 +4,6 @@ import {
   IonIcon,
   useIonActionSheet,
   useIonRouter,
-  useIonToast,
 } from "@ionic/react";
 import {
   createOutline,
@@ -40,13 +39,14 @@ import {
   buildSuccessSubscribing,
 } from "../../helpers/toastMessages";
 import useHidePosts from "../feed/useHidePosts";
+import useAppToast from "../../helpers/useAppToast";
 
 interface MoreActionsProps {
   community: string;
 }
 
 export default function MoreActions({ community }: MoreActionsProps) {
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const router = useIonRouter();
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
@@ -155,21 +155,19 @@ export default function MoreActions({ community }: MoreActionsProps) {
               try {
                 await dispatch(followCommunity(!isSubscribed, communityId));
               } catch (error) {
-                present(buildProblemSubscribing(isSubscribed, community));
+                presentToast(buildProblemSubscribing(isSubscribed, community));
                 throw error;
               }
 
-              present(buildSuccessSubscribing(isSubscribed, community));
+              presentToast(buildSuccessSubscribing(isSubscribed, community));
               break;
             }
             case "post": {
               if (presentLoginIfNeeded()) return;
 
               if (!canPost) {
-                present({
+                presentToast({
                   message: "This community has disabled new posts",
-                  duration: 3500,
-                  position: "bottom",
                   color: "warning",
                 });
                 return;
@@ -191,12 +189,10 @@ export default function MoreActions({ community }: MoreActionsProps) {
                 dispatch(removeFavorite(community));
               }
 
-              present({
+              presentToast({
                 message: `${
                   isFavorite ? "Unfavorited" : "Favorited"
                 } c/${community}.`,
-                duration: 3500,
-                position: "bottom",
                 color: "success",
               });
 
@@ -229,7 +225,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
                         (async () => {
                           await dispatch(showNsfw(false));
 
-                          present(allNSFWHidden);
+                          presentToast(allNSFWHidden);
                         })();
                       },
                     },
@@ -242,7 +238,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
                             blockCommunity(!isBlocked, communityId),
                           );
 
-                          present(buildBlocked(!isBlocked, community));
+                          presentToast(buildBlocked(!isBlocked, community));
                         })();
                       },
                     },
@@ -255,7 +251,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
               } else {
                 await dispatch(blockCommunity(!isBlocked, communityId));
 
-                present(buildBlocked(!isBlocked, community));
+                presentToast(buildBlocked(!isBlocked, community));
               }
             }
           }

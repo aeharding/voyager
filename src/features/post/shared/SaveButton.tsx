@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonToast } from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -10,6 +10,7 @@ import { ActionButton } from "../actions/ActionButton";
 import { saveError } from "../../../helpers/toastMessages";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
+import useAppToast from "../../../helpers/useAppToast";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on",
@@ -30,7 +31,7 @@ interface SaveButtonProps {
 }
 
 export function SaveButton({ postId }: SaveButtonProps) {
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const { presentLoginIfNeeded } = useContext(PageContext);
   const vibrate = useHapticFeedback();
@@ -48,7 +49,7 @@ export function SaveButton({ postId }: SaveButtonProps) {
     try {
       await dispatch(savePost(postId, !postSavedById[postId]));
     } catch (error) {
-      present(saveError);
+      presentToast(saveError);
 
       throw error;
     }

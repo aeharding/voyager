@@ -6,7 +6,7 @@ import { StyledLink } from "./shared";
 import ItemIcon from "../img/ItemIcon";
 import { css } from "@emotion/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { useIonActionSheet, useIonToast } from "@ionic/react";
+import { useIonActionSheet } from "@ionic/react";
 import { useLongPress } from "use-long-press";
 import {
   blockCommunity,
@@ -24,6 +24,7 @@ import {
 } from "ionicons/icons";
 import { useContext } from "react";
 import { PageContext } from "../../auth/PageContext";
+import useAppToast from "../../../helpers/useAppToast";
 
 interface CommunityLinkProps {
   community: Community;
@@ -41,7 +42,7 @@ export default function CommunityLink({
 }: CommunityLinkProps) {
   const dispatch = useAppDispatch();
   const [present] = useIonActionSheet();
-  const [presentToast] = useIonToast();
+  const presentToast = useAppToast();
   const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
