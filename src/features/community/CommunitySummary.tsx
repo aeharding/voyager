@@ -7,7 +7,7 @@ import Ago from "../labels/Ago";
 import { getHandle } from "../../helpers/lemmy";
 import InlineMarkdown from "../shared/InlineMarkdown";
 import { heart } from "ionicons/icons";
-import useCommunityActions from "./useCommunityActions";
+import useCommunity from "./useCommunity";
 import { ActionButton } from "../post/actions/ActionButton";
 import { ToggleIcon } from "../../components/ToggleIcon";
 
@@ -56,7 +56,7 @@ interface CommunitySummaryProps {
 
 export default function CommunitySummary({ community }: CommunitySummaryProps) {
   const handle = getHandle(community.community);
-  const { isSubscribed, subscribe, view } = useCommunityActions(handle);
+  const { isSubscribed, subscribe, view } = useCommunity(handle);
 
   return (
     <Container>

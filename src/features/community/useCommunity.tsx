@@ -23,7 +23,8 @@ import {
   buildSuccessSubscribing,
 } from "../../helpers/toastMessages";
 
-export default function useCommunityActions(communityHandle: string) {
+// fetches the community info (subscribed, etc) from the server
+export default function useCommunity(communityHandle: string) {
   const [present] = useIonToast();
   const router = useIonRouter();
   const dispatch = useAppDispatch();
