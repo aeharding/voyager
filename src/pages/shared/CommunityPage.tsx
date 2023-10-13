@@ -35,6 +35,7 @@ export default function CommunityPage() {
   const jwt = useAppSelector(jwtSelector);
 
   const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+  const communityView = useFetchCommunity(community);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
@@ -59,8 +60,6 @@ export default function CommunityPage() {
     );
 
   const feed = <PostCommentFeed fetchFn={fetchFn} communityName={community} />;
-
-  const communityView = useFetchCommunity(community);
 
   return (
     <FeedContextProvider>
