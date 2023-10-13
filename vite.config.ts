@@ -59,6 +59,18 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: () => "index.js",
+
+        // ---- Reproducible builds (f-droid) ----
+        // eslint-disable-next-line no-undef
+        ...(process.env.CI_PLATFORM === "android" ||
+        // eslint-disable-next-line no-undef
+        process.env.CI_PLATFORM === "ios"
+          ? {
+              entryFileNames: `[name].js`,
+              chunkFileNames: `[name].js`,
+              assetFileNames: `[name].[ext]`,
+            }
+          : {}),
       },
     },
   },
