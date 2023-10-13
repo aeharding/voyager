@@ -12,6 +12,7 @@ import {
   heartDislikeOutline,
   heartOutline,
   removeCircleOutline,
+  tabletPortraitOutline,
 } from "ionicons/icons";
 import useCommunityActions from "../../community/useCommunityActions";
 
@@ -35,12 +36,13 @@ export default function CommunityLink({
     (state) => state.community.communityByHandle,
   );
 
-  const { isSubscribed, isBlocked, subscribe, block } = useCommunityActions({
-    blocked: communityByHandle[getHandle(community)]?.blocked ?? false,
-    community: community,
-    subscribed:
-      communityByHandle[getHandle(community)]?.subscribed ?? subscribed,
-  });
+  const { isSubscribed, isBlocked, subscribe, block, sidebar } =
+    useCommunityActions({
+      blocked: communityByHandle[getHandle(community)]?.blocked ?? false,
+      community: community,
+      subscribed:
+        communityByHandle[getHandle(community)]?.subscribed ?? subscribed,
+    });
 
   const bind = useLongPress(
     () => {
@@ -57,6 +59,12 @@ export default function CommunityLink({
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
             icon: !isSubscribed ? heartOutline : heartDislikeOutline,
             handler: subscribe,
+          },
+          {
+            text: "Sidebar",
+            data: "sidebar",
+            icon: tabletPortraitOutline,
+            handler: sidebar,
           },
           {
             text: "Cancel",
