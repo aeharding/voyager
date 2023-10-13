@@ -36,12 +36,14 @@ export default function CommunityLink({
     (state) => state.community.communityByHandle,
   );
 
+  const handle = getHandle(community);
+  const c = communityByHandle[handle];
+
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
     useCommunityActions({
-      blocked: communityByHandle[getHandle(community)]?.blocked ?? false,
+      blocked: c?.blocked ?? false,
       community: community,
-      subscribed:
-        communityByHandle[getHandle(community)]?.subscribed ?? subscribed,
+      subscribed: c?.subscribed ?? subscribed,
     });
 
   const bind = useLongPress(
@@ -80,7 +82,7 @@ export default function CommunityLink({
 
   return (
     <StyledLink
-      to={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
+      to={buildGeneralBrowseLink(`/c/${handle}`)}
       onClick={(e) => e.stopPropagation()}
       className={className}
       {...bind()}
