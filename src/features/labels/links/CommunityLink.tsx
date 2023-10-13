@@ -5,26 +5,15 @@ import Handle from "../Handle";
 import { StyledLink } from "./shared";
 import ItemIcon from "../img/ItemIcon";
 import { css } from "@emotion/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
 import { useIonActionSheet } from "@ionic/react";
 import { useLongPress } from "use-long-press";
-import {
-  blockCommunity,
-  followCommunity,
-} from "../../community/communitySlice";
-import {
-  buildBlocked,
-  buildProblemSubscribing,
-  buildSuccessSubscribing,
-} from "../../../helpers/toastMessages";
 import {
   heartDislikeOutline,
   heartOutline,
   removeCircleOutline,
 } from "ionicons/icons";
-import { useContext } from "react";
-import { PageContext } from "../../auth/PageContext";
-import useAppToast from "../../../helpers/useAppToast";
+import useCommunityActions from "../../community/useCommunityActions";
 
 interface CommunityLinkProps {
   community: Community;
@@ -40,20 +29,18 @@ export default function CommunityLink({
   className,
   subscribed,
 }: CommunityLinkProps) {
-  const dispatch = useAppDispatch();
   const [present] = useIonActionSheet();
-  const presentToast = useAppToast();
-  const { presentLoginIfNeeded } = useContext(PageContext);
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle,
   );
 
-  const _subscribed =
-    communityByHandle[getHandle(community)]?.subscribed ?? subscribed;
-
-  const isSubscribed =
-    _subscribed === "Subscribed" || _subscribed === "Pending";
+  const { isSubscribed, isBlocked, subscribe, block } = useCommunityActions({
+    blocked: communityByHandle[getHandle(community)]?.blocked ?? false,
+    community: community,
+    subscribed:
+      communityByHandle[getHandle(community)]?.subscribed ?? subscribed,
+  });
 
   const bind = useLongPress(
     () => {
@@ -61,40 +48,15 @@ export default function CommunityLink({
         cssClass: "left-align-buttons",
         buttons: [
           {
-            text: "Block Community",
+            text: `${isBlocked ? "Unblock" : "Block"} Community`,
             icon: removeCircleOutline,
             role: "destructive",
-            handler: () => {
-              (async () => {
-                if (presentLoginIfNeeded()) return;
-
-                await dispatch(blockCommunity(true, community.id));
-
-                presentToast(buildBlocked(true, getHandle(community)));
-              })();
-            },
+            handler: block,
           },
           {
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
             icon: !isSubscribed ? heartOutline : heartDislikeOutline,
-            handler: () => {
-              (async () => {
-                if (presentLoginIfNeeded()) return;
-
-                try {
-                  await dispatch(followCommunity(!isSubscribed, community.id));
-                } catch (error) {
-                  presentToast(
-                    buildProblemSubscribing(isSubscribed, getHandle(community)),
-                  );
-                  throw error;
-                }
-
-                presentToast(
-                  buildSuccessSubscribing(isSubscribed, getHandle(community)),
-                );
-              })();
-            },
+            handler: subscribe,
           },
           {
             text: "Cancel",

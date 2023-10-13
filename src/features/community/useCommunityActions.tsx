@@ -24,7 +24,9 @@ import {
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useAppToast from "../../helpers/useAppToast";
 
-export default function useCommunityActions(community: CommunityView) {
+export default function useCommunityActions(
+  community: Pick<CommunityView, "community" | "subscribed" | "blocked">,
+) {
   const presentToast = useAppToast();
 
   // local state as source of truth for this hook
