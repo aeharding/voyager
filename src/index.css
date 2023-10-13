@@ -17,6 +17,15 @@ ion-tab-button {
   opacity: 1 !important;
 }
 
+/*
+ * Header doesn't support dynamic font size
+ */
+ion-router-outlet > .ion-page > ion-header ion-button,
+ion-router-outlet > .ion-page > ion-header ion-back-button,
+ion-router-outlet > .ion-page > ion-header ion-title {
+  font-size: 17px;
+}
+
 .left-align-buttons
   .action-sheet-button:not(.action-sheet-cancel)
   .action-sheet-button-inner.sc-ion-action-sheet-ios:not(
