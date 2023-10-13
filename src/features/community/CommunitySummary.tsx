@@ -4,12 +4,11 @@ import { CommunityView } from "lemmy-js-client";
 import { maxWidthCss } from "../shared/AppContent";
 import CommunityLink from "../labels/links/CommunityLink";
 import Ago from "../labels/Ago";
-import { getHandle } from "../../helpers/lemmy";
 import InlineMarkdown from "../shared/InlineMarkdown";
 import { heart } from "ionicons/icons";
-import useCommunity from "./useCommunity";
 import { ActionButton } from "../post/actions/ActionButton";
 import { ToggleIcon } from "../../components/ToggleIcon";
+import useCommunityActions from "./useCommunityActions";
 
 const Container = styled(IonItem)`
   ${maxWidthCss}
@@ -55,8 +54,7 @@ interface CommunitySummaryProps {
 }
 
 export default function CommunitySummary({ community }: CommunitySummaryProps) {
-  const handle = getHandle(community.community);
-  const { isSubscribed, subscribe, view } = useCommunity(handle);
+  const { isSubscribed, subscribe, view } = useCommunityActions(community);
 
   return (
     <Container>
