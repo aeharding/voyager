@@ -97,11 +97,7 @@ export default function useCommunityActions(communityHandle: string) {
       throw error;
     }
 
-    present(
-      buildSuccessSubscribing(isSubscribed, communityHandle, () => {
-        dispatch(followCommunity(isSubscribed, communityId));
-      }),
-    );
+    present(buildSuccessSubscribing(isSubscribed, communityHandle));
   }
 
   function favorite() {
@@ -164,11 +160,7 @@ export default function useCommunityActions(communityHandle: string) {
               (async () => {
                 await dispatch(blockCommunity(!isBlocked, communityId));
 
-                present(
-                  buildBlocked(!isBlocked, communityHandle, () => {
-                    dispatch(blockCommunity(isBlocked!, communityId));
-                  }),
-                );
+                present(buildBlocked(!isBlocked, communityHandle));
               })();
             },
           },
@@ -181,11 +173,7 @@ export default function useCommunityActions(communityHandle: string) {
     } else {
       await dispatch(blockCommunity(!isBlocked, communityId));
 
-      present(
-        buildBlocked(!isBlocked, communityHandle, () => {
-          dispatch(blockCommunity(isBlocked!, communityId));
-        }),
-      );
+      present(buildBlocked(!isBlocked, communityHandle));
     }
   }
 
