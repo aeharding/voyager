@@ -509,5 +509,7 @@ function getPathForFeed(defaultFeed: DefaultFeedType): string {
       return "/local";
     case ODefaultFeedType.CommunityList:
       return "";
+    case ODefaultFeedType.Community:
+      return `/c/${defaultFeed.name}`;
   }
 }

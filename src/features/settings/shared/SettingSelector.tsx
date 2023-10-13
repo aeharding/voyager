@@ -11,6 +11,23 @@ import { InsetIonItem } from "./formatting";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
+const Container = styled.div`
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  min-width: 0;
+`;
+
+const ValueLabel = styled(IonLabel)`
+  flex: 1;
+  text-align: right;
+
+  min-width: 75px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 export interface SettingSelectorProps<T> {
   title: string;
   selected: T;
@@ -21,6 +38,7 @@ export interface SettingSelectorProps<T> {
   iconMirrored?: boolean;
   disabled?: boolean;
   getOptionLabel?: (option: string) => string | undefined;
+  getSelectedLabel?: (option: string) => string | undefined;
 }
 
 export default function SettingSelector<T extends string>({
@@ -33,6 +51,7 @@ export default function SettingSelector<T extends string>({
   iconMirrored,
   disabled,
   getOptionLabel,
+  getSelectedLabel,
 }: SettingSelectorProps<T>) {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
@@ -78,11 +97,13 @@ export default function SettingSelector<T extends string>({
       disabled={disabled}
       detail={false}
     >
-      {Icon && <Icon mirror={iconMirrored} />}
-      <IonLabel>{title}</IonLabel>
-      <IonLabel slot="end" color="medium">
-        {startCase(selected)}
-      </IonLabel>
+      <Container>
+        {Icon && <Icon mirror={iconMirrored} />}
+        <IonLabel>{title}</IonLabel>
+        <ValueLabel slot="end" color="medium">
+          {getSelectedLabel?.(selected) ?? startCase(selected)}
+        </ValueLabel>
+      </Container>
       <IonActionSheet
         cssClass="left-align-buttons"
         isOpen={open}

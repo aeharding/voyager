@@ -135,19 +135,30 @@ export const OLinkHandlerType = {
   InApp: "in-app",
 } as const;
 
-export type DefaultFeedType = {
-  type:
-    | typeof ODefaultFeedType.All
-    | typeof ODefaultFeedType.Home
-    | typeof ODefaultFeedType.Local
-    | typeof ODefaultFeedType.CommunityList;
-}; // Future support: add specific community type with payload of the community name
+export type DefaultFeedType =
+  | {
+      type:
+        | typeof ODefaultFeedType.All
+        | typeof ODefaultFeedType.Home
+        | typeof ODefaultFeedType.Local
+        | typeof ODefaultFeedType.CommunityList;
+    }
+  | {
+      type: typeof ODefaultFeedType.Community;
+
+      /**
+       * Community handle. If remote, "community@instance.com".
+       * If local, "community"
+       */
+      name: string;
+    };
 
 export const ODefaultFeedType = {
   Home: "home",
   All: "all",
   Local: "local",
   CommunityList: "community-list",
+  Community: "community",
 } as const;
 
 export type JumpButtonPositionType =
