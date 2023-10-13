@@ -1,5 +1,5 @@
 import { CommunityView } from "lemmy-js-client";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { PageContext } from "../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { checkIsMod, getHandle } from "../../helpers/lemmy";
@@ -41,7 +41,6 @@ export default function useCommunityActions(
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const site = useAppSelector((state) => state.auth.site);
-  const isMod = site ? checkIsMod(communityHandle, site) : false;
   const isAdmin = useAppSelector(isAdminSelector);
 
   const { presentLoginIfNeeded } = useContext(PageContext);
@@ -52,14 +51,23 @@ export default function useCommunityActions(
 
   const isNsfw = community.community.nsfw;
 
-  const canPost =
-    !community.community.posting_restricted_to_mods || isMod || isAdmin;
+  const canPost = useMemo(() => {
+    const isMod = site ? checkIsMod(communityHandle, site) : false;
+
+    const canPost =
+      !community.community.posting_restricted_to_mods || isMod || isAdmin;
+
+    return canPost;
+  }, [community, communityHandle, isAdmin, site]);
 
   const favoriteCommunities = useAppSelector(
     (state) => state.community.favorites,
   );
 
-  const isFavorite = favoriteCommunities.includes(communityHandle);
+  const isFavorite = useMemo(
+    () => favoriteCommunities.includes(communityHandle),
+    [favoriteCommunities, communityHandle],
+  );
 
   function post() {
     if (presentLoginIfNeeded()) return;
