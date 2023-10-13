@@ -18,6 +18,14 @@ export default function useCommunity(communityHandle: string) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [communityHandle]);
 
+  const community = communityByHandle[communityHandle];
+
+  if (!community) {
+    return {
+      community,
+    };
+  }
+
   const {
     isFavorite,
     isSubscribed,
@@ -27,9 +35,10 @@ export default function useCommunity(communityHandle: string) {
     block,
     sidebar,
     view,
-  } = useCommunityActions(communityByHandle[communityHandle]!);
+  } = useCommunityActions(community);
 
   return {
+    community,
     communityByHandle,
     isSubscribed,
     isFavorite,
