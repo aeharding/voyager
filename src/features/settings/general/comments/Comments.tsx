@@ -4,6 +4,7 @@ import DefaultSort from "./DefaultSort";
 import { ListHeader } from "../../shared/formatting";
 import ShowJumpButton from "./ShowJumpButton";
 import JumpButtonPosition from "./JumpButtonPosition";
+import HighlightNewAccount from "./HighlightNewAccount";
 
 export default function Comments() {
   return (
@@ -16,6 +17,7 @@ export default function Comments() {
         <DefaultSort />
         <ShowJumpButton />
         <JumpButtonPosition />
+        <HighlightNewAccount />
       </IonList>
     </>
   );

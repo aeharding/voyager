@@ -6,7 +6,6 @@ import {
   IonContent,
   IonToolbar,
   IonTitle,
-  useIonToast,
   IonText,
   IonSegment,
   IonSegmentButton,
@@ -34,6 +33,7 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PhotoPreview from "./PhotoPreview";
 import { uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
+import useAppToast from "../../../helpers/useAppToast";
 
 const Container = styled.div`
   position: absolute;
@@ -119,7 +119,7 @@ export default function PostEditorRoot({
   const [postType, setPostType] = useState<PostType>(initialPostType);
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initialTitle);
   const [url, setUrl] = useState(initialUrl);
@@ -222,12 +222,10 @@ export default function PostEditorRoot({
     }
 
     if (errorMessage) {
-      present({
+      presentToast({
         // TODO more helpful msg
         message: errorMessage,
-        duration: 3500,
-        position: "bottom",
-        color: "primary",
+        fullscreen: true,
       });
 
       return;
@@ -259,11 +257,10 @@ export default function PostEditorRoot({
         });
       }
     } catch (error) {
-      present({
+      presentToast({
         message: "Problem submitting your post. Please try again.",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;
@@ -273,11 +270,10 @@ export default function PostEditorRoot({
 
     dispatch(receivedPosts([postResponse.post_view]));
 
-    present({
+    presentToast({
       message: existingPost ? "Post edited!" : "Post created!",
-      duration: 3500,
-      position: "bottom",
       color: "success",
+      fullscreen: true,
     });
 
     setCanDismiss(true);
@@ -307,11 +303,10 @@ export default function PostEditorRoot({
     try {
       imageUrl = await uploadImage(instanceUrl, jwt, image);
     } catch (error) {
-      present({
+      presentToast({
         message: "Problem uploading image. Please try again.",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
       clearImage();
 
@@ -395,7 +390,7 @@ export default function PostEditorRoot({
 
                     <HiddenInput
                       type="file"
-                      accept="image/jpeg, image/x-png, image/gif"
+                      accept="image/*"
                       id="photo-upload"
                       onInput={(e) => {
                         const image = (e.target as HTMLInputElement).files?.[0];

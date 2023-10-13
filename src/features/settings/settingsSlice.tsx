@@ -82,6 +82,7 @@ interface SettingsState {
       sort: CommentDefaultSort;
       showJumpButton: boolean;
       jumpButtonPosition: JumpButtonPositionType;
+      highlightNewAccount: boolean;
     };
     posts: {
       disableMarkingRead: boolean;
@@ -147,6 +148,7 @@ const initialState: SettingsState = {
       sort: OCommentDefaultSort.Hot,
       showJumpButton: false,
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
+      highlightNewAccount: true,
     },
     posts: {
       disableMarkingRead: false,
@@ -237,6 +239,10 @@ export const appearanceSlice = createSlice({
     ) {
       state.general.comments.jumpButtonPosition = action.payload;
       db.setSetting("jump_button_position", action.payload);
+    },
+    setHighlightNewAccount(state, action: PayloadAction<boolean>) {
+      state.general.comments.highlightNewAccount = action.payload;
+      db.setSetting("highlight_new_account", action.payload);
     },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
@@ -398,6 +404,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const show_jump_button = await db.getSetting("show_jump_button");
       const jump_button_position = await db.getSetting("jump_button_position");
+      const highlight_new_account = await db.getSetting(
+        "highlight_new_account",
+      );
       const user_instance_url_display = await db.getSetting(
         "user_instance_url_display",
       );
@@ -472,6 +481,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             jumpButtonPosition:
               jump_button_position ??
               initialState.general.comments.jumpButtonPosition,
+            highlightNewAccount:
+              highlight_new_account ??
+              initialState.general.comments.highlightNewAccount,
           },
           posts: {
             disableMarkingRead:
@@ -513,6 +525,7 @@ export const {
   setCommentsCollapsed,
   setShowJumpButton,
   setJumpButtonPosition,
+  setHighlightNewAccount,
   setNsfwBlur,
   setFilteredKeywords,
   setPostAppearance,

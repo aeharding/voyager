@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonToast } from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import { useContext, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { voteOnPost } from "../postSlice";
@@ -13,6 +13,7 @@ import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
 import { useTransition } from "react-transition-state";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
+import useAppToast from "../../../helpers/useAppToast";
 
 export const Item = styled(ActionButton, {
   shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
@@ -37,7 +38,7 @@ interface VoteButtonProps {
 }
 
 export function VoteButton({ type, postId }: VoteButtonProps) {
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const vibrate = useHapticFeedback();
   const { presentLoginIfNeeded } = useContext(PageContext);
@@ -107,7 +108,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
             voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote),
           );
         } catch (error) {
-          present(voteError);
+          presentToast(voteError);
 
           throw error;
         }

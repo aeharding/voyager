@@ -3,8 +3,8 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { getHandle } from "../../helpers/lemmy";
 import { PageContext } from "../auth/PageContext";
 import { blockUser } from "./userSlice";
-import { useIonToast } from "@ionic/react";
 import { buildBlocked, problemBlockingUser } from "../../helpers/toastMessages";
+import useAppToast from "../../helpers/useAppToast";
 
 export function useUserDetails(handle: string) {
   const blocks = useAppSelector(
@@ -18,7 +18,7 @@ export function useUserDetails(handle: string) {
   const user = userByHandle[handle];
   const { presentLoginIfNeeded } = useContext(PageContext);
   const dispatch = useAppDispatch();
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
 
   async function blockOrUnblock() {
     if (presentLoginIfNeeded()) return;
@@ -27,16 +27,12 @@ export function useUserDetails(handle: string) {
     try {
       await dispatch(blockUser(!isBlocked, user.id));
     } catch (error) {
-      present(problemBlockingUser);
+      presentToast(problemBlockingUser);
 
       throw error;
     }
 
-    present(
-      buildBlocked(!isBlocked, handle, () => {
-        dispatch(blockUser(isBlocked!, user.id));
-      }),
-    );
+    presentToast(buildBlocked(!isBlocked, handle));
   }
 
   return { isBlocked, user, blockOrUnblock };
