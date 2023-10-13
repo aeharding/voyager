@@ -72,6 +72,8 @@ export default function CommunityPage() {
 
   const feed = <PostCommentFeed fetchFn={fetchFn} communityName={community} />;
 
+  const communityView = communityByHandle[community];
+
   return (
     <FeedContextProvider>
       <TitleSearchProvider>
@@ -88,7 +90,7 @@ export default function CommunityPage() {
               <TitleSearch name={community}>
                 <IonButtons slot="end">
                   <PostSort />
-                  <MoreActions community={community} />
+                  {communityView && <MoreActions community={communityView} />}
                 </IonButtons>
               </TitleSearch>
             </IonToolbar>
