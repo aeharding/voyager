@@ -48,6 +48,8 @@ export default function useCommunityActions(community: CommunityView) {
   const localUser = useAppSelector(localUserSelector);
   const [presentActionSheet] = useIonActionSheet();
 
+  const isNsfw = community.community.nsfw;
+
   const canPost =
     !community.community.posting_restricted_to_mods || isMod || isAdmin;
 
@@ -115,7 +117,7 @@ export default function useCommunityActions(community: CommunityView) {
   async function block() {
     if (typeof communityId !== "number") return;
 
-    if (!isBlocked && community.community.nsfw && localUser?.show_nsfw) {
+    if (!isBlocked && isNsfw && localUser?.show_nsfw) {
       // User wants to block a NSFW community when account is set to show NSFW. Ask them
       // if they want to hide all NSFW instead of blocking on a per community basis
       presentActionSheet({
