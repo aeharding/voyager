@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { PageContext } from "../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { checkIsMod, getHandle } from "../../helpers/lemmy";
-import { useIonActionSheet, useIonRouter, useIonToast } from "@ionic/react";
+import { useIonActionSheet, useIonRouter } from "@ionic/react";
 import {
   isAdminSelector,
   localUserSelector,
