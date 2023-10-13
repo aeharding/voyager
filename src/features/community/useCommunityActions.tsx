@@ -1,5 +1,5 @@
 import { CommunityView } from "lemmy-js-client";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { PageContext } from "../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { checkIsMod, getHandle } from "../../helpers/lemmy";
@@ -22,9 +22,17 @@ import {
   buildSuccessSubscribing,
 } from "../../helpers/toastMessages";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import useAppToast from "../../helpers/useAppToast";
 
 export default function useCommunityActions(community: CommunityView) {
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
+
+  // local state as source of truth for this hook
+  const [isSubscribed, setIsSubscribed] = useState(
+    community.subscribed === "Subscribed" || community.subscribed === "Pending",
+  );
+  const [isBlocked, setIsBlocked] = useState(community.blocked);
+
   const dispatch = useAppDispatch();
   const communityHandle = getHandle(community.community);
   const router = useIonRouter();
@@ -33,18 +41,15 @@ export default function useCommunityActions(community: CommunityView) {
   const site = useAppSelector((state) => state.auth.site);
   const isMod = site ? checkIsMod(communityHandle, site) : false;
   const isAdmin = useAppSelector(isAdminSelector);
-  const isSubscribed =
-    community?.subscribed === "Subscribed" ||
-    community?.subscribed === "Pending";
+
   const { presentLoginIfNeeded } = useContext(PageContext);
   const { presentPostEditor } = useContext(PageContext);
-  const isBlocked = community?.blocked;
-  const communityId = community?.community.id;
+  const communityId = community.community.id;
   const localUser = useAppSelector(localUserSelector);
   const [presentActionSheet] = useIonActionSheet();
 
   const canPost =
-    !community?.community.posting_restricted_to_mods || isMod || isAdmin;
+    !community.community.posting_restricted_to_mods || isMod || isAdmin;
 
   const favoriteCommunities = useAppSelector(
     (state) => state.community.favorites,
@@ -56,9 +61,8 @@ export default function useCommunityActions(community: CommunityView) {
     if (presentLoginIfNeeded()) return;
 
     if (!canPost) {
-      present({
+      presentToast({
         message: "This community has disabled new posts",
-        duration: 3500,
         position: "bottom",
         color: "warning",
       });
@@ -68,21 +72,26 @@ export default function useCommunityActions(community: CommunityView) {
     presentPostEditor(communityHandle);
   }
 
+  async function _subscribe() {
+    await dispatch(followCommunity(!isSubscribed, communityId));
+    setIsSubscribed(!isSubscribed);
+  }
+
+  async function _block() {
+    await dispatch(blockCommunity(!isBlocked, communityId));
+    setIsBlocked(!isBlocked);
+  }
+
   async function subscribe() {
     if (presentLoginIfNeeded()) return;
 
-    const communityId = community?.community.id;
-
-    if (communityId === undefined) throw new Error("community not found");
-
     try {
-      await dispatch(followCommunity(!isSubscribed, communityId));
+      await _subscribe();
+      presentToast(buildSuccessSubscribing(isSubscribed, communityHandle));
     } catch (error) {
-      present(buildProblemSubscribing(isSubscribed, communityHandle));
+      presentToast(buildProblemSubscribing(isSubscribed, communityHandle));
       throw error;
     }
-
-    present(buildSuccessSubscribing(isSubscribed, communityHandle));
   }
 
   function favorite() {
@@ -94,11 +103,10 @@ export default function useCommunityActions(community: CommunityView) {
       dispatch(removeFavorite(communityHandle));
     }
 
-    present({
+    presentToast({
       message: `${
         isFavorite ? "Unfavorited" : "Favorited"
       } c/${communityHandle}.`,
-      duration: 3500,
       position: "bottom",
       color: "success",
     });
@@ -107,11 +115,7 @@ export default function useCommunityActions(community: CommunityView) {
   async function block() {
     if (typeof communityId !== "number") return;
 
-    if (
-      !community?.blocked &&
-      community?.community.nsfw &&
-      localUser?.show_nsfw
-    ) {
+    if (!isBlocked && community.community.nsfw && localUser?.show_nsfw) {
       // User wants to block a NSFW community when account is set to show NSFW. Ask them
       // if they want to hide all NSFW instead of blocking on a per community basis
       presentActionSheet({
@@ -126,7 +130,7 @@ export default function useCommunityActions(community: CommunityView) {
               (async () => {
                 await dispatch(showNsfw(false));
 
-                present(allNSFWHidden);
+                presentToast(allNSFWHidden);
               })();
             },
           },
@@ -135,9 +139,8 @@ export default function useCommunityActions(community: CommunityView) {
             role: "destructive",
             handler: () => {
               (async () => {
-                await dispatch(blockCommunity(!isBlocked, communityId));
-
-                present(buildBlocked(!isBlocked, communityHandle));
+                await _block();
+                presentToast(buildBlocked(!isBlocked, communityHandle));
               })();
             },
           },
@@ -148,9 +151,8 @@ export default function useCommunityActions(community: CommunityView) {
         ],
       });
     } else {
-      await dispatch(blockCommunity(!isBlocked, communityId));
-
-      present(buildBlocked(!isBlocked, communityHandle));
+      await _block();
+      presentToast(buildBlocked(!isBlocked, communityHandle));
     }
   }
 
@@ -164,8 +166,8 @@ export default function useCommunityActions(community: CommunityView) {
 
   return {
     isSubscribed,
-    isFavorite,
     isBlocked,
+    isFavorite,
     post,
     subscribe,
     favorite,
