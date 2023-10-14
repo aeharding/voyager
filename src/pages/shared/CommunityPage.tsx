@@ -21,7 +21,7 @@ import { markReadOnScrollSelector } from "../../features/settings/settingsSlice"
 import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
-import useFetchCommunity from "./useFetchCommunity";
+import useFetchCommunity from "../../features/community/useFetchCommunity";
 
 export default function CommunityPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
