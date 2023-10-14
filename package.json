@@ -16,7 +16,7 @@
     "generate:splash:light": "pwa-asset-generator --type png --index index.html --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
-    "capacitor:sync:before": "rm dist/pro-manifest.json"
+    "capacitor:sync:before": "rm dist/pro-manifest.json dist/live-update-manifest.json"
   },
   "pnpm": {
     "overrides": {
