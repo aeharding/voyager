@@ -41,9 +41,9 @@ export default function CommunityLink({
 
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
     useCommunityActions({
-      blocked: c?.blocked ?? false,
+      blocked: c?.blocked || false,
       community: community,
-      subscribed: c?.subscribed ?? subscribed,
+      subscribed: subscribed || c?.subscribed || false,
     });
 
   const bind = useLongPress(
