@@ -22,11 +22,9 @@ export default function BlockedCommunities() {
     (state) => state.auth.site?.my_user?.community_blocks,
   );
 
-  const sortedCommunities = communities && communities.length > 0
-    ? [...(communities || [])].sort((a, b) =>
-      a.community.name.localeCompare(b.community.name)
-    )
-    : communities || [];
+  const sortedCommunities = communities
+    ?.slice()
+    .sort((a, b) => a.community.name.localeCompare(b.community.name));
 
   async function remove(community: CommunityBlockView) {
     setLoading(true);
@@ -67,6 +65,7 @@ export default function BlockedCommunities() {
           </InsetIonItem>
         )}
       </IonList>
+
       <IonLoading isOpen={loading} />
     </>
   );

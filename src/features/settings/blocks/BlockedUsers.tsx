@@ -22,11 +22,9 @@ export default function BlockedUsers() {
     (state) => state.auth.site?.my_user?.person_blocks,
   );
 
-  const sortedUsers = users && users.length > 0
-    ? [...users].sort((a, b) =>
-      (a.target?.name || "").localeCompare(b.target?.name || "")
-    )
-    : [];
+  const sortedUsers = users
+    ?.slice()
+    .sort((a, b) => (a.target?.name || "").localeCompare(b.target?.name || ""));
 
   async function remove(user: PersonBlockView) {
     setLoading(true);
@@ -40,7 +38,7 @@ export default function BlockedUsers() {
 
   return (
     <>
-      <ListHeader style={{ marginBottom: "20px" }} className="ion-margin-bottom">
+      <ListHeader className="ion-margin-bottom">
         <IonLabel>Blocked Users</IonLabel>
       </ListHeader>
 
