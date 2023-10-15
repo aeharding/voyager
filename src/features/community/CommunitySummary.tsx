@@ -26,6 +26,12 @@ const Title = styled.div`
   align-items: center;
 `;
 
+const StyledCommunityLink = styled(CommunityLink)`
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 const Contents = styled.div`
   display: flex;
   flex-direction: column;
@@ -62,7 +68,7 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
     <Container>
       <Contents>
         <Title>
-          <CommunityLink
+          <StyledCommunityLink
             community={community.community}
             showInstanceWhenRemote
             subscribed={community.subscribed}
