@@ -32,6 +32,8 @@ import {
   OLinkHandlerType,
   JumpButtonPositionType,
   OJumpButtonPositionType,
+  DefaultFeedType,
+  ODefaultFeedType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -91,6 +93,7 @@ interface SettingsState {
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
+    defaultFeed: DefaultFeedType | undefined;
   };
   blocks: {
     keywords: string[];
@@ -157,6 +160,7 @@ const initialState: SettingsState = {
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
+    defaultFeed: undefined,
   },
   blocks: {
     keywords: [],
@@ -254,6 +258,10 @@ export const appearanceSlice = createSlice({
     },
     setFilteredKeywords(state, action: PayloadAction<string[]>) {
       state.blocks.keywords = action.payload;
+      // Per user setting is updated in StoreProvider
+    },
+    setDefaultFeed(state, action: PayloadAction<DefaultFeedType>) {
+      state.general.defaultFeed = action.payload;
       // Per user setting is updated in StoreProvider
     },
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
@@ -382,6 +390,29 @@ export const getFilteredKeywords =
     );
   };
 
+export const getDefaultFeed =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const defaultFeed = await db.getSetting("default_feed", {
+      user_handle: userHandle,
+    });
+
+    dispatch(setDefaultFeed(defaultFeed ?? { type: ODefaultFeedType.Home }));
+  };
+
+export const updateDefaultFeed =
+  (defaultFeed: DefaultFeedType) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setDefaultFeed(defaultFeed ?? initialState.general.defaultFeed));
+
+    db.setSetting("default_feed", defaultFeed, {
+      user_handle: userHandle,
+    });
+  };
+
 export const updateFilteredKeywords =
   (filteredKeywords: string[]) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -499,6 +530,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
+          defaultFeed: initialState.general.defaultFeed,
         },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
@@ -545,6 +577,7 @@ export const {
   setEnableHapticFeedback,
   setLinkHandler,
   setPureBlack,
+  setDefaultFeed,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

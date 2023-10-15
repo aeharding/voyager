@@ -17,6 +17,7 @@ import inboxSlice from "./features/inbox/inboxSlice";
 import settingsSlice, {
   fetchSettingsFromDatabase,
   getBlurNsfw,
+  getDefaultFeed,
   getFilteredKeywords,
 } from "./features/settings/settingsSlice";
 import gestureSlice, {
@@ -63,6 +64,7 @@ const activeHandleChange = () => {
   store.dispatch(getFavoriteCommunities());
   store.dispatch(getBlurNsfw());
   store.dispatch(getFilteredKeywords());
+  store.dispatch(getDefaultFeed());
 };
 
 export function StoreProvider({ children }: { children: ReactNode }) {
