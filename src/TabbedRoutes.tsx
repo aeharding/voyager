@@ -291,7 +291,7 @@ export default function TabbedRoutes() {
                   ? getPathForFeed(
                       defaultFeed || { type: ODefaultFeedType.Home },
                     )
-                  : "all"
+                  : "/all"
               }`}
               push={false}
             />
