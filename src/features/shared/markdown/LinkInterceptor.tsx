@@ -60,7 +60,7 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
   );
 }
 
-function matchLemmyCommunity(
+export function matchLemmyCommunity(
   urlPathname: string,
 ): [string, string] | [string] | null {
   const matches = urlPathname.match(COMMUNITY_RELATIVE_URL);

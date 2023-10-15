@@ -4,9 +4,9 @@ import { visit } from "unist-util-visit";
 import remarkParse from "remark-parse";
 import CommentLink from "./CommentLink";
 import styled from "@emotion/styled";
-import buildCommunityPlugin from "../shared/markdown/buildCommunityPlugin";
-import customRemarkGfm from "../shared/markdown/customRemarkGfm";
-import { useAppSelector } from "../../store";
+import buildCommunityPlugin from "../../shared/markdown/buildCommunityPlugin";
+import customRemarkGfm from "../../shared/markdown/customRemarkGfm";
+import { useAppSelector } from "../../../store";
 import { Link, Text } from "mdast";
 
 const Container = styled.div`
@@ -36,14 +36,16 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     const communityPlugin = buildCommunityPlugin(connectedInstance);
 
     // Parse the Markdown content
-    const ast = unified()
-      .use(remarkParse as never)
-      .use([communityPlugin, customRemarkGfm])
-      .parse(markdown);
+    const processor = unified()
+      .use(remarkParse)
+      .use([communityPlugin, customRemarkGfm]);
 
-    const links: LinkData[] = [];
+    const mdastTree = processor.parse(markdown);
+    processor.runSync(mdastTree, markdown);
 
-    visit(ast, ["link", "image"], (_node) => {
+    let links: LinkData[] = [];
+
+    visit(mdastTree, ["link", "image"], (_node) => {
       const node = _node as Link;
 
       if (node.type === "link" || node.type === "image")
@@ -53,6 +55,8 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
           text: (node.children?.[0] as Text)?.value,
         });
     });
+
+    links = links.filter((link) => !link.url.startsWith("mailto:"));
 
     return links;
   }, [markdown, connectedInstance]);
