@@ -32,7 +32,7 @@ export default function MoreActions({ community }: MoreActionsProps) {
     block,
     post,
     sidebar,
-  } = useCommunityActions(community);
+  } = useCommunityActions(community.community);
 
   return (
     <>

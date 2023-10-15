@@ -54,7 +54,9 @@ interface CommunitySummaryProps {
 }
 
 export default function CommunitySummary({ community }: CommunitySummaryProps) {
-  const { isSubscribed, subscribe, view } = useCommunityActions(community);
+  const { isSubscribed, subscribe, view } = useCommunityActions(
+    community.community,
+  );
 
   return (
     <Container>

@@ -1,5 +1,5 @@
-import { CommunityView } from "lemmy-js-client";
-import { useContext, useMemo, useState } from "react";
+import { Community } from "lemmy-js-client";
+import { useContext, useMemo } from "react";
 import { PageContext } from "../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { checkIsMod, getHandle } from "../../helpers/lemmy";
@@ -24,38 +24,37 @@ import {
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useAppToast from "../../helpers/useAppToast";
 
-export default function useCommunityActions(
-  community: Pick<CommunityView, "community" | "subscribed" | "blocked">,
-) {
+export default function useCommunityActions(community: Community) {
   const presentToast = useAppToast();
 
-  // local state as source of truth for this hook
-  const [isSubscribed, setIsSubscribed] = useState(
-    community.subscribed === "Subscribed" || community.subscribed === "Pending",
-  );
-  const [isBlocked, setIsBlocked] = useState(community.blocked);
-
   const dispatch = useAppDispatch();
-  const communityHandle = getHandle(community.community);
+  const communityByHandle = useAppSelector(
+    (state) => state.community.communityByHandle,
+  );
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-
-  const site = useAppSelector((state) => state.auth.site);
-  const isAdmin = useAppSelector(isAdminSelector);
+  const [presentActionSheet] = useIonActionSheet();
 
   const { presentLoginIfNeeded } = useContext(PageContext);
   const { presentPostEditor } = useContext(PageContext);
-  const communityId = community.community.id;
-  const localUser = useAppSelector(localUserSelector);
-  const [presentActionSheet] = useIonActionSheet();
 
-  const isNsfw = community.community.nsfw;
+  const site = useAppSelector((state) => state.auth.site);
+  const isAdmin = useAppSelector(isAdminSelector);
+  const localUser = useAppSelector(localUserSelector);
+
+  const communityHandle = getHandle(community);
+  const communityId = community.id;
+  const isNsfw = community.nsfw;
+
+  const isSubscribed =
+    communityByHandle[communityHandle]?.subscribed !== "NotSubscribed";
+
+  const isBlocked = communityByHandle[communityHandle]?.blocked;
 
   const canPost = useMemo(() => {
     const isMod = site ? checkIsMod(communityHandle, site) : false;
 
-    const canPost =
-      !community.community.posting_restricted_to_mods || isMod || isAdmin;
+    const canPost = !community.posting_restricted_to_mods || isMod || isAdmin;
 
     return canPost;
   }, [community, communityHandle, isAdmin, site]);
@@ -84,21 +83,15 @@ export default function useCommunityActions(
     presentPostEditor(communityHandle);
   }
 
-  async function _subscribe() {
-    await dispatch(followCommunity(!isSubscribed, communityId));
-    setIsSubscribed(!isSubscribed);
-  }
-
   async function _block() {
     await dispatch(blockCommunity(!isBlocked, communityId));
-    setIsBlocked(!isBlocked);
   }
 
   async function subscribe() {
     if (presentLoginIfNeeded()) return;
 
     try {
-      await _subscribe();
+      await dispatch(followCommunity(!isSubscribed, communityId));
       presentToast(buildSuccessSubscribing(isSubscribed, communityHandle));
     } catch (error) {
       presentToast(buildProblemSubscribing(isSubscribed, communityHandle));
