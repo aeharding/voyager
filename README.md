@@ -16,7 +16,7 @@ A mobile-first Lemmy web client
 <a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;
 </p>
 <p align="center">
-  <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat&logo=matrix" alt="matrix chat"></a>
+  <a href="https://f-droid.org/en/packages/app.vger.voyager/"><img src="https://img.shields.io/f-droid/v/app.vger.voyager.svg?style=flat-square&logo=F-Droid" alt="matrix chat"></a> <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat-square&logo=matrix" alt="matrix chat"></a>
 </p>
 <br/>
 
@@ -54,7 +54,6 @@ Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [L
 - More customization
 - Native notifications and badging
 - Mod features
-- Native apps
 - Translations
 - ...and more!
 
@@ -204,7 +203,9 @@ BUILD=123; npx release-it
 
 Make sure the build number is incremental. This is used for F-droid.
 
-Voyager uses [Ionic App Flow](https://ionic.io/appflow) for Apple App Store and Android Play Store builds. Unfortunately, there's no way to provide public access to build logs and artifacts. Hopefully someday. :-)
+Voyager uses [Ionic App Flow](https://ionic.io/appflow) for Apple App Store and Android Play Store builds. Those builds are initiated and monitored by Github Actions, where logs may be inspected.
+
+**Voyager's Android and iOS builds are reproducible**! In fact, [F-droid independently builds Voyager](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/app.vger.voyager.yml) and verifies the same compiled APK is provided in Github Releases.
 
 ## 📲 PWA
 
