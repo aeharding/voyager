@@ -77,7 +77,7 @@ export default function CommunityPage() {
               <TitleSearch name={community}>
                 <IonButtons slot="end">
                   <PostSort />
-                  {communityView && <MoreActions community={communityView} />}
+                  <MoreActions community={communityView} />
                 </IonButtons>
               </TitleSearch>
             </IonToolbar>

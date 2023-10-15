@@ -9,7 +9,7 @@ import ItemIcon from "../../labels/img/ItemIcon";
 import { ActionButton } from "../../post/actions/ActionButton";
 import { addFavorite, removeFavorite } from "../communitySlice";
 import { star } from "ionicons/icons";
-import { ToggleIcon } from "../../../components/ToggleIcon";
+import { ToggleIcon } from "../ToggleIcon";
 
 export default function CommunityListItem({
   community,

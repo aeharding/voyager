@@ -44,18 +44,24 @@ export default function CommunityLink({
             text: `${isBlocked ? "Unblock" : "Block"} Community`,
             icon: removeCircleOutline,
             role: "destructive",
-            handler: block,
+            handler: () => {
+              block();
+            },
           },
           {
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
             icon: !isSubscribed ? heartOutline : heartDislikeOutline,
-            handler: subscribe,
+            handler: () => {
+              subscribe();
+            },
           },
           {
             text: "Sidebar",
             data: "sidebar",
             icon: tabletPortraitOutline,
-            handler: sidebar,
+            handler: () => {
+              sidebar();
+            },
           },
           {
             text: "Cancel",

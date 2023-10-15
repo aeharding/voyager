@@ -7,7 +7,7 @@ import Ago from "../labels/Ago";
 import InlineMarkdown from "../shared/InlineMarkdown";
 import { heart } from "ionicons/icons";
 import { ActionButton } from "../post/actions/ActionButton";
-import { ToggleIcon } from "../../components/ToggleIcon";
+import { ToggleIcon } from "./ToggleIcon";
 import useCommunityActions from "./useCommunityActions";
 
 const Container = styled(IonItem)`
