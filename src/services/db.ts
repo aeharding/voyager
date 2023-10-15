@@ -239,6 +239,7 @@ export type SettingValueTypes = {
   filtered_keywords: string[];
   highlight_new_account: boolean;
   default_feed: DefaultFeedType;
+  touch_friendly_links: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

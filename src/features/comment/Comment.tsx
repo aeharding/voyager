@@ -279,7 +279,10 @@ export default function Comment({
                     if (e.target.nodeName === "A") e.stopPropagation();
                   }}
                 >
-                  <CommentContent item={comment} />
+                  <CommentContent
+                    item={comment}
+                    showTouchFriendlyLinks={!context}
+                  />
                   {context}
                 </Content>
               </AnimateHeight>

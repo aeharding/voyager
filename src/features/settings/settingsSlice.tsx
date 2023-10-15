@@ -85,6 +85,7 @@ interface SettingsState {
       showJumpButton: boolean;
       jumpButtonPosition: JumpButtonPositionType;
       highlightNewAccount: boolean;
+      touchFriendlyLinks: boolean;
     };
     posts: {
       disableMarkingRead: boolean;
@@ -152,6 +153,7 @@ const initialState: SettingsState = {
       showJumpButton: false,
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
       highlightNewAccount: true,
+      touchFriendlyLinks: true,
     },
     posts: {
       disableMarkingRead: false,
@@ -247,6 +249,10 @@ export const appearanceSlice = createSlice({
     setHighlightNewAccount(state, action: PayloadAction<boolean>) {
       state.general.comments.highlightNewAccount = action.payload;
       db.setSetting("highlight_new_account", action.payload);
+    },
+    setTouchFriendlyLinks(state, action: PayloadAction<boolean>) {
+      state.general.comments.touchFriendlyLinks = action.payload;
+      db.setSetting("touch_friendly_links", action.payload);
     },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
@@ -467,6 +473,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const link_handler = await db.getSetting("link_handler");
       const filtered_keywords = await db.getSetting("filtered_keywords");
+      const touch_friendly_links = await db.getSetting("touch_friendly_links");
 
       return {
         ...state.settings,
@@ -515,6 +522,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             highlightNewAccount:
               highlight_new_account ??
               initialState.general.comments.highlightNewAccount,
+            touchFriendlyLinks:
+              touch_friendly_links ??
+              initialState.general.comments.touchFriendlyLinks,
           },
           posts: {
             disableMarkingRead:
@@ -558,6 +568,7 @@ export const {
   setShowJumpButton,
   setJumpButtonPosition,
   setHighlightNewAccount,
+  setTouchFriendlyLinks,
   setNsfwBlur,
   setFilteredKeywords,
   setPostAppearance,

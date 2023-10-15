@@ -61,7 +61,7 @@ export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
         <StyledAgo date={payload.published} />
       </Header>
       <CommentContentWrapper onTouchMoveCapture={stopPropagationIfNeeded}>
-        <CommentContent item={payload} />
+        <CommentContent item={payload} showTouchFriendlyLinks={false} />
       </CommentContentWrapper>
     </Container>
   );
