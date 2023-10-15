@@ -93,7 +93,7 @@ export default function Feed<I>({
       } else {
         setitems((existingPosts) => {
           const result = [...existingPosts];
-          const newPosts = pullAllBy(items.slice(), existingPosts, "post.id");
+          const newPosts = pullAllBy(items.slice(), existingPosts, getIndex);
           result.splice(currentPage * limit, limit, ...newPosts);
           return result;
         });
@@ -103,7 +103,7 @@ export default function Feed<I>({
 
       setPage(currentPage);
     },
-    [atEnd, fetchFn, limit, loading, page],
+    [atEnd, fetchFn, limit, loading, page, getIndex],
   );
 
   const { onScroll } = useFeedOnScroll({ fetchMore });

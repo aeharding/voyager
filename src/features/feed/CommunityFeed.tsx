@@ -12,5 +12,9 @@ export default function CommunityFeed({ ...rest }: PostCommentFeed) {
     [],
   );
 
-  return <Feed renderItemContent={renderItemContent} {...rest} />;
+  return (
+    <Feed renderItemContent={renderItemContent} getIndex={getIndex} {...rest} />
+  );
 }
+
+const getIndex = (item: CommunityView) => item.community.id;

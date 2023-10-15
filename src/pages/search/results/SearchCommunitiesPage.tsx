@@ -14,11 +14,12 @@ import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
 import PostSort from "../../../features/feed/PostSort";
-import { useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { CommunityView, LemmyHttp } from "lemmy-js-client";
 import CommunityFeed from "../../../features/feed/CommunityFeed";
 import { jwtSelector } from "../../../features/auth/authSlice";
 import { notEmpty } from "../../../helpers/array";
+import { receivedCommunities } from "../../../features/community/communitySlice";
 
 export default function SearchCommunitiesPage() {
   const { search: _encodedSearch } = useParams<{ search: string }>();
@@ -26,6 +27,7 @@ export default function SearchCommunitiesPage() {
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
   const jwt = useAppSelector(jwtSelector);
+  const dispatch = useAppDispatch();
 
   const search = decodeURIComponent(_encodedSearch);
 
@@ -45,9 +47,11 @@ export default function SearchCommunitiesPage() {
         auth: jwt,
       });
 
+      dispatch(receivedCommunities(response.communities));
+
       return response.communities;
     },
-    [client, search, sort, jwt],
+    [client, search, sort, jwt, dispatch],
   );
 
   return (

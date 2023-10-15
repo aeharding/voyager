@@ -32,6 +32,12 @@ export const communitySlice = createSlice({
       state.communityByHandle[getHandle(action.payload.community)] =
         action.payload;
     },
+    receivedCommunities: (state, action: PayloadAction<CommunityView[]>) => {
+      for (const communityView of action.payload) {
+        state.communityByHandle[getHandle(communityView.community)] =
+          communityView;
+      }
+    },
     recievedTrendingCommunities: (
       state,
       action: PayloadAction<CommunityView[]>,
@@ -57,6 +63,7 @@ export const communitySlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   receivedCommunity,
+  receivedCommunities,
   recievedTrendingCommunities,
   resetCommunities,
   setFavorites,
