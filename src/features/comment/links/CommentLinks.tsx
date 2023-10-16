@@ -8,6 +8,7 @@ import buildCommunityPlugin from "../../shared/markdown/buildCommunityPlugin";
 import customRemarkGfm from "../../shared/markdown/customRemarkGfm";
 import { useAppSelector } from "../../../store";
 import { Link, Text } from "mdast";
+import { uniqBy } from "lodash";
 
 const Container = styled.div`
   display: flex;
@@ -56,7 +57,14 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
         });
     });
 
+    // Remove mailto
     links = links.filter((link) => !link.url.startsWith("mailto:"));
+
+    // Dedupe by url
+    links = uniqBy(links, (l) => l.url);
+
+    // Max 4 links
+    links = links.slice(0, 4);
 
     return links;
   }, [markdown, connectedInstance]);
