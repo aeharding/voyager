@@ -5,17 +5,23 @@ import { isUrlImage } from "../../helpers/url";
 
 export interface PostGalleryImgProps extends Omit<GalleryImgProps, "src"> {
   post: PostView;
+  thumbnail?: boolean;
 }
 
 export default function PostGalleryImg({
   post,
+  thumbnail = false,
   ...props
 }: PostGalleryImgProps) {
-  return <GalleryImg {...props} src={getPostImage(post)} post={post} />;
+  return (
+    <GalleryImg {...props} src={getPostImage(post, thumbnail)} post={post} />
+  );
 }
 
-function getPostImage(post: PostView): string | undefined {
-  if (post.post.thumbnail_url) return post.post.thumbnail_url;
+function getPostImage(post: PostView, thumbnail: boolean): string | undefined {
+  if (thumbnail && post.post.thumbnail_url) {
+    return post.post.thumbnail_url;
+  }
 
   if (post.post.url && isUrlImage(post.post.url)) return post.post.url;
 

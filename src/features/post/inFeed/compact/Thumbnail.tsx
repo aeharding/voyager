@@ -162,7 +162,7 @@ export default function Thumbnail({ post }: ImgProps) {
     }
 
     if (postImageSrc) {
-      return <StyledPostGallery post={post} blur={nsfw} />;
+      return <StyledPostGallery post={post} blur={nsfw} thumbnail />;
     }
 
     return <SelfSvg />;
