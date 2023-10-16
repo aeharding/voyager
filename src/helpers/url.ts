@@ -22,26 +22,38 @@ export function isValidUrl(
 const urlTransformations: { [website: string]: RegExp } = {
   "streamable.com": /(https:\/\/streamable.com\/)([a-zA-Z0-9]+)/,
   "piped.video": /(https:\/\/piped\.video\/watch\?v=)([a-zA-Z0-9_-]+)/,
-  "youtube.com": /(https:\/\/www.youtube.com\/watch\?v=)([a-zA-Z0-9_-]+)/,
+  "youtube.com":
+    /(https:\/\/(?:www|m)\.youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+).*$/,
+  "youtu.be": /(https:\/\/youtu\.be\/)([a-zA-Z0-9_-]+)/,
   // Add more websites and patterns as needed
 };
 
 // Transform known video platform urls into their embed counterparts
 export const transformUrl = (inputUrl: string): string => {
-  for (const website in urlTransformations) {
-    if (inputUrl.match(urlTransformations[website])) {
-      return inputUrl.replace(urlTransformations[website], (match, p1, p2) => {
-        if (website === "streamable.com") {
-          return `${p1}e/${p2}?quality=highest`;
-        } else if (website === "piped.video") {
-          return `${p1}${p2}`;
-        } else if (website === "youtube.com") {
-          return `https://www.youtube.com/embed/${p2}/`;
-        }
-      });
-    }
+  const matchedWebsite = Object.keys(urlTransformations).find((website) =>
+    inputUrl.match(urlTransformations[website]),
+  );
+
+  if (!matchedWebsite) {
+    return inputUrl; // No matching pattern found, return input URL
   }
-  return inputUrl; // Return the input URL if no matching pattern is found
+
+  return inputUrl.replace(
+    urlTransformations[matchedWebsite],
+    (_match, p1, p2) => {
+      if (matchedWebsite === "streamable.com") {
+        return `${p1}e/${p2}?quality=highest`;
+      }
+      if (matchedWebsite === "piped.video") {
+        return `${p1}${p2}`;
+      }
+      if (matchedWebsite === "youtube.com" || matchedWebsite === "youtu.be") {
+        return `https://www.youtube.com/embed/${p2}/`;
+      }
+
+      return inputUrl; // Fallback to the input URL
+    },
+  );
 };
 
 const parseUrl = (url: string): URL | null => {
