@@ -24,7 +24,7 @@ export default function BlockedUsers() {
 
   const sortedUsers = users
     ?.slice()
-    .sort((a, b) => (a.target?.name || "").localeCompare(b.target?.name || ""));
+    .sort((a, b) => a.target.name.localeCompare(b.target.name));
 
   async function remove(user: PersonBlockView) {
     setLoading(true);
@@ -38,11 +38,11 @@ export default function BlockedUsers() {
 
   return (
     <>
-      <ListHeader className="ion-margin-bottom">
+      <ListHeader>
         <IonLabel>Blocked Users</IonLabel>
       </ListHeader>
 
-      <IonList inset key="blocked_users">
+      <IonList inset>
         {sortedUsers?.length ? (
           sortedUsers.map((user) => (
             <IonItemSliding key={user.target.id}>
