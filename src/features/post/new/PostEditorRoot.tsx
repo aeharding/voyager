@@ -272,7 +272,9 @@ export default function PostEditorRoot({
 
     presentToast({
       message: existingPost ? "Post edited!" : "Post created!",
-      color: "success",
+      color: "primary",
+      position: "top",
+      centerText: true,
       fullscreen: true,
     });
 
