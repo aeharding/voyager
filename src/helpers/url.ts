@@ -30,30 +30,30 @@ const urlTransformations: { [website: string]: RegExp } = {
 
 // Transform known video platform urls into their embed counterparts
 export const transformUrl = (inputUrl: string): string => {
+  // If the URL contains gifv replace it with mp4 in order for the video to play inline
+  const url = inputUrl.replace(/\.gifv/g, ".mp4");
+
   const matchedWebsite = Object.keys(urlTransformations).find((website) =>
-    inputUrl.match(urlTransformations[website]),
+    url.match(urlTransformations[website]),
   );
 
   if (!matchedWebsite) {
-    return inputUrl; // No matching pattern found, return input URL
+    return url; // No matching pattern found, return input URL
   }
 
-  return inputUrl.replace(
-    urlTransformations[matchedWebsite],
-    (_match, p1, p2) => {
-      if (matchedWebsite === "streamable.com") {
-        return `${p1}e/${p2}?quality=highest`;
-      }
-      if (matchedWebsite === "piped.video") {
-        return `${p1}${p2}`;
-      }
-      if (matchedWebsite === "youtube.com" || matchedWebsite === "youtu.be") {
-        return `https://www.youtube.com/embed/${p2}/`;
-      }
+  return url.replace(urlTransformations[matchedWebsite], (_match, p1, p2) => {
+    if (matchedWebsite === "streamable.com") {
+      return `${p1}e/${p2}?quality=highest`;
+    }
+    if (matchedWebsite === "piped.video") {
+      return `${p1}${p2}`;
+    }
+    if (matchedWebsite === "youtube.com" || matchedWebsite === "youtu.be") {
+      return `https://www.youtube.com/embed/${p2}/`;
+    }
 
-      return inputUrl; // Fallback to the input URL
-    },
-  );
+    return url; // Fallback to the input URL
+  });
 };
 
 const parseUrl = (url: string): URL | null => {
