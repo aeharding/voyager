@@ -13,6 +13,7 @@ import { css } from "@emotion/react";
 
 const Container = styled.div`
   display: flex;
+  align-items: center;
   flex: 1;
   gap: 8px;
   min-width: 0;

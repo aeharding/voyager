@@ -1,3 +1,4 @@
+import { checkmark } from "ionicons/icons";
 import { AppToastOptions } from "./useAppToast";
 
 export const voteError: AppToastOptions = {
@@ -8,6 +9,14 @@ export const voteError: AppToastOptions = {
 export const downvotesDisabled: AppToastOptions = {
   message: "Downvotes have been disabled by your server admins.",
   color: "warning",
+};
+
+export const saveSuccess: AppToastOptions = {
+  message: "Saved!",
+  color: "primary",
+  position: "top",
+  icon: checkmark,
+  centerText: true,
 };
 
 export const saveError: AppToastOptions = {

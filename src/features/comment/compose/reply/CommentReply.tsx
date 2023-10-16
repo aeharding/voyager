@@ -100,7 +100,10 @@ export default function CommentReply({
 
     presentToast({
       message: "Comment posted!",
-      color: "success",
+      color: "primary",
+      position: "top",
+      centerText: true,
+      fullscreen: true,
     });
 
     dispatch(receivedComments([reply.comment_view]));

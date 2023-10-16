@@ -24,7 +24,7 @@ import {
   savePost,
   voteOnPost,
 } from "../../post/postSlice";
-import { voteError } from "../../../helpers/toastMessages";
+import { saveSuccess, voteError } from "../../../helpers/toastMessages";
 import { saveComment, voteOnComment } from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
@@ -164,6 +164,8 @@ function BaseSlidingVoteInternal({
     if (presentLoginIfNeeded()) return;
     try {
       await dispatch((isPost ? savePost : saveComment)(id, !isSaved));
+
+      if (!isSaved) presentToast(saveSuccess);
     } catch (error) {
       presentToast({
         message: "Failed to mark item as saved",

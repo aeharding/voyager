@@ -5,7 +5,7 @@ export function baseToastOptions(
   presentAlongsideAppBars = true,
 ): ToastOptions {
   const BASE = {
-    duration: 3500,
+    duration: 3000,
   };
 
   switch (position) {
@@ -14,7 +14,7 @@ export function baseToastOptions(
         ...BASE,
         position: "bottom",
         positionAnchor: presentAlongsideAppBars
-          ? document.querySelector("ion-tab-bar") ?? undefined
+          ? document.querySelector("ion-tab-bar") || undefined
           : undefined,
       };
     case "top":
@@ -22,7 +22,9 @@ export function baseToastOptions(
         ...BASE,
         position: "top",
         positionAnchor: presentAlongsideAppBars
-          ? document.querySelector("ion-header") ?? undefined
+          ? (document.querySelector(
+              "ion-router-outlet > .ion-page:not(.ion-page-hidden) ion-header",
+            ) as HTMLElement) || undefined
           : undefined,
       };
   }

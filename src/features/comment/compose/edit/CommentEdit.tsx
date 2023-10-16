@@ -58,7 +58,10 @@ export default function CommentEdit({
 
     presentToast({
       message: "Comment edited!",
-      color: "success",
+      color: "primary",
+      position: "top",
+      centerText: true,
+      fullscreen: true,
     });
 
     setCanDismiss(true);
