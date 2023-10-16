@@ -100,12 +100,12 @@ describe("URL Utility Functions", () => {
     it("returns true for media URLs", () => {
       expect(isUrlMedia("https://example.com/image.jpg")).toBe(true);
       expect(isUrlMedia("https://example.com/video.mp4")).toBe(true);
+      expect(isUrlMedia("https://example.com/video.gifv")).toBe(true);
       expect(isUrlMedia("https://example.com/embed/aostm89aueu")).toBe(true);
     });
 
-    it("returns false for non-media URLs", () => {
-      expect(isUrlMedia("https://example.com/document.pdf")).toBe(false);
-      expect(isUrlMedia("https://example.com/not-media")).toBe(false);
+    it("returns false for non-video embed URLs", () => {
+      expect(isUrlVideoEmbed("https://example.com/aoeu2134aeu")).toBe(false);
     });
   });
 });

@@ -120,5 +120,10 @@ export const isUrlMedia = (url: string): boolean => {
     return false;
   }
 
-  return isUrlImage(url) || isUrlVideo(url) || isUrlVideoEmbed(url);
+  const transformedUrl = transformUrl(url);
+  return (
+    isUrlImage(transformedUrl) ||
+    isUrlVideo(transformedUrl) ||
+    isUrlVideoEmbed(transformedUrl)
+  );
 };
