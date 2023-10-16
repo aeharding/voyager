@@ -116,5 +116,9 @@ export const isUrlVideoEmbed = (url: string): boolean => {
 };
 
 export const isUrlMedia = (url: string): boolean => {
+  if (!url || url === "") {
+    return false;
+  }
+
   return isUrlImage(url) || isUrlVideo(url) || isUrlVideoEmbed(url);
 };
