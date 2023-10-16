@@ -160,3 +160,11 @@ ion-fab.fab-vertical-top {
 .ion-page {
   overflow: hidden;
 }
+
+/* Center toast message and icon */
+ion-toast.center::part(container) {
+  display: inline-flex;
+  transform: translateX(-50%);
+  left: 50%;
+  position: relative;
+}

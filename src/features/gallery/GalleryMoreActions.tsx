@@ -16,7 +16,7 @@ import { PageContext } from "../auth/PageContext";
 import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { savePost } from "../post/postSlice";
-import { saveError } from "../../helpers/toastMessages";
+import { saveError, saveSuccess } from "../../helpers/toastMessages";
 import { Browser } from "@capacitor/browser";
 import { ActionButton } from "../post/actions/ActionButton";
 import { StashMedia } from "capacitor-stash-media";
@@ -146,6 +146,8 @@ export default function GalleryMoreActions({
 
               try {
                 await dispatch(savePost(post.post.id, !mySaved));
+
+                if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
                 presentToast(saveError);
 

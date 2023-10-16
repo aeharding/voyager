@@ -5,7 +5,7 @@ export function baseToastOptions(
   presentAlongsideAppBars = true,
 ): ToastOptions {
   const BASE = {
-    duration: 3500,
+    duration: 3000,
   };
 
   switch (position) {

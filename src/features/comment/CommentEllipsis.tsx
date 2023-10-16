@@ -24,7 +24,7 @@ import {
   share,
 } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { saveError, voteError } from "../../helpers/toastMessages";
+import { saveError, saveSuccess, voteError } from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
 import { handleSelector, isDownvoteEnabledSelector } from "../auth/authSlice";
@@ -134,6 +134,8 @@ export default function MoreActions({
 
               try {
                 await dispatch(saveComment(comment.id, !mySaved));
+
+                if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
                 presentToast(saveError);
               }

@@ -7,7 +7,7 @@ import { savePost } from "../postSlice";
 import { css } from "@emotion/react";
 import { bookmarkOutline } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
-import { saveError } from "../../../helpers/toastMessages";
+import { saveError, saveSuccess } from "../../../helpers/toastMessages";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import useAppToast from "../../../helpers/useAppToast";
@@ -47,7 +47,9 @@ export function SaveButton({ postId }: SaveButtonProps) {
     if (presentLoginIfNeeded()) return;
 
     try {
-      await dispatch(savePost(postId, !postSavedById[postId]));
+      await dispatch(savePost(postId, !mySaved));
+
+      if (!mySaved) presentToast(saveSuccess);
     } catch (error) {
       presentToast(saveError);
 

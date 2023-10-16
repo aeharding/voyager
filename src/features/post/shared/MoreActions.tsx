@@ -35,7 +35,11 @@ import { getHandle, getRemoteHandle, share } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
-import { saveError, voteError } from "../../../helpers/toastMessages";
+import {
+  saveError,
+  saveSuccess,
+  voteError,
+} from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
 import {
   handleSelector,
@@ -132,6 +136,8 @@ export default function MoreActions({
 
               try {
                 await dispatch(savePost(post.post.id, !mySaved));
+
+                if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
                 presentToast(saveError);
 

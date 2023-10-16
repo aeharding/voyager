@@ -9,6 +9,8 @@ export interface AppToastOptions {
   message: string;
   color?: Color;
   position?: "top" | "bottom";
+  icon?: string;
+  centerText?: boolean;
   fullscreen?: boolean;
 }
 
@@ -39,6 +41,8 @@ export default function useAppToast() {
       present({
         message: options.message,
         color: options.color ?? "primary",
+        icon: options.icon,
+        cssClass: options.centerText ? "center" : "",
         ...baseToastOptions(options.position ?? "bottom", !options.fullscreen),
       });
     },
