@@ -74,7 +74,8 @@ export const isUrlVideo = (url: string): boolean => {
 
   if (parsedUrl) {
     // Check if the URL contains ".mp4" in its pathname
-    return parsedUrl.pathname.toLowerCase().includes(".mp4");
+    url = parsedUrl.pathname.toLowerCase();
+    return url.includes(".mp4") || url.includes(".mov");
   }
 
   return false;
