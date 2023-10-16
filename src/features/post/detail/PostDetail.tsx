@@ -23,17 +23,15 @@ import ViewAllComments from "./ViewAllComments";
 import InlineMarkdown from "../../shared/InlineMarkdown";
 import { megaphone } from "ionicons/icons";
 import CommunityLink from "../../labels/links/CommunityLink";
-import Video from "../../shared/Video";
-import { css } from "@emotion/react";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { PageContext } from "../../auth/PageContext";
-import PostGalleryImg from "../../gallery/PostGalleryImg";
 import { scrollIntoView } from "../../../helpers/dom";
 import JumpFab from "../../comment/JumpFab";
 import { OTapToCollapseType } from "../../../services/db";
 import Locked from "./Locked";
 import useAppToast from "../../../helpers/useAppToast";
 import { postLocked } from "../../../helpers/toastMessages";
+import Media from "../../shared/Media";
 import { isUrlMedia } from "../../../helpers/url";
 
 const BorderlessIonItem = styled(IonItem)`
@@ -55,19 +53,6 @@ export const CenteredSpinner = styled(IonSpinner)`
 const Container = styled.div`
   margin: 0 0 16px;
   width: 100%;
-`;
-
-const lightboxCss = css`
-  width: 100%;
-  max-height: 50vh;
-  object-fit: contain;
-  background: var(--lightroom-bg);
-`;
-
-const LightboxImg = styled(PostGalleryImg)`
-  -webkit-touch-callout: default;
-
-  ${lightboxCss}
 `;
 
 const StyledMarkdown = styled(Markdown)`
@@ -127,6 +112,7 @@ export default function PostDetail({
   sort,
 }: PostDetailProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [hasMediaError, setHasMediaError] = useState(false);
   const dispatch = useAppDispatch();
   const markdownLoneImage = useMemo(
     () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
@@ -170,21 +156,6 @@ export default function PostDetail({
     [],
   );
 
-  function renderImage() {
-    if (!post) return;
-
-    if (post.post.url && isUrlImage(post.post.url)) {
-      return <LightboxImg post={post} />;
-    }
-
-    const videoUrl = post.post.embed_video_url || post.post.url;
-    if (videoUrl && isUrlVideo(videoUrl)) {
-      return <Video src={videoUrl} css={lightboxCss} controls />;
-    }
-
-    if (markdownLoneImage) return <LightboxImg post={post} />;
-  }
-
   function renderText() {
     if (!post) return;
 
@@ -226,7 +197,16 @@ export default function PostDetail({
           }}
         >
           <Container>
-            <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
+            {!hasMediaError && (
+              <div onClick={(e) => e.stopPropagation()}>
+                <Media
+                  post={post}
+                  detail={true}
+                  blur={false}
+                  onError={() => setHasMediaError(true)}
+                />
+              </div>
+            )}
             <PostDeets>
               <Title ref={titleRef}>
                 <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}

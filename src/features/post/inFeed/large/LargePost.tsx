@@ -1,10 +1,9 @@
+import { useState } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { megaphone } from "ionicons/icons";
 import PreviewStats from "../PreviewStats";
 import Embed from "../../shared/Embed";
-import { useMemo } from "react";
-import { findLoneImage } from "../../../../helpers/markdown";
 import { maxWidthCss } from "../../../shared/AppContent";
 import Nsfw, { isNsfw, isNsfwBlurred } from "../../../labels/Nsfw";
 import { VoteButton } from "../../shared/VoteButton";
@@ -13,12 +12,11 @@ import PersonLink from "../../../labels/links/PersonLink";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
 import { AnnouncementIcon } from "../../../../pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
-import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
-import { Image } from "./Image";
 import { useAppSelector } from "../../../../store";
-import { isUrlVideo, isUrlImage } from "../../../../helpers/url";
+import Media from "../../../shared/Media";
+import { isUrlMedia } from "../../../../helpers/url";
 
 const Container = styled.div`
   display: flex;
@@ -98,66 +96,16 @@ const PostBody = styled.div<{ isRead: boolean }>`
   overflow: hidden;
 `;
 
-const ImageContainer = styled.div`
-  overflow: hidden;
-  margin: 0 -0.75rem;
-`;
-
 export default function LargePost({ post, communityMode }: PostProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
-  const markdownLoneImage = useMemo(
-    () => (post.post.body ? findLoneImage(post.post.body) : undefined),
-    [post],
-  );
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,
   );
+  const [hasMediaError, setHasMediaError] = useState(false);
 
   function renderPostBody() {
-    if (post.post.url && isUrlImage(post.post.url)) {
-      return (
-        <ImageContainer>
-          <Image
-            blur={isNsfwBlurred(post, blurNsfw)}
-            post={post}
-            animationType="zoom"
-          />
-        </ImageContainer>
-      );
-    }
-
-    /**
-     * The lemmy api returns an embed_video_url for some urls, try loading those here
-     */
-    const videoUrl = post.post.embed_video_url || post.post.url;
-    if (videoUrl && isUrlVideo(videoUrl)) {
-      return (
-        <ImageContainer>
-          <Video src={videoUrl} blur={isNsfwBlurred(post, blurNsfw)} />
-        </ImageContainer>
-      );
-    }
-
-    if (markdownLoneImage)
-      return (
-        <ImageContainer>
-          <Image
-            blur={isNsfwBlurred(post, blurNsfw)}
-            post={post}
-            animationType="zoom"
-          />
-        </ImageContainer>
-      );
-
-    /**
-     * Embedded video, image with a thumbanil
-     */
-    if (post.post.thumbnail_url && post.post.url) {
-      return <Embed post={post} />;
-    }
-
     /**
      * text image with captions
      */
@@ -185,7 +133,16 @@ export default function LargePost({ post, communityMode }: PostProps) {
         {isNsfw(post) && <Nsfw />}
       </Title>
 
-      {renderPostBody()}
+      {!hasMediaError &&
+      isUrlMedia(post.post.embed_video_url || post.post.url || "") ? (
+        <Media
+          post={post}
+          blur={isNsfwBlurred(post, blurNsfw)}
+          onError={() => setHasMediaError(true)}
+        />
+      ) : (
+        renderPostBody()
+      )}
 
       <Details>
         <LeftDetails isRead={hasBeenRead}>
