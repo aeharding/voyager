@@ -70,7 +70,14 @@ const Media = ({ post, detail = false, blur = true, onError }: MediaProps) => {
   const postWithUrl = { ...post, post: { ...post.post, url: url } };
 
   if (postUrl && isUrlImage(postUrl)) {
-    return <Image blur={blur} post={postWithUrl} animationType="zoom" />;
+    return (
+      <Image
+        blur={blur}
+        post={postWithUrl}
+        animationType="zoom"
+        onError={handleMediaError}
+      />
+    );
   }
 
   if (isVideo) {
@@ -100,7 +107,14 @@ const Media = ({ post, detail = false, blur = true, onError }: MediaProps) => {
   }
 
   if (markdownLoneImage)
-    return <Image blur={blur} post={postWithUrl} animationType="zoom" />;
+    return (
+      <Image
+        blur={blur}
+        post={postWithUrl}
+        animationType="zoom"
+        onError={handleMediaError}
+      />
+    );
 };
 
 export default Media;

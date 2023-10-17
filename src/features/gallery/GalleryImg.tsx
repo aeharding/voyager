@@ -1,4 +1,10 @@
-import React, { FocusEvent, KeyboardEvent, useContext, useRef } from "react";
+import React, {
+  FocusEvent,
+  KeyboardEvent,
+  ReactEventHandler,
+  useContext,
+  useRef,
+} from "react";
 import "photoswipe/dist/photoswipe.css";
 import { PostView } from "lemmy-js-client";
 import { GalleryContext } from "./GalleryProvider";
@@ -10,6 +16,7 @@ export interface GalleryImgProps {
   className?: string;
   post?: PostView;
   animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"];
+  onError?: ReactEventHandler<HTMLImageElement> | undefined;
 }
 
 /**
@@ -28,6 +35,7 @@ export function GalleryImg({
   className,
   post,
   animationType,
+  onError,
 }: GalleryImgProps) {
   const loaded = useRef(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -53,6 +61,7 @@ export function GalleryImg({
 
         loaded.current = true;
       }}
+      onError={onError}
     />
   );
 }
