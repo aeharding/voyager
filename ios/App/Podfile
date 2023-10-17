@@ -21,7 +21,7 @@ def capacitor_pods
   pod 'CapacitorAndroidNavMode', :path => '../../node_modules/.pnpm/capacitor-android-nav-mode@0.0.1_@capacitor+core@5.2.3/node_modules/capacitor-android-nav-mode'
   pod 'CapacitorApplicationContext', :path => '../../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.2.3/node_modules/capacitor-application-context'
   pod 'CapacitorPluginSafeArea', :path => '../../node_modules/.pnpm/capacitor-plugin-safe-area@2.0.5_@capacitor+core@5.2.3/node_modules/capacitor-plugin-safe-area'
-  pod 'CapacitorStashMedia', :path => '../../node_modules/.pnpm/capacitor-stash-media@0.0.6_@capacitor+core@5.2.3/node_modules/capacitor-stash-media'
+  pod 'CapacitorStashMedia', :path => '../../node_modules/.pnpm/capacitor-stash-media@0.0.7_@capacitor+core@5.2.3/node_modules/capacitor-stash-media'
 end
 
 target 'App' do
