@@ -19,6 +19,7 @@ interface PersonLinkProps {
   distinguished?: boolean;
   showInstanceWhenRemote?: boolean;
   prefix?: string;
+  showBadge?: boolean;
 
   className?: string;
 }
@@ -30,6 +31,7 @@ export default function PersonLink({
   className,
   showInstanceWhenRemote,
   prefix,
+  showBadge = true,
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
@@ -68,7 +70,7 @@ export default function PersonLink({
         item={person}
         showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
       />
-      <AgeBadge published={person.published} />
+      {showBadge && <AgeBadge published={person.published} />}
     </StyledLink>
   );
 }
