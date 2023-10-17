@@ -36,8 +36,10 @@ interface MediaProps {
 const Media = ({ post, detail = false, blur = true, onError }: MediaProps) => {
   const postUrl = transformUrl(post.post.url || "");
   const embedVideoUrl = transformUrl(post.post.embed_video_url || "");
+  const thumbnailUrl = transformUrl(post.post.thumbnail_url || "");
   const [url, setUrl] = useState(embedVideoUrl || postUrl);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const isImage = isUrlImage(url as string);
   const isVideo = isUrlVideo(url as string);
   const isVideoEmbed = isUrlVideoEmbed(url as string);
 
@@ -51,6 +53,12 @@ const Media = ({ post, detail = false, blur = true, onError }: MediaProps) => {
     if (isVideo && url === embedVideoUrl) {
       return setUrl(postUrl);
     }
+
+    // Cycle the image url before throwing an error
+    if (isImage && url === postUrl) {
+      return setUrl(thumbnailUrl);
+    }
+
     onError();
   };
 
@@ -58,8 +66,11 @@ const Media = ({ post, detail = false, blur = true, onError }: MediaProps) => {
     return;
   }
 
+  // Change the url as we need
+  const postWithUrl = { ...post, post: { ...post.post, url: url } };
+
   if (postUrl && isUrlImage(postUrl)) {
-    return <Image blur={blur} post={post} animationType="zoom" />;
+    return <Image blur={blur} post={postWithUrl} animationType="zoom" />;
   }
 
   if (isVideo) {
@@ -89,7 +100,7 @@ const Media = ({ post, detail = false, blur = true, onError }: MediaProps) => {
   }
 
   if (markdownLoneImage)
-    return <Image blur={blur} post={post} animationType="zoom" />;
+    return <Image blur={blur} post={postWithUrl} animationType="zoom" />;
 };
 
 export default Media;
