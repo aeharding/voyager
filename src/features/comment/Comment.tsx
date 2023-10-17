@@ -246,6 +246,7 @@ export default function Comment({
                   person={commentView.creator}
                   opId={commentView.post.creator_id}
                   distinguished={comment.distinguished}
+                  showBadge={!context}
                 />
                 <Vote item={commentView} />
                 <Edited item={commentView} />
