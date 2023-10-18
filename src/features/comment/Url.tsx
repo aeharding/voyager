@@ -11,13 +11,22 @@ interface UrlProps {
 
 export default function Url({ children }: UrlProps) {
   const [domain, rest] = useMemo(() => {
-    const url = new URL(children);
+    let url;
+
+    try {
+      url = new URL(children);
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
 
     return [
       `${url.protocol}//${url.host}`,
       `${url.pathname}${url.search}${url.hash}`,
     ];
   }, [children]);
+
+  if (!domain || !rest) return;
 
   return (
     <>
