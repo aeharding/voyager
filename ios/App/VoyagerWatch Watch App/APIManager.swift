@@ -30,7 +30,10 @@ class APIManager {
         request.httpMethod = "PUT"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        let payload = SavePost(post_id: postId, save: true, auth: authToken)
+        request.setValue("auth=\(authToken)", forHTTPHeaderField: "Cookie") // lemmy <= 0.18
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization") // lemmy >= 0.19
+
+        let payload = SavePost(post_id: postId, save: true)
 
         do {
             let jsonData = try JSONEncoder().encode(payload)

@@ -10,5 +10,4 @@ import Foundation
 struct SavePost: Codable {
     let post_id: Int
     let save: Bool
-    let auth: String
 }

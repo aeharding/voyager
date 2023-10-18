@@ -25,18 +25,22 @@ class FeedViewModel: ObservableObject {
         }
 
         let feed = sessionManager.loggedIn ? "Subscribed" : "All"
-        let authParam = "&auth=\(self.sessionManager.authToken ?? "")"
 
         let potentialRequestConnectedInstance = sessionManager.connectedInstance
 
-        guard let url = URL(string: "https://\(potentialRequestConnectedInstance)/api/v3/post/list?page=1&limit=20&sort=Active&type_=\(feed)\(authParam)") else {
+        guard let url = URL(string: "https://\(potentialRequestConnectedInstance)/api/v3/post/list?page=1&limit=20&sort=Active&type_=\(feed)") else {
             return
         }
 
         isLoading = true
         error = nil
 
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+
+        if let authToken = self.sessionManager.authToken {
+            request.setValue("auth=\(authToken)", forHTTPHeaderField: "Cookie") // lemmy <= 0.18
+            request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization") // lemmy >= 0.19
+        }
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
