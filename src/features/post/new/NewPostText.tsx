@@ -18,7 +18,9 @@ import MarkdownToolbar, {
   TOOLBAR_TARGET_ID,
 } from "../../shared/markdown/editing/MarkdownToolbar";
 import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
-import useTextRecovery from "../../../helpers/useTextRecovery";
+import useTextRecovery, {
+  clearRecoveredText,
+} from "../../../helpers/useTextRecovery";
 
 const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -87,6 +89,8 @@ export default function NewPostText({
     } finally {
       setLoading(false);
     }
+
+    clearRecoveredText();
   }
 
   return (
