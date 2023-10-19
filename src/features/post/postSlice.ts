@@ -211,9 +211,14 @@ export const setPostRead =
     dispatch(updatePostRead({ postId }));
 
     await clientSelector(getState())?.markPostAsRead({
-      post_id: postId,
-      read: true,
-      auth: jwt,
+      ...{
+        post_id: postId, // TODO REMOVE lemmy 0.18 support
+        read: true,
+        auth: jwt,
+      },
+      ...{
+        post_ids: [postId],
+      },
     });
   };
 
