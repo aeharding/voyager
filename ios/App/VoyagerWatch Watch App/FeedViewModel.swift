@@ -25,9 +25,9 @@ class FeedViewModel: ObservableObject {
         }
 
         let feed = sessionManager.loggedIn ? "Subscribed" : "All"
+        let authParam = "&auth=\(self.sessionManager.authToken ?? "")"
 
         let potentialRequestConnectedInstance = sessionManager.connectedInstance
-        let authParam = "&auth=\(self.sessionManager.authToken ?? "")"
 
         guard let url = URL(string: "https://\(potentialRequestConnectedInstance)/api/v3/post/list?page=1&limit=20&sort=Active&type_=\(feed)\(authParam)") else {
             return
