@@ -22,11 +22,11 @@ export function getClient(url: string, jwt?: string): LemmyHttp {
     // Capacitor http plugin is not compatible with cross-fetch.
     // Bind to globalThis or lemmy-js-client will bind incorrectly
     fetchFunction: fetch.bind(globalThis),
-    headers: {
-      Authorization: jwt ? `Bearer ${jwt}` : undefined,
-    } as {
-      [key: string]: string;
-    },
+    headers: jwt
+      ? {
+          Authorization: `Bearer ${jwt}`,
+        }
+      : undefined,
   });
 }
 
