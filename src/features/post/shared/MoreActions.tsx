@@ -213,17 +213,15 @@ export default function MoreActions({
             );
           },
         },
-        post.post.body
-          ? {
-              text: "Select Text",
-              icon: textOutline,
-              handler: () => {
-                if (!post.post.body) return;
-
-                presentSelectText(post.post.body);
-              },
-            }
-          : undefined,
+        {
+          text: "Select Text",
+          icon: textOutline,
+          handler: () => {
+            presentSelectText(
+              [post.post.name, post.post.body].filter(notEmpty).join("\n\n"),
+            );
+          },
+        },
         onFeed
           ? {
               text: isHidden ? "Unhide" : "Hide",
