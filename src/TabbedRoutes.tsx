@@ -1,5 +1,5 @@
 import { Redirect, Route, useLocation } from "react-router-dom";
-import Hammer from "react-hammerjs";
+import { useLongPress } from "use-long-press";
 import {
   IonBadge,
   IonIcon,
@@ -115,6 +115,10 @@ export default function TabbedRoutes() {
       page: null,
     },
   );
+
+  const presentAccountSwitcherBind = useLongPress(() => {
+    presentAccountSwitcher({ cssClass: "small" });
+  });
 
   const actor = location.pathname.split("/")[2];
   const iss = useAppSelector(jwtIssSelector);
@@ -488,12 +492,10 @@ export default function TabbedRoutes() {
             >
               <IonIcon aria-hidden="true" icon={personCircleOutline} />
               <ProfileLabel>{profileTabLabel}</ProfileLabel>
-              <Hammer
-                onTap={onProfileClick}
-                onPress={() => presentAccountSwitcher({ cssClass: "small" })}
-              >
-                <Interceptor />
-              </Hammer>
+              <Interceptor
+                onClick={onProfileClick}
+                {...presentAccountSwitcherBind()}
+              />
             </IonTabButton>
             <IonTabButton
               disabled={isSearchButtonDisabled}
