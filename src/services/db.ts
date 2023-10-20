@@ -15,6 +15,8 @@ export const OAppThemeType = {
   SpookyPumpkin: "pumpkin",
   UV: "uv",
   Mint: "mint",
+  Dracula: "dracula",
+  Tangerine: "tangerine",
 } as const;
 
 export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
@@ -133,6 +135,32 @@ export const OLinkHandlerType = {
   InApp: "in-app",
 } as const;
 
+export type DefaultFeedType =
+  | {
+      type:
+        | typeof ODefaultFeedType.All
+        | typeof ODefaultFeedType.Home
+        | typeof ODefaultFeedType.Local
+        | typeof ODefaultFeedType.CommunityList;
+    }
+  | {
+      type: typeof ODefaultFeedType.Community;
+
+      /**
+       * Community handle. If remote, "community@instance.com".
+       * If local, "community"
+       */
+      name: string;
+    };
+
+export const ODefaultFeedType = {
+  Home: "home",
+  All: "all",
+  Local: "local",
+  CommunityList: "community-list",
+  Community: "community",
+} as const;
+
 export type JumpButtonPositionType =
   (typeof OJumpButtonPositionType)[keyof typeof OJumpButtonPositionType];
 
@@ -208,6 +236,10 @@ export type SettingValueTypes = {
   link_handler: LinkHandlerType;
   show_jump_button: boolean;
   jump_button_position: JumpButtonPositionType;
+  filtered_keywords: string[];
+  highlight_new_account: boolean;
+  default_feed: DefaultFeedType;
+  touch_friendly_links: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

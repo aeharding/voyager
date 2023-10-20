@@ -17,9 +17,14 @@ import { ListHeader } from "../shared/formatting";
 export default function BlockedCommunities() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
+
   const communities = useAppSelector(
     (state) => state.auth.site?.my_user?.community_blocks,
   );
+
+  const sortedCommunities = communities
+    ?.slice()
+    .sort((a, b) => a.community.name.localeCompare(b.community.name));
 
   async function remove(community: CommunityBlockView) {
     setLoading(true);
@@ -37,8 +42,8 @@ export default function BlockedCommunities() {
         <IonLabel>Blocked Communities</IonLabel>
       </ListHeader>
       <IonList inset>
-        {communities?.length ? (
-          communities.map((community) => (
+        {sortedCommunities?.length ? (
+          sortedCommunities.map((community) => (
             <IonItemSliding key={community.community.id}>
               <IonItemOptions side="end" onIonSwipe={() => remove(community)}>
                 <IonItemOption
@@ -60,6 +65,7 @@ export default function BlockedCommunities() {
           </InsetIonItem>
         )}
       </IonList>
+
       <IonLoading isOpen={loading} />
     </>
   );

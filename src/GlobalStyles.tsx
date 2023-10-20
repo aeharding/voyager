@@ -47,10 +47,6 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
         styles={css`
           html {
             ${baseFontStyles}
-
-            ion-content ion-item {
-              font-size: 1rem;
-            }
           }
 
           ${baseVariables}

@@ -104,9 +104,10 @@ export default function ProfileFeedHiddenPostsPage() {
       </IonHeader>
       <FeedContent>
         <PostCommentFeed
-          filterHiddenPosts={false}
           fetchFn={fetchFn}
           limit={LIMIT}
+          filterHiddenPosts={false}
+          filterKeywords={false}
         />
       </FeedContent>
     </IonPage>

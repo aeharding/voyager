@@ -18,7 +18,9 @@ import MarkdownToolbar, {
   TOOLBAR_TARGET_ID,
 } from "../../shared/markdown/editing/MarkdownToolbar";
 import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
-import useTextRecovery from "../../../helpers/useTextRecovery";
+import useTextRecovery, {
+  clearRecoveredText,
+} from "../../../helpers/useTextRecovery";
 
 const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -70,6 +72,7 @@ export default function NewPostText({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [text, setText] = useState(value);
+  const isSubmitDisabled = loading;
 
   useEffect(() => {
     setValue(text);
@@ -78,6 +81,7 @@ export default function NewPostText({
   useTextRecovery(text, setText, editing);
 
   async function submit() {
+    if (isSubmitDisabled) return;
     setLoading(true);
 
     try {
@@ -85,6 +89,8 @@ export default function NewPostText({
     } finally {
       setLoading(false);
     }
+
+    clearRecoveredText();
   }
 
   return (
@@ -101,7 +107,12 @@ export default function NewPostText({
             </Centered>
           </IonTitle>
           <IonButtons slot="end">
-            <IonButton strong type="submit" onClick={submit} disabled={loading}>
+            <IonButton
+              strong
+              type="submit"
+              onClick={submit}
+              disabled={isSubmitDisabled}
+            >
               Post
             </IonButton>
           </IonButtons>
@@ -115,6 +126,11 @@ export default function NewPostText({
             value={text}
             onInput={(e) => setText((e.target as HTMLInputElement).value)}
             autoFocus
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                submit();
+              }
+            }}
           />
         </Container>
 

@@ -1,10 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  IonIcon,
-  useIonActionSheet,
-  useIonRouter,
-  useIonToast,
-} from "@ionic/react";
+import { IonIcon, useIonActionSheet, useIonRouter } from "@ionic/react";
 import {
   arrowDownOutline,
   arrowUndoOutline,
@@ -29,13 +24,14 @@ import {
   share,
 } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { saveError, voteError } from "../../helpers/toastMessages";
+import { saveError, saveSuccess, voteError } from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
 import { handleSelector, isDownvoteEnabledSelector } from "../auth/authSlice";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
+import useAppToast from "../../helpers/useAppToast";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px;
@@ -57,7 +53,7 @@ export default function MoreActions({
   const dispatch = useAppDispatch();
   const { prependComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();
   const collapseRootComment = useCollapseRootComment(commentView, rootIndex);
@@ -105,7 +101,7 @@ export default function MoreActions({
               try {
                 await dispatch(voteOnComment(comment.id, myVote === 1 ? 0 : 1));
               } catch (error) {
-                present(voteError);
+                presentToast(voteError);
               }
             })();
           },
@@ -123,7 +119,7 @@ export default function MoreActions({
                       voteOnComment(comment.id, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
-                    present(voteError);
+                    presentToast(voteError);
                   }
                 })();
               },
@@ -138,8 +134,10 @@ export default function MoreActions({
 
               try {
                 await dispatch(saveComment(comment.id, !mySaved));
+
+                if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
-                present(saveError);
+                presentToast(saveError);
               }
             })();
           },
@@ -168,21 +166,17 @@ export default function MoreActions({
                           try {
                             await dispatch(deleteComment(comment.id));
                           } catch (error) {
-                            present({
+                            presentToast({
                               message:
                                 "Problem deleting comment. Please try again.",
-                              duration: 3500,
-                              position: "bottom",
                               color: "danger",
                             });
 
                             throw error;
                           }
 
-                          present({
+                          presentToast({
                             message: "Comment deleted!",
-                            duration: 3500,
-                            position: "bottom",
                             color: "primary",
                           });
                         })();

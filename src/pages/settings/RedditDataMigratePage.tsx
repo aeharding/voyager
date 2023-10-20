@@ -9,15 +9,15 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonToast,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { useEffect, useState } from "react";
 import { InsetIonItem } from "../profile/ProfileFeedItemsPage";
 import { isValidUrl } from "../../helpers/url";
+import useAppToast from "../../helpers/useAppToast";
 
 export default function RedditMigratePage() {
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const [subs, setSubs] = useState<string[] | undefined>();
   const [link, setLink] = useState("");
 
@@ -27,19 +27,17 @@ export default function RedditMigratePage() {
     const subs = parseSubsFromLink(link);
 
     if (!subs.length) {
-      present({
+      presentToast({
         message:
           "Problem parsing link. Please make sure the link you entered is correct.",
-        duration: 3500,
-        position: "bottom",
-        color: "danger",
+        color: "warning",
       });
       setLink("");
       return;
     }
 
     setSubs(subs);
-  }, [link, present]);
+  }, [link, presentToast]);
 
   function renderUpload() {
     return (

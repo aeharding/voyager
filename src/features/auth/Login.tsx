@@ -13,7 +13,6 @@ import {
   IonRadio,
   IonSpinner,
   IonList,
-  useIonToast,
   IonText,
   IonRouterLink,
   useIonModal,
@@ -28,6 +27,7 @@ import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
 import { getCustomServers } from "../../services/app";
 import { isNative } from "../../helpers/device";
 import { Browser } from "@capacitor/browser";
+import useAppToast from "../../helpers/useAppToast";
 
 const JOIN_LEMMY_URL = "https://join-lemmy.org/instances";
 
@@ -53,7 +53,7 @@ export default function Login({
 }: {
   onDismiss: (data?: string | null | undefined | number, role?: string) => void;
 }) {
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const [servers] = useState(getCustomServers());
   const [server, setServer] = useState(servers[0]);
@@ -104,11 +104,10 @@ export default function Login({
 
   async function submit() {
     if (!server && !customServer) {
-      present({
-        message: `Please enter your instance domain name`,
-        duration: 3500,
-        position: "bottom",
+      presentToast({
+        message: "Please enter your instance domain name",
         color: "danger",
+        fullscreen: true,
       });
       return;
     }
@@ -116,11 +115,10 @@ export default function Login({
     if (!serverConfirmed) {
       if (customServer) {
         if (!customServerHostname) {
-          present({
+          presentToast({
             message: `${customServer} is not a valid server URL. Please try again`,
-            duration: 3500,
-            position: "bottom",
             color: "danger",
+            fullscreen: true,
           });
 
           return;
@@ -130,11 +128,10 @@ export default function Login({
         try {
           await getClient(customServerHostname).getSite({});
         } catch (error) {
-          present({
+          presentToast({
             message: `Problem connecting to ${customServerHostname}. Please try again`,
-            duration: 3500,
-            position: "bottom",
             color: "danger",
+            fullscreen: true,
           });
 
           throw error;
@@ -148,21 +145,19 @@ export default function Login({
     }
 
     if (!username || !password) {
-      present({
+      presentToast({
         message: "Please fill out username and password fields",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
       return;
     }
 
     if (!totp && needsTotp) {
-      present({
+      presentToast({
         message: `Please enter your second factor authentication code for ${username}`,
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
       return;
     }
@@ -171,12 +166,7 @@ export default function Login({
 
     try {
       await dispatch(
-        login(
-          getClient(server ?? customServerHostname),
-          username,
-          password,
-          totp,
-        ),
+        login(server ?? customServerHostname, username, password, totp),
       );
     } catch (error) {
       if (error === "missing_totp_token") {
@@ -188,11 +178,10 @@ export default function Login({
         setPassword("");
       }
 
-      present({
+      presentToast({
         message: getLoginErrorMessage(error, server ?? customServer),
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;
@@ -201,10 +190,8 @@ export default function Login({
     }
 
     onDismiss();
-    present({
+    presentToast({
       message: "Login successful",
-      duration: 2000,
-      position: "bottom",
       color: "success",
     });
   }

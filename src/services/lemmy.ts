@@ -17,11 +17,16 @@ function buildProxiedBaseUrl(url: string): string {
   return `${location.origin}/api/${url}`;
 }
 
-export function getClient(url: string): LemmyHttp {
+export function getClient(url: string, jwt?: string): LemmyHttp {
   return new LemmyHttp(buildBaseUrl(url), {
     // Capacitor http plugin is not compatible with cross-fetch.
     // Bind to globalThis or lemmy-js-client will bind incorrectly
     fetchFunction: fetch.bind(globalThis),
+    headers: jwt
+      ? {
+          Authorization: `Bearer ${jwt}`,
+        }
+      : undefined,
   });
 }
 

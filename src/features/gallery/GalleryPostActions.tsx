@@ -1,4 +1,4 @@
-import { IonIcon, useIonRouter, useIonToast } from "@ionic/react";
+import { IonIcon, useIonRouter } from "@ionic/react";
 import { VoteButton } from "../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline, shareOutline } from "ionicons/icons";
@@ -19,6 +19,7 @@ import { isNative } from "../../helpers/device";
 import GalleryMoreActions from "./GalleryMoreActions";
 import { StashMedia } from "capacitor-stash-media";
 import { Share } from "@capacitor/share";
+import useAppToast from "../../helpers/useAppToast";
 
 const Container = styled.div`
   display: flex;
@@ -55,7 +56,7 @@ export default function GalleryPostActions({
   );
   const router = useIonRouter();
   const location = useLocation();
-  const [presentToast] = useIonToast();
+  const presentToast = useAppToast();
   const { close } = useContext(GalleryContext);
 
   async function shareImage() {
@@ -72,9 +73,9 @@ export default function GalleryPostActions({
     } catch (error) {
       presentToast({
         message: "Error sharing photo",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        position: "top",
+        fullscreen: true,
       });
 
       throw error;

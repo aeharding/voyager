@@ -17,9 +17,14 @@ import { ListHeader } from "../shared/formatting";
 export default function BlockedUsers() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
+
   const users = useAppSelector(
     (state) => state.auth.site?.my_user?.person_blocks,
   );
+
+  const sortedUsers = users
+    ?.slice()
+    .sort((a, b) => a.target.name.localeCompare(b.target.name));
 
   async function remove(user: PersonBlockView) {
     setLoading(true);
@@ -36,9 +41,10 @@ export default function BlockedUsers() {
       <ListHeader>
         <IonLabel>Blocked Users</IonLabel>
       </ListHeader>
+
       <IonList inset>
-        {users?.length ? (
-          users.map((user) => (
+        {sortedUsers?.length ? (
+          sortedUsers.map((user) => (
             <IonItemSliding key={user.target.id}>
               <IonItemOptions side="end" onIonSwipe={() => remove(user)}>
                 <IonItemOption
@@ -60,6 +66,7 @@ export default function BlockedUsers() {
           </InsetIonItem>
         )}
       </IonList>
+
       <IonLoading isOpen={loading} />
     </>
   );

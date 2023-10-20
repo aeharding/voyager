@@ -36,7 +36,11 @@ class FeedViewModel: ObservableObject {
         isLoading = true
         error = nil
 
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+
+        if let authToken = self.sessionManager.authToken {
+            request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization") // lemmy >= 0.19
+        }
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {

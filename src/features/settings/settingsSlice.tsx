@@ -32,6 +32,8 @@ import {
   OLinkHandlerType,
   JumpButtonPositionType,
   OJumpButtonPositionType,
+  DefaultFeedType,
+  ODefaultFeedType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -82,6 +84,8 @@ interface SettingsState {
       sort: CommentDefaultSort;
       showJumpButton: boolean;
       jumpButtonPosition: JumpButtonPositionType;
+      highlightNewAccount: boolean;
+      touchFriendlyLinks: boolean;
     };
     posts: {
       disableMarkingRead: boolean;
@@ -90,6 +94,10 @@ interface SettingsState {
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
+    defaultFeed: DefaultFeedType | undefined;
+  };
+  blocks: {
+    keywords: string[];
   };
 }
 
@@ -144,6 +152,8 @@ const initialState: SettingsState = {
       sort: OCommentDefaultSort.Hot,
       showJumpButton: false,
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
+      highlightNewAccount: true,
+      touchFriendlyLinks: true,
     },
     posts: {
       disableMarkingRead: false,
@@ -152,6 +162,10 @@ const initialState: SettingsState = {
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
+    defaultFeed: undefined,
+  },
+  blocks: {
+    keywords: [],
   },
 };
 
@@ -232,12 +246,28 @@ export const appearanceSlice = createSlice({
       state.general.comments.jumpButtonPosition = action.payload;
       db.setSetting("jump_button_position", action.payload);
     },
+    setHighlightNewAccount(state, action: PayloadAction<boolean>) {
+      state.general.comments.highlightNewAccount = action.payload;
+      db.setSetting("highlight_new_account", action.payload);
+    },
+    setTouchFriendlyLinks(state, action: PayloadAction<boolean>) {
+      state.general.comments.touchFriendlyLinks = action.payload;
+      db.setSetting("touch_friendly_links", action.payload);
+    },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
       db.setSetting("post_appearance_type", action.payload);
     },
     setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
       state.appearance.posts.blurNsfw = action.payload;
+      // Per user setting is updated in StoreProvider
+    },
+    setFilteredKeywords(state, action: PayloadAction<string[]>) {
+      state.blocks.keywords = action.payload;
+      // Per user setting is updated in StoreProvider
+    },
+    setDefaultFeed(state, action: PayloadAction<DefaultFeedType>) {
+      state.general.defaultFeed = action.payload;
       // Per user setting is updated in StoreProvider
     },
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
@@ -353,6 +383,54 @@ export const getBlurNsfw =
     dispatch(setNsfwBlur(blurNsfw ?? initialState.appearance.posts.blurNsfw));
   };
 
+export const getFilteredKeywords =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const filteredKeywords = await db.getSetting("filtered_keywords", {
+      user_handle: userHandle,
+    });
+
+    dispatch(
+      setFilteredKeywords(filteredKeywords ?? initialState.blocks.keywords),
+    );
+  };
+
+export const getDefaultFeed =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const defaultFeed = await db.getSetting("default_feed", {
+      user_handle: userHandle,
+    });
+
+    dispatch(setDefaultFeed(defaultFeed ?? { type: ODefaultFeedType.Home }));
+  };
+
+export const updateDefaultFeed =
+  (defaultFeed: DefaultFeedType) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setDefaultFeed(defaultFeed ?? initialState.general.defaultFeed));
+
+    db.setSetting("default_feed", defaultFeed, {
+      user_handle: userHandle,
+    });
+  };
+
+export const updateFilteredKeywords =
+  (filteredKeywords: string[]) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setFilteredKeywords(filteredKeywords));
+
+    db.setSetting("filtered_keywords", filteredKeywords, {
+      user_handle: userHandle,
+    });
+  };
+
 export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
@@ -363,6 +441,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const show_jump_button = await db.getSetting("show_jump_button");
       const jump_button_position = await db.getSetting("jump_button_position");
+      const highlight_new_account = await db.getSetting(
+        "highlight_new_account",
+      );
       const user_instance_url_display = await db.getSetting(
         "user_instance_url_display",
       );
@@ -391,6 +472,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "enable_haptic_feedback",
       );
       const link_handler = await db.getSetting("link_handler");
+      const filtered_keywords = await db.getSetting("filtered_keywords");
+      const touch_friendly_links = await db.getSetting("touch_friendly_links");
 
       return {
         ...state.settings,
@@ -436,6 +519,12 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             jumpButtonPosition:
               jump_button_position ??
               initialState.general.comments.jumpButtonPosition,
+            highlightNewAccount:
+              highlight_new_account ??
+              initialState.general.comments.highlightNewAccount,
+            touchFriendlyLinks:
+              touch_friendly_links ??
+              initialState.general.comments.touchFriendlyLinks,
           },
           posts: {
             disableMarkingRead:
@@ -451,6 +540,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
+          defaultFeed: initialState.general.defaultFeed,
+        },
+        blocks: {
+          keywords: filtered_keywords ?? initialState.blocks.keywords,
         },
       };
     });
@@ -474,7 +567,10 @@ export const {
   setCommentsCollapsed,
   setShowJumpButton,
   setJumpButtonPosition,
+  setHighlightNewAccount,
+  setTouchFriendlyLinks,
   setNsfwBlur,
+  setFilteredKeywords,
   setPostAppearance,
   setThumbnailPosition,
   setShowVotingButtons,
@@ -492,6 +588,7 @@ export const {
   setEnableHapticFeedback,
   setLinkHandler,
   setPureBlack,
+  setDefaultFeed,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

@@ -7,6 +7,7 @@ import Handle from "../Handle";
 import { StyledLink } from "./shared";
 import { useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
+import AgeBadge from "./AgeBadge";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -18,6 +19,7 @@ interface PersonLinkProps {
   distinguished?: boolean;
   showInstanceWhenRemote?: boolean;
   prefix?: string;
+  showBadge?: boolean;
 
   className?: string;
 }
@@ -29,6 +31,7 @@ export default function PersonLink({
   className,
   showInstanceWhenRemote,
   prefix,
+  showBadge = true,
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
@@ -67,6 +70,7 @@ export default function PersonLink({
         item={person}
         showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
       />
+      {showBadge && <AgeBadge published={person.published} />}
     </StyledLink>
   );
 }

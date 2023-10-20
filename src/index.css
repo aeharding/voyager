@@ -17,6 +17,15 @@ ion-tab-button {
   opacity: 1 !important;
 }
 
+/*
+ * Header doesn't support dynamic font size
+ */
+ion-router-outlet > .ion-page > ion-header ion-button,
+ion-router-outlet > .ion-page > ion-header ion-back-button,
+ion-router-outlet > .ion-page > ion-header ion-title {
+  font-size: 17px;
+}
+
 .left-align-buttons
   .action-sheet-button:not(.action-sheet-cancel)
   .action-sheet-button-inner.sc-ion-action-sheet-ios:not(
@@ -138,4 +147,29 @@ ion-fab-button {
 
 ion-fab.fab-vertical-top {
   top: 15vh;
+}
+
+/**
+ * This patch reverts the following Ionic change:
+ * https://github.com/ionic-team/ionic-framework/pull/28246/files#diff-8371750710eecf6a609337a240b7db295073f746f1cda13248f9780cc6f6ff24L159
+ *
+ * Private discord discussion: https://discord.com/channels/520266681499779082/1128001453676568637/1162812415054983198
+ *
+ * Fixes #780
+ */
+.ion-page {
+  overflow: hidden;
+}
+
+ion-toast {
+  font-weight: 600;
+  --height: 45px;
+}
+
+/* Center toast message and icon */
+ion-toast.center::part(container) {
+  display: inline-flex;
+  transform: translateX(-50%);
+  left: 50%;
+  position: relative;
 }

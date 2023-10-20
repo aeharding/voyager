@@ -2,8 +2,8 @@
   "apps": [
     {
       "appId": "9f0851ec",
-      "dependencyInstallCommand": "corepack enable && pnpm i",
-      "webBuildCommand": "if [ \"$CI_PLATFORM\" != \"web\" ]; then npx trapeze run appflow.yml -y --$CI_PLATFORM; fi && pnpm build"
+      "dependencyInstallCommand": "corepack enable && pnpm i --frozen-lockfile",
+      "webBuildCommand": "pnpm build"
     }
   ]
 }

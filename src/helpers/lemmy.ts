@@ -6,6 +6,7 @@ import {
   Post,
 } from "lemmy-js-client";
 import { Share } from "@capacitor/share";
+import { escapeStringForRegex } from "./regex";
 
 export interface LemmyJWT {
   sub: number;
@@ -266,4 +267,29 @@ export function isUrlVideo(url: string): boolean {
 
 export function share(item: Post | Comment) {
   return Share.share({ url: item.ap_id });
+}
+
+export function postHasFilteredKeywords(
+  post: Post,
+  keywords: string[],
+): boolean {
+  for (const keyword of keywords) {
+    if (keywordFoundInSentence(keyword, post.name)) return true;
+  }
+
+  return false;
+}
+
+export function keywordFoundInSentence(
+  keyword: string,
+  sentence: string,
+): boolean {
+  // Escape the keyword for use in a regular expression
+  const escapedKeyword = escapeStringForRegex(keyword);
+
+  // Create a regular expression pattern to match the escaped keyword as a whole word
+  const pattern = new RegExp(`\\b${escapedKeyword}\\b`, "i");
+
+  // Use the RegExp test method to check if the pattern is found in the sentence
+  return pattern.test(sentence);
 }

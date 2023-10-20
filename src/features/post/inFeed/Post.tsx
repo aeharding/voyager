@@ -35,6 +35,7 @@ export interface PostProps {
 export default function Post(props: PostProps) {
   const dispatch = useAppDispatch();
   const [shouldHide, setShouldHide] = useState(false);
+  const shouldHideRef = useRef(false);
   const isHidden = useAppSelector(postHiddenByIdSelector)[props.post.post.id];
   const hideCompleteRef = useRef(false);
   const postById = useAppSelector((state) => state.post.postById);
@@ -70,8 +71,13 @@ export default function Post(props: PostProps) {
   }, [targetIntersectionRef, observe, unobserve]);
 
   useEffect(() => {
+    // Refs must be used during cleanup useEffect
+    shouldHideRef.current = shouldHide;
+  }, [shouldHide]);
+
+  useEffect(() => {
     return () => {
-      if (!shouldHide) return;
+      if (!shouldHideRef.current) return;
       if (hideCompleteRef.current) return;
 
       onFinishHide();

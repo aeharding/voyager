@@ -72,6 +72,7 @@ import AppearanceThemePage from "./pages/settings/AppearanceThemePage";
 import GalleryProvider from "./features/gallery/GalleryProvider";
 import AppIconPage from "./pages/settings/AppIconPage";
 import AccountSwitcher from "./features/auth/AccountSwitcher";
+import { DefaultFeedType, ODefaultFeedType } from "./services/db";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -92,6 +93,9 @@ export default function TabbedRoutes() {
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
   const ready = useAppSelector((state) => state.settings.ready);
+  const defaultFeed = useAppSelector(
+    (state) => state.settings.general.defaultFeed,
+  );
 
   const settingsNotificationCount =
     (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
@@ -294,10 +298,20 @@ export default function TabbedRoutes() {
     () => (
       <IonRouterOutlet ref={pageRef}>
         <Route exact path="/">
-          <Redirect
-            to={`/posts/${iss ?? getDefaultServer()}/${iss ? "home" : "all"}`}
-            push={false}
-          />
+          {!iss || defaultFeed ? (
+            <Redirect
+              to={`/posts/${iss ?? getDefaultServer()}${
+                iss
+                  ? getPathForFeed(
+                      defaultFeed || { type: ODefaultFeedType.Home },
+                    )
+                  : "/all"
+              }`}
+              push={false}
+            />
+          ) : (
+            ""
+          )}
         </Route>
         <Route exact path="/posts/:actor/home">
           <ActorRedirect>
@@ -432,7 +446,7 @@ export default function TabbedRoutes() {
         {...buildGeneralBrowseRoutes("settings")}
       </IonRouterOutlet>
     ),
-    [iss],
+    [iss, defaultFeed],
   );
 
   if (!ready) return;
@@ -502,4 +516,19 @@ export default function TabbedRoutes() {
       </GalleryProvider>
     </PageContextProvider>
   );
+}
+
+function getPathForFeed(defaultFeed: DefaultFeedType): string {
+  switch (defaultFeed.type) {
+    case ODefaultFeedType.All:
+      return "/all";
+    case ODefaultFeedType.Home:
+      return "/home";
+    case ODefaultFeedType.Local:
+      return "/local";
+    case ODefaultFeedType.CommunityList:
+      return "";
+    case ODefaultFeedType.Community:
+      return `/c/${defaultFeed.name}`;
+  }
 }

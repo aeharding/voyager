@@ -1,4 +1,3 @@
-import { useIonToast } from "@ionic/react";
 import {
   arrowDownSharp,
   arrowUndo,
@@ -25,7 +24,7 @@ import {
   savePost,
   voteOnPost,
 } from "../../post/postSlice";
-import { voteError } from "../../../helpers/toastMessages";
+import { saveSuccess, voteError } from "../../../helpers/toastMessages";
 import { saveComment, voteOnComment } from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
@@ -33,6 +32,7 @@ import useCollapseRootComment from "../../comment/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { CommentsContext } from "../../comment/CommentsContext";
 import styled from "@emotion/styled";
+import useAppToast from "../../../helpers/useAppToast";
 
 const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
@@ -93,7 +93,7 @@ function BaseSlidingVoteInternal({
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const { prependComments } = useContext(CommentsContext);
 
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
@@ -132,10 +132,10 @@ function BaseSlidingVoteInternal({
         if (isPost) await dispatch(voteOnPost(item.post.id, score));
         else await dispatch(voteOnComment(item.comment.id, score));
       } catch (error) {
-        present(voteError);
+        presentToast(voteError);
       }
     },
-    [dispatch, isPost, item, present, presentLoginIfNeeded],
+    [dispatch, isPost, item, presentToast, presentLoginIfNeeded],
   );
 
   const reply = useCallback(async () => {
@@ -164,16 +164,16 @@ function BaseSlidingVoteInternal({
     if (presentLoginIfNeeded()) return;
     try {
       await dispatch((isPost ? savePost : saveComment)(id, !isSaved));
+
+      if (!isSaved) presentToast(saveSuccess);
     } catch (error) {
-      present({
+      presentToast({
         message: "Failed to mark item as saved",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
       throw error;
     }
-  }, [presentLoginIfNeeded, dispatch, isPost, id, isSaved, present]);
+  }, [presentLoginIfNeeded, dispatch, isPost, id, isSaved, presentToast]);
 
   const saveAction = useMemo(() => {
     return {
@@ -221,15 +221,13 @@ function BaseSlidingVoteInternal({
     try {
       await dispatch(markRead(item, !isRead));
     } catch (error) {
-      present({
+      presentToast({
         message: "Failed to mark item as unread",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
       throw error;
     }
-  }, [dispatch, present, item, isRead]);
+  }, [dispatch, presentToast, item, isRead]);
 
   const markUnreadAction = useMemo(() => {
     return {

@@ -5,7 +5,6 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  useIonToast,
   IonText,
 } from "@ionic/react";
 import {
@@ -25,6 +24,7 @@ import CommentContent from "../shared";
 import useTextRecovery, {
   clearRecoveredText,
 } from "../../../../helpers/useTextRecovery";
+import useAppToast from "../../../../helpers/useAppToast";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -61,11 +61,13 @@ export default function CommentReply({
   const [replyContent, setReplyContent] = useState("");
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const userHandle = useAppSelector(handleSelector);
+  const isSubmitDisabled = !replyContent.trim() || loading;
 
   async function submit() {
+    if (isSubmitDisabled) return;
     if (!jwt) return;
 
     setLoading(true);
@@ -85,11 +87,10 @@ export default function CommentReply({
           ? "Please select a language in your lemmy profile settings."
           : "Please try again.";
 
-      present({
+      presentToast({
         message: `Problem posting your comment. ${errorDescription}`,
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;
@@ -97,11 +98,12 @@ export default function CommentReply({
       setLoading(false);
     }
 
-    present({
+    presentToast({
       message: "Comment posted!",
-      duration: 3500,
-      position: "bottom",
-      color: "success",
+      color: "primary",
+      position: "top",
+      centerText: true,
+      fullscreen: true,
     });
 
     dispatch(receivedComments([reply.comment_view]));
@@ -142,7 +144,7 @@ export default function CommentReply({
             <IonButton
               strong
               type="submit"
-              disabled={!replyContent.trim() || loading}
+              disabled={isSubmitDisabled}
               onClick={submit}
             >
               Post
@@ -151,7 +153,11 @@ export default function CommentReply({
         </IonToolbar>
       </IonHeader>
 
-      <CommentContent text={replyContent} setText={setReplyContent}>
+      <CommentContent
+        text={replyContent}
+        setText={setReplyContent}
+        onSubmit={submit}
+      >
         <ItemReplyingTo item={item} />
       </CommentContent>
     </>

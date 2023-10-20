@@ -19,7 +19,7 @@ jobs:
           build-type: app-store
           certificate: Distribution
           destinations: Voyager App Store
-          filename: iOS-${{ github.ref_name }}-${{ github.run_id }}
+          filename: iOS-${{ github.ref_name }}
           upload-artifact: iOS-Build.zip
 
   build_android:
@@ -35,7 +35,7 @@ jobs:
           build-type: release
           certificate: Voyager Play Store
           destinations: Voyager Play Store
-          filename: Android-${{ github.ref_name }}-${{ github.run_id }}
+          filename: Android-${{ github.ref_name }}
           upload-artifact: Android-Build.zip
 
   create_release:

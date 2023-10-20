@@ -4,7 +4,6 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  useIonToast,
 } from "@ionic/react";
 import { Comment } from "lemmy-js-client";
 import { useEffect, useState } from "react";
@@ -14,6 +13,7 @@ import { jwtSelector } from "../../../auth/authSlice";
 import { editComment } from "../../commentSlice";
 import { DismissableProps } from "../../../shared/DynamicDismissableModal";
 import CommentContent from "../shared";
+import useAppToast from "../../../../helpers/useAppToast";
 
 type CommentEditingProps = DismissableProps & {
   item: Comment;
@@ -27,14 +27,17 @@ export default function CommentEdit({
   const dispatch = useAppDispatch();
   const [replyContent, setReplyContent] = useState(item.content);
   const jwt = useAppSelector(jwtSelector);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
+  const isSubmitDisabled =
+    !replyContent.trim() || item.content === replyContent || loading;
 
   useEffect(() => {
     setCanDismiss(item.content === replyContent);
   }, [replyContent, item, setCanDismiss]);
 
   async function submit() {
+    if (isSubmitDisabled) return;
     if (!jwt) return;
 
     setLoading(true);
@@ -42,11 +45,10 @@ export default function CommentEdit({
     try {
       await dispatch(editComment(item.id, replyContent));
     } catch (error) {
-      present({
+      presentToast({
         message: "Problem saving your changes. Please try again.",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;
@@ -54,11 +56,12 @@ export default function CommentEdit({
       setLoading(false);
     }
 
-    present({
+    presentToast({
       message: "Comment edited!",
-      duration: 3500,
-      position: "bottom",
-      color: "success",
+      color: "primary",
+      position: "top",
+      centerText: true,
+      fullscreen: true,
     });
 
     setCanDismiss(true);
@@ -85,9 +88,7 @@ export default function CommentEdit({
             <IonButton
               strong={true}
               type="submit"
-              disabled={
-                !replyContent.trim() || item.content === replyContent || loading
-              }
+              disabled={isSubmitDisabled}
               onClick={submit}
             >
               Save
@@ -96,7 +97,11 @@ export default function CommentEdit({
         </IonToolbar>
       </IonHeader>
 
-      <CommentContent text={replyContent} setText={setReplyContent} />
+      <CommentContent
+        text={replyContent}
+        setText={setReplyContent}
+        onSubmit={submit}
+      />
     </>
   );
 }

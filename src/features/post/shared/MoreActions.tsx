@@ -3,7 +3,6 @@ import {
   IonIcon,
   useIonActionSheet,
   useIonRouter,
-  useIonToast,
 } from "@ionic/react";
 import {
   arrowDownOutline,
@@ -36,12 +35,17 @@ import { getHandle, getRemoteHandle, share } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
-import { saveError, voteError } from "../../../helpers/toastMessages";
+import {
+  saveError,
+  saveSuccess,
+  voteError,
+} from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
 import {
   handleSelector,
   isDownvoteEnabledSelector,
 } from "../../auth/authSlice";
+import useAppToast from "../../../helpers/useAppToast";
 
 interface MoreActionsProps {
   post: PostView;
@@ -56,7 +60,7 @@ export default function MoreActions({
 }: MoreActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const isHidden = useAppSelector(postHiddenByIdSelector)[post.post.id];
@@ -95,7 +99,7 @@ export default function MoreActions({
               try {
                 await dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
               } catch (error) {
-                present(voteError);
+                presentToast(voteError);
 
                 throw error;
               }
@@ -115,7 +119,7 @@ export default function MoreActions({
                       voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
-                    present(voteError);
+                    presentToast(voteError);
 
                     throw error;
                   }
@@ -132,8 +136,10 @@ export default function MoreActions({
 
               try {
                 await dispatch(savePost(post.post.id, !mySaved));
+
+                if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
-                present(saveError);
+                presentToast(saveError);
 
                 throw error;
               }
@@ -154,10 +160,8 @@ export default function MoreActions({
                         (async () => {
                           await dispatch(deletePost(post.post.id));
 
-                          present({
+                          presentToast({
                             message: "Post deleted",
-                            duration: 3500,
-                            position: "bottom",
                             color: "success",
                           });
                         })();
@@ -209,17 +213,15 @@ export default function MoreActions({
             );
           },
         },
-        post.post.body
-          ? {
-              text: "Select Text",
-              icon: textOutline,
-              handler: () => {
-                if (!post.post.body) return;
-
-                presentSelectText(post.post.body);
-              },
-            }
-          : undefined,
+        {
+          text: "Select Text",
+          icon: textOutline,
+          handler: () => {
+            presentSelectText(
+              [post.post.name, post.post.body].filter(notEmpty).join("\n\n"),
+            );
+          },
+        },
         onFeed
           ? {
               text: isHidden ? "Unhide" : "Hide",
