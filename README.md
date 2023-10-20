@@ -11,12 +11,17 @@ A mobile-first Lemmy web client
 </p>
 
 <p align="center">
+Report Bug · Request Feature · Releases
+</p>
+
+<p align="center">
 &nbsp;<a href="https://vger.app"><img src="public/badges/pwa.svg" height="45"></a>&nbsp;&#8203;&nbsp;
 <a href="https://apps.apple.com/us/app/voyager-for-lemmy/id6451429762"><img src="public/badges/ios.svg" height="45"></a>&nbsp;&nbsp;
-<a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;
+<a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;&nbsp;<a href="https://f-droid.org/en/packages/app.vger.voyager/"><img src="public/badges/fdroid.png" height="45"></a>
 </p>
 <p align="center">
-  <a href="https://f-droid.org/en/packages/app.vger.voyager/"><img src="https://img.shields.io/f-droid/v/app.vger.voyager.svg?style=flat-square&logo=F-Droid" alt="matrix chat"></a> <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat-square&logo=matrix" alt="matrix chat"></a>
+  <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat-square&logo=matrix" alt="matrix chat"></a>
+  <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/lemmy/voyagerapp@lemmy.world?style=flat-square&logo=lemmy&label=lemmy" alt="lemmy community"></a>
 </p>
 <br/>
 
