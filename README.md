@@ -11,7 +11,7 @@ A mobile-first Lemmy web client
 </p>
 
 <p align="center">
-Report Bug · Request Feature · Releases
+<a href="https://github.com/aeharding/voyager/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title=">Report Bug</a> · <a href="https://github.com/aeharding/voyager/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=">Request Feature</a> · <a href="https://github.com/aeharding/voyager/releases">Releases</a>
 </p>
 
 <p align="center">
