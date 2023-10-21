@@ -78,7 +78,7 @@ export default function CommunityLink({
 
   return (
     <StyledLink
-      to={buildGeneralBrowseLink(`/c/${handle}`)}
+      to={buildGeneralBrowseLink(`/c/${getHandle(community, true)}`)}
       onClick={(e) => e.stopPropagation()}
       className={className}
       {...bind()}

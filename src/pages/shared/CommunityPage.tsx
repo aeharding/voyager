@@ -56,6 +56,11 @@ export default function CommunityPage() {
       />
     );
 
+  const communityDisplayName =
+    community.includes("@") && community.split("@")[1] === actor
+      ? community.split("@")[0]
+      : community;
+
   const feed = <PostCommentFeed fetchFn={fetchFn} communityName={community} />;
 
   return (
@@ -71,7 +76,7 @@ export default function CommunityPage() {
                 />
               </IonButtons>
 
-              <TitleSearch name={community}>
+              <TitleSearch name={communityDisplayName}>
                 <IonButtons slot="end">
                   <PostSort />
                   <MoreActions community={communityView} />

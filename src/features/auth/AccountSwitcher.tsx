@@ -54,7 +54,7 @@ export default function AccountSwitcher({
             {editing ? (
               <IonButton
                 onClick={() =>
-                  login({ presentingElement: pageRef.current ?? undefined })
+                  login({ presentingElement: pageRef?.current ?? undefined })
                 }
               >
                 <IonIcon icon={add} />

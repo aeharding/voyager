@@ -41,7 +41,11 @@ export function checkIsMod(communityHandle: string, site: GetSiteResponse) {
  */
 export function getHandle(
   item: Pick<Community, "name" | "actor_id" | "local">,
+  returnRemoteHandle?: boolean,
 ) {
+  if (returnRemoteHandle) {
+    return getRemoteHandle(item);
+  }
   return item.local ? item.name : getRemoteHandle(item);
 }
 
