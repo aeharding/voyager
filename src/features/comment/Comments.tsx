@@ -24,7 +24,6 @@ import { getPost } from "../post/postSlice";
 import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
 import { CommentsContext } from "./CommentsContext";
-import { jwtSelector } from "../auth/authSlice";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import useAppToast from "../../helpers/useAppToast";
@@ -74,7 +73,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   ref,
 ) {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector(jwtSelector);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [finishedPaging, setFinishedPaging] = useState(false);
@@ -110,7 +108,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   useEffect(() => {
     fetchComments(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, commentPath, jwt, postId]);
+  }, [sort, commentPath, postId, client]);
 
   async function fetchComments(refresh = false) {
     if (refresh) {
@@ -143,7 +141,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
         saved_only: false,
         page: currentPage,
-        auth: jwt,
       });
     } catch (error) {
       if (reqPostId === postId && reqCommentId === commentId)

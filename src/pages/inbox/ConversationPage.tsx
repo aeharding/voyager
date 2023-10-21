@@ -19,7 +19,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { jwtPayloadSelector, jwtSelector } from "../../features/auth/authSlice";
+import { jwtPayloadSelector } from "../../features/auth/authSlice";
 import {
   receivedMessages,
   syncMessages,
@@ -127,7 +127,6 @@ export default function ConversationPage() {
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
   const { tab } = useContext(TabContext);
-  const jwt = useAppSelector(jwtSelector);
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
@@ -180,7 +179,6 @@ export default function ConversationPage() {
     const recipientId = userByHandle[handle]?.id;
 
     if (typeof recipientId !== "number") return;
-    if (!jwt) return;
 
     setLoading(true);
 
@@ -190,7 +188,6 @@ export default function ConversationPage() {
       message = await client.createPrivateMessage({
         content: value,
         recipient_id: recipientId,
-        auth: jwt,
       });
     } catch (error) {
       presentToast({

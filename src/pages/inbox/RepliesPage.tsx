@@ -6,7 +6,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppDispatch } from "../../store";
 import useClient from "../../helpers/useClient";
 import { FetchFn } from "../../features/feed/Feed";
 import { useCallback } from "react";
@@ -14,7 +14,6 @@ import { CommentReplyView } from "lemmy-js-client";
 import InboxFeed from "../../features/feed/InboxFeed";
 import { receivedInboxItems } from "../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
-import { jwtSelector } from "../../features/auth/authSlice";
 import FeedContent from "../shared/FeedContent";
 
 interface RepliesPageProps {
@@ -23,20 +22,16 @@ interface RepliesPageProps {
 
 export default function RepliesPage({ type }: RepliesPageProps) {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
 
   const fetchFn: FetchFn<CommentReplyView> = useCallback(
     async (page) => {
-      if (!jwt) throw new Error("user must be authed");
-
       // TODO - actually paginate properly if Lemmy implements
       // reply pagination filtering by comment and post
       const response = await client.getReplies({
         limit: 50,
         page,
         sort: "New",
-        auth: jwt,
         unread_only: false,
       });
 
@@ -48,7 +43,7 @@ export default function RepliesPage({ type }: RepliesPageProps) {
 
       return replies;
     },
-    [client, jwt, dispatch, type],
+    [client, dispatch, type],
   );
 
   return (

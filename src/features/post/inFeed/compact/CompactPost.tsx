@@ -120,7 +120,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
         </Title>
         <Aside isRead={hasBeenRead}>
           <From>
-            {post.counts.featured_community || post.counts.featured_local ? (
+            {post.post.featured_community || post.post.featured_local ? (
               <AnnouncementIcon icon={megaphone} />
             ) : undefined}
             {communityMode ? (

@@ -19,7 +19,6 @@ import PostCommentFeed, {
 } from "../../../features/feed/PostCommentFeed";
 import { receivedPosts } from "../../../features/post/postSlice";
 import { receivedComments } from "../../../features/comment/commentSlice";
-import { jwtSelector } from "../../../features/auth/authSlice";
 import FeedContent from "../../shared/FeedContent";
 
 interface SearchPostsResultsProps {
@@ -27,7 +26,6 @@ interface SearchPostsResultsProps {
 }
 
 export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
-  const jwt = useAppSelector(jwtSelector);
   const dispatch = useAppDispatch();
   const { search: _encodedSearch } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -44,13 +42,12 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
         type_: type,
         page,
         sort,
-        auth: jwt,
       });
       dispatch(receivedPosts(response.posts));
       dispatch(receivedComments(response.comments));
       return [...response.posts, ...response.comments];
     },
-    [search, client, sort, type, dispatch, jwt],
+    [search, client, sort, type, dispatch],
   );
 
   return (

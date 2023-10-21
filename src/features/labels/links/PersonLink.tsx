@@ -34,6 +34,9 @@ export default function PersonLink({
   showBadge = true,
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const isAdmin = useAppSelector((state) => state.auth.site?.admins)?.some(
+    (admin) => admin.person.actor_id === person.actor_id,
+  );
 
   let color: string | undefined;
 
@@ -42,7 +45,7 @@ export default function PersonLink({
       (state) => state.settings.appearance.general.userInstanceUrlDisplay,
     ) === OInstanceUrlDisplayMode.WhenRemote;
 
-  if (person.admin) color = "var(--ion-color-danger)";
+  if (isAdmin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 

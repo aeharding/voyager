@@ -126,7 +126,7 @@ export default function Login({
 
         setLoading(true);
         try {
-          await getClient(customServerHostname).getSite({});
+          await getClient(customServerHostname).getSite();
         } catch (error) {
           presentToast({
             message: `Problem connecting to ${customServerHostname}. Please try again`,

@@ -10,6 +10,7 @@ import {
   arrowUpCircleOutline,
   flameOutline,
   hourglassOutline,
+  skullOutline,
   timeOutline,
 } from "ionicons/icons";
 import { useContext, useState } from "react";
@@ -75,5 +76,7 @@ export function getSortIcon(sort: CommentSortType): string {
       return timeOutline;
     case "Old":
       return hourglassOutline;
+    case "Controversial":
+      return skullOutline;
   }
 }

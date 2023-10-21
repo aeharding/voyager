@@ -14,12 +14,17 @@ import {
   chatbubblesOutline,
   flameOutline,
   helpCircleOutline,
+  leafOutline,
+  skullOutline,
   timeOutline,
   trophyOutline,
 } from "ionicons/icons";
 
 import calendarWeekIconSvg from "./icons/calendarWeek.svg";
 import calendarSingleDaySvg from "./icons/calendarSingleDay.svg";
+import calendarNineMonthsSvg from "./icons/calendarNineMonths.svg";
+import calendarSixMonthsSvg from "./icons/calendarSixMonths.svg";
+import calendarThreeMonthsSvg from "./icons/calendarThreeMonths.svg";
 import clockBadgeOneSvg from "./icons/clockBadgeOne.svg";
 import clockBadgeSixSvg from "./icons/clockBadgeSix.svg";
 import clockBadgeTwelveSvg from "./icons/clockBadgeTwelve.svg";
@@ -169,6 +174,18 @@ function getSortIcon(sort: ExtendedSortType): string {
       return barChartOutline;
     case "Old":
       return helpCircleOutline;
+
+    // lemmy v0.19 below
+    case "Controversial":
+      return skullOutline;
+    case "Scaled":
+      return leafOutline;
+    case "TopNineMonths":
+      return calendarNineMonthsSvg;
+    case "TopSixMonths":
+      return calendarSixMonthsSvg;
+    case "TopThreeMonths":
+      return calendarThreeMonthsSvg;
   }
 }
 

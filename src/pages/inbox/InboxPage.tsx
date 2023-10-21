@@ -17,7 +17,6 @@ import {
 } from "../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { InboxItemView } from "../../features/inbox/InboxItem";
-import { jwtSelector } from "../../features/auth/authSlice";
 import FeedContent from "../shared/FeedContent";
 
 interface InboxPageProps {
@@ -26,7 +25,6 @@ interface InboxPageProps {
 
 export default function InboxPage({ showRead }: InboxPageProps) {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
@@ -34,12 +32,9 @@ export default function InboxPage({ showRead }: InboxPageProps) {
 
   const fetchFn: FetchFn<InboxItemView> = useCallback(
     async (page) => {
-      if (!jwt) throw new Error("user must be authed");
-
       const params = {
         limit: 50,
         page,
-        auth: jwt,
         unread_only: !showRead,
       };
 
@@ -73,7 +68,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
 
       return everything;
     },
-    [client, dispatch, jwt, myUserId, showRead],
+    [client, dispatch, myUserId, showRead],
   );
 
   return (

@@ -14,13 +14,11 @@ import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
 import { FetchFn } from "../../features/feed/Feed";
 import { useParams } from "react-router";
-import { useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
   isPost,
 } from "../../features/feed/PostCommentFeed";
-import { jwtSelector } from "../../features/auth/authSlice";
 import FeedContent from "../shared/FeedContent";
 
 export const InsetIonItem = styled(IonItem)`
@@ -47,7 +45,6 @@ export default function ProfileFeedItemsPage({
 }: ProfileFeedItemsPageProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { handle } = useParams<{ handle: string }>();
-  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
@@ -57,7 +54,6 @@ export default function ProfileFeedItemsPage({
         username: handle,
         page,
         sort: "New",
-        auth: jwt,
         saved_only: type === "Saved",
       });
 
@@ -69,7 +65,7 @@ export default function ProfileFeedItemsPage({
 
       return type === "Comments" ? response.comments : response.posts;
     },
-    [client, handle, jwt, type],
+    [client, handle, type],
   );
 
   return (

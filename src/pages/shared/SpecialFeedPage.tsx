@@ -16,7 +16,6 @@ import { useAppSelector } from "../../store";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
-import { jwtSelector } from "../../features/auth/authSlice";
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
@@ -36,7 +35,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
-  const jwt = useAppSelector(jwtSelector);
 
   const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
 
@@ -47,12 +45,11 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
         page,
         sort,
         type_: type,
-        auth: jwt,
       });
 
       return response.posts;
     },
-    [client, sort, type, jwt],
+    [client, sort, type],
   );
 
   const feed = <PostCommentFeed fetchFn={fetchFn} />;
@@ -100,5 +97,7 @@ function listingTypeTitle(type: ListingType): string {
       return type;
     case "Subscribed":
       return "Home";
+    case "ModeratorView":
+      return "Moderating";
   }
 }

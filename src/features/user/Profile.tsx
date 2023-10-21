@@ -20,7 +20,7 @@ import PostCommentFeed, {
   PostCommentItem,
   isPost,
 } from "../feed/PostCommentFeed";
-import { handleSelector, jwtSelector } from "../auth/authSlice";
+import { handleSelector } from "../auth/authSlice";
 import { fixLemmyDateString } from "../../helpers/date";
 
 export const InsetIonItem = styled(IonItem)`
@@ -37,7 +37,6 @@ interface ProfileProps {
 
 export default function Profile({ person }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
   const myHandle = useAppSelector(handleSelector);
 
@@ -50,13 +49,12 @@ export default function Profile({ person }: ProfileProps) {
         username: getHandle(person.person_view.person),
         page,
         sort: "New",
-        auth: jwt,
       });
       return [...response.posts, ...response.comments].sort(
         (a, b) => getCreatedDate(b) - getCreatedDate(a),
       );
     },
-    [person, client, jwt],
+    [person, client],
   );
 
   const header = useCallback(

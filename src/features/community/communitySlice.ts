@@ -1,6 +1,6 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, getSite, jwtSelector } from "../auth/authSlice";
+import { clientSelector, getSite } from "../auth/authSlice";
 import {
   CommunityModeratorView,
   CommunityView,
@@ -75,11 +75,8 @@ export default communitySlice.reducer;
 export const getCommunity =
   (handle: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
     const community = await clientSelector(getState())?.getCommunity({
       name: handle,
-      auth: jwt,
     });
     if (community) dispatch(receivedCommunityResponse(community));
   };
@@ -133,14 +130,9 @@ export const getFavoriteCommunities =
 export const followCommunity =
   (follow: boolean, communityId: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) throw new Error("Not authorized");
-
     const community = await clientSelector(getState())?.followCommunity({
       community_id: communityId,
       follow,
-      auth: jwt,
     });
 
     if (community) dispatch(receivedCommunity(community.community_view));
@@ -149,15 +141,11 @@ export const followCommunity =
 export const blockCommunity =
   (block: boolean, id: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
     if (!id) return;
-    if (!jwt) throw new Error("Not authorized");
 
     const response = await clientSelector(getState())?.blockCommunity({
       community_id: id,
       block,
-      auth: jwt,
     });
 
     dispatch(receivedCommunity(response.community_view));

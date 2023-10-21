@@ -18,11 +18,11 @@ import { getPost } from "../../features/post/postSlice";
 import AppBackButton from "../../features/shared/AppBackButton";
 import { CommentSortType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { jwtSelector } from "../../features/auth/authSlice";
 import CommentSort from "../../features/comment/CommentSort";
 import MoreActions from "../../features/post/shared/MoreActions";
 import PostDetail from "../../features/post/detail/PostDetail";
 import FeedContent from "../shared/FeedContent";
+import useClient from "../../helpers/useClient";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -46,7 +46,7 @@ export default function PostPage() {
     community: string;
   }>();
   const post = useAppSelector((state) => state.post.postById[id]);
-  const jwt = useAppSelector(jwtSelector);
+  const client = useClient();
   const dispatch = useAppDispatch();
   const defaultSort = useAppSelector(
     (state) => state.settings.general.comments.sort,
@@ -59,7 +59,7 @@ export default function PostPage() {
     if (post) return;
 
     dispatch(getPost(+id));
-  }, [post, jwt, dispatch, id]);
+  }, [post, client, dispatch, id]);
 
   const refresh = useCallback(
     async (event: RefresherCustomEvent) => {
