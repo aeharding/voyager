@@ -7,9 +7,8 @@ import {
 } from "@ionic/react";
 import { Comment } from "lemmy-js-client";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { useAppDispatch } from "../../../../store";
 import { Centered, Spinner } from "../../../auth/Login";
-import { jwtSelector } from "../../../auth/authSlice";
 import { editComment } from "../../commentSlice";
 import { DismissableProps } from "../../../shared/DynamicDismissableModal";
 import CommentContent from "../shared";
@@ -26,7 +25,6 @@ export default function CommentEdit({
 }: CommentEditingProps) {
   const dispatch = useAppDispatch();
   const [replyContent, setReplyContent] = useState(item.content);
-  const jwt = useAppSelector(jwtSelector);
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const isSubmitDisabled =
@@ -38,7 +36,6 @@ export default function CommentEdit({
 
   async function submit() {
     if (isSubmitDisabled) return;
-    if (!jwt) return;
 
     setLoading(true);
 
