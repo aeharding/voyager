@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { PostView, SortType } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, handleSelector } from "../auth/authSlice";
+import { clientSelector, handleSelector, jwtSelector } from "../auth/authSlice";
 import { POST_SORTS } from "../feed/PostSort";
 import { get, set } from "../settings/storage";
 import { IPostMetadata, db } from "../../services/db";
@@ -198,6 +198,7 @@ export const savePost =
 export const setPostRead =
   (postId: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    if (!jwtSelector(getState())) return;
     if (getState().settings.general.posts.disableMarkingRead) return;
 
     dispatch(updatePostRead({ postId }));
