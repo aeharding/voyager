@@ -27,13 +27,14 @@ export default function CommunityLink({
   community,
   showInstanceWhenRemote,
   className,
+  subscribed,
 }: CommunityLinkProps) {
   const [present] = useIonActionSheet();
 
   const handle = getHandle(community);
 
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
-    useCommunityActions(community);
+    useCommunityActions(community, subscribed);
 
   const bind = useLongPress(
     () => {
