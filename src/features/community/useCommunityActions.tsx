@@ -1,4 +1,4 @@
-import { Community } from "lemmy-js-client";
+import { Community, SubscribedType } from "lemmy-js-client";
 import { useContext, useMemo } from "react";
 import { PageContext } from "../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -24,7 +24,16 @@ import {
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useAppToast from "../../helpers/useAppToast";
 
-export default function useCommunityActions(community: Community) {
+/**
+ *
+ * @param community The community to show actions for
+ * @param subscribedFromPayload Subscribed status from post payload. Will be used if `CommunityView` not yet hydrated in redux.
+ * @returns Various community actions
+ */
+export default function useCommunityActions(
+  community: Community,
+  subscribedFromPayload?: SubscribedType,
+) {
   const presentToast = useAppToast();
 
   const dispatch = useAppDispatch();
@@ -46,8 +55,13 @@ export default function useCommunityActions(community: Community) {
   const communityId = community.id;
   const isNsfw = community.nsfw;
 
+  const subscribedSourceOfTruth = communityByHandle[communityHandle]
+    ? communityByHandle[communityHandle]?.subscribed
+    : subscribedFromPayload;
+
   const isSubscribed =
-    communityByHandle[communityHandle]?.subscribed !== "NotSubscribed";
+    subscribedSourceOfTruth === "Subscribed" ||
+    subscribedSourceOfTruth === "Pending";
 
   const isBlocked = communityByHandle[communityHandle]?.blocked;
 
