@@ -3,15 +3,12 @@ import { ToastOptions } from "@ionic/core";
 export function baseToastOptions(
   position: "top" | "bottom",
   presentAlongsideAppBars = true,
+  duration = 3000,
 ): ToastOptions {
-  const BASE = {
-    duration: 3000,
-  };
-
   switch (position) {
     case "bottom":
       return {
-        ...BASE,
+        duration,
         position: "bottom",
         positionAnchor: presentAlongsideAppBars
           ? document.querySelector("ion-tab-bar") || undefined
@@ -19,7 +16,7 @@ export function baseToastOptions(
       };
     case "top":
       return {
-        ...BASE,
+        duration,
         position: "top",
         positionAnchor: presentAlongsideAppBars
           ? (document.querySelector(

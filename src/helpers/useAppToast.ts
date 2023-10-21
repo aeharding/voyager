@@ -12,6 +12,7 @@ export interface AppToastOptions {
   icon?: string;
   centerText?: boolean;
   fullscreen?: boolean;
+  duration?: number;
 }
 
 type Color = "success" | "warning" | "danger" | "primary";
@@ -43,7 +44,11 @@ export default function useAppToast() {
         color: options.color ?? "primary",
         icon: options.icon,
         cssClass: options.centerText ? "center" : "",
-        ...baseToastOptions(options.position ?? "bottom", !options.fullscreen),
+        ...baseToastOptions(
+          options.position ?? "bottom",
+          !options.fullscreen,
+          options.duration,
+        ),
       });
     },
     [present, vibrate],
