@@ -185,7 +185,7 @@ export default function PostEditorRoot({
   }
 
   async function submit() {
-    if (!jwt || !community) return;
+    if (!community) return;
 
     // super hacky, I know... but current value submitted
     // from child is needed for submit
@@ -240,8 +240,6 @@ export default function PostEditorRoot({
       url: postUrl,
       body: text || undefined,
       nsfw: showNsfwToggle && nsfw,
-
-      auth: jwt,
     };
 
     try {

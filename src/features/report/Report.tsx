@@ -2,8 +2,6 @@ import { IonActionSheet, IonAlert } from "@ionic/react";
 import { CommentView, PostView, PrivateMessageView } from "lemmy-js-client";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import useClient from "../../helpers/useClient";
-import { useAppSelector } from "../../store";
-import { jwtSelector } from "../auth/authSlice";
 import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 import useAppToast from "../../helpers/useAppToast";
 
@@ -14,7 +12,6 @@ export type ReportHandle = {
 };
 
 export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
-  const jwt = useAppSelector(jwtSelector);
   const presentToast = useAppToast();
   const [item, setItem] = useState<ReportableItem | undefined>();
   const [reportOptionsOpen, setReportOptionsOpen] = useState(false);
@@ -37,26 +34,23 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
   }));
 
   async function submitReport(reason: string) {
-    if (!item || !jwt) return;
+    if (!item) return;
 
     try {
       if ("comment" in item) {
         await client.createCommentReport({
           reason,
           comment_id: item.comment.id,
-          auth: jwt,
         });
       } else if ("post" in item) {
         await client.createPostReport({
           reason,
           post_id: item.post.id,
-          auth: jwt,
         });
       } else if ("private_message" in item) {
         await client.createPrivateMessageReport({
           reason,
           private_message_id: item.private_message.id,
-          auth: jwt,
         });
       }
     } catch (error) {

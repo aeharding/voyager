@@ -6,7 +6,6 @@ import { useContext, useEffect, useRef, useState } from "react";
 import useClient from "../../../helpers/useClient";
 import { getInboxCounts, receivedMessages } from "../inboxSlice";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
-import { jwtSelector } from "../../auth/authSlice";
 import { PageContext } from "../../auth/PageContext";
 import { useLongPress } from "use-long-press";
 import Markdown from "../../shared/Markdown";
@@ -119,7 +118,6 @@ export default function Message({ message }: MessageProps) {
     message.private_message.creator_id === message.private_message.recipient_id;
   const [loading, setLoading] = useState(false);
   const client = useClient();
-  const jwt = useAppSelector(jwtSelector);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -148,7 +146,6 @@ export default function Message({ message }: MessageProps) {
   }, [focused, message, thisIsMyMessage]);
 
   async function setRead() {
-    if (!jwt) return;
     if (loading) return;
 
     setLoading(true);
@@ -159,7 +156,6 @@ export default function Message({ message }: MessageProps) {
       response = await client.markPrivateMessageAsRead({
         private_message_id: message.private_message.id,
         read: true,
-        auth: jwt,
       });
     } finally {
       setLoading(false);

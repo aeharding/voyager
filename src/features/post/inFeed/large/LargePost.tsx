@@ -187,7 +187,7 @@ export default function LargePost({ post, communityMode }: PostProps) {
       <Details>
         <LeftDetails isRead={hasBeenRead}>
           <CommunityName>
-            {post.counts.featured_community || post.counts.featured_local ? (
+            {post.post.featured_community || post.post.featured_local ? (
               <AnnouncementIcon icon={megaphone} />
             ) : undefined}
             {communityMode ? (

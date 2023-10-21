@@ -1,6 +1,6 @@
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, jwtSelector } from "../auth/authSlice";
+import { clientSelector } from "../auth/authSlice";
 import { Comment, CommentView } from "lemmy-js-client";
 
 interface CommentState {
@@ -101,15 +101,10 @@ export const voteOnComment =
 
     dispatch(updateCommentVote({ commentId, vote }));
 
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) throw new Error("Not authorized");
-
     try {
       await clientSelector(getState())?.likeComment({
         comment_id: commentId,
         score: vote,
-        auth: jwt,
       });
     } catch (error) {
       dispatch(updateCommentVote({ commentId, vote: oldVote }));
@@ -125,15 +120,10 @@ export const saveComment =
 
     dispatch(updateCommentSaved({ commentId, saved: save }));
 
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) throw new Error("Not authorized");
-
     try {
       await clientSelector(getState())?.saveComment({
         comment_id: commentId,
         save,
-        auth: jwt,
       });
     } catch (error) {
       dispatch(updateCommentSaved({ commentId, saved: oldSaved }));
@@ -145,14 +135,9 @@ export const saveComment =
 export const deleteComment =
   (commentId: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) throw new Error("Not authorized");
-
     const response = await clientSelector(getState())?.deleteComment({
       comment_id: commentId,
       deleted: true,
-      auth: jwt,
     });
 
     dispatch(mutatedComment(response.comment_view));
@@ -161,14 +146,9 @@ export const deleteComment =
 export const editComment =
   (commentId: number, content: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) throw new Error("Not authorized");
-
     const response = await clientSelector(getState())?.editComment({
       comment_id: commentId,
       content,
-      auth: jwt,
     });
 
     dispatch(mutatedComment(response.comment_view));
