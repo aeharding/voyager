@@ -1,4 +1,4 @@
-import { differenceInDays } from "date-fns";
+import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
 import { CommentSortType, FederatedInstances } from "lemmy-js-client";
 
@@ -269,7 +269,7 @@ export const CompoundKeys = {
 export class WefwefDB extends Dexie {
   postMetadatas!: Table<IPostMetadata, number>;
   settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
-  federatedInstanceData!: Table<InstanceData, number>;
+  cachedFederatedInstanceData!: Table<InstanceData, number>;
 
   constructor() {
     super("WefwefDB");
@@ -321,9 +321,10 @@ export class WefwefDB extends Dexie {
         user_handle,
         community
       `,
-      federatedInstanceData: `
+      cachedFederatedInstanceData: `
         ++id,
-        &domain
+        &domain,
+        updated
       `,
     });
   }
@@ -416,17 +417,28 @@ export class WefwefDB extends Dexie {
   /*
    * Federated instance data
    */
-  async getFederatedInstances(domain: string) {
-    const result = await this.federatedInstanceData.get({ domain });
+  async getCachedFederatedInstances(domain: string) {
+    const INVALIDATE_AFTER_HOURS = 12;
+
+    const result = await this.cachedFederatedInstanceData.get({ domain });
+
+    // Cleanup stale
+    (async () => {
+      this.cachedFederatedInstanceData
+        .where("updated")
+        .below(subHours(new Date(), INVALIDATE_AFTER_HOURS))
+        .delete();
+    })();
 
     if (!result) return;
 
-    if (differenceInDays(new Date(), result.updated) > 2) return;
+    if (differenceInHours(new Date(), result.updated) > INVALIDATE_AFTER_HOURS)
+      return;
 
     return result.data;
   }
 
-  async setFederatedInstances(
+  async setCachedFederatedInstances(
     domain: string,
     federatedInstances: FederatedInstances,
   ) {
@@ -436,8 +448,10 @@ export class WefwefDB extends Dexie {
       data: federatedInstances,
     };
 
-    await this.transaction("rw", this.federatedInstanceData, async () => {
-      const query = this.federatedInstanceData.where("domain").equals(domain);
+    await this.transaction("rw", this.cachedFederatedInstanceData, async () => {
+      const query = this.cachedFederatedInstanceData
+        .where("domain")
+        .equals(domain);
 
       const item = await query.first();
 
@@ -446,7 +460,7 @@ export class WefwefDB extends Dexie {
         return;
       }
 
-      await this.federatedInstanceData.add(payload);
+      await this.cachedFederatedInstanceData.add(payload);
     });
   }
 

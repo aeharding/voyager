@@ -65,7 +65,8 @@ export const getInstances =
 
     dispatch(pendingInstances());
 
-    let federated_instances = await db.getFederatedInstances(connectedInstance);
+    let federated_instances =
+      await db.getCachedFederatedInstances(connectedInstance);
 
     if (!federated_instances) {
       try {
@@ -76,7 +77,7 @@ export const getInstances =
         if (!federated_instances)
           throw new Error("No federated instances in response");
 
-        db.setFederatedInstances(connectedInstance, federated_instances);
+        db.setCachedFederatedInstances(connectedInstance, federated_instances);
       } catch (error) {
         dispatch(failedInstances());
         throw error;
