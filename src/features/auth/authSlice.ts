@@ -11,6 +11,8 @@ import { resetInbox } from "../inbox/inboxSlice";
 import { differenceWith, uniqBy } from "lodash";
 import { resetCommunities } from "../community/communitySlice";
 import { ApplicationContext } from "capacitor-application-context";
+import { resetInstances } from "../instances/instancesSlice";
+import { resetResolve } from "../resolve/resolveSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -236,22 +238,25 @@ export const getSite =
     dispatch(updateUserDetails(details));
   };
 
-export const logoutEverything = () => async (dispatch: AppDispatch) => {
-  dispatch(reset());
+const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
   dispatch(resetPosts());
   dispatch(resetComments());
   dispatch(resetUsers());
   dispatch(resetInbox());
+  dispatch(resetCommunities());
+  dispatch(resetResolve());
+  dispatch(resetInstances());
+};
+
+export const logoutEverything = () => async (dispatch: AppDispatch) => {
+  dispatch(reset());
+  dispatch(resetAccountSpecificStoreData());
 };
 
 export const changeAccount =
   (handle: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    dispatch(resetPosts());
-    dispatch(resetComments());
-    dispatch(resetUsers());
-    dispatch(resetInbox());
-    dispatch(resetCommunities());
+    dispatch(resetAccountSpecificStoreData());
     dispatch(setPrimaryAccount(handle));
 
     const iss = jwtIssSelector(getState());

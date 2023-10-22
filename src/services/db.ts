@@ -1,11 +1,18 @@
+import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
-import { CommentSortType } from "lemmy-js-client";
+import { CommentSortType, FederatedInstances } from "lemmy-js-client";
 
 export interface IPostMetadata {
   post_id: number;
   user_handle: string;
   hidden: 0 | 1; // Not boolean because dexie doesn't support booleans for indexes
   hidden_updated_at?: number;
+}
+
+export interface InstanceData {
+  domain: string;
+  updated: Date;
+  data: FederatedInstances;
 }
 
 export const OAppThemeType = {
@@ -262,6 +269,7 @@ export const CompoundKeys = {
 export class WefwefDB extends Dexie {
   postMetadatas!: Table<IPostMetadata, number>;
   settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
+  cachedFederatedInstanceData!: Table<InstanceData, number>;
 
   constructor() {
     super("WefwefDB");
@@ -293,6 +301,31 @@ export class WefwefDB extends Dexie {
 
     this.version(3).upgrade(async () => {
       await this.setSetting("blur_nsfw", OPostBlurNsfw.InFeed);
+    });
+
+    this.version(4).stores({
+      postMetadatas: `
+        ++,
+        ${CompoundKeys.postMetadata.post_id_and_user_handle},
+        ${CompoundKeys.postMetadata.user_handle_and_hidden},
+        post_id,
+        user_handle,
+        hidden,
+        hidden_updated_at
+      `,
+      settings: `
+        ++,
+        key,
+        ${CompoundKeys.settings.key_and_user_handle_and_community},
+        value,
+        user_handle,
+        community
+      `,
+      cachedFederatedInstanceData: `
+        ++id,
+        &domain,
+        updated
+      `,
     });
   }
 
@@ -379,6 +412,56 @@ export class WefwefDB extends Dexie {
       .filter(filterFn)
       .limit(limit)
       .toArray();
+  }
+
+  /*
+   * Federated instance data
+   */
+  async getCachedFederatedInstances(domain: string) {
+    const INVALIDATE_AFTER_HOURS = 12;
+
+    const result = await this.cachedFederatedInstanceData.get({ domain });
+
+    // Cleanup stale
+    (async () => {
+      this.cachedFederatedInstanceData
+        .where("updated")
+        .below(subHours(new Date(), INVALIDATE_AFTER_HOURS))
+        .delete();
+    })();
+
+    if (!result) return;
+
+    if (differenceInHours(new Date(), result.updated) > INVALIDATE_AFTER_HOURS)
+      return;
+
+    return result.data;
+  }
+
+  async setCachedFederatedInstances(
+    domain: string,
+    federatedInstances: FederatedInstances,
+  ) {
+    const payload: InstanceData = {
+      updated: new Date(),
+      domain,
+      data: federatedInstances,
+    };
+
+    await this.transaction("rw", this.cachedFederatedInstanceData, async () => {
+      const query = this.cachedFederatedInstanceData
+        .where("domain")
+        .equals(domain);
+
+      const item = await query.first();
+
+      if (item) {
+        await query.modify(payload);
+        return;
+      }
+
+      await this.cachedFederatedInstanceData.add(payload);
+    });
   }
 
   /*

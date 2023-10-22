@@ -26,6 +26,10 @@ import gestureSlice, {
 import appIconSlice, {
   fetchAppIcon,
 } from "./features/settings/app-icon/appIconSlice";
+import instancesSlice, {
+  getInstances,
+} from "./features/instances/instancesSlice";
+import resolveSlice from "./features/resolve/resolveSlice";
 
 const store = configureStore({
   reducer: {
@@ -38,6 +42,8 @@ const store = configureStore({
     settings: settingsSlice,
     gesture: gestureSlice,
     appIcon: appIconSlice,
+    instances: instancesSlice,
+    resolve: resolveSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
@@ -65,6 +71,7 @@ const activeHandleChange = () => {
   store.dispatch(getBlurNsfw());
   store.dispatch(getFilteredKeywords());
   store.dispatch(getDefaultFeed());
+  store.dispatch(getInstances());
 };
 
 export function StoreProvider({ children }: { children: ReactNode }) {

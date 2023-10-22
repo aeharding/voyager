@@ -246,7 +246,8 @@ export const getPost =
       throw error;
     }
 
-    if (result) dispatch(receivedPosts([result.post_view]));
+    dispatch(receivedPosts([result.post_view]));
+    return result;
   };
 
 export const deletePost =
