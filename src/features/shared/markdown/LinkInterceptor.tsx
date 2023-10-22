@@ -17,11 +17,11 @@ import {
 import useClient from "../../../helpers/useClient";
 import { getPost } from "../../post/postSlice";
 
-const POST_PATH = /^\/post\/(\d+)$/;
-const COMMENT_PATH = /^\/comment\/(\d+)$/;
-const USER_PATH =
+export const POST_PATH = /^\/post\/(\d+)$/;
+export const COMMENT_PATH = /^\/comment\/(\d+)$/;
+export const USER_PATH =
   /^\/u\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
-const COMMUNITY_PATH =
+export const COMMUNITY_PATH =
   /^\/c\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
 
 const POTENTIAL_PATHS = [
@@ -133,7 +133,16 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
         if (commentMatch) {
           const commentId = +commentMatch[1];
 
-          const { comment_view } = await client.getComment({ id: commentId });
+          let comment_view;
+
+          try {
+            ({ comment_view } = await client.getComment({ id: commentId }));
+          } catch (error) {
+            presentToast({
+              message: "Comment not found",
+            });
+            throw error;
+          }
           navigateToComment(comment_view);
           return;
         }
@@ -142,7 +151,16 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
         if (postMatch) {
           const postId = +postMatch[1];
 
-          const { post_view } = await dispatch(getPost(postId));
+          let post_view;
+
+          try {
+            ({ post_view } = await dispatch(getPost(postId)));
+          } catch (error) {
+            presentToast({
+              message: "Post not found",
+            });
+            throw error;
+          }
           navigateToPost(post_view);
           return;
         }

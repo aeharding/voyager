@@ -421,7 +421,7 @@ export class WefwefDB extends Dexie {
 
     if (!result) return;
 
-    if (differenceInDays(new Date(), result.updated) > 14) return;
+    if (differenceInDays(new Date(), result.updated) > 2) return;
 
     return result.data;
   }

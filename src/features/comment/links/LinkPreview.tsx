@@ -1,13 +1,25 @@
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { LinkData } from "./CommentLinks";
-import { linkSharp, peopleSharp } from "ionicons/icons";
+import {
+  albumsOutline,
+  chatboxSharp,
+  linkSharp,
+  peopleSharp,
+  personSharp,
+} from "ionicons/icons";
 import { css } from "@emotion/react";
 import { getImageSrc } from "../../../services/lemmy";
 import { ReactNode, useMemo } from "react";
-import { matchLemmyCommunity } from "../../shared/markdown/LinkInterceptor";
+import {
+  COMMENT_PATH,
+  POST_PATH,
+  USER_PATH,
+  matchLemmyCommunity,
+} from "../../shared/markdown/LinkInterceptor";
 import { useAppSelector } from "../../../store";
 import { isUrlImage } from "../../../helpers/lemmy";
+import { knownInstancesSelector } from "../../instances/instancesSlice";
 
 const shared = css`
   width: 30px;
@@ -40,18 +52,26 @@ export default function LinkPreview({ link }: LinkPreviewProps): ReactNode {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+  const knownInstances = useAppSelector(knownInstancesSelector);
 
-  const isLemmyCommunity = useMemo(() => {
+  const icon = useMemo(() => {
     const url = new URL(link.url, `https://${connectedInstance}`);
 
-    return !!matchLemmyCommunity(url.pathname);
-  }, [connectedInstance, link.url]);
+    if (matchLemmyCommunity(url.pathname)) return peopleSharp;
+
+    if (!knownInstances.includes(url.hostname)) return linkSharp;
+
+    if (POST_PATH.test(url.pathname)) return albumsOutline;
+    if (COMMENT_PATH.test(url.pathname)) return chatboxSharp;
+    if (USER_PATH.test(url.pathname)) return personSharp;
+
+    return linkSharp;
+  }, [connectedInstance, link.url, knownInstances]);
 
   if (link.type === "image" || isUrlImage(link.url))
     return (
       <LinkImage src={getImageSrc(link.url, { size: 30 })} alt={link.text} />
     );
 
-  if (link.type === "link")
-    return <LinkIcon icon={isLemmyCommunity ? peopleSharp : linkSharp} />;
+  if (link.type === "link") return <LinkIcon icon={icon} />;
 }
