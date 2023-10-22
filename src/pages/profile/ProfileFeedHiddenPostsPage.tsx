@@ -99,7 +99,7 @@ export default function ProfileFeedHiddenPostsPage() {
     presentActionSheet({
       buttons: [
         {
-          text: "Clear hidden posts",
+          text: "Reset hidden posts",
           role: "destructive",
           handler: () => {
             dispatch(clearHidden());
@@ -126,7 +126,7 @@ export default function ProfileFeedHiddenPostsPage() {
           </IonButtons>
           <IonButtons slot="end">
             <IonButton onClick={clear} color="danger">
-              Clear
+              Reset
             </IonButton>
           </IonButtons>
         </IonToolbar>
