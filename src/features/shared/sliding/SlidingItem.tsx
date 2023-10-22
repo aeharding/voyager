@@ -15,6 +15,8 @@ import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { bounceAnimation } from "../animations";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
+  overflow: initial; // sticky
+
   --ion-item-border-color: transparent;
 `;
 
@@ -35,6 +37,10 @@ const OptionContainer = styled.div<{ active: boolean }>`
   width: min(60px, 11vw);
 
   opacity: 0.5;
+
+  position: sticky;
+  top: 0;
+  bottom: 0;
 
   .item-options-start & {
     margin-right: auto;
@@ -63,6 +69,8 @@ const SlashedIcon = styled(IonIcon)<{
   slash: boolean;
   bgColor: string;
 }>`
+  margin-block: 24px;
+
   color: white;
 
   ${({ icon, slash, bgColor }) =>
@@ -254,7 +262,7 @@ export default function SlidingItem({
       {canSwipeStart && (
         <IonItemOptions side="start">
           <StyledIonItemOption color={startActionColor}>
-            <OptionContainer active={ratio <= startRatio}>
+            <OptionContainer active={ratio <= startRatio} slot="top">
               {startActionContents}
             </OptionContainer>
           </StyledIonItemOption>
@@ -264,7 +272,7 @@ export default function SlidingItem({
       {canSwipeEnd && (
         <IonItemOptions side="end">
           <StyledIonItemOption color={endActionColor}>
-            <OptionContainer active={ratio >= endRatio}>
+            <OptionContainer active={ratio >= endRatio} slot="top">
               {endActionContents}
             </OptionContainer>
           </StyledIonItemOption>
