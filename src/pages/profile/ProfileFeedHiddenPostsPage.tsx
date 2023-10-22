@@ -8,19 +8,24 @@ import {
   IonTitle,
   IonButtons,
   IonBackButton,
+  IonButton,
+  useIonActionSheet,
 } from "@ionic/react";
 import { useParams } from "react-router";
 import styled from "@emotion/styled";
 import useClient from "../../helpers/useClient";
 import { FetchFn } from "../../features/feed/Feed";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
 import { handleSelector } from "../../features/auth/authSlice";
 import { IPostMetadata, db } from "../../services/db";
-import { postHiddenByIdSelector } from "../../features/post/postSlice";
+import {
+  clearHidden,
+  postHiddenByIdSelector,
+} from "../../features/post/postSlice";
 import FeedContent from "../shared/FeedContent";
 
 export const InsetIonItem = styled(IonItem)`
@@ -41,6 +46,8 @@ export default function ProfileFeedHiddenPostsPage() {
   const { handle: handleWithoutServer } = useParams<{ handle: string }>();
   const client = useClient();
   const postById = useAppSelector((state) => state.post.postById);
+  const dispatch = useAppDispatch();
+  const [presentActionSheet] = useIonActionSheet();
 
   // This is just used to trigger a re-render when the list changes
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
@@ -88,6 +95,24 @@ export default function ProfileFeedHiddenPostsPage() {
     [client, handle, postHiddenById],
   );
 
+  function clear() {
+    presentActionSheet({
+      buttons: [
+        {
+          text: "Clear hidden posts",
+          role: "destructive",
+          handler: () => {
+            dispatch(clearHidden());
+          },
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ],
+    });
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -98,6 +123,11 @@ export default function ProfileFeedHiddenPostsPage() {
               text={handleWithoutServer}
               defaultHref={buildGeneralBrowseLink(`/u/${handleWithoutServer}`)}
             />
+          </IonButtons>
+          <IonButtons slot="end">
+            <IonButton onClick={clear} color="danger">
+              Clear
+            </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
