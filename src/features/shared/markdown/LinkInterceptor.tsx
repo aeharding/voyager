@@ -8,6 +8,14 @@ import { knownInstancesSelector } from "../../instances/instancesSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { resolveObject } from "../../resolve/resolveSlice";
 import useAppToast from "../../../helpers/useAppToast";
+import {
+  CommentView,
+  CommunityView,
+  PersonView,
+  PostView,
+} from "lemmy-js-client";
+import useClient from "../../../helpers/useClient";
+import { getPost } from "../../post/postSlice";
 
 const POST_PATH = /^\/post\/(\d+)$/;
 const COMMENT_PATH = /^\/comment\/(\d+)$/;
@@ -37,6 +45,7 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
   const objectByUrl = useAppSelector((state) => state.resolve.objectByUrl);
+  const client = useClient();
 
   const onClick = useCallback(
     async (e: MouseEvent) => {
@@ -48,7 +57,12 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
 
       handleCommunityClickIfNeeded();
       if (e.defaultPrevented) return;
-      await handleObjectIfNeeded();
+      if (!isPotentialObjectPath(url.pathname)) return;
+      if (url.hostname !== connectedInstance) {
+        await handleRemoteObjectIfNeeded();
+      } else {
+        await handleLocalObjectIfNeeded();
+      }
 
       function handleCommunityClickIfNeeded() {
         const matchedCommunityHandle = matchLemmyCommunity(url.pathname);
@@ -74,8 +88,7 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
         );
       }
 
-      async function handleObjectIfNeeded() {
-        if (!isPotentialObjectPath(url.pathname)) return;
+      async function handleRemoteObjectIfNeeded() {
         const cachedResolvedObject = objectByUrl[url.toString()];
         if (cachedResolvedObject === "couldnt_find_object") return;
 
@@ -102,32 +115,79 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
         }
 
         if (object.post) {
-          router.push(
-            buildGeneralBrowseLink(
-              `/c/${getHandle(object.post.community)}/comments/${
-                object.post.post.id
-              }`,
-            ),
-          );
+          navigateToPost(object.post);
         } else if (object.community) {
-          router.push(
-            buildGeneralBrowseLink(
-              `/c/${getHandle(object.community.community)}`,
-            ),
-          );
+          navigateToCommunity(object.community);
         } else if (object.person) {
-          router.push(
-            buildGeneralBrowseLink(`/u/${getHandle(object.person.person)}`),
-          );
+          navigateToUser(object.person);
         } else if (object.comment) {
-          router.push(
-            buildGeneralBrowseLink(
-              `/c/${getHandle(object.comment.community)}/comments/${
-                object.comment.post.id
-              }/${object.comment.comment.path}`,
-            ),
-          );
+          navigateToComment(object.comment);
         }
+      }
+
+      async function handleLocalObjectIfNeeded() {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const commentMatch = COMMENT_PATH.exec(url.pathname);
+        if (commentMatch) {
+          const commentId = +commentMatch[1];
+
+          const { comment_view } = await client.getComment({ id: commentId });
+          navigateToComment(comment_view);
+          return;
+        }
+
+        const postMatch = POST_PATH.exec(url.pathname);
+        if (postMatch) {
+          const postId = +postMatch[1];
+
+          const { post_view } = await dispatch(getPost(postId));
+          navigateToPost(post_view);
+          return;
+        }
+
+        // Community links should be handled already
+
+        const matchedUserHandle = matchLemmyUser(url.pathname);
+
+        if (matchedUserHandle) {
+          const [userName, domain] = matchedUserHandle;
+
+          if (!domain || domain === connectedInstance) {
+            router.push(buildGeneralBrowseLink(`/u/${userName}`));
+          } else {
+            router.push(buildGeneralBrowseLink(`/u/${userName}@${domain}`));
+          }
+        }
+      }
+
+      function navigateToPost(post: PostView) {
+        router.push(
+          buildGeneralBrowseLink(
+            `/c/${getHandle(post.community)}/comments/${post.post.id}`,
+          ),
+        );
+      }
+
+      function navigateToCommunity(community: CommunityView) {
+        router.push(
+          buildGeneralBrowseLink(`/c/${getHandle(community.community)}`),
+        );
+      }
+
+      function navigateToUser(user: PersonView) {
+        router.push(buildGeneralBrowseLink(`/u/${getHandle(user.person)}`));
+      }
+
+      function navigateToComment(comment: CommentView) {
+        router.push(
+          buildGeneralBrowseLink(
+            `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${
+              comment.comment.path
+            }`,
+          ),
+        );
       }
     },
     [
@@ -139,6 +199,7 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
       dispatch,
       presentToast,
       objectByUrl,
+      client,
     ],
   );
 
@@ -160,6 +221,18 @@ export function matchLemmyCommunity(
     const [communityName, domain] = matches[1].split("@");
     if (!domain) return [communityName];
     return [communityName, domain];
+  }
+  return null;
+}
+
+export function matchLemmyUser(
+  urlPathname: string,
+): [string, string] | [string] | null {
+  const matches = urlPathname.match(USER_PATH);
+  if (matches && matches[1]) {
+    const [userName, domain] = matches[1].split("@");
+    if (!domain) return [userName];
+    return [userName, domain];
   }
   return null;
 }

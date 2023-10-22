@@ -1,11 +1,18 @@
+import { differenceInDays } from "date-fns";
 import Dexie, { Table } from "dexie";
-import { CommentSortType } from "lemmy-js-client";
+import { CommentSortType, FederatedInstances } from "lemmy-js-client";
 
 export interface IPostMetadata {
   post_id: number;
   user_handle: string;
   hidden: 0 | 1; // Not boolean because dexie doesn't support booleans for indexes
   hidden_updated_at?: number;
+}
+
+export interface InstanceData {
+  domain: string;
+  updated: Date;
+  data: FederatedInstances;
 }
 
 export const OAppThemeType = {
@@ -262,6 +269,7 @@ export const CompoundKeys = {
 export class WefwefDB extends Dexie {
   postMetadatas!: Table<IPostMetadata, number>;
   settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
+  federatedInstanceData!: Table<InstanceData, number>;
 
   constructor() {
     super("WefwefDB");
@@ -293,6 +301,30 @@ export class WefwefDB extends Dexie {
 
     this.version(3).upgrade(async () => {
       await this.setSetting("blur_nsfw", OPostBlurNsfw.InFeed);
+    });
+
+    this.version(4).stores({
+      postMetadatas: `
+        ++,
+        ${CompoundKeys.postMetadata.post_id_and_user_handle},
+        ${CompoundKeys.postMetadata.user_handle_and_hidden},
+        post_id,
+        user_handle,
+        hidden,
+        hidden_updated_at
+      `,
+      settings: `
+        ++,
+        key,
+        ${CompoundKeys.settings.key_and_user_handle_and_community},
+        value,
+        user_handle,
+        community
+      `,
+      federatedInstanceData: `
+        ++id,
+        &domain
+      `,
     });
   }
 
@@ -379,6 +411,43 @@ export class WefwefDB extends Dexie {
       .filter(filterFn)
       .limit(limit)
       .toArray();
+  }
+
+  /*
+   * Federated instance data
+   */
+  async getFederatedInstances(domain: string) {
+    const result = await this.federatedInstanceData.get({ domain });
+
+    if (!result) return;
+
+    if (differenceInDays(new Date(), result.updated) > 14) return;
+
+    return result.data;
+  }
+
+  async setFederatedInstances(
+    domain: string,
+    federatedInstances: FederatedInstances,
+  ) {
+    const payload: InstanceData = {
+      updated: new Date(),
+      domain,
+      data: federatedInstances,
+    };
+
+    await this.transaction("rw", this.federatedInstanceData, async () => {
+      const query = this.federatedInstanceData.where("domain").equals(domain);
+
+      const item = await query.first();
+
+      if (item) {
+        await query.modify(payload);
+        return;
+      }
+
+      await this.federatedInstanceData.add(payload);
+    });
   }
 
   /*

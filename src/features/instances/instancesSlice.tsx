@@ -1,63 +1,55 @@
-import {
-  Dictionary,
-  PayloadAction,
-  createSelector,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
 import { FederatedInstances } from "lemmy-js-client";
+import { db } from "../../services/db";
 
 interface InstancesState {
-  knownInstancesByInstance: Dictionary<"pending" | FederatedInstances>;
+  knownInstances: "pending" | FederatedInstances | undefined;
 }
 
 const initialState: InstancesState = {
-  knownInstancesByInstance: {},
+  knownInstances: undefined,
 };
 
 export const instancesSlice = createSlice({
   name: "instances",
   initialState,
   reducers: {
-    pendingInstances: (state, action: PayloadAction<string>) => {
-      state.knownInstancesByInstance[action.payload] = "pending";
+    pendingInstances: (state) => {
+      state.knownInstances = "pending";
     },
-    failedInstances: (state, action: PayloadAction<string>) => {
-      delete state.knownInstancesByInstance[action.payload];
+    failedInstances: (state) => {
+      state.knownInstances = undefined;
     },
-    receivedInstances: (
-      state,
-      action: PayloadAction<{
-        instances: FederatedInstances;
-        connectedInstance: string;
-      }>,
-    ) => {
-      state.knownInstancesByInstance[action.payload.connectedInstance] =
-        action.payload.instances;
+    receivedInstances: (state, action: PayloadAction<FederatedInstances>) => {
+      state.knownInstances = action.payload;
     },
+    resetInstances: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { receivedInstances, pendingInstances, failedInstances } =
-  instancesSlice.actions;
+export const {
+  receivedInstances,
+  pendingInstances,
+  failedInstances,
+  resetInstances,
+} = instancesSlice.actions;
 
 export default instancesSlice.reducer;
 
 export const knownInstancesSelector = createSelector(
   [
-    (state: RootState) => state.instances.knownInstancesByInstance,
+    (state: RootState) => state.instances.knownInstances,
     (state: RootState) => state.auth.connectedInstance,
   ],
-  (knownInstancesByInstance, connectedInstance) => {
-    const instances = knownInstancesByInstance[connectedInstance];
-
-    if (!instances || instances === "pending") return [];
+  (knownInstances, connectedInstance) => {
+    if (!knownInstances || knownInstances === "pending") return [];
 
     return [
       connectedInstance,
-      ...instances.linked
+      ...knownInstances.linked
         .filter((instance) => instance.software === "lemmy")
         .map((instance) => instance.domain),
     ];
@@ -69,29 +61,27 @@ export const getInstances =
     const connectedInstance = getState().auth.connectedInstance;
 
     // Already received, or in flight
-    if (getState().instances.knownInstancesByInstance[connectedInstance])
-      return;
+    if (getState().instances.knownInstances) return;
 
-    dispatch(pendingInstances(connectedInstance));
+    dispatch(pendingInstances());
 
-    let federated_instances;
+    let federated_instances = await db.getFederatedInstances(connectedInstance);
 
-    try {
-      ({ federated_instances } = await clientSelector(
-        getState(),
-      ).getFederatedInstances());
+    if (!federated_instances) {
+      try {
+        ({ federated_instances } = await clientSelector(
+          getState(),
+        ).getFederatedInstances());
 
-      if (!federated_instances)
-        throw new Error("No federated instances in response");
-    } catch (error) {
-      dispatch(failedInstances(connectedInstance));
-      throw error;
+        if (!federated_instances)
+          throw new Error("No federated instances in response");
+
+        db.setFederatedInstances(connectedInstance, federated_instances);
+      } catch (error) {
+        dispatch(failedInstances());
+        throw error;
+      }
     }
 
-    dispatch(
-      receivedInstances({
-        instances: federated_instances,
-        connectedInstance,
-      }),
-    );
+    dispatch(receivedInstances(federated_instances));
   };

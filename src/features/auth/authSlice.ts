@@ -11,6 +11,8 @@ import { resetInbox } from "../inbox/inboxSlice";
 import { differenceWith, uniqBy } from "lodash";
 import { resetCommunities } from "../community/communitySlice";
 import { ApplicationContext } from "capacitor-application-context";
+import { resetInstances } from "../instances/instancesSlice";
+import { resetResolve } from "../resolve/resolveSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -242,6 +244,9 @@ export const logoutEverything = () => async (dispatch: AppDispatch) => {
   dispatch(resetComments());
   dispatch(resetUsers());
   dispatch(resetInbox());
+  dispatch(resetCommunities());
+  dispatch(resetResolve());
+  dispatch(resetInstances());
 };
 
 export const changeAccount =

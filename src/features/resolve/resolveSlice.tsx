@@ -31,11 +31,13 @@ export const resolveSlice = createSlice({
     ) => {
       state.objectByUrl[action.payload.url] = action.payload.object;
     },
+    resetResolve: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { couldNotFindUrl, resolvedObject } = resolveSlice.actions;
+export const { couldNotFindUrl, resolvedObject, resetResolve } =
+  resolveSlice.actions;
 
 export default resolveSlice.reducer;
 
