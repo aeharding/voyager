@@ -59,7 +59,17 @@ function buildCustomFetch(auth: string | undefined): typeof fetch {
     const url = toURL(info as never); // something is wrong with these types
     if (auth && url) url.searchParams.set("auth", auth);
 
-    return await fetch(url ?? (info as never), init); // something is wrong with these types
+    if (url?.pathname === "/pictrs/image") {
+      init = {
+        ...init,
+        headers: {
+          ...init?.headers,
+          Cookie: `jwt=${auth}`,
+        },
+      };
+    }
+
+    return await fetch(url ? url.toString() : (info as never), init); // something is wrong with these types
   };
 }
 
@@ -85,7 +95,7 @@ export async function uploadImage(url: string, auth: string, image: File) {
 
   // Cookie header can only be set by native code (Capacitor http plugin)
   if (isNative()) {
-    const response = await getClient(url).uploadImage({
+    const response = await getClient(url, auth).uploadImage({
       image: compressedImageIfNeeded as File,
       auth,
     });
