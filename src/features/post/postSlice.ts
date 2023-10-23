@@ -58,6 +58,9 @@ export const postSlice = createSlice({
     receivedPostNotFound: (state, action: PayloadAction<number>) => {
       state.postById[action.payload] = "not-found";
     },
+    resetHidden: (state) => {
+      state.postHiddenById = {};
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -172,6 +175,7 @@ export const {
   updatePostSaved,
   updatePostRead,
   receivedPostNotFound,
+  resetHidden,
 } = postSlice.actions;
 
 export default postSlice.reducer;
@@ -283,6 +287,14 @@ export const hidePosts =
 export const unhidePost = (postId: number) => async (dispatch: AppDispatch) => {
   await dispatch(updatePostHidden({ postId, hidden: false }));
 };
+
+export const clearHidden =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const handle = handleSelector(getState());
+    if (!handle) return;
+    await db.clearHiddenPosts(handle);
+    await dispatch(resetHidden());
+  };
 
 export const postHiddenByIdSelector = (state: RootState) => {
   return state.post.postHiddenById;

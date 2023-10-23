@@ -414,6 +414,13 @@ export class WefwefDB extends Dexie {
       .toArray();
   }
 
+  async clearHiddenPosts(user_handle: string) {
+    return await this.postMetadatas
+      .where("user_handle")
+      .equals(user_handle)
+      .delete();
+  }
+
   /*
    * Federated instance data
    */
