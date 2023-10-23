@@ -11,7 +11,7 @@ import AppBackButton from "../../features/shared/AppBackButton";
 import PostSort from "../../features/feed/PostSort";
 import MoreActions from "../../features/community/MoreActions";
 import { useAppSelector } from "../../store";
-import { useCallback, useRef, useState } from "react";
+import { createContext, useCallback, useRef, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
@@ -39,8 +39,12 @@ const StyledFeedContent = styled(FeedContent)`
   );
 `;
 
-const StyledIonToolbar = styled(IonToolbar)`
-  --border-color: transparent;
+const StyledIonToolbar = styled(IonToolbar)<{ hideBorder: boolean }>`
+  ${({ hideBorder }) =>
+    hideBorder &&
+    css`
+      --border-color: transparent;
+    `}
 `;
 
 const HeaderIonSearchbar = styled(IonSearchbar)<{ hideSearch: boolean }>`
@@ -78,6 +82,7 @@ export default function CommunityPage() {
     community: string;
     actor: string;
   }>();
+  const [scrolledPastSearch, setScrolledPastSearch] = useState(false);
   const [_searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -114,23 +119,25 @@ export default function CommunityPage() {
     );
 
   const feed = (
-    <PostCommentFeed
-      fetchFn={fetchFn}
-      communityName={community}
-      header={() =>
-        !searchOpen && (
-          <HeaderContainer>
-            <CommunitySearchbar
-              placeholder={`Search c/${community}`}
-              onFocus={() => {
-                setSearchOpen(true);
-                searchbarRef.current?.setFocus();
-              }}
-            />
-          </HeaderContainer>
-        )
-      }
-    />
+    <FeedSearchContext.Provider value={{ setScrolledPastSearch }}>
+      <PostCommentFeed
+        fetchFn={fetchFn}
+        communityName={community}
+        header={() =>
+          !searchOpen && (
+            <HeaderContainer>
+              <CommunitySearchbar
+                placeholder={`Search c/${community}`}
+                onFocus={() => {
+                  setSearchOpen(true);
+                  searchbarRef.current?.setFocus();
+                }}
+              />
+            </HeaderContainer>
+          )
+        }
+      />
+    </FeedSearchContext.Provider>
   );
 
   function renderFeed() {
@@ -149,7 +156,7 @@ export default function CommunityPage() {
       <TitleSearchProvider>
         <IonPage>
           <IonHeader>
-            <StyledIonToolbar>
+            <StyledIonToolbar hideBorder={!searchOpen && !scrolledPastSearch}>
               <HeaderIonSearchbar
                 placeholder={`Search c/${community}`}
                 ref={searchbarRef}
@@ -189,3 +196,11 @@ export default function CommunityPage() {
     </FeedContextProvider>
   );
 }
+
+interface IFeedSearchContext {
+  setScrolledPastSearch: (scrolled: boolean) => void;
+}
+
+export const FeedSearchContext = createContext<IFeedSearchContext>({
+  setScrolledPastSearch: () => {},
+});

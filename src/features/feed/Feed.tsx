@@ -1,6 +1,7 @@
 import React, {
   Fragment,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -21,6 +22,7 @@ import { markReadOnScrollSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import { VList, VListHandle } from "virtua";
+import { FeedSearchContext } from "../../pages/shared/CommunityPage";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
@@ -52,6 +54,7 @@ export default function Feed<I>({
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const [atEnd, setAtEnd] = useState(false);
   const [loadFailed, setLoadFailed] = useState(true);
+  const { setScrolledPastSearch } = useContext(FeedSearchContext);
 
   const filteredItems = useMemo(
     () => (filterFn ? items.filter(filterFn) : items),
@@ -187,6 +190,7 @@ export default function Feed<I>({
         style={{ height: "100%" }}
         onScroll={(offset) => {
           setIsListAtTop(offset < 10);
+          setScrolledPastSearch(offset > 40);
         }}
         onRangeChange={(start, end) => {
           if (end + 10 > filteredItems.length) {
