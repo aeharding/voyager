@@ -70,6 +70,7 @@ import GalleryProvider from "./features/gallery/GalleryProvider";
 import AppIconPage from "./pages/settings/AppIconPage";
 import { DefaultFeedType, ODefaultFeedType } from "./services/db";
 import { AppContext } from "./features/auth/AppContext";
+import SearchFeedResultsPage from "./pages/search/results/SearchFeedResultsPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -207,6 +208,18 @@ export default function TabbedRoutes() {
       <Route exact path={`/${tab}/:actor/c/:community`}>
         <ActorRedirect>
           <CommunityPage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/c/:community/search/posts/:search`}>
+        <ActorRedirect>
+          <SearchFeedResultsPage type="Posts" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/c/:community/search/comments/:search`}>
+        <ActorRedirect>
+          <SearchFeedResultsPage type="Comments" />
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
