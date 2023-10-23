@@ -24,40 +24,40 @@ dependencies:
 devDependencies:
   '@capacitor-community/app-icon':
     specifier: ^4.1.1
-    version: 4.1.1(@capacitor/core@5.5.0)
+    version: 4.1.1(@capacitor/core@5.2.3)
   '@capacitor/android':
-    specifier: ^5.5.0
-    version: 5.5.0(@capacitor/core@5.5.0)
+    specifier: 5.2.3
+    version: 5.2.3(@capacitor/core@5.2.3)
   '@capacitor/app':
     specifier: ^5.0.6
-    version: 5.0.6(@capacitor/core@5.5.0)
+    version: 5.0.6(@capacitor/core@5.2.3)
   '@capacitor/assets':
     specifier: ^3.0.1
     version: 3.0.1(@types/node@20.8.7)(typescript@5.2.2)
   '@capacitor/browser':
     specifier: ^5.1.0
-    version: 5.1.0(@capacitor/core@5.5.0)
+    version: 5.1.0(@capacitor/core@5.2.3)
   '@capacitor/cli':
-    specifier: ^5.5.0
-    version: 5.5.0
+    specifier: 5.2.3
+    version: 5.2.3
   '@capacitor/core':
-    specifier: ^5.5.0
-    version: 5.5.0
+    specifier: 5.2.3
+    version: 5.2.3
   '@capacitor/haptics':
     specifier: npm:voyager-capacitor-haptics@^5.0.7
-    version: /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.5.0)
+    version: /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.2.3)
   '@capacitor/ios':
-    specifier: ^5.5.0
-    version: 5.5.0(@capacitor/core@5.5.0)
+    specifier: 5.2.3
+    version: 5.2.3(@capacitor/core@5.2.3)
   '@capacitor/keyboard':
     specifier: ^5.0.6
-    version: 5.0.6(@capacitor/core@5.5.0)
+    version: 5.0.6(@capacitor/core@5.2.3)
   '@capacitor/share':
     specifier: ^5.0.6
-    version: 5.0.6(@capacitor/core@5.5.0)
+    version: 5.0.6(@capacitor/core@5.2.3)
   '@capacitor/status-bar':
     specifier: ^5.0.6
-    version: 5.0.6(@capacitor/core@5.5.0)
+    version: 5.0.6(@capacitor/core@5.2.3)
   '@emotion/babel-plugin':
     specifier: ^11.11.0
     version: 11.11.0
@@ -147,19 +147,19 @@ devDependencies:
     version: 4.1.0(vite@4.5.0)
   capacitor-android-nav-mode:
     specifier: ^0.0.1
-    version: 0.0.1(@capacitor/core@5.5.0)
+    version: 0.0.1(@capacitor/core@5.2.3)
   capacitor-application-context:
     specifier: ^0.0.1
-    version: 0.0.1(@capacitor/core@5.5.0)
+    version: 0.0.1(@capacitor/core@5.2.3)
   capacitor-plugin-safe-area:
     specifier: ^2.0.5
-    version: 2.0.5(@capacitor/core@5.5.0)
+    version: 2.0.5(@capacitor/core@5.2.3)
   capacitor-set-version:
     specifier: ^2.2.0
     version: 2.2.0(@types/node@20.8.7)(typescript@5.2.2)
   capacitor-stash-media:
     specifier: ^0.0.7
-    version: 0.0.7(@capacitor/core@5.5.0)
+    version: 0.0.7(@capacitor/core@5.2.3)
   date-fns:
     specifier: ^2.30.0
     version: 2.30.0
@@ -1516,28 +1516,28 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@capacitor-community/app-icon@4.1.1(@capacitor/core@5.5.0):
+  /@capacitor-community/app-icon@4.1.1(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-76oedS4WnilQEoMszraBVMZIx52H5zNFHHsBuwMKARGrp1fkjOJpmxIYuuwmJSr2KojXllPMSskS43Yf8XdGbA==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
-  /@capacitor/android@5.5.0(@capacitor/core@5.5.0):
-    resolution: {integrity: sha512-ipJijb3M0FA6DvotS9zrbJ8p/mTEVg9EVtBmvUexogm8g5se1mc7i1gvOr3MQ/iTZ3PnNrRC/P7kHxa2R55iqg==}
+  /@capacitor/android@5.2.3(@capacitor/core@5.2.3):
+    resolution: {integrity: sha512-TqXOq5RIniMACcAckn/X84XajPP2GU4VH7Er390Ja2Y2BWSeUKgk7T8aURcwLYu2hnv+Op9eTww5MTBb3zBtmg==}
     peerDependencies:
-      '@capacitor/core': ^5.5.0
+      '@capacitor/core': ^5.2.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
-  /@capacitor/app@5.0.6(@capacitor/core@5.5.0):
+  /@capacitor/app@5.0.6(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-6ZXVdnNmaYILasC/RjQw+yfTmq2ZO7Q3v5lFcDVfq3PFGnybyYQh+RstBrYri+376OmXOXxBD7E6UxBhrMzXGA==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
   /@capacitor/assets@3.0.1(@types/node@20.8.7)(typescript@5.2.2):
@@ -1566,12 +1566,38 @@ packages:
       - typescript
     dev: true
 
-  /@capacitor/browser@5.1.0(@capacitor/core@5.5.0):
+  /@capacitor/browser@5.1.0(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-7togqchk2Tvq4SmLaWhcrd4x48ES/GEZsceM+29aun7WhxQEVcDU0cJsVdSU2LNFwNhWgPV2GW90etVd1B3OdQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
+    dev: true
+
+  /@capacitor/cli@5.2.3:
+    resolution: {integrity: sha512-iqjOnA9fCxm+cFv5iTvxb/vElK2Z1kDpVS+N9XyD2Msyv3l3ezuOZTSvABiDoo6w6CGkj4/AUMpdT4nrZkTHTg==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    dependencies:
+      '@ionic/cli-framework-output': 2.2.6
+      '@ionic/utils-fs': 3.1.7
+      '@ionic/utils-subprocess': 2.1.12
+      '@ionic/utils-terminal': 2.3.4
+      commander: 9.5.0
+      debug: 4.3.4(supports-color@8.1.1)
+      env-paths: 2.2.1
+      kleur: 4.1.5
+      native-run: 1.7.3
+      open: 8.4.2
+      plist: 3.1.0
+      prompts: 2.4.2
+      rimraf: 4.4.1
+      semver: 7.5.4
+      tar: 6.2.0
+      tslib: 2.6.2
+      xml2js: 0.5.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@capacitor/cli@5.5.0:
@@ -1600,42 +1626,42 @@ packages:
       - supports-color
     dev: true
 
-  /@capacitor/core@5.5.0:
-    resolution: {integrity: sha512-w59io0ctwnb7JRng7yO2H0YLHG8uz7XARUugRfp5aYTNiG55FqdSmSMOOqGCMPRg4sEnKjJTvAa4ImCYh3Kk1w==}
+  /@capacitor/core@5.2.3:
+    resolution: {integrity: sha512-Q1zbgt3Mvldy7six2/GX54kTL0ozgnR37jeDUAXL/fOJBF4Iorr/8A0OjGEAnwEjpR1la7uFZUunESMFyMLhEQ==}
     dependencies:
       tslib: 2.6.2
     dev: true
 
-  /@capacitor/ios@5.5.0(@capacitor/core@5.5.0):
-    resolution: {integrity: sha512-kApjblUOlLY91+1OrWIx+vaVfEN1bl1kh1jSgK1/IdGfS9kFs1hxUE/okRoLJGT6tYeSOa6GA/19MLOs64wb6A==}
+  /@capacitor/ios@5.2.3(@capacitor/core@5.2.3):
+    resolution: {integrity: sha512-ailR/Mer48GEXdqip+ENyN3Qk+ZtUBNDTlHh83WLNbx6uv71z6lCeoLKBXdtSEBFwzFrwtCO5upzbdzK79pONQ==}
     peerDependencies:
-      '@capacitor/core': ^5.5.0
+      '@capacitor/core': ^5.2.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
-  /@capacitor/keyboard@5.0.6(@capacitor/core@5.5.0):
+  /@capacitor/keyboard@5.0.6(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-9GewAa/y2Hwkdw/Be8MTdiAjrFZ7TPDKpR44M0Y/0QMnK+mBbgzcoZ/UkuumWv6e2F1IAI+VY5eYVQHDeZcRoA==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
-  /@capacitor/share@5.0.6(@capacitor/core@5.5.0):
+  /@capacitor/share@5.0.6(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-/dVOW7kcuuD7hWB9Z1drArIpEk+5JCoMnMrAs2c7CLp3q5PeaXNJjTkGr6RJ1OtMhsHyXc6DAFwQ4frFkmZsgw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
-  /@capacitor/status-bar@5.0.6(@capacitor/core@5.5.0):
+  /@capacitor/status-bar@5.0.6(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-7od8CxsBnot1XMK3IeOkproFL4hgoKoWAc3pwUvmDOkQsXoxwQm4SR9mLwQavv1XfxtHbFV9Ukd7FwMxOPSViw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
   /@cspotcode/source-map-support@0.8.1:
@@ -4159,28 +4185,28 @@ packages:
     resolution: {integrity: sha512-p82WjBYIypO0ukTsd/FG3Xxs+4tFeaY9pfT4amQL8KWtYH7H9nYwReGAbMTJ0hsmRO8IfDtsS6p3ZWj8+1c2RQ==}
     dev: true
 
-  /capacitor-android-nav-mode@0.0.1(@capacitor/core@5.5.0):
+  /capacitor-android-nav-mode@0.0.1(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-cnEk7CqDCjNokhDr/DTY/w/qgZqUr/+tTqavjl5PIBCXNkqUCHAP/nBFebZN5wZfAwD9WaXJp67Q1MtfaQNpVw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
-  /capacitor-application-context@0.0.1(@capacitor/core@5.5.0):
+  /capacitor-application-context@0.0.1(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-XYHvn01l3VxbGh/fs77aBTyEW54TOoEDlXYkAEeRe7PQCwU8EfVCX5MLvuWVCoIzpRlEWYNCFCS1TvLkmV7IsQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
-  /capacitor-plugin-safe-area@2.0.5(@capacitor/core@5.5.0):
+  /capacitor-plugin-safe-area@2.0.5(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-Lg3P+/aW2/+C3gz2/xZFdfjgkOJ/ZSFTmZSxLaSY6lIudOTjwVpjoxhAyKUz1tc13Carjqdlq01yRrr++XOzAg==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
   /capacitor-set-version@2.2.0(@types/node@20.8.7)(typescript@5.2.2):
@@ -4205,12 +4231,12 @@ packages:
       - typescript
     dev: true
 
-  /capacitor-stash-media@0.0.7(@capacitor/core@5.5.0):
+  /capacitor-stash-media@0.0.7(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-4fS+TaAGSVy+SV7qOqAMGOUg0+Xc9R0+F4TkWcj8wv4xyU2IAJkRCZLyfVtmO/RRlKxSUIV481NLKkIPmp7TLQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
   /cardinal@2.1.1:
@@ -11403,12 +11429,12 @@ packages:
       - terser
     dev: true
 
-  /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.5.0):
+  /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-AfPxS2PumM+LHd7C2hFYmDqezrA4F5sgeTkrGVbSxRTp6dWuEZ8coC8gJeEh1G0xuZAOHqvL9tJ3XrxHU7m7ag==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.0
+      '@capacitor/core': 5.2.3
     dev: true
 
   /voyager-ionic-core@7.5.1:
