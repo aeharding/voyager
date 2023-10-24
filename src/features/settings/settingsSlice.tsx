@@ -86,6 +86,7 @@ interface SettingsState {
       jumpButtonPosition: JumpButtonPositionType;
       highlightNewAccount: boolean;
       touchFriendlyLinks: boolean;
+      renderCommentImages: boolean;
     };
     posts: {
       disableMarkingRead: boolean;
@@ -154,6 +155,7 @@ const initialState: SettingsState = {
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
       highlightNewAccount: true,
       touchFriendlyLinks: true,
+      renderCommentImages: false,
     },
     posts: {
       disableMarkingRead: false,
@@ -253,6 +255,10 @@ export const appearanceSlice = createSlice({
     setTouchFriendlyLinks(state, action: PayloadAction<boolean>) {
       state.general.comments.touchFriendlyLinks = action.payload;
       db.setSetting("touch_friendly_links", action.payload);
+    },
+    setRenderCommentImages(state, action: PayloadAction<boolean>) {
+      state.general.comments.renderCommentImages = action.payload;
+      db.setSetting("render_comment_images", action.payload);
     },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
@@ -474,6 +480,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const link_handler = await db.getSetting("link_handler");
       const filtered_keywords = await db.getSetting("filtered_keywords");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
+      const render_comment_images = await db.getSetting(
+        "render_comment_images",
+      );
 
       return {
         ...state.settings,
@@ -525,6 +534,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             touchFriendlyLinks:
               touch_friendly_links ??
               initialState.general.comments.touchFriendlyLinks,
+            renderCommentImages:
+              render_comment_images ??
+              initialState.general.comments.renderCommentImages,
           },
           posts: {
             disableMarkingRead:
@@ -569,6 +581,7 @@ export const {
   setJumpButtonPosition,
   setHighlightNewAccount,
   setTouchFriendlyLinks,
+  setRenderCommentImages,
   setNsfwBlur,
   setFilteredKeywords,
   setPostAppearance,
