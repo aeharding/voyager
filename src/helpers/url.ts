@@ -1,4 +1,4 @@
-export function isValidUrl(potentialUrl: string) {
+export function isValidUrl(potentialUrl: string, checkProtocol = false) {
   let url;
 
   try {
@@ -6,6 +6,8 @@ export function isValidUrl(potentialUrl: string) {
   } catch (_) {
     return false;
   }
+
+  if (!checkProtocol) return true;
 
   return url.protocol === "http:" || url.protocol === "https:";
 }
