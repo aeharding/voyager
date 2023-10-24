@@ -26,12 +26,7 @@ import { jwtSelector, urlSelector } from "../../auth/authSlice";
 import { startCase } from "lodash";
 import { css } from "@emotion/react";
 import { getHandle, getRemoteHandle, isUrlImage } from "../../../helpers/lemmy";
-import {
-  cameraOutline,
-  heartOutline,
-  refreshOutline,
-  reloadOutline,
-} from "ionicons/icons";
+import { cameraOutline } from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -39,7 +34,6 @@ import PhotoPreview from "./PhotoPreview";
 import { getTitle, uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
 import useAppToast from "../../../helpers/useAppToast";
-import { ToggleIcon } from "../../community/ToggleIcon";
 
 const Container = styled.div`
   position: absolute;
