@@ -371,6 +371,7 @@ export default function PostEditorRoot({
             <IonItem>
               <IonInputTitle
                 value={title}
+                clearInput
                 onIonInput={(e) => setTitle(e.detail.value ?? "")}
                 placeholder="Title"
                 counter
