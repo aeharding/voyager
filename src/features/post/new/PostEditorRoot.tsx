@@ -34,6 +34,7 @@ import PhotoPreview from "./PhotoPreview";
 import { getTitle, uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
 import useAppToast from "../../../helpers/useAppToast";
+import { isValidUrl } from "../../../helpers/url";
 
 const Container = styled.div`
   position: absolute;
@@ -420,35 +421,27 @@ export default function PostEditorRoot({
                   value={url}
                   onIonInput={(e) => setUrl(e.detail.value ?? "")}
                 />
-                {!!url &&
-                  (() => {
-                    try {
-                      new URL(url);
-                      return true;
-                    } catch (_err) {
-                      return false;
-                    }
-                  })() && (
-                    <IonButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                        async function fetchData() {
-                          const title = await getTitle(url);
-                          if (title === "") {
-                            return presentToast({
-                              message: "Unable to fetch title",
-                              color: "danger",
-                            });
-                          }
-                          setTitle(title);
+                {!!url && isValidUrl(url) && (
+                  <IonButton
+                    onClick={(e) => {
+                      e.preventDefault();
+                      async function fetchData() {
+                        const title = await getTitle(url);
+                        if (title === "") {
+                          return presentToast({
+                            message: "Unable to fetch title",
+                            color: "danger",
+                          });
                         }
+                        setTitle(title);
+                      }
 
-                        fetchData();
-                      }}
-                    >
-                      FETCH TITLE
-                    </IonButton>
-                  )}
+                      fetchData();
+                    }}
+                  >
+                    FETCH TITLE
+                  </IonButton>
+                )}
               </IonItem>
             )}
             {showNsfwToggle && (
