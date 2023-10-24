@@ -11,7 +11,7 @@ export async function scrollUpIfNeeded(
 
   if ("querySelector" in current) {
     const scroll =
-      current.querySelector('[data-virtuoso-scroller="true"]') ??
+      current.querySelector(".virtual-scroller") ??
       current
         .querySelector("ion-content")
         ?.shadowRoot?.querySelector(".inner-scroll");
@@ -21,25 +21,13 @@ export async function scrollUpIfNeeded(
       return true;
     }
   } else {
-    return new Promise<boolean>((resolve) =>
-      current.getState((state) => {
-        if (state.scrollTop) {
-          if (index != null) {
-            current.scrollToIndex({
-              index,
-              behavior,
-            });
-          } else {
-            current.scrollTo({
-              top: 0,
-              behavior,
-            });
-          }
-        }
+    if (current.scrollOffset) {
+      current.scrollToIndex(index ?? 0, {
+        smooth: behavior === "smooth",
+      });
 
-        resolve(!!state.scrollTop);
-      }),
-    );
+      return true;
+    }
   }
 
   return false;

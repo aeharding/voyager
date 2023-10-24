@@ -1,4 +1,5 @@
 import React, {
+  Fragment,
   forwardRef,
   useEffect,
   useImperativeHandle,
@@ -16,7 +17,6 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { CommentSortType, CommentView, Person } from "lemmy-js-client";
 import { pullAllBy, uniqBy } from "lodash";
-import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { receivedComments } from "./commentSlice";
 import { RefresherCustomEvent } from "@ionic/core";
@@ -27,6 +27,7 @@ import { CommentsContext } from "./CommentsContext";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import useAppToast from "../../helpers/useAppToast";
+import { VList, VListHandle } from "virtua";
 
 const centerCss = css`
   position: relative;
@@ -96,9 +97,9 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   const commentId = commentPath ? +commentPath.split(".")[1] : undefined;
   const commentDepth = commentPath ? commentPath.split(".").length : undefined;
 
-  const virtuosoRef = useRef<VirtuosoHandle>(null);
+  const virtuaRef = useRef<VListHandle>(null);
 
-  useSetActivePage(virtuosoRef);
+  useSetActivePage(virtuaRef);
 
   useImperativeHandle(ref, () => ({
     appendComments,
@@ -268,6 +269,18 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     ));
   }, [commentTree, comments.length, highlightedCommentId, loading, op]);
 
+  const list = useMemo(() => {
+    const data = [<Fragment key="header">{header}</Fragment>, ...allComments];
+    if (bottomPadding)
+      data.push(<div style={{ height: `${bottomPadding}px` }} key="footer" />);
+
+    return data.map((item, i) => (
+      <div data-index={i} key={item.key}>
+        {item}
+      </div>
+    ));
+  }, [allComments, bottomPadding, header]);
+
   return (
     <CommentsContext.Provider
       value={{
@@ -283,25 +296,26 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       >
         <IonRefresherContent />
       </IonRefresher>
-      <Virtuoso
+      <VList
         className={
-          isSafariFeedHackEnabled ? undefined : "ion-content-scroll-host"
+          isSafariFeedHackEnabled
+            ? "virtual-scroller"
+            : "ion-content-scroll-host virtual-scroller"
         }
-        ref={virtuosoRef}
+        ref={virtuaRef}
         style={{ height: "100%" }}
-        totalCount={allComments.length + 1}
-        itemContent={(index) => (index ? allComments[index - 1] : header)}
-        endReached={() => fetchComments()}
-        atTopStateChange={setIsListAtTop}
-        components={
-          bottomPadding
-            ? {
-                // add space for the <ViewAllComments /> fixed component
-                Footer: () => <div style={{ height: `${bottomPadding}px` }} />,
-              }
-            : {}
-        }
-      />
+        overscan={0}
+        onRangeChange={(start, end) => {
+          if (end + 10 > list.length) {
+            fetchComments();
+          }
+        }}
+        onScroll={(offset) => {
+          setIsListAtTop(offset < 6);
+        }}
+      >
+        {list}
+      </VList>
     </CommentsContext.Provider>
   );
 });

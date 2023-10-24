@@ -56,6 +56,7 @@ export default defineConfig({
   // break. This breaks iOS transitions.
   // Put everything into one chunk for now.
   build: {
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: () => "index.js",

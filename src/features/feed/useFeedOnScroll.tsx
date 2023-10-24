@@ -8,11 +8,7 @@ interface UseFeedOnScrollProps {
 export default function useFeedOnScroll({ fetchMore }: UseFeedOnScrollProps) {
   const throttledOnScroll: UIEventHandler<HTMLDivElement> = useMemo(
     () =>
-      throttle<UIEventHandler<HTMLDivElement>>((e) => {
-        const scrollView = e.target;
-
-        if (!(scrollView instanceof HTMLElement)) return;
-
+      throttle<(offset: number) => void>((offset) => {
         const nearBottom =
           Math.abs(
             scrollView.scrollHeight -

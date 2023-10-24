@@ -1,12 +1,12 @@
 import React, {
   ComponentType,
+  Fragment,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
 import {
   IonRefresher,
   IonRefresherContent,
@@ -18,11 +18,11 @@ import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
 import EndPost from "./endItems/EndPost";
 import { useAppSelector } from "../../store";
-import { OPostAppearanceType } from "../../services/db";
 import { markReadOnScrollSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import useFeedOnScroll from "./useFeedOnScroll";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
+import { VList, VListHandle } from "virtua";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
@@ -135,9 +135,9 @@ export default function Feed<I>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredItems, filteredItems, items, items, page, loading]);
 
-  const virtuosoRef = useRef<VirtuosoHandle>(null);
+  const virtuaHandle = useRef<VListHandle>(null);
 
-  useSetActivePage(virtuosoRef);
+  useSetActivePage(virtuaHandle);
 
   useEffect(() => {
     fetchMore(true);
@@ -186,37 +186,36 @@ export default function Feed<I>({
         <IonRefresherContent />
       </IonRefresher>
 
-      <Virtuoso
+      <VList
         className={
-          isSafariFeedHackEnabled ? undefined : "ion-content-scroll-host"
+          isSafariFeedHackEnabled
+            ? "virtual-scroller"
+            : "ion-content-scroll-host virtual-scroller"
         }
-        ref={virtuosoRef}
+        ref={virtuaHandle}
         style={{ height: "100%" }}
-        atTopStateChange={setIsListAtTop}
-        computeItemKey={computeItemKey}
-        totalCount={filteredItems.length}
-        itemContent={itemContent}
-        components={{ Header: header, Footer: footer }}
-        onScroll={onScroll}
-        increaseViewportBy={
-          postAppearanceType === OPostAppearanceType.Compact
-            ? // Compact posts have fixed size, so we don't need to proactively render
-              markReadOnScroll
-              ? {
-                  // Intersection observer needs time to work when quickly scrolling
-                  // TODO it would be nice if we could just detect if removed from top or bottom of
-                  // page on unmount
-                  top: 150,
-                  bottom: 0,
-                }
-              : 0
-            : {
-                // Height of post depends on image aspect ratio, so load extra off screen
-                top: 200,
-                bottom: 800,
-              }
-        }
-      />
+        // atTopStateChange={setIsListAtTop}
+        // computeItemKey={computeItemKey}
+        // totalCount={filteredItems.length}
+        // itemContent={itemContent}
+        // components={{ Header: header, Footer: footer }}
+        onScroll={(offset) => {
+          setIsListAtTop(offset < 10);
+        }}
+        onRangeChange={(start, end) => {
+          if (end + 10 > filteredItems.length) {
+            fetchMore();
+          }
+        }}
+        overscan={markReadOnScroll ? 2 : 0}
+      >
+        {header?.()}
+        {filteredItems.map((i) => (
+          <Fragment key={getIndex ? getIndex(i) : `${i}`}>
+            {renderItemContent(i)}
+          </Fragment>
+        ))}
+      </VList>
     </>
   );
 }
