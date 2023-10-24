@@ -26,14 +26,20 @@ import { jwtSelector, urlSelector } from "../../auth/authSlice";
 import { startCase } from "lodash";
 import { css } from "@emotion/react";
 import { getHandle, getRemoteHandle, isUrlImage } from "../../../helpers/lemmy";
-import { cameraOutline } from "ionicons/icons";
+import {
+  cameraOutline,
+  heartOutline,
+  refreshOutline,
+  reloadOutline,
+} from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PhotoPreview from "./PhotoPreview";
-import { uploadImage } from "../../../services/lemmy";
+import { getTitle, uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
 import useAppToast from "../../../helpers/useAppToast";
+import { ToggleIcon } from "../../community/ToggleIcon";
 
 const Container = styled.div`
   position: absolute;
@@ -419,6 +425,35 @@ export default function PostEditorRoot({
                   value={url}
                   onIonInput={(e) => setUrl(e.detail.value ?? "")}
                 />
+                {!!url &&
+                  (() => {
+                    try {
+                      new URL(url);
+                      return true;
+                    } catch (_err) {
+                      return false;
+                    }
+                  })() && (
+                    <IonButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                        async function fetchData() {
+                          const title = await getTitle(url);
+                          if (title === "") {
+                            return presentToast({
+                              message: "Unable to fetch title",
+                              color: "danger",
+                            });
+                          }
+                          setTitle(title);
+                        }
+
+                        fetchData();
+                      }}
+                    >
+                      FETCH TITLE
+                    </IonButton>
+                  )}
               </IonItem>
             )}
             {showNsfwToggle && (

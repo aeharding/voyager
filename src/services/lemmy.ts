@@ -128,6 +128,19 @@ export async function uploadImage(url: string, auth: string, image: File) {
   throw new Error("unknown image upload error");
 }
 
+export async function getTitle(url: string) {
+  try {
+    const fetchUrl = isNative() ? url : `${location.origin}/api/title/${url}`;
+    const response = await fetch(fetchUrl);
+    const html = await response.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const title = doc.title;
+    return title as string;
+  } catch (_error) {
+    return "";
+  }
+}
+
 interface ImageOptions {
   /**
    * maximum image dimension

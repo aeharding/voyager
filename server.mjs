@@ -34,8 +34,34 @@ INITIAL_VALID_LEMMY_SERVERS.forEach(
 const app = express();
 
 const PROXY_ENDPOINT = "/api/:actor";
+const TITLE_ENDPINT = "/api/title/:url(*)";
 
 app.use(compression());
+
+app.get(TITLE_ENDPINT, (req, res, next) => {
+  try {
+    new URL(`${req.params.url}`);
+    next();
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+});
+
+app.get(
+  TITLE_ENDPINT,
+  createProxyMiddleware({
+    target: "http://example.com",
+    router: (req) => `${req.params.url}`,
+    changeOrigin: true,
+    secure: true,
+    xfwd: true,
+    followRedirects: true,
+    pathRewrite: (path) => path.split("/").slice(3).join("/"),
+    onProxyRes: (proxyRes, req, res) => {
+      res.removeHeader("cookie");
+    },
+  }),
+);
 
 app.use(PROXY_ENDPOINT, async (req, res, next) => {
   const actor = req.params.actor;
