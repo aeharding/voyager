@@ -31,7 +31,7 @@ import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PhotoPreview from "./PhotoPreview";
-import { getTitle, uploadImage } from "../../../services/lemmy";
+import { getSiteMetadata, uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
 import useAppToast from "../../../helpers/useAppToast";
 import { isValidUrl } from "../../../helpers/url";
@@ -428,14 +428,18 @@ export default function PostEditorRoot({
                       e.preventDefault();
                       async function fetchData() {
                         if (!jwt) return;
-                        const title = await getTitle(instanceUrl, jwt, url);
-                        if (!title) {
+                        const data = await getSiteMetadata(
+                          instanceUrl,
+                          jwt,
+                          url,
+                        );
+                        if (!data?.title) {
                           return presentToast({
                             message: "Unable to fetch title",
                             color: "danger",
                           });
                         }
-                        setTitle(title);
+                        setTitle(data.title);
                       }
 
                       fetchData();

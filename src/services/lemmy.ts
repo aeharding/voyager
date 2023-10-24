@@ -128,11 +128,15 @@ export async function uploadImage(url: string, auth: string, image: File) {
   throw new Error("unknown image upload error");
 }
 
-export async function getTitle(instanceUrl: string, auth: string, url: string) {
+export async function getSiteMetadata(
+  instanceUrl: string,
+  auth: string,
+  url: string,
+) {
   try {
     const client = getClient(instanceUrl, auth);
     const meta = await client.getSiteMetadata({ url });
-    return meta.metadata.title;
+    return meta.metadata;
   } catch (_) {}
 }
 
