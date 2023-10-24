@@ -423,11 +423,13 @@ export default function PostEditorRoot({
                 />
                 {!!url && isValidUrl(url) && (
                   <IonButton
+                    hidden={!jwt}
                     onClick={(e) => {
                       e.preventDefault();
                       async function fetchData() {
-                        const title = await getTitle(url);
-                        if (title === "") {
+                        if (!jwt) return;
+                        const title = await getTitle(instanceUrl, jwt, url);
+                        if (!title) {
                           return presentToast({
                             message: "Unable to fetch title",
                             color: "danger",

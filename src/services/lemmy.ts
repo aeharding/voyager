@@ -128,17 +128,12 @@ export async function uploadImage(url: string, auth: string, image: File) {
   throw new Error("unknown image upload error");
 }
 
-export async function getTitle(url: string) {
+export async function getTitle(instanceUrl: string, auth: string, url: string) {
   try {
-    const fetchUrl = isNative() ? url : `${location.origin}/api/title/${url}`;
-    const response = await fetch(fetchUrl);
-    const html = await response.text();
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    const title = doc.title;
-    return title as string;
-  } catch (_error) {
-    return "";
-  }
+    const client = getClient(instanceUrl, auth);
+    const meta = await client.getSiteMetadata({ url });
+    return meta.metadata.title;
+  } catch (_) {}
 }
 
 interface ImageOptions {
