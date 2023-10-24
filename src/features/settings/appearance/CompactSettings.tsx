@@ -22,7 +22,7 @@ export default function CompactSettings() {
     (state) => state.settings.appearance.posts.type,
   );
 
-  if (!(postsAppearanceType == "compact")) return <></>;
+  if (!(postsAppearanceType === "compact")) return <></>;
 
   return (
     <>
