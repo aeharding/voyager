@@ -1,6 +1,6 @@
 import { Page } from "../features/auth/AppContext";
 
-export async function scrollUpIfNeeded(
+export function scrollUpIfNeeded(
   activePage: Page | null | undefined,
   index: number | undefined = undefined,
   behavior: "auto" | "smooth" = "smooth",
