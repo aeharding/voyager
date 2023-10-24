@@ -4,6 +4,7 @@ import {
   IonPage,
   IonSearchbar,
   IonToolbar,
+  useIonRouter,
 } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
@@ -29,7 +30,6 @@ import PostFabs from "../../features/feed/postFabs/PostFabs";
 import useFetchCommunity from "../../features/community/useFetchCommunity";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { maxWidthCss } from "../../features/shared/AppContent";
 import CommunitySearchResults from "../../features/community/search/CommunitySearchResults";
 
 const StyledFeedContent = styled(FeedContent)`
@@ -53,8 +53,6 @@ const HeaderIonSearchbar = styled(IonSearchbar)<{ hideSearch: boolean }>`
 
   padding-top: 5px !important;
 
-  ${maxWidthCss}
-
   ${({ hideSearch }) =>
     hideSearch &&
     css`
@@ -72,8 +70,6 @@ const CommunitySearchbar = styled(IonSearchbar)`
   padding-top: 0;
 
   min-height: 0;
-
-  ${maxWidthCss}
 `;
 
 export default function CommunityPage() {
@@ -85,6 +81,7 @@ export default function CommunityPage() {
   const [scrolledPastSearch, setScrolledPastSearch] = useState(false);
   const [_searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useIonRouter();
 
   const searchOpen = searchQuery || _searchOpen;
 
@@ -166,6 +163,17 @@ export default function CommunityPage() {
                 showClearButton="never"
                 onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
                 value={searchQuery}
+                enterkeyhint="search"
+                onKeyDown={(e) => {
+                  if (!searchQuery.trim()) return;
+                  if (e.key !== "Enter") return;
+
+                  router.push(
+                    buildGeneralBrowseLink(
+                      `/c/${community}/search/posts/${searchQuery}`,
+                    ),
+                  );
+                }}
               />
 
               {!searchOpen && (
