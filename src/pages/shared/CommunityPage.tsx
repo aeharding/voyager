@@ -37,21 +37,15 @@ const StyledFeedContent = styled(FeedContent)`
     --ion-toolbar-background,
     var(--ion-color-step-50, #f7f7f7)
   );
+`;
 
-  // This is a super hacky way to make sure the background is right
-  // under the entire simulated-ios ion-refresher
-  .ios & ion-refresher {
-    position: relative;
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      height: 300px;
-      background: var(--background);
-    }
-  }
+// This isn't great... but it works
+// and I can't find a better solution 🤷‍♂️
+const FixedBg = styled.div`
+  position: absolute;
+  inset: 0;
+  background: var(--ion-toolbar-background, var(--ion-color-step-50, #f7f7f7));
+  z-index: -1;
 `;
 
 const StyledIonToolbar = styled(IonToolbar)<{ hideBorder: boolean }>`
@@ -213,6 +207,7 @@ export default function CommunityPage() {
             {renderFeed()}
             <TitleSearchResults />
             <PostFabs />
+            <FixedBg slot="fixed" />
           </StyledFeedContent>
         </IonPage>
       </TitleSearchProvider>
