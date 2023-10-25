@@ -432,12 +432,9 @@ export default function PostEditorRoot({
                         });
                       }
                       getSiteMetadata(url, instanceUrl, jwt)
-                        .then((data) => {
-                          if (!data.title) {
-                            return toast();
-                          }
-                          setTitle(data.title);
-                        })
+                        .then((data) =>
+                          data.title ? setTitle(data.title) : toast(),
+                        )
                         .catch(toast);
                     }}
                   >
