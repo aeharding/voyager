@@ -1,8 +1,14 @@
-export function isValidUrl(potentialUrl: string, checkProtocol = false) {
+export function isValidUrl(
+  potentialUrl: string,
+  { checkProtocol = false, allowRelative = true } = {},
+) {
   let url;
 
   try {
-    url = new URL(potentialUrl);
+    url = new URL(
+      potentialUrl,
+      allowRelative ? document.location.href : undefined,
+    );
   } catch (_) {
     return false;
   }
