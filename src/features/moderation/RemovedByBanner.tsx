@@ -74,7 +74,7 @@ export function getItemModState(item: Comment): ItemModState {
 }
 
 export function getModStateBackgroundColor(
-  modState: ItemModState
+  modState: ItemModState,
 ): string | undefined {
   switch (modState) {
     case ItemModState.Flagged:
