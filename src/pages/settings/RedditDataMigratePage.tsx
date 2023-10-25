@@ -22,7 +22,8 @@ export default function RedditMigratePage() {
   const [link, setLink] = useState("");
 
   useEffect(() => {
-    if (!isValidUrl(link, true)) return;
+    if (!isValidUrl(link, { checkProtocol: true, allowRelative: false }))
+      return;
 
     const subs = parseSubsFromLink(link);
 
