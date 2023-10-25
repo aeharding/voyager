@@ -1,4 +1,9 @@
-import { IonActionSheet, IonIcon, IonLoading, useIonAlert } from "@ionic/react";
+import {
+  IonIcon,
+  IonLoading,
+  useIonActionSheet,
+  useIonAlert,
+} from "@ionic/react";
 import {
   checkmarkCircleOutline,
   colorWandOutline,
@@ -28,11 +33,11 @@ interface ModActionsProps {
 }
 
 export default function ModActions({ comment, counts }: ModActionsProps) {
-  const [present] = useIonAlert();
+  const [presentAlert] = useIonAlert();
   const dispatch = useAppDispatch();
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const localUser = useAppSelector(localUserSelector);
+  const [presentActionSheet] = useIonActionSheet();
 
   const isSelf = comment.creator_id === localUser?.person_id;
 
@@ -41,85 +46,78 @@ export default function ModActions({ comment, counts }: ModActionsProps) {
       <ModIonIcon
         icon={shield}
         onClick={(e) => {
-          setOpen(true);
           e.stopPropagation();
+
+          presentActionSheet({
+            cssClass: "left-align-buttons mod",
+            buttons: [
+              isSelf
+                ? {
+                    text: !comment.distinguished
+                      ? "Distinguish"
+                      : "Undistinguish",
+                    icon: shieldCheckmarkOutline,
+                    handler: () => {
+                      dispatch(
+                        modDistinguishComment(
+                          comment.id,
+                          !comment.distinguished,
+                        ),
+                      );
+                    },
+                  }
+                : undefined,
+              {
+                text: "Approve",
+                icon: checkmarkCircleOutline,
+                handler: () => {
+                  dispatch(modRemoveComment(comment.id, false));
+                },
+              },
+              {
+                text: "Remove",
+                icon: trashOutline,
+                handler: () => {
+                  dispatch(modRemoveComment(comment.id, true));
+                },
+              },
+              {
+                text: "Comment Nuke",
+                icon: colorWandOutline,
+                handler: () => {
+                  presentAlert(
+                    `Remove ${
+                      counts.child_count + 1
+                    } comments in comment chain?`,
+                    [
+                      {
+                        text: "Begone",
+                        handler: () => {
+                          (async () => {
+                            setLoading(true);
+
+                            try {
+                              await dispatch(modNukeCommentChain(comment.id));
+                            } finally {
+                              setLoading(false);
+                            }
+                          })();
+                        },
+                      },
+                      { text: "Cancel", role: "cancel" },
+                    ],
+                  );
+                },
+              },
+              {
+                text: "Cancel",
+              },
+            ].filter(notEmpty),
+          });
         }}
       />
 
       <IonLoading isOpen={loading} message="Nuking..." />
-
-      <IonActionSheet
-        cssClass="left-align-buttons mod"
-        onClick={(e) => e.stopPropagation()}
-        isOpen={open}
-        buttons={[
-          isSelf
-            ? {
-                text: !comment.distinguished ? "Distinguish" : "Undistinguish",
-                data: "distinguish",
-                icon: shieldCheckmarkOutline,
-              }
-            : undefined,
-          {
-            text: "Approve",
-            data: "approve",
-            icon: checkmarkCircleOutline,
-          },
-          {
-            text: "Remove",
-            data: "remove",
-            icon: trashOutline,
-          },
-          {
-            text: "Comment Nuke",
-            data: "nuke",
-            icon: colorWandOutline,
-          },
-          {
-            text: "Cancel",
-            role: "cancel",
-          },
-        ].filter(notEmpty)}
-        onDidDismiss={() => setOpen(false)}
-        onWillDismiss={async (e) => {
-          switch (e.detail.data) {
-            case "distinguish":
-              dispatch(
-                modDistinguishComment(comment.id, !comment.distinguished)
-              );
-              break;
-            case "approve":
-              dispatch(modRemoveComment(comment.id, false));
-
-              break;
-            case "remove":
-              dispatch(modRemoveComment(comment.id, true));
-
-              break;
-            case "nuke":
-              present(
-                `Remove ${counts.child_count + 1} comments in comment chain?`,
-                [
-                  {
-                    text: "Begone",
-                    handler: () => {
-                      (async () => {
-                        setLoading(true);
-
-                        try {
-                          await dispatch(modNukeCommentChain(comment.id));
-                        } finally {
-                          setLoading(false);
-                        }
-                      })();
-                    },
-                  },
-                  { text: "Cancel", role: "cancel" },
-                ]
-              );
-          }
-        }}
-      />
     </>
   );
 }

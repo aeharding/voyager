@@ -157,14 +157,9 @@ export const editComment =
 export const modRemoveComment =
   (commentId: number, removed: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) throw new Error("Not authorized");
-
     const response = await clientSelector(getState())?.removeComment({
       comment_id: commentId,
       removed,
-      auth: jwt,
     });
 
     dispatch(mutatedComment(response.comment_view));
@@ -173,10 +168,6 @@ export const modRemoveComment =
 export const modNukeCommentChain =
   (commentId: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) throw new Error("Not authorized");
-
     const client = clientSelector(getState());
 
     if (!client) throw new Error("Not authorized");
@@ -193,25 +184,19 @@ export const modNukeCommentChain =
         const comment = await client.removeComment({
           comment_id: commentId,
           removed: true,
-          auth: jwt,
         });
 
         dispatch(mutatedComment(comment.comment_view));
-      })
+      }),
     );
   };
 
 export const modDistinguishComment =
   (commentId: number, distinguished: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) throw new Error("Not authorized");
-
     const response = await clientSelector(getState())?.distinguishComment({
       comment_id: commentId,
       distinguished,
-      auth: jwt,
     });
 
     dispatch(mutatedComment(response.comment_view));
