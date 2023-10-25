@@ -137,7 +137,9 @@ export async function getSiteMetadata(
     const client = getClient(instanceUrl, auth);
     const meta = await client.getSiteMetadata({ url });
     return meta.metadata;
-  } catch (_) {}
+  } catch (_) {
+    return undefined;
+  }
 }
 
 interface ImageOptions {
