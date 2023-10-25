@@ -33,19 +33,26 @@ import { css } from "@emotion/react";
 import CommunitySearchResults from "../../features/community/search/CommunitySearchResults";
 
 const StyledFeedContent = styled(FeedContent)`
-  --background: var(
-    --ion-toolbar-background,
-    var(--ion-color-step-50, #f7f7f7)
-  );
+  .ios & {
+    --background: var(
+      --ion-toolbar-background,
+      var(--ion-color-step-50, #f7f7f7)
+    );
+  }
 `;
 
 // This isn't great... but it works
 // and I can't find a better solution 🤷‍♂️
 const FixedBg = styled.div`
-  position: absolute;
-  inset: 0;
-  background: var(--ion-toolbar-background, var(--ion-color-step-50, #f7f7f7));
-  z-index: -1;
+  .ios & {
+    position: absolute;
+    inset: 0;
+    background: var(
+      --ion-toolbar-background,
+      var(--ion-color-step-50, #f7f7f7)
+    );
+    z-index: -2;
+  }
 `;
 
 const StyledIonToolbar = styled(IonToolbar)<{ hideBorder: boolean }>`
@@ -62,6 +69,14 @@ const HeaderIonSearchbar = styled(IonSearchbar)<{ hideSearch: boolean }>`
 
   padding-top: 5px !important;
 
+  &.md {
+    padding-top: 0 !important;
+    padding-left: 0;
+    padding-right: 0;
+
+    --box-shadow: none;
+  }
+
   ${({ hideSearch }) =>
     hideSearch &&
     css`
@@ -77,6 +92,13 @@ const HeaderContainer = styled.div`
 
 const CommunitySearchbar = styled(IonSearchbar)`
   padding-top: 0;
+
+  &.md {
+    padding-left: 0;
+    padding-right: 0;
+
+    --box-shadow: none;
+  }
 
   min-height: 0;
 `;
@@ -160,9 +182,31 @@ export default function CommunityPage() {
   return (
     <FeedContextProvider>
       <TitleSearchProvider>
-        <IonPage>
+        <IonPage className={searchOpen ? "grey-bg" : ""}>
           <IonHeader>
             <StyledIonToolbar hideBorder={!searchOpen && !scrolledPastSearch}>
+              {!searchOpen && (
+                <>
+                  <IonButtons slot="start">
+                    <AppBackButton
+                      defaultText="Communities"
+                      defaultHref={buildGeneralBrowseLink("/")}
+                    />
+                  </IonButtons>
+                  <TitleSearch name={community}>
+                    <IonButtons
+                      slot="end"
+                      css={css`
+                        margin: auto;
+                      `}
+                    >
+                      <PostSort />
+                      <MoreActions community={communityView} />
+                    </IonButtons>
+                  </TitleSearch>
+                </>
+              )}
+
               <HeaderIonSearchbar
                 placeholder={`Search c/${community}`}
                 ref={searchbarRef}
@@ -184,23 +228,6 @@ export default function CommunityPage() {
                   );
                 }}
               />
-
-              {!searchOpen && (
-                <>
-                  <IonButtons slot="start">
-                    <AppBackButton
-                      defaultText="Communities"
-                      defaultHref={buildGeneralBrowseLink("/")}
-                    />
-                  </IonButtons>
-                  <TitleSearch name={community}>
-                    <IonButtons slot="end">
-                      <PostSort />
-                      <MoreActions community={communityView} />
-                    </IonButtons>
-                  </TitleSearch>
-                </>
-              )}
             </StyledIonToolbar>
           </IonHeader>
           <StyledFeedContent>
