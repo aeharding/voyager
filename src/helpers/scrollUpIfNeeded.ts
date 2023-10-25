@@ -1,4 +1,6 @@
 import { Page } from "../features/auth/AppContext";
+import { isAndroid } from "./device";
+import { findCurrentPage } from "./ionic";
 
 export function scrollUpIfNeeded(
   activePage: Page | null | undefined,
@@ -22,9 +24,20 @@ export function scrollUpIfNeeded(
     }
   } else {
     if (current.scrollOffset) {
-      current.scrollToIndex(index ?? 0, {
-        smooth: behavior === "smooth",
-      });
+      if (!index && behavior === "smooth") {
+        findCurrentPage()
+          ?.querySelector(".virtual-scroller")
+          ?.scrollTo({
+            top: 0,
+
+            // Android/Chrome smooth scroll implementation is bad
+            behavior: isAndroid() ? "auto" : "smooth",
+          });
+      } else {
+        current.scrollToIndex(index ?? 0, {
+          smooth: behavior === "smooth",
+        });
+      }
 
       return true;
     }
