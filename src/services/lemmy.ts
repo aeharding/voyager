@@ -129,17 +129,13 @@ export async function uploadImage(url: string, auth: string, image: File) {
 }
 
 export async function getSiteMetadata(
+  url: string,
   instanceUrl: string,
   auth: string,
-  url: string,
 ) {
-  try {
-    const client = getClient(instanceUrl, auth);
-    const meta = await client.getSiteMetadata({ url });
-    return meta.metadata;
-  } catch (_) {
-    return undefined;
-  }
+  const client = getClient(instanceUrl, auth);
+  const meta = await client.getSiteMetadata({ url });
+  return meta.metadata;
 }
 
 interface ImageOptions {

@@ -421,28 +421,24 @@ export default function PostEditorRoot({
                   value={url}
                   onIonInput={(e) => setUrl(e.detail.value ?? "")}
                 />
-                {!!url && isValidUrl(url) && (
+                {!!jwt && !!url && isValidUrl(url) && (
                   <IonButton
-                    hidden={!jwt}
                     onClick={(e) => {
                       e.preventDefault();
-                      async function fetchData() {
-                        if (!jwt) return;
-                        const data = await getSiteMetadata(
-                          instanceUrl,
-                          jwt,
-                          url,
-                        );
-                        if (!data?.title) {
-                          return presentToast({
-                            message: "Unable to fetch title",
-                            color: "danger",
-                          });
-                        }
-                        setTitle(data.title);
+                      function toast() {
+                        presentToast({
+                          message: "Unable to fetch title",
+                          color: "danger",
+                        });
                       }
-
-                      fetchData();
+                      getSiteMetadata(url, instanceUrl, jwt)
+                        .then((data) => {
+                          if (!data.title) {
+                            return toast();
+                          }
+                          setTitle(data.title);
+                        })
+                        .catch(toast);
                     }}
                   >
                     FETCH TITLE
