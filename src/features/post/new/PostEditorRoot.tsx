@@ -325,6 +325,22 @@ export default function PostEditorRoot({
     setPhotoPreviewURL(undefined);
   }
 
+  async function fetchPostTitle() {
+    try {
+      const { metadata } = await client.getSiteMetadata({
+        url,
+      });
+
+      if (metadata.title) {
+        setTitle(metadata.title);
+      } else {
+        presentToast(problemFetchingTitle);
+      }
+    } catch (error) {
+      presentToast(problemFetchingTitle);
+    }
+  }
+
   return (
     <>
       <IonHeader>
@@ -424,17 +440,9 @@ export default function PostEditorRoot({
                 />
                 {!!jwt && !!url && isValidUrl(url) && (
                   <IonButton
-                    onClick={async (e) => {
+                    onClick={(e) => {
                       e.preventDefault();
-                      const { metadata } = await client.getSiteMetadata({
-                        url,
-                      });
-
-                      if (metadata.title) {
-                        setTitle(metadata.title);
-                      } else {
-                        presentToast(problemFetchingTitle);
-                      }
+                      fetchPostTitle();
                     }}
                   >
                     FETCH TITLE
