@@ -1,5 +1,5 @@
 import {
-  ComponentType,
+  ReactElement,
   useCallback,
   useContext,
   useEffect,
@@ -37,7 +37,7 @@ interface PostCommentFeed
   filterHiddenPosts?: boolean;
   filterKeywords?: boolean;
 
-  header?: ComponentType<{ context?: unknown }>;
+  header?: ReactElement;
 }
 
 export default function PostCommentFeed({

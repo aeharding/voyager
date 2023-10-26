@@ -151,8 +151,8 @@ export default function CommunityPage() {
       <PostCommentFeed
         fetchFn={fetchFn}
         communityName={community}
-        header={() =>
-          !searchOpen && (
+        header={
+          !searchOpen ? (
             <HeaderContainer>
               <CommunitySearchbar
                 placeholder={`Search c/${community}`}
@@ -162,7 +162,7 @@ export default function CommunityPage() {
                 }}
               />
             </HeaderContainer>
-          )
+          ) : undefined
         }
       />
     </FeedSearchContext.Provider>
