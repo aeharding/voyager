@@ -24,7 +24,7 @@ export default function useHidePosts() {
 
     await dispatch(hidePosts(toHide));
 
-    activePageRef.current.current.scrollToIndex({ index: 0, behavior: "auto" });
+    activePageRef.current.current.scrollToIndex(0);
   }, [activePageRef, dispatch, itemsRefRef, postReadById]);
 
   return onHide;

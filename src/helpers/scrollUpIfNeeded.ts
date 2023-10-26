@@ -1,6 +1,8 @@
 import { Page } from "../features/auth/AppContext";
+import { isAndroid } from "./device";
+import { findCurrentPage } from "./ionic";
 
-export async function scrollUpIfNeeded(
+export function scrollUpIfNeeded(
   activePage: Page | null | undefined,
   index: number | undefined = undefined,
   behavior: "auto" | "smooth" = "smooth",
@@ -11,7 +13,7 @@ export async function scrollUpIfNeeded(
 
   if ("querySelector" in current) {
     const scroll =
-      current.querySelector('[data-virtuoso-scroller="true"]') ??
+      current.querySelector(".virtual-scroller") ??
       current
         .querySelector("ion-content")
         ?.shadowRoot?.querySelector(".inner-scroll");
@@ -21,25 +23,24 @@ export async function scrollUpIfNeeded(
       return true;
     }
   } else {
-    return new Promise<boolean>((resolve) =>
-      current.getState((state) => {
-        if (state.scrollTop) {
-          if (index != null) {
-            current.scrollToIndex({
-              index,
-              behavior,
-            });
-          } else {
-            current.scrollTo({
-              top: 0,
-              behavior,
-            });
-          }
-        }
+    if (current.scrollOffset) {
+      if (!index && behavior === "smooth") {
+        findCurrentPage()
+          ?.querySelector(".virtual-scroller")
+          ?.scrollTo({
+            top: 0,
 
-        resolve(!!state.scrollTop);
-      }),
-    );
+            // Android/Chrome smooth scroll implementation is bad
+            behavior: isAndroid() ? "auto" : "smooth",
+          });
+      } else {
+        current.scrollToIndex(index ?? 0, {
+          smooth: behavior === "smooth",
+        });
+      }
+
+      return true;
+    }
   }
 
   return false;

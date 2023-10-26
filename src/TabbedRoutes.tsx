@@ -32,7 +32,6 @@ import styled from "@emotion/styled";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
 import { useContext, useEffect, useMemo, useRef } from "react";
-import { AppContext } from "./features/auth/AppContext";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage, { focusSearchBar } from "./pages/search/SearchPage";
 import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
@@ -70,6 +69,7 @@ import AppearanceThemePage from "./pages/settings/AppearanceThemePage";
 import GalleryProvider from "./features/gallery/GalleryProvider";
 import AppIconPage from "./pages/settings/AppIconPage";
 import { DefaultFeedType, ODefaultFeedType } from "./services/db";
+import { AppContext } from "./features/auth/AppContext";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -150,7 +150,7 @@ export default function TabbedRoutes() {
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
 
-    if (await scrollUpIfNeeded(activePageRef?.current)) return;
+    if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
       router.push(`/posts/${actor ?? iss ?? getDefaultServer()}`, "back");
@@ -177,7 +177,7 @@ export default function TabbedRoutes() {
   async function onInboxClick() {
     if (!isInboxButtonDisabled) return;
 
-    if (await scrollUpIfNeeded(activePageRef?.current)) return;
+    if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push(`/inbox`, "back");
   }
@@ -185,7 +185,7 @@ export default function TabbedRoutes() {
   async function onProfileClick() {
     if (!isProfileButtonDisabled) return;
 
-    if (await scrollUpIfNeeded(activePageRef?.current)) return;
+    if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push("/profile", "back");
   }
@@ -196,7 +196,7 @@ export default function TabbedRoutes() {
     // if the search page is already open, focus the search bar
     focusSearchBar();
 
-    if (await scrollUpIfNeeded(activePageRef?.current)) return;
+    if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push(`/search`, "back");
   }

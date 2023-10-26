@@ -221,7 +221,7 @@ Voyager works best added to the homescreen. There are certain features that only
 - [React](https://react.dev/) - The library for web and native user interfaces
 - [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
 - [Ionic](https://ionicframework.com/) - The mobile SDK for the Web
-- [Virtuoso](https://virtuoso.dev/) - Display large data sets using virtualized rendering
+- [Virtua](https://github.com/inokawa/virtua) - A zero-config, fast and small virtual list
 - [vite-plugin-pwa](https://github.com/vite-pwa/vite-plugin-pwa) - Prompt for update, Web Push Notifications and Web Share Target API
 
 ## 👨‍💻 Contributors
