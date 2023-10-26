@@ -31,10 +31,11 @@ import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PhotoPreview from "./PhotoPreview";
-import { getSiteMetadata, uploadImage } from "../../../services/lemmy";
+import { uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
 import useAppToast from "../../../helpers/useAppToast";
 import { isValidUrl } from "../../../helpers/url";
+import { problemFetchingTitle } from "../../../helpers/toastMessages";
 
 const Container = styled.div`
   position: absolute;
@@ -423,19 +424,17 @@ export default function PostEditorRoot({
                 />
                 {!!jwt && !!url && isValidUrl(url) && (
                   <IonButton
-                    onClick={(e) => {
+                    onClick={async (e) => {
                       e.preventDefault();
-                      function toast() {
-                        presentToast({
-                          message: "Unable to fetch title",
-                          color: "danger",
-                        });
+                      const { metadata } = await client.getSiteMetadata({
+                        url,
+                      });
+
+                      if (metadata.title) {
+                        setTitle(metadata.title);
+                      } else {
+                        presentToast(problemFetchingTitle);
                       }
-                      getSiteMetadata(url, instanceUrl, jwt)
-                        .then((data) =>
-                          data.title ? setTitle(data.title) : toast(),
-                        )
-                        .catch(toast);
                     }}
                   >
                     FETCH TITLE
