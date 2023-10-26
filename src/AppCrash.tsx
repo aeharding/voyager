@@ -71,7 +71,7 @@ ${error instanceof Error ? error.stack : "Not available"}
   async function clearData() {
     if (
       !confirm(
-        "Are you sure? This will log you out of all accounts and delete all data.",
+        "Are you sure? This will log you out of all accounts and delete all local app data including app configuration, hidden posts and favorites.",
       )
     )
       return;
