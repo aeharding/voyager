@@ -87,7 +87,7 @@ export function getScrollParent(
   if (
     node.tagName === "ION-CONTENT" ||
     node.classList.contains("ion-content-scroll-host") ||
-    node.hasAttribute("data-virtuoso-scroller")
+    node.classList.contains("virtual-scroller")
   ) {
     return node;
   } else if (node.parentNode instanceof HTMLElement) {
