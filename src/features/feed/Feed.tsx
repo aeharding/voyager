@@ -36,6 +36,14 @@ export interface FeedProps<I> {
   limit?: number;
 
   communityName?: string;
+
+  /**
+   * If duration is time-limited (for example, top posts of past 2 days)
+   * pass that duration here
+   *
+   * Examples: `"1 hour"` `"6 months"` `"1 week"`
+   */
+  sortDuration?: string;
 }
 
 export default function Feed<I>({
@@ -47,6 +55,7 @@ export default function Feed<I>({
   communityName,
   getIndex,
   limit = DEFAULT_LIMIT,
+  sortDuration,
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
@@ -154,6 +163,7 @@ export default function Feed<I>({
         <EndPost
           empty={!items.length}
           communityName={communityName}
+          sortDuration={sortDuration}
           key="footer"
         />
       );

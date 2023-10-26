@@ -31,6 +31,7 @@ import useFetchCommunity from "../../features/community/useFetchCommunity";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import CommunitySearchResults from "../../features/community/search/CommunitySearchResults";
+import { getSortDuration } from "../../features/feed/endItems/EndPost";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -151,6 +152,7 @@ export default function CommunityPage() {
       <PostCommentFeed
         fetchFn={fetchFn}
         communityName={community}
+        sortDuration={getSortDuration(sort)}
         header={
           !searchOpen ? (
             <HeaderContainer>
