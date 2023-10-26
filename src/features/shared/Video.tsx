@@ -2,7 +2,6 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Dictionary } from "@reduxjs/toolkit";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
-import { isAppleDeviceInstallable } from "../../helpers/device";
 import { useInView } from "react-intersection-observer";
 
 const Container = styled.div`
@@ -75,6 +74,22 @@ export default function Video({ src, controls, blur, className }: VideoProps) {
     [inViewRef],
   );
 
+  const savePlace = useCallback(() => {
+    if (!videoRef.current) return;
+    if (blur) return;
+
+    videoPlaybackPlace[src] = videoRef.current.currentTime;
+    videoRef.current.pause();
+  }, [blur, src]);
+
+  const resume = useCallback(() => {
+    if (!videoRef.current) return;
+    if (blur) return;
+
+    videoRef.current.currentTime = videoPlaybackPlace[src] ?? 0;
+    videoRef.current.play();
+  }, [blur, src]);
+
   useEffect(() => {
     if (!videoRef || !videoRef.current) {
       return;
@@ -85,23 +100,7 @@ export default function Video({ src, controls, blur, className }: VideoProps) {
     } else {
       savePlace();
     }
-  }, [inView]);
-
-  function savePlace() {
-    if (!videoRef.current) return;
-    if (blur) return;
-
-    videoPlaybackPlace[src] = videoRef.current.currentTime;
-    videoRef.current.pause();
-  }
-
-  function resume() {
-    if (!videoRef.current) return;
-    if (blur) return;
-
-    videoRef.current.currentTime = videoPlaybackPlace[src] ?? 0;
-    videoRef.current.play();
-  }
+  }, [inView, savePlace, resume]);
 
   const videoEl = (
     <Container>
