@@ -16,7 +16,7 @@ import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
 import { CenteredSpinner } from "../../pages/posts/PostPage";
 import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
-import EndPost from "./endItems/EndPost";
+import EndPost, { EndPostProps } from "./endItems/EndPost";
 import { useAppSelector } from "../../store";
 import { markReadOnScrollSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
@@ -26,7 +26,8 @@ import { FeedSearchContext } from "../../pages/shared/CommunityPage";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
-export interface FeedProps<I> {
+export interface FeedProps<I>
+  extends Partial<Pick<EndPostProps, "sortDuration">> {
   itemsRef?: React.MutableRefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
   filterFn?: (item: I) => boolean;
@@ -47,6 +48,7 @@ export default function Feed<I>({
   communityName,
   getIndex,
   limit = DEFAULT_LIMIT,
+  sortDuration,
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
@@ -154,6 +156,7 @@ export default function Feed<I>({
         <EndPost
           empty={!items.length}
           communityName={communityName}
+          sortDuration={sortDuration}
           key="footer"
         />
       );

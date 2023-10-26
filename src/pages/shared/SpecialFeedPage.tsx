@@ -25,6 +25,7 @@ import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import SpecialFeedMoreActions from "../../features/feed/SpecialFeedMoreActions";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
+import { getSortDuration } from "../../features/feed/endItems/EndPost";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -52,7 +53,9 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     [client, sort, type],
   );
 
-  const feed = <PostCommentFeed fetchFn={fetchFn} />;
+  const feed = (
+    <PostCommentFeed fetchFn={fetchFn} sortDuration={getSortDuration(sort)} />
+  );
 
   return (
     <TitleSearchProvider>

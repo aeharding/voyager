@@ -20,6 +20,7 @@ import PostCommentFeed, {
 import { receivedPosts } from "../../../features/post/postSlice";
 import { receivedComments } from "../../../features/comment/commentSlice";
 import FeedContent from "../../shared/FeedContent";
+import { getSortDuration } from "../../../features/feed/endItems/EndPost";
 
 interface SearchPostsResultsProps {
   type: "Posts" | "Comments";
@@ -75,7 +76,10 @@ export default function SearchFeedResultsPage({
         </IonToolbar>
       </IonHeader>
       <FeedContent>
-        <PostCommentFeed fetchFn={fetchFn} />
+        <PostCommentFeed
+          fetchFn={fetchFn}
+          sortDuration={getSortDuration(sort)}
+        />
       </FeedContent>
     </IonPage>
   );
