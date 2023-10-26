@@ -25,9 +25,14 @@ interface SearchPostsResultsProps {
   type: "Posts" | "Comments";
 }
 
-export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
+export default function SearchFeedResultsPage({
+  type,
+}: SearchPostsResultsProps) {
   const dispatch = useAppDispatch();
-  const { search: _encodedSearch } = useParams<{ search: string }>();
+  const { search: _encodedSearch, community } = useParams<{
+    search: string;
+    community: string | undefined;
+  }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
@@ -40,6 +45,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
         limit: LIMIT,
         q: search,
         type_: type,
+        community_name: community,
         page,
         sort,
       });
@@ -47,7 +53,7 @@ export default function SearchPostsResults({ type }: SearchPostsResultsProps) {
       dispatch(receivedComments(response.comments));
       return [...response.posts, ...response.comments];
     },
-    [search, client, sort, type, dispatch],
+    [search, client, sort, type, dispatch, community],
   );
 
   return (

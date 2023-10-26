@@ -1,4 +1,10 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import {
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 import Feed, { FeedProps, FetchFn } from "./Feed";
 import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
@@ -30,6 +36,8 @@ interface PostCommentFeed
   communityName?: string;
   filterHiddenPosts?: boolean;
   filterKeywords?: boolean;
+
+  header?: ReactElement;
 }
 
 export default function PostCommentFeed({
