@@ -12,7 +12,7 @@ export const Container = styled.div`
   color: var(--ion-color-medium);
 `;
 
-interface EndPostProps {
+export interface EndPostProps {
   empty: boolean | undefined;
   communityName: string | undefined;
 
