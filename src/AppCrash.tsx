@@ -92,8 +92,8 @@ ${error instanceof Error ? error.stack : "Not available"}
       <Container>
         <Title>🫣 Gah! Voyager crashed!</Title>
         <Description>
-          Voyager does not collect any data. So, we would love if you would
-          voluntarily submit this crash for us to investigate.
+          Voyager does not collect any data, so we would appreciate you
+          voluntarily submitting this crash for us to investigate.
         </Description>
         <IonButton
           href={`https://github.com/aeharding/voyager/issues/new?title=Crash&body=${encodeURIComponent(
