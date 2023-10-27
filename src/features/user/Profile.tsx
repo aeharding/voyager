@@ -57,54 +57,51 @@ export default function Profile({ person }: ProfileProps) {
     [person, client],
   );
 
-  const header = useCallback(
-    () => (
-      <MaxWidthContainer>
-        <Scores
-          aggregates={person.person_view.counts}
-          accountCreated={person.person_view.person.published}
-        />
-        <IonList inset color="primary">
-          <InsetIonItem
-            routerLink={buildGeneralBrowseLink(
-              `/u/${getHandle(person.person_view.person)}/posts`,
-            )}
-          >
-            <IonIcon icon={albumsOutline} color="primary" />{" "}
-            <SettingLabel>Posts</SettingLabel>
-          </InsetIonItem>
-          <InsetIonItem
-            routerLink={buildGeneralBrowseLink(
-              `/u/${getHandle(person.person_view.person)}/comments`,
-            )}
-          >
-            <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
-            <SettingLabel>Comments</SettingLabel>
-          </InsetIonItem>
-          {isSelf && (
-            <>
-              <InsetIonItem
-                routerLink={buildGeneralBrowseLink(
-                  `/u/${getHandle(person.person_view.person)}/saved`,
-                )}
-              >
-                <IonIcon icon={bookmarkOutline} color="primary" />{" "}
-                <SettingLabel>Saved</SettingLabel>
-              </InsetIonItem>
-              <InsetIonItem
-                routerLink={buildGeneralBrowseLink(
-                  `/u/${getHandle(person.person_view.person)}/hidden`,
-                )}
-              >
-                <IonIcon icon={eyeOffOutline} color="primary" />{" "}
-                <SettingLabel>Hidden</SettingLabel>
-              </InsetIonItem>
-            </>
+  const header = (
+    <MaxWidthContainer>
+      <Scores
+        aggregates={person.person_view.counts}
+        accountCreated={person.person_view.person.published}
+      />
+      <IonList inset color="primary">
+        <InsetIonItem
+          routerLink={buildGeneralBrowseLink(
+            `/u/${getHandle(person.person_view.person)}/posts`,
           )}
-        </IonList>
-      </MaxWidthContainer>
-    ),
-    [person, buildGeneralBrowseLink, isSelf],
+        >
+          <IonIcon icon={albumsOutline} color="primary" />{" "}
+          <SettingLabel>Posts</SettingLabel>
+        </InsetIonItem>
+        <InsetIonItem
+          routerLink={buildGeneralBrowseLink(
+            `/u/${getHandle(person.person_view.person)}/comments`,
+          )}
+        >
+          <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
+          <SettingLabel>Comments</SettingLabel>
+        </InsetIonItem>
+        {isSelf && (
+          <>
+            <InsetIonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person_view.person)}/saved`,
+              )}
+            >
+              <IonIcon icon={bookmarkOutline} color="primary" />{" "}
+              <SettingLabel>Saved</SettingLabel>
+            </InsetIonItem>
+            <InsetIonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person_view.person)}/hidden`,
+              )}
+            >
+              <IonIcon icon={eyeOffOutline} color="primary" />{" "}
+              <SettingLabel>Hidden</SettingLabel>
+            </InsetIonItem>
+          </>
+        )}
+      </IonList>
+    </MaxWidthContainer>
   );
 
   return (

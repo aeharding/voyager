@@ -9,6 +9,7 @@ import customRemarkGfm from "../../shared/markdown/customRemarkGfm";
 import { useAppSelector } from "../../../store";
 import { Link, Text } from "mdast";
 import { uniqBy } from "lodash";
+import { isValidUrl } from "../../../helpers/url";
 
 const Container = styled.div`
   display: flex;
@@ -62,6 +63,9 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
 
     // Dedupe by url
     links = uniqBy(links, (l) => l.url);
+
+    // e.g. `http://127.0.0.1:8080”`
+    links = links.filter(({ url }) => isValidUrl(url));
 
     // Max 4 links
     links = links.slice(0, 4);

@@ -10,6 +10,7 @@ import { createRef, useState } from "react";
 import { css } from "@emotion/react";
 import TrendingCommunities from "../../features/search/TrendingCommunities";
 import SearchOptions from "../../features/search/SearchOptions";
+import useLemmyUrlHandler from "../../features/shared/useLemmyUrlHandler";
 
 // eslint-disable-next-line no-undef -- I can't work out where to import this type from
 const searchBarRef = createRef<HTMLIonSearchbarElement>();
@@ -22,6 +23,7 @@ export const focusSearchBar = () => searchBarRef.current?.setFocus();
 export default function SearchPage() {
   const [search, setSearch] = useState("");
   const router = useIonRouter();
+  const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
 
   return (
     <IonPage className="grey-bg">
@@ -32,6 +34,10 @@ export default function SearchPage() {
               e.preventDefault();
 
               if (!search.trim()) return;
+
+              const potentialUrl = search.trim();
+
+              if (await redirectToLemmyObjectIfNeeded(potentialUrl)) return;
 
               const el = await searchBarRef.current?.getInputElement();
               el?.blur();

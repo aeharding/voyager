@@ -1,5 +1,4 @@
 const ION_CONTENT_ELEMENT_SELECTOR = "ion-content";
-const ION_CONTENT_CLASS_SELECTOR = ".ion-content-scroll-host";
 
 export function findCurrentPage() {
   const width = window.innerWidth;
@@ -9,7 +8,7 @@ export function findCurrentPage() {
   return findClosestIonContent(el);
 }
 
-const ION_CONTENT_SELECTOR = `${ION_CONTENT_ELEMENT_SELECTOR}, ${ION_CONTENT_CLASS_SELECTOR}`;
+const ION_CONTENT_SELECTOR = `${ION_CONTENT_ELEMENT_SELECTOR}`;
 
 /**
  * Queries the closest element matching the selector for IonContent.

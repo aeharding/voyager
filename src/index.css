@@ -123,6 +123,10 @@ ion-action-sheet ion-icon {
   overflow-y: auto;
 }
 
+.virtual-scroller {
+  overflow-x: hidden !important;
+}
+
 .ion-content-scroll-host::before,
 .ion-content-scroll-host::after {
   position: absolute;

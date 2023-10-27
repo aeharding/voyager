@@ -7,9 +7,9 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import { VirtuosoHandle } from "react-virtuoso";
+import { VListHandle } from "virtua";
 
-export type Page = RefObject<VirtuosoHandle | HTMLElement>;
+export type Page = RefObject<VListHandle | HTMLElement>;
 
 interface IAppContext {
   // used for determining whether page needs to be scrolled up first

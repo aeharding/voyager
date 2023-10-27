@@ -183,6 +183,9 @@ export const isDownvoteEnabledSelector = (state: RootState) =>
 export const localUserSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.local_user;
 
+export const lemmyVersionSelector = (state: RootState) =>
+  state.auth.site?.version;
+
 export const login =
   (baseUrl: string, username: string, password: string, totp?: string) =>
   async (dispatch: AppDispatch) => {

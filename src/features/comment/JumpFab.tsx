@@ -53,9 +53,9 @@ export default function JumpFab() {
   })();
 
   function onJump(skip = 1) {
-    const virtuosoRef = activePageRef?.current?.current;
-    if (!virtuosoRef) return;
-    if (!("scrollToIndex" in virtuosoRef)) return;
+    const virtuaRef = activePageRef?.current?.current;
+    if (!virtuaRef) return;
+    if (!("scrollToIndex" in virtuaRef)) return;
 
     const page = findCurrentPage();
     if (!page) return;
@@ -108,7 +108,7 @@ export default function JumpFab() {
 
     if (isNative()) vibrate({ style: ImpactStyle.Light });
 
-    virtuosoRef.scrollToIndex({ index, behavior: "smooth" });
+    virtuaRef.scrollToIndex(index, { smooth: true });
   }
 
   return (
