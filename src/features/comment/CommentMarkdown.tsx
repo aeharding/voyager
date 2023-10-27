@@ -7,14 +7,14 @@ interface CommentMarkdownProps {
 }
 
 export default function CommentMarkdown({ children }: CommentMarkdownProps) {
-  const { renderCommentImages } = useAppSelector(
+  const { showCommentImages } = useAppSelector(
     (state) => state.settings.general.comments,
   );
 
   return (
     <Markdown
       components={
-        !renderCommentImages
+        !showCommentImages
           ? {
               img: (props) => (
                 <InAppExternalLink

@@ -86,7 +86,7 @@ interface SettingsState {
       jumpButtonPosition: JumpButtonPositionType;
       highlightNewAccount: boolean;
       touchFriendlyLinks: boolean;
-      renderCommentImages: boolean;
+      showCommentImages: boolean;
     };
     posts: {
       disableMarkingRead: boolean;
@@ -155,7 +155,7 @@ const initialState: SettingsState = {
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
       highlightNewAccount: true,
       touchFriendlyLinks: true,
-      renderCommentImages: false,
+      showCommentImages: false,
     },
     posts: {
       disableMarkingRead: false,
@@ -256,9 +256,9 @@ export const appearanceSlice = createSlice({
       state.general.comments.touchFriendlyLinks = action.payload;
       db.setSetting("touch_friendly_links", action.payload);
     },
-    setRenderCommentImages(state, action: PayloadAction<boolean>) {
-      state.general.comments.renderCommentImages = action.payload;
-      db.setSetting("render_comment_images", action.payload);
+    setShowCommentImages(state, action: PayloadAction<boolean>) {
+      state.general.comments.showCommentImages = action.payload;
+      db.setSetting("show_comment_images", action.payload);
     },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
@@ -480,9 +480,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const link_handler = await db.getSetting("link_handler");
       const filtered_keywords = await db.getSetting("filtered_keywords");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
-      const render_comment_images = await db.getSetting(
-        "render_comment_images",
-      );
+      const show_comment_images = await db.getSetting("show_comment_images");
 
       return {
         ...state.settings,
@@ -534,9 +532,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             touchFriendlyLinks:
               touch_friendly_links ??
               initialState.general.comments.touchFriendlyLinks,
-            renderCommentImages:
-              render_comment_images ??
-              initialState.general.comments.renderCommentImages,
+            showCommentImages:
+              show_comment_images ??
+              initialState.general.comments.showCommentImages,
           },
           posts: {
             disableMarkingRead:
@@ -581,7 +579,7 @@ export const {
   setJumpButtonPosition,
   setHighlightNewAccount,
   setTouchFriendlyLinks,
-  setRenderCommentImages,
+  setShowCommentImages,
   setNsfwBlur,
   setFilteredKeywords,
   setPostAppearance,

@@ -1,21 +1,21 @@
 import { IonLabel, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { setRenderCommentImages } from "../../settingsSlice";
+import { setShowCommentImages } from "../../settingsSlice";
 
-export default function RenderCommentImages() {
+export default function ShowCommentImages() {
   const dispatch = useAppDispatch();
-  const { renderCommentImages } = useAppSelector(
+  const { showCommentImages } = useAppSelector(
     // this needs a better naming
     (state) => state.settings.general.comments,
   );
 
   return (
     <InsetIonItem>
-      <IonLabel>Render Comment Images</IonLabel>
+      <IonLabel>Show Comment Images</IonLabel>
       <IonToggle
-        checked={renderCommentImages}
-        onIonChange={(e) => dispatch(setRenderCommentImages(e.detail.checked))}
+        checked={showCommentImages}
+        onIonChange={(e) => dispatch(setShowCommentImages(e.detail.checked))}
       />
     </InsetIonItem>
   );
