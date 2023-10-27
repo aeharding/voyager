@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { updateCommentCollapseState } from "./commentSlice";
 import { Person } from "lemmy-js-client";
 import CommentExpander from "./CommentExpander";
+import { OTapToCollapseType } from "../../services/db";
 
 interface CommentTreeProps {
   comment: CommentNodeI;
@@ -27,6 +28,9 @@ export default function CommentTree({
   const dispatch = useAppDispatch();
   const commentCollapsedById = useAppSelector(
     (state) => state.comment.commentCollapsedById,
+  );
+  const { tapToCollapse } = useAppSelector(
+    (state) => state.settings.general.comments,
   );
 
   const collapsed = commentCollapsedById[comment.comment_view.comment.id];
@@ -62,7 +66,15 @@ export default function CommentTree({
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
         depth={comment.depth}
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={() => {
+          if (
+            tapToCollapse === OTapToCollapseType.Neither ||
+            tapToCollapse === OTapToCollapseType.OnlyHeaders
+          )
+            return;
+
+          setCollapsed(!collapsed);
+        }}
         collapsed={collapsed}
         fullyCollapsed={!!fullyCollapsed}
         rootIndex={rootIndex}
