@@ -163,9 +163,8 @@ export default function PostDetail({
       return (
         <>
           {post.post.url &&
-            !isUrlMedia(post.post.embed_video_url || post.post.url) && (
-              <Embed post={post} />
-            )}
+            (!isUrlMedia(post.post.embed_video_url || post.post.url) ||
+              hasMediaError) && <Embed post={post} />}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
         </>
       );
@@ -173,7 +172,7 @@ export default function PostDetail({
 
     if (
       post.post.url &&
-      !isUrlMedia(post.post.embed_video_url || post.post.url)
+      (!isUrlMedia(post.post.embed_video_url || post.post.url) || hasMediaError)
     ) {
       return <StyledEmbed post={post} />;
     }
