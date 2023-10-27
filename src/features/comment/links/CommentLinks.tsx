@@ -75,7 +75,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     links = links.slice(0, 4);
 
     return links;
-  }, [markdown, connectedInstance]);
+  }, [markdown, connectedInstance, showCommentImages]);
 
   if (!links.length) return;
 
