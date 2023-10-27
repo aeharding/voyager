@@ -14,6 +14,7 @@ interface GenericSidebarProps {
   people: Person[];
   counts: SiteAggregates | CommunityAggregates;
   beforeMarkdown?: React.ReactNode;
+  extraBadges?: React.ReactNode;
   type: "instance" | "community";
 }
 
@@ -23,6 +24,7 @@ export default function GenericSidebar({
   type,
   counts,
   beforeMarkdown,
+  extraBadges,
 }: GenericSidebarProps) {
   return (
     <>
@@ -30,6 +32,7 @@ export default function GenericSidebar({
         {beforeMarkdown}
         <Markdown>{sidebar}</Markdown>
         <SidebarCounts counts={counts} />
+        {extraBadges}
       </Container>
       <SidebarOwners
         people={people}

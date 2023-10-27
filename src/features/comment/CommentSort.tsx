@@ -18,8 +18,15 @@ import { startCase } from "lodash";
 import { CommentSortType } from "lemmy-js-client";
 import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
 import { AppContext } from "../auth/AppContext";
+import useSupported, { is019Sort } from "../../helpers/useSupported";
 
-export const COMMENT_SORTS = ["Hot", "Top", "New", "Old"] as const;
+export const COMMENT_SORTS = [
+  "Hot",
+  "Top",
+  "New",
+  "Controversial",
+  "Old",
+] as const;
 
 const BUTTONS: ActionSheetButton<CommentSortType>[] = COMMENT_SORTS.map(
   (sortType) => ({
@@ -37,6 +44,11 @@ interface CommentSortProps {
 export default function CommentSort({ sort, setSort }: CommentSortProps) {
   const [open, setOpen] = useState(false);
   const { activePageRef } = useContext(AppContext);
+  const controversialSupported = useSupported("v0.19 Sorts");
+
+  const supportedSortButtons = controversialSupported
+    ? BUTTONS
+    : BUTTONS.filter(({ data }) => !is019Sort(data));
 
   return (
     <>
@@ -57,7 +69,7 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
           scrollUpIfNeeded(activePageRef?.current, 1, "auto");
         }}
         header="Sort by..."
-        buttons={BUTTONS.map((b) => ({
+        buttons={supportedSortButtons.map((b) => ({
           ...b,
           role: sort === b.data ? "selected" : undefined,
         }))}
