@@ -181,6 +181,16 @@ export const OJumpButtonPositionType = {
   RightBottom: "right-bottom",
 } as const;
 
+export type TapToCollapseType =
+  (typeof OTapToCollapseType)[keyof typeof OTapToCollapseType];
+
+export const OTapToCollapseType = {
+  OnlyComments: "only-comments",
+  OnlyHeaders: "only-headers",
+  Both: "both",
+  Neither: "neither",
+} as const;
+
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
@@ -243,6 +253,7 @@ export type SettingValueTypes = {
   link_handler: LinkHandlerType;
   show_jump_button: boolean;
   jump_button_position: JumpButtonPositionType;
+  tap_to_collapse: TapToCollapseType;
   filtered_keywords: string[];
   highlight_new_account: boolean;
   default_feed: DefaultFeedType;

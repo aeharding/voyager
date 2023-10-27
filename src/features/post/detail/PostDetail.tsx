@@ -31,6 +31,7 @@ import { PageContext } from "../../auth/PageContext";
 import PostGalleryImg from "../../gallery/PostGalleryImg";
 import { scrollIntoView } from "../../../helpers/dom";
 import JumpFab from "../../comment/JumpFab";
+import { OTapToCollapseType } from "../../../services/db";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -122,7 +123,7 @@ export default function PostDetail({
   commentPath,
   sort,
 }: PostDetailProps) {
-  const [collapsed, setCollapsed] = useState(!!commentPath);
+  const [collapsed, setCollapsed] = useState(false);
   const dispatch = useAppDispatch();
   const markdownLoneImage = useMemo(
     () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
@@ -135,6 +136,9 @@ export default function PostDetail({
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const [ionViewEntered, setIonViewEntered] = useState(false);
   const commentsRef = useRef<CommentsHandle>(null);
+  const { tapToCollapse } = useAppSelector(
+    (state) => state.settings.general.comments,
+  );
 
   const [viewAllCommentsSpace, setViewAllCommentsSpace] = useState(70); // px
 
@@ -204,6 +208,12 @@ export default function PostDetail({
         <BorderlessIonItem
           onClick={(e) => {
             if (e.target instanceof HTMLElement && e.target.nodeName === "A")
+              return;
+
+            if (
+              tapToCollapse === OTapToCollapseType.Neither ||
+              tapToCollapse === OTapToCollapseType.OnlyComments
+            )
               return;
 
             setCollapsed(!collapsed);

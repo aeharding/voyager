@@ -34,6 +34,8 @@ import {
   OJumpButtonPositionType,
   DefaultFeedType,
   ODefaultFeedType,
+  TapToCollapseType,
+  OTapToCollapseType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -81,6 +83,7 @@ interface SettingsState {
   general: {
     comments: {
       collapseCommentThreads: CommentThreadCollapse;
+      tapToCollapse: TapToCollapseType;
       sort: CommentDefaultSort;
       showJumpButton: boolean;
       jumpButtonPosition: JumpButtonPositionType;
@@ -149,6 +152,7 @@ const initialState: SettingsState = {
   general: {
     comments: {
       collapseCommentThreads: OCommentThreadCollapse.Never,
+      tapToCollapse: OTapToCollapseType.Both,
       sort: OCommentDefaultSort.Hot,
       showJumpButton: false,
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
@@ -234,6 +238,10 @@ export const appearanceSlice = createSlice({
     setCommentsCollapsed(state, action: PayloadAction<CommentThreadCollapse>) {
       state.general.comments.collapseCommentThreads = action.payload;
       db.setSetting("collapse_comment_threads", action.payload);
+    },
+    setTapToCollapse(state, action: PayloadAction<TapToCollapseType>) {
+      state.general.comments.tapToCollapse = action.payload;
+      db.setSetting("tap_to_collapse", action.payload);
     },
     setShowJumpButton(state, action: PayloadAction<boolean>) {
       state.general.comments.showJumpButton = action.payload;
@@ -439,6 +447,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const collapse_comment_threads = await db.getSetting(
         "collapse_comment_threads",
       );
+      const tap_to_collapse = await db.getSetting("tap_to_collapse");
       const show_jump_button = await db.getSetting("show_jump_button");
       const jump_button_position = await db.getSetting("jump_button_position");
       const highlight_new_account = await db.getSetting(
@@ -513,6 +522,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             collapseCommentThreads:
               collapse_comment_threads ??
               initialState.general.comments.collapseCommentThreads,
+            tapToCollapse:
+              tap_to_collapse ?? initialState.general.comments.tapToCollapse,
             sort: default_comment_sort ?? initialState.general.comments.sort,
             showJumpButton:
               show_jump_button ?? initialState.general.comments.showJumpButton,
@@ -565,6 +576,7 @@ export const {
   setUserInstanceUrlDisplay,
   setProfileLabel,
   setCommentsCollapsed,
+  setTapToCollapse,
   setShowJumpButton,
   setJumpButtonPosition,
   setHighlightNewAccount,
