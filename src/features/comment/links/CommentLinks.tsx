@@ -32,6 +32,10 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     (state) => state.auth.connectedInstance,
   );
 
+  const { showCommentImages } = useAppSelector(
+    (state) => state.settings.general.comments,
+  );
+
   const links = useMemo(() => {
     // Initialize a unified processor with the remark-parse parser
 
@@ -50,7 +54,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     visit(mdastTree, ["link", "image"], (_node) => {
       const node = _node as Link;
 
-      if (node.type === "link" || node.type === "image")
+      if (node.type === "link" || (!showCommentImages && node.type === "image"))
         links.push({
           type: node.type,
           url: node.url,
