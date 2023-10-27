@@ -52,6 +52,7 @@ const IonInputTitle = styled(IonInput)`
     transform: translateY(-50%);
     right: 0;
     border: 0;
+    padding-top: 0;
   }
 
   .native-wrapper {
@@ -78,6 +79,8 @@ const HiddenInput = styled.input`
 `;
 
 type PostType = "photo" | "link" | "text";
+
+const MAX_TITLE_LENGTH = 200;
 
 export default function PostEditorRoot({
   setCanDismiss,
@@ -138,6 +141,8 @@ export default function PostEditorRoot({
 
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+
+  const showAutofill = !!url && isValidUrl(url) && !title;
 
   const showNsfwToggle = !!(
     (postType === "photo" && photoPreviewURL) ||
@@ -332,7 +337,7 @@ export default function PostEditorRoot({
       });
 
       if (metadata.title) {
-        setTitle(metadata.title);
+        setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
       } else {
         presentToast(problemFetchingTitle);
       }
@@ -393,11 +398,22 @@ export default function PostEditorRoot({
                 onIonInput={(e) => setTitle(e.detail.value ?? "")}
                 placeholder="Title"
                 counter
-                maxlength={200}
+                maxlength={MAX_TITLE_LENGTH}
                 counterFormatter={(inputLength, maxLength) =>
-                  `${maxLength - inputLength}`
+                  showAutofill ? "" : `${maxLength - inputLength}`
                 }
               />
+              {showAutofill && (
+                <IonButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    fetchPostTitle();
+                  }}
+                  color="light"
+                >
+                  Autofill
+                </IonButton>
+              )}
             </IonItem>
             {postType === "photo" && (
               <>
@@ -438,16 +454,6 @@ export default function PostEditorRoot({
                   value={url}
                   onIonInput={(e) => setUrl(e.detail.value ?? "")}
                 />
-                {!!jwt && !!url && isValidUrl(url) && (
-                  <IonButton
-                    onClick={(e) => {
-                      e.preventDefault();
-                      fetchPostTitle();
-                    }}
-                  >
-                    FETCH TITLE
-                  </IonButton>
-                )}
               </IonItem>
             )}
             {showNsfwToggle && (
