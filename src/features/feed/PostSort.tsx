@@ -14,9 +14,9 @@ import {
   chatbubblesOutline,
   flameOutline,
   helpCircleOutline,
-  leafOutline,
   skullOutline,
   timeOutline,
+  trendingUpOutline,
   trophyOutline,
 } from "ionicons/icons";
 
@@ -37,6 +37,7 @@ import { startCase } from "lodash";
 import { SortType } from "lemmy-js-client";
 import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
 import { AppContext } from "../auth/AppContext";
+import useSupported, { is019Sort } from "../../helpers/useSupported";
 
 type ExtendedSortType = SortType | "Top";
 
@@ -45,6 +46,8 @@ export const POST_SORTS = [
   "Hot",
   "Top",
   "New",
+  "Controversial",
+  "Scaled",
   "MostComments",
   "NewComments",
 ] as const;
@@ -56,6 +59,9 @@ export const TOP_POST_SORTS = [
   "TopDay",
   "TopWeek",
   "TopMonth",
+  "TopThreeMonths",
+  "TopSixMonths",
+  "TopNineMonths",
   "TopYear",
   "TopAll",
 ] as const;
@@ -82,6 +88,15 @@ export default function PostSort() {
   const [open, setOpen] = useState(false);
   const [topOpen, setTopOpen] = useState(false);
   const { activePageRef } = useContext(AppContext);
+  const newSorts = useSupported("v0.19 Sorts");
+
+  const supportedSortButtons = newSorts
+    ? BUTTONS
+    : BUTTONS.filter(({ data }) => !is019Sort(data));
+
+  const supportedTopSortButtons = newSorts
+    ? TOP_BUTTONS
+    : TOP_BUTTONS.filter(({ data }) => !is019Sort(data));
 
   return (
     <>
@@ -107,7 +122,7 @@ export default function PostSort() {
           }
         }}
         header="Sort by..."
-        buttons={BUTTONS.map((b) => ({
+        buttons={supportedSortButtons.map((b) => ({
           ...b,
           cssClass: b.data === "Top" ? "detail" : undefined,
           text:
@@ -133,7 +148,7 @@ export default function PostSort() {
           }
         }}
         header="Sort by Top for..."
-        buttons={TOP_BUTTONS.map((b) => ({
+        buttons={supportedTopSortButtons.map((b) => ({
           ...b,
           role: sort === b.data ? "selected" : undefined,
         }))}
@@ -179,7 +194,7 @@ function getSortIcon(sort: ExtendedSortType): string {
     case "Controversial":
       return skullOutline;
     case "Scaled":
-      return leafOutline;
+      return trendingUpOutline;
     case "TopNineMonths":
       return calendarNineMonthsSvg;
     case "TopSixMonths":
@@ -199,10 +214,16 @@ function formatTopLabel(sort: (typeof TOP_POST_SORTS)[number]): string {
       return "12 Hours";
     case "TopDay":
       return "Day";
-    case "TopMonth":
-      return "Month";
     case "TopWeek":
       return "Week";
+    case "TopMonth":
+      return "Month";
+    case "TopThreeMonths":
+      return "3 Months";
+    case "TopSixMonths":
+      return "6 Months";
+    case "TopNineMonths":
+      return "9 Months";
     case "TopYear":
       return "Year";
     case "TopAll":

@@ -123,6 +123,7 @@ export default function Feed<I>({
 
     if (
       loading ||
+      !loadFailed ||
       currentPageItems.length - currentPageFilteredItems.length <
         fetchMoreThreshold
     )
@@ -196,6 +197,8 @@ export default function Feed<I>({
           setScrolledPastSearch(offset > 40);
         }}
         onRangeChange={(start, end) => {
+          if (loadFailed) return;
+
           if (end + 10 > filteredItems.length) {
             fetchMore();
           }

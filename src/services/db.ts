@@ -76,6 +76,7 @@ export const OCommentDefaultSort: Record<string, CommentSortType> = {
   Hot: "Hot",
   Top: "Top",
   New: "New",
+  Controversial: "Controversial",
   Old: "Old",
 } as const;
 

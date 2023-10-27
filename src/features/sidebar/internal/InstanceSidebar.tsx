@@ -3,6 +3,8 @@ import { useAppSelector } from "../../../store";
 import { CenteredSpinner } from "../../post/detail/PostDetail";
 import GenericSidebar from "./GenericSidebar";
 import styled from "@emotion/styled";
+import { IonBadge } from "@ionic/react";
+import { lemmyVersionSelector } from "../../auth/authSlice";
 
 const BannerImg = styled.img`
   margin-top: calc(var(--padding-top) * -1);
@@ -15,6 +17,7 @@ const BannerImg = styled.img`
 export default function InstanceSidebar() {
   const siteView = useAppSelector((state) => state.auth.site?.site_view);
   const admins = useAppSelector((state) => state.auth.site?.admins);
+  const lemmyVersion = useAppSelector(lemmyVersionSelector);
 
   if (!siteView || !admins)
     return (
@@ -33,6 +36,7 @@ export default function InstanceSidebar() {
       sidebar={site.sidebar ?? site.description ?? ""}
       people={admins.map((a) => a.person)}
       counts={counts}
+      extraBadges={<IonBadge color="dark">v{lemmyVersion}</IonBadge>}
       beforeMarkdown={
         site.banner ? (
           <BannerImg src={site.banner} alt={`Banner for ${site.actor_id}`} />
