@@ -3,10 +3,30 @@ import styled from "@emotion/styled";
 import { Dictionary } from "@reduxjs/toolkit";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { isAppleDeviceInstallable } from "../../helpers/device";
 
-const Container = styled.div`
+const Container = styled.div<{ interactable: boolean }>`
   position: relative;
   overflow: hidden;
+
+  // Hack for Safari bug
+  //
+  // https://bugs.webkit.org/show_bug.cgi?id=261950
+  // https://github.com/aeharding/voyager/issues/763
+  //
+  // This workaround isn't perfect, but allows some
+  // touch events to work sometimes instead of never
+  ${({ interactable }) =>
+    !interactable && isAppleDeviceInstallable()
+      ? css`
+          &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            transform: translate3d(0, 0, 0);
+          }
+        `
+      : ""}
 `;
 
 const Progress = styled.progress`
@@ -103,7 +123,7 @@ export default function Video({ src, controls, blur, className }: VideoProps) {
   }, [inView, savePlace, resume]);
 
   const videoEl = (
-    <Container>
+    <Container interactable={!!controls}>
       <VideoEl
         className={className}
         ref={setRefs}
