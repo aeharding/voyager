@@ -105,6 +105,10 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
         header={`Report ${type}`}
         buttons={[
           {
+            text: "Breaks Community Rules",
+            data: "Breaks Community Rules",
+          },
+          {
             text: "Spam or Abuse",
             data: "Spam or Abuse",
           },
