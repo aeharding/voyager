@@ -4,6 +4,7 @@ import { chatbubbleOutline, timeOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
+import { formatNumber } from "../../../helpers/number";
 
 const Container = styled.div`
   display: flex;
@@ -20,7 +21,7 @@ export default function PreviewStats({ post }: PreviewStatsProps) {
     <Container>
       <Vote item={post} />
       <IonIcon icon={chatbubbleOutline} />
-      {post.counts.comments}
+      {formatNumber(post.counts.comments)}
       <IonIcon icon={timeOutline} />
       <Ago date={post.post.published} />
     </Container>
