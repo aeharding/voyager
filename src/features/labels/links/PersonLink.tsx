@@ -73,7 +73,12 @@ export default function PersonLink({
         item={person}
         showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
       />
-      {showBadge && <AgeBadge published={person.published} />}
+      {showBadge && (
+        <>
+          {person.bot_account && " 🤖"}
+          <AgeBadge published={person.published} />
+        </>
+      )}
     </StyledLink>
   );
 }
