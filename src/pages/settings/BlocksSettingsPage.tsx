@@ -23,10 +23,13 @@ import BlockedCommunities from "../../features/settings/blocks/BlockedCommunitie
 import { CenteredSpinner } from "../posts/PostPage";
 import BlockedUsers from "../../features/settings/blocks/BlockedUsers";
 import FilteredKeywords from "../../features/settings/blocks/FilteredKeywords";
+import useSupported from "../../helpers/useSupported";
+import BlockedInstances from "../../features/settings/blocks/BlockedInstances";
 
 export default function BlocksSettingsPage() {
   const userHandle = useAppSelector(handleSelector);
   const localUser = useAppSelector(localUserSelector);
+  const instanceBlockSupported = useSupported("Instance Blocking");
 
   return (
     <IonPage className="grey-bg">
@@ -52,6 +55,7 @@ export default function BlocksSettingsPage() {
           <FilteredKeywords />
           <BlockedCommunities />
           <BlockedUsers />
+          {instanceBlockSupported && <BlockedInstances />}
         </AppContent>
       ) : (
         <IonContent scrollY={false}>

@@ -368,3 +368,16 @@ function updateApplicationContextIfNeeded(
       : "",
   });
 }
+
+export const blockInstance =
+  (block: boolean, id: number) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    if (!id) return;
+
+    await clientSelector(getState())?.blockInstance({
+      instance_id: id,
+      block,
+    });
+
+    await dispatch(getSite());
+  };
