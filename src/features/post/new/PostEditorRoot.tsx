@@ -34,6 +34,8 @@ import PhotoPreview from "./PhotoPreview";
 import { uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
 import useAppToast from "../../../helpers/useAppToast";
+import { isValidUrl } from "../../../helpers/url";
+import { problemFetchingTitle } from "../../../helpers/toastMessages";
 
 const Container = styled.div`
   position: absolute;
@@ -50,6 +52,7 @@ const IonInputTitle = styled(IonInput)`
     transform: translateY(-50%);
     right: 0;
     border: 0;
+    padding-top: 0;
   }
 
   .native-wrapper {
@@ -76,6 +79,8 @@ const HiddenInput = styled.input`
 `;
 
 type PostType = "photo" | "link" | "text";
+
+const MAX_TITLE_LENGTH = 200;
 
 export default function PostEditorRoot({
   setCanDismiss,
@@ -136,6 +141,8 @@ export default function PostEditorRoot({
 
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+
+  const showAutofill = !!url && isValidUrl(url) && !title;
 
   const showNsfwToggle = !!(
     (postType === "photo" && photoPreviewURL) ||
@@ -323,6 +330,26 @@ export default function PostEditorRoot({
     setPhotoPreviewURL(undefined);
   }
 
+  async function fetchPostTitle() {
+    let metadata;
+
+    try {
+      ({ metadata } = await client.getSiteMetadata({
+        url,
+      }));
+    } catch (error) {
+      presentToast(problemFetchingTitle);
+      throw error;
+    }
+
+    if (!metadata.title) {
+      presentToast(problemFetchingTitle);
+      return;
+    }
+
+    setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
+  }
+
   return (
     <>
       <IonHeader>
@@ -371,14 +398,26 @@ export default function PostEditorRoot({
             <IonItem>
               <IonInputTitle
                 value={title}
+                clearInput
                 onIonInput={(e) => setTitle(e.detail.value ?? "")}
                 placeholder="Title"
                 counter
-                maxlength={200}
+                maxlength={MAX_TITLE_LENGTH}
                 counterFormatter={(inputLength, maxLength) =>
-                  `${maxLength - inputLength}`
+                  showAutofill ? "" : `${maxLength - inputLength}`
                 }
               />
+              {showAutofill && (
+                <IonButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    fetchPostTitle();
+                  }}
+                  color="light"
+                >
+                  Autofill
+                </IonButton>
+              )}
             </IonItem>
             {postType === "photo" && (
               <>
