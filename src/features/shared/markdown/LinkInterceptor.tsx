@@ -12,7 +12,7 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const { redirectToLemmyObjectIfNeeded: redirectTo } = useLemmyUrlHandler();
+  const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
 
   const absoluteHref = useMemo(() => {
     if (!props.href) return;
@@ -29,9 +29,9 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
       if (!props.href) return;
       if (e.metaKey || e.ctrlKey) return;
 
-      redirectTo(props.href, e);
+      redirectToLemmyObjectIfNeeded(props.href, e);
     },
-    [props.href, redirectTo],
+    [props.href, redirectToLemmyObjectIfNeeded],
   );
 
   // Sometimes markdown thinks things are URLs that aren't URLs

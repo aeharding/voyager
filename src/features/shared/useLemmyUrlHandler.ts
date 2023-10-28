@@ -65,6 +65,8 @@ export default function useLemmyUrlHandler() {
       router.push(
         buildGeneralBrowseLink(`/c/${communityName}@${domain ?? url.hostname}`),
       );
+
+      return true;
     },
     [buildGeneralBrowseLink, connectedInstance, router],
   );
@@ -227,7 +229,7 @@ export default function useLemmyUrlHandler() {
       if (!url) return false;
       if (!knownInstances.includes(url.hostname)) return false; // If non-lemmy domain, return
 
-      if (await handleCommunityClickIfNeeded(url, e)) return true;
+      if (handleCommunityClickIfNeeded(url, e)) return true;
       if (!isPotentialObjectPath(url.pathname)) return false;
       if (url.hostname !== connectedInstance) {
         return handleRemoteObjectIfNeeded(url, e);
