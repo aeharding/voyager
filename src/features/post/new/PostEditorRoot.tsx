@@ -331,19 +331,23 @@ export default function PostEditorRoot({
   }
 
   async function fetchPostTitle() {
-    try {
-      const { metadata } = await client.getSiteMetadata({
-        url,
-      });
+    let metadata;
 
-      if (metadata.title) {
-        setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
-      } else {
-        presentToast(problemFetchingTitle);
-      }
+    try {
+      ({ metadata } = await client.getSiteMetadata({
+        url,
+      }));
     } catch (error) {
       presentToast(problemFetchingTitle);
+      throw error;
     }
+
+    if (!metadata.title) {
+      presentToast(problemFetchingTitle);
+      return;
+    }
+
+    setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
   }
 
   return (

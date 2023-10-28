@@ -36,7 +36,7 @@ export const problemBlockingUser: AppToastOptions = {
 
 export const problemFetchingTitle: AppToastOptions = {
   message: "Unable to fetch title",
-  color: "danger",
+  color: "warning",
 };
 
 export function buildBlocked(
