@@ -259,6 +259,7 @@ export type SettingValueTypes = {
   highlight_new_account: boolean;
   default_feed: DefaultFeedType;
   touch_friendly_links: boolean;
+  show_comment_images: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

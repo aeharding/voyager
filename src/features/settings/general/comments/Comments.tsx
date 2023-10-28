@@ -7,6 +7,7 @@ import JumpButtonPosition from "./JumpButtonPosition";
 import HighlightNewAccount from "./HighlightNewAccount";
 import TouchFriendlyLinks from "./TouchFriendlyLinks";
 import TapToCollapse from "./TapToCollapse";
+import ShowCommentImages from "./ShowCommentImages";
 
 export default function Comments() {
   return (
@@ -22,6 +23,7 @@ export default function Comments() {
         <JumpButtonPosition />
         <HighlightNewAccount />
         <TouchFriendlyLinks />
+        <ShowCommentImages />
       </IonList>
     </>
   );
