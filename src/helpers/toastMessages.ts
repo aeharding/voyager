@@ -1,4 +1,4 @@
-import { checkmark } from "ionicons/icons";
+import { checkmark, close } from "ionicons/icons";
 import { AppToastOptions } from "./useAppToast";
 
 export const voteError: AppToastOptions = {
@@ -72,3 +72,11 @@ export function buildSuccessSubscribing(
     color: "success",
   };
 }
+
+export const postLocked: AppToastOptions = {
+  message: "Post locked by moderator",
+  color: "warning",
+  position: "top",
+  icon: close,
+  centerText: true,
+};

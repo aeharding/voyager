@@ -24,7 +24,12 @@ import {
   share,
 } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { saveError, saveSuccess, voteError } from "../../helpers/toastMessages";
+import {
+  postLocked,
+  saveError,
+  saveSuccess,
+  voteError,
+} from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
 import { handleSelector, isDownvoteEnabledSelector } from "../auth/authSlice";
@@ -197,6 +202,10 @@ export default function MoreActions({
           handler: () => {
             (async () => {
               if (presentLoginIfNeeded()) return;
+              if (commentView.post.locked) {
+                presentToast(postLocked);
+                return;
+              }
 
               const reply = await presentCommentReply(commentView);
 
