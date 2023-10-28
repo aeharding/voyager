@@ -17,10 +17,9 @@ export default function InstanceSelectorModal(
   async function search(query: string) {
     if (!instances) return [];
     if (!query) return instances;
+    const q = query.toLocaleLowerCase();
 
-    return instances.filter((instance) =>
-      instance.domain.toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-    );
+    return instances.filter((instance) => instance.domain.includes(q));
   }
 
   return (
