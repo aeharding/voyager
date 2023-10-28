@@ -23,6 +23,7 @@ import MoreActions from "../../features/post/shared/MoreActions";
 import PostDetail from "../../features/post/detail/PostDetail";
 import FeedContent from "../shared/FeedContent";
 import useClient from "../../helpers/useClient";
+import { formatNumber } from "../../helpers/number";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -110,7 +111,10 @@ export default function PostPage() {
               defaultText={postIfFound?.community.name}
             />
           </IonButtons>
-          <IonTitle>{postIfFound?.counts.comments} Comments</IonTitle>
+          <IonTitle>
+            {postIfFound ? formatNumber(postIfFound.counts.comments) : ""}{" "}
+            Comments
+          </IonTitle>
           <IonButtons slot="end">
             <CommentSort sort={sort} setSort={setSort} />
             {postIfFound && <MoreActions post={postIfFound} />}
