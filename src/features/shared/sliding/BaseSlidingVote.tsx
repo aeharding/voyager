@@ -24,7 +24,11 @@ import {
   savePost,
   voteOnPost,
 } from "../../post/postSlice";
-import { saveSuccess, voteError } from "../../../helpers/toastMessages";
+import {
+  postLocked,
+  saveSuccess,
+  voteError,
+} from "../../../helpers/toastMessages";
 import { saveComment, voteOnComment } from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
@@ -140,6 +144,11 @@ function BaseSlidingVoteInternal({
 
   const reply = useCallback(async () => {
     if (presentLoginIfNeeded()) return;
+    if (item.post.locked) {
+      presentToast(postLocked);
+      return;
+    }
+
     const reply = await presentCommentReply(item);
     if (!isPost && reply) prependComments([reply]);
   }, [
@@ -148,6 +157,7 @@ function BaseSlidingVoteInternal({
     presentCommentReply,
     presentLoginIfNeeded,
     prependComments,
+    presentToast,
   ]);
 
   const { id, isSaved } = useMemo(() => {

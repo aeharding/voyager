@@ -36,6 +36,7 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
 import {
+  postLocked,
   saveError,
   saveSuccess,
   voteError,
@@ -190,6 +191,10 @@ export default function MoreActions({
           icon: arrowUndoOutline,
           handler: () => {
             if (presentLoginIfNeeded()) return;
+            if (post.post.locked) {
+              presentToast(postLocked);
+              return;
+            }
 
             // Not viewing comments, so no feed update
             presentCommentReply(post);

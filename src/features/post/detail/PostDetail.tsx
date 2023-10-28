@@ -32,6 +32,9 @@ import PostGalleryImg from "../../gallery/PostGalleryImg";
 import { scrollIntoView } from "../../../helpers/dom";
 import JumpFab from "../../comment/JumpFab";
 import { OTapToCollapseType } from "../../../services/db";
+import Locked from "./Locked";
+import useAppToast from "../../../helpers/useAppToast";
+import { postLocked } from "../../../helpers/toastMessages";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -139,6 +142,7 @@ export default function PostDetail({
   const { tapToCollapse } = useAppSelector(
     (state) => state.settings.general.comments,
   );
+  const presentToast = useAppToast();
 
   const [viewAllCommentsSpace, setViewAllCommentsSpace] = useState(70); // px
 
@@ -239,6 +243,7 @@ export default function PostDetail({
                 <PersonLink person={post.creator} prefix="by" />
               </By>
               <Stats post={post} />
+              {post.post.locked && <Locked />}
             </PostDeets>
           </Container>
         </BorderlessIonItem>
@@ -247,6 +252,10 @@ export default function PostDetail({
             post={post}
             onReply={async () => {
               if (presentLoginIfNeeded()) return;
+              if (post.post.locked) {
+                presentToast(postLocked);
+                return;
+              }
 
               const reply = await presentCommentReply(post);
 
