@@ -18,12 +18,6 @@ export default function CompactSettings() {
   const { thumbnailsPosition, showVotingButtons, thumbnailSize } =
     useAppSelector((state) => state.settings.appearance.compact);
 
-  const postsAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type,
-  );
-
-  if (!(postsAppearanceType === "compact")) return <></>;
-
   return (
     <>
       <ListHeader>
