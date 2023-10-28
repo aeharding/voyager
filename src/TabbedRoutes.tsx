@@ -209,6 +209,8 @@ export default function TabbedRoutes() {
   }
 
   async function onSettingsClick() {
+    if (!isSettingsButtonDisabled) return;
+
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push(`/settings`, "back");

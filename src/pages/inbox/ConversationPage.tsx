@@ -44,6 +44,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ConversationsMoreActions from "../../features/feed/ConversationsMoreActions";
 import { TabContext } from "../../TabContext";
 import useAppToast from "../../helpers/useAppToast";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -123,6 +124,7 @@ const SendButton = styled(IonIcon)`
 `;
 
 export default function ConversationPage() {
+  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
@@ -139,6 +141,8 @@ export default function ConversationPage() {
 
   const contentRef = useRef<IonContentCustomEvent<never>["target"]>(null);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+
+  useSetActivePage(pageRef);
 
   useIonViewWillEnter(() => {
     contentRef.current?.scrollToBottom();
@@ -212,7 +216,7 @@ export default function ConversationPage() {
   }
 
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

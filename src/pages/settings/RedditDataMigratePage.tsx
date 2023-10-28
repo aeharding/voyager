@@ -11,15 +11,20 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InsetIonItem } from "../profile/ProfileFeedItemsPage";
 import { isValidUrl } from "../../helpers/url";
 import useAppToast from "../../helpers/useAppToast";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 export default function RedditMigratePage() {
+  const pageRef = useRef<HTMLElement>(null);
+
   const presentToast = useAppToast();
   const [subs, setSubs] = useState<string[] | undefined>();
   const [link, setLink] = useState("");
+
+  useSetActivePage(pageRef);
 
   useEffect(() => {
     if (!isValidUrl(link, { checkProtocol: true, allowRelative: false }))
@@ -99,7 +104,7 @@ export default function RedditMigratePage() {
   }
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
