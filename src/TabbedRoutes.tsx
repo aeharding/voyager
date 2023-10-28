@@ -147,6 +147,7 @@ export default function TabbedRoutes() {
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
   const isProfileButtonDisabled = location.pathname.startsWith("/profile");
   const isSearchButtonDisabled = location.pathname.startsWith("/search");
+  const isSettingsButtonDisabled = location.pathname.startsWith("/settings");
 
   async function onPostsClick() {
     if (!isPostsButtonDisabled) return;
@@ -178,7 +179,12 @@ export default function TabbedRoutes() {
   async function onInboxClick() {
     if (!isInboxButtonDisabled) return;
 
-    if (scrollUpIfNeeded(activePageRef?.current)) return;
+    if (
+      // Messages are in reverse order, so bail on scroll up
+      !location.pathname.startsWith("/inbox/messages/") &&
+      scrollUpIfNeeded(activePageRef?.current)
+    )
+      return;
 
     router.push(`/inbox`, "back");
   }
@@ -200,6 +206,12 @@ export default function TabbedRoutes() {
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push(`/search`, "back");
+  }
+
+  async function onSettingsClick() {
+    if (scrollUpIfNeeded(activePageRef?.current)) return;
+
+    router.push(`/settings`, "back");
   }
 
   function buildGeneralBrowseRoutes(tab: string) {
@@ -498,12 +510,17 @@ export default function TabbedRoutes() {
               <IonLabel>Search</IonLabel>
               <Interceptor onClick={onSearchClick} />
             </IonTabButton>
-            <IonTabButton tab="settings" href="/settings">
+            <IonTabButton
+              tab="settings"
+              href="/settings"
+              disabled={isSettingsButtonDisabled}
+            >
               <IonIcon aria-hidden="true" icon={cog} />
               <IonLabel>Settings</IonLabel>
               {settingsNotificationCount ? (
                 <IonBadge color="danger">{settingsNotificationCount}</IonBadge>
               ) : undefined}
+              <Interceptor onClick={onSettingsClick} />
             </IonTabButton>
           </IonTabBar>
         </IonTabs>
