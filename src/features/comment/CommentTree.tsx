@@ -26,14 +26,13 @@ export default function CommentTree({
   rootIndex,
 }: CommentTreeProps) {
   const dispatch = useAppDispatch();
-  const commentCollapsedById = useAppSelector(
-    (state) => state.comment.commentCollapsedById,
+  const collapsed = useAppSelector(
+    (state) =>
+      state.comment.commentCollapsedById[comment.comment_view.comment.id],
   );
   const { tapToCollapse } = useAppSelector(
     (state) => state.settings.general.comments,
   );
-
-  const collapsed = commentCollapsedById[comment.comment_view.comment.id];
 
   // Comment context chains don't show missing for parents
   const showMissing = useMemo(() => {
