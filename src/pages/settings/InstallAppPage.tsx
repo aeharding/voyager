@@ -18,9 +18,10 @@ import {
 import AppContent from "../../features/shared/AppContent";
 import styled from "@emotion/styled";
 import { isInstallable, isInstalled, ua } from "../../helpers/device";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { BeforeInstallPromptContext } from "../../BeforeInstallPromptProvider";
 import { css } from "@emotion/react";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 const Container = styled.div`
   line-height: 1.5;
@@ -47,6 +48,10 @@ const AppContainer = styled.div`
 `;
 
 export default function InstallAppPage() {
+  const pageRef = useRef<HTMLElement>(null);
+
+  useSetActivePage(pageRef);
+
   const beforeInstallPrompt = useContext(BeforeInstallPromptContext);
 
   function renderGuidance() {
@@ -167,7 +172,7 @@ export default function InstallAppPage() {
   }
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

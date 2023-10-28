@@ -15,10 +15,11 @@ import {
 } from "@ionic/react";
 import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../profile/ProfileFeedItemsPage";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { UpdateContext } from "./update/UpdateContext";
 import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 const UpToDateText = styled.div`
   margin: auto;
@@ -38,9 +39,13 @@ const Container = styled.div`
 `;
 
 export default function UpdateAppPage() {
+  const pageRef = useRef<HTMLElement>(null);
+
   const [loading, setLoading] = useState(false);
   const { status, checkForUpdates, updateServiceWorker } =
     useContext(UpdateContext);
+
+  useSetActivePage(pageRef);
 
   useEffect(() => {
     checkForUpdates();
@@ -61,7 +66,7 @@ export default function UpdateAppPage() {
   }
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

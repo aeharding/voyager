@@ -7,41 +7,40 @@ export function scrollUpIfNeeded(
   index: number | undefined = undefined,
   behavior: "auto" | "smooth" = "smooth",
 ) {
-  if (!index) {
-    const page = findCurrentPage();
-
-    if (!page) return false;
-
-    const scrollView =
-      page.querySelector(".virtual-scroller") ??
-      page?.shadowRoot?.querySelector(".inner-scroll");
-
-    if (!scrollView) return false;
-    if (!scrollView.scrollTop) return false;
-
-    scrollView.scrollTo({
-      top: 0,
-      behavior:
-        isAndroid() && scrollView.classList.contains("virtual-scroller")
-          ? "auto"
-          : behavior,
-    });
-
-    return true;
-  }
-
   if (!activePage?.current) return false;
 
   const current = activePage.current;
 
-  if ("scrollToIndex" in current) {
-    if (!current.scrollOffset) return false;
+  if ("querySelector" in current) {
+    const scroll =
+      current.querySelector(".virtual-scroller") ??
+      current
+        .querySelector("ion-content")
+        ?.shadowRoot?.querySelector(".inner-scroll");
 
-    current.scrollToIndex(index ?? 0, {
-      smooth: behavior === "smooth",
-    });
+    if (scroll?.scrollTop) {
+      scroll.scrollTo({ top: 0, behavior });
+      return true;
+    }
+  } else {
+    if (current.scrollOffset) {
+      if (!index && behavior === "smooth") {
+        findCurrentPage()
+          ?.querySelector(".virtual-scroller")
+          ?.scrollTo({
+            top: 0,
 
-    return true;
+            // Android/Chrome smooth scroll implementation is bad
+            behavior: isAndroid() ? "auto" : "smooth",
+          });
+      } else {
+        current.scrollToIndex(index ?? 0, {
+          smooth: behavior === "smooth",
+        });
+      }
+
+      return true;
+    }
   }
 
   return false;

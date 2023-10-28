@@ -23,7 +23,7 @@ import {
   returnUpForwardOutline,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { UpdateContext } from "./update/UpdateContext";
 import useShouldInstall from "../../features/pwa/useShouldInstall";
 import styled from "@emotion/styled";
@@ -32,6 +32,7 @@ import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
 import { isNative } from "../../helpers/device";
 import { getIconSrc } from "../../features/settings/app-icon/AppIcon";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 export const IconBg = styled.div<{ color: string }>`
   width: 30px;
@@ -62,13 +63,16 @@ export default function SettingsPage() {
   const shouldInstall = useShouldInstall();
   const currentHandle = useAppSelector(handleSelector);
   const icon = useAppSelector((state) => state.appIcon.icon);
+  const pageRef = useRef<HTMLElement>(null);
+
+  useSetActivePage(pageRef);
 
   useEffect(() => {
     checkForUpdates();
   }, [checkForUpdates]);
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Settings</IonTitle>

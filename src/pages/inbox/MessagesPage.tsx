@@ -11,7 +11,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { groupBy, sortBy } from "lodash";
 import { jwtPayloadSelector } from "../../features/auth/authSlice";
@@ -20,8 +20,10 @@ import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { syncMessages } from "../../features/inbox/inboxSlice";
 import ComposeButton from "./ComposeButton";
 import { CenteredSpinner } from "../posts/PostPage";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 export default function MessagesPage() {
+  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const messages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
@@ -29,6 +31,8 @@ export default function MessagesPage() {
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
   const [loading, setLoading] = useState(false);
+
+  useSetActivePage(pageRef);
 
   useEffect(() => {
     fetchItems();
@@ -62,7 +66,7 @@ export default function MessagesPage() {
   );
 
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

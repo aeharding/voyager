@@ -27,7 +27,7 @@ export default function InstanceSidebarPage() {
   return (
     <FeedContextProvider>
       <TitleSearchProvider>
-        <IonPage>
+        <IonPage ref={pageRef}>
           <IonHeader>
             <IonToolbar>
               <IonButtons slot="start">
