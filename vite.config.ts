@@ -38,6 +38,7 @@ export default defineConfig({
     svgr(),
     VitePWA({
       registerType: "prompt",
+      manifestFilename: "manifest.json",
       workbox: {
         runtimeCaching: [
           {
