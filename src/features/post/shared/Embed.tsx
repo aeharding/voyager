@@ -1,15 +1,23 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
-import { chevronForward, linkOutline } from "ionicons/icons";
+import {
+  albumsOutline,
+  chatboxOutline,
+  chevronForward,
+  linkOutline,
+  peopleOutline,
+  personOutline,
+} from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { isNsfwBlurred } from "../../labels/Nsfw";
 import { setPostRead } from "../postSlice";
-import InAppExternalLink from "../../shared/InAppExternalLink";
+import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
+import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 
-const Container = styled(InAppExternalLink)`
+const Container = styled(LinkInterceptor)`
   display: flex;
   flex-direction: column;
 
@@ -76,21 +84,39 @@ interface EmbedProps {
 export default function Embed({ post, className }: EmbedProps) {
   const [error, setError] = useState(false);
   const dispatch = useAppDispatch();
+  const blurNsfw = useAppSelector(
+    (state) => state.settings.appearance.posts.blurNsfw,
+  );
+  const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
+
+  const icon = useMemo(() => {
+    const type = post.post.url
+      ? determineObjectTypeFromUrl(post.post.url)
+      : undefined;
+
+    switch (type) {
+      case "comment":
+        return chatboxOutline;
+      case "community":
+        return peopleOutline;
+      case "post":
+        return albumsOutline;
+      case "user":
+        return personOutline;
+      case undefined:
+        return linkOutline;
+    }
+  }, [post.post.url, determineObjectTypeFromUrl]);
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
     dispatch(setPostRead(post.post.id));
   };
-  const blurNsfw = useAppSelector(
-    (state) => state.settings.appearance.posts.blurNsfw,
-  );
 
   return (
     <Container
       className={className}
       href={post.post.url}
-      target="_blank"
-      rel="noopener noreferrer"
       onClick={handleLinkClick}
       draggable="false"
     >
@@ -103,7 +129,7 @@ export default function Embed({ post, className }: EmbedProps) {
         />
       )}
       <Bottom>
-        <EmbedIcon icon={linkOutline} />
+        <EmbedIcon icon={icon} />
         <Divider />
         <Url>{post.post.url}</Url>
         <IonIcon icon={chevronForward} />
