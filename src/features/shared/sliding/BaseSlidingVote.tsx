@@ -9,7 +9,7 @@ import {
   eyeOutline,
   mailOpen,
   mailUnread,
-  shareSharp,
+  share as shareIcon,
 } from "ionicons/icons";
 import React, { useCallback, useContext, useMemo } from "react";
 import SlidingItem, { ActionList, SlidingItemAction } from "./SlidingItem";
@@ -287,7 +287,7 @@ function BaseSlidingVoteInternal({
         collapse: collapseAction,
         mark_unread: markUnreadAction,
         share: {
-          icon: shareSharp,
+          icon: shareIcon,
           trigger: shareTrigger,
           bgColor: "primary-fixed",
         },
