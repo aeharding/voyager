@@ -203,6 +203,7 @@ const OSwipeActionBase = {
   Downvote: "downvote",
   Reply: "reply",
   Save: "save",
+  Share: "share",
 } as const;
 
 export const OSwipeActionPost = {

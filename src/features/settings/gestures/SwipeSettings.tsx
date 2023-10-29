@@ -37,11 +37,13 @@ import {
   arrowDownOutline,
   arrowUndoOutline,
   arrowUpOutline,
+  shareOutline,
   bookmarkOutline,
   chevronCollapseOutline,
   eyeOffOutline,
   mailUnreadOutline,
 } from "ionicons/icons";
+import { isNative } from "../../../helpers/device";
 
 export default function SwipeSettings() {
   const [open, setOpen] = useState(false);
@@ -58,12 +60,24 @@ export default function SwipeSettings() {
     (state) => state.gesture.swipe.disableRightSwipes,
   );
 
+  function filterCapableOptions(
+    options: Dictionary<SwipeAction>,
+  ): typeof options {
+    const filteredOptions = { ...options };
+
+    // Web clients rely on navigator.share, which requires initiating
+    // share with a gesture. That doesn't work super well, so disable
+    if (!isNative()) delete filteredOptions["Share"];
+
+    return filteredOptions;
+  }
+
   return (
     <>
       <SwipeList
         name="Posts"
         selector={post}
-        options={OSwipeActionPost}
+        options={filterCapableOptions(OSwipeActionPost)}
         farStart={setPostSwipeActionFarStart}
         start={setPostSwipeActionStart}
         end={setPostSwipeActionEnd}
@@ -72,7 +86,7 @@ export default function SwipeSettings() {
       <SwipeList
         name="Comments"
         selector={comment}
-        options={OSwipeActionComment}
+        options={filterCapableOptions(OSwipeActionComment)}
         farStart={setCommentSwipeActionFarStart}
         start={setCommentSwipeActionStart}
         end={setCommentSwipeActionEnd}
@@ -81,7 +95,7 @@ export default function SwipeSettings() {
       <SwipeList
         name="Inbox"
         selector={inbox}
-        options={OSwipeActionInbox}
+        options={filterCapableOptions(OSwipeActionInbox)}
         farStart={setInboxSwipeActionFarStart}
         start={setInboxSwipeActionStart}
         end={setInboxSwipeActionEnd}
@@ -153,6 +167,7 @@ const swipeIcons = {
   [OSwipeActionAll.Hide]: eyeOffOutline,
   [OSwipeActionAll.Collapse]: chevronCollapseOutline,
   [OSwipeActionAll.MarkUnread]: mailUnreadOutline,
+  [OSwipeActionAll.Share]: shareOutline,
 };
 
 interface SwipeListProps {
