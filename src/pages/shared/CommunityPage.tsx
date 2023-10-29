@@ -62,6 +62,12 @@ const StyledIonToolbar = styled(IonToolbar)<{ hideBorder: boolean }>`
     css`
       --border-color: transparent;
     `}
+
+  // Weird ionic glitch where adding
+  // absolutely positioned searchbar to header misaligns buttons
+  ion-buttons {
+    margin: auto;
+  }
 `;
 
 const HeaderIonSearchbar = styled(IonSearchbar)<{ hideSearch: boolean }>`
@@ -189,24 +195,14 @@ export default function CommunityPage() {
             <StyledIonToolbar hideBorder={!searchOpen && !scrolledPastSearch}>
               {!searchOpen && (
                 <>
-                  <IonButtons
-                    slot="start"
-                    css={css`
-                      margin: auto;
-                    `}
-                  >
+                  <IonButtons slot="start">
                     <AppBackButton
                       defaultText="Communities"
                       defaultHref={buildGeneralBrowseLink("/")}
                     />
                   </IonButtons>
                   <TitleSearch name={community}>
-                    <IonButtons
-                      slot="end"
-                      css={css`
-                        margin: auto;
-                      `}
-                    >
+                    <IonButtons slot="end">
                       <PostSort />
                       <MoreActions community={communityView} />
                     </IonButtons>
