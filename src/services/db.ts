@@ -213,12 +213,13 @@ export const OSwipeActionPost = {
 
 export const OSwipeActionComment = {
   ...OSwipeActionBase,
+  CollapseToTop: "collapse-to-top",
   Collapse: "collapse",
 } as const;
 
 export const OSwipeActionInbox = {
   ...OSwipeActionBase,
-  MarkUnread: "mark_unread",
+  MarkUnread: "mark-unread",
 } as const;
 
 export const OSwipeActionAll = {
@@ -342,6 +343,38 @@ export class WefwefDB extends Dexie {
         &domain,
         updated
       `,
+    });
+
+    this.version(5).upgrade(async () => {
+      // Upgrade comment gesture "collapse" => "collapse-to-top"
+      await (async () => {
+        const gestures = await this.getSetting("gesture_swipe_comment");
+
+        if (!gestures) return;
+
+        Object.entries(gestures).map(([direction, gesture]) => {
+          if (!gestures) return;
+          if (gesture === "collapse")
+            gestures[direction as keyof typeof gestures] = "collapse-to-top";
+        });
+
+        await this.setSetting("gesture_swipe_comment", gestures);
+      })();
+
+      // Upgrade inbox gesture "mark_unread" => "mark-unread"
+      await (async () => {
+        const gestures = await this.getSetting("gesture_swipe_inbox");
+
+        if (!gestures) return;
+
+        Object.entries(gestures).map(([direction, gesture]) => {
+          if (!gestures) return;
+          if ((gesture as string) === "mark_unread")
+            gestures[direction as keyof typeof gestures] = "mark-unread";
+        });
+
+        await this.setSetting("gesture_swipe_inbox", gestures);
+      })();
     });
   }
 

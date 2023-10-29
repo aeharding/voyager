@@ -4,14 +4,22 @@ import {
   arrowUpSharp,
   bookmark,
   chevronCollapse,
+  chevronDown,
   chevronExpand,
+  chevronUp,
   eyeOffOutline,
   eyeOutline,
   mailOpen,
   mailUnread,
   share as shareIcon,
 } from "ionicons/icons";
-import React, { useCallback, useContext, useMemo } from "react";
+import React, {
+  MouseEvent,
+  TouchEvent,
+  useCallback,
+  useContext,
+  useMemo,
+} from "react";
 import SlidingItem, { ActionList, SlidingItemAction } from "./SlidingItem";
 import {
   CommentReplyView,
@@ -30,7 +38,11 @@ import {
   saveSuccess,
   voteError,
 } from "../../../helpers/toastMessages";
-import { saveComment, voteOnComment } from "../../comment/commentSlice";
+import {
+  saveComment,
+  updateCommentCollapseState,
+  voteOnComment,
+} from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
@@ -39,6 +51,7 @@ import { CommentsContext } from "../../comment/CommentsContext";
 import styled from "@emotion/styled";
 import useAppToast from "../../../helpers/useAppToast";
 import { share } from "../../../helpers/lemmy";
+import { scrollViewUpIfNeeded } from "../../comment/CommentTree";
 
 const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
@@ -213,7 +226,7 @@ function BaseSlidingVoteInternal({
     !isPost ? item : undefined,
     rootIndex,
   );
-  const collapseAction = useMemo(() => {
+  const collapseToTopAction = useMemo(() => {
     return collapseRootComment
       ? {
           icon: collapsed ? chevronExpand : chevronCollapse,
@@ -222,6 +235,29 @@ function BaseSlidingVoteInternal({
         }
       : undefined;
   }, [collapsed, collapseRootComment]);
+
+  const collapse = useCallback(
+    (e: TouchEvent | MouseEvent) => {
+      if (isPost) return;
+
+      dispatch(
+        updateCommentCollapseState({
+          commentId: item.comment.id,
+          collapsed: !collapsed,
+        }),
+      );
+
+      if (e.target) scrollViewUpIfNeeded(e.target);
+    },
+    [collapsed, dispatch, isPost, item],
+  );
+  const collapseAction = useMemo(() => {
+    return {
+      icon: collapsed ? chevronDown : chevronUp,
+      trigger: collapse,
+      bgColor: "tertiary",
+    };
+  }, [collapsed, collapse]);
 
   const isRead = useMemo(() => {
     return isInboxItem(item) ? readByInboxItemId[getInboxItemId(item)] : false;
@@ -280,8 +316,9 @@ function BaseSlidingVoteInternal({
         },
         save: saveAction,
         hide: hideAction,
+        "collapse-to-top": collapseToTopAction,
         collapse: collapseAction,
-        mark_unread: markUnreadAction,
+        "mark-unread": markUnreadAction,
         share: {
           icon: shareIcon,
           trigger: shareTrigger,
@@ -294,6 +331,7 @@ function BaseSlidingVoteInternal({
       saveAction,
       hideAction,
       collapseAction,
+      collapseToTopAction,
       markUnreadAction,
       onVote,
       shareTrigger,
