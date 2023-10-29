@@ -341,6 +341,11 @@ export default function TabbedRoutes() {
             <SpecialFeedPage type="Local" />
           </ActorRedirect>
         </Route>
+        <Route exact path="/posts/:actor/mod">
+          <ActorRedirect>
+            <SpecialFeedPage type="ModeratorView" />
+          </ActorRedirect>
+        </Route>
         <Route exact path="/posts/:actor">
           <ActorRedirect>
             <CommunitiesPage />
@@ -539,6 +544,8 @@ function getPathForFeed(defaultFeed: DefaultFeedType): string {
       return "/home";
     case ODefaultFeedType.Local:
       return "/local";
+    case ODefaultFeedType.Moderating:
+      return "/mod";
     case ODefaultFeedType.CommunityList:
       return "";
     case ODefaultFeedType.Community:

@@ -101,6 +101,6 @@ function listingTypeTitle(type: ListingType): string {
     case "Subscribed":
       return "Home";
     case "ModeratorView":
-      return "Moderating";
+      return "Modded";
   }
 }

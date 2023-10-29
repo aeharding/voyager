@@ -149,7 +149,8 @@ export type DefaultFeedType =
         | typeof ODefaultFeedType.All
         | typeof ODefaultFeedType.Home
         | typeof ODefaultFeedType.Local
-        | typeof ODefaultFeedType.CommunityList;
+        | typeof ODefaultFeedType.CommunityList
+        | typeof ODefaultFeedType.Moderating;
     }
   | {
       type: typeof ODefaultFeedType.Community;
@@ -165,6 +166,7 @@ export const ODefaultFeedType = {
   Home: "home",
   All: "all",
   Local: "local",
+  Moderating: "moderating",
   CommunityList: "community-list",
   Community: "community",
 } as const;

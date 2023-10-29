@@ -4,6 +4,7 @@ import {
   listOutline,
   peopleOutline,
   pinOutline,
+  shieldOutline,
 } from "ionicons/icons";
 import { ODefaultFeedType } from "../../../../services/db";
 import { useAppDispatch, useAppSelector } from "../../../../store";
@@ -16,6 +17,7 @@ import { CommunityView } from "lemmy-js-client";
 import { useContext } from "react";
 import { PageContext } from "../../../auth/PageContext";
 import { getHandle } from "../../../../helpers/lemmy";
+import useSupported from "../../../../helpers/useSupported";
 
 export default function DefaultFeed() {
   const dispatch = useAppDispatch();
@@ -24,6 +26,7 @@ export default function DefaultFeed() {
   );
   const jwt = useAppSelector(jwtSelector);
   const { pageRef } = useContext(PageContext);
+  const moderatedFeedSupported = useSupported("Modded Feed");
 
   const [presentCommunitySelectorModal, onDismiss] = useIonModal(
     CommunitySelectorModal,
@@ -44,6 +47,10 @@ export default function DefaultFeed() {
     },
   );
 
+  // When lemmy v0.18 support removed, this can be removed
+  const options: Record<string, string> = { ...ODefaultFeedType };
+  if (!moderatedFeedSupported) delete options["Moderating"];
+
   if (!jwt || !defaultFeed) return; // must be logged in to configure default feed
 
   return (
@@ -59,13 +66,14 @@ export default function DefaultFeed() {
 
         return updateDefaultFeed({ type });
       }}
-      options={ODefaultFeedType}
+      options={options}
       optionIcons={{
         [ODefaultFeedType.Home]: homeOutline,
         [ODefaultFeedType.All]: libraryOutline,
         [ODefaultFeedType.Local]: peopleOutline,
         [ODefaultFeedType.CommunityList]: listOutline,
         [ODefaultFeedType.Community]: pinOutline,
+        [ODefaultFeedType.Moderating]: shieldOutline,
       }}
       getSelectedLabel={(option) => {
         if (option === ODefaultFeedType.CommunityList) return "List";

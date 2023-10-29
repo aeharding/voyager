@@ -16,9 +16,10 @@ import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../../helpers/array";
 import { getHandle } from "../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
-import { home, library, people } from "ionicons/icons";
+import { home, library, people, shield } from "ionicons/icons";
 import ItemIcon from "../../labels/img/ItemIcon";
 import CommunityListItem from "./CommunityListItem";
+import useSupported from "../../../helpers/useSupported";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -48,6 +49,11 @@ export default function CommunitiesList() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { actor } = useParams<{ actor: string }>();
   const jwt = useAppSelector(jwtSelector);
+
+  const moderates = useAppSelector(
+    (state) => state.auth.site?.my_user?.moderates,
+  );
+  const moderatorFeedSupported = useSupported("Modded Feed");
 
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
 
@@ -106,6 +112,8 @@ export default function CommunitiesList() {
     );
   }, [communities]);
 
+  const showModeratorFeed = !!moderates?.length && moderatorFeedSupported;
+
   return (
     <IonList>
       <IonItemGroup>
@@ -128,7 +136,10 @@ export default function CommunitiesList() {
             </div>
           </Content>
         </IonItem>
-        <IonItem routerLink={buildGeneralBrowseLink(`/local`)} lines="none">
+        <IonItem
+          routerLink={buildGeneralBrowseLink(`/local`)}
+          lines={showModeratorFeed ? "inset" : "none"}
+        >
           <Content>
             <SubIcon icon={people} color="#00f100" />
             <div>
@@ -136,6 +147,17 @@ export default function CommunitiesList() {
             </div>
           </Content>
         </IonItem>
+        {showModeratorFeed && (
+          <IonItem routerLink={buildGeneralBrowseLink(`/mod`)} lines="none">
+            <Content>
+              <SubIcon icon={shield} color="#464646" />
+              <div>
+                Moderator Posts
+                <aside>Posts from moderated communities</aside>
+              </div>
+            </Content>
+          </IonItem>
+        )}
       </IonItemGroup>
 
       {favoritesAsCommunitiesIfFound.length > 0 && (
@@ -166,6 +188,22 @@ export default function CommunitiesList() {
         </IonItemGroup>
       )}
 
+      {moderates?.length ? (
+        <IonItemGroup>
+          <IonItemDivider sticky>
+            <IonLabel>Moderator</IonLabel>
+          </IonItemDivider>
+          {moderates.map(({ community }) => (
+            <CommunityListItem
+              key={community.id}
+              community={community}
+              favorites={favorites}
+            />
+          ))}
+        </IonItemGroup>
+      ) : (
+        ""
+      )}
       {communitiesGroupedByLetter.map(([letter, communities]) => (
         <IonItemGroup key={letter}>
           <IonItemDivider sticky>
