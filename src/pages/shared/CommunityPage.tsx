@@ -189,7 +189,12 @@ export default function CommunityPage() {
             <StyledIonToolbar hideBorder={!searchOpen && !scrolledPastSearch}>
               {!searchOpen && (
                 <>
-                  <IonButtons slot="start">
+                  <IonButtons
+                    slot="start"
+                    css={css`
+                      margin: auto;
+                    `}
+                  >
                     <AppBackButton
                       defaultText="Communities"
                       defaultHref={buildGeneralBrowseLink("/")}
