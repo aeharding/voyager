@@ -8,41 +8,57 @@ import {
 import { getHandle } from "./lemmy";
 import { useBuildGeneralBrowseLink } from "./routes";
 import { useCallback } from "react";
+import useAppToast from "./useAppToast";
 
 export default function useAppNavigation() {
   const router = useIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const presentToast = useAppToast();
+
+  const pushRouteIfNeeded = useCallback(
+    (route: string) => {
+      if (router.routeInfo.pathname === route) {
+        presentToast({
+          message: "You're already here!",
+        });
+        return;
+      }
+
+      router.push(route);
+    },
+    [router, presentToast],
+  );
 
   const navigateToPost = useCallback(
     (post: PostView) => {
-      router.push(
+      pushRouteIfNeeded(
         buildGeneralBrowseLink(
           `/c/${getHandle(post.community)}/comments/${post.post.id}`,
         ),
       );
     },
-    [buildGeneralBrowseLink, router],
+    [buildGeneralBrowseLink, pushRouteIfNeeded],
   );
 
   const navigateToCommunity = useCallback(
     (community: CommunityView) => {
-      router.push(
+      pushRouteIfNeeded(
         buildGeneralBrowseLink(`/c/${getHandle(community.community)}`),
       );
     },
-    [buildGeneralBrowseLink, router],
+    [buildGeneralBrowseLink, pushRouteIfNeeded],
   );
 
   const navigateToUser = useCallback(
     (user: PersonView) => {
-      router.push(buildGeneralBrowseLink(`/u/${getHandle(user.person)}`));
+      pushRouteIfNeeded(buildGeneralBrowseLink(`/u/${getHandle(user.person)}`));
     },
-    [buildGeneralBrowseLink, router],
+    [buildGeneralBrowseLink, pushRouteIfNeeded],
   );
 
   const navigateToComment = useCallback(
     (comment: CommentView) => {
-      router.push(
+      pushRouteIfNeeded(
         buildGeneralBrowseLink(
           `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${
             comment.comment.path
@@ -50,7 +66,7 @@ export default function useAppNavigation() {
         ),
       );
     },
-    [buildGeneralBrowseLink, router],
+    [buildGeneralBrowseLink, pushRouteIfNeeded],
   );
 
   return {
