@@ -10,7 +10,13 @@ import {
 } from "@ionic/react";
 import { Dictionary } from "@reduxjs/toolkit";
 import { bookmark, mailUnread } from "ionicons/icons";
-import React, { TouchEvent, useMemo, useRef, useState } from "react";
+import React, {
+  MouseEvent,
+  TouchEvent,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { bounceAnimation } from "../animations";
 
@@ -97,7 +103,7 @@ export type SlidingItemAction = {
    * If `string`, it's passed to IonIcon as an icon value
    */
   icon: string;
-  trigger: (e: TouchEvent) => void;
+  trigger: (e: TouchEvent | MouseEvent) => void;
   bgColor: string;
   slash?: boolean;
 };
@@ -238,7 +244,7 @@ export default function SlidingItem({
     return endActions[0] ? FIRST_ACTION_RATIO : SECOND_ACTION_RATIO;
   }, [endActions]);
 
-  async function onDragStop(e: TouchEvent) {
+  async function onDragStop(e: TouchEvent | MouseEvent) {
     if (!dragRef.current) return;
     if (!dragging) return;
 

@@ -13,7 +13,13 @@ import {
   mailUnread,
   share as shareIcon,
 } from "ionicons/icons";
-import React, { TouchEvent, useCallback, useContext, useMemo } from "react";
+import React, {
+  MouseEvent,
+  TouchEvent,
+  useCallback,
+  useContext,
+  useMemo,
+} from "react";
 import SlidingItem, { ActionList, SlidingItemAction } from "./SlidingItem";
 import {
   CommentReplyView,
@@ -231,7 +237,7 @@ function BaseSlidingVoteInternal({
   }, [collapsed, collapseRootComment]);
 
   const collapse = useCallback(
-    (e: TouchEvent) => {
+    (e: TouchEvent | MouseEvent) => {
       if (isPost) return;
 
       dispatch(
