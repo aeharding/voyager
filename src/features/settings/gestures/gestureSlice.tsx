@@ -28,7 +28,7 @@ const defaultSwipeActionsPost: SwipeActions = {
 const defaultSwipeActionsComment: SwipeActions = {
   farStart: OSwipeActionComment.Downvote,
   start: OSwipeActionComment.Upvote,
-  end: OSwipeActionComment.Collapse,
+  end: OSwipeActionComment.CollapseToTop,
   farEnd: OSwipeActionComment.Reply,
 } as const;
 

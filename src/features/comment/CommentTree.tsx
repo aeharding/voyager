@@ -109,11 +109,11 @@ export default function CommentTree({
   return payload;
 }
 
-function scrollViewUpIfNeeded(target: EventTarget) {
+export function scrollViewUpIfNeeded(target: EventTarget) {
   if (!(target instanceof HTMLElement)) return;
 
   const scrollView = target.closest(".virtual-scroller");
-  const item = target.closest("ion-item");
+  const item = target.closest("ion-item-sliding")?.querySelector("ion-item");
 
   if (!(scrollView instanceof HTMLElement) || !(item instanceof HTMLElement))
     return;

@@ -28,7 +28,7 @@ import {
   setDisableRightSwipes,
 } from "./gestureSlice";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
-import { Dictionary } from "lodash";
+import { Dictionary, startCase } from "lodash";
 import { useState } from "react";
 import { IonActionSheetCustomEvent, OverlayEventDetail } from "@ionic/core";
 import ShortSwipeSvg from "./swipeShort.svg?react";
@@ -42,6 +42,7 @@ import {
   chevronCollapseOutline,
   eyeOffOutline,
   mailUnreadOutline,
+  chevronDownOutline,
 } from "ionicons/icons";
 import { isNative } from "../../../helpers/device";
 
@@ -165,7 +166,8 @@ const swipeIcons = {
   [OSwipeActionAll.Reply]: arrowUndoOutline,
   [OSwipeActionAll.Save]: bookmarkOutline,
   [OSwipeActionAll.Hide]: eyeOffOutline,
-  [OSwipeActionAll.Collapse]: chevronCollapseOutline,
+  [OSwipeActionAll.CollapseToTop]: chevronCollapseOutline,
+  [OSwipeActionAll.Collapse]: chevronDownOutline,
   [OSwipeActionAll.MarkUnread]: mailUnreadOutline,
   [OSwipeActionAll.Share]: shareOutline,
 };
@@ -198,6 +200,10 @@ function SwipeList({
     (state) => state.gesture.swipe.disableRightSwipes,
   );
 
+  function getSelectedLabel(option: string): string {
+    return option === "collapse-to-top" ? "Collapse Top" : startCase(option);
+  }
+
   return (
     <>
       <ListHeader>
@@ -212,6 +218,7 @@ function SwipeList({
           options={options}
           optionIcons={swipeIcons}
           disabled={disableLeftSwipes}
+          getSelectedLabel={getSelectedLabel}
         />
         <Selector
           icon={LongSwipeSvg}
@@ -221,6 +228,7 @@ function SwipeList({
           options={options}
           optionIcons={swipeIcons}
           disabled={disableLeftSwipes}
+          getSelectedLabel={getSelectedLabel}
         />
         <Selector
           icon={ShortSwipeSvg}
@@ -231,6 +239,7 @@ function SwipeList({
           options={options}
           optionIcons={swipeIcons}
           disabled={disableRightSwipes}
+          getSelectedLabel={getSelectedLabel}
         />
         <Selector
           icon={LongSwipeSvg}
@@ -241,6 +250,7 @@ function SwipeList({
           options={options}
           optionIcons={swipeIcons}
           disabled={disableRightSwipes}
+          getSelectedLabel={getSelectedLabel}
         />
       </IonList>
     </>
