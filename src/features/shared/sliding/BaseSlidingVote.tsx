@@ -250,11 +250,7 @@ function BaseSlidingVoteInternal({
   }, [markUnread, isRead]);
 
   const shareTrigger = useCallback(async () => {
-    try {
-      await share(isPost ? item.post : item.comment);
-    } catch (error) {
-      console.error(error);
-    }
+    share(isPost ? item.post : item.comment);
   }, [isPost, item]);
 
   const allActions: Record<SwipeAction, SlidingItemAction | undefined> =
