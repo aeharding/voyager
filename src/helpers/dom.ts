@@ -48,7 +48,7 @@ export function scrollIntoView(
   });
 }
 
-function calculateScrollTop(
+export function calculateScrollTop(
   element: HTMLElement,
   parentScroll: HTMLElement,
   scrollPaddingTop: number,
@@ -93,4 +93,24 @@ export function getScrollParent(
   } else if (node.parentNode instanceof HTMLElement) {
     return getScrollParent(node.parentNode);
   }
+}
+
+/**
+ * Returns top offset of given HTML element in a given scroll view
+ */
+export function getOffsetTop(
+  item: HTMLElement,
+  scrollView: HTMLElement,
+): number {
+  let cumulative = 0;
+  let view = item;
+
+  while (view !== scrollView) {
+    cumulative += view.offsetTop;
+    if (!view.offsetParent || !(view.offsetParent instanceof HTMLElement))
+      break;
+    view = view.offsetParent;
+  }
+
+  return cumulative;
 }

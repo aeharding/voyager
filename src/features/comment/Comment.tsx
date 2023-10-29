@@ -3,7 +3,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React, { useEffect, useRef } from "react";
+import React, { MouseEvent, useEffect, useRef } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
@@ -177,7 +177,7 @@ interface CommentProps {
   comment: CommentView;
   highlightedCommentId?: number;
   depth?: number;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
   collapsed?: boolean;
   fullyCollapsed?: boolean;
   routerLink?: string;
@@ -233,7 +233,7 @@ export default function Comment({
         <CustomIonItem
           routerLink={routerLink}
           href={undefined}
-          onClick={() => onClick?.()}
+          onClick={(e) => onClick?.(e)}
           ref={commentRef}
         >
           <PositionedContainer

@@ -7,6 +7,7 @@ import { updateCommentCollapseState } from "./commentSlice";
 import { Person } from "lemmy-js-client";
 import CommentExpander from "./CommentExpander";
 import { OTapToCollapseType } from "../../services/db";
+import { getOffsetTop } from "../../helpers/dom";
 
 interface CommentTreeProps {
   comment: CommentNodeI;
@@ -65,7 +66,7 @@ export default function CommentTree({
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
         depth={comment.depth}
-        onClick={() => {
+        onClick={(e) => {
           if (
             tapToCollapse === OTapToCollapseType.Neither ||
             tapToCollapse === OTapToCollapseType.OnlyHeaders
@@ -73,6 +74,8 @@ export default function CommentTree({
             return;
 
           setCollapsed(!collapsed);
+
+          scrollViewUpIfNeeded(e.target);
         }}
         collapsed={collapsed}
         fullyCollapsed={!!fullyCollapsed}
@@ -104,4 +107,23 @@ export default function CommentTree({
   }
 
   return payload;
+}
+
+function scrollViewUpIfNeeded(target: EventTarget) {
+  if (!(target instanceof HTMLElement)) return;
+
+  const scrollView = target.closest(".virtual-scroller");
+  const item = target.closest("ion-item");
+
+  if (!(scrollView instanceof HTMLElement) || !(item instanceof HTMLElement))
+    return;
+
+  const itemOffsetTop = getOffsetTop(item, scrollView);
+
+  if (itemOffsetTop > scrollView.scrollTop) return;
+
+  item.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest",
+  });
 }
