@@ -9,6 +9,7 @@ import { getHandle } from "./lemmy";
 import { useBuildGeneralBrowseLink } from "./routes";
 import { useCallback } from "react";
 import useAppToast from "./useAppToast";
+import { checkmark } from "ionicons/icons";
 
 export default function useAppNavigation() {
   const router = useIonRouter();
@@ -20,6 +21,9 @@ export default function useAppNavigation() {
       if (router.routeInfo.pathname === route) {
         presentToast({
           message: "You're already here!",
+          position: "top",
+          centerText: true,
+          icon: checkmark,
         });
         return;
       }
