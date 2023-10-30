@@ -19,6 +19,7 @@ import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { InboxItemView } from "../../features/inbox/InboxItem";
 import FeedContent from "../shared/FeedContent";
 import { useSetActivePage } from "../../features/auth/AppContext";
+import { receivedUsers } from "../../features/user/userSlice";
 
 interface InboxPageProps {
   showRead?: boolean;
@@ -69,6 +70,12 @@ export default function InboxPage({ showRead }: InboxPageProps) {
       );
 
       dispatch(receivedInboxItems(everything));
+      dispatch(
+        receivedUsers([
+          ...everything.map(({ creator }) => creator),
+          ...everything.map(({ recipient }) => recipient),
+        ]),
+      );
 
       return everything;
     },

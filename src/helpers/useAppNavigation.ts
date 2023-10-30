@@ -2,6 +2,7 @@ import { useIonRouter } from "@ionic/react";
 import {
   CommentView,
   CommunityView,
+  Person,
   PersonView,
   PostView,
 } from "lemmy-js-client";
@@ -54,8 +55,9 @@ export default function useAppNavigation() {
   );
 
   const navigateToUser = useCallback(
-    (user: PersonView) => {
-      pushRouteIfNeeded(buildGeneralBrowseLink(`/u/${getHandle(user.person)}`));
+    (user: PersonView | Person) => {
+      const person = "person" in user ? user.person : user;
+      pushRouteIfNeeded(buildGeneralBrowseLink(`/u/${getHandle(person)}`));
     },
     [buildGeneralBrowseLink, pushRouteIfNeeded],
   );

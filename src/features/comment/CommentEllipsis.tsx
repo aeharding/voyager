@@ -1,5 +1,10 @@
 import styled from "@emotion/styled";
-import { IonIcon, useIonActionSheet, useIonRouter } from "@ionic/react";
+import {
+  ActionSheetOptions,
+  IonIcon,
+  useIonActionSheet,
+  useIonRouter,
+} from "@ionic/react";
 import {
   arrowDownOutline,
   arrowUndoOutline,
@@ -14,7 +19,11 @@ import {
   textOutline,
   trashOutline,
 } from "ionicons/icons";
-import { CommentView } from "lemmy-js-client";
+import {
+  CommentReplyView,
+  CommentView,
+  PersonMentionView,
+} from "lemmy-js-client";
 import { useContext } from "react";
 import { notEmpty } from "../../helpers/array";
 import {
@@ -46,13 +55,15 @@ const StyledIonIcon = styled(IonIcon)`
 `;
 
 interface MoreActionsProps {
-  comment: CommentView;
+  comment: CommentView | PersonMentionView | CommentReplyView;
   rootIndex: number | undefined;
+  appendActions?: ActionSheetOptions["buttons"];
 }
 
 export default function MoreActions({
   comment: commentView,
   rootIndex,
+  appendActions,
 }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
@@ -96,6 +107,7 @@ export default function MoreActions({
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: [
+        ...(appendActions || []),
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
           icon: arrowUpOutline,
