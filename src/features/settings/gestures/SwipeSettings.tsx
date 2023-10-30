@@ -8,6 +8,7 @@ import {
   SwipeActions,
   OSwipeActionInbox,
   OSwipeActionAll,
+  OLongSwipeTriggerPointType,
 } from "../../../services/db";
 import SettingSelector from "../shared/SettingSelector";
 import {
@@ -26,6 +27,7 @@ import {
   setAllSwipesToDefault,
   setDisableLeftSwipes,
   setDisableRightSwipes,
+  setLongSwipeTriggerPoint,
 } from "./gestureSlice";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { Dictionary, startCase } from "lodash";
@@ -54,12 +56,8 @@ export default function SwipeSettings() {
   const comment = useAppSelector((state) => state.gesture.swipe.comment);
   const inbox = useAppSelector((state) => state.gesture.swipe.inbox);
 
-  const disableLeftSwipes = useAppSelector(
-    (state) => state.gesture.swipe.disableLeftSwipes,
-  );
-  const disableRightSwipes = useAppSelector(
-    (state) => state.gesture.swipe.disableRightSwipes,
-  );
+  const { disableLeftSwipes, disableRightSwipes, longSwipeTriggerPoint } =
+    useAppSelector((state) => state.gesture.swipe);
 
   function filterCapableOptions(
     options: Dictionary<SwipeAction>,
@@ -125,6 +123,13 @@ export default function SwipeSettings() {
               }
             />
           </InsetIonItem>
+          <SettingSelector
+            title="Long Swipe Trigger Point"
+            openTitle="When the long swipe action should trigger..."
+            selected={longSwipeTriggerPoint}
+            setSelected={setLongSwipeTriggerPoint}
+            options={OLongSwipeTriggerPointType}
+          />
           <InsetIonItem button onClick={() => setOpen(true)}>
             <IonLabel>Reset All Gestures</IonLabel>
             <IonActionSheet
