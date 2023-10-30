@@ -197,6 +197,14 @@ export const OTapToCollapseType = {
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
+export const OLongSwipeTriggerPointType = {
+  Normal: "normal",
+  Later: "later",
+} as const;
+
+export type LongSwipeTriggerPointType =
+  (typeof OLongSwipeTriggerPointType)[keyof typeof OLongSwipeTriggerPointType];
+
 const OSwipeActionBase = {
   None: "none",
   Upvote: "upvote",
@@ -264,6 +272,7 @@ export type SettingValueTypes = {
   default_feed: DefaultFeedType;
   touch_friendly_links: boolean;
   show_comment_images: boolean;
+  long_swipe_trigger_point: LongSwipeTriggerPointType;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

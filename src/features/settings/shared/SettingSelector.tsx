@@ -31,6 +31,7 @@ const ValueLabel = styled(IonLabel)`
 
 export interface SettingSelectorProps<T> {
   title: string;
+  openTitle?: string;
   selected: T;
   setSelected: Dispatchable<T>;
   options: Dictionary<string>;
@@ -44,6 +45,7 @@ export interface SettingSelectorProps<T> {
 
 export default function SettingSelector<T extends string>({
   title,
+  openTitle,
   selected,
   setSelected,
   options,
@@ -116,7 +118,7 @@ export default function SettingSelector<T extends string>({
             dispatch(setSelected(e.detail.data));
           }
         }}
-        header={title}
+        header={openTitle ?? title}
         buttons={buttons}
       />
     </InsetIonItem>

@@ -87,7 +87,7 @@ ion-action-sheet .action-sheet-selected .action-sheet-button-inner::after {
   content: "";
   z-index: 1;
   position: absolute;
-  right: -6px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
 
