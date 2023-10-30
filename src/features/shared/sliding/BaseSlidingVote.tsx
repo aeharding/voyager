@@ -161,6 +161,9 @@ function BaseSlidingVoteInternal({
 
   const reply = useCallback(async () => {
     if (presentLoginIfNeeded()) return;
+
+    if (isInboxItem(item)) dispatch(markRead(item, true));
+
     if (item.post.locked) {
       presentToast(postLocked);
       return;
@@ -175,6 +178,7 @@ function BaseSlidingVoteInternal({
     presentLoginIfNeeded,
     prependComments,
     presentToast,
+    dispatch,
   ]);
 
   const { id, isSaved } = useMemo(() => {
