@@ -7,7 +7,7 @@ import { updateCommentCollapseState } from "./commentSlice";
 import { Person } from "lemmy-js-client";
 import CommentExpander from "./CommentExpander";
 import { OTapToCollapseType } from "../../services/db";
-import { getOffsetTop } from "../../helpers/dom";
+import { getOffsetTop, scrollIntoView } from "../../helpers/dom";
 
 interface CommentTreeProps {
   comment: CommentNodeI;
@@ -122,8 +122,5 @@ export function scrollViewUpIfNeeded(target: EventTarget) {
 
   if (itemOffsetTop > scrollView.scrollTop) return;
 
-  item.scrollIntoView({
-    behavior: "smooth",
-    block: "nearest",
-  });
+  scrollIntoView(item);
 }
