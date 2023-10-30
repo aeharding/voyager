@@ -147,6 +147,8 @@ function BaseSlidingVoteInternal({
     async (score: 1 | -1 | 0) => {
       if (presentLoginIfNeeded()) return;
 
+      if (isInboxItem(item)) dispatch(markRead(item, true));
+
       try {
         if (isPost) await dispatch(voteOnPost(item.post.id, score));
         else await dispatch(voteOnComment(item.comment.id, score));
@@ -154,7 +156,7 @@ function BaseSlidingVoteInternal({
         presentToast(voteError);
       }
     },
-    [dispatch, isPost, item, presentToast, presentLoginIfNeeded],
+    [presentLoginIfNeeded, isPost, dispatch, item, presentToast],
   );
 
   const reply = useCallback(async () => {
