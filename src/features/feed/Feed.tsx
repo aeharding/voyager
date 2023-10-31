@@ -198,6 +198,7 @@ export default function Feed<I>({
         }}
         onRangeChange={(start, end) => {
           if (loadFailed) return;
+          if (!start) return;
 
           if (end + 10 > filteredItems.length) {
             fetchMore();

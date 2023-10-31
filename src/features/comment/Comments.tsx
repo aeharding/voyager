@@ -75,8 +75,9 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 ) {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [finishedPaging, setFinishedPaging] = useState(false);
+  const [loading, _setLoading] = useState(false);
+  const loadingRef = useRef(false);
+  const finishedPagingRef = useRef(false);
   const [comments, setComments] = useState<CommentView[]>([]);
   const commentTree = useMemo(
     () =>
@@ -99,6 +100,11 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   const virtuaRef = useRef<VListHandle>(null);
 
+  function setLoading(loading: boolean) {
+    _setLoading(loading);
+    loadingRef.current = loading;
+  }
+
   useSetActivePage(virtuaRef);
 
   useImperativeHandle(ref, () => ({
@@ -113,10 +119,11 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   async function fetchComments(refresh = false) {
     if (refresh) {
-      setFinishedPaging(false);
+      if (page === 0 && loadingRef.current) return; // Still loading first page
+      finishedPagingRef.current = false;
     } else {
-      if (loading) return;
-      if (finishedPaging) return;
+      if (loadingRef.current) return;
+      if (finishedPagingRef.current) return;
     }
 
     let response;
@@ -165,7 +172,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       existingComments,
       "comment.id",
     );
-    if (!newComments.length) setFinishedPaging(true);
+    if (!newComments.length) finishedPagingRef.current = true;
 
     let potentialComments = uniqBy(
       [...existingComments, ...newComments],
