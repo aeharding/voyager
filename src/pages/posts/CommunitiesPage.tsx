@@ -8,8 +8,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../features/shared/AppContent";
 import CommunitiesMoreActions from "../../features/community/list/InstanceMoreActions";
+import FeedContent from "../shared/FeedContent";
 
 export default function CommunitiesPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -26,9 +26,9 @@ export default function CommunitiesPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <AppContent scrollY>
+      <FeedContent>
         <CommunitiesList />
-      </AppContent>
+      </FeedContent>
     </IonPage>
   );
 }
