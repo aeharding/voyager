@@ -30,6 +30,7 @@ export default function CommunityListItem({
     <IonItem
       key={community.id}
       routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
+      detail={false}
     >
       <Content>
         <ItemIcon item={community} size={28} />

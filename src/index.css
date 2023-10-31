@@ -190,3 +190,8 @@ ion-toast.center::part(container) {
   left: 50%;
   position: relative;
 }
+
+/* https://github.com/ionic-team/ionic-framework/issues/18714#issuecomment-913305864 */
+ion-refresher.refresher-active {
+  z-index: 1;
+}

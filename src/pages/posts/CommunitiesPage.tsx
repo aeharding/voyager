@@ -3,6 +3,7 @@ import CommunitiesList from "../../features/community/list/CommunitiesList";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import {
   IonButtons,
+  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
@@ -26,9 +27,9 @@ export default function CommunitiesPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <FeedContent>
+      <IonContent scrollY={false}>
         <CommunitiesList />
-      </FeedContent>
+      </IonContent>
     </IonPage>
   );
 }
