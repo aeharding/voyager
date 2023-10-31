@@ -204,6 +204,7 @@ export const setPostRead =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     if (!jwtSelector(getState())) return;
     if (getState().settings.general.posts.disableMarkingRead) return;
+    if (getState().post.postReadById[postId]) return;
 
     dispatch(updatePostRead({ postId }));
 
