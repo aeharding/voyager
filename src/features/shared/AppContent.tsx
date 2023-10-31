@@ -24,7 +24,7 @@ export default function AppContent({
   className?: string;
 }) {
   return (
-    <IonContent style={{ width: "100%" }} scrollY={scrollY ?? false} fullscreen>
+    <IonContent style={{ width: "100%" }} scrollY={scrollY ?? false}>
       <MaxWidthContainer className={className}>{children}</MaxWidthContainer>
     </IonContent>
   );
