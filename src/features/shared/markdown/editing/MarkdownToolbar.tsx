@@ -1,6 +1,4 @@
 import styled from "@emotion/styled";
-import bold from "./icons/bold.svg";
-import italic from "./icons/italic.svg";
 import {
   IonIcon,
   IonLoading,
@@ -33,6 +31,7 @@ import { insert } from "../../../../helpers/string";
 import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 import textFaces from "./textFaces.txt?raw";
 import useAppToast from "../../../../helpers/useAppToast";
+import { bold, italic } from "../../../icons";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";

@@ -125,8 +125,8 @@
     "usehooks-ts": "^2.9.1",
     "uuid": "^9.0.1",
     "virtua": "^0.15.4",
-    "vite": "^4.5.0",
-    "vite-plugin-pwa": "^0.16.5",
+    "vite": "^5.0.0-beta.14",
+    "vite-plugin-pwa": "^0.16.6",
     "vite-plugin-svgr": "^4.1.0",
     "vitest": "^0.34.6",
     "workbox-window": "^7.0.0"
