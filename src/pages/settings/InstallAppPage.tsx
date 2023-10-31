@@ -47,12 +47,73 @@ const AppContainer = styled.div`
   }
 `;
 
+const BadgeContainer = styled.div`
+  display: grid;
+  grid-template-rows: 50px;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 0;
+  height: auto;
+
+  @media (max-width: 360px) {
+    grid-template-columns: 1fr;
+    gap: 20px 0;
+  }
+
+  @media (min-width: 800px) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+`;
+
+const BadgeItem = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BadgeImg = styled.img`
+  height: 45px;
+`;
+
 export default function InstallAppPage() {
   const pageRef = useRef<HTMLElement>(null);
 
   useSetActivePage(pageRef);
 
   const beforeInstallPrompt = useContext(BeforeInstallPromptContext);
+
+  const nativeBadges = (
+    <>
+      <BadgeItem>
+        <BadgeImg src="/public/badges/ios.svg" alt="" />
+      </BadgeItem>
+      <BadgeItem>
+        <BadgeImg src="/public/badges/play.svg" alt="" />
+      </BadgeItem>
+      <BadgeItem>
+        <BadgeImg src="/public/badges/fdroid.png" alt="" />
+      </BadgeItem>
+    </>
+  );
+
+  const badges = <BadgeContainer>{nativeBadges}</BadgeContainer>;
+  const badgesWithWeb = (
+    <BadgeContainer>
+      {nativeBadges}
+      <BadgeItem>
+        <BadgeImg
+          src="/public/badges/pwa.svg"
+          alt=""
+          onClick={async () => {
+            try {
+              await beforeInstallPrompt.event?.prompt();
+            } finally {
+              beforeInstallPrompt.clearEvent();
+            }
+          }}
+        />
+      </BadgeItem>
+    </BadgeContainer>
+  );
 
   function renderGuidance() {
     const why = (
@@ -74,37 +135,20 @@ export default function InstallAppPage() {
             Installed
           </h3>
           <IonText color="medium">
-            <p>Congrats, you&apos;re browsing from the app!</p>
+            <p>Congrats, you&apos;re browsing from the webapp!</p>
+            <p>You can also install the native app for a richer experience.</p>
           </IonText>
+          {badges}
         </>
       );
     }
 
-    if (beforeInstallPrompt.event) {
+    if (beforeInstallPrompt.event || true) {
       return (
         <>
           <h3>How to get the App</h3>
 
-          <p>
-            <IonButton
-              color="primary"
-              onClick={async () => {
-                try {
-                  await beforeInstallPrompt.event?.prompt();
-                } finally {
-                  beforeInstallPrompt.clearEvent();
-                }
-              }}
-            >
-              <IonIcon
-                icon={download}
-                css={css`
-                  margin-right: 0.65rem;
-                `}
-              />{" "}
-              Install App
-            </IonButton>
-          </p>
+          {badgesWithWeb}
 
           {why}
         </>
