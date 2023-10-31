@@ -3,15 +3,12 @@ import CommunitiesList from "../../features/community/list/CommunitiesList";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import {
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../features/shared/AppContent";
 import CommunitiesMoreActions from "../../features/community/list/InstanceMoreActions";
-import { css } from "@emotion/react";
 import FeedContent from "../shared/FeedContent";
 
 export default function CommunitiesPage() {
