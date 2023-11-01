@@ -3,6 +3,7 @@ import "photoswipe/dist/photoswipe.css";
 import { PostView } from "lemmy-js-client";
 import { GalleryContext } from "./GalleryProvider";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
+import mime from "mime";
 
 export interface GalleryImgProps {
   src?: string;
@@ -33,7 +34,9 @@ export function GalleryImg({
   const imgRef = useRef<HTMLImageElement>(null);
   const { open } = useContext(GalleryContext);
 
-  const isVideo = src?.endsWith(".webm");
+  const mt = mime.getType(`${src}`);
+
+  const isVideo = mt?.startsWith("video/");
 
   const InnerComponent = !isVideo ? (
     <img
@@ -58,7 +61,7 @@ export function GalleryImg({
     />
   ) : (
     <video width="100%" controls loop preload="metadata" draggable="false">
-      <source type="video/webm" src={src} />
+      <source type={mt || undefined} src={src} />
       {alt}
       Your browser does not support playing HTML5 video. You can{" "}
       <a href={src} download>
