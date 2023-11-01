@@ -38,6 +38,8 @@ export function GalleryImg({
 
   const isVideo = mt?.startsWith("video/");
 
+  const type = mt || undefined;
+
   const InnerComponent = !isVideo ? (
     <img
       ref={imgRef}
@@ -61,7 +63,7 @@ export function GalleryImg({
     />
   ) : (
     <video width="100%" controls loop preload="metadata" draggable="false">
-      <source type={mt || undefined} src={src} />
+      <source type={type} src={src} />
       {alt}
       Your browser does not support playing HTML5 video. You can{" "}
       <a href={src} download>
