@@ -8,7 +8,7 @@ import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { postHiddenByIdSelector, hidePost, unhidePost } from "../postSlice";
+import { hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
 import { FeedScrollObserverContext } from "../../feed/FeedScrollObserver";
 
@@ -36,7 +36,9 @@ export default function Post(props: PostProps) {
   const dispatch = useAppDispatch();
   const [shouldHide, setShouldHide] = useState(false);
   const shouldHideRef = useRef(false);
-  const isHidden = useAppSelector(postHiddenByIdSelector)[props.post.post.id];
+  const isHidden = useAppSelector(
+    (state) => state.post.postHiddenById[props.post.post.id]?.hidden,
+  );
   const hideCompleteRef = useRef(false);
   const postById = useAppSelector((state) => state.post.postById);
   const possiblyPost = postById[props.post.post.id];

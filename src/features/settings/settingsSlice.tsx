@@ -99,6 +99,7 @@ interface SettingsState {
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
     defaultFeed: DefaultFeedType | undefined;
+    noSubscribedInFeed: boolean;
   };
   blocks: {
     keywords: string[];
@@ -169,6 +170,7 @@ const initialState: SettingsState = {
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
     defaultFeed: undefined,
+    noSubscribedInFeed: false,
   },
   blocks: {
     keywords: [],
@@ -283,6 +285,10 @@ export const appearanceSlice = createSlice({
     setDefaultFeed(state, action: PayloadAction<DefaultFeedType>) {
       state.general.defaultFeed = action.payload;
       // Per user setting is updated in StoreProvider
+    },
+    setNoSubscribedInFeed(state, action: PayloadAction<boolean>) {
+      state.general.noSubscribedInFeed = action.payload;
+      db.setSetting("no_subscribed_in_feed", action.payload);
     },
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.compact.showVotingButtons = action.payload;
@@ -490,6 +496,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const filtered_keywords = await db.getSetting("filtered_keywords");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
       const show_comment_images = await db.getSetting("show_comment_images");
+      const no_subscribed_in_feed = await db.getSetting(
+        "no_subscribed_in_feed",
+      );
 
       return {
         ...state.settings,
@@ -562,6 +571,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
           defaultFeed: initialState.general.defaultFeed,
+          noSubscribedInFeed:
+            no_subscribed_in_feed ?? initialState.general.noSubscribedInFeed,
         },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
@@ -612,6 +623,7 @@ export const {
   setLinkHandler,
   setPureBlack,
   setDefaultFeed,
+  setNoSubscribedInFeed,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

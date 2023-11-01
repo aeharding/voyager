@@ -45,6 +45,8 @@ export default function PostCommentFeed({
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
   filterKeywords = true,
+  filterOnRxFn: _filterOnRxFn,
+  filterFn: _filterFn,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
@@ -121,13 +123,47 @@ export default function PostCommentFeed({
   );
 
   const filterFn = useCallback(
-    (item: PostCommentItem) =>
-      !postHiddenById[item.post.id] &&
-      !postHasFilteredKeywords(
-        item.post,
-        filterKeywords ? filteredKeywords : [],
-      ),
-    [postHiddenById, filteredKeywords, filterKeywords],
+    (item: PostCommentItem) => {
+      const postHidden = postHiddenById[item.post.id];
+      if (
+        filterHiddenPosts &&
+        postHidden &&
+        postHidden.immediate &&
+        postHidden.hidden
+      )
+        return false;
+      if (
+        filterKeywords &&
+        postHasFilteredKeywords(
+          item.post,
+          filterKeywords ? filteredKeywords : [],
+        )
+      )
+        return false;
+
+      if (_filterFn) return _filterFn(item);
+
+      return true;
+    },
+    [
+      postHiddenById,
+      filteredKeywords,
+      filterKeywords,
+      filterHiddenPosts,
+      _filterFn,
+    ],
+  );
+
+  const filterOnRxFn = useCallback(
+    (item: PostCommentItem) => {
+      const postHidden = postHiddenById[item.post.id];
+      if (filterHiddenPosts && postHidden?.hidden) return false;
+
+      if (_filterOnRxFn) return _filterOnRxFn(item);
+
+      return true;
+    },
+    [filterHiddenPosts, postHiddenById, _filterOnRxFn],
   );
 
   const getIndex = useCallback(
@@ -139,7 +175,8 @@ export default function PostCommentFeed({
   return (
     <Feed
       fetchFn={fetchFn}
-      filterFn={filterHiddenPosts ? filterFn : undefined}
+      filterFn={filterFn}
+      filterOnRxFn={filterOnRxFn}
       getIndex={getIndex}
       renderItemContent={renderItemContent}
       {...rest}

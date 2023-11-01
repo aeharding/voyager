@@ -24,7 +24,6 @@ import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { PostView } from "lemmy-js-client";
 import {
-  postHiddenByIdSelector,
   hidePost,
   unhidePost,
   voteOnPost,
@@ -64,7 +63,9 @@ export default function MoreActions({
   const presentToast = useAppToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const isHidden = useAppSelector(postHiddenByIdSelector)[post.post.id];
+  const isHidden = useAppSelector(
+    (state) => state.post.postHiddenById[post.post.id]?.hidden,
+  );
   const myHandle = useAppSelector(handleSelector);
 
   const router = useIonRouter();

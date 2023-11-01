@@ -30,7 +30,24 @@ export interface FeedProps<I>
   extends Partial<Pick<EndPostProps, "sortDuration">> {
   itemsRef?: React.MutableRefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
+
+  /**
+   * Filters feed immediately. You can hide and unhide live
+   * (hidden items are kept in memory)
+   *
+   * @related filterOnRxFn
+   */
   filterFn?: (item: I) => boolean;
+
+  /**
+   * `filterOnRxFn` runs once data is received from the API.
+   * If an item is filtered, it's tossed and cannot be recovered
+   * without refreshing the feed.
+   *
+   * @related filterFn
+   */
+  filterOnRxFn?: (item: I) => boolean;
+
   getIndex?: (item: I) => number | string;
   renderItemContent: (item: I) => React.ReactNode;
   header?: React.ReactElement;
@@ -43,6 +60,7 @@ export default function Feed<I>({
   itemsRef,
   fetchFn,
   filterFn,
+  filterOnRxFn,
   renderItemContent,
   header,
   communityName,
@@ -57,6 +75,9 @@ export default function Feed<I>({
   const [atEnd, setAtEnd] = useState(false);
   const [loadFailed, setLoadFailed] = useState(true);
   const { setScrolledPastSearch } = useContext(FeedSearchContext);
+
+  // If you have everything filtered, don't continue polling API indefinitely
+  const requestLoopRef = useRef(0);
 
   const filteredItems = useMemo(
     () => (filterFn ? items.filter(filterFn) : items),
@@ -85,25 +106,37 @@ export default function Feed<I>({
         setLoading(false);
       }
 
+      const filteredItems = filterOnRxFn ? items.filter(filterOnRxFn) : items;
+
       setLoadFailed(false);
 
       if (refresh) {
         setAtEnd(false);
-        setitems(items);
+        setitems(filteredItems);
       } else {
         setitems((existingPosts) => {
           const result = [...existingPosts];
-          const newPosts = pullAllBy(items.slice(), existingPosts, getIndex);
+          const newPosts = pullAllBy(
+            filteredItems.slice(),
+            existingPosts,
+            getIndex,
+          );
           result.splice(currentPage * limit, limit, ...newPosts);
           return result;
         });
       }
 
-      if (!items.length) setAtEnd(true);
+      if (!filteredItems.length) {
+        requestLoopRef.current++;
+      } else {
+        requestLoopRef.current = 0;
+      }
+
+      if (!items.length || requestLoopRef.current > 10) setAtEnd(true);
 
       setPage(currentPage);
     },
-    [atEnd, fetchFn, limit, loading, page, getIndex],
+    [atEnd, fetchFn, limit, loading, page, getIndex, filterOnRxFn],
   );
 
   useEffect(() => {

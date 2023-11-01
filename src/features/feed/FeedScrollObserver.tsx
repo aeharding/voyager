@@ -1,7 +1,7 @@
 import { Dictionary } from "@reduxjs/toolkit";
 import React, { createContext, useCallback, useEffect, useRef } from "react";
 import { useAppDispatch } from "../../store";
-import { setPostRead } from "../post/postSlice";
+import { hidePost, setPostRead } from "../post/postSlice";
 import { useIonViewDidEnter, useIonViewWillLeave } from "@ionic/react";
 
 interface IFeedScrollObserverContext {
@@ -58,7 +58,10 @@ export default function FeedScrollObserver({
             if (entry.target.getBoundingClientRect().top > 16) return;
 
             const idAsNumber = +id;
-            if (!isNaN(idAsNumber)) dispatch(setPostRead(idAsNumber));
+            if (!isNaN(idAsNumber)) {
+              dispatch(setPostRead(idAsNumber));
+              dispatch(hidePost(idAsNumber, false));
+            }
 
             // console.log(
             //   entry.target.querySelector('[class*="-Title"]')?.textContent

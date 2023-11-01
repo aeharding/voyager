@@ -299,6 +299,11 @@ export const clientSelector = createSelector(
   },
 );
 
+export const followIdsSelector = createSelector(
+  [(state: RootState) => state.auth.site?.my_user?.follows],
+  (follows) => (follows ?? []).map((follow) => follow.community.id),
+);
+
 function updateCredentialsStorage(
   accounts: CredentialStoragePayload | undefined,
 ) {

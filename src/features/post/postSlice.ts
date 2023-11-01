@@ -15,7 +15,7 @@ const POST_SORT_KEY = "post-sort-v2";
 
 interface PostState {
   postById: Dictionary<PostView | "not-found">;
-  postHiddenById: Dictionary<boolean>;
+  postHiddenById: Dictionary<{ hidden: boolean; immediate: boolean }>;
   postVotesById: Dictionary<1 | -1 | 0>;
   postSavedById: Dictionary<boolean>;
   postReadById: Dictionary<boolean>;
@@ -69,7 +69,12 @@ export const postSlice = createSlice({
 
         for (const post of posts) {
           state.postById[post.post.id] = post;
-          state.postHiddenById[post.post.id] = postHiddenById[post.post.id];
+          const hidden = postHiddenById[post.post.id];
+          if (hidden)
+            state.postHiddenById[post.post.id] = {
+              hidden,
+              immediate: false,
+            };
           if (post.read) state.postReadById[post.post.id] = post.read;
 
           if (post.my_vote)
@@ -81,13 +86,19 @@ export const postSlice = createSlice({
       .addCase(updatePostHidden.fulfilled, (state, action) => {
         if (!action.payload) return;
 
-        state.postHiddenById[action.payload.post_id] = !!action.payload.hidden;
+        state.postHiddenById[action.payload.post_id] = {
+          hidden: !!action.payload.hidden,
+          immediate: action.payload.immediate,
+        };
       })
       .addCase(bulkUpdatePostsHidden.fulfilled, (state, action) => {
         if (!action.payload) return;
 
         for (const metadata of action.payload) {
-          state.postHiddenById[metadata.post_id] = !!metadata.hidden;
+          state.postHiddenById[metadata.post_id] = {
+            hidden: !!metadata.hidden,
+            immediate: true,
+          };
         }
       });
   },
@@ -95,7 +106,14 @@ export const postSlice = createSlice({
 
 export const updatePostHidden = createAsyncThunk(
   "post/updatePostHidden",
-  async ({ postId, hidden }: { postId: number; hidden: boolean }, thunkAPI) => {
+  async (
+    {
+      postId,
+      hidden,
+      immediate,
+    }: { postId: number; hidden: boolean; immediate: boolean },
+    thunkAPI,
+  ) => {
     const rootState = thunkAPI.getState() as RootState;
     const handle = handleSelector(rootState);
 
@@ -110,7 +128,7 @@ export const updatePostHidden = createAsyncThunk(
 
     await db.upsertPostMetadata(newPostMetadata);
 
-    return newPostMetadata;
+    return { ...newPostMetadata, immediate };
   },
 );
 
@@ -276,18 +294,22 @@ export const deletePost =
     dispatch(receivedPostNotFound(id));
   };
 
-export const hidePost = (postId: number) => async (dispatch: AppDispatch) => {
-  await dispatch(updatePostHidden({ postId, hidden: true }));
-};
+export const hidePost =
+  (postId: number, immediate = true) =>
+  async (dispatch: AppDispatch) => {
+    await dispatch(updatePostHidden({ postId, hidden: true, immediate }));
+  };
 
 export const hidePosts =
   (postIds: number[]) => async (dispatch: AppDispatch) => {
     await dispatch(bulkUpdatePostsHidden({ postIds, hidden: true }));
   };
 
-export const unhidePost = (postId: number) => async (dispatch: AppDispatch) => {
-  await dispatch(updatePostHidden({ postId, hidden: false }));
-};
+export const unhidePost =
+  (postId: number, immediate = true) =>
+  async (dispatch: AppDispatch) => {
+    await dispatch(updatePostHidden({ postId, hidden: false, immediate }));
+  };
 
 export const clearHidden =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
