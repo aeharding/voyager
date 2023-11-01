@@ -1,4 +1,4 @@
-import React, { FocusEvent, KeyboardEvent, useContext, useRef } from "react";
+import { FocusEvent, KeyboardEvent, useContext, useRef } from "react";
 import "photoswipe/dist/photoswipe.css";
 import { PostView } from "lemmy-js-client";
 import { GalleryContext } from "./GalleryProvider";
@@ -57,7 +57,7 @@ export function GalleryImg({
       }}
     />
   ) : (
-    <video width="100%" max-height="100%" controls loop preload="metadata">
+    <video width="100%" controls loop preload="metadata">
       <source type="video/webm" src={src} />
       Your browser does not support playing HTML5 video. You can{" "}
       <a href={src} download>
