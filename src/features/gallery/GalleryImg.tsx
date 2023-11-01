@@ -33,7 +33,9 @@ export function GalleryImg({
   const imgRef = useRef<HTMLImageElement>(null);
   const { open } = useContext(GalleryContext);
 
-  return (
+  const isVideo = src?.endsWith(".webm");
+
+  const InnerComponent = !isVideo ? (
     <img
       ref={imgRef}
       draggable="false"
@@ -54,5 +56,16 @@ export function GalleryImg({
         loaded.current = true;
       }}
     />
+  ) : (
+    <video width="100%" max-height="100%" controls loop preload="metadata">
+      <source type="video/webm" src={src} />
+      Your browser does not support playing HTML5 video. You can{" "}
+      <a href={src} download>
+        download a copy of the video file
+      </a>{" "}
+      instead.
+    </video>
   );
+
+  return InnerComponent;
 }
