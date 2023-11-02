@@ -1,6 +1,5 @@
 import {
   IonBackButton,
-  IonButton,
   IonButtons,
   IonHeader,
   IonIcon,
@@ -12,13 +11,19 @@ import {
 import {
   addOutline,
   checkmarkCircleOutline,
-  download,
+  chevronBack,
   shareOutline,
 } from "ionicons/icons";
 import AppContent from "../../features/shared/AppContent";
 import styled from "@emotion/styled";
-import { isInstallable, isInstalled, ua } from "../../helpers/device";
-import { useContext, useRef } from "react";
+import {
+  isAndroid,
+  isAppleDeviceInstallable,
+  isInstallable,
+  isInstalled,
+  ua,
+} from "../../helpers/device";
+import { useContext, useRef, useState } from "react";
 import { BeforeInstallPromptContext } from "../../BeforeInstallPromptProvider";
 import { css } from "@emotion/react";
 import { useSetActivePage } from "../../features/auth/AppContext";
@@ -47,12 +52,125 @@ const AppContainer = styled.div`
   }
 `;
 
+const BadgeContainer = styled.div`
+  display: grid;
+  grid-template-rows: 50px;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 0;
+  height: auto;
+
+  a {
+    display: flex;
+  }
+
+  @media (max-width: 360px) {
+    grid-template-columns: 1fr;
+    gap: 20px 0;
+  }
+
+  @media (min-width: 800px) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+`;
+
+const BadgeItem = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BadgeImg = styled.img`
+  height: 45px;
+`;
+
+const H3 = styled.h3`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const ANDROID_APP_BADGES = [
+  {
+    src: "/public/badges/play.svg",
+    href: "https://play.google.com/store/apps/details?id=app.vger.voyager",
+  },
+  {
+    src: "/public/badges/fdroid.png",
+    href: "https://f-droid.org/en/packages/app.vger.voyager/",
+  },
+];
+
+const IOS_APP_BADGES = [
+  {
+    src: "/public/badges/ios.svg",
+    href: "https://apps.apple.com/us/app/voyager-for-lemmy/id6451429762",
+  },
+];
+
 export default function InstallAppPage() {
   const pageRef = useRef<HTMLElement>(null);
+  const [showInstallwebAppDirections, setShowInstallwebAppDirections] =
+    useState(false);
 
   useSetActivePage(pageRef);
 
   const beforeInstallPrompt = useContext(BeforeInstallPromptContext);
+
+  const relevantBadges = (() => {
+    if (isAppleDeviceInstallable()) return IOS_APP_BADGES;
+    if (isAndroid()) return ANDROID_APP_BADGES;
+
+    return [...IOS_APP_BADGES, ...ANDROID_APP_BADGES];
+  })();
+
+  const nativeBadges = (
+    <>
+      {relevantBadges.map(({ src, href }) => (
+        <BadgeItem key={src}>
+          <a href={href} target="_blank" rel="noopener noreferrer">
+            <BadgeImg src={src} />
+          </a>
+        </BadgeItem>
+      ))}
+    </>
+  );
+
+  const howToGetAppTitle = (
+    <H3>
+      {showInstallwebAppDirections && (
+        <IonIcon
+          icon={chevronBack}
+          onClick={() => setShowInstallwebAppDirections(false)}
+        />
+      )}{" "}
+      How to get the App
+    </H3>
+  );
+
+  const badges = <BadgeContainer>{nativeBadges}</BadgeContainer>;
+  const badgesWithWeb = (
+    <BadgeContainer>
+      {nativeBadges}
+      <BadgeItem>
+        <BadgeImg
+          src="/public/badges/pwa.svg"
+          alt=""
+          onClick={async () => {
+            if (!beforeInstallPrompt.event) {
+              setShowInstallwebAppDirections(true);
+              return;
+            }
+
+            try {
+              await beforeInstallPrompt.event?.prompt();
+            } finally {
+              beforeInstallPrompt.clearEvent();
+            }
+          }}
+        />
+      </BadgeItem>
+    </BadgeContainer>
+  );
 
   function renderGuidance() {
     const why = (
@@ -74,8 +192,10 @@ export default function InstallAppPage() {
             Installed
           </h3>
           <IonText color="medium">
-            <p>Congrats, you&apos;re browsing from the app!</p>
+            <p>Congrats, you&apos;re browsing from the webapp!</p>
+            <p>You can also install the native app for a richer experience.</p>
           </IonText>
+          {badges}
         </>
       );
     }
@@ -85,26 +205,7 @@ export default function InstallAppPage() {
         <>
           <h3>How to get the App</h3>
 
-          <p>
-            <IonButton
-              color="primary"
-              onClick={async () => {
-                try {
-                  await beforeInstallPrompt.event?.prompt();
-                } finally {
-                  beforeInstallPrompt.clearEvent();
-                }
-              }}
-            >
-              <IonIcon
-                icon={download}
-                css={css`
-                  margin-right: 0.65rem;
-                `}
-              />{" "}
-              Install App
-            </IonButton>
-          </p>
+          {badgesWithWeb}
 
           {why}
         </>
@@ -114,16 +215,21 @@ export default function InstallAppPage() {
     if (ua.getDevice().vendor === "Apple" && navigator.maxTouchPoints > 1) {
       return (
         <>
-          <h3>How to get the App</h3>
-          <ol>
-            <li>
-              Tap <IonIcon icon={shareOutline} color="primary" /> from the
-              Safari tab bar
-            </li>
-            <li>
-              Scroll and tap Add to Home Screen <IonIcon icon={addOutline} />
-            </li>
-          </ol>
+          {howToGetAppTitle}
+
+          {showInstallwebAppDirections ? (
+            <ol>
+              <li>
+                Tap <IonIcon icon={shareOutline} color="primary" /> from the
+                Safari tab bar
+              </li>
+              <li>
+                Scroll and tap Add to Home Screen <IonIcon icon={addOutline} />
+              </li>
+            </ol>
+          ) : (
+            badgesWithWeb
+          )}
 
           {why}
         </>
@@ -133,16 +239,21 @@ export default function InstallAppPage() {
     if (isInstallable) {
       return (
         <>
-          <h3>How to get the App</h3>
-          <ol>
-            <li>
-              You may have the app already installed. Check your homescreen!
-            </li>
-            <li>
-              If not, check for an &quot;install app&quot; button in your
-              browser&apos;s controls
-            </li>
-          </ol>
+          {howToGetAppTitle}
+
+          {showInstallwebAppDirections ? (
+            <ol>
+              <li>
+                You may have the app already installed. Check your homescreen!
+              </li>
+              <li>
+                If not, check for an &quot;install app&quot; button in your
+                browser&apos;s controls
+              </li>
+            </ol>
+          ) : (
+            badgesWithWeb
+          )}
 
           {why}
         </>
@@ -151,20 +262,26 @@ export default function InstallAppPage() {
 
     return (
       <>
-        <h3>How to get the App</h3>
-        <ol>
-          <li>
-            Install the app by visiting{" "}
-            <span
-              css={css`
-                text-decoration: underline;
-              `}
-            >
-              https://vger.app/settings/install
-            </span>{" "}
-            from your phone or tablet.
-          </li>
-        </ol>
+        {howToGetAppTitle}
+
+        {showInstallwebAppDirections ? (
+          <ol>
+            <li>
+              Visit{" "}
+              <span
+                css={css`
+                  text-decoration: underline;
+                `}
+              >
+                https://vger.app/settings/install
+              </span>{" "}
+              from your phone or tablet.
+            </li>
+            <li>Tap &quot;Launch as Web App&quot;</li>
+          </ol>
+        ) : (
+          badgesWithWeb
+        )}
 
         {why}
       </>
@@ -187,7 +304,7 @@ export default function InstallAppPage() {
           <AppContainer>
             <img src="/logo.png" alt="" />
             <div>
-              Voyager<aside>by Alexander Harding</aside>
+              Voyager for Lemmy<aside>by Alexander Harding</aside>
             </div>
           </AppContainer>
 
