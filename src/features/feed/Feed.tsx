@@ -85,7 +85,7 @@ export default function Feed<I>({
   const [isListAtTop, setIsListAtTop] = useState(true);
   const [atEnd, _setAtEnd] = useState(false);
   const atEndRef = useRef(false);
-  const [loadFailed, setLoadFailed] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
   const { setScrolledPastSearch } = useContext(FeedSearchContext);
   const startRangeRef = useRef(0);
   const scrollingRef = useRef(false);
