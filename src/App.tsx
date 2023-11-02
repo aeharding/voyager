@@ -41,6 +41,8 @@ import { TextRecoveryStartupPrompt } from "./helpers/useTextRecovery";
 import { ErrorBoundary } from "react-error-boundary";
 import AppCrash from "./AppCrash";
 
+import "./statusTap";
+
 // index.tsx ensurxes android nav mode resolves before app is rendered
 (async () => {
   let navMode;
@@ -53,6 +55,7 @@ import AppCrash from "./AppCrash";
   setupIonicReact({
     rippleEffect: false,
     mode: getDeviceMode(),
+    statusTap: false, // custom implementation statusTap.ts
     swipeBackEnabled:
       isInstalled() &&
       getDeviceMode() === "ios" &&
