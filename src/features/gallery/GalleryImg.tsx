@@ -39,8 +39,6 @@ export function GalleryImg({
 
   const isVideo = mt?.startsWith("video/");
 
-  const type = mt || undefined;
-
   const InnerComponent = !isVideo ? (
     <img
       ref={imgRef}
