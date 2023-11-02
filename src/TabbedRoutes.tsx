@@ -71,6 +71,7 @@ import AppIconPage from "./pages/settings/AppIconPage";
 import { DefaultFeedType, ODefaultFeedType } from "./services/db";
 import { AppContext } from "./features/auth/AppContext";
 import SearchFeedResultsPage from "./pages/search/results/SearchFeedResultsPage";
+import { resetSavedStatusTap } from "./statusTap";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -132,6 +133,10 @@ export default function TabbedRoutes() {
       );
     };
   }, [router]);
+
+  useEffect(() => {
+    resetSavedStatusTap();
+  }, [location]);
 
   const userHandle = useAppSelector(handleSelector);
   const profileLabelType = useAppSelector(
