@@ -13,9 +13,24 @@ import { IPostMetadata, db } from "../../services/db";
 
 const POST_SORT_KEY = "post-sort-v2";
 
+interface PostHiddenData {
+  /**
+   * Is post hidden?
+   */
+  hidden: boolean;
+
+  /**
+   * Should post be immediately hidden from feed, or just on next refresh?
+   *
+   * (For example: User pressing "hide" immediately hides,
+   * vs "auto hide" hiding on refresh)
+   */
+  immediate: boolean;
+}
+
 interface PostState {
   postById: Dictionary<PostView | "not-found">;
-  postHiddenById: Dictionary<{ hidden: boolean; immediate: boolean }>;
+  postHiddenById: Dictionary<PostHiddenData>;
   postVotesById: Dictionary<1 | -1 | 0>;
   postSavedById: Dictionary<boolean>;
   postReadById: Dictionary<boolean>;
@@ -86,18 +101,18 @@ export const postSlice = createSlice({
       .addCase(updatePostHidden.fulfilled, (state, action) => {
         if (!action.payload) return;
 
-        state.postHiddenById[action.payload.post_id] = {
-          hidden: !!action.payload.hidden,
+        state.postHiddenById[action.payload.metadata.post_id] = {
+          hidden: !!action.payload.metadata.hidden,
           immediate: action.payload.immediate,
         };
       })
       .addCase(bulkUpdatePostsHidden.fulfilled, (state, action) => {
         if (!action.payload) return;
 
-        for (const metadata of action.payload) {
+        for (const metadata of action.payload.metadata) {
           state.postHiddenById[metadata.post_id] = {
             hidden: !!metadata.hidden,
-            immediate: true,
+            immediate: action.payload.immediate,
           };
         }
       });
@@ -128,14 +143,18 @@ export const updatePostHidden = createAsyncThunk(
 
     await db.upsertPostMetadata(newPostMetadata);
 
-    return { ...newPostMetadata, immediate };
+    return { metadata: newPostMetadata, immediate };
   },
 );
 
 export const bulkUpdatePostsHidden = createAsyncThunk(
   "post/bulkUpdatePostsHidden",
   async (
-    { postIds, hidden }: { postIds: number[]; hidden: boolean },
+    {
+      postIds,
+      hidden,
+      immediate,
+    }: { postIds: number[]; hidden: boolean; immediate: boolean },
     thunkAPI,
   ) => {
     const rootState = thunkAPI.getState() as RootState;
@@ -154,7 +173,7 @@ export const bulkUpdatePostsHidden = createAsyncThunk(
       newPostMetadata.map((metadata) => db.upsertPostMetadata(metadata)),
     );
 
-    return newPostMetadata;
+    return { metadata: newPostMetadata, immediate };
   },
 );
 
@@ -304,8 +323,9 @@ export const hidePost =
   };
 
 export const hidePosts =
-  (postIds: number[]) => async (dispatch: AppDispatch) => {
-    await dispatch(bulkUpdatePostsHidden({ postIds, hidden: true }));
+  (postIds: number[], immediate = true) =>
+  async (dispatch: AppDispatch) => {
+    await dispatch(bulkUpdatePostsHidden({ postIds, hidden: true, immediate }));
   };
 
 export const unhidePost =

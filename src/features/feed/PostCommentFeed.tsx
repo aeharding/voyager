@@ -187,19 +187,18 @@ export default function PostCommentFeed({
   );
 
   function onRemovedFromTopOfViewport(items: PostCommentItem[]) {
-    for (const item of items) {
-      onRead(item);
-    }
+    items.forEach(onRead);
   }
 
   function onRead(item: PostCommentItem) {
-    if (isPost(item))
-      dispatch(
-        setPostRead(
-          item.post.id,
-          communityName ? disableAutoHideInCommunities : false,
-        ),
-      );
+    if (!isPost(item)) return;
+
+    dispatch(
+      setPostRead(
+        item.post.id,
+        communityName ? disableAutoHideInCommunities : false,
+      ),
+    );
   }
 
   return (

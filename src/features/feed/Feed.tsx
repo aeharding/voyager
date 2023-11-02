@@ -19,15 +19,14 @@ import { useSetActivePage } from "../auth/AppContext";
 import EndPost, { EndPostProps } from "./endItems/EndPost";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
-import { VList, VListHandle, VListProps } from "virtua";
+import { VList, VListHandle } from "virtua";
 import { FeedSearchContext } from "../../pages/shared/CommunityPage";
 import { useAppSelector } from "../../store";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
 export interface FeedProps<I>
-  extends Partial<Pick<EndPostProps, "sortDuration">>,
-    Partial<Pick<VListProps, "onRangeChange">> {
+  extends Partial<Pick<EndPostProps, "sortDuration">> {
   itemsRef?: React.MutableRefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
 
@@ -53,6 +52,9 @@ export interface FeedProps<I>
   header?: React.ReactElement;
   limit?: number;
 
+  /**
+   * Called with item(s) scrolled off the top of the users' viewport
+   */
   onRemovedFromTop?: (items: I[]) => void;
 
   communityName?: string;
@@ -61,7 +63,7 @@ export interface FeedProps<I>
 /**
  * Maximum requests to loop through (for example, searching for unhidden posts) before giving up
  */
-const MAX_REQUEST_LOOP = 50;
+const MAX_REQUEST_LOOP = 20;
 
 export default function Feed<I>({
   itemsRef,
@@ -86,6 +88,7 @@ export default function Feed<I>({
   const [loadFailed, setLoadFailed] = useState(true);
   const { setScrolledPastSearch } = useContext(FeedSearchContext);
   const startRangeRef = useRef(0);
+  const scrollingRef = useRef(false);
 
   const postType = useAppSelector(
     (state) => state.settings.appearance.posts.type,
@@ -238,7 +241,11 @@ export default function Feed<I>({
         }
         ref={virtuaHandle}
         style={{ height: "100%" }}
+        onScrollStop={() => {
+          scrollingRef.current = false;
+        }}
         onScroll={(offset) => {
+          scrollingRef.current = true;
           setIsListAtTop(offset < 10);
           setScrolledPastSearch(offset > 40);
         }}
@@ -246,14 +253,17 @@ export default function Feed<I>({
           if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
 
           // if scrolled down
-          if (start > 0 && start > startRangeRef.current) {
-            const startOffset = header ? 1 : 0; // header counts as item to VList
-
+          const startOffset = header ? 1 : 0; // header counts as item to VList
+          if (
+            scrollingRef.current &&
+            start > startOffset &&
+            start > startRangeRef.current
+          ) {
             // emit what was removed
             onRemovedFromTop?.(
               filteredItems.slice(
-                startRangeRef.current + startOffset,
-                start + startOffset,
+                startRangeRef.current - startOffset,
+                start - startOffset,
               ),
             );
           }
