@@ -257,6 +257,8 @@ export type SettingValueTypes = {
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
   show_hide_read_button: boolean;
+  auto_hide_read: boolean;
+  disable_auto_hide_in_communities: boolean;
   gesture_swipe_post: SwipeActions;
   gesture_swipe_comment: SwipeActions;
   gesture_swipe_inbox: SwipeActions;
@@ -274,6 +276,7 @@ export type SettingValueTypes = {
   show_comment_images: boolean;
   long_swipe_trigger_point: LongSwipeTriggerPointType;
   has_presented_block_nsfw_tip: boolean;
+  no_subscribed_in_feed: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

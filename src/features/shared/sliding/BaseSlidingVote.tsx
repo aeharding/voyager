@@ -28,11 +28,7 @@ import {
   PostView,
 } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import {
-  postHiddenByIdSelector,
-  savePost,
-  voteOnPost,
-} from "../../post/postSlice";
+import { savePost, voteOnPost } from "../../post/postSlice";
 import {
   postLocked,
   saveSuccess,
@@ -130,7 +126,9 @@ function BaseSlidingVoteInternal({
     (state) => state.comment.commentSavedById,
   );
 
-  const isHidden = useAppSelector(postHiddenByIdSelector)[item.post?.id];
+  const isHidden = useAppSelector(
+    (state) => state.post.postHiddenById[item.post?.id]?.hidden,
+  );
 
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId,

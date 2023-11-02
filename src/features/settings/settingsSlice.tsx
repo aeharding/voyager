@@ -95,10 +95,13 @@ interface SettingsState {
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
+      autoHideRead: boolean;
+      disableAutoHideInCommunities: boolean;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
     defaultFeed: DefaultFeedType | undefined;
+    noSubscribedInFeed: boolean;
   };
   blocks: {
     keywords: string[];
@@ -165,10 +168,13 @@ const initialState: SettingsState = {
       disableMarkingRead: false,
       markReadOnScroll: false,
       showHideReadButton: false,
+      autoHideRead: false,
+      disableAutoHideInCommunities: false,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
     defaultFeed: undefined,
+    noSubscribedInFeed: false,
   },
   blocks: {
     keywords: [],
@@ -284,6 +290,10 @@ export const appearanceSlice = createSlice({
       state.general.defaultFeed = action.payload;
       // Per user setting is updated in StoreProvider
     },
+    setNoSubscribedInFeed(state, action: PayloadAction<boolean>) {
+      state.general.noSubscribedInFeed = action.payload;
+      db.setSetting("no_subscribed_in_feed", action.payload);
+    },
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.compact.showVotingButtons = action.payload;
       db.setSetting("compact_show_voting_buttons", action.payload);
@@ -341,6 +351,16 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("show_hide_read_button", action.payload);
     },
+    setAutoHideRead(state, action: PayloadAction<boolean>) {
+      state.general.posts.autoHideRead = action.payload;
+
+      db.setSetting("auto_hide_read", action.payload);
+    },
+    setDisableAutoHideInCommunities(state, action: PayloadAction<boolean>) {
+      state.general.posts.disableAutoHideInCommunities = action.payload;
+
+      db.setSetting("disable_auto_hide_in_communities", action.payload);
+    },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
@@ -366,13 +386,6 @@ export const appearanceSlice = createSlice({
     },
   },
 });
-
-export const markReadOnScrollSelector = (state: RootState) => {
-  return (
-    !state.settings.general.posts.disableMarkingRead &&
-    state.settings.general.posts.markReadOnScroll
-  );
-};
 
 export const setBlurNsfwState =
   (blurNsfw: PostBlurNsfwType) =>
@@ -483,6 +496,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const show_hide_read_button = await db.getSetting(
         "show_hide_read_button",
       );
+      const auto_hide_read = await db.getSetting("auto_hide_read");
+      const disable_auto_hide_in_communities = await db.getSetting(
+        "disable_auto_hide_in_communities",
+      );
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
@@ -490,6 +507,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const filtered_keywords = await db.getSetting("filtered_keywords");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
       const show_comment_images = await db.getSetting("show_comment_images");
+      const no_subscribed_in_feed = await db.getSetting(
+        "no_subscribed_in_feed",
+      );
 
       return {
         ...state.settings,
@@ -557,11 +577,18 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showHideReadButton:
               show_hide_read_button ??
               initialState.general.posts.showHideReadButton,
+            autoHideRead:
+              auto_hide_read ?? initialState.general.posts.autoHideRead,
+            disableAutoHideInCommunities:
+              disable_auto_hide_in_communities ??
+              initialState.general.posts.disableAutoHideInCommunities,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
           defaultFeed: initialState.general.defaultFeed,
+          noSubscribedInFeed:
+            no_subscribed_in_feed ?? initialState.general.noSubscribedInFeed,
         },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
@@ -607,11 +634,14 @@ export const {
   setDisableMarkingPostsRead,
   setMarkPostsReadOnScroll,
   setShowHideReadButton,
+  setAutoHideRead,
+  setDisableAutoHideInCommunities,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,
   setPureBlack,
   setDefaultFeed,
+  setNoSubscribedInFeed,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

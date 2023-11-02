@@ -11,3 +11,9 @@ export const ListHeader = styled.div`
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
 `;
+
+export const HelperText = styled.div`
+  margin: 0 32px;
+  font-size: 0.875em;
+  color: var(--ion-color-medium);
+`;

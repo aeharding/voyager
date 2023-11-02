@@ -22,8 +22,6 @@ import PostCommentFeed, {
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
-import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
-import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
@@ -126,7 +124,6 @@ export default function CommunityPage() {
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
 
-  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
   const communityView = useFetchCommunity(community);
 
   // eslint-disable-next-line no-undef
@@ -182,9 +179,7 @@ export default function CommunityPage() {
         <CommunitySearchResults community={community} query={searchQuery} />
       );
 
-    if (!markReadOnScroll) return feed;
-
-    return <FeedScrollObserver>{feed}</FeedScrollObserver>;
+    return feed;
   }
 
   return (

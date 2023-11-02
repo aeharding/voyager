@@ -19,13 +19,14 @@ import PostCommentFeed, {
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
-import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
-import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import SpecialFeedMoreActions from "../../features/feed/SpecialFeedMoreActions";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
 import { getSortDuration } from "../../features/feed/endItems/EndPost";
+import { followIdsSelector } from "../../features/auth/authSlice";
+import { getHandle } from "../../helpers/lemmy";
+import { CenteredSpinner } from "../posts/PostPage";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -37,7 +38,17 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
 
-  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+  const followIds = useAppSelector(followIdsSelector);
+  const communityByHandle = useAppSelector(
+    (state) => state.community.communityByHandle,
+  );
+  const site = useAppSelector((state) => state.auth.site);
+  const noSubscribedInFeed = useAppSelector(
+    (state) => state.settings.general.noSubscribedInFeed,
+  );
+
+  const filterSubscribed =
+    noSubscribedInFeed && (type === "All" || type === "Local");
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
@@ -53,9 +64,32 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     [client, sort, type],
   );
 
-  const feed = (
-    <PostCommentFeed fetchFn={fetchFn} sortDuration={getSortDuration(sort)} />
+  const filterSubscribedFn = useCallback(
+    (item: PostCommentItem) => {
+      if (item.post.featured_community || item.post.featured_local) return true;
+
+      const potentialCommunity = communityByHandle[getHandle(item.community)];
+      if (potentialCommunity)
+        return potentialCommunity.subscribed === "NotSubscribed";
+
+      return !followIds.includes(item.community.id);
+    },
+    [followIds, communityByHandle],
   );
+
+  const feed = (() => {
+    // We need the site response to know follows in order to filter
+    // subscribed communities before rendering the feed
+    if (filterSubscribed && !site) return <CenteredSpinner />;
+
+    return (
+      <PostCommentFeed
+        fetchFn={fetchFn}
+        sortDuration={getSortDuration(sort)}
+        filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+      />
+    );
+  })();
 
   return (
     <TitleSearchProvider>
@@ -79,11 +113,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
             </IonToolbar>
           </IonHeader>
           <FeedContent>
-            {markReadOnScroll ? (
-              <FeedScrollObserver>{feed}</FeedScrollObserver>
-            ) : (
-              feed
-            )}
+            {feed}
             <TitleSearchResults />
             <PostFabs />
           </FeedContent>
