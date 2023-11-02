@@ -73,7 +73,7 @@ export const postSlice = createSlice({
           if (hidden)
             state.postHiddenById[post.post.id] = {
               hidden,
-              immediate: false,
+              immediate: true,
             };
           if (post.read) state.postReadById[post.post.id] = post.read;
 
@@ -218,18 +218,21 @@ export const savePost =
   };
 
 export const setPostRead =
-  (postId: number) =>
+  (postId: number, autoHideDisabled = false) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     if (!jwtSelector(getState())) return;
     if (getState().settings.general.posts.disableMarkingRead) return;
-    if (getState().post.postReadById[postId]) return;
 
-    dispatch(updatePostRead({ postId }));
+    if (getState().settings.general.posts.autoHideRead && !autoHideDisabled)
+      dispatch(hidePost(postId, false));
 
-    await clientSelector(getState())?.markPostAsRead({
-      post_id: postId,
-      read: true,
-    });
+    if (!getState().post.postReadById[postId]) {
+      dispatch(updatePostRead({ postId }));
+      await clientSelector(getState())?.markPostAsRead({
+        post_id: postId,
+        read: true,
+      });
+    }
   };
 
 export const voteOnPost =

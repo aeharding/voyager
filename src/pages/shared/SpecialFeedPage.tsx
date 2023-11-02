@@ -19,8 +19,6 @@ import PostCommentFeed, {
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
-import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
-import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import SpecialFeedMoreActions from "../../features/feed/SpecialFeedMoreActions";
@@ -39,8 +37,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
   const client = useClient();
   const sort = useAppSelector((state) => state.post.sort);
-
-  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
 
   const followIds = useAppSelector(followIdsSelector);
   const communityByHandle = useAppSelector(
@@ -117,11 +113,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
             </IonToolbar>
           </IonHeader>
           <FeedContent>
-            {markReadOnScroll ? (
-              <FeedScrollObserver>{feed}</FeedScrollObserver>
-            ) : (
-              feed
-            )}
+            {feed}
             <TitleSearchResults />
             <PostFabs />
           </FeedContent>

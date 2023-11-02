@@ -17,17 +17,17 @@ import { CenteredSpinner } from "../../pages/posts/PostPage";
 import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
 import EndPost, { EndPostProps } from "./endItems/EndPost";
-import { useAppSelector } from "../../store";
-import { markReadOnScrollSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
-import { VList, VListHandle } from "virtua";
+import { VList, VListHandle, VListProps } from "virtua";
 import { FeedSearchContext } from "../../pages/shared/CommunityPage";
+import { useAppSelector } from "../../store";
 
 export type FetchFn<I> = (page: number) => Promise<I[]>;
 
 export interface FeedProps<I>
-  extends Partial<Pick<EndPostProps, "sortDuration">> {
+  extends Partial<Pick<EndPostProps, "sortDuration">>,
+    Partial<Pick<VListProps, "onRangeChange">> {
   itemsRef?: React.MutableRefObject<I[] | undefined>;
   fetchFn: FetchFn<I>;
 
@@ -53,8 +53,15 @@ export interface FeedProps<I>
   header?: React.ReactElement;
   limit?: number;
 
+  onRemovedFromTop?: (items: I[]) => void;
+
   communityName?: string;
 }
+
+/**
+ * Maximum requests to loop through (for example, searching for unhidden posts) before giving up
+ */
+const MAX_REQUEST_LOOP = 50;
 
 export default function Feed<I>({
   itemsRef,
@@ -67,14 +74,22 @@ export default function Feed<I>({
   getIndex,
   limit = DEFAULT_LIMIT,
   sortDuration,
+  onRemovedFromTop,
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
-  const [loading, setLoading] = useState<boolean | undefined>();
-  const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
-  const [atEnd, setAtEnd] = useState(false);
+  const [loading, _setLoading] = useState(false);
+  const loadingRef = useRef(false);
+  const [isListAtTop, setIsListAtTop] = useState(true);
+  const [atEnd, _setAtEnd] = useState(false);
+  const atEndRef = useRef(false);
   const [loadFailed, setLoadFailed] = useState(true);
   const { setScrolledPastSearch } = useContext(FeedSearchContext);
+  const startRangeRef = useRef(0);
+
+  const postType = useAppSelector(
+    (state) => state.settings.appearance.posts.type,
+  );
 
   // If you have everything filtered, don't continue polling API indefinitely
   const requestLoopRef = useRef(0);
@@ -84,12 +99,21 @@ export default function Feed<I>({
     [filterFn, items],
   );
 
-  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+  function setLoading(loading: boolean) {
+    _setLoading(loading);
+    loadingRef.current = loading;
+  }
+
+  function setAtEnd(atEnd: boolean) {
+    _setAtEnd(atEnd);
+    atEndRef.current = atEnd;
+  }
 
   const fetchMore = useCallback(
     async (refresh = false) => {
-      if (loading) return;
-      if (atEnd && !refresh) return;
+      if (loadingRef.current) return;
+      if (atEndRef.current && !refresh) return;
+
       setLoading(true);
 
       const currentPage = refresh ? 1 : page + 1;
@@ -132,11 +156,12 @@ export default function Feed<I>({
         requestLoopRef.current = 0;
       }
 
-      if (!items.length || requestLoopRef.current > 10) setAtEnd(true);
+      if (!items.length || requestLoopRef.current > MAX_REQUEST_LOOP)
+        setAtEnd(true);
 
       setPage(currentPage);
     },
-    [atEnd, fetchFn, limit, loading, page, getIndex, filterOnRxFn],
+    [fetchFn, limit, page, getIndex, filterOnRxFn],
   );
 
   useEffect(() => {
@@ -147,25 +172,13 @@ export default function Feed<I>({
 
   // Fetch more items if there are less than FETCH_MORE_THRESHOLD items left due to filtering
   useEffect(() => {
-    const fetchMoreThreshold = limit / 2;
-    const currentPageItems = items.slice((page - 1) * limit, page * limit);
+    const FETCH_MORE_THRESHOLD = limit / 2;
 
-    const currentPageFilteredItems = filteredItems.filter(
-      (item) => currentPageItems.indexOf(item) !== -1,
-    );
-
-    if (
-      loading ||
-      !loadFailed ||
-      currentPageItems.length - currentPageFilteredItems.length <
-        fetchMoreThreshold
-    )
+    if (loading || loadFailed || filteredItems.length > FETCH_MORE_THRESHOLD)
       return;
 
     fetchMore();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredItems, filteredItems, items, items, page, loading]);
+  }, [filteredItems, items, page, loading, limit, loadFailed, fetchMore]);
 
   const virtuaHandle = useRef<VListHandle>(null);
 
@@ -230,14 +243,29 @@ export default function Feed<I>({
           setScrolledPastSearch(offset > 40);
         }}
         onRangeChange={(start, end) => {
-          if (loadFailed) return;
-          if (!start) return;
+          if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
 
-          if (end + 10 > filteredItems.length) {
+          // if scrolled down
+          if (start > 0 && start > startRangeRef.current) {
+            const startOffset = header ? 1 : 0; // header counts as item to VList
+
+            // emit what was removed
+            onRemovedFromTop?.(
+              filteredItems.slice(
+                startRangeRef.current + startOffset,
+                start + startOffset,
+              ),
+            );
+          }
+
+          startRangeRef.current = start;
+
+          if (end + 10 > filteredItems.length && !loadFailed) {
             fetchMore();
           }
         }}
-        overscan={markReadOnScroll ? 2 : 0}
+        /* Large posts reflow with image load, so mount to dom a bit sooner */
+        overscan={postType === "large" ? 1 : 0}
       >
         {header}
         {filteredItems.map((i) => (

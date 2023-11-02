@@ -7,10 +7,9 @@ import { IonItem } from "@ionic/react";
 import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
-import { FeedScrollObserverContext } from "../../feed/FeedScrollObserver";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -45,8 +44,6 @@ export default function Post(props: PostProps) {
   const potentialPost =
     typeof possiblyPost === "object" ? possiblyPost : undefined;
 
-  const { observe, unobserve } = useContext(FeedScrollObserverContext);
-
   // eslint-disable-next-line no-undef
   const targetIntersectionRef = useRef<HTMLIonItemElement>(null);
 
@@ -59,18 +56,6 @@ export default function Post(props: PostProps) {
       dispatch(hidePost(props.post.post.id));
     }
   }, [dispatch, props.post.post.id, isHidden]);
-
-  useEffect(() => {
-    if (!targetIntersectionRef.current) return;
-
-    const targetIntersectionEl = targetIntersectionRef.current;
-
-    observe(targetIntersectionEl);
-
-    return () => {
-      unobserve(targetIntersectionEl);
-    };
-  }, [targetIntersectionRef, observe, unobserve]);
 
   useEffect(() => {
     // Refs must be used during cleanup useEffect
@@ -122,7 +107,6 @@ export default function Post(props: PostProps) {
           )}
           href={undefined}
           ref={targetIntersectionRef}
-          data-postid={props.post.post.id}
         >
           {postBody}
         </CustomIonItem>

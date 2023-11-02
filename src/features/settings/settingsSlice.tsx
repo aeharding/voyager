@@ -95,6 +95,8 @@ interface SettingsState {
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
+      autoHideRead: boolean;
+      disableAutoHideInCommunities: boolean;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
@@ -166,6 +168,8 @@ const initialState: SettingsState = {
       disableMarkingRead: false,
       markReadOnScroll: false,
       showHideReadButton: false,
+      autoHideRead: false,
+      disableAutoHideInCommunities: false,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
@@ -347,6 +351,16 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("show_hide_read_button", action.payload);
     },
+    setAutoHideRead(state, action: PayloadAction<boolean>) {
+      state.general.posts.autoHideRead = action.payload;
+
+      db.setSetting("auto_hide_read", action.payload);
+    },
+    setDisableAutoHideInCommunities(state, action: PayloadAction<boolean>) {
+      state.general.posts.disableAutoHideInCommunities = action.payload;
+
+      db.setSetting("disable_auto_hide_in_communities", action.payload);
+    },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
@@ -372,13 +386,6 @@ export const appearanceSlice = createSlice({
     },
   },
 });
-
-export const markReadOnScrollSelector = (state: RootState) => {
-  return (
-    !state.settings.general.posts.disableMarkingRead &&
-    state.settings.general.posts.markReadOnScroll
-  );
-};
 
 export const setBlurNsfwState =
   (blurNsfw: PostBlurNsfwType) =>
@@ -489,6 +496,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const show_hide_read_button = await db.getSetting(
         "show_hide_read_button",
       );
+      const auto_hide_read = await db.getSetting("auto_hide_read");
+      const disable_auto_hide_in_communities = await db.getSetting(
+        "disable_auto_hide_in_communities",
+      );
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
@@ -566,6 +577,11 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showHideReadButton:
               show_hide_read_button ??
               initialState.general.posts.showHideReadButton,
+            autoHideRead:
+              auto_hide_read ?? initialState.general.posts.autoHideRead,
+            disableAutoHideInCommunities:
+              disable_auto_hide_in_communities ??
+              initialState.general.posts.disableAutoHideInCommunities,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
@@ -618,6 +634,8 @@ export const {
   setDisableMarkingPostsRead,
   setMarkPostsReadOnScroll,
   setShowHideReadButton,
+  setAutoHideRead,
+  setDisableAutoHideInCommunities,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,

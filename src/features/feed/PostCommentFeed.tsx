@@ -10,7 +10,11 @@ import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
-import { postHiddenByIdSelector, receivedPosts } from "../post/postSlice";
+import {
+  postHiddenByIdSelector,
+  receivedPosts,
+  setPostRead,
+} from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
@@ -56,6 +60,16 @@ export default function PostCommentFeed({
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
   const filteredKeywords = useAppSelector(
     (state) => state.settings.blocks.keywords,
+  );
+
+  const disableMarkingRead = useAppSelector(
+    (state) => state.settings.general.posts.disableMarkingRead,
+  );
+  const markReadOnScroll = useAppSelector(
+    (state) => state.settings.general.posts.markReadOnScroll,
+  );
+  const disableAutoHideInCommunities = useAppSelector(
+    (state) => state.settings.general.posts.disableAutoHideInCommunities,
   );
 
   const itemsRef = useRef<PostCommentItem[]>();
@@ -172,6 +186,22 @@ export default function PostCommentFeed({
     [],
   );
 
+  function onRemovedFromTopOfViewport(items: PostCommentItem[]) {
+    for (const item of items) {
+      onRead(item);
+    }
+  }
+
+  function onRead(item: PostCommentItem) {
+    if (isPost(item))
+      dispatch(
+        setPostRead(
+          item.post.id,
+          communityName ? disableAutoHideInCommunities : false,
+        ),
+      );
+  }
+
   return (
     <Feed
       fetchFn={fetchFn}
@@ -181,6 +211,11 @@ export default function PostCommentFeed({
       renderItemContent={renderItemContent}
       {...rest}
       itemsRef={itemsRef}
+      onRemovedFromTop={
+        !disableMarkingRead && markReadOnScroll
+          ? onRemovedFromTopOfViewport
+          : undefined
+      }
     />
   );
 }
