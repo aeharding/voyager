@@ -273,6 +273,7 @@ export type SettingValueTypes = {
   touch_friendly_links: boolean;
   show_comment_images: boolean;
   long_swipe_trigger_point: LongSwipeTriggerPointType;
+  has_presented_block_nsfw_tip: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
