@@ -135,6 +135,18 @@ export default function InstallAppPage() {
     </>
   );
 
+  const howToGetAppTitle = (
+    <H3>
+      {showInstallwebAppDirections && (
+        <IonIcon
+          icon={chevronBack}
+          onClick={() => setShowInstallwebAppDirections(false)}
+        />
+      )}{" "}
+      How to get the App
+    </H3>
+  );
+
   const badges = <BadgeContainer>{nativeBadges}</BadgeContainer>;
   const badgesWithWeb = (
     <BadgeContainer>
@@ -203,15 +215,7 @@ export default function InstallAppPage() {
     if (ua.getDevice().vendor === "Apple" && navigator.maxTouchPoints > 1) {
       return (
         <>
-          <H3>
-            {showInstallwebAppDirections && (
-              <IonIcon
-                icon={chevronBack}
-                onClick={() => setShowInstallwebAppDirections(false)}
-              />
-            )}{" "}
-            How to get the App
-          </H3>
+          {howToGetAppTitle}
 
           {showInstallwebAppDirections ? (
             <ol>
@@ -235,15 +239,7 @@ export default function InstallAppPage() {
     if (isInstallable) {
       return (
         <>
-          <H3>
-            {showInstallwebAppDirections && (
-              <IonIcon
-                icon={chevronBack}
-                onClick={() => setShowInstallwebAppDirections(false)}
-              />
-            )}{" "}
-            How to get the App
-          </H3>
+          {howToGetAppTitle}
 
           {showInstallwebAppDirections ? (
             <ol>
@@ -266,15 +262,7 @@ export default function InstallAppPage() {
 
     return (
       <>
-        <H3>
-          {showInstallwebAppDirections && (
-            <IonIcon
-              icon={chevronBack}
-              onClick={() => setShowInstallwebAppDirections(false)}
-            />
-          )}{" "}
-          How to get the Webapp
-        </H3>
+        {howToGetAppTitle}
 
         {showInstallwebAppDirections ? (
           <ol>
