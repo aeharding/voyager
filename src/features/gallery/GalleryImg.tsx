@@ -4,6 +4,7 @@ import { PostView } from "lemmy-js-client";
 import { GalleryContext } from "./GalleryProvider";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
 import mime from "mime";
+import Video from "../shared/Video";
 
 export interface GalleryImgProps {
   src?: string;
@@ -62,15 +63,7 @@ export function GalleryImg({
       }}
     />
   ) : (
-    <video width="100%" controls loop preload="metadata" draggable="false">
-      <source type={type} src={src} />
-      {alt}
-      Your browser does not support playing HTML5 video. You can{" "}
-      <a href={src} download>
-        download a copy of the video file
-      </a>{" "}
-      instead.
-    </video>
+    <Video src={`${src}`} />
   );
 
   return InnerComponent;
