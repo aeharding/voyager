@@ -10,7 +10,11 @@ import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
-import { postHiddenByIdSelector, receivedPosts } from "../post/postSlice";
+import {
+  postHiddenByIdSelector,
+  receivedPosts,
+  setPostRead,
+} from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
@@ -45,6 +49,8 @@ export default function PostCommentFeed({
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
   filterKeywords = true,
+  filterOnRxFn: _filterOnRxFn,
+  filterFn: _filterFn,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
@@ -54,6 +60,16 @@ export default function PostCommentFeed({
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
   const filteredKeywords = useAppSelector(
     (state) => state.settings.blocks.keywords,
+  );
+
+  const disableMarkingRead = useAppSelector(
+    (state) => state.settings.general.posts.disableMarkingRead,
+  );
+  const markReadOnScroll = useAppSelector(
+    (state) => state.settings.general.posts.markReadOnScroll,
+  );
+  const disableAutoHideInCommunities = useAppSelector(
+    (state) => state.settings.general.posts.disableAutoHideInCommunities,
   );
 
   const itemsRef = useRef<PostCommentItem[]>();
@@ -121,13 +137,47 @@ export default function PostCommentFeed({
   );
 
   const filterFn = useCallback(
-    (item: PostCommentItem) =>
-      !postHiddenById[item.post.id] &&
-      !postHasFilteredKeywords(
-        item.post,
-        filterKeywords ? filteredKeywords : [],
-      ),
-    [postHiddenById, filteredKeywords, filterKeywords],
+    (item: PostCommentItem) => {
+      const postHidden = postHiddenById[item.post.id];
+      if (
+        filterHiddenPosts &&
+        postHidden &&
+        postHidden.immediate &&
+        postHidden.hidden
+      )
+        return false;
+      if (
+        filterKeywords &&
+        postHasFilteredKeywords(
+          item.post,
+          filterKeywords ? filteredKeywords : [],
+        )
+      )
+        return false;
+
+      if (_filterFn) return _filterFn(item);
+
+      return true;
+    },
+    [
+      postHiddenById,
+      filteredKeywords,
+      filterKeywords,
+      filterHiddenPosts,
+      _filterFn,
+    ],
+  );
+
+  const filterOnRxFn = useCallback(
+    (item: PostCommentItem) => {
+      const postHidden = postHiddenById[item.post.id];
+      if (filterHiddenPosts && postHidden?.hidden) return false;
+
+      if (_filterOnRxFn) return _filterOnRxFn(item);
+
+      return true;
+    },
+    [filterHiddenPosts, postHiddenById, _filterOnRxFn],
   );
 
   const getIndex = useCallback(
@@ -136,14 +186,35 @@ export default function PostCommentFeed({
     [],
   );
 
+  function onRemovedFromTopOfViewport(items: PostCommentItem[]) {
+    items.forEach(onRead);
+  }
+
+  function onRead(item: PostCommentItem) {
+    if (!isPost(item)) return;
+
+    dispatch(
+      setPostRead(
+        item.post.id,
+        communityName ? disableAutoHideInCommunities : false,
+      ),
+    );
+  }
+
   return (
     <Feed
       fetchFn={fetchFn}
-      filterFn={filterHiddenPosts ? filterFn : undefined}
+      filterFn={filterFn}
+      filterOnRxFn={filterOnRxFn}
       getIndex={getIndex}
       renderItemContent={renderItemContent}
       {...rest}
       itemsRef={itemsRef}
+      onRemovedFromTop={
+        !disableMarkingRead && markReadOnScroll
+          ? onRemovedFromTopOfViewport
+          : undefined
+      }
     />
   );
 }

@@ -73,7 +73,7 @@ function buildCustomFetch(auth: string | undefined): typeof fetch {
   };
 }
 
-export const LIMIT = 30;
+export const LIMIT = 50;
 
 const PICTRS_URL = "/pictrs/image";
 

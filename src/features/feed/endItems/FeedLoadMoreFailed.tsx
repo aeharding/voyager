@@ -10,7 +10,7 @@ export default function FeedLoadMoreFailed({
   loading,
 }: FeedLoadMoreFailedProps) {
   return (
-    <Container onClick={fetchMore}>
+    <Container onClick={() => fetchMore()}>
       Failed to load more posts. {loading ? "Loading..." : "Try again?"}
     </Container>
   );

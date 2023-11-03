@@ -4,7 +4,7 @@ import { IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
-import { ListHeader } from "../shared/formatting";
+import { HelperText, ListHeader } from "../shared/formatting";
 
 const Range = styled(IonRange)`
   --bar-background: var(--ion-color-medium);
@@ -24,12 +24,6 @@ const A = styled.div<{ small?: boolean }>`
     css`
       font-size: 0.8em;
     `}
-`;
-
-const HelperText = styled.div`
-  margin: 0 32px;
-  font-size: 0.875em;
-  color: var(--ion-color-medium);
 `;
 
 const MAX_REGULAR_FONT_ADJUSTMENT = 1.6;

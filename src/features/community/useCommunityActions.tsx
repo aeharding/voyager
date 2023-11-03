@@ -23,6 +23,7 @@ import {
 } from "../../helpers/toastMessages";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useAppToast from "../../helpers/useAppToast";
+import { db } from "../../services/db";
 
 /**
  *
@@ -134,7 +135,12 @@ export default function useCommunityActions(
   async function block() {
     if (typeof communityId !== "number") return;
 
-    if (!isBlocked && isNsfw && localUser?.show_nsfw) {
+    if (
+      !isBlocked &&
+      isNsfw &&
+      localUser?.show_nsfw &&
+      !(await db.getSetting("has_presented_block_nsfw_tip"))
+    ) {
       // User wants to block a NSFW community when account is set to show NSFW. Ask them
       // if they want to hide all NSFW instead of blocking on a per community basis
       presentActionSheet({
@@ -169,6 +175,8 @@ export default function useCommunityActions(
           },
         ],
       });
+
+      db.setSetting("has_presented_block_nsfw_tip", true);
     } else {
       await _block();
       presentToast(buildBlocked(!isBlocked, communityHandle));
