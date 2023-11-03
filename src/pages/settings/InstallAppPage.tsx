@@ -91,18 +91,18 @@ const H3 = styled.h3`
 
 const ANDROID_APP_BADGES = [
   {
-    src: "/public/badges/play.svg",
+    src: "/badges/play.svg",
     href: "https://play.google.com/store/apps/details?id=app.vger.voyager",
   },
   {
-    src: "/public/badges/fdroid.png",
+    src: "/badges/fdroid.png",
     href: "https://f-droid.org/en/packages/app.vger.voyager/",
   },
 ];
 
 const IOS_APP_BADGES = [
   {
-    src: "/public/badges/ios.svg",
+    src: "/badges/ios.svg",
     href: "https://apps.apple.com/us/app/voyager-for-lemmy/id6451429762",
   },
 ];
@@ -153,7 +153,7 @@ export default function InstallAppPage() {
       {nativeBadges}
       <BadgeItem>
         <BadgeImg
-          src="/public/badges/pwa.svg"
+          src="/badges/pwa.svg"
           alt=""
           onClick={async () => {
             if (!beforeInstallPrompt.event) {
