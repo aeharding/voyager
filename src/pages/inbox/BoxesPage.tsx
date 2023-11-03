@@ -46,7 +46,7 @@ export default function BoxesPage() {
           <IonTitle>Boxes</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <AppContent scrollY>
+      <AppContent scrollY fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Boxes</IonTitle>

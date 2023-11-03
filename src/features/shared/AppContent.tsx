@@ -18,13 +18,19 @@ export default function AppContent({
   children,
   scrollY,
   className,
+  fullscreen = false,
 }: {
   children: React.ReactNode;
   scrollY?: boolean;
   className?: string;
+  fullscreen?: boolean;
 }) {
   return (
-    <IonContent style={{ width: "100%" }} scrollY={scrollY ?? false}>
+    <IonContent
+      style={{ width: "100%" }}
+      scrollY={scrollY ?? false}
+      fullscreen={fullscreen}
+    >
       <MaxWidthContainer className={className}>{children}</MaxWidthContainer>
     </IonContent>
   );

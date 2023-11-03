@@ -78,7 +78,7 @@ export default function SettingsPage() {
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <AppContent scrollY>
+      <AppContent scrollY fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Settings</IonTitle>
