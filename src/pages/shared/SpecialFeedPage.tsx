@@ -87,6 +87,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
         fetchFn={fetchFn}
         sortDuration={getSortDuration(sort)}
         filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+        autoHideIfConfigured
       />
     );
   })();
