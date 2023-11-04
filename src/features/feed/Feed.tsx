@@ -80,13 +80,22 @@ export default function Feed<I>({
 }: FeedProps<I>) {
   const [page, setPage] = useState(0);
   const [items, setitems] = useState<I[]>([]);
-  const [loading, _setLoading] = useState(false);
+
+  // Loading needs to be initially `undefined` so that IonRefresher is
+  // never initially rendered, which breaks pull to refresh on Android
+  // See: https://github.com/aeharding/voyager/issues/718
+  const [loading, _setLoading] = useState<boolean | undefined>(undefined);
   const loadingRef = useRef(false);
+
   const [isListAtTop, setIsListAtTop] = useState(true);
+
   const [atEnd, _setAtEnd] = useState(false);
   const atEndRef = useRef(false);
+
   const [loadFailed, setLoadFailed] = useState(false);
+
   const { setScrolledPastSearch } = useContext(FeedSearchContext);
+
   const startRangeRef = useRef(0);
   const scrollingRef = useRef(false);
 
