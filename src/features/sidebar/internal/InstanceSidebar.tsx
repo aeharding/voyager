@@ -2,17 +2,8 @@ import { css } from "@emotion/react";
 import { useAppSelector } from "../../../store";
 import { CenteredSpinner } from "../../post/detail/PostDetail";
 import GenericSidebar from "./GenericSidebar";
-import styled from "@emotion/styled";
 import { IonBadge } from "@ionic/react";
 import { lemmyVersionSelector } from "../../auth/authSlice";
-
-const BannerImg = styled.img`
-  margin-top: calc(var(--padding-top) * -1);
-  margin-left: calc(var(--padding-start) * -1);
-  margin-right: calc(var(--padding-end) * -1);
-  width: calc(100% + var(--padding-start) + var(--padding-end));
-  max-width: initial;
-`;
 
 export default function InstanceSidebar() {
   const siteView = useAppSelector((state) => state.auth.site?.site_view);
@@ -37,11 +28,8 @@ export default function InstanceSidebar() {
       people={admins.map((a) => a.person)}
       counts={counts}
       extraBadges={<IonBadge color="dark">v{lemmyVersion}</IonBadge>}
-      beforeMarkdown={
-        site.banner ? (
-          <BannerImg src={site.banner} alt={`Banner for ${site.actor_id}`} />
-        ) : undefined
-      }
+      banner={site.banner}
+      name={site.actor_id}
     />
   );
 }
