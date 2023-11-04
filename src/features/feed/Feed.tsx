@@ -157,7 +157,7 @@ export default function Feed<I>({
             existingPosts,
             getIndex,
           );
-          result.splice(currentPage * limit, limit, ...newPosts);
+          result.push(...newPosts);
           return result;
         });
       }
@@ -173,7 +173,7 @@ export default function Feed<I>({
 
       setPage(currentPage);
     },
-    [fetchFn, limit, page, getIndex, filterOnRxFn],
+    [fetchFn, page, getIndex, filterOnRxFn],
   );
 
   useEffect(() => {
