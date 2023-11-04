@@ -41,6 +41,11 @@ interface PostCommentFeed
   filterHiddenPosts?: boolean;
   filterKeywords?: boolean;
 
+  /**
+   * Feed will auto-hide posts, if enabled by the user
+   */
+  autoHideIfConfigured?: boolean;
+
   header?: ReactElement;
 }
 
@@ -49,6 +54,7 @@ export default function PostCommentFeed({
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
   filterKeywords = true,
+  autoHideIfConfigured,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
   ...rest
@@ -190,15 +196,18 @@ export default function PostCommentFeed({
     items.forEach(onRead);
   }
 
+  const shouldAutoHide = (() => {
+    if (!autoHideIfConfigured) return false;
+
+    if (communityName) return !disableAutoHideInCommunities;
+
+    return true; // setPostRead doesn't auto-hide if feature is turned completely off
+  })();
+
   function onRead(item: PostCommentItem) {
     if (!isPost(item)) return;
 
-    dispatch(
-      setPostRead(
-        item.post.id,
-        communityName ? disableAutoHideInCommunities : false,
-      ),
-    );
+    dispatch(setPostRead(item.post.id, !shouldAutoHide));
   }
 
   return (

@@ -79,6 +79,8 @@ export default function SearchFeedResultsPage({
         <PostCommentFeed
           fetchFn={fetchFn}
           sortDuration={getSortDuration(sort)}
+          filterHiddenPosts={false}
+          filterKeywords={false}
         />
       </FeedContent>
     </IonPage>

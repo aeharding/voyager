@@ -156,6 +156,7 @@ export default function CommunityPage() {
         fetchFn={fetchFn}
         communityName={community}
         sortDuration={getSortDuration(sort)}
+        autoHideIfConfigured
         header={
           !searchOpen ? (
             <HeaderContainer>
