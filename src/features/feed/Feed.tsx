@@ -23,7 +23,17 @@ import { VList, VListHandle } from "virtua";
 import { FeedSearchContext } from "../../pages/shared/CommunityPage";
 import { useAppSelector } from "../../store";
 
-export type FetchFn<I> = (page: number) => Promise<I[]>;
+type PageData =
+  | {
+      page: number;
+    }
+  | {
+      page_cursor: string;
+    };
+
+export type FetchFn<I> = (pageData: PageData) => Promise<FetchFnResult<I>>;
+
+type FetchFnResult<I> = I[] | { data: I[]; next_page?: string };
 
 export interface FeedProps<I>
   extends Partial<Pick<EndPostProps, "sortDuration">> {
@@ -78,7 +88,7 @@ export default function Feed<I>({
   sortDuration,
   onRemovedFromTop,
 }: FeedProps<I>) {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<number | string>(0);
   const [items, setitems] = useState<I[]>([]);
 
   // Loading needs to be initially `undefined` so that IonRefresher is
@@ -128,12 +138,21 @@ export default function Feed<I>({
 
       setLoading(true);
 
-      const currentPage = refresh ? 1 : page + 1;
+      let currentPage = refresh
+        ? 1
+        : typeof page === "number"
+        ? page + 1
+        : page;
 
       let items: I[];
 
       try {
-        items = await fetchFn(currentPage);
+        const result = await fetchFn(withPageData(currentPage));
+        if (Array.isArray(result)) items = result;
+        else {
+          items = result.data;
+          if (result.next_page) currentPage = result.next_page;
+        }
       } catch (error) {
         setLoadFailed(true);
 
@@ -296,4 +315,14 @@ export default function Feed<I>({
       </VList>
     </>
   );
+}
+
+function withPageData(page: number | string): PageData {
+  if (typeof page === "number") return { page };
+  return { page_cursor: page };
+}
+
+export function isFirstPage(pageData: PageData): boolean {
+  if ("page" in pageData) return pageData.page === 1;
+  return !pageData.page_cursor;
 }

@@ -128,7 +128,9 @@ export default function PostCommentFeed({
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
-      const items = await _fetchFn(page);
+      const result = await _fetchFn(page);
+
+      const items = Array.isArray(result) ? result : result.data;
 
       /* receivedPosts needs to be awaited so that we fetch post metadatas
          from the db before showing them to prevent flickering
@@ -136,7 +138,7 @@ export default function PostCommentFeed({
       await dispatch(receivedPosts(items.filter(isPost)));
       dispatch(receivedComments(items.filter(isComment)));
 
-      return items;
+      return result;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [_fetchFn, dispatch],

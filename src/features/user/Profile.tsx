@@ -43,11 +43,11 @@ export default function Profile({ person }: ProfileProps) {
   const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
+    async (pageData) => {
       const response = await client.getPersonDetails({
+        ...pageData,
         limit: LIMIT,
         username: getHandle(person.person_view.person),
-        page,
         sort: "New",
       });
       return [...response.posts, ...response.comments].sort(

@@ -9,7 +9,7 @@ import {
 } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useCallback } from "react";
-import { FetchFn } from "../../../features/feed/Feed";
+import { FetchFn, isFirstPage } from "../../../features/feed/Feed";
 import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
@@ -30,8 +30,8 @@ export default function SearchCommunitiesPage() {
   const search = decodeURIComponent(_encodedSearch);
 
   const fetchFn: FetchFn<CommunityView> = useCallback(
-    async (page) => {
-      if (page === 1 && search.includes("@")) {
+    async (pageData) => {
+      if (isFirstPage(pageData) && search.includes("@")) {
         return [await findExactCommunity(search, client)].filter(notEmpty);
       }
 
@@ -40,7 +40,7 @@ export default function SearchCommunitiesPage() {
         q: search,
         type_: "Communities",
         listing_type: "All",
-        page,
+        ...pageData,
         sort,
       });
 

@@ -48,11 +48,11 @@ export default function ProfileFeedItemsPage({
   const client = useClient();
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
+    async (pageData) => {
       const response = await client.getPersonDetails({
+        ...pageData,
         limit: LIMIT,
         username: handle,
-        page,
         sort: "New",
         saved_only: type === "Saved",
       });

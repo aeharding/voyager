@@ -51,15 +51,15 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     noSubscribedInFeed && (type === "All" || type === "Local");
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
-      const response = await client.getPosts({
+    async (pageData) => {
+      const { posts, next_page } = await client.getPosts({
+        ...pageData,
         limit: LIMIT,
-        page,
         sort,
         type_: type,
       });
 
-      return response.posts;
+      return { data: posts, next_page };
     },
     [client, sort, type],
   );
