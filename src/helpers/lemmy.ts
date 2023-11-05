@@ -292,7 +292,7 @@ export function keywordFoundInSentence(
 }
 
 export type LemmyErrorValue = LemmyErrorType["error"];
-export type OldLemmyErrorValue = never;
+export type OldLemmyErrorValue = never; // When removing support for an old version of Lemmy, cleanup these references
 
 export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
   if (!(error instanceof Error)) return;
