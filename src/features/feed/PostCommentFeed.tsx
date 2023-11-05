@@ -195,7 +195,7 @@ export default function PostCommentFeed({
   );
 
   function onRemovedFromTopOfViewport(items: PostCommentItem[]) {
-    items.forEach(onRead);
+    items.forEach(onAutoRead);
   }
 
   const shouldAutoHide = (() => {
@@ -206,8 +206,11 @@ export default function PostCommentFeed({
     return true; // setPostRead doesn't auto-hide if feature is turned completely off
   })();
 
-  function onRead(item: PostCommentItem) {
+  function onAutoRead(item: PostCommentItem) {
     if (!isPost(item)) return;
+
+    // Pinned posts should not be automatically hidden
+    if (item.post.featured_community || item.post.featured_local) return;
 
     dispatch(setPostRead(item.post.id, !shouldAutoHide));
   }
