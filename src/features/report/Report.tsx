@@ -4,6 +4,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import useClient from "../../helpers/useClient";
 import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 import useAppToast from "../../helpers/useAppToast";
+import { isLemmyError } from "../../helpers/lemmy";
 
 export type ReportableItem = CommentView | PostView | PrivateMessageView;
 
@@ -56,7 +57,7 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
     } catch (error) {
       let errorDetail = "Please try again.";
 
-      if (error === "couldnt_create_report") {
+      if (isLemmyError(error, "couldnt_create_report")) {
         errorDetail = "You may have already reported this.";
       }
 

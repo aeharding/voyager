@@ -19,6 +19,7 @@ import { CommunityView, LemmyHttp } from "lemmy-js-client";
 import CommunityFeed from "../../../features/feed/CommunityFeed";
 import { notEmpty } from "../../../helpers/array";
 import { receivedCommunities } from "../../../features/community/communitySlice";
+import { isLemmyError } from "../../../helpers/lemmy";
 
 export default function SearchCommunitiesPage() {
   const { search: _encodedSearch } = useParams<{ search: string }>();
@@ -85,7 +86,7 @@ async function findExactCommunity(
   try {
     return (await client.getCommunity({ name: sanitizedName })).community_view;
   } catch (error) {
-    if (error === "couldnt_find_community") return;
+    if (isLemmyError(error, "couldnt_find_community")) return;
 
     throw error;
   }
