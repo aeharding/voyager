@@ -88,7 +88,9 @@ export const postSlice = createSlice({
           if (hidden)
             state.postHiddenById[post.post.id] = {
               hidden,
-              immediate: true,
+
+              // Inherit immediate value, if already hidden with immediate = false
+              immediate: state.postHiddenById[post.post.id]?.immediate ?? true,
             };
           if (post.read) state.postReadById[post.post.id] = post.read;
 
