@@ -41,13 +41,13 @@ export default function SearchFeedResultsPage({
   const search = decodeURIComponent(_encodedSearch);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
+    async (pageData) => {
       const response = await client.search({
+        ...pageData,
         limit: LIMIT,
         q: search,
         type_: type,
         community_name: community,
-        page,
         sort,
       });
       dispatch(receivedPosts(response.posts));
