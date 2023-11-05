@@ -371,6 +371,8 @@ export default function Login({
                       onIonInput={(e) => setTotp(e.target.value as string)}
                       disabled={loading}
                       enterkeyhint="done"
+                      autocomplete="one-time-code"
+                      inputMode="numeric"
                     />
                   </IonItem>
                 </IonList>
