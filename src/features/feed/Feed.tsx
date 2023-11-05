@@ -172,14 +172,13 @@ export default function Feed<I>({
         setItems(filteredNewPageItems);
       } else {
         setItems((existingItems) => {
-          const result = [...existingItems];
-          const newPosts = pullAllBy(
+          const newItems = pullAllBy(
             filteredNewPageItems.slice(),
             existingItems,
             getIndex,
           );
-          result.push(...newPosts);
-          return result;
+
+          return [...existingItems, ...newItems];
         });
       }
 
