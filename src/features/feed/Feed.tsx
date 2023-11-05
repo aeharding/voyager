@@ -89,7 +89,7 @@ export default function Feed<I>({
   onRemovedFromTop,
 }: FeedProps<I>) {
   const [page, setPage] = useState<number | string>(0);
-  const [items, setitems] = useState<I[]>([]);
+  const [items, setItems] = useState<I[]>([]);
 
   // Loading needs to be initially `undefined` so that IonRefresher is
   // never initially rendered, which breaks pull to refresh on Android
@@ -144,13 +144,13 @@ export default function Feed<I>({
         ? page + 1
         : page;
 
-      let items: I[];
+      let newPageItems: I[];
 
       try {
         const result = await fetchFn(withPageData(currentPage));
-        if (Array.isArray(result)) items = result;
+        if (Array.isArray(result)) newPageItems = result;
         else {
-          items = result.data;
+          newPageItems = result.data;
           if (result.next_page) currentPage = result.next_page;
         }
       } catch (error) {
@@ -161,19 +161,21 @@ export default function Feed<I>({
         setLoading(false);
       }
 
-      const filteredItems = filterOnRxFn ? items.filter(filterOnRxFn) : items;
+      const filteredNewPageItems = filterOnRxFn
+        ? newPageItems.filter(filterOnRxFn)
+        : newPageItems;
 
       setLoadFailed(false);
 
       if (refresh) {
         setAtEnd(false);
-        setitems(filteredItems);
+        setItems(filteredNewPageItems);
       } else {
-        setitems((existingPosts) => {
-          const result = [...existingPosts];
+        setItems((existingItems) => {
+          const result = [...existingItems];
           const newPosts = pullAllBy(
-            filteredItems.slice(),
-            existingPosts,
+            filteredNewPageItems.slice(),
+            existingItems,
             getIndex,
           );
           result.push(...newPosts);
@@ -181,13 +183,13 @@ export default function Feed<I>({
         });
       }
 
-      if (!filteredItems.length) {
+      if (!filteredNewPageItems.length) {
         requestLoopRef.current++;
       } else {
         requestLoopRef.current = 0;
       }
 
-      if (!items.length || requestLoopRef.current > MAX_REQUEST_LOOP)
+      if (!newPageItems.length || requestLoopRef.current > MAX_REQUEST_LOOP)
         setAtEnd(true);
 
       setPage(currentPage);
