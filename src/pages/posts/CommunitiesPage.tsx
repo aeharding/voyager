@@ -10,7 +10,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import CommunitiesMoreActions from "../../features/community/list/InstanceMoreActions";
-import FeedContent from "../shared/FeedContent";
 
 export default function CommunitiesPage() {
   const pageRef = useRef<HTMLElement>(null);

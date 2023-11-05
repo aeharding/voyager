@@ -116,22 +116,22 @@ export default function CommunitiesList() {
   );
 
   const communitiesGroupedByLetter = useMemo(() => {
-    const alphabeticallySortedCommunities = sortBy(communities, (c) =>
-      c.name.toLowerCase(),
-    );
+    return sortBy(
+      Object.entries(
+        communities.reduce<Record<string, Community[]>>((acc, community) => {
+          const firstLetter = /[0-9]/.test(community.name[0])
+            ? "#"
+            : community.name[0].toUpperCase();
 
-    return Object.entries(
-      alphabeticallySortedCommunities.reduce<Record<string, Community[]>>(
-        (acc, community) => {
-          const firstLetter = community.name[0].toUpperCase();
           if (!acc[firstLetter]) {
             acc[firstLetter] = [];
           }
+
           acc[firstLetter].push(community);
           return acc;
-        },
-        {},
+        }, {}),
       ),
+      ([letter]) => (letter === "#" ? "\uffff" : letter), // sort # at bottom
     );
   }, [communities]);
 
@@ -139,7 +139,6 @@ export default function CommunitiesList() {
 
   return (
     <>
-      <AlphabetJump virtuaRef={virtuaRef} />
       <StyledIonList>
         <StyledVList
           ref={virtuaRef}
@@ -259,6 +258,13 @@ export default function CommunitiesList() {
           ))}
         </StyledVList>
       </StyledIonList>
+
+      <AlphabetJump
+        virtuaRef={virtuaRef}
+        hasFavorited={!!favoritesAsCommunitiesIfFound.length}
+        hasModerated={!!moderates?.length}
+        letters={communitiesGroupedByLetter.map(([letter]) => letter)}
+      />
     </>
   );
 }

@@ -1,15 +1,27 @@
 import styled from "@emotion/styled";
-import { MouseEvent, RefObject, TouchEvent, useRef } from "react";
+import React, {
+  MouseEvent,
+  RefObject,
+  TouchEvent,
+  useMemo,
+  useRef,
+} from "react";
 import { VListHandle } from "virtua";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { ImpactStyle } from "@capacitor/haptics";
+import { ellipseOutline, menuOutline, star } from "ionicons/icons";
+import { IonIcon } from "@ionic/react";
+import { notEmpty } from "../../../helpers/array";
+import { findCurrentPage } from "../../../helpers/ionic";
 
 const alphabetUpperCase = Array.from({ length: 26 }, (_, i) =>
   String.fromCharCode(65 + i),
 );
 
 const Container = styled.div`
-  position: absolute;
+  --line-height: 16px;
+
+  /* position: absolute; */
   right: 0;
   z-index: 1;
 
@@ -25,37 +37,143 @@ const Container = styled.div`
   text-align: center;
 
   padding-left: 6px;
+  padding-right: 3px;
+
+  white-space: pre;
+  line-height: var(--line-height);
+
+  ion-icon {
+    height: var(--line-height);
+  }
 `;
 
 interface AlphabetJumpProps {
   virtuaRef: RefObject<VListHandle>;
+  hasModerated: boolean;
+  hasFavorited: boolean;
+  letters: string[];
 }
 
-export default function AlphabetJump({ virtuaRef }: AlphabetJumpProps) {
-  const sections = ["@", ".", "2", ...alphabetUpperCase];
+enum SpecialSection {
+  Home = 0,
+  Favorited = 1,
+  Moderated = 2,
+}
+
+type JumpItem = SpecialSection | string;
+
+export default function AlphabetJump({
+  virtuaRef,
+  hasFavorited,
+  hasModerated,
+  letters,
+}: AlphabetJumpProps) {
+  const jumpTableLookup = useMemo(
+    () =>
+      buildJumpToTable(
+        [
+          SpecialSection.Home,
+          hasFavorited ? SpecialSection.Favorited : undefined,
+          hasModerated ? SpecialSection.Moderated : undefined,
+          ...letters,
+        ].filter(notEmpty),
+        [
+          SpecialSection.Home,
+          SpecialSection.Favorited,
+          SpecialSection.Moderated,
+          ...alphabetUpperCase,
+          "#",
+        ].filter(notEmpty),
+      ),
+    [hasFavorited, hasModerated, letters],
+  );
+
+  const sections = useMemo(
+    () =>
+      [
+        <IonIcon icon={menuOutline} key={0} />,
+        <IonIcon icon={star} key={1} />,
+        <IonIcon icon={ellipseOutline} key={2} />,
+        ...alphabetUpperCase,
+        "#",
+      ].filter(notEmpty),
+    [],
+  );
+
+  // Joins adjacent strings with \n to reduce items rendered
+  const simplifiedSections = useMemo(
+    () =>
+      sections.reduce<typeof sections>((result, item, index) => {
+        if (index === 0) {
+          result.push(item);
+        } else {
+          const previousItem = result[result.length - 1];
+          if (typeof previousItem === "string" && typeof item === "string") {
+            // Assert that previousItem and item are strings
+            result[result.length - 1] = `${previousItem}\n${item}`;
+          } else {
+            result.push(item);
+          }
+        }
+        return result;
+      }, []),
+    [sections],
+  );
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const prevItemRef = useRef(0);
   const vibrate = useHapticFeedback();
 
   const onDrag = (e: MouseEvent | TouchEvent) => {
     const y = "touches" in e ? e.touches[0].clientY : e.clientY;
     const bbox = containerRef.current?.getBoundingClientRect();
     if (!bbox) return;
-    // console.log(y - bbox.top, bbox.height / sections.length);
-    const section = Math.min(
-      sections.length,
-      Math.max(0, Math.floor((y - bbox.top) / (bbox.height / sections.length))),
+
+    const sectionIndex = Math.min(
+      jumpTableLookup.length,
+      Math.max(
+        0,
+        Math.floor((y - bbox.top) / (bbox.height / jumpTableLookup.length)),
+      ),
     );
-    if (section !== prevItemRef.current) vibrate({ style: ImpactStyle.Light });
-    prevItemRef.current = section;
+
+    const section =
+      jumpTableLookup[
+        Math.max(0, Math.min(sectionIndex, jumpTableLookup.length - 1))
+      ];
+
+    const scrollView = findCurrentPage()?.querySelector(
+      ".ion-content-scroll-host",
+    );
+    const currentScrollOfset = scrollView?.scrollTop;
     virtuaRef.current?.scrollToIndex(section);
+    if (currentScrollOfset !== scrollView?.scrollTop)
+      vibrate({ style: ImpactStyle.Light });
   };
 
   return (
-    <Container ref={containerRef} onTouchMove={onDrag} onMouseMove={onDrag}>
-      {sections.map((s, i) => (
-        <div key={s}>{s}</div>
-      ))}
+    <Container
+      ref={containerRef}
+      onTouchMove={onDrag}
+      onTouchStart={onDrag}
+      onClick={onDrag}
+      onMouseMove={onDrag}
+      slot="fixed"
+    >
+      {simplifiedSections}
     </Container>
   );
+}
+
+function buildJumpToTable(partial: JumpItem[], all: JumpItem[]): number[] {
+  const jumpToTable: number[] = [];
+
+  let lastFound = 0;
+
+  for (let i = 0; i < all.length; i++) {
+    const foundIndex = partial.findIndex((p) => p === all[i]);
+    if (foundIndex !== -1) lastFound = foundIndex;
+    jumpToTable.push(lastFound);
+  }
+
+  return jumpToTable;
 }
