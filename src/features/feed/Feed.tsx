@@ -21,7 +21,6 @@ import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import { VList, VListHandle } from "virtua";
 import { FeedSearchContext } from "../../pages/shared/CommunityPage";
-import { useAppSelector } from "../../store";
 
 type PageData =
   | {
@@ -62,6 +61,8 @@ export interface FeedProps<I>
   header?: React.ReactElement;
   limit?: number;
 
+  onMountedSoonHint?: (items: I[]) => void;
+
   /**
    * Called with item(s) scrolled off the top of the users' viewport
    */
@@ -87,6 +88,7 @@ export default function Feed<I>({
   limit = DEFAULT_LIMIT,
   sortDuration,
   onRemovedFromTop,
+  onMountedSoonHint,
 }: FeedProps<I>) {
   const [page, setPage] = useState<number | string>(0);
   const [items, setItems] = useState<I[]>([]);
@@ -108,10 +110,6 @@ export default function Feed<I>({
 
   const startRangeRef = useRef(0);
   const scrollingRef = useRef(false);
-
-  const postType = useAppSelector(
-    (state) => state.settings.appearance.posts.type,
-  );
 
   // If you have everything filtered, don't continue polling API indefinitely
   const requestLoopRef = useRef(0);
@@ -295,6 +293,10 @@ export default function Feed<I>({
                 start - startOffset,
               ),
             );
+
+            onMountedSoonHint?.(
+              filteredItems.slice(end - startOffset, end - startOffset + 7),
+            );
           }
 
           startRangeRef.current = start;
@@ -303,8 +305,7 @@ export default function Feed<I>({
             fetchMore();
           }
         }}
-        /* Large posts reflow with image load, so mount to dom a bit sooner */
-        overscan={postType === "large" ? 1 : 0}
+        overscan={0}
       >
         {header}
         {filteredItems.map((i) => (

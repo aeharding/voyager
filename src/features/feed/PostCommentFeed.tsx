@@ -19,7 +19,7 @@ import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
 import { FeedContext } from "./FeedContext";
-import { postHasFilteredKeywords } from "../../helpers/lemmy";
+import { isUrlImage, postHasFilteredKeywords } from "../../helpers/lemmy";
 
 const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -77,6 +77,8 @@ export default function PostCommentFeed({
   const disableAutoHideInCommunities = useAppSelector(
     (state) => state.settings.general.posts.disableAutoHideInCommunities,
   );
+
+  const premounted = useRef<number[]>([]);
 
   const itemsRef = useRef<PostCommentItem[]>();
 
@@ -226,6 +228,28 @@ export default function PostCommentFeed({
           ? onRemovedFromTopOfViewport
           : undefined
       }
+      onMountedSoonHint={(items) => {
+        items.forEach((item) => {
+          if (!isPost(item)) return;
+          if (postAppearanceType !== "large") return; // compact post image doesn't trigger reflow
+
+          // Only preload once
+          if (premounted.current.includes(item.post.id)) return;
+          premounted.current.push(item.post.id);
+
+          // Only preload post image that causes post reflow
+          const src =
+            item.post.url && isUrlImage(item.post.url)
+              ? item.post.url
+              : undefined;
+          if (!src) return;
+
+          console.info(`Preloading ${item.post.name}`);
+
+          const img = new Image();
+          img.src = src;
+        });
+      }}
     />
   );
 }
