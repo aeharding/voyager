@@ -13,6 +13,7 @@ import styled from "@emotion/styled";
 import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { OldLemmyErrorValue, isLemmyError } from "../../helpers/lemmy";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
@@ -51,7 +52,13 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     try {
       data = await dispatch(getUser(handle));
     } catch (error) {
-      if (error === "couldnt_find_that_username_or_email") {
+      if (
+        isLemmyError(
+          error,
+          "couldnt_find_that_username_or_email" as OldLemmyErrorValue,
+        ) ||
+        isLemmyError(error, "couldnt_find_person")
+      ) {
         await present(`Huh, u/${handle} doesn't exist. Mysterious...`);
 
         if (router.canGoBack()) {

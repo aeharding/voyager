@@ -10,6 +10,7 @@ import { clientSelector, handleSelector, jwtSelector } from "../auth/authSlice";
 import { POST_SORTS } from "../feed/PostSort";
 import { get, set } from "../settings/storage";
 import { IPostMetadata, db } from "../../services/db";
+import { isLemmyError } from "../../helpers/lemmy";
 
 const POST_SORT_KEY = "post-sort-v2";
 
@@ -286,7 +287,10 @@ export const getPost =
       });
     } catch (error) {
       // I think there is a bug in lemmy-js-client where it tries to parse 404 with non-json body
-      if (error === "couldnt_find_post" || error instanceof SyntaxError) {
+      if (
+        isLemmyError(error, "couldnt_find_post") ||
+        error instanceof SyntaxError
+      ) {
         dispatch(receivedPostNotFound(id));
       }
 
@@ -306,7 +310,10 @@ export const deletePost =
       });
     } catch (error) {
       // I think there is a bug in lemmy-js-client where it tries to parse 404 with non-json body
-      if (error === "couldnt_find_post" || error instanceof SyntaxError) {
+      if (
+        isLemmyError(error, "couldnt_find_post") ||
+        error instanceof SyntaxError
+      ) {
         dispatch(receivedPostNotFound(id));
 
         return;

@@ -25,6 +25,7 @@ import useTextRecovery, {
   clearRecoveredText,
 } from "../../../../helpers/useTextRecovery";
 import useAppToast from "../../../../helpers/useAppToast";
+import { isLemmyError } from "../../../../helpers/lemmy";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -79,10 +80,9 @@ export default function CommentReply({
         post_id: item.post.id,
       });
     } catch (error) {
-      const errorDescription =
-        error === "language_not_allowed"
-          ? "Please select a language in your lemmy profile settings."
-          : "Please try again.";
+      const errorDescription = isLemmyError(error, "language_not_allowed")
+        ? "Please select a language in your lemmy profile settings."
+        : "Please try again.";
 
       presentToast({
         message: `Problem posting your comment. ${errorDescription}`,

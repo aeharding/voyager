@@ -3,6 +3,7 @@ import {
   CommentView,
   Community,
   GetSiteResponse,
+  LemmyErrorType,
   Post,
 } from "lemmy-js-client";
 import { Share } from "@capacitor/share";
@@ -288,4 +289,12 @@ export function keywordFoundInSentence(
 
   // Use the RegExp test method to check if the pattern is found in the sentence
   return pattern.test(sentence);
+}
+
+export type LemmyErrorValue = LemmyErrorType["error"];
+export type OldLemmyErrorValue = never; // When removing support for an old version of Lemmy, cleanup these references
+
+export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
+  if (!(error instanceof Error)) return;
+  return error.message === lemmyErrorValue;
 }
