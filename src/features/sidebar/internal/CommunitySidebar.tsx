@@ -21,6 +21,8 @@ export default function CommunitySidebar({ community }: CommunitySidebarProps) {
       }
       people={mods?.map((m) => m.moderator) ?? []}
       counts={community.counts}
+      banner={community.community.banner}
+      name={`c/${getHandle(community.community)}`}
     />
   );
 }

@@ -36,10 +36,10 @@ export default function InboxPage({ showRead }: InboxPageProps) {
   useSetActivePage(pageRef);
 
   const fetchFn: FetchFn<InboxItemView> = useCallback(
-    async (page) => {
+    async (pageData) => {
       const params = {
         limit: 50,
-        page,
+        ...pageData,
         unread_only: !showRead,
       };
 

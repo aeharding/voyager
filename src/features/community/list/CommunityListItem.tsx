@@ -10,6 +10,18 @@ import { ActionButton } from "../../post/actions/ActionButton";
 import { addFavorite, removeFavorite } from "../communitySlice";
 import { star } from "ionicons/icons";
 import { ToggleIcon } from "../ToggleIcon";
+import styled from "@emotion/styled";
+import { HIDE_ALPHABET_JUMP } from "./AlphabetJump";
+
+const StyledToggleIcon = styled(ToggleIcon)`
+  @media (max-width: 725px) {
+    margin-right: 8px;
+  }
+
+  @media ${HIDE_ALPHABET_JUMP} {
+    margin-right: 0;
+  }
+`;
 
 export default function CommunityListItem({
   community,
@@ -30,6 +42,7 @@ export default function CommunityListItem({
     <IonItem
       key={community.id}
       routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
+      detail={false}
     >
       <Content>
         <ItemIcon item={community} size={28} />
@@ -50,7 +63,7 @@ export default function CommunityListItem({
           }
         }}
       >
-        <ToggleIcon icon={star} selected={isFavorite} />
+        <StyledToggleIcon icon={star} selected={isFavorite} />
       </ActionButton>
     </IonItem>
   );

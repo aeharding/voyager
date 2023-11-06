@@ -263,13 +263,22 @@ export const changeAccount =
 export const logoutAccount =
   (handle: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const accountData = getState().auth.accountData;
+    const currentAccount = accountData?.accounts?.find(
+      ({ handle: h }) => handle === h,
+    );
+
     // Going to need to change active accounts
-    if (handle === getState().auth.accountData?.activeHandle) {
+    if (handle === accountData?.activeHandle) {
       dispatch(resetPosts());
       dispatch(resetComments());
       dispatch(resetUsers());
       dispatch(resetInbox());
     }
+
+    // revoke token
+    if (currentAccount)
+      getClient(parseJWT(currentAccount.jwt).iss, currentAccount.jwt)?.logout();
 
     dispatch(removeAccount(handle));
 

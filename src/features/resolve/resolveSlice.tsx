@@ -6,6 +6,7 @@ import { receivedCommunity } from "../community/communitySlice";
 import { receivedPosts } from "../post/postSlice";
 import { receivedUsers } from "../user/userSlice";
 import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { isLemmyError } from "../../helpers/lemmy";
 
 interface ResolveState {
   objectByUrl: Dictionary<"couldnt_find_object" | ResolveObjectResponse>;
@@ -55,7 +56,8 @@ export const resolveObject =
         q: url,
       });
     } catch (error) {
-      if (error === "couldnt_find_object") dispatch(couldNotFindUrl(url));
+      if (isLemmyError(error, "couldnt_find_object"))
+        dispatch(couldNotFindUrl(url));
 
       throw error;
     }

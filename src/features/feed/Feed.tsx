@@ -23,7 +23,17 @@ import { VList, VListHandle } from "virtua";
 import { FeedSearchContext } from "../../pages/shared/CommunityPage";
 import { useAppSelector } from "../../store";
 
-export type FetchFn<I> = (page: number) => Promise<I[]>;
+type PageData =
+  | {
+      page: number;
+    }
+  | {
+      page_cursor: string;
+    };
+
+export type FetchFn<I> = (pageData: PageData) => Promise<FetchFnResult<I>>;
+
+type FetchFnResult<I> = I[] | { data: I[]; next_page?: string };
 
 export interface FeedProps<I>
   extends Partial<Pick<EndPostProps, "sortDuration">> {
@@ -78,15 +88,24 @@ export default function Feed<I>({
   sortDuration,
   onRemovedFromTop,
 }: FeedProps<I>) {
-  const [page, setPage] = useState(0);
-  const [items, setitems] = useState<I[]>([]);
-  const [loading, _setLoading] = useState(false);
+  const [page, setPage] = useState<number | string>(0);
+  const [items, setItems] = useState<I[]>([]);
+
+  // Loading needs to be initially `undefined` so that IonRefresher is
+  // never initially rendered, which breaks pull to refresh on Android
+  // See: https://github.com/aeharding/voyager/issues/718
+  const [loading, _setLoading] = useState<boolean | undefined>(undefined);
   const loadingRef = useRef(false);
+
   const [isListAtTop, setIsListAtTop] = useState(true);
+
   const [atEnd, _setAtEnd] = useState(false);
   const atEndRef = useRef(false);
+
   const [loadFailed, setLoadFailed] = useState(false);
+
   const { setScrolledPastSearch } = useContext(FeedSearchContext);
+
   const startRangeRef = useRef(0);
   const scrollingRef = useRef(false);
 
@@ -119,12 +138,21 @@ export default function Feed<I>({
 
       setLoading(true);
 
-      const currentPage = refresh ? 1 : page + 1;
+      let currentPage = refresh
+        ? 1
+        : typeof page === "number"
+        ? page + 1
+        : page;
 
-      let items: I[];
+      let newPageItems: I[];
 
       try {
-        items = await fetchFn(currentPage);
+        const result = await fetchFn(withPageData(currentPage));
+        if (Array.isArray(result)) newPageItems = result;
+        else {
+          newPageItems = result.data;
+          if (result.next_page) currentPage = result.next_page;
+        }
       } catch (error) {
         setLoadFailed(true);
 
@@ -133,38 +161,39 @@ export default function Feed<I>({
         setLoading(false);
       }
 
-      const filteredItems = filterOnRxFn ? items.filter(filterOnRxFn) : items;
+      const filteredNewPageItems = filterOnRxFn
+        ? newPageItems.filter(filterOnRxFn)
+        : newPageItems;
 
       setLoadFailed(false);
 
       if (refresh) {
         setAtEnd(false);
-        setitems(filteredItems);
+        setItems(filteredNewPageItems);
       } else {
-        setitems((existingPosts) => {
-          const result = [...existingPosts];
-          const newPosts = pullAllBy(
-            filteredItems.slice(),
-            existingPosts,
+        setItems((existingItems) => {
+          const newItems = pullAllBy(
+            filteredNewPageItems.slice(),
+            existingItems,
             getIndex,
           );
-          result.splice(currentPage * limit, limit, ...newPosts);
-          return result;
+
+          return [...existingItems, ...newItems];
         });
       }
 
-      if (!filteredItems.length) {
+      if (!filteredNewPageItems.length) {
         requestLoopRef.current++;
       } else {
         requestLoopRef.current = 0;
       }
 
-      if (!items.length || requestLoopRef.current > MAX_REQUEST_LOOP)
+      if (!newPageItems.length || requestLoopRef.current > MAX_REQUEST_LOOP)
         setAtEnd(true);
 
       setPage(currentPage);
     },
-    [fetchFn, limit, page, getIndex, filterOnRxFn],
+    [fetchFn, page, getIndex, filterOnRxFn],
   );
 
   useEffect(() => {
@@ -287,4 +316,14 @@ export default function Feed<I>({
       </VList>
     </>
   );
+}
+
+function withPageData(page: number | string): PageData {
+  if (typeof page === "number") return { page };
+  return { page_cursor: page };
+}
+
+export function isFirstPage(pageData: PageData): boolean {
+  if ("page" in pageData) return pageData.page === 1;
+  return !pageData.page_cursor;
 }

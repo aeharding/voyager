@@ -9,7 +9,7 @@ import {
 } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useCallback } from "react";
-import { FetchFn } from "../../../features/feed/Feed";
+import { FetchFn, isFirstPage } from "../../../features/feed/Feed";
 import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
@@ -19,6 +19,7 @@ import { CommunityView, LemmyHttp } from "lemmy-js-client";
 import CommunityFeed from "../../../features/feed/CommunityFeed";
 import { notEmpty } from "../../../helpers/array";
 import { receivedCommunities } from "../../../features/community/communitySlice";
+import { isLemmyError } from "../../../helpers/lemmy";
 
 export default function SearchCommunitiesPage() {
   const { search: _encodedSearch } = useParams<{ search: string }>();
@@ -30,8 +31,8 @@ export default function SearchCommunitiesPage() {
   const search = decodeURIComponent(_encodedSearch);
 
   const fetchFn: FetchFn<CommunityView> = useCallback(
-    async (page) => {
-      if (page === 1 && search.includes("@")) {
+    async (pageData) => {
+      if (isFirstPage(pageData) && search.includes("@")) {
         return [await findExactCommunity(search, client)].filter(notEmpty);
       }
 
@@ -40,7 +41,7 @@ export default function SearchCommunitiesPage() {
         q: search,
         type_: "Communities",
         listing_type: "All",
-        page,
+        ...pageData,
         sort,
       });
 
@@ -85,7 +86,7 @@ async function findExactCommunity(
   try {
     return (await client.getCommunity({ name: sanitizedName })).community_view;
   } catch (error) {
-    if (error === "couldnt_find_community") return;
+    if (isLemmyError(error, "couldnt_find_community")) return;
 
     throw error;
   }

@@ -41,6 +41,11 @@ interface PostCommentFeed
   filterHiddenPosts?: boolean;
   filterKeywords?: boolean;
 
+  /**
+   * Feed will auto-hide posts, if enabled by the user
+   */
+  autoHideIfConfigured?: boolean;
+
   header?: ReactElement;
 }
 
@@ -49,6 +54,7 @@ export default function PostCommentFeed({
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
   filterKeywords = true,
+  autoHideIfConfigured,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
   ...rest
@@ -122,7 +128,9 @@ export default function PostCommentFeed({
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (page) => {
-      const items = await _fetchFn(page);
+      const result = await _fetchFn(page);
+
+      const items = Array.isArray(result) ? result : result.data;
 
       /* receivedPosts needs to be awaited so that we fetch post metadatas
          from the db before showing them to prevent flickering
@@ -130,7 +138,7 @@ export default function PostCommentFeed({
       await dispatch(receivedPosts(items.filter(isPost)));
       dispatch(receivedComments(items.filter(isComment)));
 
-      return items;
+      return result;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [_fetchFn, dispatch],
@@ -187,18 +195,29 @@ export default function PostCommentFeed({
   );
 
   function onRemovedFromTopOfViewport(items: PostCommentItem[]) {
-    items.forEach(onRead);
+    items.forEach(onAutoRead);
   }
 
-  function onRead(item: PostCommentItem) {
+  const shouldAutoHide = (() => {
+    if (!autoHideIfConfigured) return false;
+
+    if (communityName) return !disableAutoHideInCommunities;
+
+    return true; // setPostRead doesn't auto-hide if feature is turned completely off
+  })();
+
+  function onAutoRead(item: PostCommentItem) {
     if (!isPost(item)) return;
 
-    dispatch(
-      setPostRead(
-        item.post.id,
-        communityName ? disableAutoHideInCommunities : false,
-      ),
-    );
+    // Determine if the post is pinned in the current feed
+    const postIsPinned =
+      (communityName && item.post.featured_community) ||
+      (!communityName && item.post.featured_local);
+
+    // Pinned posts should not be automatically hidden
+    const shouldAutoHidePost = shouldAutoHide && !postIsPinned;
+
+    dispatch(setPostRead(item.post.id, !shouldAutoHidePost));
   }
 
   return (

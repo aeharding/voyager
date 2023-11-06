@@ -56,8 +56,10 @@ export default function ProfileFeedHiddenPostsPage() {
   const lastPageItemsRef = useRef<IPostMetadata[]>([]);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
+    async (pageData) => {
       if (!handle) return [];
+      if (!("page" in pageData)) return [];
+      const { page } = pageData;
 
       const hiddenPostMetadatas = await db.getHiddenPostMetadatasPaginated(
         handle,

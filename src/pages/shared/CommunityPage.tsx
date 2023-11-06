@@ -130,14 +130,14 @@ export default function CommunityPage() {
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
-      const response = await client.getPosts({
+    async (pageData) => {
+      const { posts, next_page } = await client.getPosts({
+        ...pageData,
         limit: LIMIT,
-        page,
         community_name: community,
         sort,
       });
-      return response.posts;
+      return { data: posts, next_page };
     },
     [client, community, sort],
   );
@@ -156,6 +156,7 @@ export default function CommunityPage() {
         fetchFn={fetchFn}
         communityName={community}
         sortDuration={getSortDuration(sort)}
+        autoHideIfConfigured
         header={
           !searchOpen ? (
             <HeaderContainer>

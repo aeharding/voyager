@@ -28,6 +28,11 @@ import { getCustomServers } from "../../services/app";
 import { isNative } from "../../helpers/device";
 import { Browser } from "@capacitor/browser";
 import useAppToast from "../../helpers/useAppToast";
+import {
+  LemmyErrorValue,
+  OldLemmyErrorValue,
+  isLemmyError,
+} from "../../helpers/lemmy";
 
 const JOIN_LEMMY_URL = "https://join-lemmy.org/instances";
 
@@ -169,12 +174,15 @@ export default function Login({
         login(server ?? customServerHostname, username, password, totp),
       );
     } catch (error) {
-      if (error === "missing_totp_token") {
+      if (isLemmyError(error, "missing_totp_token")) {
         setNeedsTotp(true);
         return;
       }
 
-      if (error === "password_incorrect") {
+      if (
+        isLemmyError(error, "password_incorrect" as OldLemmyErrorValue) || // TODO lemmy v0.18 support
+        isLemmyError(error, "incorrect_login")
+      ) {
         setPassword("");
       }
 
@@ -363,6 +371,8 @@ export default function Login({
                       onIonInput={(e) => setTotp(e.target.value as string)}
                       disabled={loading}
                       enterkeyhint="done"
+                      autocomplete="one-time-code"
+                      inputMode="numeric"
                     />
                   </IonItem>
                 </IonList>
@@ -376,13 +386,19 @@ export default function Login({
 }
 
 function getLoginErrorMessage(error: unknown, instanceActorId: string): string {
-  switch (error) {
-    case "incorrect_totp token": // This might be a typo? Included "correct" case below
+  if (!(error instanceof Error))
+    return "Unknown error occurred, please try again.";
+
+  switch (error.message as LemmyErrorValue) {
+    // TODO old lemmy support
+    case "incorrect_totp token" as OldLemmyErrorValue:
     case "incorrect_totp_token":
       return "Incorrect 2nd factor code. Please try again.";
-    case "couldnt_find_that_username_or_email":
+    // TODO old lemmy support
+    case "couldnt_find_that_username_or_email" as OldLemmyErrorValue:
+    case "couldnt_find_person":
       return `User not found. Is your account on ${instanceActorId}?`;
-    case "password_incorrect":
+    case "password_incorrect" as OldLemmyErrorValue:
       return "Incorrect password. Please try again.";
     case "incorrect_login":
       return "Incorrect login credentials. Please try again.";

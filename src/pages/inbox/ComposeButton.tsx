@@ -9,7 +9,11 @@ import { createOutline } from "ionicons/icons";
 import { useState } from "react";
 import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
-import { getHandle } from "../../helpers/lemmy";
+import {
+  OldLemmyErrorValue,
+  getHandle,
+  isLemmyError,
+} from "../../helpers/lemmy";
 import useAppToast from "../../helpers/useAppToast";
 
 export default function ComposeButton() {
@@ -29,7 +33,10 @@ export default function ComposeButton() {
     } catch (error) {
       presentToast({
         message:
-          error === "couldnt_find_that_username_or_email"
+          isLemmyError(
+            error,
+            "couldnt_find_that_username_or_email" as OldLemmyErrorValue,
+          ) || isLemmyError(error, "couldnt_find_person")
             ? `Could not find user with handle ${handle}`
             : "Server error. Please try again.",
         color: "danger",

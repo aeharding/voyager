@@ -11,7 +11,7 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useParams } from "react-router";
 import { useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../../helpers/array";
 import { getHandle } from "../../../helpers/lemmy";
@@ -20,8 +20,9 @@ import { home, library, people, shield } from "ionicons/icons";
 import ItemIcon from "../../labels/img/ItemIcon";
 import CommunityListItem from "./CommunityListItem";
 import useSupported from "../../../helpers/useSupported";
-import { VList } from "virtua";
+import { VList, VListHandle } from "virtua";
 import { maxWidthCss } from "../../shared/AppContent";
+import AlphabetJump from "./AlphabetJump";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -54,6 +55,12 @@ const StyledIonList = styled(IonList)`
 const StyledVList = styled(VList)`
   height: 100%;
 
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
   ion-item-group {
     ${maxWidthCss}
   }
@@ -63,6 +70,8 @@ export default function CommunitiesList() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { actor } = useParams<{ actor: string }>();
   const jwt = useAppSelector(jwtSelector);
+
+  const virtuaRef = useRef<VListHandle>(null);
 
   const moderates = useAppSelector(
     (state) => state.auth.site?.my_user?.moderates,
@@ -107,136 +116,155 @@ export default function CommunitiesList() {
   );
 
   const communitiesGroupedByLetter = useMemo(() => {
-    const alphabeticallySortedCommunities = sortBy(communities, (c) =>
-      c.name.toLowerCase(),
-    );
+    return sortBy(
+      Object.entries(
+        communities.reduce<Record<string, Community[]>>((acc, community) => {
+          const firstLetter = /[0-9]/.test(community.name[0])
+            ? "#"
+            : community.name[0].toUpperCase();
 
-    return Object.entries(
-      alphabeticallySortedCommunities.reduce<Record<string, Community[]>>(
-        (acc, community) => {
-          const firstLetter = community.name[0].toUpperCase();
           if (!acc[firstLetter]) {
             acc[firstLetter] = [];
           }
+
           acc[firstLetter].push(community);
           return acc;
-        },
-        {},
+        }, {}),
       ),
+      ([letter]) => (letter === "#" ? "\uffff" : letter), // sort # at bottom
     );
   }, [communities]);
 
   const showModeratorFeed = !!moderates?.length && moderatorFeedSupported;
 
   return (
-    <StyledIonList>
-      <StyledVList
-        overscan={0}
-        className="ion-content-scroll-host virtual-scroller"
-      >
-        <IonItemGroup>
-          {jwt && (
-            <IonItem routerLink={buildGeneralBrowseLink(`/home`)}>
+    <>
+      <StyledIonList>
+        <StyledVList
+          ref={virtuaRef}
+          overscan={0}
+          className="ion-content-scroll-host virtual-scroller"
+        >
+          <IonItemGroup key="list">
+            {jwt && (
+              <IonItem
+                routerLink={buildGeneralBrowseLink(`/home`)}
+                detail={false}
+              >
+                <Content>
+                  <SubIcon icon={home} color="red" />
+                  <div>
+                    Home
+                    <aside>Posts from subscriptions</aside>
+                  </div>
+                </Content>
+              </IonItem>
+            )}
+            <IonItem routerLink={buildGeneralBrowseLink(`/all`)} detail={false}>
               <Content>
-                <SubIcon icon={home} color="red" />
+                <SubIcon icon={library} color="#009dff" />
                 <div>
-                  Home
-                  <aside>Posts from subscriptions</aside>
+                  All<aside>Posts across all federated communities</aside>
                 </div>
               </Content>
             </IonItem>
-          )}
-          <IonItem routerLink={buildGeneralBrowseLink(`/all`)}>
-            <Content>
-              <SubIcon icon={library} color="#009dff" />
-              <div>
-                All<aside>Posts across all federated communities</aside>
-              </div>
-            </Content>
-          </IonItem>
-          <IonItem
-            routerLink={buildGeneralBrowseLink(`/local`)}
-            lines={showModeratorFeed ? "inset" : "none"}
-          >
-            <Content>
-              <SubIcon icon={people} color="#00f100" />
-              <div>
-                Local<aside>Posts from communities on {actor}</aside>
-              </div>
-            </Content>
-          </IonItem>
-          {showModeratorFeed && (
-            <IonItem routerLink={buildGeneralBrowseLink(`/mod`)} lines="none">
+            <IonItem
+              routerLink={buildGeneralBrowseLink(`/local`)}
+              detail={false}
+              lines={showModeratorFeed ? "inset" : "none"}
+            >
               <Content>
-                <SubIcon icon={shield} color="#464646" />
+                <SubIcon icon={people} color="#00f100" />
                 <div>
-                  Moderator Posts
-                  <aside>Posts from moderated communities</aside>
+                  Local<aside>Posts from communities on {actor}</aside>
                 </div>
               </Content>
             </IonItem>
-          )}
-        </IonItemGroup>
-
-        {favoritesAsCommunitiesIfFound.length > 0 && (
-          <IonItemGroup>
-            <IonItemDivider sticky>
-              <IonLabel>Favorites</IonLabel>
-            </IonItemDivider>
-
-            {favoritesAsCommunitiesIfFound.map((favorite) =>
-              typeof favorite === "string" ? (
-                <IonItem
-                  key={favorite}
-                  routerLink={buildGeneralBrowseLink(`/c/${favorite}`)}
-                >
-                  <Content>
-                    <ItemIcon item={favorite} size={28} />
-                    {favorite}
-                  </Content>
-                </IonItem>
-              ) : (
-                <CommunityListItem
-                  key={favorite.id}
-                  community={favorite}
-                  favorites={favorites}
-                />
-              ),
+            {showModeratorFeed && (
+              <IonItem
+                routerLink={buildGeneralBrowseLink(`/mod`)}
+                detail={false}
+                lines="none"
+              >
+                <Content>
+                  <SubIcon icon={shield} color="#464646" />
+                  <div>
+                    Moderator Posts
+                    <aside>Posts from moderated communities</aside>
+                  </div>
+                </Content>
+              </IonItem>
             )}
           </IonItemGroup>
-        )}
 
-        {moderates?.length ? (
-          <IonItemGroup>
-            <IonItemDivider sticky>
-              <IonLabel>Moderator</IonLabel>
-            </IonItemDivider>
-            {moderates.map(({ community }) => (
-              <CommunityListItem
-                key={community.id}
-                community={community}
-                favorites={favorites}
-              />
-            ))}
-          </IonItemGroup>
-        ) : (
-          ""
-        )}
-        {communitiesGroupedByLetter.map(([letter, communities]) => (
-          <IonItemGroup key={letter}>
-            <IonItemDivider sticky>
-              <IonLabel>{letter}</IonLabel>
-            </IonItemDivider>
-            {communities.map((community) => (
-              <CommunityListItem
-                key={community.id}
-                community={community}
-                favorites={favorites}
-              />
-            ))}
-          </IonItemGroup>
-        ))}
-      </StyledVList>
-    </StyledIonList>
+          {favoritesAsCommunitiesIfFound.length > 0 && (
+            <IonItemGroup key="favorites">
+              <IonItemDivider sticky>
+                <IonLabel>Favorites</IonLabel>
+              </IonItemDivider>
+
+              {favoritesAsCommunitiesIfFound.map((favorite) =>
+                typeof favorite === "string" ? (
+                  <IonItem
+                    detail={false}
+                    key={favorite}
+                    routerLink={buildGeneralBrowseLink(`/c/${favorite}`)}
+                  >
+                    <Content>
+                      <ItemIcon item={favorite} size={28} />
+                      {favorite}
+                    </Content>
+                  </IonItem>
+                ) : (
+                  <CommunityListItem
+                    key={favorite.id}
+                    community={favorite}
+                    favorites={favorites}
+                  />
+                ),
+              )}
+            </IonItemGroup>
+          )}
+
+          {moderates?.length ? (
+            <IonItemGroup key="moderates">
+              <IonItemDivider sticky>
+                <IonLabel>Moderator</IonLabel>
+              </IonItemDivider>
+              {moderates.map(({ community }) => (
+                <CommunityListItem
+                  key={community.id}
+                  community={community}
+                  favorites={favorites}
+                />
+              ))}
+            </IonItemGroup>
+          ) : (
+            ""
+          )}
+          {communitiesGroupedByLetter.map(([letter, communities]) => (
+            <IonItemGroup key={letter}>
+              <IonItemDivider sticky>
+                <IonLabel>{letter}</IonLabel>
+              </IonItemDivider>
+              {communities.map((community) => (
+                <CommunityListItem
+                  key={community.id}
+                  community={community}
+                  favorites={favorites}
+                />
+              ))}
+            </IonItemGroup>
+          ))}
+        </StyledVList>
+      </StyledIonList>
+
+      <AlphabetJump
+        virtuaRef={virtuaRef}
+        hasFavorited={!!favoritesAsCommunitiesIfFound.length}
+        hasModerated={!!moderates?.length}
+        letters={communitiesGroupedByLetter.map(([letter]) => letter)}
+      />
+    </>
   );
 }

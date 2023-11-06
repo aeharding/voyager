@@ -9,6 +9,7 @@ import useClient from "../../helpers/useClient";
 import { getPost } from "../post/postSlice";
 import { MouseEvent } from "react";
 import useAppToast from "../../helpers/useAppToast";
+import { isLemmyError } from "../../helpers/lemmy";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
 export const COMMENT_PATH = /^\/comment\/(\d+)$/;
@@ -85,7 +86,7 @@ export default function useLemmyUrlHandler() {
         try {
           object = await dispatch(resolveObject(url.toString()));
         } catch (error) {
-          if (error === "couldnt_find_object") {
+          if (isLemmyError(error, "couldnt_find_object")) {
             presentToast({
               message: `Could not find ${getObjectName(
                 url.pathname,
