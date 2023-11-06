@@ -145,7 +145,7 @@ export default function CommunitiesList() {
           overscan={0}
           className="ion-content-scroll-host virtual-scroller"
         >
-          <IonItemGroup>
+          <IonItemGroup key="list">
             {jwt && (
               <IonItem
                 routerLink={buildGeneralBrowseLink(`/home`)}
@@ -198,7 +198,7 @@ export default function CommunitiesList() {
           </IonItemGroup>
 
           {favoritesAsCommunitiesIfFound.length > 0 && (
-            <IonItemGroup>
+            <IonItemGroup key="favorites">
               <IonItemDivider sticky>
                 <IonLabel>Favorites</IonLabel>
               </IonItemDivider>
@@ -227,7 +227,7 @@ export default function CommunitiesList() {
           )}
 
           {moderates?.length ? (
-            <IonItemGroup>
+            <IonItemGroup key="moderates">
               <IonItemDivider sticky>
                 <IonLabel>Moderator</IonLabel>
               </IonItemDivider>

@@ -18,11 +18,49 @@ const alphabetUpperCase = Array.from({ length: 26 }, (_, i) =>
   String.fromCharCode(65 + i),
 );
 
-const Container = styled.div`
-  --line-height: 16px;
+enum SpecialSection {
+  Home = 0,
+  Favorited = 1,
+  Moderated = 2,
+}
 
-  /* position: absolute; */
-  right: 0;
+type JumpItem = SpecialSection | string;
+
+const SECTIONS = [
+  <IonIcon icon={menuOutline} key={0} />,
+  <IonIcon icon={star} key={1} />,
+  <IonIcon icon={ellipseOutline} key={2} />,
+  ...alphabetUpperCase,
+  "#",
+];
+
+// Joins adjacent strings with \n to reduce items rendered
+const SIMPLIFIED_SECTIONS = SECTIONS.reduce<typeof SECTIONS>(
+  (result, item, index) => {
+    if (index === 0) {
+      result.push(item);
+    } else {
+      const previousItem = result[result.length - 1];
+      if (typeof previousItem === "string" && typeof item === "string") {
+        // Assert that previousItem and item are strings
+        result[result.length - 1] = `${previousItem}\n${item}`;
+      } else {
+        result.push(item);
+      }
+    }
+    return result;
+  },
+  [],
+);
+
+export const HIDE_ALPHABET_JUMP =
+  "(max-height: 600px) and (orientation: landscape)" as const;
+
+const Container = styled.div`
+  --line-height: 15px;
+
+  position: absolute;
+  right: env(safe-area-inset-right);
   z-index: 1;
 
   top: 50%;
@@ -31,7 +69,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
 
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
   color: var(--ion-color-primary);
   text-align: center;
@@ -45,6 +83,10 @@ const Container = styled.div`
   ion-icon {
     height: var(--line-height);
   }
+
+  @media ${HIDE_ALPHABET_JUMP} {
+    display: none;
+  }
 `;
 
 interface AlphabetJumpProps {
@@ -54,20 +96,15 @@ interface AlphabetJumpProps {
   letters: string[];
 }
 
-enum SpecialSection {
-  Home = 0,
-  Favorited = 1,
-  Moderated = 2,
-}
-
-type JumpItem = SpecialSection | string;
-
 export default function AlphabetJump({
   virtuaRef,
   hasFavorited,
   hasModerated,
   letters,
 }: AlphabetJumpProps) {
+  const containerElTopRef = useRef<DOMRect | undefined>();
+  const scrollViewRef = useRef<HTMLElement | undefined>();
+
   const jumpTableLookup = useMemo(
     () =>
       buildJumpToTable(
@@ -88,51 +125,27 @@ export default function AlphabetJump({
     [hasFavorited, hasModerated, letters],
   );
 
-  const sections = useMemo(
-    () =>
-      [
-        <IonIcon icon={menuOutline} key={0} />,
-        <IonIcon icon={star} key={1} />,
-        <IonIcon icon={ellipseOutline} key={2} />,
-        ...alphabetUpperCase,
-        "#",
-      ].filter(notEmpty),
-    [],
-  );
-
-  // Joins adjacent strings with \n to reduce items rendered
-  const simplifiedSections = useMemo(
-    () =>
-      sections.reduce<typeof sections>((result, item, index) => {
-        if (index === 0) {
-          result.push(item);
-        } else {
-          const previousItem = result[result.length - 1];
-          if (typeof previousItem === "string" && typeof item === "string") {
-            // Assert that previousItem and item are strings
-            result[result.length - 1] = `${previousItem}\n${item}`;
-          } else {
-            result.push(item);
-          }
-        }
-        return result;
-      }, []),
-    [sections],
-  );
-
   const containerRef = useRef<HTMLDivElement>(null);
   const vibrate = useHapticFeedback();
 
+  const onStart = () => {
+    containerElTopRef.current = containerRef.current?.getBoundingClientRect();
+    scrollViewRef.current =
+      findCurrentPage()?.querySelector(".ion-content-scroll-host") || undefined;
+  };
+
   const onDrag = (e: MouseEvent | TouchEvent) => {
     const y = "touches" in e ? e.touches[0].clientY : e.clientY;
-    const bbox = containerRef.current?.getBoundingClientRect();
-    if (!bbox) return;
+    if (!containerElTopRef.current) return;
 
     const sectionIndex = Math.min(
       jumpTableLookup.length,
       Math.max(
         0,
-        Math.floor((y - bbox.top) / (bbox.height / jumpTableLookup.length)),
+        Math.floor(
+          (y - containerElTopRef.current.top) /
+            (containerElTopRef.current.height / jumpTableLookup.length),
+        ),
       ),
     );
 
@@ -141,12 +154,9 @@ export default function AlphabetJump({
         Math.max(0, Math.min(sectionIndex, jumpTableLookup.length - 1))
       ];
 
-    const scrollView = findCurrentPage()?.querySelector(
-      ".ion-content-scroll-host",
-    );
-    const currentScrollOfset = scrollView?.scrollTop;
+    const currentScrollOfset = scrollViewRef.current?.scrollTop;
     virtuaRef.current?.scrollToIndex(section);
-    if (currentScrollOfset !== scrollView?.scrollTop)
+    if (currentScrollOfset !== scrollViewRef.current?.scrollTop)
       vibrate({ style: ImpactStyle.Light });
   };
 
@@ -154,12 +164,19 @@ export default function AlphabetJump({
     <Container
       ref={containerRef}
       onTouchMove={onDrag}
-      onTouchStart={onDrag}
-      onClick={onDrag}
+      onTouchStart={(e) => {
+        onStart();
+        onDrag(e);
+      }}
+      onClick={(e) => {
+        onStart();
+        onDrag(e);
+      }}
+      onMouseOver={onStart}
       onMouseMove={onDrag}
       slot="fixed"
     >
-      {simplifiedSections}
+      {SIMPLIFIED_SECTIONS}
     </Container>
   );
 }
