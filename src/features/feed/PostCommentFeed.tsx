@@ -209,10 +209,15 @@ export default function PostCommentFeed({
   function onAutoRead(item: PostCommentItem) {
     if (!isPost(item)) return;
 
-    // Pinned posts should not be automatically hidden
-    if (item.post.featured_community || item.post.featured_local) return;
+    // Determine if the post is pinned in the current feed
+    const postIsPinned =
+      (communityName && item.post.featured_community) ||
+      (!communityName && item.post.featured_local);
 
-    dispatch(setPostRead(item.post.id, !shouldAutoHide));
+    // Pinned posts should not be automatically hidden
+    const shouldAutoHidePost = shouldAutoHide && !postIsPinned;
+
+    dispatch(setPostRead(item.post.id, !shouldAutoHidePost));
   }
 
   return (
