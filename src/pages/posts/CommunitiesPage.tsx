@@ -3,13 +3,13 @@ import CommunitiesList from "../../features/community/list/CommunitiesList";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import {
   IonButtons,
-  IonContent,
   IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import CommunitiesMoreActions from "../../features/community/list/InstanceMoreActions";
+import FeedContent from "../shared/FeedContent";
 
 export default function CommunitiesPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -26,9 +26,9 @@ export default function CommunitiesPage() {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <IonContent scrollY={false}>
+      <FeedContent>
         <CommunitiesList />
-      </IonContent>
+      </FeedContent>
     </IonPage>
   );
 }
