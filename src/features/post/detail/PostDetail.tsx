@@ -117,14 +117,17 @@ export const AnnouncementIcon = styled(IonIcon)`
 
 interface PostDetailProps {
   post: PostView;
-  commentPath: string | undefined;
   sort: CommentSortType;
+
+  commentPath: string | undefined;
+  threadCommentId: string | undefined;
 }
 
 export default function PostDetail({
   post,
-  commentPath,
   sort,
+  commentPath,
+  threadCommentId,
 }: PostDetailProps) {
   const [collapsed, setCollapsed] = useState(false);
   const dispatch = useAppDispatch();
@@ -288,6 +291,7 @@ export default function PostDetail({
         header={renderHeader(post)}
         postId={post.post.id}
         commentPath={commentPath}
+        threadCommentId={threadCommentId}
         op={post.creator}
         sort={sort}
         bottomPadding={bottomPadding}

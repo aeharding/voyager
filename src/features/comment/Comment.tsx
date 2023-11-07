@@ -177,6 +177,7 @@ interface CommentProps {
   comment: CommentView;
   highlightedCommentId?: number;
   depth?: number;
+  actualCommentDepth?: number;
   onClick?: (e: MouseEvent) => void;
   collapsed?: boolean;
   fullyCollapsed?: boolean;
@@ -194,6 +195,7 @@ export default function Comment({
   comment: commentView,
   highlightedCommentId,
   depth,
+  actualCommentDepth,
   onClick,
   collapsed,
   fullyCollapsed,
@@ -237,10 +239,10 @@ export default function Comment({
           ref={commentRef}
         >
           <PositionedContainer
-            depth={depth || 0}
+            depth={actualCommentDepth === depth ? depth || 0 : (depth || 0) + 1}
             highlighted={highlightedCommentId === comment.id}
           >
-            <Container depth={depth || 0}>
+            <Container depth={actualCommentDepth ?? depth ?? 0}>
               <Header>
                 <StyledPersonLabel
                   person={commentView.creator}

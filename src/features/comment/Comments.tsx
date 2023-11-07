@@ -11,7 +11,7 @@ import {
   MAX_DEFAULT_COMMENT_DEPTH,
   buildCommentsTreeWithMissing,
 } from "../../helpers/lemmy";
-import CommentTree from "./CommentTree";
+import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
@@ -28,6 +28,7 @@ import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import useAppToast from "../../helpers/useAppToast";
 import { VList, VListHandle } from "virtua";
+import LoadParentComments from "./LoadParentComments";
 
 const centerCss = css`
   position: relative;
@@ -55,6 +56,8 @@ const Empty = styled.div`
   }
 `;
 
+const MAX_COMMENT_PATH_CONTEXT_DEPTH = 3;
+
 export type CommentsHandle = {
   appendComments: (comments: CommentView[]) => void;
   prependComments: (comments: CommentView[]) => void;
@@ -64,13 +67,14 @@ interface CommentsProps {
   header: React.ReactNode;
   postId: number;
   commentPath?: string;
+  threadCommentId?: string;
   op: Person;
   sort: CommentSortType;
   bottomPadding?: number;
 }
 
 export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
-  { header, postId, commentPath, op, sort, bottomPadding },
+  { header, postId, commentPath, op, sort, bottomPadding, threadCommentId },
   ref,
 ) {
   const dispatch = useAppDispatch();
@@ -79,24 +83,87 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   const loadingRef = useRef(false);
   const finishedPagingRef = useRef(false);
   const [comments, setComments] = useState<CommentView[]>([]);
-  const commentTree = useMemo(
-    () =>
-      comments.length
-        ? buildCommentsTreeWithMissing(comments, !!commentPath)
-        : [],
-    [commentPath, comments],
-  );
+
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
   const presentToast = useAppToast();
   const defaultCommentDepth = useAppSelector(defaultCommentDepthSelector);
 
-  const highlightedCommentId = commentPath
-    ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      +commentPath.split(".").pop()!
-    : undefined;
-  const commentId = commentPath ? +commentPath.split(".")[1] : undefined;
-  const commentDepth = commentPath ? commentPath.split(".").length : undefined;
+  const [maxContext, setMaxContext] = useState(
+    commentPath
+      ? commentPath.split(".").length - MAX_COMMENT_PATH_CONTEXT_DEPTH
+      : 0,
+  );
+
+  const highlightedCommentId = (() => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (commentPath) return +commentPath.split(".").pop()!;
+    if (threadCommentId) return +threadCommentId;
+    return undefined;
+  })();
+
+  const filteredComments = useMemo(() => {
+    let potentialComments = comments;
+
+    // Filter context to a single comment chain (only show direct ancestors and children)
+    if (commentPath) {
+      potentialComments = potentialComments.filter((c) => {
+        if (
+          commentPath.split(".").includes(`${c.comment.id}`) &&
+          c.comment.path.split(".").length > maxContext
+        )
+          return true;
+        if (
+          highlightedCommentId &&
+          c.comment.path.split(".").includes(`${highlightedCommentId}`)
+        )
+          return true;
+        return false;
+      });
+    } else if (threadCommentId) {
+      // Filter with commentId as root comment (we're viewing a continuing thread)
+      potentialComments = potentialComments.filter((c) =>
+        c.comment.path.split(".").includes(threadCommentId),
+      );
+    }
+
+    return potentialComments;
+  }, [
+    commentPath,
+    comments,
+    highlightedCommentId,
+    maxContext,
+    threadCommentId,
+  ]);
+
+  const commentTree = useMemo(
+    () =>
+      filteredComments.length
+        ? buildCommentsTreeWithMissing(
+            filteredComments,
+            !!commentPath || !!threadCommentId,
+          )
+        : [],
+    [commentPath, filteredComments, threadCommentId],
+  );
+
+  const commentId = (() => {
+    if (commentPath) return +commentPath.split(".")[1];
+    if (threadCommentId) return +threadCommentId;
+    return undefined;
+  })();
+
+  const maxDepth = (() => {
+    // Viewing a single thread should always show highlighted comment, regardless of depth
+    if (commentPath) {
+      const commentDepth = commentPath.split(".").length;
+      return Math.max(MAX_DEFAULT_COMMENT_DEPTH, commentDepth);
+    }
+
+    if (threadCommentId) return MAX_COMMENT_DEPTH + 1;
+
+    return defaultCommentDepth;
+  })();
 
   const virtuaRef = useRef<VListHandle>(null);
 
@@ -115,7 +182,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   useEffect(() => {
     fetchComments(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, commentPath, postId, client]);
+  }, [sort, commentPath, postId, client, threadCommentId]);
 
   async function fetchComments(refresh = false) {
     if (refresh) {
@@ -142,10 +209,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         sort,
         type_: "All",
 
-        // Viewing a single thread should always show highlighted comment, regardless of depth
-        max_depth: commentDepth
-          ? Math.max(MAX_DEFAULT_COMMENT_DEPTH, commentDepth)
-          : defaultCommentDepth,
+        max_depth: maxDepth,
 
         saved_only: false,
         page: currentPage,
@@ -174,22 +238,10 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     );
     if (!newComments.length) finishedPagingRef.current = true;
 
-    let potentialComments = uniqBy(
+    const potentialComments = uniqBy(
       [...existingComments, ...newComments],
       (c) => c.comment.id,
     );
-
-    // Filter context to a single comment chain (only show direct ancestors and children)
-    if (commentPath)
-      potentialComments = potentialComments.filter((c) => {
-        if (commentPath.split(".").includes(`${c.comment.id}`)) return true;
-        if (
-          highlightedCommentId &&
-          c.comment.path.split(".").includes(`${highlightedCommentId}`)
-        )
-          return true;
-        return false;
-      });
 
     setComments(potentialComments);
     setPage(currentPage);
@@ -202,7 +254,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       // We want to *unshift* comments, so that they appear as first child(ren) of a given node
 
       // if `commentPath` exists, we call `buildCommentsTree` with `true`
-      if (commentPath) {
+      if (commentPath || threadCommentId) {
         // The first comment is considered the root (see `buildCommentsTree(comments, true)`),
         // so have to insert at root + 1 instead of at beginning
         commentsResult = existingComments.slice(); // don't mutate existing
@@ -264,7 +316,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         </Empty>,
       ];
 
-    return commentTree.map((comment, index) => (
+    const tree = commentTree.map((comment, index) => (
       <CommentTree
         comment={comment}
         highlightedCommentId={highlightedCommentId}
@@ -272,9 +324,27 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         first={index === 0}
         op={op}
         rootIndex={index + 1} /* Plus header index = 0 */
+        baseDepth={
+          commentPath
+            ? commentPath.split(".").length
+            : comment.comment_view.comment.path.split(".").length
+        }
       />
     ));
-  }, [commentTree, comments.length, highlightedCommentId, loading, op]);
+
+    if (maxContext > 0)
+      tree.unshift(<LoadParentComments setMaxContext={setMaxContext} />);
+
+    return tree;
+  }, [
+    commentTree,
+    comments.length,
+    highlightedCommentId,
+    loading,
+    op,
+    commentPath,
+    maxContext,
+  ]);
 
   const list = useMemo(() => {
     const data = [<Fragment key="header">{header}</Fragment>, ...allComments];

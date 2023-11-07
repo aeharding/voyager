@@ -8,6 +8,9 @@ import { Person } from "lemmy-js-client";
 import CommentExpander from "./CommentExpander";
 import { OTapToCollapseType } from "../../services/db";
 import { getOffsetTop, scrollIntoView } from "../../helpers/dom";
+import ContinueThread from "./ContinueThread";
+
+export const MAX_COMMENT_DEPTH = 10;
 
 interface CommentTreeProps {
   comment: CommentNodeI;
@@ -16,6 +19,7 @@ interface CommentTreeProps {
   op: Person;
   fullyCollapsed?: boolean;
   rootIndex: number;
+  baseDepth: number;
 }
 
 export default function CommentTree({
@@ -25,6 +29,7 @@ export default function CommentTree({
   op,
   fullyCollapsed,
   rootIndex,
+  baseDepth,
 }: CommentTreeProps) {
   const dispatch = useAppDispatch();
   const collapsed = useAppSelector(
@@ -58,6 +63,23 @@ export default function CommentTree({
     );
   }
 
+  if (
+    comment.depth > MAX_COMMENT_DEPTH &&
+    comment.comment_view.counts.child_count > 3
+  ) {
+    return (
+      <ContinueThread
+        depth={comment.depth}
+        actualCommentDepth={
+          comment.comment_view.comment.path.split(".").length - 2
+        }
+        key={comment.comment_view.comment.id}
+        collapsed={collapsed || fullyCollapsed}
+        comment={comment}
+      />
+    );
+  }
+
   // eslint-disable-next-line no-sparse-arrays
   const payload = [
     <React.Fragment key={comment.comment_view.comment.id}>
@@ -66,6 +88,9 @@ export default function CommentTree({
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
         depth={comment.depth}
+        actualCommentDepth={
+          comment.comment_view.comment.path.split(".").length - 2
+        }
         onClick={(e) => {
           if (
             tapToCollapse === OTapToCollapseType.Neither ||
@@ -90,6 +115,7 @@ export default function CommentTree({
         op={op}
         fullyCollapsed={collapsed || fullyCollapsed}
         rootIndex={rootIndex}
+        baseDepth={baseDepth}
       />
     )),
   ];
