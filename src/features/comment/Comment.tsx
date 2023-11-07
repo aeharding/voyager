@@ -218,7 +218,7 @@ export default function Comment({
       () => {
         if (!commentRef.current) return;
 
-        scrollIntoView(commentRef.current, 100);
+        // scrollIntoView(commentRef.current, 100);
       },
       useScrollIntoViewWorkaround ? 50 : 600,
     );

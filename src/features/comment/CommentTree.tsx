@@ -64,12 +64,13 @@ export default function CommentTree({
   }
 
   if (
-    comment.depth > MAX_COMMENT_DEPTH &&
+    comment.comment_view.comment.path.split(".").length - baseDepth >
+      MAX_COMMENT_DEPTH &&
     comment.comment_view.counts.child_count > 3
   ) {
     return (
       <ContinueThread
-        depth={comment.depth}
+        depth={comment.comment_view.comment.path.split(".").length - baseDepth}
         actualCommentDepth={
           comment.comment_view.comment.path.split(".").length - 2
         }
@@ -83,11 +84,23 @@ export default function CommentTree({
   // eslint-disable-next-line no-sparse-arrays
   const payload = [
     <React.Fragment key={comment.comment_view.comment.id}>
-      {!first && <CommentHr depth={comment.depth} />}
+      {!first && (
+        <CommentHr
+          depth={
+            comment.comment_view.comment.path.split(".").length <= 1
+              ? comment.comment_view.comment.path.split(".").length
+              : Math.max(
+                  1,
+                  comment.comment_view.comment.path.split(".").length -
+                    baseDepth,
+                )
+          }
+        />
+      )}
       <Comment
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
-        depth={comment.depth}
+        depth={comment.comment_view.comment.path.split(".").length - baseDepth}
         actualCommentDepth={
           comment.comment_view.comment.path.split(".").length - 2
         }
@@ -125,7 +138,10 @@ export default function CommentTree({
       <CommentExpander
         key={`${comment.comment_view.comment.id}--expand`}
         comment={comment.comment_view}
-        depth={comment.depth + 1}
+        depth={comment.comment_view.comment.path.split(".").length - baseDepth}
+        actualCommentDepth={
+          comment.comment_view.comment.path.split(".").length - 2
+        }
         missing={comment.missing}
         collapsed={collapsed || fullyCollapsed}
       />,

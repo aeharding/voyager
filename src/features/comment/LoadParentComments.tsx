@@ -41,7 +41,7 @@ export default function LoadParentComments({
           </Container>
         </PositionedContainer>
       </CustomIonItem>
-      <CommentHr depth={0} />
+      <CommentHr depth={1} />
     </>
   );
 }

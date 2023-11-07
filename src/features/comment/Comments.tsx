@@ -95,6 +95,14 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       : 0,
   );
 
+  useEffect(() => {
+    setMaxContext(
+      commentPath
+        ? commentPath.split(".").length - MAX_COMMENT_PATH_CONTEXT_DEPTH
+        : 0,
+    );
+  }, [commentPath]);
+
   const highlightedCommentId = (() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (commentPath) return +commentPath.split(".").pop()!;
@@ -326,7 +334,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         rootIndex={index + 1} /* Plus header index = 0 */
         baseDepth={
           commentPath
-            ? commentPath.split(".").length
+            ? Math.max(commentPath.split(".").length - 2, 2)
             : comment.comment_view.comment.path.split(".").length
         }
       />

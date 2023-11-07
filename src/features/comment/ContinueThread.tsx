@@ -42,7 +42,7 @@ export default function ContinueThread({
 
   return (
     <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
-      <CommentHr depth={depth - 1} />
+      <CommentHr depth={depth} />
       <CustomIonItem
         detail={false}
         routerLink={buildGeneralBrowseLink(
