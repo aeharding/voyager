@@ -232,11 +232,9 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
 }
 
 export function isUrlImage(url: string): boolean {
-  let parsedUrl;
-
   try {
-    parsedUrl = new URL(url);
-    let mt = mime.getType(url);
+    new URL(url);
+    const mt = mime.getType(url);
     return mt?.startsWith("image/") ?? false;
   } catch (error) {
     console.error(error);
@@ -245,11 +243,9 @@ export function isUrlImage(url: string): boolean {
 }
 
 export function isUrlVideo(url: string): boolean {
-  let parsedUrl;
-
   try {
-    parsedUrl = new URL(url);
-    let mt = mime.getType(url);
+    new URL(url);
+    const mt = mime.getType(url);
     return mt?.startsWith("video/") ?? false;
   } catch (error) {
     console.error(error);
