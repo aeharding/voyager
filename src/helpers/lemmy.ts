@@ -231,26 +231,22 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
   return flattenedChildren;
 }
 
-export function isUrlImage(url: string): boolean {
+function isValidUrl(url: string): boolean {
   try {
     new URL(url);
-    const mt = mime.getType(url);
-    return mt?.startsWith("image/") ?? false;
+    return true;
   } catch (error) {
     console.error(error);
     return false;
   }
 }
 
+export function isUrlImage(url: string): boolean {
+  return (isValidUrl(url) && mime.getType(url)?.startsWith("image/")) ?? false;
+}
+
 export function isUrlVideo(url: string): boolean {
-  try {
-    new URL(url);
-    const mt = mime.getType(url);
-    return mt?.startsWith("video/") ?? false;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
+  return (isValidUrl(url) && mime.getType(url)?.startsWith("video/")) ?? false;
 }
 
 export function share(item: Post | Comment) {
