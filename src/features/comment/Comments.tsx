@@ -432,7 +432,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
           }
           ref={virtuaRef}
           style={{ height: "100%" }}
-          overscan={highlightedCommentId ? 1 : 0}
+          overscan={highlightedCommentId ? 10 : 0}
           onRangeChange={(start, end) => {
             if (end + 10 > list.length) {
               fetchComments();
