@@ -256,6 +256,15 @@ export default function TabbedRoutes() {
       // eslint-disable-next-line react/jsx-key
       <Route
         exact
+        path={`/${tab}/:actor/c/:community/comments/:id/thread/:threadCommentId`}
+      >
+        <ActorRedirect>
+          <PostDetail />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route
+        exact
         path={`/${tab}/:actor/c/:community/comments/:id/:commentPath`}
       >
         <ActorRedirect>

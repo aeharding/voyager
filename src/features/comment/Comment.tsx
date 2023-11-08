@@ -3,7 +3,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React, { MouseEvent, useEffect, useRef } from "react";
+import React, { MouseEvent } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
@@ -16,10 +16,6 @@ import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
-import {
-  scrollIntoView as scrollIntoView,
-  useScrollIntoViewWorkaround,
-} from "../../helpers/dom";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -177,6 +173,7 @@ interface CommentProps {
   comment: CommentView;
   highlightedCommentId?: number;
   depth?: number;
+  absoluteDepth?: number;
   onClick?: (e: MouseEvent) => void;
   collapsed?: boolean;
   fullyCollapsed?: boolean;
@@ -194,6 +191,7 @@ export default function Comment({
   comment: commentView,
   highlightedCommentId,
   depth,
+  absoluteDepth,
   onClick,
   collapsed,
   fullyCollapsed,
@@ -202,25 +200,12 @@ export default function Comment({
   className,
   rootIndex,
 }: CommentProps) {
-  const commentById = useAppSelector((state) => state.comment.commentById);
-  // eslint-disable-next-line no-undef
-  const commentRef = useRef<HTMLIonItemElement>(null);
+  const commentFromStore = useAppSelector(
+    (state) => state.comment.commentById[commentView.comment.id],
+  );
 
   // Comment from slice might be more up to date, e.g. edits
-  const comment = commentById[commentView.comment.id] ?? commentView.comment;
-
-  useEffect(() => {
-    if (highlightedCommentId !== comment.id) return;
-
-    setTimeout(
-      () => {
-        if (!commentRef.current) return;
-
-        scrollIntoView(commentRef.current, 100);
-      },
-      useScrollIntoViewWorkaround ? 50 : 600,
-    );
-  }, [highlightedCommentId, comment]);
+  const comment = commentFromStore ?? commentView.comment;
 
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
@@ -234,13 +219,13 @@ export default function Comment({
           routerLink={routerLink}
           href={undefined}
           onClick={(e) => onClick?.(e)}
-          ref={commentRef}
+          className={`comment-${comment.id}`}
         >
           <PositionedContainer
-            depth={depth || 0}
+            depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
             highlighted={highlightedCommentId === comment.id}
           >
-            <Container depth={depth || 0}>
+            <Container depth={absoluteDepth ?? depth ?? 0}>
               <Header>
                 <StyledPersonLabel
                   person={commentView.creator}

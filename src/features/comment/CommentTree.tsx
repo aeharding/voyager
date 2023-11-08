@@ -8,6 +8,9 @@ import { Person } from "lemmy-js-client";
 import CommentExpander from "./CommentExpander";
 import { OTapToCollapseType } from "../../services/db";
 import { getOffsetTop, scrollIntoView } from "../../helpers/dom";
+import ContinueThread from "./ContinueThread";
+
+export const MAX_COMMENT_DEPTH = 10;
 
 interface CommentTreeProps {
   comment: CommentNodeI;
@@ -16,6 +19,7 @@ interface CommentTreeProps {
   op: Person;
   fullyCollapsed?: boolean;
   rootIndex: number;
+  baseDepth: number;
 }
 
 export default function CommentTree({
@@ -25,6 +29,7 @@ export default function CommentTree({
   op,
   fullyCollapsed,
   rootIndex,
+  baseDepth,
 }: CommentTreeProps) {
   const dispatch = useAppDispatch();
   const collapsed = useAppSelector(
@@ -58,14 +63,38 @@ export default function CommentTree({
     );
   }
 
+  if (
+    comment.absoluteDepth - baseDepth > MAX_COMMENT_DEPTH &&
+    comment.comment_view.counts.child_count >= 2
+  ) {
+    return (
+      <ContinueThread
+        depth={comment.absoluteDepth - baseDepth}
+        absoluteDepth={comment.absoluteDepth}
+        key={comment.comment_view.comment.id}
+        collapsed={collapsed || fullyCollapsed}
+        comment={comment}
+      />
+    );
+  }
+
   // eslint-disable-next-line no-sparse-arrays
   const payload = [
     <React.Fragment key={comment.comment_view.comment.id}>
-      {!first && <CommentHr depth={comment.depth} />}
+      {!first && (
+        <CommentHr
+          depth={
+            !comment.absoluteDepth
+              ? 0
+              : Math.max(1, comment.absoluteDepth - baseDepth)
+          }
+        />
+      )}
       <Comment
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
-        depth={comment.depth}
+        depth={comment.absoluteDepth - baseDepth}
+        absoluteDepth={comment.absoluteDepth}
         onClick={(e) => {
           if (
             tapToCollapse === OTapToCollapseType.Neither ||
@@ -90,6 +119,7 @@ export default function CommentTree({
         op={op}
         fullyCollapsed={collapsed || fullyCollapsed}
         rootIndex={rootIndex}
+        baseDepth={baseDepth}
       />
     )),
   ];
@@ -99,7 +129,8 @@ export default function CommentTree({
       <CommentExpander
         key={`${comment.comment_view.comment.id}--expand`}
         comment={comment.comment_view}
-        depth={comment.depth + 1}
+        depth={comment.absoluteDepth - baseDepth}
+        absoluteDepth={comment.absoluteDepth}
         missing={comment.missing}
         collapsed={collapsed || fullyCollapsed}
       />,

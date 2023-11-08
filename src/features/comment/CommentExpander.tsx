@@ -43,6 +43,7 @@ const StyledIonSpinner = styled(IonSpinner)`
 
 interface CommentExpanderProps {
   depth: number;
+  absoluteDepth: number;
   comment: CommentView;
   missing: number;
   collapsed?: boolean;
@@ -50,6 +51,7 @@ interface CommentExpanderProps {
 
 export default function CommentExpander({
   depth,
+  absoluteDepth,
   comment,
   missing,
   collapsed,
@@ -95,10 +97,13 @@ export default function CommentExpander({
 
   return (
     <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
-      <CommentHr depth={depth - 1} />
+      <CommentHr depth={depth} />
       <CustomIonItem href={undefined} onClick={fetchChildren}>
-        <PositionedContainer depth={depth || 0} highlighted={false}>
-          <Container depth={depth || 0} hidden={loading}>
+        <PositionedContainer
+          depth={absoluteDepth === depth ? depth + 1 : depth + 2}
+          highlighted={false}
+        >
+          <Container depth={absoluteDepth + 1} hidden={loading}>
             <MoreRepliesBlock hidden={loading}>
               {missing} more {missing === 1 ? "reply" : "replies"}
               <ChevronIcon icon={chevronDown} />
