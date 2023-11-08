@@ -11,6 +11,8 @@ import AnimateHeight from "react-animate-height";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "../../helpers/lemmy";
 import { css } from "@emotion/react";
 import useAppToast from "../../helpers/useAppToast";
+import { receivedComments } from "./commentSlice";
+import { useAppDispatch } from "../../store";
 
 const MoreRepliesBlock = styled.div<{ hidden: boolean }>`
   display: flex;
@@ -60,6 +62,7 @@ export default function CommentExpander({
   const { appendComments } = useContext(CommentsContext);
   const client = useClient();
   const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   async function fetchChildren() {
     if (loading) return;
@@ -92,6 +95,7 @@ export default function CommentExpander({
       return;
     }
 
+    dispatch(receivedComments(response.comments));
     appendComments(response.comments);
   }
 
