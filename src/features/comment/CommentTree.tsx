@@ -64,16 +64,13 @@ export default function CommentTree({
   }
 
   if (
-    comment.comment_view.comment.path.split(".").length - baseDepth >
-      MAX_COMMENT_DEPTH &&
-    comment.comment_view.counts.child_count > 3
+    comment.absoluteDepth - baseDepth > MAX_COMMENT_DEPTH &&
+    comment.comment_view.counts.child_count >= 2
   ) {
     return (
       <ContinueThread
-        depth={comment.comment_view.comment.path.split(".").length - baseDepth}
-        actualCommentDepth={
-          comment.comment_view.comment.path.split(".").length - 2
-        }
+        depth={comment.absoluteDepth - baseDepth}
+        absoluteDepth={comment.absoluteDepth}
         key={comment.comment_view.comment.id}
         collapsed={collapsed || fullyCollapsed}
         comment={comment}
@@ -87,23 +84,17 @@ export default function CommentTree({
       {!first && (
         <CommentHr
           depth={
-            comment.comment_view.comment.path.split(".").length <= 1
-              ? comment.comment_view.comment.path.split(".").length
-              : Math.max(
-                  1,
-                  comment.comment_view.comment.path.split(".").length -
-                    baseDepth,
-                )
+            !comment.absoluteDepth
+              ? 0
+              : Math.max(1, comment.absoluteDepth - baseDepth)
           }
         />
       )}
       <Comment
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
-        depth={comment.comment_view.comment.path.split(".").length - baseDepth}
-        actualCommentDepth={
-          comment.comment_view.comment.path.split(".").length - 2
-        }
+        depth={comment.absoluteDepth - baseDepth}
+        actualCommentDepth={comment.absoluteDepth}
         onClick={(e) => {
           if (
             tapToCollapse === OTapToCollapseType.Neither ||
@@ -138,10 +129,8 @@ export default function CommentTree({
       <CommentExpander
         key={`${comment.comment_view.comment.id}--expand`}
         comment={comment.comment_view}
-        depth={comment.comment_view.comment.path.split(".").length - baseDepth}
-        actualCommentDepth={
-          comment.comment_view.comment.path.split(".").length - 2
-        }
+        depth={comment.absoluteDepth - baseDepth}
+        actualCommentDepth={comment.absoluteDepth}
         missing={comment.missing}
         collapsed={collapsed || fullyCollapsed}
       />,

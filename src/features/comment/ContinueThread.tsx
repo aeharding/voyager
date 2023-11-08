@@ -23,14 +23,14 @@ const ChevronIcon = styled(IonIcon)`
 
 interface CommentExpanderProps {
   depth: number;
-  actualCommentDepth?: number;
+  absoluteDepth?: number;
   collapsed?: boolean;
   comment: CommentNodeI;
 }
 
 export default function ContinueThread({
   depth,
-  actualCommentDepth,
+  absoluteDepth,
   collapsed,
   comment,
 }: CommentExpanderProps) {
@@ -50,10 +50,10 @@ export default function ContinueThread({
         )}
       >
         <PositionedContainer
-          depth={actualCommentDepth === depth ? depth || 0 : (depth || 0) + 1}
+          depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
           highlighted={false}
         >
-          <Container depth={actualCommentDepth ?? depth ?? 0}>
+          <Container depth={absoluteDepth ?? depth ?? 0}>
             <MoreRepliesBlock>
               Continue Thread...
               <ChevronIcon icon={chevronForward} />

@@ -1,6 +1,7 @@
 import React, {
   Fragment,
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -8,15 +9,15 @@ import React, {
   useState,
 } from "react";
 import {
-  MAX_DEFAULT_COMMENT_DEPTH,
   buildCommentsTreeWithMissing,
+  getDepthFromCommentPath,
 } from "../../helpers/lemmy";
 import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { CommentSortType, CommentView, Person } from "lemmy-js-client";
-import { pullAllBy, uniqBy } from "lodash";
+import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { receivedComments } from "./commentSlice";
 import { RefresherCustomEvent } from "@ionic/core";
@@ -29,6 +30,15 @@ import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import useAppToast from "../../helpers/useAppToast";
 import { VList, VListHandle } from "virtua";
 import LoadParentComments from "./LoadParentComments";
+import {
+  scrollIntoView as scrollIntoView,
+  useScrollIntoViewWorkaround,
+} from "../../helpers/dom";
+
+const ScrollViewContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 const centerCss = css`
   position: relative;
@@ -79,7 +89,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 ) {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
-  const [loading, _setLoading] = useState(false);
+  const [loading, _setLoading] = useState(true);
   const loadingRef = useRef(false);
   const finishedPagingRef = useRef(false);
   const [comments, setComments] = useState<CommentView[]>([]);
@@ -91,17 +101,19 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   const [maxContext, setMaxContext] = useState(
     commentPath
-      ? commentPath.split(".").length - MAX_COMMENT_PATH_CONTEXT_DEPTH
+      ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
       : 0,
   );
 
   useEffect(() => {
     setMaxContext(
       commentPath
-        ? commentPath.split(".").length - MAX_COMMENT_PATH_CONTEXT_DEPTH
+        ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
         : 0,
     );
   }, [commentPath]);
+
+  const scrollViewContainerRef = useRef<HTMLDivElement>(null);
 
   const highlightedCommentId = (() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -118,7 +130,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       potentialComments = potentialComments.filter((c) => {
         if (
           commentPath.split(".").includes(`${c.comment.id}`) &&
-          c.comment.path.split(".").length > maxContext
+          getDepthFromCommentPath(c.comment.path) > maxContext
         )
           return true;
         if (
@@ -135,6 +147,20 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       );
     }
 
+    // Comment depths for filtered results can be out of order,
+    // so they need to be sorted before building the tree.
+    //
+    // This is probably a bit inefficient (we could probably check
+    // for root comment to pass to the tree builder instead of the
+    // tree builder assuming the first comment is the root comment),
+    // but since we're only viewing a single thread
+    // (and have already filtered) it probably doesn't matter much
+    if (commentPath || threadCommentId) {
+      potentialComments = sortBy(potentialComments, (i) =>
+        getDepthFromCommentPath(i.comment.path),
+      );
+    }
+
     return potentialComments;
   }, [
     commentPath,
@@ -144,16 +170,38 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     threadCommentId,
   ]);
 
-  const commentTree = useMemo(
-    () =>
-      filteredComments.length
-        ? buildCommentsTreeWithMissing(
-            filteredComments,
-            !!commentPath || !!threadCommentId,
-          )
-        : [],
-    [commentPath, filteredComments, threadCommentId],
-  );
+  const focusCommentIfNeeded = useCallback(() => {
+    const commentElement = scrollViewContainerRef.current?.querySelector(
+      `.comment-${highlightedCommentId}`,
+    );
+
+    setTimeout(
+      () => {
+        if (!(commentElement instanceof HTMLElement)) return;
+
+        scrollIntoView(commentElement, 100);
+      },
+      useScrollIntoViewWorkaround ? 50 : 600,
+    );
+
+    return !!commentElement;
+  }, [highlightedCommentId]);
+
+  // This is super hacky logic to scroll the view received new comments
+  const scrolledRef = useRef(false);
+  useEffect(() => {
+    if (scrolledRef.current) return;
+    if (focusCommentIfNeeded()) scrolledRef.current = true;
+  }, [filteredComments, focusCommentIfNeeded]);
+
+  const commentTree = useMemo(() => {
+    return filteredComments.length
+      ? buildCommentsTreeWithMissing(
+          filteredComments,
+          !!commentPath || !!threadCommentId,
+        )
+      : [];
+  }, [commentPath, filteredComments, threadCommentId]);
 
   const commentId = (() => {
     if (commentPath) return +commentPath.split(".")[1];
@@ -164,8 +212,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   const maxDepth = (() => {
     // Viewing a single thread should always show highlighted comment, regardless of depth
     if (commentPath) {
-      const commentDepth = commentPath.split(".").length;
-      return Math.max(MAX_DEFAULT_COMMENT_DEPTH, commentDepth);
+      return getDepthFromCommentPath(commentPath) + MAX_COMMENT_DEPTH + 1;
     }
 
     if (threadCommentId) return MAX_COMMENT_DEPTH + 1;
@@ -253,6 +300,8 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
     setComments(potentialComments);
     setPage(currentPage);
+
+    if (refresh) scrolledRef.current = false;
   }
 
   function prependComments(comments: CommentView[]) {
@@ -334,8 +383,8 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         rootIndex={index + 1} /* Plus header index = 0 */
         baseDepth={
           commentPath
-            ? Math.max(commentPath.split(".").length - 2, 2)
-            : comment.comment_view.comment.path.split(".").length
+            ? Math.max(0, getDepthFromCommentPath(commentPath) - 2)
+            : comment.absoluteDepth
         }
       />
     ));
@@ -381,26 +430,28 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       >
         <IonRefresherContent />
       </IonRefresher>
-      <VList
-        className={
-          isSafariFeedHackEnabled
-            ? "virtual-scroller"
-            : "ion-content-scroll-host virtual-scroller"
-        }
-        ref={virtuaRef}
-        style={{ height: "100%" }}
-        overscan={highlightedCommentId ? 1 : 0}
-        onRangeChange={(start, end) => {
-          if (end + 10 > list.length) {
-            fetchComments();
+      <ScrollViewContainer ref={scrollViewContainerRef}>
+        <VList
+          className={
+            isSafariFeedHackEnabled
+              ? "virtual-scroller"
+              : "ion-content-scroll-host virtual-scroller"
           }
-        }}
-        onScroll={(offset) => {
-          setIsListAtTop(offset < 6);
-        }}
-      >
-        {list}
-      </VList>
+          ref={virtuaRef}
+          style={{ height: "100%" }}
+          overscan={highlightedCommentId ? 1 : 0}
+          onRangeChange={(start, end) => {
+            if (end + 10 > list.length) {
+              fetchComments();
+            }
+          }}
+          onScroll={(offset) => {
+            setIsListAtTop(offset < 6);
+          }}
+        >
+          {list}
+        </VList>
+      </ScrollViewContainer>
     </CommentsContext.Provider>
   );
 });
