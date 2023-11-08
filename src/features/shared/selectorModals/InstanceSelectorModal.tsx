@@ -1,6 +1,9 @@
 import { Instance } from "lemmy-js-client";
 import GenericSelectorModal from "./GenericSelectorModal";
-import { useAppSelector } from "../../../store";
+import { useEffect, useState } from "react";
+import useClient from "../../../helpers/useClient";
+import { IonLoading } from "@ionic/react";
+import useAppToast from "../../../helpers/useAppToast";
 
 interface InstanceSelectorModalProps {
   onDismiss: (instance?: Instance) => void;
@@ -9,10 +12,44 @@ interface InstanceSelectorModalProps {
 export default function InstanceSelectorModal(
   props: InstanceSelectorModalProps,
 ) {
-  const instances = useAppSelector((state) => {
-    if (typeof state.instances.knownInstances === "object")
-      return state.instances.knownInstances.linked;
-  });
+  const client = useClient();
+  const [loading, setLoading] = useState(false);
+
+  // Don't use instances from state because it may be stale
+  const [instances, setInstances] = useState<Instance[]>([]);
+
+  const presentToast = useAppToast();
+
+  useEffect(() => {
+    getInstances();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function getInstances() {
+    let instances;
+
+    setLoading(true);
+
+    try {
+      instances = await client.getFederatedInstances();
+    } catch (error) {
+      presentToast({
+        message: "Failed to load instance list",
+        color: "danger",
+      });
+      props.onDismiss();
+
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+
+    setInstances(
+      instances.federated_instances?.linked.filter(
+        ({ software }) => software === "lemmy",
+      ) ?? [],
+    );
+  }
 
   async function search(query: string) {
     if (!instances) return [];
@@ -23,13 +60,17 @@ export default function InstanceSelectorModal(
   }
 
   return (
-    <GenericSelectorModal
-      search={search}
-      {...props}
-      getIndex={(instance) => instance.id}
-      getLabel={(instance) => instance.domain}
-      itemSingular="Instance"
-      itemPlural="Instances"
-    />
+    <>
+      <GenericSelectorModal
+        search={search}
+        {...props}
+        getIndex={(instance) => instance.id}
+        getLabel={(instance) => instance.domain}
+        itemSingular="Instance"
+        itemPlural="Instances"
+      />
+
+      <IonLoading isOpen={loading} />
+    </>
   );
 }

@@ -20,10 +20,11 @@ export interface CommentNodeI {
   comment_view: CommentView;
   children: Array<CommentNodeI>;
   depth: number;
+  absoluteDepth: number;
   missing?: number;
 }
 
-export const MAX_DEFAULT_COMMENT_DEPTH = 5;
+export const MAX_DEFAULT_COMMENT_DEPTH = 6;
 
 /**
  * @param item Community, Person, etc
@@ -73,6 +74,7 @@ export function buildCommentsTree(
       comment_view,
       children: [],
       depth,
+      absoluteDepth: depthI,
     };
     map.set(comment_view.comment.id, { ...node });
   }
@@ -164,8 +166,12 @@ export function getCommentParentId(comment?: Comment): number | undefined {
 }
 
 export function getDepthFromComment(comment?: Comment): number | undefined {
-  const len = comment?.path.split(".").length;
-  return len ? len - 2 : undefined;
+  return comment ? getDepthFromCommentPath(comment.path) : undefined;
+}
+
+export function getDepthFromCommentPath(path: string): number {
+  const len = path.split(".").length;
+  return len - 2;
 }
 
 export function insertCommentIntoTree(
@@ -178,6 +184,7 @@ export function insertCommentIntoTree(
     comment_view: cv,
     children: [],
     depth: 0,
+    absoluteDepth: 0,
   };
 
   const parentId = getCommentParentId(cv.comment);

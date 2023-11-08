@@ -41,9 +41,10 @@ export const AnnouncementIcon = styled(IonIcon)`
 
 export default function PostPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { id, commentPath, community } = useParams<{
+  const { id, commentPath, community, threadCommentId } = useParams<{
     id: string;
     commentPath?: string;
+    threadCommentId?: string; // for continuing threads
     community: string;
   }>();
   const post = useAppSelector((state) => state.post.postById[id]);
@@ -98,8 +99,25 @@ export default function PostPage() {
         <div className="ion-padding">Post deleted</div>,
       );
 
-    return <PostDetail post={post} commentPath={commentPath} sort={sort} />;
+    return (
+      <PostDetail
+        post={post}
+        sort={sort}
+        commentPath={commentPath}
+        threadCommentId={threadCommentId}
+      />
+    );
   }
+
+  const title = (() => {
+    if (threadCommentId) return "Thread";
+
+    return (
+      <>
+        {postIfFound ? formatNumber(postIfFound.counts.comments) : ""} Comments
+      </>
+    );
+  })();
 
   return (
     <IonPage>
@@ -111,10 +129,7 @@ export default function PostPage() {
               defaultText={postIfFound?.community.name}
             />
           </IonButtons>
-          <IonTitle>
-            {postIfFound ? formatNumber(postIfFound.counts.comments) : ""}{" "}
-            Comments
-          </IonTitle>
+          <IonTitle>{title}</IonTitle>
           <IonButtons slot="end">
             <CommentSort sort={sort} setSort={setSort} />
             {postIfFound && <MoreActions post={postIfFound} />}
