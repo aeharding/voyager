@@ -66,7 +66,7 @@ const Empty = styled.div`
   }
 `;
 
-const MAX_COMMENT_PATH_CONTEXT_DEPTH = 3;
+const MAX_COMMENT_PATH_CONTEXT_DEPTH = 2;
 
 export type CommentsHandle = {
   appendComments: (comments: CommentView[]) => void;
@@ -154,7 +154,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       potentialComments = potentialComments.filter((c) => {
         if (
           commentPath.split(".").includes(`${c.comment.id}`) &&
-          getDepthFromCommentPath(c.comment.path) > maxContext
+          getDepthFromCommentPath(c.comment.path) >= maxContext
         )
           return true;
         if (
