@@ -3,8 +3,8 @@ import "photoswipe/dist/photoswipe.css";
 import { PostView } from "lemmy-js-client";
 import { GalleryContext } from "./GalleryProvider";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
-import mime from "mime";
 import Video from "../shared/Video";
+import { isUrlVideo } from "../../helpers/lemmy";
 
 export interface GalleryImgProps {
   src?: string;
@@ -35,11 +35,7 @@ export function GalleryImg({
   const imgRef = useRef<HTMLImageElement>(null);
   const { open } = useContext(GalleryContext);
 
-  const mt = mime.getType(`${src}`);
-
-  const isVideo = mt?.startsWith("video/");
-
-  const InnerComponent = !isVideo ? (
+  return !isUrlVideo(`${src}`) ? (
     <img
       ref={imgRef}
       draggable="false"
@@ -63,6 +59,4 @@ export function GalleryImg({
   ) : (
     <Video src={`${src}`} />
   );
-
-  return InnerComponent;
 }
