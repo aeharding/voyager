@@ -94,7 +94,7 @@ export default function CommentTree({
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
         depth={comment.absoluteDepth - baseDepth}
-        actualCommentDepth={comment.absoluteDepth}
+        absoluteDepth={comment.absoluteDepth}
         onClick={(e) => {
           if (
             tapToCollapse === OTapToCollapseType.Neither ||
@@ -130,7 +130,7 @@ export default function CommentTree({
         key={`${comment.comment_view.comment.id}--expand`}
         comment={comment.comment_view}
         depth={comment.absoluteDepth - baseDepth}
-        actualCommentDepth={comment.absoluteDepth}
+        absoluteDepth={comment.absoluteDepth}
         missing={comment.missing}
         collapsed={collapsed || fullyCollapsed}
       />,

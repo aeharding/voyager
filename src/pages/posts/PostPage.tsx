@@ -109,6 +109,16 @@ export default function PostPage() {
     );
   }
 
+  const title = (() => {
+    if (threadCommentId) return "Thread";
+
+    return (
+      <>
+        {postIfFound ? formatNumber(postIfFound.counts.comments) : ""} Comments
+      </>
+    );
+  })();
+
   return (
     <IonPage>
       <IonHeader>
@@ -119,16 +129,7 @@ export default function PostPage() {
               defaultText={postIfFound?.community.name}
             />
           </IonButtons>
-          <IonTitle>
-            {threadCommentId ? (
-              "Thread"
-            ) : (
-              <>
-                {postIfFound ? formatNumber(postIfFound.counts.comments) : ""}{" "}
-                Comments
-              </>
-            )}
-          </IonTitle>
+          <IonTitle>{title}</IonTitle>
           <IonButtons slot="end">
             <CommentSort sort={sort} setSort={setSort} />
             {postIfFound && <MoreActions post={postIfFound} />}

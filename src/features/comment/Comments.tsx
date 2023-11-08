@@ -99,27 +99,51 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   const presentToast = useAppToast();
   const defaultCommentDepth = useAppSelector(defaultCommentDepthSelector);
 
+  const scrollViewContainerRef = useRef<HTMLDivElement>(null);
+  const virtuaRef = useRef<VListHandle>(null);
+
+  function setLoading(loading: boolean) {
+    _setLoading(loading);
+    loadingRef.current = loading;
+  }
+
+  useSetActivePage(virtuaRef);
+
+  useImperativeHandle(ref, () => ({
+    appendComments,
+    prependComments,
+  }));
+
   const [maxContext, setMaxContext] = useState(
-    commentPath
-      ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
-      : 0,
+    getCommentContextDepthForPath(commentPath),
   );
 
   useEffect(() => {
-    setMaxContext(
-      commentPath
-        ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
-        : 0,
-    );
+    setMaxContext(getCommentContextDepthForPath(commentPath));
   }, [commentPath]);
 
-  const scrollViewContainerRef = useRef<HTMLDivElement>(null);
+  const parentCommentId = (() => {
+    if (commentPath) return +commentPath.split(".")[1];
+    if (threadCommentId) return +threadCommentId;
+    return undefined;
+  })();
 
   const highlightedCommentId = (() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (commentPath) return +commentPath.split(".").pop()!;
     if (threadCommentId) return +threadCommentId;
     return undefined;
+  })();
+
+  const maxDepth = (() => {
+    // Viewing a single thread should always show highlighted comment, regardless of depth
+    if (commentPath) {
+      return getDepthFromCommentPath(commentPath) + MAX_COMMENT_DEPTH + 1;
+    }
+
+    if (threadCommentId) return MAX_COMMENT_DEPTH + 1;
+
+    return defaultCommentDepth;
   })();
 
   const filteredComments = useMemo(() => {
@@ -203,37 +227,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       : [];
   }, [commentPath, filteredComments, threadCommentId]);
 
-  const commentId = (() => {
-    if (commentPath) return +commentPath.split(".")[1];
-    if (threadCommentId) return +threadCommentId;
-    return undefined;
-  })();
-
-  const maxDepth = (() => {
-    // Viewing a single thread should always show highlighted comment, regardless of depth
-    if (commentPath) {
-      return getDepthFromCommentPath(commentPath) + MAX_COMMENT_DEPTH + 1;
-    }
-
-    if (threadCommentId) return MAX_COMMENT_DEPTH + 1;
-
-    return defaultCommentDepth;
-  })();
-
-  const virtuaRef = useRef<VListHandle>(null);
-
-  function setLoading(loading: boolean) {
-    _setLoading(loading);
-    loadingRef.current = loading;
-  }
-
-  useSetActivePage(virtuaRef);
-
-  useImperativeHandle(ref, () => ({
-    appendComments,
-    prependComments,
-  }));
-
   useEffect(() => {
     fetchComments(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -253,13 +246,13 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     const currentPage = refresh ? 1 : page + 1;
 
     const reqPostId = postId;
-    const reqCommentId = commentId;
+    const reqCommentId = parentCommentId;
     setLoading(true);
 
     try {
       response = await client.getComments({
         post_id: reqPostId,
-        parent_id: commentId,
+        parent_id: parentCommentId,
         limit: 10,
         sort,
         type_: "All",
@@ -270,7 +263,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         page: currentPage,
       });
     } catch (error) {
-      if (reqPostId === postId && reqCommentId === commentId)
+      if (reqPostId === postId && reqCommentId === parentCommentId)
         presentToast({
           message: "Problem fetching comments. Please try again.",
           color: "danger",
@@ -283,7 +276,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
     dispatch(receivedComments(response.comments));
 
-    if (reqPostId !== postId || reqCommentId !== commentId) return;
+    if (reqPostId !== postId || reqCommentId !== parentCommentId) return;
 
     const existingComments = refresh ? [] : comments;
     const newComments = pullAllBy(
@@ -455,3 +448,11 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     </CommentsContext.Provider>
   );
 });
+
+function getCommentContextDepthForPath(
+  commentPath: string | undefined,
+): number {
+  return commentPath
+    ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
+    : 0;
+}
