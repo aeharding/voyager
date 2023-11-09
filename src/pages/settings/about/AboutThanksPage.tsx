@@ -8,9 +8,14 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+<<<<<<< HEAD
 import AppContent from "../../../features/shared/AppContent";
 import { InsetIonItem } from "./AboutPage";
 import InAppExternalLink from "../../../features/shared/InAppExternalLink";
+=======
+import { InsetIonItem } from "../../../features/user/Profile";
+import AppContent from "../../../features/shared/AppContent";
+>>>>>>> 1ac7d36 (Add about)
 
 const links = [
   {
