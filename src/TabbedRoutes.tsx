@@ -434,6 +434,11 @@ export default function TabbedRoutes() {
           <Redirect to="/search" push={false} />
         </Route>
 
+        {...buildGeneralBrowseRoutes("settings")}
+        <Route exact path="/settings/:actor">
+          <Redirect to="/settings" push={false} />
+        </Route>
+
         <Route exact path="/settings">
           <SettingsPage />
         </Route>
@@ -483,11 +488,6 @@ export default function TabbedRoutes() {
         </Route>
         <Route exact path="/settings/about/thanks">
           <AboutThanksPage />
-        </Route>
-
-        {...buildGeneralBrowseRoutes("settings")}
-        <Route exact path="/settings/:actor">
-          <Redirect to="/settings" push={false} />
         </Route>
       </IonRouterOutlet>
     ),
