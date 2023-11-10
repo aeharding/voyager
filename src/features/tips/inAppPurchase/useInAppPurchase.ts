@@ -2,10 +2,11 @@ import "cordova-plugin-purchase";
 import { notEmpty } from "../../../helpers/array";
 import { useEffect, useState } from "react";
 import tipProducts from "./tipProducts";
+import { isNative } from "../../../helpers/device";
 
 (() => {
   // Do not setup in-app purchases for PWA, f-droid and github builds
-  if (!ENABLE_IN_APP_PURCHASES) return;
+  if (BUILD_FOSS_ONLY || !isNative()) return;
 
   document.addEventListener("deviceready", () => {
     CdvPurchase.store.when().approved((p) => p.finish());

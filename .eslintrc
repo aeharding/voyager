@@ -61,7 +61,7 @@
       "files": ["src/**"],
       "globals": {
         "APP_VERSION": true,
-        "ENABLE_IN_APP_PURCHASES": true,
+        "BUILD_FOSS_ONLY": true,
         "CdvPurchase": true
       }
     }

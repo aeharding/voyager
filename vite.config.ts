@@ -84,7 +84,7 @@ export default defineConfig({
     // eslint-disable-next-line no-undef
     APP_VERSION: JSON.stringify(process.env.npm_package_version),
     // eslint-disable-next-line no-undef
-    ENABLE_IN_APP_PURCHASES: !!process.env.ENABLE_IN_APP_PURCHASES,
+    BUILD_FOSS_ONLY: !!process.env.BUILD_FOSS_ONLY,
   },
   test: {
     globals: true,

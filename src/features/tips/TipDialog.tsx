@@ -3,6 +3,7 @@ import { IonIcon } from "@ionic/react";
 import { close, heart } from "ionicons/icons";
 import InAppProducts from "./inAppPurchase/InAppProducts";
 import ExternalSponsorOptions from "./ExternalSponsorOptions";
+import { isNative } from "../../helpers/device";
 
 const Container = styled.div`
   margin: 36px auto;
@@ -91,10 +92,10 @@ export default function TipDialog({ onDismiss }: TipProps) {
         and maintenance!
       </Description>
       <Tips>
-        {ENABLE_IN_APP_PURCHASES ? (
-          <InAppProducts />
-        ) : (
+        {BUILD_FOSS_ONLY || !isNative() ? (
           <ExternalSponsorOptions />
+        ) : (
+          <InAppProducts />
         )}
       </Tips>
     </Container>

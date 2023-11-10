@@ -3,4 +3,4 @@
 /// <reference types="vite-plugin-pwa/react" />
 
 declare const APP_VERSION: string;
-declare const ENABLE_IN_APP_PURCHASES: boolean;
+declare const BUILD_FOSS_ONLY: boolean;
