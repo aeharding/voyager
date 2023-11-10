@@ -6,6 +6,7 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  useIonModal,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
@@ -16,6 +17,7 @@ import {
   ban,
   cog,
   colorPalette,
+  heart,
   reloadCircle,
 } from "ionicons/icons";
 import { useContext, useEffect, useRef } from "react";
@@ -29,6 +31,7 @@ import { isNative } from "../../helpers/device";
 import { getIconSrc } from "../../features/settings/app-icon/AppIcon";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { gesture } from "../../features/icons";
+import TipDialog from "../../features/tips/TipDialog";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
@@ -67,6 +70,10 @@ export default function SettingsPage() {
   const icon = useAppSelector((state) => state.appIcon.icon);
   const pageRef = useRef<HTMLElement>(null);
 
+  const [presentTip, onDismissTip] = useIonModal(TipDialog, {
+    onDismiss: (data: string, role: string) => onDismissTip(data, role),
+  });
+
   useSetActivePage(pageRef);
 
   useEffect(() => {
@@ -86,6 +93,17 @@ export default function SettingsPage() {
             <IonTitle size="large">Settings</IonTitle>
           </IonToolbar>
         </IonHeader>
+
+        <IonList inset color="primary">
+          <InsetIonItem
+            onClick={() => presentTip({ cssClass: "transparent-scroll" })}
+          >
+            <IconBg color="color(display-p3 1 0 0)">
+              <IonIcon icon={heart} />
+            </IconBg>
+            <SettingLabel>Support Voyager</SettingLabel>
+          </InsetIonItem>
+        </IonList>
 
         {!isNative() && (
           <IonList inset color="primary">
