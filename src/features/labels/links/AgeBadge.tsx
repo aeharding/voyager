@@ -6,9 +6,14 @@ import {
 } from "../../../helpers/date";
 import { useAppSelector } from "../../../store";
 import { useMemo } from "react";
+import Ago from "../Ago";
 
 const NewAccountBadge = styled.span`
   color: gold;
+`;
+
+const AlientBadge = styled.span`
+  color: red;
 `;
 
 interface AgeBadgeProps {
@@ -28,7 +33,8 @@ export default function AgeBadge({ published }: AgeBadgeProps) {
     const days = calculateNewAccount(publishedDate);
 
     if (days !== undefined) {
-      return { type: "new", days } as const;
+      if (days >= 0) return { type: "new", days } as const;
+      else return { type: "alien", days } as const;
     }
   }, [published]);
 
@@ -45,6 +51,14 @@ export default function AgeBadge({ published }: AgeBadgeProps) {
           {" "}
           👶 {formatDaysOld(ageBadgeData.days)}
         </NewAccountBadge>
+      );
+    }
+    case "alien": {
+      return (
+        <AlientBadge>
+          {" "}
+          👽 <Ago date={published} />
+        </AlientBadge>
       );
     }
   }

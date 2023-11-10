@@ -11,14 +11,14 @@ export default function Ago({ date, className }: AgoProps) {
 }
 
 export function formatRelative(date: string): string {
-  const relativeDate = formatDistanceToNowStrict(
-    new Date(fixLemmyDateString(date)),
-    {
-      addSuffix: false,
-    },
-  );
+  const _date = new Date(fixLemmyDateString(date));
+  const relativeDate = formatDistanceToNowStrict(_date, {
+    addSuffix: false,
+  });
 
-  return getRelativeDateString(relativeDate);
+  return `${_date > new Date() ? "-" : ""}${getRelativeDateString(
+    relativeDate,
+  )}`;
 }
 
 const getRelativeDateString = (relativeDate: string) => {
