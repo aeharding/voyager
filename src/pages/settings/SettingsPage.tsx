@@ -17,7 +17,6 @@ import {
   cog,
   colorPalette,
   reloadCircle,
-  returnUpForward,
 } from "ionicons/icons";
 import { useContext, useEffect, useRef } from "react";
 import { UpdateContext } from "./update/UpdateContext";
@@ -29,6 +28,7 @@ import { handleSelector } from "../../features/auth/authSlice";
 import { isNative } from "../../helpers/device";
 import { getIconSrc } from "../../features/settings/app-icon/AppIcon";
 import { useSetActivePage } from "../../features/auth/AppContext";
+import { gesture } from "../../features/icons";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
@@ -117,7 +117,7 @@ export default function SettingsPage() {
           </InsetIonItem>
 
           <InsetIonItem routerLink="/settings/appearance">
-            <IconBg color="color(display-p3 1 0 0)" size="1.2">
+            <IconBg color="#0e7afe" size="1.2">
               <IonIcon icon={colorPalette} />
             </IconBg>
             <SettingLabel>Appearance</SettingLabel>
@@ -132,7 +132,7 @@ export default function SettingsPage() {
 
           {currentHandle && (
             <InsetIonItem routerLink="/settings/blocks">
-              <IconBg color="color(display-p3 0 0.8 0.3)" size="1.15">
+              <IconBg color="color(display-p3 0 0.75 0.3)" size="1.15">
                 <IonIcon icon={ban} />
               </IconBg>
               <SettingLabel>Filters & Blocks</SettingLabel>
@@ -140,8 +140,8 @@ export default function SettingsPage() {
           )}
 
           <InsetIonItem routerLink="/settings/gestures">
-            <IconBg color="color(display-p3 0.55 0.15 1)">
-              <IonIcon icon={returnUpForward} />
+            <IconBg color="color(display-p3 0.55 0.15 1)" size="1.3">
+              <IonIcon icon={gesture} />
             </IconBg>
             <SettingLabel>Gestures</SettingLabel>
           </InsetIonItem>
