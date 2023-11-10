@@ -31,6 +31,7 @@ import { isNative } from "../../helpers/device";
 import { getIconSrc } from "../../features/settings/app-icon/AppIcon";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { gesture } from "../../features/icons";
+import TipDialog from "../../features/tips/TipDialog";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
