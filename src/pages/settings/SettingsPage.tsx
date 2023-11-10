@@ -97,6 +97,7 @@ export default function SettingsPage() {
         <IonList inset color="primary">
           <InsetIonItem
             onClick={() => presentTip({ cssClass: "transparent-scroll" })}
+            detail
           >
             <IconBg color="color(display-p3 1 0 0)">
               <IonIcon icon={heart} />
