@@ -1,8 +1,9 @@
-import { IonButton, IonLoading } from "@ionic/react";
+import { IonButton, IonSpinner } from "@ionic/react";
 import useInAppPurchase, { Product } from "./useInAppPurchase";
 import styled from "@emotion/styled";
 import { useState } from "react";
 import useAppToast from "../../../helpers/useAppToast";
+import { css } from "@emotion/react";
 
 const Container = styled.div`
   display: flex;
@@ -10,6 +11,49 @@ const Container = styled.div`
   justify-content: space-between;
 
   width: 100%;
+`;
+
+const transition = css`
+  transition: opacity 250ms linear;
+`;
+
+const StyledIonButton = styled(IonButton)<{ loading: boolean }>`
+  position: relative;
+
+  ${({ loading }) =>
+    loading &&
+    css`
+      pointer-events: none;
+    `}
+`;
+
+const Contents = styled.span<{ hide: boolean }>`
+  opacity: 1;
+
+  ${({ hide }) =>
+    hide &&
+    css`
+      opacity: 0;
+    `}
+
+  ${transition}
+`;
+
+const HiddenIonSpinner = styled(IonSpinner)<{ visible: boolean }>`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  opacity: 0;
+
+  ${({ visible }) =>
+    visible &&
+    css`
+      opacity: 1;
+    `}
+
+  ${transition}
 `;
 
 interface TipProps {
@@ -58,8 +102,10 @@ export default function Tip({ product }: TipProps) {
   return (
     <Container>
       <div>{product.label}</div>
-      <IonButton onClick={tip}>{product.price}</IonButton>
-      <IonLoading isOpen={loading} message="one sec!" />
+      <StyledIonButton onClick={tip} loading={loading}>
+        <Contents hide={loading}>{product.price}</Contents>
+        <HiddenIonSpinner visible={loading} />
+      </StyledIonButton>
     </Container>
   );
 }
