@@ -11,12 +11,15 @@ import { getInboxCounts, syncMessages } from "./features/inbox/inboxSlice";
 import { useInterval } from "usehooks-ts";
 import usePageVisibility from "./helpers/usePageVisibility";
 import { getDefaultServer } from "./services/app";
+import { isLemmyError } from "./helpers/lemmy";
+import useAppToast from "./helpers/useAppToast";
 
 interface AuthProps {
   children: React.ReactNode;
 }
 
 export default function Auth({ children }: AuthProps) {
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const iss = useAppSelector(jwtIssSelector);
@@ -61,18 +64,38 @@ export default function Auth({ children }: AuthProps) {
     shouldSyncMessages() ? 1_000 * 15 : null,
   );
 
+  const getInboxCountsAndErrorIfNeeded = useCallback(async () => {
+    try {
+      await dispatch(getInboxCounts());
+    } catch (error) {
+      if (
+        isLemmyError(error, "not_logged_in") ||
+        isLemmyError(error, "incorrect_login")
+      ) {
+        presentToast({
+          message: "Logged out by Lemmy instance. Please try logging in again.",
+          color: "warning",
+          duration: 4_000,
+        });
+      }
+
+      throw error;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
   useInterval(() => {
     if (!pageVisibility) return;
     if (!jwt) return;
 
-    dispatch(getInboxCounts());
+    getInboxCountsAndErrorIfNeeded();
   }, 1_000 * 60);
 
   useEffect(() => {
     if (!pageVisibility) return;
 
-    dispatch(getInboxCounts());
-  }, [pageVisibility, dispatch, jwt]);
+    getInboxCountsAndErrorIfNeeded();
+  }, [pageVisibility, jwt, getInboxCountsAndErrorIfNeeded]);
 
   useEffect(() => {
     if (!pageVisibility) return;
