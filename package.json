@@ -78,6 +78,7 @@
     "capacitor-set-version": "^2.2.0",
     "capacitor-stash-media": "^0.0.7",
     "compare-versions": "^6.1.0",
+    "cordova-plugin-purchase": "^13.9.0",
     "date-fns": "^2.30.0",
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.6",

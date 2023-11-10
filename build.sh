@@ -1,15 +1,15 @@
 #!/bin/bash
 
-setupScript="./enable_in_app_purchases.sh"
+setupScript="./disable_in_app_purchases.sh"
 
-# Check if the environment variable ENABLE_IN_APP_PURCHASES is set
-if [ ! -z "$ENABLE_IN_APP_PURCHASES" ]; then
+# Check if the environment variable DISABLE_IN_APP_PURCHASES is set
+if [ ! -z "$DISABLE_IN_APP_PURCHASES" ]; then
     # Run the setup script
     bash "$setupScript"
 
-    echo "In-app purchases enabled."
+    echo "In-app purchases disabled."
 else
-    echo "ENABLE_IN_APP_PURCHASES not set. In-app purchases not enabled."
+    echo "DISABLE_IN_APP_PURCHASES not set. In-app purchases not disabled."
 fi
 
 # Run Vite build regardless of the environment variable
