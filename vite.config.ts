@@ -83,6 +83,8 @@ export default defineConfig({
   define: {
     // eslint-disable-next-line no-undef
     APP_VERSION: JSON.stringify(process.env.npm_package_version),
+    // eslint-disable-next-line no-undef
+    ENABLE_IN_APP_PURCHASES: !!process.env.ENABLE_IN_APP_PURCHASES,
   },
   test: {
     globals: true,

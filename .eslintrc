@@ -60,7 +60,9 @@
     {
       "files": ["src/**"],
       "globals": {
-        "APP_VERSION": true
+        "APP_VERSION": true,
+        "ENABLE_IN_APP_PURCHASES": true,
+        "CdvPurchase": true
       }
     }
   ]

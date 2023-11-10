@@ -17,10 +17,26 @@ jobs:
           app-id: 9f0851ec
           platform: iOS
           build-type: app-store
+          environment: InAppPayments
           certificate: Distribution
           destinations: Voyager App Store
           filename: iOS-${{ github.ref_name }}
           upload-artifact: iOS-Build.zip
+
+  build_android_play:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build Android on Appflow
+        uses: ionic-team/appflow-build@v1
+        with:
+          token: ${{ secrets.APPFLOW_TOKEN }}
+          app-id: 9f0851ec
+          platform: Android
+          build-type: release
+          environment: InAppPayments
+          certificate: Voyager Play Store
+          destinations: Voyager Play Store
 
   build_android:
     runs-on: ubuntu-latest
@@ -34,12 +50,11 @@ jobs:
           platform: Android
           build-type: release
           certificate: Voyager Play Store
-          destinations: Voyager Play Store
           filename: Android-${{ github.ref_name }}
           upload-artifact: Android-Build.zip
 
   create_release:
-    needs: [build_ios, build_android]
+    needs: [build_ios, build_android_play, build_android]
     runs-on: ubuntu-latest
 
     permissions:

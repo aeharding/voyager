@@ -43,6 +43,7 @@ export default function AppCrash({ error }: FallbackProps) {
   - Native app? \`${isNative()}\`
   - Installed to home screen? \`${isInstalled()}\`
   - Voyager version: \`${APP_VERSION}\`
+  - In-app purchases: \`${ENABLE_IN_APP_PURCHASES}\`
   - User agent: \`${navigator.userAgent}\`
 
 ### Crash data
