@@ -14,6 +14,10 @@ import InAppExternalLink from "../../../features/shared/InAppExternalLink";
 
 const links = [
   {
+    label: "Apollo",
+    href: "https://apolloapp.io",
+  },
+  {
     label: "Lemmy",
     href: "https://join-lemmy.org",
   },
