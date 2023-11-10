@@ -72,6 +72,8 @@ import { DefaultFeedType, ODefaultFeedType } from "./services/db";
 import { AppContext } from "./features/auth/AppContext";
 import SearchFeedResultsPage from "./pages/search/results/SearchFeedResultsPage";
 import { resetSavedStatusTap } from "./statusTap";
+import AboutPage from "./pages/settings/about/AboutPage";
+import AboutThanksPage from "./pages/settings/about/AboutThanksPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -432,6 +434,11 @@ export default function TabbedRoutes() {
           <Redirect to="/search" push={false} />
         </Route>
 
+        {...buildGeneralBrowseRoutes("settings")}
+        <Route exact path="/settings/:actor">
+          <Redirect to="/settings" push={false} />
+        </Route>
+
         <Route exact path="/settings">
           <SettingsPage />
         </Route>
@@ -474,8 +481,14 @@ export default function TabbedRoutes() {
         <Route exact path="/settings/reddit-migrate/:search">
           <SearchCommunitiesPage />
         </Route>
-        {/* general routes for settings is only for reddit-migrate */}
-        {...buildGeneralBrowseRoutes("settings")}
+
+        {/* This annoyingly cannot be /settings/about, because otherwise it will also match /settings/:actor */}
+        <Route exact path="/settings/about/app">
+          <AboutPage />
+        </Route>
+        <Route exact path="/settings/about/thanks">
+          <AboutThanksPage />
+        </Route>
       </IonRouterOutlet>
     ),
     [iss, defaultFeed],

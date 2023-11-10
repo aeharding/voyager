@@ -356,7 +356,7 @@ export const buildDarkVariables = (
     }
 
     @media (max-width: 767px) {
-      .ios ion-modal:not(.small) {
+      .ios ion-modal:not(.small, .transparent-scroll) {
         --ion-background-color: #000;
         --ion-toolbar-background: var(--ion-background-color);
         --ion-toolbar-border-color: var(--ion-color-step-150);
@@ -375,7 +375,7 @@ export const buildDarkVariables = (
             --ion-toolbar-background: ${tabBarBackground};
           }
 
-          .ios ion-modal:not(.small) {
+          .ios ion-modal:not(.small, .transparent-scroll) {
             --ion-background-color: ${background};
             --ion-toolbar-background: ${tabBarBackground};
             --ion-toolbar-border-color: var(--ion-color-step-150);

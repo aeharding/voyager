@@ -27,29 +27,10 @@ import { useContext, useRef, useState } from "react";
 import { BeforeInstallPromptContext } from "../../BeforeInstallPromptProvider";
 import { css } from "@emotion/react";
 import { useSetActivePage } from "../../features/auth/AppContext";
+import AppDetails from "./about/AppDetails";
 
 const Container = styled.div`
   line-height: 1.5;
-`;
-
-const AppContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 1.2rem;
-  margin: 2rem 0 3rem;
-
-  img {
-    width: 70px;
-    height: 70px;
-    border-radius: 1rem;
-  }
-
-  aside {
-    font-size: 0.9rem;
-    margin-top: 0.25rem;
-    color: var(--ion-color-medium);
-  }
 `;
 
 const BadgeContainer = styled.div`
@@ -301,12 +282,7 @@ export default function InstallAppPage() {
       </IonHeader>
       <AppContent scrollY>
         <Container className="ion-padding">
-          <AppContainer>
-            <img src="/logo.png" alt="" />
-            <div>
-              Voyager for Lemmy<aside>by Alexander Harding</aside>
-            </div>
-          </AppContainer>
+          <AppDetails />
 
           {renderGuidance()}
         </Container>
