@@ -54,10 +54,6 @@ ion-modal.small ion-header ion-toolbar:first-of-type {
   padding-top: 0px;
 }
 
-ion-modal.small .ion-page {
-  overflow: visible;
-}
-
 ion-modal.transparent-scroll {
   --background: none;
   --height: auto;
