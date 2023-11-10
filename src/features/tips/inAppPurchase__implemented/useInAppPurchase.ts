@@ -1,5 +1,5 @@
 import "cordova-plugin-purchase";
-import { notEmpty } from "../../helpers/array";
+import { notEmpty } from "../../../helpers/array";
 import { useEffect, useState } from "react";
 import tipProducts from "./tipProducts";
 

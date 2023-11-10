@@ -18,5 +18,6 @@
     "types": ["vite-plugin-svgr/client", "jest"]
   },
   "include": ["src"],
+  "exclude": ["src/features/tips/inAppPurchase__implemented"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

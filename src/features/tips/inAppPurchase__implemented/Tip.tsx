@@ -2,7 +2,7 @@ import { IonButton, IonLoading } from "@ionic/react";
 import useInAppPurchase, { Product } from "./useInAppPurchase";
 import styled from "@emotion/styled";
 import { useState } from "react";
-import useAppToast from "../../helpers/useAppToast";
+import useAppToast from "../../../helpers/useAppToast";
 
 const Container = styled.div`
   display: flex;

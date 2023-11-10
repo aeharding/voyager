@@ -1,10 +1,8 @@
 #!/bin/bash
 
-# File path
-implementedFile="src/features/tips/useInAppPurchase.implemented.ts"
 
-# Check the file doesn't exist before performing actions
-if [ -f "$implementedFile" ]; then
+# Check the folder doesn't exist before performing actions
+if [ -d "src/features/tips/inAppPurchase__implemented" ]; then
     # Install cordova-plugin-purchase
     pnpm install --save-dev cordova-plugin-purchase@13.9.0
 
@@ -12,8 +10,8 @@ if [ -f "$implementedFile" ]; then
     npx cap update
 
     # Remove and rename files
-    rm src/features/tips/useInAppPurchase.ts
-    mv "$implementedFile" src/features/tips/useInAppPurchase.ts
+    rm -rf src/features/tips/inAppPurchase
+    mv src/features/tips/inAppPurchase__implemented src/features/tips/inAppPurchase
 else
     echo "In-app purchases already enabled. Skipping installation and file operations."
 fi

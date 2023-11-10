@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { close, heart } from "ionicons/icons";
-import InAppProducts from "./InAppProducts";
+import InAppProducts from "./inAppPurchase/InAppProducts";
 import ExternalSponsorOptions from "./ExternalSponsorOptions";
 
 const Container = styled.div`

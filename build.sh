@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# File path
-implementedFile="src/features/tips/useInAppPurchase.implemented.ts"
 setupScript="./enable_in_app_purchases.sh"
 
 # Check if the environment variable ENABLE_IN_APP_PURCHASES is set
