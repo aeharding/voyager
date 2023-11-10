@@ -94,18 +94,16 @@ export default function SettingsPage() {
           </IonToolbar>
         </IonHeader>
 
-        {(isNative() || true) && (
-          <IonList inset color="primary">
-            <InsetIonItem
-              onClick={() => presentTip({ cssClass: "transparent-scroll" })}
-            >
-              <IconBg color="color(display-p3 1 0 0)">
-                <IonIcon icon={heart} />
-              </IconBg>
-              <SettingLabel>Support Voyager</SettingLabel>
-            </InsetIonItem>
-          </IonList>
-        )}
+        <IonList inset color="primary">
+          <InsetIonItem
+            onClick={() => presentTip({ cssClass: "transparent-scroll" })}
+          >
+            <IconBg color="color(display-p3 1 0 0)">
+              <IonIcon icon={heart} />
+            </IconBg>
+            <SettingLabel>Support Voyager</SettingLabel>
+          </InsetIonItem>
+        </IonList>
 
         {!isNative() && (
           <IonList inset color="primary">

@@ -19,8 +19,8 @@ jobs:
           build-type: app-store
           certificate: Distribution
           destinations: Voyager App Store
-          filename: iOS-${{ github.ref_name }}
-          upload-artifact: iOS-Build.zip
+          filename: Voyager-iOS-${{ github.ref_name }}
+          upload-artifact: Voyager-iOS-${{ github.ref_name }}-Build.zip
 
   build_android_play:
     runs-on: ubuntu-latest
@@ -49,8 +49,8 @@ jobs:
           build-type: release
           environment: BuildFOSSOnly
           certificate: Voyager Play Store
-          filename: Android-${{ github.ref_name }}
-          upload-artifact: Android-Build.zip
+          filename: Voyager-Android-${{ github.ref_name }}
+          upload-artifact: Voyager-Android-${{ github.ref_name }}-Build.zip
 
   create_release:
     needs: [build_ios, build_android_play, build_android]
@@ -63,13 +63,13 @@ jobs:
       - name: Download iOS Artifact
         uses: actions/download-artifact@v3
         with:
-          name: iOS-Build.zip
+          name: Voyager-iOS-${{ github.ref_name }}-Build.zip
           path: artifacts/ios
 
       - name: Download Android Artifact
         uses: actions/download-artifact@v3
         with:
-          name: Android-Build.zip
+          name: Voyager-Android-${{ github.ref_name }}-Build.zip
           path: artifacts/android
 
       - name: Release

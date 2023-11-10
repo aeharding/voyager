@@ -31,7 +31,7 @@ export default function Tip({ product }: TipProps) {
     } catch (error) {
       presentToast({
         message:
-          "There was an error completing your purchase. Please try again later.",
+          "There was an error completing your payment. Please try again later.",
         color: "warning",
       });
       throw error;
@@ -48,7 +48,7 @@ export default function Tip({ product }: TipProps) {
       });
     } else {
       presentToast({
-        message: "Purchase successful. Thank you so much for your support! 💙",
+        message: "Payment successful. Thank you so much for your support! 💙",
         color: "success",
         duration: 5_000,
       });

@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/bin/sh
 
 # Check the folder doesn't exist before performing actions
 if [ -d "src/features/tips/inAppPurchase__stub" ]; then

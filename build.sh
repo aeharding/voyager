@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 setupScript="./disable_in_app_purchases.sh"
 
