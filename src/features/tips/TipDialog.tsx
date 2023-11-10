@@ -88,8 +88,7 @@ export default function TipDialog({ onDismiss }: TipProps) {
       </Heart>
       <Title>Support Voyager</Title>
       <Description>
-        Voyager is completely free, forever. Donations help support development
-        and maintenance!
+        Voyager is completely free, forever. Your support means a lot!
       </Description>
       <Tips>
         {BUILD_FOSS_ONLY || !isNative() ? (
