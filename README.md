@@ -212,6 +212,8 @@ Voyager uses [Ionic App Flow](https://ionic.io/appflow) for Apple App Store and 
 
 **Voyager's Android and iOS builds are reproducible**! In fact, [F-droid independently builds Voyager](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/app.vger.voyager.yml) and verifies the same compiled APK is provided in Github Releases.
 
+Note: F-droid and Github Releases binaries are built with `BUILD_FOSS_ONLY=true`. This removes all nonfree dependencies, currently just Google Play in-app purchases.
+
 ## 📲 PWA
 
 Voyager works best added to the homescreen. There are certain features that only work there, like badging and smooth page transitions.
