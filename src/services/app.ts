@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { isNative } from "../helpers/device";
 
 const DEFAULT_LEMMY_SERVERS = [
   "lemmy.world",
@@ -18,6 +19,8 @@ export function getDefaultServer() {
 }
 
 async function getConfig() {
+  if (isNative()) return;
+
   const response = await fetch("/_config");
 
   const { customServers } = await response.json();
