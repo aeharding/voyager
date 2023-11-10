@@ -19,10 +19,10 @@ jobs:
           build-type: app-store
           certificate: Distribution
           destinations: Voyager App Store
-          filename: iOS-${{ github.ref_name }}
-          upload-artifact: iOS-Build.zip
+          filename: Voyager-iOS-${{ github.ref_name }}
+          upload-artifact: Voyager-iOS-${{ github.ref_name }}-Build.zip
 
-  build_android:
+  build_android_play:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,11 +35,25 @@ jobs:
           build-type: release
           certificate: Voyager Play Store
           destinations: Voyager Play Store
-          filename: Android-${{ github.ref_name }}
-          upload-artifact: Android-Build.zip
+
+  build_android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build Android on Appflow
+        uses: ionic-team/appflow-build@v1
+        with:
+          token: ${{ secrets.APPFLOW_TOKEN }}
+          app-id: 9f0851ec
+          platform: Android
+          build-type: release
+          environment: BuildFOSSOnly
+          certificate: Voyager Play Store
+          filename: Voyager-Android-${{ github.ref_name }}
+          upload-artifact: Voyager-Android-${{ github.ref_name }}-Build.zip
 
   create_release:
-    needs: [build_ios, build_android]
+    needs: [build_ios, build_android_play, build_android]
     runs-on: ubuntu-latest
 
     permissions:
@@ -49,13 +63,13 @@ jobs:
       - name: Download iOS Artifact
         uses: actions/download-artifact@v3
         with:
-          name: iOS-Build.zip
+          name: Voyager-iOS-${{ github.ref_name }}-Build.zip
           path: artifacts/ios
 
       - name: Download Android Artifact
         uses: actions/download-artifact@v3
         with:
-          name: Android-Build.zip
+          name: Voyager-Android-${{ github.ref_name }}-Build.zip
           path: artifacts/android
 
       - name: Release

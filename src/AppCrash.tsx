@@ -43,6 +43,7 @@ export default function AppCrash({ error }: FallbackProps) {
   - Native app? \`${isNative()}\`
   - Installed to home screen? \`${isInstalled()}\`
   - Voyager version: \`${APP_VERSION}\`
+  - BUILD_FOSS_ONLY: \`${BUILD_FOSS_ONLY}\`
   - User agent: \`${navigator.userAgent}\`
 
 ### Crash data

@@ -6,6 +6,7 @@ WORKDIR /voyager
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+ENV BUILD_FOSS_ONLY=true
 
 # enable corepack & set network-timeout
 RUN corepack enable &&\
