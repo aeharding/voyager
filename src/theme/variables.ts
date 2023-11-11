@@ -139,11 +139,6 @@ export const buildLightVariables = (appTheme: AppThemeType) => {
     :root.ios .grey-bg ion-item-sliding {
       background: #fff;
     }
-
-    .md ion-modal {
-      --ion-background-color: #fff;
-      --ion-item-background: #fff;
-    }
   `;
 };
 

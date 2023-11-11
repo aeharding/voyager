@@ -7,7 +7,7 @@ import { isNative } from "../../helpers/device";
 
 const Container = styled.div`
   margin: 36px auto;
-  background: var(--ion-background-color);
+  background: var(--ion-background-color, #fff);
   border-radius: 16px;
   max-width: 320px;
 
