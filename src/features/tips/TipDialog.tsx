@@ -43,11 +43,14 @@ const CloseButton = styled.button`
 const Heart = styled.div`
   font-size: 3em;
   margin-top: -46px;
-  background: color(display-p3 1 0 0);
+
   border-radius: 50%;
   padding: 8px;
 
   display: flex;
+
+  background: color(display-p3 1 0 0);
+  color: white;
 `;
 
 const Title = styled.div`
