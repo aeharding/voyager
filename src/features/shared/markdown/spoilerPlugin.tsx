@@ -1,4 +1,5 @@
 export { customRehypeSpoiler } from "./spoilerRehype";
+export type { spoilerProps } from "./spoilerRehype";
 export { customRemarkSpoiler };
 
 import { visit, SKIP } from "unist-util-visit";

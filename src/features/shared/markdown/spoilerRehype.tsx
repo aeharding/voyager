@@ -4,6 +4,11 @@ const isElement = (node: Node): node is Element => (node.type == 'element') ? tr
 const isText = (node: Node): node is Text => (node.type == 'text') ? true : false;
 const SPOILER_TITLE_REGEX = /^::: ?spoiler (.*?)$/m;
 
+export interface spoilerProps {
+  title: string,
+  children: any,
+}
+
 
 /**
  * Rehype plugin that uses spoiler tokens generate from the Remark
@@ -41,9 +46,8 @@ export function customRehypeSpoiler() {
       const start = starts[0];
       tree.children.splice(start, 1, {
         type: 'element',
-        tagName: 'a',
+        tagName: 'spoiler',
         properties: {
-          href: 'https://spoiler', // Need a valid URL here
           title: spoilerTitle![1],
         },
         children: [],

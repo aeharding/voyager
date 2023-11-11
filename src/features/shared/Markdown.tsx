@@ -7,7 +7,7 @@ import { useAppSelector } from "../../store";
 import LinkInterceptor from "./markdown/LinkInterceptor";
 import buildCommunityPlugin from "./markdown/buildCommunityPlugin";
 import customRemarkGfm from "./markdown/customRemarkGfm";
-import { customRemarkSpoiler, customRehypeSpoiler } from "./markdown/spoilerPlugin"
+import { customRemarkSpoiler, customRehypeSpoiler, spoilerProps } from "./markdown/spoilerPlugin"
 import { useMemo } from "react";
 import { GalleryImg } from "../gallery/GalleryImg";
 
@@ -74,6 +74,13 @@ export default function Markdown(props: ReactMarkdownOptions) {
           </TableContainer>
         ),
         a: (props) => <LinkInterceptor {...props} />,
+        // @ts-ignore
+        spoiler: (props: spoilerProps) => (
+          <details onClick={(e) => e.stopPropagation()}>
+            <summary>{props.title}</summary>
+            {props.children}
+          </details>
+        ),
         ...props.components,
       }}
       remarkPlugins={[communityPlugin, customRemarkGfm, customRemarkSpoiler]}

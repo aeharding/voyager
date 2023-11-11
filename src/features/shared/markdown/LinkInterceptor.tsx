@@ -43,13 +43,6 @@ function LinkInterceptorUnstyled({
   // Sometimes markdown thinks things are URLs that aren't URLs
   if (!absoluteHref) return props.children;
 
-  if (absoluteHref == "https://spoiler/") return (
-    <details onClick={(e) => e.stopPropagation()}>
-      <summary>{props.title ? props.title : "spoiler"}</summary>
-      {props.children}
-    </details>
-  );
-
   return (
     <InAppExternalLink
       {...props}
