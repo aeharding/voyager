@@ -39,9 +39,7 @@ export function customRehypeSpoiler() {
         }
       }
     }
-    console.log(starts, ends);
     while (starts.length > 0 && ends.length > 0) {
-      console.log(tree.children[starts[0]]);
       let spoilerTitle = SPOILER_TITLE_REGEX.exec(((tree.children[starts[0]] as Element).children[0] as Text).value);
       const start = starts[0];
       tree.children.splice(start, 1, {
@@ -54,7 +52,6 @@ export function customRehypeSpoiler() {
       });
       let spoiler = tree.children[start]
       let spoilerLength = ends[0] - starts[0] + 1;
-      console.log(spoilerLength);
       // set children and splice
       if (isElement(spoiler)) {
         spoiler.children = tree.children.splice(start + 1, spoilerLength).slice(0, -2) as ElementContent[];
@@ -72,8 +69,6 @@ export function customRehypeSpoiler() {
         else if (index > end) return index - spoilerLength;
         return -1;
       }).filter((index) => index >= 0);
-      console.log(starts, ends)
     }
-    console.log(tree);
   }
 }
