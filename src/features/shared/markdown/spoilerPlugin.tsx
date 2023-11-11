@@ -1,6 +1,8 @@
+export { customRehypeSpoiler } from "./spoilerRehype";
+export { customRemarkSpoiler };
+
 import { visit, SKIP } from "unist-util-visit";
-import { Root as MdRoot, Text, Parent, Paragraph, Node, PhrasingContent } from "mdast";
-import { Root as HtmlRoot } from "hast";
+import { Root, Text, Parent, Paragraph, Node, PhrasingContent } from "mdast";
 
 const splitSpoiler = (text: string): string[] => {
   const SPOILER_TITLE_REGEX = /^::: ?spoiler (.*?)$/m;
@@ -19,13 +21,10 @@ const splitSpoiler = (text: string): string[] => {
   return [text];
 }
 
-const isText = (node: Node): node is Text => {
-  if (node.type == 'text') return true;
-  return false;
-}
+const isText = (node: Node): node is Text => (node.type == 'text') ? true : false;
 
-export function customRemarkSpoiler() {
-  return (tree: MdRoot) => {
+function customRemarkSpoiler() {
+  return (tree: Root) => {
     // TODO: change to paragraph!!
     visit(tree, 'paragraph', (parent: Paragraph, index: number | undefined, root: Parent | undefined) => {
       let i = 0;
@@ -55,12 +54,6 @@ export function customRemarkSpoiler() {
         return [SKIP, index + splitTags.length];
       }
     });
-    console.log(tree);
   }
 }
 
-export function customRehypeSpoiler() {
-  return (tree: HtmlRoot) => {
-    //console.log(tree);
-  }
-}
