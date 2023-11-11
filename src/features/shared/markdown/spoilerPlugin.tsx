@@ -4,6 +4,9 @@ export { customRemarkSpoiler };
 import { visit, SKIP } from "unist-util-visit";
 import { Root, Text, Parent, Paragraph, Node, PhrasingContent } from "mdast";
 
+/**
+ * Given a piece of text, seperate the spoiler tokens and returns text split into list.
+ */
 const splitSpoiler = (text: string): string[] => {
   const SPOILER_TITLE_REGEX = /^::: ?spoiler (.*?)$/m;
   const SPOILER_END_REGEX = /^:::$/m;
@@ -23,6 +26,10 @@ const splitSpoiler = (text: string): string[] => {
 
 const isText = (node: Node): node is Text => (node.type == 'text') ? true : false;
 
+/**
+ * Remark plugin to identify spoiler tokens. Seperates spoiler tokens into
+ * their own paragraphs for further parsing by the Rehype plugin.
+ */
 function customRemarkSpoiler() {
   return (tree: Root) => {
     // TODO: change to paragraph!!

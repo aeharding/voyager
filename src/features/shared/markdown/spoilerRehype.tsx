@@ -5,6 +5,11 @@ const isText = (node: Node): node is Text => (node.type == 'text') ? true : fals
 const SPOILER_TITLE_REGEX = /^::: ?spoiler (.*?)$/m;
 
 
+/**
+ * Rehype plugin that uses spoiler tokens generate from the Remark
+ * plugin to create spoiler links that contain the spoiler content.
+ * The links are then rendered correctly as spoilers by LinkInterceptor.
+ */
 export function customRehypeSpoiler() {
   return (tree: Root) => {
     // go through the lsit
