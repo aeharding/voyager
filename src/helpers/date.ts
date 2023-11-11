@@ -53,7 +53,7 @@ export function calculateIsCakeDay(creationDate: Date) {
 export function calculateNewAccount(creationDate: Date): number | undefined {
   const days = differenceInDays(new Date(), creationDate);
 
-  if (days > 30) return;
+  if (days < 0 || days > 30) return;
 
   return days;
 }
