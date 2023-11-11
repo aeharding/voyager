@@ -4,21 +4,28 @@ import { useEffect, useState } from "react";
 import tipProducts from "./tipProducts";
 import { isNative } from "../../../helpers/device";
 
-(() => {
+async function initializeIfNeeded() {
   // Do not setup in-app purchases for PWA, f-droid and github builds
   if (BUILD_FOSS_ONLY || !isNative()) return;
+  if (CdvPurchase.store.isReady) return;
 
-  document.addEventListener("deviceready", () => {
-    CdvPurchase.store.when().approved((p) => p.finish());
+  try {
+    document.addEventListener("deviceready", () => {
+      CdvPurchase.store.when().approved((p) => p.finish());
 
-    CdvPurchase.store.register(tipProducts);
+      CdvPurchase.store.register(tipProducts);
 
-    CdvPurchase.store.initialize([
-      CdvPurchase.Platform.APPLE_APPSTORE,
-      CdvPurchase.Platform.GOOGLE_PLAY,
-    ]);
-  });
-})();
+      CdvPurchase.store.initialize([
+        CdvPurchase.Platform.APPLE_APPSTORE,
+        CdvPurchase.Platform.GOOGLE_PLAY,
+      ]);
+    });
+  } catch (error) {
+    console.error("Error initializing CdvPurchase", error);
+  }
+}
+
+initializeIfNeeded();
 
 export interface Product {
   label: string;
@@ -46,7 +53,11 @@ export default function useInAppPurchase() {
   const [initializing, setInitializing] = useState(false);
 
   useEffect(() => {
-    getProducts().then((products) => setProducts(products));
+    (async () => {
+      initializeIfNeeded();
+
+      setProducts(await getProducts());
+    })();
   }, []);
 
   async function getProducts(): Promise<Product[]> {

@@ -127,7 +127,10 @@ export const getInboxCounts =
       // If API rejects jwt, check if initial handle used to make the request
       // is the same as the handle at this moment (e.g. something else didn't
       // log the user out). If match, then proceed to log the user out
-      if (isLemmyError(error, "not_logged_in")) {
+      if (
+        isLemmyError(error, "not_logged_in") ||
+        isLemmyError(error, "incorrect_login")
+      ) {
         const handle = handleSelector(getState());
         if (handle && handle === initialHandle) {
           dispatch(logoutAccount(handle));
