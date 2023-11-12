@@ -30,6 +30,7 @@ import instancesSlice, {
   getInstances,
 } from "./features/instances/instancesSlice";
 import resolveSlice from "./features/resolve/resolveSlice";
+import biometricSlice from "./features/settings/biometric/biometricSlice";
 
 const store = configureStore({
   reducer: {
@@ -44,6 +45,7 @@ const store = configureStore({
     appIcon: appIconSlice,
     instances: instancesSlice,
     resolve: resolveSlice,
+    biometric: biometricSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

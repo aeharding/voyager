@@ -32,12 +32,15 @@ import AppContent from "../../../features/shared/AppContent";
 import styled from "@emotion/styled";
 import { IonItemInAppExternalLink } from "../../../features/shared/InAppExternalLink";
 import { isAndroid, isNative } from "../../../helpers/device";
+import { useSetActivePage } from "../../../features/auth/AppContext";
 
 export const InsetIonItem = styled(IonItemInAppExternalLink)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
 `;
 
 export default function AboutPage() {
+  const pageRef = useRef<HTMLElement>(null);
+
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
@@ -83,8 +86,10 @@ export default function AboutPage() {
     );
   })();
 
+  useSetActivePage(pageRef);
+
   return (
-    <IonPage className="grey-bg">
+    <IonPage className="grey-bg" ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

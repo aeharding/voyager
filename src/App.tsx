@@ -42,6 +42,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import AppCrash from "./AppCrash";
 
 import "./statusTap";
+import BiometricAppGuard from "./features/settings/biometric/BiometricAppGuard";
 
 // index.tsx ensurxes android nav mode resolves before app is rendered
 (async () => {
@@ -108,6 +109,8 @@ export default function App() {
                           <TabbedRoutes />
                         </Auth>
                       </TabContextProvider>
+
+                      {isNative() && <BiometricAppGuard />}
                     </ErrorBoundary>
                   </IonApp>
                 </Router>

@@ -9,6 +9,8 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
+    implementation project(':capacitor-community-privacy-screen')
+    implementation project(':aparajita-capacitor-biometric-auth')
     implementation project(':capacitor-community-app-icon')
     implementation project(':capacitor-app')
     implementation project(':capacitor-browser')

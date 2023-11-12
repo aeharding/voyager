@@ -25,12 +25,14 @@
     }
   },
   "dependencies": {
+    "@capacitor-community/privacy-screen": "^4.2.2",
     "compression": "^1.7.4",
     "express": "^4.18.2",
     "http-proxy-middleware": "^2.0.6",
     "vite-express": "^0.10.0"
   },
   "devDependencies": {
+    "@aparajita/capacitor-biometric-auth": "^5.2.1",
     "@capacitor-community/app-icon": "^4.1.1",
     "@capacitor/android": "5.2.3",
     "@capacitor/app": "^5.0.6",
