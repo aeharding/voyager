@@ -1,20 +1,20 @@
+import { BiometricMethod } from "capacitor-biometric-lock";
 import { useAppSelector } from "../../../store";
 import { primaryBiometricTypeSelector } from "./biometricSlice";
-import { BiometryType } from "@aparajita/capacitor-biometric-auth";
 
 export default function BiometricTitle() {
   const primaryBiometricType = useAppSelector(primaryBiometricTypeSelector);
 
   switch (primaryBiometricType) {
-    case BiometryType.faceId:
+    case BiometricMethod.faceId:
       return "Face ID & Passcode";
-    case BiometryType.touchId:
+    case BiometricMethod.touchId:
       return "Touch ID & Passcode";
-    case BiometryType.faceAuthentication:
+    case BiometricMethod.faceAuthentication:
       return "Face Auth & Passcode";
-    case BiometryType.fingerprintAuthentication:
+    case BiometricMethod.fingerprintAuthentication:
       return "Touch Auth & Passcode";
-    case BiometryType.irisAuthentication:
+    case BiometricMethod.irisAuthentication:
       return "Iris & Passcode";
   }
 }

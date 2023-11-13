@@ -2,18 +2,15 @@ import {
   IonBackButton,
   IonButtons,
   IonHeader,
-  IonLabel,
-  IonList,
   IonPage,
   IonTitle,
-  IonToggle,
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { useRef } from "react";
 import BiometricTitle from "../../features/settings/biometric/biometricTitle";
-import { InsetIonItem } from "../profile/ProfileFeedItemsPage";
+import BiometricSettings from "../../features/settings/biometric/BiometricSettings";
 
 export default function BiometricPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -34,25 +31,7 @@ export default function BiometricPage() {
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY fullscreen>
-        <IonList inset color="primary">
-          <InsetIonItem>
-            <IonLabel>
-              Lock with <BiometricTitle />
-            </IonLabel>
-            <IonToggle
-              checked={true}
-              //   onIonChange={() =>
-              // dispatch(
-              //   setFontSizeMultiplier(
-              //     fontSizeMultiplier >= MIN_LARGER_FONT_ADJUSTMENT
-              //       ? MAX_REGULAR_FONT_ADJUSTMENT
-              //       : MIN_LARGER_FONT_ADJUSTMENT,
-              //   ),
-              // )
-              //   }
-            />
-          </InsetIonItem>
-        </IonList>
+        <BiometricSettings />
       </AppContent>
     </IonPage>
   );

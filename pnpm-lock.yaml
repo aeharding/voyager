@@ -8,9 +8,6 @@ overrides:
   '@ionic/core': npm:voyager-ionic-core@^7.5.0
 
 dependencies:
-  '@capacitor-community/privacy-screen':
-    specifier: ^4.2.2
-    version: 4.2.2(@capacitor/core@5.2.3)
   compression:
     specifier: ^1.7.4
     version: 1.7.4
@@ -25,9 +22,6 @@ dependencies:
     version: 0.10.0
 
 devDependencies:
-  '@aparajita/capacitor-biometric-auth':
-    specifier: ^5.2.1
-    version: 5.2.1
   '@capacitor-community/app-icon':
     specifier: ^4.1.1
     version: 4.1.1(@capacitor/core@5.2.3)
@@ -157,6 +151,9 @@ devDependencies:
   capacitor-application-context:
     specifier: ^0.0.1
     version: 0.0.1(@capacitor/core@5.2.3)
+  capacitor-biometric-lock:
+    specifier: link:../capacitor-biometric-lock
+    version: link:../capacitor-biometric-lock
   capacitor-plugin-safe-area:
     specifier: ^2.0.5
     version: 2.0.5(@capacitor/core@5.2.3)
@@ -346,16 +343,6 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.20
-    dev: true
-
-  /@aparajita/capacitor-biometric-auth@5.2.1:
-    resolution: {integrity: sha512-tGEx3nZYEv3v4g6BfGCixjkt8NGyOsBTX+aFvM9cws91e9NorMU2gjqZ3MTUgiwAKEUJLgZ0D3IwzFrQmfmmsQ==}
-    engines: {node: '>=16.15.1'}
-    dependencies:
-      '@capacitor/android': 5.5.1(@capacitor/core@5.5.1)
-      '@capacitor/app': 5.0.6(@capacitor/core@5.5.1)
-      '@capacitor/core': 5.5.1
-      '@capacitor/ios': 5.5.1(@capacitor/core@5.5.1)
     dev: true
 
   /@apideck/better-ajv-errors@0.3.6(ajv@8.12.0):
@@ -1552,14 +1539,6 @@ packages:
       '@capacitor/core': 5.2.3
     dev: true
 
-  /@capacitor-community/privacy-screen@4.2.2(@capacitor/core@5.2.3):
-    resolution: {integrity: sha512-YE+ZkTjA35BM+VcvjlPO3r97IjzRvOA1VpWCXseDh1owsniHVDsV6a0/BWJM20YofZOotJiRflrG7t70ecJ0jQ==}
-    peerDependencies:
-      '@capacitor/core': ^5.0.0
-    dependencies:
-      '@capacitor/core': 5.2.3
-    dev: false
-
   /@capacitor/android@5.2.3(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-TqXOq5RIniMACcAckn/X84XajPP2GU4VH7Er390Ja2Y2BWSeUKgk7T8aURcwLYu2hnv+Op9eTww5MTBb3zBtmg==}
     peerDependencies:
@@ -1568,28 +1547,12 @@ packages:
       '@capacitor/core': 5.2.3
     dev: true
 
-  /@capacitor/android@5.5.1(@capacitor/core@5.5.1):
-    resolution: {integrity: sha512-WTnPnpaEvTtaEtTNRbh06Y1afF7A4plY/4uajAL0WW8tdR1FxieadF357yKGiAT6CudI/B+eOu6rxn6qWuphKg==}
-    peerDependencies:
-      '@capacitor/core': ^5.5.0
-    dependencies:
-      '@capacitor/core': 5.5.1
-    dev: true
-
   /@capacitor/app@5.0.6(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-6ZXVdnNmaYILasC/RjQw+yfTmq2ZO7Q3v5lFcDVfq3PFGnybyYQh+RstBrYri+376OmXOXxBD7E6UxBhrMzXGA==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
       '@capacitor/core': 5.2.3
-    dev: true
-
-  /@capacitor/app@5.0.6(@capacitor/core@5.5.1):
-    resolution: {integrity: sha512-6ZXVdnNmaYILasC/RjQw+yfTmq2ZO7Q3v5lFcDVfq3PFGnybyYQh+RstBrYri+376OmXOXxBD7E6UxBhrMzXGA==}
-    peerDependencies:
-      '@capacitor/core': ^5.0.0
-    dependencies:
-      '@capacitor/core': 5.5.1
     dev: true
 
   /@capacitor/assets@3.0.1(@types/node@20.8.10)(typescript@5.2.2):
@@ -1682,11 +1645,6 @@ packages:
     resolution: {integrity: sha512-Q1zbgt3Mvldy7six2/GX54kTL0ozgnR37jeDUAXL/fOJBF4Iorr/8A0OjGEAnwEjpR1la7uFZUunESMFyMLhEQ==}
     dependencies:
       tslib: 2.6.2
-
-  /@capacitor/core@5.5.1:
-    resolution: {integrity: sha512-VG6Iv8Q7ZAbvjodxpvjcSe0jfxUwZXnvjbi93ehuJ6eYP8U926qLSXyrT/DToZq+F6v/HyGyVgn3mrE/9jW2Tg==}
-    dependencies:
-      tslib: 2.6.2
     dev: true
 
   /@capacitor/ios@5.2.3(@capacitor/core@5.2.3):
@@ -1695,14 +1653,6 @@ packages:
       '@capacitor/core': ^5.2.0
     dependencies:
       '@capacitor/core': 5.2.3
-    dev: true
-
-  /@capacitor/ios@5.5.1(@capacitor/core@5.5.1):
-    resolution: {integrity: sha512-h00qt8u32t8eEbIkuG4IjR0r34YZC0sIXglDH8fRDdA84xDkTybmz3WtdpRWDzh6ukE2RIY7rmD7p410WSJ2yA==}
-    peerDependencies:
-      '@capacitor/core': ^5.5.0
-    dependencies:
-      '@capacitor/core': 5.5.1
     dev: true
 
   /@capacitor/keyboard@5.0.6(@capacitor/core@5.2.3):
@@ -11003,6 +10953,7 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: true
 
   /tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
