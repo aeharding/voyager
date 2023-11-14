@@ -1,12 +1,12 @@
 import {
   IonBackButton,
+  IonButton,
   IonButtons,
   IonHeader,
   IonInput,
   IonItem,
   IonLabel,
   IonList,
-  IonListHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -18,7 +18,10 @@ import { isValidUrl } from "../../helpers/url";
 import useAppToast from "../../helpers/useAppToast";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { addMigrationLink } from "../../features/community/migrationSlice";
+import {
+  addMigrationLink,
+  resetMigrationLinks,
+} from "../../features/community/migrationSlice";
 
 export default function RedditMigratePage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -97,9 +100,17 @@ export default function RedditMigratePage() {
         </IonList>
         <IonList inset>
           {links.length > 0 ? (
-            <IonListHeader>
+            <IonItem>
               <IonLabel>Previous Links</IonLabel>
-            </IonListHeader>
+              <IonButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  dispatch(resetMigrationLinks());
+                }}
+              >
+                Clear
+              </IonButton>
+            </IonItem>
           ) : undefined}
           {links.map((link, idx) => (
             <InsetIonItem

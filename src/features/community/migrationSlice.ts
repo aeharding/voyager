@@ -18,7 +18,6 @@ export const migrationSlice = createSlice({
     setMigrationLinks: (state, action: PayloadAction<string[]>) => {
       state.links = action.payload;
     },
-    resetLinks: () => initialState,
   },
 });
 
@@ -61,11 +60,11 @@ export const resetMigrationLinks =
 
     if (!userHandle) return;
 
-    dispatch(resetLinks);
+    dispatch(setMigrationLinks([]));
 
     db.setSetting("migration_links", [], {
       user_handle: userHandle,
     });
   };
 
-const { setMigrationLinks, resetLinks } = migrationSlice.actions;
+const { setMigrationLinks } = migrationSlice.actions;
