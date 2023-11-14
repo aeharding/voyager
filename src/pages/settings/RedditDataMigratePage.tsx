@@ -103,6 +103,7 @@ export default function RedditMigratePage() {
             <IonItem>
               <IonLabel>Previous Links</IonLabel>
               <IonButton
+                fill="clear"
                 onClick={(e) => {
                   e.preventDefault();
                   dispatch(resetMigrationLinks());
