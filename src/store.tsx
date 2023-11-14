@@ -30,6 +30,9 @@ import instancesSlice, {
   getInstances,
 } from "./features/instances/instancesSlice";
 import resolveSlice from "./features/resolve/resolveSlice";
+import migrationSlice, {
+  getMigrationLinks,
+} from "./features/community/migrationSlice";
 
 const store = configureStore({
   reducer: {
@@ -44,6 +47,7 @@ const store = configureStore({
     appIcon: appIconSlice,
     instances: instancesSlice,
     resolve: resolveSlice,
+    migration: migrationSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
@@ -68,6 +72,7 @@ const activeHandleChange = () => {
   lastActiveHandle = activeHandle;
 
   store.dispatch(getFavoriteCommunities());
+  store.dispatch(getMigrationLinks());
   store.dispatch(getBlurNsfw());
   store.dispatch(getFilteredKeywords());
   store.dispatch(getDefaultFeed());

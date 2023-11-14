@@ -253,6 +253,7 @@ export type SettingValueTypes = {
   compact_thumbnail_size: CompactThumbnailSizeType;
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
+  migration_links: string[];
   default_comment_sort: CommentDefaultSort;
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
