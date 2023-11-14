@@ -14,9 +14,6 @@ const config: CapacitorConfig = {
     Keyboard: {
       resizeOnFullScreen: true,
     },
-    PrivacyScreen: {
-      enable: false,
-    },
   },
 };
 
