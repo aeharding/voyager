@@ -19,7 +19,6 @@ import useAppToast from "../../helpers/useAppToast";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { addMigrationLink } from "../../features/community/migrationSlice";
-import { ListHeader } from "../../features/settings/shared/formatting";
 
 export default function RedditMigratePage() {
   const pageRef = useRef<HTMLElement>(null);
