@@ -95,7 +95,7 @@ export default function RedditMigratePage() {
             </InsetIonItem>
           </label>
         </IonList>
-        <IonList>
+        <IonList inset>
           {links.length > 0 ? (
             <IonListHeader>
               <IonLabel>Previous Links</IonLabel>
