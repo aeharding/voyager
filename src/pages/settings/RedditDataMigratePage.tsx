@@ -51,7 +51,7 @@ export default function RedditMigratePage() {
 
     dispatch(addMigrationLink(link));
     setSubs(subs);
-  }, [link, presentToast]);
+  }, [link, presentToast, dispatch]);
 
   function renderUpload() {
     return (
