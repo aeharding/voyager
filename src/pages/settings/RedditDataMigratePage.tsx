@@ -146,7 +146,7 @@ export default function RedditMigratePage() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            {!!subs ? (
+            {subs ? (
               <IonButton
                 onClick={(e) => {
                   e.preventDefault();
