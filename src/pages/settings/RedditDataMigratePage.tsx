@@ -146,7 +146,19 @@ export default function RedditMigratePage() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/settings" text="Settings" />
+            {!!subs ? (
+              <IonButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  setLink("");
+                  setSubs(undefined);
+                }}
+              >
+                Back
+              </IonButton>
+            ) : (
+              <IonBackButton defaultHref="/settings" text="Settings" />
+            )}
           </IonButtons>
 
           <IonTitle>Migrate</IonTitle>
