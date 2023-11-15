@@ -9,7 +9,7 @@ import {
 import AppContent from "../../features/shared/AppContent";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { useRef } from "react";
-import BiometricTitle from "../../features/settings/biometric/biometricTitle";
+import BiometricTitle from "../../features/settings/biometric/BiometricTitle";
 import BiometricSettings from "../../features/settings/biometric/BiometricSettings";
 
 export default function BiometricPage() {

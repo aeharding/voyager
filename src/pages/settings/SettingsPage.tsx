@@ -7,7 +7,6 @@ import {
   IonTitle,
   IonToolbar,
   useIonModal,
-  useIonViewDidEnter,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../../features/user/Profile";

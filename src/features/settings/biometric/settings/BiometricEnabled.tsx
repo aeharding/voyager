@@ -1,6 +1,6 @@
 import { IonLabel, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../user/Profile";
-import BiometricTitle from "../biometricTitle";
+import BiometricTitle from "../BiometricTitle";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setBiometricsEnabled } from "../biometricSlice";
 
