@@ -27,7 +27,10 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
-import { isNative } from "../../helpers/device";
+import {
+  isAppleDeviceInstalledToHomescreen,
+  isNative,
+} from "../../helpers/device";
 import { getIconSrc } from "../../features/settings/app-icon/AppIcon";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { gesture } from "../../features/icons";
@@ -92,6 +95,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (!pageVisibility) return;
+    if (!isNative() || !isAppleDeviceInstalledToHomescreen()) return;
 
     dispatch(refreshBiometricType());
   }, [pageVisibility, dispatch]);
