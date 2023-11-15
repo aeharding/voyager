@@ -277,6 +277,7 @@ export type SettingValueTypes = {
   long_swipe_trigger_point: LongSwipeTriggerPointType;
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
+  infinite_scrolling: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
