@@ -6,7 +6,6 @@ import { setInfiniteScrolling } from "../../settingsSlice";
 export default function InfiniteScrolling() {
   const dispatch = useAppDispatch();
   const infiniteScrolling = useAppSelector(
-    // this needs a better naming
     (state) => state.settings.general.posts.infiniteScrolling,
   );
 
