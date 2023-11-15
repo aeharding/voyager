@@ -7,6 +7,7 @@ import {
   IonTitle,
   IonToolbar,
   useIonModal,
+  useIonViewDidEnter,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../../features/user/Profile";
@@ -25,16 +26,20 @@ import { UpdateContext } from "./update/UpdateContext";
 import useShouldInstall from "../../features/pwa/useShouldInstall";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
 import { isNative } from "../../helpers/device";
 import { getIconSrc } from "../../features/settings/app-icon/AppIcon";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { gesture } from "../../features/icons";
 import TipDialog from "../../features/tips/TipDialog";
-import BiometricTitle from "../../features/settings/biometric/biometricTitle";
 import BiometricIcon from "../../features/settings/biometric/BiometricIcon";
-import { biometricSupportedSelector } from "../../features/settings/biometric/biometricSlice";
+import {
+  biometricSupportedSelector,
+  refreshBiometricType,
+} from "../../features/settings/biometric/biometricSlice";
+import BiometricTitle from "../../features/settings/biometric/BiometricTitle";
+import usePageVisibility from "../../helpers/usePageVisibility";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
@@ -73,6 +78,8 @@ export default function SettingsPage() {
   const icon = useAppSelector((state) => state.appIcon.icon);
   const pageRef = useRef<HTMLElement>(null);
   const biometricSupported = useAppSelector(biometricSupportedSelector);
+  const dispatch = useAppDispatch();
+  const pageVisibility = usePageVisibility();
 
   const [presentTip, onDismissTip] = useIonModal(TipDialog, {
     onDismiss: (data: string, role: string) => onDismissTip(data, role),
@@ -83,6 +90,12 @@ export default function SettingsPage() {
   useEffect(() => {
     checkForUpdates();
   }, [checkForUpdates]);
+
+  useEffect(() => {
+    if (!pageVisibility) return;
+
+    dispatch(refreshBiometricType());
+  }, [pageVisibility, dispatch]);
 
   return (
     <IonPage ref={pageRef} className="grey-bg">

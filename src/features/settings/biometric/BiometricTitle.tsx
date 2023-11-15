@@ -11,9 +11,9 @@ export default function BiometricTitle() {
     case BiometricMethod.touchId:
       return "Touch ID & Passcode";
     case BiometricMethod.faceAuthentication:
-      return "Face Auth & Passcode";
+      return "Face Unlock & Passcode";
     case BiometricMethod.fingerprintAuthentication:
-      return "Touch Auth & Passcode";
+      return "Finger Unlock & Passcode";
     case BiometricMethod.irisAuthentication:
       return "Iris & Passcode";
   }

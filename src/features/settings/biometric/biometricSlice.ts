@@ -81,12 +81,16 @@ export const retrieveBiometricTypeIfNeeded =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     if (getState().biometric.checkResult) return;
 
-    dispatch(checkResultLoading());
-
-    const result = await BiometricLock.getBiometricMethod();
-
-    dispatch(setCheckResult(result));
+    dispatch(refreshBiometricType());
   };
+
+export const refreshBiometricType = () => async (dispatch: AppDispatch) => {
+  dispatch(checkResultLoading());
+
+  const result = await BiometricLock.getBiometricMethod();
+
+  dispatch(setCheckResult(result));
+};
 
 export const retrieveBiometricLockConfigIfNeeded =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
