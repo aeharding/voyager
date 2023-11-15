@@ -45,7 +45,8 @@ export const knownInstancesSelector = createSelector(
     (state: RootState) => state.auth.connectedInstance,
   ],
   (knownInstances, connectedInstance) => {
-    if (!knownInstances || knownInstances === "pending") return [];
+    if (!knownInstances || knownInstances === "pending")
+      return [connectedInstance];
 
     return [
       connectedInstance,
@@ -68,13 +69,14 @@ export const getInstances =
     let federated_instances =
       await db.getCachedFederatedInstances(connectedInstance);
 
-    if (!federated_instances) {
+    // https://github.com/aeharding/voyager/issues/935
+    if (!federated_instances?.linked) {
       try {
         ({ federated_instances } = await clientSelector(
           getState(),
         ).getFederatedInstances());
 
-        if (!federated_instances)
+        if (!federated_instances?.linked)
           throw new Error("No federated instances in response");
 
         db.setCachedFederatedInstances(connectedInstance, federated_instances);
