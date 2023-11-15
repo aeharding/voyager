@@ -3,9 +3,12 @@ import { AppDispatch, RootState } from "../../../store";
 import {
   BiometricLock,
   BiometricLockConfiguration,
-  BiometricMethod,
   BiometricMethodResult,
 } from "capacitor-biometric-lock";
+import {
+  isAppleDeviceInstalledToHomescreen,
+  isNative,
+} from "../../../helpers/device";
 
 interface BiometricState {
   checkResult: BiometricMethodResult | undefined;
@@ -28,12 +31,18 @@ export const biometricSlice = createSlice({
     checkResultLoading: (state) => {
       state.loadingCheckResult = true;
     },
+    checkResultFailed: (state) => {
+      state.loadingCheckResult = false;
+    },
     setCheckResult: (state, action: PayloadAction<BiometricMethodResult>) => {
       state.checkResult = action.payload;
       state.loadingCheckResult = false;
     },
     loadingConfig: (state) => {
       state.loadingConfig = true;
+    },
+    loadingConfigFailed: (state) => {
+      state.loadingConfig = false;
     },
     receivedConfig: (
       state,
@@ -62,8 +71,10 @@ export const biometricSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const {
   checkResultLoading,
+  checkResultFailed,
   setCheckResult,
   loadingConfig,
+  loadingConfigFailed,
   receivedConfig,
   setBiometricsEnabled,
   setBiometricsTimeoutInSeconds,
@@ -72,7 +83,7 @@ export const {
 export default biometricSlice.reducer;
 
 export const biometricSupportedSelector = (state: RootState) =>
-  state.biometric.checkResult?.biometricMethod !== BiometricMethod.none;
+  !!state.biometric.checkResult?.biometricMethod;
 
 export const primaryBiometricTypeSelector = (state: RootState) =>
   state.biometric.checkResult?.biometricMethod;
@@ -87,24 +98,42 @@ export const retrieveBiometricTypeIfNeeded =
 export const refreshBiometricType = () => async (dispatch: AppDispatch) => {
   dispatch(checkResultLoading());
 
-  const result = await BiometricLock.getBiometricMethod();
+  let result;
+
+  try {
+    result = await BiometricLock.getBiometricMethod();
+  } catch (error) {
+    dispatch(checkResultFailed());
+    throw error;
+  }
 
   dispatch(setCheckResult(result));
 };
 
 export const retrieveBiometricLockConfigIfNeeded =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    if (getState().biometric.config) return;
+    const state = getState();
+    if (state.biometric.config || state.biometric.loadingConfig) return;
 
     dispatch(loadingConfig());
 
-    const result = await BiometricLock.getConfiguration();
+    let result;
+
+    try {
+      result = await BiometricLock.getConfiguration();
+    } catch (error) {
+      dispatch(loadingConfigFailed());
+      throw error;
+    }
 
     dispatch(receivedConfig(result));
   };
 
 export const initializeBiometricSliceDataIfNeeded =
   () => async (dispatch: AppDispatch) => {
+    // Only supported on native iOS
+    if (!isNative() || !isAppleDeviceInstalledToHomescreen()) return;
+
     dispatch(retrieveBiometricTypeIfNeeded());
     dispatch(retrieveBiometricLockConfigIfNeeded());
   };
