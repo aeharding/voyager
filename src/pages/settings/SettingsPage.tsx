@@ -25,13 +25,23 @@ import { UpdateContext } from "./update/UpdateContext";
 import useShouldInstall from "../../features/pwa/useShouldInstall";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
-import { isNative } from "../../helpers/device";
+import {
+  isAppleDeviceInstalledToHomescreen,
+  isNative,
+} from "../../helpers/device";
 import { getIconSrc } from "../../features/settings/app-icon/AppIcon";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import { gesture } from "../../features/icons";
 import TipDialog from "../../features/tips/TipDialog";
+import BiometricIcon from "../../features/settings/biometric/BiometricIcon";
+import {
+  biometricSupportedSelector,
+  refreshBiometricType,
+} from "../../features/settings/biometric/biometricSlice";
+import BiometricTitle from "../../features/settings/biometric/BiometricTitle";
+import usePageVisibility from "../../helpers/usePageVisibility";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
@@ -69,6 +79,9 @@ export default function SettingsPage() {
   const currentHandle = useAppSelector(handleSelector);
   const icon = useAppSelector((state) => state.appIcon.icon);
   const pageRef = useRef<HTMLElement>(null);
+  const biometricSupported = useAppSelector(biometricSupportedSelector);
+  const dispatch = useAppDispatch();
+  const pageVisibility = usePageVisibility();
 
   const [presentTip, onDismissTip] = useIonModal(TipDialog, {
     onDismiss: (data: string, role: string) => onDismissTip(data, role),
@@ -79,6 +92,13 @@ export default function SettingsPage() {
   useEffect(() => {
     checkForUpdates();
   }, [checkForUpdates]);
+
+  useEffect(() => {
+    if (!pageVisibility) return;
+    if (!isNative() || !isAppleDeviceInstalledToHomescreen()) return;
+
+    dispatch(refreshBiometricType());
+  }, [pageVisibility, dispatch]);
 
   return (
     <IonPage ref={pageRef} className="grey-bg">
@@ -146,6 +166,17 @@ export default function SettingsPage() {
             <InsetIonItem routerLink="/settings/app-icon">
               <AppIcon src={getIconSrc(icon)} />
               <SettingLabel>App Icon</SettingLabel>
+            </InsetIonItem>
+          )}
+
+          {biometricSupported && (
+            <InsetIonItem routerLink="/settings/biometric">
+              <IconBg color="color(display-p3 0.86 0.1 0.2)" size="1.1">
+                <BiometricIcon />
+              </IconBg>
+              <SettingLabel>
+                <BiometricTitle />
+              </SettingLabel>
             </InsetIonItem>
           )}
 

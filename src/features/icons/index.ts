@@ -10,3 +10,4 @@ export { default as calendarYear } from "./svg/calendarYear.svg";
 export { default as bold } from "./svg/bold.svg";
 export { default as italic } from "./svg/italic.svg";
 export { default as gesture } from "./svg/gesture.svg";
+export { default as faceid } from "./svg/faceid.svg";
