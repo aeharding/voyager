@@ -97,6 +97,7 @@ interface SettingsState {
       showHideReadButton: boolean;
       autoHideRead: boolean;
       disableAutoHideInCommunities: boolean;
+      infiniteScrolling: boolean;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
@@ -170,6 +171,7 @@ const initialState: SettingsState = {
       showHideReadButton: false,
       autoHideRead: false,
       disableAutoHideInCommunities: false,
+      infiniteScrolling: true,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
@@ -361,6 +363,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("disable_auto_hide_in_communities", action.payload);
     },
+    setInfiniteScrolling(state, action: PayloadAction<boolean>) {
+      state.general.posts.infiniteScrolling = action.payload;
+
+      db.setSetting("infinite_scrolling", action.payload);
+    },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
@@ -500,6 +507,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const disable_auto_hide_in_communities = await db.getSetting(
         "disable_auto_hide_in_communities",
       );
+      const infinite_scrolling = await db.getSetting("infinite_scrolling");
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
@@ -582,6 +590,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             disableAutoHideInCommunities:
               disable_auto_hide_in_communities ??
               initialState.general.posts.disableAutoHideInCommunities,
+            infiniteScrolling:
+              infinite_scrolling ??
+              initialState.general.posts.infiniteScrolling,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
@@ -636,6 +647,7 @@ export const {
   setShowHideReadButton,
   setAutoHideRead,
   setDisableAutoHideInCommunities,
+  setInfiniteScrolling,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,
