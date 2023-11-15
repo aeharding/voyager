@@ -31,7 +31,7 @@
     "vite-express": "^0.10.0"
   },
   "devDependencies": {
-    "capacitor-biometric-lock": "link:../capacitor-biometric-lock",
+    "capacitor-biometric-lock": "^0.1.0",
     "@capacitor-community/app-icon": "^4.1.1",
     "@capacitor/android": "5.2.3",
     "@capacitor/app": "^5.0.6",
