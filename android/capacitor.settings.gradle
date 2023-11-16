@@ -2,9 +2,6 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/.pnpm/@capacitor+android@5.2.3_@capacitor+core@5.2.3/node_modules/@capacitor/android/capacitor')
 
-include ':capacitor-biometric-lock'
-project(':capacitor-biometric-lock').projectDir = new File('../node_modules/.pnpm/capacitor-biometric-lock@0.1.0_@capacitor+core@5.2.3/node_modules/capacitor-biometric-lock/android')
-
 include ':capacitor-community-app-icon'
 project(':capacitor-community-app-icon').projectDir = new File('../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.2.3/node_modules/@capacitor-community/app-icon/android')
 
@@ -31,6 +28,9 @@ project(':capacitor-android-nav-mode').projectDir = new File('../node_modules/.p
 
 include ':capacitor-application-context'
 project(':capacitor-application-context').projectDir = new File('../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.2.3/node_modules/capacitor-application-context/android')
+
+include ':capacitor-biometric-lock'
+project(':capacitor-biometric-lock').projectDir = new File('../node_modules/.pnpm/capacitor-biometric-lock@0.1.0_@capacitor+core@5.2.3/node_modules/capacitor-biometric-lock/android')
 
 include ':capacitor-plugin-safe-area'
 project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@2.0.5_@capacitor+core@5.2.3/node_modules/capacitor-plugin-safe-area/android')
