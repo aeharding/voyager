@@ -370,6 +370,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("infinite_scrolling", action.payload);
     },
+    setUpvoteOnSave(state, action: PayloadAction<boolean>) {
+      state.general.posts.upvoteOnSave = action.payload;
+
+      db.setSetting("upvote_on_save", action.payload);
+    },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
@@ -653,6 +658,7 @@ export const {
   setAutoHideRead,
   setDisableAutoHideInCommunities,
   setInfiniteScrolling,
+  setUpvoteOnSave,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,
