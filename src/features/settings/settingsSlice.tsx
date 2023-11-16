@@ -173,7 +173,7 @@ const initialState: SettingsState = {
       autoHideRead: false,
       disableAutoHideInCommunities: false,
       infiniteScrolling: true,
-      upvoteOnSave: true,
+      upvoteOnSave: false,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
