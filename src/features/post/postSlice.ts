@@ -225,6 +225,12 @@ export const savePost =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const oldSaved = getState().post.postSavedById[postId];
 
+    const { upvoteOnSave } = getState().settings.general.posts;
+
+    if (upvoteOnSave) {
+      dispatch(voteOnPost(postId, save ? 1 : 0));
+    }
+
     dispatch(updatePostSaved({ postId, saved: save }));
 
     try {
