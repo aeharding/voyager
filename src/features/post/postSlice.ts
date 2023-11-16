@@ -227,8 +227,8 @@ export const savePost =
 
     const { upvoteOnSave } = getState().settings.general.posts;
 
-    if (upvoteOnSave) {
-      dispatch(voteOnPost(postId, save ? 1 : 0));
+    if (upvoteOnSave && save) {
+      dispatch(voteOnPost(postId, 1));
     }
 
     dispatch(updatePostSaved({ postId, saved: save }));
