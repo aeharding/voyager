@@ -48,7 +48,8 @@ export default function DefaultFeed() {
   );
 
   // When lemmy v0.18 support removed, this can be removed
-  const options: Record<string, string> = { ...ODefaultFeedType };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const options: any = { ...ODefaultFeedType };
   if (!moderatedFeedSupported) delete options["Moderating"];
 
   if (!jwt || !defaultFeed) return; // must be logged in to configure default feed

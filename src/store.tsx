@@ -30,6 +30,9 @@ import instancesSlice, {
   getInstances,
 } from "./features/instances/instancesSlice";
 import resolveSlice from "./features/resolve/resolveSlice";
+import biometricSlice, {
+  initializeBiometricSliceDataIfNeeded,
+} from "./features/settings/biometric/biometricSlice";
 import migrationSlice, {
   getMigrationLinks,
 } from "./features/community/migrationSlice";
@@ -47,6 +50,7 @@ const store = configureStore({
     appIcon: appIconSlice,
     instances: instancesSlice,
     resolve: resolveSlice,
+    biometric: biometricSlice,
     migration: migrationSlice,
   },
 });
@@ -88,6 +92,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           store.dispatch(fetchSettingsFromDatabase()),
           store.dispatch(fetchGesturesFromDatabase()),
           store.dispatch(fetchAppIcon()),
+          store.dispatch(initializeBiometricSliceDataIfNeeded()),
         ]);
       } finally {
         // Subscribe to actions to handle handle changes, this can be used to react to other changes as well

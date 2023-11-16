@@ -11,6 +11,7 @@ install! 'cocoapods', :disable_input_output_paths => true
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@5.2.3_@capacitor+core@5.2.3/node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@5.2.3_@capacitor+core@5.2.3/node_modules/@capacitor/ios'
+  pod 'CapacitorBiometricLock', :path => '../../node_modules/.pnpm/capacitor-biometric-lock@0.1.0_@capacitor+core@5.2.3/node_modules/capacitor-biometric-lock'
   pod 'CapacitorCommunityAppIcon', :path => '../../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.2.3/node_modules/@capacitor-community/app-icon'
   pod 'CapacitorApp', :path => '../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/app'
   pod 'CapacitorBrowser', :path => '../../node_modules/.pnpm/@capacitor+browser@5.1.0_@capacitor+core@5.2.3/node_modules/@capacitor/browser'

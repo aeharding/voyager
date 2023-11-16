@@ -151,6 +151,9 @@ devDependencies:
   capacitor-application-context:
     specifier: ^0.0.1
     version: 0.0.1(@capacitor/core@5.2.3)
+  capacitor-biometric-lock:
+    specifier: ^0.1.0
+    version: 0.1.0(@capacitor/core@5.2.3)
   capacitor-plugin-safe-area:
     specifier: ^2.0.5
     version: 2.0.5(@capacitor/core@5.2.3)
@@ -4314,6 +4317,14 @@ packages:
 
   /capacitor-application-context@0.0.1(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-XYHvn01l3VxbGh/fs77aBTyEW54TOoEDlXYkAEeRe7PQCwU8EfVCX5MLvuWVCoIzpRlEWYNCFCS1TvLkmV7IsQ==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.3
+    dev: true
+
+  /capacitor-biometric-lock@0.1.0(@capacitor/core@5.2.3):
+    resolution: {integrity: sha512-+O+QZOtsj3+ItESBj/2NhpBupKVFNjunvE+sHeJvyaMYrb/w4AlpIUj/20GmfIKKUAxF3B3xQZ3bF6MPuG1U/w==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:

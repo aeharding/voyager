@@ -1,8 +1,4 @@
-import {
-  OPostAppearanceType,
-  PostAppearanceType,
-  setPostAppearance,
-} from "../../settingsSlice";
+import { OPostAppearanceType, setPostAppearance } from "../../settingsSlice";
 import { useAppSelector } from "../../../../store";
 import SettingSelector from "../../shared/SettingSelector";
 
@@ -11,10 +7,8 @@ export default function PostSize() {
     (state) => state.settings.appearance.posts.type,
   );
 
-  const PostSizeSelector = SettingSelector<PostAppearanceType>;
-
   return (
-    <PostSizeSelector
+    <SettingSelector
       title="Post Size"
       selected={postsAppearanceType}
       setSelected={setPostAppearance}

@@ -11,6 +11,8 @@ import {
 import AppContent from "../../../features/shared/AppContent";
 import { InsetIonItem } from "./AboutPage";
 import InAppExternalLink from "../../../features/shared/InAppExternalLink";
+import { useRef } from "react";
+import { useSetActivePage } from "../../../features/auth/AppContext";
 
 const links = [
   {
@@ -52,8 +54,12 @@ const links = [
 ];
 
 export default function AboutThanksPage() {
+  const pageRef = useRef<HTMLElement>(null);
+
+  useSetActivePage(pageRef);
+
   return (
-    <IonPage className="grey-bg">
+    <IonPage className="grey-bg" ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
