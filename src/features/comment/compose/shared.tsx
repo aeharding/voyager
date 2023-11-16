@@ -9,6 +9,7 @@ import React, { Dispatch, SetStateAction, useRef } from "react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 import { css } from "@emotion/react";
 import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
+import { useEffect } from "react";
 
 export const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -62,6 +63,15 @@ export default function CommentContent({
 }: CommentContentProps) {
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    textareaRef.current?.focus({ preventScroll: true });
+
+    // iOS safari native has race sometimes
+    setTimeout(() => {
+      textareaRef.current?.focus({ preventScroll: true });
+    }, 100);
+  }, []);
 
   return (
     <>

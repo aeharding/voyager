@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Keyboard } from "@capacitor/keyboard";
-import { isAndroid, isNative } from "./device";
+import { isNative } from "./device";
 import BooleanWatcher from "./BooleanWatcher";
 
 const keyboardWatcher = new BooleanWatcher(false);
@@ -10,7 +10,7 @@ if (isNative()) {
     keyboardWatcher.setValue(true),
   );
 
-  Keyboard.addListener("keyboardWillShow", () =>
+  Keyboard.addListener("keyboardWillHide", () =>
     keyboardWatcher.setValue(false),
   );
 }
@@ -23,7 +23,7 @@ export default function useKeyboardOpen() {
   useEffect(() => {
     const nativeListener = (open: boolean) => setKeyboardOpen(open);
 
-    if (isNative() && isAndroid()) {
+    if (isNative()) {
       keyboardWatcher.addEventListener(nativeListener);
 
       return () => {
