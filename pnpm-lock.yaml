@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ionic/core': npm:voyager-ionic-core@^7.5.0
+  '@ionic/core': npm:voyager-ionic-core@^7.5.5
 
 dependencies:
   compression:
@@ -77,8 +77,8 @@ devDependencies:
     specifier: ^2.2.1
     version: 2.2.1
   '@ionic/core':
-    specifier: npm:voyager-ionic-core@^7.5.0
-    version: /voyager-ionic-core@7.5.1
+    specifier: npm:voyager-ionic-core@^7.5.5
+    version: /voyager-ionic-core@7.5.5
   '@ionic/react':
     specifier: ^7.5.1
     version: 7.5.2(react-dom@18.2.0)(react@18.2.0)
@@ -2122,7 +2122,7 @@ packages:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
     dependencies:
-      '@ionic/core': /voyager-ionic-core@7.5.1
+      '@ionic/core': /voyager-ionic-core@7.5.5
       ionicons: 7.2.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -2855,6 +2855,12 @@ packages:
 
   /@stencil/core@4.7.0:
     resolution: {integrity: sha512-hl3hD5FA8F9kZiDJSus08Kno1QRl+fXeMBzrl5DjWAzAu0JHxL1AqTph5oQSekjvkSahaa8JtsXnHRZU93eivg==}
+    engines: {node: '>=16.0.0', npm: '>=7.10.0'}
+    hasBin: true
+    dev: true
+
+  /@stencil/core@4.7.2:
+    resolution: {integrity: sha512-sPPDYrXiTbfeUF5CCyfqysXK/yfTHC4xYR1+nHzGkS2vhRSBOLp0oPuB+xkJLKA+K2ZqDJUxpOnDxy1CLWwBXA==}
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
     dev: true
@@ -11660,10 +11666,10 @@ packages:
       '@capacitor/core': 5.2.3
     dev: true
 
-  /voyager-ionic-core@7.5.1:
-    resolution: {integrity: sha512-2A+cHPPhcvlWHhaa4Igz2n9zwv+BAu6GyQMGj3o2/orVF6SpKuegYmsuu+iNA4SXMSsOdPCyXQ+GWK0HocY3/w==}
+  /voyager-ionic-core@7.5.5:
+    resolution: {integrity: sha512-lcwGceM/Xwn8hj2rururjP/bVq82PxpAuXl6VjAo+bv9k3ynUR/19+FfMgsbl7caKvO7PnSudEQNLefeDxlG3Q==}
     dependencies:
-      '@stencil/core': 4.7.0
+      '@stencil/core': 4.7.2
       ionicons: 7.2.1
       tslib: 2.6.2
     dev: true
