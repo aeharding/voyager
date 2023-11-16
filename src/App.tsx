@@ -34,6 +34,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import AppCrash from "./AppCrash";
 
 import "./listeners";
+import HapticsListener from "./listeners/HapticsListener";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
@@ -66,6 +67,8 @@ export default function App() {
                 <Router>
                   <IonApp>
                     <ErrorBoundary FallbackComponent={AppCrash}>
+                      <HapticsListener />
+
                       <TabContextProvider>
                         <TextRecoveryStartupPrompt />
                         <Auth>
