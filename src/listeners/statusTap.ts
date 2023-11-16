@@ -1,4 +1,4 @@
-import { findCurrentPage } from "./helpers/ionic";
+import { findCurrentPage } from "../helpers/ionic";
 
 let savedScrollTop = 0;
 

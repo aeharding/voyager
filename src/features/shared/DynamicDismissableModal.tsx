@@ -52,6 +52,9 @@ export function DynamicDismissableModal({
   }, [pageContext.pageRef, iss]);
 
   const onDismissAttemptCb = useCallback(async () => {
+    if (document.activeElement instanceof HTMLElement)
+      document.activeElement.blur();
+
     await presentActionSheet([
       {
         text: "Delete",
@@ -105,6 +108,11 @@ export function DynamicDismissableModal({
         canDismiss={canDismiss ? canDismiss : onDismissAttemptCb}
         onDidDismiss={() => setIsOpen(false)}
         presentingElement={presentingElement}
+        onWillDismiss={() => {
+          if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+          }
+        }}
       >
         {renderModalContents({
           setCanDismiss,
