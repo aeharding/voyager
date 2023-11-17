@@ -22,6 +22,7 @@ import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import { VList, VListHandle } from "virtua";
 import { FeedSearchContext } from "../../pages/shared/CommunityPage";
 import { useAppSelector } from "../../store";
+import FetchMore from "./endItems/FetchMore";
 
 type PageData =
   | {
@@ -89,6 +90,7 @@ export default function Feed<I>({
   onRemovedFromTop,
 }: FeedProps<I>) {
   const [page, setPage] = useState<number | string>(0);
+  const [numberedPage, setNumberedPage] = useState(0);
   const [items, setItems] = useState<I[]>([]);
 
   // Loading needs to be initially `undefined` so that IonRefresher is
@@ -111,6 +113,9 @@ export default function Feed<I>({
 
   const postType = useAppSelector(
     (state) => state.settings.appearance.posts.type,
+  );
+  const infiniteScrolling = useAppSelector(
+    (state) => state.settings.general.posts.infiniteScrolling,
   );
 
   // If you have everything filtered, don't continue polling API indefinitely
@@ -138,11 +143,13 @@ export default function Feed<I>({
 
       setLoading(true);
 
-      let currentPage = refresh
-        ? 1
-        : typeof page === "number"
-        ? page + 1
-        : page;
+      let currentPage = (() => {
+        if (refresh) return 1;
+
+        if (typeof page === "number") return page + 1;
+
+        return page;
+      })();
 
       let newPageItems: I[];
 
@@ -191,6 +198,7 @@ export default function Feed<I>({
       if (!newPageItems.length || requestLoopRef.current > MAX_REQUEST_LOOP)
         setAtEnd(true);
 
+      setNumberedPage((numberedPage) => (refresh ? 1 : numberedPage + 1));
       setPage(currentPage);
     },
     [fetchFn, page, getIndex, filterOnRxFn],
@@ -237,6 +245,14 @@ export default function Feed<I>({
           communityName={communityName}
           sortDuration={sortDuration}
           key="footer"
+        />
+      );
+    else if (!infiniteScrolling)
+      return (
+        <FetchMore
+          fetchMore={fetchMore}
+          loading={!!loading}
+          page={numberedPage}
         />
       );
   })();
@@ -299,7 +315,11 @@ export default function Feed<I>({
 
           startRangeRef.current = start;
 
-          if (end + 10 > filteredItems.length && !loadFailed) {
+          if (
+            end + 10 > filteredItems.length &&
+            !loadFailed &&
+            infiniteScrolling
+          ) {
             fetchMore();
           }
         }}

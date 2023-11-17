@@ -29,21 +29,24 @@ const ValueLabel = styled(IonLabel)`
   text-overflow: ellipsis;
 `;
 
-export interface SettingSelectorProps<T> {
+export interface SettingSelectorProps<T, O extends Dictionary<T>> {
   title: string;
   openTitle?: string;
   selected: T;
   setSelected: Dispatchable<T>;
-  options: Dictionary<string>;
+  options: O;
   optionIcons?: Dictionary<string>;
   icon?: React.FunctionComponent;
   iconMirrored?: boolean;
   disabled?: boolean;
-  getOptionLabel?: (option: string) => string | undefined;
-  getSelectedLabel?: (option: string) => string | undefined;
+  getOptionLabel?: (option: T) => string | undefined;
+  getSelectedLabel?: (option: T) => string | undefined;
 }
 
-export default function SettingSelector<T extends string>({
+export default function SettingSelector<
+  T extends string | number,
+  O extends Dictionary<T>,
+>({
   title,
   openTitle,
   selected,
@@ -55,7 +58,7 @@ export default function SettingSelector<T extends string>({
   disabled,
   getOptionLabel,
   getSelectedLabel,
-}: SettingSelectorProps<T>) {
+}: SettingSelectorProps<T, O>) {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -65,7 +68,7 @@ export default function SettingSelector<T extends string>({
 
       return {
         icon: optionIcons ? optionIcons[v] : undefined,
-        text: customLabel ?? startCase(v),
+        text: customLabel ?? (typeof v === "string" ? startCase(v) : v),
         data: v,
         role: selected === v ? "selected" : undefined,
       } as ActionSheetButton<T>;
@@ -104,7 +107,8 @@ export default function SettingSelector<T extends string>({
         {Icon && <Icon mirror={iconMirrored} />}
         <IonLabel>{title}</IonLabel>
         <ValueLabel slot="end" color="medium">
-          {getSelectedLabel?.(selected) ?? startCase(selected)}
+          {getSelectedLabel?.(selected) ??
+            (typeof selected === "string" ? startCase(selected) : selected)}
         </ValueLabel>
       </Container>
       <IonActionSheet
@@ -114,9 +118,9 @@ export default function SettingSelector<T extends string>({
         onWillDismiss={(
           e: IonActionSheetCustomEvent<OverlayEventDetail<T>>,
         ) => {
-          if (e.detail.data) {
-            dispatch(setSelected(e.detail.data));
-          }
+          if (e.detail.data == null) return;
+
+          dispatch(setSelected(e.detail.data));
         }}
         header={openTitle ?? title}
         buttons={buttons}

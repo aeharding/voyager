@@ -1,5 +1,8 @@
 import React, { forwardRef } from "react";
-import { isAppleDeviceInstalledToHomescreen } from "../../helpers/device";
+import {
+  isAppleDeviceInstalledToHomescreen,
+  isNative,
+} from "../../helpers/device";
 import { fixSafariAutoscroll } from "../../helpers/safari";
 import TextareaAutosize, {
   TextareaAutosizeProps,
@@ -13,7 +16,7 @@ const TextareaAutosizedForOnScreenKeyboard = forwardRef<
     <TextareaAutosize
       ref={ref}
       onFocus={(e) => {
-        if (!isAppleDeviceInstalledToHomescreen()) return;
+        if (!isAppleDeviceInstalledToHomescreen() || isNative()) return;
 
         // https://stackoverflow.com/a/74902393/1319878
         const target = e.currentTarget;

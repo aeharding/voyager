@@ -196,8 +196,6 @@ function SwipeList({
   end,
   farEnd,
 }: SwipeListProps) {
-  const Selector = SettingSelector<SwipeAction>;
-
   const disableLeftSwipes = useAppSelector(
     (state) => state.gesture.swipe.disableLeftSwipes,
   );
@@ -215,7 +213,7 @@ function SwipeList({
         <IonLabel>{name}</IonLabel>
       </ListHeader>
       <IonList inset>
-        <Selector
+        <SettingSelector
           icon={ShortSwipeSvg}
           title="Left Short Swipe"
           selected={selector.start ?? options.None}
@@ -225,7 +223,7 @@ function SwipeList({
           disabled={disableLeftSwipes}
           getSelectedLabel={getSelectedLabel}
         />
-        <Selector
+        <SettingSelector
           icon={LongSwipeSvg}
           title="Left Long Swipe"
           selected={selector.farStart ?? options.None}
@@ -235,7 +233,7 @@ function SwipeList({
           disabled={disableLeftSwipes}
           getSelectedLabel={getSelectedLabel}
         />
-        <Selector
+        <SettingSelector
           icon={ShortSwipeSvg}
           iconMirrored
           title="Right Short Swipe"
@@ -246,7 +244,7 @@ function SwipeList({
           disabled={disableRightSwipes}
           getSelectedLabel={getSelectedLabel}
         />
-        <Selector
+        <SettingSelector
           icon={LongSwipeSvg}
           iconMirrored
           title="Right Long Swipe"

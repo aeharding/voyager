@@ -1,4 +1,5 @@
 import { CapacitorConfig } from "@capacitor/cli";
+import { KeyboardResize } from "@capacitor/keyboard";
 
 const config: CapacitorConfig = {
   appId: "app.vger.voyager",
@@ -13,6 +14,7 @@ const config: CapacitorConfig = {
     },
     Keyboard: {
       resizeOnFullScreen: true,
+      resize: KeyboardResize.None,
     },
   },
 };
