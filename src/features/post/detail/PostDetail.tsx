@@ -16,7 +16,6 @@ import {
 } from "react";
 import { findLoneImage } from "../../../helpers/markdown";
 import { setPostRead } from "../postSlice";
-import { isUrlImage, isUrlVideo } from "../../../helpers/lemmy";
 import { maxWidthCss } from "../../shared/AppContent";
 import PersonLink from "../../labels/links/PersonLink";
 import { CommentSortType, PostView } from "lemmy-js-client";
@@ -24,17 +23,17 @@ import ViewAllComments from "./ViewAllComments";
 import InlineMarkdown from "../../shared/InlineMarkdown";
 import { megaphone } from "ionicons/icons";
 import CommunityLink from "../../labels/links/CommunityLink";
-import Video from "../../shared/Video";
 import { css } from "@emotion/react";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { PageContext } from "../../auth/PageContext";
-import PostGalleryImg from "../../gallery/PostGalleryImg";
+import PostMedia from "../../gallery/PostMedia";
 import { scrollIntoView } from "../../../helpers/dom";
 import JumpFab from "../../comment/JumpFab";
 import { OTapToCollapseType } from "../../../services/db";
 import Locked from "./Locked";
 import useAppToast from "../../../helpers/useAppToast";
 import { postLocked } from "../../../helpers/toastMessages";
+import { isUrlMedia } from "../../../helpers/url";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -64,7 +63,7 @@ const lightboxCss = css`
   background: var(--lightroom-bg);
 `;
 
-const LightboxImg = styled(PostGalleryImg)`
+const LightboxPostMedia = styled(PostMedia)`
   -webkit-touch-callout: default;
 
   ${lightboxCss}
@@ -173,17 +172,12 @@ export default function PostDetail({
     [],
   );
 
-  function renderImage() {
+  function renderMedia() {
     if (!post) return;
 
-    if (post.post.url) {
-      if (isUrlImage(post.post.url)) return <LightboxImg post={post} />;
-
-      if (isUrlVideo(post.post.url))
-        return <Video src={post.post.url} css={lightboxCss} controls />;
+    if ((post.post.url && isUrlMedia(post.post.url)) || markdownLoneImage) {
+      return <LightboxPostMedia post={post} controls />;
     }
-
-    if (markdownLoneImage) return <LightboxImg post={post} />;
   }
 
   function renderText() {
@@ -192,19 +186,13 @@ export default function PostDetail({
     if (post.post.body && !markdownLoneImage) {
       return (
         <>
-          {post.post.url &&
-            !isUrlImage(post.post.url) &&
-            !isUrlVideo(post.post.url) && <Embed post={post} />}
+          {post.post.url && !isUrlMedia(post.post.url) && <Embed post={post} />}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
         </>
       );
     }
 
-    if (
-      post.post.url &&
-      !isUrlImage(post.post.url) &&
-      !isUrlVideo(post.post.url)
-    ) {
+    if (post.post.url && !isUrlMedia(post.post.url)) {
       return <StyledEmbed post={post} />;
     }
   }
@@ -227,7 +215,7 @@ export default function PostDetail({
           }}
         >
           <Container>
-            <div onClick={(e) => e.stopPropagation()}>{renderImage()}</div>
+            <div onClick={(e) => e.stopPropagation()}>{renderMedia()}</div>
             <PostDeets>
               <Title ref={titleRef}>
                 <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}

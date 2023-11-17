@@ -66,18 +66,26 @@ const VideoEl = styled.video<{ blur?: boolean }>`
     `}
 `;
 
-interface VideoProps {
+export interface VideoProps {
   src: string;
   controls?: boolean;
 
   blur?: boolean;
+
+  progress?: boolean;
 
   className?: string;
 }
 
 const videoPlaybackPlace: Dictionary<number> = {};
 
-export default function Video({ src, controls, blur, className }: VideoProps) {
+export default function Video({
+  src,
+  controls,
+  blur,
+  className,
+  progress: showProgress = !controls,
+}: VideoProps) {
   const [inViewRef, inView] = useInView({
     threshold: 0.5,
   });
@@ -135,10 +143,11 @@ export default function Video({ src, controls, blur, className }: VideoProps) {
         autoPlay={false}
         controls={controls}
         onTimeUpdate={(e: ChangeEvent<HTMLVideoElement>) => {
+          if (!showProgress) return;
           setProgress(e.target.currentTime / e.target.duration);
         }}
       />
-      <Progress value={progress} />
+      {showProgress && <Progress value={progress} />}
     </Container>
   );
 

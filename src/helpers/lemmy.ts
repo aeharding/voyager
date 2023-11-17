@@ -8,7 +8,6 @@ import {
 } from "lemmy-js-client";
 import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
-import mime from "mime";
 
 export interface LemmyJWT {
   sub: number;
@@ -236,24 +235,6 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
   flattenChildren(comment);
 
   return flattenedChildren;
-}
-
-function isValidUrl(url: string): boolean {
-  try {
-    new URL(url);
-    return true;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-}
-
-export function isUrlImage(url: string): boolean {
-  return (isValidUrl(url) && mime.getType(url)?.startsWith("image/")) ?? false;
-}
-
-export function isUrlVideo(url: string): boolean {
-  return (isValidUrl(url) && mime.getType(url)?.startsWith("video/")) ?? false;
 }
 
 export function share(item: Post | Comment) {
