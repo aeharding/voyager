@@ -206,6 +206,14 @@ export default function TitleSearchResults() {
     setSearchPayload(result.communities);
   }
 
+  function renderTitle(result: Result) {
+    if (typeof result === "string") return result;
+
+    if ("type" in result) return result.label;
+
+    return getHandle(result);
+  }
+
   if (!searching) return null;
 
   return (
@@ -226,11 +234,7 @@ export default function TitleSearchResults() {
                 key={typeof c === "string" ? c : c.id}
                 routerDirection="none"
               >
-                {typeof c === "string"
-                  ? c
-                  : "type" in c
-                  ? c.label
-                  : getHandle(c)}
+                {renderTitle(c)}
               </IonItem>
             ))}
           </IonList>

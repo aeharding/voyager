@@ -97,7 +97,6 @@ export async function uploadImage(url: string, auth: string, image: File) {
   if (isNative()) {
     const response = await getClient(url, auth).uploadImage({
       image: compressedImageIfNeeded as File,
-      auth,
     });
 
     if (!response.url) throw new Error("unknown native image upload error");
