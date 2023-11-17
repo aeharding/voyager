@@ -236,9 +236,10 @@ Shoutout to [@fer0n](https://github.com/fer0n) for the great logo and splashscre
 
 ## 📄 License
 
-### Logo & Splashscreen
+### Artwork
 
-CC BY-SA 4.0 &copy; [@fer0n](https://github.com/fer0n)
+- **Default Logo & Splashscreen**: CC BY-SA 4.0 &copy; [@fer0n](https://github.com/fer0n)
+- **Default Android themed icon**: CC BY-SA 4.0 &copy; [@Donno](https://github.com/Donnnno)
 
 ### Code
 
