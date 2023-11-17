@@ -72,9 +72,8 @@ export const getInstances =
     // https://github.com/aeharding/voyager/issues/935
     if (!federated_instances?.linked) {
       try {
-        ({ federated_instances } = await clientSelector(
-          getState(),
-        ).getFederatedInstances());
+        ({ federated_instances } =
+          await clientSelector(getState()).getFederatedInstances());
 
         if (!federated_instances?.linked)
           throw new Error("No federated instances in response");

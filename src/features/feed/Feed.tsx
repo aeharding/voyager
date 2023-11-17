@@ -143,11 +143,13 @@ export default function Feed<I>({
 
       setLoading(true);
 
-      let currentPage = refresh
-        ? 1
-        : typeof page === "number"
-        ? page + 1
-        : page;
+      let currentPage = (() => {
+        if (refresh) return 1;
+
+        if (typeof page === "number") return page + 1;
+
+        return page;
+      })();
 
       let newPageItems: I[];
 
