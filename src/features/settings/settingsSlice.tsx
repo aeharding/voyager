@@ -98,6 +98,7 @@ interface SettingsState {
       autoHideRead: boolean;
       disableAutoHideInCommunities: boolean;
       infiniteScrolling: boolean;
+      upvoteOnSave: boolean;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
@@ -172,6 +173,7 @@ const initialState: SettingsState = {
       autoHideRead: false,
       disableAutoHideInCommunities: false,
       infiniteScrolling: true,
+      upvoteOnSave: false,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
@@ -368,6 +370,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("infinite_scrolling", action.payload);
     },
+    setUpvoteOnSave(state, action: PayloadAction<boolean>) {
+      state.general.posts.upvoteOnSave = action.payload;
+
+      db.setSetting("upvote_on_save", action.payload);
+    },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
@@ -508,6 +515,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "disable_auto_hide_in_communities",
       );
       const infinite_scrolling = await db.getSetting("infinite_scrolling");
+      const upvote_on_save = await db.getSetting("upvote_on_save");
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
@@ -593,6 +601,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             infiniteScrolling:
               infinite_scrolling ??
               initialState.general.posts.infiniteScrolling,
+            upvoteOnSave:
+              upvote_on_save ?? initialState.general.posts.upvoteOnSave,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
@@ -648,6 +658,7 @@ export const {
   setAutoHideRead,
   setDisableAutoHideInCommunities,
   setInfiniteScrolling,
+  setUpvoteOnSave,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,

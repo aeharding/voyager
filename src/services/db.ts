@@ -278,6 +278,7 @@ export type SettingValueTypes = {
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
   infinite_scrolling: boolean;
+  upvote_on_save: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
