@@ -1,4 +1,5 @@
 import {
+  IonBadge,
   IonLabel,
   IonList,
   IonRadio,
@@ -10,6 +11,7 @@ import { InsetIonItem } from "../shared/formatting";
 import styled from "@emotion/styled";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { APP_ICONS, AppIcon, updateAppIcon } from "./appIconSlice";
+import { isAndroid } from "../../../helpers/device";
 
 const StyledIonThumbnail = styled(IonThumbnail)`
   margin: 1rem 1rem 1rem 0;
@@ -19,6 +21,12 @@ const StyledIonThumbnail = styled(IonThumbnail)`
 
 const Img = styled.img`
   border-radius: 1em;
+`;
+
+const H2 = styled.h2`
+  display: flex;
+  align-items: center;
+  gap: 6px;
 `;
 
 export default function AppIconComponent() {
@@ -38,9 +46,18 @@ export default function AppIconComponent() {
               <Img src={getIconSrc(icon)} />
             </StyledIonThumbnail>
             <IonLabel>
-              <h2>{getIconName(icon)}</h2>
+              <H2>
+                {getIconName(icon)}{" "}
+                {isIconThemed(icon) && (
+                  <IonBadge color="medium">Themed</IonBadge>
+                )}
+              </H2>
               <p>
-                <IonText color="medium">{getIconAuthor(icon)}</IonText>
+                <IonText color="medium">
+                  {getIconAuthor(icon)}{" "}
+                  {getThemedIconAuthor(icon) &&
+                    `— themed by ${getThemedIconAuthor(icon)}`}
+                </IonText>
               </p>
             </IonLabel>
             <IonRadio value={icon} />
@@ -74,7 +91,7 @@ function getIconName(icon: AppIcon): string {
   }
 }
 
-function getIconAuthor(icon: AppIcon): string | null {
+function getIconAuthor(icon: AppIcon): string {
   switch (icon) {
     case "default":
     case "planetary":
@@ -86,5 +103,27 @@ function getIconAuthor(icon: AppIcon): string | null {
       return "nathanielcwm";
     case "galactic":
       return "L1C4U5E";
+  }
+}
+
+function getThemedIconAuthor(icon: AppIcon): string | undefined {
+  if (!isAndroid()) return;
+
+  switch (icon) {
+    case "default":
+    case "planetary":
+      return "Donno";
+  }
+}
+
+function isIconThemed(icon: AppIcon): boolean {
+  if (!isAndroid()) return false;
+
+  switch (icon) {
+    case "default":
+    case "planetary":
+      return true;
+    default:
+      return false;
   }
 }
