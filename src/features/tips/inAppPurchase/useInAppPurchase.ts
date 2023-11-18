@@ -1,84 +1,57 @@
-import "cordova-plugin-purchase";
-import { notEmpty } from "../../../helpers/array";
 import { useEffect, useState } from "react";
-import tipProducts from "./tipProducts";
-import { isNative } from "../../../helpers/device";
+import { isAndroid, isNative } from "../../../helpers/device";
+import {
+  Purchases,
+  PurchasesStoreProduct,
+} from "@revenuecat/purchases-capacitor";
+
+const PUBLIC_REVENUECAT_ANDROID_API_KEY = "goog_hVemKEyHECiLbyUlVAPsFOVqoKN";
+const PUBLIC_REVENUECAT_APPLE_API_KEY = "appl_EKWdPfZUYmrWEgJXKsIkQGkgjBd";
+const PRODUCT_IDENTIFIERS = ["tip_small", "tip_medium", "tip_large"];
 
 async function initializeIfNeeded() {
   // Do not setup in-app purchases for PWA, f-droid and github builds
   if (BUILD_FOSS_ONLY || !isNative()) return;
-  if (CdvPurchase.store.isReady) return;
+  if ((await Purchases.isConfigured()).isConfigured) return;
 
-  try {
-    document.addEventListener("deviceready", () => {
-      CdvPurchase.store.when().approved((p) => p.finish());
-
-      CdvPurchase.store.register(tipProducts);
-
-      CdvPurchase.store.initialize([
-        CdvPurchase.Platform.APPLE_APPSTORE,
-        CdvPurchase.Platform.GOOGLE_PLAY,
-      ]);
-    });
-  } catch (error) {
-    console.error("Error initializing CdvPurchase", error);
-  }
+  Purchases.configure({
+    apiKey: isAndroid()
+      ? PUBLIC_REVENUECAT_ANDROID_API_KEY
+      : PUBLIC_REVENUECAT_APPLE_API_KEY,
+  });
 }
 
-initializeIfNeeded();
+async function getProducts(): Promise<PurchasesStoreProduct[]> {
+  await initializeIfNeeded();
 
-export interface Product {
-  label: string;
-  id: string;
-  price: string;
-}
+  const { products } = await Purchases.getProducts({
+    productIdentifiers: PRODUCT_IDENTIFIERS,
+  });
 
-function _getProducts(): Product[] {
-  return CdvPurchase.store.products
-    .filter((p) => p.canPurchase)
-    .map((p) =>
-      p.pricing
-        ? {
-            label: p.description,
-            id: p.id,
-            price: p.pricing?.price,
-          }
-        : undefined,
-    )
-    .filter(notEmpty);
+  // Revenuecat doesn't return in expected order
+  products.sort(
+    (a, b) =>
+      PRODUCT_IDENTIFIERS.indexOf(a.identifier) -
+      PRODUCT_IDENTIFIERS.indexOf(b.identifier),
+  );
+
+  return products;
 }
 
 export default function useInAppPurchase() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [initializing, setInitializing] = useState(false);
+  const [products, setProducts] = useState<PurchasesStoreProduct[]>([]);
+  const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
     (async () => {
-      initializeIfNeeded();
-
       setProducts(await getProducts());
+
+      setInitializing(false);
     })();
   }, []);
 
-  async function getProducts(): Promise<Product[]> {
-    if (CdvPurchase.store.isReady) return _getProducts();
-
-    setInitializing(true);
-
-    return new Promise((resolve) =>
-      CdvPurchase.store.ready(() => {
-        setInitializing(false);
-        resolve(_getProducts());
-      }),
-    );
-  }
-
-  async function purchase(product: Product) {
-    const cdvProduct = CdvPurchase.store.products.find(
-      ({ id }) => id === product.id,
-    );
-
-    return cdvProduct?.getOffer()?.order();
+  async function purchase(product: PurchasesStoreProduct) {
+    return Purchases.purchaseStoreProduct({ product });
   }
 
   return { initializing, products, purchase };

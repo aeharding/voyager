@@ -1,9 +1,10 @@
 import { IonButton, IonSpinner } from "@ionic/react";
-import useInAppPurchase, { Product } from "./useInAppPurchase";
+import useInAppPurchase from "./useInAppPurchase";
 import styled from "@emotion/styled";
 import { useState } from "react";
 import useAppToast from "../../../helpers/useAppToast";
 import { css } from "@emotion/react";
+import { PurchasesStoreProduct } from "@revenuecat/purchases-capacitor";
 
 const Container = styled.div`
   display: flex;
@@ -57,7 +58,7 @@ const HiddenIonSpinner = styled(IonSpinner)<{ visible: boolean }>`
 `;
 
 interface TipProps {
-  product: Product;
+  product: PurchasesStoreProduct;
 }
 
 export default function Tip({ product }: TipProps) {
@@ -68,13 +69,17 @@ export default function Tip({ product }: TipProps) {
   async function tip() {
     setLoading(true);
 
-    let error;
-
     try {
-      error = await purchase(product);
+      await purchase(product);
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = error as any;
+
+      if (err?.code === "1") return; // cancelled
+
       presentToast({
         message:
+          err?.message ??
           "There was an error completing your payment. Please try again later.",
         color: "warning",
       });
@@ -83,27 +88,18 @@ export default function Tip({ product }: TipProps) {
       setLoading(false);
     }
 
-    if (error) {
-      if (error.code === CdvPurchase.ErrorCode.PAYMENT_CANCELLED) return;
-
-      presentToast({
-        message: error?.message || "Unknown error. Please try again later.",
-        color: "warning",
-      });
-    } else {
-      presentToast({
-        message: "Payment successful. Thank you so much for your support! 💙",
-        color: "success",
-        duration: 5_000,
-      });
-    }
+    presentToast({
+      message: "Payment successful. Thank you so much for your support! 💙",
+      color: "success",
+      duration: 5_000,
+    });
   }
 
   return (
     <Container>
-      <div>{product.label}</div>
+      <div>{product.description}</div>
       <StyledIonButton onClick={tip} loading={loading}>
-        <Contents hide={loading}>{product.price}</Contents>
+        <Contents hide={loading}>{product.priceString}</Contents>
         <HiddenIonSpinner visible={loading} />
       </StyledIonButton>
     </Container>
