@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { isAndroid, isNative } from "../../../helpers/device";
 import {
+  PRODUCT_CATEGORY,
   Purchases,
   PurchasesStoreProduct,
 } from "@revenuecat/purchases-capacitor";
@@ -26,6 +27,7 @@ async function getProducts(): Promise<PurchasesStoreProduct[]> {
 
   const { products } = await Purchases.getProducts({
     productIdentifiers: PRODUCT_IDENTIFIERS,
+    type: PRODUCT_CATEGORY.NON_SUBSCRIPTION,
   });
 
   // Revenuecat doesn't return in expected order
