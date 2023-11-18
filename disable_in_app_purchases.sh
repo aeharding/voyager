@@ -2,8 +2,7 @@
 
 # Check the folder doesn't exist before performing actions
 if [ -d "src/features/tips/inAppPurchase__stub" ]; then
-    # Install cordova-plugin-purchase
-    pnpm uninstall cordova-plugin-purchase
+    pnpm uninstall @revenuecat/purchases-capacitor
 
     # Removes the proprietary google play app purchase libs
     npx cap update

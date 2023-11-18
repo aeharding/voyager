@@ -15,5 +15,7 @@ export default function InAppProducts() {
       </div>
     );
 
-  return products.map((product) => <Tip product={product} key={product.id} />);
+  return products.map((product) => (
+    <Tip product={product} key={product.identifier} />
+  ));
 }
