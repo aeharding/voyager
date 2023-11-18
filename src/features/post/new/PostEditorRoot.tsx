@@ -25,7 +25,7 @@ import { Centered, Spinner } from "../../auth/Login";
 import { jwtSelector, urlSelector } from "../../auth/authSlice";
 import { startCase } from "lodash";
 import { css } from "@emotion/react";
-import { getHandle, getRemoteHandle, isUrlImage } from "../../../helpers/lemmy";
+import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { cameraOutline } from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
@@ -34,7 +34,7 @@ import PhotoPreview from "./PhotoPreview";
 import { uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
 import useAppToast from "../../../helpers/useAppToast";
-import { isValidUrl } from "../../../helpers/url";
+import { isUrlImage, isValidUrl } from "../../../helpers/url";
 import { problemFetchingTitle } from "../../../helpers/toastMessages";
 
 const Container = styled.div`

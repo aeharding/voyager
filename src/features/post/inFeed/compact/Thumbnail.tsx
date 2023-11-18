@@ -4,10 +4,9 @@ import { IonIcon } from "@ionic/react";
 import { link, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { MouseEvent, useCallback, useMemo } from "react";
-import { isUrlImage } from "../../../../helpers/lemmy";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import PostGalleryImg from "../../../gallery/PostGalleryImg";
+import PostMedia from "../../../gallery/PostMedia";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import SelfSvg from "./self.svg?react";
 import { getImageSrc } from "../../../../services/lemmy";
@@ -17,6 +16,7 @@ import {
   OCompactThumbnailSizeType,
 } from "../../../../services/db";
 import { setPostRead } from "../../postSlice";
+import { isUrlImage } from "../../../../helpers/url";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {
@@ -100,7 +100,7 @@ const imgStyles = (blur: boolean) => css`
   `}
 `;
 
-const StyledPostGallery = styled(PostGalleryImg)<{ blur: boolean }>`
+const StyledPostGallery = styled(PostMedia)<{ blur: boolean }>`
   ${({ blur }) => imgStyles(blur)}
 `;
 
