@@ -11,8 +11,8 @@ import {
 import { css } from "@emotion/react";
 import { getImageSrc } from "../../../services/lemmy";
 import { ReactNode, useMemo } from "react";
-import { isUrlImage } from "../../../helpers/lemmy";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
+import { isUrlImage } from "../../../helpers/url";
 
 const shared = css`
   width: 30px;

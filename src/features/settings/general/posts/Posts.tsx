@@ -2,6 +2,7 @@ import { IonLabel, IonList } from "@ionic/react";
 import { InsetIonItem } from "../../../user/Profile";
 import { ListHeader } from "../../shared/formatting";
 import InfiniteScrolling from "./InfiniteScrolling";
+import UpvoteOnSave from "./UpvoteOnSave";
 
 export default function Posts() {
   return (
@@ -14,6 +15,7 @@ export default function Posts() {
           <IonLabel>Mark Read / Hiding Posts</IonLabel>
         </InsetIonItem>
         <InfiniteScrolling />
+        <UpvoteOnSave />
       </IonList>
     </>
   );

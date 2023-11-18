@@ -1,4 +1,4 @@
-import React, { FocusEvent, KeyboardEvent, useContext, useRef } from "react";
+import { FocusEvent, KeyboardEvent, useContext, useRef } from "react";
 import "photoswipe/dist/photoswipe.css";
 import { PostView } from "lemmy-js-client";
 import { GalleryContext } from "./GalleryProvider";

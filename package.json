@@ -2,7 +2,7 @@
   "name": "voyager",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "1.23.2",
+  "version": "1.24.2",
   "type": "module",
   "packageManager": "pnpm@8.9.2+sha256.8d62573d93061f2722b7b48c9739e96cd4603c3ab153bc81c619dcb9861a214e",
   "scripts": {
@@ -21,17 +21,16 @@
   },
   "pnpm": {
     "overrides": {
-      "@ionic/core": "npm:voyager-ionic-core@^7.5.0"
+      "@ionic/core": "npm:voyager-ionic-core@^7.5.5"
     }
   },
   "dependencies": {
     "compression": "^1.7.4",
     "express": "^4.18.2",
     "http-proxy-middleware": "^2.0.6",
-    "vite-express": "^0.10.0"
+    "vite-express": "^0.11.0"
   },
   "devDependencies": {
-    "capacitor-biometric-lock": "^0.1.0",
     "@capacitor-community/app-icon": "^4.1.1",
     "@capacitor/android": "5.2.3",
     "@capacitor/app": "^5.0.6",
@@ -50,10 +49,11 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@github/markdown-toolbar-element": "^2.2.1",
-    "@ionic/core": "npm:voyager-ionic-core@^7.5.1",
+    "@ionic/core": "npm:voyager-ionic-core@^7.5.5",
     "@ionic/react": "^7.5.1",
     "@ionic/react-router": "^7.5.1",
     "@reduxjs/toolkit": "^1.9.7",
+    "@revenuecat/purchases-capacitor": "^7.1.1",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.5.1",
@@ -71,15 +71,15 @@
     "@types/uuid": "^9.0.6",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
-    "@vitejs/plugin-legacy": "^4.1.1",
+    "@vitejs/plugin-legacy": "^5.0.0",
     "@vitejs/plugin-react": "^4.1.0",
     "capacitor-android-nav-mode": "^0.0.1",
     "capacitor-application-context": "^0.0.1",
+    "capacitor-biometric-lock": "^0.1.0",
     "capacitor-plugin-safe-area": "^2.0.5",
     "capacitor-set-version": "^2.2.0",
     "capacitor-stash-media": "^0.0.7",
     "compare-versions": "^6.1.0",
-    "cordova-plugin-purchase": "^13.9.0",
     "date-fns": "^2.30.0",
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.6",
@@ -92,7 +92,7 @@
     "ionicons": "^7.2.1",
     "js-cookie": "^3.0.5",
     "jsdom": "^22.1.0",
-    "lemmy-js-client": "0.19.0-alpha.16",
+    "lemmy-js-client": "0.19.0-alpha.18",
     "lodash": "^4.17.21",
     "mdast-util-gfm-autolink-literal-lemmy": "^1.0.3",
     "mdast-util-gfm-strikethrough": "^1.0.3",
@@ -115,7 +115,7 @@
     "react-router-dom": "^5.3.4",
     "react-textarea-autosize": "^8.5.3",
     "react-transition-state": "^2.1.1",
-    "release-it": "^16.2.1",
+    "release-it": "^17.0.0",
     "remark-gfm": "^3.0.1",
     "remark-parse": "^10.0.2",
     "terser": "^5.22.0",
@@ -126,8 +126,8 @@
     "use-long-press": "^3.2.0",
     "usehooks-ts": "^2.9.1",
     "uuid": "^9.0.1",
-    "virtua": "^0.15.4",
-    "vite": "^5.0.0-beta.14",
+    "virtua": "^0.16.3",
+    "vite": "^5.0.0",
     "vite-plugin-pwa": "^0.16.6",
     "vite-plugin-svgr": "^4.1.0",
     "vitest": "^0.34.6",

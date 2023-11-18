@@ -5,7 +5,6 @@ import PreviewStats from "../PreviewStats";
 import Embed from "../../shared/Embed";
 import { useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
-import { isUrlImage, isUrlVideo } from "../../../../helpers/lemmy";
 import { maxWidthCss } from "../../../shared/AppContent";
 import Nsfw, { isNsfw, isNsfwBlurred } from "../../../labels/Nsfw";
 import { VoteButton } from "../../shared/VoteButton";
@@ -14,11 +13,11 @@ import PersonLink from "../../../labels/links/PersonLink";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
 import { AnnouncementIcon } from "../../../../pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
-import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
-import { Image } from "./Image";
+import { InFeedPostMedia } from "./Image";
 import { useAppSelector } from "../../../../store";
+import { isUrlMedia } from "../../../../helpers/url";
 
 const Container = styled.div`
   display: flex;
@@ -116,37 +115,17 @@ export default function LargePost({ post, communityMode }: PostProps) {
   );
 
   function renderPostBody() {
-    if (post.post.url) {
-      if (isUrlImage(post.post.url)) {
-        return (
-          <ImageContainer>
-            <Image
-              blur={isNsfwBlurred(post, blurNsfw)}
-              post={post}
-              animationType="zoom"
-            />
-          </ImageContainer>
-        );
-      }
-      if (isUrlVideo(post.post.url)) {
-        return (
-          <ImageContainer>
-            <Video src={post.post.url} blur={isNsfwBlurred(post, blurNsfw)} />
-          </ImageContainer>
-        );
-      }
-    }
-
-    if (markdownLoneImage)
+    if ((post.post.url && isUrlMedia(post.post.url)) || markdownLoneImage) {
       return (
         <ImageContainer>
-          <Image
+          <InFeedPostMedia
             blur={isNsfwBlurred(post, blurNsfw)}
             post={post}
             animationType="zoom"
           />
         </ImageContainer>
       );
+    }
 
     /**
      * Embedded video, image with a thumbanil

@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import PostGalleryImg from "../../../gallery/PostGalleryImg";
+import PostMedia from "../../../gallery/PostMedia";
 
-export const Image = styled(PostGalleryImg)<{ blur: boolean }>`
+export const InFeedPostMedia = styled(PostMedia)<{ blur: boolean }>`
   width: 100%;
   max-width: none;
-  max-height: max(200vh, 2000px);
+  max-height: max(100vh, 1000px);
   object-fit: contain;
   -webkit-touch-callout: default;
 

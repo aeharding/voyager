@@ -71,7 +71,7 @@ import AppIconPage from "./pages/settings/AppIconPage";
 import { DefaultFeedType, ODefaultFeedType } from "./services/db";
 import { AppContext } from "./features/auth/AppContext";
 import SearchFeedResultsPage from "./pages/search/results/SearchFeedResultsPage";
-import { resetSavedStatusTap } from "./statusTap";
+import { resetSavedStatusTap } from "./listeners/statusTap";
 import AboutPage from "./pages/settings/about/AboutPage";
 import AboutThanksPage from "./pages/settings/about/AboutThanksPage";
 import BiometricPage from "./pages/settings/BiometricPage";
