@@ -66,7 +66,7 @@ export function DynamicDismissableModal({
     ]);
 
     return false;
-  }, [presentActionSheet, setIsOpen]);
+  }, [presentActionSheet, setCanDismiss, setIsOpen]);
 
   // Close tab
   useUnload((e) => {
