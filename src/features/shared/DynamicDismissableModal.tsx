@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useIonActionSheet } from "@ionic/react";
 import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
@@ -12,6 +6,7 @@ import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreen
 import { useAppSelector } from "../../store";
 import { jwtIssSelector } from "../auth/authSlice";
 import { clearRecoveredText } from "../../helpers/useTextRecovery";
+import useStateRef from "../../helpers/useRefState";
 
 export interface DismissableProps {
   dismiss: () => void;
@@ -34,8 +29,7 @@ export function DynamicDismissableModal({
   const location = useLocation();
   const iss = useAppSelector(jwtIssSelector);
 
-  const [canDismiss, setCanDismiss] = useState(true);
-  const canDismissRef = useRef(canDismiss);
+  const [canDismissRef, setCanDismiss] = useStateRef(true);
 
   const [presentActionSheet] = useIonActionSheet();
 
@@ -74,11 +68,6 @@ export function DynamicDismissableModal({
     return false;
   }, [presentActionSheet, setIsOpen]);
 
-  useEffect(() => {
-    // ಠ_ಠ
-    canDismissRef.current = canDismiss;
-  }, [canDismiss]);
-
   // Close tab
   useUnload((e) => {
     if (canDismissRef.current) return;
@@ -100,12 +89,14 @@ export function DynamicDismissableModal({
   return (
     <>
       <Prompt
-        when={!canDismiss}
+        when={!canDismissRef.current}
         message="Are you sure you want to discard your work?"
       />
       <IonModalAutosizedForOnScreenKeyboard
         isOpen={isOpen}
-        canDismiss={canDismiss ? canDismiss : onDismissAttemptCb}
+        canDismiss={
+          canDismissRef.current ? canDismissRef.current : onDismissAttemptCb
+        }
         onDidDismiss={() => setIsOpen(false)}
         presentingElement={presentingElement}
         onWillDismiss={() => {

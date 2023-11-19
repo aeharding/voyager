@@ -105,8 +105,6 @@ export default function CommentReply({
 
     dispatch(receivedComments([reply.comment_view]));
     setCanDismiss(true);
-    // TODO is there a way to avoid a timeout here?
-    await new Promise((resolve) => setTimeout(resolve, 100));
     dismiss(reply.comment_view);
     clearRecoveredText();
   }
