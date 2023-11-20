@@ -209,6 +209,7 @@ ion-toast.center::part(container) {
   position: relative;
 }
 
+/* Make header buttons closer together (room for mod button) */
 .sc-ion-buttons-ios-s ion-button {
   margin: 0;
 }
