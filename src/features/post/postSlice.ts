@@ -360,3 +360,37 @@ export const clearHidden =
 export const postHiddenByIdSelector = (state: RootState) => {
   return state.post.postHiddenById;
 };
+
+export const modRemovePost =
+  (postId: number, removed: boolean) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const response = await clientSelector(getState())?.removePost({
+      post_id: postId,
+      removed,
+    });
+
+    dispatch(receivedPosts([response.post_view]));
+  };
+
+export const modLockPost =
+  (postId: number, locked: boolean) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const response = await clientSelector(getState())?.lockPost({
+      post_id: postId,
+      locked,
+    });
+
+    dispatch(receivedPosts([response.post_view]));
+  };
+
+export const modStickyPost =
+  (postId: number, stickied: boolean) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const response = await clientSelector(getState())?.featurePost({
+      post_id: postId,
+      feature_type: "Community",
+      featured: stickied,
+    });
+
+    dispatch(receivedPosts([response.post_view]));
+  };

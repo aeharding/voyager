@@ -91,6 +91,14 @@ export default function MoreActions({
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: [
+        // {
+        //   text: "Moderator",
+        //   icon: shieldOutline,
+        //   cssClass: "mod detail",
+        //   handler: () => {
+        //     onModClick();
+        //   },
+        // },
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
           icon: arrowUpOutline,
@@ -274,8 +282,9 @@ export default function MoreActions({
           e.stopPropagation();
           onClick();
         }}
+        className={className}
       >
-        <IonIcon className={className} icon={ellipsisHorizontal} />
+        <IonIcon icon={ellipsisHorizontal} />
       </Button>
     </>
   );

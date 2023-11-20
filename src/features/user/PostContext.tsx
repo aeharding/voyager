@@ -5,11 +5,11 @@ import { Link } from "react-router-dom";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 
 const ContainerLink = styled(Link)`
-  padding: 0.5rem 0.75rem;
+  padding: 6px 12px;
 
   background: var(--ion-tab-bar-background, var(--ion-color-step-50, #f7f7f7));
   color: var(--ion-color-dark);
-  border-radius: 0.5rem;
+  border-radius: 6px;
 
   font-size: 0.95em;
 

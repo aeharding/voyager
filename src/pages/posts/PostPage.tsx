@@ -24,6 +24,7 @@ import PostDetail from "../../features/post/detail/PostDetail";
 import FeedContent from "../shared/FeedContent";
 import useClient from "../../helpers/useClient";
 import { formatNumber } from "../../helpers/number";
+import MoreModActions from "../../features/post/shared/MoreModAction";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -94,10 +95,6 @@ export default function PostPage() {
       return buildWithRefresher(
         <div className="ion-padding">Post not found</div>,
       );
-    if (post.post.deleted)
-      return buildWithRefresher(
-        <div className="ion-padding">Post deleted</div>,
-      );
 
     return (
       <PostDetail
@@ -131,6 +128,7 @@ export default function PostPage() {
           </IonButtons>
           <IonTitle>{title}</IonTitle>
           <IonButtons slot="end">
+            {postIfFound && <MoreModActions post={postIfFound} />}
             <CommentSort sort={sort} setSort={setSort} />
             {postIfFound && <MoreActions post={postIfFound} />}
           </IonButtons>
