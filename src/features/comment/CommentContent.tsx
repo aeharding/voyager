@@ -20,8 +20,18 @@ export default function CommentContent({
   );
 
   const content = useMemo(() => {
-    if (item.deleted) return <i>deleted by creator</i>;
-    if (item.removed && !isMod) return <i>removed by mod</i>;
+    if (item.deleted)
+      return (
+        <p>
+          <i>deleted by creator</i>
+        </p>
+      );
+    if (item.removed && !isMod)
+      return (
+        <p>
+          <i>removed by mod</i>
+        </p>
+      );
 
     return (
       <>

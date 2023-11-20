@@ -34,12 +34,16 @@ import Locked from "./Locked";
 import useAppToast from "../../../helpers/useAppToast";
 import { postLocked } from "../../../helpers/toastMessages";
 import { isUrlMedia } from "../../../helpers/url";
+import ModeratableItem, {
+  ModeratableItemBannerOutlet,
+} from "../../moderation/ModeratableItem";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
   --inner-padding-end: 0;
 
   --inner-border-width: 0 0 1px 0;
+  --background: none; // TODO is this OK?
 
   ${maxWidthCss}
 `;
@@ -199,7 +203,7 @@ export default function PostDetail({
 
   function renderHeader(post: PostView) {
     return (
-      <>
+      <ModeratableItem itemView={post}>
         <BorderlessIonItem
           onClick={(e) => {
             if (e.target instanceof HTMLElement && e.target.nodeName === "A")
@@ -218,6 +222,7 @@ export default function PostDetail({
             <div onClick={(e) => e.stopPropagation()}>{renderMedia()}</div>
             <PostDeets>
               <Title ref={titleRef}>
+                <ModeratableItemBannerOutlet />
                 <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
                 {isNsfw(post) && <Nsfw />}
               </Title>
@@ -254,7 +259,7 @@ export default function PostDetail({
             }}
           />
         </BorderlessIonItem>
-      </>
+      </ModeratableItem>
     );
   }
 

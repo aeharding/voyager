@@ -34,7 +34,9 @@ ion-router-outlet > .ion-page > ion-header ion-title {
   justify-content: flex-start;
 }
 .mod .action-sheet-button,
-.mod .action-sheet-button:hover {
+.mod .action-sheet-button:hover,
+.mod.action-sheet-button,
+.mod.action-sheet-button:hover {
   color: var(--ion-color-success-shade);
 }
 
@@ -204,4 +206,8 @@ ion-toast.center::part(container) {
   transform: translateX(-50%);
   left: 50%;
   position: relative;
+}
+
+.sc-ion-buttons-ios-s ion-button {
+  margin: 0;
 }

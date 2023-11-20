@@ -22,6 +22,12 @@ import { useState } from "react";
 import styled from "@emotion/styled";
 import { Comment, CommentAggregates } from "lemmy-js-client";
 import { localUserSelector } from "../auth/authSlice";
+import useAppToast from "../../helpers/useAppToast";
+import {
+  commentApproved,
+  commentDistinguished,
+  commentRemoved,
+} from "../../helpers/toastMessages";
 
 const ModIonIcon = styled(IonIcon)`
   color: var(--ion-color-success);
@@ -38,6 +44,7 @@ export default function ModActions({ comment, counts }: ModActionsProps) {
   const [loading, setLoading] = useState(false);
   const localUser = useAppSelector(localUserSelector);
   const [presentActionSheet] = useIonActionSheet();
+  const presentToast = useAppToast();
 
   const isSelf = comment.creator_id === localUser?.person_id;
 
@@ -58,12 +65,16 @@ export default function ModActions({ comment, counts }: ModActionsProps) {
                       : "Undistinguish",
                     icon: shieldCheckmarkOutline,
                     handler: () => {
-                      dispatch(
-                        modDistinguishComment(
-                          comment.id,
-                          !comment.distinguished,
-                        ),
-                      );
+                      (async () => {
+                        await dispatch(
+                          modDistinguishComment(
+                            comment.id,
+                            !comment.distinguished,
+                          ),
+                        );
+
+                        presentToast(commentDistinguished);
+                      })();
                     },
                   }
                 : undefined,
@@ -71,14 +82,22 @@ export default function ModActions({ comment, counts }: ModActionsProps) {
                 text: "Approve",
                 icon: checkmarkCircleOutline,
                 handler: () => {
-                  dispatch(modRemoveComment(comment.id, false));
+                  (async () => {
+                    await dispatch(modRemoveComment(comment.id, false));
+
+                    presentToast(commentApproved);
+                  })();
                 },
               },
               {
                 text: "Remove",
                 icon: trashOutline,
                 handler: () => {
-                  dispatch(modRemoveComment(comment.id, true));
+                  (async () => {
+                    await dispatch(modRemoveComment(comment.id, true));
+
+                    presentToast(commentRemoved);
+                  })();
                 },
               },
               {
@@ -111,6 +130,7 @@ export default function ModActions({ comment, counts }: ModActionsProps) {
               },
               {
                 text: "Cancel",
+                role: "cancel",
               },
             ].filter(notEmpty),
           });

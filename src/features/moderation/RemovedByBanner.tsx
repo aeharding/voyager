@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { IonIcon, useIonAlert } from "@ionic/react";
 import { trashOutline } from "ionicons/icons";
-import { Comment } from "lemmy-js-client";
+import { Comment, Post } from "lemmy-js-client";
 import { useAppDispatch } from "../../store";
 import { modRemoveComment } from "../comment/commentSlice";
 
@@ -25,7 +25,7 @@ const Banner = styled.div`
 
 interface RemovedByBannerProps {
   modState: ItemModState;
-  item: Comment;
+  item: Comment | Post;
 }
 
 export default function RemovedByBanner({
@@ -62,12 +62,12 @@ export default function RemovedByBanner({
 }
 
 export enum ItemModState {
-  RemovedByMod,
-  Flagged,
   None,
+  Flagged,
+  RemovedByMod,
 }
 
-export function getItemModState(item: Comment): ItemModState {
+export function getItemModState(item: Comment | Post): ItemModState {
   if (item.removed) return ItemModState.RemovedByMod;
 
   return ItemModState.None;
