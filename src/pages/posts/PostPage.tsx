@@ -25,7 +25,6 @@ import FeedContent from "../shared/FeedContent";
 import useClient from "../../helpers/useClient";
 import { formatNumber } from "../../helpers/number";
 import MoreModActions from "../../features/post/shared/MoreModAction";
-import useCanModerate from "../../features/moderation/useCanModerate";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -58,8 +57,6 @@ export default function PostPage() {
   const [sort, setSort] = useState<CommentSortType>(defaultSort);
 
   const postIfFound = typeof post === "object" ? post : undefined;
-
-  const isMod = useCanModerate(postIfFound?.community.id);
 
   useEffect(() => {
     if (post) return;
@@ -131,7 +128,7 @@ export default function PostPage() {
           </IonButtons>
           <IonTitle>{title}</IonTitle>
           <IonButtons slot="end">
-            {postIfFound && isMod && <MoreModActions post={postIfFound} />}
+            {postIfFound && <MoreModActions post={postIfFound} />}
             <CommentSort sort={sort} setSort={setSort} />
             {postIfFound && <MoreActions post={postIfFound} />}
           </IonButtons>

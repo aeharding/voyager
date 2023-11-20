@@ -18,6 +18,7 @@ import {
 } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
 import useAppToast from "../../../helpers/useAppToast";
+import useCanModerate from "../../moderation/useCanModerate";
 
 interface MoreActionsProps {
   post: PostView;
@@ -25,11 +26,15 @@ interface MoreActionsProps {
   onFeed?: boolean;
 }
 
-export default function MoreModActions({
-  post,
-  onFeed,
-  className,
-}: MoreActionsProps) {
+export default function MoreModActions(props: MoreActionsProps) {
+  const isMod = useCanModerate(props.post.community.id);
+
+  if (!isMod) return;
+
+  return <Actions {...props} />;
+}
+
+function Actions({ post, onFeed, className }: MoreActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();

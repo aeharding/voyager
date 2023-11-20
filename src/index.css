@@ -33,6 +33,7 @@ ion-router-outlet > .ion-page > ion-header ion-title {
   ) {
   justify-content: flex-start;
 }
+
 .mod .action-sheet-button,
 .mod .action-sheet-button:hover,
 .mod.action-sheet-button,
