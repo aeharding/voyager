@@ -27,8 +27,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 12px;
+  padding: 12px;
 
   position: relative;
 
@@ -103,7 +103,7 @@ const PostBody = styled.div<{ isRead: boolean }>`
 
 const ImageContainer = styled.div`
   overflow: hidden;
-  margin: 0 -0.75rem;
+  margin: 0 -12px;
 `;
 
 export default function LargePost({ post, communityMode }: PostProps) {

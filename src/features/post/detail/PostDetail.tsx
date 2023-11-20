@@ -90,7 +90,7 @@ const StyledEmbed = styled(Embed)`
 `;
 
 const PostDeets = styled.div`
-  margin: 0 8px;
+  margin: 0 12px;
   font-size: 0.9375em;
 `;
 

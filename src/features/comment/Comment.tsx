@@ -51,7 +51,7 @@ export const PositionedContainer = styled.div<{
 
   ${maxWidthCss}
 
-  padding: 0.55rem 0.5rem;
+  padding: 8px 12px;
 
   ${({ highlighted }) =>
     highlighted &&
@@ -65,7 +65,7 @@ export const PositionedContainer = styled.div<{
   }
 
   ${({ depth }) => css`
-    padding-left: calc(0.5rem + ${Math.max(0, depth - 1) * 10}px);
+    padding-left: calc(12px + ${Math.max(0, depth - 1) * 10}px);
   `}
 `;
 
