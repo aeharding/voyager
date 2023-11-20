@@ -4,6 +4,7 @@ import {
   lockClosedOutline,
   lockOpenOutline,
   megaphoneOutline,
+  shield,
   shieldOutline,
   trashOutline,
 } from "ionicons/icons";
@@ -24,6 +25,7 @@ interface MoreActionsProps {
   post: PostView;
   className?: string;
   onFeed?: boolean;
+  solidIcon?: boolean;
 }
 
 export default function MoreModActions(props: MoreActionsProps) {
@@ -34,7 +36,7 @@ export default function MoreModActions(props: MoreActionsProps) {
   return <Actions {...props} />;
 }
 
-function Actions({ post, onFeed, className }: MoreActionsProps) {
+function Actions({ post, onFeed, solidIcon, className }: MoreActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
@@ -108,7 +110,7 @@ function Actions({ post, onFeed, className }: MoreActionsProps) {
         }}
         className={className}
       >
-        <IonIcon icon={shieldOutline} color="success" />
+        <IonIcon icon={solidIcon ? shield : shieldOutline} color="success" />
       </Button>
     </>
   );

@@ -102,6 +102,8 @@ const StyledMoreActions = styled(MoreActions)`
 `;
 
 const StyledModActions = styled(MoreModActions)`
+  font-size: 1.1em;
+
   ${actionButtonStyles}
 `;
 
@@ -161,7 +163,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
               </From>
               <Actions>
                 <PreviewStats post={post} />
-                <StyledModActions post={post} onFeed />
+                <StyledModActions post={post} onFeed solidIcon />
                 <StyledMoreActions post={post} onFeed />
               </Actions>
             </Aside>

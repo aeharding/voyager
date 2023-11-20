@@ -4,6 +4,9 @@ import { trashOutline } from "ionicons/icons";
 import { Comment, Post } from "lemmy-js-client";
 import { useAppDispatch } from "../../store";
 import { modRemoveComment } from "../comment/commentSlice";
+import { modRemovePost } from "../post/postSlice";
+import { commentApproved, postApproved } from "../../helpers/toastMessages";
+import useAppToast from "../../helpers/useAppToast";
 
 const Banner = styled.div`
   display: flex;
@@ -34,18 +37,27 @@ export default function RemovedByBanner({
 }: RemovedByBannerProps) {
   const [present] = useIonAlert();
   const dispatch = useAppDispatch();
+  const presentToast = useAppToast();
 
   if (modState === ItemModState.None) return;
 
   function onClickModRemovedPopup() {
     present("Removed by mod", [
-      { text: "OK" },
       {
         text: "Approve",
-        handler: async () => {
-          dispatch(modRemoveComment(item.id, false));
+        handler: () => {
+          (async () => {
+            if ("path" in item) {
+              await dispatch(modRemoveComment(item.id, false));
+              presentToast(commentApproved);
+            } else {
+              dispatch(modRemovePost(item.id, false));
+              presentToast(postApproved);
+            }
+          })();
         },
       },
+      { text: "OK", role: "cancel" },
     ]);
   }
 
