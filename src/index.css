@@ -212,3 +212,8 @@ ion-toast.center::part(container) {
 .sc-ion-buttons-ios-s ion-button {
   margin: 0;
 }
+
+/* Add minimum padding for top dismiss area of action sheet */
+.action-sheet-group.sc-ion-action-sheet-ios:first-child {
+  margin-top: min(15vh, 70px);
+}
