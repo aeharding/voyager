@@ -24,6 +24,7 @@ import {
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useAppToast from "../../helpers/useAppToast";
 import { db } from "../../services/db";
+import { Share } from "@capacitor/share";
 
 /**
  *
@@ -191,6 +192,10 @@ export default function useCommunityActions(
     router.push(buildGeneralBrowseLink(`/c/${communityHandle}`));
   }
 
+  function share() {
+    Share.share({ url: community.actor_id });
+  }
+
   return {
     isSubscribed,
     isBlocked,
@@ -201,5 +206,6 @@ export default function useCommunityActions(
     block,
     sidebar,
     view,
+    share,
   };
 }
