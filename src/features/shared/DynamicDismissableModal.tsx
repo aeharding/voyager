@@ -56,7 +56,7 @@ export function DynamicDismissableModal({
         handler: () => {
           clearRecoveredText();
           setCanDismiss(true);
-          setTimeout(() => setIsOpen(false), 100);
+          setIsOpen(false);
         },
       },
       {
@@ -82,16 +82,23 @@ export function DynamicDismissableModal({
     if (!isOpen) return;
 
     setCanDismiss(true);
-    setTimeout(() => setIsOpen(false), 100);
+    setIsOpen(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   return (
     <>
-      <Prompt
-        when={!canDismissRef.current}
-        message="Are you sure you want to discard your work?"
-      />
+      {isOpen && (
+        <Prompt
+          // https://github.com/remix-run/react-router/issues/5405#issuecomment-673811334
+          when={true}
+          message={() => {
+            if (canDismissRef.current) return true;
+
+            return "Are you sure you want to discard your work?";
+          }}
+        />
+      )}
       <IonModalAutosizedForOnScreenKeyboard
         isOpen={isOpen}
         canDismiss={
