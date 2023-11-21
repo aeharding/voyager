@@ -1,0 +1,168 @@
+import {
+  IonButtons,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
+import Feed, { FetchFn } from "../../features/feed/Feed";
+import AppBackButton from "../../features/shared/AppBackButton";
+import { useCallback } from "react";
+import useClient from "../../helpers/useClient";
+import FeedContextProvider from "../../features/feed/FeedContext";
+import FeedContent from "./FeedContent";
+import { Community, GetModlogResponse } from "lemmy-js-client";
+import { values } from "lodash";
+import { ModlogItem } from "../../features/moderation/logs/ModlogItem";
+import { fixLemmyDateString } from "../../helpers/date";
+import { LIMIT } from "../../services/lemmy";
+import useFetchCommunity from "../../features/community/useFetchCommunity";
+import { CenteredSpinner } from "../posts/PostPage";
+import { useParams } from "react-router";
+import { getHandle } from "../../helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { buildCommunityLink } from "../../helpers/appLinkBuilder";
+
+export type ModlogItemType =
+  GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;
+
+export default function ModlogPage() {
+  const { community } = useParams<{ community?: string }>();
+
+  if (!community) return <GlobalModlog />;
+
+  return <ModlogByCommunityName communityName={community} />;
+}
+
+function GlobalModlog() {
+  return <ModlogByCommunity />;
+}
+
+function ModlogByCommunityName({ communityName }: { communityName: string }) {
+  const community = useFetchCommunity(communityName);
+
+  if (!community) return <CenteredSpinner />;
+
+  return <ModlogByCommunity community={community.community} />;
+}
+
+function ModlogByCommunity({ community }: { community?: Community }) {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const client = useClient();
+
+  const fetchFn: FetchFn<ModlogItemType> = useCallback(
+    async (pageData) => {
+      const logs = await client.getModlog({
+        ...pageData,
+        limit: LIMIT,
+        community_id: community?.id,
+      });
+
+      return values(logs)
+        .reduce<ModlogItemType[]>((acc, current) => acc.concat(current), [])
+        .sort(
+          (a, b) =>
+            Date.parse(fixLemmyDateString(getLogDate(b))) -
+            Date.parse(fixLemmyDateString(getLogDate(a))),
+        );
+    },
+    [client, community],
+  );
+
+  const renderItemContent = useCallback((item: ModlogItemType) => {
+    return <ModlogItem item={item} />;
+  }, []);
+
+  return (
+    <FeedContextProvider>
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <AppBackButton
+                defaultHref={buildGeneralBrowseLink(
+                  community ? buildCommunityLink(community) : "",
+                )}
+              />
+            </IonButtons>
+            <IonTitle>{community ? getHandle(community) : "Mod"} Logs</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        <FeedContent>
+          <Feed
+            fetchFn={fetchFn}
+            renderItemContent={renderItemContent}
+            getIndex={getIndex}
+          />
+        </FeedContent>
+      </IonPage>
+    </FeedContextProvider>
+  );
+}
+
+function getIndex(item: ModlogItemType): string {
+  if ("mod_remove_comment" in item)
+    return `mod_remove_comment-${item.mod_remove_comment.id}`;
+  else if ("mod_remove_post" in item)
+    return `mod_remove_post-${item.mod_remove_post.id}`;
+  else if ("mod_lock_post" in item)
+    return `mod_lock_post-${item.mod_lock_post.id}`;
+  else if ("mod_feature_post" in item)
+    return `mod_feature_post-${item.mod_feature_post.id}`;
+  else if ("mod_remove_community" in item)
+    return `mod_remove_community-${item.mod_remove_community.id}`;
+  else if ("mod_ban_from_community" in item)
+    return `mod_ban_from_community-${item.mod_ban_from_community.id}`;
+  else if ("mod_ban" in item) return `mod_ban-${item.mod_ban.id}`;
+  else if ("mod_add_community" in item)
+    return `mod_add_community-${item.mod_add_community.id}`;
+  else if ("mod_transfer_community" in item)
+    return `mod_transfer_community-${item.mod_transfer_community.id}`;
+  else if ("mod_add" in item) return `mod_add-${item.mod_add.id}`;
+  else if ("admin_purge_person" in item)
+    return `admin_purge_person-${item.admin_purge_person.id}`;
+  else if ("admin_purge_community" in item)
+    return `admin_purge_community-${item.admin_purge_community.id}`;
+  else if ("admin_purge_post" in item)
+    return `admin_purge_post-${item.admin_purge_post.id}`;
+  else if ("admin_purge_comment" in item)
+    return `admin_purge_comment-${item.admin_purge_comment.id}`;
+  else if ("mod_hide_community" in item)
+    return `mod_hide_community-${item.mod_hide_community.id}`;
+  else {
+    // should never happen (type = never)
+    //
+    // If item is not type = never, then some mod log action was added
+    // and needs to be handled.
+    return item;
+  }
+}
+
+function getLogDate(item: ModlogItemType): string {
+  if ("mod_remove_comment" in item) return item.mod_remove_comment.when_;
+  else if ("mod_remove_post" in item) return item.mod_remove_post.when_;
+  else if ("mod_lock_post" in item) return item.mod_lock_post.when_;
+  else if ("mod_feature_post" in item) return item.mod_feature_post.when_;
+  else if ("mod_remove_community" in item)
+    return item.mod_remove_community.when_;
+  else if ("mod_ban_from_community" in item)
+    return item.mod_ban_from_community.when_;
+  else if ("mod_ban" in item) return item.mod_ban.when_;
+  else if ("mod_add_community" in item) return item.mod_add_community.when_;
+  else if ("mod_transfer_community" in item)
+    return item.mod_transfer_community.when_;
+  else if ("mod_add" in item) return item.mod_add.when_;
+  else if ("admin_purge_person" in item) return item.admin_purge_person.when_;
+  else if ("admin_purge_community" in item)
+    return item.admin_purge_community.when_;
+  else if ("admin_purge_post" in item) return item.admin_purge_post.when_;
+  else if ("admin_purge_comment" in item) return item.admin_purge_comment.when_;
+  else if ("mod_hide_community" in item) return item.mod_hide_community.when_;
+  else {
+    // should never happen (type = never)
+    //
+    // If item is not type = never, then some mod log action was added
+    // and needs to be handled.
+    return item;
+  }
+}

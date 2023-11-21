@@ -68,7 +68,7 @@ export default function RemovedByBanner({
         onClickModRemovedPopup();
       }}
     >
-      <IonIcon icon={trashOutline} /> Removed by mod
+      <IonIcon icon={trashOutline} /> Removed
     </Banner>
   );
 }

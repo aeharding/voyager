@@ -30,6 +30,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import CommunitySearchResults from "../../features/community/search/CommunitySearchResults";
 import { getSortDuration } from "../../features/feed/endItems/EndPost";
+import ModActions from "../../features/community/mod/ModActions";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -199,6 +200,10 @@ export default function CommunityPage() {
                   </IonButtons>
                   <TitleSearch name={community}>
                     <IonButtons slot="end">
+                      <ModActions
+                        community={communityView}
+                        communityHandle={community}
+                      />
                       <PostSort />
                       <MoreActions community={communityView} />
                     </IonButtons>

@@ -4,7 +4,7 @@ import {
   listOutline,
   peopleOutline,
   pinOutline,
-  shieldOutline,
+  shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { ODefaultFeedType } from "../../../../services/db";
 import { useAppDispatch, useAppSelector } from "../../../../store";
@@ -74,7 +74,7 @@ export default function DefaultFeed() {
         [ODefaultFeedType.Local]: peopleOutline,
         [ODefaultFeedType.CommunityList]: listOutline,
         [ODefaultFeedType.Community]: pinOutline,
-        [ODefaultFeedType.Moderating]: shieldOutline,
+        [ODefaultFeedType.Moderating]: shieldCheckmarkOutline,
       }}
       getSelectedLabel={(option) => {
         if (option === ODefaultFeedType.CommunityList) return "List";

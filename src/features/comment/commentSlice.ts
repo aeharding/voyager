@@ -177,7 +177,9 @@ export const modNukeCommentChain =
       max_depth: 100,
     });
 
-    const commentIds = comments.map((c) => c.comment.id);
+    const commentIds = comments
+      .filter((c) => !c.creator_is_moderator)
+      .map((c) => c.comment.id);
 
     await Promise.all(
       commentIds.map(async (commentId) => {

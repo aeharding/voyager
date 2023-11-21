@@ -7,7 +7,7 @@ import {
 import {
   checkmarkCircleOutline,
   colorWandOutline,
-  shield,
+  shieldCheckmark,
   shieldCheckmarkOutline,
   trashOutline,
 } from "ionicons/icons";
@@ -51,7 +51,7 @@ export default function ModActions({ comment, counts }: ModActionsProps) {
   return (
     <>
       <ModIonIcon
-        icon={shield}
+        icon={shieldCheckmark}
         onClick={(e) => {
           e.stopPropagation();
 
