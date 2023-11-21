@@ -101,68 +101,83 @@ function ModlogByCommunity({ community }: { community?: Community }) {
 }
 
 function getIndex(item: ModlogItemType): string {
-  if ("mod_remove_comment" in item)
-    return `mod_remove_comment-${item.mod_remove_comment.id}`;
-  else if ("mod_remove_post" in item)
-    return `mod_remove_post-${item.mod_remove_post.id}`;
-  else if ("mod_lock_post" in item)
-    return `mod_lock_post-${item.mod_lock_post.id}`;
-  else if ("mod_feature_post" in item)
-    return `mod_feature_post-${item.mod_feature_post.id}`;
-  else if ("mod_remove_community" in item)
-    return `mod_remove_community-${item.mod_remove_community.id}`;
-  else if ("mod_ban_from_community" in item)
-    return `mod_ban_from_community-${item.mod_ban_from_community.id}`;
-  else if ("mod_ban" in item) return `mod_ban-${item.mod_ban.id}`;
-  else if ("mod_add_community" in item)
-    return `mod_add_community-${item.mod_add_community.id}`;
-  else if ("mod_transfer_community" in item)
-    return `mod_transfer_community-${item.mod_transfer_community.id}`;
-  else if ("mod_add" in item) return `mod_add-${item.mod_add.id}`;
-  else if ("admin_purge_person" in item)
-    return `admin_purge_person-${item.admin_purge_person.id}`;
-  else if ("admin_purge_community" in item)
-    return `admin_purge_community-${item.admin_purge_community.id}`;
-  else if ("admin_purge_post" in item)
-    return `admin_purge_post-${item.admin_purge_post.id}`;
-  else if ("admin_purge_comment" in item)
-    return `admin_purge_comment-${item.admin_purge_comment.id}`;
-  else if ("mod_hide_community" in item)
-    return `mod_hide_community-${item.mod_hide_community.id}`;
-  else {
-    // should never happen (type = never)
-    //
-    // If item is not type = never, then some mod log action was added
-    // and needs to be handled.
-    return item;
+  switch (true) {
+    case "mod_remove_comment" in item:
+      return `mod_remove_comment-${item.mod_remove_comment.id}`;
+    case "mod_remove_post" in item:
+      return `mod_remove_post-${item.mod_remove_post.id}`;
+    case "mod_lock_post" in item:
+      return `mod_lock_post-${item.mod_lock_post.id}`;
+    case "mod_feature_post" in item:
+      return `mod_feature_post-${item.mod_feature_post.id}`;
+    case "mod_remove_community" in item:
+      return `mod_remove_community-${item.mod_remove_community.id}`;
+    case "mod_ban_from_community" in item:
+      return `mod_ban_from_community-${item.mod_ban_from_community.id}`;
+    case "mod_ban" in item:
+      return `mod_ban-${item.mod_ban.id}`;
+    case "mod_add_community" in item:
+      return `mod_add_community-${item.mod_add_community.id}`;
+    case "mod_transfer_community" in item:
+      return `mod_transfer_community-${item.mod_transfer_community.id}`;
+    case "mod_add" in item:
+      return `mod_add-${item.mod_add.id}`;
+    case "admin_purge_person" in item:
+      return `admin_purge_person-${item.admin_purge_person.id}`;
+    case "admin_purge_community" in item:
+      return `admin_purge_community-${item.admin_purge_community.id}`;
+    case "admin_purge_post" in item:
+      return `admin_purge_post-${item.admin_purge_post.id}`;
+    case "admin_purge_comment" in item:
+      return `admin_purge_comment-${item.admin_purge_comment.id}`;
+    case "mod_hide_community" in item:
+      return `mod_hide_community-${item.mod_hide_community.id}`;
+    default:
+      // should never happen (type = never)
+      //
+      // If item is not type = never, then some mod log action was added
+      // and needs to be handled.
+      return item;
   }
 }
 
 function getLogDate(item: ModlogItemType): string {
-  if ("mod_remove_comment" in item) return item.mod_remove_comment.when_;
-  else if ("mod_remove_post" in item) return item.mod_remove_post.when_;
-  else if ("mod_lock_post" in item) return item.mod_lock_post.when_;
-  else if ("mod_feature_post" in item) return item.mod_feature_post.when_;
-  else if ("mod_remove_community" in item)
-    return item.mod_remove_community.when_;
-  else if ("mod_ban_from_community" in item)
-    return item.mod_ban_from_community.when_;
-  else if ("mod_ban" in item) return item.mod_ban.when_;
-  else if ("mod_add_community" in item) return item.mod_add_community.when_;
-  else if ("mod_transfer_community" in item)
-    return item.mod_transfer_community.when_;
-  else if ("mod_add" in item) return item.mod_add.when_;
-  else if ("admin_purge_person" in item) return item.admin_purge_person.when_;
-  else if ("admin_purge_community" in item)
-    return item.admin_purge_community.when_;
-  else if ("admin_purge_post" in item) return item.admin_purge_post.when_;
-  else if ("admin_purge_comment" in item) return item.admin_purge_comment.when_;
-  else if ("mod_hide_community" in item) return item.mod_hide_community.when_;
-  else {
-    // should never happen (type = never)
-    //
-    // If item is not type = never, then some mod log action was added
-    // and needs to be handled.
-    return item;
+  switch (true) {
+    case "mod_remove_comment" in item:
+      return item.mod_remove_comment.when_;
+    case "mod_remove_post" in item:
+      return item.mod_remove_post.when_;
+    case "mod_lock_post" in item:
+      return item.mod_lock_post.when_;
+    case "mod_feature_post" in item:
+      return item.mod_feature_post.when_;
+    case "mod_remove_community" in item:
+      return item.mod_remove_community.when_;
+    case "mod_ban_from_community" in item:
+      return item.mod_ban_from_community.when_;
+    case "mod_ban" in item:
+      return item.mod_ban.when_;
+    case "mod_add_community" in item:
+      return item.mod_add_community.when_;
+    case "mod_transfer_community" in item:
+      return item.mod_transfer_community.when_;
+    case "mod_add" in item:
+      return item.mod_add.when_;
+    case "admin_purge_person" in item:
+      return item.admin_purge_person.when_;
+    case "admin_purge_community" in item:
+      return item.admin_purge_community.when_;
+    case "admin_purge_post" in item:
+      return item.admin_purge_post.when_;
+    case "admin_purge_comment" in item:
+      return item.admin_purge_comment.when_;
+    case "mod_hide_community" in item:
+      return item.mod_hide_community.when_;
+    default:
+      // should never happen (type = never)
+      //
+      // If item is not type = never, then some mod log action was added
+      // and needs to be handled.
+      return item;
   }
 }

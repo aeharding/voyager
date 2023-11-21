@@ -57,27 +57,43 @@ export interface LogEntryData {
 }
 
 function renderModlogData(item: ModlogItemType): LogEntryData {
-  if ("mod_remove_comment" in item) return removeComment(item);
-  else if ("mod_remove_post" in item) return removePost(item);
-  else if ("mod_lock_post" in item) return lockPost(item);
-  else if ("mod_feature_post" in item) return featurePost(item);
-  else if ("mod_remove_community" in item) return removeCommunity(item);
-  else if ("mod_ban_from_community" in item) return banFromCommunity(item);
-  else if ("mod_ban" in item) return banFromInstance(item);
-  else if ("mod_add_community" in item) return addCommunity(item);
-  else if ("mod_transfer_community" in item) return transferCommunity(item);
-  else if ("mod_add" in item) return addInstance(item);
-  else if ("admin_purge_person" in item) return purgePerson(item);
-  else if ("admin_purge_community" in item) return purgeCommunity(item);
-  else if ("admin_purge_post" in item) return purgePost(item);
-  else if ("admin_purge_comment" in item) return purgeComment(item);
-  else if ("mod_hide_community" in item) return hideCommunity(item);
-  else {
-    // should never happen (type = never)
-    //
-    // If item is not type = never, then some mod log action was added
-    // and needs to be handled.
-    return item;
+  switch (true) {
+    case "mod_remove_comment" in item:
+      return removeComment(item);
+    case "mod_remove_post" in item:
+      return removePost(item);
+    case "mod_lock_post" in item:
+      return lockPost(item);
+    case "mod_feature_post" in item:
+      return featurePost(item);
+    case "mod_remove_community" in item:
+      return removeCommunity(item);
+    case "mod_ban_from_community" in item:
+      return banFromCommunity(item);
+    case "mod_ban" in item:
+      return banFromInstance(item);
+    case "mod_add_community" in item:
+      return addCommunity(item);
+    case "mod_transfer_community" in item:
+      return transferCommunity(item);
+    case "mod_add" in item:
+      return addInstance(item);
+    case "admin_purge_person" in item:
+      return purgePerson(item);
+    case "admin_purge_community" in item:
+      return purgeCommunity(item);
+    case "admin_purge_post" in item:
+      return purgePost(item);
+    case "admin_purge_comment" in item:
+      return purgeComment(item);
+    case "mod_hide_community" in item:
+      return hideCommunity(item);
+    default:
+      // should never happen (type = never)
+      //
+      // If item is not type = never, then some mod log action was added
+      // and needs to be handled.
+      return item;
   }
 }
 
