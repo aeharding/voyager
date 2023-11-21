@@ -6,7 +6,7 @@ import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreen
 import { useAppSelector } from "../../store";
 import { jwtIssSelector } from "../auth/authSlice";
 import { clearRecoveredText } from "../../helpers/useTextRecovery";
-import useStateRef from "../../helpers/useRefState";
+import useStateRef from "../../helpers/useStateRef";
 
 export interface DismissableProps {
   dismiss: () => void;
