@@ -327,9 +327,9 @@ export default function Feed<I>({
         overscan={postType === "large" ? 1 : 0}
       >
         {header}
-        {filteredItems.map((i) => (
-          <Fragment key={getIndex ? getIndex(i) : `${i}`}>
-            {renderItemContent(i)}
+        {filteredItems.map((item, i) => (
+          <Fragment key={getIndex ? getIndex(item) : i}>
+            {renderItemContent(item)}
           </Fragment>
         ))}
         {footer}
