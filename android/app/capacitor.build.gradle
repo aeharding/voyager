@@ -9,6 +9,7 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
+    implementation project(':capacitor-tips')
     implementation project(':capacitor-community-app-icon')
     implementation project(':capacitor-app')
     implementation project(':capacitor-browser')
@@ -16,7 +17,6 @@ dependencies {
     implementation project(':capacitor-keyboard')
     implementation project(':capacitor-share')
     implementation project(':capacitor-status-bar')
-    implementation project(':revenuecat-purchases-capacitor')
     implementation project(':capacitor-android-nav-mode')
     implementation project(':capacitor-application-context')
     implementation project(':capacitor-biometric-lock')

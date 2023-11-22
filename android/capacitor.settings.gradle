@@ -2,6 +2,9 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/.pnpm/@capacitor+android@5.2.3_@capacitor+core@5.2.3/node_modules/@capacitor/android/capacitor')
 
+include ':capacitor-tips'
+project(':capacitor-tips').projectDir = new File('../../capacitor-tips/android')
+
 include ':capacitor-community-app-icon'
 project(':capacitor-community-app-icon').projectDir = new File('../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.2.3/node_modules/@capacitor-community/app-icon/android')
 
@@ -22,9 +25,6 @@ project(':capacitor-share').projectDir = new File('../node_modules/.pnpm/@capaci
 
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/status-bar/android')
-
-include ':revenuecat-purchases-capacitor'
-project(':revenuecat-purchases-capacitor').projectDir = new File('../node_modules/.pnpm/@revenuecat+purchases-capacitor@7.1.1_@capacitor+core@5.2.3/node_modules/@revenuecat/purchases-capacitor/android')
 
 include ':capacitor-android-nav-mode'
 project(':capacitor-android-nav-mode').projectDir = new File('../node_modules/.pnpm/capacitor-android-nav-mode@0.0.1_@capacitor+core@5.2.3/node_modules/capacitor-android-nav-mode/android')
