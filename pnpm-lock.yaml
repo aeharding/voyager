@@ -8,9 +8,6 @@ overrides:
   '@ionic/core': npm:voyager-ionic-core@^7.5.5
 
 dependencies:
-  capacitor-tips:
-    specifier: link:../capacitor-tips
-    version: link:../capacitor-tips
   compression:
     specifier: ^1.7.4
     version: 1.7.4
@@ -166,6 +163,9 @@ devDependencies:
   capacitor-stash-media:
     specifier: ^0.0.7
     version: 0.0.7(@capacitor/core@5.2.3)
+  capacitor-tips:
+    specifier: ^0.0.2
+    version: 0.0.2(@capacitor/core@5.2.3)
   compare-versions:
     specifier: ^6.1.0
     version: 6.1.0
@@ -4408,6 +4408,14 @@ packages:
 
   /capacitor-stash-media@0.0.7(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-4fS+TaAGSVy+SV7qOqAMGOUg0+Xc9R0+F4TkWcj8wv4xyU2IAJkRCZLyfVtmO/RRlKxSUIV481NLKkIPmp7TLQ==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.2.3
+    dev: true
+
+  /capacitor-tips@0.0.2(@capacitor/core@5.2.3):
+    resolution: {integrity: sha512-ig/inocKk8oVfiOst6inGLl5dhA8/bFtlhpZNTjSffGEhyAGnK2rsGn2FWkM39qBP4+3/0xakI80BwO1PvKsXQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:

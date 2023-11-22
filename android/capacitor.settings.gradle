@@ -2,9 +2,6 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/.pnpm/@capacitor+android@5.2.3_@capacitor+core@5.2.3/node_modules/@capacitor/android/capacitor')
 
-include ':capacitor-tips'
-project(':capacitor-tips').projectDir = new File('../../capacitor-tips/android')
-
 include ':capacitor-community-app-icon'
 project(':capacitor-community-app-icon').projectDir = new File('../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.2.3/node_modules/@capacitor-community/app-icon/android')
 
@@ -40,3 +37,6 @@ project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.p
 
 include ':capacitor-stash-media'
 project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@0.0.7_@capacitor+core@5.2.3/node_modules/capacitor-stash-media/android')
+
+include ':capacitor-tips'
+project(':capacitor-tips').projectDir = new File('../node_modules/.pnpm/capacitor-tips@0.0.2_@capacitor+core@5.2.3/node_modules/capacitor-tips/android')

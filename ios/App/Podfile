@@ -11,7 +11,6 @@ install! 'cocoapods', :disable_input_output_paths => true
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@5.2.3_@capacitor+core@5.2.3/node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@5.2.3_@capacitor+core@5.2.3/node_modules/@capacitor/ios'
-  pod 'CapacitorTips', :path => '../../../capacitor-tips'
   pod 'CapacitorCommunityAppIcon', :path => '../../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.2.3/node_modules/@capacitor-community/app-icon'
   pod 'CapacitorApp', :path => '../../node_modules/.pnpm/@capacitor+app@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/app'
   pod 'CapacitorBrowser', :path => '../../node_modules/.pnpm/@capacitor+browser@5.1.0_@capacitor+core@5.2.3/node_modules/@capacitor/browser'
@@ -24,6 +23,7 @@ def capacitor_pods
   pod 'CapacitorBiometricLock', :path => '../../node_modules/.pnpm/capacitor-biometric-lock@0.1.0_@capacitor+core@5.2.3/node_modules/capacitor-biometric-lock'
   pod 'CapacitorPluginSafeArea', :path => '../../node_modules/.pnpm/capacitor-plugin-safe-area@2.0.5_@capacitor+core@5.2.3/node_modules/capacitor-plugin-safe-area'
   pod 'CapacitorStashMedia', :path => '../../node_modules/.pnpm/capacitor-stash-media@0.0.7_@capacitor+core@5.2.3/node_modules/capacitor-stash-media'
+  pod 'CapacitorTips', :path => '../../node_modules/.pnpm/capacitor-tips@0.0.2_@capacitor+core@5.2.3/node_modules/capacitor-tips'
 end
 
 target 'App' do

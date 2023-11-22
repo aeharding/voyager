@@ -27,7 +27,7 @@ PODS:
     - SDWebImage
   - CapacitorStatusBar (5.0.6):
     - Capacitor
-  - CapacitorTips (0.0.1):
+  - CapacitorTips (0.0.2):
     - Capacitor
   - SDWebImage (5.17.0):
     - SDWebImage/Core (= 5.17.0)
@@ -48,7 +48,7 @@ DEPENDENCIES:
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/share`)"
   - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@0.0.7_@capacitor+core@5.2.3/node_modules/capacitor-stash-media`)"
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/status-bar`)"
-  - CapacitorTips (from `../../../capacitor-tips`)
+  - "CapacitorTips (from `../../node_modules/.pnpm/capacitor-tips@0.0.2_@capacitor+core@5.2.3/node_modules/capacitor-tips`)"
 
 SPEC REPOS:
   trunk:
@@ -84,7 +84,7 @@ EXTERNAL SOURCES:
   CapacitorStatusBar:
     :path: "../../node_modules/.pnpm/@capacitor+status-bar@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/status-bar"
   CapacitorTips:
-    :path: "../../../capacitor-tips"
+    :path: "../../node_modules/.pnpm/capacitor-tips@0.0.2_@capacitor+core@5.2.3/node_modules/capacitor-tips"
 
 SPEC CHECKSUMS:
   Capacitor: 6f44cbc33839b8a4202b8eac97041fe584083417
@@ -101,9 +101,9 @@ SPEC CHECKSUMS:
   CapacitorShare: cd41743331cb71d217c029de54b681cbd91e0fcc
   CapacitorStashMedia: 4a75016eb94559a6c1a16fc07bc5964724ba09eb
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
-  CapacitorTips: 948f788ae83af258c490d0e7307a816d08b21084
+  CapacitorTips: 045758a9354574aa4807265e1bccbca0919ad861
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: f3101e95fc7c2b478e32e1676cee4ab2ee26cbd5
+PODFILE CHECKSUM: 730711e474c0fd0d0016631d86fdafa17cf7e498
 
 COCOAPODS: 1.12.1
