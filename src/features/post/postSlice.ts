@@ -346,7 +346,6 @@ export const deletePost =
       throw error;
     }
 
-    dispatch(receivedPostNotFound(id));
     dispatch(postDeleted(id));
   };
 
