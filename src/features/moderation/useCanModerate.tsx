@@ -1,16 +1,58 @@
 import { useMemo } from "react";
-import { canModerate } from "../../helpers/lemmy";
+import { canModerate, getItemActorName } from "../../helpers/lemmy";
 import { useAppSelector } from "../../store";
 import useIsAdmin from "./useIsAdmin";
+import { Community } from "lemmy-js-client";
+import {
+  shield,
+  shieldCheckmark,
+  shieldCheckmarkOutline,
+  shieldOutline,
+} from "ionicons/icons";
 
-export default function useCanModerate(communityId: number | undefined) {
+export type ModeratorRole = "mod" | "admin-local" | "admin-remote";
+export type CanModerateAs = ModeratorRole | undefined;
+
+export default function useCanModerate(
+  community: Community | undefined,
+): CanModerateAs {
   const moderates = useAppSelector(
     (state) => state.auth.site?.my_user?.moderates,
   );
   const isAdmin = useIsAdmin();
-
-  return useMemo(
-    () => isAdmin || canModerate(communityId, moderates),
-    [moderates, communityId, isAdmin],
+  const myPerson = useAppSelector(
+    (state) => state.auth.site?.my_user?.local_user_view?.person,
   );
+
+  return useMemo(() => {
+    if (canModerate(community?.id, moderates)) {
+      return "mod";
+    }
+
+    // If user is admin on site of current community
+    if (isAdmin && myPerson && community)
+      return getItemActorName(myPerson) === getItemActorName(community)
+        ? "admin-local"
+        : "admin-remote";
+  }, [moderates, community, isAdmin, myPerson]);
+}
+
+export function getModColor(role: ModeratorRole): "danger" | "success" {
+  switch (role) {
+    case "admin-local":
+    case "admin-remote":
+      return "danger";
+    case "mod":
+      return "success";
+  }
+}
+
+export function getModIcon(role: ModeratorRole, solid = false): string {
+  switch (role) {
+    case "admin-local":
+    case "mod":
+      return solid ? shieldCheckmark : shieldCheckmarkOutline;
+    case "admin-remote":
+      return solid ? shield : shieldOutline;
+  }
 }

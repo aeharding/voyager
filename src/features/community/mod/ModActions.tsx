@@ -24,7 +24,7 @@ type ModActionsProps =
 
 export default function ModActions(props: ModActionsProps) {
   const isMod = useCanModerate(
-    "communityHandle" in props ? props.community?.community.id : undefined,
+    "communityHandle" in props ? props.community?.community : undefined,
   );
 
   if (!isMod && "communityHandle" in props) return;

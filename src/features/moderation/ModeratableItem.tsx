@@ -34,7 +34,7 @@ export default function ModeratableItem({
   itemView,
   children,
 }: ModeratableItemProps) {
-  const canModerate = useCanModerate(itemView.community.id);
+  const canModerate = useCanModerate(itemView.community);
 
   const item = useAppSelector((state) => {
     if (isPost(itemView)) {
