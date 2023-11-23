@@ -15,7 +15,7 @@ async function initializeIfNeeded() {
   if (BUILD_FOSS_ONLY || !isNative()) return;
   if ((await Purchases.isConfigured()).isConfigured) return;
 
-  Purchases.configure({
+  await Purchases.configure({
     apiKey: isAndroid()
       ? PUBLIC_REVENUECAT_ANDROID_API_KEY
       : PUBLIC_REVENUECAT_APPLE_API_KEY,

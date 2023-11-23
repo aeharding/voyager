@@ -34,6 +34,13 @@ ion-router-outlet > .ion-page > ion-header ion-title {
   justify-content: flex-start;
 }
 
+.mod .action-sheet-button,
+.mod .action-sheet-button:hover,
+.mod.action-sheet-button,
+.mod.action-sheet-button:hover {
+  color: var(--ion-color-success-shade);
+}
+
 /* https://github.com/ionic-team/ionic-framework/issues/27777#issuecomment-1631522283 */
 .action-sheet-height-fix {
   --height: 100%;
@@ -200,4 +207,14 @@ ion-toast.center::part(container) {
   transform: translateX(-50%);
   left: 50%;
   position: relative;
+}
+
+/* Make header buttons closer together (room for mod button) */
+.sc-ion-buttons-ios-s ion-button {
+  margin: 0;
+}
+
+/* Add minimum padding for top dismiss area of action sheet */
+.action-sheet-group.sc-ion-action-sheet-ios:first-child {
+  margin-top: min(15vh, 70px);
 }

@@ -251,8 +251,7 @@ export const logoutEverything = () => async (dispatch: AppDispatch) => {
 };
 
 export const changeAccount =
-  (handle: string) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
+  (handle: string) => (dispatch: AppDispatch, getState: () => RootState) => {
     dispatch(resetAccountSpecificStoreData());
     dispatch(setPrimaryAccount(handle));
 
@@ -261,8 +260,7 @@ export const changeAccount =
   };
 
 export const logoutAccount =
-  (handle: string) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
+  (handle: string) => (dispatch: AppDispatch, getState: () => RootState) => {
     const accountData = getState().auth.accountData;
     const currentAccount = accountData?.accounts?.find(
       ({ handle: h }) => handle === h,

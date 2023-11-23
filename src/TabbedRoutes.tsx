@@ -75,6 +75,9 @@ import { resetSavedStatusTap } from "./listeners/statusTap";
 import AboutPage from "./pages/settings/about/AboutPage";
 import AboutThanksPage from "./pages/settings/about/AboutThanksPage";
 import BiometricPage from "./pages/settings/BiometricPage";
+import CommunityCommentsPage from "./pages/shared/CommunityCommentsPage";
+import CommentsPage from "./pages/shared/CommentsPage";
+import ModlogPage from "./pages/shared/ModlogPage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -275,6 +278,18 @@ export default function TabbedRoutes() {
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/c/:community/comments`}>
+        <ActorRedirect>
+          <CommunityCommentsPage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/c/:community/log`}>
+        <ActorRedirect>
+          <ModlogPage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle`}>
         <ActorRedirect>
           <UserPage />
@@ -358,9 +373,29 @@ export default function TabbedRoutes() {
             <SpecialFeedPage type="Local" />
           </ActorRedirect>
         </Route>
+        <Route exact path="/posts/:actor/local/comments">
+          <ActorRedirect>
+            <CommentsPage type="Local" />
+          </ActorRedirect>
+        </Route>
+        <Route exact path="/posts/:actor/local/log">
+          <ActorRedirect>
+            <ModlogPage />
+          </ActorRedirect>
+        </Route>
         <Route exact path="/posts/:actor/mod">
           <ActorRedirect>
             <SpecialFeedPage type="ModeratorView" />
+          </ActorRedirect>
+        </Route>
+        <Route exact path="/posts/:actor/mod/comments">
+          <ActorRedirect>
+            <CommentsPage type="ModeratorView" />
+          </ActorRedirect>
+        </Route>
+        <Route exact path="/posts/:actor/mod/log">
+          <ActorRedirect>
+            <ModlogPage />
           </ActorRedirect>
         </Route>
         <Route exact path="/posts/:actor">
@@ -439,7 +474,6 @@ export default function TabbedRoutes() {
         <Route exact path="/settings/:actor">
           <Redirect to="/settings" push={false} />
         </Route>
-
         <Route exact path="/settings">
           <SettingsPage />
         </Route>
@@ -485,7 +519,6 @@ export default function TabbedRoutes() {
         <Route exact path="/settings/reddit-migrate/:search">
           <SearchCommunitiesPage />
         </Route>
-
         {/* This annoyingly cannot be /settings/about, because otherwise it will also match /settings/:actor */}
         <Route exact path="/settings/about/app">
           <AboutPage />

@@ -80,3 +80,56 @@ export const postLocked: AppToastOptions = {
   icon: close,
   centerText: true,
 };
+
+export function buildLocked(locked: boolean): AppToastOptions {
+  return {
+    message: `${locked ? "Locked" : "Unlocked"} post`,
+    color: "success",
+    centerText: true,
+    icon: checkmark,
+  };
+}
+
+export function buildStickied(stickied: boolean): AppToastOptions {
+  return {
+    message: `${stickied ? "Stickied" : "Unstickied"} post`,
+    color: "success",
+    centerText: true,
+    icon: checkmark,
+  };
+}
+
+export const postRemoved: AppToastOptions = {
+  message: "Post removed",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};
+
+export const postApproved: AppToastOptions = {
+  message: "Post approved",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};
+
+export const commentRemoved: AppToastOptions = {
+  message: "Comment removed",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};
+
+export const commentApproved: AppToastOptions = {
+  message: "Comment approved",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};
+
+export const commentDistinguished: AppToastOptions = {
+  message: "Comment distinguished",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};

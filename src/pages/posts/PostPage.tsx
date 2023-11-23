@@ -24,6 +24,7 @@ import PostDetail from "../../features/post/detail/PostDetail";
 import FeedContent from "../shared/FeedContent";
 import useClient from "../../helpers/useClient";
 import { formatNumber } from "../../helpers/number";
+import MoreModActions from "../../features/post/shared/MoreModAction";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -54,6 +55,7 @@ export default function PostPage() {
     (state) => state.settings.general.comments.sort,
   );
   const [sort, setSort] = useState<CommentSortType>(defaultSort);
+  const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
 
   const postIfFound = typeof post === "object" ? post : undefined;
 
@@ -90,13 +92,13 @@ export default function PostPage() {
 
   function renderPost() {
     if (!post) return <CenteredSpinner />;
-    if (post === "not-found")
+    if (
+      post === "not-found" || // 404 from lemmy
+      post.post.deleted || // post marked deleted from lemmy
+      postDeletedById[post.post.id] // deleted by user recently
+    )
       return buildWithRefresher(
-        <div className="ion-padding">Post not found</div>,
-      );
-    if (post.post.deleted)
-      return buildWithRefresher(
-        <div className="ion-padding">Post deleted</div>,
+        <div className="ion-padding ion-text-center">Post not found</div>,
       );
 
     return (
@@ -131,6 +133,7 @@ export default function PostPage() {
           </IonButtons>
           <IonTitle>{title}</IonTitle>
           <IonButtons slot="end">
+            {postIfFound && <MoreModActions post={postIfFound} />}
             <CommentSort sort={sort} setSort={setSort} />
             {postIfFound && <MoreActions post={postIfFound} />}
           </IonButtons>

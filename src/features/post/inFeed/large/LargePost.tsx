@@ -18,13 +18,17 @@ import Save from "../../../labels/Save";
 import { InFeedPostMedia } from "./Image";
 import { useAppSelector } from "../../../../store";
 import { isUrlMedia } from "../../../../helpers/url";
+import ModeratableItem, {
+  ModeratableItemBannerOutlet,
+} from "../../../moderation/ModeratableItem";
+import MoreModActions from "../../shared/MoreModAction";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 12px;
+  padding: 12px;
 
   position: relative;
 
@@ -99,7 +103,7 @@ const PostBody = styled.div<{ isRead: boolean }>`
 
 const ImageContainer = styled.div`
   overflow: hidden;
-  margin: 0 -0.75rem;
+  margin: 0 -12px;
 `;
 
 export default function LargePost({ post, communityMode }: PostProps) {
@@ -155,45 +159,50 @@ export default function LargePost({ post, communityMode }: PostProps) {
   }
 
   return (
-    <Container>
-      <Title isRead={hasBeenRead}>
-        <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
-        {isNsfw(post) && <Nsfw />}
-      </Title>
+    <ModeratableItem itemView={post}>
+      <Container>
+        <ModeratableItemBannerOutlet />
 
-      {renderPostBody()}
+        <Title isRead={hasBeenRead}>
+          <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+          {isNsfw(post) && <Nsfw />}
+        </Title>
 
-      <Details>
-        <LeftDetails isRead={hasBeenRead}>
-          <CommunityName>
-            {post.post.featured_community || post.post.featured_local ? (
-              <AnnouncementIcon icon={megaphone} />
-            ) : undefined}
-            {communityMode ? (
-              <PersonLink
-                person={post.creator}
-                showInstanceWhenRemote
-                prefix="by"
-              />
-            ) : (
-              <CommunityLink
-                community={post.community}
-                showInstanceWhenRemote
-                subscribed={post.subscribed}
-              />
-            )}
-          </CommunityName>
+        {renderPostBody()}
 
-          <PreviewStats post={post} />
-        </LeftDetails>
-        <RightDetails>
-          <MoreActions post={post} onFeed />
-          <VoteButton type="up" postId={post.post.id} />
-          <VoteButton type="down" postId={post.post.id} />
-        </RightDetails>
-      </Details>
+        <Details>
+          <LeftDetails isRead={hasBeenRead}>
+            <CommunityName>
+              {post.post.featured_community || post.post.featured_local ? (
+                <AnnouncementIcon icon={megaphone} />
+              ) : undefined}
+              {communityMode ? (
+                <PersonLink
+                  person={post.creator}
+                  showInstanceWhenRemote
+                  prefix="by"
+                />
+              ) : (
+                <CommunityLink
+                  community={post.community}
+                  showInstanceWhenRemote
+                  subscribed={post.subscribed}
+                />
+              )}
+            </CommunityName>
 
-      <Save type="post" id={post.post.id} />
-    </Container>
+            <PreviewStats post={post} />
+          </LeftDetails>
+          <RightDetails>
+            <MoreActions post={post} onFeed />
+            <MoreModActions post={post} onFeed />
+            <VoteButton type="up" postId={post.post.id} />
+            <VoteButton type="down" postId={post.post.id} />
+          </RightDetails>
+        </Details>
+
+        <Save type="post" id={post.post.id} />
+      </Container>
+    </ModeratableItem>
   );
 }

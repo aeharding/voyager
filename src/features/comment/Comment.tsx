@@ -16,6 +16,10 @@ import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
+import ModActions from "./ModActions";
+import { ModeratableItemBannerOutlet } from "../moderation/ModeratableItem";
+import ModeratableItem from "../moderation/ModeratableItem";
+import useCanModerate from "../moderation/useCanModerate";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -47,7 +51,7 @@ export const PositionedContainer = styled.div<{
 
   ${maxWidthCss}
 
-  padding: 0.55rem 1rem;
+  padding: 8px 12px;
 
   ${({ highlighted }) =>
     highlighted &&
@@ -61,7 +65,7 @@ export const PositionedContainer = styled.div<{
   }
 
   ${({ depth }) => css`
-    padding-left: calc(0.5rem + ${Math.max(0, depth - 1) * 10}px);
+    padding-left: calc(12px + ${Math.max(0, depth - 1) * 10}px);
   `}
 `;
 
@@ -207,6 +211,8 @@ export default function Comment({
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentFromStore ?? commentView.comment;
 
+  const canModerate = useCanModerate(commentView.community.id);
+
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
       <SlidingNestedCommentVote
@@ -221,60 +227,70 @@ export default function Comment({
           onClick={(e) => onClick?.(e)}
           className={`comment-${comment.id}`}
         >
-          <PositionedContainer
-            depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
-            highlighted={highlightedCommentId === comment.id}
-          >
-            <Container depth={absoluteDepth ?? depth ?? 0}>
-              <Header>
-                <StyledPersonLabel
-                  person={commentView.creator}
-                  opId={commentView.post.creator_id}
-                  distinguished={comment.distinguished}
-                  showBadge={!context}
-                />
-                <Vote item={commentView} />
-                <Edited item={commentView} />
-                <div
-                  css={css`
-                    flex: 1;
-                  `}
-                />
-                {!collapsed ? (
-                  <>
-                    <CommentEllipsis
-                      comment={commentView}
-                      rootIndex={rootIndex}
-                    />
-                    <Ago date={comment.published} />
-                  </>
-                ) : (
-                  <>
-                    <AmountCollapsed>
-                      {commentView.counts.child_count + 1}
-                    </AmountCollapsed>
-                    <CollapsedIcon icon={chevronDownOutline} />
-                  </>
-                )}
-              </Header>
-
-              <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
-                <Content
-                  onClick={(e) => {
-                    if (!(e.target instanceof HTMLElement)) return;
-                    if (e.target.nodeName === "A") e.stopPropagation();
-                  }}
-                >
-                  <CommentContent
-                    item={comment}
-                    showTouchFriendlyLinks={!context}
+          <ModeratableItem itemView={commentView}>
+            <PositionedContainer
+              depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
+              highlighted={highlightedCommentId === comment.id}
+            >
+              <Container depth={absoluteDepth ?? depth ?? 0}>
+                <ModeratableItemBannerOutlet />
+                <Header>
+                  <StyledPersonLabel
+                    person={commentView.creator}
+                    opId={commentView.post.creator_id}
+                    distinguished={comment.distinguished}
+                    showBadge={!context}
                   />
-                  {context}
-                </Content>
-              </AnimateHeight>
-            </Container>
-            <Save type="comment" id={commentView.comment.id} />
-          </PositionedContainer>
+                  <Vote item={commentView} />
+                  <Edited item={commentView} />
+                  <div
+                    css={css`
+                      flex: 1;
+                    `}
+                  />
+                  {!collapsed ? (
+                    <>
+                      {canModerate && (
+                        <ModActions
+                          comment={comment}
+                          counts={commentView.counts}
+                        />
+                      )}
+                      <CommentEllipsis
+                        comment={commentView}
+                        rootIndex={rootIndex}
+                      />
+                      <Ago date={comment.published} />
+                    </>
+                  ) : (
+                    <>
+                      <AmountCollapsed>
+                        {commentView.counts.child_count + 1}
+                      </AmountCollapsed>
+                      <CollapsedIcon icon={chevronDownOutline} />
+                    </>
+                  )}
+                </Header>
+
+                <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
+                  <Content
+                    onClick={(e) => {
+                      if (!(e.target instanceof HTMLElement)) return;
+                      if (e.target.nodeName === "A") e.stopPropagation();
+                    }}
+                  >
+                    <CommentContent
+                      item={comment}
+                      showTouchFriendlyLinks={!context}
+                      isMod={canModerate}
+                    />
+                    {context}
+                  </Content>
+                </AnimateHeight>
+              </Container>
+              <Save type="comment" id={commentView.comment.id} />
+            </PositionedContainer>
+          </ModeratableItem>
         </CustomIonItem>
       </SlidingNestedCommentVote>
     </AnimateHeight>

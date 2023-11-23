@@ -15,11 +15,23 @@ import Nsfw, { isNsfw } from "../../../labels/Nsfw";
 import { useAppSelector } from "../../../../store";
 import { useMemo } from "react";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
+import MoreModActions from "../../shared/MoreModAction";
+import ModeratableItem, {
+  ModeratableItemBannerOutlet,
+} from "../../../moderation/ModeratableItem";
 
 const Container = styled.div`
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 12px;
+`;
+
+const Contents = styled.div`
   display: flex;
   align-items: flex-start;
-  padding: 12px;
   gap: 12px;
   line-height: 1.15;
 
@@ -78,13 +90,23 @@ const Actions = styled.div`
   white-space: nowrap;
 `;
 
-const StyledMoreActions = styled(MoreActions)`
-  font-size: 1.3rem;
-
+const actionButtonStyles = css`
   margin: -0.5rem;
   padding: 0.5rem;
 
   color: var(--ion-color-text-aside);
+`;
+
+const StyledMoreActions = styled(MoreActions)`
+  font-size: 1.3rem;
+
+  ${actionButtonStyles}
+`;
+
+const StyledModActions = styled(MoreModActions)`
+  font-size: 1.1em;
+
+  ${actionButtonStyles}
 `;
 
 const EndDetails = styled.div`
@@ -112,44 +134,54 @@ export default function CompactPost({ post, communityMode }: PostProps) {
   const nsfw = useMemo(() => isNsfw(post), [post]);
 
   return (
-    <Container>
-      {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
-      <Content>
-        <Title isRead={hasBeenRead}>
-          <InlineMarkdown>{post.post.name}</InlineMarkdown> {nsfw && <Nsfw />}
-        </Title>
-        <Aside isRead={hasBeenRead}>
-          <From>
-            {post.post.featured_community || post.post.featured_local ? (
-              <AnnouncementIcon icon={megaphone} />
-            ) : undefined}
-            {communityMode ? (
-              <PersonLink
-                person={post.creator}
-                showInstanceWhenRemote
-                prefix="by"
-              />
-            ) : (
-              <CommunityLink
-                community={post.community}
-                subscribed={post.subscribed}
-              />
-            )}
-          </From>
-          <Actions>
-            <PreviewStats post={post} />
-            <StyledMoreActions post={post} onFeed />
-          </Actions>
-        </Aside>
-      </Content>
-      {compactThumbnailPositionType === "right" && <Thumbnail post={post} />}
-      {compactShowVotingButtons === true && (
-        <EndDetails>
-          <VoteButton type="up" postId={post.post.id} />
-          <VoteButton type="down" postId={post.post.id} />
-        </EndDetails>
-      )}
-      <Save type="post" id={post.post.id} />
-    </Container>
+    <ModeratableItem itemView={post}>
+      <Container>
+        <ModeratableItemBannerOutlet />
+
+        <Contents>
+          {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
+          <Content>
+            <Title isRead={hasBeenRead}>
+              <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+              {nsfw && <Nsfw />}
+            </Title>
+            <Aside isRead={hasBeenRead}>
+              <From>
+                {post.post.featured_community || post.post.featured_local ? (
+                  <AnnouncementIcon icon={megaphone} />
+                ) : undefined}
+                {communityMode ? (
+                  <PersonLink
+                    person={post.creator}
+                    showInstanceWhenRemote
+                    prefix="by"
+                  />
+                ) : (
+                  <CommunityLink
+                    community={post.community}
+                    subscribed={post.subscribed}
+                  />
+                )}
+              </From>
+              <Actions>
+                <PreviewStats post={post} />
+                <StyledModActions post={post} onFeed solidIcon />
+                <StyledMoreActions post={post} onFeed />
+              </Actions>
+            </Aside>
+          </Content>
+          {compactThumbnailPositionType === "right" && (
+            <Thumbnail post={post} />
+          )}
+          {compactShowVotingButtons === true && (
+            <EndDetails>
+              <VoteButton type="up" postId={post.post.id} />
+              <VoteButton type="down" postId={post.post.id} />
+            </EndDetails>
+          )}
+          <Save type="post" id={post.post.id} />
+        </Contents>
+      </Container>
+    </ModeratableItem>
   );
 }

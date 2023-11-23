@@ -2,6 +2,7 @@ import {
   Comment,
   CommentView,
   Community,
+  CommunityModeratorView,
   GetSiteResponse,
   LemmyErrorType,
   Post,
@@ -272,4 +273,13 @@ export type OldLemmyErrorValue = never; // When removing support for an old vers
 export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
   if (!(error instanceof Error)) return;
   return error.message === lemmyErrorValue;
+}
+
+export function canModerate(
+  communityId: number | undefined,
+  moderates: CommunityModeratorView[] | undefined,
+): boolean {
+  if (communityId === undefined) return false;
+  if (!moderates) return false;
+  return moderates.some((m) => m.community.id === communityId);
 }
