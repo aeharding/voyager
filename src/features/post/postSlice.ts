@@ -31,6 +31,13 @@ interface PostHiddenData {
 
 interface PostState {
   postById: Dictionary<PostView | "not-found">;
+
+  /**
+   * Separate deleted dictionary is so that the feed can observe and not get hammered with updates
+   * (this should only ever change when the user deletes their own post to trigger the feed to hide it)
+   */
+  postDeletedById: Dictionary<boolean>;
+
   postHiddenById: Dictionary<PostHiddenData>;
   postVotesById: Dictionary<1 | -1 | 0>;
   postSavedById: Dictionary<boolean>;
@@ -40,6 +47,7 @@ interface PostState {
 
 const initialState: PostState = {
   postById: {},
+  postDeletedById: {},
   postHiddenById: {},
   postVotesById: {},
   postSavedById: {},
@@ -74,6 +82,9 @@ export const postSlice = createSlice({
     receivedPostNotFound: (state, action: PayloadAction<number>) => {
       state.postById[action.payload] = "not-found";
     },
+    postDeleted: (state, action: PayloadAction<number>) => {
+      state.postDeletedById[action.payload] = true;
+    },
     resetHidden: (state) => {
       state.postHiddenById = {};
     },
@@ -99,6 +110,12 @@ export const postSlice = createSlice({
             state.postVotesById[post.post.id] = post.my_vote as 1 | -1;
 
           if (post.saved) state.postSavedById[post.post.id] = post.saved;
+
+          // If user restores a post, reset local state
+          // (you can't do this through Voyager, but you can with lemmy-ui)
+          if (!post.post.deleted && state.postDeletedById[post.post.id]) {
+            delete state.postDeletedById[post.post.id];
+          }
         }
       })
       .addCase(updatePostHidden.fulfilled, (state, action) => {
@@ -215,6 +232,7 @@ export const {
   updatePostSaved,
   updatePostRead,
   receivedPostNotFound,
+  postDeleted,
   resetHidden,
 } = postSlice.actions;
 
@@ -328,7 +346,7 @@ export const deletePost =
       throw error;
     }
 
-    dispatch(receivedPostNotFound(id));
+    dispatch(postDeleted(id));
   };
 
 export const hidePost =

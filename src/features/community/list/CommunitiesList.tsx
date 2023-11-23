@@ -16,7 +16,7 @@ import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../../helpers/array";
 import { getHandle } from "../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
-import { home, library, people, shield } from "ionicons/icons";
+import { home, library, people, shieldCheckmark } from "ionicons/icons";
 import ItemIcon from "../../labels/img/ItemIcon";
 import CommunityListItem from "./CommunityListItem";
 import useSupported from "../../../helpers/useSupported";
@@ -187,7 +187,7 @@ export default function CommunitiesList() {
                 lines="none"
               >
                 <Content>
-                  <SubIcon icon={shield} color="#464646" />
+                  <SubIcon icon={shieldCheckmark} color="#464646" />
                   <div>
                     Moderator Posts
                     <aside>Posts from moderated communities</aside>

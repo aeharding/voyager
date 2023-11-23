@@ -285,8 +285,6 @@ export default function PostEditorRoot({
 
     setCanDismiss(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
     dismiss();
 
     if (!existingPost)

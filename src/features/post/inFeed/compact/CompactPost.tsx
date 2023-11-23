@@ -21,6 +21,8 @@ import ModeratableItem, {
 } from "../../../moderation/ModeratableItem";
 
 const Container = styled.div`
+  width: 100%;
+
   display: flex;
   flex-direction: column;
   padding: 12px;

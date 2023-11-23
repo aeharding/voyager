@@ -4,8 +4,8 @@ import {
   lockClosedOutline,
   lockOpenOutline,
   megaphoneOutline,
-  shield,
-  shieldOutline,
+  shieldCheckmark,
+  shieldCheckmarkOutline,
   trashOutline,
 } from "ionicons/icons";
 import { useAppDispatch } from "../../../store";
@@ -110,7 +110,10 @@ function Actions({ post, onFeed, solidIcon, className }: MoreActionsProps) {
         }}
         className={className}
       >
-        <IonIcon icon={solidIcon ? shield : shieldOutline} color="success" />
+        <IonIcon
+          icon={solidIcon ? shieldCheckmark : shieldCheckmarkOutline}
+          color="success"
+        />
       </Button>
     </>
   );

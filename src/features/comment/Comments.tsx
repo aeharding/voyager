@@ -34,6 +34,7 @@ import {
   scrollIntoView as scrollIntoView,
   useScrollIntoViewWorkaround,
 } from "../../helpers/dom";
+import { IndexedVirtuaItem } from "../../helpers/virtua";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
@@ -401,11 +402,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     if (bottomPadding)
       data.push(<div style={{ height: `${bottomPadding}px` }} key="footer" />);
 
-    return data.map((item, i) => (
-      <div data-index={i} key={item.key}>
-        {item}
-      </div>
-    ));
+    return data;
   }, [allComments, bottomPadding, header]);
 
   return (
@@ -432,6 +429,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
           }
           ref={virtuaRef}
           style={{ height: "100%" }}
+          components={{ Item: IndexedVirtuaItem }}
           overscan={highlightedCommentId ? 10 : 0}
           onRangeChange={(start, end) => {
             if (end + 10 > list.length) {

@@ -9,6 +9,7 @@ import {
   removeCircleOutline,
   tabletPortraitOutline,
   eyeOffOutline,
+  shareOutline,
 } from "ionicons/icons";
 import { useState } from "react";
 import useHidePosts from "../feed/useHidePosts";
@@ -63,6 +64,7 @@ function MoreActionsActionSheet({
     post,
     sidebar,
     favorite,
+    share,
   } = useCommunityActions(community);
   const hidePosts = useHidePosts();
 
@@ -109,6 +111,14 @@ function MoreActionsActionSheet({
           icon: tabletPortraitOutline,
           handler: () => {
             sidebar();
+          },
+        },
+        {
+          text: "Share",
+          data: "share",
+          icon: shareOutline,
+          handler: () => {
+            share();
           },
         },
         {

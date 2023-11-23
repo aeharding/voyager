@@ -64,6 +64,7 @@ export default function PostCommentFeed({
     (state) => state.settings.appearance.posts.type,
   );
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
+  const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
   const filteredKeywords = useAppSelector(
     (state) => state.settings.blocks.keywords,
   );
@@ -146,6 +147,19 @@ export default function PostCommentFeed({
 
   const filterFn = useCallback(
     (item: PostCommentItem) => {
+      // Filter deleted posts when:
+      // 1. Via Lemmy API, mods see deleted posts in feed. Filter them out.
+      // 2. User deletes their own post (live update to remove from feed)
+      if (isPost(item)) {
+        if (item.post.deleted || postDeletedById[item.post.id]) {
+          return false;
+        }
+      } else {
+        if (item.comment.deleted) {
+          return false;
+        }
+      }
+
       const postHidden = postHiddenById[item.post.id];
       if (
         filterHiddenPosts &&
@@ -173,6 +187,7 @@ export default function PostCommentFeed({
       filterKeywords,
       filterHiddenPosts,
       _filterFn,
+      postDeletedById,
     ],
   );
 
