@@ -4,8 +4,6 @@ import {
   lockClosedOutline,
   lockOpenOutline,
   megaphoneOutline,
-  shieldCheckmark,
-  shieldCheckmarkOutline,
   trashOutline,
 } from "ionicons/icons";
 import { useAppDispatch } from "../../../store";
@@ -19,7 +17,11 @@ import {
 } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
 import useAppToast from "../../../helpers/useAppToast";
-import useCanModerate from "../../moderation/useCanModerate";
+import useCanModerate, {
+  ModeratorRole,
+  getModColor,
+  getModIcon,
+} from "../../moderation/useCanModerate";
 
 interface MoreActionsProps {
   post: PostView;
@@ -29,21 +31,25 @@ interface MoreActionsProps {
 }
 
 export default function MoreModActions(props: MoreActionsProps) {
-  const isMod = useCanModerate(props.post.community.id);
+  const canModerate = useCanModerate(props.post.community);
 
-  if (!isMod) return;
+  if (!canModerate) return;
 
-  return <Actions {...props} />;
+  return <Actions {...props} role={canModerate} />;
 }
 
-function Actions({ post, onFeed, solidIcon, className }: MoreActionsProps) {
+interface ActionsProps extends MoreActionsProps {
+  role: ModeratorRole;
+}
+
+function Actions({ post, onFeed, solidIcon, className, role }: ActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
 
   function onClick() {
     presentActionSheet({
-      cssClass: "mod left-align-buttons",
+      cssClass: `${role} left-align-buttons`,
       buttons: [
         {
           text: "Approve",
@@ -110,10 +116,7 @@ function Actions({ post, onFeed, solidIcon, className }: MoreActionsProps) {
         }}
         className={className}
       >
-        <IonIcon
-          icon={solidIcon ? shieldCheckmark : shieldCheckmarkOutline}
-          color="success"
-        />
+        <IonIcon icon={getModIcon(role, solidIcon)} color={getModColor(role)} />
       </Button>
     </>
   );

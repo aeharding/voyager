@@ -4,35 +4,60 @@ import {
   useIonActionSheet,
   useIonRouter,
 } from "@ionic/react";
-import {
-  chatbubbleOutline,
-  footstepsOutline,
-  shieldCheckmarkOutline,
-} from "ionicons/icons";
+import { chatbubbleOutline, footstepsOutline } from "ionicons/icons";
 import { MouseEvent } from "react";
 import { notEmpty } from "../../../helpers/array";
-import useCanModerate from "../../moderation/useCanModerate";
+import useCanModerate, {
+  ModeratorRole,
+  getModColor,
+  getModIcon,
+} from "../../moderation/useCanModerate";
 import { CommunityView, ListingType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 
-type ModActionsProps =
-  | {
-      community: CommunityView | undefined;
-      communityHandle: string;
-    }
-  | { type: ListingType };
-
-export default function ModActions(props: ModActionsProps) {
-  const isMod = useCanModerate(
-    "communityHandle" in props ? props.community?.community.id : undefined,
-  );
-
-  if (!isMod && "communityHandle" in props) return;
-
-  return <Actions {...props} />;
+interface CommunityModActionsProps {
+  community: CommunityView | undefined;
+  communityHandle: string;
 }
 
-function Actions(props: ModActionsProps) {
+interface SpecialFeedModActionsProps {
+  type: "Local" | "ModeratorView";
+}
+
+type ModActionsProps = CommunityModActionsProps | SpecialFeedModActionsProps;
+
+export default function ModActions(props: ModActionsProps) {
+  if ("communityHandle" in props) return <CommunityActions {...props} />;
+
+  return <SpecialFeedActions {...props} />;
+}
+
+function CommunityActions(props: CommunityModActionsProps) {
+  const canModerate = useCanModerate(props.community?.community);
+
+  if (!canModerate) return;
+
+  return <Actions {...props} role={canModerate} />;
+}
+
+function SpecialFeedActions(props: SpecialFeedModActionsProps) {
+  const role = (() => {
+    switch (props.type) {
+      case "Local":
+        return "admin-local";
+      case "ModeratorView":
+        return "mod";
+    }
+  })();
+
+  return <Actions {...props} role={role} />;
+}
+
+type ActionsProps = ModActionsProps & {
+  role: ModeratorRole;
+};
+
+function Actions(props: ActionsProps) {
   // const [presentAlert] = useIonAlert();
   // const dispatch = useAppDispatch();
   // const [loading, setLoading] = useState(false);
@@ -45,7 +70,7 @@ function Actions(props: ModActionsProps) {
     e.stopPropagation();
 
     presentActionSheet({
-      cssClass: "left-align-buttons mod",
+      cssClass: `${props.role} left-align-buttons`,
       buttons: [
         {
           text: "Mod Log",
@@ -95,7 +120,7 @@ function Actions(props: ModActionsProps) {
 
   return (
     <IonButton onClick={onClick}>
-      <IonIcon icon={shieldCheckmarkOutline} color="success" />
+      <IonIcon icon={getModIcon(props.role)} color={getModColor(props.role)} />
     </IonButton>
   );
 }

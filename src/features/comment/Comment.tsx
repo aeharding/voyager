@@ -211,7 +211,7 @@ export default function Comment({
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentFromStore ?? commentView.comment;
 
-  const canModerate = useCanModerate(commentView.community.id);
+  const canModerate = useCanModerate(commentView.community);
 
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
@@ -250,10 +250,11 @@ export default function Comment({
                   />
                   {!collapsed ? (
                     <>
-                      {canModerate && (
+                      {!!canModerate && (
                         <ModActions
                           comment={comment}
                           counts={commentView.counts}
+                          role={canModerate}
                         />
                       )}
                       <CommentEllipsis
@@ -282,7 +283,7 @@ export default function Comment({
                     <CommentContent
                       item={comment}
                       showTouchFriendlyLinks={!context}
-                      isMod={canModerate}
+                      isMod={!!canModerate}
                     />
                     {context}
                   </Content>
