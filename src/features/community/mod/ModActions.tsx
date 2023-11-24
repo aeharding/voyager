@@ -19,31 +19,40 @@ import useCanModerate, {
 import { CommunityView, ListingType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 
-type ModActionsProps =
-  | {
-      community: CommunityView | undefined;
-      communityHandle: string;
-    }
-  | { type: "Local" | "ModeratorView" };
+interface CommunityModActionsProps {
+  community: CommunityView | undefined;
+  communityHandle: string;
+}
+
+interface SpecialFeedModActionsProps {
+  type: "Local" | "ModeratorView";
+}
+
+type ModActionsProps = CommunityModActionsProps | SpecialFeedModActionsProps;
 
 export default function ModActions(props: ModActionsProps) {
-  const canModerate = useCanModerate(
-    "communityHandle" in props ? props.community?.community : undefined,
-  );
+  if ("communityHandle" in props) return <CommunityActions {...props} />;
 
-  if (!canModerate && "communityHandle" in props) return;
+  return <SpecialFeedActions {...props} />;
+}
 
-  const role =
-    "type" in props
-      ? (() => {
-          switch (props.type) {
-            case "Local":
-              return "admin-local";
-            case "ModeratorView":
-              return "mod";
-          }
-        })()
-      : canModerate!;
+function CommunityActions(props: CommunityModActionsProps) {
+  const canModerate = useCanModerate(props.community?.community);
+
+  if (!canModerate) return;
+
+  return <Actions {...props} role={canModerate} />;
+}
+
+function SpecialFeedActions(props: SpecialFeedModActionsProps) {
+  const role = (() => {
+    switch (props.type) {
+      case "Local":
+        return "admin-local";
+      case "ModeratorView":
+        return "mod";
+    }
+  })();
 
   return <Actions {...props} role={role} />;
 }
