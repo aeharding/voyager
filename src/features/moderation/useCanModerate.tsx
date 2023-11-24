@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { canModerate, getItemActorName } from "../../helpers/lemmy";
+import { canModerate } from "../../helpers/lemmy";
 import { useAppSelector } from "../../store";
 import useIsAdmin from "./useIsAdmin";
 import { Community } from "lemmy-js-client";
