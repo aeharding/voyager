@@ -254,6 +254,7 @@ export default function Comment({
                         <ModActions
                           comment={comment}
                           counts={commentView.counts}
+                          role={canModerate}
                         />
                       )}
                       <CommentEllipsis

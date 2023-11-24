@@ -11,7 +11,11 @@ import {
 } from "ionicons/icons";
 import { MouseEvent } from "react";
 import { notEmpty } from "../../../helpers/array";
-import useCanModerate from "../../moderation/useCanModerate";
+import useCanModerate, {
+  ModeratorRole,
+  getModColor,
+  getModIcon,
+} from "../../moderation/useCanModerate";
 import { CommunityView, ListingType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 
@@ -20,7 +24,7 @@ type ModActionsProps =
       community: CommunityView | undefined;
       communityHandle: string;
     }
-  | { type: ListingType };
+  | { type: "Local" | "ModeratorView" };
 
 export default function ModActions(props: ModActionsProps) {
   const isMod = useCanModerate(
@@ -29,10 +33,25 @@ export default function ModActions(props: ModActionsProps) {
 
   if (!isMod && "communityHandle" in props) return;
 
-  return <Actions {...props} />;
+  const role =
+    "type" in props
+      ? (() => {
+          switch (props.type) {
+            case "Local":
+              return "admin-local";
+            case "ModeratorView":
+              return "mod";
+          }
+        })()
+      : isMod!;
+
+  return <Actions {...props} role={role} />;
 }
 
-function Actions(props: ModActionsProps) {
+type ActionsProps = ModActionsProps & {
+  role: ModeratorRole;
+};
+function Actions(props: ActionsProps) {
   // const [presentAlert] = useIonAlert();
   // const dispatch = useAppDispatch();
   // const [loading, setLoading] = useState(false);
@@ -45,7 +64,7 @@ function Actions(props: ModActionsProps) {
     e.stopPropagation();
 
     presentActionSheet({
-      cssClass: "left-align-buttons mod",
+      cssClass: `${props.role} left-align-buttons`,
       buttons: [
         {
           text: "Mod Log",
@@ -95,7 +114,7 @@ function Actions(props: ModActionsProps) {
 
   return (
     <IonButton onClick={onClick}>
-      <IonIcon icon={shieldCheckmarkOutline} color="success" />
+      <IonIcon icon={getModIcon(props.role)} color={getModColor(props.role)} />
     </IonButton>
   );
 }

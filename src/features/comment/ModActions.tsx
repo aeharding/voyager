@@ -28,17 +28,19 @@ import {
   commentDistinguished,
   commentRemoved,
 } from "../../helpers/toastMessages";
-
-const ModIonIcon = styled(IonIcon)`
-  color: var(--ion-color-success);
-`;
+import {
+  ModeratorRole,
+  getModColor,
+  getModIcon,
+} from "../moderation/useCanModerate";
 
 interface ModActionsProps {
   comment: Comment;
   counts: CommentAggregates;
+  role: ModeratorRole;
 }
 
-export default function ModActions({ comment, counts }: ModActionsProps) {
+export default function ModActions({ comment, counts, role }: ModActionsProps) {
   const [presentAlert] = useIonAlert();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
@@ -50,13 +52,14 @@ export default function ModActions({ comment, counts }: ModActionsProps) {
 
   return (
     <>
-      <ModIonIcon
-        icon={shieldCheckmark}
+      <IonIcon
+        icon={getModIcon(role, true)}
+        color={getModColor(role)}
         onClick={(e) => {
           e.stopPropagation();
 
           presentActionSheet({
-            cssClass: "left-align-buttons mod",
+            cssClass: `${role} left-align-buttons`,
             buttons: [
               isSelf
                 ? {

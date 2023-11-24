@@ -11,11 +11,10 @@ import {
 } from "ionicons/icons";
 
 export type ModeratorRole = "mod" | "admin-local" | "admin-remote";
-export type CanModerateAs = ModeratorRole | undefined;
 
 export default function useCanModerate(
   community: Community | undefined,
-): CanModerateAs {
+): ModeratorRole | undefined {
   const moderates = useAppSelector(
     (state) => state.auth.site?.my_user?.moderates,
   );

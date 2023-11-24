@@ -28,7 +28,6 @@ interface MoreActionsProps {
   className?: string;
   onFeed?: boolean;
   solidIcon?: boolean;
-  role: ModeratorRole;
 }
 
 export default function MoreModActions(props: MoreActionsProps) {
@@ -39,13 +38,11 @@ export default function MoreModActions(props: MoreActionsProps) {
   return <Actions {...props} role={isMod} />;
 }
 
-function Actions({
-  post,
-  onFeed,
-  solidIcon,
-  className,
-  role,
-}: MoreActionsProps) {
+interface ActionsProps extends MoreActionsProps {
+  role: ModeratorRole;
+}
+
+function Actions({ post, onFeed, solidIcon, className, role }: ActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
