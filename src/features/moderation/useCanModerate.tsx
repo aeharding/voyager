@@ -4,7 +4,6 @@ import { useAppSelector } from "../../store";
 import useIsAdmin from "./useIsAdmin";
 import { Community } from "lemmy-js-client";
 import {
-  shield,
   shieldCheckmark,
   shieldCheckmarkOutline,
   shieldOutline,
@@ -50,6 +49,6 @@ export function getModIcon(role: ModeratorRole, solid = false): string {
     case "mod":
       return solid ? shieldCheckmark : shieldCheckmarkOutline;
     case "admin-remote":
-      return solid ? shield : shieldOutline;
+      return shieldOutline;
   }
 }
