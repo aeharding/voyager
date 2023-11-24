@@ -31,11 +31,11 @@ interface MoreActionsProps {
 }
 
 export default function MoreModActions(props: MoreActionsProps) {
-  const isMod = useCanModerate(props.post.community);
+  const canModerate = useCanModerate(props.post.community);
 
-  if (!isMod) return;
+  if (!canModerate) return;
 
-  return <Actions {...props} role={isMod} />;
+  return <Actions {...props} role={canModerate} />;
 }
 
 interface ActionsProps extends MoreActionsProps {

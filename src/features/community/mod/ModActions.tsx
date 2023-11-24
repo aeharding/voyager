@@ -27,11 +27,11 @@ type ModActionsProps =
   | { type: "Local" | "ModeratorView" };
 
 export default function ModActions(props: ModActionsProps) {
-  const isMod = useCanModerate(
+  const canModerate = useCanModerate(
     "communityHandle" in props ? props.community?.community : undefined,
   );
 
-  if (!isMod && "communityHandle" in props) return;
+  if (!canModerate && "communityHandle" in props) return;
 
   const role =
     "type" in props
@@ -43,7 +43,7 @@ export default function ModActions(props: ModActionsProps) {
               return "mod";
           }
         })()
-      : isMod!;
+      : canModerate!;
 
   return <Actions {...props} role={role} />;
 }
@@ -51,6 +51,7 @@ export default function ModActions(props: ModActionsProps) {
 type ActionsProps = ModActionsProps & {
   role: ModeratorRole;
 };
+
 function Actions(props: ActionsProps) {
   // const [presentAlert] = useIonAlert();
   // const dispatch = useAppDispatch();
