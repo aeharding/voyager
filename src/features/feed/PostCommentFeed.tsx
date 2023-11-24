@@ -196,6 +196,11 @@ export default function PostCommentFeed({
       const postHidden = postHiddenById[item.post.id];
       if (filterHiddenPosts && postHidden?.hidden) return false;
 
+      // Filter removed from community/special feed pages for mods
+      if (filterHiddenPosts && item.post.removed) {
+        return false;
+      }
+
       if (_filterOnRxFn) return _filterOnRxFn(item);
 
       return true;
