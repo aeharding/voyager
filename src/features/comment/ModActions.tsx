@@ -7,7 +7,6 @@ import {
 import {
   checkmarkCircleOutline,
   colorWandOutline,
-  shieldCheckmark,
   shieldCheckmarkOutline,
   trashOutline,
 } from "ionicons/icons";
@@ -19,7 +18,6 @@ import {
   modRemoveComment,
 } from "./commentSlice";
 import { useState } from "react";
-import styled from "@emotion/styled";
 import { Comment, CommentAggregates } from "lemmy-js-client";
 import { localUserSelector } from "../auth/authSlice";
 import useAppToast from "../../helpers/useAppToast";

@@ -4,11 +4,7 @@ import {
   useIonActionSheet,
   useIonRouter,
 } from "@ionic/react";
-import {
-  chatbubbleOutline,
-  footstepsOutline,
-  shieldCheckmarkOutline,
-} from "ionicons/icons";
+import { chatbubbleOutline, footstepsOutline } from "ionicons/icons";
 import { MouseEvent } from "react";
 import { notEmpty } from "../../../helpers/array";
 import useCanModerate, {
