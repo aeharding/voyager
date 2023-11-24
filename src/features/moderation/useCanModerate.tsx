@@ -30,9 +30,7 @@ export default function useCanModerate(
 
     // If user is admin on site of current community
     if (isAdmin && myPerson && community)
-      return getItemActorName(myPerson) === getItemActorName(community)
-        ? "admin-local"
-        : "admin-remote";
+      return community.local ? "admin-local" : "admin-remote";
   }, [moderates, community, isAdmin, myPerson]);
 }
 
