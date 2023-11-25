@@ -105,7 +105,6 @@ export default function CommentExpander({
       <CustomIonItem href={undefined} onClick={fetchChildren}>
         <PositionedContainer
           depth={absoluteDepth === depth ? depth + 1 : depth + 2}
-          highlighted={false}
         >
           <Container depth={absoluteDepth + 1} hidden={loading}>
             <MoreRepliesBlock hidden={loading}>
