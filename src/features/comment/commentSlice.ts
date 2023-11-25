@@ -2,6 +2,7 @@ import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
 import { Comment, CommentView } from "lemmy-js-client";
+import { resolveCommentReport } from "../moderation/modSlice";
 
 interface CommentState {
   commentCollapsedById: Dictionary<boolean>;
@@ -163,6 +164,7 @@ export const modRemoveComment =
     });
 
     dispatch(mutatedComment(response.comment_view));
+    await dispatch(resolveCommentReport(commentId));
   };
 
 export const modNukeCommentChain =

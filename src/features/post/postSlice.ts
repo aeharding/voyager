@@ -11,6 +11,7 @@ import { POST_SORTS } from "../feed/PostSort";
 import { get, set } from "../settings/storage";
 import { IPostMetadata, db } from "../../services/db";
 import { isLemmyError } from "../../helpers/lemmy";
+import { resolvePostReport } from "../moderation/modSlice";
 
 const POST_SORT_KEY = "post-sort-v2";
 
@@ -388,6 +389,7 @@ export const modRemovePost =
     });
 
     dispatch(receivedPosts([response.post_view]));
+    await dispatch(resolvePostReport(postId));
   };
 
 export const modLockPost =

@@ -4,7 +4,11 @@ import {
   useIonActionSheet,
   useIonRouter,
 } from "@ionic/react";
-import { chatbubbleOutline, footstepsOutline } from "ionicons/icons";
+import {
+  chatbubbleOutline,
+  fileTrayFullOutline,
+  footstepsOutline,
+} from "ionicons/icons";
 import { MouseEvent } from "react";
 import { notEmpty } from "../../../helpers/array";
 import useCanModerate, {
@@ -72,6 +76,19 @@ function Actions(props: ActionsProps) {
     presentActionSheet({
       cssClass: `${props.role} left-align-buttons`,
       buttons: [
+        {
+          text: "Mod Queue",
+          icon: fileTrayFullOutline,
+          handler: () => {
+            router.push(
+              buildGeneralBrowseLink(
+                "communityHandle" in props
+                  ? `/c/${props.communityHandle}/modqueue`
+                  : `/${getFeedUrlName(props.type)}/modqueue`,
+              ),
+            );
+          },
+        },
         {
           text: "Mod Log",
           icon: footstepsOutline,

@@ -78,6 +78,7 @@ import BiometricPage from "./pages/settings/BiometricPage";
 import CommunityCommentsPage from "./pages/shared/CommunityCommentsPage";
 import CommentsPage from "./pages/shared/CommentsPage";
 import ModlogPage from "./pages/shared/ModlogPage";
+import ModqueuePage from "./pages/shared/ModqueuePage";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -290,6 +291,12 @@ export default function TabbedRoutes() {
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/c/:community/modqueue`}>
+        <ActorRedirect>
+          <ModqueuePage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle`}>
         <ActorRedirect>
           <UserPage />
@@ -383,6 +390,11 @@ export default function TabbedRoutes() {
             <ModlogPage />
           </ActorRedirect>
         </Route>
+        <Route exact path="/posts/:actor/local/modqueue">
+          <ActorRedirect>
+            <ModqueuePage />
+          </ActorRedirect>
+        </Route>
         <Route exact path="/posts/:actor/mod">
           <ActorRedirect>
             <SpecialFeedPage type="ModeratorView" />
@@ -396,6 +408,11 @@ export default function TabbedRoutes() {
         <Route exact path="/posts/:actor/mod/log">
           <ActorRedirect>
             <ModlogPage />
+          </ActorRedirect>
+        </Route>
+        <Route exact path="/posts/:actor/mod/modqueue">
+          <ActorRedirect>
+            <ModqueuePage />
           </ActorRedirect>
         </Route>
         <Route exact path="/posts/:actor">

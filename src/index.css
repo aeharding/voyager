@@ -52,6 +52,10 @@ ion-router-outlet > .ion-page > ion-header ion-title {
   color: var(--ion-color-danger-shade);
 }
 
+.report-reasons .action-sheet-title {
+  white-space: pre;
+}
+
 /* https://github.com/ionic-team/ionic-framework/issues/27777#issuecomment-1631522283 */
 .action-sheet-height-fix {
   --height: 100%;

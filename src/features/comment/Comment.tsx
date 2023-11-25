@@ -45,19 +45,12 @@ export const CustomIonItem = styled(IonItem)`
 
 export const PositionedContainer = styled.div<{
   depth: number;
-  highlighted: boolean;
 }>`
   position: relative;
 
   ${maxWidthCss}
 
   padding: 8px 12px;
-
-  ${({ highlighted }) =>
-    highlighted &&
-    css`
-      background: var(--ion-color-light);
-    `}
 
   @media (hover: none) {
     padding-top: 0.65rem;
@@ -227,10 +220,12 @@ export default function Comment({
           onClick={(e) => onClick?.(e)}
           className={`comment-${comment.id}`}
         >
-          <ModeratableItem itemView={commentView}>
+          <ModeratableItem
+            itemView={commentView}
+            highlighted={highlightedCommentId === comment.id}
+          >
             <PositionedContainer
               depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
-              highlighted={highlightedCommentId === comment.id}
             >
               <Container depth={absoluteDepth ?? depth ?? 0}>
                 <ModeratableItemBannerOutlet />
@@ -251,11 +246,7 @@ export default function Comment({
                   {!collapsed ? (
                     <>
                       {!!canModerate && (
-                        <ModActions
-                          comment={comment}
-                          counts={commentView.counts}
-                          role={canModerate}
-                        />
+                        <ModActions comment={commentView} role={canModerate} />
                       )}
                       <CommentEllipsis
                         comment={commentView}

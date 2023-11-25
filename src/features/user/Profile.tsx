@@ -51,7 +51,8 @@ export default function Profile({ person }: ProfileProps) {
         sort: "New",
       });
       return [...response.posts, ...response.comments].sort(
-        (a, b) => getCreatedDate(b) - getCreatedDate(a),
+        (a, b) =>
+          getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
       );
     },
     [person, client],
@@ -114,7 +115,7 @@ export default function Profile({ person }: ProfileProps) {
   );
 }
 
-function getCreatedDate(item: PostCommentItem): number {
+export function getPostCommentItemCreatedDate(item: PostCommentItem): number {
   if (isPost(item)) return Date.parse(fixLemmyDateString(item.post.published));
   return Date.parse(fixLemmyDateString(item.comment.published));
 }
