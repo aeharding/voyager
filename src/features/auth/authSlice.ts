@@ -13,6 +13,7 @@ import { resetCommunities } from "../community/communitySlice";
 import { ApplicationContext } from "capacitor-application-context";
 import { resetInstances } from "../instances/instancesSlice";
 import { resetResolve } from "../resolve/resolveSlice";
+import { resetMod } from "../moderation/modSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -243,6 +244,7 @@ const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
   dispatch(resetCommunities());
   dispatch(resetResolve());
   dispatch(resetInstances());
+  dispatch(resetMod());
 };
 
 export const logoutEverything = () => async (dispatch: AppDispatch) => {

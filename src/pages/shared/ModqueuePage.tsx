@@ -95,7 +95,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
       }
 
       if (needsSync) {
-        await dispatch(syncReports());
+        await dispatch(syncReports(true));
       }
 
       const comments = await uniqBy(comment_reports, (r) => r.comment.id).map(

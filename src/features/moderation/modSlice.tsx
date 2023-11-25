@@ -3,17 +3,21 @@ import { CommentReport, PostReport } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, jwtSelector } from "../auth/authSlice";
 import { groupBy, pullAllBy } from "lodash";
+import { isBefore, subSeconds } from "date-fns";
+import { REPORT_SYNC_INTERVAL_IN_SECONDS } from "./BackgroundReportSync";
 
 interface PostState {
   commentReports: CommentReport[];
   postReports: PostReport[];
   reportSyncState: "init" | "syncing" | "synced";
+  reportSyncTimestamp: number;
 }
 
 const initialState: PostState = {
   commentReports: [],
   postReports: [],
   reportSyncState: "init",
+  reportSyncTimestamp: 0,
 };
 
 export const modSlice = createSlice({
@@ -25,6 +29,7 @@ export const modSlice = createSlice({
     },
     syncComplete: (state) => {
       state.reportSyncState = "synced";
+      state.reportSyncTimestamp = Date.now();
     },
     syncFail: (state) => {
       if (state.reportSyncState === "syncing") state.reportSyncState = "init";
@@ -74,14 +79,25 @@ export const reportsByPostIdSelector = createSelector(
 
 const REPORT_LIMIT = 50;
 
+// All this logic can be removed when the following resolved:
+// 1. https://github.com/LemmyNet/lemmy/issues/4163
+// 2. https://github.com/LemmyNet/lemmy/issues/4190
+
 export const syncReports =
-  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+  (force = false) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    // If not forced refresh, only refresh every 10 minutes
+    const syncThreshold = subSeconds(
+      new Date(),
+      REPORT_SYNC_INTERVAL_IN_SECONDS,
+    );
+
+    if (!force && !isBefore(getState().mod.reportSyncTimestamp, syncThreshold))
+      return;
+
     const jwt = jwtSelector(getState());
 
-    if (!jwt) {
-      dispatch(resetMod());
-      return;
-    }
+    if (!jwt) return;
 
     const syncState = getState().mod.reportSyncState;
 

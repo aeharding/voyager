@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import {
   getSiteIfNeeded,
+  isAdminSelector,
   jwtIssSelector,
   jwtSelector,
   updateConnectedInstance,
@@ -13,7 +14,7 @@ import usePageVisibility from "./helpers/usePageVisibility";
 import { getDefaultServer } from "./services/app";
 import { isLemmyError } from "./helpers/lemmy";
 import useAppToast from "./helpers/useAppToast";
-import { syncReports } from "./features/moderation/modSlice";
+import BackgroundReportSync from "./features/moderation/BackgroundReportSync";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -26,6 +27,10 @@ export default function Auth({ children }: AuthProps) {
   const iss = useAppSelector(jwtIssSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
+  );
+  const hasModdedSubs = useAppSelector(
+    (state) =>
+      !!state.auth.site?.my_user?.moderates.length || !!isAdminSelector(state),
   );
   const location = useLocation();
   const pageVisibility = usePageVisibility();
@@ -54,10 +59,6 @@ export default function Auth({ children }: AuthProps) {
   const shouldSyncMessages = useCallback(() => {
     return jwt && location.pathname.startsWith("/inbox/messages");
   }, [jwt, location]);
-
-  const shouldSyncReports = useCallback(() => {
-    return jwt;
-  }, [jwt]);
 
   useInterval(
     () => {
@@ -110,14 +111,12 @@ export default function Auth({ children }: AuthProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageVisibility]);
 
-  useEffect(() => {
-    if (!pageVisibility) return;
-    if (!shouldSyncReports()) return;
-
-    dispatch(syncReports());
-  }, [pageVisibility, dispatch, shouldSyncReports]);
-
   if (!connectedInstance) return;
 
-  return <>{children}</>;
+  return (
+    <>
+      {hasModdedSubs && <BackgroundReportSync />}
+      {children}
+    </>
+  );
 }
