@@ -47,6 +47,8 @@ interface PostCommentFeed
   autoHideIfConfigured?: boolean;
 
   header?: ReactElement;
+
+  modqueue?: boolean;
 }
 
 export default function PostCommentFeed({
@@ -57,6 +59,7 @@ export default function PostCommentFeed({
   autoHideIfConfigured,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
+  modqueue,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
@@ -104,12 +107,17 @@ export default function PostCommentFeed({
     (item: PostCommentItem) => {
       if (isPost(item))
         return (
-          <Post post={item} communityMode={!!communityName} css={borderCss} />
+          <Post
+            post={item}
+            communityMode={!!communityName}
+            css={borderCss}
+            modqueue={modqueue}
+          />
         );
 
-      return <FeedComment comment={item} css={borderCss} />;
+      return <FeedComment comment={item} css={borderCss} modqueue={modqueue} />;
     },
-    [communityName, borderCss],
+    [communityName, borderCss, modqueue],
   );
 
   const renderItemContent = useCallback(

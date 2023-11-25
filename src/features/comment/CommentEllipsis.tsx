@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import {
   ActionSheetOptions,
   IonIcon,
+  IonLoading,
   useIonActionSheet,
   useIonRouter,
 } from "@ionic/react";
@@ -46,6 +47,8 @@ import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
 import useAppToast from "../../helpers/useAppToast";
+import { ModeratorRole, getModIcon } from "../moderation/useCanModerate";
+import useCommentModActions from "../moderation/useCommentModActions";
 
 const StyledIonIcon = styled(IonIcon)`
   padding: 8px 12px 8px 6px;
@@ -58,12 +61,14 @@ interface MoreActionsProps {
   comment: CommentView | PersonMentionView | CommentReplyView;
   rootIndex: number | undefined;
   appendActions?: ActionSheetOptions["buttons"];
+  canModerate: ModeratorRole | undefined;
 }
 
 export default function MoreActions({
   comment: commentView,
   rootIndex,
   appendActions,
+  canModerate,
 }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
@@ -103,10 +108,21 @@ export default function MoreActions({
   const isMyComment = getRemoteHandle(commentView.creator) === myHandle;
   const commentExists = !comment.deleted && !comment.removed;
 
+  const { loading, present: presentCommentModActions } =
+    useCommentModActions(commentView);
+
   function onClick() {
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: [
+        canModerate
+          ? {
+              cssClass: `${canModerate} detail`,
+              text: "Moderator",
+              icon: getModIcon(canModerate),
+              handler: presentCommentModActions,
+            }
+          : undefined,
         ...(appendActions || []),
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
@@ -276,12 +292,15 @@ export default function MoreActions({
   }
 
   return (
-    <StyledIonIcon
-      icon={ellipsisHorizontal}
-      onClick={(e) => {
-        onClick();
-        e.stopPropagation();
-      }}
-    />
+    <>
+      <IonLoading isOpen={loading} />
+      <StyledIonIcon
+        icon={ellipsisHorizontal}
+        onClick={(e) => {
+          onClick();
+          e.stopPropagation();
+        }}
+      />
+    </>
   );
 }

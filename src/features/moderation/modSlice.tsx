@@ -186,6 +186,8 @@ export const resolveCommentReport =
     const reports = reportsByCommentIdSelector(getState())[commentId];
     const client = clientSelector(getState());
 
+    if (!reports) return;
+
     for (const report of reports) {
       await client.resolveCommentReport({
         report_id: report.id,
@@ -200,6 +202,8 @@ export const resolvePostReport =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const reports = reportsByPostIdSelector(getState())[postId];
     const client = clientSelector(getState());
+
+    if (!reports) return;
 
     for (const report of reports) {
       await client.resolvePostReport({

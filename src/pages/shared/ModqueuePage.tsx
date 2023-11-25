@@ -136,6 +136,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
             fetchFn={fetchFn}
             filterHiddenPosts={false}
             filterKeywords={false}
+            modqueue
           />
         </FeedContent>
       </IonPage>

@@ -17,7 +17,6 @@ export const Banner = styled.div<{ modState: ItemModState }>`
   font-size: 0.875rem;
 
   padding: 6px 0;
-  margin-bottom: 10px;
   border-radius: 6px;
 
   text-align: center;
@@ -84,7 +83,7 @@ export function getModStateBannerBgColor(
 ): string | undefined {
   switch (modState) {
     case ItemModState.Flagged:
-      return "#e0cd00";
+      return "var(--ion-color-warning)";
     case ItemModState.RemovedByMod:
       return "red";
     case ItemModState.None:
