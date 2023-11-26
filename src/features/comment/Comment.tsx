@@ -163,6 +163,8 @@ const CollapsedIcon = styled(IonIcon)`
 
 const AmountCollapsed = styled.div`
   font-size: 0.875em;
+  padding: 2px 8px;
+  margin: -4px 0;
   border-radius: 1rem;
   color: var(--ion-color-medium);
   background: var(--ion-color-light);
