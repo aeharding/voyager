@@ -33,6 +33,7 @@ import resolveSlice from "./features/resolve/resolveSlice";
 import biometricSlice, {
   initializeBiometricSliceDataIfNeeded,
 } from "./features/settings/biometric/biometricSlice";
+import modSlice from "./features/moderation/modSlice";
 
 const store = configureStore({
   reducer: {
@@ -48,6 +49,7 @@ const store = configureStore({
     instances: instancesSlice,
     resolve: resolveSlice,
     biometric: biometricSlice,
+    mod: modSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

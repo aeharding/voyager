@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import {
   getSiteIfNeeded,
+  isAdminSelector,
   jwtIssSelector,
   jwtSelector,
   updateConnectedInstance,
@@ -13,6 +14,7 @@ import usePageVisibility from "./helpers/usePageVisibility";
 import { getDefaultServer } from "./services/app";
 import { isLemmyError } from "./helpers/lemmy";
 import useAppToast from "./helpers/useAppToast";
+import BackgroundReportSync from "./features/moderation/BackgroundReportSync";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -25,6 +27,10 @@ export default function Auth({ children }: AuthProps) {
   const iss = useAppSelector(jwtIssSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
+  );
+  const hasModdedSubs = useAppSelector(
+    (state) =>
+      !!state.auth.site?.my_user?.moderates.length || !!isAdminSelector(state),
   );
   const location = useLocation();
   const pageVisibility = usePageVisibility();
@@ -107,5 +113,10 @@ export default function Auth({ children }: AuthProps) {
 
   if (!connectedInstance) return;
 
-  return <>{children}</>;
+  return (
+    <>
+      {hasModdedSubs && <BackgroundReportSync />}
+      {children}
+    </>
+  );
 }

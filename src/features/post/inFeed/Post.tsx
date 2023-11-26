@@ -29,6 +29,8 @@ export interface PostProps {
   communityMode?: boolean;
 
   className?: string;
+
+  modqueue?: boolean;
 }
 
 export default function Post(props: PostProps) {
