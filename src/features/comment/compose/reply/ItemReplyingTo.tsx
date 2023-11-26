@@ -7,7 +7,7 @@ import Vote from "../../../labels/Vote";
 import Ago from "../../../labels/Ago";
 import CommentContent from "../../CommentContent";
 import Edited from "../../../labels/Edited";
-import { TouchEvent } from "react";
+import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
 
 const Container = styled.div`
   padding: 1rem;
@@ -44,14 +44,6 @@ interface ItemReplyingToProps {
 export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
   const payload = "comment" in item ? item.comment : item.post;
 
-  function stopPropagationIfNeeded(e: TouchEvent) {
-    if (!window.getSelection()?.toString()) return true;
-
-    e.stopPropagation();
-
-    return true;
-  }
-
   return (
     <Container>
       <Header>
@@ -60,7 +52,7 @@ export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
         <Edited item={item} />
         <StyledAgo date={payload.published} />
       </Header>
-      <CommentContentWrapper onTouchMoveCapture={stopPropagationIfNeeded}>
+      <CommentContentWrapper {...preventModalSwipeOnTextSelection}>
         <CommentContent item={payload} showTouchFriendlyLinks={false} />
       </CommentContentWrapper>
     </Container>
