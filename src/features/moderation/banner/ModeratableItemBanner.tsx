@@ -7,8 +7,11 @@ import {
 } from "../modSlice";
 import RemovedBanner from "./RemovedBanner";
 import ReportBanner from "./ReportBanner";
+import { maxWidthCss } from "../../shared/AppContent";
 
 export const Banner = styled.div<{ modState: ItemModState }>`
+  ${maxWidthCss}
+
   display: flex;
   align-items: center;
   justify-content: center;
