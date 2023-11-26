@@ -21,6 +21,7 @@ import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
 import useTextRecovery, {
   clearRecoveredText,
 } from "../../../helpers/useTextRecovery";
+import { preventModalSwipeOnTextSelection } from "../../../helpers/ionic";
 
 const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -121,6 +122,7 @@ export default function NewPostText({
       <IonContent>
         <Container keyboardOpen={keyboardOpen}>
           <Textarea
+            {...preventModalSwipeOnTextSelection}
             id={TOOLBAR_TARGET_ID}
             ref={textareaRef}
             value={text}

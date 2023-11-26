@@ -10,6 +10,7 @@ import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosized
 import { css } from "@emotion/react";
 import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
 import { useEffect } from "react";
+import { preventModalSwipeOnTextSelection } from "../../../helpers/ionic";
 
 export const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -78,6 +79,7 @@ export default function CommentContent({
       <IonContent {...preventPhotoswipeGalleryFocusTrap}>
         <Container keyboardOpen={keyboardOpen}>
           <Textarea
+            {...preventModalSwipeOnTextSelection}
             ref={textareaRef}
             value={text}
             onChange={(e) => setText(e.target.value)}

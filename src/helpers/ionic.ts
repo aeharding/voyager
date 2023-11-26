@@ -1,3 +1,5 @@
+import { MouseEvent, TouchEvent } from "react";
+
 const ION_CONTENT_ELEMENT_SELECTOR = "ion-content";
 
 export function findCurrentPage() {
@@ -16,3 +18,13 @@ const ION_CONTENT_SELECTOR = `${ION_CONTENT_ELEMENT_SELECTOR}`;
 function findClosestIonContent(el: Element) {
   return el.closest<HTMLElement>(ION_CONTENT_SELECTOR);
 }
+
+export const preventModalSwipeOnTextSelection = {
+  onTouchMoveCapture: (e: TouchEvent | MouseEvent) => {
+    if (!window.getSelection()?.toString()) return true;
+
+    e.stopPropagation();
+
+    return true;
+  },
+};
