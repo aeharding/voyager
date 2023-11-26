@@ -19,6 +19,7 @@ import { useContext } from "react";
 import { PageContext } from "../auth/PageContext";
 import useAppNavigation from "../../helpers/useAppNavigation";
 import { useUserDetails } from "../user/useUserDetails";
+import useCanModerate from "../moderation/useCanModerate";
 
 const EllipsisIcon = styled(IonIcon)`
   font-size: 1.2rem;
@@ -40,6 +41,10 @@ export default function InboxItemMoreActions({ item }: InboxItemMoreActions) {
   );
 
   const { isBlocked, blockOrUnblock } = useUserDetails(getHandle(item.creator));
+
+  const canModerate = useCanModerate(
+    "community" in item ? item.community : undefined,
+  );
 
   const isRead = readByInboxItemId[getInboxItemId(item)];
 
@@ -98,6 +103,7 @@ export default function InboxItemMoreActions({ item }: InboxItemMoreActions) {
         comment={item}
         rootIndex={undefined}
         appendActions={[markReadAction]}
+        canModerate={canModerate}
       />
     );
   }

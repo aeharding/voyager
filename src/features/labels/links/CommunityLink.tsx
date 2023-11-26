@@ -19,6 +19,7 @@ interface CommunityLinkProps {
   community: Community;
   showInstanceWhenRemote?: boolean;
   subscribed: SubscribedType;
+  showIcon?: boolean;
 
   className?: string;
 }
@@ -28,6 +29,7 @@ export default function CommunityLink({
   showInstanceWhenRemote,
   className,
   subscribed,
+  showIcon = true,
 }: CommunityLinkProps) {
   const [present] = useIonActionSheet();
 
@@ -83,14 +85,16 @@ export default function CommunityLink({
       className={className}
       {...bind()}
     >
-      <ItemIcon
-        item={community}
-        size={24}
-        css={css`
-          margin-right: 0.4rem;
-          vertical-align: middle;
-        `}
-      />
+      {showIcon && (
+        <ItemIcon
+          item={community}
+          size={24}
+          css={css`
+            margin-right: 0.4rem;
+            vertical-align: middle;
+          `}
+        />
+      )}
 
       <Handle
         item={community}

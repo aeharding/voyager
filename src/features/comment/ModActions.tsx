@@ -6,6 +6,7 @@ import {
   getModIcon,
 } from "../moderation/useCanModerate";
 import useCommentModActions from "../moderation/useCommentModActions";
+import { ActionButton } from "../post/actions/ActionButton";
 
 interface ModActionsProps {
   comment: CommentView;
@@ -17,14 +18,16 @@ export default function ModActions({ comment, role }: ModActionsProps) {
 
   return (
     <>
-      <IonIcon
-        icon={getModIcon(role, true)}
-        color={getModColor(role)}
-        onClick={(e) => {
-          e.stopPropagation();
-          present();
-        }}
-      />
+      <ActionButton>
+        <IonIcon
+          icon={getModIcon(role, true)}
+          color={getModColor(role)}
+          onClick={(e) => {
+            e.stopPropagation();
+            present();
+          }}
+        />
+      </ActionButton>
 
       <IonLoading isOpen={loading} message="Nuking..." />
     </>

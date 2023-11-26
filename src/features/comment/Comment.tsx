@@ -21,6 +21,7 @@ import { ModeratableItemBannerOutlet } from "../moderation/ModeratableItem";
 import ModeratableItem from "../moderation/ModeratableItem";
 import useCanModerate from "../moderation/useCanModerate";
 import ModqueueItemActions from "../moderation/ModqueueItemActions";
+import { ActionsContainer } from "../post/inFeed/compact/CompactPost";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -162,8 +163,6 @@ const CollapsedIcon = styled(IonIcon)`
 
 const AmountCollapsed = styled.div`
   font-size: 0.875em;
-  padding: 0.25rem 0.5rem;
-  margin: -0.25rem;
   border-radius: 1rem;
   color: var(--ion-color-medium);
   background: var(--ion-color-light);
@@ -261,7 +260,7 @@ export default function Comment({
                       `}
                     />
                     {!collapsed ? (
-                      <>
+                      <ActionsContainer>
                         {renderActions()}
                         <CommentEllipsis
                           comment={commentView}
@@ -269,7 +268,7 @@ export default function Comment({
                           canModerate={canModerate}
                         />
                         <Ago date={comment.published} />
-                      </>
+                      </ActionsContainer>
                     ) : (
                       <>
                         <AmountCollapsed>

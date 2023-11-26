@@ -49,11 +49,9 @@ import useCollapseRootComment from "./useCollapseRootComment";
 import useAppToast from "../../helpers/useAppToast";
 import { ModeratorRole, getModIcon } from "../moderation/useCanModerate";
 import useCommentModActions from "../moderation/useCommentModActions";
+import { ActionButton } from "../post/actions/ActionButton";
 
 const StyledIonIcon = styled(IonIcon)`
-  padding: 8px 12px 8px 6px;
-  margin: -8px -12px -8px -6px;
-
   font-size: 1.2em;
 `;
 
@@ -294,13 +292,15 @@ export default function MoreActions({
   return (
     <>
       <IonLoading isOpen={loading} />
-      <StyledIonIcon
-        icon={ellipsisHorizontal}
-        onClick={(e) => {
-          onClick();
-          e.stopPropagation();
-        }}
-      />
+      <ActionButton>
+        <StyledIonIcon
+          icon={ellipsisHorizontal}
+          onClick={(e) => {
+            onClick();
+            e.stopPropagation();
+          }}
+        />
+      </ActionButton>
     </>
   );
 }
