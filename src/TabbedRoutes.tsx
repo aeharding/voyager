@@ -297,6 +297,24 @@ export default function TabbedRoutes() {
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/mod/comments`}>
+        <ActorRedirect>
+          <CommentsPage type="ModeratorView" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/mod/log`}>
+        <ActorRedirect>
+          <ModlogPage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/mod/modqueue`}>
+        <ActorRedirect>
+          <ModqueuePage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle`}>
         <ActorRedirect>
           <UserPage />
@@ -380,39 +398,9 @@ export default function TabbedRoutes() {
             <SpecialFeedPage type="Local" />
           </ActorRedirect>
         </Route>
-        <Route exact path="/posts/:actor/local/comments">
-          <ActorRedirect>
-            <CommentsPage type="Local" />
-          </ActorRedirect>
-        </Route>
-        <Route exact path="/posts/:actor/local/log">
-          <ActorRedirect>
-            <ModlogPage />
-          </ActorRedirect>
-        </Route>
-        <Route exact path="/posts/:actor/local/modqueue">
-          <ActorRedirect>
-            <ModqueuePage />
-          </ActorRedirect>
-        </Route>
         <Route exact path="/posts/:actor/mod">
           <ActorRedirect>
             <SpecialFeedPage type="ModeratorView" />
-          </ActorRedirect>
-        </Route>
-        <Route exact path="/posts/:actor/mod/comments">
-          <ActorRedirect>
-            <CommentsPage type="ModeratorView" />
-          </ActorRedirect>
-        </Route>
-        <Route exact path="/posts/:actor/mod/log">
-          <ActorRedirect>
-            <ModlogPage />
-          </ActorRedirect>
-        </Route>
-        <Route exact path="/posts/:actor/mod/modqueue">
-          <ActorRedirect>
-            <ModqueuePage />
           </ActorRedirect>
         </Route>
         <Route exact path="/posts/:actor">

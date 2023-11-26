@@ -22,6 +22,12 @@ import PostCommentFeed, {
 } from "../feed/PostCommentFeed";
 import { handleSelector } from "../auth/authSlice";
 import { fixLemmyDateString } from "../../helpers/date";
+import {
+  getModColor,
+  getModIcon,
+  getModName,
+} from "../moderation/useCanModerate";
+import useModZoneActions from "../moderation/useModZoneActions";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -39,6 +45,9 @@ export default function Profile({ person }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const myHandle = useAppSelector(handleSelector);
+  const { present: presentModZoneActions, role } = useModZoneActions({
+    type: "ModeratorView",
+  });
 
   const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
@@ -64,7 +73,7 @@ export default function Profile({ person }: ProfileProps) {
         aggregates={person.person_view.counts}
         accountCreated={person.person_view.person.published}
       />
-      <IonList inset color="primary">
+      <IonList inset>
         <InsetIonItem
           routerLink={buildGeneralBrowseLink(
             `/u/${getHandle(person.person_view.person)}/posts`,
@@ -102,6 +111,14 @@ export default function Profile({ person }: ProfileProps) {
           </>
         )}
       </IonList>
+      {isSelf && role && (
+        <IonList inset>
+          <InsetIonItem detail onClick={presentModZoneActions}>
+            <IonIcon icon={getModIcon(role)} color={getModColor(role)} />{" "}
+            <SettingLabel>{getModName(role)} Zone</SettingLabel>
+          </InsetIonItem>
+        </IonList>
+      )}
     </MaxWidthContainer>
   );
 

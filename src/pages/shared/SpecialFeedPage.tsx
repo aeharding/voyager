@@ -28,7 +28,6 @@ import { followIdsSelector } from "../../features/auth/authSlice";
 import { getHandle } from "../../helpers/lemmy";
 import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../features/community/mod/ModActions";
-import useIsAdmin from "../../features/moderation/useIsAdmin";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -48,7 +47,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const noSubscribedInFeed = useAppSelector(
     (state) => state.settings.general.noSubscribedInFeed,
   );
-  const isAdmin = useIsAdmin();
 
   const filterSubscribed =
     noSubscribedInFeed && (type === "All" || type === "Local");
@@ -110,10 +108,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
               <TitleSearch name={listingTypeTitle(type)}>
                 <IonButtons slot="end">
-                  {(type === "ModeratorView" ||
-                    (isAdmin && type === "Local")) && (
-                    <ModActions type={type} />
-                  )}
+                  {type === "ModeratorView" && <ModActions type={type} />}
                   <PostSort />
                   <SpecialFeedMoreActions />
                 </IonButtons>

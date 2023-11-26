@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { canModerate } from "../../helpers/lemmy";
+import { canModerate as canModerateCommunity } from "../../helpers/lemmy";
 import { useAppSelector } from "../../store";
 import useIsAdmin from "./useIsAdmin";
 import { Community } from "lemmy-js-client";
@@ -11,8 +11,14 @@ import {
 
 export type ModeratorRole = "mod" | "admin-local" | "admin-remote";
 
+/**
+ * @param community
+ *   Either the community to check mod status for a specific community,
+ *   or `true` to check account role (admin-local, mod or undefined)
+ * @returns Role of moderator, if available
+ */
 export default function useCanModerate(
-  community: Community | undefined,
+  community: Community | boolean | undefined,
 ): ModeratorRole | undefined {
   const moderates = useAppSelector(
     (state) => state.auth.site?.my_user?.moderates,
@@ -23,12 +29,24 @@ export default function useCanModerate(
   );
 
   return useMemo(() => {
-    if (canModerate(community?.id, moderates)) {
+    if (!community) return;
+
+    // Check account role if true
+    if (typeof community === "boolean") {
+      if (isAdmin && myPerson) return "admin-local";
+      if (moderates?.length) return "mod";
+
+      return;
+    }
+
+    // else, check specific community role
+
+    if (canModerateCommunity(community?.id, moderates)) {
       return "mod";
     }
 
     // If user is admin on site of current community
-    if (isAdmin && myPerson && community)
+    if (isAdmin && myPerson)
       return community.local ? "admin-local" : "admin-remote";
   }, [moderates, community, isAdmin, myPerson]);
 }
@@ -50,5 +68,15 @@ export function getModIcon(role: ModeratorRole, solid = false): string {
       return solid ? shieldCheckmark : shieldCheckmarkOutline;
     case "admin-remote":
       return shieldOutline;
+  }
+}
+
+export function getModName(role: ModeratorRole): string {
+  switch (role) {
+    case "admin-local":
+    case "admin-remote":
+      return "Administrator";
+    case "mod":
+      return "Moderator";
   }
 }
