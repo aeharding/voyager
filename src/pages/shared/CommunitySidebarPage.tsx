@@ -24,19 +24,20 @@ export default function CommunitySidebarPage() {
     community: string;
   }>();
 
-  const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle,
+  const communityView = useAppSelector(
+    (state) => state.community.communityByHandle[community],
   );
-
-  const communityView = communityByHandle[community];
+  const mods = useAppSelector(
+    (state) => state.community.modsByHandle[community],
+  );
 
   useSetActivePage(pageRef);
 
   useEffect(() => {
-    if (communityView) return;
+    if (communityView && mods) return;
 
     dispatch(getCommunity(community));
-  }, [community, dispatch, communityView]);
+  }, [community, dispatch, communityView, mods]);
 
   return (
     <IonPage ref={pageRef}>

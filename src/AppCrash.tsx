@@ -6,6 +6,7 @@ import { jwtSelector } from "./features/auth/authSlice";
 import { isInstalled, isNative } from "./helpers/device";
 import { IonButton, IonContent, IonIcon, IonLabel } from "@ionic/react";
 import { logoGithub } from "ionicons/icons";
+import { unloadServiceWorkerAndRefresh } from "./helpers/serviceWorker";
 
 const Container = styled.div`
   display: flex;
@@ -57,18 +58,6 @@ ${error instanceof Error ? error.stack : "Not available"}
 \`\`\`
   `.trim();
 
-  async function reload() {
-    try {
-      const registrations = await navigator.serviceWorker.getRegistrations();
-
-      await Promise.all(
-        registrations.map((registration) => registration.unregister()),
-      );
-    } finally {
-      window.location.href = "/";
-    }
-  }
-
   async function clearData() {
     if (
       !confirm(
@@ -114,7 +103,9 @@ ${error instanceof Error ? error.stack : "Not available"}
           You can also try reloading the app to see if that solves the issue.
           {isNative() ? " Check the app store for an update, too." : ""}
         </Description>
-        <IonButton onClick={reload}>Reload app</IonButton>
+        <IonButton onClick={unloadServiceWorkerAndRefresh}>
+          Reload app
+        </IonButton>
 
         <hr />
 

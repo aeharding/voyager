@@ -188,12 +188,12 @@ export const buildDarkVariables = (
       --ion-color-success-shade: #00820b;
       --ion-color-success-tint: #1a9f24;
 
-      --ion-color-warning: #ffd534;
-      --ion-color-warning-rgb: 255, 213, 52;
+      --ion-color-warning: #eac200;
+      --ion-color-warning-rgb: 234, 194, 0;
       --ion-color-warning-contrast: #000000;
       --ion-color-warning-contrast-rgb: 0, 0, 0;
-      --ion-color-warning-shade: #e0bb2e;
-      --ion-color-warning-tint: #ffd948;
+      --ion-color-warning-shade: #ceab00;
+      --ion-color-warning-tint: #ecc81a;
 
       --ion-color-danger: #ff4961;
       --ion-color-danger-rgb: 255, 73, 97;

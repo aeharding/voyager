@@ -8,6 +8,7 @@ export default function addInstance(item: ModAddView): LogEntryData {
   return {
     title: `${item.mod_add.removed ? "Added" : "Removed"} Admin`,
     by: item.moderator ? getHandle(item.moderator) : undefined,
+    message: getHandle(item.modded_person),
     link: buildUserLink(item.modded_person),
     ...buildBaseData(item.mod_add),
   };

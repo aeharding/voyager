@@ -8,9 +8,14 @@ import { getHandle } from "../../../helpers/lemmy";
 interface FeedCommentProps {
   comment: CommentView;
   className?: string;
+  modqueue?: boolean;
 }
 
-export default function FeedComment({ comment, className }: FeedCommentProps) {
+export default function FeedComment({
+  comment,
+  className,
+  modqueue,
+}: FeedCommentProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useIonRouter();
 
@@ -30,6 +35,7 @@ export default function FeedComment({ comment, className }: FeedCommentProps) {
           ),
         )
       }
+      modqueue={modqueue}
     />
   );
 }

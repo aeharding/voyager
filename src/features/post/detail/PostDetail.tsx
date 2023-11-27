@@ -56,7 +56,6 @@ export const CenteredSpinner = styled(IonSpinner)`
 `;
 
 const Container = styled.div`
-  margin: 0 0 16px;
   width: 100%;
 `;
 
@@ -74,7 +73,7 @@ const LightboxPostMedia = styled(PostMedia)`
 `;
 
 const StyledMarkdown = styled(Markdown)`
-  margin: 16px 0;
+  margin: 12px 0;
 
   img {
     display: block;
@@ -86,18 +85,21 @@ const StyledMarkdown = styled(Markdown)`
 `;
 
 const StyledEmbed = styled(Embed)`
-  margin: 16px 0;
+  margin: 12px 0;
 `;
 
 const PostDeets = styled.div`
-  margin: 0 12px;
+  margin: 12px;
   font-size: 0.9375em;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 
 const Title = styled.div`
   font-size: 1.125rem;
-  padding: 16px 0 0;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 `;
 
 const By = styled.div`
@@ -221,25 +223,27 @@ export default function PostDetail({
           <Container>
             <div onClick={(e) => e.stopPropagation()}>{renderMedia()}</div>
             <PostDeets>
-              <Title ref={titleRef}>
-                <ModeratableItemBannerOutlet />
-                <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
-                {isNsfw(post) && <Nsfw />}
-              </Title>
-              {!collapsed && renderText()}
-              <By>
-                {post.post.featured_community || post.post.featured_local ? (
-                  <AnnouncementIcon icon={megaphone} />
-                ) : undefined}
-                <CommunityLink
-                  community={post.community}
-                  showInstanceWhenRemote
-                  subscribed={post.subscribed}
-                />{" "}
-                <PersonLink person={post.creator} prefix="by" />
-              </By>
-              <Stats post={post} />
-              {post.post.locked && <Locked />}
+              <ModeratableItemBannerOutlet />
+              <div>
+                <Title ref={titleRef}>
+                  <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+                  {isNsfw(post) && <Nsfw />}
+                </Title>
+                {!collapsed && renderText()}
+                <By>
+                  {post.post.featured_community || post.post.featured_local ? (
+                    <AnnouncementIcon icon={megaphone} />
+                  ) : undefined}
+                  <CommunityLink
+                    community={post.community}
+                    showInstanceWhenRemote
+                    subscribed={post.subscribed}
+                  />{" "}
+                  <PersonLink person={post.creator} prefix="by" />
+                </By>
+                <Stats post={post} />
+                {post.post.locked && <Locked />}
+              </div>
             </PostDeets>
           </Container>
         </BorderlessIonItem>

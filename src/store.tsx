@@ -36,6 +36,7 @@ import biometricSlice, {
 import migrationSlice, {
   getMigrationLinks,
 } from "./features/community/migrationSlice";
+import modSlice from "./features/moderation/modSlice";
 
 const store = configureStore({
   reducer: {
@@ -51,6 +52,7 @@ const store = configureStore({
     instances: instancesSlice,
     resolve: resolveSlice,
     biometric: biometricSlice,
+    mod: modSlice,
     migration: migrationSlice,
   },
 });

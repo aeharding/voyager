@@ -32,7 +32,7 @@ export default function LoadParentComments({
           setMaxContext((maxContext) => maxContext - 5);
         }}
       >
-        <PositionedContainer depth={0} highlighted={false}>
+        <PositionedContainer depth={0}>
           <Container depth={0}>
             <MoreRepliesBlock>
               <ChevronIcon icon={chevronUp} />

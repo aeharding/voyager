@@ -46,6 +46,8 @@ import {
   isDownvoteEnabledSelector,
 } from "../../auth/authSlice";
 import useAppToast from "../../../helpers/useAppToast";
+import usePostModActions from "../../moderation/usePostModActions";
+import useCanModerate, { getModIcon } from "../../moderation/useCanModerate";
 
 interface MoreActionsProps {
   post: PostView;
@@ -78,6 +80,8 @@ export default function MoreActions({
     presentSelectText,
   } = useContext(PageContext);
 
+  const presentPostModActions = usePostModActions(post);
+
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
 
@@ -87,18 +91,20 @@ export default function MoreActions({
   const isMyPost = getRemoteHandle(post.creator) === myHandle;
   const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
+  const canModerate = useCanModerate(post.community);
+
   function onClick() {
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: [
-        // {
-        //   text: "Moderator",
-        //   icon: shieldOutline,
-        //   cssClass: "mod detail",
-        //   handler: () => {
-        //     onModClick();
-        //   },
-        // },
+        canModerate
+          ? {
+              text: "Moderator",
+              icon: getModIcon(canModerate),
+              cssClass: `${canModerate} detail`,
+              handler: presentPostModActions,
+            }
+          : undefined,
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
           icon: arrowUpOutline,

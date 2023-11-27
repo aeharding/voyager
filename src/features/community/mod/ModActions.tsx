@@ -1,101 +1,24 @@
-import {
-  IonButton,
-  IonIcon,
-  useIonActionSheet,
-  useIonRouter,
-} from "@ionic/react";
-import {
-  chatbubbleOutline,
-  footstepsOutline,
-  shieldCheckmarkOutline,
-} from "ionicons/icons";
+import { IonButton, IonIcon } from "@ionic/react";
 import { MouseEvent } from "react";
-import { notEmpty } from "../../../helpers/array";
-import useCanModerate from "../../moderation/useCanModerate";
-import { CommunityView, ListingType } from "lemmy-js-client";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { getModColor, getModIcon } from "../../moderation/useCanModerate";
+import { ListingType } from "lemmy-js-client";
+import useModZoneActions, {
+  UseModZoneActionsProps,
+} from "../../moderation/useModZoneActions";
 
-type ModActionsProps =
-  | {
-      community: CommunityView | undefined;
-      communityHandle: string;
-    }
-  | { type: ListingType };
-
-export default function ModActions(props: ModActionsProps) {
-  const isMod = useCanModerate(
-    "communityHandle" in props ? props.community?.community.id : undefined,
-  );
-
-  if (!isMod && "communityHandle" in props) return;
-
-  return <Actions {...props} />;
-}
-
-function Actions(props: ModActionsProps) {
-  // const [presentAlert] = useIonAlert();
-  // const dispatch = useAppDispatch();
-  // const [loading, setLoading] = useState(false);
-  const [presentActionSheet] = useIonActionSheet();
-  // const presentToast = useAppToast();
-  const router = useIonRouter();
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+export default function ModActions(props: UseModZoneActionsProps) {
+  const { present: presentModZoneActions, role } = useModZoneActions(props);
 
   function onClick(e: MouseEvent) {
     e.stopPropagation();
-
-    presentActionSheet({
-      cssClass: "left-align-buttons mod",
-      buttons: [
-        {
-          text: "Mod Log",
-          icon: footstepsOutline,
-          handler: () => {
-            router.push(
-              buildGeneralBrowseLink(
-                "communityHandle" in props
-                  ? `/c/${props.communityHandle}/log`
-                  : `/${getFeedUrlName(props.type)}/log`,
-              ),
-            );
-          },
-        },
-        {
-          text: "All Comments",
-          icon: chatbubbleOutline,
-          handler: () => {
-            router.push(
-              buildGeneralBrowseLink(
-                "communityHandle" in props
-                  ? `/c/${props.communityHandle}/comments`
-                  : `/${getFeedUrlName(props.type)}/comments`,
-              ),
-            );
-          },
-        },
-        // "communityHandle" in props
-        //   ? {
-        //       text: "Moderators",
-        //       icon: shieldCheckmarkOutline,
-        //       handler: () => {
-        //         (async () => {
-        //           // await dispatch(modRemoveComment(comment.id, false));
-        //           // presentToast(commentApproved);
-        //         })();
-        //       },
-        //     }
-        //   : undefined,
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
-      ].filter(notEmpty),
-    });
+    presentModZoneActions();
   }
+
+  if (!role) return;
 
   return (
     <IonButton onClick={onClick}>
-      <IonIcon icon={shieldCheckmarkOutline} color="success" />
+      <IonIcon icon={getModIcon(role)} color={getModColor(role)} />
     </IonButton>
   );
 }

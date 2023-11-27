@@ -2,7 +2,7 @@
 
 # Check the folder doesn't exist before performing actions
 if [ -d "src/features/tips/inAppPurchase__stub" ]; then
-    pnpm uninstall @revenuecat/purchases-capacitor
+    pnpm uninstall capacitor-tips
 
     # Removes the proprietary google play app purchase libs
     npx cap update

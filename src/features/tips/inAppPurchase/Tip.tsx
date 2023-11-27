@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { useState } from "react";
 import useAppToast from "../../../helpers/useAppToast";
 import { css } from "@emotion/react";
-import { PurchasesStoreProduct } from "@revenuecat/purchases-capacitor";
+import { Product } from "capacitor-tips";
 
 const Container = styled.div`
   display: flex;
@@ -58,7 +58,7 @@ const HiddenIonSpinner = styled(IonSpinner)<{ visible: boolean }>`
 `;
 
 interface TipProps {
-  product: PurchasesStoreProduct;
+  product: Product;
 }
 
 export default function Tip({ product }: TipProps) {
@@ -75,7 +75,7 @@ export default function Tip({ product }: TipProps) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const err = error as any;
 
-      if (err?.code === "1") return; // cancelled
+      if (err?.code === "cancelled") return; // cancelled
 
       presentToast({
         message:

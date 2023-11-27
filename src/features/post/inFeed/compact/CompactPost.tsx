@@ -19,6 +19,7 @@ import MoreModActions from "../../shared/MoreModAction";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "../../../moderation/ModeratableItem";
+import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
 
 const Container = styled.div`
   width: 100%;
@@ -43,7 +44,7 @@ const Contents = styled.div`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: 8px;
 
   min-width: 0;
   flex: 1;
@@ -63,7 +64,7 @@ const Aside = styled.div<{ isRead: boolean }>`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5em;
+  gap: 8px;
 
   color: var(--ion-color-text-aside);
   font-size: 0.8em;
@@ -82,10 +83,21 @@ const From = styled.div`
   text-overflow: ellipsis;
 `;
 
-const Actions = styled.div`
+export const ActionsContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5em;
+  gap: 6px;
+
+  > button {
+    font-size: 1.2em;
+
+    padding: 6px 3px;
+    margin: -10px -3px;
+
+    &.large {
+      font-size: 1.6em;
+    }
+  }
 
   white-space: nowrap;
 `;
@@ -119,7 +131,11 @@ const EndDetails = styled.div`
   margin-left: auto;
 `;
 
-export default function CompactPost({ post, communityMode }: PostProps) {
+export default function CompactPost({
+  post,
+  communityMode,
+  modqueue,
+}: PostProps) {
   const compactThumbnailPositionType = useAppSelector(
     (state) => state.settings.appearance.compact.thumbnailsPosition,
   );
@@ -141,6 +157,15 @@ export default function CompactPost({ post, communityMode }: PostProps) {
         <Contents>
           {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
           <Content>
+            {modqueue && !communityMode && (
+              <Aside isRead={false}>
+                <CommunityLink
+                  community={post.community}
+                  subscribed={post.subscribed}
+                  showIcon={false}
+                />
+              </Aside>
+            )}
             <Title isRead={hasBeenRead}>
               <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
               {nsfw && <Nsfw />}
@@ -150,7 +175,7 @@ export default function CompactPost({ post, communityMode }: PostProps) {
                 {post.post.featured_community || post.post.featured_local ? (
                   <AnnouncementIcon icon={megaphone} />
                 ) : undefined}
-                {communityMode ? (
+                {communityMode || modqueue ? (
                   <PersonLink
                     person={post.creator}
                     showInstanceWhenRemote
@@ -163,11 +188,15 @@ export default function CompactPost({ post, communityMode }: PostProps) {
                   />
                 )}
               </From>
-              <Actions>
+              <ActionsContainer>
                 <PreviewStats post={post} />
-                <StyledModActions post={post} onFeed solidIcon />
+                {modqueue ? (
+                  <ModqueueItemActions item={post} />
+                ) : (
+                  <StyledModActions post={post} onFeed solidIcon />
+                )}
                 <StyledMoreActions post={post} onFeed />
-              </Actions>
+              </ActionsContainer>
             </Aside>
           </Content>
           {compactThumbnailPositionType === "right" && (
