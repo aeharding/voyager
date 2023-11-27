@@ -191,6 +191,7 @@ export const modNukeCommentChain =
         });
 
         dispatch(mutatedComment(comment.comment_view));
+        await dispatch(resolveCommentReport(commentId));
       }),
     );
   };
