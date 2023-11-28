@@ -21,9 +21,11 @@ const Code = styled.code`
 `;
 
 const TableContainer = styled.div`
+  display: inline-flex;
   overflow-x: auto;
   margin: 0 -1rem;
   padding: 0 1rem;
+  max-width: calc(100% + 2rem);
 
   tbody {
     border-collapse: collapse;
@@ -69,7 +71,14 @@ export default function Markdown(props: ReactMarkdownOptions) {
         code: (props) => <Code {...props} />,
         table: (props) => (
           <TableContainer>
-            <table {...props} />
+            <table
+              {...props}
+              // Prevent swiping item to allow scrolling table
+              onTouchMoveCapture={(e) => {
+                e.stopPropagation();
+                return true;
+              }}
+            />
           </TableContainer>
         ),
         a: (props) => <LinkInterceptor {...props} />,
