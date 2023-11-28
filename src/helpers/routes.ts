@@ -1,5 +1,5 @@
 import { useAppSelector } from "../store";
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useRef } from "react";
 import { TabContext } from "../TabContext";
 
 export function useBuildGeneralBrowseLink() {
