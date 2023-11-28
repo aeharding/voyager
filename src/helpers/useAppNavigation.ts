@@ -19,7 +19,7 @@ export default function useAppNavigation() {
 
   const pushRouteIfNeeded = useCallback(
     (route: string) => {
-      if (router.routeInfo.pathname === route) {
+      if (router.getRouteInfo()?.pathname === route) {
         presentToast({
           message: "You're already here!",
           position: "top",

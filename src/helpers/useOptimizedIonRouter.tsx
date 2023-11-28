@@ -33,6 +33,7 @@ export function useOptimizedIonRouter() {
         context.routerRef?.current?.goBack(...args),
       canGoBack: (...args: Parameters<UseIonRouterResult["canGoBack"]>) =>
         context.routerRef?.current?.canGoBack(...args),
+      getRouteInfo: () => context.routerRef?.current?.routeInfo,
     }),
     [context.routerRef],
   );
