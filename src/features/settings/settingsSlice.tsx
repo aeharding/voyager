@@ -164,7 +164,7 @@ const initialState: SettingsState = {
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
       highlightNewAccount: true,
       touchFriendlyLinks: true,
-      showCommentImages: false,
+      showCommentImages: true,
     },
     posts: {
       disableMarkingRead: false,
