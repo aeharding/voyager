@@ -1,4 +1,4 @@
-import { IonActionSheet, IonButton, IonIcon, useIonRouter } from "@ionic/react";
+import { IonActionSheet, IonButton, IonIcon } from "@ionic/react";
 import {
   ellipsisHorizontal,
   personCircleOutline,
@@ -8,12 +8,13 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useParams } from "react-router";
 import { useUserDetails } from "../user/useUserDetails";
 import { useState } from "react";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 export default function ConversationsMoreActions() {
   const [open, setOpen] = useState(false);
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
 
   const { handle } = useParams<{ handle: string }>();
   const { isBlocked, blockOrUnblock } = useUserDetails(handle);

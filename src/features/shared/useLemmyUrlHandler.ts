@@ -3,13 +3,13 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { knownInstancesSelector } from "../instances/instancesSlice";
 import useAppNavigation from "../../helpers/useAppNavigation";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { useIonRouter } from "@ionic/react";
 import { resolveObject } from "../resolve/resolveSlice";
 import useClient from "../../helpers/useClient";
 import { getPost } from "../post/postSlice";
 import { MouseEvent } from "react";
 import useAppToast from "../../helpers/useAppToast";
 import { isLemmyError } from "../../helpers/lemmy";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
 export const COMMENT_PATH = /^\/comment\/(\d+)$/;
@@ -40,7 +40,7 @@ export default function useLemmyUrlHandler() {
     navigateToUser,
   } = useAppNavigation();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
   const client = useClient();

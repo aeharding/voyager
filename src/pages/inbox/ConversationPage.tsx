@@ -128,7 +128,7 @@ export default function ConversationPage() {
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
-  const { tab } = useContext(TabContext);
+  const { tabRef } = useContext(TabContext);
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
@@ -222,7 +222,7 @@ export default function ConversationPage() {
           <IonButtons slot="start">
             <IonBackButton
               defaultHref="/inbox/messages"
-              text={tab === "inbox" ? "Messages" : "Back"}
+              text={tabRef?.current === "inbox" ? "Messages" : "Back"}
             />
           </IonButtons>
 

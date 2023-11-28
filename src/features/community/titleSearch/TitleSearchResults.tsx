@@ -11,12 +11,13 @@ import styled from "@emotion/styled";
 import { useDebounce } from "usehooks-ts";
 import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
-import { IonItem, IonList, createAnimation, useIonRouter } from "@ionic/react";
+import { IonItem, IonList, createAnimation } from "@ionic/react";
 import { useAppSelector } from "../../../store";
 import { notEmpty } from "../../../helpers/array";
 import { uniqBy } from "lodash";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -84,7 +85,7 @@ type SpecialFeed = (typeof SPECIAL_FEEDS)[number];
 type Result = Community | SpecialFeed | string;
 
 export default function TitleSearchResults() {
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
   const debouncedSearch = useDebounce(search, 500);
