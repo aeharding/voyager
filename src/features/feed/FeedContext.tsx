@@ -1,4 +1,4 @@
-import React, { MutableRefObject, createContext, useRef } from "react";
+import React, { MutableRefObject, createContext, useMemo, useRef } from "react";
 import { PostCommentItem } from "./PostCommentFeed";
 
 type ItemsRef = MutableRefObject<PostCommentItem[] | undefined>;
@@ -26,13 +26,16 @@ export default function FeedContextProvider({
 }: FeedContextProviderProps) {
   const itemsRef = useRef<ItemsRef | undefined>();
 
+  const feedContextValue: IFeedContext = useMemo(
+    () => ({
+      setItemsRef: (ref) => (itemsRef.current = ref),
+      itemsRefRef: itemsRef,
+    }),
+    [],
+  );
+
   return (
-    <FeedContext.Provider
-      value={{
-        setItemsRef: (ref) => (itemsRef.current = ref),
-        itemsRefRef: itemsRef,
-      }}
-    >
+    <FeedContext.Provider value={feedContextValue}>
       {children}
     </FeedContext.Provider>
   );

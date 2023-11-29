@@ -4,7 +4,6 @@ import {
   IonIcon,
   IonLoading,
   useIonActionSheet,
-  useIonRouter,
 } from "@ionic/react";
 import {
   arrowDownOutline,
@@ -50,6 +49,7 @@ import useAppToast from "../../helpers/useAppToast";
 import { ModeratorRole, getModIcon } from "../moderation/useCanModerate";
 import useCommentModActions from "../moderation/useCommentModActions";
 import { ActionButton } from "../post/actions/ActionButton";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 const StyledIonIcon = styled(IonIcon)`
   font-size: 1.2em;
@@ -79,7 +79,7 @@ export default function MoreActions({
 
   const commentById = useAppSelector((state) => state.comment.commentById);
 
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
 
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentById[commentView.comment.id] ?? commentView.comment;

@@ -10,8 +10,10 @@ import {
 } from "@ionic/react";
 import CommunitiesMoreActions from "../../features/community/list/InstanceMoreActions";
 import FeedContent from "../shared/FeedContent";
+import { useParams } from "react-router";
 
 export default function CommunitiesPage() {
+  const { actor } = useParams<{ actor: string }>();
   const pageRef = useRef<HTMLElement>(null);
 
   useSetActivePage(pageRef);
@@ -27,7 +29,7 @@ export default function CommunitiesPage() {
         </IonToolbar>
       </IonHeader>
       <FeedContent>
-        <CommunitiesList />
+        <CommunitiesList actor={actor} />
       </FeedContent>
     </IonPage>
   );

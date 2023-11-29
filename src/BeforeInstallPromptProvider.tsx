@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 
 type BeforeInstallPromptContextType = {
   event: BeforeInstallPromptEvent | null;
@@ -52,10 +58,13 @@ export default function BeforeInstallPromptProvider({
     setBeforeInstallPromptEvent(null);
   }, []);
 
+  const value = useMemo(
+    () => ({ event: beforeInstallPromptEvent, clearEvent }),
+    [beforeInstallPromptEvent, clearEvent],
+  );
+
   return (
-    <BeforeInstallPromptContext.Provider
-      value={{ event: beforeInstallPromptEvent, clearEvent }}
-    >
+    <BeforeInstallPromptContext.Provider value={value}>
       {children}
     </BeforeInstallPromptContext.Provider>
   );

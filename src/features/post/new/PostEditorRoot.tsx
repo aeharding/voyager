@@ -15,7 +15,6 @@ import {
   IonLabel,
   IonIcon,
   IonNavLink,
-  useIonRouter,
   IonToggle,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
@@ -36,6 +35,7 @@ import { receivedPosts } from "../postSlice";
 import useAppToast from "../../../helpers/useAppToast";
 import { isUrlImage, isValidUrl } from "../../../helpers/url";
 import { problemFetchingTitle } from "../../../helpers/toastMessages";
+import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
 const Container = styled.div`
   position: absolute;
@@ -139,7 +139,7 @@ export default function PostEditorRoot({
 
   const instanceUrl = useAppSelector(urlSelector);
 
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const showAutofill = !!url && isValidUrl(url) && !title;

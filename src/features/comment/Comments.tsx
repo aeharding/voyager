@@ -235,120 +235,137 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort, commentPath, postId, client, threadCommentId]);
 
-  async function fetchComments(refresh = false) {
-    if (refresh) {
-      if (page === 0 && loadingRef.current) return; // Still loading first page
-      finishedPagingRef.current = false;
-    } else {
-      if (loadingRef.current) return;
-      if (finishedPagingRef.current) return;
-    }
-
-    let response;
-
-    const currentPage = refresh ? 1 : page + 1;
-
-    const reqPostId = postId;
-    const reqCommentId = parentCommentId;
-    setLoading(true);
-
-    try {
-      response = await client.getComments({
-        post_id: reqPostId,
-        parent_id: parentCommentId,
-        limit: 10,
-        sort,
-        type_: "All",
-
-        max_depth: maxDepth,
-
-        saved_only: false,
-        page: currentPage,
-      });
-    } catch (error) {
-      if (reqPostId === postId && reqCommentId === parentCommentId)
-        presentToast({
-          message: "Problem fetching comments. Please try again.",
-          color: "danger",
-        });
-
-      setLoadFailed(true);
+  const fetchComments = useCallback(
+    async (refresh = false) => {
       if (refresh) {
-        setComments([]);
-        setPage(0);
-      }
-
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-
-    dispatch(receivedComments(response.comments));
-
-    if (reqPostId !== postId || reqCommentId !== parentCommentId) return;
-
-    const existingComments = refresh ? [] : comments;
-    const newComments = pullAllBy(
-      response.comments,
-      existingComments,
-      "comment.id",
-    );
-    if (!newComments.length) finishedPagingRef.current = true;
-
-    const potentialComments = uniqBy(
-      [...existingComments, ...newComments],
-      (c) => c.comment.id,
-    );
-
-    setComments(potentialComments);
-    setPage(currentPage);
-    setLoadFailed(false);
-
-    if (refresh) scrolledRef.current = false;
-  }
-
-  function prependComments(comments: CommentView[]) {
-    setComments((existingComments) => {
-      let commentsResult;
-
-      // We want to *unshift* comments, so that they appear as first child(ren) of a given node
-
-      // if `commentPath` exists, we call `buildCommentsTree` with `true`
-      if (commentPath || threadCommentId) {
-        // The first comment is considered the root (see `buildCommentsTree(comments, true)`),
-        // so have to insert at root + 1 instead of at beginning
-        commentsResult = existingComments.slice(); // don't mutate existing
-        commentsResult.splice(1, 0, ...comments); // insert after root
+        if (page === 0 && loadingRef.current) return; // Still loading first page
+        finishedPagingRef.current = false;
       } else {
-        // doesn't matter where inserted into array, put them first
-        commentsResult = [...comments, ...existingComments];
+        if (loadingRef.current) return;
+        if (finishedPagingRef.current) return;
       }
 
-      const newComments = uniqBy(commentsResult, (c) => c.comment.id);
+      let response;
 
-      // Increase the child_count as appropriate
-      comments.forEach((c) => {
-        if (existingComments.some((d) => d.comment.id === c.comment.id)) return;
+      const currentPage = refresh ? 1 : page + 1;
 
-        const parentIndex = newComments.findIndex((d) => {
-          const path = c.comment.path.split(".");
-          return d.comment.id === +(path[path.length - 2] ?? -1);
+      const reqPostId = postId;
+      const reqCommentId = parentCommentId;
+      setLoading(true);
+
+      try {
+        response = await client.getComments({
+          post_id: reqPostId,
+          parent_id: parentCommentId,
+          limit: 10,
+          sort,
+          type_: "All",
+
+          max_depth: maxDepth,
+
+          saved_only: false,
+          page: currentPage,
         });
-        const parent = newComments[parentIndex];
-        if (parent) {
-          newComments.splice(parentIndex, 1, {
-            ...parent,
-            counts: {
-              ...parent.counts,
-              child_count: parent.counts.child_count + 1,
-            },
+      } catch (error) {
+        if (reqPostId === postId && reqCommentId === parentCommentId)
+          presentToast({
+            message: "Problem fetching comments. Please try again.",
+            color: "danger",
           });
-        }
-      });
 
-      return newComments;
-    });
-  }
+        setLoadFailed(true);
+        if (refresh) {
+          setComments([]);
+          setPage(0);
+        }
+
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+
+      dispatch(receivedComments(response.comments));
+
+      if (reqPostId !== postId || reqCommentId !== parentCommentId) return;
+
+      const existingComments = refresh ? [] : comments;
+      const newComments = pullAllBy(
+        response.comments,
+        existingComments,
+        "comment.id",
+      );
+      if (!newComments.length) finishedPagingRef.current = true;
+
+      const potentialComments = uniqBy(
+        [...existingComments, ...newComments],
+        (c) => c.comment.id,
+      );
+
+      setComments(potentialComments);
+      setPage(currentPage);
+      setLoadFailed(false);
+
+      if (refresh) scrolledRef.current = false;
+    },
+    [
+      client,
+      comments,
+      dispatch,
+      maxDepth,
+      page,
+      parentCommentId,
+      postId,
+      presentToast,
+      sort,
+    ],
+  );
+
+  const prependComments = useCallback(
+    async (comments: CommentView[]) => {
+      setComments((existingComments) => {
+        let commentsResult;
+
+        // We want to *unshift* comments, so that they appear as first child(ren) of a given node
+
+        // if `commentPath` exists, we call `buildCommentsTree` with `true`
+        if (commentPath || threadCommentId) {
+          // The first comment is considered the root (see `buildCommentsTree(comments, true)`),
+          // so have to insert at root + 1 instead of at beginning
+          commentsResult = existingComments.slice(); // don't mutate existing
+          commentsResult.splice(1, 0, ...comments); // insert after root
+        } else {
+          // doesn't matter where inserted into array, put them first
+          commentsResult = [...comments, ...existingComments];
+        }
+
+        const newComments = uniqBy(commentsResult, (c) => c.comment.id);
+
+        // Increase the child_count as appropriate
+        comments.forEach((c) => {
+          if (existingComments.some((d) => d.comment.id === c.comment.id))
+            return;
+
+          const parentIndex = newComments.findIndex((d) => {
+            const path = c.comment.path.split(".");
+            return d.comment.id === +(path[path.length - 2] ?? -1);
+          });
+          const parent = newComments[parentIndex];
+          if (parent) {
+            newComments.splice(parentIndex, 1, {
+              ...parent,
+              counts: {
+                ...parent.counts,
+                child_count: parent.counts.child_count + 1,
+              },
+            });
+          }
+        });
+
+        return newComments;
+      });
+    },
+    [commentPath, threadCommentId],
+  );
 
   function appendComments(comments: CommentView[]) {
     setComments((existingComments) =>
@@ -406,14 +423,17 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       );
   }
 
+  const commentsContextValue = useMemo(
+    () => ({
+      refresh: () => fetchComments(true),
+      appendComments,
+      prependComments,
+    }),
+    [fetchComments, prependComments],
+  );
+
   return (
-    <CommentsContext.Provider
-      value={{
-        refresh: () => fetchComments(true),
-        appendComments,
-        prependComments,
-      }}
-    >
+    <CommentsContext.Provider value={commentsContextValue}>
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}

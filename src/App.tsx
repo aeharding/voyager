@@ -35,6 +35,8 @@ import AppCrash from "./AppCrash";
 
 import "./listeners";
 import HapticsListener from "./listeners/HapticsListener";
+import AndroidBackButton from "./listeners/AndroidBackButton";
+import { OptimizedRouterProvider } from "./helpers/useOptimizedIonRouter";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
@@ -65,18 +67,22 @@ export default function App() {
             <BeforeInstallPromptProvider>
               <UpdateContextProvider>
                 <Router>
-                  <IonApp>
-                    <ErrorBoundary FallbackComponent={AppCrash}>
-                      <HapticsListener />
+                  <OptimizedRouterProvider>
+                    <AndroidBackButton />
 
-                      <TabContextProvider>
-                        <TextRecoveryStartupPrompt />
-                        <Auth>
-                          <TabbedRoutes />
-                        </Auth>
-                      </TabContextProvider>
-                    </ErrorBoundary>
-                  </IonApp>
+                    <IonApp>
+                      <ErrorBoundary FallbackComponent={AppCrash}>
+                        <HapticsListener />
+
+                        <TabContextProvider>
+                          <TextRecoveryStartupPrompt />
+                          <Auth>
+                            <TabbedRoutes />
+                          </Auth>
+                        </TabContextProvider>
+                      </ErrorBoundary>
+                    </IonApp>
+                  </OptimizedRouterProvider>
                 </Router>
               </UpdateContextProvider>
             </BeforeInstallPromptProvider>

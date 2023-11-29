@@ -7,7 +7,7 @@ import {
 } from "@ionic/react";
 import Feed, { FetchFn } from "../../features/feed/Feed";
 import AppBackButton from "../../features/shared/AppBackButton";
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import useClient from "../../helpers/useClient";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import FeedContent from "./FeedContent";
@@ -34,17 +34,21 @@ export default function ModlogPage() {
   return <ModlogByCommunityName communityName={community} />;
 }
 
-function GlobalModlog() {
+const GlobalModlog = memo(function GlobalModlog() {
   return <ModlogByCommunity />;
-}
+});
 
-function ModlogByCommunityName({ communityName }: { communityName: string }) {
+const ModlogByCommunityName = memo(function ModlogByCommunityName({
+  communityName,
+}: {
+  communityName: string;
+}) {
   const community = useFetchCommunity(communityName);
 
   if (!community) return <CenteredSpinner />;
 
   return <ModlogByCommunity community={community.community} />;
-}
+});
 
 function ModlogByCommunity({ community }: { community?: Community }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();

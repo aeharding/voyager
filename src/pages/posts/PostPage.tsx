@@ -13,7 +13,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useParams } from "react-router";
 import styled from "@emotion/styled";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { getPost } from "../../features/post/postSlice";
 import AppBackButton from "../../features/shared/AppBackButton";
 import { CommentSortType } from "lemmy-js-client";
@@ -40,14 +40,34 @@ export const AnnouncementIcon = styled(IonIcon)`
   color: var(--ion-color-success);
 `;
 
+interface PostPageParams {
+  id: string;
+  commentPath?: string;
+  community: string;
+  threadCommentId?: string; // For continuing threads
+}
+
 export default function PostPage() {
+  const { id, commentPath, community, threadCommentId } =
+    useParams<PostPageParams>();
+
+  return (
+    <PostPageContent
+      id={id}
+      commentPath={commentPath}
+      community={community}
+      threadCommentId={threadCommentId}
+    />
+  );
+}
+
+const PostPageContent = memo(function PostPageContent({
+  id,
+  commentPath,
+  community,
+  threadCommentId,
+}: PostPageParams) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { id, commentPath, community, threadCommentId } = useParams<{
-    id: string;
-    commentPath?: string;
-    threadCommentId?: string; // for continuing threads
-    community: string;
-  }>();
   const post = useAppSelector((state) => state.post.postById[id]);
   const client = useClient();
   const dispatch = useAppDispatch();
@@ -142,4 +162,4 @@ export default function PostPage() {
       <FeedContent>{renderPost()}</FeedContent>
     </IonPage>
   );
-}
+});

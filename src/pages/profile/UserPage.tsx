@@ -15,9 +15,21 @@ import {
   usernameSelector,
 } from "../../features/auth/authSlice";
 import FeedContent from "../shared/FeedContent";
+import { memo } from "react";
+
+interface UserPageProps {
+  handle: string;
+}
 
 export default function UserPage() {
-  const handle = useParams<{ handle: string }>().handle;
+  const { handle } = useParams<{ handle: string }>();
+
+  return <UserPageContent handle={handle} />;
+}
+
+const UserPageContent = memo(function UserPageContent({
+  handle,
+}: UserPageProps) {
   const myUsername = useAppSelector(usernameSelector);
   const myHandle = useAppSelector(handleSelector);
   const isSelf = handle === myUsername || handle === myHandle;
@@ -44,4 +56,4 @@ export default function UserPage() {
       </FeedContent>
     </IonPage>
   );
-}
+});

@@ -1,12 +1,18 @@
-import React, { createContext, useMemo } from "react";
+import React, {
+  MutableRefObject,
+  createContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { useLocation } from "react-router";
 
 interface ITabContext {
-  tab: string;
+  tabRef: MutableRefObject<string> | undefined;
 }
 
 export const TabContext = createContext<ITabContext>({
-  tab: "",
+  tabRef: undefined,
 });
 
 /**
@@ -41,5 +47,13 @@ function TabContextProviderInternals({
   tab: string;
   children: React.ReactNode;
 }) {
-  return <TabContext.Provider value={{ tab }}>{children}</TabContext.Provider>;
+  const tabRef = useRef(tab);
+
+  useEffect(() => {
+    tabRef.current = tab;
+  }, [tab]);
+
+  const value = useMemo(() => ({ tabRef }), []);
+
+  return <TabContext.Provider value={value}>{children}</TabContext.Provider>;
 }
