@@ -10,6 +10,7 @@ import {
   arrowUndoOutline,
   arrowUpOutline,
   bookmarkOutline,
+  cameraOutline,
   chevronCollapseOutline,
   ellipsisHorizontal,
   flagOutline,
@@ -70,7 +71,7 @@ export default function MoreActions({
 }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const { prependComments } = useContext(CommentsContext);
+  const { prependComments, getComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
@@ -90,6 +91,7 @@ export default function MoreActions({
     presentCommentEdit,
     presentReport,
     presentSelectText,
+    presentShareAsImage,
   } = useContext(PageContext);
 
   const commentVotesById = useAppSelector(
@@ -264,6 +266,17 @@ export default function MoreActions({
             share(comment);
           },
         },
+        rootIndex !== undefined
+          ? {
+              text: "Share as image...",
+              icon: cameraOutline,
+              handler: () => {
+                const comments = getComments();
+                if (!comments) return;
+                presentShareAsImage(commentView, comments);
+              },
+            }
+          : undefined,
         rootIndex !== undefined
           ? {
               text: "Collapse to Top",

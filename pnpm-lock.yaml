@@ -43,6 +43,9 @@ devDependencies:
   '@capacitor/core':
     specifier: 5.2.3
     version: 5.2.3
+  '@capacitor/filesystem':
+    specifier: ^5.1.4
+    version: 5.1.4(@capacitor/core@5.2.3)
   '@capacitor/haptics':
     specifier: npm:voyager-capacitor-haptics@^5.0.7
     version: /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.2.3)
@@ -85,6 +88,9 @@ devDependencies:
   '@ionic/react-router':
     specifier: ^7.5.1
     version: 7.5.5(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
+  '@justfork/html-to-image':
+    specifier: ^1.21.5
+    version: 1.21.5
   '@reduxjs/toolkit':
     specifier: ^1.9.7
     version: 1.9.7(react-redux@8.1.3)(react@18.2.0)
@@ -1682,6 +1688,14 @@ packages:
       tslib: 2.6.2
     dev: true
 
+  /@capacitor/filesystem@5.1.4(@capacitor/core@5.2.3):
+    resolution: {integrity: sha512-10EM1KvFMs+pTzxkcflspzxBWcX9sOnS9nTP5Afjr5hn4OxLrwTFySw2Z12Uv6jdN4OnhY3jXtDKXPljXvXILg==}
+    peerDependencies:
+      '@capacitor/core': ^5.1.1
+    dependencies:
+      '@capacitor/core': 5.2.3
+    dev: true
+
   /@capacitor/ios@5.2.3(@capacitor/core@5.2.3):
     resolution: {integrity: sha512-ailR/Mer48GEXdqip+ENyN3Qk+ZtUBNDTlHh83WLNbx6uv71z6lCeoLKBXdtSEBFwzFrwtCO5upzbdzK79pONQ==}
     peerDependencies:
@@ -2333,6 +2347,10 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
+    dev: true
+
+  /@justfork/html-to-image@1.21.5:
+    resolution: {integrity: sha512-07bImKz0XC7s285jSVzXU2Qas99oJznaE3c+baPltvONSKp/4tg8O8we4Zm4jxros8Hk6R+dcV1HhKWm++S+rw==}
     dev: true
 
   /@ljharb/through@2.3.11:

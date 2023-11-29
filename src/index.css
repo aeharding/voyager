@@ -233,3 +233,27 @@ ion-toast.center::part(container) {
 .action-sheet-group.sc-ion-action-sheet-ios:first-child {
   margin-top: min(15vh, 70px);
 }
+
+#shareAsImageRoot {
+  --width: 330px;
+
+  position: absolute;
+  width: var(--width);
+  right: calc(var(--width) * -1);
+
+  word-break: break-word;
+}
+
+#shareAsImageRoot button {
+  display: none;
+}
+
+ion-modal.save-as-image-modal {
+  --height: auto;
+  --max-width: 470px;
+}
+
+#shareAsImageRoot img:not(.allowed-image),
+#shareAsImageRoot video {
+  display: none;
+}
