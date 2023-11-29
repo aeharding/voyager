@@ -13,6 +13,7 @@ import { isNative } from "../../../helpers/device";
 import { Share } from "@capacitor/share";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { blobToDataURL, blobToString } from "../../../helpers/blob";
+import useAppToast from "../../../helpers/useAppToast";
 
 const Container = styled.div`
   display: flex;
@@ -83,6 +84,7 @@ interface ShareAsImageProps {
 }
 
 export default function ShareAsImage({ data }: ShareAsImageProps) {
+  const presentToast = useAppToast();
   const [blob, setBlob] = useState<Blob | undefined>();
   const [greaterThan400, setGreaterThan400] = useState(false);
   const [minDepth, setMinDepth] = useState(
@@ -123,33 +125,41 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
 
   useEffect(() => {
     setTimeout(async () => {
-      const blob = await toBlob(
-        shareAsImageRenderRoot.querySelector(".inner") as HTMLElement,
-        {
-          pixelRatio: 3,
-          includeStyleProperties: ALLOWED_STYLE_PROPERTIES,
+      try {
+        const blob = await toBlob(
+          shareAsImageRenderRoot.querySelector(".inner") as HTMLElement,
+          {
+            pixelRatio: 3,
+            includeStyleProperties: ALLOWED_STYLE_PROPERTIES,
 
-          // TODO, for now ignore image/video to avoid tainted canvas failing render
-          // (there's also display: none for img/video in index.css)
-          //
-          // Two ways around this in the future:
-          //
-          // 1. Use a centralized proxy for this
-          // 2. Patch html-to-image to get image data using fetch API (native-only)
-          filter: (node) => {
-            if (node.tagName === "IMG") {
-              if (node.classList.contains("allowed-image")) return true;
+            // TODO, for now ignore image/video to avoid tainted canvas failing render
+            // (there's also display: none for img/video in index.css)
+            //
+            // Two ways around this in the future:
+            //
+            // 1. Use a centralized proxy for this
+            // 2. Patch html-to-image to get image data using fetch API (native-only)
+            filter: (node) => {
+              if (node.tagName === "IMG") {
+                if (node.classList.contains("allowed-image")) return true;
 
-              return false;
-            }
+                return false;
+              }
 
-            return node.tagName !== "VIDEO";
+              return node.tagName !== "VIDEO";
+            },
           },
-        },
-      );
-      setBlob(blob ?? undefined);
+        );
+        setBlob(blob ?? undefined);
+      } catch (error) {
+        presentToast({
+          message: "Error rendering image.",
+        });
+
+        throw error;
+      }
     }, 200);
-  }, [data, filteredComments, watermark, hideUsernames]);
+  }, [data, filteredComments, watermark, hideUsernames, presentToast]);
 
   async function onShare() {
     if (!blob) return;

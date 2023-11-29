@@ -55,8 +55,8 @@ export const PositionedContainer = styled.div<{
   padding: 8px 12px;
 
   @media (hover: none) {
-    padding-top: 0.65rem;
-    padding-bottom: 0.65rem;
+    padding-top: 0.65em;
+    padding-bottom: 0.65em;
   }
 
   ${({ depth }) => css`
@@ -84,7 +84,7 @@ export const Container = styled.div<{
   ${({ depth }) =>
     depth > 0 &&
     css`
-      padding-left: 1rem;
+      padding-left: 1em;
     `}
 
   &:before {
@@ -120,9 +120,9 @@ const Header = styled.div`
   display: flex;
   align-items: center;
 
-  font-size: 0.875rem;
+  font-size: 0.875em;
 
-  gap: 0.5rem;
+  gap: 0.5em;
 
   color: var(--ion-color-medium2);
 `;
@@ -135,10 +135,10 @@ const StyledPersonLabel = styled(PersonLink)`
 `;
 
 const Content = styled.div`
-  padding-top: 0.35rem;
+  padding-top: 0.35em;
 
   @media (hover: none) {
-    padding-top: 0.45rem;
+    padding-top: 0.45em;
   }
 
   line-height: 1.25;
@@ -165,7 +165,7 @@ const AmountCollapsed = styled.div`
   font-size: 0.875em;
   padding: 2px 8px;
   margin: -4px 0;
-  border-radius: 1rem;
+  border-radius: 16px;
   color: var(--ion-color-medium);
   background: var(--ion-color-light);
 `;

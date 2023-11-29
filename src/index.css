@@ -235,6 +235,8 @@ ion-toast.center::part(container) {
 }
 
 #shareAsImageRoot {
+  font-size: 16px;
+
   --width: 330px;
 
   position: absolute;
@@ -242,6 +244,10 @@ ion-toast.center::part(container) {
   right: calc(var(--width) * -1);
 
   word-break: break-word;
+}
+
+#shareAsImageRoot ion-item {
+  font-size: 16px;
 }
 
 #shareAsImageRoot button {

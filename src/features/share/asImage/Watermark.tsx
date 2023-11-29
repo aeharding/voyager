@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { isAndroid, isNative } from "../../../helpers/device";
 
 const Container = styled.div`
   width: 100%;
@@ -31,9 +30,7 @@ export default function Watermark() {
     <Container>
       <Text>Voyager for Lemmy</Text>
       {/* https://github.com/bubkoo/html-to-image/issues/321#issuecomment-1831136948 */}
-      {(!isNative() || !isAndroid()) && (
-        <LogoImg src="/logo.png" className="allowed-image" />
-      )}
+      <LogoImg src="/logo.png" className="allowed-image" />
     </Container>
   );
 }
