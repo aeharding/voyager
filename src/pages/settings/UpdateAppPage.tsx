@@ -20,6 +20,8 @@ import styled from "@emotion/styled";
 import { UpdateContext } from "./update/UpdateContext";
 import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
 import { useSetActivePage } from "../../features/auth/AppContext";
+import { ua } from "../../helpers/device";
+import { unloadServiceWorkerAndRefresh } from "../../helpers/serviceWorker";
 
 const UpToDateText = styled.div`
   margin: auto;
@@ -55,7 +57,15 @@ export default function UpdateAppPage() {
     setLoading(true);
 
     try {
-      await updateServiceWorker();
+      if (ua.getEngine().name === "WebKit") {
+        // There is a Safari bug where it won't update the service worker if the SSL certificate has renewed
+        // So instead of gracefully updating, just nuke the service worker and start over
+        // See: https://github.com/aeharding/voyager/issues/896
+
+        await unloadServiceWorkerAndRefresh();
+      } else {
+        await updateServiceWorker();
+      }
     } finally {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 

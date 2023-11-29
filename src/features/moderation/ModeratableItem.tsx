@@ -1,9 +1,9 @@
 import { css } from "@emotion/react";
-import RemovedByBanner, {
+import ModeratableItemBanner, {
   ItemModState,
-  getItemModState,
+  useItemModState,
   getModStateBackgroundColor,
-} from "./RemovedByBanner";
+} from "./banner/ModeratableItemBanner";
 import { CommentView, PostView } from "lemmy-js-client";
 import { ReactNode, createContext, useContext } from "react";
 import styled from "@emotion/styled";
@@ -11,10 +11,13 @@ import useCanModerate from "./useCanModerate";
 import { useAppSelector } from "../../store";
 import { isPost } from "../feed/PostCommentFeed";
 
-const ModeratableItemContainer = styled.div<{ modState?: ItemModState }>`
+const ModeratableItemContainer = styled.div<{
+  modState?: ItemModState;
+  highlighted?: boolean;
+}>`
   width: 100%;
 
-  ${({ modState }) => {
+  ${({ modState, highlighted }) => {
     const color =
       modState !== undefined ? getModStateBackgroundColor(modState) : undefined;
 
@@ -22,19 +25,26 @@ const ModeratableItemContainer = styled.div<{ modState?: ItemModState }>`
       return css`
         background: ${color};
       `;
+
+    if (highlighted)
+      return css`
+        background: var(--ion-color-light);
+      `;
   }}
 `;
 
 interface ModeratableItemProps {
   itemView: PostView | CommentView;
   children?: ReactNode;
+  highlighted?: boolean;
 }
 
 export default function ModeratableItem({
   itemView,
   children,
+  highlighted,
 }: ModeratableItemProps) {
-  const canModerate = useCanModerate(itemView.community.id);
+  const canModerate = useCanModerate(itemView.community);
 
   const item = useAppSelector((state) => {
     if (isPost(itemView)) {
@@ -47,11 +57,23 @@ export default function ModeratableItem({
     return state.comment.commentById[itemView.comment.id] ?? itemView.comment;
   });
 
-  const modState = getItemModState(item);
+  const modState = useItemModState(item);
 
-  if (!canModerate || !modState) return children;
+  const shouldShowModBanner = canModerate && modState;
 
-  const banner = <RemovedByBanner modState={modState} item={item} />;
+  if (highlighted && !shouldShowModBanner) {
+    return (
+      <ModeratableItemContainer highlighted>
+        {children}
+      </ModeratableItemContainer>
+    );
+  }
+
+  if (!shouldShowModBanner) return children;
+
+  const banner = (
+    <ModeratableItemBanner modState={modState} itemView={itemView} />
+  );
 
   return (
     <ModeratableItemContext.Provider value={{ banner }}>

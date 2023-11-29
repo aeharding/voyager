@@ -51,7 +51,6 @@ export default function ContinueThread({
       >
         <PositionedContainer
           depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
-          highlighted={false}
         >
           <Container depth={absoluteDepth ?? depth ?? 0}>
             <MoreRepliesBlock>

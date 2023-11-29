@@ -1,5 +1,4 @@
 import React, {
-  Fragment,
   forwardRef,
   useCallback,
   useEffect,
@@ -35,6 +34,7 @@ import {
   useScrollIntoViewWorkaround,
 } from "../../helpers/dom";
 import { IndexedVirtuaItem } from "../../helpers/virtua";
+import FeedLoadMoreFailed from "../feed/endItems/FeedLoadMoreFailed";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
@@ -94,6 +94,8 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   const loadingRef = useRef(false);
   const finishedPagingRef = useRef(false);
   const [comments, setComments] = useState<CommentView[]>([]);
+
+  const [loadFailed, setLoadFailed] = useState(false);
 
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
@@ -270,6 +272,12 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
           color: "danger",
         });
 
+      setLoadFailed(true);
+      if (refresh) {
+        setComments([]);
+        setPage(0);
+      }
+
       throw error;
     } finally {
       setLoading(false);
@@ -294,6 +302,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
     setComments(potentialComments);
     setPage(currentPage);
+    setLoadFailed(false);
 
     if (refresh) scrolledRef.current = false;
   }
@@ -356,17 +365,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   }
 
   const allComments = useMemo(() => {
-    if (loading && !comments.length)
-      return [<StyledIonSpinner key="spinner" />];
-
-    if (!comments.length)
-      return [
-        <Empty key="empty">
-          <div>No Comments</div>
-          <aside>It&apos;s quiet... too quiet...</aside>
-        </Empty>,
-      ];
-
     const tree = commentTree.map((comment, index) => (
       <CommentTree
         comment={comment}
@@ -387,23 +385,26 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       tree.unshift(<LoadParentComments setMaxContext={setMaxContext} />);
 
     return tree;
-  }, [
-    commentTree,
-    comments.length,
-    highlightedCommentId,
-    loading,
-    op,
-    commentPath,
-    maxContext,
-  ]);
+  }, [commentTree, highlightedCommentId, op, commentPath, maxContext]);
 
-  const list = useMemo(() => {
-    const data = [<Fragment key="header">{header}</Fragment>, ...allComments];
-    if (bottomPadding)
-      data.push(<div style={{ height: `${bottomPadding}px` }} key="footer" />);
+  const padding = bottomPadding ? (
+    <div style={{ height: `${bottomPadding}px` }} />
+  ) : undefined;
 
-    return data;
-  }, [allComments, bottomPadding, header]);
+  function renderFooter() {
+    if (loadFailed)
+      return <FeedLoadMoreFailed fetchMore={fetchComments} loading={loading} />;
+
+    if (loading && !comments.length) return <StyledIonSpinner />;
+
+    if (!comments.length)
+      return (
+        <Empty>
+          <div>No Comments</div>
+          <aside>It&apos;s quiet... too quiet...</aside>
+        </Empty>
+      );
+  }
 
   return (
     <CommentsContext.Provider
@@ -432,7 +433,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
           components={{ Item: IndexedVirtuaItem }}
           overscan={highlightedCommentId ? 10 : 0}
           onRangeChange={(start, end) => {
-            if (end + 10 > list.length) {
+            if (end + 10 > allComments.length && !loadFailed) {
               fetchComments();
             }
           }}
@@ -440,7 +441,10 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
             setIsListAtTop(offset < 6);
           }}
         >
-          {list}
+          {header}
+          {allComments}
+          {renderFooter()}
+          {padding}
         </VList>
       </ScrollViewContainer>
     </CommentsContext.Provider>

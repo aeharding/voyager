@@ -27,12 +27,8 @@ PODS:
     - SDWebImage
   - CapacitorStatusBar (5.0.6):
     - Capacitor
-  - PurchasesHybridCommon (7.3.3):
-    - RevenueCat (= 4.30.5)
-  - RevenueCat (4.30.5)
-  - RevenuecatPurchasesCapacitor (7.1.1):
+  - CapacitorTips (0.0.2):
     - Capacitor
-    - PurchasesHybridCommon (= 7.3.3)
   - SDWebImage (5.17.0):
     - SDWebImage/Core (= 5.17.0)
   - SDWebImage/Core (5.17.0)
@@ -52,12 +48,10 @@ DEPENDENCIES:
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/share`)"
   - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@0.0.7_@capacitor+core@5.2.3/node_modules/capacitor-stash-media`)"
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/status-bar`)"
-  - "RevenuecatPurchasesCapacitor (from `../../node_modules/.pnpm/@revenuecat+purchases-capacitor@7.1.1_@capacitor+core@5.2.3/node_modules/@revenuecat/purchases-capacitor`)"
+  - "CapacitorTips (from `../../node_modules/.pnpm/capacitor-tips@0.0.2_@capacitor+core@5.2.3/node_modules/capacitor-tips`)"
 
 SPEC REPOS:
   trunk:
-    - PurchasesHybridCommon
-    - RevenueCat
     - SDWebImage
 
 EXTERNAL SOURCES:
@@ -89,8 +83,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/capacitor-stash-media@0.0.7_@capacitor+core@5.2.3/node_modules/capacitor-stash-media"
   CapacitorStatusBar:
     :path: "../../node_modules/.pnpm/@capacitor+status-bar@5.0.6_@capacitor+core@5.2.3/node_modules/@capacitor/status-bar"
-  RevenuecatPurchasesCapacitor:
-    :path: "../../node_modules/.pnpm/@revenuecat+purchases-capacitor@7.1.1_@capacitor+core@5.2.3/node_modules/@revenuecat/purchases-capacitor"
+  CapacitorTips:
+    :path: "../../node_modules/.pnpm/capacitor-tips@0.0.2_@capacitor+core@5.2.3/node_modules/capacitor-tips"
 
 SPEC CHECKSUMS:
   Capacitor: 6f44cbc33839b8a4202b8eac97041fe584083417
@@ -107,11 +101,9 @@ SPEC CHECKSUMS:
   CapacitorShare: cd41743331cb71d217c029de54b681cbd91e0fcc
   CapacitorStashMedia: 4a75016eb94559a6c1a16fc07bc5964724ba09eb
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
-  PurchasesHybridCommon: 347eab2636e0f03e3001d3aaad1ba1d9d0481b12
-  RevenueCat: c1e33f4e1f1fd239ba461652f02928e220becc31
-  RevenuecatPurchasesCapacitor: 74aed0f69964862a615f5e78698b86b7145bc7cc
+  CapacitorTips: 045758a9354574aa4807265e1bccbca0919ad861
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: 86f0193563e7b2ae614ecc8e86cd1945bd8ce4a5
+PODFILE CHECKSUM: 730711e474c0fd0d0016631d86fdafa17cf7e498
 
 COCOAPODS: 1.12.1

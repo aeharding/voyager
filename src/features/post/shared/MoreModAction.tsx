@@ -1,25 +1,12 @@
-import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
-import {
-  checkmarkCircleOutline,
-  lockClosedOutline,
-  lockOpenOutline,
-  megaphoneOutline,
-  shieldCheckmark,
-  shieldCheckmarkOutline,
-  trashOutline,
-} from "ionicons/icons";
-import { useAppDispatch } from "../../../store";
+import { IonButton, IonIcon } from "@ionic/react";
 import { PostView } from "lemmy-js-client";
-import { modRemovePost, modStickyPost, modLockPost } from "../postSlice";
-import {
-  buildLocked,
-  buildStickied,
-  postApproved,
-  postRemoved,
-} from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
-import useAppToast from "../../../helpers/useAppToast";
-import useCanModerate from "../../moderation/useCanModerate";
+import useCanModerate, {
+  ModeratorRole,
+  getModColor,
+  getModIcon,
+} from "../../moderation/useCanModerate";
+import usePostModActions from "../../moderation/usePostModActions";
 
 interface MoreActionsProps {
   post: PostView;
@@ -29,76 +16,19 @@ interface MoreActionsProps {
 }
 
 export default function MoreModActions(props: MoreActionsProps) {
-  const isMod = useCanModerate(props.post.community.id);
+  const canModerate = useCanModerate(props.post.community);
 
-  if (!isMod) return;
+  if (!canModerate) return;
 
-  return <Actions {...props} />;
+  return <Actions {...props} role={canModerate} />;
 }
 
-function Actions({ post, onFeed, solidIcon, className }: MoreActionsProps) {
-  const [presentActionSheet] = useIonActionSheet();
-  const dispatch = useAppDispatch();
-  const presentToast = useAppToast();
+interface ActionsProps extends MoreActionsProps {
+  role: ModeratorRole;
+}
 
-  function onClick() {
-    presentActionSheet({
-      cssClass: "mod left-align-buttons",
-      buttons: [
-        {
-          text: "Approve",
-          icon: checkmarkCircleOutline,
-          handler: () => {
-            (async () => {
-              await dispatch(modRemovePost(post.post.id, false));
-
-              presentToast(postApproved);
-            })();
-          },
-        },
-        {
-          text: "Remove",
-          icon: trashOutline,
-          handler: () => {
-            (async () => {
-              await dispatch(modRemovePost(post.post.id, true));
-
-              presentToast(postRemoved);
-            })();
-          },
-        },
-        {
-          text: !post.post.featured_community ? "Sticky" : "Unsticky",
-          icon: megaphoneOutline,
-          handler: () => {
-            (async () => {
-              await dispatch(
-                modStickyPost(post.post.id, !post.post.featured_community),
-              );
-
-              presentToast(buildStickied(!post.post.featured_community));
-            })();
-          },
-        },
-        {
-          text: !post.post.locked ? "Lock" : "Unlock",
-          icon: !post.post.locked ? lockClosedOutline : lockOpenOutline,
-          handler: () => {
-            (async () => {
-              await dispatch(modLockPost(post.post.id, !post.post.locked));
-
-              presentToast(buildLocked(!post.post.locked));
-            })();
-          },
-        },
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
-      ],
-    });
-  }
-
+function Actions({ post, onFeed, solidIcon, className, role }: ActionsProps) {
+  const presentPostModActions = usePostModActions(post);
   const Button = onFeed ? ActionButton : IonButton;
 
   return (
@@ -106,14 +36,11 @@ function Actions({ post, onFeed, solidIcon, className }: MoreActionsProps) {
       <Button
         onClick={(e) => {
           e.stopPropagation();
-          onClick();
+          presentPostModActions();
         }}
         className={className}
       >
-        <IonIcon
-          icon={solidIcon ? shieldCheckmark : shieldCheckmarkOutline}
-          color="success"
-        />
+        <IonIcon icon={getModIcon(role, solidIcon)} color={getModColor(role)} />
       </Button>
     </>
   );

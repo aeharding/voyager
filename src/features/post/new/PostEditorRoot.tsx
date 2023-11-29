@@ -400,6 +400,10 @@ export default function PostEditorRoot({
                 onIonInput={(e) => setTitle(e.detail.value ?? "")}
                 placeholder="Title"
                 counter
+                inputMode="text"
+                autocapitalize="on"
+                autocorrect="on"
+                spellCheck
                 maxlength={MAX_TITLE_LENGTH}
                 counterFormatter={(inputLength, maxLength) =>
                   showAutofill ? "" : `${maxLength - inputLength}`
