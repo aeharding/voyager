@@ -77,7 +77,7 @@
     "capacitor-biometric-lock": "^0.1.0",
     "capacitor-plugin-safe-area": "^2.0.5",
     "capacitor-set-version": "^2.2.0",
-    "capacitor-stash-media": "^0.0.7",
+    "capacitor-stash-media": "^1.0.0",
     "capacitor-tips": "^0.0.2",
     "compare-versions": "^6.1.0",
     "date-fns": "^2.30.0",
