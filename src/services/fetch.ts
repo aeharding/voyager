@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { CapacitorHttp } from "@capacitor/core";
 import { CapFormDataEntry } from "@capacitor/core/types/definitions-internal";
 
@@ -17,8 +18,6 @@ export default async function fetch(
     return window.fetch(resource, options);
   }
 
-  const tag = `CapacitorHttp fetch ${Date.now()} ${resource}`;
-  console.time(tag);
   try {
     // intercept request & pass to the bridge
     const {
@@ -69,10 +68,8 @@ export default async function fetch(
       value: nativeResponse.url,
     });
 
-    console.timeEnd(tag);
     return response;
   } catch (error) {
-    console.timeEnd(tag);
     return Promise.reject(error);
   }
 }
