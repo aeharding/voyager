@@ -113,6 +113,13 @@ export const postApproved: AppToastOptions = {
   icon: checkmark,
 };
 
+export const postRestored: AppToastOptions = {
+  message: "Post restored",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};
+
 export const commentRemoved: AppToastOptions = {
   message: "Comment removed",
   color: "success",
@@ -122,6 +129,13 @@ export const commentRemoved: AppToastOptions = {
 
 export const commentApproved: AppToastOptions = {
   message: "Comment approved",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};
+
+export const commentRestored: AppToastOptions = {
+  message: "Comment restored",
   color: "success",
   centerText: true,
   icon: checkmark,
