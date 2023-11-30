@@ -14,52 +14,60 @@ import { Share } from "@capacitor/share";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 import { blobToDataURL, blobToString } from "../../../helpers/blob";
 import useAppToast from "../../../helpers/useAppToast";
+import includeStyleProperties from "./includeStyleProperties";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0 16px 32px;
-
-  gap: 16px;
 `;
 
 const PreviewWrapper = styled.div`
   overflow: hidden;
-  margin: -8px;
-  padding: 8px;
+  margin: -16px 0;
+  padding: 16px;
 `;
 
-const PreviewImgContainer = styled.div<{ greaterThan400: boolean }>`
+const PreviewImgContainer = styled.div<{ height: number | undefined }>`
   height: min-content;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  ${({ greaterThan400 }) =>
-    greaterThan400 &&
+  ${({ height }) =>
+    height &&
     css`
-      height: 400px;
+      height: ${height}px;
     `}
 `;
 
+const sharedImgCss = css`
+  filter: var(--share-img-drop-shadow);
+
+  .ios & {
+    border-radius: 8px;
+  }
+
+  .md & {
+    margin-top: 16px;
+  }
+`;
+
 const PlaceholderImg = styled.div`
-  border-radius: 8px;
   height: 80px;
   width: 80%;
   margin: auto;
-  background: black;
-  filter: drop-shadow(0 0 8px black);
+  background: var(--ion-item-background, var(--ion-background-color, #fff));
+
+  ${sharedImgCss}
 `;
 
 const PreviewImg = styled.img`
-  border-radius: 8px;
-
   flex-shrink: 0;
   max-width: 100%;
   max-height: 100%;
 
-  filter: drop-shadow(0 0 8px black);
+  ${sharedImgCss}
 `;
 
 const ParentCommentValues = styled.div`
@@ -72,8 +80,12 @@ const CommentSnapshotContainer = styled.div`
   background: var(--ion-item-background, var(--ion-background-color, #fff));
 `;
 
+const ShareIonButton = styled(IonButton)`
+  margin: 0 16px 16px;
+`;
+
 const shareAsImageRenderRoot = document.querySelector(
-  "#shareAsImageRoot",
+  "#share-as-image-root",
 ) as HTMLElement;
 
 interface ShareAsImageProps {
@@ -86,7 +98,7 @@ interface ShareAsImageProps {
 export default function ShareAsImage({ data }: ShareAsImageProps) {
   const presentToast = useAppToast();
   const [blob, setBlob] = useState<Blob | undefined>();
-  const [greaterThan400, setGreaterThan400] = useState(false);
+  const [greaterThanThreshold, setGreaterThanThreshold] = useState(false);
   const [minDepth, setMinDepth] = useState(
     getDepthFromComment(data.comment.comment) ?? 0,
   );
@@ -94,6 +106,15 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
   const [watermark, setWatermark] = useState(false);
 
   const [imageSrc, setImageSrc] = useState("");
+
+  const maxImgHeight = (() => {
+    if (document.body.clientHeight < 500) return 125;
+    if (document.body.clientHeight < 600) return 200;
+    if (document.body.clientHeight < 700) return 250;
+    if (document.body.clientHeight < 750) return 275;
+
+    return 400;
+  })();
 
   useEffect(() => {
     if (!blob) return;
@@ -129,8 +150,8 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
         const blob = await toBlob(
           shareAsImageRenderRoot.querySelector(".inner") as HTMLElement,
           {
-            pixelRatio: 3,
-            includeStyleProperties: ALLOWED_STYLE_PROPERTIES,
+            pixelRatio: 4,
+            includeStyleProperties,
 
             // TODO, for now ignore image/video to avoid tainted canvas failing render
             // (there's also display: none for img/video in index.css)
@@ -195,7 +216,10 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
   return (
     <Container>
       <PreviewWrapper>
-        <PreviewImgContainer className="embed" greaterThan400={greaterThan400}>
+        <PreviewImgContainer
+          className="embed"
+          height={greaterThanThreshold ? maxImgHeight : undefined}
+        >
           {!imageSrc ? (
             <PlaceholderImg />
           ) : (
@@ -206,10 +230,10 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
                 const parent = e.target.parentElement;
                 if (!parent) return;
 
-                setGreaterThan400(
+                setGreaterThanThreshold(
                   (e.target.naturalHeight / e.target.naturalWidth) *
                     parent.clientWidth >
-                    400,
+                    maxImgHeight,
                 );
 
                 // Safari hacks 😢 to force rerender
@@ -227,7 +251,7 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
         </PreviewImgContainer>
       </PreviewWrapper>
 
-      <IonList lines="full">
+      <IonList inset lines="full">
         {!!getDepthFromComment(data.comment.comment) && (
           <IonItem>
             <IonLabel>Parent Comments</IonLabel>
@@ -263,9 +287,9 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
           </IonToggle>
         </IonItem>
       </IonList>
-      <IonButton onClick={onShare}>
+      <ShareIonButton onClick={onShare}>
         {isNative() || "share" in navigator ? "Share" : "Download"}
-      </IonButton>
+      </ShareIonButton>
       {createPortal(
         <CommentSnapshotContainer className="inner">
           <ShareImageContext.Provider value={{ hideUsernames }}>
@@ -283,59 +307,6 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
     </Container>
   );
 }
-
-const ALLOWED_STYLE_PROPERTIES = [
-  "width",
-  "height",
-  "box-sizing",
-  "display",
-  "align-items",
-  "justify-content",
-  "font-size",
-  "gap",
-  "color",
-  "background",
-  "background-color",
-  "font",
-  "font-family",
-  "fill",
-  "stroke",
-  "margin",
-  "padding",
-  "padding-left",
-  "padding-top",
-  "padding-bottom",
-  "padding-right",
-  "flex-direction",
-  "filter",
-  "position",
-  "top",
-  "left",
-  "bottom",
-  "right",
-  "content",
-  "line-height",
-  "text-decoration",
-  "border-radius",
-  "opacity",
-  "border-right",
-  "border-left",
-  "margin-right",
-  "margin-left",
-  "margin-top",
-  "margin-bottom",
-  "white-space",
-  "overflow",
-  "text-overflow",
-  "font-weight",
-  "min-width",
-  "transform",
-  "z-index",
-  "flex",
-  "border-width",
-  "text-wrap",
-  "word-break",
-];
 
 export const ShareImageContext = createContext({
   hideUsernames: false,

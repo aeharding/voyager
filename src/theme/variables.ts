@@ -96,6 +96,8 @@ export const baseVariables = css`
 
     --read-color: rgba(0, 0, 0, 0.45);
     --read-color-medium: rgba(0, 0, 0, 0.4);
+
+    --share-img-drop-shadow: none;
   }
 
   .ios body {
@@ -233,6 +235,8 @@ export const buildDarkVariables = (
 
       --read-color: rgba(255, 255, 255, 0.6);
       --read-color-medium: rgba(255, 255, 255, 0.4);
+
+      --share-img-drop-shadow: drop-shadow(0 0 8px black);
     }
 
     // iOS Dark Theme

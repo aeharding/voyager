@@ -6,6 +6,8 @@ const Button = styled(IonButton)`
   --padding-start: 5px;
   --padding-end: 5px;
   --height: 20px;
+
+  color: inherit;
 `;
 
 const Container = styled.div`

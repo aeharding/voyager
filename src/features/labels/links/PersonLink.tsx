@@ -39,7 +39,7 @@ const PersonLinkEl = styled(StyledLink, {
         content: "";
         position: absolute;
         inset: 0;
-        background: #777;
+        background: var(--ion-color-step-150, #ccc);
       }
     `}
 `;

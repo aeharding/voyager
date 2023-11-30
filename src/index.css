@@ -234,7 +234,7 @@ ion-toast.center::part(container) {
   margin-top: min(15vh, 70px);
 }
 
-#shareAsImageRoot {
+#share-as-image-root {
   font-size: 16px;
 
   --width: 330px;
@@ -243,14 +243,17 @@ ion-toast.center::part(container) {
   width: var(--width);
   right: calc(var(--width) * -1);
 
-  word-break: break-word;
+  a {
+    /* Hack for long links breaking */
+    word-break: break-word;
+  }
 }
 
-#shareAsImageRoot ion-item {
+#share-as-image-root ion-item {
   font-size: 16px;
 }
 
-#shareAsImageRoot button {
+#share-as-image-root button {
   display: none;
 }
 
@@ -259,7 +262,7 @@ ion-modal.save-as-image-modal {
   --max-width: 470px;
 }
 
-#shareAsImageRoot img:not(.allowed-image),
-#shareAsImageRoot video {
+#share-as-image-root img:not(.allowed-image),
+#share-as-image-root video {
   display: none;
 }
