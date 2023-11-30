@@ -156,6 +156,7 @@ function convertPostReportToPost(postReport: PostReportView): PostView {
     // The below is mocked because properties are not available.
     // See: https://github.com/LemmyNet/lemmy/issues/4200
     creator_is_moderator: false,
+    creator_is_admin: false,
     subscribed: "NotSubscribed",
     saved: false,
     read: false,
@@ -173,6 +174,7 @@ function convertCommentReportToComment(
     // The below is mocked because properties are not available.
     // See: https://github.com/LemmyNet/lemmy/issues/4200
     creator_is_moderator: false,
+    creator_is_admin: false,
     creator_blocked: false,
     subscribed: "NotSubscribed",
     saved: false,

@@ -180,7 +180,7 @@ export const modNukeCommentChain =
     });
 
     const commentIds = comments
-      .filter((c) => !c.creator_is_moderator)
+      .filter((c) => !c.creator_is_moderator && !c.creator_is_admin)
       .map((c) => c.comment.id);
 
     await Promise.all(
