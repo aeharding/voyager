@@ -45,7 +45,7 @@ const toURL = (input: Parameters<typeof fetch>[0]): URL | undefined => {
   }
 };
 
-function buildCustomFetch(auth: string | undefined): typeof window.fetch {
+function buildCustomFetch(auth: string | undefined): typeof fetch {
   return async (info, init) => {
     if (init?.body && auth) {
       try {
@@ -70,7 +70,7 @@ function buildCustomFetch(auth: string | undefined): typeof window.fetch {
       };
     }
 
-    const fetchFn = isNative() ? nativeFetch : window.fetch;
+    const fetchFn = isNative() ? nativeFetch : fetch;
 
     return await fetchFn(url ? url.toString() : (info as never), init); // something is wrong with these types
   };
