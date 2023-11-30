@@ -81,7 +81,8 @@ const CommentSnapshotContainer = styled.div`
 `;
 
 const ShareIonButton = styled(IonButton)`
-  margin: 0 16px 16px;
+  margin: 0 16px
+    max(var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0)), 16px);
 `;
 
 const shareAsImageRenderRoot = document.querySelector(
@@ -256,9 +257,9 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
           <IonItem>
             <IonLabel>Parent Comments</IonLabel>
             <ParentCommentValues slot="end">
-              <div>
+              <strong>
                 {(getDepthFromComment(data.comment.comment) ?? 0) - minDepth}
-              </div>
+              </strong>
               <AddRemoveButtons
                 addDisabled={minDepth === 0}
                 removeDisabled={
@@ -290,6 +291,7 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
       <ShareIonButton onClick={onShare}>
         {isNative() || "share" in navigator ? "Share" : "Download"}
       </ShareIonButton>
+
       {createPortal(
         <CommentSnapshotContainer className="inner">
           <ShareImageContext.Provider value={{ hideUsernames }}>
