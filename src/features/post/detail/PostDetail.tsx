@@ -189,7 +189,10 @@ export default function PostDetail({
   const renderText = useCallback(() => {
     if (!post) return;
 
-    if (post.post.body && !markdownLoneImage) {
+    const usedLoneImage =
+      markdownLoneImage && (!post.post.url || !isUrlMedia(post.post.url));
+
+    if (post.post.body && !usedLoneImage) {
       return (
         <>
           {post.post.url && !isUrlMedia(post.post.url) && <Embed post={post} />}
