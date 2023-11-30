@@ -29,7 +29,6 @@ export default function Watermark() {
   return (
     <Container>
       <Text>Voyager for Lemmy</Text>
-      {/* https://github.com/bubkoo/html-to-image/issues/321#issuecomment-1831136948 */}
       <LogoImg src="/logo.png" className="allowed-image" />
     </Container>
   );

@@ -2,7 +2,7 @@ import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
 import { isNative, supportsWebp } from "../helpers/device";
 import { omitUndefinedValues } from "../helpers/object";
-import fetch from "./fetch";
+import nativeFetch from "./nativeFetch";
 
 function buildBaseUrl(url: string): string {
   return buildDirectConnectBaseUrl(url);
@@ -70,7 +70,7 @@ function buildCustomFetch(auth: string | undefined): typeof window.fetch {
       };
     }
 
-    const fetchFn = isNative() ? fetch : window.fetch;
+    const fetchFn = isNative() ? nativeFetch : window.fetch;
 
     return await fetchFn(url ? url.toString() : (info as never), init); // something is wrong with these types
   };

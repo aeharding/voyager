@@ -5,7 +5,7 @@ import { CapFormDataEntry } from "@capacitor/core/types/definitions-internal";
 // Stolen from capacitor fetch shim
 // https://github.com/ionic-team/capacitor/blob/5.2.3/core/native-bridge.ts
 
-export default async function fetch(
+export default async function nativeFetch(
   resource: RequestInfo | URL,
   options?: RequestInit,
 ) {
