@@ -23,7 +23,7 @@ import {
   modRemoveComment,
 } from "../comment/commentSlice";
 import { stringifyReports } from "./usePostModActions";
-import { reportsByCommentIdSelector } from "./modSlice";
+import { reportsByCommentIdSelector, resolveCommentReport } from "./modSlice";
 
 export default function useCommentModActions(commentView: CommentView) {
   const [presentAlert] = useIonAlert();
@@ -65,28 +65,42 @@ export default function useCommentModActions(commentView: CommentView) {
               },
             }
           : undefined,
-        {
-          text: "Approve",
-          icon: checkmarkCircleOutline,
-          handler: () => {
-            (async () => {
-              await dispatch(modRemoveComment(comment.id, false));
+        !comment.removed && reports?.length
+          ? {
+              text: "Approve",
+              icon: checkmarkCircleOutline,
+              handler: () => {
+                (async () => {
+                  await dispatch(resolveCommentReport(comment.id));
 
-              presentToast(commentApproved);
-            })();
-          },
-        },
-        {
-          text: "Remove",
-          icon: trashOutline,
-          handler: () => {
-            (async () => {
-              await dispatch(modRemoveComment(comment.id, true));
+                  presentToast(commentApproved);
+                })();
+              },
+            }
+          : undefined,
+        !comment.removed
+          ? {
+              text: "Remove",
+              icon: trashOutline,
+              handler: () => {
+                (async () => {
+                  await dispatch(modRemoveComment(comment.id, true));
 
-              presentToast(commentRemoved);
-            })();
-          },
-        },
+                  presentToast(commentRemoved);
+                })();
+              },
+            }
+          : {
+              text: "Restore",
+              icon: checkmarkCircleOutline,
+              handler: () => {
+                (async () => {
+                  await dispatch(modRemoveComment(comment.id, false));
+
+                  presentToast(commentApproved);
+                })();
+              },
+            },
         {
           text: "Comment Nuke",
           icon: colorWandOutline,
