@@ -146,6 +146,7 @@ export default function Video({
           if (!showProgress) return;
           setProgress(e.target.currentTime / e.target.duration);
         }}
+        onClick={(e) => e.stopPropagation()}
       />
       {showProgress && <Progress value={progress} />}
     </Container>
