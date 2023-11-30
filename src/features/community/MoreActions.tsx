@@ -10,6 +10,7 @@ import {
   tabletPortraitOutline,
   eyeOffOutline,
   shareOutline,
+  bandageOutline,
 } from "ionicons/icons";
 import { useState } from "react";
 import useHidePosts from "../feed/useHidePosts";
@@ -61,6 +62,7 @@ function MoreActionsActionSheet({
     isFavorite,
     subscribe,
     block,
+    modlog,
     post,
     sidebar,
     favorite,
@@ -119,6 +121,14 @@ function MoreActionsActionSheet({
           icon: shareOutline,
           handler: () => {
             share();
+          },
+        },
+        {
+          text: "Modlog",
+          data: "modlog",
+          icon: bandageOutline,
+          handler: () => {
+            modlog();
           },
         },
         {
