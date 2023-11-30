@@ -27,7 +27,7 @@ import {
   jwtIssSelector,
   jwtSelector,
 } from "./features/auth/authSlice";
-import { useContext, useEffect, useMemo } from "react";
+import { forwardRef, useContext, useEffect, useMemo } from "react";
 import { getDefaultServer } from "./services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
 import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
@@ -42,8 +42,14 @@ const ProfileLabel = styled(IonLabel)`
   max-width: 20vw;
 `;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function TabBar(_: { slot: "bottom" }) {
+type CustomTabBarType = typeof IonTabBar & {
+  /**
+   * Signal to Ionic that this is a tab bar component
+   */
+  isTabBar?: boolean;
+};
+
+const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const location = useLocation();
   const router = useOptimizedIonRouter();
 
@@ -153,7 +159,7 @@ export default function TabBar(_: { slot: "bottom" }) {
   }
 
   return (
-    <IonTabBar>
+    <IonTabBar {...props} ref={ref}>
       <IonTabButton
         disabled={isPostsButtonDisabled}
         tab="posts"
@@ -203,6 +209,8 @@ export default function TabBar(_: { slot: "bottom" }) {
       </IonTabButton>
     </IonTabBar>
   );
-}
+});
 
 TabBar.isTabBar = true;
+
+export default TabBar;
