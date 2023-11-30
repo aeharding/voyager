@@ -212,8 +212,8 @@ devDependencies:
     specifier: ^22.1.0
     version: 22.1.0
   lemmy-js-client:
-    specifier: 0.19.0-alpha.18
-    version: 0.19.0-alpha.18
+    specifier: 0.19.0-rc.19
+    version: 0.19.0-rc.19
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -7710,8 +7710,8 @@ packages:
       package-json: 8.1.1
     dev: true
 
-  /lemmy-js-client@0.19.0-alpha.18:
-    resolution: {integrity: sha512-cKJfKKnjK+ijk0Yd6ydtne3Y4FILp2RbQg05pCru9n6PCyPAa85eQL4QxPB1PPed20ckSZRcHLcnr/bYFDgpaw==}
+  /lemmy-js-client@0.19.0-rc.19:
+    resolution: {integrity: sha512-kae8V33QixbyYIA+pn7+sCeOOWL3eRgnFaNkZU8Y8vxhwZExIhkZus9jzVt/BoyPddVlafyBHxgAUsWXLA4tRA==}
     dependencies:
       cross-fetch: 3.1.8
       form-data: 4.0.0
