@@ -15,7 +15,7 @@ import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { CommentSortType, CommentView, Person } from "lemmy-js-client";
+import { CommentSortType, CommentView } from "lemmy-js-client";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { receivedComments } from "./commentSlice";
@@ -79,13 +79,12 @@ interface CommentsProps {
   postId: number;
   commentPath?: string;
   threadCommentId?: string;
-  op: Person;
   sort: CommentSortType;
   bottomPadding?: number;
 }
 
 export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
-  { header, postId, commentPath, op, sort, bottomPadding, threadCommentId },
+  { header, postId, commentPath, sort, bottomPadding, threadCommentId },
   ref,
 ) {
   const dispatch = useAppDispatch();
@@ -367,6 +366,8 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     [commentPath, threadCommentId],
   );
 
+  const getComments = useCallback(() => comments, [comments]);
+
   function appendComments(comments: CommentView[]) {
     setComments((existingComments) =>
       uniqBy([...existingComments, ...comments], (c) => c.comment.id),
@@ -388,7 +389,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         highlightedCommentId={highlightedCommentId}
         key={comment.comment_view.comment.id}
         first={index === 0}
-        op={op}
         rootIndex={index + 1} /* Plus header index = 0 */
         baseDepth={
           commentPath
@@ -402,7 +402,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       tree.unshift(<LoadParentComments setMaxContext={setMaxContext} />);
 
     return tree;
-  }, [commentTree, highlightedCommentId, op, commentPath, maxContext]);
+  }, [commentTree, highlightedCommentId, commentPath, maxContext]);
 
   const padding = bottomPadding ? (
     <div style={{ height: `${bottomPadding}px` }} />
@@ -428,8 +428,9 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       refresh: () => fetchComments(true),
       appendComments,
       prependComments,
+      getComments,
     }),
-    [fetchComments, prependComments],
+    [fetchComments, prependComments, getComments],
   );
 
   return (

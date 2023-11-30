@@ -301,7 +301,6 @@ export default function PostDetail({
         postId={post.post.id}
         commentPath={commentPath}
         threadCommentId={threadCommentId}
-        op={post.creator}
         sort={sort}
         bottomPadding={bottomPadding}
       />

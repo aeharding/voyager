@@ -9,9 +9,6 @@ const config: CapacitorConfig = {
     androidScheme: "https",
   },
   plugins: {
-    CapacitorHttp: {
-      enabled: true,
-    },
     Keyboard: {
       resizeOnFullScreen: true,
       resize: KeyboardResize.None,

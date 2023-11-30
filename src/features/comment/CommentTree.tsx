@@ -4,7 +4,6 @@ import React, { useMemo } from "react";
 import CommentHr from "./CommentHr";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { updateCommentCollapseState } from "./commentSlice";
-import { Person } from "lemmy-js-client";
 import CommentExpander from "./CommentExpander";
 import { OTapToCollapseType } from "../../services/db";
 import { getOffsetTop, scrollIntoView } from "../../helpers/dom";
@@ -16,7 +15,6 @@ interface CommentTreeProps {
   comment: CommentNodeI;
   highlightedCommentId?: number;
   first?: boolean;
-  op: Person;
   fullyCollapsed?: boolean;
   rootIndex: number;
   baseDepth: number;
@@ -26,7 +24,6 @@ export default function CommentTree({
   comment,
   highlightedCommentId,
   first,
-  op,
   fullyCollapsed,
   rootIndex,
   baseDepth,
@@ -116,7 +113,6 @@ export default function CommentTree({
         key={comment.comment_view.comment.id}
         highlightedCommentId={highlightedCommentId}
         comment={comment}
-        op={op}
         fullyCollapsed={collapsed || fullyCollapsed}
         rootIndex={rootIndex}
         baseDepth={baseDepth}

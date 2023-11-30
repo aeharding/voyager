@@ -22,8 +22,8 @@ export default function DeviceModeSettingsPage() {
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton
-              defaultHref="/settings/appearance"
-              text="Appearance"
+              defaultHref="/settings/appearance/theme"
+              text="Theme"
             />
           </IonButtons>
 

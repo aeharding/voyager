@@ -18,6 +18,9 @@ import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
 import SelectTextModal from "../../pages/shared/SelectTextModal";
+import ShareAsImageModal, {
+  ShareAsImageData,
+} from "../share/asImage/ShareAsImageModal";
 
 interface IPageContext {
   // used for ion presentingElement
@@ -50,6 +53,8 @@ interface IPageContext {
   presentPostEditor: (postOrCommunity: PostView | string) => void;
 
   presentSelectText: (text: string) => void;
+
+  presentShareAsImage: (comment: CommentView, comments: CommentView[]) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -60,6 +65,7 @@ export const PageContext = createContext<IPageContext>({
   presentReport: () => {},
   presentPostEditor: () => {},
   presentSelectText: () => {},
+  presentShareAsImage: () => {},
 });
 
 interface PageContextProvider {
@@ -73,13 +79,41 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     onDismiss: (data: string, role: string) => onDismissLogin(data, role),
   });
   const reportRef = useRef<ReportHandle>(null);
+  const shareAsImageDataRef = useRef<ShareAsImageData | null>(null);
+
+  const [presentShareAsImageModal, onDismissShareAsImageModal] = useIonModal(
+    ShareAsImageModal,
+    {
+      dataRef: shareAsImageDataRef,
+      onDismiss: (data: string, role: string) =>
+        onDismissShareAsImageModal(data, role),
+    },
+  );
 
   const presentLoginIfNeeded = useCallback(() => {
     if (jwt) return false;
 
-    presentLogin({ presentingElement: value.pageRef?.current ?? undefined });
+    presentLogin({
+      presentingElement: value.pageRef?.current ?? undefined,
+    });
     return true;
   }, [jwt, presentLogin, value.pageRef]);
+
+  const presentShareAsImage = useCallback(
+    (comment: CommentView, comments: CommentView[]) => {
+      shareAsImageDataRef.current = {
+        comment,
+        comments,
+      };
+      presentShareAsImageModal({
+        cssClass: "save-as-image-modal",
+        initialBreakpoint: 1,
+        breakpoints: [0, 1],
+        handle: false,
+      });
+    },
+    [presentShareAsImageModal],
+  );
 
   // Comment reply start
   const commentReplyItem = useRef<CommentReplyItem>();
@@ -150,6 +184,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentReport,
       presentPostEditor,
       presentSelectText,
+      presentShareAsImage,
     }),
     [
       presentCommentEdit,
@@ -158,6 +193,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentPostEditor,
       presentReport,
       presentSelectText,
+      presentShareAsImage,
       value,
     ],
   );
