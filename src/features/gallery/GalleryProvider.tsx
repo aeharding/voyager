@@ -3,6 +3,7 @@ import React, {
   createContext,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -252,8 +253,10 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
     [dispatch],
   );
 
+  const value = useMemo(() => ({ open, close }), [close, open]);
+
   return (
-    <GalleryContext.Provider value={{ open, close }}>
+    <GalleryContext.Provider value={value}>
       {actionContainer !== null &&
         post &&
         createPortal(

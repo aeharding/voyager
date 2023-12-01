@@ -15,10 +15,12 @@ import {
   buildStickied,
   postApproved,
   postRemoved,
+  postRestored,
 } from "../../helpers/toastMessages";
 import useAppToast from "../../helpers/useAppToast";
-import { reportsByPostIdSelector } from "./modSlice";
+import { reportsByPostIdSelector, resolvePostReport } from "./modSlice";
 import { groupBy, values } from "lodash";
+import { notEmpty } from "../../helpers/array";
 
 export default function usePostModActions(post: PostView) {
   const dispatch = useAppDispatch();
@@ -35,28 +37,42 @@ export default function usePostModActions(post: PostView) {
       cssClass: `${role} left-align-buttons report-reasons`,
       header: stringifyReports(reports),
       buttons: [
-        {
-          text: "Approve",
-          icon: checkmarkCircleOutline,
-          handler: () => {
-            (async () => {
-              await dispatch(modRemovePost(post.post.id, false));
+        !post.post.removed && reports?.length
+          ? {
+              text: "Approve",
+              icon: checkmarkCircleOutline,
+              handler: () => {
+                (async () => {
+                  await dispatch(resolvePostReport(post.post.id));
 
-              presentToast(postApproved);
-            })();
-          },
-        },
-        {
-          text: "Remove",
-          icon: trashOutline,
-          handler: () => {
-            (async () => {
-              await dispatch(modRemovePost(post.post.id, true));
+                  presentToast(postApproved);
+                })();
+              },
+            }
+          : undefined,
+        !post.post.removed
+          ? {
+              text: "Remove",
+              icon: trashOutline,
+              handler: () => {
+                (async () => {
+                  await dispatch(modRemovePost(post.post.id, true));
 
-              presentToast(postRemoved);
-            })();
-          },
-        },
+                  presentToast(postRemoved);
+                })();
+              },
+            }
+          : {
+              text: "Restore",
+              icon: checkmarkCircleOutline,
+              handler: () => {
+                (async () => {
+                  await dispatch(modRemovePost(post.post.id, false));
+
+                  presentToast(postRestored);
+                })();
+              },
+            },
         {
           text: !post.post.featured_community ? "Sticky" : "Unsticky",
           icon: megaphoneOutline,
@@ -85,7 +101,7 @@ export default function usePostModActions(post: PostView) {
           text: "Cancel",
           role: "cancel",
         },
-      ],
+      ].filter(notEmpty),
     });
   };
 }

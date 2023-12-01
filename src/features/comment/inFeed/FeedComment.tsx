@@ -2,8 +2,8 @@ import { CommentView } from "lemmy-js-client";
 import Comment from "../Comment";
 import PostContext from "../../user/PostContext";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useIonRouter } from "@ionic/react";
 import { getHandle } from "../../../helpers/lemmy";
+import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
 interface FeedCommentProps {
   comment: CommentView;
@@ -17,7 +17,7 @@ export default function FeedComment({
   modqueue,
 }: FeedCommentProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
 
   return (
     <Comment

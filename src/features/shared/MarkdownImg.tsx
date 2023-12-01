@@ -22,7 +22,13 @@ export default function MarkdownImg({ small, ...props }: MarkdownImgProps) {
 
   if (props.src && isUrlVideo(props.src))
     return (
-      <Video src={props.src} progress={false} css={sharedStyles} {...props} />
+      <Video
+        src={props.src}
+        progress={false}
+        css={sharedStyles}
+        controls={!small}
+        {...props}
+      />
     );
 
   return <GalleryImg {...props} css={sharedStyles} animationType="zoom" />;

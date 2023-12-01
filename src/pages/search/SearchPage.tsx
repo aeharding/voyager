@@ -1,16 +1,11 @@
-import {
-  IonHeader,
-  IonPage,
-  IonSearchbar,
-  IonToolbar,
-  useIonRouter,
-} from "@ionic/react";
+import { IonHeader, IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { createRef, useState } from "react";
 import { css } from "@emotion/react";
 import TrendingCommunities from "../../features/search/TrendingCommunities";
 import SearchOptions from "../../features/search/SearchOptions";
 import useLemmyUrlHandler from "../../features/shared/useLemmyUrlHandler";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 // eslint-disable-next-line no-undef -- I can't work out where to import this type from
 const searchBarRef = createRef<HTMLIonSearchbarElement>();
@@ -22,7 +17,7 @@ export const focusSearchBar = () => searchBarRef.current?.setFocus();
 
 export default function SearchPage() {
   const [search, setSearch] = useState("");
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
 
   return (

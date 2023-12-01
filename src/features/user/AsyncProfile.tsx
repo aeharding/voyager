@@ -4,7 +4,6 @@ import {
   IonRefresherContent,
   IonSpinner,
   useIonAlert,
-  useIonRouter,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
 import Profile from "../../features/user/Profile";
@@ -14,6 +13,7 @@ import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { OldLemmyErrorValue, isLemmyError } from "../../helpers/lemmy";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
@@ -38,7 +38,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
   const [person, setPerson] = useState<
     GetPersonDetailsResponse | "failed" | undefined
   >();
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const [present] = useIonAlert();
 
   useEffect(() => {

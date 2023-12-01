@@ -18,12 +18,12 @@ import { close } from "ionicons/icons";
 import { useCallback, useEffect, useState } from "react";
 import { VList } from "virtua";
 
-const TransparentIonToolbar = styled(IonToolbar)`
+export const TransparentIonToolbar = styled(IonToolbar)`
   --background: none;
   --border-width: 0 !important;
 `;
 
-const CloseButton = styled(IonButton)`
+export const CloseButton = styled(IonButton)`
   border-radius: 50%;
   background: rgba(180, 180, 180, 0.2);
 `;

@@ -4,7 +4,6 @@ import {
   IonPage,
   IonSearchbar,
   IonToolbar,
-  useIonRouter,
 } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
@@ -12,7 +11,14 @@ import AppBackButton from "../../features/shared/AppBackButton";
 import PostSort from "../../features/feed/PostSort";
 import MoreActions from "../../features/community/MoreActions";
 import { useAppSelector } from "../../store";
-import { createContext, useCallback, useRef, useState } from "react";
+import {
+  createContext,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
@@ -31,6 +37,7 @@ import { css } from "@emotion/react";
 import CommunitySearchResults from "../../features/community/search/CommunitySearchResults";
 import { getSortDuration } from "../../features/feed/endItems/EndPost";
 import ModActions from "../../features/community/mod/ModActions";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -109,16 +116,26 @@ const CommunitySearchbar = styled(IonSearchbar)`
   min-height: 0;
 `;
 
+interface CommunityPageParams {
+  community: string;
+  actor: string;
+}
+
 export default function CommunityPage() {
+  const { community, actor } = useParams<CommunityPageParams>();
+
+  return <CommunityPageContent community={community} actor={actor} />;
+}
+
+const CommunityPageContent = memo(function CommunityPageContent({
+  community,
+  actor,
+}: CommunityPageParams) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { community, actor } = useParams<{
-    community: string;
-    actor: string;
-  }>();
   const [scrolledPastSearch, setScrolledPastSearch] = useState(false);
   const [_searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
 
   const searchOpen = searchQuery || _searchOpen;
 
@@ -143,6 +160,24 @@ export default function CommunityPage() {
     [client, community, sort],
   );
 
+  const feedSearchContextValue = useMemo(() => ({ setScrolledPastSearch }), []);
+
+  const header = useMemo(
+    () =>
+      !searchOpen ? (
+        <HeaderContainer>
+          <CommunitySearchbar
+            placeholder={`Search c/${community}`}
+            onFocus={() => {
+              setSearchOpen(true);
+              searchbarRef.current?.setFocus();
+            }}
+          />
+        </HeaderContainer>
+      ) : undefined,
+    [community, searchOpen],
+  );
+
   if (community.includes("@") && community.split("@")[1] === actor)
     return (
       <Redirect
@@ -152,25 +187,13 @@ export default function CommunityPage() {
     );
 
   const feed = (
-    <FeedSearchContext.Provider value={{ setScrolledPastSearch }}>
+    <FeedSearchContext.Provider value={feedSearchContextValue}>
       <PostCommentFeed
         fetchFn={fetchFn}
         communityName={community}
         sortDuration={getSortDuration(sort)}
         autoHideIfConfigured
-        header={
-          !searchOpen ? (
-            <HeaderContainer>
-              <CommunitySearchbar
-                placeholder={`Search c/${community}`}
-                onFocus={() => {
-                  setSearchOpen(true);
-                  searchbarRef.current?.setFocus();
-                }}
-              />
-            </HeaderContainer>
-          ) : undefined
-        }
+        header={header}
       />
     </FeedSearchContext.Provider>
   );
@@ -244,7 +267,7 @@ export default function CommunityPage() {
       </TitleSearchProvider>
     </FeedContextProvider>
   );
-}
+});
 
 interface IFeedSearchContext {
   setScrolledPastSearch: (scrolled: boolean) => void;

@@ -8,10 +8,9 @@ import {
   IonList,
 } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useParams } from "react-router";
 import { useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
-import { useMemo, useRef } from "react";
+import { memo, useMemo, useRef } from "react";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../../helpers/array";
 import { getHandle } from "../../../helpers/lemmy";
@@ -66,9 +65,12 @@ const StyledVList = styled(VList)`
   }
 `;
 
-export default function CommunitiesList() {
+interface CommunitiesListParams {
+  actor: string;
+}
+
+function CommunitiesList({ actor }: CommunitiesListParams) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { actor } = useParams<{ actor: string }>();
   const jwt = useAppSelector(jwtSelector);
 
   const virtuaRef = useRef<VListHandle>(null);
@@ -268,3 +270,5 @@ export default function CommunitiesList() {
     </>
   );
 }
+
+export default memo(CommunitiesList);

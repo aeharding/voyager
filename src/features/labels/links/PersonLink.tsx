@@ -8,9 +8,40 @@ import { StyledLink } from "./shared";
 import { useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
 import AgeBadge from "./AgeBadge";
+import { useContext } from "react";
+import { ShareImageContext } from "../../share/asImage/ShareAsImage";
 
 const Prefix = styled.span`
   font-weight: normal;
+`;
+
+const PersonLinkEl = styled(StyledLink, {
+  shouldForwardProp: (prop) => prop !== "hideUsername",
+})<{
+  color: string | undefined;
+  hideUsername: boolean;
+}>`
+  ${({ color }) =>
+    color
+      ? css`
+          && {
+            color: ${color};
+          }
+        `
+      : undefined}
+
+  ${({ hideUsername }) =>
+    hideUsername &&
+    css`
+      position: relative;
+
+      &:after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--ion-color-step-150, #ccc);
+      }
+    `}
 `;
 
 interface PersonLinkProps {
@@ -37,6 +68,7 @@ export default function PersonLink({
   const isAdmin = useAppSelector((state) => state.auth.site?.admins)?.some(
     (admin) => admin.person.actor_id === person.actor_id,
   );
+  const { hideUsernames } = useContext(ShareImageContext);
 
   let color: string | undefined;
 
@@ -50,19 +82,12 @@ export default function PersonLink({
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
   return (
-    <StyledLink
+    <PersonLinkEl
       to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
       onClick={(e) => e.stopPropagation()}
       className={className}
-      css={
-        color
-          ? css`
-              && {
-                color: ${color};
-              }
-            `
-          : undefined
-      }
+      hideUsername={hideUsernames}
+      color={color}
     >
       {prefix ? (
         <>
@@ -79,6 +104,6 @@ export default function PersonLink({
           <AgeBadge published={person.published} />
         </>
       )}
-    </StyledLink>
+    </PersonLinkEl>
   );
 }
