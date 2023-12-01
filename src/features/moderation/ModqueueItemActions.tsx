@@ -9,11 +9,14 @@ import useAppToast from "../../helpers/useAppToast";
 import {
   commentApproved,
   commentRemoved,
+  commentRestored,
   postApproved,
   postRemoved,
+  postRestored,
 } from "../../helpers/toastMessages";
 import useCanModerate, { getModColor } from "./useCanModerate";
 import { ActionButton } from "../post/actions/ActionButton";
+import { resolveCommentReport, resolvePostReport } from "./modSlice";
 
 interface ModqueueItemActionsProps {
   item: PostView | CommentView;
@@ -26,19 +29,34 @@ export default function ModqueueItemActions({
   const presentToast = useAppToast();
   const canModerate = useCanModerate(item.community);
 
-  async function modRemoveItem(removed: boolean) {
+  async function modRemoveItem(remove: boolean) {
     const id = isPost(item) ? item.post.id : item.comment.id;
+    const isAlreadyRemoved = isPost(item)
+      ? item.post.removed
+      : item.comment.removed;
+
+    // If removal status already in the state you want, just resolve reports
+    if (remove === isAlreadyRemoved) {
+      const action = isPost(item) ? resolvePostReport : resolveCommentReport;
+      await dispatch(action(id));
+
+      if (remove) presentToast(isPost(item) ? postRemoved : commentRemoved);
+      else presentToast(isPost(item) ? postApproved : commentApproved);
+
+      return;
+    }
+
     const action = isPost(item) ? modRemovePost : modRemoveComment;
 
-    await dispatch(action(id, removed));
+    await dispatch(action(id, remove));
 
     const toastMessage = (() => {
-      if (removed) {
+      if (remove) {
         if (isPost(item)) return postRemoved;
         else return commentRemoved;
       } else {
-        if (isPost(item)) return postApproved;
-        else return commentApproved;
+        if (isPost(item)) return postRestored;
+        else return commentRestored;
       }
     })();
 

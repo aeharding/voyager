@@ -178,18 +178,21 @@ export default function PostDetail({
     [],
   );
 
-  function renderMedia() {
+  const renderMedia = useCallback(() => {
     if (!post) return;
 
     if ((post.post.url && isUrlMedia(post.post.url)) || markdownLoneImage) {
       return <LightboxPostMedia post={post} controls />;
     }
-  }
+  }, [markdownLoneImage, post]);
 
-  function renderText() {
+  const renderText = useCallback(() => {
     if (!post) return;
 
-    if (post.post.body && !markdownLoneImage) {
+    const usedLoneImage =
+      markdownLoneImage && (!post.post.url || !isUrlMedia(post.post.url));
+
+    if (post.post.body && !usedLoneImage) {
       return (
         <>
           {post.post.url && !isUrlMedia(post.post.url) && <Embed post={post} />}
@@ -201,71 +204,83 @@ export default function PostDetail({
     if (post.post.url && !isUrlMedia(post.post.url)) {
       return <StyledEmbed post={post} />;
     }
-  }
+  }, [markdownLoneImage, post]);
 
-  function renderHeader(post: PostView) {
-    return (
-      <ModeratableItem itemView={post}>
-        <BorderlessIonItem
-          onClick={(e) => {
-            if (e.target instanceof HTMLElement && e.target.nodeName === "A")
-              return;
-
-            if (
-              tapToCollapse === OTapToCollapseType.Neither ||
-              tapToCollapse === OTapToCollapseType.OnlyComments
-            )
-              return;
-
-            setCollapsed(!collapsed);
-          }}
-        >
-          <Container>
-            <div onClick={(e) => e.stopPropagation()}>{renderMedia()}</div>
-            <PostDeets>
-              <ModeratableItemBannerOutlet />
-              <div>
-                <Title ref={titleRef}>
-                  <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
-                  {isNsfw(post) && <Nsfw />}
-                </Title>
-                {!collapsed && renderText()}
-                <By>
-                  {post.post.featured_community || post.post.featured_local ? (
-                    <AnnouncementIcon icon={megaphone} />
-                  ) : undefined}
-                  <CommunityLink
-                    community={post.community}
-                    showInstanceWhenRemote
-                    subscribed={post.subscribed}
-                  />{" "}
-                  <PersonLink person={post.creator} prefix="by" />
-                </By>
-                <Stats post={post} />
-                {post.post.locked && <Locked />}
-              </div>
-            </PostDeets>
-          </Container>
-        </BorderlessIonItem>
-        <BorderlessIonItem>
-          <PostActions
-            post={post}
-            onReply={async () => {
-              if (presentLoginIfNeeded()) return;
-              if (post.post.locked) {
-                presentToast(postLocked);
+  const renderHeader = useCallback(
+    (post: PostView) => {
+      return (
+        <ModeratableItem itemView={post}>
+          <BorderlessIonItem
+            onClick={(e) => {
+              if (e.target instanceof HTMLElement && e.target.nodeName === "A")
                 return;
-              }
 
-              const reply = await presentCommentReply(post);
+              if (
+                tapToCollapse === OTapToCollapseType.Neither ||
+                tapToCollapse === OTapToCollapseType.OnlyComments
+              )
+                return;
 
-              if (reply) commentsRef.current?.prependComments([reply]);
+              setCollapsed(!collapsed);
             }}
-          />
-        </BorderlessIonItem>
-      </ModeratableItem>
-    );
-  }
+          >
+            <Container>
+              <div onClick={(e) => e.stopPropagation()}>{renderMedia()}</div>
+              <PostDeets>
+                <ModeratableItemBannerOutlet />
+                <div>
+                  <Title ref={titleRef}>
+                    <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+                    {isNsfw(post) && <Nsfw />}
+                  </Title>
+                  {!collapsed && renderText()}
+                  <By>
+                    {post.post.featured_community ||
+                    post.post.featured_local ? (
+                      <AnnouncementIcon icon={megaphone} />
+                    ) : undefined}
+                    <CommunityLink
+                      community={post.community}
+                      showInstanceWhenRemote
+                      subscribed={post.subscribed}
+                    />{" "}
+                    <PersonLink person={post.creator} prefix="by" />
+                  </By>
+                  <Stats post={post} />
+                  {post.post.locked && <Locked />}
+                </div>
+              </PostDeets>
+            </Container>
+          </BorderlessIonItem>
+          <BorderlessIonItem>
+            <PostActions
+              post={post}
+              onReply={async () => {
+                if (presentLoginIfNeeded()) return;
+                if (post.post.locked) {
+                  presentToast(postLocked);
+                  return;
+                }
+
+                const reply = await presentCommentReply(post);
+
+                if (reply) commentsRef.current?.prependComments([reply]);
+              }}
+            />
+          </BorderlessIonItem>
+        </ModeratableItem>
+      );
+    },
+    [
+      collapsed,
+      presentCommentReply,
+      presentLoginIfNeeded,
+      presentToast,
+      renderMedia,
+      renderText,
+      tapToCollapse,
+    ],
+  );
 
   const bottomPadding: number = (() => {
     if (commentPath) return viewAllCommentsSpace + 12;
@@ -289,7 +304,6 @@ export default function PostDetail({
         postId={post.post.id}
         commentPath={commentPath}
         threadCommentId={threadCommentId}
-        op={post.creator}
         sort={sort}
         bottomPadding={bottomPadding}
       />

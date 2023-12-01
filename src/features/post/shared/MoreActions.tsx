@@ -1,9 +1,4 @@
-import {
-  IonButton,
-  IonIcon,
-  useIonActionSheet,
-  useIonRouter,
-} from "@ionic/react";
+import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
 import {
   arrowDownOutline,
   arrowUndoOutline,
@@ -48,6 +43,7 @@ import {
 import useAppToast from "../../../helpers/useAppToast";
 import usePostModActions from "../../moderation/usePostModActions";
 import useCanModerate, { getModIcon } from "../../moderation/useCanModerate";
+import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
 interface MoreActionsProps {
   post: PostView;
@@ -70,7 +66,7 @@ export default function MoreActions({
   );
   const myHandle = useAppSelector(handleSelector);
 
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
 
   const {
     presentLoginIfNeeded,

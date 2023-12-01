@@ -233,3 +233,36 @@ ion-toast.center::part(container) {
 .action-sheet-group.sc-ion-action-sheet-ios:first-child {
   margin-top: min(15vh, 70px);
 }
+
+#share-as-image-root {
+  font-size: 16px;
+
+  --width: 330px;
+
+  position: absolute;
+  width: var(--width);
+  right: calc(var(--width) * -1);
+
+  a {
+    /* Hack for long links breaking */
+    word-break: break-word;
+  }
+}
+
+#share-as-image-root ion-item {
+  font-size: 16px;
+}
+
+#share-as-image-root button {
+  display: none;
+}
+
+ion-modal.save-as-image-modal {
+  --height: auto;
+  --max-width: 470px;
+}
+
+#share-as-image-root img:not(.allowed-image),
+#share-as-image-root video {
+  display: none;
+}

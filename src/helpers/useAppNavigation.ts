@@ -1,4 +1,3 @@
-import { useIonRouter } from "@ionic/react";
 import {
   CommentView,
   CommunityView,
@@ -11,15 +10,16 @@ import { useBuildGeneralBrowseLink } from "./routes";
 import { useCallback } from "react";
 import useAppToast from "./useAppToast";
 import { checkmark } from "ionicons/icons";
+import { useOptimizedIonRouter } from "./useOptimizedIonRouter";
 
 export default function useAppNavigation() {
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const presentToast = useAppToast();
 
   const pushRouteIfNeeded = useCallback(
     (route: string) => {
-      if (router.routeInfo.pathname === route) {
+      if (router.getRouteInfo()?.pathname === route) {
         presentToast({
           message: "You're already here!",
           position: "top",

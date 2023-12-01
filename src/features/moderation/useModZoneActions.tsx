@@ -1,4 +1,4 @@
-import { useIonActionSheet, useIonRouter } from "@ionic/react";
+import { useIonActionSheet } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import {
   chatbubbleOutline,
@@ -9,6 +9,7 @@ import { CommunityView } from "lemmy-js-client";
 import useCanModerate from "./useCanModerate";
 import { getFeedUrlName } from "../community/mod/ModActions";
 import { notEmpty } from "../../helpers/array";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 export interface CommunityUseModZoneActionsProps {
   community: CommunityView | undefined;
@@ -25,7 +26,7 @@ export type UseModZoneActionsProps =
 
 export default function useModZoneActions(props: UseModZoneActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const role = useCanModerate(
     "communityHandle" in props ? props.community?.community : true,

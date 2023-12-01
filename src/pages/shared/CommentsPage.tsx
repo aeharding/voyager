@@ -7,7 +7,7 @@ import {
 } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
 import AppBackButton from "../../features/shared/AppBackButton";
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
@@ -28,7 +28,7 @@ type CommentsPageProps =
       communityName: string;
     };
 
-export default function CommentsPage(props: CommentsPageProps) {
+function CommentsPage(props: CommentsPageProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
@@ -83,3 +83,5 @@ export default function CommentsPage(props: CommentsPageProps) {
     </FeedContextProvider>
   );
 }
+
+export default memo(CommentsPage);

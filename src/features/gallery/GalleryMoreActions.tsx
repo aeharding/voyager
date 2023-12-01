@@ -1,4 +1,4 @@
-import { IonIcon, useIonActionSheet, useIonRouter } from "@ionic/react";
+import { IonIcon, useIonActionSheet } from "@ionic/react";
 import {
   bookmarkOutline,
   copyOutline,
@@ -23,6 +23,7 @@ import { StashMedia } from "capacitor-stash-media";
 import { isNative } from "../../helpers/device";
 import { Share } from "@capacitor/share";
 import useAppToast from "../../helpers/useAppToast";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 interface GalleryMoreActionsProps {
   post: PostView;
@@ -33,7 +34,7 @@ export default function GalleryMoreActions({
   post,
   imgSrc,
 }: GalleryMoreActionsProps) {
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const [presentActionSheet] = useIonActionSheet();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 

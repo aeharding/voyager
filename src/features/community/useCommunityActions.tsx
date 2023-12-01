@@ -3,7 +3,7 @@ import { useContext, useMemo } from "react";
 import { PageContext } from "../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { checkIsMod, getHandle } from "../../helpers/lemmy";
-import { useIonActionSheet, useIonRouter } from "@ionic/react";
+import { useIonActionSheet } from "@ionic/react";
 import {
   isAdminSelector,
   localUserSelector,
@@ -25,6 +25,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useAppToast from "../../helpers/useAppToast";
 import { db } from "../../services/db";
 import { Share } from "@capacitor/share";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 /**
  *
@@ -42,7 +43,7 @@ export default function useCommunityActions(
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle,
   );
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
 

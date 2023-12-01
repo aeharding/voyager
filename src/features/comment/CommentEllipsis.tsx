@@ -4,13 +4,13 @@ import {
   IonIcon,
   IonLoading,
   useIonActionSheet,
-  useIonRouter,
 } from "@ionic/react";
 import {
   arrowDownOutline,
   arrowUndoOutline,
   arrowUpOutline,
   bookmarkOutline,
+  cameraOutline,
   chevronCollapseOutline,
   ellipsisHorizontal,
   flagOutline,
@@ -50,6 +50,7 @@ import useAppToast from "../../helpers/useAppToast";
 import { ModeratorRole, getModIcon } from "../moderation/useCanModerate";
 import useCommentModActions from "../moderation/useCommentModActions";
 import { ActionButton } from "../post/actions/ActionButton";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 const StyledIonIcon = styled(IonIcon)`
   font-size: 1.2em;
@@ -70,7 +71,7 @@ export default function MoreActions({
 }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const { prependComments } = useContext(CommentsContext);
+  const { prependComments, getComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
@@ -79,7 +80,7 @@ export default function MoreActions({
 
   const commentById = useAppSelector((state) => state.comment.commentById);
 
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
 
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentById[commentView.comment.id] ?? commentView.comment;
@@ -90,6 +91,7 @@ export default function MoreActions({
     presentCommentEdit,
     presentReport,
     presentSelectText,
+    presentShareAsImage,
   } = useContext(PageContext);
 
   const commentVotesById = useAppSelector(
@@ -264,6 +266,17 @@ export default function MoreActions({
             share(comment);
           },
         },
+        rootIndex !== undefined
+          ? {
+              text: "Share as image...",
+              icon: cameraOutline,
+              handler: () => {
+                const comments = getComments();
+                if (!comments) return;
+                presentShareAsImage(commentView, comments);
+              },
+            }
+          : undefined,
         rootIndex !== undefined
           ? {
               text: "Collapse to Top",

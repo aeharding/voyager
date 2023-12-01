@@ -11,6 +11,9 @@ project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacito
 include ':capacitor-browser'
 project(':capacitor-browser').projectDir = new File('../node_modules/.pnpm/@capacitor+browser@5.1.0_@capacitor+core@5.2.3/node_modules/@capacitor/browser/android')
 
+include ':capacitor-filesystem'
+project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@5.1.4_@capacitor+core@5.2.3/node_modules/@capacitor/filesystem/android')
+
 include ':capacitor-haptics'
 project(':capacitor-haptics').projectDir = new File('../node_modules/.pnpm/voyager-capacitor-haptics@5.0.7_@capacitor+core@5.2.3/node_modules/voyager-capacitor-haptics/android')
 
@@ -36,7 +39,7 @@ include ':capacitor-plugin-safe-area'
 project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@2.0.5_@capacitor+core@5.2.3/node_modules/capacitor-plugin-safe-area/android')
 
 include ':capacitor-stash-media'
-project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@0.0.7_@capacitor+core@5.2.3/node_modules/capacitor-stash-media/android')
+project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@1.0.0_@capacitor+core@5.2.3/node_modules/capacitor-stash-media/android')
 
 include ':capacitor-tips'
 project(':capacitor-tips').projectDir = new File('../node_modules/.pnpm/capacitor-tips@0.0.2_@capacitor+core@5.2.3/node_modules/capacitor-tips/android')

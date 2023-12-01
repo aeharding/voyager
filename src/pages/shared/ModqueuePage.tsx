@@ -7,7 +7,7 @@ import {
 } from "@ionic/react";
 import { FetchFn, isFirstPage } from "../../features/feed/Feed";
 import AppBackButton from "../../features/shared/AppBackButton";
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import useClient from "../../helpers/useClient";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import FeedContent from "./FeedContent";
@@ -45,17 +45,21 @@ export default function ModqueuePage() {
   return <ModqueueByCommunityName communityName={community} />;
 }
 
-function GlobalModqueue() {
+const GlobalModqueue = memo(function GlobalModqueue() {
   return <ModqueueByCommunity />;
-}
+});
 
-function ModqueueByCommunityName({ communityName }: { communityName: string }) {
+const ModqueueByCommunityName = memo(function ModqueueByCommunityName({
+  communityName,
+}: {
+  communityName: string;
+}) {
   const community = useFetchCommunity(communityName);
 
   if (!community) return <CenteredSpinner />;
 
   return <ModqueueByCommunity community={community.community} />;
-}
+});
 
 function ModqueueByCommunity({ community }: { community?: Community }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -152,6 +156,7 @@ function convertPostReportToPost(postReport: PostReportView): PostView {
     // The below is mocked because properties are not available.
     // See: https://github.com/LemmyNet/lemmy/issues/4200
     creator_is_moderator: false,
+    creator_is_admin: false,
     subscribed: "NotSubscribed",
     saved: false,
     read: false,
@@ -169,6 +174,7 @@ function convertCommentReportToComment(
     // The below is mocked because properties are not available.
     // See: https://github.com/LemmyNet/lemmy/issues/4200
     creator_is_moderator: false,
+    creator_is_admin: false,
     creator_blocked: false,
     subscribed: "NotSubscribed",
     saved: false,

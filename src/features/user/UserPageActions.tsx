@@ -1,4 +1,4 @@
-import { IonActionSheet, IonButton, IonIcon, useIonRouter } from "@ionic/react";
+import { IonActionSheet, IonButton, IonIcon } from "@ionic/react";
 import {
   ellipsisHorizontal,
   mailOutline,
@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { PageContext } from "../auth/PageContext";
 import { useUserDetails } from "./useUserDetails";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 interface UserPageActionsProps {
   handle: string;
@@ -16,7 +17,7 @@ interface UserPageActionsProps {
 export default function UserPageActions({ handle }: UserPageActionsProps) {
   const [open, setOpen] = useState(false);
   const { presentLoginIfNeeded } = useContext(PageContext);
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const { isBlocked, blockOrUnblock } = useUserDetails(handle);
 

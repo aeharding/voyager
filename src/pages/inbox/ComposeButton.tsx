@@ -1,10 +1,4 @@
-import {
-  IonAlert,
-  IonButton,
-  IonIcon,
-  IonLoading,
-  useIonRouter,
-} from "@ionic/react";
+import { IonAlert, IonButton, IonIcon, IonLoading } from "@ionic/react";
 import { createOutline } from "ionicons/icons";
 import { useState } from "react";
 import { useAppDispatch } from "../../store";
@@ -15,11 +9,12 @@ import {
   isLemmyError,
 } from "../../helpers/lemmy";
 import useAppToast from "../../helpers/useAppToast";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 export default function ComposeButton() {
   const [loading, setLoading] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
 

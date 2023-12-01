@@ -1,4 +1,4 @@
-import { IonIcon, useIonRouter } from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import { VoteButton } from "../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline, shareOutline } from "ionicons/icons";
@@ -20,6 +20,7 @@ import GalleryMoreActions from "./GalleryMoreActions";
 import { StashMedia } from "capacitor-stash-media";
 import { Share } from "@capacitor/share";
 import useAppToast from "../../helpers/useAppToast";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 const Container = styled.div`
   display: flex;
@@ -54,7 +55,7 @@ export default function GalleryPostActions({
   const link = buildGeneralBrowseLink(
     `/c/${getHandle(post.community)}/comments/${post.post.id}`,
   );
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const location = useLocation();
   const presentToast = useAppToast();
   const { close } = useContext(GalleryContext);
