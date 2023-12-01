@@ -1,7 +1,15 @@
 import { IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
 import { CommentView } from "lemmy-js-client";
-import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
-import { toBlob } from "@justfork/html-to-image";
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { toBlob } from "@aeharding/html-to-image";
 import { createPortal } from "react-dom";
 import CommentTree from "../../comment/CommentTree";
 import { buildCommentsTree, getDepthFromComment } from "../../../helpers/lemmy";
@@ -15,6 +23,8 @@ import { Filesystem, Directory } from "@capacitor/filesystem";
 import { blobToDataURL, blobToString } from "../../../helpers/blob";
 import useAppToast from "../../../helpers/useAppToast";
 import includeStyleProperties from "./includeStyleProperties";
+import { CapacitorHttp } from "@capacitor/core";
+import { debounce } from "lodash";
 
 const Container = styled.div`
   --bottom-padding: max(
@@ -110,6 +120,8 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   );
   const [hideUsernames, setHideUsernames] = useState(false);
   const [watermark, setWatermark] = useState(false);
+  const imageSrcMap = useRef<Map<string, true>>(new Map());
+  const needsRerenderRef = useRef(false);
 
   const [imageSrc, setImageSrc] = useState("");
 
@@ -141,43 +153,92 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     [filteredComments],
   );
 
+  const render = useCallback(async () => {
+    try {
+      const blob = await toBlob(
+        shareAsImageRenderRoot.querySelector(".inner") as HTMLElement,
+        {
+          pixelRatio: 4,
+          includeStyleProperties,
+
+          // TODO, for now ignore image/video to avoid tainted canvas failing render
+          // (there's also display: none for img/video in index.css)
+          //
+          // Two ways around this in the future:
+          //
+          // 1. Use a centralized proxy for this
+          // 2. Patch html-to-image to get image data using fetch API (native-only)
+          filter: (node) => {
+            if (!(node instanceof HTMLElement)) return true;
+
+            if (node instanceof HTMLImageElement) {
+              if (!imageSrcMap.current.has(node.src)) {
+                imageSrcMap.current.set(node.src, true);
+                needsRerenderRef.current = true;
+              }
+            }
+
+            // if (node.tagName === "IMG") {
+            //   if (node.classList.contains("allowed-image")) return true;
+
+            //   return false;
+            // }
+
+            return node.tagName !== "VIDEO";
+          },
+          customDataURLFetch: async (url) => {
+            // Pass through relative URLs to browser fetching
+            if (!url.startsWith("http://") && !url.startsWith("https://"))
+              return false;
+
+            const nativeResponse = await CapacitorHttp.get({
+              url,
+              responseType: "blob",
+            });
+
+            const res = new Response(nativeResponse.data, {
+              headers: nativeResponse.headers,
+              status: nativeResponse.status,
+            });
+
+            const contentType = res.headers.get("Content-Type");
+            const result = `data:${contentType || "image/png"};base64,${
+              nativeResponse.data
+            }`;
+
+            return { res, result };
+          },
+        },
+      );
+      setBlob(blob ?? undefined);
+
+      if (!needsRerenderRef.current) return;
+      needsRerenderRef.current = false;
+
+      // https://github.com/bubkoo/html-to-image/issues/420
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      render();
+
+      finalRender();
+    } catch (error) {
+      presentToast({
+        message: "Error rendering image.",
+      });
+
+      throw error;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [presentToast]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const finalRender = useCallback(debounce(render, 1000), []);
+
   useEffect(() => {
     setTimeout(async () => {
-      try {
-        const blob = await toBlob(
-          shareAsImageRenderRoot.querySelector(".inner") as HTMLElement,
-          {
-            pixelRatio: 4,
-            includeStyleProperties,
-
-            // TODO, for now ignore image/video to avoid tainted canvas failing render
-            // (there's also display: none for img/video in index.css)
-            //
-            // Two ways around this in the future:
-            //
-            // 1. Use a centralized proxy for this
-            // 2. Patch html-to-image to get image data using fetch API (native-only)
-            filter: (node) => {
-              if (node.tagName === "IMG") {
-                if (node.classList.contains("allowed-image")) return true;
-
-                return false;
-              }
-
-              return node.tagName !== "VIDEO";
-            },
-          },
-        );
-        setBlob(blob ?? undefined);
-      } catch (error) {
-        presentToast({
-          message: "Error rendering image.",
-        });
-
-        throw error;
-      }
+      render();
     }, 200);
-  }, [data, filteredComments, watermark, hideUsernames, presentToast]);
+  }, [render, data, filteredComments, watermark, hideUsernames]);
 
   async function onShare() {
     if (!blob) return;

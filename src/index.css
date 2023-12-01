@@ -262,7 +262,6 @@ ion-modal.save-as-image-modal {
   --max-width: 470px;
 }
 
-#share-as-image-root img:not(.allowed-image),
 #share-as-image-root video {
   display: none;
 }
