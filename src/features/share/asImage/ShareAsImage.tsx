@@ -1,6 +1,6 @@
 import { IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
 import { CommentView } from "lemmy-js-client";
-import { createContext, useEffect, useMemo, useState } from "react";
+import { ReactNode, createContext, useEffect, useMemo, useState } from "react";
 import { toBlob } from "@justfork/html-to-image";
 import { createPortal } from "react-dom";
 import CommentTree from "../../comment/CommentTree";
@@ -17,31 +17,40 @@ import useAppToast from "../../../helpers/useAppToast";
 import includeStyleProperties from "./includeStyleProperties";
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+  --bottom-padding: max(
+    var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0)),
+    16px
+  );
 
-const PreviewWrapper = styled.div`
-  overflow: hidden;
-  margin: -16px 0;
-  padding: 16px;
-`;
+  --top-space: 50px;
 
-const PreviewImgContainer = styled.div<{ height: number | undefined }>`
-  height: min-content;
+  @media (max-height: 650px) {
+    --top-space: 0px;
+  }
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: auto 1fr auto;
+  max-height: calc(
+    100vh - var(--ion-safe-area-top, env(safe-area-inset-top, 0)) - var(
+        --top-space
+      )
+  );
+  place-content: center;
 
-  ${({ height }) =>
-    height &&
-    css`
-      height: ${height}px;
-    `}
+  padding: 0 16px var(--bottom-padding);
 `;
 
 const sharedImgCss = css`
+  max-height: 100%;
+  min-height: 0;
+  height: auto;
+  max-width: 100%;
+  min-width: 0;
+  width: auto;
+  vertical-align: middle;
+  margin: auto;
+
   filter: var(--share-img-drop-shadow);
 
   .ios & {
@@ -56,18 +65,19 @@ const sharedImgCss = css`
 const PlaceholderImg = styled.div`
   height: 80px;
   width: 80%;
-  margin: auto;
-  background: var(--ion-item-background, var(--ion-background-color, #fff));
 
   ${sharedImgCss}
 `;
 
 const PreviewImg = styled.img`
-  flex-shrink: 0;
-  max-width: 100%;
-  max-height: 100%;
-
   ${sharedImgCss}
+`;
+
+const StyledIonList = styled(IonList)`
+  &.list-ios.list-inset {
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+  }
 `;
 
 const ParentCommentValues = styled.div`
@@ -80,11 +90,6 @@ const CommentSnapshotContainer = styled.div`
   background: var(--ion-item-background, var(--ion-background-color, #fff));
 `;
 
-const ShareIonButton = styled(IonButton)`
-  margin: 0 16px
-    max(var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0)), 16px);
-`;
-
 const shareAsImageRenderRoot = document.querySelector(
   "#share-as-image-root",
 ) as HTMLElement;
@@ -94,12 +99,12 @@ interface ShareAsImageProps {
     comment: CommentView;
     comments: CommentView[];
   };
+  header: ReactNode;
 }
 
-export default function ShareAsImage({ data }: ShareAsImageProps) {
+export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   const presentToast = useAppToast();
   const [blob, setBlob] = useState<Blob | undefined>();
-  const [greaterThanThreshold, setGreaterThanThreshold] = useState(false);
   const [minDepth, setMinDepth] = useState(
     getDepthFromComment(data.comment.comment) ?? 0,
   );
@@ -107,15 +112,6 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
   const [watermark, setWatermark] = useState(false);
 
   const [imageSrc, setImageSrc] = useState("");
-
-  const maxImgHeight = (() => {
-    if (document.body.clientHeight < 500) return 125;
-    if (document.body.clientHeight < 600) return 200;
-    if (document.body.clientHeight < 700) return 250;
-    if (document.body.clientHeight < 750) return 275;
-
-    return 400;
-  })();
 
   useEffect(() => {
     if (!blob) return;
@@ -216,43 +212,32 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
 
   return (
     <Container>
-      <PreviewWrapper>
-        <PreviewImgContainer
-          className="embed"
-          height={greaterThanThreshold ? maxImgHeight : undefined}
-        >
-          {!imageSrc ? (
-            <PlaceholderImg />
-          ) : (
-            <PreviewImg
-              src={imageSrc}
-              onLoad={(e) => {
-                if (!(e.target instanceof HTMLImageElement)) return;
-                const parent = e.target.parentElement;
-                if (!parent) return;
+      {header}
+      {!imageSrc ? (
+        <PlaceholderImg />
+      ) : (
+        <PreviewImg
+          draggable={false}
+          src={imageSrc}
+          onLoad={(e) => {
+            if (!(e.target instanceof HTMLImageElement)) return;
+            const parent = e.target.parentElement;
+            if (!parent) return;
 
-                setGreaterThanThreshold(
-                  (e.target.naturalHeight / e.target.naturalWidth) *
-                    parent.clientWidth >
-                    maxImgHeight,
-                );
+            // Safari hacks 😢 to force rerender
+            const theMostParentedOfThemAll = parent.parentElement;
+            if (!theMostParentedOfThemAll) return;
+            setTimeout(() => {
+              theMostParentedOfThemAll.style.opacity = "0.99";
+              setTimeout(() => {
+                theMostParentedOfThemAll.style.opacity = "1";
+              });
+            });
+          }}
+        />
+      )}
 
-                // Safari hacks 😢 to force rerender
-                const theMostParentedOfThemAll = parent.parentElement;
-                if (!theMostParentedOfThemAll) return;
-                setTimeout(() => {
-                  theMostParentedOfThemAll.style.opacity = "0.99";
-                  setTimeout(() => {
-                    theMostParentedOfThemAll.style.opacity = "1";
-                  });
-                });
-              }}
-            />
-          )}
-        </PreviewImgContainer>
-      </PreviewWrapper>
-
-      <IonList inset lines="full">
+      <StyledIonList inset lines="full">
         {!!getDepthFromComment(data.comment.comment) && (
           <IonItem>
             <IonLabel>Parent Comments</IonLabel>
@@ -287,10 +272,10 @@ export default function ShareAsImage({ data }: ShareAsImageProps) {
             Watermark
           </IonToggle>
         </IonItem>
-      </IonList>
-      <ShareIonButton onClick={onShare}>
+      </StyledIonList>
+      <IonButton onClick={onShare}>
         {isNative() || "share" in navigator ? "Share" : "Download"}
-      </ShareIonButton>
+      </IonButton>
 
       {createPortal(
         <CommentSnapshotContainer className="inner">

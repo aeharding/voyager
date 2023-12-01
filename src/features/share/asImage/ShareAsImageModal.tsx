@@ -35,17 +35,23 @@ export default function ShareAsImageModal({
 
   return (
     <Content>
-      <IonHeader>
-        <TransparentIonToolbar>
-          <IonButtons slot="end">
-            <CloseButton color="medium" onClick={() => onDismiss()}>
-              <IonIcon icon={close} />
-            </CloseButton>
-          </IonButtons>
-          <IonTitle>Preview</IonTitle>
-        </TransparentIonToolbar>
-      </IonHeader>
-      {data && <ShareAsImage data={data} />}
+      {data && (
+        <ShareAsImage
+          data={data}
+          header={
+            <IonHeader>
+              <TransparentIonToolbar>
+                <IonButtons slot="end">
+                  <CloseButton color="medium" onClick={() => onDismiss()}>
+                    <IonIcon icon={close} />
+                  </CloseButton>
+                </IonButtons>
+                <IonTitle>Preview</IonTitle>
+              </TransparentIonToolbar>
+            </IonHeader>
+          }
+        />
+      )}
     </Content>
   );
 }
