@@ -83,11 +83,11 @@ devDependencies:
     specifier: npm:voyager-ionic-core@^7.5.5
     version: /voyager-ionic-core@7.5.5
   '@ionic/react':
-    specifier: ^7.5.1
-    version: 7.5.5(react-dom@18.2.0)(react@18.2.0)
+    specifier: 7.5.8-dev.11701383555.17254408
+    version: 7.5.8-dev.11701383555.17254408(react-dom@18.2.0)(react@18.2.0)
   '@ionic/react-router':
-    specifier: ^7.5.1
-    version: 7.5.5(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
+    specifier: 7.5.8-dev.11701383555.17254408
+    version: 7.5.8-dev.11701383555.17254408(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
   '@justfork/html-to-image':
     specifier: ^1.21.5
     version: 1.21.5
@@ -2149,15 +2149,15 @@ packages:
       - supports-color
     dev: true
 
-  /@ionic/react-router@7.5.5(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
-    resolution: {integrity: sha512-Tq6PKGSxXaqjAJZisBKjh0Ak9gRPSoHNBRi1ICthDnPwSl9+VgKkPgRH92FMWYcb/qTlDQMqhoIaIjrH3N+ddA==}
+  /@ionic/react-router@7.5.8-dev.11701383555.17254408(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
+    resolution: {integrity: sha512-akQlAzpptUyqalUUcdTFttz+hLiLZjiNI32D8QhIRVwFinT0B14rq6MU3an6zgIUJG0AVvTUTN9xfJiJfdU+1A==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
       react-router: ^5.0.1
       react-router-dom: ^5.0.1
     dependencies:
-      '@ionic/react': 7.5.5(react-dom@18.2.0)(react@18.2.0)
+      '@ionic/react': 7.5.8-dev.11701383555.17254408(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-router: 5.3.4(react@18.2.0)
@@ -2165,8 +2165,8 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@ionic/react@7.5.5(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-OcuTMinb7+HedD7dSQXxMKRct1MNK9Jzszoxi25JI0Iues/mKB0DPJyMe0ICyQdS2ualfin8I2FClHBSjPYBoQ==}
+  /@ionic/react@7.5.8-dev.11701383555.17254408(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-G4WS4ZycswQvkT6TqbTpzGtb8gvQgGL2n/SJFUVdFkc7g6oIap5ydq7tirz5pa4VzzUZ7J/wmyCqxInEKbalzA==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
