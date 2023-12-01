@@ -19,7 +19,6 @@ export default function GeneralAppearance() {
       </ListHeader>
       <IonList inset>
         <InsetIonItem>
-          <IonLabel>Show user instance</IonLabel>
           <IonToggle
             checked={
               userInstanceUrlDisplay === OInstanceUrlDisplayMode.WhenRemote
@@ -33,7 +32,9 @@ export default function GeneralAppearance() {
                 ),
               )
             }
-          />
+          >
+            Show user instance
+          </IonToggle>
         </InsetIonItem>
       </IonList>
     </>
