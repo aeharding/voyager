@@ -10,7 +10,7 @@ import {
   tabletPortraitOutline,
   eyeOffOutline,
   shareOutline,
-  bandageOutline,
+  footstepsOutline,
 } from "ionicons/icons";
 import { useState } from "react";
 import useHidePosts from "../feed/useHidePosts";
@@ -124,9 +124,9 @@ function MoreActionsActionSheet({
           },
         },
         {
-          text: "Modlog",
+          text: "Mod Log",
           data: "modlog",
-          icon: bandageOutline,
+          icon: footstepsOutline,
           handler: () => {
             modlog();
           },
