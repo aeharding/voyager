@@ -48,9 +48,17 @@ export default function CommunitiesListRedirectBootstrapper() {
 
     if (!isInstalled()) return;
 
+    const baseRoute = getBaseRoute(!!iss, defaultFeed);
+
+    // user set default page = communities list. We're already there.
+    if (!baseRoute) {
+      setBootstrapped(true);
+      return;
+    }
+
     requestAnimationFrame(() => {
       router.push(
-        buildGeneralBrowseLink(getBaseRoute(!!iss, defaultFeed)),
+        buildGeneralBrowseLink(baseRoute),
         "forward",
         "push",
         undefined,
