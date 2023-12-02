@@ -4,6 +4,7 @@ import {
   arrowUndoOutline,
   arrowUpOutline,
   bookmarkOutline,
+  cameraOutline,
   ellipsisHorizontal,
   eyeOffOutline,
   eyeOutline,
@@ -74,6 +75,7 @@ export default function MoreActions({
     presentReport,
     presentPostEditor,
     presentSelectText,
+    presentShareAsImage,
   } = useContext(PageContext);
 
   const presentPostModActions = usePostModActions(post);
@@ -257,6 +259,13 @@ export default function MoreActions({
           icon: shareOutline,
           handler: () => {
             share(post.post);
+          },
+        },
+        {
+          text: "Share as image...",
+          icon: cameraOutline,
+          handler: () => {
+            presentShareAsImage(post);
           },
         },
         {

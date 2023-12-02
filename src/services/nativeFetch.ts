@@ -5,16 +5,17 @@ import { CapFormDataEntry } from "@capacitor/core/types/definitions-internal";
 // Stolen from capacitor fetch shim
 // https://github.com/ionic-team/capacitor/blob/5.2.3/core/native-bridge.ts
 
+export const webviewServerUrl =
+  "WEBVIEW_SERVER_URL" in window &&
+  typeof window.WEBVIEW_SERVER_URL === "string"
+    ? window.WEBVIEW_SERVER_URL
+    : "";
+
 export default async function nativeFetch(
   resource: RequestInfo | URL,
   options?: RequestInit,
 ) {
-  if (
-    !(
-      resource.toString().startsWith("http:") ||
-      resource.toString().startsWith("https:")
-    )
-  ) {
+  if (resource.toString().startsWith(`${webviewServerUrl}/`)) {
     return window.fetch(resource, options);
   }
 

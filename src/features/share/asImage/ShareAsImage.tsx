@@ -1,10 +1,10 @@
 import { IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
-import { CommentView } from "lemmy-js-client";
 import {
   ReactNode,
   createContext,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
 } from "react";
@@ -24,6 +24,9 @@ import includeStyleProperties from "./includeStyleProperties";
 import { CapacitorHttp } from "@capacitor/core";
 import { domToBlob } from "@aeharding/modern-screenshot";
 import { getImageSrc } from "../../../services/lemmy";
+import { ShareAsImageData } from "./ShareAsImageModal";
+import PostHeader from "../../post/detail/PostHeader";
+import { webviewServerUrl } from "../../../services/nativeFetch";
 
 const Container = styled.div`
   --bottom-padding: max(
@@ -72,10 +75,12 @@ const sharedImgCss = css`
 `;
 
 const PlaceholderImg = styled.div`
+  ${sharedImgCss}
+
+  background: ${({ theme }) => (theme.dark ? "black" : "white")};
+
   height: 80px;
   width: 80%;
-
-  ${sharedImgCss}
 `;
 
 const PreviewImg = styled.img`
@@ -99,28 +104,46 @@ const CommentSnapshotContainer = styled.div`
   background: var(--ion-item-background, var(--ion-background-color, #fff));
 `;
 
+const PostCommentSpacer = styled.div`
+  height: 6px;
+`;
+
+const StyledPostHeader = styled(PostHeader)<{ hideBottomBorder: boolean }>`
+  ${({ hideBottomBorder }) =>
+    hideBottomBorder &&
+    css`
+      --inner-border-width: 0 0 0 0;
+    `}
+`;
+
 const shareAsImageRenderRoot = document.querySelector(
   "#share-as-image-root",
 ) as HTMLElement;
 
 interface ShareAsImageProps {
-  data: {
-    comment: CommentView;
-    comments: CommentView[];
-  };
+  data: ShareAsImageData;
   header: ReactNode;
 }
 
 export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   const presentToast = useAppToast();
-  const [blob, setBlob] = useState<Blob | undefined>();
-  const [minDepth, setMinDepth] = useState(
-    getDepthFromComment(data.comment.comment) ?? 0,
-  );
+
   const [hideUsernames, setHideUsernames] = useState(false);
+  const [hideCommunity, setHideCommunity] = useState(false);
+  const [includePostDetails, setIncludePostDetails] = useState(
+    !("comment" in data),
+  );
+  const [includePostText, setIncludePostText] = useState(true);
   const [watermark, setWatermark] = useState(false);
 
+  const [blob, setBlob] = useState<Blob | undefined>();
   const [imageSrc, setImageSrc] = useState("");
+
+  const [minDepth, setMinDepth] = useState(
+    ("comment" in data
+      ? getDepthFromComment(data.comment.comment)
+      : undefined) ?? 0,
+  );
 
   useEffect(() => {
     if (!blob) return;
@@ -131,6 +154,8 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   }, [blob]);
 
   const filteredComments = useMemo(() => {
+    if (!("comment" in data)) return [];
+
     const filtered = data.comments
       .filter(
         (c) =>
@@ -145,8 +170,10 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
     return filtered;
   }, [data, minDepth]);
+
   const commentNode = useMemo(
-    () => buildCommentsTree(filteredComments, true),
+    () =>
+      filteredComments.length ? buildCommentsTree(filteredComments, true) : [],
     [filteredComments],
   );
 
@@ -157,46 +184,40 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         {
           scale: 4,
           features: {
+            // Without this, render fails on certain images
             removeControlCharacter: false,
           },
-          // includeStyleProperties,
-
-          // TODO, for now ignore image/video to avoid tainted canvas failing render
-          // (there's also display: none for img/video in index.css)
-          //
-          // Two ways around this in the future:
-          //
-          // 1. Use a centralized proxy for this
-          // 2. Patch html-to-image to get image data using fetch API (native-only)
+          includeStyleProperties,
           filter: (node) => {
             if (!(node instanceof HTMLElement)) return true;
 
-            // if (node.tagName === "IMG") {
-            //   if (node.classList.contains("allowed-image")) return true;
-
-            //   return false;
-            // }
-
             return node.tagName !== "VIDEO";
           },
-          fetchFn: async (url) => {
-            // Pass through relative URLs to browser fetching
-            if (!url.startsWith("http://") && !url.startsWith("https://"))
-              return false;
+          fetchFn: isNative()
+            ? async (url) => {
+                // Pass through relative URLs to browser fetching
+                if (url.startsWith(`${webviewServerUrl}/`)) {
+                  return false;
+                }
 
-            const nativeResponse = await CapacitorHttp.get({
-              // if pictrs, convert large gifs to jpg
-              url: getImageSrc(url, { format: "jpg" }),
-              responseType: "blob",
-            });
+                // Attempt upgrade to https (insecure will be blocked)
+                if (url.startsWith("http://")) {
+                  url = url.replace(/^http:\/\//, "https://");
+                }
 
-            // Workaround that will probably break in a future capacitor upgrade
-            // https://github.com/ionic-team/capacitor/issues/6126
-            return `data:${
-              nativeResponse.headers["Content-Type"] || "image/png"
-            };base64,${nativeResponse.data}`;
-          },
-          includeStyleProperties,
+                const nativeResponse = await CapacitorHttp.get({
+                  // if pictrs, convert large gifs to jpg
+                  url: getImageSrc(url, { format: "jpg" }),
+                  responseType: "blob",
+                });
+
+                // Workaround that will probably break in a future capacitor upgrade
+                // https://github.com/ionic-team/capacitor/issues/6126
+                return `data:${
+                  nativeResponse.headers["Content-Type"] || "image/png"
+                };base64,${nativeResponse.data}`;
+              }
+            : undefined,
         },
       );
       setBlob(blob ?? undefined);
@@ -210,16 +231,28 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [presentToast]);
 
-  useEffect(() => {
-    setTimeout(async () => {
+  useLayoutEffect(() => {
+    requestAnimationFrame(() => {
       render();
-    }, 200);
-  }, [render, data, filteredComments, watermark, hideUsernames]);
+    });
+  }, [
+    render,
+    data,
+    filteredComments,
+    watermark,
+    hideUsernames,
+    hideCommunity,
+    includePostDetails,
+    includePostText,
+  ]);
 
   async function onShare() {
     if (!blob) return;
 
-    const filename = `${data.comment.comment.ap_id
+    const apId =
+      "comment" in data ? data.comment.comment.ap_id : data.post.post.ap_id;
+
+    const filename = `${apId
       .replace(/^https:\/\//, "")
       .replaceAll(/\//g, "-")}.png`;
 
@@ -275,22 +308,56 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       )}
 
       <StyledIonList inset lines="full">
-        {!!getDepthFromComment(data.comment.comment) && (
+        {"comment" in data && (
+          <>
+            <IonItem>
+              <IonToggle
+                checked={includePostDetails}
+                onIonChange={(e) => setIncludePostDetails(e.detail.checked)}
+              >
+                Include Post Details
+              </IonToggle>
+            </IonItem>
+            {includePostDetails && (
+              <IonItem>
+                <IonToggle
+                  checked={includePostText}
+                  onIonChange={(e) => setIncludePostText(e.detail.checked)}
+                >
+                  Include Post Text
+                </IonToggle>
+              </IonItem>
+            )}
+
+            {!!getDepthFromComment(data.comment.comment) && (
+              <IonItem>
+                <IonLabel>Parent Comments</IonLabel>
+                <ParentCommentValues slot="end">
+                  <strong>
+                    {(getDepthFromComment(data.comment.comment) ?? 0) -
+                      minDepth}
+                  </strong>
+                  <AddRemoveButtons
+                    addDisabled={minDepth === 0}
+                    removeDisabled={
+                      minDepth === getDepthFromComment(data.comment.comment)
+                    }
+                    onAdd={() => setMinDepth((minDepth) => minDepth - 1)}
+                    onRemove={() => setMinDepth((minDepth) => minDepth + 1)}
+                  />
+                </ParentCommentValues>
+              </IonItem>
+            )}
+          </>
+        )}
+        {includePostDetails && (
           <IonItem>
-            <IonLabel>Parent Comments</IonLabel>
-            <ParentCommentValues slot="end">
-              <strong>
-                {(getDepthFromComment(data.comment.comment) ?? 0) - minDepth}
-              </strong>
-              <AddRemoveButtons
-                addDisabled={minDepth === 0}
-                removeDisabled={
-                  minDepth === getDepthFromComment(data.comment.comment)
-                }
-                onAdd={() => setMinDepth((minDepth) => minDepth - 1)}
-                onRemove={() => setMinDepth((minDepth) => minDepth + 1)}
-              />
-            </ParentCommentValues>
+            <IonToggle
+              checked={hideCommunity}
+              onIonChange={(e) => setHideCommunity(e.detail.checked)}
+            >
+              Hide Community
+            </IonToggle>
           </IonItem>
         )}
         <IonItem>
@@ -316,13 +383,27 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
       {createPortal(
         <CommentSnapshotContainer className="inner">
-          <ShareImageContext.Provider value={{ hideUsernames }}>
-            <CommentTree
-              comment={commentNode[0]}
-              first
-              rootIndex={0}
-              baseDepth={minDepth}
-            />
+          <ShareImageContext.Provider value={{ hideUsernames, hideCommunity }}>
+            {includePostDetails && (
+              <StyledPostHeader
+                hideBottomBorder={!("comment" in data)}
+                post={data.post}
+                showPostText={includePostText}
+                showPostActions={false}
+                constrainHeight={false}
+              />
+            )}
+            {"comment" in data && (
+              <>
+                {includePostDetails && <PostCommentSpacer />}
+                <CommentTree
+                  comment={commentNode[0]}
+                  first
+                  rootIndex={0}
+                  baseDepth={minDepth}
+                />
+              </>
+            )}
           </ShareImageContext.Provider>
           {watermark && <Watermark />}
         </CommentSnapshotContainer>,
@@ -334,4 +415,5 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
 export const ShareImageContext = createContext({
   hideUsernames: false,
+  hideCommunity: false,
 });

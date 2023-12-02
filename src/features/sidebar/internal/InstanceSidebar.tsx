@@ -1,9 +1,9 @@
 import { css } from "@emotion/react";
 import { useAppSelector } from "../../../store";
-import { CenteredSpinner } from "../../post/detail/PostDetail";
 import GenericSidebar from "./GenericSidebar";
 import { IonBadge } from "@ionic/react";
 import { lemmyVersionSelector } from "../../auth/authSlice";
+import { CenteredSpinner } from "../../../pages/posts/PostPage";
 
 export default function InstanceSidebar() {
   const siteView = useAppSelector((state) => state.auth.site?.site_view);

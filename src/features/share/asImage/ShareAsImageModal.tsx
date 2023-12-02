@@ -1,4 +1,4 @@
-import { CommentView } from "lemmy-js-client";
+import { CommentView, PostView } from "lemmy-js-client";
 import ShareAsImage from "./ShareAsImage";
 import { MutableRefObject, useEffect, useState } from "react";
 import styled from "@emotion/styled";
@@ -9,10 +9,15 @@ import {
 } from "../../shared/selectorModals/GenericSelectorModal";
 import { close } from "ionicons/icons";
 
-export interface ShareAsImageData {
-  comment: CommentView;
-  comments: CommentView[];
-}
+export type ShareAsImageData =
+  | {
+      post: PostView;
+    }
+  | {
+      post: PostView;
+      comment: CommentView;
+      comments: CommentView[];
+    };
 
 interface SelectTextProps {
   dataRef: MutableRefObject<ShareAsImageData>;

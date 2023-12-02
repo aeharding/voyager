@@ -78,6 +78,10 @@ export default function MoreActions({
   const [presentSecondaryActionSheet] = useIonActionSheet();
   const collapseRootComment = useCollapseRootComment(commentView, rootIndex);
 
+  const post = useAppSelector(
+    (state) => state.post.postById[commentView.post.id],
+  );
+
   const commentById = useAppSelector((state) => state.comment.commentById);
 
   const router = useOptimizedIonRouter();
@@ -272,8 +276,10 @@ export default function MoreActions({
               icon: cameraOutline,
               handler: () => {
                 const comments = getComments();
-                if (!comments) return;
-                presentShareAsImage(commentView, comments);
+
+                if (!comments || !post || post === "not-found") return;
+
+                presentShareAsImage(post, commentView, comments);
               },
             }
           : undefined,
