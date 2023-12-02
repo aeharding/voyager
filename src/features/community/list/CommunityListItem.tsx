@@ -27,34 +27,31 @@ export default function CommunityListItem({
   community,
   favorites,
 }: {
-  community: Community;
+  community: Community | string;
   favorites?: string[];
 }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
 
+  const handle =
+    typeof community === "string" ? community : getHandle(community);
+
   const isFavorite = useMemo(
-    () => favorites?.includes(getHandle(community)) ?? false,
-    [favorites, community],
+    () => favorites?.includes(handle) ?? false,
+    [favorites, handle],
   );
 
   return (
-    <IonItem
-      key={community.id}
-      routerLink={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
-      detail={false}
-    >
+    <IonItem routerLink={buildGeneralBrowseLink(`/c/${handle}`)} detail={false}>
       <Content>
         <ItemIcon item={community} size={28} />
-        {getHandle(community)}
+        {handle}
       </Content>
       <ActionButton
         slot="end"
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
-
-          const handle = getHandle(community);
 
           if (!isFavorite) {
             dispatch(addFavorite(handle));
