@@ -16,7 +16,7 @@ import styled from "@emotion/styled";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
 const LoadingOverlay = styled.div`
-  background: black;
+  background: var(--ion-background-color);
   position: fixed;
   inset: 0;
   z-index: 1000;
