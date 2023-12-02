@@ -260,6 +260,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       type: "image/png",
     });
 
+    // eslint-disable-next-line no-undef
+    const webSharePayload: ShareData = { files: [file] };
+
     if (isNative()) {
       const data = await blobToString(blob);
       const file = await Filesystem.writeFile({
@@ -269,8 +272,8 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       });
       await Share.share({ files: [file.uri] });
       await Filesystem.deleteFile({ path: file.uri });
-    } else if ("share" in navigator) {
-      navigator.share({ files: [file] });
+    } else if ("canShare" in navigator && navigator.canShare(webSharePayload)) {
+      navigator.share(webSharePayload);
     } else {
       const link = document.createElement("a");
       link.download = filename;
@@ -378,7 +381,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         </IonItem>
       </StyledIonList>
       <IonButton onClick={onShare}>
-        {isNative() || "share" in navigator ? "Share" : "Download"}
+        {isNative() || "canShare" in navigator ? "Share" : "Download"}
       </IonButton>
 
       {createPortal(
