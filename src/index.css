@@ -238,6 +238,7 @@ ion-toast.center::part(container) {
   font-size: 16px;
 
   --width: 330px;
+  color: var(--ion-text-color);
 
   position: absolute;
   width: var(--width);
