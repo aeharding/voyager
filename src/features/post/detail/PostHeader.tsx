@@ -6,18 +6,10 @@ import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "../../moderation/ModeratableItem";
 import { OTapToCollapseType } from "../../../services/db";
-import {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { memo, useCallback, useContext, useMemo, useRef } from "react";
 import { PageContext } from "../../auth/PageContext";
 import { scrollIntoView } from "../../../helpers/dom";
-import { useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
 import { findLoneImage } from "../../../helpers/markdown";
 import { isUrlMedia } from "../../../helpers/url";
@@ -34,6 +26,7 @@ import Stats from "./Stats";
 import Locked from "./Locked";
 import PostActions from "../actions/PostActions";
 import { postLocked } from "../../../helpers/toastMessages";
+import { togglePostCollapse } from "../postSlice";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -131,7 +124,10 @@ function PostHeader({
   constrainHeight = true,
   className,
 }: PostHeaderProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const dispatch = useAppDispatch();
+  const collapsed = useAppSelector(
+    (state) => !!state.post.postCollapsedById[post.post.id],
+  );
   const titleRef = useRef<HTMLDivElement>(null);
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
 
@@ -140,11 +136,11 @@ function PostHeader({
   );
   const presentToast = useAppToast();
 
-  useEffect(() => {
+  const scrollTitleIntoView = useCallback(() => {
     if (!titleRef.current) return;
 
     scrollIntoView(titleRef.current);
-  }, [collapsed]);
+  }, []);
 
   const markdownLoneImage = useMemo(
     () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
@@ -199,7 +195,8 @@ function PostHeader({
           )
             return;
 
-          setCollapsed(!collapsed);
+          dispatch(togglePostCollapse(post.post.id));
+          scrollTitleIntoView();
         }}
       >
         <Container>
