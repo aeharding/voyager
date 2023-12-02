@@ -31,7 +31,7 @@
     "vite-express": "^0.11.0"
   },
   "devDependencies": {
-    "@aeharding/html-to-image": "^1.13.0",
+    "@aeharding/modern-screenshot": "^4.5.0",
     "@capacitor-community/app-icon": "^4.1.1",
     "@capacitor/android": "5.2.3",
     "@capacitor/app": "^5.0.6",

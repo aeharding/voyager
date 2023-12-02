@@ -22,9 +22,9 @@ dependencies:
     version: 0.11.0
 
 devDependencies:
-  '@aeharding/html-to-image':
-    specifier: ^1.13.0
-    version: 1.13.0
+  '@aeharding/modern-screenshot':
+    specifier: ^4.5.0
+    version: 4.5.0
   '@capacitor-community/app-icon':
     specifier: ^4.1.1
     version: 4.1.1(@capacitor/core@5.2.3)
@@ -343,8 +343,8 @@ packages:
     resolution: {integrity: sha512-/62yikz7NLScCGAAST5SHdnjaDJQBDq0M2muyRTpf2VQhw6StBg2ALiu73zSJQ4fMVLA+0uBhBHAle7Wg+2kSg==}
     dev: true
 
-  /@aeharding/html-to-image@1.13.0:
-    resolution: {integrity: sha512-vTFI/RkkxXD+u+0W9hkxpPW8lqzgPE5yE3aYVsWIPKOhVKTDcM/X2eMisUSMqgPTiHzgu3z7/VrExMT5d2JxNA==}
+  /@aeharding/modern-screenshot@4.5.0:
+    resolution: {integrity: sha512-EEfz3JCF4/Nt2ynS/h4DKx5Gfg39J5F1I8yiFZIomzNThKCeiiSFl1k9D0HQBuT8pYmh30b6pPai1LDC+QhTeg==}
     dev: true
 
   /@ampproject/remapping@2.2.1:
