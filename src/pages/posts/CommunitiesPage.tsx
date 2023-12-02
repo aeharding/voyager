@@ -11,6 +11,7 @@ import {
 import CommunitiesMoreActions from "../../features/community/list/InstanceMoreActions";
 import FeedContent from "../shared/FeedContent";
 import { useParams } from "react-router";
+import CommunitiesListRedirectBootstrapper from "../../features/community/list/CommunitiesListRedirectBootstrapper";
 
 export default function CommunitiesPage() {
   const { actor } = useParams<{ actor: string }>();
@@ -19,18 +20,21 @@ export default function CommunitiesPage() {
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef}>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Communities</IonTitle>
-          <IonButtons slot="end">
-            <CommunitiesMoreActions />
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <FeedContent>
-        <CommunitiesList actor={actor} />
-      </FeedContent>
-    </IonPage>
+    <>
+      <CommunitiesListRedirectBootstrapper />
+      <IonPage ref={pageRef}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Communities</IonTitle>
+            <IonButtons slot="end">
+              <CommunitiesMoreActions />
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <FeedContent>
+          <CommunitiesList actor={actor} />
+        </FeedContent>
+      </IonPage>
+    </>
   );
 }
