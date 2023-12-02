@@ -29,27 +29,22 @@ const Container = styled.div`
   }
 
   display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: max-content 1fr max-content;
+
   max-height: calc(
     100vh - var(--ion-safe-area-top, env(safe-area-inset-top, 0)) - var(
         --top-space
       )
   );
-  place-content: center;
 
   padding: 0 16px var(--bottom-padding);
 `;
 
 const sharedImgCss = css`
-  max-height: 100%;
   min-height: 0;
-  height: auto;
+  max-height: 100%;
+  justify-self: center;
   max-width: 100%;
-  min-width: 0;
-  width: auto;
-  vertical-align: middle;
-  margin: auto;
 
   filter: var(--share-img-drop-shadow);
 
