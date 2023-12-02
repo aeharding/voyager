@@ -11,7 +11,7 @@ import { memo, useCallback } from "react";
 import useClient from "../../helpers/useClient";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import FeedContent from "./FeedContent";
-import { Community, GetModlogResponse } from "lemmy-js-client";
+import { Community, GetModlogResponse, Person } from "lemmy-js-client";
 import { values } from "lodash";
 import { ModlogItem } from "../../features/moderation/logs/ModlogItem";
 import { fixLemmyDateString } from "../../helpers/date";
@@ -22,6 +22,8 @@ import { useParams } from "react-router";
 import { getHandle } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { buildCommunityLink } from "../../helpers/appLinkBuilder";
+import { RootState, useAppSelector } from "../../store";
+import useCanModerate from "../../features/moderation/useCanModerate";
 
 export type ModlogItemType =
   GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;
@@ -34,8 +36,15 @@ export default function ModlogPage() {
   return <ModlogByCommunityName communityName={community} />;
 }
 
+const userSelector = (state: RootState) =>
+  state.auth.site?.my_user?.local_user_view?.person;
+
 const GlobalModlog = memo(function GlobalModlog() {
-  return <ModlogByCommunity />;
+  const canModerate = useCanModerate(true);
+  const user = useAppSelector(userSelector);
+
+  if (canModerate) return <Modlog />;
+  return <Modlog user={user} />;
 });
 
 const ModlogByCommunityName = memo(function ModlogByCommunityName({
@@ -44,13 +53,22 @@ const ModlogByCommunityName = memo(function ModlogByCommunityName({
   communityName: string;
 }) {
   const community = useFetchCommunity(communityName);
+  const canModerate = useCanModerate(community?.community);
+  const user = useAppSelector(userSelector);
 
   if (!community) return <CenteredSpinner />;
 
-  return <ModlogByCommunity community={community.community} />;
+  if (canModerate) return <Modlog community={community.community} />;
+  return <Modlog community={community.community} user={user} />;
 });
 
-function ModlogByCommunity({ community }: { community?: Community }) {
+interface ModlogProps {
+  community?: Community;
+  user?: Person;
+  mod?: Person;
+}
+
+function Modlog({ community, user, mod }: ModlogProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
 
@@ -60,6 +78,8 @@ function ModlogByCommunity({ community }: { community?: Community }) {
         ...pageData,
         limit: LIMIT,
         community_id: community?.id,
+        other_person_id: user?.id,
+        mod_person_id: mod?.id,
       });
 
       return values(logs)
@@ -70,7 +90,7 @@ function ModlogByCommunity({ community }: { community?: Community }) {
             Date.parse(fixLemmyDateString(getLogDate(a))),
         );
     },
-    [client, community],
+    [client, community, user, mod],
   );
 
   const renderItemContent = useCallback((item: ModlogItemType) => {
