@@ -464,12 +464,12 @@ export default function PostEditorRoot({
             )}
             {showNsfwToggle && (
               <IonItem>
-                <IonText color="medium">NSFW</IonText>{" "}
                 <IonToggle
-                  slot="end"
                   checked={nsfw}
                   onIonChange={(e) => setNsfw(e.detail.checked)}
-                />
+                >
+                  <IonText color="medium">NSFW</IonText>
+                </IonToggle>
               </IonItem>
             )}
             <IonNavLink

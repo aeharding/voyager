@@ -1,4 +1,4 @@
-import { IonLabel, IonToggle } from "@ionic/react";
+import { IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setEnableHapticFeedback } from "../../settingsSlice";
@@ -15,11 +15,12 @@ export default function Haptics() {
 
   return (
     <InsetIonItem>
-      <IonLabel>Haptic Feedback</IonLabel>
       <IonToggle
         checked={enableHapticFeedback}
         onIonChange={(e) => dispatch(setEnableHapticFeedback(e.detail.checked))}
-      />
+      >
+        Haptic Feedback
+      </IonToggle>
     </InsetIonItem>
   );
 }

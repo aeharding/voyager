@@ -1,4 +1,4 @@
-import { IonLabel, IonToggle } from "@ionic/react";
+import { IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import {
@@ -15,7 +15,6 @@ export default function CollapsedByDefault() {
 
   return (
     <InsetIonItem>
-      <IonLabel>Collapse Comment Threads</IonLabel>
       <IonToggle
         checked={collapseCommentThreads === OCommentThreadCollapse.Always}
         onIonChange={(e) =>
@@ -27,7 +26,9 @@ export default function CollapsedByDefault() {
             ),
           )
         }
-      />
+      >
+        Collapse Comment Threads
+      </IonToggle>
     </InsetIonItem>
   );
 }

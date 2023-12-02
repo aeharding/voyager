@@ -76,7 +76,9 @@ export default function SettingSelector<
   );
 
   const Icon = icon
-    ? styled(icon)<{ mirror?: boolean }>`
+    ? styled(icon, { shouldForwardProp: (prop) => prop !== "mirror" })<{
+        mirror?: boolean;
+      }>`
         position: relative;
         display: inline-flex;
         height: 4ex;
