@@ -1,5 +1,9 @@
 import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
-import { ellipsisHorizontal, tabletPortraitOutline } from "ionicons/icons";
+import {
+  ellipsisHorizontal,
+  footstepsOutline,
+  tabletPortraitOutline,
+} from "ionicons/icons";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
@@ -17,6 +21,14 @@ export default function CommunitiesMoreActions() {
           icon: tabletPortraitOutline,
           handler: () => {
             router.push(buildGeneralBrowseLink("/sidebar"));
+          },
+        },
+        {
+          text: "Mod Log",
+          data: "modlog",
+          icon: footstepsOutline,
+          handler: () => {
+            router.push(buildGeneralBrowseLink("/mod/log"));
           },
         },
         {
