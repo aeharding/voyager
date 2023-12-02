@@ -7,7 +7,6 @@ import PreviewStats from "../PreviewStats";
 import MoreActions from "../../shared/MoreActions";
 import { megaphone } from "ionicons/icons";
 import PersonLink from "../../../labels/links/PersonLink";
-import { AnnouncementIcon } from "../../detail/PostDetail";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { VoteButton } from "../../shared/VoteButton";
 import Save from "../../../labels/Save";
@@ -20,6 +19,7 @@ import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "../../../moderation/ModeratableItem";
 import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
+import { AnnouncementIcon } from "../../detail/PostHeader";
 
 const Container = styled.div`
   width: 100%;
