@@ -14,7 +14,6 @@ export default function useMediaLoadObserver() {
           (entry.target instanceof HTMLVideoElement && entry.target.videoWidth)
         ) {
           setLoaded(true);
-          destroyObserver();
           return;
         }
       }
