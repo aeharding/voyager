@@ -279,6 +279,7 @@ export type SettingValueTypes = {
   no_subscribed_in_feed: boolean;
   infinite_scrolling: boolean;
   upvote_on_save: boolean;
+  instances: string[];
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

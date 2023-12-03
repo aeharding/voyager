@@ -37,6 +37,7 @@ import {
   TapToCollapseType,
   OTapToCollapseType,
 } from "../../services/db";
+import { DEFAULT_LEMMY_SERVERS } from "../../services/app";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
 
@@ -108,6 +109,7 @@ interface SettingsState {
   blocks: {
     keywords: string[];
   };
+  instances: string[];
 }
 
 const LOCALSTORAGE_KEYS = {
@@ -183,6 +185,7 @@ const initialState: SettingsState = {
   blocks: {
     keywords: [],
   },
+  instances: DEFAULT_LEMMY_SERVERS,
 };
 
 // We continue using localstorage for specific items because indexeddb is slow
@@ -389,6 +392,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("link_handler", action.payload);
     },
+    setInstances(state, action: PayloadAction<string[]>) {
+      state.instances = action.payload;
+
+      db.setSetting("instances", action.payload);
+    },
 
     resetSettings: () => ({
       ...initialState,
@@ -526,6 +534,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const no_subscribed_in_feed = await db.getSetting(
         "no_subscribed_in_feed",
       );
+      const instances = await db.getSetting("instances");
 
       return {
         ...state.settings,
@@ -614,6 +623,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
         },
+        instances: instances ?? initialState.instances,
       };
     });
 
@@ -665,6 +675,7 @@ export const {
   setPureBlack,
   setDefaultFeed,
   setNoSubscribedInFeed,
+  setInstances,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

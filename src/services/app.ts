@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { isNative } from "../helpers/device";
+import { useAppDispatch, useAppSelector } from "../store";
+import { setInstances } from "../features/settings/settingsSlice";
 
-const DEFAULT_LEMMY_SERVERS = [
+export const DEFAULT_LEMMY_SERVERS = [
   "lemmy.world",
   "lemmy.ml",
   "beehaw.org",
@@ -9,6 +11,17 @@ const DEFAULT_LEMMY_SERVERS = [
 ];
 
 let _customServers = DEFAULT_LEMMY_SERVERS;
+
+export function useCustomServers(): [string[], Dispatch<string[]>, () => void] {
+  const dispatch = useAppDispatch();
+  const customServers = useAppSelector((state) => state.settings.instances);
+  const setCustomServers = (servers: string[]) => {
+    dispatch(setInstances(servers));
+  };
+  const resetCustomServers = () => setCustomServers(DEFAULT_LEMMY_SERVERS);
+
+  return [customServers, setCustomServers, resetCustomServers];
+}
 
 export function getCustomServers() {
   return _customServers;
