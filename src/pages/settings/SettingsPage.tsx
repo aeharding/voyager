@@ -19,6 +19,7 @@ import {
   colorPalette,
   heart,
   reloadCircle,
+  serverOutline,
 } from "ionicons/icons";
 import { useContext, useEffect, useRef } from "react";
 import { UpdateContext } from "./update/UpdateContext";
@@ -198,6 +199,12 @@ export default function SettingsPage() {
         </IonList>
 
         <IonList inset color="primary">
+          <InsetIonItem routerLink="/settings/manage-instances">
+            <IconBg color="color(display-p3 0.02 0.68 0.77)">
+              <IonIcon icon={serverOutline} />
+            </IconBg>
+            <SettingLabel>Manage instances</SettingLabel>
+          </InsetIonItem>
           <InsetIonItem routerLink="/settings/reddit-migrate">
             <IconBg color="#ff5700">
               <IonIcon icon={bagCheck} />

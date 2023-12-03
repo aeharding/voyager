@@ -27,6 +27,7 @@ import InboxAuthRequired from "./pages/inbox/InboxAuthRequired";
 import UpdateAppPage from "./pages/settings/UpdateAppPage";
 import AppearancePage from "./pages/settings/AppearancePage";
 import CommunitySidebarPage from "./pages/shared/CommunitySidebarPage";
+import ManageInstancesPage from "./pages/settings/ManageInstancesPage";
 import RedditMigratePage from "./pages/settings/RedditDataMigratePage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import ProfileFeedHiddenPostsPage from "./pages/profile/ProfileFeedHiddenPostsPage";
@@ -354,6 +355,9 @@ export default function TabbedRoutes() {
             </Route>
             <Route exact path="/settings/blocks">
               <BlocksSettingsPage />
+            </Route>
+            <Route exact path="/settings/manage-instances">
+              <ManageInstancesPage />
             </Route>
             <Route exact path="/settings/reddit-migrate">
               <RedditMigratePage />
