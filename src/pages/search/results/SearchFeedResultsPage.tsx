@@ -13,7 +13,7 @@ import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
 import PostSort from "../../../features/feed/PostSort";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppDispatch } from "../../../store";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../../features/feed/PostCommentFeed";
@@ -21,6 +21,7 @@ import { receivedPosts } from "../../../features/post/postSlice";
 import { receivedComments } from "../../../features/comment/commentSlice";
 import FeedContent from "../../shared/FeedContent";
 import { getSortDuration } from "../../../features/feed/endItems/EndPost";
+import usePostSort from "../../../features/feed/usePostSort";
 
 interface SearchPostsResultsProps {
   type: "Posts" | "Comments";
@@ -36,7 +37,7 @@ export default function SearchFeedResultsPage({
   }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const sort = useAppSelector((state) => state.post.sort);
+  const [sort, setSort] = usePostSort();
 
   const search = decodeURIComponent(_encodedSearch);
 
@@ -71,7 +72,7 @@ export default function SearchFeedResultsPage({
           <IonTitle>“{search}”</IonTitle>
 
           <IonButtons slot="end">
-            <PostSort />
+            <PostSort sort={sort} setSort={setSort} />
           </IonButtons>
         </IonToolbar>
       </IonHeader>

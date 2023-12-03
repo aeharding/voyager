@@ -28,6 +28,7 @@ import { followIdsSelector } from "../../features/auth/authSlice";
 import { getHandle } from "../../helpers/lemmy";
 import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../features/community/mod/ModActions";
+import usePostSort from "../../features/feed/usePostSort";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -37,7 +38,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
-  const sort = useAppSelector((state) => state.post.sort);
+  const [sort, setSort] = usePostSort();
 
   const followIds = useAppSelector(followIdsSelector);
   const communityByHandle = useAppSelector(
@@ -109,7 +110,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               <TitleSearch name={listingTypeTitle(type)}>
                 <IonButtons slot="end">
                   {type === "ModeratorView" && <ModActions type={type} />}
-                  <PostSort />
+                  <PostSort sort={sort} setSort={setSort} />
                   <SpecialFeedMoreActions />
                 </IonButtons>
               </TitleSearch>

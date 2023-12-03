@@ -10,7 +10,6 @@ import { Redirect, useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
 import PostSort from "../../features/feed/PostSort";
 import MoreActions from "../../features/community/MoreActions";
-import { useAppSelector } from "../../store";
 import {
   createContext,
   memo,
@@ -38,6 +37,7 @@ import CommunitySearchResults from "../../features/community/search/CommunitySea
 import { getSortDuration } from "../../features/feed/endItems/EndPost";
 import ModActions from "../../features/community/mod/ModActions";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import usePostSort from "../../features/feed/usePostSort";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -140,7 +140,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
   const searchOpen = searchQuery || _searchOpen;
 
   const client = useClient();
-  const sort = useAppSelector((state) => state.post.sort);
+  const [sort, setSort] = usePostSort();
 
   const communityView = useFetchCommunity(community);
 
@@ -227,7 +227,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
                         community={communityView}
                         communityHandle={community}
                       />
-                      <PostSort />
+                      <PostSort sort={sort} setSort={setSort} />
                       <MoreActions community={communityView} />
                     </IonButtons>
                   </TitleSearch>
