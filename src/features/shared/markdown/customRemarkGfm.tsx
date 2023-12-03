@@ -1,3 +1,5 @@
+/// <reference types="remark-stringify" />
+
 import { combineExtensions } from "micromark-util-combine-extensions";
 import { gfmStrikethrough } from "micromark-extension-gfm-strikethrough";
 import { gfmTable } from "micromark-extension-gfm-table";
@@ -16,37 +18,38 @@ export default function customRemarkGfm(
   this: import("unified").Processor,
   options = {},
 ) {
+  const settings = options;
   const data = this.data();
 
-  add("micromarkExtensions", gfm());
-  add("fromMarkdownExtensions", gfmFromMarkdown());
-  add("toMarkdownExtensions", gfmToMarkdown(options));
+  const micromarkExtensions =
+    data.micromarkExtensions || (data.micromarkExtensions = []);
+  const fromMarkdownExtensions =
+    data.fromMarkdownExtensions || (data.fromMarkdownExtensions = []);
+  const toMarkdownExtensions =
+    data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
 
-  function add(field: string, value: unknown) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const list: any = data[field] ? data[field] : (data[field] = []);
-
-    list.push(value);
-  }
+  micromarkExtensions.push(gfm(settings));
+  fromMarkdownExtensions.push(gfmFromMarkdown());
+  toMarkdownExtensions.push(gfmToMarkdown(settings));
 }
 
 function gfm(options?: Options) {
-  return combineExtensions([gfmStrikethrough(options), gfmTable]);
+  return combineExtensions([gfmStrikethrough(options), gfmTable()]);
 }
 
 function gfmFromMarkdown() {
   return [
-    gfmAutolinkLiteralFromMarkdown,
-    gfmStrikethroughFromMarkdown,
-    gfmTableFromMarkdown,
+    gfmAutolinkLiteralFromMarkdown(),
+    gfmStrikethroughFromMarkdown(),
+    gfmTableFromMarkdown(),
   ];
 }
 
 function gfmToMarkdown(options?: Options) {
   return {
     extensions: [
-      gfmAutolinkLiteralToMarkdown,
-      gfmStrikethroughToMarkdown,
+      gfmAutolinkLiteralToMarkdown(),
+      gfmStrikethroughToMarkdown(),
       gfmTableToMarkdown(options),
     ],
   };
