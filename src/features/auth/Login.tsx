@@ -24,7 +24,7 @@ import { getClient } from "../../services/lemmy";
 import { IonInputCustomEvent } from "@ionic/core";
 import TermsSheet from "../settings/terms/TermsSheet";
 import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
-import { getCustomServers } from "../../services/app";
+import { useCustomServers } from "../../services/app";
 import { isNative } from "../../helpers/device";
 import { Browser } from "@capacitor/browser";
 import useAppToast from "../../helpers/useAppToast";
@@ -60,7 +60,7 @@ export default function Login({
 }) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
-  const [servers] = useState(getCustomServers());
+  const [servers] = useCustomServers();
   const [server, setServer] = useState(servers[0]);
   const [customServer, setCustomServer] = useState("");
   const [serverConfirmed, setServerConfirmed] = useState(false);
@@ -258,7 +258,7 @@ export default function Login({
                 onIonChange={(e) => setServer(e.target.value)}
               >
                 <IonList inset>
-                  {servers.slice(0, 3).map((server) => (
+                  {servers.map((server) => (
                     <IonItem disabled={loading} key={server}>
                       <IonRadio value={server} key={server}>
                         {server}

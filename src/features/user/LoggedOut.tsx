@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { useState } from "react";
 import { updateConnectedInstance } from "../auth/authSlice";
 import { swapHorizontalOutline } from "ionicons/icons";
-import { getCustomServers } from "../../services/app";
+import { useCustomServers } from "../../services/app";
 
 const Incognito = styled(IncognitoSvg)`
   opacity: 0.1;
@@ -20,6 +20,7 @@ const Incognito = styled(IncognitoSvg)`
 
 export default function LoggedOut() {
   const dispatch = useAppDispatch();
+  const [servers] = useCustomServers();
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
@@ -59,7 +60,7 @@ export default function LoggedOut() {
         columns={[
           {
             name: "server",
-            options: getCustomServers().map((server) => ({
+            options: servers.map((server) => ({
               text: server,
               value: server,
             })),

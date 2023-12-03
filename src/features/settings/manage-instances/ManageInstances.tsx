@@ -1,10 +1,9 @@
 import { IonLabel, IonList, useIonAlert } from "@ionic/react";
 import { InsetIonItem, ListHeader } from "../shared/formatting";
-import { getCustomServers } from "../../../services/app";
+import { useCustomServers } from "../../../services/app";
 import { getClient } from "../../../services/lemmy";
 import useAppToast from "../../../helpers/useAppToast";
 import { uniq, without } from "lodash";
-import { useState } from "react";
 import Instance from "./Instance";
 
 interface ManageInstancesProps {
@@ -12,7 +11,7 @@ interface ManageInstancesProps {
 }
 
 export default function ManageInstances({ editing }: ManageInstancesProps) {
-  const [instances, setInstances] = useState(getCustomServers());
+  const [instances, setInstances, resetInstances] = useCustomServers();
   const [presentAlert] = useIonAlert();
   const presentToast = useAppToast();
 
@@ -82,12 +81,8 @@ export default function ManageInstances({ editing }: ManageInstancesProps) {
     });
   }
 
-  function removeInstance(domain: string) {
-    setInstances(without(instances, domain));
-  }
-
-  function resetInstances() {
-    setInstances(getCustomServers());
+  function removeInstance(instance: string) {
+    setInstances(without(instances, instance));
   }
 
   return (
