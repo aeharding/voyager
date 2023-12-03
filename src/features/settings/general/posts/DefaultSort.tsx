@@ -28,7 +28,7 @@ export default function DefaultSort() {
       detail={false}
     >
       <Container>
-        <IonLabel>Default Post Sort</IonLabel>
+        <IonLabel>Default Sort</IonLabel>
         <ValueLabel slot="end" color="medium">
           {formatPostSort(defaultPostSort)}
         </ValueLabel>
@@ -38,7 +38,7 @@ export default function DefaultSort() {
 }
 
 function formatPostSort(sort: SortType): string {
-  if (isTopSort(sort)) return formatTopLabel(sort);
+  if (isTopSort(sort)) return `Top: ${formatTopLabel(sort)}`;
 
   return startCase(sort);
 }
