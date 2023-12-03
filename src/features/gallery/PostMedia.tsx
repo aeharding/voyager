@@ -3,22 +3,35 @@ import { findLoneImage } from "../../helpers/markdown";
 import GalleryImg, { GalleryImgProps } from "./GalleryImg";
 import { isUrlMedia, isUrlVideo } from "../../helpers/url";
 import Video, { VideoProps } from "../shared/Video";
-import { forwardRef } from "react";
+import { RefObject, forwardRef, memo } from "react";
 
 export interface PostGalleryImgProps
   extends Omit<GalleryImgProps & VideoProps, "src"> {
   post: PostView;
 }
 
-export default forwardRef<HTMLImageElement, PostGalleryImgProps>(
-  function PostMedia({ post, ...props }, ref) {
-    const src = getPostMedia(post);
+const PostMedia = forwardRef<
+  HTMLVideoElement | HTMLImageElement,
+  PostGalleryImgProps
+>(function PostMedia({ post, ...props }, ref) {
+  const src = getPostMedia(post);
 
-    if (src && isUrlVideo(src)) return <Video src={src} {...props} />;
+  if (src && isUrlVideo(src))
+    return (
+      <Video ref={ref as RefObject<HTMLVideoElement>} src={src} {...props} />
+    );
 
-    return <GalleryImg {...props} ref={ref} src={src} post={post} />;
-  },
-);
+  return (
+    <GalleryImg
+      {...props}
+      ref={ref as RefObject<HTMLImageElement>}
+      src={src}
+      post={post}
+    />
+  );
+});
+
+export default memo(PostMedia);
 
 export function getPostMedia(post: PostView): string | undefined {
   if (post.post.url && isUrlMedia(post.post.url)) return post.post.url;

@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import PostMedia, { PostGalleryImgProps } from "../../../gallery/PostMedia";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { IonIcon } from "@ionic/react";
 import { imageOutline, warningOutline } from "ionicons/icons";
+import useMediaLoadObserver from "./useMediaLoadObserver";
 
 interface ImgProps {
   blur: boolean;
@@ -37,7 +38,7 @@ const PlaceholderContainer = styled.div<{ loaded: boolean }>`
       aspect-ratio: 1.2;
       position: relative;
 
-      img {
+      ${Img} {
         position: absolute;
         top: 0;
         left: 0;
@@ -51,8 +52,8 @@ const LoadingIonIcon = styled(IonIcon)`
   font-size: 24px;
 `;
 
-export default function Image(props: PostGalleryImgProps & ImgProps) {
-  const [imgRef, loaded, setLoaded] = useImgLoadObserver();
+export default function Media(props: PostGalleryImgProps & ImgProps) {
+  const [mediaRef, loaded, setLoaded] = useMediaLoadObserver();
   const [error, setError] = useState(false);
 
   function renderIcon() {
@@ -64,7 +65,7 @@ export default function Image(props: PostGalleryImgProps & ImgProps) {
     <PlaceholderContainer loaded={loaded}>
       <Img
         {...props}
-        ref={imgRef}
+        ref={mediaRef}
         style={{ display: error ? "none" : undefined }}
         onError={() => {
           setError(true);
@@ -77,35 +78,4 @@ export default function Image(props: PostGalleryImgProps & ImgProps) {
       {renderIcon()}
     </PlaceholderContainer>
   );
-}
-
-function useImgLoadObserver() {
-  const imgRef = useRef<HTMLImageElement>(null);
-  const [loaded, setLoaded] = useState<boolean>(false);
-
-  useEffect(() => {
-    const handleResize = (entries: ResizeObserverEntry[]) => {
-      for (const entry of entries) {
-        if (
-          !(entry.target instanceof HTMLImageElement) ||
-          !entry.target.naturalWidth
-        )
-          return;
-
-        setLoaded(true);
-      }
-    };
-
-    if (!imgRef.current) return;
-
-    const resizeObserver = new ResizeObserver(handleResize);
-    resizeObserver.observe(imgRef.current);
-
-    return () => {
-      // Cleanup: Disconnect the ResizeObserver when the component unmounts
-      resizeObserver.disconnect();
-    };
-  }, []);
-
-  return [imgRef, loaded, setLoaded] as const;
 }
