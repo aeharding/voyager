@@ -1,6 +1,6 @@
 import { HTMLProps } from "react";
 import { isUrlVideo } from "../../helpers/url";
-import { GalleryImg, GalleryImgProps } from "../gallery/GalleryImg";
+import GalleryImg, { GalleryImgProps } from "../gallery/GalleryImg";
 import Video from "./Video";
 import { css } from "@emotion/react";
 
@@ -9,7 +9,7 @@ const smallStyles = css`
 `;
 
 interface MarkdownImgProps
-  extends HTMLProps<HTMLImageElement>,
+  extends Omit<HTMLProps<HTMLImageElement>, "ref">,
     GalleryImgProps {
   /**
    * Restrict height of media within comments (unrestricted in post body)
