@@ -14,17 +14,17 @@ import useClient from "../../../helpers/useClient";
 import { LIMIT } from "../../../services/lemmy";
 import { useParams } from "react-router";
 import PostSort from "../../../features/feed/PostSort";
-import { useAppSelector } from "../../../store";
 import { CommunityView, LemmyHttp } from "lemmy-js-client";
 import CommunityFeed from "../../../features/feed/CommunityFeed";
 import { notEmpty } from "../../../helpers/array";
 import { isLemmyError } from "../../../helpers/lemmy";
+import usePostSort from "../../../features/feed/usePostSort";
 
 export default function SearchCommunitiesPage() {
   const { search: _encodedSearch } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const sort = useAppSelector((state) => state.post.sort);
+  const [sort, setSort] = usePostSort();
 
   const search = decodeURIComponent(_encodedSearch);
 
@@ -62,7 +62,7 @@ export default function SearchCommunitiesPage() {
           <IonTitle>“{search}”</IonTitle>
 
           <IonButtons slot="end">
-            <PostSort />
+            <PostSort sort={sort} setSort={setSort} />
           </IonButtons>
         </IonToolbar>
       </IonHeader>

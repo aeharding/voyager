@@ -11,7 +11,7 @@ import { InsetIonItem } from "./formatting";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   align-items: center;
   flex: 1;
@@ -19,7 +19,7 @@ const Container = styled.div`
   min-width: 0;
 `;
 
-const ValueLabel = styled(IonLabel)`
+export const ValueLabel = styled(IonLabel)`
   flex: 1;
   text-align: right;
 
