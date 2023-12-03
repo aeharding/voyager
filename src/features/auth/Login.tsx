@@ -33,6 +33,7 @@ import {
   OldLemmyErrorValue,
   isLemmyError,
 } from "../../helpers/lemmy";
+import { uniq } from "lodash";
 
 const JOIN_LEMMY_URL = "https://join-lemmy.org/instances";
 
@@ -60,7 +61,7 @@ export default function Login({
 }) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
-  const [servers] = useCustomServers();
+  const [servers, setServers] = useCustomServers();
   const [server, setServer] = useState(servers[0]);
   const [customServer, setCustomServer] = useState("");
   const [serverConfirmed, setServerConfirmed] = useState(false);
@@ -202,6 +203,7 @@ export default function Login({
       message: "Login successful",
       color: "success",
     });
+    setServers(uniq([...servers, customServer]));
   }
 
   return (
