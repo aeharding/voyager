@@ -6,7 +6,7 @@ import PostMedia, {
 } from "../../../gallery/PostMedia";
 import { CSSProperties, useMemo } from "react";
 import { IonIcon } from "@ionic/react";
-import { imageOutline, warningOutline } from "ionicons/icons";
+import { imageOutline } from "ionicons/icons";
 import useMediaLoadObserver from "./useMediaLoadObserver";
 import { IMAGE_FAILED, imageFailed } from "./imageSlice";
 import { useAppDispatch } from "../../../../store";
@@ -56,14 +56,18 @@ const LoadingIonIcon = styled(IonIcon)`
   font-size: 24px;
 `;
 
+const Error = styled.div`
+  opacity: 0.5;
+`;
+
 export default function Media(props: PostGalleryImgProps & ImgProps) {
   const dispatch = useAppDispatch();
   const src = useMemo(() => getPostMedia(props.post), [props.post]);
-  const [mediaRef, aspectRatio, onLoad] = useMediaLoadObserver(src);
+  const [mediaRef, aspectRatio] = useMediaLoadObserver(src);
 
   function renderIcon() {
     if (aspectRatio === IMAGE_FAILED)
-      return <LoadingIonIcon icon={warningOutline} />;
+      return <Error>failed to load media 😢</Error>;
 
     if (!aspectRatio) return <LoadingIonIcon icon={imageOutline} />;
   }
@@ -71,7 +75,7 @@ export default function Media(props: PostGalleryImgProps & ImgProps) {
   const style: CSSProperties | undefined = useMemo(() => {
     if (!aspectRatio) return;
 
-    if (aspectRatio === IMAGE_FAILED) return { display: "none" };
+    if (aspectRatio === IMAGE_FAILED) return { opacity: 0 };
 
     return { aspectRatio };
   }, [aspectRatio]);
@@ -82,7 +86,6 @@ export default function Media(props: PostGalleryImgProps & ImgProps) {
         {...props}
         ref={mediaRef}
         style={style}
-        onLoad={(e) => onLoad(e.target as Element)}
         onError={() => {
           if (src) dispatch(imageFailed(src));
         }}
