@@ -10,7 +10,7 @@ export const DEFAULT_LEMMY_SERVERS = [
   "sh.itjust.works",
 ];
 
-let _customServers = DEFAULT_LEMMY_SERVERS;
+let _customServers: string[] = [];
 
 export function useCustomServers(): [string[], Dispatch<string[]>, () => void] {
   const dispatch = useAppDispatch();
@@ -20,7 +20,12 @@ export function useCustomServers(): [string[], Dispatch<string[]>, () => void] {
   };
   const resetCustomServers = () => setCustomServers(DEFAULT_LEMMY_SERVERS);
 
+  if (hasCustomServers()) return [_customServers, () => {}, () => {}];
   return [customServers, setCustomServers, resetCustomServers];
+}
+
+export function hasCustomServers() {
+  return _customServers.length > 0;
 }
 
 export function getCustomServers() {
@@ -28,7 +33,7 @@ export function getCustomServers() {
 }
 
 export function getDefaultServer() {
-  return _customServers[0];
+  return _customServers[0] || DEFAULT_LEMMY_SERVERS[0];
 }
 
 async function getConfig() {

@@ -43,6 +43,7 @@ import {
 } from "../../features/settings/biometric/biometricSlice";
 import BiometricTitle from "../../features/settings/biometric/BiometricTitle";
 import usePageVisibility from "../../helpers/usePageVisibility";
+import { hasCustomServers } from "../../services/app";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
@@ -199,12 +200,14 @@ export default function SettingsPage() {
         </IonList>
 
         <IonList inset color="primary">
-          <InsetIonItem routerLink="/settings/manage-instances">
-            <IconBg color="color(display-p3 0.02 0.68 0.77)">
-              <IonIcon icon={serverOutline} />
-            </IconBg>
-            <SettingLabel>Manage instances</SettingLabel>
-          </InsetIonItem>
+          {!hasCustomServers() && (
+            <InsetIonItem routerLink="/settings/manage-instances">
+              <IconBg color="color(display-p3 0.02 0.68 0.77)">
+                <IonIcon icon={serverOutline} />
+              </IconBg>
+              <SettingLabel>Manage instances</SettingLabel>
+            </InsetIonItem>
+          )}
           <InsetIonItem routerLink="/settings/reddit-migrate">
             <IconBg color="#ff5700">
               <IonIcon icon={bagCheck} />
