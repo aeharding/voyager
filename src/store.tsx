@@ -92,6 +92,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           store.dispatch(initializeBiometricSliceDataIfNeeded()),
         ]);
       } finally {
+        // Initialize with current active handle
+        activeHandleChange();
+
         // Subscribe to actions to handle handle changes, this can be used to react to other changes as well
         // to coordinate side effects between slices.
         store.subscribe(activeHandleChange);
