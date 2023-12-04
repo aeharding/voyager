@@ -106,22 +106,24 @@ export default function SwipeSettings() {
         </ListHeader>
         <IonList inset>
           <InsetIonItem>
-            <IonLabel>Disable Left Swipes</IonLabel>
             <IonToggle
               checked={disableLeftSwipes === true}
               onIonChange={(e) =>
                 dispatch(setDisableLeftSwipes(e.detail.checked))
               }
-            />
+            >
+              Disable Left Swipes
+            </IonToggle>
           </InsetIonItem>
           <InsetIonItem>
-            <IonLabel>Disable Right Swipes</IonLabel>
             <IonToggle
               checked={disableRightSwipes === true}
               onIonChange={(e) =>
                 dispatch(setDisableRightSwipes(e.detail.checked))
               }
-            />
+            >
+              Disable Right Swipes
+            </IonToggle>
           </InsetIonItem>
           <SettingSelector
             title="Long Swipe Trigger Point"

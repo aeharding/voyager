@@ -38,7 +38,7 @@ interface ConfigProviderProps {
 }
 
 export default function ConfigProvider({ children }: ConfigProviderProps) {
-  const [configLoaded, setConfigLoaded] = useState(false);
+  const [configLoaded, setConfigLoaded] = useState(isNative()); // native does not load config
 
   useEffect(() => {
     // Config is not necessary for app to run

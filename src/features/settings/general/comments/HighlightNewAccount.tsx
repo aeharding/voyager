@@ -1,4 +1,4 @@
-import { IonLabel, IonToggle } from "@ionic/react";
+import { IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setHighlightNewAccount } from "../../settingsSlice";
@@ -12,11 +12,12 @@ export default function HighlightNewAccount() {
 
   return (
     <InsetIonItem>
-      <IonLabel>New Account Highlightenator</IonLabel>
       <IonToggle
         checked={highlightNewAccount}
         onIonChange={(e) => dispatch(setHighlightNewAccount(e.detail.checked))}
-      />
+      >
+        New Account Highlightenator
+      </IonToggle>
     </InsetIonItem>
   );
 }

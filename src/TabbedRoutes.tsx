@@ -51,6 +51,8 @@ import CommentsPage from "./pages/shared/CommentsPage";
 import ModlogPage from "./pages/shared/ModlogPage";
 import ModqueuePage from "./pages/shared/ModqueuePage";
 import TabBar from "./TabBar";
+import { isInstalled } from "./helpers/device";
+import { getBaseRoute } from "./features/community/list/CommunitiesListRedirectBootstrapper";
 
 export default function TabbedRoutes() {
   const ready = useAppSelector((state) => state.settings.ready);
@@ -196,6 +198,12 @@ export default function TabbedRoutes() {
 
   if (!ready) return;
 
+  const redirectRoute = (() => {
+    if (isInstalled()) return ""; // redirect to be handled by <CommunitiesListRedirectBootstrapper />
+
+    return getBaseRoute(!!iss, defaultFeed);
+  })();
+
   return (
     <PageContextProvider value={pageContextValue}>
       <GalleryProvider>
@@ -207,13 +215,7 @@ export default function TabbedRoutes() {
             <Route exact path="/">
               {!iss || defaultFeed ? (
                 <Redirect
-                  to={`/posts/${iss ?? getDefaultServer()}${
-                    iss
-                      ? getPathForFeed(
-                          defaultFeed || { type: ODefaultFeedType.Home },
-                        )
-                      : "/all"
-                  }`}
+                  to={`/posts/${iss ?? getDefaultServer()}${redirectRoute}`}
                   push={false}
                 />
               ) : (
@@ -377,7 +379,7 @@ export default function TabbedRoutes() {
   );
 }
 
-function getPathForFeed(defaultFeed: DefaultFeedType): string {
+export function getPathForFeed(defaultFeed: DefaultFeedType): string {
   switch (defaultFeed.type) {
     case ODefaultFeedType.All:
       return "/all";

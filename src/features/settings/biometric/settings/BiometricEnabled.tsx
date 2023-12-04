@@ -1,4 +1,4 @@
-import { IonLabel, IonToggle } from "@ionic/react";
+import { IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../user/Profile";
 import BiometricTitle from "../BiometricTitle";
 import { useAppDispatch, useAppSelector } from "../../../../store";
@@ -12,13 +12,12 @@ export default function BiometricEnabled() {
 
   return (
     <InsetIonItem>
-      <IonLabel>
-        Lock with <BiometricTitle />
-      </IonLabel>
       <IonToggle
         checked={biometricsEnabled}
         onIonChange={() => dispatch(setBiometricsEnabled(!biometricsEnabled))}
-      />
+      >
+        Lock with <BiometricTitle />
+      </IonToggle>
     </InsetIonItem>
   );
 }

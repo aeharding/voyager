@@ -136,6 +136,8 @@ interface ImageOptions {
    */
   size?: number;
 
+  devicePixelRatio?: number;
+
   format?: "jpg" | "png" | "webp";
 }
 
@@ -148,7 +150,10 @@ export function getImageSrc(url: string, options?: ImageOptions) {
     ? new URLSearchParams(
         omitUndefinedValues({
           thumbnail: options.size
-            ? `${Math.round(options.size * window.devicePixelRatio)}`
+            ? `${Math.round(
+                options.size *
+                  (options?.devicePixelRatio ?? window.devicePixelRatio),
+              )}`
             : undefined,
           format: options.format ?? defaultFormat,
         }),
