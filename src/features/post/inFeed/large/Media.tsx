@@ -1,10 +1,15 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import PostMedia, { PostGalleryImgProps } from "../../../gallery/PostMedia";
-import { useState } from "react";
+import PostMedia, {
+  PostGalleryImgProps,
+  getPostMedia,
+} from "../../../gallery/PostMedia";
+import { CSSProperties, useMemo } from "react";
 import { IonIcon } from "@ionic/react";
 import { imageOutline, warningOutline } from "ionicons/icons";
 import useMediaLoadObserver from "./useMediaLoadObserver";
+import { IMAGE_FAILED, imageFailed } from "./imageSlice";
+import { useAppDispatch } from "../../../../store";
 
 interface ImgProps {
   blur: boolean;
@@ -42,7 +47,6 @@ const PlaceholderContainer = styled.div<{ loaded: boolean }>`
         position: absolute;
         top: 0;
         left: 0;
-        right: 0;
       }
     `}
 `;
@@ -53,25 +57,34 @@ const LoadingIonIcon = styled(IonIcon)`
 `;
 
 export default function Media(props: PostGalleryImgProps & ImgProps) {
-  const [mediaRef, loaded, setLoaded] = useMediaLoadObserver();
-  const [error, setError] = useState(false);
+  const dispatch = useAppDispatch();
+  const src = useMemo(() => getPostMedia(props.post), [props.post]);
+  const [mediaRef, aspectRatio, onLoad] = useMediaLoadObserver(src);
 
   function renderIcon() {
-    if (error) return <LoadingIonIcon icon={warningOutline} />;
-    if (!loaded) return <LoadingIonIcon icon={imageOutline} />;
+    if (aspectRatio === IMAGE_FAILED)
+      return <LoadingIonIcon icon={warningOutline} />;
+
+    if (!aspectRatio) return <LoadingIonIcon icon={imageOutline} />;
   }
 
+  const style: CSSProperties | undefined = useMemo(() => {
+    if (!aspectRatio) return;
+
+    if (aspectRatio === IMAGE_FAILED) return { display: "none" };
+
+    return { aspectRatio };
+  }, [aspectRatio]);
+
   return (
-    <PlaceholderContainer loaded={loaded}>
+    <PlaceholderContainer loaded={!!aspectRatio && aspectRatio > 0}>
       <Img
         {...props}
         ref={mediaRef}
-        style={{ display: error ? "none" : undefined }}
+        style={style}
+        onLoad={(e) => onLoad(e.target as Element)}
         onError={() => {
-          setError(true);
-        }}
-        onLoad={() => {
-          setLoaded(true);
+          if (src) dispatch(imageFailed(src));
         }}
       />
 
