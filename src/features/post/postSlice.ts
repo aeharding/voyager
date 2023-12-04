@@ -43,6 +43,7 @@ interface PostState {
   postVotesById: Dictionary<1 | -1 | 0>;
   postSavedById: Dictionary<boolean>;
   postReadById: Dictionary<boolean>;
+  postCollapsedById: Dictionary<boolean>;
   sort: SortType;
 }
 
@@ -53,6 +54,7 @@ const initialState: PostState = {
   postVotesById: {},
   postSavedById: {},
   postReadById: {},
+  postCollapsedById: {},
   sort: get(POST_SORT_KEY) ?? POST_SORTS[0],
 };
 
@@ -85,6 +87,10 @@ export const postSlice = createSlice({
     },
     postDeleted: (state, action: PayloadAction<number>) => {
       state.postDeletedById[action.payload] = true;
+    },
+    togglePostCollapse: (state, action: PayloadAction<number>) => {
+      state.postCollapsedById[action.payload] =
+        !state.postCollapsedById[action.payload];
     },
     resetHidden: (state) => {
       state.postHiddenById = {};
@@ -234,6 +240,7 @@ export const {
   updatePostRead,
   receivedPostNotFound,
   postDeleted,
+  togglePostCollapse,
   resetHidden,
 } = postSlice.actions;
 

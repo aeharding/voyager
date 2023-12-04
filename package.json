@@ -2,7 +2,7 @@
   "name": "voyager",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "1.27.0",
+  "version": "1.28.0",
   "type": "module",
   "packageManager": "pnpm@8.9.2+sha256.8d62573d93061f2722b7b48c9739e96cd4603c3ab153bc81c619dcb9861a214e",
   "scripts": {
@@ -31,6 +31,7 @@
     "vite-express": "^0.11.0"
   },
   "devDependencies": {
+    "@aeharding/modern-screenshot": "^4.5.0",
     "@capacitor-community/app-icon": "^4.1.1",
     "@capacitor/android": "5.2.3",
     "@capacitor/app": "^5.0.6",
@@ -53,7 +54,6 @@
     "@ionic/core": "npm:voyager-ionic-core@^7.5.5",
     "@ionic/react": "7.5.8-dev.11701383555.17254408",
     "@ionic/react-router": "7.5.8-dev.11701383555.17254408",
-    "@justfork/html-to-image": "^1.21.5",
     "@reduxjs/toolkit": "^1.9.7",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.0.0",

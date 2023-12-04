@@ -238,6 +238,7 @@ ion-toast.center::part(container) {
   font-size: 16px;
 
   --width: 330px;
+  color: var(--ion-text-color);
 
   position: absolute;
   width: var(--width);
@@ -262,7 +263,6 @@ ion-modal.save-as-image-modal {
   --max-width: 470px;
 }
 
-#share-as-image-root img:not(.allowed-image),
 #share-as-image-root video {
   display: none;
 }

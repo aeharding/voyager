@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Person } from "lemmy-js-client";
 import Handle from "../Handle";
-import { StyledLink } from "./shared";
+import { StyledLink, hideCss } from "./shared";
 import { useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
 import AgeBadge from "./AgeBadge";
@@ -33,14 +33,7 @@ const PersonLinkEl = styled(StyledLink, {
   ${({ hideUsername }) =>
     hideUsername &&
     css`
-      position: relative;
-
-      &:after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: var(--ion-color-step-150, #ccc);
-      }
+      ${hideCss}
     `}
 `;
 

@@ -2,7 +2,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Community, SubscribedType } from "lemmy-js-client";
 import Handle from "../Handle";
-import { StyledLink } from "./shared";
+import { StyledLink, hideCss } from "./shared";
 import ItemIcon from "../img/ItemIcon";
 import { css } from "@emotion/react";
 import { useIonActionSheet } from "@ionic/react";
@@ -14,6 +14,8 @@ import {
   tabletPortraitOutline,
 } from "ionicons/icons";
 import useCommunityActions from "../../community/useCommunityActions";
+import { useContext } from "react";
+import { ShareImageContext } from "../../share/asImage/ShareAsImage";
 
 interface CommunityLinkProps {
   community: Community;
@@ -34,6 +36,7 @@ export default function CommunityLink({
   const [present] = useIonActionSheet();
 
   const handle = getHandle(community);
+  const { hideCommunity } = useContext(ShareImageContext);
 
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
     useCommunityActions(community, subscribed);
@@ -83,9 +86,10 @@ export default function CommunityLink({
       to={buildGeneralBrowseLink(`/c/${handle}`)}
       onClick={(e) => e.stopPropagation()}
       className={className}
+      css={hideCommunity ? hideCss : undefined}
       {...bind()}
     >
-      {showIcon && (
+      {showIcon && !hideCommunity && (
         <ItemIcon
           item={community}
           size={24}

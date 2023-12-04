@@ -55,13 +55,14 @@ export default function TextSize() {
       </ListHeader>
       <IonList inset>
         <InsetIonItem>
-          <IonLabel>Use System Text Size</IonLabel>
           <IonToggle
             checked={useSystemFontSize}
             onIonChange={(e) =>
               dispatch(setUseSystemFontSize(e.detail.checked))
             }
-          />
+          >
+            Use System Text Size
+          </IonToggle>
         </InsetIonItem>
         <InsetIonItem>
           <Range
@@ -82,7 +83,6 @@ export default function TextSize() {
         </InsetIonItem>
         {fontSizeMultiplier >= 1.4 && (
           <InsetIonItem>
-            <IonLabel>Larger Text Mode</IonLabel>
             <IonToggle
               checked={fontSizeMultiplier > MAX_REGULAR_FONT_ADJUSTMENT}
               onIonChange={() =>
@@ -94,7 +94,9 @@ export default function TextSize() {
                   ),
                 )
               }
-            />
+            >
+              Larger Text Mode
+            </IonToggle>
           </InsetIonItem>
         )}
       </IonList>

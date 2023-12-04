@@ -54,7 +54,11 @@ interface IPageContext {
 
   presentSelectText: (text: string) => void;
 
-  presentShareAsImage: (comment: CommentView, comments: CommentView[]) => void;
+  presentShareAsImage: (
+    post: PostView,
+    comment?: CommentView,
+    comments?: CommentView[],
+  ) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -100,11 +104,17 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   }, [jwt, presentLogin, value.pageRef]);
 
   const presentShareAsImage = useCallback(
-    (comment: CommentView, comments: CommentView[]) => {
+    (post: PostView, comment?: CommentView, comments?: CommentView[]) => {
       shareAsImageDataRef.current = {
-        comment,
-        comments,
+        post,
       };
+      if (comment && comments) {
+        shareAsImageDataRef.current = {
+          ...shareAsImageDataRef.current,
+          comment,
+          comments,
+        };
+      }
       presentShareAsImageModal({
         cssClass: "save-as-image-modal",
         initialBreakpoint: 1,
