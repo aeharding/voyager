@@ -61,7 +61,9 @@ export default function Login({
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const [servers] = useState(getCustomServers());
-  const connectedInstance = useAppSelector((state) => state.auth.connectedInstance);
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
   const [server, setServer] = useState(connectedInstance);
   const [customServer, setCustomServer] = useState("");
   const [serverConfirmed, setServerConfirmed] = useState(false);
