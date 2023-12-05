@@ -1,7 +1,15 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Dictionary } from "@reduxjs/toolkit";
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { useInView } from "react-intersection-observer";
 import { isAppleDeviceInstallable } from "../../helpers/device";
 
@@ -79,18 +87,25 @@ export interface VideoProps {
 
 const videoPlaybackPlace: Dictionary<number> = {};
 
-export default function Video({
-  src,
-  controls,
-  blur,
-  className,
-  progress: showProgress = !controls,
-}: VideoProps) {
+const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
+  {
+    src,
+    controls,
+    blur,
+    className,
+    progress: showProgress = !controls,
+    ...rest
+  },
+  forwardedRef,
+) {
+  const videoRef = useRef<HTMLVideoElement>();
+
+  useImperativeHandle(forwardedRef, () => videoRef.current as HTMLVideoElement);
+
   const [inViewRef, inView] = useInView({
     threshold: 0.5,
   });
-  const videoRef = useRef<HTMLVideoElement>();
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState<number | undefined>(undefined);
 
   const setRefs = useCallback(
     (node: HTMLVideoElement) => {
@@ -131,9 +146,8 @@ export default function Video({
   }, [inView, savePlace, resume]);
 
   const videoEl = (
-    <Container interactable={!!controls}>
+    <Container interactable={!!controls} className={className}>
       <VideoEl
-        className={className}
         ref={setRefs}
         src={`${src}#t=0.001`}
         blur={blur}
@@ -147,10 +161,13 @@ export default function Video({
           setProgress(e.target.currentTime / e.target.duration);
         }}
         onClick={(e) => e.stopPropagation()}
+        {...rest}
       />
-      {showProgress && <Progress value={progress} />}
+      {showProgress && progress !== undefined && <Progress value={progress} />}
     </Container>
   );
 
   return videoEl;
-}
+});
+
+export default Video;
