@@ -40,7 +40,7 @@ export default function CommentContent({
     if (item.removed && !isMod)
       return (
         <p>
-          <i>removed by mod</i>
+          <i>removed by moderator</i>
           <TrashIconContainer>
             <IonIcon icon={trashOutline} />
           </TrashIconContainer>
