@@ -24,16 +24,21 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { buildCommunityLink } from "../../helpers/appLinkBuilder";
 import { RootState, useAppSelector } from "../../store";
 import useCanModerate from "../../features/moderation/useCanModerate";
+import { useUserDetails } from "../../features/user/useUserDetails";
 
 export type ModlogItemType =
   GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;
 
 export default function ModlogPage() {
-  const { community } = useParams<{ community?: string }>();
+  const { community, handle } = useParams<{
+    community?: string;
+    handle?: string;
+  }>();
 
-  if (!community) return <GlobalModlog />;
+  if (handle) return <ModlogByUserHandle handle={handle} />;
+  if (community) return <ModlogByCommunityName communityName={community} />;
 
-  return <ModlogByCommunityName communityName={community} />;
+  return <GlobalModlog />;
 }
 
 const userSelector = (state: RootState) =>
@@ -60,6 +65,18 @@ const ModlogByCommunityName = memo(function ModlogByCommunityName({
 
   if (canModerate) return <Modlog community={community.community} />;
   return <Modlog community={community.community} user={user} />;
+});
+
+const ModlogByUserHandle = memo(function ModlogByUserHandle({
+  handle,
+}: {
+  handle: string;
+}) {
+  const user = useUserDetails(handle);
+
+  if (!user) return <CenteredSpinner />;
+
+  return <Modlog user={user.user} />;
 });
 
 interface ModlogProps {

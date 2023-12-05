@@ -16,6 +16,7 @@ import { useContext } from "react";
 import AppContent from "../../features/shared/AppContent";
 import { PageContext } from "../../features/auth/PageContext";
 import FeedContent from "../shared/FeedContent";
+import ProfilePageActions from "../../features/user/ProfilePageActions";
 
 export default function ProfilePage() {
   const handle = useAppSelector(handleSelector);
@@ -45,6 +46,10 @@ export default function ProfilePage() {
               </IonButtons>
 
               <IonTitle>{handle}</IonTitle>
+
+              <IonButtons slot="end">
+                <ProfilePageActions />
+              </IonButtons>
             </>
           ) : (
             <>
