@@ -7,15 +7,9 @@ import { IonIcon } from "@ionic/react";
 import { trashOutline } from "ionicons/icons";
 import styled from "@emotion/styled";
 
-const InlineStyle = styled.div`
-  display: flex;
-  display: inline;
+const TrashIconContainer = styled.span`
   padding-inline-start: 0.4em;
   vertical-align: middle;
-`;
-
-const InlineRed = styled(InlineStyle)`
-  color: var(--ion-color-danger);
 `;
 
 interface CommentContentProps {
@@ -38,18 +32,18 @@ export default function CommentContent({
       return (
         <p>
           <i>deleted by creator</i>
-          <InlineStyle>
+          <TrashIconContainer>
             <IonIcon icon={trashOutline} />
-          </InlineStyle>
+          </TrashIconContainer>
         </p>
       );
     if (item.removed && !isMod)
       return (
         <p>
           <i>removed by mod</i>
-          <InlineRed>
+          <TrashIconContainer>
             <IonIcon icon={trashOutline} />
-          </InlineRed>
+          </TrashIconContainer>
         </p>
       );
 
