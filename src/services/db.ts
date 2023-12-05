@@ -1,6 +1,9 @@
 import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
-import { CommentSortType, FederatedInstances } from "lemmy-js-client";
+import { CommentSortType, FederatedInstances, SortType } from "lemmy-js-client";
+import { zipObject } from "lodash";
+import { ALL_POST_SORTS } from "../features/feed/PostSort";
+import { COMMENT_SORTS } from "../features/comment/CommentSort";
 
 export interface IPostMetadata {
   post_id: number;
@@ -72,15 +75,11 @@ export const OPostBlurNsfw = {
   Never: "never",
 } as const;
 
-export const OCommentDefaultSort: Record<string, CommentSortType> = {
-  Hot: "Hot",
-  Top: "Top",
-  New: "New",
-  Controversial: "Controversial",
-  Old: "Old",
-} as const;
+export const OCommentDefaultSort = zipObject(COMMENT_SORTS, COMMENT_SORTS);
 
 export type CommentDefaultSort = CommentSortType;
+
+export const OSortType = zipObject(ALL_POST_SORTS, ALL_POST_SORTS);
 
 export type PostBlurNsfwType =
   (typeof OPostBlurNsfw)[keyof typeof OPostBlurNsfw];
@@ -280,6 +279,7 @@ export type SettingValueTypes = {
   no_subscribed_in_feed: boolean;
   infinite_scrolling: boolean;
   upvote_on_save: boolean;
+  default_post_sort: SortType;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

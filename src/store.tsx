@@ -37,6 +37,7 @@ import migrationSlice, {
   getMigrationLinks,
 } from "./features/community/migrationSlice";
 import modSlice from "./features/moderation/modSlice";
+import imageSlice from "./features/post/inFeed/large/imageSlice";
 
 const store = configureStore({
   reducer: {
@@ -53,6 +54,7 @@ const store = configureStore({
     resolve: resolveSlice,
     biometric: biometricSlice,
     mod: modSlice,
+    image: imageSlice,
     migration: migrationSlice,
   },
 });
@@ -97,6 +99,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           store.dispatch(initializeBiometricSliceDataIfNeeded()),
         ]);
       } finally {
+        // Initialize with current active handle
+        activeHandleChange();
+
         // Subscribe to actions to handle handle changes, this can be used to react to other changes as well
         // to coordinate side effects between slices.
         store.subscribe(activeHandleChange);

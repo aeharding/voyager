@@ -15,7 +15,7 @@ import { AnnouncementIcon } from "../../../../pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
-import { InFeedPostMedia } from "./Image";
+import Media from "./Media";
 import { useAppSelector } from "../../../../store";
 import { isUrlMedia } from "../../../../helpers/url";
 import ModeratableItem, {
@@ -127,7 +127,7 @@ export default function LargePost({
     if ((post.post.url && isUrlMedia(post.post.url)) || markdownLoneImage) {
       return (
         <ImageContainer>
-          <InFeedPostMedia
+          <Media
             blur={isNsfwBlurred(post, blurNsfw)}
             post={post}
             animationType="zoom"
