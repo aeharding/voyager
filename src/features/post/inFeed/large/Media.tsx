@@ -10,26 +10,14 @@ import { imageOutline } from "ionicons/icons";
 import useMediaLoadObserver from "./useMediaLoadObserver";
 import { IMAGE_FAILED, imageFailed } from "./imageSlice";
 import { useAppDispatch } from "../../../../store";
+import BlurOverlay from "./BlurOverlay";
 
-interface ImgProps {
-  blur: boolean;
-}
-
-const Img = styled(PostMedia)<ImgProps>`
+const Img = styled(PostMedia)`
   width: 100%;
   max-width: none;
   max-height: max(100vh, 1000px);
   object-fit: contain;
   -webkit-touch-callout: default;
-
-  ${({ blur }) =>
-    blur &&
-    css`
-      filter: blur(40px);
-
-      // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-      transform: translate3d(0, 0, 0);
-    `}
 `;
 
 const PlaceholderContainer = styled.div<{ loaded: boolean }>`
@@ -60,7 +48,7 @@ const Error = styled.div`
   opacity: 0.5;
 `;
 
-export default function Media(props: PostGalleryImgProps & ImgProps) {
+export default function Media(props: PostGalleryImgProps & { blur: boolean }) {
   const dispatch = useAppDispatch();
   const src = useMemo(() => getPostMedia(props.post), [props.post]);
   const [mediaRef, aspectRatio] = useMediaLoadObserver(src);
@@ -73,19 +61,20 @@ export default function Media(props: PostGalleryImgProps & ImgProps) {
   }
 
   const style: CSSProperties | undefined = useMemo(() => {
-    if (!aspectRatio) return;
-
-    if (aspectRatio === IMAGE_FAILED) return { opacity: 0 };
+    if (!aspectRatio || aspectRatio === IMAGE_FAILED) return { opacity: 0 };
 
     return { aspectRatio };
   }, [aspectRatio]);
 
-  return (
-    <PlaceholderContainer loaded={!!aspectRatio && aspectRatio > 0}>
+  const loaded = !!aspectRatio && aspectRatio > 0;
+
+  const contents = (
+    <PlaceholderContainer loaded={loaded}>
       <Img
         {...props}
         ref={mediaRef}
         style={style}
+        autoPlay={!props.blur}
         onError={() => {
           if (src) dispatch(imageFailed(src));
         }}
@@ -94,4 +83,8 @@ export default function Media(props: PostGalleryImgProps & ImgProps) {
       {renderIcon()}
     </PlaceholderContainer>
   );
+
+  if (!props.blur) return contents; // optimization
+
+  return <BlurOverlay blur={props.blur && loaded}>{contents}</BlurOverlay>;
 }

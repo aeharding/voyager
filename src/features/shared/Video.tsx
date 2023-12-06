@@ -57,30 +57,20 @@ const Progress = styled.progress`
   }
 `;
 
-const VideoEl = styled.video<{ blur?: boolean }>`
+const VideoEl = styled.video`
   width: 100%;
   max-height: calc(100vh - 60px);
   object-fit: cover;
 
   overflow: hidden;
-
-  ${({ blur }) =>
-    blur &&
-    css`
-      filter: blur(40px);
-
-      // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-      transform: translate3d(0, 0, 0);
-    `}
 `;
 
 export interface VideoProps {
   src: string;
+
   controls?: boolean;
-
-  blur?: boolean;
-
   progress?: boolean;
+  autoPlay?: boolean;
 
   className?: string;
 }
@@ -91,9 +81,9 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
   {
     src,
     controls,
-    blur,
     className,
     progress: showProgress = !controls,
+    autoPlay = true,
     ...rest
   },
   forwardedRef,
@@ -119,19 +109,19 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
 
   const savePlace = useCallback(() => {
     if (!videoRef.current) return;
-    if (blur) return;
+    if (!autoPlay) return;
 
     videoPlaybackPlace[src] = videoRef.current.currentTime;
     videoRef.current.pause();
-  }, [blur, src]);
+  }, [src, autoPlay]);
 
   const resume = useCallback(() => {
     if (!videoRef.current) return;
-    if (blur) return;
+    if (!autoPlay) return;
 
     videoRef.current.currentTime = videoPlaybackPlace[src] ?? 0;
     videoRef.current.play();
-  }, [blur, src]);
+  }, [src, autoPlay]);
 
   useEffect(() => {
     if (!videoRef || !videoRef.current) {
@@ -150,7 +140,6 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
       <VideoEl
         ref={setRefs}
         src={`${src}#t=0.001`}
-        blur={blur}
         loop
         muted
         playsInline
