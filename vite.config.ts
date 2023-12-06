@@ -6,6 +6,10 @@ import legacy from "@vitejs/plugin-legacy";
 
 import fs from "fs";
 
+import { readFileSync } from "fs";
+
+const manifest = JSON.parse(readFileSync("./manifest.json", "utf-8"));
+
 // https://github.com/vitejs/vite/issues/2415#issuecomment-1381196720
 const dotPathFixPlugin = () => ({
   name: "dot-path-fix-plugin",
@@ -37,7 +41,12 @@ export default defineConfig({
     }),
     svgr(),
     VitePWA({
+      devOptions: {
+        enabled: true,
+      },
       registerType: "prompt",
+      manifestFilename: "manifest.json",
+      manifest,
       workbox: {
         runtimeCaching: [
           {
@@ -49,7 +58,9 @@ export default defineConfig({
       },
     }),
     legacy({
-      modernPolyfills: ["es.array.at"],
+      // es.array.at: Voyager code iOS 15.2
+      // es.object.has-own: ReactMarkdown iOS 15.2
+      modernPolyfills: ["es.array.at", "es.object.has-own"],
     }),
   ],
   // TODO: Outdated clients trying to access stale codesplit js chucks
@@ -59,12 +70,26 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: () => "index.js",
+
+        // ---- Reproducible builds (f-droid) ----
+        // eslint-disable-next-line no-undef
+        ...(process.env.CI_PLATFORM === "android" ||
+        // eslint-disable-next-line no-undef
+        process.env.CI_PLATFORM === "ios"
+          ? {
+              entryFileNames: `[name].js`,
+              chunkFileNames: `[name].js`,
+              assetFileNames: `[name].[ext]`,
+            }
+          : {}),
       },
     },
   },
   define: {
     // eslint-disable-next-line no-undef
     APP_VERSION: JSON.stringify(process.env.npm_package_version),
+    // eslint-disable-next-line no-undef
+    BUILD_FOSS_ONLY: !!process.env.BUILD_FOSS_ONLY,
   },
   test: {
     globals: true,

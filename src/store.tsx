@@ -17,6 +17,8 @@ import inboxSlice from "./features/inbox/inboxSlice";
 import settingsSlice, {
   fetchSettingsFromDatabase,
   getBlurNsfw,
+  getDefaultFeed,
+  getFilteredKeywords,
 } from "./features/settings/settingsSlice";
 import gestureSlice, {
   fetchGesturesFromDatabase,
@@ -24,6 +26,15 @@ import gestureSlice, {
 import appIconSlice, {
   fetchAppIcon,
 } from "./features/settings/app-icon/appIconSlice";
+import instancesSlice, {
+  getInstances,
+} from "./features/instances/instancesSlice";
+import resolveSlice from "./features/resolve/resolveSlice";
+import biometricSlice, {
+  initializeBiometricSliceDataIfNeeded,
+} from "./features/settings/biometric/biometricSlice";
+import modSlice from "./features/moderation/modSlice";
+import imageSlice from "./features/post/inFeed/large/imageSlice";
 
 const store = configureStore({
   reducer: {
@@ -36,6 +47,11 @@ const store = configureStore({
     settings: settingsSlice,
     gesture: gestureSlice,
     appIcon: appIconSlice,
+    instances: instancesSlice,
+    resolve: resolveSlice,
+    biometric: biometricSlice,
+    mod: modSlice,
+    image: imageSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
@@ -61,6 +77,9 @@ const activeHandleChange = () => {
 
   store.dispatch(getFavoriteCommunities());
   store.dispatch(getBlurNsfw());
+  store.dispatch(getFilteredKeywords());
+  store.dispatch(getDefaultFeed());
+  store.dispatch(getInstances());
 };
 
 export function StoreProvider({ children }: { children: ReactNode }) {
@@ -72,8 +91,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           store.dispatch(fetchSettingsFromDatabase()),
           store.dispatch(fetchGesturesFromDatabase()),
           store.dispatch(fetchAppIcon()),
+          store.dispatch(initializeBiometricSliceDataIfNeeded()),
         ]);
       } finally {
+        // Initialize with current active handle
+        activeHandleChange();
+
         // Subscribe to actions to handle handle changes, this can be used to react to other changes as well
         // to coordinate side effects between slices.
         store.subscribe(activeHandleChange);

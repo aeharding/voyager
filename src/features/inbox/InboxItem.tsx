@@ -4,15 +4,9 @@ import {
   PrivateMessageView,
 } from "lemmy-js-client";
 import CommentMarkdown from "../comment/CommentMarkdown";
-import { IonIcon, IonItem, useIonToast } from "@ionic/react";
+import { IonIcon, IonItem } from "@ionic/react";
 import styled from "@emotion/styled";
-import {
-  albums,
-  chatbubble,
-  ellipsisHorizontal,
-  mail,
-  personCircle,
-} from "ionicons/icons";
+import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
 import Ago from "../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
@@ -23,6 +17,8 @@ import { isPostReply } from "../../pages/inbox/RepliesPage";
 import { maxWidthCss } from "../shared/AppContent";
 import VoteArrow from "./VoteArrow";
 import SlidingInbox from "../shared/sliding/SlidingInbox";
+import useAppToast from "../../helpers/useAppToast";
+import InboxItemMoreActions from "./InboxItemMoreActions";
 
 const Hr = styled.div`
   ${maxWidthCss}
@@ -103,10 +99,6 @@ const Footer = styled.div`
   }
 `;
 
-const EllipsisIcon = styled(IonIcon)`
-  font-size: 1.2rem;
-`;
-
 export type InboxItemView =
   | PersonMentionView
   | CommentReplyView
@@ -122,7 +114,7 @@ export default function InboxItem({ item }: InboxItemProps) {
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId,
   );
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const commentVotesById = useAppSelector(
     (state) => state.comment.commentVotesById,
   );
@@ -218,10 +210,8 @@ export default function InboxItem({ item }: InboxItemProps) {
     try {
       await dispatch(markReadAction(item, true));
     } catch (error) {
-      present({
+      presentToast({
         message: "Failed to mark item as read",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
 
@@ -250,8 +240,7 @@ export default function InboxItem({ item }: InboxItemProps) {
           <Footer>
             <div>{renderFooterDetails()}</div>
             <aside>
-              <EllipsisIcon icon={ellipsisHorizontal} />{" "}
-              <Ago date={getDate()} />
+              <InboxItemMoreActions item={item} /> <Ago date={getDate()} />
             </aside>
           </Footer>
         </Content>

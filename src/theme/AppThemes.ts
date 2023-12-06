@@ -7,6 +7,9 @@ interface Theme {
 
 interface Colors {
   primary: string;
+  background?: string;
+  insetItemBackground?: string;
+  tabBarBackground?: string;
 }
 
 export function getTheme(appTheme: AppThemeType): Theme {
@@ -63,6 +66,27 @@ export function getTheme(appTheme: AppThemeType): Theme {
         },
         dark: {
           primary: "#53C391",
+        },
+      };
+    case "dracula":
+      return {
+        light: {
+          primary: "#AD81FF",
+        },
+        dark: {
+          primary: "#AD81FF",
+          background: "#1A1D29",
+          insetItemBackground: "#12141C",
+          tabBarBackground: "#12141C",
+        },
+      };
+    case "tangerine":
+      return {
+        light: {
+          primary: "#FF4500",
+        },
+        dark: {
+          primary: "#FF4500",
         },
       };
   }

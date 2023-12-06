@@ -8,10 +8,16 @@ import {
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import Theme from "../../features/settings/appearance/themes/Theme";
+import { useSetActivePage } from "../../features/auth/AppContext";
+import { useRef } from "react";
 
 export default function AppearanceThemePage() {
+  const pageRef = useRef<HTMLElement>(null);
+
+  useSetActivePage(pageRef);
+
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

@@ -1,66 +1,182 @@
-import { IonButtons, IonHeader, IonPage, IonToolbar } from "@ionic/react";
+import {
+  IonButtons,
+  IonHeader,
+  IonPage,
+  IonSearchbar,
+  IonToolbar,
+} from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
 import AppBackButton from "../../features/shared/AppBackButton";
 import PostSort from "../../features/feed/PostSort";
 import MoreActions from "../../features/community/MoreActions";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { useCallback, useEffect } from "react";
-import { getCommunity } from "../../features/community/communitySlice";
+import {
+  createContext,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
-import { jwtSelector } from "../../features/auth/authSlice";
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
-import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
-import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
+import useFetchCommunity from "../../features/community/useFetchCommunity";
+import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import CommunitySearchResults from "../../features/community/search/CommunitySearchResults";
+import { getSortDuration } from "../../features/feed/endItems/EndPost";
+import ModActions from "../../features/community/mod/ModActions";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import usePostSort from "../../features/feed/usePostSort";
+
+const StyledFeedContent = styled(FeedContent)`
+  .ios & {
+    --background: var(
+      --ion-toolbar-background,
+      var(--ion-color-step-50, #f7f7f7)
+    );
+  }
+`;
+
+// This isn't great... but it works
+// and I can't find a better solution 🤷‍♂️
+const FixedBg = styled.div`
+  .ios & {
+    position: absolute;
+    inset: 0;
+    background: var(
+      --ion-toolbar-background,
+      var(--ion-color-step-50, #f7f7f7)
+    );
+    z-index: -2;
+  }
+`;
+
+const StyledIonToolbar = styled(IonToolbar)<{ hideBorder: boolean }>`
+  ${({ hideBorder }) =>
+    hideBorder &&
+    css`
+      --border-color: transparent;
+    `}
+
+  // Weird ionic glitch where adding
+  // absolutely positioned searchbar to header misaligns buttons
+  ion-buttons {
+    margin: auto;
+  }
+`;
+
+const HeaderIonSearchbar = styled(IonSearchbar)<{ hideSearch: boolean }>`
+  position: absolute;
+  inset: 0;
+
+  padding-top: 5px !important;
+
+  &.md {
+    padding-top: 0 !important;
+    padding-left: 0;
+    padding-right: 0;
+
+    --box-shadow: none;
+  }
+
+  ${({ hideSearch }) =>
+    hideSearch &&
+    css`
+      opacity: 0 !important;
+      z-index: -1 !important;
+      pointer-events: none !important;
+    `}
+`;
+
+const HeaderContainer = styled.div`
+  background: var(--ion-toolbar-background, var(--ion-color-step-50, #f7f7f7));
+`;
+
+const CommunitySearchbar = styled(IonSearchbar)`
+  padding-top: 0;
+
+  &.md {
+    padding-left: 0;
+    padding-right: 0;
+
+    --box-shadow: none;
+  }
+
+  min-height: 0;
+`;
+
+interface CommunityPageParams {
+  community: string;
+  actor: string;
+}
 
 export default function CommunityPage() {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const dispatch = useAppDispatch();
-  const { community, actor } = useParams<{
-    community: string;
-    actor: string;
-  }>();
+  const { community, actor } = useParams<CommunityPageParams>();
 
-  const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle,
-  );
+  return <CommunityPageContent community={community} actor={actor} />;
+}
+
+const CommunityPageContent = memo(function CommunityPageContent({
+  community,
+  actor,
+}: CommunityPageParams) {
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const [scrolledPastSearch, setScrolledPastSearch] = useState(false);
+  const [_searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useOptimizedIonRouter();
+
+  const searchOpen = searchQuery || _searchOpen;
 
   const client = useClient();
-  const sort = useAppSelector((state) => state.post.sort);
-  const jwt = useAppSelector(jwtSelector);
+  const [sort, setSort] = usePostSort();
 
-  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
+  const communityView = useFetchCommunity(community);
+
+  // eslint-disable-next-line no-undef
+  const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
-      const response = await client.getPosts({
+    async (pageData) => {
+      const { posts, next_page } = await client.getPosts({
+        ...pageData,
         limit: LIMIT,
-        page,
         community_name: community,
         sort,
-        auth: jwt,
       });
-      return response.posts;
+      return { data: posts, next_page };
     },
-    [client, community, sort, jwt],
+    [client, community, sort],
   );
 
-  useEffect(() => {
-    if (communityByHandle[community]) return;
+  const feedSearchContextValue = useMemo(() => ({ setScrolledPastSearch }), []);
 
-    dispatch(getCommunity(community));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [community]);
+  const header = useMemo(
+    () =>
+      !searchOpen ? (
+        <HeaderContainer>
+          <CommunitySearchbar
+            placeholder={`Search c/${community}`}
+            onFocus={() => {
+              setSearchOpen(true);
+              searchbarRef.current?.setFocus();
+            }}
+          />
+        </HeaderContainer>
+      ) : undefined,
+    [community, searchOpen],
+  );
 
   if (community.includes("@") && community.split("@")[1] === actor)
     return (
@@ -70,40 +186,93 @@ export default function CommunityPage() {
       />
     );
 
-  const feed = <PostCommentFeed fetchFn={fetchFn} communityName={community} />;
+  const feed = (
+    <FeedSearchContext.Provider value={feedSearchContextValue}>
+      <PostCommentFeed
+        fetchFn={fetchFn}
+        communityName={community}
+        sortDuration={getSortDuration(sort)}
+        autoHideIfConfigured
+        header={header}
+      />
+    </FeedSearchContext.Provider>
+  );
+
+  function renderFeed() {
+    if (searchQuery)
+      return (
+        <CommunitySearchResults community={community} query={searchQuery} />
+      );
+
+    return feed;
+  }
 
   return (
     <FeedContextProvider>
       <TitleSearchProvider>
-        <IonPage>
+        <IonPage className={searchOpen ? "grey-bg" : ""}>
           <IonHeader>
-            <IonToolbar>
-              <IonButtons slot="start">
-                <AppBackButton
-                  defaultText="Communities"
-                  defaultHref={buildGeneralBrowseLink("/")}
-                />
-              </IonButtons>
+            <StyledIonToolbar hideBorder={!searchOpen && !scrolledPastSearch}>
+              {!searchOpen && (
+                <>
+                  <IonButtons slot="start">
+                    <AppBackButton
+                      defaultText="Communities"
+                      defaultHref={buildGeneralBrowseLink("/")}
+                    />
+                  </IonButtons>
+                  <TitleSearch name={community}>
+                    <IonButtons slot="end">
+                      <ModActions
+                        community={communityView}
+                        communityHandle={community}
+                      />
+                      <PostSort sort={sort} setSort={setSort} />
+                      <MoreActions community={communityView} />
+                    </IonButtons>
+                  </TitleSearch>
+                </>
+              )}
 
-              <TitleSearch name={community}>
-                <IonButtons slot="end">
-                  <PostSort />
-                  <MoreActions community={community} />
-                </IonButtons>
-              </TitleSearch>
-            </IonToolbar>
+              <HeaderIonSearchbar
+                placeholder={`Search c/${community}`}
+                ref={searchbarRef}
+                onBlur={() => setSearchOpen(false)}
+                hideSearch={!searchOpen}
+                showCancelButton="always"
+                showClearButton="never"
+                onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
+                value={searchQuery}
+                enterkeyhint="search"
+                onKeyDown={(e) => {
+                  if (!searchQuery.trim()) return;
+                  if (e.key !== "Enter") return;
+
+                  router.push(
+                    buildGeneralBrowseLink(
+                      `/c/${community}/search/posts/${searchQuery}`,
+                    ),
+                  );
+                }}
+              />
+            </StyledIonToolbar>
           </IonHeader>
-          <FeedContent>
-            {markReadOnScroll ? (
-              <FeedScrollObserver>{feed}</FeedScrollObserver>
-            ) : (
-              feed
-            )}
+          <StyledFeedContent>
+            {renderFeed()}
             <TitleSearchResults />
             <PostFabs />
-          </FeedContent>
+            <FixedBg slot="fixed" />
+          </StyledFeedContent>
         </IonPage>
       </TitleSearchProvider>
     </FeedContextProvider>
   );
+});
+
+interface IFeedSearchContext {
+  setScrolledPastSearch: (scrolled: boolean) => void;
 }
+
+export const FeedSearchContext = createContext<IFeedSearchContext>({
+  setScrolledPastSearch: () => {},
+});

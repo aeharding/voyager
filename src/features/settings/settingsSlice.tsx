@@ -32,9 +32,14 @@ import {
   OLinkHandlerType,
   JumpButtonPositionType,
   OJumpButtonPositionType,
+  DefaultFeedType,
+  ODefaultFeedType,
+  TapToCollapseType,
+  OTapToCollapseType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
+import { SortType } from "lemmy-js-client";
 
 export {
   type CommentThreadCollapse,
@@ -79,17 +84,31 @@ interface SettingsState {
   general: {
     comments: {
       collapseCommentThreads: CommentThreadCollapse;
+      tapToCollapse: TapToCollapseType;
       sort: CommentDefaultSort;
       showJumpButton: boolean;
       jumpButtonPosition: JumpButtonPositionType;
+      highlightNewAccount: boolean;
+      touchFriendlyLinks: boolean;
+      showCommentImages: boolean;
     };
     posts: {
+      sort: SortType;
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
+      autoHideRead: boolean;
+      disableAutoHideInCommunities: boolean;
+      infiniteScrolling: boolean;
+      upvoteOnSave: boolean;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
+    defaultFeed: DefaultFeedType | undefined;
+    noSubscribedInFeed: boolean;
+  };
+  blocks: {
+    keywords: string[];
   };
 }
 
@@ -141,17 +160,31 @@ const initialState: SettingsState = {
   general: {
     comments: {
       collapseCommentThreads: OCommentThreadCollapse.Never,
+      tapToCollapse: OTapToCollapseType.Both,
       sort: OCommentDefaultSort.Hot,
       showJumpButton: false,
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
+      highlightNewAccount: true,
+      touchFriendlyLinks: true,
+      showCommentImages: true,
     },
     posts: {
+      sort: "Active",
       disableMarkingRead: false,
       markReadOnScroll: false,
       showHideReadButton: false,
+      autoHideRead: false,
+      disableAutoHideInCommunities: false,
+      infiniteScrolling: true,
+      upvoteOnSave: false,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
+    defaultFeed: undefined,
+    noSubscribedInFeed: false,
+  },
+  blocks: {
+    keywords: [],
   },
 };
 
@@ -221,6 +254,10 @@ export const appearanceSlice = createSlice({
       state.general.comments.collapseCommentThreads = action.payload;
       db.setSetting("collapse_comment_threads", action.payload);
     },
+    setTapToCollapse(state, action: PayloadAction<TapToCollapseType>) {
+      state.general.comments.tapToCollapse = action.payload;
+      db.setSetting("tap_to_collapse", action.payload);
+    },
     setShowJumpButton(state, action: PayloadAction<boolean>) {
       state.general.comments.showJumpButton = action.payload;
       db.setSetting("show_jump_button", action.payload);
@@ -232,6 +269,18 @@ export const appearanceSlice = createSlice({
       state.general.comments.jumpButtonPosition = action.payload;
       db.setSetting("jump_button_position", action.payload);
     },
+    setHighlightNewAccount(state, action: PayloadAction<boolean>) {
+      state.general.comments.highlightNewAccount = action.payload;
+      db.setSetting("highlight_new_account", action.payload);
+    },
+    setTouchFriendlyLinks(state, action: PayloadAction<boolean>) {
+      state.general.comments.touchFriendlyLinks = action.payload;
+      db.setSetting("touch_friendly_links", action.payload);
+    },
+    setShowCommentImages(state, action: PayloadAction<boolean>) {
+      state.general.comments.showCommentImages = action.payload;
+      db.setSetting("show_comment_images", action.payload);
+    },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
       db.setSetting("post_appearance_type", action.payload);
@@ -239,6 +288,18 @@ export const appearanceSlice = createSlice({
     setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
       state.appearance.posts.blurNsfw = action.payload;
       // Per user setting is updated in StoreProvider
+    },
+    setFilteredKeywords(state, action: PayloadAction<string[]>) {
+      state.blocks.keywords = action.payload;
+      // Per user setting is updated in StoreProvider
+    },
+    setDefaultFeed(state, action: PayloadAction<DefaultFeedType>) {
+      state.general.defaultFeed = action.payload;
+      // Per user setting is updated in StoreProvider
+    },
+    setNoSubscribedInFeed(state, action: PayloadAction<boolean>) {
+      state.general.noSubscribedInFeed = action.payload;
+      db.setSetting("no_subscribed_in_feed", action.payload);
     },
     setShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.compact.showVotingButtons = action.payload;
@@ -283,6 +344,10 @@ export const appearanceSlice = createSlice({
       state.general.comments.sort = action.payload;
       db.setSetting("default_comment_sort", action.payload);
     },
+    setDefaultPostSort(state, action: PayloadAction<SortType>) {
+      state.general.posts.sort = action.payload;
+      db.setSetting("default_post_sort", action.payload);
+    },
     setDisableMarkingPostsRead(state, action: PayloadAction<boolean>) {
       state.general.posts.disableMarkingRead = action.payload;
       db.setSetting("disable_marking_posts_read", action.payload);
@@ -296,6 +361,26 @@ export const appearanceSlice = createSlice({
       state.general.posts.showHideReadButton = action.payload;
 
       db.setSetting("show_hide_read_button", action.payload);
+    },
+    setAutoHideRead(state, action: PayloadAction<boolean>) {
+      state.general.posts.autoHideRead = action.payload;
+
+      db.setSetting("auto_hide_read", action.payload);
+    },
+    setDisableAutoHideInCommunities(state, action: PayloadAction<boolean>) {
+      state.general.posts.disableAutoHideInCommunities = action.payload;
+
+      db.setSetting("disable_auto_hide_in_communities", action.payload);
+    },
+    setInfiniteScrolling(state, action: PayloadAction<boolean>) {
+      state.general.posts.infiniteScrolling = action.payload;
+
+      db.setSetting("infinite_scrolling", action.payload);
+    },
+    setUpvoteOnSave(state, action: PayloadAction<boolean>) {
+      state.general.posts.upvoteOnSave = action.payload;
+
+      db.setSetting("upvote_on_save", action.payload);
     },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
@@ -323,13 +408,6 @@ export const appearanceSlice = createSlice({
   },
 });
 
-export const markReadOnScrollSelector = (state: RootState) => {
-  return (
-    !state.settings.general.posts.disableMarkingRead &&
-    state.settings.general.posts.markReadOnScroll
-  );
-};
-
 export const setBlurNsfwState =
   (blurNsfw: PostBlurNsfwType) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -353,6 +431,54 @@ export const getBlurNsfw =
     dispatch(setNsfwBlur(blurNsfw ?? initialState.appearance.posts.blurNsfw));
   };
 
+export const getFilteredKeywords =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const filteredKeywords = await db.getSetting("filtered_keywords", {
+      user_handle: userHandle,
+    });
+
+    dispatch(
+      setFilteredKeywords(filteredKeywords ?? initialState.blocks.keywords),
+    );
+  };
+
+export const getDefaultFeed =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const defaultFeed = await db.getSetting("default_feed", {
+      user_handle: userHandle,
+    });
+
+    dispatch(setDefaultFeed(defaultFeed ?? { type: ODefaultFeedType.Home }));
+  };
+
+export const updateDefaultFeed =
+  (defaultFeed: DefaultFeedType) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setDefaultFeed(defaultFeed ?? initialState.general.defaultFeed));
+
+    db.setSetting("default_feed", defaultFeed, {
+      user_handle: userHandle,
+    });
+  };
+
+export const updateFilteredKeywords =
+  (filteredKeywords: string[]) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setFilteredKeywords(filteredKeywords));
+
+    db.setSetting("filtered_keywords", filteredKeywords, {
+      user_handle: userHandle,
+    });
+  };
+
 export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
@@ -361,8 +487,12 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const collapse_comment_threads = await db.getSetting(
         "collapse_comment_threads",
       );
+      const tap_to_collapse = await db.getSetting("tap_to_collapse");
       const show_jump_button = await db.getSetting("show_jump_button");
       const jump_button_position = await db.getSetting("jump_button_position");
+      const highlight_new_account = await db.getSetting(
+        "highlight_new_account",
+      );
       const user_instance_url_display = await db.getSetting(
         "user_instance_url_display",
       );
@@ -387,10 +517,23 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const show_hide_read_button = await db.getSetting(
         "show_hide_read_button",
       );
+      const auto_hide_read = await db.getSetting("auto_hide_read");
+      const disable_auto_hide_in_communities = await db.getSetting(
+        "disable_auto_hide_in_communities",
+      );
+      const infinite_scrolling = await db.getSetting("infinite_scrolling");
+      const upvote_on_save = await db.getSetting("upvote_on_save");
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
       const link_handler = await db.getSetting("link_handler");
+      const filtered_keywords = await db.getSetting("filtered_keywords");
+      const touch_friendly_links = await db.getSetting("touch_friendly_links");
+      const show_comment_images = await db.getSetting("show_comment_images");
+      const no_subscribed_in_feed = await db.getSetting(
+        "no_subscribed_in_feed",
+      );
+      const default_post_sort = await db.getSetting("default_post_sort");
 
       return {
         ...state.settings,
@@ -430,12 +573,23 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             collapseCommentThreads:
               collapse_comment_threads ??
               initialState.general.comments.collapseCommentThreads,
+            tapToCollapse:
+              tap_to_collapse ?? initialState.general.comments.tapToCollapse,
             sort: default_comment_sort ?? initialState.general.comments.sort,
             showJumpButton:
               show_jump_button ?? initialState.general.comments.showJumpButton,
             jumpButtonPosition:
               jump_button_position ??
               initialState.general.comments.jumpButtonPosition,
+            highlightNewAccount:
+              highlight_new_account ??
+              initialState.general.comments.highlightNewAccount,
+            touchFriendlyLinks:
+              touch_friendly_links ??
+              initialState.general.comments.touchFriendlyLinks,
+            showCommentImages:
+              show_comment_images ??
+              initialState.general.comments.showCommentImages,
           },
           posts: {
             disableMarkingRead:
@@ -447,10 +601,27 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showHideReadButton:
               show_hide_read_button ??
               initialState.general.posts.showHideReadButton,
+            autoHideRead:
+              auto_hide_read ?? initialState.general.posts.autoHideRead,
+            disableAutoHideInCommunities:
+              disable_auto_hide_in_communities ??
+              initialState.general.posts.disableAutoHideInCommunities,
+            infiniteScrolling:
+              infinite_scrolling ??
+              initialState.general.posts.infiniteScrolling,
+            upvoteOnSave:
+              upvote_on_save ?? initialState.general.posts.upvoteOnSave,
+            sort: default_post_sort ?? initialState.general.posts.sort,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
+          defaultFeed: initialState.general.defaultFeed,
+          noSubscribedInFeed:
+            no_subscribed_in_feed ?? initialState.general.noSubscribedInFeed,
+        },
+        blocks: {
+          keywords: filtered_keywords ?? initialState.blocks.keywords,
         },
       };
     });
@@ -472,9 +643,14 @@ export const {
   setUserInstanceUrlDisplay,
   setProfileLabel,
   setCommentsCollapsed,
+  setTapToCollapse,
   setShowJumpButton,
   setJumpButtonPosition,
+  setHighlightNewAccount,
+  setTouchFriendlyLinks,
+  setShowCommentImages,
   setNsfwBlur,
+  setFilteredKeywords,
   setPostAppearance,
   setThumbnailPosition,
   setShowVotingButtons,
@@ -484,14 +660,21 @@ export const {
   setUseSystemDarkMode,
   setDeviceMode,
   setDefaultCommentSort,
+  setDefaultPostSort,
   settingsReady,
   setDisableMarkingPostsRead,
   setMarkPostsReadOnScroll,
   setShowHideReadButton,
+  setAutoHideRead,
+  setDisableAutoHideInCommunities,
+  setInfiniteScrolling,
+  setUpvoteOnSave,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,
   setPureBlack,
+  setDefaultFeed,
+  setNoSubscribedInFeed,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

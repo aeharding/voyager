@@ -15,11 +15,11 @@ export const APP_ICONS = [
 
 export type AppIcon = (typeof APP_ICONS)[number];
 
-interface CommunityState {
+interface AppIconState {
   icon: AppIcon;
 }
 
-const initialState: CommunityState = {
+const initialState: AppIconState = {
   icon: "default",
 };
 

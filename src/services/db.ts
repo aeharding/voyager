@@ -1,11 +1,21 @@
+import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
-import { CommentSortType } from "lemmy-js-client";
+import { CommentSortType, FederatedInstances, SortType } from "lemmy-js-client";
+import { zipObject } from "lodash";
+import { ALL_POST_SORTS } from "../features/feed/PostSort";
+import { COMMENT_SORTS } from "../features/comment/CommentSort";
 
 export interface IPostMetadata {
   post_id: number;
   user_handle: string;
   hidden: 0 | 1; // Not boolean because dexie doesn't support booleans for indexes
   hidden_updated_at?: number;
+}
+
+export interface InstanceData {
+  domain: string;
+  updated: Date;
+  data: FederatedInstances;
 }
 
 export const OAppThemeType = {
@@ -15,6 +25,8 @@ export const OAppThemeType = {
   SpookyPumpkin: "pumpkin",
   UV: "uv",
   Mint: "mint",
+  Dracula: "dracula",
+  Tangerine: "tangerine",
 } as const;
 
 export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
@@ -63,14 +75,11 @@ export const OPostBlurNsfw = {
   Never: "never",
 } as const;
 
-export const OCommentDefaultSort: Record<string, CommentSortType> = {
-  Hot: "Hot",
-  Top: "Top",
-  New: "New",
-  Old: "Old",
-} as const;
+export const OCommentDefaultSort = zipObject(COMMENT_SORTS, COMMENT_SORTS);
 
 export type CommentDefaultSort = CommentSortType;
+
+export const OSortType = zipObject(ALL_POST_SORTS, ALL_POST_SORTS);
 
 export type PostBlurNsfwType =
   (typeof OPostBlurNsfw)[keyof typeof OPostBlurNsfw];
@@ -133,6 +142,34 @@ export const OLinkHandlerType = {
   InApp: "in-app",
 } as const;
 
+export type DefaultFeedType =
+  | {
+      type:
+        | typeof ODefaultFeedType.All
+        | typeof ODefaultFeedType.Home
+        | typeof ODefaultFeedType.Local
+        | typeof ODefaultFeedType.CommunityList
+        | typeof ODefaultFeedType.Moderating;
+    }
+  | {
+      type: typeof ODefaultFeedType.Community;
+
+      /**
+       * Community handle. If remote, "community@instance.com".
+       * If local, "community"
+       */
+      name: string;
+    };
+
+export const ODefaultFeedType = {
+  Home: "home",
+  All: "all",
+  Local: "local",
+  Moderating: "moderating",
+  CommunityList: "community-list",
+  Community: "community",
+} as const;
+
 export type JumpButtonPositionType =
   (typeof OJumpButtonPositionType)[keyof typeof OJumpButtonPositionType];
 
@@ -146,8 +183,26 @@ export const OJumpButtonPositionType = {
   RightBottom: "right-bottom",
 } as const;
 
+export type TapToCollapseType =
+  (typeof OTapToCollapseType)[keyof typeof OTapToCollapseType];
+
+export const OTapToCollapseType = {
+  OnlyComments: "only-comments",
+  OnlyHeaders: "only-headers",
+  Both: "both",
+  Neither: "neither",
+} as const;
+
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
+
+export const OLongSwipeTriggerPointType = {
+  Normal: "normal",
+  Later: "later",
+} as const;
+
+export type LongSwipeTriggerPointType =
+  (typeof OLongSwipeTriggerPointType)[keyof typeof OLongSwipeTriggerPointType];
 
 const OSwipeActionBase = {
   None: "none",
@@ -155,6 +210,7 @@ const OSwipeActionBase = {
   Downvote: "downvote",
   Reply: "reply",
   Save: "save",
+  Share: "share",
 } as const;
 
 export const OSwipeActionPost = {
@@ -164,12 +220,13 @@ export const OSwipeActionPost = {
 
 export const OSwipeActionComment = {
   ...OSwipeActionBase,
+  CollapseToTop: "collapse-to-top",
   Collapse: "collapse",
 } as const;
 
 export const OSwipeActionInbox = {
   ...OSwipeActionBase,
-  MarkUnread: "mark_unread",
+  MarkUnread: "mark-unread",
 } as const;
 
 export const OSwipeActionAll = {
@@ -199,6 +256,8 @@ export type SettingValueTypes = {
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
   show_hide_read_button: boolean;
+  auto_hide_read: boolean;
+  disable_auto_hide_in_communities: boolean;
   gesture_swipe_post: SwipeActions;
   gesture_swipe_comment: SwipeActions;
   gesture_swipe_inbox: SwipeActions;
@@ -208,6 +267,18 @@ export type SettingValueTypes = {
   link_handler: LinkHandlerType;
   show_jump_button: boolean;
   jump_button_position: JumpButtonPositionType;
+  tap_to_collapse: TapToCollapseType;
+  filtered_keywords: string[];
+  highlight_new_account: boolean;
+  default_feed: DefaultFeedType;
+  touch_friendly_links: boolean;
+  show_comment_images: boolean;
+  long_swipe_trigger_point: LongSwipeTriggerPointType;
+  has_presented_block_nsfw_tip: boolean;
+  no_subscribed_in_feed: boolean;
+  infinite_scrolling: boolean;
+  upvote_on_save: boolean;
+  default_post_sort: SortType;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
@@ -230,6 +301,7 @@ export const CompoundKeys = {
 export class WefwefDB extends Dexie {
   postMetadatas!: Table<IPostMetadata, number>;
   settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
+  cachedFederatedInstanceData!: Table<InstanceData, number>;
 
   constructor() {
     super("WefwefDB");
@@ -261,6 +333,63 @@ export class WefwefDB extends Dexie {
 
     this.version(3).upgrade(async () => {
       await this.setSetting("blur_nsfw", OPostBlurNsfw.InFeed);
+    });
+
+    this.version(4).stores({
+      postMetadatas: `
+        ++,
+        ${CompoundKeys.postMetadata.post_id_and_user_handle},
+        ${CompoundKeys.postMetadata.user_handle_and_hidden},
+        post_id,
+        user_handle,
+        hidden,
+        hidden_updated_at
+      `,
+      settings: `
+        ++,
+        key,
+        ${CompoundKeys.settings.key_and_user_handle_and_community},
+        value,
+        user_handle,
+        community
+      `,
+      cachedFederatedInstanceData: `
+        ++id,
+        &domain,
+        updated
+      `,
+    });
+
+    this.version(5).upgrade(async () => {
+      // Upgrade comment gesture "collapse" => "collapse-to-top"
+      await (async () => {
+        const gestures = await this.getSetting("gesture_swipe_comment");
+
+        if (!gestures) return;
+
+        Object.entries(gestures).map(([direction, gesture]) => {
+          if (!gestures) return;
+          if (gesture === "collapse")
+            gestures[direction as keyof typeof gestures] = "collapse-to-top";
+        });
+
+        await this.setSetting("gesture_swipe_comment", gestures);
+      })();
+
+      // Upgrade inbox gesture "mark_unread" => "mark-unread"
+      await (async () => {
+        const gestures = await this.getSetting("gesture_swipe_inbox");
+
+        if (!gestures) return;
+
+        Object.entries(gestures).map(([direction, gesture]) => {
+          if (!gestures) return;
+          if ((gesture as string) === "mark_unread")
+            gestures[direction as keyof typeof gestures] = "mark-unread";
+        });
+
+        await this.setSetting("gesture_swipe_inbox", gestures);
+      })();
     });
   }
 
@@ -347,6 +476,63 @@ export class WefwefDB extends Dexie {
       .filter(filterFn)
       .limit(limit)
       .toArray();
+  }
+
+  async clearHiddenPosts(user_handle: string) {
+    return await this.postMetadatas
+      .where("user_handle")
+      .equals(user_handle)
+      .delete();
+  }
+
+  /*
+   * Federated instance data
+   */
+  async getCachedFederatedInstances(domain: string) {
+    const INVALIDATE_AFTER_HOURS = 12;
+
+    const result = await this.cachedFederatedInstanceData.get({ domain });
+
+    // Cleanup stale
+    (async () => {
+      this.cachedFederatedInstanceData
+        .where("updated")
+        .below(subHours(new Date(), INVALIDATE_AFTER_HOURS))
+        .delete();
+    })();
+
+    if (!result) return;
+
+    if (differenceInHours(new Date(), result.updated) > INVALIDATE_AFTER_HOURS)
+      return;
+
+    return result.data;
+  }
+
+  async setCachedFederatedInstances(
+    domain: string,
+    federatedInstances: FederatedInstances,
+  ) {
+    const payload: InstanceData = {
+      updated: new Date(),
+      domain,
+      data: federatedInstances,
+    };
+
+    await this.transaction("rw", this.cachedFederatedInstanceData, async () => {
+      const query = this.cachedFederatedInstanceData
+        .where("domain")
+        .equals(domain);
+
+      const item = await query.first();
+
+      if (item) {
+        await query.modify(payload);
+        return;
+      }
+
+      await this.cachedFederatedInstanceData.add(payload);
+    });
   }
 
   /*

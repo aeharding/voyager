@@ -15,10 +15,13 @@ import {
 } from "@ionic/react";
 import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../profile/ProfileFeedItemsPage";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { UpdateContext } from "./update/UpdateContext";
 import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
+import { useSetActivePage } from "../../features/auth/AppContext";
+import { ua } from "../../helpers/device";
+import { unloadServiceWorkerAndRefresh } from "../../helpers/serviceWorker";
 
 const UpToDateText = styled.div`
   margin: auto;
@@ -38,9 +41,13 @@ const Container = styled.div`
 `;
 
 export default function UpdateAppPage() {
+  const pageRef = useRef<HTMLElement>(null);
+
   const [loading, setLoading] = useState(false);
   const { status, checkForUpdates, updateServiceWorker } =
     useContext(UpdateContext);
+
+  useSetActivePage(pageRef);
 
   useEffect(() => {
     checkForUpdates();
@@ -50,7 +57,15 @@ export default function UpdateAppPage() {
     setLoading(true);
 
     try {
-      await updateServiceWorker();
+      if (ua.getEngine().name === "WebKit") {
+        // There is a Safari bug where it won't update the service worker if the SSL certificate has renewed
+        // So instead of gracefully updating, just nuke the service worker and start over
+        // See: https://github.com/aeharding/voyager/issues/896
+
+        await unloadServiceWorkerAndRefresh();
+      } else {
+        await updateServiceWorker();
+      }
     } finally {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -61,7 +76,7 @@ export default function UpdateAppPage() {
   }
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

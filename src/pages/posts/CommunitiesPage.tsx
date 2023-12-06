@@ -8,27 +8,33 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../features/shared/AppContent";
 import CommunitiesMoreActions from "../../features/community/list/InstanceMoreActions";
+import FeedContent from "../shared/FeedContent";
+import { useParams } from "react-router";
+import CommunitiesListRedirectBootstrapper from "../../features/community/list/CommunitiesListRedirectBootstrapper";
 
 export default function CommunitiesPage() {
+  const { actor } = useParams<{ actor: string }>();
   const pageRef = useRef<HTMLElement>(null);
 
   useSetActivePage(pageRef);
 
   return (
-    <IonPage ref={pageRef}>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Communities</IonTitle>
-          <IonButtons slot="end">
-            <CommunitiesMoreActions />
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <AppContent scrollY>
-        <CommunitiesList />
-      </AppContent>
-    </IonPage>
+    <>
+      <CommunitiesListRedirectBootstrapper />
+      <IonPage ref={pageRef}>
+        <IonHeader>
+          <IonToolbar>
+            <IonTitle>Communities</IonTitle>
+            <IonButtons slot="end">
+              <CommunitiesMoreActions />
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <FeedContent>
+          <CommunitiesList actor={actor} />
+        </FeedContent>
+      </IonPage>
+    </>
   );
 }

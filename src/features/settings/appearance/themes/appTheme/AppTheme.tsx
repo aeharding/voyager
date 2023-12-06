@@ -1,10 +1,19 @@
-import { IonLabel, IonList, IonRadio, IonRadioGroup } from "@ionic/react";
+import {
+  IonLabel,
+  IonList,
+  IonRadio,
+  IonRadioGroup,
+  useIonAlert,
+} from "@ionic/react";
 import { InsetIonItem, ListHeader } from "../../../shared/formatting";
 import AppThemePreview from "./AppThemePreview";
 import { AppThemeType, OAppThemeType } from "../../../../../services/db";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { setTheme } from "../../../settingsSlice";
 import styled from "@emotion/styled";
+import { getTheme } from "../../../../../theme/AppThemes";
+import { capitalize } from "lodash";
+import { useTheme } from "@emotion/react";
 
 const Description = styled.div`
   font-size: 0.76em;
@@ -14,6 +23,24 @@ const Description = styled.div`
 export default function AppTheme() {
   const theme = useAppSelector((state) => state.settings.appearance.theme);
   const dispatch = useAppDispatch();
+  const [presentAlert] = useIonAlert();
+  const userTheme = useTheme();
+
+  function onChangeTheme(themeName: AppThemeType) {
+    dispatch(setTheme(themeName));
+
+    const theme = getTheme(themeName);
+
+    if (theme.dark.background && !theme.light.background && !userTheme.dark) {
+      presentAlert({
+        header: `${capitalize(themeName)} Looks Best Dark`,
+        message: `Just as a heads up, you're in the light theme currently but ${capitalize(
+          themeName,
+        )} looks best with a darker theme. You might want to change it to get the full effect, or you do you!`,
+        buttons: ["OK"],
+      });
+    }
+  }
 
   return (
     <>
@@ -22,7 +49,7 @@ export default function AppTheme() {
       </ListHeader>
       <IonRadioGroup
         value={theme}
-        onIonChange={(e) => dispatch(setTheme(e.detail.value))}
+        onIonChange={(e) => onChangeTheme(e.detail.value)}
       >
         <IonList inset>
           {Object.values(OAppThemeType).map((theme) => (
@@ -55,6 +82,10 @@ function getThemeName(appTheme: AppThemeType): string {
       return "Ultraviolet";
     case "mint":
       return "Mint";
+    case "dracula":
+      return "Dracula";
+    case "tangerine":
+      return "Tangerine";
   }
 }
 
@@ -72,5 +103,9 @@ function getThemeDescription(appTheme: AppThemeType): string {
       return "Windows logo jack-o-lantern?";
     case "mint":
       return "Life is mint to be refreshing!";
+    case "dracula":
+      return "Your Phone, Now Undeadly Cool";
+    case "tangerine":
+      return "Like oranges, but better!";
   }
 }

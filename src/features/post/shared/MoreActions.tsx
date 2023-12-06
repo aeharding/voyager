@@ -1,15 +1,10 @@
-import {
-  IonButton,
-  IonIcon,
-  useIonActionSheet,
-  useIonRouter,
-  useIonToast,
-} from "@ionic/react";
+import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
 import {
   arrowDownOutline,
   arrowUndoOutline,
   arrowUpOutline,
   bookmarkOutline,
+  cameraOutline,
   ellipsisHorizontal,
   eyeOffOutline,
   eyeOutline,
@@ -25,7 +20,6 @@ import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { PostView } from "lemmy-js-client";
 import {
-  postHiddenByIdSelector,
   hidePost,
   unhidePost,
   voteOnPost,
@@ -36,12 +30,21 @@ import { getHandle, getRemoteHandle, share } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
-import { saveError, voteError } from "../../../helpers/toastMessages";
+import {
+  postLocked,
+  saveError,
+  saveSuccess,
+  voteError,
+} from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
 import {
   handleSelector,
   isDownvoteEnabledSelector,
 } from "../../auth/authSlice";
+import useAppToast from "../../../helpers/useAppToast";
+import usePostModActions from "../../moderation/usePostModActions";
+import useCanModerate, { getModIcon } from "../../moderation/useCanModerate";
+import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
 interface MoreActionsProps {
   post: PostView;
@@ -56,13 +59,15 @@ export default function MoreActions({
 }: MoreActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const isHidden = useAppSelector(postHiddenByIdSelector)[post.post.id];
+  const isHidden = useAppSelector(
+    (state) => state.post.postHiddenById[post.post.id]?.hidden,
+  );
   const myHandle = useAppSelector(handleSelector);
 
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
 
   const {
     presentLoginIfNeeded,
@@ -70,7 +75,10 @@ export default function MoreActions({
     presentReport,
     presentPostEditor,
     presentSelectText,
+    presentShareAsImage,
   } = useContext(PageContext);
+
+  const presentPostModActions = usePostModActions(post);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
@@ -81,10 +89,20 @@ export default function MoreActions({
   const isMyPost = getRemoteHandle(post.creator) === myHandle;
   const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
+  const canModerate = useCanModerate(post.community);
+
   function onClick() {
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: [
+        canModerate
+          ? {
+              text: "Moderator",
+              icon: getModIcon(canModerate),
+              cssClass: `${canModerate} detail`,
+              handler: presentPostModActions,
+            }
+          : undefined,
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
           icon: arrowUpOutline,
@@ -95,7 +113,7 @@ export default function MoreActions({
               try {
                 await dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
               } catch (error) {
-                present(voteError);
+                presentToast(voteError);
 
                 throw error;
               }
@@ -115,7 +133,7 @@ export default function MoreActions({
                       voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
-                    present(voteError);
+                    presentToast(voteError);
 
                     throw error;
                   }
@@ -132,8 +150,10 @@ export default function MoreActions({
 
               try {
                 await dispatch(savePost(post.post.id, !mySaved));
+
+                if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
-                present(saveError);
+                presentToast(saveError);
 
                 throw error;
               }
@@ -154,10 +174,8 @@ export default function MoreActions({
                         (async () => {
                           await dispatch(deletePost(post.post.id));
 
-                          present({
+                          presentToast({
                             message: "Post deleted",
-                            duration: 3500,
-                            position: "bottom",
                             color: "success",
                           });
                         })();
@@ -186,6 +204,10 @@ export default function MoreActions({
           icon: arrowUndoOutline,
           handler: () => {
             if (presentLoginIfNeeded()) return;
+            if (post.post.locked) {
+              presentToast(postLocked);
+              return;
+            }
 
             // Not viewing comments, so no feed update
             presentCommentReply(post);
@@ -209,17 +231,15 @@ export default function MoreActions({
             );
           },
         },
-        post.post.body
-          ? {
-              text: "Select Text",
-              icon: textOutline,
-              handler: () => {
-                if (!post.post.body) return;
-
-                presentSelectText(post.post.body);
-              },
-            }
-          : undefined,
+        {
+          text: "Select Text",
+          icon: textOutline,
+          handler: () => {
+            presentSelectText(
+              [post.post.name, post.post.body].filter(notEmpty).join("\n\n"),
+            );
+          },
+        },
         onFeed
           ? {
               text: isHidden ? "Unhide" : "Hide",
@@ -239,6 +259,13 @@ export default function MoreActions({
           icon: shareOutline,
           handler: () => {
             share(post.post);
+          },
+        },
+        {
+          text: "Share as image...",
+          icon: cameraOutline,
+          handler: () => {
+            presentShareAsImage(post);
           },
         },
         {
@@ -266,8 +293,9 @@ export default function MoreActions({
           e.stopPropagation();
           onClick();
         }}
+        className={className}
       >
-        <IonIcon className={className} icon={ellipsisHorizontal} />
+        <IonIcon icon={ellipsisHorizontal} />
       </Button>
     </>
   );

@@ -6,7 +6,6 @@ import {
   IonContent,
   IonToolbar,
   IonTitle,
-  useIonToast,
   IonText,
   IonSegment,
   IonSegmentButton,
@@ -16,7 +15,6 @@ import {
   IonLabel,
   IonIcon,
   IonNavLink,
-  useIonRouter,
   IonToggle,
 } from "@ionic/react";
 import { useEffect, useState } from "react";
@@ -26,7 +24,7 @@ import { Centered, Spinner } from "../../auth/Login";
 import { jwtSelector, urlSelector } from "../../auth/authSlice";
 import { startCase } from "lodash";
 import { css } from "@emotion/react";
-import { getHandle, getRemoteHandle, isUrlImage } from "../../../helpers/lemmy";
+import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { cameraOutline } from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
@@ -34,6 +32,10 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PhotoPreview from "./PhotoPreview";
 import { uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
+import useAppToast from "../../../helpers/useAppToast";
+import { isUrlImage, isValidUrl } from "../../../helpers/url";
+import { problemFetchingTitle } from "../../../helpers/toastMessages";
+import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
 const Container = styled.div`
   position: absolute;
@@ -50,6 +52,7 @@ const IonInputTitle = styled(IonInput)`
     transform: translateY(-50%);
     right: 0;
     border: 0;
+    padding-top: 0;
   }
 
   .native-wrapper {
@@ -76,6 +79,8 @@ const HiddenInput = styled.input`
 `;
 
 type PostType = "photo" | "link" | "text";
+
+const MAX_TITLE_LENGTH = 200;
 
 export default function PostEditorRoot({
   setCanDismiss,
@@ -119,7 +124,7 @@ export default function PostEditorRoot({
   const [postType, setPostType] = useState<PostType>(initialPostType);
   const client = useClient();
   const jwt = useAppSelector(jwtSelector);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initialTitle);
   const [url, setUrl] = useState(initialUrl);
@@ -134,8 +139,10 @@ export default function PostEditorRoot({
 
   const instanceUrl = useAppSelector(urlSelector);
 
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+
+  const showAutofill = !!url && isValidUrl(url) && !title;
 
   const showNsfwToggle = !!(
     (postType === "photo" && photoPreviewURL) ||
@@ -185,7 +192,7 @@ export default function PostEditorRoot({
   }
 
   async function submit() {
-    if (!jwt || !community) return;
+    if (!community) return;
 
     // super hacky, I know... but current value submitted
     // from child is needed for submit
@@ -222,12 +229,10 @@ export default function PostEditorRoot({
     }
 
     if (errorMessage) {
-      present({
+      presentToast({
         // TODO more helpful msg
         message: errorMessage,
-        duration: 3500,
-        position: "bottom",
-        color: "primary",
+        fullscreen: true,
       });
 
       return;
@@ -242,8 +247,6 @@ export default function PostEditorRoot({
       url: postUrl,
       body: text || undefined,
       nsfw: showNsfwToggle && nsfw,
-
-      auth: jwt,
     };
 
     try {
@@ -259,11 +262,10 @@ export default function PostEditorRoot({
         });
       }
     } catch (error) {
-      present({
+      presentToast({
         message: "Problem submitting your post. Please try again.",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;
@@ -273,16 +275,15 @@ export default function PostEditorRoot({
 
     dispatch(receivedPosts([postResponse.post_view]));
 
-    present({
+    presentToast({
       message: existingPost ? "Post edited!" : "Post created!",
-      duration: 3500,
-      position: "bottom",
-      color: "success",
+      color: "primary",
+      position: "top",
+      centerText: true,
+      fullscreen: true,
     });
 
     setCanDismiss(true);
-
-    await new Promise((resolve) => setTimeout(resolve, 100));
 
     dismiss();
 
@@ -307,11 +308,10 @@ export default function PostEditorRoot({
     try {
       imageUrl = await uploadImage(instanceUrl, jwt, image);
     } catch (error) {
-      present({
+      presentToast({
         message: "Problem uploading image. Please try again.",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
       clearImage();
 
@@ -326,6 +326,26 @@ export default function PostEditorRoot({
   function clearImage() {
     setPhotoUrl("");
     setPhotoPreviewURL(undefined);
+  }
+
+  async function fetchPostTitle() {
+    let metadata;
+
+    try {
+      ({ metadata } = await client.getSiteMetadata({
+        url,
+      }));
+    } catch (error) {
+      presentToast(problemFetchingTitle);
+      throw error;
+    }
+
+    if (!metadata.title) {
+      presentToast(problemFetchingTitle);
+      return;
+    }
+
+    setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
   }
 
   return (
@@ -376,14 +396,30 @@ export default function PostEditorRoot({
             <IonItem>
               <IonInputTitle
                 value={title}
+                clearInput
                 onIonInput={(e) => setTitle(e.detail.value ?? "")}
                 placeholder="Title"
                 counter
-                maxlength={200}
+                inputMode="text"
+                autocapitalize="on"
+                autocorrect="on"
+                spellCheck
+                maxlength={MAX_TITLE_LENGTH}
                 counterFormatter={(inputLength, maxLength) =>
-                  `${maxLength - inputLength}`
+                  showAutofill ? "" : `${maxLength - inputLength}`
                 }
               />
+              {showAutofill && (
+                <IonButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    fetchPostTitle();
+                  }}
+                  color="light"
+                >
+                  Autofill
+                </IonButton>
+              )}
             </IonItem>
             {postType === "photo" && (
               <>
@@ -395,7 +431,7 @@ export default function PostEditorRoot({
 
                     <HiddenInput
                       type="file"
-                      accept="image/jpeg, image/x-png, image/gif"
+                      accept="image/*"
                       id="photo-upload"
                       onInput={(e) => {
                         const image = (e.target as HTMLInputElement).files?.[0];
@@ -420,6 +456,7 @@ export default function PostEditorRoot({
               <IonItem>
                 <IonInput
                   placeholder="https://aspca.org"
+                  inputMode="url"
                   clearInput
                   value={url}
                   onIonInput={(e) => setUrl(e.detail.value ?? "")}
@@ -428,12 +465,12 @@ export default function PostEditorRoot({
             )}
             {showNsfwToggle && (
               <IonItem>
-                <IonText color="medium">NSFW</IonText>{" "}
                 <IonToggle
-                  slot="end"
                   checked={nsfw}
                   onIonChange={(e) => setNsfw(e.detail.checked)}
-                />
+                >
+                  <IonText color="medium">NSFW</IonText>
+                </IonToggle>
               </IonItem>
             )}
             <IonNavLink

@@ -1,14 +1,11 @@
-import {
-  ReactMarkdown,
-  ReactMarkdownOptions,
-} from "react-markdown/lib/react-markdown";
+import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
 import styled from "@emotion/styled";
 import { useAppSelector } from "../../store";
 import LinkInterceptor from "./markdown/LinkInterceptor";
 import buildCommunityPlugin from "./markdown/buildCommunityPlugin";
 import customRemarkGfm from "./markdown/customRemarkGfm";
 import { useMemo } from "react";
-import { GalleryImg } from "../gallery/GalleryImg";
+import MarkdownImg from "./MarkdownImg";
 
 const Blockquote = styled.blockquote`
   padding-left: 0.5rem;
@@ -21,9 +18,11 @@ const Code = styled.code`
 `;
 
 const TableContainer = styled.div`
+  display: inline-flex;
   overflow-x: auto;
   margin: 0 -1rem;
   padding: 0 1rem;
+  max-width: calc(100% + 2rem);
 
   tbody {
     border-collapse: collapse;
@@ -61,15 +60,21 @@ export default function Markdown(props: ReactMarkdownOptions) {
 
   return (
     <ReactMarkdown
-      linkTarget="_blank"
       {...props}
       components={{
-        img: (props) => <GalleryImg {...props} animationType="zoom" />,
+        img: (props) => <MarkdownImg {...props} />,
         blockquote: (props) => <Blockquote {...props} />,
         code: (props) => <Code {...props} />,
         table: (props) => (
           <TableContainer>
-            <table {...props} />
+            <table
+              {...props}
+              // Prevent swiping item to allow scrolling table
+              onTouchMoveCapture={(e) => {
+                e.stopPropagation();
+                return true;
+              }}
+            />
           </TableContainer>
         ),
         a: (props) => <LinkInterceptor {...props} />,

@@ -1,9 +1,4 @@
-import {
-  IonIcon,
-  useIonActionSheet,
-  useIonRouter,
-  useIonToast,
-} from "@ionic/react";
+import { IonIcon, useIonActionSheet } from "@ionic/react";
 import {
   bookmarkOutline,
   copyOutline,
@@ -21,12 +16,14 @@ import { PageContext } from "../auth/PageContext";
 import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { savePost } from "../post/postSlice";
-import { saveError } from "../../helpers/toastMessages";
+import { saveError, saveSuccess } from "../../helpers/toastMessages";
 import { Browser } from "@capacitor/browser";
 import { ActionButton } from "../post/actions/ActionButton";
 import { StashMedia } from "capacitor-stash-media";
 import { isNative } from "../../helpers/device";
 import { Share } from "@capacitor/share";
+import useAppToast from "../../helpers/useAppToast";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 interface GalleryMoreActionsProps {
   post: PostView;
@@ -37,12 +34,12 @@ export default function GalleryMoreActions({
   post,
   imgSrc,
 }: GalleryMoreActionsProps) {
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
   const [presentActionSheet] = useIonActionSheet();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const { presentLoginIfNeeded } = useContext(PageContext);
-  const [presentToast] = useIonToast();
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
@@ -70,9 +67,9 @@ export default function GalleryMoreActions({
               } catch (error) {
                 presentToast({
                   message: "Error sharing photo",
-                  duration: 3500,
-                  position: "bottom",
                   color: "danger",
+                  position: "top",
+                  fullscreen: true,
                 });
 
                 throw error;
@@ -90,9 +87,9 @@ export default function GalleryMoreActions({
               } catch (error) {
                 presentToast({
                   message: "Error saving photo to device",
-                  duration: 3500,
-                  position: "bottom",
                   color: "danger",
+                  position: "top",
+                  fullscreen: true,
                 });
 
                 throw error;
@@ -100,9 +97,9 @@ export default function GalleryMoreActions({
 
               presentToast({
                 message: "Photo saved",
-                duration: 3500,
-                position: "bottom",
                 color: "success",
+                position: "top",
+                fullscreen: true,
               });
             })();
           },
@@ -117,9 +114,9 @@ export default function GalleryMoreActions({
               } catch (error) {
                 presentToast({
                   message: "Error copying photo to clipboard",
-                  duration: 3500,
-                  position: "bottom",
                   color: "danger",
+                  position: "top",
+                  fullscreen: true,
                 });
 
                 throw error;
@@ -127,9 +124,9 @@ export default function GalleryMoreActions({
 
               presentToast({
                 message: "Photo copied to clipboard",
-                duration: 3500,
-                position: "bottom",
                 color: "success",
+                position: "top",
+                fullscreen: true,
               });
             })();
           },
@@ -150,6 +147,8 @@ export default function GalleryMoreActions({
 
               try {
                 await dispatch(savePost(post.post.id, !mySaved));
+
+                if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
                 presentToast(saveError);
 

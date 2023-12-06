@@ -96,6 +96,8 @@ export const baseVariables = css`
 
     --read-color: rgba(0, 0, 0, 0.45);
     --read-color-medium: rgba(0, 0, 0, 0.4);
+
+    --share-img-drop-shadow: none;
   }
 
   .ios body {
@@ -146,7 +148,8 @@ export const buildDarkVariables = (
   appTheme: AppThemeType,
   pureBlack: boolean,
 ) => {
-  const { primary } = getThemeByStyle(appTheme, "dark");
+  const { primary, background, insetItemBackground, tabBarBackground } =
+    getThemeByStyle(appTheme, "dark");
 
   return css`
     // Dark Colors
@@ -187,12 +190,12 @@ export const buildDarkVariables = (
       --ion-color-success-shade: #00820b;
       --ion-color-success-tint: #1a9f24;
 
-      --ion-color-warning: #ffd534;
-      --ion-color-warning-rgb: 255, 213, 52;
+      --ion-color-warning: #eac200;
+      --ion-color-warning-rgb: 234, 194, 0;
       --ion-color-warning-contrast: #000000;
       --ion-color-warning-contrast-rgb: 0, 0, 0;
-      --ion-color-warning-shade: #e0bb2e;
-      --ion-color-warning-tint: #ffd948;
+      --ion-color-warning-shade: #ceab00;
+      --ion-color-warning-tint: #ecc81a;
 
       --ion-color-danger: #ff4961;
       --ion-color-danger-rgb: 255, 73, 97;
@@ -232,6 +235,8 @@ export const buildDarkVariables = (
 
       --read-color: rgba(255, 255, 255, 0.6);
       --read-color-medium: rgba(255, 255, 255, 0.4);
+
+      --share-img-drop-shadow: drop-shadow(0 0 8px black);
     }
 
     // iOS Dark Theme
@@ -355,11 +360,31 @@ export const buildDarkVariables = (
     }
 
     @media (max-width: 767px) {
-      .ios ion-modal:not(.small) {
+      .ios ion-modal:not(.small, .transparent-scroll) {
         --ion-background-color: #000;
         --ion-toolbar-background: var(--ion-background-color);
         --ion-toolbar-border-color: var(--ion-color-step-150);
       }
     }
+
+    ${background
+      ? css`
+          .ios body,
+          .md body {
+            --ion-background-color: ${background};
+            --ion-item-background: ${background};
+            --ion-color-step-50: ${insetItemBackground};
+            --ion-color-step-100: ${tabBarBackground};
+            --ion-tab-bar-background: ${tabBarBackground};
+            --ion-toolbar-background: ${tabBarBackground};
+          }
+
+          .ios ion-modal:not(.small, .transparent-scroll) {
+            --ion-background-color: ${background};
+            --ion-toolbar-background: ${tabBarBackground};
+            --ion-toolbar-border-color: var(--ion-color-step-150);
+          }
+        `
+      : ""}
   `;
 };

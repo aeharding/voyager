@@ -1,15 +1,16 @@
 import styled from "@emotion/styled";
 import {
+  ActionSheetOptions,
   IonIcon,
+  IonLoading,
   useIonActionSheet,
-  useIonRouter,
-  useIonToast,
 } from "@ionic/react";
 import {
   arrowDownOutline,
   arrowUndoOutline,
   arrowUpOutline,
   bookmarkOutline,
+  cameraOutline,
   chevronCollapseOutline,
   ellipsisHorizontal,
   flagOutline,
@@ -19,7 +20,11 @@ import {
   textOutline,
   trashOutline,
 } from "ionicons/icons";
-import { CommentView } from "lemmy-js-client";
+import {
+  CommentReplyView,
+  CommentView,
+  PersonMentionView,
+} from "lemmy-js-client";
 import { useContext } from "react";
 import { notEmpty } from "../../helpers/array";
 import {
@@ -29,42 +34,57 @@ import {
   share,
 } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { saveError, voteError } from "../../helpers/toastMessages";
+import {
+  postLocked,
+  saveError,
+  saveSuccess,
+  voteError,
+} from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
 import { handleSelector, isDownvoteEnabledSelector } from "../auth/authSlice";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
+import useAppToast from "../../helpers/useAppToast";
+import { ModeratorRole, getModIcon } from "../moderation/useCanModerate";
+import useCommentModActions from "../moderation/useCommentModActions";
+import { ActionButton } from "../post/actions/ActionButton";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 const StyledIonIcon = styled(IonIcon)`
-  padding: 8px 12px;
-  margin: -8px -12px;
-
   font-size: 1.2em;
 `;
 
 interface MoreActionsProps {
-  comment: CommentView;
+  comment: CommentView | PersonMentionView | CommentReplyView;
   rootIndex: number | undefined;
+  appendActions?: ActionSheetOptions["buttons"];
+  canModerate: ModeratorRole | undefined;
 }
 
 export default function MoreActions({
   comment: commentView,
   rootIndex,
+  appendActions,
+  canModerate,
 }: MoreActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const { prependComments } = useContext(CommentsContext);
+  const { prependComments, getComments } = useContext(CommentsContext);
   const myHandle = useAppSelector(handleSelector);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();
   const collapseRootComment = useCollapseRootComment(commentView, rootIndex);
 
+  const post = useAppSelector(
+    (state) => state.post.postById[commentView.post.id],
+  );
+
   const commentById = useAppSelector((state) => state.comment.commentById);
 
-  const router = useIonRouter();
+  const router = useOptimizedIonRouter();
 
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentById[commentView.comment.id] ?? commentView.comment;
@@ -75,6 +95,7 @@ export default function MoreActions({
     presentCommentEdit,
     presentReport,
     presentSelectText,
+    presentShareAsImage,
   } = useContext(PageContext);
 
   const commentVotesById = useAppSelector(
@@ -91,10 +112,22 @@ export default function MoreActions({
   const isMyComment = getRemoteHandle(commentView.creator) === myHandle;
   const commentExists = !comment.deleted && !comment.removed;
 
+  const { loading, present: presentCommentModActions } =
+    useCommentModActions(commentView);
+
   function onClick() {
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: [
+        canModerate
+          ? {
+              cssClass: `${canModerate} detail`,
+              text: "Moderator",
+              icon: getModIcon(canModerate),
+              handler: presentCommentModActions,
+            }
+          : undefined,
+        ...(appendActions || []),
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
           icon: arrowUpOutline,
@@ -105,7 +138,7 @@ export default function MoreActions({
               try {
                 await dispatch(voteOnComment(comment.id, myVote === 1 ? 0 : 1));
               } catch (error) {
-                present(voteError);
+                presentToast(voteError);
               }
             })();
           },
@@ -123,7 +156,7 @@ export default function MoreActions({
                       voteOnComment(comment.id, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
-                    present(voteError);
+                    presentToast(voteError);
                   }
                 })();
               },
@@ -138,8 +171,10 @@ export default function MoreActions({
 
               try {
                 await dispatch(saveComment(comment.id, !mySaved));
+
+                if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
-                present(saveError);
+                presentToast(saveError);
               }
             })();
           },
@@ -168,21 +203,17 @@ export default function MoreActions({
                           try {
                             await dispatch(deleteComment(comment.id));
                           } catch (error) {
-                            present({
+                            presentToast({
                               message:
                                 "Problem deleting comment. Please try again.",
-                              duration: 3500,
-                              position: "bottom",
                               color: "danger",
                             });
 
                             throw error;
                           }
 
-                          present({
+                          presentToast({
                             message: "Comment deleted!",
-                            duration: 3500,
-                            position: "bottom",
                             color: "primary",
                           });
                         })();
@@ -203,6 +234,10 @@ export default function MoreActions({
           handler: () => {
             (async () => {
               if (presentLoginIfNeeded()) return;
+              if (commentView.post.locked) {
+                presentToast(postLocked);
+                return;
+              }
 
               const reply = await presentCommentReply(commentView);
 
@@ -237,6 +272,19 @@ export default function MoreActions({
         },
         rootIndex !== undefined
           ? {
+              text: "Share as image...",
+              icon: cameraOutline,
+              handler: () => {
+                const comments = getComments();
+
+                if (!comments || !post || post === "not-found") return;
+
+                presentShareAsImage(post, commentView, comments);
+              },
+            }
+          : undefined,
+        rootIndex !== undefined
+          ? {
               text: "Collapse to Top",
               icon: chevronCollapseOutline,
               handler: () => {
@@ -261,12 +309,17 @@ export default function MoreActions({
   }
 
   return (
-    <StyledIonIcon
-      icon={ellipsisHorizontal}
-      onClick={(e) => {
-        onClick();
-        e.stopPropagation();
-      }}
-    />
+    <>
+      <IonLoading isOpen={loading} />
+      <ActionButton>
+        <StyledIonIcon
+          icon={ellipsisHorizontal}
+          onClick={(e) => {
+            onClick();
+            e.stopPropagation();
+          }}
+        />
+      </ActionButton>
+    </>
   );
 }

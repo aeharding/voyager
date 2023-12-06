@@ -1,10 +1,10 @@
-import { IonActionSheet, IonAlert, useIonToast } from "@ionic/react";
+import { IonActionSheet, IonAlert } from "@ionic/react";
 import { CommentView, PostView, PrivateMessageView } from "lemmy-js-client";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import useClient from "../../helpers/useClient";
-import { useAppSelector } from "../../store";
-import { jwtSelector } from "../auth/authSlice";
-import useDebounceFn from "../../helpers/useDebounceFn";
+import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
+import useAppToast from "../../helpers/useAppToast";
+import { isLemmyError } from "../../helpers/lemmy";
 
 export type ReportableItem = CommentView | PostView | PrivateMessageView;
 
@@ -13,8 +13,7 @@ export type ReportHandle = {
 };
 
 export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
-  const jwt = useAppSelector(jwtSelector);
-  const [presentToast] = useIonToast();
+  const presentToast = useAppToast();
   const [item, setItem] = useState<ReportableItem | undefined>();
   const [reportOptionsOpen, setReportOptionsOpen] = useState(false);
   const [customOpen, setCustomOpen] = useState(false);
@@ -36,39 +35,34 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
   }));
 
   async function submitReport(reason: string) {
-    if (!item || !jwt) return;
+    if (!item) return;
 
     try {
       if ("comment" in item) {
         await client.createCommentReport({
           reason,
           comment_id: item.comment.id,
-          auth: jwt,
         });
       } else if ("post" in item) {
         await client.createPostReport({
           reason,
           post_id: item.post.id,
-          auth: jwt,
         });
       } else if ("private_message" in item) {
         await client.createPrivateMessageReport({
           reason,
           private_message_id: item.private_message.id,
-          auth: jwt,
         });
       }
     } catch (error) {
       let errorDetail = "Please try again.";
 
-      if (error === "couldnt_create_report") {
+      if (isLemmyError(error, "couldnt_create_report")) {
         errorDetail = "You may have already reported this.";
       }
 
       presentToast({
         message: `Failed to report ${type?.toLowerCase()}. ${errorDetail}`,
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
 
@@ -77,21 +71,19 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
 
     presentToast({
       message: `${type} reported!`,
-      duration: 3500,
-      position: "bottom",
-      color: "primary",
     });
   }
 
-  // Workaround for Ionic bug where onDidDismiss is called twice
-  const submitCustomReason = useDebounceFn(async (e) => {
+  const submitCustomReason = async function (
+    e: IonAlertCustomEvent<OverlayEventDetail>,
+  ) {
     setCustomOpen(false);
 
     if (e.detail.role === "cancel" || e.detail.role === "backdrop") return;
 
     await submitReport(e.detail.data.values.reason);
     setCustomOpen(false);
-  }, 50);
+  };
 
   return (
     <>
@@ -113,6 +105,10 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
         }}
         header={`Report ${type}`}
         buttons={[
+          {
+            text: "Breaks Community Rules",
+            data: "Breaks Community Rules",
+          },
           {
             text: "Spam or Abuse",
             data: "Spam or Abuse",

@@ -40,13 +40,14 @@ export default function CompactSettings() {
           options={OCompactThumbnailPositionType}
         />
         <InsetIonItem>
-          <IonLabel>Show Voting Buttons</IonLabel>
           <IonToggle
             checked={showVotingButtons}
             onIonChange={(e) =>
               dispatch(setShowVotingButtons(e.detail.checked ? true : false))
             }
-          />
+          >
+            Show Voting Buttons
+          </IonToggle>
         </InsetIonItem>
       </IonList>
     </>

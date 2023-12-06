@@ -8,7 +8,6 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonToast,
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -20,7 +19,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { jwtPayloadSelector, jwtSelector } from "../../features/auth/authSlice";
+import { jwtPayloadSelector } from "../../features/auth/authSlice";
 import {
   receivedMessages,
   syncMessages,
@@ -44,6 +43,8 @@ import { StyledLink } from "../../features/labels/links/shared";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import ConversationsMoreActions from "../../features/feed/ConversationsMoreActions";
 import { TabContext } from "../../TabContext";
+import useAppToast from "../../helpers/useAppToast";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -123,11 +124,11 @@ const SendButton = styled(IonIcon)`
 `;
 
 export default function ConversationPage() {
+  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
   const allMessages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
-  const { tab } = useContext(TabContext);
-  const jwt = useAppSelector(jwtSelector);
+  const { tabRef } = useContext(TabContext);
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
@@ -136,10 +137,12 @@ export default function ConversationPage() {
   const client = useClient();
   const userByHandle = useAppSelector((state) => state.user.userByHandle);
   const [loading, setLoading] = useState(false);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
 
   const contentRef = useRef<IonContentCustomEvent<never>["target"]>(null);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+
+  useSetActivePage(pageRef);
 
   useIonViewWillEnter(() => {
     contentRef.current?.scrollToBottom();
@@ -180,7 +183,6 @@ export default function ConversationPage() {
     const recipientId = userByHandle[handle]?.id;
 
     if (typeof recipientId !== "number") return;
-    if (!jwt) return;
 
     setLoading(true);
 
@@ -190,13 +192,10 @@ export default function ConversationPage() {
       message = await client.createPrivateMessage({
         content: value,
         recipient_id: recipientId,
-        auth: jwt,
       });
     } catch (error) {
-      present({
+      presentToast({
         message: `Message failed to send. Please try again`,
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
       setLoading(false);
@@ -217,13 +216,13 @@ export default function ConversationPage() {
   }
 
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton
               defaultHref="/inbox/messages"
-              text={tab === "inbox" ? "Messages" : "Back"}
+              text={tabRef?.current === "inbox" ? "Messages" : "Back"}
             />
           </IonButtons>
 

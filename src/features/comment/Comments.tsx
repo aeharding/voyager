@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -7,21 +8,15 @@ import React, {
   useState,
 } from "react";
 import {
-  MAX_DEFAULT_COMMENT_DEPTH,
   buildCommentsTreeWithMissing,
+  getDepthFromCommentPath,
 } from "../../helpers/lemmy";
-import CommentTree from "./CommentTree";
-import {
-  IonRefresher,
-  IonRefresherContent,
-  IonSpinner,
-  useIonToast,
-} from "@ionic/react";
+import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
+import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { CommentSortType, CommentView, Person } from "lemmy-js-client";
-import { pullAllBy, uniqBy } from "lodash";
-import { Virtuoso, VirtuosoHandle } from "react-virtuoso";
+import { CommentSortType, CommentView } from "lemmy-js-client";
+import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { receivedComments } from "./commentSlice";
 import { RefresherCustomEvent } from "@ionic/core";
@@ -29,9 +24,22 @@ import { getPost } from "../post/postSlice";
 import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
 import { CommentsContext } from "./CommentsContext";
-import { jwtSelector } from "../auth/authSlice";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
+import useAppToast from "../../helpers/useAppToast";
+import { VList, VListHandle } from "virtua";
+import LoadParentComments from "./LoadParentComments";
+import {
+  scrollIntoView as scrollIntoView,
+  useScrollIntoViewWorkaround,
+} from "../../helpers/dom";
+import { IndexedVirtuaItem } from "../../helpers/virtua";
+import FeedLoadMoreFailed from "../feed/endItems/FeedLoadMoreFailed";
+
+const ScrollViewContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 const centerCss = css`
   position: relative;
@@ -59,6 +67,8 @@ const Empty = styled.div`
   }
 `;
 
+const MAX_COMMENT_PATH_CONTEXT_DEPTH = 2;
+
 export type CommentsHandle = {
   appendComments: (comments: CommentView[]) => void;
   prependComments: (comments: CommentView[]) => void;
@@ -68,122 +78,87 @@ interface CommentsProps {
   header: React.ReactNode;
   postId: number;
   commentPath?: string;
-  op: Person;
+  threadCommentId?: string;
   sort: CommentSortType;
   bottomPadding?: number;
 }
 
 export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
-  { header, postId, commentPath, op, sort, bottomPadding },
+  { header, postId, commentPath, sort, bottomPadding, threadCommentId },
   ref,
 ) {
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector(jwtSelector);
   const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [finishedPaging, setFinishedPaging] = useState(false);
+  const [loading, _setLoading] = useState(true);
+  const loadingRef = useRef(false);
+  const finishedPagingRef = useRef(false);
   const [comments, setComments] = useState<CommentView[]>([]);
-  const commentTree = useMemo(
-    () =>
-      comments.length
-        ? buildCommentsTreeWithMissing(comments, !!commentPath)
-        : [],
-    [commentPath, comments],
-  );
+
+  const [loadFailed, setLoadFailed] = useState(false);
+
   const client = useClient();
   const [isListAtTop, setIsListAtTop] = useState<boolean>(true);
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const defaultCommentDepth = useAppSelector(defaultCommentDepthSelector);
 
-  const highlightedCommentId = commentPath
-    ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      +commentPath.split(".").pop()!
-    : undefined;
-  const commentId = commentPath ? +commentPath.split(".")[1] : undefined;
-  const commentDepth = commentPath ? commentPath.split(".").length : undefined;
+  const scrollViewContainerRef = useRef<HTMLDivElement>(null);
+  const virtuaRef = useRef<VListHandle>(null);
 
-  const virtuosoRef = useRef<VirtuosoHandle>(null);
+  function setLoading(loading: boolean) {
+    _setLoading(loading);
+    loadingRef.current = loading;
+  }
 
-  useSetActivePage(virtuosoRef);
+  useSetActivePage(virtuaRef);
 
   useImperativeHandle(ref, () => ({
     appendComments,
     prependComments,
   }));
 
+  const [maxContext, setMaxContext] = useState(
+    getCommentContextDepthForPath(commentPath),
+  );
+
   useEffect(() => {
-    fetchComments(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, commentPath, jwt, postId]);
+    setMaxContext(getCommentContextDepthForPath(commentPath));
+  }, [commentPath]);
 
-  async function fetchComments(refresh = false) {
-    if (refresh) {
-      setFinishedPaging(false);
-    } else {
-      if (loading) return;
-      if (finishedPaging) return;
+  const parentCommentId = (() => {
+    if (commentPath) return +commentPath.split(".")[1];
+    if (threadCommentId) return +threadCommentId;
+    return undefined;
+  })();
+
+  const highlightedCommentId = (() => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    if (commentPath) return +commentPath.split(".").pop()!;
+    if (threadCommentId) return +threadCommentId;
+    return undefined;
+  })();
+
+  const maxDepth = (() => {
+    // Viewing a single thread should always show highlighted comment, regardless of depth
+    if (commentPath) {
+      return getDepthFromCommentPath(commentPath) + MAX_COMMENT_DEPTH + 1;
     }
 
-    let response;
+    if (threadCommentId) return MAX_COMMENT_DEPTH + 1;
 
-    const currentPage = refresh ? 1 : page + 1;
+    return defaultCommentDepth;
+  })();
 
-    const reqPostId = postId;
-    const reqCommentId = commentId;
-    setLoading(true);
-
-    try {
-      response = await client.getComments({
-        post_id: reqPostId,
-        parent_id: commentId,
-        limit: 10,
-        sort,
-        type_: "All",
-
-        // Viewing a single thread should always show highlighted comment, regardless of depth
-        max_depth: commentDepth
-          ? Math.max(MAX_DEFAULT_COMMENT_DEPTH, commentDepth)
-          : defaultCommentDepth,
-
-        saved_only: false,
-        page: currentPage,
-        auth: jwt,
-      });
-    } catch (error) {
-      if (reqPostId === postId && reqCommentId === commentId)
-        present({
-          message: "Problem fetching comments. Please try again.",
-          duration: 3500,
-          position: "bottom",
-          color: "danger",
-        });
-
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-
-    dispatch(receivedComments(response.comments));
-
-    if (reqPostId !== postId || reqCommentId !== commentId) return;
-
-    const existingComments = refresh ? [] : comments;
-    const newComments = pullAllBy(
-      response.comments,
-      existingComments,
-      "comment.id",
-    );
-    if (!newComments.length) setFinishedPaging(true);
-
-    let potentialComments = uniqBy(
-      [...existingComments, ...newComments],
-      (c) => c.comment.id,
-    );
+  const filteredComments = useMemo(() => {
+    let potentialComments = comments;
 
     // Filter context to a single comment chain (only show direct ancestors and children)
-    if (commentPath)
+    if (commentPath) {
       potentialComments = potentialComments.filter((c) => {
-        if (commentPath.split(".").includes(`${c.comment.id}`)) return true;
+        if (
+          commentPath.split(".").includes(`${c.comment.id}`) &&
+          getDepthFromCommentPath(c.comment.path) >= maxContext
+        )
+          return true;
         if (
           highlightedCommentId &&
           c.comment.path.split(".").includes(`${highlightedCommentId}`)
@@ -191,53 +166,207 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
           return true;
         return false;
       });
+    } else if (threadCommentId) {
+      // Filter with commentId as root comment (we're viewing a continuing thread)
+      potentialComments = potentialComments.filter((c) =>
+        c.comment.path.split(".").includes(threadCommentId),
+      );
+    }
 
-    setComments(potentialComments);
-    setPage(currentPage);
-  }
+    // Comment depths for filtered results can be out of order,
+    // so they need to be sorted before building the tree.
+    //
+    // This is probably a bit inefficient (we could probably check
+    // for root comment to pass to the tree builder instead of the
+    // tree builder assuming the first comment is the root comment),
+    // but since we're only viewing a single thread
+    // (and have already filtered) it probably doesn't matter much
+    if (commentPath || threadCommentId) {
+      potentialComments = sortBy(potentialComments, (i) =>
+        getDepthFromCommentPath(i.comment.path),
+      );
+    }
 
-  function prependComments(comments: CommentView[]) {
-    setComments((existingComments) => {
-      let commentsResult;
+    return potentialComments;
+  }, [
+    commentPath,
+    comments,
+    highlightedCommentId,
+    maxContext,
+    threadCommentId,
+  ]);
 
-      // We want to *unshift* comments, so that they appear as first child(ren) of a given node
+  const focusCommentIfNeeded = useCallback(() => {
+    const commentElement = scrollViewContainerRef.current?.querySelector(
+      `.comment-${highlightedCommentId}`,
+    );
 
-      // if `commentPath` exists, we call `buildCommentsTree` with `true`
-      if (commentPath) {
-        // The first comment is considered the root (see `buildCommentsTree(comments, true)`),
-        // so have to insert at root + 1 instead of at beginning
-        commentsResult = existingComments.slice(); // don't mutate existing
-        commentsResult.splice(1, 0, ...comments); // insert after root
+    setTimeout(
+      () => {
+        if (!(commentElement instanceof HTMLElement)) return;
+
+        scrollIntoView(commentElement, 100);
+      },
+      useScrollIntoViewWorkaround ? 50 : 600,
+    );
+
+    return !!commentElement;
+  }, [highlightedCommentId]);
+
+  // This is super hacky logic to scroll the view received new comments
+  const scrolledRef = useRef(false);
+  useEffect(() => {
+    if (scrolledRef.current) return;
+    if (focusCommentIfNeeded()) scrolledRef.current = true;
+  }, [filteredComments, focusCommentIfNeeded]);
+
+  const commentTree = useMemo(() => {
+    return filteredComments.length
+      ? buildCommentsTreeWithMissing(
+          filteredComments,
+          !!commentPath || !!threadCommentId,
+        )
+      : [];
+  }, [commentPath, filteredComments, threadCommentId]);
+
+  useEffect(() => {
+    fetchComments(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort, commentPath, postId, client, threadCommentId]);
+
+  const fetchComments = useCallback(
+    async (refresh = false) => {
+      if (refresh) {
+        if (page === 0 && loadingRef.current) return; // Still loading first page
+        finishedPagingRef.current = false;
       } else {
-        // doesn't matter where inserted into array, put them first
-        commentsResult = [...comments, ...existingComments];
+        if (loadingRef.current) return;
+        if (finishedPagingRef.current) return;
       }
 
-      const newComments = uniqBy(commentsResult, (c) => c.comment.id);
+      let response;
 
-      // Increase the child_count as appropriate
-      comments.forEach((c) => {
-        if (existingComments.some((d) => d.comment.id === c.comment.id)) return;
+      const currentPage = refresh ? 1 : page + 1;
 
-        const parentIndex = newComments.findIndex((d) => {
-          const path = c.comment.path.split(".");
-          return d.comment.id === +(path[path.length - 2] ?? -1);
+      const reqPostId = postId;
+      const reqCommentId = parentCommentId;
+      setLoading(true);
+
+      try {
+        response = await client.getComments({
+          post_id: reqPostId,
+          parent_id: parentCommentId,
+          limit: 10,
+          sort,
+          type_: "All",
+
+          max_depth: maxDepth,
+
+          saved_only: false,
+          page: currentPage,
         });
-        const parent = newComments[parentIndex];
-        if (parent) {
-          newComments.splice(parentIndex, 1, {
-            ...parent,
-            counts: {
-              ...parent.counts,
-              child_count: parent.counts.child_count + 1,
-            },
+      } catch (error) {
+        if (reqPostId === postId && reqCommentId === parentCommentId)
+          presentToast({
+            message: "Problem fetching comments. Please try again.",
+            color: "danger",
           });
-        }
-      });
 
-      return newComments;
-    });
-  }
+        setLoadFailed(true);
+        if (refresh) {
+          setComments([]);
+          setPage(0);
+        }
+
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+
+      dispatch(receivedComments(response.comments));
+
+      if (reqPostId !== postId || reqCommentId !== parentCommentId) return;
+
+      const existingComments = refresh ? [] : comments;
+      const newComments = pullAllBy(
+        response.comments,
+        existingComments,
+        "comment.id",
+      );
+      if (!newComments.length) finishedPagingRef.current = true;
+
+      const potentialComments = uniqBy(
+        [...existingComments, ...newComments],
+        (c) => c.comment.id,
+      );
+
+      setComments(potentialComments);
+      setPage(currentPage);
+      setLoadFailed(false);
+
+      if (refresh) scrolledRef.current = false;
+    },
+    [
+      client,
+      comments,
+      dispatch,
+      maxDepth,
+      page,
+      parentCommentId,
+      postId,
+      presentToast,
+      sort,
+    ],
+  );
+
+  const prependComments = useCallback(
+    async (comments: CommentView[]) => {
+      setComments((existingComments) => {
+        let commentsResult;
+
+        // We want to *unshift* comments, so that they appear as first child(ren) of a given node
+
+        // if `commentPath` exists, we call `buildCommentsTree` with `true`
+        if (commentPath || threadCommentId) {
+          // The first comment is considered the root (see `buildCommentsTree(comments, true)`),
+          // so have to insert at root + 1 instead of at beginning
+          commentsResult = existingComments.slice(); // don't mutate existing
+          commentsResult.splice(1, 0, ...comments); // insert after root
+        } else {
+          // doesn't matter where inserted into array, put them first
+          commentsResult = [...comments, ...existingComments];
+        }
+
+        const newComments = uniqBy(commentsResult, (c) => c.comment.id);
+
+        // Increase the child_count as appropriate
+        comments.forEach((c) => {
+          if (existingComments.some((d) => d.comment.id === c.comment.id))
+            return;
+
+          const parentIndex = newComments.findIndex((d) => {
+            const path = c.comment.path.split(".");
+            return d.comment.id === +(path[path.length - 2] ?? -1);
+          });
+          const parent = newComments[parentIndex];
+          if (parent) {
+            newComments.splice(parentIndex, 1, {
+              ...parent,
+              counts: {
+                ...parent.counts,
+                child_count: parent.counts.child_count + 1,
+              },
+            });
+          }
+        });
+
+        return newComments;
+      });
+    },
+    [commentPath, threadCommentId],
+  );
+
+  const getComments = useCallback(() => comments, [comments]);
 
   function appendComments(comments: CommentView[]) {
     setComments((existingComments) =>
@@ -254,37 +383,58 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   }
 
   const allComments = useMemo(() => {
-    if (loading && !comments.length)
-      return [<StyledIonSpinner key="spinner" />];
-
-    if (!comments.length)
-      return [
-        <Empty key="empty">
-          <div>No Comments</div>
-          <aside>It&apos;s quiet... too quiet...</aside>
-        </Empty>,
-      ];
-
-    return commentTree.map((comment, index) => (
+    const tree = commentTree.map((comment, index) => (
       <CommentTree
         comment={comment}
         highlightedCommentId={highlightedCommentId}
         key={comment.comment_view.comment.id}
         first={index === 0}
-        op={op}
         rootIndex={index + 1} /* Plus header index = 0 */
+        baseDepth={
+          commentPath
+            ? Math.max(0, getDepthFromCommentPath(commentPath) - 2)
+            : comment.absoluteDepth
+        }
       />
     ));
-  }, [commentTree, comments.length, highlightedCommentId, loading, op]);
+
+    if (maxContext > 0)
+      tree.unshift(<LoadParentComments setMaxContext={setMaxContext} />);
+
+    return tree;
+  }, [commentTree, highlightedCommentId, commentPath, maxContext]);
+
+  const padding = bottomPadding ? (
+    <div style={{ height: `${bottomPadding}px` }} />
+  ) : undefined;
+
+  function renderFooter() {
+    if (loadFailed)
+      return <FeedLoadMoreFailed fetchMore={fetchComments} loading={loading} />;
+
+    if (loading && !comments.length) return <StyledIonSpinner />;
+
+    if (!comments.length)
+      return (
+        <Empty>
+          <div>No Comments</div>
+          <aside>It&apos;s quiet... too quiet...</aside>
+        </Empty>
+      );
+  }
+
+  const commentsContextValue = useMemo(
+    () => ({
+      refresh: () => fetchComments(true),
+      appendComments,
+      prependComments,
+      getComments,
+    }),
+    [fetchComments, prependComments, getComments],
+  );
 
   return (
-    <CommentsContext.Provider
-      value={{
-        refresh: () => fetchComments(true),
-        appendComments,
-        prependComments,
-      }}
-    >
+    <CommentsContext.Provider value={commentsContextValue}>
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
@@ -292,25 +442,40 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       >
         <IonRefresherContent />
       </IonRefresher>
-      <Virtuoso
-        className={
-          isSafariFeedHackEnabled ? undefined : "ion-content-scroll-host"
-        }
-        ref={virtuosoRef}
-        style={{ height: "100%" }}
-        totalCount={allComments.length + 1}
-        itemContent={(index) => (index ? allComments[index - 1] : header)}
-        endReached={() => fetchComments()}
-        atTopStateChange={setIsListAtTop}
-        components={
-          bottomPadding
-            ? {
-                // add space for the <ViewAllComments /> fixed component
-                Footer: () => <div style={{ height: `${bottomPadding}px` }} />,
-              }
-            : {}
-        }
-      />
+      <ScrollViewContainer ref={scrollViewContainerRef}>
+        <VList
+          className={
+            isSafariFeedHackEnabled
+              ? "virtual-scroller"
+              : "ion-content-scroll-host virtual-scroller"
+          }
+          ref={virtuaRef}
+          style={{ height: "100%" }}
+          components={{ Item: IndexedVirtuaItem }}
+          overscan={highlightedCommentId ? 10 : 0}
+          onRangeChange={(start, end) => {
+            if (end + 10 > allComments.length && !loadFailed) {
+              fetchComments();
+            }
+          }}
+          onScroll={(offset) => {
+            setIsListAtTop(offset < 6);
+          }}
+        >
+          {header}
+          {allComments}
+          {renderFooter()}
+          {padding}
+        </VList>
+      </ScrollViewContainer>
     </CommentsContext.Provider>
   );
 });
+
+function getCommentContextDepthForPath(
+  commentPath: string | undefined,
+): number {
+  return commentPath
+    ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
+    : 0;
+}

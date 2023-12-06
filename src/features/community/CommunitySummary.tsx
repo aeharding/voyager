@@ -4,12 +4,32 @@ import { CommunityView } from "lemmy-js-client";
 import { maxWidthCss } from "../shared/AppContent";
 import CommunityLink from "../labels/links/CommunityLink";
 import Ago from "../labels/Ago";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle } from "../../helpers/lemmy";
 import InlineMarkdown from "../shared/InlineMarkdown";
+import { heart } from "ionicons/icons";
+import { ActionButton } from "../post/actions/ActionButton";
+import { ToggleIcon } from "./ToggleIcon";
+import useCommunityActions from "./useCommunityActions";
 
 const Container = styled(IonItem)`
   ${maxWidthCss}
+`;
+
+const RightContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const Title = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const StyledCommunityLink = styled(CommunityLink)`
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Contents = styled.div`
@@ -40,29 +60,39 @@ interface CommunitySummaryProps {
 }
 
 export default function CommunitySummary({ community }: CommunitySummaryProps) {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const { isSubscribed, subscribe, view } = useCommunityActions(
+    community.community,
+    community.subscribed,
+  );
 
   return (
-    <Container
-      routerLink={buildGeneralBrowseLink(
-        `/c/${getHandle(community.community)}`,
-      )}
-    >
+    <Container>
       <Contents>
-        <div>
-          <CommunityLink
+        <Title>
+          <StyledCommunityLink
             community={community.community}
             showInstanceWhenRemote
             subscribed={community.subscribed}
           />
-        </div>
-        <Stats>
+          <RightContainer>
+            <ActionButton
+              color={isSubscribed ? "danger" : "primary"}
+              onClick={(e) => {
+                subscribe();
+                e.stopPropagation();
+              }}
+            >
+              <ToggleIcon icon={heart} selected={isSubscribed} />
+            </ActionButton>
+          </RightContainer>
+        </Title>
+        <Stats onClick={view}>
           {community.counts.subscribers} Subscriber
           {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
           <Ago date={community.community.published} /> Old{" "}
         </Stats>
         {community.community.description && (
-          <Description>
+          <Description onClick={view}>
             <InlineMarkdown>{community.community.description}</InlineMarkdown>
           </Description>
         )}

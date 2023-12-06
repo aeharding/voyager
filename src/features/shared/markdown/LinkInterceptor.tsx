@@ -1,54 +1,47 @@
-import { LinkHTMLAttributes, MouseEvent, useCallback } from "react";
-import { useAppSelector } from "../../../store";
-import { useIonRouter } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import React, { useCallback, useMemo } from "react";
 import styled from "@emotion/styled";
 import InAppExternalLink from "../InAppExternalLink";
-
-const COMMUNITY_RELATIVE_URL =
-  /^\/c\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
+import useLemmyUrlHandler from "../useLemmyUrlHandler";
+import { useAppSelector } from "../../../store";
 
 const LinkInterceptor = styled(LinkInterceptorUnstyled)`
   -webkit-touch-callout: default;
 `;
 
-function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
+function LinkInterceptorUnstyled({
+  onClick: _onClick,
+  ...props
+}: React.JSX.IntrinsicElements["a"]) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const router = useIonRouter();
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
+
+  const absoluteHref = useMemo(() => {
+    if (!props.href) return;
+
+    try {
+      return new URL(props.href, `https://${connectedInstance}`).href;
+    } catch (error) {
+      return;
+    }
+  }, [connectedInstance, props.href]);
 
   const onClick = useCallback(
-    (e: MouseEvent) => {
+    async (e: React.MouseEvent<HTMLAnchorElement>) => {
+      _onClick?.(e);
+
       if (!props.href) return;
       if (e.metaKey || e.ctrlKey) return;
+      if (e.defaultPrevented) return;
 
-      const url = new URL(props.href, `https://${connectedInstance}`);
-
-      const matchedCommunityHandle = matchLemmyCommunity(url.pathname);
-
-      if (!matchedCommunityHandle) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      const [communityName, domain] = matchedCommunityHandle;
-
-      if (
-        (!domain && url.hostname === connectedInstance) ||
-        (domain === url.hostname && domain === connectedInstance)
-      ) {
-        router.push(buildGeneralBrowseLink(`/c/${communityName}`));
-        return;
-      }
-
-      router.push(
-        buildGeneralBrowseLink(`/c/${communityName}@${domain ?? url.hostname}`),
-      );
+      redirectToLemmyObjectIfNeeded(props.href, e);
     },
-    [buildGeneralBrowseLink, connectedInstance, props.href, router],
+    [props.href, redirectToLemmyObjectIfNeeded, _onClick],
   );
+
+  // Sometimes markdown thinks things are URLs that aren't URLs
+  if (!absoluteHref) return props.children;
 
   return (
     <InAppExternalLink
@@ -56,20 +49,9 @@ function LinkInterceptorUnstyled(props: LinkHTMLAttributes<HTMLAnchorElement>) {
       target="_blank"
       rel="noopener noreferrer"
       onClick={onClick}
+      href={absoluteHref}
     />
   );
-}
-
-function matchLemmyCommunity(
-  urlPathname: string,
-): [string, string] | [string] | null {
-  const matches = urlPathname.match(COMMUNITY_RELATIVE_URL);
-  if (matches && matches[1]) {
-    const [communityName, domain] = matches[1].split("@");
-    if (!domain) return [communityName];
-    return [communityName, domain];
-  }
-  return null;
 }
 
 export default LinkInterceptor;

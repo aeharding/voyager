@@ -17,7 +17,6 @@ export default function FilterNsfw() {
       </ListHeader>
       <IonList inset>
         <InsetIonItem>
-          <IonLabel>Hide all NSFW</IonLabel>
           <IonToggle
             checked={!localUser?.show_nsfw}
             onIonChange={async () => {
@@ -28,7 +27,9 @@ export default function FilterNsfw() {
                 setLoading(false);
               }
             }}
-          />
+          >
+            Hide all NSFW
+          </IonToggle>
         </InsetIonItem>
       </IonList>
       <IonLoading isOpen={loading} />

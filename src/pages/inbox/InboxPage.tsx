@@ -9,7 +9,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store";
 import useClient from "../../helpers/useClient";
 import { FetchFn } from "../../features/feed/Feed";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import InboxFeed from "../../features/feed/InboxFeed";
 import {
   getInboxItemPublished,
@@ -17,29 +17,29 @@ import {
 } from "../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { InboxItemView } from "../../features/inbox/InboxItem";
-import { jwtSelector } from "../../features/auth/authSlice";
 import FeedContent from "../shared/FeedContent";
+import { useSetActivePage } from "../../features/auth/AppContext";
+import { receivedUsers } from "../../features/user/userSlice";
 
 interface InboxPageProps {
   showRead?: boolean;
 }
 
 export default function InboxPage({ showRead }: InboxPageProps) {
+  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
   const myUserId = useAppSelector(
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
 
-  const fetchFn: FetchFn<InboxItemView> = useCallback(
-    async (page) => {
-      if (!jwt) throw new Error("user must be authed");
+  useSetActivePage(pageRef);
 
+  const fetchFn: FetchFn<InboxItemView> = useCallback(
+    async (pageData) => {
       const params = {
         limit: 50,
-        page,
-        auth: jwt,
+        ...pageData,
         unread_only: !showRead,
       };
 
@@ -70,14 +70,20 @@ export default function InboxPage({ showRead }: InboxPageProps) {
       );
 
       dispatch(receivedInboxItems(everything));
+      dispatch(
+        receivedUsers([
+          ...everything.map(({ creator }) => creator),
+          ...everything.map(({ recipient }) => recipient),
+        ]),
+      );
 
       return everything;
     },
-    [client, dispatch, jwt, myUserId, showRead],
+    [client, dispatch, myUserId, showRead],
   );
 
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

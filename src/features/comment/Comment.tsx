@@ -3,7 +3,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React, { useEffect, useRef } from "react";
+import React, { MouseEvent } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
@@ -16,10 +16,12 @@ import CommentEllipsis from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
-import {
-  scrollIntoView as scrollIntoView,
-  useScrollIntoViewWorkaround,
-} from "../../helpers/dom";
+import ModActions from "./ModActions";
+import { ModeratableItemBannerOutlet } from "../moderation/ModeratableItem";
+import ModeratableItem from "../moderation/ModeratableItem";
+import useCanModerate from "../moderation/useCanModerate";
+import ModqueueItemActions from "../moderation/ModqueueItemActions";
+import { ActionsContainer } from "../post/inFeed/compact/CompactPost";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -45,27 +47,20 @@ export const CustomIonItem = styled(IonItem)`
 
 export const PositionedContainer = styled.div<{
   depth: number;
-  highlighted: boolean;
 }>`
   position: relative;
 
   ${maxWidthCss}
 
-  padding: 0.55rem 1rem;
-
-  ${({ highlighted }) =>
-    highlighted &&
-    css`
-      background: var(--ion-color-light);
-    `}
+  padding: 8px 12px;
 
   @media (hover: none) {
-    padding-top: 0.65rem;
-    padding-bottom: 0.65rem;
+    padding-top: 0.65em;
+    padding-bottom: 0.65em;
   }
 
   ${({ depth }) => css`
-    padding-left: calc(0.5rem + ${Math.max(0, depth - 1) * 10}px);
+    padding-left: calc(12px + ${Math.max(0, depth - 1) * 10}px);
   `}
 `;
 
@@ -79,6 +74,8 @@ export const Container = styled.div<{
   position: relative;
   width: 100%;
 
+  gap: 12px;
+
   font-size: 0.9375em;
 
   display: flex;
@@ -87,7 +84,7 @@ export const Container = styled.div<{
   ${({ depth }) =>
     depth > 0 &&
     css`
-      padding-left: 1rem;
+      padding-left: 1em;
     `}
 
   &:before {
@@ -123,9 +120,9 @@ const Header = styled.div`
   display: flex;
   align-items: center;
 
-  font-size: 0.875rem;
+  font-size: 0.875em;
 
-  gap: 0.5rem;
+  gap: 0.5em;
 
   color: var(--ion-color-medium2);
 `;
@@ -138,10 +135,10 @@ const StyledPersonLabel = styled(PersonLink)`
 `;
 
 const Content = styled.div`
-  padding-top: 0.35rem;
+  padding-top: 0.35em;
 
   @media (hover: none) {
-    padding-top: 0.45rem;
+    padding-top: 0.45em;
   }
 
   line-height: 1.25;
@@ -166,9 +163,9 @@ const CollapsedIcon = styled(IonIcon)`
 
 const AmountCollapsed = styled.div`
   font-size: 0.875em;
-  padding: 0.25rem 0.5rem;
-  margin: -0.25rem;
-  border-radius: 1rem;
+  padding: 2px 8px;
+  margin: -4px 0;
+  border-radius: 16px;
   color: var(--ion-color-medium);
   background: var(--ion-color-light);
 `;
@@ -177,7 +174,8 @@ interface CommentProps {
   comment: CommentView;
   highlightedCommentId?: number;
   depth?: number;
-  onClick?: () => void;
+  absoluteDepth?: number;
+  onClick?: (e: MouseEvent) => void;
   collapsed?: boolean;
   fullyCollapsed?: boolean;
   routerLink?: string;
@@ -188,12 +186,18 @@ interface CommentProps {
   className?: string;
 
   rootIndex?: number;
+
+  /**
+   * On mod queue, this will be used for custom actions
+   */
+  modqueue?: boolean;
 }
 
 export default function Comment({
   comment: commentView,
   highlightedCommentId,
   depth,
+  absoluteDepth,
   onClick,
   collapsed,
   fullyCollapsed,
@@ -201,26 +205,23 @@ export default function Comment({
   routerLink,
   className,
   rootIndex,
+  modqueue,
 }: CommentProps) {
-  const commentById = useAppSelector((state) => state.comment.commentById);
-  // eslint-disable-next-line no-undef
-  const commentRef = useRef<HTMLIonItemElement>(null);
+  const commentFromStore = useAppSelector(
+    (state) => state.comment.commentById[commentView.comment.id],
+  );
 
   // Comment from slice might be more up to date, e.g. edits
-  const comment = commentById[commentView.comment.id] ?? commentView.comment;
+  const comment = commentFromStore ?? commentView.comment;
 
-  useEffect(() => {
-    if (highlightedCommentId !== comment.id) return;
+  const canModerate = useCanModerate(commentView.community);
 
-    setTimeout(
-      () => {
-        if (!commentRef.current) return;
+  function renderActions() {
+    if (modqueue) return <ModqueueItemActions item={commentView} />;
 
-        scrollIntoView(commentRef.current, 100);
-      },
-      useScrollIntoViewWorkaround ? 50 : 600,
-    );
-  }, [highlightedCommentId, comment]);
+    if (canModerate)
+      return <ModActions comment={commentView} role={canModerate} />;
+  }
 
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
@@ -233,59 +234,73 @@ export default function Comment({
         <CustomIonItem
           routerLink={routerLink}
           href={undefined}
-          onClick={() => onClick?.()}
-          ref={commentRef}
+          onClick={(e) => onClick?.(e)}
+          className={`comment-${comment.id}`}
         >
-          <PositionedContainer
-            depth={depth || 0}
+          <ModeratableItem
+            itemView={commentView}
             highlighted={highlightedCommentId === comment.id}
           >
-            <Container depth={depth || 0}>
-              <Header>
-                <StyledPersonLabel
-                  person={commentView.creator}
-                  opId={commentView.post.creator_id}
-                  distinguished={comment.distinguished}
-                />
-                <Vote item={commentView} />
-                <Edited item={commentView} />
-                <div
-                  css={css`
-                    flex: 1;
-                  `}
-                />
-                {!collapsed ? (
-                  <>
-                    <CommentEllipsis
-                      comment={commentView}
-                      rootIndex={rootIndex}
+            <PositionedContainer
+              depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
+            >
+              <Container depth={absoluteDepth ?? depth ?? 0}>
+                <ModeratableItemBannerOutlet />
+                <div>
+                  <Header>
+                    <StyledPersonLabel
+                      person={commentView.creator}
+                      opId={commentView.post.creator_id}
+                      distinguished={comment.distinguished}
+                      showBadge={!context}
                     />
-                    <Ago date={comment.published} />
-                  </>
-                ) : (
-                  <>
-                    <AmountCollapsed>
-                      {commentView.counts.child_count + 1}
-                    </AmountCollapsed>
-                    <CollapsedIcon icon={chevronDownOutline} />
-                  </>
-                )}
-              </Header>
+                    <Vote item={commentView} />
+                    <Edited item={commentView} />
+                    <div
+                      css={css`
+                        flex: 1;
+                      `}
+                    />
+                    {!collapsed ? (
+                      <ActionsContainer>
+                        {renderActions()}
+                        <CommentEllipsis
+                          comment={commentView}
+                          rootIndex={rootIndex}
+                          canModerate={canModerate}
+                        />
+                        <Ago date={comment.published} />
+                      </ActionsContainer>
+                    ) : (
+                      <>
+                        <AmountCollapsed>
+                          {commentView.counts.child_count + 1}
+                        </AmountCollapsed>
+                        <CollapsedIcon icon={chevronDownOutline} />
+                      </>
+                    )}
+                  </Header>
 
-              <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
-                <Content
-                  onClick={(e) => {
-                    if (!(e.target instanceof HTMLElement)) return;
-                    if (e.target.nodeName === "A") e.stopPropagation();
-                  }}
-                >
-                  <CommentContent item={comment} />
-                  {context}
-                </Content>
-              </AnimateHeight>
-            </Container>
-            <Save type="comment" id={commentView.comment.id} />
-          </PositionedContainer>
+                  <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
+                    <Content
+                      onClick={(e) => {
+                        if (!(e.target instanceof HTMLElement)) return;
+                        if (e.target.nodeName === "A") e.stopPropagation();
+                      }}
+                    >
+                      <CommentContent
+                        item={comment}
+                        showTouchFriendlyLinks={!context}
+                        isMod={!!canModerate}
+                      />
+                      {context}
+                    </Content>
+                  </AnimateHeight>
+                </div>
+              </Container>
+              <Save type="comment" id={commentView.comment.id} />
+            </PositionedContainer>
+          </ModeratableItem>
         </CustomIonItem>
       </SlidingNestedCommentVote>
     </AnimateHeight>

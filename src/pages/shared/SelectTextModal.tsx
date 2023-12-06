@@ -11,8 +11,9 @@ import { Centered } from "../../features/auth/Login";
 import styled from "@emotion/styled";
 import TextareaAutosize from "react-textarea-autosize";
 import { css } from "@emotion/react";
-import { MouseEvent, TouchEvent, useRef } from "react";
+import { useRef } from "react";
 import { isTouchDevice } from "../../helpers/device";
+import { preventModalSwipeOnTextSelection } from "../../helpers/ionic";
 
 const Container = styled.div`
   min-height: 100%;
@@ -68,14 +69,6 @@ export default function SelectTextModal({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const firstSelectRef = useRef(true);
 
-  function stopPropagationIfNeeded(e: TouchEvent | MouseEvent) {
-    if (!window.getSelection()?.toString()) return true;
-
-    e.stopPropagation();
-
-    return true;
-  }
-
   return (
     <IonModal
       isOpen={isOpen}
@@ -106,7 +99,7 @@ export default function SelectTextModal({
       <IonContent>
         <Container>
           {touch ? (
-            <Selectable onTouchMoveCapture={stopPropagationIfNeeded}>
+            <Selectable {...preventModalSwipeOnTextSelection}>
               {text}
             </Selectable>
           ) : (

@@ -8,19 +8,24 @@ import {
   IonTitle,
   IonButtons,
   IonBackButton,
+  IonButton,
+  useIonActionSheet,
 } from "@ionic/react";
 import { useParams } from "react-router";
 import styled from "@emotion/styled";
 import useClient from "../../helpers/useClient";
 import { FetchFn } from "../../features/feed/Feed";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
-import { handleSelector, jwtSelector } from "../../features/auth/authSlice";
+import { handleSelector } from "../../features/auth/authSlice";
 import { IPostMetadata, db } from "../../services/db";
-import { postHiddenByIdSelector } from "../../features/post/postSlice";
+import {
+  clearHidden,
+  postHiddenByIdSelector,
+} from "../../features/post/postSlice";
 import FeedContent from "../shared/FeedContent";
 
 export const InsetIonItem = styled(IonItem)`
@@ -39,9 +44,10 @@ export default function ProfileFeedHiddenPostsPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const handle = useAppSelector(handleSelector);
   const { handle: handleWithoutServer } = useParams<{ handle: string }>();
-  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
   const postById = useAppSelector((state) => state.post.postById);
+  const dispatch = useAppDispatch();
+  const [presentActionSheet] = useIonActionSheet();
 
   // This is just used to trigger a re-render when the list changes
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
@@ -50,8 +56,10 @@ export default function ProfileFeedHiddenPostsPage() {
   const lastPageItemsRef = useRef<IPostMetadata[]>([]);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
+    async (pageData) => {
       if (!handle) return [];
+      if (!("page" in pageData)) return [];
+      const { page } = pageData;
 
       const hiddenPostMetadatas = await db.getHiddenPostMetadatasPaginated(
         handle,
@@ -77,7 +85,7 @@ export default function ProfileFeedHiddenPostsPage() {
           const potentialPost = postById[postId];
           if (typeof potentialPost === "object") return potentialPost;
 
-          return client.getPost({ id: postId, auth: jwt });
+          return client.getPost({ id: postId });
         }),
       );
 
@@ -86,8 +94,26 @@ export default function ProfileFeedHiddenPostsPage() {
       );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [client, handle, jwt, postHiddenById],
+    [client, handle, postHiddenById],
   );
+
+  function clear() {
+    presentActionSheet({
+      buttons: [
+        {
+          text: "Reset hidden posts",
+          role: "destructive",
+          handler: () => {
+            dispatch(clearHidden());
+          },
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ],
+    });
+  }
 
   return (
     <IonPage>
@@ -100,13 +126,19 @@ export default function ProfileFeedHiddenPostsPage() {
               defaultHref={buildGeneralBrowseLink(`/u/${handleWithoutServer}`)}
             />
           </IonButtons>
+          <IonButtons slot="end">
+            <IonButton onClick={clear} color="danger">
+              Reset
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <FeedContent>
         <PostCommentFeed
-          filterHiddenPosts={false}
           fetchFn={fetchFn}
           limit={LIMIT}
+          filterHiddenPosts={false}
+          filterKeywords={false}
         />
       </FeedContent>
     </IonPage>

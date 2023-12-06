@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { getAndroidNavMode, isNative } from "./helpers/device";
+import "./features/icons";
 
 (async () => {
   try {

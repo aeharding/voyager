@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../store";
-import { IonIcon, useIonToast } from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
@@ -16,6 +16,8 @@ import { OVoteDisplayMode } from "../../services/db";
 import { isDownvoteEnabledSelector } from "../auth/authSlice";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../helpers/useHapticFeedback";
+import useAppToast from "../../helpers/useAppToast";
+import { formatNumber } from "../../helpers/number";
 
 const Container = styled.div<{
   vote?: 1 | -1 | 0;
@@ -44,7 +46,7 @@ interface VoteProps {
 }
 
 export default function Vote({ item }: VoteProps): React.ReactElement {
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const votesById = useAppSelector((state) =>
     "comment" in item
@@ -69,7 +71,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
 
     // you are allowed to un-downvote if they are disabled
     if (!canDownvote && vote === -1) {
-      present(downvotesDisabled);
+      presentToast(downvotesDisabled);
       return;
     }
 
@@ -83,7 +85,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
     try {
       await dispatch(dispatcherFn(id, vote));
     } catch (error) {
-      present(voteError);
+      presentToast(voteError);
       throw error;
     }
   }
@@ -104,7 +106,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
               await onVote(e, myVote === 1 ? 0 : 1);
             }}
           >
-            <IonIcon icon={arrowUpSharp} /> {upvotes}
+            <IonIcon icon={arrowUpSharp} /> {formatNumber(upvotes)}
           </Container>
           <Container
             vote={myVote}
@@ -113,7 +115,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
               await onVote(e, myVote === -1 ? 0 : -1);
             }}
           >
-            <IonIcon icon={arrowDownSharp} /> {downvotes}
+            <IonIcon icon={arrowDownSharp} /> {formatNumber(downvotes)}
           </Container>
         </>
       );
@@ -140,7 +142,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
           }}
         >
           <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} />{" "}
-          {score}
+          {formatNumber(score)}
         </Container>
       );
     }

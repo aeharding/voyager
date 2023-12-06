@@ -13,16 +13,18 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useParams } from "react-router";
 import styled from "@emotion/styled";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { getPost } from "../../features/post/postSlice";
 import AppBackButton from "../../features/shared/AppBackButton";
 import { CommentSortType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { jwtSelector } from "../../features/auth/authSlice";
 import CommentSort from "../../features/comment/CommentSort";
 import MoreActions from "../../features/post/shared/MoreActions";
 import PostDetail from "../../features/post/detail/PostDetail";
 import FeedContent from "../shared/FeedContent";
+import useClient from "../../helpers/useClient";
+import { formatNumber } from "../../helpers/number";
+import MoreModActions from "../../features/post/shared/MoreModAction";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -38,20 +40,42 @@ export const AnnouncementIcon = styled(IonIcon)`
   color: var(--ion-color-success);
 `;
 
+interface PostPageParams {
+  id: string;
+  commentPath?: string;
+  community: string;
+  threadCommentId?: string; // For continuing threads
+}
+
 export default function PostPage() {
+  const { id, commentPath, community, threadCommentId } =
+    useParams<PostPageParams>();
+
+  return (
+    <PostPageContent
+      id={id}
+      commentPath={commentPath}
+      community={community}
+      threadCommentId={threadCommentId}
+    />
+  );
+}
+
+const PostPageContent = memo(function PostPageContent({
+  id,
+  commentPath,
+  community,
+  threadCommentId,
+}: PostPageParams) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { id, commentPath, community } = useParams<{
-    id: string;
-    commentPath?: string;
-    community: string;
-  }>();
   const post = useAppSelector((state) => state.post.postById[id]);
-  const jwt = useAppSelector(jwtSelector);
+  const client = useClient();
   const dispatch = useAppDispatch();
   const defaultSort = useAppSelector(
     (state) => state.settings.general.comments.sort,
   );
   const [sort, setSort] = useState<CommentSortType>(defaultSort);
+  const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
 
   const postIfFound = typeof post === "object" ? post : undefined;
 
@@ -59,7 +83,7 @@ export default function PostPage() {
     if (post) return;
 
     dispatch(getPost(+id));
-  }, [post, jwt, dispatch, id]);
+  }, [post, client, dispatch, id]);
 
   const refresh = useCallback(
     async (event: RefresherCustomEvent) => {
@@ -88,17 +112,34 @@ export default function PostPage() {
 
   function renderPost() {
     if (!post) return <CenteredSpinner />;
-    if (post === "not-found")
+    if (
+      post === "not-found" || // 404 from lemmy
+      post.post.deleted || // post marked deleted from lemmy
+      postDeletedById[post.post.id] // deleted by user recently
+    )
       return buildWithRefresher(
-        <div className="ion-padding">Post not found</div>,
-      );
-    if (post.post.deleted)
-      return buildWithRefresher(
-        <div className="ion-padding">Post deleted</div>,
+        <div className="ion-padding ion-text-center">Post not found</div>,
       );
 
-    return <PostDetail post={post} commentPath={commentPath} sort={sort} />;
+    return (
+      <PostDetail
+        post={post}
+        sort={sort}
+        commentPath={commentPath}
+        threadCommentId={threadCommentId}
+      />
+    );
   }
+
+  const title = (() => {
+    if (threadCommentId) return "Thread";
+
+    return (
+      <>
+        {postIfFound ? formatNumber(postIfFound.counts.comments) : ""} Comments
+      </>
+    );
+  })();
 
   return (
     <IonPage>
@@ -110,8 +151,9 @@ export default function PostPage() {
               defaultText={postIfFound?.community.name}
             />
           </IonButtons>
-          <IonTitle>{postIfFound?.counts.comments} Comments</IonTitle>
+          <IonTitle>{title}</IonTitle>
           <IonButtons slot="end">
+            {postIfFound && <MoreModActions post={postIfFound} />}
             <CommentSort sort={sort} setSort={setSort} />
             {postIfFound && <MoreActions post={postIfFound} />}
           </IonButtons>
@@ -120,4 +162,4 @@ export default function PostPage() {
       <FeedContent>{renderPost()}</FeedContent>
     </IonPage>
   );
-}
+});

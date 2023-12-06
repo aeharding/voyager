@@ -16,16 +16,19 @@ import { useAppSelector } from "../../store";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
-import { jwtSelector } from "../../features/auth/authSlice";
 import TitleSearch from "../../features/community/titleSearch/TitleSearch";
 import { TitleSearchProvider } from "../../features/community/titleSearch/TitleSearchProvider";
 import TitleSearchResults from "../../features/community/titleSearch/TitleSearchResults";
-import FeedScrollObserver from "../../features/feed/FeedScrollObserver";
-import { markReadOnScrollSelector } from "../../features/settings/settingsSlice";
 import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import SpecialFeedMoreActions from "../../features/feed/SpecialFeedMoreActions";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
+import { getSortDuration } from "../../features/feed/endItems/EndPost";
+import { followIdsSelector } from "../../features/auth/authSlice";
+import { getHandle } from "../../helpers/lemmy";
+import { CenteredSpinner } from "../posts/PostPage";
+import ModActions from "../../features/community/mod/ModActions";
+import usePostSort from "../../features/feed/usePostSort";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -35,27 +38,61 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
-  const sort = useAppSelector((state) => state.post.sort);
-  const jwt = useAppSelector(jwtSelector);
+  const [sort, setSort] = usePostSort();
 
-  const markReadOnScroll = useAppSelector(markReadOnScrollSelector);
-
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
-      const response = await client.getPosts({
-        limit: LIMIT,
-        page,
-        sort,
-        type_: type,
-        auth: jwt,
-      });
-
-      return response.posts;
-    },
-    [client, sort, type, jwt],
+  const followIds = useAppSelector(followIdsSelector);
+  const communityByHandle = useAppSelector(
+    (state) => state.community.communityByHandle,
+  );
+  const site = useAppSelector((state) => state.auth.site);
+  const noSubscribedInFeed = useAppSelector(
+    (state) => state.settings.general.noSubscribedInFeed,
   );
 
-  const feed = <PostCommentFeed fetchFn={fetchFn} />;
+  const filterSubscribed =
+    noSubscribedInFeed && (type === "All" || type === "Local");
+
+  const fetchFn: FetchFn<PostCommentItem> = useCallback(
+    async (pageData) => {
+      const { posts, next_page } = await client.getPosts({
+        ...pageData,
+        limit: LIMIT,
+        sort,
+        type_: type,
+      });
+
+      return { data: posts, next_page };
+    },
+    [client, sort, type],
+  );
+
+  const filterSubscribedFn = useCallback(
+    (item: PostCommentItem) => {
+      if (item.post.featured_community || item.post.featured_local) return true;
+
+      const potentialCommunity = communityByHandle[getHandle(item.community)];
+      if (potentialCommunity)
+        return potentialCommunity.subscribed === "NotSubscribed";
+
+      return !followIds.includes(item.community.id);
+    },
+    [followIds, communityByHandle],
+  );
+
+  const feed = (() => {
+    // We need the site response to know follows in order to filter
+    // subscribed communities before rendering the feed
+    if (filterSubscribed && !site) return <CenteredSpinner />;
+
+    return (
+      <PostCommentFeed
+        fetchFn={fetchFn}
+        sortDuration={getSortDuration(sort)}
+        filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+        autoHideIfConfigured
+      />
+    );
+  })();
 
   return (
     <TitleSearchProvider>
@@ -72,18 +109,15 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
               <TitleSearch name={listingTypeTitle(type)}>
                 <IonButtons slot="end">
-                  <PostSort />
+                  {type === "ModeratorView" && <ModActions type={type} />}
+                  <PostSort sort={sort} setSort={setSort} />
                   <SpecialFeedMoreActions />
                 </IonButtons>
               </TitleSearch>
             </IonToolbar>
           </IonHeader>
           <FeedContent>
-            {markReadOnScroll ? (
-              <FeedScrollObserver>{feed}</FeedScrollObserver>
-            ) : (
-              feed
-            )}
+            {feed}
             <TitleSearchResults />
             <PostFabs />
           </FeedContent>
@@ -93,12 +127,14 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   );
 }
 
-function listingTypeTitle(type: ListingType): string {
+export function listingTypeTitle(type: ListingType): string {
   switch (type) {
     case "All":
     case "Local":
       return type;
     case "Subscribed":
       return "Home";
+    case "ModeratorView":
+      return "Modded";
   }
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { isNative } from "../helpers/device";
 
 const DEFAULT_LEMMY_SERVERS = [
   "lemmy.world",
@@ -18,6 +19,8 @@ export function getDefaultServer() {
 }
 
 async function getConfig() {
+  if (isNative()) return;
+
   const response = await fetch("/_config");
 
   const { customServers } = await response.json();
@@ -35,7 +38,7 @@ interface ConfigProviderProps {
 }
 
 export default function ConfigProvider({ children }: ConfigProviderProps) {
-  const [configLoaded, setConfigLoaded] = useState(false);
+  const [configLoaded, setConfigLoaded] = useState(isNative()); // native does not load config
 
   useEffect(() => {
     // Config is not necessary for app to run

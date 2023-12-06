@@ -8,17 +8,19 @@ import {
   IonList,
 } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useParams } from "react-router";
 import { useAppSelector } from "../../../store";
 import { jwtSelector } from "../../auth/authSlice";
-import { useMemo } from "react";
+import { memo, useMemo, useRef } from "react";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../../helpers/array";
 import { getHandle } from "../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
-import { home, library, people } from "ionicons/icons";
-import ItemIcon from "../../labels/img/ItemIcon";
+import { home, library, people, shieldCheckmark } from "ionicons/icons";
 import CommunityListItem from "./CommunityListItem";
+import useSupported from "../../../helpers/useSupported";
+import { VList, VListHandle } from "virtua";
+import { maxWidthCss } from "../../shared/AppContent";
+import AlphabetJump from "./AlphabetJump";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -44,10 +46,38 @@ export const Content = styled.div`
   }
 `;
 
-export default function CommunitiesList() {
+const StyledIonList = styled(IonList)`
+  height: 100%;
+`;
+
+const StyledVList = styled(VList)`
+  height: 100%;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  ion-item-group {
+    ${maxWidthCss}
+  }
+`;
+
+interface CommunitiesListParams {
+  actor: string;
+}
+
+function CommunitiesList({ actor }: CommunitiesListParams) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { actor } = useParams<{ actor: string }>();
   const jwt = useAppSelector(jwtSelector);
+
+  const virtuaRef = useRef<VListHandle>(null);
+
+  const moderates = useAppSelector(
+    (state) => state.auth.site?.my_user?.moderates,
+  );
+  const moderatorFeedSupported = useSupported("Modded Feed");
 
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
 
@@ -87,99 +117,144 @@ export default function CommunitiesList() {
   );
 
   const communitiesGroupedByLetter = useMemo(() => {
-    const alphabeticallySortedCommunities = sortBy(communities, (c) =>
-      c.name.toLowerCase(),
-    );
+    return sortBy(
+      Object.entries(
+        communities.reduce<Record<string, Community[]>>((acc, community) => {
+          const firstLetter = /[0-9]/.test(community.name[0])
+            ? "#"
+            : community.name[0].toUpperCase();
 
-    return Object.entries(
-      alphabeticallySortedCommunities.reduce<Record<string, Community[]>>(
-        (acc, community) => {
-          const firstLetter = community.name[0].toUpperCase();
           if (!acc[firstLetter]) {
             acc[firstLetter] = [];
           }
+
           acc[firstLetter].push(community);
           return acc;
-        },
-        {},
+        }, {}),
       ),
+      ([letter]) => (letter === "#" ? "\uffff" : letter), // sort # at bottom
     );
   }, [communities]);
 
+  const showModeratorFeed = !!moderates?.length && moderatorFeedSupported;
+
   return (
-    <IonList>
-      <IonItemGroup>
-        {jwt && (
-          <IonItem routerLink={buildGeneralBrowseLink(`/home`)}>
-            <Content>
-              <SubIcon icon={home} color="red" />
-              <div>
-                Home
-                <aside>Posts from subscriptions</aside>
-              </div>
-            </Content>
-          </IonItem>
-        )}
-        <IonItem routerLink={buildGeneralBrowseLink(`/all`)}>
-          <Content>
-            <SubIcon icon={library} color="#009dff" />
-            <div>
-              All<aside>Posts across all federated communities</aside>
-            </div>
-          </Content>
-        </IonItem>
-        <IonItem routerLink={buildGeneralBrowseLink(`/local`)} lines="none">
-          <Content>
-            <SubIcon icon={people} color="#00f100" />
-            <div>
-              Local<aside>Posts from communities on {actor}</aside>
-            </div>
-          </Content>
-        </IonItem>
-      </IonItemGroup>
-
-      {favoritesAsCommunitiesIfFound.length > 0 && (
-        <IonItemGroup>
-          <IonItemDivider sticky>
-            <IonLabel>Favorites</IonLabel>
-          </IonItemDivider>
-
-          {favoritesAsCommunitiesIfFound.map((favorite) =>
-            typeof favorite === "string" ? (
+    <>
+      <StyledIonList>
+        <StyledVList
+          ref={virtuaRef}
+          overscan={0}
+          className="ion-content-scroll-host virtual-scroller"
+        >
+          <IonItemGroup key="list">
+            {jwt && (
               <IonItem
-                key={favorite}
-                routerLink={buildGeneralBrowseLink(`/c/${favorite}`)}
+                routerLink={buildGeneralBrowseLink(`/home`)}
+                detail={false}
               >
                 <Content>
-                  <ItemIcon item={favorite} size={28} />
-                  {favorite}
+                  <SubIcon icon={home} color="red" />
+                  <div>
+                    Home
+                    <aside>Posts from subscriptions</aside>
+                  </div>
                 </Content>
               </IonItem>
-            ) : (
-              <CommunityListItem
-                key={favorite.id}
-                community={favorite}
-                favorites={favorites}
-              />
-            ),
-          )}
-        </IonItemGroup>
-      )}
+            )}
+            <IonItem routerLink={buildGeneralBrowseLink(`/all`)} detail={false}>
+              <Content>
+                <SubIcon icon={library} color="#009dff" />
+                <div>
+                  All<aside>Posts across all federated communities</aside>
+                </div>
+              </Content>
+            </IonItem>
+            <IonItem
+              routerLink={buildGeneralBrowseLink(`/local`)}
+              detail={false}
+              lines={showModeratorFeed ? "inset" : "none"}
+            >
+              <Content>
+                <SubIcon icon={people} color="#00f100" />
+                <div>
+                  Local<aside>Posts from communities on {actor}</aside>
+                </div>
+              </Content>
+            </IonItem>
+            {showModeratorFeed && (
+              <IonItem
+                routerLink={buildGeneralBrowseLink(`/mod`)}
+                detail={false}
+                lines="none"
+              >
+                <Content>
+                  <SubIcon icon={shieldCheckmark} color="#464646" />
+                  <div>
+                    Moderator Posts
+                    <aside>Posts from moderated communities</aside>
+                  </div>
+                </Content>
+              </IonItem>
+            )}
+          </IonItemGroup>
 
-      {communitiesGroupedByLetter.map(([letter, communities]) => (
-        <IonItemGroup key={letter}>
-          <IonItemDivider sticky>
-            <IonLabel>{letter}</IonLabel>
-          </IonItemDivider>
-          {communities.map((community) => (
-            <CommunityListItem
-              key={community.id}
-              community={community}
-              favorites={favorites}
-            />
+          {favoritesAsCommunitiesIfFound.length > 0 && (
+            <IonItemGroup key="favorites">
+              <IonItemDivider sticky>
+                <IonLabel>Favorites</IonLabel>
+              </IonItemDivider>
+
+              {favoritesAsCommunitiesIfFound.map((favorite) => (
+                <CommunityListItem
+                  key={typeof favorite === "string" ? favorite : favorite.id}
+                  community={favorite}
+                  favorites={favorites}
+                />
+              ))}
+            </IonItemGroup>
+          )}
+
+          {moderates?.length ? (
+            <IonItemGroup key="moderates">
+              <IonItemDivider sticky>
+                <IonLabel>Moderator</IonLabel>
+              </IonItemDivider>
+              {moderates.map(({ community }) => (
+                <CommunityListItem
+                  key={community.id}
+                  community={community}
+                  favorites={favorites}
+                />
+              ))}
+            </IonItemGroup>
+          ) : (
+            ""
+          )}
+          {communitiesGroupedByLetter.map(([letter, communities]) => (
+            <IonItemGroup key={letter}>
+              <IonItemDivider sticky>
+                <IonLabel>{letter}</IonLabel>
+              </IonItemDivider>
+              {communities.map((community) => (
+                <CommunityListItem
+                  key={community.id}
+                  community={community}
+                  favorites={favorites}
+                />
+              ))}
+            </IonItemGroup>
           ))}
-        </IonItemGroup>
-      ))}
-    </IonList>
+        </StyledVList>
+      </StyledIonList>
+
+      <AlphabetJump
+        virtuaRef={virtuaRef}
+        hasFavorited={!!favoritesAsCommunitiesIfFound.length}
+        hasModerated={!!moderates?.length}
+        letters={communitiesGroupedByLetter.map(([letter]) => letter)}
+      />
+    </>
   );
 }
+
+export default memo(CommunitiesList);

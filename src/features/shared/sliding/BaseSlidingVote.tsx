@@ -1,17 +1,25 @@
-import { useIonToast } from "@ionic/react";
 import {
   arrowDownSharp,
   arrowUndo,
   arrowUpSharp,
   bookmark,
   chevronCollapse,
+  chevronDown,
   chevronExpand,
+  chevronUp,
   eyeOffOutline,
   eyeOutline,
   mailOpen,
   mailUnread,
+  share as shareIcon,
 } from "ionicons/icons";
-import React, { useCallback, useContext, useMemo } from "react";
+import React, {
+  MouseEvent,
+  TouchEvent,
+  useCallback,
+  useContext,
+  useMemo,
+} from "react";
 import SlidingItem, { ActionList, SlidingItemAction } from "./SlidingItem";
 import {
   CommentReplyView,
@@ -20,19 +28,26 @@ import {
   PostView,
 } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
+import { savePost, voteOnPost } from "../../post/postSlice";
 import {
-  postHiddenByIdSelector,
-  savePost,
-  voteOnPost,
-} from "../../post/postSlice";
-import { voteError } from "../../../helpers/toastMessages";
-import { saveComment, voteOnComment } from "../../comment/commentSlice";
+  postLocked,
+  saveSuccess,
+  voteError,
+} from "../../../helpers/toastMessages";
+import {
+  saveComment,
+  updateCommentCollapseState,
+  voteOnComment,
+} from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { CommentsContext } from "../../comment/CommentsContext";
 import styled from "@emotion/styled";
+import useAppToast from "../../../helpers/useAppToast";
+import { share } from "../../../helpers/lemmy";
+import { scrollViewUpIfNeeded } from "../../comment/CommentTree";
 
 const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
@@ -93,7 +108,7 @@ function BaseSlidingVoteInternal({
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const { prependComments } = useContext(CommentsContext);
 
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
@@ -111,7 +126,9 @@ function BaseSlidingVoteInternal({
     (state) => state.comment.commentSavedById,
   );
 
-  const isHidden = useAppSelector(postHiddenByIdSelector)[item.post?.id];
+  const isHidden = useAppSelector(
+    (state) => state.post.postHiddenById[item.post?.id]?.hidden,
+  );
 
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId,
@@ -128,18 +145,28 @@ function BaseSlidingVoteInternal({
     async (score: 1 | -1 | 0) => {
       if (presentLoginIfNeeded()) return;
 
+      if (isInboxItem(item)) dispatch(markRead(item, true));
+
       try {
         if (isPost) await dispatch(voteOnPost(item.post.id, score));
         else await dispatch(voteOnComment(item.comment.id, score));
       } catch (error) {
-        present(voteError);
+        presentToast(voteError);
       }
     },
-    [dispatch, isPost, item, present, presentLoginIfNeeded],
+    [presentLoginIfNeeded, isPost, dispatch, item, presentToast],
   );
 
   const reply = useCallback(async () => {
     if (presentLoginIfNeeded()) return;
+
+    if (isInboxItem(item)) dispatch(markRead(item, true));
+
+    if (item.post.locked) {
+      presentToast(postLocked);
+      return;
+    }
+
     const reply = await presentCommentReply(item);
     if (!isPost && reply) prependComments([reply]);
   }, [
@@ -148,6 +175,8 @@ function BaseSlidingVoteInternal({
     presentCommentReply,
     presentLoginIfNeeded,
     prependComments,
+    presentToast,
+    dispatch,
   ]);
 
   const { id, isSaved } = useMemo(() => {
@@ -164,16 +193,16 @@ function BaseSlidingVoteInternal({
     if (presentLoginIfNeeded()) return;
     try {
       await dispatch((isPost ? savePost : saveComment)(id, !isSaved));
+
+      if (!isSaved) presentToast(saveSuccess);
     } catch (error) {
-      present({
+      presentToast({
         message: "Failed to mark item as saved",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
       throw error;
     }
-  }, [presentLoginIfNeeded, dispatch, isPost, id, isSaved, present]);
+  }, [presentLoginIfNeeded, dispatch, isPost, id, isSaved, presentToast]);
 
   const saveAction = useMemo(() => {
     return {
@@ -201,7 +230,7 @@ function BaseSlidingVoteInternal({
     !isPost ? item : undefined,
     rootIndex,
   );
-  const collapseAction = useMemo(() => {
+  const collapseToTopAction = useMemo(() => {
     return collapseRootComment
       ? {
           icon: collapsed ? chevronExpand : chevronCollapse,
@@ -210,6 +239,29 @@ function BaseSlidingVoteInternal({
         }
       : undefined;
   }, [collapsed, collapseRootComment]);
+
+  const collapse = useCallback(
+    (e: TouchEvent | MouseEvent) => {
+      if (isPost) return;
+
+      dispatch(
+        updateCommentCollapseState({
+          commentId: item.comment.id,
+          collapsed: !collapsed,
+        }),
+      );
+
+      if (e.target) scrollViewUpIfNeeded(e.target);
+    },
+    [collapsed, dispatch, isPost, item],
+  );
+  const collapseAction = useMemo(() => {
+    return {
+      icon: collapsed ? chevronDown : chevronUp,
+      trigger: collapse,
+      bgColor: "tertiary",
+    };
+  }, [collapsed, collapse]);
 
   const isRead = useMemo(() => {
     return isInboxItem(item) ? readByInboxItemId[getInboxItemId(item)] : false;
@@ -221,15 +273,13 @@ function BaseSlidingVoteInternal({
     try {
       await dispatch(markRead(item, !isRead));
     } catch (error) {
-      present({
+      presentToast({
         message: "Failed to mark item as unread",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
       });
       throw error;
     }
-  }, [dispatch, present, item, isRead]);
+  }, [dispatch, presentToast, item, isRead]);
 
   const markUnreadAction = useMemo(() => {
     return {
@@ -238,6 +288,10 @@ function BaseSlidingVoteInternal({
       bgColor: "primary-fixed",
     };
   }, [markUnread, isRead]);
+
+  const shareTrigger = useCallback(async () => {
+    share(isPost ? item.post : item.comment);
+  }, [isPost, item]);
 
   const allActions: Record<SwipeAction, SlidingItemAction | undefined> =
     useMemo(() => {
@@ -266,8 +320,14 @@ function BaseSlidingVoteInternal({
         },
         save: saveAction,
         hide: hideAction,
+        "collapse-to-top": collapseToTopAction,
         collapse: collapseAction,
-        mark_unread: markUnreadAction,
+        "mark-unread": markUnreadAction,
+        share: {
+          icon: shareIcon,
+          trigger: shareTrigger,
+          bgColor: "primary-fixed",
+        },
       };
     }, [
       currentVote,
@@ -275,8 +335,10 @@ function BaseSlidingVoteInternal({
       saveAction,
       hideAction,
       collapseAction,
+      collapseToTopAction,
       markUnreadAction,
       onVote,
+      shareTrigger,
     ]);
 
   const startActions: ActionList = useMemo(

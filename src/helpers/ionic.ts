@@ -1,5 +1,6 @@
+import { MouseEvent, TouchEvent } from "react";
+
 const ION_CONTENT_ELEMENT_SELECTOR = "ion-content";
-const ION_CONTENT_CLASS_SELECTOR = ".ion-content-scroll-host";
 
 export function findCurrentPage() {
   const width = window.innerWidth;
@@ -9,7 +10,7 @@ export function findCurrentPage() {
   return findClosestIonContent(el);
 }
 
-const ION_CONTENT_SELECTOR = `${ION_CONTENT_ELEMENT_SELECTOR}, ${ION_CONTENT_CLASS_SELECTOR}`;
+const ION_CONTENT_SELECTOR = `${ION_CONTENT_ELEMENT_SELECTOR}`;
 
 /**
  * Queries the closest element matching the selector for IonContent.
@@ -17,3 +18,13 @@ const ION_CONTENT_SELECTOR = `${ION_CONTENT_ELEMENT_SELECTOR}, ${ION_CONTENT_CLA
 function findClosestIonContent(el: Element) {
   return el.closest<HTMLElement>(ION_CONTENT_SELECTOR);
 }
+
+export const preventModalSwipeOnTextSelection = {
+  onTouchMoveCapture: (e: TouchEvent | MouseEvent) => {
+    if (!window.getSelection()?.toString()) return true;
+
+    e.stopPropagation();
+
+    return true;
+  },
+};

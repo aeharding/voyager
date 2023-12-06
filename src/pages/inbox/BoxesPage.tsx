@@ -19,13 +19,17 @@ import {
 } from "ionicons/icons";
 import { useAppDispatch } from "../../store";
 import { getInboxCounts } from "../../features/inbox/inboxSlice";
-import { MouseEvent, useContext } from "react";
+import { MouseEvent, useContext, useRef } from "react";
 import { PageContext } from "../../features/auth/PageContext";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 export default function BoxesPage() {
+  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
 
   const { presentLoginIfNeeded } = useContext(PageContext);
+
+  useSetActivePage(pageRef);
 
   useIonViewWillEnter(() => {
     dispatch(getInboxCounts());
@@ -36,13 +40,13 @@ export default function BoxesPage() {
   }
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonTitle>Boxes</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <AppContent scrollY>
+      <AppContent scrollY fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Boxes</IonTitle>

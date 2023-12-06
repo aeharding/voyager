@@ -2,6 +2,7 @@ import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
 import { isNative, supportsWebp } from "../helpers/device";
 import { omitUndefinedValues } from "../helpers/object";
+import nativeFetch from "./nativeFetch";
 
 function buildBaseUrl(url: string): string {
   return buildDirectConnectBaseUrl(url);
@@ -17,15 +18,65 @@ function buildProxiedBaseUrl(url: string): string {
   return `${location.origin}/api/${url}`;
 }
 
-export function getClient(url: string): LemmyHttp {
+export function getClient(url: string, jwt?: string): LemmyHttp {
   return new LemmyHttp(buildBaseUrl(url), {
     // Capacitor http plugin is not compatible with cross-fetch.
     // Bind to globalThis or lemmy-js-client will bind incorrectly
-    fetchFunction: fetch.bind(globalThis),
+    fetchFunction: buildCustomFetch(jwt),
+    headers: jwt
+      ? {
+          Authorization: `Bearer ${jwt}`,
+        }
+      : undefined,
   });
 }
 
-export const LIMIT = 30;
+// From https://github.com/Xyphyn/photon/blob/main/src/lib/lemmy.ts
+const isURL = (input: Parameters<typeof fetch>[0]): input is URL =>
+  typeof input == "object" && "searchParams" in input;
+
+const toURL = (input: Parameters<typeof fetch>[0]): URL | undefined => {
+  if (isURL(input)) return input;
+
+  try {
+    return new URL(input.toString());
+  } catch (e) {
+    return;
+  }
+};
+
+function buildCustomFetch(auth: string | undefined): typeof fetch {
+  return async (info, init) => {
+    if (init?.body && auth) {
+      try {
+        const json = JSON.parse(init.body.toString());
+        json.auth = auth;
+        init.body = JSON.stringify(json);
+      } catch (e) {
+        // It seems this isn't a JSON request. Ignore adding an auth parameter.
+      }
+    }
+
+    const url = toURL(info as never); // something is wrong with these types
+    if (auth && url) url.searchParams.set("auth", auth);
+
+    if (url?.pathname === "/pictrs/image") {
+      init = {
+        ...init,
+        headers: {
+          ...init?.headers,
+          Cookie: `jwt=${auth}`,
+        },
+      };
+    }
+
+    const fetchFn = isNative() ? nativeFetch : fetch;
+
+    return await fetchFn(url ? url.toString() : (info as never), init); // something is wrong with these types
+  };
+}
+
+export const LIMIT = 50;
 
 const PICTRS_URL = "/pictrs/image";
 
@@ -47,9 +98,8 @@ export async function uploadImage(url: string, auth: string, image: File) {
 
   // Cookie header can only be set by native code (Capacitor http plugin)
   if (isNative()) {
-    const response = await getClient(url).uploadImage({
+    const response = await getClient(url, auth).uploadImage({
       image: compressedImageIfNeeded as File,
-      auth,
     });
 
     if (!response.url) throw new Error("unknown native image upload error");
@@ -86,6 +136,8 @@ interface ImageOptions {
    */
   size?: number;
 
+  devicePixelRatio?: number;
+
   format?: "jpg" | "png" | "webp";
 }
 
@@ -98,7 +150,10 @@ export function getImageSrc(url: string, options?: ImageOptions) {
     ? new URLSearchParams(
         omitUndefinedValues({
           thumbnail: options.size
-            ? `${Math.round(options.size * window.devicePixelRatio)}`
+            ? `${Math.round(
+                options.size *
+                  (options?.devicePixelRatio ?? window.devicePixelRatio),
+              )}`
             : undefined,
           format: options.format ?? defaultFormat,
         }),

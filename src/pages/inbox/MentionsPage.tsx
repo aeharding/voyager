@@ -6,32 +6,31 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppDispatch } from "../../store";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
 import { FetchFn } from "../../features/feed/Feed";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { PersonMentionView } from "lemmy-js-client";
 import InboxFeed from "../../features/feed/InboxFeed";
 import { receivedInboxItems } from "../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
-import { jwtSelector } from "../../features/auth/authSlice";
 import FeedContent from "../shared/FeedContent";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 export default function MentionsPage() {
+  const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
-  const jwt = useAppSelector(jwtSelector);
   const client = useClient();
 
-  const fetchFn: FetchFn<PersonMentionView> = useCallback(
-    async (page) => {
-      if (!jwt) throw new Error("user must be authed");
+  useSetActivePage(pageRef);
 
+  const fetchFn: FetchFn<PersonMentionView> = useCallback(
+    async (pageData) => {
       const response = await client.getPersonMentions({
+        ...pageData,
         limit: LIMIT,
-        page,
         sort: "New",
-        auth: jwt,
         unread_only: false,
       });
 
@@ -39,11 +38,11 @@ export default function MentionsPage() {
 
       return response.mentions;
     },
-    [client, jwt, dispatch],
+    [client, dispatch],
   );
 
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

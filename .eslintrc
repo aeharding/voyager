@@ -20,6 +20,11 @@
     "sourceType": "module",
     "ecmaVersion": 2022
   },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "rules": {
     "react/react-in-jsx-scope": "off",
     "no-console": ["warn", { "allow": ["warn", "error", "info"] }],
@@ -60,7 +65,8 @@
     {
       "files": ["src/**"],
       "globals": {
-        "APP_VERSION": true
+        "APP_VERSION": true,
+        "BUILD_FOSS_ONLY": true
       }
     }
   ]

@@ -1,10 +1,18 @@
-import React, { FocusEvent, KeyboardEvent, useContext, useRef } from "react";
+import {
+  FocusEvent,
+  HTMLProps,
+  KeyboardEvent,
+  forwardRef,
+  useContext,
+  useRef,
+} from "react";
 import "photoswipe/dist/photoswipe.css";
 import { PostView } from "lemmy-js-client";
 import { GalleryContext } from "./GalleryProvider";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
 
-export interface GalleryImgProps {
+export interface GalleryImgProps
+  extends Omit<HTMLProps<HTMLImageElement>, "ref"> {
   src?: string;
   alt?: string;
   className?: string;
@@ -22,37 +30,38 @@ export const preventPhotoswipeGalleryFocusTrap = {
   onKeyDown: (e: KeyboardEvent) => e.stopPropagation(),
 };
 
-export function GalleryImg({
-  src,
-  alt,
-  className,
-  post,
-  animationType,
-}: GalleryImgProps) {
-  const loaded = useRef(false);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const { open } = useContext(GalleryContext);
+export default forwardRef<HTMLImageElement, GalleryImgProps>(
+  function GalleryImg(
+    { src, alt, className, post, animationType, ...rest },
+    imgRef,
+  ) {
+    const loaded = useRef(false);
+    const { open } = useContext(GalleryContext);
 
-  return (
-    <img
-      ref={imgRef}
-      draggable="false"
-      alt={alt}
-      onClick={(e) => {
-        if (!loaded.current) return;
+    return (
+      <img
+        {...rest}
+        ref={imgRef}
+        draggable="false"
+        alt={alt}
+        onClick={(e) => {
+          if (!loaded.current) return;
 
-        e.stopPropagation();
+          e.stopPropagation();
 
-        open(e.currentTarget, post, animationType);
-      }}
-      src={src}
-      className={className}
-      onLoad={(e) => {
-        if (!(e.target instanceof HTMLImageElement)) return;
-        if (!src) return;
+          open(e.currentTarget, post, animationType);
+        }}
+        src={src}
+        className={className}
+        onLoad={(e) => {
+          rest.onLoad?.(e);
 
-        loaded.current = true;
-      }}
-    />
-  );
-}
+          if (!(e.target instanceof HTMLImageElement)) return;
+          if (!src) return;
+
+          loaded.current = true;
+        }}
+      />
+    );
+  },
+);

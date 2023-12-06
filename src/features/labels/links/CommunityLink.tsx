@@ -2,33 +2,26 @@ import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Community, SubscribedType } from "lemmy-js-client";
 import Handle from "../Handle";
-import { StyledLink } from "./shared";
+import { StyledLink, hideCss } from "./shared";
 import ItemIcon from "../img/ItemIcon";
 import { css } from "@emotion/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { useIonActionSheet, useIonToast } from "@ionic/react";
+import { useIonActionSheet } from "@ionic/react";
 import { useLongPress } from "use-long-press";
-import {
-  blockCommunity,
-  followCommunity,
-} from "../../community/communitySlice";
-import {
-  buildBlocked,
-  buildProblemSubscribing,
-  buildSuccessSubscribing,
-} from "../../../helpers/toastMessages";
 import {
   heartDislikeOutline,
   heartOutline,
   removeCircleOutline,
+  tabletPortraitOutline,
 } from "ionicons/icons";
+import useCommunityActions from "../../community/useCommunityActions";
 import { useContext } from "react";
-import { PageContext } from "../../auth/PageContext";
+import { ShareImageContext } from "../../share/asImage/ShareAsImage";
 
 interface CommunityLinkProps {
   community: Community;
   showInstanceWhenRemote?: boolean;
   subscribed: SubscribedType;
+  showIcon?: boolean;
 
   className?: string;
 }
@@ -38,21 +31,15 @@ export default function CommunityLink({
   showInstanceWhenRemote,
   className,
   subscribed,
+  showIcon = true,
 }: CommunityLinkProps) {
-  const dispatch = useAppDispatch();
   const [present] = useIonActionSheet();
-  const [presentToast] = useIonToast();
-  const { presentLoginIfNeeded } = useContext(PageContext);
 
-  const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle,
-  );
+  const handle = getHandle(community);
+  const { hideCommunity } = useContext(ShareImageContext);
 
-  const _subscribed =
-    communityByHandle[getHandle(community)]?.subscribed ?? subscribed;
-
-  const isSubscribed =
-    _subscribed === "Subscribed" || _subscribed === "Pending";
+  const { isSubscribed, isBlocked, subscribe, block, sidebar } =
+    useCommunityActions(community, subscribed);
 
   const bind = useLongPress(
     () => {
@@ -60,39 +47,26 @@ export default function CommunityLink({
         cssClass: "left-align-buttons",
         buttons: [
           {
-            text: "Block Community",
+            text: `${isBlocked ? "Unblock" : "Block"} Community`,
             icon: removeCircleOutline,
             role: "destructive",
             handler: () => {
-              (async () => {
-                if (presentLoginIfNeeded()) return;
-
-                await dispatch(blockCommunity(true, community.id));
-
-                presentToast(buildBlocked(true, getHandle(community)));
-              })();
+              block();
             },
           },
           {
             text: !isSubscribed ? "Subscribe" : "Unsubscribe",
             icon: !isSubscribed ? heartOutline : heartDislikeOutline,
             handler: () => {
-              (async () => {
-                if (presentLoginIfNeeded()) return;
-
-                try {
-                  await dispatch(followCommunity(!isSubscribed, community.id));
-                } catch (error) {
-                  presentToast(
-                    buildProblemSubscribing(isSubscribed, getHandle(community)),
-                  );
-                  throw error;
-                }
-
-                presentToast(
-                  buildSuccessSubscribing(isSubscribed, getHandle(community)),
-                );
-              })();
+              subscribe();
+            },
+          },
+          {
+            text: "Sidebar",
+            data: "sidebar",
+            icon: tabletPortraitOutline,
+            handler: () => {
+              sidebar();
             },
           },
           {
@@ -109,19 +83,22 @@ export default function CommunityLink({
 
   return (
     <StyledLink
-      to={buildGeneralBrowseLink(`/c/${getHandle(community)}`)}
+      to={buildGeneralBrowseLink(`/c/${handle}`)}
       onClick={(e) => e.stopPropagation()}
       className={className}
+      css={hideCommunity ? hideCss : undefined}
       {...bind()}
     >
-      <ItemIcon
-        item={community}
-        size={24}
-        css={css`
-          margin-right: 0.4rem;
-          vertical-align: middle;
-        `}
-      />
+      {showIcon && !hideCommunity && (
+        <ItemIcon
+          item={community}
+          size={24}
+          css={css`
+            margin-right: 0.4rem;
+            vertical-align: middle;
+          `}
+        />
+      )}
 
       <Handle
         item={community}

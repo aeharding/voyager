@@ -1,12 +1,9 @@
 import styled from "@emotion/styled";
-import bold from "./icons/bold.svg";
-import italic from "./icons/italic.svg";
 import {
   IonIcon,
   IonLoading,
   useIonActionSheet,
   useIonModal,
-  useIonToast,
 } from "@ionic/react";
 import {
   ellipsisHorizontal,
@@ -22,6 +19,7 @@ import {
   MouseEvent,
   RefObject,
   SetStateAction,
+  TouchEvent,
   useEffect,
   useRef,
   useState,
@@ -33,6 +31,8 @@ import { jwtSelector, urlSelector } from "../../../auth/authSlice";
 import { insert } from "../../../../helpers/string";
 import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 import textFaces from "./textFaces.txt?raw";
+import useAppToast from "../../../../helpers/useAppToast";
+import { bold, italic, quote } from "../../../icons";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";
@@ -110,7 +110,7 @@ export default function MarkdownToolbar({
 }: MarkdownToolbarProps) {
   const [presentActionSheet] = useIonActionSheet();
   const [presentTextFaceActionSheet] = useIonActionSheet();
-  const [presentAlert] = useIonToast();
+  const presentToast = useAppToast();
   const keyboardOpen = useKeyboardOpen();
   const [imageUploading, setImageUploading] = useState(false);
   const jwt = useAppSelector(jwtSelector);
@@ -123,10 +123,12 @@ export default function MarkdownToolbar({
     text,
   });
   const selectionLocation = useRef(0);
+  const replySelectionRef = useRef("");
 
   useEffect(() => {
     const onChange = () => {
       selectionLocation.current = textareaRef.current?.selectionStart ?? 0;
+      replySelectionRef.current = window.getSelection()?.toString() || "";
     };
 
     document.addEventListener("selectionchange", onChange);
@@ -170,11 +172,10 @@ export default function MarkdownToolbar({
     try {
       imageUrl = await uploadImage(instanceUrl, jwt, image);
     } catch (error) {
-      presentAlert({
+      presentToast({
         message: "Problem uploading image. Please try again.",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;
@@ -226,6 +227,47 @@ export default function MarkdownToolbar({
     });
   }
 
+  function onQuote(e: MouseEvent | TouchEvent) {
+    if (!replySelectionRef.current) return;
+    if (
+      !textareaRef.current ||
+      textareaRef.current?.selectionStart - textareaRef.current?.selectionEnd
+    )
+      return;
+
+    e.stopPropagation();
+    e.preventDefault();
+
+    const currentSelectionLocation = selectionLocation.current;
+
+    let insertedText = `> ${replySelectionRef.current
+      .trim()
+      .split("\n")
+      .join("\n> ")}\n\n`;
+
+    if (
+      text[currentSelectionLocation - 2] &&
+      text[currentSelectionLocation - 2] !== "\n"
+    ) {
+      insertedText = `\n${insertedText}`;
+    }
+
+    setText((text) => insert(text, currentSelectionLocation, insertedText));
+
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+
+      setTimeout(() => {
+        if (!textareaRef.current) return;
+
+        textareaRef.current.selectionEnd =
+          currentSelectionLocation + insertedText.length;
+      }, 10);
+    }
+
+    return false;
+  }
+
   return (
     <>
       <IonLoading isOpen={imageUploading} message="Uploading image..." />
@@ -243,7 +285,7 @@ export default function MarkdownToolbar({
                   display: none;
                 `}
                 type="file"
-                accept="image/jpeg, image/x-png, image/gif"
+                accept="image/*"
                 id="photo-upload"
                 onInput={(e) => {
                   const image = (e.target as HTMLInputElement).files?.[0];
@@ -268,6 +310,11 @@ export default function MarkdownToolbar({
                 <IonIcon icon={italic} color="primary" />
               </Button>
             </md-italic>
+            <md-quote>
+              <Button onClickCapture={onQuote}>
+                <IonIcon icon={quote} color="primary" />
+              </Button>
+            </md-quote>
             <Button onClick={presentMoreOptions}>
               <IonIcon icon={ellipsisHorizontal} color="primary" />
             </Button>

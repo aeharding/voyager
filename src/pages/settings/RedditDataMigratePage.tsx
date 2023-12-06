@@ -9,37 +9,41 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonToast,
 } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InsetIonItem } from "../profile/ProfileFeedItemsPage";
 import { isValidUrl } from "../../helpers/url";
+import useAppToast from "../../helpers/useAppToast";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 export default function RedditMigratePage() {
-  const [present] = useIonToast();
+  const pageRef = useRef<HTMLElement>(null);
+
+  const presentToast = useAppToast();
   const [subs, setSubs] = useState<string[] | undefined>();
   const [link, setLink] = useState("");
 
+  useSetActivePage(pageRef);
+
   useEffect(() => {
-    if (!isValidUrl(link)) return;
+    if (!isValidUrl(link, { checkProtocol: true, allowRelative: false }))
+      return;
 
     const subs = parseSubsFromLink(link);
 
     if (!subs.length) {
-      present({
+      presentToast({
         message:
           "Problem parsing link. Please make sure the link you entered is correct.",
-        duration: 3500,
-        position: "bottom",
-        color: "danger",
+        color: "warning",
       });
       setLink("");
       return;
     }
 
     setSubs(subs);
-  }, [link, present]);
+  }, [link, presentToast]);
 
   function renderUpload() {
     return (
@@ -100,7 +104,7 @@ export default function RedditMigratePage() {
   }
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">

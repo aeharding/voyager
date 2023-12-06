@@ -1,5 +1,7 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  LongSwipeTriggerPointType,
+  OLongSwipeTriggerPointType,
   OSwipeActionComment,
   OSwipeActionInbox,
   OSwipeActionPost,
@@ -15,6 +17,7 @@ interface GestureState {
     inbox: SwipeActions;
     disableLeftSwipes: boolean;
     disableRightSwipes: boolean;
+    longSwipeTriggerPoint: LongSwipeTriggerPointType;
   };
 }
 
@@ -28,7 +31,7 @@ const defaultSwipeActionsPost: SwipeActions = {
 const defaultSwipeActionsComment: SwipeActions = {
   farStart: OSwipeActionComment.Downvote,
   start: OSwipeActionComment.Upvote,
-  end: OSwipeActionComment.Collapse,
+  end: OSwipeActionComment.CollapseToTop,
   farEnd: OSwipeActionComment.Reply,
 } as const;
 
@@ -46,6 +49,7 @@ const initialState: GestureState = {
     inbox: defaultSwipeActionsInbox,
     disableLeftSwipes: false,
     disableRightSwipes: false,
+    longSwipeTriggerPoint: OLongSwipeTriggerPointType.Normal,
   },
 };
 
@@ -115,6 +119,14 @@ export const gestureSlice = createSlice({
       state.swipe.disableRightSwipes = action.payload;
       db.setSetting("disable_right_swipes", action.payload);
     },
+    setLongSwipeTriggerPoint(
+      state,
+      action: PayloadAction<LongSwipeTriggerPointType>,
+    ) {
+      state.swipe.longSwipeTriggerPoint = action.payload;
+      db.setSetting("long_swipe_trigger_point", action.payload);
+    },
+
     setAllSwipesToDefault(state) {
       state.swipe.post = defaultSwipeActionsPost;
       state.swipe.comment = defaultSwipeActionsComment;
@@ -138,6 +150,9 @@ export const fetchGesturesFromDatabase = createAsyncThunk<GestureState>(
       const gesture_swipe_inbox = await db.getSetting("gesture_swipe_inbox");
       const disable_left_swipes = await db.getSetting("disable_left_swipes");
       const disable_right_swipes = await db.getSetting("disable_right_swipes");
+      const long_swipe_trigger_point = await db.getSetting(
+        "long_swipe_trigger_point",
+      );
 
       return {
         swipe: {
@@ -148,6 +163,9 @@ export const fetchGesturesFromDatabase = createAsyncThunk<GestureState>(
             disable_left_swipes ?? initialState.swipe.disableLeftSwipes,
           disableRightSwipes:
             disable_right_swipes ?? initialState.swipe.disableRightSwipes,
+          longSwipeTriggerPoint:
+            long_swipe_trigger_point ??
+            initialState.swipe.longSwipeTriggerPoint,
         },
       };
     });
@@ -169,6 +187,7 @@ export const {
   setInboxSwipeActionStart,
   setDisableLeftSwipes,
   setDisableRightSwipes,
+  setLongSwipeTriggerPoint,
   setAllSwipesToDefault,
 } = gestureSlice.actions;
 

@@ -30,6 +30,8 @@ class APIManager {
         request.httpMethod = "PUT"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization") // lemmy >= 0.19
+
         let payload = SavePost(post_id: postId, save: true, auth: authToken)
 
         do {

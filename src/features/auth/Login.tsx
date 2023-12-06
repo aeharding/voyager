@@ -13,7 +13,6 @@ import {
   IonRadio,
   IonSpinner,
   IonList,
-  useIonToast,
   IonText,
   IonRouterLink,
   useIonModal,
@@ -28,6 +27,12 @@ import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
 import { getCustomServers } from "../../services/app";
 import { isNative } from "../../helpers/device";
 import { Browser } from "@capacitor/browser";
+import useAppToast from "../../helpers/useAppToast";
+import {
+  LemmyErrorValue,
+  OldLemmyErrorValue,
+  isLemmyError,
+} from "../../helpers/lemmy";
 
 const JOIN_LEMMY_URL = "https://join-lemmy.org/instances";
 
@@ -53,7 +58,7 @@ export default function Login({
 }: {
   onDismiss: (data?: string | null | undefined | number, role?: string) => void;
 }) {
-  const [present] = useIonToast();
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const [servers] = useState(getCustomServers());
   const [server, setServer] = useState(servers[0]);
@@ -104,11 +109,10 @@ export default function Login({
 
   async function submit() {
     if (!server && !customServer) {
-      present({
-        message: `Please enter your instance domain name`,
-        duration: 3500,
-        position: "bottom",
+      presentToast({
+        message: "Please enter your instance domain name",
         color: "danger",
+        fullscreen: true,
       });
       return;
     }
@@ -116,11 +120,10 @@ export default function Login({
     if (!serverConfirmed) {
       if (customServer) {
         if (!customServerHostname) {
-          present({
+          presentToast({
             message: `${customServer} is not a valid server URL. Please try again`,
-            duration: 3500,
-            position: "bottom",
             color: "danger",
+            fullscreen: true,
           });
 
           return;
@@ -128,13 +131,12 @@ export default function Login({
 
         setLoading(true);
         try {
-          await getClient(customServerHostname).getSite({});
+          await getClient(customServerHostname).getSite();
         } catch (error) {
-          present({
+          presentToast({
             message: `Problem connecting to ${customServerHostname}. Please try again`,
-            duration: 3500,
-            position: "bottom",
             color: "danger",
+            fullscreen: true,
           });
 
           throw error;
@@ -148,21 +150,19 @@ export default function Login({
     }
 
     if (!username || !password) {
-      present({
+      presentToast({
         message: "Please fill out username and password fields",
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
       return;
     }
 
     if (!totp && needsTotp) {
-      present({
+      presentToast({
         message: `Please enter your second factor authentication code for ${username}`,
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
       return;
     }
@@ -171,28 +171,25 @@ export default function Login({
 
     try {
       await dispatch(
-        login(
-          getClient(server ?? customServerHostname),
-          username,
-          password,
-          totp,
-        ),
+        login(server ?? customServerHostname, username, password, totp),
       );
     } catch (error) {
-      if (error === "missing_totp_token") {
+      if (isLemmyError(error, "missing_totp_token")) {
         setNeedsTotp(true);
         return;
       }
 
-      if (error === "password_incorrect") {
+      if (
+        isLemmyError(error, "password_incorrect" as OldLemmyErrorValue) || // TODO lemmy v0.18 support
+        isLemmyError(error, "incorrect_login")
+      ) {
         setPassword("");
       }
 
-      present({
+      presentToast({
         message: getLoginErrorMessage(error, server ?? customServer),
-        duration: 3500,
-        position: "bottom",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;
@@ -201,10 +198,8 @@ export default function Login({
     }
 
     onDismiss();
-    present({
+    presentToast({
       message: "Login successful",
-      duration: 2000,
-      position: "bottom",
       color: "success",
     });
   }
@@ -376,6 +371,8 @@ export default function Login({
                       onIonInput={(e) => setTotp(e.target.value as string)}
                       disabled={loading}
                       enterkeyhint="done"
+                      autocomplete="one-time-code"
+                      inputMode="numeric"
                     />
                   </IonItem>
                 </IonList>
@@ -389,13 +386,19 @@ export default function Login({
 }
 
 function getLoginErrorMessage(error: unknown, instanceActorId: string): string {
-  switch (error) {
-    case "incorrect_totp token": // This might be a typo? Included "correct" case below
+  if (!(error instanceof Error))
+    return "Unknown error occurred, please try again.";
+
+  switch (error.message as LemmyErrorValue) {
+    // TODO old lemmy support
+    case "incorrect_totp token" as OldLemmyErrorValue:
     case "incorrect_totp_token":
       return "Incorrect 2nd factor code. Please try again.";
-    case "couldnt_find_that_username_or_email":
+    // TODO old lemmy support
+    case "couldnt_find_that_username_or_email" as OldLemmyErrorValue:
+    case "couldnt_find_person":
       return `User not found. Is your account on ${instanceActorId}?`;
-    case "password_incorrect":
+    case "password_incorrect" as OldLemmyErrorValue:
       return "Incorrect password. Please try again.";
     case "incorrect_login":
       return "Incorrect login credentials. Please try again.";

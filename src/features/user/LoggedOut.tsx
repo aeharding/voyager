@@ -2,7 +2,7 @@ import { IonIcon, IonList, IonPicker, IonText } from "@ionic/react";
 import { css } from "@emotion/react";
 import { InsetIonItem, SettingLabel } from "./Profile";
 import styled from "@emotion/styled";
-import { ReactComponent as IncognitoSvg } from "./incognito.svg";
+import IncognitoSvg from "./incognito.svg?react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useState } from "react";
 import { updateConnectedInstance } from "../auth/authSlice";

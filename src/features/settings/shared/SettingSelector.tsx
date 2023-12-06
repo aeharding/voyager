@@ -11,20 +11,44 @@ import { InsetIonItem } from "./formatting";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
-export interface SettingSelectorProps<T> {
+export const Container = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 8px;
+  min-width: 0;
+`;
+
+export const ValueLabel = styled(IonLabel)`
+  flex: 1;
+  text-align: right;
+
+  min-width: 75px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export interface SettingSelectorProps<T, O extends Dictionary<T>> {
   title: string;
+  openTitle?: string;
   selected: T;
   setSelected: Dispatchable<T>;
-  options: Dictionary<string>;
+  options: O;
   optionIcons?: Dictionary<string>;
   icon?: React.FunctionComponent;
   iconMirrored?: boolean;
   disabled?: boolean;
-  getOptionLabel?: (option: string) => string | undefined;
+  getOptionLabel?: (option: T) => string | undefined;
+  getSelectedLabel?: (option: T) => string | undefined;
 }
 
-export default function SettingSelector<T extends string>({
+export default function SettingSelector<
+  T extends string | number,
+  O extends Dictionary<T>,
+>({
   title,
+  openTitle,
   selected,
   setSelected,
   options,
@@ -33,7 +57,8 @@ export default function SettingSelector<T extends string>({
   iconMirrored,
   disabled,
   getOptionLabel,
-}: SettingSelectorProps<T>) {
+  getSelectedLabel,
+}: SettingSelectorProps<T, O>) {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -43,7 +68,7 @@ export default function SettingSelector<T extends string>({
 
       return {
         icon: optionIcons ? optionIcons[v] : undefined,
-        text: customLabel ?? startCase(v),
+        text: customLabel ?? (typeof v === "string" ? startCase(v) : v),
         data: v,
         role: selected === v ? "selected" : undefined,
       } as ActionSheetButton<T>;
@@ -51,7 +76,9 @@ export default function SettingSelector<T extends string>({
   );
 
   const Icon = icon
-    ? styled(icon)<{ mirror?: boolean }>`
+    ? styled(icon, { shouldForwardProp: (prop) => prop !== "mirror" })<{
+        mirror?: boolean;
+      }>`
         position: relative;
         display: inline-flex;
         height: 4ex;
@@ -78,11 +105,14 @@ export default function SettingSelector<T extends string>({
       disabled={disabled}
       detail={false}
     >
-      {Icon && <Icon mirror={iconMirrored} />}
-      <IonLabel>{title}</IonLabel>
-      <IonLabel slot="end" color="medium">
-        {startCase(selected)}
-      </IonLabel>
+      <Container>
+        {Icon && <Icon mirror={iconMirrored} />}
+        <IonLabel>{title}</IonLabel>
+        <ValueLabel slot="end" color="medium">
+          {getSelectedLabel?.(selected) ??
+            (typeof selected === "string" ? startCase(selected) : selected)}
+        </ValueLabel>
+      </Container>
       <IonActionSheet
         cssClass="left-align-buttons"
         isOpen={open}
@@ -90,11 +120,11 @@ export default function SettingSelector<T extends string>({
         onWillDismiss={(
           e: IonActionSheetCustomEvent<OverlayEventDetail<T>>,
         ) => {
-          if (e.detail.data) {
-            dispatch(setSelected(e.detail.data));
-          }
+          if (e.detail.data == null) return;
+
+          dispatch(setSelected(e.detail.data));
         }}
-        header={title}
+        header={openTitle ?? title}
         buttons={buttons}
       />
     </InsetIonItem>

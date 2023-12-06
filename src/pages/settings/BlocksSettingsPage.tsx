@@ -22,13 +22,23 @@ import FilterNsfw from "../../features/settings/blocks/FilterNsfw";
 import BlockedCommunities from "../../features/settings/blocks/BlockedCommunities";
 import { CenteredSpinner } from "../posts/PostPage";
 import BlockedUsers from "../../features/settings/blocks/BlockedUsers";
+import FilteredKeywords from "../../features/settings/blocks/FilteredKeywords";
+import useSupported from "../../helpers/useSupported";
+import BlockedInstances from "../../features/settings/blocks/BlockedInstances";
+import { useRef } from "react";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 export default function BlocksSettingsPage() {
+  const pageRef = useRef<HTMLElement>(null);
+
   const userHandle = useAppSelector(handleSelector);
   const localUser = useAppSelector(localUserSelector);
+  const instanceBlockSupported = useSupported("Instance Blocking");
+
+  useSetActivePage(pageRef);
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -48,8 +58,10 @@ export default function BlocksSettingsPage() {
       {localUser ? (
         <AppContent scrollY>
           <FilterNsfw />
+          <FilteredKeywords />
           <BlockedCommunities />
           <BlockedUsers />
+          {instanceBlockSupported && <BlockedInstances />}
         </AppContent>
       ) : (
         <IonContent scrollY={false}>

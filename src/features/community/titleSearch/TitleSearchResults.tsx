@@ -11,13 +11,13 @@ import styled from "@emotion/styled";
 import { useDebounce } from "usehooks-ts";
 import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
-import { IonItem, IonList, createAnimation, useIonRouter } from "@ionic/react";
+import { IonItem, IonList, createAnimation } from "@ionic/react";
 import { useAppSelector } from "../../../store";
 import { notEmpty } from "../../../helpers/array";
 import { uniqBy } from "lodash";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { jwtSelector } from "../../auth/authSlice";
+import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -85,8 +85,7 @@ type SpecialFeed = (typeof SPECIAL_FEEDS)[number];
 type Result = Community | SpecialFeed | string;
 
 export default function TitleSearchResults() {
-  const router = useIonRouter();
-  const jwt = useAppSelector(jwtSelector);
+  const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
   const debouncedSearch = useDebounce(search, 500);
@@ -203,10 +202,17 @@ export default function TitleSearchResults() {
       type_: "Communities",
       listing_type: "All",
       sort: "TopAll",
-      auth: jwt,
     });
 
     setSearchPayload(result.communities);
+  }
+
+  function renderTitle(result: Result) {
+    if (typeof result === "string") return result;
+
+    if ("type" in result) return result.label;
+
+    return getHandle(result);
   }
 
   if (!searching) return null;
@@ -229,11 +235,7 @@ export default function TitleSearchResults() {
                 key={typeof c === "string" ? c : c.id}
                 routerDirection="none"
               >
-                {typeof c === "string"
-                  ? c
-                  : "type" in c
-                  ? c.label
-                  : getHandle(c)}
+                {renderTitle(c)}
               </IonItem>
             ))}
           </IonList>

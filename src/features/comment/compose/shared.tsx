@@ -9,6 +9,8 @@ import React, { Dispatch, SetStateAction, useRef } from "react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 import { css } from "@emotion/react";
 import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
+import { useEffect } from "react";
+import { preventModalSwipeOnTextSelection } from "../../../helpers/ionic";
 
 export const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -49,6 +51,7 @@ export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
 interface CommentContentProps {
   text: string;
   setText: Dispatch<SetStateAction<string>>;
+  onSubmit?: () => unknown;
 
   children?: React.ReactNode;
 }
@@ -57,20 +60,36 @@ export default function CommentContent({
   text,
   setText,
   children,
+  onSubmit,
 }: CommentContentProps) {
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    textareaRef.current?.focus({ preventScroll: true });
+
+    // iOS safari native has race sometimes
+    setTimeout(() => {
+      textareaRef.current?.focus({ preventScroll: true });
+    }, 100);
+  }, []);
 
   return (
     <>
       <IonContent {...preventPhotoswipeGalleryFocusTrap}>
         <Container keyboardOpen={keyboardOpen}>
           <Textarea
+            {...preventModalSwipeOnTextSelection}
             ref={textareaRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             autoFocus
             id={TOOLBAR_TARGET_ID}
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                onSubmit?.();
+              }
+            }}
           />
           {children}
         </Container>

@@ -21,9 +21,8 @@ export default function useCollapseRootComment(
     const currentActivePage = activePageRef?.current?.current;
     if (!currentActivePage || !("scrollToIndex" in currentActivePage)) return;
 
-    currentActivePage.scrollToIndex({
-      index: rootIndex,
-      behavior: "smooth",
+    currentActivePage.scrollToIndex(rootIndex, {
+      smooth: true,
     });
   }, [activePageRef, dispatch, item, rootIndex]);
 }

@@ -11,12 +11,17 @@ A mobile-first Lemmy web client
 </p>
 
 <p align="center">
+<a href="https://github.com/aeharding/voyager/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title=">Report Bug</a> · <a href="https://github.com/aeharding/voyager/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=">Request Feature</a> · <a href="https://github.com/aeharding/voyager/releases">Releases</a>
+</p>
+
+<p align="center">
 &nbsp;<a href="https://vger.app"><img src="public/badges/pwa.svg" height="45"></a>&nbsp;&#8203;&nbsp;
 <a href="https://apps.apple.com/us/app/voyager-for-lemmy/id6451429762"><img src="public/badges/ios.svg" height="45"></a>&nbsp;&nbsp;
-<a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;
+<a href="https://play.google.com/store/apps/details?id=app.vger.voyager"><img src="public/badges/play.svg" height="45"></a>&nbsp;&nbsp;<a href="https://f-droid.org/en/packages/app.vger.voyager/"><img src="public/badges/fdroid.png" height="45"></a>
 </p>
 <p align="center">
-  <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat&logo=matrix" alt="matrix chat"></a>
+  <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat-square&logo=matrix" alt="matrix chat"></a>
+  <a href="https://lemmy.world/c/voyagerapp"><img src="https://img.shields.io/lemmy/voyagerapp@lemmy.world?style=flat-square&logo=lemmy&label=lemmy" alt="lemmy community"></a>
 </p>
 <br/>
 
@@ -54,7 +59,6 @@ Voyager is an [Apollo-like](https://apolloapp.io/) open source web client for [L
 - More customization
 - Native notifications and badging
 - Mod features
-- Native apps
 - Translations
 - ...and more!
 
@@ -204,7 +208,11 @@ BUILD=123; npx release-it
 
 Make sure the build number is incremental. This is used for F-droid.
 
-Voyager uses [Ionic App Flow](https://ionic.io/appflow) for Apple App Store and Android Play Store builds. Unfortunately, there's no way to provide public access to build logs and artifacts. Hopefully someday. :-)
+Voyager uses [Ionic App Flow](https://ionic.io/appflow) for Apple App Store and Android Play Store builds. Those builds are initiated and monitored by Github Actions, where logs may be inspected.
+
+**Voyager's Android and iOS builds are reproducible**! In fact, [F-droid independently builds Voyager](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/app.vger.voyager.yml) and verifies the same compiled APK is provided in Github Releases.
+
+Note: F-droid and Github Releases binaries are built with `BUILD_FOSS_ONLY=true`. This removes all nonfree dependencies, currently just Google Play in-app purchases.
 
 ## 📲 PWA
 
@@ -215,7 +223,7 @@ Voyager works best added to the homescreen. There are certain features that only
 - [React](https://react.dev/) - The library for web and native user interfaces
 - [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
 - [Ionic](https://ionicframework.com/) - The mobile SDK for the Web
-- [Virtuoso](https://virtuoso.dev/) - Display large data sets using virtualized rendering
+- [Virtua](https://github.com/inokawa/virtua) - A zero-config, fast and small virtual list
 - [vite-plugin-pwa](https://github.com/vite-pwa/vite-plugin-pwa) - Prompt for update, Web Push Notifications and Web Share Target API
 
 ## 👨‍💻 Contributors
@@ -228,9 +236,10 @@ Shoutout to [@fer0n](https://github.com/fer0n) for the great logo and splashscre
 
 ## 📄 License
 
-### Logo & Splashscreen
+### Artwork
 
-CC BY-SA 4.0 &copy; [@fer0n](https://github.com/fer0n)
+- **Default Logo & Splashscreen**: CC BY-SA 4.0 &copy; [@fer0n](https://github.com/fer0n)
+- **Default Android themed icon**: CC BY-SA 4.0 &copy; [@Donno](https://github.com/Donnnno)
 
 ### Code
 

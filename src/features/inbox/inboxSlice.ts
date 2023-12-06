@@ -10,6 +10,7 @@ import {
 import { InboxItemView } from "./InboxItem";
 import { differenceBy, uniqBy } from "lodash";
 import { receivedUsers } from "../user/userSlice";
+import { isLemmyError } from "../../helpers/lemmy";
 
 interface PostState {
   counts: {
@@ -117,9 +118,7 @@ export const getInboxCounts =
     const initialHandle = handleSelector(getState());
 
     try {
-      result = await clientSelector(getState()).getUnreadCount({
-        auth: jwt,
-      });
+      result = await clientSelector(getState()).getUnreadCount();
     } catch (error) {
       // Get inbox counts is a good place to check if token is valid,
       // because it runs quite often (when returning from background,
@@ -128,7 +127,10 @@ export const getInboxCounts =
       // If API rejects jwt, check if initial handle used to make the request
       // is the same as the handle at this moment (e.g. something else didn't
       // log the user out). If match, then proceed to log the user out
-      if (error === "not_logged_in") {
+      if (
+        isLemmyError(error, "not_logged_in") ||
+        isLemmyError(error, "incorrect_login")
+      ) {
         const handle = handleSelector(getState());
         if (handle && handle === initialHandle) {
           dispatch(logoutAccount(handle));
@@ -168,7 +170,6 @@ export const syncMessages =
           try {
             const results = await clientSelector(getState()).getPrivateMessages(
               {
-                auth: jwt,
                 limit: syncState === "init" ? 50 : page === 1 ? 1 : 20,
                 page,
               },
@@ -200,11 +201,7 @@ export const syncMessages =
 
 export const markAllRead =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
-    if (!jwt) return;
-
-    await clientSelector(getState()).markAllAsRead({ auth: jwt });
+    await clientSelector(getState()).markAllAsRead();
 
     dispatch(getInboxCounts());
   };
@@ -248,10 +245,7 @@ export function getInboxItemPublished(item: InboxItemView): string {
 export const markRead =
   (item: InboxItemView, read: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
     const client = clientSelector(getState());
-
-    if (!jwt) throw new Error("needs auth");
 
     const initialRead =
       !!getState().inbox.readByInboxItemId[getInboxItemId(item)];
@@ -263,19 +257,16 @@ export const markRead =
         await client.markPersonMentionAsRead({
           read,
           person_mention_id: item.person_mention.id,
-          auth: jwt,
         });
       } else if ("comment_reply" in item) {
         await client.markCommentReplyAsRead({
           read,
           comment_reply_id: item.comment_reply.id,
-          auth: jwt,
         });
       } else if ("private_message" in item) {
         await client.markPrivateMessageAsRead({
           read,
           private_message_id: item.private_message.id,
-          auth: jwt,
         });
       }
     } catch (error) {

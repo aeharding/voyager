@@ -1,5 +1,5 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { GetSiteResponse, LemmyHttp } from "lemmy-js-client";
+import { GetSiteResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import Cookies from "js-cookie";
 import { LemmyJWT, getRemoteHandle } from "../../helpers/lemmy";
@@ -11,6 +11,9 @@ import { resetInbox } from "../inbox/inboxSlice";
 import { differenceWith, uniqBy } from "lodash";
 import { resetCommunities } from "../community/communitySlice";
 import { ApplicationContext } from "capacitor-application-context";
+import { resetInstances } from "../instances/instancesSlice";
+import { resetResolve } from "../resolve/resolveSlice";
+import { resetMod } from "../moderation/modSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -173,7 +176,7 @@ export const usernameSelector = createSelector([handleSelector], (handle) => {
 });
 
 export const isAdminSelector = (state: RootState) =>
-  state.auth.site?.my_user?.local_user_view.person.admin;
+  state.auth.site?.my_user?.local_user_view.local_user.admin;
 
 export const isDownvoteEnabledSelector = (state: RootState) =>
   state.auth.site?.site_view.local_site.enable_downvotes !== false;
@@ -181,9 +184,14 @@ export const isDownvoteEnabledSelector = (state: RootState) =>
 export const localUserSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.local_user;
 
+export const lemmyVersionSelector = (state: RootState) =>
+  state.auth.site?.version;
+
 export const login =
-  (client: LemmyHttp, username: string, password: string, totp?: string) =>
+  (baseUrl: string, username: string, password: string, totp?: string) =>
   async (dispatch: AppDispatch) => {
+    const client = getClient(baseUrl);
+
     const res = await client.login({
       username_or_email: username,
       password,
@@ -195,7 +203,9 @@ export const login =
       throw new Error("broke");
     }
 
-    const site = await client.getSite({ auth: res.jwt });
+    const authenticatedClient = getClient(baseUrl, res.jwt);
+
+    const site = await authenticatedClient.getSite();
     const myUser = site.my_user?.local_user_view?.person;
 
     if (!myUser) throw new Error("broke");
@@ -221,32 +231,30 @@ export const getSiteIfNeeded =
 
 export const getSite =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwtPayload = jwtPayloadSelector(getState());
-    const instance = jwtPayload?.iss ?? getState().auth.connectedInstance;
-
-    const details = await getClient(instance).getSite({
-      auth: jwtSelector(getState()),
-    });
+    const details = await clientSelector(getState()).getSite();
 
     dispatch(updateUserDetails(details));
   };
 
-export const logoutEverything = () => async (dispatch: AppDispatch) => {
-  dispatch(reset());
+const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
   dispatch(resetPosts());
   dispatch(resetComments());
   dispatch(resetUsers());
   dispatch(resetInbox());
+  dispatch(resetCommunities());
+  dispatch(resetResolve());
+  dispatch(resetInstances());
+  dispatch(resetMod());
+};
+
+export const logoutEverything = () => async (dispatch: AppDispatch) => {
+  dispatch(reset());
+  dispatch(resetAccountSpecificStoreData());
 };
 
 export const changeAccount =
-  (handle: string) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
-    dispatch(resetPosts());
-    dispatch(resetComments());
-    dispatch(resetUsers());
-    dispatch(resetInbox());
-    dispatch(resetCommunities());
+  (handle: string) => (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(resetAccountSpecificStoreData());
     dispatch(setPrimaryAccount(handle));
 
     const iss = jwtIssSelector(getState());
@@ -254,15 +262,23 @@ export const changeAccount =
   };
 
 export const logoutAccount =
-  (handle: string) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
+  (handle: string) => (dispatch: AppDispatch, getState: () => RootState) => {
+    const accountData = getState().auth.accountData;
+    const currentAccount = accountData?.accounts?.find(
+      ({ handle: h }) => handle === h,
+    );
+
     // Going to need to change active accounts
-    if (handle === getState().auth.accountData?.activeHandle) {
+    if (handle === accountData?.activeHandle) {
       dispatch(resetPosts());
       dispatch(resetComments());
       dispatch(resetUsers());
       dispatch(resetInbox());
     }
+
+    // revoke token
+    if (currentAccount)
+      getClient(parseJWT(currentAccount.jwt).iss, currentAccount.jwt)?.logout();
 
     dispatch(removeAccount(handle));
 
@@ -284,10 +300,18 @@ export const urlSelector = createSelector(
   },
 );
 
-export const clientSelector = createSelector([urlSelector], (url) => {
-  // never leak the jwt to the incorrect server
-  return getClient(url);
-});
+export const clientSelector = createSelector(
+  [urlSelector, jwtSelector],
+  (url, jwt) => {
+    // never leak the jwt to the incorrect server
+    return getClient(url, jwt);
+  },
+);
+
+export const followIdsSelector = createSelector(
+  [(state: RootState) => state.auth.site?.my_user?.follows],
+  (follows) => (follows ?? []).map((follow) => follow.community.id),
+);
 
 function updateCredentialsStorage(
   accounts: CredentialStoragePayload | undefined,
@@ -313,19 +337,15 @@ function getCredentialsFromStorage(): CredentialStoragePayload | undefined {
 export const showNsfw =
   (show: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwt = jwtSelector(getState());
-
     // https://github.com/LemmyNet/lemmy/issues/3565
     const person = getState().auth.site?.my_user?.local_user_view.person;
 
-    if (!jwt) throw new Error("Not authorized");
     if (!person || handleSelector(getState()) !== getRemoteHandle(person))
       throw new Error("user mismatch");
 
     await clientSelector(getState())?.saveUserSettings({
       avatar: person?.avatar || "",
       show_nsfw: show,
-      auth: jwt,
     });
 
     await dispatch(getSite());
@@ -356,3 +376,16 @@ function updateApplicationContextIfNeeded(
       : "",
   });
 }
+
+export const blockInstance =
+  (block: boolean, id: number) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    if (!id) return;
+
+    await clientSelector(getState())?.blockInstance({
+      instance_id: id,
+      block,
+    });
+
+    await dispatch(getSite());
+  };

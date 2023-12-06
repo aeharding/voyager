@@ -5,7 +5,6 @@ import PreviewStats from "../PreviewStats";
 import Embed from "../../shared/Embed";
 import { useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
-import { isUrlImage, isUrlVideo } from "../../../../helpers/lemmy";
 import { maxWidthCss } from "../../../shared/AppContent";
 import Nsfw, { isNsfw, isNsfwBlurred } from "../../../labels/Nsfw";
 import { VoteButton } from "../../shared/VoteButton";
@@ -14,18 +13,23 @@ import PersonLink from "../../../labels/links/PersonLink";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
 import { AnnouncementIcon } from "../../../../pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
-import Video from "../../../shared/Video";
 import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
-import { Image } from "./Image";
+import Media from "./media/Media";
 import { useAppSelector } from "../../../../store";
+import { isUrlMedia } from "../../../../helpers/url";
+import ModeratableItem, {
+  ModeratableItemBannerOutlet,
+} from "../../../moderation/ModeratableItem";
+import MoreModActions from "../../shared/MoreModAction";
+import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 12px;
+  padding: 12px;
 
   position: relative;
 
@@ -100,10 +104,14 @@ const PostBody = styled.div<{ isRead: boolean }>`
 
 const ImageContainer = styled.div`
   overflow: hidden;
-  margin: 0 -0.75rem;
+  margin: 0 -12px;
 `;
 
-export default function LargePost({ post, communityMode }: PostProps) {
+export default function LargePost({
+  post,
+  communityMode,
+  modqueue,
+}: PostProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
@@ -116,37 +124,17 @@ export default function LargePost({ post, communityMode }: PostProps) {
   );
 
   function renderPostBody() {
-    if (post.post.url) {
-      if (isUrlImage(post.post.url)) {
-        return (
-          <ImageContainer>
-            <Image
-              blur={isNsfwBlurred(post, blurNsfw)}
-              post={post}
-              animationType="zoom"
-            />
-          </ImageContainer>
-        );
-      }
-      if (isUrlVideo(post.post.url)) {
-        return (
-          <ImageContainer>
-            <Video src={post.post.url} blur={isNsfwBlurred(post, blurNsfw)} />
-          </ImageContainer>
-        );
-      }
-    }
-
-    if (markdownLoneImage)
+    if ((post.post.url && isUrlMedia(post.post.url)) || markdownLoneImage) {
       return (
         <ImageContainer>
-          <Image
+          <Media
             blur={isNsfwBlurred(post, blurNsfw)}
             post={post}
             animationType="zoom"
           />
         </ImageContainer>
       );
+    }
 
     /**
      * Embedded video, image with a thumbanil
@@ -176,45 +164,55 @@ export default function LargePost({ post, communityMode }: PostProps) {
   }
 
   return (
-    <Container>
-      <Title isRead={hasBeenRead}>
-        <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
-        {isNsfw(post) && <Nsfw />}
-      </Title>
+    <ModeratableItem itemView={post}>
+      <Container>
+        <ModeratableItemBannerOutlet />
 
-      {renderPostBody()}
+        <Title isRead={hasBeenRead}>
+          <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+          {isNsfw(post) && <Nsfw />}
+        </Title>
 
-      <Details>
-        <LeftDetails isRead={hasBeenRead}>
-          <CommunityName>
-            {post.counts.featured_community || post.counts.featured_local ? (
-              <AnnouncementIcon icon={megaphone} />
-            ) : undefined}
-            {communityMode ? (
-              <PersonLink
-                person={post.creator}
-                showInstanceWhenRemote
-                prefix="by"
-              />
-            ) : (
-              <CommunityLink
-                community={post.community}
-                showInstanceWhenRemote
-                subscribed={post.subscribed}
-              />
+        {renderPostBody()}
+
+        <Details>
+          <LeftDetails isRead={hasBeenRead}>
+            <CommunityName>
+              {post.post.featured_community || post.post.featured_local ? (
+                <AnnouncementIcon icon={megaphone} />
+              ) : undefined}
+              {communityMode ? (
+                <PersonLink
+                  person={post.creator}
+                  showInstanceWhenRemote
+                  prefix="by"
+                />
+              ) : (
+                <CommunityLink
+                  community={post.community}
+                  showInstanceWhenRemote
+                  subscribed={post.subscribed}
+                />
+              )}
+            </CommunityName>
+
+            <PreviewStats post={post} />
+          </LeftDetails>
+          <RightDetails>
+            {modqueue && <ModqueueItemActions item={post} />}
+            <MoreActions post={post} onFeed />
+            {!modqueue && (
+              <>
+                <MoreModActions post={post} onFeed />
+                <VoteButton type="up" postId={post.post.id} />
+                <VoteButton type="down" postId={post.post.id} />
+              </>
             )}
-          </CommunityName>
+          </RightDetails>
+        </Details>
 
-          <PreviewStats post={post} />
-        </LeftDetails>
-        <RightDetails>
-          <MoreActions post={post} onFeed />
-          <VoteButton type="up" postId={post.post.id} />
-          <VoteButton type="down" postId={post.post.id} />
-        </RightDetails>
-      </Details>
-
-      <Save type="post" id={post.post.id} />
-    </Container>
+        <Save type="post" id={post.post.id} />
+      </Container>
+    </ModeratableItem>
   );
 }

@@ -10,11 +10,21 @@ import {
 } from "@ionic/react";
 import { Dictionary } from "@reduxjs/toolkit";
 import { bookmark, mailUnread } from "ionicons/icons";
-import React, { useMemo, useRef, useState } from "react";
+import React, {
+  MouseEvent,
+  TouchEvent,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { bounceAnimation } from "../animations";
+import { useAppSelector } from "../../../store";
+import { OLongSwipeTriggerPointType } from "../../../services/db";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
+  overflow: initial; // sticky
+
   --ion-item-border-color: transparent;
 `;
 
@@ -35,6 +45,10 @@ const OptionContainer = styled.div<{ active: boolean }>`
   width: min(60px, 11vw);
 
   opacity: 0.5;
+
+  position: sticky;
+  top: 0;
+  bottom: 0;
 
   .item-options-start & {
     margin-right: auto;
@@ -63,6 +77,8 @@ const SlashedIcon = styled(IonIcon)<{
   slash: boolean;
   bgColor: string;
 }>`
+  margin-block: 24px;
+
   color: white;
 
   ${({ icon, slash, bgColor }) =>
@@ -89,7 +105,7 @@ export type SlidingItemAction = {
    * If `string`, it's passed to IonIcon as an icon value
    */
   icon: string;
-  trigger: () => void;
+  trigger: (e: TouchEvent | MouseEvent) => void;
   bgColor: string;
   slash?: boolean;
 };
@@ -109,12 +125,14 @@ export interface SlidingItemProps {
 }
 
 const FIRST_ACTION_RATIO = 1;
-const SECOND_ACTION_RATIO = 1.75;
+const SECOND_ACTION_RATIO_NORMAL = 1.75;
+const SECOND_ACTION_RATIO_LATER = 2.5;
 
 function getActiveItem(
   ratio: number,
   hasNearSwipe: boolean,
   hasFarSwipe: boolean,
+  SECOND_ACTION_RATIO: number,
 ) {
   ratio = Math.abs(ratio);
 
@@ -133,6 +151,18 @@ export default function SlidingItem({
   const [ratio, setRatio] = useState(0);
   const vibrate = useHapticFeedback();
   const [dragging, setDragging] = useState(false);
+  const longSwipeTriggerPoint = useAppSelector(
+    (state) => state.gesture.swipe.longSwipeTriggerPoint,
+  );
+
+  const SECOND_ACTION_RATIO = (() => {
+    switch (longSwipeTriggerPoint) {
+      case OLongSwipeTriggerPointType.Normal:
+        return SECOND_ACTION_RATIO_NORMAL;
+      case OLongSwipeTriggerPointType.Later:
+        return SECOND_ACTION_RATIO_LATER;
+    }
+  })();
 
   const activeActionRef = useRef(0);
 
@@ -149,7 +179,12 @@ export default function SlidingItem({
     const hasNearSwipe = !!(ratio < 0 ? startActions[0] : endActions[0]);
     const hasFarSwipe = !!(ratio < 0 ? startActions[1] : endActions[1]);
 
-    const activeItem = getActiveItem(ratio, hasNearSwipe, hasFarSwipe);
+    const activeItem = getActiveItem(
+      ratio,
+      hasNearSwipe,
+      hasFarSwipe,
+      SECOND_ACTION_RATIO,
+    );
 
     if (activeItem > activeActionRef.current) {
       vibrate({ style: ImpactStyle.Light });
@@ -173,7 +208,7 @@ export default function SlidingItem({
     if (!startActions[1]) return 0;
     else if (!startActions[0]) return 1;
     else return ratio <= -SECOND_ACTION_RATIO ? 1 : 0;
-  }, [ratio, startActions]);
+  }, [ratio, startActions, SECOND_ACTION_RATIO]);
 
   const startActionColor = startActions[currentStartActionIndex]?.bgColor;
 
@@ -202,7 +237,7 @@ export default function SlidingItem({
     if (!endActions[1]) return 0;
     else if (!endActions[0]) return 1;
     else return ratio >= SECOND_ACTION_RATIO ? 1 : 0;
-  }, [ratio, endActions]);
+  }, [ratio, endActions, SECOND_ACTION_RATIO]);
 
   const endActionColor = endActions[currentEndActionIndex]?.bgColor;
 
@@ -225,19 +260,19 @@ export default function SlidingItem({
 
   const startRatio = useMemo(() => {
     return startActions[0] ? -FIRST_ACTION_RATIO : -SECOND_ACTION_RATIO;
-  }, [startActions]);
+  }, [startActions, SECOND_ACTION_RATIO]);
   const endRatio = useMemo(() => {
     return endActions[0] ? FIRST_ACTION_RATIO : SECOND_ACTION_RATIO;
-  }, [endActions]);
+  }, [endActions, SECOND_ACTION_RATIO]);
 
-  async function onDragStop() {
+  async function onDragStop(e: TouchEvent | MouseEvent) {
     if (!dragRef.current) return;
     if (!dragging) return;
 
     if (ratio <= startRatio) {
-      startActions[currentStartActionIndex]?.trigger();
+      startActions[currentStartActionIndex]?.trigger(e);
     } else if (ratio >= endRatio) {
-      endActions[currentEndActionIndex]?.trigger();
+      endActions[currentEndActionIndex]?.trigger(e);
     }
 
     dragRef.current.target.closeOpened();
@@ -254,7 +289,7 @@ export default function SlidingItem({
       {canSwipeStart && (
         <IonItemOptions side="start">
           <StyledIonItemOption color={startActionColor}>
-            <OptionContainer active={ratio <= startRatio}>
+            <OptionContainer active={ratio <= startRatio} slot="top">
               {startActionContents}
             </OptionContainer>
           </StyledIonItemOption>
@@ -264,7 +299,7 @@ export default function SlidingItem({
       {canSwipeEnd && (
         <IonItemOptions side="end">
           <StyledIonItemOption color={endActionColor}>
-            <OptionContainer active={ratio >= endRatio}>
+            <OptionContainer active={ratio >= endRatio} slot="top">
               {endActionContents}
             </OptionContainer>
           </StyledIonItemOption>

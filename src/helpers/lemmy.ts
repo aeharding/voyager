@@ -2,10 +2,13 @@ import {
   Comment,
   CommentView,
   Community,
+  CommunityModeratorView,
   GetSiteResponse,
+  LemmyErrorType,
   Post,
 } from "lemmy-js-client";
 import { Share } from "@capacitor/share";
+import { escapeStringForRegex } from "./regex";
 
 export interface LemmyJWT {
   sub: number;
@@ -17,10 +20,11 @@ export interface CommentNodeI {
   comment_view: CommentView;
   children: Array<CommentNodeI>;
   depth: number;
+  absoluteDepth: number;
   missing?: number;
 }
 
-export const MAX_DEFAULT_COMMENT_DEPTH = 5;
+export const MAX_DEFAULT_COMMENT_DEPTH = 6;
 
 /**
  * @param item Community, Person, etc
@@ -70,6 +74,7 @@ export function buildCommentsTree(
       comment_view,
       children: [],
       depth,
+      absoluteDepth: depthI,
     };
     map.set(comment_view.comment.id, { ...node });
   }
@@ -161,8 +166,12 @@ export function getCommentParentId(comment?: Comment): number | undefined {
 }
 
 export function getDepthFromComment(comment?: Comment): number | undefined {
-  const len = comment?.path.split(".").length;
-  return len ? len - 2 : undefined;
+  return comment ? getDepthFromCommentPath(comment.path) : undefined;
+}
+
+export function getDepthFromCommentPath(path: string): number {
+  const len = path.split(".").length;
+  return len - 2;
 }
 
 export function insertCommentIntoTree(
@@ -175,6 +184,7 @@ export function insertCommentIntoTree(
     comment_view: cv,
     children: [],
     depth: 0,
+    absoluteDepth: 0,
   };
 
   const parentId = getCommentParentId(cv.comment);
@@ -228,38 +238,48 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
   return flattenedChildren;
 }
 
-export function isUrlImage(url: string): boolean {
-  let parsedUrl;
-
-  try {
-    parsedUrl = new URL(url);
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-
-  return (
-    parsedUrl.pathname.endsWith(".jpeg") ||
-    parsedUrl.pathname.endsWith(".png") ||
-    parsedUrl.pathname.endsWith(".gif") ||
-    parsedUrl.pathname.endsWith(".jpg") ||
-    parsedUrl.pathname.endsWith(".webp")
-  );
-}
-
-export function isUrlVideo(url: string): boolean {
-  let parsedUrl;
-
-  try {
-    parsedUrl = new URL(url);
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-
-  return parsedUrl.pathname.endsWith(".mp4");
-}
-
 export function share(item: Post | Comment) {
   return Share.share({ url: item.ap_id });
+}
+
+export function postHasFilteredKeywords(
+  post: Post,
+  keywords: string[],
+): boolean {
+  for (const keyword of keywords) {
+    if (keywordFoundInSentence(keyword, post.name)) return true;
+  }
+
+  return false;
+}
+
+export function keywordFoundInSentence(
+  keyword: string,
+  sentence: string,
+): boolean {
+  // Escape the keyword for use in a regular expression
+  const escapedKeyword = escapeStringForRegex(keyword);
+
+  // Create a regular expression pattern to match the escaped keyword as a whole word
+  const pattern = new RegExp(`\\b${escapedKeyword}\\b`, "i");
+
+  // Use the RegExp test method to check if the pattern is found in the sentence
+  return pattern.test(sentence);
+}
+
+export type LemmyErrorValue = LemmyErrorType["error"];
+export type OldLemmyErrorValue = never; // When removing support for an old version of Lemmy, cleanup these references
+
+export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
+  if (!(error instanceof Error)) return;
+  return error.message === lemmyErrorValue;
+}
+
+export function canModerate(
+  communityId: number | undefined,
+  moderates: CommunityModeratorView[] | undefined,
+): boolean {
+  if (communityId === undefined) return false;
+  if (!moderates) return false;
+  return moderates.some((m) => m.community.id === communityId);
 }

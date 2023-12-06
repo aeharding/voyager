@@ -1,4 +1,5 @@
 import { CapacitorConfig } from "@capacitor/cli";
+import { KeyboardResize } from "@capacitor/keyboard";
 
 const config: CapacitorConfig = {
   appId: "app.vger.voyager",
@@ -8,11 +9,9 @@ const config: CapacitorConfig = {
     androidScheme: "https",
   },
   plugins: {
-    CapacitorHttp: {
-      enabled: true,
-    },
     Keyboard: {
       resizeOnFullScreen: true,
+      resize: KeyboardResize.None,
     },
   },
 };
