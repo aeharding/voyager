@@ -22,9 +22,6 @@ dependencies:
     version: 0.11.1
 
 devDependencies:
-  '@aeharding/modern-screenshot':
-    specifier: ^4.5.0
-    version: 4.5.0
   '@capacitor-community/app-icon':
     specifier: ^4.1.1
     version: 4.1.1(@capacitor/core@5.5.1)
@@ -238,6 +235,9 @@ devDependencies:
   micromark-util-combine-extensions:
     specifier: ^2.0.0
     version: 2.0.0
+  modern-screenshot:
+    specifier: ^4.4.36
+    version: 4.4.36
   photoswipe:
     specifier: ^5.4.2
     version: 5.4.3
@@ -344,10 +344,6 @@ packages:
 
   /@adobe/css-tools@4.3.2:
     resolution: {integrity: sha512-DA5a1C0gD/pLOvhv33YMrbf2FK3oUzwNl9oOJqE4XVjuEtt6XIakRcsd7eLiOSPkp1kTRQGICTA8cKra/vFbjw==}
-    dev: true
-
-  /@aeharding/modern-screenshot@4.5.0:
-    resolution: {integrity: sha512-EEfz3JCF4/Nt2ynS/h4DKx5Gfg39J5F1I8yiFZIomzNThKCeiiSFl1k9D0HQBuT8pYmh30b6pPai1LDC+QhTeg==}
     dev: true
 
   /@ampproject/remapping@2.2.1:
@@ -8580,6 +8576,10 @@ packages:
       pathe: 1.1.1
       pkg-types: 1.0.3
       ufo: 1.3.2
+    dev: true
+
+  /modern-screenshot@4.4.36:
+    resolution: {integrity: sha512-Trz71g4sE+a0m408BTYem9KhbQTHKc4WvLKqPh0oOvr5PLTqvfnIO/r2nhjRH0qn34+hfBtKxjpK/l9Ylsv00g==}
     dev: true
 
   /modify-values@1.0.1:

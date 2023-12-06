@@ -2,7 +2,7 @@
   "name": "voyager",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "1.28.0",
+  "version": "1.29.0",
   "type": "module",
   "packageManager": "pnpm@8.9.2+sha256.8d62573d93061f2722b7b48c9739e96cd4603c3ab153bc81c619dcb9861a214e",
   "scripts": {
@@ -31,7 +31,6 @@
     "vite-express": "^0.11.0"
   },
   "devDependencies": {
-    "@aeharding/modern-screenshot": "^4.5.0",
     "@capacitor-community/app-icon": "^4.1.1",
     "@capacitor/android": "5.5.1",
     "@capacitor/app": "^5.0.6",
@@ -103,6 +102,7 @@
     "micromark-extension-gfm-strikethrough": "^2.0.0",
     "micromark-extension-gfm-table": "^2.0.0",
     "micromark-util-combine-extensions": "^2.0.0",
+    "modern-screenshot": "^4.4.36",
     "photoswipe": "^5.4.2",
     "prettier": "^3.0.3",
     "pwa-asset-generator": "^6.3.1",

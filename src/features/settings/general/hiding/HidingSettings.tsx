@@ -36,7 +36,7 @@ export default function HidingSettings() {
           <HelperText>
             Auto Hide will automatically hide read posts when you refresh the
             feed. &quot;Disable in Communities&quot; stops posts from being
-            automatically hidden when read inside inside a feed for a specific
+            automatically hidden when read inside a feed for a specific
             community.
           </HelperText>
         </>

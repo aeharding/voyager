@@ -22,7 +22,7 @@ import { blobToDataURL, blobToString } from "../../../helpers/blob";
 import useAppToast from "../../../helpers/useAppToast";
 import includeStyleProperties from "./includeStyleProperties";
 import { CapacitorHttp } from "@capacitor/core";
-import { domToBlob } from "@aeharding/modern-screenshot";
+import { domToBlob } from "modern-screenshot";
 import { getImageSrc } from "../../../services/lemmy";
 import { ShareAsImageData } from "./ShareAsImageModal";
 import PostHeader from "../../post/detail/PostHeader";
