@@ -1,7 +1,4 @@
-import {
-  ReactMarkdown,
-  ReactMarkdownOptions,
-} from "react-markdown/lib/react-markdown";
+import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
 import styled from "@emotion/styled";
 import { useAppSelector } from "../../store";
 import LinkInterceptor from "./markdown/LinkInterceptor";
@@ -63,7 +60,6 @@ export default function Markdown(props: ReactMarkdownOptions) {
 
   return (
     <ReactMarkdown
-      linkTarget="_blank"
       {...props}
       components={{
         img: (props) => <MarkdownImg {...props} />,

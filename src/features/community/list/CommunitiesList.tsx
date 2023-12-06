@@ -16,7 +16,6 @@ import { notEmpty } from "../../../helpers/array";
 import { getHandle } from "../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
 import { home, library, people, shieldCheckmark } from "ionicons/icons";
-import ItemIcon from "../../labels/img/ItemIcon";
 import CommunityListItem from "./CommunityListItem";
 import useSupported from "../../../helpers/useSupported";
 import { VList, VListHandle } from "virtua";
@@ -205,26 +204,13 @@ function CommunitiesList({ actor }: CommunitiesListParams) {
                 <IonLabel>Favorites</IonLabel>
               </IonItemDivider>
 
-              {favoritesAsCommunitiesIfFound.map((favorite) =>
-                typeof favorite === "string" ? (
-                  <IonItem
-                    detail={false}
-                    key={favorite}
-                    routerLink={buildGeneralBrowseLink(`/c/${favorite}`)}
-                  >
-                    <Content>
-                      <ItemIcon item={favorite} size={28} />
-                      {favorite}
-                    </Content>
-                  </IonItem>
-                ) : (
-                  <CommunityListItem
-                    key={favorite.id}
-                    community={favorite}
-                    favorites={favorites}
-                  />
-                ),
-              )}
+              {favoritesAsCommunitiesIfFound.map((favorite) => (
+                <CommunityListItem
+                  key={typeof favorite === "string" ? favorite : favorite.id}
+                  community={favorite}
+                  favorites={favorites}
+                />
+              ))}
             </IonItemGroup>
           )}
 

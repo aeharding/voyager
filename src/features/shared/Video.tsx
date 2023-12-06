@@ -1,7 +1,15 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Dictionary } from "@reduxjs/toolkit";
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { useInView } from "react-intersection-observer";
 import { isAppleDeviceInstallable } from "../../helpers/device";
 
@@ -49,48 +57,45 @@ const Progress = styled.progress`
   }
 `;
 
-const VideoEl = styled.video<{ blur?: boolean }>`
+const VideoEl = styled.video`
   width: 100%;
   max-height: calc(100vh - 60px);
   object-fit: cover;
 
   overflow: hidden;
-
-  ${({ blur }) =>
-    blur &&
-    css`
-      filter: blur(40px);
-
-      // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-      transform: translate3d(0, 0, 0);
-    `}
 `;
 
 export interface VideoProps {
   src: string;
+
   controls?: boolean;
-
-  blur?: boolean;
-
   progress?: boolean;
+  autoPlay?: boolean;
 
   className?: string;
 }
 
 const videoPlaybackPlace: Dictionary<number> = {};
 
-export default function Video({
-  src,
-  controls,
-  blur,
-  className,
-  progress: showProgress = !controls,
-}: VideoProps) {
+const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
+  {
+    src,
+    controls,
+    className,
+    progress: showProgress = !controls,
+    autoPlay = true,
+    ...rest
+  },
+  forwardedRef,
+) {
+  const videoRef = useRef<HTMLVideoElement>();
+
+  useImperativeHandle(forwardedRef, () => videoRef.current as HTMLVideoElement);
+
   const [inViewRef, inView] = useInView({
     threshold: 0.5,
   });
-  const videoRef = useRef<HTMLVideoElement>();
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState<number | undefined>(undefined);
 
   const setRefs = useCallback(
     (node: HTMLVideoElement) => {
@@ -104,19 +109,19 @@ export default function Video({
 
   const savePlace = useCallback(() => {
     if (!videoRef.current) return;
-    if (blur) return;
+    if (!autoPlay) return;
 
     videoPlaybackPlace[src] = videoRef.current.currentTime;
     videoRef.current.pause();
-  }, [blur, src]);
+  }, [src, autoPlay]);
 
   const resume = useCallback(() => {
     if (!videoRef.current) return;
-    if (blur) return;
+    if (!autoPlay) return;
 
     videoRef.current.currentTime = videoPlaybackPlace[src] ?? 0;
     videoRef.current.play();
-  }, [blur, src]);
+  }, [src, autoPlay]);
 
   useEffect(() => {
     if (!videoRef || !videoRef.current) {
@@ -131,12 +136,10 @@ export default function Video({
   }, [inView, savePlace, resume]);
 
   const videoEl = (
-    <Container interactable={!!controls}>
+    <Container interactable={!!controls} className={className}>
       <VideoEl
-        className={className}
         ref={setRefs}
         src={`${src}#t=0.001`}
-        blur={blur}
         loop
         muted
         playsInline
@@ -147,10 +150,13 @@ export default function Video({
           setProgress(e.target.currentTime / e.target.duration);
         }}
         onClick={(e) => e.stopPropagation()}
+        {...rest}
       />
-      {showProgress && <Progress value={progress} />}
+      {showProgress && progress !== undefined && <Progress value={progress} />}
     </Container>
   );
 
   return videoEl;
-}
+});
+
+export default Video;

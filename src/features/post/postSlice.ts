@@ -4,16 +4,12 @@ import {
   createAsyncThunk,
   createSlice,
 } from "@reduxjs/toolkit";
-import { PostView, SortType } from "lemmy-js-client";
+import { PostView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, handleSelector, jwtSelector } from "../auth/authSlice";
-import { POST_SORTS } from "../feed/PostSort";
-import { get, set } from "../settings/storage";
 import { IPostMetadata, db } from "../../services/db";
 import { isLemmyError } from "../../helpers/lemmy";
 import { resolvePostReport } from "../moderation/modSlice";
-
-const POST_SORT_KEY = "post-sort-v2";
 
 interface PostHiddenData {
   /**
@@ -44,7 +40,6 @@ interface PostState {
   postSavedById: Dictionary<boolean>;
   postReadById: Dictionary<boolean>;
   postCollapsedById: Dictionary<boolean>;
-  sort: SortType;
 }
 
 const initialState: PostState = {
@@ -55,7 +50,6 @@ const initialState: PostState = {
   postSavedById: {},
   postReadById: {},
   postCollapsedById: {},
-  sort: get(POST_SORT_KEY) ?? POST_SORTS[0],
 };
 
 export const postSlice = createSlice({
@@ -75,10 +69,6 @@ export const postSlice = createSlice({
       state.postSavedById[action.payload.postId] = action.payload.saved;
     },
     resetPosts: () => initialState,
-    updateSortType(state, action: PayloadAction<SortType>) {
-      state.sort = action.payload;
-      set(POST_SORT_KEY, action.payload);
-    },
     updatePostRead: (state, action: PayloadAction<{ postId: number }>) => {
       state.postReadById[action.payload.postId] = true;
     },
@@ -235,7 +225,6 @@ export const receivedPosts = createAsyncThunk(
 export const {
   updatePostVote,
   resetPosts,
-  updateSortType,
   updatePostSaved,
   updatePostRead,
   receivedPostNotFound,

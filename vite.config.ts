@@ -41,6 +41,9 @@ export default defineConfig({
     }),
     svgr(),
     VitePWA({
+      devOptions: {
+        enabled: true,
+      },
       registerType: "prompt",
       manifestFilename: "manifest.json",
       manifest,
@@ -55,7 +58,9 @@ export default defineConfig({
       },
     }),
     legacy({
-      modernPolyfills: ["es.array.at"],
+      // es.array.at: Voyager code iOS 15.2
+      // es.object.has-own: ReactMarkdown iOS 15.2
+      modernPolyfills: ["es.array.at", "es.object.has-own"],
     }),
   ],
   // TODO: Outdated clients trying to access stale codesplit js chucks

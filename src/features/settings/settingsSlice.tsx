@@ -39,6 +39,7 @@ import {
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
+import { SortType } from "lemmy-js-client";
 
 export {
   type CommentThreadCollapse,
@@ -92,6 +93,7 @@ interface SettingsState {
       showCommentImages: boolean;
     };
     posts: {
+      sort: SortType;
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
@@ -167,6 +169,7 @@ const initialState: SettingsState = {
       showCommentImages: true,
     },
     posts: {
+      sort: "Active",
       disableMarkingRead: false,
       markReadOnScroll: false,
       showHideReadButton: false,
@@ -340,6 +343,10 @@ export const appearanceSlice = createSlice({
     setDefaultCommentSort(state, action: PayloadAction<CommentDefaultSort>) {
       state.general.comments.sort = action.payload;
       db.setSetting("default_comment_sort", action.payload);
+    },
+    setDefaultPostSort(state, action: PayloadAction<SortType>) {
+      state.general.posts.sort = action.payload;
+      db.setSetting("default_post_sort", action.payload);
     },
     setDisableMarkingPostsRead(state, action: PayloadAction<boolean>) {
       state.general.posts.disableMarkingRead = action.payload;
@@ -526,6 +533,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const no_subscribed_in_feed = await db.getSetting(
         "no_subscribed_in_feed",
       );
+      const default_post_sort = await db.getSetting("default_post_sort");
 
       return {
         ...state.settings,
@@ -603,6 +611,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               initialState.general.posts.infiniteScrolling,
             upvoteOnSave:
               upvote_on_save ?? initialState.general.posts.upvoteOnSave,
+            sort: default_post_sort ?? initialState.general.posts.sort,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
@@ -651,6 +660,7 @@ export const {
   setUseSystemDarkMode,
   setDeviceMode,
   setDefaultCommentSort,
+  setDefaultPostSort,
   settingsReady,
   setDisableMarkingPostsRead,
   setMarkPostsReadOnScroll,

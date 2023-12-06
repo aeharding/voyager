@@ -456,6 +456,7 @@ export default function PostEditorRoot({
               <IonItem>
                 <IonInput
                   placeholder="https://aspca.org"
+                  inputMode="url"
                   clearInput
                   value={url}
                   onIonInput={(e) => setUrl(e.detail.value ?? "")}
