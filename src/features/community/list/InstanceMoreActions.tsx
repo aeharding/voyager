@@ -1,25 +1,17 @@
 import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
-import {
-  ellipsisHorizontal,
-  footstepsOutline,
-  tabletPortraitOutline,
-} from "ionicons/icons";
+import { ellipsisHorizontal, tabletPortraitOutline } from "ionicons/icons";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import { useAppSelector } from "../../../store";
-import { jwtSelector } from "../../auth/authSlice";
-import { compact } from "lodash";
 
 export default function CommunitiesMoreActions() {
   const router = useOptimizedIonRouter();
-  const loggedIn = useAppSelector(jwtSelector);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
 
   function present() {
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: compact([
+      buttons: [
         {
           text: "Instance Sidebar",
           icon: tabletPortraitOutline,
@@ -27,19 +19,11 @@ export default function CommunitiesMoreActions() {
             router.push(buildGeneralBrowseLink("/sidebar"));
           },
         },
-        loggedIn && {
-          text: "Mod Log",
-          data: "modlog",
-          icon: footstepsOutline,
-          handler: () => {
-            router.push(buildGeneralBrowseLink("/mod/log"));
-          },
-        },
         {
           text: "Cancel",
           role: "cancel",
         },
-      ]),
+      ],
     });
   }
 

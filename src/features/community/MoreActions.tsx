@@ -10,15 +10,11 @@ import {
   tabletPortraitOutline,
   eyeOffOutline,
   shareOutline,
-  footstepsOutline,
 } from "ionicons/icons";
 import { useState } from "react";
 import useHidePosts from "../feed/useHidePosts";
 import useCommunityActions from "./useCommunityActions";
 import { Community, CommunityView } from "lemmy-js-client";
-import { useAppSelector } from "../../store";
-import { jwtSelector } from "../auth/authSlice";
-import { compact } from "lodash";
 
 interface MoreActionsProps {
   community: CommunityView | undefined;
@@ -65,20 +61,18 @@ function MoreActionsActionSheet({
     isFavorite,
     subscribe,
     block,
-    modlog,
     post,
     sidebar,
     favorite,
     share,
   } = useCommunityActions(community);
   const hidePosts = useHidePosts();
-  const loggedIn = !!useAppSelector(jwtSelector);
 
   return (
     <IonActionSheet
       cssClass="left-align-buttons"
       isOpen={open}
-      buttons={compact([
+      buttons={[
         {
           text: "Submit Post",
           data: "post",
@@ -127,14 +121,6 @@ function MoreActionsActionSheet({
             share();
           },
         },
-        loggedIn && {
-          text: "Mod Log",
-          data: "modlog",
-          icon: footstepsOutline,
-          handler: () => {
-            modlog();
-          },
-        },
         {
           text: !isBlocked ? "Block Community" : "Unblock Community",
           role: !isBlocked ? "destructive" : undefined,
@@ -148,7 +134,7 @@ function MoreActionsActionSheet({
           text: "Cancel",
           role: "cancel",
         },
-      ])}
+      ]}
       onDidDismiss={() => setOpen(false)}
     />
   );
