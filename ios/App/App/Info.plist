@@ -98,6 +98,15 @@
             <string>galactic</string>
           </array>
         </dict>
+        <key>pride</key>
+        <dict>
+          <key>UIPrerenderedIcon</key>
+          <true/>
+          <key>CFBundleIconFiles</key>
+          <array>
+            <string>pride</string>
+          </array>
+        </dict>
       </dict>
     </dict>
     <key>CFBundleIcons~ipad</key>
@@ -147,6 +156,15 @@
           <key>CFBundleIconFiles</key>
           <array>
             <string>galactic</string>
+          </array>
+        </dict>
+        <key>pride</key>
+        <dict>
+          <key>UIPrerenderedIcon</key>
+          <true/>
+          <key>CFBundleIconFiles</key>
+          <array>
+            <string>pride</string>
           </array>
         </dict>
       </dict>

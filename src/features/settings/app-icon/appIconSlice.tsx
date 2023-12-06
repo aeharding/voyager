@@ -8,6 +8,7 @@ export const APP_ICONS = [
   "default",
   "planetary",
   "psych",
+  "pride",
   "space",
   "galactic",
   "original",
