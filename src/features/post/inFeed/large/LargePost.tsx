@@ -15,7 +15,7 @@ import { AnnouncementIcon } from "../../../../pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
-import Media from "./Media";
+import Media from "./media/Media";
 import { useAppSelector } from "../../../../store";
 import { isUrlMedia } from "../../../../helpers/url";
 import ModeratableItem, {

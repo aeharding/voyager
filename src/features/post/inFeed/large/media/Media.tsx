@@ -3,13 +3,13 @@ import { css } from "@emotion/react";
 import PostMedia, {
   PostGalleryImgProps,
   getPostMedia,
-} from "../../../gallery/PostMedia";
+} from "../../../../gallery/PostMedia";
 import { CSSProperties, useMemo } from "react";
 import { IonIcon } from "@ionic/react";
 import { imageOutline } from "ionicons/icons";
-import useMediaLoadObserver from "./useMediaLoadObserver";
-import { IMAGE_FAILED, imageFailed } from "./imageSlice";
-import { useAppDispatch } from "../../../../store";
+import useMediaLoadObserver from "../useMediaLoadObserver";
+import { IMAGE_FAILED, imageFailed } from "../imageSlice";
+import { useAppDispatch } from "../../../../../store";
 import BlurOverlay from "./BlurOverlay";
 
 const Img = styled(PostMedia)`
