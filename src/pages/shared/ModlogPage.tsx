@@ -114,6 +114,12 @@ function Modlog({ community, user, mod }: ModlogProps) {
     return <ModlogItem item={item} />;
   }, []);
 
+  const title = community
+    ? getHandle(community)
+    : user
+      ? getHandle(user)
+      : "Mod";
+
   return (
     <FeedContextProvider>
       <IonPage>
@@ -126,7 +132,7 @@ function Modlog({ community, user, mod }: ModlogProps) {
                 )}
               />
             </IonButtons>
-            <IonTitle>{community ? getHandle(community) : "Mod"} Logs</IonTitle>
+            <IonTitle>{title} Logs</IonTitle>
           </IonToolbar>
         </IonHeader>
         <FeedContent>
