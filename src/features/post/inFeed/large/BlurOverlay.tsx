@@ -9,10 +9,10 @@ const BlurContainer = styled.div`
 `;
 
 const BlurContents = styled.div<{ blur: boolean }>`
-  ${({ blur, theme }) =>
+  ${({ blur }) =>
     blur &&
     css`
-      filter: blur(40px) brightness(${theme.dark ? 0.8 : 1.2});
+      filter: blur(40px) brightness(0.8) saturate(1.2);
 
       // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
       transform: translate3d(0, 0, 0);
@@ -48,24 +48,44 @@ const MessageContainer = styled.div`
   justify-content: center;
 
   text-align: center;
+  color: white;
 
   // Allow tap through to the media viewer
   pointer-events: none;
+
+  container-type: size;
 `;
+
+const tallerImageQuery = "min-height: 150px";
 
 const WarningIcon = styled(IonIcon)`
   font-size: 42px;
-  margin-bottom: 8px;
+
+  @container (${tallerImageQuery}) {
+    margin-bottom: 8px;
+  }
 `;
 
 const Title = styled.div`
   font-size: 1.2em;
   font-weight: 600;
+
+  display: none;
+
+  @container (${tallerImageQuery}) {
+    display: block;
+  }
 `;
 
 const Description = styled.div`
   font-size: 0.875em;
   opacity: 0.7;
+
+  display: none;
+
+  @container (${tallerImageQuery}) {
+    display: block;
+  }
 `;
 
 function BlurOverlayMessage() {
