@@ -41,6 +41,9 @@ export default defineConfig({
     }),
     svgr(),
     VitePWA({
+      devOptions: {
+        enabled: true,
+      },
       registerType: "prompt",
       manifestFilename: "manifest.json",
       manifest,
