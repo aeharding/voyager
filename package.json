@@ -4,7 +4,7 @@
   "private": true,
   "version": "1.29.0",
   "type": "module",
-  "packageManager": "pnpm@8.9.2+sha256.8d62573d93061f2722b7b48c9739e96cd4603c3ab153bc81c619dcb9861a214e",
+  "packageManager": "pnpm@8.11.0+sha256.5858806c3b292cbec89b5533662168a957358e2bbd86431516d441dc1aface89",
   "scripts": {
     "dev": "node server.mjs",
     "build": "./build.sh",
@@ -17,7 +17,8 @@
     "generate:splash:light": "pwa-asset-generator --type png --index index.html --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
-    "capacitor:sync:before": "rm dist/pro-manifest.json dist/live-update-manifest.json"
+    "capacitor:sync:before": "rm dist/pro-manifest.json dist/live-update-manifest.json",
+    "upgrade:packageManager": "corepack use pnpm@latest"
   },
   "pnpm": {
     "overrides": {
