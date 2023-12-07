@@ -1,14 +1,14 @@
-import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSlice";
 import { Comment, CommentView } from "lemmy-js-client";
 import { resolveCommentReport } from "../moderation/modSlice";
 
 interface CommentState {
-  commentCollapsedById: Dictionary<boolean>;
-  commentVotesById: Dictionary<1 | -1 | 0>;
-  commentSavedById: Dictionary<boolean>;
-  commentById: Dictionary<Comment>;
+  commentCollapsedById: Record<string, boolean>;
+  commentVotesById: Record<string, 1 | -1 | 0 | undefined>;
+  commentSavedById: Record<string, boolean | undefined>;
+  commentById: Record<string, Comment>;
 }
 
 const initialState: CommentState = {

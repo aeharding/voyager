@@ -30,7 +30,7 @@ import {
   setLongSwipeTriggerPoint,
 } from "./gestureSlice";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
-import { Dictionary, startCase } from "lodash";
+import { startCase } from "lodash";
 import { useState } from "react";
 import { IonActionSheetCustomEvent, OverlayEventDetail } from "@ionic/core";
 import ShortSwipeSvg from "./swipeShort.svg?react";
@@ -60,7 +60,7 @@ export default function SwipeSettings() {
     useAppSelector((state) => state.gesture.swipe);
 
   function filterCapableOptions(
-    options: Dictionary<SwipeAction>,
+    options: Record<string, SwipeAction>,
   ): typeof options {
     const filteredOptions = { ...options };
 
@@ -182,7 +182,7 @@ const swipeIcons = {
 interface SwipeListProps {
   name: string;
   selector: SwipeActions;
-  options: Dictionary<SwipeAction>;
+  options: Record<string, SwipeAction>;
   farStart: ActionCreatorWithPayload<SwipeAction>;
   start: ActionCreatorWithPayload<SwipeAction>;
   end: ActionCreatorWithPayload<SwipeAction>;

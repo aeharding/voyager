@@ -4,6 +4,7 @@ import { CommentSortType, FederatedInstances, SortType } from "lemmy-js-client";
 import { zipObject } from "lodash";
 import { ALL_POST_SORTS } from "../features/feed/PostSort";
 import { COMMENT_SORTS } from "../features/comment/CommentSort";
+import { StringArrayToIdentityObject } from "../helpers/typescript";
 
 export interface IPostMetadata {
   post_id: number;
@@ -75,11 +76,16 @@ export const OPostBlurNsfw = {
   Never: "never",
 } as const;
 
-export const OCommentDefaultSort = zipObject(COMMENT_SORTS, COMMENT_SORTS);
-
 export type CommentDefaultSort = CommentSortType;
+export const OCommentDefaultSort = zipObject(
+  COMMENT_SORTS,
+  COMMENT_SORTS,
+) as StringArrayToIdentityObject<typeof COMMENT_SORTS>;
 
-export const OSortType = zipObject(ALL_POST_SORTS, ALL_POST_SORTS);
+export const OSortType = zipObject(
+  ALL_POST_SORTS,
+  ALL_POST_SORTS,
+) as StringArrayToIdentityObject<typeof ALL_POST_SORTS>;
 
 export type PostBlurNsfwType =
   (typeof OPostBlurNsfw)[keyof typeof OPostBlurNsfw];
@@ -471,7 +477,7 @@ export class WefwefDB extends Dexie {
 
     return await this.postMetadatas
       .where("hidden_updated_at")
-      .below(lastPageLastEntry.hidden_updated_at)
+      .below(lastPageLastEntry?.hidden_updated_at)
       .reverse()
       .filter(filterFn)
       .limit(limit)

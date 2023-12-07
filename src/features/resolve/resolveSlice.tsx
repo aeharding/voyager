@@ -5,11 +5,11 @@ import { receivedComments } from "../comment/commentSlice";
 import { receivedCommunity } from "../community/communitySlice";
 import { receivedPosts } from "../post/postSlice";
 import { receivedUsers } from "../user/userSlice";
-import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { isLemmyError } from "../../helpers/lemmy";
 
 interface ResolveState {
-  objectByUrl: Dictionary<"couldnt_find_object" | ResolveObjectResponse>;
+  objectByUrl: Record<string, "couldnt_find_object" | ResolveObjectResponse>;
 }
 
 const initialState: ResolveState = {

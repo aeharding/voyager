@@ -96,7 +96,9 @@ export const authSlice = createSlice({
         (a, b) => a.handle === b,
       );
 
-      if (accounts.length === 0) {
+      const nextAccount = accounts[0];
+
+      if (!nextAccount) {
         state.accountData = undefined;
         updateCredentialsStorage(undefined);
         return;
@@ -104,7 +106,7 @@ export const authSlice = createSlice({
 
       state.accountData.accounts = accounts;
       if (state.accountData.activeHandle === action.payload) {
-        state.accountData.activeHandle = accounts[0].handle;
+        state.accountData.activeHandle = nextAccount.handle;
       }
 
       updateCredentialsStorage(state.accountData);
@@ -287,7 +289,7 @@ export const logoutAccount =
   };
 
 function parseJWT(payload: string): LemmyJWT {
-  const base64 = payload.split(".")[1];
+  const base64 = payload.split(".")[1]!;
   const jsonPayload = atob(base64);
   return JSON.parse(jsonPayload);
 }

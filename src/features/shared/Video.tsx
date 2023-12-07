@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Dictionary } from "@reduxjs/toolkit";
 import {
   ChangeEvent,
   forwardRef,
@@ -75,7 +74,7 @@ export interface VideoProps {
   className?: string;
 }
 
-const videoPlaybackPlace: Dictionary<number> = {};
+const videoPlaybackPlace: Record<string, number> = {};
 
 const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
   {

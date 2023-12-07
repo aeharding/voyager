@@ -32,7 +32,7 @@ function PostReportBanner({ post }: { post: PostView }) {
   return (
     <SharedBanner
       onClick={presentPostModActions}
-      reportsCount={reports?.length}
+      reportsCount={reports?.length ?? 0}
     />
   );
 }
@@ -46,7 +46,7 @@ function CommentReportBanner({ comment }: { comment: CommentView }) {
   return (
     <>
       <IonLoading isOpen={loading} />
-      <SharedBanner onClick={present} reportsCount={reports?.length} />
+      <SharedBanner onClick={present} reportsCount={reports?.length ?? 0} />
     </>
   );
 }

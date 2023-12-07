@@ -12,7 +12,9 @@ export default function DefaultSort() {
   );
   const newSorts = useSupported("v0.19 Sorts");
 
-  const options = { ...OCommentDefaultSort };
+  const options: Partial<typeof OCommentDefaultSort> = {
+    ...OCommentDefaultSort,
+  };
   if (!newSorts) delete options["Controversial"];
 
   return (

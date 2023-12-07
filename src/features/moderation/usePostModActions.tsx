@@ -115,7 +115,7 @@ export function stringifyReports(
     .map(
       (reports) =>
         `${reports.length} report${reports.length === 1 ? "" : "s"}: “${
-          reports[0].reason
+          reports[0]!.reason
         }”`,
     )
     .join("\n");

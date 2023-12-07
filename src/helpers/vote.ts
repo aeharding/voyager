@@ -1,9 +1,8 @@
-import { Dictionary } from "@reduxjs/toolkit";
 import { CommentView, PostView } from "lemmy-js-client";
 
 export function calculateTotalScore(
   item: PostView | CommentView,
-  votesById: Dictionary<0 | 1 | -1>,
+  votesById: Record<string, 0 | 1 | -1 | undefined>,
 ) {
   const id = "comment" in item ? item.comment.id : item.post.id;
   return item.counts.score - (item.my_vote ?? 0) + (votesById[id] ?? 0);
@@ -11,7 +10,7 @@ export function calculateTotalScore(
 
 export function calculateSeparateScore(
   item: PostView | CommentView,
-  votesById: Dictionary<0 | 1 | -1>,
+  votesById: Record<string, 0 | 1 | -1 | undefined>,
 ) {
   const id = "comment" in item ? item.comment.id : item.post.id;
 

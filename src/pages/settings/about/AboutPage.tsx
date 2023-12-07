@@ -57,7 +57,7 @@ export default function AboutPage() {
 
   function getCompliment() {
     presentToast({
-      message: messages.current[messageIndex.current],
+      message: messages.current[messageIndex.current]!,
       color: "success",
       centerText: true,
     });

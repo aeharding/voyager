@@ -97,7 +97,7 @@ export default function GenericSelectorModal<I>({
         >
           <VList count={items.length}>
             {(i) => {
-              const item = items[i];
+              const item = items[i]!;
 
               return (
                 <IonItem key={getIndex(item)} onClick={() => onDismiss(item)}>

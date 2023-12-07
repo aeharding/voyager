@@ -4,7 +4,7 @@ import {
   OverlayEventDetail,
 } from "@ionic/core";
 import { IonActionSheet, IonLabel } from "@ionic/react";
-import { Dictionary, startCase } from "lodash";
+import { startCase } from "lodash";
 import React, { useState } from "react";
 import { Dispatchable, useAppDispatch } from "../../../store";
 import { InsetIonItem } from "./formatting";
@@ -29,13 +29,13 @@ export const ValueLabel = styled(IonLabel)`
   text-overflow: ellipsis;
 `;
 
-export interface SettingSelectorProps<T, O extends Dictionary<T>> {
+export interface SettingSelectorProps<T, O extends Record<string, T>> {
   title: string;
   openTitle?: string;
   selected: T;
   setSelected: Dispatchable<T>;
   options: O;
-  optionIcons?: Dictionary<string>;
+  optionIcons?: Record<string | number, string>;
   icon?: React.FunctionComponent;
   iconMirrored?: boolean;
   disabled?: boolean;
@@ -45,7 +45,7 @@ export interface SettingSelectorProps<T, O extends Dictionary<T>> {
 
 export default function SettingSelector<
   T extends string | number,
-  O extends Dictionary<T>,
+  O extends Record<string, T>,
 >({
   title,
   openTitle,
