@@ -60,7 +60,7 @@ export default function MessagesPage() {
         ).map((messages) =>
           sortBy(messages, (m) => -Date.parse(m.private_message.published)),
         ),
-        (group) => -Date.parse(group[0].private_message.published),
+        (group) => -Date.parse(group[0]!.private_message.published),
       ),
     [messages, myUserId],
   );

@@ -155,7 +155,7 @@ export default function TitleSearchResults() {
     setOnSubmit(() => {
       if (!results.length) return;
 
-      onSelect(results[0]);
+      onSelect(results[0]!);
       setSearching(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

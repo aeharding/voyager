@@ -125,7 +125,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   }, [commentPath]);
 
   const parentCommentId = (() => {
-    if (commentPath) return +commentPath.split(".")[1];
+    if (commentPath) return +commentPath.split(".")[1]!;
     if (threadCommentId) return +threadCommentId;
     return undefined;
   })();

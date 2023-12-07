@@ -1,9 +1,4 @@
-import {
-  Dictionary,
-  PayloadAction,
-  createAsyncThunk,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PostView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, handleSelector, jwtSelector } from "../auth/authSlice";
@@ -27,19 +22,19 @@ interface PostHiddenData {
 }
 
 interface PostState {
-  postById: Dictionary<PostView | "not-found">;
+  postById: Record<string, PostView | "not-found">;
 
   /**
    * Separate deleted dictionary is so that the feed can observe and not get hammered with updates
    * (this should only ever change when the user deletes their own post to trigger the feed to hide it)
    */
-  postDeletedById: Dictionary<boolean>;
+  postDeletedById: Record<string, boolean>;
 
-  postHiddenById: Dictionary<PostHiddenData>;
-  postVotesById: Dictionary<1 | -1 | 0>;
-  postSavedById: Dictionary<boolean>;
-  postReadById: Dictionary<boolean>;
-  postCollapsedById: Dictionary<boolean>;
+  postHiddenById: Record<string, PostHiddenData>;
+  postVotesById: Record<string, 1 | -1 | 0 | undefined>;
+  postSavedById: Record<string, boolean | undefined>;
+  postReadById: Record<string, boolean>;
+  postCollapsedById: Record<string, boolean>;
 }
 
 const initialState: PostState = {
@@ -199,7 +194,7 @@ export const receivedPosts = createAsyncThunk(
   async (posts: PostView[], thunkAPI) => {
     const rootState = thunkAPI.getState() as RootState;
     const handle = handleSelector(rootState);
-    const postHiddenById: Dictionary<boolean> = {};
+    const postHiddenById: Record<string, boolean> = {};
 
     if (!handle)
       return {

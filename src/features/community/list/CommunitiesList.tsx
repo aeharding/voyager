@@ -120,15 +120,15 @@ function CommunitiesList({ actor }: CommunitiesListParams) {
     return sortBy(
       Object.entries(
         communities.reduce<Record<string, Community[]>>((acc, community) => {
-          const firstLetter = /[0-9]/.test(community.name[0])
+          const firstLetter = /[0-9]/.test(community.name[0]!)
             ? "#"
-            : community.name[0].toUpperCase();
+            : community.name[0]!.toUpperCase();
 
           if (!acc[firstLetter]) {
             acc[firstLetter] = [];
           }
 
-          acc[firstLetter].push(community);
+          acc[firstLetter]!.push(community);
           return acc;
         }, {}),
       ),

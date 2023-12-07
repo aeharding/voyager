@@ -1,4 +1,4 @@
-import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, getSite } from "../auth/authSlice";
 import { getHandle } from "../../helpers/lemmy";
@@ -7,7 +7,7 @@ import { receivedComments } from "../comment/commentSlice";
 import { Person } from "lemmy-js-client";
 
 interface CommentState {
-  userByHandle: Dictionary<Person>;
+  userByHandle: Record<string, Person>;
 }
 
 const initialState: CommentState = {

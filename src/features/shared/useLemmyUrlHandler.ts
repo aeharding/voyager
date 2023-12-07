@@ -131,7 +131,7 @@ export default function useLemmyUrlHandler() {
 
       const commentMatch = COMMENT_PATH.exec(url.pathname);
       if (commentMatch) {
-        const commentId = +commentMatch[1];
+        const commentId = +commentMatch[1]!;
 
         let comment_view;
 
@@ -149,7 +149,7 @@ export default function useLemmyUrlHandler() {
 
       const postMatch = POST_PATH.exec(url.pathname);
       if (postMatch) {
-        const postId = +postMatch[1];
+        const postId = +postMatch[1]!;
 
         let post_view;
 
@@ -260,8 +260,8 @@ export function matchLemmyCommunity(
   const matches = urlPathname.match(COMMUNITY_PATH);
   if (matches && matches[1]) {
     const [communityName, domain] = matches[1].split("@");
-    if (!domain) return [communityName];
-    return [communityName, domain];
+    if (!domain) return [communityName!];
+    return [communityName!, domain];
   }
   return null;
 }
@@ -272,8 +272,8 @@ export function matchLemmyUser(
   const matches = urlPathname.match(USER_PATH);
   if (matches && matches[1]) {
     const [userName, domain] = matches[1].split("@");
-    if (!domain) return [userName];
-    return [userName, domain];
+    if (!domain) return [userName!];
+    return [userName!, domain];
   }
   return null;
 }

@@ -1,4 +1,4 @@
-import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, getSite } from "../auth/authSlice";
 import {
@@ -11,8 +11,8 @@ import { db } from "../../services/db";
 import { without } from "lodash";
 
 interface CommunityState {
-  communityByHandle: Dictionary<CommunityView>;
-  modsByHandle: Dictionary<CommunityModeratorView[]>;
+  communityByHandle: Record<string, CommunityView>;
+  modsByHandle: Record<string, CommunityModeratorView[]>;
   trendingCommunities: CommunityView[];
   favorites: string[];
 }
