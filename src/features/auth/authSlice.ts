@@ -292,13 +292,8 @@ function parseJWT(payload: string): LemmyJWT {
   return JSON.parse(jsonPayload);
 }
 
-export const urlSelector = createSelector(
-  [(state: RootState) => state.auth.connectedInstance, jwtIssSelector],
-  (connectedInstance, iss) => {
-    // never leak the jwt to the incorrect server
-    return iss ?? connectedInstance;
-  },
-);
+export const urlSelector = (state: RootState) =>
+  jwtIssSelector(state) ?? state.auth.connectedInstance;
 
 export const clientSelector = createSelector(
   [urlSelector, jwtSelector],
