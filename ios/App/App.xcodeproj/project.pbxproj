@@ -31,6 +31,7 @@
 		E75D25702A7C369900C4AD87 /* SavePost.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75D256C2A7C369800C4AD87 /* SavePost.swift */; };
 		E75D25712A7C369900C4AD87 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75D256D2A7C369800C4AD87 /* PostView.swift */; };
 		E75D25722A7C369900C4AD87 /* GetPostsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E75D256E2A7C369800C4AD87 /* GetPostsResponse.swift */; };
+		E76185BB2B213B200044BA55 /* pride.png in Resources */ = {isa = PBXBuildFile; fileRef = E76185BA2B213B200044BA55 /* pride.png */; };
 		E761A9562A8B15EE00DDD466 /* space.png in Resources */ = {isa = PBXBuildFile; fileRef = E761A9552A8B15EE00DDD466 /* space.png */; };
 		E761A9592A8B15F800DDD466 /* psych.png in Resources */ = {isa = PBXBuildFile; fileRef = E761A9572A8B15F800DDD466 /* psych.png */; };
 		E761A95A2A8B15F800DDD466 /* planetary.png in Resources */ = {isa = PBXBuildFile; fileRef = E761A9582A8B15F800DDD466 /* planetary.png */; };
@@ -88,6 +89,7 @@
 		E75D256C2A7C369800C4AD87 /* SavePost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavePost.swift; sourceTree = "<group>"; };
 		E75D256D2A7C369800C4AD87 /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		E75D256E2A7C369800C4AD87 /* GetPostsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetPostsResponse.swift; sourceTree = "<group>"; };
+		E76185BA2B213B200044BA55 /* pride.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pride.png; sourceTree = "<group>"; };
 		E761A9552A8B15EE00DDD466 /* space.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = space.png; sourceTree = "<group>"; };
 		E761A9572A8B15F800DDD466 /* psych.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = psych.png; sourceTree = "<group>"; };
 		E761A9582A8B15F800DDD466 /* planetary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = planetary.png; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 				E761A9582A8B15F800DDD466 /* planetary.png */,
 				E73A34CA2A8DAE3A0004DC5B /* galactic.png */,
 				E73782662A8B33E200FCDF7B /* original.png */,
+				E76185BA2B213B200044BA55 /* pride.png */,
 				E761A9572A8B15F800DDD466 /* psych.png */,
 				E761A9552A8B15EE00DDD466 /* space.png */,
 			);
@@ -307,6 +310,7 @@
 				E73782672A8B33E200FCDF7B /* original.png in Resources */,
 				E761A9592A8B15F800DDD466 /* psych.png in Resources */,
 				50379B232058CBB4000EE86E /* capacitor.config.json in Resources */,
+				E76185BB2B213B200044BA55 /* pride.png in Resources */,
 				504EC30D1FED79650016851F /* Main.storyboard in Resources */,
 				2FAD9763203C412B000D30F8 /* config.xml in Resources */,
 				E761A9562A8B15EE00DDD466 /* space.png in Resources */,
