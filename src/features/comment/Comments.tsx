@@ -30,12 +30,12 @@ import useAppToast from "../../helpers/useAppToast";
 import { VList, VListHandle } from "virtua";
 import LoadParentComments from "./LoadParentComments";
 import {
-  getScrollParent,
   scrollIntoView as scrollIntoView,
   useScrollIntoViewWorkaround,
 } from "../../helpers/dom";
 import { IndexedVirtuaItem } from "../../helpers/virtua";
 import FeedLoadMoreFailed from "../feed/endItems/FeedLoadMoreFailed";
+import usePreservePositionFromBottomInScrollView from "../../helpers/usePreservePositionFromBottomInScrollView";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
@@ -104,6 +104,9 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   const scrollViewContainerRef = useRef<HTMLDivElement>(null);
   const virtuaRef = useRef<VListHandle>(null);
+
+  const preservePositionFromBottomInScrollView =
+    usePreservePositionFromBottomInScrollView(scrollViewContainerRef);
 
   function setLoading(loading: boolean) {
     _setLoading(loading);
@@ -403,21 +406,21 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       tree.unshift(
         <LoadParentComments
           key="load-parent-comments"
-          setMaxContext={(b) => {
-            if (!scrollViewContainerRef.current) return;
-            const scrollView = getScrollParent(scrollViewContainerRef.current);
-            if (!scrollView) return;
-
-            savedScrollPositionRef.current =
-              saveScrollPositionFromBottom(scrollView);
-
-            setMaxContext(b);
+          setMaxContext={(maxContext) => {
+            preservePositionFromBottomInScrollView.save();
+            setMaxContext(maxContext);
           }}
         />,
       );
 
     return tree;
-  }, [commentTree, highlightedCommentId, commentPath, maxContext]);
+  }, [
+    commentTree,
+    highlightedCommentId,
+    commentPath,
+    maxContext,
+    preservePositionFromBottomInScrollView,
+  ]);
 
   const padding = bottomPadding ? (
     <div style={{ height: `${bottomPadding}px` }} />
@@ -448,32 +451,11 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     [fetchComments, prependComments, getComments],
   );
 
-  const savedScrollPositionRef = useRef<number | undefined>(undefined);
-
   useEffect(() => {
-    if (savedScrollPositionRef.current === undefined) return;
-    const savedScrollPosition = savedScrollPositionRef.current;
-    savedScrollPositionRef.current = undefined;
-
-    if (!scrollViewContainerRef.current) return;
-    const scrollView = getScrollParent(scrollViewContainerRef.current);
-    if (!scrollView) return;
-
-    requestAnimationFrame(() => {
-      restoreScrollPositionFromBottom(scrollView, savedScrollPosition);
-    });
-  }, [maxContext]);
+    preservePositionFromBottomInScrollView.restore();
+  }, [maxContext, preservePositionFromBottomInScrollView]);
 
   const virtualEnabled = !highlightedCommentId;
-
-  const data = (
-    <>
-      {header}
-      {allComments}
-      {renderFooter()}
-      {padding}
-    </>
-  );
 
   return (
     <CommentsContext.Provider value={commentsContextValue}>
@@ -495,7 +477,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
             ref={virtuaRef}
             style={{ height: "100%" }}
             components={{ Item: IndexedVirtuaItem }}
-            overscan={highlightedCommentId ? 10 : 0}
+            overscan={0}
             onRangeChange={(start, end) => {
               if (end + 10 > allComments.length && !loadFailed) {
                 fetchComments();
@@ -505,10 +487,18 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
               setIsListAtTop(offset < 6);
             }}
           >
-            {data}
+            {header}
+            {allComments}
+            {renderFooter()}
+            {padding}
           </VList>
         ) : (
-          data
+          <>
+            {header}
+            {allComments}
+            {renderFooter()}
+            {padding}
+          </>
         )}
       </ScrollViewContainer>
     </CommentsContext.Provider>
@@ -521,24 +511,4 @@ function getCommentContextDepthForPath(
   return commentPath
     ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
     : 0;
-}
-
-function saveScrollPositionFromBottom(scrollableElement: HTMLElement): number {
-  const scrollFromBottom =
-    scrollableElement.scrollHeight -
-    scrollableElement.scrollTop -
-    scrollableElement.clientHeight;
-  return scrollFromBottom;
-}
-
-// Define a function to restore the scroll position from the bottom
-function restoreScrollPositionFromBottom(
-  scrollableElement: HTMLElement,
-  savedScrollPosition: number,
-): void {
-  const scrollTop =
-    scrollableElement.scrollHeight -
-    savedScrollPosition -
-    scrollableElement.clientHeight;
-  scrollableElement.scrollTop = scrollTop;
 }
