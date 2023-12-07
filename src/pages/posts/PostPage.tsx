@@ -1,5 +1,6 @@
 import {
   IonButtons,
+  IonContent,
   IonHeader,
   IonIcon,
   IonPage,
@@ -141,6 +142,8 @@ const PostPageContent = memo(function PostPageContent({
     );
   })();
 
+  const Content = threadCommentId || commentPath ? IonContent : FeedContent;
+
   return (
     <IonPage>
       <IonHeader>
@@ -159,7 +162,7 @@ const PostPageContent = memo(function PostPageContent({
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      <FeedContent>{renderPost()}</FeedContent>
+      <Content>{renderPost()}</Content>
     </IonPage>
   );
 });

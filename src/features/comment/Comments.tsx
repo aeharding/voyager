@@ -30,6 +30,7 @@ import useAppToast from "../../helpers/useAppToast";
 import { VList, VListHandle } from "virtua";
 import LoadParentComments from "./LoadParentComments";
 import {
+  getScrollParent,
   scrollIntoView as scrollIntoView,
   useScrollIntoViewWorkaround,
 } from "../../helpers/dom";
@@ -399,7 +400,21 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     ));
 
     if (maxContext > 0)
-      tree.unshift(<LoadParentComments setMaxContext={setMaxContext} />);
+      tree.unshift(
+        <LoadParentComments
+          key="load-parent-comments"
+          setMaxContext={(b) => {
+            if (!scrollViewContainerRef.current) return;
+            const scrollView = getScrollParent(scrollViewContainerRef.current);
+            if (!scrollView) return;
+
+            savedScrollPositionRef.current =
+              saveScrollPositionFromBottom(scrollView);
+
+            setMaxContext(b);
+          }}
+        />,
+      );
 
     return tree;
   }, [commentTree, highlightedCommentId, commentPath, maxContext]);
@@ -433,6 +448,33 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     [fetchComments, prependComments, getComments],
   );
 
+  const savedScrollPositionRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (savedScrollPositionRef.current === undefined) return;
+    const savedScrollPosition = savedScrollPositionRef.current;
+    savedScrollPositionRef.current = undefined;
+
+    if (!scrollViewContainerRef.current) return;
+    const scrollView = getScrollParent(scrollViewContainerRef.current);
+    if (!scrollView) return;
+
+    requestAnimationFrame(() => {
+      restoreScrollPositionFromBottom(scrollView, savedScrollPosition);
+    });
+  }, [maxContext]);
+
+  const virtualEnabled = !highlightedCommentId;
+
+  const data = (
+    <>
+      {header}
+      {allComments}
+      {renderFooter()}
+      {padding}
+    </>
+  );
+
   return (
     <CommentsContext.Provider value={commentsContextValue}>
       <IonRefresher
@@ -443,30 +485,31 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         <IonRefresherContent />
       </IonRefresher>
       <ScrollViewContainer ref={scrollViewContainerRef}>
-        <VList
-          className={
-            isSafariFeedHackEnabled
-              ? "virtual-scroller"
-              : "ion-content-scroll-host virtual-scroller"
-          }
-          ref={virtuaRef}
-          style={{ height: "100%" }}
-          components={{ Item: IndexedVirtuaItem }}
-          overscan={highlightedCommentId ? 10 : 0}
-          onRangeChange={(start, end) => {
-            if (end + 10 > allComments.length && !loadFailed) {
-              fetchComments();
+        {virtualEnabled ? (
+          <VList
+            className={
+              isSafariFeedHackEnabled
+                ? "virtual-scroller"
+                : "ion-content-scroll-host virtual-scroller"
             }
-          }}
-          onScroll={(offset) => {
-            setIsListAtTop(offset < 6);
-          }}
-        >
-          {header}
-          {allComments}
-          {renderFooter()}
-          {padding}
-        </VList>
+            ref={virtuaRef}
+            style={{ height: "100%" }}
+            components={{ Item: IndexedVirtuaItem }}
+            overscan={highlightedCommentId ? 10 : 0}
+            onRangeChange={(start, end) => {
+              if (end + 10 > allComments.length && !loadFailed) {
+                fetchComments();
+              }
+            }}
+            onScroll={(offset) => {
+              setIsListAtTop(offset < 6);
+            }}
+          >
+            {data}
+          </VList>
+        ) : (
+          data
+        )}
       </ScrollViewContainer>
     </CommentsContext.Provider>
   );
@@ -478,4 +521,24 @@ function getCommentContextDepthForPath(
   return commentPath
     ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
     : 0;
+}
+
+function saveScrollPositionFromBottom(scrollableElement: HTMLElement): number {
+  const scrollFromBottom =
+    scrollableElement.scrollHeight -
+    scrollableElement.scrollTop -
+    scrollableElement.clientHeight;
+  return scrollFromBottom;
+}
+
+// Define a function to restore the scroll position from the bottom
+function restoreScrollPositionFromBottom(
+  scrollableElement: HTMLElement,
+  savedScrollPosition: number,
+): void {
+  const scrollTop =
+    scrollableElement.scrollHeight -
+    savedScrollPosition -
+    scrollableElement.clientHeight;
+  scrollableElement.scrollTop = scrollTop;
 }
