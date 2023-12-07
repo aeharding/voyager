@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ionic/core': npm:voyager-ionic-core@^7.5.5
+  '@ionic/core': npm:voyager-ionic-core
 
 dependencies:
   compression:
@@ -80,7 +80,7 @@ devDependencies:
     specifier: ^2.2.1
     version: 2.2.1
   '@ionic/core':
-    specifier: npm:voyager-ionic-core@^7.6.0
+    specifier: npm:voyager-ionic-core
     version: /voyager-ionic-core@7.6.0
   '@ionic/react':
     specifier: 7.6.0
