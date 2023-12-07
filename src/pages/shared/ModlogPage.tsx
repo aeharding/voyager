@@ -22,9 +22,9 @@ import { useParams } from "react-router";
 import { getHandle } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { buildCommunityLink } from "../../helpers/appLinkBuilder";
-import { RootState, useAppSelector } from "../../store";
+import { useAppSelector } from "../../store";
+import { userPersonSelector } from "../../features/auth/authSlice";
 import useCanModerate from "../../features/moderation/useCanModerate";
-import { useUserDetails } from "../../features/user/useUserDetails";
 
 export type ModlogItemType =
   GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;
@@ -41,12 +41,9 @@ export default function ModlogPage() {
   return <GlobalModlog />;
 }
 
-const userSelector = (state: RootState) =>
-  state.auth.site?.my_user?.local_user_view?.person;
-
 const GlobalModlog = memo(function GlobalModlog() {
   const canModerate = useCanModerate(true);
-  const user = useAppSelector(userSelector);
+  const user = useAppSelector(userPersonSelector);
 
   if (canModerate) return <Modlog />;
   return <Modlog user={user} />;
@@ -59,7 +56,7 @@ const ModlogByCommunityName = memo(function ModlogByCommunityName({
 }) {
   const community = useFetchCommunity(communityName);
   const canModerate = useCanModerate(community?.community);
-  const user = useAppSelector(userSelector);
+  const user = useAppSelector(userPersonSelector);
 
   if (!community) return <CenteredSpinner />;
 
@@ -72,11 +69,11 @@ const ModlogByUserHandle = memo(function ModlogByUserHandle({
 }: {
   handle: string;
 }) {
-  const user = useUserDetails(handle);
+  const user = useAppSelector((state) => state.user.userByHandle[handle]);
 
   if (!user) return <CenteredSpinner />;
 
-  return <Modlog user={user.user} />;
+  return <Modlog user={user} />;
 });
 
 interface ModlogProps {
@@ -114,11 +111,12 @@ function Modlog({ community, user, mod }: ModlogProps) {
     return <ModlogItem item={item} />;
   }, []);
 
-  const title = community
-    ? getHandle(community)
-    : user
-      ? getHandle(user)
-      : "Mod";
+  const title = (() => {
+    if (community) return getHandle(community);
+    if (user) return getHandle(user);
+
+    return "Mod";
+  })();
 
   return (
     <FeedContextProvider>

@@ -184,6 +184,9 @@ export const isDownvoteEnabledSelector = (state: RootState) =>
 export const localUserSelector = (state: RootState) =>
   state.auth.site?.my_user?.local_user_view.local_user;
 
+export const userPersonSelector = (state: RootState) =>
+  state.auth.site?.my_user?.local_user_view?.person;
+
 export const lemmyVersionSelector = (state: RootState) =>
   state.auth.site?.version;
 
