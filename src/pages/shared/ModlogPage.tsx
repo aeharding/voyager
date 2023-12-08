@@ -7,7 +7,7 @@ import {
 } from "@ionic/react";
 import Feed, { FetchFn } from "../../features/feed/Feed";
 import AppBackButton from "../../features/shared/AppBackButton";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useEffect } from "react";
 import useClient from "../../helpers/useClient";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import FeedContent from "./FeedContent";
@@ -22,9 +22,8 @@ import { useParams } from "react-router";
 import { getHandle } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { buildCommunityLink } from "../../helpers/appLinkBuilder";
-import { useAppSelector } from "../../store";
-import { userPersonSelector } from "../../features/auth/authSlice";
-import useCanModerate from "../../features/moderation/useCanModerate";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getUser } from "../../features/user/userSlice";
 
 export type ModlogItemType =
   GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;
@@ -42,11 +41,7 @@ export default function ModlogPage() {
 }
 
 const GlobalModlog = memo(function GlobalModlog() {
-  const canModerate = useCanModerate(true);
-  const user = useAppSelector(userPersonSelector);
-
-  if (canModerate) return <Modlog />;
-  return <Modlog user={user} />;
+  return <Modlog />;
 });
 
 const ModlogByCommunityName = memo(function ModlogByCommunityName({
@@ -55,13 +50,10 @@ const ModlogByCommunityName = memo(function ModlogByCommunityName({
   communityName: string;
 }) {
   const community = useFetchCommunity(communityName);
-  const canModerate = useCanModerate(community?.community);
-  const user = useAppSelector(userPersonSelector);
 
   if (!community) return <CenteredSpinner />;
 
-  if (canModerate) return <Modlog community={community.community} />;
-  return <Modlog community={community.community} user={user} />;
+  return <Modlog community={community.community} />;
 });
 
 const ModlogByUserHandle = memo(function ModlogByUserHandle({
@@ -69,7 +61,14 @@ const ModlogByUserHandle = memo(function ModlogByUserHandle({
 }: {
   handle: string;
 }) {
+  const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.userByHandle[handle]);
+
+  useEffect(() => {
+    if (user) return;
+
+    dispatch(getUser(handle));
+  }, [handle, dispatch, user]);
 
   if (!user) return <CenteredSpinner />;
 
@@ -79,10 +78,9 @@ const ModlogByUserHandle = memo(function ModlogByUserHandle({
 interface ModlogProps {
   community?: Community;
   user?: Person;
-  mod?: Person;
 }
 
-function Modlog({ community, user, mod }: ModlogProps) {
+function Modlog({ community, user }: ModlogProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
 
@@ -93,7 +91,6 @@ function Modlog({ community, user, mod }: ModlogProps) {
         limit: LIMIT,
         community_id: community?.id,
         other_person_id: user?.id,
-        mod_person_id: mod?.id,
       });
 
       return values(logs)
@@ -104,7 +101,7 @@ function Modlog({ community, user, mod }: ModlogProps) {
             Date.parse(fixLemmyDateString(getLogDate(a))),
         );
     },
-    [client, community, user, mod],
+    [client, community, user],
   );
 
   const renderItemContent = useCallback((item: ModlogItemType) => {
