@@ -111,7 +111,6 @@ function saveScrollPositionFromBottom(scrollableElement: HTMLElement): number {
   return scrollFromBottom;
 }
 
-// Define a function to restore the scroll position from the bottom
 function restoreScrollPositionFromBottom(
   scrollableElement: HTMLElement,
   savedScrollPosition: number,
