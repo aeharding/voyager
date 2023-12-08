@@ -84,8 +84,9 @@ export function getScrollParent(
 ): HTMLElement | undefined {
   if (!node) return;
 
-  if (
-    node.tagName === "ION-CONTENT" ||
+  if (node.tagName === "ION-CONTENT") {
+    return node.shadowRoot?.querySelector("[part=scroll]") ?? undefined;
+  } else if (
     node.classList.contains("ion-content-scroll-host") ||
     node.classList.contains("virtual-scroller")
   ) {
