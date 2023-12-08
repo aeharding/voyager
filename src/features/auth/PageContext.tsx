@@ -1,4 +1,5 @@
-import { useIonModal } from "@ionic/react";
+import { ModalOptions, useIonModal } from "@ionic/react";
+import { ComponentRef } from "@ionic/core";
 import React, {
   RefObject,
   createContext,
@@ -21,6 +22,8 @@ import SelectTextModal from "../../pages/shared/SelectTextModal";
 import ShareAsImageModal, {
   ShareAsImageData,
 } from "../share/asImage/ShareAsImageModal";
+import { HookOverlayOptions } from "@ionic/react/dist/types/hooks/HookOverlayOptions";
+import AccountSwitcher from "./AccountSwitcher";
 
 interface IPageContext {
   // used for ion presentingElement
@@ -59,6 +62,13 @@ interface IPageContext {
     comment?: CommentView,
     comments?: CommentView[],
   ) => void;
+
+  presentAccountSwitcher: (
+    options?:
+      | (Omit<ModalOptions<ComponentRef>, "component" | "componentProps"> &
+          HookOverlayOptions)
+      | undefined,
+  ) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -70,6 +80,7 @@ export const PageContext = createContext<IPageContext>({
   presentPostEditor: () => {},
   presentSelectText: () => {},
   presentShareAsImage: () => {},
+  presentAccountSwitcher: () => {},
 });
 
 interface PageContextProvider {
@@ -185,6 +196,15 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     reportRef.current?.present(item);
   }, []);
 
+  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
+    AccountSwitcher,
+    {
+      onDismiss: (data: string, role: string) =>
+        onDismissAccountSwitcher(data, role),
+      pageRef: value,
+    },
+  );
+
   const currentValue = useMemo(
     () => ({
       ...value,
@@ -195,6 +215,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentPostEditor,
       presentSelectText,
       presentShareAsImage,
+      presentAccountSwitcher,
     }),
     [
       presentCommentEdit,
@@ -204,6 +225,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentReport,
       presentSelectText,
       presentShareAsImage,
+      presentAccountSwitcher,
       value,
     ],
   );
