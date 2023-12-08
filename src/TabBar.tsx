@@ -12,7 +12,6 @@ import {
   IonLabel,
   IonTabBar,
   IonTabButton,
-  useIonModal,
 } from "@ionic/react";
 import { totalUnreadSelector } from "./features/inbox/inboxSlice";
 import useShouldInstall from "./features/pwa/useShouldInstall";
@@ -32,7 +31,7 @@ import { forwardRef, useContext, useEffect, useMemo } from "react";
 import { getDefaultServer } from "./services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
 import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
-import AccountSwitcher from "./features/auth/AccountSwitcher";
+import { PageContext } from "./features/auth/PageContext";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -65,6 +64,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const shouldInstall = useShouldInstall();
 
   const { activePageRef } = useContext(AppContext);
+  const { presentAccountSwitcher } = useContext(PageContext);
 
   const jwt = useAppSelector(jwtSelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
@@ -85,15 +85,6 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const profileTabLabel = useMemo(
     () => getProfileTabLabel(profileLabelType, userHandle, connectedInstance),
     [profileLabelType, userHandle, connectedInstance],
-  );
-
-  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
-    AccountSwitcher,
-    {
-      onDismiss: (data: string, role: string) =>
-        onDismissAccountSwitcher(data, role),
-      activePageRef,
-    },
   );
 
   const isPostsButtonDisabled = location.pathname.startsWith("/posts");
