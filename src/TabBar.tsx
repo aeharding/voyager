@@ -12,6 +12,7 @@ import {
   IonLabel,
   IonTabBar,
   IonTabButton,
+  useIonModal,
 } from "@ionic/react";
 import { totalUnreadSelector } from "./features/inbox/inboxSlice";
 import useShouldInstall from "./features/pwa/useShouldInstall";
@@ -31,6 +32,7 @@ import { forwardRef, useContext, useEffect, useMemo } from "react";
 import { getDefaultServer } from "./services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
 import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
+import AccountSwitcher from "./features/auth/AccountSwitcher";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -85,6 +87,15 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     [profileLabelType, userHandle, connectedInstance],
   );
 
+  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
+    AccountSwitcher,
+    {
+      onDismiss: (data: string, role: string) =>
+        onDismissAccountSwitcher(data, role),
+      activePageRef,
+    },
+  );
+
   const isPostsButtonDisabled = location.pathname.startsWith("/posts");
   const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
   const isProfileButtonDisabled = location.pathname.startsWith("/profile");
@@ -135,6 +146,10 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (!isProfileButtonDisabled) return;
 
     if (scrollUpIfNeeded(activePageRef?.current)) return;
+
+    // if the profile page is already open, show the account switcher
+    if (router.getRouteInfo()?.pathname === "/profile")
+      presentAccountSwitcher({ cssClass: "small" });
 
     router.push("/profile", "back");
   }
