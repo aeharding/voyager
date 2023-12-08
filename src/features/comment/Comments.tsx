@@ -40,7 +40,7 @@ import { postDetailPageHasVirtualScrollEnabled } from "../../pages/posts/PostPag
 
 const ScrollViewContainer = styled.div`
   width: 100%;
-  min-height: 100%;
+  height: 100%;
 `;
 
 const centerCss = css`
@@ -106,15 +106,23 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   const scrollViewContainerRef = useRef<HTMLDivElement>(null);
   const virtuaRef = useRef<VListHandle>(null);
 
+  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
+    commentPath,
+    threadCommentId,
+  );
+
   const preservePositionFromBottomInScrollView =
-    usePreservePositionFromBottomInScrollView(scrollViewContainerRef);
+    usePreservePositionFromBottomInScrollView(
+      scrollViewContainerRef,
+      !virtualEnabled,
+    );
 
   function setLoading(loading: boolean) {
     _setLoading(loading);
     loadingRef.current = loading;
   }
 
-  useSetActivePage(virtuaRef);
+  useSetActivePage(virtuaRef, virtualEnabled);
 
   useImperativeHandle(ref, () => ({
     appendComments,
@@ -403,7 +411,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       />
     ));
 
-    if (maxContext > 0)
+    if (tree.length && maxContext > 0)
       tree.unshift(
         <LoadParentComments
           key="load-parent-comments"
@@ -455,11 +463,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   useEffect(() => {
     preservePositionFromBottomInScrollView.restore();
   }, [maxContext, preservePositionFromBottomInScrollView]);
-
-  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
-    commentPath,
-    threadCommentId,
-  );
 
   const content = [header, allComments, renderFooter(), padding];
 
