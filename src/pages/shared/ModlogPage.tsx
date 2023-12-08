@@ -7,11 +7,11 @@ import {
 } from "@ionic/react";
 import Feed, { FetchFn } from "../../features/feed/Feed";
 import AppBackButton from "../../features/shared/AppBackButton";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useEffect } from "react";
 import useClient from "../../helpers/useClient";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import FeedContent from "./FeedContent";
-import { Community, GetModlogResponse } from "lemmy-js-client";
+import { Community, GetModlogResponse, Person } from "lemmy-js-client";
 import { values } from "lodash";
 import { ModlogItem } from "../../features/moderation/logs/ModlogItem";
 import { fixLemmyDateString } from "../../helpers/date";
@@ -22,20 +22,26 @@ import { useParams } from "react-router";
 import { getHandle } from "../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { buildCommunityLink } from "../../helpers/appLinkBuilder";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { getUser } from "../../features/user/userSlice";
 
 export type ModlogItemType =
   GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;
 
 export default function ModlogPage() {
-  const { community } = useParams<{ community?: string }>();
+  const { community, handle } = useParams<{
+    community?: string;
+    handle?: string;
+  }>();
 
-  if (!community) return <GlobalModlog />;
+  if (handle) return <ModlogByUserHandle handle={handle} />;
+  if (community) return <ModlogByCommunityName communityName={community} />;
 
-  return <ModlogByCommunityName communityName={community} />;
+  return <GlobalModlog />;
 }
 
 const GlobalModlog = memo(function GlobalModlog() {
-  return <ModlogByCommunity />;
+  return <Modlog />;
 });
 
 const ModlogByCommunityName = memo(function ModlogByCommunityName({
@@ -47,10 +53,34 @@ const ModlogByCommunityName = memo(function ModlogByCommunityName({
 
   if (!community) return <CenteredSpinner />;
 
-  return <ModlogByCommunity community={community.community} />;
+  return <Modlog community={community.community} />;
 });
 
-function ModlogByCommunity({ community }: { community?: Community }) {
+const ModlogByUserHandle = memo(function ModlogByUserHandle({
+  handle,
+}: {
+  handle: string;
+}) {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.userByHandle[handle]);
+
+  useEffect(() => {
+    if (user) return;
+
+    dispatch(getUser(handle));
+  }, [handle, dispatch, user]);
+
+  if (!user) return <CenteredSpinner />;
+
+  return <Modlog user={user} />;
+});
+
+interface ModlogProps {
+  community?: Community;
+  user?: Person;
+}
+
+function Modlog({ community, user }: ModlogProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
 
@@ -60,6 +90,7 @@ function ModlogByCommunity({ community }: { community?: Community }) {
         ...pageData,
         limit: LIMIT,
         community_id: community?.id,
+        other_person_id: user?.id,
       });
 
       return values(logs)
@@ -70,12 +101,19 @@ function ModlogByCommunity({ community }: { community?: Community }) {
             Date.parse(fixLemmyDateString(getLogDate(a))),
         );
     },
-    [client, community],
+    [client, community, user],
   );
 
   const renderItemContent = useCallback((item: ModlogItemType) => {
     return <ModlogItem item={item} />;
   }, []);
+
+  const title = (() => {
+    if (community) return getHandle(community);
+    if (user) return getHandle(user);
+
+    return "Mod";
+  })();
 
   return (
     <FeedContextProvider>
@@ -89,7 +127,7 @@ function ModlogByCommunity({ community }: { community?: Community }) {
                 )}
               />
             </IonButtons>
-            <IonTitle>{community ? getHandle(community) : "Mod"} Logs</IonTitle>
+            <IonTitle>{title} Logs</IonTitle>
           </IonToolbar>
         </IonHeader>
         <FeedContent>

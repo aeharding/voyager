@@ -9,6 +9,7 @@ import {
 import { useParams } from "react-router";
 import AsyncProfile from "../../features/user/AsyncProfile";
 import UserPageActions from "../../features/user/UserPageActions";
+import ProfilePageActions from "../../features/user/ProfilePageActions";
 import { useAppSelector } from "../../store";
 import {
   handleSelector,
@@ -44,11 +45,13 @@ const UserPageContent = memo(function UserPageContent({
 
           <IonTitle>{handle}</IonTitle>
 
-          {!isSelf && (
-            <IonButtons slot="end">
+          <IonButtons slot="end">
+            {isSelf ? (
+              <ProfilePageActions />
+            ) : (
               <UserPageActions handle={handle} />
-            </IonButtons>
-          )}
+            )}
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
       <FeedContent>
