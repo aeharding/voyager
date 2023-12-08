@@ -36,10 +36,11 @@ import {
 import { IndexedVirtuaItem } from "../../helpers/virtua";
 import FeedLoadMoreFailed from "../feed/endItems/FeedLoadMoreFailed";
 import usePreservePositionFromBottomInScrollView from "../../helpers/usePreservePositionFromBottomInScrollView";
+import { postDetailPageHasVirtualScrollEnabled } from "../../pages/posts/PostPage";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
 `;
 
 const centerCss = css`
@@ -455,7 +456,12 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     preservePositionFromBottomInScrollView.restore();
   }, [maxContext, preservePositionFromBottomInScrollView]);
 
-  const virtualEnabled = !highlightedCommentId;
+  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
+    commentPath,
+    threadCommentId,
+  );
+
+  const content = [header, allComments, renderFooter(), padding];
 
   return (
     <CommentsContext.Provider value={commentsContextValue}>
@@ -487,18 +493,10 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
               setIsListAtTop(offset < 6);
             }}
           >
-            {header}
-            {allComments}
-            {renderFooter()}
-            {padding}
+            {...content}
           </VList>
         ) : (
-          <>
-            {header}
-            {allComments}
-            {renderFooter()}
-            {padding}
-          </>
+          <>{...content}</>
         )}
       </ScrollViewContainer>
     </CommentsContext.Provider>

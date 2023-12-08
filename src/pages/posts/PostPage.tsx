@@ -26,6 +26,8 @@ import FeedContent from "../shared/FeedContent";
 import useClient from "../../helpers/useClient";
 import { formatNumber } from "../../helpers/number";
 import MoreModActions from "../../features/post/shared/MoreModAction";
+import { useSetActivePage } from "../../features/auth/AppContext";
+import { useRef } from "react";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -79,6 +81,17 @@ const PostPageContent = memo(function PostPageContent({
   const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
 
   const postIfFound = typeof post === "object" ? post : undefined;
+
+  const pageRef = useRef<HTMLElement>(null);
+  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
+    commentPath,
+    threadCommentId,
+  );
+
+  // TODO This is gets quite hacky when dynamically using virtual scroll view.
+  // pageRef should probably be refactored
+  useSetActivePage(pageRef, !virtualEnabled);
+  const Content = virtualEnabled ? FeedContent : IonContent;
 
   useEffect(() => {
     if (post) return;
@@ -142,10 +155,8 @@ const PostPageContent = memo(function PostPageContent({
     );
   })();
 
-  const Content = threadCommentId || commentPath ? IonContent : FeedContent;
-
   return (
-    <IonPage>
+    <IonPage ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -166,3 +177,10 @@ const PostPageContent = memo(function PostPageContent({
     </IonPage>
   );
 });
+
+export function postDetailPageHasVirtualScrollEnabled(
+  commentPath: string | undefined,
+  threadCommentId: string | undefined,
+): boolean {
+  return !commentPath && !threadCommentId;
+}
