@@ -5,6 +5,9 @@ import { RootState } from "../../../store";
 import { getFeedUrlName } from "../../community/mod/ModActions";
 
 interface PostSortState {
+  /**
+   * `null`: Loaded from database, but nothing there
+   */
   sortByFeedName: Record<string, SortType | null>;
 }
 
