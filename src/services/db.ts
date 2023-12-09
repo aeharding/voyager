@@ -285,6 +285,8 @@ export type SettingValueTypes = {
   infinite_scrolling: boolean;
   upvote_on_save: boolean;
   default_post_sort: SortType;
+  default_post_sort_by_feed: SortType;
+  remember_community_sort: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
