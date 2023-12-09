@@ -5,13 +5,11 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
-  useIonModal,
 } from "@ionic/react";
 import AsyncProfile from "../../features/user/AsyncProfile";
 import { useAppSelector } from "../../store";
 import { handleSelector } from "../../features/auth/authSlice";
 import LoggedOut from "../../features/user/LoggedOut";
-import AccountSwitcher from "../../features/auth/AccountSwitcher";
 import { useContext } from "react";
 import AppContent from "../../features/shared/AppContent";
 import { PageContext } from "../../features/auth/PageContext";
@@ -20,16 +18,8 @@ import ProfilePageActions from "../../features/user/ProfilePageActions";
 
 export default function ProfilePage() {
   const handle = useAppSelector(handleSelector);
-  const { pageRef, presentLoginIfNeeded } = useContext(PageContext);
-
-  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
-    AccountSwitcher,
-    {
-      onDismiss: (data: string, role: string) =>
-        onDismissAccountSwitcher(data, role),
-      pageRef,
-    },
-  );
+  const { presentAccountSwitcher, presentLoginIfNeeded } =
+    useContext(PageContext);
 
   return (
     <IonPage className="grey-bg">
@@ -38,9 +28,7 @@ export default function ProfilePage() {
           {handle ? (
             <>
               <IonButtons slot="start">
-                <IonButton
-                  onClick={() => presentAccountSwitcher({ cssClass: "small" })}
-                >
+                <IonButton onClick={() => presentAccountSwitcher()}>
                   Accounts
                 </IonButton>
               </IonButtons>
