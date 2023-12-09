@@ -98,17 +98,14 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     },
   );
 
-  const presentLoginIfNeeded = useCallback(
-    (force = false) => {
-      if (!force && jwt) return false;
+  const presentLoginIfNeeded = useCallback(() => {
+    if (jwt) return false;
 
-      presentLogin({
-        presentingElement: value.pageRef?.current ?? undefined,
-      });
-      return true;
-    },
-    [jwt, presentLogin, value.pageRef],
-  );
+    presentLogin({
+      presentingElement: value.pageRef?.current ?? undefined,
+    });
+    return true;
+  }, [jwt, presentLogin, value.pageRef]);
 
   const presentShareAsImage = useCallback(
     (post: PostView, comment?: CommentView, comments?: CommentView[]) => {
@@ -197,7 +194,10 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
-      presentLogin: () => presentLoginIfNeeded(true),
+      presentLogin: () =>
+        presentLogin({
+          presentingElement: value.pageRef?.current ?? undefined,
+        }),
     },
   );
 
