@@ -4,6 +4,9 @@ import { AppDispatch } from "../../../store";
 import { isAndroid, isNative } from "../../../helpers/device";
 import { without } from "lodash";
 
+/**
+ * Important: name must be ONLY a-z characters
+ */
 export const APP_ICONS = [
   "default",
   "planetary",
@@ -64,5 +67,8 @@ export const fetchAppIcon = () => async (dispatch: AppDispatch) => {
 
   const { value } = await CapAppIcon.getName();
 
-  dispatch(updatedAppIcon((value || "default") as AppIcon));
+  // remove cache busting: planetary_v2 -> planetary
+  const iconName = value?.replace(/_.*$/, "");
+
+  dispatch(updatedAppIcon((iconName || "default") as AppIcon));
 };
