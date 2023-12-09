@@ -29,6 +29,7 @@ const TitleIonLabel = styled(IonLabel)`
 
 export const ValueLabel = styled(IonLabel)`
   flex: 0 auto !important;
+  min-width: 0 !important;
   text-align: right;
 
   min-width: 75px;
