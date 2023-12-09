@@ -20,6 +20,7 @@ import PostCommentFeed, {
   isPost,
 } from "../../features/feed/PostCommentFeed";
 import FeedContent from "../shared/FeedContent";
+import { CommentView, GetComments, GetPosts, PostView } from "lemmy-js-client";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -39,7 +40,7 @@ const getPublishedDate = (item: PostCommentItem) => {
 };
 
 interface ProfileFeedItemsPageProps {
-  type: "Comments" | "Posts" | "Saved";
+  type: "Comments" | "Posts" | "Saved" | "Upvoted" | "Downvoted";
 }
 export default function ProfileFeedItemsPage({
   type,
@@ -50,7 +51,23 @@ export default function ProfileFeedItemsPage({
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (pageData) => {
-      const response = await client.getPersonDetails({
+      if (type === "Upvoted" || type === "Downvoted") {
+        const requestPayload: GetPosts & GetComments = {
+          ...pageData,
+          limit: LIMIT,
+          sort: "New",
+          liked_only: type === "Upvoted",
+          disliked_only: type === "Downvoted",
+        };
+
+        const [{ posts }, { comments }] = await Promise.all([
+          await client.getPosts(requestPayload),
+          await client.getComments(requestPayload),
+        ]);
+
+        return [...comments, ...posts].sort(comparePostComment);
+      }
+      const { comments, posts } = await client.getPersonDetails({
         ...pageData,
         limit: LIMIT,
         username: handle,
@@ -59,12 +76,10 @@ export default function ProfileFeedItemsPage({
       });
 
       if (type === "Saved") {
-        return [...response.comments, ...response.posts].sort((a, b) =>
-          getPublishedDate(b).localeCompare(getPublishedDate(a)),
-        );
+        return [...comments, ...posts].sort(comparePostComment);
       }
 
-      return type === "Comments" ? response.comments : response.posts;
+      return type === "Comments" ? comments : posts;
     },
     [client, handle, type],
   );
@@ -91,4 +106,11 @@ export default function ProfileFeedItemsPage({
       </FeedContent>
     </IonPage>
   );
+}
+
+function comparePostComment(
+  a: PostView | CommentView,
+  b: PostView | CommentView,
+): number {
+  return getPublishedDate(b).localeCompare(getPublishedDate(a));
 }
