@@ -27,9 +27,7 @@ export default function ProfilePage() {
           {handle ? (
             <>
               <IonButtons slot="start">
-                <IonButton
-                  onClick={() => presentAccountSwitcher({ cssClass: "small" })}
-                >
+                <IonButton onClick={() => presentAccountSwitcher()}>
                   Accounts
                 </IonButton>
               </IonButtons>

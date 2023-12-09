@@ -1,5 +1,4 @@
-import { ModalOptions, useIonModal } from "@ionic/react";
-import { ComponentRef } from "@ionic/core";
+import { useIonModal } from "@ionic/react";
 import React, {
   RefObject,
   createContext,
@@ -22,7 +21,6 @@ import SelectTextModal from "../../pages/shared/SelectTextModal";
 import ShareAsImageModal, {
   ShareAsImageData,
 } from "../share/asImage/ShareAsImageModal";
-import { HookOverlayOptions } from "@ionic/react/dist/types/hooks/HookOverlayOptions";
 import AccountSwitcher from "./AccountSwitcher";
 
 interface IPageContext {
@@ -63,12 +61,7 @@ interface IPageContext {
     comments?: CommentView[],
   ) => void;
 
-  presentAccountSwitcher: (
-    options?:
-      | (Omit<ModalOptions<ComponentRef>, "component" | "componentProps"> &
-          HookOverlayOptions)
-      | undefined,
-  ) => void;
+  presentAccountSwitcher: () => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -196,7 +189,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     reportRef.current?.present(item);
   }, []);
 
-  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
+  const [presentAccountSwitcherModal, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
     {
       onDismiss: (data: string, role: string) =>
@@ -204,6 +197,10 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       pageRef: value,
     },
   );
+
+  const presentAccountSwitcher = useCallback(() => {
+    presentAccountSwitcherModal({ cssClass: "small" });
+  }, [presentAccountSwitcherModal]);
 
   const currentValue = useMemo(
     () => ({
