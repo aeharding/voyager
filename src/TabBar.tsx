@@ -139,7 +139,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     // if the profile page is already open, show the account switcher
-    if (router.getRouteInfo()?.pathname === "/profile")
+    if (location.pathname === "/profile")
       presentAccountSwitcher({ cssClass: "small" });
 
     router.push("/profile", "back");
