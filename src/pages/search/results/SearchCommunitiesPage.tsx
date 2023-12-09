@@ -18,13 +18,13 @@ import { CommunityView, LemmyHttp } from "lemmy-js-client";
 import CommunityFeed from "../../../features/feed/CommunityFeed";
 import { notEmpty } from "../../../helpers/array";
 import { isLemmyError } from "../../../helpers/lemmy";
-import usePostSort from "../../../features/feed/usePostSort";
+import useFeedSort from "../../../features/feed/sort/useFeedSort";
 
 export default function SearchCommunitiesPage() {
   const { search: _encodedSearch } = useParams<{ search: string }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const [sort, setSort] = usePostSort();
+  const [sort, setSort] = useFeedSort();
 
   const search = decodeURIComponent(_encodedSearch);
 

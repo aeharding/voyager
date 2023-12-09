@@ -101,6 +101,7 @@ interface SettingsState {
       disableAutoHideInCommunities: boolean;
       infiniteScrolling: boolean;
       upvoteOnSave: boolean;
+      rememberCommunitySort: boolean;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
@@ -177,6 +178,7 @@ const initialState: SettingsState = {
       disableAutoHideInCommunities: false,
       infiniteScrolling: true,
       upvoteOnSave: false,
+      rememberCommunitySort: false,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
@@ -382,6 +384,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("upvote_on_save", action.payload);
     },
+    setRememberCommunitySort(state, action: PayloadAction<boolean>) {
+      state.general.posts.rememberCommunitySort = action.payload;
+
+      db.setSetting("remember_community_sort", action.payload);
+    },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
@@ -523,6 +530,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const infinite_scrolling = await db.getSetting("infinite_scrolling");
       const upvote_on_save = await db.getSetting("upvote_on_save");
+      const remember_community_sort = await db.getSetting(
+        "remember_community_sort",
+      );
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
@@ -612,6 +622,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             upvoteOnSave:
               upvote_on_save ?? initialState.general.posts.upvoteOnSave,
             sort: default_post_sort ?? initialState.general.posts.sort,
+            rememberCommunitySort:
+              remember_community_sort ??
+              initialState.general.posts.rememberCommunitySort,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
@@ -669,6 +682,7 @@ export const {
   setDisableAutoHideInCommunities,
   setInfiniteScrolling,
   setUpvoteOnSave,
+  setRememberCommunitySort,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,

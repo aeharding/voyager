@@ -4,6 +4,7 @@ import { ListHeader } from "../../shared/formatting";
 import InfiniteScrolling from "./InfiniteScrolling";
 import UpvoteOnSave from "./UpvoteOnSave";
 import DefaultSort from "./DefaultSort";
+import RememberCommunitySort from "./RememberCommunitySort";
 
 export default function Posts() {
   return (
@@ -16,6 +17,7 @@ export default function Posts() {
           <IonLabel>Mark Read / Hiding Posts</IonLabel>
         </InsetIonItem>
         <DefaultSort />
+        <RememberCommunitySort />
         <InfiniteScrolling />
         <UpvoteOnSave />
       </IonList>

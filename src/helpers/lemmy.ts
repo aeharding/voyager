@@ -54,6 +54,15 @@ export function getRemoteHandle(
   return `${item.name}@${getItemActorName(item)}`;
 }
 
+export function getRemoteHandleFromHandle(
+  handle: string,
+  connectedInstance: string,
+): string {
+  if (handle.includes("@")) return handle;
+
+  return `${handle}@${connectedInstance}`;
+}
+
 export function canModify(comment: Comment) {
   return !comment.deleted && !comment.removed;
 }
