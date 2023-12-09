@@ -19,8 +19,16 @@ export const Container = styled.div`
   min-width: 0;
 `;
 
-export const ValueLabel = styled(IonLabel)`
+const TitleIonLabel = styled(IonLabel)`
   flex: 1;
+
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+`;
+
+export const ValueLabel = styled(IonLabel)`
+  flex: 0 auto !important;
   text-align: right;
 
   min-width: 75px;
@@ -107,7 +115,7 @@ export default function SettingSelector<
     >
       <Container>
         {Icon && <Icon mirror={iconMirrored} />}
-        <IonLabel>{title}</IonLabel>
+        <TitleIonLabel>{title}</TitleIonLabel>
         <ValueLabel slot="end" color="medium">
           {getSelectedLabel?.(selected) ??
             (typeof selected === "string" ? startCase(selected) : selected)}
