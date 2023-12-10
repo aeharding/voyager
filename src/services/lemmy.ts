@@ -102,7 +102,7 @@ export async function uploadImage(url: string, auth: string, image: File) {
       image: compressedImageIfNeeded as File,
     });
 
-    if (!response.url) throw new Error("unknown native image upload error");
+    if (!response.url) throw new Error(response.msg);
 
     return response.url;
   }
@@ -120,6 +120,12 @@ export async function uploadImage(url: string, auth: string, image: File) {
       body: formData,
     },
   );
+
+  if (!response.ok) {
+    throw new Error(
+      `Server responded ${response.status} ${response.statusText}`,
+    );
+  }
 
   const json = await response.json();
 
