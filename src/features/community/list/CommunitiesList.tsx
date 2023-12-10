@@ -17,10 +17,10 @@ import { getHandle } from "../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
 import { home, library, people, shieldCheckmark } from "ionicons/icons";
 import CommunityListItem from "./CommunityListItem";
-import useSupported from "../../../helpers/useSupported";
 import { VList, VListHandle } from "virtua";
 import { maxWidthCss } from "../../shared/AppContent";
 import AlphabetJump from "./AlphabetJump";
+import useShowModeratorFeed from "./useShowModeratorFeed";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -77,13 +77,14 @@ function CommunitiesList({ actor }: CommunitiesListParams) {
   const moderates = useAppSelector(
     (state) => state.auth.site?.my_user?.moderates,
   );
-  const moderatorFeedSupported = useSupported("Modded Feed");
 
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle,
   );
+
+  const showModeratorFeed = useShowModeratorFeed();
 
   const favorites = useAppSelector((state) => state.community.favorites);
 
@@ -135,8 +136,6 @@ function CommunitiesList({ actor }: CommunitiesListParams) {
       ([letter]) => (letter === "#" ? "\uffff" : letter), // sort # at bottom
     );
   }, [communities]);
-
-  const showModeratorFeed = !!moderates?.length && moderatorFeedSupported;
 
   return (
     <>
