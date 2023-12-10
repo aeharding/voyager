@@ -62,8 +62,7 @@ export default function CommunitiesListRedirectBootstrapper() {
         "forward",
         "push",
         undefined,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (baseEl: any, opts: TransitionOptions) => {
+        (baseEl: HTMLElement, opts: TransitionOptions) => {
           // Do not animate into view
           if (opts.direction === "forward") return createAnimation();
 
