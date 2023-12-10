@@ -18,6 +18,7 @@ import { uniqBy } from "lodash";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import useShowModeratorFeed from "../list/useShowModeratorFeed";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -79,7 +80,12 @@ const SPECIAL_FEEDS = [
     type: "local",
     label: "Local",
   },
-] as const;
+  {
+    id: "mod",
+    type: "mod",
+    label: "Moderator Posts",
+  },
+];
 
 type SpecialFeed = (typeof SPECIAL_FEEDS)[number];
 type Result = Community | SpecialFeed | string;
@@ -98,6 +104,7 @@ export default function TitleSearchResults() {
   );
   const contentRef = useRef<HTMLDivElement>(null);
   const favorites = useAppSelector((state) => state.community.favorites);
+  const showModeratorFeed = useShowModeratorFeed();
 
   const results: Result[] = useMemo(() => {
     const results = [
@@ -108,14 +115,18 @@ export default function TitleSearchResults() {
       ...searchPayload.map((p) => p.community),
     ];
 
+    const eligibleSpecialFeeds = SPECIAL_FEEDS.filter(
+      ({ type }) => type !== "mod" || showModeratorFeed,
+    );
+
     return uniqBy(
       [
-        ...searchSpecialByName(SPECIAL_FEEDS, search),
+        ...searchSpecialByName(eligibleSpecialFeeds, search),
         ...(search ? results : favorites),
       ].filter(notEmpty),
       (c) => (typeof c === "string" ? c : c.id),
     ).slice(0, 15);
-  }, [follows, searchPayload, search, favorites]);
+  }, [follows, searchPayload, search, favorites, showModeratorFeed]);
 
   useEffect(() => {
     if (!debouncedSearch) {
