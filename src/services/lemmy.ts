@@ -102,7 +102,7 @@ export async function uploadImage(url: string, auth: string, image: File) {
       image: compressedImageIfNeeded as File,
     });
 
-    if (!response.url) throw new Error("unknown native image upload error");
+    if (!response.url) throw new Error(response.msg);
 
     return response.url;
   }
@@ -114,12 +114,20 @@ export async function uploadImage(url: string, auth: string, image: File) {
   // All requests for image upload must be proxied due to Lemmy not accepting
   // parameterized JWT for this request (see: https://github.com/LemmyNet/lemmy/issues/3567)
   const response = await fetch(
-    `${buildProxiedBaseUrl(url)}${PICTRS_URL}?${new URLSearchParams({ auth })}`,
+    `${buildProxiedBaseUrl(url)}${PICTRS_URL}?${new URLSearchParams({
+      auth,
+    })}`,
     {
       method: "POST",
       body: formData,
     },
   );
+
+  if (!response.ok) {
+    throw new Error(
+      `Server responded ${response.status} ${response.statusText}`,
+    );
+  }
 
   const json = await response.json();
 
