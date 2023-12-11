@@ -54,6 +54,15 @@ export function getRemoteHandle(
   return `${item.name}@${getItemActorName(item)}`;
 }
 
+export function getRemoteHandleFromHandle(
+  handle: string,
+  connectedInstance: string,
+): string {
+  if (handle.includes("@")) return handle;
+
+  return `${handle}@${connectedInstance}`;
+}
+
 export function canModify(comment: Comment) {
   return !comment.deleted && !comment.removed;
 }
@@ -65,7 +74,7 @@ export function buildCommentsTree(
   const map = new Map<number, CommentNodeI>();
   const depthOffset = !parentComment
     ? 0
-    : getDepthFromComment(comments[0].comment) ?? 0;
+    : getDepthFromComment(comments[0]!.comment) ?? 0;
 
   for (const comment_view of comments) {
     const depthI = getDepthFromComment(comment_view.comment) ?? 0;
@@ -83,7 +92,7 @@ export function buildCommentsTree(
 
   // if its a parent comment fetch, then push the first comment to the top node.
   if (parentComment) {
-    const cNode = map.get(comments[0].comment.id);
+    const cNode = map.get(comments[0]!.comment.id);
     if (cNode) {
       tree.push(cNode);
     }

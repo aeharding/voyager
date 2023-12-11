@@ -186,6 +186,12 @@ export default function TabbedRoutes() {
         </InboxAuthRequired>
       </Route>,
       // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/log`}>
+        <ActorRedirect>
+          <ModlogPage />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/sidebar`}>
         <ActorRedirect>
           <InstanceSidebarPage />

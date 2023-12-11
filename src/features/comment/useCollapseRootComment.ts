@@ -14,7 +14,7 @@ export default function useCollapseRootComment(
   return useCallback(() => {
     if (!item || !rootIndex) return;
 
-    const rootCommentId = +item.comment.path.split(".")[1];
+    const rootCommentId = +item.comment.path.split(".")[1]!;
 
     dispatch(toggleCommentCollapseState(rootCommentId));
 

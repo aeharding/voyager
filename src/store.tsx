@@ -35,6 +35,7 @@ import biometricSlice, {
 } from "./features/settings/biometric/biometricSlice";
 import modSlice from "./features/moderation/modSlice";
 import imageSlice from "./features/post/inFeed/large/imageSlice";
+import feedSortSlice from "./features/feed/sort/feedSortSlice";
 
 const store = configureStore({
   reducer: {
@@ -52,6 +53,7 @@ const store = configureStore({
     biometric: biometricSlice,
     mod: modSlice,
     image: imageSlice,
+    feedSort: feedSortSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

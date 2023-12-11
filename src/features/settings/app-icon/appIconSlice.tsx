@@ -1,13 +1,17 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppIcon as CapAppIcon } from "@capacitor-community/app-icon";
 import { AppDispatch } from "../../../store";
-import { isNative } from "../../../helpers/device";
+import { isAndroid, isNative } from "../../../helpers/device";
 import { without } from "lodash";
 
+/**
+ * Important: name must be ONLY a-z characters
+ */
 export const APP_ICONS = [
   "default",
   "planetary",
   "psych",
+  "pride",
   "space",
   "galactic",
   "original",
@@ -51,7 +55,8 @@ export const updateAppIcon =
     }
 
     CapAppIcon.change({
-      name,
+      // iOS needed cache busting at some point due to moving Alternate App Icons around (thus `_v2`)
+      name: isAndroid() ? name : `${name}_v2`,
       suppressNotification: false,
       disable: without(APP_ICONS, name, "default"),
     });
@@ -62,5 +67,8 @@ export const fetchAppIcon = () => async (dispatch: AppDispatch) => {
 
   const { value } = await CapAppIcon.getName();
 
-  dispatch(updatedAppIcon((value || "default") as AppIcon));
+  // remove cache busting: planetary_v2 -> planetary
+  const iconName = value?.replace(/_.*$/, "");
+
+  dispatch(updatedAppIcon((iconName || "default") as AppIcon));
 };

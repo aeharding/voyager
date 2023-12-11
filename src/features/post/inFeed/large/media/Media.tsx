@@ -48,7 +48,10 @@ const Error = styled.div`
   opacity: 0.5;
 `;
 
-export default function Media(props: PostGalleryImgProps & { blur: boolean }) {
+export default function Media({
+  blur,
+  ...props
+}: PostGalleryImgProps & { blur: boolean }) {
   const dispatch = useAppDispatch();
   const src = useMemo(() => getPostMedia(props.post), [props.post]);
   const [mediaRef, aspectRatio] = useMediaLoadObserver(src);
@@ -74,7 +77,7 @@ export default function Media(props: PostGalleryImgProps & { blur: boolean }) {
         {...props}
         ref={mediaRef}
         style={style}
-        autoPlay={!props.blur}
+        autoPlay={!blur}
         onError={() => {
           if (src) dispatch(imageFailed(src));
         }}
@@ -84,7 +87,7 @@ export default function Media(props: PostGalleryImgProps & { blur: boolean }) {
     </PlaceholderContainer>
   );
 
-  if (!props.blur) return contents; // optimization
+  if (!blur) return contents; // optimization
 
-  return <BlurOverlay blur={props.blur && loaded}>{contents}</BlurOverlay>;
+  return <BlurOverlay blur={blur && loaded}>{contents}</BlurOverlay>;
 }

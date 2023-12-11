@@ -185,6 +185,10 @@ export default function useCommunityActions(
     }
   }
 
+  function modlog() {
+    router.push(buildGeneralBrowseLink(`/c/${communityHandle}/log`));
+  }
+
   function sidebar() {
     router.push(buildGeneralBrowseLink(`/c/${communityHandle}/sidebar`));
   }
@@ -205,6 +209,7 @@ export default function useCommunityActions(
     subscribe,
     favorite,
     block,
+    modlog,
     sidebar,
     view,
     share,

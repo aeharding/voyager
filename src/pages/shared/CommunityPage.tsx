@@ -37,7 +37,10 @@ import CommunitySearchResults from "../../features/community/search/CommunitySea
 import { getSortDuration } from "../../features/feed/endItems/EndPost";
 import ModActions from "../../features/community/mod/ModActions";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import usePostSort from "../../features/feed/usePostSort";
+import useFeedSort from "../../features/feed/sort/useFeedSort";
+import { CenteredSpinner } from "../posts/PostPage";
+import { getRemoteHandleFromHandle } from "../../helpers/lemmy";
+import { useAppSelector } from "../../store";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -140,7 +143,15 @@ const CommunityPageContent = memo(function CommunityPageContent({
   const searchOpen = searchQuery || _searchOpen;
 
   const client = useClient();
-  const [sort, setSort] = usePostSort();
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
+  const [sort, setSort] = useFeedSort({
+    remoteCommunityHandle: getRemoteHandleFromHandle(
+      community,
+      connectedInstance,
+    ),
+  });
 
   const communityView = useFetchCommunity(community);
 
@@ -186,7 +197,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
       />
     );
 
-  const feed = (
+  const feed = sort ? (
     <FeedSearchContext.Provider value={feedSearchContextValue}>
       <PostCommentFeed
         fetchFn={fetchFn}
@@ -196,6 +207,8 @@ const CommunityPageContent = memo(function CommunityPageContent({
         header={header}
       />
     </FeedSearchContext.Provider>
+  ) : (
+    <CenteredSpinner />
   );
 
   function renderFeed() {

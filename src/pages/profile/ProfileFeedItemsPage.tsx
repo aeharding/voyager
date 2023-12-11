@@ -27,6 +27,7 @@ export const InsetIonItem = styled(IonItem)`
 
 export const SettingLabel = styled(IonLabel)`
   margin-left: 16px;
+  flex-grow: initial !important;
 `;
 
 const getPublishedDate = (item: PostCommentItem) => {

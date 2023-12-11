@@ -21,7 +21,7 @@ import { receivedPosts } from "../../../features/post/postSlice";
 import { receivedComments } from "../../../features/comment/commentSlice";
 import FeedContent from "../../shared/FeedContent";
 import { getSortDuration } from "../../../features/feed/endItems/EndPost";
-import usePostSort from "../../../features/feed/usePostSort";
+import useFeedSort from "../../../features/feed/sort/useFeedSort";
 
 interface SearchPostsResultsProps {
   type: "Posts" | "Comments";
@@ -37,7 +37,7 @@ export default function SearchFeedResultsPage({
   }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const [sort, setSort] = usePostSort();
+  const [sort, setSort] = useFeedSort();
 
   const search = decodeURIComponent(_encodedSearch);
 

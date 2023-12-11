@@ -4,7 +4,7 @@ import {
   OverlayEventDetail,
 } from "@ionic/core";
 import { IonActionSheet, IonLabel } from "@ionic/react";
-import { Dictionary, startCase } from "lodash";
+import { startCase } from "lodash";
 import React, { useState } from "react";
 import { Dispatchable, useAppDispatch } from "../../../store";
 import { InsetIonItem } from "./formatting";
@@ -19,8 +19,17 @@ export const Container = styled.div`
   min-width: 0;
 `;
 
-export const ValueLabel = styled(IonLabel)`
+const TitleIonLabel = styled(IonLabel)`
   flex: 1;
+
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+`;
+
+export const ValueLabel = styled(IonLabel)`
+  flex: 0 auto !important;
+  min-width: 0 !important;
   text-align: right;
 
   min-width: 75px;
@@ -29,13 +38,13 @@ export const ValueLabel = styled(IonLabel)`
   text-overflow: ellipsis;
 `;
 
-export interface SettingSelectorProps<T, O extends Dictionary<T>> {
+export interface SettingSelectorProps<T, O extends Record<string, T>> {
   title: string;
   openTitle?: string;
   selected: T;
   setSelected: Dispatchable<T>;
   options: O;
-  optionIcons?: Dictionary<string>;
+  optionIcons?: Record<string | number, string>;
   icon?: React.FunctionComponent;
   iconMirrored?: boolean;
   disabled?: boolean;
@@ -45,7 +54,7 @@ export interface SettingSelectorProps<T, O extends Dictionary<T>> {
 
 export default function SettingSelector<
   T extends string | number,
-  O extends Dictionary<T>,
+  O extends Record<string, T>,
 >({
   title,
   openTitle,
@@ -107,7 +116,7 @@ export default function SettingSelector<
     >
       <Container>
         {Icon && <Icon mirror={iconMirrored} />}
-        <IonLabel>{title}</IonLabel>
+        <TitleIonLabel>{title}</TitleIonLabel>
         <ValueLabel slot="end" color="medium">
           {getSelectedLabel?.(selected) ??
             (typeof selected === "string" ? startCase(selected) : selected)}

@@ -15,7 +15,7 @@ export function getCustomServers() {
 }
 
 export function getDefaultServer() {
-  return _customServers[0];
+  return _customServers[0]!;
 }
 
 async function getConfig() {

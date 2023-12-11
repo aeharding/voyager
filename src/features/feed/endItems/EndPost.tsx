@@ -50,7 +50,9 @@ export default function EndPost({
   return <Container>{renderError()}</Container>;
 }
 
-export function getSortDuration(sort: SortType): string | undefined {
+export function getSortDuration(
+  sort: SortType | undefined,
+): string | undefined {
   switch (sort) {
     case "TopDay":
       return "day";

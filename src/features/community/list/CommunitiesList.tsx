@@ -17,10 +17,10 @@ import { getHandle } from "../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
 import { home, library, people, shieldCheckmark } from "ionicons/icons";
 import CommunityListItem from "./CommunityListItem";
-import useSupported from "../../../helpers/useSupported";
 import { VList, VListHandle } from "virtua";
 import { maxWidthCss } from "../../shared/AppContent";
 import AlphabetJump from "./AlphabetJump";
+import useShowModeratorFeed from "./useShowModeratorFeed";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -77,13 +77,14 @@ function CommunitiesList({ actor }: CommunitiesListParams) {
   const moderates = useAppSelector(
     (state) => state.auth.site?.my_user?.moderates,
   );
-  const moderatorFeedSupported = useSupported("Modded Feed");
 
   const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle,
   );
+
+  const showModeratorFeed = useShowModeratorFeed();
 
   const favorites = useAppSelector((state) => state.community.favorites);
 
@@ -120,23 +121,21 @@ function CommunitiesList({ actor }: CommunitiesListParams) {
     return sortBy(
       Object.entries(
         communities.reduce<Record<string, Community[]>>((acc, community) => {
-          const firstLetter = /[0-9]/.test(community.name[0])
+          const firstLetter = /[0-9]/.test(community.name[0]!)
             ? "#"
-            : community.name[0].toUpperCase();
+            : community.name[0]!.toUpperCase();
 
           if (!acc[firstLetter]) {
             acc[firstLetter] = [];
           }
 
-          acc[firstLetter].push(community);
+          acc[firstLetter]!.push(community);
           return acc;
         }, {}),
       ),
       ([letter]) => (letter === "#" ? "\uffff" : letter), // sort # at bottom
     );
   }, [communities]);
-
-  const showModeratorFeed = !!moderates?.length && moderatorFeedSupported;
 
   return (
     <>

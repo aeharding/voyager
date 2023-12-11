@@ -172,8 +172,10 @@ export default function MarkdownToolbar({
     try {
       imageUrl = await uploadImage(instanceUrl, jwt, image);
     } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+
       presentToast({
-        message: "Problem uploading image. Please try again.",
+        message: `Problem uploading image: ${message}. Please try again.`,
         color: "danger",
         fullscreen: true,
       });

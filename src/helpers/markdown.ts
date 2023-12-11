@@ -15,7 +15,7 @@ export function findLoneImage(
     const remainingContent = markdown.slice(match[0].length);
     const hasAdditionalContent = remainingContent.trim().length > 0;
 
-    if (!hasAdditionalContent) {
+    if (!hasAdditionalContent && url) {
       return { url, altText };
     }
   }
