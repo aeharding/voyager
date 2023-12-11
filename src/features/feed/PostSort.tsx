@@ -103,7 +103,7 @@ const TOP_BUTTONS: ActionSheetButton<SortType>[] = TOP_POST_SORTS.map(
 );
 
 interface PostSortProps {
-  sort: SortType;
+  sort: SortType | undefined;
   setSort: (sort: SortType) => void;
 }
 
@@ -116,8 +116,8 @@ export default function PostSort({ sort, setSort }: PostSortProps) {
   });
 
   return (
-    <IonButton fill="default" onClick={() => present(sort)}>
-      <IonIcon icon={getSortIcon(sort)} color="primary" />
+    <IonButton fill="default" onClick={() => sort && present(sort)}>
+      <IonIcon icon={sort ? getSortIcon(sort) : " "} color="primary" />
     </IonButton>
   );
 }

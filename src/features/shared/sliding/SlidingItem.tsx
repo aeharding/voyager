@@ -8,7 +8,6 @@ import {
   IonItemOptions,
   IonItemSliding,
 } from "@ionic/react";
-import { Dictionary } from "@reduxjs/toolkit";
 import { bookmark, mailUnread } from "ionicons/icons";
 import React, {
   MouseEvent,
@@ -67,7 +66,7 @@ const OptionContainer = styled.div<{ active: boolean }>`
     `}
 `;
 
-const custom_slash_lengths: Dictionary<number> = {
+const custom_slash_lengths: Record<string, number> = {
   [bookmark]: 35,
   [mailUnread]: 40,
 };

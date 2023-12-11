@@ -21,6 +21,7 @@ import SelectTextModal from "../../pages/shared/SelectTextModal";
 import ShareAsImageModal, {
   ShareAsImageData,
 } from "../share/asImage/ShareAsImageModal";
+import AccountSwitcher from "./AccountSwitcher";
 
 interface IPageContext {
   // used for ion presentingElement
@@ -59,6 +60,8 @@ interface IPageContext {
     comment?: CommentView,
     comments?: CommentView[],
   ) => void;
+
+  presentAccountSwitcher: () => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -70,6 +73,7 @@ export const PageContext = createContext<IPageContext>({
   presentPostEditor: () => {},
   presentSelectText: () => {},
   presentShareAsImage: () => {},
+  presentAccountSwitcher: () => {},
 });
 
 interface PageContextProvider {
@@ -185,6 +189,22 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     reportRef.current?.present(item);
   }, []);
 
+  const [presentAccountSwitcherModal, onDismissAccountSwitcher] = useIonModal(
+    AccountSwitcher,
+    {
+      onDismiss: (data: string, role: string) =>
+        onDismissAccountSwitcher(data, role),
+      presentLogin: () =>
+        presentLogin({
+          presentingElement: value.pageRef?.current ?? undefined,
+        }),
+    },
+  );
+
+  const presentAccountSwitcher = useCallback(() => {
+    presentAccountSwitcherModal({ cssClass: "small" });
+  }, [presentAccountSwitcherModal]);
+
   const currentValue = useMemo(
     () => ({
       ...value,
@@ -195,6 +215,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentPostEditor,
       presentSelectText,
       presentShareAsImage,
+      presentAccountSwitcher,
     }),
     [
       presentCommentEdit,
@@ -204,6 +225,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentReport,
       presentSelectText,
       presentShareAsImage,
+      presentAccountSwitcher,
       value,
     ],
   );

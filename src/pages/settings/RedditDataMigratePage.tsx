@@ -5,7 +5,6 @@ import {
   IonHeader,
   IonInput,
   IonItem,
-  IonLabel,
   IonList,
   IonPage,
   IonTitle,
@@ -87,8 +86,6 @@ export default function RedditMigratePage() {
         <IonList inset>
           <label htmlFor="upload-csv">
             <InsetIonItem>
-              <IonLabel>Paste multireddit link</IonLabel>
-
               <IonInput
                 label="Multireddit link"
                 type="text"

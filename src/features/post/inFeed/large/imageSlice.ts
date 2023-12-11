@@ -1,9 +1,9 @@
-import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export const IMAGE_FAILED = -1;
 
 interface ImageState {
-  loadedBySrc: Dictionary<number | typeof IMAGE_FAILED>;
+  loadedBySrc: Record<string, number | typeof IMAGE_FAILED>;
 }
 
 const initialState: ImageState = {

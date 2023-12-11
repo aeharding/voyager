@@ -28,7 +28,7 @@ import { followIdsSelector } from "../../features/auth/authSlice";
 import { getHandle } from "../../helpers/lemmy";
 import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../features/community/mod/ModActions";
-import usePostSort from "../../features/feed/usePostSort";
+import useFeedSort from "../../features/feed/sort/useFeedSort";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -38,7 +38,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
-  const [sort, setSort] = usePostSort();
+  const [sort, setSort] = useFeedSort({ listingType: type });
 
   const followIds = useAppSelector(followIdsSelector);
   const communityByHandle = useAppSelector(
@@ -83,6 +83,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     // We need the site response to know follows in order to filter
     // subscribed communities before rendering the feed
     if (filterSubscribed && !site) return <CenteredSpinner />;
+    if (!sort) return <CenteredSpinner />;
 
     return (
       <PostCommentFeed

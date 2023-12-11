@@ -135,7 +135,7 @@ export default function AlphabetJump({
   };
 
   const onDrag = (e: MouseEvent | TouchEvent) => {
-    const y = "touches" in e ? e.touches[0].clientY : e.clientY;
+    const y = "touches" in e ? e.touches[0]!.clientY : e.clientY;
     if (!containerElTopRef.current) return;
 
     const sectionIndex = Math.min(
@@ -152,7 +152,7 @@ export default function AlphabetJump({
     const section =
       jumpTableLookup[
         Math.max(0, Math.min(sectionIndex, jumpTableLookup.length - 1))
-      ];
+      ]!;
 
     const currentScrollOfset = scrollViewRef.current?.scrollTop;
     virtuaRef.current?.scrollToIndex(section);

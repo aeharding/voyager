@@ -1,4 +1,4 @@
-import { Dictionary, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import {
@@ -19,7 +19,7 @@ interface PostState {
     replies: number;
   };
   lastUpdatedCounts: number;
-  readByInboxItemId: Dictionary<boolean>;
+  readByInboxItemId: Record<string, boolean>;
   messageSyncState: "init" | "syncing" | "synced";
   messages: PrivateMessageView[];
 }

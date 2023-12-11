@@ -395,7 +395,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
               <>
                 {includePostDetails && <PostCommentSpacer />}
                 <CommentTree
-                  comment={commentNode[0]}
+                  comment={commentNode[0]!}
                   first
                   rootIndex={0}
                   baseDepth={minDepth}

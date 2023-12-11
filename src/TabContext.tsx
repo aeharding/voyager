@@ -26,7 +26,7 @@ export function TabContextProvider({
 }) {
   const location = useLocation();
 
-  const tab = location.pathname.split("/")[1];
+  const tab = location.pathname.split("/")[1]!;
 
   const memoized = useMemo(
     () => (

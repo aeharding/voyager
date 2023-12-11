@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Dictionary } from "@reduxjs/toolkit";
 import {
   ChangeEvent,
   forwardRef,
@@ -16,6 +15,8 @@ import { isAppleDeviceInstallable } from "../../helpers/device";
 const Container = styled.div<{ interactable: boolean }>`
   position: relative;
   overflow: hidden;
+
+  display: flex;
 
   // Hack for Safari bug
   //
@@ -58,9 +59,10 @@ const Progress = styled.progress`
 `;
 
 const VideoEl = styled.video`
+  flex: 1;
+
   width: 100%;
-  max-height: calc(100vh - 60px);
-  object-fit: cover;
+  object-fit: contain;
 
   overflow: hidden;
 `;
@@ -75,7 +77,7 @@ export interface VideoProps {
   className?: string;
 }
 
-const videoPlaybackPlace: Dictionary<number> = {};
+const videoPlaybackPlace: Record<string, number> = {};
 
 const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
   {

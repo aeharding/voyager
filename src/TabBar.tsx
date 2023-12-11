@@ -31,6 +31,7 @@ import { forwardRef, useContext, useEffect, useMemo } from "react";
 import { getDefaultServer } from "./services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
 import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
+import { PageContext } from "./features/auth/PageContext";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -63,6 +64,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const shouldInstall = useShouldInstall();
 
   const { activePageRef } = useContext(AppContext);
+  const { presentAccountSwitcher } = useContext(PageContext);
 
   const jwt = useAppSelector(jwtSelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
@@ -135,6 +137,9 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (!isProfileButtonDisabled) return;
 
     if (scrollUpIfNeeded(activePageRef?.current)) return;
+
+    // if the profile page is already open, show the account switcher
+    if (location.pathname === "/profile") presentAccountSwitcher();
 
     router.push("/profile", "back");
   }

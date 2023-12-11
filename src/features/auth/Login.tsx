@@ -171,7 +171,7 @@ export default function Login({
 
     try {
       await dispatch(
-        login(server ?? customServerHostname, username, password, totp),
+        login(server ?? customServerHostname!, username, password, totp),
       );
     } catch (error) {
       if (isLemmyError(error, "missing_totp_token")) {

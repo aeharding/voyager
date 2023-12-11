@@ -96,7 +96,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
     (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
   );
 
-  const previewMsg = messages[0]; // presorted, newest => oldest
+  const previewMsg = messages[0]!; // presorted, newest => oldest
 
   const person =
     previewMsg.creator.id === myUserId

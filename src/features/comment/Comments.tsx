@@ -35,6 +35,8 @@ import {
 } from "../../helpers/dom";
 import { IndexedVirtuaItem } from "../../helpers/virtua";
 import FeedLoadMoreFailed from "../feed/endItems/FeedLoadMoreFailed";
+import usePreservePositionFromBottomInScrollView from "../../helpers/usePreservePositionFromBottomInScrollView";
+import { postDetailPageHasVirtualScrollEnabled } from "../../pages/posts/PostPage";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
@@ -104,12 +106,23 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   const scrollViewContainerRef = useRef<HTMLDivElement>(null);
   const virtuaRef = useRef<VListHandle>(null);
 
+  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
+    commentPath,
+    threadCommentId,
+  );
+
+  const preservePositionFromBottomInScrollView =
+    usePreservePositionFromBottomInScrollView(
+      scrollViewContainerRef,
+      !virtualEnabled,
+    );
+
   function setLoading(loading: boolean) {
     _setLoading(loading);
     loadingRef.current = loading;
   }
 
-  useSetActivePage(virtuaRef);
+  useSetActivePage(virtuaRef, virtualEnabled);
 
   useImperativeHandle(ref, () => ({
     appendComments,
@@ -125,7 +138,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   }, [commentPath]);
 
   const parentCommentId = (() => {
-    if (commentPath) return +commentPath.split(".")[1];
+    if (commentPath) return +commentPath.split(".")[1]!;
     if (threadCommentId) return +threadCommentId;
     return undefined;
   })();
@@ -398,11 +411,25 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       />
     ));
 
-    if (maxContext > 0)
-      tree.unshift(<LoadParentComments setMaxContext={setMaxContext} />);
+    if (tree.length && maxContext > 0)
+      tree.unshift(
+        <LoadParentComments
+          key="load-parent-comments"
+          setMaxContext={(maxContext) => {
+            preservePositionFromBottomInScrollView.save();
+            setMaxContext(maxContext);
+          }}
+        />,
+      );
 
     return tree;
-  }, [commentTree, highlightedCommentId, commentPath, maxContext]);
+  }, [
+    commentTree,
+    highlightedCommentId,
+    commentPath,
+    maxContext,
+    preservePositionFromBottomInScrollView,
+  ]);
 
   const padding = bottomPadding ? (
     <div style={{ height: `${bottomPadding}px` }} />
@@ -433,6 +460,12 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     [fetchComments, prependComments, getComments],
   );
 
+  useEffect(() => {
+    preservePositionFromBottomInScrollView.restore();
+  }, [maxContext, preservePositionFromBottomInScrollView]);
+
+  const content = [header, allComments, renderFooter(), padding];
+
   return (
     <CommentsContext.Provider value={commentsContextValue}>
       <IonRefresher
@@ -443,30 +476,31 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
         <IonRefresherContent />
       </IonRefresher>
       <ScrollViewContainer ref={scrollViewContainerRef}>
-        <VList
-          className={
-            isSafariFeedHackEnabled
-              ? "virtual-scroller"
-              : "ion-content-scroll-host virtual-scroller"
-          }
-          ref={virtuaRef}
-          style={{ height: "100%" }}
-          components={{ Item: IndexedVirtuaItem }}
-          overscan={highlightedCommentId ? 10 : 0}
-          onRangeChange={(start, end) => {
-            if (end + 10 > allComments.length && !loadFailed) {
-              fetchComments();
+        {virtualEnabled ? (
+          <VList
+            className={
+              isSafariFeedHackEnabled
+                ? "virtual-scroller"
+                : "ion-content-scroll-host virtual-scroller"
             }
-          }}
-          onScroll={(offset) => {
-            setIsListAtTop(offset < 6);
-          }}
-        >
-          {header}
-          {allComments}
-          {renderFooter()}
-          {padding}
-        </VList>
+            ref={virtuaRef}
+            style={{ height: "100%" }}
+            components={{ Item: IndexedVirtuaItem }}
+            overscan={0}
+            onRangeChange={(start, end) => {
+              if (end + 10 > allComments.length && !loadFailed) {
+                fetchComments();
+              }
+            }}
+            onScroll={(offset) => {
+              setIsListAtTop(offset < 6);
+            }}
+          >
+            {...content}
+          </VList>
+        ) : (
+          <>{...content}</>
+        )}
       </ScrollViewContainer>
     </CommentsContext.Provider>
   );

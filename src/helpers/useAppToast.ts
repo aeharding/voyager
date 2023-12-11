@@ -43,6 +43,7 @@ export default function useAppToast() {
         message: options.message,
         color: options.color ?? "primary",
         icon: options.icon,
+        swipeGesture: "vertical",
         cssClass: options.centerText ? "center" : "",
         ...baseToastOptions(
           options.position ?? "bottom",
