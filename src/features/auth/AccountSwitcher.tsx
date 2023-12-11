@@ -20,7 +20,7 @@ interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
   presentLogin: () => void;
   onSelectAccount: (account: string) => void;
-  allowLogin?: boolean;
+  allowEdit?: boolean;
   activeHandle?: string;
 }
 
@@ -28,7 +28,7 @@ export default function AccountSwitcher({
   onDismiss,
   presentLogin,
   onSelectAccount,
-  allowLogin = true,
+  allowEdit = true,
   activeHandle: _activeHandle,
 }: AccountSwitcherProps) {
   const [loading, setLoading] = useState(false);
@@ -36,8 +36,15 @@ export default function AccountSwitcher({
   const appActiveHandle = useAppSelector(
     (state) => state.auth.accountData?.activeHandle,
   );
-  const activeHandle = _activeHandle ?? appActiveHandle;
   const [editing, setEditing] = useState(false);
+
+  const [selectedAccount, setSelectedAccount] = useState(
+    _activeHandle ?? appActiveHandle,
+  );
+
+  useEffect(() => {
+    setSelectedAccount(_activeHandle ?? appActiveHandle);
+  }, [_activeHandle, appActiveHandle]);
 
   useEffect(() => {
     if (accounts?.length) return;
@@ -61,7 +68,7 @@ export default function AccountSwitcher({
             )}
           </IonButtons>
           <IonTitle>Accounts</IonTitle>
-          {allowLogin && (
+          {allowEdit && (
             <IonButtons slot="end">
               {editing ? (
                 <IonButton onClick={() => setEditing(false)}>Done</IonButton>
@@ -74,12 +81,17 @@ export default function AccountSwitcher({
       </IonHeader>
       <IonContent>
         <IonRadioGroup
-          value={activeHandle}
+          value={selectedAccount}
           onIonChange={async (e) => {
             setLoading(true);
+            const old = selectedAccount;
+            setSelectedAccount(e.target.value);
 
             try {
               await onSelectAccount(e.target.value);
+            } catch (error) {
+              setSelectedAccount(old);
+              throw error;
             } finally {
               setLoading(false);
             }
@@ -93,6 +105,7 @@ export default function AccountSwitcher({
                 key={account.handle}
                 account={account}
                 editing={editing}
+                allowEdit={allowEdit}
               />
             ))}
           </IonList>

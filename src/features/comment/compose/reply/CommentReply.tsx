@@ -70,33 +70,36 @@ export default function CommentReply({
   const isSubmitDisabled = !replyContent.trim() || loading;
 
   const userHandle = useAppSelector(handleSelector);
-  const [account, setAccount] = useState(userHandle);
+  const [selectedAccount, setSelectedAccount] = useState(userHandle);
 
-  const isUsingAppAccount = account === userHandle;
+  const isUsingAppAccount = selectedAccount === userHandle;
 
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
   const resolvedRef = useRef<ResolveObjectResponse | undefined>();
-  const localAccountJwt = accounts?.find(({ handle }) => handle === account)
-    ?.jwt;
-  const localClient = useMemo(() => {
-    if (!account) return;
+  const selectedAccountJwt = accounts?.find(
+    ({ handle }) => handle === selectedAccount,
+  )?.jwt;
+  const selectedAccountClient = useMemo(() => {
+    if (!selectedAccount) return;
 
-    const instance = account.split("@")[1]!;
+    const instance = selectedAccount.split("@")[1]!;
 
-    return getClient(instance, localAccountJwt);
-  }, [account, localAccountJwt]);
+    return getClient(instance, selectedAccountJwt);
+  }, [selectedAccount, selectedAccountJwt]);
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
     {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
-      allowLogin: false,
+      allowEdit: false,
       onSelectAccount: async (account: string) => {
         // Switching back to local account
         if (account === userHandle) {
           resolvedRef.current = undefined;
-          setAccount(account);
+          setSelectedAccount(account);
           return;
         }
 
@@ -122,14 +125,16 @@ export default function CommentReply({
               comment ? "comment" : "post"
             } does not exist on ${instance}.`,
             color: "warning",
+            position: "top",
+            fullscreen: true,
           });
 
           throw error;
         }
 
-        setAccount(account);
+        setSelectedAccount(account);
       },
-      activeHandle: account,
+      activeHandle: selectedAccount,
     },
   );
 
@@ -139,6 +144,7 @@ export default function CommentReply({
     setLoading(true);
 
     let reply;
+    let silentError = false;
 
     try {
       if (isUsingAppAccount) {
@@ -155,10 +161,11 @@ export default function CommentReply({
           resolvedRef.current?.post?.post.id;
 
         if (!postId) throw new Error("Post not found.");
-        if (!localClient) throw new Error("Unexpected error occurred.");
+        if (!selectedAccountClient)
+          throw new Error("Unexpected error occurred.");
 
         // Post comment to selected remote instance
-        const remoteComment = await localClient.createComment({
+        const remoteComment = await selectedAccountClient.createComment({
           content: replyContent,
           parent_id: resolvedRef.current?.comment?.comment.id,
           post_id: postId,
@@ -172,11 +179,14 @@ export default function CommentReply({
             })
           ).comment;
         } catch (error) {
+          silentError = true;
           presentToast({
             message:
               "Your comment was successfully posted, but there was an error looking it up.",
             duration: 7_000, // user prolly like "holup wat"
             color: "warning",
+            position: "top",
+            fullscreen: true,
           });
 
           // Don't throw - the comment was posted, there was just an issue resolving
@@ -198,13 +208,15 @@ export default function CommentReply({
       setLoading(false);
     }
 
-    presentToast({
-      message: "Comment posted!",
-      color: "primary",
-      position: "top",
-      centerText: true,
-      fullscreen: true,
-    });
+    if (!silentError) {
+      presentToast({
+        message: "Comment posted!",
+        color: "primary",
+        position: "top",
+        centerText: true,
+        fullscreen: true,
+      });
+    }
 
     if (reply) dispatch(receivedComments([reply]));
     setCanDismiss(true);
@@ -230,11 +242,24 @@ export default function CommentReply({
           <IonTitle>
             <Centered>
               <TitleContainer
-                onClick={() => presentAccountSwitcher({ cssClass: "small" })}
+                onClick={() => {
+                  if (accounts?.length === 1) return;
+
+                  presentAccountSwitcher({
+                    cssClass: "small",
+                    onDidDismiss: () => {
+                      requestAnimationFrame(() => {
+                        textareaRef.current?.focus();
+                      });
+                    },
+                  });
+                }}
               >
                 <IonText>New Comment</IonText>
                 <div>
-                  <UsernameIonText color="medium">{account}</UsernameIonText>
+                  <UsernameIonText color="medium">
+                    {selectedAccount}
+                  </UsernameIonText>
                 </div>
               </TitleContainer>{" "}
               {loading && <Spinner color="dark" />}
@@ -254,6 +279,7 @@ export default function CommentReply({
       </IonHeader>
 
       <CommentContent
+        ref={textareaRef}
         text={replyContent}
         setText={setReplyContent}
         onSubmit={submit}
