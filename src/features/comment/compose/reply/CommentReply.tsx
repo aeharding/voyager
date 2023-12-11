@@ -164,12 +164,23 @@ export default function CommentReply({
           post_id: postId,
         });
 
-        // Lookup the reply from the perspective of our instance to hydrate comment tree
-        reply = (
-          await client.resolveObject({
-            q: remoteComment.comment_view.comment.ap_id,
-          })
-        ).comment;
+        try {
+          // Lookup the reply from the perspective of our instance to hydrate comment tree
+          reply = (
+            await client.resolveObject({
+              q: remoteComment.comment_view.comment.ap_id,
+            })
+          ).comment;
+        } catch (error) {
+          presentToast({
+            message:
+              "Your comment was successfully posted, but there was an error looking it up.",
+            duration: 7_000, // user prolly like "holup wat"
+            color: "warning",
+          });
+
+          // Don't throw - the comment was posted, there was just an issue resolving
+        }
       }
     } catch (error) {
       const errorDescription = isLemmyError(error, "language_not_allowed")
