@@ -24,6 +24,7 @@ export default function InlineMarkdown({ children }: InlineMarkdownProps) {
           "h3",
           "h4",
           "h5",
+          "code",
         ]}
         components={{
           a: "span",
@@ -39,6 +40,7 @@ export default function InlineMarkdown({ children }: InlineMarkdownProps) {
           h3: "span",
           h4: "span",
           h5: "span",
+          code: "code",
         }}
       >
         {children}
