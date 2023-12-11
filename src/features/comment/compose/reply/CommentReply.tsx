@@ -92,9 +92,10 @@ export default function CommentReply({
   const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
     {
-      onDismiss: (data: string, role: string) =>
-        onDismissAccountSwitcher(data, role),
       allowEdit: false,
+      activeHandle: selectedAccount,
+      onDismiss: (data?: string, role?: string) =>
+        onDismissAccountSwitcher(data, role),
       onSelectAccount: async (account: string) => {
         // Switching back to local account
         if (account === userHandle) {
@@ -134,7 +135,6 @@ export default function CommentReply({
 
         setSelectedAccount(account);
       },
-      activeHandle: selectedAccount,
     },
   );
 
