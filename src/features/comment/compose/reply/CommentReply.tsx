@@ -6,14 +6,16 @@ import {
   IonToolbar,
   IonTitle,
   IonText,
+  useIonModal,
 } from "@ionic/react";
 import {
   CommentReplyView,
   CommentView,
   PersonMentionView,
   PostView,
+  ResolveObjectResponse,
 } from "lemmy-js-client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../../store";
@@ -26,6 +28,8 @@ import useTextRecovery, {
 } from "../../../../helpers/useTextRecovery";
 import useAppToast from "../../../../helpers/useAppToast";
 import { isLemmyError } from "../../../../helpers/lemmy";
+import AccountSwitcher from "../../../auth/AccountSwitcher";
+import { getClient } from "../../../../services/lemmy";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -63,8 +67,71 @@ export default function CommentReply({
   const client = useClient();
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
-  const userHandle = useAppSelector(handleSelector);
   const isSubmitDisabled = !replyContent.trim() || loading;
+
+  const userHandle = useAppSelector(handleSelector);
+  const [account, setAccount] = useState(userHandle);
+
+  const isUsingAppAccount = account === userHandle;
+
+  const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
+  const resolvedRef = useRef<ResolveObjectResponse | undefined>();
+  const localAccountJwt = accounts?.find(({ handle }) => handle === account)
+    ?.jwt;
+  const localClient = useMemo(() => {
+    if (!account) return;
+
+    const instance = account.split("@")[1]!;
+
+    return getClient(instance, localAccountJwt);
+  }, [account, localAccountJwt]);
+
+  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
+    AccountSwitcher,
+    {
+      onDismiss: (data: string, role: string) =>
+        onDismissAccountSwitcher(data, role),
+      allowLogin: false,
+      onSelectAccount: async (account: string) => {
+        // Switching back to local account
+        if (account === userHandle) {
+          resolvedRef.current = undefined;
+          setAccount(account);
+          return;
+        }
+
+        // Using a remote account
+        const accountJwt = accounts?.find(({ handle }) => handle === account)
+          ?.jwt;
+
+        if (!accountJwt) throw new Error("Error switching accounts");
+
+        const instance = account.split("@")[1]!;
+        const client = getClient(instance, accountJwt);
+
+        // Lookup the comment from the perspective of the remote instance.
+        // The remote instance may not know about the thing we're trying to comment on.
+        // Also, IDs are not the same between instances.
+        try {
+          resolvedRef.current = await client.resolveObject({
+            q: comment?.ap_id ?? item.post.ap_id,
+          });
+        } catch (error) {
+          presentToast({
+            message: `This ${
+              comment ? "comment" : "post"
+            } does not exist on ${instance}.`,
+            color: "warning",
+          });
+
+          throw error;
+        }
+
+        setAccount(account);
+      },
+      activeHandle: account,
+    },
+  );
 
   async function submit() {
     if (isSubmitDisabled) return;
@@ -74,11 +141,36 @@ export default function CommentReply({
     let reply;
 
     try {
-      reply = await client.createComment({
-        content: replyContent,
-        parent_id: comment?.id,
-        post_id: item.post.id,
-      });
+      if (isUsingAppAccount) {
+        reply = (
+          await client.createComment({
+            content: replyContent,
+            parent_id: comment?.id,
+            post_id: item.post.id,
+          })
+        ).comment_view;
+      } else {
+        const postId =
+          resolvedRef.current?.comment?.comment.post_id ??
+          resolvedRef.current?.post?.post.id;
+
+        if (!postId) throw new Error("Post not found.");
+        if (!localClient) throw new Error("Unexpected error occurred.");
+
+        // Post comment to selected remote instance
+        const remoteComment = await localClient.createComment({
+          content: replyContent,
+          parent_id: resolvedRef.current?.comment?.comment.id,
+          post_id: postId,
+        });
+
+        // Lookup the reply from the perspective of our instance to hydrate comment tree
+        reply = (
+          await client.resolveObject({
+            q: remoteComment.comment_view.comment.ap_id,
+          })
+        ).comment;
+      }
     } catch (error) {
       const errorDescription = isLemmyError(error, "language_not_allowed")
         ? "Please select a language in your lemmy profile settings."
@@ -103,9 +195,9 @@ export default function CommentReply({
       fullscreen: true,
     });
 
-    dispatch(receivedComments([reply.comment_view]));
+    if (reply) dispatch(receivedComments([reply]));
     setCanDismiss(true);
-    dismiss(reply.comment_view);
+    dismiss(reply);
     clearRecoveredText();
   }
 
@@ -126,10 +218,12 @@ export default function CommentReply({
           </IonButtons>
           <IonTitle>
             <Centered>
-              <TitleContainer>
+              <TitleContainer
+                onClick={() => presentAccountSwitcher({ cssClass: "small" })}
+              >
                 <IonText>New Comment</IonText>
                 <div>
-                  <UsernameIonText color="medium">{userHandle}</UsernameIonText>
+                  <UsernameIonText color="medium">{account}</UsernameIonText>
                 </div>
               </TitleContainer>{" "}
               {loading && <Spinner color="dark" />}

@@ -5,31 +5,38 @@ import {
   IonHeader,
   IonIcon,
   IonList,
+  IonLoading,
   IonPage,
   IonRadioGroup,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { changeAccount } from "./authSlice";
+import { useAppSelector } from "../../store";
 import { useEffect, useState } from "react";
 import Account from "./Account";
 
 interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
   presentLogin: () => void;
+  onSelectAccount: (account: string) => void;
+  allowLogin?: boolean;
+  activeHandle?: string;
 }
 
 export default function AccountSwitcher({
   onDismiss,
   presentLogin,
+  onSelectAccount,
+  allowLogin = true,
+  activeHandle: _activeHandle,
 }: AccountSwitcherProps) {
-  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
-  const activeHandle = useAppSelector(
+  const appActiveHandle = useAppSelector(
     (state) => state.auth.accountData?.activeHandle,
   );
+  const activeHandle = _activeHandle ?? appActiveHandle;
   const [editing, setEditing] = useState(false);
 
   useEffect(() => {
@@ -41,6 +48,7 @@ export default function AccountSwitcher({
 
   return (
     <IonPage>
+      <IonLoading isOpen={loading} />
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -53,20 +61,29 @@ export default function AccountSwitcher({
             )}
           </IonButtons>
           <IonTitle>Accounts</IonTitle>
-          <IonButtons slot="end">
-            {editing ? (
-              <IonButton onClick={() => setEditing(false)}>Done</IonButton>
-            ) : (
-              <IonButton onClick={() => setEditing(true)}>Edit</IonButton>
-            )}
-          </IonButtons>
+          {allowLogin && (
+            <IonButtons slot="end">
+              {editing ? (
+                <IonButton onClick={() => setEditing(false)}>Done</IonButton>
+              ) : (
+                <IonButton onClick={() => setEditing(true)}>Edit</IonButton>
+              )}
+            </IonButtons>
+          )}
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <IonRadioGroup
           value={activeHandle}
-          onIonChange={(e) => {
-            dispatch(changeAccount(e.target.value));
+          onIonChange={async (e) => {
+            setLoading(true);
+
+            try {
+              await onSelectAccount(e.target.value);
+            } finally {
+              setLoading(false);
+            }
+
             onDismiss();
           }}
         >
