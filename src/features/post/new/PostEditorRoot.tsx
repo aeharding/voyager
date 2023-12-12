@@ -86,16 +86,13 @@ const MAX_TITLE_LENGTH = 200;
 export default function PostEditorRoot({
   setCanDismiss,
   dismiss,
-  ...props
+  community,
+  existingPost,
 }: PostEditorProps) {
-  const community =
-    "existingPost" in props
-      ? props.existingPost.community
-      : props.community?.community;
-
-  if (!community) throw new Error("community must be defined");
-
-  const existingPost = "existingPost" in props ? props.existingPost : undefined;
+  if (!community) {
+    if (existingPost) community = existingPost.community;
+    else throw new Error("community or existingPost must be defined");
+  }
 
   const dispatch = useAppDispatch();
 
@@ -251,12 +248,14 @@ export default function PostEditorRoot({
     };
 
     try {
-      if (existingPost) {
+      if (existingPost && existingPost.community === community) {
+        // update existing post
         postResponse = await client.editPost({
           post_id: existingPost.post.id,
           ...payload,
         });
       } else {
+        // new post or crosspost
         postResponse = await client.createPost({
           community_id: community.id,
           ...payload,
@@ -354,6 +353,12 @@ export default function PostEditorRoot({
     setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
   }
 
+  const modalTitle = (() => {
+    if (existingPost?.community === community) return "Edit Post";
+    if (existingPost) return "Crosspost";
+    return `${startCase(postType)} Post`;
+  })();
+
   return (
     <>
       <IonHeader>
@@ -365,9 +370,7 @@ export default function PostEditorRoot({
           </IonButtons>
           <IonTitle>
             <Centered>
-              <IonText>
-                {existingPost ? "Edit Post" : <>{startCase(postType)} Post</>}
-              </IonText>
+              <IonText>{modalTitle}</IonText>
               {loading && <Spinner color="dark" />}
             </Centered>
           </IonTitle>
@@ -486,7 +489,7 @@ export default function PostEditorRoot({
                   value={text}
                   setValue={setText}
                   onSubmit={submit}
-                  editing={"existingPost" in props}
+                  editing={!!existingPost}
                 />
               )}
             >
@@ -498,7 +501,9 @@ export default function PostEditorRoot({
             </IonNavLink>
           </IonList>
 
-          <PostingIn>Posting in {getRemoteHandle(community)}</PostingIn>
+          {community && (
+            <PostingIn>Posting in {getRemoteHandle(community)}</PostingIn>
+          )}
         </Container>
       </IonContent>
     </>

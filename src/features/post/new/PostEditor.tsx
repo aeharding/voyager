@@ -1,19 +1,15 @@
 import { IonNav } from "@ionic/react";
-import { CommunityView, PostView } from "lemmy-js-client";
+import { Community, PostView } from "lemmy-js-client";
 import PostEditorRoot from "./PostEditorRoot";
 import { useCallback } from "react";
 
 export type PostEditorProps = {
   setCanDismiss: (canDismiss: boolean) => void;
   dismiss: () => void;
-} & (
-  | {
-      community: CommunityView | undefined;
-    }
-  | {
-      existingPost: PostView;
-    }
-);
+} & {
+  community: Community | undefined;
+  existingPost: PostView | undefined;
+};
 
 export default function PostEditor(props: PostEditorProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps

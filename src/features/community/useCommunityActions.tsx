@@ -97,7 +97,7 @@ export default function useCommunityActions(
       return;
     }
 
-    presentPostEditor(communityHandle);
+    presentPostEditor(undefined, communityHandle);
   }
 
   async function _block() {

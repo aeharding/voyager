@@ -13,7 +13,7 @@ import Login from "../auth/Login";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { changeAccount, jwtSelector } from "../auth/authSlice";
 import CommentReplyModal from "../comment/compose/reply/CommentReplyModal";
-import { Comment, CommentView, PostView } from "lemmy-js-client";
+import { Comment, CommentView, Community, PostView } from "lemmy-js-client";
 import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
@@ -51,7 +51,7 @@ interface IPageContext {
    * @param postOrCommunity An existing post to be edited, or the community handle
    * to submit the new post to
    */
-  presentPostEditor: (postOrCommunity: PostView | string) => void;
+  presentPostEditor: (post?: PostView, community?: Community | string) => void;
 
   presentSelectText: (text: string) => void;
 
@@ -166,11 +166,13 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   // Edit comment end
 
   // Edit/new post start
-  const postItem = useRef<PostView | string>();
+  const postItem = useRef<PostView>();
+  const communityRef = useRef<Community | string>();
   const [isPostOpen, setIsPostOpen] = useState(false);
   const presentPostEditor = useCallback(
-    (postOrCommunity: PostView | string) => {
-      postItem.current = postOrCommunity;
+    (post?: PostView, community?: Community | string) => {
+      postItem.current = post;
+      communityRef.current = community;
       setIsPostOpen(true);
     },
     [],
@@ -255,7 +257,8 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       <Report ref={reportRef} />
       <PostEditorModal
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        postOrCommunity={postItem.current!}
+        post={postItem.current!}
+        community={communityRef.current!}
         isOpen={isPostOpen}
         setIsOpen={setIsPostOpen}
       />

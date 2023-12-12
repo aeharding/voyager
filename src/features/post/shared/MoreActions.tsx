@@ -1,10 +1,16 @@
-import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
+import {
+  IonButton,
+  IonIcon,
+  useIonActionSheet,
+  useIonModal,
+} from "@ionic/react";
 import {
   arrowDownOutline,
   arrowUndoOutline,
   arrowUpOutline,
   bookmarkOutline,
   cameraOutline,
+  duplicateOutline,
   ellipsisHorizontal,
   eyeOffOutline,
   eyeOutline,
@@ -18,7 +24,7 @@ import {
 } from "ionicons/icons";
 import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { PostView } from "lemmy-js-client";
+import { CommunityView, PostView } from "lemmy-js-client";
 import {
   hidePost,
   unhidePost,
@@ -45,6 +51,7 @@ import useAppToast from "../../../helpers/useAppToast";
 import usePostModActions from "../../moderation/usePostModActions";
 import useCanModerate, { getModIcon } from "../../moderation/useCanModerate";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import CommunitySelectorModal from "../../shared/selectorModals/CommunitySelectorModal";
 
 interface MoreActionsProps {
   post: PostView;
@@ -76,9 +83,23 @@ export default function MoreActions({
     presentPostEditor,
     presentSelectText,
     presentShareAsImage,
+    pageRef,
   } = useContext(PageContext);
 
   const presentPostModActions = usePostModActions(post);
+  const [presentCommunitySelector, onDismissCommunitySelector] = useIonModal(
+    CommunitySelectorModal,
+    {
+      onDismiss: (data?: CommunityView) => {
+        if (data) {
+          presentPostEditor(post, data.community);
+        }
+
+        onDismissCommunitySelector(data);
+      },
+      pageRef,
+    },
+  );
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
@@ -211,6 +232,15 @@ export default function MoreActions({
 
             // Not viewing comments, so no feed update
             presentCommentReply(post);
+          },
+        },
+        {
+          text: "Crosspost to...",
+          icon: duplicateOutline,
+          handler: () => {
+            if (presentLoginIfNeeded()) return;
+
+            presentCommunitySelector();
           },
         },
         {
