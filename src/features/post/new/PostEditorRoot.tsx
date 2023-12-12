@@ -36,6 +36,7 @@ import useAppToast from "../../../helpers/useAppToast";
 import { isUrlImage, isValidUrl } from "../../../helpers/url";
 import { problemFetchingTitle } from "../../../helpers/toastMessages";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import { isAndroid } from "../../../helpers/device";
 
 const Container = styled.div`
   position: absolute;
@@ -304,6 +305,9 @@ export default function PostEditorRoot({
     setPhotoUploading(true);
 
     let imageUrl;
+
+    // On Samsung devices, upload from photo picker will return DOM error on upload without timeout 🤬
+    if (isAndroid()) await new Promise((resolve) => setTimeout(resolve, 250));
 
     try {
       imageUrl = await uploadImage(instanceUrl, jwt, image);
