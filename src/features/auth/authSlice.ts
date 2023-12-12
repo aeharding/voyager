@@ -68,12 +68,10 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     addAccount: (state, action: PayloadAction<Credential>) => {
-      if (!state.accountData) {
-        state.accountData = {
-          accounts: [action.payload],
-          activeHandle: action.payload.handle,
-        };
-      }
+      state.accountData ??= {
+        accounts: [action.payload],
+        activeHandle: action.payload.handle,
+      };
 
       const accounts = uniqBy(
         [action.payload, ...state.accountData.accounts],
