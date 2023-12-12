@@ -285,7 +285,10 @@ export default function PostEditorRoot({
     dispatch(receivedPosts([postResponse.post_view]));
 
     presentToast({
-      message: existingPost ? "Post edited!" : "Post created!",
+      message: (() => {
+        if (existingPost?.community !== community) return "Crosspost created!";
+        return existingPost ? "Post edited!" : "Post created!";
+      })(),
       color: "primary",
       position: "top",
       centerText: true,
