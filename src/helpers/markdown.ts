@@ -22,3 +22,10 @@ export function findLoneImage(
 
   return null;
 }
+
+export function quote(markdown: string) {
+  return markdown
+    .split("\n")
+    .map((line) => `> ${line}`)
+    .join("\n");
+}

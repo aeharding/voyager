@@ -22,7 +22,7 @@ import useClient from "../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
 import { jwtSelector, urlSelector } from "../../auth/authSlice";
-import { startCase } from "lodash";
+import { compact, startCase } from "lodash";
 import { css } from "@emotion/react";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { cameraOutline } from "ionicons/icons";
@@ -37,6 +37,7 @@ import { isUrlImage, isValidUrl } from "../../../helpers/url";
 import { problemFetchingTitle } from "../../../helpers/toastMessages";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isAndroid } from "../../../helpers/device";
+import { quote } from "../../../helpers/markdown";
 
 const Container = styled.div`
   position: absolute;
@@ -115,7 +116,15 @@ export default function PostEditorRoot({
 
   const initialUrl = initialImage ? "" : existingPost?.post.url ?? "";
 
-  const initialText = existingPost?.post.body ?? "";
+  const initialText = (() => {
+    if (existingPost && existingPost.community !== community)
+      return compact([
+        `cross-posted from: ${existingPost.post.ap_id}`,
+        existingPost.post.body && quote(existingPost.post.body),
+      ]).join("\n\n");
+
+    return existingPost?.post.body ?? "";
+  })();
 
   const initialNsfw = existingPost?.post.nsfw ?? false;
 
