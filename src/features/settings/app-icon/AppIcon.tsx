@@ -90,6 +90,8 @@ function getIconName(icon: AppIcon): string {
       return "Enter Galactic";
     case "pride":
       return "Progress Pride";
+    case "holidays":
+      return "Holiday Spirit";
   }
 }
 
@@ -99,6 +101,7 @@ function getIconAuthor(icon: AppIcon): string {
     case "planetary":
     case "psych":
     case "pride":
+    case "holidays":
       return "fer0n";
     case "space":
       return "ripened_avacado";
