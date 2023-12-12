@@ -136,83 +136,7 @@ We would also appreciate sponsoring other contributors to Voyager. If someone he
 
 ## 🧑‍💻 Contributing
 
-We're really excited that you're interested in contributing to Voyager! Before contributing, make sure you read through existing issues. Before working on a large PR, please open an issue to discuss first.
-
-### Local Setup
-
-Clone the repository and run on the root folder:
-
-```
-pnpm install
-pnpm run dev
-```
-
-`Warning`: you will need `corepack` enabled.
-
-### iOS Native App
-
-To build the iOS native app:
-
-1. Install [Node](https://nodejs.org/en)
-2. Install [Ionic CLI](https://ionicframework.com/docs/cli)
-3. Install [Xcode](https://developer.apple.com/xcode/)
-4. [Cocoapods](https://cocoapods.org/)
-
-Then, build the project and copy web dependencies over:
-
-```sh
-corepack enable
-pnpm install
-ionic capacitor build ios
-```
-
-Finally, can run the project with `CMD+R`.
-
-### Android Native App
-
-To build the Android native app:
-
-1. Install [Node](https://nodejs.org/en)
-2. Install [Ionic CLI](https://ionicframework.com/docs/cli)
-3. Install [Android Studio](https://developer.android.com/studio)
-
-In Voyager source code directory:
-
-```sh
-corepack enable
-pnpm install
-ionic capacitor build android
-```
-
-Android Studio should open.
-
-You may need to sync. `File -> Sync Project with Gradle Files`
-
-Finally, can run the project with `Ctrl+R`.
-
-### Testing
-
-Voyager uses [Vitest](https://vitest.dev). You can run the test suite with:
-
-```
-pnpm test
-```
-
-### 🚀 Releasing
-
-To release a new version:
-
-```sh
-BUILD=123; npx release-it
-```
-
-Make sure the build number is incremental. This is used for F-droid.
-
-Voyager uses [Ionic App Flow](https://ionic.io/appflow) for Apple App Store and Android Play Store builds. Those builds are initiated and monitored by Github Actions, where logs may be inspected.
-
-**Voyager's Android and iOS builds are reproducible**! In fact, [F-droid independently builds Voyager](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/app.vger.voyager.yml) and verifies the same compiled APK is provided in Github Releases.
-
-Note: F-droid and Github Releases binaries are built with `BUILD_FOSS_ONLY=true`. This removes all nonfree dependencies, currently just Google Play in-app purchases.
+Please check out [CONTRIBUTING.md](./CONTRIBUTING.md) for details on contributing to Voyager. Thank you! 💙
 
 ## 📲 PWA
 
@@ -231,7 +155,7 @@ Voyager works best added to the homescreen. There are certain features that only
 Shoutout to [@fer0n](https://github.com/fer0n) for the great logo and splashscreen! And thank you 💙 all of our contributors to the codebase:
 
 <a href="https://github.com/aeharding/voyager/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=aeharding/voyager" />   
+  <img src="https://contrib.rocks/image?repo=aeharding/voyager" />
 </a>
 
 ## 📄 License
