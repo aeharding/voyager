@@ -95,6 +95,8 @@ export default function PostEditorRoot({
     else throw new Error("community or existingPost must be defined");
   }
 
+  const crosspost = !!existingPost && existingPost.community !== community;
+
   const dispatch = useAppDispatch();
 
   const initialImage =
@@ -117,7 +119,7 @@ export default function PostEditorRoot({
   const initialUrl = initialImage ? "" : existingPost?.post.url ?? "";
 
   const initialText = (() => {
-    if (existingPost && existingPost.community !== community)
+    if (crosspost)
       return compact([
         `cross-posted from: ${existingPost.post.ap_id}`,
         existingPost.post.body && quote(existingPost.post.body),
@@ -257,7 +259,7 @@ export default function PostEditorRoot({
     };
 
     try {
-      if (existingPost && existingPost.community === community) {
+      if (existingPost && !crosspost) {
         // update existing post
         postResponse = await client.editPost({
           post_id: existingPost.post.id,
@@ -285,10 +287,11 @@ export default function PostEditorRoot({
     dispatch(receivedPosts([postResponse.post_view]));
 
     presentToast({
-      message: (() => {
-        if (existingPost?.community !== community) return "Crosspost created!";
-        return existingPost ? "Post edited!" : "Post created!";
-      })(),
+      message: crosspost
+        ? "Crosspost created!"
+        : existingPost
+          ? "Post edited!"
+          : "Post created!",
       color: "primary",
       position: "top",
       centerText: true,
@@ -299,7 +302,7 @@ export default function PostEditorRoot({
 
     dismiss();
 
-    if (!existingPost)
+    if (!existingPost || crosspost)
       router.push(
         buildGeneralBrowseLink(
           `/c/${getHandle(community)}/comments/${
@@ -366,9 +369,8 @@ export default function PostEditorRoot({
   }
 
   const modalTitle = (() => {
-    if (existingPost?.community === community) return "Edit Post";
-    if (existingPost) return "Crosspost";
-    return `${startCase(postType)} Post`;
+    if (crosspost) return "Crosspost";
+    return existingPost ? "Edit Post" : `${startCase(postType)} Post`;
   })();
 
   return (
@@ -513,9 +515,7 @@ export default function PostEditorRoot({
             </IonNavLink>
           </IonList>
 
-          {community && (
-            <PostingIn>Posting in {getRemoteHandle(community)}</PostingIn>
-          )}
+          <PostingIn>Posting in {getRemoteHandle(community)}</PostingIn>
         </Container>
       </IonContent>
     </>
