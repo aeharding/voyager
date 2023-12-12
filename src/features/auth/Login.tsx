@@ -56,7 +56,7 @@ const HelperText = styled.p`
 export default function Login({
   onDismiss,
 }: {
-  onDismiss: (data?: string | null | undefined | number, role?: string) => void;
+  onDismiss: (data?: string, role?: string) => void;
 }) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
@@ -73,7 +73,7 @@ export default function Login({
   const [totp, setTotp] = useState("");
 
   const [presentTerms, onDismissTerms] = useIonModal(TermsSheet, {
-    onDismiss: (data: string, role: string) => onDismissTerms(data, role),
+    onDismiss: (data?: string, role?: string) => onDismissTerms(data, role),
   });
 
   function presentNativeTerms() {

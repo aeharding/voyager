@@ -125,11 +125,9 @@ function CommunitiesList({ actor }: CommunitiesListParams) {
             ? "#"
             : community.name[0]!.toUpperCase();
 
-          if (!acc[firstLetter]) {
-            acc[firstLetter] = [];
-          }
-
+          acc[firstLetter] ??= [];
           acc[firstLetter]!.push(community);
+
           return acc;
         }, {}),
       ),
