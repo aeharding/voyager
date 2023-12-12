@@ -10,8 +10,8 @@ import React, {
 } from "react";
 import { CommentReplyItem } from "../comment/compose/reply/CommentReply";
 import Login from "../auth/Login";
-import { useAppSelector } from "../../store";
-import { jwtSelector } from "../auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { changeAccount, jwtSelector } from "../auth/authSlice";
 import CommentReplyModal from "../comment/compose/reply/CommentReplyModal";
 import { Comment, CommentView, PostView } from "lemmy-js-client";
 import CommentEditModal from "../comment/compose/edit/CommentEditModal";
@@ -82,6 +82,7 @@ interface PageContextProvider {
 }
 
 export function PageContextProvider({ value, children }: PageContextProvider) {
+  const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const [presentLogin, onDismissLogin] = useIonModal(Login, {
     onDismiss: (data: string, role: string) => onDismissLogin(data, role),
@@ -198,6 +199,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         presentLogin({
           presentingElement: value.pageRef?.current ?? undefined,
         }),
+      onSelectAccount: (account: string) => dispatch(changeAccount(account)),
     },
   );
 

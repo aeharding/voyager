@@ -30,9 +30,10 @@ const RemoveIcon = styled(IonIcon)`
 interface AccountProps {
   editing: boolean;
   account: Credential;
+  allowEdit: boolean;
 }
 
-export default function Account({ editing, account }: AccountProps) {
+export default function Account({ editing, account, allowEdit }: AccountProps) {
   const dispatch = useAppDispatch();
   const slidingRef = useRef<ItemSlidingCustomEvent["target"]>(null);
 
@@ -42,11 +43,13 @@ export default function Account({ editing, account }: AccountProps) {
 
   return (
     <IonItemSliding ref={slidingRef}>
-      <IonItemOptions side="end" onIonSwipe={logout}>
-        <IonItemOption color="danger" expandable onClick={logout}>
-          Log out
-        </IonItemOption>
-      </IonItemOptions>
+      {allowEdit && (
+        <IonItemOptions side="end" onIonSwipe={logout}>
+          <IonItemOption color="danger" expandable onClick={logout}>
+            Log out
+          </IonItemOption>
+        </IonItemOptions>
+      )}
       <IonItem>
         {editing && (
           <IonButton

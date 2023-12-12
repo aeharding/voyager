@@ -5,12 +5,13 @@ import MarkdownToolbar, {
 } from "../../shared/markdown/editing/MarkdownToolbar";
 import { IonContent } from "@ionic/react";
 import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
-import React, { Dispatch, SetStateAction, useRef } from "react";
+import React, { Dispatch, SetStateAction, forwardRef, useRef } from "react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 import { css } from "@emotion/react";
 import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
 import { useEffect } from "react";
 import { preventModalSwipeOnTextSelection } from "../../../helpers/ionic";
+import { mergeRefs } from "react-merge-refs";
 
 export const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -56,52 +57,49 @@ interface CommentContentProps {
   children?: React.ReactNode;
 }
 
-export default function CommentContent({
-  text,
-  setText,
-  children,
-  onSubmit,
-}: CommentContentProps) {
-  const keyboardOpen = useKeyboardOpen();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+export default forwardRef<HTMLTextAreaElement, CommentContentProps>(
+  function CommentContent({ text, setText, children, onSubmit }, ref) {
+    const keyboardOpen = useKeyboardOpen();
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    textareaRef.current?.focus({ preventScroll: true });
+    useEffect(() => {
+      textareaRef?.current?.focus({ preventScroll: true });
 
-    // iOS safari native has race sometimes
-    setTimeout(() => {
-      textareaRef.current?.focus({ preventScroll: true });
-    }, 100);
-  }, []);
+      // iOS safari native has race sometimes
+      setTimeout(() => {
+        textareaRef.current?.focus({ preventScroll: true });
+      }, 100);
+    }, []);
 
-  return (
-    <>
-      <IonContent {...preventPhotoswipeGalleryFocusTrap}>
-        <Container keyboardOpen={keyboardOpen}>
-          <Textarea
-            {...preventModalSwipeOnTextSelection}
-            ref={textareaRef}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            autoFocus
-            id={TOOLBAR_TARGET_ID}
-            onKeyDown={(e) => {
-              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-                onSubmit?.();
-              }
-            }}
+    return (
+      <>
+        <IonContent {...preventPhotoswipeGalleryFocusTrap}>
+          <Container keyboardOpen={keyboardOpen}>
+            <Textarea
+              {...preventModalSwipeOnTextSelection}
+              ref={mergeRefs([textareaRef, ref])}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              autoFocus
+              id={TOOLBAR_TARGET_ID}
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                  onSubmit?.();
+                }
+              }}
+            />
+            {children}
+          </Container>
+
+          <MarkdownToolbar
+            type="comment"
+            text={text}
+            setText={setText}
+            textareaRef={textareaRef}
+            slot="fixed"
           />
-          {children}
-        </Container>
-
-        <MarkdownToolbar
-          type="comment"
-          text={text}
-          setText={setText}
-          textareaRef={textareaRef}
-          slot="fixed"
-        />
-      </IonContent>
-    </>
-  );
-}
+        </IonContent>
+      </>
+    );
+  },
+);

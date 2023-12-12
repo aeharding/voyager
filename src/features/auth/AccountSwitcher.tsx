@@ -5,32 +5,46 @@ import {
   IonHeader,
   IonIcon,
   IonList,
+  IonLoading,
   IonPage,
   IonRadioGroup,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { changeAccount } from "./authSlice";
+import { useAppSelector } from "../../store";
 import { useEffect, useState } from "react";
 import Account from "./Account";
 
 interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
   presentLogin: () => void;
+  onSelectAccount: (account: string) => void;
+  allowEdit?: boolean;
+  activeHandle?: string;
 }
 
 export default function AccountSwitcher({
   onDismiss,
   presentLogin,
+  onSelectAccount,
+  allowEdit = true,
+  activeHandle: _activeHandle,
 }: AccountSwitcherProps) {
-  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
-  const activeHandle = useAppSelector(
+  const appActiveHandle = useAppSelector(
     (state) => state.auth.accountData?.activeHandle,
   );
   const [editing, setEditing] = useState(false);
+
+  const [selectedAccount, setSelectedAccount] = useState(
+    _activeHandle ?? appActiveHandle,
+  );
+
+  useEffect(() => {
+    setSelectedAccount(_activeHandle ?? appActiveHandle);
+  }, [_activeHandle, appActiveHandle]);
 
   useEffect(() => {
     if (accounts?.length) return;
@@ -41,6 +55,7 @@ export default function AccountSwitcher({
 
   return (
     <IonPage>
+      <IonLoading isOpen={loading} />
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
@@ -53,20 +68,34 @@ export default function AccountSwitcher({
             )}
           </IonButtons>
           <IonTitle>Accounts</IonTitle>
-          <IonButtons slot="end">
-            {editing ? (
-              <IonButton onClick={() => setEditing(false)}>Done</IonButton>
-            ) : (
-              <IonButton onClick={() => setEditing(true)}>Edit</IonButton>
-            )}
-          </IonButtons>
+          {allowEdit && (
+            <IonButtons slot="end">
+              {editing ? (
+                <IonButton onClick={() => setEditing(false)}>Done</IonButton>
+              ) : (
+                <IonButton onClick={() => setEditing(true)}>Edit</IonButton>
+              )}
+            </IonButtons>
+          )}
         </IonToolbar>
       </IonHeader>
       <IonContent>
         <IonRadioGroup
-          value={activeHandle}
-          onIonChange={(e) => {
-            dispatch(changeAccount(e.target.value));
+          value={selectedAccount}
+          onIonChange={async (e) => {
+            setLoading(true);
+            const old = selectedAccount;
+            setSelectedAccount(e.target.value);
+
+            try {
+              await onSelectAccount(e.target.value);
+            } catch (error) {
+              setSelectedAccount(old);
+              throw error;
+            } finally {
+              setLoading(false);
+            }
+
             onDismiss();
           }}
         >
@@ -76,6 +105,7 @@ export default function AccountSwitcher({
                 key={account.handle}
                 account={account}
                 editing={editing}
+                allowEdit={allowEdit}
               />
             ))}
           </IonList>
