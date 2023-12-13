@@ -201,9 +201,7 @@ function PostHeader({
         }}
       >
         <Container>
-          {showPostText && (
-            <div onClick={(e) => e.stopPropagation()}>{renderMedia()}</div>
-          )}
+          {showPostText && renderMedia()}
           <PostDeets>
             <ModeratableItemBannerOutlet />
             <div>
