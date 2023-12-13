@@ -6,15 +6,25 @@ import buildCommunityPlugin from "./markdown/buildCommunityPlugin";
 import customRemarkGfm from "./markdown/customRemarkGfm";
 import { useMemo } from "react";
 import MarkdownImg from "./MarkdownImg";
+import { css } from "@emotion/react";
 
-const Blockquote = styled.blockquote`
-  padding-left: 0.5rem;
-  border-left: 3px solid var(--ion-color-light);
-  margin-left: 0;
-`;
+const markdownCss = css`
+  @media (max-width: 700px) {
+    ul,
+    ol {
+      padding-left: 24px;
+    }
+  }
 
-const Code = styled.code`
-  white-space: pre-wrap;
+  code {
+    white-space: pre-wrap;
+  }
+
+  blockquote {
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--ion-color-light);
+    margin-left: 0;
+  }
 `;
 
 const TableContainer = styled.div`
@@ -61,12 +71,11 @@ export default function Markdown(props: ReactMarkdownOptions) {
   return (
     <ReactMarkdown
       {...props}
+      css={markdownCss}
       components={{
         img: (props) => (
           <MarkdownImg onClick={(e) => e.stopPropagation()} {...props} />
         ),
-        blockquote: (props) => <Blockquote {...props} />,
-        code: (props) => <Code {...props} />,
         table: (props) => (
           <TableContainer>
             <table
