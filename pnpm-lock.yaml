@@ -81,13 +81,13 @@ devDependencies:
     version: 2.2.1
   '@ionic/core':
     specifier: npm:voyager-ionic-core
-    version: /voyager-ionic-core@7.6.0
+    version: /voyager-ionic-core@7.6.1
   '@ionic/react':
-    specifier: 7.6.0
-    version: 7.6.0(react-dom@18.2.0)(react@18.2.0)
+    specifier: 7.6.1
+    version: 7.6.1(react-dom@18.2.0)(react@18.2.0)
   '@ionic/react-router':
-    specifier: 7.6.0
-    version: 7.6.0(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
+    specifier: 7.6.1
+    version: 7.6.1(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
   '@reduxjs/toolkit':
     specifier: ^2.0.1
     version: 2.0.1(react-redux@9.0.2)(react@18.2.0)
@@ -2105,15 +2105,15 @@ packages:
       - supports-color
     dev: true
 
-  /@ionic/react-router@7.6.0(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
-    resolution: {integrity: sha512-HJVXkkUppZ9jqXl4WsHwE4UqWYUphCDD7Vqw0C1iSR31WeF2kd4JqAsY3yrG97qH0HCyXeg05ph2fLVdGNL6pg==}
+  /@ionic/react-router@7.6.1(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
+    resolution: {integrity: sha512-Ze+NTmhagsL/Wbd9DeUOqFRYExDtAJFao5qIAYZS+VghAnRWGR7/iNmghQYMHdVIrw1EZOP7yAqNcy9rnBqXCA==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
       react-router: ^5.0.1
       react-router-dom: ^5.0.1
     dependencies:
-      '@ionic/react': 7.6.0(react-dom@18.2.0)(react@18.2.0)
+      '@ionic/react': 7.6.1(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-router: 5.3.4(react@18.2.0)
@@ -2121,13 +2121,13 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@ionic/react@7.6.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-2hjTQlxwONH7rcIu1iJ219a6teegTa28DSIxUVZ032f7bltR54dVSRl7W0y4yTPTIjgGUBU3qQu+bgqYbPu9VA==}
+  /@ionic/react@7.6.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-Gg6IezbyvMucgNgmCMFr5vrsh2kgB/5S9j/24L07wt4mCNBy5ZGrzHkq9NSmcgU7bj/qD1GzamjoqICLH2vEzw==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
     dependencies:
-      '@ionic/core': /voyager-ionic-core@7.6.0
+      '@ionic/core': /voyager-ionic-core@7.6.1
       ionicons: 7.2.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -2867,8 +2867,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@stencil/core@4.8.1:
-    resolution: {integrity: sha512-KG1H10j24rlyxIqOI4CG8/h9T7ObTv7giW2H3u1qXV4KKrLykDOpMcLzpqNXqL2Fki3s1QvHyl/oaRvi5waWVw==}
+  /@stencil/core@4.8.2:
+    resolution: {integrity: sha512-KdZEAtz9VnqMtXOkf51+8mphyRt0fN/LYgtj5M8gnveGspG8KzoyTDzlWt0wsstWIsJJ21RA1yd3AgMMZiu3MA==}
     engines: {node: '>=16.0.0', npm: '>=7.10.0'}
     hasBin: true
     dev: true
@@ -11741,10 +11741,10 @@ packages:
       '@capacitor/core': 5.5.1
     dev: true
 
-  /voyager-ionic-core@7.6.0:
-    resolution: {integrity: sha512-epuVdbkMr2VEpZXNQqUe0TkRU6UgiTDVh2AeE1f8a9RvxUJOqNsR1KzBL+2xxf9mlaSlrwPfGkV6ysoyvHWltA==}
+  /voyager-ionic-core@7.6.1:
+    resolution: {integrity: sha512-JbI5Zu7uAeHkYA9ZA/xwCYyWMMFwA+jRPRcHV8ojnFBjcoOxyHscoeXvsxxL3vRM06qj3xS/pgEgUBhJ7eCMSQ==}
     dependencies:
-      '@stencil/core': 4.8.1
+      '@stencil/core': 4.8.2
       ionicons: 7.2.1
       tslib: 2.6.2
     dev: true
