@@ -62,7 +62,9 @@ export default function Markdown(props: ReactMarkdownOptions) {
     <ReactMarkdown
       {...props}
       components={{
-        img: (props) => <MarkdownImg {...props} />,
+        img: (props) => (
+          <MarkdownImg onClick={(e) => e.stopPropagation()} {...props} />
+        ),
         blockquote: (props) => <Blockquote {...props} />,
         code: (props) => <Code {...props} />,
         table: (props) => (

@@ -156,6 +156,7 @@ function PostHeader({
           post={post}
           controls
           constrainHeight={constrainHeight}
+          onClick={(e) => e.stopPropagation()}
         />
       );
     }
