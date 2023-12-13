@@ -203,7 +203,16 @@ export const receivedPosts = createAsyncThunk(
       };
 
     const receivedPostsIds = posts.map((post) => post.post.id);
-    const postMetadatas = await db.getPostMetadatas(receivedPostsIds, handle);
+
+    let postMetadatas: IPostMetadata[];
+
+    try {
+      postMetadatas = await db.getPostMetadatas(receivedPostsIds, handle);
+    } catch (error) {
+      // If lockdown mode or indexeddb unavailable, continue
+      postMetadatas = [];
+      console.error("Error fetching post metadatas", error);
+    }
 
     for (const postMetadata of postMetadatas) {
       postHiddenById[postMetadata.post_id] = !!postMetadata.hidden;
