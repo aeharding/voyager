@@ -76,6 +76,7 @@ function MoreActionsActionSheet({
         {
           text: "Submit Post",
           data: "post",
+          cssClass: "detail",
           icon: createOutline,
           handler: () => {
             post();
