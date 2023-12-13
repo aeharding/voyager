@@ -25,7 +25,11 @@ export default function CommentMarkdown({ children }: CommentMarkdownProps) {
               {props.alt || "Image"}
             </InAppExternalLink>
           ) : (
-            <MarkdownImg small {...props} />
+            <MarkdownImg
+              small
+              onClick={(e) => e.stopPropagation()}
+              {...props}
+            />
           ),
       }}
     >

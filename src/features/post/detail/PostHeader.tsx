@@ -156,6 +156,7 @@ function PostHeader({
           post={post}
           controls
           constrainHeight={constrainHeight}
+          onClick={(e) => e.stopPropagation()}
         />
       );
     }
@@ -200,9 +201,7 @@ function PostHeader({
         }}
       >
         <Container>
-          {showPostText && (
-            <div onClick={(e) => e.stopPropagation()}>{renderMedia()}</div>
-          )}
+          {showPostText && renderMedia()}
           <PostDeets>
             <ModeratableItemBannerOutlet />
             <div>
