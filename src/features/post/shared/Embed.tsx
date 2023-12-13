@@ -16,6 +16,7 @@ import { isNsfwBlurred } from "../../labels/Nsfw";
 import { setPostRead } from "../postSlice";
 import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
+import Url from "../../shared/Url";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -48,12 +49,17 @@ const Img = styled.img<{ blur: boolean }>`
 const Bottom = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+
+  gap: 0.75rem;
+  padding: 0.65rem;
 
   opacity: 0.5;
-
-  padding: 0.5rem 1rem;
   background: var(--ion-color-light);
+
+  @media (min-width: 700px) {
+    gap: 1rem;
+    padding: 0.65rem 1rem;
+  }
 `;
 
 const EmbedIcon = styled(IonIcon)`
@@ -67,9 +73,11 @@ const Divider = styled.div`
   opacity: 0.5;
 `;
 
-const Url = styled.div`
+const UrlContainer = styled.div`
   flex: 1;
   font-size: 0.875em;
+
+  margin-right: -0.5rem; // fudge it closer
 
   white-space: nowrap;
   overflow: hidden;
@@ -113,6 +121,8 @@ export default function Embed({ post, className }: EmbedProps) {
     dispatch(setPostRead(post.post.id));
   };
 
+  if (!post.post.url) return;
+
   return (
     <Container
       className={className}
@@ -131,7 +141,9 @@ export default function Embed({ post, className }: EmbedProps) {
       <Bottom>
         <EmbedIcon icon={icon} />
         <Divider />
-        <Url>{post.post.url}</Url>
+        <UrlContainer>
+          <Url>{post.post.url}</Url>
+        </UrlContainer>
         <IonIcon icon={chevronForward} />
       </Bottom>
     </Container>

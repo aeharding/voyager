@@ -3,7 +3,7 @@ import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
 import { LinkData } from "./CommentLinks";
 import { IonIcon } from "@ionic/react";
 import { chevronForward } from "ionicons/icons";
-import Url from "../Url";
+import Url from "../../shared/Url";
 import LinkPreview from "./LinkPreview";
 
 const StyledLinkInterceptor = styled(LinkInterceptor)`
