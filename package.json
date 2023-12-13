@@ -76,7 +76,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "capacitor-android-nav-mode": "^0.0.1",
     "capacitor-application-context": "^0.0.1",
-    "capacitor-biometric-lock": "^0.1.0",
+    "capacitor-biometric-lock": "^0.1.1",
     "capacitor-plugin-safe-area": "^2.0.6",
     "capacitor-set-version": "^2.2.0",
     "capacitor-stash-media": "^1.0.0",

@@ -33,7 +33,7 @@ include ':capacitor-application-context'
 project(':capacitor-application-context').projectDir = new File('../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.5.1/node_modules/capacitor-application-context/android')
 
 include ':capacitor-biometric-lock'
-project(':capacitor-biometric-lock').projectDir = new File('../node_modules/.pnpm/capacitor-biometric-lock@0.1.0_@capacitor+core@5.5.1/node_modules/capacitor-biometric-lock/android')
+project(':capacitor-biometric-lock').projectDir = new File('../node_modules/.pnpm/capacitor-biometric-lock@0.1.1_@capacitor+core@5.5.1/node_modules/capacitor-biometric-lock/android')
 
 include ':capacitor-plugin-safe-area'
 project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@2.0.6_@capacitor+core@5.5.1/node_modules/capacitor-plugin-safe-area/android')
