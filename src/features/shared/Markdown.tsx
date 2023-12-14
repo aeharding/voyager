@@ -1,10 +1,7 @@
 import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
 import styled from "@emotion/styled";
-import { useAppSelector } from "../../store";
 import LinkInterceptor from "./markdown/LinkInterceptor";
-import buildCommunityPlugin from "./markdown/buildCommunityPlugin";
 import customRemarkGfm from "./markdown/customRemarkGfm";
-import { useMemo } from "react";
 import MarkdownImg from "./MarkdownImg";
 import { css } from "@emotion/react";
 
@@ -59,15 +56,6 @@ const TableContainer = styled.div`
 `;
 
 export default function Markdown(props: ReactMarkdownOptions) {
-  const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance,
-  );
-
-  const communityPlugin = useMemo(
-    () => buildCommunityPlugin(connectedInstance),
-    [connectedInstance],
-  );
-
   return (
     <ReactMarkdown
       {...props}
@@ -91,7 +79,7 @@ export default function Markdown(props: ReactMarkdownOptions) {
         a: (props) => <LinkInterceptor {...props} />,
         ...props.components,
       }}
-      remarkPlugins={[communityPlugin, customRemarkGfm]}
+      remarkPlugins={[customRemarkGfm]}
     />
   );
 }
