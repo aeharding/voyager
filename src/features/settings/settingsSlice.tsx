@@ -455,9 +455,15 @@ export const getDefaultFeed =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
 
-    const defaultFeed = await db.getSetting("default_feed", {
-      user_handle: userHandle,
-    });
+    let defaultFeed;
+
+    try {
+      defaultFeed = await db.getSetting("default_feed", {
+        user_handle: userHandle,
+      });
+    } catch (error) {
+      console.error("Error receiving default feed", error);
+    }
 
     dispatch(setDefaultFeed(defaultFeed ?? { type: ODefaultFeedType.Home }));
   };
