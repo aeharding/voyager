@@ -265,21 +265,30 @@ export const savePost =
   };
 
 export const setPostRead =
-  (postId: number, autoHideDisabled = false) =>
+  (postId: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     if (!jwtSelector(getState())) return;
+
     if (getState().settings.general.posts.disableMarkingRead) return;
 
-    if (getState().settings.general.posts.autoHideRead && !autoHideDisabled)
-      dispatch(hidePost(postId, false));
+    if (getState().post.postReadById[postId]) return;
 
-    if (!getState().post.postReadById[postId]) {
-      dispatch(updatePostRead({ postId }));
-      await clientSelector(getState())?.markPostAsRead({
-        post_id: postId,
-        read: true,
-      });
-    }
+    dispatch(updatePostRead({ postId }));
+    await clientSelector(getState())?.markPostAsRead({
+      post_id: postId,
+      read: true,
+    });
+  };
+
+export const setPostHidden =
+  (postId: number) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    if (!jwtSelector(getState())) return;
+
+    if (getState().settings.general.posts.disableMarkingRead) return;
+    if (!getState().settings.general.posts.autoHideRead) return;
+
+    dispatch(hidePost(postId, false));
   };
 
 export const voteOnPost =

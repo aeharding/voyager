@@ -41,6 +41,7 @@ import useFeedSort from "../../features/feed/sort/useFeedSort";
 import { CenteredSpinner } from "../posts/PostPage";
 import { getRemoteHandleFromHandle } from "../../helpers/lemmy";
 import { useAppSelector } from "../../store";
+import { PageTypeContext } from "../../features/feed/PageTypeContext";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -199,13 +200,14 @@ const CommunityPageContent = memo(function CommunityPageContent({
 
   const feed = sort ? (
     <FeedSearchContext.Provider value={feedSearchContextValue}>
-      <PostCommentFeed
-        fetchFn={fetchFn}
-        communityName={community}
-        sortDuration={getSortDuration(sort)}
-        autoHideIfConfigured
-        header={header}
-      />
+      <PageTypeContext.Provider value="community">
+        <PostCommentFeed
+          fetchFn={fetchFn}
+          communityName={community}
+          sortDuration={getSortDuration(sort)}
+          header={header}
+        />
+      </PageTypeContext.Provider>
     </FeedSearchContext.Provider>
   ) : (
     <CenteredSpinner />
