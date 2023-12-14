@@ -4,7 +4,6 @@ import { visit } from "unist-util-visit";
 import remarkParse from "remark-parse";
 import CommentLink from "./CommentLink";
 import styled from "@emotion/styled";
-import buildCommunityPlugin from "../../shared/markdown/buildCommunityPlugin";
 import customRemarkGfm from "../../shared/markdown/customRemarkGfm";
 import { useAppSelector } from "../../../store";
 import { Link, Text } from "mdast";
@@ -28,23 +27,14 @@ interface CommentLinksProps {
 }
 
 export default function CommentLinks({ markdown }: CommentLinksProps) {
-  const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance,
-  );
-
   const { showCommentImages } = useAppSelector(
     (state) => state.settings.general.comments,
   );
 
   const links = useMemo(() => {
     // Initialize a unified processor with the remark-parse parser
-
-    const communityPlugin = buildCommunityPlugin(connectedInstance);
-
-    // Parse the Markdown content
-    const processor = unified()
-      .use(remarkParse)
-      .use([communityPlugin, customRemarkGfm]);
+    // and parse the Markdown content
+    const processor = unified().use(remarkParse).use([customRemarkGfm]);
 
     const mdastTree = processor.parse(markdown);
     processor.runSync(mdastTree, markdown);
@@ -75,7 +65,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     links = links.slice(0, 4);
 
     return links;
-  }, [markdown, connectedInstance, showCommentImages]);
+  }, [markdown, showCommentImages]);
 
   if (!links.length) return;
 
