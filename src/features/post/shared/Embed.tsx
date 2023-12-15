@@ -13,10 +13,11 @@ import { PostView } from "lemmy-js-client";
 import { MouseEvent, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { isNsfwBlurred } from "../../labels/Nsfw";
-import { setPostRead } from "../postSlice";
 import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 import Url from "../../shared/Url";
+import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
+import { setPostRead } from "../postSlice";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -90,12 +91,14 @@ interface EmbedProps {
 }
 
 export default function Embed({ post, className }: EmbedProps) {
-  const [error, setError] = useState(false);
   const dispatch = useAppDispatch();
+  const autohidePostIfNeeded = useAutohidePostIfNeeded();
+  const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
+
+  const [error, setError] = useState(false);
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,
   );
-  const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
 
   const icon = useMemo(() => {
     const type = post.post.url
@@ -118,7 +121,9 @@ export default function Embed({ post, className }: EmbedProps) {
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
+
     dispatch(setPostRead(post.post.id));
+    autohidePostIfNeeded(post);
   };
 
   if (!post.post.url) return;

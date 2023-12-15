@@ -2,11 +2,11 @@ import { useIonViewDidEnter } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import Comments, { CommentsHandle } from "../../comment/Comments";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { setPostRead } from "../postSlice";
 import { CommentSortType, PostView } from "lemmy-js-client";
 import ViewAllComments from "./ViewAllComments";
 import JumpFab from "../../comment/JumpFab";
 import PostHeader from "./PostHeader";
+import { setPostRead } from "../postSlice";
 
 interface PostDetailProps {
   post: PostView;
@@ -37,7 +37,7 @@ export default function PostDetail({
   useEffect(() => {
     if (!post || !ionViewEntered) return;
 
-    dispatch(setPostRead(+post.post.id));
+    dispatch(setPostRead(post.post.id));
   }, [post, ionViewEntered, dispatch]);
 
   useIonViewDidEnter(() => {
