@@ -6,7 +6,7 @@ import { buildUserLink } from "../../../../helpers/appLinkBuilder";
 
 export default function banFromInstance(item: ModBanView): LogEntryData {
   return {
-    title: `${item.mod_ban.banned ? "Banned" : "Unbanned"} User [instance]`,
+    title: `${item.mod_ban.banned ? "Banned" : "Unbanned"} User`,
     by: item.moderator ? getHandle(item.moderator) : undefined,
     message: getHandle(item.banned_person),
     link: buildUserLink(item.banned_person),
