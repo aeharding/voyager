@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PostView } from "lemmy-js-client";
-import { setPostHidden, setPostRead } from "../post/postSlice";
+import { setPostHidden } from "../post/postSlice";
 
 export type PageTypeContextValue = "community" | "special-feed" | undefined;
 
@@ -19,36 +19,32 @@ export function useAutohidePostIfNeeded() {
     (state) => state.settings.general.posts.disableAutoHideInCommunities,
   );
 
-  const determineShouldAutohide = useCallback(
-    (pageTypeOverride?: PageTypeContextValue) => {
-      switch (pageTypeOverride ?? pageType) {
-        case "community":
-          return !disableAutoHideInCommunities;
-        case "special-feed":
-          return true; // setPostRead doesn't auto-hide if feature is turned completely off
-        default:
-          return false;
-      }
-    },
-    [disableAutoHideInCommunities, pageType],
-  );
-
   return useCallback(
-    ({ post }: PostView, pageTypeOverride?: PageTypeContextValue) => {
-      dispatch(setPostRead(post.id));
+    ({ post }: PostView, trigger: "scroll" | "tap" = "tap") => {
+      const shouldAutohide = (() => {
+        switch (pageType) {
+          case "community":
+            return !disableAutoHideInCommunities;
+          case "special-feed":
+            return true; // setPostRead doesn't auto-hide if feature is turned completely off
+          default:
+            return false;
+        }
+      })();
 
-      const shouldAutohide = determineShouldAutohide(pageTypeOverride);
+      if (!shouldAutohide) return;
 
       // Determine if the post is pinned in the current feed
       const postIsPinned =
         (pageType === "community" && post.featured_community) ||
         (pageType === "special-feed" && post.featured_local);
 
-      // Pinned posts should not be automatically hidden
-      const shouldAutoHidePost = shouldAutohide && !postIsPinned;
+      // Pinned posts should not be automatically hidden on scroll auto hide,
+      // but should when explicitly tapped
+      if (postIsPinned && trigger === "scroll") return;
 
-      if (shouldAutoHidePost) dispatch(setPostHidden(post.id));
+      dispatch(setPostHidden(post.id));
     },
-    [determineShouldAutohide, dispatch, pageType],
+    [disableAutoHideInCommunities, dispatch, pageType],
   );
 }

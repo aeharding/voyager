@@ -223,7 +223,7 @@ export default function PostCommentFeed({
     if (!isPost(item)) return;
 
     dispatch(setPostRead(item.post.id));
-    autohidePostIfNeeded(item);
+    autohidePostIfNeeded(item, "scroll");
   }
 
   return (
