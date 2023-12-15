@@ -5,5 +5,7 @@ import InitialPageRedirectBootstrapper from "../community/list/InitialPageRedire
 export default function BoxesRedirectBootstrapper() {
   const iss = useAppSelector(jwtIssSelector);
 
-  return <InitialPageRedirectBootstrapper to={iss ? "/inbox/all" : ""} />;
+  if (!iss) return;
+
+  return <InitialPageRedirectBootstrapper to="/inbox/all" />;
 }
