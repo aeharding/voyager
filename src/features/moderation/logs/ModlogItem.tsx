@@ -60,6 +60,7 @@ const Title = styled.div``;
 const Message = styled.div`
   color: var(--ion-color-medium);
 `;
+const Reason = styled.div``;
 
 interface ModLogItemProps {
   item: ModlogItemType;
@@ -69,6 +70,7 @@ export interface LogEntryData {
   title: string;
   when: string;
   message?: string;
+  reason?: string;
   by?: string;
   link?: string;
 }
@@ -116,7 +118,7 @@ function renderModlogData(item: ModlogItemType): LogEntryData {
 
 export function ModlogItem({ item }: ModLogItemProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { title, by, when, message, link } = renderModlogData(item);
+  const { title, by, when, message, reason, link } = renderModlogData(item);
 
   return (
     <IonItem
@@ -133,6 +135,7 @@ export function ModlogItem({ item }: ModLogItemProps) {
           </aside>
         </TitleLine>
         <Message>{message}</Message>
+        {reason && <Reason>Reason: {reason}</Reason>}
       </Contents>
     </IonItem>
   );
