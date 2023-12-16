@@ -51,7 +51,7 @@ export function DynamicDismissableModal({
 
     await presentActionSheet([
       {
-        text: "Delete",
+        text: "Discard",
         role: "destructive",
         handler: () => {
           clearRecoveredText();
