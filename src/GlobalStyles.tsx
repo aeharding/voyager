@@ -9,6 +9,7 @@ import {
 import React, { useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { isNative } from "./helpers/device";
+import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
 
 interface GlobalStylesProps {
   children: React.ReactNode;
@@ -40,6 +41,17 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
 
     StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
   }, [isDark]);
+
+  useEffect(() => {
+    const keyboardStyle = (() => {
+      if (usingSystemDarkMode) return KeyboardStyle.Default;
+
+      if (isDark) return KeyboardStyle.Dark;
+      return KeyboardStyle.Light;
+    })();
+
+    Keyboard.setStyle({ style: keyboardStyle });
+  }, [isDark, usingSystemDarkMode]);
 
   return (
     <ThemeProvider theme={{ dark: isDark }}>
