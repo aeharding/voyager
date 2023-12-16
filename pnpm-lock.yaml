@@ -24,43 +24,43 @@ dependencies:
 devDependencies:
   '@capacitor-community/app-icon':
     specifier: ^4.1.1
-    version: 4.1.1(@capacitor/core@5.5.1)
+    version: 4.1.1(@capacitor/core@5.6.0)
   '@capacitor/android':
-    specifier: 5.5.1
-    version: 5.5.1(@capacitor/core@5.5.1)
+    specifier: 5.6.0
+    version: 5.6.0(@capacitor/core@5.6.0)
   '@capacitor/app':
     specifier: ^5.0.6
-    version: 5.0.6(@capacitor/core@5.5.1)
+    version: 5.0.6(@capacitor/core@5.6.0)
   '@capacitor/assets':
     specifier: ^3.0.4
     version: 3.0.4(@types/node@20.10.4)(typescript@5.3.3)
   '@capacitor/browser':
     specifier: ^5.1.0
-    version: 5.1.0(@capacitor/core@5.5.1)
+    version: 5.1.0(@capacitor/core@5.6.0)
   '@capacitor/cli':
-    specifier: 5.5.1
-    version: 5.5.1
+    specifier: 5.6.0
+    version: 5.6.0
   '@capacitor/core':
-    specifier: 5.5.1
-    version: 5.5.1
+    specifier: 5.6.0
+    version: 5.6.0
   '@capacitor/filesystem':
-    specifier: ^5.1.4
-    version: 5.1.4(@capacitor/core@5.5.1)
+    specifier: ^5.2.0
+    version: 5.2.0(@capacitor/core@5.6.0)
   '@capacitor/haptics':
     specifier: npm:voyager-capacitor-haptics@^5.0.7
-    version: /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.5.1)
+    version: /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.6.0)
   '@capacitor/ios':
-    specifier: 5.5.1
-    version: 5.5.1(@capacitor/core@5.5.1)
+    specifier: 5.6.0
+    version: 5.6.0(@capacitor/core@5.6.0)
   '@capacitor/keyboard':
-    specifier: ^5.0.6
-    version: 5.0.6(@capacitor/core@5.5.1)
+    specifier: ^5.0.7
+    version: 5.0.7(@capacitor/core@5.6.0)
   '@capacitor/share':
     specifier: ^5.0.6
-    version: 5.0.6(@capacitor/core@5.5.1)
+    version: 5.0.6(@capacitor/core@5.6.0)
   '@capacitor/status-bar':
     specifier: ^5.0.6
-    version: 5.0.6(@capacitor/core@5.5.1)
+    version: 5.0.6(@capacitor/core@5.6.0)
   '@emotion/babel-plugin':
     specifier: ^11.11.0
     version: 11.11.0
@@ -69,7 +69,7 @@ devDependencies:
     version: 11.11.2
   '@emotion/eslint-plugin':
     specifier: ^11.11.0
-    version: 11.11.0(eslint@8.55.0)
+    version: 11.11.0(eslint@8.56.0)
   '@emotion/react':
     specifier: ^11.11.1
     version: 11.11.1(@types/react@18.2.45)(react@18.2.0)
@@ -122,8 +122,8 @@ devDependencies:
     specifier: ^18.2.45
     version: 18.2.45
   '@types/react-dom':
-    specifier: ^18.2.17
-    version: 18.2.17
+    specifier: ^18.2.18
+    version: 18.2.18
   '@types/react-router':
     specifier: ^5.1.20
     version: 5.1.20
@@ -138,37 +138,37 @@ devDependencies:
     version: 9.0.7
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.14.0
-    version: 6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.55.0)(typescript@5.3.3)
+    version: 6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.56.0)(typescript@5.3.3)
   '@typescript-eslint/parser':
     specifier: ^6.14.0
-    version: 6.14.0(eslint@8.55.0)(typescript@5.3.3)
+    version: 6.14.0(eslint@8.56.0)(typescript@5.3.3)
   '@vitejs/plugin-legacy':
     specifier: ^5.2.0
-    version: 5.2.0(terser@5.26.0)(vite@5.0.9)
+    version: 5.2.0(terser@5.26.0)(vite@5.0.10)
   '@vitejs/plugin-react':
     specifier: ^4.2.1
-    version: 4.2.1(vite@5.0.9)
+    version: 4.2.1(vite@5.0.10)
   capacitor-android-nav-mode:
     specifier: ^0.0.1
-    version: 0.0.1(@capacitor/core@5.5.1)
+    version: 0.0.1(@capacitor/core@5.6.0)
   capacitor-application-context:
     specifier: ^0.0.1
-    version: 0.0.1(@capacitor/core@5.5.1)
+    version: 0.0.1(@capacitor/core@5.6.0)
   capacitor-biometric-lock:
     specifier: ^0.1.1
-    version: 0.1.1(@capacitor/core@5.5.1)
+    version: 0.1.1(@capacitor/core@5.6.0)
   capacitor-plugin-safe-area:
     specifier: ^2.0.6
-    version: 2.0.6(@capacitor/core@5.5.1)
+    version: 2.0.6(@capacitor/core@5.6.0)
   capacitor-set-version:
     specifier: ^2.2.0
     version: 2.2.0(@types/node@20.10.4)(typescript@5.3.3)
   capacitor-stash-media:
     specifier: ^1.0.0
-    version: 1.0.0(@capacitor/core@5.5.1)
+    version: 1.0.0(@capacitor/core@5.6.0)
   capacitor-tips:
     specifier: ^0.0.2
-    version: 0.0.2(@capacitor/core@5.5.1)
+    version: 0.0.2(@capacitor/core@5.6.0)
   compare-versions:
     specifier: ^6.1.0
     version: 6.1.0
@@ -182,20 +182,20 @@ devDependencies:
     specifier: ^1.1.7
     version: 1.1.7(@types/react@18.2.45)(dexie@3.2.4)(react@18.2.0)
   eslint:
-    specifier: ^8.55.0
-    version: 8.55.0
+    specifier: ^8.56.0
+    version: 8.56.0
   eslint-config-prettier:
     specifier: ^9.1.0
-    version: 9.1.0(eslint@8.55.0)
+    version: 9.1.0(eslint@8.56.0)
   eslint-plugin-prettier:
     specifier: ^5.0.1
-    version: 5.0.1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1)
+    version: 5.0.1(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.1.1)
   eslint-plugin-react:
     specifier: ^7.33.2
-    version: 7.33.2(eslint@8.55.0)
+    version: 7.33.2(eslint@8.56.0)
   eslint-plugin-react-hooks:
     specifier: ^4.6.0
-    version: 4.6.0(eslint@8.55.0)
+    version: 4.6.0(eslint@8.56.0)
   history:
     specifier: ^4.10.1
     version: 4.10.1
@@ -257,8 +257,8 @@ devDependencies:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   react-error-boundary:
-    specifier: ^4.0.11
-    version: 4.0.11(react@18.2.0)
+    specifier: ^4.0.12
+    version: 4.0.12(react@18.2.0)
   react-intersection-observer:
     specifier: ^9.5.3
     version: 9.5.3(react@18.2.0)
@@ -323,14 +323,14 @@ devDependencies:
     specifier: ^0.17.5
     version: 0.17.5(react-dom@18.2.0)(react@18.2.0)
   vite:
-    specifier: ^5.0.9
-    version: 5.0.9(@types/node@20.10.4)(terser@5.26.0)
+    specifier: ^5.0.10
+    version: 5.0.10(@types/node@20.10.4)(terser@5.26.0)
   vite-plugin-pwa:
     specifier: ^0.17.4
-    version: 0.17.4(vite@5.0.9)(workbox-build@7.0.0)(workbox-window@7.0.0)
+    version: 0.17.4(vite@5.0.10)(workbox-build@7.0.0)(workbox-window@7.0.0)
   vite-plugin-svgr:
     specifier: ^4.2.0
-    version: 4.2.0(rollup@2.79.1)(typescript@5.3.3)(vite@5.0.9)
+    version: 4.2.0(rollup@2.79.1)(typescript@5.3.3)(vite@5.0.10)
   vitest:
     specifier: ^1.0.4
     version: 1.0.4(@types/node@20.10.4)(jsdom@23.0.1)(terser@5.26.0)
@@ -2514,7 +2514,7 @@ packages:
     resolution: {integrity: sha512-zHd0eUrf5GZoOWVCXp6koAKQTfZV07eit6bGPmJgnZdnSAvvZee6zniW2XMF7Cmc4ISOOnPy3QaSiIJGJkVEDQ==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      regenerator-runtime: 0.14.0
+      regenerator-runtime: 0.14.1
     dev: true
 
   /@babel/template@7.22.15:
@@ -2580,28 +2580,28 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@capacitor-community/app-icon@4.1.1(@capacitor/core@5.5.1):
+  /@capacitor-community/app-icon@4.1.1(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-76oedS4WnilQEoMszraBVMZIx52H5zNFHHsBuwMKARGrp1fkjOJpmxIYuuwmJSr2KojXllPMSskS43Yf8XdGbA==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /@capacitor/android@5.5.1(@capacitor/core@5.5.1):
-    resolution: {integrity: sha512-WTnPnpaEvTtaEtTNRbh06Y1afF7A4plY/4uajAL0WW8tdR1FxieadF357yKGiAT6CudI/B+eOu6rxn6qWuphKg==}
+  /@capacitor/android@5.6.0(@capacitor/core@5.6.0):
+    resolution: {integrity: sha512-6O7xV6K6c8WvQzKxOe7fnhRyoVpS3TNDXy1FyfhvOvclBvu+1JddSdFvW4e4dSL60s2c00sCzNRgYhm+cn0/dQ==}
     peerDependencies:
-      '@capacitor/core': ^5.5.0
+      '@capacitor/core': ^5.6.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /@capacitor/app@5.0.6(@capacitor/core@5.5.1):
+  /@capacitor/app@5.0.6(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-6ZXVdnNmaYILasC/RjQw+yfTmq2ZO7Q3v5lFcDVfq3PFGnybyYQh+RstBrYri+376OmXOXxBD7E6UxBhrMzXGA==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
   /@capacitor/assets@3.0.4(@types/node@20.10.4)(typescript@5.3.3):
@@ -2609,7 +2609,7 @@ packages:
     engines: {node: '>=10.3.0'}
     hasBin: true
     dependencies:
-      '@capacitor/cli': 5.5.1
+      '@capacitor/cli': 5.6.0
       '@ionic/utils-array': 2.1.6
       '@ionic/utils-fs': 3.1.7
       '@trapezedev/project': 7.0.10(@types/node@20.10.4)(typescript@5.3.3)
@@ -2630,16 +2630,16 @@ packages:
       - typescript
     dev: true
 
-  /@capacitor/browser@5.1.0(@capacitor/core@5.5.1):
+  /@capacitor/browser@5.1.0(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-7togqchk2Tvq4SmLaWhcrd4x48ES/GEZsceM+29aun7WhxQEVcDU0cJsVdSU2LNFwNhWgPV2GW90etVd1B3OdQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /@capacitor/cli@5.5.1:
-    resolution: {integrity: sha512-/oGd2IIc+k1H/fc7tUzP7vqMtZi0gNcJ4/4wUE2kzAnETxxxHXMM/2V62KfjCby/OOAzJbtI7n5OPlnWE9un1A==}
+  /@capacitor/cli@5.6.0:
+    resolution: {integrity: sha512-h2HLkjPn+hd95F0iOlSWROW15kxj/0qNuzXgktSNQ55Z3dCeWmelgfkbYwjo0eqiunv5zNa31H0YvrpnIVdKEA==}
     engines: {node: '>=16.0.0'}
     hasBin: true
     dependencies:
@@ -2651,7 +2651,7 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       env-paths: 2.2.1
       kleur: 4.1.5
-      native-run: 1.7.4
+      native-run: 2.0.0
       open: 8.4.2
       plist: 3.1.0
       prompts: 2.4.2
@@ -2664,50 +2664,50 @@ packages:
       - supports-color
     dev: true
 
-  /@capacitor/core@5.5.1:
-    resolution: {integrity: sha512-VG6Iv8Q7ZAbvjodxpvjcSe0jfxUwZXnvjbi93ehuJ6eYP8U926qLSXyrT/DToZq+F6v/HyGyVgn3mrE/9jW2Tg==}
+  /@capacitor/core@5.6.0:
+    resolution: {integrity: sha512-xJhCOUGPHw0QYDA3YH+CmL6qiV9DH4Ij3yPxSenymjrtLuXI197u9ddCZwGEwgVIkh9kGZBBKzsNkn89SZ2gdQ==}
     dependencies:
       tslib: 2.6.2
     dev: true
 
-  /@capacitor/filesystem@5.1.4(@capacitor/core@5.5.1):
-    resolution: {integrity: sha512-10EM1KvFMs+pTzxkcflspzxBWcX9sOnS9nTP5Afjr5hn4OxLrwTFySw2Z12Uv6jdN4OnhY3jXtDKXPljXvXILg==}
+  /@capacitor/filesystem@5.2.0(@capacitor/core@5.6.0):
+    resolution: {integrity: sha512-fyv+yWVFfglobPPveIRm4+ryMGI8vW27vjX63HDwB7K5fscSYajid+ie3qfwl2wkbPhlX8KTPes7IPij0lCmQg==}
     peerDependencies:
       '@capacitor/core': ^5.1.1
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /@capacitor/ios@5.5.1(@capacitor/core@5.5.1):
-    resolution: {integrity: sha512-h00qt8u32t8eEbIkuG4IjR0r34YZC0sIXglDH8fRDdA84xDkTybmz3WtdpRWDzh6ukE2RIY7rmD7p410WSJ2yA==}
+  /@capacitor/ios@5.6.0(@capacitor/core@5.6.0):
+    resolution: {integrity: sha512-iswpOcD5us10hIF5zS4w6k/ekW0A+2pXhDV4AHOBXR4VOkOMI8QJaavgl9JvZ/NVvVNJdEN2rOKCMNh4AH08sw==}
     peerDependencies:
-      '@capacitor/core': ^5.5.0
+      '@capacitor/core': ^5.6.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /@capacitor/keyboard@5.0.6(@capacitor/core@5.5.1):
-    resolution: {integrity: sha512-9GewAa/y2Hwkdw/Be8MTdiAjrFZ7TPDKpR44M0Y/0QMnK+mBbgzcoZ/UkuumWv6e2F1IAI+VY5eYVQHDeZcRoA==}
+  /@capacitor/keyboard@5.0.7(@capacitor/core@5.6.0):
+    resolution: {integrity: sha512-+6lW8z2nXTM2NOG7D7pOasCfIGicz26+EeDRXIj5AtJibbjwtE1Q5GIY+qGHgzpmwOF0qmcrGJBz4zagDwUapg==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /@capacitor/share@5.0.6(@capacitor/core@5.5.1):
+  /@capacitor/share@5.0.6(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-/dVOW7kcuuD7hWB9Z1drArIpEk+5JCoMnMrAs2c7CLp3q5PeaXNJjTkGr6RJ1OtMhsHyXc6DAFwQ4frFkmZsgw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /@capacitor/status-bar@5.0.6(@capacitor/core@5.5.1):
+  /@capacitor/status-bar@5.0.6(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-7od8CxsBnot1XMK3IeOkproFL4hgoKoWAc3pwUvmDOkQsXoxwQm4SR9mLwQavv1XfxtHbFV9Ukd7FwMxOPSViw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
   /@cspotcode/source-map-support@0.8.1:
@@ -2753,13 +2753,13 @@ packages:
       '@emotion/utils': 1.2.1
     dev: true
 
-  /@emotion/eslint-plugin@11.11.0(eslint@8.55.0):
+  /@emotion/eslint-plugin@11.11.0(eslint@8.56.0):
     resolution: {integrity: sha512-jCOYqU/0Sqm+g+6D7QuIlG99q8YAF0T7BP98zQF/MPZKfbcm46z5mizXn0YlhZ9AYZfNtZ1DeODXdncYxZzR4Q==}
     engines: {node: '>=6'}
     peerDependencies:
       eslint: 6 || 7 || 8
     dependencies:
-      eslint: 8.55.0
+      eslint: 8.56.0
     dev: true
 
   /@emotion/hash@0.9.1:
@@ -3050,13 +3050,13 @@ packages:
     dev: true
     optional: true
 
-  /@eslint-community/eslint-utils@4.4.0(eslint@8.55.0):
+  /@eslint-community/eslint-utils@4.4.0(eslint@8.56.0):
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
     dependencies:
-      eslint: 8.55.0
+      eslint: 8.56.0
       eslint-visitor-keys: 3.4.3
     dev: true
 
@@ -3082,8 +3082,8 @@ packages:
       - supports-color
     dev: true
 
-  /@eslint/js@8.55.0:
-    resolution: {integrity: sha512-qQfo2mxH5yVom1kacMtZZJFVdW+E70mqHMJvVg6WTLo+VBuQJ4TojZlfWBjK0ve5BdEeNAVxOsl/nvNMpJOaJA==}
+  /@eslint/js@8.56.0:
+    resolution: {integrity: sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
@@ -4102,7 +4102,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.5
       '@testing-library/dom': 9.3.3
-      '@types/react-dom': 18.2.17
+      '@types/react-dom': 18.2.18
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: true
@@ -4407,8 +4407,8 @@ packages:
     resolution: {integrity: sha512-ga8y9v9uyeiLdpKddhxYQkxNDrfvuPrlFb0N1qnZZByvcElJaXthF1UhvCh9TLWJBEHeNtdnbysW7Y6Uq8CVng==}
     dev: true
 
-  /@types/react-dom@18.2.17:
-    resolution: {integrity: sha512-rvrT/M7Df5eykWFxn6MYt5Pem/Dbyc1N8Y0S9Mrkw2WFCRiqUgw9P7ul2NpwsXCSM1DVdENzdG9J5SreqfAIWg==}
+  /@types/react-dom@18.2.18:
+    resolution: {integrity: sha512-TJxDm6OfAX2KJWJdMEVTwWke5Sc/E/RlnPGvGfS0W7+6ocy2xhDVQVh/KvC2Uf7kACs+gDytdusDSdWfWkaNzw==}
     dependencies:
       '@types/react': 18.2.45
     dev: true
@@ -4504,7 +4504,7 @@ packages:
     dev: true
     optional: true
 
-  /@typescript-eslint/eslint-plugin@6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.55.0)(typescript@5.3.3):
+  /@typescript-eslint/eslint-plugin@6.14.0(@typescript-eslint/parser@6.14.0)(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-1ZJBykBCXaSHG94vMMKmiHoL0MhNHKSVlcHVYZNw+BKxufhqQVTOawNpwwI1P5nIFZ/4jLVop0mcY6mJJDFNaw==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -4516,13 +4516,13 @@ packages:
         optional: true
     dependencies:
       '@eslint-community/regexpp': 4.10.0
-      '@typescript-eslint/parser': 6.14.0(eslint@8.55.0)(typescript@5.3.3)
+      '@typescript-eslint/parser': 6.14.0(eslint@8.56.0)(typescript@5.3.3)
       '@typescript-eslint/scope-manager': 6.14.0
-      '@typescript-eslint/type-utils': 6.14.0(eslint@8.55.0)(typescript@5.3.3)
-      '@typescript-eslint/utils': 6.14.0(eslint@8.55.0)(typescript@5.3.3)
+      '@typescript-eslint/type-utils': 6.14.0(eslint@8.56.0)(typescript@5.3.3)
+      '@typescript-eslint/utils': 6.14.0(eslint@8.56.0)(typescript@5.3.3)
       '@typescript-eslint/visitor-keys': 6.14.0
       debug: 4.3.4(supports-color@8.1.1)
-      eslint: 8.55.0
+      eslint: 8.56.0
       graphemer: 1.4.0
       ignore: 5.3.0
       natural-compare: 1.4.0
@@ -4533,7 +4533,7 @@ packages:
       - supports-color
     dev: true
 
-  /@typescript-eslint/parser@6.14.0(eslint@8.55.0)(typescript@5.3.3):
+  /@typescript-eslint/parser@6.14.0(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-QjToC14CKacd4Pa7JK4GeB/vHmWFJckec49FR4hmIRf97+KXole0T97xxu9IFiPxVQ1DBWrQ5wreLwAGwWAVQA==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -4548,7 +4548,7 @@ packages:
       '@typescript-eslint/typescript-estree': 6.14.0(typescript@5.3.3)
       '@typescript-eslint/visitor-keys': 6.14.0
       debug: 4.3.4(supports-color@8.1.1)
-      eslint: 8.55.0
+      eslint: 8.56.0
       typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
@@ -4562,7 +4562,7 @@ packages:
       '@typescript-eslint/visitor-keys': 6.14.0
     dev: true
 
-  /@typescript-eslint/type-utils@6.14.0(eslint@8.55.0)(typescript@5.3.3):
+  /@typescript-eslint/type-utils@6.14.0(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-x6OC9Q7HfYKqjnuNu5a7kffIYs3No30isapRBJl1iCHLitD8O0lFbRcVGiOcuyN837fqXzPZ1NS10maQzZMKqw==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
@@ -4573,9 +4573,9 @@ packages:
         optional: true
     dependencies:
       '@typescript-eslint/typescript-estree': 6.14.0(typescript@5.3.3)
-      '@typescript-eslint/utils': 6.14.0(eslint@8.55.0)(typescript@5.3.3)
+      '@typescript-eslint/utils': 6.14.0(eslint@8.56.0)(typescript@5.3.3)
       debug: 4.3.4(supports-color@8.1.1)
-      eslint: 8.55.0
+      eslint: 8.56.0
       ts-api-utils: 1.0.3(typescript@5.3.3)
       typescript: 5.3.3
     transitivePeerDependencies:
@@ -4608,19 +4608,19 @@ packages:
       - supports-color
     dev: true
 
-  /@typescript-eslint/utils@6.14.0(eslint@8.55.0)(typescript@5.3.3):
+  /@typescript-eslint/utils@6.14.0(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-XwRTnbvRr7Ey9a1NT6jqdKX8y/atWG+8fAIu3z73HSP8h06i3r/ClMhmaF/RGWGW1tHJEwij1uEg2GbEmPYvYg==}
     engines: {node: ^16.0.0 || >=18.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@8.55.0)
+      '@eslint-community/eslint-utils': 4.4.0(eslint@8.56.0)
       '@types/json-schema': 7.0.15
       '@types/semver': 7.5.6
       '@typescript-eslint/scope-manager': 6.14.0
       '@typescript-eslint/types': 6.14.0
       '@typescript-eslint/typescript-estree': 6.14.0(typescript@5.3.3)
-      eslint: 8.55.0
+      eslint: 8.56.0
       semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
@@ -4639,7 +4639,7 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
 
-  /@vitejs/plugin-legacy@5.2.0(terser@5.26.0)(vite@5.0.9):
+  /@vitejs/plugin-legacy@5.2.0(terser@5.26.0)(vite@5.0.10):
     resolution: {integrity: sha512-FGpxQCgyI8SHA/TkFH5vfBManyc6GYkCoYtmom924c7sKObnBE7q543RQuKK46duI4j31Nv1wg4GRNtCfsGpGQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
@@ -4654,12 +4654,12 @@ packages:
       regenerator-runtime: 0.14.0
       systemjs: 6.14.2
       terser: 5.26.0
-      vite: 5.0.9(@types/node@20.10.4)(terser@5.26.0)
+      vite: 5.0.10(@types/node@20.10.4)(terser@5.26.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-react@4.2.1(vite@5.0.9):
+  /@vitejs/plugin-react@4.2.1(vite@5.0.10):
     resolution: {integrity: sha512-oojO9IDc4nCUUi8qIR11KoQm0XFFLIwsRBwHRR4d/88IWghn1y6ckz/bJ8GHDCsYEJee8mDzqtJxh15/cisJNQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -4670,7 +4670,7 @@ packages:
       '@babel/plugin-transform-react-jsx-source': 7.23.3(@babel/core@7.23.5)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.0
-      vite: 5.0.9(@types/node@20.10.4)(terser@5.26.0)
+      vite: 5.0.10(@types/node@20.10.4)(terser@5.26.0)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5280,7 +5280,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001570
-      electron-to-chromium: 1.4.612
+      electron-to-chromium: 1.4.614
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.22.2)
     dev: true
@@ -5396,36 +5396,36 @@ packages:
     resolution: {integrity: sha512-+3e0ASu4sw1SWaoCtvPeyXp+5PsjigkSt8OXZbF9StH5pQWbxEjLAZE3n8Aup5udop1uRiKA7a4utUk/uoSpUw==}
     dev: true
 
-  /capacitor-android-nav-mode@0.0.1(@capacitor/core@5.5.1):
+  /capacitor-android-nav-mode@0.0.1(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-cnEk7CqDCjNokhDr/DTY/w/qgZqUr/+tTqavjl5PIBCXNkqUCHAP/nBFebZN5wZfAwD9WaXJp67Q1MtfaQNpVw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /capacitor-application-context@0.0.1(@capacitor/core@5.5.1):
+  /capacitor-application-context@0.0.1(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-XYHvn01l3VxbGh/fs77aBTyEW54TOoEDlXYkAEeRe7PQCwU8EfVCX5MLvuWVCoIzpRlEWYNCFCS1TvLkmV7IsQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /capacitor-biometric-lock@0.1.1(@capacitor/core@5.5.1):
+  /capacitor-biometric-lock@0.1.1(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-vqO0GijlOscXyAON21myo72LW3+eiOl+3eOLX7Rb/WFRqJeYCySZjH9/Eh+ip28B05dr7scO9vFB5VTh1trtEQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /capacitor-plugin-safe-area@2.0.6(@capacitor/core@5.5.1):
+  /capacitor-plugin-safe-area@2.0.6(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-7arNdX72Zbx5GtP9XlJFOne13QM8/FibTuBqG2EPdqBMGdYNiMk4G8ivD/Ovt2/w9VGWahOBCWwo2S99UgT1VQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
   /capacitor-set-version@2.2.0(@types/node@20.10.4)(typescript@5.3.3):
@@ -5450,20 +5450,20 @@ packages:
       - typescript
     dev: true
 
-  /capacitor-stash-media@1.0.0(@capacitor/core@5.5.1):
+  /capacitor-stash-media@1.0.0(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-9Uqv7KYwA8S8EpuNerzB/ljnwNSTaGiGXJJ8mxXPcj3lnY+84ObS63k0VuPkTYwc+1Q6HaZgjd4Y4cYaDmElaw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
-  /capacitor-tips@0.0.2(@capacitor/core@5.5.1):
+  /capacitor-tips@0.0.2(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-ig/inocKk8oVfiOst6inGLl5dhA8/bFtlhpZNTjSffGEhyAGnK2rsGn2FWkM39qBP4+3/0xakI80BwO1PvKsXQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
   /cardinal@2.1.1:
@@ -6566,8 +6566,8 @@ packages:
     resolution: {integrity: sha512-SpwUMDWe9tQu8JX5QCO1+p/hChAi9AE9UpoC3rcHVc+gdCGlbT3SGb5I1klgb952HRIyvt9wZhSz9bNBYz9swA==}
     dev: true
 
-  /electron-to-chromium@1.4.612:
-    resolution: {integrity: sha512-dM8BMtXtlH237ecSMnYdYuCkib2QHq0kpWfUnavjdYsyr/6OsAwg5ZGUfnQ9KD1Ga4QgB2sqXlB2NT8zy2GnVg==}
+  /electron-to-chromium@1.4.614:
+    resolution: {integrity: sha512-X4ze/9Sc3QWs6h92yerwqv7aB/uU8vCjZcrMjA8N9R1pjMFRe44dLsck5FzLilOYvcXuDn93B+bpGYyufc70gQ==}
     dev: true
 
   /elementtree@0.1.7:
@@ -6807,16 +6807,16 @@ packages:
       source-map: 0.6.1
     dev: true
 
-  /eslint-config-prettier@9.1.0(eslint@8.55.0):
+  /eslint-config-prettier@9.1.0(eslint@8.56.0):
     resolution: {integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
     dependencies:
-      eslint: 8.55.0
+      eslint: 8.56.0
     dev: true
 
-  /eslint-plugin-prettier@5.0.1(eslint-config-prettier@9.1.0)(eslint@8.55.0)(prettier@3.1.1):
+  /eslint-plugin-prettier@5.0.1(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.1.1):
     resolution: {integrity: sha512-m3u5RnR56asrwV/lDC4GHorlW75DsFfmUcjfCYylTUs85dBRnB7VM6xG8eCMJdeDRnppzmxZVf1GEPJvl1JmNg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -6830,23 +6830,23 @@ packages:
       eslint-config-prettier:
         optional: true
     dependencies:
-      eslint: 8.55.0
-      eslint-config-prettier: 9.1.0(eslint@8.55.0)
+      eslint: 8.56.0
+      eslint-config-prettier: 9.1.0(eslint@8.56.0)
       prettier: 3.1.1
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.6
     dev: true
 
-  /eslint-plugin-react-hooks@4.6.0(eslint@8.55.0):
+  /eslint-plugin-react-hooks@4.6.0(eslint@8.56.0):
     resolution: {integrity: sha512-oFc7Itz9Qxh2x4gNHStv3BqJq54ExXmfC+a1NjAta66IAN87Wu0R/QArgIS9qKzX3dXKPI9H5crl9QchNMY9+g==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
     dependencies:
-      eslint: 8.55.0
+      eslint: 8.56.0
     dev: true
 
-  /eslint-plugin-react@7.33.2(eslint@8.55.0):
+  /eslint-plugin-react@7.33.2(eslint@8.56.0):
     resolution: {integrity: sha512-73QQMKALArI8/7xGLNI/3LylrEYrlKZSb5C9+q3OtOewTnMQi5cT+aE9E41sLCmli3I9PGGmD1yiZydyo4FEPw==}
     engines: {node: '>=4'}
     peerDependencies:
@@ -6857,7 +6857,7 @@ packages:
       array.prototype.tosorted: 1.1.2
       doctrine: 2.1.0
       es-iterator-helpers: 1.0.15
-      eslint: 8.55.0
+      eslint: 8.56.0
       estraverse: 5.3.0
       jsx-ast-utils: 3.3.5
       minimatch: 3.1.2
@@ -6884,15 +6884,15 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /eslint@8.55.0:
-    resolution: {integrity: sha512-iyUUAM0PCKj5QpwGfmCAG9XXbZCWsqP/eWAWrG/W0umvjuLRBECwSFdt+rCntju0xEH7teIABPwXpahftIaTdA==}
+  /eslint@8.56.0:
+    resolution: {integrity: sha512-Go19xM6T9puCOWntie1/P997aXxFsOi37JIHRWI514Hc6ZnaHGKY9xFhrU65RT6CcBEzZoGG1e6Nq+DT04ZtZQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     hasBin: true
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.0(eslint@8.55.0)
+      '@eslint-community/eslint-utils': 4.4.0(eslint@8.56.0)
       '@eslint-community/regexpp': 4.10.0
       '@eslint/eslintrc': 2.1.4
-      '@eslint/js': 8.55.0
+      '@eslint/js': 8.56.0
       '@humanwhocodes/config-array': 0.11.13
       '@humanwhocodes/module-importer': 1.0.1
       '@nodelib/fs.walk': 1.2.8
@@ -8014,9 +8014,9 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /ini@3.0.1:
-    resolution: {integrity: sha512-it4HyVAUTKBc6m8e1iXWvXSTdndF7HbdN713+kvLrymxTaU4AUBWrJ4vEooP+V7fexnVD3LKcBshjGGPefSMUQ==}
-    engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
+  /ini@4.1.1:
+    resolution: {integrity: sha512-QQnnxNyfvmHFIsj7gkPcYymR8Jdw/o7mp5ZFihxn6h8Ci6fh3Dx4E1gPjpQEpIuPo9XVNY/ZUwh4BPMjGyL01g==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
   /inline-style-parser@0.2.2:
@@ -9719,9 +9719,9 @@ packages:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
     dev: true
 
-  /native-run@1.7.4:
-    resolution: {integrity: sha512-yDEwTp66vmXpqFiSQzz4sVQgyq5U58gGRovglY4GHh12ITyWa6mh6Lbpm2gViVOVD1JYFtYnwcgr7GTFBinXNA==}
-    engines: {node: '>=12.13.0'}
+  /native-run@2.0.0:
+    resolution: {integrity: sha512-NKOoSLt3Xi7EDxo62ii7i6IBpQ8EAOwli8EZooPWeAUPP9Vwsptm5khbeSKBSjlIE4XOtuG24QJQEGqy//HFbA==}
+    engines: {node: '>=16.0.0'}
     hasBin: true
     dependencies:
       '@ionic/utils-fs': 3.1.7
@@ -9729,7 +9729,7 @@ packages:
       bplist-parser: 0.3.2
       debug: 4.3.4(supports-color@8.1.1)
       elementtree: 0.1.7
-      ini: 3.0.1
+      ini: 4.1.1
       plist: 3.1.0
       split2: 4.2.0
       through2: 4.0.2
@@ -10738,8 +10738,8 @@ packages:
       scheduler: 0.23.0
     dev: true
 
-  /react-error-boundary@4.0.11(react@18.2.0):
-    resolution: {integrity: sha512-U13ul67aP5DOSPNSCWQ/eO0AQEYzEFkVljULQIjMV0KlffTAhxuDoBKdO0pb/JZ8mDhMKFZ9NZi0BmLGUiNphw==}
+  /react-error-boundary@4.0.12(react@18.2.0):
+    resolution: {integrity: sha512-kJdxdEYlb7CPC1A0SeUY38cHpjuu6UkvzKiAmqmOFL21VRfMhOcWxTCBgLVCO0VEMh9JhFNcVaXlV4/BTpiwOA==}
     peerDependencies:
       react: '>=16.13.1'
     dependencies:
@@ -11005,6 +11005,10 @@ packages:
 
   /regenerator-runtime@0.14.0:
     resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
+    dev: true
+
+  /regenerator-runtime@0.14.1:
+    resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
     dev: true
 
   /regenerator-transform@0.15.2:
@@ -12698,7 +12702,7 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       pathe: 1.1.1
       picocolors: 1.0.0
-      vite: 5.0.9(@types/node@20.10.4)(terser@5.26.0)
+      vite: 5.0.10(@types/node@20.10.4)(terser@5.26.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -12710,7 +12714,7 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-pwa@0.17.4(vite@5.0.9)(workbox-build@7.0.0)(workbox-window@7.0.0):
+  /vite-plugin-pwa@0.17.4(vite@5.0.10)(workbox-build@7.0.0)(workbox-window@7.0.0):
     resolution: {integrity: sha512-j9iiyinFOYyof4Zk3Q+DtmYyDVBDAi6PuMGNGq6uGI0pw7E+LNm9e+nQ2ep9obMP/kjdWwzilqUrlfVRj9OobA==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
@@ -12721,14 +12725,14 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       fast-glob: 3.3.2
       pretty-bytes: 6.1.1
-      vite: 5.0.9(@types/node@20.10.4)(terser@5.26.0)
+      vite: 5.0.10(@types/node@20.10.4)(terser@5.26.0)
       workbox-build: 7.0.0
       workbox-window: 7.0.0
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite-plugin-svgr@4.2.0(rollup@2.79.1)(typescript@5.3.3)(vite@5.0.9):
+  /vite-plugin-svgr@4.2.0(rollup@2.79.1)(typescript@5.3.3)(vite@5.0.10):
     resolution: {integrity: sha512-SC7+FfVtNQk7So0XMjrrtLAbEC8qjFPifyD7+fs/E6aaNdVde6umlVVh0QuwDLdOMu7vp5RiGFsB70nj5yo0XA==}
     peerDependencies:
       vite: ^2.6.0 || 3 || 4 || 5
@@ -12736,15 +12740,15 @@ packages:
       '@rollup/pluginutils': 5.1.0(rollup@2.79.1)
       '@svgr/core': 8.1.0(typescript@5.3.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0)
-      vite: 5.0.9(@types/node@20.10.4)(terser@5.26.0)
+      vite: 5.0.10(@types/node@20.10.4)(terser@5.26.0)
     transitivePeerDependencies:
       - rollup
       - supports-color
       - typescript
     dev: true
 
-  /vite@5.0.9(@types/node@20.10.4)(terser@5.26.0):
-    resolution: {integrity: sha512-wVqMd5kp28QWGgfYPDfrj771VyHTJ4UDlCteLH7bJDGDEamaz5hV8IX6h1brSGgnnyf9lI2RnzXq/JmD0c2wwg==}
+  /vite@5.0.10(@types/node@20.10.4)(terser@5.26.0):
+    resolution: {integrity: sha512-2P8J7WWgmc355HUMlFrwofacvr98DAjoE52BfdbwQtyLH06XKwaL/FMnmKM2crF0iX4MpmMKoDlNCB1ok7zHCw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -12825,7 +12829,7 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.5.1
       tinypool: 0.8.1
-      vite: 5.0.9(@types/node@20.10.4)(terser@5.26.0)
+      vite: 5.0.10(@types/node@20.10.4)(terser@5.26.0)
       vite-node: 1.0.4(@types/node@20.10.4)(terser@5.26.0)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
@@ -12838,12 +12842,12 @@ packages:
       - terser
     dev: true
 
-  /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.5.1):
+  /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-AfPxS2PumM+LHd7C2hFYmDqezrA4F5sgeTkrGVbSxRTp6dWuEZ8coC8gJeEh1G0xuZAOHqvL9tJ3XrxHU7m7ag==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.5.1
+      '@capacitor/core': 5.6.0
     dev: true
 
   /voyager-ionic-core@7.6.1:
