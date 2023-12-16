@@ -14,7 +14,7 @@ import {
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Account from "./Account";
 import { setAccounts } from "./authSlice";
 import { moveItem } from "../../helpers/array";
@@ -37,6 +37,7 @@ export default function AccountSwitcher({
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
+  const oldAccountsCountRef = useRef(accounts?.length ?? 0);
   const appActiveHandle = useAppSelector(
     (state) => state.auth.accountData?.activeHandle,
   );
@@ -55,6 +56,17 @@ export default function AccountSwitcher({
 
     onDismiss();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accounts]);
+
+  useEffect(() => {
+    const newAccountsCount = accounts?.length ?? 0;
+
+    // On new account added, set no longer editing
+    if (newAccountsCount > oldAccountsCountRef.current) {
+      setEditing(false);
+    }
+
+    oldAccountsCountRef.current = newAccountsCount;
   }, [accounts]);
 
   const accountEls = accounts?.map((account) => (
