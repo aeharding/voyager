@@ -320,8 +320,8 @@ devDependencies:
     specifier: ^9.0.1
     version: 9.0.1
   virtua:
-    specifier: ^0.17.5
-    version: 0.17.5(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^0.17.6
+    version: 0.17.6(react-dom@18.2.0)(react@18.2.0)
   vite:
     specifier: ^5.0.10
     version: 5.0.10(@types/node@20.10.4)(terser@5.26.0)
@@ -12677,8 +12677,8 @@ packages:
       vfile-message: 4.0.2
     dev: true
 
-  /virtua@0.17.5(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-xTlxQ2/mDNSpU1tsdmpZT3kgoxSnjodTfs+OUeahkTSlBEWXnBujXKWXdl+hIRKOF1Igq8/gKPYltGSQV9p2eA==}
+  /virtua@0.17.6(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-tJqLi1kpGdWu8sBVRjqfMnums3NQYtfMOYr2n1vnOwXuUWKozHS20RzWfiQGfB5ylM4typkvUs2w7uzkPC1y3A==}
     peerDependencies:
       react: '>=16.14.0'
       react-dom: '>=16.14.0'
