@@ -1,9 +1,9 @@
 import React, { HTMLProps, MouseEventHandler } from "react";
 import { isNative } from "../../helpers/device";
-import { Browser } from "@capacitor/browser";
 import { useAppSelector } from "../../store";
 import { OLinkHandlerType } from "../../services/db";
 import { IonItem } from "@ionic/react";
+import useNativeBrowser from "./useNativeBrowser";
 
 export default function InAppExternalLink({
   href,
@@ -32,6 +32,7 @@ function useOnClick(
   const linkHandler = useAppSelector(
     (state) => state.settings.general.linkHandler,
   );
+  const openNativeBrowser = useNativeBrowser();
 
   const onClick: MouseEventHandler = (e) => {
     _onClick?.(e);
@@ -41,7 +42,7 @@ function useOnClick(
     if (isNative() && href && linkHandler === OLinkHandlerType.InApp) {
       e.preventDefault();
       e.stopPropagation();
-      Browser.open({ url: href });
+      openNativeBrowser(href);
     }
   };
 

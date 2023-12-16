@@ -17,13 +17,13 @@ import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { savePost } from "../post/postSlice";
 import { saveError, saveSuccess } from "../../helpers/toastMessages";
-import { Browser } from "@capacitor/browser";
 import { ActionButton } from "../post/actions/ActionButton";
 import { StashMedia } from "capacitor-stash-media";
 import { isNative } from "../../helpers/device";
 import { Share } from "@capacitor/share";
 import useAppToast from "../../helpers/useAppToast";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import useNativeBrowser from "../shared/useNativeBrowser";
 
 interface GalleryMoreActionsProps {
   post: PostView;
@@ -35,6 +35,7 @@ export default function GalleryMoreActions({
   imgSrc,
 }: GalleryMoreActionsProps) {
   const router = useOptimizedIonRouter();
+  const openNativeBrowser = useNativeBrowser();
   const [presentActionSheet] = useIonActionSheet();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
@@ -135,7 +136,7 @@ export default function GalleryMoreActions({
           text: "Open in Browser",
           icon: earthOutline,
           handler: () => {
-            Browser.open({ url: post.post.ap_id });
+            openNativeBrowser(post.post.ap_id);
           },
         },
         {

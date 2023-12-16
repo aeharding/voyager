@@ -26,13 +26,13 @@ import TermsSheet from "../settings/terms/TermsSheet";
 import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
 import { getCustomServers } from "../../services/app";
 import { isNative } from "../../helpers/device";
-import { Browser } from "@capacitor/browser";
 import useAppToast from "../../helpers/useAppToast";
 import {
   LemmyErrorValue,
   OldLemmyErrorValue,
   isLemmyError,
 } from "../../helpers/lemmy";
+import useNativeBrowser from "../shared/useNativeBrowser";
 
 const JOIN_LEMMY_URL = "https://join-lemmy.org/instances";
 
@@ -60,6 +60,7 @@ export default function Login({
 }) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
+  const openNativeBrowser = useNativeBrowser();
   const [servers] = useState(getCustomServers());
   const [server, setServer] = useState(servers[0]);
   const [customServer, setCustomServer] = useState("");
@@ -77,7 +78,7 @@ export default function Login({
   });
 
   function presentNativeTerms() {
-    Browser.open({ url: "https://getvoyager.app/terms.html" });
+    openNativeBrowser("https://getvoyager.app/terms.html");
   }
 
   const customServerHostname = (() => {
@@ -317,7 +318,7 @@ export default function Login({
 
                     e.preventDefault();
 
-                    Browser.open({ url: JOIN_LEMMY_URL });
+                    openNativeBrowser(JOIN_LEMMY_URL);
                   }}
                 >
                   <IonText color="primary">Don&apos;t have an account?</IonText>
