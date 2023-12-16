@@ -8,13 +8,16 @@ import {
   IonLoading,
   IonPage,
   IonRadioGroup,
+  IonReorderGroup,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { useEffect, useState } from "react";
 import Account from "./Account";
+import { setAccounts } from "./authSlice";
+import { moveItem } from "../../helpers/array";
 
 interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
@@ -31,6 +34,7 @@ export default function AccountSwitcher({
   allowEdit = true,
   activeHandle: _activeHandle,
 }: AccountSwitcherProps) {
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
   const appActiveHandle = useAppSelector(
@@ -52,6 +56,15 @@ export default function AccountSwitcher({
     onDismiss();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accounts]);
+
+  const accountEls = accounts?.map((account) => (
+    <Account
+      key={account.handle}
+      account={account}
+      editing={editing}
+      allowEdit={allowEdit}
+    />
+  ));
 
   return (
     <IonPage>
@@ -80,36 +93,47 @@ export default function AccountSwitcher({
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonRadioGroup
-          value={selectedAccount}
-          onIonChange={async (e) => {
-            setLoading(true);
-            const old = selectedAccount;
-            setSelectedAccount(e.target.value);
+        {!editing ? (
+          <IonRadioGroup
+            value={selectedAccount}
+            onIonChange={async (e) => {
+              setLoading(true);
+              const old = selectedAccount;
+              setSelectedAccount(e.target.value);
 
-            try {
-              await onSelectAccount(e.target.value);
-            } catch (error) {
-              setSelectedAccount(old);
-              throw error;
-            } finally {
-              setLoading(false);
-            }
+              try {
+                await onSelectAccount(e.target.value);
+              } catch (error) {
+                setSelectedAccount(old);
+                throw error;
+              } finally {
+                setLoading(false);
+              }
 
-            onDismiss();
-          }}
-        >
+              onDismiss();
+            }}
+          >
+            <IonList>{accountEls}</IonList>
+          </IonRadioGroup>
+        ) : (
           <IonList>
-            {accounts?.map((account) => (
-              <Account
-                key={account.handle}
-                account={account}
-                editing={editing}
-                allowEdit={allowEdit}
-              />
-            ))}
+            <IonReorderGroup
+              onIonItemReorder={(event) => {
+                if (accounts)
+                  dispatch(
+                    setAccounts(
+                      moveItem(accounts, event.detail.from, event.detail.to),
+                    ),
+                  );
+
+                event.detail.complete();
+              }}
+              disabled={false}
+            >
+              {accountEls}
+            </IonReorderGroup>
           </IonList>
-        </IonRadioGroup>
+        )}
       </IonContent>
     </IonPage>
   );

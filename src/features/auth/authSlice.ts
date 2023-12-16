@@ -116,6 +116,13 @@ export const authSlice = createSlice({
 
       updateCredentialsStorage(state.accountData);
     },
+    setAccounts: (state, action: PayloadAction<Credential[]>) => {
+      if (!state.accountData) return;
+
+      state.accountData.accounts = action.payload;
+
+      updateCredentialsStorage(state.accountData);
+    },
 
     reset: (state) => {
       return initialState(state.connectedInstance);
@@ -138,6 +145,7 @@ export const {
   addAccount,
   removeAccount,
   setPrimaryAccount,
+  setAccounts,
   reset,
   updateUserDetails,
   updateConnectedInstance,
