@@ -34,6 +34,7 @@ import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 import textFaces from "./textFaces.txt?raw";
 import useAppToast from "../../../../helpers/useAppToast";
 import { bold, italic, quote } from "../../../icons";
+import { useLongPress } from "use-long-press";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";
@@ -127,6 +128,10 @@ export default function MarkdownToolbar({
   const selectionLocation = useRef(0);
   const replySelectionRef = useRef("");
 
+  const bind = useLongPress(() => insertMarkdownLink(), {
+    onCancel: () => presentLinkInput(),
+  });
+
   useEffect(() => {
     const onChange = () => {
       selectionLocation.current = textareaRef.current?.selectionStart ?? 0;
@@ -194,9 +199,7 @@ export default function MarkdownToolbar({
     );
   }
 
-  function presentLinkInput(e: MouseEvent) {
-    e.preventDefault();
-
+  function presentLinkInput() {
     presentAlert({
       header: "Insert link",
       inputs: [
@@ -213,17 +216,7 @@ export default function MarkdownToolbar({
         {
           text: "OK",
           handler: ({ text, url }) => {
-            const markdownLink = `[${text}](${url || "url"})`;
-            const currentSelectionLocation =
-              selectionLocation.current + text.length === 0
-                ? 1
-                : markdownLink.length;
-
-            setText((text) =>
-              insert(text, selectionLocation.current, markdownLink),
-            );
-
-            setSelectionEnd(currentSelectionLocation);
+            insertMarkdownLink(text, url);
           },
         },
         "Cancel",
@@ -304,6 +297,16 @@ export default function MarkdownToolbar({
     }
   }
 
+  function insertMarkdownLink(text: string = "", url?: string) {
+    const markdownLink = `[${text}](${url || "url"})`;
+    const currentSelectionLocation =
+      selectionLocation.current + text.length === 0 ? 1 : markdownLink.length;
+
+    setText((text) => insert(text, selectionLocation.current, markdownLink));
+
+    setSelectionEnd(currentSelectionLocation);
+  }
+
   return (
     <>
       <IonLoading isOpen={imageUploading} message="Uploading image..." />
@@ -331,7 +334,7 @@ export default function MarkdownToolbar({
                 }}
               />
             </label>
-            <Button onClick={presentLinkInput}>
+            <Button {...bind()}>
               <IonIcon icon={link} color="primary" />
             </Button>
             <md-bold>
