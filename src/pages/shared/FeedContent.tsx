@@ -1,5 +1,5 @@
-import { IonContent } from "@ionic/react";
-import React from "react";
+import { IonContent, useIonViewWillEnter } from "@ionic/react";
+import React, { useRef } from "react";
 import {
   isAppleDeviceInstalledToHomescreen,
   isNative,
@@ -20,8 +20,24 @@ export const isSafariFeedHackEnabled =
 // https://bugs.webkit.org/show_bug.cgi?id=222654
 
 export default function FeedContent({ children, className }: FeedContentProps) {
+  const ref = useRef();
+
+  useIonViewWillEnter(() => {
+    if (!document.body.classList.contains("hide-bars")) return;
+
+    requestAnimationFrame(() => {
+      const scrollView = ref.current?.querySelector?.(".virtual-scroller");
+
+      if (scrollView.scrollTop < 44) scrollView.scrollTop = 44;
+    });
+  });
+
   return (
-    <IonContent className={className} scrollY={isSafariFeedHackEnabled}>
+    <IonContent
+      ref={ref}
+      className={className}
+      scrollY={isSafariFeedHackEnabled}
+    >
       {children}
     </IonContent>
   );

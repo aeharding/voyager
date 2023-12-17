@@ -266,3 +266,19 @@ ion-modal.save-as-image-modal {
 #share-as-image-root video {
   display: none;
 }
+
+.hide-bars .virtual-scroller {
+  padding-top: 44px;
+}
+
+.hide-bars ion-router-outlet > .ion-page {
+  margin-top: var(--ion-safe-area-top, env(safe-area-inset-top, 0));
+}
+
+.hide-bars ion-router-outlet ion-header {
+  display: none;
+}
+
+.hide-bars ion-tab-bar {
+  display: none;
+}

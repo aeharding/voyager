@@ -4,9 +4,10 @@ import {
   IonHeader,
   IonPage,
   IonToolbar,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { FetchFn } from "../../features/feed/Feed";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import PostSort from "../../features/feed/PostSort";
 import { ListingType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";

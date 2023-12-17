@@ -1,4 +1,5 @@
 import React, {
+  CSSProperties,
   forwardRef,
   useCallback,
   useEffect,
@@ -27,7 +28,7 @@ import { CommentsContext } from "./CommentsContext";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
 import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
 import useAppToast from "../../helpers/useAppToast";
-import { VList, VListHandle } from "virtua";
+import { CustomViewportComponentProps, VList, VListHandle } from "virtua";
 import LoadParentComments from "./LoadParentComments";
 import {
   scrollIntoView as scrollIntoView,
@@ -433,6 +434,11 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     [fetchComments, prependComments, getComments],
   );
 
+  const oldScrollRef = useRef(0);
+
+  const touching = useRef(false);
+  const scrolling = useRef(false);
+
   return (
     <CommentsContext.Provider value={commentsContextValue}>
       <IonRefresher
@@ -442,7 +448,17 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       >
         <IonRefresherContent />
       </IonRefresher>
-      <ScrollViewContainer ref={scrollViewContainerRef}>
+      <ScrollViewContainer
+        ref={scrollViewContainerRef}
+        onTouchStart={() => {
+          touching.current = true;
+        }}
+        onTouchEnd={() => {
+          if (scrolling.current) return;
+
+          touching.current = false;
+        }}
+      >
         <VList
           className={
             isSafariFeedHackEnabled
@@ -458,14 +474,46 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
               fetchComments();
             }
           }}
+          onScrollStop={() => {
+            scrolling.current = false;
+            touching.current = false;
+          }}
           onScroll={(offset) => {
             setIsListAtTop(offset < 6);
+
+            scrolling.current = true;
+            if (!touching.current) return;
+
+            if (
+              oldScrollRef.current < offset &&
+              document.body.classList.contains("hide-bars")
+            ) {
+              oldScrollRef.current = offset;
+            } else if (
+              oldScrollRef.current > offset &&
+              !document.body.classList.contains("hide-bars")
+            ) {
+              oldScrollRef.current = offset;
+            }
+
+            if (
+              (offset < 44 || oldScrollRef.current > offset + 65) &&
+              document.body.classList.contains("hide-bars")
+            ) {
+              document.body.classList.remove("hide-bars");
+            } else if (
+              oldScrollRef.current < offset - 65 &&
+              !document.body.classList.contains("hide-bars")
+            ) {
+              document.body.classList.add("hide-bars");
+            }
           }}
         >
           {header}
           {allComments}
           {renderFooter()}
           {padding}
+          <Pad />
         </VList>
       </ScrollViewContainer>
     </CommentsContext.Provider>
@@ -479,3 +527,9 @@ function getCommentContextDepthForPath(
     ? getDepthFromCommentPath(commentPath) - MAX_COMMENT_PATH_CONTEXT_DEPTH
     : 0;
 }
+
+const Pad = styled.div`
+  height: 100vh;
+  background: red;
+  width: 100%;
+`;

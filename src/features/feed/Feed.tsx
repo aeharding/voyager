@@ -11,6 +11,7 @@ import {
   IonRefresher,
   IonRefresherContent,
   RefresherCustomEvent,
+  useIonViewWillEnter,
 } from "@ionic/react";
 import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
 import { CenteredSpinner } from "../../pages/posts/PostPage";
