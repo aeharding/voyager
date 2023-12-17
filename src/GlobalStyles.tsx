@@ -43,6 +43,8 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
   }, [isDark]);
 
   useEffect(() => {
+    if (!isNative()) return;
+
     const keyboardStyle = (() => {
       if (usingSystemDarkMode) return KeyboardStyle.Default;
 
