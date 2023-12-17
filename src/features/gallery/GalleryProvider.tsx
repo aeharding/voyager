@@ -109,6 +109,10 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         showHideAnimationType: animationType ?? "fade",
         zoom: false,
         bgOpacity: 1,
+        // copy any CSS classes beginning with 'pswp' from the image
+        mainClass: [...img.classList]
+          .filter((cls) => cls.match(/^pswp/))
+          .join(" "),
         // Put in ion-app element so share IonActionSheet is on top
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         appendToEl: document.querySelector("ion-app")!,
