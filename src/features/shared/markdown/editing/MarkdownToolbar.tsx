@@ -3,6 +3,7 @@ import {
   IonIcon,
   IonLoading,
   useIonActionSheet,
+  useIonAlert,
   useIonModal,
 } from "@ionic/react";
 import {
@@ -108,6 +109,7 @@ export default function MarkdownToolbar({
   textareaRef,
   slot,
 }: MarkdownToolbarProps) {
+  const [presentAlert] = useIonAlert();
   const [presentActionSheet] = useIonActionSheet();
   const [presentTextFaceActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
@@ -190,6 +192,51 @@ export default function MarkdownToolbar({
     setText((text) =>
       insert(text, selectionLocation.current, `\n![](${imageUrl})\n`),
     );
+  }
+
+  function presentLinkInput(e: MouseEvent) {
+    e.preventDefault();
+
+    presentAlert({
+      header: "Insert link",
+      inputs: [
+        {
+          name: "text",
+          placeholder: "Description",
+        },
+        {
+          name: "url",
+          placeholder: "https://vger.app",
+        },
+      ],
+      buttons: [
+        {
+          text: "OK",
+          handler: ({ text, url }) => {
+            const markdownLink = `[${text}](${url || "url"})`;
+            const currentSelectionLocation =
+              selectionLocation.current + text.length === 0
+                ? 1
+                : markdownLink.length;
+
+            setText((text) =>
+              insert(text, selectionLocation.current, markdownLink),
+            );
+
+            if (textareaRef.current) {
+              textareaRef.current.focus();
+
+              setTimeout(() => {
+                if (!textareaRef.current) return;
+
+                textareaRef.current.selectionEnd = currentSelectionLocation;
+              }, 10);
+            }
+          },
+        },
+        "Cancel",
+      ],
+    });
   }
 
   function presentTextFaces() {
@@ -297,11 +344,9 @@ export default function MarkdownToolbar({
                 }}
               />
             </label>
-            <md-link>
-              <Button>
-                <IonIcon icon={link} color="primary" />
-              </Button>
-            </md-link>
+            <Button onClick={presentLinkInput}>
+              <IonIcon icon={link} color="primary" />
+            </Button>
             <md-bold>
               <Button>
                 <IonIcon icon={bold} color="primary" />
