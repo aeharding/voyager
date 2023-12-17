@@ -248,7 +248,7 @@ export default function MarkdownToolbar({
           insert(text, selectionLocation.current, event.detail.data),
         );
 
-        setSelectionEnd(currentSelectionLocation);
+        updateSelection({ selectionEnd: currentSelectionLocation });
       },
     });
   }
@@ -280,19 +280,28 @@ export default function MarkdownToolbar({
 
     setText((text) => insert(text, currentSelectionLocation, insertedText));
 
-    setSelectionEnd(currentSelectionLocation + insertedText.length);
+    updateSelection({
+      selectionEnd: currentSelectionLocation + insertedText.length,
+    });
 
     return false;
   }
 
-  function setSelectionEnd(newLocation: number) {
+  function updateSelection({
+    selectionStart,
+    selectionEnd,
+  }: {
+    selectionStart?: number;
+    selectionEnd?: number;
+  }) {
     if (textareaRef.current) {
       textareaRef.current.focus();
 
       setTimeout(() => {
         if (!textareaRef.current) return;
 
-        textareaRef.current.selectionEnd = newLocation;
+        selectionStart && (textareaRef.current.selectionStart = selectionStart);
+        selectionEnd && (textareaRef.current.selectionEnd = selectionEnd);
       }, 10);
     }
   }
@@ -300,11 +309,23 @@ export default function MarkdownToolbar({
   function insertMarkdownLink(text: string = "", url?: string) {
     const markdownLink = `[${text}](${url || "url"})`;
     const currentSelectionLocation =
-      selectionLocation.current + text.length === 0 ? 1 : markdownLink.length;
+      selectionLocation.current + markdownLink.length;
 
     setText((text) => insert(text, selectionLocation.current, markdownLink));
 
-    setSelectionEnd(currentSelectionLocation);
+    if (!text) {
+      // place cursor inside brackets
+      updateSelection({ selectionEnd: selectionLocation.current + 1 });
+    } else if (!url) {
+      // select url placeholder
+      updateSelection({
+        selectionStart: currentSelectionLocation - 4,
+        selectionEnd: currentSelectionLocation - 1,
+      });
+    } else {
+      // place cursor after link
+      updateSelection({ selectionEnd: currentSelectionLocation });
+    }
   }
 
   return (
