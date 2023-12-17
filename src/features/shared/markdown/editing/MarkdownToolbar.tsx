@@ -223,15 +223,7 @@ export default function MarkdownToolbar({
               insert(text, selectionLocation.current, markdownLink),
             );
 
-            if (textareaRef.current) {
-              textareaRef.current.focus();
-
-              setTimeout(() => {
-                if (!textareaRef.current) return;
-
-                textareaRef.current.selectionEnd = currentSelectionLocation;
-              }, 10);
-            }
+            setSelectionEnd(currentSelectionLocation);
           },
         },
         "Cancel",
@@ -263,15 +255,7 @@ export default function MarkdownToolbar({
           insert(text, selectionLocation.current, event.detail.data),
         );
 
-        if (textareaRef.current) {
-          textareaRef.current.focus();
-
-          setTimeout(() => {
-            if (!textareaRef.current) return;
-
-            textareaRef.current.selectionEnd = currentSelectionLocation;
-          }, 10);
-        }
+        setSelectionEnd(currentSelectionLocation);
       },
     });
   }
@@ -303,18 +287,21 @@ export default function MarkdownToolbar({
 
     setText((text) => insert(text, currentSelectionLocation, insertedText));
 
+    setSelectionEnd(currentSelectionLocation + insertedText.length);
+
+    return false;
+  }
+
+  function setSelectionEnd(newLocation: number) {
     if (textareaRef.current) {
       textareaRef.current.focus();
 
       setTimeout(() => {
         if (!textareaRef.current) return;
 
-        textareaRef.current.selectionEnd =
-          currentSelectionLocation + insertedText.length;
+        textareaRef.current.selectionEnd = newLocation;
       }, 10);
     }
-
-    return false;
   }
 
   return (
