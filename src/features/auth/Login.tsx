@@ -219,7 +219,6 @@ export default function Login({
           <IonToolbar>
             <IonButtons slot="start">
               <IonButton
-                color="medium"
                 onClick={() => {
                   if (serverConfirmed) {
                     setServerConfirmed(false);
