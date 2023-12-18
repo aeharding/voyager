@@ -144,7 +144,13 @@ ion-action-sheet ion-icon {
 
 .action-sheet-button:not(.action-sheet-cancel) {
   padding-inline-end: 0 !important;
+  padding-inline-start: 0;
 }
+
+.left-align-buttons .action-sheet-button:not(.action-sheet-cancel) {
+  padding-inline-start: 14px;
+}
+
 .action-sheet-button-inner {
   mask-image: linear-gradient(
     90deg,

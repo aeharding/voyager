@@ -5,7 +5,9 @@ import {
   IonItemOption,
   IonItemOptions,
   IonItemSliding,
+  IonLabel,
   IonRadio,
+  IonReorder,
   ItemSlidingCustomEvent,
 } from "@ionic/react";
 import { removeCircle } from "ionicons/icons";
@@ -27,12 +29,26 @@ const RemoveIcon = styled(IonIcon)`
   }
 `;
 
+const Line = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  ion-label {
+    min-width: 0;
+    text-overflow: clip !important;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+`;
+
 interface AccountProps {
   editing: boolean;
   account: Credential;
+  allowEdit: boolean;
 }
 
-export default function Account({ editing, account }: AccountProps) {
+export default function Account({ editing, account, allowEdit }: AccountProps) {
   const dispatch = useAppDispatch();
   const slidingRef = useRef<ItemSlidingCustomEvent["target"]>(null);
 
@@ -42,11 +58,13 @@ export default function Account({ editing, account }: AccountProps) {
 
   return (
     <IonItemSliding ref={slidingRef}>
-      <IonItemOptions side="end" onIonSwipe={logout}>
-        <IonItemOption color="danger" expandable onClick={logout}>
-          Log out
-        </IonItemOption>
-      </IonItemOptions>
+      {allowEdit && (
+        <IonItemOptions side="end" onIonSwipe={logout}>
+          <IonItemOption color="danger" expandable onClick={logout}>
+            Log out
+          </IonItemOption>
+        </IonItemOptions>
+      )}
       <IonItem>
         {editing && (
           <IonButton
@@ -59,7 +77,14 @@ export default function Account({ editing, account }: AccountProps) {
             <RemoveIcon icon={removeCircle} color="danger" slot="icon-only" />
           </IonButton>
         )}
-        <IonRadio value={account.handle}>{account.handle}</IonRadio>
+        {editing ? (
+          <Line>
+            <IonLabel>{account.handle}</IonLabel>
+            <IonReorder />
+          </Line>
+        ) : (
+          <IonRadio value={account.handle}>{account.handle}</IonRadio>
+        )}
       </IonItem>
     </IonItemSliding>
   );

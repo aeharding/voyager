@@ -203,7 +203,16 @@ export const receivedPosts = createAsyncThunk(
       };
 
     const receivedPostsIds = posts.map((post) => post.post.id);
-    const postMetadatas = await db.getPostMetadatas(receivedPostsIds, handle);
+
+    let postMetadatas: IPostMetadata[];
+
+    try {
+      postMetadatas = await db.getPostMetadatas(receivedPostsIds, handle);
+    } catch (error) {
+      // If lockdown mode or indexeddb unavailable, continue
+      postMetadatas = [];
+      console.error("Error fetching post metadatas", error);
+    }
 
     for (const postMetadata of postMetadatas) {
       postHiddenById[postMetadata.post_id] = !!postMetadata.hidden;
@@ -256,21 +265,30 @@ export const savePost =
   };
 
 export const setPostRead =
-  (postId: number, autoHideDisabled = false) =>
+  (postId: number) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     if (!jwtSelector(getState())) return;
+
     if (getState().settings.general.posts.disableMarkingRead) return;
 
-    if (getState().settings.general.posts.autoHideRead && !autoHideDisabled)
-      dispatch(hidePost(postId, false));
+    if (getState().post.postReadById[postId]) return;
 
-    if (!getState().post.postReadById[postId]) {
-      dispatch(updatePostRead({ postId }));
-      await clientSelector(getState())?.markPostAsRead({
-        post_id: postId,
-        read: true,
-      });
-    }
+    dispatch(updatePostRead({ postId }));
+    await clientSelector(getState())?.markPostAsRead({
+      post_id: postId,
+      read: true,
+    });
+  };
+
+export const setPostHidden =
+  (postId: number) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    if (!jwtSelector(getState())) return;
+
+    if (getState().settings.general.posts.disableMarkingRead) return;
+    if (!getState().settings.general.posts.autoHideRead) return;
+
+    dispatch(hidePost(postId, false));
   };
 
 export const voteOnPost =

@@ -1,83 +1,22 @@
+import { getPathForFeed } from "../../../TabbedRoutes";
+import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { DefaultFeedType, ODefaultFeedType } from "../../../services/db";
 import { useAppSelector } from "../../../store";
 import { jwtIssSelector } from "../../auth/authSlice";
-import { useRef, useState } from "react";
-import {
-  TransitionOptions,
-  createAnimation,
-  iosTransitionAnimation,
-  mdTransitionAnimation,
-  useIonViewDidEnter,
-} from "@ionic/react";
-import { getPathForFeed } from "../../../TabbedRoutes";
-import { DefaultFeedType, ODefaultFeedType } from "../../../services/db";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { isInstalled } from "../../../helpers/device";
-import styled from "@emotion/styled";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import InitialPageRedirectBootstrapper from "./InitialPageRedirectBootstrapper";
 
-const LoadingOverlay = styled.div`
-  background: var(--ion-background-color);
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-`;
-
-/**
- * This component redirects after the Communities List is mounted,
- * for installed apps only.
- *
- * This improves user experience by always allowing swipe back.
- *
- * Note: This will become unecessary with the resolution of
- * https://github.com/ionic-team/ionic-framework/issues/27892
- */
 export default function CommunitiesListRedirectBootstrapper() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const router = useOptimizedIonRouter();
-  const [bootstrapped, setBootstrapped] = useState(false);
 
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,
   );
   const iss = useAppSelector(jwtIssSelector);
-  const firstEnter = useRef(true);
+  const baseRoute = getBaseRoute(!!iss, defaultFeed);
 
-  useIonViewDidEnter(() => {
-    if (!firstEnter.current) return;
-    firstEnter.current = false;
-
-    if (!isInstalled()) return;
-
-    const baseRoute = getBaseRoute(!!iss, defaultFeed);
-
-    // user set default page = communities list. We're already there.
-    if (!baseRoute) {
-      setBootstrapped(true);
-      return;
-    }
-
-    requestAnimationFrame(() => {
-      router.push(
-        buildGeneralBrowseLink(baseRoute),
-        "forward",
-        "push",
-        undefined,
-        (baseEl: HTMLElement, opts: TransitionOptions) => {
-          // Do not animate into view
-          if (opts.direction === "forward") return createAnimation();
-
-          return opts.mode === "ios"
-            ? iosTransitionAnimation(baseEl, opts)
-            : mdTransitionAnimation(baseEl, opts);
-        },
-      );
-
-      requestAnimationFrame(() => setBootstrapped(true));
-    });
-  });
-
-  if (!isInstalled() || bootstrapped) return null;
-  return <LoadingOverlay />;
+  return (
+    <InitialPageRedirectBootstrapper to={buildGeneralBrowseLink(baseRoute)} />
+  );
 }
 
 export function getBaseRoute(

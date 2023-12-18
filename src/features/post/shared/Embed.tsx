@@ -13,9 +13,11 @@ import { PostView } from "lemmy-js-client";
 import { MouseEvent, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { isNsfwBlurred } from "../../labels/Nsfw";
-import { setPostRead } from "../postSlice";
 import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
+import Url from "../../shared/Url";
+import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
+import { setPostRead } from "../postSlice";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -48,12 +50,17 @@ const Img = styled.img<{ blur: boolean }>`
 const Bottom = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+
+  gap: 0.75rem;
+  padding: 0.65rem;
 
   opacity: 0.5;
-
-  padding: 0.5rem 1rem;
   background: var(--ion-color-light);
+
+  @media (min-width: 700px) {
+    gap: 1rem;
+    padding: 0.65rem 1rem;
+  }
 `;
 
 const EmbedIcon = styled(IonIcon)`
@@ -67,9 +74,11 @@ const Divider = styled.div`
   opacity: 0.5;
 `;
 
-const Url = styled.div`
+const UrlContainer = styled.div`
   flex: 1;
   font-size: 0.875em;
+
+  margin-right: -0.5rem; // fudge it closer
 
   white-space: nowrap;
   overflow: hidden;
@@ -82,12 +91,14 @@ interface EmbedProps {
 }
 
 export default function Embed({ post, className }: EmbedProps) {
-  const [error, setError] = useState(false);
   const dispatch = useAppDispatch();
+  const autohidePostIfNeeded = useAutohidePostIfNeeded();
+  const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
+
+  const [error, setError] = useState(false);
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,
   );
-  const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
 
   const icon = useMemo(() => {
     const type = post.post.url
@@ -110,8 +121,12 @@ export default function Embed({ post, className }: EmbedProps) {
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
+
     dispatch(setPostRead(post.post.id));
+    autohidePostIfNeeded(post);
   };
+
+  if (!post.post.url) return;
 
   return (
     <Container
@@ -131,7 +146,9 @@ export default function Embed({ post, className }: EmbedProps) {
       <Bottom>
         <EmbedIcon icon={icon} />
         <Divider />
-        <Url>{post.post.url}</Url>
+        <UrlContainer>
+          <Url>{post.post.url}</Url>
+        </UrlContainer>
         <IonIcon icon={chevronForward} />
       </Bottom>
     </Container>

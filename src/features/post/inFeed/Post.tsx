@@ -10,6 +10,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
+import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -35,6 +36,7 @@ export interface PostProps {
 
 export default function Post(props: PostProps) {
   const dispatch = useAppDispatch();
+  const autohidePostIfNeeded = useAutohidePostIfNeeded();
   const [shouldHide, setShouldHide] = useState(false);
   const shouldHideRef = useRef(false);
   const isHidden = useAppSelector(
@@ -107,6 +109,12 @@ export default function Post(props: PostProps) {
               props.post.post.id
             }`,
           )}
+          onClick={() => {
+            // Marking post read is done in the post detail page when it finishes transitioning in.
+            // However, autohiding is context-sensitive (community feed vs special feed, etc)
+            // and doesn't cause rerender, so do it now.
+            autohidePostIfNeeded(props.post);
+          }}
           href={undefined}
           ref={targetIntersectionRef}
         >

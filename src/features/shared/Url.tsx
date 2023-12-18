@@ -20,8 +20,16 @@ export default function Url({ children }: UrlProps) {
       return [];
     }
 
+    const protocolPrefix = url.protocol === "https:" ? "" : `${url.protocol}//`;
+    const normalizedHost = (() => {
+      if (protocolPrefix) return url.host;
+      if (url.host.startsWith("www.")) return url.host.slice(4);
+
+      return url.host;
+    })();
+
     return [
-      `${url.protocol}//${url.host}`,
+      `${protocolPrefix}${normalizedHost}`,
       `${url.pathname}${url.search}${url.hash}`,
     ];
   }, [children]);
