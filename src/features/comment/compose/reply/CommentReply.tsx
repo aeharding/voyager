@@ -235,9 +235,7 @@ export default function CommentReply({
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => dismiss()}>
-              Cancel
-            </IonButton>
+            <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>
             <Centered>
@@ -270,6 +268,7 @@ export default function CommentReply({
               strong
               type="submit"
               disabled={isSubmitDisabled}
+              color={isSubmitDisabled ? "medium" : undefined}
               onClick={submit}
             >
               Post
