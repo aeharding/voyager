@@ -354,14 +354,14 @@ export default function PostEditorRoot({
     setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
   }
 
+  const postButtonDisabled = loading || !canSubmit();
+
   return (
     <>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => dismiss()}>
-              Cancel
-            </IonButton>
+            <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>
             <Centered>
@@ -373,9 +373,10 @@ export default function PostEditorRoot({
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
-              strong={true}
+              color={postButtonDisabled ? "medium" : undefined}
+              strong
               type="submit"
-              disabled={loading || !canSubmit()}
+              disabled={postButtonDisabled}
               onClick={submit}
             >
               Post
