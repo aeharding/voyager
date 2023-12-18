@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../store";
+import { AppDispatch } from "../../store";
 import { db } from "../../services/db";
 import { uniq } from "lodash";
 
