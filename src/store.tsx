@@ -75,6 +75,9 @@ export default store;
 let lastActiveHandle: string | undefined = undefined;
 const activeHandleChange = () => {
   const state = store.getState();
+
+  store.dispatch(getMigrationLinks());
+
   const activeHandle = handleSelector(state);
 
   if (activeHandle === lastActiveHandle) return;
@@ -82,7 +85,6 @@ const activeHandleChange = () => {
   lastActiveHandle = activeHandle;
 
   store.dispatch(getFavoriteCommunities());
-  store.dispatch(getMigrationLinks());
   store.dispatch(getBlurNsfw());
   store.dispatch(getFilteredKeywords());
   store.dispatch(getDefaultFeed());

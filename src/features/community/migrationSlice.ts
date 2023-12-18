@@ -18,53 +18,25 @@ export const migrationSlice = createSlice({
     setMigrationLinks: (state, action: PayloadAction<string[]>) => {
       state.links = action.payload;
     },
+    addMigrationLink: (state, action: PayloadAction<string>) => {
+      state.links = uniq([action.payload, ...state.links]);
+      db.setSetting("migration_links", state.links);
+    },
+    resetMigrationLinks: (state) => {
+      state.links = [];
+      db.setSetting("migration_links", state.links);
+    },
   },
 });
 
 export default migrationSlice.reducer;
 
-export const addMigrationLink =
-  (link: string) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
-    const userHandle = getState().auth.accountData?.activeHandle;
-    const links = uniq([link, ...getState().migration.links]);
-
-    if (!userHandle) return;
-
-    dispatch(setMigrationLinks(links));
-
-    db.setSetting("migration_links", links, {
-      user_handle: userHandle,
-    });
-  };
-
 export const getMigrationLinks =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const userHandle = getState().auth.accountData?.activeHandle;
-
-    if (!userHandle) {
-      dispatch(setMigrationLinks([]));
-      return;
-    }
-
-    const links = await db.getSetting("migration_links", {
-      user_handle: userHandle,
-    });
+    const links = await db.getSetting("migration_links");
 
     dispatch(setMigrationLinks(links || []));
   };
 
-export const resetMigrationLinks =
-  () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const userHandle = getState().auth.accountData?.activeHandle;
-
-    if (!userHandle) return;
-
-    dispatch(setMigrationLinks([]));
-
-    db.setSetting("migration_links", [], {
-      user_handle: userHandle,
-    });
-  };
-
-const { setMigrationLinks } = migrationSlice.actions;
+export const { setMigrationLinks, addMigrationLink, resetMigrationLinks } =
+  migrationSlice.actions;
