@@ -31,12 +31,11 @@ export const migrationSlice = createSlice({
 
 export default migrationSlice.reducer;
 
-export const getMigrationLinks =
-  () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const links = await db.getSetting("migration_links");
+export const getMigrationLinks = () => async (dispatch: AppDispatch) => {
+  const links = await db.getSetting("migration_links");
 
-    dispatch(setMigrationLinks(links || []));
-  };
+  dispatch(setMigrationLinks(links || []));
+};
 
 export const { setMigrationLinks, addMigrationLink, resetMigrationLinks } =
   migrationSlice.actions;
