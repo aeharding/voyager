@@ -205,7 +205,8 @@ export const login =
 
     const res = await client.login({
       username_or_email: username,
-      password,
+      // lemmy-ui has maxlength of 60. If we don't clamp too users will complain password won't work
+      password: password.slice(0, 60),
       totp_2fa_token: totp || undefined,
     });
 
