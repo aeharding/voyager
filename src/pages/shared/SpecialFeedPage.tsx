@@ -29,6 +29,7 @@ import { getHandle } from "../../helpers/lemmy";
 import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../features/community/mod/ModActions";
 import useFeedSort from "../../features/feed/sort/useFeedSort";
+import { PageTypeContext } from "../../features/feed/PageTypeContext";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -86,12 +87,13 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     if (!sort) return <CenteredSpinner />;
 
     return (
-      <PostCommentFeed
-        fetchFn={fetchFn}
-        sortDuration={getSortDuration(sort)}
-        filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
-        autoHideIfConfigured
-      />
+      <PageTypeContext.Provider value="special-feed">
+        <PostCommentFeed
+          fetchFn={fetchFn}
+          sortDuration={getSortDuration(sort)}
+          filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+        />
+      </PageTypeContext.Provider>
     );
   })();
 

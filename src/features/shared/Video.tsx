@@ -151,7 +151,6 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
           if (!showProgress) return;
           setProgress(e.target.currentTime / e.target.duration);
         }}
-        onClick={(e) => e.stopPropagation()}
         {...rest}
       />
       {showProgress && progress !== undefined && <Progress value={progress} />}

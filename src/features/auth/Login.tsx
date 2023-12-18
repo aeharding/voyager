@@ -26,13 +26,13 @@ import TermsSheet from "../settings/terms/TermsSheet";
 import { preventPhotoswipeGalleryFocusTrap } from "../gallery/GalleryImg";
 import { getCustomServers } from "../../services/app";
 import { isNative } from "../../helpers/device";
-import { Browser } from "@capacitor/browser";
 import useAppToast from "../../helpers/useAppToast";
 import {
   LemmyErrorValue,
   OldLemmyErrorValue,
   isLemmyError,
 } from "../../helpers/lemmy";
+import useNativeBrowser from "../shared/useNativeBrowser";
 
 const JOIN_LEMMY_URL = "https://join-lemmy.org/instances";
 
@@ -56,10 +56,11 @@ const HelperText = styled.p`
 export default function Login({
   onDismiss,
 }: {
-  onDismiss: (data?: string | null | undefined | number, role?: string) => void;
+  onDismiss: (data?: string, role?: string) => void;
 }) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
+  const openNativeBrowser = useNativeBrowser();
   const [servers] = useState(getCustomServers());
   const [server, setServer] = useState(servers[0]);
   const [customServer, setCustomServer] = useState("");
@@ -73,11 +74,11 @@ export default function Login({
   const [totp, setTotp] = useState("");
 
   const [presentTerms, onDismissTerms] = useIonModal(TermsSheet, {
-    onDismiss: (data: string, role: string) => onDismissTerms(data, role),
+    onDismiss: (data?: string, role?: string) => onDismissTerms(data, role),
   });
 
   function presentNativeTerms() {
-    Browser.open({ url: "https://getvoyager.app/terms.html" });
+    openNativeBrowser("https://getvoyager.app/terms.html");
   }
 
   const customServerHostname = (() => {
@@ -218,7 +219,6 @@ export default function Login({
           <IonToolbar>
             <IonButtons slot="start">
               <IonButton
-                color="medium"
                 onClick={() => {
                   if (serverConfirmed) {
                     setServerConfirmed(false);
@@ -317,7 +317,7 @@ export default function Login({
 
                     e.preventDefault();
 
-                    Browser.open({ url: JOIN_LEMMY_URL });
+                    openNativeBrowser(JOIN_LEMMY_URL);
                   }}
                 >
                   <IonText color="primary">Don&apos;t have an account?</IonText>

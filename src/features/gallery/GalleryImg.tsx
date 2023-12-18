@@ -10,6 +10,7 @@ import "photoswipe/dist/photoswipe.css";
 import { PostView } from "lemmy-js-client";
 import { GalleryContext } from "./GalleryProvider";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
+import { useAutohidePostIfNeeded } from "../feed/PageTypeContext";
 
 export interface GalleryImgProps
   extends Omit<HTMLProps<HTMLImageElement>, "ref"> {
@@ -37,6 +38,7 @@ export default forwardRef<HTMLImageElement, GalleryImgProps>(
   ) {
     const loaded = useRef(false);
     const { open } = useContext(GalleryContext);
+    const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
     return (
       <img
@@ -50,6 +52,13 @@ export default forwardRef<HTMLImageElement, GalleryImgProps>(
           e.stopPropagation();
 
           open(e.currentTarget, post, animationType);
+
+          // marking read happens after the gallery has finished animating
+          // so that the post doesn't rerender before it's fully hidden
+
+          // but autohiding doesn't rerender anything, and is context-sensitive,
+          // so just do it now
+          if (post) autohidePostIfNeeded(post);
         }}
         src={src}
         className={className}

@@ -15,9 +15,9 @@ import { getSafeArea, isAndroid, isNative } from "../../helpers/device";
 
 import "photoswipe/style.css";
 import { useLocation } from "react-router";
-import { useAppDispatch } from "../../store";
-import { setPostRead } from "../post/postSlice";
 import { StatusBar } from "@capacitor/status-bar";
+import { setPostRead } from "../post/postSlice";
+import { useAppDispatch } from "../../store";
 
 const Container = styled.div`
   position: absolute;
@@ -57,6 +57,7 @@ interface GalleryProviderProps {
 }
 
 export default function GalleryProvider({ children }: GalleryProviderProps) {
+  const dispatch = useAppDispatch();
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null,
   );
@@ -64,7 +65,6 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     return () => {

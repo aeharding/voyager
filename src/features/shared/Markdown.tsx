@@ -1,20 +1,27 @@
 import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
 import styled from "@emotion/styled";
-import { useAppSelector } from "../../store";
 import LinkInterceptor from "./markdown/LinkInterceptor";
-import buildCommunityPlugin from "./markdown/buildCommunityPlugin";
 import customRemarkGfm from "./markdown/customRemarkGfm";
-import { useMemo } from "react";
 import MarkdownImg from "./MarkdownImg";
+import { css } from "@emotion/react";
 
-const Blockquote = styled.blockquote`
-  padding-left: 0.5rem;
-  border-left: 3px solid var(--ion-color-light);
-  margin-left: 0;
-`;
+const markdownCss = css`
+  @media (max-width: 700px) {
+    ul,
+    ol {
+      padding-left: 24px;
+    }
+  }
 
-const Code = styled.code`
-  white-space: pre-wrap;
+  code {
+    white-space: pre-wrap;
+  }
+
+  blockquote {
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--ion-color-light);
+    margin-left: 0;
+  }
 `;
 
 const TableContainer = styled.div`
@@ -49,22 +56,14 @@ const TableContainer = styled.div`
 `;
 
 export default function Markdown(props: ReactMarkdownOptions) {
-  const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance,
-  );
-
-  const communityPlugin = useMemo(
-    () => buildCommunityPlugin(connectedInstance),
-    [connectedInstance],
-  );
-
   return (
     <ReactMarkdown
       {...props}
+      css={markdownCss}
       components={{
-        img: (props) => <MarkdownImg {...props} />,
-        blockquote: (props) => <Blockquote {...props} />,
-        code: (props) => <Code {...props} />,
+        img: (props) => (
+          <MarkdownImg onClick={(e) => e.stopPropagation()} {...props} />
+        ),
         table: (props) => (
           <TableContainer>
             <table
@@ -80,7 +79,7 @@ export default function Markdown(props: ReactMarkdownOptions) {
         a: (props) => <LinkInterceptor {...props} />,
         ...props.components,
       }}
-      remarkPlugins={[communityPlugin, customRemarkGfm]}
+      remarkPlugins={[customRemarkGfm]}
     />
   );
 }

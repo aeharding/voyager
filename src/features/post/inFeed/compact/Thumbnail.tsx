@@ -15,8 +15,9 @@ import {
   CompactThumbnailSizeType,
   OCompactThumbnailSizeType,
 } from "../../../../services/db";
-import { setPostRead } from "../../postSlice";
 import { isUrlImage } from "../../../../helpers/url";
+import { useAutohidePostIfNeeded } from "../../../feed/PageTypeContext";
+import { setPostRead } from "../../postSlice";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {
@@ -114,6 +115,7 @@ interface ImgProps {
 
 export default function Thumbnail({ post }: ImgProps) {
   const dispatch = useAppDispatch();
+  const autohidePostIfNeeded = useAutohidePostIfNeeded();
   const markdownLoneImage = useMemo(
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post],
@@ -137,7 +139,9 @@ export default function Thumbnail({ post }: ImgProps) {
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
+
     dispatch(setPostRead(post.post.id));
+    autohidePostIfNeeded(post);
   };
 
   const renderContents = useCallback(() => {

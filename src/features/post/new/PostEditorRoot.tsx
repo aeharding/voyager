@@ -36,6 +36,7 @@ import useAppToast from "../../../helpers/useAppToast";
 import { isUrlImage, isValidUrl } from "../../../helpers/url";
 import { problemFetchingTitle } from "../../../helpers/toastMessages";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import { isAndroid } from "../../../helpers/device";
 
 const Container = styled.div`
   position: absolute;
@@ -305,6 +306,9 @@ export default function PostEditorRoot({
 
     let imageUrl;
 
+    // On Samsung devices, upload from photo picker will return DOM error on upload without timeout 🤬
+    if (isAndroid()) await new Promise((resolve) => setTimeout(resolve, 250));
+
     try {
       imageUrl = await uploadImage(instanceUrl, jwt, image);
     } catch (error) {
@@ -350,14 +354,14 @@ export default function PostEditorRoot({
     setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
   }
 
+  const postButtonDisabled = loading || !canSubmit();
+
   return (
     <>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => dismiss()}>
-              Cancel
-            </IonButton>
+            <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>
             <Centered>
@@ -369,9 +373,10 @@ export default function PostEditorRoot({
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
-              strong={true}
+              color={postButtonDisabled ? "medium" : undefined}
+              strong
               type="submit"
-              disabled={loading || !canSubmit()}
+              disabled={postButtonDisabled}
               onClick={submit}
             >
               Post

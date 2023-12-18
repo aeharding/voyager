@@ -20,6 +20,7 @@ import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
 import { FeedContext } from "./FeedContext";
 import { postHasFilteredKeywords } from "../../helpers/lemmy";
+import { useAutohidePostIfNeeded } from "./PageTypeContext";
 
 const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
@@ -41,11 +42,6 @@ interface PostCommentFeed
   filterHiddenPosts?: boolean;
   filterKeywords?: boolean;
 
-  /**
-   * Feed will auto-hide posts, if enabled by the user
-   */
-  autoHideIfConfigured?: boolean;
-
   header?: ReactElement;
 
   modqueue?: boolean;
@@ -56,7 +52,6 @@ export default function PostCommentFeed({
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
   filterKeywords = true,
-  autoHideIfConfigured,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
   modqueue,
@@ -78,9 +73,7 @@ export default function PostCommentFeed({
   const markReadOnScroll = useAppSelector(
     (state) => state.settings.general.posts.markReadOnScroll,
   );
-  const disableAutoHideInCommunities = useAppSelector(
-    (state) => state.settings.general.posts.disableAutoHideInCommunities,
-  );
+  const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
   const itemsRef = useRef<PostCommentItem[]>();
 
@@ -226,26 +219,11 @@ export default function PostCommentFeed({
     items.forEach(onAutoRead);
   }
 
-  const shouldAutoHide = (() => {
-    if (!autoHideIfConfigured) return false;
-
-    if (communityName) return !disableAutoHideInCommunities;
-
-    return true; // setPostRead doesn't auto-hide if feature is turned completely off
-  })();
-
   function onAutoRead(item: PostCommentItem) {
     if (!isPost(item)) return;
 
-    // Determine if the post is pinned in the current feed
-    const postIsPinned =
-      (communityName && item.post.featured_community) ||
-      (!communityName && item.post.featured_local);
-
-    // Pinned posts should not be automatically hidden
-    const shouldAutoHidePost = shouldAutoHide && !postIsPinned;
-
-    dispatch(setPostRead(item.post.id, !shouldAutoHidePost));
+    dispatch(setPostRead(item.post.id));
+    autohidePostIfNeeded(item, "scroll");
   }
 
   return (

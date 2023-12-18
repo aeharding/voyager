@@ -88,13 +88,20 @@ const PICTRS_URL = "/pictrs/image";
  * @returns relative pictrs URL
  */
 export async function uploadImage(url: string, auth: string, image: File) {
-  const compressedImageIfNeeded = await reduceFileSize(
-    image,
-    990_000, // 990 kB - Lemmy's default limit is 1MB
-    1500,
-    1500,
-    0.85,
-  );
+  let compressedImageIfNeeded;
+
+  try {
+    compressedImageIfNeeded = await reduceFileSize(
+      image,
+      990_000, // 990 kB - Lemmy's default limit is 1MB
+      1500,
+      1500,
+      0.85,
+    );
+  } catch (error) {
+    compressedImageIfNeeded = image;
+    console.error("Image compress failed", error);
+  }
 
   // Cookie header can only be set by native code (Capacitor http plugin)
   if (isNative()) {

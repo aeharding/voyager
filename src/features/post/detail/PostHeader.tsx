@@ -38,7 +38,9 @@ const BorderlessIonItem = styled(IonItem)`
   ${maxWidthCss}
 `;
 
-const LightboxPostMedia = styled(PostMedia)<{ constrainHeight?: boolean }>`
+const LightboxPostMedia = styled(PostMedia, {
+  shouldForwardProp: (prop) => prop !== "constrainHeight",
+})<{ constrainHeight?: boolean }>`
   -webkit-touch-callout: default;
 
   width: 100%;
@@ -156,6 +158,7 @@ function PostHeader({
           post={post}
           controls
           constrainHeight={constrainHeight}
+          onClick={(e) => e.stopPropagation()}
         />
       );
     }
@@ -200,9 +203,7 @@ function PostHeader({
         }}
       >
         <Container>
-          {showPostText && (
-            <div onClick={(e) => e.stopPropagation()}>{renderMedia()}</div>
-          )}
+          {showPostText && renderMedia()}
           <PostDeets>
             <ModeratableItemBannerOutlet />
             <div>
