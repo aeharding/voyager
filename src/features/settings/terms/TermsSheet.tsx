@@ -19,9 +19,7 @@ export default function TermsSheet({ onDismiss }: TermsSheetProps) {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => onDismiss()}>
-              Cancel
-            </IonButton>
+            <IonButton onClick={() => onDismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>Terms</IonTitle>
         </IonToolbar>
