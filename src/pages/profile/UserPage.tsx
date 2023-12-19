@@ -14,7 +14,7 @@ import { useAppSelector } from "../../store";
 import {
   handleSelector,
   usernameSelector,
-} from "../../features/auth/authSlice";
+} from "../../features/auth/authSelectors";
 import FeedContent from "../shared/FeedContent";
 import { memo } from "react";
 

@@ -1,10 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
-import {
-  jwtIssSelector,
-  jwtSelector,
-  updateConnectedInstance,
-} from "./features/auth/authSlice";
+import { updateConnectedInstance } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
 import { getInboxCounts, syncMessages } from "./features/inbox/inboxSlice";
 import { useInterval } from "usehooks-ts";
@@ -14,6 +10,7 @@ import { isLemmyError } from "./helpers/lemmy";
 import useAppToast from "./helpers/useAppToast";
 import BackgroundReportSync from "./features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "./features/auth/siteSlice";
+import { jwtIssSelector, jwtSelector } from "./features/auth/authSelectors";
 
 interface AuthProps {
   children: React.ReactNode;

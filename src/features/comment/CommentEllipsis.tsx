@@ -42,7 +42,7 @@ import {
 } from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
-import { handleSelector } from "../auth/authSlice";
+import { handleSelector } from "../auth/authSelectors";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";

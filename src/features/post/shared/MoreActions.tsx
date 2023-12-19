@@ -37,7 +37,7 @@ import {
   voteError,
 } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
-import { handleSelector } from "../../auth/authSlice";
+import { handleSelector } from "../../auth/authSelectors";
 import useAppToast from "../../../helpers/useAppToast";
 import usePostModActions from "../../moderation/usePostModActions";
 import useCanModerate, { getModIcon } from "../../moderation/useCanModerate";

@@ -1,7 +1,7 @@
-import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import Cookies from "js-cookie";
-import { LemmyJWT, getRemoteHandle } from "../../helpers/lemmy";
+import { getRemoteHandle, parseJWT } from "../../helpers/lemmy";
 import { resetPosts } from "../post/postSlice";
 import { getClient } from "../../services/lemmy";
 import { resetComments } from "../comment/commentSlice";
@@ -13,6 +13,7 @@ import { ApplicationContext } from "capacitor-application-context";
 import { resetInstances } from "../instances/instancesSlice";
 import { resetResolve } from "../resolve/resolveSlice";
 import { resetMod } from "../moderation/modSlice";
+import { jwtIssSelector } from "./authSelectors";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -141,35 +142,6 @@ export const {
 
 export default authSlice.reducer;
 
-export const activeAccount = createSelector(
-  [
-    (state: RootState) => state.auth.accountData?.accounts,
-    (state: RootState) => state.auth.accountData?.activeHandle,
-  ],
-  (accounts, activeHandle) => {
-    return accounts?.find(({ handle }) => handle === activeHandle);
-  },
-);
-
-export const jwtSelector = createSelector([activeAccount], (account) => {
-  return account?.jwt;
-});
-
-export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
-  jwt ? parseJWT(jwt) : undefined,
-);
-
-export const jwtIssSelector = (state: RootState) =>
-  jwtPayloadSelector(state)?.iss;
-
-export const handleSelector = createSelector([activeAccount], (account) => {
-  return account?.handle;
-});
-
-export const usernameSelector = createSelector([handleSelector], (handle) => {
-  return handle?.split("@")[0];
-});
-
 export const login =
   (baseUrl: string, username: string, password: string, totp?: string) =>
   async (dispatch: AppDispatch) => {
@@ -247,23 +219,6 @@ export const logoutAccount =
     const iss = jwtIssSelector(getState());
     if (iss) dispatch(updateConnectedInstance(iss));
   };
-
-function parseJWT(payload: string): LemmyJWT {
-  const base64 = payload.split(".")[1]!;
-  const jsonPayload = atob(base64);
-  return JSON.parse(jsonPayload);
-}
-
-export const urlSelector = (state: RootState) =>
-  jwtIssSelector(state) ?? state.auth.connectedInstance;
-
-export const clientSelector = createSelector(
-  [urlSelector, jwtSelector],
-  (url, jwt) => {
-    // never leak the jwt to the incorrect server
-    return getClient(url, jwt);
-  },
-);
 
 function updateCredentialsStorage(
   accounts: CredentialStoragePayload | undefined,

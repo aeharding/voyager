@@ -27,7 +27,7 @@ import {
 import { css } from "@emotion/react";
 import { uploadImage } from "../../../../services/lemmy";
 import { useAppSelector } from "../../../../store";
-import { jwtSelector, urlSelector } from "../../../auth/authSlice";
+import { jwtSelector, urlSelector } from "../../../auth/authSelectors";
 import { insert } from "../../../../helpers/string";
 import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 import textFaces from "./textFaces.txt?raw";

@@ -14,7 +14,7 @@ import {
   UsernameIonText,
 } from "../../features/comment/compose/reply/CommentReply";
 import { useAppSelector } from "../../store";
-import { handleSelector } from "../../features/auth/authSlice";
+import { handleSelector } from "../../features/auth/authSelectors";
 import FilterNsfw from "../../features/settings/blocks/FilterNsfw";
 import BlockedCommunities from "../../features/settings/blocks/BlockedCommunities";
 import { CenteredSpinner } from "../posts/PostPage";

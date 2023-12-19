@@ -1,7 +1,7 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { GetSiteResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, handleSelector } from "./authSlice";
+import { clientSelector, handleSelector } from "./authSelectors";
 import { getRemoteHandle } from "../../helpers/lemmy";
 
 interface SiteState {
@@ -85,12 +85,6 @@ export const getSite =
     let site;
 
     try {
-      if (
-        getState().site.failedAttempt < 5 &&
-        getState().auth.connectedInstance === "lemmy.world"
-      )
-        throw new Error("test fail");
-
       site = await clientSelector(getState()).getSite();
     } catch (error) {
       dispatch(failedSite());

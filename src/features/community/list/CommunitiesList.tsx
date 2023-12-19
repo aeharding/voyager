@@ -9,7 +9,7 @@ import {
 } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useAppSelector } from "../../../store";
-import { jwtSelector } from "../../auth/authSlice";
+import { jwtSelector } from "../../auth/authSelectors";
 import { memo, useMemo, useRef } from "react";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { notEmpty } from "../../../helpers/array";
@@ -75,10 +75,12 @@ function CommunitiesList({ actor }: CommunitiesListParams) {
   const virtuaRef = useRef<VListHandle>(null);
 
   const moderates = useAppSelector(
-    (state) => state.auth.site?.my_user?.moderates,
+    (state) => state.site.response?.my_user?.moderates,
   );
 
-  const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
+  const follows = useAppSelector(
+    (state) => state.site.response?.my_user?.follows,
+  );
 
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle,

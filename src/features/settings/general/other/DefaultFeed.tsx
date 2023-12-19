@@ -10,7 +10,7 @@ import { ODefaultFeedType } from "../../../../services/db";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { updateDefaultFeed } from "../../settingsSlice";
 import SettingSelector from "../../shared/SettingSelector";
-import { jwtSelector } from "../../../auth/authSlice";
+import { jwtSelector } from "../../../auth/authSelectors";
 import { useIonModal } from "@ionic/react";
 import CommunitySelectorModal from "../../../shared/selectorModals/CommunitySelectorModal";
 import { CommunityView } from "lemmy-js-client";

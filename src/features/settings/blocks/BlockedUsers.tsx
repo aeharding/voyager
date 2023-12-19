@@ -19,7 +19,7 @@ export default function BlockedUsers() {
   const [loading, setLoading] = useState(false);
 
   const users = useAppSelector(
-    (state) => state.auth.site?.my_user?.person_blocks,
+    (state) => state.site.response?.my_user?.person_blocks,
   );
 
   const sortedUsers = users

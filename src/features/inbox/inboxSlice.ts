@@ -1,16 +1,16 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import {
-  clientSelector,
-  handleSelector,
-  jwtSelector,
-  logoutAccount,
-} from "../auth/authSlice";
+import { logoutAccount } from "../auth/authSlice";
 import { InboxItemView } from "./InboxItem";
 import { differenceBy, uniqBy } from "lodash";
 import { receivedUsers } from "../user/userSlice";
 import { isLemmyError } from "../../helpers/lemmy";
+import {
+  clientSelector,
+  handleSelector,
+  jwtSelector,
+} from "../auth/authSelectors";
 
 interface PostState {
   counts: {

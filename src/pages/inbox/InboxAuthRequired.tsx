@@ -2,7 +2,7 @@ import React from "react";
 import { useAppSelector } from "../../store";
 import { Redirect } from "react-router";
 import useIonViewIsVisible from "../../helpers/useIonViewIsVisible";
-import { jwtSelector } from "../../features/auth/authSlice";
+import { jwtSelector } from "../../features/auth/authSelectors";
 
 interface InboxAuthRequiredProps {
   children: React.ReactNode;

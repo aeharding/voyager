@@ -4,7 +4,7 @@ import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
 import { useAppSelector } from "../../store";
-import { jwtIssSelector } from "../auth/authSlice";
+import { jwtIssSelector } from "../auth/authSelectors";
 import { clearRecoveredText } from "../../helpers/useTextRecovery";
 import useStateRef from "../../helpers/useStateRef";
 

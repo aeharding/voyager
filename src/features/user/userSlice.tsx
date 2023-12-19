@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSlice";
+import { clientSelector } from "../auth/authSelectors";
 import { getHandle } from "../../helpers/lemmy";
 import { LIMIT } from "../../services/lemmy";
 import { receivedComments } from "../comment/commentSlice";

@@ -1,6 +1,6 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSlice";
+import { clientSelector } from "../auth/authSelectors";
 import { FederatedInstances } from "lemmy-js-client";
 import { db } from "../../services/db";
 

@@ -26,7 +26,7 @@ import {
   handleSelector,
   jwtIssSelector,
   jwtSelector,
-} from "./features/auth/authSlice";
+} from "./features/auth/authSelectors";
 import { forwardRef, useContext, useEffect, useMemo } from "react";
 import { getDefaultServer } from "./services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
