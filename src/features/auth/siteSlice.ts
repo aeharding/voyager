@@ -76,14 +76,13 @@ const siteReqIdSelector = createSelector(
 export const getSiteIfNeeded =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     if (getState().site.response) return;
+    if (getState().site.loading) return;
 
     dispatch(getSite());
   };
 
 export const getSite =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    if (getState().site.loading) return;
-
     const reqId = siteReqIdSelector(getState());
     let site;
 
