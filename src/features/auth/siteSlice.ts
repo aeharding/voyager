@@ -6,13 +6,13 @@ import { getRemoteHandle } from "../../helpers/lemmy";
 
 interface SiteState {
   failedAttempt: number;
-  reqId: string;
+  loading: boolean;
   response: GetSiteResponse | undefined;
 }
 
 const initialState: SiteState = {
-  reqId: "",
   failedAttempt: 0,
+  loading: false,
   response: undefined,
 };
 
@@ -20,25 +20,27 @@ export const siteSlice = createSlice({
   name: "site",
   initialState,
   reducers: {
+    loadingSite(state) {
+      state.loading = true;
+    },
     failedSite(state) {
       state.failedAttempt++;
+      state.loading = false;
     },
-    receivedSite(
-      state,
-      action: PayloadAction<{ site: GetSiteResponse; reqId: string }>,
-    ) {
-      state.response = action.payload.site;
+    receivedSite(state, action: PayloadAction<GetSiteResponse>) {
+      state.response = action.payload;
+      state.loading = false;
       state.failedAttempt = 0;
-      state.reqId = action.payload.reqId;
     },
-    reset() {
+    resetSite() {
       return initialState;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { failedSite, receivedSite } = siteSlice.actions;
+export const { loadingSite, failedSite, receivedSite, resetSite } =
+  siteSlice.actions;
 
 export default siteSlice.reducer;
 
@@ -62,7 +64,10 @@ export const followIdsSelector = createSelector(
   (follows) => (follows ?? []).map((follow) => follow.community.id),
 );
 
-export const siteReqIdSelector = createSelector(
+/**
+ * Used to determine if request is stale (for other lemmy account and/or instance)
+ */
+const siteReqIdSelector = createSelector(
   [(state: RootState) => state.auth.connectedInstance, handleSelector],
   (handle, connectedInstance) =>
     connectedInstance ? getSiteReqId(connectedInstance, handle) : "",
@@ -70,19 +75,19 @@ export const siteReqIdSelector = createSelector(
 
 export const getSiteIfNeeded =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    if (
-      getState().site.reqId &&
-      siteReqIdSelector(getState()) === getState().site.reqId
-    )
-      return;
+    if (getState().site.response) return;
 
     dispatch(getSite());
   };
 
 export const getSite =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    if (getState().site.loading) return;
+
     const reqId = siteReqIdSelector(getState());
     let site;
+
+    dispatch(loadingSite());
 
     try {
       site = await clientSelector(getState()).getSite();
@@ -91,6 +96,9 @@ export const getSite =
 
       (async () => {
         await customBackOff(getState().site.failedAttempt);
+
+        // Site or user changed before site response resolved
+        if (reqId !== siteReqIdSelector(getState())) return;
 
         dispatch(getSite());
       })();
@@ -101,7 +109,7 @@ export const getSite =
     // Site or user changed before site response resolved
     if (reqId !== siteReqIdSelector(getState())) return;
 
-    dispatch(receivedSite({ site, reqId }));
+    dispatch(receivedSite(site));
   };
 
 export const showNsfw =

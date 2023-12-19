@@ -14,6 +14,7 @@ import { resetInstances } from "../instances/instancesSlice";
 import { resetResolve } from "../resolve/resolveSlice";
 import { resetMod } from "../moderation/modSlice";
 import { jwtIssSelector } from "./authSelectors";
+import { resetSite } from "./siteSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -179,6 +180,7 @@ const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
   dispatch(resetResolve());
   dispatch(resetInstances());
   dispatch(resetMod());
+  dispatch(resetSite());
 };
 
 export const logoutEverything = () => async (dispatch: AppDispatch) => {
@@ -204,10 +206,7 @@ export const logoutAccount =
 
     // Going to need to change active accounts
     if (handle === accountData?.activeHandle) {
-      dispatch(resetPosts());
-      dispatch(resetComments());
-      dispatch(resetUsers());
-      dispatch(resetInbox());
+      dispatch(resetAccountSpecificStoreData());
     }
 
     // revoke token
