@@ -8,7 +8,7 @@ import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
 import { PageContext } from "../../auth/PageContext";
-import { isDownvoteEnabledSelector } from "../../auth/authSlice";
+import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
 import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
 import { useTransition } from "react-transition-state";
 import { ImpactStyle } from "@capacitor/haptics";

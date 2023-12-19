@@ -42,7 +42,7 @@ import {
 } from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
-import { handleSelector, isDownvoteEnabledSelector } from "../auth/authSlice";
+import { handleSelector } from "../auth/authSlice";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
@@ -51,6 +51,7 @@ import { ModeratorRole, getModIcon } from "../moderation/useCanModerate";
 import useCommentModActions from "../moderation/useCommentModActions";
 import { ActionButton } from "../post/actions/ActionButton";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import { isDownvoteEnabledSelector } from "../auth/siteSlice";
 
 const StyledIonIcon = styled(IonIcon)`
   font-size: 1.2em;

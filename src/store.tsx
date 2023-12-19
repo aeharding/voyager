@@ -36,12 +36,14 @@ import biometricSlice, {
 import modSlice from "./features/moderation/modSlice";
 import imageSlice from "./features/post/inFeed/large/imageSlice";
 import feedSortSlice from "./features/feed/sort/feedSortSlice";
+import siteSlice from "./features/auth/siteSlice";
 
 const store = configureStore({
   reducer: {
     post: postSlice,
     comment: commentSlice,
     auth: authSlice,
+    site: siteSlice,
     community: communitySlice,
     user: userSlice,
     inbox: inboxSlice,

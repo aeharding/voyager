@@ -2,12 +2,12 @@ import { css } from "@emotion/react";
 import { useAppSelector } from "../../../store";
 import GenericSidebar from "./GenericSidebar";
 import { IonBadge } from "@ionic/react";
-import { lemmyVersionSelector } from "../../auth/authSlice";
+import { lemmyVersionSelector } from "../../auth/siteSlice";
 import { CenteredSpinner } from "../../../pages/posts/PostPage";
 
 export default function InstanceSidebar() {
-  const siteView = useAppSelector((state) => state.auth.site?.site_view);
-  const admins = useAppSelector((state) => state.auth.site?.admins);
+  const siteView = useAppSelector((state) => state.site.response?.site_view);
+  const admins = useAppSelector((state) => state.site.response?.admins);
   const lemmyVersion = useAppSelector(lemmyVersionSelector);
 
   if (!siteView || !admins)

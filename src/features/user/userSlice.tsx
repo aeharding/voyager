@@ -1,10 +1,11 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, getSite } from "../auth/authSlice";
+import { clientSelector } from "../auth/authSlice";
 import { getHandle } from "../../helpers/lemmy";
 import { LIMIT } from "../../services/lemmy";
 import { receivedComments } from "../comment/commentSlice";
 import { Person } from "lemmy-js-client";
+import { getSite } from "../auth/siteSlice";
 
 interface CommentState {
   userByHandle: Record<string, Person>;

@@ -14,10 +14,7 @@ import {
   UsernameIonText,
 } from "../../features/comment/compose/reply/CommentReply";
 import { useAppSelector } from "../../store";
-import {
-  handleSelector,
-  localUserSelector,
-} from "../../features/auth/authSlice";
+import { handleSelector } from "../../features/auth/authSlice";
 import FilterNsfw from "../../features/settings/blocks/FilterNsfw";
 import BlockedCommunities from "../../features/settings/blocks/BlockedCommunities";
 import { CenteredSpinner } from "../posts/PostPage";
@@ -27,6 +24,7 @@ import useSupported from "../../helpers/useSupported";
 import BlockedInstances from "../../features/settings/blocks/BlockedInstances";
 import { useRef } from "react";
 import { useSetActivePage } from "../../features/auth/AppContext";
+import { localUserSelector } from "../../features/auth/siteSlice";
 
 export default function BlocksSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);

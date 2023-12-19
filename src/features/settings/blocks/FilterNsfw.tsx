@@ -1,7 +1,7 @@
 import { IonLabel, IonList, IonLoading, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { localUserSelector, showNsfw } from "../../auth/authSlice";
+import { localUserSelector, showNsfw } from "../../auth/siteSlice";
 import { useState } from "react";
 import { ListHeader } from "../shared/formatting";
 
