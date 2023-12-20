@@ -11,7 +11,7 @@ import React, {
 import { CommentReplyItem } from "../comment/compose/reply/CommentReply";
 import Login from "../auth/Login";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { changeAccount, jwtSelector } from "../auth/authSlice";
+import { changeAccount } from "../auth/authSlice";
 import CommentReplyModal from "../comment/compose/reply/CommentReplyModal";
 import { Comment, CommentView, PostView } from "lemmy-js-client";
 import CommentEditModal from "../comment/compose/edit/CommentEditModal";
@@ -22,6 +22,7 @@ import ShareAsImageModal, {
   ShareAsImageData,
 } from "../share/asImage/ShareAsImageModal";
 import AccountSwitcher from "./AccountSwitcher";
+import { jwtSelector } from "./authSelectors";
 
 interface IPageContext {
   // used for ion presentingElement

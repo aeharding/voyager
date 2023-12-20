@@ -26,7 +26,7 @@ import useShouldInstall from "../../features/pwa/useShouldInstall";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { handleSelector } from "../../features/auth/authSlice";
+import { handleSelector } from "../../features/auth/authSelectors";
 import {
   isAppleDeviceInstalledToHomescreen,
   isNative,

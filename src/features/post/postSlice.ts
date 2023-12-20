@@ -1,7 +1,11 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PostView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, handleSelector, jwtSelector } from "../auth/authSlice";
+import {
+  clientSelector,
+  handleSelector,
+  jwtSelector,
+} from "../auth/authSelectors";
 import { IPostMetadata, db } from "../../services/db";
 import { isLemmyError } from "../../helpers/lemmy";
 import { resolvePostReport } from "../moderation/modSlice";

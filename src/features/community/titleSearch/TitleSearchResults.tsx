@@ -97,7 +97,9 @@ export default function TitleSearchResults() {
   const debouncedSearch = useDebounce(search, 500);
   const [searchPayload, setSearchPayload] = useState<CommunityView[]>([]);
   const client = useClient();
-  const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
+  const follows = useAppSelector(
+    (state) => state.site.response?.my_user?.follows,
+  );
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [viewportHeight, setViewportHeight] = useState(
     document.documentElement.clientHeight,

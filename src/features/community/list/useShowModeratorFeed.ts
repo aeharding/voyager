@@ -3,7 +3,7 @@ import { useAppSelector } from "../../../store";
 
 export default function useShowModeratorFeed() {
   const moderates = useAppSelector(
-    (state) => state.auth.site?.my_user?.moderates,
+    (state) => state.site.response?.my_user?.moderates,
   );
   const moderatorFeedSupported = useSupported("Modded Feed");
 

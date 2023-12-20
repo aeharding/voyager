@@ -175,3 +175,9 @@ export function getImageSrc(url: string, options?: ImageOptions) {
 
   return `${url}${urlParams ? `?${urlParams}` : ""}`;
 }
+
+export const customBackOff = async (attempt = 0, maxRetries = 5) => {
+  await new Promise((resolve) => {
+    setTimeout(resolve, Math.min(attempt, maxRetries) * 4_000);
+  });
+};

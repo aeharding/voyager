@@ -1,8 +1,7 @@
-import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { GetSiteResponse } from "lemmy-js-client";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
 import Cookies from "js-cookie";
-import { LemmyJWT, getRemoteHandle } from "../../helpers/lemmy";
+import { getRemoteHandle, parseJWT } from "../../helpers/lemmy";
 import { resetPosts } from "../post/postSlice";
 import { getClient } from "../../services/lemmy";
 import { resetComments } from "../comment/commentSlice";
@@ -14,6 +13,8 @@ import { ApplicationContext } from "capacitor-application-context";
 import { resetInstances } from "../instances/instancesSlice";
 import { resetResolve } from "../resolve/resolveSlice";
 import { resetMod } from "../moderation/modSlice";
+import { jwtIssSelector } from "./authSelectors";
+import { resetSite } from "./siteSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -47,19 +48,15 @@ type CredentialStoragePayload = {
   activeHandle: string;
 };
 
-interface PostState {
+interface AuthState {
   accountData: CredentialStoragePayload | undefined;
-  site: GetSiteResponse | undefined;
-  loadingSite: string;
   connectedInstance: string;
 }
 
-const initialState: (connectedInstance?: string) => PostState = (
+const initialState: (connectedInstance?: string) => AuthState = (
   connectedInstance = "",
 ) => ({
   accountData: getCredentialsFromStorage(),
-  site: undefined,
-  loadingSite: "",
   connectedInstance,
 });
 
@@ -128,14 +125,8 @@ export const authSlice = createSlice({
       return initialState(state.connectedInstance);
     },
 
-    updateUserDetails(state, action: PayloadAction<GetSiteResponse>) {
-      state.site = action.payload;
-    },
     updateConnectedInstance(state, action: PayloadAction<string>) {
       state.connectedInstance = action.payload;
-    },
-    loadingSite(state, action: PayloadAction<string>) {
-      state.loadingSite = action.payload;
     },
   },
 });
@@ -147,56 +138,10 @@ export const {
   setPrimaryAccount,
   setAccounts,
   reset,
-  updateUserDetails,
   updateConnectedInstance,
-  loadingSite,
 } = authSlice.actions;
 
 export default authSlice.reducer;
-
-export const activeAccount = createSelector(
-  [
-    (state: RootState) => state.auth.accountData?.accounts,
-    (state: RootState) => state.auth.accountData?.activeHandle,
-  ],
-  (accounts, activeHandle) => {
-    return accounts?.find(({ handle }) => handle === activeHandle);
-  },
-);
-
-export const jwtSelector = createSelector([activeAccount], (account) => {
-  return account?.jwt;
-});
-
-export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
-  jwt ? parseJWT(jwt) : undefined,
-);
-
-export const jwtIssSelector = (state: RootState) =>
-  jwtPayloadSelector(state)?.iss;
-
-export const handleSelector = createSelector([activeAccount], (account) => {
-  return account?.handle;
-});
-
-export const usernameSelector = createSelector([handleSelector], (handle) => {
-  return handle?.split("@")[0];
-});
-
-export const isAdminSelector = (state: RootState) =>
-  state.auth.site?.my_user?.local_user_view.local_user.admin;
-
-export const isDownvoteEnabledSelector = (state: RootState) =>
-  state.auth.site?.site_view.local_site.enable_downvotes !== false;
-
-export const localUserSelector = (state: RootState) =>
-  state.auth.site?.my_user?.local_user_view.local_user;
-
-export const userPersonSelector = (state: RootState) =>
-  state.auth.site?.my_user?.local_user_view?.person;
-
-export const lemmyVersionSelector = (state: RootState) =>
-  state.auth.site?.version;
 
 export const login =
   (baseUrl: string, username: string, password: string, totp?: string) =>
@@ -226,28 +171,6 @@ export const login =
     dispatch(updateConnectedInstance(parseJWT(res.jwt).iss));
   };
 
-export const getSiteIfNeeded =
-  () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const jwtPayload = jwtPayloadSelector(getState());
-    const instance = jwtPayload?.iss ?? getState().auth.connectedInstance;
-
-    const handle = handleSelector(getState());
-
-    if (getLoadingSiteId(instance, handle) === getState().auth.loadingSite)
-      return;
-
-    dispatch(loadingSite(getLoadingSiteId(instance, handle)));
-
-    dispatch(getSite());
-  };
-
-export const getSite =
-  () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const details = await clientSelector(getState()).getSite();
-
-    dispatch(updateUserDetails(details));
-  };
-
 const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
   dispatch(resetPosts());
   dispatch(resetComments());
@@ -257,6 +180,7 @@ const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
   dispatch(resetResolve());
   dispatch(resetInstances());
   dispatch(resetMod());
+  dispatch(resetSite());
 };
 
 export const logoutEverything = () => async (dispatch: AppDispatch) => {
@@ -282,10 +206,7 @@ export const logoutAccount =
 
     // Going to need to change active accounts
     if (handle === accountData?.activeHandle) {
-      dispatch(resetPosts());
-      dispatch(resetComments());
-      dispatch(resetUsers());
-      dispatch(resetInbox());
+      dispatch(resetAccountSpecificStoreData());
     }
 
     // revoke token
@@ -297,28 +218,6 @@ export const logoutAccount =
     const iss = jwtIssSelector(getState());
     if (iss) dispatch(updateConnectedInstance(iss));
   };
-
-function parseJWT(payload: string): LemmyJWT {
-  const base64 = payload.split(".")[1]!;
-  const jsonPayload = atob(base64);
-  return JSON.parse(jsonPayload);
-}
-
-export const urlSelector = (state: RootState) =>
-  jwtIssSelector(state) ?? state.auth.connectedInstance;
-
-export const clientSelector = createSelector(
-  [urlSelector, jwtSelector],
-  (url, jwt) => {
-    // never leak the jwt to the incorrect server
-    return getClient(url, jwt);
-  },
-);
-
-export const followIdsSelector = createSelector(
-  [(state: RootState) => state.auth.site?.my_user?.follows],
-  (follows) => (follows ?? []).map((follow) => follow.community.id),
-);
 
 function updateCredentialsStorage(
   accounts: CredentialStoragePayload | undefined,
@@ -341,29 +240,6 @@ function getCredentialsFromStorage(): CredentialStoragePayload | undefined {
   return JSON.parse(serializedCredentials);
 }
 
-export const showNsfw =
-  (show: boolean) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
-    // https://github.com/LemmyNet/lemmy/issues/3565
-    const person = getState().auth.site?.my_user?.local_user_view.person;
-
-    if (!person || handleSelector(getState()) !== getRemoteHandle(person))
-      throw new Error("user mismatch");
-
-    await clientSelector(getState())?.saveUserSettings({
-      avatar: person?.avatar || "",
-      show_nsfw: show,
-    });
-
-    await dispatch(getSite());
-  };
-
-function getLoadingSiteId(instance: string, handle: string | undefined) {
-  if (!handle) return instance;
-
-  return `${instance}-${handle}`;
-}
-
 // Run once on app load to sync state if needed
 updateApplicationContextIfNeeded(getCredentialsFromStorage());
 
@@ -383,16 +259,3 @@ function updateApplicationContextIfNeeded(
       : "",
   });
 }
-
-export const blockInstance =
-  (block: boolean, id: number) =>
-  async (dispatch: AppDispatch, getState: () => RootState) => {
-    if (!id) return;
-
-    await clientSelector(getState())?.blockInstance({
-      instance_id: id,
-      block,
-    });
-
-    await dispatch(getSite());
-  };

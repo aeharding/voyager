@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { FallbackProps } from "react-error-boundary";
 import { useLocation } from "react-router";
 import { useAppSelector } from "./store";
-import { jwtSelector } from "./features/auth/authSlice";
+import { jwtSelector } from "./features/auth/authSelectors";
 import { isInstalled, isNative } from "./helpers/device";
 import { IonButton, IonContent, IonIcon, IonLabel } from "@ionic/react";
 import { logoGithub } from "ionicons/icons";

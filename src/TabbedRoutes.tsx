@@ -4,7 +4,7 @@ import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppSelector } from "./store";
-import { jwtIssSelector } from "./features/auth/authSlice";
+import { jwtIssSelector } from "./features/auth/authSelectors";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import UserPage from "./pages/profile/UserPage";

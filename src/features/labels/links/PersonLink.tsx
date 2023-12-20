@@ -58,7 +58,7 @@ export default function PersonLink({
   showBadge = true,
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const isAdmin = useAppSelector((state) => state.auth.site?.admins)?.some(
+  const isAdmin = useAppSelector((state) => state.site.response?.admins)?.some(
     (admin) => admin.person.actor_id === person.actor_id,
   );
   const { hideUsernames } = useContext(ShareImageContext);

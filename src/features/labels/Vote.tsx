@@ -13,7 +13,7 @@ import {
 } from "../../helpers/vote";
 import { CommentView, PostView } from "lemmy-js-client";
 import { OVoteDisplayMode } from "../../services/db";
-import { isDownvoteEnabledSelector } from "../auth/authSlice";
+import { isDownvoteEnabledSelector } from "../auth/siteSlice";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../helpers/useHapticFeedback";
 import useAppToast from "../../helpers/useAppToast";

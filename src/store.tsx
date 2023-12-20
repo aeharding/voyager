@@ -7,7 +7,7 @@ import {
   useDispatch,
   useSelector,
 } from "react-redux";
-import authSlice, { handleSelector } from "./features/auth/authSlice";
+import authSlice from "./features/auth/authSlice";
 import commentSlice from "./features/comment/commentSlice";
 import communitySlice, {
   getFavoriteCommunities,
@@ -36,12 +36,15 @@ import biometricSlice, {
 import modSlice from "./features/moderation/modSlice";
 import imageSlice from "./features/post/inFeed/large/imageSlice";
 import feedSortSlice from "./features/feed/sort/feedSortSlice";
+import siteSlice from "./features/auth/siteSlice";
+import { handleSelector } from "./features/auth/authSelectors";
 
 const store = configureStore({
   reducer: {
     post: postSlice,
     comment: commentSlice,
     auth: authSlice,
+    site: siteSlice,
     community: communitySlice,
     user: userSlice,
     inbox: inboxSlice,

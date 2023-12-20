@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import useClient from "../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/Login";
-import { jwtSelector, urlSelector } from "../../auth/authSlice";
+import { jwtSelector, urlSelector } from "../../auth/authSelectors";
 import { startCase } from "lodash";
 import { css } from "@emotion/react";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";

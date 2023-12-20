@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, getSite } from "../auth/authSlice";
+import { clientSelector } from "../auth/authSelectors";
 import {
   CommunityModeratorView,
   CommunityView,
@@ -9,6 +9,7 @@ import {
 import { getHandle } from "../../helpers/lemmy";
 import { db } from "../../services/db";
 import { without } from "lodash";
+import { getSite } from "../auth/siteSlice";
 
 interface CommunityState {
   communityByHandle: Record<string, CommunityView>;
