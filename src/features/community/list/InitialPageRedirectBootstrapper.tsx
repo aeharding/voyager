@@ -49,23 +49,27 @@ export default function InitialPageRedirectBootstrapper({
       return;
     }
 
-    router.push(
-      to,
-      "forward",
-      "push",
-      undefined,
-      (baseEl: HTMLElement, opts: TransitionOptions) => {
-        // Do not animate into view
-        if (opts.direction === "forward") return createAnimation();
+    // requestAnimationFrame needed so Ionic can finish some calculations,
+    // like --offset-top for <ion-content> needed for grey-bg (full size header)
+    requestAnimationFrame(() => {
+      router.push(
+        to,
+        "forward",
+        "push",
+        undefined,
+        (baseEl: HTMLElement, opts: TransitionOptions) => {
+          // Do not animate into view
+          if (opts.direction === "forward") return createAnimation();
 
-        // Later, use normal animation for swipe back
-        return opts.mode === "ios"
-          ? iosTransitionAnimation(baseEl, opts)
-          : mdTransitionAnimation(baseEl, opts);
-      },
-    );
+          // Later, use normal animation for swipe back
+          return opts.mode === "ios"
+            ? iosTransitionAnimation(baseEl, opts)
+            : mdTransitionAnimation(baseEl, opts);
+        },
+      );
 
-    setBootstrapped(true);
+      setBootstrapped(true);
+    });
   });
 
   if (!isInstalled() || bootstrapped) return null;
