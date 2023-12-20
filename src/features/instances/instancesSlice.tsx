@@ -3,6 +3,7 @@ import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSelectors";
 import { FederatedInstances } from "lemmy-js-client";
 import { db } from "../../services/db";
+import { customBackOff } from "../../services/lemmy";
 
 interface InstancesState {
   knownInstances: "pending" | FederatedInstances | undefined;
@@ -103,9 +104,3 @@ export const getInstances =
 
     dispatch(receivedInstances(federated_instances));
   };
-
-const customBackOff = async (attempt = 0, maxRetries = 5) => {
-  await new Promise((resolve) => {
-    setTimeout(resolve, Math.min(attempt, maxRetries) * 4_000);
-  });
-};

@@ -3,6 +3,7 @@ import { GetSiteResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector, handleSelector } from "./authSelectors";
 import { getRemoteHandle } from "../../helpers/lemmy";
+import { customBackOff } from "../../services/lemmy";
 
 interface SiteState {
   failedAttempt: number;
@@ -146,9 +147,3 @@ function getSiteReqId(instance: string, handle: string | undefined) {
 
   return `${instance}-${handle}`;
 }
-
-const customBackOff = async (attempt = 0, maxRetries = 5) => {
-  await new Promise((resolve) => {
-    setTimeout(resolve, Math.min(attempt, maxRetries) * 4_000);
-  });
-};
