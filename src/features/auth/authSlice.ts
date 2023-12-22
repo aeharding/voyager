@@ -14,7 +14,7 @@ import { resetInstances } from "../instances/instancesSlice";
 import { resetResolve } from "../resolve/resolveSlice";
 import { resetMod } from "../moderation/modSlice";
 import { jwtIssSelector } from "./authSelectors";
-import { resetSite } from "./siteSlice";
+import { receivedSite, resetSite } from "./siteSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -167,6 +167,7 @@ export const login =
 
     if (!myUser) throw new Error("broke");
 
+    dispatch(receivedSite(site));
     dispatch(addAccount({ jwt: res.jwt, handle: getRemoteHandle(myUser) }));
     dispatch(updateConnectedInstance(parseJWT(res.jwt).iss));
   };
