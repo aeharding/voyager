@@ -1,16 +1,10 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import { logoutAccount } from "../auth/authSlice";
 import { InboxItemView } from "./InboxItem";
 import { differenceBy, uniqBy } from "lodash";
 import { receivedUsers } from "../user/userSlice";
-import { isLemmyError } from "../../helpers/lemmy";
-import {
-  clientSelector,
-  handleSelector,
-  jwtSelector,
-} from "../auth/authSelectors";
+import { clientSelector, jwtSelector } from "../auth/authSelectors";
 
 interface PostState {
   counts: {
@@ -114,31 +108,7 @@ export const getInboxCounts =
 
     if (Date.now() - lastUpdatedCounts < 3_000) return;
 
-    let result;
-    const initialHandle = handleSelector(getState());
-
-    try {
-      result = await clientSelector(getState()).getUnreadCount();
-    } catch (error) {
-      // Get inbox counts is a good place to check if token is valid,
-      // because it runs quite often (when returning from background,
-      // every 60 seconds, etc)
-      //
-      // If API rejects jwt, check if initial handle used to make the request
-      // is the same as the handle at this moment (e.g. something else didn't
-      // log the user out). If match, then proceed to log the user out
-      if (
-        isLemmyError(error, "not_logged_in") ||
-        isLemmyError(error, "incorrect_login")
-      ) {
-        const handle = handleSelector(getState());
-        if (handle && handle === initialHandle) {
-          dispatch(logoutAccount(handle));
-        }
-      }
-
-      throw error;
-    }
+    const result = await clientSelector(getState()).getUnreadCount();
 
     if (result) dispatch(receivedInboxCounts(result));
   };
