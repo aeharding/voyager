@@ -7,8 +7,8 @@ android {
         applicationId "app.vger.voyager"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 198
-        versionName "1.32.4"
+        versionCode 199
+        versionName "1.32.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
