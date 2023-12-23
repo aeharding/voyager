@@ -32,6 +32,7 @@ export default function TrendingCommunities() {
       </IonListHeader>
       {trendingCommunities.map((community) => (
         <InsetIonItem
+          className="item-legacy"
           routerLink={buildGeneralBrowseLink(
             `/c/${getHandle(community.community)}`,
           )}
