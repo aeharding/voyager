@@ -1,8 +1,14 @@
 import { IonLabel, IonList, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { setUserInstanceUrlDisplay } from "../settingsSlice";
-import { OInstanceUrlDisplayMode } from "../../../services/db";
+import {
+  setUserAvatarDisplay,
+  setUserInstanceUrlDisplay,
+} from "../settingsSlice";
+import {
+  OInstanceUrlDisplayMode,
+  OUserAvatarDisplayMode,
+} from "../../../services/db";
 import { ListHeader } from "../shared/formatting";
 
 export default function GeneralAppearance() {
@@ -10,6 +16,10 @@ export default function GeneralAppearance() {
 
   const userInstanceUrlDisplay = useAppSelector(
     (state) => state.settings.appearance.general.userInstanceUrlDisplay,
+  );
+
+  const userAvatarDisplay = useAppSelector(
+    (state) => state.settings.appearance.general.userAvatarDisplay,
   );
 
   return (
@@ -34,6 +44,22 @@ export default function GeneralAppearance() {
             }
           >
             Show user instance
+          </IonToggle>
+        </InsetIonItem>
+        <InsetIonItem>
+          <IonToggle
+            checked={userAvatarDisplay === OUserAvatarDisplayMode.InComments}
+            onIonChange={(e) =>
+              dispatch(
+                setUserAvatarDisplay(
+                  e.detail.checked
+                    ? OUserAvatarDisplayMode.InComments
+                    : OUserAvatarDisplayMode.Never,
+                ),
+              )
+            }
+          >
+            Show user avatars
           </IonToggle>
         </InsetIonItem>
       </IonList>

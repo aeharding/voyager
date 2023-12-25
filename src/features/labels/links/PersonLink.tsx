@@ -6,7 +6,10 @@ import { Person } from "lemmy-js-client";
 import Handle from "../Handle";
 import { StyledLink, hideCss } from "./shared";
 import { useAppSelector } from "../../../store";
-import { OInstanceUrlDisplayMode } from "../../../services/db";
+import {
+  OInstanceUrlDisplayMode,
+  OUserAvatarDisplayMode,
+} from "../../../services/db";
 import AgeBadge from "./AgeBadge";
 import { useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
@@ -71,6 +74,11 @@ export default function PersonLink({
       (state) => state.settings.appearance.general.userInstanceUrlDisplay,
     ) === OInstanceUrlDisplayMode.WhenRemote;
 
+  const userAvatarDisplay =
+    useAppSelector(
+      (state) => state.settings.appearance.general.userAvatarDisplay,
+    ) === OUserAvatarDisplayMode.InComments;
+
   if (isAdmin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
@@ -88,14 +96,16 @@ export default function PersonLink({
           <Prefix>{prefix}</Prefix>{" "}
         </>
       ) : (
-        <ItemIcon
-          item={person}
-          size={24}
-          css={css`
-            margin-right: 0.4rem;
-            vertical-align: middle;
-          `}
-        />
+        userAvatarDisplay && (
+          <ItemIcon
+            item={person}
+            size={24}
+            css={css`
+              margin-right: 0.4rem;
+              vertical-align: middle;
+            `}
+          />
+        )
       )}
       <Handle
         item={person}

@@ -98,6 +98,14 @@ export const OInstanceUrlDisplayMode = {
 export type InstanceUrlDisplayMode =
   (typeof OInstanceUrlDisplayMode)[keyof typeof OInstanceUrlDisplayMode];
 
+export const OUserAvatarDisplayMode = {
+  InComments: "in-comments",
+  Never: "never",
+} as const;
+
+export type UserAvatarDisplayMode =
+  (typeof OUserAvatarDisplayMode)[keyof typeof OUserAvatarDisplayMode];
+
 export const OVoteDisplayMode = {
   /**
    * Show upvotes and downvotes separately
@@ -250,6 +258,7 @@ export type SwipeActions = Record<SwipeDirection, SwipeAction>;
 export type SettingValueTypes = {
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
+  user_avatar_display: UserAvatarDisplayMode;
   vote_display_mode: VoteDisplayMode;
   profile_label: ProfileLabelType;
   post_appearance_type: PostAppearanceType;
