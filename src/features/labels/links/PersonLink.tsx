@@ -10,6 +10,7 @@ import { OInstanceUrlDisplayMode } from "../../../services/db";
 import AgeBadge from "./AgeBadge";
 import { useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
+import ItemIcon from "../img/ItemIcon";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -86,7 +87,16 @@ export default function PersonLink({
         <>
           <Prefix>{prefix}</Prefix>{" "}
         </>
-      ) : undefined}
+      ) : (
+        <ItemIcon
+          item={person}
+          size={24}
+          css={css`
+            margin-right: 0.4rem;
+            vertical-align: middle;
+          `}
+        />
+      )}
       <Handle
         item={person}
         showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
