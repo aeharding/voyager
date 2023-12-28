@@ -14,7 +14,7 @@ import removeComment from "./types/removeComment";
 import removeCommunity from "./types/removeCommunity";
 import removePost from "./types/removePost";
 import transferCommunity from "./types/transferCommunity";
-import { IonItem } from "@ionic/react";
+import { IonIcon, IonItem } from "@ionic/react";
 import { maxWidthCss } from "../../shared/AppContent";
 import Ago from "../../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -37,17 +37,51 @@ import {
 } from "lemmy-js-client";
 import { styled } from "@linaria/react";
 
-const Contents = styled.div`
-  font-size: 0.875em;
-  width: 100%;
-
+const Container = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 8px 0;
+  gap: 1rem;
+
+  ${maxWidthCss}
+
+  padding: 0.5rem 0;
+
+  font-size: 0.875em;
+
+  strong {
+    font-weight: 500;
+  }
 `;
 
-const TitleLine = styled.div`
+const StartContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const Content = styled.div`
+  flex: 1;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  aside {
+    color: var(--ion-color-medium);
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+`;
+
+const Body = styled.div`
+  color: var(--ion-color-medium);
+  padding: 0.5rem 0;
+`;
+
+const Footer = styled.div`
   display: flex;
   justify-content: space-between;
 
@@ -57,9 +91,6 @@ const TitleLine = styled.div`
 `;
 
 const Title = styled.div``;
-const Message = styled.div`
-  color: var(--ion-color-medium);
-`;
 const Reason = styled.div``;
 
 interface ModLogItemProps {
@@ -67,10 +98,12 @@ interface ModLogItemProps {
 }
 
 export interface LogEntryData {
+  icon: string;
   title: string;
   when: string;
   message?: string;
   reason?: string;
+  expires?: string;
   by?: string;
   link?: string;
 }
@@ -118,7 +151,8 @@ function renderModlogData(item: ModlogItemType): LogEntryData {
 
 export function ModlogItem({ item }: ModLogItemProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { title, by, when, message, reason, link } = renderModlogData(item);
+  const { icon, title, when, message, reason, expires, link } =
+    renderModlogData(item);
 
   return (
     <IonItem
@@ -126,17 +160,30 @@ export function ModlogItem({ item }: ModLogItemProps) {
       routerLink={link ? buildGeneralBrowseLink(link) : undefined}
       detail={false}
     >
-      <Contents>
-        <TitleLine>
-          <Title>{title}</Title>
-          <aside>
-            {by && <span>{by} · </span>}
-            <Ago date={when} />
-          </aside>
-        </TitleLine>
-        <Message>{message}</Message>
-        {reason && <Reason>Reason: {reason}</Reason>}
-      </Contents>
+      <Container>
+        <StartContent>
+          <IonIcon icon={icon} color="medium" />
+        </StartContent>
+        <Content>
+          <Header>
+            <Title>{title}</Title>
+            <aside>
+              <Ago date={when} />
+            </aside>
+          </Header>
+          <Body>{message}</Body>
+          <Footer>
+            {reason && <Reason>Reason: {reason}</Reason>}
+            <aside>
+              {expires && (
+                <>
+                  expires in <Ago date={expires} />
+                </>
+              )}
+            </aside>
+          </Footer>
+        </Content>
+      </Container>
     </IonItem>
   );
 }
