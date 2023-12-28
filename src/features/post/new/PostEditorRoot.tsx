@@ -491,7 +491,7 @@ export default function PostEditorRoot({
                 />
               )}
             >
-              <IonItem detail>
+              <IonItem detail className="item-legacy">
                 <IonLabel color={!text ? "medium" : undefined}>
                   {!text ? "Text (optional)" : text}
                 </IonLabel>
