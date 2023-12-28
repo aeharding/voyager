@@ -1,5 +1,6 @@
 import {
   CommentView,
+  Community,
   CommunityView,
   Person,
   PersonView,
@@ -46,9 +47,13 @@ export default function useAppNavigation() {
   );
 
   const navigateToCommunity = useCallback(
-    (community: CommunityView) => {
+    (community: CommunityView | Community) => {
       pushRouteIfNeeded(
-        buildGeneralBrowseLink(`/c/${getHandle(community.community)}`),
+        buildGeneralBrowseLink(
+          `/c/${getHandle(
+            "community" in community ? community.community : community,
+          )}`,
+        ),
       );
     },
     [buildGeneralBrowseLink, pushRouteIfNeeded],

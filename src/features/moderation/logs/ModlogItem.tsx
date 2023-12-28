@@ -35,6 +35,7 @@ import {
   ModRemovePostView,
   ModTransferCommunityView,
 } from "lemmy-js-client";
+import ModlogItemMoreActions from "./ModlogItemMoreActions";
 import { styled } from "@linaria/react";
 
 const Container = styled.div`
@@ -157,6 +158,7 @@ export function ModlogItem({ item }: ModLogItemProps) {
   return (
     <IonItem
       className={maxWidthCss}
+      href={undefined}
       routerLink={link ? buildGeneralBrowseLink(link) : undefined}
       detail={false}
     >
@@ -168,6 +170,7 @@ export function ModlogItem({ item }: ModLogItemProps) {
           <Header>
             <Title>{title}</Title>
             <aside>
+              <ModlogItemMoreActions item={item} />
               <Ago date={when} />
             </aside>
           </Header>
