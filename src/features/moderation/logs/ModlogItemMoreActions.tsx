@@ -4,12 +4,13 @@ import {
   ellipsisHorizontal,
   peopleOutline,
   personOutline,
-  shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { ModlogItemType } from "../../../routes/pages/shared/ModlogPage";
 import { getHandle } from "../../../helpers/lemmy";
 import useAppNavigation from "../../../helpers/useAppNavigation";
 import { notEmpty } from "../../../helpers/array";
+import useIsAdmin from "../useIsAdmin";
+import { getModIcon } from "../useCanModerate";
 
 const EllipsisIcon = styled(IonIcon)`
   font-size: 1.2rem;
@@ -34,6 +35,14 @@ export default function ModlogItemMoreActions({ item }: ModlogItemMoreActions) {
   const moderator = (() => {
     if ("moderator" in item) return item.moderator;
     if ("admin" in item) return item.admin;
+  })();
+
+  const isAdmin = useIsAdmin(moderator);
+
+  const role = (() => {
+    if (moderator && isAdmin) return "admin-local";
+    if ("admin" in item) return "admin-remote";
+    return "mod";
   })();
 
   function presentMoreActions() {
@@ -61,7 +70,8 @@ export default function ModlogItemMoreActions({ item }: ModlogItemMoreActions) {
         moderator
           ? {
               text: getHandle(moderator),
-              icon: shieldCheckmarkOutline,
+              icon: getModIcon(role),
+              cssClass: role,
               handler: () => {
                 navigateToUser(moderator);
               },
