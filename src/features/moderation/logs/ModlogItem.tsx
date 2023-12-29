@@ -36,7 +36,12 @@ import {
   ModTransferCommunityView,
 } from "lemmy-js-client";
 import ModlogItemMoreActions from "./ModlogItemMoreActions";
-import { getModColor, getModIcon, getModName } from "../useCanModerate";
+import {
+  ModeratorRole,
+  getModColor,
+  getModIcon,
+  getModName,
+} from "../useCanModerate";
 import useIsAdmin from "../useIsAdmin";
 import { timerOutline } from "ionicons/icons";
 import { styled } from "@linaria/react";
@@ -121,7 +126,7 @@ export interface LogEntryData {
   reason?: string;
   expires?: string;
   by?: string;
-  admin?: boolean;
+  role?: ModeratorRole;
   link?: string;
 }
 
@@ -168,8 +173,17 @@ function renderModlogData(item: ModlogItemType): LogEntryData {
 
 export function ModlogItem({ item }: ModLogItemProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { icon, title, when, by, message, reason, expires, link } =
-    renderModlogData(item);
+  const {
+    icon,
+    title,
+    when,
+    by,
+    role: role_,
+    message,
+    reason,
+    expires,
+    link,
+  } = renderModlogData(item);
 
   const isAdmin = useIsAdmin(
     "admin" in item
@@ -178,8 +192,13 @@ export function ModlogItem({ item }: ModLogItemProps) {
         ? item.moderator
         : undefined,
   );
+
   const role =
-    by && isAdmin ? "admin-local" : "admin" in item ? "admin-remote" : "mod";
+    by && isAdmin
+      ? "admin-local"
+      : "admin" in item
+        ? "admin-remote"
+        : role_ ?? "mod";
 
   return (
     <IonItem
@@ -196,7 +215,7 @@ export function ModlogItem({ item }: ModLogItemProps) {
           <Header>
             <Title>{title}</Title>
             <aside>
-              <ModlogItemMoreActions item={item} />
+              <ModlogItemMoreActions item={item} role={role} />
               <Ago date={when} />
             </aside>
           </Header>

@@ -1,4 +1,5 @@
-import { Comment, Post } from "lemmy-js-client";
+import { Comment, Person, Post } from "lemmy-js-client";
+import { ModeratorRole } from "../../useCanModerate";
 
 interface ModItem {
   when_: string;
@@ -16,4 +17,8 @@ export function buildPostMessage(post: Post): string {
 
 export function buildCommentMessage(comment: Comment): string {
   return `‘${comment.content}’`;
+}
+
+export function getAdminRole(person: Person | undefined): ModeratorRole {
+  return person && person.local ? "admin-local" : "admin-remote";
 }

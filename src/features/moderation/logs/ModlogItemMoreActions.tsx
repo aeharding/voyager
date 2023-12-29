@@ -9,8 +9,7 @@ import { ModlogItemType } from "../../../routes/pages/shared/ModlogPage";
 import { getHandle } from "../../../helpers/lemmy";
 import useAppNavigation from "../../../helpers/useAppNavigation";
 import { notEmpty } from "../../../helpers/array";
-import useIsAdmin from "../useIsAdmin";
-import { getModIcon } from "../useCanModerate";
+import { ModeratorRole, getModIcon } from "../useCanModerate";
 
 const EllipsisIcon = styled(IonIcon)`
   font-size: 1.2rem;
@@ -18,9 +17,13 @@ const EllipsisIcon = styled(IonIcon)`
 
 interface ModlogItemMoreActions {
   item: ModlogItemType;
+  role: ModeratorRole;
 }
 
-export default function ModlogItemMoreActions({ item }: ModlogItemMoreActions) {
+export default function ModlogItemMoreActions({
+  item,
+  role,
+}: ModlogItemMoreActions) {
   const { navigateToCommunity, navigateToUser } = useAppNavigation();
   const [presentActionSheet] = useIonActionSheet();
 
@@ -35,14 +38,6 @@ export default function ModlogItemMoreActions({ item }: ModlogItemMoreActions) {
   const moderator = (() => {
     if ("moderator" in item) return item.moderator;
     if ("admin" in item) return item.admin;
-  })();
-
-  const isAdmin = useIsAdmin(moderator);
-
-  const role = (() => {
-    if (moderator && isAdmin) return "admin-local";
-    if ("admin" in item) return "admin-remote";
-    return "mod";
   })();
 
   function presentMoreActions() {
