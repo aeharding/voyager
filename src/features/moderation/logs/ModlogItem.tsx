@@ -36,6 +36,9 @@ import {
   ModTransferCommunityView,
 } from "lemmy-js-client";
 import ModlogItemMoreActions from "./ModlogItemMoreActions";
+import { getModColor, getModIcon, getModName } from "../useCanModerate";
+import useIsAdmin from "../useIsAdmin";
+import { timerOutline } from "ionicons/icons";
 import { styled } from "@linaria/react";
 
 const Container = styled.div`
@@ -85,14 +88,26 @@ const Body = styled.div`
 const Footer = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 
   aside {
     color: var(--ion-color-medium);
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 `;
 
 const Title = styled.div``;
 const Reason = styled.div``;
+const By = styled.div<{ color: string }>`
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 0;
+  color: ${({ color }) => `var(--ion-color-${color}-shade)`};
+`;
 
 interface ModLogItemProps {
   item: ModlogItemType;
@@ -106,6 +121,7 @@ export interface LogEntryData {
   reason?: string;
   expires?: string;
   by?: string;
+  admin?: boolean;
   link?: string;
 }
 
@@ -152,8 +168,18 @@ function renderModlogData(item: ModlogItemType): LogEntryData {
 
 export function ModlogItem({ item }: ModLogItemProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { icon, title, when, message, reason, expires, link } =
+  const { icon, title, when, by, message, reason, expires, link } =
     renderModlogData(item);
+
+  const isAdmin = useIsAdmin(
+    "admin" in item
+      ? item.admin
+      : "moderator" in item
+        ? item.moderator
+        : undefined,
+  );
+  const role =
+    by && isAdmin ? "admin-local" : "admin" in item ? "admin-remote" : "mod";
 
   return (
     <IonItem
@@ -175,15 +201,17 @@ export function ModlogItem({ item }: ModLogItemProps) {
             </aside>
           </Header>
           <Body>{message}</Body>
+          {reason && <Reason>Reason: {reason}</Reason>}
           <Footer>
-            {reason && <Reason>Reason: {reason}</Reason>}
-            <aside>
-              {expires && (
-                <>
-                  expires in <Ago date={expires} />
-                </>
-              )}
-            </aside>
+            <By color={getModColor(role)}>
+              <IonIcon icon={getModIcon(role)} />
+              {by ? by : getModName(role)}
+            </By>
+            {expires && (
+              <aside>
+                <IonIcon icon={timerOutline} /> <Ago date={expires} />
+              </aside>
+            )}
           </Footer>
         </Content>
       </Container>
