@@ -24,7 +24,7 @@ import FeedContextProvider from "../../features/feed/FeedContext";
 import SpecialFeedMoreActions from "../../features/feed/SpecialFeedMoreActions";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
 import { getSortDuration } from "../../features/feed/endItems/EndPost";
-import { followIdsSelector } from "../../features/auth/authSlice";
+import { followIdsSelector } from "../../features/auth/siteSlice";
 import { getHandle } from "../../helpers/lemmy";
 import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../features/community/mod/ModActions";
@@ -45,7 +45,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle,
   );
-  const site = useAppSelector((state) => state.auth.site);
+  const site = useAppSelector((state) => state.site.response);
   const noSubscribedInFeed = useAppSelector(
     (state) => state.settings.general.noSubscribedInFeed,
   );

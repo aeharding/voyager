@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { groupBy, sortBy } from "lodash";
-import { jwtPayloadSelector } from "../../features/auth/authSlice";
+import { jwtPayloadSelector } from "../../features/auth/authSelectors";
 import ConversationItem from "../../features/inbox/messages/ConversationItem";
 import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { syncMessages } from "../../features/inbox/inboxSlice";
@@ -28,7 +28,8 @@ export default function MessagesPage() {
   const messages = useAppSelector((state) => state.inbox.messages);
   const jwtPayload = useAppSelector(jwtPayloadSelector);
   const myUserId = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
+    (state) =>
+      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   );
   const [loading, setLoading] = useState(false);
 

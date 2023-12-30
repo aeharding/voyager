@@ -292,3 +292,9 @@ export function canModerate(
   if (!moderates) return false;
   return moderates.some((m) => m.community.id === communityId);
 }
+
+export function parseJWT(payload: string): LemmyJWT {
+  const base64 = payload.split(".")[1]!;
+  const jsonPayload = atob(base64);
+  return JSON.parse(jsonPayload);
+}

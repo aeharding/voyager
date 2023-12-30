@@ -1,6 +1,6 @@
 import { ResolveObjectResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSlice";
+import { clientSelector } from "../auth/authSelectors";
 import { receivedComments } from "../comment/commentSlice";
 import { receivedCommunity } from "../community/communitySlice";
 import { receivedPosts } from "../post/postSlice";

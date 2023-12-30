@@ -402,9 +402,8 @@ function getLoginErrorMessage(error: unknown, instanceActorId: string): string {
     case "couldnt_find_person":
       return `User not found. Is your account on ${instanceActorId}?`;
     case "password_incorrect" as OldLemmyErrorValue:
-      return "Incorrect password. Please try again.";
     case "incorrect_login":
-      return "Incorrect login credentials. Please try again.";
+      return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
     case "email_not_verified":
       return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
     case "site_ban":

@@ -1,6 +1,6 @@
 import { Redirect, useLocation, useParams } from "react-router";
 import { useAppSelector } from "./store";
-import { jwtIssSelector } from "./features/auth/authSlice";
+import { jwtIssSelector } from "./features/auth/authSelectors";
 import React from "react";
 import useIonViewIsVisible from "./helpers/useIonViewIsVisible";
 

@@ -2,7 +2,7 @@ import { getPathForFeed } from "../../../TabbedRoutes";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { DefaultFeedType, ODefaultFeedType } from "../../../services/db";
 import { useAppSelector } from "../../../store";
-import { jwtIssSelector } from "../../auth/authSlice";
+import { jwtIssSelector } from "../../auth/authSelectors";
 import InitialPageRedirectBootstrapper from "./InitialPageRedirectBootstrapper";
 
 export default function CommunitiesListRedirectBootstrapper() {

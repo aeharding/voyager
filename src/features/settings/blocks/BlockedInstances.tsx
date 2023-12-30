@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { useContext, useState } from "react";
 import { Instance, InstanceBlockView } from "lemmy-js-client";
 import { ListHeader } from "../shared/formatting";
-import { blockInstance } from "../../auth/authSlice";
+import { blockInstance } from "../../auth/siteSlice";
 import InstanceSelectorModal from "../../shared/selectorModals/InstanceSelectorModal";
 import { PageContext } from "../../auth/PageContext";
 
@@ -36,7 +36,7 @@ export default function BlockedInstances() {
   );
 
   const instances = useAppSelector(
-    (state) => state.auth.site?.my_user?.instance_blocks,
+    (state) => state.site.response?.my_user?.instance_blocks,
   );
 
   const sortedInstances = instances

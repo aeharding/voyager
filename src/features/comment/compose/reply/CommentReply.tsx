@@ -20,7 +20,7 @@ import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { Centered, Spinner } from "../../../auth/Login";
-import { handleSelector } from "../../../auth/authSlice";
+import { handleSelector } from "../../../auth/authSelectors";
 import { receivedComments } from "../../commentSlice";
 import CommentContent from "../shared";
 import useTextRecovery, {

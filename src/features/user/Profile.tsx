@@ -20,7 +20,7 @@ import PostCommentFeed, {
   PostCommentItem,
   isPost,
 } from "../feed/PostCommentFeed";
-import { handleSelector } from "../auth/authSlice";
+import { handleSelector } from "../auth/authSelectors";
 import { fixLemmyDateString } from "../../helpers/date";
 import {
   getModColor,
