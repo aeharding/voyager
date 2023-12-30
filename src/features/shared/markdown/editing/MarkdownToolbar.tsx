@@ -27,7 +27,7 @@ import {
 import { css } from "@emotion/react";
 import { uploadImage } from "../../../../services/lemmy";
 import { useAppSelector } from "../../../../store";
-import { jwtSelector, urlSelector } from "../../../auth/authSlice";
+import { jwtSelector, urlSelector } from "../../../auth/authSelectors";
 import { insert } from "../../../../helpers/string";
 import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 import textFaces from "./textFaces.txt?raw";
@@ -81,11 +81,25 @@ const Toolbar = styled.div<{ keyboardOpen: boolean }>`
     justify-content: space-evenly;
 
     height: 100%;
+
+    > * {
+      flex: 1;
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      button {
+        height: 100%;
+        width: 100%;
+      }
+    }
   }
 `;
 
 const Button = styled.button`
-  padding: 1rem;
+  padding: 0;
   font-size: 1.5rem;
 
   appearance: none;

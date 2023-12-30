@@ -1,5 +1,5 @@
 import { compare } from "compare-versions";
-import { lemmyVersionSelector } from "../features/auth/authSlice";
+import { lemmyVersionSelector } from "../features/auth/siteSlice";
 import { useAppSelector } from "../store";
 import { CommentSortType, SortType } from "lemmy-js-client";
 

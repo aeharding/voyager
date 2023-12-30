@@ -8,7 +8,7 @@ import useAppToast from "../../helpers/useAppToast";
 
 export function useUserDetails(handle: string) {
   const blocks = useAppSelector(
-    (state) => state.auth.site?.my_user?.person_blocks,
+    (state) => state.site.response?.my_user?.person_blocks,
   );
   const isBlocked = useMemo(
     () => blocks?.some((b) => getHandle(b.target) === handle),

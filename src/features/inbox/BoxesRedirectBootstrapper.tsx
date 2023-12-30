@@ -1,5 +1,5 @@
 import { useAppSelector } from "../../store";
-import { jwtIssSelector } from "../auth/authSlice";
+import { jwtIssSelector } from "../auth/authSelectors";
 import InitialPageRedirectBootstrapper from "../community/list/InitialPageRedirectBootstrapper";
 
 export default function BoxesRedirectBootstrapper() {

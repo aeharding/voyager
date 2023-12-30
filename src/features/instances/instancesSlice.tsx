@@ -1,15 +1,18 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSlice";
+import { clientSelector } from "../auth/authSelectors";
 import { FederatedInstances } from "lemmy-js-client";
 import { db } from "../../services/db";
+import { customBackOff } from "../../services/lemmy";
 
 interface InstancesState {
   knownInstances: "pending" | FederatedInstances | undefined;
+  failedCount: number;
 }
 
 const initialState: InstancesState = {
   knownInstances: undefined,
+  failedCount: 0,
 };
 
 export const instancesSlice = createSlice({
@@ -21,9 +24,11 @@ export const instancesSlice = createSlice({
     },
     failedInstances: (state) => {
       state.knownInstances = undefined;
+      state.failedCount++;
     },
     receivedInstances: (state, action: PayloadAction<FederatedInstances>) => {
       state.knownInstances = action.payload;
+      state.failedCount = 0;
     },
     resetInstances: () => initialState,
   },
@@ -81,9 +86,21 @@ export const getInstances =
         db.setCachedFederatedInstances(connectedInstance, federated_instances);
       } catch (error) {
         dispatch(failedInstances());
+
+        (async () => {
+          await customBackOff(getState().instances.failedCount);
+
+          // Instance was switched before request could resolved. Bail
+          if (connectedInstance !== getState().auth.connectedInstance) return;
+
+          dispatch(getInstances());
+        })();
         throw error;
       }
     }
+
+    // Instance was switched before request could resolved. Bail
+    if (connectedInstance !== getState().auth.connectedInstance) return;
 
     dispatch(receivedInstances(federated_instances));
   };

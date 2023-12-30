@@ -8,7 +8,7 @@ import {
 } from "@ionic/react";
 import AsyncProfile from "../../features/user/AsyncProfile";
 import { useAppSelector } from "../../store";
-import { handleSelector } from "../../features/auth/authSlice";
+import { handleSelector } from "../../features/auth/authSelectors";
 import LoggedOut from "../../features/user/LoggedOut";
 import { useContext } from "react";
 import AppContent from "../../features/shared/AppContent";

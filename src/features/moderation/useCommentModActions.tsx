@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { useState } from "react";
 import useAppToast from "../../helpers/useAppToast";
 import { CommentView } from "lemmy-js-client";
-import { localUserSelector } from "../auth/authSlice";
+import { localUserSelector } from "../auth/siteSlice";
 import { notEmpty } from "../../helpers/array";
 import useCanModerate from "./useCanModerate";
 import {

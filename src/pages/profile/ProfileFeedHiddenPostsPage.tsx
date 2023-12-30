@@ -20,7 +20,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
-import { handleSelector } from "../../features/auth/authSlice";
+import { handleSelector } from "../../features/auth/authSelectors";
 import { IPostMetadata, db } from "../../services/db";
 import {
   clearHidden,

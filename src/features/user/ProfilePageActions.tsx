@@ -3,7 +3,7 @@ import { ellipsisHorizontal, footstepsOutline } from "ionicons/icons";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { useAppSelector } from "../../store";
-import { usernameSelector } from "../auth/authSlice";
+import { usernameSelector } from "../auth/authSelectors";
 import { compact } from "lodash";
 
 export default function ProfilePageActions() {

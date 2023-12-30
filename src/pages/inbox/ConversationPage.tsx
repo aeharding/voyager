@@ -19,7 +19,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { jwtPayloadSelector } from "../../features/auth/authSlice";
+import { jwtPayloadSelector } from "../../features/auth/authSelectors";
 import {
   receivedMessages,
   syncMessages,
@@ -130,7 +130,8 @@ export default function ConversationPage() {
   const jwtPayload = useAppSelector(jwtPayloadSelector);
   const { tabRef } = useContext(TabContext);
   const myUserId = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.local_user?.person_id,
+    (state) =>
+      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   );
   const { handle } = useParams<{ handle: string }>();
   const [value, setValue] = useState("");

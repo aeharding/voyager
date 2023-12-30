@@ -21,11 +21,11 @@ export default function useCanModerate(
   community: Community | boolean | undefined,
 ): ModeratorRole | undefined {
   const moderates = useAppSelector(
-    (state) => state.auth.site?.my_user?.moderates,
+    (state) => state.site.response?.my_user?.moderates,
   );
   const isAdmin = useIsAdmin();
   const myPerson = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.person,
+    (state) => state.site.response?.my_user?.local_user_view?.person,
   );
 
   return useMemo(() => {

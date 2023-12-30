@@ -8,7 +8,7 @@ import {
   isAdminSelector,
   localUserSelector,
   showNsfw,
-} from "../auth/authSlice";
+} from "../auth/siteSlice";
 import {
   addFavorite,
   blockCommunity,
@@ -50,7 +50,7 @@ export default function useCommunityActions(
   const { presentLoginIfNeeded } = useContext(PageContext);
   const { presentPostEditor } = useContext(PageContext);
 
-  const site = useAppSelector((state) => state.auth.site);
+  const site = useAppSelector((state) => state.site.response);
   const isAdmin = useAppSelector(isAdminSelector);
   const localUser = useAppSelector(localUserSelector);
 
