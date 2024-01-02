@@ -379,7 +379,7 @@ export default function PostEditorRoot({
               disabled={postButtonDisabled}
               onClick={submit}
             >
-              Post
+              {existingPost ? "Save" : "Post"}
             </IonButton>
           </IonButtons>
         </IonToolbar>
