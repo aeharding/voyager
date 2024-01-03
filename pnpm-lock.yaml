@@ -80,7 +80,7 @@ devDependencies:
     specifier: ^2.2.1
     version: 2.2.1
   '@ionic/core':
-    specifier: npm:voyager-ionic-core@^7.6.3
+    specifier: npm:voyager-ionic-core
     version: /voyager-ionic-core@7.6.3
   '@ionic/react':
     specifier: 7.6.3
