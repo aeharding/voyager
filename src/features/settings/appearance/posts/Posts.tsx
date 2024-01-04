@@ -9,7 +9,9 @@ import { setBoldTitles } from "../../settingsSlice";
 export default function Posts() {
   const dispatch = useAppDispatch();
 
-  const { boldTitles } = useAppSelector((state) => state.settings.appearance.posts)
+  const { boldTitles } = useAppSelector(
+    (state) => state.settings.appearance.posts,
+  );
 
   return (
     <>
@@ -25,7 +27,8 @@ export default function Posts() {
             checked={boldTitles}
             onIonChange={(e) =>
               dispatch(setBoldTitles(e.detail.checked ? true : false))
-            }>
+            }
+          >
             Bold Titles
           </IonToggle>
         </InsetIonItem>

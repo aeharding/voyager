@@ -50,7 +50,7 @@ const Content = styled.div`
   flex: 1;
 `;
 
-const Title = styled.span<{ isRead: boolean, isBold: boolean }>`
+const Title = styled.span<{ isRead: boolean; isBold: boolean }>`
   font-size: 0.9375em;
   font-weight: ${({ isBold }) => (isBold ? "bold" : "normal")};
 

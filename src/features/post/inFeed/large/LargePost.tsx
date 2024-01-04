@@ -36,7 +36,7 @@ const Container = styled.div`
   ${maxWidthCss}
 `;
 
-const Title = styled.div<{ isRead: boolean, isBold: boolean }>`
+const Title = styled.div<{ isRead: boolean; isBold: boolean }>`
   font-weight: ${({ isBold }) => (isBold ? "bold" : "normal")};
 
   ${({ isRead }) =>

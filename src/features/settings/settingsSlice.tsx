@@ -142,7 +142,7 @@ const initialState: SettingsState = {
     posts: {
       blurNsfw: OPostBlurNsfw.InFeed,
       type: OPostAppearanceType.Large,
-      boldTitles: false
+      boldTitles: false,
     },
     compact: {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
@@ -703,7 +703,7 @@ export const {
   setPureBlack,
   setDefaultFeed,
   setNoSubscribedInFeed,
-  setBoldTitles
+  setBoldTitles,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
