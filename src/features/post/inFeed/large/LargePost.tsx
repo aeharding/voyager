@@ -36,7 +36,9 @@ const Container = styled.div`
   ${maxWidthCss}
 `;
 
-const Title = styled.div<{ isRead: boolean }>`
+const Title = styled.div<{ isRead: boolean, isBold: boolean }>`
+  font-weight: ${({ isBold }) => (isBold ? "bold" : "normal")};
+
   ${({ isRead }) =>
     isRead &&
     css`
@@ -119,8 +121,8 @@ export default function LargePost({
     () => (post.post.body ? findLoneImage(post.post.body) : undefined),
     [post],
   );
-  const blurNsfw = useAppSelector(
-    (state) => state.settings.appearance.posts.blurNsfw,
+  const { blurNsfw, boldTitles } = useAppSelector(
+    (state) => state.settings.appearance.posts,
   );
 
   function renderPostBody() {
@@ -168,7 +170,7 @@ export default function LargePost({
       <Container>
         <ModeratableItemBannerOutlet />
 
-        <Title isRead={hasBeenRead}>
+        <Title isRead={hasBeenRead} isBold={boldTitles}>
           <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
           {isNsfw(post) && <Nsfw />}
         </Title>
