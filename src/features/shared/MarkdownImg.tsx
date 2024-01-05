@@ -5,7 +5,7 @@ import Video from "./Video";
 import { css } from "@emotion/react";
 
 const smallStyles = css`
-  max-width: 200px;
+  max-height: 200px;
 `;
 
 interface MarkdownImgProps
