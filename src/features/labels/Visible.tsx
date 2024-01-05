@@ -1,7 +1,7 @@
 import { CommentView, PostView } from "lemmy-js-client";
 import { IonIcon, IonSpinner, useIonAlert } from "@ionic/react";
 import { warning } from "ionicons/icons";
-import { MouseEvent, useEffect } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { getItemActorName, getRemoteHandle } from "../../helpers/lemmy";
 import { getClient } from "../../services/lemmy";
@@ -32,6 +32,7 @@ export default function Visible({ item, className }: VisibleProps) {
   const myHandle = useAppSelector(handleSelector);
   const objectByUrl = useAppSelector((state) => state.resolve.objectByUrl);
   const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
   const [presentAlert] = useIonAlert();
 
   const { ap_id } = "comment" in item ? item.comment : item.post;
@@ -47,10 +48,14 @@ export default function Visible({ item, className }: VisibleProps) {
   })();
 
   useEffect(() => {
-    if (visible === "unknown" && shouldCheck) {
-      dispatch(resolveObject(ap_id, getClient(instance)));
-    }
-  }, [ap_id, instance, shouldCheck, visible, dispatch]);
+    (async () => {
+      if (visible === "unknown" && shouldCheck && !loading) {
+        setLoading(true);
+        await dispatch(resolveObject(ap_id, getClient(instance)));
+        setLoading(false);
+      }
+    })();
+  }, [ap_id, instance, loading, shouldCheck, visible, dispatch]);
 
   function presentVisible(e: MouseEvent) {
     e.stopPropagation();
