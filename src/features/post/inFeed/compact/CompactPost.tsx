@@ -50,8 +50,9 @@ const Content = styled.div`
   flex: 1;
 `;
 
-const Title = styled.span<{ isRead: boolean }>`
+const Title = styled.span<{ isRead: boolean; isBold: boolean }>`
   font-size: 0.9375em;
+  font-weight: ${({ isBold }) => (isBold ? "bold" : "normal")};
 
   ${({ isRead }) =>
     isRead &&
@@ -144,6 +145,10 @@ export default function CompactPost({
     (state) => state.settings.appearance.compact.showVotingButtons,
   );
 
+  const boldTitles = useAppSelector(
+    (state) => state.settings.appearance.posts.boldTitles,
+  );
+
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
@@ -166,7 +171,7 @@ export default function CompactPost({
                 />
               </Aside>
             )}
-            <Title isRead={hasBeenRead}>
+            <Title isRead={hasBeenRead} isBold={boldTitles}>
               <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
               {nsfw && <Nsfw />}
             </Title>
