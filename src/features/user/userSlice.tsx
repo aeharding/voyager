@@ -4,7 +4,7 @@ import { clientSelector } from "../auth/authSelectors";
 import { getHandle } from "../../helpers/lemmy";
 import { LIMIT } from "../../services/lemmy";
 import { receivedComments } from "../comment/commentSlice";
-import { Person } from "lemmy-js-client";
+import { BanFromCommunity, Person } from "lemmy-js-client";
 import { getSite } from "../auth/siteSlice";
 
 interface CommentState {
@@ -61,4 +61,18 @@ export const blockUser =
 
     dispatch(receivedUsers([response.person_view.person]));
     await dispatch(getSite());
+  };
+
+export const banUser =
+  (
+    payload: Omit<BanFromCommunity, "ban"> &
+      Partial<Pick<BanFromCommunity, "ban">>,
+  ) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const response = await clientSelector(getState())?.banFromCommunity({
+      ban: true,
+      ...payload,
+    });
+
+    dispatch(receivedUsers([response.person_view.person]));
   };

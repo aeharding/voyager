@@ -3,6 +3,7 @@ import useCanModerate from "./useCanModerate";
 import { CommentReport, PostReport, PostView } from "lemmy-js-client";
 import {
   checkmarkCircleOutline,
+  hammerOutline,
   lockClosedOutline,
   lockOpenOutline,
   megaphoneOutline,
@@ -11,6 +12,8 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store";
 import { modLockPost, modRemovePost, modStickyPost } from "../post/postSlice";
 import {
+  buildBanFailed,
+  buildBanned,
   buildLocked,
   buildStickied,
   postApproved,
@@ -21,12 +24,23 @@ import useAppToast from "../../helpers/useAppToast";
 import { reportsByPostIdSelector, resolvePostReport } from "./modSlice";
 import { groupBy, values } from "lodash";
 import { notEmpty } from "../../helpers/array";
+import { useContext } from "react";
+import { PageContext } from "../auth/PageContext";
+import { getHandle } from "../../helpers/lemmy";
+import { banUser } from "../user/userSlice";
 
 export default function usePostModActions(post: PostView) {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
+  const { presentBanUser } = useContext(PageContext);
   const role = useCanModerate(post.community);
+
+  const postCreatorInStore = useAppSelector(
+    (state) => state.user.userByHandle[getHandle(post.creator)],
+  );
+
+  const creator = postCreatorInStore ?? post.creator;
 
   const reports = useAppSelector(
     (state) => reportsByPostIdSelector(state)[post.post.id],
@@ -94,6 +108,34 @@ export default function usePostModActions(post: PostView) {
               await dispatch(modLockPost(post.post.id, !post.post.locked));
 
               presentToast(buildLocked(!post.post.locked));
+            })();
+          },
+        },
+        {
+          text: !creator.banned ? "Ban User" : "Unban User",
+          icon: hammerOutline,
+          handler: () => {
+            (async () => {
+              if (creator.banned) {
+                try {
+                  await dispatch(
+                    banUser({
+                      person_id: creator.id,
+                      community_id: post.community.id,
+                      ban: false,
+                    }),
+                  );
+                } catch (error) {
+                  presentToast(buildBanFailed(false));
+                  throw error;
+                }
+
+                presentToast(buildBanned(false));
+
+                return;
+              }
+
+              presentBanUser({ user: post.creator, community: post.community });
             })();
           },
         },
