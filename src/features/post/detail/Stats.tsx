@@ -5,6 +5,7 @@ import { PostView } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
 import Edited from "../../labels/Edited";
+import Visible from "../../labels/Visible";
 
 const Container = styled.div`
   display: flex;
@@ -33,6 +34,7 @@ export default function Stats({ post }: StatsProps) {
       <IonIcon icon={timeOutline} />
       <Ago date={post.post.published} />
       <Edited item={post} showDate />
+      <Visible item={post} />
     </Container>
   );
 }
