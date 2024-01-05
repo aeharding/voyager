@@ -9,10 +9,12 @@ import { getSite } from "../auth/siteSlice";
 
 interface CommentState {
   userByHandle: Record<string, Person>;
+  bannedByCommunityIdUserId: Record<string, boolean>;
 }
 
 const initialState: CommentState = {
   userByHandle: {},
+  bannedByCommunityIdUserId: {},
 };
 
 export const userSlice = createSlice({
@@ -24,13 +26,25 @@ export const userSlice = createSlice({
         state.userByHandle[getHandle(user)] = user;
       }
     },
+    updateBanned: (
+      state,
+      action: PayloadAction<{
+        banned: boolean;
+        userId: number;
+        communityId: number;
+      }>,
+    ) => {
+      state.bannedByCommunityIdUserId[
+        `${action.payload.communityId}${action.payload.userId}`
+      ] = action.payload.banned;
+    },
 
     resetUsers: () => initialState,
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { receivedUsers, resetUsers } = userSlice.actions;
+export const { receivedUsers, updateBanned, resetUsers } = userSlice.actions;
 
 export default userSlice.reducer;
 
@@ -74,5 +88,11 @@ export const banUser =
       ...payload,
     });
 
-    dispatch(receivedUsers([response.person_view.person]));
+    dispatch(
+      updateBanned({
+        communityId: payload.community_id,
+        userId: payload.person_id,
+        banned: response.banned,
+      }),
+    );
   };

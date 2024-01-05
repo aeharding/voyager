@@ -26,7 +26,6 @@ import { groupBy, values } from "lodash";
 import { notEmpty } from "../../helpers/array";
 import { useContext } from "react";
 import { PageContext } from "../auth/PageContext";
-import { getHandle } from "../../helpers/lemmy";
 import { banUser } from "../user/userSlice";
 
 export default function usePostModActions(post: PostView) {
@@ -36,11 +35,14 @@ export default function usePostModActions(post: PostView) {
   const { presentBanUser } = useContext(PageContext);
   const role = useCanModerate(post.community);
 
-  const postCreatorInStore = useAppSelector(
-    (state) => state.user.userByHandle[getHandle(post.creator)],
+  const bannedFromCommunity = useAppSelector(
+    (state) =>
+      state.user.bannedByCommunityIdUserId[
+        `${post.community.id}${post.creator.id}`
+      ],
   );
 
-  const creator = postCreatorInStore ?? post.creator;
+  const banned = bannedFromCommunity ?? post.creator_banned_from_community;
 
   const reports = useAppSelector(
     (state) => reportsByPostIdSelector(state)[post.post.id],
@@ -112,15 +114,15 @@ export default function usePostModActions(post: PostView) {
           },
         },
         {
-          text: !creator.banned ? "Ban User" : "Unban User",
+          text: !banned ? "Ban User" : "Unban User",
           icon: hammerOutline,
           handler: () => {
             (async () => {
-              if (creator.banned) {
+              if (banned) {
                 try {
                   await dispatch(
                     banUser({
-                      person_id: creator.id,
+                      person_id: post.creator.id,
                       community_id: post.community.id,
                       ban: false,
                     }),

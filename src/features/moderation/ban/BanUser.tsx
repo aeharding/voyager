@@ -22,7 +22,7 @@ import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
 import { getHandle } from "../../../helpers/lemmy";
 import AddRemoveButtons from "../../share/asImage/AddRemoveButtons";
 import { banUser } from "../../user/userSlice";
-import { Spinner } from "../../auth/Login";
+import { Centered, Spinner } from "../../auth/Login";
 import { buildBanFailed, buildBanned } from "../../../helpers/toastMessages";
 
 export const UsernameIonText = styled(IonText)`
@@ -61,9 +61,11 @@ export default function BanUser({
   const [loading, setLoading] = useState(false);
   const [presentActionSheet] = useIonActionSheet();
 
-  async function submit() {
-    setLoading(true);
+  const text = `Banning ${getHandle(user)} ${
+    permanent ? "permanently" : `for ${days} days`
+  } from c/${getHandle(community)}`;
 
+  async function submit() {
     presentActionSheet([
       {
         text: `Ban ${getHandle(user)}`,
@@ -81,6 +83,8 @@ export default function BanUser({
   }
 
   async function ban() {
+    setLoading(true);
+
     try {
       await dispatch(
         banUser({
@@ -93,6 +97,8 @@ export default function BanUser({
       );
     } catch (error) {
       presentToast(buildBanFailed(true));
+    } finally {
+      setLoading(false);
     }
 
     presentToast(buildBanned(true));
@@ -113,7 +119,9 @@ export default function BanUser({
             <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>
-            Ban {getHandle(user)} {loading && <Spinner color="dark" />}
+            <Centered>
+              Ban {getHandle(user)} {loading && <Spinner color="dark" />}
+            </Centered>
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
@@ -170,6 +178,10 @@ export default function BanUser({
             </IonToggle>
           </IonItem>
         </IonList>
+
+        <div className="ion-padding">
+          <IonLabel color="medium">{text}</IonLabel>
+        </div>
       </IonContent>
     </>
   );
