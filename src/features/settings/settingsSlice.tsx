@@ -36,6 +36,8 @@ import {
   ODefaultFeedType,
   TapToCollapseType,
   OTapToCollapseType,
+  UserAvatarDisplayMode,
+  OUserAvatarDisplayMode,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -59,6 +61,7 @@ interface SettingsState {
     };
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
+      userAvatarDisplay: UserAvatarDisplayMode;
       profileLabel: ProfileLabelType;
     };
     posts: {
@@ -136,6 +139,7 @@ const initialState: SettingsState = {
     },
     general: {
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
+      userAvatarDisplay: OUserAvatarDisplayMode.Never,
       profileLabel: OProfileLabelType.Instance,
     },
     posts: {
@@ -247,6 +251,10 @@ export const appearanceSlice = createSlice({
     ) {
       state.appearance.general.userInstanceUrlDisplay = action.payload;
       db.setSetting("user_instance_url_display", action.payload);
+    },
+    setUserAvatarDisplay(state, action: PayloadAction<UserAvatarDisplayMode>) {
+      state.appearance.general.userAvatarDisplay = action.payload;
+      db.setSetting("user_avatar_display", action.payload);
     },
     setProfileLabel(state, action: PayloadAction<ProfileLabelType>) {
       state.appearance.general.profileLabel = action.payload;
@@ -509,6 +517,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const user_instance_url_display = await db.getSetting(
         "user_instance_url_display",
       );
+      const user_avatar_display = await db.getSetting("user_avatar_display");
       const profile_label = await db.getSetting("profile_label");
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
@@ -560,6 +569,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             userInstanceUrlDisplay:
               user_instance_url_display ??
               initialState.appearance.general.userInstanceUrlDisplay,
+            userAvatarDisplay:
+              user_avatar_display ??
+              initialState.appearance.general.userAvatarDisplay,
             profileLabel:
               profile_label ?? initialState.appearance.general.profileLabel,
           },
@@ -660,6 +672,7 @@ export const {
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setUserInstanceUrlDisplay,
+  setUserAvatarDisplay,
   setProfileLabel,
   setCommentsCollapsed,
   setTapToCollapse,
