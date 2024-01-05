@@ -1,16 +1,13 @@
-import {
-  Comment,
-  CommentView,
-  Community,
-  Post,
-  PostView,
-} from "lemmy-js-client";
-import { IonIcon, useIonAlert } from "@ionic/react";
+import { CommentView, PostView } from "lemmy-js-client";
+import { IonIcon, IonSpinner, useIonAlert } from "@ionic/react";
 import { warning } from "ionicons/icons";
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, useEffect } from "react";
 import styled from "@emotion/styled";
-import { getItemActorName } from "../../helpers/lemmy";
+import { getItemActorName, getRemoteHandle } from "../../helpers/lemmy";
 import { getClient } from "../../services/lemmy";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { invalidateObject, resolveObject } from "../resolve/resolveSlice";
+import { handleSelector } from "../auth/authSelectors";
 
 const Container = styled.div`
   display: flex;
@@ -21,50 +18,66 @@ const Container = styled.div`
   padding: 3px;
 `;
 
+export const Spinner = styled(IonSpinner)`
+  height: 1em;
+  width: 1em;
+`;
+
 interface VisibleProps {
   item: PostView | CommentView;
   className?: string;
 }
 
 export default function Visible({ item, className }: VisibleProps) {
-  const [visible, setVisible] = useState<boolean>();
+  const myHandle = useAppSelector(handleSelector);
+  const objectByUrl = useAppSelector((state) => state.resolve.objectByUrl);
+  const dispatch = useAppDispatch();
   const [presentAlert] = useIonAlert();
 
+  const { ap_id } = "comment" in item ? item.comment : item.post;
+  const instance = getItemActorName(item.community);
+  const shouldCheck =
+    getRemoteHandle(item.creator) === myHandle &&
+    getItemActorName(item.creator) !== instance;
+
+  const visible = (() => {
+    if (typeof objectByUrl[ap_id] === "object") return true;
+    if (objectByUrl[ap_id] === "couldnt_find_object") return false;
+    return "unknown";
+  })();
+
   useEffect(() => {
-    isVisibleInCommunity(
-      "comment" in item ? item.comment : item.post,
-      item.community,
-    ).then(setVisible);
-  }, [item]);
-
-  async function isVisibleInCommunity(
-    item: Post | Comment,
-    community: Community,
-  ) {
-    const instance = getItemActorName(community);
-    if (instance === new URL(item.ap_id).hostname) return true;
-
-    const response = await getClient(instance).resolveObject({ q: item.ap_id });
-    return "comment" in response || "post" in response;
-  }
+    if (visible === "unknown" && shouldCheck) {
+      dispatch(resolveObject(ap_id, getClient(instance)));
+    }
+  }, [ap_id, instance, shouldCheck, visible, dispatch]);
 
   function presentVisible(e: MouseEvent) {
     e.stopPropagation();
 
-    if (visible) return;
-
     presentAlert({
       header: "Limited visibility",
       message: "This item is not yet visible in the community it was posted to",
-      buttons: ["OK"],
+      buttons: [
+        {
+          text: "Check again",
+          role: "dismiss",
+          handler: async () => {
+            await dispatch(invalidateObject(ap_id));
+            dispatch(resolveObject(ap_id, getClient(instance)));
+          },
+        },
+        { text: "OK" },
+      ],
     });
   }
 
-  if (visible !== false) return;
-
-  return (
-    <Container onClick={presentVisible}>
-      <IonIcon icon={warning} color="danger" className={className} />
-    </Container>
-  );
+  if (!shouldCheck) return;
+  if (visible === "unknown") return <Spinner />;
+  if (!visible)
+    return (
+      <Container onClick={presentVisible}>
+        <IonIcon icon={warning} color="warning" className={className} />
+      </Container>
+    );
 }
