@@ -11,7 +11,7 @@ const LinkInterceptor = styled(LinkInterceptorUnstyled)`
 function LinkInterceptorUnstyled({
   onClick: _onClick,
   ...props
-}: React.JSX.IntrinsicElements["a"]) {
+}: React.JSX.IntrinsicElements["a"] & { el?: "div" }) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );

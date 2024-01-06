@@ -29,6 +29,12 @@ const Container = styled(LinkInterceptor)`
   color: inherit;
   text-decoration: none;
   -webkit-touch-callout: default;
+
+  .cross-post & {
+    border: 1px solid rgba(var(--ion-color-dark-rgb), 0.15);
+    border-bottom-right-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+  }
 `;
 
 const Img = styled.img<{ blur: boolean }>`
@@ -56,6 +62,10 @@ const Bottom = styled.div`
 
   opacity: 0.5;
   background: var(--ion-color-light);
+
+  .cross-post & {
+    background: none;
+  }
 
   @media (min-width: 700px) {
     gap: 1rem;
@@ -87,10 +97,11 @@ const UrlContainer = styled.div`
 
 interface EmbedProps {
   post: PostView;
+  inFeed?: boolean;
   className?: string;
 }
 
-export default function Embed({ post, className }: EmbedProps) {
+export default function Embed({ post, inFeed = true, className }: EmbedProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
   const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
@@ -139,7 +150,7 @@ export default function Embed({ post, className }: EmbedProps) {
         <Img
           src={post.post.thumbnail_url}
           draggable="false"
-          blur={isNsfwBlurred(post, blurNsfw)}
+          blur={inFeed ? isNsfwBlurred(post, blurNsfw) : false}
           onError={() => setError(true)}
         />
       )}

@@ -20,6 +20,8 @@ import ModeratableItem, {
 } from "../../../moderation/ModeratableItem";
 import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
 import { AnnouncementIcon } from "../../detail/PostHeader";
+import CompactCrosspost from "./CompactCrosspost";
+import useCrosspostUrl from "../../shared/useCrosspostUrl";
 
 const Container = styled.div`
   width: 100%;
@@ -144,6 +146,8 @@ export default function CompactPost({
     (state) => state.settings.appearance.compact.showVotingButtons,
   );
 
+  const crosspostUrl = useCrosspostUrl(post);
+
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
@@ -198,6 +202,11 @@ export default function CompactPost({
                 <StyledMoreActions post={post} onFeed />
               </ActionsContainer>
             </Aside>
+            {crosspostUrl && (
+              <div>
+                <CompactCrosspost post={post} url={crosspostUrl} />
+              </div>
+            )}
           </Content>
           {compactThumbnailPositionType === "right" && (
             <Thumbnail post={post} />
