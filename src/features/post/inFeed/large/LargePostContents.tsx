@@ -1,5 +1,5 @@
 import { PostView } from "lemmy-js-client";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppSelector } from "../../../../store";
 import { isUrlMedia } from "../../../../helpers/url";
@@ -9,6 +9,7 @@ import { isNsfwBlurred } from "../../../labels/Nsfw";
 import Media from "./media/Media";
 import Embed from "../../shared/Embed";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
+import { InFeedContext } from "../../../feed/Feed";
 
 const PostBody = styled.div<{ isRead: boolean }>`
   font-size: 0.8em;
@@ -36,13 +37,11 @@ const ImageContainer = styled.div`
 
 interface LargePostContentsProps {
   post: PostView;
-  inFeed?: boolean;
 }
 
-export default function LargePostContents({
-  post,
-  inFeed = true,
-}: LargePostContentsProps) {
+export default function LargePostContents({ post }: LargePostContentsProps) {
+  const inFeed = useContext(InFeedContext);
+
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
@@ -70,7 +69,7 @@ export default function LargePostContents({
    * Embedded video, image with a thumbanil
    */
   if (post.post.thumbnail_url && post.post.url) {
-    return <Embed post={post} inFeed={inFeed} />;
+    return <Embed post={post} />;
   }
 
   /**
@@ -79,7 +78,7 @@ export default function LargePostContents({
   if (post.post.body) {
     return (
       <>
-        {post.post.url && <Embed post={post} inFeed={inFeed} />}
+        {post.post.url && <Embed post={post} />}
 
         <PostBody isRead={hasBeenRead}>
           <InlineMarkdown>{post.post.body}</InlineMarkdown>
@@ -89,6 +88,6 @@ export default function LargePostContents({
   }
 
   if (post.post.url) {
-    return <Embed post={post} inFeed={inFeed} />;
+    return <Embed post={post} />;
   }
 }

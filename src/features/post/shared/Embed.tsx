@@ -10,7 +10,7 @@ import {
   personOutline,
 } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { MouseEvent, useMemo, useState } from "react";
+import { MouseEvent, useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { isNsfwBlurred } from "../../labels/Nsfw";
 import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
@@ -18,6 +18,7 @@ import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 import Url from "../../shared/Url";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 import { setPostRead } from "../postSlice";
+import { InFeedContext } from "../../feed/Feed";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -97,14 +98,15 @@ const UrlContainer = styled.div`
 
 interface EmbedProps {
   post: PostView;
-  inFeed?: boolean;
   className?: string;
 }
 
-export default function Embed({ post, inFeed = true, className }: EmbedProps) {
+export default function Embed({ post, className }: EmbedProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
   const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
+
+  const inFeed = useContext(InFeedContext);
 
   const [error, setError] = useState(false);
   const blurNsfw = useAppSelector(

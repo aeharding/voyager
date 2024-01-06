@@ -75,16 +75,10 @@ const StatIonSkeletonText = styled(IonSkeletonText)`
 interface CrosspostProps {
   post: PostView;
   url: string;
-  inFeed?: boolean;
   className?: string;
 }
 
-export default function Crosspost({
-  post,
-  url,
-  inFeed = true,
-  className,
-}: CrosspostProps) {
+export default function Crosspost({ post, url, className }: CrosspostProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
@@ -137,7 +131,7 @@ export default function Crosspost({
       ) : (
         <IonSkeletonText />
       )}
-      <LargePostContents post={crosspost ?? post} inFeed={inFeed} />
+      <LargePostContents post={crosspost ?? post} />
       <Bottom isRead={hasBeenRead}>
         <CrosspostIcon icon={repeat} />
         {crosspost ? crosspost.community.title : <CommunityIonSkeletonText />}

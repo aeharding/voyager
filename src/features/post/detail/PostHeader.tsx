@@ -176,7 +176,7 @@ function PostHeader({
     if (!post) return;
 
     if (crosspostUrl) {
-      return <StyledCrosspost post={post} url={crosspostUrl} inFeed={false} />;
+      return <StyledCrosspost post={post} url={crosspostUrl} />;
     }
 
     const usedLoneImage =
@@ -185,16 +185,14 @@ function PostHeader({
     if (post.post.body && !usedLoneImage) {
       return (
         <>
-          {post.post.url && !isUrlMedia(post.post.url) && (
-            <Embed post={post} inFeed={false} />
-          )}
+          {post.post.url && !isUrlMedia(post.post.url) && <Embed post={post} />}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
         </>
       );
     }
 
     if (post.post.url && !isUrlMedia(post.post.url)) {
-      return <StyledEmbed post={post} inFeed={false} />;
+      return <StyledEmbed post={post} />;
     }
   }, [markdownLoneImage, post, crosspostUrl]);
 
