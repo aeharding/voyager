@@ -7,6 +7,7 @@ import useNativeBrowser from "./useNativeBrowser";
 
 type InAppExternalLinkProps =
   | HTMLProps<HTMLAnchorElement>
+  | (HTMLProps<HTMLAnchorElement> & { el: undefined })
   | (HTMLProps<HTMLDivElement> & { el: "div" });
 
 export default function InAppExternalLink({
@@ -16,7 +17,7 @@ export default function InAppExternalLink({
 }: InAppExternalLinkProps) {
   const onClick = useOnClick(href, _onClick);
 
-  if ("el" in rest) {
+  if ("el" in rest && rest.el) {
     const El = rest.el;
 
     return <El onClick={onClick} {...rest} />;

@@ -20,7 +20,7 @@ import ModeratableItem, {
 } from "../../../moderation/ModeratableItem";
 import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
 import { AnnouncementIcon } from "../../detail/PostHeader";
-import CompactCrosspost from "./CompactCrosspost";
+import CompactCrosspost from "../../shared/crosspost/CompactCrosspost";
 import useCrosspostUrl from "../../shared/useCrosspostUrl";
 
 const Container = styled.div`

@@ -27,7 +27,7 @@ import Locked from "./Locked";
 import PostActions from "../actions/PostActions";
 import { postLocked } from "../../../helpers/toastMessages";
 import { togglePostCollapse } from "../postSlice";
-import Crosspost from "../shared/Crosspost";
+import Crosspost from "../shared/crosspost/Crosspost";
 import useCrosspostUrl from "../shared/useCrosspostUrl";
 
 const BorderlessIonItem = styled(IonItem)`
