@@ -10,7 +10,7 @@ import {
   personOutline,
 } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { MouseEvent, useMemo, useState } from "react";
+import { MouseEvent, useContext, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { isNsfwBlurred } from "../../labels/Nsfw";
 import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
@@ -18,6 +18,7 @@ import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 import Url from "../../shared/Url";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 import { setPostRead } from "../postSlice";
+import { InFeedContext } from "../../feed/Feed";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -29,6 +30,12 @@ const Container = styled(LinkInterceptor)`
   color: inherit;
   text-decoration: none;
   -webkit-touch-callout: default;
+
+  .cross-post & {
+    border: 1px solid rgba(var(--ion-color-dark-rgb), 0.15);
+    border-bottom-right-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+  }
 `;
 
 const Img = styled.img<{ blur: boolean }>`
@@ -56,6 +63,10 @@ const Bottom = styled.div`
 
   opacity: 0.5;
   background: var(--ion-color-light);
+
+  .cross-post & {
+    background: none;
+  }
 
   @media (min-width: 700px) {
     gap: 1rem;
@@ -94,6 +105,8 @@ export default function Embed({ post, className }: EmbedProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
   const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
+
+  const inFeed = useContext(InFeedContext);
 
   const [error, setError] = useState(false);
   const blurNsfw = useAppSelector(
@@ -139,7 +152,7 @@ export default function Embed({ post, className }: EmbedProps) {
         <Img
           src={post.post.thumbnail_url}
           draggable="false"
-          blur={isNsfwBlurred(post, blurNsfw)}
+          blur={inFeed ? isNsfwBlurred(post, blurNsfw) : false}
           onError={() => setError(true)}
         />
       )}

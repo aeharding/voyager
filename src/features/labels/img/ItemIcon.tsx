@@ -14,9 +14,15 @@ interface ItemIconProps {
   item: Community | Person | string;
   size?: number;
   className?: string;
+  slot?: string;
 }
 
-export default function ItemIcon({ item, size, className }: ItemIconProps) {
+export default function ItemIcon({
+  item,
+  size,
+  className,
+  slot,
+}: ItemIconProps) {
   size = size ?? 28;
 
   if (typeof item === "string")
@@ -34,6 +40,7 @@ export default function ItemIcon({ item, size, className }: ItemIconProps) {
         })}
         size={size}
         className={className}
+        slot={slot}
       />
     );
 
@@ -43,6 +50,7 @@ export default function ItemIcon({ item, size, className }: ItemIconProps) {
       name={item.name}
       className={className}
       size={size}
+      slot={slot}
     />
   );
 }

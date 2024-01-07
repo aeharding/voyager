@@ -13,7 +13,13 @@ import Login from "../auth/Login";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { changeAccount } from "../auth/authSlice";
 import CommentReplyModal from "../comment/compose/reply/CommentReplyModal";
-import { Comment, CommentView, PostView } from "lemmy-js-client";
+import {
+  Comment,
+  CommentView,
+  Community,
+  Person,
+  PostView,
+} from "lemmy-js-client";
 import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
@@ -23,6 +29,12 @@ import ShareAsImageModal, {
 } from "../share/asImage/ShareAsImageModal";
 import AccountSwitcher from "./AccountSwitcher";
 import { jwtSelector } from "./authSelectors";
+import BanUserModal from "../moderation/ban/BanUserModal";
+
+export interface BanUserPayload {
+  user: Person;
+  community: Community;
+}
 
 interface IPageContext {
   // used for ion presentingElement
@@ -63,6 +75,8 @@ interface IPageContext {
   ) => void;
 
   presentAccountSwitcher: () => void;
+
+  presentBanUser: (payload: BanUserPayload) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -75,6 +89,7 @@ export const PageContext = createContext<IPageContext>({
   presentSelectText: () => {},
   presentShareAsImage: () => {},
   presentAccountSwitcher: () => {},
+  presentBanUser: () => {},
 });
 
 interface PageContextProvider {
@@ -187,6 +202,15 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   }, []);
   // Select text end
 
+  // Ban user start
+  const banItem = useRef<BanUserPayload>();
+  const [isBanUserOpen, setIsBanUserOpen] = useState(false);
+  const presentBanUser = useCallback((banUserPayload: BanUserPayload) => {
+    banItem.current = banUserPayload;
+    setIsBanUserOpen(true);
+  }, []);
+  // Ban user end
+
   const presentReport = useCallback((item: ReportableItem) => {
     reportRef.current?.present(item);
   }, []);
@@ -219,6 +243,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentSelectText,
       presentShareAsImage,
       presentAccountSwitcher,
+      presentBanUser,
     }),
     [
       presentCommentEdit,
@@ -229,6 +254,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentSelectText,
       presentShareAsImage,
       presentAccountSwitcher,
+      presentBanUser,
       value,
     ],
   );
@@ -259,6 +285,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         postOrCommunity={postItem.current!}
         isOpen={isPostOpen}
         setIsOpen={setIsPostOpen}
+      />
+      <BanUserModal
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        item={banItem.current!}
+        isOpen={isBanUserOpen}
+        setIsOpen={setIsBanUserOpen}
       />
       <SelectTextModal
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

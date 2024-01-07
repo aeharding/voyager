@@ -18,12 +18,17 @@ interface DynamicDismissableModalProps {
   isOpen: boolean;
 
   children: (props: DismissableProps) => React.ReactElement;
+
+  className?: string;
+  dismissClassName?: string;
 }
 
 export function DynamicDismissableModal({
   setIsOpen,
   isOpen,
   children: renderModalContents,
+  className,
+  dismissClassName,
 }: DynamicDismissableModalProps) {
   const pageContext = useContext(PageContext);
   const location = useLocation();
@@ -49,24 +54,27 @@ export function DynamicDismissableModal({
     if (document.activeElement instanceof HTMLElement)
       document.activeElement.blur();
 
-    await presentActionSheet([
-      {
-        text: "Discard",
-        role: "destructive",
-        handler: () => {
-          clearRecoveredText();
-          setCanDismiss(true);
-          setIsOpen(false);
+    await presentActionSheet({
+      cssClass: dismissClassName,
+      buttons: [
+        {
+          text: "Discard",
+          role: "destructive",
+          handler: () => {
+            clearRecoveredText();
+            setCanDismiss(true);
+            setIsOpen(false);
+          },
         },
-      },
-      {
-        text: "Cancel",
-        role: "cancel",
-      },
-    ]);
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ],
+    });
 
     return false;
-  }, [presentActionSheet, setCanDismiss, setIsOpen]);
+  }, [presentActionSheet, setCanDismiss, setIsOpen, dismissClassName]);
 
   // Close tab
   useUnload((e) => {
@@ -100,6 +108,7 @@ export function DynamicDismissableModal({
         />
       )}
       <IonModalAutosizedForOnScreenKeyboard
+        className={className}
         isOpen={isOpen}
         canDismiss={
           canDismissRef.current ? canDismissRef.current : onDismissAttemptCb
