@@ -150,7 +150,7 @@ export default function BanUser({
           <IonItem>
             <IonToggle
               checked={permanent}
-              onIonChange={(e) => setPermanent(!e.detail.value)}
+              onIonChange={(e) => setPermanent(e.detail.checked)}
             >
               Permanent
             </IonToggle>
@@ -172,7 +172,7 @@ export default function BanUser({
           <IonItem>
             <IonToggle
               checked={removeContent}
-              onIonChange={(e) => setRemoveContent(!e.detail.value)}
+              onIonChange={(e) => setRemoveContent(e.detail.checked)}
             >
               Remove Content
             </IonToggle>

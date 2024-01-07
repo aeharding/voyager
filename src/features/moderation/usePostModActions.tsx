@@ -113,34 +113,39 @@ export default function usePostModActions(post: PostView) {
             })();
           },
         },
-        {
-          text: !banned ? "Ban User" : "Unban User",
-          icon: hammerOutline,
-          handler: () => {
-            (async () => {
-              if (banned) {
-                try {
-                  await dispatch(
-                    banUser({
-                      person_id: post.creator.id,
-                      community_id: post.community.id,
-                      ban: false,
-                    }),
-                  );
-                } catch (error) {
-                  presentToast(buildBanFailed(false));
-                  throw error;
-                }
+        role === "mod" || role === "admin-local"
+          ? {
+              text: !banned ? "Ban User" : "Unban User",
+              icon: hammerOutline,
+              handler: () => {
+                (async () => {
+                  if (banned) {
+                    try {
+                      await dispatch(
+                        banUser({
+                          person_id: post.creator.id,
+                          community_id: post.community.id,
+                          ban: false,
+                        }),
+                      );
+                    } catch (error) {
+                      presentToast(buildBanFailed(false));
+                      throw error;
+                    }
 
-                presentToast(buildBanned(false));
+                    presentToast(buildBanned(false));
 
-                return;
-              }
+                    return;
+                  }
 
-              presentBanUser({ user: post.creator, community: post.community });
-            })();
-          },
-        },
+                  presentBanUser({
+                    user: post.creator,
+                    community: post.community,
+                  });
+                })();
+              },
+            }
+          : undefined,
         {
           text: "Cancel",
           role: "cancel",
