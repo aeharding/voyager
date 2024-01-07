@@ -287,6 +287,7 @@ export type SettingValueTypes = {
   default_post_sort: SortType;
   default_post_sort_by_feed: SortType;
   remember_community_sort: boolean;
+  embed_crossposts: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
