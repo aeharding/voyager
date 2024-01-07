@@ -27,6 +27,8 @@ import Locked from "./Locked";
 import PostActions from "../actions/PostActions";
 import { postLocked } from "../../../helpers/toastMessages";
 import { togglePostCollapse } from "../postSlice";
+import Crosspost from "../shared/crosspost/Crosspost";
+import useCrosspostUrl from "../shared/useCrosspostUrl";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -67,6 +69,10 @@ const StyledMarkdown = styled(Markdown)`
 `;
 
 const StyledEmbed = styled(Embed)`
+  margin: 12px 0;
+`;
+
+const StyledCrosspost = styled(Crosspost)`
   margin: 12px 0;
 `;
 
@@ -133,6 +139,8 @@ function PostHeader({
   const titleRef = useRef<HTMLDivElement>(null);
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
 
+  const crosspostUrl = useCrosspostUrl(post);
+
   const tapToCollapse = useAppSelector(
     (state) => state.settings.general.comments.tapToCollapse,
   );
@@ -167,6 +175,10 @@ function PostHeader({
   const renderText = useCallback(() => {
     if (!post) return;
 
+    if (crosspostUrl) {
+      return <StyledCrosspost post={post} url={crosspostUrl} />;
+    }
+
     const usedLoneImage =
       markdownLoneImage && (!post.post.url || !isUrlMedia(post.post.url));
 
@@ -182,7 +194,7 @@ function PostHeader({
     if (post.post.url && !isUrlMedia(post.post.url)) {
       return <StyledEmbed post={post} />;
     }
-  }, [markdownLoneImage, post]);
+  }, [markdownLoneImage, post, crosspostUrl]);
 
   return (
     <ModeratableItem itemView={post}>
@@ -203,7 +215,7 @@ function PostHeader({
         }}
       >
         <Container>
-          {showPostText && renderMedia()}
+          {showPostText && !crosspostUrl && renderMedia()}
           <PostDeets>
             <ModeratableItemBannerOutlet />
             <div>

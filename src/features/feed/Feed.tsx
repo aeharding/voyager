@@ -1,5 +1,6 @@
 import React, {
   Fragment,
+  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -278,62 +279,64 @@ export default function Feed<I>({
         <IonRefresherContent />
       </IonRefresher>
 
-      <VList
-        className={
-          isSafariFeedHackEnabled
-            ? "virtual-scroller"
-            : "ion-content-scroll-host virtual-scroller"
-        }
-        ref={virtuaHandle}
-        style={{ height: "100%" }}
-        onScrollStop={() => {
-          scrollingRef.current = false;
-        }}
-        onScroll={(offset) => {
-          scrollingRef.current = true;
-          setIsListAtTop(offset < 10);
-          setScrolledPastSearch(offset > 40);
-        }}
-        onRangeChange={(start, end) => {
-          if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
-
-          // if scrolled down
-          const startOffset = header ? 1 : 0; // header counts as item to VList
-          if (
-            scrollingRef.current &&
-            start > startOffset &&
-            start > startRangeRef.current
-          ) {
-            // emit what was removed
-            onRemovedFromTop?.(
-              filteredItems.slice(
-                startRangeRef.current - startOffset,
-                start - startOffset,
-              ),
-            );
+      <InFeedContext.Provider value={true}>
+        <VList
+          className={
+            isSafariFeedHackEnabled
+              ? "virtual-scroller"
+              : "ion-content-scroll-host virtual-scroller"
           }
+          ref={virtuaHandle}
+          style={{ height: "100%" }}
+          onScrollStop={() => {
+            scrollingRef.current = false;
+          }}
+          onScroll={(offset) => {
+            scrollingRef.current = true;
+            setIsListAtTop(offset < 10);
+            setScrolledPastSearch(offset > 40);
+          }}
+          onRangeChange={(start, end) => {
+            if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
 
-          startRangeRef.current = start;
+            // if scrolled down
+            const startOffset = header ? 1 : 0; // header counts as item to VList
+            if (
+              scrollingRef.current &&
+              start > startOffset &&
+              start > startRangeRef.current
+            ) {
+              // emit what was removed
+              onRemovedFromTop?.(
+                filteredItems.slice(
+                  startRangeRef.current - startOffset,
+                  start - startOffset,
+                ),
+              );
+            }
 
-          if (
-            end + 10 > filteredItems.length &&
-            !loadFailed &&
-            infiniteScrolling
-          ) {
-            fetchMore();
-          }
-        }}
-        /* Large posts reflow with image load, so mount to dom a bit sooner */
-        overscan={postType === "large" ? 1 : 0}
-      >
-        {header}
-        {filteredItems.map((item, i) => (
-          <Fragment key={getIndex ? getIndex(item) : i}>
-            {renderItemContent(item)}
-          </Fragment>
-        ))}
-        {footer}
-      </VList>
+            startRangeRef.current = start;
+
+            if (
+              end + 10 > filteredItems.length &&
+              !loadFailed &&
+              infiniteScrolling
+            ) {
+              fetchMore();
+            }
+          }}
+          /* Large posts reflow with image load, so mount to dom a bit sooner */
+          overscan={postType === "large" ? 1 : 0}
+        >
+          {header}
+          {filteredItems.map((item, i) => (
+            <Fragment key={getIndex ? getIndex(item) : i}>
+              {renderItemContent(item)}
+            </Fragment>
+          ))}
+          {footer}
+        </VList>
+      </InFeedContext.Provider>
     </>
   );
 }
@@ -347,3 +350,5 @@ export function isFirstPage(pageData: PageData): boolean {
   if ("page" in pageData) return pageData.page === 1;
   return !pageData.page_cursor;
 }
+
+export const InFeedContext = createContext(false);

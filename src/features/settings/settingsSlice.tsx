@@ -64,6 +64,7 @@ interface SettingsState {
     posts: {
       blurNsfw: PostBlurNsfwType;
       type: PostAppearanceType;
+      embedCrossposts: boolean;
     };
     compact: {
       thumbnailsPosition: CompactThumbnailPositionType;
@@ -141,6 +142,7 @@ const initialState: SettingsState = {
     posts: {
       blurNsfw: OPostBlurNsfw.InFeed,
       type: OPostAppearanceType.Large,
+      embedCrossposts: true,
     },
     compact: {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
@@ -290,6 +292,10 @@ export const appearanceSlice = createSlice({
     setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
       state.appearance.posts.blurNsfw = action.payload;
       // Per user setting is updated in StoreProvider
+    },
+    setEmbedCrossposts(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.embedCrossposts = action.payload;
+      db.setSetting("embed_crossposts", action.payload);
     },
     setFilteredKeywords(state, action: PayloadAction<string[]>) {
       state.blocks.keywords = action.payload;
@@ -512,6 +518,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const profile_label = await db.getSetting("profile_label");
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
+      const embed_crossposts = await db.getSetting("embed_crossposts");
       const compact_thumbnail_position_type = await db.getSetting(
         "compact_thumbnail_position_type",
       );
@@ -566,6 +573,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           posts: {
             type: post_appearance_type ?? initialState.appearance.posts.type,
             blurNsfw: blur_nsfw ?? initialState.appearance.posts.blurNsfw,
+            embedCrossposts:
+              embed_crossposts ?? initialState.appearance.posts.embedCrossposts,
           },
           compact: {
             thumbnailsPosition:
@@ -669,6 +678,7 @@ export const {
   setTouchFriendlyLinks,
   setShowCommentImages,
   setNsfwBlur,
+  setEmbedCrossposts,
   setFilteredKeywords,
   setPostAppearance,
   setThumbnailPosition,

@@ -147,3 +147,24 @@ export const commentDistinguished: AppToastOptions = {
   centerText: true,
   icon: checkmark,
 };
+
+export function buildBanned(banned: boolean): AppToastOptions {
+  return {
+    message: banned ? "Banned user" : "Unbanned user",
+    position: "top",
+    color: "success",
+    fullscreen: true,
+    centerText: true,
+    icon: checkmark,
+  };
+}
+
+export function buildBanFailed(banned: boolean): AppToastOptions {
+  return {
+    message: `Failed to ${banned ? "ban user" : "unban user"}`,
+    position: "top",
+    color: "danger",
+    fullscreen: true,
+    centerText: true,
+  };
+}

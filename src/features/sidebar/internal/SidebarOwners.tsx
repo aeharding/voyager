@@ -1,15 +1,8 @@
 import { Person } from "lemmy-js-client";
 import { getHandle } from "../../../helpers/lemmy";
 import ItemIcon from "../../labels/img/ItemIcon";
-import { IonItem, IonList } from "@ionic/react";
+import { IonItem, IonLabel, IonList } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import styled from "@emotion/styled";
-
-const Content = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
 
 interface InstanceAdminsProps {
   people: Person[];
@@ -29,11 +22,10 @@ export default function SidebarOwners({ people, type }: InstanceAdminsProps) {
           <IonItem
             key={person.id}
             routerLink={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
+            className="item-legacy"
           >
-            <Content>
-              <ItemIcon item={person} />
-              {getHandle(person)}
-            </Content>
+            <ItemIcon item={person} slot="start" />
+            <IonLabel>{getHandle(person)}</IonLabel>
           </IonItem>
         ))}
       </IonList>

@@ -18,6 +18,7 @@ interface FakeIconProps {
   size?: number;
   name: string;
   className?: string;
+  slot?: string;
 }
 
 export default function FakeIcon({
@@ -25,12 +26,14 @@ export default function FakeIcon({
   size,
   className,
   name,
+  slot,
 }: FakeIconProps) {
   return (
     <FakeIconContainer
       bg={generateRandomColor(seed)}
       size={size ?? 20}
       className={className}
+      slot={slot}
     >
       {name.slice(0, 1).toUpperCase()}
     </FakeIconContainer>

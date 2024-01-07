@@ -5,12 +5,23 @@ import { OLinkHandlerType } from "../../services/db";
 import { IonItem } from "@ionic/react";
 import useNativeBrowser from "./useNativeBrowser";
 
+type InAppExternalLinkProps =
+  | HTMLProps<HTMLAnchorElement>
+  | (HTMLProps<HTMLAnchorElement> & { el: undefined })
+  | (HTMLProps<HTMLDivElement> & { el: "div" });
+
 export default function InAppExternalLink({
   href,
   onClick: _onClick,
   ...rest
-}: HTMLProps<HTMLAnchorElement>) {
+}: InAppExternalLinkProps) {
   const onClick = useOnClick(href, _onClick);
+
+  if ("el" in rest && rest.el) {
+    const El = rest.el;
+
+    return <El onClick={onClick} {...rest} />;
+  }
 
   return <a href={href} onClick={onClick} {...rest} />;
 }
