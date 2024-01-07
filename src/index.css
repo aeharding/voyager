@@ -34,10 +34,14 @@ ion-router-outlet > .ion-page > ion-header ion-title {
   justify-content: flex-start;
 }
 
-.mod .action-sheet-button,
-.mod .action-sheet-button:hover,
-.mod.action-sheet-button,
-.mod.action-sheet-button:hover {
+.mod .action-sheet-button:not(.action-sheet-destructive),
+.mod .action-sheet-button:hover:not(.action-sheet-destructive),
+.mod.action-sheet-button:not(.action-sheet-destructive),
+.mod.action-sheet-button:hover:not(.action-sheet-destructive) {
+  color: var(--ion-color-success-shade);
+}
+
+.mod.alert-button {
   color: var(--ion-color-success-shade);
 }
 
