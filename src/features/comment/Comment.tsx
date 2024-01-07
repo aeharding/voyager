@@ -22,6 +22,7 @@ import ModeratableItem from "../moderation/ModeratableItem";
 import useCanModerate from "../moderation/useCanModerate";
 import ModqueueItemActions from "../moderation/ModqueueItemActions";
 import { ActionsContainer } from "../post/inFeed/compact/CompactPost";
+import Visible from "../labels/Visible";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -256,6 +257,7 @@ export default function Comment({
                     />
                     <Vote item={commentView} />
                     <Edited item={commentView} />
+                    <Visible item={commentView} />
                     <div
                       css={css`
                         flex: 1;

@@ -1,4 +1,4 @@
-import { ResolveObjectResponse } from "lemmy-js-client";
+import { LemmyHttp, ResolveObjectResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSelectors";
 import { receivedComments } from "../comment/commentSlice";
@@ -23,6 +23,9 @@ export const resolveSlice = createSlice({
     couldNotFindUrl: (state, action: PayloadAction<string>) => {
       state.objectByUrl[action.payload] = "couldnt_find_object";
     },
+    invalidateObject: (state, action: PayloadAction<string>) => {
+      delete state.objectByUrl[action.payload];
+    },
     resolvedObject: (
       state,
       action: PayloadAction<{
@@ -37,8 +40,12 @@ export const resolveSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { couldNotFindUrl, resolvedObject, resetResolve } =
-  resolveSlice.actions;
+export const {
+  couldNotFindUrl,
+  invalidateObject,
+  resolvedObject,
+  resetResolve,
+} = resolveSlice.actions;
 
 export default resolveSlice.reducer;
 
@@ -48,11 +55,12 @@ export default resolveSlice.reducer;
  * @returns The object, if found
  */
 export const resolveObject =
-  (url: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  (url: string, client?: LemmyHttp) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
     let object;
 
     try {
-      object = await clientSelector(getState()).resolveObject({
+      object = await (client || clientSelector(getState())).resolveObject({
         q: url,
       });
     } catch (error) {
@@ -62,14 +70,17 @@ export const resolveObject =
       throw error;
     }
 
-    if (object.comment) {
-      dispatch(receivedComments([object.comment]));
-    } else if (object.community) {
-      dispatch(receivedCommunity(object.community));
-    } else if (object.person) {
-      dispatch(receivedUsers([object.person.person]));
-    } else if (object.post) {
-      dispatch(receivedPosts([object.post]));
+    if (!client) {
+      // don't pollute other slices with remote objects
+      if (object.comment) {
+        dispatch(receivedComments([object.comment]));
+      } else if (object.community) {
+        dispatch(receivedCommunity(object.community));
+      } else if (object.person) {
+        dispatch(receivedUsers([object.person.person]));
+      } else if (object.post) {
+        dispatch(receivedPosts([object.post]));
+      }
     }
 
     dispatch(resolvedObject({ url, object }));

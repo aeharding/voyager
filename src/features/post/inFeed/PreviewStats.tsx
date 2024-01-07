@@ -5,6 +5,7 @@ import { PostView } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
 import { formatNumber } from "../../../helpers/number";
+import Visible from "../../labels/Visible";
 
 const Container = styled.div`
   display: flex;
@@ -24,6 +25,7 @@ export default function PreviewStats({ post }: PreviewStatsProps) {
       {formatNumber(post.counts.comments)}
       <IonIcon icon={timeOutline} />
       <Ago date={post.post.published} />
+      <Visible item={post} />
     </Container>
   );
 }
