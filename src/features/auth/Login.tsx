@@ -18,7 +18,7 @@ import {
   useIonModal,
 } from "@ionic/react";
 import styled from "@emotion/styled";
-import { useAppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { login } from "./authSlice";
 import { getClient } from "../../services/lemmy";
 import { IonInputCustomEvent } from "@ionic/core";
@@ -62,7 +62,10 @@ export default function Login({
   const dispatch = useAppDispatch();
   const openNativeBrowser = useNativeBrowser();
   const [servers] = useState(getCustomServers());
-  const [server, setServer] = useState(servers[0]);
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
+  const [server, setServer] = useState(connectedInstance);
   const [customServer, setCustomServer] = useState("");
   const [serverConfirmed, setServerConfirmed] = useState(false);
   const [username, setUsername] = useState("");
@@ -258,7 +261,7 @@ export default function Login({
                 onIonChange={(e) => setServer(e.target.value)}
               >
                 <IonList inset>
-                  {servers.slice(0, 3).map((server) => (
+                  {servers.map((server) => (
                     <IonItem disabled={loading} key={server}>
                       <IonRadio value={server} key={server}>
                         {server}
