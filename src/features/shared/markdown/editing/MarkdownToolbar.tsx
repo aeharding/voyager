@@ -3,6 +3,7 @@ import {
   IonIcon,
   IonLoading,
   useIonActionSheet,
+  useIonAlert,
   useIonModal,
 } from "@ionic/react";
 import {
@@ -33,6 +34,7 @@ import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 import textFaces from "./textFaces.txt?raw";
 import useAppToast from "../../../../helpers/useAppToast";
 import { bold, italic, quote } from "../../../icons";
+import { useLongPress } from "use-long-press";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";
@@ -122,6 +124,7 @@ export default function MarkdownToolbar({
   textareaRef,
   slot,
 }: MarkdownToolbarProps) {
+  const [presentAlert] = useIonAlert();
   const [presentActionSheet] = useIonActionSheet();
   const [presentTextFaceActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
@@ -138,6 +141,10 @@ export default function MarkdownToolbar({
   });
   const selectionLocation = useRef(0);
   const replySelectionRef = useRef("");
+
+  const bind = useLongPress(() => insertMarkdownLink(), {
+    onCancel: () => presentLinkInput(),
+  });
 
   useEffect(() => {
     const onChange = () => {
@@ -206,6 +213,31 @@ export default function MarkdownToolbar({
     );
   }
 
+  function presentLinkInput() {
+    presentAlert({
+      header: "Insert link",
+      inputs: [
+        {
+          name: "text",
+          placeholder: "Description",
+        },
+        {
+          name: "url",
+          placeholder: "https://vger.app",
+        },
+      ],
+      buttons: [
+        {
+          text: "OK",
+          handler: ({ text, url }) => {
+            insertMarkdownLink(text, url);
+          },
+        },
+        "Cancel",
+      ],
+    });
+  }
+
   function presentTextFaces() {
     presentTextFaceActionSheet({
       cssClass: "left-align-buttons action-sheet-height-fix",
@@ -230,15 +262,7 @@ export default function MarkdownToolbar({
           insert(text, selectionLocation.current, event.detail.data),
         );
 
-        if (textareaRef.current) {
-          textareaRef.current.focus();
-
-          setTimeout(() => {
-            if (!textareaRef.current) return;
-
-            textareaRef.current.selectionEnd = currentSelectionLocation;
-          }, 10);
-        }
+        updateSelection({ selectionEnd: currentSelectionLocation });
       },
     });
   }
@@ -270,18 +294,52 @@ export default function MarkdownToolbar({
 
     setText((text) => insert(text, currentSelectionLocation, insertedText));
 
+    updateSelection({
+      selectionEnd: currentSelectionLocation + insertedText.length,
+    });
+
+    return false;
+  }
+
+  function updateSelection({
+    selectionStart,
+    selectionEnd,
+  }: {
+    selectionStart?: number;
+    selectionEnd?: number;
+  }) {
     if (textareaRef.current) {
       textareaRef.current.focus();
 
       setTimeout(() => {
         if (!textareaRef.current) return;
 
-        textareaRef.current.selectionEnd =
-          currentSelectionLocation + insertedText.length;
+        selectionStart && (textareaRef.current.selectionStart = selectionStart);
+        selectionEnd && (textareaRef.current.selectionEnd = selectionEnd);
       }, 10);
     }
+  }
 
-    return false;
+  function insertMarkdownLink(text: string = "", url?: string) {
+    const markdownLink = `[${text}](${url || "url"})`;
+    const currentSelectionLocation =
+      selectionLocation.current + markdownLink.length;
+
+    setText((text) => insert(text, selectionLocation.current, markdownLink));
+
+    if (!text) {
+      // place cursor inside brackets
+      updateSelection({ selectionEnd: selectionLocation.current + 1 });
+    } else if (!url) {
+      // select url placeholder
+      updateSelection({
+        selectionStart: currentSelectionLocation - 4,
+        selectionEnd: currentSelectionLocation - 1,
+      });
+    } else {
+      // place cursor after link
+      updateSelection({ selectionEnd: currentSelectionLocation });
+    }
   }
 
   return (
@@ -311,11 +369,9 @@ export default function MarkdownToolbar({
                 }}
               />
             </label>
-            <md-link>
-              <Button>
-                <IonIcon icon={link} color="primary" />
-              </Button>
-            </md-link>
+            <Button {...bind()}>
+              <IonIcon icon={link} color="primary" />
+            </Button>
             <md-bold>
               <Button>
                 <IonIcon icon={bold} color="primary" />
