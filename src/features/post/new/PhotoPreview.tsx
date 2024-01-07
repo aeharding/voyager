@@ -1,12 +1,15 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { IonSpinner } from "@ionic/react";
+import GalleryImg from "../../gallery/GalleryImg";
 
 const Container = styled.div`
   position: relative;
 `;
 
-const Img = styled.img<{ loadingImage: boolean }>`
+const PreviewImg = styled(GalleryImg, {
+  shouldForwardProp: (prop) => prop !== "loadingImage",
+})<{ loadingImage: boolean }>`
   max-width: 100px;
   max-height: 100px;
   padding: 1rem;
@@ -28,17 +31,17 @@ const OverlaySpinner = styled(IonSpinner)`
 interface PhotoPreviewProps {
   src: string;
   loading: boolean;
-  onClick?: () => void;
 }
 
-export default function PhotoPreview({
-  src,
-  loading,
-  onClick,
-}: PhotoPreviewProps) {
+export default function PhotoPreview({ src, loading }: PhotoPreviewProps) {
   return (
     <Container>
-      <Img src={src} onClick={onClick} loadingImage={loading} />
+      <PreviewImg
+        src={src}
+        loadingImage={loading}
+        animationType="zoom"
+        className="pswp-topmost"
+      />
       {loading && <OverlaySpinner />}
     </Container>
   );

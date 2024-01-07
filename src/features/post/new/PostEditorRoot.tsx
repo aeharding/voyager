@@ -452,7 +452,7 @@ export default function PostEditorRoot({
                 {photoPreviewURL && (
                   <IonItem>
                     <PhotoPreview
-                      src={photoPreviewURL}
+                      src={photoUploading ? photoPreviewURL : photoUrl}
                       loading={photoUploading}
                     />
                   </IonItem>
