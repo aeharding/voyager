@@ -33,6 +33,9 @@ import resolveSlice from "./features/resolve/resolveSlice";
 import biometricSlice, {
   initializeBiometricSliceDataIfNeeded,
 } from "./features/settings/biometric/biometricSlice";
+import migrationSlice, {
+  getMigrationLinks,
+} from "./features/community/migrationSlice";
 import modSlice from "./features/moderation/modSlice";
 import imageSlice from "./features/post/inFeed/large/imageSlice";
 import feedSortSlice from "./features/feed/sort/feedSortSlice";
@@ -57,6 +60,7 @@ const store = configureStore({
     mod: modSlice,
     image: imageSlice,
     feedSort: feedSortSlice,
+    migration: migrationSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
@@ -74,6 +78,9 @@ export default store;
 let lastActiveHandle: string | undefined = undefined;
 const activeHandleChange = () => {
   const state = store.getState();
+
+  store.dispatch(getMigrationLinks());
+
   const activeHandle = handleSelector(state);
 
   if (activeHandle === lastActiveHandle) return;
