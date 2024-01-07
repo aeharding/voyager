@@ -1,6 +1,11 @@
 import { DynamicDismissableModal } from "../../shared/DynamicDismissableModal";
 import { BanUserPayload } from "../../auth/PageContext";
 import BanUser from "./BanUser";
+import { css } from "@emotion/react";
+
+const modPrimaryStyle = css`
+  --ion-color-primary: var(--ion-color-success);
+`;
 
 interface BanUserModalProps {
   item: BanUserPayload;
@@ -14,7 +19,12 @@ export default function BanUserModal({
   setIsOpen,
 }: BanUserModalProps) {
   return (
-    <DynamicDismissableModal isOpen={isOpen} setIsOpen={setIsOpen}>
+    <DynamicDismissableModal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      css={modPrimaryStyle}
+      dismissClassName="mod"
+    >
       {({ setCanDismiss, dismiss }) => (
         <BanUser item={item} setCanDismiss={setCanDismiss} dismiss={dismiss} />
       )}

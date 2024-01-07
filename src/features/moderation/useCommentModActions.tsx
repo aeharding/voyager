@@ -128,6 +128,7 @@ export default function useCommentModActions(commentView: CommentView) {
               [
                 {
                   text: "Begone",
+                  cssClass: "mod",
                   handler: () => {
                     (async () => {
                       setLoading(true);
@@ -140,7 +141,7 @@ export default function useCommentModActions(commentView: CommentView) {
                     })();
                   },
                 },
-                { text: "Cancel", role: "cancel" },
+                { text: "Cancel", role: "cancel", cssClass: "mod" },
               ],
             );
           },

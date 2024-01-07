@@ -5,7 +5,6 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonText,
   IonContent,
   IonItem,
   IonTextarea,
@@ -25,19 +24,20 @@ import { banUser } from "../../user/userSlice";
 import { Centered, Spinner } from "../../auth/Login";
 import { buildBanFailed, buildBanned } from "../../../helpers/toastMessages";
 
-export const UsernameIonText = styled(IonText)`
-  font-size: 0.7em;
-  font-weight: normal;
-`;
-
-export const TitleContainer = styled.div`
-  line-height: 1;
+const Title = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const DaysValues = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
+`;
+
+const BanTextContainer = styled.div`
+  font-size: 0.925em;
+  margin: 0 32px 32px;
 `;
 
 type BanUserProps = {
@@ -120,7 +120,9 @@ export default function BanUser({
           </IonButtons>
           <IonTitle>
             <Centered>
-              Ban {getHandle(user)} {loading && <Spinner color="dark" />}
+              <Title>
+                Ban {getHandle(user)} {loading && <Spinner color="dark" />}
+              </Title>
             </Centered>
           </IonTitle>
           <IonButtons slot="end">
@@ -179,9 +181,9 @@ export default function BanUser({
           </IonItem>
         </IonList>
 
-        <div className="ion-padding">
+        <BanTextContainer>
           <IonLabel color="medium">{text}</IonLabel>
-        </div>
+        </BanTextContainer>
       </IonContent>
     </>
   );
