@@ -4,6 +4,8 @@ import styled from "@emotion/styled";
 import Scores from "./Scores";
 import {
   albumsOutline,
+  arrowDown,
+  arrowUp,
   bookmarkOutline,
   chatbubbleOutline,
   eyeOffOutline,
@@ -28,6 +30,7 @@ import {
   getModName,
 } from "../moderation/useCanModerate";
 import useModZoneActions from "../moderation/useModZoneActions";
+import useSupported from "../../helpers/useSupported";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -48,6 +51,7 @@ export default function Profile({ person }: ProfileProps) {
   const { present: presentModZoneActions, role } = useModZoneActions({
     type: "ModeratorView",
   });
+  const showUpvoteDownvote = useSupported("Profile Upvote/Downvote");
 
   const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
@@ -100,6 +104,26 @@ export default function Profile({ person }: ProfileProps) {
               <IonIcon icon={bookmarkOutline} color="primary" />{" "}
               <SettingLabel>Saved</SettingLabel>
             </InsetIonItem>
+            {showUpvoteDownvote && (
+              <>
+                <InsetIonItem
+                  routerLink={buildGeneralBrowseLink(
+                    `/u/${getHandle(person.person_view.person)}/upvoted`,
+                  )}
+                >
+                  <IonIcon icon={arrowUp} color="primary" />{" "}
+                  <SettingLabel>Upvoted</SettingLabel>
+                </InsetIonItem>
+                <InsetIonItem
+                  routerLink={buildGeneralBrowseLink(
+                    `/u/${getHandle(person.person_view.person)}/downvoted`,
+                  )}
+                >
+                  <IonIcon icon={arrowDown} color="primary" />{" "}
+                  <SettingLabel>Downvoted</SettingLabel>
+                </InsetIonItem>
+              </>
+            )}
             <InsetIonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/hidden`,

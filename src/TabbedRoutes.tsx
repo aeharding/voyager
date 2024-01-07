@@ -174,6 +174,18 @@ export default function TabbedRoutes() {
         </ActorRedirect>
       </Route>,
       // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/upvoted`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Upvoted" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
+      <Route exact path={`/${tab}/:actor/u/:handle/downvoted`}>
+        <ActorRedirect>
+          <ProfileFeedItemsPage type="Downvoted" />
+        </ActorRedirect>
+      </Route>,
+      // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
         <ActorRedirect>
           <ProfileFeedHiddenPostsPage />
