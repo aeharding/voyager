@@ -485,7 +485,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
             }
             ref={virtuaRef}
             style={{ height: "100%" }}
-            components={{ Item: IndexedVirtuaItem }}
+            item={IndexedVirtuaItem}
             overscan={0}
             onRangeChange={(start, end) => {
               if (end + 10 > allComments.length && !loadFailed) {
