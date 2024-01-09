@@ -14,6 +14,7 @@ import InboxFeed from "../../features/feed/InboxFeed";
 import {
   getInboxItemPublished,
   receivedInboxItems,
+  totalUnreadSelector,
 } from "../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { InboxItemView } from "../../features/inbox/InboxItem";
@@ -33,6 +34,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
     (state) =>
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   );
+  const totalUnread = useAppSelector(totalUnreadSelector);
 
   useSetActivePage(pageRef);
 
@@ -91,7 +93,10 @@ export default function InboxPage({ showRead }: InboxPageProps) {
             <IonBackButton defaultHref="/inbox" text="Boxes" />
           </IonButtons>
 
-          <IonTitle>{showRead ? "Inbox" : "Unread"}</IonTitle>
+          <IonTitle>
+            {showRead ? "Inbox" : "Unread"}{" "}
+            {totalUnread ? ` (${totalUnread})` : ""}
+          </IonTitle>
 
           <IonButtons slot="end">
             <MarkAllAsReadButton />
