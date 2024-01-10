@@ -367,6 +367,11 @@ export const buildDarkVariables = (
       }
     }
 
+    // TODO test other themes
+    ion-modal.transparent-scroll.dark {
+      --ion-background-color: black;
+    }
+
     ${background
       ? css`
           .ios body,

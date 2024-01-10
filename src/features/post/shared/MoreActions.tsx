@@ -5,6 +5,7 @@ import {
   arrowUpOutline,
   bookmarkOutline,
   cameraOutline,
+  checkmark,
   ellipsisHorizontal,
   eyeOffOutline,
   eyeOutline,
@@ -12,6 +13,7 @@ import {
   pencilOutline,
   peopleOutline,
   personOutline,
+  repeatOutline,
   shareOutline,
   textOutline,
   trashOutline,
@@ -74,6 +76,7 @@ export default function MoreActions({
     presentPostEditor,
     presentSelectText,
     presentShareAsImage,
+    presentCreateCrosspost,
   } = useContext(PageContext);
 
   const presentPostModActions = usePostModActions(post);
@@ -175,6 +178,8 @@ export default function MoreActions({
                           presentToast({
                             message: "Post deleted",
                             color: "success",
+                            centerText: true,
+                            icon: checkmark,
                           });
                         })();
                       },
@@ -264,6 +269,13 @@ export default function MoreActions({
           icon: cameraOutline,
           handler: () => {
             presentShareAsImage(post);
+          },
+        },
+        {
+          text: "Crosspost",
+          icon: repeatOutline,
+          handler: () => {
+            presentCreateCrosspost(post);
           },
         },
         {

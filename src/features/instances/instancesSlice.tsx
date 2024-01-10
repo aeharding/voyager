@@ -1,6 +1,6 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSelectors";
+import { clientSelector, urlSelector } from "../auth/authSelectors";
 import { FederatedInstances } from "lemmy-js-client";
 import { db } from "../../services/db";
 import { customBackOff } from "../../services/lemmy";
@@ -64,7 +64,8 @@ export const knownInstancesSelector = createSelector(
 
 export const getInstances =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const connectedInstance = getState().auth.connectedInstance;
+    const connectedInstance = urlSelector(getState());
+    const client = clientSelector(getState());
 
     // Already received, or in flight
     if (getState().instances.knownInstances) return;
@@ -77,8 +78,7 @@ export const getInstances =
     // https://github.com/aeharding/voyager/issues/935
     if (!federated_instances?.linked) {
       try {
-        ({ federated_instances } =
-          await clientSelector(getState()).getFederatedInstances());
+        ({ federated_instances } = await client.getFederatedInstances());
 
         if (!federated_instances?.linked)
           throw new Error("No federated instances in response");
@@ -91,7 +91,7 @@ export const getInstances =
           await customBackOff(getState().instances.failedCount);
 
           // Instance was switched before request could resolved. Bail
-          if (connectedInstance !== getState().auth.connectedInstance) return;
+          if (connectedInstance !== urlSelector(getState())) return;
 
           dispatch(getInstances());
         })();
@@ -100,7 +100,7 @@ export const getInstances =
     }
 
     // Instance was switched before request could resolved. Bail
-    if (connectedInstance !== getState().auth.connectedInstance) return;
+    if (connectedInstance !== urlSelector(getState())) return;
 
     dispatch(receivedInstances(federated_instances));
   };

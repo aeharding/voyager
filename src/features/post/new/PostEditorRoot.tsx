@@ -25,7 +25,7 @@ import { jwtSelector, urlSelector } from "../../auth/authSelectors";
 import { startCase } from "lodash";
 import { css } from "@emotion/react";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
-import { cameraOutline } from "ionicons/icons";
+import { cameraOutline, checkmark } from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -282,6 +282,7 @@ export default function PostEditorRoot({
       position: "top",
       centerText: true,
       fullscreen: true,
+      icon: checkmark,
     });
 
     setCanDismiss(true);
