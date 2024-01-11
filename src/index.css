@@ -82,6 +82,9 @@ ion-modal.transparent-scroll {
   --background: none;
   --height: auto;
   --box-shadow: none;
+
+  display: flex;
+  flex-direction: column;
 }
 
 ion-modal.transparent-scroll .ion-page {

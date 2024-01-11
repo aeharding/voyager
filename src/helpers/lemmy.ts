@@ -9,6 +9,7 @@ import {
 } from "lemmy-js-client";
 import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
+import { quote } from "./markdown";
 
 export interface LemmyJWT {
   sub: number;
@@ -308,4 +309,12 @@ export function getCrosspostUrl(post: Post): string | undefined {
   const matches = post.body.match(CROSS_POST_REGEX);
 
   return matches?.[1];
+}
+
+export function buildCrosspostBody(post: Post): string {
+  const header = `cross-posted from: ${post.ap_id}\n\n${quote(post.name)}`;
+
+  if (!post.body) return header;
+
+  return `${header}\n>\n${quote(post.body)}`;
 }

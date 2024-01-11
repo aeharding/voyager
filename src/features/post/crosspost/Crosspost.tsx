@@ -2,12 +2,14 @@ import styled from "@emotion/styled";
 import { IonIcon, IonSkeletonText } from "@ionic/react";
 import { arrowUpSharp, chatbubbleOutline, repeat } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import LargePostContents from "../../inFeed/large/LargePostContents";
-import { formatNumber } from "../../../../helpers/number";
+import LargePostContents from "../inFeed/large/LargePostContents";
+import { formatNumber } from "../../../helpers/number";
 import { css } from "@emotion/react";
 import CrosspostContainer from "./CrosspostContainer";
 
 const StyledCrosspostContainer = styled(CrosspostContainer)`
+  width: 100%;
+
   display: flex;
   flex-direction: column;
   gap: 8px;
