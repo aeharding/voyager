@@ -282,6 +282,8 @@ export default function MoreActions({
           icon: repeatOutline,
           handler: () => {
             (async () => {
+              if (presentLoginIfNeeded()) return;
+
               // If crossposting a crosspost, crosspost the original post
               const crosspostUrl = getCrosspostUrl(post.post);
 
