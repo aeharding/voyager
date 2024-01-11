@@ -28,7 +28,12 @@ import {
   savePost,
   deletePost,
 } from "../postSlice";
-import { getHandle, getRemoteHandle, share } from "../../../helpers/lemmy";
+import {
+  getCrosspostUrl,
+  getHandle,
+  getRemoteHandle,
+  share,
+} from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
@@ -45,6 +50,7 @@ import usePostModActions from "../../moderation/usePostModActions";
 import useCanModerate, { getModIcon } from "../../moderation/useCanModerate";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
+import { resolveObject } from "../../resolve/resolveSlice";
 
 interface MoreActionsProps {
   post: PostView;
@@ -275,7 +281,30 @@ export default function MoreActions({
           text: "Crosspost",
           icon: repeatOutline,
           handler: () => {
-            presentCreateCrosspost(post);
+            (async () => {
+              // If crossposting a crosspost, crosspost the original post
+              const crosspostUrl = getCrosspostUrl(post.post);
+
+              if (crosspostUrl) {
+                let post;
+
+                try {
+                  ({ post } = await dispatch(resolveObject(crosspostUrl)));
+                } catch (error) {
+                  console.error(error);
+
+                  // Continue silently
+                }
+
+                if (post) {
+                  presentCreateCrosspost(post);
+
+                  return;
+                }
+              }
+
+              presentCreateCrosspost(post);
+            })();
           },
         },
         {
