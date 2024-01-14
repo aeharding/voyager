@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useIonActionSheet } from "@ionic/react";
 import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
@@ -17,7 +24,9 @@ interface DynamicDismissableModalProps {
   setIsOpen: (open: boolean) => void;
   isOpen: boolean;
 
-  children: (props: DismissableProps) => React.ReactElement;
+  children:
+    | React.ReactElement
+    | ((props: DismissableProps) => React.ReactElement);
 
   className?: string;
   dismissClassName?: string;
@@ -94,6 +103,31 @@ export function DynamicDismissableModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
+  const dismiss = useCallback(() => {
+    if (canDismissRef.current) {
+      setIsOpen(false);
+      return;
+    }
+
+    onDismissAttemptCb();
+  }, [canDismissRef, onDismissAttemptCb, setIsOpen]);
+
+  const context = useMemo(
+    () => ({ dismiss, setCanDismiss }),
+    [dismiss, setCanDismiss],
+  );
+
+  const content = useMemo(
+    () =>
+      typeof renderModalContents === "function"
+        ? renderModalContents({
+            setCanDismiss,
+            dismiss,
+          })
+        : renderModalContents,
+    [dismiss, renderModalContents, setCanDismiss],
+  );
+
   return (
     <>
       {isOpen && (
@@ -121,17 +155,9 @@ export function DynamicDismissableModal({
           }
         }}
       >
-        {renderModalContents({
-          setCanDismiss,
-          dismiss: () => {
-            if (canDismissRef.current) {
-              setIsOpen(false);
-              return;
-            }
-
-            onDismissAttemptCb();
-          },
-        })}
+        <DynamicDismissableModalContext.Provider value={context}>
+          {content}
+        </DynamicDismissableModalContext.Provider>
       </IonModalAutosizedForOnScreenKeyboard>
     </>
   );
@@ -148,3 +174,8 @@ const useUnload = (fn: (e: BeforeUnloadEvent) => void) => {
     };
   }, [cb]);
 };
+
+export const DynamicDismissableModalContext = createContext<{
+  dismiss: () => void;
+  setCanDismiss: (canDismiss: boolean) => void;
+}>({ dismiss: () => {}, setCanDismiss: () => {} });

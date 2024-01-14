@@ -8,7 +8,7 @@ import {
 import { Comment } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../../store";
-import { Centered, Spinner } from "../../../auth/Login";
+import { Centered, Spinner } from "../../../auth/login/LoginNav";
 import { editComment } from "../../commentSlice";
 import { DismissableProps } from "../../../shared/DynamicDismissableModal";
 import CommentContent from "../shared";
