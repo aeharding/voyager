@@ -52,7 +52,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
     setTimeout(() => {
       usernameRef.current?.setFocus();
     }, 300);
-  });
+  }, []);
 
   async function submit() {
     if (!username || !password) {
@@ -127,7 +127,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
         <div className="ion-padding">
           You are logging in to{" "}
           <InAppExternalLink
-            href={`https://${url}/legal`}
+            href={`https://${url}`}
             target="_blank"
             rel="noopener noreferrer"
           >

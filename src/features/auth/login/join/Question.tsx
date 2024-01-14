@@ -15,12 +15,13 @@ import {
 import { useAppSelector } from "../../../../store";
 import Markdown from "../../../shared/Markdown";
 import Join from "./Join";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
 
 export default function Question() {
-  const { site } = useAppSelector((state) => state.join);
+  const { site, url } = useAppSelector((state) => state.join);
   const { setCanDismiss } = useContext(DynamicDismissableModalContext);
+  const [answer, setAnswer] = useState("");
 
   return (
     <>
@@ -31,8 +32,10 @@ export default function Question() {
           </IonButtons>
           <IonTitle>Account application</IonTitle>
           <IonButtons slot="end">
-            <IonNavLink component={() => <Join />}>
-              <IonButton strong>Next</IonButton>
+            <IonNavLink component={answer ? () => <Join /> : undefined}>
+              <IonButton strong disabled={!answer}>
+                Next
+              </IonButton>
             </IonNavLink>
           </IonButtons>
         </IonToolbar>
@@ -46,13 +49,15 @@ export default function Question() {
 
         <p className="ion-padding">
           <IonText color="warning">
-            <strong>This server manually reviews account requests.</strong>
+            <strong>{url} manually reviews account requests.</strong>
           </IonText>{" "}
           Please read and enter your <strong>application answer</strong> below.
         </p>
 
         <IonList inset className="ion-padding">
-          <Markdown>{site?.site_view.local_site.application_question}</Markdown>
+          <Markdown className="collapse-md-margins">
+            {site?.site_view.local_site.application_question}
+          </Markdown>
         </IonList>
 
         <IonList inset>
@@ -61,7 +66,11 @@ export default function Question() {
               labelPlacement="stacked"
               placeholder="lemmy in"
               autoGrow
-              onIonInput={() => setCanDismiss(false)}
+              onIonInput={(e) => {
+                setAnswer(e.detail.value || "");
+                setCanDismiss(false);
+              }}
+              value={answer}
             >
               <div slot="label">
                 Application Answer <IonText color="danger">(Required)</IonText>

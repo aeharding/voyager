@@ -9,17 +9,30 @@ import {
   IonList,
   IonText,
   IonTitle,
+  IonToggle,
   IonToolbar,
 } from "@ionic/react";
 import { useAppSelector } from "../../../../store";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Joined from "./Joined";
+import Captcha from "./Captcha";
 
 export default function Join() {
   const { site, url } = useAppSelector((state) => state.join);
 
   // eslint-disable-next-line no-undef
   const ref = useRef<HTMLIonListElement>(null);
+
+  // eslint-disable-next-line no-undef
+  const emailRef = useRef<HTMLIonInputElement>(null);
+
+  const [nsfw, setNsfw] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      emailRef.current?.setFocus();
+    }, 300);
+  }, []);
 
   async function submit() {
     const nav = ref.current?.closest("ion-nav");
@@ -30,12 +43,14 @@ export default function Join() {
       null,
       null,
       async (hasCompleted, requiresTransition, entering) => {
+        // Remove signup steps from stack (everything between root and current nav view)
+        // (user should not be able to navigate back after signup)
+
         // TODO open bug for missing ionic type
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (entering) nav.removeIndex(1, (nav as any).getLength() - 2);
       },
     );
-    // nav.p
   }
 
   return (
@@ -67,6 +82,7 @@ export default function Join() {
               labelPlacement="stacked"
               placeholder="email@proton.me"
               autocomplete="email"
+              ref={emailRef}
             >
               <div slot="label">
                 Email{" "}
@@ -125,6 +141,21 @@ export default function Join() {
             </IonInput>
           </IonItem>
         </IonList>
+
+        <IonList inset>
+          <IonItem>
+            <IonToggle
+              checked={nsfw}
+              onIonChange={(e) => setNsfw(e.detail.checked)}
+            >
+              Show NSFW
+            </IonToggle>
+          </IonItem>
+        </IonList>
+
+        {site?.site_view.local_site.captcha_enabled && url && (
+          <Captcha url={url} />
+        )}
       </IonContent>
     </>
   );

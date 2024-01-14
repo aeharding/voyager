@@ -10,6 +10,7 @@ import {
   IonRadio,
   IonRadioGroup,
   IonSearchbar,
+  IonSpinner,
   IonText,
   IonThumbnail,
   IonTitle,
@@ -21,15 +22,34 @@ import { getInstances } from "./pickJoinServerSlice";
 import { VList } from "virtua";
 import styled from "@emotion/styled";
 import { getClient, getImageSrc } from "../../../../services/lemmy";
-import Legal from "../join/Legal";
-import { requestJoinSiteData } from "../join/joinSlice";
 import { GetSiteResponse } from "lemmy-js-client";
 import { isValidHostname } from "../../../../helpers/url";
+import useStartJoinFlow from "./useStartJoinFlow";
+import { uniqBy } from "lodash";
+import { LVInstance } from "../../../../services/lemmyverse";
+import { css } from "@emotion/react";
+
+const spacing = css`
+  margin: 2.5rem 0;
+  width: 100%;
+`;
+
+const CenteredSpinner = styled(IonSpinner)`
+  ${spacing}
+`;
+
+const Empty = styled.div`
+  ${spacing}
+
+  color: var(--ion-color-medium);
+  text-align: center;
+`;
 
 const ServerThumbnail = styled(IonThumbnail)`
   --size: 32px;
   --border-radius: 6px;
   margin: 16px 16px 16px 0;
+  pointer-events: none;
 `;
 
 const ServerItem = styled(IonItem)`
@@ -52,9 +72,12 @@ export default function PickJoinServer() {
   const [search, setSearch] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [customInstance, setCustomInstance] = useState<
     GetSiteResponse | undefined
   >();
+
+  const startJoinFlow = useStartJoinFlow(contentRef);
 
   const matchingInstances = useMemo(
     () =>
@@ -64,9 +87,17 @@ export default function PickJoinServer() {
     [instances, search],
   );
 
-  const allInstances = customInstance
-    ? [...matchingInstances, customInstance]
-    : matchingInstances;
+  const allInstances = useMemo(
+    () =>
+      uniqBy(
+        (customInstance
+          ? [...matchingInstances, customInstance]
+          : matchingInstances
+        ).map(normalize),
+        ({ url }) => url,
+      ),
+    [customInstance, matchingInstances],
+  );
 
   const customSearchHostnameInvalid = useMemo(
     () =>
@@ -117,12 +148,45 @@ export default function PickJoinServer() {
   }, [dispatch]);
 
   async function submit() {
-    if (!selection) return;
+    const server = selection || "lemmy.world";
 
-    await dispatch(requestJoinSiteData(selection));
+    setSubmitting(true);
 
-    contentRef.current?.closest("ion-nav")?.push(() => <Legal />);
+    try {
+      await startJoinFlow(server);
+    } finally {
+      setSubmitting(false);
+    }
   }
+
+  const content = (() => {
+    if (allInstances.length) {
+      return (
+        <VList count={allInstances.length} className="ion-content-scroll-host">
+          {(i) => {
+            const { url, icon, description } = allInstances[i]!;
+
+            return (
+              <ServerItem key={url}>
+                <ServerThumbnail slot="start">
+                  {icon && <img src={getImageSrc(icon, { size: 32 })} />}
+                </ServerThumbnail>
+                <IonLabel>
+                  <h2>{url}</h2>
+                  <p>{description}</p>
+                </IonLabel>
+                <IonRadio value={url} />
+              </ServerItem>
+            );
+          }}
+        </VList>
+      );
+    }
+
+    if (loading) return <CenteredSpinner />;
+
+    return <Empty>No results</Empty>;
+  })();
 
   return (
     <>
@@ -137,6 +201,11 @@ export default function PickJoinServer() {
           <IonSearchbar
             value={search}
             onIonInput={(e) => setSearch(e.detail.value || "")}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter") return;
+
+              if (e.target instanceof HTMLElement) e.target.blur();
+            }}
             inputMode="url"
             enterkeyhint="go"
           />
@@ -148,49 +217,18 @@ export default function PickJoinServer() {
           onIonChange={(e) => setSelection(e.detail.value)}
           allowEmptySelection
         >
-          <VList
-            count={allInstances.length}
-            className="ion-content-scroll-host"
-          >
-            {(i) => {
-              const instance = allInstances[i]!;
-
-              const { url, icon, description } = (() => {
-                if ("baseurl" in instance) {
-                  return {
-                    url: instance.baseurl,
-                    icon: instance.icon,
-                    description: instance.desc,
-                  };
-                }
-
-                return {
-                  url: instance.site_view.site.actor_id,
-                  icon: instance.site_view.site.icon,
-                  description: instance.site_view.site.description,
-                };
-              })();
-
-              return (
-                <ServerItem key={url}>
-                  <ServerThumbnail slot="start">
-                    {icon && <img src={getImageSrc(icon, { size: 32 })} />}
-                  </ServerThumbnail>
-                  <IonLabel>
-                    <h2>{url}</h2>
-                    <p>{description}</p>
-                  </IonLabel>
-                  <IonRadio value={url} />
-                </ServerItem>
-              );
-            }}
-          </VList>
+          {content}
         </IonRadioGroup>
       </IonContent>
       <IonFooter>
         <IonToolbar>
-          <IonButton fill="solid" expand="block">
-            Next
+          <IonButton
+            fill="solid"
+            expand="block"
+            onClick={submit}
+            disabled={submitting}
+          >
+            {submitting ? <IonSpinner /> : "Next"}
           </IonButton>
           <IonText color="medium">
             <NextMessage>
@@ -202,4 +240,26 @@ export default function PickJoinServer() {
       </IonFooter>
     </>
   );
+}
+
+interface Instance {
+  url: string;
+  description?: string;
+  icon?: string;
+}
+
+function normalize(instance: GetSiteResponse | LVInstance): Instance {
+  if ("baseurl" in instance) {
+    return {
+      url: instance.baseurl,
+      icon: instance.icon,
+      description: instance.desc,
+    };
+  }
+
+  return {
+    url: new URL(instance.site_view.site.actor_id).hostname,
+    icon: instance.site_view.site.icon,
+    description: instance.site_view.site.description,
+  };
 }

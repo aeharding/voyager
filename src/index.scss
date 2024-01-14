@@ -279,3 +279,18 @@ ion-modal.save-as-image-modal {
 #share-as-image-root video {
   display: none;
 }
+
+.collapse-md-margins {
+  > *:first-child {
+    &,
+    > p:first-child {
+      margin-top: 0;
+    }
+  }
+  > *:last-child {
+    &,
+    > p:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

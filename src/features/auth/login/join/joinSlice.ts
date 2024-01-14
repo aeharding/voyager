@@ -63,6 +63,8 @@ export const requestJoinSiteData =
     }
 
     dispatch(received(site));
+
+    return site;
   };
 
 export default joinSlice.reducer;

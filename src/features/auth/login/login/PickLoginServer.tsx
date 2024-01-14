@@ -172,6 +172,7 @@ export default function PickLoginServer() {
                       onClick={() => {
                         setSearch(instance);
                         setDirty(false);
+                        searchbarRef.current?.setFocus();
                       }}
                     >
                       {instance}

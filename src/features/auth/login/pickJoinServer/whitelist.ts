@@ -95,6 +95,7 @@ export const ACTIVISM = [
   "beehaw.org",
   "sirpnk.net",
   "merv.news",
+  "lemmy.giftedmc.com",
 ];
 
 export const LGBT = ["femboys.bar", "transfem.space", "lemmy.blahaj.zone"];
@@ -115,7 +116,7 @@ export const WHITELISTED_INSTANCES = uniq([
   ...FURRY,
 ]);
 
-const ADDITIONAL_LOGIN_INSTANCES = ["lemmy.ml"];
+const ADDITIONAL_LOGIN_INSTANCES = ["lemmy.ml", "lemmygrad.ml", "hexbear.net"];
 
 export const LOGIN_INSTANCES = uniq([
   ...WHITELISTED_INSTANCES,

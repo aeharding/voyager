@@ -1,12 +1,19 @@
 import styled from "@emotion/styled";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { useAppSelector } from "../../../../store";
 import { useRef } from "react";
-import { requestJoinSiteData } from "../join/joinSlice";
-import Legal from "../join/Legal";
 import { IonButton, IonNavLink, IonSpinner } from "@ionic/react";
 import PickJoinServer from "../pickJoinServer/PickJoinServer";
 import LearnMore from "../LearnMore";
 import PickLoginServer from "../login/PickLoginServer";
+import useStartJoinFlow from "../pickJoinServer/useStartJoinFlow";
+
+const TopSpacer = styled.div`
+  flex: 10;
+`;
+
+const BottomSpacer = styled.div`
+  flex: 7;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -17,12 +24,10 @@ const Container = styled.div`
 
   margin-top: auto;
 
-  position: absolute;
+  /* position: absolute;
   left: 0;
   right: 0;
-  bottom: 25vh;
-
-  z-index: 1;
+  bottom: 25vh; */
 `;
 
 const Or = styled.div`
@@ -50,48 +55,46 @@ const ButtonLine = styled.div`
 `;
 
 export default function Buttons() {
-  const dispatch = useAppDispatch();
   const loadingJoin = useAppSelector((state) => state.join.loading);
   const ref = useRef<HTMLDivElement>(null);
-
-  async function join(url: string) {
-    await dispatch(requestJoinSiteData(url));
-
-    ref.current?.closest("ion-nav")?.push(() => <Legal />);
-  }
+  const startJoinFlow = useStartJoinFlow(ref);
 
   return (
-    <Container ref={ref}>
-      <IonButton
-        expand="block"
-        onClick={() => join("lemmy.world")}
-        disabled={loadingJoin}
-      >
-        {loadingJoin ? <IonSpinner /> : "Join lemmy.world"}
-      </IonButton>
-      <IonNavLink component={() => <PickJoinServer />}>
-        <IonButton fill="outline" color="dark" expand="block">
-          Pick another server
+    <>
+      <TopSpacer />
+      <Container ref={ref}>
+        <IonButton
+          expand="block"
+          onClick={() => startJoinFlow("lemmy.world")}
+          disabled={loadingJoin}
+        >
+          {loadingJoin ? <IonSpinner /> : "Join lemmy.world"}
         </IonButton>
-      </IonNavLink>
-      <Or>
-        <hr />
-        OR
-        <hr />
-      </Or>
+        <IonNavLink component={() => <PickJoinServer />}>
+          <IonButton fill="outline" color="dark" expand="block">
+            Pick another server
+          </IonButton>
+        </IonNavLink>
+        <Or>
+          <hr />
+          OR
+          <hr />
+        </Or>
 
-      <ButtonLine>
-        <IonNavLink component={() => <LearnMore />}>
-          <IonButton fill="clear" color="dark" expand="block">
-            Learn More
-          </IonButton>
-        </IonNavLink>
-        <IonNavLink component={() => <PickLoginServer />}>
-          <IonButton fill="clear" color="dark" expand="block">
-            Log In
-          </IonButton>
-        </IonNavLink>
-      </ButtonLine>
-    </Container>
+        <ButtonLine>
+          <IonNavLink component={() => <LearnMore />}>
+            <IonButton fill="clear" color="dark" expand="block">
+              Learn More
+            </IonButton>
+          </IonNavLink>
+          <IonNavLink component={() => <PickLoginServer />}>
+            <IonButton fill="clear" color="dark" expand="block">
+              Log In
+            </IonButton>
+          </IonNavLink>
+        </ButtonLine>
+      </Container>
+      <BottomSpacer />
+    </>
   );
 }

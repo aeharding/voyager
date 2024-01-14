@@ -7,7 +7,6 @@ import React, { MouseEvent } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
-import { ignoreSsrFlag } from "../../helpers/emotion";
 import Vote from "../labels/Vote";
 import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
@@ -142,19 +141,6 @@ const Content = styled.div`
   }
 
   line-height: 1.25;
-
-  > *:first-child ${ignoreSsrFlag} {
-    &,
-    > p:first-child ${ignoreSsrFlag} {
-      margin-top: 0;
-    }
-  }
-  > *:last-child {
-    &,
-    > p:last-child {
-      margin-bottom: 0;
-    }
-  }
 `;
 
 const CollapsedIcon = styled(IonIcon)`
@@ -283,6 +269,7 @@ export default function Comment({
 
                   <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
                     <Content
+                      className="collapse-md-margins"
                       onClick={(e) => {
                         if (!(e.target instanceof HTMLElement)) return;
                         if (e.target.nodeName === "A") e.stopPropagation();

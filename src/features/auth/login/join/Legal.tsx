@@ -43,7 +43,9 @@ export default function Legal() {
         </p>
 
         <IonList inset className="ion-padding">
-          <Markdown>{site?.site_view.local_site.legal_information}</Markdown>
+          <Markdown className="collapse-md-margins">
+            {site?.site_view.local_site.legal_information}
+          </Markdown>
         </IonList>
       </IonContent>
     </>
