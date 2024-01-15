@@ -32,7 +32,9 @@ export default function Question() {
           </IonButtons>
           <IonTitle>Account application</IonTitle>
           <IonButtons slot="end">
-            <IonNavLink component={answer ? () => <Join /> : undefined}>
+            <IonNavLink
+              component={answer ? () => <Join answer={answer} /> : undefined}
+            >
               <IonButton strong disabled={!answer}>
                 Next
               </IonButton>

@@ -17,6 +17,7 @@ import { useAppDispatch } from "../../../../store";
 import { login } from "../../authSlice";
 import { getLoginErrorMessage, isLemmyError } from "../../../../helpers/lemmy";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
+import { loginSuccess } from "../../../../helpers/toastMessages";
 
 interface TotpProps {
   url: string;
@@ -74,10 +75,7 @@ export default function Totp({ url, username, password }: TotpProps) {
       setLoading(false);
     }
 
-    presentToast({
-      message: "Login successful",
-      color: "success",
-    });
+    presentToast(loginSuccess);
 
     setCanDismiss(true);
     dismiss();

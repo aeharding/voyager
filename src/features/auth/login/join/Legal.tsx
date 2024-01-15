@@ -12,6 +12,7 @@ import {
 import { useAppSelector } from "../../../../store";
 import Markdown from "../../../shared/Markdown";
 import Question from "./Question";
+import Join from "./Join";
 
 export default function Legal() {
   const { url, site } = useAppSelector((state) => state.join);
@@ -25,7 +26,18 @@ export default function Legal() {
           </IonButtons>
           <IonTitle>Privacy &amp; Terms</IonTitle>
           <IonButtons slot="end">
-            <IonNavLink component={() => <Question />}>
+            <IonNavLink
+              component={() => {
+                if (
+                  site?.site_view.local_site.application_question &&
+                  site?.site_view.local_site.registration_mode ===
+                    "RequireApplication"
+                )
+                  return <Question />;
+
+                return <Join />;
+              }}
+            >
               <IonButton strong>I Agree</IonButton>
             </IonNavLink>
           </IonButtons>

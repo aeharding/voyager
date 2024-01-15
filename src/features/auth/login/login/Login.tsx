@@ -28,6 +28,7 @@ import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissab
 import InAppExternalLink from "../../../shared/InAppExternalLink";
 import { HelperText } from "../../../settings/shared/formatting";
 import { getImageSrc } from "../../../../services/lemmy";
+import { loginSuccess } from "../../../../helpers/toastMessages";
 
 interface LoginProps {
   url: string;
@@ -96,10 +97,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
       setLoading(false);
     }
 
-    presentToast({
-      message: "Login successful",
-      color: "success",
-    });
+    presentToast(loginSuccess);
 
     setCanDismiss(true);
     dismiss();

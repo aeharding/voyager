@@ -15,6 +15,7 @@ import { resetResolve } from "../resolve/resolveSlice";
 import { resetMod } from "../moderation/modSlice";
 import { jwtIssSelector } from "./authSelectors";
 import { receivedSite, resetSite } from "./siteSlice";
+import { Register } from "lemmy-js-client";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -160,7 +161,27 @@ export const login =
       throw new Error("broke");
     }
 
-    const authenticatedClient = getClient(baseUrl, res.jwt);
+    await dispatch(addJwt(baseUrl, res.jwt));
+  };
+
+export const register =
+  (baseUrl: string, register: Register) => async (dispatch: AppDispatch) => {
+    const client = getClient(baseUrl);
+
+    const res = await client.register(register);
+
+    if (!res.jwt) {
+      return res;
+    }
+
+    await dispatch(addJwt(baseUrl, res.jwt));
+
+    return true;
+  };
+
+const addJwt =
+  (baseUrl: string, jwt: string) => async (dispatch: AppDispatch) => {
+    const authenticatedClient = getClient(baseUrl, jwt);
 
     const site = await authenticatedClient.getSite();
     const myUser = site.my_user?.local_user_view?.person;
@@ -168,8 +189,8 @@ export const login =
     if (!myUser) throw new Error("broke");
 
     dispatch(receivedSite(site));
-    dispatch(addAccount({ jwt: res.jwt, handle: getRemoteHandle(myUser) }));
-    dispatch(updateConnectedInstance(parseJWT(res.jwt).iss));
+    dispatch(addAccount({ jwt, handle: getRemoteHandle(myUser) }));
+    dispatch(updateConnectedInstance(parseJWT(jwt).iss));
   };
 
 const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {

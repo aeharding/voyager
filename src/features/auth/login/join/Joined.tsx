@@ -16,7 +16,11 @@ import useHapticFeedback from "../../../../helpers/useHapticFeedback";
 import { NotificationType } from "@capacitor/haptics";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
 
-export default function Joined() {
+interface JoinedProps {
+  verifyEmailSent: boolean;
+}
+
+export default function Joined({ verifyEmailSent }: JoinedProps) {
   const vibrate = useHapticFeedback();
   const { setCanDismiss } = useContext(DynamicDismissableModalContext);
   const { url, site } = useAppSelector((state) => state.join);
@@ -34,7 +38,7 @@ export default function Joined() {
           <IonButtons slot="start">
             <IonBackButton />
           </IonButtons>
-          <IonTitle>✅ Success</IonTitle>
+          <IonTitle>✅ Success!</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -48,7 +52,9 @@ export default function Joined() {
           <p>
             ✨ Your request for an account was successfully submitted!{" "}
             <strong>
-              Keep an eye out for the email to activate your account.
+              {verifyEmailSent
+                ? "Keep an eye out for an email to activate your account."
+                : "Please wait for your account to be approved before you can log in."}
             </strong>
           </p>
         </div>

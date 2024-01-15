@@ -6,16 +6,19 @@ import {
   IonSpinner,
   IonText,
 } from "@ionic/react";
-import { useCallback, useEffect, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { getClient } from "../../../../services/lemmy";
-import { GetCaptchaResponse } from "lemmy-js-client";
+import { GetCaptchaResponse, Register } from "lemmy-js-client";
 import styled from "@emotion/styled";
 import { refresh, volumeHigh, volumeHighOutline } from "ionicons/icons";
 import { b64ToBlob } from "../../../../helpers/blob";
-
-interface CaptchaProps {
-  url: string;
-}
+import { PlainButton } from "../../../shared/PlainButton";
 
 const CaptchaIonList = styled(IonList)`
   position: relative;
@@ -71,11 +74,32 @@ const Spinner = styled(IonSpinner)`
   transform: translate(-50%, -50%);
 `;
 
-export default function Captcha({ url }: CaptchaProps) {
+export interface CaptchaHandle {
+  getResult: () => Pick<Register, "captcha_answer" | "captcha_uuid">;
+}
+
+interface CaptchaProps {
+  url: string;
+}
+
+export default forwardRef<CaptchaHandle, CaptchaProps>(function Captcha(
+  { url },
+  ref,
+) {
   const [captcha, setCaptcha] = useState<GetCaptchaResponse | undefined>();
+  const [answer, setAnswer] = useState("");
   const [playing, setPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    getResult,
+  }));
+
+  const getResult = useCallback(
+    () => ({ captcha_answer: answer, captcha_uuid: captcha?.ok?.uuid }),
+    [answer, captcha],
+  );
 
   const getCaptcha = useCallback(async () => {
     setLoading(true);
@@ -129,26 +153,31 @@ export default function Captcha({ url }: CaptchaProps) {
           <>
             <CaptchaBg src={`data:image/png;base64,${captcha.ok.png}`} />
             <CaptchaIonItem>
-              <CaptchaImg src={`data:image/png;base64,${captcha.ok.png}`} />
+              <CaptchaImg
+                src={`data:image/png;base64,${captcha.ok.png}`}
+                alt="Captcha image"
+              />
             </CaptchaIonItem>
           </>
         )}
 
         <Actions>
-          <IonIcon
-            icon={refresh}
-            color="primary"
+          <PlainButton
+            aria-label="Refresh captcha"
             onClick={() => {
               if (loading || playing) return;
 
               getCaptcha();
             }}
-          />
-          <IonIcon
-            icon={playing ? volumeHigh : volumeHighOutline}
-            color="primary"
-            onClick={play}
-          />
+          >
+            <IonIcon icon={refresh} color="primary" />
+          </PlainButton>
+          <PlainButton aria-label="Play captcha audio" onClick={play}>
+            <IonIcon
+              icon={playing ? volumeHigh : volumeHighOutline}
+              color="primary"
+            />
+          </PlainButton>
         </Actions>
 
         {loading && (
@@ -162,6 +191,8 @@ export default function Captcha({ url }: CaptchaProps) {
           <IonInput
             labelPlacement="stacked"
             placeholder="enter captcha text above"
+            value={answer}
+            onIonInput={(e) => setAnswer(e.detail.value || "")}
           >
             <div slot="label">
               Captcha Answer <IonText color="danger">(Required)</IonText>
@@ -171,4 +202,4 @@ export default function Captcha({ url }: CaptchaProps) {
       </IonList>
     </>
   );
-}
+});
