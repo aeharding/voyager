@@ -70,18 +70,18 @@ export default function App() {
                   <OptimizedRouterProvider>
                     <AndroidBackButton />
 
-                    <IonApp>
-                      <ErrorBoundary FallbackComponent={AppCrash}>
-                        <HapticsListener />
+                    <TabContextProvider>
+                      <IonApp>
+                        <ErrorBoundary FallbackComponent={AppCrash}>
+                          <HapticsListener />
 
-                        <TabContextProvider>
                           <TextRecoveryStartupPrompt />
                           <Auth>
                             <TabbedRoutes />
                           </Auth>
-                        </TabContextProvider>
-                      </ErrorBoundary>
-                    </IonApp>
+                        </ErrorBoundary>
+                      </IonApp>
+                    </TabContextProvider>
                   </OptimizedRouterProvider>
                 </Router>
               </UpdateContextProvider>

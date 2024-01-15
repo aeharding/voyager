@@ -30,6 +30,7 @@ import ShareAsImageModal, {
 import AccountSwitcher from "./AccountSwitcher";
 import { jwtSelector } from "./authSelectors";
 import BanUserModal from "../moderation/ban/BanUserModal";
+import CreateCrosspostDialog from "../post/crosspost/create/CreateCrosspostDialog";
 
 export interface BanUserPayload {
   user: Person;
@@ -77,6 +78,8 @@ interface IPageContext {
   presentAccountSwitcher: () => void;
 
   presentBanUser: (payload: BanUserPayload) => void;
+
+  presentCreateCrosspost: (post: PostView) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -90,6 +93,7 @@ export const PageContext = createContext<IPageContext>({
   presentShareAsImage: () => {},
   presentAccountSwitcher: () => {},
   presentBanUser: () => {},
+  presentCreateCrosspost: () => {},
 });
 
 interface PageContextProvider {
@@ -232,6 +236,23 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     presentAccountSwitcherModal({ cssClass: "small" });
   }, [presentAccountSwitcherModal]);
 
+  const crosspost = useRef<PostView | undefined>();
+  const [presentCrosspost, onDismissCrosspost] = useIonModal(
+    CreateCrosspostDialog,
+    {
+      onDismiss: (data: string, role: string) => onDismissCrosspost(data, role),
+      post: crosspost.current,
+    },
+  );
+
+  const presentCreateCrosspost = useCallback(
+    (post: PostView) => {
+      crosspost.current = post;
+      presentCrosspost({ cssClass: "transparent-scroll dark" });
+    },
+    [presentCrosspost],
+  );
+
   const currentValue = useMemo(
     () => ({
       ...value,
@@ -244,6 +265,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentShareAsImage,
       presentAccountSwitcher,
       presentBanUser,
+      presentCreateCrosspost,
     }),
     [
       presentCommentEdit,
@@ -255,6 +277,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentShareAsImage,
       presentAccountSwitcher,
       presentBanUser,
+      presentCreateCrosspost,
       value,
     ],
   );

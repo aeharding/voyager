@@ -288,7 +288,7 @@ export default function Feed<I>({
           }
           ref={virtuaHandle}
           style={{ height: "100%" }}
-          onScrollStop={() => {
+          onScrollEnd={() => {
             scrollingRef.current = false;
           }}
           onScroll={(offset) => {

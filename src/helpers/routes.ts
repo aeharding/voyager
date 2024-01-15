@@ -4,6 +4,7 @@ import { TabContext } from "../TabContext";
 
 export function useBuildGeneralBrowseLink() {
   const { tabRef } = useContext(TabContext);
+
   const connectedServer = useAppSelector(
     (state) => state.auth.connectedInstance,
   );

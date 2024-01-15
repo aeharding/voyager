@@ -18,7 +18,7 @@ import ModeratableItem, {
 } from "../../../moderation/ModeratableItem";
 import MoreModActions from "../../shared/MoreModAction";
 import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
-import Crosspost from "../../shared/crosspost/Crosspost";
+import Crosspost from "../../crosspost/Crosspost";
 import LargePostContents from "./LargePostContents";
 import useCrosspostUrl from "../../shared/useCrosspostUrl";
 
