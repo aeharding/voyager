@@ -1,44 +1,10 @@
 import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
-import { close, heart } from "ionicons/icons";
+import { heart } from "ionicons/icons";
 import InAppProducts from "./inAppPurchase/InAppProducts";
 import ExternalSponsorOptions from "./ExternalSponsorOptions";
 import { isNative } from "../../helpers/device";
-
-const Container = styled.div`
-  margin: 36px auto;
-  background: var(--ion-background-color, #fff);
-  border-radius: 16px;
-  max-width: 320px;
-
-  position: relative;
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 16px;
-
-  padding: 16px;
-`;
-
-const CloseButton = styled.button`
-  border-radius: 50%;
-  background: rgba(180, 180, 180, 0.2);
-
-  appearance: none;
-  padding: 5px;
-  color: var(--ion-color-medium);
-
-  display: flex;
-
-  position: absolute;
-  right: 8px;
-  top: 8px;
-
-  font-size: 1.3em;
-`;
+import FloatingDialog from "../../helpers/FloatingDialog";
 
 const Heart = styled.div`
   font-size: 3em;
@@ -81,11 +47,7 @@ interface TipProps {
 
 export default function TipDialog({ onDismiss }: TipProps) {
   return (
-    <Container>
-      <CloseButton color="medium" onClick={() => onDismiss()}>
-        <IonIcon icon={close} />
-      </CloseButton>
-
+    <FloatingDialog onDismiss={onDismiss}>
       <Heart>
         <IonIcon icon={heart} />
       </Heart>
@@ -102,6 +64,6 @@ export default function TipDialog({ onDismiss }: TipProps) {
           <InAppProducts />
         )}
       </Tips>
-    </Container>
+    </FloatingDialog>
   );
 }

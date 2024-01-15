@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { IonIcon, IonSkeletonText } from "@ionic/react";
 import { arrowUpSharp, chatbubbleOutline, repeat } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { formatNumber } from "../../../../helpers/number";
+import { formatNumber } from "../../../helpers/number";
 import CrosspostContainer from "./CrosspostContainer";
 
 const StyledCrosspostContainer = styled(CrosspostContainer)`

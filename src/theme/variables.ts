@@ -90,7 +90,7 @@ export const baseVariables = css`
 
     --ion-color-step-100: #f3f3f3;
 
-    --unread-item-background-color: #fffcd9;
+    --unread-item-background-color: #e3f1ff;
 
     --ion-color-text-aside: rgba(0, 0, 0, 0.55);
 
@@ -229,7 +229,7 @@ export const buildDarkVariables = (
 
       --thick-separator-color: rgba(255, 255, 255, 0.08);
 
-      --unread-item-background-color: #1e1c00;
+      --unread-item-background-color: #162f4a;
 
       --ion-color-text-aside: rgba(255, 255, 255, 0.65);
 
@@ -365,6 +365,11 @@ export const buildDarkVariables = (
         --ion-toolbar-background: var(--ion-background-color);
         --ion-toolbar-border-color: var(--ion-color-step-150);
       }
+    }
+
+    // TODO test other themes
+    ion-modal.transparent-scroll.dark {
+      --ion-background-color: black;
     }
 
     ${background
