@@ -58,6 +58,10 @@ export default function Join({ answer }: JoinProps) {
     }, 300);
   }, []);
 
+  useEffect(() => {
+    setCanDismiss(false);
+  }, [username, password, passwordVerify, nsfw, email, setCanDismiss]);
+
   async function submit() {
     if (!url) return;
 
