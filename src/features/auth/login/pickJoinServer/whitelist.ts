@@ -95,7 +95,6 @@ export const ACTIVISM = [
   "beehaw.org",
   "sirpnk.net",
   "merv.news",
-  "lemmy.giftedmc.com",
 ];
 
 export const LGBT = ["femboys.bar", "transfem.space", "lemmy.blahaj.zone"];
