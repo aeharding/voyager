@@ -4,8 +4,10 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
+  IonItem,
   IonList,
   IonNavLink,
+  IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -13,9 +15,11 @@ import { useAppSelector } from "../../../../store";
 import Markdown from "../../../shared/Markdown";
 import Question from "./Question";
 import Join from "./Join";
+import { useInterceptHrefIfNeeded } from "../../../shared/InAppExternalLink";
 
 export default function Legal() {
   const { url, site } = useAppSelector((state) => state.join);
+  const interceptHrefIfNeeded = useInterceptHrefIfNeeded();
 
   return (
     <>
@@ -51,13 +55,46 @@ export default function Legal() {
         </IonHeader>
 
         <p className="ion-padding">
-          The admins of {url} would like you to read over the following.
+          The Voyager app does not collect any data, but the server you sign up
+          with may have a different policy. Take a moment to review and agree to
+          the Voyager App policies as well as your server&apos;s policies.
+        </p>
+
+        <IonList inset>
+          <IonItem
+            href="https://getvoyager.app/privacy.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={interceptHrefIfNeeded(
+              "https://getvoyager.app/privacy.html",
+            )}
+          >
+            Voyager App — Privacy Policy
+          </IonItem>
+          <IonItem
+            href="https://getvoyager.app/terms.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={interceptHrefIfNeeded("https://getvoyager.app/terms.html")}
+          >
+            Voyager App — Terms of Use
+          </IonItem>
+        </IonList>
+
+        <p className="ion-padding">
+          The server {url} has the following legal information below:
         </p>
 
         <IonList inset className="ion-padding">
-          <Markdown className="collapse-md-margins">
-            {site?.site_view.local_site.legal_information}
-          </Markdown>
+          {site?.site_view.local_site.legal_information ? (
+            <Markdown className="collapse-md-margins">
+              {site.site_view.local_site.legal_information}
+            </Markdown>
+          ) : (
+            <IonText color="medium">
+              <i>This server ({url}) does not have any terms set up.</i>
+            </IonText>
+          )}
         </IonList>
       </IonContent>
     </>

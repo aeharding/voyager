@@ -1,4 +1,4 @@
-import React, { HTMLProps, MouseEventHandler } from "react";
+import React, { HTMLProps, MouseEvent, MouseEventHandler } from "react";
 import { isNative } from "../../helpers/device";
 import { useAppSelector } from "../../store";
 import { OLinkHandlerType } from "../../services/db";
@@ -58,4 +58,21 @@ function useOnClick(
   };
 
   return onClick;
+}
+
+export function useInterceptHrefIfNeeded() {
+  const linkHandler = useAppSelector(
+    (state) => state.settings.general.linkHandler,
+  );
+  const openNativeBrowser = useNativeBrowser();
+
+  return (href: string) => (e: MouseEvent) => {
+    if (e.defaultPrevented) return;
+
+    if (isNative() && href && linkHandler === OLinkHandlerType.InApp) {
+      e.preventDefault();
+      e.stopPropagation();
+      openNativeBrowser(href);
+    }
+  };
 }
