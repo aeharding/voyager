@@ -28,6 +28,13 @@ import useStartJoinFlow from "./useStartJoinFlow";
 import { uniqBy } from "lodash";
 import { LVInstance } from "../../../../services/lemmyverse";
 import { css } from "@emotion/react";
+import lemmyLogo from "../lemmyLogo.svg";
+import Filters from "./Filters";
+import { SERVERS_BY_CATEGORY, ServerCategory } from "./whitelist";
+import {
+  defaultServersUntouched,
+  getCustomServers,
+} from "../../../../services/app";
 
 const spacing = css`
   margin: 2.5rem 0;
@@ -60,17 +67,32 @@ const NextMessage = styled.p`
   font-size: 0.8em;
 `;
 
+const ServerImg = styled.img`
+  object-fit: contain;
+`;
+
+const StyledIonSearchbar = styled(IonSearchbar)`
+  padding-bottom: 5px !important;
+  min-height: 40px !important;
+`;
+
+const FiltersToolbar = styled(IonToolbar)`
+  --ion-safe-area-left: -8px;
+  --ion-safe-area-right: -8px;
+  --padding-start: 0;
+  --padding-end: 0;
+`;
+
 export default function PickJoinServer() {
   const dispatch = useAppDispatch();
-  const instances = useAppSelector(
-    (state) => state.pickJoinServer.instances || [],
-  );
+  const instances = useAppSelector((state) => state.pickJoinServer.instances);
   // eslint-disable-next-line no-undef
   const contentRef = useRef<HTMLIonContentElement>(null);
 
   const [selection, setSelection] = useState<string | undefined>();
   const [search, setSearch] = useState("");
 
+  const [loadingInstances, setLoadingInstances] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [customInstance, setCustomInstance] = useState<
@@ -79,11 +101,17 @@ export default function PickJoinServer() {
 
   const startJoinFlow = useStartJoinFlow(contentRef);
 
+  const hasRecommended = !defaultServersUntouched();
+
+  const [category, setCategory] = useState<ServerCategory>(
+    hasRecommended ? "recommended" : "general",
+  );
+
   const matchingInstances = useMemo(
     () =>
-      instances.filter((instance) =>
+      instances?.filter((instance) =>
         instance.baseurl.includes(search.toLowerCase()),
-      ),
+      ) || [],
     [instances, search],
   );
 
@@ -93,10 +121,17 @@ export default function PickJoinServer() {
         (customInstance
           ? [...matchingInstances, customInstance]
           : matchingInstances
-        ).map(normalize),
+        )
+          .map(normalize)
+          .filter((instance) => {
+            if (category === "recommended")
+              return getCustomServers().includes(instance.url);
+
+            return SERVERS_BY_CATEGORY[category].includes(instance.url);
+          }),
         ({ url }) => url,
       ),
-    [customInstance, matchingInstances],
+    [customInstance, matchingInstances, category],
   );
 
   const customSearchHostnameInvalid = useMemo(
@@ -144,7 +179,15 @@ export default function PickJoinServer() {
   }, [customSearchHostnameInvalid]);
 
   useEffect(() => {
-    dispatch(getInstances());
+    (async () => {
+      setLoadingInstances(true);
+
+      try {
+        await dispatch(getInstances());
+      } finally {
+        setLoadingInstances(false);
+      }
+    })();
   }, [dispatch]);
 
   async function submit() {
@@ -169,7 +212,9 @@ export default function PickJoinServer() {
             return (
               <ServerItem key={url}>
                 <ServerThumbnail slot="start">
-                  {icon && <img src={getImageSrc(icon, { size: 32 })} />}
+                  <ServerImg
+                    src={icon ? getImageSrc(icon, { size: 32 }) : lemmyLogo}
+                  />
                 </ServerThumbnail>
                 <IonLabel>
                   <h2>{url}</h2>
@@ -183,7 +228,7 @@ export default function PickJoinServer() {
       );
     }
 
-    if (loading) return <CenteredSpinner />;
+    if (loading || loadingInstances) return <CenteredSpinner />;
 
     return <Empty>No results</Empty>;
   })();
@@ -197,8 +242,8 @@ export default function PickJoinServer() {
           </IonButtons>
           <IonTitle>Pick Server</IonTitle>
         </IonToolbar>
-        <IonToolbar>
-          <IonSearchbar
+        <FiltersToolbar>
+          <StyledIonSearchbar
             value={search}
             onIonInput={(e) => setSearch(e.detail.value || "")}
             onKeyDown={(e) => {
@@ -209,7 +254,12 @@ export default function PickJoinServer() {
             inputMode="url"
             enterkeyhint="go"
           />
-        </IonToolbar>
+          <Filters
+            hasRecommended={hasRecommended}
+            category={category}
+            setCategory={setCategory}
+          />
+        </FiltersToolbar>
       </IonHeader>
       <IonContent ref={contentRef}>
         <IonRadioGroup
@@ -246,6 +296,7 @@ interface Instance {
   url: string;
   description?: string;
   icon?: string;
+  open: boolean;
 }
 
 function normalize(instance: GetSiteResponse | LVInstance): Instance {
@@ -254,6 +305,7 @@ function normalize(instance: GetSiteResponse | LVInstance): Instance {
       url: instance.baseurl,
       icon: instance.icon,
       description: instance.desc,
+      open: instance.open,
     };
   }
 
@@ -261,5 +313,6 @@ function normalize(instance: GetSiteResponse | LVInstance): Instance {
     url: new URL(instance.site_view.site.actor_id).hostname,
     icon: instance.site_view.site.icon,
     description: instance.site_view.site.description,
+    open: instance.site_view.local_site.registration_mode === "Open",
   };
 }

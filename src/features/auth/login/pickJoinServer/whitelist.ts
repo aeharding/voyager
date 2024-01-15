@@ -121,3 +121,17 @@ export const LOGIN_INSTANCES = uniq([
   ...WHITELISTED_INSTANCES,
   ...ADDITIONAL_LOGIN_INSTANCES,
 ]);
+
+export const SERVERS_BY_CATEGORY = {
+  general: GENERAL,
+  regional: REGIONAL,
+  games: GAMES,
+  tech: TECH,
+  niche: NICHE,
+  activism: ACTIVISM,
+  lgbt: LGBT,
+  academia: ACADEMIA,
+  furry: FURRY,
+};
+
+export type ServerCategory = keyof typeof SERVERS_BY_CATEGORY | "recommended";

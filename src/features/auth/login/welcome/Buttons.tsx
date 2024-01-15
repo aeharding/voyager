@@ -6,6 +6,7 @@ import PickJoinServer from "../pickJoinServer/PickJoinServer";
 import LearnMore from "../LearnMore";
 import PickLoginServer from "../login/PickLoginServer";
 import useStartJoinFlow from "../pickJoinServer/useStartJoinFlow";
+import { getDefaultServer } from "../../../../services/app";
 
 const TopSpacer = styled.div`
   flex: 10;
@@ -65,10 +66,10 @@ export default function Buttons() {
       <Container ref={ref}>
         <IonButton
           expand="block"
-          onClick={() => startJoinFlow("lemmy.world")}
+          onClick={() => startJoinFlow(getDefaultServer())}
           disabled={loadingJoin}
         >
-          {loadingJoin ? <IonSpinner /> : "Join lemmy.world"}
+          {loadingJoin ? <IonSpinner /> : `Join ${getDefaultServer()}`}
         </IonButton>
         <IonNavLink component={() => <PickJoinServer />}>
           <IonButton fill="outline" color="dark" expand="block">

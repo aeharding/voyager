@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useIonActionSheet } from "@ionic/react";
+import { IonModal, useIonActionSheet } from "@ionic/react";
 import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
@@ -14,6 +14,7 @@ import { useAppSelector } from "../../store";
 import { jwtIssSelector } from "../auth/authSelectors";
 import { clearRecoveredText } from "../../helpers/useTextRecovery";
 import useStateRef from "../../helpers/useStateRef";
+import { isNative } from "../../helpers/device";
 
 export interface DismissableProps {
   dismiss: () => void;
@@ -128,6 +129,8 @@ export function DynamicDismissableModal({
     [dismiss, renderModalContents, setCanDismiss],
   );
 
+  const Modal = isNative() ? IonModal : IonModalAutosizedForOnScreenKeyboard;
+
   return (
     <>
       {isOpen && (
@@ -141,7 +144,7 @@ export function DynamicDismissableModal({
           }}
         />
       )}
-      <IonModalAutosizedForOnScreenKeyboard
+      <Modal
         className={className}
         isOpen={isOpen}
         canDismiss={
@@ -158,7 +161,7 @@ export function DynamicDismissableModal({
         <DynamicDismissableModalContext.Provider value={context}>
           {content}
         </DynamicDismissableModalContext.Provider>
-      </IonModalAutosizedForOnScreenKeyboard>
+      </Modal>
     </>
   );
 }

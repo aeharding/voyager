@@ -29,6 +29,12 @@ import InAppExternalLink from "../../../shared/InAppExternalLink";
 import { HelperText } from "../../../settings/shared/formatting";
 import { getImageSrc } from "../../../../services/lemmy";
 import { loginSuccess } from "../../../../helpers/toastMessages";
+import lemmyLogo from "../lemmyLogo.svg";
+import styled from "@emotion/styled";
+
+const SiteImg = styled.img`
+  object-fit: contain;
+`;
 
 interface LoginProps {
   url: string;
@@ -130,11 +136,17 @@ export default function Login({ url, siteIcon }: LoginProps) {
             rel="noopener noreferrer"
           >
             <IonChip outline>
-              {siteIcon && (
-                <IonAvatar>
-                  <img src={getImageSrc(siteIcon, { size: 24 })} />
-                </IonAvatar>
-              )}
+              <IonAvatar>
+                <SiteImg
+                  src={
+                    siteIcon
+                      ? getImageSrc(siteIcon, {
+                          size: 24,
+                        })
+                      : lemmyLogo
+                  }
+                />
+              </IonAvatar>
               <IonLabel>{url}</IonLabel>
             </IonChip>
           </InAppExternalLink>

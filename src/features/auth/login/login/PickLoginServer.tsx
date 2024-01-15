@@ -21,6 +21,8 @@ import Login from "./Login";
 import useAppToast from "../../../../helpers/useAppToast";
 import { isValidHostname } from "../../../../helpers/url";
 import { GetSiteResponse } from "lemmy-js-client";
+import { uniq } from "lodash";
+import { getCustomServers } from "../../../../services/app";
 
 const Container = styled.div`
   height: 100%;
@@ -41,7 +43,9 @@ export default function PickLoginServer() {
   const [dirty, setDirty] = useState(false);
   const instances = useMemo(
     () =>
-      LOGIN_INSTANCES.filter((server) => server.includes(search.toLowerCase())),
+      uniq([...getCustomServers(), ...LOGIN_INSTANCES]).filter((server) =>
+        server.includes(search.toLowerCase()),
+      ),
     [search],
   );
   const [loading, setLoading] = useState(false);
