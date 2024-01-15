@@ -107,7 +107,7 @@ export default function LearnMore() {
             <IonText color="warning">
               <strong>E-Mail account</strong>
             </IonText>
-            : it's hosted by a particular provider.
+            : it’s hosted by a particular provider.
             <Compare>
               <div>
                 <IonText color="secondary">
