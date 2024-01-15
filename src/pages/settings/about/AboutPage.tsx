@@ -33,6 +33,7 @@ import styled from "@emotion/styled";
 import { IonItemInAppExternalLink } from "../../../features/shared/InAppExternalLink";
 import { isAndroid, isNative } from "../../../helpers/device";
 import { useSetActivePage } from "../../../features/auth/AppContext";
+import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "../../../helpers/voyager";
 
 export const InsetIonItem = styled(IonItemInAppExternalLink)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -135,7 +136,7 @@ export default function AboutPage() {
           </InsetIonItem>
           <InsetIonItem
             detail
-            href="https://getvoyager.app/privacy.html"
+            href={VOYAGER_PRIVACY}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -146,7 +147,7 @@ export default function AboutPage() {
           </InsetIonItem>
           <InsetIonItem
             detail
-            href="https://getvoyager.app/terms.html"
+            href={VOYAGER_TERMS}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -15,11 +15,13 @@ import { useAppSelector } from "../../../../store";
 import Markdown from "../../../shared/Markdown";
 import Question from "./Question";
 import Join from "./Join";
-import { useInterceptHrefIfNeeded } from "../../../shared/InAppExternalLink";
+import { useInterceptHrefWithInAppBrowserIfNeeded } from "../../../shared/InAppExternalLink";
+import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "../../../../helpers/voyager";
 
 export default function Legal() {
   const { url, site } = useAppSelector((state) => state.join);
-  const interceptHrefIfNeeded = useInterceptHrefIfNeeded();
+  const interceptHrefWithInAppBrowserIfNeeded =
+    useInterceptHrefWithInAppBrowserIfNeeded();
 
   return (
     <>
@@ -62,20 +64,18 @@ export default function Legal() {
 
         <IonList inset>
           <IonItem
-            href="https://getvoyager.app/privacy.html"
+            href={VOYAGER_PRIVACY}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={interceptHrefIfNeeded(
-              "https://getvoyager.app/privacy.html",
-            )}
+            onClick={interceptHrefWithInAppBrowserIfNeeded(VOYAGER_PRIVACY)}
           >
             Voyager App — Privacy Policy
           </IonItem>
           <IonItem
-            href="https://getvoyager.app/terms.html"
+            href={VOYAGER_TERMS}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={interceptHrefIfNeeded("https://getvoyager.app/terms.html")}
+            onClick={interceptHrefWithInAppBrowserIfNeeded(VOYAGER_TERMS)}
           >
             Voyager App — Terms of Use
           </IonItem>

@@ -31,6 +31,7 @@ import { getImageSrc } from "../../../../services/lemmy";
 import { loginSuccess } from "../../../../helpers/toastMessages";
 import lemmyLogo from "../lemmyLogo.svg";
 import styled from "@emotion/styled";
+import { VOYAGER_TERMS } from "../../../../helpers/voyager";
 
 const SiteImg = styled.img`
   object-fit: contain;
@@ -190,7 +191,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
         <HelperText>
           By using Voyager, you agree to the{" "}
           <InAppExternalLink
-            href="https://getvoyager.app/terms.html"
+            href={VOYAGER_TERMS}
             target="_blank"
             rel="noopener noreferrer"
           >

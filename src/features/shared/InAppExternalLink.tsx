@@ -40,39 +40,28 @@ function useOnClick(
   href: string | undefined,
   _onClick: MouseEventHandler | undefined,
 ) {
-  const linkHandler = useAppSelector(
-    (state) => state.settings.general.linkHandler,
-  );
-  const openNativeBrowser = useNativeBrowser();
+  const interceptHrefWithInAppBrowserIfNeeded =
+    useInterceptHrefWithInAppBrowserIfNeeded();
 
-  const onClick: MouseEventHandler = (e) => {
-    _onClick?.(e);
-
-    if (e.defaultPrevented) return;
-
-    if (isNative() && href && linkHandler === OLinkHandlerType.InApp) {
-      e.preventDefault();
-      e.stopPropagation();
-      openNativeBrowser(href);
-    }
-  };
-
-  return onClick;
+  return interceptHrefWithInAppBrowserIfNeeded(href, _onClick);
 }
 
-export function useInterceptHrefIfNeeded() {
+export function useInterceptHrefWithInAppBrowserIfNeeded() {
   const linkHandler = useAppSelector(
     (state) => state.settings.general.linkHandler,
   );
   const openNativeBrowser = useNativeBrowser();
 
-  return (href: string) => (e: MouseEvent) => {
-    if (e.defaultPrevented) return;
+  return (href: string | undefined, onClick?: MouseEventHandler) =>
+    (e: MouseEvent) => {
+      onClick?.(e);
 
-    if (isNative() && href && linkHandler === OLinkHandlerType.InApp) {
-      e.preventDefault();
-      e.stopPropagation();
-      openNativeBrowser(href);
-    }
-  };
+      if (e.defaultPrevented) return;
+
+      if (isNative() && href && linkHandler === OLinkHandlerType.InApp) {
+        e.preventDefault();
+        e.stopPropagation();
+        openNativeBrowser(href);
+      }
+    };
 }
