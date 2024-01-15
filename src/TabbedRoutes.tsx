@@ -211,8 +211,8 @@ export default function TabbedRoutes() {
   })();
 
   return (
-    <PageContextProvider value={pageContextValue}>
-      <GalleryProvider>
+    <GalleryProvider>
+      <PageContextProvider value={pageContextValue}>
         {/* TODO key={} resets the tab route stack whenever your instance changes. */}
         {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
         {/* But this isn't trivial with needing to rewrite URLs... */}
@@ -380,8 +380,8 @@ export default function TabbedRoutes() {
 
           <TabBar slot="bottom" />
         </IonTabs>
-      </GalleryProvider>
-    </PageContextProvider>
+      </PageContextProvider>
+    </GalleryProvider>
   );
 }
 
