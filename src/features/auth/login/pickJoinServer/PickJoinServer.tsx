@@ -34,6 +34,7 @@ import { SERVERS_BY_CATEGORY, ServerCategory } from "./whitelist";
 import {
   defaultServersUntouched,
   getCustomServers,
+  getDefaultServer,
 } from "../../../../services/app";
 
 const spacing = css`
@@ -191,7 +192,7 @@ export default function PickJoinServer() {
   }, [dispatch]);
 
   async function submit() {
-    const server = selection || "lemmy.world";
+    const server = selection || getDefaultServer();
 
     setSubmitting(true);
 

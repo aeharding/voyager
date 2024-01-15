@@ -14,6 +14,10 @@ const Container = styled.div`
   > * {
     flex-shrink: 0;
   }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Chip = styled(IonChip)<{ selected?: boolean }>`
@@ -39,7 +43,13 @@ export default function Filters({
   setCategory,
 }: FiltersProps) {
   return (
-    <Container>
+    <Container
+      onTouchMoveCapture={(e) => {
+        // Prevent page swipes
+        e.stopPropagation();
+        return true;
+      }}
+    >
       {hasRecommended && (
         <Chip
           outline={category !== "recommended"}
