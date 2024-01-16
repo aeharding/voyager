@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../../../store";
 import * as lemmyverse from "../../../../services/lemmyverse";
 import { intersectionWith, sortBy, uniq } from "lodash";
-import { WHITELISTED_INSTANCES } from "./whitelist";
+import { WHITELISTED_SERVERS } from "../data/servers";
 import { getCustomServers } from "../../../../services/app";
 import { buildPrioritizeAndSortFn } from "../../../../helpers/array";
 
@@ -29,10 +29,7 @@ const { received } = pickJoinServerSlice.actions;
 export const getInstances = () => async (dispatch: AppDispatch) => {
   const instances = await lemmyverse.getFullList();
 
-  const serverWhitelist = uniq([
-    ...getCustomServers(),
-    ...WHITELISTED_INSTANCES,
-  ]);
+  const serverWhitelist = uniq([...getCustomServers(), ...WHITELISTED_SERVERS]);
 
   const unorderedInstances = sortBy(
     intersectionWith(instances, serverWhitelist, (a, b) => a.baseurl === b),

@@ -30,7 +30,7 @@ import { LVInstance } from "../../../../services/lemmyverse";
 import { css } from "@emotion/react";
 import lemmyLogo from "../lemmyLogo.svg";
 import Filters from "./Filters";
-import { SERVERS_BY_CATEGORY, ServerCategory } from "./whitelist";
+import { SERVERS_BY_CATEGORY, ServerCategory } from "../data/servers";
 import {
   defaultServersUntouched,
   getCustomServers,

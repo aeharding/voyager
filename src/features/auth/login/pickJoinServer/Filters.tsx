@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { IonChip } from "@ionic/react";
-import { SERVERS_BY_CATEGORY, ServerCategory } from "./whitelist";
+import { SERVERS_BY_CATEGORY, ServerCategory } from "../data/servers";
 import { css } from "@emotion/react";
 
 const Container = styled.div`

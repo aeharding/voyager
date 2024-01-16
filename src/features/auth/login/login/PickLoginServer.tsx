@@ -15,7 +15,7 @@ import {
 } from "@ionic/react";
 import { VList } from "virtua";
 import styled from "@emotion/styled";
-import { LOGIN_INSTANCES } from "../pickJoinServer/whitelist";
+import { LOGIN_SERVERS } from "../data/servers";
 import { getClient } from "../../../../services/lemmy";
 import Login from "./Login";
 import useAppToast from "../../../../helpers/useAppToast";
@@ -43,7 +43,7 @@ export default function PickLoginServer() {
   const [dirty, setDirty] = useState(false);
   const instances = useMemo(
     () =>
-      uniq([...getCustomServers(), ...LOGIN_INSTANCES]).filter((server) =>
+      uniq([...getCustomServers(), ...LOGIN_SERVERS]).filter((server) =>
         server.includes(search.toLowerCase()),
       ),
     [search],
