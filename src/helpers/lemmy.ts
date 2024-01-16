@@ -318,3 +318,33 @@ export function buildCrosspostBody(post: Post): string {
 
   return `${header}\n>\n${quote(post.body)}`;
 }
+
+export function getLoginErrorMessage(
+  error: unknown,
+  instanceActorId: string,
+): string {
+  if (!(error instanceof Error))
+    return "Unknown error occurred, please try again.";
+
+  switch (error.message as LemmyErrorValue) {
+    // TODO old lemmy support
+    case "incorrect_totp token" as OldLemmyErrorValue:
+    case "incorrect_totp_token":
+      return "Incorrect 2nd factor code. Please try again.";
+    // TODO old lemmy support
+    case "couldnt_find_that_username_or_email" as OldLemmyErrorValue:
+    case "couldnt_find_person":
+      return `User not found. Is your account on ${instanceActorId}?`;
+    case "password_incorrect" as OldLemmyErrorValue:
+    case "incorrect_login":
+      return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
+    case "email_not_verified":
+      return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
+    case "site_ban":
+      return "You have been banned.";
+    case "deleted":
+      return "Account deleted.";
+    default:
+      return "Connection error, please try again.";
+  }
+}

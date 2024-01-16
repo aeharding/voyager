@@ -21,7 +21,7 @@ import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
 import { getHandle } from "../../../helpers/lemmy";
 import AddRemoveButtons from "../../share/asImage/AddRemoveButtons";
 import { banUser } from "../../user/userSlice";
-import { Centered, Spinner } from "../../auth/Login";
+import { Centered, Spinner } from "../../auth/login/LoginNav";
 import { buildBanFailed, buildBanned } from "../../../helpers/toastMessages";
 
 const Title = styled.span`

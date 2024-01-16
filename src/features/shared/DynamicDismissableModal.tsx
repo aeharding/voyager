@@ -1,5 +1,12 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useIonActionSheet } from "@ionic/react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { IonModal, useIonActionSheet } from "@ionic/react";
 import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
@@ -7,6 +14,7 @@ import { useAppSelector } from "../../store";
 import { jwtIssSelector } from "../auth/authSelectors";
 import { clearRecoveredText } from "../../helpers/useTextRecovery";
 import useStateRef from "../../helpers/useStateRef";
+import { isNative } from "../../helpers/device";
 
 export interface DismissableProps {
   dismiss: () => void;
@@ -17,7 +25,9 @@ interface DynamicDismissableModalProps {
   setIsOpen: (open: boolean) => void;
   isOpen: boolean;
 
-  children: (props: DismissableProps) => React.ReactElement;
+  children:
+    | React.ReactElement
+    | ((props: DismissableProps) => React.ReactElement);
 
   className?: string;
   dismissClassName?: string;
@@ -94,6 +104,33 @@ export function DynamicDismissableModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
+  const dismiss = useCallback(() => {
+    if (canDismissRef.current) {
+      setIsOpen(false);
+      return;
+    }
+
+    onDismissAttemptCb();
+  }, [canDismissRef, onDismissAttemptCb, setIsOpen]);
+
+  const context = useMemo(
+    () => ({ dismiss, setCanDismiss }),
+    [dismiss, setCanDismiss],
+  );
+
+  const content = useMemo(
+    () =>
+      typeof renderModalContents === "function"
+        ? renderModalContents({
+            setCanDismiss,
+            dismiss,
+          })
+        : renderModalContents,
+    [dismiss, renderModalContents, setCanDismiss],
+  );
+
+  const Modal = isNative() ? IonModal : IonModalAutosizedForOnScreenKeyboard;
+
   return (
     <>
       {isOpen && (
@@ -107,7 +144,7 @@ export function DynamicDismissableModal({
           }}
         />
       )}
-      <IonModalAutosizedForOnScreenKeyboard
+      <Modal
         className={className}
         isOpen={isOpen}
         canDismiss={
@@ -121,18 +158,10 @@ export function DynamicDismissableModal({
           }
         }}
       >
-        {renderModalContents({
-          setCanDismiss,
-          dismiss: () => {
-            if (canDismissRef.current) {
-              setIsOpen(false);
-              return;
-            }
-
-            onDismissAttemptCb();
-          },
-        })}
-      </IonModalAutosizedForOnScreenKeyboard>
+        <DynamicDismissableModalContext.Provider value={context}>
+          {content}
+        </DynamicDismissableModalContext.Provider>
+      </Modal>
     </>
   );
 }
@@ -148,3 +177,8 @@ const useUnload = (fn: (e: BeforeUnloadEvent) => void) => {
     };
   }, [cb]);
 };
+
+export const DynamicDismissableModalContext = createContext<{
+  dismiss: () => void;
+  setCanDismiss: (canDismiss: boolean) => void;
+}>({ dismiss: () => {}, setCanDismiss: () => {} });
