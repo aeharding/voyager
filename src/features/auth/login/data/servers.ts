@@ -1,5 +1,9 @@
 import { concat, uniq } from "lodash";
 
+/**
+ * 🚨 Want to add a server to this list?
+ * Please read the [curated servers policy](./README.md) first.
+ */
 export const SERVERS_BY_CATEGORY = {
   general: [
     "lemmy.world",
@@ -97,7 +101,7 @@ export const SERVERS_BY_CATEGORY = {
 };
 
 export const WHITELISTED_SERVERS = uniq(
-  concat(Object.values(SERVERS_BY_CATEGORY)),
+  concat(...Object.values(SERVERS_BY_CATEGORY)),
 );
 
 const ADDITIONAL_LOGIN_INSTANCES = ["lemmy.ml", "lemmygrad.ml", "hexbear.net"];
