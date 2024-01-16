@@ -23,6 +23,7 @@ export default function useStartJoinFlow(
         message: `Problem connecting to ${url}. Please try again later.`,
         position: "top",
         color: "danger",
+        fullscreen: true,
       });
 
       throw error;
