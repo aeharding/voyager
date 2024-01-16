@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import BaseSvg from "./assets/base.svg?react";
 import Buttons from "./Buttons";
+import AndroidClose from "./AndroidClose";
 
 // slot attribute not allowed for some reason??
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,6 +49,8 @@ export default function Welcome() {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Welcome</IonTitle>
+
+          <AndroidClose />
         </IonToolbar>
       </IonHeader>
       <StyledIonContent fullscreen>

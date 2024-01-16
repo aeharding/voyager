@@ -89,6 +89,7 @@ export default function Join({ answer }: JoinProps) {
         message: `Registration error: ${startCase(error.message)}`,
         color: "danger",
         position: "top",
+        fullscreen: true,
       });
 
       throw error;

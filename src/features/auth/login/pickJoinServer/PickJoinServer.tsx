@@ -116,24 +116,20 @@ export default function PickJoinServer() {
     [instances, search],
   );
 
-  const allInstances = useMemo(
-    () =>
-      uniqBy(
-        (customInstance
-          ? [...matchingInstances, customInstance]
-          : matchingInstances
-        )
-          .map(normalize)
-          .filter((instance) => {
-            if (category === "recommended")
-              return getCustomServers().includes(instance.url);
+  const allInstances = useMemo(() => {
+    const matches = matchingInstances.map(normalize).filter((instance) => {
+      if (category === "recommended")
+        return getCustomServers().includes(instance.url);
 
-            return SERVERS_BY_CATEGORY[category].includes(instance.url);
-          }),
-        ({ url }) => url,
-      ),
-    [customInstance, matchingInstances, category],
-  );
+      return SERVERS_BY_CATEGORY[category].includes(instance.url);
+    });
+
+    const all = customInstance
+      ? [normalize(customInstance), ...matches]
+      : matches;
+
+    return uniqBy(all, ({ url }) => url);
+  }, [customInstance, matchingInstances, category]);
 
   const customSearchHostnameInvalid = useMemo(
     () =>
