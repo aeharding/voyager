@@ -75,7 +75,6 @@ function MoreActionsActionSheet({
       buttons={[
         {
           text: "Submit Post",
-          data: "post",
           cssClass: "detail",
           icon: createOutline,
           handler: () => {
@@ -84,7 +83,6 @@ function MoreActionsActionSheet({
         },
         {
           text: "Hide Read Posts",
-          data: "hide-read",
           icon: eyeOffOutline,
           handler: () => {
             hidePosts();
@@ -92,7 +90,6 @@ function MoreActionsActionSheet({
         },
         {
           text: !isSubscribed ? "Subscribe" : "Unsubscribe",
-          data: "subscribe",
           icon: !isSubscribed ? heartOutline : heartDislikeOutline,
           handler: () => {
             subscribe();
@@ -100,7 +97,6 @@ function MoreActionsActionSheet({
         },
         {
           text: !isFavorite ? "Favorite" : "Unfavorite",
-          data: "favorite",
           icon: !isFavorite ? starOutline : starSharp,
           handler: () => {
             favorite();
@@ -108,7 +104,6 @@ function MoreActionsActionSheet({
         },
         {
           text: "Sidebar",
-          data: "sidebar",
           icon: tabletPortraitOutline,
           handler: () => {
             sidebar();
@@ -116,7 +111,6 @@ function MoreActionsActionSheet({
         },
         {
           text: "Share",
-          data: "share",
           icon: shareOutline,
           handler: () => {
             share();
@@ -125,7 +119,6 @@ function MoreActionsActionSheet({
         {
           text: !isBlocked ? "Block Community" : "Unblock Community",
           role: !isBlocked ? "destructive" : undefined,
-          data: "block",
           icon: removeCircleOutline,
           handler: () => {
             block();

@@ -149,12 +149,12 @@ ion-action-sheet ion-icon {
   margin-inline-end: 16px !important;
 }
 
-.action-sheet-button:not(.action-sheet-cancel) {
+.ios .action-sheet-button:not(.action-sheet-cancel) {
   padding-inline-end: 0 !important;
   padding-inline-start: 0;
 }
 
-.left-align-buttons .action-sheet-button:not(.action-sheet-cancel) {
+.ios .left-align-buttons .action-sheet-button:not(.action-sheet-cancel) {
   padding-inline-start: 14px;
 }
 
