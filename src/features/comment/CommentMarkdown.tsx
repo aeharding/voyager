@@ -1,19 +1,18 @@
 import { useAppSelector } from "../../store";
 import InAppExternalLink from "../shared/InAppExternalLink";
-import Markdown from "../shared/Markdown";
+import Markdown, { MarkdownProps } from "../shared/Markdown";
 import MarkdownImg from "../shared/MarkdownImg";
 
-interface CommentMarkdownProps {
-  children: string;
-}
-
-export default function CommentMarkdown({ children }: CommentMarkdownProps) {
+export default function CommentMarkdown(
+  props: Omit<MarkdownProps, "components">,
+) {
   const { showCommentImages } = useAppSelector(
     (state) => state.settings.general.comments,
   );
 
   return (
     <Markdown
+      {...props}
       components={{
         img: (props) =>
           !showCommentImages ? (
@@ -32,8 +31,6 @@ export default function CommentMarkdown({ children }: CommentMarkdownProps) {
             />
           ),
       }}
-    >
-      {children}
-    </Markdown>
+    />
   );
 }
