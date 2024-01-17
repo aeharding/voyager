@@ -22,11 +22,17 @@ export default function PreviewModal({
   onDismiss,
 }: PreviewModalProps) {
   const content = (() => {
+    // disableInternalLinkRouting to prevent internal links (like @test@example.com)
+    // from taking user away from current page (since user is in a modal)
+    //
+    // TODO future - push internal routes onto the `ion-nav`? might be cool!
     switch (type) {
       case "comment":
-        return <CommentMarkdown>{text}</CommentMarkdown>;
+        return (
+          <CommentMarkdown disableInternalLinkRouting>{text}</CommentMarkdown>
+        );
       case "post":
-        return <Markdown>{text}</Markdown>;
+        return <Markdown disableInternalLinkRouting>{text}</Markdown>;
     }
   })();
 

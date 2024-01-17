@@ -4,6 +4,7 @@ import LinkInterceptor from "./markdown/LinkInterceptor";
 import customRemarkGfm from "./markdown/customRemarkGfm";
 import MarkdownImg from "./MarkdownImg";
 import { css } from "@emotion/react";
+import InAppExternalLink from "./InAppExternalLink";
 
 const markdownCss = css`
   @media (max-width: 700px) {
@@ -55,7 +56,15 @@ const TableContainer = styled.div`
   }
 `;
 
-export default function Markdown(props: ReactMarkdownOptions) {
+export interface MarkdownProps
+  extends Omit<ReactMarkdownOptions, "remarkPlugins"> {
+  disableInternalLinkRouting?: boolean;
+}
+
+export default function Markdown({
+  disableInternalLinkRouting,
+  ...props
+}: MarkdownProps) {
   return (
     <ReactMarkdown
       {...props}
@@ -76,7 +85,15 @@ export default function Markdown(props: ReactMarkdownOptions) {
             />
           </TableContainer>
         ),
-        a: (props) => <LinkInterceptor {...props} />,
+        a: disableInternalLinkRouting
+          ? (props) => (
+              <InAppExternalLink
+                {...props}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            )
+          : (props) => <LinkInterceptor {...props} />,
         ...props.components,
       }}
       remarkPlugins={[customRemarkGfm]}
