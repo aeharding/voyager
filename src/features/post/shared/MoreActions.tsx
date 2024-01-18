@@ -1,8 +1,6 @@
 import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
 import {
-  arrowDownOutline,
   arrowUndoOutline,
-  arrowUpOutline,
   bookmarkOutline,
   cameraOutline,
   checkmark,
@@ -21,13 +19,7 @@ import {
 import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { PostView } from "lemmy-js-client";
-import {
-  hidePost,
-  unhidePost,
-  voteOnPost,
-  savePost,
-  deletePost,
-} from "../postSlice";
+import { hidePost, unhidePost, savePost, deletePost } from "../postSlice";
 import {
   getCrosspostUrl,
   getHandle,
@@ -41,7 +33,6 @@ import {
   postLocked,
   saveError,
   saveSuccess,
-  voteError,
 } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
 import { handleSelector } from "../../auth/authSelectors";
@@ -49,7 +40,6 @@ import useAppToast from "../../../helpers/useAppToast";
 import usePostModActions from "../../moderation/usePostModActions";
 import useCanModerate, { getModIcon } from "../../moderation/useCanModerate";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
 import { resolveObject } from "../../resolve/resolveSlice";
 
 interface MoreActionsProps {
@@ -87,14 +77,11 @@ export default function MoreActions({
 
   const presentPostModActions = usePostModActions(post);
 
-  const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
 
-  const myVote = postVotesById[post.post.id] ?? post.my_vote;
   const mySaved = postSavedById[post.post.id] ?? post.saved;
 
   const isMyPost = getRemoteHandle(post.creator) === myHandle;
-  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
 
   const canModerate = useCanModerate(post.community);
 
