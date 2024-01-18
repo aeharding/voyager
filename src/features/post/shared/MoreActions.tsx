@@ -111,44 +111,6 @@ export default function MoreActions({
             }
           : undefined,
         {
-          text: myVote !== 1 ? "Upvote" : "Undo Upvote",
-          icon: arrowUpOutline,
-          handler: () => {
-            (async () => {
-              if (presentLoginIfNeeded()) return;
-
-              try {
-                await dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
-              } catch (error) {
-                presentToast(voteError);
-
-                throw error;
-              }
-            })();
-          },
-        },
-        downvoteAllowed
-          ? {
-              text: myVote !== -1 ? "Downvote" : "Undo Downvote",
-              icon: arrowDownOutline,
-              handler: () => {
-                (async () => {
-                  if (presentLoginIfNeeded()) return;
-
-                  try {
-                    await dispatch(
-                      voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
-                    );
-                  } catch (error) {
-                    presentToast(voteError);
-
-                    throw error;
-                  }
-                })();
-              },
-            }
-          : undefined,
-        {
           text: !mySaved ? "Save" : "Unsave",
           icon: bookmarkOutline,
           handler: () => {
