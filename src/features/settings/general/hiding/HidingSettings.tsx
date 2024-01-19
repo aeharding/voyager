@@ -6,6 +6,7 @@ import ShowHideReadButton from "./ShowHideReadButton";
 import { HelperText, ListHeader } from "../../shared/formatting";
 import AutoHideRead from "./autoHide/AutoHideRead";
 import DisableInCommunities from "./autoHide/DisableInCommunities";
+import ShowHiddenInCommunities from "./ShowHiddenInCommunities";
 
 export default function HidingSettings() {
   const disableMarkingRead = useAppSelector(
@@ -20,6 +21,7 @@ export default function HidingSettings() {
           <>
             <MarkReadOnScroll />
             <ShowHideReadButton />
+            <ShowHiddenInCommunities />
           </>
         )}
       </IonList>

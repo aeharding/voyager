@@ -147,6 +147,11 @@ const CommunityPageContent = memo(function CommunityPageContent({
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+
+  const showHiddenInCommunities = useAppSelector(
+    (state) => state.settings.general.posts.showHiddenInCommunities,
+  );
+
   const [sort, setSort] = useFeedSort({
     remoteCommunityHandle: getRemoteHandleFromHandle(
       community,
@@ -206,6 +211,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
           communityName={community}
           sortDuration={getSortDuration(sort)}
           header={header}
+          filterHiddenPosts={!showHiddenInCommunities}
         />
       </PageTypeContext.Provider>
     </FeedSearchContext.Provider>
@@ -275,7 +281,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
           <StyledFeedContent>
             {renderFeed()}
             <TitleSearchResults />
-            <PostFabs />
+            {!showHiddenInCommunities && <PostFabs />}
             <FixedBg slot="fixed" />
           </StyledFeedContent>
         </IonPage>
