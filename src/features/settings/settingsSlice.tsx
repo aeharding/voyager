@@ -98,6 +98,7 @@ interface SettingsState {
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
+      showHiddenInCommunities: boolean;
       autoHideRead: boolean;
       disableAutoHideInCommunities: boolean;
       infiniteScrolling: boolean;
@@ -176,6 +177,7 @@ const initialState: SettingsState = {
       disableMarkingRead: false,
       markReadOnScroll: false,
       showHideReadButton: false,
+      showHiddenInCommunities: false,
       autoHideRead: false,
       disableAutoHideInCommunities: false,
       infiniteScrolling: true,
@@ -370,6 +372,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("show_hide_read_button", action.payload);
     },
+    setShowHiddenInCommunities(state, action: PayloadAction<boolean>) {
+      state.general.posts.showHiddenInCommunities = action.payload;
+
+      db.setSetting("show_hidden_in_communities", action.payload);
+    },
     setAutoHideRead(state, action: PayloadAction<boolean>) {
       state.general.posts.autoHideRead = action.payload;
 
@@ -537,6 +544,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const show_hide_read_button = await db.getSetting(
         "show_hide_read_button",
       );
+      const show_hidden_in_communities = await db.getSetting(
+        "show_hidden_in_communities",
+      );
       const auto_hide_read = await db.getSetting("auto_hide_read");
       const disable_auto_hide_in_communities = await db.getSetting(
         "disable_auto_hide_in_communities",
@@ -626,6 +636,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showHideReadButton:
               show_hide_read_button ??
               initialState.general.posts.showHideReadButton,
+            showHiddenInCommunities:
+              show_hidden_in_communities ??
+              initialState.general.posts.showHiddenInCommunities,
             autoHideRead:
               auto_hide_read ?? initialState.general.posts.autoHideRead,
             disableAutoHideInCommunities:
@@ -694,6 +707,7 @@ export const {
   setDisableMarkingPostsRead,
   setMarkPostsReadOnScroll,
   setShowHideReadButton,
+  setShowHiddenInCommunities,
   setAutoHideRead,
   setDisableAutoHideInCommunities,
   setInfiniteScrolling,

@@ -15,6 +15,8 @@ import { useState } from "react";
 import useHidePosts from "../feed/useHidePosts";
 import useCommunityActions from "./useCommunityActions";
 import { Community, CommunityView } from "lemmy-js-client";
+import { useAppSelector } from "../../store";
+import { compact } from "lodash";
 
 interface MoreActionsProps {
   community: CommunityView | undefined;
@@ -68,11 +70,15 @@ function MoreActionsActionSheet({
   } = useCommunityActions(community);
   const hidePosts = useHidePosts();
 
+  const showHiddenInCommunities = useAppSelector(
+    (state) => state.settings.general.posts.showHiddenInCommunities,
+  );
+
   return (
     <IonActionSheet
       cssClass="left-align-buttons"
       isOpen={open}
-      buttons={[
+      buttons={compact([
         {
           text: "Submit Post",
           cssClass: "detail",
@@ -81,7 +87,7 @@ function MoreActionsActionSheet({
             post();
           },
         },
-        {
+        !showHiddenInCommunities && {
           text: "Hide Read Posts",
           icon: eyeOffOutline,
           handler: () => {
@@ -128,7 +134,7 @@ function MoreActionsActionSheet({
           text: "Cancel",
           role: "cancel",
         },
-      ]}
+      ])}
       onDidDismiss={() => setOpen(false)}
     />
   );
