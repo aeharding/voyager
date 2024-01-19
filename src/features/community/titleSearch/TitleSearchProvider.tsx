@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useMemo, useState } from "react";
 
 type TitleSearchContext = {
   search: string;
@@ -26,17 +26,20 @@ export function TitleSearchProvider({ children }: TitleSearchProviderProps) {
   const [searching, setSearching] = useState(false);
   const [onSubmit, setOnSubmit] = useState(() => () => {});
 
+  const value = useMemo(
+    () => ({
+      search,
+      setSearch,
+      searching,
+      setSearching,
+      onSubmit,
+      setOnSubmit: (fn: () => void) => setOnSubmit(() => fn),
+    }),
+    [onSubmit, search, searching],
+  );
+
   return (
-    <TitleSearchContext.Provider
-      value={{
-        search,
-        setSearch,
-        searching,
-        setSearching,
-        onSubmit,
-        setOnSubmit: (fn) => setOnSubmit(() => fn),
-      }}
-    >
+    <TitleSearchContext.Provider value={value}>
       {children}
     </TitleSearchContext.Provider>
   );
