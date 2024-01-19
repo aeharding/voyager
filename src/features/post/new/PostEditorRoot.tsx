@@ -401,7 +401,7 @@ export default function PostEditorRoot({
       <IonContent>
         <Container>
           <IonList>
-            <IonItem>
+            <IonItem className="item-legacy">
               <IonInputTitle
                 value={title}
                 clearInput
