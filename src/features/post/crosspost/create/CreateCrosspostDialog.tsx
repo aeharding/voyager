@@ -161,7 +161,24 @@ export default function CreateCrosspostDialog({
         placeholder="Title"
         value={title}
         onIonInput={(e) => setTitle(e.detail.value || "")}
-      />
+        // clearInput // TODO add once below bug fixed
+      >
+        {/* https://github.com/ionic-team/ionic-framework/issues/28855 */}
+        <div slot="end">
+          {!title && (
+            <IonButton
+              color="light"
+              size="small"
+              onClick={(e) => {
+                setTitle(post.post.name);
+                e.preventDefault();
+              }}
+            >
+              Autofill
+            </IonButton>
+          )}
+        </div>
+      </PillIonInput>
       <ReadonlyCrosspost post={post} url={post.post.ap_id} />
       <PillIonList inset>
         <IonItem
