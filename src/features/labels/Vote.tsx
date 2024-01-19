@@ -43,9 +43,13 @@ const Container = styled.div<{
 
 interface VoteProps {
   item: PostView | CommentView;
+  className?: string;
 }
 
-export default function Vote({ item }: VoteProps): React.ReactElement {
+export default function Vote({
+  item,
+  className,
+}: VoteProps): React.ReactElement {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const votesById = useAppSelector((state) =>
@@ -100,6 +104,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
       return (
         <>
           <Container
+            className={className}
             vote={myVote}
             voteRepresented={1}
             onClick={async (e) => {
@@ -109,6 +114,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
             <IonIcon icon={arrowUpSharp} /> {formatNumber(upvotes)}
           </Container>
           <Container
+            className={className}
             vote={myVote}
             voteRepresented={-1}
             onClick={async (e) => {
@@ -123,6 +129,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
     case OVoteDisplayMode.Hide:
       return (
         <Container
+          className={className}
           vote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);
@@ -136,6 +143,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
       const score = calculateTotalScore(item, votesById);
       return (
         <Container
+          className={className}
           vote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);

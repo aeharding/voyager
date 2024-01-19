@@ -133,6 +133,12 @@ const StyledPersonLabel = styled(PersonLink)`
   overflow: hidden;
 `;
 
+const CommentVote = styled(Vote)`
+  // Increase tap target
+  padding: 6px 3px;
+  margin: -6px -3px;
+`;
+
 const Content = styled.div`
   padding-top: 0.35em;
 
@@ -240,7 +246,7 @@ export default function Comment({
                       distinguished={comment.distinguished}
                       showBadge={!context}
                     />
-                    <Vote item={commentView} />
+                    <CommentVote item={commentView} />
                     <Edited item={commentView} />
                     <div
                       css={css`
