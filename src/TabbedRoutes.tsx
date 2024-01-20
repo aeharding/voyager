@@ -4,7 +4,10 @@ import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppSelector } from "./store";
-import { jwtIssSelector } from "./features/auth/authSelectors";
+import {
+  instanceSelector,
+  loggedInSelector,
+} from "./features/auth/authSelectors";
 import ActorRedirect from "./ActorRedirect";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import UserPage from "./pages/profile/UserPage";
@@ -58,7 +61,8 @@ export default function TabbedRoutes() {
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,
   );
-  const iss = useAppSelector(jwtIssSelector);
+  const loggedIn = useAppSelector(loggedInSelector);
+  const selectedInstance = useAppSelector(instanceSelector);
 
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
 
@@ -206,7 +210,7 @@ export default function TabbedRoutes() {
   const redirectRoute = (() => {
     if (isInstalled()) return ""; // redirect to be handled by <CommunitiesListRedirectBootstrapper />
 
-    return getBaseRoute(!!iss, defaultFeed);
+    return getBaseRoute(loggedIn, defaultFeed);
   })();
 
   return (
@@ -215,12 +219,14 @@ export default function TabbedRoutes() {
         {/* TODO key={} resets the tab route stack whenever your instance changes. */}
         {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
         {/* But this isn't trivial with needing to rewrite URLs... */}
-        <IonTabs key={iss ?? getDefaultServer()}>
+        <IonTabs key={selectedInstance ?? getDefaultServer()}>
           <IonRouterOutlet ref={pageRef}>
             <Route exact path="/">
-              {!iss || defaultFeed ? (
+              {!loggedIn || defaultFeed ? (
                 <Redirect
-                  to={`/posts/${iss ?? getDefaultServer()}${redirectRoute}`}
+                  to={`/posts/${
+                    selectedInstance ?? getDefaultServer()
+                  }${redirectRoute}`}
                   push={false}
                 />
               ) : (

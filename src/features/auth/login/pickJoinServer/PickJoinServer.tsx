@@ -5,6 +5,7 @@ import {
   IonContent,
   IonFooter,
   IonHeader,
+  IonIcon,
   IonItem,
   IonLabel,
   IonRadio,
@@ -15,8 +16,16 @@ import {
   IonThumbnail,
   IonTitle,
   IonToolbar,
+  useIonActionSheet,
 } from "@ionic/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { getInstances } from "./pickJoinServerSlice";
 import { VList } from "virtua";
@@ -25,7 +34,7 @@ import { getClient, getImageSrc } from "../../../../services/lemmy";
 import { GetSiteResponse } from "lemmy-js-client";
 import { isValidHostname } from "../../../../helpers/url";
 import useStartJoinFlow from "./useStartJoinFlow";
-import { uniqBy } from "lodash";
+import { compact, uniqBy } from "lodash";
 import { LVInstance } from "../../../../services/lemmyverse";
 import { css } from "@emotion/react";
 import lemmyLogo from "../lemmyLogo.svg";
@@ -34,8 +43,12 @@ import { SERVERS_BY_CATEGORY, ServerCategory } from "../data/servers";
 import {
   defaultServersUntouched,
   getCustomServers,
-  getDefaultServer,
 } from "../../../../services/app";
+import { ellipsisHorizontalCircleOutline } from "ionicons/icons";
+import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
+import { addGuestInstance } from "../../authSlice";
+import Login from "../login/Login";
+import { getInstanceFromHandle } from "../../authSelectors";
 
 const spacing = css`
   margin: 2.5rem 0;
@@ -85,13 +98,22 @@ const FiltersToolbar = styled(IonToolbar)`
 `;
 
 export default function PickJoinServer() {
+  const [presentActionSheet] = useIonActionSheet();
+
+  const { dismiss } = useContext(DynamicDismissableModalContext);
+
   const dispatch = useAppDispatch();
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
   const instances = useAppSelector((state) => state.pickJoinServer.instances);
   // eslint-disable-next-line no-undef
   const contentRef = useRef<HTMLIonContentElement>(null);
 
   const [selection, setSelection] = useState<string | undefined>();
   const [search, setSearch] = useState("");
+
+  const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
 
   const [loadingInstances, setLoadingInstances] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -188,7 +210,7 @@ export default function PickJoinServer() {
   }, [dispatch]);
 
   async function submit() {
-    const server = selection || getDefaultServer();
+    const server = selection || connectedInstance;
 
     setSubmitting(true);
 
@@ -197,6 +219,55 @@ export default function PickJoinServer() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function presentOptions() {
+    const selectedUrl = selection || connectedInstance;
+    const alreadyLoggedIn = accounts?.some(
+      (a) => getInstanceFromHandle(a.handle) === selectedUrl,
+    );
+
+    presentActionSheet({
+      buttons: compact([
+        {
+          text: `Join ${selectedUrl}`,
+          handler: () => {
+            submit();
+          },
+        },
+        {
+          text: "Log In",
+          handler: () => {
+            const icon = allInstances.find(({ url }) => url === selectedUrl)
+              ?.icon;
+
+            contentRef.current
+              ?.closest("ion-nav")
+              ?.push(() => <Login url={selectedUrl} siteIcon={icon} />);
+          },
+        },
+        !alreadyLoggedIn && {
+          text: "Browse as Guest",
+          handler: () => {
+            (async () => {
+              setSubmitting(true);
+
+              try {
+                await dispatch(addGuestInstance(selectedUrl));
+              } finally {
+                setSubmitting(false);
+              }
+
+              dismiss();
+            })();
+          },
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ]),
+    });
   }
 
   const content = (() => {
@@ -238,6 +309,11 @@ export default function PickJoinServer() {
             <IonBackButton />
           </IonButtons>
           <IonTitle>Pick Server</IonTitle>
+          <IonButtons slot="end">
+            <IonButton fill="clear" color="medium" onClick={presentOptions}>
+              <IonIcon icon={ellipsisHorizontalCircleOutline} />
+            </IonButton>
+          </IonButtons>
         </IonToolbar>
         <FiltersToolbar>
           <StyledIonSearchbar

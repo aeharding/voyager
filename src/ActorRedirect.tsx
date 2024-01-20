@@ -1,6 +1,6 @@
 import { Redirect, useLocation, useParams } from "react-router";
 import { useAppSelector } from "./store";
-import { jwtIssSelector } from "./features/auth/authSelectors";
+import { instanceSelector } from "./features/auth/authSelectors";
 import React from "react";
 import useIonViewIsVisible from "./helpers/useIonViewIsVisible";
 
@@ -10,17 +10,20 @@ interface ActorRedirectProps {
 
 export default function ActorRedirect({ children }: ActorRedirectProps) {
   const { actor } = useParams<{ actor: string }>();
-  const iss = useAppSelector(jwtIssSelector);
+  const selectedInstance = useAppSelector(instanceSelector);
   const location = useLocation();
   const ionViewIsVisible = useIonViewIsVisible();
 
   if (!ionViewIsVisible) return <>{children}</>;
-  if (!iss || !actor) return <>{children}</>;
-  if (iss === actor) return <>{children}</>;
+  if (!selectedInstance || !actor) return <>{children}</>;
+  if (selectedInstance === actor) return <>{children}</>;
 
   const [first, second, _wrongActor, ...urlEnd] = location.pathname.split("/");
 
   return (
-    <Redirect to={[first, second, iss, ...urlEnd].join("/")} push={false} />
+    <Redirect
+      to={[first, second, selectedInstance, ...urlEnd].join("/")}
+      push={false}
+    />
   );
 }

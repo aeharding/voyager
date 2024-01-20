@@ -10,7 +10,7 @@ import { isLemmyError } from "./helpers/lemmy";
 import useAppToast from "./helpers/useAppToast";
 import BackgroundReportSync from "./features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "./features/auth/siteSlice";
-import { jwtIssSelector, jwtSelector } from "./features/auth/authSelectors";
+import { instanceSelector, jwtSelector } from "./features/auth/authSelectors";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -20,7 +20,7 @@ export default function Auth({ children }: AuthProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
-  const iss = useAppSelector(jwtIssSelector);
+  const selectedInstance = useAppSelector(instanceSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
@@ -36,7 +36,7 @@ export default function Auth({ children }: AuthProps) {
     if (!location.pathname.startsWith("/posts")) {
       if (connectedInstance) return;
 
-      dispatch(updateConnectedInstance(iss ?? getDefaultServer()));
+      dispatch(updateConnectedInstance(selectedInstance ?? getDefaultServer()));
     }
 
     const potentialConnectedInstance = location.pathname.split("/")[2];

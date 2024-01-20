@@ -1,13 +1,11 @@
-import { IonIcon, IonList, IonPicker, IonText } from "@ionic/react";
+import { IonButton, IonText } from "@ionic/react";
 import { css } from "@emotion/react";
-import { InsetIonItem, SettingLabel } from "./Profile";
 import styled from "@emotion/styled";
 import IncognitoSvg from "./incognito.svg?react";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { useState } from "react";
-import { updateConnectedInstance } from "../auth/authSlice";
-import { swapHorizontalOutline } from "ionicons/icons";
-import { getCustomServers } from "../../services/app";
+import { useAppSelector } from "../../store";
+import { PageContext } from "../auth/PageContext";
+import { useContext } from "react";
+import { profilesEmptySelector } from "../auth/authSelectors";
 
 const Incognito = styled(IncognitoSvg)`
   opacity: 0.1;
@@ -19,65 +17,48 @@ const Incognito = styled(IncognitoSvg)`
 `;
 
 export default function LoggedOut() {
-  const dispatch = useAppDispatch();
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const [pickerOpen, setPickerOpen] = useState(false);
+  const profilesEmpty = useAppSelector(profilesEmptySelector);
+
+  const { presentLoginIfNeeded, presentAccountSwitcher } =
+    useContext(PageContext);
 
   return (
     <>
       <IonText color="medium">
         <p
+          className="ion-padding"
           css={css`
             font-size: 0.875em;
-            padding: 1rem;
           `}
         >
-          Change the instance you&apos;re currently connected to below.
-          Alternatively, click <strong>login</strong> to join your instance with
-          your account.
+          You are browsing <strong>{connectedInstance}</strong> as a guest. Log
+          in to vote, comment and post!
         </p>
       </IonText>
-      <IonList inset>
-        <InsetIonItem
+      <IonButton
+        className="ion-padding-start ion-padding-end"
+        expand="block"
+        onClick={() => {
+          presentLoginIfNeeded();
+        }}
+      >
+        {profilesEmpty ? "Get Started" : "Log In"}
+      </IonButton>
+      {!profilesEmpty && (
+        <IonButton
+          className="ion-padding-start ion-padding-end"
+          expand="block"
+          fill="clear"
           onClick={() => {
-            setPickerOpen(true);
+            presentAccountSwitcher();
           }}
-          detail
         >
-          <IonIcon icon={swapHorizontalOutline} color="primary" />
-          <SettingLabel>
-            Connected to {connectedInstance}{" "}
-            <IonText color="medium">(as guest)</IonText>
-          </SettingLabel>
-        </InsetIonItem>
-      </IonList>
-      <IonPicker
-        isOpen={pickerOpen}
-        onDidDismiss={() => setPickerOpen(false)}
-        columns={[
-          {
-            name: "server",
-            options: getCustomServers().map((server) => ({
-              text: server,
-              value: server,
-            })),
-          },
-        ]}
-        buttons={[
-          {
-            text: "Cancel",
-            role: "cancel",
-          },
-          {
-            text: "Confirm",
-            handler: (value) => {
-              dispatch(updateConnectedInstance(value.server.value));
-            },
-          },
-        ]}
-      />
+          Switch Accounts
+        </IonButton>
+      )}
       <Incognito />
     </>
   );

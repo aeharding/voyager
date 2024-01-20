@@ -8,7 +8,11 @@ import {
 } from "@ionic/react";
 import AsyncProfile from "../../features/user/AsyncProfile";
 import { useAppSelector } from "../../store";
-import { handleSelector } from "../../features/auth/authSelectors";
+import {
+  handleSelector,
+  loggedInSelector,
+  profilesEmptySelector,
+} from "../../features/auth/authSelectors";
 import LoggedOut from "../../features/user/LoggedOut";
 import { useContext } from "react";
 import AppContent from "../../features/shared/AppContent";
@@ -17,37 +21,33 @@ import FeedContent from "../shared/FeedContent";
 import ProfilePageActions from "../../features/user/ProfilePageActions";
 
 export default function ProfilePage() {
+  const profilesEmpty = useAppSelector(profilesEmptySelector);
   const handle = useAppSelector(handleSelector);
-  const { presentAccountSwitcher, presentLoginIfNeeded } =
-    useContext(PageContext);
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
+  const loggedIn = useAppSelector(loggedInSelector);
+
+  const { presentAccountSwitcher } = useContext(PageContext);
 
   return (
     <IonPage className="grey-bg">
       <IonHeader>
         <IonToolbar>
-          {handle ? (
-            <>
-              <IonButtons slot="start">
-                <IonButton onClick={() => presentAccountSwitcher()}>
-                  Accounts
-                </IonButton>
-              </IonButtons>
+          {!profilesEmpty && (
+            <IonButtons slot="start">
+              <IonButton onClick={() => presentAccountSwitcher()}>
+                Accounts
+              </IonButton>
+            </IonButtons>
+          )}
 
-              <IonTitle>{handle}</IonTitle>
+          <IonTitle>{handle ?? connectedInstance}</IonTitle>
 
-              <IonButtons slot="end">
-                <ProfilePageActions />
-              </IonButtons>
-            </>
-          ) : (
-            <>
-              <IonTitle>Anonymous</IonTitle>
-              <IonButtons slot="end">
-                <IonButton onClick={() => presentLoginIfNeeded()}>
-                  Login
-                </IonButton>
-              </IonButtons>
-            </>
+          {loggedIn && (
+            <IonButtons slot="end">
+              <ProfilePageActions />
+            </IonButtons>
           )}
         </IonToolbar>
       </IonHeader>

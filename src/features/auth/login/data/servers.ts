@@ -12,6 +12,8 @@ export const SERVERS_BY_CATEGORY = {
     "sopuli.xyz",
     "reddthat.com",
     "lemmy.zip",
+    "lemmy.one",
+    "lemmy.today",
     "lemmings.world",
     "discuss.online",
     "lemmus.org",

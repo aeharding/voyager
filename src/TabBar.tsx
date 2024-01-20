@@ -24,8 +24,9 @@ import { useLocation } from "react-router";
 import { useAppSelector } from "./store";
 import {
   handleSelector,
-  jwtIssSelector,
+  instanceSelector,
   jwtSelector,
+  profilesEmptySelector,
 } from "./features/auth/authSelectors";
 import { forwardRef, useContext, useEffect, useMemo } from "react";
 import { getDefaultServer } from "./services/app";
@@ -54,7 +55,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const location = useLocation();
   const router = useOptimizedIonRouter();
 
-  const iss = useAppSelector(jwtIssSelector);
+  const selectedInstance = useAppSelector(instanceSelector);
 
   useEffect(() => {
     resetSavedStatusTap();
@@ -67,6 +68,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const { presentAccountSwitcher } = useContext(PageContext);
 
   const jwt = useAppSelector(jwtSelector);
+  const profileEmpty = useAppSelector(profilesEmptySelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
 
   const settingsNotificationCount =
@@ -99,11 +101,16 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
-      router.push(`/posts/${actor ?? iss ?? getDefaultServer()}`, "back");
+      router.push(
+        `/posts/${actor ?? selectedInstance ?? getDefaultServer()}`,
+        "back",
+      );
       return;
     }
 
-    const communitiesPath = `/posts/${actor ?? iss ?? getDefaultServer()}`;
+    const communitiesPath = `/posts/${
+      actor ?? selectedInstance ?? getDefaultServer()
+    }`;
     if (
       location.pathname === communitiesPath ||
       location.pathname === `${communitiesPath}/`
@@ -114,7 +121,9 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       router.goBack();
     } else {
       router.push(
-        `/posts/${actor ?? iss ?? getDefaultServer()}/${jwt ? "home" : "all"}`,
+        `/posts/${actor ?? selectedInstance ?? getDefaultServer()}/${
+          jwt ? "home" : "all"
+        }`,
         "back",
       );
     }
@@ -139,7 +148,8 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     // if the profile page is already open, show the account switcher
-    if (location.pathname === "/profile" && jwt) presentAccountSwitcher();
+    if (location.pathname === "/profile" && !profileEmpty)
+      presentAccountSwitcher();
 
     router.push("/profile", "back");
   }

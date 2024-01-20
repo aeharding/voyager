@@ -1,7 +1,11 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { GetSiteResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, handleSelector } from "./authSelectors";
+import {
+  clientSelector,
+  handleSelector,
+  profileSelector,
+} from "./authSelectors";
 import { getRemoteHandle } from "../../helpers/lemmy";
 import { customBackOff } from "../../services/lemmy";
 
@@ -69,9 +73,9 @@ export const followIdsSelector = createSelector(
  * Used to determine if request is stale (for other lemmy account and/or instance)
  */
 const siteReqIdSelector = createSelector(
-  [(state: RootState) => state.auth.connectedInstance, handleSelector],
-  (handle, connectedInstance) =>
-    connectedInstance ? getSiteReqId(connectedInstance, handle) : "",
+  [(state: RootState) => state.auth.connectedInstance, profileSelector],
+  (profile, connectedInstance) =>
+    connectedInstance ? getSiteReqId(connectedInstance, profile) : "",
 );
 
 export const getSiteIfNeeded =

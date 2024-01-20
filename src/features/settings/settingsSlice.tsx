@@ -40,6 +40,7 @@ import {
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
 import { SortType } from "lemmy-js-client";
+import { loggedInSelector } from "../auth/authSelectors";
 
 export {
   type CommentThreadCollapse,
@@ -467,6 +468,7 @@ export const getFilteredKeywords =
 export const getDefaultFeed =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
+    const loggedIn = loggedInSelector(getState());
 
     let defaultFeed;
 
@@ -478,7 +480,13 @@ export const getDefaultFeed =
       console.error("Error receiving default feed", error);
     }
 
-    dispatch(setDefaultFeed(defaultFeed ?? { type: ODefaultFeedType.Home }));
+    dispatch(
+      setDefaultFeed(
+        defaultFeed ?? {
+          type: loggedIn ? ODefaultFeedType.Home : ODefaultFeedType.All,
+        },
+      ),
+    );
   };
 
 export const updateDefaultFeed =
