@@ -24,23 +24,26 @@ export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
 export const jwtIssSelector = (state: RootState) =>
   jwtPayloadSelector(state)?.iss;
 
-export const profileSelector = createSelector(
+/**
+ * Warning: This could be a logged-out handle, e.g. "lemmy.world"
+ */
+export const handleSelector = createSelector(
   [activeAccount],
   (account) => account?.handle,
 );
 
-export const handleSelector = createSelector([activeAccount], (account) => {
+export const userHandleSelector = createSelector([activeAccount], (account) => {
   if (!account || !account.handle.includes("@")) return;
 
   return account.handle;
 });
 
 export const usernameSelector = createSelector(
-  [handleSelector],
+  [userHandleSelector],
   (handle) => handle?.split("@")[0],
 );
 
-export const instanceSelector = createSelector([profileSelector], (profile) => {
+export const instanceSelector = createSelector([handleSelector], (profile) => {
   if (!profile) return;
 
   return getInstanceFromHandle(profile);
@@ -70,7 +73,7 @@ export const accountsListEmptySelector = (state: RootState) => {
 };
 
 export const loggedInSelector = createSelector(
-  [profileSelector],
+  [handleSelector],
   (profile) => !!profile?.includes("@"),
 );
 

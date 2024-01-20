@@ -9,7 +9,7 @@ import {
 import AsyncProfile from "../../features/user/AsyncProfile";
 import { useAppSelector } from "../../store";
 import {
-  handleSelector,
+  userHandleSelector,
   loggedInSelector,
   accountsListEmptySelector,
 } from "../../features/auth/authSelectors";
@@ -24,7 +24,7 @@ export default function ProfilePage() {
   const pageRef = useRef<HTMLElement>(null);
 
   const accountsListEmpty = useAppSelector(accountsListEmptySelector);
-  const handle = useAppSelector(handleSelector);
+  const handle = useAppSelector(userHandleSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );

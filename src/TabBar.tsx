@@ -23,7 +23,7 @@ import { resetSavedStatusTap } from "./listeners/statusTap";
 import { useLocation } from "react-router";
 import { useAppSelector } from "./store";
 import {
-  handleSelector,
+  userHandleSelector,
   instanceSelector,
   jwtSelector,
   accountsListEmptySelector,
@@ -80,7 +80,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   );
   const actor = location.pathname.split("/")[2];
 
-  const userHandle = useAppSelector(handleSelector);
+  const userHandle = useAppSelector(userHandleSelector);
   const profileLabelType = useAppSelector(
     (state) => state.settings.appearance.general.profileLabel,
   );

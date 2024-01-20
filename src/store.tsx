@@ -37,7 +37,7 @@ import modSlice from "./features/moderation/modSlice";
 import imageSlice from "./features/post/inFeed/large/imageSlice";
 import feedSortSlice from "./features/feed/sort/feedSortSlice";
 import siteSlice from "./features/auth/siteSlice";
-import { profileSelector } from "./features/auth/authSelectors";
+import { handleSelector } from "./features/auth/authSelectors";
 import pickJoinServerSlice from "./features/auth/login/pickJoinServer/pickJoinServerSlice";
 import joinSlice from "./features/auth/login/join/joinSlice";
 
@@ -75,14 +75,14 @@ export type Dispatchable<T> =
 
 export default store;
 
-let lastProfile: string | undefined = undefined;
+let lastActiveHandle: string | undefined = undefined;
 const activeHandleChange = () => {
   const state = store.getState();
-  const profile = profileSelector(state);
+  const handle = handleSelector(state);
 
-  if (profile === lastProfile) return;
+  if (handle === lastActiveHandle) return;
 
-  lastProfile = profile;
+  lastActiveHandle = handle;
 
   store.dispatch(getFavoriteCommunities());
   store.dispatch(getBlurNsfw());

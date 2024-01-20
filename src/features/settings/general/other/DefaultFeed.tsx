@@ -10,7 +10,7 @@ import { ODefaultFeedType } from "../../../../services/db";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { updateDefaultFeed } from "../../settingsSlice";
 import SettingSelector from "../../shared/SettingSelector";
-import { loggedInSelector, profileSelector } from "../../../auth/authSelectors";
+import { loggedInSelector, handleSelector } from "../../../auth/authSelectors";
 import { useIonModal } from "@ionic/react";
 import CommunitySelectorModal from "../../../shared/selectorModals/CommunitySelectorModal";
 import { CommunityView } from "lemmy-js-client";
@@ -25,7 +25,7 @@ export default function DefaultFeed() {
     (state) => state.settings.general.defaultFeed,
   );
   const loggedIn = useAppSelector(loggedInSelector);
-  const profile = useAppSelector(profileSelector);
+  const handle = useAppSelector(handleSelector);
   const { pageRef } = useContext(PageContext);
   const moderatedFeedSupported = useSupported("Modded Feed");
 
@@ -58,7 +58,7 @@ export default function DefaultFeed() {
     delete options["Moderating"];
   }
 
-  if (!profile || !defaultFeed) return; // must have specified profile
+  if (!handle || !defaultFeed) return; // must have specified handle
 
   return (
     <SettingSelector

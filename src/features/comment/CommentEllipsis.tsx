@@ -41,7 +41,7 @@ import {
 } from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
-import { handleSelector } from "../auth/authSelectors";
+import { userHandleSelector } from "../auth/authSelectors";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
@@ -73,7 +73,7 @@ export default function MoreActions({
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const { prependComments, getComments } = useContext(CommentsContext);
-  const myHandle = useAppSelector(handleSelector);
+  const myHandle = useAppSelector(userHandleSelector);
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();

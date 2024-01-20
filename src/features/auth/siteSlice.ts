@@ -3,8 +3,8 @@ import { GetSiteResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import {
   clientSelector,
+  userHandleSelector,
   handleSelector,
-  profileSelector,
 } from "./authSelectors";
 import { getRemoteHandle } from "../../helpers/lemmy";
 import { customBackOff } from "../../services/lemmy";
@@ -73,7 +73,7 @@ export const followIdsSelector = createSelector(
  * Used to determine if request is stale (for other lemmy account and/or instance)
  */
 const siteReqIdSelector = createSelector(
-  [(state: RootState) => state.auth.connectedInstance, profileSelector],
+  [(state: RootState) => state.auth.connectedInstance, handleSelector],
   (profile, connectedInstance) =>
     connectedInstance ? getSiteReqId(connectedInstance, profile) : "",
 );
@@ -122,7 +122,7 @@ export const showNsfw =
     // https://github.com/LemmyNet/lemmy/issues/3565
     const person = getState().site.response?.my_user?.local_user_view.person;
 
-    if (!person || handleSelector(getState()) !== getRemoteHandle(person))
+    if (!person || userHandleSelector(getState()) !== getRemoteHandle(person))
       throw new Error("user mismatch");
 
     await clientSelector(getState())?.saveUserSettings({
