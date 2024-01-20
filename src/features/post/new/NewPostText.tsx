@@ -10,7 +10,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { Centered, Spinner } from "../../auth/Login";
+import { Centered, Spinner } from "../../auth/login/LoginNav";
 import { css } from "@emotion/react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 import MarkdownToolbar, {

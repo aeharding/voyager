@@ -168,3 +168,10 @@ export function buildBanFailed(banned: boolean): AppToastOptions {
     centerText: true,
   };
 }
+
+export const loginSuccess: AppToastOptions = {
+  message: "Login successful",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};

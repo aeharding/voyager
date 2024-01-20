@@ -7,7 +7,7 @@ import {
   IonContent,
   IonModal,
 } from "@ionic/react";
-import { Centered } from "../../features/auth/Login";
+import { Centered } from "../../features/auth/login/LoginNav";
 import styled from "@emotion/styled";
 import TextareaAutosize from "react-textarea-autosize";
 import { css } from "@emotion/react";

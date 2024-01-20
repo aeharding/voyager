@@ -9,7 +9,6 @@ import React, {
   useState,
 } from "react";
 import { CommentReplyItem } from "../comment/compose/reply/CommentReply";
-import Login from "../auth/Login";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { changeAccount } from "../auth/authSlice";
 import CommentReplyModal from "../comment/compose/reply/CommentReplyModal";
@@ -31,6 +30,7 @@ import AccountSwitcher from "./AccountSwitcher";
 import { jwtSelector } from "./authSelectors";
 import BanUserModal from "../moderation/ban/BanUserModal";
 import CreateCrosspostDialog from "../post/crosspost/create/CreateCrosspostDialog";
+import LoginModal from "./login/LoginModal";
 
 export interface BanUserPayload {
   user: Person;
@@ -104,9 +104,6 @@ interface PageContextProvider {
 export function PageContextProvider({ value, children }: PageContextProvider) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
-  const [presentLogin, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
   const reportRef = useRef<ReportHandle>(null);
   const shareAsImageDataRef = useRef<ShareAsImageData | null>(null);
 
@@ -119,14 +116,14 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     },
   );
 
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
   const presentLoginIfNeeded = useCallback(() => {
     if (jwt) return false;
 
-    presentLogin({
-      presentingElement: value.pageRef?.current ?? undefined,
-    });
+    setIsLoginOpen(true);
     return true;
-  }, [jwt, presentLogin, value.pageRef]);
+  }, [jwt]);
 
   const presentShareAsImage = useCallback(
     (post: PostView, comment?: CommentView, comments?: CommentView[]) => {
@@ -224,10 +221,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
-      presentLogin: () =>
-        presentLogin({
-          presentingElement: value.pageRef?.current ?? undefined,
-        }),
+      presentLogin: () => setIsLoginOpen(true),
       onSelectAccount: (account: string) => dispatch(changeAccount(account)),
     },
   );
@@ -286,6 +280,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     <PageContext.Provider value={currentValue}>
       {children}
 
+      <LoginModal isOpen={isLoginOpen} setIsOpen={setIsLoginOpen} />
       <CommentReplyModal
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         item={commentReplyItem.current!}

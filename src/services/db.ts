@@ -263,6 +263,7 @@ export type SettingValueTypes = {
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
   show_hide_read_button: boolean;
+  show_hidden_in_communities: boolean;
   auto_hide_read: boolean;
   disable_auto_hide_in_communities: boolean;
   gesture_swipe_post: SwipeActions;

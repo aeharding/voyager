@@ -26,6 +26,9 @@ const StyledIonModal = styled(IonModal)<{ viewportHeight: number }>`
         `}
 `;
 
+/**
+ * This component is only needed for Safari PWAs. It is not necessary for native.
+ */
 export default function IonModalAutosizedForOnScreenKeyboard(
   props: React.ComponentProps<typeof IonModal>,
 ) {
