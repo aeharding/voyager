@@ -14,12 +14,15 @@ import {
   accountsListEmptySelector,
 } from "../../features/auth/authSelectors";
 import LoggedOut from "../../features/user/LoggedOut";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { PageContext } from "../../features/auth/PageContext";
 import FeedContent from "../shared/FeedContent";
 import ProfilePageActions from "../../features/user/ProfilePageActions";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 export default function ProfilePage() {
+  const pageRef = useRef<HTMLElement>(null);
+
   const accountsListEmpty = useAppSelector(accountsListEmptySelector);
   const handle = useAppSelector(handleSelector);
   const connectedInstance = useAppSelector(
@@ -29,8 +32,10 @@ export default function ProfilePage() {
 
   const { presentAccountSwitcher } = useContext(PageContext);
 
+  useSetActivePage(pageRef, !handle);
+
   return (
-    <IonPage className="grey-bg">
+    <IonPage className="grey-bg" ref={pageRef}>
       <IonHeader>
         <IonToolbar>
           {!accountsListEmpty && (

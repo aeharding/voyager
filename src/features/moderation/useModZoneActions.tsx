@@ -8,8 +8,8 @@ import {
 import { CommunityView } from "lemmy-js-client";
 import useCanModerate from "./useCanModerate";
 import { getFeedUrlName } from "../community/mod/ModActions";
-import { notEmpty } from "../../helpers/array";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import { compact } from "lodash";
 
 export interface CommunityUseModZoneActionsProps {
   community: CommunityView | undefined;
@@ -35,7 +35,7 @@ export default function useModZoneActions(props: UseModZoneActionsProps) {
   function present() {
     presentActionSheet({
       cssClass: `${role} left-align-buttons`,
-      buttons: [
+      buttons: compact([
         {
           text: "Mod Queue",
           icon: fileTrayFullOutline,
@@ -91,7 +91,7 @@ export default function useModZoneActions(props: UseModZoneActionsProps) {
           text: "Cancel",
           role: "cancel",
         },
-      ].filter(notEmpty),
+      ]),
     });
   }
 

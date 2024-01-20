@@ -4,7 +4,6 @@ import { useContext, useState } from "react";
 import useAppToast from "../../helpers/useAppToast";
 import { CommentView } from "lemmy-js-client";
 import { localUserSelector } from "../auth/siteSlice";
-import { notEmpty } from "../../helpers/array";
 import useCanModerate from "./useCanModerate";
 import {
   checkmarkCircleOutline,
@@ -29,6 +28,7 @@ import { stringifyReports } from "./usePostModActions";
 import { reportsByCommentIdSelector, resolveCommentReport } from "./modSlice";
 import { banUser } from "../user/userSlice";
 import { PageContext } from "../auth/PageContext";
+import { compact } from "lodash";
 
 export default function useCommentModActions(commentView: CommentView) {
   const [presentAlert] = useIonAlert();
@@ -65,22 +65,20 @@ export default function useCommentModActions(commentView: CommentView) {
     presentActionSheet({
       header: stringifyReports(reports),
       cssClass: `${role} left-align-buttons`,
-      buttons: [
-        isSelf
-          ? {
-              text: !comment.distinguished ? "Distinguish" : "Undistinguish",
-              icon: shieldCheckmarkOutline,
-              handler: () => {
-                (async () => {
-                  await dispatch(
-                    modDistinguishComment(comment.id, !comment.distinguished),
-                  );
+      buttons: compact([
+        isSelf && {
+          text: !comment.distinguished ? "Distinguish" : "Undistinguish",
+          icon: shieldCheckmarkOutline,
+          handler: () => {
+            (async () => {
+              await dispatch(
+                modDistinguishComment(comment.id, !comment.distinguished),
+              );
 
-                  presentToast(commentDistinguished);
-                })();
-              },
-            }
-          : undefined,
+              presentToast(commentDistinguished);
+            })();
+          },
+        },
         !comment.removed && reports?.length
           ? {
               text: "Approve",
@@ -183,7 +181,7 @@ export default function useCommentModActions(commentView: CommentView) {
           text: "Cancel",
           role: "cancel",
         },
-      ].filter(notEmpty),
+      ]),
     });
   }
 

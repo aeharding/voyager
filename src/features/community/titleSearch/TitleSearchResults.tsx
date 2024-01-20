@@ -13,8 +13,7 @@ import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
 import { IonItem, IonList } from "@ionic/react";
 import { useAppSelector } from "../../../store";
-import { notEmpty } from "../../../helpers/array";
-import { uniqBy } from "lodash";
+import { compact, uniqBy } from "lodash";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
@@ -122,10 +121,10 @@ export default function TitleSearchResults() {
     );
 
     return uniqBy(
-      [
+      compact([
         ...searchSpecialByName(eligibleSpecialFeeds, search),
         ...(search ? results : favorites),
-      ].filter(notEmpty),
+      ]),
       (c) => (typeof c === "string" ? c : c.id),
     ).slice(0, 15);
   }, [follows, searchPayload, search, favorites, showModeratorFeed]);
