@@ -38,6 +38,8 @@ import imageSlice from "./features/post/inFeed/large/imageSlice";
 import feedSortSlice from "./features/feed/sort/feedSortSlice";
 import siteSlice from "./features/auth/siteSlice";
 import { handleSelector } from "./features/auth/authSelectors";
+import pickJoinServerSlice from "./features/auth/login/pickJoinServer/pickJoinServerSlice";
+import joinSlice from "./features/auth/login/join/joinSlice";
 
 const store = configureStore({
   reducer: {
@@ -57,6 +59,8 @@ const store = configureStore({
     mod: modSlice,
     image: imageSlice,
     feedSort: feedSortSlice,
+    pickJoinServer: pickJoinServerSlice,
+    join: joinSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

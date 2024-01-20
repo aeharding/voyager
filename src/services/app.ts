@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { isNative } from "../helpers/device";
+import { isEqual } from "lodash";
 
-const DEFAULT_LEMMY_SERVERS = [
-  "lemmy.world",
-  "lemmy.ml",
-  "beehaw.org",
-  "sh.itjust.works",
-];
+const DEFAULT_LEMMY_SERVERS = ["lemmy.world"];
 
 let _customServers = DEFAULT_LEMMY_SERVERS;
 
@@ -16,6 +12,10 @@ export function getCustomServers() {
 
 export function getDefaultServer() {
   return _customServers[0]!;
+}
+
+export function defaultServersUntouched() {
+  return isEqual(DEFAULT_LEMMY_SERVERS, getCustomServers());
 }
 
 async function getConfig() {
