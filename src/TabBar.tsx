@@ -65,7 +65,8 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const shouldInstall = useShouldInstall();
 
   const { activePageRef } = useContext(AppContext);
-  const { presentAccountSwitcher } = useContext(PageContext);
+  const { presentAccountSwitcher, presentLoginIfNeeded } =
+    useContext(PageContext);
 
   const jwt = useAppSelector(jwtSelector);
   const accountsListEmpty = useAppSelector(accountsListEmptySelector);
@@ -148,8 +149,13 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     // if the profile page is already open, show the account switcher
-    if (location.pathname === "/profile" && !accountsListEmpty)
-      presentAccountSwitcher();
+    if (location.pathname === "/profile") {
+      if (!accountsListEmpty) {
+        presentAccountSwitcher();
+      } else {
+        presentLoginIfNeeded();
+      }
+    }
 
     router.push("/profile", "back");
   }
