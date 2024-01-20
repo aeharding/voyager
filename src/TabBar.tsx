@@ -26,7 +26,7 @@ import {
   handleSelector,
   instanceSelector,
   jwtSelector,
-  profilesEmptySelector,
+  accountsListEmptySelector,
 } from "./features/auth/authSelectors";
 import { forwardRef, useContext, useEffect, useMemo } from "react";
 import { getDefaultServer } from "./services/app";
@@ -68,7 +68,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const { presentAccountSwitcher } = useContext(PageContext);
 
   const jwt = useAppSelector(jwtSelector);
-  const profileEmpty = useAppSelector(profilesEmptySelector);
+  const accountsListEmpty = useAppSelector(accountsListEmptySelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
 
   const settingsNotificationCount =
@@ -148,7 +148,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     // if the profile page is already open, show the account switcher
-    if (location.pathname === "/profile" && !profileEmpty)
+    if (location.pathname === "/profile" && !accountsListEmpty)
       presentAccountSwitcher();
 
     router.push("/profile", "back");

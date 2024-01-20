@@ -57,7 +57,7 @@ export const clientSelector = createSelector(
   },
 );
 
-export const profilesEmptySelector = (state: RootState) => {
+export const accountsListEmptySelector = (state: RootState) => {
   if (!state.auth.accountData?.accounts.length) return true;
 
   if (

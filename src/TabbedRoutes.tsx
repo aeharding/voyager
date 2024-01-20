@@ -222,7 +222,7 @@ export default function TabbedRoutes() {
         <IonTabs key={selectedInstance ?? getDefaultServer()}>
           <IonRouterOutlet ref={pageRef}>
             <Route exact path="/">
-              {!loggedIn || defaultFeed ? (
+              {!selectedInstance || defaultFeed ? (
                 <Redirect
                   to={`/posts/${
                     selectedInstance ?? getDefaultServer()

@@ -23,8 +23,9 @@ export function getBaseRoute(
   loggedIn: boolean,
   defaultFeed: DefaultFeedType | undefined,
 ): string {
-  if (loggedIn)
-    return getPathForFeed(defaultFeed || { type: ODefaultFeedType.Home });
-
-  return "/all";
+  return getPathForFeed(
+    defaultFeed || {
+      type: loggedIn ? ODefaultFeedType.Home : ODefaultFeedType.All,
+    },
+  );
 }

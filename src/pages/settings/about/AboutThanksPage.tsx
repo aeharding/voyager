@@ -51,6 +51,10 @@ const links = [
     label: "React",
     href: "https://react.dev",
   },
+  {
+    label: "Lemmy Explorer",
+    href: "https://lemmyverse.net",
+  },
 ];
 
 export default function AboutThanksPage() {

@@ -11,17 +11,16 @@ import { useAppSelector } from "../../store";
 import {
   handleSelector,
   loggedInSelector,
-  profilesEmptySelector,
+  accountsListEmptySelector,
 } from "../../features/auth/authSelectors";
 import LoggedOut from "../../features/user/LoggedOut";
 import { useContext } from "react";
-import AppContent from "../../features/shared/AppContent";
 import { PageContext } from "../../features/auth/PageContext";
 import FeedContent from "../shared/FeedContent";
 import ProfilePageActions from "../../features/user/ProfilePageActions";
 
 export default function ProfilePage() {
-  const profilesEmpty = useAppSelector(profilesEmptySelector);
+  const accountsListEmpty = useAppSelector(accountsListEmptySelector);
   const handle = useAppSelector(handleSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
@@ -34,7 +33,7 @@ export default function ProfilePage() {
     <IonPage className="grey-bg">
       <IonHeader>
         <IonToolbar>
-          {!profilesEmpty && (
+          {!accountsListEmpty && (
             <IonButtons slot="start">
               <IonButton onClick={() => presentAccountSwitcher()}>
                 Accounts
@@ -57,9 +56,7 @@ export default function ProfilePage() {
           <AsyncProfile handle={handle} />
         </FeedContent>
       ) : (
-        <AppContent>
-          <LoggedOut />
-        </AppContent>
+        <LoggedOut />
       )}
     </IonPage>
   );

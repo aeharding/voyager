@@ -100,7 +100,7 @@ const FiltersToolbar = styled(IonToolbar)`
 export default function PickJoinServer() {
   const [presentActionSheet] = useIonActionSheet();
 
-  const { dismiss } = useContext(DynamicDismissableModalContext);
+  const { dismiss, setCanDismiss } = useContext(DynamicDismissableModalContext);
 
   const dispatch = useAppDispatch();
   const connectedInstance = useAppSelector(
@@ -258,6 +258,7 @@ export default function PickJoinServer() {
                 setSubmitting(false);
               }
 
+              setCanDismiss(true);
               dismiss();
             })();
           },
