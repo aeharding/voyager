@@ -236,7 +236,7 @@ const addJwt =
     dispatch(updateConnectedInstance(parseJWT(jwt).iss));
   };
 
-const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
+const resetAccountSpecificStoreData = () => (dispatch: AppDispatch) => {
   dispatch(resetPosts());
   dispatch(resetComments());
   dispatch(resetUsers());
@@ -249,7 +249,7 @@ const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
   dispatch(setDefaultFeed(undefined));
 };
 
-export const logoutEverything = () => async (dispatch: AppDispatch) => {
+export const logoutEverything = () => (dispatch: AppDispatch) => {
   dispatch(reset());
   dispatch(resetAccountSpecificStoreData());
 };

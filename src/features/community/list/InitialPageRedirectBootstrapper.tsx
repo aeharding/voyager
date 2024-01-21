@@ -36,15 +36,24 @@ export default function InitialPageRedirectBootstrapper({
   const router = useOptimizedIonRouter();
   const [bootstrapped, setBootstrapped] = useState(false);
   const viewEnteredRef = useRef(false);
-  const redirectedRef = useRef(false);
 
+  // Refs needed for when `redirectIfNeeded is called from `useIonViewDidEnter`
+  // (otherwise may be undefined)
+  const toRef = useRef(to);
+  const bootstrappedRef = useRef(bootstrapped);
+
+  /**
+   * Important: must access refs, cannot access state hooks
+   * (for calls via `useIonViewDidEnter`)
+   */
   const redirectIfNeeded = useCallback(() => {
+    const to = toRef.current;
+    const bootstrapped = bootstrappedRef.current;
+
+    if (!isInstalled()) return;
     if (!viewEnteredRef.current) return;
-
     if (to == null) return;
-
-    if (redirectedRef.current) return;
-    redirectedRef.current = true;
+    if (bootstrapped) return;
 
     // user set default page = communities list. We're already there.
     if (to === "") {
@@ -73,19 +82,23 @@ export default function InitialPageRedirectBootstrapper({
 
       setBootstrapped(true);
     });
-  }, [router, to]);
+  }, [router]);
 
   useIonViewDidEnter(() => {
     viewEnteredRef.current = true;
-
-    if (!isInstalled()) return;
 
     redirectIfNeeded();
   });
 
   useEffect(() => {
+    bootstrappedRef.current = bootstrapped;
+  }, [bootstrapped]);
+
+  useEffect(() => {
+    toRef.current = to;
+
     redirectIfNeeded();
-  }, [redirectIfNeeded, to]);
+  }, [to, redirectIfNeeded]);
 
   if (!isInstalled() || bootstrapped) return null;
 

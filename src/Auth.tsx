@@ -53,9 +53,10 @@ export default function Auth({ children }: AuthProps) {
  * Separate component so that it doesn't rerender react component tree on location change
  */
 function AuthLocation() {
+  const location = useLocation();
+
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
-  const location = useLocation();
   const pageVisibility = usePageVisibility();
   const jwt = useAppSelector(jwtSelector);
 
