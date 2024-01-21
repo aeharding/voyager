@@ -33,6 +33,9 @@ import { getDefaultServer } from "./services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
 import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
 import { PageContext } from "./features/auth/PageContext";
+import { useLongPress } from "use-long-press";
+import { ImpactStyle } from "@capacitor/haptics";
+import useHapticFeedback from "./helpers/useHapticFeedback";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -54,6 +57,7 @@ type CustomTabBarType = typeof IonTabBar & {
 const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const location = useLocation();
   const router = useOptimizedIonRouter();
+  const vibrate = useHapticFeedback();
 
   const selectedInstance = useAppSelector(instanceSelector);
 
@@ -179,13 +183,19 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     router.push(`/settings`, "back");
   }
 
+  const presentAccountSwitcherBind = useLongPress(() => {
+    vibrate({ style: ImpactStyle.Light });
+
+    if (!accountsListEmpty) {
+      presentAccountSwitcher();
+    } else {
+      presentLoginIfNeeded();
+    }
+  });
+
   return (
     <IonTabBar {...props} ref={ref}>
-      <IonTabButton
-        disabled={isPostsButtonDisabled}
-        tab="posts"
-        href={`/posts/${connectedInstance}`}
-      >
+      <IonTabButton disabled={isPostsButtonDisabled} tab="posts" href="/posts">
         <IonIcon aria-hidden="true" icon={telescope} />
         <IonLabel>Posts</IonLabel>
         <Interceptor onClick={onPostsClick} />
@@ -205,7 +215,10 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       >
         <IonIcon aria-hidden="true" icon={personCircleOutline} />
         <ProfileLabel>{profileTabLabel}</ProfileLabel>
-        <Interceptor onClick={onProfileClick} />
+        <Interceptor
+          onClick={onProfileClick}
+          {...presentAccountSwitcherBind()}
+        />
       </IonTabButton>
       <IonTabButton
         disabled={isSearchButtonDisabled}

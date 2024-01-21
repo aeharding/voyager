@@ -304,7 +304,7 @@ export const appearanceSlice = createSlice({
       state.blocks.keywords = action.payload;
       // Per user setting is updated in StoreProvider
     },
-    setDefaultFeed(state, action: PayloadAction<DefaultFeedType>) {
+    setDefaultFeed(state, action: PayloadAction<DefaultFeedType | undefined>) {
       state.general.defaultFeed = action.payload;
       // Per user setting is updated in StoreProvider
     },

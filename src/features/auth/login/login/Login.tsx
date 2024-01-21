@@ -14,10 +14,11 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
+  useIonActionSheet,
 } from "@ionic/react";
 import useAppToast from "../../../../helpers/useAppToast";
-import { useAppDispatch } from "../../../../store";
-import { login } from "../../authSlice";
+import { useAppDispatch, useAppSelector } from "../../../../store";
+import { addGuestInstance, login } from "../../authSlice";
 import {
   OldLemmyErrorValue,
   getLoginErrorMessage,
@@ -32,6 +33,7 @@ import { loginSuccess } from "../../../../helpers/toastMessages";
 import lemmyLogo from "../lemmyLogo.svg";
 import styled from "@emotion/styled";
 import { VOYAGER_TERMS } from "../../../../helpers/voyager";
+import { getInstanceFromHandle } from "../../authSelectors";
 
 const SiteImg = styled.img`
   object-fit: contain;
@@ -43,6 +45,7 @@ interface LoginProps {
 }
 
 export default function Login({ url, siteIcon }: LoginProps) {
+  const [presentActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
@@ -56,6 +59,8 @@ export default function Login({ url, siteIcon }: LoginProps) {
 
   const [loading, setLoading] = useState(false);
 
+  const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
+
   useEffect(() => {
     setTimeout(() => {
       usernameRef.current?.setFocus();
@@ -63,6 +68,36 @@ export default function Login({ url, siteIcon }: LoginProps) {
   }, []);
 
   async function submit() {
+    const alreadyLoggedIn = accounts?.some(
+      (a) => getInstanceFromHandle(a.handle) === url,
+    );
+
+    if (!username && !password && !alreadyLoggedIn) {
+      presentActionSheet({
+        buttons: [
+          {
+            text: "Connect as Guest",
+            handler: () => {
+              (async () => {
+                setLoading(true);
+
+                try {
+                  await dispatch(addGuestInstance(url));
+                } finally {
+                  setLoading(false);
+                }
+
+                setCanDismiss(true);
+                dismiss();
+              })();
+            },
+          },
+          { text: "Cancel", role: "cancel" },
+        ],
+      });
+      return;
+    }
+
     if (!username || !password) {
       presentToast({
         message: "Please fill out username and password fields",

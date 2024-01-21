@@ -43,10 +43,10 @@ export const usernameSelector = createSelector(
   (handle) => handle?.split("@")[0],
 );
 
-export const instanceSelector = createSelector([handleSelector], (profile) => {
-  if (!profile) return;
+export const instanceSelector = createSelector([handleSelector], (handle) => {
+  if (!handle) return;
 
-  return getInstanceFromHandle(profile);
+  return getInstanceFromHandle(handle);
 });
 
 export const urlSelector = (state: RootState) =>

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   TransitionOptions,
   createAnimation,
@@ -35,16 +35,19 @@ export default function InitialPageRedirectBootstrapper({
 }: InitialPageRedirectBootstrapperProps) {
   const router = useOptimizedIonRouter();
   const [bootstrapped, setBootstrapped] = useState(false);
-  const firstEnter = useRef(true);
+  const viewEnteredRef = useRef(false);
+  const redirectedRef = useRef(false);
 
-  useIonViewDidEnter(() => {
-    if (!firstEnter.current) return;
-    firstEnter.current = false;
+  const redirectIfNeeded = useCallback(() => {
+    if (!viewEnteredRef.current) return;
 
-    if (!isInstalled()) return;
+    if (to == null) return;
+
+    if (redirectedRef.current) return;
+    redirectedRef.current = true;
 
     // user set default page = communities list. We're already there.
-    if (!to) {
+    if (to === "") {
       setBootstrapped(true);
       return;
     }
@@ -70,8 +73,21 @@ export default function InitialPageRedirectBootstrapper({
 
       setBootstrapped(true);
     });
+  }, [router, to]);
+
+  useIonViewDidEnter(() => {
+    viewEnteredRef.current = true;
+
+    if (!isInstalled()) return;
+
+    redirectIfNeeded();
   });
 
+  useEffect(() => {
+    redirectIfNeeded();
+  }, [redirectIfNeeded, to]);
+
   if (!isInstalled() || bootstrapped) return null;
+
   return <LoadingOverlay />;
 }

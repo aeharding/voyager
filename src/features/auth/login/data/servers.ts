@@ -106,7 +106,12 @@ export const WHITELISTED_SERVERS = uniq(
   concat(...Object.values(SERVERS_BY_CATEGORY)),
 );
 
-const ADDITIONAL_LOGIN_INSTANCES = ["lemmy.ml", "lemmygrad.ml", "hexbear.net"];
+const ADDITIONAL_LOGIN_INSTANCES = [
+  "lemmy.ml",
+  "lemmygrad.ml",
+  "lemmynsfw.com",
+  "hexbear.net",
+];
 
 export const LOGIN_SERVERS = uniq([
   ...WHITELISTED_SERVERS,

@@ -16,6 +16,7 @@ import { resetMod } from "../moderation/modSlice";
 import { getInstanceFromHandle, instanceSelector } from "./authSelectors";
 import { receivedSite, resetSite } from "./siteSlice";
 import { Register } from "lemmy-js-client";
+import { setDefaultFeed } from "../settings/settingsSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -214,6 +215,7 @@ export const addGuestInstance =
 
     const site = await client.getSite();
 
+    dispatch(resetAccountSpecificStoreData());
     dispatch(receivedSite(site));
     dispatch(addAccount({ handle: url }));
     dispatch(updateConnectedInstance(url));
@@ -228,6 +230,7 @@ const addJwt =
 
     if (!myUser) throw new Error("broke");
 
+    dispatch(resetAccountSpecificStoreData());
     dispatch(receivedSite(site));
     dispatch(addAccount({ jwt, handle: getRemoteHandle(myUser) }));
     dispatch(updateConnectedInstance(parseJWT(jwt).iss));
@@ -243,6 +246,7 @@ const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
   dispatch(resetInstances());
   dispatch(resetMod());
   dispatch(resetSite());
+  dispatch(setDefaultFeed(undefined));
 };
 
 export const logoutEverything = () => async (dispatch: AppDispatch) => {

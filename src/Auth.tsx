@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import { updateConnectedInstance } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
@@ -11,31 +11,73 @@ import useAppToast from "./helpers/useAppToast";
 import BackgroundReportSync from "./features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "./features/auth/siteSlice";
 import { instanceSelector, jwtSelector } from "./features/auth/authSelectors";
+import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
+import { TabContext } from "./TabContext";
 
 interface AuthProps {
   children: React.ReactNode;
 }
 
 export default function Auth({ children }: AuthProps) {
-  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const selectedInstance = useAppSelector(instanceSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+
+  const router = useOptimizedIonRouter();
+  const { tabRef } = useContext(TabContext);
+  const oldInstanceRef = useRef(selectedInstance);
+
+  useEffect(() => {
+    if (oldInstanceRef.current !== selectedInstance) {
+      router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+      oldInstanceRef.current = selectedInstance;
+    }
+
+    dispatch(getSiteIfNeeded());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jwt, connectedInstance]);
+
+  return (
+    // Rebuild routing on instance change
+    <React.Fragment key={selectedInstance ?? getDefaultServer()}>
+      <AuthLocation />
+      {connectedInstance ? children : undefined}
+    </React.Fragment>
+  );
+}
+
+/**
+ * Separate component so that it doesn't rerender react component tree on location change
+ */
+function AuthLocation() {
+  const dispatch = useAppDispatch();
+  const presentToast = useAppToast();
+  const location = useLocation();
+  const pageVisibility = usePageVisibility();
+  const jwt = useAppSelector(jwtSelector);
+
+  const selectedInstance = useAppSelector(instanceSelector);
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
+
   const hasModdedSubs = useAppSelector(
     (state) =>
       !!state.site.response?.my_user?.moderates.length ||
       !!isAdminSelector(state),
   );
-  const location = useLocation();
-  const pageVisibility = usePageVisibility();
+
+  const shouldSyncMessages = useCallback(() => {
+    return jwt && location.pathname.startsWith("/inbox/messages");
+  }, [jwt, location]);
 
   useEffect(() => {
-    if (!location.pathname.startsWith("/posts")) {
-      if (connectedInstance) return;
+    if (connectedInstance) return;
 
+    if (!location.pathname.startsWith("/posts")) {
       dispatch(updateConnectedInstance(selectedInstance ?? getDefaultServer()));
     }
 
@@ -47,25 +89,6 @@ export default function Auth({ children }: AuthProps) {
       dispatch(updateConnectedInstance(potentialConnectedInstance));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
-
-  useEffect(() => {
-    dispatch(getSiteIfNeeded());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jwt, connectedInstance]);
-
-  const shouldSyncMessages = useCallback(() => {
-    return jwt && location.pathname.startsWith("/inbox/messages");
-  }, [jwt, location]);
-
-  useInterval(
-    () => {
-      if (!pageVisibility) return;
-      if (!shouldSyncMessages()) return;
-
-      dispatch(syncMessages());
-    },
-    shouldSyncMessages() ? 1_000 * 15 : null,
-  );
 
   const getInboxCountsAndErrorIfNeeded = useCallback(async () => {
     try {
@@ -86,6 +109,16 @@ export default function Auth({ children }: AuthProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
+
+  useInterval(
+    () => {
+      if (!pageVisibility) return;
+      if (!shouldSyncMessages()) return;
+
+      dispatch(syncMessages());
+    },
+    shouldSyncMessages() ? 1_000 * 15 : null,
+  );
 
   useInterval(() => {
     if (!pageVisibility) return;
@@ -108,12 +141,5 @@ export default function Auth({ children }: AuthProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageVisibility]);
 
-  if (!connectedInstance) return;
-
-  return (
-    <>
-      {hasModdedSubs && <BackgroundReportSync />}
-      {children}
-    </>
-  );
+  return <>{hasModdedSubs && <BackgroundReportSync />}</>;
 }

@@ -247,7 +247,7 @@ export default function PickJoinServer() {
           },
         },
         !alreadyLoggedIn && {
-          text: "Browse as Guest",
+          text: "Connect as Guest",
           handler: () => {
             (async () => {
               setSubmitting(true);
