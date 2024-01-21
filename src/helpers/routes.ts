@@ -5,7 +5,7 @@ import { TabContext } from "../TabContext";
 
 export function useBuildGeneralBrowseLink() {
   const { tabRef } = useContext(TabContext);
-  const connectedServer = useAppSelector(
+  const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
 
@@ -13,10 +13,10 @@ export function useBuildGeneralBrowseLink() {
 
   const buildGeneralBrowseLink = useCallback(
     (path: string) =>
-      `/${tabName || tabRef?.current}/${connectedServer}${path}`,
+      `/${tabName || tabRef?.current}/${connectedInstance}${path}`,
     // tab should never dynamically change for a rendered buildGeneralBrowseLink tab. So don't re-render
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [connectedServer],
+    [connectedInstance],
   );
 
   return buildGeneralBrowseLink;

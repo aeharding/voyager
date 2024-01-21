@@ -31,8 +31,10 @@ export default function Auth({ children }: AuthProps) {
   const oldInstanceRef = useRef(selectedInstance);
 
   useEffect(() => {
+    // On change, reset tab state in ionic router
     if (oldInstanceRef.current !== selectedInstance) {
       router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+
       oldInstanceRef.current = selectedInstance;
     }
 
@@ -42,7 +44,7 @@ export default function Auth({ children }: AuthProps) {
 
   return (
     // Rebuild routing on instance change
-    <React.Fragment key={selectedInstance ?? getDefaultServer()}>
+    <React.Fragment key={connectedInstance ?? getDefaultServer()}>
       <AuthLocation />
       {connectedInstance ? children : undefined}
     </React.Fragment>
@@ -78,15 +80,13 @@ function AuthLocation() {
   useEffect(() => {
     if (connectedInstance) return;
 
-    if (!location.pathname.startsWith("/posts")) {
-      dispatch(updateConnectedInstance(selectedInstance ?? getDefaultServer()));
-    }
-
     const potentialConnectedInstance = location.pathname.split("/")[2];
 
     if (connectedInstance === potentialConnectedInstance) return;
 
-    if (potentialConnectedInstance?.includes("."))
+    if (selectedInstance) {
+      dispatch(updateConnectedInstance(selectedInstance));
+    } else if (potentialConnectedInstance?.includes("."))
       dispatch(updateConnectedInstance(potentialConnectedInstance));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
