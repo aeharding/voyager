@@ -60,6 +60,9 @@ export const clientSelector = createSelector(
   },
 );
 
+export const handleOrInstanceSelector = (state: RootState) =>
+  handleSelector(state) ?? state.auth.connectedInstance;
+
 export const accountsListEmptySelector = (state: RootState) => {
   if (!state.auth.accountData?.accounts.length) return true;
 

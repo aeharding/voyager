@@ -82,12 +82,19 @@ function AuthLocation() {
 
     const potentialConnectedInstance = location.pathname.split("/")[2];
 
-    if (connectedInstance === potentialConnectedInstance) return;
+    if (
+      potentialConnectedInstance &&
+      connectedInstance === potentialConnectedInstance
+    )
+      return;
 
     if (selectedInstance) {
       dispatch(updateConnectedInstance(selectedInstance));
-    } else if (potentialConnectedInstance?.includes("."))
+    } else if (potentialConnectedInstance?.includes(".")) {
       dispatch(updateConnectedInstance(potentialConnectedInstance));
+    } else {
+      dispatch(updateConnectedInstance(getDefaultServer()));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
