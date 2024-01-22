@@ -14,7 +14,7 @@ import {
   UsernameIonText,
 } from "../../features/comment/compose/reply/CommentReply";
 import { useAppSelector } from "../../store";
-import { handleSelector } from "../../features/auth/authSelectors";
+import { userHandleSelector } from "../../features/auth/authSelectors";
 import FilterNsfw from "../../features/settings/blocks/FilterNsfw";
 import BlockedCommunities from "../../features/settings/blocks/BlockedCommunities";
 import { CenteredSpinner } from "../posts/PostPage";
@@ -29,7 +29,7 @@ import { localUserSelector } from "../../features/auth/siteSlice";
 export default function BlocksSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);
 
-  const userHandle = useAppSelector(handleSelector);
+  const userHandle = useAppSelector(userHandleSelector);
   const localUser = useAppSelector(localUserSelector);
   const instanceBlockSupported = useSupported("Instance Blocking");
 

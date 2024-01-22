@@ -1,11 +1,11 @@
 import { useAppSelector } from "../../store";
-import { jwtIssSelector } from "../auth/authSelectors";
+import { loggedInSelector } from "../auth/authSelectors";
 import InitialPageRedirectBootstrapper from "../community/list/InitialPageRedirectBootstrapper";
 
 export default function BoxesRedirectBootstrapper() {
-  const iss = useAppSelector(jwtIssSelector);
+  const loggedIn = useAppSelector(loggedInSelector);
 
-  if (!iss) return;
+  if (!loggedIn) return;
 
   return <InitialPageRedirectBootstrapper to="/inbox/all" />;
 }

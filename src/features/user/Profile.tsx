@@ -20,7 +20,7 @@ import PostCommentFeed, {
   PostCommentItem,
   isPost,
 } from "../feed/PostCommentFeed";
-import { handleSelector } from "../auth/authSelectors";
+import { userHandleSelector } from "../auth/authSelectors";
 import { fixLemmyDateString } from "../../helpers/date";
 import {
   getModColor,
@@ -44,7 +44,7 @@ interface ProfileProps {
 export default function Profile({ person }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const myHandle = useAppSelector(handleSelector);
+  const myHandle = useAppSelector(userHandleSelector);
   const { present: presentModZoneActions, role } = useModZoneActions({
     type: "ModeratorView",
   });

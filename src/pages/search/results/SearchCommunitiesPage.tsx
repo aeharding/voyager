@@ -16,9 +16,9 @@ import { useParams } from "react-router";
 import PostSort from "../../../features/feed/PostSort";
 import { CommunityView, LemmyHttp } from "lemmy-js-client";
 import CommunityFeed from "../../../features/feed/CommunityFeed";
-import { notEmpty } from "../../../helpers/array";
 import { isLemmyError } from "../../../helpers/lemmy";
 import useFeedSort from "../../../features/feed/sort/useFeedSort";
+import { compact } from "lodash";
 
 export default function SearchCommunitiesPage() {
   const { search: _encodedSearch } = useParams<{ search: string }>();
@@ -31,7 +31,7 @@ export default function SearchCommunitiesPage() {
   const fetchFn: FetchFn<CommunityView> = useCallback(
     async (pageData) => {
       if (isFirstPage(pageData) && search.includes("@")) {
-        return [await findExactCommunity(search, client)].filter(notEmpty);
+        return compact([await findExactCommunity(search, client)]);
       }
 
       const response = await client.search({

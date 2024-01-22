@@ -37,7 +37,7 @@ import modSlice from "./features/moderation/modSlice";
 import imageSlice from "./features/post/inFeed/large/imageSlice";
 import feedSortSlice from "./features/feed/sort/feedSortSlice";
 import siteSlice from "./features/auth/siteSlice";
-import { handleSelector } from "./features/auth/authSelectors";
+import { handleOrInstanceSelector } from "./features/auth/authSelectors";
 import pickJoinServerSlice from "./features/auth/login/pickJoinServer/pickJoinServerSlice";
 import joinSlice from "./features/auth/login/join/joinSlice";
 
@@ -78,11 +78,11 @@ export default store;
 let lastActiveHandle: string | undefined = undefined;
 const activeHandleChange = () => {
   const state = store.getState();
-  const activeHandle = handleSelector(state);
+  const handle = handleOrInstanceSelector(state);
 
-  if (activeHandle === lastActiveHandle) return;
+  if (handle === lastActiveHandle) return;
 
-  lastActiveHandle = activeHandle;
+  lastActiveHandle = handle;
 
   store.dispatch(getFavoriteCommunities());
   store.dispatch(getBlurNsfw());

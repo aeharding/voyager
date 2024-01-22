@@ -8,46 +8,50 @@ import {
 } from "@ionic/react";
 import AsyncProfile from "../../features/user/AsyncProfile";
 import { useAppSelector } from "../../store";
-import { handleSelector } from "../../features/auth/authSelectors";
+import {
+  userHandleSelector,
+  loggedInSelector,
+  accountsListEmptySelector,
+} from "../../features/auth/authSelectors";
 import LoggedOut from "../../features/user/LoggedOut";
-import { useContext } from "react";
-import AppContent from "../../features/shared/AppContent";
+import { useContext, useRef } from "react";
 import { PageContext } from "../../features/auth/PageContext";
 import FeedContent from "../shared/FeedContent";
 import ProfilePageActions from "../../features/user/ProfilePageActions";
+import { useSetActivePage } from "../../features/auth/AppContext";
 
 export default function ProfilePage() {
-  const handle = useAppSelector(handleSelector);
-  const { presentAccountSwitcher, presentLoginIfNeeded } =
-    useContext(PageContext);
+  const pageRef = useRef<HTMLElement>(null);
+
+  const accountsListEmpty = useAppSelector(accountsListEmptySelector);
+  const handle = useAppSelector(userHandleSelector);
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
+  const loggedIn = useAppSelector(loggedInSelector);
+
+  const { presentAccountSwitcher } = useContext(PageContext);
+
+  useSetActivePage(pageRef, !handle);
 
   return (
-    <IonPage className="grey-bg">
+    <IonPage className="grey-bg" ref={pageRef}>
       <IonHeader>
         <IonToolbar>
-          {handle ? (
-            <>
-              <IonButtons slot="start">
-                <IonButton onClick={() => presentAccountSwitcher()}>
-                  Accounts
-                </IonButton>
-              </IonButtons>
+          {!accountsListEmpty && (
+            <IonButtons slot="start">
+              <IonButton onClick={() => presentAccountSwitcher()}>
+                Accounts
+              </IonButton>
+            </IonButtons>
+          )}
 
-              <IonTitle>{handle}</IonTitle>
+          <IonTitle>{handle ?? connectedInstance}</IonTitle>
 
-              <IonButtons slot="end">
-                <ProfilePageActions />
-              </IonButtons>
-            </>
-          ) : (
-            <>
-              <IonTitle>Anonymous</IonTitle>
-              <IonButtons slot="end">
-                <IonButton onClick={() => presentLoginIfNeeded()}>
-                  Login
-                </IonButton>
-              </IonButtons>
-            </>
+          {loggedIn && (
+            <IonButtons slot="end">
+              <ProfilePageActions />
+            </IonButtons>
           )}
         </IonToolbar>
       </IonHeader>
@@ -57,9 +61,7 @@ export default function ProfilePage() {
           <AsyncProfile handle={handle} />
         </FeedContent>
       ) : (
-        <AppContent>
-          <LoggedOut />
-        </AppContent>
+        <LoggedOut />
       )}
     </IonPage>
   );

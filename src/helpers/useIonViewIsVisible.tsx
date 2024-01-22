@@ -7,6 +7,7 @@ export default function useIonViewIsVisible() {
   useIonViewWillEnter(() => {
     setVisible(true);
   });
+
   useIonViewDidLeave(() => {
     setVisible(false);
   });

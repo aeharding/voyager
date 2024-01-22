@@ -1,11 +1,11 @@
-import { Redirect, Route } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import Route from "./Route";
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
 import PostDetail from "./pages/posts/PostPage";
 import CommunitiesPage from "./pages/posts/CommunitiesPage";
 import CommunityPage from "./pages/shared/CommunityPage";
 import { useAppSelector } from "./store";
-import { jwtIssSelector } from "./features/auth/authSelectors";
-import ActorRedirect from "./ActorRedirect";
+import { instanceSelector } from "./features/auth/authSelectors";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
@@ -51,14 +51,13 @@ import ModlogPage from "./pages/shared/ModlogPage";
 import ModqueuePage from "./pages/shared/ModqueuePage";
 import TabBar from "./TabBar";
 import { isInstalled } from "./helpers/device";
-import { getBaseRoute } from "./features/community/list/CommunitiesListRedirectBootstrapper";
 
 export default function TabbedRoutes() {
   const ready = useAppSelector((state) => state.settings.ready);
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,
   );
-  const iss = useAppSelector(jwtIssSelector);
+  const selectedInstance = useAppSelector(instanceSelector);
 
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
 
@@ -66,135 +65,93 @@ export default function TabbedRoutes() {
     return [
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/c/:community`}>
-        <ActorRedirect>
-          <CommunityPage />
-        </ActorRedirect>
+        <CommunityPage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/c/:community/search/posts/:search`}>
-        <ActorRedirect>
-          <SearchFeedResultsPage type="Posts" />
-        </ActorRedirect>
+        <SearchFeedResultsPage type="Posts" />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/c/:community/search/comments/:search`}>
-        <ActorRedirect>
-          <SearchFeedResultsPage type="Comments" />
-        </ActorRedirect>
+        <SearchFeedResultsPage type="Comments" />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/c/:community/sidebar`}>
-        <ActorRedirect>
-          <CommunitySidebarPage />
-        </ActorRedirect>
+        <CommunitySidebarPage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/c/:community/comments/:id`}>
-        <ActorRedirect>
-          <PostDetail />
-        </ActorRedirect>
+        <PostDetail />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route
         exact
         path={`/${tab}/:actor/c/:community/comments/:id/thread/:threadCommentId`}
       >
-        <ActorRedirect>
-          <PostDetail />
-        </ActorRedirect>
+        <PostDetail />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route
         exact
         path={`/${tab}/:actor/c/:community/comments/:id/:commentPath`}
       >
-        <ActorRedirect>
-          <PostDetail />
-        </ActorRedirect>
+        <PostDetail />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/c/:community/comments`}>
-        <ActorRedirect>
-          <CommunityCommentsPage />
-        </ActorRedirect>
+        <CommunityCommentsPage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/c/:community/log`}>
-        <ActorRedirect>
-          <ModlogPage />
-        </ActorRedirect>
+        <ModlogPage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/c/:community/modqueue`}>
-        <ActorRedirect>
-          <ModqueuePage />
-        </ActorRedirect>
+        <ModqueuePage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/mod/comments`}>
-        <ActorRedirect>
-          <CommentsPage type="ModeratorView" />
-        </ActorRedirect>
+        <CommentsPage type="ModeratorView" />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/mod/log`}>
-        <ActorRedirect>
-          <ModlogPage />
-        </ActorRedirect>
+        <ModlogPage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/mod/modqueue`}>
-        <ActorRedirect>
-          <ModqueuePage />
-        </ActorRedirect>
+        <ModqueuePage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle`}>
-        <ActorRedirect>
-          <UserPage />
-        </ActorRedirect>
+        <UserPage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/posts`}>
-        <ActorRedirect>
-          <ProfileFeedItemsPage type="Posts" />
-        </ActorRedirect>
+        <ProfileFeedItemsPage type="Posts" />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/comments`}>
-        <ActorRedirect>
-          <ProfileFeedItemsPage type="Comments" />
-        </ActorRedirect>
+        <ProfileFeedItemsPage type="Comments" />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
-        <ActorRedirect>
-          <ProfileFeedItemsPage type="Saved" />
-        </ActorRedirect>
+        <ProfileFeedItemsPage type="Saved" />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
-        <ActorRedirect>
-          <ProfileFeedHiddenPostsPage />
-        </ActorRedirect>
+        <ProfileFeedHiddenPostsPage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/message`}>
-        <InboxAuthRequired>
-          <ConversationPage />
-        </InboxAuthRequired>
+        <ConversationPage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/u/:handle/log`}>
-        <ActorRedirect>
-          <ModlogPage />
-        </ActorRedirect>
+        <ModlogPage />
       </Route>,
       // eslint-disable-next-line react/jsx-key
       <Route exact path={`/${tab}/:actor/sidebar`}>
-        <ActorRedirect>
-          <InstanceSidebarPage />
-        </ActorRedirect>
+        <InstanceSidebarPage />
       </Route>,
     ];
   }
@@ -206,7 +163,9 @@ export default function TabbedRoutes() {
   const redirectRoute = (() => {
     if (isInstalled()) return ""; // redirect to be handled by <CommunitiesListRedirectBootstrapper />
 
-    return getBaseRoute(!!iss, defaultFeed);
+    if (!defaultFeed) return "";
+
+    return getPathForFeed(defaultFeed);
   })();
 
   return (
@@ -215,12 +174,26 @@ export default function TabbedRoutes() {
         {/* TODO key={} resets the tab route stack whenever your instance changes. */}
         {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
         {/* But this isn't trivial with needing to rewrite URLs... */}
-        <IonTabs key={iss ?? getDefaultServer()}>
+        <IonTabs>
           <IonRouterOutlet ref={pageRef}>
             <Route exact path="/">
-              {!iss || defaultFeed ? (
+              {defaultFeed ? (
                 <Redirect
-                  to={`/posts/${iss ?? getDefaultServer()}${redirectRoute}`}
+                  to={`/posts/${
+                    selectedInstance ?? getDefaultServer()
+                  }${redirectRoute}`}
+                  push={false}
+                />
+              ) : (
+                ""
+              )}
+            </Route>
+            <Route exact path="/posts">
+              {defaultFeed ? (
+                <Redirect
+                  to={`/posts/${
+                    selectedInstance ?? getDefaultServer()
+                  }${redirectRoute}`}
                   push={false}
                 />
               ) : (
@@ -228,29 +201,19 @@ export default function TabbedRoutes() {
               )}
             </Route>
             <Route exact path="/posts/:actor/home">
-              <ActorRedirect>
-                <SpecialFeedPage type="Subscribed" />
-              </ActorRedirect>
+              <SpecialFeedPage type="Subscribed" />
             </Route>
             <Route exact path="/posts/:actor/all">
-              <ActorRedirect>
-                <SpecialFeedPage type="All" />
-              </ActorRedirect>
+              <SpecialFeedPage type="All" />
             </Route>
             <Route exact path="/posts/:actor/local">
-              <ActorRedirect>
-                <SpecialFeedPage type="Local" />
-              </ActorRedirect>
+              <SpecialFeedPage type="Local" />
             </Route>
             <Route exact path="/posts/:actor/mod">
-              <ActorRedirect>
-                <SpecialFeedPage type="ModeratorView" />
-              </ActorRedirect>
+              <SpecialFeedPage type="ModeratorView" />
             </Route>
             <Route exact path="/posts/:actor">
-              <ActorRedirect>
-                <CommunitiesPage />
-              </ActorRedirect>
+              <CommunitiesPage />
             </Route>
             {...buildGeneralBrowseRoutes("posts")}
 

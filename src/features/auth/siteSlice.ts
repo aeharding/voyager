@@ -1,7 +1,11 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { GetSiteResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import { clientSelector, handleSelector } from "./authSelectors";
+import {
+  clientSelector,
+  userHandleSelector,
+  handleSelector,
+} from "./authSelectors";
 import { getRemoteHandle } from "../../helpers/lemmy";
 import { customBackOff } from "../../services/lemmy";
 
@@ -70,8 +74,8 @@ export const followIdsSelector = createSelector(
  */
 const siteReqIdSelector = createSelector(
   [(state: RootState) => state.auth.connectedInstance, handleSelector],
-  (handle, connectedInstance) =>
-    connectedInstance ? getSiteReqId(connectedInstance, handle) : "",
+  (profile, connectedInstance) =>
+    connectedInstance ? getSiteReqId(connectedInstance, profile) : "",
 );
 
 export const getSiteIfNeeded =
@@ -118,7 +122,7 @@ export const showNsfw =
     // https://github.com/LemmyNet/lemmy/issues/3565
     const person = getState().site.response?.my_user?.local_user_view.person;
 
-    if (!person || handleSelector(getState()) !== getRemoteHandle(person))
+    if (!person || userHandleSelector(getState()) !== getRemoteHandle(person))
       throw new Error("user mismatch");
 
     await clientSelector(getState())?.saveUserSettings({

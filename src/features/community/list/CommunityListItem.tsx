@@ -1,10 +1,10 @@
 import { IonItem } from "@ionic/react";
 import { Community } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useAppDispatch } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { useMemo } from "react";
 import { getHandle } from "../../../helpers/lemmy";
-import { Content } from "./CommunitiesList";
+import { Content } from "./ResolvedCommunitiesList";
 import ItemIcon from "../../labels/img/ItemIcon";
 import { ActionButton } from "../../post/actions/ActionButton";
 import { addFavorite, removeFavorite } from "../communitySlice";
@@ -12,6 +12,7 @@ import { star } from "ionicons/icons";
 import { ToggleIcon } from "../ToggleIcon";
 import styled from "@emotion/styled";
 import { HIDE_ALPHABET_JUMP } from "./AlphabetJump";
+import { loggedInSelector } from "../../auth/authSelectors";
 
 const StyledToggleIcon = styled(ToggleIcon)`
   @media (max-width: 725px) {
@@ -33,6 +34,8 @@ export default function CommunityListItem({
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
 
+  const loggedIn = useAppSelector(loggedInSelector);
+
   const handle =
     typeof community === "string" ? community : getHandle(community);
 
@@ -47,21 +50,23 @@ export default function CommunityListItem({
         <ItemIcon item={community} size={28} />
         {handle}
       </Content>
-      <ActionButton
-        slot="end"
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
+      {loggedIn && (
+        <ActionButton
+          slot="end"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
 
-          if (!isFavorite) {
-            dispatch(addFavorite(handle));
-          } else {
-            dispatch(removeFavorite(handle));
-          }
-        }}
-      >
-        <StyledToggleIcon icon={star} selected={isFavorite} />
-      </ActionButton>
+            if (!isFavorite) {
+              dispatch(addFavorite(handle));
+            } else {
+              dispatch(removeFavorite(handle));
+            }
+          }}
+        >
+          <StyledToggleIcon icon={star} selected={isFavorite} />
+        </ActionButton>
+      )}
     </IonItem>
   );
 }

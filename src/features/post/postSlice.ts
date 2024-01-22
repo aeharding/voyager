@@ -3,7 +3,7 @@ import { PostView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
 import {
   clientSelector,
-  handleSelector,
+  userHandleSelector,
   jwtSelector,
 } from "../auth/authSelectors";
 import { IPostMetadata, db } from "../../services/db";
@@ -146,7 +146,7 @@ export const updatePostHidden = createAsyncThunk(
     thunkAPI,
   ) => {
     const rootState = thunkAPI.getState() as RootState;
-    const handle = handleSelector(rootState);
+    const handle = userHandleSelector(rootState);
 
     if (!handle) return;
 
@@ -174,7 +174,7 @@ export const bulkUpdatePostsHidden = createAsyncThunk(
     thunkAPI,
   ) => {
     const rootState = thunkAPI.getState() as RootState;
-    const handle = handleSelector(rootState);
+    const handle = userHandleSelector(rootState);
 
     if (!handle) return;
 
@@ -197,7 +197,7 @@ export const receivedPosts = createAsyncThunk(
   "post/receivedPosts",
   async (posts: PostView[], thunkAPI) => {
     const rootState = thunkAPI.getState() as RootState;
-    const handle = handleSelector(rootState);
+    const handle = userHandleSelector(rootState);
     const postHiddenById: Record<string, boolean> = {};
 
     if (!handle)
@@ -383,7 +383,7 @@ export const unhidePost =
 
 export const clearHidden =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const handle = handleSelector(getState());
+    const handle = userHandleSelector(getState());
     if (!handle) return;
     await db.clearHiddenPosts(handle);
     await dispatch(resetHidden());

@@ -8,7 +8,7 @@ import { receivedUsers } from "../user/userSlice";
 import { isLemmyError } from "../../helpers/lemmy";
 import {
   clientSelector,
-  handleSelector,
+  userHandleSelector,
   jwtSelector,
 } from "../auth/authSelectors";
 
@@ -115,7 +115,7 @@ export const getInboxCounts =
     if (Date.now() - lastUpdatedCounts < 3_000) return;
 
     let result;
-    const initialHandle = handleSelector(getState());
+    const initialHandle = userHandleSelector(getState());
 
     try {
       result = await clientSelector(getState()).getUnreadCount();
@@ -131,7 +131,7 @@ export const getInboxCounts =
         isLemmyError(error, "not_logged_in") ||
         isLemmyError(error, "incorrect_login")
       ) {
-        const handle = handleSelector(getState());
+        const handle = userHandleSelector(getState());
         if (handle && handle === initialHandle) {
           dispatch(logoutAccount(handle));
         }

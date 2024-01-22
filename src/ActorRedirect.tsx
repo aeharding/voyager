@@ -1,26 +1,39 @@
-import { Redirect, useLocation, useParams } from "react-router";
+import { Redirect, RouteProps, useLocation, useParams } from "react-router";
 import { useAppSelector } from "./store";
-import { jwtIssSelector } from "./features/auth/authSelectors";
-import React from "react";
 import useIonViewIsVisible from "./helpers/useIonViewIsVisible";
+import { isNative } from "./helpers/device";
 
 interface ActorRedirectProps {
-  children?: React.ReactNode;
+  children?: RouteProps["children"];
 }
 
 export default function ActorRedirect({ children }: ActorRedirectProps) {
+  if (isNative()) return <>{children}</>;
+
+  return <ActorRedirectEnabled>{children}</ActorRedirectEnabled>;
+}
+
+function ActorRedirectEnabled({ children }: ActorRedirectProps) {
   const { actor } = useParams<{ actor: string }>();
-  const iss = useAppSelector(jwtIssSelector);
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
   const location = useLocation();
   const ionViewIsVisible = useIonViewIsVisible();
 
   if (!ionViewIsVisible) return <>{children}</>;
-  if (!iss || !actor) return <>{children}</>;
-  if (iss === actor) return <>{children}</>;
+  if (!connectedInstance || !actor) return <>{children}</>;
+  if (connectedInstance === actor) return <>{children}</>;
 
   const [first, second, _wrongActor, ...urlEnd] = location.pathname.split("/");
 
+  // no need to redirect if url doesn't have actor
+  if (!_wrongActor || !_wrongActor.includes(".")) return <>{children}</>;
+
   return (
-    <Redirect to={[first, second, iss, ...urlEnd].join("/")} push={false} />
+    <Redirect
+      to={[first, second, connectedInstance, ...urlEnd].join("/")}
+      push={false}
+    />
   );
 }

@@ -11,7 +11,7 @@ import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
 import { useAppSelector } from "../../store";
-import { jwtIssSelector } from "../auth/authSelectors";
+import { instanceSelector } from "../auth/authSelectors";
 import { clearRecoveredText } from "../../helpers/useTextRecovery";
 import useStateRef from "../../helpers/useStateRef";
 import { isNative } from "../../helpers/device";
@@ -42,7 +42,7 @@ export function DynamicDismissableModal({
 }: DynamicDismissableModalProps) {
   const pageContext = useContext(PageContext);
   const location = useLocation();
-  const iss = useAppSelector(jwtIssSelector);
+  const selectedInstance = useAppSelector(instanceSelector);
 
   const [canDismissRef, setCanDismiss] = useStateRef(true);
 
@@ -58,7 +58,7 @@ export function DynamicDismissableModal({
     // In <TabbedRoutes>, <IonRouterOutlet> rebuilds (see `key`) when iss changes,
     // so grab new IonRouterOutlet
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageContext.pageRef, iss]);
+  }, [pageContext.pageRef, selectedInstance]);
 
   const onDismissAttemptCb = useCallback(async () => {
     if (document.activeElement instanceof HTMLElement)

@@ -20,7 +20,7 @@ import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { Centered, Spinner } from "../../../auth/login/LoginNav";
-import { handleSelector } from "../../../auth/authSelectors";
+import { userHandleSelector } from "../../../auth/authSelectors";
 import { receivedComments } from "../../commentSlice";
 import CommentContent from "../shared";
 import useTextRecovery, {
@@ -69,7 +69,7 @@ export default function CommentReply({
   const [loading, setLoading] = useState(false);
   const isSubmitDisabled = !replyContent.trim() || loading;
 
-  const userHandle = useAppSelector(handleSelector);
+  const userHandle = useAppSelector(userHandleSelector);
   const [selectedAccount, setSelectedAccount] = useState(userHandle);
 
   const isUsingAppAccount = selectedAccount === userHandle;

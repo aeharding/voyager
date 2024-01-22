@@ -8,6 +8,7 @@ import {
   IonLabel,
   IonRadio,
   IonReorder,
+  IonText,
   ItemSlidingCustomEvent,
 } from "@ionic/react";
 import { removeCircle } from "ionicons/icons";
@@ -56,12 +57,20 @@ export default function Account({ editing, account, allowEdit }: AccountProps) {
     dispatch(logoutAccount(account.handle));
   }
 
+  const isGuest = !account.jwt;
+
+  const label = (
+    <>
+      {account.handle} {isGuest && <IonText color="medium">(guest)</IonText>}
+    </>
+  );
+
   return (
     <IonItemSliding ref={slidingRef}>
       {allowEdit && (
         <IonItemOptions side="end" onIonSwipe={logout}>
           <IonItemOption color="danger" expandable onClick={logout}>
-            Log out
+            {isGuest ? "Remove" : "Log out"}
           </IonItemOption>
         </IonItemOptions>
       )}
@@ -79,11 +88,11 @@ export default function Account({ editing, account, allowEdit }: AccountProps) {
         )}
         {editing ? (
           <Line>
-            <IonLabel>{account.handle}</IonLabel>
+            <IonLabel>{label}</IonLabel>
             <IonReorder />
           </Line>
         ) : (
-          <IonRadio value={account.handle}>{account.handle}</IonRadio>
+          <IonRadio value={account.handle}>{label}</IonRadio>
         )}
       </IonItem>
     </IonItemSliding>

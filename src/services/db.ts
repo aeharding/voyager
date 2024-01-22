@@ -597,6 +597,10 @@ export class WefwefDB extends Dexie {
     key: T,
     value: SettingValueTypes[T],
     specificity?: {
+      /**
+       * Note: user_handle can be a user handle (`aeharding@lemmy.world`)
+       * or an instance handle (`lemmy.world`) when in guest mode
+       */
       user_handle?: string;
       community?: string;
     },
