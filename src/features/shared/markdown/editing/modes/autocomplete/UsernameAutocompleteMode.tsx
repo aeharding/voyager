@@ -4,6 +4,7 @@ import GenericAutocompleteMode, {
   AutocompleteModeProps,
 } from "./GenericAutocompleteMode";
 import { Person } from "lemmy-js-client";
+import { getRemoteHandle } from "../../../../../../helpers/lemmy";
 
 export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
   const client = useClient();
@@ -22,7 +23,7 @@ export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
   );
 
   const buildMd = useCallback((item: Person) => {
-    return `[@${item.name}](${item.actor_id})`;
+    return `[@${getRemoteHandle(item)}](${item.actor_id})`;
   }, []);
 
   return (
