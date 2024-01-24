@@ -14,7 +14,7 @@ export default function CommunitiesListRedirectBootstrapper() {
 
   return (
     <InitialPageRedirectBootstrapper
-      to={baseRoute ? buildGeneralBrowseLink(baseRoute) : undefined}
+      to={baseRoute != null ? buildGeneralBrowseLink(baseRoute) : undefined}
     />
   );
 }
