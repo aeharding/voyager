@@ -61,7 +61,9 @@ export default function LinkPreview({ link }: LinkPreviewProps): ReactNode {
     }
   }, [link.url, determineObjectTypeFromUrl]);
 
-  if (link.type === "image" || isUrlImage(link.url))
+  const isImage = useMemo(() => isUrlImage(link.url), [link.url]);
+
+  if (link.type === "image" || isImage)
     return (
       <LinkImage src={getImageSrc(link.url, { size: 30 })} alt={link.text} />
     );

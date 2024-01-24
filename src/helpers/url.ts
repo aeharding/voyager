@@ -18,16 +18,36 @@ export function isValidUrl(
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp"];
+function getPathname(url: string): string | undefined {
+  try {
+    return new URL(url).pathname;
+  } catch {
+    return;
+  }
+}
+
+const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl"];
 
 export function isUrlImage(url: string): boolean {
-  return imageExtensions.some((extension) => url.endsWith(`.${extension}`));
+  const pathname = getPathname(url);
+
+  if (!pathname) return false;
+
+  return imageExtensions.some((extension) =>
+    pathname.endsWith(`.${extension}`),
+  );
 }
 
 const videoExtensions = ["mp4", "webm"];
 
 export function isUrlVideo(url: string): boolean {
-  return videoExtensions.some((extension) => url.endsWith(`.${extension}`));
+  const pathname = getPathname(url);
+
+  if (!pathname) return false;
+
+  return videoExtensions.some((extension) =>
+    pathname.endsWith(`.${extension}`),
+  );
 }
 
 export function isUrlMedia(url: string): boolean {
