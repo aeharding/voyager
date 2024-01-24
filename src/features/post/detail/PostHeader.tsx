@@ -157,10 +157,15 @@ function PostHeader({
     [post],
   );
 
+  const urlIsMedia = useMemo(
+    () => post.post.url && isUrlMedia(post.post.url),
+    [post],
+  );
+
   const renderMedia = useCallback(() => {
     if (!post) return;
 
-    if ((post.post.url && isUrlMedia(post.post.url)) || markdownLoneImage) {
+    if (urlIsMedia || markdownLoneImage) {
       return (
         <LightboxPostMedia
           post={post}
@@ -170,7 +175,7 @@ function PostHeader({
         />
       );
     }
-  }, [markdownLoneImage, post, constrainHeight]);
+  }, [post, urlIsMedia, markdownLoneImage, constrainHeight]);
 
   const renderText = useCallback(() => {
     if (!post) return;
@@ -179,22 +184,21 @@ function PostHeader({
       return <StyledCrosspost post={post} url={crosspostUrl} />;
     }
 
-    const usedLoneImage =
-      markdownLoneImage && (!post.post.url || !isUrlMedia(post.post.url));
+    const usedLoneImage = markdownLoneImage && !urlIsMedia;
 
     if (post.post.body && !usedLoneImage) {
       return (
         <>
-          {post.post.url && !isUrlMedia(post.post.url) && <Embed post={post} />}
+          {post.post.url && !urlIsMedia && <Embed post={post} />}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
         </>
       );
     }
 
-    if (post.post.url && !isUrlMedia(post.post.url)) {
+    if (post.post.url && !urlIsMedia) {
       return <StyledEmbed post={post} />;
     }
-  }, [markdownLoneImage, post, crosspostUrl]);
+  }, [post, crosspostUrl, markdownLoneImage, urlIsMedia]);
 
   return (
     <ModeratableItem itemView={post}>

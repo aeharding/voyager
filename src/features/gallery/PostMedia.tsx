@@ -3,7 +3,7 @@ import { findLoneImage } from "../../helpers/markdown";
 import GalleryImg, { GalleryImgProps } from "./GalleryImg";
 import { isUrlMedia, isUrlVideo } from "../../helpers/url";
 import Video, { VideoProps } from "../shared/Video";
-import { RefObject, forwardRef, memo } from "react";
+import { RefObject, forwardRef, memo, useMemo } from "react";
 
 export interface PostGalleryImgProps
   extends Omit<GalleryImgProps & VideoProps, "src"> {
@@ -14,11 +14,12 @@ const PostMedia = forwardRef<
   HTMLVideoElement | HTMLImageElement,
   PostGalleryImgProps
 >(function PostMedia({ post, ...props }, ref) {
-  const src = getPostMedia(post);
+  const src = useMemo(() => getPostMedia(post), [post]);
+  const isVideo = useMemo(() => src && isUrlVideo(src), [src]);
 
-  if (src && isUrlVideo(src))
+  if (isVideo)
     return (
-      <Video ref={ref as RefObject<HTMLVideoElement>} src={src} {...props} />
+      <Video ref={ref as RefObject<HTMLVideoElement>} src={src!} {...props} />
     );
 
   return (
@@ -34,7 +35,11 @@ const PostMedia = forwardRef<
 export default memo(PostMedia);
 
 export function getPostMedia(post: PostView): string | undefined {
-  if (post.post.url && isUrlMedia(post.post.url)) return post.post.url;
+  if (post.post.url && isUrlMedia(post.post.url)) {
+    if (post.post.thumbnail_url) return post.post.thumbnail_url;
+
+    return post.post.url;
+  }
 
   if (post.post.thumbnail_url) return post.post.thumbnail_url;
 
