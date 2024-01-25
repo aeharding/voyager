@@ -17,7 +17,7 @@ import {
   IonNavLink,
   IonToggle,
 } from "@ionic/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useClient from "../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
@@ -97,12 +97,14 @@ export default function PostEditorRoot({
 
   const existingPost = "existingPost" in props ? props.existingPost : undefined;
 
+  const isImage = useMemo(
+    () => existingPost?.post.url && isUrlImage(existingPost.post.url),
+    [existingPost],
+  );
+
   const dispatch = useAppDispatch();
 
-  const initialImage =
-    existingPost?.post.url && isUrlImage(existingPost.post.url)
-      ? existingPost.post.url
-      : undefined;
+  const initialImage = isImage ? existingPost!.post.url : undefined;
 
   const initialPostType = (() => {
     if (!existingPost) return "photo";

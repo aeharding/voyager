@@ -13,9 +13,10 @@ import { ApplicationContext } from "capacitor-application-context";
 import { resetInstances } from "../instances/instancesSlice";
 import { resetResolve } from "../resolve/resolveSlice";
 import { resetMod } from "../moderation/modSlice";
-import { jwtIssSelector } from "./authSelectors";
+import { getInstanceFromHandle, instanceSelector } from "./authSelectors";
 import { receivedSite, resetSite } from "./siteSlice";
 import { Register } from "lemmy-js-client";
+import { setDefaultFeed } from "../settings/settingsSlice";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -36,16 +37,28 @@ const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 /**
  * DO NOT CHANGE this type. It is persisted in the login cookie
  */
-export interface Credential {
-  jwt: string;
+export type Credential = {
+  jwt?: string;
+
+  /**
+   * Can either be user handle or instance url.
+   *
+   * e.g. `aeharding@lemmy.world` or `lemmy.world`
+   */
   handle: string;
-}
+};
 
 /**
  * DO NOT CHANGE this type. It is persisted in localStorage
  */
 type CredentialStoragePayload = {
   accounts: Credential[];
+
+  /**
+   * Can either be user handle or instance url.
+   *
+   * e.g. `aeharding@lemmy.world` or `lemmy.world`
+   */
   activeHandle: string;
 };
 
@@ -71,8 +84,25 @@ export const authSlice = createSlice({
         activeHandle: action.payload.handle,
       };
 
+      let cleanedPreviousAccounts;
+
+      if (
+        state.accountData.accounts.length === 1 &&
+        !state.accountData.accounts[0]?.handle.includes("@")
+      ) {
+        // If only one account, and it's a guest, just switch it out
+        cleanedPreviousAccounts = [action.payload];
+      } else {
+        // Remove guest accounts for this instance when logging in
+        cleanedPreviousAccounts = differenceWith(
+          state.accountData.accounts,
+          [getInstanceFromHandle(action.payload.handle)],
+          (a, b) => a.handle === b,
+        );
+      }
+
       const accounts = uniqBy(
-        [action.payload, ...state.accountData.accounts],
+        [action.payload, ...cleanedPreviousAccounts],
         (c) => c.handle,
       );
 
@@ -179,6 +209,18 @@ export const register =
     return true;
   };
 
+export const addGuestInstance =
+  (url: string) => async (dispatch: AppDispatch) => {
+    const client = getClient(url);
+
+    const site = await client.getSite();
+
+    dispatch(resetAccountSpecificStoreData());
+    dispatch(receivedSite(site));
+    dispatch(addAccount({ handle: url }));
+    dispatch(updateConnectedInstance(url));
+  };
+
 const addJwt =
   (baseUrl: string, jwt: string) => async (dispatch: AppDispatch) => {
     const authenticatedClient = getClient(baseUrl, jwt);
@@ -188,12 +230,13 @@ const addJwt =
 
     if (!myUser) throw new Error("broke");
 
+    dispatch(resetAccountSpecificStoreData());
     dispatch(receivedSite(site));
     dispatch(addAccount({ jwt, handle: getRemoteHandle(myUser) }));
     dispatch(updateConnectedInstance(parseJWT(jwt).iss));
   };
 
-const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
+const resetAccountSpecificStoreData = () => (dispatch: AppDispatch) => {
   dispatch(resetPosts());
   dispatch(resetComments());
   dispatch(resetUsers());
@@ -203,9 +246,10 @@ const resetAccountSpecificStoreData = () => async (dispatch: AppDispatch) => {
   dispatch(resetInstances());
   dispatch(resetMod());
   dispatch(resetSite());
+  dispatch(setDefaultFeed(undefined));
 };
 
-export const logoutEverything = () => async (dispatch: AppDispatch) => {
+export const logoutEverything = () => (dispatch: AppDispatch) => {
   dispatch(reset());
   dispatch(resetAccountSpecificStoreData());
 };
@@ -215,8 +259,8 @@ export const changeAccount =
     dispatch(resetAccountSpecificStoreData());
     dispatch(setPrimaryAccount(handle));
 
-    const iss = jwtIssSelector(getState());
-    if (iss) dispatch(updateConnectedInstance(iss));
+    const instanceUrl = instanceSelector(getState());
+    if (instanceUrl) dispatch(updateConnectedInstance(instanceUrl));
   };
 
 export const logoutAccount =
@@ -232,13 +276,13 @@ export const logoutAccount =
     }
 
     // revoke token
-    if (currentAccount)
+    if (currentAccount && currentAccount.jwt)
       getClient(parseJWT(currentAccount.jwt).iss, currentAccount.jwt)?.logout();
 
     dispatch(removeAccount(handle));
 
-    const iss = jwtIssSelector(getState());
-    if (iss) dispatch(updateConnectedInstance(iss));
+    const instanceUrl = instanceSelector(getState());
+    if (instanceUrl) dispatch(updateConnectedInstance(instanceUrl));
   };
 
 function updateCredentialsStorage(
@@ -271,10 +315,19 @@ updateApplicationContextIfNeeded(getCredentialsFromStorage());
 function updateApplicationContextIfNeeded(
   accounts: CredentialStoragePayload | undefined,
 ) {
+  const DEFAULT_INSTANCE = "lemmy.world";
+
+  const connectedInstance = (() => {
+    if (!accounts) return DEFAULT_INSTANCE;
+    if (!accounts.activeHandle.includes("@")) return accounts.activeHandle;
+
+    return accounts.activeHandle.slice(
+      accounts.activeHandle.lastIndexOf("@") + 1,
+    );
+  })();
+
   ApplicationContext.updateApplicationContext({
-    connectedInstance: accounts
-      ? accounts.activeHandle.slice(accounts.activeHandle.lastIndexOf("@") + 1)
-      : "lemmy.world",
+    connectedInstance,
     authToken: accounts
       ? accounts.accounts.find((a) => a.handle === accounts.activeHandle)
           ?.jwt ?? ""

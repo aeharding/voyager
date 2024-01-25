@@ -1,4 +1,4 @@
-import { HTMLProps } from "react";
+import { HTMLProps, useMemo } from "react";
 import { isUrlVideo } from "../../helpers/url";
 import GalleryImg, { GalleryImgProps } from "../gallery/GalleryImg";
 import Video from "./Video";
@@ -19,11 +19,15 @@ interface MarkdownImgProps
 
 export default function MarkdownImg({ small, ...props }: MarkdownImgProps) {
   const sharedStyles = small ? smallStyles : undefined;
+  const isVideo = useMemo(
+    () => props.src && isUrlVideo(props.src),
+    [props.src],
+  );
 
-  if (props.src && isUrlVideo(props.src))
+  if (isVideo)
     return (
       <Video
-        src={props.src}
+        src={props.src!}
         progress={false}
         css={sharedStyles}
         controls={!small}

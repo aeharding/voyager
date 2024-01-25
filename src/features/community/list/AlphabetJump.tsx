@@ -11,8 +11,8 @@ import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { ImpactStyle } from "@capacitor/haptics";
 import { ellipseOutline, menuOutline, star } from "ionicons/icons";
 import { IonIcon } from "@ionic/react";
-import { notEmpty } from "../../../helpers/array";
 import { findCurrentPage } from "../../../helpers/ionic";
+import { compact } from "lodash";
 
 const alphabetUpperCase = Array.from({ length: 26 }, (_, i) =>
   String.fromCharCode(65 + i),
@@ -108,19 +108,19 @@ export default function AlphabetJump({
   const jumpTableLookup = useMemo(
     () =>
       buildJumpToTable(
-        [
+        compact([
           SpecialSection.Home,
           hasFavorited ? SpecialSection.Favorited : undefined,
           hasModerated ? SpecialSection.Moderated : undefined,
           ...letters,
-        ].filter(notEmpty),
-        [
+        ]),
+        compact([
           SpecialSection.Home,
           SpecialSection.Favorited,
           SpecialSection.Moderated,
           ...alphabetUpperCase,
           "#",
-        ].filter(notEmpty),
+        ]),
       ),
     [hasFavorited, hasModerated, letters],
   );

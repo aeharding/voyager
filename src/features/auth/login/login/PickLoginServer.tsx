@@ -81,6 +81,13 @@ export default function PickLoginServer() {
     try {
       site = await getClient(potentialServer).getSite();
     } catch (error) {
+      // Dirty input with candidate
+      if (instances[0]) {
+        setDirty(false);
+        setSearch(instances[0]);
+        return;
+      }
+
       presentToast({
         message: `Problem connecting to ${potentialServer}. Please try again`,
         color: "danger",

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import { updateConnectedInstance } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
@@ -10,62 +10,93 @@ import { isLemmyError } from "./helpers/lemmy";
 import useAppToast from "./helpers/useAppToast";
 import BackgroundReportSync from "./features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "./features/auth/siteSlice";
-import { jwtIssSelector, jwtSelector } from "./features/auth/authSelectors";
+import { instanceSelector, jwtSelector } from "./features/auth/authSelectors";
+import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
+import { TabContext } from "./TabContext";
 
 interface AuthProps {
   children: React.ReactNode;
 }
 
 export default function Auth({ children }: AuthProps) {
-  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
-  const iss = useAppSelector(jwtIssSelector);
+  const selectedInstance = useAppSelector(instanceSelector);
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+
+  const router = useOptimizedIonRouter();
+  const { tabRef } = useContext(TabContext);
+  const oldInstanceRef = useRef(selectedInstance);
+
+  useEffect(() => {
+    // On change, reset tab state in ionic router
+    if (oldInstanceRef.current !== selectedInstance) {
+      router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+
+      oldInstanceRef.current = selectedInstance;
+    }
+
+    dispatch(getSiteIfNeeded());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jwt, connectedInstance]);
+
+  return (
+    // Rebuild routing on instance change
+    <React.Fragment key={connectedInstance ?? getDefaultServer()}>
+      <AuthLocation />
+      {connectedInstance ? children : undefined}
+    </React.Fragment>
+  );
+}
+
+/**
+ * Separate component so that it doesn't rerender react component tree on location change
+ */
+function AuthLocation() {
+  const location = useLocation();
+
+  const dispatch = useAppDispatch();
+  const presentToast = useAppToast();
+  const pageVisibility = usePageVisibility();
+  const jwt = useAppSelector(jwtSelector);
+
+  const selectedInstance = useAppSelector(instanceSelector);
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
+
   const hasModdedSubs = useAppSelector(
     (state) =>
       !!state.site.response?.my_user?.moderates.length ||
       !!isAdminSelector(state),
   );
-  const location = useLocation();
-  const pageVisibility = usePageVisibility();
-
-  useEffect(() => {
-    if (!location.pathname.startsWith("/posts")) {
-      if (connectedInstance) return;
-
-      dispatch(updateConnectedInstance(iss ?? getDefaultServer()));
-    }
-
-    const potentialConnectedInstance = location.pathname.split("/")[2];
-
-    if (connectedInstance === potentialConnectedInstance) return;
-
-    if (potentialConnectedInstance?.includes("."))
-      dispatch(updateConnectedInstance(potentialConnectedInstance));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
-
-  useEffect(() => {
-    dispatch(getSiteIfNeeded());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jwt, connectedInstance]);
 
   const shouldSyncMessages = useCallback(() => {
     return jwt && location.pathname.startsWith("/inbox/messages");
   }, [jwt, location]);
 
-  useInterval(
-    () => {
-      if (!pageVisibility) return;
-      if (!shouldSyncMessages()) return;
+  useEffect(() => {
+    if (connectedInstance) return;
 
-      dispatch(syncMessages());
-    },
-    shouldSyncMessages() ? 1_000 * 15 : null,
-  );
+    const potentialConnectedInstance = location.pathname.split("/")[2];
+
+    if (
+      potentialConnectedInstance &&
+      connectedInstance === potentialConnectedInstance
+    )
+      return;
+
+    if (selectedInstance) {
+      dispatch(updateConnectedInstance(selectedInstance));
+    } else if (potentialConnectedInstance?.includes(".")) {
+      dispatch(updateConnectedInstance(potentialConnectedInstance));
+    } else {
+      dispatch(updateConnectedInstance(getDefaultServer()));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   const getInboxCountsAndErrorIfNeeded = useCallback(async () => {
     try {
@@ -86,6 +117,16 @@ export default function Auth({ children }: AuthProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
+
+  useInterval(
+    () => {
+      if (!pageVisibility) return;
+      if (!shouldSyncMessages()) return;
+
+      dispatch(syncMessages());
+    },
+    shouldSyncMessages() ? 1_000 * 15 : null,
+  );
 
   useInterval(() => {
     if (!pageVisibility) return;
@@ -108,12 +149,5 @@ export default function Auth({ children }: AuthProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageVisibility]);
 
-  if (!connectedInstance) return;
-
-  return (
-    <>
-      {hasModdedSubs && <BackgroundReportSync />}
-      {children}
-    </>
-  );
+  return <>{hasModdedSubs && <BackgroundReportSync />}</>;
 }

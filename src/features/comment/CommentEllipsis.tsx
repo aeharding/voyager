@@ -26,7 +26,6 @@ import {
   PersonMentionView,
 } from "lemmy-js-client";
 import { useContext } from "react";
-import { notEmpty } from "../../helpers/array";
 import {
   getHandle,
   getRemoteHandle,
@@ -42,7 +41,7 @@ import {
 } from "../../helpers/toastMessages";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
-import { handleSelector } from "../auth/authSelectors";
+import { userHandleSelector } from "../auth/authSelectors";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
@@ -52,6 +51,7 @@ import useCommentModActions from "../moderation/useCommentModActions";
 import { ActionButton } from "../post/actions/ActionButton";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { isDownvoteEnabledSelector } from "../auth/siteSlice";
+import { compact } from "lodash";
 
 const StyledIonIcon = styled(IonIcon)`
   font-size: 1.2em;
@@ -73,7 +73,7 @@ export default function MoreActions({
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const { prependComments, getComments } = useContext(CommentsContext);
-  const myHandle = useAppSelector(handleSelector);
+  const myHandle = useAppSelector(userHandleSelector);
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();
@@ -119,15 +119,13 @@ export default function MoreActions({
   function onClick() {
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: [
-        canModerate
-          ? {
-              cssClass: `${canModerate} detail`,
-              text: "Moderator",
-              icon: getModIcon(canModerate),
-              handler: presentCommentModActions,
-            }
-          : undefined,
+      buttons: compact([
+        canModerate && {
+          cssClass: `${canModerate} detail`,
+          text: "Moderator",
+          icon: getModIcon(canModerate),
+          handler: presentCommentModActions,
+        },
         ...(appendActions || []),
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
@@ -271,28 +269,24 @@ export default function MoreActions({
             share(comment);
           },
         },
-        rootIndex !== undefined
-          ? {
-              text: "Share as image...",
-              icon: cameraOutline,
-              handler: () => {
-                const comments = getComments();
+        rootIndex !== undefined && {
+          text: "Share as image...",
+          icon: cameraOutline,
+          handler: () => {
+            const comments = getComments();
 
-                if (!comments || !post || post === "not-found") return;
+            if (!comments || !post || post === "not-found") return;
 
-                presentShareAsImage(post, commentView, comments);
-              },
-            }
-          : undefined,
-        rootIndex !== undefined
-          ? {
-              text: "Collapse to Top",
-              icon: chevronCollapseOutline,
-              handler: () => {
-                collapseRootComment();
-              },
-            }
-          : undefined,
+            presentShareAsImage(post, commentView, comments);
+          },
+        },
+        rootIndex !== undefined && {
+          text: "Collapse to Top",
+          icon: chevronCollapseOutline,
+          handler: () => {
+            collapseRootComment();
+          },
+        },
         {
           text: "Report",
           role: "report",
@@ -305,7 +299,7 @@ export default function MoreActions({
           text: "Cancel",
           role: "cancel",
         },
-      ].filter(notEmpty),
+      ]),
     });
   }
 

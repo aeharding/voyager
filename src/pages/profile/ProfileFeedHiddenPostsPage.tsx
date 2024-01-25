@@ -20,7 +20,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../features/feed/PostCommentFeed";
-import { handleSelector } from "../../features/auth/authSelectors";
+import { userHandleSelector } from "../../features/auth/authSelectors";
 import { IPostMetadata, db } from "../../services/db";
 import {
   clearHidden,
@@ -42,7 +42,7 @@ const LIMIT = 10;
 
 export default function ProfileFeedHiddenPostsPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const handle = useAppSelector(handleSelector);
+  const handle = useAppSelector(userHandleSelector);
   const { handle: handleWithoutServer } = useParams<{ handle: string }>();
   const client = useClient();
   const postById = useAppSelector((state) => state.post.postById);

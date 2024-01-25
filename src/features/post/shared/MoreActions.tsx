@@ -35,7 +35,6 @@ import {
   share,
 } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { notEmpty } from "../../../helpers/array";
 import { PageContext } from "../../auth/PageContext";
 import {
   postLocked,
@@ -44,13 +43,14 @@ import {
   voteError,
 } from "../../../helpers/toastMessages";
 import { ActionButton } from "../actions/ActionButton";
-import { handleSelector } from "../../auth/authSelectors";
+import { userHandleSelector } from "../../auth/authSelectors";
 import useAppToast from "../../../helpers/useAppToast";
 import usePostModActions from "../../moderation/usePostModActions";
 import useCanModerate, { getModIcon } from "../../moderation/useCanModerate";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
 import { resolveObject } from "../../resolve/resolveSlice";
+import { compact } from "lodash";
 
 interface MoreActionsProps {
   post: PostView;
@@ -71,7 +71,7 @@ export default function MoreActions({
   const isHidden = useAppSelector(
     (state) => state.post.postHiddenById[post.post.id]?.hidden,
   );
-  const myHandle = useAppSelector(handleSelector);
+  const myHandle = useAppSelector(userHandleSelector);
 
   const router = useOptimizedIonRouter();
 
@@ -101,15 +101,13 @@ export default function MoreActions({
   function onClick() {
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: [
-        canModerate
-          ? {
-              text: "Moderator",
-              icon: getModIcon(canModerate),
-              cssClass: `${canModerate} detail`,
-              handler: presentPostModActions,
-            }
-          : undefined,
+      buttons: compact([
+        canModerate && {
+          text: "Moderator",
+          icon: getModIcon(canModerate),
+          cssClass: `${canModerate} detail`,
+          handler: presentPostModActions,
+        },
         {
           text: myVote !== 1 ? "Upvote" : "Undo Upvote",
           icon: arrowUpOutline,
@@ -127,27 +125,25 @@ export default function MoreActions({
             })();
           },
         },
-        downvoteAllowed
-          ? {
-              text: myVote !== -1 ? "Downvote" : "Undo Downvote",
-              icon: arrowDownOutline,
-              handler: () => {
-                (async () => {
-                  if (presentLoginIfNeeded()) return;
+        downvoteAllowed && {
+          text: myVote !== -1 ? "Downvote" : "Undo Downvote",
+          icon: arrowDownOutline,
+          handler: () => {
+            (async () => {
+              if (presentLoginIfNeeded()) return;
 
-                  try {
-                    await dispatch(
-                      voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
-                    );
-                  } catch (error) {
-                    presentToast(voteError);
+              try {
+                await dispatch(
+                  voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
+                );
+              } catch (error) {
+                presentToast(voteError);
 
-                    throw error;
-                  }
-                })();
-              },
-            }
-          : undefined,
+                throw error;
+              }
+            })();
+          },
+        },
         {
           text: !mySaved ? "Save" : "Unsave",
           icon: bookmarkOutline,
@@ -167,47 +163,43 @@ export default function MoreActions({
             })();
           },
         },
-        isMyPost
-          ? {
-              text: "Delete",
-              icon: trashOutline,
-              handler: () => {
-                presentSecondaryActionSheet({
-                  buttons: [
-                    {
-                      text: "Delete Post",
-                      role: "destructive",
-                      handler: () => {
-                        (async () => {
-                          await dispatch(deletePost(post.post.id));
+        isMyPost && {
+          text: "Delete",
+          icon: trashOutline,
+          handler: () => {
+            presentSecondaryActionSheet({
+              buttons: [
+                {
+                  text: "Delete Post",
+                  role: "destructive",
+                  handler: () => {
+                    (async () => {
+                      await dispatch(deletePost(post.post.id));
 
-                          presentToast({
-                            message: "Post deleted",
-                            color: "success",
-                            centerText: true,
-                            icon: checkmark,
-                          });
-                        })();
-                      },
-                    },
-                    {
-                      text: "Cancel",
-                      role: "cancel",
-                    },
-                  ],
-                });
-              },
-            }
-          : undefined,
-        isMyPost
-          ? {
-              text: "Edit",
-              icon: pencilOutline,
-              handler: () => {
-                presentPostEditor(post);
-              },
-            }
-          : undefined,
+                      presentToast({
+                        message: "Post deleted",
+                        color: "success",
+                        centerText: true,
+                        icon: checkmark,
+                      });
+                    })();
+                  },
+                },
+                {
+                  text: "Cancel",
+                  role: "cancel",
+                },
+              ],
+            });
+          },
+        },
+        isMyPost && {
+          text: "Edit",
+          icon: pencilOutline,
+          handler: () => {
+            presentPostEditor(post);
+          },
+        },
         {
           text: "Reply",
           icon: arrowUndoOutline,
@@ -245,23 +237,21 @@ export default function MoreActions({
           icon: textOutline,
           handler: () => {
             presentSelectText(
-              [post.post.name, post.post.body].filter(notEmpty).join("\n\n"),
+              compact([post.post.name, post.post.body]).join("\n\n"),
             );
           },
         },
-        onFeed
-          ? {
-              text: isHidden ? "Unhide" : "Hide",
-              icon: isHidden ? eyeOutline : eyeOffOutline,
-              handler: () => {
-                if (presentLoginIfNeeded()) return;
+        onFeed && {
+          text: isHidden ? "Unhide" : "Hide",
+          icon: isHidden ? eyeOutline : eyeOffOutline,
+          handler: () => {
+            if (presentLoginIfNeeded()) return;
 
-                const fn = isHidden ? unhidePost : hidePost;
+            const fn = isHidden ? unhidePost : hidePost;
 
-                dispatch(fn(post.post.id));
-              },
-            }
-          : undefined,
+            dispatch(fn(post.post.id));
+          },
+        },
         {
           text: "Share",
           data: "share",
@@ -321,7 +311,7 @@ export default function MoreActions({
           text: "Cancel",
           role: "cancel",
         },
-      ].filter(notEmpty),
+      ]),
     });
   }
 

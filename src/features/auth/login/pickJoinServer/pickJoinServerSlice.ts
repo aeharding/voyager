@@ -34,7 +34,7 @@ export const getInstances = () => async (dispatch: AppDispatch) => {
   const unorderedInstances = sortBy(
     intersectionWith(instances, serverWhitelist, (a, b) => a.baseurl === b),
     (instance) => -instance.trust.score,
-  );
+  ).filter((server) => server.open);
 
   const customSortFn = buildPrioritizeAndSortFn(
     getCustomServers(),

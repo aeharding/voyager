@@ -53,7 +53,12 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
     (state) => state.settings.appearance.posts.blurNsfw,
   );
 
-  if ((post.post.url && isUrlMedia(post.post.url)) || markdownLoneImage) {
+  const urlIsMedia = useMemo(
+    () => post.post.url && isUrlMedia(post.post.url),
+    [post],
+  );
+
+  if (urlIsMedia || markdownLoneImage) {
     return (
       <ImageContainer>
         <Media

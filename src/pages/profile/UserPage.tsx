@@ -12,7 +12,7 @@ import UserPageActions from "../../features/user/UserPageActions";
 import ProfilePageActions from "../../features/user/ProfilePageActions";
 import { useAppSelector } from "../../store";
 import {
-  handleSelector,
+  userHandleSelector,
   usernameSelector,
 } from "../../features/auth/authSelectors";
 import FeedContent from "../shared/FeedContent";
@@ -32,7 +32,7 @@ const UserPageContent = memo(function UserPageContent({
   handle,
 }: UserPageProps) {
   const myUsername = useAppSelector(usernameSelector);
-  const myHandle = useAppSelector(handleSelector);
+  const myHandle = useAppSelector(userHandleSelector);
   const isSelf = handle === myUsername || handle === myHandle;
 
   return (

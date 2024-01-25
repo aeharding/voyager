@@ -121,11 +121,12 @@ export default function Thumbnail({ post }: ImgProps) {
     [post],
   );
 
-  const postImageSrc = (() => {
+  const postImageSrc = useMemo(() => {
     if (post.post.url && isUrlImage(post.post.url)) return post.post.url;
 
     if (markdownLoneImage) return markdownLoneImage.url;
-  })();
+  }, [markdownLoneImage, post.post.url]);
+
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,
   );

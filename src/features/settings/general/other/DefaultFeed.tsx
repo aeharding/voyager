@@ -10,7 +10,7 @@ import { ODefaultFeedType } from "../../../../services/db";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { updateDefaultFeed } from "../../settingsSlice";
 import SettingSelector from "../../shared/SettingSelector";
-import { jwtSelector } from "../../../auth/authSelectors";
+import { loggedInSelector, handleSelector } from "../../../auth/authSelectors";
 import { useIonModal } from "@ionic/react";
 import CommunitySelectorModal from "../../../shared/selectorModals/CommunitySelectorModal";
 import { CommunityView } from "lemmy-js-client";
@@ -24,7 +24,8 @@ export default function DefaultFeed() {
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,
   );
-  const jwt = useAppSelector(jwtSelector);
+  const loggedIn = useAppSelector(loggedInSelector);
+  const handle = useAppSelector(handleSelector);
   const { pageRef } = useContext(PageContext);
   const moderatedFeedSupported = useSupported("Modded Feed");
 
@@ -52,7 +53,12 @@ export default function DefaultFeed() {
   const options: any = { ...ODefaultFeedType };
   if (!moderatedFeedSupported) delete options["Moderating"];
 
-  if (!jwt || !defaultFeed) return; // must be logged in to configure default feed
+  if (!loggedIn) {
+    delete options["Home"];
+    delete options["Moderating"];
+  }
+
+  if (!handle || !defaultFeed) return; // must have specified handle
 
   return (
     <SettingSelector

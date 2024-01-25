@@ -22,8 +22,7 @@ import {
 } from "../../helpers/toastMessages";
 import useAppToast from "../../helpers/useAppToast";
 import { reportsByPostIdSelector, resolvePostReport } from "./modSlice";
-import { groupBy, values } from "lodash";
-import { notEmpty } from "../../helpers/array";
+import { compact, groupBy, values } from "lodash";
 import { useContext } from "react";
 import { PageContext } from "../auth/PageContext";
 import { banUser } from "../user/userSlice";
@@ -52,7 +51,7 @@ export default function usePostModActions(post: PostView) {
     presentActionSheet({
       cssClass: `${role} left-align-buttons report-reasons`,
       header: stringifyReports(reports),
-      buttons: [
+      buttons: compact([
         !post.post.removed && reports?.length
           ? {
               text: "Approve",
@@ -150,7 +149,7 @@ export default function usePostModActions(post: PostView) {
           text: "Cancel",
           role: "cancel",
         },
-      ].filter(notEmpty),
+      ]),
     });
   };
 }

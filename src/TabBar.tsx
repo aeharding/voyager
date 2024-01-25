@@ -23,15 +23,19 @@ import { resetSavedStatusTap } from "./listeners/statusTap";
 import { useLocation } from "react-router";
 import { useAppSelector } from "./store";
 import {
-  handleSelector,
-  jwtIssSelector,
+  userHandleSelector,
+  instanceSelector,
   jwtSelector,
+  accountsListEmptySelector,
 } from "./features/auth/authSelectors";
 import { forwardRef, useContext, useEffect, useMemo } from "react";
 import { getDefaultServer } from "./services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
 import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
 import { PageContext } from "./features/auth/PageContext";
+import { useLongPress } from "use-long-press";
+import { ImpactStyle } from "@capacitor/haptics";
+import useHapticFeedback from "./helpers/useHapticFeedback";
 
 const Interceptor = styled.div`
   position: absolute;
@@ -53,8 +57,9 @@ type CustomTabBarType = typeof IonTabBar & {
 const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const location = useLocation();
   const router = useOptimizedIonRouter();
+  const vibrate = useHapticFeedback();
 
-  const iss = useAppSelector(jwtIssSelector);
+  const selectedInstance = useAppSelector(instanceSelector);
 
   useEffect(() => {
     resetSavedStatusTap();
@@ -64,9 +69,11 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const shouldInstall = useShouldInstall();
 
   const { activePageRef } = useContext(AppContext);
-  const { presentAccountSwitcher } = useContext(PageContext);
+  const { presentAccountSwitcher, presentLoginIfNeeded } =
+    useContext(PageContext);
 
   const jwt = useAppSelector(jwtSelector);
+  const accountsListEmpty = useAppSelector(accountsListEmptySelector);
   const totalUnread = useAppSelector(totalUnreadSelector);
 
   const settingsNotificationCount =
@@ -77,7 +84,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   );
   const actor = location.pathname.split("/")[2];
 
-  const userHandle = useAppSelector(handleSelector);
+  const userHandle = useAppSelector(userHandleSelector);
   const profileLabelType = useAppSelector(
     (state) => state.settings.appearance.general.profileLabel,
   );
@@ -99,11 +106,16 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
-      router.push(`/posts/${actor ?? iss ?? getDefaultServer()}`, "back");
+      router.push(
+        `/posts/${actor ?? selectedInstance ?? getDefaultServer()}`,
+        "back",
+      );
       return;
     }
 
-    const communitiesPath = `/posts/${actor ?? iss ?? getDefaultServer()}`;
+    const communitiesPath = `/posts/${
+      actor ?? selectedInstance ?? getDefaultServer()
+    }`;
     if (
       location.pathname === communitiesPath ||
       location.pathname === `${communitiesPath}/`
@@ -114,7 +126,9 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       router.goBack();
     } else {
       router.push(
-        `/posts/${actor ?? iss ?? getDefaultServer()}/${jwt ? "home" : "all"}`,
+        `/posts/${actor ?? selectedInstance ?? getDefaultServer()}/${
+          jwt ? "home" : "all"
+        }`,
         "back",
       );
     }
@@ -139,7 +153,13 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     // if the profile page is already open, show the account switcher
-    if (location.pathname === "/profile" && jwt) presentAccountSwitcher();
+    if (location.pathname === "/profile") {
+      if (!accountsListEmpty) {
+        presentAccountSwitcher();
+      } else {
+        presentLoginIfNeeded();
+      }
+    }
 
     router.push("/profile", "back");
   }
@@ -163,13 +183,19 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     router.push(`/settings`, "back");
   }
 
+  const presentAccountSwitcherBind = useLongPress(() => {
+    vibrate({ style: ImpactStyle.Light });
+
+    if (!accountsListEmpty) {
+      presentAccountSwitcher();
+    } else {
+      presentLoginIfNeeded();
+    }
+  });
+
   return (
     <IonTabBar {...props} ref={ref}>
-      <IonTabButton
-        disabled={isPostsButtonDisabled}
-        tab="posts"
-        href={`/posts/${connectedInstance}`}
-      >
+      <IonTabButton disabled={isPostsButtonDisabled} tab="posts" href="/posts">
         <IonIcon aria-hidden="true" icon={telescope} />
         <IonLabel>Posts</IonLabel>
         <Interceptor onClick={onPostsClick} />
@@ -189,7 +215,10 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       >
         <IonIcon aria-hidden="true" icon={personCircleOutline} />
         <ProfileLabel>{profileTabLabel}</ProfileLabel>
-        <Interceptor onClick={onProfileClick} />
+        <Interceptor
+          onClick={onProfileClick}
+          {...presentAccountSwitcherBind()}
+        />
       </IonTabButton>
       <IonTabButton
         disabled={isSearchButtonDisabled}

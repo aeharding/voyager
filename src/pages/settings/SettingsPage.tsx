@@ -26,7 +26,7 @@ import useShouldInstall from "../../features/pwa/useShouldInstall";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { handleSelector } from "../../features/auth/authSelectors";
+import { userHandleSelector } from "../../features/auth/authSelectors";
 import {
   isAppleDeviceInstalledToHomescreen,
   isNative,
@@ -76,7 +76,7 @@ const AppIcon = styled.img`
 export default function SettingsPage() {
   const { status: updateStatus, checkForUpdates } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
-  const currentHandle = useAppSelector(handleSelector);
+  const currentHandle = useAppSelector(userHandleSelector);
   const icon = useAppSelector((state) => state.appIcon.icon);
   const pageRef = useRef<HTMLElement>(null);
   const biometricSupported = useAppSelector(biometricSupportedSelector);
