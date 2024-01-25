@@ -68,6 +68,15 @@ export function calculateScrollTop(
   const elementBottom =
     elementRect.bottom - parentRect.top + scrollPaddingBottomValue;
 
+  // Adjust scroll top for tall elements
+  const maxVisibleHeight =
+    parentScroll.offsetHeight -
+    scrollPaddingTopValue -
+    scrollPaddingBottomValue;
+  if (elementBottom - elementTop > maxVisibleHeight) {
+    return parentScroll.scrollTop + elementTop;
+  }
+
   if (elementTop < 0) {
     return parentScroll.scrollTop + elementTop;
   }

@@ -21,6 +21,7 @@ export const SERVERS_BY_CATEGORY = {
     "lemy.lol",
     "thelemmy.club",
     "lemmy.cafe",
+    "toast.ooo",
     "endlesstalk.org",
   ],
   regional: [
