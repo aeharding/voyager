@@ -20,7 +20,10 @@ import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { Centered, Spinner } from "../../../auth/login/LoginNav";
-import { userHandleSelector } from "../../../auth/authSelectors";
+import {
+  loggedInAccountsSelector,
+  userHandleSelector,
+} from "../../../auth/authSelectors";
 import { receivedComments } from "../../commentSlice";
 import CommentContent from "../shared";
 import useTextRecovery, {
@@ -74,7 +77,7 @@ export default function CommentReply({
 
   const isUsingAppAccount = selectedAccount === userHandle;
 
-  const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
+  const accounts = useAppSelector(loggedInAccountsSelector);
   const resolvedRef = useRef<ResolveObjectResponse | undefined>();
   const selectedAccountJwt = accounts?.find(
     ({ handle }) => handle === selectedAccount,
@@ -93,6 +96,7 @@ export default function CommentReply({
     AccountSwitcher,
     {
       allowEdit: false,
+      showGuest: false,
       activeHandle: selectedAccount,
       onDismiss: (data?: string, role?: string) =>
         onDismissAccountSwitcher(data, role),

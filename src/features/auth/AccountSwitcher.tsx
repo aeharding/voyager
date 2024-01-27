@@ -18,12 +18,14 @@ import { useEffect, useRef, useState } from "react";
 import Account from "./Account";
 import { setAccounts } from "./authSlice";
 import { moveItem } from "../../helpers/array";
+import { loggedInAccountsSelector } from "./authSelectors";
 
 interface AccountSwitcherProps {
   onDismiss: (data?: string, role?: string) => void;
   presentLogin: () => void;
   onSelectAccount: (account: string) => void;
   allowEdit?: boolean;
+  showGuest?: boolean;
   activeHandle?: string;
 }
 
@@ -32,11 +34,16 @@ export default function AccountSwitcher({
   presentLogin,
   onSelectAccount,
   allowEdit = true,
+  showGuest = true,
   activeHandle: _activeHandle,
 }: AccountSwitcherProps) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-  const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
+  const accounts = useAppSelector(
+    showGuest
+      ? (state) => state.auth.accountData?.accounts
+      : loggedInAccountsSelector,
+  );
   const oldAccountsCountRef = useRef(accounts?.length ?? 0);
   const appActiveHandle = useAppSelector(
     (state) => state.auth.accountData?.activeHandle,
