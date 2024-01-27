@@ -12,12 +12,12 @@ import { PrivateMessageView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getHandle } from "../../../helpers/lemmy";
 import ItemIcon from "../../labels/img/ItemIcon";
-import { chevronForwardOutline, trashOutline } from "ionicons/icons";
+import { chevronForwardOutline, removeCircle } from "ionicons/icons";
 import Time from "./Time";
 import { css } from "@emotion/react";
-import { clientSelector, jwtSelector } from "../../auth/authSlice";
 import { resetMessages, syncMessages } from "../inboxSlice";
 import { useState } from "react";
+import { clientSelector } from "../../auth/authSelectors";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin: 0.75rem 0;
@@ -116,7 +116,6 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   );
   const client = useAppSelector(clientSelector);
-  const jwt = useAppSelector(jwtSelector);
 
   const previewMsg = messages[0]!; // presorted, newest => oldest
 
@@ -128,62 +127,51 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
   const unread = !!messages.find((msg) => !msg.private_message.read);
 
   async function onDelete() {
-    if (!jwt) return;
     const mine = messages.filter((m) => m.creator.id === myUserId);
     const theirs = messages.filter((m) => m.creator.id !== myUserId);
+
+    const theirPotentialRecentMessage = theirs.pop();
+
+    if (!theirPotentialRecentMessage) return;
 
     if (mine.length <= 1) {
       await present("Block and report conversation?", [
         {
-          text: "Just delete",
+          text: "Just block",
+          role: "destructive",
           handler: () => {
-            removeMessages(mine);
+            blockAndReportIfNeeded(theirPotentialRecentMessage);
           },
         },
         {
           text: "Block + Report",
           role: "destructive",
-          handler: async () => {
-            const theirRecentMessage = theirs.pop();
-            if (!theirRecentMessage) return;
-
-            await client.createPrivateMessageReport({
-              private_message_id: theirRecentMessage.private_message.id,
-              auth: jwt,
-              reason: "Spam or abuse",
-            });
-
-            await client.blockPerson({
-              person_id: theirRecentMessage.creator.id,
-              auth: jwt,
-              block: true,
-            });
-
-            removeMessages(mine);
+          handler: () => {
+            blockAndReportIfNeeded(theirPotentialRecentMessage, true);
           },
         },
       ]);
     }
   }
 
-  async function removeMessages(messages: PrivateMessageView[]) {
-    if (!jwt) return;
-
+  async function blockAndReportIfNeeded(
+    theirRecentMessage: PrivateMessageView,
+    report = false,
+  ) {
     setLoading(true);
 
-    // Can only delete my own messages
-    const toDelete = messages.map((m) => m.private_message.id);
-
-    let id;
-
     try {
-      while ((id = toDelete.pop())) {
-        await client.deletePrivateMessage({
-          private_message_id: id,
-          auth: jwt,
-          deleted: true,
+      if (report) {
+        await client.createPrivateMessageReport({
+          private_message_id: theirRecentMessage.private_message.id,
+          reason: "Spam or abuse",
         });
       }
+
+      await client.blockPerson({
+        person_id: theirRecentMessage.creator.id,
+        block: true,
+      });
 
       dispatch(resetMessages());
       await dispatch(syncMessages());
@@ -199,7 +187,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
         <IonItemOptions side="end" onIonSwipe={onDelete}>
           <SquareIonItemOption color="danger" expandable onClick={onDelete}>
             <IonIcon
-              icon={trashOutline}
+              icon={removeCircle}
               css={css`
                 font-size: 1.4em;
               `}

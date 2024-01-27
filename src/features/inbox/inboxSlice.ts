@@ -217,8 +217,6 @@ export const conversationsByPersonIdSelector = createSelector(
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   ],
   (messages, myUserId) => {
-    if (!myUserId) return {};
-
     return sortBy(
       Object.values(
         groupBy(messages, (m) =>
