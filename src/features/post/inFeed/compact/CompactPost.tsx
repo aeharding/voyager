@@ -197,9 +197,9 @@ export default function CompactPost({
                 {modqueue ? (
                   <ModqueueItemActions item={post} />
                 ) : (
-                  <StyledModActions post={post} onFeed solidIcon />
+                  <StyledModActions post={post} solidIcon />
                 )}
-                <StyledMoreActions post={post} onFeed />
+                <StyledMoreActions post={post} />
               </ActionsContainer>
             </Aside>
             {crosspostUrl && (

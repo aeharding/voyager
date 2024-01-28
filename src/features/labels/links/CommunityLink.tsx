@@ -76,7 +76,12 @@ export default function CommunityLink({
         ],
       });
     },
-    { cancelOnMovement: true },
+    {
+      cancelOnMovement: true,
+      onStart: (e) => {
+        e.stopPropagation();
+      },
+    },
   );
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
