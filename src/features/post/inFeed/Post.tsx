@@ -11,6 +11,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
+import { useLongPress } from "use-long-press";
+import usePostActions from "../shared/usePostActions";
+import { filterSafariCallout } from "../../../helpers/longPress";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -47,6 +50,7 @@ export default function Post(props: PostProps) {
   const possiblyPost = postById[props.post.post.id];
   const potentialPost =
     typeof possiblyPost === "object" ? possiblyPost : undefined;
+  const openPostActions = usePostActions(props.post);
 
   // eslint-disable-next-line no-undef
   const targetIntersectionRef = useRef<HTMLIonItemElement>(null);
@@ -79,6 +83,13 @@ export default function Post(props: PostProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const postAppearanceType = useAppSelector(
     (state) => state.settings.appearance.posts.type,
+  );
+
+  const bind = useLongPress(
+    () => {
+      openPostActions();
+    },
+    { cancelOnMovement: true, filterEvents: filterSafariCallout },
   );
 
   const postBody = (() => {
@@ -117,6 +128,7 @@ export default function Post(props: PostProps) {
           }}
           href={undefined}
           ref={targetIntersectionRef}
+          {...bind()}
         >
           {postBody}
         </CustomIonItem>

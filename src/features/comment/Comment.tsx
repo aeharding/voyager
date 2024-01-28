@@ -3,7 +3,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useRef } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
@@ -11,7 +11,7 @@ import Vote from "../labels/Vote";
 import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
-import CommentEllipsis from "./CommentEllipsis";
+import CommentEllipsis, { CommentEllipsisHandle } from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
@@ -21,6 +21,8 @@ import ModeratableItem from "../moderation/ModeratableItem";
 import useCanModerate from "../moderation/useCanModerate";
 import ModqueueItemActions from "../moderation/ModqueueItemActions";
 import { ActionsContainer } from "../post/inFeed/compact/CompactPost";
+import { useLongPress } from "use-long-press";
+import { filterSafariCallout } from "../../helpers/longPress";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -208,6 +210,18 @@ export default function Comment({
 
   const canModerate = useCanModerate(commentView.community);
 
+  const commentEllipsisHandleRef = useRef<CommentEllipsisHandle>(null);
+
+  const bind = useLongPress(
+    () => {
+      commentEllipsisHandleRef.current?.present();
+    },
+    {
+      cancelOnMovement: true,
+      filterEvents: filterSafariCallout,
+    },
+  );
+
   function renderActions() {
     if (modqueue) return <ModqueueItemActions item={commentView} />;
 
@@ -228,6 +242,7 @@ export default function Comment({
           href={undefined}
           onClick={(e) => onClick?.(e)}
           className={`comment-${comment.id}`}
+          {...bind()}
         >
           <ModeratableItem
             itemView={commentView}
@@ -260,6 +275,7 @@ export default function Comment({
                           comment={commentView}
                           rootIndex={rootIndex}
                           canModerate={canModerate}
+                          ref={commentEllipsisHandleRef}
                         />
                         <Ago date={comment.published} />
                       </ActionsContainer>
