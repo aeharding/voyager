@@ -77,11 +77,12 @@ export default function usePostActions(post: PostView) {
 
   const presentPostModActions = usePostModActions(post);
 
-  const postVotesById = useAppSelector((state) => state.post.postVotesById);
-  const postSavedById = useAppSelector((state) => state.post.postSavedById);
-
-  const myVote = postVotesById[post.post.id] ?? post.my_vote;
-  const mySaved = postSavedById[post.post.id] ?? post.saved;
+  const myVote = useAppSelector(
+    (state) => state.post.postVotesById[post.post.id] ?? post.my_vote,
+  );
+  const mySaved = useAppSelector(
+    (state) => state.post.postSavedById[post.post.id] ?? post.saved,
+  );
 
   const isMyPost = getRemoteHandle(post.creator) === myHandle;
   const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);

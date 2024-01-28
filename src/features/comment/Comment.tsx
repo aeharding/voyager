@@ -217,6 +217,7 @@ export default function Comment({
       commentEllipsisHandleRef.current?.present();
     },
     {
+      threshold: 800,
       cancelOnMovement: true,
       filterEvents: filterSafariCallout,
     },

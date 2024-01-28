@@ -46,8 +46,9 @@ export default function Post(props: PostProps) {
     (state) => state.post.postHiddenById[props.post.post.id]?.hidden,
   );
   const hideCompleteRef = useRef(false);
-  const postById = useAppSelector((state) => state.post.postById);
-  const possiblyPost = postById[props.post.post.id];
+  const possiblyPost = useAppSelector(
+    (state) => state.post.postById[props.post.post.id],
+  );
   const potentialPost =
     typeof possiblyPost === "object" ? possiblyPost : undefined;
   const openPostActions = usePostActions(props.post);
@@ -89,7 +90,11 @@ export default function Post(props: PostProps) {
     () => {
       openPostActions();
     },
-    { cancelOnMovement: true, filterEvents: filterSafariCallout },
+    {
+      threshold: 800,
+      cancelOnMovement: true,
+      filterEvents: filterSafariCallout,
+    },
   );
 
   const postBody = (() => {
