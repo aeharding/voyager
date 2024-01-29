@@ -21,7 +21,9 @@ interface AuthProps {
 export default function Auth({ children }: AuthProps) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
-  const selectedInstance = useAppSelector(instanceSelector);
+  const selectedInstance = useAppSelector(
+    instanceSelector ?? ((state) => state.auth.connectedInstance),
+  );
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
@@ -31,20 +33,24 @@ export default function Auth({ children }: AuthProps) {
   const oldInstanceRef = useRef(selectedInstance);
 
   useEffect(() => {
+    // bind initial value once set
+    if (selectedInstance && !oldInstanceRef.current) {
+      oldInstanceRef.current = selectedInstance;
+    }
+
     // On change, reset tab state in ionic router
-    if (oldInstanceRef.current !== selectedInstance) {
+    if (selectedInstance && oldInstanceRef.current !== selectedInstance) {
       router.push(`/${tabRef?.current || "posts"}`, "none", "push");
 
       oldInstanceRef.current = selectedInstance;
     }
 
     dispatch(getSiteIfNeeded());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jwt, connectedInstance]);
+  }, [dispatch, jwt, router, selectedInstance, tabRef]);
 
   return (
     // Rebuild routing on instance change
-    <React.Fragment key={connectedInstance ?? getDefaultServer()}>
+    <React.Fragment key={selectedInstance ?? getDefaultServer()}>
       <AuthLocation />
       {connectedInstance ? children : undefined}
     </React.Fragment>
