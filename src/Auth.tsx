@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import { updateConnectedInstance } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
@@ -11,8 +11,6 @@ import useAppToast from "./helpers/useAppToast";
 import BackgroundReportSync from "./features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "./features/auth/siteSlice";
 import { instanceSelector, jwtSelector } from "./features/auth/authSelectors";
-import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
-import { TabContext } from "./TabContext";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -28,25 +26,9 @@ export default function Auth({ children }: AuthProps) {
     (state) => state.auth.connectedInstance,
   );
 
-  const router = useOptimizedIonRouter();
-  const { tabRef } = useContext(TabContext);
-  const oldInstanceRef = useRef(selectedInstance);
-
   useEffect(() => {
-    // bind initial value once set
-    if (selectedInstance && !oldInstanceRef.current) {
-      oldInstanceRef.current = selectedInstance;
-    }
-
-    // On change, reset tab state in ionic router
-    if (selectedInstance && oldInstanceRef.current !== selectedInstance) {
-      router.push(`/${tabRef?.current || "posts"}`, "none", "push");
-
-      oldInstanceRef.current = selectedInstance;
-    }
-
     dispatch(getSiteIfNeeded());
-  }, [dispatch, jwt, router, selectedInstance, tabRef]);
+  }, [dispatch, jwt, connectedInstance]);
 
   return (
     // Rebuild routing on instance change

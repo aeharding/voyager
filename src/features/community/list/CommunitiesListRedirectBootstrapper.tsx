@@ -12,11 +12,6 @@ export default function CommunitiesListRedirectBootstrapper() {
 
   const baseRoute = defaultFeed ? getPathForFeed(defaultFeed) : undefined;
 
-  console.log(
-    "to!",
-    baseRoute != null ? buildGeneralBrowseLink(baseRoute) : undefined,
-  );
-
   return (
     <InitialPageRedirectBootstrapper
       to={baseRoute != null ? buildGeneralBrowseLink(baseRoute) : undefined}

@@ -50,15 +50,11 @@ export default function InitialPageRedirectBootstrapper({
     const to = toRef.current;
     const bootstrapped = bootstrappedRef.current;
 
-    console.log("entered", viewEnteredRef.current);
-    console.log("to", to);
-    console.log("bootstrapped", bootstrapped);
     if (!isInstalled()) return;
     if (!viewEnteredRef.current) return;
     if (to == null) return;
     if (bootstrapped) return;
 
-    console.log("REDIRECTING to ", to);
     // user set default page = communities list. We're already there.
     if (to === "") {
       setBootstrapped(true);
