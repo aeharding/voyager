@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "./store";
 import { updateConnectedInstance } from "./features/auth/authSlice";
 import { useLocation } from "react-router";
@@ -11,8 +11,6 @@ import useAppToast from "./helpers/useAppToast";
 import BackgroundReportSync from "./features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "./features/auth/siteSlice";
 import { instanceSelector, jwtSelector } from "./features/auth/authSelectors";
-import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
-import { TabContext } from "./TabContext";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -21,30 +19,20 @@ interface AuthProps {
 export default function Auth({ children }: AuthProps) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
-  const selectedInstance = useAppSelector(instanceSelector);
+  const selectedInstance = useAppSelector(
+    instanceSelector ?? ((state) => state.auth.connectedInstance),
+  );
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
 
-  const router = useOptimizedIonRouter();
-  const { tabRef } = useContext(TabContext);
-  const oldInstanceRef = useRef(selectedInstance);
-
   useEffect(() => {
-    // On change, reset tab state in ionic router
-    if (oldInstanceRef.current !== selectedInstance) {
-      router.push(`/${tabRef?.current || "posts"}`, "none", "push");
-
-      oldInstanceRef.current = selectedInstance;
-    }
-
     dispatch(getSiteIfNeeded());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [jwt, connectedInstance]);
+  }, [dispatch, jwt, connectedInstance]);
 
   return (
     // Rebuild routing on instance change
-    <React.Fragment key={connectedInstance ?? getDefaultServer()}>
+    <React.Fragment key={selectedInstance ?? getDefaultServer()}>
       <AuthLocation />
       {connectedInstance ? children : undefined}
     </React.Fragment>

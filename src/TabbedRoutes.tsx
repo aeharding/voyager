@@ -9,7 +9,7 @@ import { instanceSelector } from "./features/auth/authSelectors";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage from "./pages/search/SearchPage";
 import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
@@ -51,6 +51,100 @@ import ModlogPage from "./pages/shared/ModlogPage";
 import ModqueuePage from "./pages/shared/ModqueuePage";
 import TabBar from "./TabBar";
 import { isInstalled } from "./helpers/device";
+import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
+import { TabContext } from "./TabContext";
+
+function buildGeneralBrowseRoutes(tab: string) {
+  return [
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community`}>
+      <CommunityPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/search/posts/:search`}>
+      <SearchFeedResultsPage type="Posts" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/search/comments/:search`}>
+      <SearchFeedResultsPage type="Comments" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/sidebar`}>
+      <CommunitySidebarPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/comments/:id`}>
+      <PostDetail />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route
+      exact
+      path={`/${tab}/:actor/c/:community/comments/:id/thread/:threadCommentId`}
+    >
+      <PostDetail />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/comments/:id/:commentPath`}>
+      <PostDetail />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/comments`}>
+      <CommunityCommentsPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/log`}>
+      <ModlogPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/modqueue`}>
+      <ModqueuePage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/mod/comments`}>
+      <CommentsPage type="ModeratorView" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/mod/log`}>
+      <ModlogPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/mod/modqueue`}>
+      <ModqueuePage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle`}>
+      <UserPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/posts`}>
+      <ProfileFeedItemsPage type="Posts" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/comments`}>
+      <ProfileFeedItemsPage type="Comments" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
+      <ProfileFeedItemsPage type="Saved" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
+      <ProfileFeedHiddenPostsPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/message`}>
+      <ConversationPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/log`}>
+      <ModlogPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/sidebar`}>
+      <InstanceSidebarPage />
+    </Route>,
+  ];
+}
 
 export default function TabbedRoutes() {
   const ready = useAppSelector((state) => state.settings.ready);
@@ -61,100 +155,15 @@ export default function TabbedRoutes() {
 
   const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
 
-  function buildGeneralBrowseRoutes(tab: string) {
-    return [
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community`}>
-        <CommunityPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/search/posts/:search`}>
-        <SearchFeedResultsPage type="Posts" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/search/comments/:search`}>
-        <SearchFeedResultsPage type="Comments" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/sidebar`}>
-        <CommunitySidebarPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/comments/:id`}>
-        <PostDetail />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route
-        exact
-        path={`/${tab}/:actor/c/:community/comments/:id/thread/:threadCommentId`}
-      >
-        <PostDetail />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route
-        exact
-        path={`/${tab}/:actor/c/:community/comments/:id/:commentPath`}
-      >
-        <PostDetail />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/comments`}>
-        <CommunityCommentsPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/log`}>
-        <ModlogPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/modqueue`}>
-        <ModqueuePage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/mod/comments`}>
-        <CommentsPage type="ModeratorView" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/mod/log`}>
-        <ModlogPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/mod/modqueue`}>
-        <ModqueuePage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle`}>
-        <UserPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/posts`}>
-        <ProfileFeedItemsPage type="Posts" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/comments`}>
-        <ProfileFeedItemsPage type="Comments" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
-        <ProfileFeedItemsPage type="Saved" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
-        <ProfileFeedHiddenPostsPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/message`}>
-        <ConversationPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/log`}>
-        <ModlogPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/sidebar`}>
-        <InstanceSidebarPage />
-      </Route>,
-    ];
-  }
+  const router = useOptimizedIonRouter();
+  const { tabRef } = useContext(TabContext);
+
+  // Always reset route on initialize
+  useEffect(() => {
+    router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const pageContextValue = useMemo(() => ({ pageRef }), []);
 
