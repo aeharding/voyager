@@ -53,6 +53,7 @@ import TabBar from "./TabBar";
 import { isInstalled } from "./helpers/device";
 import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
 import { TabContext } from "./TabContext";
+import { usingActorRedirect } from "./ActorRedirect";
 
 function buildGeneralBrowseRoutes(tab: string) {
   return [
@@ -158,12 +159,37 @@ export default function TabbedRoutes() {
   const router = useOptimizedIonRouter();
   const { tabRef } = useContext(TabContext);
 
-  // Always reset route on initialize
+  // Reset route on initialize, if needed
+  // (reset when it doesn't make sense breaks ionic react router)
   useEffect(() => {
-    router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+    if (!router.canGoBack()) return;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const pathname = router.getRouteInfo()?.pathname;
+
+    if (!pathname) return;
+
+    const pathnameSections = pathname.split("/").length - 1;
+
+    if (pathname.startsWith("/posts")) {
+      // special case for posts tab: /posts/lemmy.world is initial tab route
+      if (pathnameSections <= 2) return;
+    }
+
+    // all other tabs are /inbox, /settings etc as base route
+    if (pathnameSections <= 1) return;
+
+    function push() {
+      router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+    }
+
+    // have to wait for the ActorRedirect to do its thing, so it doesn't get clobbered
+    if (usingActorRedirect) {
+      queueMicrotask(push);
+      return;
+    }
+
+    push();
+  }, [router, tabRef]);
 
   const pageContextValue = useMemo(() => ({ pageRef }), []);
 
