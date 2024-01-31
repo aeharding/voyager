@@ -1,9 +1,9 @@
 import { Redirect, RouteProps, useLocation, useParams } from "react-router";
 import { useAppSelector } from "./store";
 import useIonViewIsVisible from "./helpers/useIonViewIsVisible";
-import { isNative } from "./helpers/device";
+import { isInstalled } from "./helpers/device";
 
-export const usingActorRedirect = isNative();
+export const usingActorRedirect = !isInstalled();
 
 interface ActorRedirectProps {
   children?: RouteProps["children"];
