@@ -5,6 +5,7 @@ import customRemarkGfm from "./markdown/customRemarkGfm";
 import MarkdownImg from "./MarkdownImg";
 import { css } from "@emotion/react";
 import InAppExternalLink from "./InAppExternalLink";
+import { useAppSelector } from "../../store";
 
 const markdownCss = css`
   @media (max-width: 700px) {
@@ -65,6 +66,10 @@ export default function Markdown({
   disableInternalLinkRouting,
   ...props
 }: MarkdownProps) {
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
+
   return (
     <ReactMarkdown
       {...props}
@@ -96,7 +101,7 @@ export default function Markdown({
           : (props) => <LinkInterceptor {...props} />,
         ...props.components,
       }}
-      remarkPlugins={[customRemarkGfm]}
+      remarkPlugins={[[customRemarkGfm, { connectedInstance }]]}
     />
   );
 }
