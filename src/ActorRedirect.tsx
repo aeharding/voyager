@@ -3,12 +3,14 @@ import { useAppSelector } from "./store";
 import useIonViewIsVisible from "./helpers/useIonViewIsVisible";
 import { isNative } from "./helpers/device";
 
+export const usingActorRedirect = isNative();
+
 interface ActorRedirectProps {
   children?: RouteProps["children"];
 }
 
 export default function ActorRedirect({ children }: ActorRedirectProps) {
-  if (isNative()) return <>{children}</>;
+  if (!usingActorRedirect) return <>{children}</>;
 
   return <ActorRedirectEnabled>{children}</ActorRedirectEnabled>;
 }
