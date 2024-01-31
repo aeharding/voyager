@@ -215,8 +215,8 @@ devDependencies:
     specifier: ^4.17.21
     version: 4.17.21
   mdast-util-gfm-autolink-literal-lemmy:
-    specifier: ^2.0.3
-    version: 2.0.3
+    specifier: ^3.0.0
+    version: 3.0.0
   mdast-util-gfm-strikethrough:
     specifier: ^2.0.0
     version: 2.0.0
@@ -8158,8 +8158,8 @@ packages:
       - supports-color
     dev: true
 
-  /mdast-util-gfm-autolink-literal-lemmy@2.0.3:
-    resolution: {integrity: sha512-bPNevt+BgW2hCynpECBW5mi/mTKtt2y0xxLfi9kQR+RLZfNq2f0FXH72M/5NtoaGFTVP90SgA+45Kylzz/0W6w==}
+  /mdast-util-gfm-autolink-literal-lemmy@3.0.0:
+    resolution: {integrity: sha512-+JA8WqF9QmbRvai1Aw3yPKRiBix1Q+ywmfnsjYP4NYqO20IiZTx6UDMx+eBx+h2ATukpZG77VfuIxFSfDp0G4Q==}
     dependencies:
       '@types/mdast': 4.0.3
       ccount: 2.0.1
