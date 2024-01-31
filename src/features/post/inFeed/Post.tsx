@@ -7,7 +7,7 @@ import { IonItem } from "@ionic/react";
 import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
@@ -37,7 +37,7 @@ export interface PostProps {
   modqueue?: boolean;
 }
 
-export default function Post(props: PostProps) {
+function Post(props: PostProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
   const [shouldHide, setShouldHide] = useState(false);
@@ -141,3 +141,5 @@ export default function Post(props: PostProps) {
     </AnimateHeight>
   );
 }
+
+export default memo(Post);

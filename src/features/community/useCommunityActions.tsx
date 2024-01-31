@@ -38,10 +38,14 @@ export default function useCommunityActions(
   subscribedFromPayload?: SubscribedType,
 ) {
   const presentToast = useAppToast();
-
   const dispatch = useAppDispatch();
-  const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle,
+
+  const communityHandle = getHandle(community);
+
+  const subscribedSourceOfTruth = useAppSelector((state) =>
+    state.community.communityByHandle[communityHandle]
+      ? state.community.communityByHandle[communityHandle]?.subscribed
+      : subscribedFromPayload,
   );
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -54,19 +58,16 @@ export default function useCommunityActions(
   const isAdmin = useAppSelector(isAdminSelector);
   const localUser = useAppSelector(localUserSelector);
 
-  const communityHandle = getHandle(community);
   const communityId = community.id;
   const isNsfw = community.nsfw;
-
-  const subscribedSourceOfTruth = communityByHandle[communityHandle]
-    ? communityByHandle[communityHandle]?.subscribed
-    : subscribedFromPayload;
 
   const isSubscribed =
     subscribedSourceOfTruth === "Subscribed" ||
     subscribedSourceOfTruth === "Pending";
 
-  const isBlocked = communityByHandle[communityHandle]?.blocked;
+  const isBlocked = useAppSelector(
+    (state) => state.community.communityByHandle[communityHandle]?.blocked,
+  );
 
   const canPost = useMemo(() => {
     const isMod = site ? checkIsMod(communityHandle, site) : false;
