@@ -19,9 +19,6 @@ interface AuthProps {
 export default function Auth({ children }: AuthProps) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
-  const selectedInstance = useAppSelector(
-    instanceSelector ?? ((state) => state.auth.connectedInstance),
-  );
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
@@ -31,11 +28,10 @@ export default function Auth({ children }: AuthProps) {
   }, [dispatch, jwt, connectedInstance]);
 
   return (
-    // Rebuild routing on instance change
-    <React.Fragment key={selectedInstance ?? getDefaultServer()}>
+    <>
       <AuthLocation />
       {connectedInstance ? children : undefined}
-    </React.Fragment>
+    </>
   );
 }
 
