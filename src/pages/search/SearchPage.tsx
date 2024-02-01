@@ -7,7 +7,6 @@ import SearchOptions from "../../features/search/SearchOptions";
 import useLemmyUrlHandler from "../../features/shared/useLemmyUrlHandler";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
-// eslint-disable-next-line no-undef -- I can't work out where to import this type from
 const searchBarRef = createRef<HTMLIonSearchbarElement>();
 
 /**

@@ -51,7 +51,6 @@ export default function Login({ url, siteIcon }: LoginProps) {
 
   const { dismiss, setCanDismiss } = useContext(DynamicDismissableModalContext);
 
-  // eslint-disable-next-line no-undef
   const usernameRef = useRef<HTMLIonInputElement>(null);
 
   const [username, setUsername] = useState("");
