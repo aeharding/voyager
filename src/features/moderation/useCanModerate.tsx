@@ -35,12 +35,12 @@ export default function useCanModerate(
 }
 
 /**
- * Use `useCanModerate` instead if you need to reactive updates
+ * Use `useCanModerate` hook instead if you need to reactive updates
  *
  * This function is used in present() functions of action sheets,
  * since nothing is reactive (logic can be done right before presenting)
  */
-export function canModerateSync(
+export function getCanModerate(
   community: Community | boolean | undefined,
 ): ModeratorRole | undefined {
   const state = store.getState();

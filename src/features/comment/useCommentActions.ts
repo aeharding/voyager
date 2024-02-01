@@ -39,7 +39,7 @@ import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
 import useAppToast from "../../helpers/useAppToast";
-import { canModerateSync, getModIcon } from "../moderation/useCanModerate";
+import { getCanModerate, getModIcon } from "../moderation/useCanModerate";
 import useCommentModActions from "../moderation/useCommentModActions";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { isDownvoteEnabledSelector } from "../auth/siteSlice";
@@ -101,7 +101,7 @@ export default function useCommentActions({
 
     const post = state.post.postById[commentView.post.id];
 
-    const canModerate = canModerateSync(commentView.community);
+    const canModerate = getCanModerate(commentView.community);
 
     presentActionSheet({
       cssClass: "left-align-buttons",

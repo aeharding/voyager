@@ -1,5 +1,5 @@
 import { useIonActionSheet } from "@ionic/react";
-import { canModerateSync } from "./useCanModerate";
+import { getCanModerate } from "./useCanModerate";
 import { CommentReport, PostReport, PostView } from "lemmy-js-client";
 import {
   checkmarkCircleOutline,
@@ -36,7 +36,7 @@ export default function usePostModActions(post: PostView) {
   return useCallback(() => {
     const state = store.getState();
 
-    const role = canModerateSync(post.community);
+    const role = getCanModerate(post.community);
 
     const bannedFromCommunity =
       state.user.bannedByCommunityIdUserId[

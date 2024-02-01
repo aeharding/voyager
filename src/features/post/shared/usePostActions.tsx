@@ -44,7 +44,7 @@ import {
 import { userHandleSelector } from "../../auth/authSelectors";
 import useAppToast from "../../../helpers/useAppToast";
 import usePostModActions from "../../moderation/usePostModActions";
-import { canModerateSync, getModIcon } from "../../moderation/useCanModerate";
+import { getCanModerate, getModIcon } from "../../moderation/useCanModerate";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
 import { resolveObject } from "../../resolve/resolveSlice";
@@ -84,7 +84,7 @@ export default function usePostActions(post: PostView) {
     const isMyPost = getRemoteHandle(post.creator) === myHandle;
     const downvoteAllowed = isDownvoteEnabledSelector(state);
 
-    const canModerate = canModerateSync(post.community);
+    const canModerate = getCanModerate(post.community);
 
     presentActionSheet({
       cssClass: "left-align-buttons",

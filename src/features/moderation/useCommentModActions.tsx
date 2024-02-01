@@ -4,7 +4,7 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import useAppToast from "../../helpers/useAppToast";
 import { CommentView } from "lemmy-js-client";
 import { localUserSelector } from "../auth/siteSlice";
-import { canModerateSync } from "./useCanModerate";
+import { getCanModerate } from "./useCanModerate";
 import {
   checkmarkCircleOutline,
   colorWandOutline,
@@ -60,7 +60,7 @@ export default function useCommentModActions(commentView: CommentView) {
     const banned =
       bannedFromCommunity ?? commentView.creator_banned_from_community;
 
-    const role = canModerateSync(commentView.community);
+    const role = getCanModerate(commentView.community);
 
     presentActionSheet({
       header: stringifyReports(reports),
