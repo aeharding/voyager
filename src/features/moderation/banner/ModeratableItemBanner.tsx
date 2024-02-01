@@ -54,15 +54,19 @@ export enum ItemModState {
 }
 
 export function useItemModState(item: Comment | Post): ItemModState {
-  const reportsByPostId = useAppSelector(reportsByPostIdSelector);
-  const reportsByCommentId = useAppSelector(reportsByCommentIdSelector);
+  const hasPostReports = useAppSelector(
+    (state) => !!reportsByPostIdSelector(state)[item.id]?.length,
+  );
+  const hasCommentReports = useAppSelector(
+    (state) => !!reportsByCommentIdSelector(state)[item.id]?.length,
+  );
 
   if (item.removed) return ItemModState.RemovedByMod;
 
-  if (!("path" in item)) {
-    if (reportsByPostId[item.id]?.length) return ItemModState.Flagged;
+  if ("path" in item) {
+    if (hasCommentReports) return ItemModState.Flagged;
   } else {
-    if (reportsByCommentId[item.id]?.length) return ItemModState.Flagged;
+    if (hasPostReports) return ItemModState.Flagged;
   }
 
   return ItemModState.None;

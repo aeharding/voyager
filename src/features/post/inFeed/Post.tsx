@@ -1,6 +1,6 @@
 import { PostView } from "lemmy-js-client";
 import LargePost from "./large/LargePost";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import store, { useAppDispatch, useAppSelector } from "../../../store";
 import CompactPost from "./compact/CompactPost";
 import SlidingVote from "../../shared/sliding/SlidingPostVote";
 import { IonItem } from "@ionic/react";
@@ -27,14 +27,7 @@ const CustomIonItem = styled(IonItem)`
 export interface PostProps {
   post: PostView;
 
-  /**
-   * Hide the community name, show author name
-   */
-  communityMode?: boolean;
-
   className?: string;
-
-  modqueue?: boolean;
 }
 
 function Post(props: PostProps) {
@@ -42,9 +35,6 @@ function Post(props: PostProps) {
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
   const [shouldHide, setShouldHide] = useState(false);
   const shouldHideRef = useRef(false);
-  const isHidden = useAppSelector(
-    (state) => state.post.postHiddenById[props.post.post.id]?.hidden,
-  );
   const hideCompleteRef = useRef(false);
   const possiblyPost = useAppSelector(
     (state) => state.post.postById[props.post.post.id],
@@ -59,12 +49,15 @@ function Post(props: PostProps) {
   const onFinishHide = useCallback(() => {
     hideCompleteRef.current = true;
 
+    const isHidden =
+      store.getState().post.postHiddenById[props.post.post.id]?.hidden;
+
     if (isHidden) {
       dispatch(unhidePost(props.post.post.id));
     } else {
       dispatch(hidePost(props.post.post.id));
     }
-  }, [dispatch, props.post.post.id, isHidden]);
+  }, [dispatch, props.post.post.id]);
 
   useEffect(() => {
     // Refs must be used during cleanup useEffect

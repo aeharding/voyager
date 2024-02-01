@@ -69,6 +69,9 @@ export const followIdsSelector = createSelector(
   (follows) => (follows ?? []).map((follow) => follow.community.id),
 );
 
+export const moderatesSelector = (state: RootState) =>
+  state.site.response?.my_user?.moderates;
+
 /**
  * Used to determine if request is stale (for other lemmy account and/or instance)
  */

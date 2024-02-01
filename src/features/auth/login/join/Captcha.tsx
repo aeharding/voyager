@@ -92,13 +92,17 @@ export default forwardRef<CaptchaHandle, CaptchaProps>(function Captcha(
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  useImperativeHandle(ref, () => ({
-    getResult,
-  }));
-
   const getResult = useCallback(
     () => ({ captcha_answer: answer, captcha_uuid: captcha?.ok?.uuid }),
     [answer, captcha],
+  );
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      getResult,
+    }),
+    [getResult],
   );
 
   const getCaptcha = useCallback(async () => {

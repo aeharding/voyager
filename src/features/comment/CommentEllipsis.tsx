@@ -18,9 +18,13 @@ export default forwardRef<CommentEllipsisHandle, CommentActionsProps>(
   function CommentEllipsis(props, ref) {
     const { present, loading } = useCommentActions(props);
 
-    useImperativeHandle(ref, () => ({
-      present,
-    }));
+    useImperativeHandle(
+      ref,
+      () => ({
+        present,
+      }),
+      [present],
+    );
 
     return (
       <>

@@ -92,7 +92,11 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
 ) {
   const videoRef = useRef<HTMLVideoElement>();
 
-  useImperativeHandle(forwardedRef, () => videoRef.current as HTMLVideoElement);
+  useImperativeHandle(
+    forwardedRef,
+    () => videoRef.current as HTMLVideoElement,
+    [],
+  );
 
   const [inViewRef, inView] = useInView({
     threshold: 0.5,
