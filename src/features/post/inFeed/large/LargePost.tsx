@@ -21,6 +21,9 @@ import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
 import Crosspost from "../../crosspost/Crosspost";
 import LargePostContents from "./LargePostContents";
 import useCrosspostUrl from "../../shared/useCrosspostUrl";
+import { useInModqueue } from "../../../../pages/shared/ModqueuePage";
+import { useContext } from "react";
+import { PageTypeContext } from "../../../feed/PageTypeContext";
 
 const Container = styled.div`
   display: flex;
@@ -81,16 +84,16 @@ const CommunityName = styled.span`
   white-space: nowrap;
 `;
 
-export default function LargePost({
-  post,
-  communityMode,
-  modqueue,
-}: PostProps) {
+export default function LargePost({ post }: PostProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
 
   const crosspostUrl = useCrosspostUrl(post);
+
+  const inModqueue = useInModqueue();
+
+  const inCommunityFeed = useContext(PageTypeContext) === "community";
 
   function renderPostBody() {
     if (crosspostUrl) {
@@ -118,7 +121,7 @@ export default function LargePost({
               {post.post.featured_community || post.post.featured_local ? (
                 <AnnouncementIcon icon={megaphone} />
               ) : undefined}
-              {communityMode ? (
+              {inCommunityFeed ? (
                 <PersonLink
                   person={post.creator}
                   showInstanceWhenRemote
@@ -136,9 +139,9 @@ export default function LargePost({
             <PreviewStats post={post} />
           </LeftDetails>
           <RightDetails>
-            {modqueue && <ModqueueItemActions item={post} />}
+            {inModqueue && <ModqueueItemActions item={post} />}
             <MoreActions post={post} />
-            {!modqueue && (
+            {!inModqueue && (
               <>
                 <MoreModActions post={post} />
                 <VoteButton type="up" postId={post.post.id} />

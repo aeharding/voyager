@@ -7,7 +7,7 @@ import {
 } from "@ionic/react";
 import { FetchFn, isFirstPage } from "../../features/feed/Feed";
 import AppBackButton from "../../features/shared/AppBackButton";
-import { memo, useCallback } from "react";
+import { createContext, memo, useCallback, useContext } from "react";
 import useClient from "../../helpers/useClient";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import FeedContent from "./FeedContent";
@@ -136,12 +136,13 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
           </IonToolbar>
         </IonHeader>
         <FeedContent>
-          <PostCommentFeed
-            fetchFn={fetchFn}
-            filterHiddenPosts={false}
-            filterKeywords={false}
-            modqueue
-          />
+          <ModqueueContext.Provider value={true}>
+            <PostCommentFeed
+              fetchFn={fetchFn}
+              filterHiddenPosts={false}
+              filterKeywords={false}
+            />
+          </ModqueueContext.Provider>
         </FeedContent>
       </IonPage>
     </FeedContextProvider>
@@ -179,4 +180,10 @@ function convertCommentReportToComment(
     subscribed: "NotSubscribed",
     saved: false,
   };
+}
+
+const ModqueueContext = createContext(false);
+
+export function useInModqueue() {
+  return useContext(ModqueueContext);
 }

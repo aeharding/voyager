@@ -1,5 +1,5 @@
 import { useIonActionSheet } from "@ionic/react";
-import useCanModerate from "./useCanModerate";
+import { canModerateSync } from "./useCanModerate";
 import { CommentReport, PostReport, PostView } from "lemmy-js-client";
 import {
   checkmarkCircleOutline,
@@ -9,7 +9,7 @@ import {
   megaphoneOutline,
   trashOutline,
 } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../../store";
+import store, { useAppDispatch } from "../../store";
 import { modLockPost, modRemovePost, modStickyPost } from "../post/postSlice";
 import {
   buildBanFailed,
@@ -23,7 +23,7 @@ import {
 import useAppToast from "../../helpers/useAppToast";
 import { reportsByPostIdSelector, resolvePostReport } from "./modSlice";
 import { compact, groupBy, values } from "lodash";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { PageContext } from "../auth/PageContext";
 import { banUser } from "../user/userSlice";
 
@@ -32,22 +32,21 @@ export default function usePostModActions(post: PostView) {
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
   const { presentBanUser } = useContext(PageContext);
-  const role = useCanModerate(post.community);
 
-  const bannedFromCommunity = useAppSelector(
-    (state) =>
+  return useCallback(() => {
+    const state = store.getState();
+
+    const role = canModerateSync(post.community);
+
+    const bannedFromCommunity =
       state.user.bannedByCommunityIdUserId[
         `${post.community.id}${post.creator.id}`
-      ],
-  );
+      ];
 
-  const banned = bannedFromCommunity ?? post.creator_banned_from_community;
+    const banned = bannedFromCommunity ?? post.creator_banned_from_community;
 
-  const reports = useAppSelector(
-    (state) => reportsByPostIdSelector(state)[post.post.id],
-  );
+    const reports = reportsByPostIdSelector(state)[post.post.id];
 
-  return () => {
     presentActionSheet({
       cssClass: `${role} left-align-buttons report-reasons`,
       header: stringifyReports(reports),
@@ -151,7 +150,7 @@ export default function usePostModActions(post: PostView) {
         },
       ]),
     });
-  };
+  }, [dispatch, post, presentActionSheet, presentBanUser, presentToast]);
 }
 
 export function stringifyReports(

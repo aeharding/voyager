@@ -18,7 +18,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { useCallback, useContext } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import store, { useAppDispatch } from "../../../store";
 import { PostView } from "lemmy-js-client";
 import {
   hidePost,
@@ -44,7 +44,7 @@ import {
 import { userHandleSelector } from "../../auth/authSelectors";
 import useAppToast from "../../../helpers/useAppToast";
 import usePostModActions from "../../moderation/usePostModActions";
-import useCanModerate, { getModIcon } from "../../moderation/useCanModerate";
+import { canModerateSync, getModIcon } from "../../moderation/useCanModerate";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
 import { resolveObject } from "../../resolve/resolveSlice";
@@ -58,10 +58,6 @@ export default function usePostActions(post: PostView) {
   const presentToast = useAppToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
-  const isHidden = useAppSelector(
-    (state) => state.post.postHiddenById[post.post.id]?.hidden,
-  );
-  const myHandle = useAppSelector(userHandleSelector);
 
   const router = useOptimizedIonRouter();
 
@@ -77,19 +73,19 @@ export default function usePostActions(post: PostView) {
 
   const presentPostModActions = usePostModActions(post);
 
-  const myVote = useAppSelector(
-    (state) => state.post.postVotesById[post.post.id] ?? post.my_vote,
-  );
-  const mySaved = useAppSelector(
-    (state) => state.post.postSavedById[post.post.id] ?? post.saved,
-  );
-
-  const isMyPost = getRemoteHandle(post.creator) === myHandle;
-  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
-
-  const canModerate = useCanModerate(post.community);
-
   return useCallback(() => {
+    const state = store.getState();
+    const myVote = state.post.postVotesById[post.post.id] ?? post.my_vote;
+    const mySaved = state.post.postSavedById[post.post.id] ?? post.saved;
+
+    const isHidden = state.post.postHiddenById[post.post.id]?.hidden;
+    const myHandle = userHandleSelector(state);
+
+    const isMyPost = getRemoteHandle(post.creator) === myHandle;
+    const downvoteAllowed = isDownvoteEnabledSelector(state);
+
+    const canModerate = canModerateSync(post.community);
+
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: compact([
@@ -306,13 +302,7 @@ export default function usePostActions(post: PostView) {
     });
   }, [
     buildGeneralBrowseLink,
-    canModerate,
     dispatch,
-    downvoteAllowed,
-    isHidden,
-    isMyPost,
-    mySaved,
-    myVote,
     post,
     presentActionSheet,
     presentCommentReply,

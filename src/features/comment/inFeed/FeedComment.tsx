@@ -8,14 +8,9 @@ import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 interface FeedCommentProps {
   comment: CommentView;
   className?: string;
-  modqueue?: boolean;
 }
 
-export default function FeedComment({
-  comment,
-  className,
-  modqueue,
-}: FeedCommentProps) {
+export default function FeedComment({ comment, className }: FeedCommentProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useOptimizedIonRouter();
 
@@ -35,7 +30,6 @@ export default function FeedComment({
           ),
         )
       }
-      modqueue={modqueue}
     />
   );
 }
