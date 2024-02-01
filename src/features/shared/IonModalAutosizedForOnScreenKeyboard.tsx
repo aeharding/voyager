@@ -36,7 +36,7 @@ export default function IonModalAutosizedForOnScreenKeyboard(
     document.documentElement.clientHeight,
   );
   const isVisible = usePageVisibility();
-  // eslint-disable-next-line no-undef
+
   const modalRef = useRef<HTMLIonModalElement>(null);
 
   const updateViewport = useCallback(() => {

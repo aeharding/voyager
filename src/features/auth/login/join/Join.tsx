@@ -35,10 +35,7 @@ export default function Join({ answer }: JoinProps) {
   const { setCanDismiss, dismiss } = useContext(DynamicDismissableModalContext);
   const { site, url } = useAppSelector((state) => state.join);
 
-  // eslint-disable-next-line no-undef
   const ref = useRef<HTMLIonListElement>(null);
-
-  // eslint-disable-next-line no-undef
   const emailRef = useRef<HTMLIonInputElement>(null);
 
   const [loading, setLoading] = useState(false);

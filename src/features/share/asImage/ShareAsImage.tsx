@@ -255,7 +255,6 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       type: "image/png",
     });
 
-    // eslint-disable-next-line no-undef
     const webSharePayload: ShareData = { files: [file] };
 
     if (isNative()) {

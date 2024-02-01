@@ -43,7 +43,6 @@ function Post(props: PostProps) {
     typeof possiblyPost === "object" ? possiblyPost : undefined;
   const openPostActions = usePostActions(props.post);
 
-  // eslint-disable-next-line no-undef
   const targetIntersectionRef = useRef<HTMLIonItemElement>(null);
 
   const onFinishHide = useCallback(() => {

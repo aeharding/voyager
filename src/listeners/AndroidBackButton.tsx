@@ -20,14 +20,12 @@ export default function AndroidBackButton() {
 
     document.addEventListener(
       "ionBackButton",
-      // eslint-disable-next-line no-undef
       backButtonHandler as EventListener,
     );
 
     return () => {
       document.removeEventListener(
         "ionBackButton",
-        // eslint-disable-next-line no-undef
         backButtonHandler as EventListener,
       );
     };

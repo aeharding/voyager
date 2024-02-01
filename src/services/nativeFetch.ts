@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { CapacitorHttp } from "@capacitor/core";
 import { CapFormDataEntry } from "@capacitor/core/types/definitions-internal";
 
