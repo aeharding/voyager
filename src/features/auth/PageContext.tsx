@@ -221,7 +221,10 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     {
       onDismiss: (data: string, role: string) =>
         onDismissAccountSwitcher(data, role),
-      presentLogin: () => setIsLoginOpen(true),
+      presentLogin: () => {
+        onDismissAccountSwitcher();
+        setIsLoginOpen(true);
+      },
       onSelectAccount: (account: string) => dispatch(changeAccount(account)),
     },
   );
