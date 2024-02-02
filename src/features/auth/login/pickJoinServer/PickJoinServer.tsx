@@ -238,8 +238,9 @@ export default function PickJoinServer() {
         {
           text: "Log In",
           handler: () => {
-            const icon = allInstances.find(({ url }) => url === selectedUrl)
-              ?.icon;
+            const icon = allInstances.find(
+              ({ url }) => url === selectedUrl,
+            )?.icon;
 
             contentRef.current
               ?.closest("ion-nav")
