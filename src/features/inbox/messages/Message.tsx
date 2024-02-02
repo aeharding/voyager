@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { PrivateMessageView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import useClient from "../../../helpers/useClient";
 import { getInboxCounts, receivedMessages } from "../inboxSlice";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
@@ -127,12 +127,11 @@ export default function Message({ message }: MessageProps) {
   useIonViewWillEnter(() => setFocused(true));
   useIonViewDidLeave(() => setFocused(false));
 
-  const bind = useLongPress(
-    () => {
-      presentReport(message);
-    },
-    { cancelOnMovement: true },
-  );
+  const onMessageLongPress = useCallback(() => {
+    presentReport(message);
+  }, [message, presentReport]);
+
+  const bind = useLongPress(onMessageLongPress, { cancelOnMovement: true });
 
   useEffect(() => {
     if (

@@ -28,7 +28,7 @@ import {
   jwtSelector,
   accountsListEmptySelector,
 } from "./features/auth/authSelectors";
-import { forwardRef, useContext, useEffect, useMemo } from "react";
+import { forwardRef, useCallback, useContext, useEffect, useMemo } from "react";
 import { getDefaultServer } from "./services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
 import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
@@ -36,8 +36,9 @@ import { PageContext } from "./features/auth/PageContext";
 import { useLongPress } from "use-long-press";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "./helpers/useHapticFeedback";
+import { css } from "@emotion/react";
 
-const Interceptor = styled.div`
+const interceptorCss = css`
   position: absolute;
   inset: 0;
   pointer-events: all;
@@ -82,7 +83,6 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const actor = location.pathname.split("/")[2];
 
   const userHandle = useAppSelector(userHandleSelector);
   const profileLabelType = useAppSelector(
@@ -100,12 +100,17 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const isSearchButtonDisabled = location.pathname.startsWith("/search");
   const isSettingsButtonDisabled = location.pathname.startsWith("/settings");
 
-  async function onPostsClick() {
+  const onPostsClick = useCallback(() => {
     if (!isPostsButtonDisabled) return;
 
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
-    if (location.pathname.endsWith(jwt ? "/home" : "/all")) {
+    const pathname = router.getRouteInfo()?.pathname;
+    if (!pathname) return;
+
+    const actor = pathname.split("/")[2];
+
+    if (pathname.endsWith(jwt ? "/home" : "/all")) {
       router.push(
         `/posts/${actor ?? selectedInstance ?? getDefaultServer()}`,
         "back",
@@ -116,10 +121,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     const communitiesPath = `/posts/${
       actor ?? selectedInstance ?? getDefaultServer()
     }`;
-    if (
-      location.pathname === communitiesPath ||
-      location.pathname === `${communitiesPath}/`
-    )
+    if (pathname === communitiesPath || pathname === `${communitiesPath}/`)
       return;
 
     if (router.canGoBack()) {
@@ -132,28 +134,34 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
         "back",
       );
     }
-  }
+  }, [activePageRef, isPostsButtonDisabled, jwt, router, selectedInstance]);
 
-  async function onInboxClick() {
+  const onInboxClick = useCallback(() => {
     if (!isInboxButtonDisabled) return;
+
+    const pathname = router.getRouteInfo()?.pathname;
+    if (!pathname) return;
 
     if (
       // Messages are in reverse order, so bail on scroll up
-      !location.pathname.startsWith("/inbox/messages/") &&
+      !pathname.startsWith("/inbox/messages/") &&
       scrollUpIfNeeded(activePageRef?.current)
     )
       return;
 
     router.push(`/inbox`, "back");
-  }
+  }, [activePageRef, isInboxButtonDisabled, router]);
 
-  async function onProfileClick() {
+  const onProfileClick = useCallback(() => {
     if (!isProfileButtonDisabled) return;
 
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
+    const pathname = router.getRouteInfo()?.pathname;
+    if (!pathname) return;
+
     // if the profile page is already open, show the account switcher
-    if (location.pathname === "/profile") {
+    if (pathname === "/profile") {
       if (!accountsListEmpty) {
         presentAccountSwitcher();
       } else {
@@ -162,9 +170,16 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     }
 
     router.push("/profile", "back");
-  }
+  }, [
+    accountsListEmpty,
+    activePageRef,
+    isProfileButtonDisabled,
+    presentAccountSwitcher,
+    presentLoginIfNeeded,
+    router,
+  ]);
 
-  async function onSearchClick() {
+  const onSearchClick = useCallback(() => {
     if (!isSearchButtonDisabled) return;
 
     // if the search page is already open, focus the search bar
@@ -173,17 +188,17 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push(`/search`, "back");
-  }
+  }, [activePageRef, isSearchButtonDisabled, router]);
 
-  async function onSettingsClick() {
+  const onSettingsClick = useCallback(() => {
     if (!isSettingsButtonDisabled) return;
 
     if (scrollUpIfNeeded(activePageRef?.current)) return;
 
     router.push(`/settings`, "back");
-  }
+  }, [activePageRef, isSettingsButtonDisabled, router]);
 
-  const presentAccountSwitcherBind = useLongPress(() => {
+  const onPresentAccountSwitcher = useCallback(() => {
     vibrate({ style: ImpactStyle.Light });
 
     if (!accountsListEmpty) {
@@ -191,14 +206,21 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     } else {
       presentLoginIfNeeded();
     }
-  });
+  }, [
+    accountsListEmpty,
+    presentAccountSwitcher,
+    presentLoginIfNeeded,
+    vibrate,
+  ]);
+
+  const presentAccountSwitcherBind = useLongPress(onPresentAccountSwitcher);
 
   return (
     <IonTabBar {...props} ref={ref}>
       <IonTabButton disabled={isPostsButtonDisabled} tab="posts" href="/posts">
         <IonIcon aria-hidden="true" icon={telescope} />
         <IonLabel>Posts</IonLabel>
-        <Interceptor onClick={onPostsClick} />
+        <div onClick={onPostsClick} css={interceptorCss} />
       </IonTabButton>
       <IonTabButton disabled={isInboxButtonDisabled} tab="inbox" href="/inbox">
         <IonIcon aria-hidden="true" icon={fileTray} />
@@ -206,7 +228,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
         {totalUnread ? (
           <IonBadge color="danger">{totalUnread}</IonBadge>
         ) : undefined}
-        <Interceptor onClick={onInboxClick} />
+        <div onClick={onInboxClick} css={interceptorCss} />
       </IonTabButton>
       <IonTabButton
         disabled={isProfileButtonDisabled}
@@ -215,9 +237,10 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       >
         <IonIcon aria-hidden="true" icon={personCircleOutline} />
         <ProfileLabel>{profileTabLabel}</ProfileLabel>
-        <Interceptor
+        <div
           onClick={onProfileClick}
           {...presentAccountSwitcherBind()}
+          css={interceptorCss}
         />
       </IonTabButton>
       <IonTabButton
@@ -227,7 +250,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       >
         <IonIcon aria-hidden="true" icon={search} />
         <IonLabel>Search</IonLabel>
-        <Interceptor onClick={onSearchClick} />
+        <div onClick={onSearchClick} css={interceptorCss} />
       </IonTabButton>
       <IonTabButton
         tab="settings"
@@ -239,7 +262,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
         {settingsNotificationCount ? (
           <IonBadge color="danger">{settingsNotificationCount}</IonBadge>
         ) : undefined}
-        <Interceptor onClick={onSettingsClick} />
+        <div onClick={onSettingsClick} css={interceptorCss} />
       </IonTabButton>
     </IonTabBar>
   );

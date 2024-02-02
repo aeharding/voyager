@@ -3,7 +3,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React, { MouseEvent, useRef } from "react";
+import React, { MouseEvent, useCallback, useRef } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
@@ -209,16 +209,15 @@ export default function Comment({
 
   const commentEllipsisHandleRef = useRef<CommentEllipsisHandle>(null);
 
-  const bind = useLongPress(
-    () => {
-      commentEllipsisHandleRef.current?.present();
-    },
-    {
-      threshold: 800,
-      cancelOnMovement: true,
-      filterEvents: filterSafariCallout,
-    },
-  );
+  const onCommentLongPress = useCallback(() => {
+    commentEllipsisHandleRef.current?.present();
+  }, []);
+
+  const bind = useLongPress(onCommentLongPress, {
+    threshold: 800,
+    cancelOnMovement: true,
+    filterEvents: filterSafariCallout,
+  });
 
   function renderActions() {
     if (inModqueue) return <ModqueueItemActions item={commentView} />;

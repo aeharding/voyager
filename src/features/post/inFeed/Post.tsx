@@ -78,16 +78,15 @@ function Post(props: PostProps) {
     (state) => state.settings.appearance.posts.type,
   );
 
-  const bind = useLongPress(
-    () => {
-      openPostActions();
-    },
-    {
-      threshold: 800,
-      cancelOnMovement: true,
-      filterEvents: filterSafariCallout,
-    },
-  );
+  const onPostLongPress = useCallback(() => {
+    openPostActions();
+  }, [openPostActions]);
+
+  const bind = useLongPress(onPostLongPress, {
+    threshold: 800,
+    cancelOnMovement: true,
+    filterEvents: filterSafariCallout,
+  });
 
   const postBody = (() => {
     switch (postAppearanceType) {
