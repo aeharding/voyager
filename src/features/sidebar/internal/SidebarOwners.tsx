@@ -22,10 +22,9 @@ export default function SidebarOwners({ people, type }: InstanceAdminsProps) {
           <IonItem
             key={person.id}
             routerLink={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
-            className="item-legacy"
           >
             <ItemIcon item={person} slot="start" />
-            <IonLabel>{getHandle(person)}</IonLabel>
+            <IonLabel className="ion-text-nowrap">{getHandle(person)}</IonLabel>
           </IonItem>
         ))}
       </IonList>

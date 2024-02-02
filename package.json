@@ -51,7 +51,7 @@
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@github/markdown-toolbar-element": "^2.2.1",
-    "@ionic/core": "npm:voyager-ionic-core@^7.6.5",
+    "@ionic/core": "npm:voyager-ionic-core@^7.7.0",
     "@ionic/react": "7.6.7-dev.11706567011.11e782a9",
     "@ionic/react-router": "7.6.7-dev.11706567011.11e782a9",
     "@reduxjs/toolkit": "^2.0.1",

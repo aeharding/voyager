@@ -2,7 +2,7 @@ import { IonIcon, IonLabel, IonList, IonListHeader } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { css } from "@emotion/react";
-import { InsetIonItem, SettingLabel } from "../user/Profile";
+import { InsetIonItem } from "../user/Profile";
 import { getHandle } from "../../helpers/lemmy";
 import { trendingUp } from "ionicons/icons";
 import { useEffect } from "react";
@@ -32,14 +32,15 @@ export default function TrendingCommunities() {
       </IonListHeader>
       {trendingCommunities.map((community) => (
         <InsetIonItem
-          className="item-legacy"
           routerLink={buildGeneralBrowseLink(
             `/c/${getHandle(community.community)}`,
           )}
           key={community.community.id}
         >
-          <IonIcon icon={trendingUp} color="primary" />
-          <SettingLabel>{getHandle(community.community)}</SettingLabel>
+          <IonIcon icon={trendingUp} color="primary" slot="start" />
+          <IonLabel className="ion-text-nowrap">
+            {getHandle(community.community)}
+          </IonLabel>
         </InsetIonItem>
       ))}
     </IonList>

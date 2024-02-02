@@ -403,7 +403,7 @@ export default function PostEditorRoot({
       <IonContent>
         <Container>
           <IonList>
-            <IonItem className="item-legacy">
+            <IonItem>
               <IonInputTitle
                 value={title}
                 clearInput
@@ -494,8 +494,11 @@ export default function PostEditorRoot({
                 />
               )}
             >
-              <IonItem detail className="item-legacy">
-                <IonLabel color={!text ? "medium" : undefined}>
+              <IonItem detail>
+                <IonLabel
+                  color={!text ? "medium" : undefined}
+                  className="ion-text-nowrap"
+                >
                   {!text ? "Text (optional)" : text}
                 </IonLabel>
               </IonItem>
