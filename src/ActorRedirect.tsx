@@ -2,6 +2,7 @@ import { Redirect, RouteProps, useLocation, useParams } from "react-router";
 import { useAppSelector } from "./store";
 import useIonViewIsVisible from "./helpers/useIonViewIsVisible";
 import { isInstalled } from "./helpers/device";
+import { useMemo } from "react";
 
 export const usingActorRedirect = !isInstalled();
 
@@ -23,14 +24,16 @@ function ActorRedirectEnabled({ children }: ActorRedirectProps) {
   const location = useLocation();
   const ionViewIsVisible = useIonViewIsVisible();
 
-  if (!ionViewIsVisible) return <>{children}</>;
-  if (!connectedInstance || !actor) return <>{children}</>;
-  if (connectedInstance === actor) return <>{children}</>;
+  const page = useMemo(() => <>{children}</>, [children]);
+
+  if (!ionViewIsVisible) return page;
+  if (!connectedInstance || !actor) return page;
+  if (connectedInstance === actor) return page;
 
   const [first, second, _wrongActor, ...urlEnd] = location.pathname.split("/");
 
   // no need to redirect if url doesn't have actor
-  if (!_wrongActor || !_wrongActor.includes(".")) return <>{children}</>;
+  if (!_wrongActor || !_wrongActor.includes(".")) return page;
 
   return (
     <Redirect
