@@ -83,11 +83,11 @@ devDependencies:
     specifier: npm:voyager-ionic-core
     version: /voyager-ionic-core@7.6.5
   '@ionic/react':
-    specifier: 7.6.3
-    version: 7.6.3(react-dom@18.2.0)(react@18.2.0)
+    specifier: 7.6.7-dev.11706567011.11e782a9
+    version: 7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react@18.2.0)
   '@ionic/react-router':
-    specifier: 7.6.3
-    version: 7.6.3(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
+    specifier: 7.6.7-dev.11706567011.11e782a9
+    version: 7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
   '@reduxjs/toolkit':
     specifier: ^2.0.1
     version: 2.0.1(react-redux@9.0.4)(react@18.2.0)
@@ -2248,15 +2248,15 @@ packages:
       - supports-color
     dev: true
 
-  /@ionic/react-router@7.6.3(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
-    resolution: {integrity: sha512-UUogXQQymrNHsutmQOvyvFbbrNNHg4y18X96JYBvgWdihFdNmxMlSt/iIhCdzRNq32c1yTZtBZdum2MbOwtJ4A==}
+  /@ionic/react-router@7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
+    resolution: {integrity: sha512-Y0N9Dt4iuLhuqzXGgXQjXbVG7EkbU9Td5gk4DfH56CaRDlz8X8/BHyXICnnkvoPcKiKJ9Fdtx4cTu5lt7PYM2Q==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
       react-router: ^5.0.1
       react-router-dom: ^5.0.1
     dependencies:
-      '@ionic/react': 7.6.3(react-dom@18.2.0)(react@18.2.0)
+      '@ionic/react': 7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-router: 5.3.4(react@18.2.0)
@@ -2264,8 +2264,8 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@ionic/react@7.6.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-hgntkT+tJalHH4XAjnNZ3e5G64mZL/C7ah2pF5v6W/0YdwRMv4HTEp7KYyumRFiUlNQdNXmZlwJ2CjsoAafJRA==}
+  /@ionic/react@7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-QANaEZt+F/j61O68uwC2Rrf9rzCDRDteD9slFERdopAFV7fEm7f3YVO0j9XvDo1XbFx7wTJQVjqWlbjktWv+Xg==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
