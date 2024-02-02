@@ -64,8 +64,9 @@ export type CompactThumbnailSizeType =
   (typeof OCompactThumbnailSizeType)[keyof typeof OCompactThumbnailSizeType];
 
 export const OCommentThreadCollapse = {
-  Always: "always",
   Never: "never",
+  RootOnly: "root_only",
+  All: "all",
 } as const;
 
 export type CommentThreadCollapse =

@@ -12,7 +12,11 @@ import { MAX_DEFAULT_COMMENT_DEPTH } from "../../helpers/lemmy";
 import { css } from "@emotion/react";
 import useAppToast from "../../helpers/useAppToast";
 import { receivedComments } from "./commentSlice";
-import { useAppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
+import {
+  OCommentThreadCollapse,
+  defaultThreadCollapse,
+} from "../settings/settingsSlice";
 
 const MoreRepliesBlock = styled.div<{ hidden: boolean }>`
   display: flex;
@@ -63,6 +67,7 @@ export default function CommentExpander({
   const client = useClient();
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const collapseThreads = useAppSelector(defaultThreadCollapse);
 
   async function fetchChildren() {
     if (loading) return;
@@ -75,7 +80,10 @@ export default function CommentExpander({
       response = await client.getComments({
         parent_id: comment.comment.id,
         type_: "All",
-        max_depth: Math.max((depth += 2), MAX_DEFAULT_COMMENT_DEPTH),
+        max_depth:
+          collapseThreads == OCommentThreadCollapse.All
+            ? 1
+            : Math.max((depth += 2), MAX_DEFAULT_COMMENT_DEPTH),
       });
     } catch (error) {
       presentToast({

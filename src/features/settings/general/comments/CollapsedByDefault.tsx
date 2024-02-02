@@ -5,6 +5,7 @@ import {
   OCommentThreadCollapse,
   setCommentsCollapsed,
 } from "../../settingsSlice";
+import SettingSelector from "../../shared/SettingSelector";
 
 export default function CollapsedByDefault() {
   const dispatch = useAppDispatch();
@@ -14,21 +15,27 @@ export default function CollapsedByDefault() {
   );
 
   return (
-    <InsetIonItem>
-      <IonToggle
-        checked={collapseCommentThreads === OCommentThreadCollapse.Always}
-        onIonChange={(e) =>
-          dispatch(
-            setCommentsCollapsed(
-              e.detail.checked
-                ? OCommentThreadCollapse.Always
-                : OCommentThreadCollapse.Never,
-            ),
-          )
-        }
-      >
-        Collapse Comment Threads
-      </IonToggle>
-    </InsetIonItem>
+    <SettingSelector
+      title="Collapse Comment Threads"
+      selected={collapseCommentThreads}
+      setSelected={setCommentsCollapsed}
+      options={OCommentThreadCollapse}
+    />
+    // <InsetIonItem>
+    //   <IonToggle
+    //     checked={collapseCommentThreads === OCommentThreadCollapse.Always}
+    //     onIonChange={(e) =>
+    //       dispatch(
+    //         setCommentsCollapsed(
+    //           e.detail.checked
+    //             ? OCommentThreadCollapse.Always
+    //             : OCommentThreadCollapse.Never,
+    //         ),
+    //       )
+    //     }
+    //   >
+    //     Collapse Comment Threads
+    //   </IonToggle>
+    // </InsetIonItem>
   );
 }
