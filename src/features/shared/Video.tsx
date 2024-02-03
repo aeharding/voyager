@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import {
   ChangeEvent,
@@ -10,32 +9,12 @@ import {
   useState,
 } from "react";
 import { useInView } from "react-intersection-observer";
-import { isAppleDeviceInstallable } from "../../helpers/device";
 
-const Container = styled.div<{ interactable: boolean }>`
+const Container = styled.div`
   position: relative;
   overflow: hidden;
 
   display: flex;
-
-  // Hack for Safari bug
-  //
-  // https://bugs.webkit.org/show_bug.cgi?id=261950
-  // https://github.com/aeharding/voyager/issues/763
-  //
-  // This workaround isn't perfect, but allows some
-  // touch events to work sometimes instead of never
-  ${({ interactable }) =>
-    !interactable && isAppleDeviceInstallable()
-      ? css`
-          &::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            transform: translate3d(0, 0, 0);
-          }
-        `
-      : ""}
 `;
 
 const Progress = styled.progress`
@@ -92,7 +71,11 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
 ) {
   const videoRef = useRef<HTMLVideoElement>();
 
-  useImperativeHandle(forwardedRef, () => videoRef.current as HTMLVideoElement);
+  useImperativeHandle(
+    forwardedRef,
+    () => videoRef.current as HTMLVideoElement,
+    [],
+  );
 
   const [inViewRef, inView] = useInView({
     threshold: 0.5,
@@ -138,7 +121,7 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
   }, [inView, savePlace, resume]);
 
   const videoEl = (
-    <Container interactable={!!controls} className={className}>
+    <Container className={className}>
       <VideoEl
         ref={setRefs}
         src={`${src}#t=0.001`}

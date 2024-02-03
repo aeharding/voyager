@@ -6,7 +6,7 @@ import { StyledLink, hideCss } from "./shared";
 import ItemIcon from "../img/ItemIcon";
 import { css } from "@emotion/react";
 import { useIonActionSheet } from "@ionic/react";
-import { useLongPress } from "use-long-press";
+import { LongPressOptions, useLongPress } from "use-long-press";
 import {
   heartDislikeOutline,
   heartOutline,
@@ -14,7 +14,7 @@ import {
   tabletPortraitOutline,
 } from "ionicons/icons";
 import useCommunityActions from "../../community/useCommunityActions";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
 
 interface CommunityLinkProps {
@@ -41,43 +41,45 @@ export default function CommunityLink({
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
     useCommunityActions(community, subscribed);
 
-  const bind = useLongPress(
-    () => {
-      present({
-        cssClass: "left-align-buttons",
-        buttons: [
-          {
-            text: `${isBlocked ? "Unblock" : "Block"} Community`,
-            icon: removeCircleOutline,
-            role: "destructive",
-            handler: () => {
-              block();
-            },
+  const onCommunityLinkLongPress = useCallback(() => {
+    present({
+      cssClass: "left-align-buttons",
+      buttons: [
+        {
+          text: `${isBlocked ? "Unblock" : "Block"} Community`,
+          icon: removeCircleOutline,
+          role: "destructive",
+          handler: () => {
+            block();
           },
-          {
-            text: !isSubscribed ? "Subscribe" : "Unsubscribe",
-            icon: !isSubscribed ? heartOutline : heartDislikeOutline,
-            handler: () => {
-              subscribe();
-            },
+        },
+        {
+          text: !isSubscribed ? "Subscribe" : "Unsubscribe",
+          icon: !isSubscribed ? heartOutline : heartDislikeOutline,
+          handler: () => {
+            subscribe();
           },
-          {
-            text: "Sidebar",
-            data: "sidebar",
-            icon: tabletPortraitOutline,
-            handler: () => {
-              sidebar();
-            },
+        },
+        {
+          text: "Sidebar",
+          data: "sidebar",
+          icon: tabletPortraitOutline,
+          handler: () => {
+            sidebar();
           },
-          {
-            text: "Cancel",
-            role: "cancel",
-          },
-        ],
-      });
-    },
-    { cancelOnMovement: true },
-  );
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ],
+    });
+  }, [block, isBlocked, isSubscribed, present, sidebar, subscribe]);
+
+  const bind = useLongPress(onCommunityLinkLongPress, {
+    cancelOnMovement: true,
+    onStart,
+  });
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
@@ -107,3 +109,7 @@ export default function CommunityLink({
     </StyledLink>
   );
 }
+
+const onStart: LongPressOptions["onStart"] = (e) => {
+  e.stopPropagation();
+};

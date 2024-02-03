@@ -9,7 +9,7 @@ import { instanceSelector } from "./features/auth/authSelectors";
 import SpecialFeedPage from "./pages/shared/SpecialFeedPage";
 import UserPage from "./pages/profile/UserPage";
 import SettingsPage from "./pages/settings/SettingsPage";
-import { useMemo, useRef } from "react";
+import { forwardRef, useContext, useEffect, useMemo, useRef } from "react";
 import InstallAppPage from "./pages/settings/InstallAppPage";
 import SearchPage from "./pages/search/SearchPage";
 import SearchPostsResultsPage from "./pages/search/results/SearchFeedResultsPage";
@@ -51,298 +51,348 @@ import ModlogPage from "./pages/shared/ModlogPage";
 import ModqueuePage from "./pages/shared/ModqueuePage";
 import TabBar from "./TabBar";
 import { isInstalled } from "./helpers/device";
+import { useOptimizedIonRouter } from "./helpers/useOptimizedIonRouter";
+import { TabContext } from "./TabContext";
+import { usingActorRedirect } from "./ActorRedirect";
+
+function buildGeneralBrowseRoutes(tab: string) {
+  return [
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community`}>
+      <CommunityPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/search/posts/:search`}>
+      <SearchFeedResultsPage type="Posts" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/search/comments/:search`}>
+      <SearchFeedResultsPage type="Comments" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/sidebar`}>
+      <CommunitySidebarPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/comments/:id`}>
+      <PostDetail />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route
+      exact
+      path={`/${tab}/:actor/c/:community/comments/:id/thread/:threadCommentId`}
+    >
+      <PostDetail />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/comments/:id/:commentPath`}>
+      <PostDetail />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/comments`}>
+      <CommunityCommentsPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/log`}>
+      <ModlogPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/c/:community/modqueue`}>
+      <ModqueuePage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/mod/comments`}>
+      <CommentsPage type="ModeratorView" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/mod/log`}>
+      <ModlogPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/mod/modqueue`}>
+      <ModqueuePage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle`}>
+      <UserPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/posts`}>
+      <ProfileFeedItemsPage type="Posts" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/comments`}>
+      <ProfileFeedItemsPage type="Comments" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
+      <ProfileFeedItemsPage type="Saved" />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
+      <ProfileFeedHiddenPostsPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/message`}>
+      <ConversationPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/u/:handle/log`}>
+      <ModlogPage />
+    </Route>,
+    // eslint-disable-next-line react/jsx-key
+    <Route exact path={`/${tab}/:actor/sidebar`}>
+      <InstanceSidebarPage />
+    </Route>,
+  ];
+}
+
+type RouterOutletRef = IonRouterOutletCustomEvent<unknown>["target"];
 
 export default function TabbedRoutes() {
   const ready = useAppSelector((state) => state.settings.ready);
-  const defaultFeed = useAppSelector(
-    (state) => state.settings.general.defaultFeed,
+  const selectedInstance = useAppSelector(
+    instanceSelector ?? ((state) => state.auth.connectedInstance),
   );
-  const selectedInstance = useAppSelector(instanceSelector);
 
-  const pageRef = useRef<IonRouterOutletCustomEvent<unknown>["target"]>(null);
-
-  function buildGeneralBrowseRoutes(tab: string) {
-    return [
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community`}>
-        <CommunityPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/search/posts/:search`}>
-        <SearchFeedResultsPage type="Posts" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/search/comments/:search`}>
-        <SearchFeedResultsPage type="Comments" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/sidebar`}>
-        <CommunitySidebarPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/comments/:id`}>
-        <PostDetail />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route
-        exact
-        path={`/${tab}/:actor/c/:community/comments/:id/thread/:threadCommentId`}
-      >
-        <PostDetail />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route
-        exact
-        path={`/${tab}/:actor/c/:community/comments/:id/:commentPath`}
-      >
-        <PostDetail />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/comments`}>
-        <CommunityCommentsPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/log`}>
-        <ModlogPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/c/:community/modqueue`}>
-        <ModqueuePage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/mod/comments`}>
-        <CommentsPage type="ModeratorView" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/mod/log`}>
-        <ModlogPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/mod/modqueue`}>
-        <ModqueuePage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle`}>
-        <UserPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/posts`}>
-        <ProfileFeedItemsPage type="Posts" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/comments`}>
-        <ProfileFeedItemsPage type="Comments" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
-        <ProfileFeedItemsPage type="Saved" />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
-        <ProfileFeedHiddenPostsPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/message`}>
-        <ConversationPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/u/:handle/log`}>
-        <ModlogPage />
-      </Route>,
-      // eslint-disable-next-line react/jsx-key
-      <Route exact path={`/${tab}/:actor/sidebar`}>
-        <InstanceSidebarPage />
-      </Route>,
-    ];
-  }
+  const pageRef = useRef<RouterOutletRef>(null);
 
   const pageContextValue = useMemo(() => ({ pageRef }), []);
 
   if (!ready) return;
 
-  const redirectRoute = (() => {
-    if (isInstalled()) return ""; // redirect to be handled by <CommunitiesListRedirectBootstrapper />
-
-    if (!defaultFeed) return "";
-
-    return getPathForFeed(defaultFeed);
-  })();
-
   return (
     <PageContextProvider value={pageContextValue}>
       <GalleryProvider>
-        {/* TODO key={} resets the tab route stack whenever your instance changes. */}
-        {/* In the future, it would be really cool if we could resolve object urls to pick up where you left off */}
-        {/* But this isn't trivial with needing to rewrite URLs... */}
-        <IonTabs>
-          <IonRouterOutlet ref={pageRef}>
-            <Route exact path="/">
-              {defaultFeed ? (
-                <Redirect
-                  to={`/posts/${
-                    selectedInstance ?? getDefaultServer()
-                  }${redirectRoute}`}
-                  push={false}
-                />
-              ) : (
-                ""
-              )}
-            </Route>
-            <Route exact path="/posts">
-              {defaultFeed ? (
-                <Redirect
-                  to={`/posts/${
-                    selectedInstance ?? getDefaultServer()
-                  }${redirectRoute}`}
-                  push={false}
-                />
-              ) : (
-                ""
-              )}
-            </Route>
-            <Route exact path="/posts/:actor/home">
-              <SpecialFeedPage type="Subscribed" />
-            </Route>
-            <Route exact path="/posts/:actor/all">
-              <SpecialFeedPage type="All" />
-            </Route>
-            <Route exact path="/posts/:actor/local">
-              <SpecialFeedPage type="Local" />
-            </Route>
-            <Route exact path="/posts/:actor/mod">
-              <SpecialFeedPage type="ModeratorView" />
-            </Route>
-            <Route exact path="/posts/:actor">
-              <CommunitiesPage />
-            </Route>
-            {...buildGeneralBrowseRoutes("posts")}
-
-            <Route exact path="/inbox">
-              <BoxesPage />
-            </Route>
-            <Route exact path="/inbox/all">
-              <InboxAuthRequired>
-                <InboxPage showRead />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/unread">
-              <InboxAuthRequired>
-                <InboxPage />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/mentions">
-              <InboxAuthRequired>
-                <MentionsPage />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/comment-replies">
-              <InboxAuthRequired>
-                <RepliesPage type="Comment" />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/post-replies">
-              <InboxAuthRequired>
-                <RepliesPage type="Post" />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/messages">
-              <InboxAuthRequired>
-                <MessagesPage />
-              </InboxAuthRequired>
-            </Route>
-            <Route exact path="/inbox/messages/:handle">
-              <InboxAuthRequired>
-                <ConversationPage />
-              </InboxAuthRequired>
-            </Route>
-            {...buildGeneralBrowseRoutes("inbox")}
-
-            <Route exact path="/profile">
-              <ProfilePage />
-            </Route>
-            {...buildGeneralBrowseRoutes("profile")}
-            <Route exact path="/profile/:actor">
-              <Redirect to="/profile" push={false} />
-            </Route>
-
-            <Route exact path="/search">
-              <SearchPage />
-            </Route>
-            <Route exact path="/search/posts/:search">
-              <SearchPostsResultsPage type="Posts" />
-            </Route>
-            <Route exact path="/search/comments/:search">
-              <SearchPostsResultsPage type="Comments" />
-            </Route>
-            <Route exact path="/search/communities/:search">
-              <SearchCommunitiesPage />
-            </Route>
-            {...buildGeneralBrowseRoutes("search")}
-            <Route exact path="/search/:actor">
-              <Redirect to="/search" push={false} />
-            </Route>
-
-            {...buildGeneralBrowseRoutes("settings")}
-            <Route exact path="/settings/:actor">
-              <Redirect to="/settings" push={false} />
-            </Route>
-            <Route exact path="/settings">
-              <SettingsPage />
-            </Route>
-            <Route exact path="/settings/install">
-              <InstallAppPage />
-            </Route>
-            <Route exact path="/settings/update">
-              <UpdateAppPage />
-            </Route>
-            <Route exact path="/settings/general">
-              <GeneralPage />
-            </Route>
-            <Route exact path="/settings/general/hiding">
-              <HidingSettingsPage />
-            </Route>
-            <Route exact path="/settings/appearance">
-              <AppearancePage />
-            </Route>
-            <Route exact path="/settings/appearance/theme">
-              <AppearanceThemePage />
-            </Route>
-            <Route exact path="/settings/appearance/theme/mode">
-              <DeviceModeSettingsPage />
-            </Route>
-            <Route exact path="/settings/app-icon">
-              <AppIconPage />
-            </Route>
-            <Route exact path="/settings/biometric">
-              <BiometricPage />
-            </Route>
-            <Route exact path="/settings/gestures">
-              <GesturesPage />
-            </Route>
-            <Route exact path="/settings/blocks">
-              <BlocksSettingsPage />
-            </Route>
-            <Route exact path="/settings/reddit-migrate">
-              <RedditMigratePage />
-            </Route>
-            <Route exact path="/settings/reddit-migrate/:search">
-              <SearchCommunitiesPage />
-            </Route>
-            {/* This annoyingly cannot be /settings/about, because otherwise it will also match /settings/:actor */}
-            <Route exact path="/settings/about/app">
-              <AboutPage />
-            </Route>
-            <Route exact path="/settings/about/thanks">
-              <AboutThanksPage />
-            </Route>
-          </IonRouterOutlet>
-
-          <TabBar slot="bottom" />
-        </IonTabs>
+        <InnerTabbedRoutes
+          ref={pageRef}
+          // Rebuild routing on instance change
+          key={selectedInstance ?? getDefaultServer()}
+        />
       </GalleryProvider>
     </PageContextProvider>
   );
 }
+
+const InnerTabbedRoutes = forwardRef<RouterOutletRef>(
+  function InnerTabbedRoutes(_, pageRef) {
+    const defaultFeed = useAppSelector(
+      (state) => state.settings.general.defaultFeed,
+    );
+    const selectedInstance = useAppSelector(instanceSelector);
+
+    const router = useOptimizedIonRouter();
+    const { tabRef } = useContext(TabContext);
+
+    // Reset route on initialize, if needed
+    // (reset when it doesn't make sense breaks ionic react router)
+    useEffect(() => {
+      if (!router.canGoBack()) return;
+
+      const pathname = router.getRouteInfo()?.pathname;
+
+      if (!pathname) return;
+
+      const pathnameSections = pathname.split("/").length - 1;
+
+      if (pathname.startsWith("/posts")) {
+        // special case for posts tab: /posts/lemmy.world is initial tab route
+        if (pathnameSections <= 2) return;
+      }
+
+      // all other tabs are /inbox, /settings etc as base route
+      if (pathnameSections <= 1) return;
+
+      function push() {
+        router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+      }
+
+      // have to wait for the ActorRedirect to do its thing, so it doesn't get clobbered
+      if (usingActorRedirect) {
+        queueMicrotask(push);
+        return;
+      }
+
+      push();
+    }, [router, tabRef]);
+
+    const redirectRoute = (() => {
+      if (isInstalled()) return ""; // redirect to be handled by <CommunitiesListRedirectBootstrapper />
+
+      if (!defaultFeed) return "";
+
+      return getPathForFeed(defaultFeed);
+    })();
+
+    return (
+      <IonTabs>
+        <IonRouterOutlet ref={pageRef}>
+          <Route exact path="/">
+            {defaultFeed ? (
+              <Redirect
+                to={`/posts/${
+                  selectedInstance ?? getDefaultServer()
+                }${redirectRoute}`}
+                push={false}
+              />
+            ) : (
+              ""
+            )}
+          </Route>
+          <Route exact path="/posts">
+            {defaultFeed ? (
+              <Redirect
+                to={`/posts/${
+                  selectedInstance ?? getDefaultServer()
+                }${redirectRoute}`}
+                push={false}
+              />
+            ) : (
+              ""
+            )}
+          </Route>
+          <Route exact path="/posts/:actor/home">
+            <SpecialFeedPage type="Subscribed" />
+          </Route>
+          <Route exact path="/posts/:actor/all">
+            <SpecialFeedPage type="All" />
+          </Route>
+          <Route exact path="/posts/:actor/local">
+            <SpecialFeedPage type="Local" />
+          </Route>
+          <Route exact path="/posts/:actor/mod">
+            <SpecialFeedPage type="ModeratorView" />
+          </Route>
+          <Route exact path="/posts/:actor">
+            <CommunitiesPage />
+          </Route>
+          {...buildGeneralBrowseRoutes("posts")}
+
+          <Route exact path="/inbox">
+            <BoxesPage />
+          </Route>
+          <Route exact path="/inbox/all">
+            <InboxAuthRequired>
+              <InboxPage showRead />
+            </InboxAuthRequired>
+          </Route>
+          <Route exact path="/inbox/unread">
+            <InboxAuthRequired>
+              <InboxPage />
+            </InboxAuthRequired>
+          </Route>
+          <Route exact path="/inbox/mentions">
+            <InboxAuthRequired>
+              <MentionsPage />
+            </InboxAuthRequired>
+          </Route>
+          <Route exact path="/inbox/comment-replies">
+            <InboxAuthRequired>
+              <RepliesPage type="Comment" />
+            </InboxAuthRequired>
+          </Route>
+          <Route exact path="/inbox/post-replies">
+            <InboxAuthRequired>
+              <RepliesPage type="Post" />
+            </InboxAuthRequired>
+          </Route>
+          <Route exact path="/inbox/messages">
+            <InboxAuthRequired>
+              <MessagesPage />
+            </InboxAuthRequired>
+          </Route>
+          <Route exact path="/inbox/messages/:handle">
+            <InboxAuthRequired>
+              <ConversationPage />
+            </InboxAuthRequired>
+          </Route>
+          {...buildGeneralBrowseRoutes("inbox")}
+
+          <Route exact path="/profile">
+            <ProfilePage />
+          </Route>
+          {...buildGeneralBrowseRoutes("profile")}
+          <Route exact path="/profile/:actor">
+            <Redirect to="/profile" push={false} />
+          </Route>
+
+          <Route exact path="/search">
+            <SearchPage />
+          </Route>
+          <Route exact path="/search/posts/:search">
+            <SearchPostsResultsPage type="Posts" />
+          </Route>
+          <Route exact path="/search/comments/:search">
+            <SearchPostsResultsPage type="Comments" />
+          </Route>
+          <Route exact path="/search/communities/:search">
+            <SearchCommunitiesPage />
+          </Route>
+          {...buildGeneralBrowseRoutes("search")}
+          <Route exact path="/search/:actor">
+            <Redirect to="/search" push={false} />
+          </Route>
+
+          {...buildGeneralBrowseRoutes("settings")}
+          <Route exact path="/settings/:actor">
+            <Redirect to="/settings" push={false} />
+          </Route>
+          <Route exact path="/settings">
+            <SettingsPage />
+          </Route>
+          <Route exact path="/settings/install">
+            <InstallAppPage />
+          </Route>
+          <Route exact path="/settings/update">
+            <UpdateAppPage />
+          </Route>
+          <Route exact path="/settings/general">
+            <GeneralPage />
+          </Route>
+          <Route exact path="/settings/general/hiding">
+            <HidingSettingsPage />
+          </Route>
+          <Route exact path="/settings/appearance">
+            <AppearancePage />
+          </Route>
+          <Route exact path="/settings/appearance/theme">
+            <AppearanceThemePage />
+          </Route>
+          <Route exact path="/settings/appearance/theme/mode">
+            <DeviceModeSettingsPage />
+          </Route>
+          <Route exact path="/settings/app-icon">
+            <AppIconPage />
+          </Route>
+          <Route exact path="/settings/biometric">
+            <BiometricPage />
+          </Route>
+          <Route exact path="/settings/gestures">
+            <GesturesPage />
+          </Route>
+          <Route exact path="/settings/blocks">
+            <BlocksSettingsPage />
+          </Route>
+          <Route exact path="/settings/reddit-migrate">
+            <RedditMigratePage />
+          </Route>
+          <Route exact path="/settings/reddit-migrate/:search">
+            <SearchCommunitiesPage />
+          </Route>
+          {/* This annoyingly cannot be /settings/about, because otherwise it will also match /settings/:actor */}
+          <Route exact path="/settings/about/app">
+            <AboutPage />
+          </Route>
+          <Route exact path="/settings/about/thanks">
+            <AboutThanksPage />
+          </Route>
+        </IonRouterOutlet>
+
+        <TabBar slot="bottom" />
+      </IonTabs>
+    );
+  },
+);
 
 export function getPathForFeed(defaultFeed: DefaultFeedType): string {
   switch (defaultFeed.type) {

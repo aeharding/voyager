@@ -74,10 +74,7 @@ function CommentsPage(props: CommentsPageProps) {
           </IonToolbar>
         </IonHeader>
         <FeedContent>
-          <PostCommentFeed
-            fetchFn={fetchFn}
-            communityName={communityNameIfAvailable}
-          />
+          <PostCommentFeed fetchFn={fetchFn} />
         </FeedContent>
       </IonPage>
     </FeedContextProvider>

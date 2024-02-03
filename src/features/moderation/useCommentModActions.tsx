@@ -1,10 +1,10 @@
 import { useIonActionSheet, useIonAlert } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { useContext, useState } from "react";
+import store, { useAppDispatch } from "../../store";
+import { useCallback, useContext, useMemo, useState } from "react";
 import useAppToast from "../../helpers/useAppToast";
 import { CommentView } from "lemmy-js-client";
 import { localUserSelector } from "../auth/siteSlice";
-import useCanModerate from "./useCanModerate";
+import { getCanModerate } from "./useCanModerate";
 import {
   checkmarkCircleOutline,
   colorWandOutline,
@@ -31,37 +31,37 @@ import { PageContext } from "../auth/PageContext";
 import { compact } from "lodash";
 
 export default function useCommentModActions(commentView: CommentView) {
-  const [presentAlert] = useIonAlert();
   const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState(false);
-  const localUser = useAppSelector(localUserSelector);
+  const [presentAlert] = useIonAlert();
   const [presentActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
   const { presentBanUser } = useContext(PageContext);
-  const role = useCanModerate(commentView.community);
 
-  const comment = useAppSelector(
-    (state) =>
-      state.comment.commentById[commentView.comment.id] ?? commentView.comment,
-  );
+  const [loading, setLoading] = useState(false);
 
-  const isSelf = comment.creator_id === localUser?.person_id;
+  // Do all logic sync in present() so it doesn't slow down initial render
+  const present = useCallback(() => {
+    const state = store.getState();
 
-  const reports = useAppSelector(
-    (state) => reportsByCommentIdSelector(state)[comment.id],
-  );
+    const comment =
+      state.comment.commentById[commentView.comment.id] ?? commentView.comment;
 
-  const bannedFromCommunity = useAppSelector(
-    (state) =>
+    const localUser = localUserSelector(state);
+
+    const isSelf = comment.creator_id === localUser?.person_id;
+
+    const reports = reportsByCommentIdSelector(state)[comment.id];
+
+    const bannedFromCommunity =
       state.user.bannedByCommunityIdUserId[
         `${commentView.community.id}${commentView.creator.id}`
-      ],
-  );
+      ];
 
-  const banned =
-    bannedFromCommunity ?? commentView.creator_banned_from_community;
+    const banned =
+      bannedFromCommunity ?? commentView.creator_banned_from_community;
 
-  function present() {
+    const role = getCanModerate(commentView.community);
+
     presentActionSheet({
       header: stringifyReports(reports),
       cssClass: `${role} left-align-buttons`,
@@ -183,7 +183,14 @@ export default function useCommentModActions(commentView: CommentView) {
         },
       ]),
     });
-  }
+  }, [
+    commentView,
+    dispatch,
+    presentActionSheet,
+    presentAlert,
+    presentBanUser,
+    presentToast,
+  ]);
 
-  return { present, loading };
+  return useMemo(() => ({ present, loading }), [loading, present]);
 }

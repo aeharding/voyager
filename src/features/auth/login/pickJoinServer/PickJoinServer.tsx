@@ -107,7 +107,7 @@ export default function PickJoinServer() {
     (state) => state.auth.connectedInstance,
   );
   const instances = useAppSelector((state) => state.pickJoinServer.instances);
-  // eslint-disable-next-line no-undef
+
   const contentRef = useRef<HTMLIonContentElement>(null);
 
   const [selection, setSelection] = useState<string | undefined>();
@@ -238,8 +238,9 @@ export default function PickJoinServer() {
         {
           text: "Log In",
           handler: () => {
-            const icon = allInstances.find(({ url }) => url === selectedUrl)
-              ?.icon;
+            const icon = allInstances.find(
+              ({ url }) => url === selectedUrl,
+            )?.icon;
 
             contentRef.current
               ?.closest("ion-nav")

@@ -3,7 +3,7 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
 import { css } from "@emotion/react";
-import React, { MouseEvent } from "react";
+import React, { MouseEvent, useCallback, useRef } from "react";
 import Ago from "../labels/Ago";
 import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
@@ -11,7 +11,7 @@ import Vote from "../labels/Vote";
 import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
-import CommentEllipsis from "./CommentEllipsis";
+import CommentEllipsis, { CommentEllipsisHandle } from "./CommentEllipsis";
 import { useAppSelector } from "../../store";
 import Save from "../labels/Save";
 import Edited from "../labels/Edited";
@@ -21,6 +21,9 @@ import ModeratableItem from "../moderation/ModeratableItem";
 import useCanModerate from "../moderation/useCanModerate";
 import ModqueueItemActions from "../moderation/ModqueueItemActions";
 import { ActionsContainer } from "../post/inFeed/compact/CompactPost";
+import { useLongPress } from "use-long-press";
+import { filterSafariCallout } from "../../helpers/longPress";
+import { useInModqueue } from "../../pages/shared/ModqueuePage";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -178,11 +181,6 @@ interface CommentProps {
   className?: string;
 
   rootIndex?: number;
-
-  /**
-   * On mod queue, this will be used for custom actions
-   */
-  modqueue?: boolean;
 }
 
 export default function Comment({
@@ -197,19 +195,32 @@ export default function Comment({
   routerLink,
   className,
   rootIndex,
-  modqueue,
 }: CommentProps) {
   const commentFromStore = useAppSelector(
     (state) => state.comment.commentById[commentView.comment.id],
   );
+
+  const inModqueue = useInModqueue();
 
   // Comment from slice might be more up to date, e.g. edits
   const comment = commentFromStore ?? commentView.comment;
 
   const canModerate = useCanModerate(commentView.community);
 
+  const commentEllipsisHandleRef = useRef<CommentEllipsisHandle>(null);
+
+  const onCommentLongPress = useCallback(() => {
+    commentEllipsisHandleRef.current?.present();
+  }, []);
+
+  const bind = useLongPress(onCommentLongPress, {
+    threshold: 800,
+    cancelOnMovement: true,
+    filterEvents: filterSafariCallout,
+  });
+
   function renderActions() {
-    if (modqueue) return <ModqueueItemActions item={commentView} />;
+    if (inModqueue) return <ModqueueItemActions item={commentView} />;
 
     if (canModerate)
       return <ModActions comment={commentView} role={canModerate} />;
@@ -228,6 +239,7 @@ export default function Comment({
           href={undefined}
           onClick={(e) => onClick?.(e)}
           className={`comment-${comment.id}`}
+          {...bind()}
         >
           <ModeratableItem
             itemView={commentView}
@@ -259,7 +271,7 @@ export default function Comment({
                         <CommentEllipsis
                           comment={commentView}
                           rootIndex={rootIndex}
-                          canModerate={canModerate}
+                          ref={commentEllipsisHandleRef}
                         />
                         <Ago date={comment.published} />
                       </ActionsContainer>

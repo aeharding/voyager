@@ -30,19 +30,6 @@ const RemoveIcon = styled(IonIcon)`
   }
 `;
 
-const Line = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-
-  ion-label {
-    min-width: 0;
-    text-overflow: clip !important;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-`;
-
 interface AccountProps {
   editing: boolean;
   account: Credential;
@@ -87,10 +74,10 @@ export default function Account({ editing, account, allowEdit }: AccountProps) {
           </IonButton>
         )}
         {editing ? (
-          <Line>
-            <IonLabel>{label}</IonLabel>
-            <IonReorder />
-          </Line>
+          <>
+            <IonLabel className="ion-text-nowrap">{label}</IonLabel>
+            <IonReorder slot="end" />
+          </>
         ) : (
           <IonRadio value={account.handle}>{label}</IonRadio>
         )}

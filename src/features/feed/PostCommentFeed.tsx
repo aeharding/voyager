@@ -43,18 +43,14 @@ interface PostCommentFeed
   filterKeywords?: boolean;
 
   header?: ReactElement;
-
-  modqueue?: boolean;
 }
 
 export default function PostCommentFeed({
-  communityName,
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
   filterKeywords = true,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
-  modqueue,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
@@ -98,19 +94,11 @@ export default function PostCommentFeed({
 
   const renderItem = useCallback(
     (item: PostCommentItem) => {
-      if (isPost(item))
-        return (
-          <Post
-            post={item}
-            communityMode={!!communityName}
-            css={borderCss}
-            modqueue={modqueue}
-          />
-        );
+      if (isPost(item)) return <Post post={item} css={borderCss} />;
 
-      return <FeedComment comment={item} css={borderCss} modqueue={modqueue} />;
+      return <FeedComment comment={item} css={borderCss} />;
     },
-    [communityName, borderCss, modqueue],
+    [borderCss],
   );
 
   const renderItemContent = useCallback(

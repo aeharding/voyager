@@ -30,11 +30,16 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
   const { showCommentImages } = useAppSelector(
     (state) => state.settings.general.comments,
   );
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
 
   const links = useMemo(() => {
     // Initialize a unified processor with the remark-parse parser
     // and parse the Markdown content
-    const processor = unified().use(remarkParse).use([customRemarkGfm]);
+    const processor = unified()
+      .use(remarkParse)
+      .use(customRemarkGfm, { connectedInstance });
 
     const mdastTree = processor.parse(markdown);
     processor.runSync(mdastTree, markdown);
@@ -65,7 +70,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     links = links.slice(0, 4);
 
     return links;
-  }, [markdown, showCommentImages]);
+  }, [markdown, showCommentImages, connectedInstance]);
 
   if (!links.length) return;
 

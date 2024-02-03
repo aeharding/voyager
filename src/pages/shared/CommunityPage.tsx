@@ -161,7 +161,6 @@ const CommunityPageContent = memo(function CommunityPageContent({
 
   const communityView = useFetchCommunity(community);
 
-  // eslint-disable-next-line no-undef
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(

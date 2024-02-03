@@ -49,8 +49,8 @@ export default function PickLoginServer() {
     [search],
   );
   const [loading, setLoading] = useState(false);
+
   const ref = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line no-undef
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
   const searchInvalid = useMemo(

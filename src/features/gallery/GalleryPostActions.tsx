@@ -21,6 +21,7 @@ import { StashMedia } from "capacitor-stash-media";
 import { Share } from "@capacitor/share";
 import useAppToast from "../../helpers/useAppToast";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import { InFeedContext } from "../feed/Feed";
 
 const Container = styled.div`
   display: flex;
@@ -104,7 +105,9 @@ export default function GalleryPostActions({
       {isNative() ? (
         <GalleryMoreActions post={post} imgSrc={imgSrc} />
       ) : (
-        <MoreActions post={post} onFeed />
+        <InFeedContext.Provider value={true}>
+          <MoreActions post={post} />
+        </InFeedContext.Provider>
       )}
     </Container>
   );

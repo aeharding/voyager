@@ -124,11 +124,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   useSetActivePage(virtuaRef, virtualEnabled);
 
-  useImperativeHandle(ref, () => ({
-    appendComments,
-    prependComments,
-  }));
-
   const [maxContext, setMaxContext] = useState(
     getCommentContextDepthForPath(commentPath),
   );
@@ -381,11 +376,20 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   const getComments = useCallback(() => comments, [comments]);
 
-  function appendComments(comments: CommentView[]) {
+  const appendComments = useCallback((comments: CommentView[]) => {
     setComments((existingComments) =>
       uniqBy([...existingComments, ...comments], (c) => c.comment.id),
     );
-  }
+  }, []);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      appendComments,
+      prependComments,
+    }),
+    [appendComments, prependComments],
+  );
 
   async function handleRefresh(event: RefresherCustomEvent) {
     try {
@@ -457,7 +461,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       prependComments,
       getComments,
     }),
-    [fetchComments, prependComments, getComments],
+    [appendComments, prependComments, getComments, fetchComments],
   );
 
   useEffect(() => {
