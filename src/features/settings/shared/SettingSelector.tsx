@@ -50,6 +50,7 @@ export interface SettingSelectorProps<T, O extends Record<string, T>> {
   disabled?: boolean;
   getOptionLabel?: (option: T) => string | undefined;
   getSelectedLabel?: (option: T) => string | undefined;
+  hideOptions?: T[] | undefined;
 }
 
 export default function SettingSelector<
@@ -67,12 +68,14 @@ export default function SettingSelector<
   disabled,
   getOptionLabel,
   getSelectedLabel,
+  hideOptions = [],
 }: SettingSelectorProps<T, O>) {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
 
-  const buttons: ActionSheetButton<T>[] = Object.values(options).map(
-    function (v) {
+  const buttons: ActionSheetButton<T>[] = Object.values(options)
+    .filter((o) => !hideOptions.includes(o))
+    .map(function (v) {
       const customLabel = getOptionLabel?.(v);
 
       return {
@@ -81,8 +84,7 @@ export default function SettingSelector<
         data: v,
         role: selected === v ? "selected" : undefined,
       } as ActionSheetButton<T>;
-    },
-  );
+    });
 
   const Icon = icon
     ? styled(icon, { shouldForwardProp: (prop) => prop !== "mirror" })<{

@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { useInView } from "react-intersection-observer";
+import useShouldAutoplay from "../network/useShouldAutoplay";
 
 const Container = styled.div`
   position: relative;
@@ -64,12 +65,14 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
     controls,
     className,
     progress: showProgress = !controls,
-    autoPlay = true,
+    autoPlay: _autoplayRequested = true,
     ...rest
   },
   forwardedRef,
 ) {
   const videoRef = useRef<HTMLVideoElement>();
+  const shouldAutoplay = useShouldAutoplay();
+  const autoPlay = shouldAutoplay && _autoplayRequested;
 
   useImperativeHandle(
     forwardedRef,
