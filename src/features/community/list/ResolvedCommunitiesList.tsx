@@ -20,6 +20,7 @@ import { VList, VListHandle } from "virtua";
 import { maxWidthCss } from "../../shared/AppContent";
 import AlphabetJump from "./AlphabetJump";
 import useShowModeratorFeed from "./useShowModeratorFeed";
+import { attributedPreventOnClickNavigationBug } from "../../../helpers/ionic";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;
@@ -125,6 +126,7 @@ function ResolvedCommunitiesList({
               <IonItem
                 routerLink={buildGeneralBrowseLink(`/home`)}
                 detail={false}
+                {...attributedPreventOnClickNavigationBug}
               >
                 <Content>
                   <SubIcon icon={home} color="red" />
@@ -135,7 +137,11 @@ function ResolvedCommunitiesList({
                 </Content>
               </IonItem>
             )}
-            <IonItem routerLink={buildGeneralBrowseLink(`/all`)} detail={false}>
+            <IonItem
+              routerLink={buildGeneralBrowseLink(`/all`)}
+              detail={false}
+              {...attributedPreventOnClickNavigationBug}
+            >
               <Content>
                 <SubIcon icon={library} color="#009dff" />
                 <div>
@@ -147,6 +153,7 @@ function ResolvedCommunitiesList({
               routerLink={buildGeneralBrowseLink(`/local`)}
               detail={false}
               lines={showModeratorFeed ? "inset" : "none"}
+              {...attributedPreventOnClickNavigationBug}
             >
               <Content>
                 <SubIcon icon={people} color="#00f100" />
@@ -160,6 +167,7 @@ function ResolvedCommunitiesList({
                 routerLink={buildGeneralBrowseLink(`/mod`)}
                 detail={false}
                 lines="none"
+                {...attributedPreventOnClickNavigationBug}
               >
                 <Content>
                   <SubIcon icon={shieldCheckmark} color="#464646" />

@@ -5,6 +5,7 @@ import { IonIcon } from "@ionic/react";
 import { chevronForward } from "ionicons/icons";
 import Url from "../../shared/Url";
 import LinkPreview from "./LinkPreview";
+import { attributedPreventOnClickNavigationBug } from "../../../helpers/ionic";
 
 const StyledLinkInterceptor = styled(LinkInterceptor)`
   text-decoration: none;
@@ -54,7 +55,10 @@ interface CommentLinkProps {
 export default function CommentLink({ link }: CommentLinkProps) {
   return (
     <div onClick={(e) => e.stopPropagation()}>
-      <StyledLinkInterceptor href={link.url}>
+      <StyledLinkInterceptor
+        href={link.url}
+        {...attributedPreventOnClickNavigationBug}
+      >
         <Container>
           <LinkPreview link={link} />
           <Content>
