@@ -1,7 +1,9 @@
 import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
-import { createMemoryHistory } from "history";
+import { MemoryHistory, createMemoryHistory } from "history";
 import React, { useEffect } from "react";
 import { isAppleDeviceInstalledToHomescreen } from "./helpers/device";
+
+export let memoryHistory: MemoryHistory | undefined;
 
 export default function Router({ children }: { children: React.ReactNode }) {
   const history = createMemoryHistory();
@@ -20,10 +22,13 @@ export default function Router({ children }: { children: React.ReactNode }) {
    * on iOS. If there's no page history to swipe,
    * what are you going to do, Apple... 😈
    */
-  if (isAppleDeviceInstalledToHomescreen())
+  if (isAppleDeviceInstalledToHomescreen()) {
+    memoryHistory = history;
     return (
       <IonReactMemoryRouter history={history}>{children}</IonReactMemoryRouter>
     );
+  }
 
+  memoryHistory = undefined;
   return <IonReactRouter>{children}</IonReactRouter>;
 }

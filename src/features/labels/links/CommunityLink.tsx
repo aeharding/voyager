@@ -16,6 +16,7 @@ import {
 import useCommunityActions from "../../community/useCommunityActions";
 import { useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
+import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 
 interface CommunityLinkProps {
   community: Community;
@@ -86,7 +87,10 @@ export default function CommunityLink({
   return (
     <StyledLink
       to={buildGeneralBrowseLink(`/c/${handle}`)}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        preventOnClickNavigationBug(e);
+      }}
       className={className}
       css={hideCommunity ? hideCss : undefined}
       {...bind()}

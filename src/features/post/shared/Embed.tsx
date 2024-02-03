@@ -19,6 +19,7 @@ import Url from "../../shared/Url";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 import { setPostRead } from "../postSlice";
 import { InFeedContext } from "../../feed/Feed";
+import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -134,6 +135,8 @@ export default function Embed({ post, className }: EmbedProps) {
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
+
+    if (preventOnClickNavigationBug(e)) return;
 
     dispatch(setPostRead(post.post.id));
     autohidePostIfNeeded(post);

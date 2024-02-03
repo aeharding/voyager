@@ -10,6 +10,7 @@ import { OInstanceUrlDisplayMode } from "../../../services/db";
 import AgeBadge from "./AgeBadge";
 import { useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
+import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -77,7 +78,10 @@ export default function PersonLink({
   return (
     <PersonLinkEl
       to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        preventOnClickNavigationBug(e);
+      }}
       className={className}
       hideUsername={hideUsernames}
       color={color}
