@@ -256,6 +256,7 @@ export type SettingValueTypes = {
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_show_voting_buttons: boolean;
   compact_thumbnail_size: CompactThumbnailSizeType;
+  compact_show_self_post_thumbnails: boolean;
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
   default_comment_sort: CommentDefaultSort;

@@ -71,6 +71,7 @@ interface SettingsState {
       thumbnailsPosition: CompactThumbnailPositionType;
       showVotingButtons: boolean;
       thumbnailSize: CompactThumbnailSizeType;
+      showSelfPostThumbnails: boolean;
     };
     voting: {
       voteDisplayMode: VoteDisplayMode;
@@ -150,6 +151,7 @@ const initialState: SettingsState = {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
       showVotingButtons: true,
       thumbnailSize: OCompactThumbnailSizeType.Small,
+      showSelfPostThumbnails: true,
     },
     voting: {
       voteDisplayMode: OVoteDisplayMode.Total,
@@ -322,6 +324,10 @@ export const appearanceSlice = createSlice({
     ) {
       state.appearance.compact.thumbnailSize = action.payload;
       db.setSetting("compact_thumbnail_size", action.payload);
+    },
+    setCompactShowSelfPostThumbnails(state, action: PayloadAction<boolean>) {
+      state.appearance.compact.showSelfPostThumbnails = action.payload;
+      db.setSetting("compact_show_self_post_thumbnails", action.payload);
     },
     setThumbnailPosition(
       state,
@@ -543,6 +549,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const compact_thumbnail_size = await db.getSetting(
         "compact_thumbnail_size",
       );
+      const compact_show_self_post_thumbnails = await db.getSetting(
+        "compact_show_self_post_thumbnails",
+      );
       const vote_display_mode = await db.getSetting("vote_display_mode");
       const default_comment_sort = await db.getSetting("default_comment_sort");
       const disable_marking_posts_read = await db.getSetting(
@@ -604,6 +613,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             thumbnailSize:
               compact_thumbnail_size ??
               initialState.appearance.compact.thumbnailSize,
+            showSelfPostThumbnails:
+              compact_show_self_post_thumbnails ??
+              initialState.appearance.compact.showSelfPostThumbnails,
           },
           voting: {
             voteDisplayMode:
@@ -705,6 +717,7 @@ export const {
   setThumbnailPosition,
   setShowVotingButtons,
   setCompactThumbnailSize,
+  setCompactShowSelfPostThumbnails,
   setVoteDisplayMode,
   setUserDarkMode,
   setUseSystemDarkMode,
