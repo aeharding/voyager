@@ -20,6 +20,8 @@ PODS:
     - Capacitor
   - CapacitorKeyboard (5.0.8):
     - Capacitor
+  - CapacitorNetwork (5.0.7):
+    - Capacitor
   - CapacitorPluginSafeArea (2.0.6):
     - Capacitor
   - CapacitorShare (5.0.7):
@@ -47,6 +49,7 @@ DEPENDENCIES:
   - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.6.0/node_modules/@capacitor/filesystem`)"
   - "CapacitorHaptics (from `../../node_modules/.pnpm/voyager-capacitor-haptics@5.0.7_@capacitor+core@5.6.0/node_modules/voyager-capacitor-haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/.pnpm/@capacitor+keyboard@5.0.8_@capacitor+core@5.6.0/node_modules/@capacitor/keyboard`)"
+  - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@5.0.7_@capacitor+core@5.6.0/node_modules/@capacitor/network`)"
   - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@2.0.6_@capacitor+core@5.6.0/node_modules/capacitor-plugin-safe-area`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@5.0.7_@capacitor+core@5.6.0/node_modules/@capacitor/share`)"
   - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@1.0.0_@capacitor+core@5.6.0/node_modules/capacitor-stash-media`)"
@@ -80,6 +83,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/voyager-capacitor-haptics@5.0.7_@capacitor+core@5.6.0/node_modules/voyager-capacitor-haptics"
   CapacitorKeyboard:
     :path: "../../node_modules/.pnpm/@capacitor+keyboard@5.0.8_@capacitor+core@5.6.0/node_modules/@capacitor/keyboard"
+  CapacitorNetwork:
+    :path: "../../node_modules/.pnpm/@capacitor+network@5.0.7_@capacitor+core@5.6.0/node_modules/@capacitor/network"
   CapacitorPluginSafeArea:
     :path: "../../node_modules/.pnpm/capacitor-plugin-safe-area@2.0.6_@capacitor+core@5.6.0/node_modules/capacitor-plugin-safe-area"
   CapacitorShare:
@@ -103,6 +108,7 @@ SPEC CHECKSUMS:
   CapacitorFilesystem: 9f3e3c7fea2fff12f46dd5b07a2914f2103e4cfc
   CapacitorHaptics: f017117f49e0f34558106ad129cca79e04e56f51
   CapacitorKeyboard: aec619a578235c6ce279075009a2689c2cf5c42c
+  CapacitorNetwork: 81ef9728aa7a65cac8c1181ce79e578162b57b57
   CapacitorPluginSafeArea: d55e4d4e70c98f611240f11dd80561438d0d70cb
   CapacitorShare: c6a1ebbf0114ff9e863b966cd6052678fa25d480
   CapacitorStashMedia: 4035629067acd5b880f4a3d4fc4e3d2dfa8a6801
@@ -110,6 +116,6 @@ SPEC CHECKSUMS:
   CapacitorTips: 045758a9354574aa4807265e1bccbca0919ad861
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: e15e4f83cc41d796903fe51213091e81f740b041
+PODFILE CHECKSUM: 3cff0663976dd0a8c7b4a31dc0d623994cc14b77
 
 COCOAPODS: 1.12.1

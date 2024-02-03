@@ -37,7 +37,8 @@ const Container = styled.div`
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
   open: (
-    img: HTMLImageElement,
+    img: HTMLImageElement | HTMLCanvasElement,
+    src: string,
     post?: PostView,
     animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
   ) => void;
@@ -61,7 +62,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null,
   );
-  const imgRef = useRef<HTMLImageElement>();
+  const imgRef = useRef<HTMLImageElement | HTMLCanvasElement>();
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
@@ -89,7 +90,8 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
   const open = useCallback(
     (
-      img: HTMLImageElement,
+      img: HTMLImageElement | HTMLCanvasElement,
+      src: string,
       post?: PostView,
       animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
     ) => {
@@ -101,9 +103,11 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       const instance = new PhotoSwipeLightbox({
         dataSource: [
           {
-            src: img.src,
-            height: img.naturalHeight,
-            width: img.naturalWidth,
+            src,
+            height:
+              img instanceof HTMLImageElement ? img.naturalHeight : img.height,
+            width:
+              img instanceof HTMLImageElement ? img.naturalWidth : img.width,
           },
         ],
         showHideAnimationType: animationType ?? "fade",
@@ -121,7 +125,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       });
 
       instance.addFilter("placeholderSrc", () => {
-        return img.src;
+        return src;
       });
 
       instance.on("openingAnimationEnd", () => {

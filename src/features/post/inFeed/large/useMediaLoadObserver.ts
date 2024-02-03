@@ -18,25 +18,31 @@ export default function useMediaLoadObserver(src: string | undefined) {
 
     const handleResize = (entries: ResizeObserverEntry[]) => {
       for (const entry of entries) {
-        if (
-          entry.target instanceof HTMLImageElement ||
-          entry.target instanceof HTMLVideoElement
-        ) {
-          const width =
-            entry.target instanceof HTMLImageElement
-              ? entry.target.naturalWidth
-              : entry.target.videoWidth;
-          const height =
-            entry.target instanceof HTMLImageElement
-              ? entry.target.naturalHeight
-              : entry.target.videoHeight;
+        let width, height;
 
-          if (!width) return;
-
-          dispatch(imageLoaded({ src, aspectRatio: round(width / height, 6) }));
-          destroyObserver();
-          return;
+        switch (true) {
+          case entry.target instanceof HTMLImageElement:
+            width = entry.target.naturalWidth;
+            height = entry.target.naturalHeight;
+            break;
+          case entry.target instanceof HTMLVideoElement:
+            width = entry.target.videoWidth;
+            height = entry.target.videoWidth;
+            break;
+          case entry.target instanceof HTMLCanvasElement:
+            if (!entry.target.width && !entry.target.height) return; // canvas still loading
+            width = entry.target.width;
+            height = entry.target.height;
+            break;
+          default:
+            return;
         }
+
+        if (!width) return;
+
+        dispatch(imageLoaded({ src, aspectRatio: round(width / height, 6) }));
+        destroyObserver();
+        return;
       }
     };
 

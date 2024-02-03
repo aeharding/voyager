@@ -65,14 +65,14 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
     controls,
     className,
     progress: showProgress = !controls,
-    autoPlay: _autoplayRequested = true,
+    autoPlay: videoAllowedToAutoplay = true,
     ...rest
   },
   forwardedRef,
 ) {
   const videoRef = useRef<HTMLVideoElement>();
   const shouldAutoplay = useShouldAutoplay();
-  const autoPlay = shouldAutoplay && _autoplayRequested;
+  const autoPlay = shouldAutoplay && videoAllowedToAutoplay;
 
   useImperativeHandle(
     forwardedRef,
