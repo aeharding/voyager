@@ -5,7 +5,7 @@ import { GalleryMediaProps } from "./GalleryMedia";
 export default forwardRef<
   HTMLCanvasElement | HTMLImageElement,
   GalleryMediaProps
->(function Gif({ onClick, ...props }, ref) {
+>(function GalleryGif({ onClick, ...props }, ref) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const syntheticImgRef = useRef<HTMLImageElement>();
 
