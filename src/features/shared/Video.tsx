@@ -10,12 +10,18 @@ import {
 } from "react";
 import { useInView } from "react-intersection-observer";
 import useShouldAutoplay from "../../listeners/network/useShouldAutoplay";
+import { css } from "@emotion/react";
 
 const Container = styled.div`
   position: relative;
   overflow: hidden;
 
   display: flex;
+`;
+
+const sharedProgressBarCss = css`
+  background: rgba(0, 0, 0, 0.0045);
+  backdrop-filter: blur(30px);
 `;
 
 const Progress = styled.progress`
@@ -28,9 +34,19 @@ const Progress = styled.progress`
   height: 12px;
   transform: translate3d(0, 0, 0);
 
+  background: none;
+  border: 0;
+
   &::-webkit-progress-bar {
-    background: rgba(0, 0, 0, 0.0045);
-    backdrop-filter: blur(30px);
+    ${sharedProgressBarCss}
+  }
+
+  @supports selector(::-moz-progress-bar) {
+    ${sharedProgressBarCss}
+  }
+
+  &::-moz-progress-bar {
+    background: rgba(255, 255, 255, 0.3);
   }
 
   &::-webkit-progress-value {
