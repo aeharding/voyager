@@ -1,10 +1,7 @@
-import store from "../store";
-import {
-  getConnectionType,
-  updateConnectionType,
-} from "../features/network/networkSlice";
+import store from "../../store";
+import { getConnectionType, updateConnectionType } from "./networkSlice";
 import { Network } from "@capacitor/network";
-import { isNative } from "../helpers/device";
+import { isNative } from "../../helpers/device";
 
 (async () => {
   if (!isNative()) return;

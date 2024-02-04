@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { useInView } from "react-intersection-observer";
-import useShouldAutoplay from "../network/useShouldAutoplay";
+import useShouldAutoplay from "../../listeners/network/useShouldAutoplay";
 
 const Container = styled.div`
   position: relative;

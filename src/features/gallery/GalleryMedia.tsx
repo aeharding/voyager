@@ -10,11 +10,11 @@ import {
 import { isUrlPotentialAnimatedImage } from "../../helpers/url";
 import GalleryGif from "./GalleryGif";
 import GalleryImg from "./GalleryImg";
-import useShouldAutoplay from "../network/useShouldAutoplay";
 import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
 import { GalleryContext } from "./GalleryProvider";
 import { useAutohidePostIfNeeded } from "../feed/PageTypeContext";
+import useShouldAutoplay from "../../listeners/network/useShouldAutoplay";
 
 export type GalleryMediaRef = HTMLImageElement | HTMLCanvasElement;
 

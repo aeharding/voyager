@@ -40,7 +40,7 @@ import siteSlice from "./features/auth/siteSlice";
 import { handleSelector } from "./features/auth/authSelectors";
 import pickJoinServerSlice from "./features/auth/login/pickJoinServer/pickJoinServerSlice";
 import joinSlice from "./features/auth/login/join/joinSlice";
-import networkSlice from "./features/network/networkSlice";
+import networkSlice from "./listeners/network/networkSlice";
 
 const store = configureStore({
   reducer: {
