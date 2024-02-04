@@ -21,21 +21,5 @@ export default function CollapsedByDefault() {
       setSelected={setCommentsCollapsed}
       options={OCommentThreadCollapse}
     />
-    // <InsetIonItem>
-    //   <IonToggle
-    //     checked={collapseCommentThreads === OCommentThreadCollapse.Always}
-    //     onIonChange={(e) =>
-    //       dispatch(
-    //         setCommentsCollapsed(
-    //           e.detail.checked
-    //             ? OCommentThreadCollapse.Always
-    //             : OCommentThreadCollapse.Never,
-    //         ),
-    //       )
-    //     }
-    //   >
-    //     Collapse Comment Threads
-    //   </IonToggle>
-    // </InsetIonItem>
   );
 }
