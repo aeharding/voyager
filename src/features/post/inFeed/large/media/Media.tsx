@@ -3,8 +3,8 @@ import { css } from "@emotion/react";
 import PostMedia, {
   PostGalleryImgProps,
   getPostMedia,
-} from "../../../../gallery/PostMedia";
-import { CSSProperties, useMemo } from "react";
+} from "../../../../media/gallery/PostMedia";
+import { CSSProperties, useMemo, useRef } from "react";
 import { IonIcon } from "@ionic/react";
 import { imageOutline } from "ionicons/icons";
 import useMediaLoadObserver from "../useMediaLoadObserver";
@@ -12,7 +12,7 @@ import { IMAGE_FAILED, imageFailed } from "../imageSlice";
 import { useAppDispatch } from "../../../../../store";
 import BlurOverlay from "./BlurOverlay";
 
-const Img = styled(PostMedia)`
+const StyledPostMedia = styled(PostMedia)`
   width: 100%;
   max-width: none;
   max-height: max(100vh, 1000px);
@@ -31,7 +31,7 @@ const PlaceholderContainer = styled.div<{ loaded: boolean }>`
       aspect-ratio: 1.2;
       position: relative;
 
-      ${Img} {
+      ${StyledPostMedia} {
         position: absolute;
         top: 0;
         left: 0;
@@ -55,6 +55,7 @@ export default function Media({
   const dispatch = useAppDispatch();
   const src = useMemo(() => getPostMedia(props.post), [props.post]);
   const [mediaRef, aspectRatio] = useMediaLoadObserver(src);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   function renderIcon() {
     if (aspectRatio === IMAGE_FAILED)
@@ -72,14 +73,19 @@ export default function Media({
   const loaded = !!aspectRatio && aspectRatio > 0;
 
   const contents = (
-    <PlaceholderContainer loaded={loaded}>
-      <Img
+    <PlaceholderContainer loaded={loaded} ref={containerRef} style={style}>
+      <StyledPostMedia
         {...props}
         ref={mediaRef}
-        style={style}
         autoPlay={!blur}
         onError={() => {
           if (src) dispatch(imageFailed(src));
+        }}
+        onClick={(e) => {
+          // react-reverse-portal needs click repropagated
+          e.stopPropagation();
+          e.preventDefault();
+          containerRef.current?.click();
         }}
       />
 

@@ -6,7 +6,7 @@ import { PostView } from "lemmy-js-client";
 import { MouseEvent, useCallback, useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import PostMedia from "../../../gallery/PostMedia";
+import PostMedia from "../../../media/gallery/PostMedia";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import SelfSvg from "./self.svg?react";
 import { getImageSrc } from "../../../../services/lemmy";

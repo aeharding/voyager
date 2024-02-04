@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { isUrlVideo } from "../../helpers/url";
-import Video from "./Video";
+import Player from "../media/video/Player";
 import { css } from "@emotion/react";
-import GalleryMedia, { GalleryMediaProps } from "../gallery/GalleryMedia";
+import GalleryMedia, { GalleryMediaProps } from "../media/gallery/GalleryMedia";
 
 const smallStyles = css`
   max-height: 200px;
@@ -24,7 +24,7 @@ export default function MarkdownImg({ small, ...props }: MarkdownImgProps) {
 
   if (isVideo)
     return (
-      <Video
+      <Player
         src={props.src!}
         progress={false}
         css={sharedStyles}

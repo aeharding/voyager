@@ -4,7 +4,7 @@ import MarkdownToolbar, {
   TOOLBAR_TARGET_ID,
 } from "../../shared/markdown/editing/MarkdownToolbar";
 import { IonContent } from "@ionic/react";
-import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
+import { preventPhotoswipeGalleryFocusTrap } from "../../media/gallery/GalleryImg";
 import React, { Dispatch, SetStateAction, forwardRef, useRef } from "react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 import { css } from "@emotion/react";

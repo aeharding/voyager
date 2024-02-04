@@ -11,13 +11,13 @@ import GalleryPostActions from "./GalleryPostActions";
 import { createPortal } from "react-dom";
 import { PostView } from "lemmy-js-client";
 import PhotoSwipeLightbox, { PreparedPhotoSwipeOptions } from "photoswipe";
-import { getSafeArea, isAndroid, isNative } from "../../helpers/device";
+import { getSafeArea, isAndroid, isNative } from "../../../helpers/device";
 
 import "photoswipe/style.css";
 import { useLocation } from "react-router";
 import { StatusBar } from "@capacitor/status-bar";
-import { setPostRead } from "../post/postSlice";
-import { useAppDispatch } from "../../store";
+import { setPostRead } from "../../post/postSlice";
+import { useAppDispatch } from "../../../store";
 import { GalleryMediaRef } from "./GalleryMedia";
 
 const Container = styled.div`

@@ -51,10 +51,7 @@ import { OptimizedRouterProvider } from "./helpers/useOptimizedIonRouter";
     rippleEffect: false,
     mode: getDeviceMode(),
     statusTap: false, // custom implementation listeners/statusTap.ts
-    swipeBackEnabled:
-      isInstalled() &&
-      getDeviceMode() === "ios" &&
-      navMode !== NavModes.Gesture,
+    swipeBackEnabled: true,
   });
 })();
 

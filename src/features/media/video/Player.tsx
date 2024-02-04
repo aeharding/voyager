@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { useInView } from "react-intersection-observer";
-import useShouldAutoplay from "../../listeners/network/useShouldAutoplay";
+import useShouldAutoplay from "../../../listeners/network/useShouldAutoplay";
 import { css } from "@emotion/react";
 
 const Container = styled.div`
@@ -63,7 +63,7 @@ const VideoEl = styled.video`
   overflow: hidden;
 `;
 
-export interface VideoProps {
+export interface PlayerProps {
   src: string;
 
   controls?: boolean;
@@ -73,9 +73,7 @@ export interface VideoProps {
   className?: string;
 }
 
-const videoPlaybackPlace: Record<string, number> = {};
-
-const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
+const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   {
     src,
     controls,
@@ -89,6 +87,7 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
   const videoRef = useRef<HTMLVideoElement>();
   const shouldAutoplay = useShouldAutoplay();
   const autoPlay = shouldAutoplay && videoAllowedToAutoplay;
+  const wantedToPlayRef = useRef(false);
 
   useImperativeHandle(
     forwardedRef,
@@ -111,21 +110,26 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
     [inViewRef],
   );
 
-  const savePlace = useCallback(() => {
+  const pause = useCallback(() => {
     if (!videoRef.current) return;
     if (!autoPlay) return;
 
-    videoPlaybackPlace[src] = videoRef.current.currentTime;
-    videoRef.current.pause();
-  }, [src, autoPlay]);
+    wantedToPlayRef.current = false;
+
+    setTimeout(() => {
+      if (wantedToPlayRef.current) return;
+
+      videoRef.current?.pause();
+    }, 300);
+  }, [autoPlay]);
 
   const resume = useCallback(() => {
     if (!videoRef.current) return;
     if (!autoPlay) return;
 
-    videoRef.current.currentTime = videoPlaybackPlace[src] ?? 0;
     videoRef.current.play();
-  }, [src, autoPlay]);
+    wantedToPlayRef.current = true;
+  }, [autoPlay]);
 
   useEffect(() => {
     if (!videoRef || !videoRef.current) {
@@ -135,11 +139,11 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
     if (inView) {
       resume();
     } else {
-      savePlace();
+      pause();
     }
-  }, [inView, savePlace, resume]);
+  }, [inView, pause, resume]);
 
-  const videoEl = (
+  return (
     <Container className={className}>
       <VideoEl
         ref={setRefs}
@@ -158,8 +162,6 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
       {showProgress && progress !== undefined && <Progress value={progress} />}
     </Container>
   );
-
-  return videoEl;
 });
 
-export default Video;
+export default Player;

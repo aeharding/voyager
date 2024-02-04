@@ -7,14 +7,14 @@ import {
   useContext,
   useMemo,
 } from "react";
-import { isUrlPotentialAnimatedImage } from "../../helpers/url";
+import { isUrlPotentialAnimatedImage } from "../../../helpers/url";
 import GalleryGif from "./GalleryGif";
 import GalleryImg from "./GalleryImg";
 import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
 import { GalleryContext } from "./GalleryProvider";
-import { useAutohidePostIfNeeded } from "../feed/PageTypeContext";
-import useShouldAutoplay from "../../listeners/network/useShouldAutoplay";
+import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
+import useShouldAutoplay from "../../../listeners/network/useShouldAutoplay";
 
 export type GalleryMediaRef = HTMLImageElement | HTMLCanvasElement;
 
