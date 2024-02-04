@@ -55,6 +55,9 @@ devDependencies:
   '@capacitor/keyboard':
     specifier: ^5.0.8
     version: 5.0.8(@capacitor/core@5.6.0)
+  '@capacitor/network':
+    specifier: ^5.0.7
+    version: 5.0.7(@capacitor/core@5.6.0)
   '@capacitor/share':
     specifier: ^5.0.7
     version: 5.0.7(@capacitor/core@5.6.0)
@@ -2678,6 +2681,14 @@ packages:
 
   /@capacitor/keyboard@5.0.8(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-XYyBzGlzjgLPqyPVdu5McGLYV6+G2efVR4I3l5cF1B27M6U/oFqv9CQU74WNG08nee28bfccboNpv6eWCLYn1A==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.6.0
+    dev: true
+
+  /@capacitor/network@5.0.7(@capacitor/core@5.6.0):
+    resolution: {integrity: sha512-g+8SkNmkOyidaHnfKI9Ly8GNcx3VEwboehDXcTs5WU8bPuhCOEzbZnC0kFL5wwix3AoUQl8gEos6MtCey5cUIg==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:

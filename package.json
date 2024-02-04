@@ -43,6 +43,7 @@
     "@capacitor/haptics": "npm:voyager-capacitor-haptics@^5.0.7",
     "@capacitor/ios": "5.6.0",
     "@capacitor/keyboard": "^5.0.8",
+    "@capacitor/network": "^5.0.7",
     "@capacitor/share": "^5.0.7",
     "@capacitor/status-bar": "^5.0.7",
     "@emotion/babel-plugin": "^11.11.0",

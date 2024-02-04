@@ -1,20 +1,23 @@
 import { PostView } from "lemmy-js-client";
 import { findLoneImage } from "../../helpers/markdown";
-import GalleryImg, { GalleryImgProps } from "./GalleryImg";
 import { isUrlMedia, isUrlVideo } from "../../helpers/url";
 import Video, { VideoProps } from "../shared/Video";
 import { RefObject, forwardRef, memo, useMemo } from "react";
+import GalleryMedia, {
+  GalleryMediaProps,
+  GalleryMediaRef,
+} from "./GalleryMedia";
 
 export interface PostGalleryImgProps
-  extends Omit<GalleryImgProps & VideoProps, "src"> {
+  extends Omit<GalleryMediaProps & VideoProps, "src"> {
   post: PostView;
 }
 
 const PostMedia = forwardRef<
-  HTMLVideoElement | HTMLImageElement,
+  HTMLVideoElement | GalleryMediaRef,
   PostGalleryImgProps
->(function PostMedia({ post, ...props }, ref) {
-  const src = useMemo(() => getPostMedia(post), [post]);
+>(function PostMedia(props, ref) {
+  const src = useMemo(() => getPostMedia(props.post), [props.post]);
   const isVideo = useMemo(() => src && isUrlVideo(src), [src]);
 
   if (isVideo)
@@ -23,11 +26,10 @@ const PostMedia = forwardRef<
     );
 
   return (
-    <GalleryImg
+    <GalleryMedia
       {...props}
-      ref={ref as RefObject<HTMLImageElement>}
+      ref={ref as RefObject<HTMLImageElement | HTMLCanvasElement>}
       src={src}
-      post={post}
     />
   );
 });

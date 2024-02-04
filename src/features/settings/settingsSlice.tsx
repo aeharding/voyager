@@ -36,6 +36,8 @@ import {
   ODefaultFeedType,
   TapToCollapseType,
   OTapToCollapseType,
+  AutoplayMediaType,
+  OAutoplayMediaType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -106,6 +108,7 @@ interface SettingsState {
       infiniteScrolling: boolean;
       upvoteOnSave: boolean;
       rememberCommunitySort: boolean;
+      autoplayMedia: AutoplayMediaType;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
@@ -186,6 +189,7 @@ const initialState: SettingsState = {
       infiniteScrolling: true,
       upvoteOnSave: false,
       rememberCommunitySort: false,
+      autoplayMedia: OAutoplayMediaType.Always,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
@@ -409,6 +413,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("remember_community_sort", action.payload);
     },
+    setAutoplayMedia(state, action: PayloadAction<AutoplayMediaType>) {
+      state.general.posts.autoplayMedia = action.payload;
+
+      db.setSetting("autoplay_media", action.payload);
+    },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
@@ -573,6 +582,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const remember_community_sort = await db.getSetting(
         "remember_community_sort",
       );
+      const autoplay_media = await db.getSetting("autoplay_media");
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
@@ -673,6 +683,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             rememberCommunitySort:
               remember_community_sort ??
               initialState.general.posts.rememberCommunitySort,
+            autoplayMedia:
+              autoplay_media ?? initialState.general.posts.autoplayMedia,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
@@ -734,6 +746,7 @@ export const {
   setInfiniteScrolling,
   setUpvoteOnSave,
   setRememberCommunitySort,
+  setAutoplayMedia,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,

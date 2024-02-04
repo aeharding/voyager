@@ -5,6 +5,7 @@ import InfiniteScrolling from "./InfiniteScrolling";
 import UpvoteOnSave from "./UpvoteOnSave";
 import DefaultSort from "./DefaultSort";
 import RememberCommunitySort from "./RememberCommunitySort";
+import AutoplayMedia from "./AutoplayMedia";
 
 export default function Posts() {
   return (
@@ -20,6 +21,7 @@ export default function Posts() {
         <RememberCommunitySort />
         <InfiniteScrolling />
         <UpvoteOnSave />
+        <AutoplayMedia />
       </IonList>
     </>
   );
