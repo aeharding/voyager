@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ConnectionType, Network } from "@capacitor/network";
 
 interface NetworkState {
@@ -12,13 +12,19 @@ const initialState: NetworkState = {
 export const networkSlice = createSlice({
   name: "network",
   initialState,
-  reducers: {},
+  reducers: {
+    updateConnectionType(state, action: PayloadAction<ConnectionType>) {
+      state.connectionType = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getConnectionType.fulfilled, (state, action) => {
       state.connectionType = action.payload;
     });
   },
 });
+
+export const { updateConnectionType } = networkSlice.actions;
 
 export default networkSlice.reducer;
 

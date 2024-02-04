@@ -18,6 +18,7 @@ import { useLocation } from "react-router";
 import { StatusBar } from "@capacitor/status-bar";
 import { setPostRead } from "../post/postSlice";
 import { useAppDispatch } from "../../store";
+import { GalleryMediaRef } from "./GalleryMedia";
 
 const Container = styled.div`
   position: absolute;
@@ -57,12 +58,15 @@ interface GalleryProviderProps {
   children: React.ReactNode;
 }
 
+type ThumbEl = GalleryMediaRef;
+
 export default function GalleryProvider({ children }: GalleryProviderProps) {
   const dispatch = useAppDispatch();
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null,
   );
-  const imgRef = useRef<HTMLImageElement | HTMLCanvasElement>();
+  const thumbElRef = useRef<ThumbEl>();
+  const imgSrcRef = useRef("");
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
@@ -90,14 +94,15 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
   const open = useCallback(
     (
-      img: HTMLImageElement | HTMLCanvasElement,
+      thumbEl: ThumbEl,
       src: string,
       post?: PostView,
       animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
     ) => {
       if (lightboxRef.current) return;
 
-      imgRef.current = img;
+      thumbElRef.current = thumbEl;
+      imgSrcRef.current = src;
       setPost(post);
 
       const instance = new PhotoSwipeLightbox({
@@ -105,9 +110,13 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
           {
             src,
             height:
-              img instanceof HTMLImageElement ? img.naturalHeight : img.height,
+              thumbEl instanceof HTMLImageElement
+                ? thumbEl.naturalHeight
+                : thumbEl.height,
             width:
-              img instanceof HTMLImageElement ? img.naturalWidth : img.width,
+              thumbEl instanceof HTMLImageElement
+                ? thumbEl.naturalWidth
+                : thumbEl.width,
           },
         ],
         showHideAnimationType: animationType ?? "fade",
@@ -121,7 +130,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       });
 
       instance.addFilter("thumbEl", () => {
-        return img;
+        return thumbEl;
       });
 
       instance.addFilter("placeholderSrc", () => {
@@ -265,8 +274,8 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         post &&
         createPortal(
           <Container>
-            {imgRef.current && (
-              <GalleryPostActions post={post} imgSrc={imgRef.current.src} />
+            {thumbElRef.current && (
+              <GalleryPostActions post={post} imgSrc={imgSrcRef.current} />
             )}
           </Container>,
           actionContainer,
