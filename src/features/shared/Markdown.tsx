@@ -76,7 +76,7 @@ export default function Markdown({
       css={markdownCss}
       components={{
         img: (props) => (
-          <MarkdownImg onClick={(e) => e.stopPropagation()} {...props} />
+          <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />
         ),
         table: (props) => (
           <TableContainer>
