@@ -27,7 +27,7 @@ export default function useMediaLoadObserver(src: string | undefined) {
             break;
           case entry.target instanceof HTMLVideoElement:
             width = entry.target.videoWidth;
-            height = entry.target.videoWidth;
+            height = entry.target.videoHeight;
             break;
           case entry.target instanceof HTMLCanvasElement:
             if (!entry.target.width && !entry.target.height) return; // canvas still loading
