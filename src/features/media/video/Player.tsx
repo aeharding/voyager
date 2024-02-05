@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import {
+  CSSProperties,
   ChangeEvent,
   forwardRef,
   useCallback,
@@ -71,6 +72,7 @@ export interface PlayerProps {
   autoPlay?: boolean;
 
   className?: string;
+  style?: CSSProperties;
 }
 
 const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(

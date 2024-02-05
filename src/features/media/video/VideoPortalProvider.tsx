@@ -1,5 +1,4 @@
 import {
-  Component,
   createContext,
   useCallback,
   useContext,
@@ -10,11 +9,7 @@ import {
 } from "react";
 import * as portals from "react-reverse-portal";
 import Player from "./Player";
-import {
-  useIonViewDidEnter,
-  useIonViewDidLeave,
-  useIonViewWillEnter,
-} from "@ionic/react";
+import { useIonViewWillEnter } from "@ionic/react";
 
 interface VideoPortalProviderProps {
   children: React.ReactNode;
@@ -48,7 +43,9 @@ export default function VideoPortalProvider({
 
       const newRef = {
         renderedLocationUid,
-        portalNode: portals.createHtmlPortalNode(),
+        portalNode: portals.createHtmlPortalNode({
+          attributes: { style: "display:flex" },
+        }),
       };
 
       setVideoRefs((videoRefs) => ({
@@ -111,7 +108,7 @@ type VideoRefs = Record<
   }
 >;
 
-type PortalNode = portals.HtmlPortalNode<Component<unknown>>;
+type PortalNode = portals.HtmlPortalNode<typeof Player>;
 
 interface VideoPortalContextState {
   videoRefs: VideoRefs;
@@ -140,17 +137,22 @@ export function useVideoPortalNode(
   const { getPortalNodeForSrc, cleanupPortalNodeForSrcIfNeeded, videoRefs } =
     useContext(VideoPortalContext);
 
-  const oldLocUid = useRef("");
+  // Sometimes useIonViewWillEnter fires after element is already destroyed
+  const destroyed = useRef(false);
 
   function getPortalNode() {
+    if (destroyed.current) return;
+
     getPortalNodeForSrc(src, renderedLocationUid);
   }
 
   function cleanupPortalNodeIfNeeded() {
+    destroyed.current = true;
     cleanupPortalNodeForSrcIfNeeded(src, renderedLocationUid);
   }
 
   useEffect(() => {
+    destroyed.current = false;
     getPortalNode();
 
     return cleanupPortalNodeIfNeeded;
@@ -158,7 +160,6 @@ export function useVideoPortalNode(
   }, []);
 
   useIonViewWillEnter(() => {
-    oldLocUid.current = videoRefs[src]?.renderedLocationUid ?? "";
     getPortalNode();
   });
 

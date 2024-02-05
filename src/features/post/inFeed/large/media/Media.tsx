@@ -13,6 +13,7 @@ import { useAppDispatch } from "../../../../../store";
 import BlurOverlay from "./BlurOverlay";
 
 const StyledPostMedia = styled(PostMedia)`
+  display: flex;
   width: 100%;
   max-width: none;
   max-height: max(100vh, 1000px);
@@ -21,10 +22,11 @@ const StyledPostMedia = styled(PostMedia)`
 `;
 
 const PlaceholderContainer = styled.div<{ loaded: boolean }>`
+  display: flex;
+
   ${({ loaded }) =>
     !loaded &&
     css`
-      display: flex;
       align-items: center;
       justify-content: center;
 
@@ -50,6 +52,7 @@ const Error = styled.div`
 
 export default function Media({
   blur,
+  className,
   ...props
 }: PostGalleryImgProps & { blur: boolean }) {
   const dispatch = useAppDispatch();
@@ -73,9 +76,14 @@ export default function Media({
   const loaded = !!aspectRatio && aspectRatio > 0;
 
   const contents = (
-    <PlaceholderContainer loaded={loaded} ref={containerRef} style={style}>
+    <PlaceholderContainer
+      loaded={loaded}
+      ref={containerRef}
+      className={className}
+    >
       <StyledPostMedia
         {...props}
+        style={style}
         ref={mediaRef}
         autoPlay={!blur}
         onError={() => {

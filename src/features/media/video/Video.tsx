@@ -2,28 +2,36 @@ import * as portals from "react-reverse-portal";
 import { useVideoPortalNode } from "./VideoPortalProvider";
 import { forwardRef, useImperativeHandle, useMemo } from "react";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import Player, { PlayerProps } from "./Player";
 
-interface VideoProps {
-  src: string;
-}
+export interface VideoProps extends PlayerProps {}
 
-export default forwardRef<HTMLVideoElement, VideoProps>(
-  function Video(props, ref) {
-    const router = useOptimizedIonRouter();
-    const location = useMemo(
-      () => router.getRouteInfo()?.pathname ?? "",
-      [router],
-    );
-    const portalNode = useVideoPortalNode(props.src, location);
+export default forwardRef<HTMLVideoElement, VideoProps>(function Video(
+  { src, ...props },
+  ref,
+) {
+  const router = useOptimizedIonRouter();
+  const location = useMemo(
+    () => router.getRouteInfo()?.pathname ?? "",
+    [router],
+  );
+  const portalNode = useVideoPortalNode(src, location);
 
-    useImperativeHandle(
-      ref,
-      () => portalNode?.element.querySelector("* > video") as HTMLVideoElement,
-      [portalNode],
-    );
+  useImperativeHandle(
+    ref,
+    () => portalNode?.element.querySelector("* > video") as HTMLVideoElement,
+    [portalNode],
+  );
 
-    if (!portalNode) return null;
-
-    return <portals.OutPortal node={portalNode} {...props} />;
-  },
-);
+  return (
+    <div style={props.style} className={props.className}>
+      {portalNode ? (
+        <portals.OutPortal<typeof Player>
+          node={portalNode}
+          {...props}
+          src={src}
+        />
+      ) : undefined}
+    </div>
+  );
+});
