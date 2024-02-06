@@ -19,6 +19,8 @@ const StyledPostMedia = styled(PostMedia)`
   max-height: max(100vh, 1000px);
   object-fit: contain;
   -webkit-touch-callout: default;
+
+  min-height: 0;
 `;
 
 const PlaceholderContainer = styled.div<{ loaded: boolean }>`
@@ -88,12 +90,6 @@ export default function Media({
         autoPlay={!blur}
         onError={() => {
           if (src) dispatch(imageFailed(src));
-        }}
-        onClick={(e) => {
-          // react-reverse-portal needs click repropagated
-          e.stopPropagation();
-          e.preventDefault();
-          containerRef.current?.click();
         }}
       />
 

@@ -3,6 +3,7 @@ import {
   CSSProperties,
   ChangeEvent,
   forwardRef,
+  memo,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -166,4 +167,4 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   );
 });
 
-export default Player;
+export default memo(Player);

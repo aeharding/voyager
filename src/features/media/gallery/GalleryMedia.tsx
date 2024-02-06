@@ -25,7 +25,7 @@ export interface GalleryMediaProps
   className?: string;
   post?: PostView;
   animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"];
-  onClick?: (e: MouseEvent) => void;
+  onClick?: (e: MouseEvent) => boolean | void;
 }
 
 export default forwardRef<GalleryMediaRef, GalleryMediaProps>(

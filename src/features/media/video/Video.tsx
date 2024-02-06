@@ -1,21 +1,15 @@
 import * as portals from "react-reverse-portal";
 import { useVideoPortalNode } from "./VideoPortalProvider";
-import { forwardRef, useImperativeHandle, useMemo } from "react";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import { forwardRef, useImperativeHandle } from "react";
 import Player, { PlayerProps } from "./Player";
 
 export interface VideoProps extends PlayerProps {}
 
-export default forwardRef<HTMLVideoElement, VideoProps>(function Video(
+const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
   { src, ...props },
   ref,
 ) {
-  const router = useOptimizedIonRouter();
-  const location = useMemo(
-    () => router.getRouteInfo()?.pathname ?? "",
-    [router],
-  );
-  const portalNode = useVideoPortalNode(src, location);
+  const portalNode = useVideoPortalNode(src);
 
   useImperativeHandle(
     ref,
@@ -35,3 +29,5 @@ export default forwardRef<HTMLVideoElement, VideoProps>(function Video(
     </div>
   );
 });
+
+export default Video;

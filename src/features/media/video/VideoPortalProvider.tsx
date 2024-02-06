@@ -10,6 +10,8 @@ import {
 import * as portals from "react-reverse-portal";
 import Player from "./Player";
 import { useIonViewWillEnter } from "@ionic/react";
+import PortaledPlayer from "./PortaledPlayer";
+import { uniqueId } from "lodash";
 
 interface VideoPortalProviderProps {
   children: React.ReactNode;
@@ -26,15 +28,15 @@ export default function VideoPortalProvider({
   }, [videoRefs]);
 
   const getPortalNodeForSrc: GetPortalNodeForSrc = useCallback(
-    (src, renderedLocationUid) => {
+    (src, sourceUid) => {
       const videoRefs = videoRefsRef.current;
 
       const potentialExisting = videoRefs[src];
       if (potentialExisting) {
-        if (potentialExisting.renderedLocationUid !== renderedLocationUid) {
+        if (potentialExisting.sourceUid !== sourceUid) {
           setVideoRefs((videoRefs) => ({
             ...videoRefs,
-            [src]: { ...potentialExisting, renderedLocationUid },
+            [src]: { ...potentialExisting, sourceUid: sourceUid },
           }));
         }
 
@@ -42,9 +44,9 @@ export default function VideoPortalProvider({
       }
 
       const newRef = {
-        renderedLocationUid,
+        sourceUid,
         portalNode: portals.createHtmlPortalNode({
-          attributes: { style: "display:flex" },
+          attributes: { style: "flex:1;display:flex;width:100%" },
         }),
       };
 
@@ -59,12 +61,12 @@ export default function VideoPortalProvider({
   );
 
   const cleanupPortalNodeForSrcIfNeeded = useCallback(
-    (src: string, renderedLocationUid: string) => {
+    (src: string, sourceUid: string) => {
       const videoRefs = videoRefsRef.current;
 
       // Portal was handed off to another OutPortal.
       // Some other portal outlet is controlling, so not responsible for cleanup
-      if (videoRefs[src]?.renderedLocationUid !== renderedLocationUid) return;
+      if (videoRefs[src]?.sourceUid !== sourceUid) return;
 
       setVideoRefs((videoRefs) => {
         const updatedVideoRefs = { ...videoRefs };
@@ -84,7 +86,7 @@ export default function VideoPortalProvider({
     () =>
       Object.entries(videoRefs).map(([src, { portalNode }]) => (
         <portals.InPortal node={portalNode} key={src}>
-          <Player src={src} />
+          <PortaledPlayer src={src} />
         </portals.InPortal>
       )),
     [videoRefs],
@@ -103,7 +105,7 @@ export default function VideoPortalProvider({
 type VideoRefs = Record<
   string,
   {
-    renderedLocationUid: string;
+    sourceUid: string;
     portalNode: PortalNode;
   }
 >;
@@ -113,15 +115,12 @@ type PortalNode = portals.HtmlPortalNode<typeof Player>;
 interface VideoPortalContextState {
   videoRefs: VideoRefs;
   getPortalNodeForSrc: GetPortalNodeForSrc;
-  cleanupPortalNodeForSrcIfNeeded: (
-    src: string,
-    renderedLocationUid: string,
-  ) => void;
+  cleanupPortalNodeForSrcIfNeeded: (src: string, sourceUid: string) => void;
 }
 
 type GetPortalNodeForSrc = (
   src: string,
-  renderedLocationUid: string,
+  sourceUid: string,
 ) => PortalNode | void;
 
 const VideoPortalContext = createContext<VideoPortalContextState>({
@@ -130,10 +129,8 @@ const VideoPortalContext = createContext<VideoPortalContextState>({
   cleanupPortalNodeForSrcIfNeeded: () => {},
 });
 
-export function useVideoPortalNode(
-  src: string,
-  renderedLocationUid: string,
-): PortalNode | void {
+export function useVideoPortalNode(src: string): PortalNode | void {
+  const sourceUidRef = useRef(uniqueId());
   const { getPortalNodeForSrc, cleanupPortalNodeForSrcIfNeeded, videoRefs } =
     useContext(VideoPortalContext);
 
@@ -143,12 +140,12 @@ export function useVideoPortalNode(
   function getPortalNode() {
     if (destroyed.current) return;
 
-    getPortalNodeForSrc(src, renderedLocationUid);
+    getPortalNodeForSrc(src, sourceUidRef.current);
   }
 
   function cleanupPortalNodeIfNeeded() {
     destroyed.current = true;
-    cleanupPortalNodeForSrcIfNeeded(src, renderedLocationUid);
+    cleanupPortalNodeForSrcIfNeeded(src, sourceUidRef.current);
   }
 
   useEffect(() => {
@@ -165,6 +162,6 @@ export function useVideoPortalNode(
 
   const potentialVideoRef = videoRefs[src];
 
-  if (potentialVideoRef?.renderedLocationUid === renderedLocationUid)
+  if (potentialVideoRef?.sourceUid === sourceUidRef.current)
     return potentialVideoRef.portalNode;
 }

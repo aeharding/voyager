@@ -172,7 +172,9 @@ function PostHeader({
           post={post}
           controls
           constrainHeight={constrainHeight}
-          onClick={(e) => e.stopPropagation()}
+          onClick={() => {
+            return true; // this is a hack to stop propagation - see: OutPortalEventDispatcher for more
+          }}
         />
       );
     }
@@ -206,8 +208,7 @@ function PostHeader({
       <BorderlessIonItem
         className={className}
         onClick={(e) => {
-          if (e.target instanceof HTMLElement && e.target.nodeName === "A")
-            return;
+          if (e.target instanceof HTMLAnchorElement) return;
 
           if (
             tapToCollapse === OTapToCollapseType.Neither ||
