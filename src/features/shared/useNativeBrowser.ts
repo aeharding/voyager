@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { useAppSelector } from "../../store";
 import { useTheme } from "@emotion/react";
 import { isAndroid } from "../../helpers/device";
+import { notifyStatusTapThatBrowserWasOpened } from "../../listeners/statusTap";
 
 export default function useNativeBrowser() {
   const { dark } = useTheme();
@@ -35,6 +36,7 @@ export default function useNativeBrowser() {
         url: href,
         toolbarColor,
       });
+      notifyStatusTapThatBrowserWasOpened();
     },
     [dark, usingSystemDarkMode, pureBlack],
   );
