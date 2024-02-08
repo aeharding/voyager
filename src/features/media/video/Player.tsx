@@ -94,6 +94,8 @@ const PlayOverlay = styled.div`
   font-size: 80px;
 
   color: #fff;
+
+  background: rgba(0, 0, 0, 0.1);
 `;
 
 export interface PlayerProps {
@@ -169,10 +171,10 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   const resume = useCallback(() => {
     if (!videoRef.current) return;
     if (userPaused) return;
-    // if (!autoPlay && !playing) return;
 
     videoRef.current.play();
     wantedToPlayRef.current = true;
+    wasAutoPausedRef.current = false;
   }, [userPaused]);
 
   useEffect(() => {

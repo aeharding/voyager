@@ -4,7 +4,7 @@ import PostMedia, {
   PostGalleryImgProps,
   getPostMedia,
 } from "../../../../media/gallery/PostMedia";
-import { CSSProperties, useMemo, useRef } from "react";
+import { CSSProperties, useMemo } from "react";
 import { IonIcon } from "@ionic/react";
 import { imageOutline } from "ionicons/icons";
 import useMediaLoadObserver from "../useMediaLoadObserver";
@@ -60,7 +60,6 @@ export default function Media({
   const dispatch = useAppDispatch();
   const src = useMemo(() => getPostMedia(props.post), [props.post]);
   const [mediaRef, aspectRatio] = useMediaLoadObserver(src);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   function renderIcon() {
     if (aspectRatio === IMAGE_FAILED)
@@ -78,11 +77,7 @@ export default function Media({
   const loaded = !!aspectRatio && aspectRatio > 0;
 
   const contents = (
-    <PlaceholderContainer
-      loaded={loaded}
-      ref={containerRef}
-      className={className}
-    >
+    <PlaceholderContainer loaded={loaded} className={className}>
       <StyledPostMedia
         {...props}
         style={style}
