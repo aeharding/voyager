@@ -1,15 +1,16 @@
 import { PostView } from "lemmy-js-client";
-import { findLoneImage } from "../../helpers/markdown";
-import { isUrlMedia, isUrlVideo } from "../../helpers/url";
-import Video, { VideoProps } from "../shared/Video";
+import { findLoneImage } from "../../../helpers/markdown";
+import { isUrlMedia, isUrlVideo } from "../../../helpers/url";
+import { PlayerProps } from "../video/Player";
 import { RefObject, forwardRef, memo, useMemo } from "react";
 import GalleryMedia, {
   GalleryMediaProps,
   GalleryMediaRef,
 } from "./GalleryMedia";
+import Video from "../video/Video";
 
 export interface PostGalleryImgProps
-  extends Omit<GalleryMediaProps & VideoProps, "src"> {
+  extends Omit<GalleryMediaProps & PlayerProps, "src"> {
   post: PostView;
 }
 

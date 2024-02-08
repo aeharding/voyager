@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 import {
+  CSSProperties,
   ChangeEvent,
   forwardRef,
+  memo,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -9,8 +11,11 @@ import {
   useState,
 } from "react";
 import { useInView } from "react-intersection-observer";
-import useShouldAutoplay from "../../listeners/network/useShouldAutoplay";
+import useShouldAutoplay from "../../../listeners/network/useShouldAutoplay";
 import { css } from "@emotion/react";
+import { IonIcon } from "@ionic/react";
+import { play, volumeHigh, volumeOff } from "ionicons/icons";
+import { PlainButton } from "../../shared/PlainButton";
 
 const Container = styled.div`
   position: relative;
@@ -63,7 +68,37 @@ const VideoEl = styled.video`
   overflow: hidden;
 `;
 
-export interface VideoProps {
+const VolumeButton = styled(PlainButton)`
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  padding: 14px;
+  font-size: 26px;
+
+  color: #aaa;
+
+  svg {
+    filter: blur(10px) invert(80%);
+  }
+`;
+
+const PlayOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 80px;
+
+  color: #fff;
+
+  background: rgba(0, 0, 0, 0.1);
+`;
+
+export interface PlayerProps {
   src: string;
 
   controls?: boolean;
@@ -71,11 +106,10 @@ export interface VideoProps {
   autoPlay?: boolean;
 
   className?: string;
+  style?: CSSProperties;
 }
 
-const videoPlaybackPlace: Record<string, number> = {};
-
-const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
+const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   {
     src,
     controls,
@@ -87,8 +121,15 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
   forwardedRef,
 ) {
   const videoRef = useRef<HTMLVideoElement>();
+
+  const [muted, setMuted] = useState(true);
+  const [playing, setPlaying] = useState(false);
+
   const shouldAutoplay = useShouldAutoplay();
   const autoPlay = shouldAutoplay && videoAllowedToAutoplay;
+  const [userPaused, setUserPaused] = useState(false);
+  const wantedToPlayRef = useRef(false);
+  const wasAutoPausedRef = useRef(false);
 
   useImperativeHandle(
     forwardedRef,
@@ -101,6 +142,8 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
   });
   const [progress, setProgress] = useState<number | undefined>(undefined);
 
+  const showBigPlayButton = (userPaused || !autoPlay) && !playing;
+
   const setRefs = useCallback(
     (node: HTMLVideoElement) => {
       // Ref's from useRef needs to have the node assigned to `current`
@@ -111,42 +154,63 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
     [inViewRef],
   );
 
-  const savePlace = useCallback(() => {
+  const pause = useCallback(() => {
     if (!videoRef.current) return;
-    if (!autoPlay) return;
+    if (userPaused) return;
 
-    videoPlaybackPlace[src] = videoRef.current.currentTime;
-    videoRef.current.pause();
-  }, [src, autoPlay]);
+    wantedToPlayRef.current = false;
+
+    setTimeout(() => {
+      if (wantedToPlayRef.current) return;
+
+      wasAutoPausedRef.current = true;
+      videoRef.current?.pause();
+    }, 300);
+  }, [userPaused]);
 
   const resume = useCallback(() => {
     if (!videoRef.current) return;
-    if (!autoPlay) return;
+    if (userPaused) return;
 
-    videoRef.current.currentTime = videoPlaybackPlace[src] ?? 0;
     videoRef.current.play();
-  }, [src, autoPlay]);
+    wantedToPlayRef.current = true;
+    wasAutoPausedRef.current = false;
+  }, [userPaused]);
 
   useEffect(() => {
-    if (!videoRef || !videoRef.current) {
-      return;
-    }
+    if (!videoRef.current) return;
 
     if (inView) {
       resume();
     } else {
-      savePlace();
+      pause();
     }
-  }, [inView, savePlace, resume]);
+  }, [inView, pause, resume]);
 
-  const videoEl = (
+  return (
     <Container className={className}>
       <VideoEl
         ref={setRefs}
         src={`${src}#t=0.001`}
         loop
-        muted
+        muted={muted}
         playsInline
+        onPause={() => {
+          setPlaying(false);
+
+          if (!wasAutoPausedRef.current) {
+            setUserPaused(true);
+          }
+
+          wasAutoPausedRef.current = false;
+        }}
+        onPlay={() => {
+          setPlaying(true);
+          setUserPaused(false);
+        }}
+        onVolumeChange={() => {
+          setMuted(!!videoRef.current?.muted);
+        }}
         autoPlay={false}
         controls={controls}
         onTimeUpdate={(e: ChangeEvent<HTMLVideoElement>) => {
@@ -156,10 +220,35 @@ const Video = forwardRef<HTMLVideoElement, VideoProps>(function Video(
         {...rest}
       />
       {showProgress && progress !== undefined && <Progress value={progress} />}
+      {!controls && (
+        <>
+          {!showBigPlayButton && (
+            <VolumeButton
+              onClick={(e) => {
+                setMuted(!muted);
+                if (videoRef.current) videoRef.current.muted = !muted;
+
+                e.preventDefault();
+              }}
+            >
+              <IonIcon icon={muted ? volumeOff : volumeHigh} />
+            </VolumeButton>
+          )}
+          {showBigPlayButton && (
+            <PlayOverlay
+              onClick={(e) => {
+                e.preventDefault();
+
+                videoRef.current?.play();
+              }}
+            >
+              <IonIcon icon={play} />
+            </PlayOverlay>
+          )}
+        </>
+      )}
     </Container>
   );
-
-  return videoEl;
 });
 
-export default Video;
+export default memo(Player);

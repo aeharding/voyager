@@ -7,14 +7,14 @@ import {
   useContext,
   useMemo,
 } from "react";
-import { isUrlPotentialAnimatedImage } from "../../helpers/url";
+import { isUrlPotentialAnimatedImage } from "../../../helpers/url";
 import GalleryGif from "./GalleryGif";
 import GalleryImg from "./GalleryImg";
 import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
 import { GalleryContext } from "./GalleryProvider";
-import { useAutohidePostIfNeeded } from "../feed/PageTypeContext";
-import useShouldAutoplay from "../../listeners/network/useShouldAutoplay";
+import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
+import useShouldAutoplay from "../../../listeners/network/useShouldAutoplay";
 
 export type GalleryMediaRef = HTMLImageElement | HTMLCanvasElement;
 
@@ -25,7 +25,7 @@ export interface GalleryMediaProps
   className?: string;
   post?: PostView;
   animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"];
-  onClick?: (e: MouseEvent) => void;
+  onClick?: (e: MouseEvent) => boolean | void;
 }
 
 export default forwardRef<GalleryMediaRef, GalleryMediaProps>(

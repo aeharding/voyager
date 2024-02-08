@@ -274,6 +274,9 @@ devDependencies:
   react-redux:
     specifier: ^9.1.0
     version: 9.1.0(@types/react@18.2.51)(react@18.2.0)(redux@5.0.1)
+  react-reverse-portal:
+    specifier: ^2.1.1
+    version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
   react-router:
     specifier: ^5.3.4
     version: 5.3.4(react@18.2.0)
@@ -11084,6 +11087,16 @@ packages:
   /react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
     engines: {node: '>=0.10.0'}
+    dev: true
+
+  /react-reverse-portal@2.1.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-FzuVLYEigKPB0NuMNLWymCgVp+P1h1MY57fQxhmY22idzz6El1rsXK5+bQ+wXvEa0smUtqTDcpM77epnXDV9wg==}
+    peerDependencies:
+      react: ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: true
 
   /react-router-dom@5.3.4(react@18.2.0):

@@ -14,7 +14,6 @@ import useAppToast from "../../../helpers/useAppToast";
 import { findLoneImage } from "../../../helpers/markdown";
 import { isUrlMedia } from "../../../helpers/url";
 import { css } from "@emotion/react";
-import PostMedia from "../../gallery/PostMedia";
 import Markdown from "../../shared/Markdown";
 import Embed from "../shared/Embed";
 import InlineMarkdown from "../../shared/InlineMarkdown";
@@ -29,6 +28,7 @@ import { postLocked } from "../../../helpers/toastMessages";
 import { togglePostCollapse } from "../postSlice";
 import Crosspost from "../crosspost/Crosspost";
 import useCrosspostUrl from "../shared/useCrosspostUrl";
+import Media from "../inFeed/large/media/Media";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -40,7 +40,7 @@ const BorderlessIonItem = styled(IonItem)`
   ${maxWidthCss}
 `;
 
-const LightboxPostMedia = styled(PostMedia, {
+const LightboxMedia = styled(Media, {
   shouldForwardProp: (prop) => prop !== "constrainHeight",
 })<{ constrainHeight?: boolean }>`
   -webkit-touch-callout: default;
@@ -167,11 +167,14 @@ function PostHeader({
 
     if (urlIsMedia || markdownLoneImage) {
       return (
-        <LightboxPostMedia
+        <LightboxMedia
+          blur={false}
           post={post}
           controls
           constrainHeight={constrainHeight}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.preventDefault(); // prevent OutPortalEventDispatcher dispatch
+          }}
         />
       );
     }
@@ -205,8 +208,7 @@ function PostHeader({
       <BorderlessIonItem
         className={className}
         onClick={(e) => {
-          if (e.target instanceof HTMLElement && e.target.nodeName === "A")
-            return;
+          if (e.target instanceof HTMLAnchorElement) return;
 
           if (
             tapToCollapse === OTapToCollapseType.Neither ||
