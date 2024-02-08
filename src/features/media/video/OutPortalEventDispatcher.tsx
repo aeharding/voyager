@@ -21,7 +21,6 @@ export interface OutPortalEventDispatcherProps {
  */
 export default function OutPortalEventDispatcher({
   children,
-  onClick,
   eventsToPropagateViaOutPortal = [],
 }: OutPortalEventDispatcherProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -30,26 +29,30 @@ export default function OutPortalEventDispatcher({
     const container = containerRef.current;
     if (!container) return;
     const parentToDispatch = container.parentElement;
-    if (!parentToDispatch) return;
 
-    const handleEvent = (event: Event) => {
-      // I'm not really sure why this is necessary, but for some reason in Safari
-      // onClick on <video /> is called *after* this handleEvent function
-      // so propagation cannot be stopped.
-      // Probably some weird portal+reactevents+browser issue.
-      // So, hack = manually call onClick *now* and don't do anything if
-      // onClick function returns true
-      if (event.type === "click" && onClick?.(event as unknown as MouseEvent))
-        return;
-
+    const handleEvent = async (event: Event) => {
       const EventConstructor = event.constructor as typeof Event;
 
-      // Dispatch event on parent of current <OutPortal />
-      parentToDispatch.dispatchEvent(new EventConstructor(event.type, event));
+      function dispatchEvent() {
+        if (!parentToDispatch) return;
+
+        // Dispatch event on parent of current <OutPortal />
+        parentToDispatch.dispatchEvent(new EventConstructor(event.type, event));
+      }
 
       // Prevent propagation on original event.
       // Newly dispatched event above will propagate from OutPortal
-      event.stopPropagation();
+      if (event.type === "click") {
+        requestAnimationFrame(() => {
+          if (event.defaultPrevented) return;
+
+          dispatchEvent();
+        });
+      } else {
+        dispatchEvent();
+
+        event.stopPropagation();
+      }
     };
 
     for (const eventName of eventsToPropagateViaOutPortal) {
@@ -61,7 +64,7 @@ export default function OutPortalEventDispatcher({
         container.removeEventListener(eventName, handleEvent);
       }
     };
-  }, [eventsToPropagateViaOutPortal, onClick]);
+  }, [eventsToPropagateViaOutPortal]);
 
   return <Container ref={containerRef}>{children}</Container>;
 }

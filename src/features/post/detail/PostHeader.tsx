@@ -172,8 +172,8 @@ function PostHeader({
           post={post}
           controls
           constrainHeight={constrainHeight}
-          onClick={() => {
-            return true; // this is a hack to stop propagation - see: OutPortalEventDispatcher for more
+          onClick={(e) => {
+            e.preventDefault(); // prevent OutPortalEventDispatcher dispatch
           }}
         />
       );

@@ -1,4 +1,3 @@
-import { MouseEvent } from "react";
 import OutPortalEventDispatcher, {
   OutPortalEventDispatcherProps,
 } from "./OutPortalEventDispatcher";
@@ -25,23 +24,14 @@ const eventsToPropagateViaOutPortal: OutPortalEventDispatcherProps["eventsToProp
     "touchcancel",
   ];
 
-interface PortaledPlayerProps extends PlayerProps {
-  onClick?: (e: MouseEvent) => boolean | void;
-}
-
 /**
  * Need to wrap with EventCatcher to propagate events,
  * but also need props to be set on <Player />
  */
-export default function PortaledPlayer({
-  onClick,
-  ...props
-}: PortaledPlayerProps) {
+export default function PortaledPlayer(props: PlayerProps) {
   return (
     <OutPortalEventDispatcher
       eventsToPropagateViaOutPortal={eventsToPropagateViaOutPortal}
-      // hack: pull the onClick off the props and let OutPortalEventDispatcher handle directly
-      onClick={onClick}
     >
       <Player {...props} />
     </OutPortalEventDispatcher>
