@@ -170,7 +170,7 @@ function PostHeader({
         <LightboxMedia
           blur={false}
           post={post}
-          controls
+          nativeControls
           constrainHeight={constrainHeight}
           onClick={(e) => {
             e.preventDefault(); // prevent OutPortalEventDispatcher dispatch
