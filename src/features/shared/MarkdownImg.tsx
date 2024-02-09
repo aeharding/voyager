@@ -27,8 +27,9 @@ export default function MarkdownImg({ small, ...props }: MarkdownImgProps) {
       <Player
         src={props.src!}
         progress={false}
+        volume={false}
         css={sharedStyles}
-        controls={!small}
+        nativeControls={!small}
         {...props}
       />
     );

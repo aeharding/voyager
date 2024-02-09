@@ -101,8 +101,9 @@ const PlayOverlay = styled.div`
 export interface PlayerProps {
   src: string;
 
-  controls?: boolean;
+  nativeControls?: boolean;
   progress?: boolean;
+  volume?: boolean;
   autoPlay?: boolean;
 
   className?: string;
@@ -112,9 +113,10 @@ export interface PlayerProps {
 const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   {
     src,
-    controls,
+    nativeControls,
     className,
-    progress: showProgress = !controls,
+    progress: showProgress = !nativeControls,
+    volume = true,
     autoPlay: videoAllowedToAutoplay = true,
     ...rest
   },
@@ -125,9 +127,9 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(false);
 
-  const shouldAutoplay = useShouldAutoplay();
-  const autoPlay = shouldAutoplay && videoAllowedToAutoplay;
-  const [userPaused, setUserPaused] = useState(false);
+  const shouldAppAutoplay = useShouldAutoplay();
+  const autoPlay = shouldAppAutoplay && videoAllowedToAutoplay;
+  const [userPaused, setUserPaused] = useState(!autoPlay);
   const wantedToPlayRef = useRef(false);
   const wasAutoPausedRef = useRef(false);
 
@@ -142,7 +144,7 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   });
   const [progress, setProgress] = useState<number | undefined>(undefined);
 
-  const showBigPlayButton = (userPaused || !autoPlay) && !playing;
+  const showBigPlayButton = userPaused && !playing;
 
   const setRefs = useCallback(
     (node: HTMLVideoElement) => {
@@ -160,6 +162,7 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
 
     wantedToPlayRef.current = false;
 
+    // Hack to prevent audio pause on page transitions
     setTimeout(() => {
       if (wantedToPlayRef.current) return;
 
@@ -212,7 +215,7 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
           setMuted(!!videoRef.current?.muted);
         }}
         autoPlay={false}
-        controls={controls}
+        controls={nativeControls}
         onTimeUpdate={(e: ChangeEvent<HTMLVideoElement>) => {
           if (!showProgress) return;
           setProgress(e.target.currentTime / e.target.duration);
@@ -220,15 +223,16 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
         {...rest}
       />
       {showProgress && progress !== undefined && <Progress value={progress} />}
-      {!controls && (
+      {!nativeControls && (
         <>
-          {!showBigPlayButton && (
+          {!showBigPlayButton && volume && (
             <VolumeButton
               onClick={(e) => {
                 setMuted(!muted);
                 if (videoRef.current) videoRef.current.muted = !muted;
 
-                e.preventDefault();
+                e.preventDefault(); // reverse-portal
+                e.stopPropagation(); // video in comments
               }}
             >
               <IonIcon icon={muted ? volumeOff : volumeHigh} />
@@ -237,7 +241,8 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
           {showBigPlayButton && (
             <PlayOverlay
               onClick={(e) => {
-                e.preventDefault();
+                e.preventDefault(); // reverse-portal
+                e.stopPropagation(); // video in comments
 
                 videoRef.current?.play();
               }}
