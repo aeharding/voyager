@@ -11,6 +11,7 @@ import useMediaLoadObserver from "../useMediaLoadObserver";
 import { IMAGE_FAILED, imageFailed } from "../imageSlice";
 import { useAppDispatch } from "../../../../../store";
 import BlurOverlay from "./BlurOverlay";
+import useLatch from "../../../../../helpers/useLatch";
 
 const StyledPostMedia = styled(PostMedia)`
   display: flex;
@@ -59,7 +60,15 @@ export default function Media({
 }: PostGalleryImgProps & { blur: boolean }) {
   const dispatch = useAppDispatch();
   const src = useMemo(() => getPostMedia(props.post), [props.post]);
-  const [mediaRef, aspectRatio] = useMediaLoadObserver(src);
+  const [mediaRef, currentAspectRatio] = useMediaLoadObserver(src);
+
+  /**
+   * Cross posts have different image thumbnail url when loaded, so prevent resizing by latching
+   *
+   * If the new image is different size (or errors), it will be properly updated then
+   * (IMAGE_FAILED is truthy)
+   */
+  const aspectRatio = useLatch(currentAspectRatio);
 
   function renderIcon() {
     if (aspectRatio === IMAGE_FAILED)
