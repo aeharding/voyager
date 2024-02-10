@@ -1,17 +1,20 @@
-import { Global, css } from "@emotion/react";
 import { useAppSelector } from "./store";
-import {
-  baseVariables,
-  buildDarkVariables,
-  buildLightVariables,
-} from "./theme/variables";
 import React, { createContext, useContext, useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { isNative } from "./helpers/device";
 import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
 import useSystemDarkMode from "./helpers/useSystemDarkMode";
+import { css } from "@linaria/core";
+import { getThemeByStyle } from "./theme/AppThemes";
+
+import "./theme/variables";
 
 const DARK_CLASSNAME = "theme-dark";
+const PURE_BLACK_CLASSNAME = "theme-pure-black";
+
+const globalDeviceFontCss = css`
+  font: -apple-system-body;
+`;
 
 interface GlobalStylesProps {
   children: React.ReactNode;
@@ -22,14 +25,6 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
     (state) => state.settings.appearance.font,
   );
-
-  const baseFontStyles = useSystemFontSize
-    ? css`
-        font: -apple-system-body;
-      `
-    : css`
-        font-size: ${fontSizeMultiplier}rem;
-      `;
 
   const { usingSystemDarkMode, pureBlack } = useAppSelector(
     (state) => state.settings.appearance.dark,
@@ -43,12 +38,47 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
 
     const list = document.documentElement.classList;
 
+    if (isDark && pureBlack) {
+      list.add(PURE_BLACK_CLASSNAME);
+    } else {
+      list.remove(PURE_BLACK_CLASSNAME);
+    }
+
     if (isDark) {
       list.add(DARK_CLASSNAME);
     } else {
       list.remove(DARK_CLASSNAME);
     }
-  }, [isDark]);
+  }, [isDark, pureBlack]);
+
+  useEffect(() => {
+    if (useSystemFontSize) {
+      document.documentElement.classList.add(globalDeviceFontCss);
+      document.documentElement.style.fontSize = "";
+    } else {
+      document.documentElement.classList.remove(globalDeviceFontCss);
+      document.documentElement.style.fontSize = `${fontSizeMultiplier}rem`;
+    }
+  }, [useSystemFontSize, fontSizeMultiplier]);
+
+  useEffect(() => {
+    const { primary, background, insetItemBackground, tabBarBackground } =
+      getThemeByStyle(theme, isDark ? "dark" : "light");
+
+    document.documentElement.style.setProperty("--app-primary", primary);
+    document.documentElement.style.setProperty(
+      "--app-background",
+      background ?? "",
+    );
+    document.documentElement.style.setProperty(
+      "--app-inset-item-background",
+      insetItemBackground ?? "",
+    );
+    document.documentElement.style.setProperty(
+      "--app-tab-bar-background",
+      tabBarBackground ?? "",
+    );
+  }, [theme, isDark]);
 
   useEffect(() => {
     if (!isNative()) return;
@@ -63,24 +93,7 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
     Keyboard.setStyle({ style: keyboardStyle });
   }, [isDark, usingSystemDarkMode]);
 
-  return (
-    <>
-      <Global
-        styles={css`
-          html {
-            ${baseFontStyles}
-          }
-
-          ${baseVariables}
-
-          ${isDark
-            ? buildDarkVariables(theme, pureBlack)
-            : buildLightVariables(theme)}
-        `}
-      />
-      <DarkContext.Provider value={isDark}>{children}</DarkContext.Provider>
-    </>
-  );
+  return <DarkContext.Provider value={isDark}>{children}</DarkContext.Provider>;
 }
 
 function useComputeIsDark(): boolean {

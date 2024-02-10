@@ -1,5 +1,3 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { link, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
@@ -18,6 +16,8 @@ import {
 import { isUrlImage } from "../../../../helpers/url";
 import { useAutohidePostIfNeeded } from "../../../feed/PageTypeContext";
 import { setPostRead } from "../../postSlice";
+import { css, cx } from "@linaria/core";
+import { styled } from "@linaria/react";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {
@@ -32,14 +32,13 @@ function getWidthForSize(size: CompactThumbnailSizeType): number {
   }
 }
 
-const buildContainerCss = (thumbnailSize: CompactThumbnailSizeType) => css`
+const sharedContainerCss = css`
   display: flex;
   align-items: center;
   justify-content: center;
 
   flex: 0 0 auto;
 
-  width: ${getWidthForSize(thumbnailSize)}px;
   aspect-ratio: 1;
   background: var(--ion-color-light);
   border-radius: 8px;
@@ -53,20 +52,6 @@ const buildContainerCss = (thumbnailSize: CompactThumbnailSizeType) => css`
     width: 60%;
     opacity: 0.5;
   }
-`;
-
-const ContainerLink = styled(InAppExternalLink, {
-  shouldForwardProp: (prop) => prop !== "thumbnailSize",
-})<{
-  thumbnailSize: CompactThumbnailSizeType;
-}>`
-  ${({ thumbnailSize }) => buildContainerCss(thumbnailSize)}
-`;
-
-const Container = styled.div<{
-  thumbnailSize: CompactThumbnailSizeType;
-}>`
-  ${({ thumbnailSize }) => buildContainerCss(thumbnailSize)}
 `;
 
 const LinkIcon = styled(IonIcon)`
@@ -87,26 +72,17 @@ const FullsizeIcon = styled(IonIcon)`
   opacity: 0.3;
 `;
 
-const imgStyles = (blur: boolean) => css`
+const imgCss = css`
   width: 100%;
   height: 100%;
   object-fit: cover;
-
-  ${blur &&
-  css`
-    filter: blur(6px);
-
-    // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-    transform: translate3d(0, 0, 0);
-  `}
 `;
 
-const StyledPostGallery = styled(PostMedia)<{ blur: boolean }>`
-  ${({ blur }) => imgStyles(blur)}
-`;
+const blurImgCss = css`
+  filter: blur(6px);
 
-const Img = styled.img<{ blur: boolean }>`
-  ${({ blur }) => imgStyles(blur)}
+  // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
+  transform: translate3d(0, 0, 0);
 `;
 
 interface ImgProps {
@@ -154,9 +130,9 @@ export default function Thumbnail({ post }: ImgProps) {
         <>
           {post.post.thumbnail_url ? (
             <>
-              <Img
+              <img
                 src={getImageSrc(post.post.thumbnail_url, { size: 100 })}
-                blur={nsfw}
+                className={cx(imgCss, nsfw && blurImgCss)}
               />
               <LinkIcon icon={linkOutline} />
             </>
@@ -170,7 +146,9 @@ export default function Thumbnail({ post }: ImgProps) {
     }
 
     if (postImageSrc) {
-      return <StyledPostGallery post={post} blur={nsfw} />;
+      return (
+        <PostMedia post={post} className={cx(imgCss, nsfw && blurImgCss)} />
+      );
     }
 
     return <SelfSvg />;
@@ -182,18 +160,25 @@ export default function Thumbnail({ post }: ImgProps) {
 
   if (!showSelfPostThumbnails && contents.type === SelfSvg) return;
 
+  const style = { width: getWidthForSize(thumbnailSize) };
+
   if (isLink)
     return (
-      <ContainerLink
+      <InAppExternalLink
         href={post.post.url}
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleLinkClick}
-        thumbnailSize={thumbnailSize}
+        className={sharedContainerCss}
+        style={style}
       >
         {contents}
-      </ContainerLink>
+      </InAppExternalLink>
     );
 
-  return <Container thumbnailSize={thumbnailSize}>{contents}</Container>;
+  return (
+    <div className={sharedContainerCss} style={style}>
+      {contents}
+    </div>
+  );
 }

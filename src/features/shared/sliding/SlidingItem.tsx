@@ -1,6 +1,4 @@
 import { ImpactStyle } from "@capacitor/haptics";
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { IonItemSlidingCustomEvent, ItemSlidingCustomEvent } from "@ionic/core";
 import { IonItemOption, IonItemOptions, IonItemSliding } from "@ionic/react";
 import React, {
@@ -16,6 +14,8 @@ import { bounceAnimation } from "../animations";
 import { useAppSelector } from "../../../store";
 import { OLongSwipeTriggerPointType } from "../../../services/db";
 import ActionContents from "./ActionContents";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   overflow: initial; // sticky
@@ -32,7 +32,7 @@ const StyledIonItemOption = styled(IonItemOption)`
   margin-top: 0.5px;
 `;
 
-const OptionContainer = styled.div<{ active: boolean }>`
+const OptionContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -52,14 +52,12 @@ const OptionContainer = styled.div<{ active: boolean }>`
   .item-options-end & {
     margin-left: auto;
   }
+`;
 
-  ${({ active }) =>
-    active &&
-    css`
-      opacity: 1;
+const optionContainerActiveCss = css`
+  opacity: 1;
 
-      ${bounceAnimation}
-    `}
+  ${bounceAnimation}
 `;
 
 export type SlidingItemAction = {
@@ -243,7 +241,12 @@ export default function SlidingItem({
     return (
       <IonItemOptions side="start">
         <StyledIonItemOption color={startActionColor}>
-          <OptionContainer active={activeItemIndex < 0} slot="top">
+          <OptionContainer
+            className={
+              activeItemIndex < 0 ? optionContainerActiveCss : undefined
+            }
+            slot="top"
+          >
             {startActionContents}
           </OptionContainer>
         </StyledIonItemOption>
@@ -265,7 +268,12 @@ export default function SlidingItem({
     return (
       <IonItemOptions side="end">
         <StyledIonItemOption color={endActionColor}>
-          <OptionContainer active={activeItemIndex > 0} slot="top">
+          <OptionContainer
+            className={
+              activeItemIndex > 0 ? optionContainerActiveCss : undefined
+            }
+            slot="top"
+          >
             {endActionContents}
           </OptionContainer>
         </StyledIonItemOption>

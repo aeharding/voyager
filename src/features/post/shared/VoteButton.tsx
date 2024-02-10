@@ -1,9 +1,7 @@
-import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
 import { useContext, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { voteOnPost } from "../postSlice";
-import { css } from "@emotion/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { voteError } from "../../../helpers/toastMessages";
@@ -14,22 +12,18 @@ import { useTransition } from "react-transition-state";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import useAppToast from "../../../helpers/useAppToast";
+import { styled } from "@linaria/react";
 
-export const Item = styled(ActionButton, {
-  shouldForwardProp: (prop) => prop !== "on" && prop !== "activeColor",
-})<{
-  on?: boolean;
-  activeColor?: string;
-}>`
+const InactiveItem = styled(ActionButton)`
   ${bounceAnimationOnTransition}
+`;
 
-  ${({ on, activeColor }) =>
-    on
-      ? css`
-          background: ${activeColor};
-          color: var(--ion-color-primary-contrast);
-        `
-      : undefined}
+const ActiveItem = styled(InactiveItem)<{
+  on?: boolean;
+  activeColor: string;
+}>`
+  background: ${({ activeColor }) => activeColor};
+  color: var(--ion-color-primary-contrast);
 `;
 
 interface VoteButtonProps {
@@ -88,9 +82,12 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
     return undefined;
   }
 
+  const Item = on ? ActiveItem : InactiveItem;
+
   return (
     <Item
       on={on}
+      activeColor={activeColor}
       className={state.status}
       onClick={async (e) => {
         e.stopPropagation();
@@ -113,7 +110,6 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
           throw error;
         }
       }}
-      activeColor={activeColor}
     >
       <IonIcon icon={icon} />
     </Item>

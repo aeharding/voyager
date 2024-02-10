@@ -28,11 +28,10 @@ export const Container = styled.div<{
     top: 0;
     bottom: 0;
     width: 2px;
-    filter: brightness(0.7);
+    filter: none;
 
-    // TODO add theme-dark to body element
     .theme-dark & {
-      filter: none;
+      filter: brightness(0.7);
     }
 
     background: ${({ padColor }) => padColor || "none"};

@@ -18,6 +18,7 @@ import SlidingInbox from "../shared/sliding/SlidingInbox";
 import useAppToast from "../../helpers/useAppToast";
 import InboxItemMoreActions from "./InboxItemMoreActions";
 import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
 const Hr = styled.div`
   ${maxWidthCss}
@@ -42,10 +43,12 @@ const Hr = styled.div`
   }
 `;
 
-const StyledIonItem = styled(IonItem)<{ read: boolean }>`
+const StyledIonItem = styled(IonItem)`
   --ion-item-border-color: transparent;
-  --background: ${({ read }) =>
-    read ? "var(--unread-item-background-color)" : "none"};
+`;
+
+const itemUnreadCss = css`
+  --background: var(--unread-item-background-color);
 `;
 
 const Container = styled.div`
@@ -214,13 +217,15 @@ export default function InboxItem({ item }: InboxItemProps) {
     }
   }
 
+  const read = !!readByInboxItemId[getInboxItemId(item)];
+
   const contents = (
     <StyledIonItem
+      className={!read ? itemUnreadCss : undefined}
       routerLink={getLink()}
       href={undefined}
       detail={false}
       onClick={markRead}
-      read={!!readByInboxItemId[getInboxItemId(item)]}
     >
       <Container>
         <StartContent>

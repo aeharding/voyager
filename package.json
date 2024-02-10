@@ -123,7 +123,6 @@
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "sass": "^1.70.0",
     "terser": "^5.27.0",
     "typescript": "^5.3.3",
     "ua-parser-js": "^1.0.37",

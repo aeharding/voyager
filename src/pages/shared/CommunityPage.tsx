@@ -31,8 +31,6 @@ import FeedContent from "./FeedContent";
 import FeedContextProvider from "../../features/feed/FeedContext";
 import PostFabs from "../../features/feed/postFabs/PostFabs";
 import useFetchCommunity from "../../features/community/useFetchCommunity";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import CommunitySearchResults from "../../features/community/search/CommunitySearchResults";
 import { getSortDuration } from "../../features/feed/endItems/EndPost";
 import ModActions from "../../features/community/mod/ModActions";
@@ -42,6 +40,8 @@ import { CenteredSpinner } from "../posts/PostPage";
 import { getRemoteHandleFromHandle } from "../../helpers/lemmy";
 import { useAppSelector } from "../../store";
 import { PageTypeContext } from "../../features/feed/PageTypeContext";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -66,13 +66,7 @@ const FixedBg = styled.div`
   }
 `;
 
-const StyledIonToolbar = styled(IonToolbar)<{ hideBorder: boolean }>`
-  ${({ hideBorder }) =>
-    hideBorder &&
-    css`
-      --border-color: transparent;
-    `}
-
+const StyledIonToolbar = styled(IonToolbar)`
   // Weird ionic glitch where adding
   // absolutely positioned searchbar to header misaligns buttons
   ion-buttons {
@@ -80,7 +74,11 @@ const StyledIonToolbar = styled(IonToolbar)<{ hideBorder: boolean }>`
   }
 `;
 
-const HeaderIonSearchbar = styled(IonSearchbar)<{ hideSearch: boolean }>`
+const ionToolbarHideBorderCss = css`
+  --border-color: transparent;
+`;
+
+const HeaderIonSearchbar = styled(IonSearchbar)`
   position: absolute;
   inset: 0;
 
@@ -93,14 +91,12 @@ const HeaderIonSearchbar = styled(IonSearchbar)<{ hideSearch: boolean }>`
 
     --box-shadow: none;
   }
+`;
 
-  ${({ hideSearch }) =>
-    hideSearch &&
-    css`
-      opacity: 0 !important;
-      z-index: -1 !important;
-      pointer-events: none !important;
-    `}
+const ionSearchbarHideCss = css`
+  opacity: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
 `;
 
 const HeaderContainer = styled.div`
@@ -232,7 +228,13 @@ const CommunityPageContent = memo(function CommunityPageContent({
       <TitleSearchProvider>
         <IonPage className={searchOpen ? "grey-bg" : ""}>
           <IonHeader>
-            <StyledIonToolbar hideBorder={!searchOpen && !scrolledPastSearch}>
+            <StyledIonToolbar
+              className={
+                !searchOpen && !scrolledPastSearch
+                  ? ionToolbarHideBorderCss
+                  : undefined
+              }
+            >
               {!searchOpen && (
                 <>
                   <IonButtons slot="start">
@@ -258,7 +260,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
                 placeholder={`Search c/${community}`}
                 ref={searchbarRef}
                 onBlur={() => setSearchOpen(false)}
-                hideSearch={!searchOpen}
+                className={!searchOpen ? ionSearchbarHideCss : undefined}
                 showCancelButton="always"
                 showClearButton="never"
                 onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
