@@ -14,6 +14,7 @@ export default defineConfig({
   plugins: [
     react(),
     wyw({
+      displayName: process.env.NODE_ENV === "development",
       include: ["**/*.{ts,tsx}"],
       babelOptions: {
         presets: ["@babel/preset-typescript", "@babel/preset-react"],
