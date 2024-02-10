@@ -1,7 +1,7 @@
 import { DynamicDismissableModal } from "../../shared/DynamicDismissableModal";
 import { BanUserPayload } from "../../auth/PageContext";
 import BanUser from "./BanUser";
-import { css } from "@emotion/react";
+import { css } from "@linaria/core";
 
 const modPrimaryStyle = css`
   --ion-color-primary: var(--ion-color-success);
@@ -22,7 +22,7 @@ export default function BanUserModal({
     <DynamicDismissableModal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      css={modPrimaryStyle}
+      className={modPrimaryStyle}
       dismissClassName="mod"
     >
       {({ setCanDismiss, dismiss }) => (

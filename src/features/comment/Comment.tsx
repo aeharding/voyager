@@ -1,11 +1,8 @@
-import styled from "@emotion/styled";
 import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import { css } from "@emotion/react";
 import React, { MouseEvent, useCallback, useRef } from "react";
 import Ago from "../labels/Ago";
-import { maxWidthCss } from "../shared/AppContent";
 import PersonLink from "../labels/links/PersonLink";
 import Vote from "../labels/Vote";
 import AnimateHeight from "react-animate-height";
@@ -25,6 +22,9 @@ import { useLongPress } from "use-long-press";
 import { filterSafariCallout } from "../../helpers/longPress";
 import { useInModqueue } from "../../pages/shared/ModqueuePage";
 import { preventOnClickNavigationBug } from "../../helpers/ionic";
+import { styled } from "@linaria/react";
+import { PositionedContainer } from "./elements/PositionedContainer";
+import { Container } from "./elements/Container";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -48,77 +48,6 @@ export const CustomIonItem = styled(IonItem)`
   --min-height: 0;
 `;
 
-export const PositionedContainer = styled.div<{
-  depth: number;
-}>`
-  position: relative;
-
-  ${maxWidthCss}
-
-  padding: 8px 12px;
-
-  @media (hover: none) {
-    padding-top: 0.65em;
-    padding-bottom: 0.65em;
-  }
-
-  ${({ depth }) => css`
-    padding-left: calc(12px + ${Math.max(0, depth - 1) * 10}px);
-  `}
-`;
-
-export const Container = styled.div<{
-  depth: number;
-  highlighted?: boolean;
-  hidden?: boolean;
-}>`
-  display: flex;
-
-  position: relative;
-  width: 100%;
-
-  gap: 12px;
-
-  font-size: 0.9375em;
-
-  display: flex;
-  flex-direction: column;
-
-  ${({ depth }) =>
-    depth > 0 &&
-    css`
-      padding-left: 1em;
-    `}
-
-  &:before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    filter: brightness(0.7);
-
-    ${({ theme }) =>
-      !theme.dark &&
-      css`
-        filter: none;
-      `}
-
-    ${({ depth }) =>
-      depth &&
-      css`
-        background: ${rainbowColors[depth % rainbowColors.length]};
-      `}
-
-      ${({ hidden }) =>
-      hidden &&
-      css`
-        opacity: 0;
-      `}
-  }
-`;
-
 const Header = styled.div`
   display: flex;
   align-items: center;
@@ -131,7 +60,9 @@ const Header = styled.div`
 `;
 
 const StyledPersonLabel = styled(PersonLink)`
-  color: var(--ion-text-color);
+  && {
+    color: var(--ion-text-color);
+  }
 
   min-width: 0;
   overflow: hidden;
@@ -227,6 +158,8 @@ export default function Comment({
       return <ModActions comment={commentView} role={canModerate} />;
   }
 
+  const normalizedDepth = absoluteDepth ?? depth ?? 0;
+
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
       <SlidingNestedCommentVote
@@ -253,7 +186,15 @@ export default function Comment({
             <PositionedContainer
               depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
             >
-              <Container depth={absoluteDepth ?? depth ?? 0}>
+              <Container
+                depth={normalizedDepth}
+                padLeft={normalizedDepth > 0}
+                padColor={
+                  normalizedDepth
+                    ? rainbowColors[normalizedDepth % rainbowColors.length]
+                    : undefined
+                }
+              >
                 <ModeratableItemBannerOutlet />
                 <div>
                   <Header>
@@ -265,11 +206,7 @@ export default function Comment({
                     />
                     <CommentVote item={commentView} />
                     <Edited item={commentView} />
-                    <div
-                      css={css`
-                        flex: 1;
-                      `}
-                    />
+                    <div style={{ flex: 1 }} />
                     {!collapsed ? (
                       <ActionsContainer>
                         {renderActions()}

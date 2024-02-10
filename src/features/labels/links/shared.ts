@@ -1,5 +1,5 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { Link } from "react-router-dom";
 
 export const StyledLink = styled(Link)`

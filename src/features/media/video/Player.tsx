@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   CSSProperties,
   ChangeEvent,
@@ -12,7 +12,6 @@ import {
 } from "react";
 import { useInView } from "react-intersection-observer";
 import useShouldAutoplay from "../../../listeners/network/useShouldAutoplay";
-import { css } from "@emotion/react";
 import { IonIcon } from "@ionic/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import { PlainButton } from "../../shared/PlainButton";
@@ -24,7 +23,7 @@ const Container = styled.div`
   display: flex;
 `;
 
-const sharedProgressBarCss = css`
+const sharedProgressBarCss = `
   background: rgba(0, 0, 0, 0.0045);
   backdrop-filter: blur(30px);
 `;

@@ -1,3 +1,4 @@
+import { styled } from "@linaria/react";
 import {
   IonBackButton,
   IonBadge,
@@ -16,7 +17,6 @@ import {
 import { MaxWidthContainer } from "../../features/shared/AppContent";
 import { InsetIonItem, SettingLabel } from "../profile/ProfileFeedItemsPage";
 import { useContext, useEffect, useRef, useState } from "react";
-import styled from "@emotion/styled";
 import { UpdateContext } from "./update/UpdateContext";
 import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
 import { useSetActivePage } from "../../features/auth/AppContext";

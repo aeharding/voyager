@@ -1,12 +1,12 @@
 import { IonIcon, IonLabel, IonList, IonListHeader } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { css } from "@emotion/react";
 import { InsetIonItem } from "../user/Profile";
 import { getHandle } from "../../helpers/lemmy";
 import { trendingUp } from "ionicons/icons";
 import { useEffect } from "react";
 import { getTrendingCommunities } from "../community/communitySlice";
+import { css } from "@linaria/core";
 
 export default function TrendingCommunities() {
   const dispatch = useAppDispatch();
@@ -23,7 +23,7 @@ export default function TrendingCommunities() {
     <IonList inset color="primary">
       <IonListHeader>
         <IonLabel
-          css={css`
+          className={css`
             margin-top: 0;
           `}
         >

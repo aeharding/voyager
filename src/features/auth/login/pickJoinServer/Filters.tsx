@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonChip } from "@ionic/react";
 import { SERVERS_BY_CATEGORY, ServerCategory } from "../data/servers";
-import { css } from "@emotion/react";
+import { css } from "@linaria/core";
 
 const Container = styled.div`
   display: flex;
@@ -20,15 +20,10 @@ const Container = styled.div`
   }
 `;
 
-const Chip = styled(IonChip)<{ selected?: boolean }>`
-  ${({ selected }) =>
-    selected &&
-    css`
-      --background: var(--ion-color-primary);
-      --color: var(--ion-color-primary-contrast);
-    `}
+const selectedChipStyles = css`
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
 `;
-
 const CATEGORIES = Object.keys(SERVERS_BY_CATEGORY) as ServerCategory[];
 
 interface FiltersProps {
@@ -51,23 +46,25 @@ export default function Filters({
       }}
     >
       {hasRecommended && (
-        <Chip
+        <IonChip
+          className={
+            category === "recommended" ? selectedChipStyles : undefined
+          }
           outline={category !== "recommended"}
-          selected={category === "recommended"}
           onClick={() => setCategory("recommended")}
         >
           recommended
-        </Chip>
+        </IonChip>
       )}
       {CATEGORIES.map((c) => (
-        <Chip
+        <IonChip
+          className={category === c ? selectedChipStyles : undefined}
           key={c}
           outline={category !== c}
-          selected={category === c}
           onClick={() => setCategory(c)}
         >
           {c}
-        </Chip>
+        </IonChip>
       ))}
     </Container>
   );

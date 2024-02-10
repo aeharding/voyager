@@ -14,7 +14,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { VList } from "virtua";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { LOGIN_SERVERS } from "../data/servers";
 import { getClient } from "../../../../services/lemmy";
 import Login from "./Login";

@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useParams } from "react-router";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { getPost } from "../../features/post/postSlice";
 import AppBackButton from "../../features/shared/AppBackButton";

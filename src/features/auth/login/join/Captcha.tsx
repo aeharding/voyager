@@ -15,7 +15,7 @@ import {
 } from "react";
 import { getClient } from "../../../../services/lemmy";
 import { GetCaptchaResponse, Register } from "lemmy-js-client";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { refresh, volumeHigh, volumeHighOutline } from "ionicons/icons";
 import { b64ToBlob } from "../../../../helpers/blob";
 import { PlainButton } from "../../../shared/PlainButton";

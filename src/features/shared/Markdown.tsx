@@ -1,11 +1,11 @@
 import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
-import styled from "@emotion/styled";
 import LinkInterceptor from "./markdown/LinkInterceptor";
 import customRemarkGfm from "./markdown/customRemarkGfm";
 import MarkdownImg from "./MarkdownImg";
-import { css } from "@emotion/react";
 import InAppExternalLink from "./InAppExternalLink";
 import { useAppSelector } from "../../store";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 
 const markdownCss = css`
   @media (max-width: 700px) {
@@ -73,7 +73,7 @@ export default function Markdown({
   return (
     <ReactMarkdown
       {...props}
-      css={markdownCss}
+      className={markdownCss}
       components={{
         img: (props) => (
           <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />

@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
 import { bookmark, mailUnread } from "ionicons/icons";
 import { SlidingItemAction } from "./SlidingItem";
@@ -10,32 +9,30 @@ const custom_slash_lengths: Record<string, number> = {
   [mailUnread]: 40,
 };
 
-const SlashedIcon = styled(IonIcon)<{
+const UnslashedIcon = styled(IonIcon)`
+  margin-block: 24px;
+
+  color: white;
+`;
+
+const SlashedIcon = styled(UnslashedIcon)<{
   icon: string;
   slash: boolean;
   bgColor: string;
 }>`
-  margin-block: 24px;
-
-  color: white;
-
-  ${({ icon, slash, bgColor }) =>
-    slash &&
-    css`
-      &::after {
-        content: "";
-        position: absolute;
-        height: ${custom_slash_lengths[icon] ?? 30}px;
-        width: 3px;
-        background: white;
-        font-size: 1.7em;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) rotate(-45deg);
-        transform-origin: center;
-        box-shadow: 0 0 0 2px var(--ion-color-${bgColor});
-      }
-    `}
+  &::after {
+    content: "";
+    position: absolute;
+    height: ${({ icon }) => custom_slash_lengths[icon] ?? 30}px;
+    width: 3px;
+    background: white;
+    font-size: 1.7em;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    transform-origin: center;
+    box-shadow: 0 0 0 2px var(--ion-color-${({ bgColor }) => bgColor});
+  }
 `;
 
 interface ActionContentsProps {
@@ -45,11 +42,11 @@ interface ActionContentsProps {
 function ActionContents({ action }: ActionContentsProps) {
   if (!action) return;
 
-  const icon = action.icon;
+  const Icon = action.slash ? SlashedIcon : UnslashedIcon;
 
   return (
-    <SlashedIcon
-      icon={icon}
+    <Icon
+      icon={action.icon}
       slash={action.slash ?? false}
       bgColor={action.bgColor}
     />

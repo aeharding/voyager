@@ -1,5 +1,3 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { PrivateMessageView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
@@ -9,8 +7,10 @@ import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { PageContext } from "../../auth/PageContext";
 import { useLongPress } from "use-long-press";
 import Markdown from "../../shared/Markdown";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
-const Container = styled.div<{ type: "sent" | "recieved" }>`
+const Container = styled.div`
   position: relative; /* Setup a relative container for our pseudo elements */
   max-width: min(75%, 400px);
   margin-bottom: 15px;
@@ -28,11 +28,9 @@ const Container = styled.div<{ type: "sent" | "recieved" }>`
   --sentColor: var(--ion-color-primary);
   --receiveColor: var(--ion-color-medium);
 
-  ${({ theme }) =>
-    !theme.dark &&
-    css`
-      --receiveColor: #eee;
-    `}
+  .theme-dark & {
+    --receiveColor: #eee;
+  }
 
   &:before {
     width: 20px;
@@ -60,46 +58,40 @@ const Container = styled.div<{ type: "sent" | "recieved" }>`
     ); /* height of our bubble "tail" - should match the border-radius above */
     content: "";
   }
+`;
 
-  ${({ type }) => {
-    switch (type) {
-      case "sent":
-        return css`
-          align-self: flex-end;
-          color: white;
-          background: var(--sentColor);
+const sentCss = css`
+  align-self: flex-end;
+  color: white;
+  background: var(--sentColor);
 
-          &:before {
-            right: -7px;
-            background-color: var(--sentColor);
-            border-bottom-left-radius: 16px 14px;
-          }
+  &:before {
+    right: -7px;
+    background-color: var(--sentColor);
+    border-bottom-left-radius: 16px 14px;
+  }
 
-          &:after {
-            right: -26px;
-            border-bottom-left-radius: 10px;
-          }
-        `;
+  &:after {
+    right: -26px;
+    border-bottom-left-radius: 10px;
+  }
+`;
 
-      case "recieved":
-        return css`
-          align-self: flex-start;
-          color: black;
-          background: var(--receiveColor);
+const receivedCss = css`
+  align-self: flex-start;
+  color: black;
+  background: var(--receiveColor);
 
-          &:before {
-            left: -7px;
-            background-color: var(--receiveColor);
-            border-bottom-right-radius: 16px 14px;
-          }
+  &:before {
+    left: -7px;
+    background-color: var(--receiveColor);
+    border-bottom-right-radius: 16px 14px;
+  }
 
-          &:after {
-            left: -26px;
-            border-bottom-right-radius: 10px;
-          }
-        `;
-    }
-  }}
+  &:after {
+    left: -26px;
+    border-bottom-right-radius: 10px;
+  }
 `;
 
 interface MessageProps {
@@ -167,7 +159,7 @@ export default function Message({ message }: MessageProps) {
 
   return (
     <Container
-      type={thisIsMyMessage ? "sent" : "recieved"}
+      className={thisIsMyMessage ? sentCss : receivedCss}
       ref={containerRef}
       {...bind()}
     >

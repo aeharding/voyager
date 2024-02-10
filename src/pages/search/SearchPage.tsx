@@ -1,11 +1,11 @@
 import { IonHeader, IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
 import AppContent from "../../features/shared/AppContent";
 import { createRef, useState } from "react";
-import { css } from "@emotion/react";
 import TrendingCommunities from "../../features/search/TrendingCommunities";
 import SearchOptions from "../../features/search/SearchOptions";
 import useLemmyUrlHandler from "../../features/shared/useLemmyUrlHandler";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import { css } from "@linaria/core";
 
 const searchBarRef = createRef<HTMLIonSearchbarElement>();
 
@@ -43,7 +43,7 @@ export default function SearchPage() {
               placeholder="Search posts, communities, users"
               showCancelButton={search ? "always" : "focus"}
               showClearButton={search ? "always" : "never"}
-              css={css`
+              className={css`
                 padding-top: 0 !important;
                 padding-bottom: 0 !important;
               `}

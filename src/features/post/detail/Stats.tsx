@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
 import { happyOutline, timeOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";

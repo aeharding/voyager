@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
 import { heart } from "ionicons/icons";
 import InAppProducts from "./inAppPurchase/InAppProducts";

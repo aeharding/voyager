@@ -9,7 +9,7 @@ import Feed, { FeedProps, FetchFn } from "./Feed";
 import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { css } from "@emotion/react";
+import { css } from "@linaria/core";
 import {
   postHiddenByIdSelector,
   receivedPosts,
@@ -94,9 +94,9 @@ export default function PostCommentFeed({
 
   const renderItem = useCallback(
     (item: PostCommentItem) => {
-      if (isPost(item)) return <Post post={item} css={borderCss} />;
+      if (isPost(item)) return <Post post={item} className={borderCss} />;
 
-      return <FeedComment comment={item} css={borderCss} />;
+      return <FeedComment comment={item} className={borderCss} />;
     },
     [borderCss],
   );

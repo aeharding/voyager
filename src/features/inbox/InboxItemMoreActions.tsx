@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { IonIcon, useIonActionSheet } from "@ionic/react";
 import {
   ellipsisHorizontal,
@@ -19,6 +18,7 @@ import { useContext } from "react";
 import { PageContext } from "../auth/PageContext";
 import useAppNavigation from "../../helpers/useAppNavigation";
 import { useUserDetails } from "../user/useUserDetails";
+import { styled } from "@linaria/react";
 
 const EllipsisIcon = styled(IonIcon)`
   font-size: 1.2rem;

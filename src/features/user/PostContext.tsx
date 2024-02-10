@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
 import { Community, Post } from "lemmy-js-client";
 import { getHandle } from "../../helpers/lemmy";
 import { Link } from "react-router-dom";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { styled } from "@linaria/react";
 
 const ContainerLink = styled(Link)`
   padding: 6px 12px;

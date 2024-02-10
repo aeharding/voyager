@@ -26,13 +26,13 @@ import {
 import { useAppSelector } from "../../../../../store";
 import { jwtSelector, urlSelector } from "../../../../auth/authSelectors";
 import PreviewModal from "../PreviewModal";
-import styled from "@emotion/styled";
 import { uploadImage } from "../../../../../services/lemmy";
 import { insert } from "../../../../../helpers/string";
 import textFaces from "./textFaces.txt?raw";
 import { bold, italic, quote } from "../../../../icons";
 import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
-import { css } from "@emotion/react";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
 const Button = styled.button`
   padding: 0;
@@ -271,7 +271,7 @@ export default function DefaultMode({
           </Button>
 
           <input
-            css={css`
+            className={css`
               display: none;
             `}
             type="file"

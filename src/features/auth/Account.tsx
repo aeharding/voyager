@@ -15,7 +15,7 @@ import { removeCircle } from "ionicons/icons";
 import { Credential, logoutAccount } from "./authSlice";
 import { useAppDispatch } from "../../store";
 import { useRef } from "react";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 
 const RemoveIcon = styled(IonIcon)`
   position: relative;

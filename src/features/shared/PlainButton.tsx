@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 
 // https://gist.github.com/MoOx/9137295
 export const PlainButton = styled.button`

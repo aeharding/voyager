@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
 import { LinkData } from "./CommentLinks";
 import {
@@ -8,13 +8,12 @@ import {
   peopleSharp,
   personSharp,
 } from "ionicons/icons";
-import { css } from "@emotion/react";
 import { getImageSrc } from "../../../services/lemmy";
 import { ReactNode, useMemo } from "react";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 import { isUrlImage } from "../../../helpers/url";
 
-const shared = css`
+const shared = `
   width: 30px;
   height: 30px;
   box-sizing: content-box;

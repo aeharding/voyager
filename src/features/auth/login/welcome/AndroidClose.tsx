@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonButton, IonButtons } from "@ionic/react";
 import { useContext } from "react";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";

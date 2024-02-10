@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import {
   personCircleOutline,
   cog,
@@ -36,7 +35,8 @@ import { PageContext } from "./features/auth/PageContext";
 import { useLongPress } from "use-long-press";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "./helpers/useHapticFeedback";
-import { css } from "@emotion/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 
 const interceptorCss = css`
   position: absolute;
@@ -220,7 +220,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       <IonTabButton disabled={isPostsButtonDisabled} tab="posts" href="/posts">
         <IonIcon aria-hidden="true" icon={telescope} />
         <IonLabel>Posts</IonLabel>
-        <div onClick={onPostsClick} css={interceptorCss} />
+        <div onClick={onPostsClick} className={interceptorCss} />
       </IonTabButton>
       <IonTabButton disabled={isInboxButtonDisabled} tab="inbox" href="/inbox">
         <IonIcon aria-hidden="true" icon={fileTray} />
@@ -228,7 +228,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
         {totalUnread ? (
           <IonBadge color="danger">{totalUnread}</IonBadge>
         ) : undefined}
-        <div onClick={onInboxClick} css={interceptorCss} />
+        <div onClick={onInboxClick} className={interceptorCss} />
       </IonTabButton>
       <IonTabButton
         disabled={isProfileButtonDisabled}
@@ -240,7 +240,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
         <div
           onClick={onProfileClick}
           {...presentAccountSwitcherBind()}
-          css={interceptorCss}
+          className={interceptorCss}
         />
       </IonTabButton>
       <IonTabButton
@@ -250,7 +250,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       >
         <IonIcon aria-hidden="true" icon={search} />
         <IonLabel>Search</IonLabel>
-        <div onClick={onSearchClick} css={interceptorCss} />
+        <div onClick={onSearchClick} className={interceptorCss} />
       </IonTabButton>
       <IonTabButton
         tab="settings"
@@ -262,7 +262,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
         {settingsNotificationCount ? (
           <IonBadge color="danger">{settingsNotificationCount}</IonBadge>
         ) : undefined}
-        <div onClick={onSettingsClick} css={interceptorCss} />
+        <div onClick={onSettingsClick} className={interceptorCss} />
       </IonTabButton>
     </IonTabBar>
   );

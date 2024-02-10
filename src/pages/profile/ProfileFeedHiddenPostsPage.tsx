@@ -12,7 +12,6 @@ import {
   useIonActionSheet,
 } from "@ionic/react";
 import { useParams } from "react-router";
-import styled from "@emotion/styled";
 import useClient from "../../helpers/useClient";
 import { FetchFn } from "../../features/feed/Feed";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -27,6 +26,7 @@ import {
   postHiddenByIdSelector,
 } from "../../features/post/postSlice";
 import FeedContent from "../shared/FeedContent";
+import { styled } from "@linaria/react";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));

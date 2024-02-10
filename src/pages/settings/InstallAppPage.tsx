@@ -15,7 +15,6 @@ import {
   shareOutline,
 } from "ionicons/icons";
 import AppContent from "../../features/shared/AppContent";
-import styled from "@emotion/styled";
 import {
   isAndroid,
   isAppleDeviceInstallable,
@@ -25,9 +24,10 @@ import {
 } from "../../helpers/device";
 import { useContext, useRef, useState } from "react";
 import { BeforeInstallPromptContext } from "../../BeforeInstallPromptProvider";
-import { css } from "@emotion/react";
 import { useSetActivePage } from "../../features/auth/AppContext";
 import AppDetails from "./about/AppDetails";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
 const Container = styled.div`
   line-height: 1.5;
@@ -250,7 +250,7 @@ export default function InstallAppPage() {
             <li>
               Visit{" "}
               <span
-                css={css`
+                className={css`
                   text-decoration: underline;
                 `}
               >

@@ -3,7 +3,7 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import remarkParse from "remark-parse";
 import CommentLink from "./CommentLink";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import customRemarkGfm from "../../shared/markdown/customRemarkGfm";
 import { useAppSelector } from "../../../store";
 import { Link, Text } from "mdast";

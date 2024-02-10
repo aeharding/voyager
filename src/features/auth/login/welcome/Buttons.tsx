@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { useAppSelector } from "../../../../store";
 import { useRef } from "react";
 import { IonButton, IonNavLink, IonSpinner } from "@ionic/react";
@@ -23,11 +23,6 @@ const Container = styled.div`
   margin: 2rem;
 
   margin-top: auto;
-
-  /* position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 25vh; */
 `;
 
 const Or = styled.div`

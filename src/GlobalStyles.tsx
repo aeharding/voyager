@@ -1,22 +1,24 @@
-import { Global, ThemeProvider, css } from "@emotion/react";
+import { Global, css } from "@emotion/react";
 import { useAppSelector } from "./store";
-import useSystemDarkMode from "./helpers/useSystemDarkMode";
 import {
   baseVariables,
   buildDarkVariables,
   buildLightVariables,
 } from "./theme/variables";
-import React, { useEffect } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { isNative } from "./helpers/device";
 import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
+import useSystemDarkMode from "./helpers/useSystemDarkMode";
+
+const DARK_CLASSNAME = "theme-dark";
 
 interface GlobalStylesProps {
   children: React.ReactNode;
 }
 
 export default function GlobalStyles({ children }: GlobalStylesProps) {
-  const systemDarkMode = useSystemDarkMode();
+  const isDark = useComputeIsDark();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
     (state) => state.settings.appearance.font,
   );
@@ -29,17 +31,23 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
         font-size: ${fontSizeMultiplier}rem;
       `;
 
-  const { userDarkMode, usingSystemDarkMode, pureBlack } = useAppSelector(
+  const { usingSystemDarkMode, pureBlack } = useAppSelector(
     (state) => state.settings.appearance.dark,
   );
   const theme = useAppSelector((state) => state.settings.appearance.theme);
 
-  const isDark = usingSystemDarkMode ? systemDarkMode : userDarkMode;
-
   useEffect(() => {
-    if (!isNative()) return;
+    if (isNative()) {
+      StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
+    }
 
-    StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
+    const list = document.documentElement.classList;
+
+    if (isDark) {
+      list.add(DARK_CLASSNAME);
+    } else {
+      list.remove(DARK_CLASSNAME);
+    }
   }, [isDark]);
 
   useEffect(() => {
@@ -56,7 +64,7 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
   }, [isDark, usingSystemDarkMode]);
 
   return (
-    <ThemeProvider theme={{ dark: isDark }}>
+    <>
       <Global
         styles={css`
           html {
@@ -70,7 +78,24 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
             : buildLightVariables(theme)}
         `}
       />
-      {children}
-    </ThemeProvider>
+      <DarkContext.Provider value={isDark}>{children}</DarkContext.Provider>
+    </>
   );
 }
+
+function useComputeIsDark(): boolean {
+  const systemDarkMode = useSystemDarkMode(); // sets up document listeners
+
+  const { userDarkMode, usingSystemDarkMode } = useAppSelector(
+    (state) => state.settings.appearance.dark,
+  );
+
+  return usingSystemDarkMode ? systemDarkMode : userDarkMode;
+}
+
+// Cached
+export function useIsDark() {
+  return useContext(DarkContext);
+}
+
+const DarkContext = createContext(false);

@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonBackButton,
   IonButton,
@@ -11,7 +11,6 @@ import {
 } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
-import { css } from "@emotion/react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
 import MarkdownToolbar, {
   TOOLBAR_HEIGHT,
@@ -45,13 +44,9 @@ const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
   flex: 1 0 auto;
   min-height: 7rem;
 
-  ${({ theme }) =>
-    !theme.dark &&
-    css`
-      .ios & {
-        background: var(--ion-item-background);
-      }
-    `}
+  html.ios:not(.theme-dark) & {
+    background: var(--ion-item-background);
+  }
 `;
 
 interface NewPostTextProps {

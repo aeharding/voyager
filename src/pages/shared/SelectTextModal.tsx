@@ -8,28 +8,23 @@ import {
   IonModal,
 } from "@ionic/react";
 import { Centered } from "../../features/auth/login/LoginNav";
-import styled from "@emotion/styled";
 import TextareaAutosize from "react-textarea-autosize";
-import { css } from "@emotion/react";
 import { useRef } from "react";
 import { isTouchDevice } from "../../helpers/device";
 import { preventModalSwipeOnTextSelection } from "../../helpers/ionic";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   min-height: 100%;
 
   display: flex;
 
-  ${({ theme }) =>
-    !theme.dark &&
-    css`
-      .ios & {
-        background: var(--ion-item-background);
-      }
-    `}
+  html.ios:not(.theme-dark) & {
+    background: var(--ion-item-background);
+  }
 `;
 
-const sharedSelectStyles = css`
+const sharedSelectStyles = `
   padding: 8px;
   width: calc(100% - 16px);
 

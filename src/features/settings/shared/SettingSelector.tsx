@@ -8,8 +8,8 @@ import { startCase } from "lodash";
 import React, { useState } from "react";
 import { Dispatchable, useAppDispatch } from "../../../store";
 import { InsetIonItem } from "./formatting";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
+import { styled } from "@linaria/react";
+import { css, cx } from "@linaria/core";
 
 export const Container = styled.div`
   display: flex;
@@ -38,6 +38,24 @@ export const ValueLabel = styled(IonLabel)`
   text-overflow: ellipsis;
 `;
 
+const iconCss = css`
+  position: relative;
+  display: inline-flex;
+  height: 4ex;
+  width: auto;
+  stroke: var(--ion-color-primary);
+  fill: var(--ion-color-primary);
+
+  padding-inline-end: 0.7em;
+`;
+
+const iconMirrorCss = css`
+  padding-inline-end: 0;
+
+  padding-inline-start: 0.7em;
+  transform: scaleX(-1);
+`;
+
 export interface SettingSelectorProps<T, O extends Record<string, T>> {
   title: string;
   openTitle?: string;
@@ -45,7 +63,7 @@ export interface SettingSelectorProps<T, O extends Record<string, T>> {
   setSelected: Dispatchable<T>;
   options: O;
   optionIcons?: Record<string | number, string>;
-  icon?: React.FunctionComponent;
+  icon?: React.FunctionComponent<{ className?: string }>;
   iconMirrored?: boolean;
   disabled?: boolean;
   getOptionLabel?: (option: T) => string | undefined;
@@ -63,7 +81,7 @@ export default function SettingSelector<
   setSelected,
   options,
   optionIcons,
-  icon,
+  icon: Icon,
   iconMirrored,
   disabled,
   getOptionLabel,
@@ -86,29 +104,6 @@ export default function SettingSelector<
       } as ActionSheetButton<T>;
     });
 
-  const Icon = icon
-    ? styled(icon, { shouldForwardProp: (prop) => prop !== "mirror" })<{
-        mirror?: boolean;
-      }>`
-        position: relative;
-        display: inline-flex;
-        height: 4ex;
-        width: auto;
-        stroke: var(--ion-color-primary);
-        fill: var(--ion-color-primary);
-
-        ${({ mirror }) =>
-          mirror
-            ? css`
-                padding-inline-start: 0.7em;
-                transform: scaleX(-1);
-              `
-            : css`
-                padding-inline-end: 0.7em;
-              `}
-      `
-    : undefined;
-
   return (
     <InsetIonItem
       button
@@ -117,7 +112,9 @@ export default function SettingSelector<
       detail={false}
     >
       <Container>
-        {Icon && <Icon mirror={iconMirrored} />}
+        {Icon && (
+          <Icon className={cx(iconCss, iconMirrored && iconMirrorCss)} />
+        )}
         <TitleIonLabel>{title}</TitleIonLabel>
         <ValueLabel slot="end" color="medium">
           {getSelectedLabel?.(selected) ??

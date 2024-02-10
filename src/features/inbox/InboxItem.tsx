@@ -5,20 +5,19 @@ import {
 } from "lemmy-js-client";
 import CommentMarkdown from "../comment/CommentMarkdown";
 import { IonIcon, IonItem } from "@ionic/react";
-import styled from "@emotion/styled";
 import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
 import Ago from "../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
-import { css } from "@emotion/react";
 import { isPostReply } from "../../pages/inbox/RepliesPage";
 import { maxWidthCss } from "../shared/AppContent";
 import VoteArrow from "./VoteArrow";
 import SlidingInbox from "../shared/sliding/SlidingInbox";
 import useAppToast from "../../helpers/useAppToast";
 import InboxItemMoreActions from "./InboxItemMoreActions";
+import { styled } from "@linaria/react";
 
 const Hr = styled.div`
   ${maxWidthCss}
@@ -45,12 +44,8 @@ const Hr = styled.div`
 
 const StyledIonItem = styled(IonItem)<{ read: boolean }>`
   --ion-item-border-color: transparent;
-
-  ${({ read }) =>
-    !read &&
-    css`
-      --background: var(--unread-item-background-color);
-    `}
+  --background: ${({ read }) =>
+    read ? "var(--unread-item-background-color)" : "none"};
 `;
 
 const Container = styled.div`

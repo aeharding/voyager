@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { IonIcon, IonItem } from "@ionic/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import { maxWidthCss } from "../../shared/AppContent";
@@ -13,7 +12,6 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
 import { findLoneImage } from "../../../helpers/markdown";
 import { isUrlMedia } from "../../../helpers/url";
-import { css } from "@emotion/react";
 import Markdown from "../../shared/Markdown";
 import Embed from "../shared/Embed";
 import InlineMarkdown from "../../shared/InlineMarkdown";
@@ -29,6 +27,7 @@ import { togglePostCollapse } from "../postSlice";
 import Crosspost from "../crosspost/Crosspost";
 import useCrosspostUrl from "../shared/useCrosspostUrl";
 import Media from "../inFeed/large/media/Media";
+import { styled } from "@linaria/react";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -40,20 +39,12 @@ const BorderlessIonItem = styled(IonItem)`
   ${maxWidthCss}
 `;
 
-const LightboxMedia = styled(Media, {
-  shouldForwardProp: (prop) => prop !== "constrainHeight",
-})<{ constrainHeight?: boolean }>`
+const LightboxMedia = styled(Media)`
   -webkit-touch-callout: default;
 
   width: 100%;
   object-fit: contain;
   background: var(--lightroom-bg);
-
-  ${({ constrainHeight }) =>
-    constrainHeight &&
-    css`
-      max-height: 50vh;
-    `}
 `;
 
 const StyledMarkdown = styled(Markdown)`
@@ -171,10 +162,10 @@ function PostHeader({
           blur={false}
           post={post}
           nativeControls
-          constrainHeight={constrainHeight}
           onClick={(e) => {
             e.preventDefault(); // prevent OutPortalEventDispatcher dispatch
           }}
+          style={constrainHeight ? { maxHeight: "50vh" } : undefined}
         />
       );
     }

@@ -1,5 +1,3 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import {
   IonButton,
   IonButtons,
@@ -14,6 +12,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { close } from "ionicons/icons";
 import { useCallback, useEffect, useState } from "react";
 import { VList } from "virtua";
@@ -91,7 +91,7 @@ export default function GenericSelectorModal<I>({
       </IonHeader>
       <IonContent>
         <StyledIonList
-          css={css`
+          className={css`
             height: 100%;
           `}
         >
