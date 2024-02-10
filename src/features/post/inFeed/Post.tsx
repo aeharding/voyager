@@ -14,6 +14,7 @@ import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 import { useLongPress } from "use-long-press";
 import usePostActions from "../shared/usePostActions";
 import { filterSafariCallout } from "../../../helpers/longPress";
+import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -116,7 +117,9 @@ function Post(props: PostProps) {
               props.post.post.id
             }`,
           )}
-          onClick={() => {
+          onClick={(e) => {
+            if (preventOnClickNavigationBug(e)) return;
+
             // Marking post read is done in the post detail page when it finishes transitioning in.
             // However, autohiding is context-sensitive (community feed vs special feed, etc)
             // and doesn't cause rerender, so do it now.

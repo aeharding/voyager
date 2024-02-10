@@ -11,13 +11,14 @@ import GalleryPostActions from "./GalleryPostActions";
 import { createPortal } from "react-dom";
 import { PostView } from "lemmy-js-client";
 import PhotoSwipeLightbox, { PreparedPhotoSwipeOptions } from "photoswipe";
-import { getSafeArea, isAndroid, isNative } from "../../helpers/device";
+import { getSafeArea, isAndroid, isNative } from "../../../helpers/device";
 
 import "photoswipe/style.css";
 import { useLocation } from "react-router";
 import { StatusBar } from "@capacitor/status-bar";
-import { setPostRead } from "../post/postSlice";
-import { useAppDispatch } from "../../store";
+import { setPostRead } from "../../post/postSlice";
+import { useAppDispatch } from "../../../store";
+import { GalleryMediaRef } from "./GalleryMedia";
 
 const Container = styled.div`
   position: absolute;
@@ -37,7 +38,8 @@ const Container = styled.div`
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
   open: (
-    img: HTMLImageElement,
+    img: HTMLImageElement | HTMLCanvasElement,
+    src: string,
     post?: PostView,
     animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
   ) => void;
@@ -56,12 +58,15 @@ interface GalleryProviderProps {
   children: React.ReactNode;
 }
 
+type ThumbEl = GalleryMediaRef;
+
 export default function GalleryProvider({ children }: GalleryProviderProps) {
   const dispatch = useAppDispatch();
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null,
   );
-  const imgRef = useRef<HTMLImageElement>();
+  const thumbElRef = useRef<ThumbEl>();
+  const imgSrcRef = useRef("");
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
@@ -89,21 +94,29 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
   const open = useCallback(
     (
-      img: HTMLImageElement,
+      thumbEl: ThumbEl,
+      src: string,
       post?: PostView,
       animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
     ) => {
       if (lightboxRef.current) return;
 
-      imgRef.current = img;
+      thumbElRef.current = thumbEl;
+      imgSrcRef.current = src;
       setPost(post);
 
       const instance = new PhotoSwipeLightbox({
         dataSource: [
           {
-            src: img.src,
-            height: img.naturalHeight,
-            width: img.naturalWidth,
+            src,
+            height:
+              thumbEl instanceof HTMLImageElement
+                ? thumbEl.naturalHeight
+                : thumbEl.height,
+            width:
+              thumbEl instanceof HTMLImageElement
+                ? thumbEl.naturalWidth
+                : thumbEl.width,
           },
         ],
         showHideAnimationType: animationType ?? "fade",
@@ -117,11 +130,11 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       });
 
       instance.addFilter("thumbEl", () => {
-        return img;
+        return thumbEl;
       });
 
       instance.addFilter("placeholderSrc", () => {
-        return img.src;
+        return src;
       });
 
       instance.on("openingAnimationEnd", () => {
@@ -261,8 +274,8 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         post &&
         createPortal(
           <Container>
-            {imgRef.current && (
-              <GalleryPostActions post={post} imgSrc={imgRef.current.src} />
+            {thumbElRef.current && (
+              <GalleryPostActions post={post} imgSrc={imgSrcRef.current} />
             )}
           </Container>,
           actionContainer,

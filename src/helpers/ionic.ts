@@ -1,4 +1,5 @@
 import { MouseEvent, TouchEvent } from "react";
+import { memoryHistory } from "../Router";
 
 const ION_CONTENT_ELEMENT_SELECTOR = "ion-content";
 
@@ -28,3 +29,36 @@ export const preventModalSwipeOnTextSelection = {
     return true;
   },
 };
+
+export const attributedPreventOnClickNavigationBug = {
+  onClick: preventOnClickNavigationBug,
+};
+
+/**
+ * There's a weird bug where quickly double tapping a link
+ * can double mount a page,
+ * which causes Ionic Router to get into a bad state.
+ *
+ * I haven't been able to replicate this with an example app
+ *
+ * @returns true if prevented
+ */
+export function preventOnClickNavigationBug(e: MouseEvent) {
+  if (!(e.target instanceof HTMLElement)) return false;
+
+  const linker = e.target.closest("[href],[router-link]");
+  if (!linker) return false;
+
+  const link =
+    linker.getAttribute("router-link") || linker.getAttribute("href");
+
+  const pathname = memoryHistory?.location.pathname ?? location.pathname;
+
+  if (pathname === link) {
+    e.preventDefault();
+
+    return true;
+  }
+
+  return false;
+}

@@ -1,16 +1,14 @@
-import { HTMLProps, useMemo } from "react";
+import { useMemo } from "react";
 import { isUrlVideo } from "../../helpers/url";
-import GalleryImg, { GalleryImgProps } from "../gallery/GalleryImg";
-import Video from "./Video";
+import Player from "../media/video/Player";
 import { css } from "@emotion/react";
+import GalleryMedia, { GalleryMediaProps } from "../media/gallery/GalleryMedia";
 
 const smallStyles = css`
   max-height: 200px;
 `;
 
-interface MarkdownImgProps
-  extends Omit<HTMLProps<HTMLImageElement>, "ref">,
-    GalleryImgProps {
+interface MarkdownImgProps extends GalleryMediaProps {
   /**
    * Restrict height of media within comments (unrestricted in post body)
    */
@@ -26,14 +24,15 @@ export default function MarkdownImg({ small, ...props }: MarkdownImgProps) {
 
   if (isVideo)
     return (
-      <Video
+      <Player
         src={props.src!}
         progress={false}
+        volume={false}
         css={sharedStyles}
-        controls={!small}
+        nativeControls={!small}
         {...props}
       />
     );
 
-  return <GalleryImg {...props} css={sharedStyles} animationType="zoom" />;
+  return <GalleryMedia {...props} css={sharedStyles} animationType="zoom" />;
 }

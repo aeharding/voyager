@@ -1,27 +1,27 @@
 import { IonIcon } from "@ionic/react";
-import { VoteButton } from "../post/shared/VoteButton";
+import { VoteButton } from "../../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline, shareOutline } from "ionicons/icons";
 import styled from "@emotion/styled";
-import { useAppSelector } from "../../store";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle } from "../../helpers/lemmy";
-import MoreActions from "../post/shared/MoreActions";
+import { useAppSelector } from "../../../store";
+import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { getHandle } from "../../../helpers/lemmy";
+import MoreActions from "../../post/shared/MoreActions";
 import {
   calculateTotalScore,
   calculateSeparateScore,
-} from "../../helpers/vote";
+} from "../../../helpers/vote";
 import { useLocation } from "react-router";
 import React, { useContext } from "react";
 import { GalleryContext } from "./GalleryProvider";
-import { OVoteDisplayMode } from "../../services/db";
-import { isNative } from "../../helpers/device";
+import { OVoteDisplayMode } from "../../../services/db";
+import { isNative } from "../../../helpers/device";
 import GalleryMoreActions from "./GalleryMoreActions";
 import { StashMedia } from "capacitor-stash-media";
 import { Share } from "@capacitor/share";
-import useAppToast from "../../helpers/useAppToast";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { InFeedContext } from "../feed/Feed";
+import useAppToast from "../../../helpers/useAppToast";
+import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import { InFeedContext } from "../../feed/Feed";
 
 const Container = styled.div`
   display: flex;

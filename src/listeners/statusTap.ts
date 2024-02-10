@@ -1,6 +1,20 @@
 import { findCurrentPage } from "../helpers/ionic";
+import { Browser } from "@capacitor/browser";
 
 let savedScrollTop = 0;
+
+/**
+ * statusTap is emitted with open full screen browser
+ */
+let browserOpen = false;
+
+export function notifyStatusTapThatBrowserWasOpened() {
+  browserOpen = true;
+}
+
+Browser.addListener("browserFinished", () => {
+  browserOpen = false;
+});
 
 // statusTap is a capacitor (native app), iOS-only event
 // https://capacitorjs.com/docs/apis/status-bar#example
@@ -9,6 +23,8 @@ let savedScrollTop = 0;
 // the feed by tapping again after initially tapping to
 // scroll to top
 window.addEventListener("statusTap", () => {
+  if (browserOpen) return;
+
   const page = findCurrentPage();
 
   if (!page) return;

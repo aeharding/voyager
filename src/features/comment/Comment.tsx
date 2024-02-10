@@ -24,6 +24,7 @@ import { ActionsContainer } from "../post/inFeed/compact/CompactPost";
 import { useLongPress } from "use-long-press";
 import { filterSafariCallout } from "../../helpers/longPress";
 import { useInModqueue } from "../../pages/shared/ModqueuePage";
+import { preventOnClickNavigationBug } from "../../helpers/ionic";
 
 const rainbowColors = [
   "#FF0000", // Red
@@ -237,7 +238,11 @@ export default function Comment({
         <CustomIonItem
           routerLink={routerLink}
           href={undefined}
-          onClick={(e) => onClick?.(e)}
+          onClick={(e) => {
+            if (preventOnClickNavigationBug(e)) return;
+
+            onClick?.(e);
+          }}
           className={`comment-${comment.id}`}
           {...bind()}
         >

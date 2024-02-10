@@ -6,7 +6,7 @@ import { PostView } from "lemmy-js-client";
 import { MouseEvent, useCallback, useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import PostMedia from "../../../gallery/PostMedia";
+import PostMedia from "../../../media/gallery/PostMedia";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import SelfSvg from "./self.svg?react";
 import { getImageSrc } from "../../../../services/lemmy";
@@ -133,6 +133,9 @@ export default function Thumbnail({ post }: ImgProps) {
   const thumbnailSize = useAppSelector(
     (state) => state.settings.appearance.compact.thumbnailSize,
   );
+  const showSelfPostThumbnails = useAppSelector(
+    (state) => state.settings.appearance.compact.showSelfPostThumbnails,
+  );
 
   const nsfw = useMemo(() => isNsfwBlurred(post, blurNsfw), [post, blurNsfw]);
 
@@ -175,6 +178,10 @@ export default function Thumbnail({ post }: ImgProps) {
 
   if (thumbnailSize === OCompactThumbnailSizeType.Hidden) return;
 
+  const contents = renderContents();
+
+  if (!showSelfPostThumbnails && contents.type === SelfSvg) return;
+
   if (isLink)
     return (
       <ContainerLink
@@ -184,11 +191,9 @@ export default function Thumbnail({ post }: ImgProps) {
         onClick={handleLinkClick}
         thumbnailSize={thumbnailSize}
       >
-        {renderContents()}
+        {contents}
       </ContainerLink>
     );
 
-  return (
-    <Container thumbnailSize={thumbnailSize}>{renderContents()}</Container>
-  );
+  return <Container thumbnailSize={thumbnailSize}>{contents}</Container>;
 }

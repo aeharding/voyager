@@ -36,6 +36,8 @@ import {
   ODefaultFeedType,
   TapToCollapseType,
   OTapToCollapseType,
+  AutoplayMediaType,
+  OAutoplayMediaType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -71,6 +73,7 @@ interface SettingsState {
       thumbnailsPosition: CompactThumbnailPositionType;
       showVotingButtons: boolean;
       thumbnailSize: CompactThumbnailSizeType;
+      showSelfPostThumbnails: boolean;
     };
     voting: {
       voteDisplayMode: VoteDisplayMode;
@@ -105,6 +108,7 @@ interface SettingsState {
       infiniteScrolling: boolean;
       upvoteOnSave: boolean;
       rememberCommunitySort: boolean;
+      autoplayMedia: AutoplayMediaType;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
@@ -150,6 +154,7 @@ const initialState: SettingsState = {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
       showVotingButtons: true,
       thumbnailSize: OCompactThumbnailSizeType.Small,
+      showSelfPostThumbnails: true,
     },
     voting: {
       voteDisplayMode: OVoteDisplayMode.Total,
@@ -184,6 +189,7 @@ const initialState: SettingsState = {
       infiniteScrolling: true,
       upvoteOnSave: false,
       rememberCommunitySort: false,
+      autoplayMedia: OAutoplayMediaType.Always,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
@@ -323,6 +329,10 @@ export const appearanceSlice = createSlice({
       state.appearance.compact.thumbnailSize = action.payload;
       db.setSetting("compact_thumbnail_size", action.payload);
     },
+    setCompactShowSelfPostThumbnails(state, action: PayloadAction<boolean>) {
+      state.appearance.compact.showSelfPostThumbnails = action.payload;
+      db.setSetting("compact_show_self_post_thumbnails", action.payload);
+    },
     setThumbnailPosition(
       state,
       action: PayloadAction<CompactThumbnailPositionType>,
@@ -402,6 +412,11 @@ export const appearanceSlice = createSlice({
       state.general.posts.rememberCommunitySort = action.payload;
 
       db.setSetting("remember_community_sort", action.payload);
+    },
+    setAutoplayMedia(state, action: PayloadAction<AutoplayMediaType>) {
+      state.general.posts.autoplayMedia = action.payload;
+
+      db.setSetting("autoplay_media", action.payload);
     },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
@@ -543,6 +558,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const compact_thumbnail_size = await db.getSetting(
         "compact_thumbnail_size",
       );
+      const compact_show_self_post_thumbnails = await db.getSetting(
+        "compact_show_self_post_thumbnails",
+      );
       const vote_display_mode = await db.getSetting("vote_display_mode");
       const default_comment_sort = await db.getSetting("default_comment_sort");
       const disable_marking_posts_read = await db.getSetting(
@@ -564,6 +582,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const remember_community_sort = await db.getSetting(
         "remember_community_sort",
       );
+      const autoplay_media = await db.getSetting("autoplay_media");
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
@@ -604,6 +623,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             thumbnailSize:
               compact_thumbnail_size ??
               initialState.appearance.compact.thumbnailSize,
+            showSelfPostThumbnails:
+              compact_show_self_post_thumbnails ??
+              initialState.appearance.compact.showSelfPostThumbnails,
           },
           voting: {
             voteDisplayMode:
@@ -661,6 +683,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             rememberCommunitySort:
               remember_community_sort ??
               initialState.general.posts.rememberCommunitySort,
+            autoplayMedia:
+              autoplay_media ?? initialState.general.posts.autoplayMedia,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
@@ -705,6 +729,7 @@ export const {
   setThumbnailPosition,
   setShowVotingButtons,
   setCompactThumbnailSize,
+  setCompactShowSelfPostThumbnails,
   setVoteDisplayMode,
   setUserDarkMode,
   setUseSystemDarkMode,
@@ -721,6 +746,7 @@ export const {
   setInfiniteScrolling,
   setUpvoteOnSave,
   setRememberCommunitySort,
+  setAutoplayMedia,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,

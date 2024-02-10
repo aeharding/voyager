@@ -26,8 +26,8 @@ export default function CommentMarkdown(
           ) : (
             <MarkdownImg
               small
-              onClick={(e) => e.stopPropagation()}
               {...props}
+              onClick={(e) => e.stopPropagation()}
             />
           ),
       }}

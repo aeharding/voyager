@@ -17,6 +17,7 @@ def capacitor_pods
   pod 'CapacitorFilesystem', :path => '../../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.6.0/node_modules/@capacitor/filesystem'
   pod 'CapacitorHaptics', :path => '../../node_modules/.pnpm/voyager-capacitor-haptics@5.0.7_@capacitor+core@5.6.0/node_modules/voyager-capacitor-haptics'
   pod 'CapacitorKeyboard', :path => '../../node_modules/.pnpm/@capacitor+keyboard@5.0.8_@capacitor+core@5.6.0/node_modules/@capacitor/keyboard'
+  pod 'CapacitorNetwork', :path => '../../node_modules/.pnpm/@capacitor+network@5.0.7_@capacitor+core@5.6.0/node_modules/@capacitor/network'
   pod 'CapacitorShare', :path => '../../node_modules/.pnpm/@capacitor+share@5.0.7_@capacitor+core@5.6.0/node_modules/@capacitor/share'
   pod 'CapacitorStatusBar', :path => '../../node_modules/.pnpm/@capacitor+status-bar@5.0.7_@capacitor+core@5.6.0/node_modules/@capacitor/status-bar'
   pod 'CapacitorAndroidNavMode', :path => '../../node_modules/.pnpm/capacitor-android-nav-mode@0.0.1_@capacitor+core@5.6.0/node_modules/capacitor-android-nav-mode'

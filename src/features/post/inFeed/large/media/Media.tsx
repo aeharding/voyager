@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import PostMedia, {
   PostGalleryImgProps,
   getPostMedia,
-} from "../../../../gallery/PostMedia";
+} from "../../../../media/gallery/PostMedia";
 import { CSSProperties, useMemo } from "react";
 import { IonIcon } from "@ionic/react";
 import { imageOutline } from "ionicons/icons";
@@ -11,27 +11,32 @@ import useMediaLoadObserver from "../useMediaLoadObserver";
 import { IMAGE_FAILED, imageFailed } from "../imageSlice";
 import { useAppDispatch } from "../../../../../store";
 import BlurOverlay from "./BlurOverlay";
+import useLatch from "../../../../../helpers/useLatch";
 
-const Img = styled(PostMedia)`
+const StyledPostMedia = styled(PostMedia)`
+  display: flex;
   width: 100%;
   max-width: none;
   max-height: max(100vh, 1000px);
   object-fit: contain;
   -webkit-touch-callout: default;
+
+  min-height: 0;
 `;
 
 const PlaceholderContainer = styled.div<{ loaded: boolean }>`
+  display: flex;
+
   ${({ loaded }) =>
     !loaded &&
     css`
-      display: flex;
       align-items: center;
       justify-content: center;
 
       aspect-ratio: 1.2;
       position: relative;
 
-      ${Img} {
+      ${StyledPostMedia} {
         position: absolute;
         top: 0;
         left: 0;
@@ -50,11 +55,20 @@ const Error = styled.div`
 
 export default function Media({
   blur,
+  className,
   ...props
 }: PostGalleryImgProps & { blur: boolean }) {
   const dispatch = useAppDispatch();
   const src = useMemo(() => getPostMedia(props.post), [props.post]);
-  const [mediaRef, aspectRatio] = useMediaLoadObserver(src);
+  const [mediaRef, currentAspectRatio] = useMediaLoadObserver(src);
+
+  /**
+   * Cross posts have different image thumbnail url when loaded, so prevent resizing by latching
+   *
+   * If the new image is different size (or errors), it will be properly updated then
+   * (IMAGE_FAILED is truthy)
+   */
+  const aspectRatio = useLatch(currentAspectRatio);
 
   function renderIcon() {
     if (aspectRatio === IMAGE_FAILED)
@@ -72,11 +86,11 @@ export default function Media({
   const loaded = !!aspectRatio && aspectRatio > 0;
 
   const contents = (
-    <PlaceholderContainer loaded={loaded}>
-      <Img
+    <PlaceholderContainer loaded={loaded} className={className}>
+      <StyledPostMedia
         {...props}
-        ref={mediaRef}
         style={style}
+        ref={mediaRef}
         autoPlay={!blur}
         onError={() => {
           if (src) dispatch(imageFailed(src));

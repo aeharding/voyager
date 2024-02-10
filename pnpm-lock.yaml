@@ -55,6 +55,9 @@ devDependencies:
   '@capacitor/keyboard':
     specifier: ^5.0.8
     version: 5.0.8(@capacitor/core@5.6.0)
+  '@capacitor/network':
+    specifier: ^5.0.7
+    version: 5.0.7(@capacitor/core@5.6.0)
   '@capacitor/share':
     specifier: ^5.0.7
     version: 5.0.7(@capacitor/core@5.6.0)
@@ -83,11 +86,11 @@ devDependencies:
     specifier: npm:voyager-ionic-core
     version: /voyager-ionic-core@7.7.0
   '@ionic/react':
-    specifier: 7.6.7-dev.11706567011.11e782a9
-    version: 7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^7.7.1
+    version: 7.7.1(react-dom@18.2.0)(react@18.2.0)
   '@ionic/react-router':
-    specifier: 7.6.7-dev.11706567011.11e782a9
-    version: 7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
+    specifier: ^7.7.1
+    version: 7.7.1(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
   '@reduxjs/toolkit':
     specifier: ^2.1.0
     version: 2.1.0(react-redux@9.1.0)(react@18.2.0)
@@ -271,6 +274,9 @@ devDependencies:
   react-redux:
     specifier: ^9.1.0
     version: 9.1.0(@types/react@18.2.51)(react@18.2.0)(redux@5.0.1)
+  react-reverse-portal:
+    specifier: ^2.1.1
+    version: 2.1.1(react-dom@18.2.0)(react@18.2.0)
   react-router:
     specifier: ^5.3.4
     version: 5.3.4(react@18.2.0)
@@ -2684,6 +2690,14 @@ packages:
       '@capacitor/core': 5.6.0
     dev: true
 
+  /@capacitor/network@5.0.7(@capacitor/core@5.6.0):
+    resolution: {integrity: sha512-g+8SkNmkOyidaHnfKI9Ly8GNcx3VEwboehDXcTs5WU8bPuhCOEzbZnC0kFL5wwix3AoUQl8gEos6MtCey5cUIg==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.6.0
+    dev: true
+
   /@capacitor/share@5.0.7(@capacitor/core@5.6.0):
     resolution: {integrity: sha512-4GraggRRxwhstxIdF9JyOEBq4QTufqFOekdB4P9GeiQYWJoA5VraSR1mwy4Trke1VFfaBjz/nGi4WQOJdHIAgg==}
     peerDependencies:
@@ -3337,15 +3351,15 @@ packages:
       - supports-color
     dev: true
 
-  /@ionic/react-router@7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
-    resolution: {integrity: sha512-Y0N9Dt4iuLhuqzXGgXQjXbVG7EkbU9Td5gk4DfH56CaRDlz8X8/BHyXICnnkvoPcKiKJ9Fdtx4cTu5lt7PYM2Q==}
+  /@ionic/react-router@7.7.1(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
+    resolution: {integrity: sha512-xmCI1+3PBc7pPjFyI6ABgGferD7KvyPu8tVgT9Q3qwDzVyN+zVsqjPyRCqYUsIuDRcteRQfIkC3677rn8VrpQg==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
       react-router: ^5.0.1
       react-router-dom: ^5.0.1
     dependencies:
-      '@ionic/react': 7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react@18.2.0)
+      '@ionic/react': 7.7.1(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-router: 5.3.4(react@18.2.0)
@@ -3353,8 +3367,8 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@ionic/react@7.6.7-dev.11706567011.11e782a9(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-QANaEZt+F/j61O68uwC2Rrf9rzCDRDteD9slFERdopAFV7fEm7f3YVO0j9XvDo1XbFx7wTJQVjqWlbjktWv+Xg==}
+  /@ionic/react@7.7.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-rfTUAUSqVMzg+R1CEMclSOLwXByJ06qtRXhpyVvJetQFUUVHA8inHdULTJqKN10c0XeZr+WyapGX04IktB9WfQ==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
@@ -11073,6 +11087,16 @@ packages:
   /react-refresh@0.14.0:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
     engines: {node: '>=0.10.0'}
+    dev: true
+
+  /react-reverse-portal@2.1.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-FzuVLYEigKPB0NuMNLWymCgVp+P1h1MY57fQxhmY22idzz6El1rsXK5+bQ+wXvEa0smUtqTDcpM77epnXDV9wg==}
+    peerDependencies:
+      react: ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: true
 
   /react-router-dom@5.3.4(react@18.2.0):
