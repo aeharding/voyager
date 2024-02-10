@@ -81,6 +81,9 @@ export default forwardRef<HTMLTextAreaElement, CommentContentProps>(
               value={text}
               onChange={(e) => setText(e.target.value)}
               autoFocus
+              autoCapitalize="on"
+              autoCorrect="on"
+              spellCheck
               id={TOOLBAR_TARGET_ID}
               onKeyDown={(e) => {
                 if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
