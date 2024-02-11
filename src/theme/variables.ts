@@ -6,7 +6,7 @@ export const baseVariables = css`
     // http://ionicframework.com/docs/theming/
 
     // Ionic CSS Variables
-    :root {
+    html.theme-loaded {
       --ion-text-color: #000;
 
       /** primary **/
@@ -116,7 +116,7 @@ export const baseVariables = css`
 
 export const lightVariables = css`
   :global() {
-    html:not(.theme-dark) {
+    html.theme-loaded:not(.theme-dark) {
       &:root {
         --ion-color-primary: var(--app-primary);
         --ion-color-primary-fixed: #3880ff; // always blue always blue!
@@ -145,7 +145,7 @@ export const lightVariables = css`
 
 export const darkVariables = css`
   :global() {
-    html.theme-dark {
+    html.theme-loaded.theme-dark {
       // Dark Colors
       &:root {
         --ion-color-primary-fixed: #428cff; // always blue always blue!
@@ -315,7 +315,7 @@ export const darkVariables = css`
 
 export const darkBlackModifierVariables = css`
   :global() {
-    html.theme-dark {
+    html.theme-loaded.theme-dark {
       &:not(.theme-pure-black) {
         &.ios {
           body {

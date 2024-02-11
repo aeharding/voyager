@@ -1,5 +1,10 @@
 import { useAppSelector } from "./store";
-import React, { createContext, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+} from "react";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { isNative } from "./helpers/device";
 import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
@@ -10,6 +15,7 @@ import { getThemeByStyle } from "./theme/AppThemes";
 import "./theme/variables";
 
 export const DARK_CLASSNAME = "theme-dark";
+export const THEME_LOADED = "theme-loaded";
 export const PURE_BLACK_CLASSNAME = "theme-pure-black";
 export const THEME_HAS_CUSTOM_BACKGROUND = "theme-has-custom-background";
 
@@ -32,7 +38,7 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
   );
   const theme = useAppSelector((state) => state.settings.appearance.theme);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isNative()) {
       StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
     }
@@ -45,14 +51,18 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
       list.remove(PURE_BLACK_CLASSNAME);
     }
 
+    list.add(THEME_LOADED);
+
     if (isDark) {
       list.add(DARK_CLASSNAME);
     } else {
       list.remove(DARK_CLASSNAME);
     }
+
+    alert("hi");
   }, [isDark, pureBlack]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (useSystemFontSize) {
       document.documentElement.classList.add(globalDeviceFontCss);
       document.documentElement.style.fontSize = "";
@@ -62,7 +72,7 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
     }
   }, [useSystemFontSize, fontSizeMultiplier]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { primary, background, insetItemBackground, tabBarBackground } =
       getThemeByStyle(theme, isDark ? "dark" : "light");
 
