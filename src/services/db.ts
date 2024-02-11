@@ -406,7 +406,7 @@ export class WefwefDB extends Dexie {
     this.version(6).upgrade(async () => {
       // Upgrade collapse comment threads "always" => "root_only"
       await (async () => {
-        var default_collapse = await this.getSetting(
+        let default_collapse = await this.getSetting(
           "collapse_comment_threads",
         );
 

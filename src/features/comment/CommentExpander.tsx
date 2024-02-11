@@ -81,7 +81,7 @@ export default function CommentExpander({
         parent_id: comment.comment.id,
         type_: "All",
         max_depth:
-          collapseThreads == OCommentThreadCollapse.All
+          collapseThreads === OCommentThreadCollapse.All
             ? 1
             : Math.max((depth += 2), MAX_DEFAULT_COMMENT_DEPTH),
       });

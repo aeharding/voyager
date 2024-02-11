@@ -1,6 +1,4 @@
-import { IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { useAppSelector } from "../../../../store";
 import {
   OCommentThreadCollapse,
   setCommentsCollapsed,
@@ -8,7 +6,6 @@ import {
 import SettingSelector from "../../shared/SettingSelector";
 
 export default function CollapsedByDefault() {
-  const dispatch = useAppDispatch();
   const { collapseCommentThreads } = useAppSelector(
     // this needs a better naming
     (state) => state.settings.general.comments,
