@@ -203,7 +203,7 @@ export const initialState: SettingsState = {
 
 // We continue using localstorage for specific items because indexeddb is slow
 // and we don't want to wait for it to load before rendering the app and cause flickering
-const stateWithLocalstorageItems: SettingsState = merge(initialState, {
+export const stateWithLocalstorageItems: SettingsState = merge(initialState, {
   appearance: {
     font: {
       fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),

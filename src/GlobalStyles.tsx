@@ -15,26 +15,20 @@ import { css } from "@linaria/core";
 import { getThemeByStyle } from "./theme/AppThemes";
 
 import "./theme/variables";
-import { get as getStorage } from "./features/settings/storage";
-import {
-  LOCALSTORAGE_KEYS,
-  initialState,
-} from "./features/settings/settingsSlice";
 import { AppThemeType } from "./services/db";
+import { stateWithLocalstorageItems as initialCriticalSettingsState } from "./features/settings/settingsSlice";
 
 export const DARK_CLASSNAME = "theme-dark";
 export const PURE_BLACK_CLASSNAME = "theme-pure-black";
 export const THEME_HAS_CUSTOM_BACKGROUND = "theme-has-custom-background";
 
-function updateThemeClasses(
+function updateDocumentTheme(
   isDark: boolean,
   isPureBlack: boolean,
   theme: AppThemeType,
 ) {
   const { primary, background, insetItemBackground, tabBarBackground } =
     getThemeByStyle(theme, isDark ? "dark" : "light");
-
-  console.log(isDark, isPureBlack, theme);
 
   document.documentElement.style.setProperty("--app-primary", primary);
   document.documentElement.style.setProperty(
@@ -72,15 +66,12 @@ function updateThemeClasses(
 }
 
 // Prevent flash of white content and repaint before react component setup
-updateThemeClasses(
-  getStorage(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM) ??
-    initialState.appearance.dark.usingSystemDarkMode
+updateDocumentTheme(
+  initialCriticalSettingsState.appearance.dark.usingSystemDarkMode
     ? window.matchMedia(DARK_MEDIA_SELECTOR).matches
-    : getStorage(LOCALSTORAGE_KEYS.DARK.USER_MODE) ??
-        initialState.appearance.dark.userDarkMode,
-  getStorage(LOCALSTORAGE_KEYS.DARK.PURE_BLACK) ??
-    initialState.appearance.dark.pureBlack,
-  getStorage(LOCALSTORAGE_KEYS.THEME) ?? initialState.appearance.theme,
+    : initialCriticalSettingsState.appearance.dark.userDarkMode,
+  initialCriticalSettingsState.appearance.dark.pureBlack,
+  initialCriticalSettingsState.appearance.theme,
 );
 
 const globalDeviceFontCss = css`
@@ -119,7 +110,7 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
   }, [useSystemFontSize, fontSizeMultiplier]);
 
   useLayoutEffect(() => {
-    updateThemeClasses(isDark, pureBlack, theme);
+    updateDocumentTheme(isDark, pureBlack, theme);
   }, [theme, pureBlack, isDark]);
 
   useEffect(() => {
