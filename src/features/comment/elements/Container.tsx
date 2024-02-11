@@ -1,11 +1,22 @@
 import { styled } from "@linaria/react";
 
+const rainbowColors = [
+  "#FF0000", // Red
+  "#FF7F00", // Orange
+  "#e1ca00", // Yellow
+  "#00dd00", // Green
+  "#0000FF", // Blue
+  "#4B0082", // Indigo
+  "#8B00FF", // Violet
+  "#FF00FF", // Magenta
+  "#FF1493", // Deep Pink
+  "#00FFFF", // Cyan
+];
+
 export const Container = styled.div<{
   depth: number;
   highlighted?: boolean;
   hidden?: boolean;
-  padLeft?: boolean;
-  padColor?: string;
 }>`
   display: flex;
 
@@ -19,7 +30,7 @@ export const Container = styled.div<{
   display: flex;
   flex-direction: column;
 
-  padding-left: ${({ padLeft }) => (padLeft ? "1em" : 0)};
+  padding-left: ${({ depth }) => (depth > 0 ? "1em" : 0)};
 
   &:before {
     content: "";
@@ -34,7 +45,8 @@ export const Container = styled.div<{
       filter: brightness(0.7);
     }
 
-    background: ${({ padColor }) => padColor || "none"};
+    background: ${({ depth }) =>
+      depth ? rainbowColors[depth % rainbowColors.length]! : "none"};
 
     opacity: ${({ hidden }) => (hidden ? 0 : 1)};
   }

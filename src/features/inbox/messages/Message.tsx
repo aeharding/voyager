@@ -26,10 +26,10 @@ const Container = styled.div`
 
   --bg: var(--ion-background-color);
   --sentColor: var(--ion-color-primary);
-  --receiveColor: var(--ion-color-medium);
+  --receiveColor: #eee;
 
   .theme-dark & {
-    --receiveColor: #eee;
+    --receiveColor: var(--ion-color-medium);
   }
 
   &:before {

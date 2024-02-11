@@ -26,19 +26,6 @@ import { styled } from "@linaria/react";
 import { PositionedContainer } from "./elements/PositionedContainer";
 import { Container } from "./elements/Container";
 
-const rainbowColors = [
-  "#FF0000", // Red
-  "#FF7F00", // Orange
-  "#e1ca00", // Yellow
-  "#00dd00", // Green
-  "#0000FF", // Blue
-  "#4B0082", // Indigo
-  "#8B00FF", // Violet
-  "#FF00FF", // Magenta
-  "#FF1493", // Deep Pink
-  "#00FFFF", // Cyan
-];
-
 export const CustomIonItem = styled(IonItem)`
   scroll-margin-bottom: 35vh;
 
@@ -158,8 +145,6 @@ export default function Comment({
       return <ModActions comment={commentView} role={canModerate} />;
   }
 
-  const normalizedDepth = absoluteDepth ?? depth ?? 0;
-
   return (
     <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
       <SlidingNestedCommentVote
@@ -186,15 +171,7 @@ export default function Comment({
             <PositionedContainer
               depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
             >
-              <Container
-                depth={normalizedDepth}
-                padLeft={normalizedDepth > 0}
-                padColor={
-                  normalizedDepth
-                    ? rainbowColors[normalizedDepth % rainbowColors.length]
-                    : undefined
-                }
-              >
+              <Container depth={absoluteDepth ?? depth ?? 0}>
                 <ModeratableItemBannerOutlet />
                 <div>
                   <Header>
