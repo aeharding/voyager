@@ -23,7 +23,7 @@ import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
 import { CommentsContext } from "./CommentsContext";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
-import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
+import { isSafariFeedHackEnabled } from "../../routes/pages/shared/FeedContent";
 import useAppToast from "../../helpers/useAppToast";
 import { VList, VListHandle } from "virtua";
 import LoadParentComments from "./LoadParentComments";
@@ -34,7 +34,7 @@ import {
 import { IndexedVirtuaItem } from "../../helpers/virtua";
 import FeedLoadMoreFailed from "../feed/endItems/FeedLoadMoreFailed";
 import usePreservePositionFromBottomInScrollView from "../../helpers/usePreservePositionFromBottomInScrollView";
-import { postDetailPageHasVirtualScrollEnabled } from "../../pages/posts/PostPage";
+import { postDetailPageHasVirtualScrollEnabled } from "../../routes/pages/posts/PostPage";
 import { styled } from "@linaria/react";
 
 const ScrollViewContainer = styled.div`

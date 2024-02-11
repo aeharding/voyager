@@ -1,5 +1,5 @@
 import { IonLabel, IonList, IonRadio, IonRadioGroup } from "@ionic/react";
-import { InsetIonItem } from "../../../../../pages/profile/ProfileFeedItemsPage";
+import { InsetIonItem } from "../../../../../routes/pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { setUserDarkMode } from "../../../settingsSlice";
 import { ListHeader } from "../../../shared/formatting";

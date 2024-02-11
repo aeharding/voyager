@@ -1,4 +1,4 @@
-import { ModlogItemType } from "../../../pages/shared/ModlogPage";
+import { ModlogItemType } from "../../../routes/pages/shared/ModlogPage";
 import addCommunity from "./types/addCommunity";
 import addInstance from "./types/addInstance";
 import banFromCommunity from "./types/banFromCommunity";

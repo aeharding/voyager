@@ -11,7 +11,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
-import { isPostReply } from "../../pages/inbox/RepliesPage";
+import { isPostReply } from "../../routes/pages/inbox/RepliesPage";
 import { maxWidthCss } from "../shared/AppContent";
 import VoteArrow from "./VoteArrow";
 import SlidingInbox from "../shared/sliding/SlidingInbox";

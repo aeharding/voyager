@@ -1,6 +1,6 @@
 import { IonIcon, IonLabel, IonList } from "@ionic/react";
 import { InsetIonItem, ListHeader } from "../shared/formatting";
-import { IconBg } from "../../../pages/settings/SettingsPage";
+import { IconBg } from "../../../routes/pages/settings/SettingsPage";
 import { colorPalette } from "ionicons/icons";
 import { SettingLabel } from "../../user/Profile";
 
