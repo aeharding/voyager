@@ -9,19 +9,17 @@ const custom_slash_lengths: Record<string, number> = {
   [mailUnread]: 40,
 };
 
-const UnslashedIcon = styled(IonIcon)`
+const Icon = styled(IonIcon)<{
+  icon: string;
+  slash: boolean;
+  bgColorVar: string;
+}>`
   margin-block: 24px;
 
   color: white;
-`;
 
-const SlashedIcon = styled(UnslashedIcon)<{
-  icon: string;
-  slash: boolean;
-  bgColor: string;
-}>`
   &::after {
-    content: "";
+    content: ${({ slash }) => (slash ? '""' : "none")};
     position: absolute;
     height: ${({ icon }) => custom_slash_lengths[icon] ?? 30}px;
     width: 3px;
@@ -31,7 +29,7 @@ const SlashedIcon = styled(UnslashedIcon)<{
     top: 50%;
     transform: translate(-50%, -50%) rotate(-45deg);
     transform-origin: center;
-    box-shadow: 0 0 0 2px var(--ion-color-${({ bgColor }) => bgColor});
+    box-shadow: 0 0 0 2px ${({ bgColorVar }) => bgColorVar};
   }
 `;
 
@@ -42,13 +40,11 @@ interface ActionContentsProps {
 function ActionContents({ action }: ActionContentsProps) {
   if (!action) return;
 
-  const Icon = action.slash ? SlashedIcon : UnslashedIcon;
-
   return (
     <Icon
       icon={action.icon}
       slash={action.slash ?? false}
-      bgColor={action.bgColor}
+      bgColorVar={`var(--ion-color-${action.bgColor}`}
     />
   );
 }
