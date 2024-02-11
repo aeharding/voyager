@@ -10,7 +10,7 @@ import AppThemePreview from "./AppThemePreview";
 import { AppThemeType, OAppThemeType } from "../../../../../services/db";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { setTheme } from "../../../settingsSlice";
-import { getTheme } from "../../../../../theme/AppThemes";
+import { getTheme } from "../../../../../core/theme/AppThemes";
 import { capitalize } from "lodash";
 import { styled } from "@linaria/react";
 import { useIsDark } from "../../../../../core/GlobalStyles";

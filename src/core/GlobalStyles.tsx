@@ -12,9 +12,9 @@ import useSystemDarkMode, {
   DARK_MEDIA_SELECTOR,
 } from "../helpers/useSystemDarkMode";
 import { css } from "@linaria/core";
-import { getThemeByStyle } from "../theme/AppThemes";
+import { getThemeByStyle } from "./theme/AppThemes";
 
-import "../theme/variables";
+import "./theme/variables";
 import { AppThemeType } from "../services/db";
 import { stateWithLocalstorageItems as initialCriticalSettingsState } from "../features/settings/settingsSlice";
 
