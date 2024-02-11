@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import { IonButton, IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { addOutline, removeOutline } from "ionicons/icons";
 
 const Button = styled(IonButton)`

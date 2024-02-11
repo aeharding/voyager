@@ -23,8 +23,6 @@ import {
 import { useContext, useEffect, useRef } from "react";
 import { UpdateContext } from "./update/UpdateContext";
 import useShouldInstall from "../../features/pwa/useShouldInstall";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { userHandleSelector } from "../../features/auth/authSelectors";
 import {
@@ -42,6 +40,7 @@ import {
 } from "../../features/settings/biometric/biometricSlice";
 import BiometricTitle from "../../features/settings/biometric/BiometricTitle";
 import usePageVisibility from "../../helpers/usePageVisibility";
+import { styled } from "@linaria/react";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
@@ -55,11 +54,7 @@ export const IconBg = styled.div<{ color: string; size?: string }>`
     width: 20px;
     height: 20px;
 
-    ${({ size }) =>
-      size &&
-      css`
-        transform: scale(${size});
-      `}
+    transform: scale(${({ size }) => size || 1});
   }
 
   border-radius: 50%;

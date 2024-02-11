@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { FallbackProps } from "react-error-boundary";
 import { useLocation } from "react-router";
 import { useAppSelector } from "./store";

@@ -1,33 +1,32 @@
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 import { PostView } from "lemmy-js-client";
 import { useContext, useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppSelector } from "../../../../store";
 import { isUrlMedia } from "../../../../helpers/url";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import Media from "./media/Media";
 import Embed from "../../shared/Embed";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
 import { InFeedContext } from "../../../feed/Feed";
 
-const PostBody = styled.div<{ isRead: boolean }>`
+const PostBody = styled.div`
   font-size: 0.8em;
   line-height: 1.25;
-
-  ${({ isRead }) =>
-    isRead
-      ? css`
-          color: var(--read-color-medium);
-        `
-      : css`
-          opacity: 0.6;
-        `}
 
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+`;
+
+const postBodyReadCss = css`
+  color: var(--read-color-medium);
+`;
+
+const postBodyUnreadCss = css`
+  opacity: 0.6;
 `;
 
 const ImageContainer = styled.div`
@@ -85,7 +84,7 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
       <>
         {post.post.url && <Embed post={post} />}
 
-        <PostBody isRead={hasBeenRead}>
+        <PostBody className={hasBeenRead ? postBodyReadCss : postBodyUnreadCss}>
           <InlineMarkdown>{post.post.body}</InlineMarkdown>
         </PostBody>
       </>

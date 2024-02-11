@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import MarkdownToolbar, {
   TOOLBAR_HEIGHT,
   TOOLBAR_TARGET_ID,
@@ -7,7 +7,6 @@ import { IonContent } from "@ionic/react";
 import { preventPhotoswipeGalleryFocusTrap } from "../../media/gallery/GalleryImg";
 import React, { Dispatch, SetStateAction, forwardRef, useRef } from "react";
 import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
-import { css } from "@emotion/react";
 import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
 import { useEffect } from "react";
 import { preventModalSwipeOnTextSelection } from "../../../helpers/ionic";
@@ -40,13 +39,9 @@ export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
 
   flex: 1 0 auto;
 
-  ${({ theme }) =>
-    !theme.dark &&
-    css`
-      .ios & {
-        background: var(--ion-item-background);
-      }
-    `}
+  html.ios:not(.theme-dark) & {
+    background: var(--ion-item-background);
+  }
 `;
 
 interface CommentContentProps {

@@ -29,11 +29,11 @@ import { shuffle } from "lodash";
 import useAppToast from "../../../helpers/useAppToast";
 import { useRef } from "react";
 import AppContent from "../../../features/shared/AppContent";
-import styled from "@emotion/styled";
 import { IonItemInAppExternalLink } from "../../../features/shared/InAppExternalLink";
 import { isAndroid, isNative } from "../../../helpers/device";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "../../../helpers/voyager";
+import { styled } from "@linaria/react";
 
 export const InsetIonItem = styled(IonItemInAppExternalLink)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));

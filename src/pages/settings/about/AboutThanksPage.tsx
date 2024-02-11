@@ -44,8 +44,8 @@ const links = [
     href: "https://vitejs.dev",
   },
   {
-    label: "Emotion",
-    href: "https://emotion.sh",
+    label: "Linaria",
+    href: "https://linaria.dev",
   },
   {
     label: "React",

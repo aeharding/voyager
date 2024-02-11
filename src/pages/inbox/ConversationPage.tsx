@@ -27,7 +27,6 @@ import {
 import { useParams } from "react-router";
 import { getHandle } from "../../helpers/lemmy";
 import Message from "../../features/inbox/messages/Message";
-import styled from "@emotion/styled";
 import TextareaAutosize from "react-textarea-autosize";
 import { arrowUp } from "ionicons/icons";
 import useClient from "../../helpers/useClient";
@@ -36,7 +35,6 @@ import {
   maxWidthCss,
 } from "../../features/shared/AppContent";
 import { IonContentCustomEvent } from "@ionic/core";
-import { css } from "@emotion/react";
 import { getUser } from "../../features/user/userSlice";
 import { PageContentIonSpinner } from "../../features/user/AsyncProfile";
 import { StyledLink } from "../../features/labels/links/shared";
@@ -45,6 +43,8 @@ import ConversationsMoreActions from "../../features/feed/ConversationsMoreActio
 import { TabContext } from "../../TabContext";
 import useAppToast from "../../helpers/useAppToast";
 import { useSetActivePage } from "../../features/auth/AppContext";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -228,7 +228,7 @@ export default function ConversationPage() {
           </IonButtons>
 
           <IonTitle
-            css={css`
+            className={css`
               padding-inline-start: 120px !important;
               padding-inline-end: 120px;
             `}

@@ -10,10 +10,10 @@ import { ActionButton } from "../../post/actions/ActionButton";
 import { addFavorite, removeFavorite } from "../communitySlice";
 import { star } from "ionicons/icons";
 import { ToggleIcon } from "../ToggleIcon";
-import styled from "@emotion/styled";
 import { HIDE_ALPHABET_JUMP } from "./AlphabetJump";
 import { loggedInSelector } from "../../auth/authSelectors";
 import { attributedPreventOnClickNavigationBug } from "../../../helpers/ionic";
+import { styled } from "@linaria/react";
 
 const StyledToggleIcon = styled(ToggleIcon)`
   @media (max-width: 725px) {

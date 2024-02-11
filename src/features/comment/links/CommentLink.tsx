@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
 import { LinkData } from "./CommentLinks";
 import { IonIcon } from "@ionic/react";

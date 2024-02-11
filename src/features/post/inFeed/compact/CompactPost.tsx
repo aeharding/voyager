@@ -1,5 +1,3 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { PostProps } from "../Post";
 import Thumbnail from "./Thumbnail";
 import { maxWidthCss } from "../../../shared/AppContent";
@@ -24,6 +22,7 @@ import CompactCrosspost from "../../crosspost/CompactCrosspost";
 import useCrosspostUrl from "../../shared/useCrosspostUrl";
 import { useInModqueue } from "../../../../pages/shared/ModqueuePage";
 import { PageTypeContext } from "../../../feed/PageTypeContext";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   width: 100%;
@@ -57,11 +56,7 @@ const Content = styled.div`
 const Title = styled.span<{ isRead: boolean }>`
   font-size: 0.9375em;
 
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color);
-    `}
+  color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
 `;
 
 const Aside = styled.div<{ isRead: boolean }>`
@@ -73,11 +68,7 @@ const Aside = styled.div<{ isRead: boolean }>`
   color: var(--ion-color-text-aside);
   font-size: 0.8em;
 
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color);
-    `}
+  color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
 `;
 
 const From = styled.div`
@@ -106,7 +97,7 @@ export const ActionsContainer = styled.div`
   white-space: nowrap;
 `;
 
-const actionButtonStyles = css`
+const actionButtonStyles = `
   margin: -0.5rem;
   padding: 0.5rem;
 

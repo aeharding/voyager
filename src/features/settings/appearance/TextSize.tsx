@@ -1,10 +1,9 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
 import { HelperText, ListHeader } from "../shared/formatting";
+import { styled } from "@linaria/react";
 
 const Range = styled(IonRange)`
   --bar-background: var(--ion-color-medium);
@@ -15,15 +14,9 @@ const Range = styled(IonRange)`
 `;
 
 const A = styled.div<{ small?: boolean }>`
-  font-size: 1.3em;
   padding: 0 6px;
   font-weight: 500;
-
-  ${({ small }) =>
-    small &&
-    css`
-      font-size: 0.8em;
-    `}
+  font-size: ${({ small }) => (small ? "0.8em" : "1.3em")};
 `;
 
 const MAX_REGULAR_FONT_ADJUSTMENT = 1.6;

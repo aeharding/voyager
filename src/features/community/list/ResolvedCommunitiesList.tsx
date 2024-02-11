@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import {
   IonIcon,
   IonItem,
@@ -21,6 +20,7 @@ import { maxWidthCss } from "../../shared/AppContent";
 import AlphabetJump from "./AlphabetJump";
 import useShowModeratorFeed from "./useShowModeratorFeed";
 import { attributedPreventOnClickNavigationBug } from "../../../helpers/ionic";
+import { styled } from "@linaria/react";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;

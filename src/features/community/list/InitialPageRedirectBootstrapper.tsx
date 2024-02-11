@@ -7,8 +7,8 @@ import {
   useIonViewDidEnter,
 } from "@ionic/react";
 import { isInstalled } from "../../../helpers/device";
-import styled from "@emotion/styled";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import { styled } from "@linaria/react";
 
 const LoadingOverlay = styled.div`
   background: var(--ion-background-color);

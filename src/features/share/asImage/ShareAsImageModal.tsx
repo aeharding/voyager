@@ -1,7 +1,7 @@
+import { styled } from "@linaria/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import ShareAsImage from "./ShareAsImage";
 import { MutableRefObject, useEffect, useState } from "react";
-import styled from "@emotion/styled";
 import { IonButtons, IonHeader, IonIcon, IonTitle } from "@ionic/react";
 import {
   CloseButton,

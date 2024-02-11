@@ -5,7 +5,7 @@ import CommentLinks from "./links/CommentLinks";
 import { useAppSelector } from "../../store";
 import { IonIcon } from "@ionic/react";
 import { trashOutline } from "ionicons/icons";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 
 const TrashIconContainer = styled.span`
   padding-inline-start: 0.4em;

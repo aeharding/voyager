@@ -8,10 +8,10 @@ import {
   IonThumbnail,
 } from "@ionic/react";
 import { InsetIonItem } from "../shared/formatting";
-import styled from "@emotion/styled";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { APP_ICONS, AppIcon, updateAppIcon } from "./appIconSlice";
 import { isAndroid } from "../../../helpers/device";
+import { styled } from "@linaria/react";
 
 const StyledIonThumbnail = styled(IonThumbnail)`
   margin: 1rem 1rem 1rem 0;

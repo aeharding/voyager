@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { ModlogItemType } from "../../../pages/shared/ModlogPage";
 import addCommunity from "./types/addCommunity";
 import addInstance from "./types/addInstance";
@@ -19,6 +18,7 @@ import { IonItem } from "@ionic/react";
 import { maxWidthCss } from "../../shared/AppContent";
 import Ago from "../../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { styled } from "@linaria/react";
 
 const Contents = styled.div`
   font-size: 0.875em;
@@ -103,7 +103,7 @@ export function ModlogItem({ item }: ModLogItemProps) {
 
   return (
     <IonItem
-      css={maxWidthCss}
+      className={maxWidthCss}
       routerLink={link ? buildGeneralBrowseLink(link) : undefined}
       detail={false}
     >

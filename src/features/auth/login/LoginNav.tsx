@@ -1,6 +1,6 @@
 import { IonNav, IonSpinner } from "@ionic/react";
 import Welcome from "./welcome/Welcome";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { useCallback, useContext } from "react";
 import { IonNavCustomEvent } from "@ionic/core";
 import { DynamicDismissableModalContext } from "../../shared/DynamicDismissableModal";

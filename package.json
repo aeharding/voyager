@@ -32,6 +32,8 @@
     "vite-express": "^0.14.1"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@capacitor-community/app-icon": "^4.1.1",
     "@capacitor/android": "5.6.0",
     "@capacitor/app": "^5.0.7",
@@ -46,11 +48,6 @@
     "@capacitor/network": "^5.0.7",
     "@capacitor/share": "^5.0.7",
     "@capacitor/status-bar": "^5.0.7",
-    "@emotion/babel-plugin": "^11.11.0",
-    "@emotion/css": "^11.11.2",
-    "@emotion/eslint-plugin": "^11.11.0",
-    "@emotion/react": "^11.11.3",
-    "@emotion/styled": "^11.11.0",
     "@github/markdown-toolbar-element": "^2.2.1",
     "@ionic/core": "npm:voyager-ionic-core@^7.7.0",
     "@ionic/react": "^7.7.1",
@@ -75,6 +72,7 @@
     "@typescript-eslint/parser": "^6.20.0",
     "@vitejs/plugin-legacy": "^5.3.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "@wyw-in-js/vite": "^0.4.0",
     "capacitor-android-nav-mode": "^0.0.1",
     "capacitor-application-context": "^0.0.1",
     "capacitor-biometric-lock": "^0.1.1",
@@ -125,7 +123,6 @@
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "sass": "^1.70.0",
     "terser": "^5.27.0",
     "typescript": "^5.3.3",
     "ua-parser-js": "^1.0.37",
@@ -139,6 +136,9 @@
     "vite-plugin-pwa": "^0.17.5",
     "vite-plugin-svgr": "^4.2.0",
     "vitest": "^1.2.2",
-    "workbox-window": "^7.0.0"
+    "workbox-window": "^7.0.0",
+    "@linaria/core": "^6.1.0",
+    "@linaria/react": "^6.1.0",
+    "@wyw-in-js/babel-preset": "^0.4.0"
   }
 }

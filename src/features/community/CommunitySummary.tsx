@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonItem } from "@ionic/react";
 import { CommunityView } from "lemmy-js-client";
 import { maxWidthCss } from "../shared/AppContent";

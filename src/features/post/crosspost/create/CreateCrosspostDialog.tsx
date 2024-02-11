@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import FloatingDialog from "../../../../helpers/FloatingDialog";
 import Crosspost from "../Crosspost";
 import { CommunityView, PostView } from "lemmy-js-client";

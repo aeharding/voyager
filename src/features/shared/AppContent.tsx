@@ -1,9 +1,8 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { IonContent } from "@ionic/react";
+import { styled } from "@linaria/react";
 import React from "react";
 
-export const maxWidthCss = css`
+export const maxWidthCss = `
   width: 100%;
   max-width: 700px;
   margin-right: auto;

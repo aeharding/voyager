@@ -9,7 +9,6 @@ import {
   IonButtons,
   IonBackButton,
 } from "@ionic/react";
-import styled from "@emotion/styled";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
 import { FetchFn } from "../../features/feed/Feed";
@@ -20,6 +19,7 @@ import PostCommentFeed, {
   isPost,
 } from "../../features/feed/PostCommentFeed";
 import FeedContent from "../shared/FeedContent";
+import { styled } from "@linaria/react";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));

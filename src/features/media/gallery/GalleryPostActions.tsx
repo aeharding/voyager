@@ -2,7 +2,6 @@ import { IonIcon } from "@ionic/react";
 import { VoteButton } from "../../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline, shareOutline } from "ionicons/icons";
-import styled from "@emotion/styled";
 import { useAppSelector } from "../../../store";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
@@ -22,6 +21,7 @@ import { Share } from "@capacitor/share";
 import useAppToast from "../../../helpers/useAppToast";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { InFeedContext } from "../../feed/Feed";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   display: flex;

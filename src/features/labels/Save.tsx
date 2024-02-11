@@ -1,5 +1,5 @@
+import { styled } from "@linaria/react";
 import { useAppSelector } from "../../store";
-import styled from "@emotion/styled";
 
 const Marker = styled.div`
   position: absolute;

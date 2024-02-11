@@ -1,3 +1,4 @@
+import { styled } from "@linaria/react";
 import {
   arrowDownSharp,
   arrowUndo,
@@ -44,7 +45,6 @@ import { SwipeAction, SwipeActions } from "../../../services/db";
 import useCollapseRootComment from "../../comment/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
 import { CommentsContext } from "../../comment/CommentsContext";
-import styled from "@emotion/styled";
 import useAppToast from "../../../helpers/useAppToast";
 import { share } from "../../../helpers/lemmy";
 import { scrollViewUpIfNeeded } from "../../comment/CommentTree";

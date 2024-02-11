@@ -13,8 +13,6 @@ import {
 } from "../../helpers/lemmy";
 import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { CommentSortType, CommentView } from "lemmy-js-client";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -37,13 +35,14 @@ import { IndexedVirtuaItem } from "../../helpers/virtua";
 import FeedLoadMoreFailed from "../feed/endItems/FeedLoadMoreFailed";
 import usePreservePositionFromBottomInScrollView from "../../helpers/usePreservePositionFromBottomInScrollView";
 import { postDetailPageHasVirtualScrollEnabled } from "../../pages/posts/PostPage";
+import { styled } from "@linaria/react";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
   height: 100%;
 `;
 
-const centerCss = css`
+const centerCss = `
   position: relative;
   padding: 4rem 0 4rem;
   left: 50%;

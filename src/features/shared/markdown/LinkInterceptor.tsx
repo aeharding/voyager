@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo } from "react";
-import styled from "@emotion/styled";
 import InAppExternalLink from "../InAppExternalLink";
 import useLemmyUrlHandler from "../useLemmyUrlHandler";
 import { useAppSelector } from "../../../store";
+import { styled } from "@linaria/react";
 
 const LinkInterceptor = styled(LinkInterceptorUnstyled)`
   -webkit-touch-callout: default;

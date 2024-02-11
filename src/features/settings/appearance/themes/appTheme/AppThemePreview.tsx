@@ -1,9 +1,12 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { AppThemeType } from "../../../../../services/db";
 import { getThemeByStyle } from "../../../../../theme/AppThemes";
-import { css } from "@emotion/react";
+import { useIsDark } from "../../../../../GlobalStyles";
 
-const Container = styled.div<{ appTheme: AppThemeType }>`
+const Container = styled.div<{
+  primaryColor: string;
+  secondaryColor: string | undefined;
+}>`
   --size: 22px;
 
   width: var(--size);
@@ -12,32 +15,25 @@ const Container = styled.div<{ appTheme: AppThemeType }>`
 
   margin-right: 16px;
 
-  background: ${({ appTheme, theme }) =>
-    getThemeByStyle(appTheme, theme.dark ? "dark" : "light").primary};
+  background: ${({ primaryColor }) => primaryColor};
 
   position: relative;
   overflow: hidden;
 
-  ${({ appTheme, theme }) =>
-    getThemeByStyle(appTheme, theme.dark ? "dark" : "light").background
-      ? css`
-          &:after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
 
-            width: 0;
-            height: 0;
-            border-left: var(--size) solid transparent;
-            border-right: var(--size) solid transparent;
+    width: 0;
+    height: 0;
+    border-left: var(--size) solid transparent;
+    border-right: var(--size) solid transparent;
 
-            border-bottom: var(--size) solid
-              ${getThemeByStyle(appTheme, theme.dark ? "dark" : "light")
-                .background};
-          }
-        `
-      : ""};
+    border-bottom: var(--size) solid
+      ${({ secondaryColor }) => secondaryColor || "transparent"};
+  }
 `;
 
 interface AppThemePreviewProps {
@@ -45,5 +41,12 @@ interface AppThemePreviewProps {
 }
 
 export default function AppThemePreview({ appTheme }: AppThemePreviewProps) {
-  return <Container appTheme={appTheme} />;
+  const isDark = useIsDark();
+  const main = getThemeByStyle(appTheme, isDark ? "dark" : "light").primary;
+  const second = getThemeByStyle(
+    appTheme,
+    isDark ? "dark" : "light",
+  ).background;
+
+  return <Container primaryColor={main} secondaryColor={second} />;
 }

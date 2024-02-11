@@ -1,5 +1,3 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import PostMedia, {
   PostGalleryImgProps,
   getPostMedia,
@@ -12,6 +10,8 @@ import { IMAGE_FAILED, imageFailed } from "../imageSlice";
 import { useAppDispatch } from "../../../../../store";
 import BlurOverlay from "./BlurOverlay";
 import useLatch from "../../../../../helpers/useLatch";
+import { cx } from "@linaria/core";
+import { styled } from "@linaria/react";
 
 const StyledPostMedia = styled(PostMedia)`
   display: flex;
@@ -24,24 +24,22 @@ const StyledPostMedia = styled(PostMedia)`
   min-height: 0;
 `;
 
-const PlaceholderContainer = styled.div<{ loaded: boolean }>`
+const PlaceholderContainer = styled.div`
   display: flex;
 
-  ${({ loaded }) =>
-    !loaded &&
-    css`
-      align-items: center;
-      justify-content: center;
+  &.not-loaded {
+    align-items: center;
+    justify-content: center;
 
-      aspect-ratio: 1.2;
-      position: relative;
+    aspect-ratio: 1.2;
+    position: relative;
 
-      ${StyledPostMedia} {
-        position: absolute;
-        top: 0;
-        left: 0;
-      }
-    `}
+    ${StyledPostMedia} {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
 `;
 
 const LoadingIonIcon = styled(IonIcon)`
@@ -56,6 +54,7 @@ const Error = styled.div`
 export default function Media({
   blur,
   className,
+  style: baseStyle,
   ...props
 }: PostGalleryImgProps & { blur: boolean }) {
   const dispatch = useAppDispatch();
@@ -86,7 +85,10 @@ export default function Media({
   const loaded = !!aspectRatio && aspectRatio > 0;
 
   const contents = (
-    <PlaceholderContainer loaded={loaded} className={className}>
+    <PlaceholderContainer
+      className={cx(className, !loaded && "not-loaded")}
+      style={baseStyle}
+    >
       <StyledPostMedia
         {...props}
         style={style}

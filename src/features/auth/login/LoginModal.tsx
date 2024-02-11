@@ -1,7 +1,7 @@
 import React from "react";
 import LoginNav from "./LoginNav";
 import { DynamicDismissableModal } from "../../shared/DynamicDismissableModal";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 
 const StyledDynamicDismissableModal = styled(DynamicDismissableModal)`
   --max-width: 500px;
