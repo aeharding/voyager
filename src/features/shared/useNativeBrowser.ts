@@ -2,8 +2,8 @@ import { Browser } from "@capacitor/browser";
 import { useCallback } from "react";
 import { useAppSelector } from "../../store";
 import { isAndroid } from "../../helpers/device";
-import { notifyStatusTapThatBrowserWasOpened } from "../../listeners/statusTap";
-import { useIsDark } from "../../GlobalStyles";
+import { notifyStatusTapThatBrowserWasOpened } from "../../core/listeners/statusTap";
+import { useIsDark } from "../../core/GlobalStyles";
 
 export default function useNativeBrowser() {
   const isDark = useIsDark();

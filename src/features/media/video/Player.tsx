@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import { useInView } from "react-intersection-observer";
-import useShouldAutoplay from "../../../listeners/network/useShouldAutoplay";
+import useShouldAutoplay from "../../../core/listeners/network/useShouldAutoplay";
 import { IonIcon } from "@ionic/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import { PlainButton } from "../../shared/PlainButton";

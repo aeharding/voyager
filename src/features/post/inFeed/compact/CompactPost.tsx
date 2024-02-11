@@ -20,7 +20,7 @@ import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
 import { AnnouncementIcon } from "../../detail/PostHeader";
 import CompactCrosspost from "../../crosspost/CompactCrosspost";
 import useCrosspostUrl from "../../shared/useCrosspostUrl";
-import { useInModqueue } from "../../../../pages/shared/ModqueuePage";
+import { useInModqueue } from "../../../../routes/pages/shared/ModqueuePage";
 import { PageTypeContext } from "../../../feed/PageTypeContext";
 import { styled } from "@linaria/react";
 

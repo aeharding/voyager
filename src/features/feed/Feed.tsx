@@ -14,14 +14,14 @@ import {
   RefresherCustomEvent,
 } from "@ionic/react";
 import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
-import { CenteredSpinner } from "../../pages/posts/PostPage";
+import { CenteredSpinner } from "../../routes/pages/posts/PostPage";
 import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
 import EndPost, { EndPostProps } from "./endItems/EndPost";
-import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
+import { isSafariFeedHackEnabled } from "../../routes/pages/shared/FeedContent";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import { VList, VListHandle } from "virtua";
-import { FeedSearchContext } from "../../pages/shared/CommunityPage";
+import { FeedSearchContext } from "../../routes/pages/shared/CommunityPage";
 import { useAppSelector } from "../../store";
 import FetchMore from "./endItems/FetchMore";
 

@@ -13,7 +13,7 @@ import { setTheme } from "../../../settingsSlice";
 import { getTheme } from "../../../../../theme/AppThemes";
 import { capitalize } from "lodash";
 import { styled } from "@linaria/react";
-import { useIsDark } from "../../../../../GlobalStyles";
+import { useIsDark } from "../../../../../core/GlobalStyles";
 
 const Description = styled.div`
   font-size: 0.76em;

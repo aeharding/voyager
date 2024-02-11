@@ -14,7 +14,7 @@ import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
 import { GalleryContext } from "./GalleryProvider";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
-import useShouldAutoplay from "../../../listeners/network/useShouldAutoplay";
+import useShouldAutoplay from "../../../core/listeners/network/useShouldAutoplay";
 
 export type GalleryMediaRef = HTMLImageElement | HTMLCanvasElement;
 

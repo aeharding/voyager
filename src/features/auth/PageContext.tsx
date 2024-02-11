@@ -22,7 +22,7 @@ import {
 import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
-import SelectTextModal from "../../pages/shared/SelectTextModal";
+import SelectTextModal from "../../routes/pages/shared/SelectTextModal";
 import ShareAsImageModal, {
   ShareAsImageData,
 } from "../share/asImage/ShareAsImageModal";

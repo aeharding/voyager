@@ -20,7 +20,7 @@ import ModqueueItemActions from "../moderation/ModqueueItemActions";
 import { ActionsContainer } from "../post/inFeed/compact/CompactPost";
 import { useLongPress } from "use-long-press";
 import { filterSafariCallout } from "../../helpers/longPress";
-import { useInModqueue } from "../../pages/shared/ModqueuePage";
+import { useInModqueue } from "../../routes/pages/shared/ModqueuePage";
 import { preventOnClickNavigationBug } from "../../helpers/ionic";
 import { styled } from "@linaria/react";
 import { PositionedContainer } from "./elements/PositionedContainer";
