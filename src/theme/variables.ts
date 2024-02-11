@@ -383,26 +383,24 @@ export const darkBlackModifierVariables = css`
           }
         }
       }
+
+      &.theme-has-custom-background {
+        &.ios body,
+        &.md body {
+          --ion-background-color: var(--app-background);
+          --ion-item-background: var(--app-background);
+          --ion-color-step-50: var(--app-inset-item-background);
+          --ion-color-step-100: var(--app-tab-bar-background);
+          --ion-tab-bar-background: var(--app-tab-bar-background);
+          --ion-toolbar-background: var(--app-tab-bar-background);
+        }
+
+        &.ios ion-modal:not(.small, .transparent-scroll) {
+          --ion-background-color: var(--app-background);
+          --ion-toolbar-background: var(--app-tab-bar-background);
+          --ion-toolbar-border-color: var(--ion-color-step-150);
+        }
+      }
     }
   }
 `;
-
-/* ${background
-  ? css`
-      .ios body,
-      .md body {
-        --ion-background-color: ${background};
-        --ion-item-background: ${background};
-        --ion-color-step-50: ${insetItemBackground};
-        --ion-color-step-100: ${tabBarBackground};
-        --ion-tab-bar-background: ${tabBarBackground};
-        --ion-toolbar-background: ${tabBarBackground};
-      }
-
-      .ios ion-modal:not(.small, .transparent-scroll) {
-        --ion-background-color: ${background};
-        --ion-toolbar-background: ${tabBarBackground};
-        --ion-toolbar-border-color: var(--ion-color-step-150);
-      }
-    `
-  : ""} */

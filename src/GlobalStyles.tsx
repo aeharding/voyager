@@ -9,8 +9,9 @@ import { getThemeByStyle } from "./theme/AppThemes";
 
 import "./theme/variables";
 
-const DARK_CLASSNAME = "theme-dark";
-const PURE_BLACK_CLASSNAME = "theme-pure-black";
+export const DARK_CLASSNAME = "theme-dark";
+export const PURE_BLACK_CLASSNAME = "theme-pure-black";
+export const THEME_HAS_CUSTOM_BACKGROUND = "theme-has-custom-background";
 
 const globalDeviceFontCss = css`
   font: -apple-system-body;
@@ -78,6 +79,12 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
       "--app-tab-bar-background",
       tabBarBackground ?? "",
     );
+
+    if (background) {
+      document.documentElement.classList.add(THEME_HAS_CUSTOM_BACKGROUND);
+    } else {
+      document.documentElement.classList.remove(THEME_HAS_CUSTOM_BACKGROUND);
+    }
   }, [theme, isDark]);
 
   useEffect(() => {
