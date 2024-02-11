@@ -54,6 +54,7 @@ const Error = styled.div`
 export default function Media({
   blur,
   className,
+  style: baseStyle,
   ...props
 }: PostGalleryImgProps & { blur: boolean }) {
   const dispatch = useAppDispatch();
@@ -84,7 +85,10 @@ export default function Media({
   const loaded = !!aspectRatio && aspectRatio > 0;
 
   const contents = (
-    <PlaceholderContainer className={cx(className, !loaded && "not-loaded")}>
+    <PlaceholderContainer
+      className={cx(className, !loaded && "not-loaded")}
+      style={baseStyle}
+    >
       <StyledPostMedia
         {...props}
         style={style}
