@@ -4,7 +4,7 @@ import customRemarkGfm from "./markdown/customRemarkGfm";
 import MarkdownImg from "./MarkdownImg";
 import InAppExternalLink from "./InAppExternalLink";
 import { useAppSelector } from "../../store";
-import { css } from "@linaria/core";
+import { css, cx } from "@linaria/core";
 import { styled } from "@linaria/react";
 
 const markdownCss = css`
@@ -73,7 +73,7 @@ export default function Markdown({
   return (
     <ReactMarkdown
       {...props}
-      className={markdownCss}
+      className={cx(props.className, markdownCss)}
       components={{
         img: (props) => (
           <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />
