@@ -8,16 +8,80 @@ import React, {
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { isNative } from "./helpers/device";
 import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
-import useSystemDarkMode from "./helpers/useSystemDarkMode";
+import useSystemDarkMode, {
+  DARK_MEDIA_SELECTOR,
+} from "./helpers/useSystemDarkMode";
 import { css } from "@linaria/core";
 import { getThemeByStyle } from "./theme/AppThemes";
 
 import "./theme/variables";
+import { get as getStorage } from "./features/settings/storage";
+import {
+  LOCALSTORAGE_KEYS,
+  initialState,
+} from "./features/settings/settingsSlice";
+import { AppThemeType } from "./services/db";
 
 export const DARK_CLASSNAME = "theme-dark";
-export const THEME_LOADED = "theme-loaded";
 export const PURE_BLACK_CLASSNAME = "theme-pure-black";
 export const THEME_HAS_CUSTOM_BACKGROUND = "theme-has-custom-background";
+
+function updateThemeClasses(
+  isDark: boolean,
+  isPureBlack: boolean,
+  theme: AppThemeType,
+) {
+  const { primary, background, insetItemBackground, tabBarBackground } =
+    getThemeByStyle(theme, isDark ? "dark" : "light");
+
+  console.log(isDark, isPureBlack, theme);
+
+  document.documentElement.style.setProperty("--app-primary", primary);
+  document.documentElement.style.setProperty(
+    "--app-background",
+    background ?? "",
+  );
+  document.documentElement.style.setProperty(
+    "--app-inset-item-background",
+    insetItemBackground ?? "",
+  );
+  document.documentElement.style.setProperty(
+    "--app-tab-bar-background",
+    tabBarBackground ?? "",
+  );
+
+  const documentClasses = document.documentElement.classList;
+
+  if (background) {
+    documentClasses.add(THEME_HAS_CUSTOM_BACKGROUND);
+  } else {
+    documentClasses.remove(THEME_HAS_CUSTOM_BACKGROUND);
+  }
+
+  if (isDark && isPureBlack) {
+    documentClasses.add(PURE_BLACK_CLASSNAME);
+  } else {
+    documentClasses.remove(PURE_BLACK_CLASSNAME);
+  }
+
+  if (isDark) {
+    documentClasses.add(DARK_CLASSNAME);
+  } else {
+    documentClasses.remove(DARK_CLASSNAME);
+  }
+}
+
+// Prevent flash of white content and repaint before react component setup
+updateThemeClasses(
+  getStorage(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM) ??
+    initialState.appearance.dark.usingSystemDarkMode
+    ? window.matchMedia(DARK_MEDIA_SELECTOR).matches
+    : getStorage(LOCALSTORAGE_KEYS.DARK.USER_MODE) ??
+        initialState.appearance.dark.userDarkMode,
+  getStorage(LOCALSTORAGE_KEYS.DARK.PURE_BLACK) ??
+    initialState.appearance.dark.pureBlack,
+  getStorage(LOCALSTORAGE_KEYS.THEME) ?? initialState.appearance.theme,
+);
 
 const globalDeviceFontCss = css`
   font: -apple-system-body;
@@ -42,25 +106,7 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
     if (isNative()) {
       StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
     }
-
-    const list = document.documentElement.classList;
-
-    if (isDark && pureBlack) {
-      list.add(PURE_BLACK_CLASSNAME);
-    } else {
-      list.remove(PURE_BLACK_CLASSNAME);
-    }
-
-    list.add(THEME_LOADED);
-
-    if (isDark) {
-      list.add(DARK_CLASSNAME);
-    } else {
-      list.remove(DARK_CLASSNAME);
-    }
-
-    alert("hi");
-  }, [isDark, pureBlack]);
+  }, [isDark]);
 
   useLayoutEffect(() => {
     if (useSystemFontSize) {
@@ -73,29 +119,8 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
   }, [useSystemFontSize, fontSizeMultiplier]);
 
   useLayoutEffect(() => {
-    const { primary, background, insetItemBackground, tabBarBackground } =
-      getThemeByStyle(theme, isDark ? "dark" : "light");
-
-    document.documentElement.style.setProperty("--app-primary", primary);
-    document.documentElement.style.setProperty(
-      "--app-background",
-      background ?? "",
-    );
-    document.documentElement.style.setProperty(
-      "--app-inset-item-background",
-      insetItemBackground ?? "",
-    );
-    document.documentElement.style.setProperty(
-      "--app-tab-bar-background",
-      tabBarBackground ?? "",
-    );
-
-    if (background) {
-      document.documentElement.classList.add(THEME_HAS_CUSTOM_BACKGROUND);
-    } else {
-      document.documentElement.classList.remove(THEME_HAS_CUSTOM_BACKGROUND);
-    }
-  }, [theme, isDark]);
+    updateThemeClasses(isDark, pureBlack, theme);
+  }, [theme, pureBlack, isDark]);
 
   useEffect(() => {
     if (!isNative()) return;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const DARK_MEDIA_SELECTOR = "(prefers-color-scheme: dark)";
+export const DARK_MEDIA_SELECTOR = "(prefers-color-scheme: dark)";
 
 export default function useSystemDarkMode() {
   const [prefersDarkMode, setPrefersDarkMode] = useState(

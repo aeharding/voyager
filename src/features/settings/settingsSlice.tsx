@@ -120,7 +120,7 @@ interface SettingsState {
   };
 }
 
-const LOCALSTORAGE_KEYS = {
+export const LOCALSTORAGE_KEYS = {
   FONT: {
     FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
     USE_SYSTEM: "appearance--font-use-system",
@@ -134,7 +134,7 @@ const LOCALSTORAGE_KEYS = {
   THEME: "appearance--theme",
 } as const;
 
-const initialState: SettingsState = {
+export const initialState: SettingsState = {
   ready: false,
   appearance: {
     font: {
