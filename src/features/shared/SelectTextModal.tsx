@@ -7,11 +7,11 @@ import {
   IonContent,
   IonModal,
 } from "@ionic/react";
-import { Centered } from "../../../features/auth/login/LoginNav";
+import { Centered } from "../auth/login/LoginNav";
 import TextareaAutosize from "react-textarea-autosize";
 import { useRef } from "react";
-import { isTouchDevice } from "../../../helpers/device";
-import { preventModalSwipeOnTextSelection } from "../../../helpers/ionic";
+import { isTouchDevice } from "../../helpers/device";
+import { preventModalSwipeOnTextSelection } from "../../helpers/ionic";
 import { styled } from "@linaria/react";
 
 const Container = styled.div`
