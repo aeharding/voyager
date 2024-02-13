@@ -192,6 +192,7 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   return (
     <Container className={className}>
       <VideoEl
+        {...rest}
         ref={setRefs}
         src={`${src}#t=0.001`}
         loop
@@ -219,7 +220,6 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
           if (!showProgress) return;
           setProgress(e.target.currentTime / e.target.duration);
         }}
-        {...rest}
       />
       {showProgress && progress !== undefined && <Progress value={progress} />}
       {!nativeControls && (

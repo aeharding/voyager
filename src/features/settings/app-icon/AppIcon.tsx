@@ -45,22 +45,24 @@ export default function AppIconComponent() {
             <StyledIonThumbnail slot="start" onClick={() => selectIcon(icon)}>
               <Img src={getIconSrc(icon)} />
             </StyledIonThumbnail>
-            <IonLabel>
-              <H2>
-                {getIconName(icon)}{" "}
-                {isIconThemed(icon) && (
-                  <IonBadge color="medium">Themed</IonBadge>
-                )}
-              </H2>
-              <p>
-                <IonText color="medium">
-                  {getIconAuthor(icon)}{" "}
-                  {getThemedIconAuthor(icon) &&
-                    `— themed by ${getThemedIconAuthor(icon)}`}
-                </IonText>
-              </p>
-            </IonLabel>
-            <IonRadio value={icon} />
+
+            <IonRadio value={icon}>
+              <IonLabel>
+                <H2 className="ion-text-wrap">
+                  {getIconName(icon)}{" "}
+                  {isIconThemed(icon) && (
+                    <IonBadge color="medium">Themed</IonBadge>
+                  )}
+                </H2>
+                <p className="ion-text-wrap">
+                  <IonText color="medium">
+                    {getIconAuthor(icon)}{" "}
+                    {getThemedIconAuthor(icon) &&
+                      `— themed by ${getThemedIconAuthor(icon)}`}
+                  </IonText>
+                </p>
+              </IonLabel>
+            </IonRadio>
           </InsetIonItem>
         ))}
       </IonList>

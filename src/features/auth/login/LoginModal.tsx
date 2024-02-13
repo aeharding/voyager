@@ -16,7 +16,10 @@ interface LoginModalProps {
   setIsOpen: (isOpen: boolean) => void;
 }
 
-export default function LoginModal({ isOpen, setIsOpen }: LoginModalProps) {
+export default function LoginModal({
+  isOpen,
+  setIsOpen,
+}: Readonly<LoginModalProps>) {
   return (
     <StyledDynamicDismissableModal isOpen={isOpen} setIsOpen={setIsOpen}>
       <LoginNav />

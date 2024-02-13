@@ -1,5 +1,6 @@
 import { styled } from "@linaria/react";
 import React, {
+  ComponentRef,
   createContext,
   useCallback,
   useEffect,
@@ -18,7 +19,7 @@ import { useLocation } from "react-router";
 import { StatusBar } from "@capacitor/status-bar";
 import { setPostRead } from "../../post/postSlice";
 import { useAppDispatch } from "../../../store";
-import { GalleryMediaRef } from "./GalleryMedia";
+import GalleryMedia from "./GalleryMedia";
 
 const Container = styled.div`
   position: absolute;
@@ -58,7 +59,7 @@ interface GalleryProviderProps {
   children: React.ReactNode;
 }
 
-type ThumbEl = GalleryMediaRef;
+type ThumbEl = ComponentRef<typeof GalleryMedia>;
 
 export default function GalleryProvider({ children }: GalleryProviderProps) {
   const dispatch = useAppDispatch();

@@ -1,12 +1,12 @@
 import { styled } from "@linaria/react";
 import { FallbackProps } from "react-error-boundary";
-import { useLocation } from "react-router";
-import { useAppSelector } from "../store";
-import { jwtSelector } from "../features/auth/authSelectors";
 import { isInstalled, isNative } from "../helpers/device";
-import { IonButton, IonContent, IonIcon, IonLabel } from "@ionic/react";
+import { IonButton, IonIcon, IonLabel } from "@ionic/react";
 import { logoGithub } from "ionicons/icons";
 import { unloadServiceWorkerAndRefresh } from "../helpers/serviceWorker";
+import { memoryHistory } from "../routes/common/Router";
+import store from "../store";
+import { loggedInSelector } from "../features/auth/authSelectors";
 
 const Container = styled.div`
   display: flex;
@@ -16,10 +16,17 @@ const Container = styled.div`
   text-align: center;
   padding: 8px;
 
+  position: absolute;
+  inset: 0;
+
+  overflow: auto;
+
   padding-top: max(env(safe-area-inset-top), 8px);
   padding-right: max(env(safe-area-inset-right), 8px);
   padding-bottom: max(env(safe-area-inset-bottom), 8px);
   padding-left: max(env(safe-area-inset-left), 8px);
+
+  color: var(--ion-text-color);
 `;
 
 const Title = styled.h2``;
@@ -27,8 +34,10 @@ const Title = styled.h2``;
 const Description = styled.div``;
 
 export default function AppCrash({ error }: FallbackProps) {
-  const location = useLocation();
-  const loggedIn = !!useAppSelector(jwtSelector);
+  // Don't use useLocation/useAppSelector, because they are not available
+  // (`<AppCrash />` is at the root of the document tree)
+  const location = memoryHistory ? memoryHistory.location : window.location;
+  const loggedIn = loggedInSelector(store.getState());
 
   const crashData = `
 ### Crash description
@@ -78,54 +87,50 @@ ${error instanceof Error ? error.stack : "Not available"}
   }
 
   return (
-    <IonContent>
-      <Container>
-        <Title>🫣 Gah! Voyager crashed!</Title>
-        <Description>
-          Voyager does not collect any data, so we would appreciate you
-          voluntarily submitting this crash for us to investigate.
-        </Description>
-        <IonButton
-          href={`https://github.com/aeharding/voyager/issues/new?title=Crash&body=${encodeURIComponent(
-            crashData,
-          )}`}
+    <Container>
+      <Title>🫣 Gah! Voyager crashed!</Title>
+      <Description>
+        Voyager does not collect any data, so we would appreciate you
+        voluntarily submitting this crash for us to investigate.
+      </Description>
+      <IonButton
+        href={`https://github.com/aeharding/voyager/issues/new?title=Crash&body=${encodeURIComponent(
+          crashData,
+        )}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        color="success"
+      >
+        <IonIcon icon={logoGithub} slot="start" />
+        <IonLabel>Open Github issue with crash data</IonLabel>
+      </IonButton>
+
+      <hr />
+
+      <Description>
+        You can also try reloading the app to see if that solves the issue.
+        {isNative() ? " Check the app store for an update, too." : ""}
+      </Description>
+      <IonButton onClick={unloadServiceWorkerAndRefresh}>Reload app</IonButton>
+
+      <hr />
+
+      <Description>
+        If this crash is affecting many people, you can probably learn more{" "}
+        <a
+          href="https://lemmy.world/c/voyagerapp"
           target="_blank"
           rel="noopener noreferrer"
-          color="success"
         >
-          <IonIcon icon={logoGithub} slot="start" />
-          <IonLabel>Open Github issue with crash data</IonLabel>
-        </IonButton>
+          at Voyager&apos;s Lemmy community
+        </a>
+        .
+      </Description>
 
-        <hr />
-
-        <Description>
-          You can also try reloading the app to see if that solves the issue.
-          {isNative() ? " Check the app store for an update, too." : ""}
-        </Description>
-        <IonButton onClick={unloadServiceWorkerAndRefresh}>
-          Reload app
-        </IonButton>
-
-        <hr />
-
-        <Description>
-          If this crash is affecting many people, you can probably learn more{" "}
-          <a
-            href="https://lemmy.world/c/voyagerapp"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            at Voyager&apos;s Lemmy community
-          </a>
-          .
-        </Description>
-
-        <Description>As a last resort, try clearing all app data.</Description>
-        <IonButton color="danger" onClick={clearData}>
-          Clear app data
-        </IonButton>
-      </Container>
-    </IonContent>
+      <Description>As a last resort, try clearing all app data.</Description>
+      <IonButton color="danger" onClick={clearData}>
+        Clear app data
+      </IonButton>
+    </Container>
   );
 }

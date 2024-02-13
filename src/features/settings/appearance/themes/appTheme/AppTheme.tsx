@@ -54,12 +54,16 @@ export default function AppTheme() {
         <IonList inset>
           {Object.values(OAppThemeType).map((theme) => (
             <InsetIonItem key={theme}>
-              <AppThemePreview appTheme={theme} />
-              <IonLabel>
-                <div>{getThemeName(theme)}</div>
-                <Description>{getThemeDescription(theme)}</Description>
-              </IonLabel>
-              <IonRadio value={theme} />
+              <AppThemePreview slot="start" appTheme={theme} />
+
+              <IonRadio value={theme}>
+                <IonLabel>
+                  <div>{getThemeName(theme)}</div>
+                  <Description className="ion-text-wrap">
+                    {getThemeDescription(theme)}
+                  </Description>
+                </IonLabel>
+              </IonRadio>
             </InsetIonItem>
           ))}
         </IonList>

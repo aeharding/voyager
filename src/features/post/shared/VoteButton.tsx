@@ -19,7 +19,6 @@ const InactiveItem = styled(ActionButton)`
 `;
 
 const ActiveItem = styled(InactiveItem)<{
-  on?: boolean;
   activeColor: string;
 }>`
   background: ${({ activeColor }) => activeColor};
@@ -86,7 +85,6 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
 
   return (
     <Item
-      on={on}
       activeColor={activeColor}
       className={state.status}
       onClick={async (e) => {

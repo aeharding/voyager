@@ -21,12 +21,10 @@ export default function UserDarkMode() {
       >
         <IonList inset>
           <InsetIonItem>
-            <IonLabel>Light</IonLabel>
-            <IonRadio value={false} />
+            <IonRadio value={false}>Light</IonRadio>
           </InsetIonItem>
           <InsetIonItem>
-            <IonLabel>Dark</IonLabel>
-            <IonRadio value={true} />
+            <IonRadio value={true}>Dark</IonRadio>
           </InsetIonItem>
         </IonList>
       </IonRadioGroup>

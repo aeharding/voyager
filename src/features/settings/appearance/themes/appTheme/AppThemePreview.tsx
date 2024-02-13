@@ -2,6 +2,7 @@ import { styled } from "@linaria/react";
 import { AppThemeType } from "../../../../../services/db";
 import { getThemeByStyle } from "../../../../../core/theme/AppThemes";
 import { useIsDark } from "../../../../../core/GlobalStyles";
+import { HTMLAttributes } from "react";
 
 const Container = styled.div<{
   primaryColor: string;
@@ -20,6 +21,8 @@ const Container = styled.div<{
   position: relative;
   overflow: hidden;
 
+  pointer-events: none; // ionic bug? radio won't trigger
+
   &:after {
     content: "";
     position: absolute;
@@ -36,11 +39,14 @@ const Container = styled.div<{
   }
 `;
 
-interface AppThemePreviewProps {
+interface AppThemePreviewProps extends HTMLAttributes<HTMLDivElement> {
   appTheme: AppThemeType;
 }
 
-export default function AppThemePreview({ appTheme }: AppThemePreviewProps) {
+export default function AppThemePreview({
+  appTheme,
+  ...rest
+}: AppThemePreviewProps) {
   const isDark = useIsDark();
   const main = getThemeByStyle(appTheme, isDark ? "dark" : "light").primary;
   const second = getThemeByStyle(
@@ -48,5 +54,5 @@ export default function AppThemePreview({ appTheme }: AppThemePreviewProps) {
     isDark ? "dark" : "light",
   ).background;
 
-  return <Container primaryColor={main} secondaryColor={second} />;
+  return <Container {...rest} primaryColor={main} secondaryColor={second} />;
 }
