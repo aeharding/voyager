@@ -1,14 +1,15 @@
-import { useLayoutEffect, useRef } from "react";
+import { ComponentRef, useLayoutEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { imageLoaded } from "./imageSlice";
 import { round } from "lodash";
+import PostMedia from "../../../media/gallery/PostMedia";
 
 export default function useMediaLoadObserver(src: string | undefined) {
   const dispatch = useAppDispatch();
   const aspectRatio = useAppSelector((state) =>
     src ? state.image.loadedBySrc[src] : undefined,
   );
-  const mediaRef = useRef<HTMLVideoElement | HTMLImageElement>(null);
+  const mediaRef = useRef<ComponentRef<typeof PostMedia>>(null);
   const resizeObserverRef = useRef<ResizeObserver | undefined>();
 
   useLayoutEffect(() => {
@@ -29,25 +30,26 @@ export default function useMediaLoadObserver(src: string | undefined) {
         for (const entry of entries) {
           let width, height;
 
+          const target = entry.target as typeof mediaRef.current;
+
           switch (true) {
-            case entry.target instanceof HTMLImageElement:
-              width = entry.target.naturalWidth;
-              height = entry.target.naturalHeight;
+            case target instanceof HTMLImageElement:
+              width = target.naturalWidth;
+              height = target.naturalHeight;
               break;
-            case entry.target instanceof HTMLVideoElement:
-              width = entry.target.videoWidth;
-              height = entry.target.videoHeight;
+            case target instanceof HTMLVideoElement:
+              width = target.videoWidth;
+              height = target.videoHeight;
               break;
-            case entry.target instanceof HTMLCanvasElement:
-              if (!entry.target.width && !entry.target.height) return; // canvas still loading
-              width = entry.target.width;
-              height = entry.target.height;
+            case target instanceof HTMLCanvasElement:
+              width = target.width;
+              height = target.height;
               break;
             default:
               return;
           }
 
-          if (!width) return;
+          if (!width || !height) return;
 
           dispatch(imageLoaded({ src, aspectRatio: round(width / height, 6) }));
           destroyObserver();

@@ -1,4 +1,23 @@
 import { IonApp, setupIonicReact } from "@ionic/react";
+import { StoreProvider } from "../store";
+import { getAndroidNavMode, isInstalled } from "../helpers/device";
+import TabbedRoutes from "../routes/TabbedRoutes";
+import Auth from "./Auth";
+import { AppContextProvider } from "../features/auth/AppContext";
+import Router from "../routes/common/Router";
+import BeforeInstallPromptProvider from "../features/pwa/BeforeInstallPromptProvider";
+import { UpdateContextProvider } from "../routes/pages/settings/update/UpdateContext";
+import GlobalStyles from "./GlobalStyles";
+import ConfigProvider from "../services/app";
+import { getDeviceMode } from "../features/settings/settingsSlice";
+import { TabContextProvider } from "./TabContext";
+import { NavModes } from "capacitor-android-nav-mode";
+import { TextRecoveryStartupPrompt } from "../helpers/useTextRecovery";
+import HapticsListener from "./listeners/HapticsListener";
+import AndroidBackButton from "./listeners/AndroidBackButton";
+import { OptimizedRouterProvider } from "../helpers/useOptimizedIonRouter";
+import { ErrorBoundary } from "react-error-boundary";
+import AppCrash from "./AppCrash";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -16,27 +35,8 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
-import { StoreProvider } from "../store";
-import { getAndroidNavMode, isInstalled } from "../helpers/device";
-import TabbedRoutes from "../routes/TabbedRoutes";
-import Auth from "./Auth";
-import { AppContextProvider } from "../features/auth/AppContext";
-import Router from "../routes/common/Router";
-import BeforeInstallPromptProvider from "../features/pwa/BeforeInstallPromptProvider";
-import { UpdateContextProvider } from "../routes/pages/settings/update/UpdateContext";
-import GlobalStyles from "./GlobalStyles";
-import ConfigProvider from "../services/app";
-import { getDeviceMode } from "../features/settings/settingsSlice";
-import { TabContextProvider } from "./TabContext";
-import { NavModes } from "capacitor-android-nav-mode";
-import { TextRecoveryStartupPrompt } from "../helpers/useTextRecovery";
-import { ErrorBoundary } from "react-error-boundary";
-import AppCrash from "./AppCrash";
-
+/* Setup global app lifecycle listeners */
 import "./listeners";
-import HapticsListener from "./listeners/HapticsListener";
-import AndroidBackButton from "./listeners/AndroidBackButton";
-import { OptimizedRouterProvider } from "../helpers/useOptimizedIonRouter";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
@@ -60,35 +60,35 @@ import { OptimizedRouterProvider } from "../helpers/useOptimizedIonRouter";
 
 export default function App() {
   return (
-    <ConfigProvider>
-      <AppContextProvider>
-        <StoreProvider>
-          <GlobalStyles>
-            <BeforeInstallPromptProvider>
-              <UpdateContextProvider>
-                <Router>
-                  <OptimizedRouterProvider>
-                    <AndroidBackButton />
+    <ErrorBoundary FallbackComponent={AppCrash}>
+      <ConfigProvider>
+        <AppContextProvider>
+          <StoreProvider>
+            <GlobalStyles>
+              <BeforeInstallPromptProvider>
+                <UpdateContextProvider>
+                  <Router>
+                    <OptimizedRouterProvider>
+                      <AndroidBackButton />
 
-                    <TabContextProvider>
-                      <IonApp>
-                        <ErrorBoundary FallbackComponent={AppCrash}>
+                      <TabContextProvider>
+                        <IonApp>
                           <HapticsListener />
 
                           <TextRecoveryStartupPrompt />
                           <Auth>
                             <TabbedRoutes />
                           </Auth>
-                        </ErrorBoundary>
-                      </IonApp>
-                    </TabContextProvider>
-                  </OptimizedRouterProvider>
-                </Router>
-              </UpdateContextProvider>
-            </BeforeInstallPromptProvider>
-          </GlobalStyles>
-        </StoreProvider>
-      </AppContextProvider>
-    </ConfigProvider>
+                        </IonApp>
+                      </TabContextProvider>
+                    </OptimizedRouterProvider>
+                  </Router>
+                </UpdateContextProvider>
+              </BeforeInstallPromptProvider>
+            </GlobalStyles>
+          </StoreProvider>
+        </AppContextProvider>
+      </ConfigProvider>
+    </ErrorBoundary>
   );
 }

@@ -285,11 +285,12 @@ export default function PickJoinServer() {
                     src={icon ? getImageSrc(icon, { size: 32 }) : lemmyLogo}
                   />
                 </ServerThumbnail>
-                <IonLabel>
-                  <h2>{url}</h2>
-                  <p>{description}</p>
-                </IonLabel>
-                <IonRadio value={url} />
+                <IonRadio value={url}>
+                  <IonLabel>
+                    <h2>{url}</h2>
+                    <p className="ion-text-wrap">{description}</p>
+                  </IonLabel>
+                </IonRadio>
               </ServerItem>
             );
           }}
