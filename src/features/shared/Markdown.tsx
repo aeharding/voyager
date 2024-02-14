@@ -6,6 +6,7 @@ import InAppExternalLink from "./InAppExternalLink";
 import { useAppSelector } from "../../store";
 import { css, cx } from "@linaria/core";
 import { styled } from "@linaria/react";
+import superSub from "remark-supersub";
 
 const markdownCss = css`
   @media (max-width: 700px) {
@@ -101,7 +102,7 @@ export default function Markdown({
           : (props) => <LinkInterceptor {...props} />,
         ...props.components,
       }}
-      remarkPlugins={[[customRemarkGfm, { connectedInstance }]]}
+      remarkPlugins={[[customRemarkGfm, { connectedInstance }], superSub]}
     />
   );
 }

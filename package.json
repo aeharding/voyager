@@ -52,6 +52,8 @@
     "@ionic/core": "npm:voyager-ionic-core@^7.7.0",
     "@ionic/react": "^7.7.1",
     "@ionic/react-router": "^7.7.1",
+    "@linaria/core": "^6.1.0",
+    "@linaria/react": "^6.1.0",
     "@reduxjs/toolkit": "^2.1.0",
     "@testing-library/jest-dom": "^6.4.1",
     "@testing-library/react": "^14.2.1",
@@ -72,6 +74,7 @@
     "@typescript-eslint/parser": "^6.20.0",
     "@vitejs/plugin-legacy": "^5.3.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "@wyw-in-js/babel-preset": "^0.4.0",
     "@wyw-in-js/vite": "^0.4.0",
     "capacitor-android-nav-mode": "^0.0.1",
     "capacitor-application-context": "^0.0.1",
@@ -123,6 +126,7 @@
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
+    "remark-supersub": "^1.0.0",
     "terser": "^5.27.0",
     "typescript": "^5.3.3",
     "ua-parser-js": "^1.0.37",
@@ -136,9 +140,6 @@
     "vite-plugin-pwa": "^0.17.5",
     "vite-plugin-svgr": "^4.2.0",
     "vitest": "^1.2.2",
-    "workbox-window": "^7.0.0",
-    "@linaria/core": "^6.1.0",
-    "@linaria/react": "^6.1.0",
-    "@wyw-in-js/babel-preset": "^0.4.0"
+    "workbox-window": "^7.0.0"
   }
 }
