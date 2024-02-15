@@ -16,8 +16,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "types": ["vite-plugin-svgr/client", "jest"],
-    "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": true
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
