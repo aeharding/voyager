@@ -79,7 +79,7 @@ export default function SettingsPage() {
   const pageVisibility = usePageVisibility();
 
   const [presentTip, onDismissTip] = useIonModal(TipDialog, {
-    onDismiss: (data: string, role: string) => onDismissTip(data, role),
+    onDismiss: (data?: string, role?: string) => onDismissTip(data, role),
   });
 
   useSetActivePage(pageRef);

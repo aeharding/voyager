@@ -68,7 +68,7 @@ export default function DefaultMode({
   const instanceUrl = useAppSelector(urlSelector);
 
   const [presentPreview, onDismissPreview] = useIonModal(PreviewModal, {
-    onDismiss: (data: string, role: string) => onDismissPreview(data, role),
+    onDismiss: (data?: string, role?: string) => onDismissPreview(data, role),
     type,
     text,
   });
