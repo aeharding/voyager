@@ -118,7 +118,7 @@ function ResolvedCommunitiesList({
       <StyledIonList>
         <StyledVList
           ref={virtuaRef}
-          overscan={0}
+          overscan={1}
           className="ion-content-scroll-host virtual-scroller"
         >
           <IonItemGroup key="list">
