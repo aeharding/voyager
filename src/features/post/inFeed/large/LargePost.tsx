@@ -1,5 +1,3 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { megaphone } from "ionicons/icons";
 import PreviewStats from "../PreviewStats";
 import { maxWidthCss } from "../../../shared/AppContent";
@@ -8,7 +6,7 @@ import { VoteButton } from "../../shared/VoteButton";
 import MoreActions from "../../shared/MoreActions";
 import PersonLink from "../../../labels/links/PersonLink";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
-import { AnnouncementIcon } from "../../../../pages/posts/PostPage";
+import { AnnouncementIcon } from "../../../../routes/pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
@@ -21,9 +19,10 @@ import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
 import Crosspost from "../../crosspost/Crosspost";
 import LargePostContents from "./LargePostContents";
 import useCrosspostUrl from "../../shared/useCrosspostUrl";
-import { useInModqueue } from "../../../../pages/shared/ModqueuePage";
+import { useInModqueue } from "../../../../routes/pages/shared/ModqueuePage";
 import { useContext } from "react";
 import { PageTypeContext } from "../../../feed/PageTypeContext";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   display: flex;
@@ -38,11 +37,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.div<{ isRead: boolean }>`
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color);
-    `}
+  color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
 `;
 
 const Details = styled.div`
@@ -61,11 +56,7 @@ const LeftDetails = styled.div<{ isRead: boolean }>`
 
   min-width: 0;
 
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color-medium);
-    `}
+  color: ${({ isRead }) => (isRead ? "var(--read-color-medium)" : "inherit")};
 `;
 
 const RightDetails = styled.div`

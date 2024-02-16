@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../store";
 import { IonIcon } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
-import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
 import React, { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
@@ -18,6 +17,7 @@ import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../helpers/useHapticFeedback";
 import useAppToast from "../../helpers/useAppToast";
 import { formatNumber } from "../../helpers/number";
+import { styled } from "@linaria/react";
 
 const Container = styled.div<{
   vote?: 1 | -1 | 0;
@@ -37,6 +37,8 @@ const Container = styled.div<{
             return "var(--ion-color-danger)";
         }
       }
+
+      return "inherit";
     }};
   }
 `;

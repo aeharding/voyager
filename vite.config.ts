@@ -3,40 +3,21 @@ import { defineConfig } from "vitest/config";
 import { VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import legacy from "@vitejs/plugin-legacy";
-
-import fs from "fs";
+import wyw from "@wyw-in-js/vite";
 
 import { readFileSync } from "fs";
 
 const manifest = JSON.parse(readFileSync("./manifest.json", "utf-8"));
 
-// https://github.com/vitejs/vite/issues/2415#issuecomment-1381196720
-const dotPathFixPlugin = () => ({
-  name: "dot-path-fix-plugin",
-  configureServer: (server) => {
-    server.middlewares.use((req, _, next) => {
-      const reqPath = req.url.split("?", 2)[0];
-
-      if (
-        !req.url.startsWith("/@") &&
-        !fs.existsSync(`.${reqPath}`) &&
-        !fs.existsSync(`./public${reqPath}`)
-      ) {
-        req.url = "/";
-      }
-      next();
-    });
-  },
-});
-
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    dotPathFixPlugin(),
-    react({
-      jsxImportSource: "@emotion/react",
-      babel: {
-        plugins: ["@emotion/babel-plugin"],
+    react(),
+    wyw({
+      displayName: process.env.NODE_ENV === "development",
+      include: ["**/*.{ts,tsx}"],
+      babelOptions: {
+        presets: ["@babel/preset-typescript", "@babel/preset-react"],
       },
     }),
     svgr(),

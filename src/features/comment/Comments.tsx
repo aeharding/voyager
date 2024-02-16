@@ -13,8 +13,6 @@ import {
 } from "../../helpers/lemmy";
 import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { CommentSortType, CommentView } from "lemmy-js-client";
 import { pullAllBy, sortBy, uniqBy } from "lodash";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -25,7 +23,7 @@ import useClient from "../../helpers/useClient";
 import { useSetActivePage } from "../auth/AppContext";
 import { CommentsContext } from "./CommentsContext";
 import { defaultCommentDepthSelector } from "../settings/settingsSlice";
-import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
+import { isSafariFeedHackEnabled } from "../../routes/pages/shared/FeedContent";
 import useAppToast from "../../helpers/useAppToast";
 import { VList, VListHandle } from "virtua";
 import LoadParentComments from "./LoadParentComments";
@@ -36,14 +34,15 @@ import {
 import { IndexedVirtuaItem } from "../../helpers/virtua";
 import FeedLoadMoreFailed from "../feed/endItems/FeedLoadMoreFailed";
 import usePreservePositionFromBottomInScrollView from "../../helpers/usePreservePositionFromBottomInScrollView";
-import { postDetailPageHasVirtualScrollEnabled } from "../../pages/posts/PostPage";
+import { postDetailPageHasVirtualScrollEnabled } from "../../routes/pages/posts/PostPage";
+import { styled } from "@linaria/react";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
   height: 100%;
 `;
 
-const centerCss = css`
+const centerCss = `
   position: relative;
   padding: 4rem 0 4rem;
   left: 50%;
@@ -490,7 +489,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
             ref={virtuaRef}
             style={{ height: "100%" }}
             item={IndexedVirtuaItem}
-            overscan={0}
+            overscan={1}
             onRangeChange={(start, end) => {
               if (end + 10 > allComments.length && !loadFailed) {
                 fetchComments();

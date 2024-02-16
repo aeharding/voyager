@@ -31,7 +31,7 @@ import { HelperText } from "../../../settings/shared/formatting";
 import { getImageSrc } from "../../../../services/lemmy";
 import { loginSuccess } from "../../../../helpers/toastMessages";
 import lemmyLogo from "../lemmyLogo.svg";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { VOYAGER_TERMS } from "../../../../helpers/voyager";
 import { getInstanceFromHandle } from "../../authSelectors";
 

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { isUrlVideo } from "../../helpers/url";
 import Player from "../media/video/Player";
-import { css } from "@emotion/react";
 import GalleryMedia, { GalleryMediaProps } from "../media/gallery/GalleryMedia";
+import { css, cx } from "@linaria/core";
 
 const smallStyles = css`
   max-height: 200px;
@@ -28,11 +28,17 @@ export default function MarkdownImg({ small, ...props }: MarkdownImgProps) {
         src={props.src!}
         progress={false}
         volume={false}
-        css={sharedStyles}
+        className={cx(sharedStyles, props.className)}
         nativeControls={!small}
         {...props}
       />
     );
 
-  return <GalleryMedia {...props} css={sharedStyles} animationType="zoom" />;
+  return (
+    <GalleryMedia
+      {...props}
+      className={cx(sharedStyles, props.className)}
+      animationType="zoom"
+    />
+  );
 }

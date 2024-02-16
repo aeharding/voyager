@@ -1,4 +1,3 @@
-import React from "react";
 import {
   IonRefresher,
   IonRefresherContent,
@@ -8,12 +7,12 @@ import {
 import { useEffect, useState } from "react";
 import Profile from "../../features/user/Profile";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
-import styled from "@emotion/styled";
 import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { OldLemmyErrorValue, isLemmyError } from "../../helpers/lemmy";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import { styled } from "@linaria/react";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;

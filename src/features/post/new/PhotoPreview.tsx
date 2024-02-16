@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonSpinner } from "@ionic/react";
 
 const Container = styled.div`
@@ -11,11 +10,8 @@ const Img = styled.img<{ loadingImage: boolean }>`
   max-height: 100px;
   padding: 1rem;
 
-  ${({ loadingImage }) =>
-    loadingImage &&
-    css`
-      filter: blur(5px) brightness(0.5);
-    `}
+  filter: ${({ loadingImage }) =>
+    loadingImage ? "blur(5px) brightness(0.5)" : "none"};
 `;
 
 const OverlaySpinner = styled(IonSpinner)`

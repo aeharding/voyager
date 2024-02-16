@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
 import { getItemActorName } from "../../helpers/lemmy";
 import { OPostBlurNsfw, PostBlurNsfwType } from "../../services/db";

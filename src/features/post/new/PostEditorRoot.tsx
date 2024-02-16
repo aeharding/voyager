@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonButtons,
   IonButton,
@@ -23,7 +23,6 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
 import { jwtSelector, urlSelector } from "../../auth/authSelectors";
 import { startCase } from "lodash";
-import { css } from "@emotion/react";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { cameraOutline, checkmark } from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
@@ -37,6 +36,7 @@ import { isUrlImage, isValidUrl } from "../../../helpers/url";
 import { problemFetchingTitle } from "../../../helpers/toastMessages";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isAndroid } from "../../../helpers/device";
+import { css } from "@linaria/core";
 
 const Container = styled.div`
   position: absolute;
@@ -388,7 +388,7 @@ export default function PostEditorRoot({
         </IonToolbar>
         <IonToolbar>
           <IonSegment
-            css={css`
+            className={css`
               width: 100%;
             `}
             value={postType}

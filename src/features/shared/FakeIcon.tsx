@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 
 const FakeIconContainer = styled.div<{ bg: string; size: number }>`
-  width: ${({ size }) => `${size}px`};
-  height: ${({ size }) => `${size}px`};
+  width: ${({ size }) => size}px;
+  height: ${({ size }) => size}px;
   border-radius: 50%;
 
   display: inline-flex;

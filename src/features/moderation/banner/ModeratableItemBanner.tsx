@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { Comment, CommentView, Post, PostView } from "lemmy-js-client";
 import { useAppSelector } from "../../../store";
 import {
@@ -8,8 +7,11 @@ import {
 import RemovedBanner from "./RemovedBanner";
 import ReportBanner from "./ReportBanner";
 import { maxWidthCss } from "../../shared/AppContent";
+import { styled } from "@linaria/react";
 
-export const Banner = styled.div<{ modState: ItemModState }>`
+export const Banner = styled.div<{
+  modState: ItemModState.Flagged | ItemModState.RemovedByMod;
+}>`
   ${maxWidthCss}
 
   display: flex;
@@ -24,8 +26,8 @@ export const Banner = styled.div<{ modState: ItemModState }>`
 
   text-align: center;
 
-  background: ${({ modState }) => getModStateBannerBgColor(modState)};
-  color: ${({ modState }) => getModStateBannerColor(modState)};
+  background: ${({ modState }) => getModStateBannerBgColor(modState)!};
+  color: ${({ modState }) => getModStateBannerColor(modState)!};
 `;
 
 interface RemovedByBannerProps {

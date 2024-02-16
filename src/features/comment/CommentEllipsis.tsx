@@ -2,8 +2,8 @@ import { ellipsisHorizontal } from "ionicons/icons";
 import useCommentActions, { CommentActionsProps } from "./useCommentActions";
 import { ActionButton } from "../post/actions/ActionButton";
 import { IonIcon, IonLoading } from "@ionic/react";
-import styled from "@emotion/styled";
 import { forwardRef, useImperativeHandle } from "react";
+import { styled } from "@linaria/react";
 
 const StyledIonIcon = styled(IonIcon)`
   font-size: 1.2em;

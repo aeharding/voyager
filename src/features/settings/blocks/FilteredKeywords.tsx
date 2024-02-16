@@ -6,7 +6,7 @@ import {
   IonList,
   useIonAlert,
 } from "@ionic/react";
-import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
+import { InsetIonItem } from "../../../routes/pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { ListHeader } from "../shared/formatting";
 import { updateFilteredKeywords } from "../settingsSlice";

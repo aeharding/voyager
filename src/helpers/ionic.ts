@@ -1,5 +1,5 @@
 import { MouseEvent, TouchEvent } from "react";
-import { memoryHistory } from "../Router";
+import { memoryHistory } from "../routes/common/Router";
 
 const ION_CONTENT_ELEMENT_SELECTOR = "ion-content";
 

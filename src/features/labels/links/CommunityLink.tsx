@@ -4,7 +4,6 @@ import { Community, SubscribedType } from "lemmy-js-client";
 import Handle from "../Handle";
 import { StyledLink, hideCss } from "./shared";
 import ItemIcon from "../img/ItemIcon";
-import { css } from "@emotion/react";
 import { useIonActionSheet } from "@ionic/react";
 import { LongPressOptions, useLongPress } from "use-long-press";
 import {
@@ -17,6 +16,13 @@ import useCommunityActions from "../../community/useCommunityActions";
 import { useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
 import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import { styled } from "@linaria/react";
+import { cx } from "@linaria/core";
+
+const StyledItemIcon = styled(ItemIcon)`
+  margin-right: 0.4rem;
+  vertical-align: middle;
+`;
 
 interface CommunityLinkProps {
   community: Community;
@@ -91,19 +97,11 @@ export default function CommunityLink({
         e.stopPropagation();
         preventOnClickNavigationBug(e);
       }}
-      className={className}
-      css={hideCommunity ? hideCss : undefined}
+      className={cx(className, hideCommunity ? hideCss : undefined)}
       {...bind()}
     >
       {showIcon && !hideCommunity && (
-        <ItemIcon
-          item={community}
-          size={24}
-          css={css`
-            margin-right: 0.4rem;
-            vertical-align: middle;
-          `}
-        />
+        <StyledItemIcon item={community} size={24} />
       )}
 
       <Handle

@@ -7,7 +7,7 @@ import {
   IonLoading,
   useIonModal,
 } from "@ionic/react";
-import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
+import { InsetIonItem } from "../../../routes/pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useContext, useState } from "react";
 import { Instance, InstanceBlockView } from "lemmy-js-client";

@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
 import { IonButton, IonButtons, IonIcon, IonTitle } from "@ionic/react";
 import { chevronDown } from "ionicons/icons";
 import React, { useContext, useEffect, useRef } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
+import { styled } from "@linaria/react";
 
 const TitleContents = styled.span`
   display: inline-flex;

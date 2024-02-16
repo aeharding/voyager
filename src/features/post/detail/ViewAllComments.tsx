@@ -1,9 +1,9 @@
-import styled from "@emotion/styled";
 import { IonIcon, useIonViewDidEnter } from "@ionic/react";
 import { chevronForward } from "ionicons/icons";
 import { Link, useParams } from "react-router-dom";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useCallback, useRef } from "react";
+import { styled } from "@linaria/react";
 
 const ContainerLink = styled(Link)`
   position: absolute;

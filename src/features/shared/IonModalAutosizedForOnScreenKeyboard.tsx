@@ -1,9 +1,8 @@
 import { IonModal } from "@ionic/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import usePageVisibility from "../../helpers/usePageVisibility";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { isNative } from "../../helpers/device";
+import { styled } from "@linaria/react";
 
 // TODO it's a bit buggy trying to compute this
 // in realtime with the new post dialog + comment dialogs
@@ -12,19 +11,16 @@ const FIXED_HEADER_HEIGHT = 56;
 
 const StyledIonModal = styled(IonModal)<{ viewportHeight: number }>`
   /* Capacitor inside native web view resizes for on-screen keyboard, so we don't need bespoke layout management */
-  ${({ viewportHeight }) =>
-    isNative()
-      ? ""
-      : css`
-          ion-content::part(scroll) {
-            max-height: ${viewportHeight}px;
-          }
+  ion-content::part(scroll) {
+    max-height: ${({ viewportHeight }) => viewportHeight}px;
+  }
 
-          ion-content .fixed-toolbar-container {
-            max-height: ${viewportHeight}px;
-          }
-        `}
+  ion-content .fixed-toolbar-container {
+    max-height: ${({ viewportHeight }) => viewportHeight}px;
+  }
 `;
+
+const Modal = isNative() ? IonModal : StyledIonModal;
 
 /**
  * This component is only needed for Safari PWAs. It is not necessary for native.
@@ -96,7 +92,7 @@ export default function IonModalAutosizedForOnScreenKeyboard(
   }, [updateViewport, props.isOpen]);
 
   return (
-    <StyledIonModal
+    <Modal
       ref={modalRef}
       viewportHeight={viewportHeight}
       onDidPresent={() => {

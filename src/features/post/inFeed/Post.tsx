@@ -1,10 +1,10 @@
+import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
 import LargePost from "./large/LargePost";
 import store, { useAppDispatch, useAppSelector } from "../../../store";
 import CompactPost from "./compact/CompactPost";
 import SlidingVote from "../../shared/sliding/SlidingPostVote";
 import { IonItem } from "@ionic/react";
-import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
