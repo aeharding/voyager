@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../store";
 import { db } from "../../services/db";
-import { uniq } from "lodash";
+import { uniq, without } from "lodash";
 
 interface MigrationSlice {
   links: Array<string>;
@@ -22,8 +22,8 @@ export const migrationSlice = createSlice({
       state.links = uniq([action.payload, ...state.links]);
       db.setSetting("migration_links", state.links);
     },
-    resetMigrationLinks: (state) => {
-      state.links = [];
+    removeMigrationLink: (state, action: PayloadAction<string>) => {
+      state.links = without(state.links, action.payload);
       db.setSetting("migration_links", state.links);
     },
   },
@@ -31,11 +31,11 @@ export const migrationSlice = createSlice({
 
 export default migrationSlice.reducer;
 
+export const { setMigrationLinks, addMigrationLink, removeMigrationLink } =
+  migrationSlice.actions;
+
 export const getMigrationLinks = () => async (dispatch: AppDispatch) => {
   const links = await db.getSetting("migration_links");
 
   dispatch(setMigrationLinks(links || []));
 };
-
-export const { setMigrationLinks, addMigrationLink, resetMigrationLinks } =
-  migrationSlice.actions;

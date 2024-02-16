@@ -33,9 +33,7 @@ import resolveSlice from "./features/resolve/resolveSlice";
 import biometricSlice, {
   initializeBiometricSliceDataIfNeeded,
 } from "./features/settings/biometric/biometricSlice";
-import migrationSlice, {
-  getMigrationLinks,
-} from "./features/community/migrationSlice";
+import migrationSlice from "./features/migrate/migrationSlice";
 import modSlice from "./features/moderation/modSlice";
 import imageSlice from "./features/post/inFeed/large/imageSlice";
 import feedSortSlice from "./features/feed/sort/feedSortSlice";
@@ -91,7 +89,6 @@ const activeHandleChange = () => {
 
   lastActiveHandle = handle;
 
-  store.dispatch(getMigrationLinks());
   store.dispatch(getFavoriteCommunities());
   store.dispatch(getBlurNsfw());
   store.dispatch(getFilteredKeywords());
