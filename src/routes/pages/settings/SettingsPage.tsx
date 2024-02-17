@@ -41,6 +41,7 @@ import {
 import BiometricTitle from "../../../features/settings/biometric/BiometricTitle";
 import usePageVisibility from "../../../helpers/usePageVisibility";
 import { styled } from "@linaria/react";
+import DatabaseErrorItem from "../../../features/settings/root/DatabaseErrorItem";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
@@ -69,6 +70,7 @@ const AppIcon = styled.img`
 `;
 
 export default function SettingsPage() {
+  const databaseError = useAppSelector((state) => state.settings.databaseError);
   const { status: updateStatus, checkForUpdates } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
   const currentHandle = useAppSelector(userHandleSelector);
@@ -109,7 +111,9 @@ export default function SettingsPage() {
           </IonToolbar>
         </IonHeader>
 
-        <IonList inset color="primary">
+        {databaseError && <DatabaseErrorItem />}
+
+        <IonList inset>
           <InsetIonItem
             onClick={() => presentTip({ cssClass: "transparent-scroll" })}
             detail
@@ -122,7 +126,7 @@ export default function SettingsPage() {
         </IonList>
 
         {!isNative() && (
-          <IonList inset color="primary">
+          <IonList inset>
             <InsetIonItem routerLink="/settings/install">
               <IconBg color="#0e7afe">
                 <IonIcon icon={apps} />
@@ -142,7 +146,7 @@ export default function SettingsPage() {
             </InsetIonItem>
           </IonList>
         )}
-        <IonList inset color="primary">
+        <IonList inset>
           <InsetIonItem routerLink="/settings/general">
             <IconBg color="color(display-p3 0.5 0.5 0.5)" size="1.3">
               <IonIcon icon={cog} />
@@ -192,7 +196,7 @@ export default function SettingsPage() {
           </InsetIonItem>
         </IonList>
 
-        <IonList inset color="primary">
+        <IonList inset>
           <InsetIonItem routerLink="/settings/reddit-migrate">
             <IconBg color="#ff5700">
               <IonIcon icon={bagCheck} />
@@ -201,7 +205,7 @@ export default function SettingsPage() {
           </InsetIonItem>
         </IonList>
 
-        <IonList inset color="primary">
+        <IonList inset>
           <InsetIonItem routerLink="/settings/about/app">
             <IconBg color="#0e7afe" size="1.15">
               <IonIcon icon={at} />

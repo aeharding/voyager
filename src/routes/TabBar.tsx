@@ -60,6 +60,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   const router = useOptimizedIonRouter();
   const vibrate = useHapticFeedback();
 
+  const databaseError = useAppSelector((state) => state.settings.databaseError);
   const selectedInstance = useAppSelector(instanceSelector);
 
   useEffect(() => {
@@ -215,6 +216,13 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
 
   const presentAccountSwitcherBind = useLongPress(onPresentAccountSwitcher);
 
+  const settingsBadge = (() => {
+    if (databaseError) return <IonBadge color="danger">!</IonBadge>;
+
+    if (settingsNotificationCount)
+      return <IonBadge color="danger">{settingsNotificationCount}</IonBadge>;
+  })();
+
   return (
     <IonTabBar {...props} ref={ref}>
       <IonTabButton disabled={isPostsButtonDisabled} tab="posts" href="/posts">
@@ -259,9 +267,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       >
         <IonIcon aria-hidden="true" icon={cog} />
         <IonLabel>Settings</IonLabel>
-        {settingsNotificationCount ? (
-          <IonBadge color="danger">{settingsNotificationCount}</IonBadge>
-        ) : undefined}
+        {settingsBadge}
         <div onClick={onSettingsClick} className={interceptorCss} />
       </IonTabButton>
     </IonTabBar>
