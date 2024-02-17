@@ -19,6 +19,7 @@ import RedditMigratePage from "../pages/settings/RedditDataMigratePage";
 import SearchCommunitiesPage from "../pages/search/results/SearchCommunitiesPage";
 import AboutPage from "../pages/settings/about/AboutPage";
 import AboutThanksPage from "../pages/settings/about/AboutThanksPage";
+import RedditMigrateSubsListPage from "../pages/settings/RedditMigrateSubsListPage";
 
 export default [
   ...buildGeneralBrowseRoutes("settings"),
@@ -64,7 +65,10 @@ export default [
   <Route exact path="/settings/reddit-migrate">
     <RedditMigratePage />
   </Route>,
-  <Route exact path="/settings/reddit-migrate/:search">
+  <Route exact path="/settings/reddit-migrate/:link">
+    <RedditMigrateSubsListPage />
+  </Route>,
+  <Route exact path="/settings/reddit-migrate/:link/:search">
     <SearchCommunitiesPage />
   </Route>,
   // This annoyingly cannot be /settings/about, because otherwise it will also match /settings/:actor

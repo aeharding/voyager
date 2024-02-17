@@ -18,7 +18,7 @@ export function isValidUrl(
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-function getPathname(url: string): string | undefined {
+export function getPathname(url: string): string | undefined {
   try {
     return new URL(url).pathname;
   } catch {

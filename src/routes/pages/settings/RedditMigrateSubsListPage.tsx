@@ -9,9 +9,11 @@ import {
 import AppContent from "../../../features/shared/AppContent";
 import { useRef } from "react";
 import { useSetActivePage } from "../../../features/auth/AppContext";
-import MigrateList from "../../../features/migrate/MigrateList";
+import MigrateSubsList from "../../../features/migrate/MigrateSubsList";
+import { useParams } from "react-router";
 
-export default function RedditMigratePage() {
+export default function RedditMigrateSubsListPage() {
+  const { link } = useParams<{ link: string }>();
   const pageRef = useRef<HTMLElement>(null);
 
   useSetActivePage(pageRef);
@@ -21,14 +23,17 @@ export default function RedditMigratePage() {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/settings" text="Settings" />
+            <IonBackButton
+              defaultHref="/settings/reddit-migrate"
+              text="Migrate"
+            />
           </IonButtons>
 
-          <IonTitle>Migrate</IonTitle>
+          <IonTitle>Subreddits</IonTitle>
         </IonToolbar>
       </IonHeader>
       <AppContent scrollY>
-        <MigrateList />
+        <MigrateSubsList link={link} />
       </AppContent>
     </IonPage>
   );
