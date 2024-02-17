@@ -226,11 +226,22 @@ export const defaultCommentDepthSelector = createSelector(
   ],
   (collapseCommentThreads): number => {
     switch (collapseCommentThreads) {
-      case OCommentThreadCollapse.Always:
+      case OCommentThreadCollapse.RootOnly:
+      case OCommentThreadCollapse.All:
         return 1;
       case OCommentThreadCollapse.Never:
         return MAX_DEFAULT_COMMENT_DEPTH;
     }
+  },
+);
+
+export const defaultThreadCollapse = createSelector(
+  [
+    (state: RootState) =>
+      state.settings.general.comments.collapseCommentThreads,
+  ],
+  (collapseCommentThreads): string => {
+    return collapseCommentThreads;
   },
 );
 

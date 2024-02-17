@@ -64,8 +64,9 @@ export type CompactThumbnailSizeType =
   (typeof OCompactThumbnailSizeType)[keyof typeof OCompactThumbnailSizeType];
 
 export const OCommentThreadCollapse = {
-  Always: "always",
   Never: "never",
+  RootOnly: "root_only",
+  All: "all",
 } as const;
 
 export type CommentThreadCollapse =
@@ -411,6 +412,21 @@ export class WefwefDB extends Dexie {
         });
 
         await this.setSetting("gesture_swipe_inbox", gestures);
+      })();
+    });
+
+    this.version(6).upgrade(async () => {
+      // Upgrade collapse comment threads "always" => "root_only"
+      await (async () => {
+        let default_collapse = await this.getSetting(
+          "collapse_comment_threads",
+        );
+
+        if (!default_collapse) return;
+        if ((default_collapse as string) === "always")
+          default_collapse = "root_only";
+
+        await this.setSetting("collapse_comment_threads", default_collapse);
       })();
     });
   }
