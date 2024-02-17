@@ -6,7 +6,7 @@ import {
   IonList,
   IonLoading,
 } from "@ionic/react";
-import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
+import { InsetIonItem } from "../../../routes/pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useState } from "react";
 import { getHandle } from "../../../helpers/lemmy";

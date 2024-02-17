@@ -14,8 +14,7 @@ export function useUserDetails(handle: string) {
     () => blocks?.some((b) => getHandle(b.target) === handle),
     [blocks, handle],
   );
-  const userByHandle = useAppSelector((state) => state.user.userByHandle);
-  const user = userByHandle[handle];
+  const user = useAppSelector((state) => state.user.userByHandle[handle]);
   const { presentLoginIfNeeded } = useContext(PageContext);
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();

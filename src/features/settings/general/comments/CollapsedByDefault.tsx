@@ -6,9 +6,8 @@ import {
 import SettingSelector from "../../shared/SettingSelector";
 
 export default function CollapsedByDefault() {
-  const { collapseCommentThreads } = useAppSelector(
-    // this needs a better naming
-    (state) => state.settings.general.comments,
+  const collapseCommentThreads = useAppSelector(
+    (state) => state.settings.general.comments.collapseCommentThreads,
   );
 
   return (

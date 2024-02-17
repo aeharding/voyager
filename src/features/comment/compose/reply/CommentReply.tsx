@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonButtons,
   IonButton,
@@ -109,8 +109,9 @@ export default function CommentReply({
         }
 
         // Using a remote account
-        const accountJwt = accounts?.find(({ handle }) => handle === account)
-          ?.jwt;
+        const accountJwt = accounts?.find(
+          ({ handle }) => handle === account,
+        )?.jwt;
 
         if (!accountJwt) throw new Error("Error switching accounts");
 

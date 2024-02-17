@@ -175,3 +175,9 @@ export const loginSuccess: AppToastOptions = {
   centerText: true,
   icon: checkmark,
 };
+
+export const migrateParseError: AppToastOptions = {
+  message:
+    "Problem parsing link. Please make sure the link you entered is correct.",
+  color: "warning",
+};

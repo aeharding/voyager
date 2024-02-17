@@ -42,7 +42,9 @@ export function DynamicDismissableModal({
 }: DynamicDismissableModalProps) {
   const pageContext = useContext(PageContext);
   const location = useLocation();
-  const selectedInstance = useAppSelector(instanceSelector);
+  const selectedInstance = useAppSelector(
+    instanceSelector ?? ((state) => state.auth.connectedInstance),
+  );
 
   const [canDismissRef, setCanDismiss] = useStateRef(true);
 

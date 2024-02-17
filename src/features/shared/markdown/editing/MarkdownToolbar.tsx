@@ -1,7 +1,6 @@
-import styled from "@emotion/styled";
 import "@github/markdown-toolbar-element";
+import { styled } from "@linaria/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { css } from "@emotion/react";
 import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 
 import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
@@ -40,14 +39,11 @@ const Toolbar = styled.div<{ keyboardOpen: boolean }>`
   width: 100%;
   border-top: 1px solid var(--ion-item-border-color);
 
-  ${({ theme }) =>
-    theme.dark
-      ? css`
-          background: var(--ion-background-color);
-        `
-      : css`
-          background: var(--ion-item-background, #fff);
-        `}
+  background: var(--ion-item-background, #fff);
+
+  .theme-dark & {
+    background: var(--ion-background-color);
+  }
 
   markdown-toolbar {
     display: flex;

@@ -18,7 +18,7 @@ import {
   CommentView,
   PersonMentionView,
 } from "lemmy-js-client";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import {
   getHandle,
   getRemoteHandle,
@@ -32,14 +32,14 @@ import {
   saveSuccess,
   voteError,
 } from "../../helpers/toastMessages";
-import { useAppDispatch, useAppSelector } from "../../store";
+import store, { useAppDispatch } from "../../store";
 import { PageContext } from "../auth/PageContext";
 import { userHandleSelector } from "../auth/authSelectors";
 import { CommentsContext } from "./CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
 import useCollapseRootComment from "./useCollapseRootComment";
 import useAppToast from "../../helpers/useAppToast";
-import { ModeratorRole, getModIcon } from "../moderation/useCanModerate";
+import { getCanModerate, getModIcon } from "../moderation/useCanModerate";
 import useCommentModActions from "../moderation/useCommentModActions";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { isDownvoteEnabledSelector } from "../auth/siteSlice";
@@ -49,34 +49,22 @@ export interface CommentActionsProps {
   comment: CommentView | PersonMentionView | CommentReplyView;
   rootIndex: number | undefined;
   appendActions?: ActionSheetOptions["buttons"];
-  canModerate: ModeratorRole | undefined;
 }
 
 export default function useCommentActions({
   comment: commentView,
   rootIndex,
   appendActions,
-  canModerate,
 }: CommentActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const { prependComments, getComments } = useContext(CommentsContext);
-  const myHandle = useAppSelector(userHandleSelector);
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();
   const collapseRootComment = useCollapseRootComment(commentView, rootIndex);
 
-  const post = useAppSelector(
-    (state) => state.post.postById[commentView.post.id],
-  );
-
-  const commentById = useAppSelector((state) => state.comment.commentById);
-
   const router = useOptimizedIonRouter();
-
-  // Comment from slice might be more up to date, e.g. edits
-  const comment = commentById[commentView.comment.id] ?? commentView.comment;
 
   const {
     presentLoginIfNeeded,
@@ -87,24 +75,34 @@ export default function useCommentActions({
     presentShareAsImage,
   } = useContext(PageContext);
 
-  const commentVotesById = useAppSelector(
-    (state) => state.comment.commentVotesById,
-  );
-  const commentSavedById = useAppSelector(
-    (state) => state.comment.commentSavedById,
-  );
-
-  const myVote = commentVotesById[comment.id] ?? commentView.my_vote;
-  const mySaved = commentSavedById[comment.id] ?? commentView.saved;
-
-  const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
-  const isMyComment = getRemoteHandle(commentView.creator) === myHandle;
-  const commentExists = !comment.deleted && !comment.removed;
-
   const { loading, present: presentCommentModActions } =
     useCommentModActions(commentView);
 
+  // Do all logic sync in present() so it doesn't slow down initial render
   const present = useCallback(() => {
+    const state = store.getState();
+
+    const myHandle = userHandleSelector(state);
+
+    const commentVotesById = state.comment.commentVotesById;
+    const commentSavedById = state.comment.commentSavedById;
+
+    const commentById = state.comment.commentById;
+
+    // Comment from slice might be more up to date, e.g. edits
+    const comment = commentById[commentView.comment.id] ?? commentView.comment;
+
+    const myVote = commentVotesById[comment.id] ?? commentView.my_vote;
+    const mySaved = commentSavedById[comment.id] ?? commentView.saved;
+
+    const downvoteAllowed = isDownvoteEnabledSelector(state);
+    const isMyComment = getRemoteHandle(commentView.creator) === myHandle;
+    const commentExists = !comment.deleted && !comment.removed;
+
+    const post = state.post.postById[commentView.post.id];
+
+    const canModerate = getCanModerate(commentView.community);
+
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: compact([
@@ -292,18 +290,10 @@ export default function useCommentActions({
   }, [
     appendActions,
     buildGeneralBrowseLink,
-    canModerate,
     collapseRootComment,
-    comment,
-    commentExists,
     commentView,
     dispatch,
-    downvoteAllowed,
     getComments,
-    isMyComment,
-    mySaved,
-    myVote,
-    post,
     prependComments,
     presentActionSheet,
     presentCommentEdit,
@@ -319,5 +309,5 @@ export default function useCommentActions({
     router,
   ]);
 
-  return { loading, present };
+  return useMemo(() => ({ loading, present }), [loading, present]);
 }

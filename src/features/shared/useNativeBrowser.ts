@@ -1,11 +1,12 @@
 import { Browser } from "@capacitor/browser";
 import { useCallback } from "react";
 import { useAppSelector } from "../../store";
-import { useTheme } from "@emotion/react";
 import { isAndroid } from "../../helpers/device";
+import { notifyStatusTapThatBrowserWasOpened } from "../../core/listeners/statusTap";
+import { useIsDark } from "../../core/GlobalStyles";
 
 export default function useNativeBrowser() {
-  const { dark } = useTheme();
+  const isDark = useIsDark();
   const { usingSystemDarkMode, pureBlack } = useAppSelector(
     (state) => state.settings.appearance.dark,
   );
@@ -16,7 +17,7 @@ export default function useNativeBrowser() {
         if (usingSystemDarkMode) return undefined;
 
         if (isAndroid()) {
-          if (dark) {
+          if (isDark) {
             if (pureBlack) return "#000000";
 
             return "#0f1419";
@@ -25,7 +26,7 @@ export default function useNativeBrowser() {
           return "#ffffff";
         } else {
           // iOS clamps so #000 is not true black
-          if (dark) return "#000000";
+          if (isDark) return "#000000";
 
           return "#ffffff";
         }
@@ -35,7 +36,8 @@ export default function useNativeBrowser() {
         url: href,
         toolbarColor,
       });
+      notifyStatusTapThatBrowserWasOpened();
     },
-    [dark, usingSystemDarkMode, pureBlack],
+    [isDark, usingSystemDarkMode, pureBlack],
   );
 }

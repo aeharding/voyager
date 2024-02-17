@@ -11,7 +11,7 @@
     "plugin:react-hooks/recommended",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["react", "@typescript-eslint", "@emotion"],
+  "plugins": ["react", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -30,16 +30,11 @@
     "no-console": ["warn", { "allow": ["warn", "error", "info"] }],
     "linebreak-style": ["warn", "unix"],
     "react/jsx-fragments": ["warn", "syntax"],
-    "no-undef": 1,
     "@typescript-eslint/no-empty-function": 0,
     "@typescript-eslint/no-empty-interface": 0,
     "react/jsx-curly-brace-presence": ["warn", "never"],
     "eqeqeq": ["warn", "smart"],
     "react/no-unknown-property": ["error", { "ignore": ["css"] }],
-    "@emotion/no-vanilla": "error",
-    "@emotion/import-from-emotion": "error",
-    "@emotion/styled-import": "error",
-    "@emotion/syntax-preference": [2, "string"],
     "@typescript-eslint/no-unused-vars": [
       "warn",
       { "destructuredArrayIgnorePattern": "^_" }

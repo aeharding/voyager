@@ -1,9 +1,9 @@
+import { styled } from "@linaria/react";
 import { CommunityAggregates, Person, SiteAggregates } from "lemmy-js-client";
 import React from "react";
 import Markdown from "../../shared/Markdown";
 import SidebarCounts from "./SidebarCounts";
 import SidebarOwners from "./SidebarOwners";
-import styled from "@emotion/styled";
 
 const Container = styled.div`
   line-height: 1.5;

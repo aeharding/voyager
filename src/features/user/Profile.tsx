@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { IonIcon, IonLabel, IonList, IonItem } from "@ionic/react";
-import styled from "@emotion/styled";
 import Scores from "./Scores";
 import {
   albumsOutline,
@@ -28,6 +27,7 @@ import {
   getModName,
 } from "../moderation/useCanModerate";
 import useModZoneActions from "../moderation/useModZoneActions";
+import { styled } from "@linaria/react";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));

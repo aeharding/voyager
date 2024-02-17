@@ -200,6 +200,15 @@ export const OTapToCollapseType = {
   Neither: "neither",
 } as const;
 
+export type AutoplayMediaType =
+  (typeof OAutoplayMediaType)[keyof typeof OAutoplayMediaType];
+
+export const OAutoplayMediaType = {
+  WifiOnly: "wifi-only",
+  Always: "always",
+  Never: "never",
+} as const;
+
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
@@ -257,8 +266,10 @@ export type SettingValueTypes = {
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_show_voting_buttons: boolean;
   compact_thumbnail_size: CompactThumbnailSizeType;
+  compact_show_self_post_thumbnails: boolean;
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
+  migration_links: string[];
   default_comment_sort: CommentDefaultSort;
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
@@ -290,6 +301,7 @@ export type SettingValueTypes = {
   default_post_sort_by_feed: SortType;
   remember_community_sort: boolean;
   embed_crossposts: boolean;
+  autoplay_media: AutoplayMediaType;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

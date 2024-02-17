@@ -1,40 +1,19 @@
-import { css } from "@emotion/react";
 import { getHandle } from "../../../helpers/lemmy";
-import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Person } from "lemmy-js-client";
 import Handle from "../Handle";
-import { StyledLink, hideCss } from "./shared";
 import { useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
 import AgeBadge from "./AgeBadge";
 import { useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
+import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import { styled } from "@linaria/react";
+import { StyledLink, hideCss } from "./shared";
+import { cx } from "@linaria/core";
 
 const Prefix = styled.span`
   font-weight: normal;
-`;
-
-const PersonLinkEl = styled(StyledLink, {
-  shouldForwardProp: (prop) => prop !== "hideUsername",
-})<{
-  color: string | undefined;
-  hideUsername: boolean;
-}>`
-  ${({ color }) =>
-    color
-      ? css`
-          && {
-            color: ${color};
-          }
-        `
-      : undefined}
-
-  ${({ hideUsername }) =>
-    hideUsername &&
-    css`
-      ${hideCss}
-    `}
 `;
 
 interface PersonLinkProps {
@@ -75,12 +54,14 @@ export default function PersonLink({
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
   return (
-    <PersonLinkEl
+    <StyledLink
       to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
-      onClick={(e) => e.stopPropagation()}
-      className={className}
-      hideUsername={hideUsernames}
-      color={color}
+      onClick={(e) => {
+        e.stopPropagation();
+        preventOnClickNavigationBug(e);
+      }}
+      className={cx(className, hideUsernames ? hideCss : undefined)}
+      style={{ color }}
     >
       {prefix ? (
         <>
@@ -97,6 +78,6 @@ export default function PersonLink({
           <AgeBadge published={person.published} />
         </>
       )}
-    </PersonLinkEl>
+    </StyledLink>
   );
 }

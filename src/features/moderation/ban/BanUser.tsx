@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonButtons,
   IonButton,
@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { BanUserPayload } from "../../auth/PageContext";
 import { useAppDispatch } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
-import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
+import { preventPhotoswipeGalleryFocusTrap } from "../../media/gallery/GalleryImg";
 import { getHandle } from "../../../helpers/lemmy";
 import AddRemoveButtons from "../../share/asImage/AddRemoveButtons";
 import { banUser } from "../../user/userSlice";

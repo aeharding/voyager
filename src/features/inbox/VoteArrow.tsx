@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { arrowDown, arrowUp } from "ionicons/icons";
 
 const Container = styled.div`

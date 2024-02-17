@@ -10,10 +10,10 @@ import AppThemePreview from "./AppThemePreview";
 import { AppThemeType, OAppThemeType } from "../../../../../services/db";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { setTheme } from "../../../settingsSlice";
-import styled from "@emotion/styled";
-import { getTheme } from "../../../../../theme/AppThemes";
+import { getTheme } from "../../../../../core/theme/AppThemes";
 import { capitalize } from "lodash";
-import { useTheme } from "@emotion/react";
+import { styled } from "@linaria/react";
+import { useIsDark } from "../../../../../core/GlobalStyles";
 
 const Description = styled.div`
   font-size: 0.76em;
@@ -22,16 +22,16 @@ const Description = styled.div`
 
 export default function AppTheme() {
   const theme = useAppSelector((state) => state.settings.appearance.theme);
+  const isDark = useIsDark();
   const dispatch = useAppDispatch();
   const [presentAlert] = useIonAlert();
-  const userTheme = useTheme();
 
   function onChangeTheme(themeName: AppThemeType) {
     dispatch(setTheme(themeName));
 
     const theme = getTheme(themeName);
 
-    if (theme.dark.background && !theme.light.background && !userTheme.dark) {
+    if (theme.dark.background && !theme.light.background && !isDark) {
       presentAlert({
         header: `${capitalize(themeName)} Looks Best Dark`,
         message: `Just as a heads up, you're in the light theme currently but ${capitalize(
@@ -54,12 +54,16 @@ export default function AppTheme() {
         <IonList inset>
           {Object.values(OAppThemeType).map((theme) => (
             <InsetIonItem key={theme}>
-              <AppThemePreview appTheme={theme} />
-              <IonLabel>
-                <div>{getThemeName(theme)}</div>
-                <Description>{getThemeDescription(theme)}</Description>
-              </IonLabel>
-              <IonRadio value={theme} />
+              <AppThemePreview slot="start" appTheme={theme} />
+
+              <IonRadio value={theme}>
+                <IonLabel>
+                  <div>{getThemeName(theme)}</div>
+                  <Description className="ion-text-wrap">
+                    {getThemeDescription(theme)}
+                  </Description>
+                </IonLabel>
+              </IonRadio>
             </InsetIonItem>
           ))}
         </IonList>

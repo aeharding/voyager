@@ -1,10 +1,10 @@
+import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
 import LargePost from "./large/LargePost";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import store, { useAppDispatch, useAppSelector } from "../../../store";
 import CompactPost from "./compact/CompactPost";
 import SlidingVote from "../../shared/sliding/SlidingPostVote";
 import { IonItem } from "@ionic/react";
-import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
@@ -14,6 +14,7 @@ import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 import { useLongPress } from "use-long-press";
 import usePostActions from "../shared/usePostActions";
 import { filterSafariCallout } from "../../../helpers/longPress";
+import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -27,14 +28,7 @@ const CustomIonItem = styled(IonItem)`
 export interface PostProps {
   post: PostView;
 
-  /**
-   * Hide the community name, show author name
-   */
-  communityMode?: boolean;
-
   className?: string;
-
-  modqueue?: boolean;
 }
 
 function Post(props: PostProps) {
@@ -42,9 +36,6 @@ function Post(props: PostProps) {
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
   const [shouldHide, setShouldHide] = useState(false);
   const shouldHideRef = useRef(false);
-  const isHidden = useAppSelector(
-    (state) => state.post.postHiddenById[props.post.post.id]?.hidden,
-  );
   const hideCompleteRef = useRef(false);
   const possiblyPost = useAppSelector(
     (state) => state.post.postById[props.post.post.id],
@@ -53,18 +44,20 @@ function Post(props: PostProps) {
     typeof possiblyPost === "object" ? possiblyPost : undefined;
   const openPostActions = usePostActions(props.post);
 
-  // eslint-disable-next-line no-undef
   const targetIntersectionRef = useRef<HTMLIonItemElement>(null);
 
   const onFinishHide = useCallback(() => {
     hideCompleteRef.current = true;
+
+    const isHidden =
+      store.getState().post.postHiddenById[props.post.post.id]?.hidden;
 
     if (isHidden) {
       dispatch(unhidePost(props.post.post.id));
     } else {
       dispatch(hidePost(props.post.post.id));
     }
-  }, [dispatch, props.post.post.id, isHidden]);
+  }, [dispatch, props.post.post.id]);
 
   useEffect(() => {
     // Refs must be used during cleanup useEffect
@@ -86,16 +79,15 @@ function Post(props: PostProps) {
     (state) => state.settings.appearance.posts.type,
   );
 
-  const bind = useLongPress(
-    () => {
-      openPostActions();
-    },
-    {
-      threshold: 800,
-      cancelOnMovement: true,
-      filterEvents: filterSafariCallout,
-    },
-  );
+  const onPostLongPress = useCallback(() => {
+    openPostActions();
+  }, [openPostActions]);
+
+  const bind = useLongPress(onPostLongPress, {
+    threshold: 800,
+    cancelOnMovement: true,
+    filterEvents: filterSafariCallout,
+  });
 
   const postBody = (() => {
     switch (postAppearanceType) {
@@ -125,7 +117,9 @@ function Post(props: PostProps) {
               props.post.post.id
             }`,
           )}
-          onClick={() => {
+          onClick={(e) => {
+            if (preventOnClickNavigationBug(e)) return;
+
             // Marking post read is done in the post detail page when it finishes transitioning in.
             // However, autohiding is context-sensitive (community feed vs special feed, etc)
             // and doesn't cause rerender, so do it now.

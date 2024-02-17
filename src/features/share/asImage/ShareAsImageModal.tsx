@@ -1,7 +1,7 @@
+import { styled } from "@linaria/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import ShareAsImage from "./ShareAsImage";
 import { MutableRefObject, useEffect, useState } from "react";
-import styled from "@emotion/styled";
 import { IonButtons, IonHeader, IonIcon, IonTitle } from "@ionic/react";
 import {
   CloseButton,
@@ -20,7 +20,7 @@ export type ShareAsImageData =
     };
 
 interface SelectTextProps {
-  dataRef: MutableRefObject<ShareAsImageData>;
+  dataRef: MutableRefObject<ShareAsImageData | null>;
   onDismiss: () => void;
 }
 
@@ -32,7 +32,7 @@ export default function ShareAsImageModal({
   dataRef,
   onDismiss,
 }: SelectTextProps) {
-  const [data, setData] = useState<ShareAsImageData | undefined>(undefined);
+  const [data, setData] = useState<ShareAsImageData | null>(null);
 
   useEffect(() => {
     setData(dataRef.current);

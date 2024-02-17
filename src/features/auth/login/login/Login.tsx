@@ -31,7 +31,7 @@ import { HelperText } from "../../../settings/shared/formatting";
 import { getImageSrc } from "../../../../services/lemmy";
 import { loginSuccess } from "../../../../helpers/toastMessages";
 import lemmyLogo from "../lemmyLogo.svg";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { VOYAGER_TERMS } from "../../../../helpers/voyager";
 import { getInstanceFromHandle } from "../../authSelectors";
 
@@ -51,7 +51,6 @@ export default function Login({ url, siteIcon }: LoginProps) {
 
   const { dismiss, setCanDismiss } = useContext(DynamicDismissableModalContext);
 
-  // eslint-disable-next-line no-undef
   const usernameRef = useRef<HTMLIonInputElement>(null);
 
   const [username, setUsername] = useState("");

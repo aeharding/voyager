@@ -285,7 +285,7 @@ export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
   return error.message === lemmyErrorValue;
 }
 
-export function canModerate(
+export function canModerateCommunity(
   communityId: number | undefined,
   moderates: CommunityModeratorView[] | undefined,
 ): boolean {

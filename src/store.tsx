@@ -33,6 +33,7 @@ import resolveSlice from "./features/resolve/resolveSlice";
 import biometricSlice, {
   initializeBiometricSliceDataIfNeeded,
 } from "./features/settings/biometric/biometricSlice";
+import migrationSlice from "./features/migrate/migrationSlice";
 import modSlice from "./features/moderation/modSlice";
 import imageSlice from "./features/post/inFeed/large/imageSlice";
 import feedSortSlice from "./features/feed/sort/feedSortSlice";
@@ -40,6 +41,7 @@ import siteSlice from "./features/auth/siteSlice";
 import { handleSelector } from "./features/auth/authSelectors";
 import pickJoinServerSlice from "./features/auth/login/pickJoinServer/pickJoinServerSlice";
 import joinSlice from "./features/auth/login/join/joinSlice";
+import networkSlice from "./core/listeners/network/networkSlice";
 
 const store = configureStore({
   reducer: {
@@ -61,6 +63,8 @@ const store = configureStore({
     feedSort: feedSortSlice,
     pickJoinServer: pickJoinServerSlice,
     join: joinSlice,
+    network: networkSlice,
+    migration: migrationSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
