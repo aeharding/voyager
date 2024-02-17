@@ -43,6 +43,7 @@ import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
 import { SortType } from "lemmy-js-client";
 import { loggedInSelector } from "../auth/authSelectors";
+import Dexie from "dexie";
 
 export {
   type CommentThreadCollapse,
@@ -55,6 +56,7 @@ export {
 
 interface SettingsState {
   ready: boolean;
+  databaseError: Error | undefined;
   appearance: {
     font: {
       fontSizeMultiplier: number;
@@ -136,6 +138,7 @@ export const LOCALSTORAGE_KEYS = {
 
 export const initialState: SettingsState = {
   ready: false,
+  databaseError: undefined,
   appearance: {
     font: {
       fontSizeMultiplier: 1,
@@ -255,6 +258,9 @@ export const appearanceSlice = createSlice({
     );
   },
   reducers: {
+    setDatabaseError(state, action: PayloadAction<Error>) {
+      state.databaseError = action.payload;
+    },
     setFontSizeMultiplier(state, action: PayloadAction<number>) {
       state.appearance.font.fontSizeMultiplier = action.payload;
       set(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER, action.payload);
@@ -713,6 +719,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
     try {
       return await result;
     } catch (error) {
+      if (error instanceof Dexie.MissingAPIError) {
+        thunkApi.dispatch(setDatabaseError(error));
+      }
+
       // In the event of a database error, attempt to render the UI anyways
       thunkApi.dispatch(settingsReady());
 
@@ -722,6 +732,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 );
 
 export const {
+  setDatabaseError,
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setUserInstanceUrlDisplay,
