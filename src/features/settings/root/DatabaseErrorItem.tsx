@@ -8,10 +8,6 @@ import { useAppSelector } from "../../../store";
 import { isAppleDeviceInstallable } from "../../../helpers/device";
 import InAppExternalLink from "../../shared/InAppExternalLink";
 
-const autoHeight = css`
-  --height: auto;
-`;
-
 export default function DatabaseErrorItem() {
   const [presentPreview] = useIonModal(WarningModal);
 
@@ -19,7 +15,9 @@ export default function DatabaseErrorItem() {
     presentPreview({
       initialBreakpoint: 1,
       breakpoints: [0, 1],
-      cssClass: autoHeight,
+      cssClass: css`
+        --height: auto;
+      `,
     });
   }
 
