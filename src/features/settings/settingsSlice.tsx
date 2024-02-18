@@ -71,6 +71,9 @@ interface SettingsState {
       type: PostAppearanceType;
       embedCrossposts: boolean;
     };
+    large: {
+      showVotingButtons: boolean;
+    };
     compact: {
       thumbnailsPosition: CompactThumbnailPositionType;
       showVotingButtons: boolean;
@@ -152,6 +155,9 @@ export const initialState: SettingsState = {
       blurNsfw: OPostBlurNsfw.InFeed,
       type: OPostAppearanceType.Large,
       embedCrossposts: true,
+    },
+    large: {
+      showVotingButtons: true,
     },
     compact: {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
@@ -335,7 +341,11 @@ export const appearanceSlice = createSlice({
       state.general.noSubscribedInFeed = action.payload;
       db.setSetting("no_subscribed_in_feed", action.payload);
     },
-    setShowVotingButtons(state, action: PayloadAction<boolean>) {
+    setLargeShowVotingButtons(state, action: PayloadAction<boolean>) {
+      state.appearance.large.showVotingButtons = action.payload;
+      db.setSetting("large_show_voting_buttons", action.payload);
+    },
+    setCompactShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.compact.showVotingButtons = action.payload;
       db.setSetting("compact_show_voting_buttons", action.payload);
     },
@@ -566,6 +576,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const embed_crossposts = await db.getSetting("embed_crossposts");
+      const large_show_voting_buttons = await db.getSetting(
+        "large_show_voting_buttons",
+      );
       const compact_thumbnail_position_type = await db.getSetting(
         "compact_thumbnail_position_type",
       );
@@ -629,6 +642,11 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             blurNsfw: blur_nsfw ?? initialState.appearance.posts.blurNsfw,
             embedCrossposts:
               embed_crossposts ?? initialState.appearance.posts.embedCrossposts,
+          },
+          large: {
+            showVotingButtons:
+              large_show_voting_buttons ??
+              initialState.appearance.large.showVotingButtons,
           },
           compact: {
             thumbnailsPosition:
@@ -749,7 +767,8 @@ export const {
   setFilteredKeywords,
   setPostAppearance,
   setThumbnailPosition,
-  setShowVotingButtons,
+  setLargeShowVotingButtons,
+  setCompactShowVotingButtons,
   setCompactThumbnailSize,
   setCompactShowSelfPostThumbnails,
   setVoteDisplayMode,

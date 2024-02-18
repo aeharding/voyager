@@ -264,6 +264,7 @@ export type SettingValueTypes = {
   profile_label: ProfileLabelType;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
+  large_show_voting_buttons: boolean;
   compact_show_voting_buttons: boolean;
   compact_thumbnail_size: CompactThumbnailSizeType;
   compact_show_self_post_thumbnails: boolean;

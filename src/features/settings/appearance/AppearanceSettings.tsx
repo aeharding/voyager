@@ -4,6 +4,7 @@ import CompactSettings from "./CompactSettings";
 import GeneralAppearance from "./General";
 import Votes from "./Votes";
 import ThemesButton from "./ThemesButton";
+import LargeSettings from "./LargeSettings";
 
 export default function AppearanceSettings() {
   return (
@@ -12,6 +13,7 @@ export default function AppearanceSettings() {
       <TextSize />
       <GeneralAppearance />
       <Posts />
+      <LargeSettings />
       <CompactSettings />
       <Votes />
     </>
