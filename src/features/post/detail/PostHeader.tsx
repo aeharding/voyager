@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { IonIcon, IonItem } from "@ionic/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import { maxWidthCss } from "../../shared/AppContent";
@@ -13,8 +12,6 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
 import { findLoneImage } from "../../../helpers/markdown";
 import { isUrlMedia } from "../../../helpers/url";
-import { css } from "@emotion/react";
-import PostMedia from "../../gallery/PostMedia";
 import Markdown from "../../shared/Markdown";
 import Embed from "../shared/Embed";
 import InlineMarkdown from "../../shared/InlineMarkdown";
@@ -27,6 +24,10 @@ import Locked from "./Locked";
 import PostActions from "../actions/PostActions";
 import { postLocked } from "../../../helpers/toastMessages";
 import { togglePostCollapse } from "../postSlice";
+import Crosspost from "../crosspost/Crosspost";
+import useCrosspostUrl from "../shared/useCrosspostUrl";
+import Media from "../inFeed/large/media/Media";
+import { styled } from "@linaria/react";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -38,20 +39,12 @@ const BorderlessIonItem = styled(IonItem)`
   ${maxWidthCss}
 `;
 
-const LightboxPostMedia = styled(PostMedia, {
-  shouldForwardProp: (prop) => prop !== "constrainHeight",
-})<{ constrainHeight?: boolean }>`
+const LightboxMedia = styled(Media)`
   -webkit-touch-callout: default;
 
   width: 100%;
   object-fit: contain;
   background: var(--lightroom-bg);
-
-  ${({ constrainHeight }) =>
-    constrainHeight &&
-    css`
-      max-height: 50vh;
-    `}
 `;
 
 const StyledMarkdown = styled(Markdown)`
@@ -67,6 +60,10 @@ const StyledMarkdown = styled(Markdown)`
 `;
 
 const StyledEmbed = styled(Embed)`
+  margin: 12px 0;
+`;
+
+const StyledCrosspost = styled(Crosspost)`
   margin: 12px 0;
 `;
 
@@ -133,6 +130,8 @@ function PostHeader({
   const titleRef = useRef<HTMLDivElement>(null);
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
 
+  const crosspostUrl = useCrosspostUrl(post);
+
   const tapToCollapse = useAppSelector(
     (state) => state.settings.general.comments.tapToCollapse,
   );
@@ -149,48 +148,58 @@ function PostHeader({
     [post],
   );
 
+  const urlIsMedia = useMemo(
+    () => post.post.url && isUrlMedia(post.post.url),
+    [post],
+  );
+
   const renderMedia = useCallback(() => {
     if (!post) return;
 
-    if ((post.post.url && isUrlMedia(post.post.url)) || markdownLoneImage) {
+    if (urlIsMedia || markdownLoneImage) {
       return (
-        <LightboxPostMedia
+        <LightboxMedia
+          blur={false}
           post={post}
-          controls
-          constrainHeight={constrainHeight}
-          onClick={(e) => e.stopPropagation()}
+          nativeControls
+          onClick={(e) => {
+            e.preventDefault(); // prevent OutPortalEventDispatcher dispatch
+          }}
+          style={constrainHeight ? { maxHeight: "50vh" } : undefined}
         />
       );
     }
-  }, [markdownLoneImage, post, constrainHeight]);
+  }, [post, urlIsMedia, markdownLoneImage, constrainHeight]);
 
   const renderText = useCallback(() => {
     if (!post) return;
 
-    const usedLoneImage =
-      markdownLoneImage && (!post.post.url || !isUrlMedia(post.post.url));
+    if (crosspostUrl) {
+      return <StyledCrosspost post={post} url={crosspostUrl} />;
+    }
+
+    const usedLoneImage = markdownLoneImage && !urlIsMedia;
 
     if (post.post.body && !usedLoneImage) {
       return (
         <>
-          {post.post.url && !isUrlMedia(post.post.url) && <Embed post={post} />}
+          {post.post.url && !urlIsMedia && <Embed post={post} />}
           <StyledMarkdown>{post.post.body}</StyledMarkdown>
         </>
       );
     }
 
-    if (post.post.url && !isUrlMedia(post.post.url)) {
+    if (post.post.url && !urlIsMedia) {
       return <StyledEmbed post={post} />;
     }
-  }, [markdownLoneImage, post]);
+  }, [post, crosspostUrl, markdownLoneImage, urlIsMedia]);
 
   return (
     <ModeratableItem itemView={post}>
       <BorderlessIonItem
         className={className}
         onClick={(e) => {
-          if (e.target instanceof HTMLElement && e.target.nodeName === "A")
-            return;
+          if (e.target instanceof HTMLAnchorElement) return;
 
           if (
             tapToCollapse === OTapToCollapseType.Neither ||
@@ -203,7 +212,7 @@ function PostHeader({
         }}
       >
         <Container>
-          {showPostText && renderMedia()}
+          {showPostText && !crosspostUrl && renderMedia()}
           <PostDeets>
             <ModeratableItemBannerOutlet />
             <div>

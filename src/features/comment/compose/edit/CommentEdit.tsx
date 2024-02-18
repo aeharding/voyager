@@ -8,7 +8,7 @@ import {
 import { Comment } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../../store";
-import { Centered, Spinner } from "../../../auth/Login";
+import { Centered, Spinner } from "../../../auth/login/LoginNav";
 import { editComment } from "../../commentSlice";
 import { DismissableProps } from "../../../shared/DynamicDismissableModal";
 import CommentContent from "../shared";
@@ -70,9 +70,7 @@ export default function CommentEdit({
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => dismiss()}>
-              Cancel
-            </IonButton>
+            <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>
             <Centered>
@@ -82,9 +80,10 @@ export default function CommentEdit({
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
-              strong={true}
+              strong
               type="submit"
               disabled={isSubmitDisabled}
+              color={isSubmitDisabled ? "medium" : undefined}
               onClick={submit}
             >
               Save

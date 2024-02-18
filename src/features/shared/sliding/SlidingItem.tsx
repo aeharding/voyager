@@ -1,17 +1,10 @@
 import { ImpactStyle } from "@capacitor/haptics";
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { IonItemSlidingCustomEvent, ItemSlidingCustomEvent } from "@ionic/core";
-import {
-  IonIcon,
-  IonItemOption,
-  IonItemOptions,
-  IonItemSliding,
-} from "@ionic/react";
-import { bookmark, mailUnread } from "ionicons/icons";
+import { IonItemOption, IonItemOptions, IonItemSliding } from "@ionic/react";
 import React, {
   MouseEvent,
   TouchEvent,
+  useCallback,
   useMemo,
   useRef,
   useState,
@@ -20,6 +13,9 @@ import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { bounceAnimation } from "../animations";
 import { useAppSelector } from "../../../store";
 import { OLongSwipeTriggerPointType } from "../../../services/db";
+import ActionContents from "./ActionContents";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   overflow: initial; // sticky
@@ -36,7 +32,7 @@ const StyledIonItemOption = styled(IonItemOption)`
   margin-top: 0.5px;
 `;
 
-const OptionContainer = styled.div<{ active: boolean }>`
+const OptionContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,47 +52,12 @@ const OptionContainer = styled.div<{ active: boolean }>`
   .item-options-end & {
     margin-left: auto;
   }
-
-  ${({ active }) =>
-    active &&
-    css`
-      opacity: 1;
-
-      ${bounceAnimation}
-    `}
 `;
 
-const custom_slash_lengths: Record<string, number> = {
-  [bookmark]: 35,
-  [mailUnread]: 40,
-};
+const optionContainerActiveCss = css`
+  opacity: 1;
 
-const SlashedIcon = styled(IonIcon)<{
-  icon: string;
-  slash: boolean;
-  bgColor: string;
-}>`
-  margin-block: 24px;
-
-  color: white;
-
-  ${({ icon, slash, bgColor }) =>
-    slash &&
-    css`
-      &::after {
-        content: "";
-        position: absolute;
-        height: ${custom_slash_lengths[icon] ?? 30}px;
-        width: 3px;
-        background: white;
-        font-size: 1.7em;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) rotate(-45deg);
-        transform-origin: center;
-        box-shadow: 0 0 0 2px var(--ion-color-${bgColor});
-      }
-    `}
+  ${bounceAnimation}
 `;
 
 export type SlidingItemAction = {
@@ -129,11 +90,17 @@ const SECOND_ACTION_RATIO_LATER = 2.5;
 
 function getActiveItem(
   ratio: number,
-  hasNearSwipe: boolean,
-  hasFarSwipe: boolean,
+  startActions: ActionList,
+  endActions: ActionList,
   SECOND_ACTION_RATIO: number,
 ) {
-  ratio = Math.abs(ratio);
+  const hasNearSwipe = !!(ratio < 0 ? startActions[0] : endActions[0]);
+  const hasFarSwipe = !!(ratio < 0 ? startActions[1] : endActions[1]);
+
+  if (ratio < 0) {
+    if (ratio < -SECOND_ACTION_RATIO && hasFarSwipe) return -2;
+    if (ratio < -FIRST_ACTION_RATIO && hasNearSwipe) return -1;
+  }
 
   if (ratio > SECOND_ACTION_RATIO && hasFarSwipe) return 2;
   if (ratio > FIRST_ACTION_RATIO && hasNearSwipe) return 1;
@@ -147,50 +114,54 @@ export default function SlidingItem({
   children,
 }: SlidingItemProps) {
   const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
-  const [ratio, setRatio] = useState(0);
+  const [activeItemIndex, setActiveItemIndex] = useState<0 | 1 | 2 | -1 | -2>(
+    0,
+  );
   const vibrate = useHapticFeedback();
-  const [dragging, setDragging] = useState(false);
+  const draggingRef = useRef(false);
   const longSwipeTriggerPoint = useAppSelector(
     (state) => state.gesture.swipe.longSwipeTriggerPoint,
   );
 
-  const SECOND_ACTION_RATIO = (() => {
+  const SECOND_ACTION_RATIO = useMemo(() => {
     switch (longSwipeTriggerPoint) {
       case OLongSwipeTriggerPointType.Normal:
         return SECOND_ACTION_RATIO_NORMAL;
       case OLongSwipeTriggerPointType.Later:
         return SECOND_ACTION_RATIO_LATER;
     }
-  })();
+  }, [longSwipeTriggerPoint]);
 
-  const activeActionRef = useRef(0);
+  const activeActionRef = useRef(activeItemIndex);
 
-  async function onIonDrag(e: IonItemSlidingCustomEvent<unknown>) {
-    dragRef.current = e;
+  const onIonDrag = useCallback(
+    async (e: IonItemSlidingCustomEvent<unknown>) => {
+      dragRef.current = e;
 
-    const ratio = await e.target.getSlidingRatio();
+      if (!draggingRef.current) return;
 
-    if (Math.round(ratio) === ratio) return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const ratio = (e.detail as any).ratio;
 
-    setRatio(ratio);
-    setDragging(true);
+      if (Math.round(ratio) === ratio) return;
 
-    const hasNearSwipe = !!(ratio < 0 ? startActions[0] : endActions[0]);
-    const hasFarSwipe = !!(ratio < 0 ? startActions[1] : endActions[1]);
+      const activeItem = getActiveItem(
+        ratio,
+        startActions,
+        endActions,
+        SECOND_ACTION_RATIO,
+      );
 
-    const activeItem = getActiveItem(
-      ratio,
-      hasNearSwipe,
-      hasFarSwipe,
-      SECOND_ACTION_RATIO,
-    );
+      setActiveItemIndex(activeItem);
 
-    if (activeItem > activeActionRef.current) {
-      vibrate({ style: ImpactStyle.Light });
-    }
+      if (Math.abs(activeItem) > activeActionRef.current) {
+        vibrate({ style: ImpactStyle.Light });
+      }
 
-    activeActionRef.current = activeItem;
-  }
+      activeActionRef.current = Math.abs(activeItem) as 0 | 1 | 2;
+    },
+    [SECOND_ACTION_RATIO, endActions, startActions, vibrate],
+  );
 
   /*
    * Start Actions
@@ -206,27 +177,16 @@ export default function SlidingItem({
   const currentStartActionIndex = useMemo(() => {
     if (!startActions[1]) return 0;
     else if (!startActions[0]) return 1;
-    else return ratio <= -SECOND_ACTION_RATIO ? 1 : 0;
-  }, [ratio, startActions, SECOND_ACTION_RATIO]);
+    else return activeItemIndex === -2 ? 1 : 0;
+  }, [activeItemIndex, startActions]);
 
-  const startActionColor = startActions[currentStartActionIndex]?.bgColor;
-
-  const startActionContents = useMemo(() => {
-    const action = startActions[currentStartActionIndex];
-    if (!action) return;
-
-    const icon = action.icon;
-    return (
-      <SlashedIcon
-        icon={icon}
-        slash={action.slash ?? false}
-        bgColor={action.bgColor}
-      />
-    );
+  const startActionContents = useMemo(
+    () => <ActionContents action={startActions[currentStartActionIndex]} />,
 
     // NOTE: This caches the content so that it doesn't re-render until completely closed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStartActionIndex, ratio]);
+    [activeItemIndex],
+  );
 
   /*
    * End Actions
@@ -235,77 +195,124 @@ export default function SlidingItem({
   const currentEndActionIndex = useMemo(() => {
     if (!endActions[1]) return 0;
     else if (!endActions[0]) return 1;
-    else return ratio >= SECOND_ACTION_RATIO ? 1 : 0;
-  }, [ratio, endActions, SECOND_ACTION_RATIO]);
+    else return activeItemIndex === 2 ? 1 : 0;
+  }, [endActions, activeItemIndex]);
 
-  const endActionColor = endActions[currentEndActionIndex]?.bgColor;
-
-  const endActionContents = useMemo(() => {
-    const action = endActions[currentEndActionIndex];
-    if (!action) return;
-
-    const icon = action.icon;
-    return (
-      <SlashedIcon
-        icon={icon}
-        slash={action.slash ?? false}
-        bgColor={action.bgColor}
-      />
-    );
+  const endActionContents = useMemo(
+    () => <ActionContents action={endActions[currentEndActionIndex]} />,
 
     // NOTE: This caches the content so that it doesn't re-render until completely closed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentEndActionIndex, ratio]);
-
-  const startRatio = useMemo(() => {
-    return startActions[0] ? -FIRST_ACTION_RATIO : -SECOND_ACTION_RATIO;
-  }, [startActions, SECOND_ACTION_RATIO]);
-  const endRatio = useMemo(() => {
-    return endActions[0] ? FIRST_ACTION_RATIO : SECOND_ACTION_RATIO;
-  }, [endActions, SECOND_ACTION_RATIO]);
-
-  async function onDragStop(e: TouchEvent | MouseEvent) {
-    if (!dragRef.current) return;
-    if (!dragging) return;
-
-    if (ratio <= startRatio) {
-      startActions[currentStartActionIndex]?.trigger(e);
-    } else if (ratio >= endRatio) {
-      endActions[currentEndActionIndex]?.trigger(e);
-    }
-
-    dragRef.current.target.closeOpened();
-    setDragging(false);
-  }
-
-  return (
-    <StyledIonItemSliding
-      onIonDrag={onIonDrag}
-      onTouchEnd={onDragStop}
-      onMouseUp={onDragStop}
-      className={className}
-    >
-      {canSwipeStart && (
-        <IonItemOptions side="start">
-          <StyledIonItemOption color={startActionColor}>
-            <OptionContainer active={ratio <= startRatio} slot="top">
-              {startActionContents}
-            </OptionContainer>
-          </StyledIonItemOption>
-        </IonItemOptions>
-      )}
-
-      {canSwipeEnd && (
-        <IonItemOptions side="end">
-          <StyledIonItemOption color={endActionColor}>
-            <OptionContainer active={ratio >= endRatio} slot="top">
-              {endActionContents}
-            </OptionContainer>
-          </StyledIonItemOption>
-        </IonItemOptions>
-      )}
-
-      {children}
-    </StyledIonItemSliding>
+    [activeItemIndex],
   );
+
+  const onDragStop = useCallback(
+    async (e: TouchEvent | MouseEvent) => {
+      if (!dragRef.current) return;
+      if (!draggingRef.current) return;
+
+      switch (activeItemIndex) {
+        case 1:
+        case 2:
+          endActions[activeItemIndex - 1]?.trigger(e);
+          break;
+        case -1:
+        case -2:
+          startActions[-activeItemIndex - 1]?.trigger(e);
+      }
+
+      dragRef.current.target.closeOpened();
+      draggingRef.current = false;
+    },
+    [endActions, activeItemIndex, startActions],
+  );
+
+  const onDragStart = useCallback(() => {
+    draggingRef.current = true;
+
+    setActiveItemIndex(0);
+  }, []);
+
+  const startItems = useMemo(() => {
+    if (!canSwipeStart) return;
+
+    const startActionColor = startActions[currentStartActionIndex]?.bgColor;
+
+    return (
+      <IonItemOptions side="start">
+        <StyledIonItemOption color={startActionColor}>
+          <OptionContainer
+            className={
+              activeItemIndex < 0 ? optionContainerActiveCss : undefined
+            }
+            slot="top"
+          >
+            {startActionContents}
+          </OptionContainer>
+        </StyledIonItemOption>
+      </IonItemOptions>
+    );
+  }, [
+    activeItemIndex,
+    canSwipeStart,
+    currentStartActionIndex,
+    startActionContents,
+    startActions,
+  ]);
+
+  const endItems = useMemo(() => {
+    if (!canSwipeEnd) return;
+
+    const endActionColor = endActions[currentEndActionIndex]?.bgColor;
+
+    return (
+      <IonItemOptions side="end">
+        <StyledIonItemOption color={endActionColor}>
+          <OptionContainer
+            className={
+              activeItemIndex > 0 ? optionContainerActiveCss : undefined
+            }
+            slot="top"
+          >
+            {endActionContents}
+          </OptionContainer>
+        </StyledIonItemOption>
+      </IonItemOptions>
+    );
+  }, [
+    activeItemIndex,
+    canSwipeEnd,
+    currentEndActionIndex,
+    endActionContents,
+    endActions,
+  ]);
+
+  const childrenMemoized = useMemo(() => children, [children]);
+
+  return useMemo(() => {
+    return (
+      <StyledIonItemSliding
+        onIonDrag={onIonDrag}
+        onTouchStart={onDragStart}
+        onMouseDown={onDragStart}
+        onTouchEnd={onDragStop}
+        onMouseUp={onDragStop}
+        className={className}
+      >
+        {startItems}
+
+        {endItems}
+
+        {childrenMemoized}
+      </StyledIonItemSliding>
+    );
+  }, [
+    onIonDrag,
+    onDragStart,
+    onDragStop,
+    className,
+    startItems,
+    endItems,
+    childrenMemoized,
+  ]);
 }

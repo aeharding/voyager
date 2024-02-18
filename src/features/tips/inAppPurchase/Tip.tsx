@@ -1,9 +1,9 @@
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 import { IonButton, IonSpinner } from "@ionic/react";
 import useInAppPurchase from "./useInAppPurchase";
-import styled from "@emotion/styled";
 import { useState } from "react";
 import useAppToast from "../../../helpers/useAppToast";
-import { css } from "@emotion/react";
 import { Product } from "capacitor-tips";
 
 const Container = styled.div`
@@ -14,33 +14,25 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const transition = css`
+const transitionStyle = `
   transition: opacity 250ms linear;
 `;
 
-const StyledIonButton = styled(IonButton)<{ loading: boolean }>`
+const StyledIonButton = styled(IonButton)`
   position: relative;
-
-  ${({ loading }) =>
-    loading &&
-    css`
-      pointer-events: none;
-    `}
 `;
 
-const Contents = styled.span<{ hide: boolean }>`
+const Contents = styled.span`
   opacity: 1;
 
-  ${({ hide }) =>
-    hide &&
-    css`
-      opacity: 0;
-    `}
-
-  ${transition}
+  ${transitionStyle}
 `;
 
-const HiddenIonSpinner = styled(IonSpinner)<{ visible: boolean }>`
+const hideCss = css`
+  opacity: 0;
+`;
+
+const HiddenIonSpinner = styled(IonSpinner)`
   position: absolute;
   left: 50%;
   top: 50%;
@@ -48,13 +40,11 @@ const HiddenIonSpinner = styled(IonSpinner)<{ visible: boolean }>`
 
   opacity: 0;
 
-  ${({ visible }) =>
-    visible &&
-    css`
-      opacity: 1;
-    `}
+  ${transitionStyle}
+`;
 
-  ${transition}
+const visibleCss = css`
+  opacity: 1;
 `;
 
 interface TipProps {
@@ -98,9 +88,14 @@ export default function Tip({ product }: TipProps) {
   return (
     <Container>
       <div>{product.description}</div>
-      <StyledIonButton onClick={tip} loading={loading}>
-        <Contents hide={loading}>{product.priceString}</Contents>
-        <HiddenIonSpinner visible={loading} />
+      <StyledIonButton
+        onClick={tip}
+        style={loading ? { pointerEvents: "none" } : undefined}
+      >
+        <Contents className={loading ? hideCss : undefined}>
+          {product.priceString}
+        </Contents>
+        <HiddenIonSpinner className={loading ? visibleCss : undefined} />
       </StyledIonButton>
     </Container>
   );

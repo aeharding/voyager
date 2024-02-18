@@ -1,10 +1,9 @@
-import styled from "@emotion/styled";
+import { css } from "@linaria/core";
 import { IonIcon } from "@ionic/react";
 import { MouseEvent, useContext } from "react";
 import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { savePost } from "../postSlice";
-import { css } from "@emotion/react";
 import { bookmarkOutline } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
 import { saveError, saveSuccess } from "../../../helpers/toastMessages";
@@ -12,18 +11,9 @@ import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import useAppToast from "../../../helpers/useAppToast";
 
-export const Item = styled(ActionButton, {
-  shouldForwardProp: (prop) => prop !== "on",
-})<{
-  on?: boolean;
-}>`
-  ${({ on }) =>
-    on
-      ? css`
-          background: var(--ion-color-success);
-          color: var(--ion-color-primary-contrast);
-        `
-      : undefined}
+const savedButtonCss = css`
+  background: var(--ion-color-success);
+  color: var(--ion-color-primary-contrast);
 `;
 
 interface SaveButtonProps {
@@ -58,8 +48,11 @@ export function SaveButton({ postId }: SaveButtonProps) {
   }
 
   return (
-    <Item on={mySaved} onClick={onSavePost}>
+    <ActionButton
+      className={mySaved ? savedButtonCss : undefined}
+      onClick={onSavePost}
+    >
       <IonIcon icon={bookmarkOutline} />
-    </Item>
+    </ActionButton>
   );
 }

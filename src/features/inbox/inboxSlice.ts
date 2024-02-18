@@ -1,16 +1,16 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../store";
-import {
-  clientSelector,
-  handleSelector,
-  jwtSelector,
-  logoutAccount,
-} from "../auth/authSlice";
+import { logoutAccount } from "../auth/authSlice";
 import { InboxItemView } from "./InboxItem";
 import { differenceBy, uniqBy } from "lodash";
 import { receivedUsers } from "../user/userSlice";
 import { isLemmyError } from "../../helpers/lemmy";
+import {
+  clientSelector,
+  userHandleSelector,
+  jwtSelector,
+} from "../auth/authSelectors";
 
 interface PostState {
   counts: {
@@ -115,7 +115,7 @@ export const getInboxCounts =
     if (Date.now() - lastUpdatedCounts < 3_000) return;
 
     let result;
-    const initialHandle = handleSelector(getState());
+    const initialHandle = userHandleSelector(getState());
 
     try {
       result = await clientSelector(getState()).getUnreadCount();
@@ -131,7 +131,7 @@ export const getInboxCounts =
         isLemmyError(error, "not_logged_in") ||
         isLemmyError(error, "incorrect_login")
       ) {
-        const handle = handleSelector(getState());
+        const handle = userHandleSelector(getState());
         if (handle && handle === initialHandle) {
           dispatch(logoutAccount(handle));
         }

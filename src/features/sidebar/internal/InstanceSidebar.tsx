@@ -1,19 +1,19 @@
-import { css } from "@emotion/react";
 import { useAppSelector } from "../../../store";
 import GenericSidebar from "./GenericSidebar";
 import { IonBadge } from "@ionic/react";
-import { lemmyVersionSelector } from "../../auth/authSlice";
-import { CenteredSpinner } from "../../../pages/posts/PostPage";
+import { lemmyVersionSelector } from "../../auth/siteSlice";
+import { CenteredSpinner } from "../../../routes/pages/posts/PostPage";
+import { css } from "@linaria/core";
 
 export default function InstanceSidebar() {
-  const siteView = useAppSelector((state) => state.auth.site?.site_view);
-  const admins = useAppSelector((state) => state.auth.site?.admins);
+  const siteView = useAppSelector((state) => state.site.response?.site_view);
+  const admins = useAppSelector((state) => state.site.response?.admins);
   const lemmyVersion = useAppSelector(lemmyVersionSelector);
 
   if (!siteView || !admins)
     return (
       <CenteredSpinner
-        css={css`
+        className={css`
           margin-top: 25vh;
         `}
       />

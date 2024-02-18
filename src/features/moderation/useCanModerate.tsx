@@ -1,13 +1,17 @@
 import { useMemo } from "react";
-import { canModerate as canModerateCommunity } from "../../helpers/lemmy";
-import { useAppSelector } from "../../store";
-import useIsAdmin from "./useIsAdmin";
-import { Community } from "lemmy-js-client";
+import { canModerateCommunity } from "../../helpers/lemmy";
+import store, { useAppSelector } from "../../store";
+import { Community, CommunityModeratorView, Person } from "lemmy-js-client";
 import {
   shieldCheckmark,
   shieldCheckmarkOutline,
   shieldOutline,
 } from "ionicons/icons";
+import {
+  isAdminSelector,
+  moderatesSelector,
+  userPersonSelector,
+} from "../auth/siteSlice";
 
 export type ModeratorRole = "mod" | "admin-local" | "admin-remote";
 
@@ -20,35 +24,59 @@ export type ModeratorRole = "mod" | "admin-local" | "admin-remote";
 export default function useCanModerate(
   community: Community | boolean | undefined,
 ): ModeratorRole | undefined {
-  const moderates = useAppSelector(
-    (state) => state.auth.site?.my_user?.moderates,
+  const moderates = useAppSelector(moderatesSelector);
+  const isAdmin = useAppSelector(isAdminSelector);
+  const myPerson = useAppSelector(userPersonSelector);
+
+  return useMemo(
+    () => canModerateWith(community, isAdmin, myPerson, moderates),
+    [moderates, community, isAdmin, myPerson],
   );
-  const isAdmin = useIsAdmin();
-  const myPerson = useAppSelector(
-    (state) => state.auth.site?.my_user?.local_user_view?.person,
-  );
+}
 
-  return useMemo(() => {
-    if (!community) return;
+/**
+ * Use `useCanModerate` hook instead if you need to reactive updates
+ *
+ * This function is used in present() functions of action sheets,
+ * since nothing is reactive (logic can be done right before presenting)
+ */
+export function getCanModerate(
+  community: Community | boolean | undefined,
+): ModeratorRole | undefined {
+  const state = store.getState();
 
-    // Check account role if true
-    if (typeof community === "boolean") {
-      if (isAdmin && myPerson) return "admin-local";
-      if (moderates?.length) return "mod";
+  const moderates = moderatesSelector(state);
+  const isAdmin = isAdminSelector(state);
+  const myPerson = userPersonSelector(state);
 
-      return;
-    }
+  return canModerateWith(community, isAdmin, myPerson, moderates);
+}
 
-    // else, check specific community role
+function canModerateWith(
+  community: Community | boolean | undefined,
+  isAdmin: boolean | undefined,
+  myPerson: Person | undefined,
+  moderates: CommunityModeratorView[] | undefined,
+) {
+  if (!community) return;
 
-    if (canModerateCommunity(community?.id, moderates)) {
-      return "mod";
-    }
+  // Check account role if true
+  if (typeof community === "boolean") {
+    if (isAdmin && myPerson) return "admin-local";
+    if (moderates?.length) return "mod";
 
-    // If user is admin on site of current community
-    if (isAdmin && myPerson)
-      return community.local ? "admin-local" : "admin-remote";
-  }, [moderates, community, isAdmin, myPerson]);
+    return;
+  }
+
+  // else, check specific community role
+
+  if (canModerateCommunity(community?.id, moderates)) {
+    return "mod";
+  }
+
+  // If user is admin on site of current community
+  if (isAdmin && myPerson)
+    return community.local ? "admin-local" : "admin-remote";
 }
 
 export function getModColor(role: ModeratorRole): "danger" | "success" {

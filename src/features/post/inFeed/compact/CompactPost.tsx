@@ -1,5 +1,3 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { PostProps } from "../Post";
 import Thumbnail from "./Thumbnail";
 import { maxWidthCss } from "../../../shared/AppContent";
@@ -12,7 +10,7 @@ import { VoteButton } from "../../shared/VoteButton";
 import Save from "../../../labels/Save";
 import Nsfw, { isNsfw } from "../../../labels/Nsfw";
 import { useAppSelector } from "../../../../store";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
 import MoreModActions from "../../shared/MoreModAction";
 import ModeratableItem, {
@@ -20,6 +18,11 @@ import ModeratableItem, {
 } from "../../../moderation/ModeratableItem";
 import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
 import { AnnouncementIcon } from "../../detail/PostHeader";
+import CompactCrosspost from "../../crosspost/CompactCrosspost";
+import useCrosspostUrl from "../../shared/useCrosspostUrl";
+import { useInModqueue } from "../../../../routes/pages/shared/ModqueuePage";
+import { PageTypeContext } from "../../../feed/PageTypeContext";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   width: 100%;
@@ -53,11 +56,7 @@ const Content = styled.div`
 const Title = styled.span<{ isRead: boolean }>`
   font-size: 0.9375em;
 
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color);
-    `}
+  color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
 `;
 
 const Aside = styled.div<{ isRead: boolean }>`
@@ -69,11 +68,7 @@ const Aside = styled.div<{ isRead: boolean }>`
   color: var(--ion-color-text-aside);
   font-size: 0.8em;
 
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color);
-    `}
+  color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
 `;
 
 const From = styled.div`
@@ -102,7 +97,7 @@ export const ActionsContainer = styled.div`
   white-space: nowrap;
 `;
 
-const actionButtonStyles = css`
+const actionButtonStyles = `
   margin: -0.5rem;
   padding: 0.5rem;
 
@@ -131,11 +126,7 @@ const EndDetails = styled.div`
   margin-left: auto;
 `;
 
-export default function CompactPost({
-  post,
-  communityMode,
-  modqueue,
-}: PostProps) {
+export default function CompactPost({ post }: PostProps) {
   const compactThumbnailPositionType = useAppSelector(
     (state) => state.settings.appearance.compact.thumbnailsPosition,
   );
@@ -143,6 +134,12 @@ export default function CompactPost({
   const compactShowVotingButtons = useAppSelector(
     (state) => state.settings.appearance.compact.showVotingButtons,
   );
+
+  const crosspostUrl = useCrosspostUrl(post);
+
+  const inModqueue = useInModqueue();
+
+  const inCommunityFeed = useContext(PageTypeContext) === "community";
 
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
@@ -157,7 +154,7 @@ export default function CompactPost({
         <Contents>
           {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
           <Content>
-            {modqueue && !communityMode && (
+            {inModqueue && !inCommunityFeed && (
               <Aside isRead={false}>
                 <CommunityLink
                   community={post.community}
@@ -175,7 +172,7 @@ export default function CompactPost({
                 {post.post.featured_community || post.post.featured_local ? (
                   <AnnouncementIcon icon={megaphone} />
                 ) : undefined}
-                {communityMode || modqueue ? (
+                {inCommunityFeed || inModqueue ? (
                   <PersonLink
                     person={post.creator}
                     showInstanceWhenRemote
@@ -190,14 +187,19 @@ export default function CompactPost({
               </From>
               <ActionsContainer>
                 <PreviewStats post={post} />
-                {modqueue ? (
+                {inModqueue ? (
                   <ModqueueItemActions item={post} />
                 ) : (
-                  <StyledModActions post={post} onFeed solidIcon />
+                  <StyledModActions post={post} solidIcon />
                 )}
-                <StyledMoreActions post={post} onFeed />
+                <StyledMoreActions post={post} />
               </ActionsContainer>
             </Aside>
+            {crosspostUrl && (
+              <div>
+                <CompactCrosspost post={post} url={crosspostUrl} />
+              </div>
+            )}
           </Content>
           {compactThumbnailPositionType === "right" && (
             <Thumbnail post={post} />

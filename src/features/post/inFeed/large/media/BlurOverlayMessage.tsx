@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { alertCircle } from "ionicons/icons";
 
 const MessageContainer = styled.div`
@@ -30,7 +29,7 @@ const WarningIcon = styled(IonIcon)`
   font-size: 42px;
 `;
 
-const showIfTaller = css`
+const showIfTaller = `
   @container (min-height: 150px) {
     display: block;
   }

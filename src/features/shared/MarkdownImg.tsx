@@ -1,16 +1,14 @@
-import { HTMLProps } from "react";
+import { useMemo } from "react";
 import { isUrlVideo } from "../../helpers/url";
-import GalleryImg, { GalleryImgProps } from "../gallery/GalleryImg";
-import Video from "./Video";
-import { css } from "@emotion/react";
+import Player from "../media/video/Player";
+import GalleryMedia, { GalleryMediaProps } from "../media/gallery/GalleryMedia";
+import { css, cx } from "@linaria/core";
 
 const smallStyles = css`
-  max-width: 200px;
+  max-height: 200px;
 `;
 
-interface MarkdownImgProps
-  extends Omit<HTMLProps<HTMLImageElement>, "ref">,
-    GalleryImgProps {
+interface MarkdownImgProps extends GalleryMediaProps {
   /**
    * Restrict height of media within comments (unrestricted in post body)
    */
@@ -19,17 +17,28 @@ interface MarkdownImgProps
 
 export default function MarkdownImg({ small, ...props }: MarkdownImgProps) {
   const sharedStyles = small ? smallStyles : undefined;
+  const isVideo = useMemo(
+    () => props.src && isUrlVideo(props.src),
+    [props.src],
+  );
 
-  if (props.src && isUrlVideo(props.src))
+  if (isVideo)
     return (
-      <Video
-        src={props.src}
+      <Player
+        src={props.src!}
         progress={false}
-        css={sharedStyles}
-        controls={!small}
+        volume={false}
+        className={cx(sharedStyles, props.className)}
+        nativeControls={!small}
         {...props}
       />
     );
 
-  return <GalleryImg {...props} css={sharedStyles} animationType="zoom" />;
+  return (
+    <GalleryMedia
+      {...props}
+      className={cx(sharedStyles, props.className)}
+      animationType="zoom"
+    />
+  );
 }

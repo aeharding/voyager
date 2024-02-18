@@ -6,18 +6,16 @@ import { getCommunity } from "../../features/community/communitySlice";
 // returns undefined until the value is available
 export default function useFetchCommunity(communityHandle: string) {
   const dispatch = useAppDispatch();
-  const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle,
+  const community = useAppSelector(
+    (state) => state.community.communityByHandle[communityHandle],
   );
 
   useEffect(() => {
-    if (communityByHandle[communityHandle]) return;
+    if (community) return;
 
     dispatch(getCommunity(communityHandle));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [communityHandle]);
-
-  const community = communityByHandle[communityHandle];
 
   return community;
 }

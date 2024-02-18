@@ -1,10 +1,6 @@
 import { useAppSelector } from "../../store";
+import { isAdminSelector } from "../auth/siteSlice";
 
 export default function useIsAdmin() {
-  return useAppSelector((state) => {
-    return state.auth.site?.admins?.some(
-      (admin) =>
-        admin.person.id === state.auth.site?.my_user?.local_user_view.person.id,
-    );
-  });
+  return useAppSelector(isAdminSelector);
 }

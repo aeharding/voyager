@@ -15,6 +15,8 @@ import { useState } from "react";
 import useHidePosts from "../feed/useHidePosts";
 import useCommunityActions from "./useCommunityActions";
 import { Community, CommunityView } from "lemmy-js-client";
+import { useAppSelector } from "../../store";
+import { compact } from "lodash";
 
 interface MoreActionsProps {
   community: CommunityView | undefined;
@@ -68,23 +70,25 @@ function MoreActionsActionSheet({
   } = useCommunityActions(community);
   const hidePosts = useHidePosts();
 
+  const showHiddenInCommunities = useAppSelector(
+    (state) => state.settings.general.posts.showHiddenInCommunities,
+  );
+
   return (
     <IonActionSheet
       cssClass="left-align-buttons"
       isOpen={open}
-      buttons={[
+      buttons={compact([
         {
           text: "Submit Post",
-          data: "post",
           cssClass: "detail",
           icon: createOutline,
           handler: () => {
             post();
           },
         },
-        {
+        !showHiddenInCommunities && {
           text: "Hide Read Posts",
-          data: "hide-read",
           icon: eyeOffOutline,
           handler: () => {
             hidePosts();
@@ -92,7 +96,6 @@ function MoreActionsActionSheet({
         },
         {
           text: !isSubscribed ? "Subscribe" : "Unsubscribe",
-          data: "subscribe",
           icon: !isSubscribed ? heartOutline : heartDislikeOutline,
           handler: () => {
             subscribe();
@@ -100,7 +103,6 @@ function MoreActionsActionSheet({
         },
         {
           text: !isFavorite ? "Favorite" : "Unfavorite",
-          data: "favorite",
           icon: !isFavorite ? starOutline : starSharp,
           handler: () => {
             favorite();
@@ -108,7 +110,6 @@ function MoreActionsActionSheet({
         },
         {
           text: "Sidebar",
-          data: "sidebar",
           icon: tabletPortraitOutline,
           handler: () => {
             sidebar();
@@ -116,7 +117,6 @@ function MoreActionsActionSheet({
         },
         {
           text: "Share",
-          data: "share",
           icon: shareOutline,
           handler: () => {
             share();
@@ -125,7 +125,6 @@ function MoreActionsActionSheet({
         {
           text: !isBlocked ? "Block Community" : "Unblock Community",
           role: !isBlocked ? "destructive" : undefined,
-          data: "block",
           icon: removeCircleOutline,
           handler: () => {
             block();
@@ -135,7 +134,7 @@ function MoreActionsActionSheet({
           text: "Cancel",
           role: "cancel",
         },
-      ]}
+      ])}
       onDidDismiss={() => setOpen(false)}
     />
   );

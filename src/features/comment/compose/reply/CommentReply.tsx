@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonButtons,
   IonButton,
@@ -19,8 +19,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
 import useClient from "../../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { Centered, Spinner } from "../../../auth/Login";
-import { handleSelector } from "../../../auth/authSlice";
+import { Centered, Spinner } from "../../../auth/login/LoginNav";
+import {
+  loggedInAccountsSelector,
+  userHandleSelector,
+} from "../../../auth/authSelectors";
 import { receivedComments } from "../../commentSlice";
 import CommentContent from "../shared";
 import useTextRecovery, {
@@ -69,12 +72,12 @@ export default function CommentReply({
   const [loading, setLoading] = useState(false);
   const isSubmitDisabled = !replyContent.trim() || loading;
 
-  const userHandle = useAppSelector(handleSelector);
+  const userHandle = useAppSelector(userHandleSelector);
   const [selectedAccount, setSelectedAccount] = useState(userHandle);
 
   const isUsingAppAccount = selectedAccount === userHandle;
 
-  const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
+  const accounts = useAppSelector(loggedInAccountsSelector);
   const resolvedRef = useRef<ResolveObjectResponse | undefined>();
   const selectedAccountJwt = accounts?.find(
     ({ handle }) => handle === selectedAccount,
@@ -93,6 +96,7 @@ export default function CommentReply({
     AccountSwitcher,
     {
       allowEdit: false,
+      showGuest: false,
       activeHandle: selectedAccount,
       onDismiss: (data?: string, role?: string) =>
         onDismissAccountSwitcher(data, role),
@@ -105,8 +109,9 @@ export default function CommentReply({
         }
 
         // Using a remote account
-        const accountJwt = accounts?.find(({ handle }) => handle === account)
-          ?.jwt;
+        const accountJwt = accounts?.find(
+          ({ handle }) => handle === account,
+        )?.jwt;
 
         if (!accountJwt) throw new Error("Error switching accounts");
 
@@ -235,9 +240,7 @@ export default function CommentReply({
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => dismiss()}>
-              Cancel
-            </IonButton>
+            <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>
             <Centered>
@@ -270,6 +273,7 @@ export default function CommentReply({
               strong
               type="submit"
               disabled={isSubmitDisabled}
+              color={isSubmitDisabled ? "medium" : undefined}
               onClick={submit}
             >
               Post

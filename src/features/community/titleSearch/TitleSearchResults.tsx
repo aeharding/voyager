@@ -7,18 +7,17 @@ import {
   useState,
 } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
-import styled from "@emotion/styled";
 import { useDebounce } from "usehooks-ts";
 import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
 import { IonItem, IonList } from "@ionic/react";
 import { useAppSelector } from "../../../store";
-import { notEmpty } from "../../../helpers/array";
-import { uniqBy } from "lodash";
+import { compact, uniqBy } from "lodash";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import useShowModeratorFeed from "../list/useShowModeratorFeed";
+import { styled } from "@linaria/react";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -28,8 +27,11 @@ const Backdrop = styled.div`
   left: 0;
   z-index: 100;
 
-  background: ${({ theme }) =>
-    theme.dark ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.2)"};
+  background: rgba(0, 0, 0, 0.2);
+
+  .theme-dark & {
+    background: rgba(0, 0, 0, 0.7);
+  }
 
   display: flex;
   align-items: flex-start;
@@ -43,8 +45,11 @@ const KeyboardContent = styled.div`
 `;
 
 const Contents = styled.div`
-  --background: ${({ theme }) =>
-    theme.dark ? "var(--ion-color-step-100)" : "var(--ion-background-color)"};
+  --background: var(--ion-background-color);
+
+  .theme-dark & {
+    --background: var(--ion-color-step-100);
+  }
 
   background: var(--background);
   width: 100%;
@@ -59,8 +64,11 @@ const Contents = styled.div`
   overscroll-behavior: contain;
 
   ion-item {
-    --ion-item-background: ${({ theme }) =>
-      theme.dark ? "var(--ion-color-step-100)" : "var(--ion-background-color)"};
+    --ion-item-background: var(--ion-background-color);
+
+    .theme-dark & {
+      --ion-item-background: var(--ion-color-step-100);
+    }
   }
 `;
 
@@ -97,7 +105,9 @@ export default function TitleSearchResults() {
   const debouncedSearch = useDebounce(search, 500);
   const [searchPayload, setSearchPayload] = useState<CommunityView[]>([]);
   const client = useClient();
-  const follows = useAppSelector((state) => state.auth.site?.my_user?.follows);
+  const follows = useAppSelector(
+    (state) => state.site.response?.my_user?.follows,
+  );
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [viewportHeight, setViewportHeight] = useState(
     document.documentElement.clientHeight,
@@ -120,10 +130,10 @@ export default function TitleSearchResults() {
     );
 
     return uniqBy(
-      [
+      compact([
         ...searchSpecialByName(eligibleSpecialFeeds, search),
         ...(search ? results : favorites),
-      ].filter(notEmpty),
+      ]),
       (c) => (typeof c === "string" ? c : c.id),
     ).slice(0, 15);
   }, [follows, searchPayload, search, favorites, showModeratorFeed]);

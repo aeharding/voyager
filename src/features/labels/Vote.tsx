@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../store";
 import { IonIcon } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
-import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
 import React, { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
@@ -13,11 +12,12 @@ import {
 } from "../../helpers/vote";
 import { CommentView, PostView } from "lemmy-js-client";
 import { OVoteDisplayMode } from "../../services/db";
-import { isDownvoteEnabledSelector } from "../auth/authSlice";
+import { isDownvoteEnabledSelector } from "../auth/siteSlice";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../helpers/useHapticFeedback";
 import useAppToast from "../../helpers/useAppToast";
 import { formatNumber } from "../../helpers/number";
+import { styled } from "@linaria/react";
 
 const Container = styled.div<{
   vote?: 1 | -1 | 0;
@@ -37,15 +37,21 @@ const Container = styled.div<{
             return "var(--ion-color-danger)";
         }
       }
+
+      return "inherit";
     }};
   }
 `;
 
 interface VoteProps {
   item: PostView | CommentView;
+  className?: string;
 }
 
-export default function Vote({ item }: VoteProps): React.ReactElement {
+export default function Vote({
+  item,
+  className,
+}: VoteProps): React.ReactElement {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const votesById = useAppSelector((state) =>
@@ -100,6 +106,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
       return (
         <>
           <Container
+            className={className}
             vote={myVote}
             voteRepresented={1}
             onClick={async (e) => {
@@ -109,6 +116,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
             <IonIcon icon={arrowUpSharp} /> {formatNumber(upvotes)}
           </Container>
           <Container
+            className={className}
             vote={myVote}
             voteRepresented={-1}
             onClick={async (e) => {
@@ -123,6 +131,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
     case OVoteDisplayMode.Hide:
       return (
         <Container
+          className={className}
           vote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);
@@ -136,6 +145,7 @@ export default function Vote({ item }: VoteProps): React.ReactElement {
       const score = calculateTotalScore(item, votesById);
       return (
         <Container
+          className={className}
           vote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);

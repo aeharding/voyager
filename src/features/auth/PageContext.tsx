@@ -9,19 +9,33 @@ import React, {
   useState,
 } from "react";
 import { CommentReplyItem } from "../comment/compose/reply/CommentReply";
-import Login from "../auth/Login";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { changeAccount, jwtSelector } from "../auth/authSlice";
+import { changeAccount } from "../auth/authSlice";
 import CommentReplyModal from "../comment/compose/reply/CommentReplyModal";
-import { Comment, CommentView, PostView } from "lemmy-js-client";
+import {
+  Comment,
+  CommentView,
+  Community,
+  Person,
+  PostView,
+} from "lemmy-js-client";
 import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
-import SelectTextModal from "../../pages/shared/SelectTextModal";
+import SelectTextModal from "../shared/SelectTextModal";
 import ShareAsImageModal, {
   ShareAsImageData,
 } from "../share/asImage/ShareAsImageModal";
 import AccountSwitcher from "./AccountSwitcher";
+import { jwtSelector } from "./authSelectors";
+import BanUserModal from "../moderation/ban/BanUserModal";
+import CreateCrosspostDialog from "../post/crosspost/create/CreateCrosspostDialog";
+import LoginModal from "./login/LoginModal";
+
+export interface BanUserPayload {
+  user: Person;
+  community: Community;
+}
 
 interface IPageContext {
   // used for ion presentingElement
@@ -62,6 +76,10 @@ interface IPageContext {
   ) => void;
 
   presentAccountSwitcher: () => void;
+
+  presentBanUser: (payload: BanUserPayload) => void;
+
+  presentCreateCrosspost: (post: PostView) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -74,6 +92,8 @@ export const PageContext = createContext<IPageContext>({
   presentSelectText: () => {},
   presentShareAsImage: () => {},
   presentAccountSwitcher: () => {},
+  presentBanUser: () => {},
+  presentCreateCrosspost: () => {},
 });
 
 interface PageContextProvider {
@@ -84,9 +104,6 @@ interface PageContextProvider {
 export function PageContextProvider({ value, children }: PageContextProvider) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
-  const [presentLogin, onDismissLogin] = useIonModal(Login, {
-    onDismiss: (data: string, role: string) => onDismissLogin(data, role),
-  });
   const reportRef = useRef<ReportHandle>(null);
   const shareAsImageDataRef = useRef<ShareAsImageData | null>(null);
 
@@ -94,19 +111,19 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     ShareAsImageModal,
     {
       dataRef: shareAsImageDataRef,
-      onDismiss: (data: string, role: string) =>
+      onDismiss: (data?: string, role?: string) =>
         onDismissShareAsImageModal(data, role),
     },
   );
 
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+
   const presentLoginIfNeeded = useCallback(() => {
     if (jwt) return false;
 
-    presentLogin({
-      presentingElement: value.pageRef?.current ?? undefined,
-    });
+    setIsLoginOpen(true);
     return true;
-  }, [jwt, presentLogin, value.pageRef]);
+  }, [jwt]);
 
   const presentShareAsImage = useCallback(
     (post: PostView, comment?: CommentView, comments?: CommentView[]) => {
@@ -186,6 +203,15 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   }, []);
   // Select text end
 
+  // Ban user start
+  const banItem = useRef<BanUserPayload>();
+  const [isBanUserOpen, setIsBanUserOpen] = useState(false);
+  const presentBanUser = useCallback((banUserPayload: BanUserPayload) => {
+    banItem.current = banUserPayload;
+    setIsBanUserOpen(true);
+  }, []);
+  // Ban user end
+
   const presentReport = useCallback((item: ReportableItem) => {
     reportRef.current?.present(item);
   }, []);
@@ -193,12 +219,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   const [presentAccountSwitcherModal, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
     {
-      onDismiss: (data: string, role: string) =>
+      onDismiss: (data?: string, role?: string) =>
         onDismissAccountSwitcher(data, role),
-      presentLogin: () =>
-        presentLogin({
-          presentingElement: value.pageRef?.current ?? undefined,
-        }),
+      presentLogin: () => {
+        onDismissAccountSwitcher();
+        setIsLoginOpen(true);
+      },
       onSelectAccount: (account: string) => dispatch(changeAccount(account)),
     },
   );
@@ -206,6 +232,24 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   const presentAccountSwitcher = useCallback(() => {
     presentAccountSwitcherModal({ cssClass: "small" });
   }, [presentAccountSwitcherModal]);
+
+  const crosspost = useRef<PostView | undefined>();
+  const [presentCrosspost, onDismissCrosspost] = useIonModal(
+    CreateCrosspostDialog,
+    {
+      onDismiss: (data?: string, role?: string) =>
+        onDismissCrosspost(data, role),
+      post: crosspost.current!,
+    },
+  );
+
+  const presentCreateCrosspost = useCallback(
+    (post: PostView) => {
+      crosspost.current = post;
+      presentCrosspost({ cssClass: "transparent-scroll dark" });
+    },
+    [presentCrosspost],
+  );
 
   const currentValue = useMemo(
     () => ({
@@ -218,6 +262,8 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentSelectText,
       presentShareAsImage,
       presentAccountSwitcher,
+      presentBanUser,
+      presentCreateCrosspost,
     }),
     [
       presentCommentEdit,
@@ -228,6 +274,8 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentSelectText,
       presentShareAsImage,
       presentAccountSwitcher,
+      presentBanUser,
+      presentCreateCrosspost,
       value,
     ],
   );
@@ -236,6 +284,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     <PageContext.Provider value={currentValue}>
       {children}
 
+      <LoginModal isOpen={isLoginOpen} setIsOpen={setIsLoginOpen} />
       <CommentReplyModal
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         item={commentReplyItem.current!}
@@ -258,6 +307,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         postOrCommunity={postItem.current!}
         isOpen={isPostOpen}
         setIsOpen={setIsPostOpen}
+      />
+      <BanUserModal
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        item={banItem.current!}
+        isOpen={isBanUserOpen}
+        setIsOpen={setIsBanUserOpen}
       />
       <SelectTextModal
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

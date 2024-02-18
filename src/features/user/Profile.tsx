@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { IonIcon, IonLabel, IonList, IonItem } from "@ionic/react";
-import styled from "@emotion/styled";
 import Scores from "./Scores";
 import {
   albumsOutline,
@@ -20,7 +19,7 @@ import PostCommentFeed, {
   PostCommentItem,
   isPost,
 } from "../feed/PostCommentFeed";
-import { handleSelector } from "../auth/authSlice";
+import { userHandleSelector } from "../auth/authSelectors";
 import { fixLemmyDateString } from "../../helpers/date";
 import {
   getModColor,
@@ -28,6 +27,7 @@ import {
   getModName,
 } from "../moderation/useCanModerate";
 import useModZoneActions from "../moderation/useModZoneActions";
+import { styled } from "@linaria/react";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -44,7 +44,7 @@ interface ProfileProps {
 export default function Profile({ person }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const myHandle = useAppSelector(handleSelector);
+  const myHandle = useAppSelector(userHandleSelector);
   const { present: presentModZoneActions, role } = useModZoneActions({
     type: "ModeratorView",
   });

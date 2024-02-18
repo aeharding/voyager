@@ -8,13 +8,14 @@ import {
   IonLabel,
   IonRadio,
   IonReorder,
+  IonText,
   ItemSlidingCustomEvent,
 } from "@ionic/react";
 import { removeCircle } from "ionicons/icons";
 import { Credential, logoutAccount } from "./authSlice";
 import { useAppDispatch } from "../../store";
 import { useRef } from "react";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 
 const RemoveIcon = styled(IonIcon)`
   position: relative;
@@ -26,19 +27,6 @@ const RemoveIcon = styled(IonIcon)`
     inset: 5px;
     border-radius: 50%;
     background: white;
-  }
-`;
-
-const Line = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-
-  ion-label {
-    min-width: 0;
-    text-overflow: clip !important;
-    overflow: hidden;
-    white-space: nowrap;
   }
 `;
 
@@ -56,12 +44,20 @@ export default function Account({ editing, account, allowEdit }: AccountProps) {
     dispatch(logoutAccount(account.handle));
   }
 
+  const isGuest = !account.jwt;
+
+  const label = (
+    <>
+      {account.handle} {isGuest && <IonText color="medium">(guest)</IonText>}
+    </>
+  );
+
   return (
     <IonItemSliding ref={slidingRef}>
       {allowEdit && (
         <IonItemOptions side="end" onIonSwipe={logout}>
           <IonItemOption color="danger" expandable onClick={logout}>
-            Log out
+            {isGuest ? "Remove" : "Log out"}
           </IonItemOption>
         </IonItemOptions>
       )}
@@ -78,12 +74,12 @@ export default function Account({ editing, account, allowEdit }: AccountProps) {
           </IonButton>
         )}
         {editing ? (
-          <Line>
-            <IonLabel>{account.handle}</IonLabel>
-            <IonReorder />
-          </Line>
+          <>
+            <IonLabel className="ion-text-nowrap">{label}</IonLabel>
+            <IonReorder slot="end" />
+          </>
         ) : (
-          <IonRadio value={account.handle}>{account.handle}</IonRadio>
+          <IonRadio value={account.handle}>{label}</IonRadio>
         )}
       </IonItem>
     </IonItemSliding>

@@ -1,7 +1,6 @@
 import { LemmyHttp } from "lemmy-js-client";
 import { reduceFileSize } from "../helpers/imageCompress";
 import { isNative, supportsWebp } from "../helpers/device";
-import { omitUndefinedValues } from "../helpers/object";
 import nativeFetch from "./nativeFetch";
 
 function buildBaseUrl(url: string): string {
@@ -159,19 +158,32 @@ const defaultFormat = supportsWebp() ? "webp" : "jpg";
 export function getImageSrc(url: string, options?: ImageOptions) {
   if (!options || !options.size) return url;
 
-  const urlParams = options
-    ? new URLSearchParams(
-        omitUndefinedValues({
-          thumbnail: options.size
-            ? `${Math.round(
-                options.size *
-                  (options?.devicePixelRatio ?? window.devicePixelRatio),
-              )}`
-            : undefined,
-          format: options.format ?? defaultFormat,
-        }),
-      )
-    : undefined;
+  let mutableUrl;
 
-  return `${url}${urlParams ? `?${urlParams}` : ""}`;
+  try {
+    mutableUrl = new URL(url);
+  } catch (error) {
+    return url;
+  }
+
+  const params = mutableUrl.searchParams;
+
+  if (options.size) {
+    params.set(
+      "thumbnail",
+      `${Math.round(
+        options.size * (options?.devicePixelRatio ?? window.devicePixelRatio),
+      )}`,
+    );
+  }
+
+  params.set("format", options.format ?? defaultFormat);
+
+  return mutableUrl.toString();
 }
+
+export const customBackOff = async (attempt = 0, maxRetries = 5) => {
+  await new Promise((resolve) => {
+    setTimeout(resolve, Math.min(attempt, maxRetries) * 4_000);
+  });
+};

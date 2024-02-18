@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   TransitionOptions,
   createAnimation,
@@ -7,8 +7,8 @@ import {
   useIonViewDidEnter,
 } from "@ionic/react";
 import { isInstalled } from "../../../helpers/device";
-import styled from "@emotion/styled";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import { styled } from "@linaria/react";
 
 const LoadingOverlay = styled.div`
   background: var(--ion-background-color);
@@ -35,39 +35,72 @@ export default function InitialPageRedirectBootstrapper({
 }: InitialPageRedirectBootstrapperProps) {
   const router = useOptimizedIonRouter();
   const [bootstrapped, setBootstrapped] = useState(false);
-  const firstEnter = useRef(true);
+  const viewEnteredRef = useRef(false);
 
-  useIonViewDidEnter(() => {
-    if (!firstEnter.current) return;
-    firstEnter.current = false;
+  // Refs needed for when `redirectIfNeeded is called from `useIonViewDidEnter`
+  // (otherwise may be undefined)
+  const toRef = useRef(to);
+  const bootstrappedRef = useRef(bootstrapped);
+
+  /**
+   * Important: must access refs, cannot access state hooks
+   * (for calls via `useIonViewDidEnter`)
+   */
+  const redirectIfNeeded = useCallback(() => {
+    const to = toRef.current;
+    const bootstrapped = bootstrappedRef.current;
 
     if (!isInstalled()) return;
+    if (!viewEnteredRef.current) return;
+    if (to == null) return;
+    if (bootstrapped) return;
 
     // user set default page = communities list. We're already there.
-    if (!to) {
+    if (to === "") {
       setBootstrapped(true);
       return;
     }
 
-    router.push(
-      to,
-      "forward",
-      "push",
-      undefined,
-      (baseEl: HTMLElement, opts: TransitionOptions) => {
-        // Do not animate into view
-        if (opts.direction === "forward") return createAnimation();
+    // requestAnimationFrame needed so Ionic can finish some calculations,
+    // like --offset-top for <ion-content> needed for grey-bg (full size header)
+    requestAnimationFrame(() => {
+      router.push(
+        to,
+        "forward",
+        "push",
+        undefined,
+        (baseEl: HTMLElement, opts: TransitionOptions) => {
+          // Do not animate into view
+          if (opts.direction === "forward") return createAnimation();
 
-        // Later, use normal animation for swipe back
-        return opts.mode === "ios"
-          ? iosTransitionAnimation(baseEl, opts)
-          : mdTransitionAnimation(baseEl, opts);
-      },
-    );
+          // Later, use normal animation for swipe back
+          return opts.mode === "ios"
+            ? iosTransitionAnimation(baseEl, opts)
+            : mdTransitionAnimation(baseEl, opts);
+        },
+      );
 
-    setBootstrapped(true);
+      setBootstrapped(true);
+    });
+  }, [router]);
+
+  useIonViewDidEnter(() => {
+    viewEnteredRef.current = true;
+
+    redirectIfNeeded();
   });
 
+  useEffect(() => {
+    bootstrappedRef.current = bootstrapped;
+  }, [bootstrapped]);
+
+  useEffect(() => {
+    toRef.current = to;
+
+    redirectIfNeeded();
+  }, [to, redirectIfNeeded]);
+
   if (!isInstalled() || bootstrapped) return null;
+
   return <LoadingOverlay />;
 }

@@ -12,13 +12,16 @@ import {
   gfmStrikethroughToMarkdown,
 } from "mdast-util-gfm-strikethrough";
 import { gfmTableFromMarkdown, gfmTableToMarkdown } from "mdast-util-gfm-table";
-import type { Options } from "remark-gfm";
+import { Settings } from "unified";
+
+interface Options {
+  connectedInstance: string;
+}
 
 export default function customRemarkGfm(
   this: import("unified").Processor,
-  options = {},
+  options: Options,
 ) {
-  const settings = options;
   const data = this.data();
 
   const micromarkExtensions =
@@ -28,29 +31,32 @@ export default function customRemarkGfm(
   const toMarkdownExtensions =
     data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
 
-  micromarkExtensions.push(gfm(settings));
-  fromMarkdownExtensions.push(gfmFromMarkdown());
-  toMarkdownExtensions.push(gfmToMarkdown(settings));
+  micromarkExtensions.push(gfm());
+  fromMarkdownExtensions.push(gfmFromMarkdown(options));
+  toMarkdownExtensions.push(gfmToMarkdown() as Settings);
 }
 
-function gfm(options?: Options) {
-  return combineExtensions([gfmStrikethrough(options), gfmTable()]);
+function gfm() {
+  return combineExtensions([
+    gfmStrikethrough({ singleTilde: false }),
+    gfmTable(),
+  ]);
 }
 
-function gfmFromMarkdown() {
+function gfmFromMarkdown({ connectedInstance }: Options) {
   return [
-    gfmAutolinkLiteralFromMarkdown(),
+    gfmAutolinkLiteralFromMarkdown({ connectedInstance }),
     gfmStrikethroughFromMarkdown(),
     gfmTableFromMarkdown(),
   ];
 }
 
-function gfmToMarkdown(options?: Options) {
+function gfmToMarkdown() {
   return {
     extensions: [
       gfmAutolinkLiteralToMarkdown(),
       gfmStrikethroughToMarkdown(),
-      gfmTableToMarkdown(options),
+      gfmTableToMarkdown(),
     ],
   };
 }

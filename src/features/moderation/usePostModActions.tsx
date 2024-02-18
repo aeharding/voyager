@@ -1,16 +1,19 @@
 import { useIonActionSheet } from "@ionic/react";
-import useCanModerate from "./useCanModerate";
+import { getCanModerate } from "./useCanModerate";
 import { CommentReport, PostReport, PostView } from "lemmy-js-client";
 import {
   checkmarkCircleOutline,
+  hammerOutline,
   lockClosedOutline,
   lockOpenOutline,
   megaphoneOutline,
   trashOutline,
 } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../../store";
+import store, { useAppDispatch } from "../../store";
 import { modLockPost, modRemovePost, modStickyPost } from "../post/postSlice";
 import {
+  buildBanFailed,
+  buildBanned,
   buildLocked,
   buildStickied,
   postApproved,
@@ -19,24 +22,35 @@ import {
 } from "../../helpers/toastMessages";
 import useAppToast from "../../helpers/useAppToast";
 import { reportsByPostIdSelector, resolvePostReport } from "./modSlice";
-import { groupBy, values } from "lodash";
-import { notEmpty } from "../../helpers/array";
+import { compact, groupBy, values } from "lodash";
+import { useCallback, useContext } from "react";
+import { PageContext } from "../auth/PageContext";
+import { banUser } from "../user/userSlice";
 
 export default function usePostModActions(post: PostView) {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
-  const role = useCanModerate(post.community);
+  const { presentBanUser } = useContext(PageContext);
 
-  const reports = useAppSelector(
-    (state) => reportsByPostIdSelector(state)[post.post.id],
-  );
+  return useCallback(() => {
+    const state = store.getState();
 
-  return () => {
+    const role = getCanModerate(post.community);
+
+    const bannedFromCommunity =
+      state.user.bannedByCommunityIdUserId[
+        `${post.community.id}${post.creator.id}`
+      ];
+
+    const banned = bannedFromCommunity ?? post.creator_banned_from_community;
+
+    const reports = reportsByPostIdSelector(state)[post.post.id];
+
     presentActionSheet({
       cssClass: `${role} left-align-buttons report-reasons`,
       header: stringifyReports(reports),
-      buttons: [
+      buttons: compact([
         !post.post.removed && reports?.length
           ? {
               text: "Approve",
@@ -97,13 +111,46 @@ export default function usePostModActions(post: PostView) {
             })();
           },
         },
+        role === "mod" || role === "admin-local"
+          ? {
+              text: !banned ? "Ban User" : "Unban User",
+              icon: hammerOutline,
+              handler: () => {
+                (async () => {
+                  if (banned) {
+                    try {
+                      await dispatch(
+                        banUser({
+                          person_id: post.creator.id,
+                          community_id: post.community.id,
+                          ban: false,
+                        }),
+                      );
+                    } catch (error) {
+                      presentToast(buildBanFailed(false));
+                      throw error;
+                    }
+
+                    presentToast(buildBanned(false));
+
+                    return;
+                  }
+
+                  presentBanUser({
+                    user: post.creator,
+                    community: post.community,
+                  });
+                })();
+              },
+            }
+          : undefined,
         {
           text: "Cancel",
           role: "cancel",
         },
-      ].filter(notEmpty),
+      ]),
     });
-  };
+  }, [dispatch, post, presentActionSheet, presentBanUser, presentToast]);
 }
 
 export function stringifyReports(

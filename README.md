@@ -138,6 +138,10 @@ We would also appreciate sponsoring other contributors to Voyager. If someone he
 
 Please check out [CONTRIBUTING.md](./CONTRIBUTING.md) for details on contributing to Voyager. Thank you! 💙
 
+## 🛜 Add a lemmy instance to the curated list
+
+Voyager curates Lemmy servers for sign up ([see the data](./src/features/auth/login/data/servers.ts)). If you would like to add an instance, please read the [curated servers policy](./src/features/auth/login/data/README.md).
+
 ## 📲 PWA
 
 Voyager works best added to the homescreen. There are certain features that only work there, like badging and smooth page transitions.

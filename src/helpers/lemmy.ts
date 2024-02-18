@@ -9,6 +9,7 @@ import {
 } from "lemmy-js-client";
 import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
+import { quote } from "./markdown";
 
 export interface LemmyJWT {
   sub: number;
@@ -284,11 +285,66 @@ export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
   return error.message === lemmyErrorValue;
 }
 
-export function canModerate(
+export function canModerateCommunity(
   communityId: number | undefined,
   moderates: CommunityModeratorView[] | undefined,
 ): boolean {
   if (communityId === undefined) return false;
   if (!moderates) return false;
   return moderates.some((m) => m.community.id === communityId);
+}
+
+export function parseJWT(payload: string): LemmyJWT {
+  const base64 = payload.split(".")[1]!;
+  const jsonPayload = atob(base64);
+  return JSON.parse(jsonPayload);
+}
+
+const CROSS_POST_REGEX =
+  /^cross-posted from:\s+(https:\/\/(?:[0-9a-z-]+\.?)+\/post\/[0-9]+)/;
+
+export function getCrosspostUrl(post: Post): string | undefined {
+  if (!post.body) return;
+
+  const matches = post.body.match(CROSS_POST_REGEX);
+
+  return matches?.[1];
+}
+
+export function buildCrosspostBody(post: Post): string {
+  const header = `cross-posted from: ${post.ap_id}\n\n${quote(post.name)}`;
+
+  if (!post.body) return header;
+
+  return `${header}\n>\n${quote(post.body)}`;
+}
+
+export function getLoginErrorMessage(
+  error: unknown,
+  instanceActorId: string,
+): string {
+  if (!(error instanceof Error))
+    return "Unknown error occurred, please try again.";
+
+  switch (error.message as LemmyErrorValue) {
+    // TODO old lemmy support
+    case "incorrect_totp token" as OldLemmyErrorValue:
+    case "incorrect_totp_token":
+      return "Incorrect 2nd factor code. Please try again.";
+    // TODO old lemmy support
+    case "couldnt_find_that_username_or_email" as OldLemmyErrorValue:
+    case "couldnt_find_person":
+      return `User not found. Is your account on ${instanceActorId}?`;
+    case "password_incorrect" as OldLemmyErrorValue:
+    case "incorrect_login":
+      return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
+    case "email_not_verified":
+      return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
+    case "site_ban":
+      return "You have been banned.";
+    case "deleted":
+      return "Account deleted.";
+    default:
+      return "Connection error, please try again.";
+  }
 }

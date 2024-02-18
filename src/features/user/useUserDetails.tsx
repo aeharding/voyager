@@ -8,14 +8,13 @@ import useAppToast from "../../helpers/useAppToast";
 
 export function useUserDetails(handle: string) {
   const blocks = useAppSelector(
-    (state) => state.auth.site?.my_user?.person_blocks,
+    (state) => state.site.response?.my_user?.person_blocks,
   );
   const isBlocked = useMemo(
     () => blocks?.some((b) => getHandle(b.target) === handle),
     [blocks, handle],
   );
-  const userByHandle = useAppSelector((state) => state.user.userByHandle);
-  const user = userByHandle[handle];
+  const user = useAppSelector((state) => state.user.userByHandle[handle]);
   const { presentLoginIfNeeded } = useContext(PageContext);
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();

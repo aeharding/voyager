@@ -4,8 +4,6 @@ import { knownInstancesSelector } from "../instances/instancesSlice";
 import useAppNavigation from "../../helpers/useAppNavigation";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { resolveObject } from "../resolve/resolveSlice";
-import useClient from "../../helpers/useClient";
-import { getPost } from "../post/postSlice";
 import { MouseEvent } from "react";
 import useAppToast from "../../helpers/useAppToast";
 import { isLemmyError } from "../../helpers/lemmy";
@@ -43,7 +41,6 @@ export default function useLemmyUrlHandler() {
   const router = useOptimizedIonRouter();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
-  const client = useClient();
 
   const handleCommunityClickIfNeeded = useCallback(
     (url: URL, e?: MouseEvent) => {
@@ -72,7 +69,7 @@ export default function useLemmyUrlHandler() {
     [buildGeneralBrowseLink, connectedInstance, router],
   );
 
-  const handleRemoteObjectIfNeeded = useCallback(
+  const handleObjectIfNeeded = useCallback(
     async (url: URL, e?: MouseEvent): Promise<boolean> => {
       const cachedResolvedObject = objectByUrl[url.toString()];
       if (cachedResolvedObject === "couldnt_find_object") return false;
@@ -124,77 +121,6 @@ export default function useLemmyUrlHandler() {
     ],
   );
 
-  const handleLocalObjectIfNeeded = useCallback(
-    async (url: URL, e?: MouseEvent): Promise<boolean> => {
-      e?.preventDefault();
-      e?.stopPropagation();
-
-      const commentMatch = COMMENT_PATH.exec(url.pathname);
-      if (commentMatch) {
-        const commentId = +commentMatch[1]!;
-
-        let comment_view;
-
-        try {
-          ({ comment_view } = await client.getComment({ id: commentId }));
-        } catch (error) {
-          presentToast({
-            message: "Comment not found",
-          });
-          throw error;
-        }
-        navigateToComment(comment_view);
-        return true;
-      }
-
-      const postMatch = POST_PATH.exec(url.pathname);
-      if (postMatch) {
-        const postId = +postMatch[1]!;
-
-        let post_view;
-
-        try {
-          ({ post_view } = await dispatch(getPost(postId)));
-        } catch (error) {
-          presentToast({
-            message: "Post not found",
-          });
-          throw error;
-        }
-        navigateToPost(post_view);
-        return true;
-      }
-
-      // Community links should be handled already
-
-      const matchedUserHandle = matchLemmyUser(url.pathname);
-
-      if (matchedUserHandle) {
-        const [userName, domain] = matchedUserHandle;
-
-        if (!domain || domain === connectedInstance) {
-          router.push(buildGeneralBrowseLink(`/u/${userName}`));
-        } else {
-          router.push(buildGeneralBrowseLink(`/u/${userName}@${domain}`));
-        }
-
-        return true;
-      }
-
-      return false;
-    },
-    [
-      buildGeneralBrowseLink,
-      client,
-      connectedInstance,
-      dispatch,
-      navigateToComment,
-      navigateToPost,
-      presentToast,
-      router,
-    ],
-  );
-
   const getUrl = useCallback(
     (link: string) => {
       try {
@@ -232,18 +158,13 @@ export default function useLemmyUrlHandler() {
 
       if (handleCommunityClickIfNeeded(url, e)) return true;
       if (!isPotentialObjectPath(url.pathname)) return false;
-      if (url.hostname !== connectedInstance) {
-        return handleRemoteObjectIfNeeded(url, e);
-      } else {
-        return handleLocalObjectIfNeeded(url, e);
-      }
+
+      return handleObjectIfNeeded(url, e);
     },
     [
-      connectedInstance,
       getUrl,
       handleCommunityClickIfNeeded,
-      handleLocalObjectIfNeeded,
-      handleRemoteObjectIfNeeded,
+      handleObjectIfNeeded,
       knownInstances,
     ],
   );

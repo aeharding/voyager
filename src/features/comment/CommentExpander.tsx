@@ -1,6 +1,5 @@
 import { CommentView } from "lemmy-js-client";
-import { Container, CustomIonItem, PositionedContainer } from "./Comment";
-import styled from "@emotion/styled";
+import { CustomIonItem } from "./Comment";
 import CommentHr from "./CommentHr";
 import { useContext, useState } from "react";
 import { CommentsContext } from "./CommentsContext";
@@ -9,10 +8,16 @@ import { IonIcon, IonSpinner } from "@ionic/react";
 import { chevronDown } from "ionicons/icons";
 import AnimateHeight from "react-animate-height";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "../../helpers/lemmy";
-import { css } from "@emotion/react";
 import useAppToast from "../../helpers/useAppToast";
 import { receivedComments } from "./commentSlice";
-import { useAppDispatch } from "../../store";
+import {
+  OCommentThreadCollapse,
+  defaultThreadCollapse,
+} from "../settings/settingsSlice";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { styled } from "@linaria/react";
+import { PositionedContainer } from "./elements/PositionedContainer";
+import { Container } from "./elements/Container";
 
 const MoreRepliesBlock = styled.div<{ hidden: boolean }>`
   display: flex;
@@ -22,11 +27,7 @@ const MoreRepliesBlock = styled.div<{ hidden: boolean }>`
 
   color: var(--ion-color-primary);
 
-  ${({ hidden }) =>
-    hidden &&
-    css`
-      opacity: 0;
-    `}
+  opacity: ${({ hidden }) => (hidden ? 0 : 1)};
 `;
 
 const ChevronIcon = styled(IonIcon)`
@@ -63,6 +64,7 @@ export default function CommentExpander({
   const client = useClient();
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const collapseThreads = useAppSelector(defaultThreadCollapse);
 
   async function fetchChildren() {
     if (loading) return;
@@ -75,7 +77,10 @@ export default function CommentExpander({
       response = await client.getComments({
         parent_id: comment.comment.id,
         type_: "All",
-        max_depth: Math.max((depth += 2), MAX_DEFAULT_COMMENT_DEPTH),
+        max_depth:
+          collapseThreads === OCommentThreadCollapse.All
+            ? 1
+            : Math.max((depth += 2), MAX_DEFAULT_COMMENT_DEPTH),
       });
     } catch (error) {
       presentToast({
@@ -101,7 +106,7 @@ export default function CommentExpander({
 
   return (
     <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
-      <CommentHr depth={depth} />
+      <CommentHr depth={depth + 1} />
       <CustomIonItem href={undefined} onClick={fetchChildren}>
         <PositionedContainer
           depth={absoluteDepth === depth ? depth + 1 : depth + 2}

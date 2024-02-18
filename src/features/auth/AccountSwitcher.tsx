@@ -18,25 +18,43 @@ import { useEffect, useRef, useState } from "react";
 import Account from "./Account";
 import { setAccounts } from "./authSlice";
 import { moveItem } from "../../helpers/array";
+import { loggedInAccountsSelector } from "./authSelectors";
 
-interface AccountSwitcherProps {
+type AccountSwitcherProps = {
   onDismiss: (data?: string, role?: string) => void;
-  presentLogin: () => void;
   onSelectAccount: (account: string) => void;
-  allowEdit?: boolean;
+  showGuest?: boolean;
   activeHandle?: string;
-}
+} & (
+  | {
+      allowEdit?: true;
+      presentLogin: () => void;
+    }
+  | {
+      allowEdit: false;
+    }
+);
 
 export default function AccountSwitcher({
   onDismiss,
-  presentLogin,
   onSelectAccount,
   allowEdit = true,
+  showGuest = true,
   activeHandle: _activeHandle,
+  ...rest
 }: AccountSwitcherProps) {
+  // presentLogin only exists if allowEdit = false
+  let presentLogin: (() => void) | undefined;
+  if ("presentLogin" in rest) presentLogin = rest.presentLogin;
+
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-  const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
+  const accounts = useAppSelector(
+    showGuest
+      ? (state) => state.auth.accountData?.accounts
+      : loggedInAccountsSelector,
+  );
+
   const oldAccountsCountRef = useRef(accounts?.length ?? 0);
   const appActiveHandle = useAppSelector(
     (state) => state.auth.accountData?.activeHandle,
@@ -85,7 +103,7 @@ export default function AccountSwitcher({
         <IonToolbar>
           <IonButtons slot="start">
             {editing ? (
-              <IonButton onClick={() => presentLogin()}>
+              <IonButton onClick={() => presentLogin?.()}>
                 <IonIcon icon={add} />
               </IonButton>
             ) : (

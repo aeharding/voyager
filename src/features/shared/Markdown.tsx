@@ -1,9 +1,12 @@
 import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
-import styled from "@emotion/styled";
 import LinkInterceptor from "./markdown/LinkInterceptor";
 import customRemarkGfm from "./markdown/customRemarkGfm";
 import MarkdownImg from "./MarkdownImg";
-import { css } from "@emotion/react";
+import InAppExternalLink from "./InAppExternalLink";
+import { useAppSelector } from "../../store";
+import { css, cx } from "@linaria/core";
+import { styled } from "@linaria/react";
+import superSub from "remark-supersub";
 
 const markdownCss = css`
   @media (max-width: 700px) {
@@ -55,14 +58,26 @@ const TableContainer = styled.div`
   }
 `;
 
-export default function Markdown(props: ReactMarkdownOptions) {
+export interface MarkdownProps
+  extends Omit<ReactMarkdownOptions, "remarkPlugins"> {
+  disableInternalLinkRouting?: boolean;
+}
+
+export default function Markdown({
+  disableInternalLinkRouting,
+  ...props
+}: MarkdownProps) {
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
+
   return (
     <ReactMarkdown
       {...props}
-      css={markdownCss}
+      className={cx(props.className, markdownCss)}
       components={{
         img: (props) => (
-          <MarkdownImg onClick={(e) => e.stopPropagation()} {...props} />
+          <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />
         ),
         table: (props) => (
           <TableContainer>
@@ -76,10 +91,18 @@ export default function Markdown(props: ReactMarkdownOptions) {
             />
           </TableContainer>
         ),
-        a: (props) => <LinkInterceptor {...props} />,
+        a: disableInternalLinkRouting
+          ? (props) => (
+              <InAppExternalLink
+                {...props}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            )
+          : (props) => <LinkInterceptor {...props} />,
         ...props.components,
       }}
-      remarkPlugins={[customRemarkGfm]}
+      remarkPlugins={[[customRemarkGfm, { connectedInstance }], superSub]}
     />
   );
 }

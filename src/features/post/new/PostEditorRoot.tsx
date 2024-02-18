@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonButtons,
   IonButton,
@@ -17,15 +17,14 @@ import {
   IonNavLink,
   IonToggle,
 } from "@ionic/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useClient from "../../../helpers/useClient";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { Centered, Spinner } from "../../auth/Login";
-import { jwtSelector, urlSelector } from "../../auth/authSlice";
+import { Centered, Spinner } from "../../auth/login/LoginNav";
+import { jwtSelector, urlSelector } from "../../auth/authSelectors";
 import { startCase } from "lodash";
-import { css } from "@emotion/react";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
-import { cameraOutline } from "ionicons/icons";
+import { cameraOutline, checkmark } from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -37,6 +36,7 @@ import { isUrlImage, isValidUrl } from "../../../helpers/url";
 import { problemFetchingTitle } from "../../../helpers/toastMessages";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isAndroid } from "../../../helpers/device";
+import { css } from "@linaria/core";
 
 const Container = styled.div`
   position: absolute;
@@ -97,12 +97,14 @@ export default function PostEditorRoot({
 
   const existingPost = "existingPost" in props ? props.existingPost : undefined;
 
+  const isImage = useMemo(
+    () => existingPost?.post.url && isUrlImage(existingPost.post.url),
+    [existingPost],
+  );
+
   const dispatch = useAppDispatch();
 
-  const initialImage =
-    existingPost?.post.url && isUrlImage(existingPost.post.url)
-      ? existingPost.post.url
-      : undefined;
+  const initialImage = isImage ? existingPost!.post.url : undefined;
 
   const initialPostType = (() => {
     if (!existingPost) return "photo";
@@ -282,6 +284,7 @@ export default function PostEditorRoot({
       position: "top",
       centerText: true,
       fullscreen: true,
+      icon: checkmark,
     });
 
     setCanDismiss(true);
@@ -354,14 +357,14 @@ export default function PostEditorRoot({
     setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
   }
 
+  const postButtonDisabled = loading || !canSubmit();
+
   return (
     <>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton color="medium" onClick={() => dismiss()}>
-              Cancel
-            </IonButton>
+            <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>
             <Centered>
@@ -373,18 +376,19 @@ export default function PostEditorRoot({
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
-              strong={true}
+              color={postButtonDisabled ? "medium" : undefined}
+              strong
               type="submit"
-              disabled={loading || !canSubmit()}
+              disabled={postButtonDisabled}
               onClick={submit}
             >
-              Post
+              {existingPost ? "Save" : "Post"}
             </IonButton>
           </IonButtons>
         </IonToolbar>
         <IonToolbar>
           <IonSegment
-            css={css`
+            className={css`
               width: 100%;
             `}
             value={postType}
@@ -491,7 +495,10 @@ export default function PostEditorRoot({
               )}
             >
               <IonItem detail>
-                <IonLabel color={!text ? "medium" : undefined}>
+                <IonLabel
+                  color={!text ? "medium" : undefined}
+                  className="ion-text-nowrap"
+                >
                   {!text ? "Text (optional)" : text}
                 </IonLabel>
               </IonItem>

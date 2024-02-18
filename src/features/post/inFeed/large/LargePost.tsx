@@ -1,28 +1,28 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { megaphone } from "ionicons/icons";
 import PreviewStats from "../PreviewStats";
-import Embed from "../../shared/Embed";
-import { useMemo } from "react";
-import { findLoneImage } from "../../../../helpers/markdown";
 import { maxWidthCss } from "../../../shared/AppContent";
-import Nsfw, { isNsfw, isNsfwBlurred } from "../../../labels/Nsfw";
+import Nsfw, { isNsfw } from "../../../labels/Nsfw";
 import { VoteButton } from "../../shared/VoteButton";
 import MoreActions from "../../shared/MoreActions";
 import PersonLink from "../../../labels/links/PersonLink";
 import InlineMarkdown from "../../../shared/InlineMarkdown";
-import { AnnouncementIcon } from "../../../../pages/posts/PostPage";
+import { AnnouncementIcon } from "../../../../routes/pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { PostProps } from "../Post";
 import Save from "../../../labels/Save";
-import Media from "./media/Media";
 import { useAppSelector } from "../../../../store";
-import { isUrlMedia } from "../../../../helpers/url";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "../../../moderation/ModeratableItem";
 import MoreModActions from "../../shared/MoreModAction";
 import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
+import Crosspost from "../../crosspost/Crosspost";
+import LargePostContents from "./LargePostContents";
+import useCrosspostUrl from "../../shared/useCrosspostUrl";
+import { useInModqueue } from "../../../../routes/pages/shared/ModqueuePage";
+import { useContext } from "react";
+import { PageTypeContext } from "../../../feed/PageTypeContext";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   display: flex;
@@ -37,11 +37,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.div<{ isRead: boolean }>`
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color);
-    `}
+  color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
 `;
 
 const Details = styled.div`
@@ -60,11 +56,7 @@ const LeftDetails = styled.div<{ isRead: boolean }>`
 
   min-width: 0;
 
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color-medium);
-    `}
+  color: ${({ isRead }) => (isRead ? "var(--read-color-medium)" : "inherit")};
 `;
 
 const RightDetails = styled.div`
@@ -83,84 +75,23 @@ const CommunityName = styled.span`
   white-space: nowrap;
 `;
 
-const PostBody = styled.div<{ isRead: boolean }>`
-  font-size: 0.875em;
-  line-height: 1.25;
-
-  ${({ isRead }) =>
-    isRead
-      ? css`
-          color: var(--read-color-medium);
-        `
-      : css`
-          opacity: 0.6;
-        `}
-
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
-
-const ImageContainer = styled.div`
-  overflow: hidden;
-  margin: 0 -12px;
-`;
-
-export default function LargePost({
-  post,
-  communityMode,
-  modqueue,
-}: PostProps) {
+export default function LargePost({ post }: PostProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
-  const markdownLoneImage = useMemo(
-    () => (post.post.body ? findLoneImage(post.post.body) : undefined),
-    [post],
-  );
-  const blurNsfw = useAppSelector(
-    (state) => state.settings.appearance.posts.blurNsfw,
-  );
+
+  const crosspostUrl = useCrosspostUrl(post);
+
+  const inModqueue = useInModqueue();
+
+  const inCommunityFeed = useContext(PageTypeContext) === "community";
 
   function renderPostBody() {
-    if ((post.post.url && isUrlMedia(post.post.url)) || markdownLoneImage) {
-      return (
-        <ImageContainer>
-          <Media
-            blur={isNsfwBlurred(post, blurNsfw)}
-            post={post}
-            animationType="zoom"
-          />
-        </ImageContainer>
-      );
+    if (crosspostUrl) {
+      return <Crosspost post={post} url={crosspostUrl} />;
     }
 
-    /**
-     * Embedded video, image with a thumbanil
-     */
-    if (post.post.thumbnail_url && post.post.url) {
-      return <Embed post={post} />;
-    }
-
-    /**
-     * text image with captions
-     */
-    if (post.post.body) {
-      return (
-        <>
-          {post.post.url && <Embed post={post} />}
-
-          <PostBody isRead={hasBeenRead}>
-            <InlineMarkdown>{post.post.body}</InlineMarkdown>
-          </PostBody>
-        </>
-      );
-    }
-
-    if (post.post.url) {
-      return <Embed post={post} />;
-    }
+    return <LargePostContents post={post} />;
   }
 
   return (
@@ -181,7 +112,7 @@ export default function LargePost({
               {post.post.featured_community || post.post.featured_local ? (
                 <AnnouncementIcon icon={megaphone} />
               ) : undefined}
-              {communityMode ? (
+              {inCommunityFeed ? (
                 <PersonLink
                   person={post.creator}
                   showInstanceWhenRemote
@@ -199,11 +130,11 @@ export default function LargePost({
             <PreviewStats post={post} />
           </LeftDetails>
           <RightDetails>
-            {modqueue && <ModqueueItemActions item={post} />}
-            <MoreActions post={post} onFeed />
-            {!modqueue && (
+            {inModqueue && <ModqueueItemActions item={post} />}
+            <MoreActions post={post} />
+            {!inModqueue && (
               <>
-                <MoreModActions post={post} onFeed />
+                <MoreModActions post={post} />
                 <VoteButton type="up" postId={post.post.id} />
                 <VoteButton type="down" postId={post.post.id} />
               </>

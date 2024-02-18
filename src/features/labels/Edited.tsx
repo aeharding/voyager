@@ -3,8 +3,8 @@ import { IonIcon, useIonAlert } from "@ionic/react";
 import { pencil } from "ionicons/icons";
 import { MouseEvent, useMemo } from "react";
 import { formatRelative } from "./Ago";
-import styled from "@emotion/styled";
 import { fixLemmyDateString } from "../../helpers/date";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   display: flex;

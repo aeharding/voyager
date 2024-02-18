@@ -1,22 +1,27 @@
 import { useAppSelector } from "../store";
-import { useCallback, useContext, useRef } from "react";
-import { TabContext } from "../TabContext";
+import { useCallback, useContext } from "react";
+import { TabNameContext } from "../routes/common/Route";
+import { TabContext } from "../core/TabContext";
 
 export function useBuildGeneralBrowseLink() {
   const { tabRef } = useContext(TabContext);
-  const connectedServer = useAppSelector(
+  const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
 
-  // If connectedServer changes while we're off-tab, we don't want to
-  // change the tab value - just rerender the connectedServer value
-  const currentTab = useRef(tabRef?.current);
+  const tabName = useContext(TabNameContext);
 
   const buildGeneralBrowseLink = useCallback(
-    (path: string) => `/${currentTab?.current}/${connectedServer}${path}`,
+    (path: string) => {
+      const tab = tabName || tabRef?.current;
+      // /settings/lemmy.world is invalid. Posts tab is special case
+      if (tab !== "posts" && (!path || path === "/")) return `/${tab}`;
+
+      return `/${tab}/${connectedInstance}${path}`;
+    },
     // tab should never dynamically change for a rendered buildGeneralBrowseLink tab. So don't re-render
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [connectedServer],
+    [connectedInstance],
   );
 
   return buildGeneralBrowseLink;

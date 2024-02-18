@@ -1,18 +1,20 @@
 import { useIonActionSheet, useIonAlert } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { useState } from "react";
+import store, { useAppDispatch } from "../../store";
+import { useCallback, useContext, useMemo, useState } from "react";
 import useAppToast from "../../helpers/useAppToast";
 import { CommentView } from "lemmy-js-client";
-import { localUserSelector } from "../auth/authSlice";
-import { notEmpty } from "../../helpers/array";
-import useCanModerate from "./useCanModerate";
+import { localUserSelector } from "../auth/siteSlice";
+import { getCanModerate } from "./useCanModerate";
 import {
   checkmarkCircleOutline,
   colorWandOutline,
+  hammerOutline,
   shieldCheckmarkOutline,
   trashOutline,
 } from "ionicons/icons";
 import {
+  buildBanFailed,
+  buildBanned,
   commentApproved,
   commentDistinguished,
   commentRemoved,
@@ -24,47 +26,59 @@ import {
 } from "../comment/commentSlice";
 import { stringifyReports } from "./usePostModActions";
 import { reportsByCommentIdSelector, resolveCommentReport } from "./modSlice";
+import { banUser } from "../user/userSlice";
+import { PageContext } from "../auth/PageContext";
+import { compact } from "lodash";
 
 export default function useCommentModActions(commentView: CommentView) {
-  const [presentAlert] = useIonAlert();
   const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState(false);
-  const localUser = useAppSelector(localUserSelector);
+  const [presentAlert] = useIonAlert();
   const [presentActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
-  const role = useCanModerate(commentView.community);
+  const { presentBanUser } = useContext(PageContext);
 
-  const comment = useAppSelector(
-    (state) =>
-      state.comment.commentById[commentView.comment.id] ?? commentView.comment,
-  );
+  const [loading, setLoading] = useState(false);
 
-  const isSelf = comment.creator_id === localUser?.person_id;
+  // Do all logic sync in present() so it doesn't slow down initial render
+  const present = useCallback(() => {
+    const state = store.getState();
 
-  const reports = useAppSelector(
-    (state) => reportsByCommentIdSelector(state)[comment.id],
-  );
+    const comment =
+      state.comment.commentById[commentView.comment.id] ?? commentView.comment;
 
-  function present() {
+    const localUser = localUserSelector(state);
+
+    const isSelf = comment.creator_id === localUser?.person_id;
+
+    const reports = reportsByCommentIdSelector(state)[comment.id];
+
+    const bannedFromCommunity =
+      state.user.bannedByCommunityIdUserId[
+        `${commentView.community.id}${commentView.creator.id}`
+      ];
+
+    const banned =
+      bannedFromCommunity ?? commentView.creator_banned_from_community;
+
+    const role = getCanModerate(commentView.community);
+
     presentActionSheet({
       header: stringifyReports(reports),
       cssClass: `${role} left-align-buttons`,
-      buttons: [
-        isSelf
-          ? {
-              text: !comment.distinguished ? "Distinguish" : "Undistinguish",
-              icon: shieldCheckmarkOutline,
-              handler: () => {
-                (async () => {
-                  await dispatch(
-                    modDistinguishComment(comment.id, !comment.distinguished),
-                  );
+      buttons: compact([
+        isSelf && {
+          text: !comment.distinguished ? "Distinguish" : "Undistinguish",
+          icon: shieldCheckmarkOutline,
+          handler: () => {
+            (async () => {
+              await dispatch(
+                modDistinguishComment(comment.id, !comment.distinguished),
+              );
 
-                  presentToast(commentDistinguished);
-                })();
-              },
-            }
-          : undefined,
+              presentToast(commentDistinguished);
+            })();
+          },
+        },
         !comment.removed && reports?.length
           ? {
               text: "Approve",
@@ -112,6 +126,7 @@ export default function useCommentModActions(commentView: CommentView) {
               [
                 {
                   text: "Begone",
+                  cssClass: "mod",
                   handler: () => {
                     (async () => {
                       setLoading(true);
@@ -124,18 +139,58 @@ export default function useCommentModActions(commentView: CommentView) {
                     })();
                   },
                 },
-                { text: "Cancel", role: "cancel" },
+                { text: "Cancel", role: "cancel", cssClass: "mod" },
               ],
             );
           },
         },
+        role === "mod" || role === "admin-local"
+          ? {
+              text: !banned ? "Ban User" : "Unban User",
+              icon: hammerOutline,
+              handler: () => {
+                (async () => {
+                  if (banned) {
+                    try {
+                      await dispatch(
+                        banUser({
+                          person_id: commentView.creator.id,
+                          community_id: commentView.community.id,
+                          ban: false,
+                        }),
+                      );
+                    } catch (error) {
+                      presentToast(buildBanFailed(false));
+                      throw error;
+                    }
+
+                    presentToast(buildBanned(false));
+
+                    return;
+                  }
+
+                  presentBanUser({
+                    user: commentView.creator,
+                    community: commentView.community,
+                  });
+                })();
+              },
+            }
+          : undefined,
         {
           text: "Cancel",
           role: "cancel",
         },
-      ].filter(notEmpty),
+      ]),
     });
-  }
+  }, [
+    commentView,
+    dispatch,
+    presentActionSheet,
+    presentAlert,
+    presentBanUser,
+    presentToast,
+  ]);
 
-  return { present, loading };
+  return useMemo(() => ({ present, loading }), [loading, present]);
 }

@@ -6,7 +6,7 @@ import {
   IonList,
   IonLoading,
 } from "@ionic/react";
-import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
+import { InsetIonItem } from "../../../routes/pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useState } from "react";
 import { getHandle } from "../../../helpers/lemmy";
@@ -19,7 +19,7 @@ export default function BlockedCommunities() {
   const [loading, setLoading] = useState(false);
 
   const communities = useAppSelector(
-    (state) => state.auth.site?.my_user?.community_blocks,
+    (state) => state.site.response?.my_user?.community_blocks,
   );
 
   const sortedCommunities = communities

@@ -36,10 +36,14 @@ import {
   ODefaultFeedType,
   TapToCollapseType,
   OTapToCollapseType,
+  AutoplayMediaType,
+  OAutoplayMediaType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
 import { SortType } from "lemmy-js-client";
+import { loggedInSelector } from "../auth/authSelectors";
+import Dexie from "dexie";
 
 export {
   type CommentThreadCollapse,
@@ -52,6 +56,7 @@ export {
 
 interface SettingsState {
   ready: boolean;
+  databaseError: Error | undefined;
   appearance: {
     font: {
       fontSizeMultiplier: number;
@@ -64,11 +69,13 @@ interface SettingsState {
     posts: {
       blurNsfw: PostBlurNsfwType;
       type: PostAppearanceType;
+      embedCrossposts: boolean;
     };
     compact: {
       thumbnailsPosition: CompactThumbnailPositionType;
       showVotingButtons: boolean;
       thumbnailSize: CompactThumbnailSizeType;
+      showSelfPostThumbnails: boolean;
     };
     voting: {
       voteDisplayMode: VoteDisplayMode;
@@ -97,11 +104,13 @@ interface SettingsState {
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
+      showHiddenInCommunities: boolean;
       autoHideRead: boolean;
       disableAutoHideInCommunities: boolean;
       infiniteScrolling: boolean;
       upvoteOnSave: boolean;
       rememberCommunitySort: boolean;
+      autoplayMedia: AutoplayMediaType;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
@@ -113,7 +122,7 @@ interface SettingsState {
   };
 }
 
-const LOCALSTORAGE_KEYS = {
+export const LOCALSTORAGE_KEYS = {
   FONT: {
     FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
     USE_SYSTEM: "appearance--font-use-system",
@@ -127,8 +136,9 @@ const LOCALSTORAGE_KEYS = {
   THEME: "appearance--theme",
 } as const;
 
-const initialState: SettingsState = {
+export const initialState: SettingsState = {
   ready: false,
+  databaseError: undefined,
   appearance: {
     font: {
       fontSizeMultiplier: 1,
@@ -141,11 +151,13 @@ const initialState: SettingsState = {
     posts: {
       blurNsfw: OPostBlurNsfw.InFeed,
       type: OPostAppearanceType.Large,
+      embedCrossposts: true,
     },
     compact: {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
       showVotingButtons: true,
       thumbnailSize: OCompactThumbnailSizeType.Small,
+      showSelfPostThumbnails: true,
     },
     voting: {
       voteDisplayMode: OVoteDisplayMode.Total,
@@ -174,11 +186,13 @@ const initialState: SettingsState = {
       disableMarkingRead: false,
       markReadOnScroll: false,
       showHideReadButton: false,
+      showHiddenInCommunities: false,
       autoHideRead: false,
       disableAutoHideInCommunities: false,
       infiniteScrolling: true,
       upvoteOnSave: false,
       rememberCommunitySort: false,
+      autoplayMedia: OAutoplayMediaType.Always,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
@@ -192,7 +206,7 @@ const initialState: SettingsState = {
 
 // We continue using localstorage for specific items because indexeddb is slow
 // and we don't want to wait for it to load before rendering the app and cause flickering
-const stateWithLocalstorageItems: SettingsState = merge(initialState, {
+export const stateWithLocalstorageItems: SettingsState = merge(initialState, {
   appearance: {
     font: {
       fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
@@ -215,11 +229,22 @@ export const defaultCommentDepthSelector = createSelector(
   ],
   (collapseCommentThreads): number => {
     switch (collapseCommentThreads) {
-      case OCommentThreadCollapse.Always:
+      case OCommentThreadCollapse.RootOnly:
+      case OCommentThreadCollapse.All:
         return 1;
       case OCommentThreadCollapse.Never:
         return MAX_DEFAULT_COMMENT_DEPTH;
     }
+  },
+);
+
+export const defaultThreadCollapse = createSelector(
+  [
+    (state: RootState) =>
+      state.settings.general.comments.collapseCommentThreads,
+  ],
+  (collapseCommentThreads): string => {
+    return collapseCommentThreads;
   },
 );
 
@@ -233,6 +258,9 @@ export const appearanceSlice = createSlice({
     );
   },
   reducers: {
+    setDatabaseError(state, action: PayloadAction<Error>) {
+      state.databaseError = action.payload;
+    },
     setFontSizeMultiplier(state, action: PayloadAction<number>) {
       state.appearance.font.fontSizeMultiplier = action.payload;
       set(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER, action.payload);
@@ -291,11 +319,15 @@ export const appearanceSlice = createSlice({
       state.appearance.posts.blurNsfw = action.payload;
       // Per user setting is updated in StoreProvider
     },
+    setEmbedCrossposts(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.embedCrossposts = action.payload;
+      db.setSetting("embed_crossposts", action.payload);
+    },
     setFilteredKeywords(state, action: PayloadAction<string[]>) {
       state.blocks.keywords = action.payload;
       // Per user setting is updated in StoreProvider
     },
-    setDefaultFeed(state, action: PayloadAction<DefaultFeedType>) {
+    setDefaultFeed(state, action: PayloadAction<DefaultFeedType | undefined>) {
       state.general.defaultFeed = action.payload;
       // Per user setting is updated in StoreProvider
     },
@@ -313,6 +345,10 @@ export const appearanceSlice = createSlice({
     ) {
       state.appearance.compact.thumbnailSize = action.payload;
       db.setSetting("compact_thumbnail_size", action.payload);
+    },
+    setCompactShowSelfPostThumbnails(state, action: PayloadAction<boolean>) {
+      state.appearance.compact.showSelfPostThumbnails = action.payload;
+      db.setSetting("compact_show_self_post_thumbnails", action.payload);
     },
     setThumbnailPosition(
       state,
@@ -364,6 +400,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("show_hide_read_button", action.payload);
     },
+    setShowHiddenInCommunities(state, action: PayloadAction<boolean>) {
+      state.general.posts.showHiddenInCommunities = action.payload;
+
+      db.setSetting("show_hidden_in_communities", action.payload);
+    },
     setAutoHideRead(state, action: PayloadAction<boolean>) {
       state.general.posts.autoHideRead = action.payload;
 
@@ -388,6 +429,11 @@ export const appearanceSlice = createSlice({
       state.general.posts.rememberCommunitySort = action.payload;
 
       db.setSetting("remember_community_sort", action.payload);
+    },
+    setAutoplayMedia(state, action: PayloadAction<AutoplayMediaType>) {
+      state.general.posts.autoplayMedia = action.payload;
+
+      db.setSetting("autoplay_media", action.payload);
     },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
@@ -454,6 +500,7 @@ export const getFilteredKeywords =
 export const getDefaultFeed =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
+    const loggedIn = loggedInSelector(getState());
 
     let defaultFeed;
 
@@ -465,7 +512,13 @@ export const getDefaultFeed =
       console.error("Error receiving default feed", error);
     }
 
-    dispatch(setDefaultFeed(defaultFeed ?? { type: ODefaultFeedType.Home }));
+    dispatch(
+      setDefaultFeed(
+        defaultFeed ?? {
+          type: loggedIn ? ODefaultFeedType.Home : ODefaultFeedType.All,
+        },
+      ),
+    );
   };
 
 export const updateDefaultFeed =
@@ -512,6 +565,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const profile_label = await db.getSetting("profile_label");
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
+      const embed_crossposts = await db.getSetting("embed_crossposts");
       const compact_thumbnail_position_type = await db.getSetting(
         "compact_thumbnail_position_type",
       );
@@ -520,6 +574,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const compact_thumbnail_size = await db.getSetting(
         "compact_thumbnail_size",
+      );
+      const compact_show_self_post_thumbnails = await db.getSetting(
+        "compact_show_self_post_thumbnails",
       );
       const vote_display_mode = await db.getSetting("vote_display_mode");
       const default_comment_sort = await db.getSetting("default_comment_sort");
@@ -530,6 +587,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const show_hide_read_button = await db.getSetting(
         "show_hide_read_button",
       );
+      const show_hidden_in_communities = await db.getSetting(
+        "show_hidden_in_communities",
+      );
       const auto_hide_read = await db.getSetting("auto_hide_read");
       const disable_auto_hide_in_communities = await db.getSetting(
         "disable_auto_hide_in_communities",
@@ -539,6 +599,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const remember_community_sort = await db.getSetting(
         "remember_community_sort",
       );
+      const autoplay_media = await db.getSetting("autoplay_media");
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
@@ -566,6 +627,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           posts: {
             type: post_appearance_type ?? initialState.appearance.posts.type,
             blurNsfw: blur_nsfw ?? initialState.appearance.posts.blurNsfw,
+            embedCrossposts:
+              embed_crossposts ?? initialState.appearance.posts.embedCrossposts,
           },
           compact: {
             thumbnailsPosition:
@@ -577,6 +640,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             thumbnailSize:
               compact_thumbnail_size ??
               initialState.appearance.compact.thumbnailSize,
+            showSelfPostThumbnails:
+              compact_show_self_post_thumbnails ??
+              initialState.appearance.compact.showSelfPostThumbnails,
           },
           voting: {
             voteDisplayMode:
@@ -617,6 +683,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showHideReadButton:
               show_hide_read_button ??
               initialState.general.posts.showHideReadButton,
+            showHiddenInCommunities:
+              show_hidden_in_communities ??
+              initialState.general.posts.showHiddenInCommunities,
             autoHideRead:
               auto_hide_read ?? initialState.general.posts.autoHideRead,
             disableAutoHideInCommunities:
@@ -631,6 +700,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             rememberCommunitySort:
               remember_community_sort ??
               initialState.general.posts.rememberCommunitySort,
+            autoplayMedia:
+              autoplay_media ?? initialState.general.posts.autoplayMedia,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
@@ -648,6 +719,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
     try {
       return await result;
     } catch (error) {
+      if (error instanceof Dexie.MissingAPIError) {
+        thunkApi.dispatch(setDatabaseError(error));
+      }
+
       // In the event of a database error, attempt to render the UI anyways
       thunkApi.dispatch(settingsReady());
 
@@ -657,6 +732,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 );
 
 export const {
+  setDatabaseError,
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setUserInstanceUrlDisplay,
@@ -669,11 +745,13 @@ export const {
   setTouchFriendlyLinks,
   setShowCommentImages,
   setNsfwBlur,
+  setEmbedCrossposts,
   setFilteredKeywords,
   setPostAppearance,
   setThumbnailPosition,
   setShowVotingButtons,
   setCompactThumbnailSize,
+  setCompactShowSelfPostThumbnails,
   setVoteDisplayMode,
   setUserDarkMode,
   setUseSystemDarkMode,
@@ -684,11 +762,13 @@ export const {
   setDisableMarkingPostsRead,
   setMarkPostsReadOnScroll,
   setShowHideReadButton,
+  setShowHiddenInCommunities,
   setAutoHideRead,
   setDisableAutoHideInCommunities,
   setInfiniteScrolling,
   setUpvoteOnSave,
   setRememberCommunitySort,
+  setAutoplayMedia,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,
