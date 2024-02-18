@@ -12,7 +12,11 @@ import {
   gfmStrikethroughToMarkdown,
 } from "mdast-util-gfm-strikethrough";
 import { gfmTableFromMarkdown, gfmTableToMarkdown } from "mdast-util-gfm-table";
-import { Settings } from "unified";
+import {
+  directive,
+  directiveFromMarkdown,
+  directiveToMarkdown,
+} from "micromark-extension-lemmy-spoiler";
 
 interface Options {
   connectedInstance: string;
@@ -31,9 +35,13 @@ export default function customRemarkGfm(
   const toMarkdownExtensions =
     data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
 
+  micromarkExtensions.push(directive());
+  toMarkdownExtensions.push(directiveToMarkdown());
+  fromMarkdownExtensions.push(directiveFromMarkdown());
+
   micromarkExtensions.push(gfm());
   fromMarkdownExtensions.push(gfmFromMarkdown(options));
-  toMarkdownExtensions.push(gfmToMarkdown() as Settings);
+  toMarkdownExtensions.push(gfmToMarkdown());
 }
 
 function gfm() {

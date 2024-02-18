@@ -7,6 +7,9 @@ import { useAppSelector } from "../../store";
 import { css, cx } from "@linaria/core";
 import { styled } from "@linaria/react";
 import superSub from "remark-supersub";
+import { visit } from "unist-util-visit";
+import { h } from "hastscript";
+import { Root } from "mdast";
 
 const markdownCss = css`
   @media (max-width: 700px) {
@@ -100,9 +103,36 @@ export default function Markdown({
               />
             )
           : (props) => <LinkInterceptor {...props} />,
+        summary: (props) => (
+          <summary {...props} onClick={(e) => e.stopPropagation()} />
+        ),
         ...props.components,
       }}
-      remarkPlugins={[[customRemarkGfm, { connectedInstance }], superSub]}
+      remarkPlugins={[
+        [customRemarkGfm, { connectedInstance }],
+        superSub,
+        spoilerPlugin,
+      ]}
     />
   );
+}
+
+function spoilerPlugin() {
+  /**
+   * @param {import('mdast').Root} tree
+   *   Tree.
+   * @returns {undefined}
+   *   Nothing.
+   */
+  return function (tree: Root) {
+    visit(tree, function (node) {
+      if (node.type === "spoilerContainer") {
+        const data = node.data || (node.data = {});
+        const hast = h("details");
+
+        data.hName = hast.tagName;
+        data.hProperties = hast.properties;
+      }
+    });
+  };
 }
