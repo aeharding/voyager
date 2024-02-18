@@ -76,7 +76,10 @@ const CommunityName = styled.span`
 `;
 
 export default function LargePost({ post }: PostProps) {
-  const hasBeenRead: boolean =
+  const showVotingButtons = useAppSelector(
+    (state) => state.settings.appearance.large.showVotingButtons,
+  );
+  const hasBeenRead =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
 
@@ -129,17 +132,19 @@ export default function LargePost({ post }: PostProps) {
 
             <PreviewStats post={post} />
           </LeftDetails>
-          <RightDetails>
-            {inModqueue && <ModqueueItemActions item={post} />}
-            <MoreActions post={post} />
-            {!inModqueue && (
-              <>
-                <MoreModActions post={post} />
-                <VoteButton type="up" postId={post.post.id} />
-                <VoteButton type="down" postId={post.post.id} />
-              </>
-            )}
-          </RightDetails>
+          {(showVotingButtons || inModqueue) && (
+            <RightDetails>
+              {inModqueue && <ModqueueItemActions item={post} />}
+              <MoreActions post={post} />
+              {!inModqueue && (
+                <>
+                  <MoreModActions post={post} />
+                  <VoteButton type="up" postId={post.post.id} />
+                  <VoteButton type="down" postId={post.post.id} />
+                </>
+              )}
+            </RightDetails>
+          )}
         </Details>
 
         <Save type="post" id={post.post.id} />

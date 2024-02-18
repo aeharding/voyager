@@ -4,7 +4,7 @@ import { useAppSelector, useAppDispatch } from "../../../store";
 import {
   setCompactShowSelfPostThumbnails,
   setCompactThumbnailSize,
-  setShowVotingButtons,
+  setCompactShowVotingButtons,
   setThumbnailPosition,
 } from "../settingsSlice";
 import {
@@ -48,7 +48,7 @@ export default function CompactSettings() {
           <IonToggle
             checked={showVotingButtons}
             onIonChange={(e) =>
-              dispatch(setShowVotingButtons(!!e.detail.checked))
+              dispatch(setCompactShowVotingButtons(!!e.detail.checked))
             }
           >
             Show Voting Buttons
