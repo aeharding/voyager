@@ -18,6 +18,7 @@ import { ShareImageContext } from "../../share/asImage/ShareAsImage";
 import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 import { styled } from "@linaria/react";
 import { cx } from "@linaria/core";
+import { useAppSelector } from "../../../store";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin-right: 0.4rem;
@@ -28,7 +29,7 @@ interface CommunityLinkProps {
   community: Community;
   showInstanceWhenRemote?: boolean;
   subscribed: SubscribedType;
-  showIcon?: boolean;
+  tinyIcon?: boolean;
 
   className?: string;
 }
@@ -38,12 +39,15 @@ export default function CommunityLink({
   showInstanceWhenRemote,
   className,
   subscribed,
-  showIcon = true,
+  tinyIcon,
 }: CommunityLinkProps) {
   const [present] = useIonActionSheet();
 
   const handle = getHandle(community);
   const { hideCommunity } = useContext(ShareImageContext);
+  const showCommunityIcons = useAppSelector(
+    (state) => state.settings.appearance.posts.showCommunityIcons,
+  );
 
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
     useCommunityActions(community, subscribed);
@@ -100,8 +104,8 @@ export default function CommunityLink({
       className={cx(className, hideCommunity ? hideCss : undefined)}
       {...bind()}
     >
-      {showIcon && !hideCommunity && (
-        <StyledItemIcon item={community} size={24} />
+      {showCommunityIcons && !hideCommunity && (
+        <StyledItemIcon item={community} size={tinyIcon ? 16 : 24} />
       )}
 
       <Handle
