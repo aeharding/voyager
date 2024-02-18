@@ -70,6 +70,7 @@ interface SettingsState {
       blurNsfw: PostBlurNsfwType;
       type: PostAppearanceType;
       embedCrossposts: boolean;
+      showCommunityIcons: boolean;
     };
     large: {
       showVotingButtons: boolean;
@@ -155,6 +156,7 @@ export const initialState: SettingsState = {
       blurNsfw: OPostBlurNsfw.InFeed,
       type: OPostAppearanceType.Large,
       embedCrossposts: true,
+      showCommunityIcons: true,
     },
     large: {
       showVotingButtons: true,
@@ -328,6 +330,10 @@ export const appearanceSlice = createSlice({
     setEmbedCrossposts(state, action: PayloadAction<boolean>) {
       state.appearance.posts.embedCrossposts = action.payload;
       db.setSetting("embed_crossposts", action.payload);
+    },
+    setShowCommunityIcons(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.showCommunityIcons = action.payload;
+      db.setSetting("show_community_icons", action.payload);
     },
     setFilteredKeywords(state, action: PayloadAction<string[]>) {
       state.blocks.keywords = action.payload;
@@ -576,6 +582,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const embed_crossposts = await db.getSetting("embed_crossposts");
+      const show_community_icons = await db.getSetting("show_community_icons");
       const large_show_voting_buttons = await db.getSetting(
         "large_show_voting_buttons",
       );
@@ -642,6 +649,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             blurNsfw: blur_nsfw ?? initialState.appearance.posts.blurNsfw,
             embedCrossposts:
               embed_crossposts ?? initialState.appearance.posts.embedCrossposts,
+            showCommunityIcons:
+              show_community_icons ??
+              initialState.appearance.posts.showCommunityIcons,
           },
           large: {
             showVotingButtons:
@@ -764,6 +774,7 @@ export const {
   setShowCommentImages,
   setNsfwBlur,
   setEmbedCrossposts,
+  setShowCommunityIcons,
   setFilteredKeywords,
   setPostAppearance,
   setThumbnailPosition,

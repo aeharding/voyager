@@ -159,7 +159,7 @@ export default function CompactPost({ post }: PostProps) {
                 <CommunityLink
                   community={post.community}
                   subscribed={post.subscribed}
-                  showIcon={false}
+                  tinyIcon
                 />
               </Aside>
             )}
@@ -182,6 +182,7 @@ export default function CompactPost({ post }: PostProps) {
                   <CommunityLink
                     community={post.community}
                     subscribed={post.subscribed}
+                    tinyIcon
                   />
                 )}
               </From>

@@ -302,6 +302,7 @@ export type SettingValueTypes = {
   default_post_sort_by_feed: SortType;
   remember_community_sort: boolean;
   embed_crossposts: boolean;
+  show_community_icons: boolean;
   autoplay_media: AutoplayMediaType;
 };
 
