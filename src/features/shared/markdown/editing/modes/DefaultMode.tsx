@@ -191,12 +191,12 @@ export default function DefaultMode({
     const markdownLink = `[${text}](${url || "url"})`;
     const toRemove = selectionLocationEnd.current - selectionLocation.current;
 
-    setText((text) =>
-      insert(text, selectionLocation.current, markdownLink, toRemove),
-    );
+    const locationBeforeInsert = selectionLocation.current;
+    const currentSelectionLocation = locationBeforeInsert + markdownLink.length;
 
-    const currentSelectionLocation =
-      selectionLocation.current + markdownLink.length;
+    setText((text) =>
+      insert(text, locationBeforeInsert, markdownLink, toRemove),
+    );
 
     textareaRef.current?.focus();
 
@@ -204,8 +204,8 @@ export default function DefaultMode({
       if (!text) {
         // place cursor inside brackets
         textareaRef.current?.setSelectionRange(
-          selectionLocation.current + 1,
-          selectionLocation.current + 1,
+          locationBeforeInsert + 1,
+          locationBeforeInsert + 1,
         );
       } else if (!url) {
         // select url placeholder
