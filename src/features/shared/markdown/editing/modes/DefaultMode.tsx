@@ -157,7 +157,7 @@ export default function DefaultMode({
         },
         {
           name: "url",
-          placeholder: "https://vger.app",
+          placeholder: "https://aspca.org",
           value: isUrl ? selectedText : undefined,
           cssClass: urlCssClass,
           attributes: {
