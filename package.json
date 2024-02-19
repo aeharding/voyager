@@ -23,6 +23,9 @@
   "pnpm": {
     "overrides": {
       "@ionic/core": "npm:voyager-ionic-core"
+    },
+    "patchedDependencies": {
+      "@capacitor/browser@5.2.0": "patches/@capacitor__browser@5.2.0.patch"
     }
   },
   "dependencies": {

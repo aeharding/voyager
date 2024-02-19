@@ -43,7 +43,7 @@ DEPENDENCIES:
   - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@5.0.7_@capacitor+core@5.7.0/node_modules/@capacitor/app`)"
   - "CapacitorApplicationContext (from `../../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.7.0/node_modules/capacitor-application-context`)"
   - "CapacitorBiometricLock (from `../../node_modules/.pnpm/capacitor-biometric-lock@0.1.1_@capacitor+core@5.7.0/node_modules/capacitor-biometric-lock`)"
-  - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@5.2.0_@capacitor+core@5.7.0/node_modules/@capacitor/browser`)"
+  - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@5.2.0_patch_hash=bc25ohpkb4iimysp77pbkkz45i_@capacitor+core@5.7.0/node_modules/@capacitor/browser`)"
   - "CapacitorCommunityAppIcon (from `../../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.7.0/node_modules/@capacitor-community/app-icon`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@5.7.0_@capacitor+core@5.7.0/node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.7.0/node_modules/@capacitor/filesystem`)"
@@ -72,7 +72,7 @@ EXTERNAL SOURCES:
   CapacitorBiometricLock:
     :path: "../../node_modules/.pnpm/capacitor-biometric-lock@0.1.1_@capacitor+core@5.7.0/node_modules/capacitor-biometric-lock"
   CapacitorBrowser:
-    :path: "../../node_modules/.pnpm/@capacitor+browser@5.2.0_@capacitor+core@5.7.0/node_modules/@capacitor/browser"
+    :path: "../../node_modules/.pnpm/@capacitor+browser@5.2.0_patch_hash=bc25ohpkb4iimysp77pbkkz45i_@capacitor+core@5.7.0/node_modules/@capacitor/browser"
   CapacitorCommunityAppIcon:
     :path: "../../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.7.0/node_modules/@capacitor-community/app-icon"
   CapacitorCordova:
@@ -116,6 +116,6 @@ SPEC CHECKSUMS:
   CapacitorTips: 045758a9354574aa4807265e1bccbca0919ad861
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: 60e067b3584bd11d5c774c089886aebd272632db
+PODFILE CHECKSUM: 7bbc79e4b01b6183e68d41416625999cc78f4bc7
 
 COCOAPODS: 1.12.1

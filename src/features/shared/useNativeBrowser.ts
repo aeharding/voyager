@@ -10,6 +10,9 @@ export default function useNativeBrowser() {
   const { usingSystemDarkMode, pureBlack } = useAppSelector(
     (state) => state.settings.appearance.dark,
   );
+  const alwaysUseReaderMode = useAppSelector(
+    (state) => state.settings.general.safari.alwaysUseReaderMode,
+  );
 
   return useCallback(
     (href: string) => {
@@ -35,9 +38,10 @@ export default function useNativeBrowser() {
       Browser.open({
         url: href,
         toolbarColor,
+        entersReaderIfAvailable: alwaysUseReaderMode,
       });
       notifyStatusTapThatBrowserWasOpened();
     },
-    [isDark, usingSystemDarkMode, pureBlack],
+    [isDark, usingSystemDarkMode, pureBlack, alwaysUseReaderMode],
   );
 }
