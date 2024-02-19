@@ -12,7 +12,7 @@ export default function CollapsedByDefault() {
 
   return (
     <SettingSelector
-      title="Collapse Comment Threads"
+      title="Collapse Threads"
       selected={collapseCommentThreads}
       setSelected={setCommentsCollapsed}
       options={OCommentThreadCollapse}
