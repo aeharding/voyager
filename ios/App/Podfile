@@ -13,7 +13,7 @@ def capacitor_pods
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@5.7.0_@capacitor+core@5.7.0/node_modules/@capacitor/ios'
   pod 'CapacitorCommunityAppIcon', :path => '../../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.7.0/node_modules/@capacitor-community/app-icon'
   pod 'CapacitorApp', :path => '../../node_modules/.pnpm/@capacitor+app@5.0.7_@capacitor+core@5.7.0/node_modules/@capacitor/app'
-  pod 'CapacitorBrowser', :path => '../../node_modules/.pnpm/@capacitor+browser@5.2.0_patch_hash=bc25ohpkb4iimysp77pbkkz45i_@capacitor+core@5.7.0/node_modules/@capacitor/browser'
+  pod 'CapacitorBrowser', :path => '../../node_modules/.pnpm/@capacitor+browser@5.2.0_patch_hash=m4ddgv4ucvx4w6engzasoi47iy_@capacitor+core@5.7.0/node_modules/@capacitor/browser'
   pod 'CapacitorFilesystem', :path => '../../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.7.0/node_modules/@capacitor/filesystem'
   pod 'CapacitorHaptics', :path => '../../node_modules/.pnpm/voyager-capacitor-haptics@5.0.7_@capacitor+core@5.7.0/node_modules/voyager-capacitor-haptics'
   pod 'CapacitorKeyboard', :path => '../../node_modules/.pnpm/@capacitor+keyboard@5.0.8_@capacitor+core@5.7.0/node_modules/@capacitor/keyboard'

@@ -9,7 +9,7 @@ overrides:
 
 patchedDependencies:
   '@capacitor/browser@5.2.0':
-    hash: bc25ohpkb4iimysp77pbkkz45i
+    hash: m4ddgv4ucvx4w6engzasoi47iy
     path: patches/@capacitor__browser@5.2.0.patch
 
 dependencies:
@@ -47,7 +47,7 @@ devDependencies:
     version: 3.0.4(@types/node@20.11.17)(typescript@5.3.3)
   '@capacitor/browser':
     specifier: ^5.2.0
-    version: 5.2.0(patch_hash=bc25ohpkb4iimysp77pbkkz45i)(@capacitor/core@5.7.0)
+    version: 5.2.0(patch_hash=m4ddgv4ucvx4w6engzasoi47iy)(@capacitor/core@5.7.0)
   '@capacitor/cli':
     specifier: 5.7.0
     version: 5.7.0
@@ -2741,7 +2741,7 @@ packages:
       - typescript
     dev: true
 
-  /@capacitor/browser@5.2.0(patch_hash=bc25ohpkb4iimysp77pbkkz45i)(@capacitor/core@5.7.0):
+  /@capacitor/browser@5.2.0(patch_hash=m4ddgv4ucvx4w6engzasoi47iy)(@capacitor/core@5.7.0):
     resolution: {integrity: sha512-pWFrsNPOG6DlDWGl+bJqTWLvoJ2vvV27LKaSZ/A7S4td4bK3umwZmgGlp8ispjpYiurjliT25Ae8I+ywMV8X9w==}
     peerDependencies:
       '@capacitor/core': ^5.0.0

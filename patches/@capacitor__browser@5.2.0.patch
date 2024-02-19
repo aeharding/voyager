@@ -33,21 +33,6 @@ diff --git a/ios/Plugin/BrowserPlugin.swift b/ios/Plugin/BrowserPlugin.swift
 index f6be40dd72cdd1ced0fe43869d26d9188ca08ea8..ae31df607cc96589ed9de959d6d926174ed24a5d 100644
 --- a/ios/Plugin/BrowserPlugin.swift
 +++ b/ios/Plugin/BrowserPlugin.swift
-@@ -2,7 +2,13 @@ import Foundation
- import Capacitor
- 
- @objc(CAPBrowserPlugin)
--public class CAPBrowserPlugin: CAPPlugin {
-+public class CAPBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
-+    public let identifier = "CAPBrowserPlugin" 
-+    public let jsName = "Browser" 
-+    public let pluginMethods: [CAPPluginMethod] = [
-+        CAPPluginMethod(name: "open", returnType: CAPPluginReturnPromise),
-+        CAPPluginMethod(name: "close", returnType: CAPPluginReturnPromise),
-+    ] 
-     private let implementation = Browser()
- 
-     @objc func open(_ call: CAPPluginCall) {
 @@ -17,8 +23,9 @@ public class CAPBrowserPlugin: CAPPlugin {
              color = UIColor.capacitor.color(fromHex: toolbarColor)
          }

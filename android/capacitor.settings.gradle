@@ -9,7 +9,7 @@ include ':capacitor-app'
 project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacitor+app@5.0.7_@capacitor+core@5.7.0/node_modules/@capacitor/app/android')
 
 include ':capacitor-browser'
-project(':capacitor-browser').projectDir = new File('../node_modules/.pnpm/@capacitor+browser@5.2.0_patch_hash=bc25ohpkb4iimysp77pbkkz45i_@capacitor+core@5.7.0/node_modules/@capacitor/browser/android')
+project(':capacitor-browser').projectDir = new File('../node_modules/.pnpm/@capacitor+browser@5.2.0_patch_hash=m4ddgv4ucvx4w6engzasoi47iy_@capacitor+core@5.7.0/node_modules/@capacitor/browser/android')
 
 include ':capacitor-filesystem'
 project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.7.0/node_modules/@capacitor/filesystem/android')
