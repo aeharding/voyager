@@ -116,6 +116,9 @@ interface SettingsState {
       rememberCommunitySort: boolean;
       autoplayMedia: AutoplayMediaType;
     };
+    safari: {
+      alwaysUseReaderMode: boolean;
+    };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
     defaultFeed: DefaultFeedType | undefined;
@@ -201,6 +204,9 @@ export const initialState: SettingsState = {
       upvoteOnSave: false,
       rememberCommunitySort: false,
       autoplayMedia: OAutoplayMediaType.Always,
+    },
+    safari: {
+      alwaysUseReaderMode: false,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
@@ -346,6 +352,10 @@ export const appearanceSlice = createSlice({
     setNoSubscribedInFeed(state, action: PayloadAction<boolean>) {
       state.general.noSubscribedInFeed = action.payload;
       db.setSetting("no_subscribed_in_feed", action.payload);
+    },
+    setAlwaysUseReaderMode(state, action: PayloadAction<boolean>) {
+      state.general.safari.alwaysUseReaderMode = action.payload;
+      db.setSetting("always_use_reader_mode", action.payload);
     },
     setLargeShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.large.showVotingButtons = action.payload;
@@ -630,6 +640,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const no_subscribed_in_feed = await db.getSetting(
         "no_subscribed_in_feed",
       );
+      const always_use_reader_mode = await db.getSetting(
+        "always_use_reader_mode",
+      );
       const default_post_sort = await db.getSetting("default_post_sort");
 
       return {
@@ -731,6 +744,11 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             autoplayMedia:
               autoplay_media ?? initialState.general.posts.autoplayMedia,
           },
+          safari: {
+            alwaysUseReaderMode:
+              always_use_reader_mode ??
+              initialState.general.safari.alwaysUseReaderMode,
+          },
           linkHandler: link_handler ?? initialState.general.linkHandler,
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
@@ -805,6 +823,7 @@ export const {
   setPureBlack,
   setDefaultFeed,
   setNoSubscribedInFeed,
+  setAlwaysUseReaderMode,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
