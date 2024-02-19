@@ -20,7 +20,7 @@ FROM base AS builder
 RUN apk add --no-cache git
 
 # Prepare build deps ( ignore postinstall scripts for now )
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml patches/* ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy all source files
@@ -35,7 +35,7 @@ FROM base AS runner
 
 ARG UID=911 GID=911
 
-COPY package.json pnpm-lock.yaml server.mjs ./
+COPY package.json pnpm-lock.yaml patches/* server.mjs ./
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
 
