@@ -20,6 +20,7 @@ import buildPostsRoutes from "./tabs/posts";
 import inbox from "./tabs/inbox";
 import profile from "./tabs/profile";
 import search from "./tabs/search";
+import general from "./tabs/general";
 
 type RouterOutletRef = IonRouterOutletCustomEvent<unknown>["target"];
 
@@ -128,6 +129,8 @@ const InnerTabbedRoutes = forwardRef<RouterOutletRef>(
             {...search}
 
             {...settings}
+
+            {...general}
           </IonRouterOutlet>
 
           <TabBar slot="bottom" />

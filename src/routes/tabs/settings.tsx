@@ -2,7 +2,6 @@
 
 import { Redirect } from "react-router";
 import Route from "../common/Route";
-import { buildGeneralBrowseRoutes } from "./general";
 import SettingsPage from "../pages/settings/SettingsPage";
 import InstallAppPage from "../pages/settings/InstallAppPage";
 import UpdateAppPage from "../pages/settings/UpdateAppPage";
@@ -22,7 +21,6 @@ import AboutThanksPage from "../pages/settings/about/AboutThanksPage";
 import RedditMigrateSubsListPage from "../pages/settings/RedditMigrateSubsListPage";
 
 export default [
-  ...buildGeneralBrowseRoutes("settings"),
   <Route exact path="/settings/:actor">
     <Redirect to="/settings" push={false} />
   </Route>,

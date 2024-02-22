@@ -2,14 +2,12 @@
 
 import { Redirect } from "react-router";
 import Route from "../common/Route";
-import { buildGeneralBrowseRoutes } from "./general";
 import ProfilePage from "../pages/profile/ProfilePage";
 
 export default [
   <Route exact path="/profile">
     <ProfilePage />
   </Route>,
-  ...buildGeneralBrowseRoutes("profile"),
   <Route exact path="/profile/:actor">
     <Redirect to="/profile" push={false} />
   </Route>,
