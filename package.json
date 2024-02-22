@@ -2,7 +2,7 @@
   "name": "voyager",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "1.40.0",
+  "version": "1.41.0",
   "type": "module",
   "packageManager": "pnpm@8.15.1+sha256.245fe901f8e7fa8782d7f17d32b6a83995e2ae03984cb5b62b8949bfdc27c7b5",
   "scripts": {
