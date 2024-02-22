@@ -15,73 +15,71 @@ import ProfileFeedHiddenPostsPage from "../pages/profile/ProfileFeedHiddenPostsP
 import ConversationPage from "../pages/inbox/ConversationPage";
 import InstanceSidebarPage from "../pages/shared/InstanceSidebarPage";
 
-export function buildGeneralBrowseRoutes(tab: string) {
-  return [
-    <Route exact path={`/${tab}/:actor/c/:community`}>
-      <CommunityPage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/c/:community/search/posts/:search`}>
-      <SearchFeedResultsPage type="Posts" />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/c/:community/search/comments/:search`}>
-      <SearchFeedResultsPage type="Comments" />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/c/:community/sidebar`}>
-      <CommunitySidebarPage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/c/:community/comments/:id`}>
-      <PostDetail />
-    </Route>,
-    <Route
-      exact
-      path={`/${tab}/:actor/c/:community/comments/:id/thread/:threadCommentId`}
-    >
-      <PostDetail />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/c/:community/comments/:id/:commentPath`}>
-      <PostDetail />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/c/:community/comments`}>
-      <CommunityCommentsPage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/c/:community/log`}>
-      <ModlogPage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/c/:community/modqueue`}>
-      <ModqueuePage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/mod/comments`}>
-      <CommentsPage type="ModeratorView" />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/mod/log`}>
-      <ModlogPage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/mod/modqueue`}>
-      <ModqueuePage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/u/:handle`}>
-      <UserPage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/u/:handle/posts`}>
-      <ProfileFeedItemsPage type="Posts" />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/u/:handle/comments`}>
-      <ProfileFeedItemsPage type="Comments" />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/u/:handle/saved`}>
-      <ProfileFeedItemsPage type="Saved" />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/u/:handle/hidden`}>
-      <ProfileFeedHiddenPostsPage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/u/:handle/message`}>
-      <ConversationPage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/u/:handle/log`}>
-      <ModlogPage />
-    </Route>,
-    <Route exact path={`/${tab}/:actor/sidebar`}>
-      <InstanceSidebarPage />
-    </Route>,
-  ];
-}
+export default [
+  <Route exact path="/:tab/:actor/c/:community">
+    <CommunityPage />
+  </Route>,
+  <Route exact path="/:tab/:actor/c/:community/search/posts/:search">
+    <SearchFeedResultsPage type="Posts" />
+  </Route>,
+  <Route exact path="/:tab/:actor/c/:community/search/comments/:search">
+    <SearchFeedResultsPage type="Comments" />
+  </Route>,
+  <Route exact path="/:tab/:actor/c/:community/sidebar">
+    <CommunitySidebarPage />
+  </Route>,
+  <Route exact path="/:tab/:actor/c/:community/comments/:id">
+    <PostDetail />
+  </Route>,
+  <Route
+    exact
+    path="/:tab/:actor/c/:community/comments/:id/thread/:threadCommentId"
+  >
+    <PostDetail />
+  </Route>,
+  <Route exact path="/:tab/:actor/c/:community/comments/:id/:commentPath">
+    <PostDetail />
+  </Route>,
+  <Route exact path="/:tab/:actor/c/:community/comments">
+    <CommunityCommentsPage />
+  </Route>,
+  <Route exact path="/:tab/:actor/c/:community/log">
+    <ModlogPage />
+  </Route>,
+  <Route exact path="/:tab/:actor/c/:community/modqueue">
+    <ModqueuePage />
+  </Route>,
+  <Route exact path="/:tab/:actor/mod/comments">
+    <CommentsPage type="ModeratorView" />
+  </Route>,
+  <Route exact path="/:tab/:actor/mod/log">
+    <ModlogPage />
+  </Route>,
+  <Route exact path="/:tab/:actor/mod/modqueue">
+    <ModqueuePage />
+  </Route>,
+  <Route exact path="/:tab/:actor/u/:handle">
+    <UserPage />
+  </Route>,
+  <Route exact path="/:tab/:actor/u/:handle/posts">
+    <ProfileFeedItemsPage type="Posts" />
+  </Route>,
+  <Route exact path="/:tab/:actor/u/:handle/comments">
+    <ProfileFeedItemsPage type="Comments" />
+  </Route>,
+  <Route exact path="/:tab/:actor/u/:handle/saved">
+    <ProfileFeedItemsPage type="Saved" />
+  </Route>,
+  <Route exact path="/:tab/:actor/u/:handle/hidden">
+    <ProfileFeedHiddenPostsPage />
+  </Route>,
+  <Route exact path="/:tab/:actor/u/:handle/message">
+    <ConversationPage />
+  </Route>,
+  <Route exact path="/:tab/:actor/u/:handle/log">
+    <ModlogPage />
+  </Route>,
+  <Route exact path="/:tab/:actor/sidebar">
+    <InstanceSidebarPage />
+  </Route>,
+];

@@ -5,7 +5,6 @@ import Route from "../common/Route";
 import SearchPage from "../pages/search/SearchPage";
 import SearchPostsResultsPage from "../pages/search/results/SearchFeedResultsPage";
 import SearchCommunitiesPage from "../pages/search/results/SearchCommunitiesPage";
-import { buildGeneralBrowseRoutes } from "./general";
 
 export default [
   <Route exact path="/search">
@@ -20,7 +19,6 @@ export default [
   <Route exact path="/search/communities/:search">
     <SearchCommunitiesPage />
   </Route>,
-  ...buildGeneralBrowseRoutes("search"),
   <Route exact path="/search/:actor">
     <Redirect to="/search" push={false} />
   </Route>,

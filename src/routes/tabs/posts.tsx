@@ -2,7 +2,6 @@
 
 import { Redirect } from "react-router";
 import Route from "../common/Route";
-import { buildGeneralBrowseRoutes } from "./general";
 import { getDefaultServer } from "../../services/app";
 import SpecialFeedPage from "../pages/shared/SpecialFeedPage";
 import CommunitiesPage from "../pages/posts/CommunitiesPage";
@@ -45,6 +44,5 @@ export default function buildPostsRoutes({
     <Route exact path="/posts/:actor">
       <CommunitiesPage />
     </Route>,
-    ...buildGeneralBrowseRoutes("posts"),
   ];
 }

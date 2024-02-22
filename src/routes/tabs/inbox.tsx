@@ -8,7 +8,6 @@ import InboxPage from "../pages/inbox/InboxPage";
 import MentionsPage from "../pages/inbox/MentionsPage";
 import MessagesPage from "../pages/inbox/MessagesPage";
 import RepliesPage from "../pages/inbox/RepliesPage";
-import { buildGeneralBrowseRoutes } from "./general";
 
 export default [
   <Route exact path="/inbox">
@@ -49,5 +48,4 @@ export default [
       <ConversationPage />
     </InboxAuthRequired>
   </Route>,
-  ...buildGeneralBrowseRoutes("inbox"),
 ];
