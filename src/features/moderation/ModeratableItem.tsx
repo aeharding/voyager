@@ -7,8 +7,8 @@ import { CommentView, PostView } from "lemmy-js-client";
 import { ReactNode, createContext, useContext } from "react";
 import useCanModerate from "./useCanModerate";
 import { useAppSelector } from "../../store";
-import { isPost } from "../feed/PostCommentFeed";
 import { styled } from "@linaria/react";
+import { isPost } from "../../helpers/lemmy";
 
 const ModeratableItemContainer = styled.div<{
   modState?: ItemModState;

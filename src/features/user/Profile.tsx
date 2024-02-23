@@ -11,16 +11,13 @@ import {
 } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle, getRemoteHandle } from "../../helpers/lemmy";
+import { getHandle, getRemoteHandle, isPost } from "../../helpers/lemmy";
 import { MaxWidthContainer } from "../shared/AppContent";
 import { FetchFn } from "../feed/Feed";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
 import { useAppSelector } from "../../store";
-import PostCommentFeed, {
-  PostCommentItem,
-  isPost,
-} from "../feed/PostCommentFeed";
+import PostCommentFeed, { PostCommentItem } from "../feed/PostCommentFeed";
 import { userHandleSelector } from "../auth/authSelectors";
 import { fixLemmyDateString } from "../../helpers/date";
 import {

@@ -6,11 +6,11 @@ import {
   GetSiteResponse,
   LemmyErrorType,
   Post,
+  PostView,
 } from "lemmy-js-client";
 import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
 import { quote } from "./markdown";
-import { PostCommentItem, isPost } from "../features/feed/PostCommentFeed";
 
 export interface LemmyJWT {
   sub: number;
@@ -350,7 +350,15 @@ export function getLoginErrorMessage(
   }
 }
 
-const getPublishedDate = (item: PostCommentItem) => {
+export function isPost(item: PostView | CommentView): item is PostView {
+  return !isComment(item);
+}
+
+export function isComment(item: PostView | CommentView): item is CommentView {
+  return "comment" in item;
+}
+
+const getPublishedDate = (item: PostView | CommentView) => {
   if (isPost(item)) {
     return item.post.published;
   } else {
@@ -359,8 +367,8 @@ const getPublishedDate = (item: PostCommentItem) => {
 };
 
 export function sortPostCommentByPublished(
-  a: PostCommentItem,
-  b: PostCommentItem,
+  a: PostView | CommentView,
+  b: PostView | CommentView,
 ): number {
   return getPublishedDate(b).localeCompare(getPublishedDate(a));
 }

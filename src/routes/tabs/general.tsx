@@ -73,6 +73,12 @@ export default [
   <Route exact path="/:tab/:actor/u/:handle/hidden">
     <ProfileFeedHiddenPostsPage />
   </Route>,
+  <Route exact path="/:tab/:actor/u/:handle/upvoted">
+    <ProfileFeedItemsPage type="Upvoted" />
+  </Route>,
+  <Route exact path="/:tab/:actor/u/:handle/downvoted">
+    <ProfileFeedItemsPage type="Downvoted" />
+  </Route>,
   <Route exact path="/:tab/:actor/u/:handle/message">
     <ConversationPage />
   </Route>,
