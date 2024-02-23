@@ -4,7 +4,7 @@ import { CommunityView } from "lemmy-js-client";
 import { maxWidthCss } from "../shared/AppContent";
 import CommunityLink from "../labels/links/CommunityLink";
 import Ago from "../labels/Ago";
-import InlineMarkdown from "../shared/InlineMarkdown";
+import InlineMarkdown from "../shared/markdown/InlineMarkdown";
 import { heart } from "ionicons/icons";
 import { ActionButton } from "../post/actions/ActionButton";
 import { ToggleIcon } from "./ToggleIcon";

@@ -5,7 +5,7 @@ import Nsfw, { isNsfw } from "../../../labels/Nsfw";
 import { VoteButton } from "../../shared/VoteButton";
 import MoreActions from "../../shared/MoreActions";
 import PersonLink from "../../../labels/links/PersonLink";
-import InlineMarkdown from "../../../shared/InlineMarkdown";
+import InlineMarkdown from "../../../shared/markdown/InlineMarkdown";
 import { AnnouncementIcon } from "../../../../routes/pages/posts/PostPage";
 import CommunityLink from "../../../labels/links/CommunityLink";
 import { PostProps } from "../Post";

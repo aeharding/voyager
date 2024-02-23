@@ -12,7 +12,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useAppSelector } from "../../../../store";
-import Markdown from "../../../shared/Markdown";
+import Markdown from "../../../shared/markdown/Markdown";
 import Question from "./Question";
 import Join from "./Join";
 import { useInterceptHrefWithInAppBrowserIfNeeded } from "../../../shared/InAppExternalLink";
