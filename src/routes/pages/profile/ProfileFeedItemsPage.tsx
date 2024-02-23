@@ -54,15 +54,15 @@ export default function ProfileFeedItemsPage({
       if (type === "Upvoted" || type === "Downvoted") {
         const requestPayload: GetPosts & GetComments = {
           ...pageData,
-          limit: LIMIT,
+          limit: Math.floor(LIMIT / 2),
           sort: "New",
           liked_only: type === "Upvoted",
           disliked_only: type === "Downvoted",
         };
 
         const [{ posts }, { comments }] = await Promise.all([
-          await client.getPosts(requestPayload),
-          await client.getComments(requestPayload),
+          client.getPosts(requestPayload),
+          client.getComments(requestPayload),
         ]);
 
         return [...comments, ...posts].sort(comparePostComment);
