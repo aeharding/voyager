@@ -6,6 +6,7 @@ import {
   GetSiteResponse,
   LemmyErrorType,
   Post,
+  PostView,
 } from "lemmy-js-client";
 import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
@@ -347,4 +348,27 @@ export function getLoginErrorMessage(
     default:
       return "Connection error, please try again.";
   }
+}
+
+export function isPost(item: PostView | CommentView): item is PostView {
+  return !isComment(item);
+}
+
+export function isComment(item: PostView | CommentView): item is CommentView {
+  return "comment" in item;
+}
+
+const getPublishedDate = (item: PostView | CommentView) => {
+  if (isPost(item)) {
+    return item.post.published;
+  } else {
+    return item.comment.published;
+  }
+};
+
+export function sortPostCommentByPublished(
+  a: PostView | CommentView,
+  b: PostView | CommentView,
+): number {
+  return getPublishedDate(b).localeCompare(getPublishedDate(a));
 }

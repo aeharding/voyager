@@ -8,8 +8,8 @@ import {
   reportsByPostIdSelector,
 } from "../modSlice";
 import usePostModActions from "../usePostModActions";
-import { isPost } from "../../feed/PostCommentFeed";
 import useCommentModActions from "../useCommentModActions";
+import { isPost } from "../../../helpers/lemmy";
 
 interface ReportBannerProps {
   itemView: PostView | CommentView;

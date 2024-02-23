@@ -16,10 +16,11 @@ import { useParams } from "react-router";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
-  isPost,
 } from "../../../features/feed/PostCommentFeed";
 import FeedContent from "../shared/FeedContent";
+import { GetComments, GetPosts } from "lemmy-js-client";
 import { styled } from "@linaria/react";
+import { sortPostCommentByPublished } from "../../../helpers/lemmy";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -30,16 +31,8 @@ export const SettingLabel = styled(IonLabel)`
   flex-grow: initial !important;
 `;
 
-const getPublishedDate = (item: PostCommentItem) => {
-  if (isPost(item)) {
-    return item.post.published;
-  } else {
-    return item.comment.published;
-  }
-};
-
 interface ProfileFeedItemsPageProps {
-  type: "Comments" | "Posts" | "Saved";
+  type: "Comments" | "Posts" | "Saved" | "Upvoted" | "Downvoted";
 }
 export default function ProfileFeedItemsPage({
   type,
@@ -50,7 +43,23 @@ export default function ProfileFeedItemsPage({
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (pageData) => {
-      const response = await client.getPersonDetails({
+      if (type === "Upvoted" || type === "Downvoted") {
+        const requestPayload: GetPosts & GetComments = {
+          ...pageData,
+          limit: Math.floor(LIMIT / 2),
+          sort: "New",
+          liked_only: type === "Upvoted",
+          disliked_only: type === "Downvoted",
+        };
+
+        const [{ posts }, { comments }] = await Promise.all([
+          client.getPosts(requestPayload),
+          client.getComments(requestPayload),
+        ]);
+
+        return [...comments, ...posts].sort(sortPostCommentByPublished);
+      }
+      const { comments, posts } = await client.getPersonDetails({
         ...pageData,
         limit: LIMIT,
         username: handle,
@@ -59,12 +68,10 @@ export default function ProfileFeedItemsPage({
       });
 
       if (type === "Saved") {
-        return [...response.comments, ...response.posts].sort((a, b) =>
-          getPublishedDate(b).localeCompare(getPublishedDate(a)),
-        );
+        return [...comments, ...posts].sort(sortPostCommentByPublished);
       }
 
-      return type === "Comments" ? response.comments : response.posts;
+      return type === "Comments" ? comments : posts;
     },
     [client, handle, type],
   );

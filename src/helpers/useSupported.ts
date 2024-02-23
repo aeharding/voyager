@@ -10,6 +10,7 @@ const featureVersionSupported = {
   "v0.19 Sorts": "0.19.0-rc.3",
   "Instance Blocking": "0.19.0-rc.3",
   "Modded Feed": "0.19.0-rc.3",
+  "Profile Upvote/Downvote": "0.19.0-rc.3",
 } as const;
 
 type Feature = keyof typeof featureVersionSupported;

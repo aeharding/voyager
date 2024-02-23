@@ -19,22 +19,18 @@ import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
 import CommentHr from "../comment/CommentHr";
 import { FeedContext } from "./FeedContext";
-import { postHasFilteredKeywords } from "../../helpers/lemmy";
+import {
+  isComment,
+  isPost,
+  postHasFilteredKeywords,
+} from "../../helpers/lemmy";
 import { useAutohidePostIfNeeded } from "./PageTypeContext";
+
+export type PostCommentItem = PostView | CommentView;
 
 const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
 `;
-
-export type PostCommentItem = PostView | CommentView;
-
-export function isPost(item: PostCommentItem): item is PostView {
-  return !isComment(item);
-}
-
-export function isComment(item: PostCommentItem): item is CommentView {
-  return "comment" in item;
-}
 
 interface PostCommentFeed
   extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {

@@ -3,7 +3,6 @@ import { checkmarkCircleOutline, trashOutline } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useAppDispatch } from "../../store";
 import { modRemoveComment } from "../comment/commentSlice";
-import { isPost } from "../feed/PostCommentFeed";
 import { modRemovePost } from "../post/postSlice";
 import useAppToast from "../../helpers/useAppToast";
 import {
@@ -17,6 +16,7 @@ import {
 import useCanModerate, { getModColor } from "./useCanModerate";
 import { ActionButton } from "../post/actions/ActionButton";
 import { resolveCommentReport, resolvePostReport } from "./modSlice";
+import { isPost } from "../../helpers/lemmy";
 
 interface ModqueueItemActionsProps {
   item: PostView | CommentView;

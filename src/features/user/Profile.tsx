@@ -3,22 +3,21 @@ import { IonIcon, IonLabel, IonList, IonItem } from "@ionic/react";
 import Scores from "./Scores";
 import {
   albumsOutline,
+  arrowDown,
+  arrowUp,
   bookmarkOutline,
   chatbubbleOutline,
   eyeOffOutline,
 } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle, getRemoteHandle } from "../../helpers/lemmy";
+import { getHandle, getRemoteHandle, isPost } from "../../helpers/lemmy";
 import { MaxWidthContainer } from "../shared/AppContent";
 import { FetchFn } from "../feed/Feed";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
 import { useAppSelector } from "../../store";
-import PostCommentFeed, {
-  PostCommentItem,
-  isPost,
-} from "../feed/PostCommentFeed";
+import PostCommentFeed, { PostCommentItem } from "../feed/PostCommentFeed";
 import { userHandleSelector } from "../auth/authSelectors";
 import { fixLemmyDateString } from "../../helpers/date";
 import {
@@ -27,6 +26,7 @@ import {
   getModName,
 } from "../moderation/useCanModerate";
 import useModZoneActions from "../moderation/useModZoneActions";
+import useSupported from "../../helpers/useSupported";
 import { styled } from "@linaria/react";
 
 export const InsetIonItem = styled(IonItem)`
@@ -48,6 +48,7 @@ export default function Profile({ person }: ProfileProps) {
   const { present: presentModZoneActions, role } = useModZoneActions({
     type: "ModeratorView",
   });
+  const showUpvoteDownvote = useSupported("Profile Upvote/Downvote");
 
   const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
@@ -100,6 +101,26 @@ export default function Profile({ person }: ProfileProps) {
               <IonIcon icon={bookmarkOutline} color="primary" />{" "}
               <SettingLabel>Saved</SettingLabel>
             </InsetIonItem>
+            {showUpvoteDownvote && (
+              <>
+                <InsetIonItem
+                  routerLink={buildGeneralBrowseLink(
+                    `/u/${getHandle(person.person_view.person)}/upvoted`,
+                  )}
+                >
+                  <IonIcon icon={arrowUp} color="primary" />{" "}
+                  <SettingLabel>Upvoted</SettingLabel>
+                </InsetIonItem>
+                <InsetIonItem
+                  routerLink={buildGeneralBrowseLink(
+                    `/u/${getHandle(person.person_view.person)}/downvoted`,
+                  )}
+                >
+                  <IonIcon icon={arrowDown} color="primary" />{" "}
+                  <SettingLabel>Downvoted</SettingLabel>
+                </InsetIonItem>
+              </>
+            )}
             <InsetIonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/hidden`,
