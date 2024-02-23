@@ -1,8 +1,8 @@
+import { styled } from "@linaria/react";
 import { useCallback, useEffect, useState } from "react";
 import { getHandle } from "../../../../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
 import useDebounceFn from "../../../../../../helpers/useDebounceFn";
-import styled from "@emotion/styled";
 import { SharedModeProps as GenericModeProps } from "../DefaultMode";
 import { insert } from "../../../../../../helpers/string";
 

@@ -2,6 +2,7 @@ import {
   IonIcon,
   IonLoading,
   useIonActionSheet,
+  useIonAlert,
   useIonModal,
 } from "@ionic/react";
 import useAppToast from "../../../../../helpers/useAppToast";
@@ -26,13 +27,14 @@ import {
 import { useAppSelector } from "../../../../../store";
 import { jwtSelector, urlSelector } from "../../../../auth/authSelectors";
 import PreviewModal from "../PreviewModal";
-import styled from "@emotion/styled";
 import { uploadImage } from "../../../../../services/lemmy";
 import { insert } from "../../../../../helpers/string";
 import textFaces from "./textFaces.txt?raw";
 import { bold, italic, quote } from "../../../../icons";
 import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
-import { css } from "@emotion/react";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
+import { isValidUrl } from "../../../../../helpers/url";
 
 const Button = styled.button`
   padding: 0;
@@ -62,13 +64,14 @@ export default function DefaultMode({
   calculateMode,
 }: DefaultModeProps) {
   const [presentActionSheet] = useIonActionSheet();
+  const [presentAlert] = useIonAlert();
   const [presentTextFaceActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
   const jwt = useAppSelector(jwtSelector);
   const instanceUrl = useAppSelector(urlSelector);
 
   const [presentPreview, onDismissPreview] = useIonModal(PreviewModal, {
-    onDismiss: (data: string, role: string) => onDismissPreview(data, role),
+    onDismiss: (data?: string, role?: string) => onDismissPreview(data, role),
     type,
     text,
   });
@@ -76,11 +79,13 @@ export default function DefaultMode({
   const [imageUploading, setImageUploading] = useState(false);
 
   const selectionLocation = useRef(0);
+  const selectionLocationEnd = useRef(0);
   const replySelectionRef = useRef("");
 
   useEffect(() => {
     const onChange = () => {
       selectionLocation.current = textareaRef.current?.selectionStart ?? 0;
+      selectionLocationEnd.current = textareaRef.current?.selectionEnd ?? 0;
       replySelectionRef.current = window.getSelection()?.toString() || "";
     };
 
@@ -126,6 +131,95 @@ export default function DefaultMode({
           role: "cancel",
         },
       ],
+    });
+  }
+
+  function presentLinkInput() {
+    const selectedText = text.slice(
+      selectionLocation.current,
+      selectionLocationEnd.current,
+    );
+    const isUrl =
+      selectedText &&
+      isValidUrl(selectedText, { checkProtocol: true, allowRelative: false });
+
+    const textCssClass = "link-text-button";
+    const urlCssClass = "link-url-button";
+
+    presentAlert({
+      header: "Insert link",
+      inputs: [
+        {
+          name: "text",
+          placeholder: "Description",
+          value: !isUrl ? selectedText : undefined,
+          cssClass: textCssClass,
+        },
+        {
+          name: "url",
+          placeholder: "https://aspca.org",
+          value: isUrl ? selectedText : undefined,
+          cssClass: urlCssClass,
+          attributes: {
+            type: "url",
+          },
+        },
+      ],
+      buttons: [
+        {
+          text: "OK",
+          handler: ({ text, url }) => {
+            insertMarkdownLink(text, url);
+          },
+        },
+        "Cancel",
+      ],
+    });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const input = document.querySelector(
+          `.${isUrl || !selectedText ? textCssClass : urlCssClass}`,
+        );
+
+        if (input instanceof HTMLElement) input.focus();
+      });
+    });
+  }
+
+  function insertMarkdownLink(text: string = "", url?: string) {
+    const markdownLink = `[${text}](${url || "url"})`;
+    const toRemove = selectionLocationEnd.current - selectionLocation.current;
+
+    const locationBeforeInsert = selectionLocation.current;
+    const currentSelectionLocation = locationBeforeInsert + markdownLink.length;
+
+    setText((text) =>
+      insert(text, locationBeforeInsert, markdownLink, toRemove),
+    );
+
+    textareaRef.current?.focus();
+
+    setTimeout(() => {
+      if (!text) {
+        // place cursor inside brackets
+        textareaRef.current?.setSelectionRange(
+          locationBeforeInsert + 1,
+          locationBeforeInsert + 1,
+        );
+      } else if (!url) {
+        // select url placeholder
+        textareaRef.current?.setSelectionRange(
+          currentSelectionLocation - 4,
+          currentSelectionLocation - 1,
+        );
+      } else {
+        // place cursor after link
+        textareaRef.current?.setSelectionRange(
+          currentSelectionLocation,
+          currentSelectionLocation,
+        );
+      }
     });
   }
 
@@ -271,7 +365,7 @@ export default function DefaultMode({
           </Button>
 
           <input
-            css={css`
+            className={css`
               display: none;
             `}
             type="file"
@@ -285,11 +379,11 @@ export default function DefaultMode({
             }}
           />
         </label>
-        <md-link>
+        <Button onClick={presentLinkInput}>
           <Button>
             <IonIcon icon={link} color="primary" />
           </Button>
-        </md-link>
+        </Button>
         <md-bold>
           <Button>
             <IonIcon icon={bold} color="primary" />

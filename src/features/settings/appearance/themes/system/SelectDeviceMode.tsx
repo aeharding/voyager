@@ -30,8 +30,7 @@ export default function SelectDeviceMode() {
               key={mode}
               onClick={() => setSelectedDeviceMode(mode)}
             >
-              <IonLabel>{getDeviceModeLabel(mode)}</IonLabel>
-              <IonRadio value={mode} />
+              <IonRadio value={mode}>{getDeviceModeLabel(mode)}</IonRadio>
             </InsetIonItem>
           ))}
         </IonList>

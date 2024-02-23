@@ -1,5 +1,5 @@
 import { Community, SubscribedType } from "lemmy-js-client";
-import { useContext, useMemo } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import { PageContext } from "../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { checkIsMod, getHandle } from "../../helpers/lemmy";
@@ -38,10 +38,14 @@ export default function useCommunityActions(
   subscribedFromPayload?: SubscribedType,
 ) {
   const presentToast = useAppToast();
-
   const dispatch = useAppDispatch();
-  const communityByHandle = useAppSelector(
-    (state) => state.community.communityByHandle,
+
+  const communityHandle = getHandle(community);
+
+  const subscribedSourceOfTruth = useAppSelector((state) =>
+    state.community.communityByHandle[communityHandle]
+      ? state.community.communityByHandle[communityHandle]?.subscribed
+      : subscribedFromPayload,
   );
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -54,19 +58,16 @@ export default function useCommunityActions(
   const isAdmin = useAppSelector(isAdminSelector);
   const localUser = useAppSelector(localUserSelector);
 
-  const communityHandle = getHandle(community);
   const communityId = community.id;
   const isNsfw = community.nsfw;
-
-  const subscribedSourceOfTruth = communityByHandle[communityHandle]
-    ? communityByHandle[communityHandle]?.subscribed
-    : subscribedFromPayload;
 
   const isSubscribed =
     subscribedSourceOfTruth === "Subscribed" ||
     subscribedSourceOfTruth === "Pending";
 
-  const isBlocked = communityByHandle[communityHandle]?.blocked;
+  const isBlocked = useAppSelector(
+    (state) => state.community.communityByHandle[communityHandle]?.blocked,
+  );
 
   const canPost = useMemo(() => {
     const isMod = site ? checkIsMod(communityHandle, site) : false;
@@ -85,7 +86,7 @@ export default function useCommunityActions(
     [favoriteCommunities, communityHandle],
   );
 
-  function post() {
+  const post = useCallback(() => {
     if (presentLoginIfNeeded()) return;
 
     if (!canPost) {
@@ -98,13 +99,15 @@ export default function useCommunityActions(
     }
 
     presentPostEditor(communityHandle);
-  }
+  }, [
+    canPost,
+    communityHandle,
+    presentLoginIfNeeded,
+    presentPostEditor,
+    presentToast,
+  ]);
 
-  async function _block() {
-    await dispatch(blockCommunity(!isBlocked, communityId));
-  }
-
-  async function subscribe() {
+  const subscribe = useCallback(async () => {
     if (presentLoginIfNeeded()) return;
 
     try {
@@ -114,9 +117,16 @@ export default function useCommunityActions(
       presentToast(buildProblemSubscribing(isSubscribed, communityHandle));
       throw error;
     }
-  }
+  }, [
+    communityHandle,
+    communityId,
+    dispatch,
+    isSubscribed,
+    presentLoginIfNeeded,
+    presentToast,
+  ]);
 
-  function favorite() {
+  const favorite = useCallback(() => {
     if (presentLoginIfNeeded()) return;
 
     if (!isFavorite) {
@@ -132,10 +142,20 @@ export default function useCommunityActions(
       position: "bottom",
       color: "success",
     });
-  }
+  }, [
+    communityHandle,
+    dispatch,
+    isFavorite,
+    presentLoginIfNeeded,
+    presentToast,
+  ]);
 
-  async function block() {
+  const block = useCallback(async () => {
     if (typeof communityId !== "number") return;
+
+    async function _block() {
+      await dispatch(blockCommunity(!isBlocked, communityId));
+    }
 
     if (
       !isBlocked &&
@@ -183,35 +203,59 @@ export default function useCommunityActions(
       await _block();
       presentToast(buildBlocked(!isBlocked, communityHandle));
     }
-  }
-
-  function modlog() {
-    router.push(buildGeneralBrowseLink(`/c/${communityHandle}/log`));
-  }
-
-  function sidebar() {
-    router.push(buildGeneralBrowseLink(`/c/${communityHandle}/sidebar`));
-  }
-
-  function view() {
-    router.push(buildGeneralBrowseLink(`/c/${communityHandle}`));
-  }
-
-  function share() {
-    Share.share({ url: community.actor_id });
-  }
-
-  return {
-    isSubscribed,
+  }, [
+    communityHandle,
+    communityId,
+    dispatch,
     isBlocked,
-    isFavorite,
-    post,
-    subscribe,
-    favorite,
-    block,
-    modlog,
-    sidebar,
-    view,
-    share,
-  };
+    isNsfw,
+    localUser,
+    presentActionSheet,
+    presentToast,
+  ]);
+
+  const modlog = useCallback(() => {
+    router.push(buildGeneralBrowseLink(`/c/${communityHandle}/log`));
+  }, [buildGeneralBrowseLink, communityHandle, router]);
+
+  const sidebar = useCallback(() => {
+    router.push(buildGeneralBrowseLink(`/c/${communityHandle}/sidebar`));
+  }, [buildGeneralBrowseLink, communityHandle, router]);
+
+  const view = useCallback(() => {
+    router.push(buildGeneralBrowseLink(`/c/${communityHandle}`));
+  }, [buildGeneralBrowseLink, communityHandle, router]);
+
+  const share = useCallback(() => {
+    Share.share({ url: community.actor_id });
+  }, [community]);
+
+  return useMemo(
+    () => ({
+      isSubscribed,
+      isBlocked,
+      isFavorite,
+      post,
+      subscribe,
+      favorite,
+      block,
+      modlog,
+      sidebar,
+      view,
+      share,
+    }),
+    [
+      block,
+      favorite,
+      isBlocked,
+      isFavorite,
+      isSubscribed,
+      modlog,
+      post,
+      share,
+      sidebar,
+      subscribe,
+      view,
+    ],
+  );
 }

@@ -29,14 +29,12 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { getInstances } from "./pickJoinServerSlice";
 import { VList } from "virtua";
-import styled from "@emotion/styled";
 import { getClient, getImageSrc } from "../../../../services/lemmy";
 import { GetSiteResponse } from "lemmy-js-client";
 import { isValidHostname } from "../../../../helpers/url";
 import useStartJoinFlow from "./useStartJoinFlow";
 import { compact, uniqBy } from "lodash";
 import { LVInstance } from "../../../../services/lemmyverse";
-import { css } from "@emotion/react";
 import lemmyLogo from "../lemmyLogo.svg";
 import Filters from "./Filters";
 import { SERVERS_BY_CATEGORY, ServerCategory } from "../data/servers";
@@ -49,8 +47,9 @@ import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissab
 import { addGuestInstance } from "../../authSlice";
 import Login from "../login/Login";
 import { getInstanceFromHandle } from "../../authSelectors";
+import { styled } from "@linaria/react";
 
-const spacing = css`
+const spacing = `
   margin: 2.5rem 0;
   width: 100%;
 `;
@@ -107,7 +106,7 @@ export default function PickJoinServer() {
     (state) => state.auth.connectedInstance,
   );
   const instances = useAppSelector((state) => state.pickJoinServer.instances);
-  // eslint-disable-next-line no-undef
+
   const contentRef = useRef<HTMLIonContentElement>(null);
 
   const [selection, setSelection] = useState<string | undefined>();
@@ -238,8 +237,9 @@ export default function PickJoinServer() {
         {
           text: "Log In",
           handler: () => {
-            const icon = allInstances.find(({ url }) => url === selectedUrl)
-              ?.icon;
+            const icon = allInstances.find(
+              ({ url }) => url === selectedUrl,
+            )?.icon;
 
             contentRef.current
               ?.closest("ion-nav")
@@ -285,11 +285,12 @@ export default function PickJoinServer() {
                     src={icon ? getImageSrc(icon, { size: 32 }) : lemmyLogo}
                   />
                 </ServerThumbnail>
-                <IonLabel>
-                  <h2>{url}</h2>
-                  <p>{description}</p>
-                </IonLabel>
-                <IonRadio value={url} />
+                <IonRadio value={url}>
+                  <IonLabel>
+                    <h2>{url}</h2>
+                    <p className="ion-text-wrap">{description}</p>
+                  </IonLabel>
+                </IonRadio>
               </ServerItem>
             );
           }}

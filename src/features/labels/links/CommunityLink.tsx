@@ -4,9 +4,8 @@ import { Community, SubscribedType } from "lemmy-js-client";
 import Handle from "../Handle";
 import { StyledLink, hideCss } from "./shared";
 import ItemIcon from "../img/ItemIcon";
-import { css } from "@emotion/react";
 import { useIonActionSheet } from "@ionic/react";
-import { useLongPress } from "use-long-press";
+import { LongPressOptions, useLongPress } from "use-long-press";
 import {
   heartDislikeOutline,
   heartOutline,
@@ -14,14 +13,23 @@ import {
   tabletPortraitOutline,
 } from "ionicons/icons";
 import useCommunityActions from "../../community/useCommunityActions";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
+import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import { styled } from "@linaria/react";
+import { cx } from "@linaria/core";
+import { useAppSelector } from "../../../store";
+
+const StyledItemIcon = styled(ItemIcon)`
+  margin-right: 0.4rem;
+  vertical-align: middle;
+`;
 
 interface CommunityLinkProps {
   community: Community;
   showInstanceWhenRemote?: boolean;
   subscribed: SubscribedType;
-  showIcon?: boolean;
+  tinyIcon?: boolean;
 
   className?: string;
 }
@@ -31,73 +39,73 @@ export default function CommunityLink({
   showInstanceWhenRemote,
   className,
   subscribed,
-  showIcon = true,
+  tinyIcon,
 }: CommunityLinkProps) {
   const [present] = useIonActionSheet();
 
   const handle = getHandle(community);
   const { hideCommunity } = useContext(ShareImageContext);
+  const showCommunityIcons = useAppSelector(
+    (state) => state.settings.appearance.posts.showCommunityIcons,
+  );
 
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
     useCommunityActions(community, subscribed);
 
-  const bind = useLongPress(
-    () => {
-      present({
-        cssClass: "left-align-buttons",
-        buttons: [
-          {
-            text: `${isBlocked ? "Unblock" : "Block"} Community`,
-            icon: removeCircleOutline,
-            role: "destructive",
-            handler: () => {
-              block();
-            },
+  const onCommunityLinkLongPress = useCallback(() => {
+    present({
+      cssClass: "left-align-buttons",
+      buttons: [
+        {
+          text: `${isBlocked ? "Unblock" : "Block"} Community`,
+          icon: removeCircleOutline,
+          role: "destructive",
+          handler: () => {
+            block();
           },
-          {
-            text: !isSubscribed ? "Subscribe" : "Unsubscribe",
-            icon: !isSubscribed ? heartOutline : heartDislikeOutline,
-            handler: () => {
-              subscribe();
-            },
+        },
+        {
+          text: !isSubscribed ? "Subscribe" : "Unsubscribe",
+          icon: !isSubscribed ? heartOutline : heartDislikeOutline,
+          handler: () => {
+            subscribe();
           },
-          {
-            text: "Sidebar",
-            data: "sidebar",
-            icon: tabletPortraitOutline,
-            handler: () => {
-              sidebar();
-            },
+        },
+        {
+          text: "Sidebar",
+          data: "sidebar",
+          icon: tabletPortraitOutline,
+          handler: () => {
+            sidebar();
           },
-          {
-            text: "Cancel",
-            role: "cancel",
-          },
-        ],
-      });
-    },
-    { cancelOnMovement: true },
-  );
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ],
+    });
+  }, [block, isBlocked, isSubscribed, present, sidebar, subscribe]);
+
+  const bind = useLongPress(onCommunityLinkLongPress, {
+    cancelOnMovement: true,
+    onStart,
+  });
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   return (
     <StyledLink
       to={buildGeneralBrowseLink(`/c/${handle}`)}
-      onClick={(e) => e.stopPropagation()}
-      className={className}
-      css={hideCommunity ? hideCss : undefined}
+      onClick={(e) => {
+        e.stopPropagation();
+        preventOnClickNavigationBug(e);
+      }}
+      className={cx(className, hideCommunity ? hideCss : undefined)}
       {...bind()}
     >
-      {showIcon && !hideCommunity && (
-        <ItemIcon
-          item={community}
-          size={24}
-          css={css`
-            margin-right: 0.4rem;
-            vertical-align: middle;
-          `}
-        />
+      {showCommunityIcons && !hideCommunity && (
+        <StyledItemIcon item={community} size={tinyIcon ? 16 : 24} />
       )}
 
       <Handle
@@ -107,3 +115,7 @@ export default function CommunityLink({
     </StyledLink>
   );
 }
+
+const onStart: LongPressOptions["onStart"] = (e) => {
+  e.stopPropagation();
+};

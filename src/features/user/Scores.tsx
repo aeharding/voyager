@@ -1,10 +1,10 @@
-import styled from "@emotion/styled";
 import { PersonAggregates } from "lemmy-js-client";
 import { formatNumber } from "../../helpers/number";
 import Ago from "../labels/Ago";
 import { useIonAlert } from "@ionic/react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { fixLemmyDateString } from "../../helpers/date";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   display: flex;

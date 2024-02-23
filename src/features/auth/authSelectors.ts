@@ -83,3 +83,8 @@ export const loggedInSelector = createSelector(
 export function getInstanceFromHandle(handle: string): string {
   return handle.split("@").pop()!;
 }
+
+export const loggedInAccountsSelector = createSelector(
+  [(state: RootState) => state.auth.accountData?.accounts],
+  (accounts) => accounts?.filter(({ jwt }) => jwt),
+);

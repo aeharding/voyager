@@ -64,8 +64,9 @@ export type CompactThumbnailSizeType =
   (typeof OCompactThumbnailSizeType)[keyof typeof OCompactThumbnailSizeType];
 
 export const OCommentThreadCollapse = {
-  Always: "always",
   Never: "never",
+  RootOnly: "root_only",
+  All: "all",
 } as const;
 
 export type CommentThreadCollapse =
@@ -199,6 +200,15 @@ export const OTapToCollapseType = {
   Neither: "neither",
 } as const;
 
+export type AutoplayMediaType =
+  (typeof OAutoplayMediaType)[keyof typeof OAutoplayMediaType];
+
+export const OAutoplayMediaType = {
+  WifiOnly: "wifi-only",
+  Always: "always",
+  Never: "never",
+} as const;
+
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
@@ -254,10 +264,13 @@ export type SettingValueTypes = {
   profile_label: ProfileLabelType;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
+  large_show_voting_buttons: boolean;
   compact_show_voting_buttons: boolean;
   compact_thumbnail_size: CompactThumbnailSizeType;
+  compact_show_self_post_thumbnails: boolean;
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
+  migration_links: string[];
   default_comment_sort: CommentDefaultSort;
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
@@ -283,12 +296,15 @@ export type SettingValueTypes = {
   long_swipe_trigger_point: LongSwipeTriggerPointType;
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
+  always_use_reader_mode: boolean;
   infinite_scrolling: boolean;
   upvote_on_save: boolean;
   default_post_sort: SortType;
   default_post_sort_by_feed: SortType;
   remember_community_sort: boolean;
   embed_crossposts: boolean;
+  show_community_icons: boolean;
+  autoplay_media: AutoplayMediaType;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
@@ -399,6 +415,21 @@ export class WefwefDB extends Dexie {
         });
 
         await this.setSetting("gesture_swipe_inbox", gestures);
+      })();
+    });
+
+    this.version(6).upgrade(async () => {
+      // Upgrade collapse comment threads "always" => "root_only"
+      await (async () => {
+        let default_collapse = await this.getSetting(
+          "collapse_comment_threads",
+        );
+
+        if (!default_collapse) return;
+        if ((default_collapse as string) === "always")
+          default_collapse = "root_only";
+
+        await this.setSetting("collapse_comment_threads", default_collapse);
       })();
     });
   }

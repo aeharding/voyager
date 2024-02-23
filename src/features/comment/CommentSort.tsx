@@ -62,10 +62,9 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
         onWillDismiss={(
           e: IonActionSheetCustomEvent<OverlayEventDetail<CommentSortType>>,
         ) => {
-          if (e.detail.data) {
-            setSort(e.detail.data);
-          }
+          if (!e.detail.data) return;
 
+          setSort(e.detail.data);
           scrollUpIfNeeded(activePageRef?.current, 1, "auto");
         }}
         header="Sort by..."

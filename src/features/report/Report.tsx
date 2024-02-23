@@ -27,12 +27,16 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
     if ("private_message" in item) return "Private message";
   })();
 
-  useImperativeHandle(ref, () => ({
-    present: (item: ReportableItem) => {
-      setItem(item);
-      setReportOptionsOpen(true);
-    },
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      present: (item: ReportableItem) => {
+        setItem(item);
+        setReportOptionsOpen(true);
+      },
+    }),
+    [],
+  );
 
   async function submitReport(reason: string) {
     if (!item) return;

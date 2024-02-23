@@ -18,7 +18,7 @@ export function isValidUrl(
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-function getPathname(url: string): string | undefined {
+export function getPathname(url: string): string | undefined {
   try {
     return new URL(url).pathname;
   } catch {
@@ -26,7 +26,7 @@ function getPathname(url: string): string | undefined {
   }
 }
 
-const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl"];
+const imageExtensions = ["jpeg", "png", "gif", "gifv", "jpg", "webp", "jxl"];
 
 export function isUrlImage(url: string): boolean {
   const pathname = getPathname(url);
@@ -34,6 +34,18 @@ export function isUrlImage(url: string): boolean {
   if (!pathname) return false;
 
   return imageExtensions.some((extension) =>
+    pathname.endsWith(`.${extension}`),
+  );
+}
+
+const animatedImageExtensions = ["gif", "gifv", "webp", "jxl"];
+
+export function isUrlPotentialAnimatedImage(url: string): boolean {
+  const pathname = getPathname(url);
+
+  if (!pathname) return false;
+
+  return animatedImageExtensions.some((extension) =>
     pathname.endsWith(`.${extension}`),
   );
 }

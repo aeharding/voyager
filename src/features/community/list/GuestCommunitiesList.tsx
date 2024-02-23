@@ -1,7 +1,7 @@
 import { Community } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 import ResolvedCommunitiesList from "./ResolvedCommunitiesList";
-import { CenteredSpinner } from "../../../pages/posts/PostPage";
+import { CenteredSpinner } from "../../../routes/pages/posts/PostPage";
 import { useAppSelector } from "../../../store";
 import { clientSelector } from "../../auth/authSelectors";
 import { CommunitiesListProps } from "./CommunitiesList";

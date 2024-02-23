@@ -1,4 +1,4 @@
-import { getPathForFeed } from "../../../TabbedRoutes";
+import { getPathForFeed } from "../../../routes/TabbedRoutes";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useAppSelector } from "../../../store";
 import InitialPageRedirectBootstrapper from "./InitialPageRedirectBootstrapper";

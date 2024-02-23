@@ -30,7 +30,6 @@ export default function Totp({ url, username, password }: TotpProps) {
   const dispatch = useAppDispatch();
   const { setCanDismiss, dismiss } = useContext(DynamicDismissableModalContext);
 
-  // eslint-disable-next-line no-undef
   const totpRef = useRef<HTMLIonInputElement>(null);
 
   const [loading, setLoading] = useState(false);

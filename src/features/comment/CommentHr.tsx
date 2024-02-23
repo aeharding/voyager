@@ -1,6 +1,5 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { maxWidthCss } from "../shared/AppContent";
-import { css } from "@emotion/react";
 
 const HrContainer = styled.div<{ depth: number }>`
   position: absolute;
@@ -9,9 +8,7 @@ const HrContainer = styled.div<{ depth: number }>`
   ${maxWidthCss}
   z-index: 100;
 
-  ${({ depth }) => css`
-    padding-left: calc(0.5rem + ${(depth - 1) * 10}px);
-  `}
+  padding-left: calc(0.5rem + calc(calc(${({ depth }) => depth} - 1) * 10px));
 `;
 
 const Hr = styled.hr`

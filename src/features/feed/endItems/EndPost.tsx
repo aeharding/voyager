@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { SortType } from "lemmy-js-client";
 
 export const Container = styled.div`

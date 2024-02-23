@@ -1,4 +1,3 @@
-import styled from "@emotion/styled";
 import { IonIcon, IonItem } from "@ionic/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import { maxWidthCss } from "../../shared/AppContent";
@@ -13,11 +12,9 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
 import { findLoneImage } from "../../../helpers/markdown";
 import { isUrlMedia } from "../../../helpers/url";
-import { css } from "@emotion/react";
-import PostMedia from "../../gallery/PostMedia";
-import Markdown from "../../shared/Markdown";
+import Markdown from "../../shared/markdown/Markdown";
 import Embed from "../shared/Embed";
-import InlineMarkdown from "../../shared/InlineMarkdown";
+import InlineMarkdown from "../../shared/markdown/InlineMarkdown";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { megaphone } from "ionicons/icons";
 import CommunityLink from "../../labels/links/CommunityLink";
@@ -29,6 +26,8 @@ import { postLocked } from "../../../helpers/toastMessages";
 import { togglePostCollapse } from "../postSlice";
 import Crosspost from "../crosspost/Crosspost";
 import useCrosspostUrl from "../shared/useCrosspostUrl";
+import Media from "../inFeed/large/media/Media";
+import { styled } from "@linaria/react";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -40,20 +39,12 @@ const BorderlessIonItem = styled(IonItem)`
   ${maxWidthCss}
 `;
 
-const LightboxPostMedia = styled(PostMedia, {
-  shouldForwardProp: (prop) => prop !== "constrainHeight",
-})<{ constrainHeight?: boolean }>`
+const LightboxMedia = styled(Media)`
   -webkit-touch-callout: default;
 
   width: 100%;
   object-fit: contain;
   background: var(--lightroom-bg);
-
-  ${({ constrainHeight }) =>
-    constrainHeight &&
-    css`
-      max-height: 50vh;
-    `}
 `;
 
 const StyledMarkdown = styled(Markdown)`
@@ -167,11 +158,14 @@ function PostHeader({
 
     if (urlIsMedia || markdownLoneImage) {
       return (
-        <LightboxPostMedia
+        <LightboxMedia
+          blur={false}
           post={post}
-          controls
-          constrainHeight={constrainHeight}
-          onClick={(e) => e.stopPropagation()}
+          nativeControls
+          onClick={(e) => {
+            e.preventDefault(); // prevent OutPortalEventDispatcher dispatch
+          }}
+          style={constrainHeight ? { maxHeight: "50vh" } : undefined}
         />
       );
     }
@@ -205,8 +199,7 @@ function PostHeader({
       <BorderlessIonItem
         className={className}
         onClick={(e) => {
-          if (e.target instanceof HTMLElement && e.target.nodeName === "A")
-            return;
+          if (e.target instanceof HTMLAnchorElement) return;
 
           if (
             tapToCollapse === OTapToCollapseType.Neither ||

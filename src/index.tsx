@@ -1,8 +1,9 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App";
-import "./index.scss";
+import App from "./core/App";
 import { getAndroidNavMode, isNative } from "./helpers/device";
+
+import "./core/globalCssOverrides";
 import "./features/icons";
 
 (async () => {

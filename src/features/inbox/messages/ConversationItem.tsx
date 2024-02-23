@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonIcon, IonItem } from "@ionic/react";
 import { PrivateMessageView } from "lemmy-js-client";
 import { useAppSelector } from "../../../store";

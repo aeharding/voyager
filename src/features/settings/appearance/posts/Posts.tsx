@@ -3,6 +3,7 @@ import { ListHeader } from "../../shared/formatting";
 import BlurNsfw from "./BlurNsfw";
 import PostSize from "./PostSize";
 import EmbedCrossposts from "./EmbedCrossposts";
+import ShowCommunityIcons from "./ShowCommunityIcons";
 
 export default function Posts() {
   return (
@@ -14,6 +15,7 @@ export default function Posts() {
         <PostSize />
         <BlurNsfw />
         <EmbedCrossposts />
+        <ShowCommunityIcons />
       </IonList>
     </>
   );
