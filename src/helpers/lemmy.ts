@@ -10,6 +10,7 @@ import {
 import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
 import { quote } from "./markdown";
+import { PostCommentItem, isPost } from "../features/feed/PostCommentFeed";
 
 export interface LemmyJWT {
   sub: number;
@@ -347,4 +348,19 @@ export function getLoginErrorMessage(
     default:
       return "Connection error, please try again.";
   }
+}
+
+const getPublishedDate = (item: PostCommentItem) => {
+  if (isPost(item)) {
+    return item.post.published;
+  } else {
+    return item.comment.published;
+  }
+};
+
+export function sortPostCommentByPublished(
+  a: PostCommentItem,
+  b: PostCommentItem,
+): number {
+  return getPublishedDate(b).localeCompare(getPublishedDate(a));
 }

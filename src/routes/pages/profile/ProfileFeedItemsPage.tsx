@@ -16,11 +16,11 @@ import { useParams } from "react-router";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
-  isPost,
 } from "../../../features/feed/PostCommentFeed";
 import FeedContent from "../shared/FeedContent";
-import { CommentView, GetComments, GetPosts, PostView } from "lemmy-js-client";
+import { GetComments, GetPosts } from "lemmy-js-client";
 import { styled } from "@linaria/react";
+import { sortPostCommentByPublished } from "../../../helpers/lemmy";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -30,14 +30,6 @@ export const SettingLabel = styled(IonLabel)`
   margin-left: 16px;
   flex-grow: initial !important;
 `;
-
-const getPublishedDate = (item: PostCommentItem) => {
-  if (isPost(item)) {
-    return item.post.published;
-  } else {
-    return item.comment.published;
-  }
-};
 
 interface ProfileFeedItemsPageProps {
   type: "Comments" | "Posts" | "Saved" | "Upvoted" | "Downvoted";
@@ -65,7 +57,7 @@ export default function ProfileFeedItemsPage({
           client.getComments(requestPayload),
         ]);
 
-        return [...comments, ...posts].sort(comparePostComment);
+        return [...comments, ...posts].sort(sortPostCommentByPublished);
       }
       const { comments, posts } = await client.getPersonDetails({
         ...pageData,
@@ -76,7 +68,7 @@ export default function ProfileFeedItemsPage({
       });
 
       if (type === "Saved") {
-        return [...comments, ...posts].sort(comparePostComment);
+        return [...comments, ...posts].sort(sortPostCommentByPublished);
       }
 
       return type === "Comments" ? comments : posts;
@@ -106,11 +98,4 @@ export default function ProfileFeedItemsPage({
       </FeedContent>
     </IonPage>
   );
-}
-
-function comparePostComment(
-  a: PostView | CommentView,
-  b: PostView | CommentView,
-): number {
-  return getPublishedDate(b).localeCompare(getPublishedDate(a));
 }
