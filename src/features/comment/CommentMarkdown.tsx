@@ -1,7 +1,7 @@
 import { useAppSelector } from "../../store";
 import InAppExternalLink from "../shared/InAppExternalLink";
-import Markdown, { MarkdownProps } from "../shared/Markdown";
-import MarkdownImg from "../shared/MarkdownImg";
+import Markdown, { MarkdownProps } from "../shared/markdown/Markdown";
+import MarkdownImg from "../shared/markdown/MarkdownImg";
 
 export default function CommentMarkdown(
   props: Omit<MarkdownProps, "components">,

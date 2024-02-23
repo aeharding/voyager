@@ -6,7 +6,7 @@ import { getInboxCounts, receivedMessages } from "../inboxSlice";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { PageContext } from "../../auth/PageContext";
 import { useLongPress } from "use-long-press";
-import Markdown from "../../shared/Markdown";
+import Markdown from "../../shared/markdown/Markdown";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 

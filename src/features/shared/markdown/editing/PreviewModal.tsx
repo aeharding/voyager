@@ -7,7 +7,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Markdown from "../../Markdown";
+import Markdown from "../Markdown";
 import CommentMarkdown from "../../../comment/CommentMarkdown";
 
 interface PreviewModalProps {

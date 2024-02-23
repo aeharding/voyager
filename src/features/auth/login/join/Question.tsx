@@ -13,7 +13,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useAppSelector } from "../../../../store";
-import Markdown from "../../../shared/Markdown";
+import Markdown from "../../../shared/markdown/Markdown";
 import Join from "./Join";
 import { useContext, useState } from "react";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";

@@ -11,7 +11,7 @@ import Save from "../../../labels/Save";
 import Nsfw, { isNsfw } from "../../../labels/Nsfw";
 import { useAppSelector } from "../../../../store";
 import { useContext, useMemo } from "react";
-import InlineMarkdown from "../../../shared/InlineMarkdown";
+import InlineMarkdown from "../../../shared/markdown/InlineMarkdown";
 import MoreModActions from "../../shared/MoreModAction";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,

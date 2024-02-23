@@ -1,7 +1,9 @@
 import { useMemo } from "react";
-import { isUrlVideo } from "../../helpers/url";
-import Player from "../media/video/Player";
-import GalleryMedia, { GalleryMediaProps } from "../media/gallery/GalleryMedia";
+import { isUrlVideo } from "../../../helpers/url";
+import Player from "../../media/video/Player";
+import GalleryMedia, {
+  GalleryMediaProps,
+} from "../../media/gallery/GalleryMedia";
 import { css, cx } from "@linaria/core";
 
 const smallStyles = css`

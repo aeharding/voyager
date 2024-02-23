@@ -8,7 +8,7 @@ import { isUrlMedia } from "../../../../helpers/url";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import Media from "./media/Media";
 import Embed from "../../shared/Embed";
-import InlineMarkdown from "../../../shared/InlineMarkdown";
+import InlineMarkdown from "../../../shared/markdown/InlineMarkdown";
 import { InFeedContext } from "../../../feed/Feed";
 
 const PostBody = styled.div`

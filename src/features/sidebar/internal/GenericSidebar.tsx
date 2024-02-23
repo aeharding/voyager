@@ -1,7 +1,7 @@
 import { styled } from "@linaria/react";
 import { CommunityAggregates, Person, SiteAggregates } from "lemmy-js-client";
 import React from "react";
-import Markdown from "../../shared/Markdown";
+import Markdown from "../../shared/markdown/Markdown";
 import SidebarCounts from "./SidebarCounts";
 import SidebarOwners from "./SidebarOwners";
 
