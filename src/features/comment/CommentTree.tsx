@@ -1,6 +1,6 @@
 import { CommentNodeI } from "../../helpers/lemmy";
 import Comment from "./Comment";
-import React, { memo, useContext, useMemo } from "react";
+import React, { RefObject, memo, useContext, useMemo } from "react";
 import CommentHr from "./CommentHr";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { updateCommentCollapseState } from "./commentSlice";
@@ -8,8 +8,7 @@ import CommentExpander from "./CommentExpander";
 import { OTapToCollapseType } from "../../services/db";
 import { getOffsetTop, scrollIntoView } from "../../helpers/dom";
 import ContinueThread from "./ContinueThread";
-import { AppContext } from "../auth/AppContext";
-import { VListHandle } from "virtua";
+import { AppContext, Page } from "../auth/AppContext";
 
 export const MAX_COMMENT_DEPTH = 10;
 
@@ -104,16 +103,7 @@ function CommentTree({
 
           setCollapsed(!collapsed);
 
-          const vListHandle =
-            activePageRef?.current?.current &&
-            !("querySelector" in activePageRef.current.current)
-              ? activePageRef?.current?.current
-              : undefined;
-
-          scrollViewUpIfNeeded(e.target, {
-            vListHandle,
-            rootIndex,
-          });
+          scrollCommentIntoViewIfNeeded(e.target, activePageRef);
         }}
         collapsed={collapsed}
         fullyCollapsed={!!fullyCollapsed}
@@ -150,12 +140,9 @@ function CommentTree({
 
 export default memo(CommentTree);
 
-export function scrollViewUpIfNeeded(
+export function scrollCommentIntoViewIfNeeded(
   target: EventTarget,
-  {
-    vListHandle,
-    rootIndex,
-  }: { vListHandle: VListHandle | undefined; rootIndex: number },
+  activePageRef: RefObject<Page | undefined> | undefined,
 ) {
   if (!(target instanceof HTMLElement)) return;
 
@@ -169,12 +156,14 @@ export function scrollViewUpIfNeeded(
 
   if (itemScrollOffsetTop > scrollView.scrollTop) return;
 
-  if (vListHandle) {
+  const page = activePageRef?.current?.current;
+  if (page && !("querySelector" in page)) {
     const rootCommentContainer = target.closest("[data-index]");
     if (!(rootCommentContainer instanceof HTMLElement)) return;
+    const rootIndex = +rootCommentContainer.getAttribute("data-index")!;
     const itemOffsetRootCommentTop = getOffsetTop(item, rootCommentContainer);
 
-    vListHandle.scrollToIndex(rootIndex, {
+    page.scrollToIndex(rootIndex, {
       smooth: true,
       offset: itemOffsetRootCommentTop,
     });
