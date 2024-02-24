@@ -15,8 +15,8 @@ const PostMedia = forwardRef<
   ComponentRef<typeof Video> | ComponentRef<typeof GalleryMedia>,
   PostGalleryImgProps
 >(function PostMedia({ nativeControls, ...props }, ref) {
-  const mediaUrl = useMemo(() => getPostMedia(props.post), [props.post]);
-  const isVideo = useMemo(() => mediaUrl && isUrlVideo(mediaUrl), [mediaUrl]);
+  const src = useMemo(() => getPostMedia(props.post), [props.post]);
+  const isVideo = useMemo(() => src && isUrlVideo(src), [src]);
 
   if (isVideo)
     return (
@@ -24,7 +24,7 @@ const PostMedia = forwardRef<
         {...props}
         nativeControls={nativeControls}
         ref={ref as ComponentProps<typeof Video>["ref"]}
-        src={mediaUrl!}
+        src={src!}
       />
     );
 
@@ -32,7 +32,7 @@ const PostMedia = forwardRef<
     <GalleryMedia
       {...props}
       ref={ref as ComponentProps<typeof GalleryMedia>["ref"]}
-      src={mediaUrl}
+      src={src}
     />
   );
 });
