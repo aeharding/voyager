@@ -1,6 +1,6 @@
 import { CommentNodeI } from "../../helpers/lemmy";
 import Comment from "./Comment";
-import React, { useMemo } from "react";
+import React, { memo, useContext, useMemo } from "react";
 import CommentHr from "./CommentHr";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { updateCommentCollapseState } from "./commentSlice";
@@ -8,6 +8,8 @@ import CommentExpander from "./CommentExpander";
 import { OTapToCollapseType } from "../../services/db";
 import { getOffsetTop, scrollIntoView } from "../../helpers/dom";
 import ContinueThread from "./ContinueThread";
+import { AppContext } from "../auth/AppContext";
+import { VListHandle } from "virtua";
 
 export const MAX_COMMENT_DEPTH = 10;
 
@@ -20,7 +22,7 @@ interface CommentTreeProps {
   baseDepth: number;
 }
 
-export default function CommentTree({
+function CommentTree({
   comment,
   highlightedCommentId,
   first,
@@ -36,6 +38,7 @@ export default function CommentTree({
   const { tapToCollapse } = useAppSelector(
     (state) => state.settings.general.comments,
   );
+  const { activePageRef } = useContext(AppContext);
 
   // Comment context chains don't show missing for parents
   const showMissing = useMemo(() => {
@@ -101,7 +104,16 @@ export default function CommentTree({
 
           setCollapsed(!collapsed);
 
-          scrollViewUpIfNeeded(e.target);
+          const vListHandle =
+            activePageRef?.current?.current &&
+            !("querySelector" in activePageRef.current.current)
+              ? activePageRef?.current?.current
+              : undefined;
+
+          scrollViewUpIfNeeded(e.target, {
+            vListHandle,
+            rootIndex,
+          });
         }}
         collapsed={collapsed}
         fullyCollapsed={!!fullyCollapsed}
@@ -136,7 +148,15 @@ export default function CommentTree({
   return payload;
 }
 
-export function scrollViewUpIfNeeded(target: EventTarget) {
+export default memo(CommentTree);
+
+export function scrollViewUpIfNeeded(
+  target: EventTarget,
+  {
+    vListHandle,
+    rootIndex,
+  }: { vListHandle: VListHandle | undefined; rootIndex: number },
+) {
   if (!(target instanceof HTMLElement)) return;
 
   const scrollView = target.closest(".virtual-scroller");
@@ -145,9 +165,20 @@ export function scrollViewUpIfNeeded(target: EventTarget) {
   if (!(scrollView instanceof HTMLElement) || !(item instanceof HTMLElement))
     return;
 
-  const itemOffsetTop = getOffsetTop(item, scrollView);
+  const itemScrollOffsetTop = getOffsetTop(item, scrollView);
 
-  if (itemOffsetTop > scrollView.scrollTop) return;
+  if (itemScrollOffsetTop > scrollView.scrollTop) return;
 
-  scrollIntoView(item);
+  if (vListHandle) {
+    const rootCommentContainer = target.closest("[data-index]");
+    if (!(rootCommentContainer instanceof HTMLElement)) return;
+    const itemOffsetRootCommentTop = getOffsetTop(item, rootCommentContainer);
+
+    vListHandle.scrollToIndex(rootIndex, {
+      smooth: true,
+      offset: itemOffsetRootCommentTop,
+    });
+  } else {
+    scrollIntoView(item);
+  }
 }

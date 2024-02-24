@@ -1,7 +1,7 @@
 import { IonIcon, IonItem } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import React, { MouseEvent, useCallback, useRef } from "react";
+import React, { MouseEvent, memo, useCallback, useRef } from "react";
 import Ago from "../labels/Ago";
 import PersonLink from "../labels/links/PersonLink";
 import Vote from "../labels/Vote";
@@ -84,6 +84,23 @@ const AmountCollapsed = styled.div`
   background: var(--ion-color-light);
 `;
 
+interface CollapsibleCommentProps extends CommentProps {
+  fullyCollapsed?: boolean;
+}
+
+const MemoizedComment = memo(Comment);
+
+export default function CollapsibleComment({
+  fullyCollapsed,
+  ...rest
+}: CollapsibleCommentProps) {
+  return (
+    <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
+      <MemoizedComment {...rest} />
+    </AnimateHeight>
+  );
+}
+
 interface CommentProps {
   comment: CommentView;
   highlightedCommentId?: number;
@@ -91,7 +108,6 @@ interface CommentProps {
   absoluteDepth?: number;
   onClick?: (e: MouseEvent) => void;
   collapsed?: boolean;
-  fullyCollapsed?: boolean;
   routerLink?: string;
 
   /** On profile view, this is used to show post replying to */
@@ -102,18 +118,17 @@ interface CommentProps {
   rootIndex?: number;
 }
 
-export default function Comment({
+function Comment({
+  context,
+  routerLink,
+  className,
+  rootIndex,
   comment: commentView,
   highlightedCommentId,
   depth,
   absoluteDepth,
   onClick,
   collapsed,
-  fullyCollapsed,
-  context,
-  routerLink,
-  className,
-  rootIndex,
 }: CommentProps) {
   const commentFromStore = useAppSelector(
     (state) => state.comment.commentById[commentView.comment.id],
@@ -146,87 +161,85 @@ export default function Comment({
   }
 
   return (
-    <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
-      <SlidingNestedCommentVote
-        item={commentView}
-        className={className}
-        rootIndex={rootIndex}
-        collapsed={!!collapsed}
+    <SlidingNestedCommentVote
+      item={commentView}
+      className={className}
+      rootIndex={rootIndex}
+      collapsed={!!collapsed}
+    >
+      <CustomIonItem
+        routerLink={routerLink}
+        href={undefined}
+        onClick={(e) => {
+          if (preventOnClickNavigationBug(e)) return;
+
+          onClick?.(e);
+        }}
+        className={`comment-${comment.id}`}
+        {...bind()}
       >
-        <CustomIonItem
-          routerLink={routerLink}
-          href={undefined}
-          onClick={(e) => {
-            if (preventOnClickNavigationBug(e)) return;
-
-            onClick?.(e);
-          }}
-          className={`comment-${comment.id}`}
-          {...bind()}
+        <ModeratableItem
+          itemView={commentView}
+          highlighted={highlightedCommentId === comment.id}
         >
-          <ModeratableItem
-            itemView={commentView}
-            highlighted={highlightedCommentId === comment.id}
+          <PositionedContainer
+            depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
           >
-            <PositionedContainer
-              depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
-            >
-              <Container depth={absoluteDepth ?? depth ?? 0}>
-                <ModeratableItemBannerOutlet />
-                <div>
-                  <Header>
-                    <StyledPersonLabel
-                      person={commentView.creator}
-                      opId={commentView.post.creator_id}
-                      distinguished={comment.distinguished}
-                      showBadge={!context}
-                    />
-                    <CommentVote item={commentView} />
-                    <Edited item={commentView} />
-                    <div style={{ flex: 1 }} />
-                    {!collapsed ? (
-                      <ActionsContainer>
-                        {renderActions()}
-                        <CommentEllipsis
-                          comment={commentView}
-                          rootIndex={rootIndex}
-                          ref={commentEllipsisHandleRef}
-                        />
-                        <Ago date={comment.published} />
-                      </ActionsContainer>
-                    ) : (
-                      <>
-                        <AmountCollapsed>
-                          {commentView.counts.child_count + 1}
-                        </AmountCollapsed>
-                        <CollapsedIcon icon={chevronDownOutline} />
-                      </>
-                    )}
-                  </Header>
-
-                  <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
-                    <Content
-                      className="collapse-md-margins"
-                      onClick={(e) => {
-                        if (!(e.target instanceof HTMLElement)) return;
-                        if (e.target.nodeName === "A") e.stopPropagation();
-                      }}
-                    >
-                      <CommentContent
-                        item={comment}
-                        showTouchFriendlyLinks={!context}
-                        isMod={!!canModerate}
+            <Container depth={absoluteDepth ?? depth ?? 0}>
+              <ModeratableItemBannerOutlet />
+              <div>
+                <Header>
+                  <StyledPersonLabel
+                    person={commentView.creator}
+                    opId={commentView.post.creator_id}
+                    distinguished={comment.distinguished}
+                    showBadge={!context}
+                  />
+                  <CommentVote item={commentView} />
+                  <Edited item={commentView} />
+                  <div style={{ flex: 1 }} />
+                  {!collapsed ? (
+                    <ActionsContainer>
+                      {renderActions()}
+                      <CommentEllipsis
+                        comment={commentView}
+                        rootIndex={rootIndex}
+                        ref={commentEllipsisHandleRef}
                       />
-                      {context}
-                    </Content>
-                  </AnimateHeight>
-                </div>
-              </Container>
-              <Save type="comment" id={commentView.comment.id} />
-            </PositionedContainer>
-          </ModeratableItem>
-        </CustomIonItem>
-      </SlidingNestedCommentVote>
-    </AnimateHeight>
+                      <Ago date={comment.published} />
+                    </ActionsContainer>
+                  ) : (
+                    <>
+                      <AmountCollapsed>
+                        {commentView.counts.child_count + 1}
+                      </AmountCollapsed>
+                      <CollapsedIcon icon={chevronDownOutline} />
+                    </>
+                  )}
+                </Header>
+
+                <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
+                  <Content
+                    className="collapse-md-margins"
+                    onClick={(e) => {
+                      if (!(e.target instanceof HTMLElement)) return;
+                      if (e.target.nodeName === "A") e.stopPropagation();
+                    }}
+                  >
+                    <CommentContent
+                      item={comment}
+                      showTouchFriendlyLinks={!context}
+                      isMod={!!canModerate}
+                    />
+                    {context}
+                  </Content>
+                </AnimateHeight>
+              </div>
+            </Container>
+            <Save type="comment" id={commentView.comment.id} />
+          </PositionedContainer>
+        </ModeratableItem>
+      </CustomIonItem>
+    </SlidingNestedCommentVote>
   );
 }
