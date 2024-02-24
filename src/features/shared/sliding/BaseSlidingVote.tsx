@@ -42,12 +42,13 @@ import {
 } from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
-import useCollapseRootComment from "../../comment/useCollapseRootComment";
+import useCollapseRootComment from "../../comment/inTree/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
-import { CommentsContext } from "../../comment/CommentsContext";
+import { CommentsContext } from "../../comment/inTree/CommentsContext";
 import useAppToast from "../../../helpers/useAppToast";
 import { share } from "../../../helpers/lemmy";
-import { scrollViewUpIfNeeded } from "../../comment/CommentTree";
+import { scrollCommentIntoViewIfNeeded } from "../../comment/inTree/CommentTree";
+import { AppContext } from "../../auth/AppContext";
 
 const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
@@ -107,6 +108,8 @@ function BaseSlidingVoteInternal({
 }: BaseSlidingVoteProps) {
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
   const { prependComments } = useContext(CommentsContext);
+
+  const { activePageRef } = useContext(AppContext);
 
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
@@ -251,9 +254,9 @@ function BaseSlidingVoteInternal({
         }),
       );
 
-      if (e.target) scrollViewUpIfNeeded(e.target);
+      if (e.target) scrollCommentIntoViewIfNeeded(e.target, activePageRef);
     },
-    [collapsed, dispatch, isPost, item],
+    [collapsed, dispatch, isPost, item, activePageRef],
   );
   const collapseAction = useMemo(() => {
     return {

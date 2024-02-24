@@ -1,13 +1,13 @@
 import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
 import { chevronDownOutline } from "ionicons/icons";
 import { useCallback, useContext } from "react";
-import { AppContext } from "../auth/AppContext";
-import { findCurrentPage } from "../../helpers/ionic";
+import { AppContext } from "../../auth/AppContext";
+import { findCurrentPage } from "../../../helpers/ionic";
 import { useLongPress } from "use-long-press";
-import useHapticFeedback from "../../helpers/useHapticFeedback";
+import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { ImpactStyle } from "@capacitor/haptics";
-import { isNative } from "../../helpers/device";
-import { useAppSelector } from "../../store";
+import { isNative } from "../../../helpers/device";
+import { useAppSelector } from "../../../store";
 
 export default function JumpFab() {
   const { activePageRef } = useContext(AppContext);

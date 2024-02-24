@@ -1,13 +1,14 @@
-import { CommentNodeI } from "../../helpers/lemmy";
-import Comment from "./Comment";
-import React, { useMemo } from "react";
+import { CommentNodeI } from "../../../helpers/lemmy";
+import React, { RefObject, memo, useContext, useMemo } from "react";
 import CommentHr from "./CommentHr";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { updateCommentCollapseState } from "./commentSlice";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { updateCommentCollapseState } from "../commentSlice";
 import CommentExpander from "./CommentExpander";
-import { OTapToCollapseType } from "../../services/db";
-import { getOffsetTop, scrollIntoView } from "../../helpers/dom";
+import { OTapToCollapseType } from "../../../services/db";
+import { getOffsetTop, scrollIntoView } from "../../../helpers/dom";
 import ContinueThread from "./ContinueThread";
+import { AppContext, Page } from "../../auth/AppContext";
+import FullyCollapsibleComment from "./FullyCollapsibleComment";
 
 export const MAX_COMMENT_DEPTH = 10;
 
@@ -20,7 +21,7 @@ interface CommentTreeProps {
   baseDepth: number;
 }
 
-export default function CommentTree({
+function CommentTree({
   comment,
   highlightedCommentId,
   first,
@@ -36,6 +37,7 @@ export default function CommentTree({
   const { tapToCollapse } = useAppSelector(
     (state) => state.settings.general.comments,
   );
+  const { activePageRef } = useContext(AppContext);
 
   // Comment context chains don't show missing for parents
   const showMissing = useMemo(() => {
@@ -87,7 +89,7 @@ export default function CommentTree({
           }
         />
       )}
-      <Comment
+      <FullyCollapsibleComment
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
         depth={comment.absoluteDepth - baseDepth}
@@ -101,7 +103,7 @@ export default function CommentTree({
 
           setCollapsed(!collapsed);
 
-          scrollViewUpIfNeeded(e.target);
+          scrollCommentIntoViewIfNeeded(e.target, activePageRef);
         }}
         collapsed={collapsed}
         fullyCollapsed={!!fullyCollapsed}
@@ -136,18 +138,44 @@ export default function CommentTree({
   return payload;
 }
 
-export function scrollViewUpIfNeeded(target: EventTarget) {
+export default memo(CommentTree);
+
+export function scrollCommentIntoViewIfNeeded(
+  target: EventTarget,
+  activePageRef: RefObject<Page | undefined> | undefined,
+) {
   if (!(target instanceof HTMLElement)) return;
 
   const scrollView = target.closest(".virtual-scroller");
+
+  // get `<ion-item>` from `target`
   const item = target.closest("ion-item-sliding")?.querySelector("ion-item");
 
   if (!(scrollView instanceof HTMLElement) || !(item instanceof HTMLElement))
     return;
 
-  const itemOffsetTop = getOffsetTop(item, scrollView);
+  // if top edge of comment is in view, return
+  const itemScrollOffsetTop = getOffsetTop(item, scrollView);
+  if (itemScrollOffsetTop > scrollView.scrollTop) return;
 
-  if (itemOffsetTop > scrollView.scrollTop) return;
+  const page = activePageRef?.current?.current;
+  if (page && !("querySelector" in page)) {
+    // if virtual scrolling, use virtual scroll API
 
-  scrollIntoView(item);
+    // get root comment index
+    const rootCommentContainer = target.closest("[data-index]");
+    if (!(rootCommentContainer instanceof HTMLElement)) return;
+    const rootIndex = +rootCommentContainer.getAttribute("data-index")!;
+
+    // get comment's vertical offset from root comment
+    const itemOffsetRootCommentTop = getOffsetTop(item, rootCommentContainer);
+
+    page.scrollToIndex(rootIndex, {
+      smooth: true,
+      offset: itemOffsetRootCommentTop,
+    });
+  } else {
+    // if not virtual scrolling, use typical scrollIntoView
+    scrollIntoView(item);
+  }
 }

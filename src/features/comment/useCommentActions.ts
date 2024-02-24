@@ -35,9 +35,9 @@ import {
 import store, { useAppDispatch } from "../../store";
 import { PageContext } from "../auth/PageContext";
 import { userHandleSelector } from "../auth/authSelectors";
-import { CommentsContext } from "./CommentsContext";
+import { CommentsContext } from "./inTree/CommentsContext";
 import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
-import useCollapseRootComment from "./useCollapseRootComment";
+import useCollapseRootComment from "./inTree/useCollapseRootComment";
 import useAppToast from "../../helpers/useAppToast";
 import { getCanModerate, getModIcon } from "../moderation/useCanModerate";
 import useCommentModActions from "../moderation/useCommentModActions";
