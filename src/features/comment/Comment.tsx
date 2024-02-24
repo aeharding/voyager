@@ -104,16 +104,16 @@ interface CommentProps {
 export default memo(Comment);
 
 function Comment({
-  context,
-  routerLink,
-  className,
-  rootIndex,
   comment: commentView,
   highlightedCommentId,
   depth,
   absoluteDepth,
   onClick,
   collapsed,
+  context,
+  routerLink,
+  className,
+  rootIndex,
 }: CommentProps) {
   const commentFromStore = useAppSelector(
     (state) => state.comment.commentById[commentView.comment.id],
