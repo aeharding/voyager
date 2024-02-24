@@ -1,11 +1,11 @@
-import { CustomIonItem } from "./Comment";
+import { CustomIonItem } from "../Comment";
 import CommentHr from "./CommentHr";
 import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { chevronUp } from "ionicons/icons";
 import React from "react";
-import { PositionedContainer } from "./elements/PositionedContainer";
-import { Container } from "./elements/Container";
+import { PositionedContainer } from "../elements/PositionedContainer";
+import { Container } from "../elements/Container";
 
 const MoreRepliesBlock = styled.div`
   display: flex;

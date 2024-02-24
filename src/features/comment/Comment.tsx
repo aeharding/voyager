@@ -84,23 +84,6 @@ const AmountCollapsed = styled.div`
   background: var(--ion-color-light);
 `;
 
-interface CollapsibleCommentProps extends CommentProps {
-  fullyCollapsed?: boolean;
-}
-
-const MemoizedComment = memo(Comment);
-
-export default function CollapsibleComment({
-  fullyCollapsed,
-  ...rest
-}: CollapsibleCommentProps) {
-  return (
-    <AnimateHeight duration={200} height={fullyCollapsed ? 0 : "auto"}>
-      <MemoizedComment {...rest} />
-    </AnimateHeight>
-  );
-}
-
 interface CommentProps {
   comment: CommentView;
   highlightedCommentId?: number;
@@ -117,6 +100,8 @@ interface CommentProps {
 
   rootIndex?: number;
 }
+
+export default memo(Comment);
 
 function Comment({
   context,

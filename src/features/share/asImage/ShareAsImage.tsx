@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import CommentTree from "../../comment/CommentTree";
+import CommentTree from "../../comment/inTree/CommentTree";
 import { buildCommentsTree, getDepthFromComment } from "../../../helpers/lemmy";
 import AddRemoveButtons from "./AddRemoveButtons";
 import Watermark from "./Watermark";

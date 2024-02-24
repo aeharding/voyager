@@ -1,14 +1,14 @@
-import { CommentNodeI } from "../../helpers/lemmy";
-import Comment from "./Comment";
+import { CommentNodeI } from "../../../helpers/lemmy";
 import React, { RefObject, memo, useContext, useMemo } from "react";
 import CommentHr from "./CommentHr";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { updateCommentCollapseState } from "./commentSlice";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { updateCommentCollapseState } from "../commentSlice";
 import CommentExpander from "./CommentExpander";
-import { OTapToCollapseType } from "../../services/db";
-import { getOffsetTop, scrollIntoView } from "../../helpers/dom";
+import { OTapToCollapseType } from "../../../services/db";
+import { getOffsetTop, scrollIntoView } from "../../../helpers/dom";
 import ContinueThread from "./ContinueThread";
-import { AppContext, Page } from "../auth/AppContext";
+import { AppContext, Page } from "../../auth/AppContext";
+import FullyCollapsibleComment from "./FullyCollapsibleComment";
 
 export const MAX_COMMENT_DEPTH = 10;
 
@@ -89,7 +89,7 @@ function CommentTree({
           }
         />
       )}
-      <Comment
+      <FullyCollapsibleComment
         comment={comment.comment_view}
         highlightedCommentId={highlightedCommentId}
         depth={comment.absoluteDepth - baseDepth}
@@ -147,20 +147,27 @@ export function scrollCommentIntoViewIfNeeded(
   if (!(target instanceof HTMLElement)) return;
 
   const scrollView = target.closest(".virtual-scroller");
+
+  // get `<ion-item>` from `target`
   const item = target.closest("ion-item-sliding")?.querySelector("ion-item");
 
   if (!(scrollView instanceof HTMLElement) || !(item instanceof HTMLElement))
     return;
 
+  // if top edge of comment is in view, return
   const itemScrollOffsetTop = getOffsetTop(item, scrollView);
-
   if (itemScrollOffsetTop > scrollView.scrollTop) return;
 
   const page = activePageRef?.current?.current;
   if (page && !("querySelector" in page)) {
+    // if virtual scrolling, use virtual scroll API
+
+    // get root comment index
     const rootCommentContainer = target.closest("[data-index]");
     if (!(rootCommentContainer instanceof HTMLElement)) return;
     const rootIndex = +rootCommentContainer.getAttribute("data-index")!;
+
+    // get comment's vertical offset from root comment
     const itemOffsetRootCommentTop = getOffsetTop(item, rootCommentContainer);
 
     page.scrollToIndex(rootIndex, {
@@ -168,6 +175,7 @@ export function scrollCommentIntoViewIfNeeded(
       offset: itemOffsetRootCommentTop,
     });
   } else {
+    // if not virtual scrolling, use typical scrollIntoView
     scrollIntoView(item);
   }
 }

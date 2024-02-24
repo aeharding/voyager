@@ -42,12 +42,12 @@ import {
 } from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
 import { SwipeAction, SwipeActions } from "../../../services/db";
-import useCollapseRootComment from "../../comment/useCollapseRootComment";
+import useCollapseRootComment from "../../comment/inTree/useCollapseRootComment";
 import { getInboxItemId, markRead } from "../../inbox/inboxSlice";
-import { CommentsContext } from "../../comment/CommentsContext";
+import { CommentsContext } from "../../comment/inTree/CommentsContext";
 import useAppToast from "../../../helpers/useAppToast";
 import { share } from "../../../helpers/lemmy";
-import { scrollCommentIntoViewIfNeeded } from "../../comment/CommentTree";
+import { scrollCommentIntoViewIfNeeded } from "../../comment/inTree/CommentTree";
 import { AppContext } from "../../auth/AppContext";
 
 const StyledItemContainer = styled.div`

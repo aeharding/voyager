@@ -1,10 +1,10 @@
 import { useIonViewDidEnter } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import Comments, { CommentsHandle } from "../../comment/Comments";
+import Comments, { CommentsHandle } from "../../comment/inTree/Comments";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CommentSortType, PostView } from "lemmy-js-client";
 import ViewAllComments from "./ViewAllComments";
-import JumpFab from "../../comment/JumpFab";
+import JumpFab from "../../comment/inTree/JumpFab";
 import PostHeader from "./PostHeader";
 import { setPostRead } from "../postSlice";
 

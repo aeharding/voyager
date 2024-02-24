@@ -17,7 +17,7 @@ import {
 } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
-import CommentHr from "../comment/CommentHr";
+import CommentHr from "../comment/inTree/CommentHr";
 import { FeedContext } from "./FeedContext";
 import {
   isComment,

@@ -1,23 +1,23 @@
 import { CommentView } from "lemmy-js-client";
-import { CustomIonItem } from "./Comment";
+import { CustomIonItem } from "../Comment";
 import CommentHr from "./CommentHr";
 import { useContext, useState } from "react";
 import { CommentsContext } from "./CommentsContext";
-import useClient from "../../helpers/useClient";
+import useClient from "../../../helpers/useClient";
 import { IonIcon, IonSpinner } from "@ionic/react";
 import { chevronDown } from "ionicons/icons";
 import AnimateHeight from "react-animate-height";
-import { MAX_DEFAULT_COMMENT_DEPTH } from "../../helpers/lemmy";
-import useAppToast from "../../helpers/useAppToast";
-import { receivedComments } from "./commentSlice";
+import { MAX_DEFAULT_COMMENT_DEPTH } from "../../../helpers/lemmy";
+import useAppToast from "../../../helpers/useAppToast";
+import { receivedComments } from "../commentSlice";
 import {
   OCommentThreadCollapse,
   defaultThreadCollapse,
-} from "../settings/settingsSlice";
-import { useAppDispatch, useAppSelector } from "../../store";
+} from "../../settings/settingsSlice";
+import { useAppDispatch, useAppSelector } from "../../../store";
 import { styled } from "@linaria/react";
-import { PositionedContainer } from "./elements/PositionedContainer";
-import { Container } from "./elements/Container";
+import { PositionedContainer } from "../elements/PositionedContainer";
+import { Container } from "../elements/Container";
 
 const MoreRepliesBlock = styled.div<{ hidden: boolean }>`
   display: flex;
