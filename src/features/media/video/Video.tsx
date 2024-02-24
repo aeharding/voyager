@@ -1,17 +1,13 @@
 import * as portals from "react-reverse-portal";
 import { useVideoPortalNode } from "./VideoPortalProvider";
-import { forwardRef, useImperativeHandle, useMemo } from "react";
+import { forwardRef, useImperativeHandle } from "react";
 import Player, { PlayerProps } from "./Player";
-import { getVideoSrcForUrl } from "../../../helpers/url";
 
-export interface VideoProps extends Omit<PlayerProps, "src"> {
-  url: string;
-}
+export interface VideoProps extends PlayerProps {}
 
 const Video = forwardRef<HTMLVideoElement | undefined, VideoProps>(
-  function Video({ url, ...props }, ref) {
-    const portalNode = useVideoPortalNode(url);
-    const src = useMemo(() => getVideoSrcForUrl(url), [url]);
+  function Video({ src, ...props }, ref) {
+    const portalNode = useVideoPortalNode(src);
 
     useImperativeHandle(
       ref,
