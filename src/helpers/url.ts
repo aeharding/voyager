@@ -26,7 +26,7 @@ export function getPathname(url: string): string | undefined {
   }
 }
 
-const imageExtensions = ["jpeg", "png", "gif", "gifv", "jpg", "webp", "jxl"];
+const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl"];
 
 export function isUrlImage(url: string): boolean {
   const pathname = getPathname(url);
@@ -38,7 +38,7 @@ export function isUrlImage(url: string): boolean {
   );
 }
 
-const animatedImageExtensions = ["gif", "gifv", "webp", "jxl"];
+const animatedImageExtensions = ["gif", "webp", "jxl"];
 
 export function isUrlPotentialAnimatedImage(url: string): boolean {
   const pathname = getPathname(url);
@@ -50,7 +50,7 @@ export function isUrlPotentialAnimatedImage(url: string): boolean {
   );
 }
 
-const videoExtensions = ["mp4", "webm"];
+const videoExtensions = ["mp4", "webm", "gifv"];
 
 export function isUrlVideo(url: string): boolean {
   const pathname = getPathname(url);
@@ -98,4 +98,22 @@ export function isValidHostname(value: string) {
   });
 
   return isValid;
+}
+
+export function getVideoSrcForUrl(url: string) {
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(url);
+  } catch (error) {
+    console.error(error);
+    return url;
+  }
+
+  const { hostname, pathname } = parsedUrl;
+
+  if (hostname === "i.imgur.com" && pathname.endsWith(".gifv"))
+    return `https://${hostname}${pathname.replace(/\.gifv$/, ".mp4")}`;
+
+  return url;
 }

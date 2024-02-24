@@ -40,9 +40,9 @@ const PostMedia = forwardRef<
 export default memo(PostMedia);
 
 export function getPostMedia(post: PostView): string | undefined {
-  if (post.post.url && isUrlMedia(post.post.url)) {
-    if (post.post.thumbnail_url) return post.post.thumbnail_url;
+  if (post.post.thumbnail_url) return post.post.thumbnail_url;
 
+  if (post.post.url && isUrlMedia(post.post.url)) {
     return post.post.url;
   }
 

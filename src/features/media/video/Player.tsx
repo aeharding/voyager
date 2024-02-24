@@ -7,6 +7,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -15,6 +16,7 @@ import useShouldAutoplay from "../../../core/listeners/network/useShouldAutoplay
 import { IonIcon } from "@ionic/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import { PlainButton } from "../../shared/PlainButton";
+import { getVideoSrcForUrl } from "../../../helpers/url";
 
 const Container = styled.div`
   position: relative;
@@ -111,7 +113,7 @@ export interface PlayerProps {
 
 const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   {
-    src,
+    src: potentialSrc,
     nativeControls,
     className,
     progress: showProgress = !nativeControls,
@@ -131,6 +133,8 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
   const [userPaused, setUserPaused] = useState(!autoPlay);
   const wantedToPlayRef = useRef(false);
   const wasAutoPausedRef = useRef(false);
+
+  const src = useMemo(() => getVideoSrcForUrl(potentialSrc), [potentialSrc]);
 
   useImperativeHandle(
     forwardedRef,
