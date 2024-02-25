@@ -4,7 +4,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonItem,
   IonList,
   IonSearchbar,
@@ -23,6 +22,7 @@ import { isValidHostname } from "../../../../helpers/url";
 import { GetSiteResponse } from "lemmy-js-client";
 import { uniq } from "lodash";
 import { getCustomServers } from "../../../../services/app";
+import AppHeader from "../../../shared/AppHeader";
 
 const Container = styled.div`
   height: 100%;
@@ -108,7 +108,7 @@ export default function PickLoginServer() {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -124,7 +124,7 @@ export default function PickLoginServer() {
             )}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <Container ref={ref}>
           <div className="ion-padding">

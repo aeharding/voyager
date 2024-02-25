@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -11,6 +10,7 @@ import { useRef } from "react";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import MigrateSubsList from "../../../features/migrate/MigrateSubsList";
 import { useParams } from "react-router";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function RedditMigrateSubsListPage() {
   const { link } = useParams<{ link: string }>();
@@ -20,7 +20,7 @@ export default function RedditMigrateSubsListPage() {
 
   return (
     <IonPage ref={pageRef} className="grey-bg">
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton
@@ -31,7 +31,7 @@ export default function RedditMigrateSubsListPage() {
 
           <IonTitle>Subreddits</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <AppContent scrollY>
         <MigrateSubsList link={link} />
       </AppContent>

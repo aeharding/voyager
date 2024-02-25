@@ -2,7 +2,6 @@ import { styled } from "@linaria/react";
 import {
   IonButtons,
   IonButton,
-  IonHeader,
   IonToolbar,
   IonTitle,
   IonText,
@@ -33,6 +32,7 @@ import useAppToast from "../../../../helpers/useAppToast";
 import { isLemmyError } from "../../../../helpers/lemmy";
 import AccountSwitcher from "../../../auth/AccountSwitcher";
 import { getClient } from "../../../../services/lemmy";
+import AppHeader from "../../../shared/AppHeader";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -237,7 +237,7 @@ export default function CommentReply({
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton onClick={() => dismiss()}>Cancel</IonButton>
@@ -280,7 +280,7 @@ export default function CommentReply({
             </IonButton>
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
 
       <CommentContent
         ref={textareaRef}

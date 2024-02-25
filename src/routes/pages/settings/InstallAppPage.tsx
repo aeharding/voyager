@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonIcon,
   IonPage,
   IonText,
@@ -28,6 +27,7 @@ import { useSetActivePage } from "../../../features/auth/AppContext";
 import AppDetails from "./about/AppDetails";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+import AppHeader from "../../../features/shared/AppHeader";
 
 const Container = styled.div`
   line-height: 1.5;
@@ -271,7 +271,7 @@ export default function InstallAppPage() {
 
   return (
     <IonPage ref={pageRef} className="grey-bg">
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/settings" text="Settings" />
@@ -279,7 +279,7 @@ export default function InstallAppPage() {
 
           <IonTitle>Install</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <AppContent scrollY>
         <Container className="ion-padding">
           <AppDetails />

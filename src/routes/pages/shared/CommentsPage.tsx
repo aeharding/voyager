@@ -1,10 +1,4 @@
-import {
-  IonButtons,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import { FetchFn } from "../../../features/feed/Feed";
 import AppBackButton from "../../../features/shared/AppBackButton";
 import { memo, useCallback } from "react";
@@ -19,6 +13,7 @@ import FeedContent from "./FeedContent";
 import { ListingType } from "lemmy-js-client";
 import { listingTypeTitle } from "./SpecialFeedPage";
 import { getFeedUrlName } from "../../../features/community/mod/ModActions";
+import AppHeader from "../../../features/shared/AppHeader";
 
 type CommentsPageProps =
   | {
@@ -59,7 +54,7 @@ function CommentsPage(props: CommentsPageProps) {
   return (
     <FeedContextProvider>
       <IonPage>
-        <IonHeader>
+        <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
               <AppBackButton
@@ -72,7 +67,7 @@ function CommentsPage(props: CommentsPageProps) {
             </IonButtons>
             <IonTitle>{feedName} Comments</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
         <FeedContent>
           <PostCommentFeed fetchFn={fetchFn} />
         </FeedContent>

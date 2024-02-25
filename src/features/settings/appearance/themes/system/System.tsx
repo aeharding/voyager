@@ -5,6 +5,7 @@ import DeviceMode from "./DeviceMode";
 import { useAppSelector } from "../../../../../store";
 import UserDarkMode from "./UserDarkMode";
 import { isAndroid, isNative } from "../../../../../helpers/device";
+import QuickSwitchDarkMode from "./QuickSwitchDarkMode";
 
 export default function System() {
   const { usingSystemDarkMode } = useAppSelector(
@@ -21,7 +22,12 @@ export default function System() {
         <DarkMode />
       </IonList>
 
-      {!usingSystemDarkMode && <UserDarkMode />}
+      {!usingSystemDarkMode && (
+        <>
+          <UserDarkMode />
+          <QuickSwitchDarkMode />
+        </>
+      )}
     </>
   );
 }

@@ -3,7 +3,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonInput,
   IonItem,
   IonList,
@@ -23,6 +22,7 @@ import { loginSuccess } from "../../../../helpers/toastMessages";
 import { register } from "../../authSlice";
 import { LoginResponse } from "lemmy-js-client";
 import { startCase } from "lodash";
+import AppHeader from "../../../shared/AppHeader";
 
 interface JoinProps {
   answer?: string;
@@ -126,7 +126,7 @@ export default function Join({ answer }: JoinProps) {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -142,13 +142,13 @@ export default function Join({ answer }: JoinProps) {
             )}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
-        <IonHeader collapse="condense">
+        <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Account Details</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
 
         <IonList inset ref={ref}>
           <IonItem>

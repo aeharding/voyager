@@ -4,7 +4,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonText,
   IonTitle,
   IonToolbar,
@@ -21,6 +20,7 @@ import useTextRecovery, {
   clearRecoveredText,
 } from "../../../helpers/useTextRecovery";
 import { preventModalSwipeOnTextSelection } from "../../../helpers/ionic";
+import AppHeader from "../../shared/AppHeader";
 
 const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -91,7 +91,7 @@ export default function NewPostText({
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton disabled={loading} />
@@ -113,7 +113,7 @@ export default function NewPostText({
             </IonButton>
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <Container keyboardOpen={keyboardOpen}>
           <Textarea

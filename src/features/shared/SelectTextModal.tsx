@@ -1,5 +1,4 @@
 import {
-  IonHeader,
   IonToolbar,
   IonTitle,
   IonButtons,
@@ -13,6 +12,7 @@ import { useRef } from "react";
 import { isTouchDevice } from "../../helpers/device";
 import { preventModalSwipeOnTextSelection } from "../../helpers/ionic";
 import { styled } from "@linaria/react";
+import AppHeader from "./AppHeader";
 
 const Container = styled.div`
   min-height: 100%;
@@ -75,7 +75,7 @@ export default function SelectTextModal({
       breakpoints={[0, 0.5, 1]}
       autoFocus
     >
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonTitle>
             <Centered>Select Text</Centered>
@@ -90,7 +90,7 @@ export default function SelectTextModal({
             </IonButton>
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <Container>
           {touch ? (

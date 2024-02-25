@@ -6,7 +6,6 @@ import {
   IonButtons,
   IonChip,
   IonContent,
-  IonHeader,
   IonInput,
   IonItem,
   IonLabel,
@@ -34,6 +33,7 @@ import lemmyLogo from "../lemmyLogo.svg";
 import { styled } from "@linaria/react";
 import { VOYAGER_TERMS } from "../../../../helpers/voyager";
 import { getInstanceFromHandle } from "../../authSelectors";
+import AppHeader from "../../../shared/AppHeader";
 
 const SiteImg = styled.img`
   object-fit: contain;
@@ -145,7 +145,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
   }
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -161,7 +161,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
             )}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <div className="ion-padding">
           You are logging in to{" "}

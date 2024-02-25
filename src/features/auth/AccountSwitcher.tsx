@@ -2,7 +2,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonIcon,
   IonList,
   IonLoading,
@@ -19,6 +18,7 @@ import Account from "./Account";
 import { setAccounts } from "./authSlice";
 import { moveItem } from "../../helpers/array";
 import { loggedInAccountsSelector } from "./authSelectors";
+import AppHeader from "../shared/AppHeader";
 
 type AccountSwitcherProps = {
   onDismiss: (data?: string, role?: string) => void;
@@ -99,7 +99,7 @@ export default function AccountSwitcher({
   return (
     <IonPage>
       <IonLoading isOpen={loading} />
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             {editing ? (
@@ -121,7 +121,7 @@ export default function AccountSwitcher({
             </IonButtons>
           )}
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         {!editing ? (
           <IonRadioGroup

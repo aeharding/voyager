@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonIcon,
   IonList,
   IonPage,
@@ -34,6 +33,7 @@ import { isAndroid, isNative } from "../../../../helpers/device";
 import { useSetActivePage } from "../../../../features/auth/AppContext";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "../../../../helpers/voyager";
 import { styled } from "@linaria/react";
+import AppHeader from "../../../../features/shared/AppHeader";
 
 export const InsetIonItem = styled(IonItemInAppExternalLink)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -91,7 +91,7 @@ export default function AboutPage() {
 
   return (
     <IonPage className="grey-bg" ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton text="Settings" defaultHref="/settings" />
@@ -99,7 +99,7 @@ export default function AboutPage() {
 
           <IonTitle>About</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <AppContent scrollY fullscreen>
         <AppDetails />
 

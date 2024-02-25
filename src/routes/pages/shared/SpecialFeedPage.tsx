@@ -1,10 +1,4 @@
-import {
-  IonBackButton,
-  IonButtons,
-  IonHeader,
-  IonPage,
-  IonToolbar,
-} from "@ionic/react";
+import { IonBackButton, IonButtons, IonPage, IonToolbar } from "@ionic/react";
 import { FetchFn } from "../../../features/feed/Feed";
 import { useCallback } from "react";
 import PostSort from "../../../features/feed/PostSort";
@@ -30,6 +24,7 @@ import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../../features/community/mod/ModActions";
 import useFeedSort from "../../../features/feed/sort/useFeedSort";
 import { PageTypeContext } from "../../../features/feed/PageTypeContext";
+import AppHeader from "../../../features/shared/AppHeader";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -101,7 +96,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     <TitleSearchProvider>
       <FeedContextProvider>
         <IonPage>
-          <IonHeader>
+          <AppHeader>
             <IonToolbar>
               <IonButtons slot="start">
                 <IonBackButton
@@ -118,7 +113,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
                 </IonButtons>
               </TitleSearch>
             </IonToolbar>
-          </IonHeader>
+          </AppHeader>
           <FeedContent>
             {feed}
             <TitleSearchResults />

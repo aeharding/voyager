@@ -1,10 +1,4 @@
-import {
-  IonButtons,
-  IonHeader,
-  IonPage,
-  IonSearchbar,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButtons, IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
 import { FetchFn } from "../../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
 import AppBackButton from "../../../features/shared/AppBackButton";
@@ -42,6 +36,7 @@ import { useAppSelector } from "../../../store";
 import { PageTypeContext } from "../../../features/feed/PageTypeContext";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+import AppHeader from "../../../features/shared/AppHeader";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -227,7 +222,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
     <FeedContextProvider>
       <TitleSearchProvider>
         <IonPage className={searchOpen ? "grey-bg" : ""}>
-          <IonHeader>
+          <AppHeader>
             <StyledIonToolbar
               className={
                 !searchOpen && !scrolledPastSearch
@@ -278,7 +273,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
                 }}
               />
             </StyledIonToolbar>
-          </IonHeader>
+          </AppHeader>
           <StyledFeedContent>
             {renderFeed()}
             <TitleSearchResults />

@@ -1,10 +1,4 @@
-import {
-  IonButtons,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import Feed, { FetchFn } from "../../../features/feed/Feed";
 import AppBackButton from "../../../features/shared/AppBackButton";
 import { memo, useCallback, useEffect } from "react";
@@ -24,6 +18,7 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { buildCommunityLink } from "../../../helpers/appLinkBuilder";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getUser } from "../../../features/user/userSlice";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export type ModlogItemType =
   GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;
@@ -118,7 +113,7 @@ function Modlog({ community, user }: ModlogProps) {
   return (
     <FeedContextProvider>
       <IonPage>
-        <IonHeader>
+        <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
               <AppBackButton
@@ -129,7 +124,7 @@ function Modlog({ community, user }: ModlogProps) {
             </IonButtons>
             <IonTitle>{title} Logs</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
         <FeedContent>
           <Feed
             fetchFn={fetchFn}

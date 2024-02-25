@@ -2,7 +2,6 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonPage,
   IonText,
   IonTitle,
@@ -25,6 +24,7 @@ import BlockedInstances from "../../../features/settings/blocks/BlockedInstances
 import { useRef } from "react";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { localUserSelector } from "../../../features/auth/siteSlice";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function BlocksSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -37,7 +37,7 @@ export default function BlocksSettingsPage() {
 
   return (
     <IonPage ref={pageRef} className="grey-bg">
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/settings" text="Settings" />
@@ -52,7 +52,7 @@ export default function BlocksSettingsPage() {
             </TitleContainer>{" "}
           </IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       {localUser ? (
         <AppContent scrollY>
           <FilterNsfw />

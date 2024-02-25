@@ -3,7 +3,6 @@ import {
   IonButtons,
   IonContent,
   IonFooter,
-  IonHeader,
   IonIcon,
   IonPage,
   IonTitle,
@@ -45,6 +44,7 @@ import useAppToast from "../../../helpers/useAppToast";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+import AppHeader from "../../../features/shared/AppHeader";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -218,7 +218,7 @@ export default function ConversationPage() {
 
   return (
     <IonPage ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton
@@ -245,7 +245,7 @@ export default function ConversationPage() {
             <ConversationsMoreActions />
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent ref={contentRef}>
         {typeof myUserId === "number" ? (
           <Container>

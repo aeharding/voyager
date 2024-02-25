@@ -2,12 +2,13 @@ import { styled } from "@linaria/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import ShareAsImage from "./ShareAsImage";
 import { MutableRefObject, useEffect, useState } from "react";
-import { IonButtons, IonHeader, IonIcon, IonTitle } from "@ionic/react";
+import { IonButtons, IonIcon, IonTitle } from "@ionic/react";
 import {
   CloseButton,
   TransparentIonToolbar,
 } from "../../shared/selectorModals/GenericSelectorModal";
 import { close } from "ionicons/icons";
+import AppHeader from "../../shared/AppHeader";
 
 export type ShareAsImageData =
   | {
@@ -44,7 +45,7 @@ export default function ShareAsImageModal({
         <ShareAsImage
           data={data}
           header={
-            <IonHeader>
+            <AppHeader>
               <TransparentIonToolbar>
                 <IonButtons slot="end">
                   <CloseButton color="medium" onClick={() => onDismiss()}>
@@ -53,7 +54,7 @@ export default function ShareAsImageModal({
                 </IonButtons>
                 <IonTitle>Preview</IonTitle>
               </TransparentIonToolbar>
-            </IonHeader>
+            </AppHeader>
           }
         />
       )}

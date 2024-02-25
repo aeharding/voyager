@@ -1,10 +1,4 @@
-import {
-  IonButtons,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import { FetchFn, isFirstPage } from "../../../features/feed/Feed";
 import AppBackButton from "../../../features/shared/AppBackButton";
 import { createContext, memo, useCallback, useContext } from "react";
@@ -36,6 +30,7 @@ import {
   syncReports,
 } from "../../../features/moderation/modSlice";
 import { LIMIT } from "../../../services/lemmy";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function ModqueuePage() {
   const { community } = useParams<{ community?: string }>();
@@ -121,7 +116,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
   return (
     <FeedContextProvider>
       <IonPage>
-        <IonHeader>
+        <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
               <AppBackButton
@@ -134,7 +129,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
               {community ? getHandle(community) : ""} Modqueue
             </IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
         <FeedContent>
           <ModqueueContext.Provider value={true}>
             <PostCommentFeed

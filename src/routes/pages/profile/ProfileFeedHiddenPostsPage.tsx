@@ -3,7 +3,6 @@ import {
   IonLabel,
   IonItem,
   IonPage,
-  IonHeader,
   IonToolbar,
   IonTitle,
   IonButtons,
@@ -27,6 +26,7 @@ import {
 } from "../../../features/post/postSlice";
 import FeedContent from "../shared/FeedContent";
 import { styled } from "@linaria/react";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -117,7 +117,7 @@ export default function ProfileFeedHiddenPostsPage() {
 
   return (
     <IonPage>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonTitle>Hidden Posts</IonTitle>
           <IonButtons slot="start">
@@ -132,7 +132,7 @@ export default function ProfileFeedHiddenPostsPage() {
             </IonButton>
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <FeedContent>
         <PostCommentFeed
           fetchFn={fetchFn}
