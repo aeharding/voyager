@@ -51,14 +51,6 @@ export const commentSlice = createSlice({
       if (comment.my_vote)
         state.commentVotesById[comment.comment.id] = comment.my_vote as 1 | -1;
     },
-
-    updateCommentCollapseState: (
-      state,
-      action: PayloadAction<{ commentId: number; collapsed: boolean }>,
-    ) => {
-      state.commentCollapsedById[action.payload.commentId] =
-        action.payload.collapsed;
-    },
     toggleCommentCollapseState: (state, action: PayloadAction<number>) => {
       state.commentCollapsedById[action.payload] =
         !state.commentCollapsedById[action.payload];
@@ -86,7 +78,6 @@ export const commentSlice = createSlice({
 export const {
   receivedComments,
   mutatedComment,
-  updateCommentCollapseState,
   toggleCommentCollapseState,
   updateCommentVote,
   updateCommentSaved,

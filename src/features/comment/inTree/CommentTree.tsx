@@ -2,7 +2,7 @@ import { CommentNodeI } from "../../../helpers/lemmy";
 import React, { RefObject, memo, useContext, useMemo } from "react";
 import CommentHr from "./CommentHr";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { updateCommentCollapseState } from "../commentSlice";
+import { toggleCommentCollapseState } from "../commentSlice";
 import CommentExpander from "./CommentExpander";
 import { OTapToCollapseType } from "../../../services/db";
 import { getOffsetTop, scrollIntoView } from "../../../helpers/dom";
@@ -34,8 +34,8 @@ function CommentTree({
     (state) =>
       state.comment.commentCollapsedById[comment.comment_view.comment.id],
   );
-  const { tapToCollapse } = useAppSelector(
-    (state) => state.settings.general.comments,
+  const tapToCollapse = useAppSelector(
+    (state) => state.settings.general.comments.tapToCollapse,
   );
   const { activePageRef } = useContext(AppContext);
 
@@ -53,13 +53,8 @@ function CommentTree({
     return false;
   }, [comment.comment_view.comment.path, highlightedCommentId]);
 
-  function setCollapsed(collapsed: boolean) {
-    dispatch(
-      updateCommentCollapseState({
-        commentId: comment.comment_view.comment.id,
-        collapsed,
-      }),
-    );
+  function toggleCollapsed() {
+    dispatch(toggleCommentCollapseState(comment.comment_view.comment.id));
   }
 
   if (
@@ -101,7 +96,7 @@ function CommentTree({
           )
             return;
 
-          setCollapsed(!collapsed);
+          toggleCollapsed();
 
           scrollCommentIntoViewIfNeeded(e.target, activePageRef);
         }}
