@@ -74,7 +74,7 @@ export default function FilteredKeywords() {
         ))}
 
         <IonItemSliding>
-          <InsetIonItem onClick={add}>
+          <InsetIonItem onClick={add} button detail={false}>
             <IonLabel color="primary">Add Keyword</IonLabel>
           </InsetIonItem>
         </IonItemSliding>
