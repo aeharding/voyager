@@ -12,7 +12,7 @@ export default function DeviceMode() {
     <>
       <InsetIonItem button routerLink="/settings/appearance/theme/mode">
         <IonLabel>Device Mode</IonLabel>
-        <IonLabel slot="end" color="medium" className="ion-text-end">
+        <IonLabel slot="end" color="medium" className="ion-no-margin">
           {getDeviceModeLabel(deviceMode)}
         </IonLabel>
       </InsetIonItem>
