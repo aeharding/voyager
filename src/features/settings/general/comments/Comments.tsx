@@ -8,6 +8,7 @@ import HighlightNewAccount from "./HighlightNewAccount";
 import TouchFriendlyLinks from "./TouchFriendlyLinks";
 import TapToCollapse from "./TapToCollapse";
 import ShowCommentImages from "./ShowCommentImages";
+import ShowCollapsed from "./ShowCollapsed";
 
 export default function Comments() {
   return (
@@ -24,6 +25,7 @@ export default function Comments() {
         <HighlightNewAccount />
         <TouchFriendlyLinks />
         <ShowCommentImages />
+        <ShowCollapsed />
       </IonList>
     </>
   );

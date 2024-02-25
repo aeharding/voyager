@@ -109,12 +109,15 @@ function Comment({
   depth,
   absoluteDepth,
   onClick,
-  collapsed,
+  collapsed: _collapsed,
   context,
   routerLink,
   className,
   rootIndex,
 }: CommentProps) {
+  const showCollapsedComment = useAppSelector(
+    (state) => state.settings.general.comments.showCollapsed,
+  );
   const commentFromStore = useAppSelector(
     (state) => state.comment.commentById[commentView.comment.id],
   );
@@ -127,6 +130,11 @@ function Comment({
   const canModerate = useCanModerate(commentView.community);
 
   const commentEllipsisHandleRef = useRef<CommentEllipsisHandle>(null);
+
+  const collapsed =
+    showCollapsedComment && !commentView.counts.child_count
+      ? false
+      : _collapsed;
 
   const onCommentLongPress = useCallback(() => {
     commentEllipsisHandleRef.current?.present();
@@ -183,27 +191,32 @@ function Comment({
                   <CommentVote item={commentView} />
                   <Edited item={commentView} />
                   <div style={{ flex: 1 }} />
-                  {!collapsed ? (
-                    <ActionsContainer>
-                      {renderActions()}
-                      <CommentEllipsis
-                        comment={commentView}
-                        rootIndex={rootIndex}
-                        ref={commentEllipsisHandleRef}
-                      />
-                      <Ago date={comment.published} />
-                    </ActionsContainer>
-                  ) : (
+                  <ActionsContainer
+                    className={collapsed ? "ion-hide" : undefined}
+                  >
+                    {renderActions()}
+                    <CommentEllipsis
+                      comment={commentView}
+                      rootIndex={rootIndex}
+                      ref={commentEllipsisHandleRef}
+                    />
+                    <Ago date={comment.published} />
+                  </ActionsContainer>
+                  {collapsed && (
                     <>
                       <AmountCollapsed>
-                        {commentView.counts.child_count + 1}
+                        {commentView.counts.child_count +
+                          (showCollapsedComment ? 0 : 1)}
                       </AmountCollapsed>
                       <CollapsedIcon icon={chevronDownOutline} />
                     </>
                   )}
                 </Header>
 
-                <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
+                <AnimateHeight
+                  duration={200}
+                  height={!showCollapsedComment && collapsed ? 0 : "auto"}
+                >
                   <Content
                     className="collapse-md-margins"
                     onClick={(e) => {

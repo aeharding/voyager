@@ -102,6 +102,7 @@ interface SettingsState {
       highlightNewAccount: boolean;
       touchFriendlyLinks: boolean;
       showCommentImages: boolean;
+      showCollapsed: boolean;
     };
     posts: {
       sort: SortType;
@@ -191,6 +192,7 @@ export const initialState: SettingsState = {
       highlightNewAccount: true,
       touchFriendlyLinks: true,
       showCommentImages: true,
+      showCollapsed: false,
     },
     posts: {
       sort: "Active",
@@ -324,6 +326,10 @@ export const appearanceSlice = createSlice({
     setShowCommentImages(state, action: PayloadAction<boolean>) {
       state.general.comments.showCommentImages = action.payload;
       db.setSetting("show_comment_images", action.payload);
+    },
+    setShowCollapsedComment(state, action: PayloadAction<boolean>) {
+      state.general.comments.showCollapsed = action.payload;
+      db.setSetting("show_collapsed_comment", action.payload);
     },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
@@ -637,6 +643,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const filtered_keywords = await db.getSetting("filtered_keywords");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
       const show_comment_images = await db.getSetting("show_comment_images");
+      const show_collapsed_comment = await db.getSetting(
+        "show_collapsed_comment",
+      );
       const no_subscribed_in_feed = await db.getSetting(
         "no_subscribed_in_feed",
       );
@@ -713,6 +722,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showCommentImages:
               show_comment_images ??
               initialState.general.comments.showCommentImages,
+            showCollapsed:
+              show_collapsed_comment ??
+              initialState.general.comments.showCollapsed,
           },
           posts: {
             disableMarkingRead:
@@ -824,6 +836,7 @@ export const {
   setDefaultFeed,
   setNoSubscribedInFeed,
   setAlwaysUseReaderMode,
+  setShowCollapsedComment,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

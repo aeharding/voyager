@@ -37,7 +37,7 @@ import {
 } from "../../../helpers/toastMessages";
 import {
   saveComment,
-  updateCommentCollapseState,
+  toggleCommentCollapseState,
   voteOnComment,
 } from "../../comment/commentSlice";
 import { PageContext } from "../../auth/PageContext";
@@ -247,16 +247,11 @@ function BaseSlidingVoteInternal({
     (e: TouchEvent | MouseEvent) => {
       if (isPost) return;
 
-      dispatch(
-        updateCommentCollapseState({
-          commentId: item.comment.id,
-          collapsed: !collapsed,
-        }),
-      );
+      dispatch(toggleCommentCollapseState(item.comment.id));
 
       if (e.target) scrollCommentIntoViewIfNeeded(e.target, activePageRef);
     },
-    [collapsed, dispatch, isPost, item, activePageRef],
+    [dispatch, isPost, item, activePageRef],
   );
   const collapseAction = useMemo(() => {
     return {
