@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import React, {
   ComponentRef,
   createContext,
@@ -20,21 +19,7 @@ import { StatusBar } from "@capacitor/status-bar";
 import { setPostRead } from "../../post/postSlice";
 import { useAppDispatch } from "../../../store";
 import GalleryMedia from "./GalleryMedia";
-
-const Container = styled.div`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  padding: 1rem;
-  padding-top: 4rem;
-  padding-bottom: calc(
-    1rem + var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0))
-  );
-
-  color: white;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 1), transparent);
-`;
+import ImageMoreActions from "./ImageMoreActions";
 
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
@@ -272,13 +257,14 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
   return (
     <GalleryContext.Provider value={value}>
       {actionContainer !== null &&
-        post &&
         createPortal(
-          <Container>
-            {thumbElRef.current && (
+          post ? (
+            thumbElRef.current && (
               <GalleryPostActions post={post} imgSrc={imgSrcRef.current} />
-            )}
-          </Container>,
+            )
+          ) : (
+            <ImageMoreActions imgSrc={imgSrcRef.current} />
+          ),
           actionContainer,
         )}
 

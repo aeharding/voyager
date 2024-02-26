@@ -23,6 +23,21 @@ import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { InFeedContext } from "../../feed/Feed";
 import { styled } from "@linaria/react";
 
+const BottomContainer = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 1rem;
+  padding-top: 4rem;
+  padding-bottom: calc(
+    1rem + var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0))
+  );
+
+  color: white;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 1), transparent);
+`;
+
 const Container = styled.div`
   display: flex;
   align-items: center;
@@ -85,31 +100,33 @@ export default function GalleryPostActions({
   }
 
   return (
-    <Container onClick={(e) => e.stopPropagation()}>
-      <Voting post={post} imgSrc={imgSrc} />
-      <div
-        onClick={() => {
-          close();
+    <BottomContainer>
+      <Container onClick={(e) => e.stopPropagation()}>
+        <Voting post={post} imgSrc={imgSrc} />
+        <div
+          onClick={() => {
+            close();
 
-          if (location.pathname.startsWith(link)) return;
+            if (location.pathname.startsWith(link)) return;
 
-          setTimeout(() => router.push(link), 10);
-        }}
-      >
-        <Section>
-          <IonIcon icon={chatbubbleOutline} />
-          <Amount>{post.counts.comments}</Amount>
-        </Section>
-      </div>
-      <IonIcon icon={shareOutline} onClick={shareImage} />
-      {isNative() ? (
-        <GalleryMoreActions post={post} imgSrc={imgSrc} />
-      ) : (
-        <InFeedContext.Provider value={true}>
-          <MoreActions post={post} />
-        </InFeedContext.Provider>
-      )}
-    </Container>
+            setTimeout(() => router.push(link), 10);
+          }}
+        >
+          <Section>
+            <IonIcon icon={chatbubbleOutline} />
+            <Amount>{post.counts.comments}</Amount>
+          </Section>
+        </div>
+        <IonIcon icon={shareOutline} onClick={shareImage} />
+        {isNative() ? (
+          <GalleryMoreActions post={post} imgSrc={imgSrc} />
+        ) : (
+          <InFeedContext.Provider value={true}>
+            <MoreActions post={post} />
+          </InFeedContext.Provider>
+        )}
+      </Container>
+    </BottomContainer>
   );
 }
 

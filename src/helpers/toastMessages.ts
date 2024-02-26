@@ -176,6 +176,24 @@ export const loginSuccess: AppToastOptions = {
   icon: checkmark,
 };
 
+export const photoSaved: AppToastOptions = {
+  message: "Photo saved",
+  position: "top",
+  color: "success",
+  fullscreen: true,
+  centerText: true,
+  icon: checkmark,
+};
+
+export const photoCopied: AppToastOptions = {
+  message: "Photo copied to clipboard",
+  position: "top",
+  color: "success",
+  fullscreen: true,
+  centerText: true,
+  icon: checkmark,
+};
+
 export const migrateParseError: AppToastOptions = {
   message:
     "Problem parsing link. Please make sure the link you entered is correct.",

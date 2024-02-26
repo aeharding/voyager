@@ -104,6 +104,11 @@ export default css`
       -webkit-touch-callout: default;
     }
 
+    // gets in the way of non-post preview more actions button
+    .pswp__preloader {
+      display: none;
+    }
+
     ion-action-sheet .detail::before {
       content: "";
       z-index: 1;
