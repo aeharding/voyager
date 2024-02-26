@@ -16,7 +16,12 @@ import { PageContext } from "../../auth/PageContext";
 import { useContext } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { savePost } from "../../post/postSlice";
-import { saveError, saveSuccess } from "../../../helpers/toastMessages";
+import {
+  photoCopied,
+  photoSaved,
+  saveError,
+  saveSuccess,
+} from "../../../helpers/toastMessages";
 import { ActionButton } from "../../post/actions/ActionButton";
 import { StashMedia } from "capacitor-stash-media";
 import { isNative } from "../../../helpers/device";
@@ -24,9 +29,10 @@ import { Share } from "@capacitor/share";
 import useAppToast from "../../../helpers/useAppToast";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import useNativeBrowser from "../../shared/useNativeBrowser";
+import { compact } from "lodash";
 
 interface GalleryMoreActionsProps {
-  post: PostView;
+  post?: PostView;
   imgSrc: string;
 }
 
@@ -44,12 +50,15 @@ export default function GalleryMoreActions({
   const dispatch = useAppDispatch();
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
-  const mySaved = postSavedById[post.post.id] ?? post.saved;
 
   function openActions() {
+    const mySaved = post
+      ? postSavedById[post.post.id] ?? post.saved
+      : undefined;
+
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: [
+      buttons: compact([
         {
           text: "Share",
           icon: shareOutline,
@@ -63,7 +72,7 @@ export default function GalleryMoreActions({
               try {
                 await StashMedia.shareImage({
                   url: imgSrc,
-                  title: post.post.name,
+                  title: post ? post.post.name : "Image",
                 });
               } catch (error) {
                 presentToast({
@@ -96,12 +105,7 @@ export default function GalleryMoreActions({
                 throw error;
               }
 
-              presentToast({
-                message: "Photo saved",
-                color: "success",
-                position: "top",
-                fullscreen: true,
-              });
+              presentToast(photoSaved);
             })();
           },
         },
@@ -123,23 +127,18 @@ export default function GalleryMoreActions({
                 throw error;
               }
 
-              presentToast({
-                message: "Photo copied to clipboard",
-                color: "success",
-                position: "top",
-                fullscreen: true,
-              });
+              presentToast(photoCopied);
             })();
           },
         },
-        {
+        post && {
           text: "Open in Browser",
           icon: earthOutline,
           handler: () => {
             openNativeBrowser(post.post.ap_id);
           },
         },
-        {
+        post && {
           text: "Save",
           icon: bookmarkOutline,
           handler: () => {
@@ -158,7 +157,7 @@ export default function GalleryMoreActions({
             })();
           },
         },
-        {
+        post && {
           text: getHandle(post.creator),
           icon: personOutline,
           handler: () => {
@@ -167,7 +166,7 @@ export default function GalleryMoreActions({
             );
           },
         },
-        {
+        post && {
           text: getHandle(post.community),
           icon: peopleOutline,
           handler: () => {
@@ -180,7 +179,7 @@ export default function GalleryMoreActions({
           text: "Cancel",
           role: "cancel",
         },
-      ],
+      ]),
     });
   }
 
