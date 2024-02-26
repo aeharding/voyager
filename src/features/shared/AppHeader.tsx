@@ -50,7 +50,7 @@ function UncondensedAppHeader(props: ComponentProps<typeof AppHeader>) {
     return () => {
       header.removeEventListener("click", onClick);
     };
-  });
+  }, []);
 
   return <IonHeader {...props} {...bind()} ref={headerRef} />;
 }
