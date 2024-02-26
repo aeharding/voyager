@@ -9,10 +9,10 @@ import { IonHeader } from "@ionic/react";
 export default function AppHeader(props: ComponentProps<typeof IonHeader>) {
   if (props.collapse) return <IonHeader {...props} />;
 
-  return <UncondensedAppHeader {...props} />;
+  return <UncollapsedAppHeader {...props} />;
 }
 
-function UncondensedAppHeader(props: ComponentProps<typeof AppHeader>) {
+function UncollapsedAppHeader(props: ComponentProps<typeof AppHeader>) {
   const headerRef = useRef<HTMLIonHeaderElement>(null);
   const cancelledTimeRef = useRef(0);
 
@@ -26,11 +26,13 @@ function UncondensedAppHeader(props: ComponentProps<typeof AppHeader>) {
     store.dispatch(setUserDarkMode(!userDarkMode));
   }, []);
 
+  const onCancel = useCallback(() => {
+    cancelledTimeRef.current = Date.now();
+  }, []);
+
   const bind = useLongPress(onLongPress, {
     cancelOnMovement: true,
-    onCancel: () => {
-      cancelledTimeRef.current = Date.now();
-    },
+    onCancel,
   });
 
   useEffect(() => {
