@@ -2,7 +2,6 @@ import { styled } from "@linaria/react";
 import {
   IonButtons,
   IonButton,
-  IonHeader,
   IonContent,
   IonToolbar,
   IonTitle,
@@ -37,6 +36,7 @@ import { problemFetchingTitle } from "../../../helpers/toastMessages";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isAndroid } from "../../../helpers/device";
 import { css } from "@linaria/core";
+import AppHeader from "../../shared/AppHeader";
 
 const Container = styled.div`
   position: absolute;
@@ -361,7 +361,7 @@ export default function PostEditorRoot({
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton onClick={() => dismiss()}>Cancel</IonButton>
@@ -399,7 +399,7 @@ export default function PostEditorRoot({
             <IonSegmentButton value="text">Text</IonSegmentButton>
           </IonSegment>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <Container>
           <IonList>

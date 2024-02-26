@@ -2,13 +2,13 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import Markdown from "../Markdown";
 import CommentMarkdown from "../../../comment/CommentMarkdown";
+import AppHeader from "../../AppHeader";
 
 interface PreviewModalProps {
   text: string;
@@ -38,7 +38,7 @@ export default function PreviewModal({
 
   return (
     <IonPage>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="end">
             <IonButton color="primary" strong onClick={() => onDismiss()}>
@@ -47,7 +47,7 @@ export default function PreviewModal({
           </IonButtons>
           <IonTitle>Preview</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent className="ion-padding">{content}</IonContent>
     </IonPage>
   );

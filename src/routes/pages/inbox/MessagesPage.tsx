@@ -2,7 +2,6 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonList,
   IonPage,
   IonRefresher,
@@ -21,6 +20,7 @@ import { syncMessages } from "../../../features/inbox/inboxSlice";
 import ComposeButton from "./ComposeButton";
 import { CenteredSpinner } from "../posts/PostPage";
 import { useSetActivePage } from "../../../features/auth/AppContext";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function MessagesPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -68,7 +68,7 @@ export default function MessagesPage() {
 
   return (
     <IonPage ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/inbox" text="Boxes" />
@@ -81,7 +81,7 @@ export default function MessagesPage() {
             <ComposeButton />
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <IonRefresher
           slot="fixed"

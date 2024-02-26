@@ -2,7 +2,6 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -19,6 +18,7 @@ import CommunityFeed from "../../../../features/feed/CommunityFeed";
 import { isLemmyError } from "../../../../helpers/lemmy";
 import useFeedSort from "../../../../features/feed/sort/useFeedSort";
 import { compact } from "lodash";
+import AppHeader from "../../../../features/shared/AppHeader";
 
 export default function SearchCommunitiesPage() {
   const { search: _encodedSearch } = useParams<{ search: string }>();
@@ -50,7 +50,7 @@ export default function SearchCommunitiesPage() {
 
   return (
     <IonPage>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton
@@ -65,7 +65,7 @@ export default function SearchCommunitiesPage() {
             <PostSort sort={sort} setSort={setSort} />
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <CommunityFeed fetchFn={fetchFn} />
       </IonContent>

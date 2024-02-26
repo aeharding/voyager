@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -17,6 +16,7 @@ import { receivedInboxItems } from "../../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import FeedContent from "../shared/FeedContent";
 import { useSetActivePage } from "../../../features/auth/AppContext";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function MentionsPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -43,7 +43,7 @@ export default function MentionsPage() {
 
   return (
     <IonPage ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/inbox" text="Boxes" />
@@ -55,7 +55,7 @@ export default function MentionsPage() {
             <MarkAllAsReadButton />
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
       </FeedContent>

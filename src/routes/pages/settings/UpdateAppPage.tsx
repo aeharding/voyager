@@ -4,7 +4,6 @@ import {
   IonBadge,
   IonButtons,
   IonContent,
-  IonHeader,
   IonLabel,
   IonList,
   IonLoading,
@@ -22,6 +21,7 @@ import { PageContentIonSpinner } from "../../../features/user/AsyncProfile";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { ua } from "../../../helpers/device";
 import { unloadServiceWorkerAndRefresh } from "../../../helpers/serviceWorker";
+import AppHeader from "../../../features/shared/AppHeader";
 
 const UpToDateText = styled.div`
   margin: auto;
@@ -77,7 +77,7 @@ export default function UpdateAppPage() {
 
   return (
     <IonPage ref={pageRef} className="grey-bg">
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/settings" text="Settings" />
@@ -85,7 +85,7 @@ export default function UpdateAppPage() {
 
           <IonTitle>Updates</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <IonLoading isOpen={loading} message="Updating" />
         <IonRefresher

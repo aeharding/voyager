@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -11,6 +10,7 @@ import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
 import BiometricTitle from "../../../features/settings/biometric/BiometricTitle";
 import BiometricSettings from "../../../features/settings/biometric/BiometricSettings";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function BiometricPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -19,7 +19,7 @@ export default function BiometricPage() {
 
   return (
     <IonPage className="grey-bg" ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton text="Settings" defaultHref="/settings" />
@@ -29,7 +29,7 @@ export default function BiometricPage() {
             <BiometricTitle />
           </IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <AppContent scrollY fullscreen>
         <BiometricSettings />
       </AppContent>

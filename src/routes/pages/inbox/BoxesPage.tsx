@@ -1,5 +1,4 @@
 import {
-  IonHeader,
   IonIcon,
   IonList,
   IonPage,
@@ -23,6 +22,7 @@ import { MouseEvent, useContext, useRef } from "react";
 import { PageContext } from "../../../features/auth/PageContext";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import BoxesRedirectBootstrapper from "../../../features/inbox/BoxesRedirectBootstrapper";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function BoxesPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -44,17 +44,17 @@ export default function BoxesPage() {
     <>
       <BoxesRedirectBootstrapper />
       <IonPage ref={pageRef} className="grey-bg">
-        <IonHeader>
+        <AppHeader>
           <IonToolbar>
             <IonTitle>Boxes</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
         <AppContent scrollY fullscreen>
-          <IonHeader collapse="condense">
+          <AppHeader collapse="condense">
             <IonToolbar>
               <IonTitle size="large">Boxes</IonTitle>
             </IonToolbar>
-          </IonHeader>
+          </AppHeader>
 
           <IonList inset color="primary">
             <InsetIonItem

@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -10,6 +9,7 @@ import AppContent from "../../../features/shared/AppContent";
 import SelectDeviceMode from "../../../features/settings/appearance/themes/system/SelectDeviceMode";
 import { useRef } from "react";
 import { useSetActivePage } from "../../../features/auth/AppContext";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function DeviceModeSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -18,7 +18,7 @@ export default function DeviceModeSettingsPage() {
 
   return (
     <IonPage ref={pageRef} className="grey-bg">
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton
@@ -29,7 +29,7 @@ export default function DeviceModeSettingsPage() {
 
           <IonTitle>Device Mode</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <AppContent scrollY>
         <SelectDeviceMode />
       </AppContent>

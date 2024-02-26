@@ -1,10 +1,4 @@
-import {
-  IonButtons,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import AppBackButton from "../../../features/shared/AppBackButton";
 import { useRef } from "react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -14,6 +8,7 @@ import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useAppSelector } from "../../../store";
 import AppContent from "../../../features/shared/AppContent";
 import Sidebar from "../../../features/sidebar/Sidebar";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function InstanceSidebarPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -28,7 +23,7 @@ export default function InstanceSidebarPage() {
     <FeedContextProvider>
       <TitleSearchProvider>
         <IonPage ref={pageRef}>
-          <IonHeader>
+          <AppHeader>
             <IonToolbar>
               <IonButtons slot="start">
                 <AppBackButton
@@ -38,7 +33,7 @@ export default function InstanceSidebarPage() {
               </IonButtons>
               <IonTitle>{connectedInstance}</IonTitle>
             </IonToolbar>
-          </IonHeader>
+          </AppHeader>
           <AppContent scrollY>
             <Sidebar />
           </AppContent>

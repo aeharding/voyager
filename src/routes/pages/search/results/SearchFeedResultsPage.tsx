@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -22,6 +21,7 @@ import { receivedComments } from "../../../../features/comment/commentSlice";
 import FeedContent from "../../shared/FeedContent";
 import { getSortDuration } from "../../../../features/feed/endItems/EndPost";
 import useFeedSort from "../../../../features/feed/sort/useFeedSort";
+import AppHeader from "../../../../features/shared/AppHeader";
 
 interface SearchPostsResultsProps {
   type: "Posts" | "Comments";
@@ -60,7 +60,7 @@ export default function SearchFeedResultsPage({
 
   return (
     <IonPage>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton
@@ -75,7 +75,7 @@ export default function SearchFeedResultsPage({
             <PostSort sort={sort} setSort={setSort} />
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <FeedContent>
         <PostCommentFeed
           fetchFn={fetchFn}

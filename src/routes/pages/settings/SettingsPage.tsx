@@ -1,6 +1,5 @@
 import {
   IonBadge,
-  IonHeader,
   IonIcon,
   IonList,
   IonPage,
@@ -42,6 +41,7 @@ import BiometricTitle from "../../../features/settings/biometric/BiometricTitle"
 import usePageVisibility from "../../../helpers/usePageVisibility";
 import { styled } from "@linaria/react";
 import DatabaseErrorItem from "../../../features/settings/root/DatabaseErrorItem";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
@@ -99,17 +99,17 @@ export default function SettingsPage() {
 
   return (
     <IonPage ref={pageRef} className="grey-bg">
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonTitle>Settings</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <AppContent scrollY fullscreen>
-        <IonHeader collapse="condense">
+        <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Settings</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
 
         {databaseError && <DatabaseErrorItem />}
 

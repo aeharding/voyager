@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -21,6 +20,7 @@ import { InboxItemView } from "../../../features/inbox/InboxItem";
 import FeedContent from "../shared/FeedContent";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { receivedUsers } from "../../../features/user/userSlice";
+import AppHeader from "../../../features/shared/AppHeader";
 
 interface InboxPageProps {
   showRead?: boolean;
@@ -87,7 +87,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
 
   return (
     <IonPage ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/inbox" text="Boxes" />
@@ -102,7 +102,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
             <MarkAllAsReadButton />
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
       </FeedContent>

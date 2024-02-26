@@ -4,7 +4,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonInput,
   IonItem,
   IonList,
@@ -18,6 +17,7 @@ import { login } from "../../authSlice";
 import { getLoginErrorMessage, isLemmyError } from "../../../../helpers/lemmy";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
 import { loginSuccess } from "../../../../helpers/toastMessages";
+import AppHeader from "../../../shared/AppHeader";
 
 interface TotpProps {
   url: string;
@@ -82,7 +82,7 @@ export default function Totp({ url, username, password }: TotpProps) {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -98,7 +98,7 @@ export default function Totp({ url, username, password }: TotpProps) {
             )}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <div className="ion-padding">
           Enter 2nd factor auth code for {username}@{url}

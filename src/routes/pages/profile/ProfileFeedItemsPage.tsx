@@ -3,7 +3,6 @@ import {
   IonLabel,
   IonItem,
   IonPage,
-  IonHeader,
   IonToolbar,
   IonTitle,
   IonButtons,
@@ -21,6 +20,7 @@ import FeedContent from "../shared/FeedContent";
 import { GetComments, GetPosts } from "lemmy-js-client";
 import { styled } from "@linaria/react";
 import { sortPostCommentByPublished } from "../../../helpers/lemmy";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export const InsetIonItem = styled(IonItem)`
   --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
@@ -78,7 +78,7 @@ export default function ProfileFeedItemsPage({
 
   return (
     <IonPage>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonTitle>{type}</IonTitle>
           <IonButtons slot="start">
@@ -88,7 +88,7 @@ export default function ProfileFeedItemsPage({
             />
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <FeedContent>
         <PostCommentFeed
           fetchFn={fetchFn}

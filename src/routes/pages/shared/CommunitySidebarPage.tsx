@@ -1,10 +1,4 @@
-import {
-  IonButtons,
-  IonHeader,
-  IonPage,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import { useParams } from "react-router";
 import AppBackButton from "../../../features/shared/AppBackButton";
 import { useAppDispatch, useAppSelector } from "../../../store";
@@ -15,6 +9,7 @@ import { CenteredSpinner } from "../posts/PostPage";
 import AppContent from "../../../features/shared/AppContent";
 import Sidebar from "../../../features/sidebar/Sidebar";
 import { useSetActivePage } from "../../../features/auth/AppContext";
+import AppHeader from "../../../features/shared/AppHeader";
 
 interface CommunitySidebarPageProps {
   community: string;
@@ -50,7 +45,7 @@ const CommunitySidebarPageContent = memo(function CommunitySidebarPageContent({
 
   return (
     <IonPage ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <AppBackButton
@@ -61,7 +56,7 @@ const CommunitySidebarPageContent = memo(function CommunitySidebarPageContent({
 
           <IonTitle>{community}</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <AppContent scrollY>
         {communityView ? (
           <Sidebar community={communityView} />

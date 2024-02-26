@@ -2,28 +2,28 @@
   "root": true,
   "env": {
     "browser": true,
-    "es2022": true
+    "es2022": true,
   },
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
   ],
   "plugins": ["react", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
-      "jsx": true
+      "jsx": true,
     },
     "sourceType": "module",
-    "ecmaVersion": 2022
+    "ecmaVersion": 2022,
   },
   "settings": {
     "react": {
-      "version": "detect"
-    }
+      "version": "detect",
+    },
   },
   "rules": {
     "react/react-in-jsx-scope": "off",
@@ -37,32 +37,44 @@
     "react/no-unknown-property": ["error", { "ignore": ["css"] }],
     "@typescript-eslint/no-unused-vars": [
       "warn",
-      { "destructuredArrayIgnorePattern": "^_" }
+      { "destructuredArrayIgnorePattern": "^_" },
     ],
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "no-restricted-imports": [
+      1,
+      {
+        "paths": [
+          {
+            "name": "@ionic/react",
+            "importNames": ["IonHeader"],
+            "message": "Please use AppHeader instead.",
+          },
+        ],
+      },
+    ],
   },
   "overrides": [
     {
       "files": ["**/*.test.ts", "**/*.test.tsx"],
       "globals": {
-        "global": "writable"
+        "global": "writable",
       },
       "env": {
-        "jest": true
-      }
+        "jest": true,
+      },
     },
     {
       "files": ["server.mjs"],
       "env": {
-        "node": true
-      }
+        "node": true,
+      },
     },
     {
       "files": ["src/**"],
       "globals": {
         "APP_VERSION": true,
-        "BUILD_FOSS_ONLY": true
-      }
-    }
-  ]
+        "BUILD_FOSS_ONLY": true,
+      },
+    },
+  ],
 }

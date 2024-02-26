@@ -1,7 +1,6 @@
 import {
   IonButtons,
   IonContent,
-  IonHeader,
   IonIcon,
   IonPage,
   IonRefresher,
@@ -28,6 +27,7 @@ import { formatNumber } from "../../../helpers/number";
 import MoreModActions from "../../../features/post/shared/MoreModAction";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -157,7 +157,7 @@ const PostPageContent = memo(function PostPageContent({
 
   return (
     <IonPage ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <AppBackButton
@@ -172,7 +172,7 @@ const PostPageContent = memo(function PostPageContent({
             {postIfFound && <MoreActions post={postIfFound} />}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <Content>{renderPost()}</Content>
     </IonPage>
   );

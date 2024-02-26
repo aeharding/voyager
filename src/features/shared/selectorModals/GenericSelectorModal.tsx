@@ -2,7 +2,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
@@ -17,6 +16,7 @@ import { styled } from "@linaria/react";
 import { close } from "ionicons/icons";
 import { useCallback, useEffect, useState } from "react";
 import { VList } from "virtua";
+import AppHeader from "../AppHeader";
 
 export const TransparentIonToolbar = styled(IonToolbar)`
   --background: none;
@@ -70,7 +70,7 @@ export default function GenericSelectorModal<I>({
 
   return (
     <IonPage>
-      <IonHeader>
+      <AppHeader>
         <TransparentIonToolbar>
           <IonButtons slot="end">
             <CloseButton color="medium" onClick={() => onDismiss()}>
@@ -88,7 +88,7 @@ export default function GenericSelectorModal<I>({
           }}
           autoFocus
         />
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <StyledIonList
           className={css`

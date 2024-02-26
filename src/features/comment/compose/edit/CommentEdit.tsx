@@ -1,10 +1,4 @@
-import {
-  IonButtons,
-  IonButton,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-} from "@ionic/react";
+import { IonButtons, IonButton, IonToolbar, IonTitle } from "@ionic/react";
 import { Comment } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../../store";
@@ -13,6 +7,7 @@ import { editComment } from "../../commentSlice";
 import { DismissableProps } from "../../../shared/DynamicDismissableModal";
 import CommentContent from "../shared";
 import useAppToast from "../../../../helpers/useAppToast";
+import AppHeader from "../../../shared/AppHeader";
 
 type CommentEditingProps = DismissableProps & {
   item: Comment;
@@ -67,7 +62,7 @@ export default function CommentEdit({
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton onClick={() => dismiss()}>Cancel</IonButton>
@@ -90,7 +85,7 @@ export default function CommentEdit({
             </IonButton>
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
 
       <CommentContent
         text={replyContent}

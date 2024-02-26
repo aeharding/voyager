@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonLabel,
   IonList,
   IonPage,
@@ -13,6 +12,7 @@ import { InsetIonItem } from "./AboutPage";
 import InAppExternalLink from "../../../../features/shared/InAppExternalLink";
 import { useRef } from "react";
 import { useSetActivePage } from "../../../../features/auth/AppContext";
+import AppHeader from "../../../../features/shared/AppHeader";
 
 const links = [
   {
@@ -64,7 +64,7 @@ export default function AboutThanksPage() {
 
   return (
     <IonPage className="grey-bg" ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton text="Settings" defaultHref="/settings/about" />
@@ -72,7 +72,7 @@ export default function AboutThanksPage() {
 
           <IonTitle>Thanks To</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <AppContent scrollY fullscreen>
         <IonList inset color="primary">
           {links.map(({ label, href }) => (

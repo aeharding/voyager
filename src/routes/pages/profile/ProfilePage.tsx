@@ -1,7 +1,6 @@
 import {
   IonButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -19,6 +18,7 @@ import { PageContext } from "../../../features/auth/PageContext";
 import FeedContent from "../shared/FeedContent";
 import ProfilePageActions from "../../../features/user/ProfilePageActions";
 import { useSetActivePage } from "../../../features/auth/AppContext";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function ProfilePage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -36,7 +36,7 @@ export default function ProfilePage() {
 
   return (
     <IonPage className="grey-bg" ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           {!accountsListEmpty && (
             <IonButtons slot="start">
@@ -54,7 +54,7 @@ export default function ProfilePage() {
             </IonButtons>
           )}
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
 
       {handle ? (
         <FeedContent>

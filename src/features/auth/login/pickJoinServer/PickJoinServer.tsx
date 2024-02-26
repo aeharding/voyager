@@ -4,7 +4,6 @@ import {
   IonButtons,
   IonContent,
   IonFooter,
-  IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
@@ -48,6 +47,7 @@ import { addGuestInstance } from "../../authSlice";
 import Login from "../login/Login";
 import { getInstanceFromHandle } from "../../authSelectors";
 import { styled } from "@linaria/react";
+import AppHeader from "../../../shared/AppHeader";
 
 const spacing = `
   margin: 2.5rem 0;
@@ -305,7 +305,7 @@ export default function PickJoinServer() {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -335,7 +335,7 @@ export default function PickJoinServer() {
             setCategory={setCategory}
           />
         </FiltersToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent ref={contentRef}>
         <IonRadioGroup
           value={selection}

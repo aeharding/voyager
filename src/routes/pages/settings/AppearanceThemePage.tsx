@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -10,6 +9,7 @@ import AppContent from "../../../features/shared/AppContent";
 import Theme from "../../../features/settings/appearance/themes/Theme";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
+import AppHeader from "../../../features/shared/AppHeader";
 
 export default function AppearanceThemePage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -18,7 +18,7 @@ export default function AppearanceThemePage() {
 
   return (
     <IonPage ref={pageRef} className="grey-bg">
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/settings" text="Settings" />
@@ -26,7 +26,7 @@ export default function AppearanceThemePage() {
 
           <IonTitle>Theme</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <AppContent scrollY>
         <Theme />
       </AppContent>

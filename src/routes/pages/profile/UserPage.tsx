@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -17,6 +16,7 @@ import {
 } from "../../../features/auth/authSelectors";
 import FeedContent from "../shared/FeedContent";
 import { memo } from "react";
+import AppHeader from "../../../features/shared/AppHeader";
 
 interface UserPageProps {
   handle: string;
@@ -37,7 +37,7 @@ const UserPageContent = memo(function UserPageContent({
 
   return (
     <IonPage className="grey-bg">
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -53,7 +53,7 @@ const UserPageContent = memo(function UserPageContent({
             )}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <FeedContent>
         <AsyncProfile handle={handle} />
       </FeedContent>

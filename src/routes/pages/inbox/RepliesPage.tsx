@@ -1,7 +1,6 @@
 import {
   IonBackButton,
   IonButtons,
-  IonHeader,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -16,6 +15,7 @@ import { receivedInboxItems } from "../../../features/inbox/inboxSlice";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import FeedContent from "../shared/FeedContent";
 import { useSetActivePage } from "../../../features/auth/AppContext";
+import AppHeader from "../../../features/shared/AppHeader";
 
 interface RepliesPageProps {
   type: "Comment" | "Post";
@@ -52,7 +52,7 @@ export default function RepliesPage({ type }: RepliesPageProps) {
 
   return (
     <IonPage ref={pageRef}>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton defaultHref="/inbox" text="Boxes" />
@@ -64,7 +64,7 @@ export default function RepliesPage({ type }: RepliesPageProps) {
             <MarkAllAsReadButton />
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <FeedContent>
         <InboxFeed fetchFn={fetchFn} />
       </FeedContent>

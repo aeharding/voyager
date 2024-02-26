@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import {
   IonBackButton,
   IonButton,
   IonButtons,
   IonContent,
   IonFooter,
-  IonHeader,
   IonNavLink,
   IonTitle,
   IonToolbar,
@@ -15,6 +14,7 @@ import { useAppSelector } from "../../../../store";
 import useHapticFeedback from "../../../../helpers/useHapticFeedback";
 import { NotificationType } from "@capacitor/haptics";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
+import AppHeader from "../../../shared/AppHeader";
 
 interface JoinedProps {
   verifyEmailSent: boolean;
@@ -33,20 +33,20 @@ export default function Joined({ verifyEmailSent }: JoinedProps) {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
           </IonButtons>
           <IonTitle>✅ Success!</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
-        <IonHeader collapse="condense">
+        <AppHeader collapse="condense">
           <IonToolbar color=" ">
             <IonTitle size="large">✅ Success!</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
 
         <div className="ion-padding">
           <p>
