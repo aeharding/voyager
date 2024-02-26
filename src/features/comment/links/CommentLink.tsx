@@ -21,7 +21,7 @@ const Container = styled.div`
   padding: 4px 6px;
 
   border-radius: 8px;
-  background: var(--ion-color-light);
+  background: var(--lightroom-bg);
   opacity: 0.8;
 `;
 

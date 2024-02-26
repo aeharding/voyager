@@ -83,7 +83,7 @@ export const baseVariables = css`
       --ion-color-light-shade: #d7d8da;
       --ion-color-light-tint: #f5f6f9;
 
-      --lightroom-bg: rgba(0, 0, 0, 0.08);
+      --lightroom-bg: #f2f3f7;
 
       --thick-separator-color: var(--ion-color-step-50, #f2f2f7);
 

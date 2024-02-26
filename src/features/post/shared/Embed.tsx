@@ -60,8 +60,13 @@ const Bottom = styled.div`
   gap: 0.75rem;
   padding: 0.65rem;
 
-  opacity: 0.5;
-  background: var(--ion-color-light);
+  color: var(--ion-color-text-aside);
+
+  .theme-dark & {
+    color: var(--ion-color-medium);
+  }
+
+  background: var(--lightroom-bg);
 
   .cross-post & {
     background: none;

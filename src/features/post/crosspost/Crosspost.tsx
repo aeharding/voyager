@@ -21,7 +21,7 @@ const StyledCrosspostContainer = styled(CrosspostContainer)`
   text-decoration: none;
   -webkit-touch-callout: default;
 
-  background: rgba(var(--ion-color-light-rgb), 0.5);
+  background: var(--lightroom-bg);
   padding: 8px 12px;
 `;
 
