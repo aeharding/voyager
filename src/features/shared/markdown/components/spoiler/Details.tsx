@@ -4,8 +4,7 @@ import { ComponentProps, createContext, useMemo, useState } from "react";
 import { JsxRuntimeComponents } from "react-markdown/lib";
 
 const StyledIonAccordionGroup = styled(IonAccordionGroup)`
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+  margin: 15px 0;
 `;
 
 const HeaderItem = styled(IonItem)`
@@ -14,37 +13,20 @@ const HeaderItem = styled(IonItem)`
   --inner-padding-end: 0;
   --inner-padding-start: 0;
 
+  /* font-size: inherit; */
   font-weight: 600;
 
   --background: none;
   --background-hover: none;
 `;
 
-const HeaderItemText = styled.div`
-  padding: 12px 0;
-`;
-
 const StyledIonAccordion = styled(IonAccordion)`
   background: none;
 
   [slot="content"] {
-    padding: 12px 0;
+    padding: 15px 0;
 
     background: transparent;
-
-    ${StyledIonAccordionGroup}:not(:last-child) & {
-      margin-bottom: 18px;
-    }
-
-    border: 8px solid var(--lightroom-bg);
-    border-left: none;
-    border-right: none;
-
-    // A lot of sidebars do funky things with horizontal
-    // rules. So don't use our separators in sidebars
-    .sidebar & {
-      border: none;
-    }
 
     img {
       max-height: none;
@@ -68,7 +50,7 @@ export default function Details({
       <StyledIonAccordionGroup>
         <StyledIonAccordion>
           <HeaderItem slot="header" onClick={(e) => e.stopPropagation()}>
-            <HeaderItemText>{label}</HeaderItemText>
+            {label}
           </HeaderItem>
           <div slot="content" className="collapse-md-margins">
             {children}
