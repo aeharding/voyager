@@ -6,40 +6,53 @@ import { JsxRuntimeComponents } from "react-markdown/lib";
 const StyledIonAccordionGroup = styled(IonAccordionGroup)`
   margin-left: 0 !important;
   margin-right: 0 !important;
+`;
 
-  // force some extra space if spoiler is the only thing in the users' comment
-  &:first-child:last-child {
-    margin-top: 8px !important;
-  }
+const HeaderItem = styled(IonItem)`
+  --padding-start: 0;
+  --padding-end: 0;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+
+  font-weight: 600;
+
+  --background: none;
+  --background-hover: none;
+`;
+
+const HeaderItemText = styled.div`
+  padding: 12px 0;
 `;
 
 const StyledIonAccordion = styled(IonAccordion)`
   background: none;
 
-  [slot="header"] {
-    --background: var(--lightroom-bg);
-  }
-
   [slot="content"] {
+    padding: 12px 0;
+
     background: transparent;
-    border: 2px solid var(--lightroom-bg);
-    border-top: none;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+
+    ${StyledIonAccordionGroup}:not(:last-child) & {
+      margin-bottom: 18px;
+    }
+
+    border: 8px solid var(--lightroom-bg);
+    border-left: none;
+    border-right: none;
+
+    // A lot of sidebars do funky things with horizontal
+    // rules. So don't use our separators in sidebars
+    .sidebar & {
+      border: none;
+    }
 
     img {
       max-height: none;
     }
-
-    > p:first-child:last-child > img:first-child:last-child {
-      margin: -16px;
-      max-width: calc(100% + 32px);
-      float: left; // fix display: block margin whitespace
-    }
   }
 
   .ion-accordion-toggle-icon {
-    opacity: 0.25;
+    color: var(--ion-color-medium2);
     font-size: 22px;
   }
 `;
@@ -52,10 +65,12 @@ export default function Details({
 
   return (
     <SpoilerContext.Provider value={value}>
-      <StyledIonAccordionGroup expand="inset">
-        <StyledIonAccordion onClick={(e) => e.stopPropagation()}>
-          <IonItem slot="header">{label}</IonItem>
-          <div slot="content" className="ion-padding collapse-md-margins">
+      <StyledIonAccordionGroup>
+        <StyledIonAccordion>
+          <HeaderItem slot="header" onClick={(e) => e.stopPropagation()}>
+            <HeaderItemText>{label}</HeaderItemText>
+          </HeaderItem>
+          <div slot="content" className="collapse-md-margins">
             {children}
           </div>
         </StyledIonAccordion>

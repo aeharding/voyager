@@ -39,9 +39,11 @@ export default function GenericSidebar({
   extraBadges,
   name,
 }: GenericSidebarProps) {
+  // sidebar class used for spoiler context (see spoiler/Details.tsx)
+
   return (
     <>
-      <Container className="ion-padding-start ion-padding-end ion-padding-top">
+      <Container className="sidebar ion-padding-start ion-padding-end ion-padding-top">
         {banner && <BannerImg src={banner} alt={`Banner for ${name}`} />}
         <Markdown>{sidebar}</Markdown>
         <SidebarCounts counts={counts} />
