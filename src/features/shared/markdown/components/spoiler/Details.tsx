@@ -1,7 +1,17 @@
 import { IonAccordion, IonAccordionGroup, IonItem } from "@ionic/react";
 import { styled } from "@linaria/react";
-import { ComponentProps, createContext, useMemo, useState } from "react";
-import { JsxRuntimeComponents } from "react-markdown/lib";
+import {
+  ComponentProps,
+  createContext,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { ExtraProps } from "react-markdown";
+import store, { useAppDispatch } from "../../../../../store";
+import { getSpoilerId, updateSpoilerState } from "./spoilerSlice";
 
 const StyledIonAccordionGroup = styled(IonAccordionGroup)`
   margin: 15px 0;
@@ -13,7 +23,6 @@ const HeaderItem = styled(IonItem)`
   --inner-padding-end: 0;
   --inner-padding-start: 0;
 
-  /* font-size: inherit; */
   font-weight: 600;
 
   --background: none;
@@ -38,17 +47,48 @@ const StyledIonAccordion = styled(IonAccordion)`
     font-size: 22px;
   }
 `;
-export default function Details({
-  children,
-}: ComponentProps<JsxRuntimeComponents["details"]>) {
+
+type DetailsProps = JSX.IntrinsicElements["details"] &
+  ExtraProps & {
+    id: string;
+  };
+
+export default function Details({ children, node, id }: DetailsProps) {
+  const accordionGroupRef = useRef<HTMLIonAccordionGroupElement>(null);
   const [label, setLabel] = useState<React.ReactNode | undefined>();
+  const dispatch = useAppDispatch();
 
   const value = useMemo(() => ({ setLabel }), []);
 
+  useLayoutEffect(() => {
+    const accordionGroup = accordionGroupRef.current;
+    if (!accordionGroup) return;
+
+    const isOpen = store.getState().spoiler.byId[getSpoilerId(id, node)];
+
+    accordionGroup.value = isOpen ? "open" : undefined;
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onChange = useCallback<
+    NonNullable<ComponentProps<typeof IonAccordionGroup>["onIonChange"]>
+  >(
+    (e) => {
+      dispatch(
+        updateSpoilerState({
+          id: getSpoilerId(id, node),
+          isOpen: e.detail.value === "open",
+        }),
+      );
+    },
+    [dispatch, node, id],
+  );
+
   return (
     <SpoilerContext.Provider value={value}>
-      <StyledIonAccordionGroup>
-        <StyledIonAccordion>
+      <StyledIonAccordionGroup ref={accordionGroupRef} onIonChange={onChange}>
+        <StyledIonAccordion value="open">
           <HeaderItem slot="header" onClick={(e) => e.stopPropagation()}>
             {label}
           </HeaderItem>

@@ -1,10 +1,10 @@
-import { ComponentProps, useContext, useLayoutEffect } from "react";
-import { JsxRuntimeComponents } from "react-markdown/lib";
+import { useContext, useLayoutEffect } from "react";
 import { SpoilerContext } from "./Details";
+import { ExtraProps } from "react-markdown";
 
 export default function Summary({
   children,
-}: ComponentProps<JsxRuntimeComponents["summary"]>) {
+}: JSX.IntrinsicElements["summary"] & ExtraProps) {
   const { setLabel } = useContext(SpoilerContext);
 
   useLayoutEffect(() => {

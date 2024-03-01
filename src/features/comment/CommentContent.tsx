@@ -51,7 +51,7 @@ export default function CommentContent({
 
     return (
       <>
-        <CommentMarkdown className={mdClassName}>
+        <CommentMarkdown className={mdClassName} id={item.ap_id}>
           {"content" in item ? item.content : item.body ?? item.name}
         </CommentMarkdown>
         {showTouchFriendlyLinks && touchFriendlyLinks && (

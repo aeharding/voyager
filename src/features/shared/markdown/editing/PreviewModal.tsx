@@ -9,6 +9,7 @@ import {
 import Markdown from "../Markdown";
 import CommentMarkdown from "../../../comment/CommentMarkdown";
 import AppHeader from "../../AppHeader";
+import { useId } from "react";
 
 interface PreviewModalProps {
   text: string;
@@ -21,6 +22,8 @@ export default function PreviewModal({
   text,
   onDismiss,
 }: PreviewModalProps) {
+  const id = useId();
+
   const content = (() => {
     // disableInternalLinkRouting to prevent internal links (like @test@example.com)
     // from taking user away from current page (since user is in a modal)
@@ -29,10 +32,16 @@ export default function PreviewModal({
     switch (type) {
       case "comment":
         return (
-          <CommentMarkdown disableInternalLinkRouting>{text}</CommentMarkdown>
+          <CommentMarkdown disableInternalLinkRouting id={id}>
+            {text}
+          </CommentMarkdown>
         );
       case "post":
-        return <Markdown disableInternalLinkRouting>{text}</Markdown>;
+        return (
+          <Markdown disableInternalLinkRouting id={id}>
+            {text}
+          </Markdown>
+        );
     }
   })();
 

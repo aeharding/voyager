@@ -46,10 +46,20 @@ const markdownCss = css`
 
 export interface MarkdownProps
   extends Omit<ReactMarkdownOptions, "remarkPlugins"> {
+  className?: string;
+
   disableInternalLinkRouting?: boolean;
+
+  /**
+   * ID should be unique to the connected instance (prefixed, if 0-based id)
+   *
+   * This is used so spoilers can track open state
+   */
+  id: string;
 }
 
 export default function Markdown({
+  id,
   disableInternalLinkRouting,
   ...props
 }: MarkdownProps) {
@@ -75,8 +85,8 @@ export default function Markdown({
               />
             )
           : (props) => <LinkInterceptor {...props} />,
-        summary: Summary,
-        details: Details,
+        summary: (props) => <Summary {...props} />,
+        details: (props) => <Details {...props} id={id} />,
         ...props.components,
       }}
       remarkPlugins={[

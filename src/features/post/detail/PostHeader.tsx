@@ -184,7 +184,7 @@ function PostHeader({
       return (
         <>
           {post.post.url && !urlIsMedia && <Embed post={post} />}
-          <StyledMarkdown>{post.post.body}</StyledMarkdown>
+          <StyledMarkdown id={post.post.ap_id}>{post.post.body}</StyledMarkdown>
         </>
       );
     }
