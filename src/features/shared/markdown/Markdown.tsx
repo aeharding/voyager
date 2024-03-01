@@ -25,6 +25,18 @@ const markdownCss = css`
     border-left: 3px solid var(--ion-color-light);
     margin-left: 0;
   }
+
+  hr {
+    background-color: var(
+      --ion-border-color,
+      var(--ion-color-step-250, #c8c7cc)
+    );
+
+    min-width: min(100%, 100px);
+    width: 80%;
+
+    height: 2px;
+  }
 `;
 
 export interface MarkdownProps
