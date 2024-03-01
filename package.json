@@ -35,6 +35,7 @@
     "vite-express": "^0.15.0"
   },
   "devDependencies": {
+    "@aeharding/remark-lemmy-spoiler": "^1.0.1",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
     "@capacitor-community/app-icon": "^4.1.1",

@@ -64,6 +64,10 @@ const CommentVote = styled(Vote)`
 const Content = styled.div`
   padding-top: 0.35em;
 
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
   @media (hover: none) {
     padding-top: 0.45em;
   }
@@ -218,7 +222,6 @@ function Comment({
                   height={!showCollapsedComment && collapsed ? 0 : "auto"}
                 >
                   <Content
-                    className="collapse-md-margins"
                     onClick={(e) => {
                       if (!(e.target instanceof HTMLElement)) return;
                       if (e.target.nodeName === "A") e.stopPropagation();
@@ -228,6 +231,7 @@ function Comment({
                       item={comment}
                       showTouchFriendlyLinks={!context}
                       isMod={!!canModerate}
+                      mdClassName="collapse-md-margins"
                     />
                     {context}
                   </Content>
