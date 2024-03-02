@@ -14,7 +14,7 @@ import store, { useAppDispatch } from "../../../../../store";
 import { getSpoilerId, updateSpoilerState } from "./spoilerSlice";
 
 const StyledIonAccordionGroup = styled(IonAccordionGroup)`
-  margin: 15px 0;
+  margin: 1em 0;
 `;
 
 const HeaderItem = styled(IonItem)`
