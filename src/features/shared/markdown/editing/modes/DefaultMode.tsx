@@ -380,9 +380,7 @@ export default function DefaultMode({
           />
         </label>
         <Button onClick={presentLinkInput}>
-          <Button>
-            <IonIcon icon={link} color="primary" />
-          </Button>
+          <IonIcon icon={link} color="primary" />
         </Button>
         <md-bold>
           <Button>
