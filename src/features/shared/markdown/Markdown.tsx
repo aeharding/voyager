@@ -8,10 +8,9 @@ import { css, cx } from "@linaria/core";
 import superSub from "remark-supersub";
 import Table from "./components/Table";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
-import { visit } from "unist-util-visit";
-import { Root } from "mdast";
 import Summary from "./components/spoiler/Summary";
 import Details from "./components/spoiler/Details";
+import spoilerRehype from "./spoilerRehype";
 
 const markdownCss = css`
   @media (max-width: 700px) {
@@ -51,7 +50,8 @@ export interface MarkdownProps
   disableInternalLinkRouting?: boolean;
 
   /**
-   * ID should be unique to the connected instance (prefixed, if 0-based id)
+   * ID should be unique (prefixed, if using autoincrement id like lemmy uses)
+   * Ideally, just use the `ap_id`
    *
    * This is used so spoilers can track open state
    */
@@ -97,32 +97,4 @@ export default function Markdown({
       ]}
     />
   );
-}
-
-function spoilerRehype() {
-  return function (tree: Root) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    visit(tree, function (node: any) {
-      if (node.type === "spoiler") {
-        const data = node.data || (node.data = {});
-        data.hName = "details";
-
-        node.children = [
-          {
-            type: "unknown",
-            data: {
-              hName: "summary",
-            },
-            children: [
-              {
-                type: "text",
-                value: node.name,
-              },
-            ],
-          },
-          ...node.children,
-        ];
-      }
-    });
-  };
 }

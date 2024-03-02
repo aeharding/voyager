@@ -237,6 +237,9 @@ devDependencies:
   mdast-util-gfm-table:
     specifier: ^2.0.0
     version: 2.0.0
+  mdast-util-lemmy-spoiler:
+    specifier: ^1.0.0
+    version: 1.0.0
   micromark:
     specifier: ^4.0.0
     version: 4.0.0

@@ -105,6 +105,7 @@
     "mdast-util-gfm-autolink-literal-lemmy": "^3.0.0",
     "mdast-util-gfm-strikethrough": "^2.0.0",
     "mdast-util-gfm-table": "^2.0.0",
+    "mdast-util-lemmy-spoiler": "^1.0.0",
     "micromark": "^4.0.0",
     "micromark-extension-gfm-strikethrough": "^2.0.0",
     "micromark-extension-gfm-table": "^2.0.0",

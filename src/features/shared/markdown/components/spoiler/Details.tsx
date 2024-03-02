@@ -23,6 +23,7 @@ const HeaderItem = styled(IonItem)`
   --inner-padding-end: 0;
   --inner-padding-start: 0;
 
+  font-size: inherit;
   font-weight: 600;
 
   --background: none;
