@@ -14,13 +14,7 @@ import {
   mailUnread,
   share as shareIcon,
 } from "ionicons/icons";
-import React, {
-  MouseEvent,
-  TouchEvent,
-  useCallback,
-  useContext,
-  useMemo,
-} from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import SlidingItem, { ActionList, SlidingItemAction } from "./SlidingItem";
 import {
   CommentReplyView,
