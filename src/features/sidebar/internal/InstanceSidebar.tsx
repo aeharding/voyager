@@ -30,6 +30,7 @@ export default function InstanceSidebar() {
       extraBadges={<IonBadge color="dark">v{lemmyVersion}</IonBadge>}
       banner={site.banner}
       name={site.actor_id}
+      id={site.actor_id}
     />
   );
 }

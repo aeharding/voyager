@@ -235,7 +235,9 @@ export default function InboxItem({ item }: InboxItemProps) {
         <Content>
           <Header>{renderHeader()}</Header>
           <Body>
-            <CommentMarkdown>{renderContents()}</CommentMarkdown>
+            <CommentMarkdown id={getItemId(item)}>
+              {renderContents()}
+            </CommentMarkdown>
           </Body>
           <Footer>
             <div>{renderFooterDetails()}</div>
@@ -262,4 +264,18 @@ export default function InboxItem({ item }: InboxItemProps) {
       <Hr />
     </>
   );
+}
+
+function getItemId(item: InboxItemView): string {
+  switch (true) {
+    case "person_mention" in item:
+      return `mention-${item.person_mention.id}`;
+    case "comment_reply" in item:
+      return `comment-reply-${item.comment_reply.id}`;
+    case "private_message" in item:
+      return `private-message-${item.private_message.id}`;
+  }
+
+  // typescript should be smarter (this shouldn't be necessary)
+  throw new Error("getItemId: Unexpected item");
 }

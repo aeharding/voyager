@@ -1,6 +1,6 @@
 import { styled } from "@linaria/react";
-import { ComponentProps, useRef } from "react";
-import type { JsxRuntimeComponents } from "react-markdown/lib";
+import { useRef } from "react";
+import { ExtraProps } from "react-markdown";
 
 const TableContainer = styled.div`
   display: inline-flex;
@@ -34,7 +34,7 @@ const TableContainer = styled.div`
 `;
 
 export default function Table(
-  props: ComponentProps<JsxRuntimeComponents["table"]>,
+  props: JSX.IntrinsicElements["table"] & ExtraProps,
 ) {
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
 

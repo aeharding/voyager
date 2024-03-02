@@ -42,6 +42,7 @@ import { handleSelector } from "./features/auth/authSelectors";
 import pickJoinServerSlice from "./features/auth/login/pickJoinServer/pickJoinServerSlice";
 import joinSlice from "./features/auth/login/join/joinSlice";
 import networkSlice from "./core/listeners/network/networkSlice";
+import spoilerSlice from "./features/shared/markdown/components/spoiler/spoilerSlice";
 
 const store = configureStore({
   reducer: {
@@ -65,6 +66,7 @@ const store = configureStore({
     join: joinSlice,
     network: networkSlice,
     migration: migrationSlice,
+    spoiler: spoilerSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

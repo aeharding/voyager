@@ -28,6 +28,7 @@ interface GenericSidebarProps {
   type: "instance" | "community";
   banner?: string;
   name: string;
+  id: string;
 }
 
 export default function GenericSidebar({
@@ -38,12 +39,13 @@ export default function GenericSidebar({
   banner,
   extraBadges,
   name,
+  id,
 }: GenericSidebarProps) {
   return (
     <>
       <Container className="ion-padding-start ion-padding-end ion-padding-top">
         {banner && <BannerImg src={banner} alt={`Banner for ${name}`} />}
-        <Markdown>{sidebar}</Markdown>
+        <Markdown id={id}>{sidebar}</Markdown>
         <SidebarCounts counts={counts} />
         {extraBadges}
       </Container>

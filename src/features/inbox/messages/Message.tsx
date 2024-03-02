@@ -163,7 +163,9 @@ export default function Message({ message }: MessageProps) {
       ref={containerRef}
       {...bind()}
     >
-      <Markdown>{message.private_message.content}</Markdown>
+      <Markdown id={`private-message_${message.private_message.id}`}>
+        {message.private_message.content}
+      </Markdown>
     </Container>
   );
 }
