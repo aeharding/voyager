@@ -85,7 +85,7 @@ export default function Markdown({
               />
             )
           : (props) => <LinkInterceptor {...props} />,
-        summary: (props) => <Summary {...props} />,
+        summary: Summary,
         details: (props) => <Details {...props} id={id} />,
         ...props.components,
       }}

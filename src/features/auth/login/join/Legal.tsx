@@ -87,7 +87,10 @@ export default function Legal() {
 
         <IonList inset className="ion-padding">
           {site?.site_view.local_site.legal_information?.trim() ? (
-            <Markdown className="collapse-md-margins" id="legal">
+            <Markdown
+              className="collapse-md-margins"
+              id={`site-legal-${site?.site_view.site.actor_id}`}
+            >
               {site.site_view.local_site.legal_information}
             </Markdown>
           ) : (

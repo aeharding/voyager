@@ -274,7 +274,8 @@ function getItemId(item: InboxItemView): string {
       return `comment-reply-${item.comment_reply.id}`;
     case "private_message" in item:
       return `private-message-${item.private_message.id}`;
-    default:
-      return "foo"; // this should never be the case. Typescript should be smarter so I don't need to add this.
   }
+
+  // typescript should be smarter (this shouldn't be necessary)
+  throw new Error("getItemId: Unexpected item");
 }

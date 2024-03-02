@@ -2,6 +2,7 @@
 
 import { visit } from "unist-util-visit";
 import { Root } from "mdast";
+
 /**
  * Transform spoiler tree node to details/summary rehype html nodes
  *
