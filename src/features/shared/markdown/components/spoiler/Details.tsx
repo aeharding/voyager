@@ -34,7 +34,7 @@ const StyledIonAccordion = styled(IonAccordion)`
   background: none;
 
   [slot="content"] {
-    padding: 15px 0;
+    padding: 1em 0;
 
     background: transparent;
 
@@ -45,7 +45,7 @@ const StyledIonAccordion = styled(IonAccordion)`
 
   .ion-accordion-toggle-icon {
     color: var(--ion-color-medium2);
-    font-size: 22px;
+    font-size: 1.45em;
   }
 `;
 
