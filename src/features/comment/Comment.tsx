@@ -66,7 +66,7 @@ const Content = styled.div`
 
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 15px;
 
   @media (hover: none) {
     padding-top: 0.45em;

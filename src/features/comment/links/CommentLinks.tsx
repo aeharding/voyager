@@ -6,7 +6,7 @@ import CommentLink from "./CommentLink";
 import { styled } from "@linaria/react";
 import customRemarkGfm from "../../shared/markdown/customRemarkGfm";
 import { useAppSelector } from "../../../store";
-import { Link, Text } from "mdast";
+import { Text } from "mdast";
 import { uniqBy } from "lodash";
 import { isValidUrl } from "../../../helpers/url";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
@@ -56,7 +56,8 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
         links.push({
           type: node.type,
           url: node.url,
-          text: ((node as Link).children?.[0] as Text)?.value,
+          text:
+            "children" in node ? (node.children[0] as Text)?.value : undefined,
         });
     });
 
