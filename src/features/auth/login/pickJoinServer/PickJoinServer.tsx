@@ -48,6 +48,7 @@ import Login from "../login/Login";
 import { getInstanceFromHandle } from "../../authSelectors";
 import { styled } from "@linaria/react";
 import AppHeader from "../../../shared/AppHeader";
+import { isMinimumSupportedLemmyVersion } from "../../../../helpers/lemmy";
 
 const spacing = `
   margin: 2.5rem 0;
@@ -182,6 +183,9 @@ export default function PickJoinServer() {
     // User changed search before request resolved
     if (site.site_view.site.actor_id !== `https://${search.toLowerCase()}/`)
       return;
+
+    // Unsupported version
+    if (!isMinimumSupportedLemmyVersion(site.version)) return;
 
     setCustomInstance(site);
   }, [customSearchHostnameInvalid, search]);

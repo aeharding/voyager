@@ -11,6 +11,7 @@ import {
 import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
 import { quote } from "./markdown";
+import { compare } from "compare-versions";
 
 export interface LemmyJWT {
   sub: number;
@@ -371,4 +372,10 @@ export function sortPostCommentByPublished(
   b: PostView | CommentView,
 ): number {
   return getPublishedDate(b).localeCompare(getPublishedDate(a));
+}
+
+export const MINIMUM_LEMMY_VERSION = "0.19.0";
+
+export function isMinimumSupportedLemmyVersion(version: string) {
+  return compare(version, MINIMUM_LEMMY_VERSION, ">=");
 }
