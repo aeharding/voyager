@@ -1,14 +1,7 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonItemSlidingCustomEvent, ItemSlidingCustomEvent } from "@ionic/core";
 import { IonItemOption, IonItemOptions, IonItemSliding } from "@ionic/react";
-import React, {
-  MouseEvent,
-  TouchEvent,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { bounceAnimation } from "../animations";
 import { useAppSelector } from "../../../store";
@@ -16,6 +9,7 @@ import { OLongSwipeTriggerPointType } from "../../../services/db";
 import ActionContents from "./ActionContents";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+import useEvent from "../../../helpers/useEvent";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   overflow: initial; // sticky
@@ -206,32 +200,49 @@ export default function SlidingItem({
     [activeItemIndex],
   );
 
-  const onDragStop = useCallback(
-    async (e: TouchEvent | MouseEvent) => {
-      if (!dragRef.current) return;
-      if (!draggingRef.current) return;
+  const onDragStop = useEvent(
+    useCallback(
+      async (e: TouchEvent | MouseEvent) => {
+        if (!dragRef.current) return;
+        if (!draggingRef.current) return;
 
-      switch (activeItemIndex) {
-        case 1:
-        case 2:
-          endActions[activeItemIndex - 1]?.trigger(e);
-          break;
-        case -1:
-        case -2:
-          startActions[-activeItemIndex - 1]?.trigger(e);
-      }
+        switch (activeItemIndex) {
+          case 1:
+          case 2:
+            endActions[activeItemIndex - 1]?.trigger(e);
+            break;
+          case -1:
+          case -2:
+            startActions[-activeItemIndex - 1]?.trigger(e);
+        }
 
-      dragRef.current.target.closeOpened();
-      draggingRef.current = false;
-    },
-    [endActions, activeItemIndex, startActions],
+        dragRef.current.target.closeOpened();
+        draggingRef.current = false;
+      },
+      [endActions, activeItemIndex, startActions],
+    ),
   );
 
   const onDragStart = useCallback(() => {
     draggingRef.current = true;
 
     setActiveItemIndex(0);
-  }, []);
+
+    const onStop = (e: MouseEvent | TouchEvent) => {
+      cleanup();
+      onDragStop(e);
+    };
+
+    const cleanup = () => {
+      document.removeEventListener("mouseup", onStop);
+      document.removeEventListener("touchend", onStop);
+    };
+
+    document.addEventListener("mouseup", onDragStop);
+    document.addEventListener("touchend", onDragStop);
+
+    return cleanup;
+  }, [onDragStop]);
 
   const startItems = useMemo(() => {
     if (!canSwipeStart) return;
@@ -295,8 +306,6 @@ export default function SlidingItem({
         onIonDrag={onIonDrag}
         onTouchStart={onDragStart}
         onMouseDown={onDragStart}
-        onTouchEnd={onDragStop}
-        onMouseUp={onDragStop}
         className={className}
       >
         {startItems}
@@ -309,7 +318,6 @@ export default function SlidingItem({
   }, [
     onIonDrag,
     onDragStart,
-    onDragStop,
     className,
     startItems,
     endItems,
