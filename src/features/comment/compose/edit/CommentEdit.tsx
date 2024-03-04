@@ -5,7 +5,7 @@ import { useAppDispatch } from "../../../../store";
 import { Centered, Spinner } from "../../../auth/login/LoginNav";
 import { editComment } from "../../commentSlice";
 import { DismissableProps } from "../../../shared/DynamicDismissableModal";
-import CommentContent from "../shared";
+import CommentContent from "../CommentEditorContent";
 import useAppToast from "../../../../helpers/useAppToast";
 import AppHeader from "../../../shared/AppHeader";
 

@@ -24,10 +24,8 @@ import {
   userHandleSelector,
 } from "../../../auth/authSelectors";
 import { receivedComments } from "../../commentSlice";
-import CommentContent from "../shared";
-import useTextRecovery, {
-  clearRecoveredText,
-} from "../../../../helpers/useTextRecovery";
+import CommentEditorContent from "../CommentEditorContent";
+import { clearRecoveredText } from "../../../../helpers/useTextRecovery";
 import useAppToast from "../../../../helpers/useAppToast";
 import { isLemmyError } from "../../../../helpers/lemmy";
 import AccountSwitcher from "../../../auth/AccountSwitcher";
@@ -233,8 +231,6 @@ export default function CommentReply({
     setCanDismiss(!replyContent);
   }, [replyContent, setCanDismiss]);
 
-  useTextRecovery(replyContent, setReplyContent);
-
   return (
     <>
       <AppHeader>
@@ -282,14 +278,14 @@ export default function CommentReply({
         </IonToolbar>
       </AppHeader>
 
-      <CommentContent
+      <CommentEditorContent
         ref={textareaRef}
         text={replyContent}
         setText={setReplyContent}
         onSubmit={submit}
       >
         <ItemReplyingTo item={item} />
-      </CommentContent>
+      </CommentEditorContent>
     </>
   );
 }

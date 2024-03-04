@@ -1,11 +1,9 @@
 import {
   IonIcon,
-  IonLoading,
   useIonActionSheet,
   useIonAlert,
   useIonModal,
 } from "@ionic/react";
-import useAppToast from "../../../../../helpers/useAppToast";
 import {
   ellipsisHorizontal,
   glassesOutline,
@@ -22,12 +20,8 @@ import {
   SetStateAction,
   useEffect,
   useRef,
-  useState,
 } from "react";
-import { useAppSelector } from "../../../../../store";
-import { jwtSelector, urlSelector } from "../../../../auth/authSelectors";
 import PreviewModal from "../PreviewModal";
-import { uploadImage } from "../../../../../services/lemmy";
 import { insert } from "../../../../../helpers/string";
 import textFaces from "./textFaces.txt?raw";
 import { bold, italic, quote } from "../../../../icons";
@@ -35,6 +29,7 @@ import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import { isValidUrl } from "../../../../../helpers/url";
+import useUploadImage from "../useUploadImage";
 
 const Button = styled.button`
   padding: 0;
@@ -66,9 +61,6 @@ export default function DefaultMode({
   const [presentActionSheet] = useIonActionSheet();
   const [presentAlert] = useIonAlert();
   const [presentTextFaceActionSheet] = useIonActionSheet();
-  const presentToast = useAppToast();
-  const jwt = useAppSelector(jwtSelector);
-  const instanceUrl = useAppSelector(urlSelector);
 
   const [presentPreview, onDismissPreview] = useIonModal(PreviewModal, {
     onDismiss: (data?: string, role?: string) => onDismissPreview(data, role),
@@ -76,7 +68,7 @@ export default function DefaultMode({
     text,
   });
 
-  const [imageUploading, setImageUploading] = useState(false);
+  const { uploadImage, jsx } = useUploadImage();
 
   const selectionLocation = useRef(0);
   const selectionLocationEnd = useRef(0);
@@ -245,36 +237,6 @@ export default function DefaultMode({
     });
   }
 
-  async function receivedImage(image: File) {
-    if (!jwt) return;
-
-    setImageUploading(true);
-
-    let imageUrl: string;
-
-    try {
-      imageUrl = await uploadImage(instanceUrl, jwt, image);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-
-      presentToast({
-        message: `Problem uploading image: ${message}. Please try again.`,
-        color: "danger",
-        fullscreen: true,
-      });
-
-      throw error;
-    } finally {
-      setImageUploading(false);
-    }
-
-    if (!textareaRef.current) return;
-
-    setText((text) =>
-      insert(text, selectionLocation.current, `\n![](${imageUrl})\n`),
-    );
-  }
-
   function presentTextFaces() {
     presentTextFaceActionSheet({
       cssClass: "left-align-buttons action-sheet-height-fix",
@@ -356,7 +318,7 @@ export default function DefaultMode({
 
   return (
     <>
-      <IonLoading isOpen={imageUploading} message="Uploading image..." />
+      {jsx}
 
       <markdown-toolbar for={TOOLBAR_TARGET_ID}>
         <label htmlFor="photo-upload">
@@ -371,11 +333,15 @@ export default function DefaultMode({
             type="file"
             accept="image/*"
             id="photo-upload"
-            onInput={(e) => {
+            onInput={async (e) => {
               const image = (e.target as HTMLInputElement).files?.[0];
               if (!image) return;
 
-              receivedImage(image);
+              const markdown = await uploadImage(image);
+
+              setText((text) =>
+                insert(text, selectionLocation.current, markdown),
+              );
             }}
           />
         </label>
