@@ -1,7 +1,6 @@
-import { ComponentRef, useLayoutEffect, useRef } from "react";
+import { ComponentRef, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { imageLoaded } from "./imageSlice";
-import { round } from "lodash";
 import PostMedia from "../../../media/gallery/PostMedia";
 
 export default function useMediaLoadObserver(src: string | undefined) {
@@ -12,7 +11,7 @@ export default function useMediaLoadObserver(src: string | undefined) {
   const mediaRef = useRef<ComponentRef<typeof PostMedia>>(null);
   const resizeObserverRef = useRef<ResizeObserver | undefined>();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let destroyed = false;
 
     function setupObserver() {
@@ -28,30 +27,13 @@ export default function useMediaLoadObserver(src: string | undefined) {
 
       const handleResize = (entries: ResizeObserverEntry[]) => {
         for (const entry of entries) {
-          let width, height;
-
           const target = entry.target as typeof mediaRef.current;
 
-          switch (true) {
-            case target instanceof HTMLImageElement:
-              width = target.naturalWidth;
-              height = target.naturalHeight;
-              break;
-            case target instanceof HTMLVideoElement:
-              width = target.videoWidth;
-              height = target.videoHeight;
-              break;
-            case target instanceof HTMLCanvasElement:
-              width = target.width;
-              height = target.height;
-              break;
-            default:
-              return;
-          }
+          const dimensions = getTargetDimensions(target);
+          if (!dimensions) return;
+          const { width, height } = dimensions;
 
-          if (!width || !height) return;
-
-          dispatch(imageLoaded({ src, aspectRatio: round(width / height, 6) }));
+          dispatch(imageLoaded({ src, aspectRatio: width / height }));
           destroyObserver();
           return;
         }
@@ -76,4 +58,29 @@ export default function useMediaLoadObserver(src: string | undefined) {
   }
 
   return [mediaRef, aspectRatio] as const;
+}
+
+export function getTargetDimensions(target: ComponentRef<typeof PostMedia>) {
+  let width, height;
+
+  switch (true) {
+    case target instanceof HTMLImageElement:
+      width = target.naturalWidth;
+      height = target.naturalHeight;
+      break;
+    case target instanceof HTMLVideoElement:
+      width = target.videoWidth;
+      height = target.videoHeight;
+      break;
+    case target instanceof HTMLCanvasElement:
+      width = target.width;
+      height = target.height;
+      break;
+    default:
+      return;
+  }
+
+  if (!width || !height) return;
+
+  return { width, height };
 }
