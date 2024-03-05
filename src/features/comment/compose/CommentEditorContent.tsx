@@ -1,14 +1,14 @@
-import { IonContent } from "@ionic/react";
 import { preventPhotoswipeGalleryFocusTrap } from "../../media/gallery/GalleryImg";
 import { forwardRef } from "react";
 import Editor, { EditorProps } from "../../shared/markdown/editing/Editor";
+import { MarkdownEditorIonContent } from "../../shared/markdown/editing/MarkdownToolbar";
 
 export default forwardRef<HTMLTextAreaElement, EditorProps>(
   function CommentEditorContent(props, ref) {
     return (
-      <IonContent {...preventPhotoswipeGalleryFocusTrap}>
+      <MarkdownEditorIonContent {...preventPhotoswipeGalleryFocusTrap}>
         <Editor {...props} ref={ref} />
-      </IonContent>
+      </MarkdownEditorIonContent>
     );
   },
 );
