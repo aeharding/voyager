@@ -491,6 +491,7 @@ export default function PostEditorRoot({
                   setValue={setText}
                   onSubmit={submit}
                   editing={"existingPost" in props}
+                  dismiss={dismiss}
                 />
               )}
             >

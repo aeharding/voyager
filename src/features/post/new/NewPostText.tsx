@@ -18,6 +18,7 @@ interface NewPostTextProps {
   setValue: Dispatch<SetStateAction<string>>;
   onSubmit: () => void;
   editing: boolean;
+  dismiss: () => void;
 }
 
 export default function NewPostText({
@@ -25,6 +26,7 @@ export default function NewPostText({
   setValue,
   onSubmit,
   editing,
+  dismiss,
 }: NewPostTextProps) {
   const [loading, setLoading] = useState(false);
 
@@ -79,6 +81,7 @@ export default function NewPostText({
           setText={setText}
           canRecoverText={!editing}
           onSubmit={submit}
+          onDismiss={dismiss}
         />
       </IonContent>
     </>

@@ -9,6 +9,7 @@ import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 import {
   ClipboardEvent,
   Dispatch,
+  DragEvent,
   SetStateAction,
   forwardRef,
   useEffect,
@@ -56,12 +57,13 @@ export interface EditorProps {
   setText: Dispatch<SetStateAction<string>>;
   onSubmit?: () => unknown;
   canRecoverText?: boolean;
+  onDismiss?: () => void;
 
   children?: React.ReactNode;
 }
 
 export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
-  { text, setText, children, onSubmit, canRecoverText = true },
+  { text, setText, children, onSubmit, onDismiss, canRecoverText = true },
   ref,
 ) {
   const keyboardOpen = useKeyboardOpen();
@@ -87,11 +89,23 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
 
     e.preventDefault();
 
+    onReceivedImage(image);
+  }
+
+  async function onDragCapture(event: DragEvent) {
+    const image = event.dataTransfer.files[0];
+
+    if (!image) return;
+
+    onReceivedImage(image);
+  }
+
+  async function onReceivedImage(image: File) {
     const markdown = await uploadImage(image);
 
     const position = textareaRef.current?.selectionStart ?? 0;
 
-    setText(insert(text, position, markdown));
+    setText((text) => insert(text, position, markdown));
 
     textareaRef.current?.focus();
 
@@ -100,6 +114,10 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
 
       textareaRef.current?.setSelectionRange(location, location);
     });
+  }
+
+  async function onDragOver(event: DragEvent) {
+    event.preventDefault();
   }
 
   return (
@@ -120,8 +138,13 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
             if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
               onSubmit?.();
             }
+            if (e.key === "Escape") {
+              onDismiss?.();
+            }
           }}
           onPaste={onPaste}
+          onDropCapture={onDragCapture}
+          onDragOver={onDragOver}
         />
         {children}
       </Container>

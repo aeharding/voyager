@@ -5,7 +5,7 @@ import { useAppDispatch } from "../../../../store";
 import { Centered, Spinner } from "../../../auth/login/LoginNav";
 import { editComment } from "../../commentSlice";
 import { DismissableProps } from "../../../shared/DynamicDismissableModal";
-import CommentContent from "../CommentEditorContent";
+import CommentEditorContent from "../CommentEditorContent";
 import useAppToast from "../../../../helpers/useAppToast";
 import AppHeader from "../../../shared/AppHeader";
 
@@ -87,10 +87,11 @@ export default function CommentEdit({
         </IonToolbar>
       </AppHeader>
 
-      <CommentContent
+      <CommentEditorContent
         text={replyContent}
         setText={setReplyContent}
         onSubmit={submit}
+        onDismiss={dismiss}
       />
     </>
   );

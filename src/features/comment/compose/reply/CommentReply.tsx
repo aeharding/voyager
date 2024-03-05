@@ -283,6 +283,7 @@ export default function CommentReply({
         text={replyContent}
         setText={setReplyContent}
         onSubmit={submit}
+        onDismiss={dismiss}
       >
         <ItemReplyingTo item={item} />
       </CommentEditorContent>
