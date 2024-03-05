@@ -290,17 +290,16 @@ export default css`
     }
 
     .collapse-md-margins {
-      > *:first-child {
-        &,
-        > p:first-child {
-          margin-top: 0;
-        }
+      > *:first-child,
+      > *:first-child > *:first-child,
+      > *:first-child > *:first-child > *:first-child {
+        margin-top: 0;
       }
-      > *:last-child {
-        &,
-        > p:last-child {
-          margin-bottom: 0;
-        }
+
+      > *:last-child,
+      > *:last-child > *:last-child,
+      > *:last-child > *:last-child > *:last-child {
+        margin-bottom: 0;
       }
     }
   }

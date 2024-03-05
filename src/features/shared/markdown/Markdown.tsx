@@ -41,6 +41,13 @@ const markdownCss = css`
 
     height: 2px;
   }
+
+  ol,
+  ul {
+    li > p:first-child:last-child {
+      margin: 0;
+    }
+  }
 `;
 
 export interface MarkdownProps
