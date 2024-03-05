@@ -6,9 +6,16 @@ import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
 import UsernameAutocompleteMode from "./modes/autocomplete/UsernameAutocompleteMode";
 import CommunityAutocomplete from "./modes/autocomplete/CommunityAutocompleteMode";
+import { IonContent } from "@ionic/react";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";
+
+export const MarkdownEditorIonContent = styled(IonContent)`
+  &::part(scroll) {
+    scroll-padding: 20px 0 calc(20px + ${TOOLBAR_HEIGHT});
+  }
+`;
 
 const ToolbarContainer = styled.div`
   height: 100%;

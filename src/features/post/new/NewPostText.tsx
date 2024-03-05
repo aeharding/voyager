@@ -2,7 +2,6 @@ import {
   IonBackButton,
   IonButton,
   IonButtons,
-  IonContent,
   IonText,
   IonTitle,
   IonToolbar,
@@ -12,6 +11,7 @@ import { Centered, Spinner } from "../../auth/login/LoginNav";
 import { clearRecoveredText } from "../../../helpers/useTextRecovery";
 import AppHeader from "../../shared/AppHeader";
 import Editor from "../../shared/markdown/editing/Editor";
+import { MarkdownEditorIonContent } from "../../shared/markdown/editing/MarkdownToolbar";
 
 interface NewPostTextProps {
   value: string;
@@ -75,7 +75,7 @@ export default function NewPostText({
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <MarkdownEditorIonContent>
         <Editor
           text={text}
           setText={setText}
@@ -83,7 +83,7 @@ export default function NewPostText({
           onSubmit={submit}
           onDismiss={dismiss}
         />
-      </IonContent>
+      </MarkdownEditorIonContent>
     </>
   );
 }
