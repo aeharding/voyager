@@ -19,7 +19,7 @@ import useCanModerate from "../moderation/useCanModerate";
 import ModqueueItemActions from "../moderation/ModqueueItemActions";
 import { ActionsContainer } from "../post/inFeed/compact/CompactPost";
 import { useLongPress } from "use-long-press";
-import { filterSafariCallout } from "../../helpers/longPress";
+import { filterEvents } from "../../helpers/longPress";
 import { useInModqueue } from "../../routes/pages/shared/ModqueuePage";
 import { preventOnClickNavigationBug } from "../../helpers/ionic";
 import { styled } from "@linaria/react";
@@ -147,7 +147,7 @@ function Comment({
   const bind = useLongPress(onCommentLongPress, {
     threshold: 800,
     cancelOnMovement: true,
-    filterEvents: filterSafariCallout,
+    filterEvents,
   });
 
   function renderActions() {
