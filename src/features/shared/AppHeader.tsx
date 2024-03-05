@@ -1,5 +1,5 @@
 import { ComponentProps, useCallback, useEffect, useRef } from "react";
-import { useLongPress } from "use-long-press";
+import { LongPressCallback, useLongPress } from "use-long-press";
 import store from "../../store";
 import { setUserDarkMode } from "../settings/settingsSlice";
 
@@ -16,7 +16,9 @@ function UncollapsedAppHeader(props: ComponentProps<typeof AppHeader>) {
   const headerRef = useRef<HTMLIonHeaderElement>(null);
   const cancelledTimeRef = useRef(0);
 
-  const onLongPress = useCallback(() => {
+  const onLongPress: LongPressCallback = useCallback((e) => {
+    if (e.target instanceof HTMLElement && e.target.tagName === "INPUT") return;
+
     const { usingSystemDarkMode, userDarkMode, quickSwitch } =
       store.getState().settings.appearance.dark;
 
