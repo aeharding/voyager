@@ -29,6 +29,8 @@ const StyledPostMedia = styled(PostMedia)`
 const PlaceholderContainer = styled.div`
   display: flex;
 
+  background: var(--lightroom-bg);
+
   &.not-loaded {
     align-items: center;
     justify-content: center;
