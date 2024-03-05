@@ -22,7 +22,7 @@ import { setPostRead } from "../../post/postSlice";
 import { useAppDispatch } from "../../../store";
 import GalleryMedia from "./GalleryMedia";
 import ImageMoreActions from "./ImageMoreActions";
-import ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
+import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
 
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
