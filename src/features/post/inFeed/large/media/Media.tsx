@@ -5,8 +5,10 @@ import PostMedia, {
 import { CSSProperties, useMemo } from "react";
 import { IonIcon } from "@ionic/react";
 import { imageOutline } from "ionicons/icons";
-import useMediaLoadObserver from "../useMediaLoadObserver";
-import { IMAGE_FAILED, imageFailed } from "../imageSlice";
+import useMediaLoadObserver, {
+  getTargetDimensions,
+} from "../useMediaLoadObserver";
+import { IMAGE_FAILED, imageFailed, imageLoaded } from "../imageSlice";
 import { useAppDispatch } from "../../../../../store";
 import BlurOverlay from "./BlurOverlay";
 import useLatch from "../../../../../helpers/useLatch";
@@ -96,6 +98,23 @@ export default function Media({
         autoPlay={!blur}
         onError={() => {
           if (src) dispatch(imageFailed(src));
+        }}
+        // useMediaLoadObserver fires if image is partially loaded.
+        // but sometimes a Safari quirk doesn't fire the resize handler.
+        // this catches those edge cases.
+        //
+        // TLDR Image loading should still work with this function commented out!
+        onLoad={(event) => {
+          if (!src) return;
+          if (loaded) return;
+
+          const dimensions = getTargetDimensions(
+            event.target as HTMLImageElement,
+          );
+          if (!dimensions) return;
+          const { width, height } = dimensions;
+
+          dispatch(imageLoaded({ src, aspectRatio: width / height }));
         }}
       />
 
