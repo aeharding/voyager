@@ -44,7 +44,6 @@ const LightboxMedia = styled(Media)`
 
   width: 100%;
   object-fit: contain;
-  background: var(--lightroom-bg);
 `;
 
 const StyledMarkdown = styled(Markdown)`
