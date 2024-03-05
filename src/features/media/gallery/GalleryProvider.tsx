@@ -1,3 +1,5 @@
+const MAX_IMAGE_WIDTH = 4000;
+
 import React, {
   ComponentRef,
   createContext,
@@ -20,6 +22,7 @@ import { setPostRead } from "../../post/postSlice";
 import { useAppDispatch } from "../../../store";
 import GalleryMedia from "./GalleryMedia";
 import ImageMoreActions from "./ImageMoreActions";
+import ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
 
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
@@ -91,6 +94,17 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       imgSrcRef.current = src;
       setPost(post);
 
+      if (thumbEl instanceof HTMLImageElement) {
+        const ratio = thumbEl.width / thumbEl.naturalWidth;
+
+        // If thumbnail height is constrained, photoswipe's zoom animation doesn't work
+        if (
+          animationType === "zoom" &&
+          thumbEl.height < thumbEl.naturalHeight * ratio - 1
+        )
+          animationType = "fade";
+      }
+
       const instance = new PhotoSwipeLightbox({
         dataSource: [
           {
@@ -113,7 +127,69 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         appendToEl: document.querySelector("ion-app")!,
         paddingFn: () => getSafeArea(),
         pswpModule: () => import("photoswipe"),
+        secondaryZoomLevel: (zoomLevelObject) => {
+          // Fit tall comics
+
+          const width = zoomLevelObject.itemData.width,
+            height = zoomLevelObject.itemData.height;
+
+          const deviceWidth = zoomLevelObject.panAreaSize?.x,
+            deviceHeight = zoomLevelObject.panAreaSize?.y;
+
+          if (!width || !height || !deviceWidth || !deviceHeight)
+            return zoomLevelObject.fill;
+
+          if (width / height < deviceWidth / deviceHeight)
+            return zoomLevelObject.fill;
+
+          // Below logic is default photoswipe - https://github.com/dimsemenov/PhotoSwipe/blob/1938a36f5f41821698186e648de3ad24c45a6fd0/src/js/slide/zoom-level.js#L91
+
+          let currZoomLevel = Math.min(1, zoomLevelObject.fit * 3);
+
+          if (
+            zoomLevelObject.elementSize &&
+            currZoomLevel * zoomLevelObject.elementSize.x > MAX_IMAGE_WIDTH
+          ) {
+            currZoomLevel = MAX_IMAGE_WIDTH / zoomLevelObject.elementSize.x;
+          }
+
+          return currZoomLevel;
+        },
       });
+
+      let zoomLevel: ZoomLevel;
+      let userToggledActions = false;
+      let currZoomLevel = 0;
+      instance.on("zoomLevelsUpdate", (e) => {
+        zoomLevel = e.zoomLevels;
+        userToggledActions = false;
+        if (!currZoomLevel) currZoomLevel = e.zoomLevels.min;
+      });
+
+      instance.on("tapAction", () => {
+        if (currZoomLevel !== zoomLevel.min) userToggledActions = true;
+      });
+
+      instance.on("zoomPanUpdate", (e) => {
+        currZoomLevel = e.slide.currZoomLevel;
+
+        onZoomChange();
+      });
+
+      instance.on("beforeZoomTo", (e) => {
+        currZoomLevel = e.destZoomLevel;
+
+        onZoomChange();
+      });
+
+      function onZoomChange() {
+        if (currZoomLevel <= zoomLevel.min) {
+          instance.gestures.pswp.element?.classList.add("pswp--ui-visible");
+          userToggledActions = false;
+        } else if (!userToggledActions) {
+          instance.gestures.pswp.element?.classList.remove("pswp--ui-visible");
+        }
+      }
 
       instance.addFilter("thumbEl", () => {
         return thumbEl;
