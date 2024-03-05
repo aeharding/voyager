@@ -158,17 +158,21 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       });
 
       let zoomLevel: ZoomLevel;
-      let userToggledActions = false;
       let currZoomLevel = 0;
 
       instance.on("zoomLevelsUpdate", (e) => {
         zoomLevel = e.zoomLevels;
-        userToggledActions = false;
         if (!currZoomLevel) currZoomLevel = e.zoomLevels.min;
       });
 
       instance.on("tapAction", () => {
-        if (currZoomLevel !== zoomLevel.min) userToggledActions = true;
+        if (currZoomLevel !== zoomLevel.min) {
+          instance.zoomTo(zoomLevel.min, undefined, 300);
+          currZoomLevel = zoomLevel.min;
+
+          // queueMicrotask, otherwise will be overwritten by internal photoswipe ui toggle
+          queueMicrotask(() => onZoomChange());
+        }
       });
 
       instance.on("zoomPanUpdate", (e) => {
@@ -186,8 +190,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       function onZoomChange() {
         if (currZoomLevel <= zoomLevel.min) {
           instance.gestures.pswp.element?.classList.add("pswp--ui-visible");
-          userToggledActions = false;
-        } else if (!userToggledActions) {
+        } else {
           instance.gestures.pswp.element?.classList.remove("pswp--ui-visible");
         }
       }
