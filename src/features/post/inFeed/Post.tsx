@@ -13,7 +13,7 @@ import AnimateHeight from "react-animate-height";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 import { useLongPress } from "use-long-press";
 import usePostActions from "../shared/usePostActions";
-import { filterSafariCallout } from "../../../helpers/longPress";
+import { filterEvents } from "../../../helpers/longPress";
 import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 
 const CustomIonItem = styled(IonItem)`
@@ -86,7 +86,7 @@ function Post(props: PostProps) {
   const bind = useLongPress(onPostLongPress, {
     threshold: 800,
     cancelOnMovement: true,
-    filterEvents: filterSafariCallout,
+    filterEvents,
   });
 
   const postBody = (() => {
