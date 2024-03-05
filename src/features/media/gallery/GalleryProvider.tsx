@@ -160,6 +160,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       let zoomLevel: ZoomLevel;
       let userToggledActions = false;
       let currZoomLevel = 0;
+
       instance.on("zoomLevelsUpdate", (e) => {
         zoomLevel = e.zoomLevels;
         userToggledActions = false;
