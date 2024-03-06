@@ -38,6 +38,10 @@ const Button = styled.button`
   appearance: none;
   background: none;
   border: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export interface SharedModeProps {
