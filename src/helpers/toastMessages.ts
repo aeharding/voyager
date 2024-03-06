@@ -199,3 +199,11 @@ export const migrateParseError: AppToastOptions = {
     "Problem parsing link. Please make sure the link you entered is correct.",
   color: "warning",
 };
+
+export const replyStubError: AppToastOptions = {
+  message: "You can't reply to a removed comment",
+  color: "warning",
+  position: "top",
+  centerText: true,
+  icon: close,
+};
