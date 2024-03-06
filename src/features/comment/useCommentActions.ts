@@ -44,6 +44,7 @@ import useCommentModActions from "../moderation/useCommentModActions";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { isDownvoteEnabledSelector } from "../auth/siteSlice";
 import { compact } from "lodash";
+import { isStubComment } from "./CommentHeader";
 
 export interface CommentActionsProps {
   comment: CommentView | PersonMentionView | CommentReplyView;
@@ -97,11 +98,12 @@ export default function useCommentActions({
 
     const downvoteAllowed = isDownvoteEnabledSelector(state);
     const isMyComment = getRemoteHandle(commentView.creator) === myHandle;
-    const commentExists = !comment.deleted && !comment.removed;
 
     const post = state.post.postById[commentView.post.id];
 
     const canModerate = getCanModerate(commentView.community);
+
+    const stub = isStubComment(comment, canModerate);
 
     presentActionSheet({
       cssClass: "left-align-buttons",
@@ -213,7 +215,7 @@ export default function useCommentActions({
               },
             }
           : undefined,
-        {
+        !stub && {
           text: "Reply",
           icon: arrowUndoOutline,
           handler: () => {
@@ -230,15 +232,14 @@ export default function useCommentActions({
             })();
           },
         },
-        commentExists && comment.content
-          ? {
-              text: "Select Text",
-              icon: textOutline,
-              handler: () => {
-                presentSelectText(comment.content);
-              },
-            }
-          : undefined,
+        !stub &&
+          comment.content && {
+            text: "Select Text",
+            icon: textOutline,
+            handler: () => {
+              presentSelectText(comment.content);
+            },
+          },
         {
           text: getHandle(commentView.creator),
           icon: personOutline,
