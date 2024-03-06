@@ -55,9 +55,16 @@ export default function useAppNavigation() {
   );
 
   const navigateToUser = useCallback(
-    (user: PersonView | Person) => {
+    (user: PersonView | Person | string) => {
+      const getPath = (handle: string) => `/u/${handle}`;
+
+      if (typeof user === "string") {
+        pushRouteIfNeeded(buildGeneralBrowseLink(getPath(user)));
+        return;
+      }
+
       const person = "person" in user ? user.person : user;
-      pushRouteIfNeeded(buildGeneralBrowseLink(`/u/${getHandle(person)}`));
+      pushRouteIfNeeded(buildGeneralBrowseLink(getPath(getHandle(person))));
     },
     [buildGeneralBrowseLink, pushRouteIfNeeded],
   );

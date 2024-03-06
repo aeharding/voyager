@@ -69,6 +69,31 @@ export default function useLemmyUrlHandler() {
     [buildGeneralBrowseLink, connectedInstance, router],
   );
 
+  const handleUserClickIfNeeded = useCallback(
+    (url: URL, e?: MouseEvent) => {
+      const matchedUserHandle = matchLemmyUser(url.pathname);
+
+      if (!matchedUserHandle) return;
+      const [userName, domain] = matchedUserHandle;
+
+      e?.preventDefault();
+      e?.stopPropagation();
+
+      if (
+        (!domain && url.hostname === connectedInstance) ||
+        (domain === url.hostname && domain === connectedInstance)
+      ) {
+        navigateToUser(userName);
+        return true;
+      }
+
+      navigateToUser(`${userName}@${domain ?? url.hostname}`);
+
+      return true;
+    },
+    [connectedInstance, navigateToUser],
+  );
+
   const handleObjectIfNeeded = useCallback(
     async (url: URL, e?: MouseEvent): Promise<boolean> => {
       const cachedResolvedObject = objectByUrl[url.toString()];
@@ -157,6 +182,7 @@ export default function useLemmyUrlHandler() {
       if (!knownInstances.includes(url.hostname)) return false; // If non-lemmy domain, return
 
       if (handleCommunityClickIfNeeded(url, e)) return true;
+      if (handleUserClickIfNeeded(url, e)) return true;
       if (!isPotentialObjectPath(url.pathname)) return false;
 
       return handleObjectIfNeeded(url, e);
@@ -164,6 +190,7 @@ export default function useLemmyUrlHandler() {
     [
       getUrl,
       handleCommunityClickIfNeeded,
+      handleUserClickIfNeeded,
       handleObjectIfNeeded,
       knownInstances,
     ],
