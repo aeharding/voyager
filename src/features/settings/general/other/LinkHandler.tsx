@@ -14,7 +14,7 @@ export default function LinkHandler() {
 
   return (
     <SettingSelector
-      title="Open links in"
+      title="Open Links In"
       selected={linkHandler}
       setSelected={setLinkHandler}
       options={OLinkHandlerType}

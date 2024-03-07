@@ -14,6 +14,9 @@ export default function useNativeBrowser() {
   const alwaysUseReaderMode = useAppSelector(
     (state) => state.settings.general.safari.alwaysUseReaderMode,
   );
+  const preferNativeApps = useAppSelector(
+    (state) => state.settings.general.preferNativeApps,
+  );
 
   return useCallback(
     async (href: string) => {
@@ -36,7 +39,11 @@ export default function useNativeBrowser() {
         }
       })();
 
-      const { completed } = await LaunchNative.attempt({ url: href });
+      let completed = false;
+
+      if (preferNativeApps) {
+        ({ completed } = await LaunchNative.attempt({ url: href }));
+      }
 
       if (!completed) {
         Browser.open({
@@ -47,6 +54,12 @@ export default function useNativeBrowser() {
       }
       notifyStatusTapThatBrowserWasOpened();
     },
-    [isDark, usingSystemDarkMode, pureBlack, alwaysUseReaderMode],
+    [
+      isDark,
+      usingSystemDarkMode,
+      pureBlack,
+      alwaysUseReaderMode,
+      preferNativeApps,
+    ],
   );
 }
