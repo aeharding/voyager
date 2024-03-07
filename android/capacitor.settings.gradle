@@ -2,6 +2,9 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/.pnpm/@capacitor+android@5.7.0_@capacitor+core@5.7.0/node_modules/@capacitor/android/capacitor')
 
+include ':capacitor-launch-native'
+project(':capacitor-launch-native').projectDir = new File('../../capacitor-launch-native/android')
+
 include ':capacitor-community-app-icon'
 project(':capacitor-community-app-icon').projectDir = new File('../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.7.0/node_modules/@capacitor-community/app-icon/android')
 
