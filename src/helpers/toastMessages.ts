@@ -223,7 +223,6 @@ export const copyClipboardSuccess: AppToastOptions = {
   fullscreen: true,
   centerText: true,
   icon: checkmark,
-  dismissIfNeeded: true,
 };
 
 export const copyClipboardFailed: AppToastOptions = {
