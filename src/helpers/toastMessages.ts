@@ -215,3 +215,20 @@ export const randomCommunityFailed: AppToastOptions = {
   centerText: true,
   icon: close,
 };
+
+export const copyClipboardSuccess: AppToastOptions = {
+  message: "Text copied",
+  position: "bottom",
+  color: "success",
+  fullscreen: true,
+  centerText: true,
+  icon: checkmark,
+};
+
+export const copyClipboardFailed: AppToastOptions = {
+  message: "Failed to copy text",
+  color: "warning",
+  position: "bottom",
+  centerText: true,
+  icon: close,
+};

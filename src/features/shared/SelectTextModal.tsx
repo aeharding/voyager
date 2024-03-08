@@ -5,6 +5,7 @@ import {
   IonButton,
   IonContent,
   IonModal,
+  IonIcon,
 } from "@ionic/react";
 import { Centered } from "../auth/login/LoginNav";
 import TextareaAutosize from "react-textarea-autosize";
@@ -13,6 +14,12 @@ import { isTouchDevice } from "../../helpers/device";
 import { preventModalSwipeOnTextSelection } from "../../helpers/ionic";
 import { styled } from "@linaria/react";
 import AppHeader from "./AppHeader";
+import { copyOutline } from "ionicons/icons";
+import useAppToast from "../../helpers/useAppToast";
+import {
+  copyClipboardFailed,
+  copyClipboardSuccess,
+} from "../../helpers/toastMessages";
 
 const Container = styled.div`
   min-height: 100%;
@@ -63,6 +70,18 @@ export default function SelectTextModal({
 }: SelectTextProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const firstSelectRef = useRef(true);
+  const presentToast = useAppToast();
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      presentToast(copyClipboardFailed);
+      throw error;
+    }
+
+    presentToast(copyClipboardSuccess);
+  }
 
   return (
     <IonModal
@@ -77,6 +96,11 @@ export default function SelectTextModal({
     >
       <AppHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonButton onClick={copy}>
+              <IonIcon icon={copyOutline} />
+            </IonButton>
+          </IonButtons>
           <IonTitle>
             <Centered>Select Text</Centered>
           </IonTitle>
