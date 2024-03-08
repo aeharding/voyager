@@ -5,7 +5,6 @@ import MarkdownImg from "./MarkdownImg";
 import InAppExternalLink from "../InAppExternalLink";
 import { useAppSelector } from "../../../store";
 import { css, cx } from "@linaria/core";
-import superSub from "remark-supersub";
 import Table from "./components/Table";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import Summary from "./components/spoiler/Summary";
@@ -98,7 +97,6 @@ export default function Markdown({
       }}
       remarkPlugins={[
         [customRemarkGfm, { connectedInstance }],
-        superSub,
         spoiler,
         spoilerRehype,
       ]}

@@ -14,14 +14,14 @@ import { getSite } from "../auth/siteSlice";
 interface CommunityState {
   communityByHandle: Record<string, CommunityView>;
   modsByHandle: Record<string, CommunityModeratorView[]>;
-  trendingCommunities: CommunityView[];
+  trendingCommunities: CommunityView[] | undefined;
   favorites: string[];
 }
 
 const initialState: CommunityState = {
   communityByHandle: {},
   modsByHandle: {},
-  trendingCommunities: [],
+  trendingCommunities: undefined,
   favorites: [],
 };
 

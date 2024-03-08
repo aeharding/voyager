@@ -16,7 +16,7 @@ export default function TrendingCommunities() {
   );
 
   useEffect(() => {
-    if (!trendingCommunities.length) dispatch(getTrendingCommunities());
+    if (trendingCommunities === undefined) dispatch(getTrendingCommunities());
   }, [dispatch, trendingCommunities]);
 
   return (
@@ -30,7 +30,7 @@ export default function TrendingCommunities() {
           Trending communities
         </IonLabel>
       </IonListHeader>
-      {trendingCommunities.map((community) => (
+      {trendingCommunities?.map((community) => (
         <InsetIonItem
           routerLink={buildGeneralBrowseLink(
             `/c/${getHandle(community.community)}`,
