@@ -1,14 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  TransitionOptions,
-  createAnimation,
-  iosTransitionAnimation,
-  mdTransitionAnimation,
-  useIonViewDidEnter,
-} from "@ionic/react";
+import { useIonViewDidEnter } from "@ionic/react";
 import { isInstalled } from "../../../helpers/device";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { styled } from "@linaria/react";
+import { pageTransitionAnimateBackOnly } from "../../../helpers/ionic";
 
 const LoadingOverlay = styled.div`
   background: var(--ion-background-color);
@@ -69,15 +64,7 @@ export default function InitialPageRedirectBootstrapper({
         "forward",
         "push",
         undefined,
-        (baseEl: HTMLElement, opts: TransitionOptions) => {
-          // Do not animate into view
-          if (opts.direction === "forward") return createAnimation();
-
-          // Later, use normal animation for swipe back
-          return opts.mode === "ios"
-            ? iosTransitionAnimation(baseEl, opts)
-            : mdTransitionAnimation(baseEl, opts);
-        },
+        pageTransitionAnimateBackOnly,
       );
 
       setBootstrapped(true);

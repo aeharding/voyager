@@ -7,9 +7,14 @@ export default function RandomCommunity() {
   const trendingCommunities = useAppSelector(
     (state) => state.community.trendingCommunities,
   );
+  const communitiesCount = useAppSelector(
+    (state) => state.site.response?.site_view.counts.communities,
+  );
 
   // Prevent shift of content
   if (trendingCommunities === undefined) return;
+
+  if (!communitiesCount) return;
 
   return (
     <IonList inset color="primary">

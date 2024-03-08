@@ -5,18 +5,16 @@ import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { orderBy, sample } from "lodash";
 import { getHandle } from "../../helpers/lemmy";
-import {
-  TransitionOptions,
-  createAnimation,
-  iosTransitionAnimation,
-  mdTransitionAnimation,
-} from "@ionic/core";
+import { randomCommunityFailed } from "../../helpers/toastMessages";
+import useAppToast from "../../helpers/useAppToast";
+import { pageTransitionAnimateBackOnly } from "../../helpers/ionic";
 
 const RANDOM_CHUNK = 20;
 
 export default function useGetRandomCommunity() {
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const presentToast = useAppToast();
 
   return useCallback(async () => {
     const totalCommunitiesCount =
@@ -25,11 +23,21 @@ export default function useGetRandomCommunity() {
 
     const client = clientSelector(store.getState());
 
-    const response = await client.listCommunities({
-      type_: "All",
-      limit: RANDOM_CHUNK,
-      page: Math.floor((Math.random() * totalCommunitiesCount) / RANDOM_CHUNK),
-    });
+    let response;
+
+    try {
+      response = await client.listCommunities({
+        type_: "All",
+        limit: RANDOM_CHUNK,
+        page: Math.floor(
+          (Math.random() * totalCommunitiesCount) / RANDOM_CHUNK,
+        ),
+      });
+    } catch (error) {
+      presentToast(randomCommunityFailed);
+
+      throw error;
+    }
 
     const randomCommunitiesByPosts = orderBy(
       response.communities,
@@ -43,24 +51,19 @@ export default function useGetRandomCommunity() {
       sample(eligibleRandomCommunities)?.community ??
       randomCommunitiesByPosts[0]?.community;
 
-    if (!chosenRandomCommunity) return;
+    if (!chosenRandomCommunity) {
+      presentToast(randomCommunityFailed);
+      return;
+    }
 
     router.push(
       buildGeneralBrowseLink(`/c/${getHandle(chosenRandomCommunity)}?random=1`),
       "forward",
       "replace",
       undefined,
-      (baseEl: HTMLElement, opts: TransitionOptions) => {
-        // Do not animate into view
-        if (opts.direction === "forward") return createAnimation();
-
-        // Later, use normal animation for swipe back
-        return opts.mode === "ios"
-          ? iosTransitionAnimation(baseEl, opts)
-          : mdTransitionAnimation(baseEl, opts);
-      },
+      pageTransitionAnimateBackOnly,
     );
 
     return true;
-  }, [buildGeneralBrowseLink, router]);
+  }, [buildGeneralBrowseLink, router, presentToast]);
 }
