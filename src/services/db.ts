@@ -285,6 +285,7 @@ export type SettingValueTypes = {
   disable_right_swipes: boolean;
   enable_haptic_feedback: boolean;
   link_handler: LinkHandlerType;
+  prefer_native_apps: boolean;
   show_jump_button: boolean;
   jump_button_position: JumpButtonPositionType;
   tap_to_collapse: TapToCollapseType;

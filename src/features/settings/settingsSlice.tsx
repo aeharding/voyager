@@ -123,6 +123,7 @@ interface SettingsState {
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
+    preferNativeApps: boolean;
     defaultFeed: DefaultFeedType | undefined;
     noSubscribedInFeed: boolean;
   };
@@ -214,6 +215,7 @@ export const initialState: SettingsState = {
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
+    preferNativeApps: true,
     defaultFeed: undefined,
     noSubscribedInFeed: false,
   },
@@ -487,6 +489,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("link_handler", action.payload);
     },
+    setPreferNativeApps(state, action: PayloadAction<boolean>) {
+      state.general.preferNativeApps = action.payload;
+
+      db.setSetting("prefer_native_apps", action.payload);
+    },
 
     resetSettings: () => ({
       ...initialState,
@@ -646,6 +653,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "enable_haptic_feedback",
       );
       const link_handler = await db.getSetting("link_handler");
+      const prefer_native_apps = await db.getSetting("prefer_native_apps");
       const filtered_keywords = await db.getSetting("filtered_keywords");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
       const show_comment_images = await db.getSetting("show_comment_images");
@@ -777,6 +785,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               initialState.general.safari.alwaysUseReaderMode,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
+          preferNativeApps:
+            prefer_native_apps ?? initialState.general.preferNativeApps,
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
           defaultFeed: initialState.general.defaultFeed,
@@ -847,6 +857,7 @@ export const {
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,
+  setPreferNativeApps,
   setPureBlack,
   setDefaultFeed,
   setNoSubscribedInFeed,
