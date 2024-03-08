@@ -131,7 +131,7 @@
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "remark-supersub": "^1.0.0",
+    "remark-supersub-lemmy": "^1.0.0",
     "terser": "^5.28.1",
     "typescript": "^5.3.3",
     "ua-parser-js": "^1.0.37",
