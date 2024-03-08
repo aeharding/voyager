@@ -2,7 +2,14 @@ import { IonToggle, useIonAlert } from "@ionic/react";
 import { InsetIonItem } from "../../../../routes/pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setPreferNativeApps } from "../../settingsSlice";
-import { isNative } from "../../../../helpers/device";
+import { isAndroid, isNative, ua } from "../../../../helpers/device";
+
+// On Android 9, opening the in-app browser to youtube just opens the youtube app, regardless.
+const platformNotSupported =
+  !isNative() ||
+  (isAndroid() &&
+    ua.getOS().name === "Android" &&
+    +(ua.getOS().version ?? 13) < 10);
 
 export default function OpenNativeApps() {
   const dispatch = useAppDispatch();
@@ -14,14 +21,14 @@ export default function OpenNativeApps() {
   );
   const [presentAlert] = useIonAlert();
 
-  const notAvailable = linkHandler === "default-browser";
+  const configurationNotSupported = linkHandler === "default-browser";
 
-  if (!isNative()) return;
+  if (platformNotSupported) return;
 
   return (
     <InsetIonItem
       onClick={() => {
-        if (!notAvailable) return;
+        if (!configurationNotSupported) return;
 
         presentAlert(
           'Currently you can only turn off "Prefer Opening Native Apps" if you use the in-app browser.\n\nTo do this, change the "Open Links In" setting to "In App"',
@@ -29,9 +36,9 @@ export default function OpenNativeApps() {
       }}
     >
       <IonToggle
-        checked={notAvailable ? true : preferNativeApps}
+        checked={configurationNotSupported ? true : preferNativeApps}
         onIonChange={(e) => {
-          if (notAvailable) {
+          if (configurationNotSupported) {
             e.target.checked = true;
             return;
           }
