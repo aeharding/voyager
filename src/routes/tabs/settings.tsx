@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-key */
 
-import { Redirect } from "react-router";
 import Route from "../common/Route";
 import SettingsPage from "../pages/settings/SettingsPage";
 import InstallAppPage from "../pages/settings/InstallAppPage";
@@ -21,9 +20,6 @@ import AboutThanksPage from "../pages/settings/about/AboutThanksPage";
 import RedditMigrateSubsListPage from "../pages/settings/RedditMigrateSubsListPage";
 
 export default [
-  <Route exact path="/settings/:actor">
-    <Redirect to="/settings" push={false} />
-  </Route>,
   <Route exact path="/settings">
     <SettingsPage />
   </Route>,
@@ -69,8 +65,7 @@ export default [
   <Route exact path="/settings/reddit-migrate/:link/:search">
     <SearchCommunitiesPage />
   </Route>,
-  // This annoyingly cannot be /settings/about, because otherwise it will also match /settings/:actor
-  <Route exact path="/settings/about/app">
+  <Route exact path="/settings/about">
     <AboutPage />
   </Route>,
   <Route exact path="/settings/about/thanks">

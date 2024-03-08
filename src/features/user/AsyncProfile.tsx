@@ -21,7 +21,7 @@ export const PageContentIonSpinner = styled(IonSpinner)`
   transform: translate(-50%, -50%);
 `;
 
-const FailedMessage = styled.div`
+export const FailedMessage = styled.div`
   margin-top: 25vh;
   text-align: center;
   color: var(--ion-color-medium);

@@ -1,12 +1,12 @@
 import { IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
 import AppContent from "../../../features/shared/AppContent";
 import { createRef, useState } from "react";
-import TrendingCommunities from "../../../features/search/TrendingCommunities";
 import SearchOptions from "../../../features/search/SearchOptions";
 import useLemmyUrlHandler from "../../../features/shared/useLemmyUrlHandler";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { css } from "@linaria/core";
 import AppHeader from "../../../features/shared/AppHeader";
+import EmptySearch from "../../../features/search/EmptySearch";
 
 const searchBarRef = createRef<HTMLIonSearchbarElement>();
 
@@ -56,7 +56,7 @@ export default function SearchPage() {
         </IonToolbar>
       </AppHeader>
       <AppContent scrollY={!search}>
-        {!search ? <TrendingCommunities /> : <SearchOptions search={search} />}
+        {!search ? <EmptySearch /> : <SearchOptions search={search} />}
       </AppContent>
     </IonPage>
   );

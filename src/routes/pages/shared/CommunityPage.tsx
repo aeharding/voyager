@@ -37,6 +37,7 @@ import { PageTypeContext } from "../../../features/feed/PageTypeContext";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import AppHeader from "../../../features/shared/AppHeader";
+import useGetRandomCommunity from "../../../features/community/useGetRandomCommunity";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -131,6 +132,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
   const [_searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useOptimizedIonRouter();
+  const getRandomCommunity = useGetRandomCommunity();
 
   const searchOpen = searchQuery || _searchOpen;
 
@@ -167,6 +169,17 @@ const CommunityPageContent = memo(function CommunityPageContent({
     [client, community, sort],
   );
 
+  const onPull = async () => {
+    const search = Object.fromEntries([
+      ...new URLSearchParams(router.getRouteInfo()?.search),
+    ]);
+    if (!search.random) return;
+
+    const foundRandom = await getRandomCommunity();
+
+    if (foundRandom) return false;
+  };
+
   const feedSearchContextValue = useMemo(() => ({ setScrolledPastSearch }), []);
 
   const header = useMemo(
@@ -202,6 +215,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
           sortDuration={getSortDuration(sort)}
           header={header}
           filterHiddenPosts={!showHiddenInCommunities}
+          onPull={onPull}
         />
       </PageTypeContext.Provider>
     </FeedSearchContext.Provider>

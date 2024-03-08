@@ -207,3 +207,11 @@ export const replyStubError: AppToastOptions = {
   centerText: true,
   icon: close,
 };
+
+export const randomCommunityFailed: AppToastOptions = {
+  message: "Failed to find random community",
+  color: "warning",
+  position: "top",
+  centerText: true,
+  icon: close,
+};
