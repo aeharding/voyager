@@ -131,6 +131,8 @@ export default function DefaultMode({
   }
 
   function presentLinkInput() {
+    textareaRef.current?.focus(); // prevent keyboard flicker
+
     const selectedText = text.slice(
       selectionLocation.current,
       selectionLocationEnd.current,
