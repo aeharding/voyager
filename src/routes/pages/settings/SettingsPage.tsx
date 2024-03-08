@@ -207,7 +207,7 @@ export default function SettingsPage() {
         </IonList>
 
         <IonList inset>
-          <InsetIonItem routerLink="/settings/about/app">
+          <InsetIonItem routerLink="/settings/about">
             <IconBg color="#0e7afe" size="1.15">
               <IonIcon icon={at} />
             </IconBg>
