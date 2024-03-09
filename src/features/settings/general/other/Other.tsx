@@ -6,6 +6,7 @@ import LinkHandler from "./LinkHandler";
 import DefaultFeed from "./DefaultFeed";
 import NoSubscribedInFeed from "./NoSubscribedInFeed";
 import OpenNativeApps from "./OpenNativeApps";
+import ClearCache from "./ClearCache";
 
 export default function Other() {
   return (
@@ -20,6 +21,7 @@ export default function Other() {
         <ProfileTabLabel />
         <Haptics />
         <NoSubscribedInFeed />
+        <ClearCache />
       </IonList>
     </>
   );

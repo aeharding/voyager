@@ -11,6 +11,8 @@ PODS:
     - Capacitor
   - CapacitorBrowser (5.2.0):
     - Capacitor
+  - CapacitorClearCache (0.0.1):
+    - Capacitor
   - CapacitorCommunityAppIcon (4.1.1):
     - Capacitor
   - CapacitorCordova (5.7.0)
@@ -46,6 +48,7 @@ DEPENDENCIES:
   - "CapacitorApplicationContext (from `../../node_modules/.pnpm/capacitor-application-context@0.0.1_@capacitor+core@5.7.0/node_modules/capacitor-application-context`)"
   - "CapacitorBiometricLock (from `../../node_modules/.pnpm/capacitor-biometric-lock@0.1.1_@capacitor+core@5.7.0/node_modules/capacitor-biometric-lock`)"
   - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@5.2.0_patch_hash=m4ddgv4ucvx4w6engzasoi47iy_@capacitor+core@5.7.0/node_modules/@capacitor/browser`)"
+  - "CapacitorClearCache (from `../../node_modules/.pnpm/capacitor-clear-cache@0.0.1_@capacitor+core@5.7.0/node_modules/capacitor-clear-cache`)"
   - "CapacitorCommunityAppIcon (from `../../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.7.0/node_modules/@capacitor-community/app-icon`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@5.7.0_@capacitor+core@5.7.0/node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@5.2.1_@capacitor+core@5.7.0/node_modules/@capacitor/filesystem`)"
@@ -76,6 +79,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/capacitor-biometric-lock@0.1.1_@capacitor+core@5.7.0/node_modules/capacitor-biometric-lock"
   CapacitorBrowser:
     :path: "../../node_modules/.pnpm/@capacitor+browser@5.2.0_patch_hash=m4ddgv4ucvx4w6engzasoi47iy_@capacitor+core@5.7.0/node_modules/@capacitor/browser"
+  CapacitorClearCache:
+    :path: "../../node_modules/.pnpm/capacitor-clear-cache@0.0.1_@capacitor+core@5.7.0/node_modules/capacitor-clear-cache"
   CapacitorCommunityAppIcon:
     :path: "../../node_modules/.pnpm/@capacitor-community+app-icon@4.1.1_@capacitor+core@5.7.0/node_modules/@capacitor-community/app-icon"
   CapacitorCordova:
@@ -108,6 +113,7 @@ SPEC CHECKSUMS:
   CapacitorApplicationContext: 487dced4aebde33c94a3bf8fd0e519ab59a17eb8
   CapacitorBiometricLock: 34c43a815905b5b4a83b0edf2454618e107adef3
   CapacitorBrowser: a6deae9e5bf87f62b62a753cff7992c5def9e771
+  CapacitorClearCache: eea16556316968f5b61bad605454440a95e746ba
   CapacitorCommunityAppIcon: f984c79ffec7b26a0448ad588a221f0531763202
   CapacitorCordova: e825fce1a2e14e4b5730641c7e098dccf74397b7
   CapacitorFilesystem: 9f3e3c7fea2fff12f46dd5b07a2914f2103e4cfc
@@ -122,6 +128,6 @@ SPEC CHECKSUMS:
   CapacitorTips: 045758a9354574aa4807265e1bccbca0919ad861
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: 8ba9746ee5a9f915a797c3de3b6bae36bd160ab7
+PODFILE CHECKSUM: ece4b0af3a53cc0c831201881b55120e087b79b2
 
 COCOAPODS: 1.12.1
