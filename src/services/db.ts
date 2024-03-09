@@ -34,10 +34,12 @@ export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
 
 export const OCommentsThemeType = {
   Rainbow: "rainbow",
+  Pastel: "pastel",
   Mauve: "mauve",
-  Cascades: "cascades",
-  Celadon: "celadon",
-  Graphite: "graphite",
+  Vintage: "vintage",
+  Electric: "electric",
+  Citrus: "citrus",
+  Blush: "blush",
 } as const;
 
 export type CommentsThemeType =
