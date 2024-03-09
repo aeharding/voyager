@@ -39,19 +39,16 @@ export default function useNativeBrowser() {
         }
       })();
 
-      let completed = false;
-
       if (preferNativeApps) {
-        ({ completed } = await LaunchNative.attempt({ url: href }));
+        const { completed } = await LaunchNative.attempt({ url: href });
+        if (completed) return;
       }
 
-      if (!completed) {
-        Browser.open({
-          url: href,
-          toolbarColor,
-          entersReaderIfAvailable: alwaysUseReaderMode,
-        });
-      }
+      Browser.open({
+        url: href,
+        toolbarColor,
+        entersReaderIfAvailable: alwaysUseReaderMode,
+      });
       notifyStatusTapThatBrowserWasOpened();
     },
     [
