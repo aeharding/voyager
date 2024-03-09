@@ -123,7 +123,7 @@ export default function Message({ message }: MessageProps) {
     presentReport(message);
   }, [message, presentReport]);
 
-  const bind = useLongPress(onMessageLongPress, { cancelOnMovement: true });
+  const bind = useLongPress(onMessageLongPress, { cancelOnMovement: 15 });
 
   useEffect(() => {
     if (

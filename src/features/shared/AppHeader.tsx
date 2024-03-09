@@ -33,7 +33,7 @@ function UncollapsedAppHeader(props: ComponentProps<typeof AppHeader>) {
   }, []);
 
   const bind = useLongPress(onLongPress, {
-    cancelOnMovement: true,
+    cancelOnMovement: 15,
     onCancel,
   });
 

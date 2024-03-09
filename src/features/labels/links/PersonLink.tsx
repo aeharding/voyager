@@ -91,7 +91,7 @@ export default function PersonLink({
   }, [presentActionSheet, presentToast, dispatch, person]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
-    cancelOnMovement: true,
+    cancelOnMovement: 15,
     onStart,
   });
 

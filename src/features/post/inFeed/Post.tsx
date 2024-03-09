@@ -85,7 +85,7 @@ function Post(props: PostProps) {
 
   const bind = useLongPress(onPostLongPress, {
     threshold: 800,
-    cancelOnMovement: true,
+    cancelOnMovement: 15,
     filterEvents,
   });
 
