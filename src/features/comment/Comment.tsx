@@ -15,7 +15,7 @@ import { filterEvents } from "../../helpers/longPress";
 import { preventOnClickNavigationBug } from "../../helpers/ionic";
 import { styled } from "@linaria/react";
 import { PositionedContainer } from "./elements/PositionedContainer";
-import { Container } from "./elements/Container";
+import CommentContainer from "./elements/CommentContainer";
 import CommentHeader, { isStubComment } from "./CommentHeader";
 
 export const CustomIonItem = styled(IonItem)`
@@ -128,7 +128,7 @@ function Comment({
           <PositionedContainer
             depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
           >
-            <Container depth={absoluteDepth ?? depth ?? 0}>
+            <CommentContainer depth={absoluteDepth ?? depth ?? 0}>
               <ModeratableItemBannerOutlet />
               <div>
                 <CommentHeader
@@ -164,7 +164,7 @@ function Comment({
                   ) : undefined}
                 </AnimateHeight>
               </div>
-            </Container>
+            </CommentContainer>
             <Save type="comment" id={commentView.comment.id} />
           </PositionedContainer>
         </ModeratableItem>
