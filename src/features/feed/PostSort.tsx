@@ -116,8 +116,8 @@ export default function PostSort({ sort, setSort }: PostSortProps) {
   });
 
   return (
-    <IonButton fill="default" onClick={() => sort && present(sort)}>
-      <IonIcon icon={sort ? getSortIcon(sort) : " "} color="primary" />
+    <IonButton onClick={() => sort && present(sort)}>
+      <IonIcon icon={sort ? getSortIcon(sort) : " "} slot="icon-only" />
     </IonButton>
   );
 }

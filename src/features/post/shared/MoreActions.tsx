@@ -5,6 +5,7 @@ import { IonButton, IonIcon } from "@ionic/react";
 import usePostActions from "./usePostActions";
 import { ellipsisHorizontal } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
+import HeaderEllipsisIcon from "../../shared/HeaderEllipsisIcon";
 
 interface MoreActionsProps {
   post: PostView;
@@ -25,7 +26,11 @@ export default function MoreActions({ post, className }: MoreActionsProps) {
         }}
         className={className}
       >
-        <IonIcon icon={ellipsisHorizontal} />
+        {inFeed ? (
+          <IonIcon icon={ellipsisHorizontal} />
+        ) : (
+          <HeaderEllipsisIcon slot="icon-only" />
+        )}
       </Button>
     </>
   );

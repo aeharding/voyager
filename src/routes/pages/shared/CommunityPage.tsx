@@ -1,7 +1,12 @@
-import { IonButtons, IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonPage,
+  IonSearchbar,
+  IonToolbar,
+} from "@ionic/react";
 import { FetchFn } from "../../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
-import AppBackButton from "../../../features/shared/AppBackButton";
 import PostSort from "../../../features/feed/PostSort";
 import MoreActions from "../../../features/community/MoreActions";
 import {
@@ -247,10 +252,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
               {!searchOpen && (
                 <>
                   <IonButtons slot="start">
-                    <AppBackButton
-                      defaultText="Communities"
-                      defaultHref={buildGeneralBrowseLink("/")}
-                    />
+                    <IonBackButton defaultHref={buildGeneralBrowseLink("/")} />
                   </IonButtons>
                   <TitleSearch name={community}>
                     <IonButtons slot="end">

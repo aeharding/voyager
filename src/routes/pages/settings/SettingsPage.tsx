@@ -202,7 +202,7 @@ export default function SettingsPage() {
             <IconBg color="#ff5700">
               <IonIcon icon={bagCheck} />
             </IconBg>
-            <SettingLabel>Migrate subreddits</SettingLabel>
+            <SettingLabel>Migrate Subreddits</SettingLabel>
           </InsetIonItem>
         </IonList>
 

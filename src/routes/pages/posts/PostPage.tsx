@@ -1,4 +1,5 @@
 import {
+  IonBackButton,
   IonButtons,
   IonContent,
   IonIcon,
@@ -15,7 +16,6 @@ import { useParams } from "react-router";
 import { styled } from "@linaria/react";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { getPost } from "../../../features/post/postSlice";
-import AppBackButton from "../../../features/shared/AppBackButton";
 import { CommentSortType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentSort from "../../../features/comment/CommentSort";
@@ -160,9 +160,8 @@ const PostPageContent = memo(function PostPageContent({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <AppBackButton
+            <IonBackButton
               defaultHref={buildGeneralBrowseLink(`/c/${community}`)}
-              defaultText={postIfFound?.community.name}
             />
           </IonButtons>
           <IonTitle>{title}</IonTitle>

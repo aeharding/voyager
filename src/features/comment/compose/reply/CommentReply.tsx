@@ -6,6 +6,7 @@ import {
   IonTitle,
   IonText,
   useIonModal,
+  IonIcon,
 } from "@ionic/react";
 import {
   CommentReplyView,
@@ -31,6 +32,7 @@ import { isLemmyError } from "../../../../helpers/lemmy";
 import AccountSwitcher from "../../../auth/AccountSwitcher";
 import { getClient } from "../../../../services/lemmy";
 import AppHeader from "../../../shared/AppHeader";
+import { arrowBackSharp } from "ionicons/icons";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -236,7 +238,13 @@ export default function CommentReply({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => dismiss()}>Cancel</IonButton>
+            <IonButton onClick={() => dismiss()}>
+              {document.documentElement.classList.contains("ios") ? (
+                "Cancel"
+              ) : (
+                <IonIcon icon={arrowBackSharp} slot="icon-only" />
+              )}
+            </IonButton>
           </IonButtons>
           <IonTitle>
             <Centered>

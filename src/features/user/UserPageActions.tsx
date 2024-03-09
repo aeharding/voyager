@@ -1,14 +1,11 @@
-import { IonActionSheet, IonButton, IonIcon } from "@ionic/react";
-import {
-  ellipsisHorizontal,
-  mailOutline,
-  removeCircleOutline,
-} from "ionicons/icons";
+import { IonActionSheet, IonButton } from "@ionic/react";
+import { mailOutline, removeCircleOutline } from "ionicons/icons";
 import { useContext, useState } from "react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { PageContext } from "../auth/PageContext";
 import { useUserDetails } from "./useUserDetails";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
 
 interface UserPageActionsProps {
   handle: string;
@@ -23,12 +20,8 @@ export default function UserPageActions({ handle }: UserPageActionsProps) {
 
   return (
     <>
-      <IonButton
-        disabled={!handle}
-        fill="default"
-        onClick={() => setOpen(true)}
-      >
-        <IonIcon icon={ellipsisHorizontal} color="primary" />
+      <IonButton disabled={!handle} onClick={() => setOpen(true)}>
+        <HeaderEllipsisIcon slot="icon-only" />
       </IonButton>
       <IonActionSheet
         cssClass="left-align-buttons"

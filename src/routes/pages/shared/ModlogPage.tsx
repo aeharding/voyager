@@ -1,6 +1,11 @@
-import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import Feed, { FetchFn } from "../../../features/feed/Feed";
-import AppBackButton from "../../../features/shared/AppBackButton";
 import { memo, useCallback, useEffect } from "react";
 import useClient from "../../../helpers/useClient";
 import FeedContextProvider from "../../../features/feed/FeedContext";
@@ -116,7 +121,7 @@ function Modlog({ community, user }: ModlogProps) {
         <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <AppBackButton
+              <IonBackButton
                 defaultHref={buildGeneralBrowseLink(
                   community ? buildCommunityLink(community) : "",
                 )}

@@ -1,9 +1,9 @@
 import {
   personCircleOutline,
-  cog,
   search,
   fileTray,
   telescope,
+  cog,
 } from "ionicons/icons";
 import {
   IonBadge,

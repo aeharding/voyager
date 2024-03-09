@@ -12,8 +12,11 @@ export const Spinner = styled(IonSpinner)`
 export const Centered = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
+
+  .ios & {
+    justify-content: center;
+  }
 `;
 
 function blurDocument() {

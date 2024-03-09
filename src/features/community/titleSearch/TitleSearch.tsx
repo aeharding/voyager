@@ -7,7 +7,11 @@ import { styled } from "@linaria/react";
 const TitleContents = styled.span`
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+
+  .ios & {
+    justify-content: center;
+  }
+
   gap: 0.25rem;
 
   width: 100%;

@@ -1,5 +1,4 @@
 import { styled } from "@linaria/react";
-import { IonItem } from "@ionic/react";
 import { CommunityView } from "lemmy-js-client";
 import { maxWidthCss } from "../shared/AppContent";
 import CommunityLink from "../labels/links/CommunityLink";
@@ -9,9 +8,13 @@ import { heart } from "ionicons/icons";
 import { ActionButton } from "../post/actions/ActionButton";
 import { ToggleIcon } from "./ToggleIcon";
 import useCommunityActions from "./useCommunityActions";
+import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { buildCommunityLink } from "../../helpers/appLinkBuilder";
+import { IonItem } from "@ionic/react";
 
-const Container = styled(IonItem)`
-  ${maxWidthCss}
+const CustomIonItem = styled(IonItem)`
+  --padding-start: 0;
+  --inner-padding-end: 0;
 `;
 
 const RightContainer = styled.div`
@@ -38,7 +41,7 @@ const Contents = styled.div`
   gap: 0.5rem;
   padding: 1rem;
 
-  width: 100%;
+  ${maxWidthCss}
 `;
 
 const Stats = styled.div`
@@ -60,13 +63,19 @@ interface CommunitySummaryProps {
 }
 
 export default function CommunitySummary({ community }: CommunitySummaryProps) {
-  const { isSubscribed, subscribe, view } = useCommunityActions(
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const { isSubscribed, subscribe } = useCommunityActions(
     community.community,
     community.subscribed,
   );
 
   return (
-    <Container>
+    <CustomIonItem
+      routerLink={buildGeneralBrowseLink(
+        buildCommunityLink(community.community),
+      )}
+      detail={false}
+    >
       <Contents>
         <Title>
           <StyledCommunityLink
@@ -86,17 +95,17 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
             </ActionButton>
           </RightContainer>
         </Title>
-        <Stats onClick={view}>
+        <Stats>
           {community.counts.subscribers} Subscriber
           {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
           <Ago date={community.community.published} /> Old{" "}
         </Stats>
         {community.community.description && (
-          <Description onClick={view}>
+          <Description>
             <InlineMarkdown>{community.community.description}</InlineMarkdown>
           </Description>
         )}
       </Contents>
-    </Container>
+    </CustomIonItem>
   );
 }

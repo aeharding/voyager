@@ -54,7 +54,7 @@ export default function ComposeButton() {
         onDidDismiss={(e) => {
           setIsAlertOpen(false);
 
-          if (e.detail.role === "cancel") return;
+          if (!e.detail.data) return;
 
           composeNew(e.detail.data.values.handle);
         }}
