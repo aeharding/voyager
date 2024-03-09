@@ -99,7 +99,7 @@ function Comment({
 
   const bind = useLongPress(onCommentLongPress, {
     threshold: 800,
-    cancelOnMovement: true,
+    cancelOnMovement: 15,
     filterEvents,
   });
 

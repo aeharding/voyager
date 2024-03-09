@@ -114,7 +114,7 @@ export default function JumpFab() {
   const bind = useLongPress(
     onJumpLongPress,
     // () => onJump(),
-    { cancelOnMovement: true, onCancel: onLongPressCancel },
+    { cancelOnMovement: 15, onCancel: onLongPressCancel },
   );
 
   return (

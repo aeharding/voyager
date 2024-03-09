@@ -88,7 +88,7 @@ export default function CommunityLink({
   }, [block, isBlocked, isSubscribed, present, sidebar, subscribe]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
-    cancelOnMovement: true,
+    cancelOnMovement: 15,
     onStart,
   });
 
