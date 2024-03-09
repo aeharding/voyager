@@ -1,10 +1,10 @@
 import {
-  CommentThemeType,
-  OCommentThemeType,
+  CommentsThemeType,
+  OCommentsThemeType,
 } from "../../../../../services/db";
 
-const COMMENT_THEMES: Record<CommentThemeType, string[]> = {
-  [OCommentThemeType.Rainbow]: [
+const COMMENT_THEMES: Record<CommentsThemeType, string[]> = {
+  [OCommentsThemeType.Rainbow]: [
     "#FF0000",
     "#FF7F00",
     "#e1ca00",
@@ -16,7 +16,7 @@ const COMMENT_THEMES: Record<CommentThemeType, string[]> = {
     "#FF1493",
     "#00FFFF",
   ],
-  [OCommentThemeType.Mauve]: [
+  [OCommentsThemeType.Mauve]: [
     "#E0B0FF",
     "#D473D4",
     "#C71585",
@@ -28,7 +28,7 @@ const COMMENT_THEMES: Record<CommentThemeType, string[]> = {
     "#7B68EE",
     "#6A5ACD",
   ],
-  [OCommentThemeType.Cascades]: [
+  [OCommentsThemeType.Cascades]: [
     "#A8C7D9",
     "#5486A8",
     "#3A7ABD",
@@ -40,7 +40,7 @@ const COMMENT_THEMES: Record<CommentThemeType, string[]> = {
     "#6FA3D1",
     "#AACCF2",
   ],
-  [OCommentThemeType.Celadon]: [
+  [OCommentsThemeType.Celadon]: [
     "#AFDCEC",
     "#94C5CC",
     "#79AEA9",
@@ -52,7 +52,7 @@ const COMMENT_THEMES: Record<CommentThemeType, string[]> = {
     "#DAD33F",
     "#FFE933",
   ],
-  [OCommentThemeType.Graphite]: [
+  [OCommentsThemeType.Graphite]: [
     "#4C4C4C",
     "#5A5A5A",
     "#686868",

@@ -1,5 +1,5 @@
 import { styled } from "@linaria/react";
-import { CommentThemeType } from "../../../services/db";
+import { CommentsThemeType } from "../../../services/db";
 import COMMENT_THEMES from "../../settings/appearance/themes/commentsTheme/values";
 import { ComponentProps } from "react";
 import { useAppSelector } from "../../../store";
@@ -8,7 +8,7 @@ interface ContainerProps {
   depth: number;
   highlighted?: boolean;
   hidden?: boolean;
-  themeName: CommentThemeType;
+  themeName: CommentsThemeType;
 }
 
 const Container = styled.div<ContainerProps>`

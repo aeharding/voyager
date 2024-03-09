@@ -1,6 +1,6 @@
 import { IonLabel, IonList, IonRadio, IonRadioGroup } from "@ionic/react";
 import { InsetIonItem, ListHeader } from "../../../shared/formatting";
-import { OCommentThemeType } from "../../../../../services/db";
+import { OCommentsThemeType } from "../../../../../services/db";
 import COMMENT_THEMES from "./values";
 import Color from "./Color";
 import { styled } from "@linaria/react";
@@ -39,7 +39,7 @@ export default function CommentsTheme() {
         }}
       >
         <IonList inset>
-          {Object.entries(OCommentThemeType).map(([label, value]) => (
+          {Object.entries(OCommentsThemeType).map(([label, value]) => (
             <InsetIonItem key={value}>
               <IonRadio
                 value={value}

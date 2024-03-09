@@ -32,7 +32,7 @@ export const OAppThemeType = {
 
 export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
 
-export const OCommentThemeType = {
+export const OCommentsThemeType = {
   Rainbow: "rainbow",
   Mauve: "mauve",
   Cascades: "cascades",
@@ -40,8 +40,8 @@ export const OCommentThemeType = {
   Graphite: "graphite",
 } as const;
 
-export type CommentThemeType =
-  (typeof OCommentThemeType)[keyof typeof OCommentThemeType];
+export type CommentsThemeType =
+  (typeof OCommentsThemeType)[keyof typeof OCommentsThemeType];
 
 export const OPostAppearanceType = {
   Compact: "compact",
@@ -269,7 +269,7 @@ export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
 export type SwipeActions = Record<SwipeDirection, SwipeAction>;
 
 export type SettingValueTypes = {
-  comments_theme: CommentThemeType;
+  comments_theme: CommentsThemeType;
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;

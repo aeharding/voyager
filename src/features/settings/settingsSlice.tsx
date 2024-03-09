@@ -38,7 +38,7 @@ import {
   OTapToCollapseType,
   AutoplayMediaType,
   OAutoplayMediaType,
-  CommentThemeType,
+  CommentsThemeType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -93,7 +93,7 @@ interface SettingsState {
     };
     deviceMode: Mode;
     theme: AppThemeType;
-    commentsTheme: CommentThemeType;
+    commentsTheme: CommentsThemeType;
   };
   general: {
     comments: {
@@ -482,7 +482,7 @@ export const appearanceSlice = createSlice({
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
     },
-    setCommentsTheme(state, action: PayloadAction<CommentThemeType>) {
+    setCommentsTheme(state, action: PayloadAction<CommentsThemeType>) {
       state.appearance.commentsTheme = action.payload;
       db.setSetting("comments_theme", action.payload);
     },
