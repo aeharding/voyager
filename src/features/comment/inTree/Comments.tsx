@@ -14,7 +14,7 @@ import {
 import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import { CommentSortType, CommentView } from "lemmy-js-client";
-import { pullAllBy, sortBy, uniqBy } from "lodash";
+import { compact, pullAllBy, sortBy, uniqBy } from "lodash";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { receivedComments } from "../commentSlice";
 import { RefresherCustomEvent } from "@ionic/core";
@@ -434,11 +434,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     preservePositionFromBottomInScrollView,
   ]);
 
-  const padding = bottomPadding ? (
-    <div style={{ height: `${bottomPadding}px` }} />
-  ) : undefined;
-
-  function renderFooter() {
+  const renderFooter = useCallback(() => {
     if (loadFailed)
       return <FeedLoadMoreFailed fetchMore={fetchComments} loading={loading} />;
 
@@ -451,7 +447,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
           <aside>It&apos;s quiet... too quiet...</aside>
         </Empty>
       );
-  }
+  }, [comments.length, fetchComments, loadFailed, loading]);
 
   const commentsContextValue = useMemo(
     () => ({
@@ -467,7 +463,18 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     preservePositionFromBottomInScrollView.restore();
   }, [maxContext, preservePositionFromBottomInScrollView]);
 
-  const content = [header, allComments, renderFooter(), padding];
+  const content = useMemo(
+    () =>
+      compact([
+        header,
+        ...allComments,
+        renderFooter(),
+        bottomPadding ? (
+          <div style={{ height: `${bottomPadding}px` }} />
+        ) : undefined,
+      ]),
+    [allComments, bottomPadding, header, renderFooter],
+  );
 
   return (
     <CommentsContext.Provider value={commentsContextValue}>
