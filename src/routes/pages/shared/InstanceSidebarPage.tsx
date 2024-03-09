@@ -1,5 +1,10 @@
-import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
-import AppBackButton from "../../../features/shared/AppBackButton";
+import {
+  IonBackButton,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import { useRef } from "react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { TitleSearchProvider } from "../../../features/community/titleSearch/TitleSearchProvider";
@@ -26,10 +31,7 @@ export default function InstanceSidebarPage() {
           <AppHeader>
             <IonToolbar>
               <IonButtons slot="start">
-                <AppBackButton
-                  defaultText="Communities"
-                  defaultHref={buildGeneralBrowseLink("/")}
-                />
+                <IonBackButton defaultHref={buildGeneralBrowseLink("/")} />
               </IonButtons>
               <IonTitle>{connectedInstance}</IonTitle>
             </IonToolbar>

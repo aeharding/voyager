@@ -1,6 +1,11 @@
-import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import { FetchFn } from "../../../features/feed/Feed";
-import AppBackButton from "../../../features/shared/AppBackButton";
 import { memo, useCallback } from "react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import useClient from "../../../helpers/useClient";
@@ -57,7 +62,7 @@ function CommentsPage(props: CommentsPageProps) {
         <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <AppBackButton
+              <IonBackButton
                 defaultHref={buildGeneralBrowseLink(
                   "communityName" in props
                     ? `/c/${props.communityName}`

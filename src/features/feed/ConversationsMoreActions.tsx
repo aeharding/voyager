@@ -1,14 +1,11 @@
-import { IonActionSheet, IonButton, IonIcon } from "@ionic/react";
-import {
-  ellipsisHorizontal,
-  personCircleOutline,
-  removeCircleOutline,
-} from "ionicons/icons";
+import { IonActionSheet, IonButton } from "@ionic/react";
+import { personCircleOutline, removeCircleOutline } from "ionicons/icons";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { useParams } from "react-router";
 import { useUserDetails } from "../user/useUserDetails";
 import { useState } from "react";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
 
 export default function ConversationsMoreActions() {
   const [open, setOpen] = useState(false);
@@ -21,12 +18,8 @@ export default function ConversationsMoreActions() {
 
   return (
     <>
-      <IonButton
-        disabled={!handle}
-        fill="default"
-        onClick={() => setOpen(true)}
-      >
-        <IonIcon icon={ellipsisHorizontal} color="primary" />
+      <IonButton disabled={!handle} onClick={() => setOpen(true)}>
+        <HeaderEllipsisIcon slot="icon-only" />
       </IonButton>
       <IonActionSheet
         cssClass="left-align-buttons"

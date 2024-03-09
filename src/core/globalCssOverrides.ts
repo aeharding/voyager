@@ -21,13 +21,22 @@ export default css`
       opacity: 1 !important;
     }
 
-    /*
-     * Header doesn't support dynamic font size
-     */
-    ion-router-outlet > .ion-page > ion-header ion-button,
-    ion-router-outlet > .ion-page > ion-header ion-back-button,
-    ion-router-outlet > .ion-page > ion-header ion-title {
-      font-size: 17px;
+    ion-router-outlet > .ion-page > ion-header {
+      // Header doesn't support dynamic font size
+      ion-button,
+      ion-back-button,
+      ion-title {
+        font-size: 17px;
+      }
+
+      // Ionic's default font size for icons in header is a bit too large
+      ion-button.in-toolbar ion-icon {
+        font-size: 1.35em !important;
+      }
+
+      ion-back-button.md::part(text) {
+        display: none;
+      }
     }
 
     .left-align-buttons
@@ -42,7 +51,8 @@ export default css`
     .mod .action-sheet-button:hover:not(.action-sheet-destructive),
     .mod.action-sheet-button:not(.action-sheet-destructive),
     .mod.action-sheet-button:hover:not(.action-sheet-destructive) {
-      color: var(--ion-color-success-shade);
+      --color: var(--ion-color-success-shade);
+      color: var(--color);
     }
 
     .mod.alert-button {
@@ -57,7 +67,8 @@ export default css`
     .admin-remote .action-sheet-button:hover,
     .admin-remote.action-sheet-button,
     .admin-remote.action-sheet-button:hover {
-      color: var(--ion-color-danger-shade);
+      --color: var(--ion-color-danger-shade);
+      color: var(--color);
     }
 
     .report-reasons .action-sheet-title {
@@ -195,20 +206,22 @@ export default css`
       overflow-x: hidden !important;
     }
 
-    .ion-content-scroll-host::before,
-    .ion-content-scroll-host::after {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      content: "";
-    }
+    .ios {
+      .ion-content-scroll-host::before,
+      .ion-content-scroll-host::after {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        content: "";
+      }
 
-    .ion-content-scroll-host::before {
-      top: -1px;
-    }
+      .ion-content-scroll-host::before {
+        top: -1px;
+      }
 
-    .ion-content-scroll-host::after {
-      bottom: -1px;
+      .ion-content-scroll-host::after {
+        bottom: -1px;
+      }
     }
 
     ion-fab-button {
