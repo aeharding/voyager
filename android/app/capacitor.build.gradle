@@ -21,6 +21,7 @@ dependencies {
     implementation project(':capacitor-android-nav-mode')
     implementation project(':capacitor-application-context')
     implementation project(':capacitor-biometric-lock')
+    implementation project(':capacitor-clear-cache')
     implementation project(':capacitor-launch-native')
     implementation project(':capacitor-plugin-safe-area')
     implementation project(':capacitor-stash-media')

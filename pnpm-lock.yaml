@@ -171,6 +171,9 @@ devDependencies:
   capacitor-biometric-lock:
     specifier: ^0.1.1
     version: 0.1.1(@capacitor/core@5.7.0)
+  capacitor-clear-cache:
+    specifier: ^0.0.1
+    version: 0.0.1(@capacitor/core@5.7.0)
   capacitor-launch-native:
     specifier: ^0.0.2
     version: 0.0.2(@capacitor/core@5.7.0)
@@ -5973,6 +5976,14 @@ packages:
 
   /capacitor-biometric-lock@0.1.1(@capacitor/core@5.7.0):
     resolution: {integrity: sha512-vqO0GijlOscXyAON21myo72LW3+eiOl+3eOLX7Rb/WFRqJeYCySZjH9/Eh+ip28B05dr7scO9vFB5VTh1trtEQ==}
+    peerDependencies:
+      '@capacitor/core': ^5.0.0
+    dependencies:
+      '@capacitor/core': 5.7.0
+    dev: true
+
+  /capacitor-clear-cache@0.0.1(@capacitor/core@5.7.0):
+    resolution: {integrity: sha512-x4JY0BsbRCWrU0/G0WTiXS5XRWe/klrA8NemeGThWwEZqGo1zcE/seONpx1WLEHel2xUVNdwx4y3v1byOjE3kQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
