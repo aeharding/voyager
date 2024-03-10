@@ -71,11 +71,11 @@ const StyledMarkdown = styled(Markdown)`
 `;
 
 const StyledEmbed = styled(Embed)`
-  margin: 12px 0;
+  margin: 0 0 12px;
 `;
 
 const StyledCrosspost = styled(Crosspost)`
-  margin: 12px 0;
+  margin: 0 0 12px;
 `;
 
 const Container = styled.div`
