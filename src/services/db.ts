@@ -37,7 +37,6 @@ export const OCommentsThemeType = {
   UnoReverse: "uno-reverse",
   Pastel: "pastel",
   Mauve: "mauve",
-  Vintage: "vintage",
   Electric: "electric",
   Citrus: "citrus",
   Blush: "blush",

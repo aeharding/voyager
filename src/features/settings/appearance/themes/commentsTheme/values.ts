@@ -52,18 +52,6 @@ const COMMENT_THEMES: Record<CommentsThemeType, string[]> = {
     "#7B68EE",
     "#6A5ACD",
   ],
-  [OCommentsThemeType.Vintage]: [
-    "#D5C7A3",
-    "#B4CBB7",
-    "#9FB8A8",
-    "#99A3AD",
-    "#A698B3",
-    "#C0A5C8",
-    "#B76E79",
-    "#C78E6E",
-    "#D3A07B",
-    "#E1BC89",
-  ],
   [OCommentsThemeType.Electric]: [
     "#33FFFF",
     "#5FD5CC",
