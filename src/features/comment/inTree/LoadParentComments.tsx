@@ -5,7 +5,7 @@ import { styled } from "@linaria/react";
 import { chevronUp } from "ionicons/icons";
 import React from "react";
 import { PositionedContainer } from "../elements/PositionedContainer";
-import { Container } from "../elements/Container";
+import CommentContainer from "../elements/CommentContainer";
 
 const MoreRepliesBlock = styled.div`
   display: flex;
@@ -35,12 +35,12 @@ export default function LoadParentComments({
         }}
       >
         <PositionedContainer depth={0}>
-          <Container depth={0}>
+          <CommentContainer depth={0}>
             <MoreRepliesBlock>
               <ChevronIcon icon={chevronUp} />
               Load parent comments...
             </MoreRepliesBlock>
-          </Container>
+          </CommentContainer>
         </PositionedContainer>
       </CustomIonItem>
       <CommentHr depth={1} />

@@ -17,7 +17,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { styled } from "@linaria/react";
 import { PositionedContainer } from "../elements/PositionedContainer";
-import { Container } from "../elements/Container";
+import CommentContainer from "../elements/CommentContainer";
 
 const MoreRepliesBlock = styled.div<{ hidden: boolean }>`
   display: flex;
@@ -111,13 +111,13 @@ export default function CommentExpander({
         <PositionedContainer
           depth={absoluteDepth === depth ? depth + 1 : depth + 2}
         >
-          <Container depth={absoluteDepth + 1} hidden={loading}>
+          <CommentContainer depth={absoluteDepth + 1} hidden={loading}>
             <MoreRepliesBlock hidden={loading}>
               {missing} more {missing === 1 ? "reply" : "replies"}
               <ChevronIcon icon={chevronDown} />
             </MoreRepliesBlock>
             {loading && <StyledIonSpinner />}
-          </Container>
+          </CommentContainer>
         </PositionedContainer>
       </CustomIonItem>
     </AnimateHeight>
