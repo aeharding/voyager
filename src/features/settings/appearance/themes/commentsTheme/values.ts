@@ -5,11 +5,11 @@ import {
 
 const COMMENT_THEMES: Record<CommentsThemeType, string[]> = {
   [OCommentsThemeType.Rainbow]: [
-    "#FF0000",
-    "#FF7F00",
-    "#e1ca00",
-    "#00dd00",
-    "#0000FF",
+    "#FF2A33",
+    "#F98C1D",
+    "#DAB84D",
+    "#459E6F",
+    "#3088C1",
     "#4B0082",
     "#8B00FF",
     "#FF00FF",
@@ -22,11 +22,11 @@ const COMMENT_THEMES: Record<CommentsThemeType, string[]> = {
     "#FF00FF",
     "#8B00FF",
     "#4B0082",
-    "#0000FF",
-    "#00dd00",
-    "#e1ca00",
-    "#FF7F00",
-    "#FF0000",
+    "#3088C1",
+    "#459E6F",
+    "#DAB84D",
+    "#F98C1D",
+    "#FF2A33",
   ],
   [OCommentsThemeType.Pastel]: [
     "#FFCCCC",
