@@ -8,6 +8,7 @@ import { DismissableProps } from "../../../shared/DynamicDismissableModal";
 import CommentEditorContent from "../CommentEditorContent";
 import useAppToast from "../../../../helpers/useAppToast";
 import AppHeader from "../../../shared/AppHeader";
+import { clearRecoveredText } from "../../../../helpers/useTextRecovery";
 
 type CommentEditingProps = DismissableProps & {
   item: Comment;
@@ -58,6 +59,7 @@ export default function CommentEdit({
 
     setCanDismiss(true);
     dismiss();
+    clearRecoveredText();
   }
 
   return (
