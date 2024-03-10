@@ -34,6 +34,7 @@ export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
 
 export const OCommentsThemeType = {
   Rainbow: "rainbow",
+  UnoReverse: "uno-reverse",
   Pastel: "pastel",
   Mauve: "mauve",
   Vintage: "vintage",

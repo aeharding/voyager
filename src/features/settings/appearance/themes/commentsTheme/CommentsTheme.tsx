@@ -7,6 +7,7 @@ import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { setCommentsTheme } from "../../../settingsSlice";
+import { startCase } from "lodash";
 
 const ColorsContainer = styled.div`
   display: flex;
@@ -17,8 +18,11 @@ const ColorsContainer = styled.div`
 const Colors = styled.div`
   display: flex;
   gap: 6px;
-  opacity: 0.7;
   margin: 0 6px;
+
+  .theme-dark & {
+    opacity: 0.7;
+  }
 `;
 
 export default function CommentsTheme() {
@@ -50,7 +54,7 @@ export default function CommentsTheme() {
                 `}
               >
                 <ColorsContainer>
-                  <IonLabel>{label}</IonLabel>
+                  <IonLabel>{startCase(label)}</IonLabel>
                   <Colors>
                     {COMMENT_THEMES[value].map((color, index) => (
                       <Color key={index} color={color} />

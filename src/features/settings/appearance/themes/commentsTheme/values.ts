@@ -16,6 +16,18 @@ const COMMENT_THEMES: Record<CommentsThemeType, string[]> = {
     "#FF1493",
     "#00FFFF",
   ],
+  [OCommentsThemeType.UnoReverse]: [
+    "#00FFFF",
+    "#FF1493",
+    "#FF00FF",
+    "#8B00FF",
+    "#4B0082",
+    "#0000FF",
+    "#00dd00",
+    "#e1ca00",
+    "#FF7F00",
+    "#FF0000",
+  ],
   [OCommentsThemeType.Pastel]: [
     "#FFCCCC",
     "#FFB27F",
