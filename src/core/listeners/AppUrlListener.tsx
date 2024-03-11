@@ -23,7 +23,13 @@ export default function AppUrlListener() {
       return;
     }
 
-    redirectToLemmyObjectIfNeeded(url);
+    // wait for router to get into a good state before pushing
+    // (needed for pushing user profiles)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        redirectToLemmyObjectIfNeeded(url);
+      });
+    });
   });
 
   useEffect(() => {
