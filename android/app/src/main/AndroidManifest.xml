@@ -25,6 +25,12 @@
                 <data android:scheme="https" />
                 <data android:host="*" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="vger" />
+            </intent-filter>
         </activity>
 
         <activity-alias
@@ -45,6 +51,12 @@
 
                 <data android:scheme="https" />
                 <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="vger" />
             </intent-filter>
         </activity-alias>
 
@@ -67,6 +79,12 @@
                 <data android:scheme="https" />
                 <data android:host="*" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="vger" />
+            </intent-filter>
         </activity-alias>
 
         <activity-alias
@@ -87,6 +105,12 @@
 
                 <data android:scheme="https" />
                 <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="vger" />
             </intent-filter>
         </activity-alias>
 
@@ -109,6 +133,12 @@
                 <data android:scheme="https" />
                 <data android:host="*" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="vger" />
+            </intent-filter>
         </activity-alias>
 
         <activity-alias
@@ -129,6 +159,12 @@
 
                 <data android:scheme="https" />
                 <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="vger" />
             </intent-filter>
         </activity-alias>
 
@@ -151,6 +187,12 @@
                 <data android:scheme="https" />
                 <data android:host="*" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="vger" />
+            </intent-filter>
         </activity-alias>
 
         <activity-alias
@@ -171,6 +213,12 @@
 
                 <data android:scheme="https" />
                 <data android:host="*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="vger" />
             </intent-filter>
         </activity-alias>
 
