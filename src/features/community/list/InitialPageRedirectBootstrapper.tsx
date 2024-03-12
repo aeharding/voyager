@@ -4,6 +4,8 @@ import { isInstalled } from "../../../helpers/device";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { styled } from "@linaria/react";
 import { pageTransitionAnimateBackOnly } from "../../../helpers/ionic";
+import { appIsReadyToAcceptDeepLinks } from "./deepLinkReadySlice";
+import { useAppDispatch } from "../../../store";
 
 const LoadingOverlay = styled.div`
   background: var(--ion-background-color);
@@ -28,6 +30,7 @@ interface InitialPageRedirectBootstrapperProps {
 export default function InitialPageRedirectBootstrapper({
   to,
 }: InitialPageRedirectBootstrapperProps) {
+  const dispatch = useAppDispatch();
   const router = useOptimizedIonRouter();
   const [bootstrapped, setBootstrapped] = useState(false);
   const viewEnteredRef = useRef(false);
@@ -79,7 +82,11 @@ export default function InitialPageRedirectBootstrapper({
 
   useEffect(() => {
     bootstrappedRef.current = bootstrapped;
-  }, [bootstrapped]);
+
+    // Kinda a hack - but helps deep link determine if ready for route push.
+    // Only needs to be done once on app startup
+    if (bootstrapped) dispatch(appIsReadyToAcceptDeepLinks());
+  }, [bootstrapped, dispatch]);
 
   useEffect(() => {
     toRef.current = to;
