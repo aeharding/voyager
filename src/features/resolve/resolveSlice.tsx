@@ -55,7 +55,7 @@ export default resolveSlice.reducer;
  * @returns The object, if found
  */
 export const resolveObject =
-  (url: string) =>
+  (url: string, abortIfNotFound = false) =>
   async (
     dispatch: AppDispatch,
     getState: () => RootState,
@@ -68,56 +68,62 @@ export const resolveObject =
       });
     } catch (error) {
       if (isLemmyError(error, "couldnt_find_object")) {
-        try {
-          const { hostname, pathname } = new URL(url);
+        if (!abortIfNotFound) {
+          try {
+            const { hostname, pathname } = new URL(url);
 
-          // FINE. we'll do it the hard/insecure way and ask original instance >:(
-          // the below code should not need to exist.
-          const client = await getClient(hostname);
+            // FINE. we'll do it the hard/insecure way and ask original instance >:(
+            // the below code should not need to exist.
+            const client = await getClient(hostname);
 
-          if (POST_PATH.test(pathname)) {
-            const response = await client.getPost({
-              id: +pathname.match(POST_PATH)![1]!,
-            });
+            if (POST_PATH.test(pathname)) {
+              const response = await client.getPost({
+                id: +pathname.match(POST_PATH)![1]!,
+              });
 
-            return dispatch(resolveObject(response.post_view.post.ap_id));
-          } else if (COMMENT_PATH.test(pathname)) {
-            const response = await client.getComment({
-              id: +pathname.match(COMMENT_PATH)![1]!,
-            });
+              return dispatch(
+                resolveObject(response.post_view.post.ap_id, true),
+              );
+            } else if (COMMENT_PATH.test(pathname)) {
+              const response = await client.getComment({
+                id: +pathname.match(COMMENT_PATH)![1]!,
+              });
 
-            return dispatch(resolveObject(response.comment_view.post.ap_id));
-          } else if (matchLemmyUser(pathname)) {
-            const [username, userHostname] = matchLemmyUser(pathname)!;
+              return dispatch(
+                resolveObject(response.comment_view.comment.ap_id, true),
+              );
+            } else if (matchLemmyUser(pathname)) {
+              const [username, userHostname] = matchLemmyUser(pathname)!;
 
-            const response = await getClient(
-              userHostname ?? hostname,
-            ).getPersonDetails({
-              username,
-            });
+              const response = await getClient(
+                userHostname ?? hostname,
+              ).getPersonDetails({
+                username,
+              });
 
-            return dispatch(
-              resolveObject(response.person_view.person.actor_id),
-            );
-          } else if (matchLemmyCommunity(pathname)) {
-            const [community, communityHostname] =
-              matchLemmyCommunity(pathname)!;
+              return dispatch(
+                resolveObject(response.person_view.person.actor_id, true),
+              );
+            } else if (matchLemmyCommunity(pathname)) {
+              const [community, communityHostname] =
+                matchLemmyCommunity(pathname)!;
 
-            const response = await getClient(
-              communityHostname ?? hostname,
-            ).getCommunity({
-              name: community,
-            });
+              const response = await getClient(
+                communityHostname ?? hostname,
+              ).getCommunity({
+                name: community,
+              });
 
-            return dispatch(
-              resolveObject(response.community_view.community.actor_id),
-            );
+              return dispatch(
+                resolveObject(response.community_view.community.actor_id, true),
+              );
+            }
+          } catch (error) {
+            if (isLemmyError(error, "couldnt_find_object")) {
+              dispatch(couldNotFindUrl(url));
+            }
+            throw error;
           }
-        } catch (error) {
-          if (isLemmyError(error, "couldnt_find_object")) {
-            dispatch(couldNotFindUrl(url));
-          }
-          throw error;
         }
       }
 
