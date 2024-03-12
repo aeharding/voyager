@@ -249,3 +249,10 @@ export const cacheClearFailed: AppToastOptions = {
   centerText: true,
   icon: close,
 };
+
+export const deepLinkFailed: AppToastOptions = {
+  message: "Failed to find requested link on your instance",
+  color: "warning",
+  position: "top",
+  duration: 7000,
+};

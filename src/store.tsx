@@ -43,6 +43,7 @@ import pickJoinServerSlice from "./features/auth/login/pickJoinServer/pickJoinSe
 import joinSlice from "./features/auth/login/join/joinSlice";
 import networkSlice from "./core/listeners/network/networkSlice";
 import spoilerSlice from "./features/shared/markdown/components/spoiler/spoilerSlice";
+import deepLinkReadySlice from "./features/community/list/deepLinkReadySlice";
 
 const store = configureStore({
   reducer: {
@@ -67,6 +68,7 @@ const store = configureStore({
     network: networkSlice,
     migration: migrationSlice,
     spoiler: spoilerSlice,
+    deepLinkReady: deepLinkReadySlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

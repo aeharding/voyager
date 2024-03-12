@@ -7,6 +7,13 @@ import { receivedPosts } from "../post/postSlice";
 import { receivedUsers } from "../user/userSlice";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { isLemmyError } from "../../helpers/lemmy";
+import { getClient } from "../../services/lemmy";
+import {
+  COMMENT_PATH,
+  POST_PATH,
+  matchLemmyCommunity,
+  matchLemmyUser,
+} from "../shared/useLemmyUrlHandler";
 
 interface ResolveState {
   objectByUrl: Record<string, "couldnt_find_object" | ResolveObjectResponse>;
@@ -48,7 +55,11 @@ export default resolveSlice.reducer;
  * @returns The object, if found
  */
 export const resolveObject =
-  (url: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  (url: string) =>
+  async (
+    dispatch: AppDispatch,
+    getState: () => RootState,
+  ): Promise<ResolveObjectResponse> => {
     let object;
 
     try {
@@ -56,8 +67,59 @@ export const resolveObject =
         q: url,
       });
     } catch (error) {
-      if (isLemmyError(error, "couldnt_find_object"))
-        dispatch(couldNotFindUrl(url));
+      if (isLemmyError(error, "couldnt_find_object")) {
+        try {
+          const { hostname, pathname } = new URL(url);
+
+          // FINE. we'll do it the hard/insecure way and ask original instance >:(
+          // the below code should not need to exist.
+          const client = await getClient(hostname);
+
+          if (POST_PATH.test(pathname)) {
+            const response = await client.getPost({
+              id: +pathname.match(POST_PATH)![1]!,
+            });
+
+            return dispatch(resolveObject(response.post_view.post.ap_id));
+          } else if (COMMENT_PATH.test(pathname)) {
+            const response = await client.getComment({
+              id: +pathname.match(COMMENT_PATH)![1]!,
+            });
+
+            return dispatch(resolveObject(response.comment_view.post.ap_id));
+          } else if (matchLemmyUser(pathname)) {
+            const [username, userHostname] = matchLemmyUser(pathname)!;
+
+            const response = await getClient(
+              userHostname ?? hostname,
+            ).getPersonDetails({
+              username,
+            });
+
+            return dispatch(
+              resolveObject(response.person_view.person.actor_id),
+            );
+          } else if (matchLemmyCommunity(pathname)) {
+            const [community, communityHostname] =
+              matchLemmyCommunity(pathname)!;
+
+            const response = await getClient(
+              communityHostname ?? hostname,
+            ).getCommunity({
+              name: community,
+            });
+
+            return dispatch(
+              resolveObject(response.community_view.community.actor_id),
+            );
+          }
+        } catch (error) {
+          if (isLemmyError(error, "couldnt_find_object")) {
+            dispatch(couldNotFindUrl(url));
+          }
+          throw error;
+        }
+      }
 
       throw error;
     }
