@@ -91,7 +91,7 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
           onClick={() => {
             present({
               header: `Account is ${relativeDate} old`,
-              message: `Created on ${creationDate.toDateString()} at ${creationDate.toLocaleTimeString()}`,
+              message: `Created on ${creationDate.toDateString()} at ${creationDate.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`,
               buttons: [{ text: "OK" }],
             });
           }}

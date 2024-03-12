@@ -45,11 +45,11 @@ export default function Edited({ item, showDate, className }: EditedProps) {
 
     if (!edited) return;
 
+    const date = new Date(fixLemmyDateString(edited));
+
     present({
       header: `Edited ${formatRelative(edited)} Ago`,
-      message: `Last edited on ${new Date(
-        fixLemmyDateString(edited),
-      ).toLocaleTimeString()}`,
+      message: `Last edited on ${date.toDateString()} at ${date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`,
       buttons: ["OK"],
     });
   }
