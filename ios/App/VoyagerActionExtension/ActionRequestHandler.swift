@@ -46,18 +46,18 @@ final class ActionRequestHandler: NSObject, NSExtensionRequestHandling, Sendable
 }
 
 extension URL {
-  var isPotentialLemmyInstance: Bool {
-    get async {
-      do {
-          guard host() != nil else {
-          throw ActionRequestHandler.Error.noHost
+    var isPotentialLemmyInstance: Bool {
+        get async {
+            do {
+                guard let host = self.host else {
+                    throw ActionRequestHandler.Error.noHost
+                }
+                return true
+            } catch {
+                return false
+            }
         }
-        return true
-      } catch {
-        return false
-      }
     }
-  }
 
   var iceCubesAppDeepLink: URL {
     var components = URLComponents(url: self, resolvingAgainstBaseURL: false)!

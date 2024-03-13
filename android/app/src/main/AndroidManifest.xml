@@ -17,10 +17,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter android:label="@string/lemmy_link">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -30,6 +35,63 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="vger" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https"/>
+                <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
+                <data android:host="ani.social" />
+                <data android:host="aussie.zone" />
+                <data android:host="awful.systems" />
+                <data android:host="beehaw.org" />
+                <data android:host="burggit.moe" />
+                <data android:host="discuss.online" />
+                <data android:host="discuss.tchncs.de" />
+                <data android:host="feddit.ch" />
+                <data android:host="feddit.de" />
+                <data android:host="feddit.dk" />
+                <data android:host="feddit.it" />
+                <data android:host="feddit.nl" />
+                <data android:host="feddit.nu" />
+                <data android:host="feddit.uk" />
+                <data android:host="hexbear.net" />
+                <data android:host="infosec.pub" />
+                <data android:host="iusearchlinux.fyi" />
+                <data android:host="jlai.lu" />
+                <data android:host="lemdro.id" />
+                <data android:host="leminal.space" />
+                <data android:host="lemm.ee" />
+                <data android:host="lemmings.world" />
+                <data android:host="lemmy.blahaj.zone" />
+                <data android:host="lemmy.ca" />
+                <data android:host="lemmy.dbzer0.com" />
+                <data android:host="lemmy.eco.br" />
+                <data android:host="lemmy.ml" />
+                <data android:host="lemmy.nz" />
+                <data android:host="lemmy.one" />
+                <data android:host="lemmy.sdf.org" />
+                <data android:host="lemmy.today" />
+                <data android:host="lemmy.world" />
+                <data android:host="lemmy.zip" />
+                <data android:host="lemmygrad.ml" />
+                <data android:host="lemmynsfw.com" />
+                <data android:host="lemy.lol" />
+                <data android:host="mander.xyz" />
+                <data android:host="midwest.social" />
+                <data android:host="monero.town" />
+                <data android:host="pawb.social" />
+                <data android:host="programming.dev" />
+                <data android:host="reddthat.com" />
+                <data android:host="sh.itjust.works" />
+                <data android:host="slrpnk.net" />
+                <data android:host="sopuli.xyz" />
+                <data android:host="startrek.website" />
+                <data android:host="szmer.info" />
+                <data android:host="thelemmy.club" />
+                <data android:host="ttrpg.network" />
+                <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity>
 
@@ -44,10 +106,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter android:label="@string/lemmy_link">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -57,6 +124,63 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="vger" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https"/>
+                <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
+                <data android:host="ani.social" />
+                <data android:host="aussie.zone" />
+                <data android:host="awful.systems" />
+                <data android:host="beehaw.org" />
+                <data android:host="burggit.moe" />
+                <data android:host="discuss.online" />
+                <data android:host="discuss.tchncs.de" />
+                <data android:host="feddit.ch" />
+                <data android:host="feddit.de" />
+                <data android:host="feddit.dk" />
+                <data android:host="feddit.it" />
+                <data android:host="feddit.nl" />
+                <data android:host="feddit.nu" />
+                <data android:host="feddit.uk" />
+                <data android:host="hexbear.net" />
+                <data android:host="infosec.pub" />
+                <data android:host="iusearchlinux.fyi" />
+                <data android:host="jlai.lu" />
+                <data android:host="lemdro.id" />
+                <data android:host="leminal.space" />
+                <data android:host="lemm.ee" />
+                <data android:host="lemmings.world" />
+                <data android:host="lemmy.blahaj.zone" />
+                <data android:host="lemmy.ca" />
+                <data android:host="lemmy.dbzer0.com" />
+                <data android:host="lemmy.eco.br" />
+                <data android:host="lemmy.ml" />
+                <data android:host="lemmy.nz" />
+                <data android:host="lemmy.one" />
+                <data android:host="lemmy.sdf.org" />
+                <data android:host="lemmy.today" />
+                <data android:host="lemmy.world" />
+                <data android:host="lemmy.zip" />
+                <data android:host="lemmygrad.ml" />
+                <data android:host="lemmynsfw.com" />
+                <data android:host="lemy.lol" />
+                <data android:host="mander.xyz" />
+                <data android:host="midwest.social" />
+                <data android:host="monero.town" />
+                <data android:host="pawb.social" />
+                <data android:host="programming.dev" />
+                <data android:host="reddthat.com" />
+                <data android:host="sh.itjust.works" />
+                <data android:host="slrpnk.net" />
+                <data android:host="sopuli.xyz" />
+                <data android:host="startrek.website" />
+                <data android:host="szmer.info" />
+                <data android:host="thelemmy.club" />
+                <data android:host="ttrpg.network" />
+                <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
 
@@ -71,10 +195,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter android:label="@string/lemmy_link">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -84,6 +213,63 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="vger" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https"/>
+                <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
+                <data android:host="ani.social" />
+                <data android:host="aussie.zone" />
+                <data android:host="awful.systems" />
+                <data android:host="beehaw.org" />
+                <data android:host="burggit.moe" />
+                <data android:host="discuss.online" />
+                <data android:host="discuss.tchncs.de" />
+                <data android:host="feddit.ch" />
+                <data android:host="feddit.de" />
+                <data android:host="feddit.dk" />
+                <data android:host="feddit.it" />
+                <data android:host="feddit.nl" />
+                <data android:host="feddit.nu" />
+                <data android:host="feddit.uk" />
+                <data android:host="hexbear.net" />
+                <data android:host="infosec.pub" />
+                <data android:host="iusearchlinux.fyi" />
+                <data android:host="jlai.lu" />
+                <data android:host="lemdro.id" />
+                <data android:host="leminal.space" />
+                <data android:host="lemm.ee" />
+                <data android:host="lemmings.world" />
+                <data android:host="lemmy.blahaj.zone" />
+                <data android:host="lemmy.ca" />
+                <data android:host="lemmy.dbzer0.com" />
+                <data android:host="lemmy.eco.br" />
+                <data android:host="lemmy.ml" />
+                <data android:host="lemmy.nz" />
+                <data android:host="lemmy.one" />
+                <data android:host="lemmy.sdf.org" />
+                <data android:host="lemmy.today" />
+                <data android:host="lemmy.world" />
+                <data android:host="lemmy.zip" />
+                <data android:host="lemmygrad.ml" />
+                <data android:host="lemmynsfw.com" />
+                <data android:host="lemy.lol" />
+                <data android:host="mander.xyz" />
+                <data android:host="midwest.social" />
+                <data android:host="monero.town" />
+                <data android:host="pawb.social" />
+                <data android:host="programming.dev" />
+                <data android:host="reddthat.com" />
+                <data android:host="sh.itjust.works" />
+                <data android:host="slrpnk.net" />
+                <data android:host="sopuli.xyz" />
+                <data android:host="startrek.website" />
+                <data android:host="szmer.info" />
+                <data android:host="thelemmy.club" />
+                <data android:host="ttrpg.network" />
+                <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
 
@@ -98,10 +284,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter android:label="@string/lemmy_link">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -111,6 +302,63 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="vger" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https"/>
+                <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
+                <data android:host="ani.social" />
+                <data android:host="aussie.zone" />
+                <data android:host="awful.systems" />
+                <data android:host="beehaw.org" />
+                <data android:host="burggit.moe" />
+                <data android:host="discuss.online" />
+                <data android:host="discuss.tchncs.de" />
+                <data android:host="feddit.ch" />
+                <data android:host="feddit.de" />
+                <data android:host="feddit.dk" />
+                <data android:host="feddit.it" />
+                <data android:host="feddit.nl" />
+                <data android:host="feddit.nu" />
+                <data android:host="feddit.uk" />
+                <data android:host="hexbear.net" />
+                <data android:host="infosec.pub" />
+                <data android:host="iusearchlinux.fyi" />
+                <data android:host="jlai.lu" />
+                <data android:host="lemdro.id" />
+                <data android:host="leminal.space" />
+                <data android:host="lemm.ee" />
+                <data android:host="lemmings.world" />
+                <data android:host="lemmy.blahaj.zone" />
+                <data android:host="lemmy.ca" />
+                <data android:host="lemmy.dbzer0.com" />
+                <data android:host="lemmy.eco.br" />
+                <data android:host="lemmy.ml" />
+                <data android:host="lemmy.nz" />
+                <data android:host="lemmy.one" />
+                <data android:host="lemmy.sdf.org" />
+                <data android:host="lemmy.today" />
+                <data android:host="lemmy.world" />
+                <data android:host="lemmy.zip" />
+                <data android:host="lemmygrad.ml" />
+                <data android:host="lemmynsfw.com" />
+                <data android:host="lemy.lol" />
+                <data android:host="mander.xyz" />
+                <data android:host="midwest.social" />
+                <data android:host="monero.town" />
+                <data android:host="pawb.social" />
+                <data android:host="programming.dev" />
+                <data android:host="reddthat.com" />
+                <data android:host="sh.itjust.works" />
+                <data android:host="slrpnk.net" />
+                <data android:host="sopuli.xyz" />
+                <data android:host="startrek.website" />
+                <data android:host="szmer.info" />
+                <data android:host="thelemmy.club" />
+                <data android:host="ttrpg.network" />
+                <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
 
@@ -125,10 +373,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter android:label="@string/lemmy_link">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -138,6 +391,63 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="vger" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https"/>
+                <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
+                <data android:host="ani.social" />
+                <data android:host="aussie.zone" />
+                <data android:host="awful.systems" />
+                <data android:host="beehaw.org" />
+                <data android:host="burggit.moe" />
+                <data android:host="discuss.online" />
+                <data android:host="discuss.tchncs.de" />
+                <data android:host="feddit.ch" />
+                <data android:host="feddit.de" />
+                <data android:host="feddit.dk" />
+                <data android:host="feddit.it" />
+                <data android:host="feddit.nl" />
+                <data android:host="feddit.nu" />
+                <data android:host="feddit.uk" />
+                <data android:host="hexbear.net" />
+                <data android:host="infosec.pub" />
+                <data android:host="iusearchlinux.fyi" />
+                <data android:host="jlai.lu" />
+                <data android:host="lemdro.id" />
+                <data android:host="leminal.space" />
+                <data android:host="lemm.ee" />
+                <data android:host="lemmings.world" />
+                <data android:host="lemmy.blahaj.zone" />
+                <data android:host="lemmy.ca" />
+                <data android:host="lemmy.dbzer0.com" />
+                <data android:host="lemmy.eco.br" />
+                <data android:host="lemmy.ml" />
+                <data android:host="lemmy.nz" />
+                <data android:host="lemmy.one" />
+                <data android:host="lemmy.sdf.org" />
+                <data android:host="lemmy.today" />
+                <data android:host="lemmy.world" />
+                <data android:host="lemmy.zip" />
+                <data android:host="lemmygrad.ml" />
+                <data android:host="lemmynsfw.com" />
+                <data android:host="lemy.lol" />
+                <data android:host="mander.xyz" />
+                <data android:host="midwest.social" />
+                <data android:host="monero.town" />
+                <data android:host="pawb.social" />
+                <data android:host="programming.dev" />
+                <data android:host="reddthat.com" />
+                <data android:host="sh.itjust.works" />
+                <data android:host="slrpnk.net" />
+                <data android:host="sopuli.xyz" />
+                <data android:host="startrek.website" />
+                <data android:host="szmer.info" />
+                <data android:host="thelemmy.club" />
+                <data android:host="ttrpg.network" />
+                <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
 
@@ -152,10 +462,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter android:label="@string/lemmy_link">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -165,6 +480,63 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="vger" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https"/>
+                <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
+                <data android:host="ani.social" />
+                <data android:host="aussie.zone" />
+                <data android:host="awful.systems" />
+                <data android:host="beehaw.org" />
+                <data android:host="burggit.moe" />
+                <data android:host="discuss.online" />
+                <data android:host="discuss.tchncs.de" />
+                <data android:host="feddit.ch" />
+                <data android:host="feddit.de" />
+                <data android:host="feddit.dk" />
+                <data android:host="feddit.it" />
+                <data android:host="feddit.nl" />
+                <data android:host="feddit.nu" />
+                <data android:host="feddit.uk" />
+                <data android:host="hexbear.net" />
+                <data android:host="infosec.pub" />
+                <data android:host="iusearchlinux.fyi" />
+                <data android:host="jlai.lu" />
+                <data android:host="lemdro.id" />
+                <data android:host="leminal.space" />
+                <data android:host="lemm.ee" />
+                <data android:host="lemmings.world" />
+                <data android:host="lemmy.blahaj.zone" />
+                <data android:host="lemmy.ca" />
+                <data android:host="lemmy.dbzer0.com" />
+                <data android:host="lemmy.eco.br" />
+                <data android:host="lemmy.ml" />
+                <data android:host="lemmy.nz" />
+                <data android:host="lemmy.one" />
+                <data android:host="lemmy.sdf.org" />
+                <data android:host="lemmy.today" />
+                <data android:host="lemmy.world" />
+                <data android:host="lemmy.zip" />
+                <data android:host="lemmygrad.ml" />
+                <data android:host="lemmynsfw.com" />
+                <data android:host="lemy.lol" />
+                <data android:host="mander.xyz" />
+                <data android:host="midwest.social" />
+                <data android:host="monero.town" />
+                <data android:host="pawb.social" />
+                <data android:host="programming.dev" />
+                <data android:host="reddthat.com" />
+                <data android:host="sh.itjust.works" />
+                <data android:host="slrpnk.net" />
+                <data android:host="sopuli.xyz" />
+                <data android:host="startrek.website" />
+                <data android:host="szmer.info" />
+                <data android:host="thelemmy.club" />
+                <data android:host="ttrpg.network" />
+                <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
 
@@ -179,10 +551,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter android:label="@string/lemmy_link">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -192,6 +569,63 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="vger" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https"/>
+                <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
+                <data android:host="ani.social" />
+                <data android:host="aussie.zone" />
+                <data android:host="awful.systems" />
+                <data android:host="beehaw.org" />
+                <data android:host="burggit.moe" />
+                <data android:host="discuss.online" />
+                <data android:host="discuss.tchncs.de" />
+                <data android:host="feddit.ch" />
+                <data android:host="feddit.de" />
+                <data android:host="feddit.dk" />
+                <data android:host="feddit.it" />
+                <data android:host="feddit.nl" />
+                <data android:host="feddit.nu" />
+                <data android:host="feddit.uk" />
+                <data android:host="hexbear.net" />
+                <data android:host="infosec.pub" />
+                <data android:host="iusearchlinux.fyi" />
+                <data android:host="jlai.lu" />
+                <data android:host="lemdro.id" />
+                <data android:host="leminal.space" />
+                <data android:host="lemm.ee" />
+                <data android:host="lemmings.world" />
+                <data android:host="lemmy.blahaj.zone" />
+                <data android:host="lemmy.ca" />
+                <data android:host="lemmy.dbzer0.com" />
+                <data android:host="lemmy.eco.br" />
+                <data android:host="lemmy.ml" />
+                <data android:host="lemmy.nz" />
+                <data android:host="lemmy.one" />
+                <data android:host="lemmy.sdf.org" />
+                <data android:host="lemmy.today" />
+                <data android:host="lemmy.world" />
+                <data android:host="lemmy.zip" />
+                <data android:host="lemmygrad.ml" />
+                <data android:host="lemmynsfw.com" />
+                <data android:host="lemy.lol" />
+                <data android:host="mander.xyz" />
+                <data android:host="midwest.social" />
+                <data android:host="monero.town" />
+                <data android:host="pawb.social" />
+                <data android:host="programming.dev" />
+                <data android:host="reddthat.com" />
+                <data android:host="sh.itjust.works" />
+                <data android:host="slrpnk.net" />
+                <data android:host="sopuli.xyz" />
+                <data android:host="startrek.website" />
+                <data android:host="szmer.info" />
+                <data android:host="thelemmy.club" />
+                <data android:host="ttrpg.network" />
+                <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
 
@@ -206,10 +640,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter android:label="@string/lemmy_link">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="https" />
                 <data android:host="*" />
@@ -219,6 +658,63 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="vger" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https"/>
+                <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
+                <data android:host="ani.social" />
+                <data android:host="aussie.zone" />
+                <data android:host="awful.systems" />
+                <data android:host="beehaw.org" />
+                <data android:host="burggit.moe" />
+                <data android:host="discuss.online" />
+                <data android:host="discuss.tchncs.de" />
+                <data android:host="feddit.ch" />
+                <data android:host="feddit.de" />
+                <data android:host="feddit.dk" />
+                <data android:host="feddit.it" />
+                <data android:host="feddit.nl" />
+                <data android:host="feddit.nu" />
+                <data android:host="feddit.uk" />
+                <data android:host="hexbear.net" />
+                <data android:host="infosec.pub" />
+                <data android:host="iusearchlinux.fyi" />
+                <data android:host="jlai.lu" />
+                <data android:host="lemdro.id" />
+                <data android:host="leminal.space" />
+                <data android:host="lemm.ee" />
+                <data android:host="lemmings.world" />
+                <data android:host="lemmy.blahaj.zone" />
+                <data android:host="lemmy.ca" />
+                <data android:host="lemmy.dbzer0.com" />
+                <data android:host="lemmy.eco.br" />
+                <data android:host="lemmy.ml" />
+                <data android:host="lemmy.nz" />
+                <data android:host="lemmy.one" />
+                <data android:host="lemmy.sdf.org" />
+                <data android:host="lemmy.today" />
+                <data android:host="lemmy.world" />
+                <data android:host="lemmy.zip" />
+                <data android:host="lemmygrad.ml" />
+                <data android:host="lemmynsfw.com" />
+                <data android:host="lemy.lol" />
+                <data android:host="mander.xyz" />
+                <data android:host="midwest.social" />
+                <data android:host="monero.town" />
+                <data android:host="pawb.social" />
+                <data android:host="programming.dev" />
+                <data android:host="reddthat.com" />
+                <data android:host="sh.itjust.works" />
+                <data android:host="slrpnk.net" />
+                <data android:host="sopuli.xyz" />
+                <data android:host="startrek.website" />
+                <data android:host="szmer.info" />
+                <data android:host="thelemmy.club" />
+                <data android:host="ttrpg.network" />
+                <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
 
