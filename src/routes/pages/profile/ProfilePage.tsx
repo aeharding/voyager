@@ -1,6 +1,7 @@
 import {
   IonButton,
   IonButtons,
+  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -19,6 +20,8 @@ import FeedContent from "../shared/FeedContent";
 import ProfilePageActions from "../../../features/user/ProfilePageActions";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import AppHeader from "../../../features/shared/AppHeader";
+import { swapHorizontalSharp } from "ionicons/icons";
+import { isIosTheme } from "../../../helpers/device";
 
 export default function ProfilePage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -39,9 +42,13 @@ export default function ProfilePage() {
       <AppHeader>
         <IonToolbar>
           {!accountsListEmpty && (
-            <IonButtons slot="start">
+            <IonButtons slot="secondary">
               <IonButton onClick={() => presentAccountSwitcher()}>
-                Accounts
+                {isIosTheme() ? (
+                  "Accounts"
+                ) : (
+                  <IonIcon icon={swapHorizontalSharp} slot="icon-only" />
+                )}
               </IonButton>
             </IonButtons>
           )}

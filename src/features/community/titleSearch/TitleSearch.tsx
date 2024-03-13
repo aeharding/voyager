@@ -1,8 +1,9 @@
 import { IonButton, IonButtons, IonIcon, IonTitle } from "@ionic/react";
-import { chevronDown } from "ionicons/icons";
+import { chevronDown, close } from "ionicons/icons";
 import React, { useContext, useEffect, useRef } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
 import { styled } from "@linaria/react";
+import { isIosTheme } from "../../../helpers/device";
 
 const TitleContents = styled.span`
   display: inline-flex;
@@ -82,7 +83,13 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
         </IonTitle>
 
         <IonButtons slot="end">
-          <IonButton onClick={() => setSearching(false)}>Cancel</IonButton>
+          <IonButton onClick={() => setSearching(false)}>
+            {isIosTheme() ? (
+              "Cancel"
+            ) : (
+              <IonIcon icon={close} slot="icon-only" />
+            )}
+          </IonButton>
         </IonButtons>
       </>
     );

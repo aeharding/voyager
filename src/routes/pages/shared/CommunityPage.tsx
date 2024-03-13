@@ -68,10 +68,12 @@ const FixedBg = styled.div`
 `;
 
 const StyledIonToolbar = styled(IonToolbar)`
-  // Weird ionic glitch where adding
-  // absolutely positioned searchbar to header misaligns buttons
-  ion-buttons {
-    margin: auto;
+  .ios & {
+    // Weird ionic glitch where adding
+    // absolutely positioned searchbar to header misaligns buttons
+    ion-buttons {
+      margin: auto;
+    }
   }
 `;
 

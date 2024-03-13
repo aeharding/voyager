@@ -1,13 +1,7 @@
 import { IonIcon } from "@ionic/react";
-import { css, cx } from "@linaria/core";
-import { ellipsisHorizontal } from "ionicons/icons";
+import { ellipsisHorizontal, ellipsisVertical } from "ionicons/icons";
 import { ComponentProps } from "react";
-
-const rotateCss = css`
-  &.md {
-    transform: rotate(90deg);
-  }
-`;
+import { isIosTheme } from "../../helpers/device";
 
 export default function HeaderEllipsisIcon(
   props: ComponentProps<typeof IonIcon>,
@@ -15,8 +9,8 @@ export default function HeaderEllipsisIcon(
   return (
     <IonIcon
       {...props}
-      icon={ellipsisHorizontal}
-      className={cx(rotateCss, props.className)}
+      icon={isIosTheme() ? ellipsisHorizontal : ellipsisVertical}
+      className={props.className}
     />
   );
 }
