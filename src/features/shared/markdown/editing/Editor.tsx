@@ -18,7 +18,7 @@ import {
 import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
 import useTextRecovery from "../../../../helpers/useTextRecovery";
 import useUploadImage from "./useUploadImage";
-import { insert } from "../../../../helpers/string";
+import { htmlToMarkdown } from "../../../../helpers/markdown";
 
 export const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -83,6 +83,23 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
   }, []);
 
   async function onPaste(e: ClipboardEvent) {
+    const html = e.clipboardData.getData("text/html");
+
+    if (html) {
+      e.preventDefault();
+
+      let toInsert;
+
+      try {
+        toInsert = await htmlToMarkdown(html);
+      } catch (error) {
+        toInsert = e.clipboardData.getData("Text");
+        console.error("Parse error", e);
+      }
+
+      document.execCommand("insertText", false, toInsert);
+    }
+
     const image = e.clipboardData.files?.[0];
 
     if (!image) return;
@@ -103,17 +120,8 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
   async function onReceivedImage(image: File) {
     const markdown = await uploadImage(image);
 
-    const position = textareaRef.current?.selectionStart ?? 0;
-
-    setText((text) => insert(text, position, markdown));
-
     textareaRef.current?.focus();
-
-    setTimeout(() => {
-      const location = position + markdown.length;
-
-      textareaRef.current?.setSelectionRange(location, location);
-    });
+    document.execCommand("insertText", false, markdown);
   }
 
   async function onDragOver(event: DragEvent) {
@@ -153,7 +161,6 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
         slot="fixed"
         type="comment"
         text={text}
-        setText={setText}
         textareaRef={textareaRef}
       />
     </>
