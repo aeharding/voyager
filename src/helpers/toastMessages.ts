@@ -251,7 +251,8 @@ export const cacheClearFailed: AppToastOptions = {
 };
 
 export const deepLinkFailed: AppToastOptions = {
-  message: "Failed to find requested link on your instance",
+  message:
+    "Unknown URL. Voyager only accepts URLs to Lemmy content to browse in-app.",
   color: "warning",
   position: "top",
   duration: 7000,
