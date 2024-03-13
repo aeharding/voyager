@@ -32,7 +32,8 @@ import { isLemmyError } from "../../../../helpers/lemmy";
 import AccountSwitcher from "../../../auth/AccountSwitcher";
 import { getClient } from "../../../../services/lemmy";
 import AppHeader from "../../../shared/AppHeader";
-import { arrowBackSharp } from "ionicons/icons";
+import { arrowBackSharp, send } from "ionicons/icons";
+import { isIosTheme } from "../../../../helpers/device";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -239,7 +240,7 @@ export default function CommentReply({
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton onClick={() => dismiss()}>
-              {document.documentElement.classList.contains("ios") ? (
+              {isIosTheme() ? (
                 "Cancel"
               ) : (
                 <IonIcon icon={arrowBackSharp} slot="icon-only" />
@@ -280,7 +281,7 @@ export default function CommentReply({
               color={isSubmitDisabled ? "medium" : undefined}
               onClick={submit}
             >
-              Post
+              {isIosTheme() ? "Post" : <IonIcon icon={send} slot="icon-only" />}
             </IonButton>
           </IonButtons>
         </IonToolbar>

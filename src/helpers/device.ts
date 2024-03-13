@@ -1,6 +1,7 @@
 import UAParser from "ua-parser-js";
 import { Capacitor } from "@capacitor/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
+import { memoize } from "lodash";
 
 export function isNative() {
   return Capacitor.isNativePlatform();
@@ -62,3 +63,7 @@ export function getAndroidNavMode() {
   androidNavMode = promise;
   return promise;
 }
+
+export const isIosTheme = memoize(() =>
+  document.documentElement.classList.contains("ios"),
+);

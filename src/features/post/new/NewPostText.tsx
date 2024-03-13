@@ -2,6 +2,7 @@ import {
   IonBackButton,
   IonButton,
   IonButtons,
+  IonIcon,
   IonText,
   IonTitle,
   IonToolbar,
@@ -12,6 +13,8 @@ import { clearRecoveredText } from "../../../helpers/useTextRecovery";
 import AppHeader from "../../shared/AppHeader";
 import Editor from "../../shared/markdown/editing/Editor";
 import { MarkdownEditorIonContent } from "../../shared/markdown/editing/MarkdownToolbar";
+import { isIosTheme } from "../../../helpers/device";
+import { send } from "ionicons/icons";
 
 interface NewPostTextProps {
   value: string;
@@ -70,7 +73,7 @@ export default function NewPostText({
               onClick={submit}
               disabled={isSubmitDisabled}
             >
-              Post
+              {isIosTheme() ? "Post" : <IonIcon icon={send} slot="icon-only" />}
             </IonButton>
           </IonButtons>
         </IonToolbar>

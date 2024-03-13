@@ -1,4 +1,10 @@
-import { IonButtons, IonButton, IonToolbar, IonTitle } from "@ionic/react";
+import {
+  IonButtons,
+  IonButton,
+  IonToolbar,
+  IonTitle,
+  IonIcon,
+} from "@ionic/react";
 import { Comment } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../../store";
@@ -9,6 +15,8 @@ import CommentEditorContent from "../CommentEditorContent";
 import useAppToast from "../../../../helpers/useAppToast";
 import AppHeader from "../../../shared/AppHeader";
 import { clearRecoveredText } from "../../../../helpers/useTextRecovery";
+import { isIosTheme } from "../../../../helpers/device";
+import { arrowBackSharp, send } from "ionicons/icons";
 
 type CommentEditingProps = DismissableProps & {
   item: Comment;
@@ -67,7 +75,13 @@ export default function CommentEdit({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => dismiss()}>Cancel</IonButton>
+            <IonButton onClick={() => dismiss()}>
+              {isIosTheme() ? (
+                "Cancel"
+              ) : (
+                <IonIcon icon={arrowBackSharp} slot="icon-only" />
+              )}
+            </IonButton>
           </IonButtons>
           <IonTitle>
             <Centered>
@@ -83,7 +97,7 @@ export default function CommentEdit({
               color={isSubmitDisabled ? "medium" : undefined}
               onClick={submit}
             >
-              Save
+              {isIosTheme() ? "Save" : <IonIcon icon={send} slot="icon-only" />}
             </IonButton>
           </IonButtons>
         </IonToolbar>
