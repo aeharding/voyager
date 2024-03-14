@@ -1,3 +1,9 @@
+import rehypeParse from "rehype-parse";
+import rehypeRemark from "rehype-remark";
+import remarkStringify from "remark-stringify";
+import { unified } from "unified";
+import customRemarkGfm from "../features/shared/markdown/customRemarkGfm";
+
 export function findLoneImage(
   markdown: string,
 ): { url: string; altText?: string } | null {
@@ -28,4 +34,15 @@ export function quote(markdown: string) {
     .split("\n")
     .map((line) => `> ${line}`)
     .join("\n");
+}
+
+export async function htmlToMarkdown(html: string) {
+  const process = await unified()
+    .use(rehypeParse)
+    .use(customRemarkGfm, { connectedInstance: "unknown" })
+    .use(rehypeRemark)
+    .use(remarkStringify)
+    .process(html);
+
+  return process.toString().trim();
 }
