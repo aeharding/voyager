@@ -165,6 +165,18 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         if (!currZoomLevel) currZoomLevel = e.zoomLevels.min;
       });
 
+      instance.on("openingAnimationStart", () => {
+        if (animationType !== "zoom") return;
+
+        thumbEl.style.setProperty("visibility", "hidden");
+      });
+
+      instance.on("closingAnimationEnd", () => {
+        if (animationType !== "zoom") return;
+
+        thumbEl.style.removeProperty("visibility");
+      });
+
       instance.on("tapAction", () => {
         if (currZoomLevel !== zoomLevel.min) {
           instance.zoomTo(zoomLevel.min, undefined, 300);
