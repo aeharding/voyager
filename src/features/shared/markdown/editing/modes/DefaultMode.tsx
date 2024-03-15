@@ -258,15 +258,17 @@ export default function DefaultMode({
     e.stopPropagation();
     e.preventDefault();
 
+    const selection = replySelectionRef.current;
+
     const currentSelectionLocation = selectionLocation.current;
-    const html = getSelectionHtml(replySelectionRef.current);
+    const html = getSelectionHtml(selection);
 
     let quotedText;
 
     try {
       quotedText = await htmlToMarkdown(html);
     } catch (error) {
-      quotedText = replySelectionRef.current.toString();
+      quotedText = selection.toString();
       console.error("Parse error", error);
     }
 
