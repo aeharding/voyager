@@ -14,7 +14,6 @@ import { DismissableProps } from "../../../shared/DynamicDismissableModal";
 import CommentEditorContent from "../CommentEditorContent";
 import useAppToast from "../../../../helpers/useAppToast";
 import AppHeader from "../../../shared/AppHeader";
-import { clearRecoveredText } from "../../../../helpers/useTextRecovery";
 import { isIosTheme } from "../../../../helpers/device";
 import { arrowBackSharp, send } from "ionicons/icons";
 
@@ -67,7 +66,6 @@ export default function CommentEdit({
 
     setCanDismiss(true);
     dismiss();
-    clearRecoveredText();
   }
 
   return (
