@@ -68,13 +68,25 @@ export default function DefaultMode({
 
   const selectionLocation = useRef(0);
   const selectionLocationEnd = useRef(0);
-  const replySelectionRef = useRef<Selection | null>(null);
+  const replySelectionRef = useRef<{ text: string; html: string } | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     const onChange = () => {
       selectionLocation.current = textareaRef.current?.selectionStart ?? 0;
       selectionLocationEnd.current = textareaRef.current?.selectionEnd ?? 0;
-      replySelectionRef.current = window.getSelection();
+
+      // Not great to do this here, but if we don't,
+      // safari will sometimes return selection.toString() === "" during onQuote
+      const selection = window.getSelection();
+      replySelectionRef.current =
+        selection?.type === "Range"
+          ? {
+              text: selection.toString(),
+              html: getSelectionHtml(selection),
+            }
+          : undefined;
     };
 
     document.addEventListener("selectionchange", onChange);
@@ -248,27 +260,21 @@ export default function DefaultMode({
   }
 
   async function onQuote(e: MouseEvent | TouchEvent) {
-    if (!replySelectionRef.current?.toString()) return;
-    if (
-      !textareaRef.current ||
-      textareaRef.current?.selectionStart - textareaRef.current?.selectionEnd
-    )
-      return;
+    if (!textareaRef.current) return;
+    const selection = replySelectionRef.current;
+    if (!selection) return;
 
     e.stopPropagation();
     e.preventDefault();
 
-    const selection = replySelectionRef.current;
-
     const currentSelectionLocation = selectionLocation.current;
-    const html = getSelectionHtml(selection);
 
     let quotedText;
 
     try {
-      quotedText = await htmlToMarkdown(html);
+      quotedText = await htmlToMarkdown(selection.html);
     } catch (error) {
-      quotedText = selection.toString();
+      quotedText = selection.text;
       console.error("Parse error", error);
     }
 
