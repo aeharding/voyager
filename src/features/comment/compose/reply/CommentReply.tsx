@@ -26,7 +26,6 @@ import {
 } from "../../../auth/authSelectors";
 import { receivedComments } from "../../commentSlice";
 import CommentEditorContent from "../CommentEditorContent";
-import { clearRecoveredText } from "../../../../helpers/useTextRecovery";
 import useAppToast from "../../../../helpers/useAppToast";
 import { isLemmyError } from "../../../../helpers/lemmy";
 import AccountSwitcher from "../../../auth/AccountSwitcher";
@@ -227,7 +226,6 @@ export default function CommentReply({
     if (reply) dispatch(receivedComments([reply]));
     setCanDismiss(true);
     dismiss(reply);
-    clearRecoveredText();
   }
 
   useEffect(() => {

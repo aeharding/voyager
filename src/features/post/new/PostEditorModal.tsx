@@ -28,7 +28,7 @@ export default function PostEditorModal({
         };
 
   return (
-    <DynamicDismissableModal isOpen={isOpen} setIsOpen={setIsOpen}>
+    <DynamicDismissableModal isOpen={isOpen} setIsOpen={setIsOpen} textRecovery>
       {({ setCanDismiss, dismiss }) => (
         <PostEditor
           setCanDismiss={setCanDismiss}

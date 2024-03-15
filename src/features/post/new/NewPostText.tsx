@@ -9,7 +9,6 @@ import {
 } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
-import { clearRecoveredText } from "../../../helpers/useTextRecovery";
 import AppHeader from "../../shared/AppHeader";
 import Editor from "../../shared/markdown/editing/Editor";
 import { MarkdownEditorIonContent } from "../../shared/markdown/editing/MarkdownToolbar";
@@ -49,8 +48,6 @@ export default function NewPostText({
     } finally {
       setLoading(false);
     }
-
-    clearRecoveredText();
   }
 
   return (
