@@ -155,7 +155,9 @@ export function DynamicDismissableModal({
         }
         onDidDismiss={() => {
           setIsOpen(false);
-          if (textRecovery) clearRecoveredText();
+
+          // in case onDidDismiss incorrectly called by Ionic, don't clear data
+          if (textRecovery && canDismissRef.current) clearRecoveredText();
         }}
         presentingElement={presentingElement}
         onWillDismiss={() => {
