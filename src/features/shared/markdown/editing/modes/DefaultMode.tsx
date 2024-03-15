@@ -105,7 +105,13 @@ export default function DefaultMode({
         {
           text: "Preview",
           icon: glassesOutline,
-          handler: presentPreview,
+          handler: () => {
+            presentPreview({
+              presentingElement: document.querySelector(
+                "ion-modal.show-modal",
+              ) as HTMLElement,
+            });
+          },
         },
         {
           text: "Mention user",
