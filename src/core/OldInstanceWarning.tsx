@@ -8,7 +8,7 @@ import { getItemActorName } from "../helpers/lemmy";
 const ANNOUNCEMENT_LINK = "https://lemmy.world/post/12479493";
 const MINIMUM_REQUIRED_VERSION = "0.19.0";
 
-export default function StartupAnnouncement() {
+export default function OldInstanceWarning() {
   const lastSiteActorIdRef = useRef("");
   const [presentAlert] = useIonAlert();
   const site = useAppSelector((state) => state.site.response);

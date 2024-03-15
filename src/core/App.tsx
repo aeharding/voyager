@@ -38,7 +38,7 @@ import "@ionic/react/css/display.css";
 /* Setup global app lifecycle listeners */
 import "./listeners";
 import AppUrlListener from "./listeners/AppUrlListener";
-import StartupAnnouncement from "./StartupAnnouncement";
+import OldInstanceWarning from "./OldInstanceWarning";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
@@ -78,7 +78,7 @@ export default function App() {
                           <HapticsListener />
                           <AppUrlListener />
                           <TextRecoveryStartupPrompt />
-                          <StartupAnnouncement />
+                          <OldInstanceWarning />
 
                           <Auth>
                             <TabbedRoutes />
