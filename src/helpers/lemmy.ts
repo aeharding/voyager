@@ -302,7 +302,7 @@ export function parseJWT(payload: string): LemmyJWT {
 }
 
 const CROSS_POST_REGEX =
-  /^cross-posted from:\s+(https:\/\/(?:[0-9a-z-]+\.?)+\/post\/[0-9]+)/;
+  /^[cC]ross-posted from:\s+(https:\/\/(?:[0-9a-z-]+\.?)+\/post\/[0-9]+)/;
 
 export function getCrosspostUrl(post: Post): string | undefined {
   if (!post.body) return;
