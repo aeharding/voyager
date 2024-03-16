@@ -148,17 +148,17 @@ export default function DefaultMode({
           },
         },
         {
-          text: "Ordered List",
-          icon: listOrdered,
-          handler: () => {
-            insertBlock("1. ");
-          },
-        },
-        {
           text: "Unordered List",
           icon: listUnordered,
           handler: () => {
             insertBlock("- ");
+          },
+        },
+        {
+          text: "Ordered List",
+          icon: listOrdered,
+          handler: () => {
+            insertBlock("1. ");
           },
         },
         {

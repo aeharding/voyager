@@ -162,7 +162,6 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
           textareaRef.current.selectionStart - orderedMatch[0].length,
           textareaRef.current.selectionStart,
         );
-        document.execCommand("delete", false);
         return;
       }
 
