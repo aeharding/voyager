@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { knownInstancesSelector } from "../instances/instancesSlice";
 import useAppNavigation from "../../helpers/useAppNavigation";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { resolveObject } from "../resolve/resolveSlice";
+import { normalizeObjectUrl, resolveObject } from "../resolve/resolveSlice";
 import { MouseEvent } from "react";
 import useAppToast from "../../helpers/useAppToast";
 import { isLemmyError } from "../../helpers/lemmy";
@@ -176,7 +176,7 @@ export default function useLemmyUrlHandler() {
 
   const redirectToLemmyObjectIfNeeded = useCallback(
     async (link: string, e?: MouseEvent): Promise<boolean> => {
-      const url = getUrl(link);
+      const url = getUrl(normalizeObjectUrl(link));
 
       if (!url) return false;
       if (!knownInstances.includes(url.hostname)) return false; // If non-lemmy domain, return

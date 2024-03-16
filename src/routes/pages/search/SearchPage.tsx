@@ -55,7 +55,7 @@ export default function SearchPage() {
           </form>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY={!search}>
+      <AppContent scrollY>
         {!search ? <EmptySearch /> : <SearchOptions search={search} />}
       </AppContent>
     </IonPage>
