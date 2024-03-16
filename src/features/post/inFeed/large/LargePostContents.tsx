@@ -79,7 +79,7 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
   /**
    * text image with captions
    */
-  if (post.post.body) {
+  if (post.post.body?.trim()) {
     return (
       <>
         {post.post.url && <Embed post={post} />}
