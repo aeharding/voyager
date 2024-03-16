@@ -155,9 +155,7 @@ function PostHeader({
   );
 
   function scrollToTitle() {
-    const titleTop = titleRef.current
-      ? titleRef.current.offsetTop - 12 + 0.5
-      : 0;
+    const titleTop = titleRef.current ? titleRef.current.offsetTop - 12 + 1 : 0;
 
     if (activePageRef?.current?.current) {
       if ("querySelector" in activePageRef.current.current) {
