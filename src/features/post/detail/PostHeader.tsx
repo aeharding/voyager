@@ -1,23 +1,11 @@
-import {
-  IonAccordion,
-  IonAccordionGroup,
-  IonIcon,
-  IonItem,
-} from "@ionic/react";
+import { IonIcon, IonItem } from "@ionic/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import { maxWidthCss } from "../../shared/AppContent";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "../../moderation/ModeratableItem";
 import { OTapToCollapseType } from "../../../services/db";
-import {
-  memo,
-  useCallback,
-  useContext,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-} from "react";
+import { memo, useCallback, useContext, useMemo, useRef } from "react";
 import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
@@ -40,6 +28,7 @@ import useCrosspostUrl from "../shared/useCrosspostUrl";
 import Media from "../inFeed/large/media/Media";
 import { styled } from "@linaria/react";
 import { AppContext } from "../../auth/AppContext";
+import AnimateHeight from "react-animate-height";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -166,7 +155,9 @@ function PostHeader({
   );
 
   function scrollToTitle() {
-    const titleTop = titleRef.current ? titleRef.current.offsetTop - 12 : 0;
+    const titleTop = titleRef.current
+      ? titleRef.current.offsetTop - 12 + 0.5
+      : 0;
 
     if (activePageRef?.current?.current) {
       if ("querySelector" in activePageRef.current.current) {
@@ -210,7 +201,7 @@ function PostHeader({
 
     const usedLoneImage = markdownLoneImage && !urlIsMedia;
 
-    if (post.post.body && !usedLoneImage) {
+    if (post.post.body?.trim() && !usedLoneImage) {
       return (
         <>
           {post.post.url && !urlIsMedia && <Embed post={post} />}
@@ -226,12 +217,7 @@ function PostHeader({
     }
   }, [post, crosspostUrl, markdownLoneImage, urlIsMedia]);
 
-  const accordionGroupRef = useRef<HTMLIonAccordionGroupElement>(null);
-
-  useLayoutEffect(() => {
-    if (accordionGroupRef.current)
-      accordionGroupRef.current.value = collapsed ? undefined : "open";
-  }, [collapsed]);
+  const text = renderText();
 
   return (
     <ModeratableItem itemView={post}>
@@ -259,12 +245,10 @@ function PostHeader({
                 <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
                 {isNsfw(post) && <Nsfw />}
               </Title>
-              {showPostText && (
-                <IonAccordionGroup ref={accordionGroupRef}>
-                  <IonAccordion value="open">
-                    <TextContent slot="content">{renderText()}</TextContent>
-                  </IonAccordion>
-                </IonAccordionGroup>
+              {showPostText && text && (
+                <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
+                  <TextContent slot="content">{text}</TextContent>
+                </AnimateHeight>
               )}
               <By>
                 {post.post.featured_community || post.post.featured_local ? (
