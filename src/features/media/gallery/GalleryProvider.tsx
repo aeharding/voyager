@@ -71,13 +71,13 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
   useEffect(() => {
     if (!lightboxRef.current) return;
 
-    lightboxRef.current.destroy();
-    lightboxRef.current = null;
+    lightboxRef.current.close();
   }, [location.pathname]);
 
   const close = useCallback(() => {
     if (!lightboxRef.current) return;
 
+    lightboxRef.current.options.showHideAnimationType = "fade";
     lightboxRef.current.close();
   }, []);
 
@@ -171,11 +171,13 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         thumbEl.style.setProperty("visibility", "hidden");
       });
 
-      instance.on("closingAnimationEnd", () => {
+      const cleanupHideThumb = () => {
         if (animationType !== "zoom") return;
 
         thumbEl.style.removeProperty("visibility");
-      });
+      };
+
+      instance.on("closingAnimationEnd", cleanupHideThumb);
 
       instance.on("tapAction", () => {
         if (currZoomLevel !== zoomLevel.min) {
@@ -227,10 +229,6 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
       instance.on("close", () => {
         if (isNative()) StatusBar.show();
-      });
-
-      instance.on("closingAnimationEnd", () => {
-        setPost(undefined);
       });
 
       instance.on("uiRegister", function () {
@@ -324,6 +322,9 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       window.addEventListener("popstate", closeGalleryOnHistoryPopState);
 
       instance.on("destroy", () => {
+        cleanupHideThumb();
+        setPost(undefined);
+
         if (galleryHashEnabled) {
           window.removeEventListener("popstate", closeGalleryOnHistoryPopState);
 
