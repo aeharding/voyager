@@ -32,7 +32,7 @@ import { getDefaultServer } from "../services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
 import { useOptimizedIonRouter } from "../helpers/useOptimizedIonRouter";
 import { PageContext } from "../features/auth/PageContext";
-import { useLongPress } from "use-long-press";
+import { LongPressReactEvents, useLongPress } from "use-long-press";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../helpers/useHapticFeedback";
 import { css } from "@linaria/core";
@@ -216,6 +216,27 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
 
   const presentAccountSwitcherBind = useLongPress(onPresentAccountSwitcher);
 
+  const onLongPressSearch = useCallback(
+    (e: LongPressReactEvents) => {
+      vibrate({ style: ImpactStyle.Light });
+
+      if (!router.getRouteInfo()?.pathname.startsWith("/search")) {
+        if (e.target instanceof HTMLElement) e.target.click();
+      }
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            focusSearchBar();
+          });
+        });
+      });
+    },
+    [router, vibrate],
+  );
+
+  const longPressSearchBind = useLongPress(onLongPressSearch);
+
   const settingsBadge = (() => {
     if (databaseError) return <IonBadge color="danger">!</IonBadge>;
 
@@ -258,7 +279,11 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       >
         <IonIcon aria-hidden="true" icon={search} />
         <IonLabel>Search</IonLabel>
-        <div onClick={onSearchClick} className={interceptorCss} />
+        <div
+          onClick={onSearchClick}
+          className={interceptorCss}
+          {...longPressSearchBind()}
+        />
       </IonTabButton>
       <IonTabButton
         tab="settings"
