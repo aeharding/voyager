@@ -155,7 +155,13 @@ function PostHeader({
   );
 
   function scrollToTitle() {
-    const titleTop = titleRef.current ? titleRef.current.offsetTop - 12 + 1 : 0;
+    const titleTop = (() => {
+      const top = titleRef.current?.offsetTop;
+      if (!top) return 0;
+
+      if (top - 12 === 0) return 0;
+      return top - 12 + 1; // extra 1 to prevent thin line of image showing
+    })();
 
     if (activePageRef?.current?.current) {
       if ("querySelector" in activePageRef.current.current) {
