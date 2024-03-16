@@ -41,7 +41,7 @@ export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
   background: none;
   resize: none;
   outline: 0;
-  padding: 1rem;
+  padding: 16px;
 
   min-height: 200px;
 
