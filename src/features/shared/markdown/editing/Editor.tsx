@@ -10,6 +10,7 @@ import {
   ClipboardEvent,
   Dispatch,
   DragEvent,
+  KeyboardEvent,
   SetStateAction,
   forwardRef,
   useEffect,
@@ -19,6 +20,9 @@ import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
 import useTextRecovery from "../../../../helpers/useTextRecovery";
 import useUploadImage from "./useUploadImage";
 import { htmlToMarkdown } from "../../../../helpers/markdown";
+
+const ORDERED_LIST_REGEX = /^(\d)\. /;
+const UNORDERED_LIST_REGEX = /^(-|\*|\+) /;
 
 export const Container = styled.div<{ keyboardOpen: boolean }>`
   min-height: 100%;
@@ -128,6 +132,59 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
     event.preventDefault();
   }
 
+  async function autocompleteListIfNeeded(e: KeyboardEvent) {
+    if (
+      !textareaRef.current ||
+      textareaRef.current.selectionStart !== textareaRef.current.selectionStart
+    )
+      return;
+
+    const currentText = textareaRef.current.value.slice(
+      0,
+      textareaRef.current.selectionStart,
+    ); // -1: already hit enter
+
+    const lastNewlineIndex = currentText.lastIndexOf("\n") ?? 0;
+
+    const lastLine = currentText.slice(
+      lastNewlineIndex + 1,
+      currentText.length,
+    );
+
+    const orderedMatch = lastLine.match(ORDERED_LIST_REGEX);
+    if (orderedMatch?.[1]) {
+      const listNumber = +orderedMatch[1];
+      if (listNumber >= 9) return; // only support up to 9 items for now to avoid annoying autocomplete
+
+      // if pressing <enter> on empty list item, bail and remove empty item
+      if (orderedMatch[0] === lastLine) {
+        textareaRef.current.setSelectionRange(
+          textareaRef.current.selectionStart - orderedMatch[0].length,
+          textareaRef.current.selectionStart,
+        );
+        return;
+      }
+
+      e.preventDefault();
+      document.execCommand("insertText", false, `\n${listNumber + 1}. `);
+    }
+
+    const unorderedMatch = lastLine.match(UNORDERED_LIST_REGEX);
+    if (unorderedMatch?.[1]) {
+      // if pressing <enter> on empty list item, bail and remove empty item
+      if (unorderedMatch[0] === lastLine) {
+        textareaRef.current.setSelectionRange(
+          textareaRef.current.selectionStart - unorderedMatch[0].length,
+          textareaRef.current.selectionStart,
+        );
+        return;
+      }
+
+      e.preventDefault();
+      document.execCommand("insertText", false, `\n${unorderedMatch?.[1]} `);
+    }
+  }
+
   return (
     <>
       {jsx}
@@ -143,11 +200,18 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
           spellCheck
           id={TOOLBAR_TARGET_ID}
           onKeyDown={(e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-              onSubmit?.();
-            }
-            if (e.key === "Escape") {
-              onDismiss?.();
+            switch (e.key) {
+              case "Enter": {
+                if (e.ctrlKey || e.metaKey) {
+                  onSubmit?.();
+                } else {
+                  autocompleteListIfNeeded(e);
+                }
+                break;
+              }
+              case "Escape":
+                onDismiss?.();
+                break;
             }
           }}
           onPaste={onPaste}

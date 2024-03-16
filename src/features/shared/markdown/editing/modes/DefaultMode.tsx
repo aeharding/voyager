@@ -19,7 +19,13 @@ import {
 import { MouseEvent, RefObject, useEffect, useRef } from "react";
 import PreviewModal from "../PreviewModal";
 import textFaces from "./textFaces.txt?raw";
-import { bold, italic, quote } from "../../../../icons";
+import {
+  bold,
+  italic,
+  listOrdered,
+  listUnordered,
+  quote,
+} from "../../../../icons";
 import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
@@ -139,6 +145,20 @@ export default function DefaultMode({
               18,
               14,
             );
+          },
+        },
+        {
+          text: "Unordered List",
+          icon: listUnordered,
+          handler: () => {
+            insertBlock("- ");
+          },
+        },
+        {
+          text: "Ordered List",
+          icon: listOrdered,
+          handler: () => {
+            insertBlock("1. ");
           },
         },
         {
