@@ -119,6 +119,9 @@ export default function DefaultMode({
               presentingElement: document.querySelector(
                 "ion-modal.show-modal",
               ) as HTMLElement,
+              onDidDismiss: () => {
+                requestAnimationFrame(() => textareaRef.current?.focus());
+              },
             });
           },
         },
