@@ -5,6 +5,7 @@ import useEvent from "../../helpers/useEvent";
 import { useAppSelector } from "../../store";
 import useAppToast from "../../helpers/useAppToast";
 import { deepLinkFailed } from "../../helpers/toastMessages";
+import { normalizeObjectUrl } from "../../features/resolve/resolveSlice";
 
 export default function AppUrlListener() {
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
@@ -40,7 +41,7 @@ export default function AppUrlListener() {
 
   useEffect(() => {
     App.addListener("appUrlOpen", (event) => {
-      onAppUrl(normalizeAppUrl(event.url));
+      onAppUrl(normalizeObjectUrl(event.url));
     });
   }, [onAppUrl]);
 
@@ -53,19 +54,4 @@ export default function AppUrlListener() {
   }, [notReady, onAppUrl]);
 
   return null;
-}
-
-function normalizeAppUrl(deepLinkUrl: string) {
-  let url = deepLinkUrl;
-
-  // Replace app schema "vger" with "https"
-  url = url.replace(/^vger:\/\//, "https://");
-
-  // Strip fragment
-  url = url.split("#")[0]!;
-
-  // Strip query parameters
-  url = url.split("?")[0]!;
-
-  return url;
 }
