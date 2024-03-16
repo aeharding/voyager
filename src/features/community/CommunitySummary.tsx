@@ -85,10 +85,11 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
           />
           <RightContainer>
             <ActionButton
-              color={isSubscribed ? "danger" : "primary"}
               onClick={(e) => {
-                subscribe();
                 e.stopPropagation();
+                e.preventDefault();
+
+                subscribe();
               }}
             >
               <ToggleIcon icon={heart} selected={isSubscribed} />
