@@ -34,6 +34,7 @@ import { LongPressReactEvents, useLongPress } from "use-long-press";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../helpers/useHapticFeedback";
 import { styled } from "@linaria/react";
+import { openTitleSearch } from "../features/community/titleSearch/TitleSearch";
 
 const ProfileLabel = styled(IonLabel)`
   max-width: 20vw;
@@ -251,6 +252,33 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     [],
   );
 
+  const onLongPressPosts = useCallback(
+    (e: LongPressReactEvents) => {
+      vibrate({ style: ImpactStyle.Light });
+
+      if (!router.getRouteInfo()?.pathname.startsWith("/posts")) {
+        if (e.target instanceof HTMLElement) e.target.click();
+      }
+
+      // order matters- set after target.click()
+      longPressedRef.current = true;
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            openTitleSearch();
+          });
+        });
+      });
+    },
+    [router, vibrate],
+  );
+
+  const longPressPostsBind = useLongPress(
+    onLongPressPosts,
+    tabLongPressSettings,
+  );
+
   const onLongPressInbox = useCallback(
     (e: LongPressReactEvents) => {
       vibrate({ style: ImpactStyle.Light });
@@ -329,7 +357,12 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
 
   return (
     <IonTabBar {...props} ref={ref} onClick={resetLongPress}>
-      <IonTabButton tab="posts" href="/posts" onClick={onPostsClick}>
+      <IonTabButton
+        tab="posts"
+        href="/posts"
+        onClick={onPostsClick}
+        {...longPressPostsBind()}
+      >
         <IonIcon aria-hidden="true" icon={telescope} />
         <IonLabel>Posts</IonLabel>
       </IonTabButton>
