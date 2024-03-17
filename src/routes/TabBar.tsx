@@ -18,8 +18,6 @@ import { UpdateContext } from "./pages/settings/update/UpdateContext";
 import { scrollUpIfNeeded } from "../helpers/scrollUpIfNeeded";
 import { getProfileTabLabel } from "../features/settings/general/other/ProfileTabLabel";
 import { AppContext } from "../features/auth/AppContext";
-import { resetSavedStatusTap } from "../core/listeners/statusTap";
-import { useLocation } from "react-router";
 import { useAppSelector } from "../store";
 import {
   userHandleSelector,
@@ -27,22 +25,15 @@ import {
   jwtSelector,
   accountsListEmptySelector,
 } from "../features/auth/authSelectors";
-import { forwardRef, useCallback, useContext, useEffect, useMemo } from "react";
+import { forwardRef, useCallback, useContext, useMemo, useRef } from "react";
 import { getDefaultServer } from "../services/app";
 import { focusSearchBar } from "./pages/search/SearchPage";
 import { useOptimizedIonRouter } from "../helpers/useOptimizedIonRouter";
 import { PageContext } from "../features/auth/PageContext";
-import { useLongPress } from "use-long-press";
+import { LongPressReactEvents, useLongPress } from "use-long-press";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../helpers/useHapticFeedback";
-import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
-
-const interceptorCss = css`
-  position: absolute;
-  inset: 0;
-  pointer-events: all;
-`;
 
 const ProfileLabel = styled(IonLabel)`
   max-width: 20vw;
@@ -56,16 +47,13 @@ type CustomTabBarType = typeof IonTabBar & {
 };
 
 const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
-  const location = useLocation();
+  const longPressedRef = useRef(false);
+
   const router = useOptimizedIonRouter();
   const vibrate = useHapticFeedback();
 
   const databaseError = useAppSelector((state) => state.settings.databaseError);
   const selectedInstance = useAppSelector(instanceSelector);
-
-  useEffect(() => {
-    resetSavedStatusTap();
-  }, [location]);
 
   const { status: updateStatus } = useContext(UpdateContext);
   const shouldInstall = useShouldInstall();
@@ -95,109 +83,144 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
     [profileLabelType, userHandle, connectedInstance],
   );
 
-  const isPostsButtonDisabled = location.pathname.startsWith("/posts");
-  const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
-  const isProfileButtonDisabled = location.pathname.startsWith("/profile");
-  const isSearchButtonDisabled = location.pathname.startsWith("/search");
-  const isSettingsButtonDisabled = location.pathname.startsWith("/settings");
-
-  const onPostsClick = useCallback(() => {
-    if (!isPostsButtonDisabled) return;
-
-    if (scrollUpIfNeeded(activePageRef?.current)) return;
-
-    const pathname = router.getRouteInfo()?.pathname;
-    if (!pathname) return;
-
-    const actor = pathname.split("/")[2];
-
-    if (pathname.endsWith(jwt ? "/home" : "/all")) {
-      router.push(
-        `/posts/${actor ?? selectedInstance ?? getDefaultServer()}`,
-        "back",
-      );
-      return;
-    }
-
-    const communitiesPath = `/posts/${
-      actor ?? selectedInstance ?? getDefaultServer()
-    }`;
-    if (pathname === communitiesPath || pathname === `${communitiesPath}/`)
-      return;
-
-    if (router.canGoBack()) {
-      router.goBack();
-    } else {
-      router.push(
-        `/posts/${actor ?? selectedInstance ?? getDefaultServer()}/${
-          jwt ? "home" : "all"
-        }`,
-        "back",
-      );
-    }
-  }, [activePageRef, isPostsButtonDisabled, jwt, router, selectedInstance]);
-
-  const onInboxClick = useCallback(() => {
-    if (!isInboxButtonDisabled) return;
-
-    const pathname = router.getRouteInfo()?.pathname;
-    if (!pathname) return;
-
-    if (
-      // Messages are in reverse order, so bail on scroll up
-      !pathname.startsWith("/inbox/messages/") &&
-      scrollUpIfNeeded(activePageRef?.current)
-    )
-      return;
-
-    router.push(`/inbox`, "back");
-  }, [activePageRef, isInboxButtonDisabled, router]);
-
-  const onProfileClick = useCallback(() => {
-    if (!isProfileButtonDisabled) return;
-
-    if (scrollUpIfNeeded(activePageRef?.current)) return;
-
-    const pathname = router.getRouteInfo()?.pathname;
-    if (!pathname) return;
-
-    // if the profile page is already open, show the account switcher
-    if (pathname === "/profile") {
-      if (!accountsListEmpty) {
-        presentAccountSwitcher();
-      } else {
-        presentLoginIfNeeded();
+  const onPostsClick = useCallback(
+    (e: CustomEvent) => {
+      if (longPressedRef.current) {
+        e.preventDefault();
+        longPressedRef.current = false;
+        return;
       }
-    }
 
-    router.push("/profile", "back");
-  }, [
-    accountsListEmpty,
-    activePageRef,
-    isProfileButtonDisabled,
-    presentAccountSwitcher,
-    presentLoginIfNeeded,
-    router,
-  ]);
+      if (!router.getRouteInfo()?.pathname.startsWith("/posts")) return;
+      e.preventDefault();
 
-  const onSearchClick = useCallback(() => {
-    if (!isSearchButtonDisabled) return;
+      if (scrollUpIfNeeded(activePageRef?.current)) return;
 
-    // if the search page is already open, focus the search bar
-    focusSearchBar();
+      const pathname = router.getRouteInfo()?.pathname;
+      if (!pathname) return;
 
-    if (scrollUpIfNeeded(activePageRef?.current)) return;
+      const actor = pathname.split("/")[2];
 
-    router.push(`/search`, "back");
-  }, [activePageRef, isSearchButtonDisabled, router]);
+      if (pathname.endsWith(jwt ? "/home" : "/all")) {
+        router.push(
+          `/posts/${actor ?? selectedInstance ?? getDefaultServer()}`,
+          "back",
+        );
+        return;
+      }
 
-  const onSettingsClick = useCallback(() => {
-    if (!isSettingsButtonDisabled) return;
+      const communitiesPath = `/posts/${
+        actor ?? selectedInstance ?? getDefaultServer()
+      }`;
+      if (pathname === communitiesPath || pathname === `${communitiesPath}/`)
+        return;
 
-    if (scrollUpIfNeeded(activePageRef?.current)) return;
+      if (router.canGoBack()) {
+        router.goBack();
+      } else {
+        router.push(
+          `/posts/${actor ?? selectedInstance ?? getDefaultServer()}/${
+            jwt ? "home" : "all"
+          }`,
+          "back",
+        );
+      }
+    },
+    [activePageRef, jwt, router, selectedInstance],
+  );
 
-    router.push(`/settings`, "back");
-  }, [activePageRef, isSettingsButtonDisabled, router]);
+  const onInboxClick = useCallback(
+    (e: CustomEvent) => {
+      if (longPressedRef.current) {
+        e.preventDefault();
+        longPressedRef.current = false;
+        return;
+      }
+
+      if (!router.getRouteInfo()?.pathname.startsWith("/inbox")) return;
+      e.preventDefault();
+
+      const pathname = router.getRouteInfo()?.pathname;
+      if (!pathname) return;
+
+      if (
+        // Messages are in reverse order, so bail on scroll up
+        !pathname.startsWith("/inbox/messages/") &&
+        scrollUpIfNeeded(activePageRef?.current)
+      )
+        return;
+
+      router.push(`/inbox`, "back");
+    },
+    [activePageRef, router],
+  );
+
+  const onProfileClick = useCallback(
+    (e: CustomEvent) => {
+      if (!router.getRouteInfo()?.pathname.startsWith("/profile")) return;
+      e.preventDefault();
+
+      if (scrollUpIfNeeded(activePageRef?.current)) return;
+
+      const pathname = router.getRouteInfo()?.pathname;
+      if (!pathname) return;
+
+      // if the profile page is already open, show the account switcher
+      if (pathname === "/profile") {
+        if (!accountsListEmpty) {
+          presentAccountSwitcher();
+        } else {
+          presentLoginIfNeeded();
+        }
+      }
+
+      router.push("/profile", "back");
+    },
+    [
+      accountsListEmpty,
+      activePageRef,
+      presentAccountSwitcher,
+      presentLoginIfNeeded,
+      router,
+    ],
+  );
+
+  const onSearchClick = useCallback(
+    (e: CustomEvent) => {
+      if (longPressedRef.current) {
+        e.preventDefault();
+        return;
+      }
+
+      if (!router.getRouteInfo()?.pathname.startsWith("/search")) return;
+      e.preventDefault();
+
+      // if the search page is already open, focus the search bar
+      focusSearchBar();
+
+      if (scrollUpIfNeeded(activePageRef?.current)) return;
+
+      router.push(`/search`, "back");
+    },
+    [activePageRef, router],
+  );
+
+  const onSettingsClick = useCallback(
+    (e: CustomEvent) => {
+      if (longPressedRef.current) {
+        e.preventDefault();
+        return;
+      }
+
+      if (!router.getRouteInfo()?.pathname.startsWith("/settings")) return;
+      e.preventDefault();
+
+      if (scrollUpIfNeeded(activePageRef?.current)) return;
+
+      router.push(`/settings`, "back");
+    },
+    [activePageRef, router],
+  );
 
   const onPresentAccountSwitcher = useCallback(() => {
     vibrate({ style: ImpactStyle.Light });
@@ -216,6 +239,83 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
 
   const presentAccountSwitcherBind = useLongPress(onPresentAccountSwitcher);
 
+  // Except profile switcher, since it presents overlay this hack is not needed
+  const tabLongPressSettings = useMemo(
+    () => ({
+      onFinish: () => {
+        setTimeout(() => {
+          longPressedRef.current = false;
+        }, 200);
+      },
+    }),
+    [],
+  );
+
+  const onLongPressInbox = useCallback(
+    (e: LongPressReactEvents) => {
+      vibrate({ style: ImpactStyle.Light });
+
+      if (!router.getRouteInfo()?.pathname.startsWith("/inbox")) {
+        if (e.target instanceof HTMLElement) e.target.click();
+      }
+
+      // order matters- set after target.click()
+      longPressedRef.current = true;
+    },
+    [router, vibrate],
+  );
+
+  const longPressInboxBind = useLongPress(
+    onLongPressInbox,
+    tabLongPressSettings,
+  );
+
+  const onLongPressSearch = useCallback(
+    (e: LongPressReactEvents) => {
+      vibrate({ style: ImpactStyle.Light });
+
+      if (!router.getRouteInfo()?.pathname.startsWith("/search")) {
+        if (e.target instanceof HTMLElement) e.target.click();
+      }
+
+      // order matters- set after target.click()
+      longPressedRef.current = true;
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            focusSearchBar();
+          });
+        });
+      });
+    },
+    [router, vibrate],
+  );
+
+  const longPressSearchBind = useLongPress(
+    onLongPressSearch,
+    tabLongPressSettings,
+  );
+
+  const onLongPressSettings = useCallback(
+    (e: LongPressReactEvents) => {
+      vibrate({ style: ImpactStyle.Light });
+
+      if (!router.getRouteInfo()?.pathname.startsWith("/settings")) {
+        if (e.target instanceof HTMLElement) e.target.click();
+      }
+
+      // order matters- set after target.click()
+      longPressedRef.current = true;
+    },
+    [router, vibrate],
+  );
+
+  const longPressSettingsBind = useLongPress(
+    onLongPressSettings,
+    tabLongPressSettings,
+  );
+
   const settingsBadge = (() => {
     if (databaseError) return <IonBadge color="danger">!</IonBadge>;
 
@@ -223,52 +323,55 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       return <IonBadge color="danger">{settingsNotificationCount}</IonBadge>;
   })();
 
+  const resetLongPress = () => {
+    longPressedRef.current = false;
+  };
+
   return (
-    <IonTabBar {...props} ref={ref}>
-      <IonTabButton disabled={isPostsButtonDisabled} tab="posts" href="/posts">
+    <IonTabBar {...props} ref={ref} onClick={resetLongPress}>
+      <IonTabButton tab="posts" href="/posts" onClick={onPostsClick}>
         <IonIcon aria-hidden="true" icon={telescope} />
         <IonLabel>Posts</IonLabel>
-        <div onClick={onPostsClick} className={interceptorCss} />
       </IonTabButton>
-      <IonTabButton disabled={isInboxButtonDisabled} tab="inbox" href="/inbox">
+      <IonTabButton
+        tab="inbox"
+        href="/inbox"
+        onClick={onInboxClick}
+        {...longPressInboxBind()}
+      >
         <IonIcon aria-hidden="true" icon={fileTray} />
         <IonLabel>Inbox</IonLabel>
         {totalUnread ? (
           <IonBadge color="danger">{totalUnread}</IonBadge>
         ) : undefined}
-        <div onClick={onInboxClick} className={interceptorCss} />
       </IonTabButton>
       <IonTabButton
-        disabled={isProfileButtonDisabled}
         tab="profile"
         href="/profile"
+        onClick={onProfileClick}
+        {...presentAccountSwitcherBind()}
       >
         <IonIcon aria-hidden="true" icon={personCircleOutline} />
         <ProfileLabel>{profileTabLabel}</ProfileLabel>
-        <div
-          onClick={onProfileClick}
-          {...presentAccountSwitcherBind()}
-          className={interceptorCss}
-        />
       </IonTabButton>
       <IonTabButton
-        disabled={isSearchButtonDisabled}
         tab="search"
         href="/search"
+        onClick={onSearchClick}
+        {...longPressSearchBind()}
       >
         <IonIcon aria-hidden="true" icon={search} />
         <IonLabel>Search</IonLabel>
-        <div onClick={onSearchClick} className={interceptorCss} />
       </IonTabButton>
       <IonTabButton
         tab="settings"
         href="/settings"
-        disabled={isSettingsButtonDisabled}
+        onClick={onSettingsClick}
+        {...longPressSettingsBind()}
       >
         <IonIcon aria-hidden="true" icon={cog} />
         <IonLabel>Settings</IonLabel>
         {settingsBadge}
-        <div onClick={onSettingsClick} className={interceptorCss} />
       </IonTabButton>
     </IonTabBar>
   );

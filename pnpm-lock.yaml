@@ -11,6 +11,9 @@ patchedDependencies:
   '@capacitor/browser@5.2.0':
     hash: m4ddgv4ucvx4w6engzasoi47iy
     path: patches/@capacitor__browser@5.2.0.patch
+  '@ionic/react@7.7.3':
+    hash: 7asu52pkyapnh4lmgewfmrsdnm
+    path: patches/@ionic__react@7.7.3.patch
 
 dependencies:
   compression:
@@ -86,7 +89,7 @@ devDependencies:
     version: /voyager-ionic-core@7.7.3
   '@ionic/react':
     specifier: ^7.7.3
-    version: 7.7.3(react-dom@18.2.0)(react@18.2.0)
+    version: 7.7.3(patch_hash=7asu52pkyapnh4lmgewfmrsdnm)(react-dom@18.2.0)(react@18.2.0)
   '@ionic/react-router':
     specifier: ^7.7.3
     version: 7.7.3(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
@@ -3488,7 +3491,7 @@ packages:
       react-router: ^5.0.1
       react-router-dom: ^5.0.1
     dependencies:
-      '@ionic/react': 7.7.3(react-dom@18.2.0)(react@18.2.0)
+      '@ionic/react': 7.7.3(patch_hash=7asu52pkyapnh4lmgewfmrsdnm)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-router: 5.3.4(react@18.2.0)
@@ -3496,7 +3499,7 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@ionic/react@7.7.3(react-dom@18.2.0)(react@18.2.0):
+  /@ionic/react@7.7.3(patch_hash=7asu52pkyapnh4lmgewfmrsdnm)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-b8jLpqv4dZ9nB9zoxhe0KR1Wk9bWMQ3UXQcOPu20+zYrxExwPqpLJ93LI0bU4F7ellduMjsakvELY486FeRrXw==}
     peerDependencies:
       react: '>=16.8.6'
@@ -3508,6 +3511,7 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       tslib: 2.6.2
     dev: true
+    patched: true
 
   /@ionic/utils-array@2.1.6:
     resolution: {integrity: sha512-0JZ1Zkp3wURnv8oq6Qt7fMPo5MpjbLoUoa9Bu2Q4PJuSDWM8H8gwF3dQO7VTeUj3/0o1IB1wGkFWZZYgUXZMUg==}
