@@ -49,10 +49,10 @@ function UncollapsedAppHeader(props: ComponentProps<typeof AppHeader>) {
     };
 
     // can't simply react onClick. Synthetic doesn't work properly (Ionic issue?)
-    header.addEventListener("click", onClick);
+    header.addEventListener("click", onClick, { capture: true });
 
     return () => {
-      header.removeEventListener("click", onClick);
+      header.removeEventListener("click", onClick, { capture: true });
     };
   }, []);
 
