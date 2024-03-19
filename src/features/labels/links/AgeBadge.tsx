@@ -1,9 +1,5 @@
 import { styled } from "@linaria/react";
-import {
-  calculateIsCakeDay,
-  calculateNewAccount,
-  fixLemmyDateString,
-} from "../../../helpers/date";
+import { calculateIsCakeDay, calculateNewAccount } from "../../../helpers/date";
 import { useAppSelector } from "../../../store";
 import { useMemo } from "react";
 
@@ -21,7 +17,7 @@ export default function AgeBadge({ published }: AgeBadgeProps) {
   );
 
   const ageBadgeData = useMemo(() => {
-    const publishedDate = new Date(fixLemmyDateString(published));
+    const publishedDate = new Date(published);
 
     if (calculateIsCakeDay(publishedDate)) return { type: "cake" } as const;
 

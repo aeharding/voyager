@@ -11,6 +11,7 @@ import {
 import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
 import { quote } from "./markdown";
+import { compare } from "compare-versions";
 
 export interface LemmyJWT {
   sub: number;
@@ -279,7 +280,6 @@ export function keywordFoundInSentence(
 }
 
 export type LemmyErrorValue = LemmyErrorType["error"];
-export type OldLemmyErrorValue = never; // When removing support for an old version of Lemmy, cleanup these references
 
 export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
   if (!(error instanceof Error)) return;
@@ -328,15 +328,10 @@ export function getLoginErrorMessage(
     return "Unknown error occurred, please try again.";
 
   switch (error.message as LemmyErrorValue) {
-    // TODO old lemmy support
-    case "incorrect_totp token" as OldLemmyErrorValue:
     case "incorrect_totp_token":
       return "Incorrect 2nd factor code. Please try again.";
-    // TODO old lemmy support
-    case "couldnt_find_that_username_or_email" as OldLemmyErrorValue:
     case "couldnt_find_person":
       return `User not found. Is your account on ${instanceActorId}?`;
-    case "password_incorrect" as OldLemmyErrorValue:
     case "incorrect_login":
       return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
     case "email_not_verified":
@@ -371,4 +366,10 @@ export function sortPostCommentByPublished(
   b: PostView | CommentView,
 ): number {
   return getPublishedDate(b).localeCompare(getPublishedDate(a));
+}
+
+export const MINIMUM_LEMMY_VERSION = "0.19.0";
+
+export function isMinimumSupportedLemmyVersion(version: string) {
+  return compare(version, MINIMUM_LEMMY_VERSION, ">=");
 }

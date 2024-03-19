@@ -1,28 +1,24 @@
 import { useState } from "react";
 import useAppToast from "../../../../helpers/useAppToast";
-import { useAppSelector } from "../../../../store";
-import { jwtSelector, urlSelector } from "../../../auth/authSelectors";
 import { uploadImage } from "../../../../services/lemmy";
 import { IonLoading } from "@ionic/react";
+import useClient from "../../../../helpers/useClient";
 
 export default function useUploadImage() {
   const presentToast = useAppToast();
-  const jwt = useAppSelector(jwtSelector);
-  const instanceUrl = useAppSelector(urlSelector);
+  const client = useClient();
 
   const [imageUploading, setImageUploading] = useState(false);
 
   return {
     jsx: <IonLoading isOpen={imageUploading} message="Uploading image..." />,
     uploadImage: async (image: File) => {
-      if (!jwt) throw new Error("jwt expected for image upload");
-
       setImageUploading(true);
 
       let imageUrl: string;
 
       try {
-        imageUrl = await uploadImage(instanceUrl, jwt, image);
+        imageUrl = await uploadImage(client, image);
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Unknown error";

@@ -23,6 +23,10 @@ import { GetSiteResponse } from "lemmy-js-client";
 import { uniq } from "lodash";
 import { getCustomServers } from "../../../../services/app";
 import AppHeader from "../../../shared/AppHeader";
+import {
+  MINIMUM_LEMMY_VERSION,
+  isMinimumSupportedLemmyVersion,
+} from "../../../../helpers/lemmy";
 
 const Container = styled.div`
   height: 100%;
@@ -98,6 +102,17 @@ export default function PickLoginServer() {
       throw error;
     } finally {
       setLoading(false);
+    }
+
+    if (!isMinimumSupportedLemmyVersion(site.version)) {
+      presentToast({
+        message: `${potentialServer} is running Lemmy v${site.version}. Voyager requires at least v${MINIMUM_LEMMY_VERSION}`,
+        color: "danger",
+        fullscreen: true,
+        duration: 6_000,
+      });
+
+      return;
     }
 
     ref.current

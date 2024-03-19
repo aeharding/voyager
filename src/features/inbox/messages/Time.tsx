@@ -1,12 +1,11 @@
 import { differenceInDays, differenceInHours, format } from "date-fns";
-import { fixLemmyDateString } from "../../../helpers/date";
 
 interface TimeProps {
   date: string;
 }
 
 export default function Time({ date: dateStr }: TimeProps) {
-  const date = new Date(fixLemmyDateString(dateStr));
+  const date = new Date(dateStr);
 
   if (differenceInDays(new Date(), date) > 6) {
     return <>{format(date, "PP")}</>;

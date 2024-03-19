@@ -1,18 +1,6 @@
 import { differenceInDays } from "date-fns";
 
 /**
- * Lemmy <= 0.18.3 has a bug where the Z isn't appended
- *
- * @param rawLemmyDateString Bugged lemmy date string
- * @returns Consistent date string, ready to be passed to Date
- */
-export function fixLemmyDateString(rawLemmyDateString: string): string {
-  if (rawLemmyDateString.endsWith("Z")) return rawLemmyDateString;
-
-  return `${rawLemmyDateString}Z`;
-}
-
-/**
  * User cake day happens annually, and starts the exact millisecond the user
  * signed up, and runs for exactly 24 hours
  *

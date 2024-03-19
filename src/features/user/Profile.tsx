@@ -19,14 +19,12 @@ import { LIMIT } from "../../services/lemmy";
 import { useAppSelector } from "../../store";
 import PostCommentFeed, { PostCommentItem } from "../feed/PostCommentFeed";
 import { userHandleSelector } from "../auth/authSelectors";
-import { fixLemmyDateString } from "../../helpers/date";
 import {
   getModColor,
   getModIcon,
   getModName,
 } from "../moderation/useCanModerate";
 import useModZoneActions from "../moderation/useModZoneActions";
-import useSupported from "../../helpers/useSupported";
 import { styled } from "@linaria/react";
 
 export const InsetIonItem = styled(IonItem)`
@@ -48,7 +46,6 @@ export default function Profile({ person }: ProfileProps) {
   const { present: presentModZoneActions, role } = useModZoneActions({
     type: "ModeratorView",
   });
-  const showUpvoteDownvote = useSupported("Profile Upvote/Downvote");
 
   const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
@@ -101,26 +98,22 @@ export default function Profile({ person }: ProfileProps) {
               <IonIcon icon={bookmarkOutline} color="primary" />{" "}
               <SettingLabel>Saved</SettingLabel>
             </InsetIonItem>
-            {showUpvoteDownvote && (
-              <>
-                <InsetIonItem
-                  routerLink={buildGeneralBrowseLink(
-                    `/u/${getHandle(person.person_view.person)}/upvoted`,
-                  )}
-                >
-                  <IonIcon icon={arrowUp} color="primary" />{" "}
-                  <SettingLabel>Upvoted</SettingLabel>
-                </InsetIonItem>
-                <InsetIonItem
-                  routerLink={buildGeneralBrowseLink(
-                    `/u/${getHandle(person.person_view.person)}/downvoted`,
-                  )}
-                >
-                  <IonIcon icon={arrowDown} color="primary" />{" "}
-                  <SettingLabel>Downvoted</SettingLabel>
-                </InsetIonItem>
-              </>
-            )}
+            <InsetIonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person_view.person)}/upvoted`,
+              )}
+            >
+              <IonIcon icon={arrowUp} color="primary" />{" "}
+              <SettingLabel>Upvoted</SettingLabel>
+            </InsetIonItem>
+            <InsetIonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person_view.person)}/downvoted`,
+              )}
+            >
+              <IonIcon icon={arrowDown} color="primary" />{" "}
+              <SettingLabel>Downvoted</SettingLabel>
+            </InsetIonItem>
             <InsetIonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/hidden`,
@@ -154,6 +147,6 @@ export default function Profile({ person }: ProfileProps) {
 }
 
 export function getPostCommentItemCreatedDate(item: PostCommentItem): number {
-  if (isPost(item)) return Date.parse(fixLemmyDateString(item.post.published));
-  return Date.parse(fixLemmyDateString(item.comment.published));
+  if (isPost(item)) return Date.parse(item.post.published);
+  return Date.parse(item.comment.published);
 }

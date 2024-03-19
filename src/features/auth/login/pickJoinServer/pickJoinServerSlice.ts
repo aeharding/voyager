@@ -5,6 +5,7 @@ import { intersectionWith, sortBy, uniq } from "lodash";
 import { WHITELISTED_SERVERS } from "../data/servers";
 import { getCustomServers } from "../../../../services/app";
 import { buildPrioritizeAndSortFn } from "../../../../helpers/array";
+import { isMinimumSupportedLemmyVersion } from "../../../../helpers/lemmy";
 
 interface PickJoinServerState {
   instances: lemmyverse.LVInstance[] | undefined;
@@ -34,7 +35,9 @@ export const getInstances = () => async (dispatch: AppDispatch) => {
   const unorderedInstances = sortBy(
     intersectionWith(instances, serverWhitelist, (a, b) => a.baseurl === b),
     (instance) => -instance.trust.score,
-  ).filter((server) => server.open);
+  ).filter(
+    (server) => server.open && isMinimumSupportedLemmyVersion(server.version),
+  );
 
   const customSortFn = buildPrioritizeAndSortFn(
     getCustomServers(),

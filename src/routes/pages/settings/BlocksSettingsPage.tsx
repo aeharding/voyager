@@ -19,7 +19,6 @@ import BlockedCommunities from "../../../features/settings/blocks/BlockedCommuni
 import { CenteredSpinner } from "../posts/PostPage";
 import BlockedUsers from "../../../features/settings/blocks/BlockedUsers";
 import FilteredKeywords from "../../../features/settings/blocks/FilteredKeywords";
-import useSupported from "../../../helpers/useSupported";
 import BlockedInstances from "../../../features/settings/blocks/BlockedInstances";
 import { useRef } from "react";
 import { useSetActivePage } from "../../../features/auth/AppContext";
@@ -31,7 +30,6 @@ export default function BlocksSettingsPage() {
 
   const userHandle = useAppSelector(userHandleSelector);
   const localUser = useAppSelector(localUserSelector);
-  const instanceBlockSupported = useSupported("Instance Blocking");
 
   useSetActivePage(pageRef);
 
@@ -59,7 +57,7 @@ export default function BlocksSettingsPage() {
           <FilteredKeywords />
           <BlockedCommunities />
           <BlockedUsers />
-          {instanceBlockSupported && <BlockedInstances />}
+          <BlockedInstances />
         </AppContent>
       ) : (
         <IonContent scrollY={false}>

@@ -18,9 +18,8 @@ import {
 } from "@ionic/react";
 import { useEffect, useMemo, useState } from "react";
 import useClient from "../../../helpers/useClient";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppDispatch } from "../../../store";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
-import { jwtSelector, urlSelector } from "../../auth/authSelectors";
 import { startCase } from "lodash";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { cameraOutline, checkmark } from "ionicons/icons";
@@ -126,7 +125,6 @@ export default function PostEditorRoot({
 
   const [postType, setPostType] = useState<PostType>(initialPostType);
   const client = useClient();
-  const jwt = useAppSelector(jwtSelector);
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initialTitle);
@@ -139,8 +137,6 @@ export default function PostEditorRoot({
     initialImage,
   );
   const [photoUploading, setPhotoUploading] = useState(false);
-
-  const instanceUrl = useAppSelector(urlSelector);
 
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -302,8 +298,6 @@ export default function PostEditorRoot({
   }
 
   async function receivedImage(image: File) {
-    if (!jwt) return;
-
     setPhotoPreviewURL(URL.createObjectURL(image));
     setPhotoUploading(true);
 
@@ -313,7 +307,7 @@ export default function PostEditorRoot({
     if (isAndroid()) await new Promise((resolve) => setTimeout(resolve, 250));
 
     try {
-      imageUrl = await uploadImage(instanceUrl, jwt, image);
+      imageUrl = await uploadImage(client, image);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
 
