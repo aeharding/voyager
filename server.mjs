@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 import path from "path";
 
 const CUSTOM_LEMMY_SERVERS = process.env.CUSTOM_LEMMY_SERVERS
@@ -6,6 +7,8 @@ const CUSTOM_LEMMY_SERVERS = process.env.CUSTOM_LEMMY_SERVERS
   : [];
 
 const app = express();
+
+app.use(compression());
 
 app.get("/_config", (_, res) => {
   res.send({
