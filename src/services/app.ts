@@ -21,12 +21,16 @@ export function defaultServersUntouched() {
 async function getConfig() {
   if (isNative()) return;
 
-  const response = await fetch("/_config");
+  try {
+    const response = await fetch("/_config");
 
-  const { customServers } = await response.json();
+    const { customServers } = await response.json();
 
-  if (customServers?.length) {
-    _customServers = customServers;
+    if (customServers?.length) {
+      _customServers = customServers;
+    }
+  } catch (error) {
+    return; // ignore errors in loading config
   }
 }
 

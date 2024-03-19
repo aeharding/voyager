@@ -1,11 +1,12 @@
 import {
+  IonItem,
   IonLabel,
   IonList,
   IonRadio,
   IonRadioGroup,
   useIonAlert,
 } from "@ionic/react";
-import { InsetIonItem, ListHeader } from "../../../shared/formatting";
+import { ListHeader } from "../../../shared/formatting";
 import AppThemePreview from "./AppThemePreview";
 import { AppThemeType, OAppThemeType } from "../../../../../services/db";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
@@ -53,7 +54,7 @@ export default function AppTheme() {
       >
         <IonList inset>
           {Object.values(OAppThemeType).map((theme) => (
-            <InsetIonItem key={theme}>
+            <IonItem key={theme}>
               <AppThemePreview slot="start" appTheme={theme} />
 
               <IonRadio value={theme}>
@@ -64,7 +65,7 @@ export default function AppTheme() {
                   </Description>
                 </IonLabel>
               </IonRadio>
-            </InsetIonItem>
+            </IonItem>
           ))}
         </IonList>
       </IonRadioGroup>

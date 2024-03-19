@@ -1,7 +1,6 @@
 import { useCallback, useRef } from "react";
 import {
   IonLabel,
-  IonItem,
   IonPage,
   IonToolbar,
   IonTitle,
@@ -27,10 +26,6 @@ import {
 import FeedContent from "../shared/FeedContent";
 import { styled } from "@linaria/react";
 import AppHeader from "../../../features/shared/AppHeader";
-
-export const InsetIonItem = styled(IonItem)`
-  --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
-`;
 
 export const SettingLabel = styled(IonLabel)`
   margin-left: 1rem;

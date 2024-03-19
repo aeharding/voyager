@@ -1,5 +1,6 @@
 import {
   IonBadge,
+  IonItem,
   IonLabel,
   IonList,
   IonRadio,
@@ -7,7 +8,6 @@ import {
   IonText,
   IonThumbnail,
 } from "@ionic/react";
-import { InsetIonItem } from "../shared/formatting";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { APP_ICONS, AppIcon, updateAppIcon } from "./appIconSlice";
 import { isAndroid } from "../../../helpers/device";
@@ -41,7 +41,7 @@ export default function AppIconComponent() {
     <IonRadioGroup value={icon} onIonChange={(e) => selectIcon(e.detail.value)}>
       <IonList inset>
         {APP_ICONS.map((icon) => (
-          <InsetIonItem key={icon}>
+          <IonItem key={icon}>
             <StyledIonThumbnail slot="start" onClick={() => selectIcon(icon)}>
               <Img src={getIconSrc(icon)} />
             </StyledIonThumbnail>
@@ -63,7 +63,7 @@ export default function AppIconComponent() {
                 </p>
               </IonLabel>
             </IonRadio>
-          </InsetIonItem>
+          </IonItem>
         ))}
       </IonList>
     </IonRadioGroup>

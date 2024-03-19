@@ -1,5 +1,4 @@
-import { IonBadge, IonIcon, IonList, useIonModal } from "@ionic/react";
-import { InsetIonItem } from "../shared/formatting";
+import { IonBadge, IonIcon, IonItem, IonList, useIonModal } from "@ionic/react";
 import { IconBg } from "../../../routes/pages/settings/SettingsPage";
 import { SettingLabel } from "../../user/Profile";
 import { alert } from "ionicons/icons";
@@ -23,13 +22,13 @@ export default function DatabaseErrorItem() {
 
   return (
     <IonList inset>
-      <InsetIonItem onClick={present}>
+      <IonItem onClick={present}>
         <IconBg color="color(display-p3 1 0.7 0)" size="1.2">
           <IonIcon icon={alert} />
         </IconBg>
         <SettingLabel>Error — App limited</SettingLabel>
         <IonBadge color="danger">!</IonBadge>
-      </InsetIonItem>
+      </IonItem>
     </IonList>
   );
 }

@@ -1,5 +1,4 @@
-import { IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../../routes/pages/profile/ProfileFeedItemsPage";
+import { IonItem, IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
 import { HelperText, ListHeader } from "../shared/formatting";
@@ -47,7 +46,7 @@ export default function TextSize() {
         <IonLabel>Text size</IonLabel>
       </ListHeader>
       <IonList inset>
-        <InsetIonItem>
+        <IonItem>
           <IonToggle
             checked={useSystemFontSize}
             onIonChange={(e) =>
@@ -56,8 +55,8 @@ export default function TextSize() {
           >
             Use System Text Size
           </IonToggle>
-        </InsetIonItem>
-        <InsetIonItem>
+        </IonItem>
+        <IonItem>
           <Range
             disabled={useSystemFontSize}
             ticks
@@ -73,9 +72,9 @@ export default function TextSize() {
             </A>
             <A slot="end">A</A>
           </Range>
-        </InsetIonItem>
+        </IonItem>
         {fontSizeMultiplier >= 1.4 && (
-          <InsetIonItem>
+          <IonItem>
             <IonToggle
               checked={fontSizeMultiplier > MAX_REGULAR_FONT_ADJUSTMENT}
               onIonChange={() =>
@@ -90,7 +89,7 @@ export default function TextSize() {
             >
               Larger Text Mode
             </IonToggle>
-          </InsetIonItem>
+          </IonItem>
         )}
       </IonList>
       <HelperText>Default is two ticks from the left.</HelperText>

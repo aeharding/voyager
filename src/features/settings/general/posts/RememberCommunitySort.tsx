@@ -1,5 +1,5 @@
-import { IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../../../routes/pages/profile/ProfileFeedItemsPage";
+import { IonItem, IonToggle } from "@ionic/react";
+
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setRememberCommunitySort } from "../../settingsSlice";
 
@@ -10,7 +10,7 @@ export default function RememberCommunitySort() {
   );
 
   return (
-    <InsetIonItem>
+    <IonItem>
       <IonToggle
         checked={infiniteScrolling}
         onIonChange={(e) =>
@@ -19,6 +19,6 @@ export default function RememberCommunitySort() {
       >
         Remember Community Sort
       </IonToggle>
-    </InsetIonItem>
+    </IonItem>
   );
 }

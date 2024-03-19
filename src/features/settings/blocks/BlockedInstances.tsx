@@ -1,4 +1,5 @@
 import {
+  IonItem,
   IonItemOption,
   IonItemOptions,
   IonItemSliding,
@@ -7,7 +8,6 @@ import {
   IonLoading,
   useIonModal,
 } from "@ionic/react";
-import { InsetIonItem } from "../../../routes/pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useContext, useState } from "react";
 import { Instance, InstanceBlockView } from "lemmy-js-client";
@@ -71,13 +71,13 @@ export default function BlockedInstances() {
                 Unblock
               </IonItemOption>
             </IonItemOptions>
-            <InsetIonItem>
+            <IonItem>
               <IonLabel>{instanceBlock.instance.domain}</IonLabel>
-            </InsetIonItem>
+            </IonItem>
           </IonItemSliding>
         ))}
 
-        <InsetIonItem
+        <IonItem
           onClick={() =>
             presentInstanceSelectorModal({
               cssClass: "small",
@@ -85,7 +85,7 @@ export default function BlockedInstances() {
           }
         >
           <IonLabel color="primary">Add Instance</IonLabel>
-        </InsetIonItem>
+        </IonItem>
       </IonList>
 
       <IonLoading isOpen={loading} />

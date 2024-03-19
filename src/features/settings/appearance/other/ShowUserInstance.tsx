@@ -1,8 +1,7 @@
-import { IonToggle } from "@ionic/react";
+import { IonItem, IonToggle } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setUserInstanceUrlDisplay } from "../../settingsSlice";
 import { OInstanceUrlDisplayMode } from "../../../../services/db";
-import { InsetIonItem } from "../../shared/formatting";
 
 export default function ShowUserInstance() {
   const dispatch = useAppDispatch();
@@ -11,7 +10,7 @@ export default function ShowUserInstance() {
   );
 
   return (
-    <InsetIonItem>
+    <IonItem>
       <IonToggle
         checked={userInstanceUrlDisplay === OInstanceUrlDisplayMode.WhenRemote}
         onIonChange={(e) =>
@@ -26,6 +25,6 @@ export default function ShowUserInstance() {
       >
         Show User Instance
       </IonToggle>
-    </InsetIonItem>
+    </IonItem>
   );
 }

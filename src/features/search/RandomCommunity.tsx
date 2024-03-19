@@ -1,5 +1,4 @@
-import { IonIcon, IonLabel, IonList } from "@ionic/react";
-import { InsetIonItem } from "../user/Profile";
+import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { shuffle } from "ionicons/icons";
 import { useAppSelector } from "../../store";
 
@@ -18,10 +17,10 @@ export default function RandomCommunity() {
 
   return (
     <IonList inset color="primary">
-      <InsetIonItem routerLink="/search/random">
+      <IonItem routerLink="/search/random">
         <IonIcon icon={shuffle} color="primary" slot="start" />
         <IonLabel className="ion-text-nowrap">Random Community</IonLabel>
-      </InsetIonItem>
+      </IonItem>
     </IonList>
   );
 }

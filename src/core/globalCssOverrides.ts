@@ -39,6 +39,13 @@ export default css`
       }
     }
 
+    ion-list.list-inset ion-item {
+      --background: var(
+        --ion-tab-bar-background,
+        var(--ion-color-step-50, #fff)
+      );
+    }
+
     .left-align-buttons
       .action-sheet-button:not(.action-sheet-cancel)
       .action-sheet-button-inner.sc-ion-action-sheet-ios:not(

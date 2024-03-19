@@ -1,5 +1,4 @@
-import { IonLabel, IonList, IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../user/Profile";
+import { IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import { setLargeShowVotingButtons } from "../settingsSlice";
 import { ListHeader } from "../shared/formatting";
@@ -16,7 +15,7 @@ export default function LargeSettings() {
         <IonLabel>Large Posts</IonLabel>
       </ListHeader>
       <IonList inset>
-        <InsetIonItem>
+        <IonItem>
           <IonToggle
             checked={showVotingButtons}
             onIonChange={(e) =>
@@ -25,7 +24,7 @@ export default function LargeSettings() {
           >
             Show Voting Buttons
           </IonToggle>
-        </InsetIonItem>
+        </IonItem>
       </IonList>
     </>
   );
