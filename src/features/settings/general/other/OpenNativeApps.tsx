@@ -1,5 +1,5 @@
-import { IonToggle, useIonAlert } from "@ionic/react";
-import { InsetIonItem } from "../../../../routes/pages/profile/ProfileFeedItemsPage";
+import { IonItem, IonToggle, useIonAlert } from "@ionic/react";
+
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setPreferNativeApps } from "../../settingsSlice";
 import { isAndroid, isNative, ua } from "../../../../helpers/device";
@@ -26,7 +26,7 @@ export default function OpenNativeApps() {
   if (platformNotSupported) return;
 
   return (
-    <InsetIonItem
+    <IonItem
       onClick={() => {
         if (!configurationNotSupported) return;
 
@@ -48,6 +48,6 @@ export default function OpenNativeApps() {
       >
         Prefer Opening Native Apps
       </IonToggle>
-    </InsetIonItem>
+    </IonItem>
   );
 }

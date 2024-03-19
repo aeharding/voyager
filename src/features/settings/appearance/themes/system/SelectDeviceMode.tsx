@@ -1,5 +1,10 @@
-import { IonLabel, IonList, IonRadio, IonRadioGroup } from "@ionic/react";
-import { InsetIonItem } from "../../../../user/Profile";
+import {
+  IonItem,
+  IonLabel,
+  IonList,
+  IonRadio,
+  IonRadioGroup,
+} from "@ionic/react";
 import { getDeviceModeLabel } from "./DeviceMode";
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import { useState } from "react";
@@ -26,21 +31,18 @@ export default function SelectDeviceMode() {
       >
         <IonList inset>
           {MODES.map((mode) => (
-            <InsetIonItem
-              key={mode}
-              onClick={() => setSelectedDeviceMode(mode)}
-            >
+            <IonItem key={mode} onClick={() => setSelectedDeviceMode(mode)}>
               <IonRadio value={mode}>{getDeviceModeLabel(mode)}</IonRadio>
-            </InsetIonItem>
+            </IonItem>
           ))}
         </IonList>
       </IonRadioGroup>
 
       {selectedDeviceMode !== deviceMode && (
         <IonList inset>
-          <InsetIonItem detail onClick={apply}>
+          <IonItem detail onClick={apply}>
             <IonLabel>Tap to apply changes and reload app</IonLabel>
-          </InsetIonItem>
+          </IonItem>
         </IonList>
       )}
     </>

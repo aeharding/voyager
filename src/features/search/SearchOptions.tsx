@@ -1,5 +1,5 @@
-import { IonIcon, IonList } from "@ionic/react";
-import { InsetIonItem, SettingLabel } from "../user/Profile";
+import { IonIcon, IonItem, IonList } from "@ionic/react";
+import { SettingLabel } from "../user/Profile";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import {
   albumsOutline,
@@ -36,41 +36,39 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
     <>
       <IonList inset color="primary">
         {type && !autoResolveType && (
-          <InsetIonItem
+          <IonItem
             onClick={(e) => redirectToLemmyObjectIfNeeded(search, e)}
             detail
             button
           >
             <IonIcon icon={arrowForward} color="primary" />
             <SettingLabel>Visit {type}</SettingLabel>
-          </InsetIonItem>
+          </IonItem>
         )}
-        <InsetIonItem routerLink={`/search/posts/${searchURI}`}>
+        <IonItem routerLink={`/search/posts/${searchURI}`}>
           <IonIcon icon={albumsOutline} color="primary" />
           <SettingLabel className="ion-text-nowrap">
             Posts with “{search}”
           </SettingLabel>
-        </InsetIonItem>
-        <InsetIonItem routerLink={`/search/comments/${searchURI}`}>
+        </IonItem>
+        <IonItem routerLink={`/search/comments/${searchURI}`}>
           <IonIcon icon={chatbubbleOutline} color="primary" />
           <SettingLabel className="ion-text-nowrap">
             Comments with “{search}”
           </SettingLabel>
-        </InsetIonItem>
-        <InsetIonItem routerLink={`/search/communities/${searchURI}`}>
+        </IonItem>
+        <IonItem routerLink={`/search/communities/${searchURI}`}>
           <IonIcon icon={searchOutline} color="primary" />
           <SettingLabel className="ion-text-nowrap">
             Communities with “{search}”
           </SettingLabel>
-        </InsetIonItem>
-        <InsetIonItem
-          routerLink={buildGeneralBrowseLink(`/u/${sanitizedUser}`)}
-        >
+        </IonItem>
+        <IonItem routerLink={buildGeneralBrowseLink(`/u/${sanitizedUser}`)}>
           <IonIcon icon={personOutline} color="primary" />
           <SettingLabel className="ion-text-nowrap">
             Go to User “{search}”
           </SettingLabel>
-        </InsetIonItem>
+        </IonItem>
       </IonList>
       {autoResolveType && <AutoResolvePostComment url={search} />}
     </>

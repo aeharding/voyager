@@ -1,5 +1,6 @@
 import {
   IonIcon,
+  IonItem,
   IonList,
   IonPage,
   IonTitle,
@@ -7,7 +8,7 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import AppContent from "../../../features/shared/AppContent";
-import { InsetIonItem, SettingLabel } from "../../../features/user/Profile";
+import { SettingLabel } from "../../../features/user/Profile";
 import {
   albumsOutline,
   chatbubbleOutline,
@@ -57,54 +58,48 @@ export default function BoxesPage() {
           </AppHeader>
 
           <IonList inset color="primary">
-            <InsetIonItem
-              routerLink="/inbox/all"
-              onClick={interceptIfLoggedOut}
-            >
+            <IonItem routerLink="/inbox/all" onClick={interceptIfLoggedOut}>
               <IonIcon icon={fileTray} color="primary" />
               <SettingLabel>Inbox (All)</SettingLabel>
-            </InsetIonItem>
-            <InsetIonItem
-              routerLink="/inbox/unread"
-              onClick={interceptIfLoggedOut}
-            >
+            </IonItem>
+            <IonItem routerLink="/inbox/unread" onClick={interceptIfLoggedOut}>
               <IonIcon icon={ellipseOutline} color="primary" />
               <SettingLabel>Unread</SettingLabel>
-            </InsetIonItem>
+            </IonItem>
           </IonList>
 
           <IonList inset color="primary">
-            <InsetIonItem
+            <IonItem
               routerLink="/inbox/post-replies"
               onClick={interceptIfLoggedOut}
             >
               <IonIcon icon={albumsOutline} color="primary" />
               <SettingLabel>Post Replies</SettingLabel>
-            </InsetIonItem>
-            <InsetIonItem
+            </IonItem>
+            <IonItem
               routerLink="/inbox/comment-replies"
               onClick={interceptIfLoggedOut}
             >
               <IonIcon icon={chatbubbleOutline} color="primary" />
               <SettingLabel>Comment Replies</SettingLabel>
-            </InsetIonItem>
-            <InsetIonItem
+            </IonItem>
+            <IonItem
               routerLink="/inbox/mentions"
               onClick={interceptIfLoggedOut}
             >
               <IonIcon icon={personCircleOutline} color="primary" />
               <SettingLabel>Mentions</SettingLabel>
-            </InsetIonItem>
+            </IonItem>
           </IonList>
 
           <IonList inset color="primary">
-            <InsetIonItem
+            <IonItem
               routerLink="/inbox/messages"
               onClick={interceptIfLoggedOut}
             >
               <IonIcon icon={mail} color="primary" />
               <SettingLabel>Messages</SettingLabel>
-            </InsetIonItem>
+            </IonItem>
           </IonList>
         </AppContent>
       </IonPage>

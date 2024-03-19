@@ -1,6 +1,5 @@
 import { ClearCache as CapClearCache } from "capacitor-clear-cache";
-import { InsetIonItem } from "../../shared/formatting";
-import { IonLabel, IonLoading, useIonAlert } from "@ionic/react";
+import { IonItem, IonLabel, IonLoading, useIonAlert } from "@ionic/react";
 import { isAppleDeviceInstallable, isNative } from "../../../../helpers/device";
 import { useState } from "react";
 import useAppToast from "../../../../helpers/useAppToast";
@@ -52,9 +51,9 @@ export default function ClearCache() {
   return (
     <>
       <IonLoading isOpen={loading} />
-      <InsetIonItem button onClick={clear} detail={false}>
+      <IonItem button onClick={clear} detail={false}>
         <IonLabel color="primary">Clear Cache</IonLabel>
-      </InsetIonItem>
+      </IonItem>
     </>
   );
 }

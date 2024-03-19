@@ -4,6 +4,7 @@ import {
   IonBadge,
   IonButtons,
   IonContent,
+  IonItem,
   IonLabel,
   IonList,
   IonLoading,
@@ -14,7 +15,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { MaxWidthContainer } from "../../../features/shared/AppContent";
-import { InsetIonItem, SettingLabel } from "../profile/ProfileFeedItemsPage";
+import { SettingLabel } from "../profile/ProfileFeedItemsPage";
 import { useContext, useEffect, useRef, useState } from "react";
 import { UpdateContext } from "./update/UpdateContext";
 import { PageContentIonSpinner } from "../../../features/user/AsyncProfile";
@@ -103,27 +104,27 @@ export default function UpdateAppPage() {
         <Container>
           <MaxWidthContainer>
             <IonList inset color="primary">
-              <InsetIonItem>
+              <IonItem>
                 <IonLabel>Current version</IonLabel>
                 <SettingLabel slot="end" color="medium">
                   {APP_VERSION}
                 </SettingLabel>
-              </InsetIonItem>
-              <InsetIonItem
+              </IonItem>
+              <IonItem
                 href="https://github.com/aeharding/voyager/releases"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <IonLabel>Release notes</IonLabel>
-              </InsetIonItem>
+              </IonItem>
             </IonList>
 
             {status === "outdated" && (
               <IonList inset color="primary">
-                <InsetIonItem detail onClick={onInstallUpdate}>
+                <IonItem detail onClick={onInstallUpdate}>
                   <IonLabel>Install new update</IonLabel>
                   <IonBadge color="danger">1</IonBadge>
-                </InsetIonItem>
+                </IonItem>
               </IonList>
             )}
           </MaxWidthContainer>

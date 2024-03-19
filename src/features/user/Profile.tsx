@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { IonIcon, IonLabel, IonList, IonItem } from "@ionic/react";
+import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import Scores from "./Scores";
 import {
   albumsOutline,
@@ -26,10 +26,6 @@ import {
 } from "../moderation/useCanModerate";
 import useModZoneActions from "../moderation/useModZoneActions";
 import { styled } from "@linaria/react";
-
-export const InsetIonItem = styled(IonItem)`
-  --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
-`;
 
 export const SettingLabel = styled(IonLabel)`
   margin-left: 16px;
@@ -72,65 +68,65 @@ export default function Profile({ person }: ProfileProps) {
         accountCreated={person.person_view.person.published}
       />
       <IonList inset>
-        <InsetIonItem
+        <IonItem
           routerLink={buildGeneralBrowseLink(
             `/u/${getHandle(person.person_view.person)}/posts`,
           )}
         >
           <IonIcon icon={albumsOutline} color="primary" />{" "}
           <SettingLabel>Posts</SettingLabel>
-        </InsetIonItem>
-        <InsetIonItem
+        </IonItem>
+        <IonItem
           routerLink={buildGeneralBrowseLink(
             `/u/${getHandle(person.person_view.person)}/comments`,
           )}
         >
           <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
           <SettingLabel>Comments</SettingLabel>
-        </InsetIonItem>
+        </IonItem>
         {isSelf && (
           <>
-            <InsetIonItem
+            <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/saved`,
               )}
             >
               <IonIcon icon={bookmarkOutline} color="primary" />{" "}
               <SettingLabel>Saved</SettingLabel>
-            </InsetIonItem>
-            <InsetIonItem
+            </IonItem>
+            <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/upvoted`,
               )}
             >
               <IonIcon icon={arrowUp} color="primary" />{" "}
               <SettingLabel>Upvoted</SettingLabel>
-            </InsetIonItem>
-            <InsetIonItem
+            </IonItem>
+            <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/downvoted`,
               )}
             >
               <IonIcon icon={arrowDown} color="primary" />{" "}
               <SettingLabel>Downvoted</SettingLabel>
-            </InsetIonItem>
-            <InsetIonItem
+            </IonItem>
+            <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/hidden`,
               )}
             >
               <IonIcon icon={eyeOffOutline} color="primary" />{" "}
               <SettingLabel>Hidden</SettingLabel>
-            </InsetIonItem>
+            </IonItem>
           </>
         )}
       </IonList>
       {isSelf && role && (
         <IonList inset>
-          <InsetIonItem detail onClick={presentModZoneActions}>
+          <IonItem detail onClick={presentModZoneActions}>
             <IonIcon icon={getModIcon(role)} color={getModColor(role)} />{" "}
             <SettingLabel>{getModName(role)} Zone</SettingLabel>
-          </InsetIonItem>
+          </IonItem>
         </IonList>
       )}
     </MaxWidthContainer>

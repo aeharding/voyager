@@ -3,11 +3,10 @@ import {
   IonActionSheetCustomEvent,
   OverlayEventDetail,
 } from "@ionic/core";
-import { IonActionSheet, IonLabel } from "@ionic/react";
+import { IonActionSheet, IonItem, IonLabel } from "@ionic/react";
 import { startCase } from "lodash";
 import React, { useState } from "react";
 import { Dispatchable, useAppDispatch } from "../../../store";
-import { InsetIonItem } from "./formatting";
 import { css, cx } from "@linaria/core";
 
 const iconCss = css`
@@ -69,7 +68,7 @@ export default function SettingSelector<
     }));
 
   return (
-    <InsetIonItem
+    <IonItem
       button
       onClick={() => setOpen(true)}
       disabled={disabled}
@@ -100,6 +99,6 @@ export default function SettingSelector<
         header={openTitle ?? title}
         buttons={buttons}
       />
-    </InsetIonItem>
+    </IonItem>
   );
 }

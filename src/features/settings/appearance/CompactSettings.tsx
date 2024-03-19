@@ -1,5 +1,4 @@
-import { IonLabel, IonList, IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../user/Profile";
+import { IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import {
   setCompactShowSelfPostThumbnails,
@@ -44,7 +43,7 @@ export default function CompactSettings() {
           setSelected={setThumbnailPosition}
           options={OCompactThumbnailPositionType}
         />
-        <InsetIonItem>
+        <IonItem>
           <IonToggle
             checked={showVotingButtons}
             onIonChange={(e) =>
@@ -53,8 +52,8 @@ export default function CompactSettings() {
           >
             Show Voting Buttons
           </IonToggle>
-        </InsetIonItem>
-        <InsetIonItem>
+        </IonItem>
+        <IonItem>
           <IonToggle
             checked={showSelfPostThumbnails}
             onIonChange={(e) =>
@@ -63,7 +62,7 @@ export default function CompactSettings() {
           >
             Show Self Post Thumbnails
           </IonToggle>
-        </InsetIonItem>
+        </IonItem>
       </IonList>
     </>
   );

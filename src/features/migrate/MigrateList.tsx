@@ -1,4 +1,5 @@
 import {
+  IonItem,
   IonItemOption,
   IonItemOptions,
   IonItemSliding,
@@ -6,7 +7,6 @@ import {
   IonList,
   useIonAlert,
 } from "@ionic/react";
-import { InsetIonItem } from "../user/Profile";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useEffect } from "react";
 import {
@@ -108,17 +108,17 @@ export default function MigrateList() {
                 Forget
               </IonItemOption>
             </IonItemOptions>
-            <InsetIonItem
+            <IonItem
               routerLink={`/settings/reddit-migrate/${encodeURIComponent(link)}`}
             >
               <IonLabel class="ion-text-nowrap">{getPathname(link)}</IonLabel>
-            </InsetIonItem>
+            </IonItem>
           </IonItemSliding>
         ))}
         <IonItemSliding>
-          <InsetIonItem onClick={() => add()} button detail={false}>
+          <IonItem onClick={() => add()} button detail={false}>
             <IonLabel color="primary">Add multireddit link</IonLabel>
-          </InsetIonItem>
+          </IonItem>
         </IonItemSliding>
       </IonList>
     </>

@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setEmbedCrossposts } from "../../settingsSlice";
-import { InsetIonItem } from "../../shared/formatting";
-import { IonToggle } from "@ionic/react";
+import { IonItem, IonToggle } from "@ionic/react";
 
 export default function EmbedCrossposts() {
   const dispatch = useAppDispatch();
@@ -10,13 +9,13 @@ export default function EmbedCrossposts() {
   );
 
   return (
-    <InsetIonItem>
+    <IonItem>
       <IonToggle
         checked={embedCrossposts}
         onIonChange={(e) => dispatch(setEmbedCrossposts(e.detail.checked))}
       >
         Embed Crossposts
       </IonToggle>
-    </InsetIonItem>
+    </IonItem>
   );
 }

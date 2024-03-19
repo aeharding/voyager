@@ -1,6 +1,7 @@
 import {
   IonBadge,
   IonIcon,
+  IonItem,
   IonList,
   IonPage,
   IonTitle,
@@ -8,7 +9,7 @@ import {
   useIonModal,
 } from "@ionic/react";
 import AppContent from "../../../features/shared/AppContent";
-import { InsetIonItem, SettingLabel } from "../../../features/user/Profile";
+import { SettingLabel } from "../../../features/user/Profile";
 import {
   apps,
   at,
@@ -114,7 +115,7 @@ export default function SettingsPage() {
         {databaseError && <DatabaseErrorItem />}
 
         <IonList inset>
-          <InsetIonItem
+          <IonItem
             onClick={() => presentTip({ cssClass: "transparent-scroll" })}
             button
             detail
@@ -123,20 +124,20 @@ export default function SettingsPage() {
               <IonIcon icon={heart} />
             </IconBg>
             <SettingLabel>Support Voyager</SettingLabel>
-          </InsetIonItem>
+          </IonItem>
         </IonList>
 
         {!isNative() && (
           <IonList inset>
-            <InsetIonItem routerLink="/settings/install">
+            <IonItem routerLink="/settings/install">
               <IconBg color="#0e7afe">
                 <IonIcon icon={apps} />
               </IconBg>
               <SettingLabel>Install app</SettingLabel>
               {shouldInstall && <IonBadge color="danger">1</IonBadge>}
-            </InsetIonItem>
+            </IonItem>
 
-            <InsetIonItem routerLink="/settings/update">
+            <IonItem routerLink="/settings/update">
               <IconBg color="color(display-p3 0 0.8 0)" size="1.25">
                 <IonIcon icon={reloadCircle} />
               </IconBg>
@@ -144,75 +145,75 @@ export default function SettingsPage() {
               {updateStatus === "outdated" && (
                 <IonBadge color="danger">1</IonBadge>
               )}
-            </InsetIonItem>
+            </IonItem>
           </IonList>
         )}
         <IonList inset>
-          <InsetIonItem routerLink="/settings/general">
+          <IonItem routerLink="/settings/general">
             <IconBg color="color(display-p3 0.5 0.5 0.5)" size="1.3">
               <IonIcon icon={cog} />
             </IconBg>
             <SettingLabel>General</SettingLabel>
-          </InsetIonItem>
+          </IonItem>
 
-          <InsetIonItem routerLink="/settings/appearance">
+          <IonItem routerLink="/settings/appearance">
             <IconBg color="#0e7afe" size="1.2">
               <IonIcon icon={colorPalette} />
             </IconBg>
             <SettingLabel>Appearance</SettingLabel>
-          </InsetIonItem>
+          </IonItem>
 
           {isNative() && (
-            <InsetIonItem routerLink="/settings/app-icon">
+            <IonItem routerLink="/settings/app-icon">
               <AppIcon src={getIconSrc(icon)} />
               <SettingLabel>App Icon</SettingLabel>
-            </InsetIonItem>
+            </IonItem>
           )}
 
           {biometricSupported && (
-            <InsetIonItem routerLink="/settings/biometric">
+            <IonItem routerLink="/settings/biometric">
               <IconBg color="color(display-p3 0.86 0.1 0.2)" size="1.1">
                 <BiometricIcon />
               </IconBg>
               <SettingLabel>
                 <BiometricTitle />
               </SettingLabel>
-            </InsetIonItem>
+            </IonItem>
           )}
 
           {currentHandle && (
-            <InsetIonItem routerLink="/settings/blocks">
+            <IonItem routerLink="/settings/blocks">
               <IconBg color="color(display-p3 0 0.75 0.3)" size="1.15">
                 <IonIcon icon={ban} />
               </IconBg>
               <SettingLabel>Filters & Blocks</SettingLabel>
-            </InsetIonItem>
+            </IonItem>
           )}
 
-          <InsetIonItem routerLink="/settings/gestures">
+          <IonItem routerLink="/settings/gestures">
             <IconBg color="color(display-p3 0.55 0.15 1)" size="1.3">
               <IonIcon icon={gesture} />
             </IconBg>
             <SettingLabel>Gestures</SettingLabel>
-          </InsetIonItem>
+          </IonItem>
         </IonList>
 
         <IonList inset>
-          <InsetIonItem routerLink="/settings/reddit-migrate">
+          <IonItem routerLink="/settings/reddit-migrate">
             <IconBg color="#ff5700">
               <IonIcon icon={bagCheck} />
             </IconBg>
             <SettingLabel>Migrate Subreddits</SettingLabel>
-          </InsetIonItem>
+          </IonItem>
         </IonList>
 
         <IonList inset>
-          <InsetIonItem routerLink="/settings/about">
+          <IonItem routerLink="/settings/about">
             <IconBg color="#0e7afe" size="1.15">
               <IonIcon icon={at} />
             </IconBg>
             <SettingLabel>About</SettingLabel>
-          </InsetIonItem>
+          </IonItem>
         </IonList>
       </AppContent>
     </IonPage>

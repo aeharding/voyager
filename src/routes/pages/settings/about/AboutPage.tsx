@@ -32,12 +32,7 @@ import { IonItemInAppExternalLink } from "../../../../features/shared/InAppExter
 import { isAndroid, isNative } from "../../../../helpers/device";
 import { useSetActivePage } from "../../../../features/auth/AppContext";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "../../../../helpers/voyager";
-import { styled } from "@linaria/react";
 import AppHeader from "../../../../features/shared/AppHeader";
-
-export const InsetIonItem = styled(IonItemInAppExternalLink)`
-  --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
-`;
 
 export default function AboutPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -73,7 +68,7 @@ export default function AboutPage() {
       : "https://apps.apple.com/app/id6451429762?action=write-review";
 
     return (
-      <InsetIonItem
+      <IonItemInAppExternalLink
         detail
         href={href}
         target="_blank"
@@ -83,7 +78,7 @@ export default function AboutPage() {
           <IonIcon icon={heart} />
         </IconBg>
         <SettingLabel>Rate Voyager</SettingLabel>
-      </InsetIonItem>
+      </IonItemInAppExternalLink>
     );
   })();
 
@@ -104,7 +99,7 @@ export default function AboutPage() {
         <AppDetails />
 
         <IonList inset color="primary">
-          <InsetIonItem
+          <IonItemInAppExternalLink
             href="https://github.com/aeharding/voyager/releases"
             target="_blank"
             rel="noopener noreferrer"
@@ -113,8 +108,8 @@ export default function AboutPage() {
               <IonIcon icon={sparkles} />
             </IconBg>
             <SettingLabel>What&apos;s new</SettingLabel>
-          </InsetIonItem>
-          <InsetIonItem
+          </IonItemInAppExternalLink>
+          <IonItemInAppExternalLink
             routerLink={buildGeneralBrowseLink(`/c/${appCommunityHandle}`)}
             detail
           >
@@ -122,8 +117,8 @@ export default function AboutPage() {
               <IonIcon icon={people} />
             </IconBg>
             <SettingLabel>VoyagerApp Community</SettingLabel>
-          </InsetIonItem>
-          <InsetIonItem
+          </IonItemInAppExternalLink>
+          <IonItemInAppExternalLink
             detail
             href="https://social.harding.dev/@alex"
             target="_blank"
@@ -133,8 +128,8 @@ export default function AboutPage() {
               <IonIcon icon={logoMastodon} />
             </IconBg>
             <SettingLabel>@alex@harding.dev</SettingLabel>
-          </InsetIonItem>
-          <InsetIonItem
+          </IonItemInAppExternalLink>
+          <IonItemInAppExternalLink
             detail
             href={VOYAGER_PRIVACY}
             target="_blank"
@@ -144,8 +139,8 @@ export default function AboutPage() {
               <IonIcon icon={lockClosed} />
             </IconBg>
             <SettingLabel>Privacy Policy</SettingLabel>
-          </InsetIonItem>
-          <InsetIonItem
+          </IonItemInAppExternalLink>
+          <IonItemInAppExternalLink
             detail
             href={VOYAGER_TERMS}
             target="_blank"
@@ -155,15 +150,15 @@ export default function AboutPage() {
               <IonIcon icon={handLeft} />
             </IconBg>
             <SettingLabel>Terms of Use</SettingLabel>
-          </InsetIonItem>
+          </IonItemInAppExternalLink>
           {rateVoyager}
-          <InsetIonItem detail routerLink="/settings/about/thanks">
+          <IonItemInAppExternalLink detail routerLink="/settings/about/thanks">
             <IconBg color="color(display-p3 0.1 0.6 0.1)">
               <IonIcon icon={thumbsUp} />
             </IconBg>
             <SettingLabel>Thanks To</SettingLabel>
-          </InsetIonItem>
-          <InsetIonItem
+          </IonItemInAppExternalLink>
+          <IonItemInAppExternalLink
             detail
             href="https://github.com/aeharding/voyager/issues"
             target="_blank"
@@ -173,13 +168,13 @@ export default function AboutPage() {
               <IonIcon icon={bug} />
             </IconBg>
             <SettingLabel>Bug Tracker</SettingLabel>
-          </InsetIonItem>
-          <InsetIonItem detail onClick={getCompliment}>
+          </IonItemInAppExternalLink>
+          <IonItemInAppExternalLink detail onClick={getCompliment}>
             <IconBg color="color(display-p3 1 0.1 0.6)" size="1.1">
               <IonIcon icon={happy} />
             </IconBg>
             <SettingLabel>Get a Compliment</SettingLabel>
-          </InsetIonItem>
+          </IonItemInAppExternalLink>
         </IonList>
       </AppContent>
     </IonPage>

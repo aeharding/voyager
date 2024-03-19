@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import {
   IonLabel,
-  IonItem,
   IonPage,
   IonToolbar,
   IonTitle,
@@ -21,10 +20,6 @@ import { GetComments, GetPosts } from "lemmy-js-client";
 import { styled } from "@linaria/react";
 import { sortPostCommentByPublished } from "../../../helpers/lemmy";
 import AppHeader from "../../../features/shared/AppHeader";
-
-export const InsetIonItem = styled(IonItem)`
-  --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
-`;
 
 export const SettingLabel = styled(IonLabel)`
   margin-left: 16px;
