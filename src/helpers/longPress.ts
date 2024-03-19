@@ -50,9 +50,18 @@ export const filterEvents: LongPressOptions["filterEvents"] = (e) => {
 
 // prevent click events after long press
 export const onFinishStopClick = (event: LongPressReactEvents) => {
-  const stopClick = (clickEvent: MouseEvent) => {
-    clickEvent.stopImmediatePropagation();
-  };
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+  function clearTimeoutIfNeeded() {
+    if (typeof timeoutId !== "number") return;
+    clearTimeout(timeoutId);
+    timeoutId = undefined;
+  }
+
+  function stopClick(event: MouseEvent) {
+    event.stopImmediatePropagation();
+    clearTimeoutIfNeeded();
+  }
 
   if (!(event.target instanceof HTMLElement)) return;
 
@@ -61,7 +70,9 @@ export const onFinishStopClick = (event: LongPressReactEvents) => {
     once: true,
   });
 
-  setTimeout(() => {
+  timeoutId = setTimeout(() => {
+    clearTimeoutIfNeeded();
+
     if (!(event.target instanceof HTMLElement)) return;
 
     event.target.removeEventListener("click", stopClick, {
