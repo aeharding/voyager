@@ -50,7 +50,6 @@ import { ResetStatusTap } from "./listeners/statusTap";
   }
 
   setupIonicReact({
-    rippleEffect: false,
     mode: getDeviceMode(),
     statusTap: false, // custom implementation listeners/statusTap.ts
     swipeBackEnabled:
