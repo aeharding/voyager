@@ -279,7 +279,7 @@ export const setPostRead =
 
     dispatch(updatePostRead({ postId }));
     await clientSelector(getState())?.markPostAsRead({
-      post_id: postId,
+      post_ids: [postId],
       read: true,
     });
   };

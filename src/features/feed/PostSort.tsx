@@ -23,7 +23,6 @@ import { startCase } from "lodash";
 import { SortType } from "lemmy-js-client";
 import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
 import { AppContext } from "../auth/AppContext";
-import useSupported, { is019Sort } from "../../helpers/useSupported";
 import {
   calendarNineMonths,
   calendarSingleDay,
@@ -126,21 +125,11 @@ export function useSelectPostSort(onSelected: (sort: SortType) => void) {
   const [presentInitialSortActionSheet] = useIonActionSheet();
   const [presentTopSortActionSheet] = useIonActionSheet();
 
-  const newSorts = useSupported("v0.19 Sorts");
-
-  const supportedSortButtons = newSorts
-    ? BUTTONS
-    : BUTTONS.filter(({ data }) => !is019Sort(data));
-
-  const supportedTopSortButtons = newSorts
-    ? TOP_BUTTONS
-    : TOP_BUTTONS.filter(({ data }) => !is019Sort(data));
-
   function present(sort: SortType) {
     presentInitialSortActionSheet({
       header: "Sort by...",
       cssClass: "left-align-buttons",
-      buttons: supportedSortButtons.map((b) => ({
+      buttons: BUTTONS.map((b) => ({
         ...b,
         cssClass: b.data === "Top" ? "detail" : undefined,
         text:
@@ -169,7 +158,7 @@ export function useSelectPostSort(onSelected: (sort: SortType) => void) {
     presentTopSortActionSheet({
       header: "Sort by Top for...",
       cssClass: "left-align-buttons",
-      buttons: supportedTopSortButtons.map((b) => ({
+      buttons: TOP_BUTTONS.map((b) => ({
         ...b,
         role: sort === b.data ? "selected" : undefined,
       })),
@@ -216,8 +205,6 @@ export function getSortIcon(sort: ExtendedSortType): string {
       return barChartOutline;
     case "Old":
       return helpCircleOutline;
-
-    // lemmy v0.19 below
     case "Controversial":
       return skullOutline;
     case "Scaled":

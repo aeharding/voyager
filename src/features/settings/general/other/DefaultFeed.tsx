@@ -17,7 +17,6 @@ import { CommunityView } from "lemmy-js-client";
 import { useContext } from "react";
 import { PageContext } from "../../../auth/PageContext";
 import { getHandle } from "../../../../helpers/lemmy";
-import useSupported from "../../../../helpers/useSupported";
 
 export default function DefaultFeed() {
   const dispatch = useAppDispatch();
@@ -27,7 +26,6 @@ export default function DefaultFeed() {
   const loggedIn = useAppSelector(loggedInSelector);
   const handle = useAppSelector(handleSelector);
   const { pageRef } = useContext(PageContext);
-  const moderatedFeedSupported = useSupported("Modded Feed");
 
   const [presentCommunitySelectorModal, onDismiss] = useIonModal(
     CommunitySelectorModal,
@@ -48,10 +46,8 @@ export default function DefaultFeed() {
     },
   );
 
-  // When lemmy v0.18 support removed, this can be removed
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const options: any = { ...ODefaultFeedType };
-  if (!moderatedFeedSupported) delete options["Moderating"];
 
   if (!loggedIn) {
     delete options["Home"];
@@ -85,9 +81,7 @@ export default function DefaultFeed() {
       getSelectedLabel={(option) => {
         if (option === ODefaultFeedType.CommunityList) return "List";
         if (option === ODefaultFeedType.Community)
-          // TODO SettingSelector should handle being passed a non-string item
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return `c/${(defaultFeed as any).name}`;
+          if ("name" in defaultFeed) return `c/${defaultFeed.name}`;
       }}
     />
   );

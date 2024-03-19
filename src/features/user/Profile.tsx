@@ -26,7 +26,6 @@ import {
   getModName,
 } from "../moderation/useCanModerate";
 import useModZoneActions from "../moderation/useModZoneActions";
-import useSupported from "../../helpers/useSupported";
 import { styled } from "@linaria/react";
 
 export const InsetIonItem = styled(IonItem)`
@@ -48,7 +47,6 @@ export default function Profile({ person }: ProfileProps) {
   const { present: presentModZoneActions, role } = useModZoneActions({
     type: "ModeratorView",
   });
-  const showUpvoteDownvote = useSupported("Profile Upvote/Downvote");
 
   const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
@@ -101,26 +99,22 @@ export default function Profile({ person }: ProfileProps) {
               <IonIcon icon={bookmarkOutline} color="primary" />{" "}
               <SettingLabel>Saved</SettingLabel>
             </InsetIonItem>
-            {showUpvoteDownvote && (
-              <>
-                <InsetIonItem
-                  routerLink={buildGeneralBrowseLink(
-                    `/u/${getHandle(person.person_view.person)}/upvoted`,
-                  )}
-                >
-                  <IonIcon icon={arrowUp} color="primary" />{" "}
-                  <SettingLabel>Upvoted</SettingLabel>
-                </InsetIonItem>
-                <InsetIonItem
-                  routerLink={buildGeneralBrowseLink(
-                    `/u/${getHandle(person.person_view.person)}/downvoted`,
-                  )}
-                >
-                  <IonIcon icon={arrowDown} color="primary" />{" "}
-                  <SettingLabel>Downvoted</SettingLabel>
-                </InsetIonItem>
-              </>
-            )}
+            <InsetIonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person_view.person)}/upvoted`,
+              )}
+            >
+              <IonIcon icon={arrowUp} color="primary" />{" "}
+              <SettingLabel>Upvoted</SettingLabel>
+            </InsetIonItem>
+            <InsetIonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person_view.person)}/downvoted`,
+              )}
+            >
+              <IonIcon icon={arrowDown} color="primary" />{" "}
+              <SettingLabel>Downvoted</SettingLabel>
+            </InsetIonItem>
             <InsetIonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/hidden`,
