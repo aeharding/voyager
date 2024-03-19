@@ -3,11 +3,7 @@ import { createOutline } from "ionicons/icons";
 import { useState } from "react";
 import { useAppDispatch } from "../../../store";
 import { getUser } from "../../../features/user/userSlice";
-import {
-  OldLemmyErrorValue,
-  getHandle,
-  isLemmyError,
-} from "../../../helpers/lemmy";
+import { getHandle, isLemmyError } from "../../../helpers/lemmy";
 import useAppToast from "../../../helpers/useAppToast";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
@@ -27,13 +23,9 @@ export default function ComposeButton() {
       user = await dispatch(getUser(handle));
     } catch (error) {
       presentToast({
-        message:
-          isLemmyError(
-            error,
-            "couldnt_find_that_username_or_email" as OldLemmyErrorValue,
-          ) || isLemmyError(error, "couldnt_find_person")
-            ? `Could not find user with handle ${handle}`
-            : "Server error. Please try again.",
+        message: isLemmyError(error, "couldnt_find_person")
+          ? `Could not find user with handle ${handle}`
+          : "Server error. Please try again.",
         color: "danger",
       });
 
