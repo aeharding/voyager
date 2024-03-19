@@ -1,4 +1,4 @@
-import { LongPressOptions } from "use-long-press";
+import { LongPressOptions, LongPressReactEvents } from "use-long-press";
 import { isAppleDeviceInstallable } from "./device";
 
 const filterDragScrollbar: LongPressOptions["filterEvents"] = (e) => {
@@ -46,4 +46,26 @@ export const filterEvents: LongPressOptions["filterEvents"] = (e) => {
   if (!filterSafariCallout(e)) return false;
 
   return true;
+};
+
+// prevent click events after long press
+export const onFinishStopClick = (event: LongPressReactEvents) => {
+  const stopClick = (clickEvent: MouseEvent) => {
+    clickEvent.stopImmediatePropagation();
+  };
+
+  if (!(event.target instanceof HTMLElement)) return;
+
+  event.target?.addEventListener("click", stopClick, {
+    capture: true,
+    once: true,
+  });
+
+  setTimeout(() => {
+    if (!(event.target instanceof HTMLElement)) return;
+
+    event.target.removeEventListener("click", stopClick, {
+      capture: true,
+    });
+  }, 200); // iOS safari can delay
 };
