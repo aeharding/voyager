@@ -19,7 +19,6 @@ import { LIMIT } from "../../services/lemmy";
 import { useAppSelector } from "../../store";
 import PostCommentFeed, { PostCommentItem } from "../feed/PostCommentFeed";
 import { userHandleSelector } from "../auth/authSelectors";
-import { fixLemmyDateString } from "../../helpers/date";
 import {
   getModColor,
   getModIcon,
@@ -148,6 +147,6 @@ export default function Profile({ person }: ProfileProps) {
 }
 
 export function getPostCommentItemCreatedDate(item: PostCommentItem): number {
-  if (isPost(item)) return Date.parse(fixLemmyDateString(item.post.published));
-  return Date.parse(fixLemmyDateString(item.comment.published));
+  if (isPost(item)) return Date.parse(item.post.published);
+  return Date.parse(item.comment.published);
 }

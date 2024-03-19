@@ -13,7 +13,6 @@ import FeedContent from "./FeedContent";
 import { Community, GetModlogResponse, Person } from "lemmy-js-client";
 import { values } from "lodash";
 import { ModlogItem } from "../../../features/moderation/logs/ModlogItem";
-import { fixLemmyDateString } from "../../../helpers/date";
 import { LIMIT } from "../../../services/lemmy";
 import useFetchCommunity from "../../../features/community/useFetchCommunity";
 import { CenteredSpinner } from "../posts/PostPage";
@@ -95,11 +94,7 @@ function Modlog({ community, user }: ModlogProps) {
 
       return values(logs)
         .reduce<ModlogItemType[]>((acc, current) => acc.concat(current), [])
-        .sort(
-          (a, b) =>
-            Date.parse(fixLemmyDateString(getLogDate(b))) -
-            Date.parse(fixLemmyDateString(getLogDate(a))),
-        );
+        .sort((a, b) => Date.parse(getLogDate(b)) - Date.parse(getLogDate(a)));
     },
     [client, community, user],
   );

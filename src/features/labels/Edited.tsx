@@ -3,7 +3,6 @@ import { IonIcon, useIonAlert } from "@ionic/react";
 import { pencil } from "ionicons/icons";
 import { MouseEvent, useMemo } from "react";
 import { formatRelative } from "./Ago";
-import { fixLemmyDateString } from "../../helpers/date";
 import { styled } from "@linaria/react";
 
 const Container = styled.div`
@@ -45,7 +44,7 @@ export default function Edited({ item, showDate, className }: EditedProps) {
 
     if (!edited) return;
 
-    const date = new Date(fixLemmyDateString(edited));
+    const date = new Date(edited);
 
     present({
       header: `Edited ${formatRelative(edited)} Ago`,
