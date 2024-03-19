@@ -12,17 +12,20 @@ import React, {
 import GalleryPostActions from "./GalleryPostActions";
 import { createPortal } from "react-dom";
 import { PostView } from "lemmy-js-client";
-import PhotoSwipeLightbox, { PreparedPhotoSwipeOptions } from "photoswipe";
 import { getSafeArea, isAndroid, isNative } from "../../../helpers/device";
 
-import "photoswipe/style.css";
 import { useLocation } from "react-router";
 import { StatusBar } from "@capacitor/status-bar";
 import { setPostRead } from "../../post/postSlice";
 import { useAppDispatch } from "../../../store";
 import GalleryMedia from "./GalleryMedia";
 import ImageMoreActions from "./ImageMoreActions";
+
+import type { PreparedPhotoSwipeOptions } from "photoswipe";
 import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
+import PhotoSwipeLightbox from "photoswipe/lightbox";
+
+import "photoswipe/style.css";
 
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
@@ -71,14 +74,16 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
   useEffect(() => {
     if (!lightboxRef.current) return;
 
-    lightboxRef.current.close();
+    lightboxRef.current.pswp?.close();
   }, [location.pathname]);
 
   const close = useCallback(() => {
     if (!lightboxRef.current) return;
 
-    lightboxRef.current.options.showHideAnimationType = "fade";
-    lightboxRef.current.close();
+    if (lightboxRef.current.pswp)
+      lightboxRef.current.pswp.options.showHideAnimationType = "fade";
+
+    lightboxRef.current.pswp?.close();
   }, []);
 
   const open = useCallback(
@@ -181,7 +186,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
       instance.on("tapAction", () => {
         if (currZoomLevel !== zoomLevel.min) {
-          instance.zoomTo(zoomLevel.min, undefined, 300);
+          instance.pswp?.zoomTo(zoomLevel.min, undefined, 300);
           currZoomLevel = zoomLevel.min;
 
           // queueMicrotask, otherwise will be overwritten by internal photoswipe ui toggle
@@ -203,9 +208,13 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
       function onZoomChange() {
         if (currZoomLevel <= zoomLevel.min) {
-          instance.gestures.pswp.element?.classList.add("pswp--ui-visible");
+          instance.pswp?.gestures.pswp.element?.classList.add(
+            "pswp--ui-visible",
+          );
         } else {
-          instance.gestures.pswp.element?.classList.remove("pswp--ui-visible");
+          instance.pswp?.gestures.pswp.element?.classList.remove(
+            "pswp--ui-visible",
+          );
         }
       }
 
@@ -232,7 +241,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       });
 
       instance.on("uiRegister", function () {
-        instance.ui?.registerElement({
+        instance.pswp?.ui?.registerElement({
           appendTo: "root",
           onInit: (el) => {
             setActionContainer(el);
@@ -315,7 +324,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         }
 
         if (instance !== null) {
-          instance.close();
+          instance.pswp?.close();
         }
       };
 
@@ -339,7 +348,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       // Android back button logic end
       // -----------------------------
 
-      instance.init();
+      instance.loadAndOpen(0);
       lightboxRef.current = instance;
     },
     [dispatch],

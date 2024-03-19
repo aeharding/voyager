@@ -9,7 +9,7 @@ function buildBaseUrl(url: string): string {
 
 export function getClient(url: string, jwt?: string): LemmyHttp {
   return new LemmyHttp(buildBaseUrl(url), {
-    fetchFunction: isNative() ? nativeFetch : fetch.bind(globalThis),
+    fetchFunction: isNative() ? nativeFetch : undefined,
     headers: jwt
       ? {
           Authorization: `Bearer ${jwt}`,
