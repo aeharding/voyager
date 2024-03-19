@@ -140,6 +140,8 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       : undefined) ?? 0,
   );
 
+  const hasPostBody = data.post.post.body || data.post.post.url;
+
   useEffect(() => {
     if (!blob) return;
 
@@ -315,7 +317,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                 Include Post Details
               </IonToggle>
             </IonItem>
-            {includePostDetails && (
+            {includePostDetails && hasPostBody ? (
               <IonItem>
                 <IonToggle
                   checked={includePostText}
@@ -324,7 +326,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                   Include Post Text
                 </IonToggle>
               </IonItem>
-            )}
+            ) : undefined}
 
             {!!getDepthFromComment(data.comment.comment) && (
               <IonItem>

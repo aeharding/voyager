@@ -18,7 +18,7 @@ import { LOGIN_SERVERS } from "../data/servers";
 import { getClient } from "../../../../services/lemmy";
 import Login from "./Login";
 import useAppToast from "../../../../helpers/useAppToast";
-import { isValidHostname } from "../../../../helpers/url";
+import { isValidHostname, stripProtocol } from "../../../../helpers/url";
 import { GetSiteResponse } from "lemmy-js-client";
 import { uniq } from "lodash";
 import { getCustomServers } from "../../../../services/app";
@@ -45,12 +45,13 @@ export default function PickLoginServer() {
   const presentToast = useAppToast();
   const [search, setSearch] = useState("");
   const [dirty, setDirty] = useState(false);
+  const searchHostname = stripProtocol(search.trim());
   const instances = useMemo(
     () =>
       uniq([...getCustomServers(), ...LOGIN_SERVERS]).filter((server) =>
-        server.includes(search.toLowerCase()),
+        server.includes(searchHostname.toLowerCase()),
       ),
-    [search],
+    [searchHostname],
   );
   const [loading, setLoading] = useState(false);
 
@@ -60,11 +61,11 @@ export default function PickLoginServer() {
   const searchInvalid = useMemo(
     () =>
       !(
-        isValidHostname(search) &&
-        search.includes(".") &&
-        !search.endsWith(".")
+        isValidHostname(searchHostname) &&
+        searchHostname.includes(".") &&
+        !searchHostname.endsWith(".")
       ),
-    [search],
+    [searchHostname],
   );
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export default function PickLoginServer() {
 
     setLoading(true);
 
-    const potentialServer = search.toLowerCase();
+    const potentialServer = searchHostname.toLowerCase();
 
     let site: GetSiteResponse;
 

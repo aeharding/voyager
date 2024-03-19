@@ -46,8 +46,8 @@ export default function CommentSort({ sort, setSort }: CommentSortProps) {
 
   return (
     <>
-      <IonButton fill="default" onClick={() => setOpen(true)}>
-        <IonIcon icon={getSortIcon(sort)} color="primary" />
+      <IonButton onClick={() => setOpen(true)}>
+        <IonIcon icon={getSortIcon(sort)} slot="icon-only" />
       </IonButton>
       <IonActionSheet
         cssClass="left-align-buttons"

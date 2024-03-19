@@ -8,7 +8,7 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useParams } from "react-router";
 import { styled } from "@linaria/react";
 import { PositionedContainer } from "../elements/PositionedContainer";
-import { Container } from "../elements/Container";
+import CommentContainer from "../elements/CommentContainer";
 
 const MoreRepliesBlock = styled.div`
   display: flex;
@@ -54,12 +54,12 @@ export default function ContinueThread({
         <PositionedContainer
           depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
         >
-          <Container depth={absoluteDepth ?? depth ?? 0}>
+          <CommentContainer depth={absoluteDepth ?? depth ?? 0}>
             <MoreRepliesBlock>
               Continue Thread...
               <ChevronIcon icon={chevronForward} />
             </MoreRepliesBlock>
-          </Container>
+          </CommentContainer>
         </PositionedContainer>
       </CustomIonItem>
     </AnimateHeight>

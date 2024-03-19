@@ -4,4 +4,5 @@
     <string name="title_activity_main">Voyager</string>
     <string name="package_name">app.vger.voyager</string>
     <string name="custom_url_scheme">app.vger.voyager</string>
+    <string name="lemmy_link">Lemmy link</string>
 </resources>

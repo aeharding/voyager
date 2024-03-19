@@ -7,7 +7,6 @@ import ModeratableItem, {
 import { OTapToCollapseType } from "../../../services/db";
 import { memo, useCallback, useContext, useMemo, useRef } from "react";
 import { PageContext } from "../../auth/PageContext";
-import { scrollIntoView } from "../../../helpers/dom";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
 import { findLoneImage } from "../../../helpers/markdown";
@@ -28,6 +27,8 @@ import Crosspost from "../crosspost/Crosspost";
 import useCrosspostUrl from "../shared/useCrosspostUrl";
 import Media from "../inFeed/large/media/Media";
 import { styled } from "@linaria/react";
+import { AppContext } from "../../auth/AppContext";
+import AnimateHeight from "react-animate-height";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -44,11 +45,10 @@ const LightboxMedia = styled(Media)`
 
   width: 100%;
   object-fit: contain;
-  background: var(--lightroom-bg);
 `;
 
 const StyledMarkdown = styled(Markdown)`
-  margin: 12px 0;
+  margin: 0 0 15px 0;
 
   img {
     display: block;
@@ -60,11 +60,11 @@ const StyledMarkdown = styled(Markdown)`
 `;
 
 const StyledEmbed = styled(Embed)`
-  margin: 12px 0;
+  margin: 0 0 12px;
 `;
 
 const StyledCrosspost = styled(Crosspost)`
-  margin: 12px 0;
+  margin: 0 0 12px;
 `;
 
 const Container = styled.div`
@@ -103,6 +103,12 @@ const By = styled.div`
   text-overflow: ellipsis;
 `;
 
+const TextContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;
+
 interface PostHeaderProps {
   post: PostView;
   onPrependComment?: (comment: CommentView) => void;
@@ -129,6 +135,7 @@ function PostHeader({
   );
   const titleRef = useRef<HTMLDivElement>(null);
   const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
+  const { activePageRef } = useContext(AppContext);
 
   const crosspostUrl = useCrosspostUrl(post);
 
@@ -136,12 +143,6 @@ function PostHeader({
     (state) => state.settings.general.comments.tapToCollapse,
   );
   const presentToast = useAppToast();
-
-  const scrollTitleIntoView = useCallback(() => {
-    if (!titleRef.current) return;
-
-    scrollIntoView(titleRef.current);
-  }, []);
 
   const markdownLoneImage = useMemo(
     () => (post?.post.body ? findLoneImage(post.post.body) : undefined),
@@ -152,6 +153,30 @@ function PostHeader({
     () => post.post.url && isUrlMedia(post.post.url),
     [post],
   );
+
+  function scrollToTitle() {
+    const titleTop = (() => {
+      const top = titleRef.current?.offsetTop;
+      if (!top) return 0;
+
+      if (top - 12 === 0) return 0;
+      return top - 12 + 1; // extra 1 to prevent thin line of image showing
+    })();
+
+    if (activePageRef?.current?.current) {
+      if ("querySelector" in activePageRef.current.current) {
+        activePageRef.current.current.scrollTo({
+          top: titleTop,
+          behavior: "smooth",
+        });
+      } else {
+        activePageRef.current.current.scrollToIndex(0, {
+          smooth: true,
+          offset: titleTop,
+        });
+      }
+    }
+  }
 
   const renderMedia = useCallback(() => {
     if (!post) return;
@@ -180,11 +205,13 @@ function PostHeader({
 
     const usedLoneImage = markdownLoneImage && !urlIsMedia;
 
-    if (post.post.body && !usedLoneImage) {
+    if (post.post.body?.trim() && !usedLoneImage) {
       return (
         <>
           {post.post.url && !urlIsMedia && <Embed post={post} />}
-          <StyledMarkdown id={post.post.ap_id}>{post.post.body}</StyledMarkdown>
+          <StyledMarkdown className="collapse-md-margins" id={post.post.ap_id}>
+            {post.post.body}
+          </StyledMarkdown>
         </>
       );
     }
@@ -193,6 +220,8 @@ function PostHeader({
       return <StyledEmbed post={post} />;
     }
   }, [post, crosspostUrl, markdownLoneImage, urlIsMedia]);
+
+  const text = renderText();
 
   return (
     <ModeratableItem itemView={post}>
@@ -208,7 +237,7 @@ function PostHeader({
             return;
 
           dispatch(togglePostCollapse(post.post.id));
-          scrollTitleIntoView();
+          scrollToTitle();
         }}
       >
         <Container>
@@ -220,7 +249,11 @@ function PostHeader({
                 <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
                 {isNsfw(post) && <Nsfw />}
               </Title>
-              {!collapsed && showPostText && renderText()}
+              {showPostText && text && (
+                <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
+                  <TextContent slot="content">{text}</TextContent>
+                </AnimateHeight>
+              )}
               <By>
                 {post.post.featured_community || post.post.featured_local ? (
                   <AnnouncementIcon icon={megaphone} />

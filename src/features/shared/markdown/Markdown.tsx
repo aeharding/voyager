@@ -5,7 +5,7 @@ import MarkdownImg from "./MarkdownImg";
 import InAppExternalLink from "../InAppExternalLink";
 import { useAppSelector } from "../../../store";
 import { css, cx } from "@linaria/core";
-import superSub from "remark-supersub";
+import superSub from "remark-supersub-lemmy";
 import Table from "./components/Table";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import Summary from "./components/spoiler/Summary";
@@ -40,6 +40,13 @@ const markdownCss = css`
     width: 80%;
 
     height: 2px;
+  }
+
+  ol,
+  ul {
+    li > p:first-child:last-child {
+      margin: 0;
+    }
   }
 `;
 

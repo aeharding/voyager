@@ -199,3 +199,61 @@ export const migrateParseError: AppToastOptions = {
     "Problem parsing link. Please make sure the link you entered is correct.",
   color: "warning",
 };
+
+export const replyStubError: AppToastOptions = {
+  message: "You can't reply to a removed comment",
+  color: "warning",
+  position: "top",
+  centerText: true,
+  icon: close,
+};
+
+export const randomCommunityFailed: AppToastOptions = {
+  message: "Failed to find random community",
+  color: "warning",
+  position: "top",
+  centerText: true,
+  icon: close,
+};
+
+export const copyClipboardSuccess: AppToastOptions = {
+  message: "Text copied",
+  position: "bottom",
+  color: "success",
+  fullscreen: true,
+  centerText: true,
+  icon: checkmark,
+};
+
+export const copyClipboardFailed: AppToastOptions = {
+  message: "Failed to copy text",
+  color: "warning",
+  position: "bottom",
+  fullscreen: true,
+  centerText: true,
+  icon: close,
+};
+
+export const cacheClearSuccess: AppToastOptions = {
+  message: "Cache cleared!",
+  position: "bottom",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};
+
+export const cacheClearFailed: AppToastOptions = {
+  message: "Failed to clear cache",
+  color: "warning",
+  position: "bottom",
+  centerText: true,
+  icon: close,
+};
+
+export const deepLinkFailed: AppToastOptions = {
+  message:
+    "Unknown URL. Voyager only accepts URLs to Lemmy content to browse in-app.",
+  color: "warning",
+  position: "top",
+  duration: 7000,
+};

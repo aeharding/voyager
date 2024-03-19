@@ -22,10 +22,11 @@ import {
   PersonMentionView,
   PostView,
 } from "lemmy-js-client";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import store, { useAppDispatch, useAppSelector } from "../../../store";
 import { savePost, voteOnPost } from "../../post/postSlice";
 import {
   postLocked,
+  replyStubError,
   saveSuccess,
   voteError,
 } from "../../../helpers/toastMessages";
@@ -43,6 +44,8 @@ import useAppToast from "../../../helpers/useAppToast";
 import { share } from "../../../helpers/lemmy";
 import { scrollCommentIntoViewIfNeeded } from "../../comment/inTree/CommentTree";
 import { AppContext } from "../../auth/AppContext";
+import { getCanModerate } from "../../moderation/useCanModerate";
+import { isStubComment } from "../../comment/CommentHeader";
 
 const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
@@ -158,6 +161,19 @@ function BaseSlidingVoteInternal({
     if (presentLoginIfNeeded()) return;
 
     if (isInboxItem(item)) dispatch(markRead(item, true));
+
+    // Prevent replying to a comment that's been deleted, or removed by mod (if you're not a mod)
+    if (!isPost) {
+      const comment =
+        store.getState().comment.commentById[item.comment.id] ?? item.comment;
+
+      const stub = isStubComment(comment, getCanModerate(item.community));
+
+      if (stub) {
+        presentToast(replyStubError);
+        return;
+      }
+    }
 
     if (item.post.locked) {
       presentToast(postLocked);

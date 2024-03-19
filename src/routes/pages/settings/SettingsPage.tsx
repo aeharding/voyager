@@ -202,12 +202,12 @@ export default function SettingsPage() {
             <IconBg color="#ff5700">
               <IonIcon icon={bagCheck} />
             </IconBg>
-            <SettingLabel>Migrate subreddits</SettingLabel>
+            <SettingLabel>Migrate Subreddits</SettingLabel>
           </InsetIonItem>
         </IonList>
 
         <IonList inset>
-          <InsetIonItem routerLink="/settings/about/app">
+          <InsetIonItem routerLink="/settings/about">
             <IconBg color="#0e7afe" size="1.15">
               <IonIcon icon={at} />
             </IconBg>

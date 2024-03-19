@@ -104,7 +104,10 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
       ? previewMsg.recipient
       : previewMsg.creator;
 
-  const unread = !!messages.find((msg) => !msg.private_message.read);
+  const unread = !!messages.find(
+    (msg) =>
+      !msg.private_message.read && msg.private_message.creator_id !== myUserId,
+  );
 
   return (
     <IonItem routerLink={`/inbox/messages/${getHandle(person)}`} detail={false}>

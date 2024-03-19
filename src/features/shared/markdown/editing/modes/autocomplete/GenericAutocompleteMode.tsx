@@ -4,7 +4,6 @@ import { getHandle } from "../../../../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
 import useDebounceFn from "../../../../../../helpers/useDebounceFn";
 import { SharedModeProps as GenericModeProps } from "../DefaultMode";
-import { insert } from "../../../../../../helpers/string";
 
 const Container = styled.div`
   display: flex;
@@ -55,8 +54,6 @@ export default function GenericAutocompleteMode<
   buildMd,
   match,
   index,
-  text,
-  setText,
   textareaRef,
 }: GenericAutocompleteModeProps<I>) {
   const [items, setItems] = useState<I[]>([]);
@@ -82,18 +79,11 @@ export default function GenericAutocompleteMode<
 
   function select(item: I) {
     const md = `${buildMd(item)} `;
-    const newText = insert(text, index, md, match.length + 1);
 
-    setText(newText);
+    textareaRef.current?.focus();
 
-    setTimeout(() => {
-      if (!textareaRef.current) return;
-
-      textareaRef.current.focus();
-
-      const cursorPosition = index + md.length;
-      textareaRef.current.setSelectionRange(cursorPosition, cursorPosition);
-    });
+    textareaRef.current?.setSelectionRange(index, index + match.length + 1);
+    document.execCommand("insertText", false, md);
   }
 
   return (

@@ -30,7 +30,7 @@ import { getInstances } from "./pickJoinServerSlice";
 import { VList } from "virtua";
 import { getClient, getImageSrc } from "../../../../services/lemmy";
 import { GetSiteResponse } from "lemmy-js-client";
-import { isValidHostname } from "../../../../helpers/url";
+import { isValidHostname, stripProtocol } from "../../../../helpers/url";
 import useStartJoinFlow from "./useStartJoinFlow";
 import { compact, uniqBy } from "lodash";
 import { LVInstance } from "../../../../services/lemmyverse";
@@ -112,6 +112,7 @@ export default function PickJoinServer() {
 
   const [selection, setSelection] = useState<string | undefined>();
   const [search, setSearch] = useState("");
+  const searchHostname = stripProtocol(search.trim());
 
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
 
@@ -133,9 +134,9 @@ export default function PickJoinServer() {
   const matchingInstances = useMemo(
     () =>
       instances?.filter((instance) =>
-        instance.baseurl.includes(search.toLowerCase()),
+        instance.baseurl.includes(searchHostname.toLowerCase()),
       ) || [],
-    [instances, search],
+    [instances, searchHostname],
   );
 
   const allInstances = useMemo(() => {
@@ -156,11 +157,11 @@ export default function PickJoinServer() {
   const customSearchHostnameInvalid = useMemo(
     () =>
       !(
-        isValidHostname(search) &&
-        search.includes(".") &&
-        !search.endsWith(".")
+        isValidHostname(searchHostname) &&
+        searchHostname.includes(".") &&
+        !searchHostname.endsWith(".")
       ),
-    [search],
+    [searchHostname],
   );
 
   const fetchCustomSite = useCallback(async () => {
@@ -168,7 +169,7 @@ export default function PickJoinServer() {
 
     if (customSearchHostnameInvalid) return;
 
-    const potentialServer = search.toLowerCase();
+    const potentialServer = searchHostname.toLowerCase();
 
     setLoading(true);
 
@@ -181,14 +182,17 @@ export default function PickJoinServer() {
     }
 
     // User changed search before request resolved
-    if (site.site_view.site.actor_id !== `https://${search.toLowerCase()}/`)
+    if (
+      site.site_view.site.actor_id !==
+      `https://${searchHostname.toLowerCase()}/`
+    )
       return;
 
     // Unsupported version
     if (!isMinimumSupportedLemmyVersion(site.version)) return;
 
     setCustomInstance(site);
-  }, [customSearchHostnameInvalid, search]);
+  }, [customSearchHostnameInvalid, searchHostname]);
 
   useEffect(() => {
     fetchCustomSite();

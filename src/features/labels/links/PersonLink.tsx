@@ -91,7 +91,7 @@ export default function PersonLink({
   }, [presentActionSheet, presentToast, dispatch, person]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
-    cancelOnMovement: true,
+    cancelOnMovement: 15,
     onStart,
   });
 
@@ -104,6 +104,11 @@ export default function PersonLink({
 
   if (isAdmin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
+  else if (
+    person.actor_id === "https://lemmy.world/u/aeharding" ||
+    person.actor_id === "https://midwest.social/u/aeharding"
+  )
+    color = "var(--ion-color-tertiary-tint)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
   return (

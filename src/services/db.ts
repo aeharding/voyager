@@ -32,6 +32,19 @@ export const OAppThemeType = {
 
 export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
 
+export const OCommentsThemeType = {
+  Rainbow: "rainbow",
+  UnoReverse: "uno-reverse",
+  Pastel: "pastel",
+  Mauve: "mauve",
+  Electric: "electric",
+  Citrus: "citrus",
+  Blush: "blush",
+} as const;
+
+export type CommentsThemeType =
+  (typeof OCommentsThemeType)[keyof typeof OCommentsThemeType];
+
 export const OPostAppearanceType = {
   Compact: "compact",
   Large: "large",
@@ -258,6 +271,7 @@ export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
 export type SwipeActions = Record<SwipeDirection, SwipeAction>;
 
 export type SettingValueTypes = {
+  comments_theme: CommentsThemeType;
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;
@@ -285,6 +299,7 @@ export type SettingValueTypes = {
   disable_right_swipes: boolean;
   enable_haptic_feedback: boolean;
   link_handler: LinkHandlerType;
+  prefer_native_apps: boolean;
   show_jump_button: boolean;
   jump_button_position: JumpButtonPositionType;
   tap_to_collapse: TapToCollapseType;

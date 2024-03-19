@@ -70,6 +70,12 @@ export interface FeedProps<I>
   onRemovedFromTop?: (items: I[]) => void;
 
   communityName?: string;
+
+  /**
+   * Run some logic before normal feed refresh
+   * @returns false to skip default feed refresh behavior
+   */
+  onPull?: () => Promise<boolean | void>;
 }
 
 /**
@@ -89,6 +95,7 @@ export default function Feed<I>({
   limit = DEFAULT_LIMIT,
   sortDuration,
   onRemovedFromTop,
+  onPull,
 }: FeedProps<I>) {
   const [page, setPage] = useState<number | string>(0);
   const [numberedPage, setNumberedPage] = useState(0);
@@ -257,6 +264,10 @@ export default function Feed<I>({
 
   async function handleRefresh(event: RefresherCustomEvent) {
     try {
+      if (onPull) {
+        if ((await onPull()) === false) return;
+      }
+
       await fetchMore(true);
     } finally {
       event.detail.complete();

@@ -1,6 +1,11 @@
-import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import { FetchFn, isFirstPage } from "../../../features/feed/Feed";
-import AppBackButton from "../../../features/shared/AppBackButton";
 import { createContext, memo, useCallback, useContext } from "react";
 import useClient from "../../../helpers/useClient";
 import FeedContextProvider from "../../../features/feed/FeedContext";
@@ -119,7 +124,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
         <AppHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <AppBackButton
+              <IonBackButton
                 defaultHref={buildGeneralBrowseLink(
                   community ? buildCommunityLink(community) : "",
                 )}

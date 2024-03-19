@@ -2,6 +2,7 @@ import {
   IonButton,
   IonButtons,
   IonContent,
+  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -10,6 +11,8 @@ import Markdown from "../Markdown";
 import CommentMarkdown from "../../../comment/CommentMarkdown";
 import AppHeader from "../../AppHeader";
 import { useId } from "react";
+import { isIosTheme } from "../../../../helpers/device";
+import { arrowBackSharp } from "ionicons/icons";
 
 interface PreviewModalProps {
   text: string;
@@ -49,11 +52,19 @@ export default function PreviewModal({
     <IonPage>
       <AppHeader>
         <IonToolbar>
-          <IonButtons slot="end">
-            <IonButton color="primary" strong onClick={() => onDismiss()}>
-              Done
-            </IonButton>
-          </IonButtons>
+          {isIosTheme() ? (
+            <IonButtons slot="primary">
+              <IonButton strong onClick={() => onDismiss()}>
+                Done
+              </IonButton>
+            </IonButtons>
+          ) : (
+            <IonButtons slot="start">
+              <IonButton onClick={() => onDismiss()}>
+                <IonIcon icon={arrowBackSharp} slot="icon-only" />
+              </IonButton>
+            </IonButtons>
+          )}
           <IonTitle>Preview</IonTitle>
         </IonToolbar>
       </AppHeader>

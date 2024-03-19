@@ -4,7 +4,6 @@ import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline, shareOutline } from "ionicons/icons";
 import { useAppSelector } from "../../../store";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { getHandle } from "../../../helpers/lemmy";
 import MoreActions from "../../post/shared/MoreActions";
 import {
   calculateTotalScore,
@@ -22,6 +21,7 @@ import useAppToast from "../../../helpers/useAppToast";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { InFeedContext } from "../../feed/Feed";
 import { styled } from "@linaria/react";
+import { buildPostLink } from "../../../helpers/appLinkBuilder";
 
 const BottomContainer = styled.div`
   position: absolute;
@@ -68,9 +68,6 @@ export default function GalleryPostActions({
   imgSrc,
 }: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const link = buildGeneralBrowseLink(
-    `/c/${getHandle(post.community)}/comments/${post.post.id}`,
-  );
   const router = useOptimizedIonRouter();
   const location = useLocation();
   const presentToast = useAppToast();
@@ -107,9 +104,11 @@ export default function GalleryPostActions({
           onClick={() => {
             close();
 
-            if (location.pathname.startsWith(link)) return;
+            const link = buildGeneralBrowseLink(
+              buildPostLink(post.community, post.post),
+            );
 
-            setTimeout(() => router.push(link), 10);
+            if (!location.pathname.startsWith(link)) router.push(link);
           }}
         >
           <Section>

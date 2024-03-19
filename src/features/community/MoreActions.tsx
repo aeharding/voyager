@@ -1,7 +1,6 @@
-import { IonActionSheet, IonButton, IonIcon } from "@ionic/react";
+import { IonActionSheet, IonButton } from "@ionic/react";
 import {
   createOutline,
-  ellipsisHorizontal,
   heartDislikeOutline,
   heartOutline,
   starOutline,
@@ -17,6 +16,7 @@ import useCommunityActions from "./useCommunityActions";
 import { Community, CommunityView } from "lemmy-js-client";
 import { useAppSelector } from "../../store";
 import { compact } from "lodash";
+import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
 
 interface MoreActionsProps {
   community: CommunityView | undefined;
@@ -27,12 +27,8 @@ export default function MoreActions({ community }: MoreActionsProps) {
 
   return (
     <>
-      <IonButton
-        disabled={!community}
-        fill="default"
-        onClick={() => setOpen(true)}
-      >
-        <IonIcon icon={ellipsisHorizontal} color="primary" />
+      <IonButton disabled={!community} onClick={() => setOpen(true)}>
+        <HeaderEllipsisIcon slot="icon-only" />
       </IonButton>
 
       {community && (

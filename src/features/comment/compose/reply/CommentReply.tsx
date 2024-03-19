@@ -6,6 +6,7 @@ import {
   IonTitle,
   IonText,
   useIonModal,
+  IonIcon,
 } from "@ionic/react";
 import {
   CommentReplyView,
@@ -24,15 +25,14 @@ import {
   userHandleSelector,
 } from "../../../auth/authSelectors";
 import { receivedComments } from "../../commentSlice";
-import CommentContent from "../shared";
-import useTextRecovery, {
-  clearRecoveredText,
-} from "../../../../helpers/useTextRecovery";
+import CommentEditorContent from "../CommentEditorContent";
 import useAppToast from "../../../../helpers/useAppToast";
 import { isLemmyError } from "../../../../helpers/lemmy";
 import AccountSwitcher from "../../../auth/AccountSwitcher";
 import { getClient } from "../../../../services/lemmy";
 import AppHeader from "../../../shared/AppHeader";
+import { arrowBackSharp, send } from "ionicons/icons";
+import { isIosTheme } from "../../../../helpers/device";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -226,21 +226,24 @@ export default function CommentReply({
     if (reply) dispatch(receivedComments([reply]));
     setCanDismiss(true);
     dismiss(reply);
-    clearRecoveredText();
   }
 
   useEffect(() => {
     setCanDismiss(!replyContent);
   }, [replyContent, setCanDismiss]);
 
-  useTextRecovery(replyContent, setReplyContent);
-
   return (
     <>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonButton onClick={() => dismiss()}>Cancel</IonButton>
+            <IonButton onClick={() => dismiss()}>
+              {isIosTheme() ? (
+                "Cancel"
+              ) : (
+                <IonIcon icon={arrowBackSharp} slot="icon-only" />
+              )}
+            </IonButton>
           </IonButtons>
           <IonTitle>
             <Centered>
@@ -276,20 +279,21 @@ export default function CommentReply({
               color={isSubmitDisabled ? "medium" : undefined}
               onClick={submit}
             >
-              Post
+              {isIosTheme() ? "Post" : <IonIcon icon={send} slot="icon-only" />}
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </AppHeader>
 
-      <CommentContent
+      <CommentEditorContent
         ref={textareaRef}
         text={replyContent}
         setText={setReplyContent}
         onSubmit={submit}
+        onDismiss={dismiss}
       >
         <ItemReplyingTo item={item} />
-      </CommentContent>
+      </CommentEditorContent>
     </>
   );
 }

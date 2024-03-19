@@ -1,52 +1,10 @@
-import {
-  personCircleOutline,
-  cog,
-  search,
-  fileTray,
-  telescope,
-} from "ionicons/icons";
-import {
-  IonBadge,
-  IonIcon,
-  IonLabel,
-  IonTabBar,
-  IonTabButton,
-} from "@ionic/react";
-import { totalUnreadSelector } from "../features/inbox/inboxSlice";
-import useShouldInstall from "../features/pwa/useShouldInstall";
-import { UpdateContext } from "./pages/settings/update/UpdateContext";
-import { scrollUpIfNeeded } from "../helpers/scrollUpIfNeeded";
-import { getProfileTabLabel } from "../features/settings/general/other/ProfileTabLabel";
-import { AppContext } from "../features/auth/AppContext";
-import { resetSavedStatusTap } from "../core/listeners/statusTap";
-import { useLocation } from "react-router";
-import { useAppSelector } from "../store";
-import {
-  userHandleSelector,
-  instanceSelector,
-  jwtSelector,
-  accountsListEmptySelector,
-} from "../features/auth/authSelectors";
-import { forwardRef, useCallback, useContext, useEffect, useMemo } from "react";
-import { getDefaultServer } from "../services/app";
-import { focusSearchBar } from "./pages/search/SearchPage";
-import { useOptimizedIonRouter } from "../helpers/useOptimizedIonRouter";
-import { PageContext } from "../features/auth/PageContext";
-import { useLongPress } from "use-long-press";
-import { ImpactStyle } from "@capacitor/haptics";
-import useHapticFeedback from "../helpers/useHapticFeedback";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
-
-const interceptorCss = css`
-  position: absolute;
-  inset: 0;
-  pointer-events: all;
-`;
-
-const ProfileLabel = styled(IonLabel)`
-  max-width: 20vw;
-`;
+import { IonTabBar } from "@ionic/react";
+import { forwardRef, useRef } from "react";
+import PostsTabButton from "./tabs/buttons/PostsTabButton";
+import InboxTabButton from "./tabs/buttons/InboxTabButton";
+import ProfileTabButton from "./tabs/buttons/ProfileTabButton";
+import SearchTabButton from "./tabs/buttons/SearchTabButton";
+import SettingsTabButton from "./tabs/buttons/SettingsTabButton";
 
 type CustomTabBarType = typeof IonTabBar & {
   /**
@@ -56,220 +14,31 @@ type CustomTabBarType = typeof IonTabBar & {
 };
 
 const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
-  const location = useLocation();
-  const router = useOptimizedIonRouter();
-  const vibrate = useHapticFeedback();
+  const longPressedRef = useRef(false);
 
-  const databaseError = useAppSelector((state) => state.settings.databaseError);
-  const selectedInstance = useAppSelector(instanceSelector);
+  const resetLongPress = () => {
+    longPressedRef.current = false;
+  };
 
-  useEffect(() => {
-    resetSavedStatusTap();
-  }, [location]);
-
-  const { status: updateStatus } = useContext(UpdateContext);
-  const shouldInstall = useShouldInstall();
-
-  const { activePageRef } = useContext(AppContext);
-  const { presentAccountSwitcher, presentLoginIfNeeded } =
-    useContext(PageContext);
-
-  const jwt = useAppSelector(jwtSelector);
-  const accountsListEmpty = useAppSelector(accountsListEmptySelector);
-  const totalUnread = useAppSelector(totalUnreadSelector);
-
-  const settingsNotificationCount =
-    (shouldInstall ? 1 : 0) + (updateStatus === "outdated" ? 1 : 0);
-
-  const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance,
-  );
-
-  const userHandle = useAppSelector(userHandleSelector);
-  const profileLabelType = useAppSelector(
-    (state) => state.settings.appearance.general.profileLabel,
-  );
-
-  const profileTabLabel = useMemo(
-    () => getProfileTabLabel(profileLabelType, userHandle, connectedInstance),
-    [profileLabelType, userHandle, connectedInstance],
-  );
-
-  const isPostsButtonDisabled = location.pathname.startsWith("/posts");
-  const isInboxButtonDisabled = location.pathname.startsWith("/inbox");
-  const isProfileButtonDisabled = location.pathname.startsWith("/profile");
-  const isSearchButtonDisabled = location.pathname.startsWith("/search");
-  const isSettingsButtonDisabled = location.pathname.startsWith("/settings");
-
-  const onPostsClick = useCallback(() => {
-    if (!isPostsButtonDisabled) return;
-
-    if (scrollUpIfNeeded(activePageRef?.current)) return;
-
-    const pathname = router.getRouteInfo()?.pathname;
-    if (!pathname) return;
-
-    const actor = pathname.split("/")[2];
-
-    if (pathname.endsWith(jwt ? "/home" : "/all")) {
-      router.push(
-        `/posts/${actor ?? selectedInstance ?? getDefaultServer()}`,
-        "back",
-      );
-      return;
-    }
-
-    const communitiesPath = `/posts/${
-      actor ?? selectedInstance ?? getDefaultServer()
-    }`;
-    if (pathname === communitiesPath || pathname === `${communitiesPath}/`)
-      return;
-
-    if (router.canGoBack()) {
-      router.goBack();
-    } else {
-      router.push(
-        `/posts/${actor ?? selectedInstance ?? getDefaultServer()}/${
-          jwt ? "home" : "all"
-        }`,
-        "back",
-      );
-    }
-  }, [activePageRef, isPostsButtonDisabled, jwt, router, selectedInstance]);
-
-  const onInboxClick = useCallback(() => {
-    if (!isInboxButtonDisabled) return;
-
-    const pathname = router.getRouteInfo()?.pathname;
-    if (!pathname) return;
-
-    if (
-      // Messages are in reverse order, so bail on scroll up
-      !pathname.startsWith("/inbox/messages/") &&
-      scrollUpIfNeeded(activePageRef?.current)
-    )
-      return;
-
-    router.push(`/inbox`, "back");
-  }, [activePageRef, isInboxButtonDisabled, router]);
-
-  const onProfileClick = useCallback(() => {
-    if (!isProfileButtonDisabled) return;
-
-    if (scrollUpIfNeeded(activePageRef?.current)) return;
-
-    const pathname = router.getRouteInfo()?.pathname;
-    if (!pathname) return;
-
-    // if the profile page is already open, show the account switcher
-    if (pathname === "/profile") {
-      if (!accountsListEmpty) {
-        presentAccountSwitcher();
-      } else {
-        presentLoginIfNeeded();
-      }
-    }
-
-    router.push("/profile", "back");
-  }, [
-    accountsListEmpty,
-    activePageRef,
-    isProfileButtonDisabled,
-    presentAccountSwitcher,
-    presentLoginIfNeeded,
-    router,
-  ]);
-
-  const onSearchClick = useCallback(() => {
-    if (!isSearchButtonDisabled) return;
-
-    // if the search page is already open, focus the search bar
-    focusSearchBar();
-
-    if (scrollUpIfNeeded(activePageRef?.current)) return;
-
-    router.push(`/search`, "back");
-  }, [activePageRef, isSearchButtonDisabled, router]);
-
-  const onSettingsClick = useCallback(() => {
-    if (!isSettingsButtonDisabled) return;
-
-    if (scrollUpIfNeeded(activePageRef?.current)) return;
-
-    router.push(`/settings`, "back");
-  }, [activePageRef, isSettingsButtonDisabled, router]);
-
-  const onPresentAccountSwitcher = useCallback(() => {
-    vibrate({ style: ImpactStyle.Light });
-
-    if (!accountsListEmpty) {
-      presentAccountSwitcher();
-    } else {
-      presentLoginIfNeeded();
-    }
-  }, [
-    accountsListEmpty,
-    presentAccountSwitcher,
-    presentLoginIfNeeded,
-    vibrate,
-  ]);
-
-  const presentAccountSwitcherBind = useLongPress(onPresentAccountSwitcher);
-
-  const settingsBadge = (() => {
-    if (databaseError) return <IonBadge color="danger">!</IonBadge>;
-
-    if (settingsNotificationCount)
-      return <IonBadge color="danger">{settingsNotificationCount}</IonBadge>;
-  })();
+  const sharedTabProps = {
+    longPressedRef,
+  };
 
   return (
-    <IonTabBar {...props} ref={ref}>
-      <IonTabButton disabled={isPostsButtonDisabled} tab="posts" href="/posts">
-        <IonIcon aria-hidden="true" icon={telescope} />
-        <IonLabel>Posts</IonLabel>
-        <div onClick={onPostsClick} className={interceptorCss} />
-      </IonTabButton>
-      <IonTabButton disabled={isInboxButtonDisabled} tab="inbox" href="/inbox">
-        <IonIcon aria-hidden="true" icon={fileTray} />
-        <IonLabel>Inbox</IonLabel>
-        {totalUnread ? (
-          <IonBadge color="danger">{totalUnread}</IonBadge>
-        ) : undefined}
-        <div onClick={onInboxClick} className={interceptorCss} />
-      </IonTabButton>
-      <IonTabButton
-        disabled={isProfileButtonDisabled}
-        tab="profile"
-        href="/profile"
-      >
-        <IonIcon aria-hidden="true" icon={personCircleOutline} />
-        <ProfileLabel>{profileTabLabel}</ProfileLabel>
-        <div
-          onClick={onProfileClick}
-          {...presentAccountSwitcherBind()}
-          className={interceptorCss}
-        />
-      </IonTabButton>
-      <IonTabButton
-        disabled={isSearchButtonDisabled}
-        tab="search"
-        href="/search"
-      >
-        <IonIcon aria-hidden="true" icon={search} />
-        <IonLabel>Search</IonLabel>
-        <div onClick={onSearchClick} className={interceptorCss} />
-      </IonTabButton>
-      <IonTabButton
-        tab="settings"
-        href="/settings"
-        disabled={isSettingsButtonDisabled}
-      >
-        <IonIcon aria-hidden="true" icon={cog} />
-        <IonLabel>Settings</IonLabel>
-        {settingsBadge}
-        <div onClick={onSettingsClick} className={interceptorCss} />
-      </IonTabButton>
+    <IonTabBar
+      {...props}
+      ref={ref}
+      onClick={resetLongPress}
+      onTouchEnd={(e) => {
+        // stop keyboard closing when search input has text on search tab press up
+        if (longPressedRef.current) e.preventDefault();
+      }}
+    >
+      <PostsTabButton tab="posts" href="/posts" {...sharedTabProps} />
+      <InboxTabButton tab="inbox" href="/inbox" {...sharedTabProps} />
+      <ProfileTabButton tab="profile" href="/profile" {...sharedTabProps} />
+      <SearchTabButton tab="search" href="/search" {...sharedTabProps} />
+      <SettingsTabButton tab="settings" href="/settings" {...sharedTabProps} />
     </IonTabBar>
   );
 });

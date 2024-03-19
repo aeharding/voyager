@@ -38,6 +38,12 @@ project(':capacitor-application-context').projectDir = new File('../node_modules
 include ':capacitor-biometric-lock'
 project(':capacitor-biometric-lock').projectDir = new File('../node_modules/.pnpm/capacitor-biometric-lock@0.1.1_@capacitor+core@5.7.0/node_modules/capacitor-biometric-lock/android')
 
+include ':capacitor-clear-cache'
+project(':capacitor-clear-cache').projectDir = new File('../node_modules/.pnpm/capacitor-clear-cache@0.0.1_@capacitor+core@5.7.0/node_modules/capacitor-clear-cache/android')
+
+include ':capacitor-launch-native'
+project(':capacitor-launch-native').projectDir = new File('../node_modules/.pnpm/capacitor-launch-native@0.0.2_@capacitor+core@5.7.0/node_modules/capacitor-launch-native/android')
+
 include ':capacitor-plugin-safe-area'
 project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@2.0.6_@capacitor+core@5.7.0/node_modules/capacitor-plugin-safe-area/android')
 

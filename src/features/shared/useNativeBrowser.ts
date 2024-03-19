@@ -4,6 +4,7 @@ import { useAppSelector } from "../../store";
 import { isAndroid } from "../../helpers/device";
 import { notifyStatusTapThatBrowserWasOpened } from "../../core/listeners/statusTap";
 import { useIsDark } from "../../core/GlobalStyles";
+import { LaunchNative } from "capacitor-launch-native";
 
 export default function useNativeBrowser() {
   const isDark = useIsDark();
@@ -13,9 +14,12 @@ export default function useNativeBrowser() {
   const alwaysUseReaderMode = useAppSelector(
     (state) => state.settings.general.safari.alwaysUseReaderMode,
   );
+  const preferNativeApps = useAppSelector(
+    (state) => state.settings.general.preferNativeApps,
+  );
 
   return useCallback(
-    (href: string) => {
+    async (href: string) => {
       const toolbarColor = (() => {
         if (usingSystemDarkMode) return undefined;
 
@@ -35,6 +39,11 @@ export default function useNativeBrowser() {
         }
       })();
 
+      if (preferNativeApps) {
+        const { completed } = await LaunchNative.attempt({ url: href });
+        if (completed) return;
+      }
+
       Browser.open({
         url: href,
         toolbarColor,
@@ -42,6 +51,12 @@ export default function useNativeBrowser() {
       });
       notifyStatusTapThatBrowserWasOpened();
     },
-    [isDark, usingSystemDarkMode, pureBlack, alwaysUseReaderMode],
+    [
+      isDark,
+      usingSystemDarkMode,
+      pureBlack,
+      alwaysUseReaderMode,
+      preferNativeApps,
+    ],
   );
 }

@@ -1,7 +1,12 @@
-import { IonButtons, IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonPage,
+  IonSearchbar,
+  IonToolbar,
+} from "@ionic/react";
 import { FetchFn } from "../../../features/feed/Feed";
 import { Redirect, useParams } from "react-router";
-import AppBackButton from "../../../features/shared/AppBackButton";
 import PostSort from "../../../features/feed/PostSort";
 import MoreActions from "../../../features/community/MoreActions";
 import {
@@ -37,6 +42,7 @@ import { PageTypeContext } from "../../../features/feed/PageTypeContext";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import AppHeader from "../../../features/shared/AppHeader";
+import useGetRandomCommunity from "../../../features/community/useGetRandomCommunity";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -62,10 +68,12 @@ const FixedBg = styled.div`
 `;
 
 const StyledIonToolbar = styled(IonToolbar)`
-  // Weird ionic glitch where adding
-  // absolutely positioned searchbar to header misaligns buttons
-  ion-buttons {
-    margin: auto;
+  .ios & {
+    // Weird ionic glitch where adding
+    // absolutely positioned searchbar to header misaligns buttons
+    ion-buttons {
+      margin: auto;
+    }
   }
 `;
 
@@ -131,6 +139,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
   const [_searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useOptimizedIonRouter();
+  const getRandomCommunity = useGetRandomCommunity();
 
   const searchOpen = searchQuery || _searchOpen;
 
@@ -167,6 +176,17 @@ const CommunityPageContent = memo(function CommunityPageContent({
     [client, community, sort],
   );
 
+  const onPull = async () => {
+    const search = Object.fromEntries([
+      ...new URLSearchParams(router.getRouteInfo()?.search),
+    ]);
+    if (!search.random) return;
+
+    const foundRandom = await getRandomCommunity();
+
+    if (foundRandom) return false;
+  };
+
   const feedSearchContextValue = useMemo(() => ({ setScrolledPastSearch }), []);
 
   const header = useMemo(
@@ -202,6 +222,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
           sortDuration={getSortDuration(sort)}
           header={header}
           filterHiddenPosts={!showHiddenInCommunities}
+          onPull={onPull}
         />
       </PageTypeContext.Provider>
     </FeedSearchContext.Provider>
@@ -233,10 +254,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
               {!searchOpen && (
                 <>
                   <IonButtons slot="start">
-                    <AppBackButton
-                      defaultText="Communities"
-                      defaultHref={buildGeneralBrowseLink("/")}
-                    />
+                    <IonBackButton defaultHref={buildGeneralBrowseLink("/")} />
                   </IonButtons>
                   <TitleSearch name={community}>
                     <IonButtons slot="end">

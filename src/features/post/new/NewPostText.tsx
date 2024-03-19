@@ -1,59 +1,26 @@
-import { styled } from "@linaria/react";
 import {
   IonBackButton,
   IonButton,
   IonButtons,
-  IonContent,
+  IonIcon,
   IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
-import TextareaAutosizedForOnScreenKeyboard from "../../shared/TextareaAutosizedForOnScreenKeyboard";
-import MarkdownToolbar, {
-  TOOLBAR_HEIGHT,
-  TOOLBAR_TARGET_ID,
-} from "../../shared/markdown/editing/MarkdownToolbar";
-import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
-import useTextRecovery, {
-  clearRecoveredText,
-} from "../../../helpers/useTextRecovery";
-import { preventModalSwipeOnTextSelection } from "../../../helpers/ionic";
 import AppHeader from "../../shared/AppHeader";
-
-const Container = styled.div<{ keyboardOpen: boolean }>`
-  min-height: 100%;
-
-  display: flex;
-  flex-direction: column;
-
-  padding-bottom: ${({ keyboardOpen }) =>
-    keyboardOpen
-      ? TOOLBAR_HEIGHT
-      : `calc(${TOOLBAR_HEIGHT} + var(--ion-safe-area-bottom, env(safe-area-inset-bottom)))`};
-`;
-
-const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
-  border: 0;
-  background: none;
-  resize: none;
-  outline: 0;
-  padding: 1rem;
-
-  flex: 1 0 auto;
-  min-height: 7rem;
-
-  html.ios:not(.theme-dark) & {
-    background: var(--ion-item-background);
-  }
-`;
+import Editor from "../../shared/markdown/editing/Editor";
+import { MarkdownEditorIonContent } from "../../shared/markdown/editing/MarkdownToolbar";
+import { isIosTheme } from "../../../helpers/device";
+import { send } from "ionicons/icons";
 
 interface NewPostTextProps {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
   onSubmit: () => void;
   editing: boolean;
+  dismiss: () => void;
 }
 
 export default function NewPostText({
@@ -61,11 +28,9 @@ export default function NewPostText({
   setValue,
   onSubmit,
   editing,
+  dismiss,
 }: NewPostTextProps) {
   const [loading, setLoading] = useState(false);
-
-  const keyboardOpen = useKeyboardOpen();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [text, setText] = useState(value);
   const isSubmitDisabled = loading;
@@ -73,8 +38,6 @@ export default function NewPostText({
   useEffect(() => {
     setValue(text);
   }, [setValue, text]);
-
-  useTextRecovery(text, setText, editing);
 
   async function submit() {
     if (isSubmitDisabled) return;
@@ -85,8 +48,6 @@ export default function NewPostText({
     } finally {
       setLoading(false);
     }
-
-    clearRecoveredText();
   }
 
   return (
@@ -109,36 +70,20 @@ export default function NewPostText({
               onClick={submit}
               disabled={isSubmitDisabled}
             >
-              Post
+              {isIosTheme() ? "Post" : <IonIcon icon={send} slot="icon-only" />}
             </IonButton>
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
-        <Container keyboardOpen={keyboardOpen}>
-          <Textarea
-            {...preventModalSwipeOnTextSelection}
-            id={TOOLBAR_TARGET_ID}
-            ref={textareaRef}
-            value={text}
-            onInput={(e) => setText((e.target as HTMLInputElement).value)}
-            autoFocus
-            onKeyDown={(e) => {
-              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-                submit();
-              }
-            }}
-          />
-        </Container>
-
-        <MarkdownToolbar
-          slot="fixed"
-          type="post"
+      <MarkdownEditorIonContent>
+        <Editor
           text={text}
           setText={setText}
-          textareaRef={textareaRef}
+          canRecoverText={!editing}
+          onSubmit={submit}
+          onDismiss={dismiss}
         />
-      </IonContent>
+      </MarkdownEditorIonContent>
     </>
   );
 }

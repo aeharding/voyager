@@ -38,6 +38,7 @@ import {
   OTapToCollapseType,
   AutoplayMediaType,
   OAutoplayMediaType,
+  CommentsThemeType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -92,6 +93,7 @@ interface SettingsState {
     };
     deviceMode: Mode;
     theme: AppThemeType;
+    commentsTheme: CommentsThemeType;
   };
   general: {
     comments: {
@@ -123,6 +125,7 @@ interface SettingsState {
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
+    preferNativeApps: boolean;
     defaultFeed: DefaultFeedType | undefined;
     noSubscribedInFeed: boolean;
   };
@@ -183,6 +186,7 @@ export const initialState: SettingsState = {
     },
     deviceMode: "ios",
     theme: "default",
+    commentsTheme: "rainbow",
   },
   general: {
     comments: {
@@ -214,6 +218,7 @@ export const initialState: SettingsState = {
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
+    preferNativeApps: true,
     defaultFeed: undefined,
     noSubscribedInFeed: false,
   },
@@ -477,6 +482,10 @@ export const appearanceSlice = createSlice({
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
     },
+    setCommentsTheme(state, action: PayloadAction<CommentsThemeType>) {
+      state.appearance.commentsTheme = action.payload;
+      db.setSetting("comments_theme", action.payload);
+    },
     setEnableHapticFeedback(state, action: PayloadAction<boolean>) {
       state.general.enableHapticFeedback = action.payload;
 
@@ -486,6 +495,11 @@ export const appearanceSlice = createSlice({
       state.general.linkHandler = action.payload;
 
       db.setSetting("link_handler", action.payload);
+    },
+    setPreferNativeApps(state, action: PayloadAction<boolean>) {
+      state.general.preferNativeApps = action.payload;
+
+      db.setSetting("prefer_native_apps", action.payload);
     },
 
     resetSettings: () => ({
@@ -588,6 +602,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   async (_, thunkApi) => {
     const result = db.transaction("r", db.settings, async () => {
       const state = thunkApi.getState() as RootState;
+      const comments_theme = await db.getSetting("comments_theme");
       const collapse_comment_threads = await db.getSetting(
         "collapse_comment_threads",
       );
@@ -646,6 +661,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "enable_haptic_feedback",
       );
       const link_handler = await db.getSetting("link_handler");
+      const prefer_native_apps = await db.getSetting("prefer_native_apps");
       const filtered_keywords = await db.getSetting("filtered_keywords");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
       const show_comment_images = await db.getSetting("show_comment_images");
@@ -668,6 +684,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         ready: true,
         appearance: {
           ...state.settings.appearance,
+          commentsTheme:
+            comments_theme ?? initialState.appearance.commentsTheme,
           general: {
             userInstanceUrlDisplay:
               user_instance_url_display ??
@@ -777,6 +795,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               initialState.general.safari.alwaysUseReaderMode,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
+          preferNativeApps:
+            prefer_native_apps ?? initialState.general.preferNativeApps,
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
           defaultFeed: initialState.general.defaultFeed,
@@ -805,6 +825,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 );
 
 export const {
+  setCommentsTheme,
   setDatabaseError,
   setFontSizeMultiplier,
   setUseSystemFontSize,
@@ -847,6 +868,7 @@ export const {
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,
+  setPreferNativeApps,
   setPureBlack,
   setDefaultFeed,
   setNoSubscribedInFeed,

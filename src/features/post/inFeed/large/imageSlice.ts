@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { round } from "lodash";
 
 export const IMAGE_FAILED = -1;
 
@@ -18,7 +19,10 @@ export const imageSlice = createSlice({
       state,
       action: PayloadAction<{ src: string; aspectRatio: number }>,
     ) => {
-      state.loadedBySrc[action.payload.src] = action.payload.aspectRatio;
+      state.loadedBySrc[action.payload.src] = round(
+        action.payload.aspectRatio,
+        6,
+      );
     },
     imageFailed: (state, action: PayloadAction<string>) => {
       state.loadedBySrc[action.payload] = IMAGE_FAILED;

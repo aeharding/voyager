@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  TransitionOptions,
-  createAnimation,
-  iosTransitionAnimation,
-  mdTransitionAnimation,
-  useIonViewDidEnter,
-} from "@ionic/react";
+import { useIonViewDidEnter } from "@ionic/react";
 import { isInstalled } from "../../../helpers/device";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { styled } from "@linaria/react";
+import { pageTransitionAnimateBackOnly } from "../../../helpers/ionic";
+import { appIsReadyToAcceptDeepLinks } from "./deepLinkReadySlice";
+import { useAppDispatch } from "../../../store";
 
 const LoadingOverlay = styled.div`
   background: var(--ion-background-color);
@@ -33,6 +30,7 @@ interface InitialPageRedirectBootstrapperProps {
 export default function InitialPageRedirectBootstrapper({
   to,
 }: InitialPageRedirectBootstrapperProps) {
+  const dispatch = useAppDispatch();
   const router = useOptimizedIonRouter();
   const [bootstrapped, setBootstrapped] = useState(false);
   const viewEnteredRef = useRef(false);
@@ -69,15 +67,7 @@ export default function InitialPageRedirectBootstrapper({
         "forward",
         "push",
         undefined,
-        (baseEl: HTMLElement, opts: TransitionOptions) => {
-          // Do not animate into view
-          if (opts.direction === "forward") return createAnimation();
-
-          // Later, use normal animation for swipe back
-          return opts.mode === "ios"
-            ? iosTransitionAnimation(baseEl, opts)
-            : mdTransitionAnimation(baseEl, opts);
-        },
+        pageTransitionAnimateBackOnly,
       );
 
       setBootstrapped(true);
@@ -92,7 +82,11 @@ export default function InitialPageRedirectBootstrapper({
 
   useEffect(() => {
     bootstrappedRef.current = bootstrapped;
-  }, [bootstrapped]);
+
+    // Kinda a hack - but helps deep link determine if ready for route push.
+    // Only needs to be done once on app startup
+    if (bootstrapped) dispatch(appIsReadyToAcceptDeepLinks());
+  }, [bootstrapped, dispatch]);
 
   useEffect(() => {
     toRef.current = to;

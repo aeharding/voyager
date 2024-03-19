@@ -1,6 +1,11 @@
-import { IonButtons, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import { useParams } from "react-router";
-import AppBackButton from "../../../features/shared/AppBackButton";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { memo, useEffect, useRef } from "react";
 import { getCommunity } from "../../../features/community/communitySlice";
@@ -48,8 +53,7 @@ const CommunitySidebarPageContent = memo(function CommunitySidebarPageContent({
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <AppBackButton
-              defaultText={community}
+            <IonBackButton
               defaultHref={buildGeneralBrowseLink(`/c/${community}`)}
             />
           </IonButtons>

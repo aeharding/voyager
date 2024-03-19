@@ -1,6 +1,7 @@
-import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
-import { ellipsisHorizontal, eyeOffOutline } from "ionicons/icons";
+import { IonButton, useIonActionSheet } from "@ionic/react";
+import { eyeOffOutline } from "ionicons/icons";
 import useHidePosts from "./useHidePosts";
+import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
 
 export default function SpecialFeedMoreActions() {
   const [presentActionSheet] = useIonActionSheet();
@@ -24,8 +25,8 @@ export default function SpecialFeedMoreActions() {
   }
 
   return (
-    <IonButton fill="default" onClick={present}>
-      <IonIcon icon={ellipsisHorizontal} color="primary" />
+    <IonButton onClick={present}>
+      <HeaderEllipsisIcon slot="icon-only" />
     </IonButton>
   );
 }
