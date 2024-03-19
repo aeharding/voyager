@@ -1,5 +1,5 @@
 import express from "express";
-import ViteExpress from "vite-express";
+import path from "path";
 
 const CUSTOM_LEMMY_SERVERS = process.env.CUSTOM_LEMMY_SERVERS
   ? process.env.CUSTOM_LEMMY_SERVERS.split(",").map((s) => s.trim())
@@ -29,7 +29,13 @@ app.use("*", (req, res, next) => {
   next();
 });
 
-ViteExpress.listen(app, PORT, () =>
+app.use(express.static(path.resolve(import.meta.dirname, "dist")));
+
+app.get("*", function (_, res) {
+  res.sendFile(path.resolve(import.meta.dirname, "dist", "index.html"));
+});
+
+app.listen(PORT, () =>
   // eslint-disable-next-line no-console
   console.log(`Server is on http://localhost:${PORT}`),
 );
