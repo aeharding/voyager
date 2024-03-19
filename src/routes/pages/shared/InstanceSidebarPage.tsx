@@ -7,8 +7,6 @@ import {
 } from "@ionic/react";
 import { useRef } from "react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { TitleSearchProvider } from "../../../features/community/titleSearch/TitleSearchProvider";
-import FeedContextProvider from "../../../features/feed/FeedContext";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useAppSelector } from "../../../store";
 import AppContent from "../../../features/shared/AppContent";
@@ -25,22 +23,18 @@ export default function InstanceSidebarPage() {
   useSetActivePage(pageRef);
 
   return (
-    <FeedContextProvider>
-      <TitleSearchProvider>
-        <IonPage ref={pageRef}>
-          <AppHeader>
-            <IonToolbar>
-              <IonButtons slot="start">
-                <IonBackButton defaultHref={buildGeneralBrowseLink("/")} />
-              </IonButtons>
-              <IonTitle>{connectedInstance}</IonTitle>
-            </IonToolbar>
-          </AppHeader>
-          <AppContent scrollY>
-            <Sidebar />
-          </AppContent>
-        </IonPage>
-      </TitleSearchProvider>
-    </FeedContextProvider>
+    <IonPage ref={pageRef}>
+      <AppHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref={buildGeneralBrowseLink("/")} />
+          </IonButtons>
+          <IonTitle>{connectedInstance}</IonTitle>
+        </IonToolbar>
+      </AppHeader>
+      <AppContent scrollY>
+        <Sidebar />
+      </AppContent>
+    </IonPage>
   );
 }

@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { findCurrentPage } from "../../helpers/ionic";
 import { Browser } from "@capacitor/browser";
+import { useLocation } from "react-router";
 
 let savedScrollTop = 0;
 
@@ -48,4 +50,14 @@ window.addEventListener("statusTap", () => {
 
 export function resetSavedStatusTap() {
   savedScrollTop = 0;
+}
+
+export function ResetStatusTap() {
+  const location = useLocation();
+
+  useEffect(() => {
+    resetSavedStatusTap();
+  }, [location]);
+
+  return null;
 }
