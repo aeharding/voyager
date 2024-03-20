@@ -62,7 +62,7 @@ const Bottom = styled.div`
 
   color: var(--ion-color-text-aside);
 
-  .ion-theme-dark & {
+  .ion-palette-dark & {
     color: var(--ion-color-medium);
   }
 

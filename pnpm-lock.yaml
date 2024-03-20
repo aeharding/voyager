@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ionic/core': npm:voyager-ionic-core@^8.0.0-beta.2
+  '@ionic/core': npm:voyager-ionic-core@8.0.0-beta.3
 
 patchedDependencies:
   '@capacitor/browser@5.2.0':
@@ -76,14 +76,14 @@ devDependencies:
     specifier: ^2.2.1
     version: 2.2.3
   '@ionic/core':
-    specifier: npm:voyager-ionic-core@^8.0.0-beta.2
-    version: /voyager-ionic-core@8.0.0-beta.2
+    specifier: npm:voyager-ionic-core@8.0.0-beta.3
+    version: /voyager-ionic-core@8.0.0-beta.3
   '@ionic/react':
-    specifier: ^8.0.0-beta.2
-    version: 8.0.0-dev.11709632212.139b6f63(react-dom@18.2.0)(react@18.2.0)
+    specifier: 8.0.0-beta.3
+    version: 8.0.0-beta.3(react-dom@18.2.0)(react@18.2.0)
   '@ionic/react-router':
-    specifier: ^8.0.0-beta.2
-    version: 8.0.0-dev.11709632212.139b6f63(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
+    specifier: 8.0.0-beta.3
+    version: 8.0.0-beta.3(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0)
   '@linaria/core':
     specifier: ^6.1.0
     version: 6.1.0
@@ -2150,15 +2150,15 @@ packages:
       - supports-color
     dev: true
 
-  /@ionic/react-router@8.0.0-dev.11709632212.139b6f63(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
-    resolution: {integrity: sha512-kMFrZvKvy/u0TFhIcGd+8P2ES00Kb+lWEKJDTc2ujwhCS5FWIs4zD7Ny7IgjHSWqlR1Wqf+CLreJN3AIcEtGow==}
+  /@ionic/react-router@8.0.0-beta.3(react-dom@18.2.0)(react-router-dom@5.3.4)(react-router@5.3.4)(react@18.2.0):
+    resolution: {integrity: sha512-4odIFc/PkptoSkGPqB86szbCbT/rGZkToMM3ORumP3H6fPnRA7aPIFl51RMyKJVdr0ALVEsntGjCqJ/fv8S2wQ==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
       react-router: ^5.0.1
       react-router-dom: ^5.0.1
     dependencies:
-      '@ionic/react': 8.0.0-dev.11709632212.139b6f63(react-dom@18.2.0)(react@18.2.0)
+      '@ionic/react': 8.0.0-beta.3(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-router: 5.3.4(react@18.2.0)
@@ -2166,13 +2166,13 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@ionic/react@8.0.0-dev.11709632212.139b6f63(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-icDGVmmKsXsmDSsq82TxqUDmDrmqf2yzwBaQ4Hj9IHHmWWXF8NRwQCdUDKhs/na3BdtzdG7LGjodLtpAt3T0wg==}
+  /@ionic/react@8.0.0-beta.3(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-YI3XuKyXRw4bu++6gJfTIWmclEfezDftxzP8caW6K1vQ74GHqpnogIBIu1douYCFuRgjWxJEY5SyjQrcuKuUNA==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
     dependencies:
-      '@ionic/core': /voyager-ionic-core@8.0.0-beta.2
+      '@ionic/core': /voyager-ionic-core@8.0.0-beta.3
       ionicons: 7.2.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -12669,8 +12669,8 @@ packages:
       '@capacitor/core': 5.7.3
     dev: true
 
-  /voyager-ionic-core@8.0.0-beta.2:
-    resolution: {integrity: sha512-xdr5RygP/DMtVc06tHHk54G1pOnJAKPW0iobsdTRoQJW4xdhx9npNK8ImJEVdmA1OGIZQT3cnzZakxJjgzejmQ==}
+  /voyager-ionic-core@8.0.0-beta.3:
+    resolution: {integrity: sha512-QJTcIaBTOgrT/eBk6QUfXfzs17JycruyMgn9AwiUYHTcUUulMlyRkbbiR6EpJAFssTcMdrqb4ql6Tx59hmjcYw==}
     dependencies:
       '@stencil/core': 4.13.0
       ionicons: 7.2.2

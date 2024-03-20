@@ -20,7 +20,7 @@ const StyledIonContent = styled(IonContent)`
 
   --background: linear-gradient(0deg, #bfd5ff, #e3edff 33%, #ffff);
 
-  .ion-theme-dark & {
+  .ion-palette-dark & {
     --background: linear-gradient(0deg, #001233ff, #000a1c 33%, #0000);
   }
 `;
@@ -35,7 +35,7 @@ const StyledBaseSvg = styled(BaseSvg)`
 
   filter: brightness(2.7);
 
-  .ion-theme-dark & {
+  .ion-palette-dark & {
     filter: none;
   }
 ` as AnyComponent;

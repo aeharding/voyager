@@ -18,7 +18,7 @@ import "./theme/variables";
 import { AppThemeType } from "../services/db";
 import { stateWithLocalstorageItems as initialCriticalSettingsState } from "../features/settings/settingsSlice";
 
-export const DARK_CLASSNAME = "ion-theme-dark";
+export const DARK_CLASSNAME = "ion-palette-dark";
 export const PURE_BLACK_CLASSNAME = "theme-pure-black";
 export const THEME_HAS_CUSTOM_BACKGROUND = "theme-has-custom-background";
 

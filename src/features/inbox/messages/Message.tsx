@@ -28,7 +28,7 @@ const Container = styled.div`
   --sentColor: var(--ion-color-primary);
   --receiveColor: #eee;
 
-  .ion-theme-dark & {
+  .ion-palette-dark & {
     --receiveColor: var(--ion-color-medium);
   }
 

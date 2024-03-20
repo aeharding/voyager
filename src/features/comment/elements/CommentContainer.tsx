@@ -35,7 +35,7 @@ const Container = styled.div<ContainerProps>`
     width: 2px;
     filter: none;
 
-    .ion-theme-dark & {
+    .ion-palette-dark & {
       filter: brightness(0.7);
     }
 

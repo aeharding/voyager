@@ -29,7 +29,7 @@ const Backdrop = styled.div`
 
   background: rgba(0, 0, 0, 0.2);
 
-  .ion-theme-dark & {
+  .ion-palette-dark & {
     background: rgba(0, 0, 0, 0.7);
   }
 
@@ -47,7 +47,7 @@ const KeyboardContent = styled.div`
 const Contents = styled.div`
   --background: var(--ion-background-color);
 
-  .ion-theme-dark & {
+  .ion-palette-dark & {
     --background: var(--ion-background-color-step-100);
   }
 
@@ -66,7 +66,7 @@ const Contents = styled.div`
   ion-item {
     --ion-item-background: var(--ion-background-color);
 
-    .ion-theme-dark & {
+    .ion-palette-dark & {
       --ion-item-background: var(--ion-background-color-step-100);
     }
   }

@@ -81,7 +81,7 @@ export const baseVariables = css`
 
       --lightroom-bg: #f2f3f7;
 
-      --thick-separator-color: var(--ion-color-step-50, #f2f2f7);
+      --thick-separator-color: var(--ion-background-color-step-50, #f2f2f7);
 
       --ion-background-color-step-100: #f3f3f3;
 
@@ -100,7 +100,7 @@ export const baseVariables = css`
     }
 
     .ios ion-modal {
-      --ion-background-color: var(--ion-color-step-50, #f2f2f7);
+      --ion-background-color: var(--ion-background-color-step-50, #f2f2f7);
       --ion-item-background: #fff;
     }
 
@@ -112,7 +112,7 @@ export const baseVariables = css`
 
 export const lightVariables = css`
   :global() {
-    html:not(.ion-theme-dark) {
+    html:not(.ion-palette-dark) {
       &:root {
         --ion-color-primary: var(--app-primary);
         --ion-color-primary-fixed: #3880ff; // always blue always blue!
@@ -121,7 +121,7 @@ export const lightVariables = css`
       }
 
       &:root.ios .grey-bg {
-        --ion-background-color: var(--ion-color-step-50, #f2f2f7);
+        --ion-background-color: var(--ion-background-color-step-50, #f2f2f7);
       }
       &:root.ios .grey-bg ion-header {
         --opacity: 0;
@@ -141,7 +141,7 @@ export const lightVariables = css`
 
 export const darkVariables = css`
   :global() {
-    html.ion-theme-dark {
+    html.ion-palette-dark {
       // Dark Colors
       &:root {
         --ion-color-primary-fixed: #428cff; // always blue always blue!
@@ -237,9 +237,9 @@ export const darkVariables = css`
 
       &.ios ion-modal {
         --ion-background-color: var(--ion-background-color-step-100);
-        --ion-toolbar-background: var(--ion-color-step-150);
-        --ion-toolbar-border-color: var(--ion-color-step-250);
-        --ion-item-background: var(--ion-color-step-50);
+        --ion-toolbar-background: var(--ion-background-color-step-150);
+        --ion-toolbar-border-color: var(--ion-background-color-step-250);
+        --ion-item-background: var(--ion-background-color-step-50);
       }
 
       // Material Design Dark Theme
@@ -248,7 +248,7 @@ export const darkVariables = css`
         &.ios ion-modal:not(.small, .transparent-scroll) {
           --ion-background-color: #000;
           --ion-toolbar-background: var(--ion-background-color);
-          --ion-toolbar-border-color: var(--ion-color-step-150);
+          --ion-toolbar-border-color: var(--ion-background-color-step-150);
         }
       }
 
@@ -262,7 +262,7 @@ export const darkVariables = css`
 
 export const darkBlackModifierVariables = css`
   :global() {
-    html.ion-theme-dark {
+    html.ion-palette-dark {
       &:not(.theme-pure-black) {
         &.ios {
           body {
@@ -336,7 +336,7 @@ export const darkBlackModifierVariables = css`
         &.md body {
           --ion-background-color: var(--app-background);
           --ion-item-background: var(--app-background);
-          --ion-color-step-50: var(--app-inset-item-background);
+          --ion-background-color-step-50: var(--app-inset-item-background);
           --ion-background-color-step-100: var(--app-tab-bar-background);
           --ion-tab-bar-background: var(--app-tab-bar-background);
           --ion-toolbar-background: var(--app-tab-bar-background);
@@ -345,7 +345,7 @@ export const darkBlackModifierVariables = css`
         &.ios ion-modal:not(.small, .transparent-scroll) {
           --ion-background-color: var(--app-background);
           --ion-toolbar-background: var(--app-tab-bar-background);
-          --ion-toolbar-border-color: var(--ion-color-step-150);
+          --ion-toolbar-border-color: var(--ion-background-color-step-150);
         }
       }
     }

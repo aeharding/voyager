@@ -35,7 +35,7 @@ import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
 
-import "@ionic/react/css/themes/dark.class.css";
+import "@ionic/react/css/palettes/dark.class.css";
 
 /* Setup global app lifecycle listeners */
 import "./listeners";
