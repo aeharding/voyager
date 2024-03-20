@@ -1,7 +1,7 @@
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Person } from "lemmy-js-client";
-import Handle from "../Handle";
+import { renderHandle } from "../Handle";
 import store, { useAppDispatch, useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
 import AgeBadge from "./AgeBadge";
@@ -9,7 +9,7 @@ import { useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
 import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 import { styled } from "@linaria/react";
-import { StyledLink, hideCss } from "./shared";
+import { LinkContainer, StyledLink, hideCss } from "./shared";
 import { cx } from "@linaria/core";
 import { LongPressOptions, useLongPress } from "use-long-press";
 import { useIonActionSheet } from "@ionic/react";
@@ -32,6 +32,7 @@ interface PersonLinkProps {
   showInstanceWhenRemote?: boolean;
   prefix?: string;
   showBadge?: boolean;
+  disableInstanceClick?: boolean;
 
   className?: string;
 }
@@ -44,6 +45,7 @@ export default function PersonLink({
   showInstanceWhenRemote,
   prefix,
   showBadge = true,
+  disableInstanceClick,
 }: PersonLinkProps) {
   const presentToast = useAppToast();
   const [presentActionSheet] = useIonActionSheet();
@@ -111,33 +113,44 @@ export default function PersonLink({
     color = "var(--ion-color-tertiary-tint)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
-  return (
-    <StyledLink
-      to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
-      onClick={(e) => {
-        e.stopPropagation();
-        preventOnClickNavigationBug(e);
-      }}
-      {...bind()}
-      className={cx(className, hideUsernames ? hideCss : undefined)}
-      style={{ color }}
-    >
-      {prefix ? (
-        <>
-          <Prefix>{prefix}</Prefix>{" "}
-        </>
-      ) : undefined}
-      <Handle
-        item={person}
-        showInstanceWhenRemote={showInstanceWhenRemote || forceInstanceUrl}
-      />
+  const [handle, instance] = renderHandle({
+    showInstanceWhenRemote: showInstanceWhenRemote || forceInstanceUrl,
+    item: person,
+  });
+
+  const end = (
+    <>
+      {instance}
       {showBadge && (
         <>
           {person.bot_account && " 🤖"}
           <AgeBadge published={person.published} />
         </>
       )}
-    </StyledLink>
+    </>
+  );
+
+  return (
+    <LinkContainer {...bind()}>
+      <StyledLink
+        to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
+        onClick={(e) => {
+          e.stopPropagation();
+          preventOnClickNavigationBug(e);
+        }}
+        className={cx(className, hideUsernames ? hideCss : undefined)}
+        style={{ color }}
+      >
+        {prefix ? (
+          <>
+            <Prefix>{prefix}</Prefix>{" "}
+          </>
+        ) : undefined}
+        {handle}
+        {!disableInstanceClick && end}
+      </StyledLink>
+      {disableInstanceClick && end}
+    </LinkContainer>
   );
 }
 
