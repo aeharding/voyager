@@ -48,7 +48,7 @@ const Toolbar = styled.div<{ keyboardOpen: boolean }>`
 
   background: var(--ion-item-background, #fff);
 
-  .theme-dark & {
+  .ion-theme-dark & {
     background: var(--ion-background-color);
   }
 

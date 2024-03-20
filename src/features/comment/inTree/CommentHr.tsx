@@ -16,7 +16,7 @@ const Hr = styled.hr`
   height: 1px;
   background-color: var(
     --ion-item-border-color,
-    var(--ion-border-color, var(--ion-color-step-250, #c8c7cc))
+    var(--ion-border-color, var(--ion-background-color-step-250, #c8c7cc))
   );
   width: 100%;
   margin: 0;

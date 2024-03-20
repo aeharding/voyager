@@ -26,7 +26,7 @@ const Colors = styled.div`
   gap: 6px;
   margin: 0 6px;
 
-  .theme-dark & {
+  .ion-theme-dark & {
     opacity: 0.7;
   }
 `;

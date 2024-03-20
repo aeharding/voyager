@@ -7,7 +7,10 @@ import { styled } from "@linaria/react";
 const ContainerLink = styled(Link)`
   padding: 6px 12px;
 
-  background: var(--ion-tab-bar-background, var(--ion-color-step-50, #f7f7f7));
+  background: var(
+    --ion-tab-bar-background,
+    var(--ion-background-color-step-50, #f7f7f7)
+  );
   color: var(--ion-color-dark);
   border-radius: 6px;
 
