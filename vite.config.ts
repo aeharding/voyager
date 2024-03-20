@@ -29,6 +29,7 @@ export default defineConfig({
       manifestFilename: "manifest.json",
       manifest,
       workbox: {
+        maximumFileSizeToCacheInBytes: 2097152 * 2,
         runtimeCaching: [
           {
             handler: "StaleWhileRevalidate",
@@ -48,6 +49,7 @@ export default defineConfig({
   // break. This breaks iOS transitions.
   // Put everything into one chunk for now.
   build: {
+    chunkSizeWarningLimit: 5_000,
     rollupOptions: {
       output: {
         manualChunks: () => "index.js",
