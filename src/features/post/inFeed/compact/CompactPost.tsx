@@ -23,6 +23,7 @@ import useCrosspostUrl from "../../shared/useCrosspostUrl";
 import { useInModqueue } from "../../../../routes/pages/shared/ModqueuePage";
 import { PageTypeContext } from "../../../feed/PageTypeContext";
 import { styled } from "@linaria/react";
+import { parseUrlForDisplay } from "../../../../helpers/url";
 
 const Container = styled.div`
   width: 100%;
@@ -126,6 +127,12 @@ const EndDetails = styled.div`
   margin-left: auto;
 `;
 
+const Domain = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 export default function CompactPost({ post }: PostProps) {
   const compactThumbnailPositionType = useAppSelector(
     (state) => state.settings.appearance.compact.thumbnailsPosition,
@@ -145,6 +152,11 @@ export default function CompactPost({ post }: PostProps) {
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
   const nsfw = useMemo(() => isNsfw(post), [post]);
+
+  const [domain] = useMemo(
+    () => (post.post.url ? parseUrlForDisplay(post.post.url) : []),
+    [post],
+  );
 
   return (
     <ModeratableItem itemView={post}>
@@ -186,6 +198,7 @@ export default function CompactPost({ post }: PostProps) {
                   />
                 )}
               </From>
+              {domain && <Domain>{domain}</Domain>}
               <ActionsContainer>
                 <PreviewStats post={post} />
                 {inModqueue ? (
