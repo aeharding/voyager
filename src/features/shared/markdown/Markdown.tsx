@@ -26,7 +26,8 @@ const markdownCss = css`
 
   blockquote {
     padding-left: 0.5rem;
-    border-left: 3px solid var(--ion-color-light);
+    border-left: 3px solid
+      var(--ion-border-color, var(--ion-background-color-step-250, #c8c7cc));
     margin-left: 0;
   }
 
