@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { voteOnPost } from "../postSlice";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { ActionButton } from "../actions/ActionButton";
-import { voteError } from "../../../helpers/toastMessages";
 import { PageContext } from "../../auth/PageContext";
 import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
 import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
@@ -13,6 +12,7 @@ import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import useAppToast from "../../../helpers/useAppToast";
 import { styled } from "@linaria/react";
+import { getVoteErrorMessage } from "../../../helpers/lemmyErrors";
 
 const InactiveItem = styled(ActionButton)`
   ${bounceAnimationOnTransition}
@@ -103,7 +103,10 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
             voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote),
           );
         } catch (error) {
-          presentToast(voteError);
+          presentToast({
+            color: "danger",
+            message: getVoteErrorMessage(error),
+          });
 
           throw error;
         }

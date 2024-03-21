@@ -30,7 +30,6 @@ import {
   postLocked,
   saveError,
   saveSuccess,
-  voteError,
 } from "../../helpers/toastMessages";
 import store, { useAppDispatch } from "../../store";
 import { PageContext } from "../auth/PageContext";
@@ -45,6 +44,7 @@ import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { isDownvoteEnabledSelector } from "../auth/siteSlice";
 import { compact } from "lodash";
 import { isStubComment } from "./CommentHeader";
+import { getVoteErrorMessage } from "../../helpers/lemmyErrors";
 
 export interface CommentActionsProps {
   comment: CommentView | PersonMentionView | CommentReplyView;
@@ -125,7 +125,12 @@ export default function useCommentActions({
               try {
                 await dispatch(voteOnComment(comment.id, myVote === 1 ? 0 : 1));
               } catch (error) {
-                presentToast(voteError);
+                presentToast({
+                  color: "danger",
+                  message: getVoteErrorMessage(error),
+                });
+
+                throw error;
               }
             })();
           },
@@ -143,7 +148,12 @@ export default function useCommentActions({
                       voteOnComment(comment.id, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
-                    presentToast(voteError);
+                    presentToast({
+                      color: "danger",
+                      message: getVoteErrorMessage(error),
+                    });
+
+                    throw error;
                   }
                 })();
               },
@@ -162,6 +172,7 @@ export default function useCommentActions({
                 if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
                 presentToast(saveError);
+                throw error;
               }
             })();
           },

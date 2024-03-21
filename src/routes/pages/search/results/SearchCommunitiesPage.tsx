@@ -15,7 +15,7 @@ import { useParams } from "react-router";
 import PostSort from "../../../../features/feed/PostSort";
 import { CommunityView, LemmyHttp } from "lemmy-js-client";
 import CommunityFeed from "../../../../features/feed/CommunityFeed";
-import { isLemmyError } from "../../../../helpers/lemmy";
+import { isLemmyError } from "../../../../helpers/lemmyErrors";
 import useFeedSort from "../../../../features/feed/sort/useFeedSort";
 import { compact } from "lodash";
 import AppHeader from "../../../../features/shared/AppHeader";

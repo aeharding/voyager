@@ -14,7 +14,10 @@ import {
 import useAppToast from "../../../../helpers/useAppToast";
 import { useAppDispatch } from "../../../../store";
 import { login } from "../../authSlice";
-import { getLoginErrorMessage, isLemmyError } from "../../../../helpers/lemmy";
+import {
+  getLoginErrorMessage,
+  isLemmyError,
+} from "../../../../helpers/lemmyErrors";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
 import { loginSuccess } from "../../../../helpers/toastMessages";
 import AppHeader from "../../../shared/AppHeader";

@@ -6,7 +6,7 @@ import { receivedCommunity } from "../community/communitySlice";
 import { receivedPosts } from "../post/postSlice";
 import { receivedUsers } from "../user/userSlice";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { isLemmyError } from "../../helpers/lemmy";
+import { isLemmyError } from "../../helpers/lemmyErrors";
 import { getClient } from "../../services/lemmy";
 import {
   COMMENT_PATH,

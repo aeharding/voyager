@@ -1,11 +1,6 @@
 import { checkmark, close } from "ionicons/icons";
 import { AppToastOptions } from "./useAppToast";
 
-export const voteError: AppToastOptions = {
-  message: "Problem voting. Please try again.",
-  color: "danger",
-};
-
 export const downvotesDisabled: AppToastOptions = {
   message: "Downvotes have been disabled by your server admins.",
   color: "warning",

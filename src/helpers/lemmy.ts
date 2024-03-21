@@ -4,7 +4,6 @@ import {
   Community,
   CommunityModeratorView,
   GetSiteResponse,
-  LemmyErrorType,
   Post,
   PostView,
 } from "lemmy-js-client";
@@ -279,13 +278,6 @@ export function keywordFoundInSentence(
   return pattern.test(sentence);
 }
 
-export type LemmyErrorValue = LemmyErrorType["error"];
-
-export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
-  if (!(error instanceof Error)) return;
-  return error.message === lemmyErrorValue;
-}
-
 export function canModerateCommunity(
   communityId: number | undefined,
   moderates: CommunityModeratorView[] | undefined,
@@ -318,31 +310,6 @@ export function buildCrosspostBody(post: Post): string {
   if (!post.body) return header;
 
   return `${header}\n>\n${quote(post.body)}`;
-}
-
-export function getLoginErrorMessage(
-  error: unknown,
-  instanceActorId: string,
-): string {
-  if (!(error instanceof Error))
-    return "Unknown error occurred, please try again.";
-
-  switch (error.message as LemmyErrorValue) {
-    case "incorrect_totp_token":
-      return "Incorrect 2nd factor code. Please try again.";
-    case "couldnt_find_person":
-      return `User not found. Is your account on ${instanceActorId}?`;
-    case "incorrect_login":
-      return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
-    case "email_not_verified":
-      return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
-    case "site_ban":
-      return "You have been banned.";
-    case "deleted":
-      return "Account deleted.";
-    default:
-      return "Connection error, please try again.";
-  }
 }
 
 export function isPost(item: PostView | CommentView): item is PostView {

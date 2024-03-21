@@ -7,7 +7,7 @@ import {
   jwtSelector,
 } from "../auth/authSelectors";
 import { IPostMetadata, db } from "../../services/db";
-import { isLemmyError } from "../../helpers/lemmy";
+import { isLemmyError } from "../../helpers/lemmyErrors";
 import { resolvePostReport } from "../moderation/modSlice";
 
 interface PostHiddenData {
@@ -324,10 +324,9 @@ export const getPost =
         id,
       });
     } catch (error) {
-      // I think there is a bug in lemmy-js-client where it tries to parse 404 with non-json body
       if (
         isLemmyError(error, "couldnt_find_post") ||
-        error instanceof SyntaxError
+        isLemmyError(error, "unknown")
       ) {
         dispatch(receivedPostNotFound(id));
       }
@@ -341,24 +340,10 @@ export const getPost =
 
 export const deletePost =
   (id: number) => async (dispatch: AppDispatch, getState: () => RootState) => {
-    try {
-      await clientSelector(getState()).deletePost({
-        post_id: id,
-        deleted: true,
-      });
-    } catch (error) {
-      // I think there is a bug in lemmy-js-client where it tries to parse 404 with non-json body
-      if (
-        isLemmyError(error, "couldnt_find_post") ||
-        error instanceof SyntaxError
-      ) {
-        dispatch(receivedPostNotFound(id));
-
-        return;
-      }
-
-      throw error;
-    }
+    await clientSelector(getState()).deletePost({
+      post_id: id,
+      deleted: true,
+    });
 
     dispatch(postDeleted(id));
   };

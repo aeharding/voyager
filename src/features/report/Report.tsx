@@ -4,7 +4,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import useClient from "../../helpers/useClient";
 import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 import useAppToast from "../../helpers/useAppToast";
-import { isLemmyError } from "../../helpers/lemmy";
+import { isLemmyError } from "../../helpers/lemmyErrors";
 
 export type ReportableItem = CommentView | PostView | PrivateMessageView;
 

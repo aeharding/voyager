@@ -27,7 +27,7 @@ import {
 import { receivedComments } from "../../commentSlice";
 import CommentEditorContent from "../CommentEditorContent";
 import useAppToast from "../../../../helpers/useAppToast";
-import { isLemmyError } from "../../../../helpers/lemmy";
+import { isLemmyError } from "../../../../helpers/lemmyErrors";
 import AccountSwitcher from "../../../auth/AccountSwitcher";
 import { getClient } from "../../../../services/lemmy";
 import AppHeader from "../../../shared/AppHeader";

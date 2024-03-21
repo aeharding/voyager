@@ -28,7 +28,6 @@ import {
   postLocked,
   replyStubError,
   saveSuccess,
-  voteError,
 } from "../../../helpers/toastMessages";
 import {
   saveComment,
@@ -46,6 +45,7 @@ import { scrollCommentIntoViewIfNeeded } from "../../comment/inTree/CommentTree"
 import { AppContext } from "../../auth/AppContext";
 import { getCanModerate } from "../../moderation/useCanModerate";
 import { isStubComment } from "../../comment/CommentHeader";
+import { getVoteErrorMessage } from "../../../helpers/lemmyErrors";
 
 const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
@@ -151,7 +151,12 @@ function BaseSlidingVoteInternal({
         if (isPost) await dispatch(voteOnPost(item.post.id, score));
         else await dispatch(voteOnComment(item.comment.id, score));
       } catch (error) {
-        presentToast(voteError);
+        presentToast({
+          color: "danger",
+          message: getVoteErrorMessage(error),
+        });
+
+        throw error;
       }
     },
     [presentLoginIfNeeded, isPost, dispatch, item, presentToast],

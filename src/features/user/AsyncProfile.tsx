@@ -10,7 +10,7 @@ import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { isLemmyError } from "../../helpers/lemmy";
+import { isLemmyError } from "../../helpers/lemmyErrors";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { styled } from "@linaria/react";
 

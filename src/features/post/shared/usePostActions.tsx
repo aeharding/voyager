@@ -39,7 +39,6 @@ import {
   postLocked,
   saveError,
   saveSuccess,
-  voteError,
 } from "../../../helpers/toastMessages";
 import { userHandleSelector } from "../../auth/authSelectors";
 import useAppToast from "../../../helpers/useAppToast";
@@ -50,6 +49,7 @@ import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
 import { resolveObject } from "../../resolve/resolveSlice";
 import { compact } from "lodash";
 import { InFeedContext } from "../../feed/Feed";
+import { getVoteErrorMessage } from "../../../helpers/lemmyErrors";
 
 export default function usePostActions(post: PostView) {
   const inFeed = useContext(InFeedContext);
@@ -105,7 +105,10 @@ export default function usePostActions(post: PostView) {
               try {
                 await dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
               } catch (error) {
-                presentToast(voteError);
+                presentToast({
+                  color: "danger",
+                  message: getVoteErrorMessage(error),
+                });
 
                 throw error;
               }
@@ -124,7 +127,10 @@ export default function usePostActions(post: PostView) {
                   voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
                 );
               } catch (error) {
-                presentToast(voteError);
+                presentToast({
+                  color: "danger",
+                  message: getVoteErrorMessage(error),
+                });
 
                 throw error;
               }
