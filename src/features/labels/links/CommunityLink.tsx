@@ -101,14 +101,16 @@ export default function CommunityLink({
   });
 
   return (
-    <LinkContainer {...bind()}>
+    <LinkContainer
+      {...bind()}
+      className={cx(className, hideCommunity ? hideCss : undefined)}
+    >
       <StyledLink
         to={buildGeneralBrowseLink(`/c/${handle}`)}
         onClick={(e) => {
           e.stopPropagation();
           preventOnClickNavigationBug(e);
         }}
-        className={cx(className, hideCommunity ? hideCss : undefined)}
       >
         {showCommunityIcons && !hideCommunity && (
           <StyledItemIcon item={community} size={tinyIcon ? 16 : 24} />

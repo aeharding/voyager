@@ -131,15 +131,17 @@ export default function PersonLink({
   );
 
   return (
-    <LinkContainer {...bind()}>
+    <LinkContainer
+      {...bind()}
+      className={cx(className, hideUsernames ? hideCss : undefined)}
+      style={{ color }}
+    >
       <StyledLink
         to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
         onClick={(e) => {
           e.stopPropagation();
           preventOnClickNavigationBug(e);
         }}
-        className={cx(className, hideUsernames ? hideCss : undefined)}
-        style={{ color }}
       >
         {prefix ? (
           <>
