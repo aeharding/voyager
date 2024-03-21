@@ -1,8 +1,8 @@
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Community, SubscribedType } from "lemmy-js-client";
-import Handle from "../Handle";
-import { StyledLink, hideCss } from "./shared";
+import { renderHandle } from "../Handle";
+import { LinkContainer, StyledLink, hideCss } from "./shared";
 import ItemIcon from "../img/ItemIcon";
 import { useIonActionSheet } from "@ionic/react";
 import { LongPressOptions, useLongPress } from "use-long-press";
@@ -30,6 +30,7 @@ interface CommunityLinkProps {
   showInstanceWhenRemote?: boolean;
   subscribed: SubscribedType;
   tinyIcon?: boolean;
+  disableInstanceClick?: boolean;
 
   className?: string;
 }
@@ -40,6 +41,7 @@ export default function CommunityLink({
   className,
   subscribed,
   tinyIcon,
+  disableInstanceClick,
 }: CommunityLinkProps) {
   const [present] = useIonActionSheet();
 
@@ -93,26 +95,32 @@ export default function CommunityLink({
   });
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const [name, instance] = renderHandle({
+    item: community,
+    showInstanceWhenRemote,
+  });
 
   return (
-    <StyledLink
-      to={buildGeneralBrowseLink(`/c/${handle}`)}
-      onClick={(e) => {
-        e.stopPropagation();
-        preventOnClickNavigationBug(e);
-      }}
-      className={cx(className, hideCommunity ? hideCss : undefined)}
+    <LinkContainer
       {...bind()}
+      className={cx(className, hideCommunity ? hideCss : undefined)}
     >
-      {showCommunityIcons && !hideCommunity && (
-        <StyledItemIcon item={community} size={tinyIcon ? 16 : 24} />
-      )}
+      <StyledLink
+        to={buildGeneralBrowseLink(`/c/${handle}`)}
+        onClick={(e) => {
+          e.stopPropagation();
+          preventOnClickNavigationBug(e);
+        }}
+      >
+        {showCommunityIcons && !hideCommunity && (
+          <StyledItemIcon item={community} size={tinyIcon ? 16 : 24} />
+        )}
 
-      <Handle
-        item={community}
-        showInstanceWhenRemote={showInstanceWhenRemote}
-      />
-    </StyledLink>
+        {name}
+        {!disableInstanceClick && instance}
+      </StyledLink>
+      {disableInstanceClick && instance}
+    </LinkContainer>
   );
 }
 
