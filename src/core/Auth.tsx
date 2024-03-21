@@ -6,7 +6,7 @@ import { getInboxCounts, syncMessages } from "../features/inbox/inboxSlice";
 import { useInterval } from "usehooks-ts";
 import usePageVisibility from "../helpers/usePageVisibility";
 import { getDefaultServer } from "../services/app";
-import { isLemmyError } from "../helpers/lemmy";
+import { isLemmyError } from "../helpers/lemmyErrors";
 import useAppToast from "../helpers/useAppToast";
 import BackgroundReportSync from "../features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "../features/auth/siteSlice";

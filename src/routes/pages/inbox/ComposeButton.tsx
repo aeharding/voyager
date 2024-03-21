@@ -3,9 +3,10 @@ import { createOutline } from "ionicons/icons";
 import { useState } from "react";
 import { useAppDispatch } from "../../../store";
 import { getUser } from "../../../features/user/userSlice";
-import { getHandle, isLemmyError } from "../../../helpers/lemmy";
+import { getHandle } from "../../../helpers/lemmy";
 import useAppToast from "../../../helpers/useAppToast";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import { isLemmyError } from "../../../helpers/lemmyErrors";
 
 export default function ComposeButton() {
   const [loading, setLoading] = useState(false);

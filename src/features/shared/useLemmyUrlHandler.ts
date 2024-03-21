@@ -6,7 +6,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { normalizeObjectUrl, resolveObject } from "../resolve/resolveSlice";
 import { MouseEvent } from "react";
 import useAppToast from "../../helpers/useAppToast";
-import { isLemmyError } from "../../helpers/lemmy";
+import { isLemmyError } from "../../helpers/lemmyErrors";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
