@@ -133,37 +133,27 @@ export function buildCommentsTreeWithMissing(
 ): CommentNodeI[] {
   const tree = buildCommentsTree(comments, parentComment);
 
-  function childHasMissing(node: CommentNodeI): {
-    missing: boolean;
-    count: number;
-  } {
-    let totalChildren = 0;
-    let missingMarker = false;
-
-    for (const child of node.children) {
-      const res = childHasMissing(child);
-      totalChildren += res.count;
-      if (res.missing) missingMarker = true;
-    }
-
-    const missing =
-      node.comment_view.counts.child_count -
-      node.children.length -
-      totalChildren;
-
-    node.missing = missingMarker ? 0 : missing;
-
-    return {
-      missing: missingMarker || !!missing,
-      count: totalChildren + node.children.length,
-    };
-  }
-
   for (const node of tree) {
     childHasMissing(node);
   }
 
   return tree;
+}
+
+function childHasMissing(node: CommentNodeI) {
+  let missing = node.comment_view.counts.child_count;
+
+  for (const child of node.children) {
+    missing--;
+
+    // the child is responsible for showing missing indicator
+    // if the child has missing comments
+    missing -= child.comment_view.counts.child_count;
+
+    childHasMissing(child);
+  }
+
+  node.missing = missing;
 }
 
 export function getCommentParentId(comment?: Comment): number | undefined {
