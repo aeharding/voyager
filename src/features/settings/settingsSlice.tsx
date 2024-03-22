@@ -81,7 +81,6 @@ interface SettingsState {
       showVotingButtons: boolean;
       thumbnailSize: CompactThumbnailSizeType;
       showSelfPostThumbnails: boolean;
-      showDomainNames: boolean;
     };
     voting: {
       voteDisplayMode: VoteDisplayMode;
@@ -175,7 +174,6 @@ export const initialState: SettingsState = {
       showVotingButtons: true,
       thumbnailSize: OCompactThumbnailSizeType.Small,
       showSelfPostThumbnails: true,
-      showDomainNames: true,
     },
     voting: {
       voteDisplayMode: OVoteDisplayMode.Total,
@@ -375,10 +373,6 @@ export const appearanceSlice = createSlice({
     setLargeShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.large.showVotingButtons = action.payload;
       db.setSetting("large_show_voting_buttons", action.payload);
-    },
-    setCompactShowDomainNames(state, action: PayloadAction<boolean>) {
-      state.appearance.compact.showDomainNames = action.payload;
-      db.setSetting("compact_show_domain_names", action.payload);
     },
     setCompactShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.compact.showVotingButtons = action.payload;
@@ -632,9 +626,6 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const compact_thumbnail_position_type = await db.getSetting(
         "compact_thumbnail_position_type",
       );
-      const compact_show_domain_names = await db.getSetting(
-        "compact_show_domain_names",
-      );
       const compact_show_voting_buttons = await db.getSetting(
         "compact_show_voting_buttons",
       );
@@ -726,9 +717,6 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             thumbnailsPosition:
               compact_thumbnail_position_type ??
               initialState.appearance.compact.thumbnailsPosition,
-            showDomainNames:
-              compact_show_domain_names ??
-              initialState.appearance.compact.showDomainNames,
             showVotingButtons:
               compact_show_voting_buttons ??
               initialState.appearance.compact.showVotingButtons,
@@ -857,7 +845,6 @@ export const {
   setPostAppearance,
   setThumbnailPosition,
   setLargeShowVotingButtons,
-  setCompactShowDomainNames,
   setCompactShowVotingButtons,
   setCompactThumbnailSize,
   setCompactShowSelfPostThumbnails,

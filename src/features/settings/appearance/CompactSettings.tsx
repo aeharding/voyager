@@ -1,7 +1,6 @@
 import { IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import {
-  setCompactShowDomainNames,
   setCompactShowSelfPostThumbnails,
   setCompactThumbnailSize,
   setCompactShowVotingButtons,
@@ -21,7 +20,6 @@ export default function CompactSettings() {
     showVotingButtons,
     thumbnailSize,
     showSelfPostThumbnails,
-    showDomainNames,
   } = useAppSelector((state) => state.settings.appearance.compact);
 
   return (
@@ -63,16 +61,6 @@ export default function CompactSettings() {
             }
           >
             Show Self Post Thumbnails
-          </IonToggle>
-        </IonItem>
-        <IonItem>
-          <IonToggle
-            checked={showDomainNames}
-            onIonChange={(e) =>
-              dispatch(setCompactShowDomainNames(!!e.detail.checked))
-            }
-          >
-            Show Domain Names
           </IonToggle>
         </IonItem>
       </IonList>
