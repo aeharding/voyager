@@ -11,6 +11,9 @@ patchedDependencies:
   '@capacitor/browser@5.2.0':
     hash: m4ddgv4ucvx4w6engzasoi47iy
     path: patches/@capacitor__browser@5.2.0.patch
+  voyager-ionic-core@8.0.0-beta.3:
+    hash: h2f36qchnxaxoa77v2tqeuixfi
+    path: patches/voyager-ionic-core@8.0.0-beta.3.patch
 
 dependencies:
   compression:
@@ -77,7 +80,7 @@ devDependencies:
     version: 2.2.3
   '@ionic/core':
     specifier: npm:voyager-ionic-core@8.0.0-beta.3
-    version: /voyager-ionic-core@8.0.0-beta.3
+    version: /voyager-ionic-core@8.0.0-beta.3(patch_hash=h2f36qchnxaxoa77v2tqeuixfi)
   '@ionic/react':
     specifier: 8.0.0-beta.3
     version: 8.0.0-beta.3(react-dom@18.2.0)(react@18.2.0)
@@ -3124,7 +3127,7 @@ packages:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
     dependencies:
-      '@ionic/core': /voyager-ionic-core@8.0.0-beta.3
+      '@ionic/core': /voyager-ionic-core@8.0.0-beta.3(patch_hash=h2f36qchnxaxoa77v2tqeuixfi)
       ionicons: 7.3.0
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -13385,13 +13388,14 @@ packages:
       '@capacitor/core': 5.7.4
     dev: true
 
-  /voyager-ionic-core@8.0.0-beta.3:
+  /voyager-ionic-core@8.0.0-beta.3(patch_hash=h2f36qchnxaxoa77v2tqeuixfi):
     resolution: {integrity: sha512-QJTcIaBTOgrT/eBk6QUfXfzs17JycruyMgn9AwiUYHTcUUulMlyRkbbiR6EpJAFssTcMdrqb4ql6Tx59hmjcYw==}
     dependencies:
       '@stencil/core': 4.13.0
       ionicons: 7.3.0
       tslib: 2.6.2
     dev: true
+    patched: true
 
   /w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
