@@ -138,6 +138,10 @@ export default function CompactPost({ post }: PostProps) {
     (state) => state.settings.appearance.compact.thumbnailsPosition,
   );
 
+  const compactShowDomainNames = useAppSelector(
+    (state) => state.settings.appearance.compact.showDomainNames,
+  );
+
   const compactShowVotingButtons = useAppSelector(
     (state) => state.settings.appearance.compact.showVotingButtons,
   );
@@ -154,8 +158,11 @@ export default function CompactPost({ post }: PostProps) {
   const nsfw = useMemo(() => isNsfw(post), [post]);
 
   const [domain] = useMemo(
-    () => (post.post.url ? parseUrlForDisplay(post.post.url) : []),
-    [post],
+    () =>
+      compactShowDomainNames && post.post.url
+        ? parseUrlForDisplay(post.post.url)
+        : [],
+    [post, compactShowDomainNames],
   );
 
   return (
