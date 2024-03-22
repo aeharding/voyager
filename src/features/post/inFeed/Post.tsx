@@ -15,6 +15,8 @@ import { useLongPress } from "use-long-press";
 import usePostActions from "../shared/usePostActions";
 import { filterEvents } from "../../../helpers/longPress";
 import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import { cx } from "@linaria/core";
+import { isTouchDevice } from "../../../helpers/device";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -111,6 +113,7 @@ function Post(props: PostProps) {
       >
         {/* href=undefined: Prevent drag failure on firefox */}
         <CustomIonItem
+          className={cx(isTouchDevice() && "ion-activatable")}
           detail={false}
           routerLink={buildGeneralBrowseLink(
             `/c/${getHandle(props.post.community)}/comments/${

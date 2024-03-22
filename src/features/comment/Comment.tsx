@@ -17,6 +17,8 @@ import { styled } from "@linaria/react";
 import { PositionedContainer } from "./elements/PositionedContainer";
 import CommentContainer from "./elements/CommentContainer";
 import CommentHeader, { isStubComment } from "./CommentHeader";
+import { cx } from "@linaria/core";
+import { isTouchDevice } from "../../helpers/device";
 
 export const CustomIonItem = styled(IonItem)`
   scroll-margin-bottom: 35vh;
@@ -88,10 +90,10 @@ function Comment({
 
   const stub = isStubComment(comment, canModerate);
 
-  const collapsed =
-    (showCollapsedComment || stub) && !commentView.counts.child_count
-      ? false
-      : _collapsed;
+  const cannotCollapse =
+    (showCollapsedComment || stub) && !commentView.counts.child_count;
+
+  const collapsed = cannotCollapse ? false : _collapsed;
 
   const onCommentLongPress = useCallback(() => {
     commentEllipsisHandleRef.current?.present();
@@ -111,6 +113,10 @@ function Comment({
       collapsed={!!collapsed}
     >
       <CustomIonItem
+        className={cx(
+          !cannotCollapse && isTouchDevice() && "ion-activatable",
+          `comment-${comment.id}`,
+        )}
         routerLink={routerLink}
         href={undefined}
         onClick={(e) => {
@@ -118,7 +124,6 @@ function Comment({
 
           onClick?.(e);
         }}
-        className={`comment-${comment.id}`}
         {...bind()}
       >
         <ModeratableItem

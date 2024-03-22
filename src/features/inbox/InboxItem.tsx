@@ -18,7 +18,8 @@ import SlidingInbox from "../shared/sliding/SlidingInbox";
 import useAppToast from "../../helpers/useAppToast";
 import InboxItemMoreActions from "./InboxItemMoreActions";
 import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
+import { css, cx } from "@linaria/core";
+import { isTouchDevice } from "../../helpers/device";
 
 const Hr = styled.div`
   ${maxWidthCss}
@@ -221,7 +222,10 @@ export default function InboxItem({ item }: InboxItemProps) {
 
   const contents = (
     <StyledIonItem
-      className={!read ? itemUnreadCss : undefined}
+      className={cx(
+        !read && itemUnreadCss,
+        isTouchDevice() && "ion-activatable",
+      )}
       routerLink={getLink()}
       href={undefined}
       detail={false}
