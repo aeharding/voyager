@@ -26,7 +26,7 @@ interface SelectTextProps {
 }
 
 const Content = styled.div`
-  background: var(--ion-color-step-50, #f2f2f7);
+  background: var(--ion-background-color-step-50, #f2f2f7);
 `;
 
 export default function ShareAsImageModal({

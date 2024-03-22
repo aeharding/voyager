@@ -77,11 +77,17 @@ const SendContainer = styled.div`
 
   padding: 0.5rem;
 
-  background: var(--ion-tab-bar-background, var(--ion-color-step-50, #f7f7f7));
+  background: var(
+    --ion-tab-bar-background,
+    var(--ion-background-color-step-50, #f7f7f7)
+  );
   border-top: 1px solid
     var(
       --ion-tab-bar-border-color,
-      var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.2)))
+      var(
+        --ion-border-color,
+        var(--ion-background-color-step-150, rgba(0, 0, 0, 0.2))
+      )
     );
 `;
 

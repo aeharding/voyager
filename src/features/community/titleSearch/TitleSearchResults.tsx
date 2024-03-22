@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
-import { useDebounce } from "usehooks-ts";
+import { useDebounceValue } from "usehooks-ts";
 import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
 import { IonItem, IonList } from "@ionic/react";
@@ -29,7 +29,7 @@ const Backdrop = styled.div`
 
   background: rgba(0, 0, 0, 0.2);
 
-  .theme-dark & {
+  .ion-palette-dark & {
     background: rgba(0, 0, 0, 0.7);
   }
 
@@ -47,8 +47,8 @@ const KeyboardContent = styled.div`
 const Contents = styled.div`
   --background: var(--ion-background-color);
 
-  .theme-dark & {
-    --background: var(--ion-color-step-100);
+  .ion-palette-dark & {
+    --background: var(--ion-background-color-step-100);
   }
 
   background: var(--background);
@@ -66,8 +66,8 @@ const Contents = styled.div`
   ion-item {
     --ion-item-background: var(--ion-background-color);
 
-    .theme-dark & {
-      --ion-item-background: var(--ion-color-step-100);
+    .ion-palette-dark & {
+      --ion-item-background: var(--ion-background-color-step-100);
     }
   }
 `;
@@ -102,7 +102,7 @@ export default function TitleSearchResults() {
   const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
-  const debouncedSearch = useDebounce(search, 500);
+  const [debouncedSearch, setDebouncedSearch] = useDebounceValue(search, 500);
   const [searchPayload, setSearchPayload] = useState<CommunityView[]>([]);
   const client = useClient();
   const follows = useAppSelector(
@@ -115,6 +115,10 @@ export default function TitleSearchResults() {
   const contentRef = useRef<HTMLDivElement>(null);
   const favorites = useAppSelector((state) => state.community.favorites);
   const showModeratorFeed = useShowModeratorFeed();
+
+  useEffect(() => {
+    setDebouncedSearch(search);
+  }, [search, setDebouncedSearch]);
 
   const results: Result[] = useMemo(() => {
     const results = [

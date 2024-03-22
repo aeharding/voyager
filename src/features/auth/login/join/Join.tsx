@@ -117,9 +117,7 @@ export default function Join({ answer }: JoinProps) {
         // Remove signup steps from stack (everything between root and current nav view)
         // (user should not be able to navigate back after signup)
 
-        // TODO open bug for missing ionic type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (entering) nav.removeIndex(1, (nav as any).getLength() - 2);
+        if (entering) nav.removeIndex(1, (await nav.getLength()) - 2);
       },
     );
   }

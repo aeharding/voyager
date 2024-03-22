@@ -18,7 +18,7 @@ import "./theme/variables";
 import { AppThemeType } from "../services/db";
 import { stateWithLocalstorageItems as initialCriticalSettingsState } from "../features/settings/settingsSlice";
 
-export const DARK_CLASSNAME = "theme-dark";
+export const DARK_CLASSNAME = "ion-palette-dark";
 export const PURE_BLACK_CLASSNAME = "theme-pure-black";
 export const THEME_HAS_CUSTOM_BACKGROUND = "theme-has-custom-background";
 
@@ -74,8 +74,8 @@ updateDocumentTheme(
   initialCriticalSettingsState.appearance.theme,
 );
 
-const globalDeviceFontCss = css`
-  font: -apple-system-body;
+const fixedDeviceFontCss = css`
+  --ion-dynamic-font: initial;
 `;
 
 interface GlobalStylesProps {
@@ -101,10 +101,10 @@ export default function GlobalStyles({ children }: GlobalStylesProps) {
 
   useLayoutEffect(() => {
     if (useSystemFontSize) {
-      document.documentElement.classList.add(globalDeviceFontCss);
+      document.documentElement.classList.remove(fixedDeviceFontCss);
       document.documentElement.style.fontSize = "";
     } else {
-      document.documentElement.classList.remove(globalDeviceFontCss);
+      document.documentElement.classList.add(fixedDeviceFontCss);
       document.documentElement.style.fontSize = `${fontSizeMultiplier}rem`;
     }
   }, [useSystemFontSize, fontSizeMultiplier]);

@@ -42,7 +42,7 @@ export default css`
     ion-list.list-inset ion-item {
       --background: var(
         --ion-tab-bar-background,
-        var(--ion-color-step-50, #fff)
+        var(--ion-background-color-step-50, #fff)
       );
     }
 

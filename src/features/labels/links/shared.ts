@@ -26,6 +26,6 @@ export const hideCss = css`
     content: "";
     position: absolute;
     inset: 0;
-    background: var(--ion-color-step-150, #ccc);
+    background: var(--ion-background-color-step-150, #ccc);
   }
 `;

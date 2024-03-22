@@ -74,7 +74,7 @@ const PlaceholderImg = styled.div`
 
   background: white;
 
-  .theme-dark & {
+  .ion-palette-dark & {
     background: black;
   }
 

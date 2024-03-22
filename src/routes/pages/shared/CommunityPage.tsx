@@ -48,7 +48,7 @@ const StyledFeedContent = styled(FeedContent)`
   .ios & {
     --background: var(
       --ion-toolbar-background,
-      var(--ion-color-step-50, #f7f7f7)
+      var(--ion-background-color-step-50, #f7f7f7)
     );
   }
 `;
@@ -61,7 +61,7 @@ const FixedBg = styled.div`
     inset: 0;
     background: var(
       --ion-toolbar-background,
-      var(--ion-color-step-50, #f7f7f7)
+      var(--ion-background-color-step-50, #f7f7f7)
     );
     z-index: -2;
   }
@@ -103,7 +103,10 @@ const ionSearchbarHideCss = css`
 `;
 
 const HeaderContainer = styled.div`
-  background: var(--ion-toolbar-background, var(--ion-color-step-50, #f7f7f7));
+  background: var(
+    --ion-toolbar-background,
+    var(--ion-background-color-step-50, #f7f7f7)
+  );
 `;
 
 const CommunitySearchbar = styled(IonSearchbar)`

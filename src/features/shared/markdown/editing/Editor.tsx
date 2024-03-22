@@ -51,7 +51,7 @@ export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
 
   flex: 1 0 auto;
 
-  html.ios:not(.theme-dark) & {
+  html.ios:not(.ion-palette-dark) & {
     background: var(--ion-item-background);
   }
 `;

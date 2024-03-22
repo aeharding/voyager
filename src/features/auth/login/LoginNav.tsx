@@ -27,10 +27,8 @@ export default function LoginNav() {
   const { setCanDismiss } = useContext(DynamicDismissableModalContext);
 
   const onIonNavDidChange = useCallback(
-    (event: IonNavCustomEvent<void>) => {
-      // If swiped back to root, allow swipe to dismiss
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((event.target as any).getLength() === 1) {
+    async (event: IonNavCustomEvent<void>) => {
+      if ((await event.target.getLength()) === 1) {
         setCanDismiss(true);
       }
     },

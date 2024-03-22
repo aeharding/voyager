@@ -26,7 +26,7 @@ const Container = styled.div`
 
   display: flex;
 
-  html.ios:not(.theme-dark) & {
+  html.ios:not(.ion-palette-dark) & {
     background: var(--ion-item-background);
   }
 `;
