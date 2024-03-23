@@ -32,5 +32,8 @@ yarn-error.log*
 
 vite.config.ts.timestamp-*
 
+# Typescript Incremental Cache
+*.tsbuildinfo
+
 # fly.io
 fly.toml
