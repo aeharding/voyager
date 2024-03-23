@@ -14,3 +14,6 @@ export { default as faceid } from "./svg/faceid.svg";
 export { default as quote } from "./svg/quote.svg";
 export { default as listUnordered } from "./svg/listUnordered.svg";
 export { default as listOrdered } from "./svg/listOrdered.svg";
+export { default as superscript } from "./svg/superscript.svg";
+export { default as subscript } from "./svg/subscript.svg";
+export { default as strikethrough } from "./svg/strikethrough.svg";

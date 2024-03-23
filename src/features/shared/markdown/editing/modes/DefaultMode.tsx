@@ -25,6 +25,9 @@ import {
   listOrdered,
   listUnordered,
   quote,
+  strikethrough,
+  subscript,
+  superscript,
 } from "../../../../icons";
 import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
 import { styled } from "@linaria/react";
@@ -130,6 +133,27 @@ export default function DefaultMode({
           icon: remove,
           handler: () => {
             insertBlock("---");
+          },
+        },
+        {
+          text: "Superscript",
+          icon: superscript,
+          handler: () => {
+            insertInline("^superscript^", 12, 11);
+          },
+        },
+        {
+          text: "Subscript",
+          icon: subscript,
+          handler: () => {
+            insertInline("~subscript~", 10, 9);
+          },
+        },
+        {
+          text: "Strikethrough",
+          icon: strikethrough,
+          handler: () => {
+            insertInline("~~strikethrough~~", 15, 13);
           },
         },
         {
@@ -383,21 +407,30 @@ export default function DefaultMode({
       return "";
     })();
 
+    insertInline(
+      `${before}${blockText}${after}`,
+      placeCursorFromEnd + after.length,
+      selectLength,
+    );
+  }
+
+  function insertInline(
+    insertText: string,
+    placeCursorFromEnd = 0,
+    selectLength = 0,
+  ) {
+    const currentSelectionLocation = selectionLocation.current;
+
     const initiallySelectedText = text
       .slice(selectionLocation.current, selectionLocationEnd.current)
       .trim();
 
     textareaRef.current?.focus();
 
-    const totalBlock = `${before}${blockText}${after}`;
-
-    document.execCommand("insertText", false, totalBlock);
+    document.execCommand("insertText", false, insertText);
 
     const endCursorLocation =
-      currentSelectionLocation +
-      before.length +
-      blockText.length -
-      placeCursorFromEnd;
+      currentSelectionLocation + insertText.length - placeCursorFromEnd;
 
     textareaRef.current?.setSelectionRange(
       endCursorLocation,
