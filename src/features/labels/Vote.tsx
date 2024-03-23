@@ -19,8 +19,9 @@ import useAppToast from "../../helpers/useAppToast";
 import { formatNumber } from "../../helpers/number";
 import { styled } from "@linaria/react";
 import { getVoteErrorMessage } from "../../helpers/lemmyErrors";
+import { PlainButton } from "../shared/PlainButton";
 
-const Container = styled.div<{
+const Container = styled(PlainButton)<{
   vote?: 1 | -1 | 0;
   voteRepresented?: 1 | -1;
 }>`

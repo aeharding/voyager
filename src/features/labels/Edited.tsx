@@ -4,8 +4,9 @@ import { pencil } from "ionicons/icons";
 import { MouseEvent, useMemo } from "react";
 import { formatRelative } from "./Ago";
 import { styled } from "@linaria/react";
+import { PlainButton } from "../shared/PlainButton";
 
-const Container = styled.div`
+const Container = styled(PlainButton)`
   display: flex;
   align-items: center;
   gap: inherit;
