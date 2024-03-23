@@ -23,6 +23,7 @@ import useCrosspostUrl from "../../shared/useCrosspostUrl";
 import { useInModqueue } from "../../../../routes/pages/shared/ModqueuePage";
 import { PageTypeContext } from "../../../feed/PageTypeContext";
 import { styled } from "@linaria/react";
+import { isUrlImage, parseUrlForDisplay } from "../../../../helpers/url";
 
 const Container = styled.div`
   width: 100%;
@@ -126,6 +127,21 @@ const EndDetails = styled.div`
   margin-left: auto;
 `;
 
+const Domain = styled.span`
+  white-space: nowrap;
+
+  font-size: 0.9em;
+  opacity: 0.8;
+
+  display: inline-flex;
+  max-width: 100%;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
 export default function CompactPost({ post }: PostProps) {
   const compactThumbnailPositionType = useAppSelector(
     (state) => state.settings.appearance.compact.thumbnailsPosition,
@@ -146,6 +162,14 @@ export default function CompactPost({ post }: PostProps) {
     post.read;
   const nsfw = useMemo(() => isNsfw(post), [post]);
 
+  const [domain] = useMemo(
+    () =>
+      post.post.url && !isUrlImage(post.post.url)
+        ? parseUrlForDisplay(post.post.url)
+        : [],
+    [post],
+  );
+
   return (
     <ModeratableItem itemView={post}>
       <Container>
@@ -165,6 +189,13 @@ export default function CompactPost({ post }: PostProps) {
             )}
             <Title isRead={hasBeenRead}>
               <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+              {domain && (
+                <>
+                  <Domain>
+                    (<span>{domain}</span>)
+                  </Domain>{" "}
+                </>
+              )}
               {nsfw && <Nsfw />}
             </Title>
             <Aside isRead={hasBeenRead}>

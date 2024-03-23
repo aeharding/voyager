@@ -121,3 +121,28 @@ export function getVideoSrcForUrl(url: string) {
 export function stripProtocol(url: string): string {
   return url.replace(/^https?:\/\//, "");
 }
+
+export function parseUrlForDisplay(url: string): string[] {
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(url);
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+
+  const protocolPrefix =
+    parsedUrl.protocol === "https:" ? "" : `${parsedUrl.protocol}//`;
+  const normalizedHost = (() => {
+    if (protocolPrefix) return parsedUrl.host;
+    if (parsedUrl.host.startsWith("www.")) return parsedUrl.host.slice(4);
+
+    return parsedUrl.host;
+  })();
+
+  return [
+    `${protocolPrefix}${normalizedHost}`,
+    `${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`,
+  ];
+}
