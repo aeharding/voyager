@@ -1,13 +1,14 @@
+import { styled } from "@linaria/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import ShareAsImage from "./ShareAsImage";
 import { MutableRefObject, useEffect, useState } from "react";
-import styled from "@emotion/styled";
-import { IonButtons, IonHeader, IonIcon, IonTitle } from "@ionic/react";
+import { IonButtons, IonIcon, IonTitle } from "@ionic/react";
 import {
   CloseButton,
   TransparentIonToolbar,
 } from "../../shared/selectorModals/GenericSelectorModal";
 import { close } from "ionicons/icons";
+import AppHeader from "../../shared/AppHeader";
 
 export type ShareAsImageData =
   | {
@@ -20,19 +21,19 @@ export type ShareAsImageData =
     };
 
 interface SelectTextProps {
-  dataRef: MutableRefObject<ShareAsImageData>;
+  dataRef: MutableRefObject<ShareAsImageData | null>;
   onDismiss: () => void;
 }
 
 const Content = styled.div`
-  background: var(--ion-color-step-50, #f2f2f7);
+  background: var(--ion-background-color-step-50, #f2f2f7);
 `;
 
 export default function ShareAsImageModal({
   dataRef,
   onDismiss,
 }: SelectTextProps) {
-  const [data, setData] = useState<ShareAsImageData | undefined>(undefined);
+  const [data, setData] = useState<ShareAsImageData | null>(null);
 
   useEffect(() => {
     setData(dataRef.current);
@@ -44,7 +45,7 @@ export default function ShareAsImageModal({
         <ShareAsImage
           data={data}
           header={
-            <IonHeader>
+            <AppHeader>
               <TransparentIonToolbar>
                 <IonButtons slot="end">
                   <CloseButton color="medium" onClick={() => onDismiss()}>
@@ -53,7 +54,7 @@ export default function ShareAsImageModal({
                 </IonButtons>
                 <IonTitle>Preview</IonTitle>
               </TransparentIonToolbar>
-            </IonHeader>
+            </AppHeader>
           }
         />
       )}

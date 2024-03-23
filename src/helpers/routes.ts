@@ -1,7 +1,7 @@
 import { useAppSelector } from "../store";
 import { useCallback, useContext } from "react";
-import { TabNameContext } from "../Route";
-import { TabContext } from "../TabContext";
+import { TabNameContext } from "../routes/common/Route";
+import { TabContext } from "../core/TabContext";
 
 export function useBuildGeneralBrowseLink() {
   const { tabRef } = useContext(TabContext);
@@ -12,8 +12,13 @@ export function useBuildGeneralBrowseLink() {
   const tabName = useContext(TabNameContext);
 
   const buildGeneralBrowseLink = useCallback(
-    (path: string) =>
-      `/${tabName || tabRef?.current}/${connectedInstance}${path}`,
+    (path: string) => {
+      const tab = tabName || tabRef?.current;
+      // /settings/lemmy.world is invalid. Posts tab is special case
+      if (tab !== "posts" && (!path || path === "/")) return `/${tab}`;
+
+      return `/${tab}/${connectedInstance}${path}`;
+    },
     // tab should never dynamically change for a rendered buildGeneralBrowseLink tab. So don't re-render
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [connectedInstance],

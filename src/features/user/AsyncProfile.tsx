@@ -1,4 +1,3 @@
-import React from "react";
 import {
   IonRefresher,
   IonRefresherContent,
@@ -8,12 +7,12 @@ import {
 import { useEffect, useState } from "react";
 import Profile from "../../features/user/Profile";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
-import styled from "@emotion/styled";
 import { useAppDispatch } from "../../store";
 import { getUser } from "../../features/user/userSlice";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { OldLemmyErrorValue, isLemmyError } from "../../helpers/lemmy";
+import { isLemmyError } from "../../helpers/lemmyErrors";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+import { styled } from "@linaria/react";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
@@ -22,7 +21,7 @@ export const PageContentIonSpinner = styled(IonSpinner)`
   transform: translate(-50%, -50%);
 `;
 
-const FailedMessage = styled.div`
+export const FailedMessage = styled.div`
   margin-top: 25vh;
   text-align: center;
   color: var(--ion-color-medium);
@@ -52,13 +51,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     try {
       data = await dispatch(getUser(handle));
     } catch (error) {
-      if (
-        isLemmyError(
-          error,
-          "couldnt_find_that_username_or_email" as OldLemmyErrorValue,
-        ) ||
-        isLemmyError(error, "couldnt_find_person")
-      ) {
+      if (isLemmyError(error, "couldnt_find_person")) {
         await present(`Huh, u/${handle} doesn't exist. Mysterious...`);
 
         if (router.canGoBack()) {

@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { close } from "ionicons/icons";
 import React from "react";
 

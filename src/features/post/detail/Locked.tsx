@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { lockClosed } from "ionicons/icons";
 
 const Container = styled.div`
@@ -14,7 +14,7 @@ const Container = styled.div`
   border-top: 1px solid
     var(
       --ion-item-border-color,
-      var(--ion-border-color, var(--ion-color-step-250, #c8c7cc))
+      var(--ion-border-color, var(--ion-background-color-step-250, #c8c7cc))
     );
 `;
 

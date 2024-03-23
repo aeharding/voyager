@@ -1,5 +1,5 @@
-import { IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
+import { IonItem, IonToggle } from "@ionic/react";
+
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setUpvoteOnSave } from "../../settingsSlice";
 
@@ -10,13 +10,13 @@ export default function UpvoteOnSave() {
   );
 
   return (
-    <InsetIonItem>
+    <IonItem>
       <IonToggle
         checked={upvoteOnSave}
         onIonChange={(e) => dispatch(setUpvoteOnSave(e.detail.checked))}
       >
         Upvote on Save
       </IonToggle>
-    </InsetIonItem>
+    </IonItem>
   );
 }

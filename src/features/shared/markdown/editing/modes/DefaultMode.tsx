@@ -1,38 +1,38 @@
 import {
   IonIcon,
-  IonLoading,
   useIonActionSheet,
+  useIonAlert,
   useIonModal,
 } from "@ionic/react";
-import useAppToast from "../../../../../helpers/useAppToast";
 import {
+  codeSlashOutline,
   ellipsisHorizontal,
+  eyeOutline,
   glassesOutline,
   happyOutline,
   image,
   link,
   peopleOutline,
   personOutline,
+  remove,
 } from "ionicons/icons";
-import {
-  Dispatch,
-  MouseEvent,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useAppSelector } from "../../../../../store";
-import { jwtSelector, urlSelector } from "../../../../auth/authSelectors";
+import { MouseEvent, RefObject, useEffect, useRef } from "react";
 import PreviewModal from "../PreviewModal";
-import styled from "@emotion/styled";
-import { uploadImage } from "../../../../../services/lemmy";
-import { insert } from "../../../../../helpers/string";
 import textFaces from "./textFaces.txt?raw";
-import { bold, italic, quote } from "../../../../icons";
+import {
+  bold,
+  italic,
+  listOrdered,
+  listUnordered,
+  quote,
+} from "../../../../icons";
 import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
-import { css } from "@emotion/react";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
+import { isValidUrl } from "../../../../../helpers/url";
+import useUploadImage from "../useUploadImage";
+import { getSelectionHtml } from "../../../../../helpers/dom";
+import { htmlToMarkdown } from "../../../../../helpers/markdown";
 
 const Button = styled.button`
   padding: 0;
@@ -41,12 +41,15 @@ const Button = styled.button`
   appearance: none;
   background: none;
   border: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export interface SharedModeProps {
   type: "comment" | "post";
   text: string;
-  setText: Dispatch<SetStateAction<string>>;
   textareaRef: RefObject<HTMLTextAreaElement>;
 }
 
@@ -57,31 +60,42 @@ interface DefaultModeProps extends SharedModeProps {
 export default function DefaultMode({
   type,
   text,
-  setText,
   textareaRef,
   calculateMode,
 }: DefaultModeProps) {
   const [presentActionSheet] = useIonActionSheet();
+  const [presentAlert] = useIonAlert();
   const [presentTextFaceActionSheet] = useIonActionSheet();
-  const presentToast = useAppToast();
-  const jwt = useAppSelector(jwtSelector);
-  const instanceUrl = useAppSelector(urlSelector);
 
   const [presentPreview, onDismissPreview] = useIonModal(PreviewModal, {
-    onDismiss: (data: string, role: string) => onDismissPreview(data, role),
+    onDismiss: (data?: string, role?: string) => onDismissPreview(data, role),
     type,
     text,
   });
 
-  const [imageUploading, setImageUploading] = useState(false);
+  const { uploadImage, jsx } = useUploadImage();
 
   const selectionLocation = useRef(0);
-  const replySelectionRef = useRef("");
+  const selectionLocationEnd = useRef(0);
+  const replySelectionRef = useRef<{ text: string; html: string } | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     const onChange = () => {
       selectionLocation.current = textareaRef.current?.selectionStart ?? 0;
-      replySelectionRef.current = window.getSelection()?.toString() || "";
+      selectionLocationEnd.current = textareaRef.current?.selectionEnd ?? 0;
+
+      // Not great to do this here, but if we don't,
+      // safari will sometimes return selection.toString() === "" during onQuote
+      const selection = window.getSelection();
+      replySelectionRef.current =
+        selection?.type === "Range"
+          ? {
+              text: selection.toString(),
+              html: getSelectionHtml(selection),
+            }
+          : undefined;
     };
 
     document.addEventListener("selectionchange", onChange);
@@ -100,7 +114,55 @@ export default function DefaultMode({
         {
           text: "Preview",
           icon: glassesOutline,
-          handler: presentPreview,
+          handler: () => {
+            presentPreview({
+              presentingElement: document.querySelector(
+                "ion-modal.show-modal",
+              ) as HTMLElement,
+              onDidDismiss: () => {
+                requestAnimationFrame(() => textareaRef.current?.focus());
+              },
+            });
+          },
+        },
+        {
+          text: "Horizontal Line",
+          icon: remove,
+          handler: () => {
+            insertBlock("---");
+          },
+        },
+        {
+          text: "Code",
+          icon: codeSlashOutline,
+          handler: () => {
+            insertBlock("```\ncode\n```", 8, 4);
+          },
+        },
+        {
+          text: "Spoiler",
+          icon: eyeOutline,
+          handler: () => {
+            insertBlock(
+              "::: spoiler Tap for spoiler\nhidden content\n:::",
+              18,
+              14,
+            );
+          },
+        },
+        {
+          text: "Unordered List",
+          icon: listUnordered,
+          handler: () => {
+            insertBlock("- ");
+          },
+        },
+        {
+          text: "Ordered List",
+          icon: listOrdered,
+          handler: () => {
+            insertBlock("1. ");
+          },
         },
         {
           text: "Mention user",
@@ -129,6 +191,93 @@ export default function DefaultMode({
     });
   }
 
+  function presentLinkInput() {
+    textareaRef.current?.focus(); // prevent keyboard flicker
+
+    const selectedText = text.slice(
+      selectionLocation.current,
+      selectionLocationEnd.current,
+    );
+    const isUrl =
+      selectedText &&
+      isValidUrl(selectedText, { checkProtocol: true, allowRelative: false });
+
+    const textCssClass = "link-text-button";
+    const urlCssClass = "link-url-button";
+
+    presentAlert({
+      header: "Insert link",
+      inputs: [
+        {
+          name: "text",
+          placeholder: "Description",
+          value: !isUrl ? selectedText : undefined,
+          cssClass: textCssClass,
+        },
+        {
+          name: "url",
+          placeholder: "https://aspca.org",
+          value: isUrl ? selectedText : undefined,
+          cssClass: urlCssClass,
+          attributes: {
+            type: "url",
+          },
+        },
+      ],
+      buttons: [
+        {
+          text: "OK",
+          handler: ({ text, url }) => {
+            insertMarkdownLink(text, url);
+          },
+        },
+        "Cancel",
+      ],
+    });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const input = document.querySelector(
+          `.${isUrl || !selectedText ? textCssClass : urlCssClass}`,
+        );
+
+        if (input instanceof HTMLElement) input.focus();
+      });
+    });
+  }
+
+  function insertMarkdownLink(text: string = "", url?: string) {
+    const markdownLink = `[${text}](${url || "url"})`;
+
+    const locationBeforeInsert = selectionLocation.current;
+    const currentSelectionLocation = locationBeforeInsert + markdownLink.length;
+
+    textareaRef.current?.focus();
+    document.execCommand("insertText", false, markdownLink);
+
+    setTimeout(() => {
+      if (!text) {
+        // place cursor inside brackets
+        textareaRef.current?.setSelectionRange(
+          locationBeforeInsert + 1,
+          locationBeforeInsert + 1,
+        );
+      } else if (!url) {
+        // select url placeholder
+        textareaRef.current?.setSelectionRange(
+          currentSelectionLocation - 4,
+          currentSelectionLocation - 1,
+        );
+      } else {
+        // place cursor after link
+        textareaRef.current?.setSelectionRange(
+          currentSelectionLocation,
+          currentSelectionLocation,
+        );
+      }
+    });
+  }
+
   function insertAutocomplete(prefix: "@" | "!") {
     const index = selectionLocation.current;
 
@@ -138,47 +287,10 @@ export default function DefaultMode({
 
     const toInsert = `${space}${prefix}`;
 
-    setText((text) => insert(text, index, toInsert));
-
     textareaRef.current?.focus();
+    document.execCommand("insertText", false, toInsert);
 
-    setTimeout(() => {
-      const location = index + toInsert.length;
-
-      textareaRef.current?.setSelectionRange(location, location);
-
-      calculateMode();
-    });
-  }
-
-  async function receivedImage(image: File) {
-    if (!jwt) return;
-
-    setImageUploading(true);
-
-    let imageUrl: string;
-
-    try {
-      imageUrl = await uploadImage(instanceUrl, jwt, image);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-
-      presentToast({
-        message: `Problem uploading image: ${message}. Please try again.`,
-        color: "danger",
-        fullscreen: true,
-      });
-
-      throw error;
-    } finally {
-      setImageUploading(false);
-    }
-
-    if (!textareaRef.current) return;
-
-    setText((text) =>
-      insert(text, selectionLocation.current, `\n![](${imageUrl})\n`),
-    );
+    calculateMode();
   }
 
   function presentTextFaces() {
@@ -198,71 +310,108 @@ export default function DefaultMode({
       onWillDismiss: (event) => {
         if (!event.detail.data) return;
 
-        const currentSelectionLocation =
-          selectionLocation.current + event.detail.data.length;
-
-        setText((text) =>
-          insert(text, selectionLocation.current, event.detail.data),
-        );
-
-        if (textareaRef.current) {
-          textareaRef.current.focus();
-
-          setTimeout(() => {
-            textareaRef.current?.setSelectionRange(
-              currentSelectionLocation,
-              currentSelectionLocation,
-            );
-          });
-        }
+        textareaRef.current?.focus();
+        document.execCommand("insertText", false, event.detail.data);
       },
     });
   }
 
-  function onQuote(e: MouseEvent | TouchEvent) {
-    if (!replySelectionRef.current) return;
-    if (
-      !textareaRef.current ||
-      textareaRef.current?.selectionStart - textareaRef.current?.selectionEnd
-    )
-      return;
+  async function onQuote(e: MouseEvent | TouchEvent) {
+    if (!textareaRef.current) return;
+    const selection = replySelectionRef.current;
+    if (!selection) return;
 
     e.stopPropagation();
     e.preventDefault();
 
-    const currentSelectionLocation = selectionLocation.current;
+    let quotedText;
 
-    let insertedText = `> ${replySelectionRef.current
-      .trim()
-      .split("\n")
-      .join("\n> ")}\n\n`;
-
-    if (
-      text[currentSelectionLocation - 2] &&
-      text[currentSelectionLocation - 2] !== "\n"
-    ) {
-      insertedText = `\n${insertedText}`;
+    try {
+      quotedText = await htmlToMarkdown(selection.html);
+    } catch (error) {
+      quotedText = selection.text;
+      console.error("Parse error", error);
     }
 
-    setText((text) => insert(text, currentSelectionLocation, insertedText));
+    const insertedBlock = `> ${quotedText.trim().split("\n").join("\n> ")}`;
 
-    if (textareaRef.current) {
-      textareaRef.current.focus();
-
-      setTimeout(() => {
-        if (!textareaRef.current) return;
-
-        textareaRef.current.selectionEnd =
-          currentSelectionLocation + insertedText.length;
-      }, 10);
-    }
+    insertBlock(insertedBlock);
 
     return false;
   }
 
+  function insertBlock(
+    blockText: string,
+    placeCursorFromEnd = 0,
+    selectLength = 0,
+  ) {
+    const currentSelectionLocation = selectionLocation.current;
+
+    const before = (() => {
+      if (
+        text[currentSelectionLocation - 1] &&
+        text[currentSelectionLocation - 1] === "\n" &&
+        text[currentSelectionLocation - 2] &&
+        text[currentSelectionLocation - 2] !== "\n"
+      )
+        return "\n";
+
+      if (
+        text[currentSelectionLocation - 2] &&
+        text[currentSelectionLocation - 2] !== "\n"
+      )
+        return "\n\n";
+
+      return "";
+    })();
+
+    const after = (() => {
+      if (
+        text[currentSelectionLocation] &&
+        text[currentSelectionLocation] === "\n" &&
+        text[currentSelectionLocation + 1] &&
+        text[currentSelectionLocation + 1] !== "\n"
+      )
+        return "\n";
+
+      if (
+        text[currentSelectionLocation + 1] &&
+        text[currentSelectionLocation + 1] !== "\n"
+      )
+        return "\n\n";
+
+      return "";
+    })();
+
+    const initiallySelectedText = text
+      .slice(selectionLocation.current, selectionLocationEnd.current)
+      .trim();
+
+    textareaRef.current?.focus();
+
+    const totalBlock = `${before}${blockText}${after}`;
+
+    document.execCommand("insertText", false, totalBlock);
+
+    const endCursorLocation =
+      currentSelectionLocation +
+      before.length +
+      blockText.length -
+      placeCursorFromEnd;
+
+    textareaRef.current?.setSelectionRange(
+      endCursorLocation,
+      endCursorLocation + selectLength,
+    );
+
+    if (initiallySelectedText && selectLength) {
+      document.execCommand("insertText", false, initiallySelectedText);
+    }
+  }
+
   return (
     <>
-      <IonLoading isOpen={imageUploading} message="Uploading image..." />
+      {jsx}
 
       <markdown-toolbar for={TOOLBAR_TARGET_ID}>
         <label htmlFor="photo-upload">
@@ -271,25 +420,26 @@ export default function DefaultMode({
           </Button>
 
           <input
-            css={css`
+            className={css`
               display: none;
             `}
             type="file"
             accept="image/*"
             id="photo-upload"
-            onInput={(e) => {
+            onInput={async (e) => {
               const image = (e.target as HTMLInputElement).files?.[0];
               if (!image) return;
 
-              receivedImage(image);
+              const markdown = await uploadImage(image);
+
+              textareaRef.current?.focus();
+              document.execCommand("insertText", false, markdown);
             }}
           />
         </label>
-        <md-link>
-          <Button>
-            <IonIcon icon={link} color="primary" />
-          </Button>
-        </md-link>
+        <Button onClick={presentLinkInput}>
+          <IonIcon icon={link} color="primary" />
+        </Button>
         <md-bold>
           <Button>
             <IonIcon icon={bold} color="primary" />

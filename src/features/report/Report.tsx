@@ -4,7 +4,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import useClient from "../../helpers/useClient";
 import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 import useAppToast from "../../helpers/useAppToast";
-import { isLemmyError } from "../../helpers/lemmy";
+import { isLemmyError } from "../../helpers/lemmyErrors";
 
 export type ReportableItem = CommentView | PostView | PrivateMessageView;
 
@@ -27,12 +27,16 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
     if ("private_message" in item) return "Private message";
   })();
 
-  useImperativeHandle(ref, () => ({
-    present: (item: ReportableItem) => {
-      setItem(item);
-      setReportOptionsOpen(true);
-    },
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      present: (item: ReportableItem) => {
+        setItem(item);
+        setReportOptionsOpen(true);
+      },
+    }),
+    [],
+  );
 
   async function submitReport(reason: string) {
     if (!item) return;

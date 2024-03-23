@@ -1,4 +1,5 @@
 import {
+  IonItem,
   IonItemOption,
   IonItemOptions,
   IonItemSliding,
@@ -6,7 +7,6 @@ import {
   IonList,
   IonLoading,
 } from "@ionic/react";
-import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useState } from "react";
 import { getHandle } from "../../../helpers/lemmy";
@@ -54,15 +54,15 @@ export default function BlockedCommunities() {
                   Unblock
                 </IonItemOption>
               </IonItemOptions>
-              <InsetIonItem>
+              <IonItem>
                 <IonLabel>{getHandle(community.community)}</IonLabel>
-              </InsetIonItem>
+              </IonItem>
             </IonItemSliding>
           ))
         ) : (
-          <InsetIonItem>
+          <IonItem>
             <IonLabel color="medium">No blocked communities</IonLabel>
-          </InsetIonItem>
+          </IonItem>
         )}
       </IonList>
 

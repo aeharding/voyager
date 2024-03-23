@@ -1,8 +1,7 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonButtons,
   IonButton,
-  IonHeader,
   IonContent,
   IonToolbar,
   IonTitle,
@@ -19,11 +18,9 @@ import {
 } from "@ionic/react";
 import { useEffect, useMemo, useState } from "react";
 import useClient from "../../../helpers/useClient";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppDispatch } from "../../../store";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
-import { jwtSelector, urlSelector } from "../../auth/authSelectors";
 import { startCase } from "lodash";
-import { css } from "@emotion/react";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { cameraOutline, checkmark } from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
@@ -37,6 +34,8 @@ import { isUrlImage, isValidUrl } from "../../../helpers/url";
 import { problemFetchingTitle } from "../../../helpers/toastMessages";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isAndroid } from "../../../helpers/device";
+import { css } from "@linaria/core";
+import AppHeader from "../../shared/AppHeader";
 
 const Container = styled.div`
   position: absolute;
@@ -126,7 +125,6 @@ export default function PostEditorRoot({
 
   const [postType, setPostType] = useState<PostType>(initialPostType);
   const client = useClient();
-  const jwt = useAppSelector(jwtSelector);
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initialTitle);
@@ -139,8 +137,6 @@ export default function PostEditorRoot({
     initialImage,
   );
   const [photoUploading, setPhotoUploading] = useState(false);
-
-  const instanceUrl = useAppSelector(urlSelector);
 
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -302,8 +298,6 @@ export default function PostEditorRoot({
   }
 
   async function receivedImage(image: File) {
-    if (!jwt) return;
-
     setPhotoPreviewURL(URL.createObjectURL(image));
     setPhotoUploading(true);
 
@@ -313,7 +307,7 @@ export default function PostEditorRoot({
     if (isAndroid()) await new Promise((resolve) => setTimeout(resolve, 250));
 
     try {
-      imageUrl = await uploadImage(instanceUrl, jwt, image);
+      imageUrl = await uploadImage(client, image);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
 
@@ -361,7 +355,7 @@ export default function PostEditorRoot({
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton onClick={() => dismiss()}>Cancel</IonButton>
@@ -388,7 +382,7 @@ export default function PostEditorRoot({
         </IonToolbar>
         <IonToolbar>
           <IonSegment
-            css={css`
+            className={css`
               width: 100%;
             `}
             value={postType}
@@ -399,11 +393,11 @@ export default function PostEditorRoot({
             <IonSegmentButton value="text">Text</IonSegmentButton>
           </IonSegment>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <Container>
           <IonList>
-            <IonItem className="item-legacy">
+            <IonItem>
               <IonInputTitle
                 value={title}
                 clearInput
@@ -491,11 +485,15 @@ export default function PostEditorRoot({
                   setValue={setText}
                   onSubmit={submit}
                   editing={"existingPost" in props}
+                  dismiss={dismiss}
                 />
               )}
             >
-              <IonItem detail className="item-legacy">
-                <IonLabel color={!text ? "medium" : undefined}>
+              <IonItem detail>
+                <IonLabel
+                  color={!text ? "medium" : undefined}
+                  className="ion-text-nowrap"
+                >
                   {!text ? "Text (optional)" : text}
                 </IonLabel>
               </IonItem>

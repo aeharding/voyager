@@ -9,10 +9,8 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import CommentTree from "../../comment/CommentTree";
+import CommentTree from "../../comment/inTree/CommentTree";
 import { buildCommentsTree, getDepthFromComment } from "../../../helpers/lemmy";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import AddRemoveButtons from "./AddRemoveButtons";
 import Watermark from "./Watermark";
 import { isNative } from "../../../helpers/device";
@@ -27,6 +25,8 @@ import { getImageSrc } from "../../../services/lemmy";
 import { ShareAsImageData } from "./ShareAsImageModal";
 import PostHeader from "../../post/detail/PostHeader";
 import { webviewServerUrl } from "../../../services/nativeFetch";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
 const Container = styled.div`
   --bottom-padding: max(
@@ -52,7 +52,7 @@ const Container = styled.div`
   padding: 0 16px var(--bottom-padding);
 `;
 
-const sharedImgCss = css`
+const sharedImgCss = `
   min-height: 0;
   max-height: 100%;
   justify-self: center;
@@ -72,7 +72,11 @@ const sharedImgCss = css`
 const PlaceholderImg = styled.div`
   ${sharedImgCss}
 
-  background: ${({ theme }) => (theme.dark ? "black" : "white")};
+  background: white;
+
+  .ion-palette-dark & {
+    background: black;
+  }
 
   height: 80px;
   width: 80%;
@@ -103,12 +107,8 @@ const PostCommentSpacer = styled.div`
   height: 6px;
 `;
 
-const StyledPostHeader = styled(PostHeader)<{ hideBottomBorder: boolean }>`
-  ${({ hideBottomBorder }) =>
-    hideBottomBorder &&
-    css`
-      --inner-border-width: 0 0 0 0;
-    `}
+const hideBottomBorderCss = css`
+  --inner-border-width: 0 0 0 0;
 `;
 
 const shareAsImageRenderRoot = document.querySelector(
@@ -139,6 +139,8 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       ? getDepthFromComment(data.comment.comment)
       : undefined) ?? 0,
   );
+
+  const hasPostBody = data.post.post.body || data.post.post.url;
 
   useEffect(() => {
     if (!blob) return;
@@ -255,7 +257,6 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       type: "image/png",
     });
 
-    // eslint-disable-next-line no-undef
     const webSharePayload: ShareData = { files: [file] };
 
     if (isNative()) {
@@ -316,7 +317,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                 Include Post Details
               </IonToggle>
             </IonItem>
-            {includePostDetails && (
+            {includePostDetails && hasPostBody ? (
               <IonItem>
                 <IonToggle
                   checked={includePostText}
@@ -325,7 +326,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                   Include Post Text
                 </IonToggle>
               </IonItem>
-            )}
+            ) : undefined}
 
             {!!getDepthFromComment(data.comment.comment) && (
               <IonItem>
@@ -383,8 +384,8 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         <CommentSnapshotContainer className="inner">
           <ShareImageContext.Provider value={{ hideUsernames, hideCommunity }}>
             {includePostDetails && (
-              <StyledPostHeader
-                hideBottomBorder={!("comment" in data)}
+              <PostHeader
+                className={!("comment" in data) ? hideBottomBorderCss : ""}
                 post={data.post}
                 showPostText={includePostText}
                 showPostActions={false}

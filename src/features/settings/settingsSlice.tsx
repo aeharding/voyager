@@ -36,11 +36,15 @@ import {
   ODefaultFeedType,
   TapToCollapseType,
   OTapToCollapseType,
+  AutoplayMediaType,
+  OAutoplayMediaType,
+  CommentsThemeType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
 import { SortType } from "lemmy-js-client";
 import { loggedInSelector } from "../auth/authSelectors";
+import Dexie from "dexie";
 
 export {
   type CommentThreadCollapse,
@@ -53,6 +57,7 @@ export {
 
 interface SettingsState {
   ready: boolean;
+  databaseError: Error | undefined;
   appearance: {
     font: {
       fontSizeMultiplier: number;
@@ -66,11 +71,16 @@ interface SettingsState {
       blurNsfw: PostBlurNsfwType;
       type: PostAppearanceType;
       embedCrossposts: boolean;
+      showCommunityIcons: boolean;
+    };
+    large: {
+      showVotingButtons: boolean;
     };
     compact: {
       thumbnailsPosition: CompactThumbnailPositionType;
       showVotingButtons: boolean;
       thumbnailSize: CompactThumbnailSizeType;
+      showSelfPostThumbnails: boolean;
     };
     voting: {
       voteDisplayMode: VoteDisplayMode;
@@ -79,9 +89,11 @@ interface SettingsState {
       usingSystemDarkMode: boolean;
       userDarkMode: boolean;
       pureBlack: boolean;
+      quickSwitch: boolean;
     };
     deviceMode: Mode;
     theme: AppThemeType;
+    commentsTheme: CommentsThemeType;
   };
   general: {
     comments: {
@@ -93,6 +105,7 @@ interface SettingsState {
       highlightNewAccount: boolean;
       touchFriendlyLinks: boolean;
       showCommentImages: boolean;
+      showCollapsed: boolean;
     };
     posts: {
       sort: SortType;
@@ -105,9 +118,14 @@ interface SettingsState {
       infiniteScrolling: boolean;
       upvoteOnSave: boolean;
       rememberCommunitySort: boolean;
+      autoplayMedia: AutoplayMediaType;
+    };
+    safari: {
+      alwaysUseReaderMode: boolean;
     };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
+    preferNativeApps: boolean;
     defaultFeed: DefaultFeedType | undefined;
     noSubscribedInFeed: boolean;
   };
@@ -116,7 +134,7 @@ interface SettingsState {
   };
 }
 
-const LOCALSTORAGE_KEYS = {
+export const LOCALSTORAGE_KEYS = {
   FONT: {
     FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
     USE_SYSTEM: "appearance--font-use-system",
@@ -130,8 +148,9 @@ const LOCALSTORAGE_KEYS = {
   THEME: "appearance--theme",
 } as const;
 
-const initialState: SettingsState = {
+export const initialState: SettingsState = {
   ready: false,
+  databaseError: undefined,
   appearance: {
     font: {
       fontSizeMultiplier: 1,
@@ -145,11 +164,16 @@ const initialState: SettingsState = {
       blurNsfw: OPostBlurNsfw.InFeed,
       type: OPostAppearanceType.Large,
       embedCrossposts: true,
+      showCommunityIcons: true,
+    },
+    large: {
+      showVotingButtons: true,
     },
     compact: {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
       showVotingButtons: true,
       thumbnailSize: OCompactThumbnailSizeType.Small,
+      showSelfPostThumbnails: true,
     },
     voting: {
       voteDisplayMode: OVoteDisplayMode.Total,
@@ -158,9 +182,11 @@ const initialState: SettingsState = {
       usingSystemDarkMode: true,
       userDarkMode: false,
       pureBlack: true,
+      quickSwitch: true,
     },
     deviceMode: "ios",
     theme: "default",
+    commentsTheme: "rainbow",
   },
   general: {
     comments: {
@@ -172,6 +198,7 @@ const initialState: SettingsState = {
       highlightNewAccount: true,
       touchFriendlyLinks: true,
       showCommentImages: true,
+      showCollapsed: false,
     },
     posts: {
       sort: "Active",
@@ -184,9 +211,14 @@ const initialState: SettingsState = {
       infiniteScrolling: true,
       upvoteOnSave: false,
       rememberCommunitySort: false,
+      autoplayMedia: OAutoplayMediaType.Always,
+    },
+    safari: {
+      alwaysUseReaderMode: false,
     },
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
+    preferNativeApps: true,
     defaultFeed: undefined,
     noSubscribedInFeed: false,
   },
@@ -197,7 +229,7 @@ const initialState: SettingsState = {
 
 // We continue using localstorage for specific items because indexeddb is slow
 // and we don't want to wait for it to load before rendering the app and cause flickering
-const stateWithLocalstorageItems: SettingsState = merge(initialState, {
+export const stateWithLocalstorageItems: SettingsState = merge(initialState, {
   appearance: {
     font: {
       fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
@@ -220,11 +252,22 @@ export const defaultCommentDepthSelector = createSelector(
   ],
   (collapseCommentThreads): number => {
     switch (collapseCommentThreads) {
-      case OCommentThreadCollapse.Always:
+      case OCommentThreadCollapse.RootOnly:
+      case OCommentThreadCollapse.All:
         return 1;
       case OCommentThreadCollapse.Never:
         return MAX_DEFAULT_COMMENT_DEPTH;
     }
+  },
+);
+
+export const defaultThreadCollapse = createSelector(
+  [
+    (state: RootState) =>
+      state.settings.general.comments.collapseCommentThreads,
+  ],
+  (collapseCommentThreads): string => {
+    return collapseCommentThreads;
   },
 );
 
@@ -238,6 +281,9 @@ export const appearanceSlice = createSlice({
     );
   },
   reducers: {
+    setDatabaseError(state, action: PayloadAction<Error>) {
+      state.databaseError = action.payload;
+    },
     setFontSizeMultiplier(state, action: PayloadAction<number>) {
       state.appearance.font.fontSizeMultiplier = action.payload;
       set(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER, action.payload);
@@ -288,6 +334,10 @@ export const appearanceSlice = createSlice({
       state.general.comments.showCommentImages = action.payload;
       db.setSetting("show_comment_images", action.payload);
     },
+    setShowCollapsedComment(state, action: PayloadAction<boolean>) {
+      state.general.comments.showCollapsed = action.payload;
+      db.setSetting("show_collapsed_comment", action.payload);
+    },
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
       db.setSetting("post_appearance_type", action.payload);
@@ -299,6 +349,10 @@ export const appearanceSlice = createSlice({
     setEmbedCrossposts(state, action: PayloadAction<boolean>) {
       state.appearance.posts.embedCrossposts = action.payload;
       db.setSetting("embed_crossposts", action.payload);
+    },
+    setShowCommunityIcons(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.showCommunityIcons = action.payload;
+      db.setSetting("show_community_icons", action.payload);
     },
     setFilteredKeywords(state, action: PayloadAction<string[]>) {
       state.blocks.keywords = action.payload;
@@ -312,7 +366,15 @@ export const appearanceSlice = createSlice({
       state.general.noSubscribedInFeed = action.payload;
       db.setSetting("no_subscribed_in_feed", action.payload);
     },
-    setShowVotingButtons(state, action: PayloadAction<boolean>) {
+    setAlwaysUseReaderMode(state, action: PayloadAction<boolean>) {
+      state.general.safari.alwaysUseReaderMode = action.payload;
+      db.setSetting("always_use_reader_mode", action.payload);
+    },
+    setLargeShowVotingButtons(state, action: PayloadAction<boolean>) {
+      state.appearance.large.showVotingButtons = action.payload;
+      db.setSetting("large_show_voting_buttons", action.payload);
+    },
+    setCompactShowVotingButtons(state, action: PayloadAction<boolean>) {
       state.appearance.compact.showVotingButtons = action.payload;
       db.setSetting("compact_show_voting_buttons", action.payload);
     },
@@ -322,6 +384,10 @@ export const appearanceSlice = createSlice({
     ) {
       state.appearance.compact.thumbnailSize = action.payload;
       db.setSetting("compact_thumbnail_size", action.payload);
+    },
+    setCompactShowSelfPostThumbnails(state, action: PayloadAction<boolean>) {
+      state.appearance.compact.showSelfPostThumbnails = action.payload;
+      db.setSetting("compact_show_self_post_thumbnails", action.payload);
     },
     setThumbnailPosition(
       state,
@@ -341,6 +407,10 @@ export const appearanceSlice = createSlice({
     setPureBlack(state, action: PayloadAction<boolean>) {
       state.appearance.dark.pureBlack = action.payload;
       set(LOCALSTORAGE_KEYS.DARK.PURE_BLACK, action.payload);
+    },
+    setQuickSwitchDarkMode(state, action: PayloadAction<boolean>) {
+      state.appearance.dark.quickSwitch = action.payload;
+      db.setSetting("quick_switch_dark_mode", action.payload);
     },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
       state.appearance.dark.usingSystemDarkMode = action.payload;
@@ -403,9 +473,18 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("remember_community_sort", action.payload);
     },
+    setAutoplayMedia(state, action: PayloadAction<AutoplayMediaType>) {
+      state.general.posts.autoplayMedia = action.payload;
+
+      db.setSetting("autoplay_media", action.payload);
+    },
     setTheme(state, action: PayloadAction<AppThemeType>) {
       state.appearance.theme = action.payload;
       set(LOCALSTORAGE_KEYS.THEME, action.payload);
+    },
+    setCommentsTheme(state, action: PayloadAction<CommentsThemeType>) {
+      state.appearance.commentsTheme = action.payload;
+      db.setSetting("comments_theme", action.payload);
     },
     setEnableHapticFeedback(state, action: PayloadAction<boolean>) {
       state.general.enableHapticFeedback = action.payload;
@@ -416,6 +495,11 @@ export const appearanceSlice = createSlice({
       state.general.linkHandler = action.payload;
 
       db.setSetting("link_handler", action.payload);
+    },
+    setPreferNativeApps(state, action: PayloadAction<boolean>) {
+      state.general.preferNativeApps = action.payload;
+
+      db.setSetting("prefer_native_apps", action.payload);
     },
 
     resetSettings: () => ({
@@ -518,6 +602,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   async (_, thunkApi) => {
     const result = db.transaction("r", db.settings, async () => {
       const state = thunkApi.getState() as RootState;
+      const comments_theme = await db.getSetting("comments_theme");
       const collapse_comment_threads = await db.getSetting(
         "collapse_comment_threads",
       );
@@ -534,6 +619,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const post_appearance_type = await db.getSetting("post_appearance_type");
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const embed_crossposts = await db.getSetting("embed_crossposts");
+      const show_community_icons = await db.getSetting("show_community_icons");
+      const large_show_voting_buttons = await db.getSetting(
+        "large_show_voting_buttons",
+      );
       const compact_thumbnail_position_type = await db.getSetting(
         "compact_thumbnail_position_type",
       );
@@ -542,6 +631,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const compact_thumbnail_size = await db.getSetting(
         "compact_thumbnail_size",
+      );
+      const compact_show_self_post_thumbnails = await db.getSetting(
+        "compact_show_self_post_thumbnails",
       );
       const vote_display_mode = await db.getSetting("vote_display_mode");
       const default_comment_sort = await db.getSetting("default_comment_sort");
@@ -564,23 +656,36 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const remember_community_sort = await db.getSetting(
         "remember_community_sort",
       );
+      const autoplay_media = await db.getSetting("autoplay_media");
       const enable_haptic_feedback = await db.getSetting(
         "enable_haptic_feedback",
       );
       const link_handler = await db.getSetting("link_handler");
+      const prefer_native_apps = await db.getSetting("prefer_native_apps");
       const filtered_keywords = await db.getSetting("filtered_keywords");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
       const show_comment_images = await db.getSetting("show_comment_images");
+      const show_collapsed_comment = await db.getSetting(
+        "show_collapsed_comment",
+      );
       const no_subscribed_in_feed = await db.getSetting(
         "no_subscribed_in_feed",
       );
+      const always_use_reader_mode = await db.getSetting(
+        "always_use_reader_mode",
+      );
       const default_post_sort = await db.getSetting("default_post_sort");
+      const quick_switch_dark_mode = await db.getSetting(
+        "quick_switch_dark_mode",
+      );
 
       return {
         ...state.settings,
         ready: true,
         appearance: {
           ...state.settings.appearance,
+          commentsTheme:
+            comments_theme ?? initialState.appearance.commentsTheme,
           general: {
             userInstanceUrlDisplay:
               user_instance_url_display ??
@@ -588,11 +693,25 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             profileLabel:
               profile_label ?? initialState.appearance.general.profileLabel,
           },
+          dark: {
+            ...state.settings.appearance.dark,
+            quickSwitch:
+              quick_switch_dark_mode ??
+              initialState.appearance.dark.quickSwitch,
+          },
           posts: {
             type: post_appearance_type ?? initialState.appearance.posts.type,
             blurNsfw: blur_nsfw ?? initialState.appearance.posts.blurNsfw,
             embedCrossposts:
               embed_crossposts ?? initialState.appearance.posts.embedCrossposts,
+            showCommunityIcons:
+              show_community_icons ??
+              initialState.appearance.posts.showCommunityIcons,
+          },
+          large: {
+            showVotingButtons:
+              large_show_voting_buttons ??
+              initialState.appearance.large.showVotingButtons,
           },
           compact: {
             thumbnailsPosition:
@@ -604,6 +723,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             thumbnailSize:
               compact_thumbnail_size ??
               initialState.appearance.compact.thumbnailSize,
+            showSelfPostThumbnails:
+              compact_show_self_post_thumbnails ??
+              initialState.appearance.compact.showSelfPostThumbnails,
           },
           voting: {
             voteDisplayMode:
@@ -633,6 +755,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showCommentImages:
               show_comment_images ??
               initialState.general.comments.showCommentImages,
+            showCollapsed:
+              show_collapsed_comment ??
+              initialState.general.comments.showCollapsed,
           },
           posts: {
             disableMarkingRead:
@@ -661,8 +786,17 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             rememberCommunitySort:
               remember_community_sort ??
               initialState.general.posts.rememberCommunitySort,
+            autoplayMedia:
+              autoplay_media ?? initialState.general.posts.autoplayMedia,
+          },
+          safari: {
+            alwaysUseReaderMode:
+              always_use_reader_mode ??
+              initialState.general.safari.alwaysUseReaderMode,
           },
           linkHandler: link_handler ?? initialState.general.linkHandler,
+          preferNativeApps:
+            prefer_native_apps ?? initialState.general.preferNativeApps,
           enableHapticFeedback:
             enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
           defaultFeed: initialState.general.defaultFeed,
@@ -678,6 +812,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
     try {
       return await result;
     } catch (error) {
+      if (error instanceof Dexie.MissingAPIError) {
+        thunkApi.dispatch(setDatabaseError(error));
+      }
+
       // In the event of a database error, attempt to render the UI anyways
       thunkApi.dispatch(settingsReady());
 
@@ -687,6 +825,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 );
 
 export const {
+  setCommentsTheme,
+  setDatabaseError,
   setFontSizeMultiplier,
   setUseSystemFontSize,
   setUserInstanceUrlDisplay,
@@ -700,11 +840,14 @@ export const {
   setShowCommentImages,
   setNsfwBlur,
   setEmbedCrossposts,
+  setShowCommunityIcons,
   setFilteredKeywords,
   setPostAppearance,
   setThumbnailPosition,
-  setShowVotingButtons,
+  setLargeShowVotingButtons,
+  setCompactShowVotingButtons,
   setCompactThumbnailSize,
+  setCompactShowSelfPostThumbnails,
   setVoteDisplayMode,
   setUserDarkMode,
   setUseSystemDarkMode,
@@ -721,12 +864,17 @@ export const {
   setInfiniteScrolling,
   setUpvoteOnSave,
   setRememberCommunitySort,
+  setAutoplayMedia,
   setTheme,
   setEnableHapticFeedback,
   setLinkHandler,
+  setPreferNativeApps,
   setPureBlack,
   setDefaultFeed,
   setNoSubscribedInFeed,
+  setAlwaysUseReaderMode,
+  setShowCollapsedComment,
+  setQuickSwitchDarkMode,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

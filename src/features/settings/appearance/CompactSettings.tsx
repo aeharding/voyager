@@ -1,9 +1,9 @@
-import { IonLabel, IonList, IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../user/Profile";
+import { IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
 import { useAppSelector, useAppDispatch } from "../../../store";
 import {
+  setCompactShowSelfPostThumbnails,
   setCompactThumbnailSize,
-  setShowVotingButtons,
+  setCompactShowVotingButtons,
   setThumbnailPosition,
 } from "../settingsSlice";
 import {
@@ -15,8 +15,12 @@ import SettingSelector from "../shared/SettingSelector";
 
 export default function CompactSettings() {
   const dispatch = useAppDispatch();
-  const { thumbnailsPosition, showVotingButtons, thumbnailSize } =
-    useAppSelector((state) => state.settings.appearance.compact);
+  const {
+    thumbnailsPosition,
+    showVotingButtons,
+    thumbnailSize,
+    showSelfPostThumbnails,
+  } = useAppSelector((state) => state.settings.appearance.compact);
 
   return (
     <>
@@ -39,16 +43,26 @@ export default function CompactSettings() {
           setSelected={setThumbnailPosition}
           options={OCompactThumbnailPositionType}
         />
-        <InsetIonItem>
+        <IonItem>
           <IonToggle
             checked={showVotingButtons}
             onIonChange={(e) =>
-              dispatch(setShowVotingButtons(e.detail.checked ? true : false))
+              dispatch(setCompactShowVotingButtons(!!e.detail.checked))
             }
           >
             Show Voting Buttons
           </IonToggle>
-        </InsetIonItem>
+        </IonItem>
+        <IonItem>
+          <IonToggle
+            checked={showSelfPostThumbnails}
+            onIonChange={(e) =>
+              dispatch(setCompactShowSelfPostThumbnails(!!e.detail.checked))
+            }
+          >
+            Show Self Post Thumbnails
+          </IonToggle>
+        </IonItem>
       </IonList>
     </>
   );

@@ -1,5 +1,5 @@
-import { IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
+import { IonItem, IonToggle } from "@ionic/react";
+
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setShowHideReadButton } from "../../settingsSlice";
 
@@ -10,13 +10,13 @@ export default function ShowHideReadButton() {
   );
 
   return (
-    <InsetIonItem>
+    <IonItem>
       <IonToggle
         checked={showHideReadButton}
         onIonChange={(e) => dispatch(setShowHideReadButton(e.detail.checked))}
       >
         Show Hide Read Button
       </IonToggle>
-    </InsetIonItem>
+    </IonItem>
   );
 }

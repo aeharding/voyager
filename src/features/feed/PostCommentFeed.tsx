@@ -9,7 +9,7 @@ import Feed, { FeedProps, FetchFn } from "./Feed";
 import FeedComment from "../comment/inFeed/FeedComment";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { css } from "@emotion/react";
+import { css } from "@linaria/core";
 import {
   postHiddenByIdSelector,
   receivedPosts,
@@ -17,24 +17,20 @@ import {
 } from "../post/postSlice";
 import { receivedComments } from "../comment/commentSlice";
 import Post from "../post/inFeed/Post";
-import CommentHr from "../comment/CommentHr";
+import CommentHr from "../comment/inTree/CommentHr";
 import { FeedContext } from "./FeedContext";
-import { postHasFilteredKeywords } from "../../helpers/lemmy";
+import {
+  isComment,
+  isPost,
+  postHasFilteredKeywords,
+} from "../../helpers/lemmy";
 import { useAutohidePostIfNeeded } from "./PageTypeContext";
+
+export type PostCommentItem = PostView | CommentView;
 
 const thickBorderCss = css`
   border-bottom: 8px solid var(--thick-separator-color);
 `;
-
-export type PostCommentItem = PostView | CommentView;
-
-export function isPost(item: PostCommentItem): item is PostView {
-  return !isComment(item);
-}
-
-export function isComment(item: PostCommentItem): item is CommentView {
-  return "comment" in item;
-}
 
 interface PostCommentFeed
   extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {
@@ -43,18 +39,14 @@ interface PostCommentFeed
   filterKeywords?: boolean;
 
   header?: ReactElement;
-
-  modqueue?: boolean;
 }
 
 export default function PostCommentFeed({
-  communityName,
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
   filterKeywords = true,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
-  modqueue,
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
@@ -98,19 +90,11 @@ export default function PostCommentFeed({
 
   const renderItem = useCallback(
     (item: PostCommentItem) => {
-      if (isPost(item))
-        return (
-          <Post
-            post={item}
-            communityMode={!!communityName}
-            css={borderCss}
-            modqueue={modqueue}
-          />
-        );
+      if (isPost(item)) return <Post post={item} className={borderCss} />;
 
-      return <FeedComment comment={item} css={borderCss} modqueue={modqueue} />;
+      return <FeedComment comment={item} className={borderCss} />;
     },
-    [communityName, borderCss, modqueue],
+    [borderCss],
   );
 
   const renderItemContent = useCallback(

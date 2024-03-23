@@ -1,12 +1,12 @@
 import { IonButton, IonText } from "@ionic/react";
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
 import IncognitoSvg from "./incognito.svg?react";
 import { useAppSelector } from "../../store";
 import { PageContext } from "../auth/PageContext";
 import { useContext } from "react";
 import { accountsListEmptySelector } from "../auth/authSelectors";
 import AppContent from "../shared/AppContent";
+import { styled } from "@linaria/react";
+import { css, cx } from "@linaria/core";
 
 const StyledAppContent = styled(AppContent)`
   min-height: 100%;
@@ -40,10 +40,12 @@ export default function LoggedOut() {
       <div>
         <IonText color="medium">
           <p
-            className="ion-padding"
-            css={css`
-              font-size: 0.875em;
-            `}
+            className={cx(
+              "ion-padding",
+              css`
+                font-size: 0.875em;
+              `,
+            )}
           >
             You are browsing <strong>{connectedInstance}</strong> as a guest.
             Log in to vote, comment and post!

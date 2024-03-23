@@ -1,11 +1,11 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonIcon, IonSkeletonText } from "@ionic/react";
 import { arrowUpSharp, chatbubbleOutline, repeat } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import LargePostContents from "../inFeed/large/LargePostContents";
 import { formatNumber } from "../../../helpers/number";
-import { css } from "@emotion/react";
 import CrosspostContainer from "./CrosspostContainer";
+import { css } from "@linaria/core";
 
 const StyledCrosspostContainer = styled(CrosspostContainer)`
   width: 100%;
@@ -21,21 +21,19 @@ const StyledCrosspostContainer = styled(CrosspostContainer)`
   text-decoration: none;
   -webkit-touch-callout: default;
 
-  background: rgba(var(--ion-color-light-rgb), 0.5);
+  background: var(--lightroom-bg);
   padding: 8px 12px;
 `;
 
-const Title = styled.div<{ isRead: boolean }>`
+const Title = styled.div`
   font-size: 0.925em;
-
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color);
-    `}
 `;
 
-const Bottom = styled.div<{ isRead: boolean }>`
+const titleReadCss = css`
+  color: var(--read-color);
+`;
+
+const Bottom = styled.div`
   display: flex;
   align-items: center;
   font-size: 0.8em;
@@ -43,12 +41,10 @@ const Bottom = styled.div<{ isRead: boolean }>`
   gap: 6px;
 
   color: var(--ion-color-text-aside);
+`;
 
-  ${({ isRead }) =>
-    isRead &&
-    css`
-      color: var(--read-color-medium);
-    `}
+const bottomReadCss = css`
+  color: var(--read-color-medium);
 `;
 
 const Stat = styled.div`
@@ -81,12 +77,14 @@ export default function Crosspost(props: CrosspostProps) {
       {({ crosspost, hasBeenRead }) => (
         <>
           {crosspost ? (
-            <Title isRead={hasBeenRead}>{crosspost.post.name}</Title>
+            <Title className={hasBeenRead ? titleReadCss : undefined}>
+              {crosspost.post.name}
+            </Title>
           ) : (
             <IonSkeletonText />
           )}
           <LargePostContents post={crosspost ?? props.post} />
-          <Bottom isRead={hasBeenRead}>
+          <Bottom className={hasBeenRead ? bottomReadCss : undefined}>
             <CrosspostIcon icon={repeat} />
             {crosspost ? (
               crosspost.community.title

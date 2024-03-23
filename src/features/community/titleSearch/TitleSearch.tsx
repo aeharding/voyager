@@ -1,13 +1,19 @@
-import styled from "@emotion/styled";
 import { IonButton, IonButtons, IonIcon, IonTitle } from "@ionic/react";
-import { chevronDown } from "ionicons/icons";
+import { chevronDown, close } from "ionicons/icons";
 import React, { useContext, useEffect, useRef } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
+import { styled } from "@linaria/react";
+import { isIosTheme } from "../../../helpers/device";
+import { findCurrentPage } from "../../../helpers/ionic";
 
 const TitleContents = styled.span`
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+
+  .ios & {
+    justify-content: center;
+  }
+
   gap: 0.25rem;
 
   width: 100%;
@@ -42,6 +48,15 @@ const StyledInput = styled.input`
   --background: none;
 `;
 
+const TITLE_CLASS = "title-search-opener";
+
+export function openTitleSearch() {
+  findCurrentPage()
+    ?.closest(".ion-page")
+    ?.querySelector<HTMLElement>(`.${TITLE_CLASS}`)
+    ?.click();
+}
+
 interface TitleSearchProps {
   name: string;
   children: React.ReactNode;
@@ -57,6 +72,18 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
 
     searchRef.current?.focus();
   }, [searching]);
+
+  const titleRef = useRef<HTMLElement>(null);
+
+  // Need to declare manually, otherwise it can't be triggered from TabBar :(
+  useEffect(() => {
+    const activate = () => setSearching(true);
+    const title = titleRef.current;
+
+    title?.addEventListener("click", activate);
+
+    return () => title?.removeEventListener("click", activate);
+  }, [searching, setSearching]);
 
   if (searching) {
     return (
@@ -78,7 +105,13 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
         </IonTitle>
 
         <IonButtons slot="end">
-          <IonButton onClick={() => setSearching(false)}>Cancel</IonButton>
+          <IonButton onClick={() => setSearching(false)}>
+            {isIosTheme() ? (
+              "Cancel"
+            ) : (
+              <IonIcon icon={close} slot="icon-only" />
+            )}
+          </IonButton>
         </IonButtons>
       </>
     );
@@ -87,7 +120,7 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
   return (
     <>
       <IonTitle>
-        <TitleContents onClick={() => setSearching(true)}>
+        <TitleContents ref={titleRef} className={TITLE_CLASS}>
           <span>{name}</span> <IonIcon icon={chevronDown} />
         </TitleContents>
       </IonTitle>

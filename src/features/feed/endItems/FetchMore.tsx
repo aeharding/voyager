@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import { IonIcon, IonLabel, IonSpinner } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { chevronDown } from "ionicons/icons";
 
 export const Container = styled.div`

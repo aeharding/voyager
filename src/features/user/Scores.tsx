@@ -1,10 +1,9 @@
-import styled from "@emotion/styled";
 import { PersonAggregates } from "lemmy-js-client";
 import { formatNumber } from "../../helpers/number";
 import Ago from "../labels/Ago";
 import { useIonAlert } from "@ionic/react";
 import { formatDistanceToNowStrict } from "date-fns";
-import { fixLemmyDateString } from "../../helpers/date";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   display: flex;
@@ -35,12 +34,9 @@ interface ScoreProps {
 export default function Scores({ aggregates, accountCreated }: ScoreProps) {
   const [present] = useIonAlert();
 
-  const relativeDate = formatDistanceToNowStrict(
-    new Date(fixLemmyDateString(accountCreated)),
-    {
-      addSuffix: false,
-    },
-  );
+  const relativeDate = formatDistanceToNowStrict(new Date(accountCreated), {
+    addSuffix: false,
+  });
   const creationDate = new Date(accountCreated);
 
   const posts = aggregates.post_count;
@@ -91,7 +87,7 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
           onClick={() => {
             present({
               header: `Account is ${relativeDate} old`,
-              message: `Created on ${creationDate.toDateString()} at ${creationDate.toLocaleTimeString()}`,
+              message: `Created on ${creationDate.toDateString()} at ${creationDate.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`,
               buttons: [{ text: "OK" }],
             });
           }}

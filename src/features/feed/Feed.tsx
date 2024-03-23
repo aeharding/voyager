@@ -14,14 +14,14 @@ import {
   RefresherCustomEvent,
 } from "@ionic/react";
 import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
-import { CenteredSpinner } from "../../pages/posts/PostPage";
+import { CenteredSpinner } from "../../routes/pages/posts/PostPage";
 import { pullAllBy } from "lodash";
 import { useSetActivePage } from "../auth/AppContext";
 import EndPost, { EndPostProps } from "./endItems/EndPost";
-import { isSafariFeedHackEnabled } from "../../pages/shared/FeedContent";
+import { isSafariFeedHackEnabled } from "../../routes/pages/shared/FeedContent";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import { VList, VListHandle } from "virtua";
-import { FeedSearchContext } from "../../pages/shared/CommunityPage";
+import { FeedSearchContext } from "../../routes/pages/shared/CommunityPage";
 import { useAppSelector } from "../../store";
 import FetchMore from "./endItems/FetchMore";
 
@@ -70,6 +70,12 @@ export interface FeedProps<I>
   onRemovedFromTop?: (items: I[]) => void;
 
   communityName?: string;
+
+  /**
+   * Run some logic before normal feed refresh
+   * @returns false to skip default feed refresh behavior
+   */
+  onPull?: () => Promise<boolean | void>;
 }
 
 /**
@@ -89,6 +95,7 @@ export default function Feed<I>({
   limit = DEFAULT_LIMIT,
   sortDuration,
   onRemovedFromTop,
+  onPull,
 }: FeedProps<I>) {
   const [page, setPage] = useState<number | string>(0);
   const [numberedPage, setNumberedPage] = useState(0);
@@ -112,9 +119,6 @@ export default function Feed<I>({
   const startRangeRef = useRef(0);
   const scrollingRef = useRef(false);
 
-  const postType = useAppSelector(
-    (state) => state.settings.appearance.posts.type,
-  );
   const infiniteScrolling = useAppSelector(
     (state) => state.settings.general.posts.infiniteScrolling,
   );
@@ -260,6 +264,10 @@ export default function Feed<I>({
 
   async function handleRefresh(event: RefresherCustomEvent) {
     try {
+      if (onPull) {
+        if ((await onPull()) === false) return;
+      }
+
       await fetchMore(true);
     } finally {
       event.detail.complete();
@@ -326,7 +334,7 @@ export default function Feed<I>({
             }
           }}
           /* Large posts reflow with image load, so mount to dom a bit sooner */
-          overscan={postType === "large" ? 1 : 0}
+          overscan={1}
         >
           {header}
           {filteredItems.map((item, i) => (

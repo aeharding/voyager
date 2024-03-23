@@ -1,5 +1,11 @@
-import { IonActionSheet, IonLabel, IonList, IonToggle } from "@ionic/react";
-import { InsetIonItem, ListHeader } from "../shared/formatting";
+import {
+  IonActionSheet,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonToggle,
+} from "@ionic/react";
+import { ListHeader } from "../shared/formatting";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import {
   OSwipeActionPost,
@@ -105,7 +111,7 @@ export default function SwipeSettings() {
           <IonLabel>Other</IonLabel>
         </ListHeader>
         <IonList inset>
-          <InsetIonItem>
+          <IonItem>
             <IonToggle
               checked={disableLeftSwipes === true}
               onIonChange={(e) =>
@@ -114,8 +120,8 @@ export default function SwipeSettings() {
             >
               Disable Left Swipes
             </IonToggle>
-          </InsetIonItem>
-          <InsetIonItem>
+          </IonItem>
+          <IonItem>
             <IonToggle
               checked={disableRightSwipes === true}
               onIonChange={(e) =>
@@ -124,7 +130,7 @@ export default function SwipeSettings() {
             >
               Disable Right Swipes
             </IonToggle>
-          </InsetIonItem>
+          </IonItem>
           <SettingSelector
             title="Long Swipe Trigger Point"
             openTitle="When the long swipe action should trigger..."
@@ -132,10 +138,9 @@ export default function SwipeSettings() {
             setSelected={setLongSwipeTriggerPoint}
             options={OLongSwipeTriggerPointType}
           />
-          <InsetIonItem button onClick={() => setOpen(true)}>
-            <IonLabel>Reset All Gestures</IonLabel>
+          <IonItem button onClick={() => setOpen(true)} detail={false}>
+            <IonLabel color="primary">Reset All Gestures</IonLabel>
             <IonActionSheet
-              cssClass="left-align-buttons"
               isOpen={open}
               onDidDismiss={() => setOpen(false)}
               onWillDismiss={(
@@ -145,10 +150,9 @@ export default function SwipeSettings() {
                   dispatch(setAllSwipesToDefault());
                 }
               }}
-              header="Reset"
               buttons={[
                 {
-                  text: "Reset All",
+                  text: "Restore Defaults",
                   data: true,
                   role: "destructive",
                 },
@@ -159,7 +163,7 @@ export default function SwipeSettings() {
                 },
               ]}
             />
-          </InsetIonItem>
+          </IonItem>
         </IonList>
       </>
     </>

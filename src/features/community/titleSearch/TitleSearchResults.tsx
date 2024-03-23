@@ -7,8 +7,7 @@ import {
   useState,
 } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
-import styled from "@emotion/styled";
-import { useDebounce } from "usehooks-ts";
+import { useDebounceValue } from "usehooks-ts";
 import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
 import { IonItem, IonList } from "@ionic/react";
@@ -18,6 +17,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import useShowModeratorFeed from "../list/useShowModeratorFeed";
+import { styled } from "@linaria/react";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -27,8 +27,11 @@ const Backdrop = styled.div`
   left: 0;
   z-index: 100;
 
-  background: ${({ theme }) =>
-    theme.dark ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.2)"};
+  background: rgba(0, 0, 0, 0.2);
+
+  .ion-palette-dark & {
+    background: rgba(0, 0, 0, 0.7);
+  }
 
   display: flex;
   align-items: flex-start;
@@ -42,8 +45,11 @@ const KeyboardContent = styled.div`
 `;
 
 const Contents = styled.div`
-  --background: ${({ theme }) =>
-    theme.dark ? "var(--ion-color-step-100)" : "var(--ion-background-color)"};
+  --background: var(--ion-background-color);
+
+  .ion-palette-dark & {
+    --background: var(--ion-background-color-step-100);
+  }
 
   background: var(--background);
   width: 100%;
@@ -58,8 +64,11 @@ const Contents = styled.div`
   overscroll-behavior: contain;
 
   ion-item {
-    --ion-item-background: ${({ theme }) =>
-      theme.dark ? "var(--ion-color-step-100)" : "var(--ion-background-color)"};
+    --ion-item-background: var(--ion-background-color);
+
+    .ion-palette-dark & {
+      --ion-item-background: var(--ion-background-color-step-100);
+    }
   }
 `;
 
@@ -93,7 +102,7 @@ export default function TitleSearchResults() {
   const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
-  const debouncedSearch = useDebounce(search, 500);
+  const [debouncedSearch, setDebouncedSearch] = useDebounceValue(search, 500);
   const [searchPayload, setSearchPayload] = useState<CommunityView[]>([]);
   const client = useClient();
   const follows = useAppSelector(
@@ -106,6 +115,10 @@ export default function TitleSearchResults() {
   const contentRef = useRef<HTMLDivElement>(null);
   const favorites = useAppSelector((state) => state.community.favorites);
   const showModeratorFeed = useShowModeratorFeed();
+
+  useEffect(() => {
+    setDebouncedSearch(search);
+  }, [search, setDebouncedSearch]);
 
   const results: Result[] = useMemo(() => {
     const results = [

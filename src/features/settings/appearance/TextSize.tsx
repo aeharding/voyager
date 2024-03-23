@@ -1,10 +1,8 @@
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
-import { IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
+import { IonItem, IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
 import { HelperText, ListHeader } from "../shared/formatting";
+import { styled } from "@linaria/react";
 
 const Range = styled(IonRange)`
   --bar-background: var(--ion-color-medium);
@@ -15,15 +13,9 @@ const Range = styled(IonRange)`
 `;
 
 const A = styled.div<{ small?: boolean }>`
-  font-size: 1.3em;
   padding: 0 6px;
   font-weight: 500;
-
-  ${({ small }) =>
-    small &&
-    css`
-      font-size: 0.8em;
-    `}
+  font-size: ${({ small }) => (small ? "0.8em" : "1.3em")};
 `;
 
 const MAX_REGULAR_FONT_ADJUSTMENT = 1.6;
@@ -54,7 +46,7 @@ export default function TextSize() {
         <IonLabel>Text size</IonLabel>
       </ListHeader>
       <IonList inset>
-        <InsetIonItem>
+        <IonItem>
           <IonToggle
             checked={useSystemFontSize}
             onIonChange={(e) =>
@@ -63,8 +55,8 @@ export default function TextSize() {
           >
             Use System Text Size
           </IonToggle>
-        </InsetIonItem>
-        <InsetIonItem>
+        </IonItem>
+        <IonItem>
           <Range
             disabled={useSystemFontSize}
             ticks
@@ -80,9 +72,9 @@ export default function TextSize() {
             </A>
             <A slot="end">A</A>
           </Range>
-        </InsetIonItem>
+        </IonItem>
         {fontSizeMultiplier >= 1.4 && (
-          <InsetIonItem>
+          <IonItem>
             <IonToggle
               checked={fontSizeMultiplier > MAX_REGULAR_FONT_ADJUSTMENT}
               onIonChange={() =>
@@ -97,7 +89,7 @@ export default function TextSize() {
             >
               Larger Text Mode
             </IonToggle>
-          </InsetIonItem>
+          </IonItem>
         )}
       </IonList>
       <HelperText>Default is two ticks from the left.</HelperText>

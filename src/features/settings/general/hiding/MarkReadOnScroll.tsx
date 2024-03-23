@@ -1,5 +1,5 @@
-import { IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
+import { IonItem, IonToggle } from "@ionic/react";
+
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setMarkPostsReadOnScroll } from "../../settingsSlice";
 
@@ -10,7 +10,7 @@ export default function MarkReadOnScroll() {
   );
 
   return (
-    <InsetIonItem>
+    <IonItem>
       <IonToggle
         checked={markReadOnScroll}
         onIonChange={(e) =>
@@ -19,6 +19,6 @@ export default function MarkReadOnScroll() {
       >
         Mark Read on Scroll
       </IonToggle>
-    </InsetIonItem>
+    </IonItem>
   );
 }

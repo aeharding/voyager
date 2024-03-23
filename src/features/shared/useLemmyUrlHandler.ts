@@ -3,10 +3,10 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { knownInstancesSelector } from "../instances/instancesSlice";
 import useAppNavigation from "../../helpers/useAppNavigation";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { resolveObject } from "../resolve/resolveSlice";
+import { normalizeObjectUrl, resolveObject } from "../resolve/resolveSlice";
 import { MouseEvent } from "react";
 import useAppToast from "../../helpers/useAppToast";
-import { isLemmyError } from "../../helpers/lemmy";
+import { isLemmyError } from "../../helpers/lemmyErrors";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
@@ -67,6 +67,31 @@ export default function useLemmyUrlHandler() {
       return true;
     },
     [buildGeneralBrowseLink, connectedInstance, router],
+  );
+
+  const handleUserClickIfNeeded = useCallback(
+    (url: URL, e?: MouseEvent) => {
+      const matchedUserHandle = matchLemmyUser(url.pathname);
+
+      if (!matchedUserHandle) return;
+      const [userName, domain] = matchedUserHandle;
+
+      e?.preventDefault();
+      e?.stopPropagation();
+
+      if (
+        (!domain && url.hostname === connectedInstance) ||
+        (domain === url.hostname && domain === connectedInstance)
+      ) {
+        navigateToUser(userName);
+        return true;
+      }
+
+      navigateToUser(`${userName}@${domain ?? url.hostname}`);
+
+      return true;
+    },
+    [connectedInstance, navigateToUser],
   );
 
   const handleObjectIfNeeded = useCallback(
@@ -151,12 +176,13 @@ export default function useLemmyUrlHandler() {
 
   const redirectToLemmyObjectIfNeeded = useCallback(
     async (link: string, e?: MouseEvent): Promise<boolean> => {
-      const url = getUrl(link);
+      const url = getUrl(normalizeObjectUrl(link));
 
       if (!url) return false;
       if (!knownInstances.includes(url.hostname)) return false; // If non-lemmy domain, return
 
       if (handleCommunityClickIfNeeded(url, e)) return true;
+      if (handleUserClickIfNeeded(url, e)) return true;
       if (!isPotentialObjectPath(url.pathname)) return false;
 
       return handleObjectIfNeeded(url, e);
@@ -164,6 +190,7 @@ export default function useLemmyUrlHandler() {
     [
       getUrl,
       handleCommunityClickIfNeeded,
+      handleUserClickIfNeeded,
       handleObjectIfNeeded,
       knownInstances,
     ],

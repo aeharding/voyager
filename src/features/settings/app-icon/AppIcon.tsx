@@ -1,5 +1,6 @@
 import {
   IonBadge,
+  IonItem,
   IonLabel,
   IonList,
   IonRadio,
@@ -7,11 +8,10 @@ import {
   IonText,
   IonThumbnail,
 } from "@ionic/react";
-import { InsetIonItem } from "../shared/formatting";
-import styled from "@emotion/styled";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { APP_ICONS, AppIcon, updateAppIcon } from "./appIconSlice";
 import { isAndroid } from "../../../helpers/device";
+import { styled } from "@linaria/react";
 
 const StyledIonThumbnail = styled(IonThumbnail)`
   margin: 1rem 1rem 1rem 0;
@@ -41,27 +41,29 @@ export default function AppIconComponent() {
     <IonRadioGroup value={icon} onIonChange={(e) => selectIcon(e.detail.value)}>
       <IonList inset>
         {APP_ICONS.map((icon) => (
-          <InsetIonItem key={icon}>
+          <IonItem key={icon}>
             <StyledIonThumbnail slot="start" onClick={() => selectIcon(icon)}>
               <Img src={getIconSrc(icon)} />
             </StyledIonThumbnail>
-            <IonLabel>
-              <H2>
-                {getIconName(icon)}{" "}
-                {isIconThemed(icon) && (
-                  <IonBadge color="medium">Themed</IonBadge>
-                )}
-              </H2>
-              <p>
-                <IonText color="medium">
-                  {getIconAuthor(icon)}{" "}
-                  {getThemedIconAuthor(icon) &&
-                    `— themed by ${getThemedIconAuthor(icon)}`}
-                </IonText>
-              </p>
-            </IonLabel>
-            <IonRadio value={icon} />
-          </InsetIonItem>
+
+            <IonRadio value={icon}>
+              <IonLabel>
+                <H2 className="ion-text-wrap">
+                  {getIconName(icon)}{" "}
+                  {isIconThemed(icon) && (
+                    <IonBadge color="medium">Themed</IonBadge>
+                  )}
+                </H2>
+                <p className="ion-text-wrap">
+                  <IonText color="medium">
+                    {getIconAuthor(icon)}{" "}
+                    {getThemedIconAuthor(icon) &&
+                      `— themed by ${getThemedIconAuthor(icon)}`}
+                  </IonText>
+                </p>
+              </IonLabel>
+            </IonRadio>
+          </IonItem>
         ))}
       </IonList>
     </IonRadioGroup>

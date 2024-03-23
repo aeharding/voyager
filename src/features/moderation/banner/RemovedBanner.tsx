@@ -7,7 +7,7 @@ import { CommentView, PostView } from "lemmy-js-client";
 import { commentApproved, postApproved } from "../../../helpers/toastMessages";
 import { Banner, ItemModState } from "./ModeratableItemBanner";
 import { trashOutline } from "ionicons/icons";
-import { isPost } from "../../feed/PostCommentFeed";
+import { isPost } from "../../../helpers/lemmy";
 
 interface RemovedBannerProps {
   itemView: CommentView | PostView;

@@ -7,11 +7,12 @@ import useCanModerate, {
   getModIcon,
 } from "../../moderation/useCanModerate";
 import usePostModActions from "../../moderation/usePostModActions";
+import { useContext } from "react";
+import { InFeedContext } from "../../feed/Feed";
 
 interface MoreActionsProps {
   post: PostView;
   className?: string;
-  onFeed?: boolean;
   solidIcon?: boolean;
 }
 
@@ -27,9 +28,10 @@ interface ActionsProps extends MoreActionsProps {
   role: ModeratorRole;
 }
 
-function Actions({ post, onFeed, solidIcon, className, role }: ActionsProps) {
+function Actions({ post, solidIcon, className, role }: ActionsProps) {
   const presentPostModActions = usePostModActions(post);
-  const Button = onFeed ? ActionButton : IonButton;
+  const inFeed = useContext(InFeedContext);
+  const Button = inFeed ? ActionButton : IonButton;
 
   return (
     <>

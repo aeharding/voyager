@@ -5,9 +5,7 @@ import {
   isTopSort,
   useSelectPostSort,
 } from "../../../feed/PostSort";
-import { InsetIonItem } from "../../shared/formatting";
-import { Container, ValueLabel } from "../../shared/SettingSelector";
-import { IonLabel } from "@ionic/react";
+import { IonItem, IonLabel } from "@ionic/react";
 import { SortType } from "lemmy-js-client";
 import { startCase } from "lodash";
 
@@ -22,18 +20,12 @@ export default function DefaultSort() {
   });
 
   return (
-    <InsetIonItem
-      button
-      onClick={() => present(defaultPostSort)}
-      detail={false}
-    >
-      <Container>
-        <IonLabel>Default Sort</IonLabel>
-        <ValueLabel slot="end" color="medium">
-          {formatPostSort(defaultPostSort)}
-        </ValueLabel>
-      </Container>
-    </InsetIonItem>
+    <IonItem button onClick={() => present(defaultPostSort)} detail={false}>
+      <IonLabel className="ion-text-nowrap">Default Sort</IonLabel>
+      <IonLabel slot="end" color="medium" className="ion-no-margin">
+        {formatPostSort(defaultPostSort)}
+      </IonLabel>
+    </IonItem>
   );
 }
 

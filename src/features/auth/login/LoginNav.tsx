@@ -1,6 +1,6 @@
 import { IonNav, IonSpinner } from "@ionic/react";
 import Welcome from "./welcome/Welcome";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { useCallback, useContext } from "react";
 import { IonNavCustomEvent } from "@ionic/core";
 import { DynamicDismissableModalContext } from "../../shared/DynamicDismissableModal";
@@ -12,8 +12,11 @@ export const Spinner = styled(IonSpinner)`
 export const Centered = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 0.5rem;
+
+  .ios & {
+    justify-content: center;
+  }
 `;
 
 function blurDocument() {
@@ -24,10 +27,8 @@ export default function LoginNav() {
   const { setCanDismiss } = useContext(DynamicDismissableModalContext);
 
   const onIonNavDidChange = useCallback(
-    (event: IonNavCustomEvent<void>) => {
-      // If swiped back to root, allow swipe to dismiss
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if ((event.target as any).getLength() === 1) {
+    async (event: IonNavCustomEvent<void>) => {
+      if ((await event.target.getLength()) === 1) {
         setCanDismiss(true);
       }
     },

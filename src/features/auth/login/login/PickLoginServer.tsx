@@ -4,7 +4,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonItem,
   IonList,
   IonSearchbar,
@@ -14,15 +13,20 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { VList } from "virtua";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { LOGIN_SERVERS } from "../data/servers";
 import { getClient } from "../../../../services/lemmy";
 import Login from "./Login";
 import useAppToast from "../../../../helpers/useAppToast";
-import { isValidHostname } from "../../../../helpers/url";
+import { isValidHostname, stripProtocol } from "../../../../helpers/url";
 import { GetSiteResponse } from "lemmy-js-client";
 import { uniq } from "lodash";
 import { getCustomServers } from "../../../../services/app";
+import AppHeader from "../../../shared/AppHeader";
+import {
+  MINIMUM_LEMMY_VERSION,
+  isMinimumSupportedLemmyVersion,
+} from "../../../../helpers/lemmy";
 
 const Container = styled.div`
   height: 100%;
@@ -41,26 +45,27 @@ export default function PickLoginServer() {
   const presentToast = useAppToast();
   const [search, setSearch] = useState("");
   const [dirty, setDirty] = useState(false);
+  const searchHostname = stripProtocol(search.trim());
   const instances = useMemo(
     () =>
       uniq([...getCustomServers(), ...LOGIN_SERVERS]).filter((server) =>
-        server.includes(search.toLowerCase()),
+        server.includes(searchHostname.toLowerCase()),
       ),
-    [search],
+    [searchHostname],
   );
   const [loading, setLoading] = useState(false);
+
   const ref = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line no-undef
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
   const searchInvalid = useMemo(
     () =>
       !(
-        isValidHostname(search) &&
-        search.includes(".") &&
-        !search.endsWith(".")
+        isValidHostname(searchHostname) &&
+        searchHostname.includes(".") &&
+        !searchHostname.endsWith(".")
       ),
-    [search],
+    [searchHostname],
   );
 
   useEffect(() => {
@@ -74,7 +79,7 @@ export default function PickLoginServer() {
 
     setLoading(true);
 
-    const potentialServer = search.toLowerCase();
+    const potentialServer = searchHostname.toLowerCase();
 
     let site: GetSiteResponse;
 
@@ -99,6 +104,17 @@ export default function PickLoginServer() {
       setLoading(false);
     }
 
+    if (!isMinimumSupportedLemmyVersion(site.version)) {
+      presentToast({
+        message: `${potentialServer} is running Lemmy v${site.version}. Voyager requires at least v${MINIMUM_LEMMY_VERSION}`,
+        color: "danger",
+        fullscreen: true,
+        duration: 6_000,
+      });
+
+      return;
+    }
+
     ref.current
       ?.closest("ion-nav")
       ?.push(() => (
@@ -108,7 +124,7 @@ export default function PickLoginServer() {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -124,7 +140,7 @@ export default function PickLoginServer() {
             )}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <Container ref={ref}>
           <div className="ion-padding">

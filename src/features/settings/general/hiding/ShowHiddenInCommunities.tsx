@@ -1,5 +1,5 @@
-import { IonToggle } from "@ionic/react";
-import { InsetIonItem } from "../../../../pages/profile/ProfileFeedItemsPage";
+import { IonItem, IonToggle } from "@ionic/react";
+
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setShowHiddenInCommunities } from "../../settingsSlice";
 
@@ -10,7 +10,7 @@ export default function ShowHiddenInCommunities() {
   );
 
   return (
-    <InsetIonItem>
+    <IonItem>
       <IonToggle
         checked={showHiddenInCommunities}
         onIonChange={(e) =>
@@ -19,6 +19,6 @@ export default function ShowHiddenInCommunities() {
       >
         Show Hidden in Communities
       </IonToggle>
-    </InsetIonItem>
+    </IonItem>
   );
 }

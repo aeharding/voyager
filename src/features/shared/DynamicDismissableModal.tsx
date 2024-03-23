@@ -31,6 +31,7 @@ interface DynamicDismissableModalProps {
 
   className?: string;
   dismissClassName?: string;
+  textRecovery?: true;
 }
 
 export function DynamicDismissableModal({
@@ -39,10 +40,13 @@ export function DynamicDismissableModal({
   children: renderModalContents,
   className,
   dismissClassName,
+  textRecovery,
 }: DynamicDismissableModalProps) {
   const pageContext = useContext(PageContext);
   const location = useLocation();
-  const selectedInstance = useAppSelector(instanceSelector);
+  const selectedInstance = useAppSelector(
+    instanceSelector ?? ((state) => state.auth.connectedInstance),
+  );
 
   const [canDismissRef, setCanDismiss] = useStateRef(true);
 
@@ -71,7 +75,6 @@ export function DynamicDismissableModal({
           text: "Discard",
           role: "destructive",
           handler: () => {
-            clearRecoveredText();
             setCanDismiss(true);
             setIsOpen(false);
           },
@@ -150,7 +153,12 @@ export function DynamicDismissableModal({
         canDismiss={
           canDismissRef.current ? canDismissRef.current : onDismissAttemptCb
         }
-        onDidDismiss={() => setIsOpen(false)}
+        onDidDismiss={() => {
+          setIsOpen(false);
+
+          // in case onDidDismiss incorrectly called by Ionic, don't clear data
+          if (textRecovery && canDismissRef.current) clearRecoveredText();
+        }}
         presentingElement={presentingElement}
         onWillDismiss={() => {
           if (document.activeElement instanceof HTMLElement) {

@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import ModeratableItemBanner, {
   ItemModState,
   useItemModState,
@@ -6,10 +5,10 @@ import ModeratableItemBanner, {
 } from "./banner/ModeratableItemBanner";
 import { CommentView, PostView } from "lemmy-js-client";
 import { ReactNode, createContext, useContext } from "react";
-import styled from "@emotion/styled";
 import useCanModerate from "./useCanModerate";
 import { useAppSelector } from "../../store";
-import { isPost } from "../feed/PostCommentFeed";
+import { styled } from "@linaria/react";
+import { isPost } from "../../helpers/lemmy";
 
 const ModeratableItemContainer = styled.div<{
   modState?: ItemModState;
@@ -17,20 +16,16 @@ const ModeratableItemContainer = styled.div<{
 }>`
   width: 100%;
 
-  ${({ modState, highlighted }) => {
+  background: ${({ modState, highlighted }) => {
     const color =
       modState !== undefined ? getModStateBackgroundColor(modState) : undefined;
 
-    if (color)
-      return css`
-        background: ${color};
-      `;
+    if (color) return color;
 
-    if (highlighted)
-      return css`
-        background: var(--ion-color-light);
-      `;
-  }}
+    if (highlighted) return "var(--ion-color-light)";
+
+    return "none";
+  }};
 `;
 
 interface ModeratableItemProps {

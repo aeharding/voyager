@@ -1,11 +1,10 @@
 import { useAppDispatch, useAppSelector } from "../../store";
 import { IonIcon } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
-import styled from "@emotion/styled";
 import { voteOnPost } from "../post/postSlice";
 import React, { useContext } from "react";
 import { voteOnComment } from "../comment/commentSlice";
-import { downvotesDisabled, voteError } from "../../helpers/toastMessages";
+import { downvotesDisabled } from "../../helpers/toastMessages";
 import { PageContext } from "../auth/PageContext";
 import {
   calculateTotalScore,
@@ -18,8 +17,11 @@ import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../helpers/useHapticFeedback";
 import useAppToast from "../../helpers/useAppToast";
 import { formatNumber } from "../../helpers/number";
+import { styled } from "@linaria/react";
+import { getVoteErrorMessage } from "../../helpers/lemmyErrors";
+import { PlainButton } from "../shared/PlainButton";
 
-const Container = styled.div<{
+const Container = styled(PlainButton)<{
   vote?: 1 | -1 | 0;
   voteRepresented?: 1 | -1;
 }>`
@@ -37,6 +39,8 @@ const Container = styled.div<{
             return "var(--ion-color-danger)";
         }
       }
+
+      return "inherit";
     }};
   }
 `;
@@ -89,7 +93,11 @@ export default function Vote({
     try {
       await dispatch(dispatcherFn(id, vote));
     } catch (error) {
-      presentToast(voteError);
+      presentToast({
+        color: "danger",
+        message: getVoteErrorMessage(error),
+      });
+
       throw error;
     }
   }

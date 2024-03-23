@@ -1,7 +1,8 @@
-import styled from "@emotion/styled";
-import { IonButton, IonButtons } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { IonButton, IonButtons, IonIcon } from "@ionic/react";
 import { useContext } from "react";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
+import { arrowBackSharp } from "ionicons/icons";
 
 const AndroidIonButtons = styled(IonButtons)`
   .ios & {
@@ -13,8 +14,10 @@ export default function AndroidClose() {
   const { dismiss } = useContext(DynamicDismissableModalContext);
 
   return (
-    <AndroidIonButtons slot="end">
-      <IonButton onClick={dismiss}>Close</IonButton>
+    <AndroidIonButtons slot="start">
+      <IonButton onClick={dismiss}>
+        <IonIcon icon={arrowBackSharp} slot="icon-only" />
+      </IonButton>
     </AndroidIonButtons>
   );
 }

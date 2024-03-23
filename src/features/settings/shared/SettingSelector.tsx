@@ -3,39 +3,23 @@ import {
   IonActionSheetCustomEvent,
   OverlayEventDetail,
 } from "@ionic/core";
-import { IonActionSheet, IonLabel } from "@ionic/react";
+import { IonActionSheet, IonItem, IonLabel } from "@ionic/react";
 import { startCase } from "lodash";
 import React, { useState } from "react";
 import { Dispatchable, useAppDispatch } from "../../../store";
-import { InsetIonItem } from "./formatting";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
+import { css, cx } from "@linaria/core";
 
-export const Container = styled.div`
-  display: flex;
-  align-items: center;
-  flex: 1;
-  gap: 8px;
-  min-width: 0;
+const iconCss = css`
+  position: relative;
+  display: inline-flex;
+  height: 40px;
+  width: auto;
+  stroke: var(--ion-color-primary);
+  fill: var(--ion-color-primary);
 `;
 
-const TitleIonLabel = styled(IonLabel)`
-  flex: 1;
-
-  white-space: nowrap;
-  min-width: 0;
-  overflow: hidden;
-`;
-
-export const ValueLabel = styled(IonLabel)`
-  flex: 0 auto !important;
-  min-width: 0 !important;
-  text-align: right;
-
-  min-width: 75px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+const iconMirrorCss = css`
+  transform: scaleX(-1);
 `;
 
 export interface SettingSelectorProps<T, O extends Record<string, T>> {
@@ -45,11 +29,12 @@ export interface SettingSelectorProps<T, O extends Record<string, T>> {
   setSelected: Dispatchable<T>;
   options: O;
   optionIcons?: Record<string | number, string>;
-  icon?: React.FunctionComponent;
+  icon?: React.FunctionComponent<{ className?: string; slot?: string }>;
   iconMirrored?: boolean;
   disabled?: boolean;
   getOptionLabel?: (option: T) => string | undefined;
   getSelectedLabel?: (option: T) => string | undefined;
+  hideOptions?: T[] | undefined;
 }
 
 export default function SettingSelector<
@@ -62,66 +47,44 @@ export default function SettingSelector<
   setSelected,
   options,
   optionIcons,
-  icon,
+  icon: Icon,
   iconMirrored,
   disabled,
   getOptionLabel,
   getSelectedLabel,
+  hideOptions = [],
 }: SettingSelectorProps<T, O>) {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
 
-  const buttons: ActionSheetButton<T>[] = Object.values(options).map(
-    function (v) {
-      const customLabel = getOptionLabel?.(v);
-
-      return {
-        icon: optionIcons ? optionIcons[v] : undefined,
-        text: customLabel ?? (typeof v === "string" ? startCase(v) : v),
-        data: v,
-        role: selected === v ? "selected" : undefined,
-      } as ActionSheetButton<T>;
-    },
-  );
-
-  const Icon = icon
-    ? styled(icon, { shouldForwardProp: (prop) => prop !== "mirror" })<{
-        mirror?: boolean;
-      }>`
-        position: relative;
-        display: inline-flex;
-        height: 4ex;
-        width: auto;
-        stroke: var(--ion-color-primary);
-        fill: var(--ion-color-primary);
-
-        ${({ mirror }) =>
-          mirror
-            ? css`
-                padding-inline-start: 0.7em;
-                transform: scaleX(-1);
-              `
-            : css`
-                padding-inline-end: 0.7em;
-              `}
-      `
-    : undefined;
+  const buttons: ActionSheetButton<T>[] = Object.values(options)
+    .filter((o) => !hideOptions.includes(o))
+    .map((v) => ({
+      icon: optionIcons ? optionIcons[v] : undefined,
+      text:
+        getOptionLabel?.(v) ?? (typeof v === "string" ? startCase(v) : `${v}`),
+      data: v,
+      role: selected === v ? "selected" : undefined,
+    }));
 
   return (
-    <InsetIonItem
+    <IonItem
       button
       onClick={() => setOpen(true)}
       disabled={disabled}
       detail={false}
     >
-      <Container>
-        {Icon && <Icon mirror={iconMirrored} />}
-        <TitleIonLabel>{title}</TitleIonLabel>
-        <ValueLabel slot="end" color="medium">
-          {getSelectedLabel?.(selected) ??
-            (typeof selected === "string" ? startCase(selected) : selected)}
-        </ValueLabel>
-      </Container>
+      {Icon && (
+        <Icon
+          className={cx(iconCss, iconMirrored && iconMirrorCss)}
+          slot="start"
+        />
+      )}
+      <IonLabel className="ion-text-nowrap">{title}</IonLabel>
+      <IonLabel slot="end" color="medium" className="ion-no-margin">
+        {getSelectedLabel?.(selected) ??
+          (typeof selected === "string" ? startCase(selected) : selected)}
+      </IonLabel>
       <IonActionSheet
         cssClass="left-align-buttons"
         isOpen={open}
@@ -136,6 +99,6 @@ export default function SettingSelector<
         header={openTitle ?? title}
         buttons={buttons}
       />
-    </InsetIonItem>
+    </IonItem>
   );
 }

@@ -1,8 +1,7 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonButtons,
   IonButton,
-  IonHeader,
   IonToolbar,
   IonTitle,
   IonContent,
@@ -17,12 +16,13 @@ import { useEffect, useState } from "react";
 import { BanUserPayload } from "../../auth/PageContext";
 import { useAppDispatch } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
-import { preventPhotoswipeGalleryFocusTrap } from "../../gallery/GalleryImg";
+import { preventPhotoswipeGalleryFocusTrap } from "../../media/gallery/GalleryImg";
 import { getHandle } from "../../../helpers/lemmy";
 import AddRemoveButtons from "../../share/asImage/AddRemoveButtons";
 import { banUser } from "../../user/userSlice";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
 import { buildBanFailed, buildBanned } from "../../../helpers/toastMessages";
+import AppHeader from "../../shared/AppHeader";
 
 const Title = styled.span`
   overflow: hidden;
@@ -113,7 +113,7 @@ export default function BanUser({
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonButton onClick={() => dismiss()}>Cancel</IonButton>
@@ -137,7 +137,7 @@ export default function BanUser({
             </IonButton>
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent {...preventPhotoswipeGalleryFocusTrap}>
         <IonTextarea
           className="ion-padding"

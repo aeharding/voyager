@@ -3,10 +3,10 @@ import { IonIcon, useIonAlert } from "@ionic/react";
 import { pencil } from "ionicons/icons";
 import { MouseEvent, useMemo } from "react";
 import { formatRelative } from "./Ago";
-import styled from "@emotion/styled";
-import { fixLemmyDateString } from "../../helpers/date";
+import { styled } from "@linaria/react";
+import { PlainButton } from "../shared/PlainButton";
 
-const Container = styled.div`
+const Container = styled(PlainButton)`
   display: flex;
   align-items: center;
   gap: inherit;
@@ -45,11 +45,11 @@ export default function Edited({ item, showDate, className }: EditedProps) {
 
     if (!edited) return;
 
+    const date = new Date(edited);
+
     present({
       header: `Edited ${formatRelative(edited)} Ago`,
-      message: `Last edited on ${new Date(
-        fixLemmyDateString(edited),
-      ).toLocaleTimeString()}`,
+      message: `Last edited on ${date.toDateString()} at ${date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`,
       buttons: ["OK"],
     });
   }

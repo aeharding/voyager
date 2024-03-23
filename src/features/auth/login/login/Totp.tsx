@@ -4,7 +4,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonInput,
   IonItem,
   IonList,
@@ -15,9 +14,13 @@ import {
 import useAppToast from "../../../../helpers/useAppToast";
 import { useAppDispatch } from "../../../../store";
 import { login } from "../../authSlice";
-import { getLoginErrorMessage, isLemmyError } from "../../../../helpers/lemmy";
+import {
+  getLoginErrorMessage,
+  isLemmyError,
+} from "../../../../helpers/lemmyErrors";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
 import { loginSuccess } from "../../../../helpers/toastMessages";
+import AppHeader from "../../../shared/AppHeader";
 
 interface TotpProps {
   url: string;
@@ -30,7 +33,6 @@ export default function Totp({ url, username, password }: TotpProps) {
   const dispatch = useAppDispatch();
   const { setCanDismiss, dismiss } = useContext(DynamicDismissableModalContext);
 
-  // eslint-disable-next-line no-undef
   const totpRef = useRef<HTMLIonInputElement>(null);
 
   const [loading, setLoading] = useState(false);
@@ -83,7 +85,7 @@ export default function Totp({ url, username, password }: TotpProps) {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -99,7 +101,7 @@ export default function Totp({ url, username, password }: TotpProps) {
             )}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <div className="ion-padding">
           Enter 2nd factor auth code for {username}@{url}

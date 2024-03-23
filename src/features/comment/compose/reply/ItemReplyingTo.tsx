@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
 import { returnDownForwardSharp } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
@@ -10,7 +10,7 @@ import Edited from "../../../labels/Edited";
 import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
 
 const Container = styled.div`
-  padding: 1rem;
+  padding: 16px;
   background: var(--ion-color-light);
   font-size: 0.875em;
 
@@ -23,10 +23,10 @@ const Container = styled.div`
 const Header = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
   color: var(--ion-color-medium);
   font-size: 0.875em;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 `;
 
 const StyledAgo = styled(Ago)`

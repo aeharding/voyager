@@ -4,12 +4,13 @@ import {
   Community,
   CommunityModeratorView,
   GetSiteResponse,
-  LemmyErrorType,
   Post,
+  PostView,
 } from "lemmy-js-client";
 import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
 import { quote } from "./markdown";
+import { compare } from "compare-versions";
 
 export interface LemmyJWT {
   sub: number;
@@ -132,37 +133,27 @@ export function buildCommentsTreeWithMissing(
 ): CommentNodeI[] {
   const tree = buildCommentsTree(comments, parentComment);
 
-  function childHasMissing(node: CommentNodeI): {
-    missing: boolean;
-    count: number;
-  } {
-    let totalChildren = 0;
-    let missingMarker = false;
-
-    for (const child of node.children) {
-      const res = childHasMissing(child);
-      totalChildren += res.count;
-      if (res.missing) missingMarker = true;
-    }
-
-    const missing =
-      node.comment_view.counts.child_count -
-      node.children.length -
-      totalChildren;
-
-    node.missing = missingMarker ? 0 : missing;
-
-    return {
-      missing: missingMarker || !!missing,
-      count: totalChildren + node.children.length,
-    };
-  }
-
   for (const node of tree) {
     childHasMissing(node);
   }
 
   return tree;
+}
+
+function childHasMissing(node: CommentNodeI) {
+  let missing = node.comment_view.counts.child_count;
+
+  for (const child of node.children) {
+    missing--;
+
+    // the child is responsible for showing missing indicator
+    // if the child has missing comments
+    missing -= child.comment_view.counts.child_count;
+
+    childHasMissing(child);
+  }
+
+  node.missing = missing;
 }
 
 export function getCommentParentId(comment?: Comment): number | undefined {
@@ -277,15 +268,7 @@ export function keywordFoundInSentence(
   return pattern.test(sentence);
 }
 
-export type LemmyErrorValue = LemmyErrorType["error"];
-export type OldLemmyErrorValue = never; // When removing support for an old version of Lemmy, cleanup these references
-
-export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
-  if (!(error instanceof Error)) return;
-  return error.message === lemmyErrorValue;
-}
-
-export function canModerate(
+export function canModerateCommunity(
   communityId: number | undefined,
   moderates: CommunityModeratorView[] | undefined,
 ): boolean {
@@ -301,7 +284,7 @@ export function parseJWT(payload: string): LemmyJWT {
 }
 
 const CROSS_POST_REGEX =
-  /^cross-posted from:\s+(https:\/\/(?:[0-9a-z-]+\.?)+\/post\/[0-9]+)/;
+  /^[cC]ross-posted from:\s+(https:\/\/(?:[0-9a-z-]+\.?)+\/post\/[0-9]+)/;
 
 export function getCrosspostUrl(post: Post): string | undefined {
   if (!post.body) return;
@@ -319,32 +302,31 @@ export function buildCrosspostBody(post: Post): string {
   return `${header}\n>\n${quote(post.body)}`;
 }
 
-export function getLoginErrorMessage(
-  error: unknown,
-  instanceActorId: string,
-): string {
-  if (!(error instanceof Error))
-    return "Unknown error occurred, please try again.";
+export function isPost(item: PostView | CommentView): item is PostView {
+  return !isComment(item);
+}
 
-  switch (error.message as LemmyErrorValue) {
-    // TODO old lemmy support
-    case "incorrect_totp token" as OldLemmyErrorValue:
-    case "incorrect_totp_token":
-      return "Incorrect 2nd factor code. Please try again.";
-    // TODO old lemmy support
-    case "couldnt_find_that_username_or_email" as OldLemmyErrorValue:
-    case "couldnt_find_person":
-      return `User not found. Is your account on ${instanceActorId}?`;
-    case "password_incorrect" as OldLemmyErrorValue:
-    case "incorrect_login":
-      return `Incorrect login credentials for ${instanceActorId}. Please try again.`;
-    case "email_not_verified":
-      return `Email not verified. Please check your inbox. Request a new verification email from https://${instanceActorId}.`;
-    case "site_ban":
-      return "You have been banned.";
-    case "deleted":
-      return "Account deleted.";
-    default:
-      return "Connection error, please try again.";
+export function isComment(item: PostView | CommentView): item is CommentView {
+  return "comment" in item;
+}
+
+const getPublishedDate = (item: PostView | CommentView) => {
+  if (isPost(item)) {
+    return item.post.published;
+  } else {
+    return item.comment.published;
   }
+};
+
+export function sortPostCommentByPublished(
+  a: PostView | CommentView,
+  b: PostView | CommentView,
+): number {
+  return getPublishedDate(b).localeCompare(getPublishedDate(a));
+}
+
+export const MINIMUM_LEMMY_VERSION = "0.19.0";
+
+export function isMinimumSupportedLemmyVersion(version: string) {
+  return compare(version, MINIMUM_LEMMY_VERSION, ">=");
 }

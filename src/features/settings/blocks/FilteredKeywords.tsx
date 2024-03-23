@@ -1,4 +1,5 @@
 import {
+  IonItem,
   IonItemOption,
   IonItemOptions,
   IonItemSliding,
@@ -6,7 +7,6 @@ import {
   IonList,
   useIonAlert,
 } from "@ionic/react";
-import { InsetIonItem } from "../../../pages/profile/ProfileFeedItemsPage";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { ListHeader } from "../shared/formatting";
 import { updateFilteredKeywords } from "../settingsSlice";
@@ -67,16 +67,16 @@ export default function FilteredKeywords() {
                 Unfilter
               </IonItemOption>
             </IonItemOptions>
-            <InsetIonItem>
+            <IonItem>
               <IonLabel>{keyword}</IonLabel>
-            </InsetIonItem>
+            </IonItem>
           </IonItemSliding>
         ))}
 
         <IonItemSliding>
-          <InsetIonItem onClick={add}>
+          <IonItem onClick={add} button detail={false}>
             <IonLabel color="primary">Add Keyword</IonLabel>
-          </InsetIonItem>
+          </IonItem>
         </IonItemSliding>
       </IonList>
     </>

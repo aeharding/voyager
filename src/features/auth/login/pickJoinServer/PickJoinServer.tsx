@@ -4,7 +4,6 @@ import {
   IonButtons,
   IonContent,
   IonFooter,
-  IonHeader,
   IonIcon,
   IonItem,
   IonLabel,
@@ -29,14 +28,12 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { getInstances } from "./pickJoinServerSlice";
 import { VList } from "virtua";
-import styled from "@emotion/styled";
 import { getClient, getImageSrc } from "../../../../services/lemmy";
 import { GetSiteResponse } from "lemmy-js-client";
-import { isValidHostname } from "../../../../helpers/url";
+import { isValidHostname, stripProtocol } from "../../../../helpers/url";
 import useStartJoinFlow from "./useStartJoinFlow";
 import { compact, uniqBy } from "lodash";
 import { LVInstance } from "../../../../services/lemmyverse";
-import { css } from "@emotion/react";
 import lemmyLogo from "../lemmyLogo.svg";
 import Filters from "./Filters";
 import { SERVERS_BY_CATEGORY, ServerCategory } from "../data/servers";
@@ -49,8 +46,11 @@ import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissab
 import { addGuestInstance } from "../../authSlice";
 import Login from "../login/Login";
 import { getInstanceFromHandle } from "../../authSelectors";
+import { styled } from "@linaria/react";
+import AppHeader from "../../../shared/AppHeader";
+import { isMinimumSupportedLemmyVersion } from "../../../../helpers/lemmy";
 
-const spacing = css`
+const spacing = `
   margin: 2.5rem 0;
   width: 100%;
 `;
@@ -107,11 +107,12 @@ export default function PickJoinServer() {
     (state) => state.auth.connectedInstance,
   );
   const instances = useAppSelector((state) => state.pickJoinServer.instances);
-  // eslint-disable-next-line no-undef
+
   const contentRef = useRef<HTMLIonContentElement>(null);
 
   const [selection, setSelection] = useState<string | undefined>();
   const [search, setSearch] = useState("");
+  const searchHostname = stripProtocol(search.trim());
 
   const accounts = useAppSelector((state) => state.auth.accountData?.accounts);
 
@@ -133,9 +134,9 @@ export default function PickJoinServer() {
   const matchingInstances = useMemo(
     () =>
       instances?.filter((instance) =>
-        instance.baseurl.includes(search.toLowerCase()),
+        instance.baseurl.includes(searchHostname.toLowerCase()),
       ) || [],
-    [instances, search],
+    [instances, searchHostname],
   );
 
   const allInstances = useMemo(() => {
@@ -156,11 +157,11 @@ export default function PickJoinServer() {
   const customSearchHostnameInvalid = useMemo(
     () =>
       !(
-        isValidHostname(search) &&
-        search.includes(".") &&
-        !search.endsWith(".")
+        isValidHostname(searchHostname) &&
+        searchHostname.includes(".") &&
+        !searchHostname.endsWith(".")
       ),
-    [search],
+    [searchHostname],
   );
 
   const fetchCustomSite = useCallback(async () => {
@@ -168,7 +169,7 @@ export default function PickJoinServer() {
 
     if (customSearchHostnameInvalid) return;
 
-    const potentialServer = search.toLowerCase();
+    const potentialServer = searchHostname.toLowerCase();
 
     setLoading(true);
 
@@ -181,11 +182,17 @@ export default function PickJoinServer() {
     }
 
     // User changed search before request resolved
-    if (site.site_view.site.actor_id !== `https://${search.toLowerCase()}/`)
+    if (
+      site.site_view.site.actor_id !==
+      `https://${searchHostname.toLowerCase()}/`
+    )
       return;
 
+    // Unsupported version
+    if (!isMinimumSupportedLemmyVersion(site.version)) return;
+
     setCustomInstance(site);
-  }, [customSearchHostnameInvalid, search]);
+  }, [customSearchHostnameInvalid, searchHostname]);
 
   useEffect(() => {
     fetchCustomSite();
@@ -238,8 +245,9 @@ export default function PickJoinServer() {
         {
           text: "Log In",
           handler: () => {
-            const icon = allInstances.find(({ url }) => url === selectedUrl)
-              ?.icon;
+            const icon = allInstances.find(
+              ({ url }) => url === selectedUrl,
+            )?.icon;
 
             contentRef.current
               ?.closest("ion-nav")
@@ -285,11 +293,12 @@ export default function PickJoinServer() {
                     src={icon ? getImageSrc(icon, { size: 32 }) : lemmyLogo}
                   />
                 </ServerThumbnail>
-                <IonLabel>
-                  <h2>{url}</h2>
-                  <p>{description}</p>
-                </IonLabel>
-                <IonRadio value={url} />
+                <IonRadio value={url}>
+                  <IonLabel>
+                    <h2>{url}</h2>
+                    <p className="ion-text-wrap">{description}</p>
+                  </IonLabel>
+                </IonRadio>
               </ServerItem>
             );
           }}
@@ -304,7 +313,7 @@ export default function PickJoinServer() {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -334,7 +343,7 @@ export default function PickJoinServer() {
             setCategory={setCategory}
           />
         </FiltersToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent ref={contentRef}>
         <IonRadioGroup
           value={selection}

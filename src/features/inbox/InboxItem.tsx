@@ -5,20 +5,21 @@ import {
 } from "lemmy-js-client";
 import CommentMarkdown from "../comment/CommentMarkdown";
 import { IonIcon, IonItem } from "@ionic/react";
-import styled from "@emotion/styled";
 import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
 import Ago from "../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { getHandle } from "../../helpers/lemmy";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
-import { css } from "@emotion/react";
-import { isPostReply } from "../../pages/inbox/RepliesPage";
+import { isPostReply } from "../../routes/pages/inbox/RepliesPage";
 import { maxWidthCss } from "../shared/AppContent";
 import VoteArrow from "./VoteArrow";
 import SlidingInbox from "../shared/sliding/SlidingInbox";
 import useAppToast from "../../helpers/useAppToast";
 import InboxItemMoreActions from "./InboxItemMoreActions";
+import { styled } from "@linaria/react";
+import { css, cx } from "@linaria/core";
+import { isTouchDevice } from "../../helpers/device";
 
 const Hr = styled.div`
   ${maxWidthCss}
@@ -38,19 +39,17 @@ const Hr = styled.div`
     border-bottom: 1px solid
       var(
         --ion-item-border-color,
-        var(--ion-border-color, var(--ion-color-step-250, #c8c7cc))
+        var(--ion-border-color, var(--ion-background-color-step-250, #c8c7cc))
       );
   }
 `;
 
-const StyledIonItem = styled(IonItem)<{ read: boolean }>`
+const StyledIonItem = styled(IonItem)`
   --ion-item-border-color: transparent;
+`;
 
-  ${({ read }) =>
-    !read &&
-    css`
-      --background: var(--unread-item-background-color);
-    `}
+const itemUnreadCss = css`
+  --background: var(--unread-item-background-color);
 `;
 
 const Container = styled.div`
@@ -219,13 +218,19 @@ export default function InboxItem({ item }: InboxItemProps) {
     }
   }
 
+  const read = !!readByInboxItemId[getInboxItemId(item)];
+
   const contents = (
     <StyledIonItem
+      mode="ios" // Use iOS style activatable tap highlight
+      className={cx(
+        !read && itemUnreadCss,
+        isTouchDevice() && "ion-activatable",
+      )}
       routerLink={getLink()}
       href={undefined}
       detail={false}
       onClick={markRead}
-      read={!!readByInboxItemId[getInboxItemId(item)]}
     >
       <Container>
         <StartContent>
@@ -235,7 +240,9 @@ export default function InboxItem({ item }: InboxItemProps) {
         <Content>
           <Header>{renderHeader()}</Header>
           <Body>
-            <CommentMarkdown>{renderContents()}</CommentMarkdown>
+            <CommentMarkdown id={getItemId(item)}>
+              {renderContents()}
+            </CommentMarkdown>
           </Body>
           <Footer>
             <div>{renderFooterDetails()}</div>
@@ -262,4 +269,18 @@ export default function InboxItem({ item }: InboxItemProps) {
       <Hr />
     </>
   );
+}
+
+function getItemId(item: InboxItemView): string {
+  switch (true) {
+    case "person_mention" in item:
+      return `mention-${item.person_mention.id}`;
+    case "comment_reply" in item:
+      return `comment-reply-${item.comment_reply.id}`;
+    case "private_message" in item:
+      return `private-message-${item.private_message.id}`;
+  }
+
+  // typescript should be smarter (this shouldn't be necessary)
+  throw new Error("getItemId: Unexpected item");
 }

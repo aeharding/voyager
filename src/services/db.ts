@@ -32,6 +32,19 @@ export const OAppThemeType = {
 
 export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
 
+export const OCommentsThemeType = {
+  Rainbow: "rainbow",
+  UnoReverse: "uno-reverse",
+  Pastel: "pastel",
+  Mauve: "mauve",
+  Electric: "electric",
+  Citrus: "citrus",
+  Blush: "blush",
+} as const;
+
+export type CommentsThemeType =
+  (typeof OCommentsThemeType)[keyof typeof OCommentsThemeType];
+
 export const OPostAppearanceType = {
   Compact: "compact",
   Large: "large",
@@ -64,8 +77,9 @@ export type CompactThumbnailSizeType =
   (typeof OCompactThumbnailSizeType)[keyof typeof OCompactThumbnailSizeType];
 
 export const OCommentThreadCollapse = {
-  Always: "always",
   Never: "never",
+  RootOnly: "root_only",
+  All: "all",
 } as const;
 
 export type CommentThreadCollapse =
@@ -199,6 +213,15 @@ export const OTapToCollapseType = {
   Neither: "neither",
 } as const;
 
+export type AutoplayMediaType =
+  (typeof OAutoplayMediaType)[keyof typeof OAutoplayMediaType];
+
+export const OAutoplayMediaType = {
+  WifiOnly: "wifi-only",
+  Always: "always",
+  Never: "never",
+} as const;
+
 export type ProfileLabelType =
   (typeof OProfileLabelType)[keyof typeof OProfileLabelType];
 
@@ -248,16 +271,20 @@ export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
 export type SwipeActions = Record<SwipeDirection, SwipeAction>;
 
 export type SettingValueTypes = {
+  comments_theme: CommentsThemeType;
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;
   profile_label: ProfileLabelType;
   post_appearance_type: PostAppearanceType;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
+  large_show_voting_buttons: boolean;
   compact_show_voting_buttons: boolean;
   compact_thumbnail_size: CompactThumbnailSizeType;
+  compact_show_self_post_thumbnails: boolean;
   blur_nsfw: PostBlurNsfwType;
   favorite_communities: string[];
+  migration_links: string[];
   default_comment_sort: CommentDefaultSort;
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
@@ -272,6 +299,7 @@ export type SettingValueTypes = {
   disable_right_swipes: boolean;
   enable_haptic_feedback: boolean;
   link_handler: LinkHandlerType;
+  prefer_native_apps: boolean;
   show_jump_button: boolean;
   jump_button_position: JumpButtonPositionType;
   tap_to_collapse: TapToCollapseType;
@@ -283,12 +311,17 @@ export type SettingValueTypes = {
   long_swipe_trigger_point: LongSwipeTriggerPointType;
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
+  always_use_reader_mode: boolean;
   infinite_scrolling: boolean;
   upvote_on_save: boolean;
   default_post_sort: SortType;
   default_post_sort_by_feed: SortType;
   remember_community_sort: boolean;
   embed_crossposts: boolean;
+  show_community_icons: boolean;
+  autoplay_media: AutoplayMediaType;
+  show_collapsed_comment: boolean;
+  quick_switch_dark_mode: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
@@ -399,6 +432,21 @@ export class WefwefDB extends Dexie {
         });
 
         await this.setSetting("gesture_swipe_inbox", gestures);
+      })();
+    });
+
+    this.version(6).upgrade(async () => {
+      // Upgrade collapse comment threads "always" => "root_only"
+      await (async () => {
+        let default_collapse = await this.getSetting(
+          "collapse_comment_threads",
+        );
+
+        if (!default_collapse) return;
+        if ((default_collapse as string) === "always")
+          default_collapse = "root_only";
+
+        await this.setSetting("collapse_comment_threads", default_collapse);
       })();
     });
   }

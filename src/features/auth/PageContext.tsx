@@ -22,7 +22,7 @@ import {
 import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
-import SelectTextModal from "../../pages/shared/SelectTextModal";
+import SelectTextModal from "../shared/SelectTextModal";
 import ShareAsImageModal, {
   ShareAsImageData,
 } from "../share/asImage/ShareAsImageModal";
@@ -111,7 +111,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     ShareAsImageModal,
     {
       dataRef: shareAsImageDataRef,
-      onDismiss: (data: string, role: string) =>
+      onDismiss: (data?: string, role?: string) =>
         onDismissShareAsImageModal(data, role),
     },
   );
@@ -219,9 +219,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   const [presentAccountSwitcherModal, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
     {
-      onDismiss: (data: string, role: string) =>
+      onDismiss: (data?: string, role?: string) =>
         onDismissAccountSwitcher(data, role),
-      presentLogin: () => setIsLoginOpen(true),
+      presentLogin: () => {
+        onDismissAccountSwitcher();
+        setIsLoginOpen(true);
+      },
       onSelectAccount: (account: string) => dispatch(changeAccount(account)),
     },
   );
@@ -234,8 +237,9 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   const [presentCrosspost, onDismissCrosspost] = useIonModal(
     CreateCrosspostDialog,
     {
-      onDismiss: (data: string, role: string) => onDismissCrosspost(data, role),
-      post: crosspost.current,
+      onDismiss: (data?: string, role?: string) =>
+        onDismissCrosspost(data, role),
+      post: crosspost.current!,
     },
   );
 

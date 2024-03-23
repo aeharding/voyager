@@ -3,7 +3,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonItem,
   IonList,
   IonNavLink,
@@ -13,10 +12,11 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useAppSelector } from "../../../../store";
-import Markdown from "../../../shared/Markdown";
+import Markdown from "../../../shared/markdown/Markdown";
 import Join from "./Join";
 import { useContext, useState } from "react";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
+import AppHeader from "../../../shared/AppHeader";
 
 export default function Question() {
   const { site, url } = useAppSelector((state) => state.join);
@@ -25,7 +25,7 @@ export default function Question() {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -41,13 +41,13 @@ export default function Question() {
             </IonNavLink>
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
-        <IonHeader collapse="condense">
+        <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Account application</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
 
         <p className="ion-padding">
           <IonText color="warning">
@@ -57,7 +57,10 @@ export default function Question() {
         </p>
 
         <IonList inset className="ion-padding">
-          <Markdown className="collapse-md-margins">
+          <Markdown
+            className="collapse-md-margins"
+            id={`site-application-question-${site?.site_view.site.actor_id}`}
+          >
             {site?.site_view.local_site.application_question}
           </Markdown>
         </IonList>

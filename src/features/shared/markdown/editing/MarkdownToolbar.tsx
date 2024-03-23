@@ -1,15 +1,21 @@
-import styled from "@emotion/styled";
 import "@github/markdown-toolbar-element";
+import { styled } from "@linaria/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { css } from "@emotion/react";
 import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
 
 import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
 import UsernameAutocompleteMode from "./modes/autocomplete/UsernameAutocompleteMode";
 import CommunityAutocomplete from "./modes/autocomplete/CommunityAutocompleteMode";
+import { IonContent } from "@ionic/react";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";
+
+export const MarkdownEditorIonContent = styled(IonContent)`
+  &::part(scroll) {
+    scroll-padding: 20px 0 calc(20px + ${TOOLBAR_HEIGHT});
+  }
+`;
 
 const ToolbarContainer = styled.div`
   height: 100%;
@@ -40,14 +46,11 @@ const Toolbar = styled.div<{ keyboardOpen: boolean }>`
   width: 100%;
   border-top: 1px solid var(--ion-item-border-color);
 
-  ${({ theme }) =>
-    theme.dark
-      ? css`
-          background: var(--ion-background-color);
-        `
-      : css`
-          background: var(--ion-item-background, #fff);
-        `}
+  background: var(--ion-item-background, #fff);
+
+  .ion-palette-dark & {
+    background: var(--ion-background-color);
+  }
 
   markdown-toolbar {
     display: flex;
@@ -67,6 +70,10 @@ const Toolbar = styled.div<{ keyboardOpen: boolean }>`
       button {
         height: 100%;
         width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
   }

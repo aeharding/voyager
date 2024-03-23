@@ -1,37 +1,31 @@
 import React, { useCallback } from "react";
-import { IonIcon, IonLabel, IonList, IonItem } from "@ionic/react";
-import styled from "@emotion/styled";
+import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import Scores from "./Scores";
 import {
   albumsOutline,
+  arrowDown,
+  arrowUp,
   bookmarkOutline,
   chatbubbleOutline,
   eyeOffOutline,
 } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle, getRemoteHandle } from "../../helpers/lemmy";
+import { getHandle, getRemoteHandle, isPost } from "../../helpers/lemmy";
 import { MaxWidthContainer } from "../shared/AppContent";
 import { FetchFn } from "../feed/Feed";
 import useClient from "../../helpers/useClient";
 import { LIMIT } from "../../services/lemmy";
 import { useAppSelector } from "../../store";
-import PostCommentFeed, {
-  PostCommentItem,
-  isPost,
-} from "../feed/PostCommentFeed";
+import PostCommentFeed, { PostCommentItem } from "../feed/PostCommentFeed";
 import { userHandleSelector } from "../auth/authSelectors";
-import { fixLemmyDateString } from "../../helpers/date";
 import {
   getModColor,
   getModIcon,
   getModName,
 } from "../moderation/useCanModerate";
 import useModZoneActions from "../moderation/useModZoneActions";
-
-export const InsetIonItem = styled(IonItem)`
-  --background: var(--ion-tab-bar-background, var(--ion-color-step-50, #fff));
-`;
+import { styled } from "@linaria/react";
 
 export const SettingLabel = styled(IonLabel)`
   margin-left: 16px;
@@ -74,49 +68,65 @@ export default function Profile({ person }: ProfileProps) {
         accountCreated={person.person_view.person.published}
       />
       <IonList inset>
-        <InsetIonItem
+        <IonItem
           routerLink={buildGeneralBrowseLink(
             `/u/${getHandle(person.person_view.person)}/posts`,
           )}
         >
           <IonIcon icon={albumsOutline} color="primary" />{" "}
           <SettingLabel>Posts</SettingLabel>
-        </InsetIonItem>
-        <InsetIonItem
+        </IonItem>
+        <IonItem
           routerLink={buildGeneralBrowseLink(
             `/u/${getHandle(person.person_view.person)}/comments`,
           )}
         >
           <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
           <SettingLabel>Comments</SettingLabel>
-        </InsetIonItem>
+        </IonItem>
         {isSelf && (
           <>
-            <InsetIonItem
+            <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/saved`,
               )}
             >
               <IonIcon icon={bookmarkOutline} color="primary" />{" "}
               <SettingLabel>Saved</SettingLabel>
-            </InsetIonItem>
-            <InsetIonItem
+            </IonItem>
+            <IonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person_view.person)}/upvoted`,
+              )}
+            >
+              <IonIcon icon={arrowUp} color="primary" />{" "}
+              <SettingLabel>Upvoted</SettingLabel>
+            </IonItem>
+            <IonItem
+              routerLink={buildGeneralBrowseLink(
+                `/u/${getHandle(person.person_view.person)}/downvoted`,
+              )}
+            >
+              <IonIcon icon={arrowDown} color="primary" />{" "}
+              <SettingLabel>Downvoted</SettingLabel>
+            </IonItem>
+            <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/hidden`,
               )}
             >
               <IonIcon icon={eyeOffOutline} color="primary" />{" "}
               <SettingLabel>Hidden</SettingLabel>
-            </InsetIonItem>
+            </IonItem>
           </>
         )}
       </IonList>
       {isSelf && role && (
         <IonList inset>
-          <InsetIonItem detail onClick={presentModZoneActions}>
+          <IonItem detail onClick={presentModZoneActions}>
             <IonIcon icon={getModIcon(role)} color={getModColor(role)} />{" "}
             <SettingLabel>{getModName(role)} Zone</SettingLabel>
-          </InsetIonItem>
+          </IonItem>
         </IonList>
       )}
     </MaxWidthContainer>
@@ -133,6 +143,6 @@ export default function Profile({ person }: ProfileProps) {
 }
 
 export function getPostCommentItemCreatedDate(item: PostCommentItem): number {
-  if (isPost(item)) return Date.parse(fixLemmyDateString(item.post.published));
-  return Date.parse(fixLemmyDateString(item.comment.published));
+  if (isPost(item)) return Date.parse(item.post.published);
+  return Date.parse(item.comment.published);
 }

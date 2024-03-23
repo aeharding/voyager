@@ -15,7 +15,7 @@ import {
 } from "react";
 import { getClient } from "../../../../services/lemmy";
 import { GetCaptchaResponse, Register } from "lemmy-js-client";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { refresh, volumeHigh, volumeHighOutline } from "ionicons/icons";
 import { b64ToBlob } from "../../../../helpers/blob";
 import { PlainButton } from "../../../shared/PlainButton";
@@ -92,13 +92,17 @@ export default forwardRef<CaptchaHandle, CaptchaProps>(function Captcha(
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
-  useImperativeHandle(ref, () => ({
-    getResult,
-  }));
-
   const getResult = useCallback(
     () => ({ captcha_answer: answer, captcha_uuid: captcha?.ok?.uuid }),
     [answer, captcha],
+  );
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      getResult,
+    }),
+    [getResult],
   );
 
   const getCaptcha = useCallback(async () => {

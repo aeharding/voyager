@@ -6,7 +6,6 @@ import {
   IonButtons,
   IonChip,
   IonContent,
-  IonHeader,
   IonInput,
   IonItem,
   IonLabel,
@@ -20,10 +19,9 @@ import useAppToast from "../../../../helpers/useAppToast";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { addGuestInstance, login } from "../../authSlice";
 import {
-  OldLemmyErrorValue,
   getLoginErrorMessage,
   isLemmyError,
-} from "../../../../helpers/lemmy";
+} from "../../../../helpers/lemmyErrors";
 import Totp from "./Totp";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
 import InAppExternalLink from "../../../shared/InAppExternalLink";
@@ -31,9 +29,10 @@ import { HelperText } from "../../../settings/shared/formatting";
 import { getImageSrc } from "../../../../services/lemmy";
 import { loginSuccess } from "../../../../helpers/toastMessages";
 import lemmyLogo from "../lemmyLogo.svg";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { VOYAGER_TERMS } from "../../../../helpers/voyager";
 import { getInstanceFromHandle } from "../../authSelectors";
+import AppHeader from "../../../shared/AppHeader";
 
 const SiteImg = styled.img`
   object-fit: contain;
@@ -51,7 +50,6 @@ export default function Login({ url, siteIcon }: LoginProps) {
 
   const { dismiss, setCanDismiss } = useContext(DynamicDismissableModalContext);
 
-  // eslint-disable-next-line no-undef
   const usernameRef = useRef<HTMLIonInputElement>(null);
 
   const [username, setUsername] = useState("");
@@ -121,10 +119,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
         return;
       }
 
-      if (
-        isLemmyError(error, "password_incorrect" as OldLemmyErrorValue) || // TODO lemmy v0.18 support
-        isLemmyError(error, "incorrect_login")
-      ) {
+      if (isLemmyError(error, "incorrect_login")) {
         setPassword("");
       }
 
@@ -146,7 +141,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
   }
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -162,7 +157,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
             )}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
         <div className="ion-padding">
           You are logging in to{" "}

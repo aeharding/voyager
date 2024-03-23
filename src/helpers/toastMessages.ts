@@ -1,11 +1,6 @@
 import { checkmark, close } from "ionicons/icons";
 import { AppToastOptions } from "./useAppToast";
 
-export const voteError: AppToastOptions = {
-  message: "Problem voting. Please try again.",
-  color: "danger",
-};
-
 export const downvotesDisabled: AppToastOptions = {
   message: "Downvotes have been disabled by your server admins.",
   color: "warning",
@@ -174,4 +169,86 @@ export const loginSuccess: AppToastOptions = {
   color: "success",
   centerText: true,
   icon: checkmark,
+};
+
+export const photoSaved: AppToastOptions = {
+  message: "Photo saved",
+  position: "top",
+  color: "success",
+  fullscreen: true,
+  centerText: true,
+  icon: checkmark,
+};
+
+export const photoCopied: AppToastOptions = {
+  message: "Photo copied to clipboard",
+  position: "top",
+  color: "success",
+  fullscreen: true,
+  centerText: true,
+  icon: checkmark,
+};
+
+export const migrateParseError: AppToastOptions = {
+  message:
+    "Problem parsing link. Please make sure the link you entered is correct.",
+  color: "warning",
+};
+
+export const replyStubError: AppToastOptions = {
+  message: "You can't reply to a removed comment",
+  color: "warning",
+  position: "top",
+  centerText: true,
+  icon: close,
+};
+
+export const randomCommunityFailed: AppToastOptions = {
+  message: "Failed to find random community",
+  color: "warning",
+  position: "top",
+  centerText: true,
+  icon: close,
+};
+
+export const copyClipboardSuccess: AppToastOptions = {
+  message: "Text copied",
+  position: "bottom",
+  color: "success",
+  fullscreen: true,
+  centerText: true,
+  icon: checkmark,
+};
+
+export const copyClipboardFailed: AppToastOptions = {
+  message: "Failed to copy text",
+  color: "warning",
+  position: "bottom",
+  fullscreen: true,
+  centerText: true,
+  icon: close,
+};
+
+export const cacheClearSuccess: AppToastOptions = {
+  message: "Cache cleared!",
+  position: "bottom",
+  color: "success",
+  centerText: true,
+  icon: checkmark,
+};
+
+export const cacheClearFailed: AppToastOptions = {
+  message: "Failed to clear cache",
+  color: "warning",
+  position: "bottom",
+  centerText: true,
+  icon: close,
+};
+
+export const deepLinkFailed: AppToastOptions = {
+  message:
+    "Unknown URL. Voyager only accepts URLs to Lemmy content to browse in-app.",
+  color: "warning",
+  position: "top",
+  duration: 7000,
 };

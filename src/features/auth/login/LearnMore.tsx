@@ -1,12 +1,12 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonBackButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonText,
   IonToolbar,
 } from "@ionic/react";
+import AppHeader from "../../shared/AppHeader";
 
 const HelpIonContent = styled(IonContent)`
   line-height: 1.4;
@@ -37,13 +37,13 @@ const Compare = styled.div`
 export default function LearnMore() {
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <HelpIonContent className="ion-padding">
         <h2>How does this app work?</h2>
         <p>

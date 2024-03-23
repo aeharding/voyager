@@ -1,5 +1,6 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import { useMemo } from "react";
+import { parseUrlForDisplay } from "../../helpers/url";
 
 const Rest = styled.span`
   opacity: 0.6;
@@ -10,29 +11,10 @@ interface UrlProps {
 }
 
 export default function Url({ children }: UrlProps) {
-  const [domain, rest] = useMemo(() => {
-    let url;
-
-    try {
-      url = new URL(children);
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-
-    const protocolPrefix = url.protocol === "https:" ? "" : `${url.protocol}//`;
-    const normalizedHost = (() => {
-      if (protocolPrefix) return url.host;
-      if (url.host.startsWith("www.")) return url.host.slice(4);
-
-      return url.host;
-    })();
-
-    return [
-      `${protocolPrefix}${normalizedHost}`,
-      `${url.pathname}${url.search}${url.hash}`,
-    ];
-  }, [children]);
+  const [domain, rest] = useMemo(
+    () => parseUrlForDisplay(children),
+    [children],
+  );
 
   if (!domain || !rest) return;
 

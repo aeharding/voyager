@@ -23,6 +23,7 @@ export default function CommunitySidebar({ community }: CommunitySidebarProps) {
       counts={community.counts}
       banner={community.community.banner}
       name={`c/${getHandle(community.community)}`}
+      id={community.community.actor_id}
     />
   );
 }

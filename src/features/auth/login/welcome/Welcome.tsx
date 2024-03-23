@@ -1,10 +1,10 @@
 import React from "react";
-import { IonContent, IonHeader, IonTitle, IonToolbar } from "@ionic/react";
-import styled from "@emotion/styled";
-import { css } from "@emotion/react";
+import { IonContent, IonTitle, IonToolbar } from "@ionic/react";
 import BaseSvg from "./assets/base.svg?react";
 import Buttons from "./Buttons";
 import AndroidClose from "./AndroidClose";
+import { styled } from "@linaria/react";
+import AppHeader from "../../../shared/AppHeader";
 
 // slot attribute not allowed for some reason??
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,14 +18,11 @@ const StyledIonContent = styled(IonContent)`
     flex-direction: column;
   }
 
-  ${({ theme }) =>
-    theme.dark
-      ? css`
-          --background: linear-gradient(0deg, #001233ff, #000a1c 33%, #0000);
-        `
-      : css`
-          --background: linear-gradient(0deg, #bfd5ff, #e3edff 33%, #ffff);
-        `}
+  --background: linear-gradient(0deg, #bfd5ff, #e3edff 33%, #ffff);
+
+  .ion-palette-dark & {
+    --background: linear-gradient(0deg, #001233ff, #000a1c 33%, #0000);
+  }
 `;
 
 const StyledBaseSvg = styled(BaseSvg)`
@@ -36,29 +33,29 @@ const StyledBaseSvg = styled(BaseSvg)`
 
   pointer-events: none;
 
-  ${({ theme }) =>
-    !theme.dark &&
-    css`
-      filter: brightness(2.7);
-    `}
+  filter: brightness(2.7);
+
+  .ion-palette-dark & {
+    filter: none;
+  }
 ` as AnyComponent;
 
 export default function Welcome() {
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonTitle>Welcome</IonTitle>
 
           <AndroidClose />
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <StyledIonContent fullscreen>
-        <IonHeader collapse="condense">
+        <AppHeader collapse="condense">
           <IonToolbar color=" ">
             <IonTitle size="large">Welcome.</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
 
         <StyledBaseSvg slot="fixed" />
 

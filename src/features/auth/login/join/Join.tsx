@@ -3,7 +3,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonInput,
   IonItem,
   IonList,
@@ -23,6 +22,7 @@ import { loginSuccess } from "../../../../helpers/toastMessages";
 import { register } from "../../authSlice";
 import { LoginResponse } from "lemmy-js-client";
 import { startCase } from "lodash";
+import AppHeader from "../../../shared/AppHeader";
 
 interface JoinProps {
   answer?: string;
@@ -35,10 +35,7 @@ export default function Join({ answer }: JoinProps) {
   const { setCanDismiss, dismiss } = useContext(DynamicDismissableModalContext);
   const { site, url } = useAppSelector((state) => state.join);
 
-  // eslint-disable-next-line no-undef
   const ref = useRef<HTMLIonListElement>(null);
-
-  // eslint-disable-next-line no-undef
   const emailRef = useRef<HTMLIonInputElement>(null);
 
   const [loading, setLoading] = useState(false);
@@ -120,16 +117,14 @@ export default function Join({ answer }: JoinProps) {
         // Remove signup steps from stack (everything between root and current nav view)
         // (user should not be able to navigate back after signup)
 
-        // TODO open bug for missing ionic type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (entering) nav.removeIndex(1, (nav as any).getLength() - 2);
+        if (entering) nav.removeIndex(1, (await nav.getLength()) - 2);
       },
     );
   }
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -145,13 +140,13 @@ export default function Join({ answer }: JoinProps) {
             )}
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
-        <IonHeader collapse="condense">
+        <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Account Details</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
 
         <IonList inset ref={ref}>
           <IonItem>

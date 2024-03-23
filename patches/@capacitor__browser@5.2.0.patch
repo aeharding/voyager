@@ -1,0 +1,46 @@
+diff --git a/dist/esm/definitions.d.ts b/dist/esm/definitions.d.ts
+index 9cd84087179ce4fc2139e3d771506552b0d82254..1c158d3ec3cfcff6d7f3aec0e1a3b2b99160a53a 100644
+--- a/dist/esm/definitions.d.ts
++++ b/dist/esm/definitions.d.ts
+@@ -88,6 +88,7 @@ export interface OpenOptions {
+      * @since 4.0.0
+      */
+     height?: number;
++    entersReaderIfAvailable?: boolean;
+ }
+ /**
+  * @deprecated Use `OpenOptions`.
+diff --git a/ios/Plugin/Browser.swift b/ios/Plugin/Browser.swift
+index 3f1d1ade3e05d142a2295b354228d0a21ba0a01f..225101acfe73c068705fb18074460d8bd3c815a8 100644
+--- a/ios/Plugin/Browser.swift
++++ b/ios/Plugin/Browser.swift
+@@ -15,9 +15,12 @@ import SafariServices
+         return safariViewController
+     }
+ 
+-    @objc public func prepare(for url: URL, withTint tint: UIColor? = nil, modalPresentation style: UIModalPresentationStyle = .fullScreen) -> Bool {
++    @objc public func prepare(for url: URL, withTint tint: UIColor? = nil, modalPresentation style: UIModalPresentationStyle = .fullScreen, entersReaderIfAvailable: Bool = false) -> Bool {
+         if safariViewController == nil, let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme) {
+-            let safariVC = SFSafariViewController(url: url)
++            let config = SFSafariViewController.Configuration()
++            config.entersReaderIfAvailable = entersReaderIfAvailable
++
++            let safariVC = SFSafariViewController(url: url, configuration: config)
+             safariVC.delegate = self
+             if let color = tint {
+                 safariVC.preferredBarTintColor = color
+diff --git a/ios/Plugin/BrowserPlugin.swift b/ios/Plugin/BrowserPlugin.swift
+index f6be40dd72cdd1ced0fe43869d26d9188ca08ea8..ae31df607cc96589ed9de959d6d926174ed24a5d 100644
+--- a/ios/Plugin/BrowserPlugin.swift
++++ b/ios/Plugin/BrowserPlugin.swift
+@@ -17,8 +23,9 @@ public class CAPBrowserPlugin: CAPPlugin {
+             color = UIColor.capacitor.color(fromHex: toolbarColor)
+         }
+         let style = self.presentationStyle(for: call.getString("presentationStyle"))
++        let entersReaderIfAvailable = call.getBool("entersReaderIfAvailable") ?? false
+         // prepare for display
+-        guard implementation.prepare(for: url, withTint: color, modalPresentation: style), let viewController = implementation.viewController else {
++        guard implementation.prepare(for: url, withTint: color, modalPresentation: style, entersReaderIfAvailable: entersReaderIfAvailable), let viewController = implementation.viewController else {
+             call.reject("Unable to display URL")
+             return
+         }

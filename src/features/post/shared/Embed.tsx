@@ -1,5 +1,5 @@
-import { css } from "@emotion/react";
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 import { IonIcon } from "@ionic/react";
 import {
   albumsOutline,
@@ -19,6 +19,7 @@ import Url from "../../shared/Url";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 import { setPostRead } from "../postSlice";
 import { InFeedContext } from "../../feed/Feed";
+import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -38,20 +39,18 @@ const Container = styled(LinkInterceptor)`
   }
 `;
 
-const Img = styled.img<{ blur: boolean }>`
+const Img = styled.img`
   min-height: 0;
   aspect-ratio: 16 / 9;
 
   object-fit: cover;
+`;
 
-  ${({ blur }) =>
-    blur &&
-    css`
-      filter: blur(40px);
+const blurImgCss = css`
+  filter: blur(40px);
 
-      // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-      transform: translate3d(0, 0, 0);
-    `}
+  // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
+  transform: translate3d(0, 0, 0);
 `;
 
 const Bottom = styled.div`
@@ -61,8 +60,13 @@ const Bottom = styled.div`
   gap: 0.75rem;
   padding: 0.65rem;
 
-  opacity: 0.5;
-  background: var(--ion-color-light);
+  color: var(--ion-color-text-aside);
+
+  .ion-palette-dark & {
+    color: var(--ion-color-medium);
+  }
+
+  background: var(--lightroom-bg);
 
   .cross-post & {
     background: none;
@@ -135,11 +139,15 @@ export default function Embed({ post, className }: EmbedProps) {
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
 
+    if (preventOnClickNavigationBug(e)) return;
+
     dispatch(setPostRead(post.post.id));
     autohidePostIfNeeded(post);
   };
 
   if (!post.post.url) return;
+
+  const blur = inFeed ? isNsfwBlurred(post, blurNsfw) : false;
 
   return (
     <Container
@@ -152,7 +160,7 @@ export default function Embed({ post, className }: EmbedProps) {
         <Img
           src={post.post.thumbnail_url}
           draggable="false"
-          blur={inFeed ? isNsfwBlurred(post, blurNsfw) : false}
+          className={blur ? blurImgCss : undefined}
           onError={() => setError(true)}
         />
       )}

@@ -1,16 +1,22 @@
+import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
 import LargePost from "./large/LargePost";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import store, { useAppDispatch, useAppSelector } from "../../../store";
 import CompactPost from "./compact/CompactPost";
 import SlidingVote from "../../shared/sliding/SlidingPostVote";
 import { IonItem } from "@ionic/react";
-import styled from "@emotion/styled";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
+import { useLongPress } from "use-long-press";
+import usePostActions from "../shared/usePostActions";
+import { filterEvents } from "../../../helpers/longPress";
+import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import { cx } from "@linaria/core";
+import { isTouchDevice } from "../../../helpers/device";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -24,42 +30,36 @@ const CustomIonItem = styled(IonItem)`
 export interface PostProps {
   post: PostView;
 
-  /**
-   * Hide the community name, show author name
-   */
-  communityMode?: boolean;
-
   className?: string;
-
-  modqueue?: boolean;
 }
 
-export default function Post(props: PostProps) {
+function Post(props: PostProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
   const [shouldHide, setShouldHide] = useState(false);
   const shouldHideRef = useRef(false);
-  const isHidden = useAppSelector(
-    (state) => state.post.postHiddenById[props.post.post.id]?.hidden,
-  );
   const hideCompleteRef = useRef(false);
-  const postById = useAppSelector((state) => state.post.postById);
-  const possiblyPost = postById[props.post.post.id];
+  const possiblyPost = useAppSelector(
+    (state) => state.post.postById[props.post.post.id],
+  );
   const potentialPost =
     typeof possiblyPost === "object" ? possiblyPost : undefined;
+  const openPostActions = usePostActions(props.post);
 
-  // eslint-disable-next-line no-undef
   const targetIntersectionRef = useRef<HTMLIonItemElement>(null);
 
   const onFinishHide = useCallback(() => {
     hideCompleteRef.current = true;
+
+    const isHidden =
+      store.getState().post.postHiddenById[props.post.post.id]?.hidden;
 
     if (isHidden) {
       dispatch(unhidePost(props.post.post.id));
     } else {
       dispatch(hidePost(props.post.post.id));
     }
-  }, [dispatch, props.post.post.id, isHidden]);
+  }, [dispatch, props.post.post.id]);
 
   useEffect(() => {
     // Refs must be used during cleanup useEffect
@@ -80,6 +80,16 @@ export default function Post(props: PostProps) {
   const postAppearanceType = useAppSelector(
     (state) => state.settings.appearance.posts.type,
   );
+
+  const onPostLongPress = useCallback(() => {
+    openPostActions();
+  }, [openPostActions]);
+
+  const bind = useLongPress(onPostLongPress, {
+    threshold: 800,
+    cancelOnMovement: 15,
+    filterEvents,
+  });
 
   const postBody = (() => {
     switch (postAppearanceType) {
@@ -103,13 +113,17 @@ export default function Post(props: PostProps) {
       >
         {/* href=undefined: Prevent drag failure on firefox */}
         <CustomIonItem
+          mode="ios" // Use iOS style activatable tap highlight
+          className={cx(isTouchDevice() && "ion-activatable")}
           detail={false}
           routerLink={buildGeneralBrowseLink(
             `/c/${getHandle(props.post.community)}/comments/${
               props.post.post.id
             }`,
           )}
-          onClick={() => {
+          onClick={(e) => {
+            if (preventOnClickNavigationBug(e)) return;
+
             // Marking post read is done in the post detail page when it finishes transitioning in.
             // However, autohiding is context-sensitive (community feed vs special feed, etc)
             // and doesn't cause rerender, so do it now.
@@ -117,6 +131,7 @@ export default function Post(props: PostProps) {
           }}
           href={undefined}
           ref={targetIntersectionRef}
+          {...bind()}
         >
           {postBody}
         </CustomIonItem>
@@ -124,3 +139,5 @@ export default function Post(props: PostProps) {
     </AnimateHeight>
   );
 }
+
+export default memo(Post);

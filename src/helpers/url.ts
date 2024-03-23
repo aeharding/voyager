@@ -18,7 +18,7 @@ export function isValidUrl(
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-function getPathname(url: string): string | undefined {
+export function getPathname(url: string): string | undefined {
   try {
     return new URL(url).pathname;
   } catch {
@@ -38,7 +38,19 @@ export function isUrlImage(url: string): boolean {
   );
 }
 
-const videoExtensions = ["mp4", "webm"];
+const animatedImageExtensions = ["gif", "webp", "jxl"];
+
+export function isUrlPotentialAnimatedImage(url: string): boolean {
+  const pathname = getPathname(url);
+
+  if (!pathname) return false;
+
+  return animatedImageExtensions.some((extension) =>
+    pathname.endsWith(`.${extension}`),
+  );
+}
+
+const videoExtensions = ["mp4", "webm", "gifv"];
 
 export function isUrlVideo(url: string): boolean {
   const pathname = getPathname(url);
@@ -86,4 +98,51 @@ export function isValidHostname(value: string) {
   });
 
   return isValid;
+}
+
+export function getVideoSrcForUrl(url: string) {
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(url);
+  } catch (error) {
+    console.error(error);
+    return url;
+  }
+
+  const { hostname, pathname } = parsedUrl;
+
+  if (hostname === "i.imgur.com" && pathname.endsWith(".gifv"))
+    return `https://${hostname}${pathname.replace(/\.gifv$/, ".mp4")}`;
+
+  return url;
+}
+
+export function stripProtocol(url: string): string {
+  return url.replace(/^https?:\/\//, "");
+}
+
+export function parseUrlForDisplay(url: string): string[] {
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(url);
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+
+  const protocolPrefix =
+    parsedUrl.protocol === "https:" ? "" : `${parsedUrl.protocol}//`;
+  const normalizedHost = (() => {
+    if (protocolPrefix) return parsedUrl.host;
+    if (parsedUrl.host.startsWith("www.")) return parsedUrl.host.slice(4);
+
+    return parsedUrl.host;
+  })();
+
+  return [
+    `${protocolPrefix}${normalizedHost}`,
+    `${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`,
+  ];
 }

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { BeforeInstallPromptContext } from "../../BeforeInstallPromptProvider";
+import { BeforeInstallPromptContext } from "./BeforeInstallPromptProvider";
 import {
   isAppleDeviceInstallable,
   isInstalled,

@@ -3,7 +3,6 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
   IonItem,
   IonList,
   IonNavLink,
@@ -12,11 +11,12 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useAppSelector } from "../../../../store";
-import Markdown from "../../../shared/Markdown";
+import Markdown from "../../../shared/markdown/Markdown";
 import Question from "./Question";
 import Join from "./Join";
 import { useInterceptHrefWithInAppBrowserIfNeeded } from "../../../shared/InAppExternalLink";
 import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "../../../../helpers/voyager";
+import AppHeader from "../../../shared/AppHeader";
 
 export default function Legal() {
   const { url, site } = useAppSelector((state) => state.join);
@@ -25,7 +25,7 @@ export default function Legal() {
 
   return (
     <>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
             <IonBackButton />
@@ -48,13 +48,13 @@ export default function Legal() {
             </IonNavLink>
           </IonButtons>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent>
-        <IonHeader collapse="condense">
+        <AppHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Privacy &amp; Terms</IonTitle>
           </IonToolbar>
-        </IonHeader>
+        </AppHeader>
 
         <p className="ion-padding">
           The Voyager app does not collect any data, but the server you sign up
@@ -87,7 +87,10 @@ export default function Legal() {
 
         <IonList inset className="ion-padding">
           {site?.site_view.local_site.legal_information?.trim() ? (
-            <Markdown className="collapse-md-margins">
+            <Markdown
+              className="collapse-md-margins"
+              id={`site-legal-${site?.site_view.site.actor_id}`}
+            >
               {site.site_view.local_site.legal_information}
             </Markdown>
           ) : (

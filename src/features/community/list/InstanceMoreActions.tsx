@@ -1,7 +1,8 @@
-import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
-import { ellipsisHorizontal, tabletPortraitOutline } from "ionicons/icons";
+import { IonButton, useIonActionSheet } from "@ionic/react";
+import { tabletPortraitOutline } from "ionicons/icons";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import HeaderEllipsisIcon from "../../shared/HeaderEllipsisIcon";
 
 export default function CommunitiesMoreActions() {
   const router = useOptimizedIonRouter();
@@ -28,8 +29,8 @@ export default function CommunitiesMoreActions() {
   }
 
   return (
-    <IonButton fill="default" onClick={present}>
-      <IonIcon icon={ellipsisHorizontal} color="primary" />
+    <IonButton onClick={present}>
+      <HeaderEllipsisIcon slot="icon-only" />
     </IonButton>
   );
 }

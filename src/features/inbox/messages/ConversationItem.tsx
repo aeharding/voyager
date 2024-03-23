@@ -1,4 +1,4 @@
-import styled from "@emotion/styled";
+import { styled } from "@linaria/react";
 import {
   IonIcon,
   IonItem,
@@ -14,10 +14,10 @@ import { getHandle } from "../../../helpers/lemmy";
 import ItemIcon from "../../labels/img/ItemIcon";
 import { chevronForwardOutline, removeCircle } from "ionicons/icons";
 import Time from "./Time";
-import { css } from "@emotion/react";
 import { resetMessages, syncMessages } from "../inboxSlice";
 import { useState } from "react";
 import { clientSelector } from "../../auth/authSelectors";
+import { css } from "@linaria/core";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin: 0.75rem 0;
@@ -124,34 +124,34 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
       ? previewMsg.recipient
       : previewMsg.creator;
 
-  const unread = !!messages.find((msg) => !msg.private_message.read);
+  const unread = !!messages.find(
+    (msg) =>
+      !msg.private_message.read && msg.private_message.creator_id !== myUserId,
+  );
 
   async function onDelete() {
-    const mine = messages.filter((m) => m.creator.id === myUserId);
     const theirs = messages.filter((m) => m.creator.id !== myUserId);
 
     const theirPotentialRecentMessage = theirs.pop();
 
     if (!theirPotentialRecentMessage) return;
 
-    if (mine.length <= 1) {
-      await present("Block and report conversation?", [
-        {
-          text: "Just block",
-          role: "destructive",
-          handler: () => {
-            blockAndReportIfNeeded(theirPotentialRecentMessage);
-          },
+    await present("Block and report conversation?", [
+      {
+        text: "Just block",
+        role: "destructive",
+        handler: () => {
+          blockAndReportIfNeeded(theirPotentialRecentMessage);
         },
-        {
-          text: "Block + Report",
-          role: "destructive",
-          handler: () => {
-            blockAndReportIfNeeded(theirPotentialRecentMessage, true);
-          },
+      },
+      {
+        text: "Block + Report",
+        role: "destructive",
+        handler: () => {
+          blockAndReportIfNeeded(theirPotentialRecentMessage, true);
         },
-      ]);
-    }
+      },
+    ]);
   }
 
   async function blockAndReportIfNeeded(
@@ -188,7 +188,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
           <SquareIonItemOption color="danger" expandable onClick={onDelete}>
             <IonIcon
               icon={removeCircle}
-              css={css`
+              className={css`
                 font-size: 1.4em;
               `}
             />

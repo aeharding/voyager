@@ -2,13 +2,17 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonHeader,
+  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Markdown from "../../Markdown";
+import Markdown from "../Markdown";
 import CommentMarkdown from "../../../comment/CommentMarkdown";
+import AppHeader from "../../AppHeader";
+import { useId } from "react";
+import { isIosTheme } from "../../../../helpers/device";
+import { arrowBackSharp } from "ionicons/icons";
 
 interface PreviewModalProps {
   text: string;
@@ -21,6 +25,8 @@ export default function PreviewModal({
   text,
   onDismiss,
 }: PreviewModalProps) {
+  const id = useId();
+
   const content = (() => {
     // disableInternalLinkRouting to prevent internal links (like @test@example.com)
     // from taking user away from current page (since user is in a modal)
@@ -29,25 +35,39 @@ export default function PreviewModal({
     switch (type) {
       case "comment":
         return (
-          <CommentMarkdown disableInternalLinkRouting>{text}</CommentMarkdown>
+          <CommentMarkdown disableInternalLinkRouting id={id}>
+            {text}
+          </CommentMarkdown>
         );
       case "post":
-        return <Markdown disableInternalLinkRouting>{text}</Markdown>;
+        return (
+          <Markdown disableInternalLinkRouting id={id}>
+            {text}
+          </Markdown>
+        );
     }
   })();
 
   return (
     <IonPage>
-      <IonHeader>
+      <AppHeader>
         <IonToolbar>
-          <IonButtons slot="end">
-            <IonButton color="primary" strong onClick={() => onDismiss()}>
-              Done
-            </IonButton>
-          </IonButtons>
+          {isIosTheme() ? (
+            <IonButtons slot="primary">
+              <IonButton strong onClick={() => onDismiss()}>
+                Done
+              </IonButton>
+            </IonButtons>
+          ) : (
+            <IonButtons slot="start">
+              <IonButton onClick={() => onDismiss()}>
+                <IonIcon icon={arrowBackSharp} slot="icon-only" />
+              </IonButton>
+            </IonButtons>
+          )}
           <IonTitle>Preview</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </AppHeader>
       <IonContent className="ion-padding">{content}</IonContent>
     </IonPage>
   );
