@@ -5,6 +5,8 @@
 .prettierignore
 .vscode/
 
+*.tsbuildinfo
+
 node_modules
 *.md
 dist
