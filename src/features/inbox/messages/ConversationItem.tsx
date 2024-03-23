@@ -12,12 +12,11 @@ import { PrivateMessageView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getHandle } from "../../../helpers/lemmy";
 import ItemIcon from "../../labels/img/ItemIcon";
-import { chevronForwardOutline, removeCircle } from "ionicons/icons";
+import { chevronForwardOutline } from "ionicons/icons";
 import Time from "./Time";
 import { resetMessages, syncMessages } from "../inboxSlice";
 import { useState } from "react";
 import { clientSelector } from "../../auth/authSelectors";
-import { css } from "@linaria/core";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin: 0.75rem 0;
@@ -99,10 +98,6 @@ const Dot = styled.div`
   height: var(--size);
 `;
 
-const SquareIonItemOption = styled(IonItemOption)`
-  width: 85px;
-`;
-
 interface ConversationItemProps {
   messages: PrivateMessageView[];
 }
@@ -134,7 +129,12 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
 
     const theirPotentialRecentMessage = theirs.pop();
 
-    if (!theirPotentialRecentMessage) return;
+    if (!theirPotentialRecentMessage) {
+      present(
+        "This user hasn't messaged you, so there's nothing to block/report.",
+      );
+      return;
+    }
 
     await present("Block and report conversation?", [
       {
@@ -185,14 +185,9 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
       <IonLoading isOpen={loading} />
       <IonItemSliding>
         <IonItemOptions side="end" onIonSwipe={onDelete}>
-          <SquareIonItemOption color="danger" expandable onClick={onDelete}>
-            <IonIcon
-              icon={removeCircle}
-              className={css`
-                font-size: 1.4em;
-              `}
-            />
-          </SquareIonItemOption>
+          <IonItemOption color="danger" expandable onClick={onDelete}>
+            Block
+          </IonItemOption>
         </IonItemOptions>
 
         <IonItem
