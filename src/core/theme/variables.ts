@@ -117,7 +117,10 @@ export const lightVariables = css`
         --ion-color-primary: var(--app-primary);
         --ion-color-primary-fixed: #3880ff; // always blue always blue!
 
-        --ion-item-border-color: #ddd;
+        ion-item {
+          // default ionic light mode opacity is too harsh
+          --background-activated-opacity: 0.06;
+        }
       }
 
       &:root.ios .grey-bg {
