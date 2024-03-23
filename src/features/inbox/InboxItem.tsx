@@ -222,6 +222,7 @@ export default function InboxItem({ item }: InboxItemProps) {
 
   const contents = (
     <StyledIonItem
+      mode="ios" // Use iOS style activatable tap highlight
       className={cx(
         !read && itemUnreadCss,
         isTouchDevice() && "ion-activatable",

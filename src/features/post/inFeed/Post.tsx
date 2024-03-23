@@ -113,6 +113,7 @@ function Post(props: PostProps) {
       >
         {/* href=undefined: Prevent drag failure on firefox */}
         <CustomIonItem
+          mode="ios" // Use iOS style activatable tap highlight
           className={cx(isTouchDevice() && "ion-activatable")}
           detail={false}
           routerLink={buildGeneralBrowseLink(

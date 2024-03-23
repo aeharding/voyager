@@ -121,22 +121,23 @@ export const lightVariables = css`
           // default ionic light mode opacity is too harsh
           --background-activated-opacity: 0.06;
         }
-      }
 
-      &:root.ios .grey-bg {
-        --ion-background-color: var(--ion-background-color-step-50, #f2f2f7);
-      }
-      &:root.ios .grey-bg ion-header {
-        --opacity: 0;
-      }
-      &:root.ios .grey-bg ion-modal ion-content {
-        --background: #fff;
-      }
-      &:root.ios .grey-bg ion-item {
-        --ion-background-color: #fff;
-      }
-      &:root.ios .grey-bg ion-item-sliding {
-        background: #fff;
+        &.ios .grey-bg {
+          --ion-background-color: var(--ion-background-color-step-50, #f2f2f7);
+
+          ion-header {
+            --opacity: 0;
+          }
+          ion-modal ion-content {
+            --background: #fff;
+          }
+          ion-item {
+            --ion-background-color: #fff;
+          }
+          ion-item-sliding {
+            background: #fff;
+          }
+        }
       }
     }
   }

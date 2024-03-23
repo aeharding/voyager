@@ -113,6 +113,7 @@ function Comment({
       collapsed={!!collapsed}
     >
       <CustomIonItem
+        mode="ios" // Use iOS style activatable tap highlight
         className={cx(
           !cannotCollapse && isTouchDevice() && "ion-activatable",
           `comment-${comment.id}`,
