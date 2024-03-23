@@ -29,7 +29,6 @@ public class MainActivity extends BridgeActivity {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // On older versions of android setDecorFitsSystemWindows doesn't exist yet, but it can
             // be emulated with flags.
-
             // It still must be P or greater, as that is the min version for getting the insets
             // through the native plugin.
             getWindow().getDecorView().setSystemUiVisibility(
