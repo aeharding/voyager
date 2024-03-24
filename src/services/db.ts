@@ -270,6 +270,17 @@ export type SwipeAction =
 export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
 export type SwipeActions = Record<SwipeDirection, SwipeAction>;
 
+type Provider = "redgifs";
+
+type ProviderData<Name extends string, Data> = {
+  name: Name;
+  data: Data;
+};
+
+export type RedgifsProvider = ProviderData<"redgifs", { token: string }>;
+
+type ProvidersData = RedgifsProvider;
+
 export type SettingValueTypes = {
   comments_theme: CommentsThemeType;
   collapse_comment_threads: CommentThreadCollapse;
@@ -345,6 +356,7 @@ export class WefwefDB extends Dexie {
   postMetadatas!: Table<IPostMetadata, number>;
   settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
   cachedFederatedInstanceData!: Table<InstanceData, number>;
+  providers!: Table<ProvidersData, Provider>;
 
   constructor() {
     super("WefwefDB");
@@ -449,6 +461,47 @@ export class WefwefDB extends Dexie {
         await this.setSetting("collapse_comment_threads", default_collapse);
       })();
     });
+
+    this.version(7).stores({
+      postMetadatas: `
+        ++,
+        ${CompoundKeys.postMetadata.post_id_and_user_handle},
+        ${CompoundKeys.postMetadata.user_handle_and_hidden},
+        post_id,
+        user_handle,
+        hidden,
+        hidden_updated_at
+      `,
+      settings: `
+        ++,
+        key,
+        ${CompoundKeys.settings.key_and_user_handle_and_community},
+        value,
+        user_handle,
+        community
+      `,
+      cachedFederatedInstanceData: `
+        ++id,
+        &domain,
+        updated
+      `,
+      providers: `
+        ++,
+        &name,
+        data
+      `,
+    });
+  }
+
+  /*
+   * Providers
+   */
+  async getProvider(providerName: ProvidersData["name"]) {
+    return await this.providers.where("name").equals(providerName).first();
+  }
+
+  async setProvider(payload: ProvidersData) {
+    return await this.providers.put(payload);
   }
 
   /*

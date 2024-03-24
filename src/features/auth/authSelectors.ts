@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { parseJWT } from "../../helpers/lemmy";
 import { getClient } from "../../services/lemmy";
+import { parseLemmyJWT } from "../../helpers/lemmy";
 
 export const activeAccount = createSelector(
   [
@@ -18,7 +18,7 @@ export const jwtSelector = createSelector([activeAccount], (account) => {
 });
 
 export const jwtPayloadSelector = createSelector([jwtSelector], (jwt) =>
-  jwt ? parseJWT(jwt) : undefined,
+  jwt ? parseLemmyJWT(jwt) : undefined,
 );
 
 export const jwtIssSelector = (state: RootState) =>

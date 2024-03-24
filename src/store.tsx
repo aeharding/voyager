@@ -44,6 +44,7 @@ import joinSlice from "./features/auth/login/join/joinSlice";
 import networkSlice from "./core/listeners/network/networkSlice";
 import spoilerSlice from "./features/shared/markdown/components/spoiler/spoilerSlice";
 import deepLinkReadySlice from "./features/community/list/deepLinkReadySlice";
+import redgifsSlice from "./features/media/external/redgifs/redgifsSlice";
 
 const store = configureStore({
   reducer: {
@@ -69,6 +70,7 @@ const store = configureStore({
     migration: migrationSlice,
     spoiler: spoilerSlice,
     deepLinkReady: deepLinkReadySlice,
+    redgifs: redgifsSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

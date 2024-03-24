@@ -8,14 +8,13 @@ import Video from "../video/Video";
 
 export interface PostGalleryImgProps
   extends Omit<GalleryMediaProps & PlayerProps, "src"> {
-  post: PostView;
+  src: string;
 }
 
-const PostMedia = forwardRef<
+const Media = forwardRef<
   ComponentRef<typeof Video> | ComponentRef<typeof GalleryMedia>,
   PostGalleryImgProps
->(function PostMedia({ nativeControls, ...props }, ref) {
-  const src = useMemo(() => getPostMedia(props.post), [props.post]);
+>(function PostMedia({ nativeControls, src, ...props }, ref) {
   const isVideo = useMemo(() => src && isUrlVideo(src), [src]);
 
   if (isVideo)
@@ -37,7 +36,7 @@ const PostMedia = forwardRef<
   );
 });
 
-export default memo(PostMedia);
+export default memo(Media);
 
 export function getPostMedia(post: PostView): string | undefined {
   if (post.post.thumbnail_url) return post.post.thumbnail_url;

@@ -25,7 +25,7 @@ import { postLocked } from "../../../helpers/toastMessages";
 import { togglePostCollapse } from "../postSlice";
 import Crosspost from "../crosspost/Crosspost";
 import useCrosspostUrl from "../shared/useCrosspostUrl";
-import Media from "../inFeed/large/media/Media";
+import LargeFeedPostMedia from "../inFeed/large/media/LargeFeedPostMedia";
 import { styled } from "@linaria/react";
 import { AppContext } from "../../auth/AppContext";
 import AnimateHeight from "react-animate-height";
@@ -40,7 +40,7 @@ const BorderlessIonItem = styled(IonItem)`
   ${maxWidthCss}
 `;
 
-const LightboxMedia = styled(Media)`
+const LightboxMedia = styled(LargeFeedPostMedia)`
   -webkit-touch-callout: default;
 
   width: 100%;

@@ -1,7 +1,4 @@
-import PostMedia, {
-  PostGalleryImgProps,
-  getPostMedia,
-} from "../../../../media/gallery/PostMedia";
+import Media, { PostGalleryImgProps } from "../../../../media/gallery/Media";
 import { CSSProperties, useMemo } from "react";
 import { IonIcon } from "@ionic/react";
 import { imageOutline } from "ionicons/icons";
@@ -15,7 +12,7 @@ import useLatch from "../../../../../helpers/useLatch";
 import { cx } from "@linaria/core";
 import { styled } from "@linaria/react";
 
-const StyledPostMedia = styled(PostMedia)`
+const StyledPostMedia = styled(Media)`
   display: flex;
   width: 100%;
   max-width: none;
@@ -26,7 +23,7 @@ const StyledPostMedia = styled(PostMedia)`
   min-height: 0;
 `;
 
-const PlaceholderContainer = styled.div`
+export const PlaceholderContainer = styled.div`
   display: flex;
 
   background: var(--lightroom-bg);
@@ -55,14 +52,14 @@ const Error = styled.div`
   opacity: 0.5;
 `;
 
-export default function Media({
+export default function LargeFeedMedia({
+  src,
   blur,
   className,
   style: baseStyle,
   ...props
 }: PostGalleryImgProps & { blur: boolean }) {
   const dispatch = useAppDispatch();
-  const src = useMemo(() => getPostMedia(props.post), [props.post]);
   const [mediaRef, currentAspectRatio] = useMediaLoadObserver(src);
 
   /**
@@ -95,6 +92,7 @@ export default function Media({
     >
       <StyledPostMedia
         {...props}
+        src={src}
         style={style}
         ref={mediaRef}
         autoPlay={!blur}

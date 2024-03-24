@@ -11,6 +11,7 @@ import { Share } from "@capacitor/share";
 import { escapeStringForRegex } from "./regex";
 import { quote } from "./markdown";
 import { compare } from "compare-versions";
+import { parseJWT } from "./jwt";
 
 export interface LemmyJWT {
   sub: number;
@@ -277,11 +278,7 @@ export function canModerateCommunity(
   return moderates.some((m) => m.community.id === communityId);
 }
 
-export function parseJWT(payload: string): LemmyJWT {
-  const base64 = payload.split(".")[1]!;
-  const jsonPayload = atob(base64);
-  return JSON.parse(jsonPayload);
-}
+export const parseLemmyJWT = parseJWT<LemmyJWT>;
 
 const CROSS_POST_REGEX =
   /^[cC]ross-posted from:\s+(https:\/\/(?:[0-9a-z-]+\.?)+\/post\/[0-9]+)/;
