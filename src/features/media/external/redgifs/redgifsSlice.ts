@@ -10,7 +10,7 @@ import { parseJWT } from "../../../../helpers/jwt";
 import { redgifUrlRegex } from "./helpers";
 import { addMinutes } from "date-fns";
 
-type FetchStatus = "pending" | "fulfilled" | "error";
+type FetchStatus = "needs-enable" | "pending" | "fulfilled" | "error";
 
 interface Video {
   src: string;
@@ -32,7 +32,12 @@ const initialState: RedgifsState = {
 export const redgifsSlice = createSlice({
   name: "redgifs",
   initialState,
-  reducers: {},
+  reducers: {
+    resetRedgifs: () => {
+      db.resetProviders(); // this should be abstracted when other providers added
+      return initialState;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(initializeIfNeeded.pending, (state) => {
@@ -50,6 +55,12 @@ export const redgifsSlice = createSlice({
         state.providerData = undefined;
       })
       .addCase(initializeIfNeeded.fulfilled, (state, action) => {
+        if (!action.payload) {
+          state.providerData = undefined;
+          state.providerFetchStatus = "needs-enable";
+          return;
+        }
+
         state.providerFetchStatus = "fulfilled";
         state.providerData = action.payload;
       })
@@ -73,6 +84,8 @@ export const redgifsSlice = createSlice({
       });
   },
 });
+
+export const { resetRedgifs } = redgifsSlice.actions;
 
 export const validTokenSelector = createSelector(
   [(state: RootState) => state.redgifs.providerData],
@@ -135,7 +148,7 @@ export const initializeIfNeeded = createAsyncThunk(
       if (validTokenSelector(state)) return false;
 
       const status = state.redgifs.providerFetchStatus;
-      if (status === "pending") return false;
+      if (status === "pending" || status === "needs-enable") return false;
 
       return true;
     },

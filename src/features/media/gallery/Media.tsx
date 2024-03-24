@@ -23,7 +23,7 @@ const Media = forwardRef<
         {...props}
         nativeControls={nativeControls}
         ref={ref as ComponentProps<typeof Video>["ref"]}
-        src={src!}
+        src={src}
       />
     );
 

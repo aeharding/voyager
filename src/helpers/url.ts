@@ -1,5 +1,3 @@
-import { isRedgif } from "../features/media/external/redgifs/helpers";
-
 export function isValidUrl(
   potentialUrl: string,
   { checkProtocol = false, allowRelative = true } = {},
@@ -55,8 +53,6 @@ export function isUrlPotentialAnimatedImage(url: string): boolean {
 const videoExtensions = ["mp4", "webm", "gifv"];
 
 export function isUrlVideo(url: string): boolean {
-  if (isRedgif(url)) return true;
-
   const pathname = getPathname(url);
   if (!pathname) return false;
 

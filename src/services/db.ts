@@ -322,6 +322,7 @@ export type SettingValueTypes = {
   long_swipe_trigger_point: LongSwipeTriggerPointType;
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
+  embed_external_media: boolean;
   always_use_reader_mode: boolean;
   infinite_scrolling: boolean;
   upvote_on_save: boolean;
@@ -502,6 +503,10 @@ export class WefwefDB extends Dexie {
 
   async setProvider(payload: ProvidersData) {
     return await this.providers.put(payload);
+  }
+
+  async resetProviders() {
+    return await this.providers.clear();
   }
 
   /*

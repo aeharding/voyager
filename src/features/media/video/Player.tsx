@@ -17,6 +17,7 @@ import { IonIcon } from "@ionic/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import { PlainButton } from "../../shared/PlainButton";
 import { getVideoSrcForUrl } from "../../../helpers/url";
+import { preventIonicTapClick } from "../../../helpers/ionic";
 
 const Container = styled.div`
   position: relative;
@@ -236,6 +237,10 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
 
                 e.preventDefault(); // reverse-portal
                 e.stopPropagation(); // video in comments
+              }}
+              onTouchStart={() => {
+                // weird reverse portal event dispatching (see OutPortalEventDispatcher)
+                requestAnimationFrame(() => preventIonicTapClick());
               }}
             >
               <IonIcon icon={muted ? volumeOff : volumeHigh} />

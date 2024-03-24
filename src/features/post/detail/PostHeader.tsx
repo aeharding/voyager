@@ -10,7 +10,6 @@ import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
 import { findLoneImage } from "../../../helpers/markdown";
-import { isUrlMedia } from "../../../helpers/url";
 import Markdown from "../../shared/markdown/Markdown";
 import Embed from "../shared/Embed";
 import InlineMarkdown from "../../shared/markdown/InlineMarkdown";
@@ -29,6 +28,7 @@ import LargeFeedPostMedia from "../inFeed/large/media/LargeFeedPostMedia";
 import { styled } from "@linaria/react";
 import { AppContext } from "../../auth/AppContext";
 import AnimateHeight from "react-animate-height";
+import useIsPostUrlMedia from "../useIsPostUrlMedia";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -149,9 +149,10 @@ function PostHeader({
     [post],
   );
 
+  const isPostUrlMedia = useIsPostUrlMedia();
   const urlIsMedia = useMemo(
-    () => post.post.url && isUrlMedia(post.post.url),
-    [post],
+    () => isPostUrlMedia(post),
+    [post, isPostUrlMedia],
   );
 
   function scrollToTitle() {

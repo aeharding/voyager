@@ -72,6 +72,7 @@ interface SettingsState {
       type: PostAppearanceType;
       embedCrossposts: boolean;
       showCommunityIcons: boolean;
+      embedExternalMedia: boolean;
     };
     large: {
       showVotingButtons: boolean;
@@ -165,6 +166,7 @@ export const initialState: SettingsState = {
       type: OPostAppearanceType.Large,
       embedCrossposts: true,
       showCommunityIcons: true,
+      embedExternalMedia: true,
     },
     large: {
       showVotingButtons: true,
@@ -365,6 +367,10 @@ export const appearanceSlice = createSlice({
     setNoSubscribedInFeed(state, action: PayloadAction<boolean>) {
       state.general.noSubscribedInFeed = action.payload;
       db.setSetting("no_subscribed_in_feed", action.payload);
+    },
+    setEmbedExternalMedia(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.embedExternalMedia = action.payload;
+      db.setSetting("embed_external_media", action.payload);
     },
     setAlwaysUseReaderMode(state, action: PayloadAction<boolean>) {
       state.general.safari.alwaysUseReaderMode = action.payload;
@@ -671,6 +677,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const no_subscribed_in_feed = await db.getSetting(
         "no_subscribed_in_feed",
       );
+      const embed_external_media = await db.getSetting("embed_external_media");
       const always_use_reader_mode = await db.getSetting(
         "always_use_reader_mode",
       );
@@ -707,6 +714,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showCommunityIcons:
               show_community_icons ??
               initialState.appearance.posts.showCommunityIcons,
+            embedExternalMedia:
+              embed_external_media ??
+              initialState.appearance.posts.embedExternalMedia,
           },
           large: {
             showVotingButtons:
@@ -872,6 +882,7 @@ export const {
   setPureBlack,
   setDefaultFeed,
   setNoSubscribedInFeed,
+  setEmbedExternalMedia,
   setAlwaysUseReaderMode,
   setShowCollapsedComment,
   setQuickSwitchDarkMode,
