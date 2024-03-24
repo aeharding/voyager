@@ -13,4 +13,5 @@ What does Voyager offer?
 - A beautiful private messages UI
 - Settings to customize Voyager to your desire
 - Quick community switcher
+- Mod tools
 - Open source: code is available on Github
