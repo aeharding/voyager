@@ -24,31 +24,38 @@
   "screenshots": [
     {
       "src": "/screenshots/android/1.png",
-      "sizes": "1284x2778",
+      "sizes": "2160x3840",
       "type": "image/png",
       "platform": "narrow",
-      "label": "Subscribe across the Fediverse"
+      "label": "All your interests with infinite scrolling"
     },
     {
       "src": "/screenshots/android/2.png",
-      "sizes": "1284x2778",
-      "type": "image/png",
-      "platform": "narrow",
-      "label": "All your feeds with infinite scrolling"
-    },
-    {
-      "src": "/screenshots/android/3.png",
-      "sizes": "1284x2778",
+      "sizes": "2160x3840",
       "type": "image/png",
       "platform": "narrow",
       "label": "Gestures. Tapping is meh."
     },
     {
-      "src": "/screenshots/android/4.png",
-      "sizes": "1284x2778",
+      "src": "/screenshots/android/3.png",
+      "sizes": "2160x3840",
       "type": "image/png",
       "platform": "narrow",
-      "label": "View profile and say hi"
+      "label": "Join the conversation"
+    },
+    {
+      "src": "/screenshots/android/4.png",
+      "sizes": "2160x3840",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Never too much customization"
+    },
+    {
+      "src": "/screenshots/android/5.png",
+      "sizes": "2160x3840",
+      "type": "image/png",
+      "platform": "narrow",
+      "label": "Open source. Privacy first. Free forever."
     }
   ]
 }
