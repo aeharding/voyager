@@ -436,7 +436,13 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
   const renderFooter = useCallback(() => {
     if (loadFailed)
-      return <FeedLoadMoreFailed fetchMore={fetchComments} loading={loading} />;
+      return (
+        <FeedLoadMoreFailed
+          fetchMore={fetchComments}
+          loading={loading}
+          pluralType="comments"
+        />
+      );
 
     if (loading && !comments.length) return <StyledIonSpinner />;
 
