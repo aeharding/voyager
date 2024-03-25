@@ -105,13 +105,14 @@ export default css`
       --height: auto;
       --box-shadow: none;
 
-      display: flex;
-      flex-direction: column;
+      &.show-modal {
+        display: flex;
+        flex-direction: column;
+      }
     }
 
     ion-modal.transparent-scroll .ion-page {
       overflow: auto;
-      max-height: 100vh;
     }
 
     ion-alert.preserve-newlines {
