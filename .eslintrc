@@ -34,6 +34,7 @@
     "@typescript-eslint/no-empty-interface": 0,
     "react/jsx-curly-brace-presence": ["warn", "never"],
     "eqeqeq": ["warn", "smart"],
+    "no-unreachable": ["warn"],
     "react/no-unknown-property": ["error", { "ignore": ["css"] }],
     "@typescript-eslint/no-unused-vars": [
       "warn",
