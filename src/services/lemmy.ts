@@ -21,9 +21,7 @@ export function getClient(url: string, jwt?: string): LemmyHttp {
 export const LIMIT = 50;
 
 /**
- * This function is used instead of the one on lemmy-js-client
- * in order to get around an issue where the endpoint will
- * only accept requests with the jwt on the cookie
+ * upload image, compressing before upload if needed
  *
  * @returns relative pictrs URL
  */
@@ -43,7 +41,6 @@ export async function uploadImage(client: LemmyHttp, image: File) {
     console.error("Image compress failed", error);
   }
 
-  // Cookie header can only be set by native code (Capacitor http plugin)
   const response = await client.uploadImage({
     image: compressedImageIfNeeded as File,
   });

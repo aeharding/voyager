@@ -114,9 +114,6 @@ devDependencies:
   '@types/jest':
     specifier: ^29.5.12
     version: 29.5.12
-  '@types/js-cookie':
-    specifier: ^3.0.6
-    version: 3.0.6
   '@types/lodash':
     specifier: ^4.14.202
     version: 4.17.0
@@ -219,15 +216,12 @@ devDependencies:
   ionicons:
     specifier: ^7.3.0
     version: 7.3.0
-  js-cookie:
-    specifier: ^3.0.5
-    version: 3.0.5
   jsdom:
     specifier: ^24.0.0
     version: 24.0.0
   lemmy-js-client:
-    specifier: 0.19.4-alpha.10
-    version: 0.19.4-alpha.10
+    specifier: 0.19.4-alpha.13
+    version: 0.19.4-alpha.13
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -4341,10 +4335,6 @@ packages:
       pretty-format: 29.7.0
     dev: true
 
-  /@types/js-cookie@3.0.6:
-    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
-    dev: true
-
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
     dev: true
@@ -5243,6 +5233,12 @@ packages:
 
   /bare-events@2.2.1:
     resolution: {integrity: sha512-9GYPpsPFvrWBkelIhOhTWtkeZxVxZOdb3VnFTCzlOo3OjvmTvzLoZFUT8kNFACx0vJej6QPney1Cf9BvzCNE/A==}
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /bare-events@2.2.2:
+    resolution: {integrity: sha512-h7z00dWdG0PYOQEvChhOSWvOfkIKsdZGkWr083FgN/HyoQuebSew/cgirYqh9SCuy/hRvxc5Vy6Fw8xAmYHLkQ==}
     requiresBuild: true
     dev: true
     optional: true
@@ -6194,14 +6190,6 @@ packages:
 
   /cross-fetch@3.1.8:
     resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
-    dependencies:
-      node-fetch: 2.7.0
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
-  /cross-fetch@4.0.0:
-    resolution: {integrity: sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==}
     dependencies:
       node-fetch: 2.7.0
     transitivePeerDependencies:
@@ -9172,13 +9160,8 @@ packages:
       package-json: 8.1.1
     dev: true
 
-  /lemmy-js-client@0.19.4-alpha.10:
-    resolution: {integrity: sha512-/08YJU2x9KhCj2s9eNG31GlTy3Y7OaTPIhS+3LfZbcHRhYrwgPcIu3/zvh/HgwvpnXEmjo2ToJsH0+RUvSmgpA==}
-    dependencies:
-      cross-fetch: 4.0.0
-      form-data: 4.0.0
-    transitivePeerDependencies:
-      - encoding
+  /lemmy-js-client@0.19.4-alpha.13:
+    resolution: {integrity: sha512-ru1dCqPSfOJdsGq7am5J7P7f+/hpyHGhNbCEV/JAZP2U1lGHul32gLpBkilDnStDNdeq52scjKx+3WskRJFGFA==}
     dev: true
 
   /leven@3.1.0:
@@ -12233,7 +12216,7 @@ packages:
       fast-fifo: 1.3.2
       queue-tick: 1.0.1
     optionalDependencies:
-      bare-events: 2.2.1
+      bare-events: 2.2.2
     dev: true
 
   /string-width@4.2.3:

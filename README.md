@@ -27,7 +27,7 @@ A mobile-first Lemmy web client
 
 <p align="center">
   <a href="https://vger.app/" target="_blank" rel="noopener noreferrer" >
-    <img src="./public/promo.png" alt="Voyager screenshots" width="600" height="auto">
+    <img src="./public/promo.webp" alt="Voyager screenshots" width="800" height="auto">
   </a>
 </p>
 

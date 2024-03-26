@@ -163,6 +163,7 @@ function convertPostReportToPost(postReport: PostReportView): PostView {
     read: false,
     creator_blocked: false,
     unread_comments: 0,
+    banned_from_community: false,
   };
 }
 function convertCommentReportToComment(
@@ -179,6 +180,7 @@ function convertCommentReportToComment(
     creator_blocked: false,
     subscribed: "NotSubscribed",
     saved: false,
+    banned_from_community: false,
   };
 }
 
