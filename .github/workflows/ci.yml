@@ -5,40 +5,14 @@ permissions: {}
 on:
   push:
     branches:
-      - test-upload
+      - main
   pull_request:
     branches:
-      - test-upload
+      - main
   workflow_dispatch: {}
 
 jobs:
-  # ci:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - run: corepack enable
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 20
-  #         cache: pnpm
-
-  #     - name: 📦 Install dependencies
-  #       run: pnpm install  --frozen-lockfile
-
-  #     - name: 🧪 Test project
-  #       run: pnpm test
-
-  #     - name: 📝 Lint
-  #       run: pnpm lint
-
-  #     - name: 📝 Prettier formatting
-  #       run: pnpm lint:formatting
-
-  #     - name: 💪 Type check
-  #       run: pnpm test:typecheck
-
-  build_web:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -52,25 +26,14 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install  --frozen-lockfile
 
-      - name: Build dist bundle
-        run: pnpm build
+      - name: 🧪 Test project
+        run: pnpm test
 
-      - name: Upload dist bundle to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          SOURCE_DIR: dist
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: 📝 Lint
+        run: pnpm lint
 
-      - name: Compress artifacts
-        run: |
-          zip -r Voyager-Web-${{ github.ref_name }}-Build.zip dist
+      - name: 📝 Prettier formatting
+        run: pnpm lint:formatting
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: Voyager-Web-${{ github.ref_name }}
-          path: Voyager-Web-${{ github.ref_name }}-Build.zip
+      - name: 💪 Type check
+        run: pnpm test:typecheck

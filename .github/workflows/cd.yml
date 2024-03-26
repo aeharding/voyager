@@ -1,4 +1,4 @@
-name: Build Apps and Create Release
+name: Build Apps, Deploy Web and Create Release
 
 on:
   push:
