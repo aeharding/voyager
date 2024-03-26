@@ -3,7 +3,6 @@
 import { Redirect } from "react-router";
 import Route from "../common/Route";
 import { getDefaultServer } from "../../services/app";
-import SpecialFeedPage from "../pages/shared/SpecialFeedPage";
 import CommunitiesPage from "../pages/posts/CommunitiesPage";
 import { DefaultFeedType } from "../../services/db";
 
@@ -28,18 +27,6 @@ export default function buildPostsRoutes({
       ) : (
         ""
       )}
-    </Route>,
-    <Route exact path="/posts/:actor/home">
-      <SpecialFeedPage type="Subscribed" />
-    </Route>,
-    <Route exact path="/posts/:actor/all">
-      <SpecialFeedPage type="All" />
-    </Route>,
-    <Route exact path="/posts/:actor/local">
-      <SpecialFeedPage type="Local" />
-    </Route>,
-    <Route exact path="/posts/:actor/mod">
-      <SpecialFeedPage type="ModeratorView" />
     </Route>,
     <Route exact path="/posts/:actor">
       <CommunitiesPage />
