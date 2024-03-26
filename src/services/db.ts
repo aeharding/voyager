@@ -502,7 +502,11 @@ export class WefwefDB extends Dexie {
   }
 
   async setProvider(payload: ProvidersData) {
-    return await this.providers.put(payload);
+    return await this.transaction("rw", this.providers, async () => {
+      await this.providers.where("name").equals(payload.name).delete();
+
+      await this.providers.put(payload);
+    });
   }
 
   async resetProviders() {
