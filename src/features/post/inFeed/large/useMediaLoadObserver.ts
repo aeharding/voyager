@@ -1,14 +1,14 @@
 import { ComponentRef, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { imageLoaded } from "./imageSlice";
-import PostMedia from "../../../media/gallery/PostMedia";
+import Media from "../../../media/gallery/Media";
 
 export default function useMediaLoadObserver(src: string | undefined) {
   const dispatch = useAppDispatch();
   const aspectRatio = useAppSelector((state) =>
     src ? state.image.loadedBySrc[src] : undefined,
   );
-  const mediaRef = useRef<ComponentRef<typeof PostMedia>>(null);
+  const mediaRef = useRef<ComponentRef<typeof Media>>(null);
   const resizeObserverRef = useRef<ResizeObserver | undefined>();
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function useMediaLoadObserver(src: string | undefined) {
   return [mediaRef, aspectRatio] as const;
 }
 
-export function getTargetDimensions(target: ComponentRef<typeof PostMedia>) {
+export function getTargetDimensions(target: ComponentRef<typeof Media>) {
   let width, height;
 
   switch (true) {

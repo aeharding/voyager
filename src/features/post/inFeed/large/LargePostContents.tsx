@@ -4,12 +4,12 @@ import { PostView } from "lemmy-js-client";
 import { useContext, useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppSelector } from "../../../../store";
-import { isUrlMedia } from "../../../../helpers/url";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
-import Media from "./media/Media";
+import LargeFeedPostMedia from "./media/LargeFeedPostMedia";
 import Embed from "../../shared/Embed";
 import InlineMarkdown from "../../../shared/markdown/InlineMarkdown";
 import { InFeedContext } from "../../../feed/Feed";
+import useIsPostUrlMedia from "../../useIsPostUrlMedia";
 
 const PostBody = styled.div`
   font-size: 0.8em;
@@ -52,15 +52,16 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
     (state) => state.settings.appearance.posts.blurNsfw,
   );
 
+  const isPostUrlMedia = useIsPostUrlMedia();
   const urlIsMedia = useMemo(
-    () => post.post.url && isUrlMedia(post.post.url),
-    [post],
+    () => isPostUrlMedia(post),
+    [post, isPostUrlMedia],
   );
 
   if (urlIsMedia || markdownLoneImage) {
     return (
       <ImageContainer>
-        <Media
+        <LargeFeedPostMedia
           blur={inFeed ? isNsfwBlurred(post, blurNsfw) : false}
           post={post}
           animationType="zoom"

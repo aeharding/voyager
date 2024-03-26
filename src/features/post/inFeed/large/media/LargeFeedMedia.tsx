@@ -1,10 +1,5 @@
-import PostMedia, {
-  PostGalleryImgProps,
-  getPostMedia,
-} from "../../../../media/gallery/PostMedia";
+import Media, { PostGalleryImgProps } from "../../../../media/gallery/Media";
 import { CSSProperties, useMemo } from "react";
-import { IonIcon } from "@ionic/react";
-import { imageOutline } from "ionicons/icons";
 import useMediaLoadObserver, {
   getTargetDimensions,
 } from "../useMediaLoadObserver";
@@ -12,10 +7,10 @@ import { IMAGE_FAILED, imageFailed, imageLoaded } from "../imageSlice";
 import { useAppDispatch } from "../../../../../store";
 import BlurOverlay from "./BlurOverlay";
 import useLatch from "../../../../../helpers/useLatch";
-import { cx } from "@linaria/core";
 import { styled } from "@linaria/react";
+import MediaPlaceholder from "./MediaPlaceholder";
 
-const StyledPostMedia = styled(PostMedia)`
+export const StyledPostMedia = styled(Media)`
   display: flex;
   width: 100%;
   max-width: none;
@@ -26,43 +21,14 @@ const StyledPostMedia = styled(PostMedia)`
   min-height: 0;
 `;
 
-const PlaceholderContainer = styled.div`
-  display: flex;
-
-  background: var(--lightroom-bg);
-
-  &.not-loaded {
-    align-items: center;
-    justify-content: center;
-
-    aspect-ratio: 1.2;
-    position: relative;
-
-    ${StyledPostMedia} {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-  }
-`;
-
-const LoadingIonIcon = styled(IonIcon)`
-  opacity: 0.5;
-  font-size: 24px;
-`;
-
-const Error = styled.div`
-  opacity: 0.5;
-`;
-
-export default function Media({
+export default function LargeFeedMedia({
+  src,
   blur,
   className,
   style: baseStyle,
   ...props
 }: PostGalleryImgProps & { blur: boolean }) {
   const dispatch = useAppDispatch();
-  const src = useMemo(() => getPostMedia(props.post), [props.post]);
   const [mediaRef, currentAspectRatio] = useMediaLoadObserver(src);
 
   /**
@@ -73,12 +39,12 @@ export default function Media({
    */
   const aspectRatio = useLatch(currentAspectRatio);
 
-  function renderIcon() {
-    if (aspectRatio === IMAGE_FAILED)
-      return <Error>failed to load media 😢</Error>;
+  const placeholderState = (() => {
+    if (aspectRatio === IMAGE_FAILED) return "error";
+    if (!aspectRatio) return "loading";
 
-    if (!aspectRatio) return <LoadingIonIcon icon={imageOutline} />;
-  }
+    return "loaded";
+  })();
 
   const style: CSSProperties | undefined = useMemo(() => {
     if (!aspectRatio || aspectRatio === IMAGE_FAILED) return { opacity: 0 };
@@ -89,12 +55,14 @@ export default function Media({
   const loaded = !!aspectRatio && aspectRatio > 0;
 
   const contents = (
-    <PlaceholderContainer
-      className={cx(className, !loaded && "not-loaded")}
+    <MediaPlaceholder
+      className={className}
       style={baseStyle}
+      state={placeholderState}
     >
       <StyledPostMedia
         {...props}
+        src={src}
         style={style}
         ref={mediaRef}
         autoPlay={!blur}
@@ -119,9 +87,7 @@ export default function Media({
           dispatch(imageLoaded({ src, aspectRatio: width / height }));
         }}
       />
-
-      {renderIcon()}
-    </PlaceholderContainer>
+    </MediaPlaceholder>
   );
 
   if (!blur) return contents; // optimization

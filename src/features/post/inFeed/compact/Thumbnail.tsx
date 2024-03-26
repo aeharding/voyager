@@ -4,7 +4,6 @@ import { PostView } from "lemmy-js-client";
 import { MouseEvent, useCallback, useMemo } from "react";
 import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import PostMedia from "../../../media/gallery/PostMedia";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import SelfSvg from "./self.svg?react";
 import { getImageSrc } from "../../../../services/lemmy";
@@ -18,6 +17,7 @@ import { useAutohidePostIfNeeded } from "../../../feed/PageTypeContext";
 import { setPostRead } from "../../postSlice";
 import { css, cx } from "@linaria/core";
 import { styled } from "@linaria/react";
+import CompactFeedPostMedia from "./CompactFeedPostMedia";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {
@@ -147,7 +147,10 @@ export default function Thumbnail({ post }: ImgProps) {
 
     if (postImageSrc) {
       return (
-        <PostMedia post={post} className={cx(imgCss, nsfw && blurImgCss)} />
+        <CompactFeedPostMedia
+          post={post}
+          className={cx(imgCss, nsfw && blurImgCss)}
+        />
       );
     }
 

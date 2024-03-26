@@ -81,3 +81,7 @@ export const pageTransitionAnimateBackOnly = (
     ? iosTransitionAnimation(baseEl, opts)
     : mdTransitionAnimation(baseEl, opts);
 };
+
+export function preventIonicTapClick() {
+  document.dispatchEvent(new CustomEvent("ionGestureCaptured"));
+}

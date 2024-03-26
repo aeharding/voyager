@@ -54,7 +54,6 @@ const videoExtensions = ["mp4", "webm", "gifv"];
 
 export function isUrlVideo(url: string): boolean {
   const pathname = getPathname(url);
-
   if (!pathname) return false;
 
   return videoExtensions.some((extension) =>

@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../../store";
-import { getRemoteHandle, parseJWT } from "../../helpers/lemmy";
+import { getRemoteHandle, parseLemmyJWT } from "../../helpers/lemmy";
 import { resetPosts } from "../post/postSlice";
 import { getClient } from "../../services/lemmy";
 import { resetComments } from "../comment/commentSlice";
@@ -218,7 +218,7 @@ const addJwt =
     dispatch(resetAccountSpecificStoreData());
     dispatch(receivedSite(site));
     dispatch(addAccount({ jwt, handle: getRemoteHandle(myUser) }));
-    dispatch(updateConnectedInstance(parseJWT(jwt).iss));
+    dispatch(updateConnectedInstance(parseLemmyJWT(jwt).iss));
   };
 
 const resetAccountSpecificStoreData = () => (dispatch: AppDispatch) => {
@@ -262,7 +262,10 @@ export const logoutAccount =
 
     // revoke token
     if (currentAccount && currentAccount.jwt)
-      getClient(parseJWT(currentAccount.jwt).iss, currentAccount.jwt)?.logout();
+      getClient(
+        parseLemmyJWT(currentAccount.jwt).iss,
+        currentAccount.jwt,
+      )?.logout();
 
     dispatch(removeAccount(handle));
 

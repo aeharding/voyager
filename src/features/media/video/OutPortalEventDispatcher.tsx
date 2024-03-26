@@ -42,7 +42,7 @@ export default function OutPortalEventDispatcher({
 
       // Prevent propagation on original event.
       // Newly dispatched event above will propagate from OutPortal
-      if (event.type === "click") {
+      if (event.type === "click" || event.type === "touchstart") {
         requestAnimationFrame(() => {
           if (event.defaultPrevented) return;
 

@@ -3,9 +3,9 @@ import { Capacitor } from "@capacitor/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { memoize } from "lodash";
 
-export function isNative() {
+export const isNative = memoize(() => {
   return Capacitor.isNativePlatform();
-}
+});
 
 export function isInstalled(): boolean {
   return window.matchMedia("(display-mode: standalone)").matches || isNative();

@@ -270,6 +270,17 @@ export type SwipeAction =
 export type SwipeDirection = "farStart" | "start" | "end" | "farEnd";
 export type SwipeActions = Record<SwipeDirection, SwipeAction>;
 
+type Provider = "redgifs";
+
+type ProviderData<Name extends string, Data> = {
+  name: Name;
+  data: Data;
+};
+
+export type RedgifsProvider = ProviderData<"redgifs", { token: string }>;
+
+type ProvidersData = RedgifsProvider;
+
 export type SettingValueTypes = {
   comments_theme: CommentsThemeType;
   collapse_comment_threads: CommentThreadCollapse;
@@ -311,6 +322,7 @@ export type SettingValueTypes = {
   long_swipe_trigger_point: LongSwipeTriggerPointType;
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
+  embed_external_media: boolean;
   always_use_reader_mode: boolean;
   infinite_scrolling: boolean;
   upvote_on_save: boolean;
@@ -345,6 +357,7 @@ export class WefwefDB extends Dexie {
   postMetadatas!: Table<IPostMetadata, number>;
   settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
   cachedFederatedInstanceData!: Table<InstanceData, number>;
+  providers!: Table<ProvidersData, Provider>;
 
   constructor() {
     super("WefwefDB");
@@ -449,6 +462,55 @@ export class WefwefDB extends Dexie {
         await this.setSetting("collapse_comment_threads", default_collapse);
       })();
     });
+
+    this.version(7).stores({
+      postMetadatas: `
+        ++,
+        ${CompoundKeys.postMetadata.post_id_and_user_handle},
+        ${CompoundKeys.postMetadata.user_handle_and_hidden},
+        post_id,
+        user_handle,
+        hidden,
+        hidden_updated_at
+      `,
+      settings: `
+        ++,
+        key,
+        ${CompoundKeys.settings.key_and_user_handle_and_community},
+        value,
+        user_handle,
+        community
+      `,
+      cachedFederatedInstanceData: `
+        ++id,
+        &domain,
+        updated
+      `,
+      providers: `
+        ++,
+        &name,
+        data
+      `,
+    });
+  }
+
+  /*
+   * Providers
+   */
+  async getProvider(providerName: ProvidersData["name"]) {
+    return await this.providers.where("name").equals(providerName).first();
+  }
+
+  async setProvider(payload: ProvidersData) {
+    return await this.transaction("rw", this.providers, async () => {
+      await this.providers.where("name").equals(payload.name).delete();
+
+      await this.providers.put(payload);
+    });
+  }
+
+  async resetProviders() {
+    return await this.providers.clear();
   }
 
   /*
