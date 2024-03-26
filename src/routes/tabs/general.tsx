@@ -14,6 +14,7 @@ import ProfileFeedItemsPage from "../pages/profile/ProfileFeedItemsPage";
 import ProfileFeedHiddenPostsPage from "../pages/profile/ProfileFeedHiddenPostsPage";
 import ConversationPage from "../pages/inbox/ConversationPage";
 import InstanceSidebarPage from "../pages/shared/InstanceSidebarPage";
+import SpecialFeedPage from "../pages/shared/SpecialFeedPage";
 
 export default [
   <Route exact path="/:tab/:actor/c/:community">
@@ -48,6 +49,18 @@ export default [
   </Route>,
   <Route exact path="/:tab/:actor/c/:community/modqueue">
     <ModqueuePage />
+  </Route>,
+  <Route exact path="/:tab/:actor/home">
+    <SpecialFeedPage type="Subscribed" />
+  </Route>,
+  <Route exact path="/:tab/:actor/all">
+    <SpecialFeedPage type="All" />
+  </Route>,
+  <Route exact path="/:tab/:actor/local">
+    <SpecialFeedPage type="Local" />
+  </Route>,
+  <Route exact path="/:tab/:actor/mod">
+    <SpecialFeedPage type="ModeratorView" />
   </Route>,
   <Route exact path="/:tab/:actor/mod/comments">
     <CommentsPage type="ModeratorView" />
