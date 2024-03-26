@@ -114,9 +114,6 @@ devDependencies:
   '@types/jest':
     specifier: ^29.5.12
     version: 29.5.12
-  '@types/js-cookie':
-    specifier: ^3.0.6
-    version: 3.0.6
   '@types/lodash':
     specifier: ^4.14.202
     version: 4.17.0
@@ -219,9 +216,6 @@ devDependencies:
   ionicons:
     specifier: ^7.3.0
     version: 7.3.0
-  js-cookie:
-    specifier: ^3.0.5
-    version: 3.0.5
   jsdom:
     specifier: ^24.0.0
     version: 24.0.0
@@ -4339,10 +4333,6 @@ packages:
     dependencies:
       expect: 29.7.0
       pretty-format: 29.7.0
-    dev: true
-
-  /@types/js-cookie@3.0.6:
-    resolution: {integrity: sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==}
     dev: true
 
   /@types/json-schema@7.0.15:
