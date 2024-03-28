@@ -40,7 +40,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Web-${{ github.ref_name }}-Build.zip
+          name: Voyager-Web-${{ github.ref_name }}-Build
           path: Voyager-Web-${{ github.ref_name }}-Build.zip
 
   build_ios:
