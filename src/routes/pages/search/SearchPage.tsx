@@ -48,6 +48,7 @@ export default function SearchPage() {
             <IonSearchbar
               ref={searchBarRef}
               placeholder="Search posts, communities, users"
+              autocapitalize="on"
               showCancelButton={search ? "always" : "focus"}
               showClearButton={search ? "always" : "never"}
               className={cx(
