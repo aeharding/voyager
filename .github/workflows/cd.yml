@@ -38,9 +38,9 @@ jobs:
           zip -r Voyager-Web-${{ github.ref_name }}-Build.zip dist
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: Voyager-Web-${{ github.ref_name }}-Build
+          name: Voyager-Web-${{ github.ref_name }}-Build.zip
           path: Voyager-Web-${{ github.ref_name }}-Build.zip
 
   build_ios:
@@ -100,7 +100,7 @@ jobs:
       - name: Download dist artifacts
         uses: actions/download-artifact@v3
         with:
-          name: Voyager-Web-${{ github.ref_name }}-Build
+          name: Voyager-Web-${{ github.ref_name }}-Build.zip
           path: artifacts/web
 
       - name: Download iOS Artifact
