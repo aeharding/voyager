@@ -89,7 +89,7 @@ export const blockUser =
         ))
     ) {
       dispatch(resetMessages());
-      await dispatch(syncMessages());
+      dispatch(syncMessages());
     }
   };
 

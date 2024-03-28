@@ -1,4 +1,4 @@
-import { LemmyErrorType } from "lemmy-js-client";
+import { LemmyErrorType, Person } from "lemmy-js-client";
 
 type LemmyErrorValue = LemmyErrorType["error"];
 
@@ -54,5 +54,21 @@ export function getVoteErrorMessage(error: unknown): string {
       }
     },
     "Problem voting, please try again.",
+  );
+}
+
+export function getBlockUserErrorMessage(
+  error: unknown,
+  blockingUser: Person,
+): string {
+  return getErrorMessage(
+    error,
+    (message) => {
+      switch (message) {
+        case "cant_block_admin":
+          return `${blockingUser.name} is an admin. You can't block admins.`;
+      }
+    },
+    "Problem blocking user. Please try again.",
   );
 }

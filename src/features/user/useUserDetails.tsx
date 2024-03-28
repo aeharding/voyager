@@ -3,8 +3,9 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { getHandle } from "../../helpers/lemmy";
 import { PageContext } from "../auth/PageContext";
 import { blockUser } from "./userSlice";
-import { buildBlocked, problemBlockingUser } from "../../helpers/toastMessages";
+import { buildBlocked } from "../../helpers/toastMessages";
 import useAppToast from "../../helpers/useAppToast";
+import { getBlockUserErrorMessage } from "../../helpers/lemmyErrors";
 
 export function useUserDetails(handle: string) {
   const blocks = useAppSelector(
@@ -26,7 +27,10 @@ export function useUserDetails(handle: string) {
     try {
       await dispatch(blockUser(!isBlocked, user.id));
     } catch (error) {
-      presentToast(problemBlockingUser);
+      presentToast({
+        color: "danger",
+        message: getBlockUserErrorMessage(error, user),
+      });
 
       throw error;
     }

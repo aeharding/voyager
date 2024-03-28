@@ -16,10 +16,8 @@ import { useIonActionSheet } from "@ionic/react";
 import { removeCircleOutline } from "ionicons/icons";
 import { blockUser } from "../../user/userSlice";
 import useAppToast from "../../../helpers/useAppToast";
-import {
-  buildBlocked,
-  problemBlockingUser,
-} from "../../../helpers/toastMessages";
+import { buildBlocked } from "../../../helpers/toastMessages";
+import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -76,7 +74,10 @@ export default function PersonLink({
               try {
                 await dispatch(blockUser(!isBlocked, person.id));
               } catch (error) {
-                presentToast(problemBlockingUser);
+                presentToast({
+                  color: "danger",
+                  message: getBlockUserErrorMessage(error, person),
+                });
                 throw error;
               }
 
