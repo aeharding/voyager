@@ -100,7 +100,7 @@ jobs:
       - name: Download dist artifacts
         uses: actions/download-artifact@v3
         with:
-          name: Voyager-Web-${{ github.ref_name }}-Build.zip
+          name: Voyager-Web-${{ github.ref_name }}-Build
           path: artifacts/web
 
       - name: Download iOS Artifact
