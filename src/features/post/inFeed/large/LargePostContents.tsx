@@ -19,6 +19,10 @@ const PostBody = styled.div`
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
+  &:empty {
+    display: none;
+  }
 `;
 
 const postBodyReadCss = css`

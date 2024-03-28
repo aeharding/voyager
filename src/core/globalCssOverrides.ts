@@ -1,5 +1,7 @@
 import { css } from "@linaria/core";
 
+import "./syntaxHighlightCss";
+
 export default css`
   :global() {
     :root {

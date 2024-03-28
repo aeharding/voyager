@@ -11,6 +11,7 @@ import spoiler from "@aeharding/remark-lemmy-spoiler";
 import Summary from "./components/spoiler/Summary";
 import Details from "./components/spoiler/Details";
 import spoilerRehype from "./spoilerRehype";
+import rehypeHighlight from "rehype-highlight";
 
 const markdownCss = css`
   @media (max-width: 700px) {
@@ -22,6 +23,20 @@ const markdownCss = css`
 
   code {
     white-space: pre-wrap;
+  }
+
+  code:not(.hljs) {
+    background: var(--lightroom-bg);
+    border-radius: 4px;
+    padding: 1px 3px;
+    color: rgba(var(--ion-color-dark-rgb), 0.9);
+  }
+
+  pre {
+    background: var(--lightroom-bg);
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 0.9375em;
   }
 
   blockquote {
@@ -103,6 +118,7 @@ export default function Markdown({
         spoiler,
         spoilerRehype,
       ]}
+      rehypePlugins={[[rehypeHighlight, { detect: true }]]}
     />
   );
 }
