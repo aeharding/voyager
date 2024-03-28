@@ -14,9 +14,9 @@ import { getHandle } from "../../../helpers/lemmy";
 import ItemIcon from "../../labels/img/ItemIcon";
 import { chevronForwardOutline } from "ionicons/icons";
 import Time from "./Time";
-import { resetMessages, syncMessages } from "../inboxSlice";
 import { useState } from "react";
 import { clientSelector } from "../../auth/authSelectors";
+import { blockUser } from "../../user/userSlice";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin: 0.75rem 0;
@@ -168,13 +168,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
         });
       }
 
-      await client.blockPerson({
-        person_id: theirRecentMessage.creator.id,
-        block: true,
-      });
-
-      dispatch(resetMessages());
-      await dispatch(syncMessages());
+      dispatch(blockUser(true, theirRecentMessage.creator.id));
     } finally {
       setLoading(false);
     }
@@ -192,6 +186,7 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
 
         <IonItem
           routerLink={`/inbox/messages/${getHandle(person)}`}
+          href={undefined}
           draggable={false}
           detail={false}
         >

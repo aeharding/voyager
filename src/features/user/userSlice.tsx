@@ -6,6 +6,7 @@ import { LIMIT } from "../../services/lemmy";
 import { receivedComments } from "../comment/commentSlice";
 import { BanFromCommunity, Person } from "lemmy-js-client";
 import { getSite } from "../auth/siteSlice";
+import { resetMessages, syncMessages } from "../inbox/inboxSlice";
 
 interface CommentState {
   userByHandle: Record<string, Person>;
@@ -75,6 +76,21 @@ export const blockUser =
 
     dispatch(receivedUsers([response.person_view.person]));
     await dispatch(getSite());
+
+    // We have synced (or are syncing) messages, AND
+    //   - We are either unblocking (may have messages from that user), OR
+    //   - we are blocking the user and we have messages from this user,
+    // so refresh is needed
+    if (
+      getState().inbox.messageSyncState !== "init" &&
+      (!block ||
+        getState().inbox.messages?.find(
+          (msg) => msg.creator.id === id || msg.recipient.id === id,
+        ))
+    ) {
+      dispatch(resetMessages());
+      await dispatch(syncMessages());
+    }
   };
 
 export const banUser =
