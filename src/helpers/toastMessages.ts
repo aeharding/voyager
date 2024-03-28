@@ -24,11 +24,6 @@ export const allNSFWHidden: AppToastOptions = {
   color: "success",
 };
 
-export const problemBlockingUser: AppToastOptions = {
-  message: "Problem blocking user. Please try again.",
-  color: "danger",
-};
-
 export const problemFetchingTitle: AppToastOptions = {
   message: "Unable to fetch title",
   color: "warning",
