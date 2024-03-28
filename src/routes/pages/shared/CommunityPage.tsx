@@ -279,6 +279,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
                 className={!searchOpen ? ionSearchbarHideCss : undefined}
                 showCancelButton="always"
                 showClearButton="never"
+                autocapitalize="on"
                 onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
                 value={searchQuery}
                 enterkeyhint="search"

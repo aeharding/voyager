@@ -22,11 +22,10 @@
   },
   "pnpm": {
     "overrides": {
-      "@ionic/core": "npm:voyager-ionic-core@8.0.0-beta.3"
+      "@ionic/core": "npm:voyager-ionic-core@8.0.0-rc.0"
     },
     "patchedDependencies": {
-      "@capacitor/browser@5.2.0": "patches/@capacitor__browser@5.2.0.patch",
-      "voyager-ionic-core@8.0.0-beta.3": "patches/voyager-ionic-core@8.0.0-beta.3.patch"
+      "@capacitor/browser@5.2.0": "patches/@capacitor__browser@5.2.0.patch"
     }
   },
   "dependencies": {
@@ -52,9 +51,9 @@
     "@capacitor/share": "^5.0.7",
     "@capacitor/status-bar": "^5.0.7",
     "@github/markdown-toolbar-element": "^2.2.1",
-    "@ionic/core": "npm:voyager-ionic-core@8.0.0-beta.3",
-    "@ionic/react": "8.0.0-beta.3",
-    "@ionic/react-router": "8.0.0-beta.3",
+    "@ionic/core": "npm:voyager-ionic-core@8.0.0-rc.0",
+    "@ionic/react": "8.0.0-rc.0",
+    "@ionic/react-router": "8.0.0-rc.0",
     "@linaria/core": "^6.1.0",
     "@linaria/react": "^6.1.0",
     "@reduxjs/toolkit": "^2.2.2",
