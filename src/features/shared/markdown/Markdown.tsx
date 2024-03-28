@@ -25,6 +25,13 @@ const markdownCss = css`
     white-space: pre-wrap;
   }
 
+  code:not(.hljs) {
+    background: var(--lightroom-bg);
+    border-radius: 4px;
+    padding: 1px 3px;
+    color: rgba(var(--ion-color-dark-rgb), 0.9);
+  }
+
   pre {
     background: var(--lightroom-bg);
     padding: 8px;
