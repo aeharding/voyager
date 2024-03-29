@@ -33,26 +33,13 @@ RUN pnpm build
 
 
 # stage 2: runtime
-FROM base AS runner
+FROM docker.io/library/nginx AS runner
 
 ARG UID=911 GID=911
 
-COPY package.json pnpm-lock.yaml server.mjs ./
-COPY patches ./patches
+COPY generate_config.sh ./
+COPY ["generate_config.sh", "/docker-entrypoint.d/generate_config.sh"]
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile --ignore-scripts
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Create a dedicated user and group
-RUN set -eux; \
-  addgroup -g "${GID}" voyager; \
-  adduser -u "${UID}" -D -G voyager voyager
-
-USER voyager
-
-ENV NODE_ENV=production PORT=5314
-
-COPY --from=builder /voyager/dist ./dist
-
-EXPOSE 5314/tcp
-
-CMD ["node","./server.mjs"]
+COPY --from=builder /voyager/dist /var/www
