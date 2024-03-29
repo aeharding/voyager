@@ -39,6 +39,10 @@ ARG UID=911 GID=911
 
 COPY generate_config.sh /docker-entrypoint.d/generate_config.sh
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
 COPY --from=builder /voyager/dist /var/www
+
+ENV NGINX_PORT=5314
+
+EXPOSE 5314/tcp
