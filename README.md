@@ -114,7 +114,20 @@ If you want to run a production build without Docker, you can build from source 
 ```sh
 pnpm install
 pnpm build
-NODE_ENV=production PORT=5106 node server.mjs
+
+# Then, serve ./dist with your favorite static server - nginx, apache etc
+# (make sure 404 goes to index.html)
+# Below is a simple example for dev/testing (not recommended for production):
+npm install --global http-server
+cp dist/index.html dist/404.html # magic file for http-server
+http-server dist
+
+# Optionally, you can serve a custom list of instance(s) in the /_config endpoint,
+# with JSON payload of following format:
+# { "customServers": ["lemmy.world", "lemm.ee"] }
+
+# For production, serve index.html with Cache-Control: no-cache
+# And /assets with a long cache period (files in assets are immutable)
 ```
 
 ### Ecosystem

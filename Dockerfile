@@ -37,8 +37,7 @@ FROM docker.io/library/nginx AS runner
 
 ARG UID=911 GID=911
 
-COPY generate_config.sh ./
-COPY ["generate_config.sh", "/docker-entrypoint.d/generate_config.sh"]
+COPY generate_config.sh /docker-entrypoint.d/generate_config.sh
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
