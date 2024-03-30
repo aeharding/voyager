@@ -3,9 +3,9 @@ import { useRef } from "react";
 import { ExtraProps } from "react-markdown";
 
 const TableContainer = styled.div`
-  display: inline-flex;
+  display: flex;
   overflow-x: auto;
-  margin: 0 -1rem;
+  margin: 15px -1rem;
   padding: 0 1rem;
   max-width: calc(100% + 2rem);
 
@@ -14,7 +14,7 @@ const TableContainer = styled.div`
   }
   td,
   th {
-    padding: 4px;
+    padding: 4px 6px;
   }
   td {
     border: 1px solid var(--ion-color-light);
