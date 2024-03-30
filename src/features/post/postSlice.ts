@@ -379,11 +379,12 @@ export const postHiddenByIdSelector = (state: RootState) => {
 };
 
 export const modRemovePost =
-  (postId: number, removed: boolean) =>
+  (postId: number, removed: boolean, reason?: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const response = await clientSelector(getState())?.removePost({
       post_id: postId,
       removed,
+      reason,
     });
 
     dispatch(receivedPosts([response.post_view]));

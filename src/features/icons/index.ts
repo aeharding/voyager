@@ -17,3 +17,4 @@ export { default as listOrdered } from "./svg/listOrdered.svg";
 export { default as superscript } from "./svg/superscript.svg";
 export { default as subscript } from "./svg/subscript.svg";
 export { default as strikethrough } from "./svg/strikethrough.svg";
+export { default as trashEllipse } from "./svg/trashEllipse.svg";

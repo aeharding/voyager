@@ -1,4 +1,4 @@
-import { useIonActionSheet } from "@ionic/react";
+import { useIonActionSheet, useIonAlert } from "@ionic/react";
 import { getCanModerate } from "./useCanModerate";
 import { CommentReport, PostReport, PostView } from "lemmy-js-client";
 import {
@@ -26,10 +26,12 @@ import { compact, groupBy, values } from "lodash";
 import { useCallback, useContext } from "react";
 import { PageContext } from "../auth/PageContext";
 import { banUser } from "../user/userSlice";
+import { trashEllipse } from "../icons";
 
 export default function usePostModActions(post: PostView) {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
+  const [presentAlert] = useIonAlert();
   const [presentActionSheet] = useIonActionSheet();
   const { presentBanUser } = useContext(PageContext);
 
@@ -87,6 +89,35 @@ export default function usePostModActions(post: PostView) {
                 })();
               },
             },
+        !post.post.removed && {
+          text: "Remove With Reason",
+          icon: trashEllipse,
+          handler: () => {
+            presentAlert({
+              message: "Remove with reason",
+              buttons: [
+                {
+                  text: "Remove",
+                  cssClass: "mod",
+                  handler: ({ reason }) => {
+                    (async () => {
+                      await dispatch(modRemovePost(post.post.id, true, reason));
+
+                      presentToast(postRemoved);
+                    })();
+                  },
+                },
+                { text: "Cancel", role: "cancel", cssClass: "mod" },
+              ],
+              inputs: [
+                {
+                  placeholder: "Public removal reason",
+                  name: "reason",
+                },
+              ],
+            });
+          },
+        },
         {
           text: !post.post.featured_community ? "Sticky" : "Unsticky",
           icon: megaphoneOutline,
@@ -150,7 +181,14 @@ export default function usePostModActions(post: PostView) {
         },
       ]),
     });
-  }, [dispatch, post, presentActionSheet, presentBanUser, presentToast]);
+  }, [
+    dispatch,
+    post,
+    presentActionSheet,
+    presentBanUser,
+    presentToast,
+    presentAlert,
+  ]);
 }
 
 export function stringifyReports(
