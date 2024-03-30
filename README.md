@@ -109,26 +109,28 @@ Note: The provided Dockerfile creates a container which will eventually run Voya
 
 #### Traditional Deployment
 
-If you want to run a production build without Docker, you can build from source and run with the following commands (change `PORT` to whatever you prefer):
+While Docker makes things easier, Voyager can be hosted by any HTTP server (nginx, apache etc).
 
 ```sh
+# Build from source (Or, download web artifact from Github Releases)
 pnpm install
 pnpm build
 
-# Then, serve ./dist with your favorite static server - nginx, apache etc
+# Then, serve ./dist with your favorite HTTP server - nginx, apache etc
 # (make sure 404 goes to index.html)
 # Below is a simple example for dev/testing (not recommended for production):
 npm install --global http-server
 cp dist/index.html dist/404.html # magic file for http-server
 http-server dist
-
-# Optionally, you can serve a custom list of instance(s) in the /_config endpoint,
-# with JSON payload of following format:
-# { "customServers": ["lemmy.world", "lemm.ee"] }
-
-# For production, serve index.html with Cache-Control: no-cache
-# And /assets with a long cache period (files in assets are immutable)
 ```
+
+Optionally, you can serve a custom list of instance(s) in the `/_config` endpoint, with JSON payload of following format:
+
+```json
+{ "customServers": ["lemmy.world", "lemm.ee"] }
+```
+
+For production, serve `index.html` with `Cache-Control: no-cache` and `/assets` with a long cache period (files in assets are immutable)
 
 ### Ecosystem
 
