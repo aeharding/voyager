@@ -35,13 +35,13 @@ jobs:
 
       - name: Compress artifacts
         run: |
-          zip -r Voyager-Web-${{ github.ref_name }}-Build.zip dist
+          zip -r Voyager-Web-${{ github.ref_name }}.zip dist
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: Voyager-Web-${{ github.ref_name }}-Build.zip
-          path: Voyager-Web-${{ github.ref_name }}-Build.zip
+          path: Voyager-Web-${{ github.ref_name }}.zip
 
   build_ios:
     runs-on: ubuntu-latest
