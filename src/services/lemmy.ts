@@ -13,6 +13,7 @@ export function getClient(url: string, jwt?: string): LemmyHttp {
     headers: jwt
       ? {
           Authorization: `Bearer ${jwt}`,
+          ["Cache-Control"]: "no-cache", // otherwise may get back cached site response (despite JWT)
         }
       : undefined,
   });
