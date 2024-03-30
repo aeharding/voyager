@@ -65,12 +65,6 @@
       },
     },
     {
-      "files": ["server.mjs"],
-      "env": {
-        "node": true,
-      },
-    },
-    {
       "files": ["src/**"],
       "globals": {
         "APP_VERSION": true,
