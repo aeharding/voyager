@@ -29,6 +29,7 @@ import { reportsByCommentIdSelector, resolveCommentReport } from "./modSlice";
 import { banUser } from "../user/userSlice";
 import { PageContext } from "../auth/PageContext";
 import { compact } from "lodash";
+import { trashEllipse } from "../icons";
 
 export default function useCommentModActions(commentView: CommentView) {
   const dispatch = useAppDispatch();
@@ -115,24 +116,55 @@ export default function useCommentModActions(commentView: CommentView) {
                 })();
               },
             },
+        !comment.removed && {
+          text: "Remove With Reason",
+          icon: trashEllipse,
+          handler: () => {
+            presentAlert({
+              message: "Remove with reason",
+              buttons: [
+                {
+                  text: "Remove",
+                  cssClass: "mod",
+                  handler: ({ reason }) => {
+                    (async () => {
+                      await dispatch(
+                        modRemoveComment(comment.id, true, reason),
+                      );
+
+                      presentToast(commentRemoved);
+                    })();
+                  },
+                },
+                { text: "Cancel", role: "cancel", cssClass: "mod" },
+              ],
+              inputs: [
+                {
+                  placeholder: "Public removal reason",
+                  name: "reason",
+                },
+              ],
+            });
+          },
+        },
         {
           text: "Comment Nuke",
           icon: colorWandOutline,
           handler: () => {
-            presentAlert(
-              `Remove ${
+            presentAlert({
+              message: `Remove ${
                 commentView.counts.child_count + 1
               } comments in comment chain?`,
-              [
+              buttons: [
                 {
                   text: "Begone",
                   cssClass: "mod",
-                  handler: () => {
+                  handler: ({ reason }) => {
                     (async () => {
                       setLoading(true);
 
                       try {
-                        await dispatch(modNukeCommentChain(comment.id));
+                        await dispatch(modNukeCommentChain(comment.id, reason));
                       } finally {
                         setLoading(false);
                       }
@@ -141,7 +173,13 @@ export default function useCommentModActions(commentView: CommentView) {
                 },
                 { text: "Cancel", role: "cancel", cssClass: "mod" },
               ],
-            );
+              inputs: [
+                {
+                  placeholder: "Reason (public, optional)",
+                  name: "reason",
+                },
+              ],
+            });
           },
         },
         role === "mod" || role === "admin-local"

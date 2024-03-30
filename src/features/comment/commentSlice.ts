@@ -147,11 +147,12 @@ export const editComment =
   };
 
 export const modRemoveComment =
-  (commentId: number, removed: boolean) =>
+  (commentId: number, removed: boolean, reason?: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const response = await clientSelector(getState())?.removeComment({
       comment_id: commentId,
       removed,
+      reason,
     });
 
     dispatch(mutatedComment(response.comment_view));
@@ -159,7 +160,7 @@ export const modRemoveComment =
   };
 
 export const modNukeCommentChain =
-  (commentId: number) =>
+  (commentId: number, reason?: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const client = clientSelector(getState());
 
@@ -179,6 +180,7 @@ export const modNukeCommentChain =
         const comment = await client.removeComment({
           comment_id: commentId,
           removed: true,
+          reason,
         });
 
         dispatch(mutatedComment(comment.comment_view));
