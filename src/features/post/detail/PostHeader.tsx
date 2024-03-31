@@ -57,6 +57,10 @@ const StyledMarkdown = styled(Markdown)`
     object-fit: contain;
     object-position: 0%;
   }
+
+  table img {
+    display: inline-block;
+  }
 `;
 
 const StyledEmbed = styled(Embed)`
