@@ -12,7 +12,7 @@ import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
 import { IonItem, IonList } from "@ionic/react";
 import { useAppSelector } from "../../../store";
-import { compact, uniqBy } from "lodash";
+import { compact, sortBy, uniqBy } from "lodash";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
@@ -114,6 +114,9 @@ export default function TitleSearchResults() {
   );
   const contentRef = useRef<HTMLDivElement>(null);
   const favorites = useAppSelector((state) => state.community.favorites);
+  const moderates = useAppSelector(
+    (state) => state.site.response?.my_user?.moderates,
+  );
   const showModeratorFeed = useShowModeratorFeed();
 
   useEffect(() => {
@@ -133,14 +136,28 @@ export default function TitleSearchResults() {
       ({ type }) => type !== "mod" || showModeratorFeed,
     );
 
+    const moderatedAsCommunityId = moderates?.map((m) => m.community.id);
+
     return uniqBy(
       compact([
         ...searchSpecialByName(eligibleSpecialFeeds, search),
-        ...(search ? results : favorites),
+        ...(search
+          ? sortBy(results, (r) => {
+              if (favorites.includes(getHandle(r))) {
+                return 0;
+              }
+
+              if (moderatedAsCommunityId?.includes(r.id)) {
+                return 1;
+              }
+
+              return 2;
+            })
+          : favorites),
       ]),
       (c) => (typeof c === "string" ? c : c.id),
     ).slice(0, 15);
-  }, [follows, searchPayload, search, favorites, showModeratorFeed]);
+  }, [follows, searchPayload, search, favorites, showModeratorFeed, moderates]);
 
   useEffect(() => {
     if (!debouncedSearch) {
