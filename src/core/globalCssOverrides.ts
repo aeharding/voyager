@@ -299,10 +299,6 @@ export default css`
       font-size: 16px;
     }
 
-    #share-as-image-root button {
-      display: none;
-    }
-
     ion-modal.save-as-image-modal {
       --height: auto;
       --max-width: 470px;

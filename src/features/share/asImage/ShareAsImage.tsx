@@ -382,7 +382,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
       {createPortal(
         <CommentSnapshotContainer className="inner">
-          <ShareImageContext.Provider value={{ hideUsernames, hideCommunity }}>
+          <ShareImageContext.Provider
+            value={{ capturing: true, hideUsernames, hideCommunity }}
+          >
             {includePostDetails && (
               <PostHeader
                 className={!("comment" in data) ? hideBottomBorderCss : ""}
@@ -413,6 +415,10 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 }
 
 export const ShareImageContext = createContext({
+  /**
+   * `true` when components are being rendered for image capture
+   */
+  capturing: false,
   hideUsernames: false,
   hideCommunity: false,
 });
