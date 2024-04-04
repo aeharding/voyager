@@ -37,3 +37,7 @@ vite.config.ts.timestamp-*
 
 # fly.io
 fly.toml
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
