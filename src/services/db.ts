@@ -647,7 +647,7 @@ export class WefwefDB extends Dexie {
       const item = await query.first();
 
       if (item) {
-        await query.modify(payload);
+        await query.modify({ ...payload });
         return;
       }
 
