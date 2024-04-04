@@ -85,3 +85,12 @@ export const pageTransitionAnimateBackOnly = (
 export function preventIonicTapClick() {
   document.dispatchEvent(new CustomEvent("ionGestureCaptured"));
 }
+
+export function findIonContentScrollView(page: HTMLElement) {
+  return (
+    page.querySelector(".virtual-scroller") ??
+    page
+      .querySelector("ion-content")
+      ?.shadowRoot?.querySelector(".inner-scroll")
+  );
+}

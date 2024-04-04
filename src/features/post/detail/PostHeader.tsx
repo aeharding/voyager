@@ -29,6 +29,7 @@ import { styled } from "@linaria/react";
 import { AppContext } from "../../auth/AppContext";
 import AnimateHeight from "react-animate-height";
 import useIsPostUrlMedia from "../useIsPostUrlMedia";
+import { findIonContentScrollView } from "../../../helpers/ionic";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -170,7 +171,7 @@ function PostHeader({
 
     if (activePageRef?.current?.current) {
       if ("querySelector" in activePageRef.current.current) {
-        activePageRef.current.current.scrollTo({
+        findIonContentScrollView(activePageRef.current.current)?.scrollTo({
           top: titleTop,
           behavior: "smooth",
         });
