@@ -8,10 +8,21 @@ const LinkInterceptor = styled(LinkInterceptorUnstyled)`
   -webkit-touch-callout: default;
 `;
 
+type LinkInterceptorUnstyledProps = React.JSX.IntrinsicElements["a"] & {
+  el?: "div";
+
+  /**
+   * This might not be a lemmy link. Sometimes we know it is though, and so force it to be resolved
+   * (this helps with e.g. crossposts on new instances that aren't fully federated)
+   */
+  forceResolveObject?: boolean;
+};
+
 function LinkInterceptorUnstyled({
   onClick: _onClick,
+  forceResolveObject,
   ...props
-}: React.JSX.IntrinsicElements["a"] & { el?: "div" }) {
+}: LinkInterceptorUnstyledProps) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
@@ -35,9 +46,9 @@ function LinkInterceptorUnstyled({
       if (e.metaKey || e.ctrlKey) return;
       if (e.defaultPrevented) return;
 
-      redirectToLemmyObjectIfNeeded(props.href, e);
+      redirectToLemmyObjectIfNeeded(props.href, e, forceResolveObject);
     },
-    [props.href, redirectToLemmyObjectIfNeeded, _onClick],
+    [props.href, redirectToLemmyObjectIfNeeded, _onClick, forceResolveObject],
   );
 
   // Sometimes markdown thinks things are URLs that aren't URLs
