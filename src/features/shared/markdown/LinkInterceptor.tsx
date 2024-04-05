@@ -12,8 +12,8 @@ type LinkInterceptorUnstyledProps = React.JSX.IntrinsicElements["a"] & {
   el?: "div";
 
   /**
-   * This might not be a lemmy link. Sometimes we know it is though, and so force it to be resolved
-   * (this helps with e.g. crossposts on new instances that aren't fully federated)
+   * If we know the link is from Lemmy, force it to be resolved.
+   * This helps on new instances that aren't fully federated.
    */
   forceResolveObject?: boolean;
 };

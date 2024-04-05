@@ -183,12 +183,13 @@ export default function useLemmyUrlHandler() {
        * If its a known Lemmy link, bypass checking link domain against known instances list
        * (this helps with new instances that aren't well federated yet)
        */
-      forceResolve = false,
+      forceResolveObject = false,
     ): Promise<boolean> => {
       const url = getUrl(normalizeObjectUrl(link));
 
       if (!url) return false;
-      if (!forceResolve && !knownInstances.includes(url.hostname)) return false; // If non-lemmy domain, return
+      if (!forceResolveObject && !knownInstances.includes(url.hostname))
+        return false; // If non-lemmy domain, return
 
       if (handleCommunityClickIfNeeded(url, e)) return true;
       if (handleUserClickIfNeeded(url, e)) return true;
