@@ -66,10 +66,11 @@ export default function CrosspostContainer({
 
   return (
     <LinkInterceptor
-      className={`cross-post ${hasBeenRead ? "read" : ""} ${className}`}
-      href={url}
       el={el}
+      href={url}
+      forceResolveObject
       onClick={handleLinkClick}
+      className={`cross-post ${hasBeenRead ? "read" : ""} ${className}`}
       draggable="false"
     >
       {children({ crosspost, hasBeenRead })}
