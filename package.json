@@ -10,6 +10,7 @@
     "build": "./build.sh",
     "preview": "vite preview",
     "test": "vitest",
+    "test:e2e": "playwright test",
     "test:typecheck": "tsc",
     "lint": "eslint src --max-warnings=0",
     "lint:formatting": "prettier --check .",
