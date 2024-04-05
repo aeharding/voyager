@@ -71,7 +71,7 @@ export default defineConfig({
     BUILD_FOSS_ONLY: !!process.env.BUILD_FOSS_ONLY,
   },
   test: {
-    exclude: ["e2e/", "node_modules/"],
+    exclude: ["**/e2e/**", "**/node_modules/**"],
     globals: true,
     environment: "jsdom",
     setupFiles: "./src/setupTests.ts",
