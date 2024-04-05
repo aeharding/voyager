@@ -1,0 +1,27 @@
+name: Run e2e tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  playwright:
+    name: Run Playwright tests
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.43.0-jammy
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build project
+        run: pnpm build
+      - name: Run tests
+        run: env HOME=/root pnpm test:e2e

@@ -10,6 +10,7 @@
     "build": "./build.sh",
     "preview": "vite preview",
     "test": "vitest",
+    "test:e2e": "playwright test",
     "test:typecheck": "tsc",
     "lint": "eslint src --max-warnings=0",
     "lint:formatting": "prettier --check .",
@@ -110,6 +111,7 @@
   "devDependencies": {
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@playwright/test": "^1.43.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
     "@testing-library/user-event": "^14.5.2",
@@ -118,6 +120,7 @@
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.14.202",
     "@types/mdast": "^4.0.3",
+    "@types/node": "^20.12.4",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.23",
     "@types/react-router": "^5.1.20",
