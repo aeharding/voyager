@@ -91,14 +91,8 @@ export const SERVERS_BY_CATEGORY = {
     "psychedelia.ink",
     "ani.social",
   ],
-  activism: [
-    "rblind.com",
-    "badatbeing.social",
-    "beehaw.org",
-    "sirpnk.net",
-    "merv.news",
-  ],
-  lgbt: ["femboys.bar", "transfem.space", "lemmy.blahaj.zone"],
+  activism: ["rblind.com", "badatbeing.social", "slrpnk.net"],
+  lgbt: ["femboys.bar", "lemmy.blahaj.zone"],
   academia: ["mander.xyz", "literature.cafe", "futurology.today"],
   furry: ["pawb.social", "yiffit.net"],
 };
