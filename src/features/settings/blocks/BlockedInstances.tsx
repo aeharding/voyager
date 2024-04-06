@@ -77,15 +77,17 @@ export default function BlockedInstances() {
           </IonItemSliding>
         ))}
 
-        <IonItem
-          onClick={() =>
-            presentInstanceSelectorModal({
-              cssClass: "small",
-            })
-          }
-        >
-          <IonLabel color="primary">Add Instance</IonLabel>
-        </IonItem>
+        <IonItemSliding>
+          <IonItem
+            onClick={() =>
+              presentInstanceSelectorModal({
+                cssClass: "small",
+              })
+            }
+          >
+            <IonLabel color="primary">Add Instance</IonLabel>
+          </IonItem>
+        </IonItemSliding>
       </IonList>
 
       <IonLoading isOpen={loading} />
