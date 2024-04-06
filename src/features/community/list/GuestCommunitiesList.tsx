@@ -12,7 +12,7 @@ import { CommunitiesListProps } from "./CommunitiesList";
  *
  * TODO in the future Local/All will be configurable in an explore view
  */
-const SHOW_LOCAL_ONLY = ["lemmynsfw.com", "beehaw.org"];
+const SHOW_LOCAL_ONLY = ["lemmynsfw.com"];
 
 export default function GuestCommunitiesList({ actor }: CommunitiesListProps) {
   const [communities, setCommunities] = useState<Community[] | undefined>();
