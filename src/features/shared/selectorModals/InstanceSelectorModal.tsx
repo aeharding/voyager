@@ -44,11 +44,7 @@ export default function InstanceSelectorModal(
       setLoading(false);
     }
 
-    setInstances(
-      instances.federated_instances?.linked.filter(
-        ({ software }) => software === "lemmy",
-      ) ?? [],
-    );
+    setInstances(instances.federated_instances?.linked ?? []);
   }
 
   async function search(query: string) {
