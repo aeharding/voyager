@@ -26,7 +26,9 @@ COPY patches ./patches
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy all source files
-COPY . ./
+COPY build.sh disable_in_app_purchases.sh index.html vite.config.ts manifest.json tsconfig.json tsconfig.node.json ./
+COPY public ./public
+COPY src ./src
 
 # Build
 RUN pnpm build
