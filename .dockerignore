@@ -14,3 +14,4 @@ dist
 android/
 ios/
 fastlane/
+e2e/
