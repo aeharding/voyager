@@ -261,8 +261,16 @@ export default function PostEditorRoot({
         });
       }
     } catch (error) {
+      let message: string;
+
+      if (error instanceof Error) {
+        message = "Problem submitting your post: " + error.message;
+      } else {
+        message = "Problem submitting your post. Please try again.";
+      }
+
       presentToast({
-        message: "Problem submitting your post. Please try again.",
+        message,
         color: "danger",
         fullscreen: true,
       });
