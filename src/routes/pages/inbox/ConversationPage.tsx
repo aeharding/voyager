@@ -3,36 +3,19 @@ import {
   IonButtons,
   IonContent,
   IonFooter,
-  IonIcon,
   IonPage,
   IonTitle,
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import {
-  KeyboardEvent,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { jwtPayloadSelector } from "../../../features/auth/authSelectors";
-import {
-  receivedMessages,
-  syncMessages,
-} from "../../../features/inbox/inboxSlice";
+import { syncMessages } from "../../../features/inbox/inboxSlice";
 import { useParams } from "react-router";
 import { getHandle } from "../../../helpers/lemmy";
 import Message from "../../../features/inbox/messages/Message";
-import TextareaAutosize from "react-textarea-autosize";
-import { arrowUp } from "ionicons/icons";
-import useClient from "../../../helpers/useClient";
-import {
-  MaxWidthContainer,
-  maxWidthCss,
-} from "../../../features/shared/AppContent";
+import { maxWidthCss } from "../../../features/shared/AppContent";
 import { IonContentCustomEvent } from "@ionic/core";
 import { getUser } from "../../../features/user/userSlice";
 import { PageContentIonSpinner } from "../../../features/user/AsyncProfile";
@@ -40,15 +23,11 @@ import { StyledLink } from "../../../features/labels/links/shared";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import ConversationsMoreActions from "../../../features/feed/ConversationsMoreActions";
 import { TabContext } from "../../../core/TabContext";
-import useAppToast from "../../../helpers/useAppToast";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import AppHeader from "../../../features/shared/AppHeader";
-
-const MaxSizeContainer = styled(MaxWidthContainer)`
-  height: 100%;
-`;
+import SendMessageBox from "../../../features/inbox/SendMessageBox";
 
 const Container = styled.div`
   ${maxWidthCss}
@@ -72,63 +51,6 @@ const Messages = styled.div`
   justify-content: flex-end;
 `;
 
-const SendContainer = styled.div`
-  position: relative;
-
-  padding: 0.5rem;
-
-  background: var(
-    --ion-tab-bar-background,
-    var(--ion-background-color-step-50, #f7f7f7)
-  );
-  border-top: 1px solid
-    var(
-      --ion-tab-bar-border-color,
-      var(
-        --ion-border-color,
-        var(--ion-background-color-step-150, rgba(0, 0, 0, 0.2))
-      )
-    );
-`;
-
-const InputContainer = styled.div`
-  position: relative;
-
-  display: flex;
-`;
-
-const Input = styled(TextareaAutosize)`
-  border: 1px solid var(--ion-color-medium);
-  border-radius: 1rem;
-
-  // Exact px measurements to prevent
-  // pixel rounding browser inconsistencies
-  padding: 8px 1rem;
-  line-height: 18px;
-  font-size: 16px;
-
-  background: var(--ion-background-color);
-  color: var(--ion-text-color);
-  outline: none;
-
-  width: 100%;
-  resize: none;
-  appearance: none;
-`;
-
-const SendButton = styled(IonIcon)`
-  position: absolute;
-  bottom: calc(36px / 2);
-  transform: translateY(50%);
-  right: 4px;
-  background: var(--ion-color-primary);
-  height: 21px;
-  width: 21px;
-  border-radius: 50%;
-  padding: 3px;
-  color: white;
-`;
-
 export default function ConversationPage() {
   const pageRef = useRef<HTMLElement>(null);
   const dispatch = useAppDispatch();
@@ -140,11 +62,7 @@ export default function ConversationPage() {
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   );
   const { handle } = useParams<{ handle: string }>();
-  const [value, setValue] = useState("");
-  const client = useClient();
   const userByHandle = useAppSelector((state) => state.user.userByHandle);
-  const [loading, setLoading] = useState(false);
-  const presentToast = useAppToast();
 
   const contentRef = useRef<IonContentCustomEvent<never>["target"]>(null);
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -186,41 +104,7 @@ export default function ConversationPage() {
     [handle, allMessages, myUserId],
   );
 
-  async function send() {
-    const recipientId = userByHandle[handle]?.id;
-
-    if (typeof recipientId !== "number") return;
-
-    setLoading(true);
-
-    let message;
-
-    try {
-      message = await client.createPrivateMessage({
-        content: value,
-        recipient_id: recipientId,
-      });
-    } catch (error) {
-      presentToast({
-        message: `Message failed to send. Please try again`,
-        color: "danger",
-      });
-      setLoading(false);
-      throw error;
-    }
-
-    dispatch(receivedMessages([message.private_message_view]));
-
-    setLoading(false);
-    setValue("");
-  }
-
-  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if (!e.ctrlKey && !e.metaKey) return;
-    if (e.key !== "Enter") return;
-
-    send();
-  }
+  const them = userByHandle[handle];
 
   return (
     <IonPage ref={pageRef}>
@@ -265,26 +149,7 @@ export default function ConversationPage() {
           <PageContentIonSpinner />
         )}
       </IonContent>
-      <IonFooter>
-        <SendContainer>
-          <MaxSizeContainer>
-            <InputContainer>
-              <Input
-                disabled={loading}
-                placeholder="Message"
-                onChange={(e) => setValue(e.target.value)}
-                value={value}
-                rows={1}
-                maxRows={5}
-                onKeyDown={onKeyDown}
-              />
-              {value.trim() && !loading && (
-                <SendButton icon={arrowUp} onClick={send} />
-              )}
-            </InputContainer>
-          </MaxSizeContainer>
-        </SendContainer>
-      </IonFooter>
+      <IonFooter>{them && <SendMessageBox recipientId={them.id} />}</IonFooter>
     </IonPage>
   );
 }
