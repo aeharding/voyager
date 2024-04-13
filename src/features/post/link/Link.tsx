@@ -2,12 +2,15 @@ import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import { IonIcon } from "@ionic/react";
 import { chevronForward } from "ionicons/icons";
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useMemo, useState } from "react";
 import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
 import Url from "../../shared/Url";
 import { preventOnClickNavigationBug } from "../../../helpers/ionic";
 import LinkPreview from "./LinkPreview";
 import { LinkData } from "../../comment/CommentLinks";
+import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
+import { getImageSrc } from "../../../services/lemmy";
+import { isUrlImage } from "../../../helpers/url";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -35,8 +38,9 @@ const Img = styled.img`
 `;
 
 const ThumbnailImg = styled.img`
-  margin: -10px 0 -10px -10px;
-  height: 60px;
+  margin: calc(-1 * var(--top-padding)) 0 calc(-1 * var(--top-padding))
+    calc(-1 * var(--start-padding));
+  height: 55px;
   aspect-ratio: 0.85;
   width: auto;
   object-fit: cover;
@@ -53,25 +57,33 @@ const Bottom = styled.div<{ small?: boolean }>`
   display: flex;
   align-items: center;
 
-  min-height: 50px;
+  min-height: ${({ small }) => (small ? "50px" : "40px")};
 
-  gap: ${({ small }) => (small ? "8px" : "12px")};
-  padding: ${({ small }) => (small ? "4px 8px" : "10px")};
+  --gap: ${({ small }) => (small ? "8px" : "10px")};
 
-  color: var(--ion-color-text-aside);
+  gap: var(--gap);
+
+  --start-padding: ${({ small }) => (small ? "8px" : "10px")};
+  --top-padding: ${({ small }) => (small ? "4px" : "8px")};
+
+  padding: var(--top-padding) var(--start-padding);
+
+  color: var(--ion-color-medium);
   background: var(--lightroom-bg);
+
+  @media (min-width: 700px) {
+    --gap: 16px;
+    --start-padding: 16px;
+  }
 
   .cross-post & {
     background: none;
   }
-
-  @media (min-width: 700px) {
-    gap: 16px;
-    padding: 10px 16px;
-  }
 `;
 
-const Text = styled.div``;
+const Text = styled.div`
+  color: var(--ion-text-color);
+`;
 
 const UrlContainer = styled.div`
   flex: 1;
@@ -82,6 +94,12 @@ const UrlContainer = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+const ChevronIcon = styled(IonIcon)`
+  font-size: 20px;
+  opacity: 0.4;
+  margin: 0 -3px;
 `;
 
 interface EmbedProps {
@@ -114,7 +132,15 @@ export default function Link({
   small,
   commentType,
 }: EmbedProps) {
+  const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
+
   const [error, setError] = useState(false);
+
+  const linkType = useMemo(
+    () => determineObjectTypeFromUrl(url),
+    [url, determineObjectTypeFromUrl],
+  );
+  const isImage = useMemo(() => isUrlImage(url), [url]);
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -125,15 +151,10 @@ export default function Link({
   };
 
   const compactIcon = (() => {
-    if (!compact || !thumbnail)
-      return (
-        <LinkPreview
-          url={url}
-          thumbnail={thumbnail}
-          type={compact ? (thumbnail ? "image" : undefined) : commentType}
-          text={text}
-        />
-      );
+    if (commentType === "image" || isImage)
+      return <ThumbnailImg src={getImageSrc(url, { size: 50 })} />;
+
+    if (linkType || !compact || !thumbnail) return <LinkPreview url={url} />;
 
     return <ThumbnailImg src={thumbnail} />;
   })();
@@ -159,7 +180,7 @@ export default function Link({
           <Text>{text}</Text>
           <Url>{url}</Url>
         </UrlContainer>
-        <IonIcon icon={chevronForward} />
+        <ChevronIcon icon={chevronForward} />
       </Bottom>
     </Container>
   );
