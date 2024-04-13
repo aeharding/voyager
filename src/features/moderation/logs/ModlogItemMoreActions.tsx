@@ -1,4 +1,5 @@
 import { styled } from "@linaria/react";
+import { compact } from "lodash";
 import { IonIcon, useIonActionSheet } from "@ionic/react";
 import {
   ellipsisHorizontal,
@@ -8,7 +9,6 @@ import {
 import { ModlogItemType } from "../../../routes/pages/shared/ModlogPage";
 import { getHandle } from "../../../helpers/lemmy";
 import useAppNavigation from "../../../helpers/useAppNavigation";
-import { notEmpty } from "../../../helpers/array";
 import { ModeratorRole, getModIcon } from "../useCanModerate";
 
 const EllipsisIcon = styled(IonIcon)`
@@ -43,7 +43,7 @@ export default function ModlogItemMoreActions({
   function presentMoreActions() {
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: [
+      buttons: compact([
         person
           ? {
               text: getHandle(person),
@@ -76,7 +76,7 @@ export default function ModlogItemMoreActions({
           text: "Cancel",
           role: "cancel",
         },
-      ].filter(notEmpty),
+      ]),
     });
   }
 
