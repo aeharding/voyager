@@ -26,8 +26,9 @@ export default function LargeFeedMedia({
   blur,
   className,
   style: baseStyle,
+  defaultAspectRatio,
   ...props
-}: PostGalleryImgProps & { blur: boolean }) {
+}: PostGalleryImgProps & { blur?: boolean; defaultAspectRatio?: number }) {
   const dispatch = useAppDispatch();
   const [mediaRef, currentAspectRatio] = useMediaLoadObserver(src);
 
@@ -59,6 +60,7 @@ export default function LargeFeedMedia({
       className={className}
       style={baseStyle}
       state={placeholderState}
+      defaultAspectRatio={defaultAspectRatio}
     >
       <StyledPostMedia
         {...props}
