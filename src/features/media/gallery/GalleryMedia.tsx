@@ -54,6 +54,8 @@ export default forwardRef<
       )
         return;
 
+      if (e.target instanceof HTMLElement && e.target.closest("a")) return;
+
       open(e.currentTarget, props.src, post, animationType);
 
       // marking read happens after the gallery has finished animating
