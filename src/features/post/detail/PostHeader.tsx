@@ -11,7 +11,6 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
 import { findLoneImage } from "../../../helpers/markdown";
 import Markdown from "../../shared/markdown/Markdown";
-import Embed from "../shared/Embed";
 import InlineMarkdown from "../../shared/markdown/InlineMarkdown";
 import Nsfw, { isNsfw } from "../../labels/Nsfw";
 import { megaphone } from "ionicons/icons";
@@ -30,6 +29,7 @@ import { AppContext } from "../../auth/AppContext";
 import AnimateHeight from "react-animate-height";
 import useIsPostUrlMedia from "../useIsPostUrlMedia";
 import { findIonContentScrollView } from "../../../helpers/ionic";
+import PostLink from "../link/PostLink";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -64,7 +64,7 @@ const StyledMarkdown = styled(Markdown)`
   }
 `;
 
-const StyledEmbed = styled(Embed)`
+const StyledPostLink = styled(PostLink)`
   margin: 0 0 12px;
 `;
 
@@ -214,7 +214,7 @@ function PostHeader({
     if (post.post.body?.trim() && !usedLoneImage) {
       return (
         <>
-          {post.post.url && !urlIsMedia && <Embed post={post} />}
+          {post.post.url && !urlIsMedia && <PostLink post={post} />}
           <StyledMarkdown className="collapse-md-margins" id={post.post.ap_id}>
             {post.post.body}
           </StyledMarkdown>
@@ -223,7 +223,7 @@ function PostHeader({
     }
 
     if (post.post.url && !urlIsMedia) {
-      return <StyledEmbed post={post} />;
+      return <StyledPostLink post={post} />;
     }
   }, [post, crosspostUrl, markdownLoneImage, urlIsMedia]);
 

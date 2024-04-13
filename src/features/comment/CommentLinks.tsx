@@ -2,13 +2,13 @@ import { useMemo } from "react";
 import { unified } from "unified";
 import { SKIP, visit } from "unist-util-visit";
 import remarkParse from "remark-parse";
-import CommentLink from "./CommentLink";
+import CommentLink from "../post/link/CommentLink";
 import { styled } from "@linaria/react";
-import customRemarkGfm from "../../shared/markdown/customRemarkGfm";
-import { useAppSelector } from "../../../store";
+import customRemarkGfm from "../shared/markdown/customRemarkGfm";
+import { useAppSelector } from "../../store";
 import { Text } from "mdast";
 import { uniqBy } from "lodash";
-import { isValidUrl } from "../../../helpers/url";
+import { isValidUrl } from "../../helpers/url";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 
 const Container = styled.div`

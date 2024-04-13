@@ -1,6 +1,5 @@
 import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
-import { LinkData } from "./CommentLinks";
 import {
   albumsOutline,
   chatboxSharp,
@@ -8,43 +7,35 @@ import {
   peopleSharp,
   personSharp,
 } from "ionicons/icons";
-import { getImageSrc } from "../../../services/lemmy";
 import { ReactNode, useMemo } from "react";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
-import { isUrlImage } from "../../../helpers/url";
 
 const shared = `
-  width: 30px;
+  width: 26px;
   height: 30px;
   box-sizing: content-box;
 
-  padding-right: 6px;
+  padding-right: var(--gap);
   margin-right: 2px;
-  border-right: 1px solid rgba(160, 160, 160, 0.4);
+  border-right: 1px solid rgba(160, 160, 160, 0.7);
 `;
 
 const LinkIcon = styled(IonIcon)`
   ${shared}
 
-  font-size: 30px;
-  opacity: 0.5;
-`;
-
-const LinkImage = styled.img`
-  ${shared}
-
-  object-fit: cover;
+  font-size: 26px;
+  opacity: 0.7;
 `;
 
 interface LinkPreviewProps {
-  link: LinkData;
+  url: string;
 }
 
-export default function LinkPreview({ link }: LinkPreviewProps): ReactNode {
+export default function LinkPreview({ url }: LinkPreviewProps): ReactNode {
   const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
 
   const icon = useMemo(() => {
-    const type = determineObjectTypeFromUrl(link.url);
+    const type = determineObjectTypeFromUrl(url);
 
     switch (type) {
       case "comment":
@@ -58,14 +49,7 @@ export default function LinkPreview({ link }: LinkPreviewProps): ReactNode {
       case undefined:
         return linkSharp;
     }
-  }, [link.url, determineObjectTypeFromUrl]);
+  }, [url, determineObjectTypeFromUrl]);
 
-  const isImage = useMemo(() => isUrlImage(link.url), [link.url]);
-
-  if (link.type === "image" || isImage)
-    return (
-      <LinkImage src={getImageSrc(link.url, { size: 30 })} alt={link.text} />
-    );
-
-  if (link.type === "link") return <LinkIcon icon={icon} />;
+  return <LinkIcon icon={icon} />;
 }

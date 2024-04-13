@@ -6,10 +6,10 @@ import { findLoneImage } from "../../../../helpers/markdown";
 import { useAppSelector } from "../../../../store";
 import { isNsfwBlurred } from "../../../labels/Nsfw";
 import LargeFeedPostMedia from "./media/LargeFeedPostMedia";
-import Embed from "../../shared/Embed";
 import InlineMarkdown from "../../../shared/markdown/InlineMarkdown";
 import { InFeedContext } from "../../../feed/Feed";
 import useIsPostUrlMedia from "../../useIsPostUrlMedia";
+import PostLink from "../../link/PostLink";
 
 const PostBody = styled.div`
   font-size: 0.8em;
@@ -78,7 +78,7 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
    * Embedded video, image with a thumbanil
    */
   if (post.post.thumbnail_url && post.post.url) {
-    return <Embed post={post} />;
+    return <PostLink post={post} />;
   }
 
   /**
@@ -87,7 +87,7 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
   if (post.post.body?.trim()) {
     return (
       <>
-        {post.post.url && <Embed post={post} />}
+        {post.post.url && <PostLink post={post} />}
 
         <PostBody className={hasBeenRead ? postBodyReadCss : postBodyUnreadCss}>
           <InlineMarkdown>{post.post.body}</InlineMarkdown>
@@ -97,6 +97,6 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
   }
 
   if (post.post.url) {
-    return <Embed post={post} />;
+    return <PostLink post={post} />;
   }
 }
