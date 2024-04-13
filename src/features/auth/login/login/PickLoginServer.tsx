@@ -27,6 +27,7 @@ import {
   MINIMUM_LEMMY_VERSION,
   isMinimumSupportedLemmyVersion,
 } from "../../../../helpers/lemmy";
+import { presentErrorMessage } from "../../../../helpers/error";
 
 const Container = styled.div`
   height: 100%;
@@ -94,7 +95,10 @@ export default function PickLoginServer() {
       }
 
       presentToast({
-        message: `Problem connecting to ${potentialServer}. Please try again`,
+        message: presentErrorMessage(
+          `Problem connecting to ${potentialServer}`,
+          error,
+        ),
         color: "danger",
         fullscreen: true,
       });

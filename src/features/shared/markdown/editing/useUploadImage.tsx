@@ -3,6 +3,7 @@ import useAppToast from "../../../../helpers/useAppToast";
 import { uploadImage } from "../../../../services/lemmy";
 import { IonLoading } from "@ionic/react";
 import useClient from "../../../../helpers/useClient";
+import { presentErrorMessage } from "../../../../helpers/error";
 
 export default function useUploadImage() {
   const presentToast = useAppToast();
@@ -20,11 +21,8 @@ export default function useUploadImage() {
       try {
         imageUrl = await uploadImage(client, image);
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error";
-
         presentToast({
-          message: `Problem uploading image: ${message}. Please try again.`,
+          message: presentErrorMessage("Problem uploading image", error),
           color: "danger",
           fullscreen: true,
         });

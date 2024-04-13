@@ -310,10 +310,8 @@ export default function PostEditorRoot({
     try {
       imageUrl = await uploadImage(client, image);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-
       presentToast({
-        message: `Problem uploading image: ${message}. Please try again.`,
+        message: presentErrorMessage("Problem uploading image", error),
         color: "danger",
         fullscreen: true,
       });

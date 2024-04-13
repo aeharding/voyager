@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { styled } from "@linaria/react";
 import { PositionedContainer } from "../elements/PositionedContainer";
 import CommentContainer from "../elements/CommentContainer";
+import { presentErrorMessage } from "../../../helpers/error";
 
 const MoreRepliesBlock = styled.div<{ hidden: boolean }>`
   display: flex;
@@ -84,7 +85,7 @@ export default function CommentExpander({
       });
     } catch (error) {
       presentToast({
-        message: "Problem fetching more comments. Please try again.",
+        message: presentErrorMessage("Problem fetching more comments", error),
         color: "danger",
       });
       throw error;
