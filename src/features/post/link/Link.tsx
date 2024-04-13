@@ -40,7 +40,7 @@ const Img = styled.img`
 const ThumbnailImg = styled.img`
   margin: calc(-1 * var(--top-padding)) 0 calc(-1 * var(--top-padding))
     calc(-1 * var(--start-padding));
-  height: 55px;
+  height: var(--height);
   aspect-ratio: 0.85;
   width: auto;
   object-fit: cover;
@@ -57,7 +57,8 @@ const Bottom = styled.div<{ small?: boolean }>`
   display: flex;
   align-items: center;
 
-  min-height: ${({ small }) => (small ? "50px" : "40px")};
+  --height: ${({ small }) => (small ? "45px" : "55px")};
+  min-height: var(--height);
 
   --gap: ${({ small }) => (small ? "8px" : "10px")};
 
@@ -174,7 +175,7 @@ export default function Link({
           onError={() => setError(true)}
         />
       )}
-      <Bottom small={small}>
+      <Bottom small={small || (!compact && !!thumbnail)}>
         {compactIcon}
         <UrlContainer>
           <Text>{text}</Text>
