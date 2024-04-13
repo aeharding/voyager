@@ -18,23 +18,6 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { maxWidthCss } from "../../shared/AppContent";
 import Ago from "../../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import {
-  AdminPurgeCommentView,
-  AdminPurgeCommunityView,
-  AdminPurgePersonView,
-  AdminPurgePostView,
-  ModAddCommunityView,
-  ModAddView,
-  ModBanFromCommunityView,
-  ModBanView,
-  ModFeaturePostView,
-  ModHideCommunityView,
-  ModLockPostView,
-  ModRemoveCommentView,
-  ModRemoveCommunityView,
-  ModRemovePostView,
-  ModTransferCommunityView,
-} from "lemmy-js-client";
 import ModlogItemMoreActions from "./ModlogItemMoreActions";
 import {
   ModeratorRole,
@@ -133,35 +116,35 @@ export interface LogEntryData {
 function renderModlogData(item: ModlogItemType): LogEntryData {
   switch (true) {
     case "mod_remove_comment" in item:
-      return removeComment(item as ModRemoveCommentView);
+      return removeComment(item);
     case "mod_remove_post" in item:
-      return removePost(item as ModRemovePostView);
+      return removePost(item);
     case "mod_lock_post" in item:
-      return lockPost(item as ModLockPostView);
+      return lockPost(item);
     case "mod_feature_post" in item:
-      return featurePost(item as ModFeaturePostView);
+      return featurePost(item);
     case "mod_remove_community" in item:
-      return removeCommunity(item as ModRemoveCommunityView);
+      return removeCommunity(item);
     case "mod_ban_from_community" in item:
-      return banFromCommunity(item as ModBanFromCommunityView);
+      return banFromCommunity(item);
     case "mod_ban" in item:
-      return banFromInstance(item as ModBanView);
+      return banFromInstance(item);
     case "mod_add_community" in item:
-      return addCommunity(item as ModAddCommunityView);
+      return addCommunity(item);
     case "mod_transfer_community" in item:
-      return transferCommunity(item as ModTransferCommunityView);
+      return transferCommunity(item);
     case "mod_add" in item:
-      return addInstance(item as ModAddView);
+      return addInstance(item);
     case "admin_purge_person" in item:
-      return purgePerson(item as AdminPurgePersonView);
+      return purgePerson(item);
     case "admin_purge_community" in item:
-      return purgeCommunity(item as AdminPurgeCommunityView);
+      return purgeCommunity(item);
     case "admin_purge_post" in item:
-      return purgePost(item as AdminPurgePostView);
+      return purgePost(item);
     case "admin_purge_comment" in item:
-      return purgeComment(item as AdminPurgeCommentView);
+      return purgeComment(item);
     case "mod_hide_community" in item:
-      return hideCommunity(item as ModHideCommunityView);
+      return hideCommunity(item);
     default:
       // should never happen (type = never)
       //
