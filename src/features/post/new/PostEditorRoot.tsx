@@ -36,6 +36,7 @@ import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isAndroid } from "../../../helpers/device";
 import { css } from "@linaria/core";
 import AppHeader from "../../shared/AppHeader";
+import { presentErrorMessage } from "../../../helpers/error";
 
 const Container = styled.div`
   position: absolute;
@@ -261,16 +262,8 @@ export default function PostEditorRoot({
         });
       }
     } catch (error) {
-      let message: string;
-
-      if (error instanceof Error) {
-        message = "Problem submitting your post: " + error.message;
-      } else {
-        message = "Problem submitting your post. Please try again.";
-      }
-
       presentToast({
-        message,
+        message: presentErrorMessage("Problem submitting your post", error),
         color: "danger",
         fullscreen: true,
       });
