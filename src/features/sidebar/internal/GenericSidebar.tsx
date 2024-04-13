@@ -4,12 +4,13 @@ import React from "react";
 import Markdown from "../../shared/markdown/Markdown";
 import SidebarCounts from "./SidebarCounts";
 import SidebarOwners from "./SidebarOwners";
+import LargeFeedMedia from "../../post/inFeed/large/media/LargeFeedMedia";
 
 const Container = styled.div`
   line-height: 1.5;
 `;
 
-const BannerImg = styled.img`
+const BannerImg = styled(LargeFeedMedia)`
   margin-top: calc(var(--padding-top) * -1);
   margin-left: calc(var(--padding-start) * -1);
   margin-right: calc(var(--padding-end) * -1);
@@ -44,7 +45,13 @@ export default function GenericSidebar({
   return (
     <>
       <Container className="ion-padding-start ion-padding-end ion-padding-top">
-        {banner && <BannerImg src={banner} alt={`Banner for ${name}`} />}
+        {banner && (
+          <BannerImg
+            src={banner}
+            alt={`Banner for ${name}`}
+            defaultAspectRatio={2.5}
+          />
+        )}
         <Markdown id={id}>{sidebar}</Markdown>
         <SidebarCounts counts={counts} />
         {extraBadges}

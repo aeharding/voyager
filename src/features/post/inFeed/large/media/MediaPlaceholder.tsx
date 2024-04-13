@@ -5,7 +5,7 @@ import { IonIcon } from "@ionic/react";
 import { HTMLAttributes } from "react";
 import { imageOutline } from "ionicons/icons";
 
-const PlaceholderContainer = styled.div`
+const PlaceholderContainer = styled.div<{ defaultAspectRatio: number }>`
   display: flex;
 
   background: var(--lightroom-bg);
@@ -14,7 +14,7 @@ const PlaceholderContainer = styled.div`
     align-items: center;
     justify-content: center;
 
-    aspect-ratio: 1.2;
+    aspect-ratio: ${({ defaultAspectRatio }) => defaultAspectRatio};
     position: relative;
 
     ${StyledPostMedia} {
@@ -38,6 +38,7 @@ type State = "loading" | "loaded" | "error" | "custom";
 
 interface MediaPlaceholderProps extends HTMLAttributes<HTMLDivElement> {
   state: State;
+  defaultAspectRatio?: number;
   children?: React.ReactNode;
 }
 
@@ -45,6 +46,7 @@ export default function MediaPlaceholder({
   state,
   className,
   children,
+  defaultAspectRatio = 1.2,
   ...rest
 }: MediaPlaceholderProps) {
   function renderIcon() {
@@ -62,6 +64,7 @@ export default function MediaPlaceholder({
   return (
     <PlaceholderContainer
       className={cx(className, state !== "loaded" && "not-loaded")}
+      defaultAspectRatio={defaultAspectRatio}
       {...rest}
     >
       {children}
