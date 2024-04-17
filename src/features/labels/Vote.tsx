@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from "../../store";
-import { IonIcon } from "@ionic/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { voteOnPost } from "../post/postSlice";
 import React, { useContext } from "react";
@@ -20,15 +19,20 @@ import { formatNumber } from "../../helpers/number";
 import { styled } from "@linaria/react";
 import { getVoteErrorMessage } from "../../helpers/lemmyErrors";
 import { PlainButton } from "../shared/PlainButton";
+import Stat from "../post/detail/Stat";
+import { css } from "@linaria/core";
 
-const Container = styled(PlainButton)<{
+const iconClass = css`
+  // Vote icons are tall and narrow, but svg container is square.
+  // This creates visually inconsistent padding.
+  // So fudge it so it looks better next to more square icons
+  margin: 0 -2px;
+`;
+
+const VoteStat = styled(Stat)<{
   vote?: 1 | -1 | 0;
   voteRepresented?: 1 | -1;
 }>`
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-
   && {
     color: ${({ vote, voteRepresented }) => {
       if (voteRepresented === undefined || vote === voteRepresented) {
@@ -111,55 +115,64 @@ export default function Vote({
       const { upvotes, downvotes } = calculateSeparateScore(item, votesById);
       return (
         <>
-          <Container
+          <VoteStat
+            statEl={PlainButton}
+            icon={arrowUpSharp}
             className={className}
+            iconClassName={iconClass}
             vote={myVote}
             voteRepresented={1}
             onClick={async (e) => {
               await onVote(e, myVote === 1 ? 0 : 1);
             }}
           >
-            <IonIcon icon={arrowUpSharp} /> {formatNumber(upvotes)}
-          </Container>
-          <Container
+            {formatNumber(upvotes)}
+          </VoteStat>
+          <VoteStat
+            statEl={PlainButton}
+            icon={arrowDownSharp}
             className={className}
+            iconClassName={iconClass}
             vote={myVote}
             voteRepresented={-1}
             onClick={async (e) => {
               await onVote(e, myVote === -1 ? 0 : -1);
             }}
           >
-            <IonIcon icon={arrowDownSharp} /> {formatNumber(downvotes)}
-          </Container>
+            {formatNumber(downvotes)}
+          </VoteStat>
         </>
       );
     }
     case OVoteDisplayMode.Hide:
       return (
-        <Container
+        <VoteStat
+          statEl={PlainButton}
+          icon={myVote === -1 ? arrowDownSharp : arrowUpSharp}
           className={className}
+          iconClassName={iconClass}
           vote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);
           }}
-        >
-          <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} />
-        </Container>
+        />
       );
     // Total score
     default: {
       const score = calculateTotalScore(item, votesById);
       return (
-        <Container
+        <VoteStat
+          statEl={PlainButton}
+          icon={myVote === -1 ? arrowDownSharp : arrowUpSharp}
           className={className}
+          iconClassName={iconClass}
           vote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);
           }}
         >
-          <IonIcon icon={myVote === -1 ? arrowDownSharp : arrowUpSharp} />{" "}
           {formatNumber(score)}
-        </Container>
+        </VoteStat>
       );
     }
   }

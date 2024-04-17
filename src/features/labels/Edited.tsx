@@ -1,12 +1,13 @@
 import { CommentView, PostView } from "lemmy-js-client";
-import { IonIcon, useIonAlert } from "@ionic/react";
+import { useIonAlert } from "@ionic/react";
 import { pencil } from "ionicons/icons";
 import { MouseEvent, useMemo } from "react";
 import { formatRelative } from "./Ago";
 import { styled } from "@linaria/react";
+import Stat from "../post/detail/Stat";
 import { PlainButton } from "../shared/PlainButton";
 
-const Container = styled(PlainButton)`
+const EditedStat = styled(Stat)`
   display: flex;
   align-items: center;
   gap: inherit;
@@ -55,9 +56,13 @@ export default function Edited({ item, showDate, className }: EditedProps) {
   }
 
   return (
-    <Container onClick={presentEdited}>
-      <IonIcon icon={pencil} className={className} />
+    <EditedStat
+      statEl={PlainButton}
+      onClick={presentEdited}
+      icon={pencil}
+      iconClassName={className}
+    >
       {editedLabelIfNeeded}
-    </Container>
+    </EditedStat>
   );
 }
