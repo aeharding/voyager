@@ -1,16 +1,17 @@
 import { styled } from "@linaria/react";
-import { happyOutline, timeOutline } from "ionicons/icons";
+import { happyOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import Ago from "../../labels/Ago";
 import Vote from "../../labels/Vote";
 import Edited from "../../labels/Edited";
 import Stat from "./Stat";
 import { css } from "@linaria/core";
+import TimeStat from "./TimeStat";
 
 export const sharedStatsClass = css`
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 `;
 
 const Container = styled.div`
@@ -35,9 +36,9 @@ export default function Stats({ post }: StatsProps) {
         )}
         %
       </Stat>
-      <Stat icon={timeOutline}>
+      <TimeStat>
         <Ago date={post.post.published} />
-      </Stat>
+      </TimeStat>
       <Edited item={post} showDate />
     </Container>
   );
