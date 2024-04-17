@@ -26,7 +26,8 @@
       "@ionic/core": "npm:voyager-ionic-core@8.0.0-rc.0"
     },
     "patchedDependencies": {
-      "@capacitor/browser@6.0.0": "patches/@capacitor__browser@6.0.0.patch"
+      "@capacitor/browser@6.0.0": "patches/@capacitor__browser@6.0.0.patch",
+      "@capacitor/haptics@6.0.0": "patches/@capacitor__haptics@6.0.0.patch"
     }
   },
   "dependencies": {

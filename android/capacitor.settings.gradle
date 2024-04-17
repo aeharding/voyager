@@ -15,7 +15,7 @@ include ':capacitor-filesystem'
 project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/filesystem/android')
 
 include ':capacitor-haptics'
-project(':capacitor-haptics').projectDir = new File('../node_modules/.pnpm/@capacitor+haptics@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/haptics/android')
+project(':capacitor-haptics').projectDir = new File('../node_modules/.pnpm/@capacitor+haptics@6.0.0_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.0.0/node_modules/@capacitor/haptics/android')
 
 include ':capacitor-keyboard'
 project(':capacitor-keyboard').projectDir = new File('../node_modules/.pnpm/@capacitor+keyboard@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/keyboard/android')

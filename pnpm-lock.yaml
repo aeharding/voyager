@@ -11,6 +11,9 @@ patchedDependencies:
   '@capacitor/browser@6.0.0':
     hash: 33x6bihgpnt6i5jbwxndhs4p3q
     path: patches/@capacitor__browser@6.0.0.patch
+  '@capacitor/haptics@6.0.0':
+    hash: isktf3ewuigcwl72katxy46idi
+    path: patches/@capacitor__haptics@6.0.0.patch
 
 dependencies:
   '@aeharding/remark-lemmy-spoiler':
@@ -39,7 +42,7 @@ dependencies:
     version: 6.0.0(@capacitor/core@6.0.0)
   '@capacitor/haptics':
     specifier: ^6.0.0
-    version: 6.0.0(@capacitor/core@6.0.0)
+    version: 6.0.0(patch_hash=isktf3ewuigcwl72katxy46idi)(@capacitor/core@6.0.0)
   '@capacitor/ios':
     specifier: ^6.0.0
     version: 6.0.0(@capacitor/core@6.0.0)
@@ -2774,13 +2777,14 @@ packages:
       '@capacitor/core': 6.0.0
     dev: false
 
-  /@capacitor/haptics@6.0.0(@capacitor/core@6.0.0):
+  /@capacitor/haptics@6.0.0(patch_hash=isktf3ewuigcwl72katxy46idi)(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-z2TmB+pTbd98Il2I1xpZGClCFwORxxP2m9f1a0rh70c2ubj2atVyZctgxrx1fuoExZTNGSxHaylWfrmjmtelVg==}
     peerDependencies:
       '@capacitor/core': ^6.0.0
     dependencies:
       '@capacitor/core': 6.0.0
     dev: false
+    patched: true
 
   /@capacitor/ios@6.0.0(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-7mAs3gjWiE5DPM4AGPduqFSDGXCPwwqQRMzbohVway7/cTWnHomHV8mIojMZE4GILeWO2fILbyu3C8q9pHg2vg==}
