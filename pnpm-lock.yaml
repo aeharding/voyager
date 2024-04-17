@@ -8,9 +8,12 @@ overrides:
   '@ionic/core': npm:voyager-ionic-core@8.0.0-rc.0
 
 patchedDependencies:
-  '@capacitor/browser@5.2.0':
-    hash: m4ddgv4ucvx4w6engzasoi47iy
-    path: patches/@capacitor__browser@5.2.0.patch
+  '@capacitor/browser@6.0.0':
+    hash: 33x6bihgpnt6i5jbwxndhs4p3q
+    path: patches/@capacitor__browser@6.0.0.patch
+  '@capacitor/haptics@6.0.0':
+    hash: isktf3ewuigcwl72katxy46idi
+    path: patches/@capacitor__haptics@6.0.0.patch
 
 dependencies:
   '@aeharding/remark-lemmy-spoiler':
@@ -18,46 +21,43 @@ dependencies:
     version: 1.0.1
   '@capacitor-community/app-icon':
     specifier: ^4.1.1
-    version: 4.1.1(@capacitor/core@5.7.4)
+    version: 4.1.1(@capacitor/core@6.0.0)
   '@capacitor/android':
-    specifier: 5.7.4
-    version: 5.7.4(@capacitor/core@5.7.4)
+    specifier: ^6.0.0
+    version: 6.0.0(@capacitor/core@6.0.0)
   '@capacitor/app':
-    specifier: ^5.0.7
-    version: 5.0.7(@capacitor/core@5.7.4)
+    specifier: ^6.0.0
+    version: 6.0.0(@capacitor/core@6.0.0)
   '@capacitor/assets':
     specifier: ^3.0.5
     version: 3.0.5(@types/node@20.12.4)(typescript@5.4.3)
   '@capacitor/browser':
-    specifier: ^5.2.0
-    version: 5.2.0(patch_hash=m4ddgv4ucvx4w6engzasoi47iy)(@capacitor/core@5.7.4)
-  '@capacitor/cli':
-    specifier: 5.7.4
-    version: 5.7.4
+    specifier: ^6.0.0
+    version: 6.0.0(patch_hash=33x6bihgpnt6i5jbwxndhs4p3q)(@capacitor/core@6.0.0)
   '@capacitor/core':
-    specifier: 5.7.4
-    version: 5.7.4
+    specifier: ^6.0.0
+    version: 6.0.0
   '@capacitor/filesystem':
-    specifier: ^5.2.1
-    version: 5.2.1(@capacitor/core@5.7.4)
+    specifier: ^6.0.0
+    version: 6.0.0(@capacitor/core@6.0.0)
   '@capacitor/haptics':
-    specifier: npm:voyager-capacitor-haptics@^5.0.7
-    version: /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.7.4)
+    specifier: ^6.0.0
+    version: 6.0.0(patch_hash=isktf3ewuigcwl72katxy46idi)(@capacitor/core@6.0.0)
   '@capacitor/ios':
-    specifier: 5.7.4
-    version: 5.7.4(@capacitor/core@5.7.4)
+    specifier: ^6.0.0
+    version: 6.0.0(@capacitor/core@6.0.0)
   '@capacitor/keyboard':
-    specifier: ^5.0.8
-    version: 5.0.8(@capacitor/core@5.7.4)
+    specifier: ^6.0.0
+    version: 6.0.0(@capacitor/core@6.0.0)
   '@capacitor/network':
-    specifier: ^5.0.7
-    version: 5.0.7(@capacitor/core@5.7.4)
+    specifier: ^6.0.0
+    version: 6.0.0(@capacitor/core@6.0.0)
   '@capacitor/share':
-    specifier: ^5.0.7
-    version: 5.0.7(@capacitor/core@5.7.4)
+    specifier: ^6.0.0
+    version: 6.0.0(@capacitor/core@6.0.0)
   '@capacitor/status-bar':
-    specifier: ^5.0.7
-    version: 5.0.7(@capacitor/core@5.7.4)
+    specifier: ^6.0.0
+    version: 6.0.0(@capacitor/core@6.0.0)
   '@github/markdown-toolbar-element':
     specifier: ^2.2.1
     version: 2.2.3
@@ -81,31 +81,31 @@ dependencies:
     version: 2.2.3(react-redux@9.1.0)(react@18.2.0)
   capacitor-android-nav-mode:
     specifier: ^0.0.1
-    version: 0.0.1(@capacitor/core@5.7.4)
+    version: 0.0.1(@capacitor/core@6.0.0)
   capacitor-application-context:
     specifier: ^0.0.1
-    version: 0.0.1(@capacitor/core@5.7.4)
+    version: 0.0.1(@capacitor/core@6.0.0)
   capacitor-biometric-lock:
     specifier: ^0.1.1
-    version: 0.1.1(@capacitor/core@5.7.4)
+    version: 0.1.1(@capacitor/core@6.0.0)
   capacitor-clear-cache:
     specifier: ^0.0.1
-    version: 0.0.1(@capacitor/core@5.7.4)
+    version: 0.0.1(@capacitor/core@6.0.0)
   capacitor-launch-native:
     specifier: ^0.0.2
-    version: 0.0.2(@capacitor/core@5.7.4)
+    version: 0.0.2(@capacitor/core@6.0.0)
   capacitor-plugin-safe-area:
     specifier: ^2.0.6
-    version: 2.0.6(@capacitor/core@5.7.4)
+    version: 2.0.6(@capacitor/core@6.0.0)
   capacitor-set-version:
     specifier: ^2.2.0
     version: 2.2.0(@types/node@20.12.4)(typescript@5.4.3)
   capacitor-stash-media:
     specifier: ^1.0.0
-    version: 1.0.0(@capacitor/core@5.7.4)
+    version: 1.0.0(@capacitor/core@6.0.0)
   capacitor-tips:
     specifier: ^0.0.2
-    version: 0.0.2(@capacitor/core@5.7.4)
+    version: 0.0.2(@capacitor/core@6.0.0)
   compare-versions:
     specifier: ^6.1.0
     version: 6.1.0
@@ -252,6 +252,9 @@ devDependencies:
   '@babel/preset-typescript':
     specifier: ^7.23.3
     version: 7.24.1(@babel/core@7.24.3)
+  '@capacitor/cli':
+    specifier: ^6.0.0
+    version: 6.0.0
   '@playwright/test':
     specifier: ^1.43.0
     version: 1.43.0
@@ -2648,28 +2651,28 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
-  /@capacitor-community/app-icon@4.1.1(@capacitor/core@5.7.4):
+  /@capacitor-community/app-icon@4.1.1(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-76oedS4WnilQEoMszraBVMZIx52H5zNFHHsBuwMKARGrp1fkjOJpmxIYuuwmJSr2KojXllPMSskS43Yf8XdGbA==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /@capacitor/android@5.7.4(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-9ETwrCaLaimLHbwGpgfsPS9cHcPMFLmKFdlYsFsYIusMO6aOrcQTA9Q4xVAkr55ava4Wk+pVRniRYsekrbOLdw==}
+  /@capacitor/android@6.0.0(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-NwL87VO9F1WY/EgvJZN9pIhjejq688k2fRW6XWNLVe3cgGE6nUb9J34KI68fhx3139cf2LVGPUYs+mwZC8esiQ==}
     peerDependencies:
-      '@capacitor/core': ^5.7.0
+      '@capacitor/core': ^6.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /@capacitor/app@5.0.7(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-oad0jwQu+vgQDukeS9UV56yG10dlxkAGGl26IQpZlTmg3dTI9qSJtvhmlLfkF0nEtoj5IsVQUPE+NLH1oZkgGQ==}
+  /@capacitor/app@6.0.0(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-X5UGd90Jh5p9rmoPyMqFyFWqOypdJgVJhYcM5X1YyDVJJGzmJ5MuYv1+ajj5DW9Qyh+5a3th9WYptdGby8jidA==}
     peerDependencies:
-      '@capacitor/core': ^5.0.0
+      '@capacitor/core': ^6.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
   /@capacitor/assets@3.0.5(@types/node@20.12.4)(typescript@5.4.3):
@@ -2698,12 +2701,12 @@ packages:
       - typescript
     dev: false
 
-  /@capacitor/browser@5.2.0(patch_hash=m4ddgv4ucvx4w6engzasoi47iy)(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-pWFrsNPOG6DlDWGl+bJqTWLvoJ2vvV27LKaSZ/A7S4td4bK3umwZmgGlp8ispjpYiurjliT25Ae8I+ywMV8X9w==}
+  /@capacitor/browser@6.0.0(patch_hash=33x6bihgpnt6i5jbwxndhs4p3q)(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-mtZq8qNwN/lqBDMYSF5h0oa4Kru6UWp4OyUXG4Rw13GKXkX6QoxlSy3k2MEBS3BGvK6OG7FAMTMAjh1QyynDxQ==}
     peerDependencies:
-      '@capacitor/core': ^5.0.0
+      '@capacitor/core': ^6.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
     patched: true
 
@@ -2733,58 +2736,94 @@ packages:
       - supports-color
     dev: false
 
-  /@capacitor/core@5.7.4:
-    resolution: {integrity: sha512-iZBgvx3o4amzKv5ttA+QHB6i7cxK+/mYpCQd1tnSdipg6ZkvfBhg1HkzhEqHk+I7MNur+QwgYDZho9+ycHRwOw==}
+  /@capacitor/cli@6.0.0:
+    resolution: {integrity: sha512-6z30P0mr53l0VXPwFjzDVuKIt1991bqUSSfShTT2efWN+rBSGSAH2bPID6qSZornH1n5R5Lh/UHq/aGuW523MQ==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    dependencies:
+      '@ionic/cli-framework-output': 2.2.8
+      '@ionic/utils-fs': 3.1.7
+      '@ionic/utils-process': 2.1.11
+      '@ionic/utils-subprocess': 2.1.11
+      '@ionic/utils-terminal': 2.3.5
+      commander: 9.5.0
+      debug: 4.3.4(supports-color@8.1.1)
+      env-paths: 2.2.1
+      kleur: 4.1.5
+      native-run: 2.0.1
+      open: 8.4.2
+      plist: 3.1.0
+      prompts: 2.4.2
+      rimraf: 4.4.1
+      semver: 7.6.0
+      tar: 6.2.0
+      tslib: 2.6.2
+      xml2js: 0.5.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@capacitor/core@6.0.0:
+    resolution: {integrity: sha512-NvxIQsJcMiIV+Le1DilR2GGyQQbDInfXK1UywGROQ5mycdFlW5XoAPZ+MKnFGB123RoEgE3uhDGgwTXUmSlX9A==}
     dependencies:
       tslib: 2.6.2
     dev: false
 
-  /@capacitor/filesystem@5.2.1(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-mexkJHUbNhydzfJywEUTIGARlB/HRogrtbjCZdA+mQxOi07T2887a70CwFaYRu1nKLMoKoliTM5UsLSsdl0PlA==}
+  /@capacitor/filesystem@6.0.0(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-GnC4CBfky7fvG9zSV/aQnZaGs6ZJ90AaQorr53z81ArTCqcrSUeBMuCxWmvti9HrdXLhBavyA1UOjvRGObOFjg==}
     peerDependencies:
-      '@capacitor/core': ^5.1.1
+      '@capacitor/core': ^6.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /@capacitor/ios@5.7.4(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-tQH24WMSYVKYr/Jl1gFImooQmu8OdXUFHoDaPV1WpZIiwbwxbTdwOXeLlGes5U8B8t7xuxTWMWMDt3IwRlDbhQ==}
+  /@capacitor/haptics@6.0.0(patch_hash=isktf3ewuigcwl72katxy46idi)(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-z2TmB+pTbd98Il2I1xpZGClCFwORxxP2m9f1a0rh70c2ubj2atVyZctgxrx1fuoExZTNGSxHaylWfrmjmtelVg==}
     peerDependencies:
-      '@capacitor/core': ^5.7.0
+      '@capacitor/core': ^6.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
+    dev: false
+    patched: true
+
+  /@capacitor/ios@6.0.0(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-7mAs3gjWiE5DPM4AGPduqFSDGXCPwwqQRMzbohVway7/cTWnHomHV8mIojMZE4GILeWO2fILbyu3C8q9pHg2vg==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+    dependencies:
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /@capacitor/keyboard@5.0.8(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-XYyBzGlzjgLPqyPVdu5McGLYV6+G2efVR4I3l5cF1B27M6U/oFqv9CQU74WNG08nee28bfccboNpv6eWCLYn1A==}
+  /@capacitor/keyboard@6.0.0(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-pPX/PQWWjw5ce47kHEYv6IWlHzuhAxgXihqEAAAGLdwK3u3srgGWCljXrYS9juVBPi/lA1uK7UaUzYI0XrgxVQ==}
     peerDependencies:
-      '@capacitor/core': ^5.0.0
+      '@capacitor/core': ^6.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /@capacitor/network@5.0.7(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-g+8SkNmkOyidaHnfKI9Ly8GNcx3VEwboehDXcTs5WU8bPuhCOEzbZnC0kFL5wwix3AoUQl8gEos6MtCey5cUIg==}
+  /@capacitor/network@6.0.0(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-igGbz3VZuchnfQ/kSFxMsQjLGvKYmEKYzK5RD5S7leLaoBox0B3ueW04yRI2HcGC+PSIo9F52qDL8J6qb1N0vg==}
     peerDependencies:
-      '@capacitor/core': ^5.0.0
+      '@capacitor/core': ^6.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /@capacitor/share@5.0.7(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-4GraggRRxwhstxIdF9JyOEBq4QTufqFOekdB4P9GeiQYWJoA5VraSR1mwy4Trke1VFfaBjz/nGi4WQOJdHIAgg==}
+  /@capacitor/share@6.0.0(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-Doqvtxe9tejkjq+P9hZzDslR6VetM02R6N61GBavVBWkQj4N+xWNDA8zISG3PzuGBffGtTfHC6L0W+XySFY5nw==}
     peerDependencies:
-      '@capacitor/core': ^5.0.0
+      '@capacitor/core': ^6.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /@capacitor/status-bar@5.0.7(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-KblB3gV2LDMEjx3fQoNBAzxb+Tr+2mv68SfFLLDCMiMUD3Eile2TAWRWd1yxy496pDFTOs2BJtup8++iuuuJ/w==}
+  /@capacitor/status-bar@6.0.0(@capacitor/core@6.0.0):
+    resolution: {integrity: sha512-Wo0ILugYlmENegKDgTzVCPjbvP8h1ObgHslLdgeVG643ViMS/diausHIq8e104WIKCXtKIELmQeYVp9mX7932g==}
     peerDependencies:
-      '@capacitor/core': ^5.0.0
+      '@capacitor/core': ^6.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
   /@cspotcode/source-map-support@0.8.1:
@@ -3118,6 +3157,16 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@ionic/utils-array@2.1.5:
+    resolution: {integrity: sha512-HD72a71IQVBmQckDwmA8RxNVMTbxnaLbgFOl+dO5tbvW9CkkSFCv41h6fUuNsSEVgngfkn0i98HDuZC8mk+lTA==}
+    engines: {node: '>=10.3.0'}
+    dependencies:
+      debug: 4.3.4(supports-color@8.1.1)
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@ionic/utils-array@2.1.6:
     resolution: {integrity: sha512-0JZ1Zkp3wURnv8oq6Qt7fMPo5MpjbLoUoa9Bu2Q4PJuSDWM8H8gwF3dQO7VTeUj3/0o1IB1wGkFWZZYgUXZMUg==}
     engines: {node: '>=16.0.0'}
@@ -3126,6 +3175,18 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color
+
+  /@ionic/utils-fs@3.1.6:
+    resolution: {integrity: sha512-eikrNkK89CfGPmexjTfSWl4EYqsPSBh0Ka7by4F0PLc1hJZYtJxUZV3X4r5ecA8ikjicUmcbU7zJmAjmqutG/w==}
+    engines: {node: '>=10.3.0'}
+    dependencies:
+      '@types/fs-extra': 8.1.5
+      debug: 4.3.4(supports-color@8.1.1)
+      fs-extra: 9.1.0
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /@ionic/utils-fs@3.1.7:
     resolution: {integrity: sha512-2EknRvMVfhnyhL1VhFkSLa5gOcycK91VnjfrTB0kbqkTFCOXyXgVLI5whzq7SLrgD9t1aqos3lMMQyVzaQ5gVA==}
@@ -3138,6 +3199,16 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@ionic/utils-object@2.1.5:
+    resolution: {integrity: sha512-XnYNSwfewUqxq+yjER1hxTKggftpNjFLJH0s37jcrNDwbzmbpFTQTVAp4ikNK4rd9DOebX/jbeZb8jfD86IYxw==}
+    engines: {node: '>=10.3.0'}
+    dependencies:
+      debug: 4.3.4(supports-color@8.1.1)
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@ionic/utils-object@2.1.6:
     resolution: {integrity: sha512-vCl7sl6JjBHFw99CuAqHljYJpcE88YaH2ZW4ELiC/Zwxl5tiwn4kbdP/gxi2OT3MQb1vOtgAmSNRtusvgxI8ww==}
     engines: {node: '>=16.0.0'}
@@ -3146,6 +3217,20 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color
+
+  /@ionic/utils-process@2.1.10:
+    resolution: {integrity: sha512-mZ7JEowcuGQK+SKsJXi0liYTcXd2bNMR3nE0CyTROpMECUpJeAvvaBaPGZf5ERQUPeWBVuwqAqjUmIdxhz5bxw==}
+    engines: {node: '>=10.3.0'}
+    dependencies:
+      '@ionic/utils-object': 2.1.5
+      '@ionic/utils-terminal': 2.3.3
+      debug: 4.3.4(supports-color@8.1.1)
+      signal-exit: 3.0.7
+      tree-kill: 1.2.2
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /@ionic/utils-process@2.1.11:
     resolution: {integrity: sha512-Uavxn+x8j3rDlZEk1X7YnaN6wCgbCwYQOeIjv/m94i1dzslqWhqIHEqxEyeE8HsT5Negboagg7GtQiABy+BLbA==}
@@ -3160,6 +3245,16 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@ionic/utils-stream@3.1.5:
+    resolution: {integrity: sha512-hkm46uHvEC05X/8PHgdJi4l4zv9VQDELZTM+Kz69odtO9zZYfnt8DkfXHJqJ+PxmtiE5mk/ehJWLnn/XAczTUw==}
+    engines: {node: '>=10.3.0'}
+    dependencies:
+      debug: 4.3.4(supports-color@8.1.1)
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@ionic/utils-stream@3.1.6:
     resolution: {integrity: sha512-4+Kitey1lTA1yGtnigeYNhV/0tggI3lWBMjC7tBs1K9GXa/q7q4CtOISppdh8QgtOhrhAXS2Igp8rbko/Cj+lA==}
     engines: {node: '>=16.0.0'}
@@ -3168,6 +3263,22 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color
+
+  /@ionic/utils-subprocess@2.1.11:
+    resolution: {integrity: sha512-6zCDixNmZCbMCy5np8klSxOZF85kuDyzZSTTQKQP90ZtYNCcPYmuFSzaqDwApJT4r5L3MY3JrqK1gLkc6xiUPw==}
+    engines: {node: '>=10.3.0'}
+    dependencies:
+      '@ionic/utils-array': 2.1.5
+      '@ionic/utils-fs': 3.1.6
+      '@ionic/utils-process': 2.1.10
+      '@ionic/utils-stream': 3.1.5
+      '@ionic/utils-terminal': 2.3.3
+      cross-spawn: 7.0.3
+      debug: 4.3.4(supports-color@8.1.1)
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /@ionic/utils-subprocess@2.1.14:
     resolution: {integrity: sha512-nGYvyGVjU0kjPUcSRFr4ROTraT3w/7r502f5QJEsMRKTqa4eEzCshtwRk+/mpASm0kgBN5rrjYA5A/OZg8ahqg==}
@@ -3183,6 +3294,23 @@ packages:
       tslib: 2.6.2
     transitivePeerDependencies:
       - supports-color
+
+  /@ionic/utils-terminal@2.3.3:
+    resolution: {integrity: sha512-RnuSfNZ5fLEyX3R5mtcMY97cGD1A0NVBbarsSQ6yMMfRJ5YHU7hHVyUfvZeClbqkBC/pAqI/rYJuXKCT9YeMCQ==}
+    engines: {node: '>=10.3.0'}
+    dependencies:
+      '@types/slice-ansi': 4.0.0
+      debug: 4.3.4(supports-color@8.1.1)
+      signal-exit: 3.0.7
+      slice-ansi: 4.0.0
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      tslib: 2.6.2
+      untildify: 4.0.0
+      wrap-ansi: 7.0.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /@ionic/utils-terminal@2.3.4:
     resolution: {integrity: sha512-cEiMFl3jklE0sW60r8JHH3ijFTwh/jkdEKWbylSyExQwZ8pPuwoXz7gpkWoJRLuoRHHSvg+wzNYyPJazIHfoJA==}
@@ -4349,12 +4477,6 @@ packages:
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
     dev: false
 
-  /@types/node@20.12.2:
-    resolution: {integrity: sha512-zQ0NYO87hyN6Xrclcqp7f8ZbXNbRfoGWNcMvHTPQp9UUrwI0mI7XBz+cu7/W6/VClYo2g63B0cjull/srU7LgQ==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: true
-
   /@types/node@20.12.4:
     resolution: {integrity: sha512-E+Fa9z3wSQpzgYQdYmme5X3OTuejnnTx88A6p6vkkJosR3KBz+HpE3kqNm98VE6cfLFcISx7zW7MsJkH6KwbTw==}
     dependencies:
@@ -4410,7 +4532,7 @@ packages:
   /@types/resolve@1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
     dependencies:
-      '@types/node': 20.12.2
+      '@types/node': 20.12.4
     dev: true
 
   /@types/semver@7.5.8:
@@ -5273,7 +5395,6 @@ packages:
     engines: {node: '>= 5.10.0'}
     dependencies:
       big-integer: 1.6.52
-    dev: false
 
   /brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
@@ -5404,52 +5525,52 @@ packages:
     resolution: {integrity: sha512-LRAQHZ4yT1+f9LemSMeqdMpMxZcc4RMWdj4tiFe3G8tNkWK+E58g+/tzotb5cU6TbcVJLr4fySiAW7XmxQvZQA==}
     dev: true
 
-  /capacitor-android-nav-mode@0.0.1(@capacitor/core@5.7.4):
+  /capacitor-android-nav-mode@0.0.1(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-cnEk7CqDCjNokhDr/DTY/w/qgZqUr/+tTqavjl5PIBCXNkqUCHAP/nBFebZN5wZfAwD9WaXJp67Q1MtfaQNpVw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /capacitor-application-context@0.0.1(@capacitor/core@5.7.4):
+  /capacitor-application-context@0.0.1(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-XYHvn01l3VxbGh/fs77aBTyEW54TOoEDlXYkAEeRe7PQCwU8EfVCX5MLvuWVCoIzpRlEWYNCFCS1TvLkmV7IsQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /capacitor-biometric-lock@0.1.1(@capacitor/core@5.7.4):
+  /capacitor-biometric-lock@0.1.1(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-vqO0GijlOscXyAON21myo72LW3+eiOl+3eOLX7Rb/WFRqJeYCySZjH9/Eh+ip28B05dr7scO9vFB5VTh1trtEQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /capacitor-clear-cache@0.0.1(@capacitor/core@5.7.4):
+  /capacitor-clear-cache@0.0.1(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-x4JY0BsbRCWrU0/G0WTiXS5XRWe/klrA8NemeGThWwEZqGo1zcE/seONpx1WLEHel2xUVNdwx4y3v1byOjE3kQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /capacitor-launch-native@0.0.2(@capacitor/core@5.7.4):
+  /capacitor-launch-native@0.0.2(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-fOomAYxB86KJLMks91wm3ea3odSevjud7jnZrgTyycqGyINGD9WoKNptPqrZQ8BjyX0+yWphXHRLbtGO678nzA==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /capacitor-plugin-safe-area@2.0.6(@capacitor/core@5.7.4):
+  /capacitor-plugin-safe-area@2.0.6(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-7arNdX72Zbx5GtP9XlJFOne13QM8/FibTuBqG2EPdqBMGdYNiMk4G8ivD/Ovt2/w9VGWahOBCWwo2S99UgT1VQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
   /capacitor-set-version@2.2.0(@types/node@20.12.4)(typescript@5.4.3):
@@ -5474,20 +5595,20 @@ packages:
       - typescript
     dev: false
 
-  /capacitor-stash-media@1.0.0(@capacitor/core@5.7.4):
+  /capacitor-stash-media@1.0.0(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-9Uqv7KYwA8S8EpuNerzB/ljnwNSTaGiGXJJ8mxXPcj3lnY+84ObS63k0VuPkTYwc+1Q6HaZgjd4Y4cYaDmElaw==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
-  /capacitor-tips@0.0.2(@capacitor/core@5.7.4):
+  /capacitor-tips@0.0.2(@capacitor/core@6.0.0):
     resolution: {integrity: sha512-ig/inocKk8oVfiOst6inGLl5dhA8/bFtlhpZNTjSffGEhyAGnK2rsGn2FWkM39qBP4+3/0xakI80BwO1PvKsXQ==}
     peerDependencies:
       '@capacitor/core': ^5.0.0
     dependencies:
-      '@capacitor/core': 5.7.4
+      '@capacitor/core': 6.0.0
     dev: false
 
   /cardinal@2.1.1:
@@ -5618,7 +5739,6 @@ packages:
   /chownr@2.0.0:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
     engines: {node: '>=10'}
-    dev: false
 
   /chrome-launcher@0.15.2:
     resolution: {integrity: sha512-zdLEwNo3aUVzIhKhTtXfxhdvZhUghrnmkvcAq2NoDd+LeOHKf03H5jwZ8T/STsAlzyALkBVK552iaG1fGf1xVQ==}
@@ -5776,7 +5896,6 @@ packages:
   /commander@9.5.0:
     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
     engines: {node: ^12.20.0 || >=14}
-    dev: false
 
   /common-tags@1.8.2:
     resolution: {integrity: sha512-gk/Z852D2Wtb//0I+kRFNKKE9dIIVirjoqPoA1wJU+XePVXZfGeBpk45+A1rKO4Q43prqWBNY/MiIeRLbPWUaA==}
@@ -6286,7 +6405,6 @@ packages:
   /define-lazy-prop@2.0.0:
     resolution: {integrity: sha512-Ds09qNh8yw3khSjiJjiUInaGX9xlqZDY7JVryGxdxV7NPeuqQfplOpQ66yJFZut3jLa5zOwkXw1g9EI2uKh4Og==}
     engines: {node: '>=8'}
-    dev: false
 
   /define-lazy-prop@3.0.0:
     resolution: {integrity: sha512-N+MeXYoqr3pOgn8xfyRPREN7gHakLYjhsHhWGT3fWAiL4IkAt0iDw14QiiEm2bE30c5XX5q0FtAA3CK5f9/BUg==}
@@ -6514,7 +6632,6 @@ packages:
     engines: {node: '>= 0.4.0'}
     dependencies:
       sax: 1.1.4
-    dev: false
 
   /emoji-regex@10.3.0:
     resolution: {integrity: sha512-QpLs9D9v9kArv4lfDEgg1X/gN5XLnf/A6l9cs8SPZLRZR3ZkY9+kwIQTxm+fsSej5UMYGE8fdoaZVIBlqG0XTw==}
@@ -7308,7 +7425,6 @@ packages:
     engines: {node: '>= 8'}
     dependencies:
       minipass: 3.3.6
-    dev: false
 
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
@@ -7522,7 +7638,6 @@ packages:
       minimatch: 8.0.4
       minipass: 4.2.8
       path-scurry: 1.10.1
-    dev: false
 
   /global-dirs@3.0.1:
     resolution: {integrity: sha512-NBcGGFbBA9s1VzD41QXDG+3++t9Mn5t1FpLdhESY6oKY4gYTFpX4wO3sqGUa0Srjtbfj3szX0RnemmrVRUdULA==}
@@ -8084,7 +8199,6 @@ packages:
   /ini@4.1.2:
     resolution: {integrity: sha512-AMB1mvwR1pyBFY/nSevUX6y8nJWS63/SzUKD3JyQn97s4xgIdgQPT75IRouIiBAN4yLQBUShNYVW0+UG25daCw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dev: false
 
   /inline-style-parser@0.2.2:
     resolution: {integrity: sha512-EcKzdTHVe8wFVOGEYXiW9WmJXPjqi1T+234YpJr98RiFYKHV3cdy1+3mkTE+KHTHxFFLH51SfaGOoUdW+v7ViQ==}
@@ -8671,7 +8785,7 @@ packages:
     resolution: {integrity: sha512-KWYVV1c4i+jbMpaBC+U++4Va0cp8OisU185o73T1vo99hqi7w8tSJfUXYswwqqrjzwxa6KpRK54WhPvwf5w6PQ==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.12.2
+      '@types/node': 20.12.4
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: true
@@ -9679,7 +9793,6 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
-    dev: false
 
   /minimatch@9.0.1:
     resolution: {integrity: sha512-0jWhJpD/MdhPXwPuiRkCbfYfSKp2qnn2eOc279qI7f+osl/l+prKSrvhg157zSYvx/1nmgn2NqdT6k2Z7zSH9w==}
@@ -9710,17 +9823,14 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       yallist: 4.0.0
-    dev: false
 
   /minipass@4.2.8:
     resolution: {integrity: sha512-fNzuVyifolSLFL4NzpF+wEF4qrgqaaKX0haXPQEdQ7NKAN+WecoKMHV09YcuL/DHxrUsYQOK3MiuDf7Ip2OXfQ==}
     engines: {node: '>=8'}
-    dev: false
 
   /minipass@5.0.0:
     resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
     engines: {node: '>=8'}
-    dev: false
 
   /minipass@7.0.4:
     resolution: {integrity: sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==}
@@ -9732,7 +9842,6 @@ packages:
     dependencies:
       minipass: 3.3.6
       yallist: 4.0.0
-    dev: false
 
   /mkdirp-classic@0.5.3:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
@@ -9741,7 +9850,6 @@ packages:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
     hasBin: true
-    dev: false
 
   /mlly@1.6.1:
     resolution: {integrity: sha512-vLgaHvaeunuOXHSmEbZ9izxPx3USsk8KCQ8iC+aTlp5sKRSoZvwhHh5L9VbKSaVC6sJDqbyohIS76E2VmHIPAA==}
@@ -9803,7 +9911,6 @@ packages:
       yauzl: 2.10.0
     transitivePeerDependencies:
       - supports-color
-    dev: false
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
@@ -10093,7 +10200,6 @@ packages:
       define-lazy-prop: 2.0.0
       is-docker: 2.2.1
       is-wsl: 2.2.0
-    dev: false
 
   /optionator@0.9.3:
     resolution: {integrity: sha512-JjCoypp+jKn1ttEFExxhetCKeJt9zhAgAve5FXHixTvFDW/5aEktX9bufBKLRRMdU7bNtpLfcGu94B3cdEJgjg==}
@@ -11288,7 +11394,6 @@ packages:
     hasBin: true
     dependencies:
       glob: 9.3.5
-    dev: false
 
   /rollup-plugin-terser@7.0.2(rollup@2.79.1):
     resolution: {integrity: sha512-w3iIaU4OxcF52UUXiZNsNeuXIMDvFrr+ZXK6bFZ0Q60qyVfq4uLptoS4bbq3paG3x216eQllFZX7zt6TIImguQ==}
@@ -11392,7 +11497,6 @@ packages:
 
   /sax@1.1.4:
     resolution: {integrity: sha512-5f3k2PbGGp+YtKJjOItpg3P99IMD84E4HOvcfleTb5joCHNXYLsR9yWFPOYGgaeMPDubQILTCMdsFb2OMeOjtg==}
-    dev: false
 
   /sax@1.3.0:
     resolution: {integrity: sha512-0s+oAmw9zLl1V1cS9BtZN7JAd0cW5e0QH4W3LWEK6a4LaLEA2OTpGYWDY+6XasBLtz6wkm3u1xRw95mRuJ59WA==}
@@ -11668,7 +11772,6 @@ packages:
   /split2@4.2.0:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
     engines: {node: '>= 10.x'}
-    dev: false
 
   /split@1.0.1:
     resolution: {integrity: sha512-mTyOoPbrivtXnwnIxZRFYRrPNtEFKlpB2fvjSnCQUiAA6qAZzqwna5envK4uk6OIeP17CsdF3rSBGYVBsU0Tkg==}
@@ -12001,7 +12104,6 @@ packages:
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
-    dev: false
 
   /temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
@@ -12815,14 +12917,6 @@ packages:
       - terser
     dev: true
 
-  /voyager-capacitor-haptics@5.0.7(@capacitor/core@5.7.4):
-    resolution: {integrity: sha512-AfPxS2PumM+LHd7C2hFYmDqezrA4F5sgeTkrGVbSxRTp6dWuEZ8coC8gJeEh1G0xuZAOHqvL9tJ3XrxHU7m7ag==}
-    peerDependencies:
-      '@capacitor/core': ^5.0.0
-    dependencies:
-      '@capacitor/core': 5.7.4
-    dev: false
-
   /voyager-ionic-core@8.0.0-rc.0:
     resolution: {integrity: sha512-CBsGFv2ycJwBNZNzve7CJOK24a16AVsEm2lRFuFqMDxduKnkAbHEUZyZtY9QzNOJgBTdFQaOExUcPvzV06xE0A==}
     dependencies:
@@ -13084,7 +13178,6 @@ packages:
 
   /workbox-google-analytics@7.0.0:
     resolution: {integrity: sha512-MEYM1JTn/qiC3DbpvP2BVhyIH+dV/5BjHk756u9VbwuAhu0QHyKscTnisQuz21lfRpOwiS9z4XdqeVAKol0bzg==}
-    deprecated: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained
     dependencies:
       workbox-background-sync: 7.0.0
       workbox-core: 7.0.0
@@ -13244,12 +13337,10 @@ packages:
     dependencies:
       sax: 1.3.0
       xmlbuilder: 11.0.1
-    dev: false
 
   /xmlbuilder@11.0.1:
     resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
     engines: {node: '>=4.0'}
-    dev: false
 
   /xmlbuilder@15.1.1:
     resolution: {integrity: sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==}

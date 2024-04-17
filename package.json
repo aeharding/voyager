@@ -26,25 +26,25 @@
       "@ionic/core": "npm:voyager-ionic-core@8.0.0-rc.0"
     },
     "patchedDependencies": {
-      "@capacitor/browser@5.2.0": "patches/@capacitor__browser@5.2.0.patch"
+      "@capacitor/browser@6.0.0": "patches/@capacitor__browser@6.0.0.patch",
+      "@capacitor/haptics@6.0.0": "patches/@capacitor__haptics@6.0.0.patch"
     }
   },
   "dependencies": {
     "@aeharding/remark-lemmy-spoiler": "^1.0.1",
     "@capacitor-community/app-icon": "^4.1.1",
-    "@capacitor/android": "5.7.4",
-    "@capacitor/app": "^5.0.7",
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/app": "^6.0.0",
     "@capacitor/assets": "^3.0.5",
-    "@capacitor/browser": "^5.2.0",
-    "@capacitor/cli": "5.7.4",
-    "@capacitor/core": "5.7.4",
-    "@capacitor/filesystem": "^5.2.1",
-    "@capacitor/haptics": "npm:voyager-capacitor-haptics@^5.0.7",
-    "@capacitor/ios": "5.7.4",
-    "@capacitor/keyboard": "^5.0.8",
-    "@capacitor/network": "^5.0.7",
-    "@capacitor/share": "^5.0.7",
-    "@capacitor/status-bar": "^5.0.7",
+    "@capacitor/browser": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/filesystem": "^6.0.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.0",
+    "@capacitor/network": "^6.0.0",
+    "@capacitor/share": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0",
     "@github/markdown-toolbar-element": "^2.2.1",
     "@ionic/core": "npm:voyager-ionic-core@8.0.0-rc.0",
     "@ionic/react": "8.0.0-rc.0",
@@ -111,6 +111,7 @@
   "devDependencies": {
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@capacitor/cli": "^6.0.0",
     "@playwright/test": "^1.43.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
