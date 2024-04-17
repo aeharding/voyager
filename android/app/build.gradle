@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "app.vger.voyager"
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "app.vger.voyager"
         minSdkVersion rootProject.ext.minSdkVersion
