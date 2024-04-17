@@ -11,7 +11,7 @@ import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
 
-// Sample code was sending this from a thread to another, let asume @Sendable for this
+// Sample code was sending this from a thread to another, let assume @Sendable for this
 extension NSExtensionContext: @unchecked Sendable {}
 
 final class ActionRequestHandler: NSObject, NSExtensionRequestHandling, Sendable {
