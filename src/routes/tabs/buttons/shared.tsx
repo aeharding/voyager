@@ -7,22 +7,12 @@ import { AppContext } from "../../../features/auth/AppContext";
 import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { styled } from "@linaria/react";
-import { compactTabBarMediaSelector } from "../../TabBar";
 
 // reverts https://github.com/ionic-team/ionic-framework/pull/28754
 const StyledIonTabButton = styled(IonTabButton)`
   &.ios.tab-has-label {
     ion-icon {
       font-size: 30px;
-    }
-  }
-
-  @media ${compactTabBarMediaSelector} {
-    flex-direction: row;
-
-    ion-icon {
-      font-size: 22px !important;
-      margin-right: 5px;
     }
   }
 `;

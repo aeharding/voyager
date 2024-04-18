@@ -7,11 +7,8 @@ import SearchTabButton from "./tabs/buttons/SearchTabButton";
 import SettingsTabButton from "./tabs/buttons/SettingsTabButton";
 import { styled } from "@linaria/react";
 
-export const compactTabBarMediaSelector =
-  "(orientation: landscape) and (max-height: 450px)";
-
 const StyledIonTabBar = styled(IonTabBar)`
-  @media ${compactTabBarMediaSelector} {
+  @media (orientation: landscape) and (max-height: 450px) {
     height: 36px;
 
     ion-badge {
@@ -22,8 +19,17 @@ const StyledIonTabBar = styled(IonTabBar)`
       }
     }
 
-    ion-tab-button > ion-label {
-      margin-bottom: 0;
+    ion-tab-button {
+      flex-direction: row;
+
+      > ion-label {
+        margin-bottom: 0;
+      }
+
+      > ion-icon {
+        font-size: 22px !important;
+        margin-right: 5px;
+      }
     }
   }
 `;
