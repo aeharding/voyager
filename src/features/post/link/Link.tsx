@@ -57,7 +57,7 @@ const Bottom = styled.div<{ small?: boolean }>`
   display: flex;
   align-items: center;
 
-  --height: ${({ small }) => (small ? "45px" : "55px")};
+  --height: ${({ small }) => (small ? "50px" : "55px")};
   min-height: var(--height);
 
   --gap: ${({ small }) => (small ? "8px" : "10px")};
