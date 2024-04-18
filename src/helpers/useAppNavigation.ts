@@ -8,6 +8,7 @@ import {
 } from "lemmy-js-client";
 import { getHandle } from "./lemmy";
 import { useBuildGeneralBrowseLink } from "./routes";
+import { buildCommunityLink } from "./appLinkBuilder";
 import { useCallback } from "react";
 import useAppToast from "./useAppToast";
 import { checkmark } from "ionicons/icons";
@@ -50,9 +51,9 @@ export default function useAppNavigation() {
     (community: CommunityView | Community) => {
       pushRouteIfNeeded(
         buildGeneralBrowseLink(
-          `/c/${getHandle(
+          buildCommunityLink(
             "community" in community ? community.community : community,
-          )}`,
+          ),
         ),
       );
     },
