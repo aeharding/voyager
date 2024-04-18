@@ -1,12 +1,14 @@
 import { Person } from "lemmy-js-client";
 import { useAppSelector } from "../../store";
+import { isAdminSelector } from "../auth/siteSlice";
 
 export default function useIsAdmin(person?: Person) {
-  return useAppSelector((state) => {
-    return state.site.response?.admins?.some(
-      (admin) =>
-        admin.person.id ===
-        (person?.id ?? state.site.response?.my_user?.local_user_view.person.id),
-    );
-  });
+  useAppSelector(
+    !person
+      ? isAdminSelector
+      : (state) =>
+          state.site.response?.admins?.some(
+            (admin) => admin.person.id === person.id,
+          ),
+  );
 }
