@@ -11,7 +11,7 @@ import TimeStat from "./TimeStat";
 export const sharedStatsClass = css`
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 0.5rem;
 `;
 
 const Container = styled.div`

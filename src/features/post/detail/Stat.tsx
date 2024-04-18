@@ -4,7 +4,7 @@ import { css, cx } from "@linaria/core";
 const baseClass = css`
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 0.25rem;
 `;
 
 const baseIconClass = css`
