@@ -45,10 +45,6 @@ const Container = styled.div`
     color: white;
   }
 
-  p {
-    margin: unset;
-  }
-
   &:before,
   &:after {
     position: absolute;
@@ -163,7 +159,10 @@ export default function Message({ message }: MessageProps) {
       ref={containerRef}
       {...bind()}
     >
-      <Markdown id={`private-message_${message.private_message.id}`}>
+      <Markdown
+        id={`private-message_${message.private_message.id}`}
+        className="collapse-md-margins"
+      >
         {message.private_message.content}
       </Markdown>
     </Container>
