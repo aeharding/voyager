@@ -8,7 +8,7 @@ import { PageContext } from "../../auth/PageContext";
 import { useLongPress } from "use-long-press";
 import Markdown from "../../shared/markdown/Markdown";
 import { styled } from "@linaria/react";
-import { css, cx } from "@linaria/core";
+import { css } from "@linaria/core";
 
 const Container = styled.div`
   position: relative; /* Setup a relative container for our pseudo elements */
@@ -155,14 +155,14 @@ export default function Message({ message }: MessageProps) {
 
   return (
     <Container
-      className={cx(
-        thisIsMyMessage ? sentCss : receivedCss,
-        "collapse-md-margins",
-      )}
+      className={thisIsMyMessage ? sentCss : receivedCss}
       ref={containerRef}
       {...bind()}
     >
-      <Markdown id={`private-message_${message.private_message.id}`}>
+      <Markdown
+        id={`private-message_${message.private_message.id}`}
+        className="collapse-md-margins"
+      >
         {message.private_message.content}
       </Markdown>
     </Container>
