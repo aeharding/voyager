@@ -16,6 +16,14 @@ const StyledIonTabBar = styled(IonTabBar)`
 
     ion-badge {
       inset-inline-start: calc(70% + 6px);
+
+      &.md {
+        inset-inline-start: calc(75% + 6px);
+      }
+    }
+
+    ion-tab-button > ion-label {
+      margin-bottom: 0;
     }
   }
 `;
