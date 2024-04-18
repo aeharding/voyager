@@ -5,6 +5,34 @@ import InboxTabButton from "./tabs/buttons/InboxTabButton";
 import ProfileTabButton from "./tabs/buttons/ProfileTabButton";
 import SearchTabButton from "./tabs/buttons/SearchTabButton";
 import SettingsTabButton from "./tabs/buttons/SettingsTabButton";
+import { styled } from "@linaria/react";
+
+const StyledIonTabBar = styled(IonTabBar)`
+  @media (orientation: landscape) and (max-height: 450px) {
+    height: 36px;
+
+    ion-badge {
+      inset-inline-start: calc(70% + 6px);
+
+      &.md {
+        inset-inline-start: calc(75% + 6px);
+      }
+    }
+
+    ion-tab-button {
+      flex-direction: row;
+
+      > ion-label {
+        margin-bottom: 0;
+      }
+
+      > ion-icon {
+        font-size: 22px !important;
+        margin-right: 5px;
+      }
+    }
+  }
+`;
 
 type CustomTabBarType = typeof IonTabBar & {
   /**
@@ -25,7 +53,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   };
 
   return (
-    <IonTabBar
+    <StyledIonTabBar
       {...props}
       ref={ref}
       onClick={resetLongPress}
@@ -39,7 +67,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       <ProfileTabButton tab="profile" href="/profile" {...sharedTabProps} />
       <SearchTabButton tab="search" href="/search" {...sharedTabProps} />
       <SettingsTabButton tab="settings" href="/settings" {...sharedTabProps} />
-    </IonTabBar>
+    </StyledIonTabBar>
   );
 });
 
