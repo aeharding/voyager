@@ -3,12 +3,16 @@ import { LogEntryData } from "../ModlogItem";
 import { getHandle } from "../../../../helpers/lemmy";
 import { buildBaseData } from "./shared";
 import { buildUserLink } from "../../../../helpers/appLinkBuilder";
+import { personAdd, personRemove } from "ionicons/icons";
 
 export default function banFromCommunity(
   item: ModBanFromCommunityView,
 ): LogEntryData {
   return {
-    title: `${item.mod_ban_from_community.banned ? "Banned" : "Unbanned"} User`,
+    icon: item.mod_ban_from_community.banned ? personRemove : personAdd,
+    title: `${
+      item.mod_ban_from_community.banned ? "Banned" : "Unbanned"
+    } User from Community`,
     by: item.moderator ? getHandle(item.moderator) : undefined,
     message: `${getHandle(item.banned_person)} from ${getHandle(
       item.community,

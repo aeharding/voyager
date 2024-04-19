@@ -1,5 +1,6 @@
 import {
   CommentView,
+  Community,
   CommunityView,
   Person,
   PersonView,
@@ -7,6 +8,7 @@ import {
 } from "lemmy-js-client";
 import { getHandle } from "./lemmy";
 import { useBuildGeneralBrowseLink } from "./routes";
+import { buildCommunityLink } from "./appLinkBuilder";
 import { useCallback } from "react";
 import useAppToast from "./useAppToast";
 import { checkmark } from "ionicons/icons";
@@ -46,9 +48,13 @@ export default function useAppNavigation() {
   );
 
   const navigateToCommunity = useCallback(
-    (community: CommunityView) => {
+    (community: CommunityView | Community) => {
       pushRouteIfNeeded(
-        buildGeneralBrowseLink(`/c/${getHandle(community.community)}`),
+        buildGeneralBrowseLink(
+          buildCommunityLink(
+            "community" in community ? community.community : community,
+          ),
+        ),
       );
     },
     [buildGeneralBrowseLink, pushRouteIfNeeded],
