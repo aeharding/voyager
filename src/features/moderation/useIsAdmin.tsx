@@ -3,7 +3,7 @@ import { useAppSelector } from "../../store";
 import { isAdminSelector } from "../auth/siteSlice";
 
 export default function useIsAdmin(person?: Person) {
-  useAppSelector(
+  return useAppSelector(
     !person
       ? isAdminSelector
       : (state) =>
