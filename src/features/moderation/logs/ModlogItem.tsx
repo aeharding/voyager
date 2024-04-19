@@ -169,19 +169,18 @@ export function ModlogItem({ item }: ModLogItemProps) {
   } = renderModlogData(item);
 
   const isAdmin = useIsAdmin(
-    "admin" in item
-      ? item.admin
-      : "moderator" in item
-        ? item.moderator
-        : undefined,
+    (() => {
+      if ("admin" in item) return item.admin;
+      if ("moderator" in item) return item.moderator;
+    })(),
   );
 
-  const role =
-    by && isAdmin
-      ? "admin-local"
-      : "admin" in item
-        ? "admin-remote"
-        : role_ ?? "mod";
+  const role = (() => {
+    if (by && isAdmin) return "admin-local";
+    if ("admin" in item) return "admin-remote";
+
+    return role_ ?? "mod";
+  })();
 
   return (
     <IonItem
