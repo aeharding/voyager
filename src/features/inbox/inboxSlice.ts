@@ -174,7 +174,12 @@ export const syncMessages =
           try {
             const results = await clientSelector(getState()).getPrivateMessages(
               {
-                limit: syncState === "init" ? 50 : page === 1 ? 1 : 20,
+                limit: (() => {
+                  if (syncState === "init") return 50; // initial sync, expect many messages
+                  if (page === 1) return 1; // poll to check for new messages
+
+                  return 20; // detected new messages, kick off sync
+                })(),
                 page,
               },
             );
