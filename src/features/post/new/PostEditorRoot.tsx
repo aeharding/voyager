@@ -37,6 +37,7 @@ import { isAndroid } from "../../../helpers/device";
 import { css } from "@linaria/core";
 import AppHeader from "../../shared/AppHeader";
 import { presentErrorMessage } from "../../../helpers/error";
+import { getErrorMessage } from "../../../helpers/lemmyErrors";
 
 const Container = styled.div`
   position: absolute;
@@ -263,7 +264,18 @@ export default function PostEditorRoot({
       }
     } catch (error) {
       presentToast({
-        message: presentErrorMessage("Problem submitting your post", error),
+        message: getErrorMessage(
+          error,
+          (message) => {
+            switch (message) {
+              case "invalid_post_title":
+                return "Invalid Post Title";
+              default:
+                return `Problem submitting your post: ${message}`;
+            }
+          },
+          "Problem submitting your post",
+        ),
         color: "danger",
         fullscreen: true,
       });

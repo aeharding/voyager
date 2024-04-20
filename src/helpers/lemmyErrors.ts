@@ -7,7 +7,7 @@ export function isLemmyError(error: unknown, lemmyErrorValue: LemmyErrorValue) {
   return error.message === lemmyErrorValue;
 }
 
-function getErrorMessage(
+export function getErrorMessage(
   error: unknown,
   customErrorMap: (message: LemmyErrorValue) => string | undefined,
   unknownLemmyError: string,
