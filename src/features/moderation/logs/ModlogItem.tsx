@@ -28,6 +28,8 @@ import {
 import useIsAdmin from "../useIsAdmin";
 import { timerOutline } from "ionicons/icons";
 import { styled } from "@linaria/react";
+import { cx } from "@linaria/core";
+import { isTouchDevice } from "../../../helpers/device";
 
 const Container = styled.div`
   display: flex;
@@ -184,7 +186,8 @@ export function ModlogItem({ item }: ModLogItemProps) {
 
   return (
     <IonItem
-      className={maxWidthCss}
+      mode="ios" // Use iOS style activatable tap highlight
+      className={cx(isTouchDevice() && "ion-activatable", maxWidthCss)}
       href={undefined}
       routerLink={link ? buildGeneralBrowseLink(link) : undefined}
       detail={false}

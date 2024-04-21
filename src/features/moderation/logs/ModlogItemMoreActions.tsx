@@ -10,6 +10,7 @@ import { ModlogItemType } from "../../../routes/pages/shared/ModlogPage";
 import { getHandle } from "../../../helpers/lemmy";
 import useAppNavigation from "../../../helpers/useAppNavigation";
 import { ModeratorRole, getModIcon } from "../useCanModerate";
+import { PlainButton } from "../../shared/PlainButton";
 
 const EllipsisIcon = styled(IonIcon)`
   font-size: 1.2rem;
@@ -81,12 +82,14 @@ export default function ModlogItemMoreActions({
   }
 
   return (
-    <EllipsisIcon
-      icon={ellipsisHorizontal}
-      onClick={(e) => {
-        e.stopPropagation();
-        presentMoreActions();
-      }}
-    />
+    <PlainButton>
+      <EllipsisIcon
+        icon={ellipsisHorizontal}
+        onClick={(e) => {
+          e.stopPropagation();
+          presentMoreActions();
+        }}
+      />
+    </PlainButton>
   );
 }
