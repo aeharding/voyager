@@ -82,7 +82,7 @@ export const pageTransitionAnimateBackOnly = (
     : mdTransitionAnimation(baseEl, opts);
 };
 
-export function preventIonicTapClick() {
+export function stopIonicTapClick() {
   document.dispatchEvent(new CustomEvent("ionGestureCaptured"));
 }
 

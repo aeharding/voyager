@@ -8,7 +8,7 @@ import {
 } from "./redgifsSlice";
 import LargeFeedMedia from "../../../post/inFeed/large/media/LargeFeedMedia";
 import { IonButton, IonText } from "@ionic/react";
-import { preventIonicTapClick } from "../../../../helpers/ionic";
+import { stopIonicTapClick } from "../../../../helpers/ionic";
 import { styled } from "@linaria/react";
 import { setEmbedExternalMedia } from "../../../settings/settingsSlice";
 import { css } from "@linaria/core";
@@ -56,7 +56,7 @@ export default function LargeFeedRedgifMedia({ url, ...rest }: RedgifProps) {
               e.stopPropagation();
               dispatch(enable());
             }}
-            onTouchStart={() => preventIonicTapClick()}
+            onTouchStart={() => stopIonicTapClick()}
             size="default"
           >
             Ok
@@ -66,7 +66,7 @@ export default function LargeFeedRedgifMedia({ url, ...rest }: RedgifProps) {
               e.stopPropagation();
               dispatch(setEmbedExternalMedia(false));
             }}
-            onTouchStart={() => preventIonicTapClick()}
+            onTouchStart={() => stopIonicTapClick()}
             size="default"
             fill="clear"
             color="dark"
@@ -81,7 +81,7 @@ export default function LargeFeedRedgifMedia({ url, ...rest }: RedgifProps) {
     return (
       <MediaPlaceholder
         state="loading"
-        onTouchStart={() => preventIonicTapClick()}
+        onTouchStart={() => stopIonicTapClick()}
       />
     );
 

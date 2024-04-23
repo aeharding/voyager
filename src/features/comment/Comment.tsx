@@ -12,7 +12,10 @@ import ModeratableItem from "../moderation/ModeratableItem";
 import useCanModerate from "../moderation/useCanModerate";
 import { useLongPress } from "use-long-press";
 import { filterEvents } from "../../helpers/longPress";
-import { preventOnClickNavigationBug } from "../../helpers/ionic";
+import {
+  preventOnClickNavigationBug,
+  stopIonicTapClick,
+} from "../../helpers/ionic";
 import { styled } from "@linaria/react";
 import { PositionedContainer } from "./elements/PositionedContainer";
 import CommentContainer from "./elements/CommentContainer";
@@ -97,6 +100,7 @@ function Comment({
 
   const onCommentLongPress = useCallback(() => {
     commentEllipsisHandleRef.current?.present();
+    stopIonicTapClick();
   }, []);
 
   const bind = useLongPress(onCommentLongPress, {
