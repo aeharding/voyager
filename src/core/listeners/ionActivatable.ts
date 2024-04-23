@@ -1,4 +1,4 @@
-import { preventIonicTapClick } from "../../helpers/ionic";
+import { stopIonicTapClick } from "../../helpers/ionic";
 
 /**
  * This prevents the `ion-activatable` tap highlight
@@ -8,7 +8,7 @@ function onPreventIonicTapClick(e: MouseEvent | TouchEvent) {
   if (!(e.target instanceof HTMLElement)) return;
   if (!e.target.closest("ion-button,a,img,input,button")) return;
 
-  preventIonicTapClick();
+  stopIonicTapClick();
 }
 
 document.addEventListener("touchstart", onPreventIonicTapClick);

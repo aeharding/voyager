@@ -14,7 +14,10 @@ import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 import { useLongPress } from "use-long-press";
 import usePostActions from "../shared/usePostActions";
 import { filterEvents } from "../../../helpers/longPress";
-import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import {
+  stopIonicTapClick,
+  preventOnClickNavigationBug,
+} from "../../../helpers/ionic";
 import { cx } from "@linaria/core";
 import { isTouchDevice } from "../../../helpers/device";
 
@@ -83,6 +86,7 @@ function Post(props: PostProps) {
 
   const onPostLongPress = useCallback(() => {
     openPostActions();
+    stopIonicTapClick();
   }, [openPostActions]);
 
   const bind = useLongPress(onPostLongPress, {

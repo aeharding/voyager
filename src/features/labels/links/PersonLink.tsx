@@ -7,7 +7,10 @@ import { OInstanceUrlDisplayMode } from "../../../services/db";
 import AgeBadge from "./AgeBadge";
 import { useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
-import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import {
+  preventOnClickNavigationBug,
+  stopIonicTapClick,
+} from "../../../helpers/ionic";
 import { styled } from "@linaria/react";
 import { LinkContainer, StyledLink, hideCss } from "./shared";
 import { cx } from "@linaria/core";
@@ -61,6 +64,8 @@ export default function PersonLink({
     const isBlocked = blocks?.some(
       (b) => getHandle(b.target) === getHandle(person),
     );
+
+    stopIonicTapClick();
 
     presentActionSheet({
       cssClass: "left-align-buttons",

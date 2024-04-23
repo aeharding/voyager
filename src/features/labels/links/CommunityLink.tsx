@@ -15,7 +15,10 @@ import {
 import useCommunityActions from "../../community/useCommunityActions";
 import { useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
-import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import {
+  preventOnClickNavigationBug,
+  stopIonicTapClick,
+} from "../../../helpers/ionic";
 import { styled } from "@linaria/react";
 import { cx } from "@linaria/core";
 import { useAppSelector } from "../../../store";
@@ -55,6 +58,7 @@ export default function CommunityLink({
     useCommunityActions(community, subscribed);
 
   const onCommunityLinkLongPress = useCallback(() => {
+    stopIonicTapClick();
     present({
       cssClass: "left-align-buttons",
       buttons: [
