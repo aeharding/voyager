@@ -161,6 +161,10 @@ export default function CreateCrosspostDialog({
         placeholder="Title"
         value={title}
         onIonInput={(e) => setTitle(e.detail.value || "")}
+        inputMode="text"
+        autocapitalize="on"
+        autocorrect="on"
+        spellCheck
         // clearInput // TODO add once below bug fixed
       >
         {/* https://github.com/ionic-team/ionic-framework/issues/28855 */}
