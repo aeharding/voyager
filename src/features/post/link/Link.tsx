@@ -138,7 +138,7 @@ export default function Link({
   const [error, setError] = useState(false);
 
   const linkType = useMemo(
-    () => determineObjectTypeFromUrl(url) || determineTypeFromUrl(url),
+    () => determineObjectTypeFromUrl(url) ?? determineTypeFromUrl(url),
     [url, determineObjectTypeFromUrl],
   );
   const isImage = useMemo(() => isUrlImage(url), [url]);
