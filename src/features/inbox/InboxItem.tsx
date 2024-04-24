@@ -20,6 +20,16 @@ import InboxItemMoreActions from "./InboxItemMoreActions";
 import { styled } from "@linaria/react";
 import { css, cx } from "@linaria/core";
 import { isTouchDevice } from "../../helpers/device";
+import PersonLink from "../labels/links/PersonLink";
+import CommunityLink from "../labels/links/CommunityLink";
+
+const labelStyles = css`
+  font-weight: 500;
+
+  a {
+    display: inline-flex; // kinda brittle way to ensure it stays inline
+  }
+`;
 
 const Hr = styled.div`
   ${maxWidthCss}
@@ -31,7 +41,7 @@ const Hr = styled.div`
     content: "";
     position: absolute;
 
-    --right-offset: 1.8rem;
+    --right-offset: 2.8rem;
 
     width: calc(100% - var(--right-offset));
     left: var(--right-offset);
@@ -171,8 +181,18 @@ export default function InboxItem({ item }: InboxItemProps) {
     if ("comment" in item) {
       return (
         <>
-          <strong>{item.creator.name}</strong> in{" "}
-          <strong>{item.community.name}</strong>
+          <PersonLink
+            person={item.creator}
+            className={labelStyles}
+            showBadge={false}
+          />{" "}
+          in{" "}
+          <CommunityLink
+            community={item.community}
+            subscribed={item.subscribed}
+            hideIcon
+            className={labelStyles}
+          />
         </>
       );
     }

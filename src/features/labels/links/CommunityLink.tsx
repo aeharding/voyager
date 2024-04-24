@@ -34,6 +34,7 @@ interface CommunityLinkProps {
   subscribed: SubscribedType;
   tinyIcon?: boolean;
   disableInstanceClick?: boolean;
+  hideIcon?: boolean;
 
   className?: string;
 }
@@ -45,6 +46,7 @@ export default function CommunityLink({
   subscribed,
   tinyIcon,
   disableInstanceClick,
+  hideIcon,
 }: CommunityLinkProps) {
   const [present] = useIonActionSheet();
 
@@ -116,7 +118,7 @@ export default function CommunityLink({
           preventOnClickNavigationBug(e);
         }}
       >
-        {showCommunityIcons && !hideCommunity && (
+        {showCommunityIcons && !hideCommunity && !hideIcon && (
           <StyledItemIcon item={community} size={tinyIcon ? 16 : 24} />
         )}
 
