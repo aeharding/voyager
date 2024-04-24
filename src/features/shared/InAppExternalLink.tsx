@@ -58,7 +58,12 @@ export function useInterceptHrefWithInAppBrowserIfNeeded() {
 
       if (e.defaultPrevented) return;
 
-      if (isNative() && href && linkHandler === OLinkHandlerType.InApp) {
+      if (!href) return;
+
+      // mailto should be handled directly by web view to launch mail app
+      if (href.toLowerCase().startsWith("mailto:")) return;
+
+      if (isNative() && linkHandler === OLinkHandlerType.InApp) {
         e.preventDefault();
         e.stopPropagation();
         openNativeBrowser(href);

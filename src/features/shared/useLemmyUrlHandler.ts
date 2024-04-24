@@ -23,7 +23,7 @@ const POTENTIAL_PATHS = [
   COMMUNITY_PATH,
 ] as const;
 
-type ObjectType = "community" | "post" | "comment" | "user";
+export type LemmyObjectType = "community" | "post" | "comment" | "user";
 
 export default function useLemmyUrlHandler() {
   const knownInstances = useAppSelector(knownInstancesSelector);
@@ -158,7 +158,7 @@ export default function useLemmyUrlHandler() {
   );
 
   const determineObjectTypeFromUrl = useCallback(
-    (link: string): ObjectType | undefined => {
+    (link: string): LemmyObjectType | undefined => {
       const url = getUrl(link);
 
       if (!url) return;

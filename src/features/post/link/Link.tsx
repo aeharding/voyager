@@ -10,7 +10,7 @@ import LinkPreview from "./LinkPreview";
 import { LinkData } from "../../comment/CommentLinks";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 import { getImageSrc } from "../../../services/lemmy";
-import { isUrlImage } from "../../../helpers/url";
+import { determineTypeFromUrl, isUrlImage } from "../../../helpers/url";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -138,7 +138,7 @@ export default function Link({
   const [error, setError] = useState(false);
 
   const linkType = useMemo(
-    () => determineObjectTypeFromUrl(url),
+    () => determineObjectTypeFromUrl(url) ?? determineTypeFromUrl(url),
     [url, determineObjectTypeFromUrl],
   );
   const isImage = useMemo(() => isUrlImage(url), [url]);
@@ -155,7 +155,8 @@ export default function Link({
     if (commentType === "image" || isImage)
       return <ThumbnailImg src={getImageSrc(url, { size: 50 })} />;
 
-    if (linkType || !compact || !thumbnail) return <LinkPreview url={url} />;
+    if (linkType || !compact || !thumbnail)
+      return <LinkPreview type={linkType} />;
 
     return <ThumbnailImg src={thumbnail} />;
   })();

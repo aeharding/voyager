@@ -131,8 +131,12 @@ export function parseUrlForDisplay(url: string): string[] {
     return [];
   }
 
+  const slashSlash = url.startsWith(`${parsedUrl.protocol}//`);
+
   const protocolPrefix =
-    parsedUrl.protocol === "https:" ? "" : `${parsedUrl.protocol}//`;
+    parsedUrl.protocol === "https:"
+      ? ""
+      : `${parsedUrl.protocol}${slashSlash ? "//" : ""}`;
   const normalizedHost = (() => {
     if (protocolPrefix) return parsedUrl.host;
     if (parsedUrl.host.startsWith("www.")) return parsedUrl.host.slice(4);
@@ -144,4 +148,8 @@ export function parseUrlForDisplay(url: string): string[] {
     `${protocolPrefix}${normalizedHost}`,
     `${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`,
   ];
+}
+
+export function determineTypeFromUrl(url: string): "mail" | undefined {
+  return url.startsWith("mailto:") ? "mail" : undefined;
 }
