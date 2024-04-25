@@ -19,6 +19,7 @@ import { styled } from "@linaria/react";
 
 const RemoveIcon = styled(IonIcon)`
   position: relative;
+  font-size: 1.6rem;
 
   &:after {
     z-index: -1;
