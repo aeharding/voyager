@@ -11,6 +11,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import useAppNavigation from "../../../helpers/useAppNavigation";
 import { ModeratorRole, getModIcon } from "../useCanModerate";
 import { PlainButton } from "../../shared/PlainButton";
+import { css } from "@linaria/core";
 
 const EllipsisIcon = styled(IonIcon)`
   font-size: 1.2rem;
@@ -82,7 +83,11 @@ export default function ModlogItemMoreActions({
   }
 
   return (
-    <PlainButton>
+    <PlainButton
+      className={css`
+        margin: -6px 0; // prevent size from breaking line height
+      `}
+    >
       <EllipsisIcon
         icon={ellipsisHorizontal}
         onClick={(e) => {
