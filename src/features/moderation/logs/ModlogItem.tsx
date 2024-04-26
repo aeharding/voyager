@@ -50,6 +50,15 @@ const StartContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  ion-icon {
+    width: 1lh;
+    height: 1lh;
+  }
+`;
+
+const TypeIcon = styled(IonIcon)`
+  color: var(--ion-color-medium2);
 `;
 
 const Content = styled.div`
@@ -61,12 +70,13 @@ const Header = styled.div`
   justify-content: space-between;
 
   aside {
-    color: var(--ion-color-medium);
     margin-left: auto;
 
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    color: var(--ion-color-medium2);
   }
 `;
 
@@ -81,10 +91,11 @@ const Footer = styled.div`
   align-items: center;
 
   aside {
-    color: var(--ion-color-medium);
     display: flex;
     align-items: center;
     gap: 6px;
+
+    color: var(--ion-color-medium2);
   }
 `;
 
@@ -194,7 +205,7 @@ export function ModlogItem({ item }: ModLogItemProps) {
     >
       <Container>
         <StartContent>
-          <IonIcon icon={icon} color="medium" />
+          <TypeIcon icon={icon} />
         </StartContent>
         <Content>
           <Header>

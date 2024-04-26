@@ -14,6 +14,7 @@ import Ago from "../labels/Ago";
 import { chevronDownOutline } from "ionicons/icons";
 import { RefObject } from "react";
 import { useAppSelector } from "../../store";
+import { ActionButton } from "../post/actions/ActionButton";
 
 const Header = styled.div`
   display: flex;
@@ -100,11 +101,13 @@ export default function CommentHeader({
       <>
         <ActionsContainer className={collapsed ? "ion-hide" : undefined}>
           {renderActions()}
-          <CommentEllipsis
-            comment={commentView}
-            rootIndex={rootIndex}
-            ref={commentEllipsisHandleRef}
-          />
+          <ActionButton>
+            <CommentEllipsis
+              comment={commentView}
+              rootIndex={rootIndex}
+              ref={commentEllipsisHandleRef}
+            />
+          </ActionButton>
           <Ago date={agoTimestamp} />
         </ActionsContainer>
         {collapsed && (

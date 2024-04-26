@@ -24,4 +24,6 @@ export const PlainButton = styled.button`
   /* Corrects inability to style clickable input types in iOS */
   -webkit-appearance: none;
   appearance: none;
+
+  display: inline-flex;
 `;
