@@ -1,8 +1,8 @@
-import { IonIcon, useIonViewDidEnter } from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import { chevronForward } from "ionicons/icons";
 import { Link, useParams } from "react-router-dom";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { styled } from "@linaria/react";
 
 const ContainerLink = styled(Link)`
@@ -53,15 +53,17 @@ export default function ViewAllComments({ onHeight }: ViewAllCommentsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const ref = useRef<HTMLAnchorElement>(null);
 
-  useIonViewDidEnter(() => {
-    heightChange();
-  });
-
   const heightChange = useCallback(() => {
-    if (!ref.current) return;
+    requestAnimationFrame(() => {
+      if (!ref.current) return;
 
-    onHeight?.(ref.current.getBoundingClientRect().height);
+      onHeight?.(ref.current.getBoundingClientRect().height);
+    });
   }, [onHeight]);
+
+  useEffect(() => {
+    heightChange();
+  }, [heightChange]);
 
   return (
     <ContainerLink

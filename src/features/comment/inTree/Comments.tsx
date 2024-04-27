@@ -204,6 +204,8 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   ]);
 
   const focusCommentIfNeeded = useCallback(() => {
+    if (!bottomPadding) return false;
+
     const commentElement = scrollViewContainerRef.current?.querySelector(
       `.comment-${highlightedCommentId}`,
     );
@@ -212,13 +214,13 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       () => {
         if (!(commentElement instanceof HTMLElement)) return;
 
-        scrollIntoView(commentElement, 100);
+        scrollIntoView(commentElement, bottomPadding);
       },
       useScrollIntoViewWorkaround ? 50 : 600,
     );
 
     return !!commentElement;
-  }, [highlightedCommentId]);
+  }, [highlightedCommentId, bottomPadding]);
 
   // This is super hacky logic to scroll the view received new comments
   const scrolledRef = useRef(false);
