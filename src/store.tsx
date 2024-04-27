@@ -45,6 +45,7 @@ import networkSlice from "./core/listeners/network/networkSlice";
 import spoilerSlice from "./features/shared/markdown/components/spoiler/spoilerSlice";
 import deepLinkReadySlice from "./features/community/list/deepLinkReadySlice";
 import redgifsSlice from "./features/media/external/redgifs/redgifsSlice";
+import uploadImageSlice from "./features/shared/markdown/editing/uploadImageSlice";
 
 const store = configureStore({
   reducer: {
@@ -71,6 +72,7 @@ const store = configureStore({
     spoiler: spoilerSlice,
     deepLinkReady: deepLinkReadySlice,
     redgifs: redgifsSlice,
+    uploadImage: uploadImageSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
