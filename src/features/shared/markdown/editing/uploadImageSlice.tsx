@@ -3,6 +3,7 @@ import { UploadImageResponse } from "lemmy-js-client";
 import { AppDispatch, RootState } from "../../../../store";
 import { clientSelector } from "../../../auth/authSelectors";
 import { _uploadImage } from "../../../../services/lemmy";
+import { pullAllBy } from "lodash";
 
 interface UploadImageState {
   pendingSubmitImages: UploadImageResponse[];
@@ -19,8 +20,17 @@ export const uploadImageSlice = createSlice({
     onUploadedImage: (state, action: PayloadAction<UploadImageResponse>) => {
       state.pendingSubmitImages.push(action.payload);
     },
-    onHandledPendingImages: (state) => {
-      state.pendingSubmitImages = [];
+    onHandledPendingImages: (
+      state,
+      // if undefined, everything is handled
+      action: PayloadAction<UploadImageResponse[] | undefined>,
+    ) => {
+      if (!action.payload) {
+        state.pendingSubmitImages = [];
+        return;
+      }
+
+      pullAllBy(state.pendingSubmitImages, action.payload, (img) => img.url);
     },
   },
 });
@@ -42,12 +52,21 @@ export const uploadImage =
   };
 
 export const deletePendingImageUploads =
-  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+  (exceptUrl?: string) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
     const client = clientSelector(getState());
+
+    const toRemove = getState().uploadImage.pendingSubmitImages.filter(
+      (img) => {
+        if (exceptUrl && img.url === exceptUrl) return false;
+
+        return true;
+      },
+    );
 
     try {
       await Promise.all(
-        getState().uploadImage.pendingSubmitImages.map(async (img) => {
+        toRemove.map(async (img) => {
           const file = img.files?.[0];
           if (!file) return;
 
@@ -58,6 +77,6 @@ export const deletePendingImageUploads =
         }),
       );
     } finally {
-      dispatch(onHandledPendingImages());
+      dispatch(onHandledPendingImages(toRemove));
     }
   };

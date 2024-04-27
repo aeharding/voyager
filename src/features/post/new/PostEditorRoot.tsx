@@ -35,7 +35,10 @@ import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isAndroid } from "../../../helpers/device";
 import { css } from "@linaria/core";
 import AppHeader from "../../shared/AppHeader";
-import { uploadImage } from "../../shared/markdown/editing/uploadImageSlice";
+import {
+  deletePendingImageUploads,
+  uploadImage,
+} from "../../shared/markdown/editing/uploadImageSlice";
 
 const Container = styled.div`
   position: absolute;
@@ -322,6 +325,8 @@ export default function PostEditorRoot({
     } finally {
       setPhotoUploading(false);
     }
+
+    dispatch(deletePendingImageUploads(imageUrl));
 
     setPhotoUrl(imageUrl);
   }
