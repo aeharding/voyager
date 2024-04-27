@@ -26,7 +26,7 @@ export const LIMIT = 50;
  *
  * @returns relative pictrs URL
  */
-export async function uploadImage(client: LemmyHttp, image: File) {
+export async function _uploadImage(client: LemmyHttp, image: File) {
   let compressedImageIfNeeded;
 
   try {
@@ -48,7 +48,7 @@ export async function uploadImage(client: LemmyHttp, image: File) {
 
   if (!response.url) throw new Error(response.msg);
 
-  return response.url;
+  return response;
 }
 
 interface ImageOptions {

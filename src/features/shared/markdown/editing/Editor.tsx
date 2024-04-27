@@ -73,7 +73,7 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { uploadImage, jsx } = useUploadImage();
+  const { uploadImage, jsx: uploadImageJsx } = useUploadImage();
 
   useTextRecovery(text, setText, !canRecoverText);
 
@@ -187,7 +187,7 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
 
   return (
     <>
-      {jsx}
+      {uploadImageJsx}
       <Container keyboardOpen={keyboardOpen}>
         <Textarea
           {...preventModalSwipeOnTextSelection}
