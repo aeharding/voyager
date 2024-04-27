@@ -216,7 +216,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
 
         scrollIntoView(commentElement, bottomPadding);
       },
-      useScrollIntoViewWorkaround ? 50 : 600,
+      useScrollIntoViewWorkaround ? 200 : 600,
     );
 
     return !!commentElement;
