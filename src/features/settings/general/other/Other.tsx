@@ -7,7 +7,7 @@ import DefaultFeed from "./DefaultFeed";
 import NoSubscribedInFeed from "./NoSubscribedInFeed";
 import OpenNativeApps from "./OpenNativeApps";
 import ClearCache from "./ClearCache";
-import BackupSettings from "./BackupSettings";
+import BackupSettings from "./backup/BackupSettings";
 
 export default function Other() {
   return (
