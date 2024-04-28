@@ -46,6 +46,7 @@ import { AppContext } from "../../auth/AppContext";
 import { getCanModerate } from "../../moderation/useCanModerate";
 import { isStubComment } from "../../comment/CommentHeader";
 import { getVoteErrorMessage } from "../../../helpers/lemmyErrors";
+import { VOTE_COLORS } from "../../settings/appearance/themes/votesTheme/VotesTheme";
 
 const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
@@ -110,6 +111,10 @@ function BaseSlidingVoteInternal({
 
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
+
+  const votesTheme = useAppSelector(
+    (state) => state.settings.appearance.votesTheme,
+  );
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const commentVotesById = useAppSelector(
@@ -315,7 +320,7 @@ function BaseSlidingVoteInternal({
           trigger: () => {
             onVote(currentVote === 1 ? 0 : 1);
           },
-          bgColor: "primary-fixed",
+          bgColor: VOTE_COLORS.UPVOTE[votesTheme],
           slash: currentVote === 1,
         },
         downvote: {
@@ -323,7 +328,7 @@ function BaseSlidingVoteInternal({
           trigger: () => {
             onVote(currentVote === -1 ? 0 : -1);
           },
-          bgColor: "danger",
+          bgColor: VOTE_COLORS.DOWNVOTE[votesTheme],
           slash: currentVote === -1,
         },
         reply: {
@@ -352,6 +357,7 @@ function BaseSlidingVoteInternal({
       markUnreadAction,
       onVote,
       shareTrigger,
+      votesTheme,
     ]);
 
   const startActions: ActionList = useMemo(

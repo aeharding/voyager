@@ -93,6 +93,8 @@ export const baseVariables = css`
       --read-color-medium: rgba(0, 0, 0, 0.4);
 
       --share-img-drop-shadow: none;
+
+      --ion-color-reddit-upvote: #ff5c01;
     }
 
     .ios body {
@@ -106,6 +108,9 @@ export const baseVariables = css`
 
     .ion-color-primary-fixed {
       --ion-color-base: var(--ion-color-primary-fixed);
+    }
+    .ion-color-reddit-upvote {
+      --ion-color-base: var(--ion-color-reddit-upvote);
     }
   }
 `;
@@ -224,6 +229,8 @@ export const darkVariables = css`
         --read-color-medium: rgba(255, 255, 255, 0.4);
 
         --share-img-drop-shadow: drop-shadow(0 0 8px black);
+
+        --ion-color-reddit-upvote: #f26700;
       }
 
       // iOS Dark Theme
