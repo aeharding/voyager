@@ -118,6 +118,9 @@ importers:
       dexie:
         specifier: ^4.0.1
         version: 4.0.4
+      dexie-export-import:
+        specifier: ^4.1.1
+        version: 4.1.1(dexie@4.0.4)
       dexie-react-hooks:
         specifier: ^1.1.7
         version: 1.1.7(@types/react@18.2.79)(dexie@4.0.4)(react@18.2.0)
@@ -3008,6 +3011,11 @@ packages:
 
   devtools-protocol@0.0.981744:
     resolution: {integrity: sha512-0cuGS8+jhR67Fy7qG3i3Pc7Aw494sb9yG9QgpG97SFVWwolgYjlhJg7n+UaHxOQT30d1TYu/EYe9k01ivLErIg==}
+
+  dexie-export-import@4.1.1:
+    resolution: {integrity: sha512-X6gm08h/HUM/b/iwAOtOTrtyz+maADKOUEODjfAMJDPQ31jwRGehRzycq0e67KL2Wh6xEaqeDmG00VFr2vIQNQ==}
+    peerDependencies:
+      dexie: ^2.0.4 || ^3.0.0 || ^4.0.1-alpha.5
 
   dexie-react-hooks@1.1.7:
     resolution: {integrity: sha512-Lwv5W0Hk+uOW3kGnsU9GZoR1er1B7WQ5DSdonoNG+focTNeJbHW6vi6nBoX534VKI3/uwHebYzSw1fwY6a7mTw==}
@@ -9893,6 +9901,10 @@ snapshots:
       dequal: 2.0.3
 
   devtools-protocol@0.0.981744: {}
+
+  dexie-export-import@4.1.1(dexie@4.0.4):
+    dependencies:
+      dexie: 4.0.4
 
   dexie-react-hooks@1.1.7(@types/react@18.2.79)(dexie@4.0.4)(react@18.2.0):
     dependencies:

@@ -64,6 +64,7 @@
     "compare-versions": "^6.1.0",
     "date-fns": "^3.3.1",
     "dexie": "^4.0.1",
+    "dexie-export-import": "^4.1.1",
     "dexie-react-hooks": "^1.1.7",
     "history": "^4.10.1",
     "ionicons": "^7.3.1",
