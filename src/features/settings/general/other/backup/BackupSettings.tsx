@@ -138,7 +138,7 @@ export default function BackupSettings() {
 
   return (
     <IonItem button onClick={clear} detail={false}>
-      <IonLabel color="primary">Backup Settings</IonLabel>
+      <IonLabel color="primary">Backup and Restore Settings</IonLabel>
     </IonItem>
   );
 }
