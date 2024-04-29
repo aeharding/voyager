@@ -16,37 +16,16 @@ import { ImpactStyle } from "@capacitor/haptics";
 import useHapticFeedback from "../../helpers/useHapticFeedback";
 import useAppToast from "../../helpers/useAppToast";
 import { formatNumber } from "../../helpers/number";
-import { styled } from "@linaria/react";
 import { getVoteErrorMessage } from "../../helpers/lemmyErrors";
 import { PlainButton } from "../shared/PlainButton";
-import Stat from "../post/detail/Stat";
 import { css } from "@linaria/core";
+import VoteStat from "./VoteStat";
 
 const iconClass = css`
   // Vote icons are tall and narrow, but svg container is square.
   // This creates visually inconsistent padding.
   // So fudge it so it looks better next to more square icons
   margin: 0 -2px;
-`;
-
-const VoteStat = styled(Stat)<{
-  vote?: 1 | -1 | 0;
-  voteRepresented?: 1 | -1;
-}>`
-  && {
-    color: ${({ vote, voteRepresented }) => {
-      if (voteRepresented === undefined || vote === voteRepresented) {
-        switch (vote) {
-          case 1:
-            return "var(--ion-color-primary-fixed)";
-          case -1:
-            return "var(--ion-color-danger)";
-        }
-      }
-
-      return "inherit";
-    }};
-  }
 `;
 
 interface VoteProps {
@@ -120,7 +99,7 @@ export default function Vote({
             icon={arrowUpSharp}
             className={className}
             iconClassName={iconClass}
-            vote={myVote}
+            currentVote={myVote}
             voteRepresented={1}
             onClick={async (e) => {
               await onVote(e, myVote === 1 ? 0 : 1);
@@ -133,7 +112,7 @@ export default function Vote({
             icon={arrowDownSharp}
             className={className}
             iconClassName={iconClass}
-            vote={myVote}
+            currentVote={myVote}
             voteRepresented={-1}
             onClick={async (e) => {
               await onVote(e, myVote === -1 ? 0 : -1);
@@ -151,7 +130,7 @@ export default function Vote({
           icon={myVote === -1 ? arrowDownSharp : arrowUpSharp}
           className={className}
           iconClassName={iconClass}
-          vote={myVote}
+          currentVote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);
           }}
@@ -166,7 +145,7 @@ export default function Vote({
           icon={myVote === -1 ? arrowDownSharp : arrowUpSharp}
           className={className}
           iconClassName={iconClass}
-          vote={myVote}
+          currentVote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);
           }}

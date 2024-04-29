@@ -39,6 +39,7 @@ import {
   AutoplayMediaType,
   OAutoplayMediaType,
   CommentsThemeType,
+  VotesThemeType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -95,6 +96,7 @@ interface SettingsState {
     deviceMode: Mode;
     theme: AppThemeType;
     commentsTheme: CommentsThemeType;
+    votesTheme: VotesThemeType;
   };
   general: {
     comments: {
@@ -189,6 +191,7 @@ export const initialState: SettingsState = {
     deviceMode: "ios",
     theme: "default",
     commentsTheme: "rainbow",
+    votesTheme: "lemmy",
   },
   general: {
     comments: {
@@ -492,6 +495,10 @@ export const appearanceSlice = createSlice({
       state.appearance.commentsTheme = action.payload;
       db.setSetting("comments_theme", action.payload);
     },
+    setVotesTheme(state, action: PayloadAction<VotesThemeType>) {
+      state.appearance.votesTheme = action.payload;
+      db.setSetting("votes_theme", action.payload);
+    },
     setEnableHapticFeedback(state, action: PayloadAction<boolean>) {
       state.general.enableHapticFeedback = action.payload;
 
@@ -609,6 +616,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
     const result = db.transaction("r", db.settings, async () => {
       const state = thunkApi.getState() as RootState;
       const comments_theme = await db.getSetting("comments_theme");
+      const votes_theme = await db.getSetting("votes_theme");
       const collapse_comment_threads = await db.getSetting(
         "collapse_comment_threads",
       );
@@ -693,6 +701,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           ...state.settings.appearance,
           commentsTheme:
             comments_theme ?? initialState.appearance.commentsTheme,
+          votesTheme: votes_theme ?? initialState.appearance.votesTheme,
           general: {
             userInstanceUrlDisplay:
               user_instance_url_display ??
@@ -836,6 +845,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 
 export const {
   setCommentsTheme,
+  setVotesTheme,
   setDatabaseError,
   setFontSizeMultiplier,
   setUseSystemFontSize,

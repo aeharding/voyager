@@ -13,6 +13,10 @@ import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import useAppToast from "../../../helpers/useAppToast";
 import { styled } from "@linaria/react";
 import { getVoteErrorMessage } from "../../../helpers/lemmyErrors";
+import {
+  VOTE_COLORS,
+  bgColorToVariable,
+} from "../../settings/appearance/themes/votesTheme/VotesTheme";
 
 const InactiveItem = styled(ActionButton)`
   ${bounceAnimationOnTransition}
@@ -36,6 +40,9 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   const vibrate = useHapticFeedback();
   const { presentLoginIfNeeded } = useContext(PageContext);
   const downvoteAllowed = useAppSelector(isDownvoteEnabledSelector);
+  const votesTheme = useAppSelector(
+    (state) => state.settings.appearance.votesTheme,
+  );
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const myVote = postVotesById[postId];
@@ -64,10 +71,10 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
 
   const activeColor = (() => {
     switch (type) {
-      case "down":
-        return "var(--ion-color-danger)";
       case "up":
-        return "var(--ion-color-primary)";
+        return bgColorToVariable(VOTE_COLORS.UPVOTE[votesTheme]);
+      case "down":
+        return bgColorToVariable(VOTE_COLORS.DOWNVOTE[votesTheme]);
     }
   })();
 
