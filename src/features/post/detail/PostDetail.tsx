@@ -50,9 +50,11 @@ export default function PostDetail({
   );
 
   const bottomPadding: number = (() => {
-    if (!viewAllCommentsSpace) return 0;
+    if (commentPath) {
+      if (!viewAllCommentsSpace) return 0;
 
-    if (commentPath) return viewAllCommentsSpace + 12;
+      return viewAllCommentsSpace + 12;
+    }
 
     if (
       showJumpButton &&
