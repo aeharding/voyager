@@ -114,7 +114,6 @@ export default function PersonLink({
   else if (distinguished) color = "var(--ion-color-success)";
   else if (
     person.actor_id === "https://lemmy.world/u/aeharding" ||
-    person.actor_id === "https://midwest.social/u/aeharding" ||
     person.actor_id === "https://vger.social/u/aeharding"
   )
     color = "var(--ion-color-tertiary-tint)";
