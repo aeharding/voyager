@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useAppSelector } from "../../store";
 import InAppExternalLink from "../shared/InAppExternalLink";
 import Markdown, { MarkdownProps } from "../shared/markdown/Markdown";
@@ -15,24 +16,27 @@ export default function CommentMarkdown(props: CommentMarkdownProps) {
   return (
     <Markdown
       {...props}
-      components={{
-        img: (props) =>
-          !showCommentImages ? (
-            <InAppExternalLink
-              href={props.src}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {props.alt || "Image"}
-            </InAppExternalLink>
-          ) : (
-            <MarkdownImg
-              small
-              {...props}
-              onClick={(e) => e.stopPropagation()}
-            />
-          ),
-      }}
+      components={useMemo(
+        () => ({
+          img: (props) =>
+            !showCommentImages ? (
+              <InAppExternalLink
+                href={props.src}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {props.alt || "Image"}
+              </InAppExternalLink>
+            ) : (
+              <MarkdownImg
+                small
+                {...props}
+                onClick={(e) => e.stopPropagation()}
+              />
+            ),
+        }),
+        [showCommentImages],
+      )}
     />
   );
 }
