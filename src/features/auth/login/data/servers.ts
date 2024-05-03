@@ -105,6 +105,7 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmynsfw.com",
   "hexbear.net",
   "vger.social",
+  "lemmy.myserv.one",
 ];
 
 export const LOGIN_SERVERS = uniq([
