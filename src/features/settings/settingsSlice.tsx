@@ -74,6 +74,7 @@ interface SettingsState {
       embedCrossposts: boolean;
       showCommunityIcons: boolean;
       embedExternalMedia: boolean;
+      alwaysShowAuthor: boolean;
     };
     large: {
       showVotingButtons: boolean;
@@ -169,6 +170,7 @@ export const initialState: SettingsState = {
       embedCrossposts: true,
       showCommunityIcons: true,
       embedExternalMedia: true,
+      alwaysShowAuthor: false,
     },
     large: {
       showVotingButtons: true,
@@ -374,6 +376,10 @@ export const appearanceSlice = createSlice({
     setEmbedExternalMedia(state, action: PayloadAction<boolean>) {
       state.appearance.posts.embedExternalMedia = action.payload;
       db.setSetting("embed_external_media", action.payload);
+    },
+    setAlwaysShowAuthor(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.alwaysShowAuthor = action.payload;
+      db.setSetting("always_show_author", action.payload);
     },
     setAlwaysUseReaderMode(state, action: PayloadAction<boolean>) {
       state.general.safari.alwaysUseReaderMode = action.payload;
@@ -686,6 +692,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "no_subscribed_in_feed",
       );
       const embed_external_media = await db.getSetting("embed_external_media");
+      const always_show_author = await db.getSetting("always_show_author");
       const always_use_reader_mode = await db.getSetting(
         "always_use_reader_mode",
       );
@@ -726,6 +733,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             embedExternalMedia:
               embed_external_media ??
               initialState.appearance.posts.embedExternalMedia,
+            alwaysShowAuthor:
+              always_show_author ??
+              initialState.appearance.posts.alwaysShowAuthor,
           },
           large: {
             showVotingButtons:
@@ -893,6 +903,7 @@ export const {
   setDefaultFeed,
   setNoSubscribedInFeed,
   setEmbedExternalMedia,
+  setAlwaysShowAuthor,
   setAlwaysUseReaderMode,
   setShowCollapsedComment,
   setQuickSwitchDarkMode,
