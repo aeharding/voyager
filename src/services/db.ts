@@ -332,6 +332,7 @@ export type SettingValueTypes = {
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
   embed_external_media: boolean;
+  always_show_author: boolean;
   always_use_reader_mode: boolean;
   infinite_scrolling: boolean;
   upvote_on_save: boolean;
