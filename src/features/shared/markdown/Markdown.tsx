@@ -11,6 +11,7 @@ import spoiler from "@aeharding/remark-lemmy-spoiler";
 import Summary from "./components/spoiler/Summary";
 import Details from "./components/spoiler/Details";
 import spoilerRehype from "./spoilerRehype";
+import { useMemo } from "react";
 import rehypeHighlight from "rehype-highlight";
 
 const markdownCss = css`
@@ -70,6 +71,12 @@ const markdownCss = css`
   }
 `;
 
+// TODO - remove never when upgrading to rehypeHighlight v7
+// Waiting on leak fix - https://github.com/remarkjs/react-markdown/issues/791
+const rehypePlugins: import("unified").PluggableList = [
+  [rehypeHighlight as never, { detect: true }],
+];
+
 export interface MarkdownProps
   extends Omit<ReactMarkdownOptions, "remarkPlugins"> {
   className?: string;
@@ -98,31 +105,37 @@ export default function Markdown({
     <ReactMarkdown
       {...props}
       className={cx(props.className, markdownCss)}
-      components={{
-        img: (props) => (
-          <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />
-        ),
-        table: Table,
-        a: disableInternalLinkRouting
-          ? (props) => (
-              <InAppExternalLink
-                {...props}
-                target="_blank"
-                rel="noopener noreferrer"
-              />
-            )
-          : (props) => <LinkInterceptor {...props} />,
-        summary: Summary,
-        details: (props) => <Details {...props} id={id} />,
-        ...props.components,
-      }}
-      remarkPlugins={[
-        [customRemarkGfm, { connectedInstance }],
-        superSub,
-        spoiler,
-        spoilerRehype,
-      ]}
-      rehypePlugins={[[rehypeHighlight, { detect: true }]]}
+      components={useMemo(
+        () => ({
+          img: (props) => (
+            <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />
+          ),
+          table: Table,
+          a: disableInternalLinkRouting
+            ? (props) => (
+                <InAppExternalLink
+                  {...props}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              )
+            : (props) => <LinkInterceptor {...props} />,
+          summary: Summary,
+          details: (props) => <Details {...props} id={id} />,
+          ...props.components,
+        }),
+        [disableInternalLinkRouting, id, props.components],
+      )}
+      remarkPlugins={useMemo(
+        () => [
+          [customRemarkGfm, { connectedInstance }],
+          superSub,
+          spoiler,
+          spoilerRehype,
+        ],
+        [connectedInstance],
+      )}
+      rehypePlugins={rehypePlugins}
     />
   );
 }
