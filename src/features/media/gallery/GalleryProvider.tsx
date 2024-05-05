@@ -26,6 +26,10 @@ import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 
 import "photoswipe/style.css";
+import {
+  LARGE_POST_MEDIA_CONTAINER_CLASSNAME,
+  LARGE_POST_MEDIA_CONTAINER_HIDDEN_CLASSNAME,
+} from "../../post/inFeed/large/LargePostContents";
 
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
@@ -173,13 +177,33 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       instance.on("openingAnimationStart", () => {
         if (animationType !== "zoom") return;
 
-        thumbEl.style.setProperty("visibility", "hidden");
+        const largePostMediaContainerEl = thumbEl.closest(
+          `.${LARGE_POST_MEDIA_CONTAINER_CLASSNAME}`,
+        );
+
+        if (largePostMediaContainerEl) {
+          largePostMediaContainerEl.classList.add(
+            LARGE_POST_MEDIA_CONTAINER_HIDDEN_CLASSNAME,
+          );
+        } else {
+          thumbEl.style.setProperty("visibility", "hidden");
+        }
       });
 
       const cleanupHideThumb = () => {
         if (animationType !== "zoom") return;
 
-        thumbEl.style.removeProperty("visibility");
+        const largePostMediaContainerEl = thumbEl.closest(
+          `.${LARGE_POST_MEDIA_CONTAINER_CLASSNAME}`,
+        );
+
+        if (largePostMediaContainerEl) {
+          largePostMediaContainerEl.classList.remove(
+            LARGE_POST_MEDIA_CONTAINER_HIDDEN_CLASSNAME,
+          );
+        } else {
+          thumbEl.style.removeProperty("visibility");
+        }
       };
 
       instance.on("closingAnimationEnd", cleanupHideThumb);

@@ -1,6 +1,10 @@
 import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { alertCircle } from "ionicons/icons";
+import {
+  LARGE_POST_MEDIA_CONTAINER_CLASSNAME,
+  LARGE_POST_MEDIA_CONTAINER_HIDDEN_CLASSNAME,
+} from "../LargePostContents";
 
 const MessageContainer = styled.div`
   // Safari bug where absolutely positioned content isn't viewable over
@@ -23,6 +27,11 @@ const MessageContainer = styled.div`
   pointer-events: none;
 
   container-type: size;
+
+  .${LARGE_POST_MEDIA_CONTAINER_CLASSNAME}.${LARGE_POST_MEDIA_CONTAINER_HIDDEN_CLASSNAME}
+    & {
+    visibility: hidden;
+  }
 `;
 
 const WarningIcon = styled(IonIcon)`
