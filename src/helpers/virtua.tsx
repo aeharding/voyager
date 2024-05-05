@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import { CustomItemComponentProps } from "virtua";
 
 /**
- * Add data-index to each item for programatic scrolling
+ * Add data-index to each item for programmatic scrolling
  */
 export const IndexedVirtuaItem = forwardRef<
   HTMLDivElement,

@@ -27,7 +27,6 @@ import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PhotoPreview from "./PhotoPreview";
-import { uploadImage } from "../../../services/lemmy";
 import { receivedPosts } from "../postSlice";
 import useAppToast from "../../../helpers/useAppToast";
 import { isUrlImage, isValidUrl } from "../../../helpers/url";
@@ -38,6 +37,10 @@ import { css } from "@linaria/core";
 import AppHeader from "../../shared/AppHeader";
 import { presentErrorMessage } from "../../../helpers/error";
 import { getErrorMessage } from "../../../helpers/lemmyErrors";
+import {
+  deletePendingImageUploads,
+  uploadImage,
+} from "../../shared/markdown/editing/uploadImageSlice";
 
 const Container = styled.div`
   position: absolute;
@@ -320,7 +323,7 @@ export default function PostEditorRoot({
     if (isAndroid()) await new Promise((resolve) => setTimeout(resolve, 250));
 
     try {
-      imageUrl = await uploadImage(client, image);
+      imageUrl = await dispatch(uploadImage(image));
     } catch (error) {
       presentToast({
         message: presentErrorMessage("Problem uploading image", error),
@@ -333,6 +336,8 @@ export default function PostEditorRoot({
     } finally {
       setPhotoUploading(false);
     }
+
+    dispatch(deletePendingImageUploads(imageUrl));
 
     setPhotoUrl(imageUrl);
   }

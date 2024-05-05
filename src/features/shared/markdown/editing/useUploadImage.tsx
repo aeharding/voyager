@@ -1,14 +1,13 @@
 import { useState } from "react";
 import useAppToast from "../../../../helpers/useAppToast";
-import { uploadImage } from "../../../../services/lemmy";
 import { IonLoading } from "@ionic/react";
-import useClient from "../../../../helpers/useClient";
 import { presentErrorMessage } from "../../../../helpers/error";
+import { uploadImage } from "./uploadImageSlice";
+import { useAppDispatch } from "../../../../store";
 
 export default function useUploadImage() {
+  const dispatch = useAppDispatch();
   const presentToast = useAppToast();
-  const client = useClient();
-
   const [imageUploading, setImageUploading] = useState(false);
 
   return {
@@ -19,7 +18,7 @@ export default function useUploadImage() {
       let imageUrl: string;
 
       try {
-        imageUrl = await uploadImage(client, image);
+        imageUrl = await dispatch(uploadImage(image));
       } catch (error) {
         presentToast({
           message: presentErrorMessage("Problem uploading image", error),

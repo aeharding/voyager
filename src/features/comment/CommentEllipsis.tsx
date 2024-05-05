@@ -1,6 +1,5 @@
 import { ellipsisHorizontal } from "ionicons/icons";
 import useCommentActions, { CommentActionsProps } from "./useCommentActions";
-import { ActionButton } from "../post/actions/ActionButton";
 import { IonIcon, IonLoading } from "@ionic/react";
 import { forwardRef, useContext, useImperativeHandle } from "react";
 import { styled } from "@linaria/react";
@@ -33,15 +32,13 @@ export default forwardRef<CommentEllipsisHandle, CommentActionsProps>(
     return (
       <>
         <IonLoading isOpen={loading} />
-        <ActionButton>
-          <StyledIonIcon
-            icon={ellipsisHorizontal}
-            onClick={(e) => {
-              present();
-              e.stopPropagation();
-            }}
-          />
-        </ActionButton>
+        <StyledIonIcon
+          icon={ellipsisHorizontal}
+          onClick={(e) => {
+            present();
+            e.stopPropagation();
+          }}
+        />
       </>
     );
   },

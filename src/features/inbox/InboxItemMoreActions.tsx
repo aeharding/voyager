@@ -1,114 +1,62 @@
-import { IonIcon, useIonActionSheet } from "@ionic/react";
-import {
-  ellipsisHorizontal,
-  flagOutline,
-  mailOutline,
-  mailUnreadOutline,
-  personOutline,
-  removeCircleOutline,
-  textOutline,
-} from "ionicons/icons";
+import { mailOutline, mailUnreadOutline } from "ionicons/icons";
 import { InboxItemView } from "./InboxItem";
-import { PrivateMessageView } from "lemmy-js-client";
 import MoreActions from "../comment/CommentEllipsis";
+import { forwardRef, useMemo } from "react";
+import { styled } from "@linaria/react";
+import { PlainButton } from "../shared/PlainButton";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { getInboxItemId, markRead } from "./inboxSlice";
-import { getHandle } from "../../helpers/lemmy";
-import { useContext } from "react";
-import { PageContext } from "../auth/PageContext";
-import useAppNavigation from "../../helpers/useAppNavigation";
-import { useUserDetails } from "../user/useUserDetails";
-import { styled } from "@linaria/react";
+import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
 
-const EllipsisIcon = styled(IonIcon)`
-  font-size: 1.2rem;
+const StyledPlainButton = styled(PlainButton)`
+  font-size: 1.12em;
 `;
 
-interface InboxItemMoreActions {
+interface InboxItemMoreActionsProps {
   item: InboxItemView;
 }
 
-export default function InboxItemMoreActions({ item }: InboxItemMoreActions) {
+export type InboxItemMoreActionsHandle = {
+  present: () => void;
+};
+
+export default forwardRef<
+  InboxItemMoreActionsHandle,
+  InboxItemMoreActionsProps
+>(function InboxItemMoreActions({ item }, ref) {
   const dispatch = useAppDispatch();
-  const [presentActionSheet] = useIonActionSheet();
-  const { presentReport, presentSelectText } = useContext(PageContext);
-
-  const { navigateToUser } = useAppNavigation();
-
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId,
   );
-
-  const { isBlocked, blockOrUnblock } = useUserDetails(getHandle(item.creator));
-
   const isRead = readByInboxItemId[getInboxItemId(item)];
 
-  const markReadAction = {
-    text: isRead ? "Mark Unread" : "Mark Read",
-    icon: isRead ? mailUnreadOutline : mailOutline,
-    handler: () => {
-      dispatch(markRead(item, !isRead));
-    },
-  };
-
-  function presentMessage(item: PrivateMessageView) {
-    presentActionSheet({
-      cssClass: "left-align-buttons",
-      buttons: [
-        markReadAction,
-        {
-          text: "Select Text",
-          icon: textOutline,
-          handler: () => {
-            presentSelectText(item.private_message.content);
-          },
-        },
-        {
-          text: getHandle(item.creator),
-          icon: personOutline,
-          handler: () => {
-            navigateToUser(item.creator);
-          },
-        },
-        {
-          text: "Report",
-          icon: flagOutline,
-          handler: () => {
-            presentReport(item);
-          },
-        },
-        {
-          text: !isBlocked ? "Block User" : "Unblock User",
-          icon: removeCircleOutline,
-          handler: () => {
-            blockOrUnblock();
-          },
-        },
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
-      ],
-    });
-  }
-
-  if ("person_mention" in item || "comment_reply" in item) {
-    return (
-      <MoreActions
-        comment={item}
-        rootIndex={undefined}
-        appendActions={[markReadAction]}
-      />
-    );
-  }
+  const markReadAction = useMemo(
+    () => ({
+      text: isRead ? "Mark Unread" : "Mark Read",
+      icon: isRead ? mailUnreadOutline : mailOutline,
+      handler: () => {
+        dispatch(markRead(item, !isRead));
+      },
+    }),
+    [dispatch, isRead, item],
+  );
 
   return (
-    <EllipsisIcon
-      icon={ellipsisHorizontal}
-      onClick={(e) => {
-        e.stopPropagation();
-        presentMessage(item);
-      }}
-    />
+    <StyledPlainButton>
+      {"person_mention" in item || "comment_reply" in item ? (
+        <MoreActions
+          comment={item}
+          rootIndex={undefined}
+          appendActions={[markReadAction]}
+          ref={ref}
+        />
+      ) : (
+        <PrivateMessageMoreActions
+          item={item}
+          markReadAction={markReadAction}
+          ref={ref}
+        />
+      )}
+    </StyledPlainButton>
   );
-}
+});

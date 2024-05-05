@@ -39,6 +39,7 @@ import {
   AutoplayMediaType,
   OAutoplayMediaType,
   CommentsThemeType,
+  VotesThemeType,
 } from "../../services/db";
 import { get, set } from "./storage";
 import { Mode } from "@ionic/core";
@@ -73,6 +74,7 @@ interface SettingsState {
       embedCrossposts: boolean;
       showCommunityIcons: boolean;
       embedExternalMedia: boolean;
+      alwaysShowAuthor: boolean;
     };
     large: {
       showVotingButtons: boolean;
@@ -95,6 +97,7 @@ interface SettingsState {
     deviceMode: Mode;
     theme: AppThemeType;
     commentsTheme: CommentsThemeType;
+    votesTheme: VotesThemeType;
   };
   general: {
     comments: {
@@ -167,6 +170,7 @@ export const initialState: SettingsState = {
       embedCrossposts: true,
       showCommunityIcons: true,
       embedExternalMedia: true,
+      alwaysShowAuthor: false,
     },
     large: {
       showVotingButtons: true,
@@ -189,6 +193,7 @@ export const initialState: SettingsState = {
     deviceMode: "ios",
     theme: "default",
     commentsTheme: "rainbow",
+    votesTheme: "lemmy",
   },
   general: {
     comments: {
@@ -372,6 +377,10 @@ export const appearanceSlice = createSlice({
       state.appearance.posts.embedExternalMedia = action.payload;
       db.setSetting("embed_external_media", action.payload);
     },
+    setAlwaysShowAuthor(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.alwaysShowAuthor = action.payload;
+      db.setSetting("always_show_author", action.payload);
+    },
     setAlwaysUseReaderMode(state, action: PayloadAction<boolean>) {
       state.general.safari.alwaysUseReaderMode = action.payload;
       db.setSetting("always_use_reader_mode", action.payload);
@@ -492,6 +501,10 @@ export const appearanceSlice = createSlice({
       state.appearance.commentsTheme = action.payload;
       db.setSetting("comments_theme", action.payload);
     },
+    setVotesTheme(state, action: PayloadAction<VotesThemeType>) {
+      state.appearance.votesTheme = action.payload;
+      db.setSetting("votes_theme", action.payload);
+    },
     setEnableHapticFeedback(state, action: PayloadAction<boolean>) {
       state.general.enableHapticFeedback = action.payload;
 
@@ -609,6 +622,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
     const result = db.transaction("r", db.settings, async () => {
       const state = thunkApi.getState() as RootState;
       const comments_theme = await db.getSetting("comments_theme");
+      const votes_theme = await db.getSetting("votes_theme");
       const collapse_comment_threads = await db.getSetting(
         "collapse_comment_threads",
       );
@@ -678,6 +692,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "no_subscribed_in_feed",
       );
       const embed_external_media = await db.getSetting("embed_external_media");
+      const always_show_author = await db.getSetting("always_show_author");
       const always_use_reader_mode = await db.getSetting(
         "always_use_reader_mode",
       );
@@ -693,6 +708,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           ...state.settings.appearance,
           commentsTheme:
             comments_theme ?? initialState.appearance.commentsTheme,
+          votesTheme: votes_theme ?? initialState.appearance.votesTheme,
           general: {
             userInstanceUrlDisplay:
               user_instance_url_display ??
@@ -717,6 +733,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             embedExternalMedia:
               embed_external_media ??
               initialState.appearance.posts.embedExternalMedia,
+            alwaysShowAuthor:
+              always_show_author ??
+              initialState.appearance.posts.alwaysShowAuthor,
           },
           large: {
             showVotingButtons:
@@ -836,6 +855,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 
 export const {
   setCommentsTheme,
+  setVotesTheme,
   setDatabaseError,
   setFontSizeMultiplier,
   setUseSystemFontSize,
@@ -883,6 +903,7 @@ export const {
   setDefaultFeed,
   setNoSubscribedInFeed,
   setEmbedExternalMedia,
+  setAlwaysShowAuthor,
   setAlwaysUseReaderMode,
   setShowCollapsedComment,
   setQuickSwitchDarkMode,

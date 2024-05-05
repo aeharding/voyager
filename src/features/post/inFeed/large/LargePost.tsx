@@ -79,6 +79,9 @@ export default function LargePost({ post }: PostProps) {
   const showVotingButtons = useAppSelector(
     (state) => state.settings.appearance.large.showVotingButtons,
   );
+  const alwaysShowAuthor = useAppSelector(
+    (state) => state.settings.appearance.posts.alwaysShowAuthor,
+  );
   const hasBeenRead =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
@@ -123,12 +126,22 @@ export default function LargePost({ post }: PostProps) {
                   disableInstanceClick
                 />
               ) : (
-                <CommunityLink
-                  community={post.community}
-                  showInstanceWhenRemote
-                  subscribed={post.subscribed}
-                  disableInstanceClick
-                />
+                <>
+                  <CommunityLink
+                    community={post.community}
+                    subscribed={post.subscribed}
+                    disableInstanceClick
+                    showInstanceWhenRemote={
+                      !showVotingButtons || !alwaysShowAuthor
+                    }
+                  />
+                  {alwaysShowAuthor && (
+                    <>
+                      {" "}
+                      <PersonLink person={post.creator} prefix="by" />
+                    </>
+                  )}
+                </>
               )}
             </CommunityName>
 

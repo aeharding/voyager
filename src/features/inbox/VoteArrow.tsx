@@ -1,6 +1,11 @@
 import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { arrowDown, arrowUp } from "ionicons/icons";
+import {
+  VOTE_COLORS,
+  bgColorToVariable,
+} from "../settings/appearance/themes/votesTheme/VotesTheme";
+import { useAppSelector } from "../../store";
 
 const Container = styled.div`
   font-size: 1.4em;
@@ -23,18 +28,28 @@ interface VoteArrowProps {
 }
 
 export default function VoteArrow({ vote }: VoteArrowProps) {
+  const votesTheme = useAppSelector(
+    (state) => state.settings.appearance.votesTheme,
+  );
+
   if (!vote) return null;
 
   if (vote === 1)
     return (
       <Container>
-        <VoteIcon icon={arrowUp} color="primary" />
+        <VoteIcon
+          icon={arrowUp}
+          style={{ color: bgColorToVariable(VOTE_COLORS.UPVOTE[votesTheme]) }}
+        />
       </Container>
     );
   if (vote === -1)
     return (
       <Container>
-        <VoteIcon icon={arrowDown} color="danger" />
+        <VoteIcon
+          icon={arrowDown}
+          style={{ color: bgColorToVariable(VOTE_COLORS.DOWNVOTE[votesTheme]) }}
+        />
       </Container>
     );
 }

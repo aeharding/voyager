@@ -126,23 +126,18 @@ export default function Thumbnail({ post }: ImgProps) {
 
   const renderContents = useCallback(() => {
     if (isLink) {
-      return (
-        <>
-          {post.post.thumbnail_url ? (
-            <>
-              <img
-                src={getImageSrc(post.post.thumbnail_url, { size: 100 })}
-                className={cx(imgCss, nsfw && blurImgCss)}
-              />
-              <LinkIcon icon={linkOutline} />
-            </>
-          ) : isLink ? (
-            <FullsizeIcon icon={link} />
-          ) : (
-            <SelfSvg />
-          )}
-        </>
-      );
+      if (post.post.thumbnail_url)
+        return (
+          <>
+            <img
+              src={getImageSrc(post.post.thumbnail_url, { size: 100 })}
+              className={cx(imgCss, nsfw && blurImgCss)}
+            />
+            <LinkIcon icon={linkOutline} />
+          </>
+        );
+
+      return <FullsizeIcon icon={link} />;
     }
 
     if (postImageSrc) {

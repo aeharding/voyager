@@ -61,9 +61,6 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
         });
     });
 
-    // Remove mailto
-    links = links.filter((link) => !link.url.startsWith("mailto:"));
-
     // Dedupe by url
     links = uniqBy(links, (l) => l.url);
 

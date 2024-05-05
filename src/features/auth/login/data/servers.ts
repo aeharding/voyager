@@ -33,7 +33,6 @@ export const SERVERS_BY_CATEGORY = {
     "feddit.it",
     "lemmy.eco.br",
     "szmer.info",
-    "feddit.ch",
     "jlai.lu",
     "feddit.dk",
     "lemmy.nz",
@@ -74,7 +73,6 @@ export const SERVERS_BY_CATEGORY = {
     "lemmyhub.com",
     "linux.community",
     "infosec.pub",
-    "iusearchlinux.fyi",
     "derpzilla.net",
     "lemdro.id",
   ],
@@ -106,6 +104,8 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmygrad.ml",
   "lemmynsfw.com",
   "hexbear.net",
+  "vger.social",
+  "lemmy.myserv.one",
 ];
 
 export const LOGIN_SERVERS = uniq([

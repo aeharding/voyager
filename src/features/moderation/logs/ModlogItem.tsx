@@ -14,34 +14,100 @@ import removeComment from "./types/removeComment";
 import removeCommunity from "./types/removeCommunity";
 import removePost from "./types/removePost";
 import transferCommunity from "./types/transferCommunity";
-import { IonItem } from "@ionic/react";
+import { IonIcon, IonItem } from "@ionic/react";
 import { maxWidthCss } from "../../shared/AppContent";
 import Ago from "../../labels/Ago";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import ModlogItemMoreActions from "./ModlogItemMoreActions";
+import {
+  ModeratorRole,
+  getModColor,
+  getModIcon,
+  getModName,
+} from "../useCanModerate";
+import useIsAdmin from "../useIsAdmin";
+import { timerOutline } from "ionicons/icons";
 import { styled } from "@linaria/react";
+import { cx } from "@linaria/core";
+import { isTouchDevice } from "../../../helpers/device";
 
-const Contents = styled.div`
-  font-size: 0.875em;
-  width: 100%;
-
+const Container = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 8px 0;
+  gap: 1rem;
+
+  ${maxWidthCss}
+
+  padding: 0.5rem 0;
+
+  font-size: 0.875em;
+
+  strong {
+    font-weight: 500;
+  }
 `;
 
-const TitleLine = styled.div`
+const StartContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  ion-icon {
+    width: 1lh;
+    height: 1lh;
+  }
+`;
+
+const TypeIcon = styled(IonIcon)`
+  color: var(--ion-color-medium2);
+`;
+
+const Content = styled.div`
+  flex: 1;
+`;
+
+const Header = styled.div`
   display: flex;
   justify-content: space-between;
 
   aside {
-    color: var(--ion-color-medium);
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    color: var(--ion-color-medium2);
+  }
+`;
+
+const Body = styled.div`
+  color: var(--ion-color-medium);
+  padding: 0.5rem 0;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  aside {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: var(--ion-color-medium2);
   }
 `;
 
 const Title = styled.div``;
-const Message = styled.div`
-  color: var(--ion-color-medium);
+const Reason = styled.div``;
+const By = styled.div<{ color: string }>`
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 0;
+  color: ${({ color }) => `var(--ion-color-${color}-shade)`};
 `;
 
 interface ModLogItemProps {
@@ -49,10 +115,14 @@ interface ModLogItemProps {
 }
 
 export interface LogEntryData {
+  icon: string;
   title: string;
   when: string;
   message?: string;
+  reason?: string;
+  expires?: string;
   by?: string;
+  role?: ModeratorRole;
   link?: string;
 }
 
@@ -99,24 +169,67 @@ function renderModlogData(item: ModlogItemType): LogEntryData {
 
 export function ModlogItem({ item }: ModLogItemProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const { title, by, when, message, link } = renderModlogData(item);
+  const {
+    icon,
+    title,
+    when,
+    by,
+    role: role_,
+    message,
+    reason,
+    expires,
+    link,
+  } = renderModlogData(item);
+
+  const isAdmin = useIsAdmin(
+    (() => {
+      if ("admin" in item) return item.admin;
+      if ("moderator" in item) return item.moderator;
+    })(),
+  );
+
+  const role = (() => {
+    if (by && isAdmin) return "admin-local";
+    if ("admin" in item) return "admin-remote";
+
+    return role_ ?? "mod";
+  })();
 
   return (
     <IonItem
-      className={maxWidthCss}
+      mode="ios" // Use iOS style activatable tap highlight
+      className={cx(isTouchDevice() && "ion-activatable", maxWidthCss)}
+      href={undefined}
       routerLink={link ? buildGeneralBrowseLink(link) : undefined}
       detail={false}
     >
-      <Contents>
-        <TitleLine>
-          <Title>{title}</Title>
-          <aside>
-            {by && <span>{by} · </span>}
-            <Ago date={when} />
-          </aside>
-        </TitleLine>
-        <Message>{message}</Message>
-      </Contents>
+      <Container>
+        <StartContent>
+          <TypeIcon icon={icon} />
+        </StartContent>
+        <Content>
+          <Header>
+            <Title>{title}</Title>
+            <aside>
+              <ModlogItemMoreActions item={item} role={role} />
+              <Ago date={when} />
+            </aside>
+          </Header>
+          <Body>{message}</Body>
+          {reason && <Reason>Reason: {reason}</Reason>}
+          <Footer>
+            <By color={getModColor(role)}>
+              <IonIcon icon={getModIcon(role)} />
+              {by ? by : getModName(role)}
+            </By>
+            {expires && (
+              <aside>
+                <IonIcon icon={timerOutline} /> <Ago date={expires} />
+              </aside>
+            )}
+          </Footer>
+        </Content>
+      </Container>
     </IonItem>
   );
 }

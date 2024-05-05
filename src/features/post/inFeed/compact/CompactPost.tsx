@@ -143,10 +143,12 @@ const Domain = styled.span`
 `;
 
 export default function CompactPost({ post }: PostProps) {
+  const alwaysShowAuthor = useAppSelector(
+    (state) => state.settings.appearance.posts.alwaysShowAuthor,
+  );
   const compactThumbnailPositionType = useAppSelector(
     (state) => state.settings.appearance.compact.thumbnailsPosition,
   );
-
   const compactShowVotingButtons = useAppSelector(
     (state) => state.settings.appearance.compact.showVotingButtons,
   );
@@ -210,11 +212,19 @@ export default function CompactPost({ post }: PostProps) {
                     prefix="by"
                   />
                 ) : (
-                  <CommunityLink
-                    community={post.community}
-                    subscribed={post.subscribed}
-                    tinyIcon
-                  />
+                  <>
+                    <CommunityLink
+                      community={post.community}
+                      subscribed={post.subscribed}
+                      tinyIcon
+                    />
+                    {alwaysShowAuthor && (
+                      <>
+                        {" "}
+                        <PersonLink person={post.creator} prefix="by" />
+                      </>
+                    )}
+                  </>
                 )}
               </From>
               <ActionsContainer>

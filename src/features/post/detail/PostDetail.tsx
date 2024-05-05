@@ -29,7 +29,7 @@ export default function PostDetail({
   const [ionViewEntered, setIonViewEntered] = useState(false);
   const commentsRef = useRef<CommentsHandle>(null);
 
-  const [viewAllCommentsSpace, setViewAllCommentsSpace] = useState(70); // px
+  const [viewAllCommentsSpace, setViewAllCommentsSpace] = useState(0);
 
   // Avoid rerender from marking a post as read until the page
   // has fully transitioned in.
@@ -50,7 +50,11 @@ export default function PostDetail({
   );
 
   const bottomPadding: number = (() => {
-    if (commentPath) return viewAllCommentsSpace + 12;
+    if (commentPath) {
+      if (!viewAllCommentsSpace) return 0;
+
+      return viewAllCommentsSpace + 12;
+    }
 
     if (
       showJumpButton &&

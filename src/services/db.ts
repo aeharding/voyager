@@ -45,6 +45,14 @@ export const OCommentsThemeType = {
 export type CommentsThemeType =
   (typeof OCommentsThemeType)[keyof typeof OCommentsThemeType];
 
+export const OVotesThemeType = {
+  Lemmy: "lemmy",
+  Reddit: "reddit",
+} as const;
+
+export type VotesThemeType =
+  (typeof OVotesThemeType)[keyof typeof OVotesThemeType];
+
 export const OPostAppearanceType = {
   Compact: "compact",
   Large: "large",
@@ -283,6 +291,7 @@ type ProvidersData = RedgifsProvider;
 
 export type SettingValueTypes = {
   comments_theme: CommentsThemeType;
+  votes_theme: VotesThemeType;
   collapse_comment_threads: CommentThreadCollapse;
   user_instance_url_display: InstanceUrlDisplayMode;
   vote_display_mode: VoteDisplayMode;
@@ -323,6 +332,7 @@ export type SettingValueTypes = {
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
   embed_external_media: boolean;
+  always_show_author: boolean;
   always_use_reader_mode: boolean;
   infinite_scrolling: boolean;
   upvote_on_save: boolean;

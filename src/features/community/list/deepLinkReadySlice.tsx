@@ -9,7 +9,7 @@ interface DeepLinkReadySlice {
 }
 
 const initialState: DeepLinkReadySlice = {
-  // not-installed is always initially boostrapped, because no initial page push/redirect is done
+  // not-installed is always initially bootstrapped, because no initial page push/redirect is done
   ready: !isInstalled(),
 };
 

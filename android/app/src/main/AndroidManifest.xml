@@ -40,7 +40,6 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.ch" />
                 <data android:host="feddit.de" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
@@ -49,7 +48,6 @@
                 <data android:host="feddit.uk" />
                 <data android:host="hexbear.net" />
                 <data android:host="infosec.pub" />
-                <data android:host="iusearchlinux.fyi" />
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
@@ -82,6 +80,7 @@
                 <data android:host="szmer.info" />
                 <data android:host="thelemmy.club" />
                 <data android:host="ttrpg.network" />
+                <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity>
@@ -120,7 +119,6 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.ch" />
                 <data android:host="feddit.de" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
@@ -129,7 +127,6 @@
                 <data android:host="feddit.uk" />
                 <data android:host="hexbear.net" />
                 <data android:host="infosec.pub" />
-                <data android:host="iusearchlinux.fyi" />
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
@@ -162,6 +159,7 @@
                 <data android:host="szmer.info" />
                 <data android:host="thelemmy.club" />
                 <data android:host="ttrpg.network" />
+                <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
@@ -200,7 +198,6 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.ch" />
                 <data android:host="feddit.de" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
@@ -209,7 +206,6 @@
                 <data android:host="feddit.uk" />
                 <data android:host="hexbear.net" />
                 <data android:host="infosec.pub" />
-                <data android:host="iusearchlinux.fyi" />
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
@@ -242,6 +238,7 @@
                 <data android:host="szmer.info" />
                 <data android:host="thelemmy.club" />
                 <data android:host="ttrpg.network" />
+                <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
@@ -280,7 +277,6 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.ch" />
                 <data android:host="feddit.de" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
@@ -289,7 +285,6 @@
                 <data android:host="feddit.uk" />
                 <data android:host="hexbear.net" />
                 <data android:host="infosec.pub" />
-                <data android:host="iusearchlinux.fyi" />
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
@@ -322,6 +317,7 @@
                 <data android:host="szmer.info" />
                 <data android:host="thelemmy.club" />
                 <data android:host="ttrpg.network" />
+                <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
@@ -360,7 +356,6 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.ch" />
                 <data android:host="feddit.de" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
@@ -369,7 +364,6 @@
                 <data android:host="feddit.uk" />
                 <data android:host="hexbear.net" />
                 <data android:host="infosec.pub" />
-                <data android:host="iusearchlinux.fyi" />
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
@@ -402,6 +396,7 @@
                 <data android:host="szmer.info" />
                 <data android:host="thelemmy.club" />
                 <data android:host="ttrpg.network" />
+                <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
@@ -440,7 +435,6 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.ch" />
                 <data android:host="feddit.de" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
@@ -449,7 +443,6 @@
                 <data android:host="feddit.uk" />
                 <data android:host="hexbear.net" />
                 <data android:host="infosec.pub" />
-                <data android:host="iusearchlinux.fyi" />
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
@@ -482,6 +475,7 @@
                 <data android:host="szmer.info" />
                 <data android:host="thelemmy.club" />
                 <data android:host="ttrpg.network" />
+                <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
@@ -520,7 +514,6 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.ch" />
                 <data android:host="feddit.de" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
@@ -529,7 +522,6 @@
                 <data android:host="feddit.uk" />
                 <data android:host="hexbear.net" />
                 <data android:host="infosec.pub" />
-                <data android:host="iusearchlinux.fyi" />
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
@@ -562,6 +554,7 @@
                 <data android:host="szmer.info" />
                 <data android:host="thelemmy.club" />
                 <data android:host="ttrpg.network" />
+                <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>
@@ -600,7 +593,6 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.ch" />
                 <data android:host="feddit.de" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
@@ -609,7 +601,6 @@
                 <data android:host="feddit.uk" />
                 <data android:host="hexbear.net" />
                 <data android:host="infosec.pub" />
-                <data android:host="iusearchlinux.fyi" />
                 <data android:host="jlai.lu" />
                 <data android:host="lemdro.id" />
                 <data android:host="leminal.space" />
@@ -642,6 +633,7 @@
                 <data android:host="szmer.info" />
                 <data android:host="thelemmy.club" />
                 <data android:host="ttrpg.network" />
+                <data android:host="vger.social" />
                 <!--#INSTANCE_LIST_END#-->
             </intent-filter>
         </activity-alias>

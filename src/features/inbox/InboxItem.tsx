@@ -16,10 +16,26 @@ import { maxWidthCss } from "../shared/AppContent";
 import VoteArrow from "./VoteArrow";
 import SlidingInbox from "../shared/sliding/SlidingInbox";
 import useAppToast from "../../helpers/useAppToast";
-import InboxItemMoreActions from "./InboxItemMoreActions";
+import InboxItemMoreActions, {
+  InboxItemMoreActionsHandle,
+} from "./InboxItemMoreActions";
 import { styled } from "@linaria/react";
 import { css, cx } from "@linaria/core";
 import { isTouchDevice } from "../../helpers/device";
+import PersonLink from "../labels/links/PersonLink";
+import CommunityLink from "../labels/links/CommunityLink";
+import { useCallback, useRef } from "react";
+import { useLongPress } from "use-long-press";
+import { filterEvents } from "../../helpers/longPress";
+import { stopIonicTapClick } from "../../helpers/ionic";
+
+const labelStyles = css`
+  font-weight: 500;
+
+  a {
+    display: inline-flex; // kinda brittle way to ensure it stays inline
+  }
+`;
 
 const Hr = styled.div`
   ${maxWidthCss}
@@ -31,7 +47,7 @@ const Hr = styled.div`
     content: "";
     position: absolute;
 
-    --right-offset: 1.8rem;
+    --right-offset: calc(23px + 1lh);
 
     width: calc(100% - var(--right-offset));
     left: var(--right-offset);
@@ -46,6 +62,7 @@ const Hr = styled.div`
 
 const StyledIonItem = styled(IonItem)`
   --ion-item-border-color: transparent;
+  --padding-start: 12px;
 `;
 
 const itemUnreadCss = css`
@@ -54,7 +71,7 @@ const itemUnreadCss = css`
 
 const Container = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: var(--padding-start);
 
   ${maxWidthCss}
 
@@ -70,7 +87,16 @@ const Container = styled.div`
 const StartContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--padding-start);
+
+  ion-icon {
+    width: 1lh;
+    height: 1lh;
+  }
+`;
+
+const TypeIcon = styled(IonIcon)`
+  color: var(--ion-color-medium2);
 `;
 
 const Content = styled.div`
@@ -94,7 +120,9 @@ const Footer = styled.div`
 
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 6px;
+
+    color: var(--ion-color-medium2);
   }
 `;
 
@@ -171,8 +199,18 @@ export default function InboxItem({ item }: InboxItemProps) {
     if ("comment" in item) {
       return (
         <>
-          <strong>{item.creator.name}</strong> in{" "}
-          <strong>{item.community.name}</strong>
+          <PersonLink
+            person={item.creator}
+            className={labelStyles}
+            showBadge={false}
+          />{" "}
+          in{" "}
+          <CommunityLink
+            community={item.community}
+            subscribed={item.subscribed}
+            hideIcon
+            className={labelStyles}
+          />
         </>
       );
     }
@@ -220,6 +258,19 @@ export default function InboxItem({ item }: InboxItemProps) {
 
   const read = !!readByInboxItemId[getInboxItemId(item)];
 
+  const ellipsisHandleRef = useRef<InboxItemMoreActionsHandle>(null);
+
+  const onCommentLongPress = useCallback(() => {
+    ellipsisHandleRef.current?.present();
+    stopIonicTapClick();
+  }, []);
+
+  const bind = useLongPress(onCommentLongPress, {
+    threshold: 800,
+    cancelOnMovement: 15,
+    filterEvents,
+  });
+
   const contents = (
     <StyledIonItem
       mode="ios" // Use iOS style activatable tap highlight
@@ -231,10 +282,11 @@ export default function InboxItem({ item }: InboxItemProps) {
       href={undefined}
       detail={false}
       onClick={markRead}
+      {...bind()}
     >
       <Container>
         <StartContent>
-          <IonIcon icon={getIcon()} color="medium" />
+          <TypeIcon icon={getIcon()} />
           <VoteArrow vote={vote} />
         </StartContent>
         <Content>
@@ -247,7 +299,8 @@ export default function InboxItem({ item }: InboxItemProps) {
           <Footer>
             <div>{renderFooterDetails()}</div>
             <aside>
-              <InboxItemMoreActions item={item} /> <Ago date={getDate()} />
+              <InboxItemMoreActions item={item} ref={ellipsisHandleRef} />
+              <Ago date={getDate()} />
             </aside>
           </Footer>
         </Content>

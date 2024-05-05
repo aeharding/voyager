@@ -6,7 +6,7 @@ import { useMemo } from "react";
 /**
  * Sometimes we want to preserve the scroll position
  * relative to the bottom of the scroll view. This function
- * observes reflow to programatically scroll until user interaction
+ * observes reflow to programmatically scroll until user interaction
  *
  * This is because sometimes images will load above the viewport
  * (and Safari doesn't have a good scroll anchoring implementation yet)

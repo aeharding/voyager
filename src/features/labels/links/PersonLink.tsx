@@ -7,7 +7,10 @@ import { OInstanceUrlDisplayMode } from "../../../services/db";
 import AgeBadge from "./AgeBadge";
 import { useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
-import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import {
+  preventOnClickNavigationBug,
+  stopIonicTapClick,
+} from "../../../helpers/ionic";
 import { styled } from "@linaria/react";
 import { LinkContainer, StyledLink, hideCss } from "./shared";
 import { cx } from "@linaria/core";
@@ -62,6 +65,8 @@ export default function PersonLink({
       (b) => getHandle(b.target) === getHandle(person),
     );
 
+    stopIonicTapClick();
+
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: [
@@ -109,7 +114,7 @@ export default function PersonLink({
   else if (distinguished) color = "var(--ion-color-success)";
   else if (
     person.actor_id === "https://lemmy.world/u/aeharding" ||
-    person.actor_id === "https://midwest.social/u/aeharding"
+    person.actor_id === "https://vger.social/u/aeharding"
   )
     color = "var(--ion-color-tertiary-tint)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";

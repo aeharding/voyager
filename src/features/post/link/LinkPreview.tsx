@@ -4,11 +4,13 @@ import {
   albumsOutline,
   chatboxSharp,
   linkSharp,
+  mailOpen,
   peopleSharp,
   personSharp,
 } from "ionicons/icons";
 import { ReactNode, useMemo } from "react";
-import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
+import { LemmyObjectType } from "../../shared/useLemmyUrlHandler";
+import { determineTypeFromUrl } from "../../../helpers/url";
 
 const shared = `
   width: 26px;
@@ -28,15 +30,11 @@ const LinkIcon = styled(IonIcon)`
 `;
 
 interface LinkPreviewProps {
-  url: string;
+  type: LemmyObjectType | ReturnType<typeof determineTypeFromUrl>;
 }
 
-export default function LinkPreview({ url }: LinkPreviewProps): ReactNode {
-  const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
-
+export default function LinkPreview({ type }: LinkPreviewProps): ReactNode {
   const icon = useMemo(() => {
-    const type = determineObjectTypeFromUrl(url);
-
     switch (type) {
       case "comment":
         return chatboxSharp;
@@ -46,10 +44,12 @@ export default function LinkPreview({ url }: LinkPreviewProps): ReactNode {
         return albumsOutline;
       case "user":
         return personSharp;
+      case "mail":
+        return mailOpen;
       case undefined:
         return linkSharp;
     }
-  }, [url, determineObjectTypeFromUrl]);
+  }, [type]);
 
   return <LinkIcon icon={icon} />;
 }

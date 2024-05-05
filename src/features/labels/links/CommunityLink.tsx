@@ -15,7 +15,10 @@ import {
 import useCommunityActions from "../../community/useCommunityActions";
 import { useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
-import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import {
+  preventOnClickNavigationBug,
+  stopIonicTapClick,
+} from "../../../helpers/ionic";
 import { styled } from "@linaria/react";
 import { cx } from "@linaria/core";
 import { useAppSelector } from "../../../store";
@@ -31,6 +34,7 @@ interface CommunityLinkProps {
   subscribed: SubscribedType;
   tinyIcon?: boolean;
   disableInstanceClick?: boolean;
+  hideIcon?: boolean;
 
   className?: string;
 }
@@ -42,6 +46,7 @@ export default function CommunityLink({
   subscribed,
   tinyIcon,
   disableInstanceClick,
+  hideIcon,
 }: CommunityLinkProps) {
   const [present] = useIonActionSheet();
 
@@ -55,6 +60,7 @@ export default function CommunityLink({
     useCommunityActions(community, subscribed);
 
   const onCommunityLinkLongPress = useCallback(() => {
+    stopIonicTapClick();
     present({
       cssClass: "left-align-buttons",
       buttons: [
@@ -112,7 +118,7 @@ export default function CommunityLink({
           preventOnClickNavigationBug(e);
         }}
       >
-        {showCommunityIcons && !hideCommunity && (
+        {showCommunityIcons && !hideCommunity && !hideIcon && (
           <StyledItemIcon item={community} size={tinyIcon ? 16 : 24} />
         )}
 

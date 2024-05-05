@@ -1,0 +1,30 @@
+diff --git a/android/src/main/java/com/capacitorjs/plugins/haptics/Haptics.java b/android/src/main/java/com/capacitorjs/plugins/haptics/Haptics.java
+index e9f182e687ac39b6d0fe014d9d512c97c53f2c1d..803dc0d6a0381e069882366c456252c5ca73d704 100644
+--- a/android/src/main/java/com/capacitorjs/plugins/haptics/Haptics.java
++++ b/android/src/main/java/com/capacitorjs/plugins/haptics/Haptics.java
+@@ -62,7 +62,7 @@ public class Haptics {
+     }
+ 
+     public void performHaptics(HapticsVibrationType type) {
+-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
++        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && vibrator.hasAmplitudeControl()) {
+             vibrator.vibrate(VibrationEffect.createWaveform(type.getTimings(), type.getAmplitudes(), -1));
+         } else {
+             vibratePre26(type.getOldSDKPattern(), -1);
+diff --git a/android/src/main/java/com/capacitorjs/plugins/haptics/arguments/HapticsImpactType.java b/android/src/main/java/com/capacitorjs/plugins/haptics/arguments/HapticsImpactType.java
+index 9dcf4fc0a6e08449039d384b13018e58bfd07a67..b50f0916426d0bca8495c6809d0921969ad0ed0c 100644
+--- a/android/src/main/java/com/capacitorjs/plugins/haptics/arguments/HapticsImpactType.java
++++ b/android/src/main/java/com/capacitorjs/plugins/haptics/arguments/HapticsImpactType.java
+@@ -1,9 +1,9 @@
+ package com.capacitorjs.plugins.haptics.arguments;
+ 
+ public enum HapticsImpactType implements HapticsVibrationType {
+-    LIGHT("LIGHT", new long[] { 0, 50 }, new int[] { 0, 110 }, new long[] { 0, 20 }),
+-    MEDIUM("MEDIUM", new long[] { 0, 43 }, new int[] { 0, 180 }, new long[] { 0, 43 }),
+-    HEAVY("HEAVY", new long[] { 0, 60 }, new int[] { 0, 255 }, new long[] { 0, 61 });
++    LIGHT("LIGHT", new long[] { 0, 6 }, new int[] { 0, 60 }, new long[] { 0, 35 }),
++    MEDIUM("MEDIUM", new long[] { 0, 43 }, new int[] { 0, 180 }, new long[] { 0, 50 }),
++    HEAVY("HEAVY", new long[] { 0, 60 }, new int[] { 0, 255 }, new long[] { 0, 65 });
+ 
+     private final String type;
+     private final long[] timings;

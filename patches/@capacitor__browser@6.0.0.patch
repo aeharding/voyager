@@ -1,5 +1,5 @@
 diff --git a/dist/esm/definitions.d.ts b/dist/esm/definitions.d.ts
-index 9cd84087179ce4fc2139e3d771506552b0d82254..1c158d3ec3cfcff6d7f3aec0e1a3b2b99160a53a 100644
+index e554f0d9d3f90722ab434ac58f05fe020f27e67d..6f052077acbb889861c8548620de5662b34af616 100644
 --- a/dist/esm/definitions.d.ts
 +++ b/dist/esm/definitions.d.ts
 @@ -88,6 +88,7 @@ export interface OpenOptions {
@@ -10,10 +10,10 @@ index 9cd84087179ce4fc2139e3d771506552b0d82254..1c158d3ec3cfcff6d7f3aec0e1a3b2b9
  }
  /**
   * @deprecated Use `OpenOptions`.
-diff --git a/ios/Plugin/Browser.swift b/ios/Plugin/Browser.swift
+diff --git a/ios/Sources/BrowserPlugin/Browser.swift b/ios/Sources/BrowserPlugin/Browser.swift
 index 3f1d1ade3e05d142a2295b354228d0a21ba0a01f..225101acfe73c068705fb18074460d8bd3c815a8 100644
---- a/ios/Plugin/Browser.swift
-+++ b/ios/Plugin/Browser.swift
+--- a/ios/Sources/BrowserPlugin/Browser.swift
++++ b/ios/Sources/BrowserPlugin/Browser.swift
 @@ -15,9 +15,12 @@ import SafariServices
          return safariViewController
      }
@@ -29,11 +29,11 @@ index 3f1d1ade3e05d142a2295b354228d0a21ba0a01f..225101acfe73c068705fb18074460d8b
              safariVC.delegate = self
              if let color = tint {
                  safariVC.preferredBarTintColor = color
-diff --git a/ios/Plugin/BrowserPlugin.swift b/ios/Plugin/BrowserPlugin.swift
-index f6be40dd72cdd1ced0fe43869d26d9188ca08ea8..ae31df607cc96589ed9de959d6d926174ed24a5d 100644
---- a/ios/Plugin/BrowserPlugin.swift
-+++ b/ios/Plugin/BrowserPlugin.swift
-@@ -17,8 +23,9 @@ public class CAPBrowserPlugin: CAPPlugin {
+diff --git a/ios/Sources/BrowserPlugin/BrowserPlugin.swift b/ios/Sources/BrowserPlugin/BrowserPlugin.swift
+index 83f3ec5d0eab17f82e82d7f6ff07c8c50a5856c0..ae31df607cc96589ed9de959d6d926174ed24a5d 100644
+--- a/ios/Sources/BrowserPlugin/BrowserPlugin.swift
++++ b/ios/Sources/BrowserPlugin/BrowserPlugin.swift
+@@ -23,8 +23,9 @@ public class CAPBrowserPlugin: CAPPlugin, CAPBridgedPlugin {
              color = UIColor.capacitor.color(fromHex: toolbarColor)
          }
          let style = self.presentationStyle(for: call.getString("presentationStyle"))

@@ -10,11 +10,15 @@ import { IonModal, useIonActionSheet } from "@ionic/react";
 import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
 import { instanceSelector } from "../auth/authSelectors";
 import { clearRecoveredText } from "../../helpers/useTextRecovery";
 import useStateRef from "../../helpers/useStateRef";
 import { isNative } from "../../helpers/device";
+import {
+  deletePendingImageUploads,
+  onHandledPendingImages,
+} from "./markdown/editing/uploadImageSlice";
 
 export interface DismissableProps {
   dismiss: () => void;
@@ -42,6 +46,7 @@ export function DynamicDismissableModal({
   dismissClassName,
   textRecovery,
 }: DynamicDismissableModalProps) {
+  const dispatch = useAppDispatch();
   const pageContext = useContext(PageContext);
   const location = useLocation();
   const selectedInstance = useAppSelector(
@@ -77,6 +82,8 @@ export function DynamicDismissableModal({
           handler: () => {
             setCanDismiss(true);
             setIsOpen(false);
+
+            dispatch(deletePendingImageUploads());
           },
         },
         {
@@ -87,7 +94,13 @@ export function DynamicDismissableModal({
     });
 
     return false;
-  }, [presentActionSheet, setCanDismiss, setIsOpen, dismissClassName]);
+  }, [
+    presentActionSheet,
+    setCanDismiss,
+    setIsOpen,
+    dismissClassName,
+    dispatch,
+  ]);
 
   // Close tab
   useUnload((e) => {
@@ -158,6 +171,8 @@ export function DynamicDismissableModal({
 
           // in case onDidDismiss incorrectly called by Ionic, don't clear data
           if (textRecovery && canDismissRef.current) clearRecoveredText();
+
+          if (canDismissRef.current) dispatch(onHandledPendingImages());
         }}
         presentingElement={presentingElement}
         onWillDismiss={() => {
