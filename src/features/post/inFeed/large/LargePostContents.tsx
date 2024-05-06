@@ -11,6 +11,10 @@ import { InFeedContext } from "../../../feed/Feed";
 import useIsPostUrlMedia from "../../useIsPostUrlMedia";
 import PostLink from "../../link/PostLink";
 
+// This is needed to hide NSFW messaging, etc when image is open
+export const LARGE_POST_MEDIA_CONTAINER_CLASSNAME =
+  "large-post-media-container";
+
 const PostBody = styled.div`
   font-size: 0.8em;
   line-height: 1.25;
@@ -64,7 +68,7 @@ export default function LargePostContents({ post }: LargePostContentsProps) {
 
   if (urlIsMedia || markdownLoneImage) {
     return (
-      <ImageContainer>
+      <ImageContainer className={LARGE_POST_MEDIA_CONTAINER_CLASSNAME}>
         <LargeFeedPostMedia
           blur={inFeed ? isNsfwBlurred(post, blurNsfw) : false}
           post={post}

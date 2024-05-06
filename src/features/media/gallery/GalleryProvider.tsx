@@ -26,6 +26,8 @@ import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 
 import "photoswipe/style.css";
+import { findBlurOverlayContainer } from "../../post/inFeed/large/media/BlurOverlayMessage";
+import { compact } from "lodash";
 
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
@@ -173,13 +175,17 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       instance.on("openingAnimationStart", () => {
         if (animationType !== "zoom") return;
 
-        thumbEl.style.setProperty("visibility", "hidden");
+        compact([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
+          el.style.setProperty("visibility", "hidden"),
+        );
       });
 
       const cleanupHideThumb = () => {
         if (animationType !== "zoom") return;
 
-        thumbEl.style.removeProperty("visibility");
+        compact([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
+          el.style.removeProperty("visibility"),
+        );
       };
 
       instance.on("closingAnimationEnd", cleanupHideThumb);
