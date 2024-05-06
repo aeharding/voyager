@@ -39,7 +39,7 @@ export default function AppCrash({ error }: FallbackProps) {
   const location = memoryHistory ? memoryHistory.location : window.location;
   const loggedIn = loggedInSelector(store.getState());
 
-  const crashData = `
+  let crashData = `
 ### Crash description
 
 <!-- Write any information here to help us debug your crash! -->
@@ -58,14 +58,14 @@ export default function AppCrash({ error }: FallbackProps) {
 
 ### Crash data
 
-Error: \`${error}\`
+Error: \`\`${error}\`\`
 
 #### Stack trace
 
 \`\`\`
-${error instanceof Error ? error.stack : "Not available"}
-\`\`\`
   `.trim();
+
+  crashData = `${crashData}\n${error instanceof Error ? error.stack : "Not available"}`;
 
   async function clearData() {
     if (
@@ -94,9 +94,7 @@ ${error instanceof Error ? error.stack : "Not available"}
         voluntarily submitting this crash for us to investigate.
       </Description>
       <IonButton
-        href={`https://github.com/aeharding/voyager/issues/new?title=Crash&body=${encodeURIComponent(
-          crashData,
-        )}`}
+        href={generateTruncatedCrashUrl(crashData)}
         target="_blank"
         rel="noopener noreferrer"
         color="success"
@@ -133,4 +131,35 @@ ${error instanceof Error ? error.stack : "Not available"}
       </IonButton>
     </Container>
   );
+}
+
+function generateCrashUrl(crashData: string): string {
+  return `https://github.com/aeharding/voyager/issues/new?title=Crash&body=${encodeURIComponent(
+    crashData,
+  )}`;
+}
+
+// The GitHub GET endpoint for opening a new issue
+// has a restriction for maximum length of a URL: 8192 bytes
+// https://github.com/cli/cli/pull/3271
+// https://github.com/cli/cli/issues/1575
+// https://github.com/cli/cli/blob/trunk/pkg/cmd/issue/create/create.go#L167
+// https://github.com/cli/cli/blob/trunk/utils/utils.go#L84
+const maxIssueBytes = 8150;
+
+function getStrByteLength(str: string): number {
+  return new TextEncoder().encode(str).length;
+}
+
+function generateTruncatedCrashUrl(crashData: string): string {
+  let url: string;
+  let strLength = 1;
+
+  do {
+    url = generateCrashUrl(crashData.slice(0, strLength));
+    if (strLength === crashData.length) return url;
+    strLength++;
+  } while (getStrByteLength(url) < maxIssueBytes);
+
+  return url;
 }
