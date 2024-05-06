@@ -1,10 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { alertCircle } from "ionicons/icons";
-import {
-  LARGE_POST_MEDIA_CONTAINER_CLASSNAME,
-  LARGE_POST_MEDIA_CONTAINER_HIDDEN_CLASSNAME,
-} from "../LargePostContents";
+import { LARGE_POST_MEDIA_CONTAINER_CLASSNAME } from "../LargePostContents";
 
 const MessageContainer = styled.div`
   // Safari bug where absolutely positioned content isn't viewable over
@@ -27,11 +24,6 @@ const MessageContainer = styled.div`
   pointer-events: none;
 
   container-type: size;
-
-  .${LARGE_POST_MEDIA_CONTAINER_CLASSNAME}.${LARGE_POST_MEDIA_CONTAINER_HIDDEN_CLASSNAME}
-    & {
-    visibility: hidden;
-  }
 `;
 
 const WarningIcon = styled(IonIcon)`
@@ -64,12 +56,24 @@ const Description = styled.div`
   ${showIfTaller}
 `;
 
+const BLUR_OVERLAY_CONTAINER_CLASSNAME = "blur-overlay-container";
+
 export default function BlurOverlayMessage() {
   return (
-    <MessageContainer>
+    <MessageContainer className={BLUR_OVERLAY_CONTAINER_CLASSNAME}>
       <WarningIcon icon={alertCircle} />
       <Title>NSFW</Title>
       <Description>Sensitive content — tap to view</Description>
     </MessageContainer>
   );
+}
+
+export function findBlurOverlayContainer(
+  imgEl: HTMLElement,
+): HTMLElement | undefined {
+  const el = imgEl
+    .closest(`.${LARGE_POST_MEDIA_CONTAINER_CLASSNAME}`)
+    ?.querySelector(`.${BLUR_OVERLAY_CONTAINER_CLASSNAME}`);
+
+  if (el instanceof HTMLElement) return el;
 }
