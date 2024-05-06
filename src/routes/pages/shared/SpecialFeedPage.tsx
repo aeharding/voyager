@@ -109,7 +109,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
                 <IonButtons slot="end">
                   {type === "ModeratorView" && <ModActions type={type} />}
                   <PostSort sort={sort} setSort={setSort} />
-                  <SpecialFeedMoreActions />
+                  <SpecialFeedMoreActions type={type} />
                 </IonButtons>
               </TitleSearch>
             </IonToolbar>
