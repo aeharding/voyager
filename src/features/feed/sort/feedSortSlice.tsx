@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ListingType, SortType } from "lemmy-js-client";
+import { CommentSortType, ListingType, SortType } from "lemmy-js-client";
 import { db } from "../../../services/db";
 import { RootState } from "../../../store";
 import { getFeedUrlName } from "../../community/mod/ModActions";
@@ -8,34 +8,63 @@ interface PostSortState {
   /**
    * `null`: Loaded from database, but nothing there
    */
-  sortByFeedName: Record<string, SortType | null>;
+  sortByContextByFeedName: {
+    posts: Record<string, SortType | null>;
+    comments: Record<string, CommentSortType | null>;
+  };
 }
 
 const initialState: PostSortState = {
-  sortByFeedName: {},
+  sortByContextByFeedName: {
+    posts: {},
+    comments: {},
+  },
 };
+
+export type SetSortActionPayload =
+  | {
+      feed: FeedSortFeed;
+      sort: SortType;
+      context: "posts";
+    }
+  | {
+      feed: FeedSortFeed;
+      sort: CommentSortType;
+      context: "comments";
+    };
 
 export const feedSortSlice = createSlice({
   name: "feedSort",
   initialState,
   reducers: {
-    setFeedSort: (
-      state,
-      action: PayloadAction<{ feed: FeedSortFeed; sort: SortType }>,
-    ) => {
-      const feedName = serializeFeedName(action.payload.feed);
-      state.sortByFeedName[feedName] = action.payload.sort;
+    setFeedSort: (state, action: PayloadAction<SetSortActionPayload>) => {
+      const normalizedContext = (() => {
+        switch (action.payload.context) {
+          case "posts":
+            return "post";
+          case "comments":
+            return "comment";
+        }
+      })();
 
-      db.setSetting("default_post_sort_by_feed", action.payload.sort, {
-        community: feedName,
-      });
+      const feedName = serializeFeedName(action.payload.feed);
+      state.sortByContextByFeedName[action.payload.context][feedName] =
+        action.payload.sort;
+
+      db.setSetting(
+        `default_${normalizedContext}_sort_by_feed`,
+        action.payload.sort,
+        {
+          community: feedName,
+        },
+      );
     },
   },
   extraReducers: (builder) => {
     builder.addCase(getFeedSort.fulfilled, (state, action) => {
-      const { feedName, sort } = action.payload;
+      const { feedName, sort, context } = action.payload;
 
-      state.sortByFeedName[feedName] = sort;
+      state.sortByContextByFeedName[context][feedName] = sort;
     });
   },
 });
@@ -55,23 +84,42 @@ export type FeedSortFeed =
 
 export const getFeedSort = createAsyncThunk(
   "feedSort/getFeedSort",
-  async (feed: FeedSortFeed) => {
+  async ({
+    feed,
+    context,
+  }: {
+    feed: FeedSortFeed;
+    context: "posts" | "comments";
+  }) => {
+    const normalizedContext = (() => {
+      switch (context) {
+        case "posts":
+          return "post";
+        case "comments":
+          return "comment";
+      }
+    })();
+
     const feedName = serializeFeedName(feed);
     const sort =
-      (await db.getSetting("default_post_sort_by_feed", {
+      (await db.getSetting(`default_${normalizedContext}_sort_by_feed`, {
         community: feedName,
       })) ?? null;
 
     return {
       feedName,
       sort,
+      context,
     };
   },
 );
 
 export const getFeedSortSelectorBuilder =
-  (feed: FeedSortFeed | undefined) => (state: RootState) =>
-    feed ? state.feedSort.sortByFeedName[serializeFeedName(feed)] : null;
+  (feed: FeedSortFeed | undefined, context: "posts" | "comments") =>
+  (state: RootState) =>
+    feed
+      ? state.feedSort.sortByContextByFeedName[context][serializeFeedName(feed)]
+      : null;
 
 function serializeFeedName(feed: FeedSortFeed): string {
   switch (true) {

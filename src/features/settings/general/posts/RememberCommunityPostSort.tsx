@@ -1,20 +1,20 @@
 import { IonItem, IonToggle } from "@ionic/react";
 
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { setRememberCommunitySort } from "../../settingsSlice";
+import { setRememberCommunityPostSort } from "../../settingsSlice";
 
-export default function RememberCommunitySort() {
+export default function RememberCommunityPostSort() {
   const dispatch = useAppDispatch();
-  const infiniteScrolling = useAppSelector(
+  const rememberCommunitySort = useAppSelector(
     (state) => state.settings.general.posts.rememberCommunitySort,
   );
 
   return (
     <IonItem>
       <IonToggle
-        checked={infiniteScrolling}
+        checked={rememberCommunitySort}
         onIonChange={(e) =>
-          dispatch(setRememberCommunitySort(e.detail.checked))
+          dispatch(setRememberCommunityPostSort(e.detail.checked))
         }
       >
         Remember Community Sort

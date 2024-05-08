@@ -34,7 +34,7 @@ import CommunitySearchResults from "../../../features/community/search/Community
 import { getSortDuration } from "../../../features/feed/endItems/EndPost";
 import ModActions from "../../../features/community/mod/ModActions";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import useFeedSort from "../../../features/feed/sort/useFeedSort";
+import useSortByFeed from "../../../features/feed/sort/useFeedSort";
 import { CenteredSpinner } from "../posts/PostPage";
 import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
 import { useAppSelector } from "../../../store";
@@ -155,7 +155,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
     (state) => state.settings.general.posts.showHiddenInCommunities,
   );
 
-  const [sort, setSort] = useFeedSort({
+  const [sort, setSort] = useSortByFeed("posts", {
     remoteCommunityHandle: getRemoteHandleFromHandle(
       community,
       connectedInstance,
