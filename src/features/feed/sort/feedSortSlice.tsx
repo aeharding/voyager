@@ -38,21 +38,12 @@ export const feedSortSlice = createSlice({
   initialState,
   reducers: {
     setFeedSort: (state, action: PayloadAction<SetSortActionPayload>) => {
-      const normalizedContext = (() => {
-        switch (action.payload.context) {
-          case "posts":
-            return "post";
-          case "comments":
-            return "comment";
-        }
-      })();
-
       const feedName = serializeFeedName(action.payload.feed);
       state.sortByContextByFeedName[action.payload.context][feedName] =
         action.payload.sort;
 
       db.setSetting(
-        `default_${normalizedContext}_sort_by_feed`,
+        getDefaultSortSettingForContext(action.payload.context),
         action.payload.sort,
         {
           community: feedName,
@@ -91,18 +82,9 @@ export const getFeedSort = createAsyncThunk(
     feed: FeedSortFeed;
     context: "posts" | "comments";
   }) => {
-    const normalizedContext = (() => {
-      switch (context) {
-        case "posts":
-          return "post";
-        case "comments":
-          return "comment";
-      }
-    })();
-
     const feedName = serializeFeedName(feed);
     const sort =
-      (await db.getSetting(`default_${normalizedContext}_sort_by_feed`, {
+      (await db.getSetting(getDefaultSortSettingForContext(context), {
         community: feedName,
       })) ?? null;
 
@@ -129,5 +111,14 @@ function serializeFeedName(feed: FeedSortFeed): string {
       return getFeedUrlName(feed.listingType);
     default:
       return feed;
+  }
+}
+
+function getDefaultSortSettingForContext(context: "posts" | "comments") {
+  switch (context) {
+    case "comments":
+      return "default_comment_sort_by_feed";
+    case "posts":
+      return "default_post_sort_by_feed";
   }
 }

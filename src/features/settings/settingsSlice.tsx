@@ -488,7 +488,7 @@ export const appearanceSlice = createSlice({
     setRememberCommunityPostSort(state, action: PayloadAction<boolean>) {
       state.general.posts.rememberCommunitySort = action.payload;
 
-      db.setSetting("remember_community_sort", action.payload);
+      db.setSetting("remember_community_post_sort", action.payload);
     },
     setRememberCommunityCommentSort(state, action: PayloadAction<boolean>) {
       state.general.comments.rememberCommunitySort = action.payload;
@@ -681,7 +681,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const infinite_scrolling = await db.getSetting("infinite_scrolling");
       const upvote_on_save = await db.getSetting("upvote_on_save");
       const remember_community_post_sort = await db.getSetting(
-        "remember_community_sort",
+        "remember_community_post_sort",
       );
       const remember_community_comment_sort = await db.getSetting(
         "remember_community_comment_sort",

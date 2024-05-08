@@ -339,7 +339,7 @@ export type SettingValueTypes = {
   upvote_on_save: boolean;
   default_post_sort: SortType;
   default_post_sort_by_feed: SortType;
-  remember_community_sort: boolean;
+  remember_community_post_sort: boolean;
   remember_community_comment_sort: boolean;
   embed_crossposts: boolean;
   show_community_icons: boolean;
@@ -503,6 +503,13 @@ export class WefwefDB extends Dexie {
         &name,
         data
       `,
+    });
+
+    this.version(8).upgrade(async () => {
+      await this.settings
+        .where("key")
+        .equals("remember_community_sort")
+        .modify({ key: "remember_community_post_sort" });
     });
   }
 
