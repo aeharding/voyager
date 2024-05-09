@@ -9,15 +9,15 @@ import {
   setFeedSort,
 } from "./feedSortSlice";
 
-type SortTypeByContext = {
-  posts: SortType;
-  comments: CommentSortType;
-};
+export default function useSortByFeed<Context extends "posts" | "comments">(
+  context: Context,
+  feed?: FeedSortFeed | undefined,
+) {
+  type Sort = {
+    posts: SortType;
+    comments: CommentSortType;
+  }[Context];
 
-export default function useSortByFeed<
-  Context extends "posts" | "comments",
-  Sort extends SortTypeByContext[Context],
->(context: Context, feed?: FeedSortFeed | undefined) {
   const dispatch = useAppDispatch();
   const feedSort = useAppSelector(
     getFeedSortSelectorBuilder(feed, context),
