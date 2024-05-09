@@ -3,7 +3,7 @@ import { ListHeader } from "../../shared/formatting";
 import InfiniteScrolling from "./InfiniteScrolling";
 import UpvoteOnSave from "./UpvoteOnSave";
 import DefaultSort from "./DefaultSort";
-import RememberCommunitySort from "./RememberCommunitySort";
+import RememberCommunityPostSort from "./RememberCommunityPostSort";
 import AutoplayMedia from "./AutoplayMedia";
 
 export default function Posts() {
@@ -19,7 +19,7 @@ export default function Posts() {
           </IonLabel>
         </IonItem>
         <DefaultSort />
-        <RememberCommunitySort />
+        <RememberCommunityPostSort />
         <InfiniteScrolling />
         <UpvoteOnSave />
         <AutoplayMedia />

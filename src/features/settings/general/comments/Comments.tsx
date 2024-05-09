@@ -9,6 +9,7 @@ import TouchFriendlyLinks from "./TouchFriendlyLinks";
 import TapToCollapse from "./TapToCollapse";
 import ShowCommentImages from "./ShowCommentImages";
 import ShowCollapsed from "./ShowCollapsed";
+import RememberCommunityCommentSort from "./RememberCommunityCommentSort";
 
 export default function Comments() {
   return (
@@ -18,6 +19,7 @@ export default function Comments() {
       </ListHeader>
       <IonList inset>
         <DefaultSort />
+        <RememberCommunityCommentSort />
         <CollapsedByDefault />
         <TapToCollapse />
         <ShowJumpButton />

@@ -22,7 +22,7 @@ import { followIdsSelector } from "../../../features/auth/siteSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../../features/community/mod/ModActions";
-import useFeedSort from "../../../features/feed/sort/useFeedSort";
+import useSortByFeed from "../../../features/feed/sort/useFeedSort";
 import { PageTypeContext } from "../../../features/feed/PageTypeContext";
 import AppHeader from "../../../features/shared/AppHeader";
 
@@ -34,7 +34,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
-  const [sort, setSort] = useFeedSort({ listingType: type });
+  const [sort, setSort] = useSortByFeed("posts", { listingType: type });
 
   const followIds = useAppSelector(followIdsSelector);
   const communityByHandle = useAppSelector(

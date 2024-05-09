@@ -306,6 +306,7 @@ export type SettingValueTypes = {
   favorite_communities: string[];
   migration_links: string[];
   default_comment_sort: CommentDefaultSort;
+  default_comment_sort_by_feed: CommentDefaultSort;
   disable_marking_posts_read: boolean;
   mark_read_on_scroll: boolean;
   show_hide_read_button: boolean;
@@ -338,7 +339,8 @@ export type SettingValueTypes = {
   upvote_on_save: boolean;
   default_post_sort: SortType;
   default_post_sort_by_feed: SortType;
-  remember_community_sort: boolean;
+  remember_community_post_sort: boolean;
+  remember_community_comment_sort: boolean;
   embed_crossposts: boolean;
   show_community_icons: boolean;
   autoplay_media: AutoplayMediaType;
@@ -501,6 +503,13 @@ export class WefwefDB extends Dexie {
         &name,
         data
       `,
+    });
+
+    this.version(8).upgrade(async () => {
+      await this.settings
+        .where("key")
+        .equals("remember_community_sort")
+        .modify({ key: "remember_community_post_sort" });
     });
   }
 
