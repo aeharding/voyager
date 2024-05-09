@@ -51,9 +51,9 @@ If the feature you're working on is native-only, you can compile and run Voyager
 
 To build the iOS native app, install:
 
-1. [Node](https://nodejs.org/en)
+1. [Node](https://nodejs.org)
 2. [Xcode](https://developer.apple.com/xcode/)
-3. [Cocoapods](https://cocoapods.org/)
+3. [Cocoapods](https://cocoapods.org)
 
 Then, in Voyager's source code directory, build the project:
 
@@ -69,7 +69,7 @@ Xcode should automatically open. You can then run the project with `CMD+R`.
 
 To build the Android native app, install:
 
-1. [Node](https://nodejs.org/en)
+1. [Node](https://nodejs.org)
 2. [Android Studio](https://developer.android.com/studio)
 
 Then, in Voyager's source code directory, build the project:
