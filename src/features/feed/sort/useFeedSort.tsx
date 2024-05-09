@@ -34,16 +34,23 @@ export default function useSortByFeed<
   );
 
   useEffect(() => {
-    if (!rememberCommunitySort) return;
-    if (!feed) return;
+    (async () => {
+      if (!rememberCommunitySort) return;
+      if (!feed) return;
 
-    dispatch(getFeedSort({ feed, context }));
-  }, [feed, dispatch, rememberCommunitySort, context]);
+      try {
+        await dispatch(getFeedSort({ feed, context }));
+      } catch (error) {
+        _setSort((_sort) => _sort ?? defaultSort); // fallback if indexeddb unavailable
+        throw error;
+      }
+    })();
+  }, [feed, dispatch, rememberCommunitySort, context, defaultSort]);
 
   useEffect(() => {
     if (!rememberCommunitySort) return;
     if (sort) return;
-    if (feedSort === undefined) return;
+    if (feedSort === undefined) return; // null = loaded, but custom community sort not found
 
     _setSort(feedSort ?? defaultSort);
   }, [feedSort, sort, defaultSort, rememberCommunitySort]);

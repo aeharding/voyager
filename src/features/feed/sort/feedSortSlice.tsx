@@ -86,7 +86,7 @@ export const getFeedSort = createAsyncThunk(
     const sort =
       (await db.getSetting(getDefaultSortSettingForContext(context), {
         community: feedName,
-      })) ?? null;
+      })) ?? null; // null = loaded, but not found
 
     return {
       feedName,
