@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonIcon, IonLoading } from "@ionic/react";
+import { IonButton, IonIcon, IonLoading, useIonAlert } from "@ionic/react";
 import { createOutline } from "ionicons/icons";
 import { useState } from "react";
 import { useAppDispatch } from "../../../store";
@@ -10,10 +10,10 @@ import { isLemmyError } from "../../../helpers/lemmyErrors";
 
 export default function ComposeButton() {
   const [loading, setLoading] = useState(false);
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
   const router = useOptimizedIonRouter();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
+  const [presentAlert] = useIonAlert();
 
   async function composeNew(handle: string) {
     setLoading(true);
@@ -38,28 +38,33 @@ export default function ComposeButton() {
     router.push(`/inbox/messages/${getHandle(user.person_view.person)}`);
   }
 
+  function present() {
+    presentAlert({
+      header: "Compose new message",
+      inputs: [
+        {
+          name: "handle",
+          placeholder: "user@instance",
+        },
+      ],
+      buttons: [
+        {
+          text: "OK",
+          handler: (e) => {
+            if (!e.handle) return;
+
+            composeNew(e.handle);
+          },
+        },
+        { text: "Cancel", role: "cancel" },
+      ],
+    });
+  }
+
   return (
     <>
       <IonLoading isOpen={loading} />
-      <IonAlert
-        isOpen={isAlertOpen}
-        header="Compose new message"
-        onDidDismiss={(e) => {
-          setIsAlertOpen(false);
-
-          if (!e.detail.data) return;
-
-          composeNew(e.detail.data.values.handle);
-        }}
-        inputs={[
-          {
-            name: "handle",
-            placeholder: "user@instance",
-          },
-        ]}
-        buttons={[{ text: "OK" }, { text: "Cancel", role: "cancel" }]}
-      />
-      <IonButton onClick={() => setIsAlertOpen(true)}>
+      <IonButton onClick={present}>
         <IonIcon icon={createOutline} />
       </IonButton>
     </>
