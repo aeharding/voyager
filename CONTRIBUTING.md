@@ -49,37 +49,35 @@ pnpm run dev
 
 If the feature you're working on is native-only, you can compile and run Voyager in an iOS Simulator or real device.
 
-To build the iOS native app:
+To build the iOS native app, install:
 
-1. Install [Node](https://nodejs.org/en)
-2. Install [Ionic CLI](https://ionicframework.com/docs/cli)
-3. Install [Xcode](https://developer.apple.com/xcode/)
-4. [Cocoapods](https://cocoapods.org/)
+1. [Node](https://nodejs.org)
+2. [Xcode](https://developer.apple.com/xcode/)
+3. [Cocoapods](https://cocoapods.org)
 
-Then, build the project and copy web dependencies over:
+Then, in Voyager's source code directory, build the project:
 
 ```sh
 corepack enable
 pnpm install
-ionic capacitor build ios
+pnpm exec ionic capacitor build ios
 ```
 
-Finally, can run the project with `CMD+R`.
+Xcode should automatically open. You can then run the project with `CMD+R`.
 
 ### Android Native App
 
-To build the Android native app:
+To build the Android native app, install:
 
-1. Install [Node](https://nodejs.org/en)
-2. Install [Ionic CLI](https://ionicframework.com/docs/cli)
-3. Install [Android Studio](https://developer.android.com/studio)
+1. [Node](https://nodejs.org)
+2. [Android Studio](https://developer.android.com/studio)
 
-In Voyager source code directory:
+Then, in Voyager's source code directory, build the project:
 
 ```sh
 corepack enable
 pnpm install
-ionic capacitor build android
+pnpm exec ionic capacitor build android
 ```
 
 Android Studio should open.
