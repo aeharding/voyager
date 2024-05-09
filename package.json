@@ -113,6 +113,7 @@
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
     "@capacitor/cli": "^6.0.0",
+    "@ionic/cli": "^7.2.0",
     "@playwright/test": "^1.43.0",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^15.0.6",

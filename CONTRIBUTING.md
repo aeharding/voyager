@@ -52,16 +52,15 @@ If the feature you're working on is native-only, you can compile and run Voyager
 To build the iOS native app:
 
 1. Install [Node](https://nodejs.org/en)
-2. Install [Ionic CLI](https://ionicframework.com/docs/cli)
-3. Install [Xcode](https://developer.apple.com/xcode/)
-4. [Cocoapods](https://cocoapods.org/)
+2. Install [Xcode](https://developer.apple.com/xcode/)
+3. [Cocoapods](https://cocoapods.org/)
 
 Then, build the project and copy web dependencies over:
 
 ```sh
 corepack enable
 pnpm install
-ionic capacitor build ios
+pnpm exec ionic capacitor build ios
 ```
 
 Finally, can run the project with `CMD+R`.
@@ -71,15 +70,14 @@ Finally, can run the project with `CMD+R`.
 To build the Android native app:
 
 1. Install [Node](https://nodejs.org/en)
-2. Install [Ionic CLI](https://ionicframework.com/docs/cli)
-3. Install [Android Studio](https://developer.android.com/studio)
+2. Install [Android Studio](https://developer.android.com/studio)
 
 In Voyager source code directory:
 
 ```sh
 corepack enable
 pnpm install
-ionic capacitor build android
+pnpm exec ionic capacitor build android
 ```
 
 Android Studio should open.
