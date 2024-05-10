@@ -1,5 +1,5 @@
 import { CommentSortType, SortType } from "lemmy-js-client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import {
   FeedSortFeed,
@@ -19,9 +19,11 @@ export default function useSortByFeed<Context extends "posts" | "comments">(
   }[Context];
 
   const dispatch = useAppDispatch();
-  const feedSort = useAppSelector(
-    getFeedSortSelectorBuilder(feed, context),
-  ) as Sort;
+
+  const feedSort = useAppSelector(getFeedSortSelectorBuilder(feed, context)) as
+    | Sort
+    | null
+    | undefined;
   const defaultSort = useAppSelector(
     (state) => state.settings.general[context].sort,
   ) as Sort;
@@ -39,7 +41,7 @@ export default function useSortByFeed<Context extends "posts" | "comments">(
       if (!feed) return;
 
       try {
-        await dispatch(getFeedSort({ feed, context }));
+        await dispatch(getFeedSort({ feed, context })).unwrap(); // unwrap to catch dispatched error (db failure)
       } catch (error) {
         _setSort((_sort) => _sort ?? defaultSort); // fallback if indexeddb unavailable
         throw error;
@@ -55,19 +57,22 @@ export default function useSortByFeed<Context extends "posts" | "comments">(
     _setSort(feedSort ?? defaultSort);
   }, [feedSort, sort, defaultSort, rememberCommunitySort]);
 
-  function setSort(sort: Sort) {
-    if (rememberCommunitySort && feed) {
-      dispatch(
-        setFeedSort({
-          feed,
-          sort,
-          context,
-        } as SetSortActionPayload),
-      );
-    }
+  const setSort = useCallback(
+    (sort: Sort) => {
+      if (rememberCommunitySort && feed) {
+        dispatch(
+          setFeedSort({
+            feed,
+            sort,
+            context,
+          } as SetSortActionPayload),
+        );
+      }
 
-    return _setSort(sort);
-  }
+      return _setSort(sort);
+    },
+    [context, dispatch, feed, rememberCommunitySort],
+  );
 
   return [sort, setSort] as const;
 }
