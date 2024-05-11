@@ -19,7 +19,7 @@ export default function DefaultSort() {
     (newSort) => {
       dispatch(setDefaultPostSort(newSort));
     },
-    { title: "Default Post Sort" },
+    { title: "Default Posts Sort..." },
   );
 
   return (
