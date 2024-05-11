@@ -110,6 +110,7 @@ interface SettingsState {
       touchFriendlyLinks: boolean;
       showCommentImages: boolean;
       showCollapsed: boolean;
+      rememberCommunitySort: boolean;
     };
     posts: {
       sort: SortType;
@@ -206,6 +207,7 @@ export const initialState: SettingsState = {
       touchFriendlyLinks: true,
       showCommentImages: true,
       showCollapsed: false,
+      rememberCommunitySort: false,
     },
     posts: {
       sort: "Active",
@@ -483,10 +485,15 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("upvote_on_save", action.payload);
     },
-    setRememberCommunitySort(state, action: PayloadAction<boolean>) {
+    setRememberCommunityPostSort(state, action: PayloadAction<boolean>) {
       state.general.posts.rememberCommunitySort = action.payload;
 
-      db.setSetting("remember_community_sort", action.payload);
+      db.setSetting("remember_community_post_sort", action.payload);
+    },
+    setRememberCommunityCommentSort(state, action: PayloadAction<boolean>) {
+      state.general.comments.rememberCommunitySort = action.payload;
+
+      db.setSetting("remember_community_comment_sort", action.payload);
     },
     setAutoplayMedia(state, action: PayloadAction<AutoplayMediaType>) {
       state.general.posts.autoplayMedia = action.payload;
@@ -673,8 +680,11 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const infinite_scrolling = await db.getSetting("infinite_scrolling");
       const upvote_on_save = await db.getSetting("upvote_on_save");
-      const remember_community_sort = await db.getSetting(
-        "remember_community_sort",
+      const remember_community_post_sort = await db.getSetting(
+        "remember_community_post_sort",
+      );
+      const remember_community_comment_sort = await db.getSetting(
+        "remember_community_comment_sort",
       );
       const autoplay_media = await db.getSetting("autoplay_media");
       const enable_haptic_feedback = await db.getSetting(
@@ -787,6 +797,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             showCollapsed:
               show_collapsed_comment ??
               initialState.general.comments.showCollapsed,
+            rememberCommunitySort:
+              remember_community_comment_sort ??
+              initialState.general.comments.rememberCommunitySort,
           },
           posts: {
             disableMarkingRead:
@@ -813,7 +826,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               upvote_on_save ?? initialState.general.posts.upvoteOnSave,
             sort: default_post_sort ?? initialState.general.posts.sort,
             rememberCommunitySort:
-              remember_community_sort ??
+              remember_community_post_sort ??
               initialState.general.posts.rememberCommunitySort,
             autoplayMedia:
               autoplay_media ?? initialState.general.posts.autoplayMedia,
@@ -893,7 +906,8 @@ export const {
   setDisableAutoHideInCommunities,
   setInfiniteScrolling,
   setUpvoteOnSave,
-  setRememberCommunitySort,
+  setRememberCommunityPostSort,
+  setRememberCommunityCommentSort,
   setAutoplayMedia,
   setTheme,
   setEnableHapticFeedback,

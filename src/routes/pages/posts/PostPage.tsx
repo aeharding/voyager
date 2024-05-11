@@ -14,9 +14,8 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useParams } from "react-router";
 import { styled } from "@linaria/react";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import { getPost } from "../../../features/post/postSlice";
-import { CommentSortType } from "lemmy-js-client";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentSort from "../../../features/comment/CommentSort";
 import MoreActions from "../../../features/post/shared/MoreActions";
@@ -28,6 +27,8 @@ import MoreModActions from "../../../features/post/shared/MoreModAction";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
 import AppHeader from "../../../features/shared/AppHeader";
+import useSortByFeed from "../../../features/feed/sort/useFeedSort";
+import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
 
 export const CenteredSpinner = styled(IonSpinner)`
   position: relative;
@@ -74,10 +75,16 @@ const PostPageContent = memo(function PostPageContent({
   const post = useAppSelector((state) => state.post.postById[id]);
   const client = useClient();
   const dispatch = useAppDispatch();
-  const defaultSort = useAppSelector(
-    (state) => state.settings.general.comments.sort,
+
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
   );
-  const [sort, setSort] = useState<CommentSortType>(defaultSort);
+  const [sort, setSort] = useSortByFeed("comments", {
+    remoteCommunityHandle: getRemoteHandleFromHandle(
+      community,
+      connectedInstance,
+    ),
+  });
   const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
 
   const postIfFound = typeof post === "object" ? post : undefined;
@@ -134,6 +141,8 @@ const PostPageContent = memo(function PostPageContent({
       return buildWithRefresher(
         <div className="ion-padding ion-text-center">Post not found</div>,
       );
+
+    if (!sort) return;
 
     return (
       <PostDetail

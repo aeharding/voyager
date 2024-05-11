@@ -36,13 +36,15 @@ const BUTTONS: ActionSheetButton<CommentSortType>[] = COMMENT_SORTS.map(
 );
 
 interface CommentSortProps {
-  sort: CommentSortType;
+  sort: CommentSortType | undefined;
   setSort: (sort: CommentSortType) => void;
 }
 
 export default function CommentSort({ sort, setSort }: CommentSortProps) {
   const [open, setOpen] = useState(false);
   const { activePageRef } = useContext(AppContext);
+
+  if (!sort) return;
 
   return (
     <>
