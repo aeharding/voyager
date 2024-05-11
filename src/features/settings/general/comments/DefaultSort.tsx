@@ -13,6 +13,7 @@ export default function DefaultSort() {
   return (
     <SettingSelector
       title="Default Sort"
+      openTitle="Default Comment Sort"
       selected={defaultCommentSort}
       setSelected={setDefaultCommentSort}
       options={OCommentDefaultSort}
