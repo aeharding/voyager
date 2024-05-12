@@ -38,15 +38,19 @@ const Media = forwardRef<
 
 export default memo(Media);
 
-export function getPostMedia(post: PostView): string | undefined {
-  if (post.post.thumbnail_url) return post.post.thumbnail_url;
-
+export function getPostMedia(
+  post: PostView,
+): [string] | [string, string] | undefined {
   if (post.post.url && isUrlMedia(post.post.url)) {
-    return post.post.url;
+    if (post.post.thumbnail_url) {
+      return [post.post.thumbnail_url, post.post.url];
+    }
+
+    return [post.post.url];
   }
 
-  if (post.post.thumbnail_url) return post.post.thumbnail_url;
+  if (post.post.thumbnail_url) return [post.post.thumbnail_url];
 
   const loneImage = post.post.body && findLoneImage(post.post.body);
-  if (loneImage) return loneImage.url;
+  if (loneImage) return [loneImage.url];
 }
