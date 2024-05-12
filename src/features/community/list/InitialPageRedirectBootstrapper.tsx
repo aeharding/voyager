@@ -24,7 +24,7 @@ interface InitialPageRedirectBootstrapperProps {
  *
  * This improves user experience by always allowing swipe back.
  *
- * Note: This will become unecessary with the resolution of
+ * Note: This will become unnecessary with the resolution of
  * https://github.com/ionic-team/ionic-framework/issues/27892
  */
 export default function InitialPageRedirectBootstrapper({

@@ -281,14 +281,14 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
 
         const hasGalleryStateInHistory = Boolean(window.history.state?.gallery);
 
-        // was openned by history.forward()
+        // was opened by history.forward()
         // we do not need to create new history record for hash navigation
         // because we already have one
         if (hasGalleryStateInHistory) {
           return;
         }
 
-        // was openned by link with gid and pid
+        // was opened by link with gid and pid
         const baseUrl = getBaseUrl();
         const currentHash = getHashValue();
         const urlWithoutOpenedSlide = `${baseUrl}`;
