@@ -43,6 +43,7 @@ import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import AppHeader from "../../../features/shared/AppHeader";
 import useGetRandomCommunity from "../../../features/community/useGetRandomCommunity";
+import PostAppearanceProvider from "../../../features/post/appearance/PostAppearanceProvider";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -155,12 +156,14 @@ const CommunityPageContent = memo(function CommunityPageContent({
     (state) => state.settings.general.posts.showHiddenInCommunities,
   );
 
-  const [sort, setSort] = useSortByFeed("posts", {
+  const postFeed = {
     remoteCommunityHandle: getRemoteHandleFromHandle(
       community,
       connectedInstance,
     ),
-  });
+  };
+
+  const [sort, setSort] = useSortByFeed("posts", postFeed);
 
   const communityView = useFetchCommunity(community);
 
@@ -244,66 +247,70 @@ const CommunityPageContent = memo(function CommunityPageContent({
 
   return (
     <FeedContextProvider>
-      <TitleSearchProvider>
-        <IonPage className={searchOpen ? "grey-bg" : ""}>
-          <AppHeader>
-            <StyledIonToolbar
-              className={
-                !searchOpen && !scrolledPastSearch
-                  ? ionToolbarHideBorderCss
-                  : undefined
-              }
-            >
-              {!searchOpen && (
-                <>
-                  <IonButtons slot="start">
-                    <IonBackButton defaultHref={buildGeneralBrowseLink("/")} />
-                  </IonButtons>
-                  <TitleSearch name={community}>
-                    <IonButtons slot="end">
-                      <ModActions
-                        community={communityView}
-                        communityHandle={community}
+      <PostAppearanceProvider feed={postFeed}>
+        <TitleSearchProvider>
+          <IonPage className={searchOpen ? "grey-bg" : ""}>
+            <AppHeader>
+              <StyledIonToolbar
+                className={
+                  !searchOpen && !scrolledPastSearch
+                    ? ionToolbarHideBorderCss
+                    : undefined
+                }
+              >
+                {!searchOpen && (
+                  <>
+                    <IonButtons slot="start">
+                      <IonBackButton
+                        defaultHref={buildGeneralBrowseLink("/")}
                       />
-                      <PostSort sort={sort} setSort={setSort} />
-                      <MoreActions community={communityView} />
                     </IonButtons>
-                  </TitleSearch>
-                </>
-              )}
+                    <TitleSearch name={community}>
+                      <IonButtons slot="end">
+                        <ModActions
+                          community={communityView}
+                          communityHandle={community}
+                        />
+                        <PostSort sort={sort} setSort={setSort} />
+                        <MoreActions community={communityView} />
+                      </IonButtons>
+                    </TitleSearch>
+                  </>
+                )}
 
-              <HeaderIonSearchbar
-                placeholder={`Search c/${community}`}
-                ref={searchbarRef}
-                onBlur={() => setSearchOpen(false)}
-                className={!searchOpen ? ionSearchbarHideCss : undefined}
-                showCancelButton="always"
-                showClearButton="never"
-                autocapitalize="on"
-                onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
-                value={searchQuery}
-                enterkeyhint="search"
-                onKeyDown={(e) => {
-                  if (!searchQuery.trim()) return;
-                  if (e.key !== "Enter") return;
+                <HeaderIonSearchbar
+                  placeholder={`Search c/${community}`}
+                  ref={searchbarRef}
+                  onBlur={() => setSearchOpen(false)}
+                  className={!searchOpen ? ionSearchbarHideCss : undefined}
+                  showCancelButton="always"
+                  showClearButton="never"
+                  autocapitalize="on"
+                  onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
+                  value={searchQuery}
+                  enterkeyhint="search"
+                  onKeyDown={(e) => {
+                    if (!searchQuery.trim()) return;
+                    if (e.key !== "Enter") return;
 
-                  router.push(
-                    buildGeneralBrowseLink(
-                      `/c/${community}/search/posts/${searchQuery}`,
-                    ),
-                  );
-                }}
-              />
-            </StyledIonToolbar>
-          </AppHeader>
-          <StyledFeedContent>
-            {renderFeed()}
-            <TitleSearchResults />
-            {!showHiddenInCommunities && <PostFabs />}
-            <FixedBg slot="fixed" />
-          </StyledFeedContent>
-        </IonPage>
-      </TitleSearchProvider>
+                    router.push(
+                      buildGeneralBrowseLink(
+                        `/c/${community}/search/posts/${searchQuery}`,
+                      ),
+                    );
+                  }}
+                />
+              </StyledIonToolbar>
+            </AppHeader>
+            <StyledFeedContent>
+              {renderFeed()}
+              <TitleSearchResults />
+              {!showHiddenInCommunities && <PostFabs />}
+              <FixedBg slot="fixed" />
+            </StyledFeedContent>
+          </IonPage>
+        </TitleSearchProvider>
+      </PostAppearanceProvider>
     </FeedContextProvider>
   );
 });

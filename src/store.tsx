@@ -46,6 +46,7 @@ import spoilerSlice from "./features/shared/markdown/components/spoiler/spoilerS
 import deepLinkReadySlice from "./features/community/list/deepLinkReadySlice";
 import redgifsSlice from "./features/media/external/redgifs/redgifsSlice";
 import uploadImageSlice from "./features/shared/markdown/editing/uploadImageSlice";
+import postAppearanceSlice from "./features/post/appearance/appearanceSlice";
 
 const store = configureStore({
   reducer: {
@@ -73,6 +74,7 @@ const store = configureStore({
     deepLinkReady: deepLinkReadySlice,
     redgifs: redgifsSlice,
     uploadImage: uploadImageSlice,
+    postAppearance: postAppearanceSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
