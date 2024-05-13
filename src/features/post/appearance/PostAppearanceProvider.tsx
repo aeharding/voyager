@@ -88,8 +88,6 @@ export default function PostAppearanceProvider({
     [postAppearance, setPostAppearance],
   );
 
-  if (!postAppearance) return; // prevent render until resolved
-
   return (
     <PostAppearanceContext.Provider value={value}>
       {children}
@@ -118,4 +116,14 @@ export function usePostAppearance() {
 
 export function useSetPostAppearance() {
   return useContext(PostAppearanceContext).setPostAppearance;
+}
+
+export function WaitUntilPostAppearanceResolved({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  if (!useContext(PostAppearanceContext).postAppearance) return;
+
+  return children;
 }

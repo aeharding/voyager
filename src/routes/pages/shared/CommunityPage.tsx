@@ -43,7 +43,9 @@ import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import AppHeader from "../../../features/shared/AppHeader";
 import useGetRandomCommunity from "../../../features/community/useGetRandomCommunity";
-import PostAppearanceProvider from "../../../features/post/appearance/PostAppearanceProvider";
+import PostAppearanceProvider, {
+  WaitUntilPostAppearanceResolved,
+} from "../../../features/post/appearance/PostAppearanceProvider";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -222,14 +224,16 @@ const CommunityPageContent = memo(function CommunityPageContent({
   const feed = sort ? (
     <FeedSearchContext.Provider value={feedSearchContextValue}>
       <PageTypeContext.Provider value="community">
-        <PostCommentFeed
-          fetchFn={fetchFn}
-          communityName={community}
-          sortDuration={getSortDuration(sort)}
-          header={header}
-          filterHiddenPosts={!showHiddenInCommunities}
-          onPull={onPull}
-        />
+        <WaitUntilPostAppearanceResolved>
+          <PostCommentFeed
+            fetchFn={fetchFn}
+            communityName={community}
+            sortDuration={getSortDuration(sort)}
+            header={header}
+            filterHiddenPosts={!showHiddenInCommunities}
+            onPull={onPull}
+          />
+        </WaitUntilPostAppearanceResolved>
       </PageTypeContext.Provider>
     </FeedSearchContext.Provider>
   ) : (

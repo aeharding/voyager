@@ -25,7 +25,9 @@ import ModActions from "../../../features/community/mod/ModActions";
 import useSortByFeed from "../../../features/feed/sort/useFeedSort";
 import { PageTypeContext } from "../../../features/feed/PageTypeContext";
 import AppHeader from "../../../features/shared/AppHeader";
-import PostAppearanceProvider from "../../../features/post/appearance/PostAppearanceProvider";
+import PostAppearanceProvider, {
+  WaitUntilPostAppearanceResolved,
+} from "../../../features/post/appearance/PostAppearanceProvider";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -86,11 +88,13 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
     return (
       <PageTypeContext.Provider value="special-feed">
-        <PostCommentFeed
-          fetchFn={fetchFn}
-          sortDuration={getSortDuration(sort)}
-          filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
-        />
+        <WaitUntilPostAppearanceResolved>
+          <PostCommentFeed
+            fetchFn={fetchFn}
+            sortDuration={getSortDuration(sort)}
+            filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+          />
+        </WaitUntilPostAppearanceResolved>
       </PageTypeContext.Provider>
     );
   })();
