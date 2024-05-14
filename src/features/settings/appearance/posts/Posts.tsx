@@ -6,6 +6,7 @@ import EmbedCrossposts from "./EmbedCrossposts";
 import ShowCommunityIcons from "./ShowCommunityIcons";
 import EmbedExternalMedia from "./EmbedExternalMedia";
 import AlwaysShowAuthor from "./AlwaysShowAuthor";
+import RememberType from "./RememberType";
 
 export default function Posts() {
   return (
@@ -15,6 +16,7 @@ export default function Posts() {
       </ListHeader>
       <IonList inset>
         <PostSize />
+        <RememberType />
         <BlurNsfw />
         <EmbedCrossposts />
         <EmbedExternalMedia />

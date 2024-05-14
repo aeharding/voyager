@@ -71,6 +71,7 @@ interface SettingsState {
     posts: {
       blurNsfw: PostBlurNsfwType;
       type: PostAppearanceType;
+      rememberType: boolean;
       embedCrossposts: boolean;
       showCommunityIcons: boolean;
       embedExternalMedia: boolean;
@@ -168,6 +169,7 @@ export const initialState: SettingsState = {
     posts: {
       blurNsfw: OPostBlurNsfw.InFeed,
       type: OPostAppearanceType.Large,
+      rememberType: false,
       embedCrossposts: true,
       showCommunityIcons: true,
       embedExternalMedia: true,
@@ -350,6 +352,10 @@ export const appearanceSlice = createSlice({
     setPostAppearance(state, action: PayloadAction<PostAppearanceType>) {
       state.appearance.posts.type = action.payload;
       db.setSetting("post_appearance_type", action.payload);
+    },
+    setRememberPostAppearance(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.rememberType = action.payload;
+      db.setSetting("remember_post_appearance_type", action.payload);
     },
     setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
       state.appearance.posts.blurNsfw = action.payload;
@@ -644,6 +650,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const profile_label = await db.getSetting("profile_label");
       const post_appearance_type = await db.getSetting("post_appearance_type");
+      const remember_post_appearance_type = await db.getSetting(
+        "remember_post_appearance_type",
+      );
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const embed_crossposts = await db.getSetting("embed_crossposts");
       const show_community_icons = await db.getSetting("show_community_icons");
@@ -734,6 +743,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           },
           posts: {
             type: post_appearance_type ?? initialState.appearance.posts.type,
+            rememberType:
+              remember_post_appearance_type ??
+              initialState.appearance.posts.rememberType,
             blurNsfw: blur_nsfw ?? initialState.appearance.posts.blurNsfw,
             embedCrossposts:
               embed_crossposts ?? initialState.appearance.posts.embedCrossposts,
@@ -886,6 +898,7 @@ export const {
   setShowCommunityIcons,
   setFilteredKeywords,
   setPostAppearance,
+  setRememberPostAppearance,
   setThumbnailPosition,
   setLargeShowVotingButtons,
   setCompactShowVotingButtons,

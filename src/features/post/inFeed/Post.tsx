@@ -20,6 +20,7 @@ import {
 } from "../../../helpers/ionic";
 import { cx } from "@linaria/core";
 import { isTouchDevice } from "../../../helpers/device";
+import { usePostAppearance } from "../appearance/PostAppearanceProvider";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -80,9 +81,8 @@ function Post(props: PostProps) {
   }, []);
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
-  const postAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type,
-  );
+
+  const postAppearance = usePostAppearance();
 
   const onPostLongPress = useCallback(() => {
     openPostActions();
@@ -96,7 +96,7 @@ function Post(props: PostProps) {
   });
 
   const postBody = (() => {
-    switch (postAppearanceType) {
+    switch (postAppearance) {
       case "large":
         return <LargePost {...props} post={potentialPost ?? props.post} />;
       case "compact":

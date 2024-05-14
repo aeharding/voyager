@@ -297,6 +297,7 @@ export type SettingValueTypes = {
   vote_display_mode: VoteDisplayMode;
   profile_label: ProfileLabelType;
   post_appearance_type: PostAppearanceType;
+  remember_post_appearance_type: boolean;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   large_show_voting_buttons: boolean;
   compact_show_voting_buttons: boolean;

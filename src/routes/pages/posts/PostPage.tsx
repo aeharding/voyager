@@ -27,7 +27,7 @@ import MoreModActions from "../../../features/post/shared/MoreModAction";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
 import AppHeader from "../../../features/shared/AppHeader";
-import useSortByFeed from "../../../features/feed/sort/useFeedSort";
+import useFeedSort from "../../../features/feed/sort/useFeedSort";
 import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
 
 export const CenteredSpinner = styled(IonSpinner)`
@@ -79,7 +79,7 @@ const PostPageContent = memo(function PostPageContent({
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const [sort, setSort] = useSortByFeed("comments", {
+  const [sort, setSort] = useFeedSort("comments", {
     remoteCommunityHandle: getRemoteHandleFromHandle(
       community,
       connectedInstance,

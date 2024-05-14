@@ -20,7 +20,7 @@ import { receivedPosts } from "../../../../features/post/postSlice";
 import { receivedComments } from "../../../../features/comment/commentSlice";
 import FeedContent from "../../shared/FeedContent";
 import { getSortDuration } from "../../../../features/feed/endItems/EndPost";
-import useSortByFeed from "../../../../features/feed/sort/useFeedSort";
+import useFeedSort from "../../../../features/feed/sort/useFeedSort";
 import AppHeader from "../../../../features/shared/AppHeader";
 
 interface SearchPostsResultsProps {
@@ -37,7 +37,7 @@ export default function SearchFeedResultsPage({
   }>();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const [sort, setSort] = useSortByFeed("posts");
+  const [sort, setSort] = useFeedSort("posts");
 
   const search = decodeURIComponent(_encodedSearch);
 

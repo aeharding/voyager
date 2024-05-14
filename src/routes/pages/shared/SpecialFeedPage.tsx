@@ -22,9 +22,12 @@ import { followIdsSelector } from "../../../features/auth/siteSlice";
 import { getHandle } from "../../../helpers/lemmy";
 import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../../features/community/mod/ModActions";
-import useSortByFeed from "../../../features/feed/sort/useFeedSort";
+import useFeedSort from "../../../features/feed/sort/useFeedSort";
 import { PageTypeContext } from "../../../features/feed/PageTypeContext";
 import AppHeader from "../../../features/shared/AppHeader";
+import PostAppearanceProvider, {
+  WaitUntilPostAppearanceResolved,
+} from "../../../features/post/appearance/PostAppearanceProvider";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -34,7 +37,9 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
-  const [sort, setSort] = useSortByFeed("posts", { listingType: type });
+
+  const postFeed = { listingType: type };
+  const [sort, setSort] = useFeedSort("posts", postFeed);
 
   const followIds = useAppSelector(followIdsSelector);
   const communityByHandle = useAppSelector(
@@ -83,44 +88,48 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
     return (
       <PageTypeContext.Provider value="special-feed">
-        <PostCommentFeed
-          fetchFn={fetchFn}
-          sortDuration={getSortDuration(sort)}
-          filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
-        />
+        <WaitUntilPostAppearanceResolved>
+          <PostCommentFeed
+            fetchFn={fetchFn}
+            sortDuration={getSortDuration(sort)}
+            filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+          />
+        </WaitUntilPostAppearanceResolved>
       </PageTypeContext.Provider>
     );
   })();
 
   return (
     <TitleSearchProvider>
-      <FeedContextProvider>
-        <IonPage>
-          <AppHeader>
-            <IonToolbar>
-              <IonButtons slot="start">
-                <IonBackButton
-                  text="Communities"
-                  defaultHref={buildGeneralBrowseLink("")}
-                />
-              </IonButtons>
-
-              <TitleSearch name={listingTypeTitle(type)}>
-                <IonButtons slot="end">
-                  {type === "ModeratorView" && <ModActions type={type} />}
-                  <PostSort sort={sort} setSort={setSort} />
-                  <SpecialFeedMoreActions type={type} />
+      <PostAppearanceProvider feed={postFeed}>
+        <FeedContextProvider>
+          <IonPage>
+            <AppHeader>
+              <IonToolbar>
+                <IonButtons slot="start">
+                  <IonBackButton
+                    text="Communities"
+                    defaultHref={buildGeneralBrowseLink("")}
+                  />
                 </IonButtons>
-              </TitleSearch>
-            </IonToolbar>
-          </AppHeader>
-          <FeedContent>
-            {feed}
-            <TitleSearchResults />
-            <PostFabs />
-          </FeedContent>
-        </IonPage>
-      </FeedContextProvider>
+
+                <TitleSearch name={listingTypeTitle(type)}>
+                  <IonButtons slot="end">
+                    {type === "ModeratorView" && <ModActions type={type} />}
+                    <PostSort sort={sort} setSort={setSort} />
+                    <SpecialFeedMoreActions type={type} />
+                  </IonButtons>
+                </TitleSearch>
+              </IonToolbar>
+            </AppHeader>
+            <FeedContent>
+              {feed}
+              <TitleSearchResults />
+              <PostFabs />
+            </FeedContent>
+          </IonPage>
+        </FeedContextProvider>
+      </PostAppearanceProvider>
     </TitleSearchProvider>
   );
 }

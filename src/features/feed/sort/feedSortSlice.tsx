@@ -1,8 +1,8 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CommentSortType, ListingType, SortType } from "lemmy-js-client";
+import { CommentSortType, SortType } from "lemmy-js-client";
 import { db } from "../../../services/db";
 import { RootState } from "../../../store";
-import { getFeedUrlName } from "../../community/mod/ModActions";
+import { AnyFeed, serializeFeedName } from "../helpers";
 
 interface PostSortState {
   /**
@@ -23,12 +23,12 @@ const initialState: PostSortState = {
 
 export type SetSortActionPayload =
   | {
-      feed: FeedSortFeed;
+      feed: AnyFeed;
       sort: SortType;
       context: "posts";
     }
   | {
-      feed: FeedSortFeed;
+      feed: AnyFeed;
       sort: CommentSortType;
       context: "comments";
     };
@@ -65,21 +65,13 @@ export const { setFeedSort } = feedSortSlice.actions;
 
 export default feedSortSlice.reducer;
 
-export type FeedSortFeed =
-  | {
-      remoteCommunityHandle: string;
-    }
-  | {
-      listingType: ListingType;
-    };
-
 export const getFeedSort = createAsyncThunk(
   "feedSort/getFeedSort",
   async ({
     feed,
     context,
   }: {
-    feed: FeedSortFeed;
+    feed: AnyFeed;
     context: "posts" | "comments";
   }) => {
     const feedName = serializeFeedName(feed);
@@ -97,22 +89,11 @@ export const getFeedSort = createAsyncThunk(
 );
 
 export const getFeedSortSelectorBuilder =
-  (feed: FeedSortFeed | undefined, context: "posts" | "comments") =>
+  (feed: AnyFeed | undefined, context: "posts" | "comments") =>
   (state: RootState) =>
     feed
       ? state.feedSort.sortByContextByFeedName[context][serializeFeedName(feed)]
       : null;
-
-function serializeFeedName(feed: FeedSortFeed): string {
-  switch (true) {
-    case "remoteCommunityHandle" in feed:
-      return feed.remoteCommunityHandle; // always contains @ - will never overlap with getFeedUrlName
-    case "listingType" in feed:
-      return getFeedUrlName(feed.listingType);
-    default:
-      return feed;
-  }
-}
 
 function getDefaultSortSettingForContext(context: "posts" | "comments") {
   switch (context) {

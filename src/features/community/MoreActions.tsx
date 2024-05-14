@@ -16,7 +16,7 @@ import { Community, CommunityView } from "lemmy-js-client";
 import { useAppSelector } from "../../store";
 import { compact } from "lodash";
 import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
-import { buildTogglePostAppearanceButton } from "../feed/SpecialFeedMoreActions";
+import { useBuildTogglePostAppearanceButton } from "../feed/SpecialFeedMoreActions";
 
 interface MoreActionsProps {
   community: CommunityView | undefined;
@@ -46,6 +46,7 @@ function MoreActionsWithCommunity({ community }: MoreActionsActionSheetProps) {
     share,
   } = useCommunityActions(community);
   const hidePosts = useHidePosts();
+  const buildTogglePostAppearanceButton = useBuildTogglePostAppearanceButton();
 
   const showHiddenInCommunities = useAppSelector(
     (state) => state.settings.general.posts.showHiddenInCommunities,
