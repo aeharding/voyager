@@ -7,16 +7,18 @@ import {
   useMemo,
   useState,
 } from "react";
-import { FeedSortFeed } from "../../feed/sort/feedSortSlice";
 import {
   getPostAppearance,
-  serializeFeedName,
-  setPostAppeartance as setPostAppeartanceReducer,
+  setPostAppeartance as setPostAppearanceReducer,
 } from "./appearanceSlice";
-import { PostAppearanceType } from "../../settings/settingsSlice";
+import {
+  PostAppearanceType,
+  setPostAppearance as setGlobalPostAppearanceReducer,
+} from "../../settings/settingsSlice";
+import { AnyFeed, serializeFeedName } from "../../feed/helpers";
 
 interface PostAppearanceProviderProps {
-  feed?: FeedSortFeed;
+  feed?: AnyFeed;
   children: React.ReactNode;
 }
 
@@ -28,7 +30,9 @@ export default function PostAppearanceProvider({
   const defaultPostAppearance = useAppSelector(
     (state) => state.settings.appearance.posts.type,
   );
-  const rememberCommunityPostAppearance = true;
+  const rememberCommunityPostAppearance = useAppSelector(
+    (state) => state.settings.appearance.posts.rememberType,
+  );
   const feedPostAppearance = useAppSelector((state) =>
     feed
       ? state.postAppearance.postAppearanceByFeedName[serializeFeedName(feed)]
@@ -69,13 +73,17 @@ export default function PostAppearanceProvider({
 
   const setPostAppearance = useCallback(
     (postAppearance: PostAppearanceType) => {
-      if (rememberCommunityPostAppearance && feed) {
-        dispatch(
-          setPostAppeartanceReducer({
-            feed,
-            postAppearance,
-          }),
-        );
+      if (rememberCommunityPostAppearance) {
+        if (feed) {
+          dispatch(
+            setPostAppearanceReducer({
+              feed,
+              postAppearance,
+            }),
+          );
+        } // else - don't persist
+      } else {
+        dispatch(setGlobalPostAppearanceReducer(postAppearance));
       }
 
       return _setPostAppearance(postAppearance);
