@@ -1,5 +1,5 @@
 import { IonTabBar } from "@ionic/react";
-import { forwardRef, useRef } from "react";
+import { useRef } from "react";
 import PostsTabButton from "./tabs/buttons/PostsTabButton";
 import InboxTabButton from "./tabs/buttons/InboxTabButton";
 import ProfileTabButton from "./tabs/buttons/ProfileTabButton";
@@ -41,7 +41,7 @@ type CustomTabBarType = typeof IonTabBar & {
   isTabBar?: boolean;
 };
 
-const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
+const TabBar = function TabBar(props) {
   const longPressedRef = useRef(false);
 
   const resetLongPress = () => {
@@ -55,7 +55,6 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
   return (
     <StyledIonTabBar
       {...props}
-      ref={ref}
       onClick={resetLongPress}
       onTouchEnd={(e) => {
         // stop keyboard closing when search input has text on search tab press up
@@ -69,7 +68,7 @@ const TabBar: CustomTabBarType = forwardRef(function TabBar(props, ref) {
       <SettingsTabButton tab="settings" href="/settings" {...sharedTabProps} />
     </StyledIonTabBar>
   );
-});
+} as CustomTabBarType;
 
 TabBar.isTabBar = true;
 

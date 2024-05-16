@@ -11,7 +11,7 @@
     "plugin:react-hooks/recommended",
     "plugin:prettier/recommended",
   ],
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": ["react", "react-compiler", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -26,6 +26,7 @@
     },
   },
   "rules": {
+    "react-compiler/react-compiler": 2,
     "react/react-in-jsx-scope": "off",
     "no-console": ["warn", { "allow": ["warn", "error", "info"] }],
     "linebreak-style": ["warn", "unix"],

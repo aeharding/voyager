@@ -20,7 +20,7 @@ import {
   PostView,
 } from "lemmy-js-client";
 import CommentEditModal from "../comment/compose/edit/CommentEditModal";
-import { Report, ReportHandle, ReportableItem } from "../report/Report";
+import Report, { ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
 import SelectTextModal from "../shared/SelectTextModal";
 import ShareAsImageModal, {

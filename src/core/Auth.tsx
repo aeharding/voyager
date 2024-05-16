@@ -79,8 +79,7 @@ function AuthLocation() {
     } else {
       dispatch(updateConnectedInstance(getDefaultServer()));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
+  }, [connectedInstance, dispatch, location.pathname, selectedInstance]);
 
   const getInboxCountsAndErrorIfNeeded = useCallback(async () => {
     try {
@@ -99,8 +98,7 @@ function AuthLocation() {
 
       throw error;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  }, [dispatch, presentToast]);
 
   useInterval(
     () => {
@@ -130,8 +128,7 @@ function AuthLocation() {
     if (!shouldSyncMessages()) return;
 
     dispatch(syncMessages());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageVisibility]);
+  }, [dispatch, pageVisibility, shouldSyncMessages]);
 
   return <>{hasModdedSubs && <BackgroundReportSync />}</>;
 }

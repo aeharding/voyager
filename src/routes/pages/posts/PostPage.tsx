@@ -14,7 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useParams } from "react-router";
 import { styled } from "@linaria/react";
-import React, { memo, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { getPost } from "../../../features/post/postSlice";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import CommentSort from "../../../features/comment/CommentSort";
@@ -65,7 +65,7 @@ export default function PostPage() {
   );
 }
 
-const PostPageContent = memo(function PostPageContent({
+function PostPageContent({
   id,
   commentPath,
   community,
@@ -184,7 +184,7 @@ const PostPageContent = memo(function PostPageContent({
       <Content>{renderPost()}</Content>
     </IonPage>
   );
-});
+}
 
 export function postDetailPageHasVirtualScrollEnabled(
   commentPath: string | undefined,

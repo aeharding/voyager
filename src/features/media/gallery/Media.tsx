@@ -2,27 +2,32 @@ import { PostView } from "lemmy-js-client";
 import { findLoneImage } from "../../../helpers/markdown";
 import { isUrlMedia, isUrlVideo } from "../../../helpers/url";
 import { PlayerProps } from "../video/Player";
-import { ComponentProps, ComponentRef, forwardRef, memo, useMemo } from "react";
+import { ComponentProps, ComponentRef, useMemo } from "react";
 import GalleryMedia, { GalleryMediaProps } from "./GalleryMedia";
 import Video from "../video/Video";
 
-export interface PostGalleryImgProps
-  extends Omit<GalleryMediaProps & PlayerProps, "src"> {
+export interface PosMediaProps
+  extends Omit<GalleryMediaProps & PlayerProps, "src" | "ref"> {
   src: string;
+
+  ref?: React.RefObject<
+    ComponentRef<typeof GalleryMedia> | ComponentRef<typeof Video>
+  >;
 }
 
-const Media = forwardRef<
-  ComponentRef<typeof Video> | ComponentRef<typeof GalleryMedia>,
-  PostGalleryImgProps
->(function PostMedia({ nativeControls, src, ...props }, ref) {
+export default function PostMedia({
+  nativeControls,
+  src,
+  ...props
+}: PosMediaProps) {
   const isVideo = useMemo(() => src && isUrlVideo(src), [src]);
 
   if (isVideo)
     return (
       <Video
         {...props}
+        ref={props.ref as ComponentProps<typeof Video>["ref"]}
         nativeControls={nativeControls}
-        ref={ref as ComponentProps<typeof Video>["ref"]}
         src={src}
       />
     );
@@ -30,13 +35,11 @@ const Media = forwardRef<
   return (
     <GalleryMedia
       {...props}
-      ref={ref as ComponentProps<typeof GalleryMedia>["ref"]}
+      ref={props.ref as ComponentProps<typeof GalleryMedia>["ref"]}
       src={src}
     />
   );
-});
-
-export default memo(Media);
+}
 
 export function getPostMedia(
   post: PostView,

@@ -1,4 +1,4 @@
-import { FocusEvent, KeyboardEvent, forwardRef, useRef } from "react";
+import { FocusEvent, KeyboardEvent, useRef } from "react";
 import "photoswipe/dist/photoswipe.css";
 import { GalleryMediaProps } from "./GalleryMedia";
 
@@ -12,34 +12,41 @@ export const preventPhotoswipeGalleryFocusTrap = {
   onKeyDown: (e: KeyboardEvent) => e.stopPropagation(),
 };
 
-export default forwardRef<HTMLImageElement, GalleryMediaProps>(
-  function GalleryImg({ src, alt, className, onClick, ...rest }, imgRef) {
-    const loaded = useRef(false);
+interface GalleryImgProps extends Omit<GalleryMediaProps, "ref"> {
+  ref?: React.RefObject<HTMLImageElement>;
+}
 
-    return (
-      <img
-        {...rest}
-        ref={imgRef}
-        draggable="false"
-        alt={alt}
-        onClick={(e) => {
-          if (!loaded.current) return;
+export default function GalleryImg({
+  src,
+  alt,
+  className,
+  onClick,
+  ...rest
+}: GalleryImgProps) {
+  const loaded = useRef(false);
 
-          e.stopPropagation();
+  return (
+    <img
+      {...rest}
+      draggable="false"
+      alt={alt}
+      onClick={(e) => {
+        if (!loaded.current) return;
 
-          onClick?.(e);
-        }}
-        src={src}
-        className={className}
-        onLoad={(e) => {
-          rest.onLoad?.(e);
+        e.stopPropagation();
 
-          if (!(e.target instanceof HTMLImageElement)) return;
-          if (!src) return;
+        onClick?.(e);
+      }}
+      src={src}
+      className={className}
+      onLoad={(e) => {
+        rest.onLoad?.(e);
 
-          loaded.current = true;
-        }}
-      />
-    );
-  },
-);
+        if (!(e.target instanceof HTMLImageElement)) return;
+        if (!src) return;
+
+        loaded.current = true;
+      }}
+    />
+  );
+}

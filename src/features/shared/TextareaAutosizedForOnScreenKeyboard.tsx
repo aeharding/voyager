@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import {
   isAppleDeviceInstalledToHomescreen,
   isNative,
@@ -8,10 +8,15 @@ import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
 
-const TextareaAutosizedForOnScreenKeyboard = forwardRef<
-  HTMLTextAreaElement,
-  Omit<TextareaAutosizeProps, "onFocus">
->((props, ref) => {
+interface TextareaAutosizedForOnScreenKeyboardProps
+  extends Omit<TextareaAutosizeProps, "onFocus"> {
+  ref: React.Ref<HTMLTextAreaElement>;
+}
+
+export default function TextareaAutosizedForOnScreenKeyboard({
+  ref,
+  ...props
+}: TextareaAutosizedForOnScreenKeyboardProps) {
   return (
     <TextareaAutosize
       ref={ref}
@@ -28,9 +33,4 @@ const TextareaAutosizedForOnScreenKeyboard = forwardRef<
       {...props}
     />
   );
-});
-
-TextareaAutosizedForOnScreenKeyboard.displayName =
-  "TextareaAutosizedForOnScreenKeyboard";
-
-export default TextareaAutosizedForOnScreenKeyboard;
+}
