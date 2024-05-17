@@ -36,6 +36,12 @@ const Container = styled.div`
   ${maxWidthCss}
 `;
 
+const Header = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
 const Title = styled.div<{ isRead: boolean }>`
   color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
 `;
@@ -73,6 +79,11 @@ const CommunityName = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  // when show community at top and not showing author, avoid gap
+  &:empty {
+    display: none;
+  }
 `;
 
 export default function LargePost({ post }: PostProps) {
@@ -81,6 +92,9 @@ export default function LargePost({ post }: PostProps) {
   );
   const alwaysShowAuthor = useAppSelector(
     (state) => state.settings.appearance.posts.alwaysShowAuthor,
+  );
+  const showCommunityAtTop = useAppSelector(
+    (state) => state.settings.appearance.posts.communityAtTop,
   );
   const hasBeenRead =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
@@ -105,10 +119,25 @@ export default function LargePost({ post }: PostProps) {
       <Container>
         <ModeratableItemBannerOutlet />
 
-        <Title isRead={hasBeenRead}>
-          <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
-          {isNsfw(post) && <Nsfw />}
-        </Title>
+        <Header>
+          {showCommunityAtTop && !inCommunityFeed && (
+            <Details>
+              <LeftDetails isRead={hasBeenRead}>
+                <CommunityLink
+                  community={post.community}
+                  subscribed={post.subscribed}
+                  showInstanceWhenRemote
+                  tinyIcon
+                />
+              </LeftDetails>
+            </Details>
+          )}
+
+          <Title isRead={hasBeenRead}>
+            <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+            {isNsfw(post) && <Nsfw />}
+          </Title>
+        </Header>
 
         {renderPostBody()}
 
@@ -127,14 +156,16 @@ export default function LargePost({ post }: PostProps) {
                 />
               ) : (
                 <>
-                  <CommunityLink
-                    community={post.community}
-                    subscribed={post.subscribed}
-                    disableInstanceClick
-                    showInstanceWhenRemote={
-                      !showVotingButtons || !alwaysShowAuthor
-                    }
-                  />
+                  {!showCommunityAtTop && (
+                    <CommunityLink
+                      community={post.community}
+                      subscribed={post.subscribed}
+                      disableInstanceClick
+                      showInstanceWhenRemote={
+                        !showVotingButtons || !alwaysShowAuthor
+                      }
+                    />
+                  )}
                   {alwaysShowAuthor && (
                     <>
                       {" "}

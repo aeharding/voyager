@@ -77,6 +77,10 @@ const From = styled.div`
 
   overflow: hidden;
   text-overflow: ellipsis;
+
+  &:empty {
+    display: none;
+  }
 `;
 
 export const ActionsContainer = styled.div`
@@ -152,6 +156,9 @@ export default function CompactPost({ post }: PostProps) {
   const compactShowVotingButtons = useAppSelector(
     (state) => state.settings.appearance.compact.showVotingButtons,
   );
+  const showCommunityAtTop = useAppSelector(
+    (state) => state.settings.appearance.posts.communityAtTop,
+  );
 
   const crosspostUrl = useCrosspostUrl(post);
 
@@ -180,11 +187,12 @@ export default function CompactPost({ post }: PostProps) {
         <Contents>
           {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
           <Content>
-            {inModqueue && !inCommunityFeed && (
+            {(inModqueue || showCommunityAtTop) && !inCommunityFeed && (
               <Aside isRead={false}>
                 <CommunityLink
                   community={post.community}
                   subscribed={post.subscribed}
+                  showInstanceWhenRemote
                   tinyIcon
                 />
               </Aside>
@@ -213,11 +221,13 @@ export default function CompactPost({ post }: PostProps) {
                   />
                 ) : (
                   <>
-                    <CommunityLink
-                      community={post.community}
-                      subscribed={post.subscribed}
-                      tinyIcon
-                    />
+                    {!showCommunityAtTop && (
+                      <CommunityLink
+                        community={post.community}
+                        subscribed={post.subscribed}
+                        tinyIcon
+                      />
+                    )}
                     {alwaysShowAuthor && (
                       <>
                         {" "}
