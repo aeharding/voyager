@@ -63,6 +63,17 @@ export function buildSuccessSubscribing(
   };
 }
 
+export function buildFavorited(
+  favorited: boolean,
+  community: string,
+): AppToastOptions {
+  return {
+    message: `${favorited ? "Unfavorited" : "Favorited"} c/${community}.`,
+    position: "bottom",
+    color: "success",
+  };
+}
+
 export const postLocked: AppToastOptions = {
   message: "Post locked by moderator",
   color: "warning",
