@@ -7,6 +7,7 @@ import ShowCommunityIcons from "./ShowCommunityIcons";
 import EmbedExternalMedia from "./EmbedExternalMedia";
 import AlwaysShowAuthor from "./AlwaysShowAuthor";
 import RememberType from "./RememberType";
+import CommunityAtTop from "./CommunityAtTop";
 
 export default function Posts() {
   return (
@@ -18,6 +19,7 @@ export default function Posts() {
         <PostSize />
         <RememberType />
         <BlurNsfw />
+        <CommunityAtTop />
         <EmbedCrossposts />
         <EmbedExternalMedia />
         <ShowCommunityIcons />

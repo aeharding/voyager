@@ -76,6 +76,7 @@ interface SettingsState {
       showCommunityIcons: boolean;
       embedExternalMedia: boolean;
       alwaysShowAuthor: boolean;
+      communityAtTop: boolean;
     };
     large: {
       showVotingButtons: boolean;
@@ -174,6 +175,7 @@ export const initialState: SettingsState = {
       showCommunityIcons: true,
       embedExternalMedia: true,
       alwaysShowAuthor: false,
+      communityAtTop: false,
     },
     large: {
       showVotingButtons: true,
@@ -368,6 +370,11 @@ export const appearanceSlice = createSlice({
     setShowCommunityIcons(state, action: PayloadAction<boolean>) {
       state.appearance.posts.showCommunityIcons = action.payload;
       db.setSetting("show_community_icons", action.payload);
+    },
+    setCommunityAtTop(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.communityAtTop = action.payload;
+
+      db.setSetting("community_at_top", action.payload);
     },
     setFilteredKeywords(state, action: PayloadAction<string[]>) {
       state.blocks.keywords = action.payload;
@@ -656,6 +663,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const embed_crossposts = await db.getSetting("embed_crossposts");
       const show_community_icons = await db.getSetting("show_community_icons");
+      const community_at_top = await db.getSetting("community_at_top");
       const large_show_voting_buttons = await db.getSetting(
         "large_show_voting_buttons",
       );
@@ -758,6 +766,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             alwaysShowAuthor:
               always_show_author ??
               initialState.appearance.posts.alwaysShowAuthor,
+            communityAtTop:
+              community_at_top ?? initialState.appearance.posts.communityAtTop,
           },
           large: {
             showVotingButtons:
@@ -896,6 +906,7 @@ export const {
   setNsfwBlur,
   setEmbedCrossposts,
   setShowCommunityIcons,
+  setCommunityAtTop,
   setFilteredKeywords,
   setPostAppearance,
   setRememberPostAppearance,

@@ -344,6 +344,7 @@ export type SettingValueTypes = {
   remember_community_comment_sort: boolean;
   embed_crossposts: boolean;
   show_community_icons: boolean;
+  community_at_top: boolean;
   autoplay_media: AutoplayMediaType;
   show_collapsed_comment: boolean;
   quick_switch_dark_mode: boolean;
