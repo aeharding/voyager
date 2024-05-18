@@ -16,7 +16,7 @@ const HEADERS = {
 
 export async function getTemporaryToken(): Promise<string> {
   const result = await CapacitorHttp.get({
-    url: `${BASE_URL}/v2/auth/temporwary`,
+    url: `${BASE_URL}/v2/auth/temporary`,
     headers: HEADERS,
   });
 
