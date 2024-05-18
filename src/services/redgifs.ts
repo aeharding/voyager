@@ -3,7 +3,7 @@ import { CapacitorHttp } from "@capacitor/core";
 // https://github.com/Redgifs/api/wiki/Temporary-tokens
 
 interface TemporaryTokenResponse {
-  token: string;
+  token?: string;
   addr: string;
   agent: string;
   rtfm: string;
@@ -21,6 +21,9 @@ export async function getTemporaryToken(): Promise<string> {
   });
 
   const response: TemporaryTokenResponse = result.data;
+
+  if (typeof response?.token !== "string")
+    throw new Error("Failed to get temporary redgifs token");
 
   return response.token;
 }
