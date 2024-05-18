@@ -3,7 +3,11 @@ import { chevronDownOutline } from "ionicons/icons";
 import { useCallback, useContext } from "react";
 import { AppContext } from "../../auth/AppContext";
 import { findCurrentPage } from "../../../helpers/ionic";
-import { useLongPress } from "use-long-press";
+import {
+  LongPressCallback,
+  LongPressCallbackReason,
+  useLongPress,
+} from "use-long-press";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { ImpactStyle } from "@capacitor/haptics";
 import { isNative } from "../../../helpers/device";
@@ -109,7 +113,14 @@ export default function JumpFab() {
   );
 
   const onJumpLongPress = useCallback(() => onJump(-1), [onJump]);
-  const onLongPressCancel = useCallback(() => onJump(), [onJump]);
+  const onLongPressCancel: LongPressCallback = useCallback(
+    (_, meta) => {
+      if (meta.reason !== LongPressCallbackReason.CancelledByRelease) return;
+
+      onJump();
+    },
+    [onJump],
+  );
 
   const bind = useLongPress(
     onJumpLongPress,
