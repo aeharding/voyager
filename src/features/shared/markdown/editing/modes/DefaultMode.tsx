@@ -249,13 +249,13 @@ export default function DefaultMode({
         },
       ],
       buttons: [
+        "Cancel",
         {
           text: "OK",
           handler: ({ text, url }) => {
             insertMarkdownLink(text, url);
           },
         },
-        "Cancel",
       ],
     });
 
