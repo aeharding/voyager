@@ -18,6 +18,7 @@ import {
 import {
   allNSFWHidden,
   buildBlocked,
+  buildFavorited,
   buildProblemSubscribing,
   buildSuccessSubscribing,
 } from "../../helpers/toastMessages";
@@ -135,13 +136,7 @@ export default function useCommunityActions(
       dispatch(removeFavorite(communityHandle));
     }
 
-    presentToast({
-      message: `${
-        isFavorite ? "Unfavorited" : "Favorited"
-      } c/${communityHandle}.`,
-      position: "bottom",
-      color: "success",
-    });
+    presentToast(buildFavorited(isFavorite, communityHandle));
   }, [
     communityHandle,
     dispatch,

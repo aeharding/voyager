@@ -191,6 +191,7 @@ function ResolvedCommunitiesList({
                   key={typeof favorite === "string" ? favorite : favorite.id}
                   community={favorite}
                   favorites={favorites}
+                  removeAction="favorite"
                 />
               ))}
             </IonItemGroup>
@@ -206,6 +207,7 @@ function ResolvedCommunitiesList({
                   key={community.id}
                   community={community}
                   favorites={favorites}
+                  removeAction="none"
                 />
               ))}
             </IonItemGroup>
@@ -222,6 +224,7 @@ function ResolvedCommunitiesList({
                   key={community.id}
                   community={community}
                   favorites={favorites}
+                  removeAction="follow"
                 />
               ))}
             </IonItemGroup>
