@@ -21,7 +21,7 @@ A mobile-first Lemmy web client
 </p>
 <p align="center">
   <a href="https://matrix.to/#/#vger.app:matrix.org"><img src="https://img.shields.io/badge/chat-matrix-blue?style=flat-square&logo=matrix" alt="matrix chat"></a>
-  <a href="https://lemmy.world/c/voyagerapp"><img src="https://img.shields.io/lemmy/voyagerapp@lemmy.world?style=flat-square&logo=lemmy&label=lemmy" alt="lemmy community"></a>
+  <a href="https://lemmyverse.link/c/voyagerapp@lemmy.world"><img src="https://img.shields.io/lemmy/voyagerapp@lemmy.world?style=flat-square&logo=lemmy&label=lemmy" alt="lemmy community"></a>
 </p>
 <br/>
 
