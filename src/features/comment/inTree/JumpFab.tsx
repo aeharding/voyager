@@ -4,7 +4,7 @@ import { useCallback, useContext } from "react";
 import { AppContext } from "../../auth/AppContext";
 import { findCurrentPage } from "../../../helpers/ionic";
 import {
-  LongPressCallbackMeta,
+  LongPressCallback,
   LongPressCallbackReason,
   useLongPress,
 } from "use-long-press";
@@ -113,8 +113,8 @@ export default function JumpFab() {
   );
 
   const onJumpLongPress = useCallback(() => onJump(-1), [onJump]);
-  const onLongPressCancel = useCallback(
-    (_: unknown, meta: LongPressCallbackMeta) => {
+  const onLongPressCancel: LongPressCallback = useCallback(
+    (_, meta) => {
       if (meta.reason !== LongPressCallbackReason.CancelledByRelease) return;
 
       onJump();
