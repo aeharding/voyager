@@ -220,6 +220,8 @@ export default function PostEditorRoot({
 
     if (!title) {
       errorMessage = "Please add a title to your post.";
+    } else if (title.length < 3) {
+      errorMessage = "Post title must contain at least three characters.";
     } else if (postType === "link" && (!url || !validUrl(url))) {
       errorMessage =
         "Please add a valid URL to your post (start with https://).";
@@ -232,8 +234,8 @@ export default function PostEditorRoot({
 
     if (errorMessage) {
       presentToast({
-        // TODO more helpful msg
         message: errorMessage,
+        color: "warning",
         fullscreen: true,
       });
 
