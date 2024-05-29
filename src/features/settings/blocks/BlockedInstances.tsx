@@ -15,6 +15,7 @@ import { ListHeader } from "../shared/formatting";
 import { blockInstance } from "../../auth/siteSlice";
 import InstanceSelectorModal from "../../shared/selectorModals/InstanceSelectorModal";
 import { PageContext } from "../../auth/PageContext";
+import { RemoveItemButton } from "../../shared/ListEditor";
 
 export default function BlockedInstances() {
   const dispatch = useAppDispatch();
@@ -73,6 +74,7 @@ export default function BlockedInstances() {
             </IonItemOptions>
             <IonItem>
               <IonLabel>{instanceBlock.instance.domain}</IonLabel>
+              <RemoveItemButton />
             </IonItem>
           </IonItemSliding>
         ))}

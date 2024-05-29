@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { ListHeader } from "../shared/formatting";
 import { updateFilteredKeywords } from "../settingsSlice";
 import { uniq, without } from "lodash";
+import { RemoveItemButton } from "../../shared/ListEditor";
 
 export default function FilteredKeywords() {
   const [presentAlert] = useIonAlert();
@@ -68,6 +69,7 @@ export default function FilteredKeywords() {
               </IonItemOption>
             </IonItemOptions>
             <IonItem>
+              <RemoveItemButton />
               <IonLabel>{keyword}</IonLabel>
             </IonItem>
           </IonItemSliding>

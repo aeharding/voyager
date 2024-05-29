@@ -13,6 +13,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import { PersonBlockView } from "lemmy-js-client";
 import { blockUser } from "../../user/userSlice";
 import { ListHeader } from "../shared/formatting";
+import { RemoveItemButton } from "../../shared/ListEditor";
 
 export default function BlockedUsers() {
   const dispatch = useAppDispatch();
@@ -57,6 +58,7 @@ export default function BlockedUsers() {
               </IonItemOptions>
               <IonItem>
                 <IonLabel>{getHandle(user.target)}</IonLabel>
+                <RemoveItemButton />
               </IonItem>
             </IonItemSliding>
           ))
