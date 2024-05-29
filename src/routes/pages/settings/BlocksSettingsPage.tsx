@@ -24,6 +24,10 @@ import { useRef } from "react";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { localUserSelector } from "../../../features/auth/siteSlice";
 import AppHeader from "../../../features/shared/AppHeader";
+import {
+  ListEditButton,
+  ListEditorProvider,
+} from "../../../features/shared/ListEditor";
 
 export default function BlocksSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -31,9 +35,17 @@ export default function BlocksSettingsPage() {
   const userHandle = useAppSelector(userHandleSelector);
   const localUser = useAppSelector(localUserSelector);
 
+  const hasBlocks = useAppSelector(
+    (state) =>
+      state.site.response?.my_user?.community_blocks.length ||
+      state.site.response?.my_user?.person_blocks.length ||
+      state.site.response?.my_user?.instance_blocks.length ||
+      state.settings.blocks.keywords.length,
+  );
+
   useSetActivePage(pageRef);
 
-  return (
+  const page = (
     <IonPage ref={pageRef} className="grey-bg">
       <AppHeader>
         <IonToolbar>
@@ -49,6 +61,9 @@ export default function BlocksSettingsPage() {
               </div>
             </TitleContainer>{" "}
           </IonTitle>
+          <IonButtons slot="end">
+            {hasBlocks ? <ListEditButton /> : null}
+          </IonButtons>
         </IonToolbar>
       </AppHeader>
       {localUser ? (
@@ -66,4 +81,8 @@ export default function BlocksSettingsPage() {
       )}
     </IonPage>
   );
+
+  if (hasBlocks) {
+    return <ListEditorProvider>{page}</ListEditorProvider>;
+  } else return page;
 }

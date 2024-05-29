@@ -13,12 +13,17 @@ import {
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Account from "./Account";
 import { setAccounts } from "./authSlice";
 import { moveItem } from "../../helpers/array";
 import { loggedInAccountsSelector } from "./authSelectors";
 import AppHeader from "../shared/AppHeader";
+import {
+  ListEditButton,
+  ListEditorContext,
+  ListEditorProvider,
+} from "../shared/ListEditor";
 
 type AccountSwitcherProps = {
   onDismiss: (data?: string, role?: string) => void;
@@ -35,7 +40,15 @@ type AccountSwitcherProps = {
     }
 );
 
-export default function AccountSwitcher({
+export default function AccountSwitcherContainer(props: AccountSwitcherProps) {
+  return (
+    <ListEditorProvider>
+      <AccountSwitcher {...props} />
+    </ListEditorProvider>
+  );
+}
+
+function AccountSwitcher({
   onDismiss,
   onSelectAccount,
   allowEdit = true,
@@ -55,15 +68,15 @@ export default function AccountSwitcher({
       : loggedInAccountsSelector,
   );
 
-  const oldAccountsCountRef = useRef(accounts?.length ?? 0);
   const appActiveHandle = useAppSelector(
     (state) => state.auth.accountData?.activeHandle,
   );
-  const [editing, setEditing] = useState(false);
 
   const [selectedAccount, setSelectedAccount] = useState(
     _activeHandle ?? appActiveHandle,
   );
+
+  const { editing } = useContext(ListEditorContext);
 
   useEffect(() => {
     setSelectedAccount(_activeHandle ?? appActiveHandle);
@@ -74,17 +87,6 @@ export default function AccountSwitcher({
 
     onDismiss();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts]);
-
-  useEffect(() => {
-    const newAccountsCount = accounts?.length ?? 0;
-
-    // On new account added, set no longer editing
-    if (newAccountsCount > oldAccountsCountRef.current) {
-      setEditing(false);
-    }
-
-    oldAccountsCountRef.current = newAccountsCount;
   }, [accounts]);
 
   const accountEls = accounts?.map((account) => (
@@ -113,11 +115,7 @@ export default function AccountSwitcher({
           <IonTitle>Accounts</IonTitle>
           {allowEdit && (
             <IonButtons slot="end">
-              {editing ? (
-                <IonButton onClick={() => setEditing(false)}>Done</IonButton>
-              ) : (
-                <IonButton onClick={() => setEditing(true)}>Edit</IonButton>
-              )}
+              <ListEditButton />
             </IonButtons>
           )}
         </IonToolbar>
