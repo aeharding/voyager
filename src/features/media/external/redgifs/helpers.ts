@@ -1,7 +1,7 @@
 import { isNative } from "../../../../helpers/device";
 
 export const redgifUrlRegex =
-  /^https:\/\/(?:www\.)?redgifs.com\/watch\/([a-z]+)/;
+  /^https:\/\/(?:www\.|v3\.)?redgifs.com\/watch\/([a-z]+)/;
 
 /**
  * Uncomment `return true` in dev to test with following command
