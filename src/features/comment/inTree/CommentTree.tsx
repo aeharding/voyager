@@ -1,5 +1,5 @@
 import { CommentNodeI } from "../../../helpers/lemmy";
-import React, { RefObject, memo, useContext, useMemo } from "react";
+import React, { RefObject, useContext, useMemo } from "react";
 import CommentHr from "./CommentHr";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { toggleCommentCollapseState } from "../commentSlice";
@@ -21,7 +21,7 @@ interface CommentTreeProps {
   baseDepth: number;
 }
 
-function CommentTree({
+export default function CommentTree({
   comment,
   highlightedCommentId,
   first,
@@ -132,8 +132,6 @@ function CommentTree({
 
   return payload;
 }
-
-export default memo(CommentTree);
 
 export function scrollCommentIntoViewIfNeeded(
   target: EventTarget,

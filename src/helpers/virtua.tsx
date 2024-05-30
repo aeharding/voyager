@@ -1,17 +1,22 @@
-import { forwardRef } from "react";
+import React from "react";
 import { CustomItemComponentProps } from "virtua";
+
+interface IndexedVirtuaItemProps extends CustomItemComponentProps {
+  ref: React.RefObject<HTMLDivElement>;
+}
 
 /**
  * Add data-index to each item for programmatic scrolling
  */
-export const IndexedVirtuaItem = forwardRef<
-  HTMLDivElement,
-  CustomItemComponentProps
->(({ children, index, style }, ref) => {
+export function IndexedVirtuaItem({
+  children,
+  index,
+  style,
+  ref,
+}: IndexedVirtuaItemProps) {
   return (
     <div ref={ref} style={style} data-index={index}>
       {children}
     </div>
   );
-});
-IndexedVirtuaItem.displayName = "IndexedVirtuaItem";
+}

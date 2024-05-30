@@ -35,43 +35,39 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     (state) => state.auth.connectedInstance,
   );
 
-  const links = useMemo(() => {
-    // Initialize a unified processor with the remark-parse parser
-    // and parse the Markdown content
-    const processor = unified()
-      .use(remarkParse)
-      .use(customRemarkGfm, { connectedInstance })
-      .use(spoiler);
+  // Initialize a unified processor with the remark-parse parser
+  // and parse the Markdown content
+  const processor = unified()
+    .use(remarkParse)
+    .use(customRemarkGfm, { connectedInstance })
+    .use(spoiler);
 
-    const mdastTree = processor.parse(markdown);
-    processor.runSync(mdastTree, markdown);
+  const mdastTree = processor.parse(markdown);
+  processor.runSync(mdastTree, markdown);
 
-    let links: LinkData[] = [];
+  let links: LinkData[] = [];
 
-    visit(mdastTree, ["spoiler", "link", "image"], (node) => {
-      // don't show links within spoilers
-      if (node.type === "spoiler") return SKIP;
+  visit(mdastTree, ["spoiler", "link", "image"], (node) => {
+    // don't show links within spoilers
+    if (node.type === "spoiler") return SKIP;
 
-      if (node.type === "link" || (!showCommentImages && node.type === "image"))
-        links.push({
-          type: node.type,
-          url: node.url,
-          text:
-            "children" in node ? (node.children[0] as Text)?.value : undefined,
-        });
-    });
+    if (node.type === "link" || (!showCommentImages && node.type === "image"))
+      links.push({
+        type: node.type,
+        url: node.url,
+        text:
+          "children" in node ? (node.children[0] as Text)?.value : undefined,
+      });
+  });
 
-    // Dedupe by url
-    links = uniqBy(links, (l) => l.url);
+  // Dedupe by url
+  links = uniqBy(links, (l) => l.url);
 
-    // e.g. `http://127.0.0.1:8080”`
-    links = links.filter(({ url }) => isValidUrl(url));
+  // e.g. `http://127.0.0.1:8080”`
+  links = links.filter(({ url }) => isValidUrl(url));
 
-    // Max 4 links
-    links = links.slice(0, 4);
-
-    return links;
-  }, [markdown, showCommentImages, connectedInstance]);
+  // Max 4 links
+  links = links.slice(0, 4);
 
   if (!links.length) return;
 

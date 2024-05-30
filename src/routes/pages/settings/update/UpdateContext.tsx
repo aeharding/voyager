@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useRef, useState } from "react";
 import { useInterval } from "usehooks-ts";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import usePageVisibility from "../../../../helpers/usePageVisibility";
+import useEvent from "../../../../helpers/useEvent";
 
 type UpdateStatus =
   | "not-enabled"
@@ -54,14 +55,7 @@ export function UpdateContextProvider({
     1_000 * 60 * 60,
   );
 
-  useEffect(() => {
-    if (!pageVisibility) return;
-
-    checkForUpdates();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageVisibility]);
-
-  async function checkForUpdates() {
+  const checkForUpdates = useEvent(async () => {
     const r = registration.current;
 
     if (!r) {
@@ -82,7 +76,13 @@ export function UpdateContextProvider({
 
       return r.waiting || r.installing ? "outdated" : "current";
     });
-  }
+  });
+
+  useEffect(() => {
+    if (!pageVisibility) return;
+
+    checkForUpdates();
+  }, [checkForUpdates, pageVisibility]);
 
   return (
     <UpdateContext.Provider

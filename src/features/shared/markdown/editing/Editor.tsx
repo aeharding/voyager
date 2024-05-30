@@ -6,13 +6,12 @@ import MarkdownToolbar, {
   TOOLBAR_TARGET_ID,
 } from "./MarkdownToolbar";
 import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
-import {
+import React, {
   ClipboardEvent,
   Dispatch,
   DragEvent,
   KeyboardEvent,
   SetStateAction,
-  forwardRef,
   useEffect,
   useRef,
 } from "react";
@@ -64,12 +63,19 @@ export interface EditorProps {
   onDismiss?: () => void;
 
   children?: React.ReactNode;
+
+  ref?: React.RefObject<HTMLTextAreaElement>;
 }
 
-export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
-  { text, setText, children, onSubmit, onDismiss, canRecoverText = true },
+export default function Editor({
+  text,
+  setText,
+  children,
+  onSubmit,
+  onDismiss,
+  canRecoverText = true,
   ref,
-) {
+}: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -229,4 +235,4 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
       />
     </>
   );
-});
+}

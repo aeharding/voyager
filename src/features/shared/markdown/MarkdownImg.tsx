@@ -10,7 +10,7 @@ const smallStyles = css`
   max-height: 200px;
 `;
 
-interface MarkdownImgProps extends GalleryMediaProps {
+interface MarkdownImgProps extends Omit<GalleryMediaProps, "ref"> {
   /**
    * Restrict height of media within comments (unrestricted in post body)
    */
