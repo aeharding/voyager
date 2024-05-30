@@ -18,7 +18,7 @@ workflows:
           pnpm install
       - name: Build ipa for distribution
         script: |
-          xcode-project build-ipa \
+          xcodebuild build \
             --workspace "$XCODE_WORKSPACE" \
             --scheme "$XCODE_SCHEME" \
             CODE_SIGN_IDENTITY="" \
