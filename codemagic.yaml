@@ -1,23 +1,22 @@
 workflows:
   ionic-capacitor-ios-workflow:
-    name: Ionic Capacitor iOS Workflow
+    name: Voyager iOS Workflow
     max_build_duration: 120
     instance_type: mac_mini_m1
     environment:
       vars:
-        # Ionic Xcode worskspace and scheme
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
       node: v18.12
-      xcode: latest # <-- set to specific version e.g. 14.3, 15.0 to avoid unexpected updates.
+      xcode: latest
       cocoapods: default
     scripts:
-      - name: Install dependencies for Ionic project
+      - name: Install dependencies for project
         script: |
           corepack enable
           pnpm install
           pnpm exec ionic capacitor build ios
-      - name: Build ipa for distribution
+      - name: Build App (unsigned)
         script: |
           xcodebuild build \
             -workspace "$XCODE_WORKSPACE" \
