@@ -8,7 +8,7 @@ workflows:
         # Ionic Xcode worskspace and scheme
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "vger"
-      node: v16.11.1
+      node: v18.12
       xcode: latest # <-- set to specific version e.g. 14.3, 15.0 to avoid unexpected updates.
       cocoapods: default
     scripts:
