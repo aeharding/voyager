@@ -1,0 +1,32 @@
+workflows:
+  ionic-capacitor-ios-workflow:
+    name: Ionic Capacitor iOS Workflow
+    max_build_duration: 120
+    instance_type: mac_mini_m1
+    environment:
+      ios_signing:
+        bundle_identifier: app.vger.voyager
+      vars:
+        # Ionic Xcode worskspace and scheme
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "vger"
+      node: v16.11.1
+      xcode: latest # <-- set to specific version e.g. 14.3, 15.0 to avoid unexpected updates.
+      cocoapods: default
+    scripts:
+      - name: Install dependencies for Ionic project
+        script: |
+          corepack enable
+          pnpm install
+          pnpm exec ionic capacitor build ios
+      - name: Build ipa for distribution
+        script: |
+          cd $CM_BUILD_DIR/ios/App
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
