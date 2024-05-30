@@ -16,7 +16,6 @@ workflows:
         script: |
           corepack enable
           pnpm install
-          pnpm exec ionic capacitor build ios
       - name: Build ipa for distribution
         script: |
           xcode-project build-ipa \
