@@ -2,7 +2,7 @@ import { useAppSelector } from "../../../store";
 import GenericSidebar from "./GenericSidebar";
 import { IonBadge } from "@ionic/react";
 import { lemmyVersionSelector } from "../../auth/siteSlice";
-import { CenteredSpinner } from "../../../routes/pages/posts/PostPage";
+import { CenteredSpinner } from "../../shared/CenteredSpinner";
 
 export default function InstanceSidebar() {
   const siteView = useAppSelector((state) => state.site.response?.site_view);

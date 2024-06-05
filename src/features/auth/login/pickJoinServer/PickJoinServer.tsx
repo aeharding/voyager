@@ -60,7 +60,7 @@ const spacing = `
   width: 100%;
 `;
 
-const CenteredSpinner = styled(IonSpinner)`
+const SpacedSpinner = styled(IonSpinner)`
   ${spacing}
 `;
 
@@ -311,7 +311,7 @@ export default function PickJoinServer() {
       );
     }
 
-    if (loading || loadingInstances) return <CenteredSpinner />;
+    if (loading || loadingInstances) return <SpacedSpinner />;
 
     return <Empty>No results</Empty>;
   })();

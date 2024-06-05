@@ -16,7 +16,6 @@ import { useAppSelector } from "../../../store";
 import { userHandleSelector } from "../../../features/auth/authSelectors";
 import FilterNsfw from "../../../features/settings/blocks/FilterNsfw";
 import BlockedCommunities from "../../../features/settings/blocks/BlockedCommunities";
-import { CenteredSpinner } from "../posts/PostPage";
 import BlockedUsers from "../../../features/settings/blocks/BlockedUsers";
 import FilteredKeywords from "../../../features/settings/blocks/FilteredKeywords";
 import BlockedInstances from "../../../features/settings/blocks/BlockedInstances";
@@ -28,6 +27,7 @@ import {
   ListEditButton,
   ListEditorProvider,
 } from "../../../features/shared/ListEditor";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 export default function BlocksSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -44,6 +44,25 @@ export default function BlocksSettingsPage() {
   );
 
   useSetActivePage(pageRef);
+
+  const content = (() => {
+    if (!localUser)
+      return (
+        <IonContent scrollY={false}>
+          <CenteredSpinner />
+        </IonContent>
+      );
+
+    return (
+      <AppContent scrollY>
+        <FilterNsfw />
+        <FilteredKeywords />
+        <BlockedCommunities />
+        <BlockedUsers />
+        <BlockedInstances />
+      </AppContent>
+    );
+  })();
 
   const page = (
     <IonPage ref={pageRef} className="grey-bg">
@@ -66,19 +85,8 @@ export default function BlocksSettingsPage() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      {localUser ? (
-        <AppContent scrollY>
-          <FilterNsfw />
-          <FilteredKeywords />
-          <BlockedCommunities />
-          <BlockedUsers />
-          <BlockedInstances />
-        </AppContent>
-      ) : (
-        <IonContent scrollY={false}>
-          <CenteredSpinner />
-        </IonContent>
-      )}
+
+      {content}
     </IonPage>
   );
 

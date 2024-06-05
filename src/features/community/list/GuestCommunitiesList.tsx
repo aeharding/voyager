@@ -1,10 +1,10 @@
 import { Community } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 import ResolvedCommunitiesList from "./ResolvedCommunitiesList";
-import { CenteredSpinner } from "../../../routes/pages/posts/PostPage";
 import { useAppSelector } from "../../../store";
 import { clientSelector } from "../../auth/authSelectors";
 import { CommunitiesListProps } from "./CommunitiesList";
+import { CenteredSpinner } from "../../shared/CenteredSpinner";
 
 /**
  * User probably just wants to see local-only communities for certain

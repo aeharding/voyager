@@ -10,11 +10,11 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { memo, useEffect, useRef } from "react";
 import { getCommunity } from "../../../features/community/communitySlice";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { CenteredSpinner } from "../posts/PostPage";
 import AppContent from "../../../features/shared/AppContent";
 import Sidebar from "../../../features/sidebar/Sidebar";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import AppHeader from "../../../features/shared/AppHeader";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 interface CommunitySidebarPageProps {
   community: string;

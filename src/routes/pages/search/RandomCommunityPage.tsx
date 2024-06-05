@@ -11,8 +11,8 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import useGetRandomCommunity from "../../../features/community/useGetRandomCommunity";
-import { CenteredSpinner } from "../posts/PostPage";
 import { FailedMessage } from "../../../features/user/AsyncProfile";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 export default function RandomCommunityPage() {
   const pushed = useRef(false);

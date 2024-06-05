@@ -6,7 +6,6 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  IonSpinner,
   IonTitle,
   IonToolbar,
   RefresherCustomEvent,
@@ -29,13 +28,7 @@ import { useRef } from "react";
 import AppHeader from "../../../features/shared/AppHeader";
 import useFeedSort from "../../../features/feed/sort/useFeedSort";
 import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
-
-export const CenteredSpinner = styled(IonSpinner)`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-`;
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 export const AnnouncementIcon = styled(IonIcon)`
   font-size: 1.1rem;

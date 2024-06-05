@@ -20,9 +20,9 @@ import {
   syncMessages,
 } from "../../../features/inbox/inboxSlice";
 import ComposeButton from "./ComposeButton";
-import { CenteredSpinner } from "../posts/PostPage";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import AppHeader from "../../../features/shared/AppHeader";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 export default function MessagesPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -55,6 +55,20 @@ export default function MessagesPage() {
     }
   }
 
+  const content = (() => {
+    if (!messages.length && loading) return <CenteredSpinner />;
+
+    return (
+      <MaxWidthContainer>
+        <IonList>
+          {groupedConversations.map((conversationMessages, index) => (
+            <ConversationItem key={index} messages={conversationMessages} />
+          ))}
+        </IonList>
+      </MaxWidthContainer>
+    );
+  })();
+
   return (
     <IonPage ref={pageRef}>
       <AppHeader>
@@ -84,17 +98,8 @@ export default function MessagesPage() {
         >
           <IonRefresherContent />
         </IonRefresher>
-        {!messages.length && loading ? (
-          <CenteredSpinner />
-        ) : (
-          <MaxWidthContainer>
-            <IonList>
-              {groupedConversations.map((conversationMessages, index) => (
-                <ConversationItem key={index} messages={conversationMessages} />
-              ))}
-            </IonList>
-          </MaxWidthContainer>
-        )}
+
+        {content}
       </IonContent>
     </IonPage>
   );
