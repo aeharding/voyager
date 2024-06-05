@@ -30,10 +30,17 @@ import { filterEvents } from "../../helpers/longPress";
 import { stopIonicTapClick } from "../../helpers/ionic";
 
 const labelStyles = css`
+  display: inline-flex;
+  max-width: 100%;
+
   font-weight: 500;
 
   a {
-    display: inline-flex; // kinda brittle way to ensure it stays inline
+    display: block;
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -101,6 +108,7 @@ const TypeIcon = styled(IonIcon)`
 
 const Content = styled.div`
   flex: 1;
+  min-width: 0;
 `;
 
 const Header = styled.div``;
@@ -112,13 +120,18 @@ const Body = styled.div`
 const Footer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   color: var(--ion-color-medium);
 
-  aside {
+  > div {
+    min-width: 0;
+  }
+
+  > aside {
     margin-left: auto;
 
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
 
