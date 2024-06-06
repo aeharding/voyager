@@ -1,8 +1,7 @@
 import { pickBy, without } from "lodash";
 import { db } from "../../../../../services/db";
 import { getAllObjectValuesDeep } from "../../../../../helpers/object";
-import { LOCALSTORAGE_KEYS } from "../../../settingsSlice";
-import { get, set } from "../../../storage";
+import { LOCALSTORAGE_KEYS, get, set } from "../../../storage";
 
 const BASE_BACKUP_JSON = {
   voyagerBackupVersion: 1,

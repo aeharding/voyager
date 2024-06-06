@@ -1,10 +1,5 @@
 import { IonButton, useIonActionSheet } from "@ionic/react";
-import {
-  eyeOffOutline,
-  imageOutline,
-  listOutline,
-  shareOutline,
-} from "ionicons/icons";
+import { eyeOffOutline, imageOutline, listOutline } from "ionicons/icons";
 import useHidePosts from "./useHidePosts";
 import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
 import { Share } from "@capacitor/share";
@@ -16,6 +11,7 @@ import {
   usePostAppearance,
   useSetPostAppearance,
 } from "../post/appearance/PostAppearanceProvider";
+import { getShareIcon } from "../../helpers/device";
 
 interface SpecialFeedMoreActionsProps {
   type: ListingType;
@@ -42,7 +38,7 @@ export default function SpecialFeedMoreActions({
         buildTogglePostAppearanceButton(),
         {
           text: "Share",
-          icon: shareOutline,
+          icon: getShareIcon(),
           handler: () => {
             const url = urlSelector(store.getState());
 

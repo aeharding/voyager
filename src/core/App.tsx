@@ -1,6 +1,10 @@
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { StoreProvider } from "../store";
-import { getAndroidNavMode, isInstalled } from "../helpers/device";
+import {
+  getAndroidNavMode,
+  getDeviceMode,
+  isInstalled,
+} from "../helpers/device";
 import TabbedRoutes from "../routes/TabbedRoutes";
 import Auth from "./Auth";
 import { AppContextProvider } from "../features/auth/AppContext";
@@ -9,7 +13,6 @@ import BeforeInstallPromptProvider from "../features/pwa/BeforeInstallPromptProv
 import { UpdateContextProvider } from "../routes/pages/settings/update/UpdateContext";
 import GlobalStyles from "./GlobalStyles";
 import ConfigProvider from "../services/app";
-import { getDeviceMode } from "../features/settings/settingsSlice";
 import { TabContextProvider } from "./TabContext";
 import { NavModes } from "capacitor-android-nav-mode";
 import { TextRecoveryStartupPrompt } from "../helpers/useTextRecovery";

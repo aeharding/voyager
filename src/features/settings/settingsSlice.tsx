@@ -41,7 +41,7 @@ import {
   CommentsThemeType,
   VotesThemeType,
 } from "../../services/db";
-import { get, set } from "./storage";
+import { LOCALSTORAGE_KEYS, get, set } from "./storage";
 import { Mode } from "@ionic/core";
 import { SortType } from "lemmy-js-client";
 import { loggedInSelector } from "../auth/authSelectors";
@@ -140,20 +140,6 @@ interface SettingsState {
     keywords: string[];
   };
 }
-
-export const LOCALSTORAGE_KEYS = {
-  FONT: {
-    FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
-    USE_SYSTEM: "appearance--font-use-system",
-  },
-  DARK: {
-    USE_SYSTEM: "appearance--dark-use-system",
-    USER_MODE: "appearance--dark-user-mode",
-    PURE_BLACK: "appearance--pure-black",
-  },
-  DEVICE_MODE: "appearance--device-mode",
-  THEME: "appearance--theme",
-} as const;
 
 export const initialState: SettingsState = {
   ready: false,
@@ -948,8 +934,3 @@ export const {
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
-
-export function getDeviceMode(): Mode {
-  // md mode is beta, so default ios for all devices
-  return get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios";
-}

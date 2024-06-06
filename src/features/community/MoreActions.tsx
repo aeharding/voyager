@@ -8,7 +8,6 @@ import {
   removeCircleOutline,
   tabletPortraitOutline,
   eyeOffOutline,
-  shareOutline,
 } from "ionicons/icons";
 import useHidePosts from "../feed/useHidePosts";
 import useCommunityActions from "./useCommunityActions";
@@ -17,6 +16,7 @@ import { useAppSelector } from "../../store";
 import { compact } from "lodash";
 import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
 import { useBuildTogglePostAppearanceButton } from "../feed/SpecialFeedMoreActions";
+import { getShareIcon } from "../../helpers/device";
 
 interface MoreActionsProps {
   community: CommunityView | undefined;
@@ -95,7 +95,7 @@ function MoreActionsWithCommunity({ community }: MoreActionsActionSheetProps) {
         buildTogglePostAppearanceButton(),
         {
           text: "Share",
-          icon: shareOutline,
+          icon: getShareIcon(),
           handler: () => {
             share();
           },
