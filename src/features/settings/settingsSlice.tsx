@@ -41,7 +41,7 @@ import {
   CommentsThemeType,
   VotesThemeType,
 } from "../../services/db";
-import { LOCALSTORAGE_KEYS, get, set } from "./storage";
+import { LOCALSTORAGE_KEYS, get, set } from "./syncStorage";
 import { Mode } from "@ionic/core";
 import { SortType } from "lemmy-js-client";
 import { loggedInSelector } from "../auth/authSelectors";

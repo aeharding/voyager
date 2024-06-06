@@ -1,3 +1,12 @@
+/**
+ * Most storage happens asynchronously with Dexie (indexeddb).
+ *
+ * However, some things we need syncronously (localStorage)
+ * to more easily avoid FOUC (e.g. dark vs light mode)
+ *
+ * So, those critical settings are stored here.
+ */
+
 export const LOCALSTORAGE_KEYS = {
   FONT: {
     FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",

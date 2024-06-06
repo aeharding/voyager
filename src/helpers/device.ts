@@ -4,7 +4,7 @@ import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { memoize } from "lodash";
 import { shareOutline, shareSocialOutline } from "ionicons/icons";
 import { Mode } from "@ionic/core";
-import { LOCALSTORAGE_KEYS, get } from "../features/settings/storage";
+import { LOCALSTORAGE_KEYS, get } from "../features/settings/syncStorage";
 
 export function getDeviceMode(): Mode {
   // md mode is beta, so default ios for all devices
