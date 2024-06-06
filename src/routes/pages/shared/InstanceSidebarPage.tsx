@@ -1,6 +1,7 @@
 import {
   IonBackButton,
   IonButtons,
+  IonContent,
   IonPage,
   IonTitle,
   IonToolbar,
@@ -9,7 +10,6 @@ import { useRef } from "react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useAppSelector } from "../../../store";
-import AppContent from "../../../features/shared/AppContent";
 import Sidebar from "../../../features/sidebar/Sidebar";
 import AppHeader from "../../../features/shared/AppHeader";
 
@@ -32,9 +32,9 @@ export default function InstanceSidebarPage() {
           <IonTitle>{connectedInstance}</IonTitle>
         </IonToolbar>
       </AppHeader>
-      <AppContent scrollY>
+      <IonContent>
         <Sidebar />
-      </AppContent>
+      </IonContent>
     </IonPage>
   );
 }
