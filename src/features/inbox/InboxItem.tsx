@@ -36,9 +36,6 @@ const labelStyles = css`
   font-weight: 500;
 
   a {
-    display: block;
-    min-width: 0;
-
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -131,7 +128,7 @@ const Footer = styled.div`
   > aside {
     margin-left: auto;
 
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 6px;
 
