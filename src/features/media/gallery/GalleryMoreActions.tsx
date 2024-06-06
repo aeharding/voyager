@@ -7,7 +7,6 @@ import {
   ellipsisHorizontal,
   peopleOutline,
   personOutline,
-  shareOutline,
 } from "ionicons/icons";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
@@ -24,7 +23,7 @@ import {
 } from "../../../helpers/toastMessages";
 import { ActionButton } from "../../post/actions/ActionButton";
 import { StashMedia } from "capacitor-stash-media";
-import { isNative } from "../../../helpers/device";
+import { getShareIcon, isNative } from "../../../helpers/device";
 import { Share } from "@capacitor/share";
 import useAppToast from "../../../helpers/useAppToast";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
@@ -61,7 +60,7 @@ export default function GalleryMoreActions({
       buttons: compact([
         {
           text: "Share",
-          icon: shareOutline,
+          icon: getShareIcon(),
           handler: () => {
             (async () => {
               if (!isNative()) {

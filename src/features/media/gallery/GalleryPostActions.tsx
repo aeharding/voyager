@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { VoteButton } from "../../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
-import { chatbubbleOutline, shareOutline } from "ionicons/icons";
+import { chatbubbleOutline } from "ionicons/icons";
 import { useAppSelector } from "../../../store";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import MoreActions from "../../post/shared/MoreActions";
@@ -13,7 +13,7 @@ import { useLocation } from "react-router";
 import React, { useContext } from "react";
 import { GalleryContext } from "./GalleryProvider";
 import { OVoteDisplayMode } from "../../../services/db";
-import { isNative } from "../../../helpers/device";
+import { getShareIcon, isNative } from "../../../helpers/device";
 import GalleryMoreActions from "./GalleryMoreActions";
 import { StashMedia } from "capacitor-stash-media";
 import { Share } from "@capacitor/share";
@@ -116,7 +116,7 @@ export default function GalleryPostActions({
             <Amount>{post.counts.comments}</Amount>
           </Section>
         </div>
-        <IonIcon icon={shareOutline} onClick={shareImage} />
+        <IonIcon icon={getShareIcon()} onClick={shareImage} />
         {isNative() ? (
           <GalleryMoreActions post={post} imgSrc={imgSrc} />
         ) : (

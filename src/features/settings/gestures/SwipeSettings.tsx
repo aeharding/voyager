@@ -45,14 +45,13 @@ import {
   arrowDownOutline,
   arrowUndoOutline,
   arrowUpOutline,
-  shareOutline,
   bookmarkOutline,
   chevronCollapseOutline,
   eyeOffOutline,
   mailUnreadOutline,
   chevronDownOutline,
 } from "ionicons/icons";
-import { isNative } from "../../../helpers/device";
+import { getShareIcon, isNative } from "../../../helpers/device";
 
 export default function SwipeSettings() {
   const [open, setOpen] = useState(false);
@@ -180,7 +179,7 @@ const swipeIcons = {
   [OSwipeActionAll.CollapseToTop]: chevronCollapseOutline,
   [OSwipeActionAll.Collapse]: chevronDownOutline,
   [OSwipeActionAll.MarkUnread]: mailUnreadOutline,
-  [OSwipeActionAll.Share]: shareOutline,
+  [OSwipeActionAll.Share]: getShareIcon(),
 };
 
 interface SwipeListProps {
