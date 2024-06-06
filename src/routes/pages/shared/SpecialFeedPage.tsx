@@ -20,7 +20,6 @@ import PostFabs from "../../../features/feed/postFabs/PostFabs";
 import { getSortDuration } from "../../../features/feed/endItems/EndPost";
 import { followIdsSelector } from "../../../features/auth/siteSlice";
 import { getHandle } from "../../../helpers/lemmy";
-import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../../features/community/mod/ModActions";
 import useFeedSort from "../../../features/feed/sort/useFeedSort";
 import { PageTypeContext } from "../../../features/feed/PageTypeContext";
@@ -28,6 +27,7 @@ import AppHeader from "../../../features/shared/AppHeader";
 import PostAppearanceProvider, {
   WaitUntilPostAppearanceResolved,
 } from "../../../features/post/appearance/PostAppearanceProvider";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 interface SpecialFeedProps {
   type: ListingType;

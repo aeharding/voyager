@@ -35,7 +35,6 @@ import { getSortDuration } from "../../../features/feed/endItems/EndPost";
 import ModActions from "../../../features/community/mod/ModActions";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import useFeedSort from "../../../features/feed/sort/useFeedSort";
-import { CenteredSpinner } from "../posts/PostPage";
 import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
 import { useAppSelector } from "../../../store";
 import { PageTypeContext } from "../../../features/feed/PageTypeContext";
@@ -46,6 +45,7 @@ import useGetRandomCommunity from "../../../features/community/useGetRandomCommu
 import PostAppearanceProvider, {
   WaitUntilPostAppearanceResolved,
 } from "../../../features/post/appearance/PostAppearanceProvider";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -221,24 +221,26 @@ const CommunityPageContent = memo(function CommunityPageContent({
       />
     );
 
-  const feed = sort ? (
-    <FeedSearchContext.Provider value={feedSearchContextValue}>
-      <PageTypeContext.Provider value="community">
-        <WaitUntilPostAppearanceResolved>
-          <PostCommentFeed
-            fetchFn={fetchFn}
-            communityName={community}
-            sortDuration={getSortDuration(sort)}
-            header={header}
-            filterHiddenPosts={!showHiddenInCommunities}
-            onPull={onPull}
-          />
-        </WaitUntilPostAppearanceResolved>
-      </PageTypeContext.Provider>
-    </FeedSearchContext.Provider>
-  ) : (
-    <CenteredSpinner />
-  );
+  const feed = (() => {
+    if (!sort) return <CenteredSpinner />;
+
+    return (
+      <FeedSearchContext.Provider value={feedSearchContextValue}>
+        <PageTypeContext.Provider value="community">
+          <WaitUntilPostAppearanceResolved>
+            <PostCommentFeed
+              fetchFn={fetchFn}
+              communityName={community}
+              sortDuration={getSortDuration(sort)}
+              header={header}
+              filterHiddenPosts={!showHiddenInCommunities}
+              onPull={onPull}
+            />
+          </WaitUntilPostAppearanceResolved>
+        </PageTypeContext.Provider>
+      </FeedSearchContext.Provider>
+    );
+  })();
 
   function renderFeed() {
     if (searchQuery)
