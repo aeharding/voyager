@@ -30,6 +30,7 @@ import AnimateHeight from "react-animate-height";
 import useIsPostUrlMedia from "../useIsPostUrlMedia";
 import { findIonContentScrollView } from "../../../helpers/ionic";
 import PostLink from "../link/PostLink";
+import { getCanModerate } from "../../moderation/useCanModerate";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -283,7 +284,10 @@ function PostHeader({
             post={post}
             onReply={async () => {
               if (presentLoginIfNeeded()) return;
-              if (post.post.locked) {
+
+              const canModerate = getCanModerate(post.community);
+
+              if (post.post.locked && !canModerate) {
                 presentToast(postLocked);
                 return;
               }

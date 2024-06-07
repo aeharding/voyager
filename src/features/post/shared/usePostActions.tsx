@@ -198,7 +198,7 @@ export default function usePostActions(post: PostView) {
           icon: arrowUndoOutline,
           handler: () => {
             if (presentLoginIfNeeded()) return;
-            if (post.post.locked) {
+            if (post.post.locked && !canModerate) {
               presentToast(postLocked);
               return;
             }
