@@ -172,12 +172,14 @@ function BaseSlidingVoteInternal({
 
     if (isInboxItem(item)) dispatch(markRead(item, true));
 
+    const canModerate = getCanModerate(item.community);
+
     // Prevent replying to a comment that's been deleted, or removed by mod (if you're not a mod)
     if (!isPost) {
       const comment =
         store.getState().comment.commentById[item.comment.id] ?? item.comment;
 
-      const stub = isStubComment(comment, getCanModerate(item.community));
+      const stub = isStubComment(comment, canModerate);
 
       if (stub) {
         presentToast(replyStubError);
@@ -185,7 +187,7 @@ function BaseSlidingVoteInternal({
       }
     }
 
-    if (item.post.locked) {
+    if (item.post.locked && !canModerate) {
       presentToast(postLocked);
       return;
     }

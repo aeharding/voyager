@@ -232,7 +232,7 @@ export default function useCommentActions({
           handler: () => {
             (async () => {
               if (presentLoginIfNeeded()) return;
-              if (commentView.post.locked) {
+              if (commentView.post.locked && !canModerate) {
                 presentToast(postLocked);
                 return;
               }
