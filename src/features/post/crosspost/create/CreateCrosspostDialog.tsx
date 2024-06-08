@@ -115,7 +115,7 @@ export default function CreateCrosspostDialog({
         name: title,
         url: post.post.url,
         nsfw: post.post.nsfw,
-        body: buildCrosspostBody(post.post),
+        body: buildCrosspostBody(post.post, title !== post.post.name),
         community_id: community.community.id,
       });
     } catch (error) {

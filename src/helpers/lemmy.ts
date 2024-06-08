@@ -291,12 +291,20 @@ export function getCrosspostUrl(post: Post): string | undefined {
   return matches?.[1];
 }
 
-export function buildCrosspostBody(post: Post): string {
-  const header = `cross-posted from: ${post.ap_id}\n\n${quote(post.name)}`;
+export function buildCrosspostBody(post: Post, includeTitle = true): string {
+  let header = `cross-posted from: ${post.ap_id}`;
+
+  if (includeTitle) {
+    header += `\n\n${quote(post.name)}`;
+  }
 
   if (!post.body) return header;
 
-  return `${header}\n>\n${quote(post.body)}`;
+  header += `\n${includeTitle ? ">" : ""}\n`;
+
+  header += quote(post.body.trim());
+
+  return header;
 }
 
 export function isPost(item: PostView | CommentView): item is PostView {
