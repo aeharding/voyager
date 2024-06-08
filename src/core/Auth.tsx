@@ -6,8 +6,6 @@ import { getInboxCounts, syncMessages } from "../features/inbox/inboxSlice";
 import { useInterval } from "usehooks-ts";
 import usePageVisibility from "../helpers/usePageVisibility";
 import { getDefaultServer } from "../services/app";
-import { isLemmyError } from "../helpers/lemmyErrors";
-import useAppToast from "../helpers/useAppToast";
 import BackgroundReportSync from "../features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "../features/auth/siteSlice";
 import { instanceSelector, jwtSelector } from "../features/auth/authSelectors";
@@ -42,7 +40,6 @@ function AuthLocation() {
   const location = useLocation();
 
   const dispatch = useAppDispatch();
-  const presentToast = useAppToast();
   const pageVisibility = usePageVisibility();
   const jwt = useAppSelector(jwtSelector);
 
@@ -82,26 +79,6 @@ function AuthLocation() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  const getInboxCountsAndErrorIfNeeded = useCallback(async () => {
-    try {
-      await dispatch(getInboxCounts());
-    } catch (error) {
-      if (
-        isLemmyError(error, "not_logged_in") ||
-        isLemmyError(error, "incorrect_login")
-      ) {
-        presentToast({
-          message: "Logged out by Lemmy instance. Please try logging in again.",
-          color: "warning",
-          duration: 4_000,
-        });
-      }
-
-      throw error;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
-
   useInterval(
     () => {
       if (!pageVisibility) return;
@@ -116,14 +93,14 @@ function AuthLocation() {
     if (!pageVisibility) return;
     if (!jwt) return;
 
-    getInboxCountsAndErrorIfNeeded();
+    dispatch(getInboxCounts());
   }, 1_000 * 60);
 
   useEffect(() => {
     if (!pageVisibility) return;
 
-    getInboxCountsAndErrorIfNeeded();
-  }, [pageVisibility, jwt, getInboxCountsAndErrorIfNeeded]);
+    dispatch(getInboxCounts());
+  }, [pageVisibility, jwt, dispatch]);
 
   useEffect(() => {
     if (!pageVisibility) return;
