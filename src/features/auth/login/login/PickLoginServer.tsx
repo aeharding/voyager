@@ -77,22 +77,22 @@ export default function PickLoginServer() {
   async function submit() {
     if (loading) return;
 
-    setLoading(true);
-
     const potentialServer = searchHostname.toLowerCase();
+
+    // Dirty input with candidate
+    if (instances[0] && search !== potentialServer) {
+      setDirty(false);
+      setSearch(instances[0]);
+      return;
+    }
+
+    setLoading(true);
 
     let site: GetSiteResponse;
 
     try {
       site = await getClient(potentialServer).getSite();
     } catch (error) {
-      // Dirty input with candidate
-      if (instances[0]) {
-        setDirty(false);
-        setSearch(instances[0]);
-        return;
-      }
-
       presentToast({
         message: `Problem connecting to ${potentialServer}. Please try again`,
         color: "danger",
