@@ -1,4 +1,5 @@
-import { keywordFoundInSentence } from "./lemmy";
+import { Post } from "lemmy-js-client";
+import { buildCrosspostBody, keywordFoundInSentence } from "./lemmy";
 
 describe("keywordFoundInSentence", () => {
   it("false when empty", () => {
@@ -54,6 +55,87 @@ describe("keywordFoundInSentence", () => {
   it("true case insensitive", () => {
     expect(keywordFoundInSentence("voyageR", "Hello, this is Voyager!")).toBe(
       true,
+    );
+  });
+});
+
+describe("buildCrosspostBody", () => {
+  it("url only", () => {
+    expect(
+      buildCrosspostBody(
+        { name: "Hi there", ap_id: "https://a.com/post/123" } as Post,
+        false,
+      ),
+    ).toBe("cross-posted from: https://a.com/post/123");
+  });
+
+  it("with title", () => {
+    expect(
+      buildCrosspostBody(
+        { name: "Hi there", ap_id: "https://a.com/post/123" } as Post,
+        true,
+      ),
+    ).toBe(
+      `
+cross-posted from: https://a.com/post/123
+
+> Hi there`.trim(),
+    );
+  });
+
+  it("with title and body", () => {
+    expect(
+      buildCrosspostBody(
+        {
+          name: "Hi there",
+          ap_id: "https://a.com/post/123",
+          body: "Test",
+        } as Post,
+        true,
+      ),
+    ).toBe(
+      `
+cross-posted from: https://a.com/post/123
+
+> Hi there
+>
+> Test`.trim(),
+    );
+  });
+
+  it("with body only", () => {
+    expect(
+      buildCrosspostBody(
+        {
+          name: "Hi there",
+          ap_id: "https://a.com/post/123",
+          body: "Test",
+        } as Post,
+        false,
+      ),
+    ).toBe(
+      `
+cross-posted from: https://a.com/post/123
+
+> Test`.trim(),
+    );
+  });
+
+  it("trims body", () => {
+    expect(
+      buildCrosspostBody(
+        {
+          name: "Hi there",
+          ap_id: "https://a.com/post/123",
+          body: "Test\n",
+        } as Post,
+        false,
+      ),
+    ).toBe(
+      `
+cross-posted from: https://a.com/post/123
+
+> Test`.trim(),
     );
   });
 });
