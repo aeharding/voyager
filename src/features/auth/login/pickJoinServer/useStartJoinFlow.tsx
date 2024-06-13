@@ -5,6 +5,7 @@ import Legal from "../join/Legal";
 import { useIonAlert } from "@ionic/react";
 import useAppToast from "../../../../helpers/useAppToast";
 import { GetSiteResponse } from "lemmy-js-client";
+import { presentErrorMessage } from "../../../../helpers/error";
 
 export default function useStartJoinFlow(
   ref: MutableRefObject<HTMLElement | null>,
@@ -20,7 +21,7 @@ export default function useStartJoinFlow(
       site = await dispatch(requestJoinSiteData(url));
     } catch (error) {
       presentToast({
-        message: `Problem connecting to ${url}. Please try again later.`,
+        message: presentErrorMessage(`Problem connecting to ${url}`, error),
         position: "top",
         color: "danger",
         fullscreen: true,

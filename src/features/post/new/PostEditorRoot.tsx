@@ -35,6 +35,8 @@ import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isAndroid } from "../../../helpers/device";
 import { css } from "@linaria/core";
 import AppHeader from "../../shared/AppHeader";
+import { presentErrorMessage } from "../../../helpers/error";
+import { getErrorMessage } from "../../../helpers/lemmyErrors";
 import {
   deletePendingImageUploads,
   uploadImage,
@@ -267,7 +269,18 @@ export default function PostEditorRoot({
       }
     } catch (error) {
       presentToast({
-        message: "Problem submitting your post. Please try again.",
+        message: getErrorMessage(
+          error,
+          (message) => {
+            switch (message) {
+              case "invalid_post_title":
+                return "Invalid Post Title";
+              default:
+                return `Problem submitting your post: ${message}`;
+            }
+          },
+          "Problem submitting your post",
+        ),
         color: "danger",
         fullscreen: true,
       });
@@ -314,10 +327,8 @@ export default function PostEditorRoot({
     try {
       imageUrl = await dispatch(uploadImage(image));
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-
       presentToast({
-        message: `Problem uploading image: ${message}. Please try again.`,
+        message: presentErrorMessage("Problem uploading image", error),
         color: "danger",
         fullscreen: true,
       });
