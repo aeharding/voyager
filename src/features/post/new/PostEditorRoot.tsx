@@ -35,10 +35,8 @@ import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { isAndroid } from "../../../helpers/device";
 import { css } from "@linaria/core";
 import AppHeader from "../../shared/AppHeader";
-import {
-  deletePendingImageUploads,
-  uploadImage,
-} from "../../shared/markdown/editing/uploadImageSlice";
+import { deletePendingImageUploads } from "../../shared/markdown/editing/uploadImageSlice";
+import useUploadImage from "../../shared/markdown/editing/useUploadImage";
 
 const Container = styled.div`
   position: absolute;
@@ -81,7 +79,7 @@ const HiddenInput = styled.input`
   display: none;
 `;
 
-type PostType = "photo" | "link" | "text";
+type PostType = "media" | "link" | "text";
 
 const MAX_TITLE_LENGTH = 200;
 
@@ -106,12 +104,14 @@ export default function PostEditorRoot({
 
   const dispatch = useAppDispatch();
 
+  const { uploadImage } = useUploadImage();
+
   const initialImage = isImage ? existingPost!.post.url : undefined;
 
   const initialPostType = (() => {
-    if (!existingPost) return "photo";
+    if (!existingPost) return "media";
 
-    if (initialImage) return "photo";
+    if (initialImage) return "media";
 
     if (existingPost.post.url) return "link";
 
@@ -139,6 +139,7 @@ export default function PostEditorRoot({
   const [photoPreviewURL, setPhotoPreviewURL] = useState<string | undefined>(
     initialImage,
   );
+  const [isPreviewVideo, setIsPreviewVideo] = useState(false);
   const [photoUploading, setPhotoUploading] = useState(false);
 
   const router = useOptimizedIonRouter();
@@ -147,7 +148,7 @@ export default function PostEditorRoot({
   const showAutofill = !!url && isValidUrl(url) && !title;
 
   const showNsfwToggle = !!(
-    (postType === "photo" && photoPreviewURL) ||
+    (postType === "media" && photoPreviewURL) ||
     (postType === "link" && url)
   );
 
@@ -177,6 +178,14 @@ export default function PostEditorRoot({
     nsfw,
   ]);
 
+  useEffect(() => {
+    return () => {
+      if (!photoPreviewURL) return;
+
+      URL.revokeObjectURL(photoPreviewURL);
+    };
+  }, [photoPreviewURL]);
+
   function canSubmit() {
     if (!title) return false;
 
@@ -185,7 +194,7 @@ export default function PostEditorRoot({
         if (!url) return false;
         break;
 
-      case "photo":
+      case "media":
         if (!photoUrl) return false;
         break;
     }
@@ -209,7 +218,7 @@ export default function PostEditorRoot({
       switch (postType) {
         case "link":
           return url || undefined;
-        case "photo":
+        case "media":
           return photoUrl || undefined;
         default:
           return;
@@ -225,8 +234,8 @@ export default function PostEditorRoot({
     } else if (postType === "link" && (!url || !validUrl(url))) {
       errorMessage =
         "Please add a valid URL to your post (start with https://).";
-    } else if (postType === "photo" && !photoUrl) {
-      errorMessage = "Please add a photo to your post.";
+    } else if (postType === "media" && !photoUrl) {
+      errorMessage = "Please add a photo or video to your post.";
     } else if (!canSubmit()) {
       errorMessage =
         "It looks like you're missing some information to submit this post. Please double check.";
@@ -304,6 +313,7 @@ export default function PostEditorRoot({
 
   async function receivedImage(image: File) {
     setPhotoPreviewURL(URL.createObjectURL(image));
+    setIsPreviewVideo(image.type.startsWith("video/"));
     setPhotoUploading(true);
 
     let imageUrl;
@@ -312,15 +322,8 @@ export default function PostEditorRoot({
     if (isAndroid()) await new Promise((resolve) => setTimeout(resolve, 250));
 
     try {
-      imageUrl = await dispatch(uploadImage(image));
+      imageUrl = await uploadImage(image);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-
-      presentToast({
-        message: `Problem uploading image: ${message}. Please try again.`,
-        color: "danger",
-        fullscreen: true,
-      });
       clearImage();
 
       throw error;
@@ -336,6 +339,7 @@ export default function PostEditorRoot({
   function clearImage() {
     setPhotoUrl("");
     setPhotoPreviewURL(undefined);
+    setIsPreviewVideo(false);
   }
 
   async function fetchPostTitle() {
@@ -395,7 +399,7 @@ export default function PostEditorRoot({
             value={postType}
             onIonChange={(e) => setPostType(e.target.value as PostType)}
           >
-            <IonSegmentButton value="photo">Photo</IonSegmentButton>
+            <IonSegmentButton value="media">Media</IonSegmentButton>
             <IonSegmentButton value="link">Link</IonSegmentButton>
             <IonSegmentButton value="text">Text</IonSegmentButton>
           </IonSegment>
@@ -432,23 +436,26 @@ export default function PostEditorRoot({
                 </IonButton>
               )}
             </IonItem>
-            {postType === "photo" && (
+            {postType === "media" && (
               <>
                 <label htmlFor="photo-upload">
                   <IonItem>
                     <IonLabel color="primary">
-                      <CameraIcon icon={cameraOutline} /> Choose Photo
+                      <CameraIcon icon={cameraOutline} /> Choose Photo / Video
                     </IonLabel>
 
                     <HiddenInput
                       type="file"
-                      accept="image/*"
+                      accept="image/*,video/mp4"
                       id="photo-upload"
                       onInput={(e) => {
                         const image = (e.target as HTMLInputElement).files?.[0];
                         if (!image) return;
 
                         receivedImage(image);
+
+                        // Allow next upload attempt
+                        (e.target as HTMLInputElement).value = "";
                       }}
                     />
                   </IonItem>
@@ -458,6 +465,7 @@ export default function PostEditorRoot({
                     <PhotoPreview
                       src={photoPreviewURL}
                       loading={photoUploading}
+                      isVideo={isPreviewVideo}
                     />
                   </IonItem>
                 )}

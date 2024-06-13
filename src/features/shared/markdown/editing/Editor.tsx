@@ -122,7 +122,7 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
   }
 
   async function onReceivedImage(image: File) {
-    const markdown = await uploadImage(image);
+    const markdown = await uploadImage(image, true);
 
     textareaRef.current?.focus();
     document.execCommand("insertText", false, markdown);

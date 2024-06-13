@@ -457,13 +457,13 @@ export default function DefaultMode({
               display: none;
             `}
             type="file"
-            accept="image/*"
+            accept="image/*,video/*"
             id="photo-upload"
             onInput={async (e) => {
               const image = (e.target as HTMLInputElement).files?.[0];
               if (!image) return;
 
-              const markdown = await uploadImage(image);
+              const markdown = await uploadImage(image, true);
 
               textareaRef.current?.focus();
               document.execCommand("insertText", false, markdown);

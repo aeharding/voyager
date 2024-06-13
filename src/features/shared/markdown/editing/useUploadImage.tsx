@@ -11,7 +11,7 @@ export default function useUploadImage() {
 
   return {
     jsx: <IonLoading isOpen={imageUploading} message="Uploading image..." />,
-    uploadImage: async (image: File) => {
+    uploadImage: async (image: File, toMarkdown = false) => {
       setImageUploading(true);
 
       let imageUrl: string;
@@ -19,13 +19,22 @@ export default function useUploadImage() {
       try {
         imageUrl = await dispatch(uploadImage(image));
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error";
+        const message = (() => {
+          if (error instanceof Error) {
+            if (error.message.startsWith("NetworkError"))
+              return "Issue with network connectivity, or upload was too large";
+
+            return error.message;
+          }
+
+          return "Unknown error";
+        })();
 
         presentToast({
           message: `Problem uploading image: ${message}. Please try again.`,
           color: "danger",
           fullscreen: true,
+          duration: 5_000,
         });
 
         throw error;
@@ -33,7 +42,9 @@ export default function useUploadImage() {
         setImageUploading(false);
       }
 
-      return `\n![](${imageUrl})\n`;
+      if (toMarkdown) return `\n![](${imageUrl})\n`;
+
+      return imageUrl;
     },
   };
 }

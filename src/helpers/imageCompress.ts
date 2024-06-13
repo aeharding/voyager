@@ -27,7 +27,7 @@ export async function reduceFileSize(
   quality = 0.7,
 ): Promise<Blob | File> {
   return new Promise((resolve) => {
-    if (file.size <= acceptFileSize) {
+    if (file.size <= acceptFileSize || file.type.startsWith("video/")) {
       resolve(file);
       return;
     }
