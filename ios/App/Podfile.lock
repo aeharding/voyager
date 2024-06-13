@@ -30,7 +30,7 @@ PODS:
     - Capacitor
   - CapacitorShare (6.0.0):
     - Capacitor
-  - CapacitorStashMedia (2.0.0):
+  - CapacitorStashMedia (2.0.1):
     - Capacitor
     - SDWebImage
   - CapacitorStatusBar (6.0.0):
@@ -58,7 +58,7 @@ DEPENDENCIES:
   - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/network`)"
   - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.1_@capacitor+core@6.0.0/node_modules/capacitor-plugin-safe-area`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/share`)"
-  - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@2.0.0_@capacitor+core@6.0.0/node_modules/capacitor-stash-media`)"
+  - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.0.0/node_modules/capacitor-stash-media`)"
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/status-bar`)"
   - "CapacitorTips (from `../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.0.0/node_modules/capacitor-tips`)"
 
@@ -100,7 +100,7 @@ EXTERNAL SOURCES:
   CapacitorShare:
     :path: "../../node_modules/.pnpm/@capacitor+share@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/share"
   CapacitorStashMedia:
-    :path: "../../node_modules/.pnpm/capacitor-stash-media@2.0.0_@capacitor+core@6.0.0/node_modules/capacitor-stash-media"
+    :path: "../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.0.0/node_modules/capacitor-stash-media"
   CapacitorStatusBar:
     :path: "../../node_modules/.pnpm/@capacitor+status-bar@6.0.0_@capacitor+core@6.0.0/node_modules/@capacitor/status-bar"
   CapacitorTips:
@@ -123,11 +123,11 @@ SPEC CHECKSUMS:
   CapacitorNetwork: f15a94c16a33cba7c47a17814cb6bcfe3ea34ded
   CapacitorPluginSafeArea: b99681e1d9986ae1c059ca0e1b5e7025916e5e04
   CapacitorShare: a771200d3b924a5d7ad9d9fecbac517e4c0aa74f
-  CapacitorStashMedia: a9038a69ab186f5d172536791887ef67fb2a39f8
+  CapacitorStashMedia: 10aa96dc5f874c4c27642528a4c327c46792abf2
   CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
   CapacitorTips: 2087733aea06ec041b210085395ca934c8554907
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: 91325504efbeb1b038121b8724e8025b9f2fa11f
+PODFILE CHECKSUM: 28718eb4e9f122216fc11cbe2c95ad57524fee30
 
 COCOAPODS: 1.12.1

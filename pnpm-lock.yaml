@@ -104,8 +104,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0(@types/node@20.12.13)(typescript@5.4.5)
       capacitor-stash-media:
-        specifier: ^2.0.0
-        version: 2.0.0(@capacitor/core@6.0.0)
+        specifier: ^2.0.1
+        version: 2.0.1(@capacitor/core@6.0.0)
       capacitor-tips:
         specifier: ^1.0.0
         version: 1.0.0(@capacitor/core@6.0.0)
@@ -370,7 +370,7 @@ importers:
         version: 0.20.0(vite@5.2.12(@types/node@20.12.13)(terser@5.31.0))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.1.0)
       vite-plugin-svgr:
         specifier: ^4.2.0
-        version: 4.2.0(rollup@4.18.0)(typescript@5.4.5)(vite@5.2.12(@types/node@20.12.13)(terser@5.31.0))
+        version: 4.2.0(rollup@2.79.1)(typescript@5.4.5)(vite@5.2.12(@types/node@20.12.13)(terser@5.31.0))
       vitest:
         specifier: ^1.6.0
         version: 1.6.0(@types/node@20.12.13)(happy-dom@14.12.0)(jsdom@24.1.0)(terser@5.31.0)
@@ -2525,8 +2525,8 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
-  capacitor-stash-media@2.0.0:
-    resolution: {integrity: sha512-UrX3fHpOddKdukXW1be5SBH5iKbSyWJPjXRpNnwPNl/AduJ9jRH+ZFQ9YSp3uLCVTdeGdJ7AAgJ1dL++WL63HQ==}
+  capacitor-stash-media@2.0.1:
+    resolution: {integrity: sha512-sDJsQJVk0DCM+rNfEpe51u3TRE0fHF7Los5F6IyLcbB+VmAn4RtTTuF6BRM4YWsLOC9REnZsDl2k6IMlOLNAZw==}
     peerDependencies:
       '@capacitor/core': ^6.0.0
 
@@ -8576,14 +8576,6 @@ snapshots:
     optionalDependencies:
       rollup: 2.79.1
 
-  '@rollup/pluginutils@5.1.0(rollup@4.18.0)':
-    dependencies:
-      '@types/estree': 1.0.5
-      estree-walker: 2.0.2
-      picomatch: 2.3.1
-    optionalDependencies:
-      rollup: 4.18.0
-
   '@rollup/rollup-android-arm-eabi@4.18.0':
     optional: true
 
@@ -9614,7 +9606,7 @@ snapshots:
       - supports-color
       - typescript
 
-  capacitor-stash-media@2.0.0(@capacitor/core@6.0.0):
+  capacitor-stash-media@2.0.1(@capacitor/core@6.0.0):
     dependencies:
       '@capacitor/core': 6.0.0
 
@@ -14419,9 +14411,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-svgr@4.2.0(rollup@4.18.0)(typescript@5.4.5)(vite@5.2.12(@types/node@20.12.13)(terser@5.31.0)):
+  vite-plugin-svgr@4.2.0(rollup@2.79.1)(typescript@5.4.5)(vite@5.2.12(@types/node@20.12.13)(terser@5.31.0)):
     dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@4.18.0)
+      '@rollup/pluginutils': 5.1.0(rollup@2.79.1)
       '@svgr/core': 8.1.0(typescript@5.4.5)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.4.5))
       vite: 5.2.12(@types/node@20.12.13)(terser@5.31.0)
