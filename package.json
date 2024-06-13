@@ -59,7 +59,7 @@
     "capacitor-launch-native": "^1.0.0",
     "capacitor-plugin-safe-area": "^3.0.1",
     "capacitor-set-version": "^2.2.0",
-    "capacitor-stash-media": "^2.0.0",
+    "capacitor-stash-media": "^2.0.1",
     "capacitor-tips": "^1.0.0",
     "compare-versions": "^6.1.0",
     "date-fns": "^3.6.0",

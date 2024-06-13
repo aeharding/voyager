@@ -48,7 +48,7 @@ include ':capacitor-plugin-safe-area'
 project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.1_@capacitor+core@6.0.0/node_modules/capacitor-plugin-safe-area/android')
 
 include ':capacitor-stash-media'
-project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@2.0.0_@capacitor+core@6.0.0/node_modules/capacitor-stash-media/android')
+project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.0.0/node_modules/capacitor-stash-media/android')
 
 include ':capacitor-tips'
 project(':capacitor-tips').projectDir = new File('../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.0.0/node_modules/capacitor-tips/android')
