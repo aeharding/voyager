@@ -131,8 +131,8 @@ importers:
         specifier: ^7.4.0
         version: 7.4.0
       lemmy-js-client:
-        specifier: 0.20.0-alpha.1
-        version: 0.20.0-alpha.1
+        specifier: 0.19.4
+        version: 0.19.4
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -4360,8 +4360,8 @@ packages:
   leek@0.0.24:
     resolution: {integrity: sha512-6PVFIYXxlYF0o6hrAsHtGpTmi06otkwNrMcmQ0K96SeSRHPREPa9J3nJZ1frliVH7XT0XFswoJFQoXsDukzGNQ==}
 
-  lemmy-js-client@0.20.0-alpha.1:
-    resolution: {integrity: sha512-0vXm/5iehW6Bq2aDkRZZAhr2lZjTvdDcrapxrl1y9Z/SGj2MyB9/sd03F1W+pHOIlbGIDYqhO0rsmCLOb1vAQQ==}
+  lemmy-js-client@0.19.4:
+    resolution: {integrity: sha512-k3d+YRDj3+JuuEP+nuEg27efR/e4m8oMk2BoC8jq9AnMrwSAKfsN2F2vG70Zke0amXtOclDZrCSHkIpNw99ikg==}
 
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -11824,7 +11824,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  lemmy-js-client@0.20.0-alpha.1: {}
+  lemmy-js-client@0.19.4: {}
 
   leven@3.1.0: {}
 
