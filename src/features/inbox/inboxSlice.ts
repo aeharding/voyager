@@ -56,6 +56,13 @@ export const inboxSlice = createSlice({
       state.readByInboxItemId[getInboxItemId(action.payload.item)] =
         action.payload.read;
     },
+    setAllReadStatus: (state) => {
+      for (const [id, read] of Object.entries(state.readByInboxItemId)) {
+        if (read) continue;
+
+        state.readByInboxItemId[id] = true;
+      }
+    },
     receivedMessages: (state, action: PayloadAction<PrivateMessageView[]>) => {
       state.messages = uniqBy(
         [...action.payload, ...state.messages],
@@ -90,6 +97,7 @@ export const {
   sync,
   syncComplete,
   syncFail,
+  setAllReadStatus: markAllReadInCache,
 } = inboxSlice.actions;
 
 export default inboxSlice.reducer;
@@ -182,6 +190,7 @@ export const markAllRead =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     await clientSelector(getState()).markAllAsRead();
 
+    dispatch(markAllReadInCache());
     dispatch(getInboxCounts());
   };
 

@@ -1,38 +1,33 @@
-import { IonActionSheet, IonButton, IonIcon } from "@ionic/react";
+import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
 import { useAppDispatch } from "../../../store";
 import { checkmarkDone } from "ionicons/icons";
-import { useState } from "react";
 import { markAllRead } from "../../../features/inbox/inboxSlice";
 
 export default function MarkAllAsReadButton() {
   const dispatch = useAppDispatch();
-  const [open, setOpen] = useState(false);
+  const [presentActionSheet] = useIonActionSheet();
 
   return (
-    <>
-      <IonButton onClick={() => setOpen(true)}>
-        <IonIcon icon={checkmarkDone} />
-      </IonButton>
-
-      <IonActionSheet
-        isOpen={open}
-        buttons={[
-          {
-            text: "Mark All Read",
-            role: "read",
-          },
-          {
-            text: "Cancel",
-            role: "cancel",
-          },
-        ]}
-        onDidDismiss={() => setOpen(false)}
-        onWillDismiss={async (e) => {
-          if (e.detail.role === "read") {
-            dispatch(markAllRead());
-          }
-        }}
-      />
-    </>
+    <IonButton
+      onClick={() => {
+        presentActionSheet({
+          buttons: [
+            {
+              text: "Mark All Read",
+              role: "read",
+              handler: () => {
+                dispatch(markAllRead());
+              },
+            },
+            {
+              text: "Cancel",
+              role: "cancel",
+            },
+          ],
+        });
+      }}
+    >
+      <IonIcon icon={checkmarkDone} />
+    </IonButton>
   );
 }
