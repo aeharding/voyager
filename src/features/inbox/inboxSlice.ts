@@ -56,7 +56,7 @@ export const inboxSlice = createSlice({
       state.readByInboxItemId[getInboxItemId(action.payload.item)] =
         action.payload.read;
     },
-    markAllReadInCache: (state) => {
+    setAllReadStatus: (state) => {
       for (const [id, read] of Object.entries(state.readByInboxItemId)) {
         if (read) continue;
 
@@ -97,7 +97,7 @@ export const {
   sync,
   syncComplete,
   syncFail,
-  markAllReadInCache,
+  setAllReadStatus: markAllReadInCache,
 } = inboxSlice.actions;
 
 export default inboxSlice.reducer;
