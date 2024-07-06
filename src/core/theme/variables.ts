@@ -79,7 +79,7 @@ export const baseVariables = css`
 
       --ion-color-medium2: var(--ion-color-medium);
 
-      --lightroom-bg: #f2f3f7;
+      --lightroom-bg: rgba(0, 0, 0, 0.047);
 
       --thick-separator-color: var(--ion-background-color-step-50, #f2f2f7);
 
@@ -95,6 +95,31 @@ export const baseVariables = css`
       --share-img-drop-shadow: none;
 
       --ion-color-reddit-upvote: #ff5c01;
+
+      &.theme-has-custom-background {
+        &.ios body,
+        &.md body {
+          --ion-background-color: var(--app-background) !important;
+          --ion-item-background: var(--app-background);
+          --ion-background-color-step-50: var(--app-inset-item-background);
+          --ion-background-color-step-100: var(--app-tab-bar-background);
+          --ion-tab-bar-background: var(--app-tab-bar-background);
+          --ion-toolbar-background: var(--app-tab-bar-background);
+          --thick-separator-color: var(--app-inset-item-background);
+        }
+
+        ion-list.list-inset ion-item {
+          --background: var(--app-inset-item-background);
+        }
+
+        &.ios ion-modal:not(.small, .transparent-scroll) {
+          --ion-background-color: var(--app-background);
+          --ion-toolbar-background: var(--app-tab-bar-background);
+          --ion-toolbar-border-color: var(--ion-background-color-step-150);
+
+          --ion-item-background: var(--ion-background-color);
+        }
+      }
     }
 
     .ios body {
@@ -141,6 +166,12 @@ export const lightVariables = css`
           }
           ion-item-sliding {
             background: #fff;
+          }
+        }
+
+        &.theme-has-custom-background {
+          .grey-bg ion-list.list-inset ion-item {
+            --background: var(--app-background);
           }
         }
       }
@@ -339,24 +370,6 @@ export const darkBlackModifierVariables = css`
             --ion-toolbar-background: #121212;
             --ion-tab-bar-background: #121212;
           }
-        }
-      }
-
-      &.theme-has-custom-background {
-        &.ios body,
-        &.md body {
-          --ion-background-color: var(--app-background);
-          --ion-item-background: var(--app-background);
-          --ion-background-color-step-50: var(--app-inset-item-background);
-          --ion-background-color-step-100: var(--app-tab-bar-background);
-          --ion-tab-bar-background: var(--app-tab-bar-background);
-          --ion-toolbar-background: var(--app-tab-bar-background);
-        }
-
-        &.ios ion-modal:not(.small, .transparent-scroll) {
-          --ion-background-color: var(--app-background);
-          --ion-toolbar-background: var(--app-tab-bar-background);
-          --ion-toolbar-border-color: var(--ion-background-color-step-150);
         }
       }
     }

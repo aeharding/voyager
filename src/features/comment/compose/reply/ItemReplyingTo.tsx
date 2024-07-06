@@ -11,7 +11,7 @@ import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
 
 const Container = styled.div`
   padding: 16px;
-  background: var(--ion-color-light);
+  background: var(--lightroom-bg);
   font-size: 0.875em;
 
   a {
