@@ -138,7 +138,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
   })();
 
   const highlightedCommentId = (() => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (commentPath) return +commentPath.split(".").pop()!;
     if (threadCommentId) return +threadCommentId;
     return undefined;

@@ -145,7 +145,6 @@ export const syncMessages =
 
         let page = 1;
 
-        // eslint-disable-next-line no-constant-condition
         while (true) {
           let privateMessages;
 

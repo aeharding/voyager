@@ -225,7 +225,6 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
       throw error;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [presentToast]);
 
   useLayoutEffect(() => {

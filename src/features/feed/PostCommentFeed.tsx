@@ -126,7 +126,6 @@ export default function PostCommentFeed({
 
       return result;
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [_fetchFn, dispatch],
   );
 

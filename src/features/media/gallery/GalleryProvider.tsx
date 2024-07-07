@@ -70,7 +70,6 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       lightboxRef.current?.destroy();
       lightboxRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -130,7 +129,6 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         zoom: false,
         bgOpacity: 1,
         // Put in ion-app element so share IonActionSheet is on top
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         appendToEl: document.querySelector("ion-app")!,
         paddingFn: () => getSafeArea(),
         pswpModule: () => import("photoswipe"),
