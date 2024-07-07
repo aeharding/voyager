@@ -108,11 +108,11 @@ export const baseVariables = css`
           --thick-separator-color: var(--app-inset-item-background);
         }
 
-        ion-list.list-inset ion-item {
+        ion-router-outlet ion-list.list-inset ion-item {
           --background: var(--app-inset-item-background);
         }
 
-        &.ios ion-modal:not(.small, .transparent-scroll) {
+        &.ios ion-modal:not(.transparent-scroll) {
           --ion-background-color: var(--app-background);
           --ion-toolbar-background: var(--app-tab-bar-background);
           --ion-toolbar-border-color: var(--ion-background-color-step-150);
@@ -128,7 +128,7 @@ export const baseVariables = css`
 
     .ios ion-modal {
       --ion-background-color: var(--ion-background-color-step-50, #f2f2f7);
-      --ion-item-background: #fff;
+      --ion-item-background: var(--app-background, #fff);
     }
 
     .ion-color-primary-fixed {
@@ -170,7 +170,7 @@ export const lightVariables = css`
         }
 
         &.theme-has-custom-background {
-          .grey-bg ion-list.list-inset ion-item {
+          ion-router-outlet .grey-bg ion-list.list-inset ion-item {
             --background: var(--app-background);
           }
         }
@@ -296,7 +296,7 @@ export const darkVariables = css`
 
       // TODO test other themes
       ion-modal.transparent-scroll.dark {
-        --ion-background-color: black;
+        --ion-background-color: inherit;
       }
     }
   }
