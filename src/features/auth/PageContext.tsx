@@ -286,7 +286,6 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
 
       <LoginModal isOpen={isLoginOpen} setIsOpen={setIsLoginOpen} />
       <CommentReplyModal
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         item={commentReplyItem.current!}
         isOpen={isReplyOpen}
         setIsOpen={setIsReplyOpen}
@@ -296,26 +295,22 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         }}
       />
       <CommentEditModal
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         item={commentEditItem.current!}
         isOpen={isEditCommentOpen}
         setIsOpen={setIsEditCommentOpen}
       />
       <Report ref={reportRef} />
       <PostEditorModal
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         postOrCommunity={postItem.current!}
         isOpen={isPostOpen}
         setIsOpen={setIsPostOpen}
       />
       <BanUserModal
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         item={banItem.current!}
         isOpen={isBanUserOpen}
         setIsOpen={setIsBanUserOpen}
       />
       <SelectTextModal
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         text={selectTextItem.current!}
         isOpen={isSelectTextOpen}
         setIsOpen={setIsSelectTextOpen}
