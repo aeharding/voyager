@@ -32,6 +32,10 @@ export const Container = styled.div<{ keyboardOpen: boolean }>`
 
   padding-bottom: ${TOOLBAR_HEIGHT};
 
+  html.ios:not(.ion-palette-dark) & {
+    background: var(--ion-item-background);
+  }
+
   @media screen and (max-width: 767px) {
     padding-bottom: ${({ keyboardOpen }) =>
       keyboardOpen
@@ -50,10 +54,6 @@ export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
   min-height: 200px;
 
   flex: 1 0 auto;
-
-  html.ios:not(.ion-palette-dark) & {
-    background: var(--ion-item-background);
-  }
 `;
 
 export interface EditorProps {

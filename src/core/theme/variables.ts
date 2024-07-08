@@ -349,6 +349,16 @@ export const darkBlackModifierVariables = css`
           }
         }
 
+        &:not(.theme-has-custom-background) {
+          &.md {
+            body {
+              --ion-item-background: black;
+              --ion-toolbar-background: #121212;
+              --ion-tab-bar-background: #121212;
+            }
+          }
+        }
+
         &.md {
           body {
             --ion-background-color: black;
@@ -359,16 +369,7 @@ export const darkBlackModifierVariables = css`
 
             --ion-border-color: #222222;
 
-            --ion-item-background: black;
-
-            --ion-toolbar-background: #1f1f1f;
-
-            --ion-tab-bar-background: #1f1f1f;
-
             --ion-card-background: black;
-
-            --ion-toolbar-background: #121212;
-            --ion-tab-bar-background: #121212;
           }
         }
       }
