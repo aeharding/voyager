@@ -52,7 +52,7 @@ const AmountCollapsed = styled.div`
   margin: -4px 0;
   border-radius: 16px;
   color: var(--ion-color-medium);
-  background: var(--ion-color-light);
+  background: var(--lightroom-bg);
 `;
 
 const DeletedLabel = styled.div`
