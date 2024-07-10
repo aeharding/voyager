@@ -91,6 +91,8 @@ function getThemeName(appTheme: AppThemeType): string {
       return "Dracula";
     case "tangerine":
       return "Tangerine";
+    case "sunset":
+      return "Sunset";
   }
 }
 
@@ -112,5 +114,7 @@ function getThemeDescription(appTheme: AppThemeType): string {
       return "Your Phone, Now Undeadly Cool";
     case "tangerine":
       return "Like oranges, but better!";
+    case "sunset":
+      return "Golden hour every hour";
   }
 }
