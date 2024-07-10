@@ -1,7 +1,7 @@
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import { IonIcon } from "@ionic/react";
-import { chevronForward } from "ionicons/icons";
+import { chevronForward, playCircleOutline } from "ionicons/icons";
 import { MouseEvent, useMemo, useState } from "react";
 import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
 import Url from "../../shared/Url";
@@ -10,7 +10,12 @@ import LinkPreview from "./LinkPreview";
 import { LinkData } from "../../comment/CommentLinks";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 import { getImageSrc } from "../../../services/lemmy";
-import { determineTypeFromUrl, isUrlImage } from "../../../helpers/url";
+import {
+  determineTypeFromUrl,
+  getYoutubeThumbnailSrc,
+  isUrlImage,
+} from "../../../helpers/url";
+import ThumbnailImg from "./ThumbnailImg";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -34,15 +39,6 @@ const Img = styled.img`
   min-height: 0;
   aspect-ratio: 16 / 9;
 
-  object-fit: cover;
-`;
-
-const ThumbnailImg = styled.img`
-  margin: calc(-1 * var(--top-padding)) 0 calc(-1 * var(--top-padding))
-    calc(-1 * var(--start-padding));
-  height: var(--height);
-  aspect-ratio: 0.85;
-  width: auto;
   object-fit: cover;
 `;
 
@@ -151,15 +147,25 @@ export default function Link({
     onClick?.(e);
   };
 
-  const compactIcon = (() => {
+  const compactIcon = useMemo(() => {
     if (commentType === "image" || isImage)
       return <ThumbnailImg src={getImageSrc(url, { size: 50 })} />;
 
+    if (linkType === "youtube" && !thumbnail)
+      return (
+        <ThumbnailImg
+          src={getYoutubeThumbnailSrc(url)}
+          icon={playCircleOutline}
+        />
+      );
+
     if (linkType || !compact || !thumbnail)
-      return <LinkPreview type={linkType} />;
+      return (
+        <LinkPreview type={linkType === "youtube" ? undefined : linkType} />
+      );
 
     return <ThumbnailImg src={thumbnail} />;
-  })();
+  }, [commentType, compact, isImage, linkType, thumbnail, url]);
 
   return (
     <Container
