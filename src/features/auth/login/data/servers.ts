@@ -25,7 +25,7 @@ export const SERVERS_BY_CATEGORY = {
     "endlesstalk.org",
   ],
   regional: [
-    "feddit.de",
+    "feddit.org",
     "lemmy.ca",
     "aussie.zone",
     "feddit.nl",
@@ -106,6 +106,7 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "hexbear.net",
   "vger.social",
   "lemmy.myserv.one",
+  "feddit.de",
 ];
 
 export const LOGIN_SERVERS = uniq([
