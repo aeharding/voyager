@@ -1,11 +1,11 @@
-import RandomCommunity from "./RandomCommunity";
+import SpecialSearchMenu from "./SpecialSearchMenu";
 import TrendingCommunities from "./TrendingCommunities";
 
 export default function EmptySearch() {
   return (
     <>
       <TrendingCommunities />
-      <RandomCommunity />
+      <SpecialSearchMenu />
     </>
   );
 }
