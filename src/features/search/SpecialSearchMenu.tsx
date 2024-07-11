@@ -1,8 +1,8 @@
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
-import { shuffle } from "ionicons/icons";
+import { planetOutline, shuffle } from "ionicons/icons";
 import { useAppSelector } from "../../store";
 
-export default function RandomCommunity() {
+export default function SpecialSearchMenu() {
   const trendingCommunities = useAppSelector(
     (state) => state.community.trendingCommunities,
   );
@@ -20,6 +20,10 @@ export default function RandomCommunity() {
       <IonItem routerLink="/search/random">
         <IonIcon icon={shuffle} color="primary" slot="start" />
         <IonLabel className="ion-text-nowrap">Random Community</IonLabel>
+      </IonItem>
+      <IonItem routerLink="/search/explore">
+        <IonIcon icon={planetOutline} color="primary" slot="start" />
+        <IonLabel className="ion-text-nowrap">Explore</IonLabel>
       </IonItem>
     </IonList>
   );

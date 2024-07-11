@@ -13,7 +13,7 @@ import { memo, useMemo, useRef } from "react";
 import { sortBy } from "lodash";
 import { getHandle } from "../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
-import { home, library, people, shieldCheckmark } from "ionicons/icons";
+import { earth, home, people, shieldCheckmark } from "ionicons/icons";
 import CommunityListItem from "./CommunityListItem";
 import { VList, VListHandle } from "virtua";
 import { maxWidthCss } from "../../shared/AppContent";
@@ -143,7 +143,7 @@ function ResolvedCommunitiesList({
               {...attributedPreventOnClickNavigationBug}
             >
               <Content>
-                <SubIcon icon={library} color="#009dff" />
+                <SubIcon icon={earth} color="#009dff" />
                 <div>
                   All<aside>Posts across all federated communities</aside>
                 </div>
