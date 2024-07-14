@@ -2,6 +2,8 @@
  * Source: https://stackoverflow.com/a/44849182/1319878
  */
 
+import { determineIsAnimatedGif } from "./gif";
+
 function imgToCanvas(
   img: HTMLImageElement,
   rawWidth: number,
@@ -26,11 +28,17 @@ export async function reduceFileSize(
   maxHeight: number,
   quality = 0.7,
 ): Promise<Blob | File> {
+  if (file.size <= acceptFileSize) {
+    return file;
+  }
+
+  if (file.type === "image/gif" && (await determineIsAnimatedGif(file))) {
+    // If its animated, our compression code won't work (will only keep the first frame)
+    // So just bail and hope the Lemmy instance allows the filesize of the upload
+    return file;
+  }
+
   return new Promise((resolve) => {
-    if (file.size <= acceptFileSize) {
-      resolve(file);
-      return;
-    }
     const img = new Image();
 
     img.addEventListener("error", function () {
