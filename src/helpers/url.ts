@@ -86,10 +86,6 @@ export function isUrlVideo(url: string): boolean {
   );
 }
 
-export function isUrlMedia(url: string): boolean {
-  return isUrlImage(url) || isUrlVideo(url);
-}
-
 export function findUrlMediaType(url: string): "video" | "image" | undefined {
   if (isUrlImage(url)) return "image";
 
