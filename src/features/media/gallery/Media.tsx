@@ -1,6 +1,6 @@
 import { PostView } from "lemmy-js-client";
 import { findLoneImage } from "../../../helpers/markdown";
-import { isUrlMedia, isUrlVideo } from "../../../helpers/url";
+import { findUrlMediaType, isUrlVideo } from "../../../helpers/url";
 import { PlayerProps } from "../video/Player";
 import { ComponentProps, ComponentRef, forwardRef, memo, useMemo } from "react";
 import GalleryMedia, { GalleryMediaProps } from "./GalleryMedia";
@@ -41,8 +41,17 @@ export default memo(Media);
 export function getPostMedia(
   post: PostView,
 ): [string] | [string, string] | undefined {
-  if (post.post.url && isUrlMedia(post.post.url)) {
+  const urlType = post.post.url && findUrlMediaType(post.post.url);
+
+  if (post.post.url && urlType) {
+    const thumbnailType =
+      post.post.thumbnail_url && findUrlMediaType(post.post.thumbnail_url);
+
     if (post.post.thumbnail_url) {
+      // Sometimes Lemmy will cache the video, sometimes the thumbnail will be a still frame of the video
+      if (urlType === "video" && thumbnailType === "image")
+        return [post.post.url];
+
       return [post.post.thumbnail_url, post.post.url];
     }
 
