@@ -51,7 +51,7 @@ export function getPotentialImageProxyPathname(
   return parsedURL.pathname;
 }
 
-const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl"];
+const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl", "avif"];
 
 export function isUrlImage(url: string): boolean {
   const pathname = getPotentialImageProxyPathname(url);
@@ -63,7 +63,7 @@ export function isUrlImage(url: string): boolean {
   );
 }
 
-const animatedImageExtensions = ["gif", "webp", "jxl"];
+const animatedImageExtensions = ["gif", "webp", "jxl", "avif"];
 
 export function isUrlPotentialAnimatedImage(url: string): boolean {
   const pathname = getPotentialImageProxyPathname(url);
