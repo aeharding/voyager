@@ -15,6 +15,7 @@ import { chevronDownOutline } from "ionicons/icons";
 import { RefObject } from "react";
 import { useAppSelector } from "../../store";
 import { ActionButton } from "../post/actions/ActionButton";
+import UserScore from "../tags/UserScore";
 
 const Header = styled.div`
   display: flex;
@@ -167,6 +168,7 @@ export default function CommentHeader({
               distinguished={comment.distinguished}
               showBadge={!context}
             />
+            <UserScore person={commentView.creator} />
             <CommentVote item={commentView} />
             <Edited item={commentView} />
             <div style={{ flex: 1 }} />
