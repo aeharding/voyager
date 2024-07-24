@@ -5,7 +5,9 @@ import { styled } from "@linaria/react";
 import { getVoteWeightColor } from "./voteColor";
 import { useIsDark } from "../../core/GlobalStyles";
 
-const ScoreContainer = styled.span``;
+const ScoreContainer = styled.span`
+  color: var(--ion-color-medium2);
+`;
 
 interface UserScoreProps {
   person: Person;
@@ -23,8 +25,14 @@ export default function UserScore({ person: user }: UserScoreProps) {
 
   return (
     <ScoreContainer
-      style={{ [isDark ? "color" : "background"]: getVoteWeightColor(tag) }}
+      style={{
+        [isDark ? "color" : "background"]: getVoteWeightColor(
+          tag,
+          isDark ? 0.8 : 1,
+        ),
+      }}
     >
+      {" "}
       [{score > 0 ? "+" : ""}
       {score}]
     </ScoreContainer>

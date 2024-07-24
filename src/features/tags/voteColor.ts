@@ -1,10 +1,10 @@
 import { CommentAggregates } from "lemmy-js-client";
 
 // https://github.com/honestbleeps/Reddit-Enhancement-Suite/blob/e804618d97350d67cf0286283fc462756dc53d87/lib/modules/userTagger.js#L644
-export function getVoteWeightColor({
-  upvotes,
-  downvotes,
-}: Pick<CommentAggregates, "upvotes" | "downvotes">) {
+export function getVoteWeightColor(
+  { upvotes, downvotes }: Pick<CommentAggregates, "upvotes" | "downvotes">,
+  opacityMixin = 1,
+) {
   const votes = upvotes - downvotes;
 
   let red = 255;
@@ -23,6 +23,6 @@ export function getVoteWeightColor({
     alpha = Math.abs(votes) / (upvotes + downvotes);
   }
 
-  const color = `rgba(${red}, ${green}, ${blue}, ${0.2 + alpha * 0.8})`;
+  const color = `rgba(${red}, ${green}, ${blue}, ${0.2 + alpha * 0.8 * opacityMixin})`;
   return color;
 }

@@ -21,6 +21,7 @@ import { blockUser } from "../../user/userSlice";
 import useAppToast from "../../../helpers/useAppToast";
 import { buildBlocked } from "../../../helpers/toastMessages";
 import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
+import UserScore from "../../tags/UserScore";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -133,6 +134,7 @@ export default function PersonLink({
           <AgeBadge published={person.published} />
         </>
       )}
+      <UserScore person={person} />
     </>
   );
 

@@ -43,6 +43,9 @@ export const userTagSlice = createSlice({
         tag.downvotes -= 1;
       }
 
+      tag.upvotes = Math.max(0, tag.upvotes);
+      tag.downvotes = Math.max(0, tag.downvotes);
+
       state.tagByRemoteHandle[action.payload.handle] = tag;
     },
     fetchTagsPending: (state, action: PayloadAction<string[]>) => {
@@ -56,6 +59,7 @@ export const userTagSlice = createSlice({
     builder
       .addCase(fetchTagsForHandles.fulfilled, (state, action) => {
         action.meta.arg.forEach((handle) => {
+          if (state.tagByRemoteHandle[handle] !== "pending") return;
           delete state.tagByRemoteHandle[handle];
         });
 
@@ -65,6 +69,7 @@ export const userTagSlice = createSlice({
       })
       .addCase(fetchTagsForHandles.rejected, (state, action) => {
         action.meta.arg.forEach((handle) => {
+          if (state.tagByRemoteHandle[handle] !== "pending") return;
           delete state.tagByRemoteHandle[handle];
         });
       });
