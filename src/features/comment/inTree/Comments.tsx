@@ -294,6 +294,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       }
 
       dispatch(receivedComments(response.comments));
+
       dispatch(
         fetchTagsForHandles(
           uniq(response.comments.map((c) => getRemoteHandle(c.creator))),

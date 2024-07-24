@@ -740,7 +740,15 @@ export class WefwefDB extends Dexie {
   }
 
   async fetchTagsForHandles(handles: string[]) {
-    return await this.userTags.where("handle").equals(handles).toArray();
+    return await this.userTags.where("handle").anyOf(handles).toArray();
+  }
+
+  async updateTag(tag: UserTag) {
+    return await this.transaction("rw", this.userTags, async () => {
+      await this.userTags.where("handle").equals(tag.handle).delete();
+
+      await this.userTags.put(tag);
+    });
   }
 
   /*

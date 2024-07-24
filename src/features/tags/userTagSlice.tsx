@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { db, UserTag } from "../../services/db";
+import { AppDispatch, RootState } from "../../store";
 
 interface CommunityState {
   tagByRemoteHandle: Record<string, UserTag | "pending">;
@@ -9,18 +10,17 @@ const initialState: CommunityState = {
   tagByRemoteHandle: {},
 };
 
+interface UpdateVotePayload {
+  handle: string;
+  oldVote: 1 | -1 | 0 | undefined;
+  newVote: 1 | -1 | 0 | undefined;
+}
+
 export const userTagSlice = createSlice({
   name: "userTag",
   initialState,
   reducers: {
-    updateTagVotes: (
-      state,
-      action: PayloadAction<{
-        handle: string;
-        oldVote: 1 | -1 | 0;
-        newVote: 1 | -1 | 0;
-      }>,
-    ) => {
+    _updateTagVotes: (state, action: PayloadAction<UpdateVotePayload>) => {
       const tag =
         state.tagByRemoteHandle[action.payload.handle] ??
         generateNewTag(action.payload.handle);
@@ -45,15 +45,20 @@ export const userTagSlice = createSlice({
 
       state.tagByRemoteHandle[action.payload.handle] = tag;
     },
+    fetchTagsPending: (state, action: PayloadAction<string[]>) => {
+      action.payload.forEach((handle) => {
+        if (state.tagByRemoteHandle[handle]) return;
+        state.tagByRemoteHandle[handle] = "pending";
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTagsForHandles.pending, (state, action) => {
-        action.meta.arg.forEach((handle) => {
-          state.tagByRemoteHandle[handle] = "pending";
-        });
-      })
       .addCase(fetchTagsForHandles.fulfilled, (state, action) => {
+        action.meta.arg.forEach((handle) => {
+          delete state.tagByRemoteHandle[handle];
+        });
+
         action.payload.forEach((tag) => {
           state.tagByRemoteHandle[tag.handle] = tag;
         });
@@ -70,10 +75,31 @@ export default userTagSlice.reducer;
 
 export const fetchTagsForHandles = createAsyncThunk(
   "userTags/fetch",
-  async (handles: string[]) => {
-    return await db.fetchTagsForHandles(handles);
+  async (handles: string[], thunkAPI) => {
+    const rootState = thunkAPI.getState() as RootState;
+
+    const handlesNeedingFetch = handles.filter(
+      (handle) => !rootState.userTag.tagByRemoteHandle[handle],
+    );
+
+    thunkAPI.dispatch(
+      userTagSlice.actions.fetchTagsPending(handlesNeedingFetch),
+    );
+
+    return await db.fetchTagsForHandles(handlesNeedingFetch);
   },
 );
+
+export const updateTagVotes =
+  (payload: UpdateVotePayload) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    dispatch(userTagSlice.actions._updateTagVotes(payload));
+
+    const updatedTag = getState().userTag.tagByRemoteHandle[payload.handle];
+    if (typeof updatedTag !== "object") return;
+
+    await db.updateTag(updatedTag);
+  };
 
 function generateNewTag(handle: string): UserTag {
   return {
