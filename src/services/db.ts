@@ -300,6 +300,20 @@ export type RedgifsProvider = ProviderData<"redgifs", { token: string }>;
 
 type ProvidersData = RedgifsProvider;
 
+export type UserTagColor = "red" | "green" | "blue";
+
+export interface UserTag {
+  handle: string;
+
+  downvotes: number;
+  upvotes: number;
+
+  text?: string;
+  color?: UserTagColor;
+
+  sourceUrl?: string;
+}
+
 export type SettingValueTypes = {
   comments_theme: CommentsThemeType;
   votes_theme: VotesThemeType;
@@ -386,6 +400,7 @@ export class WefwefDB extends Dexie {
   settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
   cachedFederatedInstanceData!: Table<InstanceData, number>;
   providers!: Table<ProvidersData, Provider>;
+  userTags!: Table<UserTag, number>;
 
   constructor() {
     super("WefwefDB");
@@ -526,6 +541,40 @@ export class WefwefDB extends Dexie {
         .where("key")
         .equals("remember_community_sort")
         .modify({ key: "remember_community_post_sort" });
+    });
+
+    this.version(9).stores({
+      postMetadatas: `
+        ++,
+        ${CompoundKeys.postMetadata.post_id_and_user_handle},
+        ${CompoundKeys.postMetadata.user_handle_and_hidden},
+        post_id,
+        user_handle,
+        hidden,
+        hidden_updated_at
+      `,
+      settings: `
+        ++,
+        key,
+        ${CompoundKeys.settings.key_and_user_handle_and_community},
+        value,
+        user_handle,
+        community
+      `,
+      cachedFederatedInstanceData: `
+        ++id,
+        &domain,
+        updated
+      `,
+      providers: `
+        ++,
+        &name,
+        data
+      `,
+      userTags: `
+        ++,
+        &handle
+      `,
     });
   }
 
@@ -688,6 +737,10 @@ export class WefwefDB extends Dexie {
 
       await this.cachedFederatedInstanceData.add(payload);
     });
+  }
+
+  async fetchTagsForHandles(handles: string[]) {
+    return await this.userTags.where("handle").equals(handles).toArray();
   }
 
   /*
