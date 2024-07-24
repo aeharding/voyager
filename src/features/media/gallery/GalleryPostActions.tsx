@@ -142,9 +142,9 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
 
       return (
         <Section>
-          <VoteButton type="up" postId={post.post.id} />
+          <VoteButton type="up" post={post} />
           <Amount>{score}</Amount>
-          <VoteButton type="down" postId={post.post.id} />
+          <VoteButton type="down" post={post} />
         </Section>
       );
     }
@@ -156,9 +156,9 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
 
       return (
         <Section>
-          <VoteButton type="up" postId={post.post.id} />
+          <VoteButton type="up" post={post} />
           <Amount>{upvotes}</Amount>
-          <VoteButton type="down" postId={post.post.id} />
+          <VoteButton type="down" post={post} />
           <Amount>{downvotes}</Amount>
         </Section>
       );
@@ -166,8 +166,8 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
     case OVoteDisplayMode.Hide:
       return (
         <Section>
-          <VoteButton type="up" postId={post.post.id} />
-          <VoteButton type="down" postId={post.post.id} />
+          <VoteButton type="up" post={post} />
+          <VoteButton type="down" post={post} />
         </Section>
       );
   }

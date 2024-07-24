@@ -9,6 +9,8 @@ import {
 import { IPostMetadata, db } from "../../services/db";
 import { isLemmyError } from "../../helpers/lemmyErrors";
 import { resolvePostReport } from "../moderation/modSlice";
+import { updateTagVotes } from "../tags/userTagSlice";
+import { getRemoteHandle } from "../../helpers/lemmy";
 
 interface PostHiddenData {
   /**
@@ -244,14 +246,15 @@ export const {
 export default postSlice.reducer;
 
 export const savePost =
-  (postId: number, save: boolean) =>
+  (post: PostView, save: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const postId = post.post.id;
     const oldSaved = getState().post.postSavedById[postId];
 
     const { upvoteOnSave } = getState().settings.general.posts;
 
     if (upvoteOnSave && save) {
-      dispatch(voteOnPost(postId, 1));
+      dispatch(voteOnPost(post, 1));
     }
 
     dispatch(updatePostSaved({ postId, saved: save }));
@@ -296,13 +299,23 @@ export const setPostHidden =
   };
 
 export const voteOnPost =
-  (postId: number, vote: 1 | -1 | 0) =>
+  (post: PostView, vote: 1 | -1 | 0) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const postId = post.post.id;
+
     const oldVote = getState().post.postVotesById[postId];
 
     dispatch(updatePostVote({ postId, vote }));
 
     dispatch(setPostRead(postId));
+
+    dispatch(
+      updateTagVotes({
+        handle: getRemoteHandle(post.creator),
+        oldVote,
+        newVote: vote,
+      }),
+    );
 
     try {
       await clientSelector(getState())?.likePost({
@@ -311,6 +324,15 @@ export const voteOnPost =
       });
     } catch (error) {
       dispatch(updatePostVote({ postId, vote: oldVote }));
+
+      dispatch(
+        updateTagVotes({
+          handle: getRemoteHandle(post.creator),
+          oldVote: vote,
+          newVote: oldVote,
+        }),
+      );
+
       throw error;
     }
   };

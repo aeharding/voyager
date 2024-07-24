@@ -145,7 +145,7 @@ export default function GalleryMoreActions({
               if (presentLoginIfNeeded()) return;
 
               try {
-                await dispatch(savePost(post.post.id, !mySaved));
+                await dispatch(savePost(post, !mySaved));
 
                 if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
