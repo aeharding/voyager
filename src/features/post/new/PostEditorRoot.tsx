@@ -434,7 +434,7 @@ export default function PostEditorRoot({
             </IonItem>
             {postType === "photo" && (
               <>
-                <label htmlFor="photo-upload">
+                <label htmlFor="photo-upload-post">
                   <IonItem>
                     <IonLabel color="primary">
                       <CameraIcon icon={cameraOutline} /> Choose Photo
@@ -443,7 +443,7 @@ export default function PostEditorRoot({
                     <HiddenInput
                       type="file"
                       accept="image/*"
-                      id="photo-upload"
+                      id="photo-upload-post"
                       onInput={(e) => {
                         const image = (e.target as HTMLInputElement).files?.[0];
                         if (!image) return;
