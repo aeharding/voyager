@@ -20,6 +20,7 @@ import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
 import useTextRecovery from "../../../../helpers/useTextRecovery";
 import useUploadImage from "./useUploadImage";
 import { htmlToMarkdown } from "../../../../helpers/markdown";
+import useEditorHelpers from "./useEditorHelpers";
 
 const ORDERED_LIST_REGEX = /^(\d)\. /;
 const UNORDERED_LIST_REGEX = /^(-|\*|\+) /;
@@ -73,6 +74,8 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const { insertBlock } = useEditorHelpers(textareaRef);
+
   const { uploadImage, jsx: uploadImageJsx } = useUploadImage();
 
   useTextRecovery(text, setText, !canRecoverText);
@@ -125,7 +128,7 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
     const markdown = await uploadImage(image);
 
     textareaRef.current?.focus();
-    document.execCommand("insertText", false, markdown);
+    insertBlock(markdown);
   }
 
   async function onDragOver(event: DragEvent) {

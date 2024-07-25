@@ -16,7 +16,7 @@ import {
   personOutline,
   remove,
 } from "ionicons/icons";
-import { MouseEvent, RefObject, useEffect, useRef } from "react";
+import { MouseEvent, RefObject } from "react";
 import PreviewModal from "../PreviewModal";
 import textFaces from "./textFaces.txt?raw";
 import {
@@ -34,8 +34,8 @@ import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import { isValidUrl } from "../../../../../helpers/url";
 import useUploadImage from "../useUploadImage";
-import { getSelectionHtml } from "../../../../../helpers/dom";
 import { htmlToMarkdown } from "../../../../../helpers/markdown";
+import useEditorHelpers from "../useEditorHelpers";
 
 const Button = styled.button`
   padding: 0;
@@ -78,35 +78,13 @@ export default function DefaultMode({
 
   const { uploadImage, jsx } = useUploadImage();
 
-  const selectionLocation = useRef(0);
-  const selectionLocationEnd = useRef(0);
-  const replySelectionRef = useRef<{ text: string; html: string } | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    const onChange = () => {
-      selectionLocation.current = textareaRef.current?.selectionStart ?? 0;
-      selectionLocationEnd.current = textareaRef.current?.selectionEnd ?? 0;
-
-      // Not great to do this here, but if we don't,
-      // safari will sometimes return selection.toString() === "" during onQuote
-      const selection = window.getSelection();
-      replySelectionRef.current =
-        selection?.type === "Range"
-          ? {
-              text: selection.toString(),
-              html: getSelectionHtml(selection),
-            }
-          : undefined;
-    };
-
-    document.addEventListener("selectionchange", onChange);
-
-    return () => {
-      document.removeEventListener("selectionchange", onChange);
-    };
-  }, [textareaRef]);
+  const {
+    insertBlock,
+    insertInline,
+    selectionLocation,
+    selectionLocationEnd,
+    replySelectionRef,
+  } = useEditorHelpers(textareaRef);
 
   function presentMoreOptions(e: MouseEvent) {
     e.preventDefault();
@@ -364,90 +342,12 @@ export default function DefaultMode({
     return false;
   }
 
-  function insertBlock(
-    blockText: string,
-    placeCursorFromEnd = 0,
-    selectLength = 0,
-  ) {
-    const currentSelectionLocation = selectionLocation.current;
-
-    const before = (() => {
-      if (
-        text[currentSelectionLocation - 1] &&
-        text[currentSelectionLocation - 1] === "\n" &&
-        text[currentSelectionLocation - 2] &&
-        text[currentSelectionLocation - 2] !== "\n"
-      )
-        return "\n";
-
-      if (
-        text[currentSelectionLocation - 2] &&
-        text[currentSelectionLocation - 2] !== "\n"
-      )
-        return "\n\n";
-
-      return "";
-    })();
-
-    const after = (() => {
-      if (
-        text[currentSelectionLocation] &&
-        text[currentSelectionLocation] === "\n" &&
-        text[currentSelectionLocation + 1] &&
-        text[currentSelectionLocation + 1] !== "\n"
-      )
-        return "\n";
-
-      if (
-        text[currentSelectionLocation + 1] &&
-        text[currentSelectionLocation + 1] !== "\n"
-      )
-        return "\n\n";
-
-      return "";
-    })();
-
-    insertInline(
-      `${before}${blockText}${after}`,
-      placeCursorFromEnd + after.length,
-      selectLength,
-    );
-  }
-
-  function insertInline(
-    insertText: string,
-    placeCursorFromEnd = 0,
-    selectLength = 0,
-  ) {
-    const currentSelectionLocation = selectionLocation.current;
-
-    const initiallySelectedText = text
-      .slice(selectionLocation.current, selectionLocationEnd.current)
-      .trim();
-
-    textareaRef.current?.focus();
-
-    document.execCommand("insertText", false, insertText);
-
-    const endCursorLocation =
-      currentSelectionLocation + insertText.length - placeCursorFromEnd;
-
-    textareaRef.current?.setSelectionRange(
-      endCursorLocation,
-      endCursorLocation + selectLength,
-    );
-
-    if (initiallySelectedText && selectLength) {
-      document.execCommand("insertText", false, initiallySelectedText);
-    }
-  }
-
   return (
     <>
       {jsx}
 
       <markdown-toolbar for={TOOLBAR_TARGET_ID}>
-        <label htmlFor="photo-upload">
+        <label htmlFor="photo-upload-toolbar">
           <Button as="div" onClick={() => textareaRef.current?.focus()}>
             <IonIcon icon={image} color="primary" />
           </Button>
@@ -458,15 +358,14 @@ export default function DefaultMode({
             `}
             type="file"
             accept="image/*"
-            id="photo-upload"
+            id="photo-upload-toolbar"
             onInput={async (e) => {
               const image = (e.target as HTMLInputElement).files?.[0];
               if (!image) return;
 
               const markdown = await uploadImage(image);
 
-              textareaRef.current?.focus();
-              document.execCommand("insertText", false, markdown);
+              insertBlock(markdown);
             }}
           />
         </label>
