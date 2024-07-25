@@ -15,6 +15,7 @@ import { chevronDownOutline } from "ionicons/icons";
 import { RefObject } from "react";
 import { useAppSelector } from "../../store";
 import { ActionButton } from "../post/actions/ActionButton";
+import UserTag from "../tags/UserTag";
 
 const Header = styled.div`
   display: flex;
@@ -63,6 +64,12 @@ const DeletedLabel = styled.div`
   overflow: hidden;
 `;
 
+const Spacer = styled.div`
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+`;
 interface CommentHeaderProps {
   canModerate: ModeratorRole | undefined;
   commentView: CommentView;
@@ -137,7 +144,7 @@ export default function CommentHeader({
               />{" "}
               deleted their <span className="ion-text-nowrap">comment :(</span>
             </DeletedLabel>
-            <div style={{ flex: 1 }} />
+            <Spacer />
             {renderAside(comment.updated || comment.published)}
           </>
         );
@@ -154,7 +161,7 @@ export default function CommentHeader({
               />
               &apos;s comment
             </DeletedLabel>
-            <div style={{ flex: 1 }} />
+            <Spacer />
             {renderAside(comment.updated || comment.published)}
           </>
         );
@@ -169,7 +176,9 @@ export default function CommentHeader({
             />
             <CommentVote item={commentView} />
             <Edited item={commentView} />
-            <div style={{ flex: 1 }} />
+            <Spacer>
+              <UserTag user={commentView.creator} />
+            </Spacer>
             {renderAside()}
           </>
         );

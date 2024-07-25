@@ -16,7 +16,7 @@ import { LinkContainer, StyledLink, hideCss } from "./shared";
 import { cx } from "@linaria/core";
 import { LongPressOptions, useLongPress } from "use-long-press";
 import { useIonActionSheet } from "@ionic/react";
-import { removeCircleOutline } from "ionicons/icons";
+import { pricetagOutline, removeCircleOutline } from "ionicons/icons";
 import { blockUser } from "../../user/userSlice";
 import useAppToast from "../../../helpers/useAppToast";
 import { buildBlocked } from "../../../helpers/toastMessages";
@@ -90,6 +90,11 @@ export default function PersonLink({
               presentToast(buildBlocked(!isBlocked, getHandle(person)));
             })();
           },
+        },
+        {
+          text: "Edit Tag",
+          icon: pricetagOutline,
+          handler: async () => {},
         },
         {
           text: "Cancel",
