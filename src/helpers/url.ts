@@ -150,26 +150,6 @@ export function parseUrlForDisplay(url: string): string[] {
   ];
 }
 
-// https://stackoverflow.com/a/61033353/1319878
-const YOUTUBE_LINK =
-  /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})/;
-
-export function determineTypeFromUrl(
-  url: string,
-): "mail" | "youtube" | undefined {
-  if (url.startsWith("mailto:")) return "mail";
-
-  if (YOUTUBE_LINK.test(url)) return "youtube";
-}
-
-export function getYoutubeVideoId(url: string): string | undefined {
-  return url.match(YOUTUBE_LINK)?.[1];
-}
-
-export function getYoutubeThumbnailSrc(url: string): string | undefined {
-  const videoId = getYoutubeVideoId(url);
-
-  if (!videoId) return;
-
-  return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+export function determineTypeFromUrl(url: string): "mail" | undefined {
+  return url.startsWith("mailto:") ? "mail" : undefined;
 }

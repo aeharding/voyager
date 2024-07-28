@@ -135,6 +135,7 @@ interface SettingsState {
     preferNativeApps: boolean;
     defaultFeed: DefaultFeedType | undefined;
     noSubscribedInFeed: boolean;
+    thumbnailinatorEnabled: boolean;
   };
   blocks: {
     keywords: string[];
@@ -220,6 +221,7 @@ export const initialState: SettingsState = {
     preferNativeApps: true,
     defaultFeed: undefined,
     noSubscribedInFeed: false,
+    thumbnailinatorEnabled: true,
   },
   blocks: {
     keywords: [],
@@ -373,6 +375,10 @@ export const appearanceSlice = createSlice({
     setNoSubscribedInFeed(state, action: PayloadAction<boolean>) {
       state.general.noSubscribedInFeed = action.payload;
       db.setSetting("no_subscribed_in_feed", action.payload);
+    },
+    setThumbnailinatorEnabled(state, action: PayloadAction<boolean>) {
+      state.general.thumbnailinatorEnabled = action.payload;
+      db.setSetting("thumbnailinator_enabled", action.payload);
     },
     setEmbedExternalMedia(state, action: PayloadAction<boolean>) {
       state.appearance.posts.embedExternalMedia = action.payload;
@@ -704,6 +710,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const no_subscribed_in_feed = await db.getSetting(
         "no_subscribed_in_feed",
       );
+      const thumbnailinator_enabled = await db.getSetting(
+        "thumbnailinator_enabled",
+      );
       const embed_external_media = await db.getSetting("embed_external_media");
       const always_show_author = await db.getSetting("always_show_author");
       const always_use_reader_mode = await db.getSetting(
@@ -852,6 +861,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           defaultFeed: initialState.general.defaultFeed,
           noSubscribedInFeed:
             no_subscribed_in_feed ?? initialState.general.noSubscribedInFeed,
+          thumbnailinatorEnabled:
+            thumbnailinator_enabled ??
+            initialState.general.thumbnailinatorEnabled,
         },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
@@ -926,6 +938,7 @@ export const {
   setPureBlack,
   setDefaultFeed,
   setNoSubscribedInFeed,
+  setThumbnailinatorEnabled,
   setEmbedExternalMedia,
   setAlwaysShowAuthor,
   setAlwaysUseReaderMode,

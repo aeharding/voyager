@@ -1,7 +1,7 @@
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import { IonIcon } from "@ionic/react";
-import { chevronForward, playCircleOutline } from "ionicons/icons";
+import { chevronForward } from "ionicons/icons";
 import { MouseEvent, useMemo, useState } from "react";
 import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
 import Url from "../../shared/Url";
@@ -10,12 +10,13 @@ import LinkPreview from "./LinkPreview";
 import { LinkData } from "../../comment/CommentLinks";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 import { getImageSrc } from "../../../services/lemmy";
-import {
-  determineTypeFromUrl,
-  getYoutubeThumbnailSrc,
-  isUrlImage,
-} from "../../../helpers/url";
+import { determineTypeFromUrl, isUrlImage } from "../../../helpers/url";
 import ThumbnailImg from "./ThumbnailImg";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
+
+const TRANSPARENT_PIXEL =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==";
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -121,7 +122,7 @@ interface EmbedProps {
 export default function Link({
   url,
   text,
-  thumbnail,
+  thumbnail: lemmyThubmnail,
   compact = true,
   blur,
   className,
@@ -129,7 +130,14 @@ export default function Link({
   small,
   commentType,
 }: EmbedProps) {
+  const dispatch = useAppDispatch();
   const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
+  const thumbnailinatorEnabled = useAppSelector(
+    (state) => state.settings.general.thumbnailinatorEnabled,
+  );
+  const thumbnailinatorResult = useAppSelector(
+    (state) => state.thumbnail.thumbnailSrcByUrl[url],
+  );
 
   const [error, setError] = useState(false);
 
@@ -147,24 +155,45 @@ export default function Link({
     onClick?.(e);
   };
 
+  const thumbnail = useMemo(() => {
+    if (lemmyThubmnail) return lemmyThubmnail;
+
+    if (!thumbnailinatorEnabled) return;
+
+    if (
+      thumbnailinatorResult === "none" ||
+      thumbnailinatorResult === "failed"
+    ) {
+      return;
+    }
+
+    if (!thumbnailinatorResult || thumbnailinatorResult === "pending") {
+      if (!thumbnailinatorResult) dispatch(fetchThumbnail(url));
+      return TRANSPARENT_PIXEL;
+    }
+
+    return thumbnailinatorResult;
+  }, [
+    lemmyThubmnail,
+    dispatch,
+    url,
+    thumbnailinatorResult,
+    thumbnailinatorEnabled,
+  ]);
+
   const compactIcon = useMemo(() => {
     if (commentType === "image" || isImage)
       return <ThumbnailImg src={getImageSrc(url, { size: 50 })} />;
 
-    if (linkType === "youtube" && !thumbnail)
-      return (
-        <ThumbnailImg
-          src={getYoutubeThumbnailSrc(url)}
-          icon={playCircleOutline}
-        />
-      );
+    if (linkType || !compact || !thumbnail) {
+      return <LinkPreview type={linkType} />;
+    }
 
-    if (linkType || !compact || !thumbnail)
-      return (
-        <LinkPreview type={linkType === "youtube" ? undefined : linkType} />
-      );
-
-    return <ThumbnailImg src={thumbnail} />;
+    return (
+      <ThumbnailImg
+        src={typeof thumbnail === "string" ? thumbnail : thumbnail.sm}
+      />
+    );
   }, [commentType, compact, isImage, linkType, thumbnail, url]);
 
   return (
@@ -176,7 +205,7 @@ export default function Link({
     >
       {!compact && thumbnail && !error && (
         <Img
-          src={thumbnail}
+          src={typeof thumbnail === "string" ? thumbnail : thumbnail.lg}
           draggable="false"
           className={blur ? blurImgCss : undefined}
           onError={() => setError(true)}
