@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
 
 const TRANSPARENT_PIXEL =
-  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==";
+  'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
 
 const Container = styled(LinkInterceptor)`
   display: flex;
