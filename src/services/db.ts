@@ -334,6 +334,7 @@ export type SettingValueTypes = {
   long_swipe_trigger_point: LongSwipeTriggerPointType;
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
+  thumbnailinator_enabled: boolean;
   embed_external_media: boolean;
   always_show_author: boolean;
   always_use_reader_mode: boolean;
