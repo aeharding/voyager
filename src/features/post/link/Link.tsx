@@ -84,6 +84,10 @@ const Bottom = styled.div<{ small?: boolean }>`
 
 const Text = styled.div`
   color: var(--ion-text-color);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const UrlContainer = styled.div`
