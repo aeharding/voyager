@@ -4,7 +4,11 @@ import { useAppSelector } from "../../../store";
 import { useMemo } from "react";
 
 const NewAccountBadge = styled.span`
-  color: gold;
+  color: #d9a900;
+
+  .ion-palette-dark & {
+    color: gold;
+  }
 `;
 
 interface AgeBadgeProps {
