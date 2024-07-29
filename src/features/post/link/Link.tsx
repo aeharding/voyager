@@ -11,12 +11,20 @@ import { LinkData } from "../../comment/CommentLinks";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 import { getImageSrc } from "../../../services/lemmy";
 import { determineTypeFromUrl, isUrlImage } from "../../../helpers/url";
-import ThumbnailImg from "./ThumbnailImg";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
 
 const TRANSPARENT_PIXEL =
   'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
+
+const ThumbnailImg = styled.img`
+  margin: calc(-1 * var(--top-padding)) 0 calc(-1 * var(--top-padding))
+    calc(-1 * var(--start-padding));
+  height: var(--height);
+  aspect-ratio: 0.85;
+  width: auto;
+  object-fit: cover;
+`;
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -185,9 +193,8 @@ export default function Link({
     if (commentType === "image" || isImage)
       return <ThumbnailImg src={getImageSrc(url, { size: 50 })} />;
 
-    if (linkType || !compact || !thumbnail) {
+    if (linkType || !compact || !thumbnail)
       return <LinkPreview type={linkType} />;
-    }
 
     return (
       <ThumbnailImg
