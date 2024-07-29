@@ -4,6 +4,7 @@ import { getRemoteHandle } from "../../helpers/lemmy";
 import { styled } from "@linaria/react";
 import { getVoteWeightColor } from "./voteColor";
 import { useIsDark } from "../../core/GlobalStyles";
+import { formatNumber } from "../../helpers/number";
 
 const ScoreContainer = styled.span`
   color: var(--ion-color-medium2);
@@ -34,7 +35,7 @@ export default function UserScore({ person: user }: UserScoreProps) {
     >
       {" "}
       [{score > 0 ? "+" : ""}
-      {score}]
+      {formatNumber(score)}]
     </ScoreContainer>
   );
 }

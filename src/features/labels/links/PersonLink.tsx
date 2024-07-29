@@ -22,6 +22,7 @@ import useAppToast from "../../../helpers/useAppToast";
 import { buildBlocked } from "../../../helpers/toastMessages";
 import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
 import UserScore from "../../tags/UserScore";
+import { PageContext } from "../../auth/PageContext";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -57,6 +58,7 @@ export default function PersonLink({
     (admin) => admin.person.actor_id === person.actor_id,
   );
   const { hideUsernames } = useContext(ShareImageContext);
+  const { presentUserTag } = useContext(PageContext);
 
   const onCommunityLinkLongPress = useCallback(() => {
     const state = store.getState();
@@ -94,7 +96,9 @@ export default function PersonLink({
         {
           text: "Edit Tag",
           icon: pricetagOutline,
-          handler: async () => {},
+          handler: async () => {
+            presentUserTag(person);
+          },
         },
         {
           text: "Cancel",
@@ -102,7 +106,7 @@ export default function PersonLink({
         },
       ],
     });
-  }, [presentActionSheet, presentToast, dispatch, person]);
+  }, [presentActionSheet, presentToast, dispatch, person, presentUserTag]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
     cancelOnMovement: 15,

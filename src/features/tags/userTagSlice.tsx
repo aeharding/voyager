@@ -54,6 +54,9 @@ export const userTagSlice = createSlice({
         state.tagByRemoteHandle[handle] = "pending";
       });
     },
+    updateTag: (state, action: PayloadAction<UserTag>) => {
+      state.tagByRemoteHandle[action.payload.handle] = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -106,7 +109,13 @@ export const updateTagVotes =
     await db.updateTag(updatedTag);
   };
 
-function generateNewTag(handle: string): UserTag {
+export const updateTag =
+  (updatedTag: UserTag) => async (dispatch: AppDispatch) => {
+    dispatch(userTagSlice.actions.updateTag(updatedTag));
+    await db.updateTag(updatedTag);
+  };
+
+export function generateNewTag(handle: string): UserTag {
   return {
     handle,
     upvotes: 0,
