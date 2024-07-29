@@ -31,6 +31,7 @@ import { jwtSelector } from "./authSelectors";
 import BanUserModal from "../moderation/ban/BanUserModal";
 import CreateCrosspostDialog from "../post/crosspost/create/CreateCrosspostDialog";
 import LoginModal from "./login/LoginModal";
+import UserTagModal from "../tags/UserTagModal";
 
 export interface BanUserPayload {
   user: Person;
@@ -80,6 +81,8 @@ interface IPageContext {
   presentBanUser: (payload: BanUserPayload) => void;
 
   presentCreateCrosspost: (post: PostView) => void;
+
+  presentUserTag: (person: Person) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -94,6 +97,7 @@ export const PageContext = createContext<IPageContext>({
   presentAccountSwitcher: () => {},
   presentBanUser: () => {},
   presentCreateCrosspost: () => {},
+  presentUserTag: () => {},
 });
 
 interface PageContextProvider {
@@ -195,7 +199,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   // Edit/new post end
 
   // Select text start
-  const selectTextItem = useRef<string | string>();
+  const selectTextItem = useRef<string>();
   const [isSelectTextOpen, setIsSelectTextOpen] = useState(false);
   const presentSelectText = useCallback((text: string) => {
     selectTextItem.current = text;
@@ -211,6 +215,15 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     setIsBanUserOpen(true);
   }, []);
   // Ban user end
+
+  // User tag start
+  const userTagItem = useRef<Person>();
+  const [isUserTagOpen, setIsUserTagOpen] = useState(false);
+  const presentUserTag = useCallback((person: Person) => {
+    userTagItem.current = person;
+    setIsUserTagOpen(true);
+  }, []);
+  // User tag end
 
   const presentReport = useCallback((item: ReportableItem) => {
     reportRef.current?.present(item);
@@ -264,6 +277,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentAccountSwitcher,
       presentBanUser,
       presentCreateCrosspost,
+      presentUserTag,
     }),
     [
       presentCommentEdit,
@@ -276,6 +290,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentAccountSwitcher,
       presentBanUser,
       presentCreateCrosspost,
+      presentUserTag,
       value,
     ],
   );
@@ -314,6 +329,11 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         text={selectTextItem.current!}
         isOpen={isSelectTextOpen}
         setIsOpen={setIsSelectTextOpen}
+      />
+      <UserTagModal
+        person={userTagItem.current!}
+        isOpen={isUserTagOpen}
+        setIsOpen={setIsUserTagOpen}
       />
     </PageContext.Provider>
   );
