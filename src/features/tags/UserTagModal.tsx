@@ -3,7 +3,6 @@ import {
   IonTitle,
   IonButtons,
   IonButton,
-  IonContent,
   IonModal,
   IonText,
   IonItem,
@@ -13,9 +12,8 @@ import {
 import { Centered } from "../auth/login/LoginNav";
 import { styled } from "@linaria/react";
 import AppHeader from "../shared/AppHeader";
-import { CommentView, Person } from "lemmy-js-client";
+import { Person } from "lemmy-js-client";
 import { getRemoteHandle } from "../../helpers/lemmy";
-import Comment from "../comment/Comment";
 import PersonLink from "../labels/links/PersonLink";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { generateNewTag, updateTag } from "./userTagSlice";
@@ -40,6 +38,21 @@ const PreviewIonItem = styled(IonItem)`
 const UserText = styled(IonText)`
   font-size: 0.7em;
   font-weight: normal;
+`;
+
+const ColorIonInput = styled(IonInput)`
+  .native-wrapper {
+    max-width: 32px;
+  }
+
+  input {
+    border-radius: 50%;
+  }
+`;
+
+const Contents = styled.div`
+  // can't use ion-content with auto height ion-modal
+  margin-bottom: var(--ion-safe-area-bottom);
 `;
 
 interface UserTagModalProps {
@@ -105,7 +118,7 @@ function UserTagModalContents({ person, setIsOpen }: UserTagModalProps) {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <div>
+      <Contents>
         <Header>Preview</Header>
         <IonList inset>
           <PreviewIonItem>
@@ -128,7 +141,7 @@ function UserTagModalContents({ person, setIsOpen }: UserTagModalProps) {
             />
           </IonItem>
           <IonItem>
-            <IonInput
+            <ColorIonInput
               label="Color"
               type="color"
               value={tag.color}
@@ -167,7 +180,7 @@ function UserTagModalContents({ person, setIsOpen }: UserTagModalProps) {
             />
           </IonItem>
         </IonList>
-      </div>
+      </Contents>
     </>
   );
 }

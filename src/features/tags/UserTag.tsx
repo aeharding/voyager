@@ -2,35 +2,51 @@ import { styled } from "@linaria/react";
 import { useAppSelector } from "../../store";
 import { getRemoteHandle } from "../../helpers/lemmy";
 import { Person } from "lemmy-js-client";
+import { getTextColorFor } from "../../helpers/color";
+import React from "react";
 
-const TagContainer = styled.div<{ tagColor: string }>`
+const TagContainer = styled.span`
   white-space: nowrap;
-  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
 
-  --bg: var(--color, var(--lightroom-bg));
-  background: var(--bg);
-  color: color-contrast(var(--bg) vs #fff, #000);
+  background: var(--bg, var(--lightroom-bg));
 
   border-radius: 4px;
-  padding: 1px 4px;
-  margin: -1px 0 auto -1px 0;
+  padding: 0 4px;
+
+  min-width: 0; // when contained in flexbox
 `;
 
 interface UserTagProps {
-  user: Person;
+  person: Person;
+  prefix?: React.ReactNode;
 }
 
-export default function UserTag({ user }: UserTagProps) {
+export default function UserTag({ person, prefix }: UserTagProps) {
   const tag = useAppSelector(
-    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(user)],
+    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
   );
 
   if (!tag || tag === "pending") return;
   if (!tag.text) return;
 
   return (
-    <TagContainer style={{ "--color": tag.color }}>{tag.text}</TagContainer>
+    <>
+      {prefix}
+      <TagContainer
+        style={
+          tag.color
+            ? {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ["--bg" as any]: tag.color,
+                color: getTextColorFor(tag.color),
+              }
+            : undefined
+        }
+      >
+        {tag.text}
+      </TagContainer>
+    </>
   );
 }

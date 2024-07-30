@@ -3,7 +3,7 @@ import { AppDispatch, RootState } from "../../store";
 import { clientSelector } from "../auth/authSelectors";
 import { Comment, CommentView } from "lemmy-js-client";
 import { resolveCommentReport } from "../moderation/modSlice";
-import { updateTagVotes } from "../tags/userTagSlice";
+import { fetchTagsForHandles, updateTagVotes } from "../tags/userTagSlice";
 import { getRemoteHandle } from "../../helpers/lemmy";
 
 interface CommentState {
@@ -78,7 +78,6 @@ export const commentSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-  receivedComments,
   mutatedComment,
   toggleCommentCollapseState,
   updateCommentVote,
@@ -220,4 +219,12 @@ export const modDistinguishComment =
     });
 
     dispatch(mutatedComment(response.comment_view));
+  };
+
+export const receivedComments =
+  (comments: CommentView[]) => async (dispatch: AppDispatch) => {
+    dispatch(commentSlice.actions.receivedComments(comments));
+    dispatch(
+      fetchTagsForHandles(comments.map((c) => getRemoteHandle(c.creator))),
+    );
   };

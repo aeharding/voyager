@@ -141,6 +141,7 @@ export default function CommentHeader({
                 opId={commentView.post.creator_id}
                 distinguished={comment.distinguished}
                 showBadge={false}
+                showTag={false}
               />{" "}
               deleted their <span className="ion-text-nowrap">comment :(</span>
             </DeletedLabel>
@@ -158,6 +159,7 @@ export default function CommentHeader({
                 opId={commentView.post.creator_id}
                 distinguished={comment.distinguished}
                 showBadge={false}
+                showTag={false}
               />
               &apos;s comment
             </DeletedLabel>
@@ -173,11 +175,12 @@ export default function CommentHeader({
               opId={commentView.post.creator_id}
               distinguished={comment.distinguished}
               showBadge={!context}
+              showTag={false}
             />
             <CommentVote item={commentView} />
             <Edited item={commentView} />
             <Spacer>
-              <UserTag user={commentView.creator} />
+              <UserTag person={commentView.creator} />
             </Spacer>
             {renderAside()}
           </>
