@@ -9,7 +9,7 @@ import {
 import { IPostMetadata, db } from "../../services/db";
 import { isLemmyError } from "../../helpers/lemmyErrors";
 import { resolvePostReport } from "../moderation/modSlice";
-import { updateTagVotes } from "../tags/userTagSlice";
+import { fetchTagsForHandles, updateTagVotes } from "../tags/userTagSlice";
 import { getRemoteHandle } from "../../helpers/lemmy";
 
 interface PostHiddenData {
@@ -223,6 +223,10 @@ export const receivedPosts = createAsyncThunk(
     for (const postMetadata of postMetadatas) {
       postHiddenById[postMetadata.post_id] = !!postMetadata.hidden;
     }
+
+    thunkAPI.dispatch(
+      fetchTagsForHandles(posts.map((c) => getRemoteHandle(c.creator))),
+    );
 
     return {
       posts,

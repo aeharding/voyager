@@ -12,12 +12,13 @@ const ScoreContainer = styled.span`
 
 interface UserScoreProps {
   person: Person;
+  prefix?: React.ReactNode;
 }
 
-export default function UserScore({ person: user }: UserScoreProps) {
+export default function UserScore({ person, prefix }: UserScoreProps) {
   const isDark = useIsDark();
   const tag = useAppSelector(
-    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(user)],
+    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
   );
 
   if (!tag || tag === "pending") return;
@@ -25,17 +26,19 @@ export default function UserScore({ person: user }: UserScoreProps) {
   if (score === 0) return;
 
   return (
-    <ScoreContainer
-      style={{
-        [isDark ? "color" : "background"]: getVoteWeightColor(
-          tag,
-          isDark ? 0.8 : 1,
-        ),
-      }}
-    >
-      {" "}
-      [{score > 0 ? "+" : ""}
-      {formatNumber(score)}]
-    </ScoreContainer>
+    <>
+      {prefix}
+      <ScoreContainer
+        style={{
+          [isDark ? "color" : "background"]: getVoteWeightColor(
+            tag,
+            isDark ? 0.8 : 1,
+          ),
+        }}
+      >
+        [{score > 0 ? "+" : ""}
+        {formatNumber(score)}]
+      </ScoreContainer>
+    </>
   );
 }

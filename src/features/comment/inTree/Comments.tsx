@@ -10,12 +10,11 @@ import React, {
 import {
   buildCommentsTreeWithMissing,
   getDepthFromCommentPath,
-  getRemoteHandle,
 } from "../../../helpers/lemmy";
 import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import { CommentSortType, CommentView } from "lemmy-js-client";
-import { compact, pullAllBy, sortBy, uniq, uniqBy } from "lodash";
+import { compact, pullAllBy, sortBy, uniqBy } from "lodash";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { receivedComments } from "../commentSlice";
 import { RefresherCustomEvent } from "@ionic/core";
@@ -37,7 +36,6 @@ import FeedLoadMoreFailed from "../../feed/endItems/FeedLoadMoreFailed";
 import usePreservePositionFromBottomInScrollView from "../../../helpers/usePreservePositionFromBottomInScrollView";
 import { postDetailPageHasVirtualScrollEnabled } from "../../../routes/pages/posts/PostPage";
 import { styled } from "@linaria/react";
-import { fetchTagsForHandles } from "../../tags/userTagSlice";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
@@ -294,12 +292,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       }
 
       dispatch(receivedComments(response.comments));
-
-      dispatch(
-        fetchTagsForHandles(
-          uniq(response.comments.map((c) => getRemoteHandle(c.creator))),
-        ),
-      );
 
       if (reqPostId !== postId || reqCommentId !== parentCommentId) return;
 

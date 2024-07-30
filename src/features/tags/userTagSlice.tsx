@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { db, UserTag } from "../../services/db";
 import { AppDispatch, RootState } from "../../store";
+import { uniq } from "lodash";
 
 interface CommunityState {
   tagByRemoteHandle: Record<string, UserTag | "pending">;
@@ -86,7 +87,7 @@ export const fetchTagsForHandles = createAsyncThunk(
   async (handles: string[], thunkAPI) => {
     const rootState = thunkAPI.getState() as RootState;
 
-    const handlesNeedingFetch = handles.filter(
+    const handlesNeedingFetch = uniq(handles).filter(
       (handle) => !rootState.userTag.tagByRemoteHandle[handle],
     );
 
