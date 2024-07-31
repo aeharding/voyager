@@ -20,8 +20,8 @@ importers:
   .:
     dependencies:
       '@aeharding/remark-lemmy-spoiler':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^2.0.0
+        version: 2.0.0
       '@capacitor-community/app-icon':
         specifier: ^5.0.0
         version: 5.0.0(@capacitor/core@6.1.0)
@@ -145,9 +145,6 @@ importers:
       mdast-util-gfm-table:
         specifier: ^2.0.0
         version: 2.0.0
-      mdast-util-lemmy-spoiler:
-        specifier: ^1.0.0
-        version: 1.0.0
       micromark:
         specifier: ^4.0.0
         version: 4.0.0
@@ -359,6 +356,9 @@ importers:
       jsdom:
         specifier: ^24.1.0
         version: 24.1.0
+      mdast-util-lemmy-spoiler:
+        specifier: ^2.0.0
+        version: 2.0.0
       prettier:
         specifier: ^3.3.2
         version: 3.3.2
@@ -392,8 +392,8 @@ packages:
   '@adobe/css-tools@4.4.0':
     resolution: {integrity: sha512-Ff9+ksdQQB3rMncgqDK78uLznstjyfIf2Arnh22pW8kBpLs6rpKDwgnZT46hin5Hl1WzazzK64DOrhSwYpS7bQ==}
 
-  '@aeharding/remark-lemmy-spoiler@1.0.1':
-    resolution: {integrity: sha512-NAykFv7DQYRh7J9xE/fyYSuTaTP5armX3Mla7vfIL+2QMU0DtRaiXpz9pybZxkjeweeB22fss87/NSOqTmB8Aw==}
+  '@aeharding/remark-lemmy-spoiler@2.0.0':
+    resolution: {integrity: sha512-Kw2LDXIeNyV2Ks1QXKYISEdwn4ufPev5gb4RzoSNSEUb1iL6aQmOUQvcuA7ePzXChNe6bmerkvJ2KKYXYaLYlQ==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -4571,6 +4571,9 @@ packages:
   marky@1.2.5:
     resolution: {integrity: sha512-q9JtQJKjpsVxCRVgQ+WapguSbKC3SQ5HEzFGPAJMStgh3QjCawp00UKv3MTTAArTmGmmPUvllHZoNbZ3gs0I+Q==}
 
+  mdast-squeeze-paragraphs@6.0.0:
+    resolution: {integrity: sha512-6NDbJPTg0M0Ye+TlYwX1KJ1LFbp515P2immRJyJQhc9Na9cetHzSoHNYIQcXpANEAP1sm9yd/CTZU2uHqR5A+w==}
+
   mdast-util-find-and-replace@3.0.1:
     resolution: {integrity: sha512-SG21kZHGC3XRTSUhtofZkBzZTJNM5ecCi0SK2IMKmSXR8vO3peL+kb1O0z7Zl83jKtutG4k5Wv/W7V3/YHvzPA==}
 
@@ -4598,8 +4601,8 @@ packages:
   mdast-util-gfm@3.0.0:
     resolution: {integrity: sha512-dgQEX5Amaq+DuUqf26jJqSK9qgixgd6rYDHAv4aTBuA92cTknZlKpPfa86Z/s8Dj8xsAQpFfBmPUHWJBWqS4Bw==}
 
-  mdast-util-lemmy-spoiler@1.0.0:
-    resolution: {integrity: sha512-M6WuaisvDWNkQVfD9LkIpCPDaDKgK6WF/jtalFTZzTQ49cZDq74EniY8RyNUHj9SsIw4kPLTpV2e5e788GId0w==}
+  mdast-util-lemmy-spoiler@2.0.0:
+    resolution: {integrity: sha512-5A0fDymXzJ0IbNDOK7+ZcjDX+nVGwpr+ginRcXduGe4CiZ7yw8WJQQhDPlUCSBScSF0Abr90hEKjhnSdOHVP+A==}
 
   mdast-util-mdx-expression@2.0.0:
     resolution: {integrity: sha512-fGCu8eWdKUKNu5mohVGkhBXCXGnOTLuFqOvGMvdikr+J1w7lDJgxThOKpwRWzzbyXAU2hhSwsmssOY4yTokluw==}
@@ -4672,8 +4675,8 @@ packages:
   micromark-extension-gfm@3.0.0:
     resolution: {integrity: sha512-vsKArQsicm7t0z2GugkCKtZehqUm31oeGBV/KVSorWSy8ZlNAv7ytjFhvaryUiCUJYqs+NoE6AFhpQvBTM6Q4w==}
 
-  micromark-extension-lemmy-spoiler@1.0.0:
-    resolution: {integrity: sha512-yVEkqRAK3HAOOzU8Bud0M897Uims5AhA8VuCnCWMKWkdo9NAddrc1txzaciyYSikNg16xDO9x20+7IlLV7Vkgg==}
+  micromark-extension-lemmy-spoiler@2.0.0:
+    resolution: {integrity: sha512-EmIUtnlX9Q8EeMWCu0JYujCDDg/7GxgEc/OeJjD6bytSdu5zuonb1PunINgObzJYSrybzAe82hmZugeAdG2Tmw==}
 
   micromark-factory-destination@2.0.0:
     resolution: {integrity: sha512-j9DGrQLm/Uhl2tCzcbLhy5kXsgkHUrjJHg4fFAeoMRwJmJerT9aw4FEhIbZStWN8A3qMwOp1uzHr4UL8AInxtA==}
@@ -5596,6 +5599,9 @@ packages:
 
   remark-supersub-lemmy@1.0.0:
     resolution: {integrity: sha512-8w3yuFfxtI55YnnZIPcrY/QrgCDSWrgY5vxX1XL3lPEwGxNE5DvtTXXgzuino6qTaClnj0PvYSz0bHa+2/D/Xw==}
+
+  remark-unlink@5.0.0:
+    resolution: {integrity: sha512-8NFrI3SecxhOLb734tKaxcU//lNDABabz1I26MGjdlpkUg1I+Fr7lyqL9ckxaCB4kErXD10mScPD7yhCXX4Pfw==}
 
   replace@1.2.2:
     resolution: {integrity: sha512-C4EDifm22XZM2b2JOYe6Mhn+lBsLBAvLbK8drfUQLTfD1KYl/n3VaW/CDju0Ny4w3xTtegBpg8YNSpFJPUDSjA==}
@@ -6893,11 +6899,12 @@ snapshots:
 
   '@adobe/css-tools@4.4.0': {}
 
-  '@aeharding/remark-lemmy-spoiler@1.0.1':
+  '@aeharding/remark-lemmy-spoiler@2.0.0':
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-lemmy-spoiler: 1.0.0
-      micromark-extension-lemmy-spoiler: 1.0.0
+      mdast-util-lemmy-spoiler: 2.0.0
+      micromark-extension-lemmy-spoiler: 2.0.0
+      remark-unlink: 5.0.0
       unified: 11.0.5
     transitivePeerDependencies:
       - supports-color
@@ -12020,6 +12027,11 @@ snapshots:
 
   marky@1.2.5: {}
 
+  mdast-squeeze-paragraphs@6.0.0:
+    dependencies:
+      '@types/mdast': 4.0.4
+      unist-util-visit: 5.0.0
+
   mdast-util-find-and-replace@3.0.1:
     dependencies:
       '@types/mdast': 4.0.4
@@ -12109,7 +12121,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  mdast-util-lemmy-spoiler@1.0.0:
+  mdast-util-lemmy-spoiler@2.0.0:
     dependencies:
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.2
@@ -12313,7 +12325,7 @@ snapshots:
       micromark-util-combine-extensions: 2.0.0
       micromark-util-types: 2.0.0
 
-  micromark-extension-lemmy-spoiler@1.0.0:
+  micromark-extension-lemmy-spoiler@2.0.0:
     dependencies:
       devlop: 1.1.0
       micromark-factory-space: 2.0.0
@@ -13451,6 +13463,12 @@ snapshots:
 
   remark-supersub-lemmy@1.0.0:
     dependencies:
+      unist-util-visit: 5.0.0
+
+  remark-unlink@5.0.0:
+    dependencies:
+      '@types/mdast': 4.0.4
+      mdast-squeeze-paragraphs: 6.0.0
       unist-util-visit: 5.0.0
 
   replace@1.2.2:
