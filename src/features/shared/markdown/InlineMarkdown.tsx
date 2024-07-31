@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import superSub from "remark-supersub-lemmy";
-import { spoilerSummaryOnlyRehype } from "./spoilerRehype";
+import inlinifySpoiler from "./components/spoiler/inlinifySpoiler";
 
 interface InlineMarkdownProps {
   children: string;
@@ -49,7 +49,7 @@ export default function InlineMarkdown({ children }: InlineMarkdownProps) {
           sub: "sub",
           sup: "sup",
         }}
-        remarkPlugins={[superSub, spoiler, spoilerSummaryOnlyRehype]}
+        remarkPlugins={[superSub, spoiler, inlinifySpoiler]}
       >
         {children}
       </ReactMarkdown>

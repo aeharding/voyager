@@ -48,9 +48,9 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
 
     let links: LinkData[] = [];
 
-    visit(mdastTree, ["spoiler", "link", "image"], (node) => {
+    visit(mdastTree, ["details", "link", "image"], (node) => {
       // don't show links within spoilers
-      if (node.type === "spoiler") return SKIP;
+      if (node.type === "details") return SKIP;
 
       if (node.type === "link" || (!showCommentImages && node.type === "image"))
         links.push({

@@ -10,7 +10,6 @@ import Table from "./components/Table";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import Summary from "./components/spoiler/Summary";
 import Details from "./components/spoiler/Details";
-import spoilerRehype from "./spoilerRehype";
 import { useMemo } from "react";
 import rehypeHighlight from "rehype-highlight";
 
@@ -128,12 +127,7 @@ export default function Markdown({
         [disableInternalLinkRouting, id, props.components],
       )}
       remarkPlugins={useMemo(
-        () => [
-          [customRemarkGfm, { connectedInstance }],
-          superSub,
-          spoiler,
-          spoilerRehype,
-        ],
+        () => [[customRemarkGfm, { connectedInstance }], superSub, spoiler],
         [connectedInstance],
       )}
       rehypePlugins={rehypePlugins}
