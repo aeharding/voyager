@@ -55,7 +55,8 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
       if (node.type === "link" || (!showCommentImages && node.type === "image"))
         links.push({
           type: node.type,
-          url: node.url,
+          // normalize relative links
+          url: new URL(node.url, `https://${connectedInstance}`).href,
           text:
             "children" in node ? (node.children[0] as Text)?.value : undefined,
         });
