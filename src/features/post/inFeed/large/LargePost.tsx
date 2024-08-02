@@ -169,7 +169,11 @@ export default function LargePost({ post }: PostProps) {
                   {alwaysShowAuthor && (
                     <>
                       {" "}
-                      <PersonLink person={post.creator} prefix="by" />
+                      <PersonLink
+                        person={post.creator}
+                        prefix="by"
+                        disableInstanceClick
+                      />
                     </>
                   )}
                 </>
