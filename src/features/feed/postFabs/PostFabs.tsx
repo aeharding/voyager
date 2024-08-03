@@ -1,10 +1,11 @@
+import { ComponentProps } from "react";
 import { useAppSelector } from "../../../store";
-import MarkReadFab from "./MarkReadFab";
+import HidePostsFab from "./HidePostsFab";
 
-export default function PostFabs() {
+export default function PostFabs(props: ComponentProps<typeof HidePostsFab>) {
   const showHideReadButton = useAppSelector(
     (state) => state.settings.general.posts.showHideReadButton,
   );
 
-  return <>{showHideReadButton && <MarkReadFab />}</>;
+  return <>{showHideReadButton && <HidePostsFab {...props} />}</>;
 }

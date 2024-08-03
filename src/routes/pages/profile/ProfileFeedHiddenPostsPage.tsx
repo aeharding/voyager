@@ -7,25 +7,22 @@ import {
   IonButtons,
   IonBackButton,
   IonButton,
-  useIonActionSheet,
 } from "@ionic/react";
 import { useParams } from "react-router";
 import useClient from "../../../helpers/useClient";
 import { FetchFn } from "../../../features/feed/Feed";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
 } from "../../../features/feed/PostCommentFeed";
 import { userHandleSelector } from "../../../features/auth/authSelectors";
 import { IPostMetadata, db } from "../../../services/db";
-import {
-  clearHidden,
-  postHiddenByIdSelector,
-} from "../../../features/post/postSlice";
+import { postHiddenByIdSelector } from "../../../features/post/postSlice";
 import FeedContent from "../shared/FeedContent";
 import { styled } from "@linaria/react";
 import AppHeader from "../../../features/shared/AppHeader";
+import useResetHiddenPosts from "../../../features/feed/useResetHiddenPosts";
 
 export const SettingLabel = styled(IonLabel)`
   margin-left: 1rem;
@@ -41,11 +38,11 @@ export default function ProfileFeedHiddenPostsPage() {
   const { handle: handleWithoutServer } = useParams<{ handle: string }>();
   const client = useClient();
   const postById = useAppSelector((state) => state.post.postById);
-  const dispatch = useAppDispatch();
-  const [presentActionSheet] = useIonActionSheet();
 
   // This is just used to trigger a re-render when the list changes
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
+
+  const resetHiddenPosts = useResetHiddenPosts();
 
   const lastPageNumberRef = useRef(1);
   const lastPageItemsRef = useRef<IPostMetadata[]>([]);
@@ -92,24 +89,6 @@ export default function ProfileFeedHiddenPostsPage() {
     [client, handle, postHiddenById],
   );
 
-  function clear() {
-    presentActionSheet({
-      buttons: [
-        {
-          text: "Reset hidden posts",
-          role: "destructive",
-          handler: () => {
-            dispatch(clearHidden());
-          },
-        },
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
-      ],
-    });
-  }
-
   return (
     <IonPage>
       <AppHeader>
@@ -122,7 +101,7 @@ export default function ProfileFeedHiddenPostsPage() {
             />
           </IonButtons>
           <IonButtons slot="end">
-            <IonButton onClick={clear} color="danger">
+            <IonButton onClick={() => resetHiddenPosts()} color="danger">
               Reset
             </IonButton>
           </IonButtons>

@@ -122,11 +122,10 @@ export default function JumpFab() {
     [onJump],
   );
 
-  const bind = useLongPress(
-    onJumpLongPress,
-    // () => onJump(),
-    { cancelOnMovement: 15, onCancel: onLongPressCancel },
-  );
+  const bind = useLongPress(onJumpLongPress, {
+    cancelOnMovement: 15,
+    onCancel: onLongPressCancel,
+  });
 
   return (
     <IonFab slot="fixed" vertical={vertical} horizontal={horizontal}>
