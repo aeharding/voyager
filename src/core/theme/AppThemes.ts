@@ -104,6 +104,21 @@ export function getTheme(appTheme: AppThemeType): Theme {
           tabBarBackground: "#000A1F",
         },
       };
+    case "outrun":
+      return {
+        light: {
+          primary: "#C400A5",
+          background: "#BAC1D1",
+          insetItemBackground: "#CFD7E8",
+          tabBarBackground: "#C1C8D9",
+        },
+        dark: {
+          primary: "#F335C5",
+          background: "#081D47",
+          insetItemBackground: "#061636",
+          tabBarBackground: "#041129",
+        },
+      };
   }
 }
 
