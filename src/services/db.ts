@@ -29,6 +29,7 @@ export const OAppThemeType = {
   Dracula: "dracula",
   Tangerine: "tangerine",
   Sunset: "sunset",
+  Outrun: "outrun",
 } as const;
 
 export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
