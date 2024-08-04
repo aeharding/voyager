@@ -123,8 +123,8 @@ function BaseSlidingVoteInternal({
   const typedMyVote = item.my_vote as 1 | -1 | 0 | undefined;
   const isPost = "unread_comments" in item;
   const currentVote = isPost
-    ? postVotesById[item.post.id] ?? typedMyVote
-    : commentVotesById[item.comment.id] ?? typedMyVote;
+    ? (postVotesById[item.post.id] ?? typedMyVote)
+    : (commentVotesById[item.comment.id] ?? typedMyVote);
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
   const commentSavedById = useAppSelector(

@@ -176,6 +176,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (pageData) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       fetchFnLastUpdated;
 
       const { posts, next_page } = await client.getPosts({

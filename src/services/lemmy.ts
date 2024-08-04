@@ -71,7 +71,7 @@ export function getImageSrc(url: string, options?: ImageOptions) {
 
   try {
     mutableUrl = new URL(url);
-  } catch (error) {
+  } catch (_) {
     return url;
   }
 

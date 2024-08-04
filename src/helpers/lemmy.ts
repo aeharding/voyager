@@ -77,7 +77,7 @@ export function buildCommentsTree(
   const map = new Map<number, CommentNodeI>();
   const depthOffset = !parentComment
     ? 0
-    : getDepthFromComment(comments[0]!.comment) ?? 0;
+    : (getDepthFromComment(comments[0]!.comment) ?? 0);
 
   for (const comment_view of comments) {
     const depthI = getDepthFromComment(comment_view.comment) ?? 0;

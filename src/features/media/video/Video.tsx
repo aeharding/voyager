@@ -1,7 +1,8 @@
 import * as portals from "react-reverse-portal";
 import { useVideoPortalNode } from "./VideoPortalProvider";
 import { forwardRef, useImperativeHandle } from "react";
-import Player, { PlayerProps } from "./Player";
+import type { PlayerProps } from "./Player";
+import type Player from "./Player";
 
 export interface VideoProps extends PlayerProps {}
 

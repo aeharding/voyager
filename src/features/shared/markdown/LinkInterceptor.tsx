@@ -33,7 +33,7 @@ function LinkInterceptorUnstyled({
 
     try {
       return new URL(props.href, `https://${connectedInstance}`).href;
-    } catch (error) {
+    } catch (_) {
       return;
     }
   }, [connectedInstance, props.href]);

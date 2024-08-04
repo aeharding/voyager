@@ -67,6 +67,7 @@ export default [
       "linebreak-style": ["warn", "unix"],
       "react/jsx-fragments": ["warn", "syntax"],
       "@typescript-eslint/no-empty-function": 0,
+      "@typescript-eslint/no-empty-object-type": 0,
       "@typescript-eslint/no-empty-interface": 0,
       "react/jsx-curly-brace-presence": ["warn", "never"],
       eqeqeq: ["warn", "smart"],
@@ -83,6 +84,7 @@ export default [
         "warn",
         {
           destructuredArrayIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
         },
       ],
 
