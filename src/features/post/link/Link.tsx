@@ -13,6 +13,7 @@ import { getImageSrc } from "../../../services/lemmy";
 import { determineTypeFromUrl, isUrlImage } from "../../../helpers/url";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
+import PlaintextMarkdown from "../../shared/markdown/PlaintextMarkdown";
 
 const TRANSPARENT_PIXEL =
   'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
@@ -225,7 +226,9 @@ export default function Link({
       <Bottom small={small || (!compact && !!thumbnail)}>
         {compactIcon}
         <UrlContainer>
-          <Text>{text}</Text>
+          <Text>
+            <PlaintextMarkdown>{text}</PlaintextMarkdown>
+          </Text>
           <Url>{url}</Url>
         </UrlContainer>
         <ChevronIcon icon={chevronForward} />
