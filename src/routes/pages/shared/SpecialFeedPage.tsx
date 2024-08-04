@@ -28,6 +28,7 @@ import PostAppearanceProvider, {
   WaitUntilPostAppearanceResolved,
 } from "../../../features/post/appearance/PostAppearanceProvider";
 import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+import useFeedUpdate from "../../../features/feed/useFeedUpdate";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -50,11 +51,15 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     (state) => state.settings.general.noSubscribedInFeed,
   );
 
+  const { notifyFeedUpdated, fetchFnLastUpdated } = useFeedUpdate();
+
   const filterSubscribed =
     noSubscribedInFeed && (type === "All" || type === "Local");
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (pageData) => {
+      fetchFnLastUpdated;
+
       const { posts, next_page } = await client.getPosts({
         ...pageData,
         limit: LIMIT,
@@ -64,7 +69,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
       return { data: posts, next_page };
     },
-    [client, sort, type],
+    [client, sort, type, fetchFnLastUpdated],
   );
 
   const filterSubscribedFn = useCallback(
@@ -125,7 +130,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
             <FeedContent>
               {feed}
               <TitleSearchResults />
-              <PostFabs />
+              <PostFabs forceRefresh={notifyFeedUpdated} />
             </FeedContent>
           </IonPage>
         </FeedContextProvider>

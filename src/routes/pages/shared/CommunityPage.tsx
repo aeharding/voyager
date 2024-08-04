@@ -46,6 +46,7 @@ import PostAppearanceProvider, {
   WaitUntilPostAppearanceResolved,
 } from "../../../features/post/appearance/PostAppearanceProvider";
 import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+import useFeedUpdate from "../../../features/feed/useFeedUpdate";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -158,6 +159,8 @@ const CommunityPageContent = memo(function CommunityPageContent({
     (state) => state.settings.general.posts.showHiddenInCommunities,
   );
 
+  const { notifyFeedUpdated, fetchFnLastUpdated } = useFeedUpdate();
+
   const postFeed = {
     remoteCommunityHandle: getRemoteHandleFromHandle(
       community,
@@ -173,6 +176,8 @@ const CommunityPageContent = memo(function CommunityPageContent({
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (pageData) => {
+      fetchFnLastUpdated;
+
       const { posts, next_page } = await client.getPosts({
         ...pageData,
         limit: LIMIT,
@@ -181,7 +186,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
       });
       return { data: posts, next_page };
     },
-    [client, community, sort],
+    [client, community, sort, fetchFnLastUpdated],
   );
 
   const onPull = async () => {
@@ -311,7 +316,9 @@ const CommunityPageContent = memo(function CommunityPageContent({
             <StyledFeedContent>
               {renderFeed()}
               <TitleSearchResults />
-              {!showHiddenInCommunities && <PostFabs />}
+              {!showHiddenInCommunities && (
+                <PostFabs forceRefresh={notifyFeedUpdated} />
+              )}
               <FixedBg slot="fixed" />
             </StyledFeedContent>
           </IonPage>
