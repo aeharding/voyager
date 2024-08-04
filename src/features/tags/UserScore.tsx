@@ -5,23 +5,72 @@ import { styled } from "@linaria/react";
 import { getVoteWeightColor } from "./voteColor";
 import { useIsDark } from "../../core/GlobalStyles";
 import { formatNumber } from "../../helpers/number";
+import { UserTag } from "../../services/db";
 
 const ScoreContainer = styled.span`
   color: var(--ion-color-medium2);
 `;
 
-interface UserScoreProps {
-  person: Person;
+type UserScoreProps =
+  | SyncUserScoreProps
+  | {
+      person: Person;
+    };
+
+interface BaseUserScoreProps {
   prefix?: React.ReactNode;
+  person?: Person;
 }
 
-export default function UserScore({ person, prefix }: UserScoreProps) {
-  const isDark = useIsDark();
+export default function UserScore(props: UserScoreProps) {
+  function renderFallback() {
+    if (!("tag" in props)) return;
+    return <SyncUserScore tag={props.tag} />;
+  }
+
+  const remoteHandle =
+    "tag" in props ? props.tag.handle : getRemoteHandle(props.person);
+
+  return (
+    <StoreUserScore
+      {...props}
+      renderFallback={renderFallback}
+      remoteHandle={remoteHandle}
+    />
+  );
+}
+
+interface StoreUserScoreProps extends BaseUserScoreProps {
+  remoteHandle: string;
+  renderFallback?: () => React.ReactNode;
+}
+
+function StoreUserScore({
+  remoteHandle,
+  renderFallback,
+  prefix,
+}: StoreUserScoreProps) {
   const tag = useAppSelector(
-    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
+    (state) => state.userTag.tagByRemoteHandle[remoteHandle],
   );
 
-  if (!tag || tag === "pending") return;
+  if (!tag || tag === "pending") return renderFallback?.();
+
+  return (
+    <>
+      {prefix}
+      <SyncUserScore tag={tag} />
+    </>
+  );
+}
+
+interface SyncUserScoreProps extends BaseUserScoreProps {
+  tag: UserTag;
+}
+
+function SyncUserScore({ tag, prefix }: SyncUserScoreProps) {
+  const isDark = useIsDark();
+
   const score = tag.upvotes - tag.downvotes;
   if (score === 0) return;
 

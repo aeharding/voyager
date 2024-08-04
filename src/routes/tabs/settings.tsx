@@ -18,6 +18,8 @@ import SearchCommunitiesPage from "../pages/search/results/SearchCommunitiesPage
 import AboutPage from "../pages/settings/about/AboutPage";
 import AboutThanksPage from "../pages/settings/about/AboutThanksPage";
 import RedditMigrateSubsListPage from "../pages/settings/RedditMigrateSubsListPage";
+import TagsSettingsPage from "../pages/settings/TagsSettingsPage";
+import BrowseTagsPage from "../pages/settings/BrowseTagsPage";
 
 export default [
   <Route exact path="/settings">
@@ -55,6 +57,12 @@ export default [
   </Route>,
   <Route exact path="/settings/blocks">
     <BlocksSettingsPage />
+  </Route>,
+  <Route exact path="/settings/tags">
+    <TagsSettingsPage />
+  </Route>,
+  <Route exact path="/settings/tags/browse">
+    <BrowseTagsPage />
   </Route>,
   <Route exact path="/settings/reddit-migrate">
     <RedditMigratePage />

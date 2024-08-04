@@ -751,6 +751,19 @@ export class WefwefDB extends Dexie {
     });
   }
 
+  async getUserTagsPaginated(
+    page: number,
+    limit: number,
+    filterTagged: boolean,
+  ) {
+    return await this.userTags
+      .orderBy("handle")
+      .filter(({ text }) => (filterTagged ? !!text : true))
+      .offset((page - 1) * limit)
+      .limit(limit)
+      .toArray();
+  }
+
   /*
    * Settings
    */
