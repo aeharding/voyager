@@ -17,6 +17,7 @@ import {
   VOTE_COLORS,
   bgColorToVariable,
 } from "../../settings/appearance/themes/votesTheme/VotesTheme";
+import { PostView } from "lemmy-js-client";
 
 const InactiveItem = styled(ActionButton)`
   ${bounceAnimationOnTransition}
@@ -31,10 +32,10 @@ const ActiveItem = styled(InactiveItem)<{
 
 interface VoteButtonProps {
   type: "down" | "up";
-  postId: number;
+  post: PostView;
 }
 
-export function VoteButton({ type, postId }: VoteButtonProps) {
+export function VoteButton({ type, post }: VoteButtonProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const vibrate = useHapticFeedback();
@@ -45,7 +46,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   );
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
-  const myVote = postVotesById[postId];
+  const myVote = postVotesById[post.post.id];
 
   const [state, toggle] = useTransition({
     timeout: bounceMs,
@@ -107,7 +108,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
 
         try {
           await dispatch(
-            voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote),
+            voteOnPost(post, myVote === selectedVote ? 0 : selectedVote),
           );
         } catch (error) {
           presentToast({
