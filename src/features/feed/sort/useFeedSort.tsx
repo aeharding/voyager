@@ -32,7 +32,7 @@ export default function useFeedSort<Context extends "posts" | "comments">(
   );
 
   const [sort, _setSort] = useState<Sort | undefined>(
-    !rememberCommunitySort ? defaultSort : feedSort ?? undefined,
+    !rememberCommunitySort ? defaultSort : (feedSort ?? undefined),
   );
 
   useEffect(() => {

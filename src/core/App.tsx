@@ -50,7 +50,7 @@ import { ResetStatusTap } from "./listeners/statusTap";
   let navMode;
   try {
     navMode = await getAndroidNavMode();
-  } catch (e) {
+  } catch (_) {
     // ignore errors
   }
 

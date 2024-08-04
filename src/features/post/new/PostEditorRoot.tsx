@@ -120,7 +120,7 @@ export default function PostEditorRoot({
 
   const initialTitle = existingPost?.post.name ?? "";
 
-  const initialUrl = initialImage ? "" : existingPost?.post.url ?? "";
+  const initialUrl = initialImage ? "" : (existingPost?.post.url ?? "");
 
   const initialText = existingPost?.post.body ?? "";
 
@@ -517,7 +517,7 @@ export default function PostEditorRoot({
 function validUrl(url: string): boolean {
   try {
     new URL(url);
-  } catch (e) {
+  } catch (_) {
     return false;
   }
 

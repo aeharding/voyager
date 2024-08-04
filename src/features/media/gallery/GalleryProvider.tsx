@@ -18,7 +18,7 @@ import { useLocation } from "react-router";
 import { StatusBar } from "@capacitor/status-bar";
 import { setPostRead } from "../../post/postSlice";
 import { useAppDispatch } from "../../../store";
-import GalleryMedia from "./GalleryMedia";
+import type GalleryMedia from "./GalleryMedia";
 import ImageMoreActions from "./ImageMoreActions";
 
 import type { PreparedPhotoSwipeOptions } from "photoswipe";

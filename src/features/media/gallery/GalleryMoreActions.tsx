@@ -52,7 +52,7 @@ export default function GalleryMoreActions({
 
   function openActions() {
     const mySaved = post
-      ? postSavedById[post.post.id] ?? post.saved
+      ? (postSavedById[post.post.id] ?? post.saved)
       : undefined;
 
     presentActionSheet({

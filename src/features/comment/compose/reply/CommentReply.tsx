@@ -183,7 +183,7 @@ export default function CommentReply({
               q: remoteComment.comment_view.comment.ap_id,
             })
           ).comment;
-        } catch (error) {
+        } catch (_) {
           silentError = true;
           presentToast({
             message:

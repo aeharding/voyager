@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import * as portals from "react-reverse-portal";
-import Player from "./Player";
+import type Player from "./Player";
 import { useIonViewWillEnter } from "@ionic/react";
 import PortaledPlayer from "./PortaledPlayer";
 import { uniqueId } from "lodash";

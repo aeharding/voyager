@@ -41,7 +41,7 @@ export default function PostAppearanceProvider({
   const [postAppearance, _setPostAppearance] = useState(
     !rememberCommunityPostAppearance
       ? defaultPostAppearance
-      : feedPostAppearance ?? undefined,
+      : (feedPostAppearance ?? undefined),
   );
 
   useEffect(() => {

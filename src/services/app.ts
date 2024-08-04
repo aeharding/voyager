@@ -29,7 +29,7 @@ async function getConfig() {
     if (customServers?.length) {
       _customServers = customServers;
     }
-  } catch (error) {
+  } catch (_) {
     return; // ignore errors in loading config
   }
 }

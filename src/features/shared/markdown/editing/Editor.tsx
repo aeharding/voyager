@@ -99,7 +99,7 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
 
       try {
         toInsert = await htmlToMarkdown(html);
-      } catch (error) {
+      } catch (_) {
         toInsert = e.clipboardData.getData("Text");
         console.error("Parse error", e);
       }

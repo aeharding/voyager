@@ -158,8 +158,8 @@ export default function InboxItem({ item }: InboxItemProps) {
 
   const vote =
     "comment" in item
-      ? commentVotesById[item.comment.id] ??
-        (item.my_vote as 1 | 0 | -1 | undefined)
+      ? (commentVotesById[item.comment.id] ??
+        (item.my_vote as 1 | 0 | -1 | undefined))
       : undefined;
 
   function renderHeader() {
