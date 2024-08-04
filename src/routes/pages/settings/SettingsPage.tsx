@@ -192,7 +192,7 @@ export default function SettingsPage() {
           )}
 
           {currentHandle && (
-            <IonItem routerLink="/settings/blocks">
+            <IonItem routerLink="/settings/tags">
               <IconBg color="color(display-p3 1 0.3 1)" size="1">
                 <IonIcon icon={pricetag} />
               </IconBg>

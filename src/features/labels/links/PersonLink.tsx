@@ -21,7 +21,7 @@ import { blockUser } from "../../user/userSlice";
 import useAppToast from "../../../helpers/useAppToast";
 import { buildBlocked } from "../../../helpers/toastMessages";
 import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
-import UserScore from "../../tags/UserScore";
+import UserScoreWithPrefix from "../../tags/UserScore";
 import { PageContext } from "../../auth/PageContext";
 import UserTag from "../../tags/UserTag";
 
@@ -152,7 +152,7 @@ export default function PersonLink({
           <AgeBadge published={person.published} />
         </>
       )}
-      <UserScore person={person} prefix=" " />
+      <UserScoreWithPrefix person={person} prefix=" " />
       {showTag && <UserTag person={person} prefix=" " />}
     </>
   );

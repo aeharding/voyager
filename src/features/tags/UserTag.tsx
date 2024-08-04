@@ -4,6 +4,7 @@ import { getRemoteHandle } from "../../helpers/lemmy";
 import { Person } from "lemmy-js-client";
 import { getTextColorFor } from "../../helpers/color";
 import React from "react";
+import type { UserTag } from "../../services/db";
 
 const TagContainer = styled.span`
   white-space: nowrap;
@@ -18,35 +19,79 @@ const TagContainer = styled.span`
   min-width: 0; // when contained in flexbox
 `;
 
-interface UserTagProps {
-  person: Person;
+type UserTagProps =
+  | SyncUserTagProps
+  | {
+      person: Person;
+    };
+
+interface BaseUserTagProps {
   prefix?: React.ReactNode;
+  person?: Person;
 }
 
-export default function UserTag({ person, prefix }: UserTagProps) {
+export default function UserTag(props: UserTagProps) {
+  function renderFallback() {
+    if (!("tag" in props)) return;
+    return <SyncUserTag tag={props.tag} />;
+  }
+
+  const remoteHandle =
+    "tag" in props ? props.tag.handle : getRemoteHandle(props.person);
+
+  return (
+    <StoreUserTag
+      {...props}
+      renderFallback={renderFallback}
+      remoteHandle={remoteHandle}
+    />
+  );
+}
+
+interface StoreUserTagProps extends BaseUserTagProps {
+  remoteHandle: string;
+  renderFallback?: () => React.ReactNode;
+}
+
+function StoreUserTag({
+  remoteHandle,
+  renderFallback,
+  prefix,
+}: StoreUserTagProps) {
   const tag = useAppSelector(
-    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
+    (state) => state.userTag.tagByRemoteHandle[remoteHandle],
   );
 
-  if (!tag || tag === "pending") return;
-  if (!tag.text) return;
+  if (!tag || tag === "pending") return renderFallback?.();
 
   return (
     <>
       {prefix}
-      <TagContainer
-        style={
-          tag.color
-            ? {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ["--bg" as any]: tag.color,
-                color: getTextColorFor(tag.color),
-              }
-            : undefined
-        }
-      >
-        {tag.text}
-      </TagContainer>
+      <SyncUserTag tag={tag} />
     </>
+  );
+}
+
+interface SyncUserTagProps extends BaseUserTagProps {
+  tag: UserTag;
+}
+
+function SyncUserTag({ tag }: SyncUserTagProps) {
+  if (!tag.text) return;
+
+  return (
+    <TagContainer
+      style={
+        tag.color
+          ? {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ["--bg" as any]: tag.color,
+              color: getTextColorFor(tag.color),
+            }
+          : undefined
+      }
+    >
+      {tag.text}
+    </TagContainer>
   );
 }
