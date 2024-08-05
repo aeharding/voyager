@@ -15,6 +15,7 @@ import {
   IonIcon,
   IonNavLink,
   IonToggle,
+  useIonAlert,
 } from "@ionic/react";
 import { useEffect, useMemo, useState } from "react";
 import useClient from "../../../helpers/useClient";
@@ -22,7 +23,7 @@ import { useAppDispatch } from "../../../store";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
 import { startCase } from "lodash";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
-import { cameraOutline, checkmark } from "ionicons/icons";
+import { accessibility, cameraOutline, checkmark } from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -39,6 +40,7 @@ import {
   deletePendingImageUploads,
   uploadImage,
 } from "../../shared/markdown/editing/uploadImageSlice";
+import { Post } from "lemmy-js-client";
 
 const Container = styled.div`
   position: absolute;
@@ -90,6 +92,11 @@ export default function PostEditorRoot({
   dismiss,
   ...props
 }: PostEditorProps) {
+  const dispatch = useAppDispatch();
+  const [presentAlert] = useIonAlert();
+  const router = useOptimizedIonRouter();
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+
   const community =
     "existingPost" in props
       ? props.existingPost.community
@@ -103,8 +110,6 @@ export default function PostEditorRoot({
     () => existingPost?.post.url && isUrlImage(existingPost.post.url),
     [existingPost],
   );
-
-  const dispatch = useAppDispatch();
 
   const initialImage = isImage ? existingPost!.post.url : undefined;
 
@@ -120,6 +125,8 @@ export default function PostEditorRoot({
 
   const initialTitle = existingPost?.post.name ?? "";
 
+  const initialAltText = existingPost?.post.alt_text ?? "";
+
   const initialUrl = initialImage ? "" : (existingPost?.post.url ?? "");
 
   const initialText = existingPost?.post.body ?? "";
@@ -131,6 +138,7 @@ export default function PostEditorRoot({
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initialTitle);
+  const [altText, setAltText] = useState(initialAltText);
   const [url, setUrl] = useState(initialUrl);
   const [text, setText] = useState(initialText);
   const [nsfw, setNsfw] = useState(initialNsfw);
@@ -140,9 +148,6 @@ export default function PostEditorRoot({
     initialImage,
   );
   const [photoUploading, setPhotoUploading] = useState(false);
-
-  const router = useOptimizedIonRouter();
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const showAutofill = !!url && isValidUrl(url) && !title;
 
@@ -216,6 +221,16 @@ export default function PostEditorRoot({
       }
     })();
 
+    const postAltText = (() => {
+      switch (postType) {
+        case "link":
+        default:
+          return undefined;
+        case "photo":
+          return altText;
+      }
+    })();
+
     let errorMessage: string | undefined;
 
     if (!title) {
@@ -246,11 +261,12 @@ export default function PostEditorRoot({
 
     let postResponse;
 
-    const payload = {
+    const payload: Pick<Post, "name" | "url" | "body" | "nsfw" | "alt_text"> = {
       name: title,
       url: postUrl,
       body: text || undefined,
       nsfw: showNsfwToggle && nsfw,
+      alt_text: postAltText,
     };
 
     try {
@@ -358,6 +374,28 @@ export default function PostEditorRoot({
     setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
   }
 
+  async function openCaptionPrompt() {
+    presentAlert({
+      message: "Add an accessible caption",
+      inputs: [
+        {
+          value: altText,
+          placeholder: "Image description",
+          name: "altText",
+        },
+      ],
+      buttons: [
+        {
+          text: altText ? "Update" : "Add",
+          handler: ({ altText }) => {
+            setAltText(altText);
+          },
+        },
+        { text: "Cancel", role: "cancel" },
+      ],
+    });
+  }
+
   const postButtonDisabled = loading || !canSubmit();
 
   return (
@@ -459,6 +497,15 @@ export default function PostEditorRoot({
                       src={photoPreviewURL}
                       loading={photoUploading}
                     />
+                    <IonButton
+                      fill={altText ? "solid" : "outline"}
+                      shape="round"
+                      tabIndex={0}
+                      aria-label="Caption this image"
+                      onClick={openCaptionPrompt}
+                    >
+                      <IonIcon slot="icon-only" icon={accessibility} />
+                    </IonButton>
                   </IonItem>
                 )}
               </>

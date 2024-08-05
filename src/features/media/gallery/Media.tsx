@@ -24,6 +24,7 @@ const Media = forwardRef<
         nativeControls={nativeControls}
         ref={ref as ComponentProps<typeof Video>["ref"]}
         src={src}
+        alt={props.alt ?? props.post?.post.alt_text}
       />
     );
 

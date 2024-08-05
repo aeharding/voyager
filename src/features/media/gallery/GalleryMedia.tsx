@@ -71,13 +71,21 @@ export default forwardRef<
   );
 
   if (isGif && !shouldAutoplay) {
-    return <GalleryGif {...props} ref={ref} onClick={onClick} />;
+    return (
+      <GalleryGif
+        {...props}
+        ref={ref}
+        onClick={onClick}
+        alt={props.alt ?? post?.post.alt_text}
+      />
+    );
   }
 
   return (
     <GalleryImg
       {...props}
       ref={ref as Ref<HTMLImageElement>}
+      alt={props.alt ?? post?.post.alt_text}
       onClick={onClick}
     />
   );

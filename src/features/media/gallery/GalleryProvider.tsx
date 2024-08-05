@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import GalleryPostActions from "./GalleryPostActions";
+import GalleryPostActions from "./actions/GalleryPostActions";
 import { createPortal } from "react-dom";
 import { PostView } from "lemmy-js-client";
 import { getSafeArea, isAndroid, isNative } from "../../../helpers/device";
@@ -19,7 +19,7 @@ import { StatusBar } from "@capacitor/status-bar";
 import { setPostRead } from "../../post/postSlice";
 import { useAppDispatch } from "../../../store";
 import type GalleryMedia from "./GalleryMedia";
-import ImageMoreActions from "./ImageMoreActions";
+import ImageMoreActions from "./actions/ImageMoreActions";
 
 import type { PreparedPhotoSwipeOptions } from "photoswipe";
 import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
@@ -123,6 +123,10 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
               thumbEl instanceof HTMLImageElement
                 ? thumbEl.naturalWidth
                 : thumbEl.width,
+            alt:
+              thumbEl instanceof HTMLImageElement
+                ? thumbEl.alt
+                : post?.post.alt_text,
           },
         ],
         showHideAnimationType: animationType ?? "fade",
@@ -369,7 +373,14 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
               <GalleryPostActions post={post} imgSrc={imgSrcRef.current} />
             )
           ) : (
-            <ImageMoreActions imgSrc={imgSrcRef.current} />
+            <ImageMoreActions
+              imgSrc={imgSrcRef.current}
+              alt={
+                thumbElRef.current instanceof HTMLImageElement
+                  ? thumbElRef.current.alt
+                  : undefined
+              }
+            />
           ),
           actionContainer,
         )}
