@@ -380,18 +380,18 @@ export default function PostEditorRoot({
       inputs: [
         {
           value: altText,
-          placeholder: "Image description",
+          placeholder: "Fluffy fur blankets the feline...",
           name: "altText",
         },
       ],
       buttons: [
+        { text: "Cancel", role: "cancel" },
         {
           text: altText ? "Update" : "Add",
           handler: ({ altText }) => {
             setAltText(altText);
           },
         },
-        { text: "Cancel", role: "cancel" },
       ],
     });
   }

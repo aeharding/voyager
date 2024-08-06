@@ -376,7 +376,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
           ) : (
             <ImageMoreActions
               imgSrc={imgSrcRef.current}
-              alt={thumbElRef.current ? getAlt(thumbElRef.current) : undefined}
+              alt={getAlt(thumbElRef.current)}
             />
           ),
           actionContainer,
@@ -396,9 +396,11 @@ function getHashValue(): string {
 }
 
 function getAlt(
-  thumbEl: HTMLImageElement | HTMLCanvasElement,
+  thumbEl: HTMLImageElement | HTMLCanvasElement | undefined,
 ): string | undefined {
-  return thumbEl instanceof HTMLImageElement
-    ? thumbEl.alt
-    : (thumbEl.getAttribute("aria-label") ?? undefined);
+  if (!thumbEl) return;
+
+  if (thumbEl instanceof HTMLImageElement) return thumbEl.alt;
+
+  return thumbEl.getAttribute("aria-label") ?? undefined;
 }

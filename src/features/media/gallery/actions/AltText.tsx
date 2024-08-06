@@ -5,7 +5,6 @@ import { useState } from "react";
 const Container = styled.div`
   max-width: 600px;
   width: 100%;
-  text-align: center;
 
   display: flex;
   flex-direction: column;
@@ -17,16 +16,40 @@ const Container = styled.div`
   margin-bottom: calc(calc(-1 * var(--topPadding)) + 1rem);
 `;
 
+const DynamicHeightBg = styled.div`
+  position: absolute;
+  inset: 0;
+
+  container-type: size;
+`;
+
+const Color = styled.div`
+  position: absolute;
+  inset: 0;
+
+  // 10px for text margins, plus 5px wiggle
+  // 2.4rem = 1.2 line height, two lines
+  @container (min-height: calc(15px + 2.4rem)) {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 6px;
+    transform: translate3d(0, 0, 0); // safari optimization
+  }
+`;
+
 const Text = styled.div`
   padding: 5px 10px;
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.5);
 
   margin-left: 16px;
   margin-right: 16px;
+
+  position: relative;
 `;
 
-const Clamped = styled.div``;
+const Clamped = styled.div`
+  position: relative;
+`;
 
 const clampCss = css`
   display: -webkit-box;
@@ -47,6 +70,9 @@ export default function AltText({ alt }: AltTextProps) {
   return (
     <Container>
       <Text onClick={() => setShouldClampAltText((v) => !v)}>
+        <DynamicHeightBg>
+          <Color />
+        </DynamicHeightBg>
         <Clamped className={cx(shouldClampAltText && clampCss)}>{alt}</Clamped>
       </Text>
     </Container>
