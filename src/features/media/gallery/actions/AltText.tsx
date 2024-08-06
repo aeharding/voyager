@@ -44,6 +44,9 @@ const Text = styled.div`
   margin-left: 16px;
   margin-right: 16px;
 
+  // explicit line height for @container calculations
+  line-height: 1.2;
+
   position: relative;
 `;
 
