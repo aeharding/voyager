@@ -1,42 +1,29 @@
 import { IonIcon } from "@ionic/react";
-import { VoteButton } from "../../post/shared/VoteButton";
+import { VoteButton } from "../../../post/shared/VoteButton";
 import { PostView } from "lemmy-js-client";
 import { chatbubbleOutline } from "ionicons/icons";
-import { useAppSelector } from "../../../store";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import MoreActions from "../../post/shared/MoreActions";
+import { useAppSelector } from "../../../../store";
+import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
+import MoreActions from "../../../post/shared/MoreActions";
 import {
   calculateTotalScore,
   calculateSeparateScore,
-} from "../../../helpers/vote";
+} from "../../../../helpers/vote";
 import { useLocation } from "react-router";
 import React, { useContext } from "react";
-import { GalleryContext } from "./GalleryProvider";
-import { OVoteDisplayMode } from "../../../services/db";
-import { getShareIcon, isNative } from "../../../helpers/device";
-import GalleryMoreActions from "./GalleryMoreActions";
+import { GalleryContext } from "../GalleryProvider";
+import { OVoteDisplayMode } from "../../../../services/db";
+import { getShareIcon, isNative } from "../../../../helpers/device";
+import GalleryActions from "./GalleryActions";
 import { StashMedia } from "capacitor-stash-media";
 import { Share } from "@capacitor/share";
-import useAppToast from "../../../helpers/useAppToast";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import { InFeedContext } from "../../feed/Feed";
+import useAppToast from "../../../../helpers/useAppToast";
+import { useOptimizedIonRouter } from "../../../../helpers/useOptimizedIonRouter";
+import { InFeedContext } from "../../../feed/Feed";
+import { buildPostLink } from "../../../../helpers/appLinkBuilder";
 import { styled } from "@linaria/react";
-import { buildPostLink } from "../../../helpers/appLinkBuilder";
-
-const BottomContainer = styled.div`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  padding: 1rem;
-  padding-top: 4rem;
-  padding-bottom: calc(
-    1rem + var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0))
-  );
-
-  color: white;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 1), transparent);
-`;
+import AltText from "./AltText";
+import { BottomContainer, BottomContainerActions } from "./shared";
 
 const Container = styled.div`
   display: flex;
@@ -45,7 +32,7 @@ const Container = styled.div`
   font-size: 1.5em;
 
   max-width: 600px;
-  margin: auto;
+  width: 100%;
 `;
 
 const Section = styled.div`
@@ -61,11 +48,13 @@ const Amount = styled.div`
 interface GalleryPostActionsProps {
   post: PostView;
   imgSrc: string;
+  alt?: string;
 }
 
 export default function GalleryPostActions({
   post,
   imgSrc,
+  alt,
 }: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useOptimizedIonRouter();
@@ -98,33 +87,36 @@ export default function GalleryPostActions({
 
   return (
     <BottomContainer>
-      <Container onClick={(e) => e.stopPropagation()}>
-        <Voting post={post} imgSrc={imgSrc} />
-        <div
-          onClick={() => {
-            close();
+      <AltText alt={alt} />
+      <BottomContainerActions withBg>
+        <Container onClick={(e) => e.stopPropagation()}>
+          <Voting post={post} imgSrc={imgSrc} />
+          <div
+            onClick={() => {
+              close();
 
-            const link = buildGeneralBrowseLink(
-              buildPostLink(post.community, post.post),
-            );
+              const link = buildGeneralBrowseLink(
+                buildPostLink(post.community, post.post),
+              );
 
-            if (!location.pathname.startsWith(link)) router.push(link);
-          }}
-        >
-          <Section>
-            <IonIcon icon={chatbubbleOutline} />
-            <Amount>{post.counts.comments}</Amount>
-          </Section>
-        </div>
-        <IonIcon icon={getShareIcon()} onClick={shareImage} />
-        {isNative() ? (
-          <GalleryMoreActions post={post} imgSrc={imgSrc} />
-        ) : (
-          <InFeedContext.Provider value={true}>
-            <MoreActions post={post} />
-          </InFeedContext.Provider>
-        )}
-      </Container>
+              if (!location.pathname.startsWith(link)) router.push(link);
+            }}
+          >
+            <Section>
+              <IonIcon icon={chatbubbleOutline} />
+              <Amount>{post.counts.comments}</Amount>
+            </Section>
+          </div>
+          <IonIcon icon={getShareIcon()} onClick={shareImage} />
+          {isNative() ? (
+            <GalleryActions post={post} imgSrc={imgSrc} />
+          ) : (
+            <InFeedContext.Provider value={true}>
+              <MoreActions post={post} />
+            </InFeedContext.Provider>
+          )}
+        </Container>
+      </BottomContainerActions>
     </BottomContainer>
   );
 }

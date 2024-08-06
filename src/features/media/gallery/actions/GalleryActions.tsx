@@ -8,37 +8,34 @@ import {
   peopleOutline,
   personOutline,
 } from "ionicons/icons";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { getHandle } from "../../../helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
+import { getHandle } from "../../../../helpers/lemmy";
 import { PostView } from "lemmy-js-client";
-import { PageContext } from "../../auth/PageContext";
+import { PageContext } from "../../../auth/PageContext";
 import { useContext } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { savePost } from "../../post/postSlice";
+import { useAppDispatch, useAppSelector } from "../../../../store";
+import { savePost } from "../../../post/postSlice";
 import {
   photoCopied,
   photoSaved,
   saveError,
   saveSuccess,
-} from "../../../helpers/toastMessages";
-import { ActionButton } from "../../post/actions/ActionButton";
+} from "../../../../helpers/toastMessages";
+import { ActionButton } from "../../../post/actions/ActionButton";
 import { StashMedia } from "capacitor-stash-media";
-import { getShareIcon, isNative } from "../../../helpers/device";
+import { getShareIcon, isNative } from "../../../../helpers/device";
 import { Share } from "@capacitor/share";
-import useAppToast from "../../../helpers/useAppToast";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import useNativeBrowser from "../../shared/useNativeBrowser";
+import useAppToast from "../../../../helpers/useAppToast";
+import { useOptimizedIonRouter } from "../../../../helpers/useOptimizedIonRouter";
+import useNativeBrowser from "../../../shared/useNativeBrowser";
 import { compact } from "lodash";
 
-interface GalleryMoreActionsProps {
+interface GalleryActionsProps {
   post?: PostView;
   imgSrc: string;
 }
 
-export default function GalleryMoreActions({
-  post,
-  imgSrc,
-}: GalleryMoreActionsProps) {
+export default function GalleryActions({ post, imgSrc }: GalleryActionsProps) {
   const router = useOptimizedIonRouter();
   const openNativeBrowser = useNativeBrowser();
   const [presentActionSheet] = useIonActionSheet();

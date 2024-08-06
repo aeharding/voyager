@@ -13,7 +13,16 @@ export default function LargeFeedPostMedia(
   const src = usePostSrc(props.post);
 
   if (props.post.post.url && isRedgif(props.post.post.url))
-    return <LargeFeedRedgifMedia url={props.post.post.url} {...props} />;
+    return (
+      <LargeFeedRedgifMedia
+        url={props.post.post.url}
+        alt={props.post.post.alt_text}
+        {...props}
+      />
+    );
 
-  if (src) return <LargeFeedMedia {...props} src={src} />;
+  if (src)
+    return (
+      <LargeFeedMedia {...props} src={src} alt={props.post.post.alt_text} />
+    );
 }

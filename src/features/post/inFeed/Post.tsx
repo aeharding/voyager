@@ -46,6 +46,7 @@ function Post(props: PostProps) {
   const possiblyPost = useAppSelector(
     (state) => state.post.postById[props.post.post.id],
   );
+
   const potentialPost =
     typeof possiblyPost === "object" ? possiblyPost : undefined;
   const openPostActions = usePostActions(props.post);

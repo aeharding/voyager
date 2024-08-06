@@ -8,5 +8,5 @@ export default function CompactFeedPostMedia(
 ) {
   const src = usePostSrc(props.post);
 
-  if (src) return <Media {...props} src={src} />;
+  if (src) return <Media {...props} src={src} alt={props.post.post.alt_text} />;
 }
