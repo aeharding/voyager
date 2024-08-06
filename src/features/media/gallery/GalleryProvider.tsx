@@ -123,10 +123,7 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
               thumbEl instanceof HTMLImageElement
                 ? thumbEl.naturalWidth
                 : thumbEl.width,
-            alt:
-              thumbEl instanceof HTMLImageElement
-                ? thumbEl.alt
-                : post?.post.alt_text,
+            alt: getAlt(thumbEl),
           },
         ],
         showHideAnimationType: animationType ?? "fade",
@@ -370,16 +367,16 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         createPortal(
           post ? (
             thumbElRef.current && (
-              <GalleryPostActions post={post} imgSrc={imgSrcRef.current} />
+              <GalleryPostActions
+                post={post}
+                imgSrc={imgSrcRef.current}
+                alt={getAlt(thumbElRef.current)}
+              />
             )
           ) : (
             <ImageMoreActions
               imgSrc={imgSrcRef.current}
-              alt={
-                thumbElRef.current instanceof HTMLImageElement
-                  ? thumbElRef.current.alt
-                  : undefined
-              }
+              alt={thumbElRef.current ? getAlt(thumbElRef.current) : undefined}
             />
           ),
           actionContainer,
@@ -396,4 +393,12 @@ function getBaseUrl(): string {
 
 function getHashValue(): string {
   return window.location.hash.substring(1);
+}
+
+function getAlt(
+  thumbEl: HTMLImageElement | HTMLCanvasElement,
+): string | undefined {
+  return thumbEl instanceof HTMLImageElement
+    ? thumbEl.alt
+    : (thumbEl.getAttribute("aria-label") ?? undefined);
 }

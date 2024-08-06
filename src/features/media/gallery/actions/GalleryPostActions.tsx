@@ -48,11 +48,13 @@ const Amount = styled.div`
 interface GalleryPostActionsProps {
   post: PostView;
   imgSrc: string;
+  alt?: string;
 }
 
 export default function GalleryPostActions({
   post,
   imgSrc,
+  alt,
 }: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useOptimizedIonRouter();
@@ -85,7 +87,7 @@ export default function GalleryPostActions({
 
   return (
     <BottomContainer>
-      <AltText alt={post.post.alt_text} />
+      <AltText alt={alt} />
       <BottomContainerActions withBg>
         <Container onClick={(e) => e.stopPropagation()}>
           <Voting post={post} imgSrc={imgSrc} />
