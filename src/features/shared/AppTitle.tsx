@@ -1,11 +1,14 @@
 import { IonTitle } from "@ionic/react";
 import { ComponentProps, useEffect, useRef, useState } from "react";
+import { isIosTheme } from "../../helpers/device";
 
 interface AppTitleProps extends ComponentProps<typeof IonTitle> {
   fullPadding?: number;
 }
 
-export default function AppTitle({ fullPadding, ...props }: AppTitleProps) {
+export default isIosTheme() ? IosAppTitle : IonTitle;
+
+function IosAppTitle({ fullPadding, ...props }: AppTitleProps) {
   const ref = useRef<HTMLIonTitleElement>(null);
   const [smaller, setSmaller] = useState(false);
 
