@@ -4,7 +4,7 @@ import { db, UserTag as UserTagType } from "../../../../services/db";
 import { IonItem, IonLabel } from "@ionic/react";
 import { LIMIT } from "../../../../services/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
-import UserScoreWithPrefix from "../../../tags/UserScore";
+import UserScore from "../../../tags/UserScore";
 import UserTag from "../../../tags/UserTag";
 
 interface BrowseTagsProps {
@@ -31,7 +31,7 @@ export default function BrowseTags({ filter }: BrowseTagsProps) {
     (tag: UserTagType) => (
       <IonItem routerLink={buildGeneralBrowseLink(`/u/${tag.handle}`)}>
         <IonLabel>
-          {tag.handle} <UserScoreWithPrefix tag={tag} /> <UserTag tag={tag} />
+          {tag.handle} <UserScore tag={tag} /> <UserTag tag={tag} />
         </IonLabel>
       </IonItem>
     ),

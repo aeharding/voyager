@@ -16,6 +16,7 @@ import { RefObject } from "react";
 import { useAppSelector } from "../../store";
 import { ActionButton } from "../post/actions/ActionButton";
 import UserTag from "../tags/UserTag";
+import UserScore from "../tags/UserScore";
 
 const Header = styled.div`
   display: flex;
@@ -70,6 +71,7 @@ const Spacer = styled.div`
   overflow: hidden;
   display: flex;
 `;
+
 interface CommentHeaderProps {
   canModerate: ModeratorRole | undefined;
   commentView: CommentView;
@@ -177,6 +179,7 @@ export default function CommentHeader({
               showBadge={!context}
               showTag={false}
             />
+            <UserScore person={commentView.creator} />
             <CommentVote item={commentView} />
             <Edited item={commentView} />
             <Spacer>
