@@ -3,6 +3,10 @@ import { ComponentProps, useEffect, useRef, useState } from "react";
 import { isIosTheme } from "../../helpers/device";
 
 interface AppTitleProps extends ComponentProps<typeof IonTitle> {
+  /**
+   * Padding applied to titles of normal headers with up to
+   * two icon buttons on right side of title
+   */
   fullPadding?: number;
 }
 
