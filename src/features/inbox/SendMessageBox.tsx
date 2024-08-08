@@ -34,7 +34,7 @@ const InputContainer = styled.div`
 `;
 
 const Input = styled(TextareaAutosize)`
-  border: 0.55px solid
+  border: 1px solid
     var(
       --ion-tab-bar-border-color,
       var(
