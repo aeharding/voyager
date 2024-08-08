@@ -258,3 +258,8 @@ export const deepLinkFailed: AppToastOptions = {
   position: "top",
   duration: 7000,
 };
+
+export const privateMessageSendFailed: AppToastOptions = {
+  message: `Message failed to send. Please try again`,
+  color: "danger",
+};

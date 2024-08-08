@@ -1,7 +1,7 @@
 import React from "react";
 import { CommentView, PostView } from "lemmy-js-client";
-import BaseSlidingVote from "./BaseSlidingVote";
 import { useAppSelector } from "../../../store";
+import { BaseSlidingVote } from "./BaseSliding";
 
 interface SlidingVoteProps {
   children: React.ReactNode;

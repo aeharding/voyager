@@ -99,12 +99,17 @@ export default function ConversationPage() {
     dispatch(syncMessages());
   }, [dispatch, jwtPayload]);
 
-  const scrollIfNeeded = useCallback(() => {
+  const scrollToBottom = useCallback(() => {
     if (!ref.current) return;
-    if (!shouldStickToBottom.current) return;
 
     ref.current.scrollToIndex(messages.length - 1, { align: "end" });
   }, [messages.length]);
+
+  const scrollIfNeeded = useCallback(() => {
+    if (!shouldStickToBottom.current) return;
+
+    scrollToBottom();
+  }, [scrollToBottom]);
 
   useEffect(() => {
     scrollIfNeeded();
@@ -175,11 +180,16 @@ export default function ConversationPage() {
           <PageContentIonSpinner />
         )}
       </FeedContent>
-      <IonFooter>
+      <IonFooter
+        className={css`
+          background: var(--ion-background-color);
+        `}
+      >
         {them && (
           <SendMessageBox
-            recipientId={them.id}
+            recipient={them}
             onHeightChange={scrollIfNeeded}
+            scrollToBottom={scrollToBottom}
           />
         )}
       </IonFooter>

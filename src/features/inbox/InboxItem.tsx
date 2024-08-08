@@ -318,17 +318,9 @@ export default function InboxItem({ item }: InboxItemProps) {
     </StyledIonItem>
   );
 
-  if ("comment" in item)
-    return (
-      <>
-        <SlidingInbox item={item}>{contents}</SlidingInbox>
-        <Hr />
-      </>
-    );
-
   return (
     <>
-      {contents}
+      <SlidingInbox item={item}>{contents}</SlidingInbox>
       <Hr />
     </>
   );

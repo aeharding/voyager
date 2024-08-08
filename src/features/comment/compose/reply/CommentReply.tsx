@@ -11,6 +11,7 @@ import {
 import {
   CommentReplyView,
   CommentView,
+  Person,
   PersonMentionView,
   PostView,
   ResolveObjectResponse,
@@ -33,6 +34,8 @@ import { getClient } from "../../../../services/lemmy";
 import AppHeader from "../../../shared/AppHeader";
 import { arrowBackSharp, send } from "ionicons/icons";
 import { isIosTheme } from "../../../../helpers/device";
+import { getHandle } from "../../../../helpers/lemmy";
+import { privateMessageSendFailed } from "../../../../helpers/toastMessages";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -43,11 +46,29 @@ export const TitleContainer = styled.div`
   line-height: 1;
 `;
 
+/**
+ * Special case to compose a private message
+ * (everything else has a Lemmy type for context-
+ * e.g. post or comment replying to,
+ * but not necessarily DMs)
+ */
+type PrivateMessage = {
+  private_message: {
+    recipient: Person;
+  };
+
+  /**
+   * Prefilled content
+   */
+  value?: string;
+};
+
 export type CommentReplyItem =
   | CommentView
   | PostView
   | PersonMentionView
-  | CommentReplyView;
+  | CommentReplyView
+  | PrivateMessage;
 
 type CommentReplyProps = {
   dismiss: (reply?: CommentView | undefined) => void;
@@ -66,7 +87,9 @@ export default function CommentReply({
   const comment = "comment" in item ? item.comment : undefined;
 
   const dispatch = useAppDispatch();
-  const [replyContent, setReplyContent] = useState("");
+  const [replyContent, setReplyContent] = useState(
+    "private_message" in item ? (item.value ?? "") : "",
+  );
   const client = useClient();
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
@@ -101,6 +124,9 @@ export default function CommentReply({
       onDismiss: (data?: string, role?: string) =>
         onDismissAccountSwitcher(data, role),
       onSelectAccount: async (account: string) => {
+        if ("private_message" in item)
+          throw new Error("Cannot switch account on private message reply");
+
         // Switching back to local account
         if (account === userHandle) {
           resolvedRef.current = undefined;
@@ -147,6 +173,33 @@ export default function CommentReply({
     if (isSubmitDisabled) return;
 
     setLoading(true);
+
+    if ("private_message" in item) {
+      try {
+        await client.createPrivateMessage({
+          content: replyContent,
+          recipient_id: item.private_message.recipient.id,
+        });
+      } catch (error) {
+        presentToast(privateMessageSendFailed);
+
+        throw error;
+      } finally {
+        setLoading(false);
+      }
+
+      presentToast({
+        message: "Message sent!",
+        color: "primary",
+        position: "top",
+        centerText: true,
+        fullscreen: true,
+      });
+
+      setCanDismiss(true);
+      dismiss(); // component doesn't support returning DM payload rn
+      return;
+    }
 
     let reply;
     let silentError = false;
@@ -224,6 +277,7 @@ export default function CommentReply({
     }
 
     if (reply) dispatch(receivedComments([reply]));
+
     setCanDismiss(true);
     dismiss(reply);
   }
@@ -246,30 +300,35 @@ export default function CommentReply({
             </IonButton>
           </IonButtons>
           <IonTitle>
-            <Centered>
-              <TitleContainer
-                onClick={() => {
-                  if (accounts?.length === 1) return;
+            {"private_message" in item ? (
+              <>To {getHandle(item.private_message.recipient)}</>
+            ) : (
+              <Centered>
+                <TitleContainer
+                  onClick={() => {
+                    if (accounts?.length === 1) return;
+                    if ("private_message" in item) return;
 
-                  presentAccountSwitcher({
-                    cssClass: "small",
-                    onDidDismiss: () => {
-                      requestAnimationFrame(() => {
-                        textareaRef.current?.focus();
-                      });
-                    },
-                  });
-                }}
-              >
-                <IonText>New Comment</IonText>
-                <div>
-                  <UsernameIonText color="medium">
-                    {selectedAccount}
-                  </UsernameIonText>
-                </div>
-              </TitleContainer>{" "}
-              {loading && <Spinner color="dark" />}
-            </Centered>
+                    presentAccountSwitcher({
+                      cssClass: "small",
+                      onDidDismiss: () => {
+                        requestAnimationFrame(() => {
+                          textareaRef.current?.focus();
+                        });
+                      },
+                    });
+                  }}
+                >
+                  <IonText>New Comment</IonText>
+                  <div>
+                    <UsernameIonText color="medium">
+                      {selectedAccount}
+                    </UsernameIonText>
+                  </div>
+                </TitleContainer>{" "}
+                {loading && <Spinner color="dark" />}
+              </Centered>
+            )}
           </IonTitle>
           <IonButtons slot="end">
             <IonButton
@@ -292,7 +351,7 @@ export default function CommentReply({
         onSubmit={submit}
         onDismiss={dismiss}
       >
-        <ItemReplyingTo item={item} />
+        {"post" in item ? <ItemReplyingTo item={item} /> : undefined}
       </CommentEditorContent>
     </>
   );
