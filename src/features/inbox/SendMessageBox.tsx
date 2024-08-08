@@ -1,6 +1,8 @@
 import { styled } from "@linaria/react";
 import { MaxWidthContainer } from "../shared/AppContent";
-import TextareaAutosize from "react-textarea-autosize";
+import TextareaAutosize, {
+  TextareaAutosizeProps,
+} from "react-textarea-autosize";
 import { IonIcon } from "@ionic/react";
 import { KeyboardEvent, useCallback, useState } from "react";
 import useClient from "../../helpers/useClient";
@@ -44,7 +46,7 @@ const Input = styled(TextareaAutosize)`
 
   // Exact px measurements to prevent
   // pixel rounding browser inconsistencies
-  padding: 8px 1rem;
+  padding: 8px 30px 8px 1rem;
   line-height: 18px;
   font-size: 16px;
 
@@ -72,9 +74,13 @@ const SendButton = styled(IonIcon)`
 
 interface SendMessageBoxProps {
   recipientId: number;
+  onHeightChange?: TextareaAutosizeProps["onHeightChange"];
 }
 
-export default function SendMessageBox({ recipientId }: SendMessageBoxProps) {
+export default function SendMessageBox({
+  recipientId,
+  onHeightChange,
+}: SendMessageBoxProps) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState("");
@@ -128,6 +134,7 @@ export default function SendMessageBox({ recipientId }: SendMessageBoxProps) {
             rows={1}
             maxRows={5}
             onKeyDown={onKeyDown}
+            onHeightChange={onHeightChange}
           />
           {value.trim() && !loading && (
             <SendButton icon={arrowUp} onClick={send} />
