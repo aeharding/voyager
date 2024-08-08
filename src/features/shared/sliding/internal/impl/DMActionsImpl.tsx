@@ -2,7 +2,7 @@ import { ComponentProps, useContext } from "react";
 import store, { useAppDispatch } from "../../../../../store";
 import { PageContext } from "../../../../auth/PageContext";
 import type { BaseSlidingDM } from "../../BaseSliding";
-import { useSharedVoteActions } from "../shared";
+import { useSharedInboxActions } from "../shared";
 import GenericBaseSliding from "../GenericBaseSliding";
 import { markRead, syncMessages } from "../../../../inbox/inboxSlice";
 
@@ -13,11 +13,13 @@ export default function DMActionsImpl({
   const dispatch = useAppDispatch();
   const { presentCommentReply } = useContext(PageContext);
 
-  const shared = useSharedVoteActions(item);
+  const shared = useSharedInboxActions(item);
 
   return (
     <GenericBaseSliding
-      onVote={async () => {}}
+      onVote={async () => {
+        await dispatch(markRead(item, true));
+      }}
       currentVote={0}
       reply={async () => {
         await presentCommentReply({

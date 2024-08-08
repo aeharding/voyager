@@ -14,6 +14,7 @@ import {
   Person,
   PersonMentionView,
   PostView,
+  PrivateMessageView,
   ResolveObjectResponse,
 } from "lemmy-js-client";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -36,6 +37,7 @@ import { arrowBackSharp, send } from "ionicons/icons";
 import { isIosTheme } from "../../../../helpers/device";
 import { getHandle } from "../../../../helpers/lemmy";
 import { privateMessageSendFailed } from "../../../../helpers/toastMessages";
+import { receivedMessages } from "../../../inbox/inboxSlice";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -71,7 +73,7 @@ export type CommentReplyItem =
   | PrivateMessage;
 
 type CommentReplyProps = {
-  dismiss: (reply?: CommentView | undefined) => void;
+  dismiss: (reply?: CommentView | PrivateMessageView | undefined) => void;
   setCanDismiss: (canDismiss: boolean) => void;
   item: CommentReplyItem;
 };
@@ -174,9 +176,11 @@ export default function CommentReply({
 
     setLoading(true);
 
+    let message;
+
     if ("private_message" in item) {
       try {
-        await client.createPrivateMessage({
+        message = await client.createPrivateMessage({
           content: replyContent,
           recipient_id: item.private_message.recipient.id,
         });
@@ -197,7 +201,8 @@ export default function CommentReply({
       });
 
       setCanDismiss(true);
-      dismiss(); // component doesn't support returning DM payload rn
+      dismiss(message.private_message_view);
+      dispatch(receivedMessages([message.private_message_view]));
       return;
     }
 

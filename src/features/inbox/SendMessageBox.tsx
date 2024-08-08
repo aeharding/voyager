@@ -9,7 +9,7 @@ import useClient from "../../helpers/useClient";
 import useAppToast from "../../helpers/useAppToast";
 import { receivedMessages } from "./inboxSlice";
 import { useAppDispatch } from "../../store";
-import { expand, send as sendIcon } from "ionicons/icons";
+import { resize, send as sendIcon } from "ionicons/icons";
 import { privateMessageSendFailed } from "../../helpers/toastMessages";
 import { css } from "@linaria/core";
 import { PageContext } from "../auth/PageContext";
@@ -131,13 +131,22 @@ export default function SendMessageBox({
           <IconButton
             shape="round"
             fill="clear"
-            onClick={() =>
-              presentCommentReply({ private_message: { recipient }, value })
-            }
+            onClick={async () => {
+              const message = await presentCommentReply({
+                private_message: { recipient },
+                value,
+              });
+
+              if (!message) return;
+              if (!("private_message" in message)) return;
+
+              scrollToBottom?.();
+              setValue("");
+            }}
             aria-label="Open fullsize editor"
           >
             <IonIcon
-              icon={expand}
+              icon={resize}
               slot="icon-only"
               onClick={send}
               className={css`

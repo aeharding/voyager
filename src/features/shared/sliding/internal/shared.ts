@@ -27,7 +27,7 @@ export function isInboxItem(
   return false;
 }
 
-export function useSharedVoteActions(item: SlideableItem) {
+export function useSharedInboxActions(item: SlideableItem) {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
 

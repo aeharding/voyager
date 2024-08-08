@@ -5,7 +5,7 @@ import { CommentsContext } from "../../../../comment/inTree/CommentsContext";
 import { AppContext } from "../../../../auth/AppContext";
 import useAppToast from "../../../../../helpers/useAppToast";
 import store, { useAppDispatch, useAppSelector } from "../../../../../store";
-import { isInboxItem, useSharedVoteActions } from "../shared";
+import { isInboxItem, useSharedInboxActions } from "../shared";
 import GenericBaseSliding, {
   GenericBaseSlidingProps,
 } from "../GenericBaseSliding";
@@ -41,7 +41,7 @@ export function VotableActionsImpl({
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
-  const shared = useSharedVoteActions(item);
+  const shared = useSharedInboxActions(item);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const commentVotesById = useAppSelector(
@@ -109,7 +109,8 @@ export function VotableActionsImpl({
     }
 
     const reply = await presentCommentReply(item);
-    if (!isPost && reply) prependComments([reply]);
+    if (!isPost && reply && !("private_message" in reply))
+      prependComments([reply]);
   }, [
     item,
     isPost,

@@ -239,7 +239,8 @@ export default function useCommentActions({
 
               const reply = await presentCommentReply(commentView);
 
-              if (reply) prependComments([reply]);
+              if (reply && !("private_message" in reply))
+                prependComments([reply]);
             })();
           },
         },
