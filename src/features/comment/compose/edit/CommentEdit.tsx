@@ -16,6 +16,7 @@ import useAppToast from "../../../../helpers/useAppToast";
 import AppHeader from "../../../shared/AppHeader";
 import { isIosTheme } from "../../../../helpers/device";
 import { arrowBackSharp, send } from "ionicons/icons";
+import { presentErrorMessage } from "../../../../helpers/error";
 
 type CommentEditingProps = DismissableProps & {
   item: Comment;
@@ -46,7 +47,7 @@ export default function CommentEdit({
       await dispatch(editComment(item.id, replyContent));
     } catch (error) {
       presentToast({
-        message: "Problem saving your changes. Please try again.",
+        message: presentErrorMessage("Problem saving your changes", error),
         color: "danger",
         fullscreen: true,
       });
