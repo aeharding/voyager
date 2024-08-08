@@ -294,7 +294,8 @@ function PostHeader({
 
               const reply = await presentCommentReply(post);
 
-              if (reply) onPrependComment?.(reply);
+              if (reply && !("private_message" in reply))
+                onPrependComment?.(reply);
             }}
           />
         </BorderlessIonItem>

@@ -18,6 +18,7 @@ import {
   Community,
   Person,
   PostView,
+  PrivateMessageView,
 } from "lemmy-js-client";
 import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
@@ -51,7 +52,7 @@ interface IPageContext {
    */
   presentCommentReply: (
     item: CommentReplyItem,
-  ) => Promise<CommentView | undefined>;
+  ) => Promise<CommentView | PrivateMessageView | undefined>;
 
   /**
    * Will mutate comment in store, which view should be linked to for updates
@@ -150,11 +151,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   // Comment reply start
   const commentReplyItem = useRef<CommentReplyItem>();
   const commentReplyCb = useRef<
-    ((replied: CommentView | undefined) => void) | undefined
+    | ((replied: CommentView | PrivateMessageView | undefined) => void)
+    | undefined
   >();
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const presentCommentReply = useCallback((item: CommentReplyItem) => {
-    const promise = new Promise<CommentView | undefined>(
+    const promise = new Promise<CommentView | PrivateMessageView | undefined>(
       (resolve) => (commentReplyCb.current = resolve),
     );
 

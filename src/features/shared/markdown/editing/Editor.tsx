@@ -85,7 +85,13 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
 
     // iOS safari native has race sometimes
     setTimeout(() => {
-      textareaRef.current?.focus({ preventScroll: true });
+      if (!textareaRef.current) return;
+
+      textareaRef.current.focus({ preventScroll: true });
+
+      // Place cursor at end
+      const len = textareaRef.current.value.length;
+      textareaRef.current?.setSelectionRange(len, len);
     }, 100);
   }, []);
 

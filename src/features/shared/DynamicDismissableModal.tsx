@@ -62,7 +62,9 @@ export function DynamicDismissableModal({
   >();
 
   useEffect(() => {
-    setPresentingElement(pageContext.pageRef?.current ?? undefined);
+    setPresentingElement(
+      pageContext.pageRef?.current?.closest("ion-tabs") ?? undefined,
+    );
 
     // In <TabbedRoutes>, <IonRouterOutlet> rebuilds (see `key`) when iss changes,
     // so grab new IonRouterOutlet
