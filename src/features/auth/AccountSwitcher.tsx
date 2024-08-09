@@ -40,15 +40,15 @@ type AccountSwitcherProps = {
     }
 );
 
-export default function AccountSwitcherContainer(props: AccountSwitcherProps) {
+export default function AccountSwitcher(props: AccountSwitcherProps) {
   return (
     <ListEditorProvider>
-      <AccountSwitcher {...props} />
+      <AccountSwitcherContents {...props} />
     </ListEditorProvider>
   );
 }
 
-function AccountSwitcher({
+function AccountSwitcherContents({
   onDismiss,
   onSelectAccount,
   allowEdit = true,

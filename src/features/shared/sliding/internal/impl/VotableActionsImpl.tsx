@@ -109,8 +109,7 @@ export function VotableActionsImpl({
     }
 
     const reply = await presentCommentReply(item);
-    if (!isPost && reply && !("private_message" in reply))
-      prependComments([reply]);
+    if (!isPost && reply) prependComments([reply]);
   }, [
     item,
     isPost,

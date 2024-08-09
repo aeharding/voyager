@@ -132,10 +132,7 @@ export default function ConversationPage() {
               padding-inline-end: 120px;
             `}
           >
-            <StyledLink
-              to={buildGeneralBrowseLink(`/u/${handle}`)}
-              onClick={(e) => e.stopPropagation()}
-            >
+            <StyledLink to={buildGeneralBrowseLink(`/u/${handle}`)}>
               {handle}
             </StyledLink>
           </IonTitle>

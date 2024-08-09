@@ -41,7 +41,7 @@ export default forwardRef<
 >(function PrivateMessageMoreActions({ item, markReadAction }, ref) {
   const dispatch = useAppDispatch();
   const [presentActionSheet] = useIonActionSheet();
-  const { presentReport, presentSelectText, presentCommentReply } =
+  const { presentReport, presentSelectText, presentPrivateMessageCompose } =
     useContext(PageContext);
 
   const { navigateToUser } = useAppNavigation();
@@ -58,7 +58,7 @@ export default forwardRef<
           icon: arrowUndoOutline,
           handler: () => {
             (async () => {
-              await presentCommentReply({
+              await presentPrivateMessageCompose({
                 private_message: {
                   recipient:
                     item.private_message.creator_id ===
@@ -113,7 +113,7 @@ export default forwardRef<
     markReadAction,
     item,
     isBlocked,
-    presentCommentReply,
+    presentPrivateMessageCompose,
     dispatch,
     presentSelectText,
     navigateToUser,

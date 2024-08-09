@@ -11,33 +11,28 @@ import {
 import {
   CommentReplyView,
   CommentView,
-  Person,
   PersonMentionView,
   PostView,
-  PrivateMessageView,
   ResolveObjectResponse,
 } from "lemmy-js-client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
-import useClient from "../../../../helpers/useClient";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { Centered, Spinner } from "../../../auth/login/LoginNav";
+import CommentEditorContent from "./CommentEditorContent";
+import { arrowBackSharp, send } from "ionicons/icons";
+import { useAppDispatch, useAppSelector } from "../../../../../../store";
+import useClient from "../../../../../../helpers/useClient";
+import useAppToast from "../../../../../../helpers/useAppToast";
 import {
   loggedInAccountsSelector,
   userHandleSelector,
-} from "../../../auth/authSelectors";
-import { receivedComments } from "../../commentSlice";
-import CommentEditorContent from "../CommentEditorContent";
-import useAppToast from "../../../../helpers/useAppToast";
-import { isLemmyError } from "../../../../helpers/lemmyErrors";
-import AccountSwitcher from "../../../auth/AccountSwitcher";
-import { getClient } from "../../../../services/lemmy";
-import AppHeader from "../../../shared/AppHeader";
-import { arrowBackSharp, send } from "ionicons/icons";
-import { isIosTheme } from "../../../../helpers/device";
-import { getHandle } from "../../../../helpers/lemmy";
-import { privateMessageSendFailed } from "../../../../helpers/toastMessages";
-import { receivedMessages } from "../../../inbox/inboxSlice";
+} from "../../../../../auth/authSelectors";
+import { getClient } from "../../../../../../services/lemmy";
+import AccountSwitcher from "../../../../../auth/AccountSwitcher";
+import { isLemmyError } from "../../../../../../helpers/lemmyErrors";
+import { receivedComments } from "../../../../../comment/commentSlice";
+import AppHeader from "../../../../AppHeader";
+import { isIosTheme } from "../../../../../../helpers/device";
+import { Centered, Spinner } from "../../../../../auth/login/LoginNav";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -48,32 +43,14 @@ export const TitleContainer = styled.div`
   line-height: 1;
 `;
 
-/**
- * Special case to compose a private message
- * (everything else has a Lemmy type for context-
- * e.g. post or comment replying to,
- * but not necessarily DMs)
- */
-type PrivateMessage = {
-  private_message: {
-    recipient: Person;
-  };
-
-  /**
-   * Prefilled content
-   */
-  value?: string;
-};
-
 export type CommentReplyItem =
   | CommentView
   | PostView
   | PersonMentionView
-  | CommentReplyView
-  | PrivateMessage;
+  | CommentReplyView;
 
-type CommentReplyProps = {
-  dismiss: (reply?: CommentView | PrivateMessageView | undefined) => void;
+type CommentReplyPageProps = {
+  dismiss: (reply?: CommentView | undefined) => void;
   setCanDismiss: (canDismiss: boolean) => void;
   item: CommentReplyItem;
 };
@@ -81,17 +58,15 @@ type CommentReplyProps = {
 /**
  * New comment replying to something
  */
-export default function CommentReply({
+export default function CommentReplyPage({
   dismiss,
   setCanDismiss,
   item,
-}: CommentReplyProps) {
+}: CommentReplyPageProps) {
   const comment = "comment" in item ? item.comment : undefined;
 
   const dispatch = useAppDispatch();
-  const [replyContent, setReplyContent] = useState(
-    "private_message" in item ? (item.value ?? "") : "",
-  );
+  const [replyContent, setReplyContent] = useState("");
   const client = useClient();
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
@@ -126,9 +101,6 @@ export default function CommentReply({
       onDismiss: (data?: string, role?: string) =>
         onDismissAccountSwitcher(data, role),
       onSelectAccount: async (account: string) => {
-        if ("private_message" in item)
-          throw new Error("Cannot switch account on private message reply");
-
         // Switching back to local account
         if (account === userHandle) {
           resolvedRef.current = undefined;
@@ -175,36 +147,6 @@ export default function CommentReply({
     if (isSubmitDisabled) return;
 
     setLoading(true);
-
-    let message;
-
-    if ("private_message" in item) {
-      try {
-        message = await client.createPrivateMessage({
-          content: replyContent,
-          recipient_id: item.private_message.recipient.id,
-        });
-      } catch (error) {
-        presentToast(privateMessageSendFailed);
-
-        throw error;
-      } finally {
-        setLoading(false);
-      }
-
-      presentToast({
-        message: "Message sent!",
-        color: "primary",
-        position: "top",
-        centerText: true,
-        fullscreen: true,
-      });
-
-      setCanDismiss(true);
-      dismiss(message.private_message_view);
-      dispatch(receivedMessages([message.private_message_view]));
-      return;
-    }
 
     let reply;
     let silentError = false;
@@ -305,35 +247,30 @@ export default function CommentReply({
             </IonButton>
           </IonButtons>
           <IonTitle>
-            {"private_message" in item ? (
-              <>To {getHandle(item.private_message.recipient)}</>
-            ) : (
-              <Centered>
-                <TitleContainer
-                  onClick={() => {
-                    if (accounts?.length === 1) return;
-                    if ("private_message" in item) return;
+            <Centered>
+              <TitleContainer
+                onClick={() => {
+                  if (accounts?.length === 1) return;
 
-                    presentAccountSwitcher({
-                      cssClass: "small",
-                      onDidDismiss: () => {
-                        requestAnimationFrame(() => {
-                          textareaRef.current?.focus();
-                        });
-                      },
-                    });
-                  }}
-                >
-                  <IonText>New Comment</IonText>
-                  <div>
-                    <UsernameIonText color="medium">
-                      {selectedAccount}
-                    </UsernameIonText>
-                  </div>
-                </TitleContainer>{" "}
-                {loading && <Spinner color="dark" />}
-              </Centered>
-            )}
+                  presentAccountSwitcher({
+                    cssClass: "small",
+                    onDidDismiss: () => {
+                      requestAnimationFrame(() => {
+                        textareaRef.current?.focus();
+                      });
+                    },
+                  });
+                }}
+              >
+                <IonText>New Comment</IonText>
+                <div>
+                  <UsernameIonText color="medium">
+                    {selectedAccount}
+                  </UsernameIonText>
+                </div>
+              </TitleContainer>{" "}
+              {loading && <Spinner color="dark" />}
+            </Centered>
           </IonTitle>
           <IonButtons slot="end">
             <IonButton

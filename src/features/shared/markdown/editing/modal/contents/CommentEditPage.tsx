@@ -5,27 +5,28 @@ import {
   IonTitle,
   IonIcon,
 } from "@ionic/react";
-import { Comment } from "lemmy-js-client";
+import { Comment, CommentView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "../../../../store";
-import { Centered, Spinner } from "../../../auth/login/LoginNav";
-import { editComment } from "../../commentSlice";
-import { DismissableProps } from "../../../shared/DynamicDismissableModal";
-import CommentEditorContent from "../CommentEditorContent";
-import useAppToast from "../../../../helpers/useAppToast";
-import AppHeader from "../../../shared/AppHeader";
-import { isIosTheme } from "../../../../helpers/device";
 import { arrowBackSharp, send } from "ionicons/icons";
+import { useAppDispatch } from "../../../../../../store";
+import useAppToast from "../../../../../../helpers/useAppToast";
+import { editComment } from "../../../../../comment/commentSlice";
+import AppHeader from "../../../../AppHeader";
+import { isIosTheme } from "../../../../../../helpers/device";
+import { Centered, Spinner } from "../../../../../auth/login/LoginNav";
+import CommentEditorContent from "./CommentEditorContent";
+import { DismissableProps } from "../../../../DynamicDismissableModal";
 
-type CommentEditingProps = DismissableProps & {
+type CommentEditPageProps = Omit<DismissableProps, "dismiss"> & {
+  dismiss: (reply?: CommentView | undefined) => void;
   item: Comment;
 };
 
-export default function CommentEdit({
+export default function CommentEditPage({
   item,
   setCanDismiss,
   dismiss,
-}: CommentEditingProps) {
+}: CommentEditPageProps) {
   const dispatch = useAppDispatch();
   const [replyContent, setReplyContent] = useState(item.content);
   const presentToast = useAppToast();
@@ -42,8 +43,10 @@ export default function CommentEdit({
 
     setLoading(true);
 
+    let comment;
+
     try {
-      await dispatch(editComment(item.id, replyContent));
+      comment = await dispatch(editComment(item.id, replyContent));
     } catch (error) {
       presentToast({
         message: "Problem saving your changes. Please try again.",
@@ -65,7 +68,7 @@ export default function CommentEdit({
     });
 
     setCanDismiss(true);
-    dismiss();
+    dismiss(comment);
   }
 
   return (

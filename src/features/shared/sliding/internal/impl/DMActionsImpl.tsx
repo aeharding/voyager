@@ -11,7 +11,7 @@ export default function DMActionsImpl({
   ...rest
 }: ComponentProps<typeof BaseSlidingDM>) {
   const dispatch = useAppDispatch();
-  const { presentCommentReply } = useContext(PageContext);
+  const { presentPrivateMessageCompose } = useContext(PageContext);
 
   const shared = useSharedInboxActions(item);
 
@@ -22,7 +22,7 @@ export default function DMActionsImpl({
       }}
       currentVote={0}
       reply={async () => {
-        await presentCommentReply({
+        await presentPrivateMessageCompose({
           private_message: {
             recipient:
               item.private_message.creator_id ===
