@@ -17,6 +17,10 @@ export const Centered = styled.div`
   .ios & {
     justify-content: center;
   }
+
+  ion-spinner {
+    flex-shrink: 0;
+  }
 `;
 
 function blurDocument() {

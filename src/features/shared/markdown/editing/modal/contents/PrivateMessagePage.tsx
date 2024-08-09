@@ -19,6 +19,12 @@ import useClient from "../../../../../../helpers/useClient";
 import { privateMessageSendFailed } from "../../../../../../helpers/toastMessages";
 import { receivedMessages } from "../../../../../inbox/inboxSlice";
 import { getHandle } from "../../../../../../helpers/lemmy";
+import { styled } from "@linaria/react";
+
+const Title = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
 /**
  * Special case to compose a private message
@@ -106,7 +112,7 @@ export default function PrivateMessagePage({
           </IonButtons>
           <IonTitle>
             <Centered>
-              To {getHandle(item.private_message.recipient)}
+              <Title>To {getHandle(item.private_message.recipient)}</Title>
               {loading && <Spinner color="dark" />}
             </Centered>
           </IonTitle>
@@ -118,7 +124,7 @@ export default function PrivateMessagePage({
               color={isSubmitDisabled ? "medium" : undefined}
               onClick={submit}
             >
-              {isIosTheme() ? "Save" : <IonIcon icon={send} slot="icon-only" />}
+              {isIosTheme() ? "Send" : <IonIcon icon={send} slot="icon-only" />}
             </IonButton>
           </IonButtons>
         </IonToolbar>
