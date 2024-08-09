@@ -1,5 +1,5 @@
 import ModeratableItemBanner, {
-  ItemModState,
+  ItemModStateType,
   useItemModState,
   getModStateBackgroundColor,
 } from "./banner/ModeratableItemBanner";
@@ -11,7 +11,7 @@ import { styled } from "@linaria/react";
 import { isPost } from "../../helpers/lemmy";
 
 const ModeratableItemContainer = styled.div<{
-  modState?: ItemModState;
+  modState?: ItemModStateType;
   highlighted?: boolean;
 }>`
   width: 100%;

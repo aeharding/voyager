@@ -18,13 +18,15 @@ const alphabetUpperCase = Array.from({ length: 26 }, (_, i) =>
   String.fromCharCode(65 + i),
 );
 
-enum SpecialSection {
-  Home = 0,
-  Favorited = 1,
-  Moderated = 2,
-}
+const SpecialSection = {
+  Home: 0,
+  Favorited: 1,
+  Moderated: 2,
+} as const;
 
-type JumpItem = SpecialSection | string;
+type SpecialSectionType = (typeof SpecialSection)[keyof typeof SpecialSection];
+
+type JumpItem = SpecialSectionType | string;
 
 const SECTIONS = [
   <IonIcon icon={menuOutline} key={0} />,

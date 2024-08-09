@@ -70,6 +70,13 @@ export default [
       "@typescript-eslint/no-empty-object-type": 0,
       "@typescript-eslint/no-empty-interface": 0,
       "react/jsx-curly-brace-presence": ["warn", "never"],
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "TSEnumDeclaration",
+          message: "Don't declare enums",
+        },
+      ],
       eqeqeq: ["warn", "smart"],
       "no-unreachable": ["warn"],
 
