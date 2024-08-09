@@ -10,7 +10,19 @@ import { isLemmyError } from "../../helpers/lemmyErrors";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
+
 export const COMMENT_PATH = /^\/comment\/(\d+)$/;
+
+/**
+ * Lemmy 0.19.4 added a new url format to reference comments,
+ * in addition to `COMMENT_PATH`.
+ *
+ * It is functionally exactly the same. IDK why
+ *
+ * https://github.com/LemmyNet/lemmy-ui/commit/b7fe70d8c15fe8c8482c8403744f24f63d1c505a#diff-13e07e23177266e419a34a839636bcdbd2f6997000fb8e0f3be26c78400acf77R145
+ */
+export const COMMENT_VIA_POST_PATH = /^\/post\/\d+\/(\d+)$/;
+
 export const USER_PATH =
   /^\/u\/([a-zA-Z0-9._%+-]+(@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})?)\/?$/;
 export const COMMUNITY_PATH =
@@ -19,6 +31,7 @@ export const COMMUNITY_PATH =
 const POTENTIAL_PATHS = [
   POST_PATH,
   COMMENT_PATH,
+  COMMENT_VIA_POST_PATH,
   USER_PATH,
   COMMUNITY_PATH,
 ] as const;
@@ -169,6 +182,7 @@ export default function useLemmyUrlHandler() {
 
       if (POST_PATH.test(url.pathname)) return "post";
       if (COMMENT_PATH.test(url.pathname)) return "comment";
+      if (COMMENT_VIA_POST_PATH.test(url.pathname)) return "comment";
       if (USER_PATH.test(url.pathname)) return "user";
     },
     [getUrl, knownInstances],
@@ -247,6 +261,7 @@ function isPotentialObjectPath(urlPathname: string): boolean {
 function getObjectName(urlPathname: string): string | undefined {
   if (POST_PATH.test(urlPathname)) return "post";
   if (COMMENT_PATH.test(urlPathname)) return "comment";
+  if (COMMENT_VIA_POST_PATH.test(urlPathname)) return "comment";
   if (USER_PATH.test(urlPathname)) return "user";
   if (COMMUNITY_PATH.test(urlPathname)) return "community";
 }
