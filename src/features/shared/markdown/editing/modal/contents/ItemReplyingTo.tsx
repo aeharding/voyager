@@ -2,12 +2,12 @@ import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
 import { returnDownForwardSharp } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
-import { getHandle } from "../../../../helpers/lemmy";
-import Vote from "../../../labels/Vote";
-import Ago from "../../../labels/Ago";
-import CommentContent from "../../CommentContent";
-import Edited from "../../../labels/Edited";
-import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
+import Ago from "../../../../../labels/Ago";
+import { getHandle } from "../../../../../../helpers/lemmy";
+import Vote from "../../../../../labels/Vote";
+import Edited from "../../../../../labels/Edited";
+import { preventModalSwipeOnTextSelection } from "../../../../../../helpers/ionic";
+import CommentContent from "../../../../../comment/CommentContent";
 
 const Container = styled.div`
   padding: 16px;

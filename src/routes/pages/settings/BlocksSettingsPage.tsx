@@ -8,10 +8,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import AppContent from "../../../features/shared/AppContent";
-import {
-  TitleContainer,
-  UsernameIonText,
-} from "../../../features/comment/compose/reply/CommentReply";
 import { useAppSelector } from "../../../store";
 import { userHandleSelector } from "../../../features/auth/authSelectors";
 import FilterNsfw from "../../../features/settings/blocks/FilterNsfw";
@@ -28,6 +24,10 @@ import {
   ListEditorProvider,
 } from "../../../features/shared/ListEditor";
 import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+import {
+  TitleContainer,
+  UsernameIonText,
+} from "../../../features/shared/markdown/editing/modal/contents/CommentReplyPage";
 
 export default function BlocksSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);

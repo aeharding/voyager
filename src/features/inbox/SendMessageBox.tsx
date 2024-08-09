@@ -88,7 +88,7 @@ export default function SendMessageBox({
   const [value, setValue] = useState("");
   const client = useClient();
   const presentToast = useAppToast();
-  const { presentCommentReply } = useContext(PageContext);
+  const { presentPrivateMessageCompose } = useContext(PageContext);
 
   const send = useCallback(async () => {
     setLoading(true);
@@ -132,7 +132,7 @@ export default function SendMessageBox({
             shape="round"
             fill="clear"
             onClick={async () => {
-              const message = await presentCommentReply({
+              const message = await presentPrivateMessageCompose({
                 private_message: { recipient },
                 value,
               });

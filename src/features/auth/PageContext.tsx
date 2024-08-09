@@ -8,10 +8,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { CommentReplyItem } from "../comment/compose/reply/CommentReply";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { changeAccount } from "../auth/authSlice";
-import CommentReplyModal from "../comment/compose/reply/CommentReplyModal";
 import {
   Comment,
   CommentView,
@@ -20,7 +18,6 @@ import {
   PostView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import CommentEditModal from "../comment/compose/edit/CommentEditModal";
 import { Report, ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
 import SelectTextModal from "../shared/SelectTextModal";
@@ -32,6 +29,11 @@ import { jwtSelector } from "./authSelectors";
 import BanUserModal from "../moderation/ban/BanUserModal";
 import CreateCrosspostDialog from "../post/crosspost/create/CreateCrosspostDialog";
 import LoginModal from "./login/LoginModal";
+import GenericMarkdownEditorModal, {
+  MarkdownEditorData,
+} from "../shared/markdown/editing/modal/GenericMarkdownEditorModal";
+import { NewPrivateMessage } from "../shared/markdown/editing/modal/contents/PrivateMessagePage";
+import { CommentReplyItem } from "../shared/markdown/editing/modal/contents/CommentReplyPage";
 
 export interface BanUserPayload {
   user: Person;
@@ -48,17 +50,23 @@ interface IPageContext {
   presentLoginIfNeeded: () => boolean;
 
   /**
+   * @returns private message payload if submitted
+   */
+  presentPrivateMessageCompose: (
+    item: NewPrivateMessage,
+  ) => Promise<PrivateMessageView | undefined>;
+
+  /**
+   * @returns comment payload if replied
+   */
+  presentCommentEdit: (item: Comment) => Promise<CommentView | undefined>;
+
+  /**
    * @returns comment payload if replied
    */
   presentCommentReply: (
     item: CommentReplyItem,
-  ) => Promise<CommentView | PrivateMessageView | undefined>;
-
-  /**
-   * Will mutate comment in store, which view should be linked to for updates
-   * That's why this does not return anything
-   */
-  presentCommentEdit: (item: Comment) => void;
+  ) => Promise<CommentView | undefined>;
 
   presentReport: (item: ReportableItem) => void;
 
@@ -86,8 +94,9 @@ interface IPageContext {
 export const PageContext = createContext<IPageContext>({
   pageRef: undefined,
   presentLoginIfNeeded: () => false,
+  presentCommentEdit: async () => undefined,
   presentCommentReply: async () => undefined,
-  presentCommentEdit: () => false,
+  presentPrivateMessageCompose: async () => undefined,
   presentReport: () => {},
   presentPostEditor: () => {},
   presentSelectText: () => {},
@@ -148,41 +157,58 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     [presentShareAsImageModal],
   );
 
-  // Comment reply start
-  const commentReplyItem = useRef<CommentReplyItem>();
-  const commentReplyCb = useRef<
-    | ((replied: CommentView | PrivateMessageView | undefined) => void)
-    | undefined
-  >();
-  const [isReplyOpen, setIsReplyOpen] = useState(false);
-  const presentCommentReply = useCallback((item: CommentReplyItem) => {
-    const promise = new Promise<CommentView | PrivateMessageView | undefined>(
-      (resolve) => (commentReplyCb.current = resolve),
-    );
-
-    commentReplyItem.current = item;
-    setIsReplyOpen(true);
-
-    return promise;
-  }, []);
+  // Markdown editor start
+  const markdownEditorData = useRef<MarkdownEditorData>();
+  const [isMarkdownEditorOpen, setIsMarkdownEditorOpen] = useState(false);
+  const presentMarkdownEditor = useCallback(
+    <T extends MarkdownEditorData>(data: Omit<T, "onSubmit">) =>
+      new Promise<Parameters<T["onSubmit"]>[0]>((resolve) => {
+        markdownEditorData.current = {
+          ...data,
+          onSubmit: resolve,
+        } as T;
+        setIsMarkdownEditorOpen(true);
+      }),
+    [],
+  );
 
   useEffect(() => {
-    if (isReplyOpen) return;
+    if (isMarkdownEditorOpen) return;
 
-    commentReplyCb.current?.(undefined);
-    commentReplyCb.current = undefined;
+    markdownEditorData.current?.onSubmit(undefined);
+    markdownEditorData.current = undefined;
     return;
-  }, [isReplyOpen]);
-  // Comment reply end
+  }, [isMarkdownEditorOpen]);
 
-  // Edit comment start
-  const commentEditItem = useRef<Comment>();
-  const [isEditCommentOpen, setIsEditCommentOpen] = useState(false);
-  const presentCommentEdit = useCallback((item: Comment) => {
-    commentEditItem.current = item;
-    setIsEditCommentOpen(true);
-  }, []);
-  // Edit comment end
+  const presentPrivateMessageCompose = useCallback<
+    IPageContext["presentPrivateMessageCompose"]
+  >(
+    (item) =>
+      presentMarkdownEditor({
+        type: "PRIVATE_MESSAGE",
+        item,
+      }) as ReturnType<IPageContext["presentPrivateMessageCompose"]>,
+    [presentMarkdownEditor],
+  );
+
+  const presentCommentEdit = useCallback<IPageContext["presentCommentEdit"]>(
+    (item) =>
+      presentMarkdownEditor({
+        type: "COMMENT_EDIT",
+        item,
+      }) as ReturnType<IPageContext["presentCommentEdit"]>,
+    [presentMarkdownEditor],
+  );
+
+  const presentCommentReply = useCallback<IPageContext["presentCommentReply"]>(
+    (item) =>
+      presentMarkdownEditor({
+        type: "COMMENT_REPLY",
+        item,
+      }) as ReturnType<IPageContext["presentCommentReply"]>,
+    [presentMarkdownEditor],
+  );
+  // Markdown editor end
 
   // Edit/new post start
   const postItem = useRef<PostView | string>();
@@ -257,8 +283,9 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     () => ({
       ...value,
       presentLoginIfNeeded,
-      presentCommentReply,
+      presentPrivateMessageCompose,
       presentCommentEdit,
+      presentCommentReply,
       presentReport,
       presentPostEditor,
       presentSelectText,
@@ -268,6 +295,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       presentCreateCrosspost,
     }),
     [
+      presentPrivateMessageCompose,
       presentCommentEdit,
       presentCommentReply,
       presentLoginIfNeeded,
@@ -287,19 +315,10 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
       {children}
 
       <LoginModal isOpen={isLoginOpen} setIsOpen={setIsLoginOpen} />
-      <CommentReplyModal
-        item={commentReplyItem.current!}
-        isOpen={isReplyOpen}
-        setIsOpen={setIsReplyOpen}
-        onReply={(reply) => {
-          commentReplyCb.current?.(reply);
-          commentReplyCb.current = undefined;
-        }}
-      />
-      <CommentEditModal
-        item={commentEditItem.current!}
-        isOpen={isEditCommentOpen}
-        setIsOpen={setIsEditCommentOpen}
+      <GenericMarkdownEditorModal
+        {...markdownEditorData.current!}
+        isOpen={isMarkdownEditorOpen}
+        setIsOpen={setIsMarkdownEditorOpen}
       />
       <Report ref={reportRef} />
       <PostEditorModal
