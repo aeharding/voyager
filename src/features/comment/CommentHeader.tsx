@@ -179,16 +179,16 @@ export default function CommentHeader({
   return <Header>{content}</Header>;
 }
 
-enum StubType {
-  None,
-  Deleted,
-  ModRemoved,
-}
+const StubType = {
+  None: 0,
+  Deleted: 1,
+  ModRemoved: 2,
+} as const;
 
 export function isStubComment(
   comment: Comment,
   canModerate: ModeratorRole | undefined,
-): StubType {
+): (typeof StubType)[keyof typeof StubType] {
   if (comment.deleted) return StubType.Deleted;
 
   if (comment.removed && !canModerate) return StubType.ModRemoved;

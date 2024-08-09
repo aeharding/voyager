@@ -9,8 +9,16 @@ import ReportBanner from "./ReportBanner";
 import { maxWidthCss } from "../../shared/AppContent";
 import { styled } from "@linaria/react";
 
+export const ItemModState = {
+  None: 0,
+  Flagged: 1,
+  RemovedByMod: 2,
+} as const;
+
+export type ItemModStateType = (typeof ItemModState)[keyof typeof ItemModState];
+
 export const Banner = styled.div<{
-  modState: ItemModState.Flagged | ItemModState.RemovedByMod;
+  modState: typeof ItemModState.Flagged | typeof ItemModState.RemovedByMod;
 }>`
   ${maxWidthCss}
 
@@ -31,7 +39,7 @@ export const Banner = styled.div<{
 `;
 
 interface RemovedByBannerProps {
-  modState: ItemModState;
+  modState: ItemModStateType;
   itemView: CommentView | PostView;
 }
 
@@ -49,13 +57,7 @@ export default function ModeratableItemBanner({
   }
 }
 
-export enum ItemModState {
-  None,
-  Flagged,
-  RemovedByMod,
-}
-
-export function useItemModState(item: Comment | Post): ItemModState {
+export function useItemModState(item: Comment | Post): ItemModStateType {
   const hasPostReports = useAppSelector(
     (state) => !!reportsByPostIdSelector(state)[item.id]?.length,
   );
@@ -75,7 +77,7 @@ export function useItemModState(item: Comment | Post): ItemModState {
 }
 
 export function getModStateBackgroundColor(
-  modState: ItemModState,
+  modState: ItemModStateType,
 ): string | undefined {
   switch (modState) {
     case ItemModState.Flagged:
@@ -88,7 +90,7 @@ export function getModStateBackgroundColor(
 }
 
 export function getModStateBannerBgColor(
-  modState: ItemModState,
+  modState: ItemModStateType,
 ): string | undefined {
   switch (modState) {
     case ItemModState.Flagged:
@@ -101,7 +103,7 @@ export function getModStateBannerBgColor(
 }
 
 export function getModStateBannerColor(
-  modState: ItemModState,
+  modState: ItemModStateType,
 ): string | undefined {
   switch (modState) {
     case ItemModState.Flagged:
