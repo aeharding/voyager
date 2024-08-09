@@ -101,9 +101,6 @@ export default function CommentReplyPage({
       onDismiss: (data?: string, role?: string) =>
         onDismissAccountSwitcher(data, role),
       onSelectAccount: async (account: string) => {
-        if ("private_message" in item)
-          throw new Error("Cannot switch account on private message reply");
-
         // Switching back to local account
         if (account === userHandle) {
           resolvedRef.current = undefined;
@@ -254,7 +251,6 @@ export default function CommentReplyPage({
               <TitleContainer
                 onClick={() => {
                   if (accounts?.length === 1) return;
-                  if ("private_message" in item) return;
 
                   presentAccountSwitcher({
                     cssClass: "small",

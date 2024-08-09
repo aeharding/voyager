@@ -138,7 +138,6 @@ export default function SendMessageBox({
               });
 
               if (!message) return;
-              if (!("private_message" in message)) return;
 
               scrollToBottom?.();
               setValue("");
