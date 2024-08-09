@@ -60,6 +60,7 @@ export const onFinishStopClick = (event: LongPressReactEvents) => {
 
   function stopClick(event: MouseEvent) {
     event.stopImmediatePropagation();
+    event.preventDefault();
     clearTimeoutIfNeeded();
   }
 
