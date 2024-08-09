@@ -1,39 +1,39 @@
 PODS:
-  - Capacitor (6.1.1):
+  - Capacitor (6.1.2):
     - CapacitorCordova
   - CapacitorAndroidNavMode (1.0.0):
     - Capacitor
-  - CapacitorApp (6.0.0):
+  - CapacitorApp (6.0.1):
     - Capacitor
   - CapacitorApplicationContext (1.0.0):
     - Capacitor
   - CapacitorBiometricLock (1.0.0):
     - Capacitor
-  - CapacitorBrowser (6.0.1):
+  - CapacitorBrowser (6.0.2):
     - Capacitor
   - CapacitorClearCache (1.0.1):
     - Capacitor
   - CapacitorCommunityAppIcon (5.0.0):
     - Capacitor
-  - CapacitorCordova (6.1.1)
-  - CapacitorFilesystem (6.0.0):
+  - CapacitorCordova (6.1.2)
+  - CapacitorFilesystem (6.0.1):
     - Capacitor
-  - CapacitorHaptics (6.0.0):
+  - CapacitorHaptics (6.0.1):
     - Capacitor
-  - CapacitorKeyboard (6.0.1):
+  - CapacitorKeyboard (6.0.2):
     - Capacitor
   - CapacitorLaunchNative (1.0.0):
     - Capacitor
-  - CapacitorNetwork (6.0.1):
+  - CapacitorNetwork (6.0.2):
     - Capacitor
   - CapacitorPluginSafeArea (3.0.3):
     - Capacitor
-  - CapacitorShare (6.0.1):
+  - CapacitorShare (6.0.2):
     - Capacitor
   - CapacitorStashMedia (2.0.1):
     - Capacitor
     - SDWebImage
-  - CapacitorStatusBar (6.0.0):
+  - CapacitorStatusBar (6.0.1):
     - Capacitor
   - CapacitorTips (1.0.0):
     - Capacitor
@@ -42,25 +42,25 @@ PODS:
   - SDWebImage/Core (5.17.0)
 
 DEPENDENCIES:
-  - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@6.1.1_@capacitor+core@6.1.1/node_modules/@capacitor/ios`)"
-  - "CapacitorAndroidNavMode (from `../../node_modules/.pnpm/capacitor-android-nav-mode@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-android-nav-mode`)"
-  - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@6.0.0_@capacitor+core@6.1.1/node_modules/@capacitor/app`)"
-  - "CapacitorApplicationContext (from `../../node_modules/.pnpm/capacitor-application-context@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-application-context`)"
-  - "CapacitorBiometricLock (from `../../node_modules/.pnpm/capacitor-biometric-lock@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-biometric-lock`)"
-  - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@6.0.1_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.1/node_modules/@capacitor/browser`)"
-  - "CapacitorClearCache (from `../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.1.1/node_modules/capacitor-clear-cache`)"
-  - "CapacitorCommunityAppIcon (from `../../node_modules/.pnpm/@capacitor-community+app-icon@5.0.0_@capacitor+core@6.1.1/node_modules/@capacitor-community/app-icon`)"
-  - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@6.1.1_@capacitor+core@6.1.1/node_modules/@capacitor/ios`)"
-  - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@6.0.0_@capacitor+core@6.1.1/node_modules/@capacitor/filesystem`)"
-  - "CapacitorHaptics (from `../../node_modules/.pnpm/@capacitor+haptics@6.0.0_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.1.1/node_modules/@capacitor/haptics`)"
-  - "CapacitorKeyboard (from `../../node_modules/.pnpm/@capacitor+keyboard@6.0.1_@capacitor+core@6.1.1/node_modules/@capacitor/keyboard`)"
-  - "CapacitorLaunchNative (from `../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-launch-native`)"
-  - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@6.0.1_@capacitor+core@6.1.1/node_modules/@capacitor/network`)"
-  - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.1/node_modules/capacitor-plugin-safe-area`)"
-  - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.1_@capacitor+core@6.1.1/node_modules/@capacitor/share`)"
-  - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.1.1/node_modules/capacitor-stash-media`)"
-  - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@6.0.0_@capacitor+core@6.1.1/node_modules/@capacitor/status-bar`)"
-  - "CapacitorTips (from `../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-tips`)"
+  - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
+  - "CapacitorAndroidNavMode (from `../../node_modules/.pnpm/capacitor-android-nav-mode@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-android-nav-mode`)"
+  - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/app`)"
+  - "CapacitorApplicationContext (from `../../node_modules/.pnpm/capacitor-application-context@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-application-context`)"
+  - "CapacitorBiometricLock (from `../../node_modules/.pnpm/capacitor-biometric-lock@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-biometric-lock`)"
+  - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@6.0.2_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.2/node_modules/@capacitor/browser`)"
+  - "CapacitorClearCache (from `../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.1.2/node_modules/capacitor-clear-cache`)"
+  - "CapacitorCommunityAppIcon (from `../../node_modules/.pnpm/@capacitor-community+app-icon@5.0.0_@capacitor+core@6.1.2/node_modules/@capacitor-community/app-icon`)"
+  - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
+  - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/filesystem`)"
+  - "CapacitorHaptics (from `../../node_modules/.pnpm/@capacitor+haptics@6.0.1_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.1.2/node_modules/@capacitor/haptics`)"
+  - "CapacitorKeyboard (from `../../node_modules/.pnpm/@capacitor+keyboard@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/keyboard`)"
+  - "CapacitorLaunchNative (from `../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-launch-native`)"
+  - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/network`)"
+  - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.2/node_modules/capacitor-plugin-safe-area`)"
+  - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share`)"
+  - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.1.2/node_modules/capacitor-stash-media`)"
+  - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar`)"
+  - "CapacitorTips (from `../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-tips`)"
 
 SPEC REPOS:
   trunk:
@@ -68,66 +68,66 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Capacitor:
-    :path: "../../node_modules/.pnpm/@capacitor+ios@6.1.1_@capacitor+core@6.1.1/node_modules/@capacitor/ios"
+    :path: "../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios"
   CapacitorAndroidNavMode:
-    :path: "../../node_modules/.pnpm/capacitor-android-nav-mode@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-android-nav-mode"
+    :path: "../../node_modules/.pnpm/capacitor-android-nav-mode@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-android-nav-mode"
   CapacitorApp:
-    :path: "../../node_modules/.pnpm/@capacitor+app@6.0.0_@capacitor+core@6.1.1/node_modules/@capacitor/app"
+    :path: "../../node_modules/.pnpm/@capacitor+app@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/app"
   CapacitorApplicationContext:
-    :path: "../../node_modules/.pnpm/capacitor-application-context@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-application-context"
+    :path: "../../node_modules/.pnpm/capacitor-application-context@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-application-context"
   CapacitorBiometricLock:
-    :path: "../../node_modules/.pnpm/capacitor-biometric-lock@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-biometric-lock"
+    :path: "../../node_modules/.pnpm/capacitor-biometric-lock@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-biometric-lock"
   CapacitorBrowser:
-    :path: "../../node_modules/.pnpm/@capacitor+browser@6.0.1_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.1/node_modules/@capacitor/browser"
+    :path: "../../node_modules/.pnpm/@capacitor+browser@6.0.2_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.2/node_modules/@capacitor/browser"
   CapacitorClearCache:
-    :path: "../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.1.1/node_modules/capacitor-clear-cache"
+    :path: "../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.1.2/node_modules/capacitor-clear-cache"
   CapacitorCommunityAppIcon:
-    :path: "../../node_modules/.pnpm/@capacitor-community+app-icon@5.0.0_@capacitor+core@6.1.1/node_modules/@capacitor-community/app-icon"
+    :path: "../../node_modules/.pnpm/@capacitor-community+app-icon@5.0.0_@capacitor+core@6.1.2/node_modules/@capacitor-community/app-icon"
   CapacitorCordova:
-    :path: "../../node_modules/.pnpm/@capacitor+ios@6.1.1_@capacitor+core@6.1.1/node_modules/@capacitor/ios"
+    :path: "../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios"
   CapacitorFilesystem:
-    :path: "../../node_modules/.pnpm/@capacitor+filesystem@6.0.0_@capacitor+core@6.1.1/node_modules/@capacitor/filesystem"
+    :path: "../../node_modules/.pnpm/@capacitor+filesystem@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/filesystem"
   CapacitorHaptics:
-    :path: "../../node_modules/.pnpm/@capacitor+haptics@6.0.0_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.1.1/node_modules/@capacitor/haptics"
+    :path: "../../node_modules/.pnpm/@capacitor+haptics@6.0.1_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.1.2/node_modules/@capacitor/haptics"
   CapacitorKeyboard:
-    :path: "../../node_modules/.pnpm/@capacitor+keyboard@6.0.1_@capacitor+core@6.1.1/node_modules/@capacitor/keyboard"
+    :path: "../../node_modules/.pnpm/@capacitor+keyboard@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/keyboard"
   CapacitorLaunchNative:
-    :path: "../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-launch-native"
+    :path: "../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-launch-native"
   CapacitorNetwork:
-    :path: "../../node_modules/.pnpm/@capacitor+network@6.0.1_@capacitor+core@6.1.1/node_modules/@capacitor/network"
+    :path: "../../node_modules/.pnpm/@capacitor+network@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/network"
   CapacitorPluginSafeArea:
-    :path: "../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.1/node_modules/capacitor-plugin-safe-area"
+    :path: "../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.2/node_modules/capacitor-plugin-safe-area"
   CapacitorShare:
-    :path: "../../node_modules/.pnpm/@capacitor+share@6.0.1_@capacitor+core@6.1.1/node_modules/@capacitor/share"
+    :path: "../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share"
   CapacitorStashMedia:
-    :path: "../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.1.1/node_modules/capacitor-stash-media"
+    :path: "../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.1.2/node_modules/capacitor-stash-media"
   CapacitorStatusBar:
-    :path: "../../node_modules/.pnpm/@capacitor+status-bar@6.0.0_@capacitor+core@6.1.1/node_modules/@capacitor/status-bar"
+    :path: "../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar"
   CapacitorTips:
-    :path: "../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.1.1/node_modules/capacitor-tips"
+    :path: "../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-tips"
 
 SPEC CHECKSUMS:
-  Capacitor: 8941aba4364ba9d1b22188569001f2ce45cc2b00
+  Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
   CapacitorAndroidNavMode: 94c169757cc0e9b82d7af168a5e59283e4bcc885
-  CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
+  CapacitorApp: 0bc633b4eae40a1f32cd2834788fad3bc42da6a1
   CapacitorApplicationContext: 2bee68107e6efb8f89b5db102dc95a9cf74c9464
   CapacitorBiometricLock: a91f2e8b28527e0d98032270f9363c4844abf1b9
-  CapacitorBrowser: 473c7fd70ddbe541608ff09ec1be14da0078279e
+  CapacitorBrowser: 83ec661a9ccd56c28a6851e4dd1ac33b181227ec
   CapacitorClearCache: 66a0b1bd6ed2d130d1c5467d3c001486cc1aa1eb
   CapacitorCommunityAppIcon: 4873c7de4cd50e68a36e08fe93f88f479e7b16a2
-  CapacitorCordova: 8f2cc8d8d3619c566e9418fe8772064a94266106
-  CapacitorFilesystem: 60e59ba274c234a979e7a3be2552feaadcee4263
-  CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
-  CapacitorKeyboard: 5f32a712adf41e07a61caafb82cf29fb6d8ba123
+  CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
+  CapacitorFilesystem: 37fb3aa5c945b4539ab11c74a5c57925a302bf24
+  CapacitorHaptics: fe689ade56ef20ec9b041a753c6da70c5d8ec9a9
+  CapacitorKeyboard: 2700f9b18687be021e28b5a09b59eb151a46d5e0
   CapacitorLaunchNative: 6508ec892ad035d5556658c10cc3b55bfbb7929d
-  CapacitorNetwork: 5c94acfdddc22043f2ffaff224ce9b4aa5a179f0
+  CapacitorNetwork: 8796cf1f1104a00b289957b6150b7c60e1c2a8d3
   CapacitorPluginSafeArea: e1eca7f70974f0e270d96f70cd0a5f51523164b1
-  CapacitorShare: 02222f2457ff003e642370a9c1ecd101baaa27c8
+  CapacitorShare: 591ae4693d85686ceb590db8e8b44aa014ec6490
   CapacitorStashMedia: 10aa96dc5f874c4c27642528a4c327c46792abf2
-  CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
+  CapacitorStatusBar: b81d4fb5d4e0064c712018071b3ab4b810b39a63
   CapacitorTips: 2087733aea06ec041b210085395ca934c8554907
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: 8c13688aa0ab7b335bbe4f1432587aec7b30504f
+PODFILE CHECKSUM: 5ca86318d997d7fd0fc8bc5b29560c7de0d0c229
 
 COCOAPODS: 1.12.1
