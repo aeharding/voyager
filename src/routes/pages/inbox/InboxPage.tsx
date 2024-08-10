@@ -40,6 +40,8 @@ export default function InboxPage({ showRead }: InboxPageProps) {
 
   const fetchFn: FetchFn<InboxItemView> = useCallback(
     async (pageData) => {
+      if (!myUserId) return [];
+
       const params = {
         limit: 50,
         ...pageData,
