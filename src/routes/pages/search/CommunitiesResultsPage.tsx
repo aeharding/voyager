@@ -29,7 +29,7 @@ export default function CommunitiesResultsPage({
 }: CommunitiesResultsPageProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
-  const [sort, setSort] = useFeedSort("posts");
+  const [sort, setSort] = useFeedSort("posts", undefined, "TopAll");
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = useCallback(

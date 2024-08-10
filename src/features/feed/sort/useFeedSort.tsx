@@ -9,14 +9,17 @@ import {
 } from "./feedSortSlice";
 import { AnyFeed } from "../helpers";
 
+type Sorts = {
+  posts: SortType;
+  comments: CommentSortType;
+};
+
 export default function useFeedSort<Context extends "posts" | "comments">(
   context: Context,
   feed?: AnyFeed | undefined,
+  overrideSort?: Sorts[Context],
 ) {
-  type Sort = {
-    posts: SortType;
-    comments: CommentSortType;
-  }[Context];
+  type Sort = Sorts[Context];
 
   const dispatch = useAppDispatch();
 
@@ -32,7 +35,9 @@ export default function useFeedSort<Context extends "posts" | "comments">(
   );
 
   const [sort, _setSort] = useState<Sort | undefined>(
-    !rememberCommunitySort ? defaultSort : (feedSort ?? undefined),
+    !rememberCommunitySort
+      ? (overrideSort ?? defaultSort)
+      : (feedSort ?? overrideSort),
   );
 
   useEffect(() => {
