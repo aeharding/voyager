@@ -38,7 +38,7 @@ const SubscribedIcon = styled(IonIcon)`
   margin-bottom: 1px;
   margin-left: 2px;
 
-  opacity: 0.3;
+  opacity: 0.4;
 
   .ion-palette-dark & {
     opacity: 0.5;
