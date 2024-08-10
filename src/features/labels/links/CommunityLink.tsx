@@ -35,7 +35,7 @@ const SubscribedIcon = styled(IonIcon)`
   vertical-align: middle;
   font-size: 0.85em;
 
-  margin-bottom: 2px;
+  margin-bottom: 1px;
   margin-left: 2px;
 
   opacity: 0.3;
