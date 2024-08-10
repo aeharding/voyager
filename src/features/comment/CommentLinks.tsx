@@ -10,6 +10,7 @@ import { Text } from "mdast";
 import { uniqBy } from "lodash";
 import { isValidUrl } from "../../helpers/url";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
+import { connectedInstanceUrlSelector } from "../auth/authSelectors";
 
 const Container = styled.div`
   display: flex;
@@ -34,6 +35,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+  const connectedInstanceUrl = useAppSelector(connectedInstanceUrlSelector);
 
   const links = useMemo(() => {
     // Initialize a unified processor with the remark-parse parser
@@ -56,7 +58,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
         links.push({
           type: node.type,
           // normalize relative links
-          url: new URL(node.url, `https://${connectedInstance}`).href,
+          url: new URL(node.url, connectedInstanceUrl).href,
           text:
             "children" in node ? (node.children[0] as Text)?.value : undefined,
         });
@@ -72,7 +74,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     links = links.slice(0, 4);
 
     return links;
-  }, [markdown, showCommentImages, connectedInstance]);
+  }, [connectedInstance, markdown, showCommentImages, connectedInstanceUrl]);
 
   if (!links.length) return;
 

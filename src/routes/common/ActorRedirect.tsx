@@ -33,7 +33,7 @@ function ActorRedirectEnabled({ children }: ActorRedirectProps) {
   const [first, second, _wrongActor, ...urlEnd] = location.pathname.split("/");
 
   // no need to redirect if url doesn't have actor
-  if (!_wrongActor || !_wrongActor.includes(".")) return page;
+  if (!_wrongActor || !isPotentialActor(_wrongActor)) return page;
 
   return (
     <Redirect
@@ -41,4 +41,13 @@ function ActorRedirectEnabled({ children }: ActorRedirectProps) {
       push={false}
     />
   );
+}
+
+function isPotentialActor(host: string) {
+  if (host.includes(".")) return true;
+  if (host.includes(":")) return true;
+
+  if (host.startsWith("localhost")) return true;
+
+  return false;
 }

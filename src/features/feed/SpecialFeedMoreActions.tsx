@@ -12,6 +12,7 @@ import {
   useSetPostAppearance,
 } from "../post/appearance/PostAppearanceProvider";
 import { getShareIcon } from "../../helpers/device";
+import { buildBaseLemmyUrl } from "../../services/lemmy";
 
 interface SpecialFeedMoreActionsProps {
   type: ListingType;
@@ -40,10 +41,10 @@ export default function SpecialFeedMoreActions({
           text: "Share",
           icon: getShareIcon(),
           handler: () => {
-            const url = urlSelector(store.getState());
+            const url = buildBaseLemmyUrl(urlSelector(store.getState()));
 
             Share.share({
-              url: `https://${url}?dataType=Post&listingType=${type}`,
+              url: `${url}?dataType=Post&listingType=${type}`,
             });
           },
         },

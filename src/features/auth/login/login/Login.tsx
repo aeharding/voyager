@@ -26,7 +26,7 @@ import Totp from "./Totp";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
 import InAppExternalLink from "../../../shared/InAppExternalLink";
 import { HelperText } from "../../../settings/shared/formatting";
-import { getImageSrc } from "../../../../services/lemmy";
+import { buildBaseLemmyUrl, getImageSrc } from "../../../../services/lemmy";
 import { loginSuccess } from "../../../../helpers/toastMessages";
 import lemmyLogo from "../lemmyLogo.svg";
 import { styled } from "@linaria/react";
@@ -162,7 +162,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
         <div className="ion-padding">
           You are logging in to{" "}
           <InAppExternalLink
-            href={`https://${url}`}
+            href={buildBaseLemmyUrl(url)}
             target="_blank"
             rel="noopener noreferrer"
           >

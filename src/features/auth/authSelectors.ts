@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { getClient } from "../../services/lemmy";
+import { buildBaseLemmyUrl, getClient } from "../../services/lemmy";
 import { parseLemmyJWT } from "../../helpers/lemmy";
 
 export const activeAccount = createSelector(
@@ -88,3 +88,6 @@ export const loggedInAccountsSelector = createSelector(
   [(state: RootState) => state.auth.accountData?.accounts],
   (accounts) => accounts?.filter(({ jwt }) => jwt),
 );
+
+export const connectedInstanceUrlSelector = (state: RootState) =>
+  buildBaseLemmyUrl(state.auth.connectedInstance);
