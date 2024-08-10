@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   IonBackButton,
   IonButton,
@@ -12,7 +18,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { VList } from "virtua";
+import { VList, VListHandle } from "virtua";
 import { styled } from "@linaria/react";
 import { LOGIN_SERVERS } from "../data/servers";
 import { getClient } from "../../../../services/lemmy";
@@ -44,7 +50,7 @@ const StyledIonList = styled(IonList)`
 export default function PickLoginServer() {
   const presentToast = useAppToast();
   const [search, setSearch] = useState("");
-  const [dirty, setDirty] = useState(false);
+  const [shouldSubmit, setShouldSubmit] = useState(false);
   const searchHostname = stripProtocol(search.trim());
   const instances = useMemo(
     () =>
@@ -54,6 +60,8 @@ export default function PickLoginServer() {
     [searchHostname],
   );
   const [loading, setLoading] = useState(false);
+
+  const vHandle = useRef<VListHandle>(null);
 
   const ref = useRef<HTMLDivElement>(null);
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
@@ -69,19 +77,21 @@ export default function PickLoginServer() {
   );
 
   useEffect(() => {
+    vHandle.current?.scrollTo(0);
+  }, [search]);
+
+  useEffect(() => {
     setTimeout(() => {
       searchbarRef.current?.setFocus();
     }, 300);
   }, []);
 
-  async function submit() {
+  const submit = useCallback(async () => {
     if (loading) return;
 
     const potentialServer = searchHostname.toLowerCase();
 
-    // Dirty input with candidate
     if (instances[0] && search !== potentialServer) {
-      setDirty(false);
       setSearch(instances[0]);
       return;
     }
@@ -120,7 +130,14 @@ export default function PickLoginServer() {
       ?.push(() => (
         <Login url={potentialServer} siteIcon={site.site_view.site.icon} />
       ));
-  }
+  }, [instances, loading, presentToast, search, searchHostname]);
+
+  useEffect(() => {
+    if (!shouldSubmit) return;
+
+    setShouldSubmit(false);
+    submit();
+  }, [shouldSubmit, submit]);
 
   return (
     <>
@@ -141,7 +158,7 @@ export default function PickLoginServer() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <IonContent>
+      <IonContent scrollY={false}>
         <Container ref={ref}>
           <div className="ion-padding">
             <IonText color="medium">
@@ -157,19 +174,26 @@ export default function PickLoginServer() {
             onKeyDown={(e) => {
               if (e.key !== "Enter") return;
 
+              // Invalid search and there is a candidate for autocomplete
+              if (
+                searchInvalid &&
+                instances[0] &&
+                instances[0] !== searchHostname
+              ) {
+                setSearch(instances[0]);
+                return;
+              }
+
               // Already selected a server
-              if (!dirty && search) return submit();
+              if (search) return submit();
 
               // Valid with TLD (for autocomplete search)
               if (!searchInvalid) {
-                setDirty(false);
                 submit();
                 return;
               }
 
-              // Dirty input with candidate
               if (instances[0]) {
-                setDirty(false);
                 setSearch(instances[0]);
                 return;
               }
@@ -182,33 +206,34 @@ export default function PickLoginServer() {
             }}
             value={search}
             onIonInput={(e) => {
-              setDirty(true);
-              setSearch(e.detail.value || "");
+              setSearch(e.detail.value ?? "");
             }}
           />
 
-          {dirty && (
-            <StyledIonList>
-              <VList count={instances.length}>
-                {(i) => {
-                  const instance = instances[i]!;
+          <StyledIonList>
+            <VList
+              count={instances.length}
+              ref={vHandle}
+              className="ion-content-scroll-host"
+            >
+              {(i) => {
+                const instance = instances[i]!;
 
-                  return (
-                    <IonItem
-                      detail
-                      onClick={() => {
-                        setSearch(instance);
-                        setDirty(false);
-                        searchbarRef.current?.setFocus();
-                      }}
-                    >
-                      {instance}
-                    </IonItem>
-                  );
-                }}
-              </VList>
-            </StyledIonList>
-          )}
+                return (
+                  <IonItem
+                    detail
+                    onClick={() => {
+                      setSearch(instance);
+                      setShouldSubmit(true);
+                      searchbarRef.current?.setFocus();
+                    }}
+                  >
+                    {instance}
+                  </IonItem>
+                );
+              }}
+            </VList>
+          </StyledIonList>
         </Container>
       </IonContent>
     </>
