@@ -94,7 +94,9 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     if (!sort) return <CenteredSpinner />;
 
     return (
-      <ShowSubscribedIconContext.Provider value={type !== "Subscribed"}>
+      <ShowSubscribedIconContext.Provider
+        value={type === "All" || type === "Local"}
+      >
         <PageTypeContext.Provider value="special-feed">
           <WaitUntilPostAppearanceResolved>
             <PostCommentFeed
