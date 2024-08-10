@@ -9,6 +9,7 @@ import OpenNativeApps from "./OpenNativeApps";
 import ClearCache from "./ClearCache";
 import BackupSettings from "./backup/BackupSettings";
 import Thumbnailinator from "./Thumbnailinator";
+import SubscribedIcon from "./SubscribedIcon";
 
 export default function Other() {
   return (
@@ -24,6 +25,7 @@ export default function Other() {
         <Haptics />
         <NoSubscribedInFeed />
         <Thumbnailinator />
+        <SubscribedIcon />
         <ClearCache />
         <BackupSettings />
       </IonList>
