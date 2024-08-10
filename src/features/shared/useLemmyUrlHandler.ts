@@ -8,7 +8,7 @@ import { MouseEvent } from "react";
 import useAppToast from "../../helpers/useAppToast";
 import { isLemmyError } from "../../helpers/lemmyErrors";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { connectedInstanceUrlSelector } from "../auth/authSelectors";
+import { buildBaseLemmyUrl } from "../../services/lemmy";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
 
@@ -44,7 +44,7 @@ export default function useLemmyUrlHandler() {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const connectedInstanceUrl = useAppSelector(connectedInstanceUrlSelector);
+  const connectedInstanceUrl = buildBaseLemmyUrl(connectedInstance);
   const objectByUrl = useAppSelector((state) => state.resolve.objectByUrl);
   const {
     navigateToComment,
