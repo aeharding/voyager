@@ -29,6 +29,7 @@ import PostAppearanceProvider, {
 } from "../../../features/post/appearance/PostAppearanceProvider";
 import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 import useFeedUpdate from "../../../features/feed/useFeedUpdate";
+import { ShowSubscribedIconContext } from "../../../features/labels/links/CommunityLink";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -93,15 +94,17 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     if (!sort) return <CenteredSpinner />;
 
     return (
-      <PageTypeContext.Provider value="special-feed">
-        <WaitUntilPostAppearanceResolved>
-          <PostCommentFeed
-            fetchFn={fetchFn}
-            sortDuration={getSortDuration(sort)}
-            filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
-          />
-        </WaitUntilPostAppearanceResolved>
-      </PageTypeContext.Provider>
+      <ShowSubscribedIconContext.Provider value={type !== "Subscribed"}>
+        <PageTypeContext.Provider value="special-feed">
+          <WaitUntilPostAppearanceResolved>
+            <PostCommentFeed
+              fetchFn={fetchFn}
+              sortDuration={getSortDuration(sort)}
+              filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+            />
+          </WaitUntilPostAppearanceResolved>
+        </PageTypeContext.Provider>
+      </ShowSubscribedIconContext.Provider>
     );
   })();
 

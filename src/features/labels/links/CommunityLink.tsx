@@ -4,16 +4,17 @@ import { Community, SubscribedType } from "lemmy-js-client";
 import { renderHandle } from "../Handle";
 import { LinkContainer, StyledLink, hideCss } from "./shared";
 import ItemIcon from "../img/ItemIcon";
-import { useIonActionSheet } from "@ionic/react";
+import { IonIcon, useIonActionSheet } from "@ionic/react";
 import { LongPressOptions, useLongPress } from "use-long-press";
 import {
+  heart,
   heartDislikeOutline,
   heartOutline,
   removeCircleOutline,
   tabletPortraitOutline,
 } from "ionicons/icons";
 import useCommunityActions from "../../community/useCommunityActions";
-import { useCallback, useContext } from "react";
+import { createContext, useCallback, useContext } from "react";
 import { ShareImageContext } from "../../share/asImage/ShareAsImage";
 import {
   preventOnClickNavigationBug,
@@ -22,10 +23,26 @@ import {
 import { styled } from "@linaria/react";
 import { cx } from "@linaria/core";
 import { useAppSelector } from "../../../store";
+import { OShowSubscribedIcon } from "../../../services/db";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin-right: 0.4rem;
   vertical-align: middle;
+`;
+
+const SubscribedIcon = styled(IonIcon)`
+  color: var(--ion-color-danger);
+  vertical-align: middle;
+  font-size: 0.85em;
+
+  margin-bottom: 2px;
+  margin-left: 2px;
+
+  opacity: 0.3;
+
+  .ion-palette-dark & {
+    opacity: 0.5;
+  }
 `;
 
 interface CommunityLinkProps {
@@ -55,6 +72,7 @@ export default function CommunityLink({
   const showCommunityIcons = useAppSelector(
     (state) => state.settings.appearance.posts.showCommunityIcons,
   );
+  const showSubscribed = useShowSubscribedIcon();
 
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
     useCommunityActions(community, subscribed);
@@ -106,6 +124,13 @@ export default function CommunityLink({
     showInstanceWhenRemote,
   });
 
+  const end = (
+    <>
+      {instance}
+      {showSubscribed && isSubscribed && <SubscribedIcon icon={heart} />}
+    </>
+  );
+
   return (
     <LinkContainer
       {...bind()}
@@ -117,15 +142,16 @@ export default function CommunityLink({
           e.stopPropagation();
           preventOnClickNavigationBug(e);
         }}
+        draggable={false}
       >
         {showCommunityIcons && !hideCommunity && !hideIcon && (
           <StyledItemIcon item={community} size={tinyIcon ? 16 : 24} />
         )}
 
         {name}
-        {!disableInstanceClick && instance}
+        {!disableInstanceClick && end}
       </StyledLink>
-      {disableInstanceClick && instance}
+      {disableInstanceClick && end}
     </LinkContainer>
   );
 }
@@ -133,3 +159,21 @@ export default function CommunityLink({
 const onStart: LongPressOptions["onStart"] = (e) => {
   e.stopPropagation();
 };
+
+function useShowSubscribedIcon() {
+  const feedEnabled = useContext(ShowSubscribedIconContext);
+  const subscribedIcon = useAppSelector(
+    (state) => state.settings.general.subscribedIcon,
+  );
+
+  switch (subscribedIcon) {
+    case OShowSubscribedIcon.OnlyAllLocal:
+      return feedEnabled;
+    case OShowSubscribedIcon.Never:
+      return false;
+    case OShowSubscribedIcon.Everywhere:
+      return true;
+  }
+}
+
+export const ShowSubscribedIconContext = createContext(false);

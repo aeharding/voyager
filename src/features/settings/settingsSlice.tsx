@@ -40,6 +40,8 @@ import {
   OAutoplayMediaType,
   CommentsThemeType,
   VotesThemeType,
+  ShowSubscribedIcon,
+  OShowSubscribedIcon,
 } from "../../services/db";
 import { LOCALSTORAGE_KEYS, get, set } from "./syncStorage";
 import { Mode } from "@ionic/core";
@@ -136,6 +138,7 @@ interface SettingsState {
     defaultFeed: DefaultFeedType | undefined;
     noSubscribedInFeed: boolean;
     thumbnailinatorEnabled: boolean;
+    subscribedIcon: ShowSubscribedIcon;
   };
   blocks: {
     keywords: string[];
@@ -222,6 +225,7 @@ export const initialState: SettingsState = {
     defaultFeed: undefined,
     noSubscribedInFeed: false,
     thumbnailinatorEnabled: true,
+    subscribedIcon: OShowSubscribedIcon.Never,
   },
   blocks: {
     keywords: [],
@@ -532,6 +536,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("prefer_native_apps", action.payload);
     },
+    setSubscribedIcon(state, action: PayloadAction<ShowSubscribedIcon>) {
+      state.general.subscribedIcon = action.payload;
+
+      db.setSetting("subscribed_icon", action.payload);
+    },
 
     resetSettings: () => ({
       ...initialState,
@@ -722,6 +731,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const quick_switch_dark_mode = await db.getSetting(
         "quick_switch_dark_mode",
       );
+      const subscribed_icon = await db.getSetting("subscribed_icon");
 
       return {
         ...state.settings,
@@ -864,6 +874,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           thumbnailinatorEnabled:
             thumbnailinator_enabled ??
             initialState.general.thumbnailinatorEnabled,
+          subscribedIcon:
+            subscribed_icon ?? initialState.general.subscribedIcon,
         },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
@@ -944,6 +956,7 @@ export const {
   setAlwaysUseReaderMode,
   setShowCollapsedComment,
   setQuickSwitchDarkMode,
+  setSubscribedIcon,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
