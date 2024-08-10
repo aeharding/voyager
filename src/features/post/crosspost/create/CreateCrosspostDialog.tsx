@@ -25,6 +25,7 @@ import useAppToast from "../../../../helpers/useAppToast";
 import { checkmark } from "ionicons/icons";
 import { StatusBar } from "@capacitor/status-bar";
 import { isNative } from "../../../../helpers/device";
+import { css } from "@linaria/core";
 
 const Title = styled.div`
   font-size: 1.1em;
@@ -61,6 +62,13 @@ const PillIonList = styled(IonList)`
 
 const LoadingIonSpinner = styled(IonSpinner)`
   margin-left: 16px;
+`;
+
+const CommunitySelectorContents = styled.div`
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
 `;
 
 interface CreateCrosspostDialogProps {
@@ -188,14 +196,19 @@ export default function CreateCrosspostDialog({
         <IonItem
           onClick={() => presentCommunitySelectorModal({ cssClass: "small" })}
         >
-          Community
-          <IonText
-            slot="end"
-            color={!community ? "medium" : undefined}
-            className="ion-text-end"
-          >
-            {community ? getHandle(community.community) : "None"}
-          </IonText>
+          <CommunitySelectorContents>
+            <div>Community</div>
+            <IonText
+              color={!community ? "medium" : undefined}
+              className={css`
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              `}
+            >
+              {community ? getHandle(community.community) : "None"}
+            </IonText>
+          </CommunitySelectorContents>
         </IonItem>
       </PillIonList>
       <PillIonButton
