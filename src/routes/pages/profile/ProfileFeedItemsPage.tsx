@@ -88,7 +88,7 @@ export default function ProfileFeedItemsPage({
         <PostCommentFeed
           fetchFn={fetchFn}
           filterHiddenPosts={false}
-          filterKeywords={false}
+          filterKeywordsAndWebsites={false}
         />
       </FeedContent>
     </IonPage>

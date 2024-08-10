@@ -19,6 +19,7 @@ import settingsSlice, {
   getBlurNsfw,
   getDefaultFeed,
   getFilteredKeywords,
+  getFilteredWebsites,
 } from "./features/settings/settingsSlice";
 import gestureSlice, {
   fetchGesturesFromDatabase,
@@ -104,6 +105,7 @@ const activeHandleChange = () => {
   store.dispatch(getFavoriteCommunities());
   store.dispatch(getBlurNsfw());
   store.dispatch(getFilteredKeywords());
+  store.dispatch(getFilteredWebsites());
   store.dispatch(getDefaultFeed());
   store.dispatch(getInstances());
 };
