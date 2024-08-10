@@ -3,12 +3,16 @@ import { reduceFileSize } from "../helpers/imageCompress";
 import { isNative, supportsWebp } from "../helpers/device";
 import nativeFetch from "./nativeFetch";
 
-function buildBaseUrl(url: string): string {
+export function buildBaseLemmyUrl(url: string): string {
+  if (import.meta.env.VITE_FORCE_LEMMY_INSECURE) {
+    return `http://${url}`;
+  }
+
   return `https://${url}`;
 }
 
 export function getClient(url: string, jwt?: string): LemmyHttp {
-  return new LemmyHttp(buildBaseUrl(url), {
+  return new LemmyHttp(buildBaseLemmyUrl(url), {
     fetchFunction: isNative() ? nativeFetch : fetch.bind(globalThis),
     headers: jwt
       ? {
