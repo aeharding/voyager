@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../../services/db";
-import {
-  AppDispatch,
-  RootState,
-  useAppDispatch,
-  useAppSelector,
-} from "../../../store";
+import { AppDispatch, useAppDispatch, useAppSelector } from "../../../store";
 import { useCallback, useEffect } from "react";
 import { DeepPartial } from "../../../helpers/deepPartial";
 
