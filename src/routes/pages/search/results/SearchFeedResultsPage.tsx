@@ -81,7 +81,7 @@ export default function SearchFeedResultsPage({
           fetchFn={fetchFn}
           sortDuration={getSortDuration(sort)}
           filterHiddenPosts={false}
-          filterKeywords={false}
+          filterKeywordsAndWebsites={false}
         />
       </FeedContent>
     </IonPage>

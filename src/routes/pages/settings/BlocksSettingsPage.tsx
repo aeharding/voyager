@@ -28,6 +28,7 @@ import {
   TitleContainer,
   UsernameIonText,
 } from "../../../features/shared/markdown/editing/modal/contents/CommentReplyPage";
+import FilteredWebsites from "../../../features/settings/blocks/FilteredWebsites";
 
 export default function BlocksSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -56,10 +57,11 @@ export default function BlocksSettingsPage() {
     return (
       <AppContent scrollY>
         <FilterNsfw />
-        <FilteredKeywords />
         <BlockedCommunities />
         <BlockedUsers />
         <BlockedInstances />
+        <FilteredKeywords />
+        <FilteredWebsites />
       </AppContent>
     );
   })();

@@ -142,6 +142,7 @@ interface SettingsState {
   };
   blocks: {
     keywords: string[];
+    websites: string[];
   };
 }
 
@@ -229,6 +230,7 @@ export const initialState: SettingsState = {
   },
   blocks: {
     keywords: [],
+    websites: [],
   },
 };
 
@@ -370,6 +372,10 @@ export const appearanceSlice = createSlice({
     },
     setFilteredKeywords(state, action: PayloadAction<string[]>) {
       state.blocks.keywords = action.payload;
+      // Per user setting is updated in StoreProvider
+    },
+    setFilteredWebsites(state, action: PayloadAction<string[]>) {
+      state.blocks.websites = action.payload;
       // Per user setting is updated in StoreProvider
     },
     setDefaultFeed(state, action: PayloadAction<DefaultFeedType | undefined>) {
@@ -589,6 +595,19 @@ export const getFilteredKeywords =
     );
   };
 
+export const getFilteredWebsites =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const filteredWebsites = await db.getSetting("filtered_websites", {
+      user_handle: userHandle,
+    });
+
+    dispatch(
+      setFilteredWebsites(filteredWebsites ?? initialState.blocks.websites),
+    );
+  };
+
 export const getDefaultFeed =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
@@ -633,6 +652,18 @@ export const updateFilteredKeywords =
     dispatch(setFilteredKeywords(filteredKeywords));
 
     db.setSetting("filtered_keywords", filteredKeywords, {
+      user_handle: userHandle,
+    });
+  };
+
+export const updateFilteredWebsites =
+  (filteredWebsites: string[]) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setFilteredWebsites(filteredWebsites));
+
+    db.setSetting("filtered_websites", filteredWebsites, {
       user_handle: userHandle,
     });
   };
@@ -711,6 +742,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const link_handler = await db.getSetting("link_handler");
       const prefer_native_apps = await db.getSetting("prefer_native_apps");
       const filtered_keywords = await db.getSetting("filtered_keywords");
+      const filtered_websites = await db.getSetting("filtered_websites");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
       const show_comment_images = await db.getSetting("show_comment_images");
       const show_collapsed_comment = await db.getSetting(
@@ -879,6 +911,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
+          websites: filtered_websites ?? initialState.blocks.websites,
         },
       };
     });
@@ -918,6 +951,7 @@ export const {
   setShowCommunityIcons,
   setCommunityAtTop,
   setFilteredKeywords,
+  setFilteredWebsites,
   setPostAppearance,
   setRememberPostAppearance,
   setThumbnailPosition,

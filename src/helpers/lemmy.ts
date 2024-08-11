@@ -12,6 +12,7 @@ import { escapeStringForRegex } from "./regex";
 import { quote } from "./markdown";
 import { compare } from "compare-versions";
 import { parseJWT } from "./jwt";
+import { parseUrl } from "./url";
 
 export interface LemmyJWT {
   sub: number;
@@ -250,6 +251,26 @@ export function postHasFilteredKeywords(
 ): boolean {
   for (const keyword of keywords) {
     if (keywordFoundInSentence(keyword, post.name)) return true;
+  }
+
+  return false;
+}
+
+export function postHasFilteredWebsite(
+  post: Post,
+  websites: string[],
+): boolean {
+  if (!post.url) return false;
+
+  for (const website of websites) {
+    const postUrl = parseUrl(post.url);
+    if (!postUrl) continue;
+
+    if (
+      postUrl.hostname === website ||
+      postUrl.hostname.endsWith(`.${website}`) // match subdomains
+    )
+      return true;
   }
 
   return false;

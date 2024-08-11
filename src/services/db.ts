@@ -337,6 +337,7 @@ export type SettingValueTypes = {
   jump_button_position: JumpButtonPositionType;
   tap_to_collapse: TapToCollapseType;
   filtered_keywords: string[];
+  filtered_websites: string[];
   highlight_new_account: boolean;
   default_feed: DefaultFeedType;
   touch_friendly_links: boolean;
