@@ -129,7 +129,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
   const {
     shareAsImagePreferences: {
-      comment: { includePostText, includePostDetails, allParentComments },
+      comment: { includePostContent, includePostDetails, allParentComments },
       common: { hideUsernames, watermark },
       post: { hideCommunity },
     },
@@ -243,7 +243,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     watermark,
     hideUsernames,
     hideCommunity,
-    includePostText,
+    includePostContent,
     includePostDetails,
     allParentComments,
   ]);
@@ -329,14 +329,14 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             {includePostDetails && hasPostBody ? (
               <IonItem>
                 <IonToggle
-                  checked={includePostText}
+                  checked={includePostContent}
                   onIonChange={({ detail: { checked } }) =>
                     setShareAsImagePreferences({
-                      comment: { includePostText: checked },
+                      comment: { includePostContent: checked },
                     })
                   }
                 >
-                  Include Post Text
+                  Include Post Content
                 </IonToggle>
               </IonItem>
             ) : undefined}
@@ -430,7 +430,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
               <PostHeader
                 className={!("comment" in data) ? hideBottomBorderCss : ""}
                 post={data.post}
-                showPostText={includePostText}
+                showPostText={includePostContent}
                 showPostActions={false}
                 constrainHeight={false}
               />

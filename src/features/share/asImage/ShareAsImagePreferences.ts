@@ -15,7 +15,7 @@ export interface ShareAsImagePreferences {
   };
   comment: {
     includePostDetails: boolean;
-    includePostText: boolean;
+    includePostContent: boolean;
     allParentComments: boolean;
   };
 }
@@ -39,8 +39,8 @@ const { reducer, actions } = createSlice({
       state.post.hideCommunity =
         post?.hideCommunity ?? state.post.hideCommunity;
 
-      state.comment.includePostText =
-        comment?.includePostText ?? state.comment.includePostText;
+      state.comment.includePostContent =
+        comment?.includePostContent ?? state.comment.includePostContent;
       state.comment.includePostDetails =
         comment?.includePostDetails ?? state.comment.includePostDetails;
       state.comment.allParentComments =

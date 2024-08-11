@@ -9,7 +9,7 @@ export const defaultPreferences: ShareAsImagePreferences = {
     hideCommunity: false,
   },
   comment: {
-    includePostText: false,
+    includePostContent: false,
     includePostDetails: false,
     allParentComments: false,
   },
