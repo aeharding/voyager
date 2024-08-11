@@ -354,8 +354,30 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                     removeDisabled={
                       minDepth === getDepthFromComment(data.comment.comment)
                     }
-                    onAdd={() => setMinDepth((minDepth) => minDepth - 1)}
-                    onRemove={() => setMinDepth((minDepth) => minDepth + 1)}
+                    onAdd={() => {
+                      setMinDepth((minDepth) => {
+                        const newValue = minDepth - 1;
+                        if (newValue === 0) {
+                          setShareAsImagePreferences({
+                            comment: { allParentComments: true },
+                          });
+                        }
+                        return newValue;
+                      });
+                    }}
+                    onRemove={() => {
+                      setMinDepth((minDepth) => {
+                        const newValue = minDepth + 1;
+                        if (
+                          newValue === getDepthFromComment(data.comment.comment)
+                        ) {
+                          setShareAsImagePreferences({
+                            comment: { allParentComments: false },
+                          });
+                        }
+                        return newValue;
+                      });
+                    }}
                   />
                 </ParentCommentValues>
               </IonItem>
