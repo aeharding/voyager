@@ -63,10 +63,10 @@ const { reducer, actions } = createSlice({
       state.comment.allParentComments =
         comment?.allParentComments ?? state.comment.allParentComments;
 
-      db.setSetting("share_as_image_preferences", {
-        post: { ...state.post },
-        comment: { ...state.comment },
-      });
+      db.setSetting(
+        "share_as_image_preferences",
+        JSON.parse(JSON.stringify(state)),
+      );
     },
   },
 });
