@@ -83,6 +83,7 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
             community={community.community}
             showInstanceWhenRemote
             subscribed={community.subscribed}
+            hideSubscribed
           />
           <RightContainer>
             <ActionButton

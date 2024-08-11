@@ -31,7 +31,7 @@ const StyledItemIcon = styled(ItemIcon)`
 `;
 
 const SubscribedIcon = styled(IonIcon)`
-  color: var(--ion-color-danger);
+  color: var(--ion-color-primary);
   vertical-align: middle;
 
   margin-bottom: 1px;
@@ -51,6 +51,7 @@ interface CommunityLinkProps {
   tinyIcon?: boolean;
   disableInstanceClick?: boolean;
   hideIcon?: boolean;
+  hideSubscribed?: boolean;
 
   className?: string;
 }
@@ -63,6 +64,7 @@ export default function CommunityLink({
   tinyIcon,
   disableInstanceClick,
   hideIcon,
+  hideSubscribed,
 }: CommunityLinkProps) {
   const [present] = useIonActionSheet();
 
@@ -126,7 +128,9 @@ export default function CommunityLink({
   const end = (
     <>
       {instance}
-      {showSubscribed && isSubscribed && <SubscribedIcon icon={heart} />}
+      {showSubscribed && !hideSubscribed && isSubscribed && (
+        <SubscribedIcon icon={heart} />
+      )}
     </>
   );
 
