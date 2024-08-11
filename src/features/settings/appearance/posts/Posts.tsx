@@ -8,6 +8,7 @@ import EmbedExternalMedia from "./EmbedExternalMedia";
 import AlwaysShowAuthor from "./AlwaysShowAuthor";
 import RememberType from "./RememberType";
 import CommunityAtTop from "./CommunityAtTop";
+import SubscribedIcon from "./SubscribedIcon";
 
 export default function Posts() {
   return (
@@ -20,10 +21,11 @@ export default function Posts() {
         <RememberType />
         <BlurNsfw />
         <CommunityAtTop />
-        <EmbedCrossposts />
         <EmbedExternalMedia />
         <ShowCommunityIcons />
+        <SubscribedIcon />
         <AlwaysShowAuthor />
+        <EmbedCrossposts />
       </IonList>
     </>
   );
