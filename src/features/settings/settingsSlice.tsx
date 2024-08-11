@@ -79,6 +79,7 @@ interface SettingsState {
       embedExternalMedia: boolean;
       alwaysShowAuthor: boolean;
       communityAtTop: boolean;
+      subscribedIcon: ShowSubscribedIcon;
     };
     large: {
       showVotingButtons: boolean;
@@ -138,7 +139,6 @@ interface SettingsState {
     defaultFeed: DefaultFeedType | undefined;
     noSubscribedInFeed: boolean;
     thumbnailinatorEnabled: boolean;
-    subscribedIcon: ShowSubscribedIcon;
   };
   blocks: {
     keywords: string[];
@@ -167,6 +167,7 @@ export const initialState: SettingsState = {
       embedExternalMedia: true,
       alwaysShowAuthor: false,
       communityAtTop: false,
+      subscribedIcon: OShowSubscribedIcon.Never,
     },
     large: {
       showVotingButtons: true,
@@ -226,7 +227,6 @@ export const initialState: SettingsState = {
     defaultFeed: undefined,
     noSubscribedInFeed: false,
     thumbnailinatorEnabled: true,
-    subscribedIcon: OShowSubscribedIcon.Never,
   },
   blocks: {
     keywords: [],
@@ -543,7 +543,7 @@ export const appearanceSlice = createSlice({
       db.setSetting("prefer_native_apps", action.payload);
     },
     setSubscribedIcon(state, action: PayloadAction<ShowSubscribedIcon>) {
-      state.general.subscribedIcon = action.payload;
+      state.appearance.posts.subscribedIcon = action.payload;
 
       db.setSetting("subscribed_icon", action.payload);
     },
@@ -805,6 +805,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
               initialState.appearance.posts.alwaysShowAuthor,
             communityAtTop:
               community_at_top ?? initialState.appearance.posts.communityAtTop,
+            subscribedIcon:
+              subscribed_icon ?? initialState.appearance.posts.subscribedIcon,
           },
           large: {
             showVotingButtons:
@@ -906,8 +908,6 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           thumbnailinatorEnabled:
             thumbnailinator_enabled ??
             initialState.general.thumbnailinatorEnabled,
-          subscribedIcon:
-            subscribed_icon ?? initialState.general.subscribedIcon,
         },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
