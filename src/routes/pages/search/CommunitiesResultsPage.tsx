@@ -31,7 +31,7 @@ export default function CommunitiesResultsPage({
   const client = useClient();
   const [sort, setSort] = useFeedSort(
     "posts",
-    { internal: "CommunitiesSearch" },
+    { internal: search ? "CommunitiesSearch" : "CommunitiesExplore" },
     "TopAll",
   );
   const [listingType, setListingType] = useState<ListingType>("All");

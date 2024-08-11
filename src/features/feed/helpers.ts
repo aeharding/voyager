@@ -1,7 +1,11 @@
 import { ListingType } from "lemmy-js-client";
 import { getFeedUrlName } from "../community/mod/ModActions";
 
-type InternalFeedType = "PostsSearch" | "CommentsSearch" | "CommunitiesSearch";
+type InternalFeedType =
+  | "PostsSearch"
+  | "CommentsSearch"
+  | "CommunitiesSearch"
+  | "CommunitiesExplore";
 
 export type AnyFeed =
   | {
