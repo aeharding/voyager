@@ -124,17 +124,14 @@ interface ShareAsImageProps {
 export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   const presentToast = useAppToast();
 
-  const [hideUsernames, setHideUsernames] = useState(false);
-  const [hideCommunity, setHideCommunity] = useState(false);
-  const [watermark, setWatermark] = useState(false);
-
   const [blob, setBlob] = useState<Blob | undefined>();
   const [imageSrc, setImageSrc] = useState("");
 
   const {
     shareAsImagePreferences: {
       comment: { includePostText, includePostDetails, allParentComments },
-      post,
+      common: { hideUsernames, watermark },
+      post: { hideCommunity },
     },
     setShareAsImagePreferences,
   } = useShareAsImagePreferences();
@@ -246,7 +243,6 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     watermark,
     hideUsernames,
     hideCommunity,
-    post,
     includePostText,
     includePostDetails,
     allParentComments,
@@ -370,7 +366,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           <IonItem>
             <IonToggle
               checked={hideCommunity}
-              onIonChange={(e) => setHideCommunity(e.detail.checked)}
+              onIonChange={({ detail: { checked } }) =>
+                setShareAsImagePreferences({ post: { hideCommunity: checked } })
+              }
             >
               Hide Community
             </IonToggle>
@@ -379,7 +377,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         <IonItem>
           <IonToggle
             checked={hideUsernames}
-            onIonChange={(e) => setHideUsernames(e.detail.checked)}
+            onIonChange={({ detail: { checked } }) =>
+              setShareAsImagePreferences({ common: { hideUsernames: checked } })
+            }
           >
             Hide Usernames
           </IonToggle>
@@ -387,7 +387,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         <IonItem lines="none">
           <IonToggle
             checked={watermark}
-            onIonChange={(e) => setWatermark(e.detail.checked)}
+            onIonChange={({ detail: { checked } }) =>
+              setShareAsImagePreferences({ common: { watermark: checked } })
+            }
           >
             Watermark
           </IonToggle>

@@ -5,31 +5,31 @@ import { useCallback, useEffect } from "react";
 import { DeepPartial } from "../../../helpers/deepPartial";
 
 export interface ShareAsImagePreferences {
+  common: {
+    hideUsernames: boolean;
+    watermark: boolean;
+  };
   post: {
     hideCommunity: boolean;
-    hideUsername: boolean;
-    watermark: boolean;
   };
   comment: {
     includePostDetails: boolean;
     includePostText: boolean;
-    hideUsernames: boolean;
-    watermark: boolean;
     allParentComments: boolean;
   };
 }
 
 const initialState: ShareAsImagePreferences = {
+  common: {
+    hideUsernames: false,
+    watermark: false,
+  },
   post: {
     hideCommunity: false,
-    hideUsername: false,
-    watermark: false,
   },
   comment: {
     includePostText: false,
     includePostDetails: false,
-    hideUsernames: false,
-    watermark: false,
     allParentComments: false,
   },
 };
@@ -42,19 +42,19 @@ const { reducer, actions } = createSlice({
       state,
       action: PayloadAction<DeepPartial<ShareAsImagePreferences>>,
     ) => {
-      const { post, comment } = action.payload;
+      const { post, comment, common } = action.payload;
+
+      state.common.hideUsernames =
+        common?.hideUsernames ?? state.common.hideUsernames;
+      state.common.watermark = common?.watermark ?? state.common.watermark;
+
       state.post.hideCommunity =
         post?.hideCommunity ?? state.post.hideCommunity;
-      state.post.hideUsername = post?.hideUsername ?? state.post.hideUsername;
-      state.post.watermark = post?.watermark ?? state.post.watermark;
 
       state.comment.includePostText =
         comment?.includePostText ?? state.comment.includePostText;
       state.comment.includePostDetails =
         comment?.includePostDetails ?? state.comment.includePostDetails;
-      state.comment.hideUsernames =
-        comment?.hideUsernames ?? state.comment.hideUsernames;
-      state.comment.watermark = comment?.watermark ?? state.comment.watermark;
       state.comment.allParentComments =
         comment?.allParentComments ?? state.comment.allParentComments;
 
