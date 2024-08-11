@@ -5,6 +5,7 @@ import { zipObject } from "lodash";
 import { ALL_POST_SORTS } from "../features/feed/PostSort";
 import { COMMENT_SORTS } from "../features/comment/CommentSort";
 import { StringArrayToIdentityObject } from "../helpers/typescript";
+import { ShareAsImagePreferences } from "../features/share/asImage/ShareAsImagePreferences";
 
 export interface IPostMetadata {
   post_id: number;
@@ -362,6 +363,7 @@ export type SettingValueTypes = {
   show_collapsed_comment: boolean;
   quick_switch_dark_mode: boolean;
   subscribed_icon: ShowSubscribedIcon;
+  share_as_image_preferences: ShareAsImagePreferences;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

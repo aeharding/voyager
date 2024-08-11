@@ -27,6 +27,7 @@ import PostHeader from "../../post/detail/PostHeader";
 import { webviewServerUrl } from "../../../services/nativeFetch";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+import { useShareAsImagePreferences } from "./ShareAsImagePreferences";
 
 const Container = styled.div`
   --bottom-padding: max(
@@ -125,20 +126,27 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
   const [hideUsernames, setHideUsernames] = useState(false);
   const [hideCommunity, setHideCommunity] = useState(false);
-  const [includePostDetails, setIncludePostDetails] = useState(
-    !("comment" in data),
-  );
-  const [includePostText, setIncludePostText] = useState(true);
   const [watermark, setWatermark] = useState(false);
 
   const [blob, setBlob] = useState<Blob | undefined>();
   const [imageSrc, setImageSrc] = useState("");
 
-  const [minDepth, setMinDepth] = useState(
-    ("comment" in data
+  const {
+    shareAsImagePreferences: {
+      comment: { includePostText, includePostDetails, allParentComments },
+      post,
+    },
+    setShareAsImagePreferences,
+  } = useShareAsImagePreferences();
+
+  // eslint-disable-next-line no-nested-ternary
+  const defaultMinDepth = allParentComments
+    ? 0
+    : "comment" in data
       ? getDepthFromComment(data.comment.comment)
-      : undefined) ?? 0,
-  );
+      : 0;
+
+  const [minDepth, setMinDepth] = useState(defaultMinDepth ?? 0);
 
   const hasPostBody = data.post.post.body || data.post.post.url;
 
@@ -238,8 +246,10 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     watermark,
     hideUsernames,
     hideCommunity,
-    includePostDetails,
+    post,
     includePostText,
+    includePostDetails,
+    allParentComments,
   ]);
 
   async function onShare() {
@@ -311,7 +321,11 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             <IonItem>
               <IonToggle
                 checked={includePostDetails}
-                onIonChange={(e) => setIncludePostDetails(e.detail.checked)}
+                onIonChange={({ detail: { checked } }) =>
+                  setShareAsImagePreferences({
+                    comment: { includePostDetails: checked },
+                  })
+                }
               >
                 Include Post Details
               </IonToggle>
@@ -320,7 +334,11 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
               <IonItem>
                 <IonToggle
                   checked={includePostText}
-                  onIonChange={(e) => setIncludePostText(e.detail.checked)}
+                  onIonChange={({ detail: { checked } }) =>
+                    setShareAsImagePreferences({
+                      comment: { includePostText: checked },
+                    })
+                  }
                 >
                   Include Post Text
                 </IonToggle>
