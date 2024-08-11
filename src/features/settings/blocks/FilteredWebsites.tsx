@@ -12,9 +12,13 @@ import { ListHeader } from "../shared/formatting";
 import { updateFilteredWebsites } from "../settingsSlice";
 import { uniq, without } from "lodash";
 import { RemoveItemButton } from "../../shared/ListEditor";
+import { parseUrl } from "../../../helpers/url";
+import useAppToast from "../../../helpers/useAppToast";
+import { close } from "ionicons/icons";
 
 export default function FilteredWebsites() {
   const [presentAlert] = useIonAlert();
+  const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const filteredWebsites = useAppSelector(
     (state) => state.settings.blocks.websites,
@@ -31,13 +35,26 @@ export default function FilteredWebsites() {
         {
           text: "OK",
           handler: ({ website }) => {
-            if (!website.trim()) return;
+            const cleanedWebsite = website.trim().toLowerCase();
 
-            dispatch(
-              updateFilteredWebsites(
-                uniq([...filteredWebsites, website.trim()]),
-              ),
-            );
+            if (!cleanedWebsite) return;
+
+            const hasProtocol = /^https?:\/\//.test(cleanedWebsite);
+            const host = parseUrl(
+              `${hasProtocol ? "" : "https://"}${cleanedWebsite}`,
+            )?.host;
+
+            if (!host || !host.includes(".")) {
+              presentToast({
+                message: "Invalid website",
+                color: "danger",
+                centerText: true,
+                icon: close,
+              });
+              return false;
+            }
+
+            dispatch(updateFilteredWebsites(uniq([...filteredWebsites, host])));
           },
         },
         "Cancel",

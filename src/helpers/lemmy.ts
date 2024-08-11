@@ -266,7 +266,11 @@ export function postHasFilteredWebsite(
     const postUrl = parseUrl(post.url);
     if (!postUrl) continue;
 
-    if (postUrl.hostname === website) return true;
+    if (
+      postUrl.hostname === website ||
+      postUrl.hostname.endsWith(`.${website}`) // match subdomains
+    )
+      return true;
   }
 
   return false;
