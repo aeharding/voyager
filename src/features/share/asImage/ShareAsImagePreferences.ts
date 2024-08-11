@@ -3,6 +3,7 @@ import { db } from "../../../services/db";
 import { AppDispatch, useAppDispatch, useAppSelector } from "../../../store";
 import { useCallback, useEffect } from "react";
 import { DeepPartial } from "../../../helpers/deepPartial";
+import { defaultPreferences } from "./DefaultPreferences";
 
 export interface ShareAsImagePreferences {
   common: {
@@ -19,20 +20,7 @@ export interface ShareAsImagePreferences {
   };
 }
 
-const initialState: ShareAsImagePreferences = {
-  common: {
-    hideUsernames: false,
-    watermark: false,
-  },
-  post: {
-    hideCommunity: false,
-  },
-  comment: {
-    includePostText: false,
-    includePostDetails: false,
-    allParentComments: false,
-  },
-};
+const initialState = defaultPreferences;
 
 const { reducer, actions } = createSlice({
   name: "shareAsImagePreferences",
