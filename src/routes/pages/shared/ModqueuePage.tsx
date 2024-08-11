@@ -140,7 +140,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
             <PostCommentFeed
               fetchFn={fetchFn}
               filterHiddenPosts={false}
-              filterKeywords={false}
+              filterKeywordsAndWebsites={false}
             />
           </ModqueueContext.Provider>
         </FeedContent>

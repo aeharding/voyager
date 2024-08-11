@@ -112,7 +112,7 @@ export default function ProfileFeedHiddenPostsPage() {
           fetchFn={fetchFn}
           limit={LIMIT}
           filterHiddenPosts={false}
-          filterKeywords={false}
+          filterKeywordsAndWebsites={false}
         />
       </FeedContent>
     </IonPage>

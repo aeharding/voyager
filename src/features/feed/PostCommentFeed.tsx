@@ -23,6 +23,7 @@ import {
   isComment,
   isPost,
   postHasFilteredKeywords,
+  postHasFilteredWebsite,
 } from "../../helpers/lemmy";
 import { useAutohidePostIfNeeded } from "./PageTypeContext";
 
@@ -36,7 +37,7 @@ interface PostCommentFeed
   extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {
   communityName?: string;
   filterHiddenPosts?: boolean;
-  filterKeywords?: boolean;
+  filterKeywordsAndWebsites?: boolean;
 
   header?: ReactElement;
 }
@@ -44,7 +45,7 @@ interface PostCommentFeed
 export default function PostCommentFeed({
   fetchFn: _fetchFn,
   filterHiddenPosts = true,
-  filterKeywords = true,
+  filterKeywordsAndWebsites = true,
   filterOnRxFn: _filterOnRxFn,
   filterFn: _filterFn,
   ...rest
@@ -57,6 +58,9 @@ export default function PostCommentFeed({
   const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
   const filteredKeywords = useAppSelector(
     (state) => state.settings.blocks.keywords,
+  );
+  const filteredWebsites = useAppSelector(
+    (state) => state.settings.blocks.websites,
   );
 
   const disableMarkingRead = useAppSelector(
@@ -152,14 +156,11 @@ export default function PostCommentFeed({
         postHidden.hidden
       )
         return false;
-      if (
-        filterKeywords &&
-        postHasFilteredKeywords(
-          item.post,
-          filterKeywords ? filteredKeywords : [],
-        )
-      )
-        return false;
+
+      if (filterKeywordsAndWebsites) {
+        if (postHasFilteredKeywords(item.post, filteredKeywords)) return false;
+        if (postHasFilteredWebsite(item.post, filteredWebsites)) return false;
+      }
 
       if (_filterFn) return _filterFn(item);
 
@@ -167,11 +168,12 @@ export default function PostCommentFeed({
     },
     [
       postHiddenById,
-      filteredKeywords,
-      filterKeywords,
       filterHiddenPosts,
+      filterKeywordsAndWebsites,
       _filterFn,
       postDeletedById,
+      filteredKeywords,
+      filteredWebsites,
     ],
   );
 
