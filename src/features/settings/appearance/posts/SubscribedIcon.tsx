@@ -6,7 +6,7 @@ import SettingSelector from "../../shared/SettingSelector";
 
 export default function SubscribedIcon() {
   const subscribedIcon = useAppSelector(
-    (state) => state.settings.general.subscribedIcon,
+    (state) => state.settings.appearance.posts.subscribedIcon,
   );
 
   return (

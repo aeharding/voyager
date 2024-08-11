@@ -33,7 +33,6 @@ const StyledItemIcon = styled(ItemIcon)`
 const SubscribedIcon = styled(IonIcon)`
   color: var(--ion-color-danger);
   vertical-align: middle;
-  font-size: 0.85em;
 
   margin-bottom: 1px;
   margin-left: 2px;
@@ -163,7 +162,7 @@ const onStart: LongPressOptions["onStart"] = (e) => {
 function useShowSubscribedIcon() {
   const feedEnabled = useContext(ShowSubscribedIconContext);
   const subscribedIcon = useAppSelector(
-    (state) => state.settings.general.subscribedIcon,
+    (state) => state.settings.appearance.posts.subscribedIcon,
   );
 
   switch (subscribedIcon) {
