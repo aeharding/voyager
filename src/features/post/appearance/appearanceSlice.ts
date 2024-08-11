@@ -1,7 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ListingType } from "lemmy-js-client";
 import { PostAppearanceType, db } from "../../../services/db";
-import { serializeFeedName } from "../../feed/helpers";
+import { AnyFeed, serializeFeedName } from "../../feed/helpers";
 
 interface PostAppearanceState {
   /**
@@ -21,7 +20,7 @@ export const postAppearanceSlice = createSlice({
     setPostAppeartance: (
       state,
       action: PayloadAction<{
-        feed: FeedSortFeed;
+        feed: AnyFeed;
         postAppearance: PostAppearanceType;
       }>,
     ) => {
@@ -47,17 +46,9 @@ export const { setPostAppeartance } = postAppearanceSlice.actions;
 
 export default postAppearanceSlice.reducer;
 
-export type FeedSortFeed =
-  | {
-      remoteCommunityHandle: string;
-    }
-  | {
-      listingType: ListingType;
-    };
-
 export const getPostAppearance = createAsyncThunk(
   "postAppearance/getPostAppearance",
-  async (feed: FeedSortFeed) => {
+  async (feed: AnyFeed) => {
     const feedName = serializeFeedName(feed);
     const postAppearance =
       (await db.getSetting("post_appearance_type", {

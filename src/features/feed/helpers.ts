@@ -1,12 +1,17 @@
 import { ListingType } from "lemmy-js-client";
 import { getFeedUrlName } from "../community/mod/ModActions";
 
+type InternalFeedType = "PostsSearch" | "CommentsSearch" | "CommunitiesSearch";
+
 export type AnyFeed =
   | {
       remoteCommunityHandle: string;
     }
   | {
       listingType: ListingType;
+    }
+  | {
+      internal: InternalFeedType;
     };
 
 export function serializeFeedName(feed: AnyFeed): string {
@@ -15,6 +20,8 @@ export function serializeFeedName(feed: AnyFeed): string {
       return feed.remoteCommunityHandle; // always contains @ - will never overlap with getFeedUrlName
     case "listingType" in feed:
       return getFeedUrlName(feed.listingType);
+    case "internal" in feed:
+      return `@@voyager_${feed.internal}`;
     default:
       return feed;
   }
