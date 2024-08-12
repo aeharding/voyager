@@ -1,0 +1,46 @@
+# Based on the nginx config made available by Lemmy developers.
+# https://github.com/LemmyNet/lemmy
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "4"
+
+services:
+  proxy:
+    image: nginx:1-alpine
+    ports:
+      - "8536:8536"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro,Z
+    restart: unless-stopped
+    logging: *default-logging
+
+  lemmy:
+    image: dessalines/lemmy:0.19.5
+    platform: linux/x86_64
+    hostname: lemmy
+    restart: unless-stopped
+    environment:
+      - RUST_LOG="warn,lemmy_server=debug,lemmy_api=debug,lemmy_api_common=debug,lemmy_api_crud=debug,lemmy_apub=debug,lemmy_db_schema=debug,lemmy_db_views=debug,lemmy_db_views_actor=debug,lemmy_db_views_moderator=debug,lemmy_routes=debug,lemmy_utils=debug,lemmy_websocket=debug"
+      - RUST_BACKTRACE=full
+    volumes:
+      - ./lemmy.hjson:/config/config.hjson:Z
+    depends_on:
+      - postgres
+    logging: *default-logging
+
+  postgres:
+    image: postgres
+    hostname: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=lemmy
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=lemmy
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data:Z
+    restart: unless-stopped
+    logging: *default-logging
