@@ -50,7 +50,9 @@ export async function _uploadImage(client: LemmyHttp, image: File) {
     image: compressedImageIfNeeded as File,
   });
 
-  if (!response.url) throw new Error(response.msg);
+  // lemm.ee uses response.message for error messages (e.g. account too new)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (!response.url) throw new Error(response.msg ?? (response as any).message);
 
   return response;
 }
