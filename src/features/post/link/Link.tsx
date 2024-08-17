@@ -11,6 +11,12 @@ import { LinkData } from "../../comment/CommentLinks";
 import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
 import { getImageSrc } from "../../../services/lemmy";
 import { determineTypeFromUrl, isUrlImage } from "../../../helpers/url";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
+import PlaintextMarkdown from "../../shared/markdown/PlaintextMarkdown";
+
+const TRANSPARENT_PIXEL =
+  'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
 
 const Container = styled(LinkInterceptor)`
   display: flex;
@@ -84,6 +90,10 @@ const Bottom = styled.div<{ small?: boolean }>`
 
 const Text = styled.div`
   color: var(--ion-text-color);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const UrlContainer = styled.div`
@@ -125,7 +135,7 @@ interface EmbedProps {
 export default function Link({
   url,
   text,
-  thumbnail,
+  thumbnail: lemmyThubmnail,
   compact = true,
   blur,
   className,
@@ -133,7 +143,14 @@ export default function Link({
   small,
   commentType,
 }: EmbedProps) {
+  const dispatch = useAppDispatch();
   const { determineObjectTypeFromUrl } = useLemmyUrlHandler();
+  const thumbnailinatorEnabled = useAppSelector(
+    (state) => state.settings.general.thumbnailinatorEnabled,
+  );
+  const thumbnailinatorResult = useAppSelector(
+    (state) => state.thumbnail.thumbnailSrcByUrl[url],
+  );
 
   const [error, setError] = useState(false);
 
@@ -151,15 +168,45 @@ export default function Link({
     onClick?.(e);
   };
 
-  const compactIcon = (() => {
+  const thumbnail = useMemo(() => {
+    if (lemmyThubmnail) return lemmyThubmnail;
+
+    if (!thumbnailinatorEnabled) return;
+
+    if (
+      thumbnailinatorResult === "none" ||
+      thumbnailinatorResult === "failed"
+    ) {
+      return;
+    }
+
+    if (!thumbnailinatorResult || thumbnailinatorResult === "pending") {
+      if (!thumbnailinatorResult) dispatch(fetchThumbnail(url));
+      return TRANSPARENT_PIXEL;
+    }
+
+    return thumbnailinatorResult;
+  }, [
+    lemmyThubmnail,
+    dispatch,
+    url,
+    thumbnailinatorResult,
+    thumbnailinatorEnabled,
+  ]);
+
+  const compactIcon = useMemo(() => {
     if (commentType === "image" || isImage)
       return <ThumbnailImg src={getImageSrc(url, { size: 50 })} />;
 
     if (linkType || !compact || !thumbnail)
       return <LinkPreview type={linkType} />;
 
-    return <ThumbnailImg src={thumbnail} />;
-  })();
+    return (
+      <ThumbnailImg
+        src={typeof thumbnail === "string" ? thumbnail : thumbnail.sm}
+      />
+    );
+  }, [commentType, compact, isImage, linkType, thumbnail, url]);
 
   return (
     <Container
@@ -170,7 +217,7 @@ export default function Link({
     >
       {!compact && thumbnail && !error && (
         <Img
-          src={thumbnail}
+          src={typeof thumbnail === "string" ? thumbnail : thumbnail.lg}
           draggable="false"
           className={blur ? blurImgCss : undefined}
           onError={() => setError(true)}
@@ -179,7 +226,9 @@ export default function Link({
       <Bottom small={small || (!compact && !!thumbnail)}>
         {compactIcon}
         <UrlContainer>
-          <Text>{text}</Text>
+          <Text>
+            <PlaintextMarkdown>{text}</PlaintextMarkdown>
+          </Text>
           <Url>{url}</Url>
         </UrlContainer>
         <ChevronIcon icon={chevronForward} />

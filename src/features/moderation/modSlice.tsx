@@ -119,7 +119,6 @@ export const syncReports =
       let page = 1;
       const cumulatedReports: CommentReport[] = [];
 
-      // eslint-disable-next-line no-constant-condition
       while (true) {
         let reports;
 
@@ -151,7 +150,6 @@ export const syncReports =
       let page = 1;
       const cumulatedReports: PostReport[] = [];
 
-      // eslint-disable-next-line no-constant-condition
       while (true) {
         let reports;
 

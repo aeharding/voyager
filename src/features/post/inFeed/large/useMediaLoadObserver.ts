@@ -1,7 +1,7 @@
 import { ComponentRef, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { imageLoaded } from "./imageSlice";
-import Media from "../../../media/gallery/Media";
+import type Media from "../../../media/gallery/Media";
 
 export default function useMediaLoadObserver(src: string | undefined) {
   const dispatch = useAppDispatch();

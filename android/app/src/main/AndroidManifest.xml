@@ -40,7 +40,7 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.de" />
+                <data android:host="feddit.org" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
                 <data android:host="feddit.nl" />
@@ -119,7 +119,7 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.de" />
+                <data android:host="feddit.org" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
                 <data android:host="feddit.nl" />
@@ -198,7 +198,7 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.de" />
+                <data android:host="feddit.org" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
                 <data android:host="feddit.nl" />
@@ -277,7 +277,7 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.de" />
+                <data android:host="feddit.org" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
                 <data android:host="feddit.nl" />
@@ -356,7 +356,7 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.de" />
+                <data android:host="feddit.org" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
                 <data android:host="feddit.nl" />
@@ -435,7 +435,7 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.de" />
+                <data android:host="feddit.org" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
                 <data android:host="feddit.nl" />
@@ -514,7 +514,7 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.de" />
+                <data android:host="feddit.org" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
                 <data android:host="feddit.nl" />
@@ -593,7 +593,7 @@
                 <data android:host="burggit.moe" />
                 <data android:host="discuss.online" />
                 <data android:host="discuss.tchncs.de" />
-                <data android:host="feddit.de" />
+                <data android:host="feddit.org" />
                 <data android:host="feddit.dk" />
                 <data android:host="feddit.it" />
                 <data android:host="feddit.nl" />

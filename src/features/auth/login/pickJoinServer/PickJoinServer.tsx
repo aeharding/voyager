@@ -41,7 +41,10 @@ import {
   defaultServersUntouched,
   getCustomServers,
 } from "../../../../services/app";
-import { ellipsisHorizontalCircleOutline } from "ionicons/icons";
+import {
+  ellipsisHorizontalCircleOutline,
+  ellipsisVertical,
+} from "ionicons/icons";
 import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
 import { addGuestInstance } from "../../authSlice";
 import Login from "../login/Login";
@@ -49,13 +52,15 @@ import { getInstanceFromHandle } from "../../authSelectors";
 import { styled } from "@linaria/react";
 import AppHeader from "../../../shared/AppHeader";
 import { isMinimumSupportedLemmyVersion } from "../../../../helpers/lemmy";
+import { css } from "@linaria/core";
+import { isIosTheme } from "../../../../helpers/device";
 
 const spacing = `
   margin: 2.5rem 0;
   width: 100%;
 `;
 
-const CenteredSpinner = styled(IonSpinner)`
+const SpacedSpinner = styled(IonSpinner)`
   ${spacing}
 `;
 
@@ -306,7 +311,7 @@ export default function PickJoinServer() {
       );
     }
 
-    if (loading || loadingInstances) return <CenteredSpinner />;
+    if (loading || loadingInstances) return <SpacedSpinner />;
 
     return <Empty>No results</Empty>;
   })();
@@ -320,8 +325,21 @@ export default function PickJoinServer() {
           </IonButtons>
           <IonTitle>Pick Server</IonTitle>
           <IonButtons slot="end">
-            <IonButton fill="clear" color="medium" onClick={presentOptions}>
-              <IonIcon icon={ellipsisHorizontalCircleOutline} />
+            <IonButton
+              color="dark"
+              onClick={presentOptions}
+              className={css`
+                font-size: 16px;
+              `}
+            >
+              <IonIcon
+                icon={
+                  isIosTheme()
+                    ? ellipsisHorizontalCircleOutline
+                    : ellipsisVertical
+                }
+                slot="icon-only"
+              />
             </IonButton>
           </IonButtons>
         </IonToolbar>

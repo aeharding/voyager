@@ -9,7 +9,6 @@ import {
   flagOutline,
   pencilOutline,
   personOutline,
-  shareOutline,
   textOutline,
   trashOutline,
 } from "ionicons/icons";
@@ -45,6 +44,7 @@ import { isDownvoteEnabledSelector } from "../auth/siteSlice";
 import { compact } from "lodash";
 import { isStubComment } from "./CommentHeader";
 import { getVoteErrorMessage } from "../../helpers/lemmyErrors";
+import { getShareIcon } from "../../helpers/device";
 
 export interface CommentActionsProps {
   comment: CommentView | PersonMentionView | CommentReplyView;
@@ -232,7 +232,7 @@ export default function useCommentActions({
           handler: () => {
             (async () => {
               if (presentLoginIfNeeded()) return;
-              if (commentView.post.locked) {
+              if (commentView.post.locked && !canModerate) {
                 presentToast(postLocked);
                 return;
               }
@@ -262,7 +262,7 @@ export default function useCommentActions({
         },
         {
           text: "Share",
-          icon: shareOutline,
+          icon: getShareIcon(),
           handler: () => {
             share(comment);
           },

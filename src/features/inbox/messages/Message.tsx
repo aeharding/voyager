@@ -10,11 +10,10 @@ import Markdown from "../../shared/markdown/Markdown";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 
-const Container = styled.div`
+const Container = styled.div<{ first: boolean }>`
   position: relative; /* Setup a relative container for our pseudo elements */
   max-width: min(75%, 400px);
-  margin-bottom: 15px;
-  padding: 10px 20px;
+  padding: 10px 15px;
   line-height: 1.3;
   word-wrap: break-word; /* Make sure the text wraps to multiple lines if long */
 
@@ -54,6 +53,10 @@ const Container = styled.div`
     ); /* height of our bubble "tail" - should match the border-radius above */
     content: "";
   }
+
+  margin-bottom: 15px;
+
+  margin-top: ${({ first }) => (first ? "15px" : "0")};
 `;
 
 const sentCss = css`
@@ -92,9 +95,10 @@ const receivedCss = css`
 
 interface MessageProps {
   message: PrivateMessageView;
+  first?: boolean;
 }
 
-export default function Message({ message }: MessageProps) {
+export default function Message({ message, first }: MessageProps) {
   const dispatch = useAppDispatch();
   const { presentReport } = useContext(PageContext);
   const myUserId = useAppSelector(
@@ -155,6 +159,7 @@ export default function Message({ message }: MessageProps) {
 
   return (
     <Container
+      first={!!first}
       className={thisIsMyMessage ? sentCss : receivedCss}
       ref={containerRef}
       {...bind()}

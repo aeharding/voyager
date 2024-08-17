@@ -10,6 +10,7 @@ import { Text } from "mdast";
 import { uniqBy } from "lodash";
 import { isValidUrl } from "../../helpers/url";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
+import { buildBaseLemmyUrl } from "../../services/lemmy";
 
 const Container = styled.div`
   display: flex;
@@ -34,6 +35,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
+  const connectedInstanceUrl = buildBaseLemmyUrl(connectedInstance);
 
   const links = useMemo(() => {
     // Initialize a unified processor with the remark-parse parser
@@ -48,14 +50,15 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
 
     let links: LinkData[] = [];
 
-    visit(mdastTree, ["spoiler", "link", "image"], (node) => {
+    visit(mdastTree, ["details", "link", "image"], (node) => {
       // don't show links within spoilers
-      if (node.type === "spoiler") return SKIP;
+      if (node.type === "details") return SKIP;
 
       if (node.type === "link" || (!showCommentImages && node.type === "image"))
         links.push({
           type: node.type,
-          url: node.url,
+          // normalize relative links
+          url: new URL(node.url, connectedInstanceUrl).href,
           text:
             "children" in node ? (node.children[0] as Text)?.value : undefined,
         });
@@ -71,7 +74,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     links = links.slice(0, 4);
 
     return links;
-  }, [markdown, showCommentImages, connectedInstance]);
+  }, [connectedInstance, markdown, showCommentImages, connectedInstanceUrl]);
 
   if (!links.length) return;
 

@@ -1,10 +1,11 @@
-import { IonButton, IonButtons, IonIcon, IonTitle } from "@ionic/react";
+import { IonButton, IonButtons, IonIcon } from "@ionic/react";
 import { chevronDown, close } from "ionicons/icons";
 import React, { useContext, useEffect, useRef } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
 import { styled } from "@linaria/react";
 import { isIosTheme } from "../../../helpers/device";
 import { findCurrentPage } from "../../../helpers/ionic";
+import AppTitle from "../../shared/AppTitle";
 
 const TitleContents = styled.span`
   display: inline-flex;
@@ -48,6 +49,10 @@ const StyledInput = styled.input`
   --background: none;
 `;
 
+const DropdownIcon = styled(IonIcon)`
+  flex-shrink: 0;
+`;
+
 const TITLE_CLASS = "title-search-opener";
 
 export function openTitleSearch() {
@@ -88,7 +93,7 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
   if (searching) {
     return (
       <>
-        <IonTitle>
+        <AppTitle>
           <StyledInput
             ref={searchRef}
             placeholder="Community..."
@@ -102,7 +107,7 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
             }}
             enterKeyHint="go"
           />
-        </IonTitle>
+        </AppTitle>
 
         <IonButtons slot="end">
           <IonButton onClick={() => setSearching(false)}>
@@ -119,11 +124,11 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
 
   return (
     <>
-      <IonTitle>
+      <AppTitle fullPadding={75}>
         <TitleContents ref={titleRef} className={TITLE_CLASS}>
-          <span>{name}</span> <IonIcon icon={chevronDown} />
+          <span>{name}</span> <DropdownIcon icon={chevronDown} />
         </TitleContents>
-      </IonTitle>
+      </AppTitle>
       {children}
     </>
   );

@@ -1,19 +1,28 @@
-import { getPostMedia } from "../../../../media/gallery/Media";
-import { ComponentProps, useMemo } from "react";
+import { ComponentProps } from "react";
 import LargeFeedMedia from "./LargeFeedMedia";
 import LargeFeedRedgifMedia from "../../../../media/external/redgifs/LargeFeedRedgifMedia";
 import { isRedgif } from "../../../../media/external/redgifs/helpers";
 import { PostView } from "lemmy-js-client";
+import usePostSrc from "../../usePostSrc";
 
 export default function LargeFeedPostMedia(
   props: Omit<ComponentProps<typeof LargeFeedMedia>, "src"> & {
     post: PostView;
   },
 ) {
-  const src = useMemo(() => getPostMedia(props.post), [props.post]);
+  const src = usePostSrc(props.post);
 
   if (props.post.post.url && isRedgif(props.post.post.url))
-    return <LargeFeedRedgifMedia url={props.post.post.url} {...props} />;
+    return (
+      <LargeFeedRedgifMedia
+        url={props.post.post.url}
+        alt={props.post.post.alt_text}
+        {...props}
+      />
+    );
 
-  if (src) return <LargeFeedMedia {...props} src={src} />;
+  if (src)
+    return (
+      <LargeFeedMedia {...props} src={src} alt={props.post.post.alt_text} />
+    );
 }

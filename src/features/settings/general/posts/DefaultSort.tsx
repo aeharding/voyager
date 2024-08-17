@@ -15,9 +15,12 @@ export default function DefaultSort() {
     (state) => state.settings.general.posts.sort,
   );
 
-  const present = useSelectPostSort((newSort) => {
-    dispatch(setDefaultPostSort(newSort));
-  });
+  const present = useSelectPostSort(
+    (newSort) => {
+      dispatch(setDefaultPostSort(newSort));
+    },
+    { title: "Default Posts Sort..." },
+  );
 
   return (
     <IonItem button onClick={() => present(defaultPostSort)} detail={false}>

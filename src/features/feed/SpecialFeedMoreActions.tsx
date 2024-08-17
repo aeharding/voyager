@@ -1,20 +1,18 @@
 import { IonButton, useIonActionSheet } from "@ionic/react";
-import {
-  eyeOffOutline,
-  imageOutline,
-  listOutline,
-  shareOutline,
-} from "ionicons/icons";
+import { eyeOffOutline, imageOutline, listOutline } from "ionicons/icons";
 import useHidePosts from "./useHidePosts";
 import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
 import { Share } from "@capacitor/share";
 import { ListingType } from "lemmy-js-client";
 import store from "../../store";
 import { urlSelector } from "../auth/authSelectors";
+import { OPostAppearanceType } from "../settings/settingsSlice";
 import {
-  OPostAppearanceType,
-  setPostAppearance,
-} from "../settings/settingsSlice";
+  usePostAppearance,
+  useSetPostAppearance,
+} from "../post/appearance/PostAppearanceProvider";
+import { getShareIcon } from "../../helpers/device";
+import { buildBaseLemmyUrl } from "../../services/lemmy";
 
 interface SpecialFeedMoreActionsProps {
   type: ListingType;
@@ -25,6 +23,7 @@ export default function SpecialFeedMoreActions({
 }: SpecialFeedMoreActionsProps) {
   const [presentActionSheet] = useIonActionSheet();
   const hidePosts = useHidePosts();
+  const buildTogglePostAppearanceButton = useBuildTogglePostAppearanceButton();
 
   function present() {
     presentActionSheet({
@@ -40,12 +39,12 @@ export default function SpecialFeedMoreActions({
         buildTogglePostAppearanceButton(),
         {
           text: "Share",
-          icon: shareOutline,
+          icon: getShareIcon(),
           handler: () => {
-            const url = urlSelector(store.getState());
+            const url = buildBaseLemmyUrl(urlSelector(store.getState()));
 
             Share.share({
-              url: `https://${url}?dataType=Post&listingType=${type}`,
+              url: `${url}?dataType=Post&listingType=${type}`,
             });
           },
         },
@@ -64,25 +63,28 @@ export default function SpecialFeedMoreActions({
   );
 }
 
-export function buildTogglePostAppearanceButton() {
-  const postAppearanceType = store.getState().settings.appearance.posts.type;
+export function useBuildTogglePostAppearanceButton() {
+  const postAppearance = usePostAppearance();
+  const setPostAppearance = useSetPostAppearance();
 
-  switch (postAppearanceType) {
-    case OPostAppearanceType.Compact:
-      return {
-        text: "Large Posts",
-        icon: imageOutline,
-        handler: () => {
-          store.dispatch(setPostAppearance(OPostAppearanceType.Large));
-        },
-      };
-    case OPostAppearanceType.Large:
-      return {
-        text: "Compact Posts",
-        icon: listOutline,
-        handler: () => {
-          store.dispatch(setPostAppearance(OPostAppearanceType.Compact));
-        },
-      };
-  }
+  return () => {
+    switch (postAppearance) {
+      case OPostAppearanceType.Compact:
+        return {
+          text: "Large Posts",
+          icon: imageOutline,
+          handler: () => {
+            setPostAppearance(OPostAppearanceType.Large);
+          },
+        };
+      case OPostAppearanceType.Large:
+        return {
+          text: "Compact Posts",
+          icon: listOutline,
+          handler: () => {
+            setPostAppearance(OPostAppearanceType.Compact);
+          },
+        };
+    }
+  };
 }

@@ -8,6 +8,7 @@ import NoSubscribedInFeed from "./NoSubscribedInFeed";
 import OpenNativeApps from "./OpenNativeApps";
 import ClearCache from "./ClearCache";
 import BackupSettings from "./backup/BackupSettings";
+import Thumbnailinator from "./Thumbnailinator";
 
 export default function Other() {
   return (
@@ -22,6 +23,7 @@ export default function Other() {
         <ProfileTabLabel />
         <Haptics />
         <NoSubscribedInFeed />
+        <Thumbnailinator />
         <ClearCache />
         <BackupSettings />
       </IonList>

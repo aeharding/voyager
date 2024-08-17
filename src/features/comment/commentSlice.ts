@@ -144,6 +144,8 @@ export const editComment =
     });
 
     dispatch(mutatedComment(response.comment_view));
+
+    return response.comment_view;
   };
 
 export const modRemoveComment =

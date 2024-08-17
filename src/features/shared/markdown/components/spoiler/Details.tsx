@@ -28,6 +28,11 @@ const HeaderItem = styled(IonItem)`
 
   --background: none;
   --background-hover: none;
+
+  strong {
+    // Differentiate from already bold title in header
+    font-weight: 900;
+  }
 `;
 
 const StyledIonAccordion = styled(IonAccordion)`
@@ -91,7 +96,7 @@ export default function Details({ children, node, id }: DetailsProps) {
       <StyledIonAccordionGroup ref={accordionGroupRef} onIonChange={onChange}>
         <StyledIonAccordion value="open">
           <HeaderItem slot="header" onClick={(e) => e.stopPropagation()}>
-            {label}
+            <div>{label}</div>
           </HeaderItem>
           <div slot="content" className="collapse-md-margins">
             {children}

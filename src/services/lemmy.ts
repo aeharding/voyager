@@ -3,12 +3,16 @@ import { reduceFileSize } from "../helpers/imageCompress";
 import { isNative, supportsWebp } from "../helpers/device";
 import nativeFetch from "./nativeFetch";
 
-function buildBaseUrl(url: string): string {
+export function buildBaseLemmyUrl(url: string): string {
+  if (import.meta.env.VITE_FORCE_LEMMY_INSECURE) {
+    return `http://${url}`;
+  }
+
   return `https://${url}`;
 }
 
 export function getClient(url: string, jwt?: string): LemmyHttp {
-  return new LemmyHttp(buildBaseUrl(url), {
+  return new LemmyHttp(buildBaseLemmyUrl(url), {
     fetchFunction: isNative() ? nativeFetch : fetch.bind(globalThis),
     headers: jwt
       ? {
@@ -46,7 +50,9 @@ export async function _uploadImage(client: LemmyHttp, image: File) {
     image: compressedImageIfNeeded as File,
   });
 
-  if (!response.url) throw new Error(response.msg);
+  // lemm.ee uses response.message for error messages (e.g. account too new)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (!response.url) throw new Error(response.msg ?? (response as any).message);
 
   return response;
 }
@@ -71,7 +77,7 @@ export function getImageSrc(url: string, options?: ImageOptions) {
 
   try {
     mutableUrl = new URL(url);
-  } catch (error) {
+  } catch (_) {
     return url;
   }
 

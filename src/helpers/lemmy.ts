@@ -12,6 +12,7 @@ import { escapeStringForRegex } from "./regex";
 import { quote } from "./markdown";
 import { compare } from "compare-versions";
 import { parseJWT } from "./jwt";
+import { parseUrl } from "./url";
 
 export interface LemmyJWT {
   sub: number;
@@ -77,7 +78,7 @@ export function buildCommentsTree(
   const map = new Map<number, CommentNodeI>();
   const depthOffset = !parentComment
     ? 0
-    : getDepthFromComment(comments[0]!.comment) ?? 0;
+    : (getDepthFromComment(comments[0]!.comment) ?? 0);
 
   for (const comment_view of comments) {
     const depthI = getDepthFromComment(comment_view.comment) ?? 0;
@@ -255,6 +256,26 @@ export function postHasFilteredKeywords(
   return false;
 }
 
+export function postHasFilteredWebsite(
+  post: Post,
+  websites: string[],
+): boolean {
+  if (!post.url) return false;
+
+  for (const website of websites) {
+    const postUrl = parseUrl(post.url);
+    if (!postUrl) continue;
+
+    if (
+      postUrl.hostname === website ||
+      postUrl.hostname.endsWith(`.${website}`) // match subdomains
+    )
+      return true;
+  }
+
+  return false;
+}
+
 export function keywordFoundInSentence(
   keyword: string,
   sentence: string,
@@ -291,12 +312,20 @@ export function getCrosspostUrl(post: Post): string | undefined {
   return matches?.[1];
 }
 
-export function buildCrosspostBody(post: Post): string {
-  const header = `cross-posted from: ${post.ap_id}\n\n${quote(post.name)}`;
+export function buildCrosspostBody(post: Post, includeTitle = true): string {
+  let header = `cross-posted from: ${post.ap_id}`;
+
+  if (includeTitle) {
+    header += `\n\n${quote(post.name)}`;
+  }
 
   if (!post.body) return header;
 
-  return `${header}\n>\n${quote(post.body)}`;
+  header += `\n${includeTitle ? ">" : ""}\n`;
+
+  header += quote(post.body.trim());
+
+  return header;
 }
 
 export function isPost(item: PostView | CommentView): item is PostView {

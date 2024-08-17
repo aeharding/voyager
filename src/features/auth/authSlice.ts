@@ -317,8 +317,8 @@ function updateApplicationContextIfNeeded(
   ApplicationContext.updateApplicationContext({
     connectedInstance,
     authToken: accounts
-      ? accounts.accounts.find((a) => a.handle === accounts.activeHandle)
-          ?.jwt ?? ""
+      ? (accounts.accounts.find((a) => a.handle === accounts.activeHandle)
+          ?.jwt ?? "")
       : "",
   });
 }

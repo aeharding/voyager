@@ -121,13 +121,20 @@ export default function PostSort({ sort, setSort }: PostSortProps) {
   );
 }
 
-export function useSelectPostSort(onSelected: (sort: SortType) => void) {
+interface Options {
+  title?: string;
+}
+
+export function useSelectPostSort(
+  onSelected: (sort: SortType) => void,
+  options?: Options,
+) {
   const [presentInitialSortActionSheet] = useIonActionSheet();
   const [presentTopSortActionSheet] = useIonActionSheet();
 
   function present(sort: SortType) {
     presentInitialSortActionSheet({
-      header: "Sort by...",
+      header: options?.title ?? "Sort by...",
       cssClass: "left-align-buttons",
       buttons: BUTTONS.map((b) => ({
         ...b,

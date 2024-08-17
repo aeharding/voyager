@@ -15,6 +15,7 @@ import {
   IonIcon,
   IonNavLink,
   IonToggle,
+  useIonAlert,
 } from "@ionic/react";
 import { useEffect, useMemo, useState } from "react";
 import useClient from "../../../helpers/useClient";
@@ -22,7 +23,7 @@ import { useAppDispatch } from "../../../store";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
 import { startCase } from "lodash";
 import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
-import { cameraOutline, checkmark } from "ionicons/icons";
+import { accessibility, cameraOutline, checkmark } from "ionicons/icons";
 import { PostEditorProps } from "./PostEditor";
 import NewPostText from "./NewPostText";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -41,6 +42,7 @@ import {
   deletePendingImageUploads,
   uploadImage,
 } from "../../shared/markdown/editing/uploadImageSlice";
+import { Post } from "lemmy-js-client";
 
 const Container = styled.div`
   position: absolute;
@@ -92,6 +94,11 @@ export default function PostEditorRoot({
   dismiss,
   ...props
 }: PostEditorProps) {
+  const dispatch = useAppDispatch();
+  const [presentAlert] = useIonAlert();
+  const router = useOptimizedIonRouter();
+  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+
   const community =
     "existingPost" in props
       ? props.existingPost.community
@@ -105,8 +112,6 @@ export default function PostEditorRoot({
     () => existingPost?.post.url && isUrlImage(existingPost.post.url),
     [existingPost],
   );
-
-  const dispatch = useAppDispatch();
 
   const initialImage = isImage ? existingPost!.post.url : undefined;
 
@@ -122,7 +127,9 @@ export default function PostEditorRoot({
 
   const initialTitle = existingPost?.post.name ?? "";
 
-  const initialUrl = initialImage ? "" : existingPost?.post.url ?? "";
+  const initialAltText = existingPost?.post.alt_text ?? "";
+
+  const initialUrl = initialImage ? "" : (existingPost?.post.url ?? "");
 
   const initialText = existingPost?.post.body ?? "";
 
@@ -133,6 +140,7 @@ export default function PostEditorRoot({
   const presentToast = useAppToast();
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(initialTitle);
+  const [altText, setAltText] = useState(initialAltText);
   const [url, setUrl] = useState(initialUrl);
   const [text, setText] = useState(initialText);
   const [nsfw, setNsfw] = useState(initialNsfw);
@@ -142,9 +150,6 @@ export default function PostEditorRoot({
     initialImage,
   );
   const [photoUploading, setPhotoUploading] = useState(false);
-
-  const router = useOptimizedIonRouter();
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const showAutofill = !!url && isValidUrl(url) && !title;
 
@@ -218,10 +223,22 @@ export default function PostEditorRoot({
       }
     })();
 
+    const postAltText = (() => {
+      switch (postType) {
+        case "link":
+        default:
+          return undefined;
+        case "photo":
+          return altText;
+      }
+    })();
+
     let errorMessage: string | undefined;
 
     if (!title) {
       errorMessage = "Please add a title to your post.";
+    } else if (title.length < 3) {
+      errorMessage = "Post title must contain at least three characters.";
     } else if (postType === "link" && (!url || !validUrl(url))) {
       errorMessage =
         "Please add a valid URL to your post (start with https://).";
@@ -234,8 +251,8 @@ export default function PostEditorRoot({
 
     if (errorMessage) {
       presentToast({
-        // TODO more helpful msg
         message: errorMessage,
+        color: "warning",
         fullscreen: true,
       });
 
@@ -246,11 +263,12 @@ export default function PostEditorRoot({
 
     let postResponse;
 
-    const payload = {
+    const payload: Pick<Post, "name" | "url" | "body" | "nsfw" | "alt_text"> = {
       name: title,
       url: postUrl,
       body: text || undefined,
       nsfw: showNsfwToggle && nsfw,
+      alt_text: postAltText,
     };
 
     try {
@@ -367,6 +385,28 @@ export default function PostEditorRoot({
     setTitle(metadata.title?.slice(0, MAX_TITLE_LENGTH));
   }
 
+  async function openCaptionPrompt() {
+    presentAlert({
+      message: "Add an accessible caption",
+      inputs: [
+        {
+          value: altText,
+          placeholder: "Fluffy fur blankets the feline...",
+          name: "altText",
+        },
+      ],
+      buttons: [
+        { text: "Cancel", role: "cancel" },
+        {
+          text: altText ? "Update" : "Add",
+          handler: ({ altText }) => {
+            setAltText(altText);
+          },
+        },
+      ],
+    });
+  }
+
   const postButtonDisabled = loading || !canSubmit();
 
   return (
@@ -443,7 +483,7 @@ export default function PostEditorRoot({
             </IonItem>
             {postType === "photo" && (
               <>
-                <label htmlFor="photo-upload">
+                <label htmlFor="photo-upload-post">
                   <IonItem>
                     <IonLabel color="primary">
                       <CameraIcon icon={cameraOutline} /> Choose Photo
@@ -452,7 +492,7 @@ export default function PostEditorRoot({
                     <HiddenInput
                       type="file"
                       accept="image/*"
-                      id="photo-upload"
+                      id="photo-upload-post"
                       onInput={(e) => {
                         const image = (e.target as HTMLInputElement).files?.[0];
                         if (!image) return;
@@ -468,6 +508,15 @@ export default function PostEditorRoot({
                       src={photoPreviewURL}
                       loading={photoUploading}
                     />
+                    <IonButton
+                      fill={altText ? "solid" : "outline"}
+                      shape="round"
+                      tabIndex={0}
+                      aria-label="Caption this image"
+                      onClick={openCaptionPrompt}
+                    >
+                      <IonIcon slot="icon-only" icon={accessibility} />
+                    </IonButton>
                   </IonItem>
                 )}
               </>
@@ -526,7 +575,7 @@ export default function PostEditorRoot({
 function validUrl(url: string): boolean {
   try {
     new URL(url);
-  } catch (e) {
+  } catch (_) {
     return false;
   }
 

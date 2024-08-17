@@ -2,6 +2,14 @@ import UAParser from "ua-parser-js";
 import { Capacitor } from "@capacitor/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { memoize } from "lodash";
+import { shareOutline, shareSocialOutline } from "ionicons/icons";
+import { Mode } from "@ionic/core";
+import { LOCALSTORAGE_KEYS, get } from "../features/settings/syncStorage";
+
+export function getDeviceMode(): Mode {
+  // md mode is beta, so default ios for all devices
+  return get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios";
+}
 
 export const isNative = memoize(() => {
   return Capacitor.isNativePlatform();
@@ -64,6 +72,8 @@ export function getAndroidNavMode() {
   return promise;
 }
 
-export const isIosTheme = memoize(() =>
-  document.documentElement.classList.contains("ios"),
+export const isIosTheme = memoize(() => getDeviceMode() === "ios");
+
+export const getShareIcon = memoize(() =>
+  isIosTheme() ? shareOutline : shareSocialOutline,
 );

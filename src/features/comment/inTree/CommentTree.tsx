@@ -72,7 +72,6 @@ function CommentTree({
     );
   }
 
-  // eslint-disable-next-line no-sparse-arrays
   const payload = [
     <React.Fragment key={comment.comment_view.comment.id}>
       {!first && (

@@ -13,6 +13,7 @@ import { getHandle } from "../../../helpers/lemmy";
 import { CommunityBlockView } from "lemmy-js-client";
 import { blockCommunity } from "../../community/communitySlice";
 import { ListHeader } from "../shared/formatting";
+import { RemoveItemButton } from "../../shared/ListEditor";
 
 export default function BlockedCommunities() {
   const dispatch = useAppDispatch();
@@ -56,6 +57,7 @@ export default function BlockedCommunities() {
               </IonItemOptions>
               <IonItem>
                 <IonLabel>{getHandle(community.community)}</IonLabel>
+                <RemoveItemButton />
               </IonItem>
             </IonItemSliding>
           ))

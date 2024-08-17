@@ -28,6 +28,8 @@ export const OAppThemeType = {
   Mint: "mint",
   Dracula: "dracula",
   Tangerine: "tangerine",
+  Sunset: "sunset",
+  Outrun: "outrun",
 } as const;
 
 export type AppThemeType = (typeof OAppThemeType)[keyof typeof OAppThemeType];
@@ -170,6 +172,15 @@ export const OLinkHandlerType = {
   InApp: "in-app",
 } as const;
 
+export type ShowSubscribedIcon =
+  (typeof OShowSubscribedIcon)[keyof typeof OShowSubscribedIcon];
+
+export const OShowSubscribedIcon = {
+  Never: "never",
+  OnlyAllLocal: "all-local",
+  Everywhere: "everywhere",
+} as const;
+
 export type DefaultFeedType =
   | {
       type:
@@ -297,6 +308,7 @@ export type SettingValueTypes = {
   vote_display_mode: VoteDisplayMode;
   profile_label: ProfileLabelType;
   post_appearance_type: PostAppearanceType;
+  remember_post_appearance_type: boolean;
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   large_show_voting_buttons: boolean;
   compact_show_voting_buttons: boolean;
@@ -325,6 +337,7 @@ export type SettingValueTypes = {
   jump_button_position: JumpButtonPositionType;
   tap_to_collapse: TapToCollapseType;
   filtered_keywords: string[];
+  filtered_websites: string[];
   highlight_new_account: boolean;
   default_feed: DefaultFeedType;
   touch_friendly_links: boolean;
@@ -332,6 +345,7 @@ export type SettingValueTypes = {
   long_swipe_trigger_point: LongSwipeTriggerPointType;
   has_presented_block_nsfw_tip: boolean;
   no_subscribed_in_feed: boolean;
+  thumbnailinator_enabled: boolean;
   embed_external_media: boolean;
   always_show_author: boolean;
   always_use_reader_mode: boolean;
@@ -343,9 +357,11 @@ export type SettingValueTypes = {
   remember_community_comment_sort: boolean;
   embed_crossposts: boolean;
   show_community_icons: boolean;
+  community_at_top: boolean;
   autoplay_media: AutoplayMediaType;
   show_collapsed_comment: boolean;
   quick_switch_dark_mode: boolean;
+  subscribed_icon: ShowSubscribedIcon;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

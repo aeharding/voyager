@@ -18,7 +18,6 @@ import {
   PostView,
 } from "lemmy-js-client";
 import useFetchCommunity from "../../../features/community/useFetchCommunity";
-import { CenteredSpinner } from "../posts/PostPage";
 import { useParams } from "react-router";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -36,6 +35,7 @@ import {
 } from "../../../features/moderation/modSlice";
 import { LIMIT } from "../../../services/lemmy";
 import AppHeader from "../../../features/shared/AppHeader";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 export default function ModqueuePage() {
   const { community } = useParams<{ community?: string }>();
@@ -140,7 +140,7 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
             <PostCommentFeed
               fetchFn={fetchFn}
               filterHiddenPosts={false}
-              filterKeywords={false}
+              filterKeywordsAndWebsites={false}
             />
           </ModqueueContext.Provider>
         </FeedContent>

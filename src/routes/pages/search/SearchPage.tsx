@@ -1,6 +1,6 @@
 import { IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
 import AppContent from "../../../features/shared/AppContent";
-import { createRef, useState } from "react";
+import { createRef, useRef, useState } from "react";
 import SearchOptions from "../../../features/search/SearchOptions";
 import useLemmyUrlHandler from "../../../features/shared/useLemmyUrlHandler";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
@@ -8,6 +8,7 @@ import { css, cx } from "@linaria/core";
 import AppHeader from "../../../features/shared/AppHeader";
 import EmptySearch from "../../../features/search/EmptySearch";
 import { findCurrentPage } from "../../../helpers/ionic";
+import { useSetActivePage } from "../../../features/auth/AppContext";
 
 const SEARCH_EL_CLASSNAME = "search-page-searchbar";
 
@@ -21,13 +22,16 @@ export const focusSearchBar = () =>
     ?.setFocus();
 
 export default function SearchPage() {
+  const pageRef = useRef<HTMLElement>(null);
   const [search, setSearch] = useState("");
   const router = useOptimizedIonRouter();
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
   const searchBarRef = createRef<HTMLIonSearchbarElement>();
 
+  useSetActivePage(pageRef);
+
   return (
-    <IonPage className="grey-bg">
+    <IonPage ref={pageRef} className="grey-bg">
       <AppHeader>
         <IonToolbar>
           <form

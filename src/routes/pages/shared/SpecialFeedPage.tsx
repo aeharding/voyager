@@ -20,11 +20,16 @@ import PostFabs from "../../../features/feed/postFabs/PostFabs";
 import { getSortDuration } from "../../../features/feed/endItems/EndPost";
 import { followIdsSelector } from "../../../features/auth/siteSlice";
 import { getHandle } from "../../../helpers/lemmy";
-import { CenteredSpinner } from "../posts/PostPage";
 import ModActions from "../../../features/community/mod/ModActions";
-import useSortByFeed from "../../../features/feed/sort/useFeedSort";
+import useFeedSort from "../../../features/feed/sort/useFeedSort";
 import { PageTypeContext } from "../../../features/feed/PageTypeContext";
 import AppHeader from "../../../features/shared/AppHeader";
+import PostAppearanceProvider, {
+  WaitUntilPostAppearanceResolved,
+} from "../../../features/post/appearance/PostAppearanceProvider";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+import useFeedUpdate from "../../../features/feed/useFeedUpdate";
+import { ShowSubscribedIconContext } from "../../../features/labels/links/CommunityLink";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -34,7 +39,9 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
-  const [sort, setSort] = useSortByFeed("posts", { listingType: type });
+
+  const postFeed = { listingType: type };
+  const [sort, setSort] = useFeedSort("posts", postFeed);
 
   const followIds = useAppSelector(followIdsSelector);
   const communityByHandle = useAppSelector(
@@ -45,11 +52,16 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     (state) => state.settings.general.noSubscribedInFeed,
   );
 
+  const { notifyFeedUpdated, fetchFnLastUpdated } = useFeedUpdate();
+
   const filterSubscribed =
     noSubscribedInFeed && (type === "All" || type === "Local");
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (pageData) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      fetchFnLastUpdated;
+
       const { posts, next_page } = await client.getPosts({
         ...pageData,
         limit: LIMIT,
@@ -59,7 +71,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
 
       return { data: posts, next_page };
     },
-    [client, sort, type],
+    [client, sort, type, fetchFnLastUpdated],
   );
 
   const filterSubscribedFn = useCallback(
@@ -82,45 +94,53 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     if (!sort) return <CenteredSpinner />;
 
     return (
-      <PageTypeContext.Provider value="special-feed">
-        <PostCommentFeed
-          fetchFn={fetchFn}
-          sortDuration={getSortDuration(sort)}
-          filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
-        />
-      </PageTypeContext.Provider>
+      <ShowSubscribedIconContext.Provider
+        value={type === "All" || type === "Local"}
+      >
+        <PageTypeContext.Provider value="special-feed">
+          <WaitUntilPostAppearanceResolved>
+            <PostCommentFeed
+              fetchFn={fetchFn}
+              sortDuration={getSortDuration(sort)}
+              filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
+            />
+          </WaitUntilPostAppearanceResolved>
+        </PageTypeContext.Provider>
+      </ShowSubscribedIconContext.Provider>
     );
   })();
 
   return (
     <TitleSearchProvider>
-      <FeedContextProvider>
-        <IonPage>
-          <AppHeader>
-            <IonToolbar>
-              <IonButtons slot="start">
-                <IonBackButton
-                  text="Communities"
-                  defaultHref={buildGeneralBrowseLink("")}
-                />
-              </IonButtons>
-
-              <TitleSearch name={listingTypeTitle(type)}>
-                <IonButtons slot="end">
-                  {type === "ModeratorView" && <ModActions type={type} />}
-                  <PostSort sort={sort} setSort={setSort} />
-                  <SpecialFeedMoreActions type={type} />
+      <PostAppearanceProvider feed={postFeed}>
+        <FeedContextProvider>
+          <IonPage>
+            <AppHeader>
+              <IonToolbar>
+                <IonButtons slot="start">
+                  <IonBackButton
+                    text="Communities"
+                    defaultHref={buildGeneralBrowseLink("")}
+                  />
                 </IonButtons>
-              </TitleSearch>
-            </IonToolbar>
-          </AppHeader>
-          <FeedContent>
-            {feed}
-            <TitleSearchResults />
-            <PostFabs />
-          </FeedContent>
-        </IonPage>
-      </FeedContextProvider>
+
+                <TitleSearch name={listingTypeTitle(type)}>
+                  <IonButtons slot="end">
+                    {type === "ModeratorView" && <ModActions type={type} />}
+                    <PostSort sort={sort} setSort={setSort} />
+                    <SpecialFeedMoreActions type={type} />
+                  </IonButtons>
+                </TitleSearch>
+              </IonToolbar>
+            </AppHeader>
+            <FeedContent>
+              {feed}
+              <TitleSearchResults />
+              <PostFabs forceRefresh={notifyFeedUpdated} />
+            </FeedContent>
+          </IonPage>
+        </FeedContextProvider>
+      </PostAppearanceProvider>
     </TitleSearchProvider>
   );
 }

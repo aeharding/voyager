@@ -6,7 +6,6 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
-  IonSpinner,
   IonTitle,
   IonToolbar,
   RefresherCustomEvent,
@@ -27,15 +26,9 @@ import MoreModActions from "../../../features/post/shared/MoreModAction";
 import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
 import AppHeader from "../../../features/shared/AppHeader";
-import useSortByFeed from "../../../features/feed/sort/useFeedSort";
+import useFeedSort from "../../../features/feed/sort/useFeedSort";
 import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
-
-export const CenteredSpinner = styled(IonSpinner)`
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-`;
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 export const AnnouncementIcon = styled(IonIcon)`
   font-size: 1.1rem;
@@ -79,7 +72,7 @@ const PostPageContent = memo(function PostPageContent({
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const [sort, setSort] = useSortByFeed("comments", {
+  const [sort, setSort] = useFeedSort("comments", {
     remoteCommunityHandle: getRemoteHandleFromHandle(
       community,
       connectedInstance,

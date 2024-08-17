@@ -89,6 +89,36 @@ export function getTheme(appTheme: AppThemeType): Theme {
           primary: "#FF4500",
         },
       };
+    case "sunset":
+      return {
+        light: {
+          primary: "#FE6C09",
+          background: "#FFE2D0",
+          insetItemBackground: "#F1D8C7",
+          tabBarBackground: "#F1D8C7",
+        },
+        dark: {
+          primary: "#FE7C00",
+          background: "#000E29",
+          insetItemBackground: "#11213C",
+          tabBarBackground: "#000A1F",
+        },
+      };
+    case "outrun":
+      return {
+        light: {
+          primary: "#C400A5",
+          background: "#BAC1D1",
+          insetItemBackground: "#CFD7E8",
+          tabBarBackground: "#C1C8D9",
+        },
+        dark: {
+          primary: "#F335C5",
+          background: "#081D47",
+          insetItemBackground: "#061636",
+          tabBarBackground: "#041129",
+        },
+      };
   }
 }
 

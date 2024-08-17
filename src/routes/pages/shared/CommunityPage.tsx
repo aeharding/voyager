@@ -34,8 +34,7 @@ import CommunitySearchResults from "../../../features/community/search/Community
 import { getSortDuration } from "../../../features/feed/endItems/EndPost";
 import ModActions from "../../../features/community/mod/ModActions";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import useSortByFeed from "../../../features/feed/sort/useFeedSort";
-import { CenteredSpinner } from "../posts/PostPage";
+import useFeedSort from "../../../features/feed/sort/useFeedSort";
 import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
 import { useAppSelector } from "../../../store";
 import { PageTypeContext } from "../../../features/feed/PageTypeContext";
@@ -43,6 +42,11 @@ import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
 import AppHeader from "../../../features/shared/AppHeader";
 import useGetRandomCommunity from "../../../features/community/useGetRandomCommunity";
+import PostAppearanceProvider, {
+  WaitUntilPostAppearanceResolved,
+} from "../../../features/post/appearance/PostAppearanceProvider";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+import useFeedUpdate from "../../../features/feed/useFeedUpdate";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -155,12 +159,16 @@ const CommunityPageContent = memo(function CommunityPageContent({
     (state) => state.settings.general.posts.showHiddenInCommunities,
   );
 
-  const [sort, setSort] = useSortByFeed("posts", {
+  const { notifyFeedUpdated, fetchFnLastUpdated } = useFeedUpdate();
+
+  const postFeed = {
     remoteCommunityHandle: getRemoteHandleFromHandle(
       community,
       connectedInstance,
     ),
-  });
+  };
+
+  const [sort, setSort] = useFeedSort("posts", postFeed);
 
   const communityView = useFetchCommunity(community);
 
@@ -168,6 +176,9 @@ const CommunityPageContent = memo(function CommunityPageContent({
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (pageData) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      fetchFnLastUpdated;
+
       const { posts, next_page } = await client.getPosts({
         ...pageData,
         limit: LIMIT,
@@ -176,7 +187,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
       });
       return { data: posts, next_page };
     },
-    [client, community, sort],
+    [client, community, sort, fetchFnLastUpdated],
   );
 
   const onPull = async () => {
@@ -216,22 +227,26 @@ const CommunityPageContent = memo(function CommunityPageContent({
       />
     );
 
-  const feed = sort ? (
-    <FeedSearchContext.Provider value={feedSearchContextValue}>
-      <PageTypeContext.Provider value="community">
-        <PostCommentFeed
-          fetchFn={fetchFn}
-          communityName={community}
-          sortDuration={getSortDuration(sort)}
-          header={header}
-          filterHiddenPosts={!showHiddenInCommunities}
-          onPull={onPull}
-        />
-      </PageTypeContext.Provider>
-    </FeedSearchContext.Provider>
-  ) : (
-    <CenteredSpinner />
-  );
+  const feed = (() => {
+    if (!sort) return <CenteredSpinner />;
+
+    return (
+      <FeedSearchContext.Provider value={feedSearchContextValue}>
+        <PageTypeContext.Provider value="community">
+          <WaitUntilPostAppearanceResolved>
+            <PostCommentFeed
+              fetchFn={fetchFn}
+              communityName={community}
+              sortDuration={getSortDuration(sort)}
+              header={header}
+              filterHiddenPosts={!showHiddenInCommunities}
+              onPull={onPull}
+            />
+          </WaitUntilPostAppearanceResolved>
+        </PageTypeContext.Provider>
+      </FeedSearchContext.Provider>
+    );
+  })();
 
   function renderFeed() {
     if (searchQuery)
@@ -244,66 +259,72 @@ const CommunityPageContent = memo(function CommunityPageContent({
 
   return (
     <FeedContextProvider>
-      <TitleSearchProvider>
-        <IonPage className={searchOpen ? "grey-bg" : ""}>
-          <AppHeader>
-            <StyledIonToolbar
-              className={
-                !searchOpen && !scrolledPastSearch
-                  ? ionToolbarHideBorderCss
-                  : undefined
-              }
-            >
-              {!searchOpen && (
-                <>
-                  <IonButtons slot="start">
-                    <IonBackButton defaultHref={buildGeneralBrowseLink("/")} />
-                  </IonButtons>
-                  <TitleSearch name={community}>
-                    <IonButtons slot="end">
-                      <ModActions
-                        community={communityView}
-                        communityHandle={community}
+      <PostAppearanceProvider feed={postFeed}>
+        <TitleSearchProvider>
+          <IonPage className={searchOpen ? "grey-bg" : ""}>
+            <AppHeader>
+              <StyledIonToolbar
+                className={
+                  !searchOpen && !scrolledPastSearch
+                    ? ionToolbarHideBorderCss
+                    : undefined
+                }
+              >
+                {!searchOpen && (
+                  <>
+                    <IonButtons slot="start">
+                      <IonBackButton
+                        defaultHref={buildGeneralBrowseLink("/")}
                       />
-                      <PostSort sort={sort} setSort={setSort} />
-                      <MoreActions community={communityView} />
                     </IonButtons>
-                  </TitleSearch>
-                </>
+                    <TitleSearch name={community}>
+                      <IonButtons slot="end">
+                        <ModActions
+                          community={communityView}
+                          communityHandle={community}
+                        />
+                        <PostSort sort={sort} setSort={setSort} />
+                        <MoreActions community={communityView} />
+                      </IonButtons>
+                    </TitleSearch>
+                  </>
+                )}
+
+                <HeaderIonSearchbar
+                  placeholder={`Search c/${community}`}
+                  ref={searchbarRef}
+                  onBlur={() => setSearchOpen(false)}
+                  className={!searchOpen ? ionSearchbarHideCss : undefined}
+                  showCancelButton="always"
+                  showClearButton="never"
+                  autocapitalize="on"
+                  onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
+                  value={searchQuery}
+                  enterkeyhint="search"
+                  onKeyDown={(e) => {
+                    if (!searchQuery.trim()) return;
+                    if (e.key !== "Enter") return;
+
+                    router.push(
+                      buildGeneralBrowseLink(
+                        `/c/${community}/search/posts/${searchQuery}`,
+                      ),
+                    );
+                  }}
+                />
+              </StyledIonToolbar>
+            </AppHeader>
+            <StyledFeedContent>
+              {renderFeed()}
+              <TitleSearchResults />
+              {!showHiddenInCommunities && (
+                <PostFabs forceRefresh={notifyFeedUpdated} />
               )}
-
-              <HeaderIonSearchbar
-                placeholder={`Search c/${community}`}
-                ref={searchbarRef}
-                onBlur={() => setSearchOpen(false)}
-                className={!searchOpen ? ionSearchbarHideCss : undefined}
-                showCancelButton="always"
-                showClearButton="never"
-                autocapitalize="on"
-                onIonInput={(e) => setSearchQuery(e.detail.value ?? "")}
-                value={searchQuery}
-                enterkeyhint="search"
-                onKeyDown={(e) => {
-                  if (!searchQuery.trim()) return;
-                  if (e.key !== "Enter") return;
-
-                  router.push(
-                    buildGeneralBrowseLink(
-                      `/c/${community}/search/posts/${searchQuery}`,
-                    ),
-                  );
-                }}
-              />
-            </StyledIonToolbar>
-          </AppHeader>
-          <StyledFeedContent>
-            {renderFeed()}
-            <TitleSearchResults />
-            {!showHiddenInCommunities && <PostFabs />}
-            <FixedBg slot="fixed" />
-          </StyledFeedContent>
-        </IonPage>
-      </TitleSearchProvider>
+              <FixedBg slot="fixed" />
+            </StyledFeedContent>
+          </IonPage>
+        </TitleSearchProvider>
+      </PostAppearanceProvider>
     </FeedContextProvider>
   );
 });

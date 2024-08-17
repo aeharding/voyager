@@ -10,6 +10,7 @@ import { isLemmyError } from "../../helpers/lemmyErrors";
 import { getClient } from "../../services/lemmy";
 import {
   COMMENT_PATH,
+  COMMENT_VIA_POST_PATH,
   POST_PATH,
   matchLemmyCommunity,
   matchLemmyUser,
@@ -129,18 +130,20 @@ async function findFedilink(url: string): Promise<string | undefined> {
 
   const client = await getClient(hostname);
 
-  if (POST_PATH.test(pathname)) {
+  const potentialCommentId = findCommentIdFromUrl(pathname);
+
+  if (typeof potentialCommentId === "number") {
+    const response = await client.getComment({
+      id: potentialCommentId,
+    });
+
+    return response.comment_view.comment.ap_id;
+  } else if (POST_PATH.test(pathname)) {
     const response = await client.getPost({
       id: +pathname.match(POST_PATH)![1]!,
     });
 
     return response.post_view.post.ap_id;
-  } else if (COMMENT_PATH.test(pathname)) {
-    const response = await client.getComment({
-      id: +pathname.match(COMMENT_PATH)![1]!,
-    });
-
-    return response.comment_view.comment.ap_id;
   } else if (matchLemmyUser(pathname)) {
     const [username, userHostname] = matchLemmyUser(pathname)!;
 
@@ -162,4 +165,10 @@ async function findFedilink(url: string): Promise<string | undefined> {
 
     return response.community_view.community.actor_id;
   }
+}
+
+function findCommentIdFromUrl(pathname: string): number | undefined {
+  if (COMMENT_PATH.test(pathname)) return +pathname.match(COMMENT_PATH)![1]!;
+  if (COMMENT_VIA_POST_PATH.test(pathname))
+    return +pathname.match(COMMENT_VIA_POST_PATH)![1]!;
 }

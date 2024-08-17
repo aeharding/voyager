@@ -77,6 +77,6 @@ export default defineConfig({
     setupFiles: "./src/setupTests.ts",
   },
   optimizeDeps: {
-    exclude: ["mdast-util-gfm-autolink-literal-lemmy"],
+    exclude: ["mdast-util-gfm-autolink-literal-lemmy", "remark-lemmy-spoiler"],
   },
 });

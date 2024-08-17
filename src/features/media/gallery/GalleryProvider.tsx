@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import GalleryPostActions from "./GalleryPostActions";
+import GalleryPostActions from "./actions/GalleryPostActions";
 import { createPortal } from "react-dom";
 import { PostView } from "lemmy-js-client";
 import { getSafeArea, isAndroid, isNative } from "../../../helpers/device";
@@ -18,8 +18,8 @@ import { useLocation } from "react-router";
 import { StatusBar } from "@capacitor/status-bar";
 import { setPostRead } from "../../post/postSlice";
 import { useAppDispatch } from "../../../store";
-import GalleryMedia from "./GalleryMedia";
-import ImageMoreActions from "./ImageMoreActions";
+import type GalleryMedia from "./GalleryMedia";
+import ImageMoreActions from "./actions/ImageMoreActions";
 
 import type { PreparedPhotoSwipeOptions } from "photoswipe";
 import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
@@ -70,7 +70,6 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
       lightboxRef.current?.destroy();
       lightboxRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -124,13 +123,13 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
               thumbEl instanceof HTMLImageElement
                 ? thumbEl.naturalWidth
                 : thumbEl.width,
+            alt: getAlt(thumbEl),
           },
         ],
         showHideAnimationType: animationType ?? "fade",
         zoom: false,
         bgOpacity: 1,
         // Put in ion-app element so share IonActionSheet is on top
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         appendToEl: document.querySelector("ion-app")!,
         paddingFn: () => getSafeArea(),
         pswpModule: () => import("photoswipe"),
@@ -368,10 +367,17 @@ export default function GalleryProvider({ children }: GalleryProviderProps) {
         createPortal(
           post ? (
             thumbElRef.current && (
-              <GalleryPostActions post={post} imgSrc={imgSrcRef.current} />
+              <GalleryPostActions
+                post={post}
+                imgSrc={imgSrcRef.current}
+                alt={getAlt(thumbElRef.current)}
+              />
             )
           ) : (
-            <ImageMoreActions imgSrc={imgSrcRef.current} />
+            <ImageMoreActions
+              imgSrc={imgSrcRef.current}
+              alt={getAlt(thumbElRef.current)}
+            />
           ),
           actionContainer,
         )}
@@ -387,4 +393,14 @@ function getBaseUrl(): string {
 
 function getHashValue(): string {
   return window.location.hash.substring(1);
+}
+
+function getAlt(
+  thumbEl: HTMLImageElement | HTMLCanvasElement | undefined,
+): string | undefined {
+  if (!thumbEl) return;
+
+  if (thumbEl instanceof HTMLImageElement) return thumbEl.alt;
+
+  return thumbEl.getAttribute("aria-label") ?? undefined;
 }

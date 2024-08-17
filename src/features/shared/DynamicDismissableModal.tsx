@@ -62,11 +62,12 @@ export function DynamicDismissableModal({
   >();
 
   useEffect(() => {
-    setPresentingElement(pageContext.pageRef?.current ?? undefined);
+    setPresentingElement(
+      pageContext.pageRef?.current?.closest("ion-tabs") ?? undefined,
+    );
 
     // In <TabbedRoutes>, <IonRouterOutlet> rebuilds (see `key`) when iss changes,
     // so grab new IonRouterOutlet
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageContext.pageRef, selectedInstance]);
 
   const onDismissAttemptCb = useCallback(async () => {

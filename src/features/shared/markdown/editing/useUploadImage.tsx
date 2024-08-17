@@ -31,7 +31,7 @@ export default function useUploadImage() {
         setImageUploading(false);
       }
 
-      return `\n![](${imageUrl})\n`;
+      return `![](${imageUrl})`;
     },
   };
 }

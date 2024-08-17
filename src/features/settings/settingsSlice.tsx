@@ -40,8 +40,10 @@ import {
   OAutoplayMediaType,
   CommentsThemeType,
   VotesThemeType,
+  ShowSubscribedIcon,
+  OShowSubscribedIcon,
 } from "../../services/db";
-import { get, set } from "./storage";
+import { LOCALSTORAGE_KEYS, get, set } from "./syncStorage";
 import { Mode } from "@ionic/core";
 import { SortType } from "lemmy-js-client";
 import { loggedInSelector } from "../auth/authSelectors";
@@ -71,10 +73,13 @@ interface SettingsState {
     posts: {
       blurNsfw: PostBlurNsfwType;
       type: PostAppearanceType;
+      rememberType: boolean;
       embedCrossposts: boolean;
       showCommunityIcons: boolean;
       embedExternalMedia: boolean;
       alwaysShowAuthor: boolean;
+      communityAtTop: boolean;
+      subscribedIcon: ShowSubscribedIcon;
     };
     large: {
       showVotingButtons: boolean;
@@ -133,25 +138,13 @@ interface SettingsState {
     preferNativeApps: boolean;
     defaultFeed: DefaultFeedType | undefined;
     noSubscribedInFeed: boolean;
+    thumbnailinatorEnabled: boolean;
   };
   blocks: {
     keywords: string[];
+    websites: string[];
   };
 }
-
-export const LOCALSTORAGE_KEYS = {
-  FONT: {
-    FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
-    USE_SYSTEM: "appearance--font-use-system",
-  },
-  DARK: {
-    USE_SYSTEM: "appearance--dark-use-system",
-    USER_MODE: "appearance--dark-user-mode",
-    PURE_BLACK: "appearance--pure-black",
-  },
-  DEVICE_MODE: "appearance--device-mode",
-  THEME: "appearance--theme",
-} as const;
 
 export const initialState: SettingsState = {
   ready: false,
@@ -168,10 +161,13 @@ export const initialState: SettingsState = {
     posts: {
       blurNsfw: OPostBlurNsfw.InFeed,
       type: OPostAppearanceType.Large,
+      rememberType: false,
       embedCrossposts: true,
       showCommunityIcons: true,
       embedExternalMedia: true,
       alwaysShowAuthor: false,
+      communityAtTop: false,
+      subscribedIcon: OShowSubscribedIcon.Never,
     },
     large: {
       showVotingButtons: true,
@@ -230,9 +226,11 @@ export const initialState: SettingsState = {
     preferNativeApps: true,
     defaultFeed: undefined,
     noSubscribedInFeed: false,
+    thumbnailinatorEnabled: true,
   },
   blocks: {
     keywords: [],
+    websites: [],
   },
 };
 
@@ -351,6 +349,10 @@ export const appearanceSlice = createSlice({
       state.appearance.posts.type = action.payload;
       db.setSetting("post_appearance_type", action.payload);
     },
+    setRememberPostAppearance(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.rememberType = action.payload;
+      db.setSetting("remember_post_appearance_type", action.payload);
+    },
     setNsfwBlur(state, action: PayloadAction<PostBlurNsfwType>) {
       state.appearance.posts.blurNsfw = action.payload;
       // Per user setting is updated in StoreProvider
@@ -363,8 +365,17 @@ export const appearanceSlice = createSlice({
       state.appearance.posts.showCommunityIcons = action.payload;
       db.setSetting("show_community_icons", action.payload);
     },
+    setCommunityAtTop(state, action: PayloadAction<boolean>) {
+      state.appearance.posts.communityAtTop = action.payload;
+
+      db.setSetting("community_at_top", action.payload);
+    },
     setFilteredKeywords(state, action: PayloadAction<string[]>) {
       state.blocks.keywords = action.payload;
+      // Per user setting is updated in StoreProvider
+    },
+    setFilteredWebsites(state, action: PayloadAction<string[]>) {
+      state.blocks.websites = action.payload;
       // Per user setting is updated in StoreProvider
     },
     setDefaultFeed(state, action: PayloadAction<DefaultFeedType | undefined>) {
@@ -374,6 +385,10 @@ export const appearanceSlice = createSlice({
     setNoSubscribedInFeed(state, action: PayloadAction<boolean>) {
       state.general.noSubscribedInFeed = action.payload;
       db.setSetting("no_subscribed_in_feed", action.payload);
+    },
+    setThumbnailinatorEnabled(state, action: PayloadAction<boolean>) {
+      state.general.thumbnailinatorEnabled = action.payload;
+      db.setSetting("thumbnailinator_enabled", action.payload);
     },
     setEmbedExternalMedia(state, action: PayloadAction<boolean>) {
       state.appearance.posts.embedExternalMedia = action.payload;
@@ -527,6 +542,11 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("prefer_native_apps", action.payload);
     },
+    setSubscribedIcon(state, action: PayloadAction<ShowSubscribedIcon>) {
+      state.appearance.posts.subscribedIcon = action.payload;
+
+      db.setSetting("subscribed_icon", action.payload);
+    },
 
     resetSettings: () => ({
       ...initialState,
@@ -572,6 +592,19 @@ export const getFilteredKeywords =
 
     dispatch(
       setFilteredKeywords(filteredKeywords ?? initialState.blocks.keywords),
+    );
+  };
+
+export const getFilteredWebsites =
+  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    const filteredWebsites = await db.getSetting("filtered_websites", {
+      user_handle: userHandle,
+    });
+
+    dispatch(
+      setFilteredWebsites(filteredWebsites ?? initialState.blocks.websites),
     );
   };
 
@@ -623,6 +656,18 @@ export const updateFilteredKeywords =
     });
   };
 
+export const updateFilteredWebsites =
+  (filteredWebsites: string[]) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
+    const userHandle = getState().auth.accountData?.activeHandle;
+
+    dispatch(setFilteredWebsites(filteredWebsites));
+
+    db.setSetting("filtered_websites", filteredWebsites, {
+      user_handle: userHandle,
+    });
+  };
+
 export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
@@ -644,9 +689,13 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const profile_label = await db.getSetting("profile_label");
       const post_appearance_type = await db.getSetting("post_appearance_type");
+      const remember_post_appearance_type = await db.getSetting(
+        "remember_post_appearance_type",
+      );
       const blur_nsfw = await db.getSetting("blur_nsfw");
       const embed_crossposts = await db.getSetting("embed_crossposts");
       const show_community_icons = await db.getSetting("show_community_icons");
+      const community_at_top = await db.getSetting("community_at_top");
       const large_show_voting_buttons = await db.getSetting(
         "large_show_voting_buttons",
       );
@@ -693,6 +742,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const link_handler = await db.getSetting("link_handler");
       const prefer_native_apps = await db.getSetting("prefer_native_apps");
       const filtered_keywords = await db.getSetting("filtered_keywords");
+      const filtered_websites = await db.getSetting("filtered_websites");
       const touch_friendly_links = await db.getSetting("touch_friendly_links");
       const show_comment_images = await db.getSetting("show_comment_images");
       const show_collapsed_comment = await db.getSetting(
@@ -700,6 +750,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       );
       const no_subscribed_in_feed = await db.getSetting(
         "no_subscribed_in_feed",
+      );
+      const thumbnailinator_enabled = await db.getSetting(
+        "thumbnailinator_enabled",
       );
       const embed_external_media = await db.getSetting("embed_external_media");
       const always_show_author = await db.getSetting("always_show_author");
@@ -710,6 +763,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       const quick_switch_dark_mode = await db.getSetting(
         "quick_switch_dark_mode",
       );
+      const subscribed_icon = await db.getSetting("subscribed_icon");
 
       return {
         ...state.settings,
@@ -734,6 +788,9 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           },
           posts: {
             type: post_appearance_type ?? initialState.appearance.posts.type,
+            rememberType:
+              remember_post_appearance_type ??
+              initialState.appearance.posts.rememberType,
             blurNsfw: blur_nsfw ?? initialState.appearance.posts.blurNsfw,
             embedCrossposts:
               embed_crossposts ?? initialState.appearance.posts.embedCrossposts,
@@ -746,6 +803,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             alwaysShowAuthor:
               always_show_author ??
               initialState.appearance.posts.alwaysShowAuthor,
+            communityAtTop:
+              community_at_top ?? initialState.appearance.posts.communityAtTop,
+            subscribedIcon:
+              subscribed_icon ?? initialState.appearance.posts.subscribedIcon,
           },
           large: {
             showVotingButtons:
@@ -844,9 +905,13 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
           defaultFeed: initialState.general.defaultFeed,
           noSubscribedInFeed:
             no_subscribed_in_feed ?? initialState.general.noSubscribedInFeed,
+          thumbnailinatorEnabled:
+            thumbnailinator_enabled ??
+            initialState.general.thumbnailinatorEnabled,
         },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
+          websites: filtered_websites ?? initialState.blocks.websites,
         },
       };
     });
@@ -884,8 +949,11 @@ export const {
   setNsfwBlur,
   setEmbedCrossposts,
   setShowCommunityIcons,
+  setCommunityAtTop,
   setFilteredKeywords,
+  setFilteredWebsites,
   setPostAppearance,
+  setRememberPostAppearance,
   setThumbnailPosition,
   setLargeShowVotingButtons,
   setCompactShowVotingButtons,
@@ -916,16 +984,13 @@ export const {
   setPureBlack,
   setDefaultFeed,
   setNoSubscribedInFeed,
+  setThumbnailinatorEnabled,
   setEmbedExternalMedia,
   setAlwaysShowAuthor,
   setAlwaysUseReaderMode,
   setShowCollapsedComment,
   setQuickSwitchDarkMode,
+  setSubscribedIcon,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
-
-export function getDeviceMode(): Mode {
-  // md mode is beta, so default ios for all devices
-  return get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios";
-}

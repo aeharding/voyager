@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useAppSelector } from "../../store";
 import { PostView } from "lemmy-js-client";
 import { isRedgif } from "../media/external/redgifs/helpers";
-import { isUrlMedia } from "../../helpers/url";
+import { findUrlMediaType } from "../../helpers/url";
 
 export default function useIsPostUrlMedia() {
   const embedExternalMedia = useAppSelector(
@@ -19,7 +19,7 @@ export default function useIsPostUrlMedia() {
         if (isRedgif(url)) return true;
       }
 
-      return isUrlMedia(url);
+      return !!findUrlMediaType(url);
     },
     [embedExternalMedia],
   );

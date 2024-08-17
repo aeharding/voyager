@@ -11,6 +11,7 @@ import useCommunityActions from "./useCommunityActions";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { buildCommunityLink } from "../../helpers/appLinkBuilder";
 import { IonItem } from "@ionic/react";
+import { formatNumber } from "../../helpers/number";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -82,6 +83,7 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
             community={community.community}
             showInstanceWhenRemote
             subscribed={community.subscribed}
+            hideSubscribed
           />
           <RightContainer>
             <ActionButton
@@ -97,7 +99,7 @@ export default function CommunitySummary({ community }: CommunitySummaryProps) {
           </RightContainer>
         </Title>
         <Stats>
-          {community.counts.subscribers} Subscriber
+          {formatNumber(community.counts.subscribers)} Subscriber
           {community.counts.subscribers !== 1 ? "s" : ""} ·{" "}
           <Ago date={community.community.published} /> Old{" "}
         </Stats>

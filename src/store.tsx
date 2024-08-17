@@ -19,6 +19,7 @@ import settingsSlice, {
   getBlurNsfw,
   getDefaultFeed,
   getFilteredKeywords,
+  getFilteredWebsites,
 } from "./features/settings/settingsSlice";
 import gestureSlice, {
   fetchGesturesFromDatabase,
@@ -46,6 +47,8 @@ import spoilerSlice from "./features/shared/markdown/components/spoiler/spoilerS
 import deepLinkReadySlice from "./features/community/list/deepLinkReadySlice";
 import redgifsSlice from "./features/media/external/redgifs/redgifsSlice";
 import uploadImageSlice from "./features/shared/markdown/editing/uploadImageSlice";
+import postAppearanceSlice from "./features/post/appearance/appearanceSlice";
+import thumbnailSlice from "./features/post/link/thumbnail/thumbnailSlice";
 
 const store = configureStore({
   reducer: {
@@ -73,6 +76,8 @@ const store = configureStore({
     deepLinkReady: deepLinkReadySlice,
     redgifs: redgifsSlice,
     uploadImage: uploadImageSlice,
+    postAppearance: postAppearanceSlice,
+    thumbnail: thumbnailSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;
@@ -100,6 +105,7 @@ const activeHandleChange = () => {
   store.dispatch(getFavoriteCommunities());
   store.dispatch(getBlurNsfw());
   store.dispatch(getFilteredKeywords());
+  store.dispatch(getFilteredWebsites());
   store.dispatch(getDefaultFeed());
   store.dispatch(getInstances());
 };

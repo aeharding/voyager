@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { isNative } from "../helpers/device";
 import { isEqual } from "lodash";
 
-const DEFAULT_LEMMY_SERVERS = ["lemmy.world"];
+const DEFAULT_LEMMY_SERVERS = getCustomDefaultServers() ?? ["lemmy.world"];
 
 let _customServers = DEFAULT_LEMMY_SERVERS;
 
@@ -29,7 +29,7 @@ async function getConfig() {
     if (customServers?.length) {
       _customServers = customServers;
     }
-  } catch (error) {
+  } catch (_) {
     return; // ignore errors in loading config
   }
 }
@@ -52,4 +52,12 @@ export default function ConfigProvider({ children }: ConfigProviderProps) {
   }, []);
 
   if (configLoaded) return children;
+}
+
+function getCustomDefaultServers() {
+  const serversList = import.meta.env.VITE_CUSTOM_LEMMY_SERVERS;
+
+  if (!serversList) return;
+
+  return serversList.split(",");
 }

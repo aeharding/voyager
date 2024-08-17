@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { resolveObject } from "../resolve/resolveSlice";
-import { CenteredSpinner } from "../../routes/pages/posts/PostPage";
 import Post from "../post/inFeed/Post";
 import FeedComment from "../comment/inFeed/FeedComment";
 import { styled } from "@linaria/react";
 import { InFeedContext } from "../feed/Feed";
 import { useDebounceValue } from "usehooks-ts";
+import { CenteredSpinner } from "../shared/CenteredSpinner";
 
 const StyledCenteredSpinner = styled(CenteredSpinner)`
   margin-top: 60px;

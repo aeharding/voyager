@@ -13,7 +13,6 @@ import {
   peopleOutline,
   personOutline,
   repeatOutline,
-  shareOutline,
   textOutline,
   trashOutline,
 } from "ionicons/icons";
@@ -50,6 +49,7 @@ import { resolveObject } from "../../resolve/resolveSlice";
 import { compact } from "lodash";
 import { InFeedContext } from "../../feed/Feed";
 import { getVoteErrorMessage } from "../../../helpers/lemmyErrors";
+import { getShareIcon } from "../../../helpers/device";
 
 export default function usePostActions(post: PostView) {
   const inFeed = useContext(InFeedContext);
@@ -198,7 +198,7 @@ export default function usePostActions(post: PostView) {
           icon: arrowUndoOutline,
           handler: () => {
             if (presentLoginIfNeeded()) return;
-            if (post.post.locked) {
+            if (post.post.locked && !canModerate) {
               presentToast(postLocked);
               return;
             }
@@ -248,7 +248,7 @@ export default function usePostActions(post: PostView) {
         {
           text: "Share",
           data: "share",
-          icon: shareOutline,
+          icon: getShareIcon(),
           handler: () => {
             share(post.post);
           },

@@ -41,7 +41,7 @@ export default css`
       }
     }
 
-    ion-list.list-inset ion-item {
+    ion-router-outlet ion-list.list-inset ion-item {
       --background: var(
         --ion-tab-bar-background,
         var(--ion-background-color-step-50, #fff)

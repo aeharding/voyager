@@ -148,6 +148,7 @@ export default function PersonLink({
           e.stopPropagation();
           preventOnClickNavigationBug(e);
         }}
+        draggable={false}
       >
         {prefix ? (
           <>

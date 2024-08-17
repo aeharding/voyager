@@ -3,6 +3,7 @@ import InAppExternalLink from "../InAppExternalLink";
 import useLemmyUrlHandler from "../useLemmyUrlHandler";
 import { useAppSelector } from "../../../store";
 import { styled } from "@linaria/react";
+import { buildBaseLemmyUrl } from "../../../services/lemmy";
 
 const LinkInterceptor = styled(LinkInterceptorUnstyled)`
   -webkit-touch-callout: default;
@@ -23,8 +24,8 @@ function LinkInterceptorUnstyled({
   forceResolveObject,
   ...props
 }: LinkInterceptorUnstyledProps) {
-  const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance,
+  const connectedInstanceUrl = useAppSelector((state) =>
+    buildBaseLemmyUrl(state.auth.connectedInstance),
   );
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
 
@@ -32,11 +33,11 @@ function LinkInterceptorUnstyled({
     if (!props.href) return;
 
     try {
-      return new URL(props.href, `https://${connectedInstance}`).href;
-    } catch (error) {
+      return new URL(props.href, connectedInstanceUrl).href;
+    } catch (_) {
       return;
     }
-  }, [connectedInstance, props.href]);
+  }, [connectedInstanceUrl, props.href]);
 
   const onClick = useCallback(
     async (e: React.MouseEvent<HTMLAnchorElement>) => {

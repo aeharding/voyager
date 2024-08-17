@@ -5,6 +5,7 @@ import Markdown from "../../shared/markdown/Markdown";
 import SidebarCounts from "./SidebarCounts";
 import SidebarOwners from "./SidebarOwners";
 import LargeFeedMedia from "../../post/inFeed/large/media/LargeFeedMedia";
+import { MaxWidthContainer } from "../../shared/AppContent";
 
 const Container = styled.div`
   line-height: 1.5;
@@ -43,7 +44,7 @@ export default function GenericSidebar({
   id,
 }: GenericSidebarProps) {
   return (
-    <>
+    <MaxWidthContainer>
       <Container className="ion-padding-start ion-padding-end ion-padding-top">
         {banner && (
           <BannerImg
@@ -60,6 +61,6 @@ export default function GenericSidebar({
         people={people}
         type={type === "community" ? "mods" : "admins"}
       />
-    </>
+    </MaxWidthContainer>
   );
 }

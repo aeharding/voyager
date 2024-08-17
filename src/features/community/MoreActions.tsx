@@ -8,7 +8,6 @@ import {
   removeCircleOutline,
   tabletPortraitOutline,
   eyeOffOutline,
-  shareOutline,
 } from "ionicons/icons";
 import useHidePosts from "../feed/useHidePosts";
 import useCommunityActions from "./useCommunityActions";
@@ -16,7 +15,8 @@ import { Community, CommunityView } from "lemmy-js-client";
 import { useAppSelector } from "../../store";
 import { compact } from "lodash";
 import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
-import { buildTogglePostAppearanceButton } from "../feed/SpecialFeedMoreActions";
+import { useBuildTogglePostAppearanceButton } from "../feed/SpecialFeedMoreActions";
+import { getShareIcon } from "../../helpers/device";
 
 interface MoreActionsProps {
   community: CommunityView | undefined;
@@ -46,6 +46,7 @@ function MoreActionsWithCommunity({ community }: MoreActionsActionSheetProps) {
     share,
   } = useCommunityActions(community);
   const hidePosts = useHidePosts();
+  const buildTogglePostAppearanceButton = useBuildTogglePostAppearanceButton();
 
   const showHiddenInCommunities = useAppSelector(
     (state) => state.settings.general.posts.showHiddenInCommunities,
@@ -94,7 +95,7 @@ function MoreActionsWithCommunity({ community }: MoreActionsActionSheetProps) {
         buildTogglePostAppearanceButton(),
         {
           text: "Share",
-          icon: shareOutline,
+          icon: getShareIcon(),
           handler: () => {
             share();
           },

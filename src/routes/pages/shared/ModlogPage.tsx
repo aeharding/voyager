@@ -15,7 +15,6 @@ import { values } from "lodash";
 import { ModlogItem } from "../../../features/moderation/logs/ModlogItem";
 import { LIMIT } from "../../../services/lemmy";
 import useFetchCommunity from "../../../features/community/useFetchCommunity";
-import { CenteredSpinner } from "../posts/PostPage";
 import { useParams } from "react-router";
 import { getHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
@@ -23,6 +22,7 @@ import { buildCommunityLink } from "../../../helpers/appLinkBuilder";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { getUser } from "../../../features/user/userSlice";
 import AppHeader from "../../../features/shared/AppHeader";
+import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 
 export type ModlogItemType =
   GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;

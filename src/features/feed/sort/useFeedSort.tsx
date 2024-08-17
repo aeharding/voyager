@@ -2,21 +2,24 @@ import { CommentSortType, SortType } from "lemmy-js-client";
 import { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import {
-  FeedSortFeed,
   SetSortActionPayload,
   getFeedSort,
   getFeedSortSelectorBuilder,
   setFeedSort,
 } from "./feedSortSlice";
+import { AnyFeed } from "../helpers";
 
-export default function useSortByFeed<Context extends "posts" | "comments">(
+type Sorts = {
+  posts: SortType;
+  comments: CommentSortType;
+};
+
+export default function useFeedSort<Context extends "posts" | "comments">(
   context: Context,
-  feed?: FeedSortFeed | undefined,
+  feed?: AnyFeed | undefined,
+  overrideSort?: Sorts[Context],
 ) {
-  type Sort = {
-    posts: SortType;
-    comments: CommentSortType;
-  }[Context];
+  type Sort = Sorts[Context];
 
   const dispatch = useAppDispatch();
 
@@ -32,7 +35,9 @@ export default function useSortByFeed<Context extends "posts" | "comments">(
   );
 
   const [sort, _setSort] = useState<Sort | undefined>(
-    !rememberCommunitySort ? defaultSort : undefined,
+    !rememberCommunitySort
+      ? (overrideSort ?? defaultSort)
+      : (feedSort ?? overrideSort),
   );
 
   useEffect(() => {

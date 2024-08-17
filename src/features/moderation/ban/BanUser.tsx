@@ -95,7 +95,7 @@ export default function BanUser({
           remove_data: removeContent,
         }),
       );
-    } catch (error) {
+    } catch (_) {
       presentToast(buildBanFailed(true));
     } finally {
       setLoading(false);

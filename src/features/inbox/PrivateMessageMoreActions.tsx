@@ -1,4 +1,5 @@
 import {
+  arrowUndoOutline,
   ellipsisHorizontal,
   flagOutline,
   personOutline,
@@ -18,6 +19,8 @@ import { useUserDetails } from "../user/useUserDetails";
 import { getHandle } from "../../helpers/lemmy";
 import { PrivateMessageView } from "lemmy-js-client";
 import { styled } from "@linaria/react";
+import { markRead, syncMessages } from "./inboxSlice";
+import store, { useAppDispatch } from "../../store";
 
 const StyledIonIcon = styled(IonIcon)`
   font-size: 1.2em;
@@ -36,8 +39,10 @@ export default forwardRef<
   PrivateMessageMoreActionsHandle,
   PrivateMessageMoreActionsProps
 >(function PrivateMessageMoreActions({ item, markReadAction }, ref) {
+  const dispatch = useAppDispatch();
   const [presentActionSheet] = useIonActionSheet();
-  const { presentReport, presentSelectText } = useContext(PageContext);
+  const { presentReport, presentSelectText, presentPrivateMessageCompose } =
+    useContext(PageContext);
 
   const { navigateToUser } = useAppNavigation();
 
@@ -48,6 +53,27 @@ export default forwardRef<
       cssClass: "left-align-buttons",
       buttons: [
         markReadAction,
+        {
+          text: "Reply",
+          icon: arrowUndoOutline,
+          handler: () => {
+            (async () => {
+              await presentPrivateMessageCompose({
+                private_message: {
+                  recipient:
+                    item.private_message.creator_id ===
+                    store.getState().site.response?.my_user?.local_user_view
+                      ?.local_user?.person_id
+                      ? item.recipient
+                      : item.creator,
+                },
+              });
+
+              await dispatch(markRead(item, true));
+              dispatch(syncMessages());
+            })();
+          },
+        },
         {
           text: "Select Text",
           icon: textOutline,
@@ -83,14 +109,16 @@ export default forwardRef<
       ],
     });
   }, [
-    blockOrUnblock,
-    isBlocked,
-    markReadAction,
-    navigateToUser,
     presentActionSheet,
-    presentReport,
-    presentSelectText,
+    markReadAction,
     item,
+    isBlocked,
+    presentPrivateMessageCompose,
+    dispatch,
+    presentSelectText,
+    navigateToUser,
+    presentReport,
+    blockOrUnblock,
   ]);
 
   useImperativeHandle(

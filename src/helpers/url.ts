@@ -26,10 +26,35 @@ export function getPathname(url: string): string | undefined {
   }
 }
 
-const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl"];
+export function parseUrl(url: string): URL | undefined {
+  try {
+    return new URL(url);
+  } catch {
+    return;
+  }
+}
+
+export function getPotentialImageProxyPathname(
+  url: string,
+): string | undefined {
+  const parsedURL = parseUrl(url);
+
+  if (!parsedURL) return;
+
+  if (parsedURL.pathname === "/api/v3/image_proxy") {
+    const actualImageURL = parsedURL.searchParams.get("url");
+
+    if (!actualImageURL) return;
+    return getPathname(actualImageURL);
+  }
+
+  return parsedURL.pathname;
+}
+
+const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl", "avif"];
 
 export function isUrlImage(url: string): boolean {
-  const pathname = getPathname(url);
+  const pathname = getPotentialImageProxyPathname(url);
 
   if (!pathname) return false;
 
@@ -38,10 +63,10 @@ export function isUrlImage(url: string): boolean {
   );
 }
 
-const animatedImageExtensions = ["gif", "webp", "jxl"];
+const animatedImageExtensions = ["gif", "webp", "jxl", "avif"];
 
 export function isUrlPotentialAnimatedImage(url: string): boolean {
-  const pathname = getPathname(url);
+  const pathname = getPotentialImageProxyPathname(url);
 
   if (!pathname) return false;
 
@@ -53,7 +78,7 @@ export function isUrlPotentialAnimatedImage(url: string): boolean {
 const videoExtensions = ["mp4", "webm", "gifv"];
 
 export function isUrlVideo(url: string): boolean {
-  const pathname = getPathname(url);
+  const pathname = getPotentialImageProxyPathname(url);
   if (!pathname) return false;
 
   return videoExtensions.some((extension) =>
@@ -61,8 +86,10 @@ export function isUrlVideo(url: string): boolean {
   );
 }
 
-export function isUrlMedia(url: string): boolean {
-  return isUrlImage(url) || isUrlVideo(url);
+export function findUrlMediaType(url: string): "video" | "image" | undefined {
+  if (isUrlImage(url)) return "image";
+
+  if (isUrlVideo(url)) return "video";
 }
 
 // https://github.com/miguelmota/is-valid-hostname

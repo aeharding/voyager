@@ -1,11 +1,12 @@
-import { ComponentProps, useMemo } from "react";
-import Media, { getPostMedia } from "../../../media/gallery/Media";
+import { ComponentProps } from "react";
+import Media from "../../../media/gallery/Media";
 import { PostView } from "lemmy-js-client";
+import usePostSrc from "../usePostSrc";
 
 export default function CompactFeedPostMedia(
   props: Omit<ComponentProps<typeof Media>, "src"> & { post: PostView },
 ) {
-  const src = useMemo(() => getPostMedia(props.post), [props.post]);
+  const src = usePostSrc(props.post);
 
-  if (src) return <Media {...props} src={src} />;
+  if (src) return <Media {...props} src={src} alt={props.post.post.alt_text} />;
 }

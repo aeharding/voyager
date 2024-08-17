@@ -10,7 +10,7 @@ import {
 } from "ionicons/icons";
 import { ReactNode, useMemo } from "react";
 import { LemmyObjectType } from "../../shared/useLemmyUrlHandler";
-import { determineTypeFromUrl } from "../../../helpers/url";
+import type { determineTypeFromUrl } from "../../../helpers/url";
 
 const shared = `
   width: 26px;

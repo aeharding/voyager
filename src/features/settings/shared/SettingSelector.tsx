@@ -83,6 +83,7 @@ export default function SettingSelector<
       <IonLabel className="ion-text-nowrap">{title}</IonLabel>
       <IonLabel slot="end" color="medium" className="ion-no-margin">
         {getSelectedLabel?.(selected) ??
+          getOptionLabel?.(selected) ??
           (typeof selected === "string" ? startCase(selected) : selected)}
       </IonLabel>
       <IonActionSheet

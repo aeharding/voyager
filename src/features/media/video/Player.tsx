@@ -110,6 +110,7 @@ export interface PlayerProps {
 
   className?: string;
   style?: CSSProperties;
+  alt?: string;
 }
 
 const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
@@ -225,6 +226,7 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
           if (!showProgress) return;
           setProgress(e.target.currentTime / e.target.duration);
         }}
+        aria-label={rest.alt}
       />
       {showProgress && progress !== undefined && <Progress value={progress} />}
       {!nativeControls && (

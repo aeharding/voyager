@@ -49,6 +49,8 @@ export default forwardRef<
 
         onClick?.(e);
       }}
+      role="img"
+      aria-label={props.alt}
     />
   );
 });

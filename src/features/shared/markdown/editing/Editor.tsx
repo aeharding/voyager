@@ -20,6 +20,7 @@ import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
 import useTextRecovery from "../../../../helpers/useTextRecovery";
 import useUploadImage from "./useUploadImage";
 import { htmlToMarkdown } from "../../../../helpers/markdown";
+import useEditorHelpers from "./useEditorHelpers";
 
 const ORDERED_LIST_REGEX = /^(\d)\. /;
 const UNORDERED_LIST_REGEX = /^(-|\*|\+) /;
@@ -31,6 +32,10 @@ export const Container = styled.div<{ keyboardOpen: boolean }>`
   flex-direction: column;
 
   padding-bottom: ${TOOLBAR_HEIGHT};
+
+  html.ios:not(.ion-palette-dark) & {
+    background: var(--ion-item-background);
+  }
 
   @media screen and (max-width: 767px) {
     padding-bottom: ${({ keyboardOpen }) =>
@@ -50,10 +55,6 @@ export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
   min-height: 200px;
 
   flex: 1 0 auto;
-
-  html.ios:not(.ion-palette-dark) & {
-    background: var(--ion-item-background);
-  }
 `;
 
 export interface EditorProps {
@@ -73,6 +74,8 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const { insertBlock } = useEditorHelpers(textareaRef);
+
   const { uploadImage, jsx: uploadImageJsx } = useUploadImage();
 
   useTextRecovery(text, setText, !canRecoverText);
@@ -82,7 +85,13 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
 
     // iOS safari native has race sometimes
     setTimeout(() => {
-      textareaRef.current?.focus({ preventScroll: true });
+      if (!textareaRef.current) return;
+
+      textareaRef.current.focus({ preventScroll: true });
+
+      // Place cursor at end
+      const len = textareaRef.current.value.length;
+      textareaRef.current?.setSelectionRange(len, len);
     }, 100);
   }, []);
 
@@ -96,7 +105,7 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
 
       try {
         toInsert = await htmlToMarkdown(html);
-      } catch (error) {
+      } catch (_) {
         toInsert = e.clipboardData.getData("Text");
         console.error("Parse error", e);
       }
@@ -125,7 +134,7 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
     const markdown = await uploadImage(image);
 
     textareaRef.current?.focus();
-    document.execCommand("insertText", false, markdown);
+    insertBlock(markdown);
   }
 
   async function onDragOver(event: DragEvent) {

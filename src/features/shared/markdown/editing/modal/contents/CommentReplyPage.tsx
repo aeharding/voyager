@@ -17,22 +17,22 @@ import {
 } from "lemmy-js-client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ItemReplyingTo from "./ItemReplyingTo";
-import useClient from "../../../../helpers/useClient";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { Centered, Spinner } from "../../../auth/login/LoginNav";
+import CommentEditorContent from "./CommentEditorContent";
+import { arrowBackSharp, send } from "ionicons/icons";
+import { useAppDispatch, useAppSelector } from "../../../../../../store";
+import useClient from "../../../../../../helpers/useClient";
+import useAppToast from "../../../../../../helpers/useAppToast";
 import {
   loggedInAccountsSelector,
   userHandleSelector,
-} from "../../../auth/authSelectors";
-import { receivedComments } from "../../commentSlice";
-import CommentEditorContent from "../CommentEditorContent";
-import useAppToast from "../../../../helpers/useAppToast";
-import { isLemmyError } from "../../../../helpers/lemmyErrors";
-import AccountSwitcher from "../../../auth/AccountSwitcher";
-import { getClient } from "../../../../services/lemmy";
-import AppHeader from "../../../shared/AppHeader";
-import { arrowBackSharp, send } from "ionicons/icons";
-import { isIosTheme } from "../../../../helpers/device";
+} from "../../../../../auth/authSelectors";
+import { getClient } from "../../../../../../services/lemmy";
+import AccountSwitcher from "../../../../../auth/AccountSwitcher";
+import { isLemmyError } from "../../../../../../helpers/lemmyErrors";
+import { receivedComments } from "../../../../../comment/commentSlice";
+import AppHeader from "../../../../AppHeader";
+import { isIosTheme } from "../../../../../../helpers/device";
+import { Centered, Spinner } from "../../../../../auth/login/LoginNav";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -49,7 +49,7 @@ export type CommentReplyItem =
   | PersonMentionView
   | CommentReplyView;
 
-type CommentReplyProps = {
+type CommentReplyPageProps = {
   dismiss: (reply?: CommentView | undefined) => void;
   setCanDismiss: (canDismiss: boolean) => void;
   item: CommentReplyItem;
@@ -58,11 +58,11 @@ type CommentReplyProps = {
 /**
  * New comment replying to something
  */
-export default function CommentReply({
+export default function CommentReplyPage({
   dismiss,
   setCanDismiss,
   item,
-}: CommentReplyProps) {
+}: CommentReplyPageProps) {
   const comment = "comment" in item ? item.comment : undefined;
 
   const dispatch = useAppDispatch();
@@ -183,7 +183,7 @@ export default function CommentReply({
               q: remoteComment.comment_view.comment.ap_id,
             })
           ).comment;
-        } catch (error) {
+        } catch (_) {
           silentError = true;
           presentToast({
             message:
@@ -224,6 +224,7 @@ export default function CommentReply({
     }
 
     if (reply) dispatch(receivedComments([reply]));
+
     setCanDismiss(true);
     dismiss(reply);
   }
@@ -292,7 +293,7 @@ export default function CommentReply({
         onSubmit={submit}
         onDismiss={dismiss}
       >
-        <ItemReplyingTo item={item} />
+        {"post" in item ? <ItemReplyingTo item={item} /> : undefined}
       </CommentEditorContent>
     </>
   );

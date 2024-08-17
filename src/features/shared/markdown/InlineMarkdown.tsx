@@ -1,5 +1,8 @@
 import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
+import spoiler from "@aeharding/remark-lemmy-spoiler";
+import superSub from "remark-supersub-lemmy";
+import inlinifySpoiler from "./components/spoiler/inlinifySpoiler";
 
 interface InlineMarkdownProps {
   children: string;
@@ -25,6 +28,8 @@ export default function InlineMarkdown({ children }: InlineMarkdownProps) {
           "h4",
           "h5",
           "code",
+          "sub",
+          "sup",
         ]}
         components={{
           a: "span",
@@ -41,7 +46,10 @@ export default function InlineMarkdown({ children }: InlineMarkdownProps) {
           h4: "span",
           h5: "span",
           code: "code",
+          sub: "sub",
+          sup: "sup",
         }}
+        remarkPlugins={[superSub, spoiler, inlinifySpoiler]}
       >
         {children}
       </ReactMarkdown>

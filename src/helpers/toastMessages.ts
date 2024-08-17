@@ -63,6 +63,17 @@ export function buildSuccessSubscribing(
   };
 }
 
+export function buildFavorited(
+  favorited: boolean,
+  community: string,
+): AppToastOptions {
+  return {
+    message: `${favorited ? "Unfavorited" : "Favorited"} c/${community}.`,
+    position: "bottom",
+    color: "success",
+  };
+}
+
 export const postLocked: AppToastOptions = {
   message: "Post locked by moderator",
   color: "warning",
@@ -246,4 +257,9 @@ export const deepLinkFailed: AppToastOptions = {
   color: "warning",
   position: "top",
   duration: 7000,
+};
+
+export const privateMessageSendFailed: AppToastOptions = {
+  message: `Message failed to send. Please try again`,
+  color: "danger",
 };
