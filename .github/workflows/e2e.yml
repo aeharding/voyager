@@ -1,17 +1,9 @@
 name: Run e2e tests
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: workflow_dispatch
 jobs:
   playwright:
     name: Run Playwright tests
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.46.0-jammy
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
@@ -23,5 +15,13 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build project
         run: pnpm build
-      - name: Run tests
-        run: env HOME=/root pnpm test:e2e
+        env:
+          VITE_FORCE_LEMMY_INSECURE: 1
+          VITE_CUSTOM_LEMMY_SERVERS: localhost:8536
+      - name: Install Playwright dependencies
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: |
+          docker compose -f e2e/ci/docker-compose.yml up -d
+          sleep 10
+          pnpm run test:e2e
