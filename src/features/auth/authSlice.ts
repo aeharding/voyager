@@ -142,6 +142,10 @@ export const authSlice = createSlice({
     },
 
     updateConnectedInstance(state, action: PayloadAction<string>) {
+      if (import.meta.env.VITE__TEST_MODE) {
+        state.connectedInstance = getDefaultServer();
+        return;
+      }
       state.connectedInstance = action.payload;
     },
   },
