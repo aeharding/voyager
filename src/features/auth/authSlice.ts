@@ -16,6 +16,7 @@ import { getInstanceFromHandle, instanceSelector } from "./authSelectors";
 import { receivedSite, resetSite } from "./siteSlice";
 import { Register } from "lemmy-js-client";
 import { setDefaultFeed } from "../settings/settingsSlice";
+import { getDefaultServer } from "../../services/app";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
