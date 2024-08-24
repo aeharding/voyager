@@ -72,38 +72,35 @@ export default function PersonLink({
     stopIonicTapClick();
 
     const isCurrentUser = currentUserHandle === getRemoteHandle(person);
+    const buttons: Button[] = [
+      isCurrentUser
+        ? "That's me!"
+        : {
+            text: `${isBlocked ? "Unblock" : "Block"} User`,
+            icon: removeCircleOutline,
+            role: "destructive",
+            handler: () => {
+              (async () => {
+                try {
+                  await dispatch(blockUser(!isBlocked, person.id));
+                } catch (error) {
+                  presentToast({
+                    color: "danger",
+                    message: getBlockUserErrorMessage(error, person),
+                  });
+                  throw error;
+                }
 
-    const buttons = compact<Button>([
-      isCurrentUser && "That's me!",
-      !isCurrentUser && {
-        text: `${isBlocked ? "Unblock" : "Block"} User`,
-        icon: removeCircleOutline,
-        role: "destructive",
-        handler: () => {
-          (async () => {
-            try {
-              await dispatch(blockUser(!isBlocked, person.id));
-            } catch (error) {
-              presentToast({
-                color: "danger",
-                message: getBlockUserErrorMessage(error, person),
-              });
-              throw error;
-            }
-
-            presentToast(buildBlocked(!isBlocked, getHandle(person)));
-          })();
-        },
-      },
+                presentToast(buildBlocked(!isBlocked, getHandle(person)));
+              })();
+            },
+          },
       {
         text: "Cancel",
         role: "cancel",
       },
-    ]);
-    presentActionSheet({
-      cssClass: "left-align-buttons",
-      buttons,
-    });
+    ];
+    presentActionSheet({ cssClass: "left-align-buttons", buttons });
   }, [currentUserHandle, person, presentActionSheet, presentToast, dispatch]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
