@@ -17,7 +17,7 @@ const markdownCss = css`
   @media (max-width: 700px) {
     ul,
     ol {
-      padding-left: 24px;
+      padding-left: 28px;
     }
   }
 

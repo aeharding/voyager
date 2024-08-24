@@ -14,12 +14,12 @@ import store, { useAppDispatch } from "../../../../../store";
 import { getSpoilerId, updateSpoilerState } from "./spoilerSlice";
 
 const StyledIonAccordionGroup = styled(IonAccordionGroup)`
-  margin: 1em 0;
+  margin: 1em -12px;
 `;
 
 const HeaderItem = styled(IonItem)`
-  --padding-start: 0;
-  --padding-end: 0;
+  --padding-start: 12px;
+  --padding-end: 12px;
   --inner-padding-end: 0;
   --inner-padding-start: 0;
 
@@ -39,7 +39,7 @@ const StyledIonAccordion = styled(IonAccordion)`
   background: none;
 
   [slot="content"] {
-    padding: 1em 0;
+    padding: 1em 12px;
 
     background: transparent;
 
