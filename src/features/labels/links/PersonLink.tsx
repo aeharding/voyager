@@ -1,4 +1,4 @@
-import { getHandle } from "../../../helpers/lemmy";
+import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Person } from "lemmy-js-client";
 import { renderHandle } from "../Handle";
@@ -15,12 +15,14 @@ import { styled } from "@linaria/react";
 import { LinkContainer, StyledLink, hideCss } from "./shared";
 import { cx } from "@linaria/core";
 import { LongPressOptions, useLongPress } from "use-long-press";
-import { useIonActionSheet } from "@ionic/react";
+import { ActionSheetOptions, useIonActionSheet } from "@ionic/react";
 import { removeCircleOutline } from "ionicons/icons";
 import { blockUser } from "../../user/userSlice";
 import useAppToast from "../../../helpers/useAppToast";
 import { buildBlocked } from "../../../helpers/toastMessages";
 import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
+import { userHandleSelector } from "../../auth/authSelectors";
+import { compact } from "lodash";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -37,6 +39,8 @@ interface PersonLinkProps {
 
   className?: string;
 }
+
+type Button = ActionSheetOptions["buttons"][number];
 
 export default function PersonLink({
   person,
@@ -56,10 +60,10 @@ export default function PersonLink({
     (admin) => admin.person.actor_id === person.actor_id,
   );
   const { hideUsernames } = useContext(ShareImageContext);
+  const currentUserHandle = useAppSelector(userHandleSelector);
 
   const onCommunityLinkLongPress = useCallback(() => {
     const state = store.getState();
-
     const blocks = state.site.response?.my_user?.person_blocks;
     const isBlocked = blocks?.some(
       (b) => getHandle(b.target) === getHandle(person),
@@ -67,36 +71,40 @@ export default function PersonLink({
 
     stopIonicTapClick();
 
+    const isCurrentUser = currentUserHandle === getRemoteHandle(person);
+
+    const buttons = compact<Button>([
+      isCurrentUser && "That's me!",
+      !isCurrentUser && {
+        text: `${isBlocked ? "Unblock" : "Block"} User`,
+        icon: removeCircleOutline,
+        role: "destructive",
+        handler: () => {
+          (async () => {
+            try {
+              await dispatch(blockUser(!isBlocked, person.id));
+            } catch (error) {
+              presentToast({
+                color: "danger",
+                message: getBlockUserErrorMessage(error, person),
+              });
+              throw error;
+            }
+
+            presentToast(buildBlocked(!isBlocked, getHandle(person)));
+          })();
+        },
+      },
+      {
+        text: "Cancel",
+        role: "cancel",
+      },
+    ]);
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: [
-        {
-          text: `${isBlocked ? "Unblock" : "Block"} User`,
-          icon: removeCircleOutline,
-          role: "destructive",
-          handler: () => {
-            (async () => {
-              try {
-                await dispatch(blockUser(!isBlocked, person.id));
-              } catch (error) {
-                presentToast({
-                  color: "danger",
-                  message: getBlockUserErrorMessage(error, person),
-                });
-                throw error;
-              }
-
-              presentToast(buildBlocked(!isBlocked, getHandle(person)));
-            })();
-          },
-        },
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
-      ],
+      buttons,
     });
-  }, [presentActionSheet, presentToast, dispatch, person]);
+  }, [currentUserHandle, person, presentActionSheet, presentToast, dispatch]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
     cancelOnMovement: 15,
