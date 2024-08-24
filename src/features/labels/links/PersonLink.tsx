@@ -22,7 +22,6 @@ import useAppToast from "../../../helpers/useAppToast";
 import { buildBlocked } from "../../../helpers/toastMessages";
 import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
 import { userHandleSelector } from "../../auth/authSelectors";
-import { compact } from "lodash";
 
 const Prefix = styled.span`
   font-weight: normal;
