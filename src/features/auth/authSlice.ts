@@ -16,6 +16,7 @@ import { getInstanceFromHandle, instanceSelector } from "./authSelectors";
 import { receivedSite, resetSite } from "./siteSlice";
 import { Register } from "lemmy-js-client";
 import { setDefaultFeed } from "../settings/settingsSlice";
+import { getDefaultServer } from "../../services/app";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
@@ -142,6 +143,10 @@ export const authSlice = createSlice({
     },
 
     updateConnectedInstance(state, action: PayloadAction<string>) {
+      if (import.meta.env.VITE__TEST_MODE) {
+        state.connectedInstance = getDefaultServer();
+        return;
+      }
       state.connectedInstance = action.payload;
     },
   },

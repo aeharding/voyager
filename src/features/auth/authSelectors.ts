@@ -49,8 +49,11 @@ export const instanceSelector = createSelector([handleSelector], (handle) => {
   return getInstanceFromHandle(handle);
 });
 
-export const urlSelector = (state: RootState) =>
-  instanceSelector(state) ?? state.auth.connectedInstance;
+export const urlSelector = (state: RootState) => {
+  if (import.meta.env.VITE__TEST_MODE) return state.auth.connectedInstance;
+
+  return instanceSelector(state) ?? state.auth.connectedInstance;
+};
 
 export const clientSelector = createSelector(
   [urlSelector, jwtSelector],
