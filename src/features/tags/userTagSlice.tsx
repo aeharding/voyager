@@ -102,6 +102,14 @@ export const fetchTagsForHandles = createAsyncThunk(
 export const updateTagVotes =
   (payload: UpdateVotePayload) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    // Can't set tag vote for own content
+    if (
+      getState().auth.accountData?.accounts.find(
+        ({ handle }) => handle === payload.handle,
+      )
+    )
+      return;
+
     dispatch(userTagSlice.actions._updateTagVotes(payload));
 
     const updatedTag = getState().userTag.tagByRemoteHandle[payload.handle];

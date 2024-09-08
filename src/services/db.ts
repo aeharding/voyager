@@ -300,8 +300,6 @@ export type RedgifsProvider = ProviderData<"redgifs", { token: string }>;
 
 type ProvidersData = RedgifsProvider;
 
-export type UserTagColor = "red" | "green" | "blue";
-
 export interface UserTag {
   handle: string;
 
@@ -309,7 +307,7 @@ export interface UserTag {
   upvotes: number;
 
   text?: string;
-  color?: UserTagColor;
+  color?: string;
 
   sourceUrl?: string;
 }

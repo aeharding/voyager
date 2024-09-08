@@ -42,11 +42,33 @@ const UserText = styled(IonText)`
 
 const ColorIonInput = styled(IonInput)`
   .native-wrapper {
-    max-width: 32px;
+    max-width: 42px;
   }
 
-  input {
-    border-radius: 50%;
+  && input {
+    appearance: none;
+    border-radius: 4px;
+    height: 25px;
+    border: 1px solid
+      var(
+        --ion-item-border-color,
+        var(
+          --ion-border-color,
+          var(
+            --ion-color-step-250,
+            var(--ion-background-color-step-250, #c8c7cc)
+          )
+        )
+      );
+  }
+
+  ::-moz-color-swatch,
+  ::-webkit-color-swatch {
+    border-style: none;
+  }
+
+  ::-webkit-color-swatch-wrapper {
+    padding: 0;
   }
 `;
 
@@ -88,6 +110,27 @@ function UserTagModalContents({ person, setIsOpen }: UserTagModalProps) {
       ? foundTag
       : generateNewTag(getRemoteHandle(person)),
   );
+
+  const [upvotes, setUpvotes] = useState(`${tag.upvotes}`);
+  const [downvotes, setDownvotes] = useState(`${tag.downvotes}`);
+
+  useEffect(() => {
+    if (isNaN(+upvotes) || +upvotes < 0) return;
+
+    setTag((tag) => ({
+      ...tag,
+      upvotes: +upvotes,
+    }));
+  }, [upvotes]);
+
+  useEffect(() => {
+    if (isNaN(+downvotes) || +downvotes < 0) return;
+
+    setTag((tag) => ({
+      ...tag,
+      downvotes: +downvotes,
+    }));
+  }, [downvotes]);
 
   useEffect(() => {
     dispatch(updateTag(tag));
@@ -143,7 +186,9 @@ function UserTagModalContents({ person, setIsOpen }: UserTagModalProps) {
           <IonItem>
             <ColorIonInput
               label="Color"
-              type="color"
+              // TODO add Ionic support for color input
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              type={"color" as any}
               value={tag.color}
               onIonInput={(e) => {
                 setTag((tag) => ({
@@ -157,12 +202,13 @@ function UserTagModalContents({ person, setIsOpen }: UserTagModalProps) {
             <IonInput
               label="Upvotes"
               type="number"
-              value={tag.upvotes}
+              inputMode="numeric"
+              value={upvotes}
               onIonInput={(e) => {
-                setTag((tag) => ({
-                  ...tag,
-                  upvotes: e.detail.value ? +e.detail.value : 0,
-                }));
+                setUpvotes(e.detail.value ?? "");
+              }}
+              onIonBlur={() => {
+                setUpvotes(`${tag.upvotes}`);
               }}
             />
           </IonItem>
@@ -170,12 +216,13 @@ function UserTagModalContents({ person, setIsOpen }: UserTagModalProps) {
             <IonInput
               label="Downvotes"
               type="number"
-              value={tag.downvotes}
+              inputMode="numeric"
+              value={downvotes}
               onIonInput={(e) => {
-                setTag((tag) => ({
-                  ...tag,
-                  downvotes: e.detail.value ? +e.detail.value : 0,
-                }));
+                setDownvotes(e.detail.value ?? "");
+              }}
+              onIonBlur={() => {
+                setDownvotes(`${tag.downvotes}`);
               }}
             />
           </IonItem>
