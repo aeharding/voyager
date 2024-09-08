@@ -108,7 +108,8 @@ export const totalUnreadSelector = (state: RootState) =>
   state.inbox.counts.replies;
 
 export const getInboxCounts =
-  () => async (dispatch: AppDispatch, getState: () => RootState) => {
+  (force = false) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
     const jwt = jwtSelector(getState());
 
     if (!jwt) {
@@ -118,7 +119,7 @@ export const getInboxCounts =
 
     const lastUpdatedCounts = getState().inbox.lastUpdatedCounts;
 
-    if (Date.now() - lastUpdatedCounts < 3_000) return;
+    if (!force && Date.now() - lastUpdatedCounts < 3_000) return;
 
     const result = await clientSelector(getState()).getUnreadCount();
 
@@ -190,7 +191,7 @@ export const markAllRead =
     await clientSelector(getState()).markAllAsRead();
 
     dispatch(markAllReadInCache());
-    dispatch(getInboxCounts());
+    dispatch(getInboxCounts(true));
   };
 
 export const conversationsByPersonIdSelector = createSelector(
@@ -284,5 +285,5 @@ export const markRead =
       throw error;
     }
 
-    dispatch(getInboxCounts());
+    dispatch(getInboxCounts(true));
   };
