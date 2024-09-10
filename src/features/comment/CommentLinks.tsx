@@ -8,9 +8,9 @@ import customRemarkGfm from "../shared/markdown/customRemarkGfm";
 import { useAppSelector } from "../../store";
 import { Text } from "mdast";
 import { uniqBy } from "lodash";
-import { isValidUrl } from "../../helpers/url";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import { buildBaseLemmyUrl } from "../../services/lemmy";
+import { defaultUrlTransform } from "react-markdown";
 
 const Container = styled.div`
   display: flex;
@@ -68,7 +68,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     links = uniqBy(links, (l) => l.url);
 
     // e.g. `http://127.0.0.1:8080”`
-    links = links.filter(({ url }) => isValidUrl(url));
+    links = links.filter(({ url }) => defaultUrlTransform(url));
 
     // Max 4 links
     links = links.slice(0, 4);
