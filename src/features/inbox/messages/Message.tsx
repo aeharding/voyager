@@ -154,7 +154,7 @@ export default function Message({ message, first }: MessageProps) {
     }
 
     await dispatch(receivedMessages([response.private_message_view]));
-    await dispatch(getInboxCounts());
+    await dispatch(getInboxCounts(true));
   }
 
   return (
