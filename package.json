@@ -68,7 +68,7 @@
     "dexie-react-hooks": "^1.1.7",
     "history": "^4.10.1",
     "ionicons": "^7.4.0",
-    "lemmy-js-client": "0.19.4",
+    "lemmy-js-client": "0.20.0-alpha.17",
     "lodash": "^4.17.21",
     "mdast-util-gfm-autolink-literal-lemmy": "^3.0.0",
     "mdast-util-gfm-strikethrough": "^2.0.0",

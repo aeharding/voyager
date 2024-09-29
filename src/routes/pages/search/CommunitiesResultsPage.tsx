@@ -101,7 +101,11 @@ async function findExactCommunity(
   try {
     return (await client.getCommunity({ name: sanitizedName })).community_view;
   } catch (error) {
-    if (isLemmyError(error, "couldnt_find_community")) return;
+    if (
+      isLemmyError(error, "couldnt_find_community" as never) || // TODO lemmy 0.19 and less support
+      isLemmyError(error, "not_found")
+    )
+      return;
 
     throw error;
   }

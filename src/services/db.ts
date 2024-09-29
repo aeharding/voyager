@@ -1,6 +1,10 @@
 import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
-import { CommentSortType, FederatedInstances, SortType } from "lemmy-js-client";
+import {
+  CommentSortType,
+  FederatedInstances,
+  PostSortType,
+} from "lemmy-js-client";
 import { zipObject } from "lodash";
 import { ALL_POST_SORTS } from "../features/feed/PostSort";
 import { COMMENT_SORTS } from "../features/comment/CommentSort";
@@ -351,8 +355,8 @@ export type SettingValueTypes = {
   always_use_reader_mode: boolean;
   infinite_scrolling: boolean;
   upvote_on_save: boolean;
-  default_post_sort: SortType;
-  default_post_sort_by_feed: SortType;
+  default_post_sort: PostSortType;
+  default_post_sort_by_feed: PostSortType;
   remember_community_post_sort: boolean;
   remember_community_comment_sort: boolean;
   embed_crossposts: boolean;
