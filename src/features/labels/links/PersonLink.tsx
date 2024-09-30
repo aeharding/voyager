@@ -22,6 +22,7 @@ import useAppToast from "../../../helpers/useAppToast";
 import { buildBlocked } from "../../../helpers/toastMessages";
 import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
 import { userHandleSelector } from "../../auth/authSelectors";
+import { compact } from "lodash";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -71,34 +72,33 @@ export default function PersonLink({
     stopIonicTapClick();
 
     const isCurrentUser = currentUserHandle === getRemoteHandle(person);
-    const buttons: Button[] = [
-      isCurrentUser
-        ? "That's me!"
-        : {
-            text: `${isBlocked ? "Unblock" : "Block"} User`,
-            icon: removeCircleOutline,
-            role: "destructive",
-            handler: () => {
-              (async () => {
-                try {
-                  await dispatch(blockUser(!isBlocked, person.id));
-                } catch (error) {
-                  presentToast({
-                    color: "danger",
-                    message: getBlockUserErrorMessage(error, person),
-                  });
-                  throw error;
-                }
 
-                presentToast(buildBlocked(!isBlocked, getHandle(person)));
-              })();
-            },
-          },
+    const buttons = compact<Button>([
+      !isCurrentUser && {
+        text: `${isBlocked ? "Unblock" : "Block"} User`,
+        icon: removeCircleOutline,
+        role: "destructive",
+        handler: () => {
+          (async () => {
+            try {
+              await dispatch(blockUser(!isBlocked, person.id));
+            } catch (error) {
+              presentToast({
+                color: "danger",
+                message: getBlockUserErrorMessage(error, person),
+              });
+              throw error;
+            }
+
+            presentToast(buildBlocked(!isBlocked, getHandle(person)));
+          })();
+        },
+      },
       {
         text: "Cancel",
         role: "cancel",
       },
-    ];
+    ]);
     presentActionSheet({ cssClass: "left-align-buttons", buttons });
   }, [currentUserHandle, person, presentActionSheet, presentToast, dispatch]);
 
