@@ -6,13 +6,22 @@ import { blockUser } from "./userSlice";
 import { buildBlocked } from "../../helpers/toastMessages";
 import useAppToast from "../../helpers/useAppToast";
 import { getBlockUserErrorMessage } from "../../helpers/lemmyErrors";
+import { Person } from "lemmy-js-client";
 
 export function useUserDetails(handle: string) {
   const blocks = useAppSelector(
     (state) => state.site.response?.my_user?.person_blocks,
   );
   const isBlocked = useMemo(
-    () => blocks?.some((b) => getHandle(b.target) === handle),
+    () =>
+      blocks?.some(
+        (b) =>
+          getHandle(
+            "target" in b
+              ? (b.target as Person) // TODO lemmy v0.19 and less support
+              : b,
+          ) === handle,
+      ),
     [blocks, handle],
   );
   const user = useAppSelector((state) => state.user.userByHandle[handle]);

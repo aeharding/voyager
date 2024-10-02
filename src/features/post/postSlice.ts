@@ -325,7 +325,8 @@ export const getPost =
       });
     } catch (error) {
       if (
-        isLemmyError(error, "couldnt_find_post") ||
+        isLemmyError(error, "couldnt_find_post" as never) || // TODO lemmy 0.19 and less support
+        isLemmyError(error, "not_found") ||
         isLemmyError(error, "unknown")
       ) {
         dispatch(receivedPostNotFound(id));

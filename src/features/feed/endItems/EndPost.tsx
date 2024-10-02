@@ -1,5 +1,5 @@
 import { styled } from "@linaria/react";
-import { SortType } from "lemmy-js-client";
+import { CommentSortType, PostSortType } from "lemmy-js-client";
 
 export const Container = styled.div`
   display: flex;
@@ -51,7 +51,7 @@ export default function EndPost({
 }
 
 export function getSortDuration(
-  sort: SortType | undefined,
+  sort: PostSortType | CommentSortType | undefined,
 ): string | undefined {
   switch (sort) {
     case "TopDay":
