@@ -1,4 +1,4 @@
-import { getHandle } from "../../../helpers/lemmy";
+import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Person } from "lemmy-js-client";
 import { renderHandle } from "../Handle";
@@ -16,11 +16,14 @@ import { LinkContainer, StyledLink, hideCss } from "./shared";
 import { cx } from "@linaria/core";
 import { LongPressOptions, useLongPress } from "use-long-press";
 import { useIonActionSheet } from "@ionic/react";
-import { removeCircleOutline } from "ionicons/icons";
+import { pricetagOutline, removeCircleOutline } from "ionicons/icons";
 import { blockUser } from "../../user/userSlice";
 import useAppToast from "../../../helpers/useAppToast";
 import { buildBlocked } from "../../../helpers/toastMessages";
 import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
+import UserScore from "../../tags/UserScore";
+import { PageContext } from "../../auth/PageContext";
+import UserTag from "../../tags/UserTag";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -34,6 +37,7 @@ interface PersonLinkProps {
   prefix?: string;
   showBadge?: boolean;
   disableInstanceClick?: boolean;
+  showTag?: boolean;
 
   className?: string;
 }
@@ -46,6 +50,7 @@ export default function PersonLink({
   showInstanceWhenRemote,
   prefix,
   showBadge = true,
+  showTag = true,
   disableInstanceClick,
 }: PersonLinkProps) {
   const presentToast = useAppToast();
@@ -56,6 +61,10 @@ export default function PersonLink({
     (admin) => admin.person.actor_id === person.actor_id,
   );
   const { hideUsernames } = useContext(ShareImageContext);
+  const { presentUserTag } = useContext(PageContext);
+  const tag = useAppSelector(
+    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
+  );
 
   const onCommunityLinkLongPress = useCallback(() => {
     const state = store.getState();
@@ -94,12 +103,19 @@ export default function PersonLink({
           },
         },
         {
+          text: "Edit Tag",
+          icon: pricetagOutline,
+          handler: async () => {
+            presentUserTag(person);
+          },
+        },
+        {
           text: "Cancel",
           role: "cancel",
         },
       ],
     });
-  }, [presentActionSheet, presentToast, dispatch, person]);
+  }, [presentActionSheet, presentToast, dispatch, person, presentUserTag]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
     cancelOnMovement: 15,
@@ -122,8 +138,11 @@ export default function PersonLink({
     color = "var(--ion-color-tertiary-tint)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
+  const tagText = typeof tag === "object" ? tag.text : undefined;
+
   const [handle, instance] = renderHandle({
-    showInstanceWhenRemote: showInstanceWhenRemote || forceInstanceUrl,
+    showInstanceWhenRemote:
+      !tagText && (showInstanceWhenRemote || forceInstanceUrl),
     item: person,
   });
 
@@ -134,6 +153,12 @@ export default function PersonLink({
         <>
           {person.bot_account && " 🤖"}
           <AgeBadge published={person.published} />
+        </>
+      )}
+      {showTag && (
+        <>
+          <UserScore person={person} prefix=" " />
+          <UserTag person={person} prefix=" " />
         </>
       )}
     </>

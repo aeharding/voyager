@@ -31,9 +31,9 @@ interface PostActionsProps {
 export default function PostActions({ post, onReply }: PostActionsProps) {
   return (
     <Container>
-      <VoteButton type="up" postId={post.post.id} />
-      <VoteButton type="down" postId={post.post.id} />
-      <SaveButton postId={post.post.id} />
+      <VoteButton type="up" post={post} />
+      <VoteButton type="down" post={post} />
+      <SaveButton post={post} />
       <ActionButton>
         <Link href={post.post.ap_id} target="_blank" rel="noopener noreferrer">
           <IonIcon icon={linkOutline} />

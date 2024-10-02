@@ -189,8 +189,8 @@ export default function LargePost({ post }: PostProps) {
               {!inModqueue && (
                 <>
                   <MoreModActions post={post} />
-                  <VoteButton type="up" postId={post.post.id} />
-                  <VoteButton type="down" postId={post.post.id} />
+                  <VoteButton type="up" post={post} />
+                  <VoteButton type="down" post={post} />
                 </>
               )}
             </RightDetails>
