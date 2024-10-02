@@ -123,7 +123,10 @@ export default function useLemmyUrlHandler() {
         try {
           object = await dispatch(resolveObject(url.toString()));
         } catch (error) {
-          if (isLemmyError(error, "couldnt_find_object")) {
+          if (
+            isLemmyError(error, "couldnt_find_object" as never) || // TODO lemmy 0.19 and less support
+            isLemmyError(error, "not_found")
+          ) {
             presentToast({
               message: `Could not find ${getObjectName(
                 url.pathname,

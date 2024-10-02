@@ -88,6 +88,7 @@ export const SERVERS_BY_CATEGORY = {
     "lemmy.radio",
     "psychedelia.ink",
     "ani.social",
+    "vegantheoryclub.org",
   ],
   activism: ["rblind.com", "badatbeing.social", "slrpnk.net"],
   lgbt: ["femboys.bar", "lemmy.blahaj.zone"],
@@ -106,7 +107,6 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "hexbear.net",
   "vger.social",
   "lemmy.myserv.one",
-  "vegantheoryclub.org",
 ];
 
 export const LOGIN_SERVERS = uniq([

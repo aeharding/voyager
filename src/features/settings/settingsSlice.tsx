@@ -45,7 +45,7 @@ import {
 } from "../../services/db";
 import { LOCALSTORAGE_KEYS, get, set } from "./syncStorage";
 import { Mode } from "@ionic/core";
-import { SortType } from "lemmy-js-client";
+import { PostSortType } from "lemmy-js-client";
 import { loggedInSelector } from "../auth/authSelectors";
 import Dexie from "dexie";
 
@@ -118,7 +118,7 @@ interface SettingsState {
       rememberCommunitySort: boolean;
     };
     posts: {
-      sort: SortType;
+      sort: PostSortType;
       disableMarkingRead: boolean;
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
@@ -457,7 +457,7 @@ export const appearanceSlice = createSlice({
       state.general.comments.sort = action.payload;
       db.setSetting("default_comment_sort", action.payload);
     },
-    setDefaultPostSort(state, action: PayloadAction<SortType>) {
+    setDefaultPostSort(state, action: PayloadAction<PostSortType>) {
       state.general.posts.sort = action.payload;
       db.setSetting("default_post_sort", action.payload);
     },

@@ -1,7 +1,7 @@
 import { compare } from "compare-versions";
 import { lemmyVersionSelector } from "../features/auth/siteSlice";
 import { useAppSelector } from "../store";
-import { CommentSortType, SortType } from "lemmy-js-client";
+import { CommentSortType, PostSortType } from "lemmy-js-client";
 
 /**
  * What Lemmy version was support added?
@@ -21,7 +21,7 @@ export default function useSupported(feature: Feature): boolean {
 }
 
 export function is019Sort(
-  sort: SortType | CommentSortType | undefined,
+  sort: PostSortType | CommentSortType | undefined,
 ): boolean {
   switch (sort) {
     case "Controversial":

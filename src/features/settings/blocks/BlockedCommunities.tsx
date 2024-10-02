@@ -10,10 +10,21 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useState } from "react";
 import { getHandle } from "../../../helpers/lemmy";
-import { CommunityBlockView } from "lemmy-js-client";
+import { Community, CommunityView } from "lemmy-js-client";
 import { blockCommunity } from "../../community/communitySlice";
 import { ListHeader } from "../shared/formatting";
 import { RemoveItemButton } from "../../shared/ListEditor";
+
+/**
+ * TODO remove - Lemmy 0.19 returned communityView. v0.20 returns community.
+ */
+function getCommunity(
+  potentialCommunity: CommunityView | Community,
+): Community {
+  if ("community" in potentialCommunity) return potentialCommunity.community;
+
+  return potentialCommunity;
+}
 
 export default function BlockedCommunities() {
   const dispatch = useAppDispatch();
@@ -25,13 +36,13 @@ export default function BlockedCommunities() {
 
   const sortedCommunities = communities
     ?.slice()
-    .sort((a, b) => a.community.name.localeCompare(b.community.name));
+    .sort((a, b) => getCommunity(a).name.localeCompare(getCommunity(b).name));
 
-  async function remove(community: CommunityBlockView) {
+  async function remove(community: Community) {
     setLoading(true);
 
     try {
-      await dispatch(blockCommunity(false, community.community.id));
+      await dispatch(blockCommunity(false, community.id));
     } finally {
       setLoading(false);
     }
@@ -45,7 +56,7 @@ export default function BlockedCommunities() {
       <IonList inset>
         {sortedCommunities?.length ? (
           sortedCommunities.map((community) => (
-            <IonItemSliding key={community.community.id}>
+            <IonItemSliding key={community.id}>
               <IonItemOptions side="end" onIonSwipe={() => remove(community)}>
                 <IonItemOption
                   color="danger"
@@ -56,7 +67,7 @@ export default function BlockedCommunities() {
                 </IonItemOption>
               </IonItemOptions>
               <IonItem>
-                <IonLabel>{getHandle(community.community)}</IonLabel>
+                <IonLabel>{getHandle(community)}</IonLabel>
                 <RemoveItemButton />
               </IonItem>
             </IonItemSliding>
