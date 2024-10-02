@@ -51,7 +51,10 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     try {
       data = await dispatch(getUser(handle));
     } catch (error) {
-      if (isLemmyError(error, "couldnt_find_person")) {
+      if (
+        isLemmyError(error, "couldnt_find_person" as never) || // TODO lemmy 0.19 and less support
+        isLemmyError(error, "not_found")
+      ) {
         await present(`Huh, u/${handle} doesn't exist. Mysterious...`);
 
         if (router.canGoBack()) {

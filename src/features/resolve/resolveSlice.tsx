@@ -68,7 +68,10 @@ export const resolveObject =
         q: url,
       });
     } catch (error) {
-      if (isLemmyError(error, "couldnt_find_object")) {
+      if (
+        isLemmyError(error, "couldnt_find_object" as never) || // TODO lemmy 0.19 and less support
+        isLemmyError(error, "not_found")
+      ) {
         try {
           const fedilink = await findFedilink(url);
 
@@ -81,7 +84,10 @@ export const resolveObject =
             q: fedilink,
           });
         } catch (error) {
-          if (isLemmyError(error, "couldnt_find_object")) {
+          if (
+            isLemmyError(error, "couldnt_find_object" as never) || // TODO lemmy 0.19 and less support
+            isLemmyError(error, "not_found")
+          ) {
             dispatch(couldNotFindUrl(url));
           }
           throw error;

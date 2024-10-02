@@ -92,7 +92,8 @@ export default function BanUser({
           community_id: community.id,
           reason,
           expires: !permanent ? days : undefined,
-          remove_data: removeContent,
+          remove_or_restore_data: removeContent,
+          ["remove_data" as never]: removeContent, // TODO lemmy 0.19.0 and less support
         }),
       );
     } catch (_) {

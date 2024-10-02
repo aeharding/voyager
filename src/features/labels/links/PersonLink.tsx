@@ -62,7 +62,10 @@ export default function PersonLink({
 
     const blocks = state.site.response?.my_user?.person_blocks;
     const isBlocked = blocks?.some(
-      (b) => getHandle(b.target) === getHandle(person),
+      (b) =>
+        // TODO b.target for 0.19 and less support
+        getHandle("target" in b ? (b.target as Person) : b) ===
+        getHandle(person),
     );
 
     stopIonicTapClick();

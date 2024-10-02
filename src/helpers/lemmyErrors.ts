@@ -32,7 +32,8 @@ export function getLoginErrorMessage(
       switch (message) {
         case "incorrect_totp_token":
           return "Incorrect 2nd factor code. Please try again.";
-        case "couldnt_find_person":
+        case "not_found":
+        case "couldnt_find_person" as never: // TODO lemmy 0.19 and less support
           return `User not found. Is your account on ${instanceActorId}?`;
         case "incorrect_login":
           return `Incorrect login credentials for ${instanceActorId}. Please try again.`;

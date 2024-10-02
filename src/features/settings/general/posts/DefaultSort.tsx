@@ -6,7 +6,7 @@ import {
   useSelectPostSort,
 } from "../../../feed/PostSort";
 import { IonItem, IonLabel } from "@ionic/react";
-import { SortType } from "lemmy-js-client";
+import { PostSortType } from "lemmy-js-client";
 import { startCase } from "lodash";
 
 export default function DefaultSort() {
@@ -32,7 +32,7 @@ export default function DefaultSort() {
   );
 }
 
-function formatPostSort(sort: SortType): string {
+function formatPostSort(sort: PostSortType): string {
   if (isTopSort(sort)) return `Top: ${formatTopLabel(sort)}`;
 
   return startCase(sort);

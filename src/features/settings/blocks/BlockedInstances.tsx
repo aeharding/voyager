@@ -10,12 +10,28 @@ import {
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useContext, useState } from "react";
-import { Instance, InstanceBlockView } from "lemmy-js-client";
+import { Instance } from "lemmy-js-client";
 import { ListHeader } from "../shared/formatting";
 import { blockInstance } from "../../auth/siteSlice";
 import InstanceSelectorModal from "../../shared/selectorModals/InstanceSelectorModal";
 import { PageContext } from "../../auth/PageContext";
 import { RemoveItemButton } from "../../shared/ListEditor";
+
+/**
+ * lemmy v0.19 version
+ */
+type InstanceView = {
+  instance: Instance;
+};
+
+/**
+ * TODO remove - Lemmy 0.19 returned communityView. v0.20 returns community.
+ */
+function getInstance(potentialInstance: InstanceView | Instance): Instance {
+  if ("instance" in potentialInstance) return potentialInstance.instance;
+
+  return potentialInstance;
+}
 
 export default function BlockedInstances() {
   const dispatch = useAppDispatch();
@@ -42,13 +58,13 @@ export default function BlockedInstances() {
 
   const sortedInstances = instances
     ?.slice()
-    .sort((a, b) => a.instance.domain.localeCompare(b.instance.domain));
+    .sort((a, b) => getInstance(a).domain.localeCompare(getInstance(b).domain));
 
-  async function remove(instanceBlock: InstanceBlockView) {
+  async function remove(instanceBlock: Instance) {
     setLoading(true);
 
     try {
-      await dispatch(blockInstance(false, instanceBlock.instance.id));
+      await dispatch(blockInstance(false, instanceBlock.id));
     } finally {
       setLoading(false);
     }
@@ -62,7 +78,7 @@ export default function BlockedInstances() {
 
       <IonList inset>
         {sortedInstances?.map((instanceBlock) => (
-          <IonItemSliding key={instanceBlock.instance.id}>
+          <IonItemSliding key={instanceBlock.id}>
             <IonItemOptions side="end" onIonSwipe={() => remove(instanceBlock)}>
               <IonItemOption
                 color="danger"
@@ -73,7 +89,7 @@ export default function BlockedInstances() {
               </IonItemOption>
             </IonItemOptions>
             <IonItem>
-              <IonLabel>{instanceBlock.instance.domain}</IonLabel>
+              <IonLabel>{instanceBlock.domain}</IonLabel>
               <RemoveItemButton />
             </IonItem>
           </IonItemSliding>
