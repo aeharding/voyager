@@ -60,10 +60,10 @@ export default function PersonLink({
     (admin) => admin.person.actor_id === person.actor_id,
   );
   const { hideUsernames } = useContext(ShareImageContext);
-  const currentUserHandle = useAppSelector(userHandleSelector);
 
   const onCommunityLinkLongPress = useCallback(() => {
     const state = store.getState();
+    const currentUserHandle = userHandleSelector(state);
     const blocks = state.site.response?.my_user?.person_blocks;
     const isBlocked = blocks?.some(
       (b) => getHandle(b.target) === getHandle(person),
@@ -100,7 +100,7 @@ export default function PersonLink({
       },
     ]);
     presentActionSheet({ cssClass: "left-align-buttons", buttons });
-  }, [currentUserHandle, person, presentActionSheet, presentToast, dispatch]);
+  }, [person, presentActionSheet, presentToast, dispatch]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
     cancelOnMovement: 15,
