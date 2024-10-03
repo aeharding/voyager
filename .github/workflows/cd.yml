@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Build iOS on Appflow
-        uses: ionic-team/appflow-build@v1
+        uses: ionic-team/appflow-build@v1.0.5
         with:
           token: ${{ secrets.APPFLOW_TOKEN }}
           app-id: 9f0851ec
@@ -64,7 +64,7 @@ jobs:
 
     steps:
       - name: Build Android on Appflow
-        uses: ionic-team/appflow-build@v1
+        uses: ionic-team/appflow-build@v1.0.5
         with:
           token: ${{ secrets.APPFLOW_TOKEN }}
           app-id: 9f0851ec
@@ -78,7 +78,7 @@ jobs:
 
     steps:
       - name: Build Android on Appflow
-        uses: ionic-team/appflow-build@v1
+        uses: ionic-team/appflow-build@v1.0.5
         with:
           token: ${{ secrets.APPFLOW_TOKEN }}
           app-id: 9f0851ec
