@@ -40,8 +40,9 @@ export default function BlockedUsers() {
   );
 
   const sortedUsers = users
+    ?.map(getPerson)
     ?.slice()
-    .sort((a, b) => getPerson(a).name.localeCompare(getPerson(b).name));
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   async function remove(user: Person) {
     setLoading(true);
