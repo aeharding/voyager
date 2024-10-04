@@ -35,8 +35,9 @@ export default function BlockedCommunities() {
   );
 
   const sortedCommunities = communities
+    ?.map(getCommunity)
     ?.slice()
-    .sort((a, b) => getCommunity(a).name.localeCompare(getCommunity(b).name));
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   async function remove(community: Community) {
     setLoading(true);
