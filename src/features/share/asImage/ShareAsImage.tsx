@@ -136,10 +136,12 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     setShareAsImagePreferences,
   } = useShareAsImagePreferences();
 
+  const isComment = "comment" in data;
+
   // eslint-disable-next-line no-nested-ternary
   const defaultMinDepth = allParentComments
     ? 0
-    : "comment" in data
+    : isComment
       ? getDepthFromComment(data.comment.comment)
       : 0;
 
@@ -156,7 +158,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   }, [blob]);
 
   const filteredComments = useMemo(() => {
-    if (!("comment" in data)) return [];
+    if (!isComment) return [];
 
     const filtered = data.comments
       .filter(
@@ -171,7 +173,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       );
 
     return filtered;
-  }, [data, minDepth]);
+  }, [data, minDepth, isComment]);
 
   const commentNode = useMemo(
     () =>
@@ -251,8 +253,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   async function onShare() {
     if (!blob) return;
 
-    const apId =
-      "comment" in data ? data.comment.comment.ap_id : data.post.post.ap_id;
+    const apId = isComment ? data.comment.comment.ap_id : data.post.post.ap_id;
 
     const filename = `${apId
       .replace(/^https:\/\//, "")
@@ -312,7 +313,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       )}
 
       <StyledIonList inset lines="full">
-        {"comment" in data && (
+        {isComment && (
           <>
             <IonItem>
               <IonToggle
@@ -326,7 +327,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                 Include Post Details
               </IonToggle>
             </IonItem>
-            {includePostDetails && hasPostBody ? (
+            {(isComment ? includePostDetails : true) && hasPostBody ? (
               <IonItem>
                 <IonToggle
                   checked={includePostContent}
@@ -426,16 +427,16 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           <ShareImageContext.Provider
             value={{ capturing: true, hideUsernames, hideCommunity }}
           >
-            {includePostDetails && (
+            {(isComment ? includePostDetails : true) && (
               <PostHeader
-                className={!("comment" in data) ? hideBottomBorderCss : ""}
+                className={!isComment ? hideBottomBorderCss : ""}
                 post={data.post}
-                showPostText={includePostContent}
+                showPostText={isComment ? includePostContent : true}
                 showPostActions={false}
                 constrainHeight={false}
               />
             )}
-            {"comment" in data && (
+            {isComment && (
               <>
                 {includePostDetails && <PostCommentSpacer />}
                 <CommentTree
