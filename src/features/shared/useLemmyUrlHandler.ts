@@ -124,7 +124,13 @@ export default function useLemmyUrlHandler() {
           object = await dispatch(resolveObject(url.toString()));
         } catch (error) {
           if (
-            isLemmyError(error, "couldnt_find_object" as never) || // TODO lemmy 0.19 and less support
+            // TODO START lemmy 0.19 and less support
+            isLemmyError(error, "couldnt_find_object" as never) ||
+            isLemmyError(error, "couldnt_find_post" as never) ||
+            isLemmyError(error, "couldnt_find_comment" as never) ||
+            isLemmyError(error, "couldnt_find_person" as never) ||
+            isLemmyError(error, "couldnt_find_community" as never) ||
+            // TODO END
             isLemmyError(error, "not_found")
           ) {
             presentToast({
@@ -132,6 +138,7 @@ export default function useLemmyUrlHandler() {
                 url.pathname,
               )} on your instance. Try again to open in browser.`,
               duration: 3500,
+              color: "warning",
             });
           }
 
