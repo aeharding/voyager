@@ -57,8 +57,9 @@ export default function BlockedInstances() {
   );
 
   const sortedInstances = instances
+    ?.map(getInstance)
     ?.slice()
-    .sort((a, b) => getInstance(a).domain.localeCompare(getInstance(b).domain));
+    .sort((a, b) => a.domain.localeCompare(b.domain));
 
   async function remove(instanceBlock: Instance) {
     setLoading(true);
