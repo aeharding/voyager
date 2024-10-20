@@ -58,6 +58,7 @@ jobs:
           destinations: Voyager App Store
           filename: Voyager-iOS-${{ github.ref_name }}
           upload-artifact: Voyager-iOS-${{ github.ref_name }}-Build.zip
+          build-stack: macOS - 2024.10 - Apple silicon
 
   build_android_play:
     runs-on: ubuntu-latest
