@@ -9,7 +9,7 @@ PODS:
     - Capacitor
   - CapacitorBiometricLock (1.0.0):
     - Capacitor
-  - CapacitorBrowser (6.0.2):
+  - CapacitorBrowser (6.0.3):
     - Capacitor
   - CapacitorClearCache (1.0.1):
     - Capacitor
@@ -47,7 +47,7 @@ DEPENDENCIES:
   - "CapacitorApp (from `../../node_modules/.pnpm/@capacitor+app@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/app`)"
   - "CapacitorApplicationContext (from `../../node_modules/.pnpm/capacitor-application-context@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-application-context`)"
   - "CapacitorBiometricLock (from `../../node_modules/.pnpm/capacitor-biometric-lock@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-biometric-lock`)"
-  - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@6.0.2_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.2/node_modules/@capacitor/browser`)"
+  - "CapacitorBrowser (from `../../node_modules/.pnpm/@capacitor+browser@6.0.3_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.2/node_modules/@capacitor/browser`)"
   - "CapacitorClearCache (from `../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.1.2/node_modules/capacitor-clear-cache`)"
   - "CapacitorCommunityAppIcon (from `../../node_modules/.pnpm/@capacitor-community+app-icon@5.0.0_@capacitor+core@6.1.2/node_modules/@capacitor-community/app-icon`)"
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
@@ -78,7 +78,7 @@ EXTERNAL SOURCES:
   CapacitorBiometricLock:
     :path: "../../node_modules/.pnpm/capacitor-biometric-lock@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-biometric-lock"
   CapacitorBrowser:
-    :path: "../../node_modules/.pnpm/@capacitor+browser@6.0.2_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.2/node_modules/@capacitor/browser"
+    :path: "../../node_modules/.pnpm/@capacitor+browser@6.0.3_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.2/node_modules/@capacitor/browser"
   CapacitorClearCache:
     :path: "../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.1.2/node_modules/capacitor-clear-cache"
   CapacitorCommunityAppIcon:
@@ -112,7 +112,7 @@ SPEC CHECKSUMS:
   CapacitorApp: 0bc633b4eae40a1f32cd2834788fad3bc42da6a1
   CapacitorApplicationContext: 2bee68107e6efb8f89b5db102dc95a9cf74c9464
   CapacitorBiometricLock: a91f2e8b28527e0d98032270f9363c4844abf1b9
-  CapacitorBrowser: 83ec661a9ccd56c28a6851e4dd1ac33b181227ec
+  CapacitorBrowser: aab1ed943b01c0365c4810538a8b3477e2d9f72e
   CapacitorClearCache: 66a0b1bd6ed2d130d1c5467d3c001486cc1aa1eb
   CapacitorCommunityAppIcon: 4873c7de4cd50e68a36e08fe93f88f479e7b16a2
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
@@ -128,6 +128,6 @@ SPEC CHECKSUMS:
   CapacitorTips: 2087733aea06ec041b210085395ca934c8554907
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: 5ca86318d997d7fd0fc8bc5b29560c7de0d0c229
+PODFILE CHECKSUM: d6642cc2d1bb1e1c0cbeb8c6b21a091b24db78c6
 
 COCOAPODS: 1.12.1
