@@ -16,6 +16,7 @@ import { isIosTheme } from "../../../../../../helpers/device";
 import { Centered, Spinner } from "../../../../../auth/login/LoginNav";
 import CommentEditorContent from "./CommentEditorContent";
 import { DismissableProps } from "../../../../DynamicDismissableModal";
+import { presentErrorMessage } from "../../../../../../helpers/error";
 
 type CommentEditPageProps = Omit<DismissableProps, "dismiss"> & {
   dismiss: (reply?: CommentView | undefined) => void;
@@ -49,7 +50,7 @@ export default function CommentEditPage({
       comment = await dispatch(editComment(item.id, replyContent));
     } catch (error) {
       presentToast({
-        message: "Problem saving your changes. Please try again.",
+        message: presentErrorMessage("Problem saving your changes", error),
         color: "danger",
         fullscreen: true,
       });
