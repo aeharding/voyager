@@ -9,6 +9,7 @@ import { useLongPress } from "use-long-press";
 import Markdown from "../../shared/markdown/Markdown";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+import useEvent from "../../../helpers/useEvent";
 
 const Container = styled.div<{ first: boolean }>`
   position: relative; /* Setup a relative container for our pseudo elements */
@@ -125,19 +126,7 @@ export default function Message({ message, first }: MessageProps) {
 
   const bind = useLongPress(onMessageLongPress, { cancelOnMovement: 15 });
 
-  useEffect(() => {
-    if (
-      message.private_message.read ||
-      (thisIsMyMessage && !thisIsASelfMessage) ||
-      !focused
-    )
-      return;
-
-    setRead();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [focused, message, thisIsMyMessage]);
-
-  async function setRead() {
+  const setReadEvent = useEvent(async () => {
     if (loading) return;
 
     setLoading(true);
@@ -155,7 +144,18 @@ export default function Message({ message, first }: MessageProps) {
 
     await dispatch(receivedMessages([response.private_message_view]));
     await dispatch(getInboxCounts(true));
-  }
+  });
+
+  useEffect(() => {
+    if (
+      message.private_message.read ||
+      (thisIsMyMessage && !thisIsASelfMessage) ||
+      !focused
+    )
+      return;
+
+    setReadEvent();
+  }, [focused, message, thisIsMyMessage, setReadEvent, thisIsASelfMessage]);
 
   return (
     <Container

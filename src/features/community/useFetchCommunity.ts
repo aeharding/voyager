@@ -14,8 +14,7 @@ export default function useFetchCommunity(communityHandle: string) {
     if (community) return;
 
     dispatch(getCommunity(communityHandle));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [communityHandle]);
+  }, [community, communityHandle, dispatch]);
 
   return community;
 }

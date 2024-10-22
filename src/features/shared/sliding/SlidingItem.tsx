@@ -1,7 +1,13 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonItemSlidingCustomEvent, ItemSlidingCustomEvent } from "@ionic/core";
 import { IonItemOption, IonItemOptions, IonItemSliding } from "@ionic/react";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { bounceAnimation } from "../animations";
 import { useAppSelector } from "../../../store";
@@ -174,12 +180,30 @@ export default function SlidingItem({
     else return activeItemIndex === -2 ? 1 : 0;
   }, [activeItemIndex, startActions]);
 
-  const startActionContents = useMemo(
-    () => <ActionContents action={startActions[currentStartActionIndex]} />,
+  const [startAction, setStartAction] = useState(
+    startActions[currentStartActionIndex],
+  );
 
-    // NOTE: This caches the content so that it doesn't re-render until completely closed
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeItemIndex],
+  const currentStartActionIndexRef = useRef(currentStartActionIndex);
+
+  useEffect(() => {
+    currentStartActionIndexRef.current = currentStartActionIndex;
+  });
+
+  const startActionsRef = useRef(startActions);
+
+  useEffect(() => {
+    startActionsRef.current = startActions;
+  });
+
+  useEffect(() => {
+    setStartAction(startActionsRef.current[currentStartActionIndexRef.current]);
+  }, [activeItemIndex]);
+
+  // NOTE: This caches the content so that it doesn't re-render until completely closed
+  const startActionContents = useMemo(
+    () => <ActionContents action={startAction} />,
+    [startAction],
   );
 
   /*
@@ -192,12 +216,28 @@ export default function SlidingItem({
     else return activeItemIndex === 2 ? 1 : 0;
   }, [endActions, activeItemIndex]);
 
-  const endActionContents = useMemo(
-    () => <ActionContents action={endActions[currentEndActionIndex]} />,
+  const [endAction, setEndAction] = useState(endActions[currentEndActionIndex]);
 
-    // NOTE: This caches the content so that it doesn't re-render until completely closed
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activeItemIndex],
+  const currentEndActionIndexRef = useRef(currentEndActionIndex);
+
+  useEffect(() => {
+    currentEndActionIndexRef.current = currentEndActionIndex;
+  });
+
+  const endActionsRef = useRef(endActions);
+
+  useEffect(() => {
+    endActionsRef.current = endActions;
+  });
+
+  useEffect(() => {
+    setEndAction(endActionsRef.current[currentEndActionIndexRef.current]);
+  }, [activeItemIndex]);
+
+  // NOTE: This caches the content so that it doesn't re-render until completely closed
+  const endActionContents = useMemo(
+    () => <ActionContents action={endAction} />,
+    [endAction],
   );
 
   const onDragStop = useEvent(

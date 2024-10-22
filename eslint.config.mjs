@@ -7,6 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
+import pluginReactCompiler from "eslint-plugin-react-compiler";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +31,7 @@ export default [
     plugins: {
       react: fixupPluginRules(react),
       "@typescript-eslint": fixupPluginRules(typescriptEslint),
+      "react-compiler": pluginReactCompiler,
     },
 
     languageOptions: {
@@ -57,12 +59,16 @@ export default [
     rules: {
       "react/react-in-jsx-scope": "off",
 
+      "react-compiler/react-compiler": "error",
+
       "no-console": [
         "warn",
         {
           allow: ["warn", "error", "info"],
         },
       ],
+
+      "react-compiler/react-compiler": "error",
 
       "linebreak-style": ["warn", "unix"],
       "react/jsx-fragments": ["warn", "syntax"],

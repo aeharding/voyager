@@ -24,6 +24,7 @@ import { FeedSearchContext } from "../../routes/pages/shared/CommunityPage";
 import { useAppSelector } from "../../store";
 import FetchMore from "./endItems/FetchMore";
 import { CenteredSpinner } from "../shared/CenteredSpinner";
+import useEvent from "../../helpers/useEvent";
 
 type PageData =
   | {
@@ -229,10 +230,11 @@ export default function Feed<I>({
 
   useSetActivePage(virtuaHandle);
 
+  const fetchMoreEvent = useEvent(fetchMore);
+
   useEffect(() => {
-    fetchMore(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchFn]);
+    fetchMoreEvent(true);
+  }, [fetchFn, fetchMoreEvent]);
 
   const footer = (() => {
     if (loadFailed)
