@@ -14,6 +14,7 @@ import {
   SetStateAction,
   forwardRef,
   useEffect,
+  useMemo,
   useRef,
 } from "react";
 import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
@@ -200,7 +201,8 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
       <Container keyboardOpen={keyboardOpen}>
         <Textarea
           {...preventModalSwipeOnTextSelection}
-          ref={mergeRefs([textareaRef, ref])}
+          // eslint-disable-next-line react-compiler/react-compiler
+          ref={useMemo(() => mergeRefs([textareaRef, ref]), [textareaRef, ref])}
           value={text}
           onChange={(e) => setText(e.target.value)}
           autoFocus

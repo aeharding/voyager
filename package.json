@@ -142,6 +142,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react-compiler": "19.0.0-beta-8a03594-20241020",
     "eslint-plugin-react-hooks": "^5.0.0",
     "globals": "^15.11.0",
     "jsdom": "^25.0.1",

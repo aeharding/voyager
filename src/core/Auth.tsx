@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { updateConnectedInstance } from "../features/auth/authSlice";
 import { useLocation } from "react-router";
@@ -9,6 +9,7 @@ import { getDefaultServer } from "../services/app";
 import BackgroundReportSync from "../features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "../features/auth/siteSlice";
 import { instanceSelector, jwtSelector } from "../features/auth/authSelectors";
+import useEvent from "../helpers/useEvent";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -54,9 +55,11 @@ function AuthLocation() {
       !!isAdminSelector(state),
   );
 
-  const shouldSyncMessages = useCallback(() => {
+  const shouldSyncMessages = () => {
     return jwt && location.pathname.startsWith("/inbox/messages");
-  }, [jwt, location]);
+  };
+
+  const shouldSyncMessagesEvent = useEvent(shouldSyncMessages);
 
   useEffect(() => {
     if (connectedInstance) return;
@@ -76,13 +79,13 @@ function AuthLocation() {
     } else {
       dispatch(updateConnectedInstance(getDefaultServer()));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
+    // TODO is this right???
+  }, [connectedInstance, dispatch, location.pathname, selectedInstance]);
 
   useInterval(
     () => {
       if (!pageVisibility) return;
-      if (!shouldSyncMessages()) return;
+      if (!shouldSyncMessagesEvent()) return;
 
       dispatch(syncMessages());
     },
@@ -104,11 +107,10 @@ function AuthLocation() {
 
   useEffect(() => {
     if (!pageVisibility) return;
-    if (!shouldSyncMessages()) return;
+    if (!shouldSyncMessagesEvent()) return;
 
     dispatch(syncMessages());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageVisibility]);
+  }, [dispatch, pageVisibility, shouldSyncMessagesEvent]);
 
   return <>{hasModdedSubs && <BackgroundReportSync />}</>;
 }

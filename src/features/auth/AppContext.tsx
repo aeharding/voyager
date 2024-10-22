@@ -47,10 +47,10 @@ export function useSetActivePage(page?: Page, enabled = true) {
 
   useEffect(() => {
     if (!enabled) return;
+    if (activePageRef?.current === page) return;
 
     if (page) setActivePage(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activePageRef, enabled, page, setActivePage]);
 
   useIonViewDidEnter(() => {
     if (!enabled) return;
@@ -79,6 +79,5 @@ export function useSetActivePage(page?: Page, enabled = true) {
     if (!current) {
       setActivePage(page);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [activePageRef, enabled, page, setActivePage]);
 }

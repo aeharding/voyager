@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import {
   IonBackButton,
   IonButton,
@@ -24,12 +24,14 @@ export default function Joined({ verifyEmailSent }: JoinedProps) {
   const vibrate = useHapticFeedback();
   const { setCanDismiss } = useContext(DynamicDismissableModalContext);
   const { url, site } = useAppSelector((state) => state.join);
+  const vibratedRef = useRef(false);
 
   useEffect(() => {
+    if (vibratedRef.current) return;
+    vibratedRef.current = true;
     vibrate({ type: NotificationType.Success });
     setCanDismiss(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setCanDismiss, vibrate]);
 
   return (
     <>

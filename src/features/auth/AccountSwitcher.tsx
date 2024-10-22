@@ -86,8 +86,7 @@ function AccountSwitcherContents({
     if (accounts?.length) return;
 
     onDismiss();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accounts]);
+  }, [accounts, onDismiss]);
 
   const accountEls = accounts?.map((account) => (
     <Account

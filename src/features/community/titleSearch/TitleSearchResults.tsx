@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
 import { useDebounceValue } from "usehooks-ts";
 import useClient from "../../../helpers/useClient";
@@ -18,6 +11,7 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import useShowModeratorFeed from "../list/useShowModeratorFeed";
 import { styled } from "@linaria/react";
+import useEvent from "../../../helpers/useEvent";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -159,33 +153,20 @@ export default function TitleSearchResults() {
     ).slice(0, 15);
   }, [follows, searchPayload, search, favorites, showModeratorFeed, moderates]);
 
-  useEffect(() => {
-    if (!debouncedSearch) {
-      setSearchPayload([]);
-      return;
+  const onSelect = useEvent((c: Result) => {
+    let route;
+
+    if (typeof c === "string") {
+      // favorite
+      route = buildGeneralBrowseLink(`/c/${c}`);
+    } else if ("type" in c) {
+      route = buildGeneralBrowseLink(`/${c.type}`);
+    } else {
+      route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
     }
 
-    asyncSearch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch]);
-
-  const onSelect = useCallback(
-    (c: Result) => {
-      let route;
-
-      if (typeof c === "string") {
-        // favorite
-        route = buildGeneralBrowseLink(`/c/${c}`);
-      } else if ("type" in c) {
-        route = buildGeneralBrowseLink(`/${c.type}`);
-      } else {
-        route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
-      }
-
-      router.push(route, "none", "replace");
-    },
-    [buildGeneralBrowseLink, router],
-  );
+    router.push(route, "none", "replace");
+  });
 
   useEffect(() => {
     setOnSubmit(() => {
@@ -194,8 +175,7 @@ export default function TitleSearchResults() {
       onSelect(results[0]!);
       setSearching(false);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [results, setSearching]);
+  }, [results, setSearching, setOnSubmit, onSelect]);
 
   useEffect(() => {
     if (!searching) {
@@ -231,7 +211,7 @@ export default function TitleSearchResults() {
     };
   }, []);
 
-  async function asyncSearch() {
+  const asyncSearch = useEvent(async () => {
     const result = await client.search({
       q: debouncedSearch,
       limit: 20,
@@ -241,7 +221,16 @@ export default function TitleSearchResults() {
     });
 
     setSearchPayload(result.communities);
-  }
+  });
+
+  useEffect(() => {
+    if (!debouncedSearch) {
+      setSearchPayload([]);
+      return;
+    }
+
+    asyncSearch();
+  }, [debouncedSearch, asyncSearch]);
 
   function renderTitle(result: Result) {
     if (typeof result === "string") return result;

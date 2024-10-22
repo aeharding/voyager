@@ -13,6 +13,7 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { isLemmyError } from "../../helpers/lemmyErrors";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { styled } from "@linaria/react";
+import useEvent from "../../helpers/useEvent";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
@@ -40,12 +41,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
   const router = useOptimizedIonRouter();
   const [present] = useIonAlert();
 
-  useEffect(() => {
-    if (handle) load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handle]);
-
-  async function load() {
+  const load = useEvent(async () => {
     let data;
 
     try {
@@ -72,7 +68,11 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     }
 
     setPerson(data);
-  }
+  });
+
+  useEffect(() => {
+    if (handle) load();
+  }, [handle, load]);
 
   if (!person) return <PageContentIonSpinner />;
 

@@ -21,6 +21,7 @@ import {
 import { cx } from "@linaria/core";
 import { isTouchDevice } from "../../../helpers/device";
 import { usePostAppearance } from "../appearance/PostAppearanceProvider";
+import useEvent from "../../../helpers/useEvent";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -53,7 +54,7 @@ function Post(props: PostProps) {
 
   const targetIntersectionRef = useRef<HTMLIonItemElement>(null);
 
-  const onFinishHide = useCallback(() => {
+  const onFinishHide = useEvent(() => {
     hideCompleteRef.current = true;
 
     const isHidden =
@@ -64,7 +65,7 @@ function Post(props: PostProps) {
     } else {
       dispatch(hidePost(props.post.post.id));
     }
-  }, [dispatch, props.post.post.id]);
+  });
 
   useEffect(() => {
     // Refs must be used during cleanup useEffect
@@ -78,8 +79,7 @@ function Post(props: PostProps) {
 
       onFinishHide();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onFinishHide]);
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 

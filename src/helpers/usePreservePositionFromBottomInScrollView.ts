@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { MutableRefObject } from "react";
 import { getScrollParent } from "./dom";
 import { useMemo } from "react";
+import useEvent from "./useEvent";
 
 /**
  * Sometimes we want to preserve the scroll position
@@ -62,7 +63,7 @@ export default function usePreservePositionFromBottomInScrollView(
   /**
    * Call before scroll position will change
    */
-  function save() {
+  const save = useEvent(() => {
     if (!enabled) return;
 
     if (!elRef.current) return;
@@ -72,14 +73,14 @@ export default function usePreservePositionFromBottomInScrollView(
     saveTopOffsetRef.current = saveScrollPositionFromBottom(scrollView);
 
     _listen();
-  }
+  });
 
   /**
    * Call in react useEffect after value change that will affect the DOM
    *
    * Note: restore can be called multiple times.
    */
-  function restore() {
+  const restore = useEvent(() => {
     if (!enabled) return;
 
     const previousTopOffset = saveTopOffsetRef.current;
@@ -91,15 +92,14 @@ export default function usePreservePositionFromBottomInScrollView(
     requestAnimationFrame(() => {
       restoreScrollPositionFromBottom(scrollView, previousTopOffset);
     });
-  }
+  });
 
   return useMemo(
     () => ({
       save,
       restore,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [restore, save],
   );
 }
 

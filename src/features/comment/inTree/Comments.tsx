@@ -36,6 +36,7 @@ import FeedLoadMoreFailed from "../../feed/endItems/FeedLoadMoreFailed";
 import usePreservePositionFromBottomInScrollView from "../../../helpers/usePreservePositionFromBottomInScrollView";
 import { postDetailPageHasVirtualScrollEnabled } from "../../../routes/pages/posts/PostPage";
 import { styled } from "@linaria/react";
+import useEvent from "../../../helpers/useEvent";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
@@ -237,11 +238,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       : [];
   }, [commentPath, filteredComments, threadCommentId]);
 
-  useEffect(() => {
-    fetchComments(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, commentPath, postId, client, threadCommentId]);
-
   const fetchComments = useCallback(
     async (refresh = false) => {
       if (refresh) {
@@ -326,6 +322,12 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       sort,
     ],
   );
+
+  const fetchCommentsEvent = useEvent(fetchComments);
+
+  useEffect(() => {
+    fetchCommentsEvent(true);
+  }, [sort, commentPath, postId, client, threadCommentId, fetchCommentsEvent]);
 
   const prependComments = useCallback(
     async (comments: CommentView[]) => {

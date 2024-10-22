@@ -12,6 +12,7 @@ import type Player from "./Player";
 import { useIonViewWillEnter } from "@ionic/react";
 import PortaledPlayer from "./PortaledPlayer";
 import { uniqueId } from "lodash";
+import useEvent from "../../../helpers/useEvent";
 
 interface VideoPortalProviderProps {
   children: React.ReactNode;
@@ -137,24 +138,23 @@ export function useVideoPortalNode(src: string): PortalNode | void {
   // Sometimes useIonViewWillEnter fires after element is already destroyed
   const destroyed = useRef(false);
 
-  function getPortalNode() {
+  const getPortalNode = useEvent(() => {
     if (destroyed.current) return;
 
     getPortalNodeForSrc(src, sourceUidRef.current);
-  }
+  });
 
-  function cleanupPortalNodeIfNeeded() {
+  const cleanupPortalNodeIfNeeded = useEvent(() => {
     destroyed.current = true;
     cleanupPortalNodeForSrcIfNeeded(src, sourceUidRef.current);
-  }
+  });
 
   useEffect(() => {
     destroyed.current = false;
     getPortalNode();
 
     return cleanupPortalNodeIfNeeded;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cleanupPortalNodeIfNeeded, getPortalNode]);
 
   useIonViewWillEnter(() => {
     getPortalNode();
