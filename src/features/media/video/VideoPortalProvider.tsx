@@ -6,13 +6,13 @@ import {
   useMemo,
   useRef,
   useState,
+  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import * as portals from "react-reverse-portal";
 import type Player from "./Player";
 import { useIonViewWillEnter } from "@ionic/react";
 import PortaledPlayer from "./PortaledPlayer";
 import { uniqueId } from "lodash";
-import useEvent from "../../../helpers/useEvent";
 
 interface VideoPortalProviderProps {
   children: React.ReactNode;
@@ -138,26 +138,28 @@ export function useVideoPortalNode(src: string): PortalNode | void {
   // Sometimes useIonViewWillEnter fires after element is already destroyed
   const destroyed = useRef(false);
 
-  const getPortalNode = useEvent(() => {
+  // eslint-disable-next-line react-compiler/react-compiler
+  const getPortalNodeEvent = useEffectEvent(() => {
     if (destroyed.current) return;
 
     getPortalNodeForSrc(src, sourceUidRef.current);
   });
 
-  const cleanupPortalNodeIfNeeded = useEvent(() => {
+  // eslint-disable-next-line react-compiler/react-compiler
+  const cleanupPortalNodeIfNeededEvent = useEffectEvent(() => {
     destroyed.current = true;
     cleanupPortalNodeForSrcIfNeeded(src, sourceUidRef.current);
   });
 
   useEffect(() => {
     destroyed.current = false;
-    getPortalNode();
+    getPortalNodeEvent();
 
-    return cleanupPortalNodeIfNeeded;
-  }, [cleanupPortalNodeIfNeeded, getPortalNode]);
+    return cleanupPortalNodeIfNeededEvent;
+  }, []);
 
   useIonViewWillEnter(() => {
-    getPortalNode();
+    getPortalNodeEvent();
   });
 
   const potentialVideoRef = videoRefs[src];

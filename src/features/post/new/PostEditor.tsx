@@ -1,7 +1,7 @@
+import { useState } from "react";
 import { IonNav } from "@ionic/react";
 import { CommunityView, PostView } from "lemmy-js-client";
 import PostEditorRoot from "./PostEditorRoot";
-import useEvent from "../../../helpers/useEvent";
 
 export type PostEditorProps = {
   setCanDismiss: (canDismiss: boolean) => void;
@@ -16,7 +16,12 @@ export type PostEditorProps = {
 );
 
 export default function PostEditor(props: PostEditorProps) {
-  const root = useEvent(() => <PostEditorRoot {...props} />);
+  const [root] = useState(
+    () =>
+      function render() {
+        return <PostEditorRoot {...props} />;
+      },
+  );
 
   return <IonNav root={root} />;
 }

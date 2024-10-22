@@ -4,7 +4,12 @@ import {
   IonSpinner,
   useIonAlert,
 } from "@ionic/react";
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import Profile from "../../features/user/Profile";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import { useAppDispatch } from "../../store";
@@ -13,7 +18,6 @@ import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { isLemmyError } from "../../helpers/lemmyErrors";
 import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { styled } from "@linaria/react";
-import useEvent from "../../helpers/useEvent";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;
@@ -41,7 +45,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
   const router = useOptimizedIonRouter();
   const [present] = useIonAlert();
 
-  const load = useEvent(async () => {
+  const load = useCallback(async () => {
     let data;
 
     try {
@@ -68,11 +72,13 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     }
 
     setPerson(data);
-  });
+  }, [buildGeneralBrowseLink, dispatch, handle, present, router]);
+
+  const loadEvent = useEffectEvent(load);
 
   useEffect(() => {
-    if (handle) load();
-  }, [handle, load]);
+    if (handle) loadEvent();
+  }, [handle]);
 
   if (!person) return <PageContentIonSpinner />;
 
@@ -95,5 +101,5 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
       </>
     );
 
-  return <Profile person={person} />;
+  return <Profile person={person} onPull={load} />;
 }

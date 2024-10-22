@@ -1,4 +1,11 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
 import { useDebounceValue } from "usehooks-ts";
 import useClient from "../../../helpers/useClient";
@@ -11,7 +18,6 @@ import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import useShowModeratorFeed from "../list/useShowModeratorFeed";
 import { styled } from "@linaria/react";
-import useEvent from "../../../helpers/useEvent";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -93,6 +99,7 @@ type SpecialFeed = (typeof SPECIAL_FEEDS)[number];
 type Result = Community | SpecialFeed | string;
 
 export default function TitleSearchResults() {
+  "use no memo";
   const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
@@ -153,7 +160,7 @@ export default function TitleSearchResults() {
     ).slice(0, 15);
   }, [follows, searchPayload, search, favorites, showModeratorFeed, moderates]);
 
-  const onSelect = useEvent((c: Result) => {
+  const onSelect = (c: Result) => {
     let route;
 
     if (typeof c === "string") {
@@ -166,16 +173,18 @@ export default function TitleSearchResults() {
     }
 
     router.push(route, "none", "replace");
-  });
+  };
+
+  const onSelectEvent = useEffectEvent(onSelect);
 
   useEffect(() => {
     setOnSubmit(() => {
       if (!results.length) return;
 
-      onSelect(results[0]!);
+      onSelectEvent(results[0]!);
       setSearching(false);
     });
-  }, [results, setSearching, setOnSubmit, onSelect]);
+  }, [results, setSearching, setOnSubmit]);
 
   useEffect(() => {
     if (!searching) {
@@ -211,7 +220,7 @@ export default function TitleSearchResults() {
     };
   }, []);
 
-  const asyncSearch = useEvent(async () => {
+  const asyncSearchEvent = useEffectEvent(async () => {
     const result = await client.search({
       q: debouncedSearch,
       limit: 20,
@@ -229,8 +238,8 @@ export default function TitleSearchResults() {
       return;
     }
 
-    asyncSearch();
-  }, [debouncedSearch, asyncSearch]);
+    asyncSearchEvent();
+  }, [debouncedSearch]);
 
   function renderTitle(result: Result) {
     if (typeof result === "string") return result;

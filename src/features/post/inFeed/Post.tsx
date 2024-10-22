@@ -7,7 +7,14 @@ import SlidingVote from "../../shared/sliding/SlidingPostVote";
 import { IonItem } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import { hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
@@ -21,7 +28,6 @@ import {
 import { cx } from "@linaria/core";
 import { isTouchDevice } from "../../../helpers/device";
 import { usePostAppearance } from "../appearance/PostAppearanceProvider";
-import useEvent from "../../../helpers/useEvent";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -54,7 +60,7 @@ function Post(props: PostProps) {
 
   const targetIntersectionRef = useRef<HTMLIonItemElement>(null);
 
-  const onFinishHide = useEvent(() => {
+  const onFinishHide = () => {
     hideCompleteRef.current = true;
 
     const isHidden =
@@ -65,21 +71,24 @@ function Post(props: PostProps) {
     } else {
       dispatch(hidePost(props.post.post.id));
     }
-  });
+  };
 
-  useEffect(() => {
-    // Refs must be used during cleanup useEffect
-    shouldHideRef.current = shouldHide;
-  }, [shouldHide]);
+  // eslint-disable-next-line react-compiler/react-compiler
+  const onFinishHideEvent = useEffectEvent(onFinishHide);
 
   useEffect(() => {
     return () => {
       if (!shouldHideRef.current) return;
       if (hideCompleteRef.current) return;
 
-      onFinishHide();
+      onFinishHideEvent();
     };
-  }, [onFinishHide]);
+  }, []);
+
+  useEffect(() => {
+    // Refs must be used during cleanup useEffect
+    shouldHideRef.current = shouldHide;
+  }, [shouldHide]);
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 

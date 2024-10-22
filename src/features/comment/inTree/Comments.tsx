@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import {
   buildCommentsTreeWithMissing,
@@ -36,7 +37,6 @@ import FeedLoadMoreFailed from "../../feed/endItems/FeedLoadMoreFailed";
 import usePreservePositionFromBottomInScrollView from "../../../helpers/usePreservePositionFromBottomInScrollView";
 import { postDetailPageHasVirtualScrollEnabled } from "../../../routes/pages/posts/PostPage";
 import { styled } from "@linaria/react";
-import useEvent from "../../../helpers/useEvent";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
@@ -323,11 +323,11 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
     ],
   );
 
-  const fetchCommentsEvent = useEvent(fetchComments);
+  const fetchCommentsEvent = useEffectEvent(fetchComments);
 
   useEffect(() => {
     fetchCommentsEvent(true);
-  }, [sort, commentPath, postId, client, threadCommentId, fetchCommentsEvent]);
+  }, [sort, commentPath, postId, client, threadCommentId]);
 
   const prependComments = useCallback(
     async (comments: CommentView[]) => {

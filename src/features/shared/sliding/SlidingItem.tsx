@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import useHapticFeedback from "../../../helpers/useHapticFeedback";
 import { bounceAnimation } from "../animations";
@@ -15,7 +16,6 @@ import { OLongSwipeTriggerPointType } from "../../../services/db";
 import ActionContents from "./ActionContents";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import useEvent from "../../../helpers/useEvent";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   overflow: initial; // sticky
@@ -240,7 +240,8 @@ export default function SlidingItem({
     [endAction],
   );
 
-  const onDragStop = useEvent(
+  const onDragStopEvent = useEffectEvent(
+    // eslint-disable-next-line react-compiler/react-compiler
     useCallback(
       async (e: TouchEvent | MouseEvent) => {
         if (!dragRef.current) return;
@@ -270,7 +271,7 @@ export default function SlidingItem({
 
     const onStop = (e: MouseEvent | TouchEvent) => {
       cleanup();
-      onDragStop(e);
+      onDragStopEvent(e);
     };
 
     const cleanup = () => {
@@ -278,11 +279,11 @@ export default function SlidingItem({
       document.removeEventListener("touchend", onStop);
     };
 
-    document.addEventListener("mouseup", onDragStop);
-    document.addEventListener("touchend", onDragStop);
+    document.addEventListener("mouseup", onDragStopEvent);
+    document.addEventListener("touchend", onDragStopEvent);
 
     return cleanup;
-  }, [onDragStop]);
+  }, []);
 
   const startItems = useMemo(() => {
     if (!canSwipeStart) return;
