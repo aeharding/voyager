@@ -1,6 +1,6 @@
 import { IonActionSheet, IonAlert } from "@ionic/react";
 import { CommentView, PostView, PrivateMessageView } from "lemmy-js-client";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import useClient from "../../helpers/useClient";
 import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 import useAppToast from "../../helpers/useAppToast";
@@ -12,7 +12,11 @@ export type ReportHandle = {
   present: (item: ReportableItem) => void;
 };
 
-export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
+export default function Report({
+  ref,
+}: {
+  ref: React.RefObject<ReportHandle>;
+}) {
   const presentToast = useAppToast();
   const [item, setItem] = useState<ReportableItem | undefined>();
   const [reportOptionsOpen, setReportOptionsOpen] = useState(false);
@@ -141,4 +145,4 @@ export const Report = forwardRef<ReportHandle>(function Report(_, ref) {
       />
     </>
   );
-});
+}

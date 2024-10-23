@@ -7,12 +7,7 @@ import {
   textOutline,
 } from "ionicons/icons";
 import { ActionSheetButton, IonIcon, useIonActionSheet } from "@ionic/react";
-import {
-  forwardRef,
-  useCallback,
-  useContext,
-  useImperativeHandle,
-} from "react";
+import { useCallback, useContext, useImperativeHandle } from "react";
 import { PageContext } from "../auth/PageContext";
 import useAppNavigation from "../../helpers/useAppNavigation";
 import { useUserDetails } from "../user/useUserDetails";
@@ -33,12 +28,15 @@ interface PrivateMessageMoreActionsHandle {
 interface PrivateMessageMoreActionsProps {
   item: PrivateMessageView;
   markReadAction: ActionSheetButton;
+
+  ref: React.RefObject<PrivateMessageMoreActionsHandle>;
 }
 
-export default forwardRef<
-  PrivateMessageMoreActionsHandle,
-  PrivateMessageMoreActionsProps
->(function PrivateMessageMoreActions({ item, markReadAction }, ref) {
+export default function PrivateMessageMoreActions({
+  item,
+  markReadAction,
+  ref,
+}: PrivateMessageMoreActionsProps) {
   const dispatch = useAppDispatch();
   const [presentActionSheet] = useIonActionSheet();
   const { presentReport, presentSelectText, presentPrivateMessageCompose } =
@@ -138,4 +136,4 @@ export default forwardRef<
       }}
     />
   );
-});
+}

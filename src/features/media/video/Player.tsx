@@ -2,8 +2,6 @@ import { styled } from "@linaria/react";
 import {
   CSSProperties,
   ChangeEvent,
-  forwardRef,
-  memo,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -111,20 +109,20 @@ export interface PlayerProps {
   className?: string;
   style?: CSSProperties;
   alt?: string;
+
+  ref?: React.RefObject<HTMLVideoElement>;
 }
 
-const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
-  {
-    src: potentialSrc,
-    nativeControls,
-    className,
-    progress: showProgress = !nativeControls,
-    volume = true,
-    autoPlay: videoAllowedToAutoplay = true,
-    ...rest
-  },
-  forwardedRef,
-) {
+export default function Player({
+  src: potentialSrc,
+  nativeControls,
+  className,
+  progress: showProgress = !nativeControls,
+  volume = true,
+  autoPlay: videoAllowedToAutoplay = true,
+  ref,
+  ...rest
+}: PlayerProps) {
   const videoRef = useRef<HTMLVideoElement>();
 
   const [muted, setMuted] = useState(true);
@@ -138,11 +136,7 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
 
   const src = useMemo(() => getVideoSrcForUrl(potentialSrc), [potentialSrc]);
 
-  useImperativeHandle(
-    forwardedRef,
-    () => videoRef.current as HTMLVideoElement,
-    [],
-  );
+  useImperativeHandle(ref, () => videoRef.current as HTMLVideoElement, []);
 
   const [inViewRef, inView] = useInView({
     threshold: 0.5,
@@ -264,6 +258,4 @@ const Player = forwardRef<HTMLVideoElement, PlayerProps>(function Player(
       )}
     </Container>
   );
-});
-
-export default memo(Player);
+}

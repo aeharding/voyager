@@ -1,5 +1,4 @@
 import React, {
-  forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -83,12 +82,19 @@ interface CommentsProps {
   threadCommentId?: string;
   sort: CommentSortType;
   bottomPadding?: number;
+
+  ref: React.RefObject<CommentsHandle>;
 }
 
-export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
-  { header, postId, commentPath, sort, bottomPadding, threadCommentId },
+export default function Comments({
+  header,
+  postId,
+  commentPath,
+  sort,
+  bottomPadding,
+  threadCommentId,
   ref,
-) {
+}: CommentsProps) {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
   const [loading, _setLoading] = useState(true);
@@ -504,6 +510,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
             }
             ref={virtuaRef}
             style={{ height: "100%" }}
+            // @ts-expect-error Virtua types not updated for forwardRef-less components
             item={IndexedVirtuaItem}
             overscan={1}
             onRangeChange={(start, end) => {
@@ -523,7 +530,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       </ScrollViewContainer>
     </CommentsContext.Provider>
   );
-});
+}
 
 function getCommentContextDepthForPath(
   commentPath: string | undefined,

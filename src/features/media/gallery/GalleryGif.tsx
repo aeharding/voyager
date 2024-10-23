@@ -1,11 +1,16 @@
-import { forwardRef, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { mergeRefs } from "react-merge-refs";
 import { GalleryMediaProps } from "./GalleryMedia";
 
-export default forwardRef<
-  HTMLCanvasElement | HTMLImageElement,
-  GalleryMediaProps
->(function GalleryGif({ onClick, ...props }, ref) {
+interface GalleryGifProps extends GalleryMediaProps {
+  ref?: React.Ref<HTMLCanvasElement>;
+}
+
+export default function GalleryGif({
+  onClick,
+  ref,
+  ...props
+}: GalleryGifProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const syntheticImgRef = useRef<HTMLImageElement>();
 
@@ -53,4 +58,4 @@ export default forwardRef<
       aria-label={props.alt}
     />
   );
-});
+}

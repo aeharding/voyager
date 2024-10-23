@@ -18,7 +18,7 @@ import {
   PostView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import { Report, ReportHandle, ReportableItem } from "../report/Report";
+import Report, { ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
 import SelectTextModal from "../shared/SelectTextModal";
 import ShareAsImageModal, {

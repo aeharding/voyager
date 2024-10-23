@@ -1,8 +1,7 @@
 import {
+  ComponentProps,
   HTMLProps,
   MouseEvent,
-  Ref,
-  forwardRef,
   useCallback,
   useContext,
   useMemo,
@@ -24,15 +23,16 @@ export interface GalleryMediaProps
   post?: PostView;
   animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"];
   onClick?: (e: MouseEvent) => boolean | void;
+
+  ref?: React.Ref<HTMLImageElement> | React.Ref<HTMLCanvasElement>;
 }
 
-export default forwardRef<
-  HTMLImageElement | HTMLCanvasElement,
-  GalleryMediaProps
->(function GalleryMedia(
-  { post, animationType, onClick: _onClick, ...props },
-  ref,
-) {
+export default function GalleryMedia({
+  post,
+  animationType,
+  onClick: _onClick,
+  ...props
+}: GalleryMediaProps) {
   const isGif = useMemo(
     () => props.src && isUrlPotentialAnimatedImage(props.src),
     [props.src],
@@ -71,14 +71,20 @@ export default forwardRef<
   );
 
   if (isGif && !shouldAutoplay) {
-    return <GalleryGif {...props} ref={ref} onClick={onClick} />;
+    return (
+      <GalleryGif
+        {...props}
+        ref={props.ref as ComponentProps<typeof GalleryGif>["ref"]}
+        onClick={onClick}
+      />
+    );
   }
 
   return (
     <GalleryImg
       {...props}
-      ref={ref as Ref<HTMLImageElement>}
+      ref={props.ref as React.RefObject<HTMLImageElement>}
       onClick={onClick}
     />
   );
-});
+}
