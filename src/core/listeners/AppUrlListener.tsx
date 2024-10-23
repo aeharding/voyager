@@ -1,7 +1,10 @@
 import { App } from "@capacitor/app";
-import { useEffect, useRef } from "react";
+import {
+  useEffect,
+  useRef,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import useLemmyUrlHandler from "../../features/shared/useLemmyUrlHandler";
-import useEvent from "../../helpers/useEvent";
 import { useAppSelector } from "../../store";
 import useAppToast from "../../helpers/useAppToast";
 import { deepLinkFailed } from "../../helpers/toastMessages";
@@ -26,7 +29,7 @@ export default function AppUrlListener() {
     !connectedInstance ||
     !deepLinkReady;
 
-  const onAppUrl = useEvent(async (url: string) => {
+  const onAppUrl = async (url: string) => {
     if (notReady) {
       appUrlToOpen.current = url;
       return;
@@ -37,21 +40,24 @@ export default function AppUrlListener() {
     const resolved = await redirectToLemmyObjectIfNeeded(url);
 
     if (!resolved) presentToast(deepLinkFailed);
-  });
+  };
+
+  // eslint-disable-next-line react-compiler/react-compiler
+  const onAppUrlEvent = useEffectEvent(onAppUrl);
 
   useEffect(() => {
     App.addListener("appUrlOpen", (event) => {
-      onAppUrl(normalizeObjectUrl(event.url));
+      onAppUrlEvent(normalizeObjectUrl(event.url));
     });
-  }, [onAppUrl]);
+  }, []);
 
   useEffect(() => {
     if (notReady) return;
     if (!appUrlToOpen.current) return;
 
-    onAppUrl(appUrlToOpen.current);
+    onAppUrlEvent(appUrlToOpen.current);
     appUrlToOpen.current = undefined;
-  }, [notReady, onAppUrl]);
+  }, [notReady]);
 
   return null;
 }

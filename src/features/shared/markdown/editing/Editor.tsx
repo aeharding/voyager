@@ -12,8 +12,8 @@ import {
   DragEvent,
   KeyboardEvent,
   SetStateAction,
-  forwardRef,
   useEffect,
+  useMemo,
   useRef,
 } from "react";
 import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
@@ -65,12 +65,19 @@ export interface EditorProps {
   onDismiss?: () => void;
 
   children?: React.ReactNode;
+
+  ref?: React.RefObject<HTMLTextAreaElement>;
 }
 
-export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
-  { text, setText, children, onSubmit, onDismiss, canRecoverText = true },
+export default function Editor({
+  text,
+  setText,
+  children,
+  onSubmit,
+  onDismiss,
+  canRecoverText = true,
   ref,
-) {
+}: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -200,7 +207,8 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
       <Container keyboardOpen={keyboardOpen}>
         <Textarea
           {...preventModalSwipeOnTextSelection}
-          ref={mergeRefs([textareaRef, ref])}
+          // eslint-disable-next-line react-compiler/react-compiler
+          ref={useMemo(() => mergeRefs([textareaRef, ref]), [textareaRef, ref])}
           value={text}
           onChange={(e) => setText(e.target.value)}
           autoFocus
@@ -238,4 +246,4 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
       />
     </>
   );
-});
+}

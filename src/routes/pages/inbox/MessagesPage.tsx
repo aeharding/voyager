@@ -10,7 +10,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { jwtPayloadSelector } from "../../../features/auth/authSelectors";
 import ConversationItem from "../../../features/inbox/messages/ConversationItem";
@@ -41,19 +41,18 @@ export default function MessagesPage() {
 
   useSetActivePage(pageRef);
 
-  useEffect(() => {
-    fetchItems();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, jwtPayload]);
-
-  async function fetchItems() {
+  const fetchItems = useCallback(async () => {
     setLoading(true);
     try {
       await dispatch(syncMessages());
     } finally {
       setLoading(false);
     }
-  }
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchItems();
+  }, [dispatch, jwtPayload, fetchItems]);
 
   const content = (() => {
     if (!messages.length && loading) return <CenteredSpinner />;

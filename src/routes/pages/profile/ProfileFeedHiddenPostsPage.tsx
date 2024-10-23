@@ -11,7 +11,7 @@ import {
 import { useParams } from "react-router";
 import useClient from "../../../helpers/useClient";
 import { FetchFn } from "../../../features/feed/Feed";
-import { useAppSelector } from "../../../store";
+import store, { useAppSelector } from "../../../store";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import PostCommentFeed, {
   PostCommentItem,
@@ -37,7 +37,6 @@ export default function ProfileFeedHiddenPostsPage() {
   const handle = useAppSelector(userHandleSelector);
   const { handle: handleWithoutServer } = useParams<{ handle: string }>();
   const client = useClient();
-  const postById = useAppSelector((state) => state.post.postById);
 
   // This is just used to trigger a re-render when the list changes
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
@@ -49,6 +48,10 @@ export default function ProfileFeedHiddenPostsPage() {
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (pageData) => {
+      // Trigger rerender when this changes
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      postHiddenById;
+
       if (!handle) return [];
       if (!("page" in pageData)) return [];
       const { page } = pageData;
@@ -74,7 +77,7 @@ export default function ProfileFeedHiddenPostsPage() {
 
       const result = await Promise.all(
         postIds.map((postId) => {
-          const potentialPost = postById[postId];
+          const potentialPost = store.getState().post.postById[postId];
           if (typeof potentialPost === "object") return potentialPost;
 
           return client.getPost({ id: postId });
@@ -85,7 +88,6 @@ export default function ProfileFeedHiddenPostsPage() {
         "post_view" in post ? post.post_view : post,
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [client, handle, postHiddenById],
   );
 

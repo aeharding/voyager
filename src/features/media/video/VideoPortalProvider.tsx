@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import * as portals from "react-reverse-portal";
 import type Player from "./Player";
@@ -137,27 +138,28 @@ export function useVideoPortalNode(src: string): PortalNode | void {
   // Sometimes useIonViewWillEnter fires after element is already destroyed
   const destroyed = useRef(false);
 
-  function getPortalNode() {
+  // eslint-disable-next-line react-compiler/react-compiler
+  const getPortalNodeEvent = useEffectEvent(() => {
     if (destroyed.current) return;
 
     getPortalNodeForSrc(src, sourceUidRef.current);
-  }
+  });
 
-  function cleanupPortalNodeIfNeeded() {
+  // eslint-disable-next-line react-compiler/react-compiler
+  const cleanupPortalNodeIfNeededEvent = useEffectEvent(() => {
     destroyed.current = true;
     cleanupPortalNodeForSrcIfNeeded(src, sourceUidRef.current);
-  }
+  });
 
   useEffect(() => {
     destroyed.current = false;
-    getPortalNode();
+    getPortalNodeEvent();
 
-    return cleanupPortalNodeIfNeeded;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return cleanupPortalNodeIfNeededEvent;
   }, []);
 
   useIonViewWillEnter(() => {
-    getPortalNode();
+    getPortalNodeEvent();
   });
 
   const potentialVideoRef = videoRefs[src];

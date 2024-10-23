@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { ComponentProps, useCallback } from "react";
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import Scores from "./Scores";
 import {
@@ -31,11 +31,12 @@ export const SettingLabel = styled(IonLabel)`
   margin-left: 16px;
 `;
 
-interface ProfileProps {
+interface ProfileProps
+  extends Pick<ComponentProps<typeof PostCommentFeed>, "onPull"> {
   person: GetPersonDetailsResponse;
 }
 
-export default function Profile({ person }: ProfileProps) {
+export default function Profile({ person, onPull }: ProfileProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const myHandle = useAppSelector(userHandleSelector);
@@ -138,6 +139,7 @@ export default function Profile({ person }: ProfileProps) {
       header={header}
       filterHiddenPosts={false}
       filterKeywordsAndWebsites={false}
+      onPull={onPull}
     />
   );
 }

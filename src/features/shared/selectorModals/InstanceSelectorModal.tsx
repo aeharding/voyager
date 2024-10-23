@@ -1,6 +1,10 @@
 import { Instance } from "lemmy-js-client";
 import GenericSelectorModal from "./GenericSelectorModal";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import useClient from "../../../helpers/useClient";
 import { IonLoading } from "@ionic/react";
 import useAppToast from "../../../helpers/useAppToast";
@@ -20,12 +24,7 @@ export default function InstanceSelectorModal(
 
   const presentToast = useAppToast();
 
-  useEffect(() => {
-    getInstances();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  async function getInstances() {
+  const getInstancesEvent = useEffectEvent(async () => {
     let instances;
 
     setLoading(true);
@@ -45,7 +44,11 @@ export default function InstanceSelectorModal(
     }
 
     setInstances(instances.federated_instances?.linked ?? []);
-  }
+  });
+
+  useEffect(() => {
+    getInstancesEvent();
+  }, []);
 
   async function search(query: string) {
     if (!instances) return [];

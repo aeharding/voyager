@@ -1,10 +1,10 @@
 import {
-  useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
+  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
 import { useDebounceValue } from "usehooks-ts";
@@ -99,6 +99,9 @@ type SpecialFeed = (typeof SPECIAL_FEEDS)[number];
 type Result = Community | SpecialFeed | string;
 
 export default function TitleSearchResults() {
+  // eslint-disable-next-line react-compiler/react-compiler -- https://github.com/aeharding/voyager/issues/1633
+  "use no memo";
+
   const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
@@ -159,43 +162,31 @@ export default function TitleSearchResults() {
     ).slice(0, 15);
   }, [follows, searchPayload, search, favorites, showModeratorFeed, moderates]);
 
-  useEffect(() => {
-    if (!debouncedSearch) {
-      setSearchPayload([]);
-      return;
+  const onSelect = (c: Result) => {
+    let route;
+
+    if (typeof c === "string") {
+      // favorite
+      route = buildGeneralBrowseLink(`/c/${c}`);
+    } else if ("type" in c) {
+      route = buildGeneralBrowseLink(`/${c.type}`);
+    } else {
+      route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
     }
 
-    asyncSearch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch]);
+    router.push(route, "none", "replace");
+  };
 
-  const onSelect = useCallback(
-    (c: Result) => {
-      let route;
-
-      if (typeof c === "string") {
-        // favorite
-        route = buildGeneralBrowseLink(`/c/${c}`);
-      } else if ("type" in c) {
-        route = buildGeneralBrowseLink(`/${c.type}`);
-      } else {
-        route = buildGeneralBrowseLink(`/c/${getHandle(c)}`);
-      }
-
-      router.push(route, "none", "replace");
-    },
-    [buildGeneralBrowseLink, router],
-  );
+  const onSelectEvent = useEffectEvent(onSelect);
 
   useEffect(() => {
     setOnSubmit(() => {
       if (!results.length) return;
 
-      onSelect(results[0]!);
+      onSelectEvent(results[0]!);
       setSearching(false);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [results, setSearching]);
+  }, [results, setSearching, setOnSubmit]);
 
   useEffect(() => {
     if (!searching) {
@@ -231,7 +222,7 @@ export default function TitleSearchResults() {
     };
   }, []);
 
-  async function asyncSearch() {
+  const asyncSearchEvent = useEffectEvent(async () => {
     const result = await client.search({
       q: debouncedSearch,
       limit: 20,
@@ -241,7 +232,16 @@ export default function TitleSearchResults() {
     });
 
     setSearchPayload(result.communities);
-  }
+  });
+
+  useEffect(() => {
+    if (!debouncedSearch) {
+      setSearchPayload([]);
+      return;
+    }
+
+    asyncSearchEvent();
+  }, [debouncedSearch]);
 
   function renderTitle(result: Result) {
     if (typeof result === "string") return result;

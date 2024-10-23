@@ -1,11 +1,11 @@
 import React, {
-  forwardRef,
   useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
+  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import {
   buildCommentsTreeWithMissing,
@@ -83,12 +83,19 @@ interface CommentsProps {
   threadCommentId?: string;
   sort: CommentSortType;
   bottomPadding?: number;
+
+  ref: React.RefObject<CommentsHandle>;
 }
 
-export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
-  { header, postId, commentPath, sort, bottomPadding, threadCommentId },
+export default function Comments({
+  header,
+  postId,
+  commentPath,
+  sort,
+  bottomPadding,
+  threadCommentId,
   ref,
-) {
+}: CommentsProps) {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
   const [loading, _setLoading] = useState(true);
@@ -238,11 +245,6 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       : [];
   }, [commentPath, filteredComments, threadCommentId]);
 
-  useEffect(() => {
-    fetchComments(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sort, commentPath, postId, client, threadCommentId]);
-
   const fetchComments = useCallback(
     async (refresh = false) => {
       if (refresh) {
@@ -327,6 +329,12 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       sort,
     ],
   );
+
+  const fetchCommentsEvent = useEffectEvent(fetchComments);
+
+  useEffect(() => {
+    fetchCommentsEvent(true);
+  }, [sort, commentPath, postId, client, threadCommentId]);
 
   const prependComments = useCallback(
     async (comments: CommentView[]) => {
@@ -503,6 +511,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
             }
             ref={virtuaRef}
             style={{ height: "100%" }}
+            // @ts-expect-error Virtua types not updated for forwardRef-less components
             item={IndexedVirtuaItem}
             overscan={1}
             onRangeChange={(start, end) => {
@@ -522,7 +531,7 @@ export default forwardRef<CommentsHandle, CommentsProps>(function Comments(
       </ScrollViewContainer>
     </CommentsContext.Provider>
   );
-});
+}
 
 function getCommentContextDepthForPath(
   commentPath: string | undefined,

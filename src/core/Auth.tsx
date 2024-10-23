@@ -1,4 +1,7 @@
-import React, { useCallback, useEffect } from "react";
+import React, {
+  useEffect,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { updateConnectedInstance } from "../features/auth/authSlice";
 import { useLocation } from "react-router";
@@ -54,9 +57,11 @@ function AuthLocation() {
       !!isAdminSelector(state),
   );
 
-  const shouldSyncMessages = useCallback(() => {
+  const shouldSyncMessages = () => {
     return jwt && location.pathname.startsWith("/inbox/messages");
-  }, [jwt, location]);
+  };
+
+  const shouldSyncMessagesEvent = useEffectEvent(shouldSyncMessages);
 
   useEffect(() => {
     if (connectedInstance) return;
@@ -76,13 +81,13 @@ function AuthLocation() {
     } else {
       dispatch(updateConnectedInstance(getDefaultServer()));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
+    // TODO is this right???
+  }, [connectedInstance, dispatch, location.pathname, selectedInstance]);
 
   useInterval(
     () => {
       if (!pageVisibility) return;
-      if (!shouldSyncMessages()) return;
+      if (!shouldSyncMessagesEvent()) return;
 
       dispatch(syncMessages());
     },
@@ -104,11 +109,12 @@ function AuthLocation() {
 
   useEffect(() => {
     if (!pageVisibility) return;
-    if (!shouldSyncMessages()) return;
+    if (!shouldSyncMessagesEvent()) return;
 
     dispatch(syncMessages());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageVisibility]);
+  }, [dispatch, pageVisibility]);
 
-  return <>{hasModdedSubs && <BackgroundReportSync />}</>;
+  if (!hasModdedSubs) return;
+
+  return <BackgroundReportSync />;
 }

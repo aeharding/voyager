@@ -5,7 +5,7 @@ import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "../../moderation/ModeratableItem";
 import { OTapToCollapseType } from "../../../services/db";
-import { memo, useCallback, useContext, useMemo, useRef } from "react";
+import { useCallback, useContext, useMemo, useRef } from "react";
 import { PageContext } from "../../auth/PageContext";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import useAppToast from "../../../helpers/useAppToast";
@@ -127,7 +127,7 @@ interface PostHeaderProps {
   className?: string;
 }
 
-function PostHeader({
+export default function PostHeader({
   post,
   onPrependComment,
   showPostActions = true,
@@ -302,5 +302,3 @@ function PostHeader({
     </ModeratableItem>
   );
 }
-
-export default memo(PostHeader);

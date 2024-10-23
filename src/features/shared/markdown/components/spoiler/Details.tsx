@@ -73,9 +73,7 @@ export default function Details({ children, node, id }: DetailsProps) {
     const isOpen = store.getState().spoiler.byId[getSpoilerId(id, node)];
 
     accordionGroup.value = isOpen ? "open" : undefined;
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id, node]);
 
   const onChange = useCallback<
     NonNullable<ComponentProps<typeof IonAccordionGroup>["onIonChange"]>

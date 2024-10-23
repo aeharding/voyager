@@ -16,13 +16,15 @@ export default function useTextRecovery(
   setText: (text: string) => void,
   disabled = false,
 ) {
+  const initializedRef = useRef(false);
   useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
     if (text || disabled) return;
 
     setText(getRecoveredText() ?? "");
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [disabled, setText, text]);
 
   useEffect(() => {
     if (!text || disabled) return;
