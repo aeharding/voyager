@@ -27,6 +27,7 @@ import PostHeader from "../../post/detail/PostHeader";
 import { webviewServerUrl } from "../../../services/nativeFetch";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+import { useShareAsImagePreferences } from "./ShareAsImagePreferences";
 
 const Container = styled.div`
   --bottom-padding: max(
@@ -123,22 +124,28 @@ interface ShareAsImageProps {
 export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   const presentToast = useAppToast();
 
-  const [hideUsernames, setHideUsernames] = useState(false);
-  const [hideCommunity, setHideCommunity] = useState(false);
-  const [includePostDetails, setIncludePostDetails] = useState(
-    !("comment" in data),
-  );
-  const [includePostText, setIncludePostText] = useState(true);
-  const [watermark, setWatermark] = useState(false);
-
   const [blob, setBlob] = useState<Blob | undefined>();
   const [imageSrc, setImageSrc] = useState("");
 
-  const [minDepth, setMinDepth] = useState(
-    ("comment" in data
+  const {
+    shareAsImagePreferences: {
+      comment: { includePostContent, includePostDetails, allParentComments },
+      common: { hideUsernames, watermark },
+      post: { hideCommunity },
+    },
+    setShareAsImagePreferences,
+  } = useShareAsImagePreferences();
+
+  const isComment = "comment" in data;
+
+  // eslint-disable-next-line no-nested-ternary
+  const defaultMinDepth = allParentComments
+    ? 0
+    : isComment
       ? getDepthFromComment(data.comment.comment)
-      : undefined) ?? 0,
-  );
+      : 0;
+
+  const [minDepth, setMinDepth] = useState(defaultMinDepth ?? 0);
 
   const hasPostBody = data.post.post.body || data.post.post.url;
 
@@ -151,7 +158,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   }, [blob]);
 
   const filteredComments = useMemo(() => {
-    if (!("comment" in data)) return [];
+    if (!isComment) return [];
 
     const filtered = data.comments
       .filter(
@@ -166,7 +173,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       );
 
     return filtered;
-  }, [data, minDepth]);
+  }, [data, minDepth, isComment]);
 
   const commentNode = useMemo(
     () =>
@@ -238,15 +245,15 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     watermark,
     hideUsernames,
     hideCommunity,
+    includePostContent,
     includePostDetails,
-    includePostText,
+    allParentComments,
   ]);
 
   async function onShare() {
     if (!blob) return;
 
-    const apId =
-      "comment" in data ? data.comment.comment.ap_id : data.post.post.ap_id;
+    const apId = isComment ? data.comment.comment.ap_id : data.post.post.ap_id;
 
     const filename = `${apId
       .replace(/^https:\/\//, "")
@@ -306,23 +313,31 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       )}
 
       <StyledIonList inset lines="full">
-        {"comment" in data && (
+        {isComment && (
           <>
             <IonItem>
               <IonToggle
                 checked={includePostDetails}
-                onIonChange={(e) => setIncludePostDetails(e.detail.checked)}
+                onIonChange={({ detail: { checked } }) =>
+                  setShareAsImagePreferences({
+                    comment: { includePostDetails: checked },
+                  })
+                }
               >
                 Include Post Details
               </IonToggle>
             </IonItem>
-            {includePostDetails && hasPostBody ? (
+            {(isComment ? includePostDetails : true) && hasPostBody ? (
               <IonItem>
                 <IonToggle
-                  checked={includePostText}
-                  onIonChange={(e) => setIncludePostText(e.detail.checked)}
+                  checked={includePostContent}
+                  onIonChange={({ detail: { checked } }) =>
+                    setShareAsImagePreferences({
+                      comment: { includePostContent: checked },
+                    })
+                  }
                 >
-                  Include Post Text
+                  Include Post Content
                 </IonToggle>
               </IonItem>
             ) : undefined}
@@ -340,8 +355,30 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                     removeDisabled={
                       minDepth === getDepthFromComment(data.comment.comment)
                     }
-                    onAdd={() => setMinDepth((minDepth) => minDepth - 1)}
-                    onRemove={() => setMinDepth((minDepth) => minDepth + 1)}
+                    onAdd={() => {
+                      setMinDepth((minDepth) => {
+                        const newValue = minDepth - 1;
+                        if (newValue === 0) {
+                          setShareAsImagePreferences({
+                            comment: { allParentComments: true },
+                          });
+                        }
+                        return newValue;
+                      });
+                    }}
+                    onRemove={() => {
+                      setMinDepth((minDepth) => {
+                        const newValue = minDepth + 1;
+                        if (
+                          newValue === getDepthFromComment(data.comment.comment)
+                        ) {
+                          setShareAsImagePreferences({
+                            comment: { allParentComments: false },
+                          });
+                        }
+                        return newValue;
+                      });
+                    }}
                   />
                 </ParentCommentValues>
               </IonItem>
@@ -352,7 +389,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           <IonItem>
             <IonToggle
               checked={hideCommunity}
-              onIonChange={(e) => setHideCommunity(e.detail.checked)}
+              onIonChange={({ detail: { checked } }) =>
+                setShareAsImagePreferences({ post: { hideCommunity: checked } })
+              }
             >
               Hide Community
             </IonToggle>
@@ -361,7 +400,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         <IonItem>
           <IonToggle
             checked={hideUsernames}
-            onIonChange={(e) => setHideUsernames(e.detail.checked)}
+            onIonChange={({ detail: { checked } }) =>
+              setShareAsImagePreferences({ common: { hideUsernames: checked } })
+            }
           >
             Hide Usernames
           </IonToggle>
@@ -369,7 +410,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         <IonItem lines="none">
           <IonToggle
             checked={watermark}
-            onIonChange={(e) => setWatermark(e.detail.checked)}
+            onIonChange={({ detail: { checked } }) =>
+              setShareAsImagePreferences({ common: { watermark: checked } })
+            }
           >
             Watermark
           </IonToggle>
@@ -384,16 +427,16 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
           <ShareImageContext.Provider
             value={{ capturing: true, hideUsernames, hideCommunity }}
           >
-            {includePostDetails && (
+            {(isComment ? includePostDetails : true) && (
               <PostHeader
-                className={!("comment" in data) ? hideBottomBorderCss : ""}
+                className={!isComment ? hideBottomBorderCss : ""}
                 post={data.post}
-                showPostText={includePostText}
+                showPostText={isComment ? includePostContent : true}
                 showPostActions={false}
                 constrainHeight={false}
               />
             )}
-            {"comment" in data && (
+            {isComment && (
               <>
                 {includePostDetails && <PostCommentSpacer />}
                 <CommentTree
