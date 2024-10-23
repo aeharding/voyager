@@ -1,7 +1,7 @@
 import { ellipsisHorizontal } from "ionicons/icons";
 import useCommentActions, { CommentActionsProps } from "./useCommentActions";
 import { IonIcon, IonLoading } from "@ionic/react";
-import { forwardRef, useContext, useImperativeHandle } from "react";
+import { useContext, useImperativeHandle } from "react";
 import { styled } from "@linaria/react";
 import { ShareImageContext } from "../share/asImage/ShareAsImage";
 
@@ -14,32 +14,37 @@ export type CommentEllipsisHandle = Pick<
   "present"
 >;
 
-export default forwardRef<CommentEllipsisHandle, CommentActionsProps>(
-  function CommentEllipsis(props, ref) {
-    const { present, loading } = useCommentActions(props);
-    const { capturing } = useContext(ShareImageContext);
+interface CommentEllipsisProps extends CommentActionsProps {
+  ref: React.RefObject<CommentEllipsisHandle>;
+}
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        present,
-      }),
-      [present],
-    );
+export default function CommentEllipsis({
+  ref,
+  ...props
+}: CommentEllipsisProps) {
+  const { present, loading } = useCommentActions(props);
+  const { capturing } = useContext(ShareImageContext);
 
-    if (capturing) return; // Hide ellipsis during image capture
+  useImperativeHandle(
+    ref,
+    () => ({
+      present,
+    }),
+    [present],
+  );
 
-    return (
-      <>
-        <IonLoading isOpen={loading} />
-        <StyledIonIcon
-          icon={ellipsisHorizontal}
-          onClick={(e) => {
-            present();
-            e.stopPropagation();
-          }}
-        />
-      </>
-    );
-  },
-);
+  if (capturing) return; // Hide ellipsis during image capture
+
+  return (
+    <>
+      <IonLoading isOpen={loading} />
+      <StyledIonIcon
+        icon={ellipsisHorizontal}
+        onClick={(e) => {
+          present();
+          e.stopPropagation();
+        }}
+      />
+    </>
+  );
+}

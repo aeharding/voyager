@@ -1,6 +1,6 @@
 import { IonItem } from "@ionic/react";
 import { CommentView } from "lemmy-js-client";
-import React, { MouseEvent, memo, useCallback, useRef } from "react";
+import React, { MouseEvent, useCallback, useRef } from "react";
 import AnimateHeight from "react-animate-height";
 import CommentContent from "./CommentContent";
 import SlidingNestedCommentVote from "../shared/sliding/SlidingNestedCommentVote";
@@ -63,9 +63,7 @@ interface CommentProps {
   rootIndex?: number;
 }
 
-export default memo(Comment);
-
-function Comment({
+export default function Comment({
   comment: commentView,
   highlightedCommentId,
   depth,

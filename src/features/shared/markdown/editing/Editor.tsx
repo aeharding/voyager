@@ -12,7 +12,6 @@ import {
   DragEvent,
   KeyboardEvent,
   SetStateAction,
-  forwardRef,
   useEffect,
   useMemo,
   useRef,
@@ -66,12 +65,19 @@ export interface EditorProps {
   onDismiss?: () => void;
 
   children?: React.ReactNode;
+
+  ref?: React.RefObject<HTMLTextAreaElement>;
 }
 
-export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
-  { text, setText, children, onSubmit, onDismiss, canRecoverText = true },
+export default function Editor({
+  text,
+  setText,
+  children,
+  onSubmit,
+  onDismiss,
+  canRecoverText = true,
   ref,
-) {
+}: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -240,4 +246,4 @@ export default forwardRef<HTMLTextAreaElement, EditorProps>(function Editor(
       />
     </>
   );
-});
+}

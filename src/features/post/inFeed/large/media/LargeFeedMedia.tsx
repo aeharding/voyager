@@ -1,4 +1,4 @@
-import Media, { PostGalleryImgProps } from "../../../../media/gallery/Media";
+import Media, { MediaProps } from "../../../../media/gallery/Media";
 import { CSSProperties, useMemo } from "react";
 import useMediaLoadObserver, {
   getTargetDimensions,
@@ -28,7 +28,10 @@ export default function LargeFeedMedia({
   style: baseStyle,
   defaultAspectRatio,
   ...props
-}: PostGalleryImgProps & { blur?: boolean; defaultAspectRatio?: number }) {
+}: Omit<MediaProps, "ref"> & {
+  blur?: boolean;
+  defaultAspectRatio?: number;
+}) {
   const dispatch = useAppDispatch();
   const [mediaRef, currentAspectRatio] = useMediaLoadObserver(src);
 
