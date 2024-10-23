@@ -1,6 +1,7 @@
 import { useState } from "react";
 import useAppToast from "../../../../helpers/useAppToast";
 import { IonLoading } from "@ionic/react";
+import { presentErrorMessage } from "../../../../helpers/error";
 import { uploadImage } from "./uploadImageSlice";
 import { useAppDispatch } from "../../../../store";
 
@@ -19,11 +20,8 @@ export default function useUploadImage() {
       try {
         imageUrl = await dispatch(uploadImage(image));
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error";
-
         presentToast({
-          message: `Problem uploading image: ${message}. Please try again.`,
+          message: presentErrorMessage("Problem uploading image", error),
           color: "danger",
           fullscreen: true,
         });

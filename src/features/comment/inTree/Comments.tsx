@@ -36,6 +36,7 @@ import FeedLoadMoreFailed from "../../feed/endItems/FeedLoadMoreFailed";
 import usePreservePositionFromBottomInScrollView from "../../../helpers/usePreservePositionFromBottomInScrollView";
 import { postDetailPageHasVirtualScrollEnabled } from "../../../routes/pages/posts/PostPage";
 import { styled } from "@linaria/react";
+import { presentErrorMessage } from "../../../helpers/error";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
@@ -278,7 +279,7 @@ export default function Comments({
       } catch (error) {
         if (reqPostId === postId && reqCommentId === parentCommentId)
           presentToast({
-            message: "Problem fetching comments. Please try again.",
+            message: presentErrorMessage("Problem fetching comments", error),
             color: "danger",
           });
 
