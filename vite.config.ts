@@ -12,7 +12,11 @@ const manifest = JSON.parse(readFileSync("./manifest.json", "utf-8"));
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: ["babel-plugin-react-compiler"],
+      },
+    }),
     wyw({
       displayName: process.env.NODE_ENV === "development",
       include: ["**/*.{ts,tsx}"],

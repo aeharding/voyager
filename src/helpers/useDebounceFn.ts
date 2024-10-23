@@ -23,6 +23,7 @@ export default function useDebounceFn<T extends (...args: any) => any>(
 
   return React.useMemo<T>(
     () =>
+      // eslint-disable-next-line react-compiler/react-compiler
       ((...args: unknown[]) => {
         clearTimeout(timeoutId.current);
 

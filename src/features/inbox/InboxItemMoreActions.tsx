@@ -1,7 +1,7 @@
 import { mailOutline, mailUnreadOutline } from "ionicons/icons";
 import { InboxItemView } from "./InboxItem";
 import MoreActions from "../comment/CommentEllipsis";
-import { forwardRef, useMemo } from "react";
+import { useMemo } from "react";
 import { styled } from "@linaria/react";
 import { PlainButton } from "../shared/PlainButton";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -14,16 +14,18 @@ const StyledPlainButton = styled(PlainButton)`
 
 interface InboxItemMoreActionsProps {
   item: InboxItemView;
+
+  ref: React.RefObject<InboxItemMoreActionsHandle>;
 }
 
 export type InboxItemMoreActionsHandle = {
   present: () => void;
 };
 
-export default forwardRef<
-  InboxItemMoreActionsHandle,
-  InboxItemMoreActionsProps
->(function InboxItemMoreActions({ item }, ref) {
+export default function InboxItemMoreActions({
+  item,
+  ref,
+}: InboxItemMoreActionsProps) {
   const dispatch = useAppDispatch();
   const readByInboxItemId = useAppSelector(
     (state) => state.inbox.readByInboxItemId,
@@ -59,4 +61,4 @@ export default forwardRef<
       )}
     </StyledPlainButton>
   );
-});
+}

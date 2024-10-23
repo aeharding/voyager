@@ -3,7 +3,7 @@ import Route from "./common/Route";
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
 import { useAppSelector } from "../store";
 import { instanceSelector } from "../features/auth/authSelectors";
-import { forwardRef, useContext, useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
 import { PageContextProvider } from "../features/auth/PageContext";
 import { getDefaultServer } from "../services/app";
@@ -49,96 +49,98 @@ export default function TabbedRoutes() {
   );
 }
 
-const InnerTabbedRoutes = forwardRef<RouterOutletRef>(
-  function InnerTabbedRoutes(_, pageRef) {
-    const defaultFeed = useAppSelector(
-      (state) => state.settings.general.defaultFeed,
-    );
-    const selectedInstance = useAppSelector(instanceSelector);
+function InnerTabbedRoutes({
+  ref: pageRef,
+}: {
+  ref: React.RefObject<RouterOutletRef>;
+}) {
+  const defaultFeed = useAppSelector(
+    (state) => state.settings.general.defaultFeed,
+  );
+  const selectedInstance = useAppSelector(instanceSelector);
 
-    const router = useOptimizedIonRouter();
-    const { tabRef } = useContext(TabContext);
+  const router = useOptimizedIonRouter();
+  const { tabRef } = useContext(TabContext);
 
-    // Reset route on initialize, if needed
-    // (reset when it doesn't make sense breaks ionic react router)
-    useEffect(() => {
-      if (!router.canGoBack()) return;
+  // Reset route on initialize, if needed
+  // (reset when it doesn't make sense breaks ionic react router)
+  useEffect(() => {
+    if (!router.canGoBack()) return;
 
-      const pathname = router.getRouteInfo()?.pathname;
+    const pathname = router.getRouteInfo()?.pathname;
 
-      if (!pathname) return;
+    if (!pathname) return;
 
-      const pathnameSections = pathname.split("/").length - 1;
+    const pathnameSections = pathname.split("/").length - 1;
 
-      if (pathname.startsWith("/posts")) {
-        // special case for posts tab: /posts/lemmy.world is initial tab route
-        if (pathnameSections <= 2) return;
-      }
+    if (pathname.startsWith("/posts")) {
+      // special case for posts tab: /posts/lemmy.world is initial tab route
+      if (pathnameSections <= 2) return;
+    }
 
-      // all other tabs are /inbox, /settings etc as base route
-      if (pathnameSections <= 1) return;
+    // all other tabs are /inbox, /settings etc as base route
+    if (pathnameSections <= 1) return;
 
-      function push() {
-        router.push(`/${tabRef?.current || "posts"}`, "none", "push");
-      }
+    function push() {
+      router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+    }
 
-      // have to wait for the ActorRedirect to do its thing, so it doesn't get clobbered
-      if (usingActorRedirect) {
-        queueMicrotask(push);
-        return;
-      }
+    // have to wait for the ActorRedirect to do its thing, so it doesn't get clobbered
+    if (usingActorRedirect) {
+      queueMicrotask(push);
+      return;
+    }
 
-      push();
-    }, [router, tabRef]);
+    push();
+  }, [router, tabRef]);
 
-    const redirectRoute = (() => {
-      if (isInstalled()) return ""; // redirect to be handled by <CommunitiesListRedirectBootstrapper />
+  const redirectRoute = (() => {
+    if (isInstalled()) return ""; // redirect to be handled by <CommunitiesListRedirectBootstrapper />
 
-      if (!defaultFeed) return "";
+    if (!defaultFeed) return "";
 
-      return getPathForFeed(defaultFeed);
-    })();
+    return getPathForFeed(defaultFeed);
+  })();
 
-    return (
-      <VideoPortalProvider>
-        <IonTabs>
-          <IonRouterOutlet ref={pageRef}>
-            <Route exact path="/">
-              {defaultFeed ? (
-                <Redirect
-                  to={`/posts/${
-                    selectedInstance ?? getDefaultServer()
-                  }${redirectRoute}`}
-                  push={false}
-                />
-              ) : (
-                ""
-              )}
-            </Route>
+  return (
+    <VideoPortalProvider>
+      <IonTabs>
+        <IonRouterOutlet ref={pageRef}>
+          <Route exact path="/">
+            {defaultFeed ? (
+              <Redirect
+                to={`/posts/${
+                  selectedInstance ?? getDefaultServer()
+                }${redirectRoute}`}
+                push={false}
+              />
+            ) : (
+              ""
+            )}
+          </Route>
 
-            {...buildPostsRoutes({
-              defaultFeed,
-              redirectRoute,
-              selectedInstance,
-            })}
+          {...buildPostsRoutes({
+            defaultFeed,
+            redirectRoute,
+            selectedInstance,
+          })}
 
-            {...inbox}
+          {...inbox}
 
-            {...profile}
+          {...profile}
 
-            {...search}
+          {...search}
 
-            {...settings}
+          {...settings}
 
-            {...general}
-          </IonRouterOutlet>
+          {...general}
+        </IonRouterOutlet>
 
-          <TabBar slot="bottom" />
-        </IonTabs>
-      </VideoPortalProvider>
-    );
-  },
-);
+        <TabBar slot="bottom" />
+      </IonTabs>
+    </VideoPortalProvider>
+  );
+}
 
 export function getPathForFeed(defaultFeed: DefaultFeedType): string {
   switch (defaultFeed.type) {

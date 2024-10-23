@@ -124,6 +124,7 @@ export default function SharedTabButton({
     () => ({
       onFinish: () => {
         setTimeout(() => {
+          // eslint-disable-next-line react-compiler/react-compiler
           longPressedRef.current = false;
         }, 200);
       },

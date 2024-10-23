@@ -27,7 +27,7 @@ import PostCommentFeed, {
 } from "../../../features/feed/PostCommentFeed";
 import { getPostCommentItemCreatedDate } from "../../../features/user/Profile";
 import { uniqBy } from "lodash";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import store, { useAppDispatch } from "../../../store";
 import {
   reportsByCommentIdSelector,
   reportsByPostIdSelector,
@@ -65,8 +65,6 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const dispatch = useAppDispatch();
-  const reportsByPostId = useAppSelector(reportsByPostIdSelector);
-  const reportsByCommentId = useAppSelector(reportsByCommentIdSelector);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
     async (pageData) => {
@@ -86,6 +84,9 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
       ]);
 
       let needsSync = isFirstPage(pageData);
+
+      const reportsByCommentId = reportsByCommentIdSelector(store.getState());
+      const reportsByPostId = reportsByPostIdSelector(store.getState());
 
       for (const report of comment_reports) {
         if (!reportsByCommentId[report.comment.id]) {
@@ -114,7 +115,6 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
           getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
       );
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [client, community, dispatch],
   );
 
