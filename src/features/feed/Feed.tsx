@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import {
   IonRefresher,
@@ -24,7 +25,6 @@ import { FeedSearchContext } from "../../routes/pages/shared/CommunityPage";
 import { useAppSelector } from "../../store";
 import FetchMore from "./endItems/FetchMore";
 import { CenteredSpinner } from "../shared/CenteredSpinner";
-import useEvent from "../../helpers/useEvent";
 
 type PageData =
   | {
@@ -230,11 +230,11 @@ export default function Feed<I>({
 
   useSetActivePage(virtuaHandle);
 
-  const fetchMoreEvent = useEvent(fetchMore);
+  const fetchMoreEvent = useEffectEvent(fetchMore);
 
   useEffect(() => {
     fetchMoreEvent(true);
-  }, [fetchFn, fetchMoreEvent]);
+  }, [fetchFn]);
 
   const footer = (() => {
     if (loadFailed)

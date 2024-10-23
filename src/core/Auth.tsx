@@ -1,4 +1,7 @@
-import React, { useEffect } from "react";
+import React, {
+  useEffect,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { updateConnectedInstance } from "../features/auth/authSlice";
 import { useLocation } from "react-router";
@@ -9,7 +12,6 @@ import { getDefaultServer } from "../services/app";
 import BackgroundReportSync from "../features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "../features/auth/siteSlice";
 import { instanceSelector, jwtSelector } from "../features/auth/authSelectors";
-import useEvent from "../helpers/useEvent";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -59,7 +61,7 @@ function AuthLocation() {
     return jwt && location.pathname.startsWith("/inbox/messages");
   };
 
-  const shouldSyncMessagesEvent = useEvent(shouldSyncMessages);
+  const shouldSyncMessagesEvent = useEffectEvent(shouldSyncMessages);
 
   useEffect(() => {
     if (connectedInstance) return;
@@ -110,7 +112,9 @@ function AuthLocation() {
     if (!shouldSyncMessagesEvent()) return;
 
     dispatch(syncMessages());
-  }, [dispatch, pageVisibility, shouldSyncMessagesEvent]);
+  }, [dispatch, pageVisibility]);
 
-  return <>{hasModdedSubs && <BackgroundReportSync />}</>;
+  if (!hasModdedSubs) return;
+
+  return <BackgroundReportSync />;
 }

@@ -1,6 +1,13 @@
 import { PrivateMessageView } from "lemmy-js-client";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import useClient from "../../../helpers/useClient";
 import { getInboxCounts, receivedMessages } from "../inboxSlice";
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
@@ -9,7 +16,6 @@ import { useLongPress } from "use-long-press";
 import Markdown from "../../shared/markdown/Markdown";
 import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import useEvent from "../../../helpers/useEvent";
 
 const Container = styled.div<{ first: boolean }>`
   position: relative; /* Setup a relative container for our pseudo elements */
@@ -126,7 +132,7 @@ export default function Message({ message, first }: MessageProps) {
 
   const bind = useLongPress(onMessageLongPress, { cancelOnMovement: 15 });
 
-  const setReadEvent = useEvent(async () => {
+  const setReadEvent = useEffectEvent(async () => {
     if (loading) return;
 
     setLoading(true);
@@ -155,7 +161,7 @@ export default function Message({ message, first }: MessageProps) {
       return;
 
     setReadEvent();
-  }, [focused, message, thisIsMyMessage, setReadEvent, thisIsASelfMessage]);
+  }, [focused, message, thisIsMyMessage, thisIsASelfMessage]);
 
   return (
     <Container

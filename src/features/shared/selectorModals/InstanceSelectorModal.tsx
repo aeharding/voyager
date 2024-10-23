@@ -1,10 +1,13 @@
 import { Instance } from "lemmy-js-client";
 import GenericSelectorModal from "./GenericSelectorModal";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import useClient from "../../../helpers/useClient";
 import { IonLoading } from "@ionic/react";
 import useAppToast from "../../../helpers/useAppToast";
-import useEvent from "../../../helpers/useEvent";
 
 interface InstanceSelectorModalProps {
   onDismiss: (instance?: Instance) => void;
@@ -21,7 +24,7 @@ export default function InstanceSelectorModal(
 
   const presentToast = useAppToast();
 
-  const getInstances = useEvent(async () => {
+  const getInstancesEvent = useEffectEvent(async () => {
     let instances;
 
     setLoading(true);
@@ -44,8 +47,8 @@ export default function InstanceSelectorModal(
   });
 
   useEffect(() => {
-    getInstances();
-  }, [getInstances]);
+    getInstancesEvent();
+  }, []);
 
   async function search(query: string) {
     if (!instances) return [];
