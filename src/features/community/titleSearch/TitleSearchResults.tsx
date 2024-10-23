@@ -99,7 +99,9 @@ type SpecialFeed = (typeof SPECIAL_FEEDS)[number];
 type Result = Community | SpecialFeed | string;
 
 export default function TitleSearchResults() {
+  // eslint-disable-next-line react-compiler/react-compiler -- https://github.com/aeharding/voyager/issues/1633
   "use no memo";
+
   const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
