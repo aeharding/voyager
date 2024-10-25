@@ -4,7 +4,7 @@
   "private": true,
   "version": "2.18.4",
   "type": "module",
-  "packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e",
+  "packageManager": "pnpm@9.12.2+sha512.22721b3a11f81661ae1ec68ce1a7b879425a1ca5b991c975b074ac220b187ce56c708fe5db69f4c962c989452eee76c82877f4ee80f474cebd61ee13461b6228",
   "scripts": {
     "dev": "vite",
     "build": "./build.sh",
@@ -26,8 +26,8 @@
       "@ionic/core": "npm:voyager-ionic-core@8.3.3"
     },
     "patchedDependencies": {
-      "@capacitor/browser@6.0.3": "patches/@capacitor__browser@6.0.3.patch",
-      "@capacitor/haptics@6.0.1": "patches/@capacitor__haptics@6.0.1.patch"
+      "@capacitor/browser": "patches/@capacitor__browser@6.0.3.patch",
+      "@capacitor/haptics": "patches/@capacitor__haptics@6.0.1.patch"
     }
   },
   "dependencies": {
