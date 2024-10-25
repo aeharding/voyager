@@ -7,11 +7,11 @@ interface UserPageActionsProps {
 }
 
 export default function UserPageActions({ handle }: UserPageActionsProps) {
-  const presentUserActions = usePresentUserActions(handle);
+  const presentUserActions = usePresentUserActions();
 
   return (
     <>
-      <IonButton disabled={!handle} onClick={presentUserActions}>
+      <IonButton disabled={!handle} onClick={() => presentUserActions(handle)}>
         <HeaderEllipsisIcon slot="icon-only" />
       </IonButton>
     </>
