@@ -1,4 +1,10 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  experimental_useEffectEvent as useEffectEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useInterval } from "usehooks-ts";
 import { useRegisterSW } from "virtual:pwa-register/react";
 import usePageVisibility from "../../../../helpers/usePageVisibility";
@@ -54,11 +60,12 @@ export function UpdateContextProvider({
     1_000 * 60 * 60,
   );
 
+  const checkForUpdatesEvent = useEffectEvent(checkForUpdates);
+
   useEffect(() => {
     if (!pageVisibility) return;
 
-    checkForUpdates();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    checkForUpdatesEvent();
   }, [pageVisibility]);
 
   async function checkForUpdates() {

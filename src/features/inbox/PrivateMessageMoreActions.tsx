@@ -3,19 +3,18 @@ import {
   ellipsisHorizontal,
   flagOutline,
   personOutline,
-  removeCircleOutline,
   textOutline,
 } from "ionicons/icons";
-import { ActionSheetButton, IonIcon, useIonActionSheet } from "@ionic/react";
+import { ActionSheetButton, IonIcon } from "@ionic/react";
 import { useCallback, useContext, useImperativeHandle } from "react";
 import { PageContext } from "../auth/PageContext";
 import useAppNavigation from "../../helpers/useAppNavigation";
-import { useUserDetails } from "../user/useUserDetails";
 import { getHandle } from "../../helpers/lemmy";
 import { PrivateMessageView } from "lemmy-js-client";
 import { styled } from "@linaria/react";
 import { markRead, syncMessages } from "./inboxSlice";
 import store, { useAppDispatch } from "../../store";
+import usePresentUserActions from "../user/usePresentUserActions";
 
 const StyledIonIcon = styled(IonIcon)`
   font-size: 1.2em;
@@ -38,18 +37,16 @@ export default function PrivateMessageMoreActions({
   ref,
 }: PrivateMessageMoreActionsProps) {
   const dispatch = useAppDispatch();
-  const [presentActionSheet] = useIonActionSheet();
   const { presentReport, presentSelectText, presentPrivateMessageCompose } =
     useContext(PageContext);
 
+  const presentUserActions = usePresentUserActions();
   const { navigateToUser } = useAppNavigation();
 
-  const { isBlocked, blockOrUnblock } = useUserDetails(getHandle(item.creator));
-
   const present = useCallback(() => {
-    presentActionSheet({
-      cssClass: "left-align-buttons",
-      buttons: [
+    presentUserActions(getHandle(item.creator), {
+      hideMessageButton: true,
+      prependButtons: [
         markReadAction,
         {
           text: "Reply",
@@ -93,30 +90,17 @@ export default function PrivateMessageMoreActions({
             presentReport(item);
           },
         },
-        {
-          text: !isBlocked ? "Block User" : "Unblock User",
-          icon: removeCircleOutline,
-          handler: () => {
-            blockOrUnblock();
-          },
-        },
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
       ],
     });
   }, [
-    presentActionSheet,
-    markReadAction,
-    item,
-    isBlocked,
-    presentPrivateMessageCompose,
     dispatch,
-    presentSelectText,
+    item,
+    markReadAction,
     navigateToUser,
+    presentPrivateMessageCompose,
     presentReport,
-    blockOrUnblock,
+    presentSelectText,
+    presentUserActions,
   ]);
 
   useImperativeHandle(
