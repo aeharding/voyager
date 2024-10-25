@@ -68,8 +68,6 @@ export default [
         },
       ],
 
-      "react-compiler/react-compiler": "error",
-
       "linebreak-style": ["warn", "unix"],
       "react/jsx-fragments": ["warn", "syntax"],
       "@typescript-eslint/no-empty-function": 0,
