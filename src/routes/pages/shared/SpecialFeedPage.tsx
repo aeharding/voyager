@@ -30,6 +30,7 @@ import PostAppearanceProvider, {
 import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 import useFeedUpdate from "../../../features/feed/useFeedUpdate";
 import { ShowSubscribedIconContext } from "../../../features/labels/links/CommunityLink";
+import DocumentTitle from "../../../features/shared/DocumentTitle";
 
 interface SpecialFeedProps {
   type: ListingType;
@@ -39,6 +40,9 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
+  const connectedInstance = useAppSelector(
+    (state) => state.auth.connectedInstance,
+  );
 
   const postFeed = { listingType: type };
   const [sort, setSort] = useFeedSort("posts", postFeed);
@@ -124,6 +128,9 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
                   />
                 </IonButtons>
 
+                {site && (
+                  <DocumentTitle>{site.site_view.site.name}</DocumentTitle>
+                )}
                 <TitleSearch name={listingTypeTitle(type)}>
                   <IonButtons slot="end">
                     {type === "ModeratorView" && <ModActions type={type} />}

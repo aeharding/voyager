@@ -47,6 +47,7 @@ import PostAppearanceProvider, {
 } from "../../../features/post/appearance/PostAppearanceProvider";
 import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 import useFeedUpdate from "../../../features/feed/useFeedUpdate";
+import DocumentTitle from "../../../features/shared/DocumentTitle";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -277,6 +278,11 @@ const CommunityPageContent = memo(function CommunityPageContent({
                         defaultHref={buildGeneralBrowseLink("/")}
                       />
                     </IonButtons>
+                    {communityView && (
+                      <DocumentTitle>
+                        {communityView.community.title}
+                      </DocumentTitle>
+                    )}
                     <TitleSearch name={community}>
                       <IonButtons slot="end">
                         <ModActions
