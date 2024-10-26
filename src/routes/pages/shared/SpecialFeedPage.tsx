@@ -40,9 +40,6 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
-  const connectedInstance = useAppSelector(
-    (state) => state.auth.connectedInstance,
-  );
 
   const postFeed = { listingType: type };
   const [sort, setSort] = useFeedSort("posts", postFeed);
