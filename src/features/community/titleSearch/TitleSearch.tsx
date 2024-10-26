@@ -66,7 +66,7 @@ interface TitleSearchProps {
   name: string;
   children: React.ReactNode;
 
-  ref: React.RefObject<AppTitleHandle>;
+  ref?: React.RefObject<AppTitleHandle>;
 }
 
 export default function TitleSearch({ name, children, ref }: TitleSearchProps) {
