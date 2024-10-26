@@ -13,6 +13,7 @@ import {
   createContext,
   memo,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -48,6 +49,7 @@ import PostAppearanceProvider, {
 import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
 import useFeedUpdate from "../../../features/feed/useFeedUpdate";
 import DocumentTitle from "../../../features/shared/DocumentTitle";
+import { AppTitleHandle } from "../../../features/shared/AppTitle";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -149,6 +151,8 @@ const CommunityPageContent = memo(function CommunityPageContent({
   const router = useOptimizedIonRouter();
   const getRandomCommunity = useGetRandomCommunity();
 
+  const appTitleRef = useRef<AppTitleHandle>(null);
+
   const searchOpen = searchQuery || _searchOpen;
 
   const client = useClient();
@@ -203,6 +207,11 @@ const CommunityPageContent = memo(function CommunityPageContent({
   };
 
   const feedSearchContextValue = useMemo(() => ({ setScrolledPastSearch }), []);
+
+  // Force update when loaded, because mod button may appear (and title may need to shrink)
+  useEffect(() => {
+    appTitleRef.current?.updateLayout();
+  }, [communityView]);
 
   const header = useMemo(
     () =>
@@ -283,7 +292,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
                         {communityView.community.title}
                       </DocumentTitle>
                     )}
-                    <TitleSearch name={community}>
+                    <TitleSearch name={community} ref={appTitleRef}>
                       <IonButtons slot="end">
                         <ModActions
                           community={communityView}

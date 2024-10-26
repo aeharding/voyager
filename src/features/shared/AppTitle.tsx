@@ -1,6 +1,17 @@
 import { IonTitle } from "@ionic/react";
-import { ComponentProps, useEffect, useRef, useState } from "react";
+import {
+  ComponentProps,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { isIosTheme } from "../../helpers/device";
+
+export interface AppTitleHandle {
+  updateLayout: () => void;
+}
 
 interface AppTitleProps extends ComponentProps<typeof IonTitle> {
   /**
@@ -8,33 +19,47 @@ interface AppTitleProps extends ComponentProps<typeof IonTitle> {
    * two icon buttons on right side of title
    */
   fullPadding?: number;
+
+  appRef: React.RefObject<AppTitleHandle>;
 }
 
 export default isIosTheme() ? IosAppTitle : IonTitle;
 
-function IosAppTitle({ fullPadding, ...props }: AppTitleProps) {
-  const ref = useRef<HTMLIonTitleElement>(null);
+function IosAppTitle({ fullPadding, appRef, ...props }: AppTitleProps) {
+  const titleRef = useRef<HTMLIonTitleElement>(null);
   const [smaller, setSmaller] = useState(false);
+
+  const updateLayout = useCallback(() => {
+    const buttons = titleRef.current
+      ?.closest("ion-header")
+      ?.querySelector('ion-buttons[slot="end"]')?.children.length;
+
+    if (!buttons) {
+      setSmaller(false);
+      return;
+    }
+
+    setSmaller(buttons >= 3);
+  }, []);
 
   useEffect(() => {
     queueMicrotask(() => {
-      const buttons = ref.current
-        ?.closest("ion-header")
-        ?.querySelector('ion-buttons[slot="end"]')?.children.length;
-
-      if (!buttons) {
-        setSmaller(false);
-        return;
-      }
-
-      setSmaller(buttons >= 3);
+      updateLayout();
     });
   });
+
+  useImperativeHandle(
+    appRef,
+    () => ({
+      updateLayout,
+    }),
+    [updateLayout],
+  );
 
   return (
     <IonTitle
       {...props}
-      ref={ref}
+      ref={titleRef}
       style={{ paddingInline: smaller ? "110px" : `${fullPadding ?? 90}px` }}
     />
   );
