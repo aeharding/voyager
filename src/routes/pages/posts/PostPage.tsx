@@ -29,6 +29,7 @@ import AppHeader from "../../../features/shared/AppHeader";
 import useFeedSort from "../../../features/feed/sort/useFeedSort";
 import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
 import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+import DocumentTitle from "../../../features/shared/DocumentTitle";
 
 export const AnnouncementIcon = styled(IonIcon)`
   font-size: 1.1rem;
@@ -138,12 +139,15 @@ function PostPageContent({
     if (!sort) return;
 
     return (
-      <PostDetail
-        post={post}
-        sort={sort}
-        commentPath={commentPath}
-        threadCommentId={threadCommentId}
-      />
+      <>
+        <DocumentTitle>{post.post.name}</DocumentTitle>
+        <PostDetail
+          post={post}
+          sort={sort}
+          commentPath={commentPath}
+          threadCommentId={threadCommentId}
+        />
+      </>
     );
   }
 

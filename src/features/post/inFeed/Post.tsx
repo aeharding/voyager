@@ -125,7 +125,6 @@ function Post(props: PostProps) {
         className={props.className}
         onHide={() => setShouldHide(true)}
       >
-        {/* href=undefined: Prevent drag failure on firefox */}
         <CustomIonItem
           mode="ios" // Use iOS style activatable tap highlight
           className={cx(isTouchDevice() && "ion-activatable")}
@@ -143,6 +142,7 @@ function Post(props: PostProps) {
             // and doesn't cause rerender, so do it now.
             autohidePostIfNeeded(props.post);
           }}
+          // href=undefined: Prevent drag failure on firefox
           href={undefined}
           ref={targetIntersectionRef}
           {...bind()}

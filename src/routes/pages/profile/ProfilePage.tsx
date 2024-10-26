@@ -22,6 +22,7 @@ import { useSetActivePage } from "../../../features/auth/AppContext";
 import AppHeader from "../../../features/shared/AppHeader";
 import { swapHorizontalSharp } from "ionicons/icons";
 import { isIosTheme } from "../../../helpers/device";
+import DocumentTitle from "../../../features/shared/DocumentTitle";
 
 export default function ProfilePage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -36,6 +37,8 @@ export default function ProfilePage() {
   const { presentAccountSwitcher } = useContext(PageContext);
 
   useSetActivePage(pageRef, !handle);
+
+  const title = handle ?? connectedInstance;
 
   return (
     <IonPage className="grey-bg" ref={pageRef}>
@@ -53,7 +56,8 @@ export default function ProfilePage() {
             </IonButtons>
           )}
 
-          <IonTitle>{handle ?? connectedInstance}</IonTitle>
+          <DocumentTitle>{title}</DocumentTitle>
+          <IonTitle>{title}</IonTitle>
 
           {loggedIn && (
             <IonButtons slot="end">
