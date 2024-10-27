@@ -7,7 +7,14 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { useCallback, useContext, useEffect, useMemo, useRef } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { jwtPayloadSelector } from "../../../features/auth/authSelectors";
 import { syncMessages } from "../../../features/inbox/inboxSlice";
 import { useParams } from "react-router";
@@ -28,6 +35,7 @@ import FeedContent from "../shared/FeedContent";
 import { CustomItemComponent, VList, VListHandle } from "virtua";
 import { styled } from "@linaria/react";
 import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
+import FeedLoadMoreFailed from "../../../features/feed/endItems/FeedLoadMoreFailed";
 
 const containerCss = css`
   ${maxWidthCss}
@@ -60,6 +68,8 @@ export default function ConversationPage() {
   );
   const { handle } = useParams<{ handle: string }>();
   const userByHandle = useAppSelector((state) => state.user.userByHandle);
+  const [error, setError] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(false);
 
   const keyboardOpen = useKeyboardOpen();
 
@@ -89,11 +99,26 @@ export default function ConversationPage() {
 
   useSetActivePage(pageRef);
 
-  useEffect(() => {
+  const loadUser = useCallback(async () => {
     if (userByHandle[handle]) return;
 
-    dispatch(getUser(handle));
+    setLoadingUser(true);
+
+    try {
+      await dispatch(getUser(handle));
+    } catch (error) {
+      setError(true);
+      throw error;
+    } finally {
+      setLoadingUser(false);
+    }
+
+    setError(false);
   }, [dispatch, handle, userByHandle]);
+
+  useEffect(() => {
+    loadUser();
+  }, [loadUser]);
 
   useEffect(() => {
     dispatch(syncMessages());
@@ -114,6 +139,50 @@ export default function ConversationPage() {
   useEffect(() => {
     scrollIfNeeded();
   }, [scrollIfNeeded, keyboardOpen]);
+
+  const content = (() => {
+    if (error)
+      return (
+        <FeedLoadMoreFailed
+          fetchMore={loadUser}
+          loading={loadingUser}
+          pluralType="messages"
+        />
+      );
+
+    if (typeof myUserId === "number" && them)
+      return (
+        <VList
+          className={containerCss}
+          ref={ref}
+          style={{ flex: 1 }}
+          reverse
+          onScroll={(offset) => {
+            // Wait for viewport resize to settle (iOS keyboard open/close)
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                if (!ref.current) return;
+                shouldStickToBottom.current =
+                  offset - ref.current.scrollSize + ref.current.viewportSize >=
+                  // FIXME: The sum may not be 0 because of sub-pixel value when browser's window.devicePixelRatio has decimal value
+                  -1.5;
+              });
+            });
+          }}
+          item={FlexItem as unknown as CustomItemComponent}
+        >
+          {messages.map((message, index) => (
+            <Message
+              key={message.private_message.id}
+              message={message}
+              first={index === 0}
+            />
+          ))}
+        </VList>
+      );
+
+    return <PageContentIonSpinner />;
+  })();
 
   return (
     <IonPage ref={pageRef}>
@@ -142,41 +211,7 @@ export default function ConversationPage() {
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <FeedContent>
-        {typeof myUserId === "number" ? (
-          <VList
-            className={containerCss}
-            ref={ref}
-            style={{ flex: 1 }}
-            reverse
-            onScroll={(offset) => {
-              // Wait for viewport resize to settle (iOS keyboard open/close)
-              requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                  if (!ref.current) return;
-                  shouldStickToBottom.current =
-                    offset -
-                      ref.current.scrollSize +
-                      ref.current.viewportSize >=
-                    // FIXME: The sum may not be 0 because of sub-pixel value when browser's window.devicePixelRatio has decimal value
-                    -1.5;
-                });
-              });
-            }}
-            item={FlexItem as unknown as CustomItemComponent}
-          >
-            {messages.map((message, index) => (
-              <Message
-                key={message.private_message.id}
-                message={message}
-                first={index === 0}
-              />
-            ))}
-          </VList>
-        ) : (
-          <PageContentIonSpinner />
-        )}
-      </FeedContent>
+      <FeedContent>{content}</FeedContent>
       <IonFooter
         className={css`
           background: var(--ion-background-color);
