@@ -42,7 +42,7 @@ export default function usePresentUserActions() {
               : b,
           ) === handle,
       );
-      const user = state.user.userByHandle[handle];
+      const user = state.user.userByHandle[handle.toLowerCase()];
 
       presentActionSheet({
         cssClass: "left-align-buttons",
@@ -56,7 +56,10 @@ export default function usePresentUserActions() {
               handler: () => {
                 if (presentLoginIfNeeded()) return;
 
-                router.push(buildGeneralBrowseLink(`/u/${handle}/message`));
+                router.push(
+                  // intent=send - SendMessageBox uses to determine focus
+                  buildGeneralBrowseLink(`/u/${handle}/message?intent=send`),
+                );
               },
             },
           !isCurrentUser && {

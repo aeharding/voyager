@@ -4,7 +4,14 @@ import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
 import { IonButton, IonIcon } from "@ionic/react";
-import { KeyboardEvent, useCallback, useContext, useState } from "react";
+import {
+  KeyboardEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import useClient from "../../helpers/useClient";
 import useAppToast from "../../helpers/useAppToast";
 import { receivedMessages } from "./inboxSlice";
@@ -14,6 +21,7 @@ import { privateMessageSendFailed } from "../../helpers/toastMessages";
 import { css } from "@linaria/core";
 import { PageContext } from "../auth/PageContext";
 import { Person } from "lemmy-js-client";
+import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -83,12 +91,15 @@ export default function SendMessageBox({
   onHeightChange,
   scrollToBottom,
 }: SendMessageBoxProps) {
+  const router = useOptimizedIonRouter();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState("");
   const client = useClient();
   const presentToast = useAppToast();
   const { presentPrivateMessageCompose } = useContext(PageContext);
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const send = useCallback(async () => {
     setLoading(true);
@@ -124,6 +135,19 @@ export default function SendMessageBox({
     [send],
   );
 
+  useEffect(() => {
+    const search = Object.fromEntries([
+      ...new URLSearchParams(router.getRouteInfo()?.search),
+    ]);
+
+    // only focus input if user intends to send a message
+    if (search.intent !== "send") return;
+
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+  }, [router]);
+
   return (
     <SendContainer>
       <MaxSizeContainer>
@@ -147,13 +171,13 @@ export default function SendMessageBox({
             <IonIcon
               icon={resize}
               slot="icon-only"
-              onClick={send}
               className={css`
                 transform: scale(1.1);
               `}
             />
           </IconButton>
           <Input
+            ref={inputRef}
             disabled={loading}
             placeholder="Message"
             onChange={(e) => setValue(e.target.value)}
@@ -162,6 +186,9 @@ export default function SendMessageBox({
             maxRows={5}
             onKeyDown={onKeyDown}
             onHeightChange={onHeightChange}
+            onFocus={(e) => {
+              e.stopPropagation();
+            }}
           />
           <IconButton
             disabled={!value.trim() || loading}

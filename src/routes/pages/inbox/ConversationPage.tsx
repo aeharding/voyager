@@ -81,8 +81,8 @@ export default function ConversationPage() {
       allMessages
         .filter((m) =>
           m.private_message.creator_id === myUserId
-            ? getHandle(m.recipient) === handle
-            : getHandle(m.creator) === handle,
+            ? getHandle(m.recipient).toLowerCase() === handle.toLowerCase()
+            : getHandle(m.creator).toLowerCase() === handle.toLowerCase(),
         )
         .sort(
           (a, b) =>
@@ -93,14 +93,14 @@ export default function ConversationPage() {
     [handle, allMessages, myUserId],
   );
 
-  const them = userByHandle[handle];
+  const them = userByHandle[handle.toLowerCase()];
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   useSetActivePage(pageRef);
 
   const loadUser = useCallback(async () => {
-    if (userByHandle[handle]) return;
+    if (userByHandle[handle.toLowerCase()]) return;
 
     setLoadingUser(true);
 
@@ -212,19 +212,19 @@ export default function ConversationPage() {
         </IonToolbar>
       </AppHeader>
       <FeedContent>{content}</FeedContent>
-      <IonFooter
-        className={css`
-          background: var(--ion-background-color);
-        `}
-      >
-        {them && (
+      {them && (
+        <IonFooter
+          className={css`
+            background: var(--ion-background-color);
+          `}
+        >
           <SendMessageBox
             recipient={them}
             onHeightChange={scrollIfNeeded}
             scrollToBottom={scrollToBottom}
           />
-        )}
-      </IonFooter>
+        </IonFooter>
+      )}
     </IonPage>
   );
 }
