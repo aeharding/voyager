@@ -45,7 +45,6 @@ export default function PrivateMessageMoreActions({
 
   const present = useCallback(() => {
     presentUserActions(getHandle(item.creator), {
-      hideMessageButton: true,
       prependButtons: [
         markReadAction,
         {

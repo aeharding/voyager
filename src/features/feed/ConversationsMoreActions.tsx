@@ -18,6 +18,7 @@ export default function ConversationsMoreActions() {
         disabled={!handle}
         onClick={() =>
           presentUserActions(handle, {
+            hideMessageButton: true,
             prependButtons: [
               {
                 text: handle,

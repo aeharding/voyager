@@ -61,7 +61,9 @@ const ModlogByUserHandle = memo(function ModlogByUserHandle({
   handle: string;
 }) {
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user.userByHandle[handle]);
+  const user = useAppSelector(
+    (state) => state.user.userByHandle[handle.toLowerCase()],
+  );
 
   useEffect(() => {
     if (user) return;
