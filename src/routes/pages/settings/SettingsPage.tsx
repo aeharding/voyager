@@ -209,10 +209,10 @@ export default function SettingsPage() {
 
           {currentHandle && (
             <IonItem routerLink="/settings/tags">
-              <IconBg color="color(display-p3 1 0.3 1)" size="1">
+              <IconBg color="color(display-p3 1 0.3 1)" size="1" slot="start">
                 <IonIcon icon={pricetag} />
               </IconBg>
-              <SettingLabel>User Tags</SettingLabel>
+              <IonLabel className="ion-text-nowrap">User Tags</IonLabel>
             </IonItem>
           )}
 
