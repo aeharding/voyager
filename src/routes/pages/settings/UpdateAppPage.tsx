@@ -15,7 +15,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { MaxWidthContainer } from "../../../features/shared/AppContent";
-import { SettingLabel } from "../profile/ProfileFeedItemsPage";
 import { useContext, useEffect, useRef, useState } from "react";
 import { UpdateContext } from "./update/UpdateContext";
 import { PageContentIonSpinner } from "../../../features/user/AsyncProfile";
@@ -106,9 +105,9 @@ export default function UpdateAppPage() {
             <IonList inset color="primary">
               <IonItem>
                 <IonLabel>Current version</IonLabel>
-                <SettingLabel slot="end" color="medium">
+                <IonLabel slot="end" color="medium">
                   {APP_VERSION}
-                </SettingLabel>
+                </IonLabel>
               </IonItem>
               <IonItem
                 href="https://github.com/aeharding/voyager/releases"

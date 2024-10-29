@@ -1,6 +1,7 @@
 import {
   IonIcon,
   IonItem,
+  IonLabel,
   IonList,
   IonPage,
   IonTitle,
@@ -8,7 +9,6 @@ import {
   useIonViewWillEnter,
 } from "@ionic/react";
 import AppContent from "../../../features/shared/AppContent";
-import { SettingLabel } from "../../../features/user/Profile";
 import {
   albumsOutline,
   chatbubbleOutline,
@@ -60,11 +60,11 @@ export default function BoxesPage() {
           <IonList inset color="primary">
             <IonItem routerLink="/inbox/all" onClick={interceptIfLoggedOut}>
               <IonIcon icon={fileTray} color="primary" />
-              <SettingLabel>Inbox (All)</SettingLabel>
+              <IonLabel className="ion-text-nowrap">Inbox (All)</IonLabel>
             </IonItem>
             <IonItem routerLink="/inbox/unread" onClick={interceptIfLoggedOut}>
               <IonIcon icon={ellipseOutline} color="primary" />
-              <SettingLabel>Unread</SettingLabel>
+              <IonLabel className="ion-text-nowrap">Unread</IonLabel>
             </IonItem>
           </IonList>
 
@@ -74,21 +74,21 @@ export default function BoxesPage() {
               onClick={interceptIfLoggedOut}
             >
               <IonIcon icon={albumsOutline} color="primary" />
-              <SettingLabel>Post Replies</SettingLabel>
+              <IonLabel className="ion-text-nowrap">Post Replies</IonLabel>
             </IonItem>
             <IonItem
               routerLink="/inbox/comment-replies"
               onClick={interceptIfLoggedOut}
             >
               <IonIcon icon={chatbubbleOutline} color="primary" />
-              <SettingLabel>Comment Replies</SettingLabel>
+              <IonLabel className="ion-text-nowrap">Comment Replies</IonLabel>
             </IonItem>
             <IonItem
               routerLink="/inbox/mentions"
               onClick={interceptIfLoggedOut}
             >
               <IonIcon icon={personCircleOutline} color="primary" />
-              <SettingLabel>Mentions</SettingLabel>
+              <IonLabel className="ion-text-nowrap">Mentions</IonLabel>
             </IonItem>
           </IonList>
 
@@ -98,7 +98,7 @@ export default function BoxesPage() {
               onClick={interceptIfLoggedOut}
             >
               <IonIcon icon={mail} color="primary" />
-              <SettingLabel>Messages</SettingLabel>
+              <IonLabel className="ion-text-nowrap">Messages</IonLabel>
             </IonItem>
           </IonList>
         </AppContent>
