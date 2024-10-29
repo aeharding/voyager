@@ -7,7 +7,14 @@ import SlidingVote from "../../shared/sliding/SlidingPostVote";
 import { IonItem } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { getHandle } from "../../../helpers/lemmy";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  experimental_useEffectEvent as useEffectEvent,
+} from "react";
 import { hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
 import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
@@ -53,7 +60,7 @@ function Post(props: PostProps) {
 
   const targetIntersectionRef = useRef<HTMLIonItemElement>(null);
 
-  const onFinishHide = useCallback(() => {
+  const onFinishHide = () => {
     hideCompleteRef.current = true;
 
     const isHidden =
@@ -64,22 +71,24 @@ function Post(props: PostProps) {
     } else {
       dispatch(hidePost(props.post.post.id));
     }
-  }, [dispatch, props.post.post.id]);
+  };
 
-  useEffect(() => {
-    // Refs must be used during cleanup useEffect
-    shouldHideRef.current = shouldHide;
-  }, [shouldHide]);
+  // eslint-disable-next-line react-compiler/react-compiler
+  const onFinishHideEvent = useEffectEvent(onFinishHide);
 
   useEffect(() => {
     return () => {
       if (!shouldHideRef.current) return;
       if (hideCompleteRef.current) return;
 
-      onFinishHide();
+      onFinishHideEvent();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // Refs must be used during cleanup useEffect
+    shouldHideRef.current = shouldHide;
+  }, [shouldHide]);
 
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
@@ -116,7 +125,6 @@ function Post(props: PostProps) {
         className={props.className}
         onHide={() => setShouldHide(true)}
       >
-        {/* href=undefined: Prevent drag failure on firefox */}
         <CustomIonItem
           mode="ios" // Use iOS style activatable tap highlight
           className={cx(isTouchDevice() && "ion-activatable")}
@@ -134,6 +142,7 @@ function Post(props: PostProps) {
             // and doesn't cause rerender, so do it now.
             autohidePostIfNeeded(props.post);
           }}
+          // href=undefined: Prevent drag failure on firefox
           href={undefined}
           ref={targetIntersectionRef}
           {...bind()}

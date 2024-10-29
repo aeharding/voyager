@@ -68,7 +68,16 @@ export const resolveObject =
         q: url,
       });
     } catch (error) {
-      if (isLemmyError(error, "couldnt_find_object")) {
+      if (
+        // TODO START lemmy 0.19 and less support
+        isLemmyError(error, "couldnt_find_object" as never) ||
+        isLemmyError(error, "couldnt_find_post" as never) ||
+        isLemmyError(error, "couldnt_find_comment" as never) ||
+        isLemmyError(error, "couldnt_find_person" as never) ||
+        isLemmyError(error, "couldnt_find_community" as never) ||
+        // TODO END
+        isLemmyError(error, "not_found")
+      ) {
         try {
           const fedilink = await findFedilink(url);
 
@@ -81,7 +90,16 @@ export const resolveObject =
             q: fedilink,
           });
         } catch (error) {
-          if (isLemmyError(error, "couldnt_find_object")) {
+          if (
+            // TODO START lemmy 0.19 and less support
+            isLemmyError(error, "couldnt_find_object" as never) ||
+            isLemmyError(error, "couldnt_find_post" as never) ||
+            isLemmyError(error, "couldnt_find_comment" as never) ||
+            isLemmyError(error, "couldnt_find_person" as never) ||
+            isLemmyError(error, "couldnt_find_community" as never) ||
+            // TODO END
+            isLemmyError(error, "not_found")
+          ) {
             dispatch(couldNotFindUrl(url));
           }
           throw error;

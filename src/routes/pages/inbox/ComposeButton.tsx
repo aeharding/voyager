@@ -24,9 +24,11 @@ export default function ComposeButton() {
       user = await dispatch(getUser(handle));
     } catch (error) {
       presentToast({
-        message: isLemmyError(error, "couldnt_find_person")
-          ? `Could not find user with handle ${handle}`
-          : "Server error. Please try again.",
+        message:
+          isLemmyError(error, "couldnt_find_person" as never) || // TODO lemmy 0.19 and less support
+          isLemmyError(error, "not_found")
+            ? `Could not find user with handle ${handle}`
+            : "Server error. Please try again.",
         color: "danger",
       });
 

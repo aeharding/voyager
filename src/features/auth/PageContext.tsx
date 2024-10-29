@@ -18,7 +18,7 @@ import {
   PostView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import { Report, ReportHandle, ReportableItem } from "../report/Report";
+import Report, { ReportHandle, ReportableItem } from "../report/Report";
 import PostEditorModal from "../post/new/PostEditorModal";
 import SelectTextModal from "../shared/SelectTextModal";
 import ShareAsImageModal, {
@@ -162,15 +162,17 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   );
 
   // Markdown editor start
-  const markdownEditorData = useRef<MarkdownEditorData>();
+  const [markdownEditorData, setMarkdownEditorData] = useState<
+    MarkdownEditorData | undefined
+  >();
   const [isMarkdownEditorOpen, setIsMarkdownEditorOpen] = useState(false);
   const presentMarkdownEditor = useCallback(
     <T extends MarkdownEditorData>(data: Omit<T, "onSubmit">) =>
       new Promise<Parameters<T["onSubmit"]>[0]>((resolve) => {
-        markdownEditorData.current = {
+        setMarkdownEditorData({
           ...data,
           onSubmit: resolve,
-        } as T;
+        } as T);
         setIsMarkdownEditorOpen(true);
       }),
     [],
@@ -178,11 +180,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
 
   useEffect(() => {
     if (isMarkdownEditorOpen) return;
+    if (!markdownEditorData) return;
 
-    markdownEditorData.current?.onSubmit(undefined);
-    markdownEditorData.current = undefined;
+    markdownEditorData.onSubmit(undefined);
+    setMarkdownEditorData(undefined);
     return;
-  }, [isMarkdownEditorOpen]);
+  }, [isMarkdownEditorOpen, markdownEditorData]);
 
   const presentPrivateMessageCompose = useCallback<
     IPageContext["presentPrivateMessageCompose"]
@@ -215,11 +218,11 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   // Markdown editor end
 
   // Edit/new post start
-  const postItem = useRef<PostView | string>();
+  const [postItem, setPostItem] = useState<PostView | string | undefined>();
   const [isPostOpen, setIsPostOpen] = useState(false);
   const presentPostEditor = useCallback(
     (postOrCommunity: PostView | string) => {
-      postItem.current = postOrCommunity;
+      setPostItem(postOrCommunity);
       setIsPostOpen(true);
     },
     [],
@@ -227,28 +230,28 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   // Edit/new post end
 
   // Select text start
-  const selectTextItem = useRef<string>();
+  const [selectTextItem, setSelectTextItem] = useState<string | undefined>();
   const [isSelectTextOpen, setIsSelectTextOpen] = useState(false);
   const presentSelectText = useCallback((text: string) => {
-    selectTextItem.current = text;
+    setSelectTextItem(text);
     setIsSelectTextOpen(true);
   }, []);
   // Select text end
 
   // Ban user start
-  const banItem = useRef<BanUserPayload>();
+  const [banItem, setBanItem] = useState<BanUserPayload | undefined>();
   const [isBanUserOpen, setIsBanUserOpen] = useState(false);
   const presentBanUser = useCallback((banUserPayload: BanUserPayload) => {
-    banItem.current = banUserPayload;
+    setBanItem(banUserPayload);
     setIsBanUserOpen(true);
   }, []);
   // Ban user end
 
   // User tag start
-  const userTagItem = useRef<Person>();
+  const [userTagItem, setUserTagItem] = useState<Person | undefined>();
   const [isUserTagOpen, setIsUserTagOpen] = useState(false);
   const presentUserTag = useCallback((person: Person) => {
-    userTagItem.current = person;
+    setUserTagItem(person);
     setIsUserTagOpen(true);
   }, []);
   // User tag end
@@ -274,19 +277,19 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     presentAccountSwitcherModal({ cssClass: "small" });
   }, [presentAccountSwitcherModal]);
 
-  const crosspost = useRef<PostView | undefined>();
+  const [crosspost, setCrosspost] = useState<PostView | undefined>();
   const [presentCrosspost, onDismissCrosspost] = useIonModal(
     CreateCrosspostDialog,
     {
       onDismiss: (data?: string, role?: string) =>
         onDismissCrosspost(data, role),
-      post: crosspost.current!,
+      post: crosspost!,
     },
   );
 
   const presentCreateCrosspost = useCallback(
     (post: PostView) => {
-      crosspost.current = post;
+      setCrosspost(post);
       presentCrosspost({ cssClass: "transparent-scroll dark" });
     },
     [presentCrosspost],
@@ -331,28 +334,28 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
 
       <LoginModal isOpen={isLoginOpen} setIsOpen={setIsLoginOpen} />
       <GenericMarkdownEditorModal
-        {...markdownEditorData.current!}
+        {...markdownEditorData!}
         isOpen={isMarkdownEditorOpen}
         setIsOpen={setIsMarkdownEditorOpen}
       />
       <Report ref={reportRef} />
       <PostEditorModal
-        postOrCommunity={postItem.current!}
+        postOrCommunity={postItem!}
         isOpen={isPostOpen}
         setIsOpen={setIsPostOpen}
       />
       <BanUserModal
-        item={banItem.current!}
+        item={banItem!}
         isOpen={isBanUserOpen}
         setIsOpen={setIsBanUserOpen}
       />
       <SelectTextModal
-        text={selectTextItem.current!}
+        text={selectTextItem!}
         isOpen={isSelectTextOpen}
         setIsOpen={setIsSelectTextOpen}
       />
       <UserTagModal
-        person={userTagItem.current!}
+        person={userTagItem!}
         isOpen={isUserTagOpen}
         setIsOpen={setIsUserTagOpen}
       />

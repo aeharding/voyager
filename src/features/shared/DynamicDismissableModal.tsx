@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { IonModal, useIonActionSheet } from "@ionic/react";
@@ -61,6 +62,12 @@ export function DynamicDismissableModal({
     HTMLElement | undefined
   >();
 
+  const isOpenRef = useRef(isOpen);
+
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  });
+
   useEffect(() => {
     setPresentingElement(
       pageContext.pageRef?.current?.closest("ion-tabs") ?? undefined,
@@ -114,12 +121,11 @@ export function DynamicDismissableModal({
 
   // HTML5 route change, and Prompt already caught and user acknowledged
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpenRef.current) return;
 
     setCanDismiss(true);
     setIsOpen(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
+  }, [location.pathname, setCanDismiss, setIsOpen]);
 
   const dismiss = useCallback(() => {
     if (canDismissRef.current) {

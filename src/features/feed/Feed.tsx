@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import {
   IonRefresher,
@@ -229,9 +230,10 @@ export default function Feed<I>({
 
   useSetActivePage(virtuaHandle);
 
+  const fetchMoreEvent = useEffectEvent(fetchMore);
+
   useEffect(() => {
-    fetchMore(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchMoreEvent(true);
   }, [fetchFn]);
 
   const footer = (() => {

@@ -14,7 +14,7 @@ jobs:
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
       - name: 📦 Install dependencies
@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Build iOS on Appflow
-        uses: ionic-team/appflow-build@v1
+        uses: ionic-team/appflow-build@v1.0.5
         with:
           token: ${{ secrets.APPFLOW_TOKEN }}
           app-id: 9f0851ec
@@ -58,13 +58,14 @@ jobs:
           destinations: Voyager App Store
           filename: Voyager-iOS-${{ github.ref_name }}
           upload-artifact: Voyager-iOS-${{ github.ref_name }}-Build.zip
+          build-stack: macOS - 2024.10 - Apple silicon
 
   build_android_play:
     runs-on: ubuntu-latest
 
     steps:
       - name: Build Android on Appflow
-        uses: ionic-team/appflow-build@v1
+        uses: ionic-team/appflow-build@v1.0.5
         with:
           token: ${{ secrets.APPFLOW_TOKEN }}
           app-id: 9f0851ec
@@ -78,7 +79,7 @@ jobs:
 
     steps:
       - name: Build Android on Appflow
-        uses: ionic-team/appflow-build@v1
+        uses: ionic-team/appflow-build@v1.0.5
         with:
           token: ${{ secrets.APPFLOW_TOKEN }}
           app-id: 9f0851ec

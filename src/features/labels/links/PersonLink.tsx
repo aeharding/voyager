@@ -2,7 +2,7 @@ import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { Person } from "lemmy-js-client";
 import { renderHandle } from "../Handle";
-import store, { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
 import { OInstanceUrlDisplayMode } from "../../../services/db";
 import AgeBadge from "./AgeBadge";
 import { useCallback, useContext } from "react";
@@ -15,15 +15,9 @@ import { styled } from "@linaria/react";
 import { LinkContainer, StyledLink, hideCss } from "./shared";
 import { cx } from "@linaria/core";
 import { LongPressOptions, useLongPress } from "use-long-press";
-import { useIonActionSheet } from "@ionic/react";
-import { pricetagOutline, removeCircleOutline } from "ionicons/icons";
-import { blockUser } from "../../user/userSlice";
-import useAppToast from "../../../helpers/useAppToast";
-import { buildBlocked } from "../../../helpers/toastMessages";
-import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
 import UserScore from "../../tags/UserScore";
-import { PageContext } from "../../auth/PageContext";
 import UserTag from "../../tags/UserTag";
+import usePresentUserActions from "../../user/usePresentUserActions";
 
 const Prefix = styled.span`
   font-weight: normal;
@@ -53,66 +47,22 @@ export default function PersonLink({
   showTag = true,
   disableInstanceClick,
 }: PersonLinkProps) {
-  const presentToast = useAppToast();
-  const [presentActionSheet] = useIonActionSheet();
-  const dispatch = useAppDispatch();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const isAdmin = useAppSelector((state) => state.site.response?.admins)?.some(
     (admin) => admin.person.actor_id === person.actor_id,
   );
   const { hideUsernames } = useContext(ShareImageContext);
-  const { presentUserTag } = useContext(PageContext);
+  const presentUserActions = usePresentUserActions();
+
   const tag = useAppSelector(
     (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
   );
 
   const onCommunityLinkLongPress = useCallback(() => {
-    const state = store.getState();
-
-    const blocks = state.site.response?.my_user?.person_blocks;
-    const isBlocked = blocks?.some(
-      (b) => getHandle(b.target) === getHandle(person),
-    );
-
     stopIonicTapClick();
 
-    presentActionSheet({
-      cssClass: "left-align-buttons",
-      buttons: [
-        {
-          text: `${isBlocked ? "Unblock" : "Block"} User`,
-          icon: removeCircleOutline,
-          role: "destructive",
-          handler: () => {
-            (async () => {
-              try {
-                await dispatch(blockUser(!isBlocked, person.id));
-              } catch (error) {
-                presentToast({
-                  color: "danger",
-                  message: getBlockUserErrorMessage(error, person),
-                });
-                throw error;
-              }
-
-              presentToast(buildBlocked(!isBlocked, getHandle(person)));
-            })();
-          },
-        },
-        {
-          text: "Edit Tag",
-          icon: pricetagOutline,
-          handler: async () => {
-            presentUserTag(person);
-          },
-        },
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
-      ],
-    });
-  }, [presentActionSheet, presentToast, dispatch, person, presentUserTag]);
+    presentUserActions(getHandle(person));
+  }, [presentUserActions, person]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
     cancelOnMovement: 15,

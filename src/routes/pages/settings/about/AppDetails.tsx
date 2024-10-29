@@ -4,19 +4,19 @@ const AppContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 16px;
   font-size: 1.2rem;
-  margin: 2rem 0 3rem;
+  margin: 32px 32px 48px;
 
   img {
     width: 70px;
     height: 70px;
-    border-radius: 1rem;
+    border-radius: 16px;
   }
 
   aside {
     font-size: 0.9rem;
-    margin-top: 0.25rem;
+    margin-top: 4px;
     color: var(--ion-color-medium);
   }
 `;

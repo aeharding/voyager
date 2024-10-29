@@ -17,6 +17,7 @@ import {
 import FeedContent from "../shared/FeedContent";
 import { memo } from "react";
 import AppHeader from "../../../features/shared/AppHeader";
+import DocumentTitle from "../../../features/shared/DocumentTitle";
 
 interface UserPageProps {
   handle: string;
@@ -43,6 +44,7 @@ const UserPageContent = memo(function UserPageContent({
             <IonBackButton />
           </IonButtons>
 
+          <DocumentTitle>{handle}</DocumentTitle>
           <IonTitle>{handle}</IonTitle>
 
           <IonButtons slot="end">

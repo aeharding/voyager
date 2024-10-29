@@ -16,7 +16,7 @@ export const isNative = memoize(() => {
 });
 
 export function isInstalled(): boolean {
-  return window.matchMedia("(display-mode: standalone)").matches || isNative();
+  return isNative() || window.matchMedia("(display-mode: standalone)").matches;
 }
 
 export const ua = new UAParser(navigator.userAgent);

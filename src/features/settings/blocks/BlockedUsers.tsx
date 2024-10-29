@@ -10,10 +10,26 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { useState } from "react";
 import { getHandle } from "../../../helpers/lemmy";
-import { PersonBlockView } from "lemmy-js-client";
 import { blockUser } from "../../user/userSlice";
 import { ListHeader } from "../shared/formatting";
 import { RemoveItemButton } from "../../shared/ListEditor";
+import { Person } from "lemmy-js-client";
+
+/**
+ * TODO remove once we drop support for lemmy 0.19
+ */
+type PersonBlockView = {
+  target: Person;
+};
+
+/**
+ * TODO remove - Lemmy 0.19 returned user block view. v0.20 returns user.
+ */
+function getPerson(potentialPerson: PersonBlockView | Person): Person {
+  if ("target" in potentialPerson) return potentialPerson.target;
+
+  return potentialPerson;
+}
 
 export default function BlockedUsers() {
   const dispatch = useAppDispatch();
@@ -24,14 +40,15 @@ export default function BlockedUsers() {
   );
 
   const sortedUsers = users
+    ?.map(getPerson)
     ?.slice()
-    .sort((a, b) => a.target.name.localeCompare(b.target.name));
+    .sort((a, b) => a.name.localeCompare(b.name));
 
-  async function remove(user: PersonBlockView) {
+  async function remove(user: Person) {
     setLoading(true);
 
     try {
-      await dispatch(blockUser(false, user.target.id));
+      await dispatch(blockUser(false, user.id));
     } finally {
       setLoading(false);
     }
@@ -46,7 +63,7 @@ export default function BlockedUsers() {
       <IonList inset>
         {sortedUsers?.length ? (
           sortedUsers.map((user) => (
-            <IonItemSliding key={user.target.id}>
+            <IonItemSliding key={user.id}>
               <IonItemOptions side="end" onIonSwipe={() => remove(user)}>
                 <IonItemOption
                   color="danger"
@@ -57,7 +74,7 @@ export default function BlockedUsers() {
                 </IonItemOption>
               </IonItemOptions>
               <IonItem>
-                <IonLabel>{getHandle(user.target)}</IonLabel>
+                <IonLabel>{getHandle(user)}</IonLabel>
                 <RemoveItemButton />
               </IonItem>
             </IonItemSliding>

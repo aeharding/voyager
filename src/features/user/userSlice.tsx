@@ -24,7 +24,7 @@ export const userSlice = createSlice({
   reducers: {
     receivedUsers: (state, action: PayloadAction<Person[]>) => {
       for (const user of action.payload) {
-        state.userByHandle[getHandle(user)] = user;
+        state.userByHandle[getHandle(user).toLowerCase()] = user;
       }
     },
     updateBanned: (

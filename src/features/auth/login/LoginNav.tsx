@@ -1,7 +1,7 @@
 import { IonNav, IonSpinner } from "@ionic/react";
 import Welcome from "./welcome/Welcome";
 import { styled } from "@linaria/react";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { IonNavCustomEvent } from "@ionic/core";
 import { DynamicDismissableModalContext } from "../../shared/DynamicDismissableModal";
 
@@ -29,6 +29,13 @@ function blurDocument() {
 }
 
 export default function LoginNav() {
+  const [root] = useState(
+    () =>
+      function render() {
+        return <Welcome />;
+      },
+  );
+
   const { setCanDismiss } = useContext(DynamicDismissableModalContext);
 
   const onIonNavDidChange = useCallback(
@@ -42,7 +49,7 @@ export default function LoginNav() {
 
   return (
     <IonNav
-      root={() => <Welcome />}
+      root={root}
       onIonNavWillChange={blurDocument}
       onIonNavDidChange={onIonNavDidChange}
     />

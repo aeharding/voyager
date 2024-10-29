@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CommentSortType, SortType } from "lemmy-js-client";
+import { CommentSortType, PostSortType } from "lemmy-js-client";
 import { db } from "../../../services/db";
 import { RootState } from "../../../store";
 import { AnyFeed, serializeFeedName } from "../helpers";
@@ -9,7 +9,7 @@ interface PostSortState {
    * `null`: Loaded from database, but nothing there
    */
   sortByContextByFeedName: {
-    posts: Record<string, SortType | null>;
+    posts: Record<string, PostSortType | null>;
     comments: Record<string, CommentSortType | null>;
   };
 }
@@ -24,7 +24,7 @@ const initialState: PostSortState = {
 export type SetSortActionPayload =
   | {
       feed: AnyFeed;
-      sort: SortType;
+      sort: PostSortType;
       context: "posts";
     }
   | {

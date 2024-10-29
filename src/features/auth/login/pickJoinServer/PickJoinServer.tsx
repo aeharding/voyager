@@ -362,7 +362,7 @@ export default function PickJoinServer() {
           />
         </FiltersToolbar>
       </AppHeader>
-      <IonContent ref={contentRef}>
+      <IonContent ref={contentRef} scrollY={false}>
         <IonRadioGroup
           value={selection}
           onIonChange={(e) => setSelection(e.detail.value)}

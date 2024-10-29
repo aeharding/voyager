@@ -23,6 +23,7 @@ import { banUser } from "../../user/userSlice";
 import { Centered, Spinner } from "../../auth/login/LoginNav";
 import { buildBanFailed, buildBanned } from "../../../helpers/toastMessages";
 import AppHeader from "../../shared/AppHeader";
+import { addDays } from "date-fns";
 
 const Title = styled.span`
   overflow: hidden;
@@ -91,12 +92,16 @@ export default function BanUser({
           person_id: user.id,
           community_id: community.id,
           reason,
-          expires: !permanent ? days : undefined,
-          remove_data: removeContent,
+          expires: !permanent
+            ? Math.trunc(addDays(new Date(), days).getTime() / 1_000)
+            : undefined,
+          remove_or_restore_data: removeContent,
+          ["remove_data" as never]: removeContent, // TODO lemmy 0.19.0 and less support
         }),
       );
-    } catch (_) {
+    } catch (error) {
       presentToast(buildBanFailed(true));
+      throw error;
     } finally {
       setLoading(false);
     }
