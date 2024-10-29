@@ -58,6 +58,7 @@ export const userTagSlice = createSlice({
     updateTag: (state, action: PayloadAction<UserTag>) => {
       state.tagByRemoteHandle[action.payload.handle] = action.payload;
     },
+    reset: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -123,6 +124,11 @@ export const updateTag =
     dispatch(userTagSlice.actions.updateTag(updatedTag));
     await db.updateTag(updatedTag);
   };
+
+export const resetTags = () => async (dispatch: AppDispatch) => {
+  dispatch(userTagSlice.actions.reset());
+  await db.resetTags();
+};
 
 export function generateNewTag(handle: string): UserTag {
   return {

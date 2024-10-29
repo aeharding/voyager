@@ -1,18 +1,16 @@
 import { IonItem, IonText, IonToggle } from "@ionic/react";
-import { setAutoHideRead } from "../settingsSlice";
-import { useAppDispatch } from "../../../store";
+import { setTagsEnabled } from "../settingsSlice";
+import { useAppDispatch, useAppSelector } from "../../../store";
 
 export default function Enabled() {
   const dispatch = useAppDispatch();
-  //   const autoHideRead = useAppSelector(
-  //     (state) => state.settings.general.posts.autoHideRead,
-  //   );
+  const enabled = useAppSelector((state) => state.settings.tags.enabled);
 
   return (
     <IonItem>
       <IonToggle
-        checked={true}
-        onIonChange={(e) => dispatch(setAutoHideRead(e.detail.checked))}
+        checked={enabled}
+        onIonChange={(e) => dispatch(setTagsEnabled(e.detail.checked))}
       >
         Enable User Tags <IonText color="medium">(experimental)</IonText>
       </IonToggle>

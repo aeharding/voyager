@@ -1,18 +1,16 @@
 import { IonItem, IonToggle } from "@ionic/react";
-import { setAutoHideRead } from "../settingsSlice";
-import { useAppDispatch } from "../../../store";
+import { setTagsTrackVotes } from "../settingsSlice";
+import { useAppDispatch, useAppSelector } from "../../../store";
 
 export default function TrackVotes() {
   const dispatch = useAppDispatch();
-  //   const autoHideRead = useAppSelector(
-  //     (state) => state.settings.general.posts.autoHideRead,
-  //   );
+  const trackVotes = useAppSelector((state) => state.settings.tags.trackVotes);
 
   return (
     <IonItem>
       <IonToggle
-        checked={true}
-        onIonChange={(e) => dispatch(setAutoHideRead(e.detail.checked))}
+        checked={trackVotes}
+        onIonChange={(e) => dispatch(setTagsTrackVotes(e.detail.checked))}
       >
         Track Votes
       </IonToggle>

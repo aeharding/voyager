@@ -1,18 +1,18 @@
 import { IonItem, IonToggle } from "@ionic/react";
-import { setAutoHideRead } from "../settingsSlice";
-import { useAppDispatch } from "../../../store";
+import { setTagsHideInstance } from "../settingsSlice";
+import { useAppDispatch, useAppSelector } from "../../../store";
 
 export default function HideInstance() {
   const dispatch = useAppDispatch();
-  //   const autoHideRead = useAppSelector(
-  //     (state) => state.settings.general.posts.autoHideRead,
-  //   );
+  const hideInstance = useAppSelector(
+    (state) => state.settings.tags.hideInstance,
+  );
 
   return (
     <IonItem>
       <IonToggle
-        checked={true}
-        onIonChange={(e) => dispatch(setAutoHideRead(e.detail.checked))}
+        checked={hideInstance}
+        onIonChange={(e) => dispatch(setTagsHideInstance(e.detail.checked))}
       >
         Hide Instance When Tagged
       </IonToggle>

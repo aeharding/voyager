@@ -378,6 +378,10 @@ export type SettingValueTypes = {
   show_collapsed_comment: boolean;
   quick_switch_dark_mode: boolean;
   subscribed_icon: ShowSubscribedIcon;
+  tags_enabled: boolean;
+  tags_track_votes: boolean;
+  tags_hide_instance: boolean;
+  tags_save_source: boolean;
 };
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
@@ -764,6 +768,10 @@ export class WefwefDB extends Dexie {
       .offset((page - 1) * limit)
       .limit(limit)
       .toArray();
+  }
+
+  async resetTags() {
+    return await this.userTags.clear();
   }
 
   /*
