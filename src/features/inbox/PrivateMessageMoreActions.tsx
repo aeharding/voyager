@@ -44,7 +44,7 @@ export default function PrivateMessageMoreActions({
   const { navigateToUser } = useAppNavigation();
 
   const present = useCallback(() => {
-    presentUserActions(getHandle(item.creator), {
+    presentUserActions(item.creator, {
       prependButtons: [
         markReadAction,
         {

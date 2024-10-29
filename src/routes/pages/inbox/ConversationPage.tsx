@@ -207,7 +207,7 @@ export default function ConversationPage() {
           </IonTitle>
 
           <IonButtons slot="end">
-            <ConversationsMoreActions />
+            <ConversationsMoreActions person={them} />
           </IonButtons>
         </IonToolbar>
       </AppHeader>

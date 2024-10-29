@@ -61,7 +61,7 @@ export default function PersonLink({
   const onCommunityLinkLongPress = useCallback(() => {
     stopIonicTapClick();
 
-    presentUserActions(getHandle(person));
+    presentUserActions(person);
   }, [presentUserActions, person]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {

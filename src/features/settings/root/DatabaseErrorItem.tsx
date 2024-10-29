@@ -12,6 +12,7 @@ import { css } from "@linaria/core";
 import { useAppSelector } from "../../../store";
 import { isAppleDeviceInstallable } from "../../../helpers/device";
 import InAppExternalLink from "../../shared/InAppExternalLink";
+import Dexie from "dexie";
 
 export default function DatabaseErrorItem() {
   const [presentPreview] = useIonModal(WarningModal);
@@ -56,13 +57,40 @@ function WarningModal() {
     </>
   );
 
-  return (
-    <div className="ion-padding">
-      <h3>There was an issue setting up Voyager&apos;s database.</h3>
+  const body = (() => {
+    if (
+      databaseError?.name === Dexie.errnames.DatabaseClosed &&
+      isAppleDeviceInstallable()
+    ) {
+      return (
+        <>
+          <p>
+            This error occurs due to an <strong>Apple bug regression</strong>{" "}
+            that has not been fixed yet. For more information, please
+            <InAppExternalLink
+              href="https://bugs.webkit.org/show_bug.cgi?id=277615"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              visit this ticket on Apple&apos;s Safari bug tracker.
+            </InAppExternalLink>
+          </p>
+          <p>
+            To fix this issue,{" "}
+            <strong>
+              please force close the app and reopen, or restart your device.
+            </strong>
+          </p>
+          <p>
+            If you are still seeing this error message after force closing the
+            app, please {reportText}
+          </p>
+        </>
+      );
+    }
 
-      <p>Non-critical settings will be forgotten when the app relaunches.</p>
-
-      {isAppleDeviceInstallable() ? (
+    if (isAppleDeviceInstallable()) {
+      return (
         <>
           <p>
             This error occurs in <strong>Lockdown Mode</strong> because certain
@@ -83,9 +111,19 @@ function WarningModal() {
             Mode is turned off, please {reportText}
           </p>
         </>
-      ) : (
-        <p>Please {reportText}</p>
-      )}
+      );
+    }
+
+    return <p>Please {reportText}</p>;
+  })();
+
+  return (
+    <div className="ion-padding">
+      <h3>There was an issue setting up Voyager&apos;s database.</h3>
+
+      <p>Non-critical settings will be forgotten when the app relaunches.</p>
+
+      {body}
 
       {databaseError && (
         <p>
