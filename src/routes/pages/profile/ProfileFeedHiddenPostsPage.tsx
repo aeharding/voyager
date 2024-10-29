@@ -1,6 +1,5 @@
 import { useCallback, useRef } from "react";
 import {
-  IonLabel,
   IonPage,
   IonToolbar,
   IonTitle,
@@ -20,13 +19,8 @@ import { userHandleSelector } from "../../../features/auth/authSelectors";
 import { IPostMetadata, db } from "../../../services/db";
 import { postHiddenByIdSelector } from "../../../features/post/postSlice";
 import FeedContent from "../shared/FeedContent";
-import { styled } from "@linaria/react";
 import AppHeader from "../../../features/shared/AppHeader";
 import useResetHiddenPosts from "../../../features/feed/useResetHiddenPosts";
-
-export const SettingLabel = styled(IonLabel)`
-  margin-left: 1rem;
-`;
 
 // Currently, we have to fetch each post with a separate API call.
 // That's why the page size is only 10

@@ -1,6 +1,12 @@
-import { IonBadge, IonIcon, IonItem, IonList, useIonModal } from "@ionic/react";
+import {
+  IonBadge,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  useIonModal,
+} from "@ionic/react";
 import { IconBg } from "../../../routes/pages/settings/SettingsPage";
-import { SettingLabel } from "../../user/Profile";
 import { alert } from "ionicons/icons";
 import { css } from "@linaria/core";
 import { useAppSelector } from "../../../store";
@@ -23,10 +29,10 @@ export default function DatabaseErrorItem() {
   return (
     <IonList inset>
       <IonItem onClick={present}>
-        <IconBg color="color(display-p3 1 0.7 0)" size="1.2">
+        <IconBg color="color(display-p3 1 0.7 0)" size="1.2" slot="start">
           <IonIcon icon={alert} />
         </IconBg>
-        <SettingLabel>Error — App limited</SettingLabel>
+        <IonLabel>Error — App limited</IonLabel>
         <IonBadge color="danger">!</IonBadge>
       </IonItem>
     </IonList>

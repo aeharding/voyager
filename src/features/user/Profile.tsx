@@ -25,11 +25,6 @@ import {
   getModName,
 } from "../moderation/useCanModerate";
 import useModZoneActions from "../moderation/useModZoneActions";
-import { styled } from "@linaria/react";
-
-export const SettingLabel = styled(IonLabel)`
-  margin-left: 16px;
-`;
 
 interface ProfileProps
   extends Pick<ComponentProps<typeof PostCommentFeed>, "onPull"> {
@@ -74,16 +69,16 @@ export default function Profile({ person, onPull }: ProfileProps) {
             `/u/${getHandle(person.person_view.person)}/posts`,
           )}
         >
-          <IonIcon icon={albumsOutline} color="primary" />{" "}
-          <SettingLabel>Posts</SettingLabel>
+          <IonIcon icon={albumsOutline} color="primary" slot="start" />{" "}
+          <IonLabel className="ion-text-nowrap">Posts</IonLabel>
         </IonItem>
         <IonItem
           routerLink={buildGeneralBrowseLink(
             `/u/${getHandle(person.person_view.person)}/comments`,
           )}
         >
-          <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
-          <SettingLabel>Comments</SettingLabel>
+          <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />{" "}
+          <IonLabel className="ion-text-nowrap">Comments</IonLabel>
         </IonItem>
         {isSelf && (
           <>
@@ -92,32 +87,32 @@ export default function Profile({ person, onPull }: ProfileProps) {
                 `/u/${getHandle(person.person_view.person)}/saved`,
               )}
             >
-              <IonIcon icon={bookmarkOutline} color="primary" />{" "}
-              <SettingLabel>Saved</SettingLabel>
+              <IonIcon icon={bookmarkOutline} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Saved</IonLabel>
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/upvoted`,
               )}
             >
-              <IonIcon icon={arrowUp} color="primary" />{" "}
-              <SettingLabel>Upvoted</SettingLabel>
+              <IonIcon icon={arrowUp} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Upvoted</IonLabel>
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/downvoted`,
               )}
             >
-              <IonIcon icon={arrowDown} color="primary" />{" "}
-              <SettingLabel>Downvoted</SettingLabel>
+              <IonIcon icon={arrowDown} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Downvoted</IonLabel>
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/hidden`,
               )}
             >
-              <IonIcon icon={eyeOffOutline} color="primary" />{" "}
-              <SettingLabel>Hidden</SettingLabel>
+              <IonIcon icon={eyeOffOutline} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Hidden</IonLabel>
             </IonItem>
           </>
         )}
@@ -125,8 +120,14 @@ export default function Profile({ person, onPull }: ProfileProps) {
       {isSelf && role && (
         <IonList inset>
           <IonItem detail onClick={presentModZoneActions}>
-            <IonIcon icon={getModIcon(role)} color={getModColor(role)} />{" "}
-            <SettingLabel>{getModName(role)} Zone</SettingLabel>
+            <IonIcon
+              icon={getModIcon(role)}
+              color={getModColor(role)}
+              slot="start"
+            />{" "}
+            <IonLabel className="ion-text-nowrap">
+              {getModName(role)} Zone
+            </IonLabel>
           </IonItem>
         </IonList>
       )}

@@ -1,5 +1,4 @@
-import { IonIcon, IonItem, IonList } from "@ionic/react";
-import { SettingLabel } from "../user/Profile";
+import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import {
   albumsOutline,
@@ -41,33 +40,29 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
             detail
             button
           >
-            <IonIcon icon={arrowForward} color="primary" />
-            <SettingLabel>Visit {type}</SettingLabel>
+            <IonIcon icon={arrowForward} color="primary" slot="start" />
+            <IonLabel>Visit {type}</IonLabel>
           </IonItem>
         )}
         <IonItem routerLink={`/search/posts/${searchURI}`}>
-          <IonIcon icon={albumsOutline} color="primary" />
-          <SettingLabel className="ion-text-nowrap">
-            Posts with “{search}”
-          </SettingLabel>
+          <IonIcon icon={albumsOutline} color="primary" slot="start" />
+          <IonLabel className="ion-text-nowrap">Posts with “{search}”</IonLabel>
         </IonItem>
         <IonItem routerLink={`/search/comments/${searchURI}`}>
-          <IonIcon icon={chatbubbleOutline} color="primary" />
-          <SettingLabel className="ion-text-nowrap">
+          <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />
+          <IonLabel className="ion-text-nowrap">
             Comments with “{search}”
-          </SettingLabel>
+          </IonLabel>
         </IonItem>
         <IonItem routerLink={`/search/communities/${searchURI}`}>
-          <IonIcon icon={searchOutline} color="primary" />
-          <SettingLabel className="ion-text-nowrap">
+          <IonIcon icon={searchOutline} color="primary" slot="start" />
+          <IonLabel className="ion-text-nowrap">
             Communities with “{search}”
-          </SettingLabel>
+          </IonLabel>
         </IonItem>
         <IonItem routerLink={buildGeneralBrowseLink(`/u/${sanitizedUser}`)}>
-          <IonIcon icon={personOutline} color="primary" />
-          <SettingLabel className="ion-text-nowrap">
-            Go to User “{search}”
-          </SettingLabel>
+          <IonIcon icon={personOutline} color="primary" slot="start" />
+          <IonLabel className="ion-text-nowrap">Go to User “{search}”</IonLabel>
         </IonItem>
       </IonList>
       {autoResolveType && <AutoResolvePostComment url={search} />}

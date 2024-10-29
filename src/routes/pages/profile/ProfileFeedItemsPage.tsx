@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 import {
-  IonLabel,
   IonPage,
   IonToolbar,
   IonTitle,
@@ -17,14 +16,8 @@ import PostCommentFeed, {
 } from "../../../features/feed/PostCommentFeed";
 import FeedContent from "../shared/FeedContent";
 import { GetComments, GetPosts } from "lemmy-js-client";
-import { styled } from "@linaria/react";
 import { sortPostCommentByPublished } from "../../../helpers/lemmy";
 import AppHeader from "../../../features/shared/AppHeader";
-
-export const SettingLabel = styled(IonLabel)`
-  margin-left: 16px;
-  flex-grow: initial !important;
-`;
 
 interface ProfileFeedItemsPageProps {
   type: "Comments" | "Posts" | "Saved" | "Upvoted" | "Downvoted";
