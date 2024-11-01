@@ -7,11 +7,11 @@ import { useAppDispatch, useAppSelector } from "../store";
 import { updateConnectedInstance } from "../features/auth/authSlice";
 import { useLocation } from "react-router";
 import { getInboxCounts, syncMessages } from "../features/inbox/inboxSlice";
-import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 import { getDefaultServer } from "../services/app";
 import BackgroundReportSync from "../features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "../features/auth/siteSlice";
 import { instanceSelector, jwtSelector } from "../features/auth/authSelectors";
+import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 
 interface AuthProps {
   children: React.ReactNode;
@@ -57,14 +57,6 @@ function AuthLocation() {
       !!isAdminSelector(state),
   );
 
-  const shouldSyncMessages = useCallback(() => {
-    return jwt && location.pathname.startsWith("/inbox/messages");
-<<<<<<< Updated upstream
-  }, [jwt, location.pathname]);
-=======
-  };
->>>>>>> Stashed changes
-
   useEffect(() => {
     if (connectedInstance) return;
 
@@ -86,6 +78,10 @@ function AuthLocation() {
     // TODO is this right???
   }, [connectedInstance, dispatch, location.pathname, selectedInstance]);
 
+  const shouldSyncMessages = useCallback(() => {
+    return jwt && location.pathname.startsWith("/inbox/messages");
+  }, [jwt, location.pathname]);
+
   const { start, stop } = useInterval(() => {
     if (documentState === "hidden") return;
     if (!shouldSyncMessages()) return;
@@ -103,13 +99,8 @@ function AuthLocation() {
 
   useInterval(
     () => {
-<<<<<<< Updated upstream
       if (documentState === "hidden") return;
       if (!jwt) return;
-=======
-      if (!pageVisibility) return;
-      if (!shouldSyncMessages()) return;
->>>>>>> Stashed changes
 
       dispatch(getInboxCounts());
     },
@@ -126,19 +117,7 @@ function AuthLocation() {
   const shouldSyncMessagesEvent = useEffectEvent(shouldSyncMessages);
 
   useEffect(() => {
-<<<<<<< Updated upstream
     if (documentState === "hidden") return;
-=======
-    if (!pageVisibility) return;
-
-    dispatch(getInboxCounts());
-  }, [pageVisibility, jwt, dispatch]);
-
-  const shouldSyncMessagesEvent = useEffectEvent(shouldSyncMessages);
-
-  useEffect(() => {
-    if (!pageVisibility) return;
->>>>>>> Stashed changes
     if (!shouldSyncMessagesEvent()) return;
 
     dispatch(syncMessages());
