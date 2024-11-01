@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { mergeRefs } from "react-merge-refs";
 import { GalleryMediaProps } from "./GalleryMedia";
+import { useMergedRef } from "@mantine/hooks";
 
 interface GalleryGifProps extends GalleryMediaProps {
   ref?: React.Ref<HTMLCanvasElement>;
@@ -46,7 +46,7 @@ export default function GalleryGif({
       style={props.style}
       width={0}
       height={0}
-      ref={mergeRefs([canvasRef, ref])}
+      ref={useMergedRef(canvasRef, ref)}
       onClick={(e) => {
         if (!loaded.current) return;
 

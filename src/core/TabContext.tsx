@@ -2,7 +2,6 @@ import React, {
   MutableRefObject,
   createContext,
   useEffect,
-  useMemo,
   useRef,
 } from "react";
 import { useLocation } from "react-router";
@@ -28,16 +27,11 @@ export function TabContextProvider({
 
   const tab = location.pathname.split("/")[1]!;
 
-  const memoized = useMemo(
-    () => (
-      <TabContextProviderInternals tab={tab}>
-        {children}
-      </TabContextProviderInternals>
-    ),
-    [tab, children],
+  return (
+    <TabContextProviderInternals tab={tab}>
+      {children}
+    </TabContextProviderInternals>
   );
-
-  return memoized;
 }
 
 function TabContextProviderInternals({
@@ -53,7 +47,7 @@ function TabContextProviderInternals({
     tabRef.current = tab;
   }, [tab]);
 
-  const value = useMemo(() => ({ tabRef }), []);
-
-  return <TabContext.Provider value={value}>{children}</TabContext.Provider>;
+  return (
+    <TabContext.Provider value={{ tabRef }}>{children}</TabContext.Provider>
+  );
 }

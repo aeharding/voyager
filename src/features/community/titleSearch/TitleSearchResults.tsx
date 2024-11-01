@@ -7,7 +7,7 @@ import {
   experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import { TitleSearchContext } from "./TitleSearchProvider";
-import { useDebounceValue } from "usehooks-ts";
+import { useDebouncedValue } from "@mantine/hooks";
 import useClient from "../../../helpers/useClient";
 import { Community, CommunityView } from "lemmy-js-client";
 import { IonItem, IonList } from "@ionic/react";
@@ -99,13 +99,10 @@ type SpecialFeed = (typeof SPECIAL_FEEDS)[number];
 type Result = Community | SpecialFeed | string;
 
 export default function TitleSearchResults() {
-  // eslint-disable-next-line react-compiler/react-compiler -- https://github.com/aeharding/voyager/issues/1633
-  "use no memo";
-
   const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
-  const [debouncedSearch, setDebouncedSearch] = useDebounceValue(search, 500);
+  const [debouncedSearch] = useDebouncedValue(search, 500);
   const [searchPayload, setSearchPayload] = useState<CommunityView[]>([]);
   const client = useClient();
   const follows = useAppSelector(
@@ -121,10 +118,6 @@ export default function TitleSearchResults() {
     (state) => state.site.response?.my_user?.moderates,
   );
   const showModeratorFeed = useShowModeratorFeed();
-
-  useEffect(() => {
-    setDebouncedSearch(search);
-  }, [search, setDebouncedSearch]);
 
   const results: Result[] = useMemo(() => {
     const results = [

@@ -122,9 +122,8 @@ export default function SharedTabButton({
 
   const tabLongPressSettings = useMemo(
     () => ({
-      onFinish: () => {
+      onFinish() {
         setTimeout(() => {
-          // eslint-disable-next-line react-compiler/react-compiler
           longPressedRef.current = false;
         }, 200);
       },

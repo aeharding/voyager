@@ -73,7 +73,6 @@ function Post(props: PostProps) {
     }
   };
 
-  // eslint-disable-next-line react-compiler/react-compiler
   const onFinishHideEvent = useEffectEvent(onFinishHide);
 
   useEffect(() => {

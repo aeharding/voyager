@@ -2,9 +2,7 @@ import { useIonModal } from "@ionic/react";
 import React, {
   RefObject,
   createContext,
-  useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -128,51 +126,51 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
-  const presentLoginIfNeeded = useCallback(() => {
+  const presentLoginIfNeeded = () => {
     if (jwt) return false;
 
     setIsLoginOpen(true);
     return true;
-  }, [jwt]);
+  };
 
-  const presentShareAsImage = useCallback(
-    (post: PostView, comment?: CommentView, comments?: CommentView[]) => {
+  const presentShareAsImage = (
+    post: PostView,
+    comment?: CommentView,
+    comments?: CommentView[],
+  ) => {
+    shareAsImageDataRef.current = {
+      post,
+    };
+    if (comment && comments) {
       shareAsImageDataRef.current = {
-        post,
+        ...shareAsImageDataRef.current,
+        comment,
+        comments,
       };
-      if (comment && comments) {
-        shareAsImageDataRef.current = {
-          ...shareAsImageDataRef.current,
-          comment,
-          comments,
-        };
-      }
-      presentShareAsImageModal({
-        cssClass: "save-as-image-modal",
-        initialBreakpoint: 1,
-        breakpoints: [0, 1],
-        handle: false,
-      });
-    },
-    [presentShareAsImageModal],
-  );
+    }
+    presentShareAsImageModal({
+      cssClass: "save-as-image-modal",
+      initialBreakpoint: 1,
+      breakpoints: [0, 1],
+      handle: false,
+    });
+  };
 
   // Markdown editor start
   const [markdownEditorData, setMarkdownEditorData] = useState<
     MarkdownEditorData | undefined
   >();
   const [isMarkdownEditorOpen, setIsMarkdownEditorOpen] = useState(false);
-  const presentMarkdownEditor = useCallback(
-    <T extends MarkdownEditorData>(data: Omit<T, "onSubmit">) =>
-      new Promise<Parameters<T["onSubmit"]>[0]>((resolve) => {
-        setMarkdownEditorData({
-          ...data,
-          onSubmit: resolve,
-        } as T);
-        setIsMarkdownEditorOpen(true);
-      }),
-    [],
-  );
+  const presentMarkdownEditor = <T extends MarkdownEditorData>(
+    data: Omit<T, "onSubmit">,
+  ) =>
+    new Promise<Parameters<T["onSubmit"]>[0]>((resolve) => {
+      setMarkdownEditorData({
+        ...data,
+        onSubmit: resolve,
+      } as T);
+      setIsMarkdownEditorOpen(true);
+    });
 
   useEffect(() => {
     if (isMarkdownEditorOpen) return;
@@ -183,69 +181,56 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     return;
   }, [isMarkdownEditorOpen, markdownEditorData]);
 
-  const presentPrivateMessageCompose = useCallback<
-    IPageContext["presentPrivateMessageCompose"]
-  >(
+  const presentPrivateMessageCompose: IPageContext["presentPrivateMessageCompose"] =
     (item) =>
       presentMarkdownEditor({
         type: "PRIVATE_MESSAGE",
         item,
-      }) as ReturnType<IPageContext["presentPrivateMessageCompose"]>,
-    [presentMarkdownEditor],
-  );
+      }) as ReturnType<IPageContext["presentPrivateMessageCompose"]>;
 
-  const presentCommentEdit = useCallback<IPageContext["presentCommentEdit"]>(
-    (item) =>
-      presentMarkdownEditor({
-        type: "COMMENT_EDIT",
-        item,
-      }) as ReturnType<IPageContext["presentCommentEdit"]>,
-    [presentMarkdownEditor],
-  );
+  const presentCommentEdit: IPageContext["presentCommentEdit"] = (item) =>
+    presentMarkdownEditor({
+      type: "COMMENT_EDIT",
+      item,
+    }) as ReturnType<IPageContext["presentCommentEdit"]>;
 
-  const presentCommentReply = useCallback<IPageContext["presentCommentReply"]>(
-    (item) =>
-      presentMarkdownEditor({
-        type: "COMMENT_REPLY",
-        item,
-      }) as ReturnType<IPageContext["presentCommentReply"]>,
-    [presentMarkdownEditor],
-  );
+  const presentCommentReply: IPageContext["presentCommentReply"] = (item) =>
+    presentMarkdownEditor({
+      type: "COMMENT_REPLY",
+      item,
+    }) as ReturnType<IPageContext["presentCommentReply"]>;
   // Markdown editor end
 
   // Edit/new post start
   const [postItem, setPostItem] = useState<PostView | string | undefined>();
   const [isPostOpen, setIsPostOpen] = useState(false);
-  const presentPostEditor = useCallback(
-    (postOrCommunity: PostView | string) => {
-      setPostItem(postOrCommunity);
-      setIsPostOpen(true);
-    },
-    [],
-  );
+  const presentPostEditor = (postOrCommunity: PostView | string) => {
+    setPostItem(postOrCommunity);
+    setIsPostOpen(true);
+  };
   // Edit/new post end
 
   // Select text start
   const [selectTextItem, setSelectTextItem] = useState<string | undefined>();
   const [isSelectTextOpen, setIsSelectTextOpen] = useState(false);
-  const presentSelectText = useCallback((text: string) => {
+  const presentSelectText = (text: string) => {
     setSelectTextItem(text);
     setIsSelectTextOpen(true);
-  }, []);
+  };
   // Select text end
 
   // Ban user start
   const [banItem, setBanItem] = useState<BanUserPayload | undefined>();
   const [isBanUserOpen, setIsBanUserOpen] = useState(false);
-  const presentBanUser = useCallback((banUserPayload: BanUserPayload) => {
+  const presentBanUser = (banUserPayload: BanUserPayload) => {
     setBanItem(banUserPayload);
     setIsBanUserOpen(true);
-  }, []);
+  };
   // Ban user end
 
-  const presentReport = useCallback((item: ReportableItem) => {
+  const presentReport = (item: ReportableItem) => {
     reportRef.current?.present(item);
-  }, []);
+  };
 
   const [presentAccountSwitcherModal, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
@@ -260,9 +245,9 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     },
   );
 
-  const presentAccountSwitcher = useCallback(() => {
+  const presentAccountSwitcher = () => {
     presentAccountSwitcherModal({ cssClass: "small" });
-  }, [presentAccountSwitcherModal]);
+  };
 
   const [crosspost, setCrosspost] = useState<PostView | undefined>();
   const [presentCrosspost, onDismissCrosspost] = useIonModal(
@@ -274,47 +259,28 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     },
   );
 
-  const presentCreateCrosspost = useCallback(
-    (post: PostView) => {
-      setCrosspost(post);
-      presentCrosspost({ cssClass: "transparent-scroll dark" });
-    },
-    [presentCrosspost],
-  );
-
-  const currentValue = useMemo(
-    () => ({
-      ...value,
-      presentLoginIfNeeded,
-      presentPrivateMessageCompose,
-      presentCommentEdit,
-      presentCommentReply,
-      presentReport,
-      presentPostEditor,
-      presentSelectText,
-      presentShareAsImage,
-      presentAccountSwitcher,
-      presentBanUser,
-      presentCreateCrosspost,
-    }),
-    [
-      presentPrivateMessageCompose,
-      presentCommentEdit,
-      presentCommentReply,
-      presentLoginIfNeeded,
-      presentPostEditor,
-      presentReport,
-      presentSelectText,
-      presentShareAsImage,
-      presentAccountSwitcher,
-      presentBanUser,
-      presentCreateCrosspost,
-      value,
-    ],
-  );
+  const presentCreateCrosspost = (post: PostView) => {
+    setCrosspost(post);
+    presentCrosspost({ cssClass: "transparent-scroll dark" });
+  };
 
   return (
-    <PageContext.Provider value={currentValue}>
+    <PageContext.Provider
+      value={{
+        ...value,
+        presentLoginIfNeeded,
+        presentPrivateMessageCompose,
+        presentCommentEdit,
+        presentCommentReply,
+        presentReport,
+        presentPostEditor,
+        presentSelectText,
+        presentShareAsImage,
+        presentAccountSwitcher,
+        presentBanUser,
+        presentCreateCrosspost,
+      }}
+    >
       {children}
 
       <LoginModal isOpen={isLoginOpen} setIsOpen={setIsLoginOpen} />
