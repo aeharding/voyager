@@ -30,7 +30,7 @@ export default function ProfileFeedItemsPage({
   const client = useClient();
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
+    async (pageData, ...rest) => {
       if (type === "Upvoted" || type === "Downvoted") {
         const requestPayload: GetPosts & GetComments = {
           ...pageData,
@@ -41,19 +41,22 @@ export default function ProfileFeedItemsPage({
         };
 
         const [{ posts }, { comments }] = await Promise.all([
-          client.getPosts(requestPayload),
-          client.getComments(requestPayload),
+          client.getPosts(requestPayload, ...rest),
+          client.getComments(requestPayload, ...rest),
         ]);
 
         return [...comments, ...posts].sort(sortPostCommentByPublished);
       }
-      const { comments, posts } = await client.getPersonDetails({
-        ...pageData,
-        limit: LIMIT,
-        username: handle,
-        sort: "New",
-        saved_only: type === "Saved",
-      });
+      const { comments, posts } = await client.getPersonDetails(
+        {
+          ...pageData,
+          limit: LIMIT,
+          username: handle,
+          sort: "New",
+          saved_only: type === "Saved",
+        },
+        ...rest,
+      );
 
       if (type === "Saved") {
         return [...comments, ...posts].sort(sortPostCommentByPublished);

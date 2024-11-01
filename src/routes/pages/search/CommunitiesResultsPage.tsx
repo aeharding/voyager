@@ -37,26 +37,32 @@ export default function CommunitiesResultsPage({
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = useCallback(
-    async (pageData) => {
+    async (pageData, ...rest) => {
       if (isFirstPage(pageData) && search?.includes("@")) {
         return compact([await findExactCommunity(search, client)]);
       }
 
       const response = await (search
-        ? client.search({
-            limit: LIMIT,
-            q: search,
-            type_: "Communities",
-            listing_type: listingType,
-            ...pageData,
-            sort,
-          })
-        : client.listCommunities({
-            limit: LIMIT,
-            type_: listingType,
-            ...pageData,
-            sort,
-          }));
+        ? client.search(
+            {
+              limit: LIMIT,
+              q: search,
+              type_: "Communities",
+              listing_type: listingType,
+              ...pageData,
+              sort,
+            },
+            ...rest,
+          )
+        : client.listCommunities(
+            {
+              limit: LIMIT,
+              type_: listingType,
+              ...pageData,
+              sort,
+            },
+            ...rest,
+          ));
 
       return response.communities;
     },

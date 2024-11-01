@@ -34,7 +34,10 @@ type PageData =
       page_cursor: string;
     };
 
-export type FetchFn<I> = (pageData: PageData) => Promise<FetchFnResult<I>>;
+export type FetchFn<I> = (
+  pageData: PageData,
+  options?: Pick<RequestInit, "signal">,
+) => Promise<FetchFnResult<I>>;
 
 type FetchFnResult<I> = I[] | { data: I[]; next_page?: string };
 
@@ -105,8 +108,7 @@ export default function Feed<I>({
   // Loading needs to be initially `undefined` so that IonRefresher is
   // never initially rendered, which breaks pull to refresh on Android
   // See: https://github.com/aeharding/voyager/issues/718
-  const [loading, _setLoading] = useState<boolean | undefined>(undefined);
-  const loadingRef = useRef(false);
+  const [loading, setLoading] = useState<boolean | undefined>(undefined);
 
   const [isListAtTop, setIsListAtTop] = useState(true);
 
@@ -132,19 +134,16 @@ export default function Feed<I>({
     [filterFn, items],
   );
 
-  function setLoading(loading: boolean) {
-    _setLoading(loading);
-    loadingRef.current = loading;
-  }
-
   function setAtEnd(atEnd: boolean) {
     _setAtEnd(atEnd);
     atEndRef.current = atEnd;
   }
 
+  const abortControllerRef = useRef<AbortController>();
+
   const fetchMore = useCallback(
     async (refresh = false) => {
-      if (loadingRef.current) return;
+      if (abortControllerRef.current) return; // previous request must be aborted or success before subsequent fetching
       if (atEndRef.current && !refresh) return;
 
       setLoading(true);
@@ -159,20 +158,29 @@ export default function Feed<I>({
 
       let newPageItems: I[];
 
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       try {
-        const result = await fetchFn(withPageData(currentPage));
+        const result = await fetchFn(withPageData(currentPage), {
+          signal: controller.signal,
+        });
         if (Array.isArray(result)) newPageItems = result;
         else {
           newPageItems = result.data;
           if (result.next_page) currentPage = result.next_page;
         }
       } catch (error) {
-        setLoadFailed(true);
+        if (!(error instanceof Error) || error.name !== "AbortError") {
+          setLoadFailed(true);
+          setLoading(false);
+        }
 
         throw error;
-      } finally {
-        setLoading(false);
       }
+
+      abortControllerRef.current = undefined;
+      setLoading(false);
 
       const filteredNewPageItems = filterOnRxFn
         ? newPageItems.filter(filterOnRxFn)
@@ -209,6 +217,15 @@ export default function Feed<I>({
     },
     [fetchFn, page, getIndex, filterOnRxFn],
   );
+
+  useEffect(() => {
+    setLoading(undefined);
+
+    return () => {
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = undefined;
+    };
+  }, []);
 
   useEffect(() => {
     if (!itemsRef) return;

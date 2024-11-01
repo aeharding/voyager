@@ -59,16 +59,19 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     noSubscribedInFeed && (type === "All" || type === "Local");
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
+    async (pageData, ...rest) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       fetchFnLastUpdated;
 
-      const { posts, next_page } = await client.getPosts({
-        ...pageData,
-        limit: LIMIT,
-        sort,
-        type_: type,
-      });
+      const { posts, next_page } = await client.getPosts(
+        {
+          ...pageData,
+          limit: LIMIT,
+          sort,
+          type_: type,
+        },
+        ...rest,
+      );
 
       return { data: posts, next_page };
     },

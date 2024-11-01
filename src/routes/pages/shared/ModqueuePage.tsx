@@ -67,20 +67,26 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
   const dispatch = useAppDispatch();
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
+    async (pageData, ...rest) => {
       const [{ comment_reports }, { post_reports }] = await Promise.all([
-        client.listCommentReports({
-          ...pageData,
-          limit: LIMIT,
-          community_id: community?.id,
-          unresolved_only: true,
-        }),
-        client.listPostReports({
-          ...pageData,
-          limit: LIMIT,
-          community_id: community?.id,
-          unresolved_only: true,
-        }),
+        client.listCommentReports(
+          {
+            ...pageData,
+            limit: LIMIT,
+            community_id: community?.id,
+            unresolved_only: true,
+          },
+          ...rest,
+        ),
+        client.listPostReports(
+          {
+            ...pageData,
+            limit: LIMIT,
+            community_id: community?.id,
+            unresolved_only: true,
+          },
+          ...rest,
+        ),
       ]);
 
       let needsSync = isFirstPage(pageData);

@@ -42,13 +42,16 @@ export default function Profile({ person, onPull }: ProfileProps) {
   const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
-      const response = await client.getPersonDetails({
-        ...pageData,
-        limit: LIMIT,
-        username: getHandle(person.person_view.person),
-        sort: "New",
-      });
+    async (pageData, ...rest) => {
+      const response = await client.getPersonDetails(
+        {
+          ...pageData,
+          limit: LIMIT,
+          username: getHandle(person.person_view.person),
+          sort: "New",
+        },
+        ...rest,
+      );
       return [...response.posts, ...response.comments].sort(
         (a, b) =>
           getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),

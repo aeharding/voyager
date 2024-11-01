@@ -26,13 +26,16 @@ export default function MentionsPage() {
   useSetActivePage(pageRef);
 
   const fetchFn: FetchFn<PersonMentionView> = useCallback(
-    async (pageData) => {
-      const response = await client.getPersonMentions({
-        ...pageData,
-        limit: LIMIT,
-        sort: "New",
-        unread_only: false,
-      });
+    async (pageData, ...rest) => {
+      const response = await client.getPersonMentions(
+        {
+          ...pageData,
+          limit: LIMIT,
+          sort: "New",
+          unread_only: false,
+        },
+        ...rest,
+      );
 
       dispatch(receivedInboxItems(response.mentions));
 
