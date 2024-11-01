@@ -4,7 +4,6 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useRef,
 } from "react";
 import { VListHandle } from "virtua";
@@ -29,16 +28,15 @@ export function AppContextProvider({
 }) {
   const activePageRef = useRef<Page>();
 
-  const currentValue = useMemo(
-    () => ({
-      activePageRef,
-      setActivePage: (page: Page) => (activePageRef.current = page),
-    }),
-    [],
-  );
-
   return (
-    <AppContext.Provider value={currentValue}>{children}</AppContext.Provider>
+    <AppContext.Provider
+      value={{
+        activePageRef,
+        setActivePage: (page: Page) => (activePageRef.current = page),
+      }}
+    >
+      {children}
+    </AppContext.Provider>
   );
 }
 

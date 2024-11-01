@@ -5,8 +5,8 @@ import Post from "../post/inFeed/Post";
 import FeedComment from "../comment/inFeed/FeedComment";
 import { styled } from "@linaria/react";
 import { InFeedContext } from "../feed/Feed";
-import { useDebounceValue } from "usehooks-ts";
 import { CenteredSpinner } from "../shared/CenteredSpinner";
+import { useDebouncedValue } from "@mantine/hooks";
 
 const StyledCenteredSpinner = styled(CenteredSpinner)`
   margin-top: 60px;
@@ -20,7 +20,7 @@ export default function AutoResolvePostComment({
   url: userInputUrl,
 }: AutoResolvePostCommentProps) {
   const dispatch = useAppDispatch();
-  const [url] = useDebounceValue(userInputUrl, 500);
+  const [url] = useDebouncedValue(userInputUrl, 500);
   const object = useAppSelector((state) => state.resolve.objectByUrl[url]);
   const [error, setError] = useState(false);
 

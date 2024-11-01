@@ -4,8 +4,8 @@ import { VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import legacy from "@vitejs/plugin-legacy";
 import wyw from "@wyw-in-js/vite";
-
 import { readFileSync } from "fs";
+import compilerOptions from "./compilerOptions";
 
 const manifest = JSON.parse(readFileSync("./manifest.json", "utf-8"));
 
@@ -14,7 +14,7 @@ export default defineConfig({
   plugins: [
     react({
       babel: {
-        plugins: ["babel-plugin-react-compiler"],
+        plugins: [["babel-plugin-react-compiler", compilerOptions]],
       },
     }),
     wyw({

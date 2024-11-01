@@ -1,4 +1,5 @@
 import React, {
+  useCallback,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
 } from "react";
@@ -6,8 +7,7 @@ import { useAppDispatch, useAppSelector } from "../store";
 import { updateConnectedInstance } from "../features/auth/authSlice";
 import { useLocation } from "react-router";
 import { getInboxCounts, syncMessages } from "../features/inbox/inboxSlice";
-import { useInterval } from "usehooks-ts";
-import usePageVisibility from "../helpers/usePageVisibility";
+import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 import { getDefaultServer } from "../services/app";
 import BackgroundReportSync from "../features/moderation/BackgroundReportSync";
 import { getSiteIfNeeded, isAdminSelector } from "../features/auth/siteSlice";
@@ -43,7 +43,7 @@ function AuthLocation() {
   const location = useLocation();
 
   const dispatch = useAppDispatch();
-  const pageVisibility = usePageVisibility();
+  const documentState = useDocumentVisibility();
   const jwt = useAppSelector(jwtSelector);
 
   const selectedInstance = useAppSelector(instanceSelector);
@@ -57,11 +57,13 @@ function AuthLocation() {
       !!isAdminSelector(state),
   );
 
-  const shouldSyncMessages = () => {
+  const shouldSyncMessages = useCallback(() => {
     return jwt && location.pathname.startsWith("/inbox/messages");
+<<<<<<< Updated upstream
+  }, [jwt, location.pathname]);
+=======
   };
-
-  const shouldSyncMessagesEvent = useEffectEvent(shouldSyncMessages);
+>>>>>>> Stashed changes
 
   useEffect(() => {
     if (connectedInstance) return;
@@ -84,35 +86,63 @@ function AuthLocation() {
     // TODO is this right???
   }, [connectedInstance, dispatch, location.pathname, selectedInstance]);
 
-  useInterval(
-    () => {
-      if (!pageVisibility) return;
-      if (!shouldSyncMessagesEvent()) return;
+  const { start, stop } = useInterval(() => {
+    if (documentState === "hidden") return;
+    if (!shouldSyncMessages()) return;
 
-      dispatch(syncMessages());
-    },
-    shouldSyncMessages() ? 1_000 * 15 : null,
-  );
+    dispatch(syncMessages());
+  }, 1_000 * 15);
 
-  useInterval(() => {
-    if (!pageVisibility) return;
-    if (!jwt) return;
-
-    dispatch(getInboxCounts());
-  }, 1_000 * 60);
+  const startEvent = useEffectEvent(start);
+  const stopEvent = useEffectEvent(stop);
 
   useEffect(() => {
+    if (shouldSyncMessages()) startEvent();
+    else stopEvent();
+  }, [shouldSyncMessages]);
+
+  useInterval(
+    () => {
+<<<<<<< Updated upstream
+      if (documentState === "hidden") return;
+      if (!jwt) return;
+=======
+      if (!pageVisibility) return;
+      if (!shouldSyncMessages()) return;
+>>>>>>> Stashed changes
+
+      dispatch(getInboxCounts());
+    },
+    1_000 * 60,
+    { autoInvoke: true },
+  );
+
+  useEffect(() => {
+    if (documentState === "hidden") return;
+
+    dispatch(getInboxCounts());
+  }, [documentState, jwt, dispatch]);
+
+  const shouldSyncMessagesEvent = useEffectEvent(shouldSyncMessages);
+
+  useEffect(() => {
+<<<<<<< Updated upstream
+    if (documentState === "hidden") return;
+=======
     if (!pageVisibility) return;
 
     dispatch(getInboxCounts());
   }, [pageVisibility, jwt, dispatch]);
 
+  const shouldSyncMessagesEvent = useEffectEvent(shouldSyncMessages);
+
   useEffect(() => {
     if (!pageVisibility) return;
+>>>>>>> Stashed changes
     if (!shouldSyncMessagesEvent()) return;
 
     dispatch(syncMessages());
-  }, [dispatch, pageVisibility]);
+  }, [dispatch, documentState]);
 
   if (!hasModdedSubs) return;
 

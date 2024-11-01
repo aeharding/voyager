@@ -1,5 +1,4 @@
 import { styled } from "@linaria/react";
-import { mergeRefs } from "react-merge-refs";
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
 import MarkdownToolbar, {
   TOOLBAR_HEIGHT,
@@ -13,7 +12,6 @@ import {
   KeyboardEvent,
   SetStateAction,
   useEffect,
-  useMemo,
   useRef,
 } from "react";
 import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
@@ -21,6 +19,7 @@ import useTextRecovery from "../../../../helpers/useTextRecovery";
 import useUploadImage from "./useUploadImage";
 import { htmlToMarkdown } from "../../../../helpers/markdown";
 import useEditorHelpers from "./useEditorHelpers";
+import { useMergedRef } from "@mantine/hooks";
 
 const ORDERED_LIST_REGEX = /^(\d)\. /;
 const UNORDERED_LIST_REGEX = /^(-|\*|\+) /;
@@ -207,8 +206,7 @@ export default function Editor({
       <Container keyboardOpen={keyboardOpen}>
         <Textarea
           {...preventModalSwipeOnTextSelection}
-          // eslint-disable-next-line react-compiler/react-compiler
-          ref={useMemo(() => mergeRefs([textareaRef, ref]), [textareaRef, ref])}
+          ref={useMergedRef(textareaRef, ref)}
           value={text}
           onChange={(e) => setText(e.target.value)}
           autoFocus

@@ -42,7 +42,6 @@ export default function AppUrlListener() {
     if (!resolved) presentToast(deepLinkFailed);
   };
 
-  // eslint-disable-next-line react-compiler/react-compiler
   const onAppUrlEvent = useEffectEvent(onAppUrl);
 
   useEffect(() => {

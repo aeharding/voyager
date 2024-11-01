@@ -18,5 +18,5 @@ export default function useStateRef<T>(defaultValue: T) {
     }
   }, []);
 
-  return [stateRef, setState] as const;
+  return [stateRef, stateValue, setState] as const;
 }

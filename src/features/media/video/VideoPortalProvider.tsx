@@ -138,14 +138,12 @@ export function useVideoPortalNode(src: string): PortalNode | void {
   // Sometimes useIonViewWillEnter fires after element is already destroyed
   const destroyed = useRef(false);
 
-  // eslint-disable-next-line react-compiler/react-compiler
   const getPortalNodeEvent = useEffectEvent(() => {
     if (destroyed.current) return;
 
     getPortalNodeForSrc(src, sourceUidRef.current);
   });
 
-  // eslint-disable-next-line react-compiler/react-compiler
   const cleanupPortalNodeIfNeededEvent = useEffectEvent(() => {
     destroyed.current = true;
     cleanupPortalNodeForSrcIfNeeded(src, sourceUidRef.current);
