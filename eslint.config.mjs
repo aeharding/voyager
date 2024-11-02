@@ -1,13 +1,14 @@
 import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
-import react from "eslint-plugin-react";
+import { FlatCompat } from "@eslint/eslintrc";
+import js from "@eslint/js";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import globals from "globals";
 import tsParser from "@typescript-eslint/parser";
+import react from "eslint-plugin-react";
+import pluginReactCompiler from "eslint-plugin-react-compiler";
+import globals from "globals";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
-import pluginReactCompiler from "eslint-plugin-react-compiler";
+
 import compilerOptions from "./compilerOptions.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -110,6 +111,12 @@ export default [
               name: "@ionic/react",
               importNames: ["IonHeader"],
               message: "Please use AppHeader instead.",
+            },
+          ],
+          patterns: [
+            {
+              regex: "\\.\\.\\/\\w+\\/",
+              message: "Import via absolute path (e.g. #/helpers/myHelper)",
             },
           ],
         },
