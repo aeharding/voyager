@@ -1,8 +1,8 @@
 import { IonModal } from "@ionic/react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import usePageVisibility from "../../helpers/usePageVisibility";
 import { isNative } from "../../helpers/device";
 import { styled } from "@linaria/react";
+import { useDocumentVisibility } from "@mantine/hooks";
 
 // TODO it's a bit buggy trying to compute this
 // in realtime with the new post dialog + comment dialogs
@@ -31,7 +31,7 @@ export default function IonModalAutosizedForOnScreenKeyboard(
   const [viewportHeight, setViewportHeight] = useState(
     document.documentElement.clientHeight,
   );
-  const isVisible = usePageVisibility();
+  const documentState = useDocumentVisibility();
 
   const modalRef = useRef<HTMLIonModalElement>(null);
 
@@ -65,7 +65,7 @@ export default function IonModalAutosizedForOnScreenKeyboard(
     if (!props.isOpen) return;
 
     updateViewport();
-  }, [isVisible, updateViewport, props.isOpen]);
+  }, [documentState, updateViewport, props.isOpen]);
 
   useEffect(() => {
     if (!props.isOpen) return;

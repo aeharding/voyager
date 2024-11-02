@@ -1,9 +1,9 @@
 import { styled } from "@linaria/react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getHandle } from "../../../../../../helpers/lemmy";
 import { Community } from "lemmy-js-client";
-import useDebounceFn from "../../../../../../helpers/useDebounceFn";
 import { SharedModeProps as GenericModeProps } from "../DefaultMode";
+import { useDebouncedCallback } from "@mantine/hooks";
 
 const Container = styled.div`
   display: flex;
@@ -58,11 +58,7 @@ export default function GenericAutocompleteMode<
 }: GenericAutocompleteModeProps<I>) {
   const [items, setItems] = useState<I[]>([]);
 
-  const debouncedFetchItems = useDebounceFn(() => {
-    fetchItems();
-  }, 500);
-
-  const fetchItems = useCallback(async () => {
+  const debouncedFetchItems = useDebouncedCallback(async () => {
     if (!match) {
       setItems([]);
       return;
@@ -71,11 +67,11 @@ export default function GenericAutocompleteMode<
     const items = await fetchFn(match);
 
     setItems(items);
-  }, [match, fetchFn]);
+  }, 500);
 
   useEffect(() => {
     debouncedFetchItems();
-  }, [match, debouncedFetchItems]);
+  }, [debouncedFetchItems, fetchFn, match]);
 
   function select(item: I) {
     const md = `${buildMd(item)} `;

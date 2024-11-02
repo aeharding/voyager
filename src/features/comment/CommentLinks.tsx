@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { unified } from "unified";
 import { SKIP, visit } from "unist-util-visit";
 import remarkParse from "remark-parse";
@@ -11,6 +10,7 @@ import { uniqBy } from "lodash";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import { buildBaseLemmyUrl } from "../../services/lemmy";
 import { defaultUrlTransform } from "react-markdown";
+import { useMemo } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -35,9 +35,10 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const connectedInstanceUrl = buildBaseLemmyUrl(connectedInstance);
 
   const links = useMemo(() => {
+    const connectedInstanceUrl = buildBaseLemmyUrl(connectedInstance);
+
     // Initialize a unified processor with the remark-parse parser
     // and parse the Markdown content
     const processor = unified()
@@ -73,16 +74,10 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     // Max 4 links
     links = links.slice(0, 4);
 
-    return links;
-  }, [connectedInstance, markdown, showCommentImages, connectedInstanceUrl]);
+    return links.map((link, index) => <CommentLink link={link} key={index} />);
+  }, [connectedInstance, markdown, showCommentImages]);
 
   if (!links.length) return;
 
-  return (
-    <Container>
-      {links.map((link, index) => (
-        <CommentLink link={link} key={index} />
-      ))}
-    </Container>
-  );
+  return <Container>{links}</Container>;
 }

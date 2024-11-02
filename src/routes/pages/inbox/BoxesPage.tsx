@@ -59,11 +59,11 @@ export default function BoxesPage() {
 
           <IonList inset color="primary">
             <IonItem routerLink="/inbox/all" onClick={interceptIfLoggedOut}>
-              <IonIcon icon={fileTray} color="primary" />
+              <IonIcon icon={fileTray} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Inbox (All)</IonLabel>
             </IonItem>
             <IonItem routerLink="/inbox/unread" onClick={interceptIfLoggedOut}>
-              <IonIcon icon={ellipseOutline} color="primary" />
+              <IonIcon icon={ellipseOutline} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Unread</IonLabel>
             </IonItem>
           </IonList>
@@ -73,21 +73,25 @@ export default function BoxesPage() {
               routerLink="/inbox/post-replies"
               onClick={interceptIfLoggedOut}
             >
-              <IonIcon icon={albumsOutline} color="primary" />
+              <IonIcon icon={albumsOutline} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Post Replies</IonLabel>
             </IonItem>
             <IonItem
               routerLink="/inbox/comment-replies"
               onClick={interceptIfLoggedOut}
             >
-              <IonIcon icon={chatbubbleOutline} color="primary" />
+              <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Comment Replies</IonLabel>
             </IonItem>
             <IonItem
               routerLink="/inbox/mentions"
               onClick={interceptIfLoggedOut}
             >
-              <IonIcon icon={personCircleOutline} color="primary" />
+              <IonIcon
+                icon={personCircleOutline}
+                color="primary"
+                slot="start"
+              />
               <IonLabel className="ion-text-nowrap">Mentions</IonLabel>
             </IonItem>
           </IonList>
@@ -97,7 +101,7 @@ export default function BoxesPage() {
               routerLink="/inbox/messages"
               onClick={interceptIfLoggedOut}
             >
-              <IonIcon icon={mail} color="primary" />
+              <IonIcon icon={mail} color="primary" slot="start" />
               <IonLabel className="ion-text-nowrap">Messages</IonLabel>
             </IonItem>
           </IonList>

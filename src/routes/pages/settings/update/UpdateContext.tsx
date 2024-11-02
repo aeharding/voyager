@@ -5,9 +5,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useInterval } from "usehooks-ts";
+import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 import { useRegisterSW } from "virtual:pwa-register/react";
-import usePageVisibility from "../../../../helpers/usePageVisibility";
 
 type UpdateStatus =
   | "not-enabled"
@@ -36,7 +35,7 @@ export function UpdateContextProvider({
   children: React.ReactNode;
 }) {
   const [status, setStatus] = useState<UpdateStatus>("not-enabled");
-  const pageVisibility = usePageVisibility();
+  const documentState = useDocumentVisibility();
 
   const registration = useRef<ServiceWorkerRegistration>();
 
@@ -58,15 +57,16 @@ export function UpdateContextProvider({
       checkForUpdates();
     },
     1_000 * 60 * 60,
+    { autoInvoke: true },
   );
 
   const checkForUpdatesEvent = useEffectEvent(checkForUpdates);
 
   useEffect(() => {
-    if (!pageVisibility) return;
+    if (documentState === "hidden") return;
 
     checkForUpdatesEvent();
-  }, [pageVisibility]);
+  }, [documentState]);
 
   async function checkForUpdates() {
     const r = registration.current;

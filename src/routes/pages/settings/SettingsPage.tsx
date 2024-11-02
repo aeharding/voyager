@@ -40,10 +40,10 @@ import {
   refreshBiometricType,
 } from "../../../features/settings/biometric/biometricSlice";
 import BiometricTitle from "../../../features/settings/biometric/BiometricTitle";
-import usePageVisibility from "../../../helpers/usePageVisibility";
 import { styled } from "@linaria/react";
 import DatabaseErrorItem from "../../../features/settings/root/DatabaseErrorItem";
 import AppHeader from "../../../features/shared/AppHeader";
+import { useDocumentVisibility } from "@mantine/hooks";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;
@@ -80,7 +80,7 @@ export default function SettingsPage() {
   const pageRef = useRef<HTMLElement>(null);
   const biometricSupported = useAppSelector(biometricSupportedSelector);
   const dispatch = useAppDispatch();
-  const pageVisibility = usePageVisibility();
+  const documentState = useDocumentVisibility();
 
   const [presentTip, onDismissTip] = useIonModal(TipDialog, {
     onDismiss: (data?: string, role?: string) => onDismissTip(data, role),
@@ -93,11 +93,11 @@ export default function SettingsPage() {
   }, [checkForUpdates]);
 
   useEffect(() => {
-    if (!pageVisibility) return;
+    if (documentState === "hidden") return;
     if (!isNative() || !isAppleDeviceInstalledToHomescreen()) return;
 
     dispatch(refreshBiometricType());
-  }, [pageVisibility, dispatch]);
+  }, [documentState, dispatch]);
 
   return (
     <IonPage ref={pageRef} className="grey-bg">
