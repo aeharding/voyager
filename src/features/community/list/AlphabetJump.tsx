@@ -3,13 +3,7 @@ import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { ellipseOutline, menuOutline, star } from "ionicons/icons";
 import { compact } from "lodash";
-import React, {
-  MouseEvent,
-  RefObject,
-  TouchEvent,
-  useMemo,
-  useRef,
-} from "react";
+import { MouseEvent, RefObject, TouchEvent, useMemo, useRef } from "react";
 import { VListHandle } from "virtua";
 
 import { findCurrentPage } from "#/helpers/ionic";

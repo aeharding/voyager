@@ -14,13 +14,7 @@ import {
 import { styled } from "@linaria/react";
 import { GetSiteResponse } from "lemmy-js-client";
 import { uniq } from "lodash";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VList, VListHandle } from "virtua";
 
 import { LOGIN_SERVERS } from "#/features/auth/login/data/servers";

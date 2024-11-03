@@ -8,7 +8,7 @@ import {
   eyeOffOutline,
 } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
-import React, { ComponentProps, useCallback } from "react";
+import { ComponentProps, useCallback } from "react";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { FetchFn } from "#/features/feed/Feed";
