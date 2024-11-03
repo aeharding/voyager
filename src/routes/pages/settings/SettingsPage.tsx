@@ -18,6 +18,7 @@ import {
   cog,
   colorPalette,
   heart,
+  pricetag,
   reloadCircle,
 } from "ionicons/icons";
 import { useContext, useEffect, useRef } from "react";
@@ -203,6 +204,15 @@ export default function SettingsPage() {
                 <IonIcon icon={ban} />
               </IconBg>
               <IonLabel className="ion-text-nowrap">Filters & Blocks</IonLabel>
+            </IonItem>
+          )}
+
+          {currentHandle && (
+            <IonItem routerLink="/settings/tags">
+              <IconBg color="color(display-p3 1 0.3 1)" size="1" slot="start">
+                <IonIcon icon={pricetag} />
+              </IconBg>
+              <IonLabel className="ion-text-nowrap">User Tags</IonLabel>
             </IonItem>
           )}
 

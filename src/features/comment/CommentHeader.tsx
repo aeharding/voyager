@@ -15,6 +15,8 @@ import { chevronDownOutline } from "ionicons/icons";
 import { RefObject } from "react";
 import { useAppSelector } from "../../store";
 import { ActionButton } from "../post/actions/ActionButton";
+import UserTag from "../tags/UserTag";
+import UserScore from "../tags/UserScore";
 
 const Header = styled.div`
   display: flex;
@@ -61,6 +63,13 @@ const DeletedLabel = styled.div`
 
   min-width: 0;
   overflow: hidden;
+`;
+
+const Spacer = styled.div`
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
 `;
 
 interface CommentHeaderProps {
@@ -134,10 +143,11 @@ export default function CommentHeader({
                 opId={commentView.post.creator_id}
                 distinguished={comment.distinguished}
                 showBadge={false}
+                showTag={false}
               />{" "}
               deleted their <span className="ion-text-nowrap">comment :(</span>
             </DeletedLabel>
-            <div style={{ flex: 1 }} />
+            <Spacer />
             {renderAside(comment.updated || comment.published)}
           </>
         );
@@ -151,10 +161,11 @@ export default function CommentHeader({
                 opId={commentView.post.creator_id}
                 distinguished={comment.distinguished}
                 showBadge={false}
+                showTag={false}
               />
               &apos;s comment
             </DeletedLabel>
-            <div style={{ flex: 1 }} />
+            <Spacer />
             {renderAside(comment.updated || comment.published)}
           </>
         );
@@ -166,10 +177,14 @@ export default function CommentHeader({
               opId={commentView.post.creator_id}
               distinguished={comment.distinguished}
               showBadge={!context}
+              showTag={false}
             />
+            <UserScore person={commentView.creator} />
             <CommentVote item={commentView} />
             <Edited item={commentView} />
-            <div style={{ flex: 1 }} />
+            <Spacer>
+              <UserTag person={commentView.creator} />
+            </Spacer>
             {renderAside()}
           </>
         );

@@ -48,6 +48,9 @@ export default function AppUrlListener() {
     App.addListener("appUrlOpen", (event) => {
       onAppUrlEvent(normalizeObjectUrl(event.url));
     });
+    return () => {
+      App.removeAllListeners();
+    };
   }, []);
 
   useEffect(() => {

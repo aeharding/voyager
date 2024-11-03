@@ -15,9 +15,6 @@ import GlobalStyles from "./GlobalStyles";
 import ConfigProvider from "../services/app";
 import { TabContextProvider } from "./TabContext";
 import { NavModes } from "capacitor-android-nav-mode";
-import { TextRecoveryStartupPrompt } from "../helpers/useTextRecovery";
-import HapticsListener from "./listeners/HapticsListener";
-import AndroidBackButton from "./listeners/AndroidBackButton";
 import { OptimizedRouterProvider } from "../helpers/useOptimizedIonRouter";
 import { ErrorBoundary } from "react-error-boundary";
 import AppCrash from "./AppCrash";
@@ -41,9 +38,7 @@ import "@ionic/react/css/display.css";
 import "@ionic/react/css/palettes/dark.class.css";
 
 /* Setup global app lifecycle listeners */
-import "./listeners";
-import AppUrlListener from "./listeners/AppUrlListener";
-import { ResetStatusTap } from "./listeners/statusTap";
+import Listeners from "./listeners";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
@@ -75,17 +70,12 @@ export default function App() {
                 <UpdateContextProvider>
                   <Router>
                     <OptimizedRouterProvider>
-                      <AndroidBackButton />
-                      <ResetStatusTap />
-
                       <TabContextProvider>
                         <IonApp>
-                          <HapticsListener />
-                          <AppUrlListener />
-                          <TextRecoveryStartupPrompt />
-
                           <Auth>
-                            <TabbedRoutes />
+                            <TabbedRoutes>
+                              <Listeners />
+                            </TabbedRoutes>
                           </Auth>
                         </IonApp>
                       </TabContextProvider>

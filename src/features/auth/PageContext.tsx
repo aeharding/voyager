@@ -32,6 +32,9 @@ import GenericMarkdownEditorModal, {
 } from "../shared/markdown/editing/modal/GenericMarkdownEditorModal";
 import { NewPrivateMessage } from "../shared/markdown/editing/modal/contents/PrivateMessagePage";
 import { CommentReplyItem } from "../shared/markdown/editing/modal/contents/CommentReplyPage";
+import UserTagModal from "../tags/UserTagModal";
+import DatabaseErrorModal from "../settings/root/DatabaseErrorModal";
+import { css } from "@linaria/core";
 
 export interface BanUserPayload {
   user: Person;
@@ -87,6 +90,10 @@ interface IPageContext {
   presentBanUser: (payload: BanUserPayload) => void;
 
   presentCreateCrosspost: (post: PostView) => void;
+
+  presentUserTag: (person: Person) => void;
+
+  presentDatabaseErrorModal: (automatic?: boolean) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -102,6 +109,8 @@ export const PageContext = createContext<IPageContext>({
   presentAccountSwitcher: () => {},
   presentBanUser: () => {},
   presentCreateCrosspost: () => {},
+  presentUserTag: () => {},
+  presentDatabaseErrorModal: () => {},
 });
 
 interface PageContextProvider {
@@ -123,6 +132,22 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         onDismissShareAsImageModal(data, role),
     },
   );
+
+  const didDatabaseModalOpenRef = useRef(false);
+  const [_presentDatabaseErrorModal] = useIonModal(DatabaseErrorModal);
+
+  const presentDatabaseErrorModal = (automatic = false) => {
+    if (didDatabaseModalOpenRef.current && automatic) return;
+    didDatabaseModalOpenRef.current = true;
+
+    _presentDatabaseErrorModal({
+      initialBreakpoint: 1,
+      breakpoints: [0, 1],
+      cssClass: css`
+        --height: auto;
+      `,
+    });
+  };
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
@@ -228,6 +253,15 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   };
   // Ban user end
 
+  // User tag start
+  const [userTagItem, setUserTagItem] = useState<Person | undefined>();
+  const [isUserTagOpen, setIsUserTagOpen] = useState(false);
+  const presentUserTag = (person: Person) => {
+    setUserTagItem(person);
+    setIsUserTagOpen(true);
+  };
+  // User tag end
+
   const presentReport = (item: ReportableItem) => {
     reportRef.current?.present(item);
   };
@@ -279,6 +313,8 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         presentAccountSwitcher,
         presentBanUser,
         presentCreateCrosspost,
+        presentUserTag,
+        presentDatabaseErrorModal,
       }}
     >
       {children}
@@ -304,6 +340,11 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         text={selectTextItem!}
         isOpen={isSelectTextOpen}
         setIsOpen={setIsSelectTextOpen}
+      />
+      <UserTagModal
+        person={userTagItem!}
+        isOpen={isUserTagOpen}
+        setIsOpen={setIsUserTagOpen}
       />
     </PageContext.Provider>
   );

@@ -258,8 +258,8 @@ export default function CompactPost({ post }: PostProps) {
           )}
           {compactShowVotingButtons === true && (
             <EndDetails>
-              <VoteButton type="up" postId={post.post.id} />
-              <VoteButton type="down" postId={post.post.id} />
+              <VoteButton type="up" post={post} />
+              <VoteButton type="down" post={post} />
             </EndDetails>
           )}
           <Save type="post" id={post.post.id} />
