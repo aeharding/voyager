@@ -6,9 +6,10 @@ import {
   PostSortType,
 } from "lemmy-js-client";
 import { zipObject } from "lodash";
-import { ALL_POST_SORTS } from "../features/feed/PostSort";
-import { COMMENT_SORTS } from "../features/comment/CommentSort";
-import { StringArrayToIdentityObject } from "../helpers/typescript";
+
+import { COMMENT_SORTS } from "#/features/comment/CommentSort";
+import { ALL_POST_SORTS } from "#/features/feed/PostSort";
+import { StringArrayToIdentityObject } from "#/helpers/typescript";
 
 export interface IPostMetadata {
   post_id: number;

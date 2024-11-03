@@ -1,6 +1,8 @@
 import { pickBy, without } from "lodash";
-import { db } from "../../../../../services/db";
-import { getAllObjectValuesDeep } from "../../../../../helpers/object";
+
+import { getAllObjectValuesDeep } from "#/helpers/object";
+import { db } from "#/services/db";
+
 import { LOCALSTORAGE_KEYS, get, set } from "../../../syncStorage";
 
 const BASE_BACKUP_JSON = {

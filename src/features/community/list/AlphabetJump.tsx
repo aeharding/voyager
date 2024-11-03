@@ -1,4 +1,8 @@
+import { ImpactStyle } from "@capacitor/haptics";
+import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
+import { ellipseOutline, menuOutline, star } from "ionicons/icons";
+import { compact } from "lodash";
 import React, {
   MouseEvent,
   RefObject,
@@ -7,12 +11,9 @@ import React, {
   useRef,
 } from "react";
 import { VListHandle } from "virtua";
-import useHapticFeedback from "../../../helpers/useHapticFeedback";
-import { ImpactStyle } from "@capacitor/haptics";
-import { ellipseOutline, menuOutline, star } from "ionicons/icons";
-import { IonIcon } from "@ionic/react";
-import { findCurrentPage } from "../../../helpers/ionic";
-import { compact } from "lodash";
+
+import { findCurrentPage } from "#/helpers/ionic";
+import useHapticFeedback from "#/helpers/useHapticFeedback";
 
 const alphabetUpperCase = Array.from({ length: 26 }, (_, i) =>
   String.fromCharCode(65 + i),

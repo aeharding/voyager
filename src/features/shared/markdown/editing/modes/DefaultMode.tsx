@@ -4,6 +4,8 @@ import {
   useIonAlert,
   useIonModal,
 } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import {
   codeSlashOutline,
   ellipsisHorizontal,
@@ -17,8 +19,7 @@ import {
   remove,
 } from "ionicons/icons";
 import { MouseEvent, RefObject } from "react";
-import PreviewModal from "../PreviewModal";
-import textFaces from "./textFaces.txt?raw";
+
 import {
   bold,
   italic,
@@ -28,14 +29,15 @@ import {
   strikethrough,
   subscript,
   superscript,
-} from "../../../../icons";
+} from "#/features/icons";
+import { htmlToMarkdown } from "#/helpers/markdown";
+import { isValidUrl } from "#/helpers/url";
+
 import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
-import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
-import { isValidUrl } from "../../../../../helpers/url";
-import useUploadImage from "../useUploadImage";
-import { htmlToMarkdown } from "../../../../../helpers/markdown";
+import PreviewModal from "../PreviewModal";
 import useEditorHelpers from "../useEditorHelpers";
+import useUploadImage from "../useUploadImage";
+import textFaces from "./textFaces.txt?raw";
 
 const Button = styled.button`
   padding: 0;

@@ -1,7 +1,8 @@
 import { styled } from "@linaria/react";
-import { calculateIsCakeDay, calculateNewAccount } from "../../../helpers/date";
-import { useAppSelector } from "../../../store";
 import { useMemo } from "react";
+
+import { calculateIsCakeDay, calculateNewAccount } from "#/helpers/date";
+import { useAppSelector } from "#/store";
 
 const NewAccountBadge = styled.span`
   color: #d9a900;

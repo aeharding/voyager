@@ -1,5 +1,7 @@
 import { IonButton } from "@ionic/react";
-import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
+
+import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
+
 import usePresentUserActions from "./usePresentUserActions";
 
 interface UserPageActionsProps {

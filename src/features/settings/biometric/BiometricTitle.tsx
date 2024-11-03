@@ -1,5 +1,7 @@
 import { BiometricMethod } from "capacitor-biometric-lock";
-import { useAppSelector } from "../../../store";
+
+import { useAppSelector } from "#/store";
+
 import { primaryBiometricTypeSelector } from "./biometricSlice";
 
 export default function BiometricTitle() {

@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import {
   IonIcon,
   IonItem,
@@ -8,15 +7,18 @@ import {
   IonLoading,
   useIonAlert,
 } from "@ionic/react";
-import { PrivateMessageView } from "lemmy-js-client";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { getHandle } from "../../../helpers/lemmy";
-import ItemIcon from "../../labels/img/ItemIcon";
+import { styled } from "@linaria/react";
 import { chevronForwardOutline } from "ionicons/icons";
-import Time from "./Time";
+import { PrivateMessageView } from "lemmy-js-client";
 import { useState } from "react";
-import { clientSelector } from "../../auth/authSelectors";
-import { blockUser } from "../../user/userSlice";
+
+import { clientSelector } from "#/features/auth/authSelectors";
+import ItemIcon from "#/features/labels/img/ItemIcon";
+import { blockUser } from "#/features/user/userSlice";
+import { getHandle } from "#/helpers/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import Time from "./Time";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin: 0.75rem 0;

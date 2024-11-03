@@ -1,10 +1,12 @@
 import { IonItem, IonLabel, IonList } from "@ionic/react";
-import { ListHeader } from "../../shared/formatting";
-import InfiniteScrolling from "./InfiniteScrolling";
-import UpvoteOnSave from "./UpvoteOnSave";
-import DefaultSort from "./DefaultSort";
-import RememberCommunityPostSort from "./RememberCommunityPostSort";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+
 import AutoplayMedia from "./AutoplayMedia";
+import DefaultSort from "./DefaultSort";
+import InfiniteScrolling from "./InfiniteScrolling";
+import RememberCommunityPostSort from "./RememberCommunityPostSort";
+import UpvoteOnSave from "./UpvoteOnSave";
 
 export default function Posts() {
   return (

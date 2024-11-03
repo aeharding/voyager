@@ -1,9 +1,11 @@
+import { styled } from "@linaria/react";
 import React, { useCallback, useMemo } from "react";
+
+import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
+
 import InAppExternalLink from "../InAppExternalLink";
 import useLemmyUrlHandler from "../useLemmyUrlHandler";
-import { useAppSelector } from "../../../store";
-import { styled } from "@linaria/react";
-import { buildBaseLemmyUrl } from "../../../services/lemmy";
 
 const LinkInterceptor = styled(LinkInterceptorUnstyled)`
   -webkit-touch-callout: default;

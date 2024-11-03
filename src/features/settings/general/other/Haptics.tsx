@@ -1,8 +1,9 @@
 import { IonItem, IonToggle } from "@ionic/react";
 
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { isNative } from "#/helpers/device";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setEnableHapticFeedback } from "../../settingsSlice";
-import { isNative } from "../../../../helpers/device";
 
 export default function Haptics() {
   const dispatch = useAppDispatch();

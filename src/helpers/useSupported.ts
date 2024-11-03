@@ -1,7 +1,8 @@
 import { compare } from "compare-versions";
-import { lemmyVersionSelector } from "../features/auth/siteSlice";
-import { useAppSelector } from "../store";
 import { CommentSortType, PostSortType } from "lemmy-js-client";
+
+import { lemmyVersionSelector } from "#/features/auth/siteSlice";
+import { useAppSelector } from "#/store";
 
 /**
  * What Lemmy version was support added?

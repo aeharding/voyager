@@ -1,7 +1,9 @@
-import { useCallback } from "react";
-import Feed, { FeedProps } from "./Feed";
 import { CommunityView } from "lemmy-js-client";
-import CommunitySummary from "../community/CommunitySummary";
+import { useCallback } from "react";
+
+import CommunitySummary from "#/features/community/CommunitySummary";
+
+import Feed, { FeedProps } from "./Feed";
 
 interface PostCommentFeed
   extends Omit<FeedProps<CommunityView>, "renderItemContent"> {}

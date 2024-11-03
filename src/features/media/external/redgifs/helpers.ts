@@ -1,4 +1,4 @@
-import { isNative } from "../../../../helpers/device";
+import { isNative } from "#/helpers/device";
 
 export const redgifUrlRegex =
   /^https:\/\/(?:www\.|v3\.)?redgifs.com\/watch\/([a-z]+)/;

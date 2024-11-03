@@ -5,10 +5,8 @@ import {
   IonSearchbar,
   IonToolbar,
 } from "@ionic/react";
-import { FetchFn } from "../../../features/feed/Feed";
-import { Redirect, useParams } from "react-router";
-import PostSort from "../../../features/feed/PostSort";
-import MoreActions from "../../../features/community/MoreActions";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import {
   createContext,
   memo,
@@ -18,38 +16,42 @@ import {
   useRef,
   useState,
 } from "react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import useClient from "../../../helpers/useClient";
-import { LIMIT } from "../../../services/lemmy";
+import { Redirect, useParams } from "react-router";
+
+import MoreActions from "#/features/community/MoreActions";
+import ModActions from "#/features/community/mod/ModActions";
+import CommunitySearchResults from "#/features/community/search/CommunitySearchResults";
+import TitleSearch from "#/features/community/titleSearch/TitleSearch";
+import { TitleSearchProvider } from "#/features/community/titleSearch/TitleSearchProvider";
+import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResults";
+import useFetchCommunity from "#/features/community/useFetchCommunity";
+import useGetRandomCommunity from "#/features/community/useGetRandomCommunity";
+import { FetchFn } from "#/features/feed/Feed";
+import FeedContextProvider from "#/features/feed/FeedContext";
+import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import TitleSearch from "../../../features/community/titleSearch/TitleSearch";
-import TitleSearchResults from "../../../features/community/titleSearch/TitleSearchResults";
-import { TitleSearchProvider } from "../../../features/community/titleSearch/TitleSearchProvider";
-import FeedContent from "./FeedContent";
-import FeedContextProvider from "../../../features/feed/FeedContext";
-import PostFabs from "../../../features/feed/postFabs/PostFabs";
-import useFetchCommunity from "../../../features/community/useFetchCommunity";
-import CommunitySearchResults from "../../../features/community/search/CommunitySearchResults";
-import { getSortDuration } from "../../../features/feed/endItems/EndPost";
-import ModActions from "../../../features/community/mod/ModActions";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import useFeedSort from "../../../features/feed/sort/useFeedSort";
-import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
-import { useAppSelector } from "../../../store";
-import { PageTypeContext } from "../../../features/feed/PageTypeContext";
-import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
-import AppHeader from "../../../features/shared/AppHeader";
-import useGetRandomCommunity from "../../../features/community/useGetRandomCommunity";
+} from "#/features/feed/PostCommentFeed";
+import PostSort from "#/features/feed/PostSort";
+import { getSortDuration } from "#/features/feed/endItems/EndPost";
+import PostFabs from "#/features/feed/postFabs/PostFabs";
+import useFeedSort from "#/features/feed/sort/useFeedSort";
+import useFeedUpdate from "#/features/feed/useFeedUpdate";
 import PostAppearanceProvider, {
   WaitUntilPostAppearanceResolved,
-} from "../../../features/post/appearance/PostAppearanceProvider";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
-import useFeedUpdate from "../../../features/feed/useFeedUpdate";
-import DocumentTitle from "../../../features/shared/DocumentTitle";
-import { AppTitleHandle } from "../../../features/shared/AppTitle";
+} from "#/features/post/appearance/PostAppearanceProvider";
+import AppHeader from "#/features/shared/AppHeader";
+import { AppTitleHandle } from "#/features/shared/AppTitle";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import DocumentTitle from "#/features/shared/DocumentTitle";
+import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { LIMIT } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
+
+import FeedContent from "./FeedContent";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {

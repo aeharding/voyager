@@ -1,14 +1,15 @@
 import { IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
-import { createRef, useRef, useState } from "react";
-import SearchOptions from "../../../features/search/SearchOptions";
-import useLemmyUrlHandler from "../../../features/shared/useLemmyUrlHandler";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { css, cx } from "@linaria/core";
-import AppHeader from "../../../features/shared/AppHeader";
-import EmptySearch from "../../../features/search/EmptySearch";
-import { findCurrentPage } from "../../../helpers/ionic";
-import { useSetActivePage } from "../../../features/auth/AppContext";
+import { createRef, useRef, useState } from "react";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import EmptySearch from "#/features/search/EmptySearch";
+import SearchOptions from "#/features/search/SearchOptions";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
+import { findCurrentPage } from "#/helpers/ionic";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
 const SEARCH_EL_CLASSNAME = "search-page-searchbar";
 

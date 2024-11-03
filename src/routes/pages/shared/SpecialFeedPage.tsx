@@ -1,36 +1,38 @@
 import { IonBackButton, IonButtons, IonPage, IonToolbar } from "@ionic/react";
-import { FetchFn } from "../../../features/feed/Feed";
-import { useCallback } from "react";
-import PostSort from "../../../features/feed/PostSort";
 import { ListingType } from "lemmy-js-client";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import useClient from "../../../helpers/useClient";
-import { LIMIT } from "../../../services/lemmy";
-import { useAppSelector } from "../../../store";
+import { useCallback } from "react";
+
+import { followIdsSelector } from "#/features/auth/siteSlice";
+import ModActions from "#/features/community/mod/ModActions";
+import TitleSearch from "#/features/community/titleSearch/TitleSearch";
+import { TitleSearchProvider } from "#/features/community/titleSearch/TitleSearchProvider";
+import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResults";
+import { FetchFn } from "#/features/feed/Feed";
+import FeedContextProvider from "#/features/feed/FeedContext";
+import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import TitleSearch from "../../../features/community/titleSearch/TitleSearch";
-import { TitleSearchProvider } from "../../../features/community/titleSearch/TitleSearchProvider";
-import TitleSearchResults from "../../../features/community/titleSearch/TitleSearchResults";
-import FeedContent from "./FeedContent";
-import FeedContextProvider from "../../../features/feed/FeedContext";
-import SpecialFeedMoreActions from "../../../features/feed/SpecialFeedMoreActions";
-import PostFabs from "../../../features/feed/postFabs/PostFabs";
-import { getSortDuration } from "../../../features/feed/endItems/EndPost";
-import { followIdsSelector } from "../../../features/auth/siteSlice";
-import { getHandle } from "../../../helpers/lemmy";
-import ModActions from "../../../features/community/mod/ModActions";
-import useFeedSort from "../../../features/feed/sort/useFeedSort";
-import { PageTypeContext } from "../../../features/feed/PageTypeContext";
-import AppHeader from "../../../features/shared/AppHeader";
+} from "#/features/feed/PostCommentFeed";
+import PostSort from "#/features/feed/PostSort";
+import SpecialFeedMoreActions from "#/features/feed/SpecialFeedMoreActions";
+import { getSortDuration } from "#/features/feed/endItems/EndPost";
+import PostFabs from "#/features/feed/postFabs/PostFabs";
+import useFeedSort from "#/features/feed/sort/useFeedSort";
+import useFeedUpdate from "#/features/feed/useFeedUpdate";
+import { ShowSubscribedIconContext } from "#/features/labels/links/CommunityLink";
 import PostAppearanceProvider, {
   WaitUntilPostAppearanceResolved,
-} from "../../../features/post/appearance/PostAppearanceProvider";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
-import useFeedUpdate from "../../../features/feed/useFeedUpdate";
-import { ShowSubscribedIconContext } from "../../../features/labels/links/CommunityLink";
-import DocumentTitle from "../../../features/shared/DocumentTitle";
+} from "#/features/post/appearance/PostAppearanceProvider";
+import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import DocumentTitle from "#/features/shared/DocumentTitle";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { LIMIT } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
+
+import FeedContent from "./FeedContent";
 
 interface SpecialFeedProps {
   type: ListingType;

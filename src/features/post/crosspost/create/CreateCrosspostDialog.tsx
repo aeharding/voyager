@@ -1,7 +1,4 @@
-import { styled } from "@linaria/react";
-import FloatingDialog from "../../../../helpers/FloatingDialog";
-import Crosspost from "../Crosspost";
-import { CommunityView, PostView } from "lemmy-js-client";
+import { StatusBar } from "@capacitor/status-bar";
 import {
   IonButton,
   IonInput,
@@ -11,21 +8,26 @@ import {
   IonText,
   useIonModal,
 } from "@ionic/react";
-import { useContext, useEffect, useState } from "react";
-import CommunitySelectorModal from "../../../shared/selectorModals/CommunitySelectorModal";
-import { PageContext } from "../../../auth/PageContext";
-import { buildCrosspostBody, getHandle } from "../../../../helpers/lemmy";
-import useClient from "../../../../helpers/useClient";
-import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
-import { buildPostLink } from "../../../../helpers/appLinkBuilder";
-import { receivedPosts } from "../../postSlice";
-import { useOptimizedIonRouter } from "../../../../helpers/useOptimizedIonRouter";
-import { useAppDispatch } from "../../../../store";
-import useAppToast from "../../../../helpers/useAppToast";
-import { checkmark } from "ionicons/icons";
-import { StatusBar } from "@capacitor/status-bar";
-import { isNative } from "../../../../helpers/device";
 import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
+import { checkmark } from "ionicons/icons";
+import { CommunityView, PostView } from "lemmy-js-client";
+import { useContext, useEffect, useState } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import CommunitySelectorModal from "#/features/shared/selectorModals/CommunitySelectorModal";
+import FloatingDialog from "#/helpers/FloatingDialog";
+import { buildPostLink } from "#/helpers/appLinkBuilder";
+import { isNative } from "#/helpers/device";
+import { buildCrosspostBody, getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppDispatch } from "#/store";
+
+import { receivedPosts } from "../../postSlice";
+import Crosspost from "../Crosspost";
 
 const Title = styled.div`
   font-size: 1.1em;

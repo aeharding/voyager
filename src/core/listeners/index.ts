@@ -1,5 +1,5 @@
 import "./androidSafeArea";
-import "./keyboardPageResizer";
-import "./statusTap";
-import "./network/listener";
 import "./ionActivatable";
+import "./keyboardPageResizer";
+import "./network/listener";
+import "./statusTap";

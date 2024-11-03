@@ -1,18 +1,19 @@
+import { useIonViewWillEnter } from "@ionic/react";
+import { uniqueId } from "lodash";
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useMemo,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import * as portals from "react-reverse-portal";
+
 import type Player from "./Player";
-import { useIonViewWillEnter } from "@ionic/react";
 import PortaledPlayer from "./PortaledPlayer";
-import { uniqueId } from "lodash";
 
 interface VideoPortalProviderProps {
   children: React.ReactNode;

@@ -1,15 +1,17 @@
-import { CommentView, PostView } from "lemmy-js-client";
-import { Banner, ItemModState } from "./ModeratableItemBanner";
 import { IonIcon, IonLoading } from "@ionic/react";
 import { flagOutline } from "ionicons/icons";
-import { useAppSelector } from "../../../store";
+import { CommentView, PostView } from "lemmy-js-client";
+
+import { isPost } from "#/helpers/lemmy";
+import { useAppSelector } from "#/store";
+
 import {
   reportsByCommentIdSelector,
   reportsByPostIdSelector,
 } from "../modSlice";
-import usePostModActions from "../usePostModActions";
 import useCommentModActions from "../useCommentModActions";
-import { isPost } from "../../../helpers/lemmy";
+import usePostModActions from "../usePostModActions";
+import { Banner, ItemModState } from "./ModeratableItemBanner";
 
 interface ReportBannerProps {
   itemView: PostView | CommentView;

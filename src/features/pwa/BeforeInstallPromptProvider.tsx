@@ -1,9 +1,9 @@
 import React, {
   createContext,
-  useState,
-  useEffect,
   useCallback,
+  useEffect,
   useMemo,
+  useState,
 } from "react";
 
 type BeforeInstallPromptContextType = {

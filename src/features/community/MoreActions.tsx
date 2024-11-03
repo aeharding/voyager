@@ -1,22 +1,24 @@
 import { IonButton, useIonActionSheet } from "@ionic/react";
 import {
   createOutline,
+  eyeOffOutline,
   heartDislikeOutline,
   heartOutline,
+  removeCircleOutline,
   starOutline,
   starSharp,
-  removeCircleOutline,
   tabletPortraitOutline,
-  eyeOffOutline,
 } from "ionicons/icons";
-import useHidePosts from "../feed/useHidePosts";
-import useCommunityActions from "./useCommunityActions";
 import { Community, CommunityView } from "lemmy-js-client";
-import { useAppSelector } from "../../store";
 import { compact } from "lodash";
-import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
-import { useBuildTogglePostAppearanceButton } from "../feed/SpecialFeedMoreActions";
-import { getShareIcon } from "../../helpers/device";
+
+import { useBuildTogglePostAppearanceButton } from "#/features/feed/SpecialFeedMoreActions";
+import useHidePosts from "#/features/feed/useHidePosts";
+import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
+import { getShareIcon } from "#/helpers/device";
+import { useAppSelector } from "#/store";
+
+import useCommunityActions from "./useCommunityActions";
 
 interface MoreActionsProps {
   community: CommunityView | undefined;

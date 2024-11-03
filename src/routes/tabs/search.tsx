@@ -1,11 +1,10 @@
 /* eslint-disable react/jsx-key */
-
-import Route from "../common/Route";
-import SearchPage from "../pages/search/SearchPage";
-import SearchPostsResultsPage from "../pages/search/results/SearchFeedResultsPage";
-import SearchCommunitiesPage from "../pages/search/results/SearchCommunitiesPage";
-import RandomCommunityPage from "../pages/search/RandomCommunityPage";
-import CommunitiesResultsPage from "../pages/search/CommunitiesResultsPage";
+import Route from "#/routes/common/Route";
+import CommunitiesResultsPage from "#/routes/pages/search/CommunitiesResultsPage";
+import RandomCommunityPage from "#/routes/pages/search/RandomCommunityPage";
+import SearchPage from "#/routes/pages/search/SearchPage";
+import SearchCommunitiesPage from "#/routes/pages/search/results/SearchCommunitiesPage";
+import SearchPostsResultsPage from "#/routes/pages/search/results/SearchFeedResultsPage";
 
 export default [
   <Route exact path="/search">

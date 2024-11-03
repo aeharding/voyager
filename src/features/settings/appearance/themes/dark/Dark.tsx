@@ -1,5 +1,7 @@
 import { IonLabel, IonList } from "@ionic/react";
-import { ListHeader } from "../../../shared/formatting";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+
 import PureBlack from "./PureBlack";
 
 export default function Dark() {

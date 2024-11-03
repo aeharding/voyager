@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
-import { GalleryMediaProps } from "./GalleryMedia";
 import { useMergedRef } from "@mantine/hooks";
+import { useEffect, useRef } from "react";
+
+import { GalleryMediaProps } from "./GalleryMedia";
 
 interface GalleryGifProps extends GalleryMediaProps {
   ref?: React.Ref<HTMLCanvasElement>;

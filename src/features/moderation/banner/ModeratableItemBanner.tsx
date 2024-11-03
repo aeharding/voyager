@@ -1,13 +1,15 @@
+import { styled } from "@linaria/react";
 import { Comment, CommentView, Post, PostView } from "lemmy-js-client";
-import { useAppSelector } from "../../../store";
+
+import { maxWidthCss } from "#/features/shared/AppContent";
+import { useAppSelector } from "#/store";
+
 import {
   reportsByCommentIdSelector,
   reportsByPostIdSelector,
 } from "../modSlice";
 import RemovedBanner from "./RemovedBanner";
 import ReportBanner from "./ReportBanner";
-import { maxWidthCss } from "../../shared/AppContent";
-import { styled } from "@linaria/react";
 
 export const ItemModState = {
   None: 0,

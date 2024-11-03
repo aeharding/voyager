@@ -1,6 +1,7 @@
-import React from "react";
 import { CommentView, PostView } from "lemmy-js-client";
-import { useAppSelector } from "../../../store";
+
+import { useAppSelector } from "#/store";
+
 import { BaseSlidingVote } from "./BaseSliding";
 
 interface SlidingVoteProps {

@@ -1,6 +1,7 @@
-import { useEffect } from "react";
-import useHapticFeedback from "../../helpers/useHapticFeedback";
 import { ImpactStyle } from "@capacitor/haptics";
+import { useEffect } from "react";
+
+import useHapticFeedback from "#/helpers/useHapticFeedback";
 
 export default function HapticsListener() {
   const vibrate = useHapticFeedback();

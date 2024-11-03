@@ -1,4 +1,5 @@
-import { Page } from "../features/auth/AppContext";
+import { Page } from "#/features/auth/AppContext";
+
 import { isAndroid } from "./device";
 import { findCurrentPage, findIonContentScrollView } from "./ionic";
 

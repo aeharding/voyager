@@ -1,14 +1,15 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { PostView } from "lemmy-js-client";
-import { ActionButton } from "../actions/ActionButton";
+import { useContext } from "react";
+
+import { InFeedContext } from "#/features/feed/Feed";
 import useCanModerate, {
   ModeratorRole,
   getModColor,
   getModIcon,
-} from "../../moderation/useCanModerate";
-import usePostModActions from "../../moderation/usePostModActions";
-import { useContext } from "react";
-import { InFeedContext } from "../../feed/Feed";
+} from "#/features/moderation/useCanModerate";
+import usePostModActions from "#/features/moderation/usePostModActions";
+import { ActionButton } from "#/features/post/actions/ActionButton";
 
 interface MoreActionsProps {
   post: PostView;

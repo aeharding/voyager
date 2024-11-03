@@ -1,8 +1,10 @@
-import React, { HTMLProps, MouseEvent, MouseEventHandler } from "react";
-import { isNative } from "../../helpers/device";
-import { useAppSelector } from "../../store";
-import { OLinkHandlerType } from "../../services/db";
 import { IonItem } from "@ionic/react";
+import React, { HTMLProps, MouseEvent, MouseEventHandler } from "react";
+
+import { isNative } from "#/helpers/device";
+import { OLinkHandlerType } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import useNativeBrowser from "./useNativeBrowser";
 
 type InAppExternalLinkProps =

@@ -6,7 +6,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import {
   useCallback,
   useContext,
@@ -15,27 +16,27 @@ import {
   useRef,
   useState,
 } from "react";
-import { jwtPayloadSelector } from "../../../features/auth/authSelectors";
-import { syncMessages } from "../../../features/inbox/inboxSlice";
 import { useParams } from "react-router";
-import { getHandle } from "../../../helpers/lemmy";
-import Message from "../../../features/inbox/messages/Message";
-import { maxWidthCss } from "../../../features/shared/AppContent";
-import { getUser } from "../../../features/user/userSlice";
-import { PageContentIonSpinner } from "../../../features/user/AsyncProfile";
-import { StyledLink } from "../../../features/labels/links/shared";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import ConversationsMoreActions from "../../../features/feed/ConversationsMoreActions";
-import { TabContext } from "../../../core/TabContext";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import { css } from "@linaria/core";
-import AppHeader from "../../../features/shared/AppHeader";
-import SendMessageBox from "../../../features/inbox/SendMessageBox";
-import FeedContent from "../shared/FeedContent";
 import { CustomItemComponent, VList, VListHandle } from "virtua";
-import { styled } from "@linaria/react";
-import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
-import FeedLoadMoreFailed from "../../../features/feed/endItems/FeedLoadMoreFailed";
+
+import { TabContext } from "#/core/TabContext";
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { jwtPayloadSelector } from "#/features/auth/authSelectors";
+import ConversationsMoreActions from "#/features/feed/ConversationsMoreActions";
+import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
+import SendMessageBox from "#/features/inbox/SendMessageBox";
+import { syncMessages } from "#/features/inbox/inboxSlice";
+import Message from "#/features/inbox/messages/Message";
+import { StyledLink } from "#/features/labels/links/shared";
+import { maxWidthCss } from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
+import { getUser } from "#/features/user/userSlice";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useKeyboardOpen from "#/helpers/useKeyboardOpen";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 const containerCss = css`
   ${maxWidthCss}

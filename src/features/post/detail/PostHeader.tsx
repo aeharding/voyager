@@ -1,36 +1,38 @@
 import { IonIcon, IonItem } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { megaphone } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
-import { maxWidthCss } from "../../shared/AppContent";
+import { useCallback, useContext, useMemo, useRef } from "react";
+import AnimateHeight from "react-animate-height";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { PageContext } from "#/features/auth/PageContext";
+import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
+import CommunityLink from "#/features/labels/links/CommunityLink";
+import PersonLink from "#/features/labels/links/PersonLink";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
-} from "../../moderation/ModeratableItem";
-import { OTapToCollapseType } from "../../../services/db";
-import { useCallback, useContext, useMemo, useRef } from "react";
-import { PageContext } from "../../auth/PageContext";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import useAppToast from "../../../helpers/useAppToast";
-import { findLoneImage } from "../../../helpers/markdown";
-import Markdown from "../../shared/markdown/Markdown";
-import InlineMarkdown from "../../shared/markdown/InlineMarkdown";
-import Nsfw, { isNsfw } from "../../labels/Nsfw";
-import { megaphone } from "ionicons/icons";
-import CommunityLink from "../../labels/links/CommunityLink";
-import PersonLink from "../../labels/links/PersonLink";
-import Stats from "./Stats";
+} from "#/features/moderation/ModeratableItem";
+import { getCanModerate } from "#/features/moderation/useCanModerate";
+import PostActions from "#/features/post/actions/PostActions";
+import Crosspost from "#/features/post/crosspost/Crosspost";
+import LargeFeedPostMedia from "#/features/post/inFeed/large/media/LargeFeedPostMedia";
+import PostLink from "#/features/post/link/PostLink";
+import { togglePostCollapse } from "#/features/post/postSlice";
+import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
+import useIsPostUrlMedia from "#/features/post/useIsPostUrlMedia";
+import { maxWidthCss } from "#/features/shared/AppContent";
+import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import Markdown from "#/features/shared/markdown/Markdown";
+import { findIonContentScrollView } from "#/helpers/ionic";
+import { findLoneImage } from "#/helpers/markdown";
+import { postLocked } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { OTapToCollapseType } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import Locked from "./Locked";
-import PostActions from "../actions/PostActions";
-import { postLocked } from "../../../helpers/toastMessages";
-import { togglePostCollapse } from "../postSlice";
-import Crosspost from "../crosspost/Crosspost";
-import useCrosspostUrl from "../shared/useCrosspostUrl";
-import LargeFeedPostMedia from "../inFeed/large/media/LargeFeedPostMedia";
-import { styled } from "@linaria/react";
-import { AppContext } from "../../auth/AppContext";
-import AnimateHeight from "react-animate-height";
-import useIsPostUrlMedia from "../useIsPostUrlMedia";
-import { findIonContentScrollView } from "../../../helpers/ionic";
-import PostLink from "../link/PostLink";
-import { getCanModerate } from "../../moderation/useCanModerate";
+import Stats from "./Stats";
 
 const BorderlessIonItem = styled(IonItem)`
   --padding-start: 0;

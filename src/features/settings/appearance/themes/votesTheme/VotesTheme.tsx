@@ -6,13 +6,15 @@ import {
   IonRadio,
   IonRadioGroup,
 } from "@ionic/react";
-import { ListHeader } from "../../../shared/formatting";
-import { OVotesThemeType } from "../../../../../services/db";
-import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { useAppDispatch, useAppSelector } from "../../../../../store";
-import { startCase } from "lodash";
+import { styled } from "@linaria/react";
 import { arrowDownOutline, arrowUpOutline } from "ionicons/icons";
+import { startCase } from "lodash";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { OVotesThemeType } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setVotesTheme } from "../../../settingsSlice";
 
 export const VOTE_COLORS = {

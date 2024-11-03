@@ -1,11 +1,13 @@
-import { styled } from "@linaria/react";
-import { useAppSelector } from "../../../../store";
-import { useRef } from "react";
 import { IonButton, IonNavLink, IonSpinner } from "@ionic/react";
-import PickJoinServer from "../pickJoinServer/PickJoinServer";
+import { styled } from "@linaria/react";
+import { useRef } from "react";
+
+import PickLoginServer from "#/features/auth/login/login/PickLoginServer";
+import PickJoinServer from "#/features/auth/login/pickJoinServer/PickJoinServer";
+import useStartJoinFlow from "#/features/auth/login/pickJoinServer/useStartJoinFlow";
+import { useAppSelector } from "#/store";
+
 import LearnMore from "../LearnMore";
-import PickLoginServer from "../login/PickLoginServer";
-import useStartJoinFlow from "../pickJoinServer/useStartJoinFlow";
 
 const TopSpacer = styled.div`
   flex: 10;

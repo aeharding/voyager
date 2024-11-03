@@ -1,7 +1,8 @@
 import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
-import { getItemActorName } from "../../helpers/lemmy";
-import { OPostBlurNsfw, PostBlurNsfwType } from "../../services/db";
+
+import { getItemActorName } from "#/helpers/lemmy";
+import { OPostBlurNsfw, PostBlurNsfwType } from "#/services/db";
 
 const Container = styled.span`
   font-size: 0.8rem;

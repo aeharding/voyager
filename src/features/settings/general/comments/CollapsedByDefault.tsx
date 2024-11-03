@@ -1,9 +1,10 @@
-import { useAppSelector } from "../../../../store";
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { useAppSelector } from "#/store";
+
 import {
   OCommentThreadCollapse,
   setCommentsCollapsed,
 } from "../../settingsSlice";
-import SettingSelector from "../../shared/SettingSelector";
 
 export default function CollapsedByDefault() {
   const collapseCommentThreads = useAppSelector(

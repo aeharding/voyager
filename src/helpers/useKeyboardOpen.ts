@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
 import { Keyboard } from "@capacitor/keyboard";
-import { isNative } from "./device";
+import { useEffect, useState } from "react";
+
 import BooleanWatcher from "./BooleanWatcher";
+import { isNative } from "./device";
 
 const keyboardWatcher = new BooleanWatcher(false);
 

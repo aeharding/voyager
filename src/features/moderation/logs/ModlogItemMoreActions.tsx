@@ -1,17 +1,19 @@
-import { styled } from "@linaria/react";
-import { compact } from "lodash";
 import { IonIcon, useIonActionSheet } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import {
   ellipsisHorizontal,
   peopleOutline,
   personOutline,
 } from "ionicons/icons";
-import { ModlogItemType } from "../../../routes/pages/shared/ModlogPage";
-import { getHandle } from "../../../helpers/lemmy";
-import useAppNavigation from "../../../helpers/useAppNavigation";
+import { compact } from "lodash";
+
+import { PlainButton } from "#/features/shared/PlainButton";
+import { getHandle } from "#/helpers/lemmy";
+import useAppNavigation from "#/helpers/useAppNavigation";
+import { ModlogItemType } from "#/routes/pages/shared/ModlogPage";
+
 import { ModeratorRole, getModIcon } from "../useCanModerate";
-import { PlainButton } from "../../shared/PlainButton";
-import { css } from "@linaria/core";
 
 const EllipsisIcon = styled(IonIcon)`
   font-size: 1.2rem;

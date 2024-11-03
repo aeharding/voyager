@@ -1,6 +1,4 @@
-import React, { ComponentProps, useCallback } from "react";
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
-import Scores from "./Scores";
 import {
   albumsOutline,
   arrowDown,
@@ -10,21 +8,27 @@ import {
   eyeOffOutline,
 } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle, getRemoteHandle, isPost } from "../../helpers/lemmy";
-import { MaxWidthContainer } from "../shared/AppContent";
-import { FetchFn } from "../feed/Feed";
-import useClient from "../../helpers/useClient";
-import { LIMIT } from "../../services/lemmy";
-import { useAppSelector } from "../../store";
-import PostCommentFeed, { PostCommentItem } from "../feed/PostCommentFeed";
-import { userHandleSelector } from "../auth/authSelectors";
+import React, { ComponentProps, useCallback } from "react";
+
+import { userHandleSelector } from "#/features/auth/authSelectors";
+import { FetchFn } from "#/features/feed/Feed";
+import PostCommentFeed, {
+  PostCommentItem,
+} from "#/features/feed/PostCommentFeed";
 import {
   getModColor,
   getModIcon,
   getModName,
-} from "../moderation/useCanModerate";
-import useModZoneActions from "../moderation/useModZoneActions";
+} from "#/features/moderation/useCanModerate";
+import useModZoneActions from "#/features/moderation/useModZoneActions";
+import { MaxWidthContainer } from "#/features/shared/AppContent";
+import { getHandle, getRemoteHandle, isPost } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { LIMIT } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
+
+import Scores from "./Scores";
 
 interface ProfileProps
   extends Pick<ComponentProps<typeof PostCommentFeed>, "onPull"> {

@@ -1,6 +1,6 @@
 import { ComponentProps } from "react";
-import supersub from "remark-supersub-lemmy";
 import ReactMarkdown from "react-markdown";
+import supersub from "remark-supersub-lemmy";
 
 type PlaintextMarkdownProps = Pick<
   ComponentProps<typeof ReactMarkdown>,

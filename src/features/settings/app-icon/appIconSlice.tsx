@@ -1,8 +1,9 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AppIcon as CapAppIcon } from "@capacitor-community/app-icon";
-import { AppDispatch } from "../../../store";
-import { isAndroid, isNative } from "../../../helpers/device";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { without } from "lodash";
+
+import { isAndroid, isNative } from "#/helpers/device";
+import { AppDispatch } from "#/store";
 
 /**
  * Important: name must be ONLY a-z characters

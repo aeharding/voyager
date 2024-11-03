@@ -1,16 +1,18 @@
 import { IonIcon, IonLabel } from "@ionic/react";
-import { useCallback, useContext, useMemo } from "react";
-import { useAppSelector } from "../../../store";
-import SharedTabButton, { TabButtonProps } from "./shared";
+import { styled } from "@linaria/react";
 import { personCircleOutline } from "ionicons/icons";
-import { PageContext } from "../../../features/auth/PageContext";
+import { useCallback, useContext, useMemo } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
 import {
   accountsListEmptySelector,
   userHandleSelector,
-} from "../../../features/auth/authSelectors";
-import { getProfileTabLabel } from "../../../features/settings/general/other/ProfileTabLabel";
-import { styled } from "@linaria/react";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+} from "#/features/auth/authSelectors";
+import { getProfileTabLabel } from "#/features/settings/general/other/ProfileTabLabel";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppSelector } from "#/store";
+
+import SharedTabButton, { TabButtonProps } from "./shared";
 
 const ProfileLabel = styled(IonLabel)`
   max-width: 20vw;

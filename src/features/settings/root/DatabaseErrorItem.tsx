@@ -6,12 +6,13 @@ import {
   IonList,
   useIonModal,
 } from "@ionic/react";
-import { IconBg } from "../../../routes/pages/settings/SettingsPage";
-import { alert } from "ionicons/icons";
 import { css } from "@linaria/core";
-import { useAppSelector } from "../../../store";
-import { isAppleDeviceInstallable } from "../../../helpers/device";
-import InAppExternalLink from "../../shared/InAppExternalLink";
+import { alert } from "ionicons/icons";
+
+import InAppExternalLink from "#/features/shared/InAppExternalLink";
+import { isAppleDeviceInstallable } from "#/helpers/device";
+import { IconBg } from "#/routes/pages/settings/SettingsPage";
+import { useAppSelector } from "#/store";
 
 export default function DatabaseErrorItem() {
   const [presentPreview] = useIonModal(WarningModal);

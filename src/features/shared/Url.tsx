@@ -1,6 +1,7 @@
 import { styled } from "@linaria/react";
 import { useMemo } from "react";
-import { parseUrlForDisplay } from "../../helpers/url";
+
+import { parseUrlForDisplay } from "#/helpers/url";
 
 const Rest = styled.span`
   opacity: 0.6;

@@ -7,11 +7,13 @@ import {
   IonList,
   useIonAlert,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { ListHeader } from "../shared/formatting";
-import { updateFilteredKeywords } from "../settingsSlice";
 import { uniq, without } from "lodash";
-import { RemoveItemButton } from "../../shared/ListEditor";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { RemoveItemButton } from "#/features/shared/ListEditor";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { updateFilteredKeywords } from "../settingsSlice";
 
 export default function FilteredKeywords() {
   const [presentAlert] = useIonAlert();

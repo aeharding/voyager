@@ -1,10 +1,11 @@
 import { IonButton } from "@ionic/react";
-import { useParams } from "react-router";
-import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
-import usePresentUserActions from "../user/usePresentUserActions";
 import { personCircleOutline } from "ionicons/icons";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { useParams } from "react-router";
+
+import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
+import usePresentUserActions from "#/features/user/usePresentUserActions";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
 export default function ConversationsMoreActions() {
   const { handle } = useParams<{ handle: string }>();

@@ -1,10 +1,12 @@
-import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
 import { IonButton, IonSpinner } from "@ionic/react";
-import useInAppPurchase from "./useInAppPurchase";
-import { useState } from "react";
-import useAppToast from "../../../helpers/useAppToast";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { Product } from "capacitor-tips";
+import { useState } from "react";
+
+import useAppToast from "#/helpers/useAppToast";
+
+import useInAppPurchase from "./useInAppPurchase";
 
 const Container = styled.div`
   display: flex;

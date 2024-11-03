@@ -17,34 +17,35 @@ import {
   CommentView,
   PersonMentionView,
 } from "lemmy-js-client";
+import { compact } from "lodash";
 import { useCallback, useContext, useMemo } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { userHandleSelector } from "#/features/auth/authSelectors";
+import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
+import {
+  getCanModerate,
+  getModIcon,
+} from "#/features/moderation/useCanModerate";
+import useCommentModActions from "#/features/moderation/useCommentModActions";
+import { getShareIcon } from "#/helpers/device";
 import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
   share,
-} from "../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import {
-  postLocked,
-  saveError,
-  saveSuccess,
-} from "../../helpers/toastMessages";
-import store, { useAppDispatch } from "../../store";
-import { PageContext } from "../auth/PageContext";
-import { userHandleSelector } from "../auth/authSelectors";
-import { CommentsContext } from "./inTree/CommentsContext";
-import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
-import useCollapseRootComment from "./inTree/useCollapseRootComment";
-import useAppToast from "../../helpers/useAppToast";
-import { getCanModerate, getModIcon } from "../moderation/useCanModerate";
-import useCommentModActions from "../moderation/useCommentModActions";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { isDownvoteEnabledSelector } from "../auth/siteSlice";
-import { compact } from "lodash";
+} from "#/helpers/lemmy";
+import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { postLocked, saveError, saveSuccess } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import store, { useAppDispatch } from "#/store";
+
 import { isStubComment } from "./CommentHeader";
-import { getVoteErrorMessage } from "../../helpers/lemmyErrors";
-import { getShareIcon } from "../../helpers/device";
+import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
+import { CommentsContext } from "./inTree/CommentsContext";
+import useCollapseRootComment from "./inTree/useCollapseRootComment";
 
 export interface CommentActionsProps {
   comment: CommentView | PersonMentionView | CommentReplyView;

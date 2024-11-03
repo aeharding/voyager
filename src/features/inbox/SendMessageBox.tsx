@@ -1,9 +1,8 @@
-import { styled } from "@linaria/react";
-import { MaxWidthContainer } from "../shared/AppContent";
-import TextareaAutosize, {
-  TextareaAutosizeProps,
-} from "react-textarea-autosize";
 import { IonButton, IonIcon } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
+import { resize, send as sendIcon } from "ionicons/icons";
+import { Person } from "lemmy-js-client";
 import {
   KeyboardEvent,
   useCallback,
@@ -12,16 +11,19 @@ import {
   useRef,
   useState,
 } from "react";
-import useClient from "../../helpers/useClient";
-import useAppToast from "../../helpers/useAppToast";
+import TextareaAutosize, {
+  TextareaAutosizeProps,
+} from "react-textarea-autosize";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { MaxWidthContainer } from "#/features/shared/AppContent";
+import { privateMessageSendFailed } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppDispatch } from "#/store";
+
 import { receivedMessages } from "./inboxSlice";
-import { useAppDispatch } from "../../store";
-import { resize, send as sendIcon } from "ionicons/icons";
-import { privateMessageSendFailed } from "../../helpers/toastMessages";
-import { css } from "@linaria/core";
-import { PageContext } from "../auth/PageContext";
-import { Person } from "lemmy-js-client";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;

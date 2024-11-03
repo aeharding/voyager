@@ -1,3 +1,4 @@
+import { IonModal, useIonActionSheet } from "@ionic/react";
 import React, {
   createContext,
   useContext,
@@ -5,15 +6,16 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { IonModal, useIonActionSheet } from "@ionic/react";
-import { PageContext } from "../auth/PageContext";
 import { Prompt, useLocation } from "react-router";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { instanceSelector } from "#/features/auth/authSelectors";
+import { isNative } from "#/helpers/device";
+import useStateRef from "#/helpers/useStateRef";
+import { clearRecoveredText } from "#/helpers/useTextRecovery";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import IonModalAutosizedForOnScreenKeyboard from "./IonModalAutosizedForOnScreenKeyboard";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { instanceSelector } from "../auth/authSelectors";
-import { clearRecoveredText } from "../../helpers/useTextRecovery";
-import useStateRef from "../../helpers/useStateRef";
-import { isNative } from "../../helpers/device";
 import {
   deletePendingImageUploads,
   onHandledPendingImages,

@@ -1,9 +1,11 @@
+import { IonNavCustomEvent } from "@ionic/core";
 import { IonNav, IonSpinner } from "@ionic/react";
-import Welcome from "./welcome/Welcome";
 import { styled } from "@linaria/react";
 import { useCallback, useContext, useState } from "react";
-import { IonNavCustomEvent } from "@ionic/core";
-import { DynamicDismissableModalContext } from "../../shared/DynamicDismissableModal";
+
+import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+
+import Welcome from "./welcome/Welcome";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;

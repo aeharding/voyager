@@ -1,5 +1,6 @@
 import { styled } from "@linaria/react";
-import { useAppSelector } from "../../store";
+
+import { useAppSelector } from "#/store";
 
 const Marker = styled.div`
   position: absolute;

@@ -1,10 +1,11 @@
-import { MutableRefObject } from "react";
-import { useAppDispatch } from "../../../../store";
-import { requestJoinSiteData } from "../join/joinSlice";
-import Legal from "../join/Legal";
 import { useIonAlert } from "@ionic/react";
-import useAppToast from "../../../../helpers/useAppToast";
 import { GetSiteResponse } from "lemmy-js-client";
+import { MutableRefObject } from "react";
+
+import Legal from "#/features/auth/login/join/Legal";
+import { requestJoinSiteData } from "#/features/auth/login/join/joinSlice";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch } from "#/store";
 
 export default function useStartJoinFlow(
   ref: MutableRefObject<HTMLElement | null>,

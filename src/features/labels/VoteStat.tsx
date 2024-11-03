@@ -1,10 +1,11 @@
 import { ComponentProps, useMemo } from "react";
-import { useAppSelector } from "../../store";
-import Stat from "../post/detail/Stat";
+
+import Stat from "#/features/post/detail/Stat";
 import {
   VOTE_COLORS,
   bgColorToVariable,
-} from "../settings/appearance/themes/votesTheme/VotesTheme";
+} from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
+import { useAppSelector } from "#/store";
 
 interface VoteStatProps extends ComponentProps<typeof Stat> {
   currentVote: 1 | -1 | 0;

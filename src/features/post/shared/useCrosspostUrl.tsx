@@ -1,7 +1,8 @@
 import { PostView } from "lemmy-js-client";
-import { getCrosspostUrl } from "../../../helpers/lemmy";
-import { useAppSelector } from "../../../store";
 import { useMemo } from "react";
+
+import { getCrosspostUrl } from "#/helpers/lemmy";
+import { useAppSelector } from "#/store";
 
 export default function useCrosspostUrl(post: PostView): string | undefined {
   const embedCrossposts = useAppSelector(

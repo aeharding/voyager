@@ -1,22 +1,24 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../store";
-import { getRemoteHandle, parseLemmyJWT } from "../../helpers/lemmy";
-import { resetPosts } from "../post/postSlice";
-import { getClient } from "../../services/lemmy";
-import { resetComments } from "../comment/commentSlice";
-import { resetUsers } from "../user/userSlice";
-import { resetInbox } from "../inbox/inboxSlice";
-import { differenceWith, uniqBy } from "lodash";
-import { resetCommunities } from "../community/communitySlice";
 import { ApplicationContext } from "capacitor-application-context";
-import { resetInstances } from "../instances/instancesSlice";
-import { resetResolve } from "../resolve/resolveSlice";
-import { resetMod } from "../moderation/modSlice";
+import { Register } from "lemmy-js-client";
+import { differenceWith, uniqBy } from "lodash";
+
+import { resetComments } from "#/features/comment/commentSlice";
+import { resetCommunities } from "#/features/community/communitySlice";
+import { resetInbox } from "#/features/inbox/inboxSlice";
+import { resetInstances } from "#/features/instances/instancesSlice";
+import { resetMod } from "#/features/moderation/modSlice";
+import { resetPosts } from "#/features/post/postSlice";
+import { resetResolve } from "#/features/resolve/resolveSlice";
+import { setDefaultFeed } from "#/features/settings/settingsSlice";
+import { resetUsers } from "#/features/user/userSlice";
+import { getRemoteHandle, parseLemmyJWT } from "#/helpers/lemmy";
+import { getDefaultServer } from "#/services/app";
+import { getClient } from "#/services/lemmy";
+import { AppDispatch, RootState } from "#/store";
+
 import { getInstanceFromHandle, instanceSelector } from "./authSelectors";
 import { receivedSite, resetSite } from "./siteSlice";
-import { Register } from "lemmy-js-client";
-import { setDefaultFeed } from "../settings/settingsSlice";
-import { getDefaultServer } from "../../services/app";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 

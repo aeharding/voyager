@@ -4,7 +4,8 @@ import {
   NotificationOptions,
 } from "@capacitor/haptics";
 import { useCallback } from "react";
-import { useAppSelector } from "../store";
+
+import { useAppSelector } from "#/store";
 
 export default function useHapticFeedback() {
   const enabled = useAppSelector(

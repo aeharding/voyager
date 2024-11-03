@@ -1,6 +1,8 @@
 import { LemmyHttp } from "lemmy-js-client";
-import { reduceFileSize } from "../helpers/imageCompress";
-import { isNative, supportsWebp } from "../helpers/device";
+
+import { isNative, supportsWebp } from "#/helpers/device";
+import { reduceFileSize } from "#/helpers/imageCompress";
+
 import nativeFetch from "./nativeFetch";
 
 export function buildBaseLemmyUrl(url: string): string {

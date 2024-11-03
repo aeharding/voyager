@@ -1,6 +1,8 @@
 import { IonItem, IonToggle } from "@ionic/react";
+
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import BiometricTitle from "../BiometricTitle";
-import { useAppDispatch, useAppSelector } from "../../../../store";
 import { setBiometricsEnabled } from "../biometricSlice";
 
 export default function BiometricEnabled() {

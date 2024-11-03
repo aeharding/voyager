@@ -1,29 +1,31 @@
-import { PostProps } from "../Post";
-import Thumbnail from "./Thumbnail";
-import { maxWidthCss } from "../../../shared/AppContent";
-import PreviewStats from "../PreviewStats";
-import MoreActions from "../../shared/MoreActions";
+import { styled } from "@linaria/react";
 import { megaphone } from "ionicons/icons";
-import PersonLink from "../../../labels/links/PersonLink";
-import CommunityLink from "../../../labels/links/CommunityLink";
-import { VoteButton } from "../../shared/VoteButton";
-import Save from "../../../labels/Save";
-import Nsfw, { isNsfw } from "../../../labels/Nsfw";
-import { useAppSelector } from "../../../../store";
 import { useContext, useMemo } from "react";
-import InlineMarkdown from "../../../shared/markdown/InlineMarkdown";
-import MoreModActions from "../../shared/MoreModAction";
+
+import { PageTypeContext } from "#/features/feed/PageTypeContext";
+import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
+import Save from "#/features/labels/Save";
+import CommunityLink from "#/features/labels/links/CommunityLink";
+import PersonLink from "#/features/labels/links/PersonLink";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
-} from "../../../moderation/ModeratableItem";
-import ModqueueItemActions from "../../../moderation/ModqueueItemActions";
-import { AnnouncementIcon } from "../../detail/PostHeader";
-import CompactCrosspost from "../../crosspost/CompactCrosspost";
-import useCrosspostUrl from "../../shared/useCrosspostUrl";
-import { useInModqueue } from "../../../../routes/pages/shared/ModqueuePage";
-import { PageTypeContext } from "../../../feed/PageTypeContext";
-import { styled } from "@linaria/react";
-import { isUrlImage, parseUrlForDisplay } from "../../../../helpers/url";
+} from "#/features/moderation/ModeratableItem";
+import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
+import CompactCrosspost from "#/features/post/crosspost/CompactCrosspost";
+import { AnnouncementIcon } from "#/features/post/detail/PostHeader";
+import MoreActions from "#/features/post/shared/MoreActions";
+import MoreModActions from "#/features/post/shared/MoreModAction";
+import { VoteButton } from "#/features/post/shared/VoteButton";
+import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
+import { maxWidthCss } from "#/features/shared/AppContent";
+import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import { isUrlImage, parseUrlForDisplay } from "#/helpers/url";
+import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
+import { useAppSelector } from "#/store";
+
+import { PostProps } from "../Post";
+import PreviewStats from "../PreviewStats";
+import Thumbnail from "./Thumbnail";
 
 const Container = styled.div`
   width: 100%;

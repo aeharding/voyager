@@ -1,6 +1,7 @@
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { planetOutline, shuffle } from "ionicons/icons";
-import { useAppSelector } from "../../store";
+
+import { useAppSelector } from "#/store";
 
 export default function SpecialSearchMenu() {
   const trendingCommunities = useAppSelector(

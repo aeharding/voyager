@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-key */
-
 import { Redirect } from "react-router";
-import Route from "../common/Route";
-import { getDefaultServer } from "../../services/app";
-import CommunitiesPage from "../pages/posts/CommunitiesPage";
-import { DefaultFeedType } from "../../services/db";
+
+import Route from "#/routes/common/Route";
+import CommunitiesPage from "#/routes/pages/posts/CommunitiesPage";
+import { getDefaultServer } from "#/services/app";
+import { DefaultFeedType } from "#/services/db";
 
 interface Props {
   defaultFeed: DefaultFeedType | undefined;

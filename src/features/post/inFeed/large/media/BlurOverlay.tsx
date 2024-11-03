@@ -1,7 +1,8 @@
-import { ReactNode } from "react";
-import BlurOverlayMessage from "./BlurOverlayMessage";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
+import { ReactNode } from "react";
+
+import BlurOverlayMessage from "./BlurOverlayMessage";
 
 const BlurContainer = styled.div`
   position: relative;

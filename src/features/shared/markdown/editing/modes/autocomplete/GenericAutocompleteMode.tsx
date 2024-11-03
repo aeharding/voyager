@@ -1,9 +1,11 @@
 import { styled } from "@linaria/react";
-import { useEffect, useState } from "react";
-import { getHandle } from "../../../../../../helpers/lemmy";
-import { Community } from "lemmy-js-client";
-import { SharedModeProps as GenericModeProps } from "../DefaultMode";
 import { useDebouncedCallback } from "@mantine/hooks";
+import { Community } from "lemmy-js-client";
+import { useEffect, useState } from "react";
+
+import { getHandle } from "#/helpers/lemmy";
+
+import { SharedModeProps as GenericModeProps } from "../DefaultMode";
 
 const Container = styled.div`
   display: flex;

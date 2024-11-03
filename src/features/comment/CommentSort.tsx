@@ -13,11 +13,12 @@ import {
   skullOutline,
   timeOutline,
 } from "ionicons/icons";
-import { useContext, useState } from "react";
-import { startCase } from "lodash";
 import { CommentSortType } from "lemmy-js-client";
-import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
-import { AppContext } from "../auth/AppContext";
+import { startCase } from "lodash";
+import { useContext, useState } from "react";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
 
 export const COMMENT_SORTS = [
   "Hot",

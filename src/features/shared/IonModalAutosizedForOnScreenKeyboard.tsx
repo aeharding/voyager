@@ -1,8 +1,9 @@
 import { IonModal } from "@ionic/react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { isNative } from "../../helpers/device";
 import { styled } from "@linaria/react";
 import { useDocumentVisibility } from "@mantine/hooks";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+
+import { isNative } from "#/helpers/device";
 
 // TODO it's a bit buggy trying to compute this
 // in realtime with the new post dialog + comment dialogs

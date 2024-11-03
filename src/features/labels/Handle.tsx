@@ -1,6 +1,7 @@
-import { Person } from "lemmy-js-client";
-import { getItemActorName } from "../../helpers/lemmy";
 import { styled } from "@linaria/react";
+import { Person } from "lemmy-js-client";
+
+import { getItemActorName } from "#/helpers/lemmy";
 
 const Aside = styled.aside`
   display: inline;

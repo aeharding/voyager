@@ -5,12 +5,13 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
-import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
-import BiometricTitle from "../../../features/settings/biometric/BiometricTitle";
-import BiometricSettings from "../../../features/settings/biometric/BiometricSettings";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import BiometricSettings from "#/features/settings/biometric/BiometricSettings";
+import BiometricTitle from "#/features/settings/biometric/BiometricTitle";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
 
 export default function BiometricPage() {
   const pageRef = useRef<HTMLElement>(null);

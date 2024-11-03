@@ -1,20 +1,22 @@
-import { styled } from "@linaria/react";
-import { useInModqueue } from "../../routes/pages/shared/ModqueuePage";
-import ModqueueItemActions from "../moderation/ModqueueItemActions";
-import ModActions from "./ModActions";
-import PersonLink from "../labels/links/PersonLink";
-import Vote from "../labels/Vote";
 import { IonIcon } from "@ionic/react";
-import { Comment, CommentView } from "lemmy-js-client";
-import { ModeratorRole } from "../moderation/useCanModerate";
-import Edited from "../labels/Edited";
-import { ActionsContainer } from "../post/inFeed/compact/CompactPost";
-import CommentEllipsis, { CommentEllipsisHandle } from "./CommentEllipsis";
-import Ago from "../labels/Ago";
+import { styled } from "@linaria/react";
 import { chevronDownOutline } from "ionicons/icons";
+import { Comment, CommentView } from "lemmy-js-client";
 import { RefObject } from "react";
-import { useAppSelector } from "../../store";
-import { ActionButton } from "../post/actions/ActionButton";
+
+import Ago from "#/features/labels/Ago";
+import Edited from "#/features/labels/Edited";
+import Vote from "#/features/labels/Vote";
+import PersonLink from "#/features/labels/links/PersonLink";
+import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
+import { ModeratorRole } from "#/features/moderation/useCanModerate";
+import { ActionButton } from "#/features/post/actions/ActionButton";
+import { ActionsContainer } from "#/features/post/inFeed/compact/CompactPost";
+import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
+import { useAppSelector } from "#/store";
+
+import CommentEllipsis, { CommentEllipsisHandle } from "./CommentEllipsis";
+import ModActions from "./ModActions";
 
 const Header = styled.div`
   display: flex;

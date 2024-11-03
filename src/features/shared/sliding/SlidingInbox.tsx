@@ -1,11 +1,12 @@
-import React from "react";
 import {
   CommentReplyView,
   PersonMentionView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import { BaseSlidingVote, BaseSlidingDM } from "./BaseSliding";
-import { useAppSelector } from "../../../store";
+
+import { useAppSelector } from "#/store";
+
+import { BaseSlidingDM, BaseSlidingVote } from "./BaseSliding";
 
 interface SlidingInboxProps {
   children: React.ReactNode;

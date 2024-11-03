@@ -16,40 +16,41 @@ import {
   textOutline,
   trashOutline,
 } from "ionicons/icons";
-import { useCallback, useContext } from "react";
-import store, { useAppDispatch } from "../../../store";
 import { PostView } from "lemmy-js-client";
+import { compact } from "lodash";
+import { useCallback, useContext } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { userHandleSelector } from "#/features/auth/authSelectors";
+import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
+import { InFeedContext } from "#/features/feed/Feed";
 import {
-  hidePost,
-  unhidePost,
-  voteOnPost,
-  savePost,
-  deletePost,
-} from "../postSlice";
+  getCanModerate,
+  getModIcon,
+} from "#/features/moderation/useCanModerate";
+import usePostModActions from "#/features/moderation/usePostModActions";
+import { resolveObject } from "#/features/resolve/resolveSlice";
+import { getShareIcon } from "#/helpers/device";
 import {
   getCrosspostUrl,
   getHandle,
   getRemoteHandle,
   share,
-} from "../../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { PageContext } from "../../auth/PageContext";
+} from "#/helpers/lemmy";
+import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { postLocked, saveError, saveSuccess } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import store, { useAppDispatch } from "#/store";
+
 import {
-  postLocked,
-  saveError,
-  saveSuccess,
-} from "../../../helpers/toastMessages";
-import { userHandleSelector } from "../../auth/authSelectors";
-import useAppToast from "../../../helpers/useAppToast";
-import usePostModActions from "../../moderation/usePostModActions";
-import { getCanModerate, getModIcon } from "../../moderation/useCanModerate";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
-import { resolveObject } from "../../resolve/resolveSlice";
-import { compact } from "lodash";
-import { InFeedContext } from "../../feed/Feed";
-import { getVoteErrorMessage } from "../../../helpers/lemmyErrors";
-import { getShareIcon } from "../../../helpers/device";
+  deletePost,
+  hidePost,
+  savePost,
+  unhidePost,
+  voteOnPost,
+} from "../postSlice";
 
 export default function usePostActions(post: PostView) {
   const inFeed = useContext(InFeedContext);

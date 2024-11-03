@@ -1,14 +1,18 @@
 import { useCallback } from "react";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { knownInstancesSelector } from "../instances/instancesSlice";
-import useAppNavigation from "../../helpers/useAppNavigation";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { normalizeObjectUrl, resolveObject } from "../resolve/resolveSlice";
 import { MouseEvent } from "react";
-import useAppToast from "../../helpers/useAppToast";
-import { isLemmyError } from "../../helpers/lemmyErrors";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { buildBaseLemmyUrl } from "../../services/lemmy";
+
+import { knownInstancesSelector } from "#/features/instances/instancesSlice";
+import {
+  normalizeObjectUrl,
+  resolveObject,
+} from "#/features/resolve/resolveSlice";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useAppNavigation from "#/helpers/useAppNavigation";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
 

@@ -4,20 +4,21 @@ import {
   IonSpinner,
   useIonAlert,
 } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { GetPersonDetailsResponse } from "lemmy-js-client";
 import {
   useCallback,
   useEffect,
-  useState,
   experimental_useEffectEvent as useEffectEvent,
+  useState,
 } from "react";
-import Profile from "../../features/user/Profile";
-import { GetPersonDetailsResponse } from "lemmy-js-client";
-import { useAppDispatch } from "../../store";
-import { getUser } from "../../features/user/userSlice";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { isLemmyError } from "../../helpers/lemmyErrors";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { styled } from "@linaria/react";
+
+import Profile from "#/features/user/Profile";
+import { getUser } from "#/features/user/userSlice";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppDispatch } from "#/store";
 
 export const PageContentIonSpinner = styled(IonSpinner)`
   position: relative;

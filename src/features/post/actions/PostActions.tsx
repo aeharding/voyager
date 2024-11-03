@@ -1,12 +1,14 @@
-import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { arrowUndoOutline, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { VoteButton } from "../shared/VoteButton";
+
+import { SaveButton } from "#/features/post/shared/SaveButton";
+import { VoteButton } from "#/features/post/shared/VoteButton";
+import { getShareIcon } from "#/helpers/device";
+import { share } from "#/helpers/lemmy";
+
 import { ActionButton } from "./ActionButton";
-import { SaveButton } from "../shared/SaveButton";
-import { share } from "../../../helpers/lemmy";
-import { getShareIcon } from "../../../helpers/device";
 
 const Container = styled.div`
   display: flex;

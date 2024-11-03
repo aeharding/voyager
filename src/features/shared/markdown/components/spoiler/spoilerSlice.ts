@@ -1,5 +1,5 @@
-import type { Element } from "react-markdown/lib";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import type { Element } from "react-markdown/lib";
 
 interface NetworkState {
   byId: Record<string, boolean>;

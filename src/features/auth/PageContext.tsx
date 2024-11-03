@@ -1,13 +1,4 @@
 import { useIonModal } from "@ionic/react";
-import React, {
-  RefObject,
-  createContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { changeAccount } from "../auth/authSlice";
 import {
   Comment,
   CommentView,
@@ -16,22 +7,33 @@ import {
   PostView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import Report, { ReportHandle, ReportableItem } from "../report/Report";
-import PostEditorModal from "../post/new/PostEditorModal";
-import SelectTextModal from "../shared/SelectTextModal";
+import React, {
+  RefObject,
+  createContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import { changeAccount } from "#/features/auth/authSlice";
+import BanUserModal from "#/features/moderation/ban/BanUserModal";
+import CreateCrosspostDialog from "#/features/post/crosspost/create/CreateCrosspostDialog";
+import PostEditorModal from "#/features/post/new/PostEditorModal";
+import Report, { ReportHandle, ReportableItem } from "#/features/report/Report";
 import ShareAsImageModal, {
   ShareAsImageData,
-} from "../share/asImage/ShareAsImageModal";
-import AccountSwitcher from "./AccountSwitcher";
-import { jwtSelector } from "./authSelectors";
-import BanUserModal from "../moderation/ban/BanUserModal";
-import CreateCrosspostDialog from "../post/crosspost/create/CreateCrosspostDialog";
-import LoginModal from "./login/LoginModal";
+} from "#/features/share/asImage/ShareAsImageModal";
+import SelectTextModal from "#/features/shared/SelectTextModal";
 import GenericMarkdownEditorModal, {
   MarkdownEditorData,
-} from "../shared/markdown/editing/modal/GenericMarkdownEditorModal";
-import { NewPrivateMessage } from "../shared/markdown/editing/modal/contents/PrivateMessagePage";
-import { CommentReplyItem } from "../shared/markdown/editing/modal/contents/CommentReplyPage";
+} from "#/features/shared/markdown/editing/modal/GenericMarkdownEditorModal";
+import { CommentReplyItem } from "#/features/shared/markdown/editing/modal/contents/CommentReplyPage";
+import { NewPrivateMessage } from "#/features/shared/markdown/editing/modal/contents/PrivateMessagePage";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import AccountSwitcher from "./AccountSwitcher";
+import { jwtSelector } from "./authSelectors";
+import LoginModal from "./login/LoginModal";
 
 export interface BanUserPayload {
   user: Person;

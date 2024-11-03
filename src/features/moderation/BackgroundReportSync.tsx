@@ -1,7 +1,9 @@
-import { useEffect } from "react";
-import { syncReports } from "./modSlice";
-import { useAppDispatch } from "../../store";
 import { useDocumentVisibility, useInterval } from "@mantine/hooks";
+import { useEffect } from "react";
+
+import { useAppDispatch } from "#/store";
+
+import { syncReports } from "./modSlice";
 
 export const REPORT_SYNC_INTERVAL_IN_SECONDS = 600;
 

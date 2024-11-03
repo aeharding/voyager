@@ -1,8 +1,9 @@
-import { isInstalled } from "../../../../helpers/device";
-import { OAutoplayMediaType } from "../../../../services/db";
-import { useAppSelector } from "../../../../store";
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { isInstalled } from "#/helpers/device";
+import { OAutoplayMediaType } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import { setAutoplayMedia } from "../../settingsSlice";
-import SettingSelector from "../../shared/SettingSelector";
 
 export default function AutoplayMedia() {
   const autoplayMedia = useAppSelector(

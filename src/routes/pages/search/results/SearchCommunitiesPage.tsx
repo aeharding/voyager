@@ -1,4 +1,5 @@
 import { useParams } from "react-router";
+
 import CommunitiesResultsPage from "../CommunitiesResultsPage";
 
 export default function SearchCommunitiesPage() {

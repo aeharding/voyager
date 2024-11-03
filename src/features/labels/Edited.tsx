@@ -1,11 +1,13 @@
-import { CommentView, PostView } from "lemmy-js-client";
 import { useIonAlert } from "@ionic/react";
-import { pencil } from "ionicons/icons";
-import { MouseEvent, useMemo } from "react";
-import { formatRelative } from "./Ago";
 import { styled } from "@linaria/react";
-import Stat from "../post/detail/Stat";
-import { PlainButton } from "../shared/PlainButton";
+import { pencil } from "ionicons/icons";
+import { CommentView, PostView } from "lemmy-js-client";
+import { MouseEvent, useMemo } from "react";
+
+import Stat from "#/features/post/detail/Stat";
+import { PlainButton } from "#/features/shared/PlainButton";
+
+import { formatRelative } from "./Ago";
 
 const EditedStat = styled(Stat)`
   display: flex;

@@ -1,32 +1,37 @@
 import { ComponentProps, useCallback, useContext, useMemo } from "react";
-import type { BaseSlidingVote } from "../../BaseSliding";
-import { PageContext } from "../../../../auth/PageContext";
-import { CommentsContext } from "../../../../comment/inTree/CommentsContext";
-import { AppContext } from "../../../../auth/AppContext";
-import useAppToast from "../../../../../helpers/useAppToast";
-import store, { useAppDispatch, useAppSelector } from "../../../../../store";
-import { isInboxItem, useSharedInboxActions } from "../shared";
-import GenericBaseSliding, {
-  GenericBaseSlidingProps,
-} from "../GenericBaseSliding";
-import { markRead } from "../../../../inbox/inboxSlice";
-import { savePost, voteOnPost } from "../../../../post/postSlice";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { PageContext } from "#/features/auth/PageContext";
+import { isStubComment } from "#/features/comment/CommentHeader";
 import {
   saveComment,
   toggleCommentCollapseState,
   voteOnComment,
-} from "../../../../comment/commentSlice";
-import { getVoteErrorMessage } from "../../../../../helpers/lemmyErrors";
-import { getCanModerate } from "../../../../moderation/useCanModerate";
-import { isStubComment } from "../../../../comment/CommentHeader";
+} from "#/features/comment/commentSlice";
+import { scrollCommentIntoViewIfNeeded } from "#/features/comment/inTree/CommentTree";
+import { CommentsContext } from "#/features/comment/inTree/CommentsContext";
+import useCollapseRootComment from "#/features/comment/inTree/useCollapseRootComment";
+import { markRead } from "#/features/inbox/inboxSlice";
+import { getCanModerate } from "#/features/moderation/useCanModerate";
+import { savePost, voteOnPost } from "#/features/post/postSlice";
+import {
+  isInboxItem,
+  useSharedInboxActions,
+} from "#/features/shared/sliding/internal/shared";
+import { share } from "#/helpers/lemmy";
+import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
   postLocked,
   replyStubError,
   saveSuccess,
-} from "../../../../../helpers/toastMessages";
-import useCollapseRootComment from "../../../../comment/inTree/useCollapseRootComment";
-import { scrollCommentIntoViewIfNeeded } from "../../../../comment/inTree/CommentTree";
-import { share } from "../../../../../helpers/lemmy";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import store, { useAppDispatch, useAppSelector } from "#/store";
+
+import type { BaseSlidingVote } from "../../BaseSliding";
+import GenericBaseSliding, {
+  GenericBaseSlidingProps,
+} from "../GenericBaseSliding";
 
 export function VotableActionsImpl({
   item,

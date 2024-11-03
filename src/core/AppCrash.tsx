@@ -1,12 +1,13 @@
-import { styled } from "@linaria/react";
-import { FallbackProps } from "react-error-boundary";
-import { isInstalled, isNative } from "../helpers/device";
 import { IonButton, IonIcon, IonLabel } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { logoGithub } from "ionicons/icons";
-import { unloadServiceWorkerAndRefresh } from "../helpers/serviceWorker";
-import { memoryHistory } from "../routes/common/Router";
-import store from "../store";
-import { loggedInSelector } from "../features/auth/authSelectors";
+import { FallbackProps } from "react-error-boundary";
+
+import { loggedInSelector } from "#/features/auth/authSelectors";
+import { isInstalled, isNative } from "#/helpers/device";
+import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
+import { memoryHistory } from "#/routes/common/Router";
+import store from "#/store";
 
 const Container = styled.div`
   display: flex;

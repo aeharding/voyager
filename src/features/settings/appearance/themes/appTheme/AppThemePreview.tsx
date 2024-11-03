@@ -1,8 +1,9 @@
 import { styled } from "@linaria/react";
-import { AppThemeType } from "../../../../../services/db";
-import { getThemeByStyle } from "../../../../../core/theme/AppThemes";
-import { useIsDark } from "../../../../../core/GlobalStyles";
 import { HTMLAttributes } from "react";
+
+import { useIsDark } from "#/core/GlobalStyles";
+import { getThemeByStyle } from "#/core/theme/AppThemes";
+import { AppThemeType } from "#/services/db";
 
 const Container = styled.div<{
   primaryColor: string;

@@ -12,18 +12,20 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../../store";
 import { useContext, useEffect, useState } from "react";
-import Account from "./Account";
-import { setAccounts } from "./authSlice";
-import { moveItem } from "../../helpers/array";
-import { loggedInAccountsSelector } from "./authSelectors";
-import AppHeader from "../shared/AppHeader";
+
+import AppHeader from "#/features/shared/AppHeader";
 import {
   ListEditButton,
   ListEditorContext,
   ListEditorProvider,
-} from "../shared/ListEditor";
+} from "#/features/shared/ListEditor";
+import { moveItem } from "#/helpers/array";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import Account from "./Account";
+import { loggedInAccountsSelector } from "./authSelectors";
+import { setAccounts } from "./authSlice";
 
 type AccountSwitcherProps = {
   onDismiss: (data?: string, role?: string) => void;

@@ -5,20 +5,22 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { FetchFn } from "../../../features/feed/Feed";
+import { ListingType } from "lemmy-js-client";
 import { memo, useCallback } from "react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import useClient from "../../../helpers/useClient";
-import { LIMIT } from "../../../services/lemmy";
+
+import { getFeedUrlName } from "#/features/community/mod/ModActions";
+import { FetchFn } from "#/features/feed/Feed";
+import FeedContextProvider from "#/features/feed/FeedContext";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import FeedContextProvider from "../../../features/feed/FeedContext";
+} from "#/features/feed/PostCommentFeed";
+import AppHeader from "#/features/shared/AppHeader";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { LIMIT } from "#/services/lemmy";
+
 import FeedContent from "./FeedContent";
-import { ListingType } from "lemmy-js-client";
 import { listingTypeTitle } from "./SpecialFeedPage";
-import { getFeedUrlName } from "../../../features/community/mod/ModActions";
-import AppHeader from "../../../features/shared/AppHeader";
 
 type CommentsPageProps =
   | {

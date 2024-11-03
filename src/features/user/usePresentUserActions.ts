@@ -1,18 +1,20 @@
-import { mailOutline, removeCircleOutline } from "ionicons/icons";
-import { useCallback, useContext } from "react";
-import { PageContext } from "../auth/PageContext";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { compact } from "lodash";
 import { ActionSheetButton, useIonActionSheet } from "@ionic/react";
-import store, { useAppDispatch } from "../../store";
-import { usernameSelector } from "../auth/authSelectors";
-import { blockUser } from "./userSlice";
-import { getBlockUserErrorMessage } from "../../helpers/lemmyErrors";
-import { buildBlocked } from "../../helpers/toastMessages";
-import useAppToast from "../../helpers/useAppToast";
-import { getHandle } from "../../helpers/lemmy";
+import { mailOutline, removeCircleOutline } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
+import { compact } from "lodash";
+import { useCallback, useContext } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { usernameSelector } from "#/features/auth/authSelectors";
+import { getHandle } from "#/helpers/lemmy";
+import { getBlockUserErrorMessage } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { buildBlocked } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import store, { useAppDispatch } from "#/store";
+
+import { blockUser } from "./userSlice";
 
 interface Options {
   prependButtons?: ActionSheetButton[];

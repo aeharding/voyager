@@ -1,4 +1,3 @@
-import { useAppDispatch, useAppSelector } from "../../../store";
 import {
   createContext,
   useCallback,
@@ -7,15 +6,18 @@ import {
   useMemo,
   useState,
 } from "react";
+
+import { AnyFeed, serializeFeedName } from "#/features/feed/helpers";
+import {
+  PostAppearanceType,
+  setPostAppearance as setGlobalPostAppearanceReducer,
+} from "#/features/settings/settingsSlice";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import {
   getPostAppearance,
   setPostAppeartance as setPostAppearanceReducer,
 } from "./appearanceSlice";
-import {
-  PostAppearanceType,
-  setPostAppearance as setGlobalPostAppearanceReducer,
-} from "../../settings/settingsSlice";
-import { AnyFeed, serializeFeedName } from "../../feed/helpers";
 
 interface PostAppearanceProviderProps {
   feed?: AnyFeed;

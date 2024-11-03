@@ -1,7 +1,8 @@
-import { isAndroid, isNative } from "../../helpers/device";
-import { SafeArea, SafeAreaInsets } from "capacitor-plugin-safe-area";
-import { StatusBar } from "@capacitor/status-bar";
 import { Keyboard } from "@capacitor/keyboard";
+import { StatusBar } from "@capacitor/status-bar";
+import { SafeArea, SafeAreaInsets } from "capacitor-plugin-safe-area";
+
+import { isAndroid, isNative } from "#/helpers/device";
 
 // Android safe area inset management is bad, we have to do it manually
 if (isNative() && isAndroid()) {

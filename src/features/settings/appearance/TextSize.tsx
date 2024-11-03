@@ -1,8 +1,10 @@
 import { IonItem, IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
-import { HelperText, ListHeader } from "../shared/formatting";
 import { styled } from "@linaria/react";
+
+import { HelperText, ListHeader } from "#/features/settings/shared/formatting";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
 
 const Range = styled(IonRange)`
   --bar-background: var(--ion-color-medium);

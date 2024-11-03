@@ -1,6 +1,7 @@
-import { isPlatform } from "@ionic/core";
 import { Keyboard } from "@capacitor/keyboard";
-import { isNative } from "../../helpers/device";
+import { isPlatform } from "@ionic/core";
+
+import { isNative } from "#/helpers/device";
 
 // Code from:
 // https://github.com/ionic-team/capacitor/issues/1540#issuecomment-735221275

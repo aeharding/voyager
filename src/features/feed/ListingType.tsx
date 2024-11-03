@@ -12,11 +12,12 @@ import {
   peopleOutline,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
-import { useContext, useState } from "react";
-import { startCase } from "lodash";
 import { ListingType } from "lemmy-js-client";
-import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
-import { AppContext } from "../auth/AppContext";
+import { startCase } from "lodash";
+import { useContext, useState } from "react";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
 
 export const LISTING_TYPES = [
   "All",

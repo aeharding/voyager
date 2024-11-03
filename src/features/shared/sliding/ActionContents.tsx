@@ -1,8 +1,9 @@
-import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { bookmark, mailUnread } from "ionicons/icons";
-import { SlidingItemAction } from "./SlidingItem";
 import { memo } from "react";
+
+import { SlidingItemAction } from "./SlidingItem";
 
 const custom_slash_lengths: Record<string, number> = {
   [bookmark]: 35,

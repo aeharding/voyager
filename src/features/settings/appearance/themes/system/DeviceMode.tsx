@@ -1,6 +1,7 @@
 import { Mode } from "@ionic/core";
-import { useAppSelector } from "../../../../../store";
 import { IonItem, IonLabel } from "@ionic/react";
+
+import { useAppSelector } from "#/store";
 
 export default function DeviceMode() {
   const deviceMode = useAppSelector(

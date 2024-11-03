@@ -1,8 +1,9 @@
 import { IonButton, useIonActionSheet } from "@ionic/react";
 import { tabletPortraitOutline } from "ionicons/icons";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import HeaderEllipsisIcon from "../../shared/HeaderEllipsisIcon";
+
+import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
 export default function CommunitiesMoreActions() {
   const router = useOptimizedIonRouter();

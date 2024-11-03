@@ -1,10 +1,11 @@
-import React from "react";
 import { IonContent, IonTitle, IonToolbar } from "@ionic/react";
-import BaseSvg from "./assets/base.svg?react";
-import Buttons from "./Buttons";
-import AndroidClose from "./AndroidClose";
 import { styled } from "@linaria/react";
-import AppHeader from "../../../shared/AppHeader";
+
+import AppHeader from "#/features/shared/AppHeader";
+
+import AndroidClose from "./AndroidClose";
+import Buttons from "./Buttons";
+import BaseSvg from "./assets/base.svg?react";
 
 // slot attribute not allowed for some reason??
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

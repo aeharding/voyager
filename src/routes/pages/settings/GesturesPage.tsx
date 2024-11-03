@@ -5,11 +5,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
-import SwipeSettings from "../../../features/settings/gestures/SwipeSettings";
 import { useRef } from "react";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import SwipeSettings from "#/features/settings/gestures/SwipeSettings";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
 
 export default function GesturesPage() {
   const pageRef = useRef<HTMLElement>(null);

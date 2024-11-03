@@ -7,13 +7,14 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Centered, Spinner } from "../../auth/login/LoginNav";
-import AppHeader from "../../shared/AppHeader";
-import Editor from "../../shared/markdown/editing/Editor";
-import { MarkdownEditorIonContent } from "../../shared/markdown/editing/MarkdownToolbar";
-import { isIosTheme } from "../../../helpers/device";
 import { send } from "ionicons/icons";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+
+import { Centered, Spinner } from "#/features/auth/login/LoginNav";
+import AppHeader from "#/features/shared/AppHeader";
+import Editor from "#/features/shared/markdown/editing/Editor";
+import { MarkdownEditorIonContent } from "#/features/shared/markdown/editing/MarkdownToolbar";
+import { isIosTheme } from "#/helpers/device";
 
 interface NewPostTextProps {
   value: string;

@@ -6,21 +6,23 @@ import {
   IonLabel,
   IonList,
 } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useAppSelector } from "../../../store";
-import { jwtSelector } from "../../auth/authSelectors";
-import { memo, useMemo, useRef } from "react";
-import { sortBy } from "lodash";
-import { getHandle } from "../../../helpers/lemmy";
-import { Community } from "lemmy-js-client";
-import { earth, home, people, shieldCheckmark } from "ionicons/icons";
-import CommunityListItem from "./CommunityListItem";
-import { VList, VListHandle } from "virtua";
-import { maxWidthCss } from "../../shared/AppContent";
-import AlphabetJump from "./AlphabetJump";
-import useShowModeratorFeed from "./useShowModeratorFeed";
-import { attributedPreventOnClickNavigationBug } from "../../../helpers/ionic";
 import { styled } from "@linaria/react";
+import { earth, home, people, shieldCheckmark } from "ionicons/icons";
+import { Community } from "lemmy-js-client";
+import { sortBy } from "lodash";
+import { memo, useMemo, useRef } from "react";
+import { VList, VListHandle } from "virtua";
+
+import { jwtSelector } from "#/features/auth/authSelectors";
+import { maxWidthCss } from "#/features/shared/AppContent";
+import { attributedPreventOnClickNavigationBug } from "#/helpers/ionic";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useAppSelector } from "#/store";
+
+import AlphabetJump from "./AlphabetJump";
+import CommunityListItem from "./CommunityListItem";
+import useShowModeratorFeed from "./useShowModeratorFeed";
 
 const SubIcon = styled(IonIcon)<{ color: string }>`
   border-radius: 50%;

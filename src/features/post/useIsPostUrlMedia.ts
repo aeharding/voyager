@@ -1,8 +1,9 @@
-import { useCallback } from "react";
-import { useAppSelector } from "../../store";
 import { PostView } from "lemmy-js-client";
-import { isRedgif } from "../media/external/redgifs/helpers";
-import { findUrlMediaType } from "../../helpers/url";
+import { useCallback } from "react";
+
+import { isRedgif } from "#/features/media/external/redgifs/helpers";
+import { findUrlMediaType } from "#/helpers/url";
+import { useAppSelector } from "#/store";
 
 export default function useIsPostUrlMedia() {
   const embedExternalMedia = useAppSelector(

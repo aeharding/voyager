@@ -1,17 +1,18 @@
-import { useMemo } from "react";
-import { canModerateCommunity } from "../../helpers/lemmy";
-import store, { useAppSelector } from "../../store";
-import { Community, CommunityModeratorView, Person } from "lemmy-js-client";
 import {
   shieldCheckmark,
   shieldCheckmarkOutline,
   shieldOutline,
 } from "ionicons/icons";
+import { Community, CommunityModeratorView, Person } from "lemmy-js-client";
+import { useMemo } from "react";
+
 import {
   isAdminSelector,
   moderatesSelector,
   userPersonSelector,
-} from "../auth/siteSlice";
+} from "#/features/auth/siteSlice";
+import { canModerateCommunity } from "#/helpers/lemmy";
+import store, { useAppSelector } from "#/store";
 
 export type ModeratorRole = "mod" | "admin-local" | "admin-remote";
 

@@ -1,23 +1,25 @@
+import { IonItem, IonList } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { useDebouncedValue } from "@mantine/hooks";
+import { Community, CommunityView } from "lemmy-js-client";
+import { compact, sortBy, uniqBy } from "lodash";
 import {
   useContext,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useMemo,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
+
+import useShowModeratorFeed from "#/features/community/list/useShowModeratorFeed";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppSelector } from "#/store";
+
 import { TitleSearchContext } from "./TitleSearchProvider";
-import { useDebouncedValue } from "@mantine/hooks";
-import useClient from "../../../helpers/useClient";
-import { Community, CommunityView } from "lemmy-js-client";
-import { IonItem, IonList } from "@ionic/react";
-import { useAppSelector } from "../../../store";
-import { compact, sortBy, uniqBy } from "lodash";
-import { getHandle } from "../../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import useShowModeratorFeed from "../list/useShowModeratorFeed";
-import { styled } from "@linaria/react";
 
 const Backdrop = styled.div`
   position: absolute;

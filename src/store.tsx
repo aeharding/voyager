@@ -1,19 +1,45 @@
-import { ReactNode, useEffect } from "react";
 import { ActionCreatorWithPayload, configureStore } from "@reduxjs/toolkit";
-import postSlice from "./features/post/postSlice";
+import { ReactNode, useEffect } from "react";
 import {
   Provider,
   TypedUseSelectorHook,
   useDispatch,
   useSelector,
 } from "react-redux";
+
+import networkSlice from "./core/listeners/network/networkSlice";
+import { handleSelector } from "./features/auth/authSelectors";
 import authSlice from "./features/auth/authSlice";
+import joinSlice from "./features/auth/login/join/joinSlice";
+import pickJoinServerSlice from "./features/auth/login/pickJoinServer/pickJoinServerSlice";
+import siteSlice from "./features/auth/siteSlice";
 import commentSlice from "./features/comment/commentSlice";
 import communitySlice, {
   getFavoriteCommunities,
 } from "./features/community/communitySlice";
-import userSlice from "./features/user/userSlice";
+import deepLinkReadySlice from "./features/community/list/deepLinkReadySlice";
+import feedSortSlice from "./features/feed/sort/feedSortSlice";
 import inboxSlice from "./features/inbox/inboxSlice";
+import instancesSlice, {
+  getInstances,
+} from "./features/instances/instancesSlice";
+import redgifsSlice from "./features/media/external/redgifs/redgifsSlice";
+import migrationSlice from "./features/migrate/migrationSlice";
+import modSlice from "./features/moderation/modSlice";
+import postAppearanceSlice from "./features/post/appearance/appearanceSlice";
+import imageSlice from "./features/post/inFeed/large/imageSlice";
+import thumbnailSlice from "./features/post/link/thumbnail/thumbnailSlice";
+import postSlice from "./features/post/postSlice";
+import resolveSlice from "./features/resolve/resolveSlice";
+import appIconSlice, {
+  fetchAppIcon,
+} from "./features/settings/app-icon/appIconSlice";
+import biometricSlice, {
+  initializeBiometricSliceDataIfNeeded,
+} from "./features/settings/biometric/biometricSlice";
+import gestureSlice, {
+  fetchGesturesFromDatabase,
+} from "./features/settings/gestures/gestureSlice";
 import settingsSlice, {
   fetchSettingsFromDatabase,
   getBlurNsfw,
@@ -21,34 +47,9 @@ import settingsSlice, {
   getFilteredKeywords,
   getFilteredWebsites,
 } from "./features/settings/settingsSlice";
-import gestureSlice, {
-  fetchGesturesFromDatabase,
-} from "./features/settings/gestures/gestureSlice";
-import appIconSlice, {
-  fetchAppIcon,
-} from "./features/settings/app-icon/appIconSlice";
-import instancesSlice, {
-  getInstances,
-} from "./features/instances/instancesSlice";
-import resolveSlice from "./features/resolve/resolveSlice";
-import biometricSlice, {
-  initializeBiometricSliceDataIfNeeded,
-} from "./features/settings/biometric/biometricSlice";
-import migrationSlice from "./features/migrate/migrationSlice";
-import modSlice from "./features/moderation/modSlice";
-import imageSlice from "./features/post/inFeed/large/imageSlice";
-import feedSortSlice from "./features/feed/sort/feedSortSlice";
-import siteSlice from "./features/auth/siteSlice";
-import { handleSelector } from "./features/auth/authSelectors";
-import pickJoinServerSlice from "./features/auth/login/pickJoinServer/pickJoinServerSlice";
-import joinSlice from "./features/auth/login/join/joinSlice";
-import networkSlice from "./core/listeners/network/networkSlice";
 import spoilerSlice from "./features/shared/markdown/components/spoiler/spoilerSlice";
-import deepLinkReadySlice from "./features/community/list/deepLinkReadySlice";
-import redgifsSlice from "./features/media/external/redgifs/redgifsSlice";
 import uploadImageSlice from "./features/shared/markdown/editing/uploadImageSlice";
-import postAppearanceSlice from "./features/post/appearance/appearanceSlice";
-import thumbnailSlice from "./features/post/link/thumbnail/thumbnailSlice";
+import userSlice from "./features/user/userSlice";
 
 const store = configureStore({
   reducer: {

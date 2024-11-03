@@ -1,7 +1,9 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CommentSortType, PostSortType } from "lemmy-js-client";
-import { db } from "../../../services/db";
-import { RootState } from "../../../store";
+
+import { db } from "#/services/db";
+import { RootState } from "#/store";
+
 import { AnyFeed, serializeFeedName } from "../helpers";
 
 interface PostSortState {

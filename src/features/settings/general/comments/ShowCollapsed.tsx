@@ -1,5 +1,7 @@
 import { IonItem, IonToggle } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setShowCollapsedComment } from "../../settingsSlice";
 
 export default function ShowCollapsed() {

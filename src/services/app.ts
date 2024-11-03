@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { isNative } from "../helpers/device";
 import { isEqual } from "lodash";
+import React, { useEffect, useState } from "react";
+
+import { isNative } from "#/helpers/device";
 
 const DEFAULT_LEMMY_SERVERS = getCustomDefaultServers() ?? ["lemmy.world"];
 

@@ -1,20 +1,19 @@
 /* eslint-disable react/jsx-key */
-
-import Route from "../common/Route";
-import SearchFeedResultsPage from "../pages/search/results/SearchFeedResultsPage";
-import CommunityPage from "../pages/shared/CommunityPage";
-import CommunitySidebarPage from "../pages/shared/CommunitySidebarPage";
-import PostDetail from "../pages/posts/PostPage";
-import CommunityCommentsPage from "../pages/shared/CommunityCommentsPage";
-import ModlogPage from "../pages/shared/ModlogPage";
-import ModqueuePage from "../pages/shared/ModqueuePage";
-import CommentsPage from "../pages/shared/CommentsPage";
-import UserPage from "../pages/profile/UserPage";
-import ProfileFeedItemsPage from "../pages/profile/ProfileFeedItemsPage";
-import ProfileFeedHiddenPostsPage from "../pages/profile/ProfileFeedHiddenPostsPage";
-import ConversationPage from "../pages/inbox/ConversationPage";
-import InstanceSidebarPage from "../pages/shared/InstanceSidebarPage";
-import SpecialFeedPage from "../pages/shared/SpecialFeedPage";
+import Route from "#/routes/common/Route";
+import ConversationPage from "#/routes/pages/inbox/ConversationPage";
+import PostDetail from "#/routes/pages/posts/PostPage";
+import ProfileFeedHiddenPostsPage from "#/routes/pages/profile/ProfileFeedHiddenPostsPage";
+import ProfileFeedItemsPage from "#/routes/pages/profile/ProfileFeedItemsPage";
+import UserPage from "#/routes/pages/profile/UserPage";
+import SearchFeedResultsPage from "#/routes/pages/search/results/SearchFeedResultsPage";
+import CommentsPage from "#/routes/pages/shared/CommentsPage";
+import CommunityCommentsPage from "#/routes/pages/shared/CommunityCommentsPage";
+import CommunityPage from "#/routes/pages/shared/CommunityPage";
+import CommunitySidebarPage from "#/routes/pages/shared/CommunitySidebarPage";
+import InstanceSidebarPage from "#/routes/pages/shared/InstanceSidebarPage";
+import ModlogPage from "#/routes/pages/shared/ModlogPage";
+import ModqueuePage from "#/routes/pages/shared/ModqueuePage";
+import SpecialFeedPage from "#/routes/pages/shared/SpecialFeedPage";
 
 export default [
   <Route exact path="/:tab/:actor/c/:community">

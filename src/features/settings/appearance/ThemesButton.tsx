@@ -1,7 +1,8 @@
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
-import { ListHeader } from "../shared/formatting";
-import { IconBg } from "../../../routes/pages/settings/SettingsPage";
 import { colorPalette } from "ionicons/icons";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { IconBg } from "#/routes/pages/settings/SettingsPage";
 
 export default function ThemesButton() {
   return (

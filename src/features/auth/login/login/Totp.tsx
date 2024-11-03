@@ -1,4 +1,3 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   IonBackButton,
   IonButton,
@@ -11,16 +10,16 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import useAppToast from "../../../../helpers/useAppToast";
-import { useAppDispatch } from "../../../../store";
+import React, { useContext, useEffect, useRef, useState } from "react";
+
+import AppHeader from "#/features/shared/AppHeader";
+import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+import { getLoginErrorMessage, isLemmyError } from "#/helpers/lemmyErrors";
+import { loginSuccess } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch } from "#/store";
+
 import { login } from "../../authSlice";
-import {
-  getLoginErrorMessage,
-  isLemmyError,
-} from "../../../../helpers/lemmyErrors";
-import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
-import { loginSuccess } from "../../../../helpers/toastMessages";
-import AppHeader from "../../../shared/AppHeader";
 
 interface TotpProps {
   url: string;

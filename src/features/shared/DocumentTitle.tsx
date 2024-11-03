@@ -1,6 +1,7 @@
 import { useIonViewDidEnter, useIonViewDidLeave } from "@ionic/react";
 import { useState } from "react";
-import { isInstalled } from "../../helpers/device";
+
+import { isInstalled } from "#/helpers/device";
 
 interface TitleProps {
   children: string;

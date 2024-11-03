@@ -9,7 +9,8 @@ import {
   IonToolbar,
   useIonModal,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
+import { styled } from "@linaria/react";
+import { useDocumentVisibility } from "@mantine/hooks";
 import {
   apps,
   at,
@@ -21,28 +22,26 @@ import {
   reloadCircle,
 } from "ionicons/icons";
 import { useContext, useEffect, useRef } from "react";
-import { UpdateContext } from "./update/UpdateContext";
-import useShouldInstall from "../../../features/pwa/useShouldInstall";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { userHandleSelector } from "../../../features/auth/authSelectors";
-import {
-  isAppleDeviceInstalledToHomescreen,
-  isNative,
-} from "../../../helpers/device";
-import { getIconSrc } from "../../../features/settings/app-icon/AppIcon";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import { gesture } from "../../../features/icons";
-import TipDialog from "../../../features/tips/TipDialog";
-import BiometricIcon from "../../../features/settings/biometric/BiometricIcon";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { userHandleSelector } from "#/features/auth/authSelectors";
+import { gesture } from "#/features/icons";
+import useShouldInstall from "#/features/pwa/useShouldInstall";
+import { getIconSrc } from "#/features/settings/app-icon/AppIcon";
+import BiometricIcon from "#/features/settings/biometric/BiometricIcon";
+import BiometricTitle from "#/features/settings/biometric/BiometricTitle";
 import {
   biometricSupportedSelector,
   refreshBiometricType,
-} from "../../../features/settings/biometric/biometricSlice";
-import BiometricTitle from "../../../features/settings/biometric/BiometricTitle";
-import { styled } from "@linaria/react";
-import DatabaseErrorItem from "../../../features/settings/root/DatabaseErrorItem";
-import AppHeader from "../../../features/shared/AppHeader";
-import { useDocumentVisibility } from "@mantine/hooks";
+} from "#/features/settings/biometric/biometricSlice";
+import DatabaseErrorItem from "#/features/settings/root/DatabaseErrorItem";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import TipDialog from "#/features/tips/TipDialog";
+import { isAppleDeviceInstalledToHomescreen, isNative } from "#/helpers/device";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { UpdateContext } from "./update/UpdateContext";
 
 export const IconBg = styled.div<{ color: string; size?: string }>`
   width: 30px;

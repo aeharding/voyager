@@ -1,18 +1,20 @@
+import { IonButton, IonText } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { ComponentProps, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+
+import LargeFeedMedia from "#/features/post/inFeed/large/media/LargeFeedMedia";
+import MediaPlaceholder from "#/features/post/inFeed/large/media/MediaPlaceholder";
+import { setEmbedExternalMedia } from "#/features/settings/settingsSlice";
+import { stopIonicTapClick } from "#/helpers/ionic";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import {
   enable,
   getVideoSrc,
   initializeIfNeeded,
   validTokenSelector,
 } from "./redgifsSlice";
-import LargeFeedMedia from "../../../post/inFeed/large/media/LargeFeedMedia";
-import { IonButton, IonText } from "@ionic/react";
-import { stopIonicTapClick } from "../../../../helpers/ionic";
-import { styled } from "@linaria/react";
-import { setEmbedExternalMedia } from "../../../settings/settingsSlice";
-import { css } from "@linaria/core";
-import MediaPlaceholder from "../../../post/inFeed/large/media/MediaPlaceholder";
 
 const EnableWarningContainer = styled.div`
   display: flex;

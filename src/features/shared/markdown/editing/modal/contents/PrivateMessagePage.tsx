@@ -1,25 +1,27 @@
 import {
-  IonButtons,
   IonButton,
-  IonToolbar,
-  IonTitle,
+  IonButtons,
   IonIcon,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { arrowBackSharp, send } from "ionicons/icons";
 import { Person, PrivateMessageView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
-import { arrowBackSharp, send } from "ionicons/icons";
-import { DismissableProps } from "../../../../DynamicDismissableModal";
-import { useAppDispatch } from "../../../../../../store";
-import useAppToast from "../../../../../../helpers/useAppToast";
-import AppHeader from "../../../../AppHeader";
-import { isIosTheme } from "../../../../../../helpers/device";
-import { Centered, Spinner } from "../../../../../auth/login/LoginNav";
+
+import { Centered, Spinner } from "#/features/auth/login/LoginNav";
+import { receivedMessages } from "#/features/inbox/inboxSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import { DismissableProps } from "#/features/shared/DynamicDismissableModal";
+import { isIosTheme } from "#/helpers/device";
+import { getHandle } from "#/helpers/lemmy";
+import { privateMessageSendFailed } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
+import { useAppDispatch } from "#/store";
+
 import CommentEditorContent from "./CommentEditorContent";
-import useClient from "../../../../../../helpers/useClient";
-import { privateMessageSendFailed } from "../../../../../../helpers/toastMessages";
-import { receivedMessages } from "../../../../../inbox/inboxSlice";
-import { getHandle } from "../../../../../../helpers/lemmy";
-import { styled } from "@linaria/react";
 
 const Title = styled.span`
   overflow: hidden;

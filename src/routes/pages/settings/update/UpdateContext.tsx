@@ -1,11 +1,11 @@
+import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 import React, {
   createContext,
-  experimental_useEffectEvent as useEffectEvent,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useRef,
   useState,
 } from "react";
-import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
 type UpdateStatus =

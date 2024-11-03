@@ -1,8 +1,9 @@
-import { Person } from "lemmy-js-client";
-import { getHandle } from "../../../helpers/lemmy";
-import ItemIcon from "../../labels/img/ItemIcon";
 import { IonItem, IonLabel, IonList } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { Person } from "lemmy-js-client";
+
+import ItemIcon from "#/features/labels/img/ItemIcon";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 interface InstanceAdminsProps {
   people: Person[];

@@ -1,5 +1,6 @@
 import { ListingType } from "lemmy-js-client";
-import { getFeedUrlName } from "../community/mod/ModActions";
+
+import { getFeedUrlName } from "#/features/community/mod/ModActions";
 
 type InternalFeedType =
   | "PostsSearch"

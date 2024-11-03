@@ -1,13 +1,15 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { GetSiteResponse } from "lemmy-js-client";
-import { AppDispatch, RootState } from "../../store";
+
+import { getRemoteHandle } from "#/helpers/lemmy";
+import { customBackOff } from "#/services/lemmy";
+import { AppDispatch, RootState } from "#/store";
+
 import {
   clientSelector,
-  userHandleSelector,
   handleSelector,
+  userHandleSelector,
 } from "./authSelectors";
-import { getRemoteHandle } from "../../helpers/lemmy";
-import { customBackOff } from "../../services/lemmy";
 
 interface SiteState {
   failedAttempt: number;

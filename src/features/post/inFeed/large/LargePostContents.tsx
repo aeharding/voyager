@@ -1,15 +1,17 @@
-import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
 import { useContext, useMemo } from "react";
-import { findLoneImage } from "../../../../helpers/markdown";
-import { useAppSelector } from "../../../../store";
-import { isNsfwBlurred } from "../../../labels/Nsfw";
-import LargeFeedPostMedia from "./media/LargeFeedPostMedia";
-import InlineMarkdown from "../../../shared/markdown/InlineMarkdown";
-import { InFeedContext } from "../../../feed/Feed";
+
+import { InFeedContext } from "#/features/feed/Feed";
+import { isNsfwBlurred } from "#/features/labels/Nsfw";
+import PostLink from "#/features/post/link/PostLink";
+import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import { findLoneImage } from "#/helpers/markdown";
+import { useAppSelector } from "#/store";
+
 import useIsPostUrlMedia from "../../useIsPostUrlMedia";
-import PostLink from "../../link/PostLink";
+import LargeFeedPostMedia from "./media/LargeFeedPostMedia";
 
 // This is needed to hide NSFW messaging, etc when image is open
 export const LARGE_POST_MEDIA_CONTAINER_CLASSNAME =

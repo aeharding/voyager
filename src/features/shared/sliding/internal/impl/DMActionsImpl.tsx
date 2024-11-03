@@ -1,10 +1,12 @@
 import { ComponentProps, useContext } from "react";
-import store, { useAppDispatch } from "../../../../../store";
-import { PageContext } from "../../../../auth/PageContext";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { markRead, syncMessages } from "#/features/inbox/inboxSlice";
+import { useSharedInboxActions } from "#/features/shared/sliding/internal/shared";
+import store, { useAppDispatch } from "#/store";
+
 import type { BaseSlidingDM } from "../../BaseSliding";
-import { useSharedInboxActions } from "../shared";
 import GenericBaseSliding from "../GenericBaseSliding";
-import { markRead, syncMessages } from "../../../../inbox/inboxSlice";
 
 export default function DMActionsImpl({
   item,

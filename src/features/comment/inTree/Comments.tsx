@@ -1,41 +1,40 @@
+import { RefresherCustomEvent } from "@ionic/core";
+import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { CommentSortType, CommentView } from "lemmy-js-client";
+import { compact, pullAllBy, sortBy, uniqBy } from "lodash";
 import React, {
   useCallback,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
+import { VList, VListHandle } from "virtua";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
+import { getPost } from "#/features/post/postSlice";
+import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
+import { scrollIntoView, useScrollIntoViewWorkaround } from "#/helpers/dom";
 import {
   buildCommentsTreeWithMissing,
   getDepthFromCommentPath,
-} from "../../../helpers/lemmy";
-import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
-import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
-import { CommentSortType, CommentView } from "lemmy-js-client";
-import { compact, pullAllBy, sortBy, uniqBy } from "lodash";
-import { useAppDispatch, useAppSelector } from "../../../store";
+} from "#/helpers/lemmy";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
+import usePreservePositionFromBottomInScrollView from "#/helpers/usePreservePositionFromBottomInScrollView";
+import { IndexedVirtuaItem } from "#/helpers/virtua";
+import { postDetailPageHasVirtualScrollEnabled } from "#/routes/pages/posts/PostPage";
+import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { receivedComments } from "../commentSlice";
-import { RefresherCustomEvent } from "@ionic/core";
-import { getPost } from "../../post/postSlice";
-import useClient from "../../../helpers/useClient";
-import { useSetActivePage } from "../../auth/AppContext";
+import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { CommentsContext } from "./CommentsContext";
-import { defaultCommentDepthSelector } from "../../settings/settingsSlice";
-import { isSafariFeedHackEnabled } from "../../../routes/pages/shared/FeedContent";
-import useAppToast from "../../../helpers/useAppToast";
-import { VList, VListHandle } from "virtua";
 import LoadParentComments from "./LoadParentComments";
-import {
-  scrollIntoView as scrollIntoView,
-  useScrollIntoViewWorkaround,
-} from "../../../helpers/dom";
-import { IndexedVirtuaItem } from "../../../helpers/virtua";
-import FeedLoadMoreFailed from "../../feed/endItems/FeedLoadMoreFailed";
-import usePreservePositionFromBottomInScrollView from "../../../helpers/usePreservePositionFromBottomInScrollView";
-import { postDetailPageHasVirtualScrollEnabled } from "../../../routes/pages/posts/PostPage";
-import { styled } from "@linaria/react";
 
 const ScrollViewContainer = styled.div`
   width: 100%;

@@ -1,3 +1,5 @@
+import { PostView } from "lemmy-js-client";
+import { PreparedPhotoSwipeOptions } from "photoswipe";
 import {
   ComponentProps,
   HTMLProps,
@@ -6,14 +8,14 @@ import {
   useContext,
   useMemo,
 } from "react";
-import { isUrlPotentialAnimatedImage } from "../../../helpers/url";
+
+import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
+import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
+import { isUrlPotentialAnimatedImage } from "#/helpers/url";
+
 import GalleryGif from "./GalleryGif";
 import GalleryImg from "./GalleryImg";
-import { PostView } from "lemmy-js-client";
-import { PreparedPhotoSwipeOptions } from "photoswipe";
 import { GalleryContext } from "./GalleryProvider";
-import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
-import useShouldAutoplay from "../../../core/listeners/network/useShouldAutoplay";
 
 export interface GalleryMediaProps
   extends Omit<HTMLProps<HTMLImageElement>, "ref" | "onClick"> {

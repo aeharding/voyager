@@ -1,3 +1,4 @@
+import { checkmark } from "ionicons/icons";
 import {
   CommentView,
   Community,
@@ -6,12 +7,12 @@ import {
   PersonView,
   PostView,
 } from "lemmy-js-client";
+import { useCallback } from "react";
+
+import { buildCommunityLink } from "./appLinkBuilder";
 import { getHandle } from "./lemmy";
 import { useBuildGeneralBrowseLink } from "./routes";
-import { buildCommunityLink } from "./appLinkBuilder";
-import { useCallback } from "react";
 import useAppToast from "./useAppToast";
-import { checkmark } from "ionicons/icons";
 import { useOptimizedIonRouter } from "./useOptimizedIonRouter";
 
 export default function useAppNavigation() {
