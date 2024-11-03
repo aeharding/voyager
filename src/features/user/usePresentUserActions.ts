@@ -6,7 +6,7 @@ import {
 } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
 import { compact } from "lodash";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { usernameSelector } from "#/features/auth/authSelectors";
