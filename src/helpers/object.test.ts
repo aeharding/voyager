@@ -1,3 +1,5 @@
+import { describe, expect, it } from "vitest";
+
 import { getAllObjectValuesDeep } from "./object";
 
 describe("getAllObjectValuesDeep", () => {
