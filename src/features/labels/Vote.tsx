@@ -73,7 +73,7 @@ export default function Vote({
     }
 
     try {
-      await dispatch(dispatcherFn(id, vote));
+      await dispatch(dispatcherFn(item as CommentView & PostView, vote));
     } catch (error) {
       presentToast({
         color: "danger",

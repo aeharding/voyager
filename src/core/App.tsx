@@ -39,8 +39,6 @@ import { TabContextProvider } from "./TabContext";
 
 /* Setup global app lifecycle listeners */
 import "./listeners";
-import AndroidBackButton from "./listeners/AndroidBackButton";
-import { ResetStatusTap } from "./listeners/statusTap";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
@@ -72,9 +70,6 @@ export default function App() {
                 <UpdateContextProvider>
                   <Router>
                     <OptimizedRouterProvider>
-                      <AndroidBackButton />
-                      <ResetStatusTap />
-
                       <TabContextProvider>
                         <IonApp>
                           <IonAppContents />

@@ -2,6 +2,7 @@ import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
 import { css } from "@linaria/core";
 import { bookmarkOutline } from "ionicons/icons";
+import { PostView } from "lemmy-js-client";
 import { MouseEvent, useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -19,17 +20,17 @@ const savedButtonCss = css`
 `;
 
 interface SaveButtonProps {
-  postId: number;
+  post: PostView;
 }
 
-export function SaveButton({ postId }: SaveButtonProps) {
+export function SaveButton({ post }: SaveButtonProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const { presentLoginIfNeeded } = useContext(PageContext);
   const vibrate = useHapticFeedback();
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);
-  const mySaved = postSavedById[postId];
+  const mySaved = postSavedById[post.post.id];
 
   async function onSavePost(e: MouseEvent) {
     e.stopPropagation();
@@ -39,7 +40,7 @@ export function SaveButton({ postId }: SaveButtonProps) {
     if (presentLoginIfNeeded()) return;
 
     try {
-      await dispatch(savePost(postId, !mySaved));
+      await dispatch(savePost(post, !mySaved));
 
       if (!mySaved) presentToast(saveSuccess);
     } catch (error) {

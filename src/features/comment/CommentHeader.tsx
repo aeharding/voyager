@@ -12,6 +12,8 @@ import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
 import { ModeratorRole } from "#/features/moderation/useCanModerate";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import { ActionsContainer } from "#/features/post/inFeed/compact/CompactPost";
+import UserScore from "#/features/tags/UserScore";
+import UserTag from "#/features/tags/UserTag";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
 
@@ -63,6 +65,13 @@ const DeletedLabel = styled.div`
 
   min-width: 0;
   overflow: hidden;
+`;
+
+const Spacer = styled.div`
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
 `;
 
 interface CommentHeaderProps {
@@ -136,10 +145,11 @@ export default function CommentHeader({
                 opId={commentView.post.creator_id}
                 distinguished={comment.distinguished}
                 showBadge={false}
+                showTag={false}
               />{" "}
               deleted their <span className="ion-text-nowrap">comment :(</span>
             </DeletedLabel>
-            <div style={{ flex: 1 }} />
+            <Spacer />
             {renderAside(comment.updated || comment.published)}
           </>
         );
@@ -153,10 +163,11 @@ export default function CommentHeader({
                 opId={commentView.post.creator_id}
                 distinguished={comment.distinguished}
                 showBadge={false}
+                showTag={false}
               />
               &apos;s comment
             </DeletedLabel>
-            <div style={{ flex: 1 }} />
+            <Spacer />
             {renderAside(comment.updated || comment.published)}
           </>
         );
@@ -168,10 +179,14 @@ export default function CommentHeader({
               opId={commentView.post.creator_id}
               distinguished={comment.distinguished}
               showBadge={!context}
+              showTag={false}
             />
+            <UserScore person={commentView.creator} />
             <CommentVote item={commentView} />
             <Edited item={commentView} />
-            <div style={{ flex: 1 }} />
+            <Spacer>
+              <UserTag person={commentView.creator} />
+            </Spacer>
             {renderAside()}
           </>
         );

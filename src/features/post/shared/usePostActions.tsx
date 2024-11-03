@@ -104,7 +104,7 @@ export default function usePostActions(post: PostView) {
               if (presentLoginIfNeeded()) return;
 
               try {
-                await dispatch(voteOnPost(post.post.id, myVote === 1 ? 0 : 1));
+                await dispatch(voteOnPost(post, myVote === 1 ? 0 : 1));
               } catch (error) {
                 presentToast({
                   color: "danger",
@@ -124,9 +124,7 @@ export default function usePostActions(post: PostView) {
               if (presentLoginIfNeeded()) return;
 
               try {
-                await dispatch(
-                  voteOnPost(post.post.id, myVote === -1 ? 0 : -1),
-                );
+                await dispatch(voteOnPost(post, myVote === -1 ? 0 : -1));
               } catch (error) {
                 presentToast({
                   color: "danger",
@@ -146,7 +144,7 @@ export default function usePostActions(post: PostView) {
               if (presentLoginIfNeeded()) return;
 
               try {
-                await dispatch(savePost(post.post.id, !mySaved));
+                await dispatch(savePost(post, !mySaved));
 
                 if (!mySaved) presentToast(saveSuccess);
               } catch (error) {

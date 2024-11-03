@@ -62,6 +62,7 @@
     "capacitor-set-version": "^2.2.0",
     "capacitor-stash-media": "^2.0.1",
     "capacitor-tips": "^1.0.0",
+    "colorjs.io": "^0.5.2",
     "compare-versions": "^6.1.1",
     "date-fns": "^4.1.0",
     "dexie": "^4.0.8",

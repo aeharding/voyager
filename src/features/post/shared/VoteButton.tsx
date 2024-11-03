@@ -2,6 +2,7 @@ import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
+import { PostView } from "lemmy-js-client";
 import { useContext, useEffect } from "react";
 import { useTransition } from "react-transition-state";
 
@@ -36,10 +37,10 @@ const ActiveItem = styled(InactiveItem)<{
 
 interface VoteButtonProps {
   type: "down" | "up";
-  postId: number;
+  post: PostView;
 }
 
-export function VoteButton({ type, postId }: VoteButtonProps) {
+export function VoteButton({ type, post }: VoteButtonProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const vibrate = useHapticFeedback();
@@ -50,7 +51,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   );
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
-  const myVote = postVotesById[postId];
+  const myVote = postVotesById[post.post.id];
 
   const [state, toggle] = useTransition({
     timeout: bounceMs,
@@ -112,7 +113,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
 
         try {
           await dispatch(
-            voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote),
+            voteOnPost(post, myVote === selectedVote ? 0 : selectedVote),
           );
         } catch (error) {
           presentToast({

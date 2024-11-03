@@ -142,6 +142,12 @@ interface SettingsState {
     noSubscribedInFeed: boolean;
     thumbnailinatorEnabled: boolean;
   };
+  tags: {
+    enabled: boolean;
+    trackVotes: boolean;
+    hideInstance: boolean;
+    saveSource: boolean;
+  };
   blocks: {
     keywords: string[];
     websites: string[];
@@ -229,6 +235,12 @@ export const initialState: SettingsState = {
     defaultFeed: undefined,
     noSubscribedInFeed: false,
     thumbnailinatorEnabled: true,
+  },
+  tags: {
+    enabled: false,
+    trackVotes: true,
+    hideInstance: true,
+    saveSource: true,
   },
   blocks: {
     keywords: [],
@@ -549,6 +561,26 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("subscribed_icon", action.payload);
     },
+    setTagsEnabled(state, action: PayloadAction<boolean>) {
+      state.tags.enabled = action.payload;
+
+      db.setSetting("tags_enabled", action.payload);
+    },
+    setTagsTrackVotes(state, action: PayloadAction<boolean>) {
+      state.tags.trackVotes = action.payload;
+
+      db.setSetting("tags_track_votes", action.payload);
+    },
+    setTagsHideInstance(state, action: PayloadAction<boolean>) {
+      state.tags.hideInstance = action.payload;
+
+      db.setSetting("tags_hide_instance", action.payload);
+    },
+    setTagsSaveSource(state, action: PayloadAction<boolean>) {
+      state.tags.saveSource = action.payload;
+
+      db.setSetting("tags_save_source", action.payload);
+    },
 
     resetSettings: () => ({
       ...initialState,
@@ -766,6 +798,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "quick_switch_dark_mode",
       );
       const subscribed_icon = await db.getSetting("subscribed_icon");
+      const tags_enabled = await db.getSetting("tags_enabled");
+      const tags_track_votes = await db.getSetting("tags_track_votes");
+      const tags_hide_instance = await db.getSetting("tags_hide_instance");
+      const tags_save_source = await db.getSetting("tags_save_source");
 
       return {
         ...state.settings,
@@ -911,6 +947,12 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             thumbnailinator_enabled ??
             initialState.general.thumbnailinatorEnabled,
         },
+        tags: {
+          enabled: tags_enabled ?? initialState.tags.enabled,
+          trackVotes: tags_track_votes ?? initialState.tags.trackVotes,
+          hideInstance: tags_hide_instance ?? initialState.tags.hideInstance,
+          saveSource: tags_save_source ?? initialState.tags.saveSource,
+        },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
           websites: filtered_websites ?? initialState.blocks.websites,
@@ -993,6 +1035,10 @@ export const {
   setShowCollapsedComment,
   setQuickSwitchDarkMode,
   setSubscribedIcon,
+  setTagsEnabled,
+  setTagsHideInstance,
+  setTagsSaveSource,
+  setTagsTrackVotes,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

@@ -1,3 +1,4 @@
+import { CommentView, PostView } from "lemmy-js-client";
 import { ComponentProps, useCallback, useContext, useMemo } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -74,8 +75,8 @@ export function VotableActionsImpl({
       if (isInboxItem(item)) dispatch(markRead(item, true));
 
       try {
-        if (isPost) await dispatch(voteOnPost(item.post.id, score));
-        else await dispatch(voteOnComment(item.comment.id, score));
+        if (isPost) await dispatch(voteOnPost(item, score));
+        else await dispatch(voteOnComment(item, score));
       } catch (error) {
         presentToast({
           color: "danger",
@@ -125,20 +126,25 @@ export function VotableActionsImpl({
     dispatch,
   ]);
 
-  const { id, isSaved } = useMemo(() => {
+  const isSaved = useMemo(() => {
     if (isPost) {
       const id = item.post.id;
-      return { id: id, isSaved: postSavedById[id] };
+      return postSavedById[id];
     } else {
       const id = item.comment.id;
-      return { id: id, isSaved: commentSavedById[id] };
+      return commentSavedById[id];
     }
   }, [item, isPost, postSavedById, commentSavedById]);
 
   const save = useCallback(async () => {
     if (presentLoginIfNeeded()) return;
     try {
-      await dispatch((isPost ? savePost : saveComment)(id, !isSaved));
+      await dispatch(
+        (isPost ? savePost : saveComment)(
+          item as PostView & CommentView,
+          !isSaved,
+        ),
+      );
 
       if (!isSaved) presentToast(saveSuccess);
     } catch (error) {
@@ -148,7 +154,7 @@ export function VotableActionsImpl({
       });
       throw error;
     }
-  }, [presentLoginIfNeeded, dispatch, isPost, id, isSaved, presentToast]);
+  }, [presentLoginIfNeeded, dispatch, isPost, item, isSaved, presentToast]);
 
   const collapseRootComment = useCollapseRootComment(
     !isPost ? item : undefined,

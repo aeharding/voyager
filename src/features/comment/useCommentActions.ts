@@ -124,7 +124,9 @@ export default function useCommentActions({
               if (presentLoginIfNeeded()) return;
 
               try {
-                await dispatch(voteOnComment(comment.id, myVote === 1 ? 0 : 1));
+                await dispatch(
+                  voteOnComment(commentView, myVote === 1 ? 0 : 1),
+                );
               } catch (error) {
                 presentToast({
                   color: "danger",
@@ -146,7 +148,7 @@ export default function useCommentActions({
 
                   try {
                     await dispatch(
-                      voteOnComment(comment.id, myVote === -1 ? 0 : -1),
+                      voteOnComment(commentView, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
                     presentToast({
@@ -168,7 +170,7 @@ export default function useCommentActions({
               if (presentLoginIfNeeded()) return;
 
               try {
-                await dispatch(saveComment(comment.id, !mySaved));
+                await dispatch(saveComment(commentView, !mySaved));
 
                 if (!mySaved) presentToast(saveSuccess);
               } catch (error) {

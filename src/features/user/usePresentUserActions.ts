@@ -1,8 +1,12 @@
 import { ActionSheetButton, useIonActionSheet } from "@ionic/react";
-import { mailOutline, removeCircleOutline } from "ionicons/icons";
+import {
+  mailOutline,
+  pricetagOutline,
+  removeCircleOutline,
+} from "ionicons/icons";
 import { Person } from "lemmy-js-client";
 import { compact } from "lodash";
-import { useCallback, useContext } from "react";
+import { useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { usernameSelector } from "#/features/auth/authSelectors";
@@ -28,12 +32,13 @@ export default function usePresentUserActions() {
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
+  const { presentUserTag } = useContext(PageContext);
 
   return useCallback(
-    (handle: string, options?: Options) => {
+    (user: Person, options?: Options) => {
       const state = store.getState();
 
-      const isCurrentUser = usernameSelector(state) === handle;
+      const isCurrentUser = usernameSelector(state) === getHandle(user);
 
       const blocks = state.site.response?.my_user?.person_blocks;
       const isBlocked = blocks?.some(
@@ -42,9 +47,8 @@ export default function usePresentUserActions() {
             "target" in b
               ? (b.target as Person) // TODO lemmy v0.19 and less support
               : b,
-          ) === handle,
+          ) === getHandle(user),
       );
-      const user = state.user.userByHandle[handle.toLowerCase()];
 
       presentActionSheet({
         cssClass: "left-align-buttons",
@@ -60,7 +64,9 @@ export default function usePresentUserActions() {
 
                 router.push(
                   // intent=send - SendMessageBox uses to determine focus
-                  buildGeneralBrowseLink(`/u/${handle}/message?intent=send`),
+                  buildGeneralBrowseLink(
+                    `/u/${getHandle(user)}/message?intent=send`,
+                  ),
                 );
               },
             },
@@ -85,8 +91,17 @@ export default function usePresentUserActions() {
                   throw error;
                 }
 
-                presentToast(buildBlocked(!isBlocked, handle));
+                presentToast(buildBlocked(!isBlocked, getHandle(user)));
               })();
+            },
+          },
+          {
+            text: "Edit Tag",
+            icon: pricetagOutline,
+            handler: async () => {
+              if (!user) return;
+
+              presentUserTag(user);
             },
           },
           {
@@ -103,6 +118,7 @@ export default function usePresentUserActions() {
       buildGeneralBrowseLink,
       presentToast,
       dispatch,
+      presentUserTag,
     ],
   );
 }

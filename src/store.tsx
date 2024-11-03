@@ -49,6 +49,7 @@ import settingsSlice, {
 } from "./features/settings/settingsSlice";
 import spoilerSlice from "./features/shared/markdown/components/spoiler/spoilerSlice";
 import uploadImageSlice from "./features/shared/markdown/editing/uploadImageSlice";
+import userTagSlice from "./features/tags/userTagSlice";
 import userSlice from "./features/user/userSlice";
 
 const store = configureStore({
@@ -79,6 +80,7 @@ const store = configureStore({
     uploadImage: uploadImageSlice,
     postAppearance: postAppearanceSlice,
     thumbnail: thumbnailSlice,
+    userTag: userTagSlice,
   },
 });
 export type RootState = ReturnType<typeof store.getState>;

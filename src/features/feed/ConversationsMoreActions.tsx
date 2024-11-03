@@ -1,14 +1,21 @@
 import { IonButton } from "@ionic/react";
 import { personCircleOutline } from "ionicons/icons";
-import { useParams } from "react-router";
+import { Person } from "lemmy-js-client";
 
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import usePresentUserActions from "#/features/user/usePresentUserActions";
+import { buildUserLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
-export default function ConversationsMoreActions() {
-  const { handle } = useParams<{ handle: string }>();
+interface ConversationsMoreActionsProps {
+  person: Person | undefined;
+}
+
+export default function ConversationsMoreActions({
+  person,
+}: ConversationsMoreActionsProps) {
   const presentUserActions = usePresentUserActions();
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -16,21 +23,23 @@ export default function ConversationsMoreActions() {
   return (
     <>
       <IonButton
-        disabled={!handle}
-        onClick={() =>
-          presentUserActions(handle, {
+        disabled={!person}
+        onClick={() => {
+          if (!person) return;
+
+          presentUserActions(person, {
             hideMessageButton: true,
             prependButtons: [
               {
-                text: handle,
+                text: getHandle(person),
                 icon: personCircleOutline,
                 handler: () => {
-                  router.push(buildGeneralBrowseLink(`/u/${handle}`));
+                  router.push(buildGeneralBrowseLink(buildUserLink(person)));
                 },
               },
             ],
-          })
-        }
+          });
+        }}
       >
         <HeaderEllipsisIcon slot="icon-only" />
       </IonButton>

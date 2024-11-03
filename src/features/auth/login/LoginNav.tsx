@@ -15,6 +15,7 @@ export const Centered = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  line-height: 1;
 
   .ios & {
     justify-content: center;

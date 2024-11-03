@@ -2,7 +2,7 @@ import { IonIcon } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { chevronForward } from "ionicons/icons";
-import { MouseEvent, useMemo, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
 
 import { LinkData } from "#/features/comment/CommentLinks";
 import Url from "#/features/shared/Url";
@@ -183,18 +183,17 @@ export default function Link({
     }
 
     if (!thumbnailinatorResult || thumbnailinatorResult === "pending") {
-      if (!thumbnailinatorResult) dispatch(fetchThumbnail(url));
       return TRANSPARENT_PIXEL;
     }
 
     return thumbnailinatorResult;
-  }, [
-    lemmyThubmnail,
-    dispatch,
-    url,
-    thumbnailinatorResult,
-    thumbnailinatorEnabled,
-  ]);
+  }, [lemmyThubmnail, thumbnailinatorResult, thumbnailinatorEnabled]);
+
+  useEffect(() => {
+    if (thumbnail === TRANSPARENT_PIXEL && !thumbnailinatorResult) {
+      dispatch(fetchThumbnail(url));
+    }
+  }, [dispatch, thumbnail, thumbnailinatorResult, url]);
 
   const compactIcon = useMemo(() => {
     if (commentType === "image" || isImage)

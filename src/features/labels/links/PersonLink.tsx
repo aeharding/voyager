@@ -5,12 +5,14 @@ import { useCallback, useContext } from "react";
 import { LongPressOptions, useLongPress } from "use-long-press";
 
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
+import UserScore from "#/features/tags/UserScore";
+import UserTag from "#/features/tags/UserTag";
 import usePresentUserActions from "#/features/user/usePresentUserActions";
 import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
 } from "#/helpers/ionic";
-import { getHandle } from "#/helpers/lemmy";
+import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { OInstanceUrlDisplayMode } from "#/services/db";
 import { useAppSelector } from "#/store";
@@ -31,6 +33,7 @@ interface PersonLinkProps {
   prefix?: string;
   showBadge?: boolean;
   disableInstanceClick?: boolean;
+  showTag?: boolean;
 
   className?: string;
 }
@@ -43,6 +46,7 @@ export default function PersonLink({
   showInstanceWhenRemote,
   prefix,
   showBadge = true,
+  showTag = true,
   disableInstanceClick,
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -52,10 +56,14 @@ export default function PersonLink({
   const { hideUsernames } = useContext(ShareImageContext);
   const presentUserActions = usePresentUserActions();
 
+  const tag = useAppSelector(
+    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
+  );
+
   const onCommunityLinkLongPress = useCallback(() => {
     stopIonicTapClick();
 
-    presentUserActions(getHandle(person));
+    presentUserActions(person);
   }, [presentUserActions, person]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
@@ -79,8 +87,11 @@ export default function PersonLink({
     color = "var(--ion-color-tertiary-tint)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
+  const tagText = typeof tag === "object" ? tag.text : undefined;
+
   const [handle, instance] = renderHandle({
-    showInstanceWhenRemote: showInstanceWhenRemote || forceInstanceUrl,
+    showInstanceWhenRemote:
+      !tagText && (showInstanceWhenRemote || forceInstanceUrl),
     item: person,
   });
 
@@ -91,6 +102,12 @@ export default function PersonLink({
         <>
           {person.bot_account && " 🤖"}
           <AgeBadge published={person.published} />
+        </>
+      )}
+      {showTag && (
+        <>
+          <UserScore person={person} prefix=" " />
+          <UserTag person={person} prefix=" " />
         </>
       )}
     </>

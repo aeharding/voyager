@@ -6,6 +6,7 @@ import AppearancePage from "#/routes/pages/settings/AppearancePage";
 import AppearanceThemePage from "#/routes/pages/settings/AppearanceThemePage";
 import BiometricPage from "#/routes/pages/settings/BiometricPage";
 import BlocksSettingsPage from "#/routes/pages/settings/BlocksSettingsPage";
+import BrowseTagsPage from "#/routes/pages/settings/BrowseTagsPage";
 import DeviceModeSettingsPage from "#/routes/pages/settings/DeviceModeSettingsPage";
 import GeneralPage from "#/routes/pages/settings/GeneralPage";
 import GesturesPage from "#/routes/pages/settings/GesturesPage";
@@ -14,6 +15,7 @@ import InstallAppPage from "#/routes/pages/settings/InstallAppPage";
 import RedditMigratePage from "#/routes/pages/settings/RedditDataMigratePage";
 import RedditMigrateSubsListPage from "#/routes/pages/settings/RedditMigrateSubsListPage";
 import SettingsPage from "#/routes/pages/settings/SettingsPage";
+import TagsSettingsPage from "#/routes/pages/settings/TagsSettingsPage";
 import UpdateAppPage from "#/routes/pages/settings/UpdateAppPage";
 import AboutPage from "#/routes/pages/settings/about/AboutPage";
 import AboutThanksPage from "#/routes/pages/settings/about/AboutThanksPage";
@@ -54,6 +56,12 @@ export default [
   </Route>,
   <Route exact path="/settings/blocks">
     <BlocksSettingsPage />
+  </Route>,
+  <Route exact path="/settings/tags">
+    <TagsSettingsPage />
+  </Route>,
+  <Route exact path="/settings/tags/browse">
+    <BrowseTagsPage />
   </Route>,
   <Route exact path="/settings/reddit-migrate">
     <RedditMigratePage />
