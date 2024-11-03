@@ -1,10 +1,10 @@
 import { IonContent } from "@ionic/react";
-import React from "react";
+
 import {
   isAppleDeviceInstalledToHomescreen,
   isNative,
   isTouchDevice,
-} from "../../../helpers/device";
+} from "#/helpers/device";
 
 interface FeedContentProps {
   children: React.ReactNode;

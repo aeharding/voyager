@@ -1,11 +1,13 @@
-import { ComponentProps, useContext } from "react";
-import Link from "./Link";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
-import { InFeedContext } from "../../feed/Feed";
-import { isNsfwBlurred } from "../../labels/Nsfw";
 import { PostView } from "lemmy-js-client";
+import { ComponentProps, useContext } from "react";
+
+import { InFeedContext } from "#/features/feed/Feed";
+import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
+import { isNsfwBlurred } from "#/features/labels/Nsfw";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setPostRead } from "../postSlice";
+import Link from "./Link";
 
 interface PostLinkProps
   extends Omit<ComponentProps<typeof Link>, "url" | "thumbnail"> {

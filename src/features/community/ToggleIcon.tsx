@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
-import { ComponentProps } from "react";
 import { css, cx } from "@linaria/core";
 import { styled } from "@linaria/react";
+import { ComponentProps } from "react";
 
 const BaseIonIcon = styled(IonIcon)`
   font-size: 24px;

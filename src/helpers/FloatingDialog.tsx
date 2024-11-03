@@ -1,7 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { close } from "ionicons/icons";
-import React from "react";
 
 const Container = styled.div`
   margin: 36px auto;

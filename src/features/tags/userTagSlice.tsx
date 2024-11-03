@@ -1,7 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { db, UserTag } from "../../services/db";
-import { AppDispatch, RootState } from "../../store";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { uniq } from "lodash";
+
+import { UserTag, db } from "#/services/db";
+
+import { AppDispatch, RootState } from "../../store";
 
 interface CommunityState {
   tagByRemoteHandle: Record<string, UserTag | "pending">;

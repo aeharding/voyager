@@ -1,10 +1,5 @@
 import { styled } from "@linaria/react";
-import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
-import MarkdownToolbar, {
-  TOOLBAR_HEIGHT,
-  TOOLBAR_TARGET_ID,
-} from "./MarkdownToolbar";
-import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
+import { useMergedRef } from "@mantine/hooks";
 import {
   ClipboardEvent,
   Dispatch,
@@ -14,12 +9,19 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { preventModalSwipeOnTextSelection } from "../../../../helpers/ionic";
-import useTextRecovery from "../../../../helpers/useTextRecovery";
-import useUploadImage from "./useUploadImage";
-import { htmlToMarkdown } from "../../../../helpers/markdown";
+
+import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
+import { htmlToMarkdown } from "#/helpers/markdown";
+import useKeyboardOpen from "#/helpers/useKeyboardOpen";
+import useTextRecovery from "#/helpers/useTextRecovery";
+
+import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
+import MarkdownToolbar, {
+  TOOLBAR_HEIGHT,
+  TOOLBAR_TARGET_ID,
+} from "./MarkdownToolbar";
 import useEditorHelpers from "./useEditorHelpers";
-import { useMergedRef } from "@mantine/hooks";
+import useUploadImage from "./useUploadImage";
 
 const ORDERED_LIST_REGEX = /^(\d)\. /;
 const UNORDERED_LIST_REGEX = /^(-|\*|\+) /;

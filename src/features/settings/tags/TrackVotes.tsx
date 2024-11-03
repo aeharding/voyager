@@ -1,6 +1,7 @@
 import { IonItem, IonToggle } from "@ionic/react";
-import { setTagsTrackVotes } from "../settingsSlice";
+
 import { useAppDispatch, useAppSelector } from "../../../store";
+import { setTagsTrackVotes } from "../settingsSlice";
 
 export default function TrackVotes() {
   const dispatch = useAppDispatch();

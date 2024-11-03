@@ -1,6 +1,8 @@
 import { IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
-import { HelperText, ListHeader } from "../../../shared/formatting";
-import { useAppDispatch, useAppSelector } from "../../../../../store";
+
+import { HelperText, ListHeader } from "#/features/settings/shared/formatting";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setQuickSwitchDarkMode } from "../../../settingsSlice";
 
 export default function QuickSwitchDarkMode() {

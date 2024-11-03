@@ -1,17 +1,18 @@
+import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 import React, {
   useCallback,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
 } from "react";
-import { useAppDispatch, useAppSelector } from "../store";
-import { updateConnectedInstance } from "../features/auth/authSlice";
 import { useLocation } from "react-router";
-import { getInboxCounts, syncMessages } from "../features/inbox/inboxSlice";
-import { getDefaultServer } from "../services/app";
-import BackgroundReportSync from "../features/moderation/BackgroundReportSync";
-import { getSiteIfNeeded, isAdminSelector } from "../features/auth/siteSlice";
-import { instanceSelector, jwtSelector } from "../features/auth/authSelectors";
-import { useDocumentVisibility, useInterval } from "@mantine/hooks";
+
+import { instanceSelector, jwtSelector } from "#/features/auth/authSelectors";
+import { updateConnectedInstance } from "#/features/auth/authSlice";
+import { getSiteIfNeeded, isAdminSelector } from "#/features/auth/siteSlice";
+import { getInboxCounts, syncMessages } from "#/features/inbox/inboxSlice";
+import BackgroundReportSync from "#/features/moderation/BackgroundReportSync";
+import { getDefaultServer } from "#/services/app";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 interface AuthProps {
   children: React.ReactNode;

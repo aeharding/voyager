@@ -5,11 +5,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
-import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
-import AppHeader from "../../../features/shared/AppHeader";
-import TagsSettings from "../../../features/settings/tags/TagsSettings";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import TagsSettings from "#/features/settings/tags/TagsSettings";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
 
 export default function TagsSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);

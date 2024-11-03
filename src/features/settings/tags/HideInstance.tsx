@@ -1,6 +1,7 @@
 import { IonItem, IonToggle } from "@ionic/react";
-import { setTagsHideInstance } from "../settingsSlice";
+
 import { useAppDispatch, useAppSelector } from "../../../store";
+import { setTagsHideInstance } from "../settingsSlice";
 
 export default function HideInstance() {
   const dispatch = useAppDispatch();

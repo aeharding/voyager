@@ -1,12 +1,13 @@
 import { IonButton } from "@ionic/react";
-import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
-import usePresentUserActions from "../user/usePresentUserActions";
 import { personCircleOutline } from "ionicons/icons";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { Person } from "lemmy-js-client";
-import { getHandle } from "../../helpers/lemmy";
-import { buildUserLink } from "../../helpers/appLinkBuilder";
+
+import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
+import usePresentUserActions from "#/features/user/usePresentUserActions";
+import { buildUserLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
 interface ConversationsMoreActionsProps {
   person: Person | undefined;

@@ -1,13 +1,15 @@
 import { CommentSortType, PostSortType } from "lemmy-js-client";
 import { useCallback, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store";
+
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { AnyFeed } from "../helpers";
 import {
   SetSortActionPayload,
   getFeedSort,
   getFeedSortSelectorBuilder,
   setFeedSort,
 } from "./feedSortSlice";
-import { AnyFeed } from "../helpers";
 
 type Sorts = {
   posts: PostSortType;

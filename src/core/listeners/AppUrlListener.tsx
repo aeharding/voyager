@@ -1,14 +1,15 @@
 import { App } from "@capacitor/app";
 import {
   useEffect,
-  useRef,
   experimental_useEffectEvent as useEffectEvent,
+  useRef,
 } from "react";
-import useLemmyUrlHandler from "../../features/shared/useLemmyUrlHandler";
-import { useAppSelector } from "../../store";
-import useAppToast from "../../helpers/useAppToast";
-import { deepLinkFailed } from "../../helpers/toastMessages";
-import { normalizeObjectUrl } from "../../features/resolve/resolveSlice";
+
+import { normalizeObjectUrl } from "#/features/resolve/resolveSlice";
+import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
+import { deepLinkFailed } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppSelector } from "#/store";
 
 export default function AppUrlListener() {
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
@@ -48,6 +49,7 @@ export default function AppUrlListener() {
     App.addListener("appUrlOpen", (event) => {
       onAppUrlEvent(normalizeObjectUrl(event.url));
     });
+
     return () => {
       App.removeAllListeners();
     };

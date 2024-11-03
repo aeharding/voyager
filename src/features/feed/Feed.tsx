@@ -1,30 +1,32 @@
+import {
+  IonRefresher,
+  IonRefresherContent,
+  RefresherCustomEvent,
+} from "@ionic/react";
+import { pullAllBy } from "lodash";
 import React, {
   Fragment,
   createContext,
   useCallback,
   useContext,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useMemo,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
-import {
-  IonRefresher,
-  IonRefresherContent,
-  RefresherCustomEvent,
-} from "@ionic/react";
-import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
-import { pullAllBy } from "lodash";
-import { useSetActivePage } from "../auth/AppContext";
-import EndPost, { EndPostProps } from "./endItems/EndPost";
-import { isSafariFeedHackEnabled } from "../../routes/pages/shared/FeedContent";
-import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import { VList, VListHandle } from "virtua";
-import { FeedSearchContext } from "../../routes/pages/shared/CommunityPage";
-import { useAppSelector } from "../../store";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { FeedSearchContext } from "#/routes/pages/shared/CommunityPage";
+import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
+import { LIMIT as DEFAULT_LIMIT } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
+
+import EndPost, { EndPostProps } from "./endItems/EndPost";
+import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import FetchMore from "./endItems/FetchMore";
-import { CenteredSpinner } from "../shared/CenteredSpinner";
 
 type PageData =
   | {

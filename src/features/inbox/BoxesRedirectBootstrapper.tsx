@@ -1,6 +1,6 @@
-import { useAppSelector } from "../../store";
-import { loggedInSelector } from "../auth/authSelectors";
-import InitialPageRedirectBootstrapper from "../community/list/InitialPageRedirectBootstrapper";
+import { loggedInSelector } from "#/features/auth/authSelectors";
+import InitialPageRedirectBootstrapper from "#/features/community/list/InitialPageRedirectBootstrapper";
+import { useAppSelector } from "#/store";
 
 export default function BoxesRedirectBootstrapper() {
   const loggedIn = useAppSelector(loggedInSelector);

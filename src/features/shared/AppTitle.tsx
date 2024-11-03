@@ -7,7 +7,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { isIosTheme } from "../../helpers/device";
+
+import { isIosTheme } from "#/helpers/device";
 
 export interface AppTitleHandle {
   updateLayout: () => void;

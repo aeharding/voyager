@@ -1,9 +1,11 @@
 import { CommentView } from "lemmy-js-client";
+
+import PostContext from "#/features/user/PostContext";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+
 import Comment from "../Comment";
-import PostContext from "../../user/PostContext";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { getHandle } from "../../../helpers/lemmy";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 
 interface FeedCommentProps {
   comment: CommentView;

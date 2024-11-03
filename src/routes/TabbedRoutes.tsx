@@ -1,26 +1,28 @@
-import { Redirect } from "react-router-dom";
-import Route from "./common/Route";
-import { IonRouterOutlet, IonTabs } from "@ionic/react";
-import { useAppSelector } from "../store";
-import { instanceSelector } from "../features/auth/authSelectors";
-import { useContext, useEffect, useMemo, useRef } from "react";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
-import { PageContextProvider } from "../features/auth/PageContext";
-import { getDefaultServer } from "../services/app";
-import GalleryProvider from "../features/media/gallery/GalleryProvider";
-import { DefaultFeedType, ODefaultFeedType } from "../services/db";
+import { IonRouterOutlet, IonTabs } from "@ionic/react";
+import { useContext, useEffect, useMemo, useRef } from "react";
+import { Redirect } from "react-router-dom";
+
+import { TabContext } from "#/core/TabContext";
+import { PageContextProvider } from "#/features/auth/PageContext";
+import { instanceSelector } from "#/features/auth/authSelectors";
+import GalleryProvider from "#/features/media/gallery/GalleryProvider";
+import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
+import { isInstalled } from "#/helpers/device";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { getDefaultServer } from "#/services/app";
+import { DefaultFeedType, ODefaultFeedType } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import TabBar from "./TabBar";
-import { isInstalled } from "../helpers/device";
-import { useOptimizedIonRouter } from "../helpers/useOptimizedIonRouter";
-import { TabContext } from "../core/TabContext";
 import { usingActorRedirect } from "./common/ActorRedirect";
-import VideoPortalProvider from "../features/media/video/VideoPortalProvider";
-import settings from "./tabs/settings";
-import buildPostsRoutes from "./tabs/posts";
+import Route from "./common/Route";
+import general from "./tabs/general";
 import inbox from "./tabs/inbox";
+import buildPostsRoutes from "./tabs/posts";
 import profile from "./tabs/profile";
 import search from "./tabs/search";
-import general from "./tabs/general";
+import settings from "./tabs/settings";
 
 type RouterOutletRef = IonRouterOutletCustomEvent<unknown>["target"];
 

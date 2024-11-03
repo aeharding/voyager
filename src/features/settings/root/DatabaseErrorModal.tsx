@@ -1,7 +1,8 @@
-import { useAppSelector } from "../../../store";
-import { isAppleDeviceInstallable } from "../../../helpers/device";
-import InAppExternalLink from "../../shared/InAppExternalLink";
 import Dexie from "dexie";
+
+import InAppExternalLink from "#/features/shared/InAppExternalLink";
+import { isAppleDeviceInstallable } from "#/helpers/device";
+import { useAppSelector } from "#/store";
 
 export default function DatabaseErrorModal() {
   const databaseError = useAppSelector((state) => state.settings.databaseError);

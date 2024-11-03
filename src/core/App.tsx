@@ -1,44 +1,44 @@
 import { IonApp, setupIonicReact } from "@ionic/react";
-import { StoreProvider } from "../store";
+
+/* Core CSS required for Ionic components to work properly */
+import "@ionic/react/css/core.css";
+import "@ionic/react/css/display.css";
+import "@ionic/react/css/flex-utils.css";
+import "@ionic/react/css/float-elements.css";
+
+/* Basic CSS for apps built with Ionic */
+import "@ionic/react/css/normalize.css";
+
+/* Optional CSS utils that can be commented out */
+import "@ionic/react/css/padding.css";
+import "@ionic/react/css/palettes/dark.class.css";
+import "@ionic/react/css/structure.css";
+import "@ionic/react/css/text-alignment.css";
+import "@ionic/react/css/text-transformation.css";
+import "@ionic/react/css/typography.css";
+import { NavModes } from "capacitor-android-nav-mode";
+import { ErrorBoundary } from "react-error-boundary";
+
+import { AppContextProvider } from "#/features/auth/AppContext";
+import BeforeInstallPromptProvider from "#/features/pwa/BeforeInstallPromptProvider";
 import {
   getAndroidNavMode,
   getDeviceMode,
   isInstalled,
-} from "../helpers/device";
-import TabbedRoutes from "../routes/TabbedRoutes";
-import Auth from "./Auth";
-import { AppContextProvider } from "../features/auth/AppContext";
-import Router from "../routes/common/Router";
-import BeforeInstallPromptProvider from "../features/pwa/BeforeInstallPromptProvider";
-import { UpdateContextProvider } from "../routes/pages/settings/update/UpdateContext";
-import GlobalStyles from "./GlobalStyles";
-import ConfigProvider from "../services/app";
-import { TabContextProvider } from "./TabContext";
-import { NavModes } from "capacitor-android-nav-mode";
-import { OptimizedRouterProvider } from "../helpers/useOptimizedIonRouter";
-import { ErrorBoundary } from "react-error-boundary";
+} from "#/helpers/device";
+import { OptimizedRouterProvider } from "#/helpers/useOptimizedIonRouter";
+import Router from "#/routes/common/Router";
+import { UpdateContextProvider } from "#/routes/pages/settings/update/UpdateContext";
+import ConfigProvider from "#/services/app";
+import { StoreProvider } from "#/store";
+
 import AppCrash from "./AppCrash";
-
-/* Core CSS required for Ionic components to work properly */
-import "@ionic/react/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
-import "@ionic/react/css/normalize.css";
-import "@ionic/react/css/structure.css";
-import "@ionic/react/css/typography.css";
-
-/* Optional CSS utils that can be commented out */
-import "@ionic/react/css/padding.css";
-import "@ionic/react/css/float-elements.css";
-import "@ionic/react/css/text-alignment.css";
-import "@ionic/react/css/text-transformation.css";
-import "@ionic/react/css/flex-utils.css";
-import "@ionic/react/css/display.css";
-
-import "@ionic/react/css/palettes/dark.class.css";
+import GlobalStyles from "./GlobalStyles";
+import IonAppContents from "./IonAppContents";
+import { TabContextProvider } from "./TabContext";
 
 /* Setup global app lifecycle listeners */
-import Listeners from "./listeners";
+import "./listeners";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
@@ -72,11 +72,7 @@ export default function App() {
                     <OptimizedRouterProvider>
                       <TabContextProvider>
                         <IonApp>
-                          <Auth>
-                            <TabbedRoutes>
-                              <Listeners />
-                            </TabbedRoutes>
-                          </Auth>
+                          <IonAppContents />
                         </IonApp>
                       </TabContextProvider>
                     </OptimizedRouterProvider>

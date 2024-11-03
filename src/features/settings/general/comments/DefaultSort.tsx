@@ -1,9 +1,11 @@
-import { useAppSelector } from "../../../../store";
-import { OCommentDefaultSort } from "../../../../services/db";
-import { setDefaultCommentSort } from "../../settingsSlice";
-import SettingSelector from "../../shared/SettingSelector";
-import { getSortIcon } from "../../../comment/CommentSort";
 import { mapValues } from "lodash";
+
+import { getSortIcon } from "#/features/comment/CommentSort";
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { OCommentDefaultSort } from "#/services/db";
+import { useAppSelector } from "#/store";
+
+import { setDefaultCommentSort } from "../../settingsSlice";
 
 export default function DefaultSort() {
   const defaultCommentSort = useAppSelector(

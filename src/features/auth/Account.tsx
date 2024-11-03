@@ -8,9 +8,11 @@ import {
   IonReorder,
   IonText,
 } from "@ionic/react";
+
+import { RemoveItemButton } from "#/features/shared/ListEditor";
+import { useAppDispatch } from "#/store";
+
 import { Credential, logoutAccount } from "./authSlice";
-import { useAppDispatch } from "../../store";
-import { RemoveItemButton } from "../shared/ListEditor";
 
 interface AccountProps {
   editing: boolean;

@@ -1,8 +1,10 @@
 import { useCallback, useContext } from "react";
-import { useAppDispatch, useAppSelector } from "../../store";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { hidePosts } from "#/features/post/postSlice";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { FeedContext } from "./FeedContext";
-import { AppContext } from "../auth/AppContext";
-import { hidePosts } from "../post/postSlice";
 
 export default function useHidePosts() {
   const dispatch = useAppDispatch();

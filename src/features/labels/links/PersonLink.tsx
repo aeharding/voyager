@@ -1,23 +1,25 @@
-import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { cx } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { Person } from "lemmy-js-client";
-import { renderHandle } from "../Handle";
-import { useAppSelector } from "../../../store";
-import { OInstanceUrlDisplayMode } from "../../../services/db";
-import AgeBadge from "./AgeBadge";
 import { useCallback, useContext } from "react";
-import { ShareImageContext } from "../../share/asImage/ShareAsImage";
+import { LongPressOptions, useLongPress } from "use-long-press";
+
+import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
+import UserScore from "#/features/tags/UserScore";
+import UserTag from "#/features/tags/UserTag";
+import usePresentUserActions from "#/features/user/usePresentUserActions";
 import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
-} from "../../../helpers/ionic";
-import { styled } from "@linaria/react";
+} from "#/helpers/ionic";
+import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { OInstanceUrlDisplayMode } from "#/services/db";
+import { useAppSelector } from "#/store";
+
+import { renderHandle } from "../Handle";
+import AgeBadge from "./AgeBadge";
 import { LinkContainer, StyledLink, hideCss } from "./shared";
-import { cx } from "@linaria/core";
-import { LongPressOptions, useLongPress } from "use-long-press";
-import UserScore from "../../tags/UserScore";
-import UserTag from "../../tags/UserTag";
-import usePresentUserActions from "../../user/usePresentUserActions";
 
 const Prefix = styled.span`
   font-weight: normal;

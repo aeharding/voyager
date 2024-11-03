@@ -1,6 +1,7 @@
 import { IonItem, IonToggle } from "@ionic/react";
 
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setDisableMarkingPostsRead } from "../../settingsSlice";
 
 export default function DisableMarkingRead() {

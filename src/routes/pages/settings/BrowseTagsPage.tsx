@@ -5,13 +5,14 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import { useRef } from "react";
-import AppHeader from "../../../features/shared/AppHeader";
-import BrowseTags from "../../../features/settings/tags/browse/BrowseTags";
-import FeedContent from "../shared/FeedContent";
 import { startCase } from "lodash";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+import { useRef } from "react";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import BrowseTags from "#/features/settings/tags/browse/BrowseTags";
+import AppHeader from "#/features/shared/AppHeader";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import FeedContent from "#/routes/pages/shared/FeedContent";
 
 export default function BrowseTagsPage() {
   const router = useOptimizedIonRouter();

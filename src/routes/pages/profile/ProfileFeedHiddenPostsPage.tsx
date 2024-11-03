@@ -1,26 +1,27 @@
-import { useCallback, useRef } from "react";
 import {
-  IonPage,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonBackButton,
   IonButton,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
+import { useCallback, useRef } from "react";
 import { useParams } from "react-router";
-import useClient from "../../../helpers/useClient";
-import { FetchFn } from "../../../features/feed/Feed";
-import store, { useAppSelector } from "../../../store";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+
+import { userHandleSelector } from "#/features/auth/authSelectors";
+import { FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import { userHandleSelector } from "../../../features/auth/authSelectors";
-import { IPostMetadata, db } from "../../../services/db";
-import { postHiddenByIdSelector } from "../../../features/post/postSlice";
-import FeedContent from "../shared/FeedContent";
-import AppHeader from "../../../features/shared/AppHeader";
-import useResetHiddenPosts from "../../../features/feed/useResetHiddenPosts";
+} from "#/features/feed/PostCommentFeed";
+import useResetHiddenPosts from "#/features/feed/useResetHiddenPosts";
+import { postHiddenByIdSelector } from "#/features/post/postSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { IPostMetadata, db } from "#/services/db";
+import store, { useAppSelector } from "#/store";
 
 // Currently, we have to fetch each post with a separate API call.
 // That's why the page size is only 10

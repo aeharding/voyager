@@ -1,6 +1,7 @@
 import { ComponentProps } from "react";
-import Comment from "../Comment";
 import AnimateHeight from "react-animate-height";
+
+import Comment from "../Comment";
 
 interface CollapsibleCommentProps extends ComponentProps<typeof Comment> {
   fullyCollapsed?: boolean;

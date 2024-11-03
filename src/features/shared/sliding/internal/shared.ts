@@ -5,10 +5,11 @@ import {
   PostView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import useAppToast from "../../../../helpers/useAppToast";
 import { useCallback, useMemo } from "react";
-import { getInboxItemId, markRead } from "../../../inbox/inboxSlice";
+
+import { getInboxItemId, markRead } from "#/features/inbox/inboxSlice";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 export type SlideableVoteItem =
   | CommentView

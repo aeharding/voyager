@@ -1,14 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../../store";
 import {
   BiometricLock,
   BiometricLockConfiguration,
   BiometricMethodResult,
 } from "capacitor-biometric-lock";
-import {
-  isAppleDeviceInstalledToHomescreen,
-  isNative,
-} from "../../../helpers/device";
+
+import { isAppleDeviceInstalledToHomescreen, isNative } from "#/helpers/device";
+import { AppDispatch, RootState } from "#/store";
 
 interface BiometricState {
   checkResult: BiometricMethodResult | undefined;

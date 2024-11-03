@@ -1,23 +1,25 @@
 import {
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonButton,
+  IonButtons,
+  IonInput,
+  IonItem,
+  IonList,
   IonModal,
   IonText,
-  IonItem,
-  IonInput,
-  IonList,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
-import { Centered } from "../auth/login/LoginNav";
 import { styled } from "@linaria/react";
-import AppHeader from "../shared/AppHeader";
 import { Person } from "lemmy-js-client";
-import { getRemoteHandle } from "../../helpers/lemmy";
-import PersonLink from "../labels/links/PersonLink";
+import { useEffect, useState } from "react";
+
+import { Centered } from "#/features/auth/login/LoginNav";
+import PersonLink from "#/features/labels/links/PersonLink";
+import AppHeader from "#/features/shared/AppHeader";
+import { getRemoteHandle } from "#/helpers/lemmy";
+
 import { useAppDispatch, useAppSelector } from "../../store";
 import { generateNewTag, updateTag } from "./userTagSlice";
-import { useEffect, useState } from "react";
 
 const TagIonModal = styled(IonModal)`
   --height: auto;

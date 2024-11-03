@@ -1,19 +1,21 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonItemSlidingCustomEvent, ItemSlidingCustomEvent } from "@ionic/core";
 import { IonItemOption, IonItemOptions, IonItemSliding } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import React, {
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
-import useHapticFeedback from "../../../helpers/useHapticFeedback";
+
+import useHapticFeedback from "#/helpers/useHapticFeedback";
+import { OLongSwipeTriggerPointType } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import { bounceAnimation } from "../animations";
-import { useAppSelector } from "../../../store";
-import { OLongSwipeTriggerPointType } from "../../../services/db";
 import ActionContents from "./ActionContents";
-import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
   overflow: initial; // sticky

@@ -1,7 +1,9 @@
 import { IonItem, IonLabel, useIonAlert } from "@ionic/react";
-import { resetTags } from "../../tags/userTagSlice";
+
+import { resetTags } from "#/features/tags/userTagSlice";
+import useAppToast from "#/helpers/useAppToast";
+
 import { useAppDispatch } from "../../../store";
-import useAppToast from "../../../helpers/useAppToast";
 
 export default function ResetTags() {
   const [presentAlert] = useIonAlert();

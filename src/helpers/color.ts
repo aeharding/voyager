@@ -1,4 +1,4 @@
-import { ColorSpace, sRGB, parse, contrastAPCA } from "colorjs.io/fn";
+import { ColorSpace, contrastAPCA, parse, sRGB } from "colorjs.io/fn";
 
 ColorSpace.register(sRGB);
 

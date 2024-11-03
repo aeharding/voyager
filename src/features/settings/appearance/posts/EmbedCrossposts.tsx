@@ -1,6 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { setEmbedCrossposts } from "../../settingsSlice";
 import { IonItem, IonToggle } from "@ionic/react";
+
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { setEmbedCrossposts } from "../../settingsSlice";
 
 export default function EmbedCrossposts() {
   const dispatch = useAppDispatch();

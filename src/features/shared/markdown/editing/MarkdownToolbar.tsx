@@ -1,12 +1,13 @@
 import "@github/markdown-toolbar-element";
+import { IonContent } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import useKeyboardOpen from "../../../../helpers/useKeyboardOpen";
+
+import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
 import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
-import UsernameAutocompleteMode from "./modes/autocomplete/UsernameAutocompleteMode";
 import CommunityAutocomplete from "./modes/autocomplete/CommunityAutocompleteMode";
-import { IonContent } from "@ionic/react";
+import UsernameAutocompleteMode from "./modes/autocomplete/UsernameAutocompleteMode";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";

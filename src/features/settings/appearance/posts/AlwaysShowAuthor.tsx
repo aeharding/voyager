@@ -1,6 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { setAlwaysShowAuthor } from "../../settingsSlice";
 import { IonItem, IonToggle } from "@ionic/react";
+
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { setAlwaysShowAuthor } from "../../settingsSlice";
 
 export default function AlwaysShowAuthor() {
   const dispatch = useAppDispatch();

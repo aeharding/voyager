@@ -1,7 +1,9 @@
 import { IonItem, IonToggle } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+
+import { OInstanceUrlDisplayMode } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setUserInstanceUrlDisplay } from "../../settingsSlice";
-import { OInstanceUrlDisplayMode } from "../../../../services/db";
 
 export default function ShowUserInstance() {
   const dispatch = useAppDispatch();

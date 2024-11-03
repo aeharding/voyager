@@ -1,16 +1,20 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PostView } from "lemmy-js-client";
-import { AppDispatch, RootState } from "../../store";
+
 import {
   clientSelector,
-  userHandleSelector,
   jwtSelector,
-} from "../auth/authSelectors";
-import { IPostMetadata, db } from "../../services/db";
-import { isLemmyError } from "../../helpers/lemmyErrors";
-import { resolvePostReport } from "../moderation/modSlice";
-import { fetchTagsForHandles, updateTagVotes } from "../tags/userTagSlice";
-import { getRemoteHandle } from "../../helpers/lemmy";
+  userHandleSelector,
+} from "#/features/auth/authSelectors";
+import { resolvePostReport } from "#/features/moderation/modSlice";
+import {
+  fetchTagsForHandles,
+  updateTagVotes,
+} from "#/features/tags/userTagSlice";
+import { getRemoteHandle } from "#/helpers/lemmy";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import { IPostMetadata, db } from "#/services/db";
+import { AppDispatch, RootState } from "#/store";
 
 interface PostHiddenData {
   /**

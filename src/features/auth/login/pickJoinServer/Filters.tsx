@@ -1,7 +1,11 @@
-import { styled } from "@linaria/react";
 import { IonChip } from "@ionic/react";
-import { SERVERS_BY_CATEGORY, ServerCategory } from "../data/servers";
 import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
+
+import {
+  SERVERS_BY_CATEGORY,
+  ServerCategory,
+} from "#/features/auth/login/data/servers";
 
 const Container = styled.div`
   display: flex;

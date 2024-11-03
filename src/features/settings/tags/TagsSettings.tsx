@@ -1,10 +1,11 @@
 import { IonList } from "@ionic/react";
+
+import Browse from "./Browse";
 import Enabled from "./Enabled";
-import TrackVotes from "./TrackVotes";
 import HideInstance from "./HideInstance";
 import ResetTags from "./Reset";
 import StoreSource from "./StoreSource";
-import Browse from "./Browse";
+import TrackVotes from "./TrackVotes";
 
 export default function TagsSettings() {
   return (

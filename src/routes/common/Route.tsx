@@ -1,7 +1,9 @@
 import { createContext, useContext, useState } from "react";
-import { TabContext } from "../../core/TabContext";
 import { RouteProps } from "react-router-dom";
 import { Route as ReactRoute } from "react-router-dom";
+
+import { TabContext } from "#/core/TabContext";
+
 import ActorRedirect from "./ActorRedirect";
 
 export default function Route({ children, ...props }: RouteProps) {

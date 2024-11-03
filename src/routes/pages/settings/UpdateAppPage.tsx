@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import {
   IonBackButton,
   IonBadge,
@@ -14,14 +13,17 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { MaxWidthContainer } from "../../../features/shared/AppContent";
+import { styled } from "@linaria/react";
 import { useContext, useEffect, useRef, useState } from "react";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { MaxWidthContainer } from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
+import { ua } from "#/helpers/device";
+import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
+
 import { UpdateContext } from "./update/UpdateContext";
-import { PageContentIonSpinner } from "../../../features/user/AsyncProfile";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import { ua } from "../../../helpers/device";
-import { unloadServiceWorkerAndRefresh } from "../../../helpers/serviceWorker";
-import AppHeader from "../../../features/shared/AppHeader";
 
 const UpToDateText = styled.div`
   margin: auto;

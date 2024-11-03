@@ -1,10 +1,12 @@
 import { PostView } from "lemmy-js-client";
 import { MouseEvent, ReactNode, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
-import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
+
+import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
+import { resolveObject } from "#/features/resolve/resolveSlice";
+import LinkInterceptor from "#/features/shared/markdown/LinkInterceptor";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setPostRead } from "../postSlice";
-import { resolveObject } from "../../resolve/resolveSlice";
 
 interface CrosspostProps {
   post: PostView;

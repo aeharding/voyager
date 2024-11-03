@@ -1,8 +1,9 @@
 import { IonBadge, IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
-import { IconBg } from "../../../routes/pages/settings/SettingsPage";
 import { alert } from "ionicons/icons";
 import { useContext } from "react";
-import { PageContext } from "../../auth/PageContext";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { IconBg } from "#/routes/pages/settings/SettingsPage";
 
 export default function DatabaseErrorItem() {
   const { presentDatabaseErrorModal } = useContext(PageContext);

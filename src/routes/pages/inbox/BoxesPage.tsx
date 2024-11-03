@@ -8,7 +8,6 @@ import {
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
 import {
   albumsOutline,
   chatbubbleOutline,
@@ -17,13 +16,15 @@ import {
   mail,
   personCircleOutline,
 } from "ionicons/icons";
-import { useAppDispatch } from "../../../store";
-import { getInboxCounts } from "../../../features/inbox/inboxSlice";
 import { MouseEvent, useContext, useRef } from "react";
-import { PageContext } from "../../../features/auth/PageContext";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import BoxesRedirectBootstrapper from "../../../features/inbox/BoxesRedirectBootstrapper";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { PageContext } from "#/features/auth/PageContext";
+import BoxesRedirectBootstrapper from "#/features/inbox/BoxesRedirectBootstrapper";
+import { getInboxCounts } from "#/features/inbox/inboxSlice";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import { useAppDispatch } from "#/store";
 
 export default function BoxesPage() {
   const pageRef = useRef<HTMLElement>(null);

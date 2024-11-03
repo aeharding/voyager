@@ -1,10 +1,11 @@
+import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 import { IonActionSheet, IonAlert } from "@ionic/react";
 import { CommentView, PostView, PrivateMessageView } from "lemmy-js-client";
 import { useImperativeHandle, useState } from "react";
-import useClient from "../../helpers/useClient";
-import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
-import useAppToast from "../../helpers/useAppToast";
-import { isLemmyError } from "../../helpers/lemmyErrors";
+
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
 
 export type ReportableItem = CommentView | PostView | PrivateMessageView;
 

@@ -1,7 +1,9 @@
 import { CommunityView } from "lemmy-js-client";
-import useClient from "../../../helpers/useClient";
+
+import { getHandle } from "#/helpers/lemmy";
+import useClient from "#/helpers/useClient";
+
 import GenericSelectorModal from "./GenericSelectorModal";
-import { getHandle } from "../../../helpers/lemmy";
 
 interface CommunitySelectorModalProps {
   onDismiss: (community?: CommunityView) => void;

@@ -1,8 +1,9 @@
 import { styled } from "@linaria/react";
-import { CommentsThemeType } from "../../../services/db";
-import COMMENT_THEMES from "../../settings/appearance/themes/commentsTheme/values";
 import { ComponentProps } from "react";
-import { useAppSelector } from "../../../store";
+
+import COMMENT_THEMES from "#/features/settings/appearance/themes/commentsTheme/values";
+import { CommentsThemeType } from "#/services/db";
+import { useAppSelector } from "#/store";
 
 interface ContainerProps {
   depth: number;

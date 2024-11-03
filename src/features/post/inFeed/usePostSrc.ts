@@ -1,9 +1,11 @@
 import { PostView } from "lemmy-js-client";
 import { useMemo } from "react";
-import { useAppSelector } from "../../../store";
+
+import { findLoneImage } from "#/helpers/markdown";
+import { findUrlMediaType } from "#/helpers/url";
+import { useAppSelector } from "#/store";
+
 import { IMAGE_FAILED } from "./large/imageSlice";
-import { findUrlMediaType } from "../../../helpers/url";
-import { findLoneImage } from "../../../helpers/markdown";
 
 export default function usePostSrc(post: PostView): string | undefined {
   const src = useMemo(() => getPostMedia(post), [post]);

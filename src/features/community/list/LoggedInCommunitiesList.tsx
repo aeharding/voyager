@@ -1,8 +1,10 @@
-import { useMemo } from "react";
-import { useAppSelector } from "../../../store";
-import ResolvedCommunitiesList from "./ResolvedCommunitiesList";
 import { compact, pullAllBy, uniqBy } from "lodash";
+import { useMemo } from "react";
+
+import { useAppSelector } from "#/store";
+
 import { CommunitiesListProps } from "./CommunitiesList";
+import ResolvedCommunitiesList from "./ResolvedCommunitiesList";
 
 export default function LoggedInCommunitiesList(props: CommunitiesListProps) {
   const follows = useAppSelector(

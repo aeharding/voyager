@@ -1,11 +1,13 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { chevronDown, close } from "ionicons/icons";
 import React, { useContext, useEffect, useRef } from "react";
+
+import AppTitle, { AppTitleHandle } from "#/features/shared/AppTitle";
+import { isIosTheme } from "#/helpers/device";
+import { findCurrentPage } from "#/helpers/ionic";
+
 import { TitleSearchContext } from "./TitleSearchProvider";
-import { styled } from "@linaria/react";
-import { isIosTheme } from "../../../helpers/device";
-import { findCurrentPage } from "../../../helpers/ionic";
-import AppTitle, { AppTitleHandle } from "../../shared/AppTitle";
 
 const TitleContents = styled.span`
   display: inline-flex;

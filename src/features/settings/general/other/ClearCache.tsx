@@ -1,13 +1,11 @@
-import { ClearCache as CapClearCache } from "capacitor-clear-cache";
-import { IonItem, IonLabel, IonLoading, useIonAlert } from "@ionic/react";
-import { isAppleDeviceInstallable, isNative } from "../../../../helpers/device";
-import { useState } from "react";
-import useAppToast from "../../../../helpers/useAppToast";
-import {
-  cacheClearFailed,
-  cacheClearSuccess,
-} from "../../../../helpers/toastMessages";
 import { CapacitorCookies } from "@capacitor/core";
+import { IonItem, IonLabel, IonLoading, useIonAlert } from "@ionic/react";
+import { ClearCache as CapClearCache } from "capacitor-clear-cache";
+import { useState } from "react";
+
+import { isAppleDeviceInstallable, isNative } from "#/helpers/device";
+import { cacheClearFailed, cacheClearSuccess } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
 
 export default function ClearCache() {
   const presentToast = useAppToast();

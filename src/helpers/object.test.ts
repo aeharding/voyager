@@ -15,11 +15,6 @@ describe("getAllObjectValuesDeep", () => {
     ]);
   });
 
-  it("returns deep", () => {
-    expect(getAllObjectValuesDeep({ foo: { bar: "baz" } })).toStrictEqual([
-      "baz",
-    ]);
-  });
   it("returns multiple deep", () => {
     expect(
       getAllObjectValuesDeep({ foo: { bar: "baz" }, hi: "there" }),

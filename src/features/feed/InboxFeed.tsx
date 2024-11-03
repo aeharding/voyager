@@ -1,7 +1,9 @@
 import { useCallback } from "react";
+
+import InboxItem, { InboxItemView } from "#/features/inbox/InboxItem";
+import { getInboxItemId } from "#/features/inbox/inboxSlice";
+
 import Feed, { FeedProps } from "./Feed";
-import InboxItem, { InboxItemView } from "../inbox/InboxItem";
-import { getInboxItemId } from "../inbox/inboxSlice";
 
 interface PostCommentFeed
   extends Omit<FeedProps<InboxItemView>, "renderItemContent"> {}

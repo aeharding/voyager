@@ -1,7 +1,8 @@
-import { createContext, useCallback, useContext } from "react";
-import { useAppDispatch, useAppSelector } from "../../store";
 import { PostView } from "lemmy-js-client";
-import { setPostHidden } from "../post/postSlice";
+import { createContext, useCallback, useContext } from "react";
+
+import { setPostHidden } from "#/features/post/postSlice";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 export type PageTypeContextValue = "community" | "special-feed" | undefined;
 

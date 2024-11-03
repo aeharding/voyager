@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch } from "../../store";
-import { db } from "../../services/db";
 import { uniq, without } from "lodash";
+
+import { db } from "#/services/db";
+import { AppDispatch } from "#/store";
 
 interface MigrationSlice {
   links: Array<string>;

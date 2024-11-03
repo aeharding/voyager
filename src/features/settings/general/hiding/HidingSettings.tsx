@@ -1,12 +1,14 @@
 import { IonLabel, IonList } from "@ionic/react";
+
+import { HelperText, ListHeader } from "#/features/settings/shared/formatting";
+import { useAppSelector } from "#/store";
+
 import DisableMarkingRead from "./DisableMarkingRead";
 import MarkReadOnScroll from "./MarkReadOnScroll";
-import { useAppSelector } from "../../../../store";
+import ShowHiddenInCommunities from "./ShowHiddenInCommunities";
 import ShowHideReadButton from "./ShowHideReadButton";
-import { HelperText, ListHeader } from "../../shared/formatting";
 import AutoHideRead from "./autoHide/AutoHideRead";
 import DisableInCommunities from "./autoHide/DisableInCommunities";
-import ShowHiddenInCommunities from "./ShowHiddenInCommunities";
 
 export default function HidingSettings() {
   const disableMarkingRead = useAppSelector(

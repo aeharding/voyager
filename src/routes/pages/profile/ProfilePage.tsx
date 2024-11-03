@@ -6,23 +6,24 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AsyncProfile from "../../../features/user/AsyncProfile";
-import { useAppSelector } from "../../../store";
-import {
-  userHandleSelector,
-  loggedInSelector,
-  accountsListEmptySelector,
-} from "../../../features/auth/authSelectors";
-import LoggedOut from "../../../features/user/LoggedOut";
-import { useContext, useRef } from "react";
-import { PageContext } from "../../../features/auth/PageContext";
-import FeedContent from "../shared/FeedContent";
-import ProfilePageActions from "../../../features/user/ProfilePageActions";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import AppHeader from "../../../features/shared/AppHeader";
 import { swapHorizontalSharp } from "ionicons/icons";
-import { isIosTheme } from "../../../helpers/device";
-import DocumentTitle from "../../../features/shared/DocumentTitle";
+import { useContext, useRef } from "react";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { PageContext } from "#/features/auth/PageContext";
+import {
+  accountsListEmptySelector,
+  loggedInSelector,
+  userHandleSelector,
+} from "#/features/auth/authSelectors";
+import AppHeader from "#/features/shared/AppHeader";
+import DocumentTitle from "#/features/shared/DocumentTitle";
+import AsyncProfile from "#/features/user/AsyncProfile";
+import LoggedOut from "#/features/user/LoggedOut";
+import ProfilePageActions from "#/features/user/ProfilePageActions";
+import { isIosTheme } from "#/helpers/device";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { useAppSelector } from "#/store";
 
 export default function ProfilePage() {
   const pageRef = useRef<HTMLElement>(null);

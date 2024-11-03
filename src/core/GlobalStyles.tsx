@@ -1,22 +1,23 @@
-import { useAppSelector } from "../store";
+import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { css } from "@linaria/core";
 import React, {
   createContext,
   useContext,
   useEffect,
   useLayoutEffect,
 } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
-import { isNative } from "../helpers/device";
-import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
+
+import { stateWithLocalstorageItems as initialCriticalSettingsState } from "#/features/settings/settingsSlice";
+import { isNative } from "#/helpers/device";
 import useSystemDarkMode, {
   DARK_MEDIA_SELECTOR,
-} from "../helpers/useSystemDarkMode";
-import { css } from "@linaria/core";
-import { getThemeByStyle } from "./theme/AppThemes";
+} from "#/helpers/useSystemDarkMode";
+import { AppThemeType } from "#/services/db";
+import { useAppSelector } from "#/store";
 
+import { getThemeByStyle } from "./theme/AppThemes";
 import "./theme/variables";
-import { AppThemeType } from "../services/db";
-import { stateWithLocalstorageItems as initialCriticalSettingsState } from "../features/settings/settingsSlice";
 
 export const DARK_CLASSNAME = "ion-palette-dark";
 export const PURE_BLACK_CLASSNAME = "theme-pure-black";

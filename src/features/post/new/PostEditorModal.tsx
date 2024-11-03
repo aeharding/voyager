@@ -1,7 +1,9 @@
-import PostEditor from "./PostEditor";
-import { useAppSelector } from "../../../store";
-import { DynamicDismissableModal } from "../../shared/DynamicDismissableModal";
 import { PostView } from "lemmy-js-client";
+
+import { DynamicDismissableModal } from "#/features/shared/DynamicDismissableModal";
+import { useAppSelector } from "#/store";
+
+import PostEditor from "./PostEditor";
 
 interface PostEditorModalProps {
   isOpen: boolean;

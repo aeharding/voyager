@@ -1,8 +1,10 @@
-import { useState } from "react";
-import useAppToast from "../../../../helpers/useAppToast";
 import { IonLoading } from "@ionic/react";
+import { useState } from "react";
+
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch } from "#/store";
+
 import { uploadImage } from "./uploadImageSlice";
-import { useAppDispatch } from "../../../../store";
 
 export default function useUploadImage() {
   const dispatch = useAppDispatch();

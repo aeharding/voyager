@@ -11,12 +11,14 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppSelector } from "../../../../store";
-import Markdown from "../../../shared/markdown/Markdown";
-import Join from "./Join";
 import { useContext, useState } from "react";
-import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
-import AppHeader from "../../../shared/AppHeader";
+
+import AppHeader from "#/features/shared/AppHeader";
+import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+import Markdown from "#/features/shared/markdown/Markdown";
+import { useAppSelector } from "#/store";
+
+import Join from "./Join";
 
 export default function Question() {
   const { site, url } = useAppSelector((state) => state.join);

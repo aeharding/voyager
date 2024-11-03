@@ -1,13 +1,12 @@
 /* eslint-disable react/jsx-key */
-
-import Route from "../common/Route";
-import BoxesPage from "../pages/inbox/BoxesPage";
-import ConversationPage from "../pages/inbox/ConversationPage";
-import InboxAuthRequired from "../pages/inbox/InboxAuthRequired";
-import InboxPage from "../pages/inbox/InboxPage";
-import MentionsPage from "../pages/inbox/MentionsPage";
-import MessagesPage from "../pages/inbox/MessagesPage";
-import RepliesPage from "../pages/inbox/RepliesPage";
+import Route from "#/routes/common/Route";
+import BoxesPage from "#/routes/pages/inbox/BoxesPage";
+import ConversationPage from "#/routes/pages/inbox/ConversationPage";
+import InboxAuthRequired from "#/routes/pages/inbox/InboxAuthRequired";
+import InboxPage from "#/routes/pages/inbox/InboxPage";
+import MentionsPage from "#/routes/pages/inbox/MentionsPage";
+import MessagesPage from "#/routes/pages/inbox/MessagesPage";
+import RepliesPage from "#/routes/pages/inbox/RepliesPage";
 
 export default [
   <Route exact path="/inbox">

@@ -1,8 +1,10 @@
 import { Comment, Post } from "lemmy-js-client";
 import { useMemo } from "react";
-import CommentMarkdown from "./CommentMarkdown";
+
+import { useAppSelector } from "#/store";
+
 import CommentLinks from "./CommentLinks";
-import { useAppSelector } from "../../store";
+import CommentMarkdown from "./CommentMarkdown";
 
 interface CommentContentProps {
   item: Comment | Post;

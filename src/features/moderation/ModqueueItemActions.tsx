@@ -1,10 +1,11 @@
 import { IonIcon } from "@ionic/react";
 import { checkmarkCircleOutline, trashOutline } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
-import { useAppDispatch } from "../../store";
-import { modRemoveComment } from "../comment/commentSlice";
-import { modRemovePost } from "../post/postSlice";
-import useAppToast from "../../helpers/useAppToast";
+
+import { modRemoveComment } from "#/features/comment/commentSlice";
+import { ActionButton } from "#/features/post/actions/ActionButton";
+import { modRemovePost } from "#/features/post/postSlice";
+import { isPost } from "#/helpers/lemmy";
 import {
   commentApproved,
   commentRemoved,
@@ -12,11 +13,12 @@ import {
   postApproved,
   postRemoved,
   postRestored,
-} from "../../helpers/toastMessages";
-import useCanModerate, { getModColor } from "./useCanModerate";
-import { ActionButton } from "../post/actions/ActionButton";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch } from "#/store";
+
 import { resolveCommentReport, resolvePostReport } from "./modSlice";
-import { isPost } from "../../helpers/lemmy";
+import useCanModerate, { getModColor } from "./useCanModerate";
 
 interface ModqueueItemActionsProps {
   item: PostView | CommentView;

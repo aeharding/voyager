@@ -1,8 +1,4 @@
 /// <reference types="remark-stringify" />
-
-import { combineExtensions } from "micromark-util-combine-extensions";
-import { gfmStrikethrough } from "micromark-extension-gfm-strikethrough";
-import { gfmTable } from "micromark-extension-gfm-table";
 import {
   gfmAutolinkLiteralFromMarkdown,
   gfmAutolinkLiteralToMarkdown,
@@ -12,6 +8,9 @@ import {
   gfmStrikethroughToMarkdown,
 } from "mdast-util-gfm-strikethrough";
 import { gfmTableFromMarkdown, gfmTableToMarkdown } from "mdast-util-gfm-table";
+import { gfmStrikethrough } from "micromark-extension-gfm-strikethrough";
+import { gfmTable } from "micromark-extension-gfm-table";
+import { combineExtensions } from "micromark-util-combine-extensions";
 import { Settings } from "unified";
 
 interface Options {

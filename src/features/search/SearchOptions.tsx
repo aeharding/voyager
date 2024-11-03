@@ -1,5 +1,4 @@
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import {
   albumsOutline,
   arrowForward,
@@ -7,8 +6,11 @@ import {
   personOutline,
   searchOutline,
 } from "ionicons/icons";
-import useLemmyUrlHandler from "../shared/useLemmyUrlHandler";
 import { useMemo } from "react";
+
+import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+
 import AutoResolvePostComment from "./AutoResolvePostComment";
 
 interface SearchOptionsProps {

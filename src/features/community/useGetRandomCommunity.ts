@@ -1,13 +1,14 @@
-import { useCallback } from "react";
-import { clientSelector } from "../auth/authSelectors";
-import store from "../../store";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { orderBy, sample } from "lodash";
-import { getHandle } from "../../helpers/lemmy";
-import { randomCommunityFailed } from "../../helpers/toastMessages";
-import useAppToast from "../../helpers/useAppToast";
-import { pageTransitionAnimateBackOnly } from "../../helpers/ionic";
+import { useCallback } from "react";
+
+import { clientSelector } from "#/features/auth/authSelectors";
+import { pageTransitionAnimateBackOnly } from "#/helpers/ionic";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { randomCommunityFailed } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import store from "#/store";
 
 const RANDOM_CHUNK = 20;
 

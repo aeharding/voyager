@@ -8,7 +8,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { isIosTheme } from "../../helpers/device";
+
+import { isIosTheme } from "#/helpers/device";
 
 interface ListEditorProviderProps {
   children: React.ReactNode;

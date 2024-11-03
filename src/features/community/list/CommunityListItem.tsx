@@ -4,31 +4,33 @@ import {
   IonItemOptions,
   IonItemSliding,
 } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { star } from "ionicons/icons";
 import { Community } from "lemmy-js-client";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useAppDispatch, useAppSelector } from "../../../store";
 import { useMemo } from "react";
-import { getHandle } from "../../../helpers/lemmy";
-import { Content } from "./ResolvedCommunitiesList";
-import ItemIcon from "../../labels/img/ItemIcon";
-import { ActionButton } from "../../post/actions/ActionButton";
+
+import { loggedInSelector } from "#/features/auth/authSelectors";
+import ItemIcon from "#/features/labels/img/ItemIcon";
+import { ActionButton } from "#/features/post/actions/ActionButton";
+import { attributedPreventOnClickNavigationBug } from "#/helpers/ionic";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import {
+  buildFavorited,
+  buildProblemSubscribing,
+  buildSuccessSubscribing,
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { ToggleIcon } from "../ToggleIcon";
 import {
   addFavorite,
   followCommunity,
   removeFavorite,
 } from "../communitySlice";
-import { star } from "ionicons/icons";
-import { ToggleIcon } from "../ToggleIcon";
 import { HIDE_ALPHABET_JUMP } from "./AlphabetJump";
-import { loggedInSelector } from "../../auth/authSelectors";
-import { attributedPreventOnClickNavigationBug } from "../../../helpers/ionic";
-import { styled } from "@linaria/react";
-import useAppToast from "../../../helpers/useAppToast";
-import {
-  buildFavorited,
-  buildProblemSubscribing,
-  buildSuccessSubscribing,
-} from "../../../helpers/toastMessages";
+import { Content } from "./ResolvedCommunitiesList";
 
 const StyledToggleIcon = styled(ToggleIcon)`
   @media (max-width: 725px) {

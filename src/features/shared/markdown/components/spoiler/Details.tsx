@@ -10,7 +10,9 @@ import {
   useState,
 } from "react";
 import { ExtraProps } from "react-markdown";
-import store, { useAppDispatch } from "../../../../../store";
+
+import store, { useAppDispatch } from "#/store";
+
 import { getSpoilerId, updateSpoilerState } from "./spoilerSlice";
 
 const StyledIonAccordionGroup = styled(IonAccordionGroup)`

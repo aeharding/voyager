@@ -1,4 +1,4 @@
-import { stopIonicTapClick } from "../../helpers/ionic";
+import { stopIonicTapClick } from "#/helpers/ionic";
 
 /**
  * This prevents the `ion-activatable` tap highlight

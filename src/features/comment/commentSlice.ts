@@ -1,10 +1,14 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSelectors";
 import { Comment, CommentView } from "lemmy-js-client";
-import { resolveCommentReport } from "../moderation/modSlice";
-import { fetchTagsForHandles, updateTagVotes } from "../tags/userTagSlice";
-import { getRemoteHandle } from "../../helpers/lemmy";
+
+import { clientSelector } from "#/features/auth/authSelectors";
+import { resolveCommentReport } from "#/features/moderation/modSlice";
+import {
+  fetchTagsForHandles,
+  updateTagVotes,
+} from "#/features/tags/userTagSlice";
+import { getRemoteHandle } from "#/helpers/lemmy";
+import { AppDispatch, RootState } from "#/store";
 
 interface CommentState {
   commentCollapsedById: Record<string, boolean>;

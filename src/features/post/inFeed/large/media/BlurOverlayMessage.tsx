@@ -1,6 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { alertCircle } from "ionicons/icons";
+
 import { LARGE_POST_MEDIA_CONTAINER_CLASSNAME } from "../LargePostContents";
 
 const MessageContainer = styled.div`

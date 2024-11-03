@@ -1,7 +1,8 @@
 import { App } from "@capacitor/app";
 import { BackButtonEventDetail } from "@ionic/core";
 import { useEffect } from "react";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
 export default function AndroidBackButton() {
   const router = useOptimizedIonRouter();

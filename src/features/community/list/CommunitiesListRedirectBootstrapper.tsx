@@ -1,6 +1,7 @@
-import { getPathForFeed } from "../../../routes/TabbedRoutes";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useAppSelector } from "../../../store";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { getPathForFeed } from "#/routes/TabbedRoutes";
+import { useAppSelector } from "#/store";
+
 import InitialPageRedirectBootstrapper from "./InitialPageRedirectBootstrapper";
 
 export default function CommunitiesListRedirectBootstrapper() {

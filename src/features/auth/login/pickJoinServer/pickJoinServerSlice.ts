@@ -1,11 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch } from "../../../../store";
-import * as lemmyverse from "../../../../services/lemmyverse";
 import { intersectionWith, sortBy, uniq } from "lodash";
-import { WHITELISTED_SERVERS } from "../data/servers";
-import { getCustomServers } from "../../../../services/app";
-import { buildPrioritizeAndSortFn } from "../../../../helpers/array";
-import { isMinimumSupportedLemmyVersion } from "../../../../helpers/lemmy";
+
+import { WHITELISTED_SERVERS } from "#/features/auth/login/data/servers";
+import { buildPrioritizeAndSortFn } from "#/helpers/array";
+import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
+import { getCustomServers } from "#/services/app";
+import * as lemmyverse from "#/services/lemmyverse";
+import { AppDispatch } from "#/store";
 
 interface PickJoinServerState {
   instances: lemmyverse.LVInstance[] | undefined;

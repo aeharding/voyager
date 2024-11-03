@@ -1,16 +1,18 @@
-import { css } from "@linaria/core";
-import { IonIcon } from "@ionic/react";
-import { MouseEvent, useContext } from "react";
-import { PageContext } from "../../auth/PageContext";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { savePost } from "../postSlice";
-import { bookmarkOutline } from "ionicons/icons";
-import { ActionButton } from "../actions/ActionButton";
-import { saveError, saveSuccess } from "../../../helpers/toastMessages";
 import { ImpactStyle } from "@capacitor/haptics";
-import useHapticFeedback from "../../../helpers/useHapticFeedback";
-import useAppToast from "../../../helpers/useAppToast";
+import { IonIcon } from "@ionic/react";
+import { css } from "@linaria/core";
+import { bookmarkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
+import { MouseEvent, useContext } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { ActionButton } from "#/features/post/actions/ActionButton";
+import { saveError, saveSuccess } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import useHapticFeedback from "#/helpers/useHapticFeedback";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { savePost } from "../postSlice";
 
 const savedButtonCss = css`
   background: var(--ion-color-success);

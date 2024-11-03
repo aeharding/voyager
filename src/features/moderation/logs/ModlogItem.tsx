@@ -1,4 +1,22 @@
-import { ModlogItemType } from "../../../routes/pages/shared/ModlogPage";
+import { IonIcon, IonItem } from "@ionic/react";
+import { cx } from "@linaria/core";
+import { styled } from "@linaria/react";
+import { timerOutline } from "ionicons/icons";
+
+import Ago from "#/features/labels/Ago";
+import { maxWidthCss } from "#/features/shared/AppContent";
+import { isTouchDevice } from "#/helpers/device";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { ModlogItemType } from "#/routes/pages/shared/ModlogPage";
+
+import {
+  ModeratorRole,
+  getModColor,
+  getModIcon,
+  getModName,
+} from "../useCanModerate";
+import useIsAdmin from "../useIsAdmin";
+import ModlogItemMoreActions from "./ModlogItemMoreActions";
 import addCommunity from "./types/addCommunity";
 import addInstance from "./types/addInstance";
 import banFromCommunity from "./types/banFromCommunity";
@@ -14,22 +32,6 @@ import removeComment from "./types/removeComment";
 import removeCommunity from "./types/removeCommunity";
 import removePost from "./types/removePost";
 import transferCommunity from "./types/transferCommunity";
-import { IonIcon, IonItem } from "@ionic/react";
-import { maxWidthCss } from "../../shared/AppContent";
-import Ago from "../../labels/Ago";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import ModlogItemMoreActions from "./ModlogItemMoreActions";
-import {
-  ModeratorRole,
-  getModColor,
-  getModIcon,
-  getModName,
-} from "../useCanModerate";
-import useIsAdmin from "../useIsAdmin";
-import { timerOutline } from "ionicons/icons";
-import { styled } from "@linaria/react";
-import { cx } from "@linaria/core";
-import { isTouchDevice } from "../../../helpers/device";
 
 const Container = styled.div`
   display: flex;

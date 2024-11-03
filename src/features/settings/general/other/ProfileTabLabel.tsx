@@ -1,7 +1,8 @@
-import { OProfileLabelType, ProfileLabelType } from "../../../../services/db";
-import { useAppSelector } from "../../../../store";
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { OProfileLabelType, ProfileLabelType } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import { setProfileLabel } from "../../settingsSlice";
-import SettingSelector from "../../shared/SettingSelector";
 
 export default function ProfileTabLabel() {
   const profileLabel = useAppSelector(

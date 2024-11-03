@@ -1,4 +1,5 @@
 import { Post } from "lemmy-js-client";
+
 import {
   buildCrosspostBody,
   keywordFoundInSentence,

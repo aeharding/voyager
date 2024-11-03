@@ -1,11 +1,12 @@
-import { useCallback } from "react";
-import Feed, { FetchFn } from "../../../feed/Feed";
-import { db, UserTag as UserTagType } from "../../../../services/db";
 import { IonItem, IonLabel } from "@ionic/react";
-import { LIMIT } from "../../../../services/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
-import UserScore from "../../../tags/UserScore";
-import UserTag from "../../../tags/UserTag";
+import { useCallback } from "react";
+
+import Feed, { FetchFn } from "#/features/feed/Feed";
+import UserScore from "#/features/tags/UserScore";
+import UserTag from "#/features/tags/UserTag";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { UserTag as UserTagType, db } from "#/services/db";
+import { LIMIT } from "#/services/lemmy";
 
 interface BrowseTagsProps {
   filter: "all" | "tagged";

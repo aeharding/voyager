@@ -1,23 +1,24 @@
-import { useCallback } from "react";
 import {
-  IonPage,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonBackButton,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
-import useClient from "../../../helpers/useClient";
-import { LIMIT } from "../../../services/lemmy";
-import { FetchFn } from "../../../features/feed/Feed";
+import { GetComments, GetPosts } from "lemmy-js-client";
+import { useCallback } from "react";
 import { useParams } from "react-router";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+
+import { FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import FeedContent from "../shared/FeedContent";
-import { GetComments, GetPosts } from "lemmy-js-client";
-import { sortPostCommentByPublished } from "../../../helpers/lemmy";
-import AppHeader from "../../../features/shared/AppHeader";
+} from "#/features/feed/PostCommentFeed";
+import AppHeader from "#/features/shared/AppHeader";
+import { sortPostCommentByPublished } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { LIMIT } from "#/services/lemmy";
 
 interface ProfileFeedItemsPageProps {
   type: "Comments" | "Posts" | "Saved" | "Upvoted" | "Downvoted";

@@ -5,9 +5,11 @@ import {
   IonRadio,
   IonRadioGroup,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../../../store";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setUserDarkMode } from "../../../settingsSlice";
-import { ListHeader } from "../../../shared/formatting";
 
 export default function UserDarkMode() {
   const dispatch = useAppDispatch();

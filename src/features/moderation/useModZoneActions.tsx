@@ -1,15 +1,17 @@
 import { useIonActionSheet } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import {
   chatbubbleOutline,
   fileTrayFullOutline,
   footstepsOutline,
 } from "ionicons/icons";
 import { CommunityView } from "lemmy-js-client";
-import useCanModerate from "./useCanModerate";
-import { getFeedUrlName } from "../community/mod/ModActions";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
 import { compact } from "lodash";
+
+import { getFeedUrlName } from "#/features/community/mod/ModActions";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+
+import useCanModerate from "./useCanModerate";
 
 export interface CommunityUseModZoneActionsProps {
   community: CommunityView | undefined;

@@ -1,4 +1,5 @@
 import { checkmark, close } from "ionicons/icons";
+
 import { AppToastOptions } from "./useAppToast";
 
 export const downvotesDisabled: AppToastOptions = {

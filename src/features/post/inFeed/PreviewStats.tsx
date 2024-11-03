@@ -1,11 +1,12 @@
 import { chatbubbleOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import Ago from "../../labels/Ago";
-import Vote from "../../labels/Vote";
-import { formatNumber } from "../../../helpers/number";
-import Stat from "../detail/Stat";
-import { sharedStatsClass } from "../detail/Stats";
-import TimeStat from "../detail/TimeStat";
+
+import Ago from "#/features/labels/Ago";
+import Vote from "#/features/labels/Vote";
+import Stat from "#/features/post/detail/Stat";
+import { sharedStatsClass } from "#/features/post/detail/Stats";
+import TimeStat from "#/features/post/detail/TimeStat";
+import { formatNumber } from "#/helpers/number";
 
 interface PreviewStatsProps {
   post: PostView;

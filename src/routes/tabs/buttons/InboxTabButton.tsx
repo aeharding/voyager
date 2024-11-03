@@ -1,8 +1,10 @@
 import { IonBadge, IonIcon, IonLabel } from "@ionic/react";
-import { useAppSelector } from "../../../store";
-import SharedTabButton, { TabButtonProps } from "./shared";
 import { fileTray } from "ionicons/icons";
-import { totalUnreadSelector } from "../../../features/inbox/inboxSlice";
+
+import { totalUnreadSelector } from "#/features/inbox/inboxSlice";
+import { useAppSelector } from "#/store";
+
+import SharedTabButton, { TabButtonProps } from "./shared";
 
 function InboxTabButton(props: TabButtonProps) {
   const totalUnread = useAppSelector(totalUnreadSelector);

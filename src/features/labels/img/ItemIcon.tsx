@@ -1,7 +1,8 @@
 import { styled } from "@linaria/react";
 import { Community, Person } from "lemmy-js-client";
-import FakeIcon from "../../shared/FakeIcon";
-import { getImageSrc } from "../../../services/lemmy";
+
+import FakeIcon from "#/features/shared/FakeIcon";
+import { getImageSrc } from "#/services/lemmy";
 
 const SubImgIcon = styled.img<{ size: number }>`
   width: ${({ size }) => size}px;

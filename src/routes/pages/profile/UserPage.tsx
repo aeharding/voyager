@@ -5,19 +5,20 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { memo } from "react";
 import { useParams } from "react-router";
-import AsyncProfile from "../../../features/user/AsyncProfile";
-import UserPageActions from "../../../features/user/UserPageActions";
-import ProfilePageActions from "../../../features/user/ProfilePageActions";
-import { useAppSelector } from "../../../store";
+
 import {
   userHandleSelector,
   usernameSelector,
-} from "../../../features/auth/authSelectors";
-import FeedContent from "../shared/FeedContent";
-import { memo } from "react";
-import AppHeader from "../../../features/shared/AppHeader";
-import DocumentTitle from "../../../features/shared/DocumentTitle";
+} from "#/features/auth/authSelectors";
+import AppHeader from "#/features/shared/AppHeader";
+import DocumentTitle from "#/features/shared/DocumentTitle";
+import AsyncProfile from "#/features/user/AsyncProfile";
+import ProfilePageActions from "#/features/user/ProfilePageActions";
+import UserPageActions from "#/features/user/UserPageActions";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { useAppSelector } from "#/store";
 
 interface UserPageProps {
   handle: string;

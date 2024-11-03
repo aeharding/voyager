@@ -1,7 +1,8 @@
-import { useEffect } from "react";
-import { findCurrentPage } from "../../helpers/ionic";
 import { Browser } from "@capacitor/browser";
+import { useEffect } from "react";
 import { useLocation } from "react-router";
+
+import { findCurrentPage } from "#/helpers/ionic";
 
 let savedScrollTop = 0;
 

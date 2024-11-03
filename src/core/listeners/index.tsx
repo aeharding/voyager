@@ -1,15 +1,15 @@
-import "./androidSafeArea";
-import "./keyboardPageResizer";
-import "./statusTap";
-import "./network/listener";
-import "./ionActivatable";
+import { TextRecoveryStartupPrompt } from "#/helpers/useTextRecovery";
 
-import HapticsListener from "./HapticsListener";
-import AppUrlListener from "./AppUrlListener";
-import { TextRecoveryStartupPrompt } from "../../helpers/useTextRecovery";
-import DatabaseErrorListener from "./DatabaseErrorListener";
-import { ResetStatusTap } from "./statusTap";
 import AndroidBackButton from "./AndroidBackButton";
+import AppUrlListener from "./AppUrlListener";
+import DatabaseErrorListener from "./DatabaseErrorListener";
+import HapticsListener from "./HapticsListener";
+import "./androidSafeArea";
+import "./ionActivatable";
+import "./keyboardPageResizer";
+import "./network/listener";
+import "./statusTap";
+import { ResetStatusTap } from "./statusTap";
 
 export default function Listeners() {
   return (

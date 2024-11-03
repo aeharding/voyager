@@ -2,7 +2,8 @@ import rehypeParse from "rehype-parse";
 import rehypeRemark from "rehype-remark";
 import remarkStringify from "remark-stringify";
 import { unified } from "unified";
-import customRemarkGfm from "../features/shared/markdown/customRemarkGfm";
+
+import customRemarkGfm from "#/features/shared/markdown/customRemarkGfm";
 
 export function findLoneImage(
   markdown: string,

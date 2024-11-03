@@ -1,6 +1,7 @@
 import { IonBadge } from "@ionic/react";
 import { CommunityAggregates, SiteAggregates } from "lemmy-js-client";
-import { formatNumber } from "../../../helpers/number";
+
+import { formatNumber } from "#/helpers/number";
 
 interface SidebarCountsProps {
   counts: CommunityAggregates | SiteAggregates;

@@ -1,7 +1,6 @@
 /**
  * Source: https://stackoverflow.com/a/44849182/1319878
  */
-
 import { determineIsAnimatedGif } from "./gif";
 
 function imgToCanvas(

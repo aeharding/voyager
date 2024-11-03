@@ -1,25 +1,24 @@
 /* eslint-disable react/jsx-key */
-
-import Route from "../common/Route";
-import SettingsPage from "../pages/settings/SettingsPage";
-import InstallAppPage from "../pages/settings/InstallAppPage";
-import UpdateAppPage from "../pages/settings/UpdateAppPage";
-import GeneralPage from "../pages/settings/GeneralPage";
-import HidingSettingsPage from "../pages/settings/HidingSettingsPage";
-import AppearancePage from "../pages/settings/AppearancePage";
-import AppearanceThemePage from "../pages/settings/AppearanceThemePage";
-import DeviceModeSettingsPage from "../pages/settings/DeviceModeSettingsPage";
-import AppIconPage from "../pages/settings/AppIconPage";
-import BiometricPage from "../pages/settings/BiometricPage";
-import GesturesPage from "../pages/settings/GesturesPage";
-import BlocksSettingsPage from "../pages/settings/BlocksSettingsPage";
-import RedditMigratePage from "../pages/settings/RedditDataMigratePage";
-import SearchCommunitiesPage from "../pages/search/results/SearchCommunitiesPage";
-import AboutPage from "../pages/settings/about/AboutPage";
-import AboutThanksPage from "../pages/settings/about/AboutThanksPage";
-import RedditMigrateSubsListPage from "../pages/settings/RedditMigrateSubsListPage";
-import TagsSettingsPage from "../pages/settings/TagsSettingsPage";
-import BrowseTagsPage from "../pages/settings/BrowseTagsPage";
+import Route from "#/routes/common/Route";
+import SearchCommunitiesPage from "#/routes/pages/search/results/SearchCommunitiesPage";
+import AppIconPage from "#/routes/pages/settings/AppIconPage";
+import AppearancePage from "#/routes/pages/settings/AppearancePage";
+import AppearanceThemePage from "#/routes/pages/settings/AppearanceThemePage";
+import BiometricPage from "#/routes/pages/settings/BiometricPage";
+import BlocksSettingsPage from "#/routes/pages/settings/BlocksSettingsPage";
+import BrowseTagsPage from "#/routes/pages/settings/BrowseTagsPage";
+import DeviceModeSettingsPage from "#/routes/pages/settings/DeviceModeSettingsPage";
+import GeneralPage from "#/routes/pages/settings/GeneralPage";
+import GesturesPage from "#/routes/pages/settings/GesturesPage";
+import HidingSettingsPage from "#/routes/pages/settings/HidingSettingsPage";
+import InstallAppPage from "#/routes/pages/settings/InstallAppPage";
+import RedditMigratePage from "#/routes/pages/settings/RedditDataMigratePage";
+import RedditMigrateSubsListPage from "#/routes/pages/settings/RedditMigrateSubsListPage";
+import SettingsPage from "#/routes/pages/settings/SettingsPage";
+import TagsSettingsPage from "#/routes/pages/settings/TagsSettingsPage";
+import UpdateAppPage from "#/routes/pages/settings/UpdateAppPage";
+import AboutPage from "#/routes/pages/settings/about/AboutPage";
+import AboutThanksPage from "#/routes/pages/settings/about/AboutThanksPage";
 
 export default [
   <Route exact path="/settings">

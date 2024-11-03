@@ -1,53 +1,55 @@
+import { Mode } from "@ionic/core";
 import {
   PayloadAction,
   createAsyncThunk,
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
-import { merge } from "lodash";
-import { AppDispatch, RootState } from "../../store";
-import { MAX_DEFAULT_COMMENT_DEPTH } from "../../helpers/lemmy";
-import {
-  CommentThreadCollapse,
-  OCommentThreadCollapse,
-  OPostAppearanceType,
-  PostBlurNsfwType,
-  PostAppearanceType,
-  OCompactThumbnailPositionType,
-  CompactThumbnailPositionType,
-  db,
-  OPostBlurNsfw,
-  CommentDefaultSort,
-  OCommentDefaultSort,
-  InstanceUrlDisplayMode,
-  OInstanceUrlDisplayMode,
-  VoteDisplayMode,
-  OVoteDisplayMode,
-  OProfileLabelType,
-  ProfileLabelType,
-  AppThemeType,
-  CompactThumbnailSizeType,
-  OCompactThumbnailSizeType,
-  LinkHandlerType,
-  OLinkHandlerType,
-  JumpButtonPositionType,
-  OJumpButtonPositionType,
-  DefaultFeedType,
-  ODefaultFeedType,
-  TapToCollapseType,
-  OTapToCollapseType,
-  AutoplayMediaType,
-  OAutoplayMediaType,
-  CommentsThemeType,
-  VotesThemeType,
-  ShowSubscribedIcon,
-  OShowSubscribedIcon,
-} from "../../services/db";
-import { LOCALSTORAGE_KEYS, get, set } from "./syncStorage";
-import { Mode } from "@ionic/core";
-import { PostSortType } from "lemmy-js-client";
-import { loggedInSelector } from "../auth/authSelectors";
 import Dexie from "dexie";
+import { PostSortType } from "lemmy-js-client";
+import { merge } from "lodash";
+
+import { loggedInSelector } from "#/features/auth/authSelectors";
+import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
+import {
+  AppThemeType,
+  AutoplayMediaType,
+  CommentDefaultSort,
+  CommentThreadCollapse,
+  CommentsThemeType,
+  CompactThumbnailPositionType,
+  CompactThumbnailSizeType,
+  DefaultFeedType,
+  InstanceUrlDisplayMode,
+  JumpButtonPositionType,
+  LinkHandlerType,
+  OAutoplayMediaType,
+  OCommentDefaultSort,
+  OCommentThreadCollapse,
+  OCompactThumbnailPositionType,
+  OCompactThumbnailSizeType,
+  ODefaultFeedType,
+  OInstanceUrlDisplayMode,
+  OJumpButtonPositionType,
+  OLinkHandlerType,
+  OPostAppearanceType,
+  OPostBlurNsfw,
+  OProfileLabelType,
+  OShowSubscribedIcon,
+  OTapToCollapseType,
+  OVoteDisplayMode,
+  PostAppearanceType,
+  PostBlurNsfwType,
+  ProfileLabelType,
+  ShowSubscribedIcon,
+  TapToCollapseType,
+  VoteDisplayMode,
+  VotesThemeType,
+  db,
+} from "#/services/db";
+import { AppDispatch, RootState } from "#/store";
+
+import { LOCALSTORAGE_KEYS, get, set } from "./syncStorage";
 
 export {
   type CommentThreadCollapse,
@@ -56,7 +58,7 @@ export {
   OCommentThreadCollapse,
   OPostAppearanceType,
   OCompactThumbnailPositionType,
-} from "../../services/db";
+} from "#/services/db";
 
 interface SettingsState {
   ready: boolean;

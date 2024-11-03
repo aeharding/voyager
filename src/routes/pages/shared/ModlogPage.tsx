@@ -5,24 +5,26 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Feed, { FetchFn } from "../../../features/feed/Feed";
-import { memo, useCallback, useEffect } from "react";
-import useClient from "../../../helpers/useClient";
-import FeedContextProvider from "../../../features/feed/FeedContext";
-import FeedContent from "./FeedContent";
 import { Community, GetModlogResponse, Person } from "lemmy-js-client";
 import { values } from "lodash";
-import { ModlogItem } from "../../../features/moderation/logs/ModlogItem";
-import { LIMIT } from "../../../services/lemmy";
-import useFetchCommunity from "../../../features/community/useFetchCommunity";
+import { memo, useCallback, useEffect } from "react";
 import { useParams } from "react-router";
-import { getHandle } from "../../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { buildCommunityLink } from "../../../helpers/appLinkBuilder";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { getUser } from "../../../features/user/userSlice";
-import AppHeader from "../../../features/shared/AppHeader";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+
+import useFetchCommunity from "#/features/community/useFetchCommunity";
+import Feed, { FetchFn } from "#/features/feed/Feed";
+import FeedContextProvider from "#/features/feed/FeedContext";
+import { ModlogItem } from "#/features/moderation/logs/ModlogItem";
+import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { getUser } from "#/features/user/userSlice";
+import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { LIMIT } from "#/services/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import FeedContent from "./FeedContent";
 
 export type ModlogItemType =
   GetModlogResponse[keyof GetModlogResponse] extends (infer T)[] ? T : never;

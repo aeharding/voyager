@@ -1,6 +1,5 @@
 import { IonContent } from "@ionic/react";
 import { styled } from "@linaria/react";
-import React from "react";
 
 export const maxWidthCss = `
   width: 100%;

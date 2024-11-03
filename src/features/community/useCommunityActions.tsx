@@ -1,32 +1,34 @@
+import { Share } from "@capacitor/share";
+import { useIonActionSheet } from "@ionic/react";
 import { Community, SubscribedType } from "lemmy-js-client";
 import { useContext } from "react";
-import { PageContext } from "../auth/PageContext";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { checkIsMod, getHandle as useGetHandle } from "../../helpers/lemmy";
-import { useIonActionSheet } from "@ionic/react";
+
+import { PageContext } from "#/features/auth/PageContext";
 import {
   isAdminSelector,
   localUserSelector,
   showNsfw,
-} from "../auth/siteSlice";
-import {
-  addFavorite,
-  blockCommunity,
-  followCommunity,
-  removeFavorite,
-} from "./communitySlice";
+} from "#/features/auth/siteSlice";
+import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
   allNSFWHidden,
   buildBlocked,
   buildFavorited,
   buildProblemSubscribing,
   buildSuccessSubscribing,
-} from "../../helpers/toastMessages";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import useAppToast from "../../helpers/useAppToast";
-import { db } from "../../services/db";
-import { Share } from "@capacitor/share";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { db } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import {
+  addFavorite,
+  blockCommunity,
+  followCommunity,
+  removeFavorite,
+} from "./communitySlice";
 
 /**
  *

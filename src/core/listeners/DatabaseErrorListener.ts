@@ -1,8 +1,9 @@
 import Dexie from "dexie";
-import { useAppDispatch } from "../../store";
-import { setDatabaseError } from "../../features/settings/settingsSlice";
 import { useContext, useEffect } from "react";
-import { PageContext } from "../../features/auth/PageContext";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { setDatabaseError } from "#/features/settings/settingsSlice";
+import { useAppDispatch } from "#/store";
 
 export default function DatabaseErrorListener() {
   const { presentDatabaseErrorModal } = useContext(PageContext);

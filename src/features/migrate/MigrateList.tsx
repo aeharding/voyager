@@ -7,17 +7,19 @@ import {
   IonList,
   useIonAlert,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../store";
 import { useEffect } from "react";
+
+import { migrateParseError } from "#/helpers/toastMessages";
+import { getPathname, isValidUrl } from "#/helpers/url";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { parseSubsFromLink } from "./MigrateSubsList";
 import {
   addMigrationLink,
   getMigrationLinks,
   removeMigrationLink,
 } from "./migrationSlice";
-import { getPathname, isValidUrl } from "../../helpers/url";
-import { parseSubsFromLink } from "./MigrateSubsList";
-import useAppToast from "../../helpers/useAppToast";
-import { migrateParseError } from "../../helpers/toastMessages";
 
 export default function MigrateList() {
   const dispatch = useAppDispatch();

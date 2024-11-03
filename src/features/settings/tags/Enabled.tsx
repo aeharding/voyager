@@ -1,6 +1,7 @@
 import { IonItem, IonText, IonToggle } from "@ionic/react";
-import { setTagsEnabled } from "../settingsSlice";
+
 import { useAppDispatch, useAppSelector } from "../../../store";
+import { setTagsEnabled } from "../settingsSlice";
 
 export default function Enabled() {
   const dispatch = useAppDispatch();

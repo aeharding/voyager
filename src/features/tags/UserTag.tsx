@@ -1,10 +1,11 @@
 import { styled } from "@linaria/react";
-import { useAppSelector } from "../../store";
-import { getRemoteHandle } from "../../helpers/lemmy";
 import { Person } from "lemmy-js-client";
-import { getTextColorFor } from "../../helpers/color";
 import React from "react";
-import type { UserTag } from "../../services/db";
+
+import { getTextColorFor } from "#/helpers/color";
+import { getRemoteHandle } from "#/helpers/lemmy";
+import type { UserTag } from "#/services/db";
+import { useAppSelector } from "#/store";
 
 const TagContainer = styled.span`
   white-space: nowrap;

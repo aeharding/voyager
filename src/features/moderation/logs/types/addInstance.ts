@@ -1,9 +1,11 @@
-import { ModAddView } from "lemmy-js-client";
-import { LogEntryData } from "../ModlogItem";
-import { getHandle } from "../../../../helpers/lemmy";
-import { buildBaseData, getAdminRole } from "./shared";
-import { buildUserLink } from "../../../../helpers/appLinkBuilder";
 import { shieldCheckmark, shieldHalf } from "ionicons/icons";
+import { ModAddView } from "lemmy-js-client";
+
+import { buildUserLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+
+import { LogEntryData } from "../ModlogItem";
+import { buildBaseData, getAdminRole } from "./shared";
 
 export default function addInstance(item: ModAddView): LogEntryData {
   return {

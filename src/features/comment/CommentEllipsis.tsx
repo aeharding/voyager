@@ -1,9 +1,11 @@
-import { ellipsisHorizontal } from "ionicons/icons";
-import useCommentActions, { CommentActionsProps } from "./useCommentActions";
 import { IonIcon, IonLoading } from "@ionic/react";
-import { useContext, useImperativeHandle } from "react";
 import { styled } from "@linaria/react";
-import { ShareImageContext } from "../share/asImage/ShareAsImage";
+import { ellipsisHorizontal } from "ionicons/icons";
+import { useContext, useImperativeHandle } from "react";
+
+import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
+
+import useCommentActions, { CommentActionsProps } from "./useCommentActions";
 
 const StyledIonIcon = styled(IonIcon)`
   font-size: 1.2em;

@@ -1,8 +1,9 @@
-import { Community, Post } from "lemmy-js-client";
-import { getHandle } from "../../helpers/lemmy";
-import { Link } from "react-router-dom";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { styled } from "@linaria/react";
+import { Community, Post } from "lemmy-js-client";
+import { Link } from "react-router-dom";
+
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 const ContainerLink = styled(Link)`
   padding: 6px 12px;

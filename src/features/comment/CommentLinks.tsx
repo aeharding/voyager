@@ -1,16 +1,17 @@
+import spoiler from "@aeharding/remark-lemmy-spoiler";
+import { styled } from "@linaria/react";
+import { uniqBy } from "lodash";
+import { Text } from "mdast";
+import { useMemo } from "react";
+import { defaultUrlTransform } from "react-markdown";
+import remarkParse from "remark-parse";
 import { unified } from "unified";
 import { SKIP, visit } from "unist-util-visit";
-import remarkParse from "remark-parse";
-import CommentLink from "../post/link/CommentLink";
-import { styled } from "@linaria/react";
-import customRemarkGfm from "../shared/markdown/customRemarkGfm";
-import { useAppSelector } from "../../store";
-import { Text } from "mdast";
-import { uniqBy } from "lodash";
-import spoiler from "@aeharding/remark-lemmy-spoiler";
-import { buildBaseLemmyUrl } from "../../services/lemmy";
-import { defaultUrlTransform } from "react-markdown";
-import { useMemo } from "react";
+
+import CommentLink from "#/features/post/link/CommentLink";
+import customRemarkGfm from "#/features/shared/markdown/customRemarkGfm";
+import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
 
 const Container = styled.div`
   display: flex;

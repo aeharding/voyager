@@ -1,5 +1,5 @@
-import { styled } from "@linaria/react";
 import { css, cx } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { useState } from "react";
 
 const Container = styled.div`

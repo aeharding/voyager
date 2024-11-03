@@ -1,6 +1,7 @@
 import { IonItem, IonToggle } from "@ionic/react";
-import { setTagsSaveSource } from "../settingsSlice";
+
 import { useAppDispatch, useAppSelector } from "../../../store";
+import { setTagsSaveSource } from "../settingsSlice";
 
 export default function StoreSource() {
   const dispatch = useAppDispatch();

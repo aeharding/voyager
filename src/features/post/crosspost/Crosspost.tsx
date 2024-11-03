@@ -1,11 +1,13 @@
-import { styled } from "@linaria/react";
 import { IonIcon, IonSkeletonText } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { arrowUpSharp, chatbubbleOutline, repeat } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import LargePostContents from "../inFeed/large/LargePostContents";
-import { formatNumber } from "../../../helpers/number";
+
+import LargePostContents from "#/features/post/inFeed/large/LargePostContents";
+import { formatNumber } from "#/helpers/number";
+
 import CrosspostContainer from "./CrosspostContainer";
-import { css } from "@linaria/core";
 
 const StyledCrosspostContainer = styled(CrosspostContainer)`
   width: 100%;

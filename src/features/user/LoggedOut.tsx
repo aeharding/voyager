@@ -1,12 +1,14 @@
 import { IonButton, IonText } from "@ionic/react";
-import IncognitoSvg from "./incognito.svg?react";
-import { useAppSelector } from "../../store";
-import { PageContext } from "../auth/PageContext";
-import { useContext } from "react";
-import { accountsListEmptySelector } from "../auth/authSelectors";
-import AppContent from "../shared/AppContent";
-import { styled } from "@linaria/react";
 import { css, cx } from "@linaria/core";
+import { styled } from "@linaria/react";
+import { useContext } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { accountsListEmptySelector } from "#/features/auth/authSelectors";
+import AppContent from "#/features/shared/AppContent";
+import { useAppSelector } from "#/store";
+
+import IncognitoSvg from "./incognito.svg?react";
 
 const StyledAppContent = styled(AppContent)`
   min-height: 100%;

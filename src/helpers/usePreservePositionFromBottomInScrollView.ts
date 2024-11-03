@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { MutableRefObject } from "react";
+
 import { getScrollParent } from "./dom";
 
 /**

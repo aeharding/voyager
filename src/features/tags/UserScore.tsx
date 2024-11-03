@@ -1,11 +1,13 @@
-import { Person } from "lemmy-js-client";
-import { useAppSelector } from "../../store";
-import { getRemoteHandle } from "../../helpers/lemmy";
 import { styled } from "@linaria/react";
+import { Person } from "lemmy-js-client";
+
+import { useIsDark } from "#/core/GlobalStyles";
+import { getRemoteHandle } from "#/helpers/lemmy";
+import { formatNumber } from "#/helpers/number";
+import { UserTag } from "#/services/db";
+
+import { useAppSelector } from "../../store";
 import { getVoteWeightColor } from "./voteColor";
-import { useIsDark } from "../../core/GlobalStyles";
-import { formatNumber } from "../../helpers/number";
-import { UserTag } from "../../services/db";
 
 const ScoreContainer = styled.span`
   color: var(--ion-color-medium2);

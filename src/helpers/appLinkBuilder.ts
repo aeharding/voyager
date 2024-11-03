@@ -1,4 +1,5 @@
 import { Comment, Community, Person, Post } from "lemmy-js-client";
+
 import { getHandle } from "./lemmy";
 
 export function buildCommunityLink(community: Community): string {

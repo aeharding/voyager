@@ -1,12 +1,13 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSelectors";
-import { getHandle } from "../../helpers/lemmy";
-import { LIMIT } from "../../services/lemmy";
-import { receivedComments } from "../comment/commentSlice";
 import { BanFromCommunity, Person } from "lemmy-js-client";
-import { getSite } from "../auth/siteSlice";
-import { resetMessages, syncMessages } from "../inbox/inboxSlice";
+
+import { clientSelector } from "#/features/auth/authSelectors";
+import { getSite } from "#/features/auth/siteSlice";
+import { receivedComments } from "#/features/comment/commentSlice";
+import { resetMessages, syncMessages } from "#/features/inbox/inboxSlice";
+import { getHandle } from "#/helpers/lemmy";
+import { LIMIT } from "#/services/lemmy";
+import { AppDispatch, RootState } from "#/store";
 
 interface CommentState {
   userByHandle: Record<string, Person>;

@@ -1,9 +1,11 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { CommentReport, PostReport } from "lemmy-js-client";
-import { AppDispatch, RootState } from "../../store";
-import { clientSelector, jwtSelector } from "../auth/authSelectors";
-import { groupBy, pullAllBy } from "lodash";
 import { isBefore, subSeconds } from "date-fns";
+import { CommentReport, PostReport } from "lemmy-js-client";
+import { groupBy, pullAllBy } from "lodash";
+
+import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
+import { AppDispatch, RootState } from "#/store";
+
 import { REPORT_SYNC_INTERVAL_IN_SECONDS } from "./BackgroundReportSync";
 
 interface PostState {

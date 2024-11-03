@@ -1,7 +1,8 @@
+import spoiler from "@aeharding/remark-lemmy-spoiler";
 import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
-import spoiler from "@aeharding/remark-lemmy-spoiler";
 import superSub from "remark-supersub-lemmy";
+
 import inlinifySpoiler from "./components/spoiler/inlinifySpoiler";
 
 interface InlineMarkdownProps {

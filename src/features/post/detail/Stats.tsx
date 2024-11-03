@@ -1,11 +1,13 @@
+import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { happyOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import Ago from "../../labels/Ago";
-import Vote from "../../labels/Vote";
-import Edited from "../../labels/Edited";
+
+import Ago from "#/features/labels/Ago";
+import Edited from "#/features/labels/Edited";
+import Vote from "#/features/labels/Vote";
+
 import Stat from "./Stat";
-import { css } from "@linaria/core";
 import TimeStat from "./TimeStat";
 
 export const sharedStatsClass = css`
