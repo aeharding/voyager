@@ -19,11 +19,12 @@
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
     "capacitor:sync:before": "rm dist/pro-manifest.json dist/live-update-manifest.json",
-    "upgrade:packageManager": "corepack use pnpm@latest"
+    "upgrade:packageManager": "corepack use pnpm@latest",
+    "upgrade:react": "pnpm i --save react@experimental react-dom@experimental babel-plugin-react-compiler@experimental eslint-plugin-react-compiler@experimental eslint-plugin-react-hooks@experimental"
   },
   "pnpm": {
     "overrides": {
-      "@ionic/core": "npm:voyager-ionic-core@8.3.3"
+      "@ionic/core": "npm:voyager-ionic-core@8.3.4"
     },
     "patchedDependencies": {
       "@capacitor/browser": "patches/@capacitor__browser@6.0.3.patch",
@@ -32,6 +33,7 @@
     "updateConfig": {
       "ignoreDependencies": [
         "history",
+        "@types/history",
         "react-router",
         "react-router-dom",
         "@types/react-router",
@@ -56,9 +58,9 @@
     "@capacitor/share": "^6.0.2",
     "@capacitor/status-bar": "^6.0.1",
     "@github/markdown-toolbar-element": "^2.2.3",
-    "@ionic/core": "npm:voyager-ionic-core@8.3.3",
-    "@ionic/react": "8.3.3",
-    "@ionic/react-router": "8.3.3",
+    "@ionic/core": "npm:voyager-ionic-core@8.3.4",
+    "@ionic/react": "8.3.4",
+    "@ionic/react-router": "8.3.4",
     "@linaria/core": "^6.2.0",
     "@linaria/react": "^6.2.1",
     "@mantine/hooks": "^7.13.4",
@@ -90,9 +92,9 @@
     "micromark-util-combine-extensions": "^2.0.0",
     "modern-screenshot": "^4.4.39",
     "photoswipe": "^5.4.4",
-    "react": "0.0.0-experimental-603e6108-20241029",
+    "react": "0.0.0-experimental-7c8e5e7a-20241101",
     "react-animate-height": "^3.2.3",
-    "react-dom": "0.0.0-experimental-603e6108-20241029",
+    "react-dom": "0.0.0-experimental-7c8e5e7a-20241101",
     "react-error-boundary": "^4.1.2",
     "react-intersection-observer": "^9.13.1",
     "react-markdown": "^9.0.1",
@@ -113,8 +115,8 @@
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "use-long-press": "^3.2.0",
-    "uuid": "^10.0.0",
-    "virtua": "^0.35.1",
+    "uuid": "^11.0.2",
+    "virtua": "^0.36.2",
     "workbox-window": "^7.3.0"
   },
   "devDependencies": {
@@ -142,12 +144,12 @@
     "@vitejs/plugin-react": "^4.3.3",
     "@wyw-in-js/babel-preset": "^0.5.4",
     "@wyw-in-js/vite": "^0.5.4",
-    "babel-plugin-react-compiler": "0.0.0-experimental-63b359f-20241029",
+    "babel-plugin-react-compiler": "0.0.0-experimental-63b359f-20241031",
     "eslint": "^9.14.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.37.2",
-    "eslint-plugin-react-compiler": "0.0.0-experimental-63b359f-20241029",
-    "eslint-plugin-react-hooks": "0.0.0-experimental-603e6108-20241029",
+    "eslint-plugin-react-compiler": "0.0.0-experimental-63b359f-20241031",
+    "eslint-plugin-react-hooks": "0.0.0-experimental-7c8e5e7a-20241101",
     "eslint-plugin-vitest": "^0.5.4",
     "globals": "^15.11.0",
     "jsdom": "^25.0.1",
