@@ -24,7 +24,11 @@ import general from "./tabs/general";
 
 type RouterOutletRef = IonRouterOutletCustomEvent<unknown>["target"];
 
-export default function TabbedRoutes() {
+interface TabbedRoutesProps {
+  children: React.ReactNode;
+}
+
+export default function TabbedRoutes({ children }: TabbedRoutesProps) {
   const ready = useAppSelector((state) => state.settings.ready);
   const selectedInstance = useAppSelector(
     instanceSelector ?? ((state) => state.auth.connectedInstance),
@@ -38,6 +42,7 @@ export default function TabbedRoutes() {
 
   return (
     <PageContextProvider value={pageContextValue}>
+      {children}
       <GalleryProvider>
         <InnerTabbedRoutes
           ref={pageRef}

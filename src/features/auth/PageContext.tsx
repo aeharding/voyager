@@ -33,6 +33,8 @@ import GenericMarkdownEditorModal, {
 import { NewPrivateMessage } from "../shared/markdown/editing/modal/contents/PrivateMessagePage";
 import { CommentReplyItem } from "../shared/markdown/editing/modal/contents/CommentReplyPage";
 import UserTagModal from "../tags/UserTagModal";
+import DatabaseErrorModal from "../settings/root/DatabaseErrorModal";
+import { css } from "@linaria/core";
 
 export interface BanUserPayload {
   user: Person;
@@ -90,6 +92,8 @@ interface IPageContext {
   presentCreateCrosspost: (post: PostView) => void;
 
   presentUserTag: (person: Person) => void;
+
+  presentDatabaseErrorModal: (automatic?: boolean) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -106,6 +110,7 @@ export const PageContext = createContext<IPageContext>({
   presentBanUser: () => {},
   presentCreateCrosspost: () => {},
   presentUserTag: () => {},
+  presentDatabaseErrorModal: () => {},
 });
 
 interface PageContextProvider {
@@ -127,6 +132,22 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         onDismissShareAsImageModal(data, role),
     },
   );
+
+  const didDatabaseModalOpenRef = useRef(false);
+  const [_presentDatabaseErrorModal] = useIonModal(DatabaseErrorModal);
+
+  const presentDatabaseErrorModal = (automatic = false) => {
+    if (didDatabaseModalOpenRef.current && automatic) return;
+    didDatabaseModalOpenRef.current = true;
+
+    _presentDatabaseErrorModal({
+      initialBreakpoint: 1,
+      breakpoints: [0, 1],
+      cssClass: css`
+        --height: auto;
+      `,
+    });
+  };
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
@@ -293,6 +314,7 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         presentBanUser,
         presentCreateCrosspost,
         presentUserTag,
+        presentDatabaseErrorModal,
       }}
     >
       {children}
