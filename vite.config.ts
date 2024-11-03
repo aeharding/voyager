@@ -53,7 +53,10 @@ export default defineConfig({
   ],
   resolve: {
     alias: [
-      { find: /#(.*)/, replacement: join(resolve(__dirname, "src"), "$1") },
+      {
+        find: /#\/(.*)/,
+        replacement: join(resolve(import.meta.dirname, "src/"), "$1"),
+      },
     ],
   },
   // TODO: Outdated clients trying to access stale codesplit js chucks
