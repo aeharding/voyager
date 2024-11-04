@@ -74,8 +74,8 @@ jobs:
       - run: pnpm i --frozen-lockfile
       - name: Build (Ionic)
         run: pnpm exec ionic cap sync
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        # env:
+        #   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       - name: Deploy to TestFlight
         run: |
           brew install fastlane
