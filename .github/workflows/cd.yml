@@ -67,11 +67,11 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 22
-        uses: actions/setup-node@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
         with:
-          node-version: "22.x"
-          cache: "pnpm"
+          node-version: 22
+          cache: pnpm
       - run: corepack enable
       - run: pnpm i --frozen-lockfile
       - name: Build (Ionic)
