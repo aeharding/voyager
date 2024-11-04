@@ -24,10 +24,10 @@ platform :ios do
     build_app(
       workspace: "App.xcworkspace",
       scheme: "App",
-      output_name: "Voyager-iOS-#{ENV['GITHUB_REF_NAME']}-Build.ipa"
+      output_name: "Voyager-iOS-#{ENV['GITHUB_REF_NAME']}.ipa"
     )
     # upload_to_testflight(
-    #   ipa: "Voyager-iOS-#{ENV['GITHUB_REF_NAME']}-Build.ipa"
+    #   ipa: "Voyager-iOS-#{ENV['GITHUB_REF_NAME']}.ipa"
     #   app_identifier: "app.vger.voyager",
     #   api_key_path: "authkey.json",
     #   skip_waiting_for_build_processing: true,
