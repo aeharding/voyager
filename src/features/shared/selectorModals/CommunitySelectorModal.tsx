@@ -2,6 +2,7 @@ import { CommunityView } from "lemmy-js-client";
 
 import { getHandle } from "#/helpers/lemmy";
 import useClient from "#/helpers/useClient";
+import { LIMIT } from "#/services/lemmy";
 
 import GenericSelectorModal from "./GenericSelectorModal";
 
@@ -19,6 +20,7 @@ export default function CommunitySelectorModal(
       q: query,
       type_: "Communities",
       sort: "TopAll",
+      limit: LIMIT,
     });
 
     return result.communities;
