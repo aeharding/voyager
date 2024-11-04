@@ -60,10 +60,44 @@ jobs:
   #         upload-artifact: Voyager-iOS-${{ github.ref_name }}-Build.zip
   #         build-stack: macOS - 2024.10 - Apple silicon
 
-  build_ios:
-    runs-on: macos-15
+  # build_ios:
+  #   runs-on: macos-15
+  #   concurrency:
+  #     group: "build_ios"
+  #     cancel-in-progress: true
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 22
+  #     - run: corepack enable
+  #     - run: pnpm i --frozen-lockfile
+  #     - name: Build (Ionic)
+  #       run: pnpm exec ionic cap sync
+  #       # env:
+  #       #   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  #     - name: Deploy to TestFlight
+  #       run: |
+  #         cd ios/App
+  #         brew install fastlane
+  #         echo "$APP_STORE_CONNECT_KEY" > authkey.json
+  #         fastlane beta
+  #       env:
+  #         FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+  #         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+  #         MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+  #         APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+  #         COMMIT_MSG: ${{ github.event.commits[0].message }}
+  #     - name: Upload iOS IPA as artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: Voyager-iOS-${{ github.ref_name }}.ipa
+  #         path: ios/App/Voyager-iOS-${{ github.ref_name }}.ipa
+
+  build_android:
+    runs-on: ubuntu-latest
     concurrency:
-      group: "build_ios"
+      group: "build_android"
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
@@ -74,25 +108,27 @@ jobs:
       - run: pnpm i --frozen-lockfile
       - name: Build (Ionic)
         run: pnpm exec ionic cap sync
-        # env:
-        #   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      - name: Deploy to TestFlight
-        run: |
-          cd ios/App
-          brew install fastlane
-          echo "$APP_STORE_CONNECT_KEY" > authkey.json
-          fastlane beta
         env:
-          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
-          APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
-          COMMIT_MSG: ${{ github.event.commits[0].message }}
+          BUILD_FOSS_ONLY: 1
+      - name: Build Release Artifact
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
+          cd android
+          ./gradlew bundleRelease
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       - name: Send to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-iOS-${{ github.ref_name }}.ipa
-          path: ios/App/Voyager-iOS-${{ github.ref_name }}.ipa
+          name: outputs
+          path: android/app/build/outputs
+      # - name: Upload iOS IPA as artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: Voyager-iOS-${{ github.ref_name }}.ipa
+      #     path: ios/App/Voyager-iOS-${{ github.ref_name }}.ipa
 
   # build_android_play:
   #   runs-on: ubuntu-latest
