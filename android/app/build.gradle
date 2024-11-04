@@ -20,7 +20,7 @@ android {
         release {
             storeFile file("release-ci.keystore")
             storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            keyAlias "android"
+            keyAlias "voyager_app"
             keyPassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
         }
     }
