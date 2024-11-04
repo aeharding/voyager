@@ -45,6 +45,10 @@ jobs:
 
   build_ios:
     runs-on: macos-latest
+    steps:
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
     concurrency:
       group: "build_ios"
       cancel-in-progress: true
