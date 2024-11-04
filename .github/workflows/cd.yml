@@ -111,7 +111,7 @@ jobs:
         env:
           BUILD_FOSS_ONLY: 1
       - name: Build Release Artifact
-        if: github.ref == 'refs/heads/main'
+        # if: github.ref == 'refs/heads/main'
         run: |
           echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
           cd android
