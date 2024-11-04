@@ -26,7 +26,7 @@ platform :ios do
 	end
   
   desc "Push a new beta build to TestFlight"
-  lane :appstore do
+  lane :push_appstore do
     setup_ci if ENV['CI']
     cocoapods(
       clean_install: true,
@@ -49,7 +49,7 @@ platform :ios do
 end
 
 platform :android do
-  lane :playstore do
+  lane :push_playstore do
     gradle(
       task: 'assemble',
       build_type: 'Release'

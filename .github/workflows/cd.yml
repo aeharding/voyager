@@ -63,7 +63,7 @@ jobs:
         run: |
           brew install fastlane
           echo "$APP_STORE_CONNECT_KEY" > authkey.json
-          fastlane appstore
+          fastlane push_appstore
         env:
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
