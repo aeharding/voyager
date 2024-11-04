@@ -19,8 +19,14 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
     setup_ci if ENV['CI']
+    cocoapods(clean_install: true)
     match(type: "appstore")
-    build_app(workspace: "App.xcworkspace", scheme: "App")
+    build_app(
+      workspace: "App.xcworkspace",
+      scheme: "App",
+      export_xcargs: '-allowProvisioningUpdates',
+      xcargs: '-allowProvisioningUpdates'
+    )
     upload_to_testflight(
       api_key_path: "authkey.json", 
       skip_waiting_for_build_processing: true, 
