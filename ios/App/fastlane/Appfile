@@ -1,4 +1,4 @@
-app_identifier("app.vger.voyager") # The bundle identifier of your app
+app_identifier(["app.vger.voyager", "app.vger.voyager.watchkitapp", "app.vger.voyager.VoyagerActionExtension"]) # The bundle identifier of your app
 apple_id("alex@harding.dev") # Your Apple email address
 
 itc_team_id("126507712") # App Store Connect Team ID
