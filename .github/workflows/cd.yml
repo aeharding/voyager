@@ -78,8 +78,8 @@ jobs:
         #   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       - name: Deploy to TestFlight
         run: |
-          brew install fastlane
           cd ios/App
+          brew install fastlane
           echo "$APP_STORE_CONNECT_KEY" > authkey.json
           fastlane beta
         env:
