@@ -43,61 +43,10 @@ jobs:
   #         name: Voyager-Web-${{ github.ref_name }}-Build.zip
   #         path: Voyager-Web-${{ github.ref_name }}.zip
 
-  # build_ios:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Build iOS on Appflow
-  #       uses: ionic-team/appflow-build@v1.0.5
-  #       with:
-  #         token: ${{ secrets.APPFLOW_TOKEN }}
-  #         app-id: 9f0851ec
-  #         platform: iOS
-  #         build-type: app-store
-  #         certificate: Distribution
-  #         destinations: Voyager App Store
-  #         filename: Voyager-iOS-${{ github.ref_name }}
-  #         upload-artifact: Voyager-iOS-${{ github.ref_name }}-Build.zip
-  #         build-stack: macOS - 2024.10 - Apple silicon
-
-  # build_ios:
-  #   runs-on: macos-latest
-  #   concurrency:
-  #     group: "build_ios"
-  #     cancel-in-progress: true
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 22
-  #     - run: corepack enable
-  #     - run: pnpm i --frozen-lockfile
-  #     - name: Build (Ionic)
-  #       run: pnpm exec ionic cap sync
-  #       env:
-  #         CI_PLATFORM: ios
-  #     - name: Deploy to TestFlight
-  #       run: |
-  #         cd ios/App
-  #         brew install fastlane
-  #         echo "$APP_STORE_CONNECT_KEY" > authkey.json
-  #         fastlane beta
-  #       env:
-  #         FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
-  #         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-  #         MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
-  #         APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
-  #         COMMIT_MSG: ${{ github.event.commits[0].message }}
-  #     - name: Upload iOS IPA as artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: Voyager-iOS-${{ github.ref_name }}.ipa
-  #         path: ios/App/Voyager-iOS-${{ github.ref_name }}.ipa
-
-  build_android:
-    runs-on: ubuntu-latest
+  build_ios:
+    runs-on: macos-latest
     concurrency:
-      group: "build_android"
+      group: "build_ios"
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
@@ -109,29 +58,61 @@ jobs:
       - name: Build (Ionic)
         run: pnpm exec ionic cap sync
         env:
-          BUILD_FOSS_ONLY: 1
-          CI_PLATFORM: android
-      - name: Set up JDK 11
-        uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: "corretto"
-          cache: gradle
-      - name: Build (Android)
-        # if: github.ref == 'refs/heads/main'
+          CI_PLATFORM: ios
+      - name: Deploy to TestFlight
         run: |
-          echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
-          cd android
-          ./gradlew assembleRelease
+          brew install fastlane
+          echo "$APP_STORE_CONNECT_KEY" > authkey.json
+          fastlane appstore
         env:
-          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-      - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ github.ref_name }}.apk
-      - name: Send to Artifacts
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+          COMMIT_MSG: ${{ github.event.commits[0].message }}
+      - name: Upload iOS IPA as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Android-${{ github.ref_name }}.apk
-          path: Voyager-Android-${{ github.ref_name }}.apk
+          name: Voyager-iOS-${{ github.ref_name }}.ipa
+          path: Voyager-iOS-${{ github.ref_name }}.ipa
+
+  # build_android:
+  #   runs-on: ubuntu-latest
+  #   concurrency:
+  #     group: "build_android"
+  #     cancel-in-progress: true
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 22
+  #     - run: corepack enable
+  #     - run: pnpm i --frozen-lockfile
+  #     - name: Build (Ionic)
+  #       run: pnpm exec ionic cap sync
+  #       env:
+  #         BUILD_FOSS_ONLY: 1
+  #         CI_PLATFORM: android
+  #     - name: Set up JDK 11
+  #       uses: actions/setup-java@v4
+  #       with:
+  #         java-version: "17"
+  #         distribution: "corretto"
+  #         cache: gradle
+  #     - name: Build (Android)
+  #       run: |
+  #         echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
+  #         cd android
+  #         ./gradlew assembleRelease
+  #       env:
+  #         ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+  #         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+  #     - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ github.ref_name }}.apk
+  #     - name: Send to Artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: Voyager-Android-${{ github.ref_name }}.apk
+  #         path: Voyager-Android-${{ github.ref_name }}.apk
 
   # build_android_play:
   #   runs-on: ubuntu-latest
@@ -164,36 +145,6 @@ jobs:
   #       env:
   #         ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
   #         ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-
-  # build_android_play:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Build Android on Appflow
-  #       uses: ionic-team/appflow-build@v1.0.5
-  #       with:
-  #         token: ${{ secrets.APPFLOW_TOKEN }}
-  #         app-id: 9f0851ec
-  #         platform: Android
-  #         build-type: release
-  #         certificate: Voyager Play Store
-  #         destinations: Voyager Play Store
-
-  # build_android:
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Build Android on Appflow
-  #       uses: ionic-team/appflow-build@v1.0.5
-  #       with:
-  #         token: ${{ secrets.APPFLOW_TOKEN }}
-  #         app-id: 9f0851ec
-  #         platform: Android
-  #         build-type: release
-  #         environment: BuildFOSSOnly
-  #         certificate: Voyager Play Store
-  #         filename: Voyager-Android-${{ github.ref_name }}
-  #         upload-artifact: Voyager-Android-${{ github.ref_name }}-Build.zip
 
   # create_release:
   #   needs: [build_web, build_ios, build_android_play, build_android]

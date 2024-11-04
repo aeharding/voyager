@@ -15,15 +15,27 @@
 
 default_platform(:ios)
 
+ENV['app_identifier'] = 'app.vger.voyager'
+ENV['app_name_sanitized'] = 'App'
+
 platform :ios do
+	before_all do
+    ENV['ios_path'] = '/ios/App'
+		ENV['ios_project_path'] = "#{ENV['ios_path']}#{ENV['app_name_sanitized']}.xcodeproj"
+		ENV['ios_workspace_path'] = "#{ENV['ios_path']}#{ENV['app_name_sanitized']}.xcworkspace"
+	end
+  
   desc "Push a new beta build to TestFlight"
-  lane :beta do
+  lane :appstore do
     setup_ci if ENV['CI']
-    cocoapods(clean_install: true)
+    cocoapods(
+      clean_install: true,
+      podfile: "#{ENV['ios_path']}Podfile"
+    )
     match(type: "appstore")
     build_app(
-      workspace: "App.xcworkspace",
-      scheme: "App",
+      workspace: ENV['ios_workspace_path'],
+      scheme: ENV['app_name_sanitized'],
       output_name: "Voyager-iOS-#{ENV['GITHUB_REF_NAME']}.ipa"
     )
     # upload_to_testflight(
@@ -36,14 +48,14 @@ platform :ios do
   end
 end
 
-# platform :android do
-#   lane :playstore do
-#     gradle(
-#       task: 'assemble',
-#       build_type: 'Release'
-#     )
-#     upload_to_play_store(
-#       release_status: 'draft'
-#     )
-#   end
-# end
+platform :android do
+  lane :playstore do
+    gradle(
+      task: 'assemble',
+      build_type: 'Release'
+    )
+    upload_to_play_store(
+      release_status: 'draft'
+    )
+  end
+end
