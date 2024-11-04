@@ -23,9 +23,7 @@ platform :ios do
     match(type: "appstore")
     build_app(
       workspace: "App.xcworkspace",
-      scheme: "App",
-      export_xcargs: '-allowProvisioningUpdates',
-      xcargs: '-allowProvisioningUpdates'
+      scheme: "App"
     )
     upload_to_testflight(
       api_key_path: "authkey.json", 
