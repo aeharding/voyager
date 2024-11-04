@@ -20,7 +20,7 @@ ENV['app_name_sanitized'] = 'App'
 
 platform :ios do
 	before_all do
-    ENV['ios_path'] = '/ios/App/'
+    ENV['ios_path'] = './ios/App/'
 		ENV['ios_project_path'] = "#{ENV['ios_path']}#{ENV['app_name_sanitized']}.xcodeproj"
 		ENV['ios_workspace_path'] = "#{ENV['ios_path']}#{ENV['app_name_sanitized']}.xcworkspace"
 	end
