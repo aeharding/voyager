@@ -23,7 +23,7 @@ platform :ios do
     match(type: "appstore")
     build_app(
       workspace: "App.xcworkspace",
-      scheme: "App"
+      scheme: "App",
       output_name: "Voyager-iOS-#{ENV['GITHUB_REF_NAME']}-Build.ipa"
     )
     # upload_to_testflight(
