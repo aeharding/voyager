@@ -29,10 +29,6 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :push_appstore do
     setup_ci if ENV['CI']
-    cocoapods(
-      clean_install: true,
-      podfile: ENV['ios_path']
-    )
     match(type: "appstore")
     build_app(
       workspace: ENV['ios_workspace_path'],
