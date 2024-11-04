@@ -125,15 +125,16 @@ jobs:
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ github.ref_name }}.apk
       - name: Send to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: outputs
-          path: android/app/build/outputs
+          name: Voyager-Android-${{ github.ref_name }}.apk
+          path: Voyager-Android-${{ github.ref_name }}.apk
       # - name: Upload iOS IPA as artifact
       #   uses: actions/upload-artifact@v4
       #   with:
-      #     name: Voyager-iOS-${{ github.ref_name }}.ipa
+      #     name: Voyager-Android-${{ github.ref_name }}.apk
       #     path: ios/App/Voyager-iOS-${{ github.ref_name }}.ipa
 
   # build_android_play:
