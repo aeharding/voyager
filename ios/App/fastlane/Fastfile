@@ -20,7 +20,7 @@ platform :ios do
   lane :beta do
     setup_ci if ENV['CI']
     cocoapods(clean_install: true)
-    match(type: "appstore")
+    match(type: "appstore", app_identifier: "app.vger.voyager")
     build_app(
       workspace: "App.xcworkspace",
       scheme: "App"
