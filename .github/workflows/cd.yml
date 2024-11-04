@@ -92,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Voyager-iOS-${{ github.ref_name }}.ipa
-          path: ./Voyager-iOS-${{ github.ref_name }}.ipa
+          path: ios/App/Voyager-iOS-${{ github.ref_name }}.ipa
 
   # build_android_play:
   #   runs-on: ubuntu-latest
