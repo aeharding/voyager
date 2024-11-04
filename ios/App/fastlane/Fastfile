@@ -24,12 +24,26 @@ platform :ios do
     build_app(
       workspace: "App.xcworkspace",
       scheme: "App"
+      output_name: "Voyager-iOS-#{ENV['GITHUB_REF_NAME']}-Build.ipa"
     )
-    upload_to_testflight(
-      app_identifier: "app.vger.voyager",
-      api_key_path: "authkey.json", 
-      skip_waiting_for_build_processing: true, 
-      changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}, msg #{ENV['COMMIT_MSG']}"
-    )
+    # upload_to_testflight(
+    #   ipa: "Voyager-iOS-#{ENV['GITHUB_REF_NAME']}-Build.ipa"
+    #   app_identifier: "app.vger.voyager",
+    #   api_key_path: "authkey.json",
+    #   skip_waiting_for_build_processing: true,
+    #   changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}, msg #{ENV['COMMIT_MSG']}"
+    # )
   end
 end
+
+# platform :android do
+#   lane :playstore do
+#     gradle(
+#       task: 'assemble',
+#       build_type: 'Release'
+#     )
+#     upload_to_play_store(
+#       release_status: 'draft'
+#     )
+#   end
+# end
