@@ -30,7 +30,7 @@ platform :ios do
     setup_ci if ENV['CI']
     cocoapods(
       clean_install: true,
-      podfile: "#{ENV['ios_path']}Podfile"
+      podfile: ENV['ios_path']
     )
     match(type: "appstore")
     build_app(
