@@ -7,7 +7,6 @@ import Ago from "#/features/labels/Ago";
 import { maxWidthCss } from "#/features/shared/AppContent";
 import { isTouchDevice } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { ModlogItemType } from "#/routes/pages/shared/ModlogPage";
 
 import {
   ModeratorRole,
@@ -17,6 +16,7 @@ import {
 } from "../useCanModerate";
 import useIsAdmin from "../useIsAdmin";
 import ModlogItemMoreActions from "./ModlogItemMoreActions";
+import { ModlogItemType } from "./helpers";
 import addCommunity from "./types/addCommunity";
 import addInstance from "./types/addInstance";
 import banFromCommunity from "./types/banFromCommunity";
