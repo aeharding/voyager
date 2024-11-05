@@ -46,8 +46,13 @@ platform :ios do
 end
 
 platform :android do
+	before_all do
+    ENV['android_path'] = './android/'
+  end
+
   lane :push_playstore do
     gradle(
+      project_dir: ENV['android_path'],
       task: 'bundle',
       build_type: 'Release'
     )
