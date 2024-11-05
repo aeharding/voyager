@@ -58,6 +58,7 @@ platform :android do
       build_type: 'Release'
     )
     upload_to_play_store(
+      package_name: ENV['app_identifier'],
       release_status: 'draft',
       json_key: ENV['google_service_account_path']
     )
