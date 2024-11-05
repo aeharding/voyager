@@ -57,7 +57,8 @@ platform :android do
       build_type: 'Release'
     )
     upload_to_play_store(
-      release_status: 'draft'
+      release_status: 'draft',
+      json_key_data: ENV['GOOGLE_SERVICE_ACCOUNT']
     )
   end
 end

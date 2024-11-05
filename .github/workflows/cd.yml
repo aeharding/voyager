@@ -159,6 +159,7 @@ jobs:
         run: fastlane android push_playstore
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
 
   # create_release:
   #   needs: [build_web, build_ios, build_android_play, build_android]
