@@ -29,11 +29,7 @@ export const UpdateContext = createContext<IUpdateContext>({
   status: "loading",
 });
 
-export function UpdateContextProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function UpdateContextProvider({ children }: React.PropsWithChildren) {
   const [status, setStatus] = useState<UpdateStatus>("not-enabled");
   const documentState = useDocumentVisibility();
 

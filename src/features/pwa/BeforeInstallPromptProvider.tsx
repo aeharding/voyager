@@ -16,13 +16,9 @@ export const BeforeInstallPromptContext =
     clearEvent: () => {},
   });
 
-interface BeforeInstallPromptProviderProps {
-  children: React.ReactNode;
-}
-
 export default function BeforeInstallPromptProvider({
   children,
-}: BeforeInstallPromptProviderProps) {
+}: React.PropsWithChildren) {
   const [beforeInstallPromptEvent, setBeforeInstallPromptEvent] =
     useState<BeforeInstallPromptEvent | null>(null);
 

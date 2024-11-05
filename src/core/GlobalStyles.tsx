@@ -79,11 +79,7 @@ const fixedDeviceFontCss = css`
   --ion-dynamic-font: initial;
 `;
 
-interface GlobalStylesProps {
-  children: React.ReactNode;
-}
-
-export default function GlobalStyles({ children }: GlobalStylesProps) {
+export default function GlobalStyles({ children }: React.PropsWithChildren) {
   const isDark = useComputeIsDark();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
     (state) => state.settings.appearance.font,

@@ -47,13 +47,9 @@ export const GalleryContext = createContext<IGalleryContext>({
 const galleryHashEnabled = isAndroid();
 const OPEN_HASH = "galleryOpen";
 
-interface GalleryProviderProps {
-  children: React.ReactNode;
-}
-
 type ThumbEl = ComponentRef<typeof GalleryMedia>;
 
-export default function GalleryProvider({ children }: GalleryProviderProps) {
+export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const dispatch = useAppDispatch();
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null,

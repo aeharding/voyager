@@ -6,8 +6,7 @@ import {
   isTouchDevice,
 } from "#/helpers/device";
 
-interface FeedContentProps {
-  children: React.ReactNode;
+interface FeedContentProps extends React.PropsWithChildren {
   className?: string;
 }
 

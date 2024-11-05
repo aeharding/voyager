@@ -11,11 +11,7 @@ import React, {
 
 import { isIosTheme } from "#/helpers/device";
 
-interface ListEditorProviderProps {
-  children: React.ReactNode;
-}
-
-export function ListEditorProvider({ children }: ListEditorProviderProps) {
+export function ListEditorProvider({ children }: React.PropsWithChildren) {
   const [editing, setEditing] = useState(false);
 
   const value = useMemo(() => ({ editing, setEditing }), [editing]);

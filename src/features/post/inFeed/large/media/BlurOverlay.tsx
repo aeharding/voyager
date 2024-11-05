@@ -1,6 +1,5 @@
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
-import { ReactNode } from "react";
 
 import BlurOverlayMessage from "./BlurOverlayMessage";
 
@@ -15,9 +14,8 @@ const blurCss = css`
   transform: translate3d(0, 0, 0);
 `;
 
-interface BlurOverlayProps {
+interface BlurOverlayProps extends React.PropsWithChildren {
   blur: boolean;
-  children: ReactNode;
 }
 
 export default function BlurOverlay({ blur, children }: BlurOverlayProps) {

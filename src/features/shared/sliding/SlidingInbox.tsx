@@ -8,8 +8,7 @@ import { useAppSelector } from "#/store";
 
 import { BaseSlidingDM, BaseSlidingVote } from "./BaseSliding";
 
-interface SlidingInboxProps {
-  children: React.ReactNode;
+interface SlidingInboxProps extends React.PropsWithChildren {
   className?: string;
   item: PersonMentionView | CommentReplyView | PrivateMessageView;
 }
