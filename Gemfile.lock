@@ -35,11 +35,10 @@ GEM
     declarative (0.0.20)
     digest-crc (0.6.5)
       rake (>= 12.0.0, < 14.0.0)
-    domain_name (0.5.20190701)
-      unf (>= 0.0.5, < 1.0.0)
+    domain_name (0.6.20240107)
     dotenv (2.8.1)
     emoji_regex (3.2.3)
-    excon (0.109.0)
+    excon (0.112.0)
     faraday (1.10.4)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
@@ -128,19 +127,19 @@ GEM
       google-apis-core (>= 0.11.0, < 2.a)
     google-apis-playcustomapp_v1 (0.13.0)
       google-apis-core (>= 0.11.0, < 2.a)
-    google-apis-storage_v1 (0.29.0)
+    google-apis-storage_v1 (0.31.0)
       google-apis-core (>= 0.11.0, < 2.a)
-    google-cloud-core (1.6.1)
+    google-cloud-core (1.7.1)
       google-cloud-env (>= 1.0, < 3.a)
       google-cloud-errors (~> 1.0)
     google-cloud-env (1.6.0)
       faraday (>= 0.17.3, < 3.0)
-    google-cloud-errors (1.3.1)
-    google-cloud-storage (1.45.0)
+    google-cloud-errors (1.4.0)
+    google-cloud-storage (1.47.0)
       addressable (~> 2.8)
       digest-crc (~> 0.4)
       google-apis-iamcredentials_v1 (~> 0.1)
-      google-apis-storage_v1 (~> 0.29.0)
+      google-apis-storage_v1 (~> 0.31.0)
       google-cloud-core (~> 1.6)
       googleauth (>= 0.16.2, < 2.a)
       mini_mime (~> 1.0)
@@ -168,7 +167,7 @@ GEM
     optparse (0.5.0)
     os (1.1.4)
     plist (3.7.1)
-    public_suffix (5.1.1)
+    public_suffix (6.0.1)
     rake (13.2.1)
     representable (3.2.0)
       declarative (< 0.1.0)
@@ -180,7 +179,7 @@ GEM
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
     security (0.1.5)
-    signet (0.18.0)
+    signet (0.19.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
       jwt (>= 1.5, < 3.0)
@@ -198,7 +197,6 @@ GEM
     tty-spinner (0.9.3)
       tty-cursor (~> 0.7)
     uber (0.1.0)
-    unf (0.2.0)
     unicode-display_width (2.6.0)
     word_wrap (1.0.0)
     xcodeproj (1.27.0)
@@ -214,10 +212,11 @@ GEM
       xcpretty (~> 0.2, >= 0.0.7)
 
 PLATFORMS
+  arm64-darwin-24
   ruby
 
 DEPENDENCIES
   fastlane
 
 BUNDLED WITH
-   1.17.2
+   2.5.18
