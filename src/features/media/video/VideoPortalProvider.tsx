@@ -15,13 +15,9 @@ import * as portals from "react-reverse-portal";
 import type Player from "./Player";
 import PortaledPlayer from "./PortaledPlayer";
 
-interface VideoPortalProviderProps {
-  children: React.ReactNode;
-}
-
 export default function VideoPortalProvider({
   children,
-}: VideoPortalProviderProps) {
+}: React.PropsWithChildren) {
   const [videoRefs, setVideoRefs] = useState<VideoRefs>({});
   const videoRefsRef = useRef<typeof videoRefs>(videoRefs); // yodawg
 

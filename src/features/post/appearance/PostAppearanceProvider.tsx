@@ -19,9 +19,8 @@ import {
   setPostAppeartance as setPostAppearanceReducer,
 } from "./appearanceSlice";
 
-interface PostAppearanceProviderProps {
+interface PostAppearanceProviderProps extends React.PropsWithChildren {
   feed?: AnyFeed;
-  children: React.ReactNode;
 }
 
 export default function PostAppearanceProvider({
@@ -130,9 +129,7 @@ export function useSetPostAppearance() {
 
 export function WaitUntilPostAppearanceResolved({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: React.PropsWithChildren) {
   if (!useContext(PostAppearanceContext).postAppearance) return;
 
   return children;

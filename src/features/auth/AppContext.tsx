@@ -21,11 +21,7 @@ export const AppContext = createContext<IAppContext>({
   setActivePage: () => {},
 });
 
-export function AppContextProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AppContextProvider({ children }: React.PropsWithChildren) {
   const activePageRef = useRef<Page>();
 
   return (

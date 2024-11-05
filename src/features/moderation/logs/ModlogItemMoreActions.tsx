@@ -11,9 +11,9 @@ import { compact } from "lodash";
 import { PlainButton } from "#/features/shared/PlainButton";
 import { getHandle } from "#/helpers/lemmy";
 import useAppNavigation from "#/helpers/useAppNavigation";
-import { ModlogItemType } from "#/routes/pages/shared/ModlogPage";
 
 import { ModeratorRole, getModIcon } from "../useCanModerate";
+import { ModlogItemType } from "./helpers";
 
 const EllipsisIcon = styled(IonIcon)`
   font-size: 1.2rem;

@@ -17,11 +17,7 @@ export const TitleSearchContext = createContext<TitleSearchContext>({
   setOnSubmit: () => {},
 });
 
-interface TitleSearchProviderProps {
-  children: React.ReactNode;
-}
-
-export function TitleSearchProvider({ children }: TitleSearchProviderProps) {
+export function TitleSearchProvider({ children }: React.PropsWithChildren) {
   const [search, setSearch] = useState("");
   const [searching, setSearching] = useState(false);
   const [onSubmit, _setOnSubmit] = useState(() => () => {});

@@ -115,9 +115,8 @@ export const PageContext = createContext<IPageContext>({
   presentDatabaseErrorModal: () => {},
 });
 
-interface PageContextProvider {
+interface PageContextProvider extends React.PropsWithChildren {
   value: Pick<IPageContext, "pageRef">;
-  children: React.ReactNode;
 }
 
 export function PageContextProvider({ value, children }: PageContextProvider) {

@@ -17,7 +17,6 @@ import { AppThemeType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
 import { getThemeByStyle } from "./theme/AppThemes";
-import "./theme/variables";
 
 export const DARK_CLASSNAME = "ion-palette-dark";
 export const PURE_BLACK_CLASSNAME = "theme-pure-black";
@@ -79,11 +78,7 @@ const fixedDeviceFontCss = css`
   --ion-dynamic-font: initial;
 `;
 
-interface GlobalStylesProps {
-  children: React.ReactNode;
-}
-
-export default function GlobalStyles({ children }: GlobalStylesProps) {
+export default function GlobalStyles({ children }: React.PropsWithChildren) {
   const isDark = useComputeIsDark();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
     (state) => state.settings.appearance.font,

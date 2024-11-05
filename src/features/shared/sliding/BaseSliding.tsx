@@ -13,8 +13,7 @@ const StyledItemContainer = styled.div`
   --ion-item-border-color: transparent;
 `;
 
-interface BaseSlidingVoteProps {
-  children: React.ReactNode;
+interface BaseSlidingVoteProps extends React.PropsWithChildren {
   className?: string;
   item: SlideableVoteItem;
   rootIndex?: number;

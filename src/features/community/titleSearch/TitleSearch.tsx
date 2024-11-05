@@ -64,9 +64,8 @@ export function openTitleSearch() {
     ?.click();
 }
 
-interface TitleSearchProps {
+interface TitleSearchProps extends React.PropsWithChildren {
   name: string;
-  children: React.ReactNode;
 
   ref?: React.RefObject<AppTitleHandle>;
 }

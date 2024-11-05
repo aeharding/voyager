@@ -1,4 +1,5 @@
 import { NotificationType } from "@capacitor/haptics";
+// eslint-disable-next-line no-restricted-imports
 import { useIonToast } from "@ionic/react";
 import { useCallback } from "react";
 
