@@ -14,7 +14,6 @@ import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { OLongSwipeTriggerPointType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
-import { bounceAnimation } from "../animations";
 import ActionContents from "./ActionContents";
 
 const StyledIonItemSliding = styled(IonItemSliding)`
@@ -56,9 +55,8 @@ const OptionContainer = styled.div`
 
 const optionContainerActiveCss = css`
   opacity: 1;
-
-  ${bounceAnimation}
 `;
+/* ${bounceAnimation} */ // TODO
 
 export interface SlidingItemAction {
   /**
