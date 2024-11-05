@@ -48,6 +48,7 @@ end
 platform :android do
 	before_all do
     ENV['android_path'] = './android/'
+    ENV['google_service_account_path'] = "#{ENV['android_path']}pc-api.json"
   end
 
   lane :push_playstore do
@@ -58,7 +59,7 @@ platform :android do
     )
     upload_to_play_store(
       release_status: 'draft',
-      json_key_data: ENV['GOOGLE_SERVICE_ACCOUNT']
+      json_key: ENV['google_service_account_path']
     )
   end
 end
