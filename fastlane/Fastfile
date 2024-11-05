@@ -60,7 +60,12 @@ platform :android do
     upload_to_play_store(
       package_name: ENV['app_identifier'],
       release_status: 'draft',
-      json_key: ENV['google_service_account_path']
+      json_key: ENV['google_service_account_path'],
+      aab: Actions.lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
     )
   end
 end
