@@ -34,9 +34,9 @@ platform :ios do
       workspace: ENV['ios_workspace_path'],
       scheme: ENV['app_name_sanitized'],
       output_name: ENV['ios_output']
-    ),
+    )
     upload_to_testflight(
-      ipa: ENV['ios_output']
+      ipa: ENV['ios_output'],
       app_identifier: ENV['app_identifier'],
       api_key_path: "authkey.json",
       skip_waiting_for_build_processing: true,
@@ -56,7 +56,7 @@ platform :android do
       project_dir: ENV['android_path'],
       task: 'bundle',
       build_type: 'Release'
-    ),
+    )
     upload_to_play_store(
       package_name: ENV['app_identifier'],
       release_status: 'draft',
