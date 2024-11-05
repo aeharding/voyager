@@ -104,7 +104,7 @@ BUILD=123; npx release-it
 
 Make sure the build number is incremental. This is used for F-droid.
 
-Voyager uses [Ionic App Flow](https://ionic.io/appflow) for Apple App Store and Android Play Store builds. Those builds are initiated and monitored by Github Actions, where logs may be inspected.
+Voyager uses Github Actions for Apple App Store and Android Play Store builds, where logs may be inspected.
 
 **Voyager's Android and iOS builds are reproducible**! In fact, [F-droid independently builds Voyager](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/app.vger.voyager.yml) and verifies the same compiled APK is provided in Github Releases.
 

@@ -7,7 +7,9 @@
   "packageManager": "pnpm@9.12.2+sha512.22721b3a11f81661ae1ec68ce1a7b879425a1ca5b991c975b074ac220b187ce56c708fe5db69f4c962c989452eee76c82877f4ee80f474cebd61ee13461b6228",
   "scripts": {
     "dev": "vite",
-    "build": "./build.sh",
+    "ionic:build:before": "./prebuild.sh",
+    "build": "pnpm ionic:build:before && vite build",
+    "postinstall": "cap telemetry off && ionic config set -g telemetry false",
     "preview": "vite preview",
     "test": "vitest",
     "test:e2e": "playwright test",
@@ -18,7 +20,6 @@
     "generate:splash:light": "pwa-asset-generator --type png --index index.html --splash-only --path-override '/splash' public/splash.html public/splash/ && prettier -w index.html",
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
-    "capacitor:sync:before": "rm dist/pro-manifest.json dist/live-update-manifest.json",
     "upgrade:packageManager": "corepack use pnpm@latest",
     "upgrade:react": "pnpm i --save react@experimental react-dom@experimental babel-plugin-react-compiler@experimental eslint-plugin-react-compiler@experimental eslint-plugin-react-hooks@experimental"
   },

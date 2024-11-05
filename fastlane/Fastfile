@@ -1,0 +1,71 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+ENV['app_identifier'] = 'app.vger.voyager'
+ENV['app_name_sanitized'] = 'App'
+ENV['ios_output'] = "Voyager-iOS-#{ENV['GITHUB_REF_NAME']}.ipa"
+
+platform :ios do
+	before_all do
+    ENV['ios_path'] = './ios/App/'
+		ENV['ios_project_path'] = "#{ENV['ios_path']}#{ENV['app_name_sanitized']}.xcodeproj"
+		ENV['ios_workspace_path'] = "#{ENV['ios_path']}#{ENV['app_name_sanitized']}.xcworkspace"
+	end
+  
+  desc "Push a new beta build to TestFlight"
+  lane :deploy do
+    setup_ci if ENV['CI']
+    match(type: "appstore")
+    build_app(
+      workspace: ENV['ios_workspace_path'],
+      scheme: ENV['app_name_sanitized'],
+      output_name: ENV['ios_output']
+    )
+    upload_to_testflight(
+      ipa: ENV['ios_output'],
+      app_identifier: ENV['app_identifier'],
+      api_key_path: "authkey.json",
+      skip_waiting_for_build_processing: true,
+      changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}, msg #{ENV['COMMIT_MSG']}"
+    )
+  end
+end
+
+platform :android do
+	before_all do
+    ENV['android_path'] = './android/'
+    ENV['google_service_account_path'] = "#{ENV['android_path']}pc-api.json"
+  end
+
+  lane :deploy do
+    gradle(
+      project_dir: ENV['android_path'],
+      task: 'bundle',
+      build_type: 'Release'
+    )
+    upload_to_play_store(
+      package_name: ENV['app_identifier'],
+      release_status: 'draft',
+      json_key: ENV['google_service_account_path'],
+      aab: Actions.lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+end
