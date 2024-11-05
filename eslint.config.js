@@ -90,8 +90,9 @@ export default tseslint.config(
           paths: [
             {
               name: "@ionic/react",
-              importNames: ["IonHeader"],
-              message: "Please use AppHeader instead.",
+              importNames: ["IonHeader", "useIonToast"],
+              message:
+                "Has an App alternative. Replace 'Ion' with 'App' when importing.",
             },
             {
               name: "react",
