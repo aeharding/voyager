@@ -27,7 +27,7 @@ platform :ios do
 	end
   
   desc "Push a new beta build to TestFlight"
-  lane :push_appstore do
+  lane :deploy do
     setup_ci if ENV['CI']
     match(type: "appstore")
     build_app(
@@ -35,13 +35,13 @@ platform :ios do
       scheme: ENV['app_name_sanitized'],
       output_name: ENV['ios_output']
     )
-    # upload_to_testflight(
-    #   ipa: ENV['ios_output']
-    #   app_identifier: ENV['app_identifier'],
-    #   api_key_path: "authkey.json",
-    #   skip_waiting_for_build_processing: true,
-    #   changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}, msg #{ENV['COMMIT_MSG']}"
-    # )
+    upload_to_testflight(
+      ipa: ENV['ios_output']
+      app_identifier: ENV['app_identifier'],
+      api_key_path: "authkey.json",
+      skip_waiting_for_build_processing: true,
+      changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}, msg #{ENV['COMMIT_MSG']}"
+    )
   end
 end
 
@@ -51,7 +51,7 @@ platform :android do
     ENV['google_service_account_path'] = "#{ENV['android_path']}pc-api.json"
   end
 
-  lane :push_playstore do
+  lane :deploy do
     gradle(
       project_dir: ENV['android_path'],
       task: 'bundle',

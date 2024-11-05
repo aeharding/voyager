@@ -40,7 +40,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Web-${{ github.ref_name }}-Build.zip
+          name: Voyager-Web-${{ github.ref_name }}.zip
           path: Voyager-Web-${{ github.ref_name }}.zip
 
   build_ios:
@@ -73,7 +73,7 @@ jobs:
       - name: Deploy to TestFlight
         run: |
           echo "$APP_STORE_CONNECT_KEY" > authkey.json
-          bundle exec fastlane push_appstore
+          bundle exec fastlane deploy
         env:
           FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
@@ -164,7 +164,7 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
       - name: Run Fastlane
-        run: bundle exec fastlane android push_playstore
+        run: bundle exec fastlane android deploy
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
@@ -179,19 +179,19 @@ jobs:
   #     - name: Download dist artifacts
   #       uses: actions/download-artifact@v4
   #       with:
-  #         name: Voyager-Web-${{ github.ref_name }}-Build.zip
+  #         name: Voyager-Web-${{ github.ref_name }}.zip
   #         path: artifacts/web
 
   #     - name: Download iOS Artifact
   #       uses: actions/download-artifact@v4
   #       with:
-  #         name: Voyager-iOS-${{ github.ref_name }}-Build.zip
+  #         name: Voyager-iOS-${{ github.ref_name }}.ipa
   #         path: artifacts/ios
 
   #     - name: Download Android Artifact
   #       uses: actions/download-artifact@v4
   #       with:
-  #         name: Voyager-Android-${{ github.ref_name }}-Build.zip
+  #         name: Voyager-Android-${{ github.ref_name }}.apk
   #         path: artifacts/android
 
   #     - name: Release
