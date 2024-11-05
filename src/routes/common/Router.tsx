@@ -8,7 +8,7 @@ export const memoryHistory = isAppleDeviceInstalledToHomescreen()
   ? createMemoryHistory()
   : undefined;
 
-export default function Router({ children }: { children: React.ReactNode }) {
+export default function Router({ children }: React.PropsWithChildren) {
   useEffect(() => {
     if (!memoryHistory) return;
 

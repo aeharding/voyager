@@ -36,9 +36,8 @@ const CloseButton = styled.button`
   font-size: 1.3em;
 `;
 
-interface FloatingDialogProps {
+interface FloatingDialogProps extends React.PropsWithChildren {
   onDismiss: () => void;
-  children: React.ReactNode;
 }
 
 export default function FloatingDialog({

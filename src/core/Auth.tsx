@@ -14,11 +14,7 @@ import BackgroundReportSync from "#/features/moderation/BackgroundReportSync";
 import { getDefaultServer } from "#/services/app";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-interface AuthProps {
-  children: React.ReactNode;
-}
-
-export default function Auth({ children }: AuthProps) {
+export default function Auth({ children }: React.PropsWithChildren) {
   const dispatch = useAppDispatch();
   const jwt = useAppSelector(jwtSelector);
   const connectedInstance = useAppSelector(

@@ -26,11 +26,7 @@ import settings from "./tabs/settings";
 
 type RouterOutletRef = IonRouterOutletCustomEvent<unknown>["target"];
 
-interface TabbedRoutesProps {
-  children: React.ReactNode;
-}
-
-export default function TabbedRoutes({ children }: TabbedRoutesProps) {
+export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   const ready = useAppSelector((state) => state.settings.ready);
   const selectedInstance = useAppSelector(
     instanceSelector ?? ((state) => state.auth.connectedInstance),

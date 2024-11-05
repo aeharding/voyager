@@ -7,8 +7,7 @@ const Container = styled.div`
   width: 100%;
 `;
 
-export interface OutPortalEventDispatcherProps {
-  children: React.ReactNode;
+export interface OutPortalEventDispatcherProps extends React.PropsWithChildren {
   onClick?: (e: MouseEvent) => boolean | void;
   eventsToPropagateViaOutPortal?: (keyof HTMLElementEventMap)[];
 }
