@@ -7,7 +7,6 @@ import { useAppSelector } from "#/store";
 
 interface ContainerProps {
   depth: number;
-  highlighted?: boolean;
   hidden?: boolean;
   themeName: CommentsThemeType;
 }

@@ -1,5 +1,5 @@
 import { ActionCreatorWithPayload, configureStore } from "@reduxjs/toolkit";
-import { ReactNode, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Provider,
   TypedUseSelectorHook,
@@ -95,45 +95,44 @@ export type Dispatchable<T> =
 
 export default store;
 
-// "uninitialized" so that "uninitialized" -> undefined (logged out) triggers change
-let lastActiveHandle: string | undefined = "uninitialized";
-const activeHandleChange = () => {
-  const state = store.getState();
-  const handle = handleSelector(state);
+export function StoreProvider({ children }: React.PropsWithChildren) {
+  return (
+    <Provider store={store}>
+      <SetupStore />
+      {children}
+    </Provider>
+  );
+}
 
-  if (handle === lastActiveHandle) return;
+function SetupStore() {
+  const dispatch = useAppDispatch();
+  const activeAccount = useAppSelector(handleSelector);
+  const needsSetupRef = useRef(true);
 
-  lastActiveHandle = handle;
-
-  store.dispatch(getFavoriteCommunities());
-  store.dispatch(getBlurNsfw());
-  store.dispatch(getFilteredKeywords());
-  store.dispatch(getFilteredWebsites());
-  store.dispatch(getDefaultFeed());
-  store.dispatch(getInstances());
-};
-
-export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
-    (async () => {
-      try {
-        // Load initial settings from DB into the store
-        await Promise.all([
-          store.dispatch(fetchSettingsFromDatabase()),
-          store.dispatch(fetchGesturesFromDatabase()),
-          store.dispatch(fetchAppIcon()),
-          store.dispatch(initializeBiometricSliceDataIfNeeded()),
-        ]);
-      } finally {
-        // Initialize with current active handle
-        activeHandleChange();
+    if (!needsSetupRef.current) {
+      afterSetup();
+      return;
+    }
 
-        // Subscribe to actions to handle handle changes, this can be used to react to other changes as well
-        // to coordinate side effects between slices.
-        store.subscribe(activeHandleChange);
-      }
-    })();
-  }, []);
+    Promise.all([
+      // Load initial settings from DB into the store
+      store.dispatch(fetchSettingsFromDatabase()),
+      store.dispatch(fetchGesturesFromDatabase()),
+      store.dispatch(fetchAppIcon()),
+      store.dispatch(initializeBiometricSliceDataIfNeeded()),
+    ]).finally(afterSetup);
 
-  return <Provider store={store}>{children}</Provider>;
+    function afterSetup() {
+      needsSetupRef.current = false;
+      dispatch(getFavoriteCommunities());
+      dispatch(getBlurNsfw());
+      dispatch(getFilteredKeywords());
+      dispatch(getFilteredWebsites());
+      dispatch(getDefaultFeed());
+      dispatch(getInstances());
+    }
+  }, [activeAccount, dispatch]);
+
+  return null;
 }

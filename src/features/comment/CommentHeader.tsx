@@ -107,7 +107,7 @@ export default function CommentHeader({
 
   const stub = isStubComment(comment, canModerate);
 
-  function renderAside(agoTimestamp = comment.published) {
+  function renderAside(agoTimestamp: string) {
     return (
       <>
         <ActionsContainer className={collapsed ? "ion-hide" : undefined}>
@@ -187,7 +187,7 @@ export default function CommentHeader({
             <Spacer>
               <UserTag person={commentView.creator} />
             </Spacer>
-            {renderAside()}
+            {renderAside(comment.published)}
           </>
         );
     }
