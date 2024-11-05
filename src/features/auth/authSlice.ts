@@ -139,17 +139,15 @@ export const authSlice = createSlice({
 
       updateCredentialsStorage(state.accountData);
     },
-
-    reset: (state) => {
-      return initialState(state.connectedInstance);
-    },
-
     updateConnectedInstance(state, action: PayloadAction<string>) {
       if (import.meta.env.VITE__TEST_MODE) {
         state.connectedInstance = getDefaultServer();
         return;
       }
       state.connectedInstance = action.payload;
+    },
+    reset: (state) => {
+      return initialState(state.connectedInstance);
     },
   },
 });
@@ -160,8 +158,8 @@ export const {
   removeAccount,
   setPrimaryAccount,
   setAccounts,
-  reset,
   updateConnectedInstance,
+  reset,
 } = authSlice.actions;
 
 export default authSlice.reducer;

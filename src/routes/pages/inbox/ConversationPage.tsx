@@ -8,6 +8,7 @@ import {
 } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
+import { PrivateMessageView } from "lemmy-js-client";
 import {
   useCallback,
   useContext,
@@ -57,27 +58,16 @@ const FlexItem = styled.div`
   padding: 0 16px !important;
 `;
 
-export default function ConversationPage() {
-  const pageRef = useRef<HTMLElement>(null);
-  const dispatch = useAppDispatch();
-  const allMessages = useAppSelector((state) => state.inbox.messages);
-  const jwtPayload = useAppSelector(jwtPayloadSelector);
-  const { tabRef } = useContext(TabContext);
-  const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
-  );
-  const { handle } = useParams<{ handle: string }>();
-  const userByHandle = useAppSelector((state) => state.user.userByHandle);
-  const [error, setError] = useState(false);
-  const [loadingUser, setLoadingUser] = useState(false);
+function useTab__UNSAFE() {
+  return useContext(TabContext).tabRef?.current;
+}
 
-  const keyboardOpen = useKeyboardOpen();
-
-  const ref = useRef<VListHandle>(null);
-  const shouldStickToBottom = useRef(true);
-
-  const messages = useMemo(
+function useMessages(
+  allMessages: PrivateMessageView[],
+  myUserId: number | undefined,
+  handle: string,
+) {
+  return useMemo(
     () =>
       allMessages
         .filter((m) =>
@@ -91,8 +81,31 @@ export default function ConversationPage() {
             Date.parse(a.private_message.published),
         )
         .reverse(),
-    [handle, allMessages, myUserId],
+    [allMessages, handle, myUserId],
   );
+}
+
+export default function ConversationPage() {
+  const pageRef = useRef<HTMLElement>(null);
+  const dispatch = useAppDispatch();
+  const allMessages = useAppSelector((state) => state.inbox.messages);
+  const jwtPayload = useAppSelector(jwtPayloadSelector);
+  const myUserId = useAppSelector(
+    (state) =>
+      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+  );
+  const tab = useTab__UNSAFE();
+  const { handle } = useParams<{ handle: string }>();
+  const userByHandle = useAppSelector((state) => state.user.userByHandle);
+  const [error, setError] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(false);
+
+  const keyboardOpen = useKeyboardOpen();
+
+  const ref = useRef<VListHandle>(null);
+  const shouldStickToBottom = useRef(true);
+
+  const messages = useMessages(allMessages, myUserId, handle);
 
   const them = userByHandle[handle.toLowerCase()];
 
@@ -105,16 +118,18 @@ export default function ConversationPage() {
 
     setLoadingUser(true);
 
-    try {
-      await dispatch(getUser(handle));
-    } catch (error) {
-      setError(true);
-      throw error;
-    } finally {
-      setLoadingUser(false);
-    }
-
-    setError(false);
+    // TODO replace with await when React Compiler doesn't bail
+    return dispatch(getUser(handle))
+      .catch((error) => {
+        setError(true);
+        throw error;
+      })
+      .then(() => {
+        setError(false);
+      })
+      .finally(() => {
+        setLoadingUser(false);
+      });
   }, [dispatch, handle, userByHandle]);
 
   useEffect(() => {
@@ -192,7 +207,7 @@ export default function ConversationPage() {
           <IonButtons slot="start">
             <IonBackButton
               defaultHref="/inbox/messages"
-              text={tabRef?.current === "inbox" ? "Messages" : "Back"}
+              text={tab === "inbox" ? "Messages" : "Back"}
             />
           </IonButtons>
 

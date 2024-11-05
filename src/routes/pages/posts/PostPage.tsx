@@ -103,11 +103,10 @@ function PostPageContent({
 
   const refresh = useCallback(
     async (event: RefresherCustomEvent) => {
-      try {
-        await dispatch(getPost(+id));
-      } finally {
+      // TODO replace with await when React Compiler doesn't bail
+      return dispatch(getPost(+id)).finally(() => {
         event.detail.complete();
-      }
+      });
     },
     [dispatch, id],
   );
