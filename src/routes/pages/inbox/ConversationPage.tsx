@@ -13,6 +13,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -58,10 +59,6 @@ const FlexItem = styled.div`
   padding: 0 16px !important;
 `;
 
-function useTab__UNSAFE() {
-  return useContext(TabContext).tabRef?.current;
-}
-
 function useMessages(
   allMessages: PrivateMessageView[],
   myUserId: number | undefined,
@@ -94,7 +91,8 @@ export default function ConversationPage() {
     (state) =>
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   );
-  const tab = useTab__UNSAFE();
+  const tabContext = useContext(TabContext);
+  const [tab, setTab] = useState<string | undefined>();
   const { handle } = useParams<{ handle: string }>();
   const userByHandle = useAppSelector((state) => state.user.userByHandle);
   const [error, setError] = useState(false);
@@ -131,6 +129,10 @@ export default function ConversationPage() {
         setLoadingUser(false);
       });
   }, [dispatch, handle, userByHandle]);
+
+  useLayoutEffect(() => {
+    setTab(tabContext.tabRef?.current);
+  }, [tabContext.tabRef]);
 
   useEffect(() => {
     loadUser();
@@ -200,15 +202,23 @@ export default function ConversationPage() {
     return <PageContentIonSpinner />;
   })();
 
+  const backText = (() => {
+    switch (tab) {
+      case undefined:
+        return " ";
+      case "inbox":
+        return "Messages";
+      default:
+        return "Back";
+    }
+  })();
+
   return (
     <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
-              defaultHref="/inbox/messages"
-              text={tab === "inbox" ? "Messages" : "Back"}
-            />
+            <IonBackButton defaultHref="/inbox/messages" text={backText} />
           </IonButtons>
 
           <IonTitle
