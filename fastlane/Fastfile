@@ -48,11 +48,11 @@ end
 platform :android do
   lane :push_playstore do
     gradle(
-      task: 'assemble',
+      task: 'bundle',
       build_type: 'Release'
     )
-    upload_to_play_store(
-      release_status: 'draft'
-    )
+    # upload_to_play_store(
+    #   release_status: 'draft'
+    # )
   end
 end
