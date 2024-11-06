@@ -1,0 +1,32 @@
+diff --git a/ios/Sources/KeyboardPlugin/Keyboard.m b/ios/Sources/KeyboardPlugin/Keyboard.m
+index 29c070840c20046fb7dd9e045cd7b83832386919..c7e18788ce2b2738b267a2ee77dbb0087c1c8c4d 100644
+--- a/ios/Sources/KeyboardPlugin/Keyboard.m
++++ b/ios/Sources/KeyboardPlugin/Keyboard.m
+@@ -110,7 +110,7 @@ - (void)resetScrollView
+ 
+ - (void)onKeyboardWillHide:(NSNotification *)notification
+ {
+-  [self setKeyboardHeight:0 delay:0.01];
++  [self setKeyboardHeight:0 delay:0];
+   [self resetScrollView];
+   hideTimer = [NSTimer scheduledTimerWithTimeInterval:0 repeats:NO block:^(NSTimer * _Nonnull timer) {
+     [self.bridge triggerWindowJSEventWithEventName:@"keyboardWillHide"];
+@@ -142,8 +142,7 @@ - (void)onKeyboardWillShow:(NSNotification *)notification
+     }
+   }
+ 
+-  double duration = [[notification.userInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue]+0.2;
+-  [self setKeyboardHeight:height delay:duration];
++  [self setKeyboardHeight:height delay:0];
+   [self resetScrollView];
+ 
+   NSString * data = [NSString stringWithFormat:@"{ 'keyboardHeight': %d }", (int)height];
+@@ -199,7 +198,7 @@ - (void)resizeElement:(NSString *)element withPaddingBottom:(int)paddingBottom w
+         height = screenHeight - paddingBottom;
+     }
+     
+-    [self.bridge evalWithJs: [NSString stringWithFormat:@"(function() { var el = %@; var height = %d; if (el) { el.style.height = height > -1 ? height + 'px' : null; } })()", element, height]];
++    [self.bridge evalWithJs: [NSString stringWithFormat:@"requestAnimationFrame(() => { var el = %@; var height = %d; if (el) { el.style.height = height > -1 ? height + 'px' : null; } })", element, height]];
+ }
+ 
+ - (void)_updateFrame

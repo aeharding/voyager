@@ -29,7 +29,8 @@
     },
     "patchedDependencies": {
       "@capacitor/browser": "patches/@capacitor__browser@6.0.3.patch",
-      "@capacitor/haptics": "patches/@capacitor__haptics@6.0.1.patch"
+      "@capacitor/haptics": "patches/@capacitor__haptics@6.0.1.patch",
+      "@capacitor/keyboard": "patches/@capacitor__keyboard@6.0.2.patch"
     },
     "updateConfig": {
       "ignoreDependencies": [
