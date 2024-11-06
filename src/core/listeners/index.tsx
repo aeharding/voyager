@@ -6,7 +6,6 @@ import DatabaseErrorListener from "./DatabaseErrorListener";
 import HapticsListener from "./HapticsListener";
 import "./androidSafeArea";
 import "./ionActivatable";
-import "./keyboardPageResizer";
 import "./network/listener";
 import "./statusTap";
 import { ResetStatusTap } from "./statusTap";

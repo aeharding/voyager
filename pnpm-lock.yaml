@@ -14,6 +14,9 @@ patchedDependencies:
   '@capacitor/haptics':
     hash: isktf3ewuigcwl72katxy46idi
     path: patches/@capacitor__haptics@6.0.1.patch
+  '@capacitor/keyboard':
+    hash: 2ihcxo2fu55l7b6g5u7feswwlm
+    path: patches/@capacitor__keyboard@6.0.2.patch
 
 importers:
 
@@ -51,7 +54,7 @@ importers:
         version: 6.1.2(@capacitor/core@6.1.2)
       '@capacitor/keyboard':
         specifier: ^6.0.2
-        version: 6.0.2(@capacitor/core@6.1.2)
+        version: 6.0.2(patch_hash=2ihcxo2fu55l7b6g5u7feswwlm)(@capacitor/core@6.1.2)
       '@capacitor/network':
         specifier: ^6.0.2
         version: 6.0.2(@capacitor/core@6.1.2)
@@ -7668,7 +7671,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 6.1.2
 
-  '@capacitor/keyboard@6.0.2(@capacitor/core@6.1.2)':
+  '@capacitor/keyboard@6.0.2(patch_hash=2ihcxo2fu55l7b6g5u7feswwlm)(@capacitor/core@6.1.2)':
     dependencies:
       '@capacitor/core': 6.1.2
 
