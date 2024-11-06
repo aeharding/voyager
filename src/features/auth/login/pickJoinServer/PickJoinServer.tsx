@@ -24,7 +24,7 @@ import {
   ellipsisVertical,
 } from "ionicons/icons";
 import { GetSiteResponse } from "lemmy-js-client";
-import { compact, uniqBy } from "lodash";
+import * as _ from "radashi";
 import {
   useCallback,
   useContext,
@@ -158,7 +158,7 @@ export default function PickJoinServer() {
       ? [normalize(customInstance), ...matches]
       : matches;
 
-    return uniqBy(all, ({ url }) => url);
+    return _.unique(all, ({ url }) => url);
   }, [customInstance, matchingInstances, category]);
 
   const customSearchHostnameInvalid = useMemo(
@@ -242,7 +242,7 @@ export default function PickJoinServer() {
     );
 
     presentActionSheet({
-      buttons: compact([
+      buttons: _.sift([
         {
           text: `Join ${selectedUrl}`,
           handler: () => {

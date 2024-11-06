@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ApplicationContext } from "capacitor-application-context";
 import { Register } from "lemmy-js-client";
-import { differenceWith, uniqBy } from "lodash";
+import * as _ from "radashi";
 
 import { resetComments } from "#/features/comment/commentSlice";
 import { resetCommunities } from "#/features/community/communitySlice";
@@ -82,14 +82,12 @@ export const authSlice = createSlice({
         cleanedPreviousAccounts = [action.payload];
       } else {
         // Remove guest accounts for this instance when logging in
-        cleanedPreviousAccounts = differenceWith(
-          state.accountData.accounts,
-          [getInstanceFromHandle(action.payload.handle)],
-          (a, b) => a.handle === b,
+        cleanedPreviousAccounts = state.accountData.accounts.filter(
+          (a) => a.handle !== getInstanceFromHandle(action.payload.handle),
         );
       }
 
-      const accounts = uniqBy(
+      const accounts = _.unique(
         [action.payload, ...cleanedPreviousAccounts],
         (c) => c.handle,
       );
@@ -104,10 +102,8 @@ export const authSlice = createSlice({
     removeAccount: (state, action: PayloadAction<string>) => {
       if (!state.accountData) return;
 
-      const accounts = differenceWith(
-        state.accountData.accounts,
-        [action.payload],
-        (a, b) => a.handle === b,
+      const accounts = state.accountData.accounts.filter(
+        (a) => a.handle !== action.payload,
       );
 
       const nextAccount = accounts[0];

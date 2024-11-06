@@ -1,4 +1,4 @@
-import { concat, uniq } from "lodash";
+import * as _ from "radashi";
 
 /**
  * 🚨 Want to add a server to this list?
@@ -96,8 +96,8 @@ export const SERVERS_BY_CATEGORY = {
   furry: ["pawb.social", "yiffit.net"],
 };
 
-export const WHITELISTED_SERVERS = uniq(
-  concat(...Object.values(SERVERS_BY_CATEGORY)),
+export const WHITELISTED_SERVERS = _.unique(
+  Object.values(SERVERS_BY_CATEGORY).flat(),
 );
 
 const ADDITIONAL_LOGIN_INSTANCES = [
@@ -109,7 +109,7 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmy.myserv.one",
 ];
 
-export const LOGIN_SERVERS = uniq([
+export const LOGIN_SERVERS = _.unique([
   ...WHITELISTED_SERVERS,
   ...ADDITIONAL_LOGIN_INSTANCES,
 ]);

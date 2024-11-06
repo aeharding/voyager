@@ -17,7 +17,7 @@ import {
   CommentView,
   PersonMentionView,
 } from "lemmy-js-client";
-import { compact } from "lodash";
+import * as _ from "radashi";
 import { useCallback, useContext, useMemo } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -108,7 +108,7 @@ export default function useCommentActions({
 
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: compact([
+      buttons: _.sift([
         canModerate && {
           cssClass: `${canModerate} detail`,
           text: "Moderator",

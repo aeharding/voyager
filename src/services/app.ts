@@ -1,4 +1,4 @@
-import { isEqual } from "lodash";
+import * as _ from "radashi";
 import React, { useEffect, useState } from "react";
 
 import { isNative } from "#/helpers/device";
@@ -16,7 +16,7 @@ export function getDefaultServer() {
 }
 
 export function defaultServersUntouched() {
-  return isEqual(DEFAULT_LEMMY_SERVERS, getCustomServers());
+  return _.isEqual(DEFAULT_LEMMY_SERVERS, getCustomServers());
 }
 
 async function getConfig() {
@@ -56,7 +56,8 @@ export default function ConfigProvider({ children }: ConfigProviderProps) {
 }
 
 function getCustomDefaultServers() {
-  const serversList = import.meta.env.VITE_CUSTOM_LEMMY_SERVERS;
+  const serversList: string | undefined = import.meta.env
+    .VITE_CUSTOM_LEMMY_SERVERS;
 
   if (!serversList) return;
 

@@ -7,7 +7,7 @@ import {
 } from "@reduxjs/toolkit";
 import Dexie from "dexie";
 import { PostSortType } from "lemmy-js-client";
-import { merge } from "lodash";
+import * as _ from "radashi";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
@@ -250,21 +250,24 @@ export const initialState: SettingsState = {
 
 // We continue using localstorage for specific items because indexeddb is slow
 // and we don't want to wait for it to load before rendering the app and cause flickering
-export const stateWithLocalstorageItems: SettingsState = merge(initialState, {
-  appearance: {
-    font: {
-      fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
-      useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
+export const stateWithLocalstorageItems: SettingsState = _.assign(
+  initialState,
+  {
+    appearance: {
+      font: {
+        fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
+        useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
+      },
+      dark: {
+        usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
+        userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+        pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK),
+      },
+      deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
+      theme: get(LOCALSTORAGE_KEYS.THEME),
     },
-    dark: {
-      usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
-      userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
-      pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK),
-    },
-    deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
-    theme: get(LOCALSTORAGE_KEYS.THEME),
   },
-});
+);
 
 export const defaultCommentDepthSelector = createSelector(
   [

@@ -14,7 +14,7 @@ import {
   timeOutline,
 } from "ionicons/icons";
 import { CommentSortType } from "lemmy-js-client";
-import { startCase } from "lodash";
+import * as _ from "radashi";
 import { useContext, useState } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -30,7 +30,7 @@ export const COMMENT_SORTS = [
 
 const BUTTONS: ActionSheetButton<CommentSortType>[] = COMMENT_SORTS.map(
   (sortType) => ({
-    text: startCase(sortType),
+    text: _.title(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
   }),

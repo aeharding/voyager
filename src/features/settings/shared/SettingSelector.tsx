@@ -5,7 +5,7 @@ import {
 } from "@ionic/core";
 import { IonActionSheet, IonItem, IonLabel } from "@ionic/react";
 import { css, cx } from "@linaria/core";
-import { startCase } from "lodash";
+import * as _ from "radashi";
 import React, { useState } from "react";
 
 import { Dispatchable, useAppDispatch } from "#/store";
@@ -63,7 +63,7 @@ export default function SettingSelector<
     .map((v) => ({
       icon: optionIcons ? optionIcons[v] : undefined,
       text:
-        getOptionLabel?.(v) ?? (typeof v === "string" ? startCase(v) : `${v}`),
+        getOptionLabel?.(v) ?? (typeof v === "string" ? _.title(v) : `${v}`),
       data: v,
       role: selected === v ? "selected" : undefined,
     }));
@@ -85,7 +85,7 @@ export default function SettingSelector<
       <IonLabel slot="end" color="medium" className="ion-no-margin">
         {getSelectedLabel?.(selected) ??
           getOptionLabel?.(selected) ??
-          (typeof selected === "string" ? startCase(selected) : selected)}
+          (typeof selected === "string" ? _.title(selected) : selected)}
       </IonLabel>
       <IonActionSheet
         cssClass="left-align-buttons"

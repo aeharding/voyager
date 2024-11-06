@@ -7,7 +7,7 @@ import {
   useIonAlert,
 } from "@ionic/react";
 import { styled } from "@linaria/react";
-import { capitalize } from "lodash";
+import * as _ from "radashi";
 
 import { useIsDark } from "#/core/GlobalStyles";
 import { getTheme } from "#/core/theme/AppThemes";
@@ -36,8 +36,8 @@ export default function AppTheme() {
 
     if (theme.dark.background && !theme.light.background && !isDark) {
       presentAlert({
-        header: `${capitalize(themeName)} Looks Best Dark`,
-        message: `Just as a heads up, you're in the light theme currently but ${capitalize(
+        header: `${_.capitalize(themeName)} Looks Best Dark`,
+        message: `Just as a heads up, you're in the light theme currently but ${_.capitalize(
           themeName,
         )} looks best with a darker theme. You might want to change it to get the full effect, or you do you!`,
         buttons: ["OK"],

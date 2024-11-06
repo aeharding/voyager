@@ -1,4 +1,4 @@
-import { startCase } from "lodash";
+import * as _ from "radashi";
 
 import SettingSelector from "#/features/settings/shared/SettingSelector";
 import { OShowSubscribedIcon } from "#/services/db";
@@ -19,7 +19,7 @@ export default function SubscribedIcon() {
       options={OShowSubscribedIcon}
       getOptionLabel={(option) => {
         if (option === OShowSubscribedIcon.OnlyAllLocal) return "All/Local";
-        return startCase(option);
+        return _.title(option);
       }}
     />
   );

@@ -1,7 +1,7 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { isBefore, subSeconds } from "date-fns";
 import { CommentReport, PostReport } from "lemmy-js-client";
-import { groupBy, pullAllBy } from "lodash";
+import * as _ from "radashi";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { AppDispatch, RootState } from "#/store";
@@ -43,10 +43,14 @@ export const modSlice = createSlice({
       state.postReports = action.payload;
     },
     resolvedCommentReport: (state, action: PayloadAction<CommentReport>) => {
-      pullAllBy(state.commentReports, [action.payload], (r) => r.id);
+      state.commentReports = state.commentReports.filter(
+        (r) => r.id !== action.payload.id,
+      );
     },
     resolvedPostReport: (state, action: PayloadAction<PostReport>) => {
-      pullAllBy(state.postReports, [action.payload], (r) => r.id);
+      state.postReports = state.postReports.filter(
+        (r) => r.id !== action.payload.id,
+      );
     },
     resetMod: () => initialState,
   },
@@ -68,14 +72,14 @@ export const { resetMod } = modSlice.actions;
 export const reportsByCommentIdSelector = createSelector(
   [(state: RootState) => state.mod.commentReports],
   (reports) => {
-    return groupBy(reports, (r) => r.comment_id);
+    return _.group(reports, (r) => r.comment_id);
   },
 );
 
 export const reportsByPostIdSelector = createSelector(
   [(state: RootState) => state.mod.postReports],
   (reports) => {
-    return groupBy(reports, (r) => r.post_id);
+    return _.group(reports, (r) => r.post_id);
   },
 );
 

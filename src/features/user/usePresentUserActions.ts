@@ -5,7 +5,7 @@ import {
   removeCircleOutline,
 } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
-import { compact } from "lodash";
+import * as _ from "radashi";
 import { useCallback, useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -52,7 +52,7 @@ export default function usePresentUserActions() {
 
       presentActionSheet({
         cssClass: "left-align-buttons",
-        buttons: compact([
+        buttons: _.sift([
           ...(options?.prependButtons ?? []),
           !isCurrentUser &&
             !options?.hideMessageButton && {

@@ -1,4 +1,4 @@
-import { mapValues } from "lodash";
+import * as _ from "radashi";
 
 import { getSortIcon } from "#/features/comment/CommentSort";
 import SettingSelector from "#/features/settings/shared/SettingSelector";
@@ -19,7 +19,7 @@ export default function DefaultSort() {
       selected={defaultCommentSort}
       setSelected={setDefaultCommentSort}
       options={OCommentDefaultSort}
-      optionIcons={mapValues(OCommentDefaultSort, getSortIcon)}
+      optionIcons={_.mapValues(OCommentDefaultSort, getSortIcon)}
     />
   );
 }

@@ -1,11 +1,11 @@
 import { useIonViewWillEnter } from "@ionic/react";
-import { uniqueId } from "lodash";
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -19,7 +19,7 @@ export default function VideoPortalProvider({
   children,
 }: React.PropsWithChildren) {
   const [videoRefs, setVideoRefs] = useState<VideoRefs>({});
-  const videoRefsRef = useRef<typeof videoRefs>(videoRefs); // yodawg
+  const videoRefsRef = useRef(videoRefs); // yodawg
 
   useEffect(() => {
     videoRefsRef.current = videoRefs;
@@ -34,7 +34,7 @@ export default function VideoPortalProvider({
         if (potentialExisting.sourceUid !== sourceUid) {
           setVideoRefs((videoRefs) => ({
             ...videoRefs,
-            [src]: { ...potentialExisting, sourceUid: sourceUid },
+            [src]: { ...potentialExisting, sourceUid },
           }));
         }
 
@@ -128,7 +128,8 @@ const VideoPortalContext = createContext<VideoPortalContextState>({
 });
 
 export function useVideoPortalNode(src: string): PortalNode | void {
-  const sourceUidRef = useRef(uniqueId());
+  const sourceUid = useId();
+
   const { getPortalNodeForSrc, cleanupPortalNodeForSrcIfNeeded, videoRefs } =
     useContext(VideoPortalContext);
 
@@ -138,12 +139,12 @@ export function useVideoPortalNode(src: string): PortalNode | void {
   const getPortalNodeEvent = useEffectEvent(() => {
     if (destroyed.current) return;
 
-    getPortalNodeForSrc(src, sourceUidRef.current);
+    getPortalNodeForSrc(src, sourceUid);
   });
 
   const cleanupPortalNodeIfNeededEvent = useEffectEvent(() => {
     destroyed.current = true;
-    cleanupPortalNodeForSrcIfNeeded(src, sourceUidRef.current);
+    cleanupPortalNodeForSrcIfNeeded(src, sourceUid);
   });
 
   useEffect(() => {
@@ -159,6 +160,6 @@ export function useVideoPortalNode(src: string): PortalNode | void {
 
   const potentialVideoRef = videoRefs[src];
 
-  if (potentialVideoRef?.sourceUid === sourceUidRef.current)
+  if (potentialVideoRef?.sourceUid === sourceUid)
     return potentialVideoRef.portalNode;
 }

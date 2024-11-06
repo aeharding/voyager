@@ -6,7 +6,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { Community, Person } from "lemmy-js-client";
-import { values } from "lodash";
 import { memo, useCallback, useEffect } from "react";
 import { useParams } from "react-router";
 
@@ -98,7 +97,7 @@ function Modlog({ community, user }: ModlogProps) {
         other_person_id: user?.id,
       });
 
-      return values(logs)
+      return Object.values(logs)
         .reduce<ModlogItemType[]>((acc, current) => acc.concat(current), [])
         .sort((a, b) => Date.parse(getLogDate(b)) - Date.parse(getLogDate(a)));
     },

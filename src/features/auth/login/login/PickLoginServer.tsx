@@ -13,7 +13,7 @@ import {
 } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { GetSiteResponse } from "lemmy-js-client";
-import { uniq } from "lodash";
+import * as _ from "radashi";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VList, VListHandle } from "virtua";
 
@@ -50,7 +50,7 @@ export default function PickLoginServer() {
   const searchHostname = stripProtocol(search.trim());
   const instances = useMemo(
     () =>
-      uniq([...getCustomServers(), ...LOGIN_SERVERS]).filter((server) =>
+      _.unique([...getCustomServers(), ...LOGIN_SERVERS]).filter((server) =>
         server.includes(searchHostname.toLowerCase()),
       ),
     [searchHostname],

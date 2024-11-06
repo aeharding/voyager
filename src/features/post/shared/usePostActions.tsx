@@ -17,7 +17,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { compact } from "lodash";
+import * as _ from "radashi";
 import { useCallback, useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -89,7 +89,7 @@ export default function usePostActions(post: PostView) {
 
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: compact([
+      buttons: _.sift([
         canModerate && {
           text: "Moderator",
           icon: getModIcon(canModerate),
@@ -229,7 +229,7 @@ export default function usePostActions(post: PostView) {
           icon: textOutline,
           handler: () => {
             presentSelectText(
-              compact([post.post.name, post.post.body]).join("\n\n"),
+              _.sift([post.post.name, post.post.body]).join("\n\n"),
             );
           },
         },

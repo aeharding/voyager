@@ -4,7 +4,6 @@ import {
   CommunityView,
   GetCommunityResponse,
 } from "lemmy-js-client";
-import { without } from "lodash";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { getSite } from "#/features/auth/siteSlice";
@@ -95,7 +94,9 @@ export const removeFavorite =
   (community: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
-    const favorites = without(getState().community.favorites, community);
+    const favorites = getState().community.favorites.filter(
+      (fav) => fav !== community,
+    );
 
     if (!userHandle) return;
 
