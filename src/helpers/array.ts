@@ -5,10 +5,13 @@ export const arrayOfAll =
     array;
 
 export function moveItem<T>(array: T[], from: number, to: number): T[] {
-  const [itemToMove] = array.slice().splice(from, 1);
+  const itemToMove = array[from];
   if (itemToMove === undefined) return array;
-  array.splice(to, 0, itemToMove);
-  return array;
+
+  const arrayCopy = [...array];
+  arrayCopy.splice(from, 1);
+  arrayCopy.splice(to, 0, itemToMove);
+  return arrayCopy;
 }
 
 /**
