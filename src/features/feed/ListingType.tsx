@@ -13,7 +13,7 @@ import {
   shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { ListingType } from "lemmy-js-client";
-import { title } from "radashi";
+import * as _ from "radashi";
 import { useContext, useState } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -28,7 +28,7 @@ export const LISTING_TYPES = [
 
 const BUTTONS: ActionSheetButton<ListingType>[] = LISTING_TYPES.map(
   (listingType) => ({
-    text: title(listingType),
+    text: _.title(listingType),
     data: listingType,
     icon: getListingTypeIcon(listingType),
   }),

@@ -1,6 +1,6 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
-import { diff, group, sift, sort, unique } from "radashi";
+import * as _ from "radashi";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { receivedUsers } from "#/features/user/userSlice";
@@ -66,7 +66,7 @@ export const inboxSlice = createSlice({
       }
     },
     receivedMessages: (state, action: PayloadAction<PrivateMessageView[]>) => {
-      state.messages = unique(
+      state.messages = _.unique(
         [...action.payload, ...state.messages],
         (m) => m.private_message.id,
       );
@@ -169,7 +169,7 @@ export const syncMessages =
             throw e;
           }
 
-          const newMessages = diff(
+          const newMessages = _.diff(
             privateMessages,
             getState().inbox.messages,
             (msg) => msg.private_message.id,
@@ -203,19 +203,19 @@ export const conversationsByPersonIdSelector = createSelector(
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   ],
   (messages, myUserId) => {
-    return sort(
+    return _.sort(
       // TODO sift is not needed here, types are wrong
       // https://github.com/radashi-org/radashi/issues/287
-      sift(
+      _.sift(
         Object.values(
-          group(messages, (m) =>
+          _.group(messages, (m) =>
             m.private_message.creator_id === myUserId
               ? m.private_message.recipient_id
               : m.private_message.creator_id,
           ),
         ),
       ).map((messages) =>
-        sort(messages, (m) => -Date.parse(m.private_message.published)),
+        _.sort(messages, (m) => -Date.parse(m.private_message.published)),
       ),
       (group) => -Date.parse(group[0]!.private_message.published),
     );

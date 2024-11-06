@@ -7,7 +7,7 @@ import {
 } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
-import { title } from "radashi";
+import * as _ from "radashi";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
 import { OCommentsThemeType } from "#/services/db";
@@ -62,7 +62,7 @@ export default function CommentsTheme() {
                 `}
               >
                 <ColorsContainer>
-                  <IonLabel>{title(label)}</IonLabel>
+                  <IonLabel>{_.title(label)}</IonLabel>
                   <Colors>
                     {COMMENT_THEMES[value].map((color, index) => (
                       <Color key={index} color={color} />

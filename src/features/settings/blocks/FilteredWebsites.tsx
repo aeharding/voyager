@@ -8,7 +8,7 @@ import {
   useIonAlert,
 } from "@ionic/react";
 import { close } from "ionicons/icons";
-import { diff, unique } from "radashi";
+import * as _ from "radashi";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
 import { RemoveItemButton } from "#/features/shared/ListEditor";
@@ -27,7 +27,7 @@ export default function FilteredWebsites() {
   );
 
   async function remove(website: string) {
-    dispatch(updateFilteredWebsites(diff(filteredWebsites, [website])));
+    dispatch(updateFilteredWebsites(_.diff(filteredWebsites, [website])));
   }
 
   async function add() {
@@ -57,7 +57,7 @@ export default function FilteredWebsites() {
             }
 
             dispatch(
-              updateFilteredWebsites(unique([...filteredWebsites, host])),
+              updateFilteredWebsites(_.unique([...filteredWebsites, host])),
             );
           },
         },

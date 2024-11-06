@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { unique } from "radashi";
+import * as _ from "radashi";
 
 import { UserTag, db } from "#/services/db";
 
@@ -90,7 +90,7 @@ export const fetchTagsForHandles = createAsyncThunk(
   async (handles: string[], thunkAPI) => {
     const rootState = thunkAPI.getState() as RootState;
 
-    const handlesNeedingFetch = unique(handles).filter(
+    const handlesNeedingFetch = _.unique(handles).filter(
       (handle) => !rootState.userTag.tagByRemoteHandle[handle],
     );
 

@@ -4,7 +4,7 @@ import type { PreparedPhotoSwipeOptions } from "photoswipe";
 import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
-import { sift } from "radashi";
+import * as _ from "radashi";
 import React, {
   ComponentRef,
   createContext,
@@ -169,7 +169,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       instance.on("openingAnimationStart", () => {
         if (animationType !== "zoom") return;
 
-        sift([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
+        _.sift([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
           el.style.setProperty("visibility", "hidden"),
         );
       });
@@ -177,7 +177,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       const cleanupHideThumb = () => {
         if (animationType !== "zoom") return;
 
-        sift([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
+        _.sift([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
           el.style.removeProperty("visibility"),
         );
       };

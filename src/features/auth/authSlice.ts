@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ApplicationContext } from "capacitor-application-context";
 import { Register } from "lemmy-js-client";
-import { unique } from "radashi";
+import * as _ from "radashi";
 
 import { resetComments } from "#/features/comment/commentSlice";
 import { resetCommunities } from "#/features/community/communitySlice";
@@ -88,7 +88,7 @@ export const authSlice = createSlice({
         );
       }
 
-      const accounts = unique(
+      const accounts = _.unique(
         [action.payload, ...cleanedPreviousAccounts],
         (c) => c.handle,
       );

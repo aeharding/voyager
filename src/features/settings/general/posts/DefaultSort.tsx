@@ -1,6 +1,6 @@
 import { IonItem, IonLabel } from "@ionic/react";
 import { PostSortType } from "lemmy-js-client";
-import { title } from "radashi";
+import * as _ from "radashi";
 
 import {
   formatTopLabel,
@@ -37,5 +37,5 @@ export default function DefaultSort() {
 function formatPostSort(sort: PostSortType): string {
   if (isTopSort(sort)) return `Top: ${formatTopLabel(sort)}`;
 
-  return title(sort);
+  return _.title(sort);
 }

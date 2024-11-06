@@ -17,7 +17,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { sift } from "radashi";
+import * as _ from "radashi";
 import { useCallback, useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -89,7 +89,7 @@ export default function usePostActions(post: PostView) {
 
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: sift([
+      buttons: _.sift([
         canModerate && {
           text: "Moderator",
           icon: getModIcon(canModerate),

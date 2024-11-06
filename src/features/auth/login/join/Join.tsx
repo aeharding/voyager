@@ -13,7 +13,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { LoginResponse } from "lemmy-js-client";
-import { title } from "radashi";
+import * as _ from "radashi";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
@@ -85,7 +85,7 @@ export default function Join({ answer }: JoinProps) {
       if (!(error instanceof Error)) throw error;
 
       presentToast({
-        message: `Registration error: ${title(error.message)}`,
+        message: `Registration error: ${_.title(error.message)}`,
         color: "danger",
         position: "top",
         fullscreen: true,

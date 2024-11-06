@@ -5,7 +5,7 @@ import {
   FederatedInstances,
   PostSortType,
 } from "lemmy-js-client";
-import { zipToObject } from "radashi";
+import * as _ from "radashi";
 
 import { COMMENT_SORTS } from "#/features/comment/CommentSort";
 import { ALL_POST_SORTS } from "#/features/feed/PostSort";
@@ -106,12 +106,12 @@ export const OPostBlurNsfw = {
 } as const;
 
 export type CommentDefaultSort = CommentSortType;
-export const OCommentDefaultSort = zipToObject(
+export const OCommentDefaultSort = _.zipToObject(
   COMMENT_SORTS as unknown as CommentSortType[], // TODO https://github.com/radashi-org/radashi/issues/288
   COMMENT_SORTS as unknown as CommentSortType[], // TODO https://github.com/radashi-org/radashi/issues/288
 ) as StringArrayToIdentityObject<typeof COMMENT_SORTS>;
 
-export const OSortType = zipToObject(
+export const OSortType = _.zipToObject(
   ALL_POST_SORTS as PostSortType[], // TODO https://github.com/radashi-org/radashi/issues/288
   ALL_POST_SORTS as PostSortType[], // TODO https://github.com/radashi-org/radashi/issues/288
 ) as StringArrayToIdentityObject<typeof ALL_POST_SORTS>;

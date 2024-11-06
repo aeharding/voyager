@@ -1,3 +1,5 @@
+import * as _ from "radashi";
+
 /**
  * 🚨 Want to add a server to this list?
  * Please read the [curated servers policy](./README.md) first.
@@ -94,9 +96,9 @@ export const SERVERS_BY_CATEGORY = {
   furry: ["pawb.social", "yiffit.net"],
 };
 
-export const WHITELISTED_SERVERS = [
-  ...new Set([...Object.values(SERVERS_BY_CATEGORY)].flat()),
-];
+export const WHITELISTED_SERVERS = _.unique(
+  Object.values(SERVERS_BY_CATEGORY).flat(),
+);
 
 const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmy.ml",
@@ -107,8 +109,9 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmy.myserv.one",
 ];
 
-export const LOGIN_SERVERS = [
-  ...new Set([...WHITELISTED_SERVERS, ...ADDITIONAL_LOGIN_INSTANCES]),
-];
+export const LOGIN_SERVERS = _.unique([
+  ...WHITELISTED_SERVERS,
+  ...ADDITIONAL_LOGIN_INSTANCES,
+]);
 
 export type ServerCategory = keyof typeof SERVERS_BY_CATEGORY | "recommended";

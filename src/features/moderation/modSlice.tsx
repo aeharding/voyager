@@ -1,7 +1,7 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { isBefore, subSeconds } from "date-fns";
 import { CommentReport, PostReport } from "lemmy-js-client";
-import { diff, group } from "radashi";
+import * as _ from "radashi";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { AppDispatch, RootState } from "#/store";
@@ -43,14 +43,14 @@ export const modSlice = createSlice({
       state.postReports = action.payload;
     },
     resolvedCommentReport: (state, action: PayloadAction<CommentReport>) => {
-      state.commentReports = diff(
+      state.commentReports = _.diff(
         state.commentReports,
         [action.payload],
         (r) => r.id,
       );
     },
     resolvedPostReport: (state, action: PayloadAction<PostReport>) => {
-      state.postReports = diff(
+      state.postReports = _.diff(
         state.postReports,
         [action.payload],
         (r) => r.id,
@@ -76,14 +76,14 @@ export const { resetMod } = modSlice.actions;
 export const reportsByCommentIdSelector = createSelector(
   [(state: RootState) => state.mod.commentReports],
   (reports) => {
-    return group(reports, (r) => r.comment_id);
+    return _.group(reports, (r) => r.comment_id);
   },
 );
 
 export const reportsByPostIdSelector = createSelector(
   [(state: RootState) => state.mod.postReports],
   (reports) => {
-    return group(reports, (r) => r.post_id);
+    return _.group(reports, (r) => r.post_id);
   },
 );
 

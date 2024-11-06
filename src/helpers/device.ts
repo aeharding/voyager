@@ -2,7 +2,7 @@ import { Capacitor } from "@capacitor/core";
 import { Mode } from "@ionic/core";
 import { NavMode, NavModes } from "capacitor-android-nav-mode";
 import { shareOutline, shareSocialOutline } from "ionicons/icons";
-import { memo } from "radashi";
+import * as _ from "radashi";
 import UAParser from "ua-parser-js";
 
 import { LOCALSTORAGE_KEYS, get } from "#/features/settings/syncStorage";
@@ -12,7 +12,7 @@ export function getDeviceMode(): Mode {
   return get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios";
 }
 
-export const isNative = memo(() => {
+export const isNative = _.memo(() => {
   return Capacitor.isNativePlatform();
 });
 
@@ -73,8 +73,8 @@ export function getAndroidNavMode() {
   return promise;
 }
 
-export const isIosTheme = memo(() => getDeviceMode() === "ios");
+export const isIosTheme = _.memo(() => getDeviceMode() === "ios");
 
-export const getShareIcon = memo(() =>
+export const getShareIcon = _.memo(() =>
   isIosTheme() ? shareOutline : shareSocialOutline,
 );

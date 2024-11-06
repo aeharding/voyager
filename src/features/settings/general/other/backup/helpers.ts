@@ -1,4 +1,4 @@
-import { diff, pick } from "radashi";
+import * as _ from "radashi";
 
 import { getAllObjectValuesDeep } from "#/helpers/object";
 import { db } from "#/services/db";
@@ -43,7 +43,7 @@ export async function createBackup(): Promise<Backup> {
     ...BASE_BACKUP_JSON,
     created: new Date().toISOString(),
     dexie: dexieExport,
-    localStorage: pick(
+    localStorage: _.pick(
       // pick: remove null/undefined
       Object.assign(
         {},
@@ -73,7 +73,7 @@ export async function restoreFromBackup(backup: Backup) {
 }
 
 function getSkipTables() {
-  return diff(
+  return _.diff(
     db.tables.map((t) => t.name),
     ["settings"],
   );

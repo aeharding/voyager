@@ -1,4 +1,4 @@
-import { sift, unique } from "radashi";
+import * as _ from "radashi";
 import { useMemo } from "react";
 
 import { useAppSelector } from "#/store";
@@ -16,8 +16,8 @@ export default function LoggedInCommunitiesList(props: CommunitiesListProps) {
   );
 
   const communities = useMemo(() => {
-    const allCommunities = unique(
-      sift([
+    const allCommunities = _.unique(
+      _.sift([
         ...(follows || []).map((f) => f.community),
         ...Object.values(communityByHandle).map((c) => c?.community),
       ]),

@@ -6,7 +6,7 @@ import {
   peopleOutline,
   personOutline,
 } from "ionicons/icons";
-import { sift } from "radashi";
+import * as _ from "radashi";
 
 import { PlainButton } from "#/features/shared/PlainButton";
 import { getHandle } from "#/helpers/lemmy";
@@ -47,7 +47,7 @@ export default function ModlogItemMoreActions({
   function presentMoreActions() {
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: sift([
+      buttons: _.sift([
         person
           ? {
               text: getHandle(person),

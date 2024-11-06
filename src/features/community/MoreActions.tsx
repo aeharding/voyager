@@ -10,7 +10,7 @@ import {
   tabletPortraitOutline,
 } from "ionicons/icons";
 import { Community, CommunityView } from "lemmy-js-client";
-import { sift } from "radashi";
+import * as _ from "radashi";
 
 import { useBuildTogglePostAppearanceButton } from "#/features/feed/SpecialFeedMoreActions";
 import useHidePosts from "#/features/feed/useHidePosts";
@@ -57,7 +57,7 @@ function MoreActionsWithCommunity({ community }: MoreActionsActionSheetProps) {
   function present() {
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: sift([
+      buttons: _.sift([
         {
           text: "Submit Post",
           cssClass: "detail",

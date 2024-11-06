@@ -2,7 +2,7 @@ import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { ellipseOutline, menuOutline, star } from "ionicons/icons";
-import { sift } from "radashi";
+import * as _ from "radashi";
 import { MouseEvent, RefObject, TouchEvent, useMemo, useRef } from "react";
 import { VListHandle } from "virtua";
 
@@ -105,13 +105,13 @@ export default function AlphabetJump({
   const jumpTableLookup = useMemo(
     () =>
       buildJumpToTable(
-        sift([
+        _.sift([
           SpecialSection.Home,
           hasFavorited ? SpecialSection.Favorited : undefined,
           hasModerated ? SpecialSection.Moderated : undefined,
           ...letters,
         ]),
-        sift([
+        _.sift([
           SpecialSection.Home,
           SpecialSection.Favorited,
           SpecialSection.Moderated,

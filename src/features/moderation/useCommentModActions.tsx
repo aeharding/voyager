@@ -7,7 +7,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import { sift } from "radashi";
+import * as _ from "radashi";
 import { useCallback, useContext, useMemo, useState } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -68,7 +68,7 @@ export default function useCommentModActions(commentView: CommentView) {
     presentActionSheet({
       header: stringifyReports(reports),
       cssClass: `${role} left-align-buttons`,
-      buttons: sift([
+      buttons: _.sift([
         isSelf && {
           text: !comment.distinguished ? "Distinguish" : "Undistinguish",
           icon: shieldCheckmarkOutline,

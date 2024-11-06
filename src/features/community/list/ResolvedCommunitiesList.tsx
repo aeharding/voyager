@@ -9,7 +9,7 @@ import {
 import { styled } from "@linaria/react";
 import { earth, home, people, shieldCheckmark } from "ionicons/icons";
 import { Community } from "lemmy-js-client";
-import { alphabetical } from "radashi";
+import * as _ from "radashi";
 import { memo, useMemo, useRef } from "react";
 import { VList, VListHandle } from "virtua";
 
@@ -98,7 +98,7 @@ function ResolvedCommunitiesList({
   );
 
   const communitiesGroupedByLetter = useMemo(() => {
-    return alphabetical(
+    return _.alphabetical(
       Object.entries(
         communities.reduce<Record<string, Community[]>>((acc, community) => {
           const firstLetter = /[0-9]/.test(community.name[0]!)

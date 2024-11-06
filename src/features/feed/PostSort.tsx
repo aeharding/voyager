@@ -19,7 +19,7 @@ import {
   trophyOutline,
 } from "ionicons/icons";
 import { PostSortType } from "lemmy-js-client";
-import { title } from "radashi";
+import * as _ from "radashi";
 import { useContext } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -89,7 +89,7 @@ const TOP_POST_SORTS = [
 
 const BUTTONS: ActionSheetButton<ExtendedSortType>[] = POST_SORTS.map(
   (sortType) => ({
-    text: title(sortType),
+    text: _.title(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
   }),
