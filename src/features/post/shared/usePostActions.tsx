@@ -229,7 +229,7 @@ export default function usePostActions(post: PostView) {
           icon: textOutline,
           handler: () => {
             presentSelectText(
-              sift([post.post.name, post.post.body]).join("\n\n"),
+              _.sift([post.post.name, post.post.body]).join("\n\n"),
             );
           },
         },
