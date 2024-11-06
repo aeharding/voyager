@@ -1,6 +1,6 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
-import { differenceBy, groupBy, sortBy, uniqBy } from "lodash";
+import { diff, group, sift, sort, unique } from "radashi";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { receivedUsers } from "#/features/user/userSlice";
@@ -66,7 +66,7 @@ export const inboxSlice = createSlice({
       }
     },
     receivedMessages: (state, action: PayloadAction<PrivateMessageView[]>) => {
-      state.messages = uniqBy(
+      state.messages = unique(
         [...action.payload, ...state.messages],
         (m) => m.private_message.id,
       );
@@ -169,7 +169,7 @@ export const syncMessages =
             throw e;
           }
 
-          const newMessages = differenceBy(
+          const newMessages = diff(
             privateMessages,
             getState().inbox.messages,
             (msg) => msg.private_message.id,
@@ -203,15 +203,19 @@ export const conversationsByPersonIdSelector = createSelector(
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   ],
   (messages, myUserId) => {
-    return sortBy(
-      Object.values(
-        groupBy(messages, (m) =>
-          m.private_message.creator_id === myUserId
-            ? m.private_message.recipient_id
-            : m.private_message.creator_id,
+    return sort(
+      // TODO sift is not needed here, types are wrong
+      // https://github.com/radashi-org/radashi/issues/287
+      sift(
+        Object.values(
+          group(messages, (m) =>
+            m.private_message.creator_id === myUserId
+              ? m.private_message.recipient_id
+              : m.private_message.creator_id,
+          ),
         ),
       ).map((messages) =>
-        sortBy(messages, (m) => -Date.parse(m.private_message.published)),
+        sort(messages, (m) => -Date.parse(m.private_message.published)),
       ),
       (group) => -Date.parse(group[0]!.private_message.published),
     );

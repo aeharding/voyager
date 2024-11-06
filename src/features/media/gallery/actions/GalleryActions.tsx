@@ -11,7 +11,7 @@ import {
   personOutline,
 } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { compact } from "lodash";
+import { sift } from "radashi";
 import { useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -55,7 +55,7 @@ export default function GalleryActions({ post, imgSrc }: GalleryActionsProps) {
 
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: compact([
+      buttons: sift([
         {
           text: "Share",
           icon: getShareIcon(),

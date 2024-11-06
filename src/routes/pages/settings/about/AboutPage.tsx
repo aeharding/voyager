@@ -19,7 +19,7 @@ import {
   sparkles,
   thumbsUp,
 } from "ionicons/icons";
-import { shuffle } from "lodash";
+import { shuffle } from "radashi";
 import { useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";

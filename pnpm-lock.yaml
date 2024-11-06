@@ -166,6 +166,9 @@ importers:
       photoswipe:
         specifier: ^5.4.4
         version: 5.4.4
+      radashi:
+        specifier: ^12.2.0
+        version: 12.2.0
       react:
         specifier: 0.0.0-experimental-7c8e5e7a-20241101
         version: 0.0.0-experimental-7c8e5e7a-20241101
@@ -5233,6 +5236,10 @@ packages:
   quick-lru@4.0.1:
     resolution: {integrity: sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==}
     engines: {node: '>=8'}
+
+  radashi@12.2.0:
+    resolution: {integrity: sha512-LeYD1SabvzUss1csIqSx5nVjUn2tg8zZykSiadmAfF0fEdAL18sMdn9oFkzniy5WEdqSq249MnnIqK5eVzluVw==}
+    engines: {node: '>=16.0.0'}
 
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
@@ -12764,6 +12771,8 @@ snapshots:
   queue-tick@1.0.1: {}
 
   quick-lru@4.0.1: {}
+
+  radashi@12.2.0: {}
 
   randombytes@2.1.0:
     dependencies:

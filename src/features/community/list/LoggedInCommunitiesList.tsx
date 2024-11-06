@@ -1,4 +1,4 @@
-import { compact, pullAllBy, uniqBy } from "lodash";
+import { sift, unique } from "radashi";
 import { useMemo } from "react";
 
 import { useAppSelector } from "#/store";
@@ -16,23 +16,21 @@ export default function LoggedInCommunitiesList(props: CommunitiesListProps) {
   );
 
   const communities = useMemo(() => {
-    const communities = uniqBy(
-      compact([
+    const allCommunities = unique(
+      sift([
         ...(follows || []).map((f) => f.community),
         ...Object.values(communityByHandle).map((c) => c?.community),
       ]),
-      "id",
+      (c) => c.id,
     );
 
-    pullAllBy(
-      communities,
-      Object.values(communityByHandle)
-        .filter((response) => response?.subscribed === "NotSubscribed")
-        .map((c) => c?.community),
-      "id",
-    );
+    const unsubscribedCommunityIds = Object.values(communityByHandle)
+      .filter((response) => response?.subscribed === "NotSubscribed")
+      .map((c) => c?.community.id);
 
-    return communities;
+    return allCommunities.filter(
+      (community) => !unsubscribedCommunityIds.includes(community.id),
+    );
   }, [follows, communityByHandle]);
 
   return <ResolvedCommunitiesList {...props} communities={communities} />;

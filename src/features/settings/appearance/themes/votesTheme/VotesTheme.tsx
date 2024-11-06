@@ -9,7 +9,7 @@ import {
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { arrowDownOutline, arrowUpOutline } from "ionicons/icons";
-import { startCase } from "lodash";
+import { title } from "radashi";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
 import { OVotesThemeType } from "#/services/db";
@@ -84,7 +84,7 @@ export default function VotesTheme() {
                 `}
               >
                 <VotesContainer>
-                  <IonLabel>{startCase(label)}</IonLabel>
+                  <IonLabel>{title(label)}</IonLabel>
                   <Votes>
                     <Vote bgColor={VOTE_COLORS.UPVOTE[value]}>
                       <IonIcon icon={arrowUpOutline} />

@@ -1,5 +1,3 @@
-import { pullAt } from "lodash";
-
 // https://stackoverflow.com/a/60132060/1319878
 export const arrayOfAll =
   <T>() =>
@@ -7,11 +5,10 @@ export const arrayOfAll =
     array;
 
 export function moveItem<T>(array: T[], from: number, to: number): T[] {
-  const clonedArray = [...array];
-  const [itemToMove] = pullAt(clonedArray, from);
-  if (!itemToMove) return array;
-  clonedArray.splice(to, 0, itemToMove);
-  return clonedArray;
+  const [itemToMove] = array.splice(from, 1);
+  if (itemToMove === undefined) return array;
+  array.splice(to, 0, itemToMove);
+  return array;
 }
 
 /**

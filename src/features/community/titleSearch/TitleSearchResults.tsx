@@ -2,7 +2,7 @@ import { IonItem, IonList } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { Community, CommunityView } from "lemmy-js-client";
-import { compact, sortBy, uniqBy } from "lodash";
+import { sift, sort, unique } from "radashi";
 import {
   useContext,
   useEffect,
@@ -136,11 +136,11 @@ export default function TitleSearchResults() {
 
     const moderatedAsCommunityId = moderates?.map((m) => m.community.id);
 
-    return uniqBy(
-      compact([
+    return unique(
+      sift([
         ...searchSpecialByName(eligibleSpecialFeeds, search),
         ...(search
-          ? sortBy(results, (r) => {
+          ? sort(results, (r) => {
               if (favorites.includes(getHandle(r))) {
                 return 0;
               }

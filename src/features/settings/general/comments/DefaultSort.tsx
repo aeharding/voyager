@@ -1,4 +1,4 @@
-import { mapValues } from "lodash";
+import { mapValues } from "radashi";
 
 import { getSortIcon } from "#/features/comment/CommentSort";
 import SettingSelector from "#/features/settings/shared/SettingSelector";

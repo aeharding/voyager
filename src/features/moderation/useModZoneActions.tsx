@@ -5,7 +5,7 @@ import {
   footstepsOutline,
 } from "ionicons/icons";
 import { CommunityView } from "lemmy-js-client";
-import { compact } from "lodash";
+import { sift } from "radashi";
 
 import { getFeedUrlName } from "#/features/community/mod/ModActions";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -37,7 +37,7 @@ export default function useModZoneActions(props: UseModZoneActionsProps) {
   function present() {
     presentActionSheet({
       cssClass: `${role} left-align-buttons`,
-      buttons: compact([
+      buttons: sift([
         {
           text: "Mod Queue",
           icon: fileTrayFullOutline,

@@ -1,6 +1,6 @@
 import { IonButton, useIonActionSheet } from "@ionic/react";
 import { footstepsOutline } from "ionicons/icons";
-import { compact } from "lodash";
+import { sift } from "radashi";
 
 import { usernameSelector } from "#/features/auth/authSelectors";
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
@@ -17,7 +17,7 @@ export default function ProfilePageActions() {
   function present() {
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: compact([
+      buttons: sift([
         username && {
           text: "Mod Log",
           data: "modlog",

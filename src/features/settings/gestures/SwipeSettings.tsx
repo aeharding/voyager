@@ -17,7 +17,7 @@ import {
   eyeOffOutline,
   mailUnreadOutline,
 } from "ionicons/icons";
-import { startCase } from "lodash";
+import { title } from "radashi";
 import { useState } from "react";
 
 import SettingSelector from "#/features/settings/shared/SettingSelector";
@@ -211,7 +211,7 @@ function SwipeList({
   );
 
   function getSelectedLabel(option: string): string {
-    return option === "collapse-to-top" ? "Collapse Top" : startCase(option);
+    return option === "collapse-to-top" ? "Collapse Top" : title(option);
   }
 
   return (

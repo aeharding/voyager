@@ -1,6 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { UploadImageResponse } from "lemmy-js-client";
-import { pullAllBy } from "lodash";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { _uploadImage } from "#/services/lemmy";
@@ -31,7 +30,9 @@ export const uploadImageSlice = createSlice({
         return;
       }
 
-      pullAllBy(state.pendingSubmitImages, action.payload, (img) => img.url);
+      state.pendingSubmitImages = state.pendingSubmitImages.filter(
+        (img) => action.payload !== img.url,
+      );
     },
   },
 });

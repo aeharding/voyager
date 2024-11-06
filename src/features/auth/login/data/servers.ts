@@ -1,5 +1,3 @@
-import { concat, uniq } from "lodash";
-
 /**
  * 🚨 Want to add a server to this list?
  * Please read the [curated servers policy](./README.md) first.
@@ -96,9 +94,9 @@ export const SERVERS_BY_CATEGORY = {
   furry: ["pawb.social", "yiffit.net"],
 };
 
-export const WHITELISTED_SERVERS = uniq(
-  concat(...Object.values(SERVERS_BY_CATEGORY)),
-);
+export const WHITELISTED_SERVERS = [
+  ...new Set([...Object.values(SERVERS_BY_CATEGORY)].flat()),
+];
 
 const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmy.ml",
@@ -109,9 +107,8 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmy.myserv.one",
 ];
 
-export const LOGIN_SERVERS = uniq([
-  ...WHITELISTED_SERVERS,
-  ...ADDITIONAL_LOGIN_INSTANCES,
-]);
+export const LOGIN_SERVERS = [
+  ...new Set([...WHITELISTED_SERVERS, ...ADDITIONAL_LOGIN_INSTANCES]),
+];
 
 export type ServerCategory = keyof typeof SERVERS_BY_CATEGORY | "recommended";

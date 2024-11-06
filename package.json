@@ -93,6 +93,7 @@
     "micromark-util-combine-extensions": "^2.0.0",
     "modern-screenshot": "^4.4.39",
     "photoswipe": "^5.4.4",
+    "radashi": "^12.2.0",
     "react": "0.0.0-experimental-7c8e5e7a-20241101",
     "react-animate-height": "^3.2.3",
     "react-dom": "0.0.0-experimental-7c8e5e7a-20241101",

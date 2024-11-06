@@ -7,7 +7,7 @@ import {
   useIonAlert,
 } from "@ionic/react";
 import { styled } from "@linaria/react";
-import { capitalize } from "lodash";
+import { capitalize } from "radashi";
 
 import { useIsDark } from "#/core/GlobalStyles";
 import { getTheme } from "#/core/theme/AppThemes";

@@ -1,4 +1,4 @@
-import { orderBy, sample } from "lodash";
+import { draw, sort } from "radashi";
 import { useCallback } from "react";
 
 import { clientSelector } from "#/features/auth/authSelectors";
@@ -40,7 +40,7 @@ export default function useGetRandomCommunity() {
       throw error;
     }
 
-    const randomCommunitiesByPosts = orderBy(
+    const randomCommunitiesByPosts = sort(
       response.communities,
       (c) => -c.counts.posts,
     );
@@ -49,7 +49,7 @@ export default function useGetRandomCommunity() {
       (c) => c.counts.posts > 10,
     );
     const chosenRandomCommunity =
-      sample(eligibleRandomCommunities)?.community ??
+      draw(eligibleRandomCommunities)?.community ??
       randomCommunitiesByPosts[0]?.community;
 
     if (!chosenRandomCommunity) {

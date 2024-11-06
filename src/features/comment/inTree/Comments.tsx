@@ -2,7 +2,7 @@ import { RefresherCustomEvent } from "@ionic/core";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { CommentSortType, CommentView } from "lemmy-js-client";
-import { compact, pullAllBy, sortBy, uniqBy } from "lodash";
+import { diff, sift, sort, unique } from "radashi";
 import React, {
   useCallback,
   useEffect,
@@ -89,7 +89,7 @@ export default function Comments({
   header,
   postId,
   commentPath,
-  sort,
+  sort: sortType,
   bottomPadding,
   threadCommentId,
   ref,
@@ -194,7 +194,7 @@ export default function Comments({
     // but since we're only viewing a single thread
     // (and have already filtered) it probably doesn't matter much
     if (commentPath || threadCommentId) {
-      potentialComments = sortBy(potentialComments, (i) =>
+      potentialComments = sort(potentialComments, (i) =>
         getDepthFromCommentPath(i.comment.path),
       );
     }
@@ -266,7 +266,7 @@ export default function Comments({
           post_id: reqPostId,
           parent_id: parentCommentId,
           limit: 10,
-          sort,
+          sort: sortType,
           type_: "All",
 
           max_depth: maxDepth,
@@ -297,14 +297,14 @@ export default function Comments({
       if (reqPostId !== postId || reqCommentId !== parentCommentId) return;
 
       const existingComments = refresh ? [] : comments;
-      const newComments = pullAllBy(
+      const newComments = diff(
         response.comments,
         existingComments,
-        "comment.id",
+        (c) => c.comment.id,
       );
       if (!newComments.length) finishedPagingRef.current = true;
 
-      const potentialComments = uniqBy(
+      const potentialComments = unique(
         [...existingComments, ...newComments],
         (c) => c.comment.id,
       );
@@ -324,7 +324,7 @@ export default function Comments({
       parentCommentId,
       postId,
       presentToast,
-      sort,
+      sortType,
     ],
   );
 
@@ -332,7 +332,7 @@ export default function Comments({
 
   useEffect(() => {
     fetchCommentsEvent(true);
-  }, [sort, commentPath, postId, client, threadCommentId]);
+  }, [sortType, commentPath, postId, client, threadCommentId]);
 
   const prependComments = useCallback(
     async (comments: CommentView[]) => {
@@ -352,7 +352,7 @@ export default function Comments({
           commentsResult = [...comments, ...existingComments];
         }
 
-        const newComments = uniqBy(commentsResult, (c) => c.comment.id);
+        const newComments = unique(commentsResult, (c) => c.comment.id);
 
         // Increase the child_count as appropriate
         comments.forEach((c) => {
@@ -385,7 +385,7 @@ export default function Comments({
 
   const appendComments = useCallback((comments: CommentView[]) => {
     setComments((existingComments) =>
-      uniqBy([...existingComments, ...comments], (c) => c.comment.id),
+      unique([...existingComments, ...comments], (c) => c.comment.id),
     );
   }, []);
 
@@ -479,7 +479,7 @@ export default function Comments({
 
   const content = useMemo(
     () =>
-      compact([
+      sift([
         header,
         ...allComments,
         renderFooter(),

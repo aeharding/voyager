@@ -1,11 +1,11 @@
 import { useIonViewWillEnter } from "@ionic/react";
-import { uniqueId } from "lodash";
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -128,7 +128,7 @@ const VideoPortalContext = createContext<VideoPortalContextState>({
 });
 
 export function useVideoPortalNode(src: string): PortalNode | void {
-  const sourceUidRef = useRef(uniqueId());
+  const sourceUidRef = useRef(useId());
   const { getPortalNodeForSrc, cleanupPortalNodeForSrcIfNeeded, videoRefs } =
     useContext(VideoPortalContext);
 

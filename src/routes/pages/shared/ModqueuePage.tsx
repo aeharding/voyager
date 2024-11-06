@@ -12,7 +12,7 @@ import {
   PostReportView,
   PostView,
 } from "lemmy-js-client";
-import { uniqBy } from "lodash";
+import { unique } from "radashi";
 import { createContext, memo, useCallback, useContext } from "react";
 import { useParams } from "react-router";
 
@@ -105,10 +105,10 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
         await dispatch(syncReports(true));
       }
 
-      const comments = await uniqBy(comment_reports, (r) => r.comment.id).map(
+      const comments = await unique(comment_reports, (r) => r.comment.id).map(
         convertCommentReportToComment,
       );
-      const posts = await uniqBy(post_reports, (r) => r.post.id).map(
+      const posts = await unique(post_reports, (r) => r.post.id).map(
         convertPostReportToPost,
       );
 

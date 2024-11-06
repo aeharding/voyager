@@ -1,4 +1,4 @@
-import { isEqual } from "lodash";
+import { isEqual } from "radashi";
 import React, { useEffect, useState } from "react";
 
 import { isNative } from "#/helpers/device";
