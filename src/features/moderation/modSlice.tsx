@@ -43,17 +43,13 @@ export const modSlice = createSlice({
       state.postReports = action.payload;
     },
     resolvedCommentReport: (state, action: PayloadAction<CommentReport>) => {
-      state.commentReports = _.diff(
-        state.commentReports,
-        [action.payload],
-        (r) => r.id,
+      state.commentReports = state.commentReports.filter(
+        (r) => r.id !== action.payload.id,
       );
     },
     resolvedPostReport: (state, action: PayloadAction<PostReport>) => {
-      state.postReports = _.diff(
-        state.postReports,
-        [action.payload],
-        (r) => r.id,
+      state.postReports = state.postReports.filter(
+        (r) => r.id !== action.payload.id,
       );
     },
     resetMod: () => initialState,

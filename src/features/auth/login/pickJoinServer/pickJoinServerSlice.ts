@@ -35,7 +35,7 @@ export const getInstances = () => async (dispatch: AppDispatch) => {
   ];
 
   const unorderedInstances = instances
-    .filter((instance) => serverWhitelist.includes(instance.baseurl))
+    .filter(({ baseurl }) => serverWhitelist.includes(baseurl))
     .sort((a, b) => b.trust.score - a.trust.score)
     .filter(
       (server) => server.open && isMinimumSupportedLemmyVersion(server.version),

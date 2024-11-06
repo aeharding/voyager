@@ -82,9 +82,8 @@ export const authSlice = createSlice({
         cleanedPreviousAccounts = [action.payload];
       } else {
         // Remove guest accounts for this instance when logging in
-        const instanceToRemove = getInstanceFromHandle(action.payload.handle);
         cleanedPreviousAccounts = state.accountData.accounts.filter(
-          (a) => a.handle !== instanceToRemove,
+          (a) => a.handle !== getInstanceFromHandle(action.payload.handle),
         );
       }
 

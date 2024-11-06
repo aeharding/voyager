@@ -89,7 +89,7 @@ export default function Comments({
   header,
   postId,
   commentPath,
-  sort: sortType,
+  sort,
   bottomPadding,
   threadCommentId,
   ref,
@@ -266,7 +266,7 @@ export default function Comments({
           post_id: reqPostId,
           parent_id: parentCommentId,
           limit: 10,
-          sort: sortType,
+          sort: sort,
           type_: "All",
 
           max_depth: maxDepth,
@@ -324,7 +324,7 @@ export default function Comments({
       parentCommentId,
       postId,
       presentToast,
-      sortType,
+      sort,
     ],
   );
 
@@ -332,7 +332,7 @@ export default function Comments({
 
   useEffect(() => {
     fetchCommentsEvent(true);
-  }, [sortType, commentPath, postId, client, threadCommentId]);
+  }, [sort, commentPath, postId, client, threadCommentId]);
 
   const prependComments = useCallback(
     async (comments: CommentView[]) => {

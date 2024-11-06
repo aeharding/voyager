@@ -56,7 +56,8 @@ export default function ConfigProvider({ children }: ConfigProviderProps) {
 }
 
 function getCustomDefaultServers() {
-  const serversList = import.meta.env.VITE_CUSTOM_LEMMY_SERVERS;
+  const serversList: string | undefined = import.meta.env
+    .VITE_CUSTOM_LEMMY_SERVERS;
 
   if (!serversList) return;
 
