@@ -97,6 +97,10 @@ export default function CommentHeader({
     (state) => state.settings.general.comments.showCollapsed,
   );
   const inModqueue = useInModqueue();
+  const tagsEnabled = useAppSelector((state) => state.settings.tags.enabled);
+  const trackVotesEnabled = useAppSelector(
+    (state) => state.settings.tags.trackVotes,
+  );
 
   function renderActions() {
     if (inModqueue) return <ModqueueItemActions item={commentView} />;
@@ -146,6 +150,7 @@ export default function CommentHeader({
                 distinguished={comment.distinguished}
                 showBadge={false}
                 showTag={false}
+                sourceUrl={commentView.comment.ap_id}
               />{" "}
               deleted their <span className="ion-text-nowrap">comment :(</span>
             </DeletedLabel>
@@ -164,6 +169,7 @@ export default function CommentHeader({
                 distinguished={comment.distinguished}
                 showBadge={false}
                 showTag={false}
+                sourceUrl={commentView.comment.ap_id}
               />
               &apos;s comment
             </DeletedLabel>
@@ -180,12 +186,15 @@ export default function CommentHeader({
               distinguished={comment.distinguished}
               showBadge={!context}
               showTag={false}
+              sourceUrl={commentView.comment.ap_id}
             />
-            <UserScore person={commentView.creator} />
+            {tagsEnabled && trackVotesEnabled && (
+              <UserScore person={commentView.creator} />
+            )}
             <CommentVote item={commentView} />
             <Edited item={commentView} />
             <Spacer>
-              <UserTag person={commentView.creator} />
+              {tagsEnabled && <UserTag person={commentView.creator} />}
             </Spacer>
             {renderAside(comment.published)}
           </>

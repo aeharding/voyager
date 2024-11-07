@@ -7,7 +7,6 @@ import {
 } from "@reduxjs/toolkit";
 import Dexie from "dexie";
 import { PostSortType } from "lemmy-js-client";
-import * as _ from "radashi";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
@@ -154,13 +153,17 @@ interface SettingsState {
   };
 }
 
+/**
+ * We continue using localstorage for specific items because indexeddb is slow
+ * and we don't want to wait for it to load before rendering the app and cause flickering
+ */
 export const initialState: SettingsState = {
   ready: false,
   databaseError: undefined,
   appearance: {
     font: {
-      fontSizeMultiplier: 1,
-      useSystemFontSize: false,
+      fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER) ?? 1,
+      useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM) ?? false,
     },
     general: {
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
@@ -190,13 +193,13 @@ export const initialState: SettingsState = {
       voteDisplayMode: OVoteDisplayMode.Total,
     },
     dark: {
-      usingSystemDarkMode: true,
-      userDarkMode: false,
-      pureBlack: true,
+      usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM) ?? true,
+      userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE) ?? false,
+      pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK) ?? true,
       quickSwitch: true,
     },
-    deviceMode: "ios",
-    theme: "default",
+    deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios",
+    theme: get(LOCALSTORAGE_KEYS.THEME) ?? "default",
     commentsTheme: "rainbow",
     votesTheme: "lemmy",
   },
@@ -238,7 +241,7 @@ export const initialState: SettingsState = {
   },
   tags: {
     enabled: false,
-    trackVotes: true,
+    trackVotes: false,
     hideInstance: true,
     saveSource: true,
   },
@@ -247,27 +250,6 @@ export const initialState: SettingsState = {
     websites: [],
   },
 };
-
-// We continue using localstorage for specific items because indexeddb is slow
-// and we don't want to wait for it to load before rendering the app and cause flickering
-export const stateWithLocalstorageItems: SettingsState = _.assign(
-  initialState,
-  {
-    appearance: {
-      font: {
-        fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
-        useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
-      },
-      dark: {
-        usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
-        userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
-        pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK),
-      },
-      deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
-      theme: get(LOCALSTORAGE_KEYS.THEME),
-    },
-  },
-);
 
 export const defaultCommentDepthSelector = createSelector(
   [
@@ -297,7 +279,7 @@ export const defaultThreadCollapse = createSelector(
 
 export const appearanceSlice = createSlice({
   name: "appearance",
-  initialState: stateWithLocalstorageItems,
+  initialState,
   extraReducers: (builder) => {
     builder.addCase(
       fetchSettingsFromDatabase.fulfilled,

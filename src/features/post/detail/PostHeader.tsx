@@ -272,7 +272,11 @@ export default function PostHeader({
                   showInstanceWhenRemote
                   subscribed={post.subscribed}
                 />{" "}
-                <PersonLink person={post.creator} prefix="by" />
+                <PersonLink
+                  person={post.creator}
+                  prefix="by"
+                  sourceUrl={post.post.ap_id}
+                />
               </By>
               <Stats post={post} />
               {post.post.locked && <Locked />}

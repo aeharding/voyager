@@ -38,9 +38,9 @@ export default function AppUrlListener() {
 
     // wait for router to get into a good state before pushing
     // (needed for pushing user profiles from app startup)
-    const resolved = await redirectToLemmyObjectIfNeeded(url);
+    const result = await redirectToLemmyObjectIfNeeded(url);
 
-    if (!resolved) presentToast(deepLinkFailed);
+    if (result === "not-found") presentToast(deepLinkFailed);
   };
 
   const onAppUrlEvent = useEffectEvent(onAppUrl);

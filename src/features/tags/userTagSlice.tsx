@@ -105,6 +105,9 @@ export const fetchTagsForHandles = createAsyncThunk(
 export const updateTagVotes =
   (payload: UpdateVotePayload) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    if (!getState().settings.tags.enabled) return;
+    if (!getState().settings.tags.trackVotes) return;
+
     // Can't set tag vote for own content
     if (
       getState().auth.accountData?.accounts.find(
@@ -121,11 +124,10 @@ export const updateTagVotes =
     await db.updateTag(updatedTag);
   };
 
-export const updateTag =
-  (updatedTag: UserTag) => async (dispatch: AppDispatch) => {
-    dispatch(userTagSlice.actions.updateTag(updatedTag));
-    await db.updateTag(updatedTag);
-  };
+export const updateTag = (tag: UserTag) => async (dispatch: AppDispatch) => {
+  dispatch(userTagSlice.actions.updateTag(tag));
+  await db.updateTag(tag);
+};
 
 export const resetTags = () => async (dispatch: AppDispatch) => {
   dispatch(userTagSlice.actions.reset());

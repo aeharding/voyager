@@ -220,6 +220,7 @@ export default function CompactPost({ post }: PostProps) {
                     person={post.creator}
                     showInstanceWhenRemote
                     prefix="by"
+                    sourceUrl={post.post.ap_id}
                   />
                 ) : (
                   <>
@@ -233,7 +234,11 @@ export default function CompactPost({ post }: PostProps) {
                     {alwaysShowAuthor && (
                       <>
                         {" "}
-                        <PersonLink person={post.creator} prefix="by" />
+                        <PersonLink
+                          person={post.creator}
+                          prefix="by"
+                          sourceUrl={post.post.ap_id}
+                        />
                       </>
                     )}
                   </>
