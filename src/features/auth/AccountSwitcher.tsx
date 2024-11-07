@@ -12,6 +12,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
+import * as _ from "radashi";
 import { useContext, useEffect, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
@@ -126,12 +127,22 @@ function AccountSwitcherContents({
           <IonRadioGroup
             value={selectedAccount}
             onIonChange={async (e) => {
+              const selectAccountPromise = onSelectAccount(e.target.value);
+
+              // Early return against loading state
+              if (!_.isPromise(selectAccountPromise)) {
+                setSelectedAccount(e.target.value);
+                onDismiss();
+                return;
+              }
+
               setLoading(true);
+
               const old = selectedAccount;
               setSelectedAccount(e.target.value);
 
               try {
-                await onSelectAccount(e.target.value);
+                await selectAccountPromise;
               } catch (error) {
                 setSelectedAccount(old);
                 throw error;
