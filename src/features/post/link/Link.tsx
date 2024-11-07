@@ -160,7 +160,7 @@ export default function Link({
     () => determineObjectTypeFromUrl(url) ?? determineTypeFromUrl(url),
     [url, determineObjectTypeFromUrl],
   );
-  const isImage = useMemo(() => isUrlImage(url), [url]);
+  const isImage = useMemo(() => isUrlImage(url, undefined), [url]);
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();

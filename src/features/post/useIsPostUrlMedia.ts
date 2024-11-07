@@ -20,7 +20,7 @@ export default function useIsPostUrlMedia() {
         if (isRedgif(url)) return true;
       }
 
-      return !!findUrlMediaType(url);
+      return !!findUrlMediaType(url, post.post.url_content_type);
     },
     [embedExternalMedia],
   );
