@@ -42,11 +42,11 @@ const BanTextContainer = styled.div`
   margin: 0 32px 32px;
 `;
 
-type BanUserProps = {
+interface BanUserProps {
   dismiss: () => void;
   setCanDismiss: (canDismiss: boolean) => void;
   item: BanUserPayload;
-};
+}
 
 export default function BanUser({
   dismiss,

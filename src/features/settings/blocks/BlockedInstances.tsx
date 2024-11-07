@@ -21,9 +21,9 @@ import { useAppDispatch, useAppSelector } from "#/store";
 /**
  * lemmy v0.19 version
  */
-type InstanceView = {
+interface InstanceView {
   instance: Instance;
-};
+}
 
 /**
  * TODO remove - Lemmy 0.19 returned communityView. v0.20 returns community.

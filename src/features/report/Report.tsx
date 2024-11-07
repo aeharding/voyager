@@ -9,9 +9,9 @@ import useClient from "#/helpers/useClient";
 
 export type ReportableItem = CommentView | PostView | PrivateMessageView;
 
-export type ReportHandle = {
+export interface ReportHandle {
   present: (item: ReportableItem) => void;
-};
+}
 
 export default function Report({
   ref,

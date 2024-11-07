@@ -1,14 +1,15 @@
 import { noop } from "es-toolkit";
 import React, { createContext, useCallback, useMemo, useState } from "react";
 
-type TitleSearchContext = {
+interface TitleSearchContext {
   search: string;
   setSearch: (search: string) => void;
   searching: boolean;
   setSearching: (searching: boolean) => void;
   onSubmit: () => void;
   setOnSubmit: (onSubmit: () => void) => void;
-};
+}
+
 export const TitleSearchContext = createContext<TitleSearchContext>({
   search: "",
   setSearch: noop,

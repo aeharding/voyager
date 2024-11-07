@@ -7,10 +7,11 @@ import React, {
   useState,
 } from "react";
 
-type BeforeInstallPromptContextType = {
+interface BeforeInstallPromptContextType {
   event: BeforeInstallPromptEvent | null;
   clearEvent: () => void;
-};
+}
+
 export const BeforeInstallPromptContext =
   createContext<BeforeInstallPromptContextType>({
     event: null,

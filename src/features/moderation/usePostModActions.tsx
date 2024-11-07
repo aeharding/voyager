@@ -205,8 +205,10 @@ export function stringifyReports(
   return Object.values(groupBy(reports, (r) => r.reason))
     .map(
       (reports) =>
-        `${reports.length} report${reports.length === 1 ? "" : "s"}: “${
-          reports[0]!.reason
+        // ! assertion is safe because we immediately call Object.values on _.group
+        // https://github.com/radashi-org/radashi/issues/287#issuecomment-2460593221
+        `${reports!.length} report${reports!.length === 1 ? "" : "s"}: “${
+          reports![0]!.reason // group will always have one item
         }”`,
     )
     .join("\n");
