@@ -20,13 +20,13 @@ FROM base AS builder
 RUN apk add --no-cache git
 
 # Prepare build deps ( ignore postinstall scripts for now )
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml .npmrc ./
 COPY patches ./patches
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy all source files
-COPY prebuild.sh disable_in_app_purchases.sh index.html vite.config.ts manifest.json tsconfig.json compilerOptions.js .npmrc ./
+COPY prebuild.sh disable_in_app_purchases.sh index.html vite.config.ts manifest.json tsconfig.json compilerOptions.js ./
 COPY public ./public
 COPY src ./src
 
