@@ -118,8 +118,7 @@
     "unist-util-visit": "^5.0.0",
     "use-long-press": "^3.2.0",
     "uuid": "^11.0.2",
-    "virtua": "^0.36.2",
-    "workbox-window": "^7.3.0"
+    "virtua": "^0.36.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.25.9",
@@ -151,13 +150,11 @@
     "eslint-plugin-react-compiler": "0.0.0-experimental-63b359f-20241031",
     "eslint-plugin-react-hooks": "0.0.0-experimental-7c8e5e7a-20241101",
     "eslint-plugin-vitest": "^0.5.4",
-    "globals": "^15.11.0",
     "jsdom": "^25.0.1",
     "mdast-util-lemmy-spoiler": "^2.0.0",
     "prettier": "^3.3.3",
     "pwa-asset-generator": "^6.4.0",
     "release-it": "^17.10.0",
-    "terser": "^5.36.0",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.12.2",
     "vite": "^5.4.10",

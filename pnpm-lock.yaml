@@ -244,9 +244,6 @@ importers:
       virtua:
         specifier: ^0.36.2
         version: 0.36.2(react-dom@0.0.0-experimental-7c8e5e7a-20241101(react@0.0.0-experimental-7c8e5e7a-20241101))(react@0.0.0-experimental-7c8e5e7a-20241101)
-      workbox-window:
-        specifier: ^7.3.0
-        version: 7.3.0
     devDependencies:
       '@babel/preset-react':
         specifier: ^7.25.9
@@ -335,9 +332,6 @@ importers:
       eslint-plugin-vitest:
         specifier: ^0.5.4
         version: 0.5.4(eslint@9.14.0)(typescript@5.6.3)(vitest@2.1.4(@types/node@22.8.7)(happy-dom@15.7.4)(jsdom@25.0.1)(terser@5.36.0))
-      globals:
-        specifier: ^15.11.0
-        version: 15.11.0
       jsdom:
         specifier: ^25.0.1
         version: 25.0.1
@@ -353,9 +347,6 @@ importers:
       release-it:
         specifier: ^17.10.0
         version: 17.10.0(typescript@5.6.3)
-      terser:
-        specifier: ^5.36.0
-        version: 5.36.0
       typescript:
         specifier: ^5.6.3
         version: 5.6.3
@@ -3530,10 +3521,6 @@ packages:
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
-    engines: {node: '>=18'}
-
-  globals@15.11.0:
-    resolution: {integrity: sha512-yeyNSjdbyVaWurlwCpcA6XNBrHTMIeDdj0/hnvX/OLJ9ekOXYbLsLinH/MucQyGvNnXhidTdNhTtJaffL2sMfw==}
     engines: {node: '>=18'}
 
   globalthis@1.0.4:
@@ -10644,8 +10631,6 @@ snapshots:
   globals@11.12.0: {}
 
   globals@14.0.0: {}
-
-  globals@15.11.0: {}
 
   globalthis@1.0.4:
     dependencies:
