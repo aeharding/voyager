@@ -312,8 +312,13 @@ export interface UserTag {
   upvotes: number;
 
   text?: string;
+
   color?: string;
 
+  /**
+   * The URL of the Lemmy post or comment this tag was created from.
+   * (Will only be set if `saveSource` is enabled.)
+   */
   sourceUrl?: string;
 }
 

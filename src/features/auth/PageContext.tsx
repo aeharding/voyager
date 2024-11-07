@@ -93,7 +93,7 @@ interface IPageContext {
 
   presentCreateCrosspost: (post: PostView) => void;
 
-  presentUserTag: (person: Person) => void;
+  presentUserTag: (person: Person, sourceUrl?: string) => void;
 
   presentDatabaseErrorModal: (automatic?: boolean) => void;
 }
@@ -255,10 +255,14 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
   // Ban user end
 
   // User tag start
-  const [userTagItem, setUserTagItem] = useState<Person | undefined>();
+  const [userTagPerson, setUserTagPerson] = useState<Person | undefined>();
+  const [userTagSourceUrl, setUserTagSourceUrl] = useState<
+    string | undefined
+  >();
   const [isUserTagOpen, setIsUserTagOpen] = useState(false);
-  const presentUserTag = (person: Person) => {
-    setUserTagItem(person);
+  const presentUserTag = (person: Person, sourceUrl?: string) => {
+    setUserTagPerson(person);
+    setUserTagSourceUrl(sourceUrl);
     setIsUserTagOpen(true);
   };
   // User tag end
@@ -343,7 +347,8 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         setIsOpen={setIsSelectTextOpen}
       />
       <UserTagModal
-        person={userTagItem!}
+        person={userTagPerson!}
+        sourceUrl={userTagSourceUrl!}
         isOpen={isUserTagOpen}
         setIsOpen={setIsUserTagOpen}
       />

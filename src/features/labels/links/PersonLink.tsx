@@ -7,7 +7,9 @@ import { LongPressOptions, useLongPress } from "use-long-press";
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
 import UserScore from "#/features/tags/UserScore";
 import UserTag from "#/features/tags/UserTag";
-import usePresentUserActions from "#/features/user/usePresentUserActions";
+import usePresentUserActions, {
+  PresentUserActionsOptions,
+} from "#/features/user/usePresentUserActions";
 import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
@@ -25,7 +27,7 @@ const Prefix = styled.span`
   font-weight: normal;
 `;
 
-interface PersonLinkProps {
+interface PersonLinkProps extends Pick<PresentUserActionsOptions, "sourceUrl"> {
   person: Person;
   opId?: number;
   distinguished?: boolean;
@@ -48,6 +50,7 @@ export default function PersonLink({
   showBadge = true,
   showTag = true,
   disableInstanceClick,
+  sourceUrl,
 }: PersonLinkProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const isAdmin = useAppSelector((state) => state.site.response?.admins)?.some(
@@ -59,12 +62,19 @@ export default function PersonLink({
   const tag = useAppSelector(
     (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
   );
+  const tagsEnabled = useAppSelector((state) => state.settings.tags.enabled);
+  const trackVotesEnabled = useAppSelector(
+    (state) => state.settings.tags.trackVotes,
+  );
+  const hideInstance = useAppSelector(
+    (state) => state.settings.tags.hideInstance,
+  );
 
   const onCommunityLinkLongPress = useCallback(() => {
     stopIonicTapClick();
 
-    presentUserActions(person);
-  }, [presentUserActions, person]);
+    presentUserActions(person, { sourceUrl });
+  }, [presentUserActions, person, sourceUrl]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
     cancelOnMovement: 15,
@@ -89,9 +99,14 @@ export default function PersonLink({
 
   const tagText = typeof tag === "object" ? tag.text : undefined;
 
+  const shouldHideInstanceWithTagText = tagText && hideInstance;
+  const shouldShowInstanceByDefault =
+    showInstanceWhenRemote || forceInstanceUrl || !tagText;
+
   const [handle, instance] = renderHandle({
-    showInstanceWhenRemote:
-      !tagText && (showInstanceWhenRemote || forceInstanceUrl),
+    showInstanceWhenRemote: shouldHideInstanceWithTagText
+      ? false
+      : shouldShowInstanceByDefault,
     item: person,
   });
 
@@ -104,9 +119,9 @@ export default function PersonLink({
           <AgeBadge published={person.published} />
         </>
       )}
-      {showTag && (
+      {showTag && tagsEnabled && (
         <>
-          <UserScore person={person} prefix=" " />
+          {trackVotesEnabled && <UserScore person={person} prefix=" " />}
           <UserTag person={person} prefix=" " />
         </>
       )}

@@ -155,6 +155,7 @@ export default function LargePost({ post }: PostProps) {
                   showInstanceWhenRemote
                   prefix="by"
                   disableInstanceClick
+                  sourceUrl={post.post.ap_id}
                 />
               ) : (
                 <>
@@ -175,6 +176,7 @@ export default function LargePost({ post }: PostProps) {
                         person={post.creator}
                         prefix="by"
                         disableInstanceClick
+                        sourceUrl={post.post.ap_id}
                       />
                     </>
                   )}

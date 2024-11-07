@@ -43,7 +43,10 @@ export default function SearchPage() {
 
               const potentialUrl = search.trim();
 
-              if (await redirectToLemmyObjectIfNeeded(potentialUrl)) return;
+              const redirectResult =
+                await redirectToLemmyObjectIfNeeded(potentialUrl);
+
+              if (redirectResult === "success") return;
 
               const el = await searchBarRef.current?.getInputElement();
               el?.blur();

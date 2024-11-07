@@ -16,13 +16,19 @@ import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { buildBlocked } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
-import store, { useAppDispatch } from "#/store";
+import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import { blockUser } from "./userSlice";
 
-interface Options {
+export interface PresentUserActionsOptions {
   prependButtons?: ActionSheetButton[];
   hideMessageButton?: boolean;
+
+  /**
+   * If provided, will be used to generate a new tag.
+   * Should be the ap_id of the post/comment
+   */
+  sourceUrl?: string;
 }
 
 export default function usePresentUserActions() {
@@ -33,9 +39,12 @@ export default function usePresentUserActions() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
   const { presentUserTag } = useContext(PageContext);
+  const userTagsEnabled = useAppSelector(
+    (state) => state.settings.tags.enabled,
+  );
 
   return useCallback(
-    (user: Person, options?: Options) => {
+    (user: Person, options?: PresentUserActionsOptions) => {
       const state = store.getState();
 
       const isCurrentUser = usernameSelector(state) === getHandle(user);
@@ -95,13 +104,13 @@ export default function usePresentUserActions() {
               })();
             },
           },
-          {
+          userTagsEnabled && {
             text: "Edit Tag",
             icon: pricetagOutline,
             handler: async () => {
               if (!user) return;
 
-              presentUserTag(user);
+              presentUserTag(user, options?.sourceUrl);
             },
           },
           {
@@ -119,6 +128,7 @@ export default function usePresentUserActions() {
       presentToast,
       dispatch,
       presentUserTag,
+      userTagsEnabled,
     ],
   );
 }

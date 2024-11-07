@@ -215,6 +215,7 @@ export default function InboxItem({ item }: InboxItemProps) {
             person={item.creator}
             className={labelStyles}
             showBadge={false}
+            sourceUrl={getSourceUrl()}
           />{" "}
           in{" "}
           <CommunityLink
@@ -244,6 +245,10 @@ export default function InboxItem({ item }: InboxItemProps) {
     if ("comment" in item) return item.counts.published;
 
     return item.private_message.published;
+  }
+
+  function getSourceUrl() {
+    if ("comment" in item) return item.comment.ap_id;
   }
 
   function getIcon() {
