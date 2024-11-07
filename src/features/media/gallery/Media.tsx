@@ -13,7 +13,10 @@ const Media = forwardRef<
   ComponentRef<typeof Video> | ComponentRef<typeof GalleryMedia>,
   PostGalleryImgProps
 >(function Media({ nativeControls, src, ...props }, ref) {
-  const isVideo = useMemo(() => src && isUrlVideo(src), [src]);
+  const isVideo = useMemo(
+    () => src && isUrlVideo(src, props.post?.post.url_content_type),
+    [src, props.post],
+  );
 
   if (isVideo)
     return (

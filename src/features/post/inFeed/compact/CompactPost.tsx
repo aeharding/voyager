@@ -173,7 +173,7 @@ export default function CompactPost({ post }: PostProps) {
 
   const [domain] = useMemo(
     () =>
-      post.post.url && !isUrlImage(post.post.url)
+      post.post.url && !isUrlImage(post.post.url, post.post.url_content_type)
         ? parseUrlForDisplay(post.post.url)
         : [],
     [post],

@@ -34,8 +34,10 @@ export default forwardRef<
   ref,
 ) {
   const isGif = useMemo(
-    () => props.src && isUrlPotentialAnimatedImage(props.src),
-    [props.src],
+    () =>
+      props.src &&
+      isUrlPotentialAnimatedImage(props.src, post?.post.url_content_type),
+    [props.src, post],
   );
   const shouldAutoplay = useShouldAutoplay();
 

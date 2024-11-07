@@ -20,7 +20,7 @@ interface MarkdownImgProps extends GalleryMediaProps {
 export default function MarkdownImg({ small, ...props }: MarkdownImgProps) {
   const sharedStyles = small ? smallStyles : undefined;
   const isVideo = useMemo(
-    () => props.src && isUrlVideo(props.src),
+    () => props.src && isUrlVideo(props.src, undefined),
     [props.src],
   );
 
