@@ -3,12 +3,9 @@ import { CommentSortType, PostSortType } from "lemmy-js-client";
 
 import { lemmyVersionSelector } from "../features/auth/siteSlice";
 import { useAppSelector } from "../store";
-import { memoize } from "lodash";
 
 const SUPPORTED_ON_OLDER_EXCLUSIVE = ">";
 const SUPPORTED_ON_NEWER_INCLUSIVE = "<=";
-
-const memoizedCompare = memoize(compare);
 
 /**
  * What Lemmy version was support added?
@@ -36,7 +33,7 @@ export default function useSupported(feature: Feature): boolean {
     comparator = supported[1];
   }
 
-  return memoizedCompare(version, lemmyVersion, comparator);
+  return compare(version, lemmyVersion, comparator);
 }
 
 export function is019Sort(
