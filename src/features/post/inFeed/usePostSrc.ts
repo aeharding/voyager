@@ -3,12 +3,18 @@ import { useMemo } from "react";
 
 import { findLoneImage } from "#/helpers/markdown";
 import { findUrlMediaType } from "#/helpers/url";
+import useSupported from "#/helpers/useSupported";
 import { useAppSelector } from "#/store";
 
 import { IMAGE_FAILED } from "./large/imageSlice";
 
 export default function usePostSrc(post: PostView): string | undefined {
-  const src = useMemo(() => getPostMedia(post), [post]);
+  const thumbnailIsFullsize = useSupported("Fullsize thumbnails");
+
+  const src = useMemo(
+    () => getPostMedia(post, thumbnailIsFullsize),
+    [post, thumbnailIsFullsize],
+  );
   const primaryFailed = useAppSelector(
     (state) => src && state.image.loadedBySrc[src[0]] === IMAGE_FAILED,
   );
@@ -20,24 +26,26 @@ export default function usePostSrc(post: PostView): string | undefined {
   return src[0];
 }
 
-export function getPostMedia(
+function getPostMedia(
   post: PostView,
+  thumbnailIsFullsize: boolean,
 ): [string] | [string, string] | undefined {
-  const urlType = post.post.url && findUrlMediaType(post.post.url);
+  if (post.post.url) {
+    const isUrlMedia = findUrlMediaType(
+      post.post.url,
+      post.post.url_content_type,
+    );
 
-  if (post.post.url && urlType) {
-    const thumbnailType =
-      post.post.thumbnail_url && findUrlMediaType(post.post.thumbnail_url);
+    if (isUrlMedia) {
+      if (post.post.thumbnail_url) {
+        if (thumbnailIsFullsize)
+          return [post.post.thumbnail_url, post.post.url];
+      }
 
-    if (post.post.thumbnail_url) {
-      // Sometimes Lemmy will cache the video, sometimes the thumbnail will be a still frame of the video
-      if (urlType === "video" && thumbnailType === "image")
-        return [post.post.url];
-
-      return [post.post.thumbnail_url, post.post.url];
+      // no fallback now for newer lemmy versions
+      // in the future might unwrap lemmy proxy_image param here
+      return [post.post.url];
     }
-
-    return [post.post.url];
   }
 
   if (post.post.thumbnail_url) return [post.post.thumbnail_url];

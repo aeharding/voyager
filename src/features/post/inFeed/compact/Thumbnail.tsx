@@ -100,10 +100,11 @@ export default function Thumbnail({ post }: ImgProps) {
   );
 
   const postImageSrc = useMemo(() => {
-    if (post.post.url && isUrlImage(post.post.url)) return post.post.url;
+    if (post.post.url && isUrlImage(post.post.url, post.post.url_content_type))
+      return post.post.url;
 
     if (markdownLoneImage) return markdownLoneImage.url;
-  }, [markdownLoneImage, post.post.url]);
+  }, [markdownLoneImage, post.post]);
 
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,

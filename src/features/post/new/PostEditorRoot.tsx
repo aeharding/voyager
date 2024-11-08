@@ -109,7 +109,9 @@ export default function PostEditorRoot({
   const existingPost = "existingPost" in props ? props.existingPost : undefined;
 
   const isImage = useMemo(
-    () => existingPost?.post.url && isUrlImage(existingPost.post.url),
+    () =>
+      existingPost?.post.url &&
+      isUrlImage(existingPost.post.url, existingPost.post.url_content_type),
     [existingPost],
   );
 
