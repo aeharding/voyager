@@ -123,7 +123,7 @@ function UserTagModalContents({
       : generateNewTag(getRemoteHandle(person));
   }
 
-  const [tag, setTag] = useState(getCurrentValidatedTag());
+  const [tag, setTag] = useState(getCurrentValidatedTag);
 
   const [upvotes, setUpvotes] = useState(`${tag.upvotes}`);
   const [downvotes, setDownvotes] = useState(`${tag.downvotes}`);
@@ -212,45 +212,50 @@ function UserTagModalContents({
               <IonItem>
                 <IonInput
                   label="Upvotes"
-                  type="number"
                   inputMode="numeric"
                   value={upvotes}
                   onIonInput={(e) => {
-                    setUpvotes(e.detail.value ?? "");
-                  }}
-                  onIonBlur={() => {
+                    const upvotes = e.detail.value ?? "";
+
+                    setUpvotes(upvotes);
                     setTag((tag) => {
-                      if (isNaN(+upvotes) || +upvotes < 0)
-                        return getCurrentValidatedTag();
+                      if (isNaN(+upvotes) || +upvotes < 0) return tag;
 
                       const newTag = {
                         ...tag,
                         upvotes: +upvotes,
                       };
-                      dispatch(updateTag(newTag));
+                      queueMicrotask(() => dispatch(updateTag(newTag)));
                       return newTag;
                     });
+                  }}
+                  onIonBlur={() => {
+                    setUpvotes(tag.upvotes.toString());
                   }}
                 />
               </IonItem>
               <IonItem>
                 <IonInput
                   label="Downvotes"
-                  type="number"
                   inputMode="numeric"
                   value={downvotes}
                   onIonInput={(e) => {
-                    setDownvotes(e.detail.value ?? "");
-                  }}
-                  onIonBlur={() => {
-                    setTag((tag) => {
-                      if (isNaN(+downvotes) || +downvotes < 0)
-                        return getCurrentValidatedTag();
+                    const downvotes = e.detail.value ?? "";
 
-                      const newTag = { ...tag, downvotes: +downvotes };
-                      dispatch(updateTag(newTag));
+                    setDownvotes(downvotes);
+                    setTag((tag) => {
+                      if (isNaN(+downvotes) || +downvotes < 0) return tag;
+
+                      const newTag = {
+                        ...tag,
+                        downvotes: +downvotes,
+                      };
+                      queueMicrotask(() => dispatch(updateTag(newTag)));
                       return newTag;
                     });
+                  }}
+                  onIonBlur={() => {
+                    setDownvotes(tag.downvotes.toString());
                   }}
                 />
               </IonItem>

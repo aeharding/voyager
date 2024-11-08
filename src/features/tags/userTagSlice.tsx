@@ -60,6 +60,9 @@ export const userTagSlice = createSlice({
     updateTag: (state, action: PayloadAction<UserTag>) => {
       state.tagByRemoteHandle[action.payload.handle] = action.payload;
     },
+    removeTag: (state, action: PayloadAction<UserTag>) => {
+      delete state.tagByRemoteHandle[action.payload.handle];
+    },
     reset: () => initialState,
   },
   extraReducers: (builder) => {
@@ -127,6 +130,11 @@ export const updateTagVotes =
 export const updateTag = (tag: UserTag) => async (dispatch: AppDispatch) => {
   dispatch(userTagSlice.actions.updateTag(tag));
   await db.updateTag(tag);
+};
+
+export const removeTag = (tag: UserTag) => async (dispatch: AppDispatch) => {
+  dispatch(userTagSlice.actions.removeTag(tag));
+  await db.removeTag(tag);
 };
 
 export const resetTags = () => async (dispatch: AppDispatch) => {

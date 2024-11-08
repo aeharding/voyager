@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { PageContext } from "#/features/auth/PageContext";
 import { accountsListEmptySelector } from "#/features/auth/authSelectors";
 import AppContent from "#/features/shared/AppContent";
+import emptyStateIconStyles from "#/routes/pages/shared/emptyStateIconStyles";
 import { useAppSelector } from "#/store";
 
 import IncognitoSvg from "./incognito.svg?react";
@@ -15,17 +16,6 @@ const StyledAppContent = styled(AppContent)`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-`;
-
-const Incognito = styled(IncognitoSvg)`
-  opacity: 0.1;
-  width: 300px;
-  height: 300px;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-
-  flex-shrink: 0;
 `;
 
 export default function LoggedOut() {
@@ -75,7 +65,7 @@ export default function LoggedOut() {
           </IonButton>
         )}
       </div>
-      <Incognito />
+      <IncognitoSvg className={emptyStateIconStyles} />
     </StyledAppContent>
   );
 }
