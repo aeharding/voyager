@@ -59,3 +59,20 @@ function gfmToMarkdown() {
     ],
   };
 }
+
+export function customRemarkStrikethrough(this: import("unified").Processor) {
+  const data = this.data();
+
+  const micromarkExtensions =
+    data.micromarkExtensions || (data.micromarkExtensions = []);
+  const fromMarkdownExtensions =
+    data.fromMarkdownExtensions || (data.fromMarkdownExtensions = []);
+  const toMarkdownExtensions =
+    data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
+
+  micromarkExtensions.push(gfmStrikethrough({ singleTilde: false }));
+  fromMarkdownExtensions.push(gfmStrikethroughFromMarkdown());
+  toMarkdownExtensions.push({
+    extensions: [gfmStrikethroughToMarkdown()],
+  } as Settings);
+}

@@ -67,7 +67,7 @@ export default function PersonLink({
     (state) => state.settings.tags.trackVotes,
   );
   const hideInstance = useAppSelector(
-    (state) => state.settings.tags.hideInstance,
+    (state) => state.settings.tags.enabled && state.settings.tags.hideInstance,
   );
 
   const onCommunityLinkLongPress = useCallback(() => {
@@ -101,7 +101,7 @@ export default function PersonLink({
 
   const shouldHideInstanceWithTagText = tagText && hideInstance;
   const shouldShowInstanceByDefault =
-    showInstanceWhenRemote || forceInstanceUrl || !tagText;
+    showInstanceWhenRemote || forceInstanceUrl;
 
   const [handle, instance] = renderHandle({
     showInstanceWhenRemote: shouldHideInstanceWithTagText

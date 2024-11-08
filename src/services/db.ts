@@ -763,6 +763,12 @@ export class WefwefDB extends Dexie {
     });
   }
 
+  async removeTag(tag: UserTag) {
+    return await this.transaction("rw", this.userTags, async () => {
+      await this.userTags.where("handle").equals(tag.handle).delete();
+    });
+  }
+
   async getUserTagsPaginated(
     page: number,
     limit: number,

@@ -6,6 +6,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import * as _ from "radashi";
 import { useCallback, useRef } from "react";
 import { useParams } from "react-router";
 
@@ -17,6 +18,7 @@ import PostCommentFeed, {
 import useResetHiddenPosts from "#/features/feed/useResetHiddenPosts";
 import { postHiddenByIdSelector } from "#/features/post/postSlice";
 import AppHeader from "#/features/shared/AppHeader";
+import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
@@ -71,15 +73,25 @@ export default function ProfileFeedHiddenPostsPage() {
       const postIds = hiddenPostMetadatas.map((metadata) => metadata.post_id);
 
       const result = await Promise.all(
-        postIds.map((postId) => {
+        postIds.map(async (postId) => {
           const potentialPost = store.getState().post.postById[postId];
           if (typeof potentialPost === "object") return potentialPost;
 
-          return client.getPost({ id: postId });
+          try {
+            return await client.getPost({ id: postId });
+          } catch (error) {
+            if (
+              isLemmyError(error, "couldnt_find_post" as never) ||
+              isLemmyError(error, "not_found")
+            )
+              return;
+
+            throw error;
+          }
         }),
       );
 
-      return result.map((post) =>
+      return _.sift(result).map((post) =>
         "post_view" in post ? post.post_view : post,
       );
     },

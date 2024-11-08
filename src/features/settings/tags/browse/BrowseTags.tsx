@@ -1,59 +1,56 @@
-import { IonItem, IonLabel } from "@ionic/react";
-import * as _ from "radashi";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import Feed, { FetchFn } from "#/features/feed/Feed";
-import SourceUrlButton from "#/features/tags/SourceUrlButton";
-import UserScore from "#/features/tags/UserScore";
-import UserTag from "#/features/tags/UserTag";
-import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { removeTag } from "#/features/tags/userTagSlice";
 import { UserTag as UserTagType, db } from "#/services/db";
 import { LIMIT } from "#/services/lemmy";
+import { useAppDispatch } from "#/store";
+
+import BrowseTag from "./BrowseTag";
 
 interface BrowseTagsProps {
   filter: "all" | "tagged";
 }
 
 export default function BrowseTags({ filter }: BrowseTagsProps) {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
+  const dispatch = useAppDispatch();
+  const [removedByHandle, setRemovedByHandle] = useState<Record<string, true>>(
+    {},
+  );
 
   const fetchFn: FetchFn<UserTagType> = useCallback(
     async (pageData) => {
       if (!("page" in pageData)) return [];
 
-      return await db.getUserTagsPaginated(
+      const result = await db.getUserTagsPaginated(
         pageData.page,
         LIMIT,
         filter === "tagged",
       );
+
+      // Reset removed state on refresh
+      if (pageData.page === 1) setRemovedByHandle({});
+
+      return result;
     },
     [filter],
   );
 
-  const renderItemContent = useCallback(
-    (tag: UserTagType) => (
-      <IonItem routerLink={buildGeneralBrowseLink(`/u/${tag.handle}`)}>
-        <IonLabel>
-          {tag.handle} <UserScore tag={tag} /> <UserTag tag={tag} />{" "}
-        </IonLabel>
-        <SourceUrlButton
-          sourceUrl={tag.sourceUrl}
-          dismiss={_.noop}
-          slot="end"
-          fill="clear"
-        />
-      </IonItem>
-    ),
-    [buildGeneralBrowseLink],
-  );
+  function filterFn(tag: UserTagType) {
+    return !removedByHandle[tag.handle];
+  }
 
-  const getIndex = useCallback((item: UserTagType) => item.handle, []);
+  function onRemove(tag: UserTagType) {
+    dispatch(removeTag(tag));
+    setRemovedByHandle((prev) => ({ ...prev, [tag.handle]: true }));
+  }
 
   return (
     <Feed
-      renderItemContent={renderItemContent}
+      renderItemContent={(item) => <BrowseTag tag={item} remove={onRemove} />}
       fetchFn={fetchFn}
-      getIndex={getIndex}
+      getIndex={(item) => item.handle}
+      filterFn={filterFn}
     />
   );
 }
