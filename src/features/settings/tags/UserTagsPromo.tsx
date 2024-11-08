@@ -5,6 +5,11 @@ import emptyStateIconStyles from "#/routes/pages/shared/emptyStateIconStyles";
 
 import TagSvg from "./tag.svg?react";
 
+const StyledTagSvg = styled(TagSvg)`
+  margin-top: 16px;
+  margin-bottom: 32px;
+`;
+
 const ListContainer = styled.div`
   display: flex;
 `;
@@ -17,7 +22,7 @@ const List = styled.ul`
 
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: 8px;
 `;
 
 const rainbowText = css`
@@ -39,7 +44,7 @@ const rainbowText = css`
 export default function UserTagsPromo() {
   return (
     <>
-      <TagSvg className={emptyStateIconStyles} />
+      <StyledTagSvg className={emptyStateIconStyles} />
       <ListContainer>
         <List>
           <li>
@@ -50,6 +55,11 @@ export default function UserTagsPromo() {
           <li>Track how you&apos;ve voted on users</li>
           <li>
             Custom <span className={rainbowText}>tag colors</span> ✨
+          </li>
+          <li>
+            Long press on a username to tag
+            <br />
+            (Or visit their profile)
           </li>
         </List>
       </ListContainer>
