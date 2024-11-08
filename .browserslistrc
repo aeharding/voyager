@@ -1,6 +1,3 @@
-Chrome >=89
-ChromeAndroid >=89
-Firefox >=75
-Edge >=89
-Safari >=15
-iOS >=15
+last 2 versions
+not dead
+iOS >= 15
