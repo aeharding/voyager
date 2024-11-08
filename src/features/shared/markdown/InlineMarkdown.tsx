@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import superSub from "remark-supersub-lemmy";
 
 import inlinifySpoiler from "./components/spoiler/inlinifySpoiler";
+import { customRemarkStrikethrough } from "./customRemarkGfm";
 
 interface InlineMarkdownProps {
   children: string;
@@ -50,7 +51,12 @@ export default function InlineMarkdown({ children }: InlineMarkdownProps) {
           sub: "sub",
           sup: "sup",
         }}
-        remarkPlugins={[superSub, spoiler, inlinifySpoiler]}
+        remarkPlugins={[
+          customRemarkStrikethrough,
+          superSub,
+          spoiler,
+          inlinifySpoiler,
+        ]}
       >
         {children}
       </ReactMarkdown>
