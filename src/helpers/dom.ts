@@ -138,7 +138,3 @@ export function getSelectionHtml(selection: Selection): string {
 
   return html;
 }
-
-export function isAbortError(error: unknown): boolean {
-  return error instanceof Error && error.name === "AbortError";
-}
