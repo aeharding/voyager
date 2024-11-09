@@ -1,7 +1,8 @@
-import { OJumpButtonPositionType } from "../../../../services/db";
-import { useAppSelector } from "../../../../store";
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { OJumpButtonPositionType } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import { setJumpButtonPosition } from "../../settingsSlice";
-import SettingSelector from "../../shared/SettingSelector";
 
 export default function JumpButtonPosition() {
   const { jumpButtonPosition } = useAppSelector(

@@ -5,11 +5,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
-import HidingSettings from "../../../features/settings/general/hiding/HidingSettings";
 import { useRef } from "react";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import HidingSettings from "#/features/settings/general/hiding/HidingSettings";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
 
 export default function HidingSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);

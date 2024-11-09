@@ -1,7 +1,9 @@
 import { IonIcon, IonLabel } from "@ionic/react";
-import SharedTabButton, { TabButtonProps } from "./shared";
 import { search } from "ionicons/icons";
-import { focusSearchBar } from "../../pages/search/SearchPage";
+
+import { focusSearchBar } from "#/routes/pages/search/SearchPage";
+
+import SharedTabButton, { TabButtonProps } from "./shared";
 
 function SearchTabButton(props: TabButtonProps) {
   return (

@@ -1,28 +1,26 @@
+import { noop } from "es-toolkit";
 import React, {
   createContext,
-  useState,
-  useEffect,
   useCallback,
+  useEffect,
   useMemo,
+  useState,
 } from "react";
 
-type BeforeInstallPromptContextType = {
+interface BeforeInstallPromptContextType {
   event: BeforeInstallPromptEvent | null;
   clearEvent: () => void;
-};
+}
+
 export const BeforeInstallPromptContext =
   createContext<BeforeInstallPromptContextType>({
     event: null,
-    clearEvent: () => {},
+    clearEvent: noop,
   });
-
-interface BeforeInstallPromptProviderProps {
-  children: React.ReactNode;
-}
 
 export default function BeforeInstallPromptProvider({
   children,
-}: BeforeInstallPromptProviderProps) {
+}: React.PropsWithChildren) {
   const [beforeInstallPromptEvent, setBeforeInstallPromptEvent] =
     useState<BeforeInstallPromptEvent | null>(null);
 

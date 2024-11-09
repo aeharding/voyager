@@ -1,9 +1,10 @@
-import { PersonAggregates } from "lemmy-js-client";
-import { formatNumber } from "../../helpers/number";
-import Ago from "../labels/Ago";
 import { useIonAlert } from "@ionic/react";
-import { formatDistanceToNowStrict } from "date-fns";
 import { styled } from "@linaria/react";
+import { formatDistanceToNowStrict } from "date-fns";
+import { PersonAggregates } from "lemmy-js-client";
+
+import Ago from "#/features/labels/Ago";
+import { formatNumber } from "#/helpers/number";
 
 const Container = styled.div`
   display: flex;

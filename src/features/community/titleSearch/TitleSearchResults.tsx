@@ -1,23 +1,25 @@
+import { IonItem, IonList } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { useDebouncedValue } from "@mantine/hooks";
+import { compact, sortBy, uniqBy } from "es-toolkit";
+import { Community, CommunityView } from "lemmy-js-client";
 import {
   useContext,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useMemo,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
+
+import useShowModeratorFeed from "#/features/community/list/useShowModeratorFeed";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppSelector } from "#/store";
+
 import { TitleSearchContext } from "./TitleSearchProvider";
-import { useDebounceValue } from "usehooks-ts";
-import useClient from "../../../helpers/useClient";
-import { Community, CommunityView } from "lemmy-js-client";
-import { IonItem, IonList } from "@ionic/react";
-import { useAppSelector } from "../../../store";
-import { compact, sortBy, uniqBy } from "lodash";
-import { getHandle } from "../../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import useShowModeratorFeed from "../list/useShowModeratorFeed";
-import { styled } from "@linaria/react";
 
 const Backdrop = styled.div`
   position: absolute;
@@ -99,13 +101,10 @@ type SpecialFeed = (typeof SPECIAL_FEEDS)[number];
 type Result = Community | SpecialFeed | string;
 
 export default function TitleSearchResults() {
-  // eslint-disable-next-line react-compiler/react-compiler -- https://github.com/aeharding/voyager/issues/1633
-  "use no memo";
-
   const router = useOptimizedIonRouter();
   const { search, setSearch, searching, setSearching, setOnSubmit } =
     useContext(TitleSearchContext);
-  const [debouncedSearch, setDebouncedSearch] = useDebounceValue(search, 500);
+  const [debouncedSearch] = useDebouncedValue(search, 500);
   const [searchPayload, setSearchPayload] = useState<CommunityView[]>([]);
   const client = useClient();
   const follows = useAppSelector(
@@ -121,10 +120,6 @@ export default function TitleSearchResults() {
     (state) => state.site.response?.my_user?.moderates,
   );
   const showModeratorFeed = useShowModeratorFeed();
-
-  useEffect(() => {
-    setDebouncedSearch(search);
-  }, [search, setDebouncedSearch]);
 
   const results: Result[] = useMemo(() => {
     const results = [
@@ -145,17 +140,19 @@ export default function TitleSearchResults() {
       compact([
         ...searchSpecialByName(eligibleSpecialFeeds, search),
         ...(search
-          ? sortBy(results, (r) => {
-              if (favorites.includes(getHandle(r))) {
-                return 0;
-              }
+          ? sortBy(results, [
+              (r) => {
+                if (favorites.includes(getHandle(r))) {
+                  return 0;
+                }
 
-              if (moderatedAsCommunityId?.includes(r.id)) {
-                return 1;
-              }
+                if (moderatedAsCommunityId?.includes(r.id)) {
+                  return 1;
+                }
 
-              return 2;
-            })
+                return 2;
+              },
+            ])
           : favorites),
       ]),
       (c) => (typeof c === "string" ? c : c.id),

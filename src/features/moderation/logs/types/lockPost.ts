@@ -1,9 +1,11 @@
-import { ModLockPostView } from "lemmy-js-client";
-import { LogEntryData } from "../ModlogItem";
-import { getHandle } from "../../../../helpers/lemmy";
-import { buildBaseData, buildPostMessage } from "./shared";
-import { buildPostLink } from "../../../../helpers/appLinkBuilder";
 import { lockClosed, lockOpen } from "ionicons/icons";
+import { ModLockPostView } from "lemmy-js-client";
+
+import { buildPostLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+
+import { LogEntryData } from "../ModlogItem";
+import { buildBaseData, buildPostMessage } from "./shared";
 
 export default function lockPost(item: ModLockPostView): LogEntryData {
   return {

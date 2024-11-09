@@ -1,23 +1,25 @@
 import { IonIcon } from "@ionic/react";
+import { css, cx } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { link, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { MouseEvent, useCallback, useMemo } from "react";
-import { findLoneImage } from "../../../../helpers/markdown";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { isNsfwBlurred } from "../../../labels/Nsfw";
-import SelfSvg from "./self.svg?react";
-import { getImageSrc } from "../../../../services/lemmy";
-import InAppExternalLink from "../../../shared/InAppExternalLink";
+
+import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
+import { isNsfwBlurred } from "#/features/labels/Nsfw";
+import InAppExternalLink from "#/features/shared/InAppExternalLink";
+import { findLoneImage } from "#/helpers/markdown";
+import { isUrlImage } from "#/helpers/url";
 import {
   CompactThumbnailSizeType,
   OCompactThumbnailSizeType,
-} from "../../../../services/db";
-import { isUrlImage } from "../../../../helpers/url";
-import { useAutohidePostIfNeeded } from "../../../feed/PageTypeContext";
+} from "#/services/db";
+import { getImageSrc } from "#/services/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setPostRead } from "../../postSlice";
-import { css, cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import CompactFeedPostMedia from "./CompactFeedPostMedia";
+import SelfSvg from "./self.svg?react";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
   switch (size) {
@@ -98,10 +100,11 @@ export default function Thumbnail({ post }: ImgProps) {
   );
 
   const postImageSrc = useMemo(() => {
-    if (post.post.url && isUrlImage(post.post.url)) return post.post.url;
+    if (post.post.url && isUrlImage(post.post.url, post.post.url_content_type))
+      return post.post.url;
 
     if (markdownLoneImage) return markdownLoneImage.url;
-  }, [markdownLoneImage, post.post.url]);
+  }, [markdownLoneImage, post.post]);
 
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,

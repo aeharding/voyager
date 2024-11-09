@@ -1,15 +1,17 @@
 import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
 import { eyeOffOutline } from "ionicons/icons";
-import useHidePosts from "../useHidePosts";
 import { useCallback, useContext } from "react";
 import {
   LongPressCallback,
   LongPressCallbackReason,
   useLongPress,
 } from "use-long-press";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+
+import useHidePosts from "../useHidePosts";
 import useResetHiddenPosts from "../useResetHiddenPosts";
-import { scrollUpIfNeeded } from "../../../helpers/scrollUpIfNeeded";
-import { AppContext } from "../../auth/AppContext";
 
 interface HidePostsFabProps {
   forceRefresh: () => void;

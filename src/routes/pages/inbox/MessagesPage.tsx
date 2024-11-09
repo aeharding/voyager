@@ -9,20 +9,22 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import MarkAllAsReadButton from "./MarkAllAsReadButton";
-import { jwtPayloadSelector } from "../../../features/auth/authSelectors";
-import ConversationItem from "../../../features/inbox/messages/ConversationItem";
-import { MaxWidthContainer } from "../../../features/shared/AppContent";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { jwtPayloadSelector } from "#/features/auth/authSelectors";
 import {
   conversationsByPersonIdSelector,
   syncMessages,
-} from "../../../features/inbox/inboxSlice";
+} from "#/features/inbox/inboxSlice";
+import ConversationItem from "#/features/inbox/messages/ConversationItem";
+import { MaxWidthContainer } from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import ComposeButton from "./ComposeButton";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import AppHeader from "../../../features/shared/AppHeader";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+import MarkAllAsReadButton from "./MarkAllAsReadButton";
 
 export default function MessagesPage() {
   const pageRef = useRef<HTMLElement>(null);

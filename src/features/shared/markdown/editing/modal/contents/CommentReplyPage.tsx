@@ -1,13 +1,14 @@
-import { styled } from "@linaria/react";
 import {
-  IonButtons,
   IonButton,
-  IonToolbar,
-  IonTitle,
-  IonText,
-  useIonModal,
+  IonButtons,
   IonIcon,
+  IonText,
+  IonTitle,
+  IonToolbar,
+  useIonModal,
 } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { arrowBackSharp, send } from "ionicons/icons";
 import {
   CommentReplyView,
   CommentView,
@@ -16,23 +17,24 @@ import {
   ResolveObjectResponse,
 } from "lemmy-js-client";
 import { useEffect, useMemo, useRef, useState } from "react";
-import ItemReplyingTo from "./ItemReplyingTo";
-import CommentEditorContent from "./CommentEditorContent";
-import { arrowBackSharp, send } from "ionicons/icons";
-import { useAppDispatch, useAppSelector } from "../../../../../../store";
-import useClient from "../../../../../../helpers/useClient";
-import useAppToast from "../../../../../../helpers/useAppToast";
+
+import AccountSwitcher from "#/features/auth/AccountSwitcher";
 import {
   loggedInAccountsSelector,
   userHandleSelector,
-} from "../../../../../auth/authSelectors";
-import { getClient } from "../../../../../../services/lemmy";
-import AccountSwitcher from "../../../../../auth/AccountSwitcher";
-import { isLemmyError } from "../../../../../../helpers/lemmyErrors";
-import { receivedComments } from "../../../../../comment/commentSlice";
+} from "#/features/auth/authSelectors";
+import { Centered, Spinner } from "#/features/auth/login/LoginNav";
+import { receivedComments } from "#/features/comment/commentSlice";
+import { isIosTheme } from "#/helpers/device";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
+import { getClient } from "#/services/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import AppHeader from "../../../../AppHeader";
-import { isIosTheme } from "../../../../../../helpers/device";
-import { Centered, Spinner } from "../../../../../auth/login/LoginNav";
+import CommentEditorContent from "./CommentEditorContent";
+import ItemReplyingTo from "./ItemReplyingTo";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
@@ -49,11 +51,11 @@ export type CommentReplyItem =
   | PersonMentionView
   | CommentReplyView;
 
-type CommentReplyPageProps = {
+interface CommentReplyPageProps {
   dismiss: (reply?: CommentView | undefined) => void;
   setCanDismiss: (canDismiss: boolean) => void;
   item: CommentReplyItem;
-};
+}
 
 /**
  * New comment replying to something

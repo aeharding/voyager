@@ -5,12 +5,13 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
 import { useRef } from "react";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import MigrateSubsList from "../../../features/migrate/MigrateSubsList";
 import { useParams } from "react-router";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import MigrateSubsList from "#/features/migrate/MigrateSubsList";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
 
 export default function RedditMigrateSubsListPage() {
   const { link } = useParams<{ link: string }>();

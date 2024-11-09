@@ -5,17 +5,19 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch } from "../../../store";
-import useClient from "../../../helpers/useClient";
-import { FetchFn } from "../../../features/feed/Feed";
-import { useCallback, useRef } from "react";
 import { CommentReplyView } from "lemmy-js-client";
-import InboxFeed from "../../../features/feed/InboxFeed";
-import { receivedInboxItems } from "../../../features/inbox/inboxSlice";
+import { useCallback, useRef } from "react";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { FetchFn } from "#/features/feed/Feed";
+import InboxFeed from "#/features/feed/InboxFeed";
+import { receivedInboxItems } from "#/features/inbox/inboxSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { useAppDispatch } from "#/store";
+
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
-import FeedContent from "../shared/FeedContent";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import AppHeader from "../../../features/shared/AppHeader";
 
 interface RepliesPageProps {
   type: "Comment" | "Post";

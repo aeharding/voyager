@@ -1,7 +1,8 @@
-import { useAppSelector } from "../store";
 import { useCallback, useContext, useEffect, useRef } from "react";
-import { TabNameContext } from "../routes/common/Route";
-import { TabContext } from "../core/TabContext";
+
+import { TabContext } from "#/core/TabContext";
+import { TabNameContext } from "#/routes/common/Route";
+import { useAppSelector } from "#/store";
 
 export function useBuildGeneralBrowseLink() {
   const { tabRef } = useContext(TabContext);

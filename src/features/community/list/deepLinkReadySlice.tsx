@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { isInstalled } from "../../../helpers/device";
+
+import { isInstalled } from "#/helpers/device";
 
 interface DeepLinkReadySlice {
   /**

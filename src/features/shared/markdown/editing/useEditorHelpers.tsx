@@ -1,5 +1,6 @@
 import { RefObject, useCallback, useEffect, useMemo, useRef } from "react";
-import { getSelectionHtml } from "../../../../helpers/dom";
+
+import { getSelectionHtml } from "#/helpers/dom";
 
 export default function useEditorHelpers(
   textareaRef: RefObject<HTMLTextAreaElement>,

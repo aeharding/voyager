@@ -1,8 +1,9 @@
 import { IonItem, IonToggle, useIonAlert } from "@ionic/react";
 
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { isAndroid, isNative, ua } from "#/helpers/device";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setPreferNativeApps } from "../../settingsSlice";
-import { isAndroid, isNative, ua } from "../../../../helpers/device";
 
 // On Android 9, opening the in-app browser to youtube just opens the youtube app, regardless.
 const platformNotSupported =

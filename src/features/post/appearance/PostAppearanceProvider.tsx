@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { noop } from "es-toolkit";
 import {
   createContext,
   useCallback,
@@ -7,19 +7,21 @@ import {
   useMemo,
   useState,
 } from "react";
+
+import { AnyFeed, serializeFeedName } from "#/features/feed/helpers";
+import {
+  PostAppearanceType,
+  setPostAppearance as setGlobalPostAppearanceReducer,
+} from "#/features/settings/settingsSlice";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import {
   getPostAppearance,
   setPostAppeartance as setPostAppearanceReducer,
 } from "./appearanceSlice";
-import {
-  PostAppearanceType,
-  setPostAppearance as setGlobalPostAppearanceReducer,
-} from "../../settings/settingsSlice";
-import { AnyFeed, serializeFeedName } from "../../feed/helpers";
 
-interface PostAppearanceProviderProps {
+interface PostAppearanceProviderProps extends React.PropsWithChildren {
   feed?: AnyFeed;
-  children: React.ReactNode;
 }
 
 export default function PostAppearanceProvider({
@@ -110,7 +112,7 @@ interface ContextValue {
 
 const PostAppearanceContext = createContext<ContextValue>({
   postAppearance: undefined,
-  setPostAppearance: () => {},
+  setPostAppearance: noop,
 });
 
 export function usePostAppearance() {
@@ -128,9 +130,7 @@ export function useSetPostAppearance() {
 
 export function WaitUntilPostAppearanceResolved({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: React.PropsWithChildren) {
   if (!useContext(PostAppearanceContext).postAppearance) return;
 
   return children;

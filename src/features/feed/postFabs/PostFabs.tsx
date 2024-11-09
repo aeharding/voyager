@@ -1,5 +1,7 @@
 import { ComponentProps } from "react";
-import { useAppSelector } from "../../../store";
+
+import { useAppSelector } from "#/store";
+
 import HidePostsFab from "./HidePostsFab";
 
 export default function PostFabs(props: ComponentProps<typeof HidePostsFab>) {

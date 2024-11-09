@@ -1,7 +1,8 @@
 import { IonButton, IonIcon, useIonActionSheet } from "@ionic/react";
-import { useAppDispatch } from "../../../store";
 import { checkmarkDone } from "ionicons/icons";
-import { markAllRead } from "../../../features/inbox/inboxSlice";
+
+import { markAllRead } from "#/features/inbox/inboxSlice";
+import { useAppDispatch } from "#/store";
 
 export default function MarkAllAsReadButton() {
   const dispatch = useAppDispatch();

@@ -1,7 +1,8 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../../../store";
 import { GetSiteResponse } from "lemmy-js-client";
-import { getClient } from "../../../../services/lemmy";
+
+import { getClient } from "#/services/lemmy";
+import { AppDispatch, RootState } from "#/store";
 
 interface JoinState {
   site: GetSiteResponse | undefined;

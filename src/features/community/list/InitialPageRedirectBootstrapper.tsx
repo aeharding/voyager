@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { useIonViewDidEnter } from "@ionic/react";
-import { isInstalled } from "../../../helpers/device";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
 import { styled } from "@linaria/react";
-import { pageTransitionAnimateBackOnly } from "../../../helpers/ionic";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import { isInstalled } from "#/helpers/device";
+import { pageTransitionAnimateBackOnly } from "#/helpers/ionic";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppDispatch } from "#/store";
+
 import { appIsReadyToAcceptDeepLinks } from "./deepLinkReadySlice";
-import { useAppDispatch } from "../../../store";
 
 const LoadingOverlay = styled.div`
   background: var(--ion-background-color);

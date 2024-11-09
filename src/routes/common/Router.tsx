@@ -1,13 +1,14 @@
 import { IonReactMemoryRouter, IonReactRouter } from "@ionic/react-router";
 import { createMemoryHistory } from "history";
 import React, { useEffect } from "react";
-import { isAppleDeviceInstalledToHomescreen } from "../../helpers/device";
+
+import { isAppleDeviceInstalledToHomescreen } from "#/helpers/device";
 
 export const memoryHistory = isAppleDeviceInstalledToHomescreen()
   ? createMemoryHistory()
   : undefined;
 
-export default function Router({ children }: { children: React.ReactNode }) {
+export default function Router({ children }: React.PropsWithChildren) {
   useEffect(() => {
     if (!memoryHistory) return;
 

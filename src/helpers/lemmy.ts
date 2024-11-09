@@ -1,3 +1,5 @@
+import { Share } from "@capacitor/share";
+import { compare } from "compare-versions";
 import {
   Comment,
   CommentView,
@@ -7,11 +9,10 @@ import {
   Post,
   PostView,
 } from "lemmy-js-client";
-import { Share } from "@capacitor/share";
-import { escapeStringForRegex } from "./regex";
-import { quote } from "./markdown";
-import { compare } from "compare-versions";
+
 import { parseJWT } from "./jwt";
+import { quote } from "./markdown";
+import { escapeStringForRegex } from "./regex";
 import { parseUrl } from "./url";
 
 export interface LemmyJWT {

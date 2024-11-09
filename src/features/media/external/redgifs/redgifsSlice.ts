@@ -3,12 +3,14 @@ import {
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
-import { RedgifsProvider, db } from "../../../../services/db";
-import { RootState } from "../../../../store";
-import { getGif, getTemporaryToken } from "../../../../services/redgifs";
-import { parseJWT } from "../../../../helpers/jwt";
-import { redgifUrlRegex } from "./helpers";
 import { addMinutes } from "date-fns";
+
+import { parseJWT } from "#/helpers/jwt";
+import { RedgifsProvider, db } from "#/services/db";
+import { getGif, getTemporaryToken } from "#/services/redgifs";
+import { RootState } from "#/store";
+
+import { redgifUrlRegex } from "./helpers";
 
 type FetchStatus = "needs-enable" | "pending" | "fulfilled" | "error";
 

@@ -1,13 +1,21 @@
 import { IonButton } from "@ionic/react";
-import { useParams } from "react-router";
-import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
-import usePresentUserActions from "../user/usePresentUserActions";
 import { personCircleOutline } from "ionicons/icons";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+import { Person } from "lemmy-js-client";
 
-export default function ConversationsMoreActions() {
-  const { handle } = useParams<{ handle: string }>();
+import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
+import usePresentUserActions from "#/features/user/usePresentUserActions";
+import { buildUserLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+
+interface ConversationsMoreActionsProps {
+  person: Person | undefined;
+}
+
+export default function ConversationsMoreActions({
+  person,
+}: ConversationsMoreActionsProps) {
   const presentUserActions = usePresentUserActions();
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -15,21 +23,23 @@ export default function ConversationsMoreActions() {
   return (
     <>
       <IonButton
-        disabled={!handle}
-        onClick={() =>
-          presentUserActions(handle, {
+        disabled={!person}
+        onClick={() => {
+          if (!person) return;
+
+          presentUserActions(person, {
             hideMessageButton: true,
             prependButtons: [
               {
-                text: handle,
+                text: getHandle(person),
                 icon: personCircleOutline,
                 handler: () => {
-                  router.push(buildGeneralBrowseLink(`/u/${handle}`));
+                  router.push(buildGeneralBrowseLink(buildUserLink(person)));
                 },
               },
             ],
-          })
-        }
+          });
+        }}
       >
         <HeaderEllipsisIcon slot="icon-only" />
       </IonButton>

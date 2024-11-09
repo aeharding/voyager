@@ -1,8 +1,10 @@
 import { CommentView } from "lemmy-js-client";
 import { useCallback, useContext } from "react";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { useAppDispatch } from "#/store";
+
 import { toggleCommentCollapseState } from "../commentSlice";
-import { useAppDispatch } from "../../../store";
-import { AppContext } from "../../auth/AppContext";
 
 export default function useCollapseRootComment(
   item: CommentView | undefined,

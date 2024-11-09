@@ -1,19 +1,21 @@
-import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
 import { IonIcon } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { chevronForward } from "ionicons/icons";
-import { MouseEvent, useMemo, useState } from "react";
-import LinkInterceptor from "../../shared/markdown/LinkInterceptor";
-import Url from "../../shared/Url";
-import { preventOnClickNavigationBug } from "../../../helpers/ionic";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
+
+import { LinkData } from "#/features/comment/CommentLinks";
+import Url from "#/features/shared/Url";
+import LinkInterceptor from "#/features/shared/markdown/LinkInterceptor";
+import PlaintextMarkdown from "#/features/shared/markdown/PlaintextMarkdown";
+import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
+import { preventOnClickNavigationBug } from "#/helpers/ionic";
+import { determineTypeFromUrl, isUrlImage } from "#/helpers/url";
+import { getImageSrc } from "#/services/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import LinkPreview from "./LinkPreview";
-import { LinkData } from "../../comment/CommentLinks";
-import useLemmyUrlHandler from "../../shared/useLemmyUrlHandler";
-import { getImageSrc } from "../../../services/lemmy";
-import { determineTypeFromUrl, isUrlImage } from "../../../helpers/url";
-import { useAppDispatch, useAppSelector } from "../../../store";
 import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
-import PlaintextMarkdown from "../../shared/markdown/PlaintextMarkdown";
 
 const TRANSPARENT_PIXEL =
   'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
@@ -158,7 +160,7 @@ export default function Link({
     () => determineObjectTypeFromUrl(url) ?? determineTypeFromUrl(url),
     [url, determineObjectTypeFromUrl],
   );
-  const isImage = useMemo(() => isUrlImage(url), [url]);
+  const isImage = useMemo(() => isUrlImage(url, undefined), [url]);
 
   const handleLinkClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -181,18 +183,17 @@ export default function Link({
     }
 
     if (!thumbnailinatorResult || thumbnailinatorResult === "pending") {
-      if (!thumbnailinatorResult) dispatch(fetchThumbnail(url));
       return TRANSPARENT_PIXEL;
     }
 
     return thumbnailinatorResult;
-  }, [
-    lemmyThubmnail,
-    dispatch,
-    url,
-    thumbnailinatorResult,
-    thumbnailinatorEnabled,
-  ]);
+  }, [lemmyThubmnail, thumbnailinatorResult, thumbnailinatorEnabled]);
+
+  useEffect(() => {
+    if (thumbnail === TRANSPARENT_PIXEL && !thumbnailinatorResult) {
+      dispatch(fetchThumbnail(url));
+    }
+  }, [dispatch, thumbnail, thumbnailinatorResult, url]);
 
   const compactIcon = useMemo(() => {
     if (commentType === "image" || isImage)

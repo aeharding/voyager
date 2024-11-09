@@ -8,9 +8,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
-import AppDetails from "./AppDetails";
-import { IconBg } from "../SettingsPage";
+import { shuffle } from "es-toolkit";
 import {
   bug,
   handLeft,
@@ -22,17 +20,21 @@ import {
   sparkles,
   thumbsUp,
 } from "ionicons/icons";
-import { useAppSelector } from "../../../../store";
-import compliments from "./compliments.txt?raw";
-import { shuffle } from "lodash";
-import useAppToast from "../../../../helpers/useAppToast";
 import { useRef } from "react";
-import AppContent from "../../../../features/shared/AppContent";
-import { IonItemInAppExternalLink } from "../../../../features/shared/InAppExternalLink";
-import { isAndroid, isNative } from "../../../../helpers/device";
-import { useSetActivePage } from "../../../../features/auth/AppContext";
-import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "../../../../helpers/voyager";
-import AppHeader from "../../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import { IonItemInAppExternalLink } from "#/features/shared/InAppExternalLink";
+import { isAndroid, isNative } from "#/helpers/device";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useAppToast from "#/helpers/useAppToast";
+import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
+import { useAppSelector } from "#/store";
+
+import { IconBg } from "../SettingsPage";
+import AppDetails from "./AppDetails";
+import compliments from "./compliments.txt?raw";
 
 export default function AboutPage() {
   const pageRef = useRef<HTMLElement>(null);

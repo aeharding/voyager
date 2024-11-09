@@ -1,5 +1,6 @@
-import { FocusEvent, KeyboardEvent, useRef } from "react";
 import "photoswipe/dist/photoswipe.css";
+import { FocusEvent, KeyboardEvent, useRef } from "react";
+
 import { GalleryMediaProps } from "./GalleryMedia";
 
 /**

@@ -1,7 +1,8 @@
-import { useCallback } from "react";
-import { useAppDispatch } from "../../store";
 import { useIonActionSheet } from "@ionic/react";
-import { clearHidden } from "../post/postSlice";
+import { useCallback } from "react";
+
+import { clearHidden } from "#/features/post/postSlice";
+import { useAppDispatch } from "#/store";
 
 export default function useResetHiddenPosts() {
   const dispatch = useAppDispatch();

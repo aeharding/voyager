@@ -1,3 +1,4 @@
+import { checkmark } from "ionicons/icons";
 import {
   CommentView,
   Community,
@@ -6,12 +7,12 @@ import {
   PersonView,
   PostView,
 } from "lemmy-js-client";
+import { useCallback } from "react";
+
+import { buildCommunityLink } from "./appLinkBuilder";
 import { getHandle } from "./lemmy";
 import { useBuildGeneralBrowseLink } from "./routes";
-import { buildCommunityLink } from "./appLinkBuilder";
-import { useCallback } from "react";
 import useAppToast from "./useAppToast";
-import { checkmark } from "ionicons/icons";
 import { useOptimizedIonRouter } from "./useOptimizedIonRouter";
 
 export default function useAppNavigation() {
@@ -28,35 +29,34 @@ export default function useAppNavigation() {
           centerText: true,
           icon: checkmark,
         });
-        return;
+        return "already-there";
       }
 
       router.push(route);
+      return "success";
     },
     [router, presentToast],
   );
 
   const navigateToPost = useCallback(
-    (post: PostView) => {
+    (post: PostView) =>
       pushRouteIfNeeded(
         buildGeneralBrowseLink(
           `/c/${getHandle(post.community)}/comments/${post.post.id}`,
         ),
-      );
-    },
+      ),
     [buildGeneralBrowseLink, pushRouteIfNeeded],
   );
 
   const navigateToCommunity = useCallback(
-    (community: CommunityView | Community) => {
+    (community: CommunityView | Community) =>
       pushRouteIfNeeded(
         buildGeneralBrowseLink(
           buildCommunityLink(
             "community" in community ? community.community : community,
           ),
         ),
-      );
-    },
+      ),
     [buildGeneralBrowseLink, pushRouteIfNeeded],
   );
 
@@ -65,26 +65,26 @@ export default function useAppNavigation() {
       const getPath = (handle: string) => `/u/${handle}`;
 
       if (typeof user === "string") {
-        pushRouteIfNeeded(buildGeneralBrowseLink(getPath(user)));
-        return;
+        return pushRouteIfNeeded(buildGeneralBrowseLink(getPath(user)));
       }
 
       const person = "person" in user ? user.person : user;
-      pushRouteIfNeeded(buildGeneralBrowseLink(getPath(getHandle(person))));
+      return pushRouteIfNeeded(
+        buildGeneralBrowseLink(getPath(getHandle(person))),
+      );
     },
     [buildGeneralBrowseLink, pushRouteIfNeeded],
   );
 
   const navigateToComment = useCallback(
-    (comment: CommentView) => {
+    (comment: CommentView) =>
       pushRouteIfNeeded(
         buildGeneralBrowseLink(
           `/c/${getHandle(comment.community)}/comments/${comment.post.id}/${
             comment.comment.path
           }`,
         ),
-      );
-    },
+      ),
     [buildGeneralBrowseLink, pushRouteIfNeeded],
   );
 

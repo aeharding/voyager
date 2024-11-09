@@ -1,14 +1,16 @@
-import { CustomIonItem } from "../Comment";
-import CommentHr from "./CommentHr";
 import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { chevronForward } from "ionicons/icons";
 import AnimateHeight from "react-animate-height";
-import { CommentNodeI } from "../../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
 import { useParams } from "react-router";
-import { styled } from "@linaria/react";
-import { PositionedContainer } from "../elements/PositionedContainer";
-import CommentContainer from "../elements/CommentContainer";
+
+import CommentContainer from "#/features/comment/elements/CommentContainer";
+import { PositionedContainer } from "#/features/comment/elements/PositionedContainer";
+import { CommentNodeI } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+
+import { CustomIonItem } from "../Comment";
+import CommentHr from "./CommentHr";
 
 const MoreRepliesBlock = styled.div`
   display: flex;

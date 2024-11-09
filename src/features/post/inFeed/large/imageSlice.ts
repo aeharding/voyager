@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { round } from "lodash";
+import { round } from "es-toolkit";
 
 export const IMAGE_FAILED = -1;
 

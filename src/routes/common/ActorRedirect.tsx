@@ -1,8 +1,9 @@
-import { Redirect, RouteProps, useLocation, useParams } from "react-router";
-import { useAppSelector } from "../../store";
-import useIonViewIsVisible from "../../helpers/useIonViewIsVisible";
-import { isInstalled } from "../../helpers/device";
 import { useMemo } from "react";
+import { Redirect, RouteProps, useLocation, useParams } from "react-router";
+
+import { isInstalled } from "#/helpers/device";
+import useIonViewIsVisible from "#/helpers/useIonViewIsVisible";
+import { useAppSelector } from "#/store";
 
 export const usingActorRedirect = !isInstalled();
 

@@ -1,9 +1,11 @@
 import { openOutline, readerOutline } from "ionicons/icons";
-import { OLinkHandlerType } from "../../../../services/db";
-import { useAppSelector } from "../../../../store";
+
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { isNative } from "#/helpers/device";
+import { OLinkHandlerType } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import { setLinkHandler } from "../../settingsSlice";
-import SettingSelector from "../../shared/SettingSelector";
-import { isNative } from "../../../../helpers/device";
 
 export default function LinkHandler() {
   const linkHandler = useAppSelector(

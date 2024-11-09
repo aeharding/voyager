@@ -1,14 +1,14 @@
 import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
+import { zipObject } from "es-toolkit";
 import {
   CommentSortType,
   FederatedInstances,
   PostSortType,
 } from "lemmy-js-client";
-import { zipObject } from "lodash";
-import { ALL_POST_SORTS } from "../features/feed/PostSort";
-import { COMMENT_SORTS } from "../features/comment/CommentSort";
-import { StringArrayToIdentityObject } from "../helpers/typescript";
+
+import { COMMENT_SORTS } from "#/features/comment/CommentSort";
+import { ALL_POST_SORTS } from "#/features/feed/PostSort";
 
 export interface IPostMetadata {
   post_id: number;
@@ -105,15 +105,9 @@ export const OPostBlurNsfw = {
 } as const;
 
 export type CommentDefaultSort = CommentSortType;
-export const OCommentDefaultSort = zipObject(
-  COMMENT_SORTS,
-  COMMENT_SORTS,
-) as StringArrayToIdentityObject<typeof COMMENT_SORTS>;
+export const OCommentDefaultSort = zipObject(COMMENT_SORTS, COMMENT_SORTS);
 
-export const OSortType = zipObject(
-  ALL_POST_SORTS,
-  ALL_POST_SORTS,
-) as StringArrayToIdentityObject<typeof ALL_POST_SORTS>;
+export const OSortType = zipObject(ALL_POST_SORTS, ALL_POST_SORTS);
 
 export type PostBlurNsfwType =
   (typeof OPostBlurNsfw)[keyof typeof OPostBlurNsfw];
@@ -295,16 +289,33 @@ export type SwipeActions = Record<SwipeDirection, SwipeAction>;
 
 type Provider = "redgifs";
 
-type ProviderData<Name extends string, Data> = {
+interface ProviderData<Name extends string, Data> {
   name: Name;
   data: Data;
-};
+}
 
 export type RedgifsProvider = ProviderData<"redgifs", { token: string }>;
 
 type ProvidersData = RedgifsProvider;
 
-export type SettingValueTypes = {
+export interface UserTag {
+  handle: string;
+
+  downvotes: number;
+  upvotes: number;
+
+  text?: string;
+
+  color?: string;
+
+  /**
+   * The URL of the Lemmy post or comment this tag was created from.
+   * (Will only be set if `saveSource` is enabled.)
+   */
+  sourceUrl?: string;
+}
+
+export interface SettingValueTypes {
   comments_theme: CommentsThemeType;
   votes_theme: VotesThemeType;
   collapse_comment_threads: CommentThreadCollapse;
@@ -366,7 +377,11 @@ export type SettingValueTypes = {
   show_collapsed_comment: boolean;
   quick_switch_dark_mode: boolean;
   subscribed_icon: ShowSubscribedIcon;
-};
+  tags_enabled: boolean;
+  tags_track_votes: boolean;
+  tags_hide_instance: boolean;
+  tags_save_source: boolean;
+}
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
   key: T;
@@ -390,6 +405,7 @@ export class WefwefDB extends Dexie {
   settings!: Table<ISettingItem<keyof SettingValueTypes>, string>;
   cachedFederatedInstanceData!: Table<InstanceData, number>;
   providers!: Table<ProvidersData, Provider>;
+  userTags!: Table<UserTag, number>;
 
   constructor() {
     super("WefwefDB");
@@ -530,6 +546,40 @@ export class WefwefDB extends Dexie {
         .where("key")
         .equals("remember_community_sort")
         .modify({ key: "remember_community_post_sort" });
+    });
+
+    this.version(9).stores({
+      postMetadatas: `
+        ++,
+        ${CompoundKeys.postMetadata.post_id_and_user_handle},
+        ${CompoundKeys.postMetadata.user_handle_and_hidden},
+        post_id,
+        user_handle,
+        hidden,
+        hidden_updated_at
+      `,
+      settings: `
+        ++,
+        key,
+        ${CompoundKeys.settings.key_and_user_handle_and_community},
+        value,
+        user_handle,
+        community
+      `,
+      cachedFederatedInstanceData: `
+        ++id,
+        &domain,
+        updated
+      `,
+      providers: `
+        ++,
+        &name,
+        data
+      `,
+      userTags: `
+        ++,
+        &handle
+      `,
     });
   }
 
@@ -692,6 +742,41 @@ export class WefwefDB extends Dexie {
 
       await this.cachedFederatedInstanceData.add(payload);
     });
+  }
+
+  async fetchTagsForHandles(handles: string[]) {
+    return await this.userTags.where("handle").anyOf(handles).toArray();
+  }
+
+  async updateTag(tag: UserTag) {
+    return await this.transaction("rw", this.userTags, async () => {
+      await this.userTags.where("handle").equals(tag.handle).delete();
+
+      await this.userTags.put(tag);
+    });
+  }
+
+  async removeTag(tag: UserTag) {
+    return await this.transaction("rw", this.userTags, async () => {
+      await this.userTags.where("handle").equals(tag.handle).delete();
+    });
+  }
+
+  async getUserTagsPaginated(
+    page: number,
+    limit: number,
+    filterTagged: boolean,
+  ) {
+    return await this.userTags
+      .orderBy("handle")
+      .filter(({ text }) => (filterTagged ? !!text : true))
+      .offset((page - 1) * limit)
+      .limit(limit)
+      .toArray();
+  }
+
+  async resetTags() {
+    return await this.userTags.clear();
   }
 
   /*

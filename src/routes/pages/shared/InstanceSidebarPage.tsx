@@ -7,11 +7,12 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { useRef } from "react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import { useAppSelector } from "../../../store";
-import Sidebar from "../../../features/sidebar/Sidebar";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import AppHeader from "#/features/shared/AppHeader";
+import Sidebar from "#/features/sidebar/Sidebar";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useAppSelector } from "#/store";
 
 export default function InstanceSidebarPage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();

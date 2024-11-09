@@ -4,10 +4,11 @@ import {
   OverlayEventDetail,
 } from "@ionic/core";
 import { IonActionSheet, IonItem, IonLabel } from "@ionic/react";
-import { startCase } from "lodash";
-import React, { useState } from "react";
-import { Dispatchable, useAppDispatch } from "../../../store";
 import { css, cx } from "@linaria/core";
+import { startCase } from "es-toolkit";
+import React, { useState } from "react";
+
+import { Dispatchable, useAppDispatch } from "#/store";
 
 const iconCss = css`
   position: relative;

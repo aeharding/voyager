@@ -1,12 +1,13 @@
 import { IonButton, IonIcon, IonLoading, useIonAlert } from "@ionic/react";
 import { createOutline } from "ionicons/icons";
 import { useState } from "react";
-import { useAppDispatch } from "../../../store";
-import { getUser } from "../../../features/user/userSlice";
-import { getHandle } from "../../../helpers/lemmy";
-import useAppToast from "../../../helpers/useAppToast";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import { isLemmyError } from "../../../helpers/lemmyErrors";
+
+import { getUser } from "#/features/user/userSlice";
+import { getHandle } from "#/helpers/lemmy";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppDispatch } from "#/store";
 
 export default function ComposeButton() {
   const [loading, setLoading] = useState(false);

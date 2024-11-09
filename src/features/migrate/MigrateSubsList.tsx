@@ -1,19 +1,18 @@
 import { IonItem, IonList } from "@ionic/react";
-import { memo, useMemo } from "react";
 
 interface MigrateSubsListProps {
   link: string;
 }
 
-function MigrateSubsList({ link }: MigrateSubsListProps) {
-  const subs = useMemo(() => {
+export default function MigrateSubsList({ link }: MigrateSubsListProps) {
+  const subs = (() => {
     try {
       return parseSubsFromLink(decodeURIComponent(link));
     } catch (error) {
       console.error("Failed to parse link", error);
       return [];
     }
-  }, [link]);
+  })();
 
   return (
     <IonList>
@@ -28,8 +27,6 @@ function MigrateSubsList({ link }: MigrateSubsListProps) {
     </IonList>
   );
 }
-
-export default memo(MigrateSubsList);
 
 export function parseSubsFromLink(multiredditUrl: string) {
   const { pathname } = new URL(multiredditUrl);

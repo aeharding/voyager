@@ -1,13 +1,12 @@
+import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 import React, {
   createContext,
-  experimental_useEffectEvent as useEffectEvent,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useRef,
   useState,
 } from "react";
-import { useInterval } from "usehooks-ts";
 import { useRegisterSW } from "virtual:pwa-register/react";
-import usePageVisibility from "../../../../helpers/usePageVisibility";
 
 type UpdateStatus =
   | "not-enabled"
@@ -24,19 +23,17 @@ interface IUpdateContext {
 }
 
 export const UpdateContext = createContext<IUpdateContext>({
+  // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
   checkForUpdates: async () => {},
+  // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
   updateServiceWorker: async () => {},
 
   status: "loading",
 });
 
-export function UpdateContextProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function UpdateContextProvider({ children }: React.PropsWithChildren) {
   const [status, setStatus] = useState<UpdateStatus>("not-enabled");
-  const pageVisibility = usePageVisibility();
+  const documentState = useDocumentVisibility();
 
   const registration = useRef<ServiceWorkerRegistration>();
 
@@ -58,15 +55,16 @@ export function UpdateContextProvider({
       checkForUpdates();
     },
     1_000 * 60 * 60,
+    { autoInvoke: true },
   );
 
   const checkForUpdatesEvent = useEffectEvent(checkForUpdates);
 
   useEffect(() => {
-    if (!pageVisibility) return;
+    if (documentState === "hidden") return;
 
     checkForUpdatesEvent();
-  }, [pageVisibility]);
+  }, [documentState]);
 
   async function checkForUpdates() {
     const r = registration.current;

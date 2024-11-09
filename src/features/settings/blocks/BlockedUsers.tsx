@@ -7,20 +7,21 @@ import {
   IonList,
   IonLoading,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { useState } from "react";
-import { getHandle } from "../../../helpers/lemmy";
-import { blockUser } from "../../user/userSlice";
-import { ListHeader } from "../shared/formatting";
-import { RemoveItemButton } from "../../shared/ListEditor";
 import { Person } from "lemmy-js-client";
+import { useState } from "react";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { RemoveItemButton } from "#/features/shared/ListEditor";
+import { blockUser } from "#/features/user/userSlice";
+import { getHandle } from "#/helpers/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 /**
  * TODO remove once we drop support for lemmy 0.19
  */
-type PersonBlockView = {
+interface PersonBlockView {
   target: Person;
-};
+}
 
 /**
  * TODO remove - Lemmy 0.19 returned user block view. v0.20 returns user.

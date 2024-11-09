@@ -1,24 +1,23 @@
-import { useAppDispatch, useAppSelector } from "../../store";
-import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
-import { voteOnPost } from "../post/postSlice";
-import React, { useContext } from "react";
-import { voteOnComment } from "../comment/commentSlice";
-import { downvotesDisabled } from "../../helpers/toastMessages";
-import { PageContext } from "../auth/PageContext";
-import {
-  calculateTotalScore,
-  calculateSeparateScore,
-} from "../../helpers/vote";
-import { CommentView, PostView } from "lemmy-js-client";
-import { OVoteDisplayMode } from "../../services/db";
-import { isDownvoteEnabledSelector } from "../auth/siteSlice";
 import { ImpactStyle } from "@capacitor/haptics";
-import useHapticFeedback from "../../helpers/useHapticFeedback";
-import useAppToast from "../../helpers/useAppToast";
-import { formatNumber } from "../../helpers/number";
-import { getVoteErrorMessage } from "../../helpers/lemmyErrors";
-import { PlainButton } from "../shared/PlainButton";
 import { css } from "@linaria/core";
+import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
+import { CommentView, PostView } from "lemmy-js-client";
+import React, { useContext } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
+import { voteOnComment } from "#/features/comment/commentSlice";
+import { voteOnPost } from "#/features/post/postSlice";
+import { PlainButton } from "#/features/shared/PlainButton";
+import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
+import { formatNumber } from "#/helpers/number";
+import { downvotesDisabled } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import useHapticFeedback from "#/helpers/useHapticFeedback";
+import { calculateSeparateScore, calculateTotalScore } from "#/helpers/vote";
+import { OVoteDisplayMode } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import VoteStat from "./VoteStat";
 
 const iconClass = css`
@@ -74,7 +73,7 @@ export default function Vote({
     }
 
     try {
-      await dispatch(dispatcherFn(id, vote));
+      await dispatch(dispatcherFn(item as CommentView & PostView, vote));
     } catch (error) {
       presentToast({
         color: "danger",

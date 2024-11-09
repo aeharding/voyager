@@ -1,11 +1,12 @@
-import { IonItem, IonLabel, useIonActionSheet } from "@ionic/react";
-import { isAndroid, isNative } from "../../../../../helpers/device";
-import { Share } from "@capacitor/share";
 import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
-import useAppToast from "../../../../../helpers/useAppToast";
-import { createBackup, isBackup, restoreFromBackup } from "./helpers";
-
+import { Share } from "@capacitor/share";
+import { IonItem, IonLabel, useIonActionSheet } from "@ionic/react";
 import "dexie-export-import";
+
+import { isAndroid, isNative } from "#/helpers/device";
+import useAppToast from "#/helpers/useAppToast";
+
+import { createBackup, isBackup, restoreFromBackup } from "./helpers";
 
 export default function BackupSettings() {
   const [presentActionSheet] = useIonActionSheet();

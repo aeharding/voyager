@@ -1,7 +1,6 @@
 /// <reference types="mdast-util-lemmy-spoiler" />
-
-import { visit } from "unist-util-visit";
 import { Root } from "mdast";
+import { visit } from "unist-util-visit";
 
 /**
  * Transform spoiler tree node to details/summary rehype html nodes

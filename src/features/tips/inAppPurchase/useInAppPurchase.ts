@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
 import { CapacitorTips, Product } from "capacitor-tips";
+import { useEffect, useRef, useState } from "react";
 
 const PRODUCT_IDENTIFIERS = ["tip_small", "tip_medium", "tip_large"];
 

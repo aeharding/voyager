@@ -1,4 +1,5 @@
 import { Comment, Person, Post } from "lemmy-js-client";
+
 import { ModeratorRole } from "../../useCanModerate";
 
 interface ModItem {

@@ -6,17 +6,18 @@ import {
   IonIcon,
 } from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
+import { startCase } from "es-toolkit";
 import {
   earthOutline,
   homeOutline,
   peopleOutline,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
-import { useContext, useState } from "react";
-import { startCase } from "lodash";
 import { ListingType } from "lemmy-js-client";
-import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
-import { AppContext } from "../auth/AppContext";
+import { useContext, useState } from "react";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
 
 export const LISTING_TYPES = [
   "All",

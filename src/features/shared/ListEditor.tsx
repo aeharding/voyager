@@ -1,5 +1,6 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
+import { noop } from "es-toolkit";
 import { checkmark, ellipsisVertical, removeCircle } from "ionicons/icons";
 import React, {
   createContext,
@@ -8,13 +9,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { isIosTheme } from "../../helpers/device";
 
-interface ListEditorProviderProps {
-  children: React.ReactNode;
-}
+import { isIosTheme } from "#/helpers/device";
 
-export function ListEditorProvider({ children }: ListEditorProviderProps) {
+export function ListEditorProvider({ children }: React.PropsWithChildren) {
   const [editing, setEditing] = useState(false);
 
   const value = useMemo(() => ({ editing, setEditing }), [editing]);
@@ -33,7 +31,7 @@ interface ListEditorContextValue {
 
 export const ListEditorContext = createContext<ListEditorContextValue>({
   editing: false,
-  setEditing: () => {},
+  setEditing: noop,
 });
 
 export function ListEditButton() {

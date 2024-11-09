@@ -1,13 +1,15 @@
 import { IonLabel, IonList } from "@ionic/react";
-import { ListHeader } from "../../shared/formatting";
-import BlurNsfw from "./BlurNsfw";
-import PostSize from "./PostSize";
-import EmbedCrossposts from "./EmbedCrossposts";
-import ShowCommunityIcons from "./ShowCommunityIcons";
-import EmbedExternalMedia from "./EmbedExternalMedia";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+
 import AlwaysShowAuthor from "./AlwaysShowAuthor";
-import RememberType from "./RememberType";
+import BlurNsfw from "./BlurNsfw";
 import CommunityAtTop from "./CommunityAtTop";
+import EmbedCrossposts from "./EmbedCrossposts";
+import EmbedExternalMedia from "./EmbedExternalMedia";
+import PostSize from "./PostSize";
+import RememberType from "./RememberType";
+import ShowCommunityIcons from "./ShowCommunityIcons";
 import SubscribedIcon from "./SubscribedIcon";
 
 export default function Posts() {

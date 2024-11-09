@@ -1,28 +1,26 @@
+import { useIonViewWillEnter } from "@ionic/react";
+import { noop } from "es-toolkit";
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
+  useId,
   useMemo,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
 import * as portals from "react-reverse-portal";
-import type Player from "./Player";
-import { useIonViewWillEnter } from "@ionic/react";
-import PortaledPlayer from "./PortaledPlayer";
-import { uniqueId } from "lodash";
 
-interface VideoPortalProviderProps {
-  children: React.ReactNode;
-}
+import type Player from "./Player";
+import PortaledPlayer from "./PortaledPlayer";
 
 export default function VideoPortalProvider({
   children,
-}: VideoPortalProviderProps) {
+}: React.PropsWithChildren) {
   const [videoRefs, setVideoRefs] = useState<VideoRefs>({});
-  const videoRefsRef = useRef<typeof videoRefs>(videoRefs); // yodawg
+  const videoRefsRef = useRef(videoRefs); // yodawg
 
   useEffect(() => {
     videoRefsRef.current = videoRefs;
@@ -37,7 +35,7 @@ export default function VideoPortalProvider({
         if (potentialExisting.sourceUid !== sourceUid) {
           setVideoRefs((videoRefs) => ({
             ...videoRefs,
-            [src]: { ...potentialExisting, sourceUid: sourceUid },
+            [src]: { ...potentialExisting, sourceUid },
           }));
         }
 
@@ -126,29 +124,28 @@ type GetPortalNodeForSrc = (
 
 const VideoPortalContext = createContext<VideoPortalContextState>({
   videoRefs: {},
-  getPortalNodeForSrc: () => {},
-  cleanupPortalNodeForSrcIfNeeded: () => {},
+  getPortalNodeForSrc: noop,
+  cleanupPortalNodeForSrcIfNeeded: noop,
 });
 
 export function useVideoPortalNode(src: string): PortalNode | void {
-  const sourceUidRef = useRef(uniqueId());
+  const sourceUid = useId();
+
   const { getPortalNodeForSrc, cleanupPortalNodeForSrcIfNeeded, videoRefs } =
     useContext(VideoPortalContext);
 
   // Sometimes useIonViewWillEnter fires after element is already destroyed
   const destroyed = useRef(false);
 
-  // eslint-disable-next-line react-compiler/react-compiler
   const getPortalNodeEvent = useEffectEvent(() => {
     if (destroyed.current) return;
 
-    getPortalNodeForSrc(src, sourceUidRef.current);
+    getPortalNodeForSrc(src, sourceUid);
   });
 
-  // eslint-disable-next-line react-compiler/react-compiler
   const cleanupPortalNodeIfNeededEvent = useEffectEvent(() => {
     destroyed.current = true;
-    cleanupPortalNodeForSrcIfNeeded(src, sourceUidRef.current);
+    cleanupPortalNodeForSrcIfNeeded(src, sourceUid);
   });
 
   useEffect(() => {
@@ -164,6 +161,6 @@ export function useVideoPortalNode(src: string): PortalNode | void {
 
   const potentialVideoRef = videoRefs[src];
 
-  if (potentialVideoRef?.sourceUid === sourceUidRef.current)
+  if (potentialVideoRef?.sourceUid === sourceUid)
     return potentialVideoRef.portalNode;
 }

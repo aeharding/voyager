@@ -8,21 +8,22 @@ import {
   IonLoading,
   useIonModal,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { useContext, useState } from "react";
 import { Instance } from "lemmy-js-client";
-import { ListHeader } from "../shared/formatting";
-import { blockInstance } from "../../auth/siteSlice";
-import InstanceSelectorModal from "../../shared/selectorModals/InstanceSelectorModal";
-import { PageContext } from "../../auth/PageContext";
-import { RemoveItemButton } from "../../shared/ListEditor";
+import { useContext, useState } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { blockInstance } from "#/features/auth/siteSlice";
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { RemoveItemButton } from "#/features/shared/ListEditor";
+import InstanceSelectorModal from "#/features/shared/selectorModals/InstanceSelectorModal";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 /**
  * lemmy v0.19 version
  */
-type InstanceView = {
+interface InstanceView {
   instance: Instance;
-};
+}
 
 /**
  * TODO remove - Lemmy 0.19 returned communityView. v0.20 returns community.

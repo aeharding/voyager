@@ -1,3 +1,5 @@
+import { ActionSheetButton, IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import {
   arrowUndoOutline,
   ellipsisHorizontal,
@@ -5,16 +7,16 @@ import {
   personOutline,
   textOutline,
 } from "ionicons/icons";
-import { ActionSheetButton, IonIcon } from "@ionic/react";
-import { useCallback, useContext, useImperativeHandle } from "react";
-import { PageContext } from "../auth/PageContext";
-import useAppNavigation from "../../helpers/useAppNavigation";
-import { getHandle } from "../../helpers/lemmy";
 import { PrivateMessageView } from "lemmy-js-client";
-import { styled } from "@linaria/react";
+import { useCallback, useContext, useImperativeHandle } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import usePresentUserActions from "#/features/user/usePresentUserActions";
+import { getHandle } from "#/helpers/lemmy";
+import useAppNavigation from "#/helpers/useAppNavigation";
+import store, { useAppDispatch } from "#/store";
+
 import { markRead, syncMessages } from "./inboxSlice";
-import store, { useAppDispatch } from "../../store";
-import usePresentUserActions from "../user/usePresentUserActions";
 
 const StyledIonIcon = styled(IonIcon)`
   font-size: 1.2em;
@@ -44,7 +46,7 @@ export default function PrivateMessageMoreActions({
   const { navigateToUser } = useAppNavigation();
 
   const present = useCallback(() => {
-    presentUserActions(getHandle(item.creator), {
+    presentUserActions(item.creator, {
       prependButtons: [
         markReadAction,
         {

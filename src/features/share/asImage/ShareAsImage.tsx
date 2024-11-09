@@ -1,32 +1,33 @@
+import { CapacitorHttp } from "@capacitor/core";
+import { Directory, Filesystem } from "@capacitor/filesystem";
+import { Share } from "@capacitor/share";
 import { IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
+import { Options as DomToBlobOptions, domToBlob } from "modern-screenshot";
 import {
   ReactNode,
   createContext,
   useCallback,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import CommentTree from "../../comment/inTree/CommentTree";
-import { buildCommentsTree, getDepthFromComment } from "../../../helpers/lemmy";
+
+import CommentTree from "#/features/comment/inTree/CommentTree";
+import PostHeader from "#/features/post/detail/PostHeader";
+import { blobToDataURL, blobToString } from "#/helpers/blob";
+import { isNative } from "#/helpers/device";
+import { buildCommentsTree, getDepthFromComment } from "#/helpers/lemmy";
+import useAppToast from "#/helpers/useAppToast";
+import { getImageSrc } from "#/services/lemmy";
+import { webviewServerUrl } from "#/services/nativeFetch";
+
 import AddRemoveButtons from "./AddRemoveButtons";
-import Watermark from "./Watermark";
-import { isNative } from "../../../helpers/device";
-import { Share } from "@capacitor/share";
-import { Filesystem, Directory } from "@capacitor/filesystem";
-import { blobToDataURL, blobToString } from "../../../helpers/blob";
-import useAppToast from "../../../helpers/useAppToast";
-import includeStyleProperties from "./includeStyleProperties";
-import { CapacitorHttp } from "@capacitor/core";
-import { domToBlob } from "modern-screenshot";
-import { getImageSrc } from "../../../services/lemmy";
 import { ShareAsImageData } from "./ShareAsImageModal";
-import PostHeader from "../../post/detail/PostHeader";
-import { webviewServerUrl } from "../../../services/nativeFetch";
-import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
+import Watermark from "./Watermark";
+import includeStyleProperties from "./includeStyleProperties";
 
 const Container = styled.div`
   --bottom-padding: max(
@@ -111,6 +112,45 @@ const hideBottomBorderCss = css`
   --inner-border-width: 0 0 0 0;
 `;
 
+const domToBlobOptions: DomToBlobOptions = {
+  scale: 4,
+  features: {
+    // Without this, render fails on certain images
+    removeControlCharacter: false,
+  },
+  includeStyleProperties,
+  filter: (node) => {
+    if (!(node instanceof HTMLElement)) return true;
+
+    return node.tagName !== "VIDEO";
+  },
+  fetchFn: isNative()
+    ? async (url) => {
+        // Pass through relative URLs to browser fetching
+        if (url.startsWith(`${webviewServerUrl}/`)) {
+          return false;
+        }
+
+        // Attempt upgrade to https (insecure will be blocked)
+        if (url.startsWith("http://")) {
+          url = url.replace(/^http:\/\//, "https://");
+        }
+
+        const nativeResponse = await CapacitorHttp.get({
+          // if pictrs, convert large gifs to jpg
+          url: getImageSrc(url, { format: "jpg" }),
+          responseType: "blob",
+        });
+
+        // Workaround that will probably break in a future capacitor upgrade
+        // https://github.com/ionic-team/capacitor/issues/6126
+        return `data:${
+          nativeResponse.headers["Content-Type"] || "image/png"
+        };base64,${nativeResponse.data}`;
+      }
+    : undefined,
+};
+
 const shareAsImageRenderRoot = document.querySelector(
   "#share-as-image-root",
 ) as HTMLElement;
@@ -150,7 +190,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
     })();
   }, [blob]);
 
-  const filteredComments = useMemo(() => {
+  const filteredComments = (() => {
     if (!("comment" in data)) return [];
 
     const filtered = data.comments
@@ -166,58 +206,19 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       );
 
     return filtered;
-  }, [data, minDepth]);
+  })();
 
-  const commentNode = useMemo(
-    () =>
-      filteredComments.length ? buildCommentsTree(filteredComments, true) : [],
-    [filteredComments],
-  );
+  const commentNode = filteredComments.length
+    ? buildCommentsTree(filteredComments, true)
+    : [];
 
   const render = useCallback(async () => {
     try {
       const blob = await domToBlob(
         shareAsImageRenderRoot.querySelector(".inner") as HTMLElement,
-        {
-          scale: 4,
-          features: {
-            // Without this, render fails on certain images
-            removeControlCharacter: false,
-          },
-          includeStyleProperties,
-          filter: (node) => {
-            if (!(node instanceof HTMLElement)) return true;
-
-            return node.tagName !== "VIDEO";
-          },
-          fetchFn: isNative()
-            ? async (url) => {
-                // Pass through relative URLs to browser fetching
-                if (url.startsWith(`${webviewServerUrl}/`)) {
-                  return false;
-                }
-
-                // Attempt upgrade to https (insecure will be blocked)
-                if (url.startsWith("http://")) {
-                  url = url.replace(/^http:\/\//, "https://");
-                }
-
-                const nativeResponse = await CapacitorHttp.get({
-                  // if pictrs, convert large gifs to jpg
-                  url: getImageSrc(url, { format: "jpg" }),
-                  responseType: "blob",
-                });
-
-                // Workaround that will probably break in a future capacitor upgrade
-                // https://github.com/ionic-team/capacitor/issues/6126
-                return `data:${
-                  nativeResponse.headers["Content-Type"] || "image/png"
-                };base64,${nativeResponse.data}`;
-              }
-            : undefined,
-        },
+        domToBlobOptions,
       );
-      setBlob(blob ?? undefined);
+      setBlob(() => blob ?? undefined);
     } catch (error) {
       presentToast({
         message: "Error rendering image.",

@@ -1,10 +1,12 @@
 import { useContext } from "react";
-import { BeforeInstallPromptContext } from "./BeforeInstallPromptProvider";
+
 import {
   isAppleDeviceInstallable,
   isInstalled,
   isTouchDevice,
-} from "../../helpers/device";
+} from "#/helpers/device";
+
+import { BeforeInstallPromptContext } from "./BeforeInstallPromptProvider";
 
 export default function useShouldInstall() {
   const { event } = useContext(BeforeInstallPromptContext);

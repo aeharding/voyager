@@ -1,6 +1,7 @@
 import { IonItem, IonToggle } from "@ionic/react";
 
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setShowCommentImages } from "../../settingsSlice";
 
 export default function ShowCommentImages() {

@@ -5,23 +5,24 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
 import { useCallback } from "react";
-import { FetchFn } from "../../../../features/feed/Feed";
-import useClient from "../../../../helpers/useClient";
-import { LIMIT } from "../../../../services/lemmy";
 import { useParams } from "react-router";
-import PostSort from "../../../../features/feed/PostSort";
-import { useAppDispatch } from "../../../../store";
+
+import { receivedComments } from "#/features/comment/commentSlice";
+import { FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../../features/feed/PostCommentFeed";
-import { receivedPosts } from "../../../../features/post/postSlice";
-import { receivedComments } from "../../../../features/comment/commentSlice";
-import FeedContent from "../../shared/FeedContent";
-import { getSortDuration } from "../../../../features/feed/endItems/EndPost";
-import useFeedSort from "../../../../features/feed/sort/useFeedSort";
-import AppHeader from "../../../../features/shared/AppHeader";
+} from "#/features/feed/PostCommentFeed";
+import PostSort from "#/features/feed/PostSort";
+import { getSortDuration } from "#/features/feed/endItems/EndPost";
+import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { receivedPosts } from "#/features/post/postSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { LIMIT } from "#/services/lemmy";
+import { useAppDispatch } from "#/store";
 
 interface SearchPostsResultsProps {
   type: "Posts" | "Comments";

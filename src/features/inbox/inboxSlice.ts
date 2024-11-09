@@ -1,10 +1,12 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
+import { differenceBy, groupBy, sortBy, uniqBy } from "es-toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
-import { AppDispatch, RootState } from "../../store";
+
+import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
+import { receivedUsers } from "#/features/user/userSlice";
+import { AppDispatch, RootState } from "#/store";
+
 import { InboxItemView } from "./InboxItem";
-import { differenceBy, groupBy, sortBy, uniqBy } from "lodash";
-import { receivedUsers } from "../user/userSlice";
-import { clientSelector, jwtSelector } from "../auth/authSelectors";
 
 interface PostState {
   counts: {
@@ -209,9 +211,9 @@ export const conversationsByPersonIdSelector = createSelector(
             : m.private_message.creator_id,
         ),
       ).map((messages) =>
-        sortBy(messages, (m) => -Date.parse(m.private_message.published)),
+        sortBy(messages, [(m) => -Date.parse(m.private_message.published)]),
       ),
-      (group) => -Date.parse(group[0]!.private_message.published),
+      [(group) => -Date.parse(group[0]!.private_message.published)],
     );
   },
 );

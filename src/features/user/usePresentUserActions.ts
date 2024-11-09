@@ -1,22 +1,34 @@
-import { mailOutline, removeCircleOutline } from "ionicons/icons";
-import { useCallback, useContext } from "react";
-import { PageContext } from "../auth/PageContext";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { compact } from "lodash";
 import { ActionSheetButton, useIonActionSheet } from "@ionic/react";
-import store, { useAppDispatch } from "../../store";
-import { usernameSelector } from "../auth/authSelectors";
-import { blockUser } from "./userSlice";
-import { getBlockUserErrorMessage } from "../../helpers/lemmyErrors";
-import { buildBlocked } from "../../helpers/toastMessages";
-import useAppToast from "../../helpers/useAppToast";
-import { getHandle } from "../../helpers/lemmy";
+import { compact } from "es-toolkit";
+import {
+  mailOutline,
+  pricetagOutline,
+  removeCircleOutline,
+} from "ionicons/icons";
 import { Person } from "lemmy-js-client";
+import { useCallback, useContext } from "react";
 
-interface Options {
+import { PageContext } from "#/features/auth/PageContext";
+import { usernameSelector } from "#/features/auth/authSelectors";
+import { getHandle } from "#/helpers/lemmy";
+import { getBlockUserErrorMessage } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { buildBlocked } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import store, { useAppDispatch, useAppSelector } from "#/store";
+
+import { blockUser } from "./userSlice";
+
+export interface PresentUserActionsOptions {
   prependButtons?: ActionSheetButton[];
   hideMessageButton?: boolean;
+
+  /**
+   * If provided, will be used to generate a new tag.
+   * Should be the ap_id of the post/comment
+   */
+  sourceUrl?: string;
 }
 
 export default function usePresentUserActions() {
@@ -26,12 +38,16 @@ export default function usePresentUserActions() {
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
+  const { presentUserTag } = useContext(PageContext);
+  const userTagsEnabled = useAppSelector(
+    (state) => state.settings.tags.enabled,
+  );
 
   return useCallback(
-    (handle: string, options?: Options) => {
+    (user: Person, options?: PresentUserActionsOptions) => {
       const state = store.getState();
 
-      const isCurrentUser = usernameSelector(state) === handle;
+      const isCurrentUser = usernameSelector(state) === getHandle(user);
 
       const blocks = state.site.response?.my_user?.person_blocks;
       const isBlocked = blocks?.some(
@@ -40,9 +56,8 @@ export default function usePresentUserActions() {
             "target" in b
               ? (b.target as Person) // TODO lemmy v0.19 and less support
               : b,
-          ) === handle,
+          ) === getHandle(user),
       );
-      const user = state.user.userByHandle[handle.toLowerCase()];
 
       presentActionSheet({
         cssClass: "left-align-buttons",
@@ -58,7 +73,9 @@ export default function usePresentUserActions() {
 
                 router.push(
                   // intent=send - SendMessageBox uses to determine focus
-                  buildGeneralBrowseLink(`/u/${handle}/message?intent=send`),
+                  buildGeneralBrowseLink(
+                    `/u/${getHandle(user)}/message?intent=send`,
+                  ),
                 );
               },
             },
@@ -83,8 +100,17 @@ export default function usePresentUserActions() {
                   throw error;
                 }
 
-                presentToast(buildBlocked(!isBlocked, handle));
+                presentToast(buildBlocked(!isBlocked, getHandle(user)));
               })();
+            },
+          },
+          userTagsEnabled && {
+            text: "Edit Tag",
+            icon: pricetagOutline,
+            handler: async () => {
+              if (!user) return;
+
+              presentUserTag(user, options?.sourceUrl);
             },
           },
           {
@@ -101,6 +127,8 @@ export default function usePresentUserActions() {
       buildGeneralBrowseLink,
       presentToast,
       dispatch,
+      presentUserTag,
+      userTagsEnabled,
     ],
   );
 }

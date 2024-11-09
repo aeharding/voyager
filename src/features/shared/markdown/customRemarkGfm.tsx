@@ -1,8 +1,4 @@
 /// <reference types="remark-stringify" />
-
-import { combineExtensions } from "micromark-util-combine-extensions";
-import { gfmStrikethrough } from "micromark-extension-gfm-strikethrough";
-import { gfmTable } from "micromark-extension-gfm-table";
 import {
   gfmAutolinkLiteralFromMarkdown,
   gfmAutolinkLiteralToMarkdown,
@@ -12,6 +8,9 @@ import {
   gfmStrikethroughToMarkdown,
 } from "mdast-util-gfm-strikethrough";
 import { gfmTableFromMarkdown, gfmTableToMarkdown } from "mdast-util-gfm-table";
+import { gfmStrikethrough } from "micromark-extension-gfm-strikethrough";
+import { gfmTable } from "micromark-extension-gfm-table";
+import { combineExtensions } from "micromark-util-combine-extensions";
 import { Settings } from "unified";
 
 interface Options {
@@ -59,4 +58,21 @@ function gfmToMarkdown() {
       gfmTableToMarkdown(),
     ],
   };
+}
+
+export function customRemarkStrikethrough(this: import("unified").Processor) {
+  const data = this.data();
+
+  const micromarkExtensions =
+    data.micromarkExtensions || (data.micromarkExtensions = []);
+  const fromMarkdownExtensions =
+    data.fromMarkdownExtensions || (data.fromMarkdownExtensions = []);
+  const toMarkdownExtensions =
+    data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
+
+  micromarkExtensions.push(gfmStrikethrough({ singleTilde: false }));
+  fromMarkdownExtensions.push(gfmStrikethroughFromMarkdown());
+  toMarkdownExtensions.push({
+    extensions: [gfmStrikethroughToMarkdown()],
+  } as Settings);
 }

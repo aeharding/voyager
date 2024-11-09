@@ -1,9 +1,11 @@
-import { CommunityView } from "lemmy-js-client";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { getHandle } from "../../../helpers/lemmy";
-import GenericSidebar from "./GenericSidebar";
 import { IonRefresher, IonRefresherContent } from "@ionic/react";
-import { getCommunity } from "../../community/communitySlice";
+import { CommunityView } from "lemmy-js-client";
+
+import { getCommunity } from "#/features/community/communitySlice";
+import { getHandle } from "#/helpers/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import GenericSidebar from "./GenericSidebar";
 
 interface CommunitySidebarProps {
   community: CommunityView;

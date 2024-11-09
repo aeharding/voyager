@@ -1,9 +1,11 @@
-import { ModRemovePostView } from "lemmy-js-client";
-import { LogEntryData } from "../ModlogItem";
-import { getHandle } from "../../../../helpers/lemmy";
-import { buildBaseData, buildPostMessage } from "./shared";
-import { buildPostLink } from "../../../../helpers/appLinkBuilder";
 import { arrowUndoCircle, trash } from "ionicons/icons";
+import { ModRemovePostView } from "lemmy-js-client";
+
+import { buildPostLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+
+import { LogEntryData } from "../ModlogItem";
+import { buildBaseData, buildPostMessage } from "./shared";
 
 export default function removePost(item: ModRemovePostView): LogEntryData {
   return {

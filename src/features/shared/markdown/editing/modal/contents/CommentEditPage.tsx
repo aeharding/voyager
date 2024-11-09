@@ -1,21 +1,23 @@
 import {
-  IonButtons,
   IonButton,
-  IonToolbar,
-  IonTitle,
+  IonButtons,
   IonIcon,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
+import { arrowBackSharp, send } from "ionicons/icons";
 import { Comment, CommentView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
-import { arrowBackSharp, send } from "ionicons/icons";
-import { useAppDispatch } from "../../../../../../store";
-import useAppToast from "../../../../../../helpers/useAppToast";
-import { editComment } from "../../../../../comment/commentSlice";
+
+import { Centered, Spinner } from "#/features/auth/login/LoginNav";
+import { editComment } from "#/features/comment/commentSlice";
+import { isIosTheme } from "#/helpers/device";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch } from "#/store";
+
 import AppHeader from "../../../../AppHeader";
-import { isIosTheme } from "../../../../../../helpers/device";
-import { Centered, Spinner } from "../../../../../auth/login/LoginNav";
-import CommentEditorContent from "./CommentEditorContent";
 import { DismissableProps } from "../../../../DynamicDismissableModal";
+import CommentEditorContent from "./CommentEditorContent";
 
 type CommentEditPageProps = Omit<DismissableProps, "dismiss"> & {
   dismiss: (reply?: CommentView | undefined) => void;

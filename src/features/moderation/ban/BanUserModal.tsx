@@ -1,7 +1,9 @@
-import { DynamicDismissableModal } from "../../shared/DynamicDismissableModal";
-import { BanUserPayload } from "../../auth/PageContext";
-import BanUser from "./BanUser";
 import { css } from "@linaria/core";
+
+import { BanUserPayload } from "#/features/auth/PageContext";
+import { DynamicDismissableModal } from "#/features/shared/DynamicDismissableModal";
+
+import BanUser from "./BanUser";
 
 const modPrimaryStyle = css`
   --ion-color-primary: var(--ion-color-success);

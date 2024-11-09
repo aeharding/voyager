@@ -1,33 +1,35 @@
+import { IonIcon, IonItem } from "@ionic/react";
+import { css, cx } from "@linaria/core";
+import { styled } from "@linaria/react";
+import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
 import {
   CommentReplyView,
   PersonMentionView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import CommentMarkdown from "../comment/CommentMarkdown";
-import { IonIcon, IonItem } from "@ionic/react";
-import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
-import Ago from "../labels/Ago";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle } from "../../helpers/lemmy";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
-import { isPostReply } from "../../routes/pages/inbox/RepliesPage";
-import { maxWidthCss } from "../shared/AppContent";
-import VoteArrow from "./VoteArrow";
-import SlidingInbox from "../shared/sliding/SlidingInbox";
-import useAppToast from "../../helpers/useAppToast";
+import { useCallback, useRef } from "react";
+import { useLongPress } from "use-long-press";
+
+import CommentMarkdown from "#/features/comment/CommentMarkdown";
+import Ago from "#/features/labels/Ago";
+import CommunityLink from "#/features/labels/links/CommunityLink";
+import PersonLink from "#/features/labels/links/PersonLink";
+import { maxWidthCss } from "#/features/shared/AppContent";
+import SlidingInbox from "#/features/shared/sliding/SlidingInbox";
+import { isTouchDevice } from "#/helpers/device";
+import { stopIonicTapClick } from "#/helpers/ionic";
+import { getHandle } from "#/helpers/lemmy";
+import { filterEvents } from "#/helpers/longPress";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useAppToast from "#/helpers/useAppToast";
+import { isPostReply } from "#/routes/pages/inbox/RepliesPage";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import InboxItemMoreActions, {
   InboxItemMoreActionsHandle,
 } from "./InboxItemMoreActions";
-import { styled } from "@linaria/react";
-import { css, cx } from "@linaria/core";
-import { isTouchDevice } from "../../helpers/device";
-import PersonLink from "../labels/links/PersonLink";
-import CommunityLink from "../labels/links/CommunityLink";
-import { useCallback, useRef } from "react";
-import { useLongPress } from "use-long-press";
-import { filterEvents } from "../../helpers/longPress";
-import { stopIonicTapClick } from "../../helpers/ionic";
+import VoteArrow from "./VoteArrow";
+import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
 
 const labelStyles = css`
   display: inline-flex;
@@ -213,6 +215,7 @@ export default function InboxItem({ item }: InboxItemProps) {
             person={item.creator}
             className={labelStyles}
             showBadge={false}
+            sourceUrl={getSourceUrl()}
           />{" "}
           in{" "}
           <CommunityLink
@@ -242,6 +245,10 @@ export default function InboxItem({ item }: InboxItemProps) {
     if ("comment" in item) return item.counts.published;
 
     return item.private_message.published;
+  }
+
+  function getSourceUrl() {
+    if ("comment" in item) return item.comment.ap_id;
   }
 
   function getIcon() {

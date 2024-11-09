@@ -1,5 +1,5 @@
-import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import {
   albumsOutline,
   chatboxSharp,
@@ -9,8 +9,9 @@ import {
   personSharp,
 } from "ionicons/icons";
 import { ReactNode, useMemo } from "react";
-import { LemmyObjectType } from "../../shared/useLemmyUrlHandler";
-import type { determineTypeFromUrl } from "../../../helpers/url";
+
+import { LemmyObjectType } from "#/features/shared/useLemmyUrlHandler";
+import type { determineTypeFromUrl } from "#/helpers/url";
 
 const shared = `
   width: 26px;

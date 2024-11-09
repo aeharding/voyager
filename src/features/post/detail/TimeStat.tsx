@@ -1,6 +1,7 @@
-import { timeOutline } from "ionicons/icons";
-import Stat from "./Stat";
 import { css } from "@linaria/core";
+import { timeOutline } from "ionicons/icons";
+
+import Stat from "./Stat";
 
 export default function TimeStat(
   props: Omit<React.ComponentProps<typeof Stat>, "icon" | "iconClassName">,

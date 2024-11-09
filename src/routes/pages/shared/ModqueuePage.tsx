@@ -5,11 +5,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { FetchFn, isFirstPage } from "../../../features/feed/Feed";
-import { createContext, memo, useCallback, useContext } from "react";
-import useClient from "../../../helpers/useClient";
-import FeedContextProvider from "../../../features/feed/FeedContext";
-import FeedContent from "./FeedContent";
+import { uniqBy } from "es-toolkit";
 import {
   CommentReportView,
   CommentView,
@@ -17,25 +13,31 @@ import {
   PostReportView,
   PostView,
 } from "lemmy-js-client";
-import useFetchCommunity from "../../../features/community/useFetchCommunity";
+import { createContext, memo, useCallback, useContext } from "react";
 import { useParams } from "react-router";
-import { getHandle } from "../../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { buildCommunityLink } from "../../../helpers/appLinkBuilder";
+
+import useFetchCommunity from "#/features/community/useFetchCommunity";
+import { FetchFn, isFirstPage } from "#/features/feed/Feed";
+import FeedContextProvider from "#/features/feed/FeedContext";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import { getPostCommentItemCreatedDate } from "../../../features/user/Profile";
-import { uniqBy } from "lodash";
-import store, { useAppDispatch } from "../../../store";
+} from "#/features/feed/PostCommentFeed";
 import {
   reportsByCommentIdSelector,
   reportsByPostIdSelector,
   syncReports,
-} from "../../../features/moderation/modSlice";
-import { LIMIT } from "../../../services/lemmy";
-import AppHeader from "../../../features/shared/AppHeader";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+} from "#/features/moderation/modSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { getPostCommentItemCreatedDate } from "#/features/user/Profile";
+import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { LIMIT } from "#/services/lemmy";
+import store, { useAppDispatch } from "#/store";
+
+import FeedContent from "./FeedContent";
 
 export default function ModqueuePage() {
   const { community } = useParams<{ community?: string }>();

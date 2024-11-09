@@ -1,8 +1,9 @@
-import { styled } from "@linaria/react";
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
-import { useContext } from "react";
-import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
+import { styled } from "@linaria/react";
 import { arrowBackSharp } from "ionicons/icons";
+import { useContext } from "react";
+
+import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 
 const AndroidIonButtons = styled(IonButtons)`
   .ios & {

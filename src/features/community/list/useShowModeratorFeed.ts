@@ -1,4 +1,4 @@
-import { useAppSelector } from "../../../store";
+import { useAppSelector } from "#/store";
 
 export default function useShowModeratorFeed() {
   const moderates = useAppSelector(

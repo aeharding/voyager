@@ -11,6 +11,3 @@ if [ ! -z "$BUILD_FOSS_ONLY" ]; then
 else
     echo "BUILD_FOSS_ONLY not set. In-app purchases not disabled."
 fi
-
-# Run Vite build regardless of the environment variable
-npx vite build

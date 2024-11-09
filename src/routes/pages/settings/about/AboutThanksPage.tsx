@@ -7,13 +7,14 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../../../features/shared/AppContent";
+import { useRef } from "react";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
 import InAppExternalLink, {
   IonItemInAppExternalLink,
-} from "../../../../features/shared/InAppExternalLink";
-import { useRef } from "react";
-import { useSetActivePage } from "../../../../features/auth/AppContext";
-import AppHeader from "../../../../features/shared/AppHeader";
+} from "#/features/shared/InAppExternalLink";
 
 const links = [
   {

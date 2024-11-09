@@ -17,6 +17,14 @@ import {
   IonToolbar,
   useIonActionSheet,
 } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
+import { compact, uniqBy } from "es-toolkit";
+import {
+  ellipsisHorizontalCircleOutline,
+  ellipsisVertical,
+} from "ionicons/icons";
+import { GetSiteResponse } from "lemmy-js-client";
 import {
   useCallback,
   useContext,
@@ -25,35 +33,29 @@ import {
   useRef,
   useState,
 } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { getInstances } from "./pickJoinServerSlice";
 import { VList } from "virtua";
-import { getClient, getImageSrc } from "../../../../services/lemmy";
-import { GetSiteResponse } from "lemmy-js-client";
-import { isValidHostname, stripProtocol } from "../../../../helpers/url";
-import useStartJoinFlow from "./useStartJoinFlow";
-import { compact, uniqBy } from "lodash";
-import { LVInstance } from "../../../../services/lemmyverse";
+
+import {
+  SERVERS_BY_CATEGORY,
+  ServerCategory,
+} from "#/features/auth/login/data/servers";
+import Login from "#/features/auth/login/login/Login";
+import AppHeader from "#/features/shared/AppHeader";
+import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+import { isIosTheme } from "#/helpers/device";
+import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
+import { isValidHostname, stripProtocol } from "#/helpers/url";
+import { defaultServersUntouched, getCustomServers } from "#/services/app";
+import { getClient, getImageSrc } from "#/services/lemmy";
+import { LVInstance } from "#/services/lemmyverse";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { getInstanceFromHandle } from "../../authSelectors";
+import { addGuestInstance } from "../../authSlice";
 import lemmyLogo from "../lemmyLogo.svg";
 import Filters from "./Filters";
-import { SERVERS_BY_CATEGORY, ServerCategory } from "../data/servers";
-import {
-  defaultServersUntouched,
-  getCustomServers,
-} from "../../../../services/app";
-import {
-  ellipsisHorizontalCircleOutline,
-  ellipsisVertical,
-} from "ionicons/icons";
-import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
-import { addGuestInstance } from "../../authSlice";
-import Login from "../login/Login";
-import { getInstanceFromHandle } from "../../authSelectors";
-import { styled } from "@linaria/react";
-import AppHeader from "../../../shared/AppHeader";
-import { isMinimumSupportedLemmyVersion } from "../../../../helpers/lemmy";
-import { css } from "@linaria/core";
-import { isIosTheme } from "../../../../helpers/device";
+import { getInstances } from "./pickJoinServerSlice";
+import useStartJoinFlow from "./useStartJoinFlow";
 
 const spacing = `
   margin: 2.5rem 0;

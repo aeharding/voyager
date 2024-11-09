@@ -1,12 +1,14 @@
-import { createContext, useContext, useRef } from "react";
-import { TabContext } from "../../core/TabContext";
+import { createContext, useContext, useState } from "react";
 import { RouteProps } from "react-router-dom";
 import { Route as ReactRoute } from "react-router-dom";
+
+import { TabContext } from "#/core/TabContext";
+
 import ActorRedirect from "./ActorRedirect";
 
 export default function Route({ children, ...props }: RouteProps) {
   const { tabRef } = useContext(TabContext);
-  const tabNameRef = useRef(tabRef?.current);
+  const [tabName] = useState(() => tabRef?.current ?? "");
 
   const content = (() => {
     if (props.path?.includes("/:actor"))
@@ -16,7 +18,7 @@ export default function Route({ children, ...props }: RouteProps) {
   })();
 
   return (
-    <TabNameContext.Provider value={tabNameRef?.current || ""}>
+    <TabNameContext.Provider value={tabName}>
       <ReactRoute {...props}>{content}</ReactRoute>
     </TabNameContext.Provider>
   );

@@ -1,11 +1,12 @@
 import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { arrowDown, arrowUp } from "ionicons/icons";
+
 import {
   VOTE_COLORS,
   bgColorToVariable,
-} from "../settings/appearance/themes/votesTheme/VotesTheme";
-import { useAppSelector } from "../../store";
+} from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
+import { useAppSelector } from "#/store";
 
 const Container = styled.div`
   font-size: 1.4em;

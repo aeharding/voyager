@@ -1,4 +1,5 @@
 import { IonList } from "@ionic/react";
+
 import BiometricEnabled from "./settings/BiometricEnabled";
 import BiometricTimeout from "./settings/BiometricTimeout";
 

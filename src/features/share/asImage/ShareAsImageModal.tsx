@@ -1,14 +1,16 @@
-import { styled } from "@linaria/react";
-import { CommentView, PostView } from "lemmy-js-client";
-import ShareAsImage from "./ShareAsImage";
-import { MutableRefObject, useEffect, useState } from "react";
 import { IonButtons, IonIcon, IonTitle } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { close } from "ionicons/icons";
+import { CommentView, PostView } from "lemmy-js-client";
+import { MutableRefObject, useEffect, useState } from "react";
+
+import AppHeader from "#/features/shared/AppHeader";
 import {
   CloseButton,
   TransparentIonToolbar,
-} from "../../shared/selectorModals/GenericSelectorModal";
-import { close } from "ionicons/icons";
-import AppHeader from "../../shared/AppHeader";
+} from "#/features/shared/selectorModals/GenericSelectorModal";
+
+import ShareAsImage from "./ShareAsImage";
 
 export type ShareAsImageData =
   | {

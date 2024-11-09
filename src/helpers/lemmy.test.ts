@@ -1,4 +1,6 @@
 import { Post } from "lemmy-js-client";
+import { describe, expect, it } from "vitest";
+
 import {
   buildCrosspostBody,
   keywordFoundInSentence,

@@ -1,32 +1,38 @@
+import { CommentView, PostView } from "lemmy-js-client";
 import { ComponentProps, useCallback, useContext, useMemo } from "react";
-import type { BaseSlidingVote } from "../../BaseSliding";
-import { PageContext } from "../../../../auth/PageContext";
-import { CommentsContext } from "../../../../comment/inTree/CommentsContext";
-import { AppContext } from "../../../../auth/AppContext";
-import useAppToast from "../../../../../helpers/useAppToast";
-import store, { useAppDispatch, useAppSelector } from "../../../../../store";
-import { isInboxItem, useSharedInboxActions } from "../shared";
-import GenericBaseSliding, {
-  GenericBaseSlidingProps,
-} from "../GenericBaseSliding";
-import { markRead } from "../../../../inbox/inboxSlice";
-import { savePost, voteOnPost } from "../../../../post/postSlice";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { PageContext } from "#/features/auth/PageContext";
+import { isStubComment } from "#/features/comment/CommentHeader";
 import {
   saveComment,
   toggleCommentCollapseState,
   voteOnComment,
-} from "../../../../comment/commentSlice";
-import { getVoteErrorMessage } from "../../../../../helpers/lemmyErrors";
-import { getCanModerate } from "../../../../moderation/useCanModerate";
-import { isStubComment } from "../../../../comment/CommentHeader";
+} from "#/features/comment/commentSlice";
+import { scrollCommentIntoViewIfNeeded } from "#/features/comment/inTree/CommentTree";
+import { CommentsContext } from "#/features/comment/inTree/CommentsContext";
+import useCollapseRootComment from "#/features/comment/inTree/useCollapseRootComment";
+import { markRead } from "#/features/inbox/inboxSlice";
+import { getCanModerate } from "#/features/moderation/useCanModerate";
+import { savePost, voteOnPost } from "#/features/post/postSlice";
+import {
+  isInboxItem,
+  useSharedInboxActions,
+} from "#/features/shared/sliding/internal/shared";
+import { share } from "#/helpers/lemmy";
+import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
   postLocked,
   replyStubError,
   saveSuccess,
-} from "../../../../../helpers/toastMessages";
-import useCollapseRootComment from "../../../../comment/inTree/useCollapseRootComment";
-import { scrollCommentIntoViewIfNeeded } from "../../../../comment/inTree/CommentTree";
-import { share } from "../../../../../helpers/lemmy";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import store, { useAppDispatch, useAppSelector } from "#/store";
+
+import type { BaseSlidingVote } from "../../BaseSliding";
+import GenericBaseSliding, {
+  GenericBaseSlidingProps,
+} from "../GenericBaseSliding";
 
 export function VotableActionsImpl({
   item,
@@ -69,8 +75,8 @@ export function VotableActionsImpl({
       if (isInboxItem(item)) dispatch(markRead(item, true));
 
       try {
-        if (isPost) await dispatch(voteOnPost(item.post.id, score));
-        else await dispatch(voteOnComment(item.comment.id, score));
+        if (isPost) await dispatch(voteOnPost(item, score));
+        else await dispatch(voteOnComment(item, score));
       } catch (error) {
         presentToast({
           color: "danger",
@@ -120,20 +126,25 @@ export function VotableActionsImpl({
     dispatch,
   ]);
 
-  const { id, isSaved } = useMemo(() => {
+  const isSaved = useMemo(() => {
     if (isPost) {
       const id = item.post.id;
-      return { id: id, isSaved: postSavedById[id] };
+      return postSavedById[id];
     } else {
       const id = item.comment.id;
-      return { id: id, isSaved: commentSavedById[id] };
+      return commentSavedById[id];
     }
   }, [item, isPost, postSavedById, commentSavedById]);
 
   const save = useCallback(async () => {
     if (presentLoginIfNeeded()) return;
     try {
-      await dispatch((isPost ? savePost : saveComment)(id, !isSaved));
+      await dispatch(
+        (isPost ? savePost : saveComment)(
+          item as PostView & CommentView,
+          !isSaved,
+        ),
+      );
 
       if (!isSaved) presentToast(saveSuccess);
     } catch (error) {
@@ -143,7 +154,7 @@ export function VotableActionsImpl({
       });
       throw error;
     }
-  }, [presentLoginIfNeeded, dispatch, isPost, id, isSaved, presentToast]);
+  }, [presentLoginIfNeeded, dispatch, isPost, item, isSaved, presentToast]);
 
   const collapseRootComment = useCollapseRootComment(
     !isPost ? item : undefined,

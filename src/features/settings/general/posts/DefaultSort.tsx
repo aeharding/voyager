@@ -1,13 +1,15 @@
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { setDefaultPostSort } from "../../settingsSlice";
+import { IonItem, IonLabel } from "@ionic/react";
+import { startCase } from "es-toolkit";
+import { PostSortType } from "lemmy-js-client";
+
 import {
   formatTopLabel,
   isTopSort,
   useSelectPostSort,
-} from "../../../feed/PostSort";
-import { IonItem, IonLabel } from "@ionic/react";
-import { PostSortType } from "lemmy-js-client";
-import { startCase } from "lodash";
+} from "#/features/feed/PostSort";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { setDefaultPostSort } from "../../settingsSlice";
 
 export default function DefaultSort() {
   const dispatch = useAppDispatch();

@@ -5,22 +5,24 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import useClient from "../../../helpers/useClient";
-import { FetchFn } from "../../../features/feed/Feed";
 import { useCallback, useRef } from "react";
-import InboxFeed from "../../../features/feed/InboxFeed";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { FetchFn } from "#/features/feed/Feed";
+import InboxFeed from "#/features/feed/InboxFeed";
+import { InboxItemView } from "#/features/inbox/InboxItem";
 import {
   getInboxItemPublished,
   receivedInboxItems,
   totalUnreadSelector,
-} from "../../../features/inbox/inboxSlice";
+} from "#/features/inbox/inboxSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import { receivedUsers } from "#/features/user/userSlice";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
-import { InboxItemView } from "../../../features/inbox/InboxItem";
-import FeedContent from "../shared/FeedContent";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import { receivedUsers } from "../../../features/user/userSlice";
-import AppHeader from "../../../features/shared/AppHeader";
 
 interface InboxPageProps {
   showRead?: boolean;

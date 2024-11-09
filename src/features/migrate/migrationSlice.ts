@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch } from "../../store";
-import { db } from "../../services/db";
-import { uniq, without } from "lodash";
+import { uniq } from "es-toolkit";
+
+import { db } from "#/services/db";
+import { AppDispatch } from "#/store";
 
 interface MigrationSlice {
   links: Array<string>;
@@ -23,7 +24,7 @@ export const migrationSlice = createSlice({
       db.setSetting("migration_links", state.links);
     },
     removeMigrationLink: (state, action: PayloadAction<string>) => {
-      state.links = without(state.links, action.payload);
+      state.links = state.links.filter((link) => link !== action.payload);
       db.setSetting("migration_links", state.links);
     },
   },

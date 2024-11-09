@@ -5,10 +5,11 @@ import {
   IonLoading,
   IonToggle,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { localUserSelector, showNsfw } from "../../auth/siteSlice";
 import { useState } from "react";
-import { ListHeader } from "../shared/formatting";
+
+import { localUserSelector, showNsfw } from "#/features/auth/siteSlice";
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 export default function FilterNsfw() {
   const dispatch = useAppDispatch();

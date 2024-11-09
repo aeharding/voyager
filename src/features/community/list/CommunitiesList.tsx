@@ -1,5 +1,6 @@
-import { useAppSelector } from "../../../store";
-import { loggedInSelector } from "../../auth/authSelectors";
+import { loggedInSelector } from "#/features/auth/authSelectors";
+import { useAppSelector } from "#/store";
+
 import GuestCommunitiesList from "./GuestCommunitiesList";
 import LoggedInCommunitiesList from "./LoggedInCommunitiesList";
 

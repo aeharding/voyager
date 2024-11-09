@@ -1,12 +1,9 @@
-import React from "react";
-import {
-  isAppleDeviceInstalledToHomescreen,
-  isNative,
-} from "../../helpers/device";
-import { fixSafariAutoscroll } from "../../helpers/safari";
 import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
+
+import { isAppleDeviceInstalledToHomescreen, isNative } from "#/helpers/device";
+import { fixSafariAutoscroll } from "#/helpers/safari";
 
 interface TextareaAutosizedForOnScreenKeyboardProps
   extends Omit<TextareaAutosizeProps, "onFocus"> {

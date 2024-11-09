@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { MutableRefObject } from "react";
+
 import { getScrollParent } from "./dom";
-import { useMemo } from "react";
 
 /**
  * Sometimes we want to preserve the scroll position
@@ -40,7 +40,7 @@ export default function usePreservePositionFromBottomInScrollView(
    *
    * Note: restore can be called multiple times.
    */
-  const restoreEvent = useCallback(() => {
+  const restoreEvent = () => {
     if (!enabledRef.current) return;
 
     const previousTopOffset = saveTopOffsetRef.current;
@@ -52,9 +52,9 @@ export default function usePreservePositionFromBottomInScrollView(
     requestAnimationFrame(() => {
       restoreScrollPositionFromBottom(scrollView, previousTopOffset);
     });
-  }, [elRef]);
+  };
 
-  const _unlisten = useCallback(() => {
+  const _unlisten = () => {
     if (!enabledRef.current) return;
 
     saveTopOffsetRef.current = undefined;
@@ -67,9 +67,9 @@ export default function usePreservePositionFromBottomInScrollView(
     scrollParent.removeEventListener("mousedown", _unlisten);
     scrollParent.removeEventListener("touchstart", _unlisten);
     scrollParent.removeEventListener("wheel", _unlisten);
-  }, [elRef]);
+  };
 
-  const _listen = useCallback(() => {
+  const _listen = () => {
     if (!enabledRef.current) return;
 
     if (!elRef.current) return;
@@ -82,12 +82,12 @@ export default function usePreservePositionFromBottomInScrollView(
     if (!elRef.current || resizeObserverRef.current) return;
     resizeObserverRef.current = new ResizeObserver(() => restoreEvent());
     resizeObserverRef.current.observe(elRef.current);
-  }, [_unlisten, elRef, restoreEvent]);
+  };
 
   /**
    * Call before scroll position will change
    */
-  const saveEvent = useCallback(() => {
+  const saveEvent = () => {
     if (!enabledRef.current) return;
 
     if (!elRef.current) return;
@@ -97,15 +97,12 @@ export default function usePreservePositionFromBottomInScrollView(
     saveTopOffsetRef.current = saveScrollPositionFromBottom(scrollView);
 
     _listen();
-  }, [_listen, elRef]);
+  };
 
-  return useMemo(
-    () => ({
-      save: saveEvent,
-      restore: restoreEvent,
-    }),
-    [restoreEvent, saveEvent],
-  );
+  return {
+    save: saveEvent,
+    restore: restoreEvent,
+  };
 }
 
 function saveScrollPositionFromBottom(scrollableElement: HTMLElement): number {

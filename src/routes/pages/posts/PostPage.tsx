@@ -10,26 +10,27 @@ import {
   IonToolbar,
   RefresherCustomEvent,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { useParams } from "react-router";
 import { styled } from "@linaria/react";
 import React, { useCallback, useEffect } from "react";
-import { getPost } from "../../../features/post/postSlice";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import CommentSort from "../../../features/comment/CommentSort";
-import MoreActions from "../../../features/post/shared/MoreActions";
-import PostDetail from "../../../features/post/detail/PostDetail";
-import FeedContent from "../shared/FeedContent";
-import useClient from "../../../helpers/useClient";
-import { formatNumber } from "../../../helpers/number";
-import MoreModActions from "../../../features/post/shared/MoreModAction";
-import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
-import AppHeader from "../../../features/shared/AppHeader";
-import useFeedSort from "../../../features/feed/sort/useFeedSort";
-import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
-import DocumentTitle from "../../../features/shared/DocumentTitle";
+import { useParams } from "react-router";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import CommentSort from "#/features/comment/CommentSort";
+import useFeedSort from "#/features/feed/sort/useFeedSort";
+import PostDetail from "#/features/post/detail/PostDetail";
+import { getPost } from "#/features/post/postSlice";
+import MoreActions from "#/features/post/shared/MoreActions";
+import MoreModActions from "#/features/post/shared/MoreModAction";
+import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import DocumentTitle from "#/features/shared/DocumentTitle";
+import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
+import { formatNumber } from "#/helpers/number";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 export const AnnouncementIcon = styled(IonIcon)`
   font-size: 1.1rem;
@@ -102,11 +103,10 @@ function PostPageContent({
 
   const refresh = useCallback(
     async (event: RefresherCustomEvent) => {
-      try {
-        await dispatch(getPost(+id));
-      } finally {
+      // TODO replace with await when React Compiler doesn't bail
+      return dispatch(getPost(+id)).finally(() => {
         event.detail.complete();
-      }
+      });
     },
     [dispatch, id],
   );

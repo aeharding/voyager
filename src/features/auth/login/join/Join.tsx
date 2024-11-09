@@ -12,17 +12,19 @@ import {
   IonToggle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { useContext, useEffect, useRef, useState } from "react";
-import Joined from "./Joined";
-import Captcha, { CaptchaHandle } from "./Captcha";
-import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
-import useAppToast from "../../../../helpers/useAppToast";
-import { loginSuccess } from "../../../../helpers/toastMessages";
-import { register } from "../../authSlice";
+import { startCase } from "es-toolkit";
 import { LoginResponse } from "lemmy-js-client";
-import { startCase } from "lodash";
-import AppHeader from "../../../shared/AppHeader";
+import { useContext, useEffect, useRef, useState } from "react";
+
+import AppHeader from "#/features/shared/AppHeader";
+import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+import { loginSuccess } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { register } from "../../authSlice";
+import Captcha, { CaptchaHandle } from "./Captcha";
+import Joined from "./Joined";
 
 interface JoinProps {
   answer?: string;

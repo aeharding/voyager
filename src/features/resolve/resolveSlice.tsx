@@ -1,20 +1,21 @@
-import { ResolveObjectResponse } from "lemmy-js-client";
-import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSelectors";
-import { receivedComments } from "../comment/commentSlice";
-import { receivedCommunity } from "../community/communitySlice";
-import { receivedPosts } from "../post/postSlice";
-import { receivedUsers } from "../user/userSlice";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { isLemmyError } from "../../helpers/lemmyErrors";
-import { getClient } from "../../services/lemmy";
+import { ResolveObjectResponse } from "lemmy-js-client";
+
+import { clientSelector } from "#/features/auth/authSelectors";
+import { receivedComments } from "#/features/comment/commentSlice";
+import { receivedCommunity } from "#/features/community/communitySlice";
+import { receivedPosts } from "#/features/post/postSlice";
 import {
   COMMENT_PATH,
   COMMENT_VIA_POST_PATH,
   POST_PATH,
   matchLemmyCommunity,
   matchLemmyUser,
-} from "../shared/useLemmyUrlHandler";
+} from "#/features/shared/useLemmyUrlHandler";
+import { receivedUsers } from "#/features/user/userSlice";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import { getClient } from "#/services/lemmy";
+import { AppDispatch, RootState } from "#/store";
 
 interface ResolveState {
   objectByUrl: Record<string, "couldnt_find_object" | ResolveObjectResponse>;

@@ -1,6 +1,7 @@
+import { preventPhotoswipeGalleryFocusTrap } from "#/features/media/gallery/GalleryImg";
+
 import Editor, { EditorProps } from "../../Editor";
 import { MarkdownEditorIonContent } from "../../MarkdownToolbar";
-import { preventPhotoswipeGalleryFocusTrap } from "../../../../../media/gallery/GalleryImg";
 
 interface CommentEditorContentProps extends EditorProps {
   ref?: React.RefObject<HTMLTextAreaElement>;

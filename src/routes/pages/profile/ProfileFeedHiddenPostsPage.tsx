@@ -1,26 +1,29 @@
-import { useCallback, useRef } from "react";
 import {
-  IonPage,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonBackButton,
   IonButton,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
+import { compact } from "es-toolkit";
+import { useCallback, useRef } from "react";
 import { useParams } from "react-router";
-import useClient from "../../../helpers/useClient";
-import { FetchFn } from "../../../features/feed/Feed";
-import store, { useAppSelector } from "../../../store";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+
+import { userHandleSelector } from "#/features/auth/authSelectors";
+import { FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import { userHandleSelector } from "../../../features/auth/authSelectors";
-import { IPostMetadata, db } from "../../../services/db";
-import { postHiddenByIdSelector } from "../../../features/post/postSlice";
-import FeedContent from "../shared/FeedContent";
-import AppHeader from "../../../features/shared/AppHeader";
-import useResetHiddenPosts from "../../../features/feed/useResetHiddenPosts";
+} from "#/features/feed/PostCommentFeed";
+import useResetHiddenPosts from "#/features/feed/useResetHiddenPosts";
+import { postHiddenByIdSelector } from "#/features/post/postSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { IPostMetadata, db } from "#/services/db";
+import store, { useAppSelector } from "#/store";
 
 // Currently, we have to fetch each post with a separate API call.
 // That's why the page size is only 10
@@ -70,15 +73,25 @@ export default function ProfileFeedHiddenPostsPage() {
       const postIds = hiddenPostMetadatas.map((metadata) => metadata.post_id);
 
       const result = await Promise.all(
-        postIds.map((postId) => {
+        postIds.map(async (postId) => {
           const potentialPost = store.getState().post.postById[postId];
           if (typeof potentialPost === "object") return potentialPost;
 
-          return client.getPost({ id: postId }, ...rest);
+          try {
+            return await client.getPost({ id: postId }, ...rest);
+          } catch (error) {
+            if (
+              isLemmyError(error, "couldnt_find_post" as never) ||
+              isLemmyError(error, "not_found")
+            )
+              return;
+
+            throw error;
+          }
         }),
       );
 
-      return result.map((post) =>
+      return compact(result).map((post) =>
         "post_view" in post ? post.post_view : post,
       );
     },

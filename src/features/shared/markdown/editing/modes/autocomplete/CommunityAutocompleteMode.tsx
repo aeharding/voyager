@@ -1,10 +1,12 @@
+import { Community } from "lemmy-js-client";
 import { useCallback } from "react";
-import useClient from "../../../../../../helpers/useClient";
+
+import { getRemoteHandle } from "#/helpers/lemmy";
+import useClient from "#/helpers/useClient";
+
 import GenericAutocompleteMode, {
   AutocompleteModeProps,
 } from "./GenericAutocompleteMode";
-import { Community } from "lemmy-js-client";
-import { getRemoteHandle } from "../../../../../../helpers/lemmy";
 
 export default function CommunityAutocomplete(props: AutocompleteModeProps) {
   const client = useClient();

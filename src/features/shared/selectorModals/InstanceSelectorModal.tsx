@@ -1,13 +1,15 @@
+import { IonLoading } from "@ionic/react";
 import { Instance } from "lemmy-js-client";
-import GenericSelectorModal from "./GenericSelectorModal";
 import {
   useEffect,
-  useState,
   experimental_useEffectEvent as useEffectEvent,
+  useState,
 } from "react";
-import useClient from "../../../helpers/useClient";
-import { IonLoading } from "@ionic/react";
-import useAppToast from "../../../helpers/useAppToast";
+
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
+
+import GenericSelectorModal from "./GenericSelectorModal";
 
 interface InstanceSelectorModalProps {
   onDismiss: (instance?: Instance) => void;

@@ -1,6 +1,7 @@
-import { useState } from "react";
 import { IonNav } from "@ionic/react";
 import { CommunityView, PostView } from "lemmy-js-client";
+import { useState } from "react";
+
 import PostEditorRoot from "./PostEditorRoot";
 
 export type PostEditorProps = {

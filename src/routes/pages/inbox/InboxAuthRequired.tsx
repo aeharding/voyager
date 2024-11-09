@@ -1,16 +1,12 @@
-import React from "react";
-import { useAppSelector } from "../../../store";
 import { Redirect } from "react-router";
-import useIonViewIsVisible from "../../../helpers/useIonViewIsVisible";
-import { jwtSelector } from "../../../features/auth/authSelectors";
 
-interface InboxAuthRequiredProps {
-  children: React.ReactNode;
-}
+import { jwtSelector } from "#/features/auth/authSelectors";
+import useIonViewIsVisible from "#/helpers/useIonViewIsVisible";
+import { useAppSelector } from "#/store";
 
 export default function InboxAuthRequired({
   children,
-}: InboxAuthRequiredProps) {
+}: React.PropsWithChildren) {
   const jwt = useAppSelector(jwtSelector);
 
   const ionViewIsVisible = useIonViewIsVisible();

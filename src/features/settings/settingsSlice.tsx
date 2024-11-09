@@ -1,53 +1,56 @@
+import { Mode } from "@ionic/core";
 import {
   PayloadAction,
   createAsyncThunk,
   createSelector,
   createSlice,
 } from "@reduxjs/toolkit";
-import { merge } from "lodash";
-import { AppDispatch, RootState } from "../../store";
-import { MAX_DEFAULT_COMMENT_DEPTH } from "../../helpers/lemmy";
-import {
-  CommentThreadCollapse,
-  OCommentThreadCollapse,
-  OPostAppearanceType,
-  PostBlurNsfwType,
-  PostAppearanceType,
-  OCompactThumbnailPositionType,
-  CompactThumbnailPositionType,
-  db,
-  OPostBlurNsfw,
-  CommentDefaultSort,
-  OCommentDefaultSort,
-  InstanceUrlDisplayMode,
-  OInstanceUrlDisplayMode,
-  VoteDisplayMode,
-  OVoteDisplayMode,
-  OProfileLabelType,
-  ProfileLabelType,
-  AppThemeType,
-  CompactThumbnailSizeType,
-  OCompactThumbnailSizeType,
-  LinkHandlerType,
-  OLinkHandlerType,
-  JumpButtonPositionType,
-  OJumpButtonPositionType,
-  DefaultFeedType,
-  ODefaultFeedType,
-  TapToCollapseType,
-  OTapToCollapseType,
-  AutoplayMediaType,
-  OAutoplayMediaType,
-  CommentsThemeType,
-  VotesThemeType,
-  ShowSubscribedIcon,
-  OShowSubscribedIcon,
-} from "../../services/db";
-import { LOCALSTORAGE_KEYS, get, set } from "./syncStorage";
-import { Mode } from "@ionic/core";
-import { PostSortType } from "lemmy-js-client";
-import { loggedInSelector } from "../auth/authSelectors";
 import Dexie from "dexie";
+import { cloneDeep, merge } from "es-toolkit";
+import { PostSortType } from "lemmy-js-client";
+
+import { loggedInSelector } from "#/features/auth/authSelectors";
+import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
+import { DeepPartial } from "#/helpers/typescript";
+import {
+  AppThemeType,
+  AutoplayMediaType,
+  CommentDefaultSort,
+  CommentThreadCollapse,
+  CommentsThemeType,
+  CompactThumbnailPositionType,
+  CompactThumbnailSizeType,
+  DefaultFeedType,
+  InstanceUrlDisplayMode,
+  JumpButtonPositionType,
+  LinkHandlerType,
+  OAutoplayMediaType,
+  OCommentDefaultSort,
+  OCommentThreadCollapse,
+  OCompactThumbnailPositionType,
+  OCompactThumbnailSizeType,
+  ODefaultFeedType,
+  OInstanceUrlDisplayMode,
+  OJumpButtonPositionType,
+  OLinkHandlerType,
+  OPostAppearanceType,
+  OPostBlurNsfw,
+  OProfileLabelType,
+  OShowSubscribedIcon,
+  OTapToCollapseType,
+  OVoteDisplayMode,
+  PostAppearanceType,
+  PostBlurNsfwType,
+  ProfileLabelType,
+  ShowSubscribedIcon,
+  TapToCollapseType,
+  VoteDisplayMode,
+  VotesThemeType,
+  db,
+} from "#/services/db";
+import { AppDispatch, RootState } from "#/store";
+
+import { LOCALSTORAGE_KEYS, get, set } from "./syncStorage";
 
 export {
   type CommentThreadCollapse,
@@ -56,7 +59,7 @@ export {
   OCommentThreadCollapse,
   OPostAppearanceType,
   OCompactThumbnailPositionType,
-} from "../../services/db";
+} from "#/services/db";
 
 interface SettingsState {
   ready: boolean;
@@ -140,10 +143,45 @@ interface SettingsState {
     noSubscribedInFeed: boolean;
     thumbnailinatorEnabled: boolean;
   };
+  tags: {
+    enabled: boolean;
+    trackVotes: boolean;
+    hideInstance: boolean;
+    saveSource: boolean;
+  };
   blocks: {
     keywords: string[];
     websites: string[];
   };
+}
+
+export function getLocalStorageInitialState() {
+  return {
+    appearance: {
+      font: {
+        fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
+        useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
+      },
+      dark: {
+        usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
+        userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+        pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK),
+      },
+      deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
+      theme: get(LOCALSTORAGE_KEYS.THEME),
+    },
+  } as const;
+}
+
+/**
+ * We continue using localstorage for specific items because indexeddb is slow
+ * and we don't want to wait for it to load before rendering the app and cause flickering
+ */
+export function buildInitialState(): SettingsState {
+  const localStorageInitialState: DeepPartial<SettingsState> =
+    getLocalStorageInitialState();
+
+  return merge(cloneDeep(initialState), localStorageInitialState);
 }
 
 export const initialState: SettingsState = {
@@ -151,8 +189,8 @@ export const initialState: SettingsState = {
   databaseError: undefined,
   appearance: {
     font: {
-      fontSizeMultiplier: 1,
-      useSystemFontSize: false,
+      fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER) ?? 1,
+      useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM) ?? false,
     },
     general: {
       userInstanceUrlDisplay: OInstanceUrlDisplayMode.Never,
@@ -182,13 +220,13 @@ export const initialState: SettingsState = {
       voteDisplayMode: OVoteDisplayMode.Total,
     },
     dark: {
-      usingSystemDarkMode: true,
-      userDarkMode: false,
-      pureBlack: true,
+      usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM) ?? true,
+      userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE) ?? false,
+      pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK) ?? true,
       quickSwitch: true,
     },
-    deviceMode: "ios",
-    theme: "default",
+    deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios",
+    theme: get(LOCALSTORAGE_KEYS.THEME) ?? "default",
     commentsTheme: "rainbow",
     votesTheme: "lemmy",
   },
@@ -228,29 +266,17 @@ export const initialState: SettingsState = {
     noSubscribedInFeed: false,
     thumbnailinatorEnabled: true,
   },
+  tags: {
+    enabled: false,
+    trackVotes: false,
+    hideInstance: true,
+    saveSource: true,
+  },
   blocks: {
     keywords: [],
     websites: [],
   },
 };
-
-// We continue using localstorage for specific items because indexeddb is slow
-// and we don't want to wait for it to load before rendering the app and cause flickering
-export const stateWithLocalstorageItems: SettingsState = merge(initialState, {
-  appearance: {
-    font: {
-      fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
-      useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
-    },
-    dark: {
-      usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
-      userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
-      pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK),
-    },
-    deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
-    theme: get(LOCALSTORAGE_KEYS.THEME),
-  },
-});
 
 export const defaultCommentDepthSelector = createSelector(
   [
@@ -280,7 +306,7 @@ export const defaultThreadCollapse = createSelector(
 
 export const appearanceSlice = createSlice({
   name: "appearance",
-  initialState: stateWithLocalstorageItems,
+  initialState: buildInitialState(),
   extraReducers: (builder) => {
     builder.addCase(
       fetchSettingsFromDatabase.fulfilled,
@@ -547,9 +573,29 @@ export const appearanceSlice = createSlice({
 
       db.setSetting("subscribed_icon", action.payload);
     },
+    setTagsEnabled(state, action: PayloadAction<boolean>) {
+      state.tags.enabled = action.payload;
+
+      db.setSetting("tags_enabled", action.payload);
+    },
+    setTagsTrackVotes(state, action: PayloadAction<boolean>) {
+      state.tags.trackVotes = action.payload;
+
+      db.setSetting("tags_track_votes", action.payload);
+    },
+    setTagsHideInstance(state, action: PayloadAction<boolean>) {
+      state.tags.hideInstance = action.payload;
+
+      db.setSetting("tags_hide_instance", action.payload);
+    },
+    setTagsSaveSource(state, action: PayloadAction<boolean>) {
+      state.tags.saveSource = action.payload;
+
+      db.setSetting("tags_save_source", action.payload);
+    },
 
     resetSettings: () => ({
-      ...initialState,
+      ...buildInitialState(),
       ready: true,
     }),
 
@@ -764,6 +810,10 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
         "quick_switch_dark_mode",
       );
       const subscribed_icon = await db.getSetting("subscribed_icon");
+      const tags_enabled = await db.getSetting("tags_enabled");
+      const tags_track_votes = await db.getSetting("tags_track_votes");
+      const tags_hide_instance = await db.getSetting("tags_hide_instance");
+      const tags_save_source = await db.getSetting("tags_save_source");
 
       return {
         ...state.settings,
@@ -909,6 +959,12 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
             thumbnailinator_enabled ??
             initialState.general.thumbnailinatorEnabled,
         },
+        tags: {
+          enabled: tags_enabled ?? initialState.tags.enabled,
+          trackVotes: tags_track_votes ?? initialState.tags.trackVotes,
+          hideInstance: tags_hide_instance ?? initialState.tags.hideInstance,
+          saveSource: tags_save_source ?? initialState.tags.saveSource,
+        },
         blocks: {
           keywords: filtered_keywords ?? initialState.blocks.keywords,
           websites: filtered_websites ?? initialState.blocks.websites,
@@ -991,6 +1047,10 @@ export const {
   setShowCollapsedComment,
   setQuickSwitchDarkMode,
   setSubscribedIcon,
+  setTagsEnabled,
+  setTagsHideInstance,
+  setTagsSaveSource,
+  setTagsTrackVotes,
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;

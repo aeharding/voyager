@@ -1,22 +1,28 @@
-import { IonIcon } from "@ionic/react";
-import { useContext, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { voteOnPost } from "../postSlice";
-import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
-import { ActionButton } from "../actions/ActionButton";
-import { PageContext } from "../../auth/PageContext";
-import { isDownvoteEnabledSelector } from "../../auth/siteSlice";
-import { bounceAnimationOnTransition, bounceMs } from "../../shared/animations";
-import { useTransition } from "react-transition-state";
 import { ImpactStyle } from "@capacitor/haptics";
-import useHapticFeedback from "../../../helpers/useHapticFeedback";
-import useAppToast from "../../../helpers/useAppToast";
+import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
-import { getVoteErrorMessage } from "../../../helpers/lemmyErrors";
+import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
+import { PostView } from "lemmy-js-client";
+import { useContext, useEffect } from "react";
+import { useTransition } from "react-transition-state";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
+import { ActionButton } from "#/features/post/actions/ActionButton";
 import {
   VOTE_COLORS,
   bgColorToVariable,
-} from "../../settings/appearance/themes/votesTheme/VotesTheme";
+} from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
+import {
+  bounceAnimationOnTransition,
+  bounceMs,
+} from "#/features/shared/animations";
+import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
+import useAppToast from "#/helpers/useAppToast";
+import useHapticFeedback from "#/helpers/useHapticFeedback";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { voteOnPost } from "../postSlice";
 
 const InactiveItem = styled(ActionButton)`
   ${bounceAnimationOnTransition}
@@ -31,10 +37,10 @@ const ActiveItem = styled(InactiveItem)<{
 
 interface VoteButtonProps {
   type: "down" | "up";
-  postId: number;
+  post: PostView;
 }
 
-export function VoteButton({ type, postId }: VoteButtonProps) {
+export function VoteButton({ type, post }: VoteButtonProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
   const vibrate = useHapticFeedback();
@@ -45,7 +51,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
   );
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
-  const myVote = postVotesById[postId];
+  const myVote = postVotesById[post.post.id];
 
   const [state, toggle] = useTransition({
     timeout: bounceMs,
@@ -107,7 +113,7 @@ export function VoteButton({ type, postId }: VoteButtonProps) {
 
         try {
           await dispatch(
-            voteOnPost(postId, myVote === selectedVote ? 0 : selectedVote),
+            voteOnPost(post, myVote === selectedVote ? 0 : selectedVote),
           );
         } catch (error) {
           presentToast({

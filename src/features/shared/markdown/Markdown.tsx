@@ -1,17 +1,19 @@
-import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
-import LinkInterceptor from "./LinkInterceptor";
-import customRemarkGfm from "./customRemarkGfm";
-import MarkdownImg from "./MarkdownImg";
-import InAppExternalLink from "../InAppExternalLink";
-import { useAppSelector } from "../../../store";
-import { css, cx } from "@linaria/core";
-import superSub from "remark-supersub-lemmy";
-import Table from "./components/Table";
 import spoiler from "@aeharding/remark-lemmy-spoiler";
-import Summary from "./components/spoiler/Summary";
-import Details from "./components/spoiler/Details";
+import { css, cx } from "@linaria/core";
 import { useMemo } from "react";
+import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
+import superSub from "remark-supersub-lemmy";
+
+import { useAppSelector } from "#/store";
+
+import InAppExternalLink from "../InAppExternalLink";
+import LinkInterceptor from "./LinkInterceptor";
+import MarkdownImg from "./MarkdownImg";
+import Table from "./components/Table";
+import Details from "./components/spoiler/Details";
+import Summary from "./components/spoiler/Summary";
+import customRemarkGfm from "./customRemarkGfm";
 
 const markdownCss = css`
   @media (max-width: 700px) {

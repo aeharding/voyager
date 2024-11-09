@@ -6,36 +6,39 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
+import { PrivateMessageView } from "lemmy-js-client";
 import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { jwtPayloadSelector } from "../../../features/auth/authSelectors";
-import { syncMessages } from "../../../features/inbox/inboxSlice";
 import { useParams } from "react-router";
-import { getHandle } from "../../../helpers/lemmy";
-import Message from "../../../features/inbox/messages/Message";
-import { maxWidthCss } from "../../../features/shared/AppContent";
-import { getUser } from "../../../features/user/userSlice";
-import { PageContentIonSpinner } from "../../../features/user/AsyncProfile";
-import { StyledLink } from "../../../features/labels/links/shared";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import ConversationsMoreActions from "../../../features/feed/ConversationsMoreActions";
-import { TabContext } from "../../../core/TabContext";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import { css } from "@linaria/core";
-import AppHeader from "../../../features/shared/AppHeader";
-import SendMessageBox from "../../../features/inbox/SendMessageBox";
-import FeedContent from "../shared/FeedContent";
 import { CustomItemComponent, VList, VListHandle } from "virtua";
-import { styled } from "@linaria/react";
-import useKeyboardOpen from "../../../helpers/useKeyboardOpen";
-import FeedLoadMoreFailed from "../../../features/feed/endItems/FeedLoadMoreFailed";
+
+import { TabContext } from "#/core/TabContext";
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { jwtPayloadSelector } from "#/features/auth/authSelectors";
+import ConversationsMoreActions from "#/features/feed/ConversationsMoreActions";
+import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
+import SendMessageBox from "#/features/inbox/SendMessageBox";
+import { syncMessages } from "#/features/inbox/inboxSlice";
+import Message from "#/features/inbox/messages/Message";
+import { StyledLink } from "#/features/labels/links/shared";
+import { maxWidthCss } from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
+import { getUser } from "#/features/user/userSlice";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useKeyboardOpen from "#/helpers/useKeyboardOpen";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 const containerCss = css`
   ${maxWidthCss}
@@ -56,27 +59,12 @@ const FlexItem = styled.div`
   padding: 0 16px !important;
 `;
 
-export default function ConversationPage() {
-  const pageRef = useRef<HTMLElement>(null);
-  const dispatch = useAppDispatch();
-  const allMessages = useAppSelector((state) => state.inbox.messages);
-  const jwtPayload = useAppSelector(jwtPayloadSelector);
-  const { tabRef } = useContext(TabContext);
-  const myUserId = useAppSelector(
-    (state) =>
-      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
-  );
-  const { handle } = useParams<{ handle: string }>();
-  const userByHandle = useAppSelector((state) => state.user.userByHandle);
-  const [error, setError] = useState(false);
-  const [loadingUser, setLoadingUser] = useState(false);
-
-  const keyboardOpen = useKeyboardOpen();
-
-  const ref = useRef<VListHandle>(null);
-  const shouldStickToBottom = useRef(true);
-
-  const messages = useMemo(
+function useMessages(
+  allMessages: PrivateMessageView[],
+  myUserId: number | undefined,
+  handle: string,
+) {
+  return useMemo(
     () =>
       allMessages
         .filter((m) =>
@@ -90,8 +78,32 @@ export default function ConversationPage() {
             Date.parse(a.private_message.published),
         )
         .reverse(),
-    [handle, allMessages, myUserId],
+    [allMessages, handle, myUserId],
   );
+}
+
+export default function ConversationPage() {
+  const pageRef = useRef<HTMLElement>(null);
+  const dispatch = useAppDispatch();
+  const allMessages = useAppSelector((state) => state.inbox.messages);
+  const jwtPayload = useAppSelector(jwtPayloadSelector);
+  const myUserId = useAppSelector(
+    (state) =>
+      state.site.response?.my_user?.local_user_view?.local_user?.person_id,
+  );
+  const tabContext = useContext(TabContext);
+  const [tab, setTab] = useState<string | undefined>();
+  const { handle } = useParams<{ handle: string }>();
+  const userByHandle = useAppSelector((state) => state.user.userByHandle);
+  const [error, setError] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(false);
+
+  const keyboardOpen = useKeyboardOpen();
+
+  const ref = useRef<VListHandle>(null);
+  const shouldStickToBottom = useRef(true);
+
+  const messages = useMessages(allMessages, myUserId, handle);
 
   const them = userByHandle[handle.toLowerCase()];
 
@@ -104,17 +116,23 @@ export default function ConversationPage() {
 
     setLoadingUser(true);
 
-    try {
-      await dispatch(getUser(handle));
-    } catch (error) {
-      setError(true);
-      throw error;
-    } finally {
-      setLoadingUser(false);
-    }
-
-    setError(false);
+    // TODO replace with await when React Compiler doesn't bail
+    return dispatch(getUser(handle))
+      .catch((error) => {
+        setError(true);
+        throw error;
+      })
+      .then(() => {
+        setError(false);
+      })
+      .finally(() => {
+        setLoadingUser(false);
+      });
   }, [dispatch, handle, userByHandle]);
+
+  useLayoutEffect(() => {
+    setTab(tabContext.tabRef?.current);
+  }, [tabContext.tabRef]);
 
   useEffect(() => {
     loadUser();
@@ -184,15 +202,23 @@ export default function ConversationPage() {
     return <PageContentIonSpinner />;
   })();
 
+  const backText = (() => {
+    switch (tab) {
+      case undefined:
+        return " ";
+      case "inbox":
+        return "Messages";
+      default:
+        return "Back";
+    }
+  })();
+
   return (
     <IonPage ref={pageRef}>
       <AppHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton
-              defaultHref="/inbox/messages"
-              text={tabRef?.current === "inbox" ? "Messages" : "Back"}
-            />
+            <IonBackButton defaultHref="/inbox/messages" text={backText} />
           </IonButtons>
 
           <IonTitle
@@ -207,7 +233,7 @@ export default function ConversationPage() {
           </IonTitle>
 
           <IonButtons slot="end">
-            <ConversationsMoreActions />
+            <ConversationsMoreActions person={them} />
           </IonButtons>
         </IonToolbar>
       </AppHeader>

@@ -5,13 +5,14 @@ import {
   IonList,
   IonListHeader,
 } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { getHandle } from "../../helpers/lemmy";
+import { css } from "@linaria/core";
 import { trendingUp } from "ionicons/icons";
 import { useEffect } from "react";
-import { getTrendingCommunities } from "../community/communitySlice";
-import { css } from "@linaria/core";
+
+import { getTrendingCommunities } from "#/features/community/communitySlice";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 export default function TrendingCommunities() {
   const dispatch = useAppDispatch();

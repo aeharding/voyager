@@ -1,9 +1,10 @@
+import { IonIcon } from "@ionic/react";
 import { cx } from "@linaria/core";
 import { styled } from "@linaria/react";
-import { StyledPostMedia } from "./LargeFeedMedia";
-import { IonIcon } from "@ionic/react";
-import { HTMLAttributes } from "react";
 import { imageOutline } from "ionicons/icons";
+import { HTMLAttributes } from "react";
+
+import { StyledPostMedia } from "./LargeFeedMedia";
 
 const PlaceholderContainer = styled.div<{ defaultAspectRatio: number }>`
   display: flex;

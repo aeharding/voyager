@@ -1,10 +1,12 @@
+import { Capacitor, CapacitorException, ExceptionCode } from "@capacitor/core";
 import {
   Haptics,
   ImpactOptions,
   NotificationOptions,
 } from "@capacitor/haptics";
 import { useCallback } from "react";
-import { useAppSelector } from "../store";
+
+import { useAppSelector } from "#/store";
 
 export default function useHapticFeedback() {
   const enabled = useAppSelector(
@@ -12,11 +14,23 @@ export default function useHapticFeedback() {
   );
 
   return useCallback(
-    (options: ImpactOptions | NotificationOptions) => {
+    async (options: ImpactOptions | NotificationOptions) => {
       if (!enabled) return;
 
-      if ("style" in options) Haptics.impact(options);
-      else Haptics.notification(options);
+      try {
+        if ("style" in options) await Haptics.impact(options);
+        else await Haptics.notification(options);
+      } catch (e) {
+        // Ignore if the web browser doesn't support haptics
+        if (
+          Capacitor.getPlatform() === "web" &&
+          e instanceof CapacitorException &&
+          e.code === ExceptionCode.Unavailable
+        )
+          return;
+
+        throw e;
+      }
     },
     [enabled],
   );

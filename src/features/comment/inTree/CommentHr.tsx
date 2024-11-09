@@ -1,5 +1,6 @@
 import { styled } from "@linaria/react";
-import { maxWidthCss } from "../../shared/AppContent";
+
+import { maxWidthCss } from "#/features/shared/AppContent";
 
 const HrContainer = styled.div<{ depth: number }>`
   position: absolute;

@@ -1,9 +1,11 @@
-import { ModTransferCommunityView } from "lemmy-js-client";
-import { LogEntryData } from "../ModlogItem";
-import { getHandle } from "../../../../helpers/lemmy";
-import { buildBaseData } from "./shared";
-import { buildCommunityLink } from "../../../../helpers/appLinkBuilder";
 import { swapHorizontal } from "ionicons/icons";
+import { ModTransferCommunityView } from "lemmy-js-client";
+
+import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+
+import { LogEntryData } from "../ModlogItem";
+import { buildBaseData } from "./shared";
 
 export default function transferCommunity(
   item: ModTransferCommunityView,

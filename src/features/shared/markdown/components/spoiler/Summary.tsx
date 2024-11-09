@@ -1,6 +1,7 @@
 import { useContext, useLayoutEffect } from "react";
-import { SpoilerContext } from "./Details";
 import { ExtraProps } from "react-markdown";
+
+import { SpoilerContext } from "./Details";
 
 export default function Summary({
   children,

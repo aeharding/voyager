@@ -1,6 +1,8 @@
-import { setRememberPostAppearance } from "../../settingsSlice";
-import { useAppDispatch, useAppSelector } from "../../../../store";
 import { IonItem, IonToggle } from "@ionic/react";
+
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { setRememberPostAppearance } from "../../settingsSlice";
 
 export default function RememberType() {
   const dispatch = useAppDispatch();

@@ -1,5 +1,6 @@
 import { styled } from "@linaria/react";
-import { maxWidthCss } from "../../shared/AppContent";
+
+import { maxWidthCss } from "#/features/shared/AppContent";
 
 export const PositionedContainer = styled.div<{
   depth: number;

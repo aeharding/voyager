@@ -1,17 +1,19 @@
+import { IonItem } from "@ionic/react";
 import { styled } from "@linaria/react";
-import { CommunityView } from "lemmy-js-client";
-import { maxWidthCss } from "../shared/AppContent";
-import CommunityLink from "../labels/links/CommunityLink";
-import Ago from "../labels/Ago";
-import InlineMarkdown from "../shared/markdown/InlineMarkdown";
 import { heart } from "ionicons/icons";
-import { ActionButton } from "../post/actions/ActionButton";
+import { CommunityView } from "lemmy-js-client";
+
+import Ago from "#/features/labels/Ago";
+import CommunityLink from "#/features/labels/links/CommunityLink";
+import { ActionButton } from "#/features/post/actions/ActionButton";
+import { maxWidthCss } from "#/features/shared/AppContent";
+import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { formatNumber } from "#/helpers/number";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+
 import { ToggleIcon } from "./ToggleIcon";
 import useCommunityActions from "./useCommunityActions";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { buildCommunityLink } from "../../helpers/appLinkBuilder";
-import { IonItem } from "@ionic/react";
-import { formatNumber } from "../../helpers/number";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;

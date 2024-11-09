@@ -1,3 +1,5 @@
+import { useIonModal } from "@ionic/react";
+import { noop } from "es-toolkit";
 import {
   homeOutline,
   libraryOutline,
@@ -6,17 +8,21 @@ import {
   pinOutline,
   shieldCheckmarkOutline,
 } from "ionicons/icons";
-import { ODefaultFeedType } from "../../../../services/db";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { updateDefaultFeed } from "../../settingsSlice";
-import SettingSelector from "../../shared/SettingSelector";
-import { loggedInSelector, handleSelector } from "../../../auth/authSelectors";
-import { useIonModal } from "@ionic/react";
-import CommunitySelectorModal from "../../../shared/selectorModals/CommunitySelectorModal";
 import { CommunityView } from "lemmy-js-client";
 import { useContext } from "react";
-import { PageContext } from "../../../auth/PageContext";
-import { getHandle } from "../../../../helpers/lemmy";
+
+import { PageContext } from "#/features/auth/PageContext";
+import {
+  handleSelector,
+  loggedInSelector,
+} from "#/features/auth/authSelectors";
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import CommunitySelectorModal from "#/features/shared/selectorModals/CommunitySelectorModal";
+import { getHandle } from "#/helpers/lemmy";
+import { ODefaultFeedType } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { updateDefaultFeed } from "../../settingsSlice";
 
 export default function DefaultFeed() {
   const dispatch = useAppDispatch();
@@ -64,7 +70,7 @@ export default function DefaultFeed() {
         if (type === ODefaultFeedType.Community) {
           presentCommunitySelectorModal({ cssClass: "small" });
 
-          return () => {}; // nothing to dispatch
+          return noop; // nothing to dispatch
         }
 
         return updateDefaultFeed({ type });

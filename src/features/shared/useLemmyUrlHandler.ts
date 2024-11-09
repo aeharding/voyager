@@ -1,14 +1,18 @@
 import { useCallback } from "react";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { knownInstancesSelector } from "../instances/instancesSlice";
-import useAppNavigation from "../../helpers/useAppNavigation";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { normalizeObjectUrl, resolveObject } from "../resolve/resolveSlice";
 import { MouseEvent } from "react";
-import useAppToast from "../../helpers/useAppToast";
-import { isLemmyError } from "../../helpers/lemmyErrors";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { buildBaseLemmyUrl } from "../../services/lemmy";
+
+import { knownInstancesSelector } from "#/features/instances/instancesSlice";
+import {
+  normalizeObjectUrl,
+  resolveObject,
+} from "#/features/resolve/resolveSlice";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useAppNavigation from "#/helpers/useAppNavigation";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 export const POST_PATH = /^\/post\/(\d+)$/;
 
@@ -110,9 +114,12 @@ export default function useLemmyUrlHandler() {
   );
 
   const handleObjectIfNeeded = useCallback(
-    async (url: URL, e?: MouseEvent): Promise<boolean> => {
+    async (
+      url: URL,
+      e?: MouseEvent,
+    ): Promise<"already-there" | "not-found" | "success"> => {
       const cachedResolvedObject = objectByUrl[url.toString()];
-      if (cachedResolvedObject === "couldnt_find_object") return false;
+      if (cachedResolvedObject === "couldnt_find_object") return "not-found";
 
       e?.preventDefault();
       e?.stopPropagation();
@@ -147,18 +154,16 @@ export default function useLemmyUrlHandler() {
       }
 
       if (object.post) {
-        navigateToPost(object.post);
+        return navigateToPost(object.post);
       } else if (object.community) {
-        navigateToCommunity(object.community);
+        return navigateToCommunity(object.community);
       } else if (object.person) {
-        navigateToUser(object.person);
+        return navigateToUser(object.person);
       } else if (object.comment) {
-        navigateToComment(object.comment);
-      } else {
-        return false;
+        return navigateToComment(object.comment);
       }
 
-      return true;
+      return "not-found";
     },
     [
       dispatch,
@@ -210,16 +215,16 @@ export default function useLemmyUrlHandler() {
        * (this helps with new instances that aren't well federated yet)
        */
       forceResolveObject = false,
-    ): Promise<boolean> => {
+    ): Promise<"not-found" | "already-there" | "success"> => {
       const url = getUrl(normalizeObjectUrl(link));
 
-      if (!url) return false;
+      if (!url) return "not-found";
       if (!forceResolveObject && !knownInstances.includes(url.hostname))
-        return false; // If non-lemmy domain, return
+        return "not-found"; // If non-lemmy domain, return
 
-      if (handleCommunityClickIfNeeded(url, e)) return true;
-      if (handleUserClickIfNeeded(url, e)) return true;
-      if (!isPotentialObjectPath(url.pathname)) return false;
+      if (handleCommunityClickIfNeeded(url, e)) return "success";
+      if (handleUserClickIfNeeded(url, e)) return "success";
+      if (!isPotentialObjectPath(url.pathname)) return "not-found";
 
       return handleObjectIfNeeded(url, e);
     },

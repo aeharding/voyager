@@ -1,4 +1,7 @@
+import { Share } from "@capacitor/share";
 import { IonIcon, useIonActionSheet } from "@ionic/react";
+import { StashMedia } from "capacitor-stash-media";
+import { compact } from "es-toolkit";
 import {
   bookmarkOutline,
   copyOutline,
@@ -8,27 +11,25 @@ import {
   peopleOutline,
   personOutline,
 } from "ionicons/icons";
-import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
-import { getHandle } from "../../../../helpers/lemmy";
 import { PostView } from "lemmy-js-client";
-import { PageContext } from "../../../auth/PageContext";
 import { useContext } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { savePost } from "../../../post/postSlice";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { ActionButton } from "#/features/post/actions/ActionButton";
+import { savePost } from "#/features/post/postSlice";
+import useNativeBrowser from "#/features/shared/useNativeBrowser";
+import { getShareIcon, isNative } from "#/helpers/device";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
   photoCopied,
   photoSaved,
   saveError,
   saveSuccess,
-} from "../../../../helpers/toastMessages";
-import { ActionButton } from "../../../post/actions/ActionButton";
-import { StashMedia } from "capacitor-stash-media";
-import { getShareIcon, isNative } from "../../../../helpers/device";
-import { Share } from "@capacitor/share";
-import useAppToast from "../../../../helpers/useAppToast";
-import { useOptimizedIonRouter } from "../../../../helpers/useOptimizedIonRouter";
-import useNativeBrowser from "../../../shared/useNativeBrowser";
-import { compact } from "lodash";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 interface GalleryActionsProps {
   post?: PostView;
@@ -142,7 +143,7 @@ export default function GalleryActions({ post, imgSrc }: GalleryActionsProps) {
               if (presentLoginIfNeeded()) return;
 
               try {
-                await dispatch(savePost(post.post.id, !mySaved));
+                await dispatch(savePost(post, !mySaved));
 
                 if (!mySaved) presentToast(saveSuccess);
               } catch (error) {

@@ -1,25 +1,27 @@
 import {
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonButton,
+  IonButtons,
   IonContent,
-  IonModal,
   IonIcon,
+  IonModal,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
-import { Centered } from "../auth/login/LoginNav";
-import TextareaAutosize from "react-textarea-autosize";
-import { useRef } from "react";
-import { isTouchDevice } from "../../helpers/device";
-import { preventModalSwipeOnTextSelection } from "../../helpers/ionic";
 import { styled } from "@linaria/react";
-import AppHeader from "./AppHeader";
 import { copyOutline } from "ionicons/icons";
-import useAppToast from "../../helpers/useAppToast";
+import { useRef } from "react";
+import TextareaAutosize from "react-textarea-autosize";
+
+import { Centered } from "#/features/auth/login/LoginNav";
+import { isTouchDevice } from "#/helpers/device";
+import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import {
   copyClipboardFailed,
   copyClipboardSuccess,
-} from "../../helpers/toastMessages";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+
+import AppHeader from "./AppHeader";
 
 const Container = styled.div`
   min-height: 100%;
