@@ -18,9 +18,9 @@ import {
 } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
+import { startCase } from "es-toolkit";
 import { accessibility, cameraOutline, checkmark } from "ionicons/icons";
 import { Post } from "lemmy-js-client";
-import * as _ from "radashi";
 import { useEffect, useMemo, useState } from "react";
 
 import { Centered, Spinner } from "#/features/auth/login/LoginNav";
@@ -412,7 +412,7 @@ export default function PostEditorRoot({
           <IonTitle>
             <Centered>
               <IonText>
-                {existingPost ? "Edit Post" : <>{_.title(postType)} Post</>}
+                {existingPost ? "Edit Post" : <>{startCase(postType)} Post</>}
               </IonText>
               {loading && <Spinner color="dark" />}
             </Centered>

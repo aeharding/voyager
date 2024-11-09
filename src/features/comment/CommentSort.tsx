@@ -6,6 +6,7 @@ import {
   IonIcon,
 } from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
+import { startCase } from "es-toolkit";
 import {
   arrowUpCircleOutline,
   flameOutline,
@@ -14,7 +15,6 @@ import {
   timeOutline,
 } from "ionicons/icons";
 import { CommentSortType } from "lemmy-js-client";
-import * as _ from "radashi";
 import { useContext, useState } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -30,7 +30,7 @@ export const COMMENT_SORTS = [
 
 const BUTTONS: ActionSheetButton<CommentSortType>[] = COMMENT_SORTS.map(
   (sortType) => ({
-    text: _.title(sortType),
+    text: startCase(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
   }),

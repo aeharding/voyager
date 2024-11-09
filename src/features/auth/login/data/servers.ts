@@ -1,4 +1,4 @@
-import * as _ from "radashi";
+import { uniq } from "es-toolkit";
 
 /**
  * 🚨 Want to add a server to this list?
@@ -96,7 +96,7 @@ export const SERVERS_BY_CATEGORY = {
   furry: ["pawb.social", "yiffit.net"],
 };
 
-export const WHITELISTED_SERVERS = _.unique(
+export const WHITELISTED_SERVERS = uniq(
   Object.values(SERVERS_BY_CATEGORY).flat(),
 );
 
@@ -109,7 +109,7 @@ const ADDITIONAL_LOGIN_INSTANCES = [
   "lemmy.myserv.one",
 ];
 
-export const LOGIN_SERVERS = _.unique([
+export const LOGIN_SERVERS = uniq([
   ...WHITELISTED_SERVERS,
   ...ADDITIONAL_LOGIN_INSTANCES,
 ]);

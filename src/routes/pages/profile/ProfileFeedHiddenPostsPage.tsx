@@ -6,7 +6,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import * as _ from "radashi";
+import { compact } from "es-toolkit";
 import { useCallback, useRef } from "react";
 import { useParams } from "react-router";
 
@@ -91,7 +91,7 @@ export default function ProfileFeedHiddenPostsPage() {
         }),
       );
 
-      return _.sift(result).map((post) =>
+      return compact(result).map((post) =>
         "post_view" in post ? post.post_view : post,
       );
     },

@@ -1,6 +1,6 @@
 import { CompareOperator, compare } from "compare-versions";
+import { memoize } from "es-toolkit";
 import { CommentSortType, PostSortType } from "lemmy-js-client";
-import * as _ from "radashi";
 
 import { lemmyVersionSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";
@@ -8,7 +8,12 @@ import { useAppSelector } from "#/store";
 const SUPPORTED_ON_OLDER_EXCLUSIVE = ">";
 const SUPPORTED_ON_NEWER_INCLUSIVE = "<=";
 
-const memoizedCompare = _.memo(compare);
+const memoizedCompare = memoize(
+  ([v1, v2, cmp]: Parameters<typeof compare>) => compare(v1, v2, cmp),
+  {
+    getCacheKey: ([v1, v2, cmp]) => `${v1}${v2}${cmp}`,
+  },
+);
 
 /**
  * What Lemmy version was support added?
@@ -36,7 +41,7 @@ export default function useSupported(feature: Feature): boolean {
     comparator = supported[1];
   }
 
-  return memoizedCompare(version, lemmyVersion, comparator);
+  return memoizedCompare([version, lemmyVersion, comparator]);
 }
 
 export function is019Sort(

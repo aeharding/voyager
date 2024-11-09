@@ -1,11 +1,11 @@
 import { ActionSheetButton, useIonActionSheet } from "@ionic/react";
+import { compact } from "es-toolkit";
 import {
   mailOutline,
   pricetagOutline,
   removeCircleOutline,
 } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
-import * as _ from "radashi";
 import { useCallback, useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -61,7 +61,7 @@ export default function usePresentUserActions() {
 
       presentActionSheet({
         cssClass: "left-align-buttons",
-        buttons: _.sift([
+        buttons: compact([
           ...(options?.prependButtons ?? []),
           !isCurrentUser &&
             !options?.hideMessageButton && {

@@ -1,4 +1,5 @@
 import { useIonViewWillEnter } from "@ionic/react";
+import { noop } from "es-toolkit";
 import {
   createContext,
   useCallback,
@@ -123,8 +124,8 @@ type GetPortalNodeForSrc = (
 
 const VideoPortalContext = createContext<VideoPortalContextState>({
   videoRefs: {},
-  getPortalNodeForSrc: () => {},
-  cleanupPortalNodeForSrcIfNeeded: () => {},
+  getPortalNodeForSrc: noop,
+  cleanupPortalNodeForSrcIfNeeded: noop,
 });
 
 export function useVideoPortalNode(src: string): PortalNode | void {

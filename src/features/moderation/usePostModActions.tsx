@@ -1,4 +1,5 @@
 import { useIonActionSheet, useIonAlert } from "@ionic/react";
+import { compact, groupBy } from "es-toolkit";
 import {
   checkmarkCircleOutline,
   hammerOutline,
@@ -8,7 +9,6 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { CommentReport, PostReport, PostView } from "lemmy-js-client";
-import * as _ from "radashi";
 import { useCallback, useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -58,7 +58,7 @@ export default function usePostModActions(post: PostView) {
     presentActionSheet({
       cssClass: `${role} left-align-buttons report-reasons`,
       header: stringifyReports(reports),
-      buttons: _.sift([
+      buttons: compact([
         !post.post.removed && reports?.length
           ? {
               text: "Approve",
@@ -202,9 +202,7 @@ export function stringifyReports(
 ): string | undefined {
   if (!reports?.length) return;
 
-  // TODO sift is not needed here, types are wrong
-  // https://github.com/radashi-org/radashi/issues/287
-  return _.sift(Object.values(_.group(reports, (r) => r.reason)))
+  return Object.values(groupBy(reports, (r) => r.reason))
     .map(
       (reports) =>
         `${reports.length} report${reports.length === 1 ? "" : "s"}: “${

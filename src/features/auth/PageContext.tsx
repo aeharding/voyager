@@ -1,5 +1,6 @@
 import { useIonModal } from "@ionic/react";
 import { css } from "@linaria/core";
+import { noop } from "es-toolkit";
 import {
   Comment,
   CommentView,
@@ -104,15 +105,15 @@ export const PageContext = createContext<IPageContext>({
   presentCommentEdit: async () => undefined,
   presentCommentReply: async () => undefined,
   presentPrivateMessageCompose: async () => undefined,
-  presentReport: () => {},
-  presentPostEditor: () => {},
-  presentSelectText: () => {},
-  presentShareAsImage: () => {},
-  presentAccountSwitcher: () => {},
-  presentBanUser: () => {},
-  presentCreateCrosspost: () => {},
-  presentUserTag: () => {},
-  presentDatabaseErrorModal: () => {},
+  presentReport: noop,
+  presentPostEditor: noop,
+  presentSelectText: noop,
+  presentShareAsImage: noop,
+  presentAccountSwitcher: noop,
+  presentBanUser: noop,
+  presentCreateCrosspost: noop,
+  presentUserTag: noop,
+  presentDatabaseErrorModal: noop,
 });
 
 interface PageContextProvider extends React.PropsWithChildren {

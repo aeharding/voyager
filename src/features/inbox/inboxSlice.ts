@@ -1,6 +1,6 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
+import { differenceBy, groupBy, sortBy, uniqBy } from "es-toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
-import * as _ from "radashi";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { receivedUsers } from "#/features/user/userSlice";
@@ -66,7 +66,7 @@ export const inboxSlice = createSlice({
       }
     },
     receivedMessages: (state, action: PayloadAction<PrivateMessageView[]>) => {
-      state.messages = _.unique(
+      state.messages = uniqBy(
         [...action.payload, ...state.messages],
         (m) => m.private_message.id,
       );
@@ -169,7 +169,7 @@ export const syncMessages =
             throw e;
           }
 
-          const newMessages = _.diff(
+          const newMessages = differenceBy(
             privateMessages,
             getState().inbox.messages,
             (msg) => msg.private_message.id,
@@ -203,21 +203,17 @@ export const conversationsByPersonIdSelector = createSelector(
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   ],
   (messages, myUserId) => {
-    return _.sort(
-      // TODO sift is not needed here, types are wrong
-      // https://github.com/radashi-org/radashi/issues/287
-      _.sift(
-        Object.values(
-          _.group(messages, (m) =>
-            m.private_message.creator_id === myUserId
-              ? m.private_message.recipient_id
-              : m.private_message.creator_id,
-          ),
+    return sortBy(
+      Object.values(
+        groupBy(messages, (m) =>
+          m.private_message.creator_id === myUserId
+            ? m.private_message.recipient_id
+            : m.private_message.creator_id,
         ),
       ).map((messages) =>
-        _.sort(messages, (m) => -Date.parse(m.private_message.published)),
+        sortBy(messages, [(m) => -Date.parse(m.private_message.published)]),
       ),
-      (group) => -Date.parse(group[0]!.private_message.published),
+      [(group) => -Date.parse(group[0]!.private_message.published)],
     );
   },
 );

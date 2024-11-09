@@ -5,6 +5,7 @@ import {
   useIonActionSheet,
 } from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
+import { startCase } from "es-toolkit";
 import {
   arrowUpCircleOutline,
   barChartOutline,
@@ -19,7 +20,6 @@ import {
   trophyOutline,
 } from "ionicons/icons";
 import { PostSortType } from "lemmy-js-client";
-import * as _ from "radashi";
 import { useContext } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -89,7 +89,7 @@ const TOP_POST_SORTS = [
 
 const BUTTONS: ActionSheetButton<ExtendedSortType>[] = POST_SORTS.map(
   (sortType) => ({
-    text: _.title(sortType),
+    text: startCase(sortType),
     data: sortType,
     icon: getSortIcon(sortType),
   }),

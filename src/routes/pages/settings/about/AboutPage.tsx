@@ -8,6 +8,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { shuffle } from "es-toolkit";
 import {
   bug,
   handLeft,
@@ -19,7 +20,6 @@ import {
   sparkles,
   thumbsUp,
 } from "ionicons/icons";
-import * as _ from "radashi";
 import { useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
@@ -45,7 +45,7 @@ export default function AboutPage() {
   );
   const presentToast = useAppToast();
 
-  const messages = useRef(_.shuffle(compliments.split("\n")));
+  const messages = useRef(shuffle(compliments.split("\n")));
   const messageIndex = useRef(0);
 
   const appCommunityHandle =

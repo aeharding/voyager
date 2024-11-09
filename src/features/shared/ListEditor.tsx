@@ -1,5 +1,6 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
+import { noop } from "es-toolkit";
 import { checkmark, ellipsisVertical, removeCircle } from "ionicons/icons";
 import React, {
   createContext,
@@ -30,7 +31,7 @@ interface ListEditorContextValue {
 
 export const ListEditorContext = createContext<ListEditorContextValue>({
   editing: false,
-  setEditing: () => {},
+  setEditing: noop,
 });
 
 export function ListEditButton() {

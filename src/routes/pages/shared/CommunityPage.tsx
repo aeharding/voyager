@@ -7,6 +7,7 @@ import {
 } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
+import { noop } from "es-toolkit";
 import {
   createContext,
   memo,
@@ -351,5 +352,5 @@ interface IFeedSearchContext {
 }
 
 export const FeedSearchContext = createContext<IFeedSearchContext>({
-  setScrolledPastSearch: () => {},
+  setScrolledPastSearch: noop,
 });

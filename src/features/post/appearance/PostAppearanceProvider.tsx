@@ -1,3 +1,4 @@
+import { noop } from "es-toolkit";
 import {
   createContext,
   useCallback,
@@ -111,7 +112,7 @@ interface ContextValue {
 
 const PostAppearanceContext = createContext<ContextValue>({
   postAppearance: undefined,
-  setPostAppearance: () => {},
+  setPostAppearance: noop,
 });
 
 export function usePostAppearance() {

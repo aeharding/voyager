@@ -1,12 +1,12 @@
 import { IonIcon, useIonActionSheet } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
+import { compact } from "es-toolkit";
 import {
   ellipsisHorizontal,
   peopleOutline,
   personOutline,
 } from "ionicons/icons";
-import * as _ from "radashi";
 
 import { PlainButton } from "#/features/shared/PlainButton";
 import { getHandle } from "#/helpers/lemmy";
@@ -47,7 +47,7 @@ export default function ModlogItemMoreActions({
   function presentMoreActions() {
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: _.sift([
+      buttons: compact([
         person
           ? {
               text: getHandle(person),

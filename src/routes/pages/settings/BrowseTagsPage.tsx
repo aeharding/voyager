@@ -5,7 +5,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import * as _ from "radashi";
+import { startCase } from "es-toolkit";
 import { useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
@@ -31,7 +31,7 @@ export default function BrowseTagsPage() {
             <IonBackButton defaultHref="/settings/tags" />
           </IonButtons>
 
-          <IonTitle>View {_.title(filter)}</IonTitle>
+          <IonTitle>View {startCase(filter)}</IonTitle>
         </IonToolbar>
       </AppHeader>
       <FeedContent>

@@ -5,6 +5,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { uniqBy } from "es-toolkit";
 import {
   CommentReportView,
   CommentView,
@@ -12,7 +13,6 @@ import {
   PostReportView,
   PostView,
 } from "lemmy-js-client";
-import * as _ from "radashi";
 import { createContext, memo, useCallback, useContext } from "react";
 import { useParams } from "react-router";
 
@@ -105,10 +105,10 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
         await dispatch(syncReports(true));
       }
 
-      const comments = await _.unique(comment_reports, (r) => r.comment.id).map(
+      const comments = await uniqBy(comment_reports, (r) => r.comment.id).map(
         convertCommentReportToComment,
       );
-      const posts = await _.unique(post_reports, (r) => r.post.id).map(
+      const posts = await uniqBy(post_reports, (r) => r.post.id).map(
         convertPostReportToPost,
       );
 

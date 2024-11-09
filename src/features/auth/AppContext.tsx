@@ -1,4 +1,5 @@
 import { useIonViewDidEnter } from "@ionic/react";
+import { noop } from "es-toolkit";
 import React, {
   RefObject,
   createContext,
@@ -18,7 +19,7 @@ interface IAppContext {
 
 export const AppContext = createContext<IAppContext>({
   activePageRef: undefined,
-  setActivePage: () => {},
+  setActivePage: noop,
 });
 
 export function AppContextProvider({ children }: React.PropsWithChildren) {

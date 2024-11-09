@@ -1,3 +1,4 @@
+import { noop } from "es-toolkit";
 import { ComponentProps, useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -38,11 +39,12 @@ export default function DMActionsImpl({
         await dispatch(markRead(item, true));
         dispatch(syncMessages());
       }}
-      collapse={() => {}}
-      collapseRootComment={() => {}}
+      collapse={noop}
+      collapseRootComment={noop}
+      // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
       save={async () => {}}
       isHidden={false}
-      shareTrigger={() => {}}
+      shareTrigger={noop}
       isSaved={false}
       {...shared}
       {...rest}

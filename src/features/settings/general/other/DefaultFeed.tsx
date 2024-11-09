@@ -1,4 +1,5 @@
 import { useIonModal } from "@ionic/react";
+import { noop } from "es-toolkit";
 import {
   homeOutline,
   libraryOutline,
@@ -69,7 +70,7 @@ export default function DefaultFeed() {
         if (type === ODefaultFeedType.Community) {
           presentCommunitySelectorModal({ cssClass: "small" });
 
-          return () => {}; // nothing to dispatch
+          return noop; // nothing to dispatch
         }
 
         return updateDefaultFeed({ type });

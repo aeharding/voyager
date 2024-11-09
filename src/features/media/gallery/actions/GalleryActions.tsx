@@ -1,6 +1,7 @@
 import { Share } from "@capacitor/share";
 import { IonIcon, useIonActionSheet } from "@ionic/react";
 import { StashMedia } from "capacitor-stash-media";
+import { compact } from "es-toolkit";
 import {
   bookmarkOutline,
   copyOutline,
@@ -11,7 +12,6 @@ import {
   personOutline,
 } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import * as _ from "radashi";
 import { useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -55,7 +55,7 @@ export default function GalleryActions({ post, imgSrc }: GalleryActionsProps) {
 
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: _.sift([
+      buttons: compact([
         {
           text: "Share",
           icon: getShareIcon(),

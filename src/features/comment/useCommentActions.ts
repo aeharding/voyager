@@ -1,4 +1,5 @@
 import { ActionSheetOptions, useIonActionSheet } from "@ionic/react";
+import { compact } from "es-toolkit";
 import {
   arrowDownOutline,
   arrowUndoOutline,
@@ -17,7 +18,6 @@ import {
   CommentView,
   PersonMentionView,
 } from "lemmy-js-client";
-import * as _ from "radashi";
 import { useCallback, useContext, useMemo } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
@@ -108,7 +108,7 @@ export default function useCommentActions({
 
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: _.sift([
+      buttons: compact([
         canModerate && {
           cssClass: `${canModerate} detail`,
           text: "Moderator",
