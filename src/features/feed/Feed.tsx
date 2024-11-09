@@ -19,6 +19,7 @@ import { VList, VListHandle } from "virtua";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { isAbortError } from "#/helpers/dom";
 import { FeedSearchContext } from "#/routes/pages/shared/CommunityPage";
 import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { LIMIT as DEFAULT_LIMIT } from "#/services/lemmy";
@@ -145,7 +146,10 @@ export default function Feed<I>({
 
   const fetchMore = useCallback(
     async (refresh = false) => {
-      if (abortControllerRef.current) return; // previous request must be aborted or success before subsequent fetching
+      // previous request must be done before subsequent fetching (existence of abort controller)
+      if (abortControllerRef.current) return;
+
+      // Don't fetch more if we're at the end of the feed (unless refreshing)
       if (atEndRef.current && !refresh) return;
 
       setLoading(true);
@@ -158,27 +162,30 @@ export default function Feed<I>({
         return page;
       })();
 
-      let newPageItems: I[];
+      let result;
 
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
+      abortControllerRef.current = new AbortController();
 
       try {
-        const result = await fetchFn(withPageData(currentPage), {
-          signal: controller.signal,
+        result = await fetchFn(withPageData(currentPage), {
+          signal: abortControllerRef.current.signal,
         });
-        if (Array.isArray(result)) newPageItems = result;
-        else {
-          newPageItems = result.data;
-          if (result.next_page) currentPage = result.next_page;
-        }
       } catch (error) {
-        if (!(error instanceof Error) || error.name !== "AbortError") {
-          setLoadFailed(true);
-          setLoading(false);
-        }
+        // Aborted requests are expected. Silently return to avoid spamming console with DOM errors
+        // Also don't set loading to false, component will unmount
+        if (isAbortError(error)) return;
 
+        setLoading(false);
+        setLoadFailed(true);
         throw error;
+      }
+
+      let newPageItems;
+
+      if (Array.isArray(result)) newPageItems = result;
+      else {
+        newPageItems = result.data;
+        if (result.next_page) currentPage = result.next_page;
       }
 
       abortControllerRef.current = undefined;
@@ -219,8 +226,6 @@ export default function Feed<I>({
   );
 
   useEffect(() => {
-    setLoading(undefined);
-
     return () => {
       abortControllerRef.current?.abort();
       abortControllerRef.current = undefined;

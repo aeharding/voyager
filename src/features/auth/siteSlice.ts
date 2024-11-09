@@ -55,8 +55,8 @@ export const isAdminSelector = (state: RootState) =>
   state.site.response?.my_user?.local_user_view.local_user.admin;
 
 export const isDownvoteEnabledSelector = (state: RootState) =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO required changes for lemmy v0.20.0 https://github.com/aeharding/voyager/issues/1683
-  (state.site.response?.site_view.local_site as any).enable_downvotes !== false;
+  // @ts-expect-error TODO required changes for lemmy v0.20.0 https://github.com/aeharding/voyager/issues/1683
+  state.site.response?.site_view.local_site.enable_downvotes !== false;
 
 export const localUserSelector = (state: RootState) =>
   state.site.response?.my_user?.local_user_view.local_user;
