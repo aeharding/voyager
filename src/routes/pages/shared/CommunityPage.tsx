@@ -192,6 +192,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
         limit: LIMIT,
         community_name: community,
         sort,
+        show_read: true,
       });
       return { data: posts, next_page };
     },
