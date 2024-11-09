@@ -5,9 +5,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
-import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
 import CommunityAutocomplete from "./modes/autocomplete/CommunityAutocompleteMode";
 import UsernameAutocompleteMode from "./modes/autocomplete/UsernameAutocompleteMode";
+import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 export const TOOLBAR_HEIGHT = "50px";

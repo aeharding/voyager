@@ -9,14 +9,14 @@ import { isTouchDevice } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 import {
-  ModeratorRole,
   getModColor,
   getModIcon,
   getModName,
+  ModeratorRole,
 } from "../useCanModerate";
 import useIsAdmin from "../useIsAdmin";
-import ModlogItemMoreActions from "./ModlogItemMoreActions";
 import { ModlogItemType } from "./helpers";
+import ModlogItemMoreActions from "./ModlogItemMoreActions";
 import addCommunity from "./types/addCommunity";
 import addInstance from "./types/addInstance";
 import banFromCommunity from "./types/banFromCommunity";

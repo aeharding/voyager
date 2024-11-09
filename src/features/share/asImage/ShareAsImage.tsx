@@ -4,10 +4,10 @@ import { Share } from "@capacitor/share";
 import { IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
-import { Options as DomToBlobOptions, domToBlob } from "modern-screenshot";
+import { domToBlob, Options as DomToBlobOptions } from "modern-screenshot";
 import {
-  ReactNode,
   createContext,
+  ReactNode,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -25,9 +25,9 @@ import { getImageSrc } from "#/services/lemmy";
 import { webviewServerUrl } from "#/services/nativeFetch";
 
 import AddRemoveButtons from "./AddRemoveButtons";
+import includeStyleProperties from "./includeStyleProperties";
 import { ShareAsImageData } from "./ShareAsImageModal";
 import Watermark from "./Watermark";
-import includeStyleProperties from "./includeStyleProperties";
 
 const Container = styled.div`
   --bottom-padding: max(

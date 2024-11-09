@@ -1,8 +1,8 @@
 import { useIonViewDidEnter } from "@ionic/react";
 import { noop } from "es-toolkit";
 import React, {
-  RefObject,
   createContext,
+  RefObject,
   useContext,
   useEffect,
   useRef,

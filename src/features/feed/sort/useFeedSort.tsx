@@ -5,10 +5,10 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import { AnyFeed } from "../helpers";
 import {
-  SetSortActionPayload,
   getFeedSort,
   getFeedSortSelectorBuilder,
   setFeedSort,
+  SetSortActionPayload,
 } from "./feedSortSlice";
 
 interface Sorts {

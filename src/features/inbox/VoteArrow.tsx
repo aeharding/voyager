@@ -3,8 +3,8 @@ import { styled } from "@linaria/react";
 import { arrowDown, arrowUp } from "ionicons/icons";
 
 import {
-  VOTE_COLORS,
   bgColorToVariable,
+  VOTE_COLORS,
 } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
 import { useAppSelector } from "#/store";
 

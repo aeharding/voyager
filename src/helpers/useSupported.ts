@@ -1,4 +1,4 @@
-import { CompareOperator, compare } from "compare-versions";
+import { compare, CompareOperator } from "compare-versions";
 import { memoize } from "es-toolkit";
 import { CommentSortType, PostSortType } from "lemmy-js-client";
 

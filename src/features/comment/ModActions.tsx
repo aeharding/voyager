@@ -2,9 +2,9 @@ import { IonIcon, IonLoading } from "@ionic/react";
 import { CommentView } from "lemmy-js-client";
 
 import {
-  ModeratorRole,
   getModColor,
   getModIcon,
+  ModeratorRole,
 } from "#/features/moderation/useCanModerate";
 import useCommentModActions from "#/features/moderation/useCommentModActions";
 import { ActionButton } from "#/features/post/actions/ActionButton";

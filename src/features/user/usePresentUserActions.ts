@@ -8,8 +8,8 @@ import {
 import { Person } from "lemmy-js-client";
 import { useCallback, useContext } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
 import { usernameSelector } from "#/features/auth/authSelectors";
+import { PageContext } from "#/features/auth/PageContext";
 import { getHandle } from "#/helpers/lemmy";
 import { getBlockUserErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";

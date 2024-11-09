@@ -1,4 +1,4 @@
-import React, { MutableRefObject, createContext, useMemo, useRef } from "react";
+import React, { createContext, MutableRefObject, useMemo, useRef } from "react";
 
 import { PostCommentItem } from "./PostCommentFeed";
 

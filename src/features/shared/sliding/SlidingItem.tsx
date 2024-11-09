@@ -4,8 +4,8 @@ import { IonItemOption, IonItemOptions, IonItemSliding } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import React, {
-  useEffect,
   experimental_useEffectEvent as useEffectEvent,
+  useEffect,
   useRef,
   useState,
 } from "react";

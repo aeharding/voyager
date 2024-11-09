@@ -3,8 +3,8 @@ import { css, cx } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { useContext } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
 import { accountsListEmptySelector } from "#/features/auth/authSelectors";
+import { PageContext } from "#/features/auth/PageContext";
 import AppContent from "#/features/shared/AppContent";
 import emptyStateIconStyles from "#/routes/pages/shared/emptyStateIconStyles";
 import { useAppSelector } from "#/store";

@@ -5,9 +5,9 @@ import { chevronForward } from "ionicons/icons";
 import { MouseEvent, useEffect, useMemo, useState } from "react";
 
 import { LinkData } from "#/features/comment/CommentLinks";
-import Url from "#/features/shared/Url";
 import LinkInterceptor from "#/features/shared/markdown/LinkInterceptor";
 import PlaintextMarkdown from "#/features/shared/markdown/PlaintextMarkdown";
+import Url from "#/features/shared/Url";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { preventOnClickNavigationBug } from "#/helpers/ionic";
 import { determineTypeFromUrl, isUrlImage } from "#/helpers/url";

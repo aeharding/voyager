@@ -5,7 +5,7 @@ import { memoize } from "es-toolkit";
 import { shareOutline, shareSocialOutline } from "ionicons/icons";
 import UAParser from "ua-parser-js";
 
-import { LOCALSTORAGE_KEYS, get } from "#/features/settings/syncStorage";
+import { get, LOCALSTORAGE_KEYS } from "#/features/settings/syncStorage";
 
 export function getDeviceMode(): Mode {
   // md mode is beta, so default ios for all devices

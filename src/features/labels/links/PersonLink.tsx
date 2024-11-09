@@ -21,7 +21,7 @@ import { useAppSelector } from "#/store";
 
 import { renderHandle } from "../Handle";
 import AgeBadge from "./AgeBadge";
-import { LinkContainer, StyledLink, hideCss } from "./shared";
+import { hideCss, LinkContainer, StyledLink } from "./shared";
 
 const Prefix = styled.span`
   font-weight: normal;

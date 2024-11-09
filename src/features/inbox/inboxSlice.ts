@@ -1,4 +1,4 @@
-import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { differenceBy, groupBy, sortBy, uniqBy } from "es-toolkit";
 import { GetUnreadCountResponse, PrivateMessageView } from "lemmy-js-client";
 

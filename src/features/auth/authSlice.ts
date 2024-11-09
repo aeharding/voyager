@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ApplicationContext } from "capacitor-application-context";
 import { uniqBy } from "es-toolkit";
 import { Register } from "lemmy-js-client";

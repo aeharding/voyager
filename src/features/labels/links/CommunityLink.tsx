@@ -25,7 +25,7 @@ import { OShowSubscribedIcon } from "#/services/db";
 import { useAppSelector } from "#/store";
 
 import { renderHandle } from "../Handle";
-import { LinkContainer, StyledLink, hideCss } from "./shared";
+import { hideCss, LinkContainer, StyledLink } from "./shared";
 
 const StyledItemIcon = styled(ItemIcon)`
   margin-right: 0.4rem;

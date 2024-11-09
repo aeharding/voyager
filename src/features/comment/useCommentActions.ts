@@ -20,8 +20,8 @@ import {
 } from "lemmy-js-client";
 import { useCallback, useContext, useMemo } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
+import { PageContext } from "#/features/auth/PageContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import {
   getCanModerate,
@@ -30,9 +30,9 @@ import {
 import useCommentModActions from "#/features/moderation/useCommentModActions";
 import { getShareIcon } from "#/helpers/device";
 import {
+  canModify as isCommentMutable,
   getHandle,
   getRemoteHandle,
-  canModify as isCommentMutable,
   share,
 } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";

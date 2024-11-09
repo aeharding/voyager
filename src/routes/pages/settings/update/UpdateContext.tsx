@@ -1,8 +1,8 @@
 import { useDocumentVisibility, useInterval } from "@mantine/hooks";
 import React, {
   createContext,
-  useEffect,
   experimental_useEffectEvent as useEffectEvent,
+  useEffect,
   useRef,
   useState,
 } from "react";

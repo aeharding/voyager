@@ -3,10 +3,10 @@ import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { PrivateMessageView } from "lemmy-js-client";
 import {
+  experimental_useEffectEvent as useEffectEvent,
   useCallback,
   useContext,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
   useRef,
   useState,
 } from "react";

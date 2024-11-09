@@ -3,8 +3,8 @@ import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 
 import {
-  SERVERS_BY_CATEGORY,
   ServerCategory,
+  SERVERS_BY_CATEGORY,
 } from "#/features/auth/login/data/servers";
 
 const Container = styled.div`

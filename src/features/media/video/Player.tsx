@@ -2,8 +2,8 @@ import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import {
-  CSSProperties,
   ChangeEvent,
+  CSSProperties,
   useCallback,
   useEffect,
   useImperativeHandle,
