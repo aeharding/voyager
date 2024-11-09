@@ -39,6 +39,7 @@ export default function ProfileFeedItemsPage({
           sort: "New",
           liked_only: type === "Upvoted",
           disliked_only: type === "Downvoted",
+          show_read: true,
         };
 
         const [{ posts }, { comments }] = await Promise.all([

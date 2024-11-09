@@ -70,6 +70,7 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
         limit: LIMIT,
         sort,
         type_: type,
+        show_read: true,
       });
 
       return { data: posts, next_page };
