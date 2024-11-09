@@ -1,8 +1,8 @@
 import { IonLoading } from "@ionic/react";
 import { Instance } from "lemmy-js-client";
 import {
-  useEffect,
   experimental_useEffectEvent as useEffectEvent,
+  useEffect,
   useState,
 } from "react";
 

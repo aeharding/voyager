@@ -4,8 +4,8 @@ import { useContext, useEffect, useMemo, useRef } from "react";
 import { Redirect } from "react-router-dom";
 
 import { TabContext } from "#/core/TabContext";
-import { PageContextProvider } from "#/features/auth/PageContext";
 import { instanceSelector } from "#/features/auth/authSelectors";
+import { PageContextProvider } from "#/features/auth/PageContext";
 import GalleryProvider from "#/features/media/gallery/GalleryProvider";
 import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
 import { isInstalled } from "#/helpers/device";
@@ -14,9 +14,9 @@ import { getDefaultServer } from "#/services/app";
 import { DefaultFeedType, ODefaultFeedType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
-import TabBar from "./TabBar";
 import { usingActorRedirect } from "./common/ActorRedirect";
 import Route from "./common/Route";
+import TabBar from "./TabBar";
 import general from "./tabs/general";
 import inbox from "./tabs/inbox";
 import buildPostsRoutes from "./tabs/posts";

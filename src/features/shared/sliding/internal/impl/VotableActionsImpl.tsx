@@ -9,8 +9,8 @@ import {
   toggleCommentCollapseState,
   voteOnComment,
 } from "#/features/comment/commentSlice";
-import { scrollCommentIntoViewIfNeeded } from "#/features/comment/inTree/CommentTree";
 import { CommentsContext } from "#/features/comment/inTree/CommentsContext";
+import { scrollCommentIntoViewIfNeeded } from "#/features/comment/inTree/CommentTree";
 import useCollapseRootComment from "#/features/comment/inTree/useCollapseRootComment";
 import { markRead } from "#/features/inbox/inboxSlice";
 import { getCanModerate } from "#/features/moderation/useCanModerate";

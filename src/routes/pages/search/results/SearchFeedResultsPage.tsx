@@ -9,12 +9,12 @@ import { useCallback } from "react";
 import { useParams } from "react-router";
 
 import { receivedComments } from "#/features/comment/commentSlice";
+import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import { FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
 import PostSort from "#/features/feed/PostSort";
-import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
 import { receivedPosts } from "#/features/post/postSlice";
 import AppHeader from "#/features/shared/AppHeader";

@@ -4,9 +4,9 @@ import { styled } from "@linaria/react";
 import { compact, differenceBy, sortBy, uniqBy } from "es-toolkit";
 import { CommentSortType, CommentView } from "lemmy-js-client";
 import React, {
+  experimental_useEffectEvent as useEffectEvent,
   useCallback,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -32,8 +32,8 @@ import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { receivedComments } from "../commentSlice";
-import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { CommentsContext } from "./CommentsContext";
+import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import LoadParentComments from "./LoadParentComments";
 
 const ScrollViewContainer = styled.div`

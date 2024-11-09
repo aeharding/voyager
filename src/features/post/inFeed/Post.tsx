@@ -3,10 +3,10 @@ import { cx } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
 import {
+  experimental_useEffectEvent as useEffectEvent,
   memo,
   useCallback,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
   useRef,
   useState,
 } from "react";

@@ -71,7 +71,7 @@ export default tseslint.config(
 
       "perfectionist/sort-named-imports": [
         "warn",
-        { ignoreCase: true, ignoreAlias: true },
+        { ignoreCase: false, ignoreAlias: true, type: "natural" },
       ],
       "perfectionist/sort-imports": [
         "warn",

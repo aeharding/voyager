@@ -2,8 +2,8 @@ import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { heart } from "ionicons/icons";
 
-import FloatingDialog from "#/helpers/FloatingDialog";
 import { isNative } from "#/helpers/device";
+import FloatingDialog from "#/helpers/FloatingDialog";
 
 import ExternalSponsorOptions from "./ExternalSponsorOptions";
 import InAppProducts from "./inAppPurchase/InAppProducts";

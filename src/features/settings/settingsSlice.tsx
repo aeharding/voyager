@@ -3,10 +3,10 @@
 
 import { Mode } from "@ionic/core";
 import {
+  PayloadAction,
   createAsyncThunk,
   createSelector,
   createSlice,
-  PayloadAction,
 } from "@reduxjs/toolkit";
 import Dexie from "dexie";
 import { cloneDeep, merge } from "es-toolkit";
@@ -19,11 +19,10 @@ import {
   AppThemeType,
   AutoplayMediaType,
   CommentDefaultSort,
-  CommentsThemeType,
   CommentThreadCollapse,
+  CommentsThemeType,
   CompactThumbnailPositionType,
   CompactThumbnailSizeType,
-  db,
   DefaultFeedType,
   InstanceUrlDisplayMode,
   JumpButtonPositionType,
@@ -50,10 +49,11 @@ import {
   TapToCollapseType,
   VoteDisplayMode,
   VotesThemeType,
+  db,
 } from "#/services/db";
 import { AppDispatch, RootState } from "#/store";
 
-import { get, LOCALSTORAGE_KEYS, set } from "./syncStorage";
+import { LOCALSTORAGE_KEYS, get, set } from "./syncStorage";
 
 export {
   type CommentThreadCollapse,

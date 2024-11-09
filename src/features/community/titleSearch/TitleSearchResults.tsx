@@ -4,9 +4,9 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { compact, sortBy, uniqBy } from "es-toolkit";
 import { Community, CommunityView } from "lemmy-js-client";
 import {
+  experimental_useEffectEvent as useEffectEvent,
   useContext,
   useEffect,
-  experimental_useEffectEvent as useEffectEvent,
   useMemo,
   useRef,
   useState,
