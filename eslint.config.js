@@ -55,51 +55,6 @@ export default tseslint.config(
       },
     },
     rules: {
-      "react/prop-types": "off",
-      "react/jsx-fragments": ["warn", "syntax"],
-      "react/jsx-curly-brace-presence": ["warn", "never"],
-      "react/no-unknown-property": [
-        "error",
-        {
-          ignore: ["css"],
-        },
-      ],
-      "react/function-component-definition": [
-        "error",
-        { namedComponents: "function-declaration", unnamedComponents: [] },
-      ],
-
-      "perfectionist/sort-named-imports": [
-        "warn",
-        { ignoreCase: false, type: "natural", ignoreAlias: false },
-      ],
-      "perfectionist/sort-imports": [
-        "warn",
-        {
-          newlinesBetween: "always",
-          ignoreCase: false,
-          type: "natural",
-          internalPattern: ["#/**"],
-          sortSideEffects: true,
-          groups: [
-            "builtin",
-            "external",
-            "internal",
-            ["parent", "sibling", "index"],
-          ],
-        },
-      ],
-
-      "@typescript-eslint/consistent-type-definitions": "error",
-      "@typescript-eslint/no-empty-object-type": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        {
-          destructuredArrayIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-        },
-      ],
-
       "no-empty-function": "warn",
       "no-nested-ternary": "warn",
       "no-unreachable": "warn",
@@ -142,6 +97,51 @@ export default tseslint.config(
             },
           ],
         },
+      ],
+
+      "@typescript-eslint/consistent-type-definitions": "error",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          destructuredArrayIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+
+      "perfectionist/sort-named-imports": [
+        "warn",
+        { ignoreCase: false, type: "natural", ignoreAlias: false },
+      ],
+      "perfectionist/sort-imports": [
+        "warn",
+        {
+          newlinesBetween: "always",
+          ignoreCase: false,
+          type: "natural",
+          internalPattern: ["#/**"],
+          sortSideEffects: true,
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            ["parent", "sibling", "index"],
+          ],
+        },
+      ],
+
+      "react/prop-types": "off",
+      "react/jsx-fragments": ["warn", "syntax"],
+      "react/jsx-curly-brace-presence": ["warn", "never"],
+      "react/no-unknown-property": [
+        "error",
+        {
+          ignore: ["css"],
+        },
+      ],
+      "react/function-component-definition": [
+        "error",
+        { namedComponents: "function-declaration", unnamedComponents: [] },
       ],
     },
   },
