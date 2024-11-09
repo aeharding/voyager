@@ -7,8 +7,8 @@ import { PlainButton } from "#/features/shared/PlainButton";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { InboxItemView } from "./InboxItem";
-import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
 import { getInboxItemId, markRead } from "./inboxSlice";
+import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
 
 const StyledPlainButton = styled(PlainButton)`
   font-size: 1.12em;

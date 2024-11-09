@@ -1,6 +1,8 @@
 // @ts-check
+
 import eslint from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
+import perfectionistPlugin from "eslint-plugin-perfectionist";
 import reactPlugin from "eslint-plugin-react";
 import pluginReactCompiler from "eslint-plugin-react-compiler";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
@@ -42,6 +44,11 @@ export default tseslint.config(
     },
   },
   {
+    plugins: {
+      perfectionist: perfectionistPlugin,
+    },
+  },
+  {
     settings: {
       react: {
         version: "detect",
@@ -60,6 +67,26 @@ export default tseslint.config(
       "react/function-component-definition": [
         "error",
         { namedComponents: "function-declaration", unnamedComponents: [] },
+      ],
+
+      "perfectionist/sort-named-imports": [
+        "warn",
+        { ignoreCase: true, ignoreAlias: true },
+      ],
+      "perfectionist/sort-imports": [
+        "warn",
+        {
+          newlinesBetween: "always",
+          type: "natural",
+          internalPattern: ["#/**"],
+          sortSideEffects: true,
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            ["parent", "sibling", "index"],
+          ],
+        },
       ],
 
       "@typescript-eslint/consistent-type-definitions": "error",

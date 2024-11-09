@@ -1,3 +1,5 @@
+/* eslint perfectionist/sort-interfaces: ["warn", { partitionByNewLine: true }] */
+
 import { differenceInHours, subHours } from "date-fns";
 import Dexie, { Table } from "dexie";
 import { zipObject } from "es-toolkit";
@@ -13,14 +15,16 @@ import { ALL_POST_SORTS } from "#/features/feed/PostSort";
 export interface IPostMetadata {
   post_id: number;
   user_handle: string;
+
   hidden: 0 | 1; // Not boolean because dexie doesn't support booleans for indexes
+
   hidden_updated_at?: number;
 }
 
 export interface InstanceData {
+  data: FederatedInstances;
   domain: string;
   updated: Date;
-  data: FederatedInstances;
 }
 
 export const OAppThemeType = {
@@ -291,6 +295,7 @@ type Provider = "redgifs";
 
 interface ProviderData<Name extends string, Data> {
   name: Name;
+
   data: Data;
 }
 
@@ -316,78 +321,79 @@ export interface UserTag {
 }
 
 export interface SettingValueTypes {
-  comments_theme: CommentsThemeType;
-  votes_theme: VotesThemeType;
-  collapse_comment_threads: CommentThreadCollapse;
-  user_instance_url_display: InstanceUrlDisplayMode;
-  vote_display_mode: VoteDisplayMode;
-  profile_label: ProfileLabelType;
-  post_appearance_type: PostAppearanceType;
-  remember_post_appearance_type: boolean;
-  compact_thumbnail_position_type: CompactThumbnailPositionType;
-  large_show_voting_buttons: boolean;
-  compact_show_voting_buttons: boolean;
-  compact_thumbnail_size: CompactThumbnailSizeType;
-  compact_show_self_post_thumbnails: boolean;
-  blur_nsfw: PostBlurNsfwType;
-  favorite_communities: string[];
-  migration_links: string[];
-  default_comment_sort: CommentDefaultSort;
-  default_comment_sort_by_feed: CommentDefaultSort;
-  disable_marking_posts_read: boolean;
-  mark_read_on_scroll: boolean;
-  show_hide_read_button: boolean;
-  show_hidden_in_communities: boolean;
-  auto_hide_read: boolean;
-  disable_auto_hide_in_communities: boolean;
-  gesture_swipe_post: SwipeActions;
-  gesture_swipe_comment: SwipeActions;
-  gesture_swipe_inbox: SwipeActions;
-  disable_left_swipes: boolean;
-  disable_right_swipes: boolean;
-  enable_haptic_feedback: boolean;
-  link_handler: LinkHandlerType;
-  prefer_native_apps: boolean;
-  show_jump_button: boolean;
-  jump_button_position: JumpButtonPositionType;
-  tap_to_collapse: TapToCollapseType;
-  filtered_keywords: string[];
-  filtered_websites: string[];
-  highlight_new_account: boolean;
-  default_feed: DefaultFeedType;
-  touch_friendly_links: boolean;
-  show_comment_images: boolean;
-  long_swipe_trigger_point: LongSwipeTriggerPointType;
-  has_presented_block_nsfw_tip: boolean;
-  no_subscribed_in_feed: boolean;
-  thumbnailinator_enabled: boolean;
-  embed_external_media: boolean;
   always_show_author: boolean;
   always_use_reader_mode: boolean;
-  infinite_scrolling: boolean;
-  upvote_on_save: boolean;
+  auto_hide_read: boolean;
+  autoplay_media: AutoplayMediaType;
+  blur_nsfw: PostBlurNsfwType;
+  collapse_comment_threads: CommentThreadCollapse;
+  comments_theme: CommentsThemeType;
+  community_at_top: boolean;
+  compact_show_self_post_thumbnails: boolean;
+  compact_show_voting_buttons: boolean;
+  compact_thumbnail_position_type: CompactThumbnailPositionType;
+  compact_thumbnail_size: CompactThumbnailSizeType;
+  default_comment_sort: CommentDefaultSort;
+  default_comment_sort_by_feed: CommentDefaultSort;
+  default_feed: DefaultFeedType;
   default_post_sort: PostSortType;
   default_post_sort_by_feed: PostSortType;
-  remember_community_post_sort: boolean;
-  remember_community_comment_sort: boolean;
+  disable_auto_hide_in_communities: boolean;
+  disable_left_swipes: boolean;
+  disable_marking_posts_read: boolean;
+  disable_right_swipes: boolean;
   embed_crossposts: boolean;
-  show_community_icons: boolean;
-  community_at_top: boolean;
-  autoplay_media: AutoplayMediaType;
-  show_collapsed_comment: boolean;
+  embed_external_media: boolean;
+  enable_haptic_feedback: boolean;
+  favorite_communities: string[];
+  filtered_keywords: string[];
+  filtered_websites: string[];
+  gesture_swipe_comment: SwipeActions;
+  gesture_swipe_inbox: SwipeActions;
+  gesture_swipe_post: SwipeActions;
+  has_presented_block_nsfw_tip: boolean;
+  highlight_new_account: boolean;
+  infinite_scrolling: boolean;
+  jump_button_position: JumpButtonPositionType;
+  large_show_voting_buttons: boolean;
+  link_handler: LinkHandlerType;
+  long_swipe_trigger_point: LongSwipeTriggerPointType;
+  mark_read_on_scroll: boolean;
+  migration_links: string[];
+  no_subscribed_in_feed: boolean;
+  post_appearance_type: PostAppearanceType;
+  prefer_native_apps: boolean;
+  profile_label: ProfileLabelType;
   quick_switch_dark_mode: boolean;
+  remember_community_comment_sort: boolean;
+  remember_community_post_sort: boolean;
+  remember_post_appearance_type: boolean;
+  show_collapsed_comment: boolean;
+  show_comment_images: boolean;
+  show_community_icons: boolean;
+  show_hidden_in_communities: boolean;
+  show_hide_read_button: boolean;
+  show_jump_button: boolean;
   subscribed_icon: ShowSubscribedIcon;
   tags_enabled: boolean;
-  tags_track_votes: boolean;
   tags_hide_instance: boolean;
   tags_save_source: boolean;
+  tags_track_votes: boolean;
+  tap_to_collapse: TapToCollapseType;
+  thumbnailinator_enabled: boolean;
+  touch_friendly_links: boolean;
+  upvote_on_save: boolean;
+  user_instance_url_display: InstanceUrlDisplayMode;
+  vote_display_mode: VoteDisplayMode;
+  votes_theme: VotesThemeType;
 }
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
   key: T;
   value: SettingValueTypes[T];
-  user_handle: string;
+
   community: string;
+  user_handle: string;
 }
 
 export const CompoundKeys = {
