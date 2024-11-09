@@ -20,9 +20,9 @@ interface InboxItemMoreActionsProps {
   ref: React.RefObject<InboxItemMoreActionsHandle>;
 }
 
-export type InboxItemMoreActionsHandle = {
+export interface InboxItemMoreActionsHandle {
   present: () => void;
-};
+}
 
 export default function InboxItemMoreActions({
   item,

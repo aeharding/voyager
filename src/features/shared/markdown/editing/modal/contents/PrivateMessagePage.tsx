@@ -34,7 +34,7 @@ const Title = styled.span`
  * e.g. post or comment replying to,
  * but not necessarily DMs)
  */
-export type NewPrivateMessage = {
+export interface NewPrivateMessage {
   private_message: {
     recipient: Person;
   };
@@ -43,7 +43,7 @@ export type NewPrivateMessage = {
    * Prefilled content
    */
   value?: string;
-};
+}
 
 type CommentEditingProps = Omit<DismissableProps, "dismiss"> & {
   dismiss: (reply?: PrivateMessageView | undefined) => void;

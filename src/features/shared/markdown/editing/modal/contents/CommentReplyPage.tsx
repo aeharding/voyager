@@ -51,11 +51,11 @@ export type CommentReplyItem =
   | PersonMentionView
   | CommentReplyView;
 
-type CommentReplyPageProps = {
+interface CommentReplyPageProps {
   dismiss: (reply?: CommentView | undefined) => void;
   setCanDismiss: (canDismiss: boolean) => void;
   item: CommentReplyItem;
-};
+}
 
 /**
  * New comment replying to something

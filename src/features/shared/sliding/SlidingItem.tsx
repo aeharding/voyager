@@ -60,7 +60,7 @@ const optionContainerActiveCss = css`
   ${bounceAnimation}
 `;
 
-export type SlidingItemAction = {
+export interface SlidingItemAction {
   /**
    * If `string`, it's passed to IonIcon as an icon value
    */
@@ -68,7 +68,7 @@ export type SlidingItemAction = {
   trigger: (e: TouchEvent | MouseEvent) => void;
   bgColor: string;
   slash?: boolean;
-};
+}
 
 export type ActionList = [
   // short swipe action

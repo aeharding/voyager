@@ -69,10 +69,10 @@ const Empty = styled.div`
 
 const MAX_COMMENT_PATH_CONTEXT_DEPTH = 2;
 
-export type CommentsHandle = {
+export interface CommentsHandle {
   appendComments: (comments: CommentView[]) => void;
   prependComments: (comments: CommentView[]) => void;
-};
+}
 
 interface CommentsProps {
   header: React.ReactNode;

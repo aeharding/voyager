@@ -114,7 +114,7 @@ function cumulativeOffset(element: HTMLElement) {
   } while (element instanceof HTMLElement);
 
   return {
-    top: top,
-    left: left,
+    top,
+    left,
   };
 }

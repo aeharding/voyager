@@ -289,10 +289,10 @@ export type SwipeActions = Record<SwipeDirection, SwipeAction>;
 
 type Provider = "redgifs";
 
-type ProviderData<Name extends string, Data> = {
+interface ProviderData<Name extends string, Data> {
   name: Name;
   data: Data;
-};
+}
 
 export type RedgifsProvider = ProviderData<"redgifs", { token: string }>;
 
@@ -315,7 +315,7 @@ export interface UserTag {
   sourceUrl?: string;
 }
 
-export type SettingValueTypes = {
+export interface SettingValueTypes {
   comments_theme: CommentsThemeType;
   votes_theme: VotesThemeType;
   collapse_comment_threads: CommentThreadCollapse;
@@ -381,7 +381,7 @@ export type SettingValueTypes = {
   tags_track_votes: boolean;
   tags_hide_instance: boolean;
   tags_save_source: boolean;
-};
+}
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
   key: T;

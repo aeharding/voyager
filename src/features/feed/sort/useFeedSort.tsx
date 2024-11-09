@@ -11,10 +11,10 @@ import {
   setFeedSort,
 } from "./feedSortSlice";
 
-type Sorts = {
+interface Sorts {
   posts: PostSortType;
   comments: CommentSortType;
-};
+}
 
 export default function useFeedSort<Context extends "posts" | "comments">(
   context: Context,

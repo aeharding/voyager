@@ -19,9 +19,9 @@ import { useAppDispatch, useAppSelector } from "#/store";
 /**
  * TODO remove once we drop support for lemmy 0.19
  */
-type PersonBlockView = {
+interface PersonBlockView {
   target: Person;
-};
+}
 
 /**
  * TODO remove - Lemmy 0.19 returned user block view. v0.20 returns user.

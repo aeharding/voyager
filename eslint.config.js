@@ -57,7 +57,12 @@ export default tseslint.config(
           ignore: ["css"],
         },
       ],
+      "react/function-component-definition": [
+        "error",
+        { namedComponents: "function-declaration", unnamedComponents: [] },
+      ],
 
+      "@typescript-eslint/consistent-type-definitions": "error",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
@@ -70,6 +75,7 @@ export default tseslint.config(
       "no-empty-function": "warn",
       "no-nested-ternary": "warn",
       "no-unreachable": "warn",
+      "object-shorthand": "warn",
       "linebreak-style": ["warn", "unix"],
       eqeqeq: ["warn", "smart"],
       "no-console": [

@@ -35,7 +35,12 @@ const StyledIonTabBar = styled(IonTabBar)`
   }
 `;
 
-const TabBar = function TabBar(props: ComponentProps<typeof IonTabBar>) {
+/**
+ * Ionic checks `isTabBar` for custom IonTabBar components.
+ */
+TabBar.isTabBar = true;
+
+export default function TabBar(props: ComponentProps<typeof IonTabBar>) {
   const longPressedRef = useRef(false);
 
   const resetLongPress = () => {
@@ -62,8 +67,4 @@ const TabBar = function TabBar(props: ComponentProps<typeof IonTabBar>) {
       <SettingsTabButton tab="settings" href="/settings" {...sharedTabProps} />
     </StyledIonTabBar>
   );
-};
-
-TabBar.isTabBar = true;
-
-export default TabBar;
+}

@@ -25,7 +25,7 @@ const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 /**
  * DO NOT CHANGE this type. It is persisted.
  */
-export type Credential = {
+export interface Credential {
   jwt?: string;
 
   /**
@@ -34,12 +34,12 @@ export type Credential = {
    * e.g. `aeharding@lemmy.world` or `lemmy.world`
    */
   handle: string;
-};
+}
 
 /**
  * DO NOT CHANGE this type. It is persisted.
  */
-type CredentialStoragePayload = {
+interface CredentialStoragePayload {
   accounts: Credential[];
 
   /**
@@ -48,7 +48,7 @@ type CredentialStoragePayload = {
    * e.g. `aeharding@lemmy.world` or `lemmy.world`
    */
   activeHandle: string;
-};
+}
 
 interface AuthState {
   accountData: CredentialStoragePayload | undefined;
