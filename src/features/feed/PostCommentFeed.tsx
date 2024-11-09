@@ -119,8 +119,8 @@ export default function PostCommentFeed({
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
-      const result = await _fetchFn(page);
+    async (page, signal) => {
+      const result = await _fetchFn(page, signal);
 
       const items = Array.isArray(result) ? result : result.data;
 

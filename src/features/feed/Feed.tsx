@@ -28,6 +28,8 @@ import EndPost, { EndPostProps } from "./endItems/EndPost";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import FetchMore from "./endItems/FetchMore";
 
+const ABORT_REASON_UNMOUNT = "unmount";
+
 type PageData =
   | {
       page: number;
@@ -36,7 +38,10 @@ type PageData =
       page_cursor: string;
     };
 
-export type FetchFn<I> = (pageData: PageData) => Promise<FetchFnResult<I>>;
+export type FetchFn<I> = (
+  pageData: PageData,
+  options?: Pick<RequestInit, "signal">,
+) => Promise<FetchFnResult<I>>;
 
 type FetchFnResult<I> = I[] | { data: I[]; next_page?: string };
 
@@ -107,8 +112,7 @@ export default function Feed<I>({
   // Loading needs to be initially `undefined` so that IonRefresher is
   // never initially rendered, which breaks pull to refresh on Android
   // See: https://github.com/aeharding/voyager/issues/718
-  const [loading, _setLoading] = useState<boolean | undefined>(undefined);
-  const loadingRef = useRef(false);
+  const [loading, setLoading] = useState<boolean | undefined>(undefined);
 
   const [isListAtTop, setIsListAtTop] = useState(true);
 
@@ -134,19 +138,19 @@ export default function Feed<I>({
     [filterFn, items],
   );
 
-  function setLoading(loading: boolean) {
-    _setLoading(loading);
-    loadingRef.current = loading;
-  }
-
   function setAtEnd(atEnd: boolean) {
     _setAtEnd(atEnd);
     atEndRef.current = atEnd;
   }
 
+  const abortControllerRef = useRef<AbortController>();
+
   const fetchMore = useCallback(
     async (refresh = false) => {
-      if (loadingRef.current) return;
+      // previous request must be done before subsequent fetching (existence of abort controller)
+      if (abortControllerRef.current) return;
+
+      // Don't fetch more if we're at the end of the feed (unless refreshing)
       if (atEndRef.current && !refresh) return;
 
       setLoading(true);
@@ -159,22 +163,39 @@ export default function Feed<I>({
         return page;
       })();
 
-      let newPageItems: I[];
+      let result;
+
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
 
       try {
-        const result = await fetchFn(withPageData(currentPage));
-        if (Array.isArray(result)) newPageItems = result;
-        else {
-          newPageItems = result.data;
-          if (result.next_page) currentPage = result.next_page;
-        }
+        result = await fetchFn(withPageData(currentPage), {
+          signal: abortController.signal,
+        });
       } catch (error) {
-        setLoadFailed(true);
+        // Aborted requests are expected. Silently return to avoid spamming console with DOM errors
+        // Also don't set loading to false, component will unmount
+        if (
+          abortController.signal.aborted &&
+          abortController.signal.reason === ABORT_REASON_UNMOUNT
+        )
+          return;
 
-        throw error;
-      } finally {
         setLoading(false);
+        setLoadFailed(true);
+        throw error;
       }
+
+      let newPageItems;
+
+      if (Array.isArray(result)) newPageItems = result;
+      else {
+        newPageItems = result.data;
+        if (result.next_page) currentPage = result.next_page;
+      }
+
+      abortControllerRef.current = undefined;
+      setLoading(false);
 
       const filteredNewPageItems = filterOnRxFn
         ? newPageItems.filter(filterOnRxFn)
@@ -209,6 +230,13 @@ export default function Feed<I>({
     },
     [fetchFn, page, getIndex, filterOnRxFn],
   );
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort(ABORT_REASON_UNMOUNT);
+      abortControllerRef.current = undefined;
+    };
+  }, []);
 
   useEffect(() => {
     if (!itemsRef) return;

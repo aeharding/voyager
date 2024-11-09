@@ -41,7 +41,7 @@ export default function InboxPage({ showRead }: InboxPageProps) {
   useSetActivePage(pageRef);
 
   const fetchFn: FetchFn<InboxItemView> = useCallback(
-    async (pageData) => {
+    async (pageData, ...rest) => {
       if (!myUserId) return [];
 
       const params = {
@@ -51,15 +51,21 @@ export default function InboxPage({ showRead }: InboxPageProps) {
       };
 
       const [replies, mentions, privateMessages] = await Promise.all([
-        client.getReplies({
-          ...params,
-          sort: "New",
-        }),
-        client.getPersonMentions({
-          ...params,
-          sort: "New",
-        }),
-        client.getPrivateMessages(params),
+        client.getReplies(
+          {
+            ...params,
+            sort: "New",
+          },
+          ...rest,
+        ),
+        client.getPersonMentions(
+          {
+            ...params,
+            sort: "New",
+          },
+          ...rest,
+        ),
+        client.getPrivateMessages(params, ...rest),
       ]);
 
       const everything = [

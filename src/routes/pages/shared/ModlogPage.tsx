@@ -89,13 +89,16 @@ function Modlog({ community, user }: ModlogProps) {
   const client = useClient();
 
   const fetchFn: FetchFn<ModlogItemType> = useCallback(
-    async (pageData) => {
-      const logs = await client.getModlog({
-        ...pageData,
-        limit: LIMIT,
-        community_id: community?.id,
-        other_person_id: user?.id,
-      });
+    async (pageData, ...rest) => {
+      const logs = await client.getModlog(
+        {
+          ...pageData,
+          limit: LIMIT,
+          community_id: community?.id,
+          other_person_id: user?.id,
+        },
+        ...rest,
+      );
 
       return Object.values(logs)
         .reduce<ModlogItemType[]>((acc, current) => acc.concat(current), [])

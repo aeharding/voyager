@@ -39,14 +39,17 @@ function CommentsPage(props: CommentsPageProps) {
     "communityName" in props ? props.communityName : undefined;
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
-      const { comments } = await client.getComments({
-        ...pageData,
-        limit: LIMIT,
-        community_name: communityNameIfAvailable,
-        type_: "type" in props ? props.type : undefined,
-        sort: "New",
-      });
+    async (pageData, ...rest) => {
+      const { comments } = await client.getComments(
+        {
+          ...pageData,
+          limit: LIMIT,
+          community_name: communityNameIfAvailable,
+          type_: "type" in props ? props.type : undefined,
+          sort: "New",
+        },
+        ...rest,
+      );
       return comments;
     },
     [client, props, communityNameIfAvailable],

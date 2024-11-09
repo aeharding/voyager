@@ -44,7 +44,7 @@ export default function ProfileFeedHiddenPostsPage() {
   const lastPageItemsRef = useRef<IPostMetadata[]>([]);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
+    async (pageData, ...rest) => {
       // Trigger rerender when this changes
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       postHiddenById;
@@ -78,7 +78,7 @@ export default function ProfileFeedHiddenPostsPage() {
           if (typeof potentialPost === "object") return potentialPost;
 
           try {
-            return await client.getPost({ id: postId });
+            return await client.getPost({ id: postId }, ...rest);
           } catch (error) {
             if (
               isLemmyError(error, "couldnt_find_post" as never) ||

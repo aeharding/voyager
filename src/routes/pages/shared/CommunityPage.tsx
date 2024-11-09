@@ -183,17 +183,20 @@ const CommunityPageContent = memo(function CommunityPageContent({
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
+    async (pageData, ...rest) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       fetchFnLastUpdated;
 
-      const { posts, next_page } = await client.getPosts({
-        ...pageData,
-        limit: LIMIT,
-        community_name: community,
-        sort,
-        show_read: true,
-      });
+      const { posts, next_page } = await client.getPosts(
+        {
+          ...pageData,
+          limit: LIMIT,
+          community_name: community,
+          sort,
+          show_read: true,
+        },
+        ...rest,
+      );
       return { data: posts, next_page };
     },
     [client, community, sort, fetchFnLastUpdated],
