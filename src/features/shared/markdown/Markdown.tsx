@@ -8,12 +8,12 @@ import superSub from "remark-supersub-lemmy";
 import { useAppSelector } from "#/store";
 
 import InAppExternalLink from "../InAppExternalLink";
-import Details from "./components/spoiler/Details";
-import Summary from "./components/spoiler/Summary";
-import Table from "./components/Table";
-import customRemarkGfm from "./customRemarkGfm";
 import LinkInterceptor from "./LinkInterceptor";
 import MarkdownImg from "./MarkdownImg";
+import Table from "./components/Table";
+import Details from "./components/spoiler/Details";
+import Summary from "./components/spoiler/Summary";
+import customRemarkGfm from "./customRemarkGfm";
 
 const markdownCss = css`
   @media (max-width: 700px) {

@@ -20,8 +20,8 @@ import {
 import { PostView } from "lemmy-js-client";
 import { useCallback, useContext } from "react";
 
-import { userHandleSelector } from "#/features/auth/authSelectors";
 import { PageContext } from "#/features/auth/PageContext";
+import { userHandleSelector } from "#/features/auth/authSelectors";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { InFeedContext } from "#/features/feed/Feed";
 import {

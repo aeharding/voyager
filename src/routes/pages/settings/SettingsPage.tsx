@@ -30,11 +30,11 @@ import { gesture } from "#/features/icons";
 import useShouldInstall from "#/features/pwa/useShouldInstall";
 import { getIconSrc } from "#/features/settings/app-icon/AppIcon";
 import BiometricIcon from "#/features/settings/biometric/BiometricIcon";
+import BiometricTitle from "#/features/settings/biometric/BiometricTitle";
 import {
   biometricSupportedSelector,
   refreshBiometricType,
 } from "#/features/settings/biometric/biometricSlice";
-import BiometricTitle from "#/features/settings/biometric/BiometricTitle";
 import DatabaseErrorItem from "#/features/settings/root/DatabaseErrorItem";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";

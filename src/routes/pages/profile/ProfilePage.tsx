@@ -10,12 +10,12 @@ import { swapHorizontalSharp } from "ionicons/icons";
 import { useContext, useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
+import { PageContext } from "#/features/auth/PageContext";
 import {
   accountsListEmptySelector,
   loggedInSelector,
   userHandleSelector,
 } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
 import AppHeader from "#/features/shared/AppHeader";
 import DocumentTitle from "#/features/shared/DocumentTitle";
 import AsyncProfile from "#/features/user/AsyncProfile";

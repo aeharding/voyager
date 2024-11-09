@@ -71,12 +71,13 @@ export default tseslint.config(
 
       "perfectionist/sort-named-imports": [
         "warn",
-        { ignoreCase: false, ignoreAlias: true, type: "natural" },
+        { ignoreCase: false, type: "natural", ignoreAlias: true },
       ],
       "perfectionist/sort-imports": [
         "warn",
         {
           newlinesBetween: "always",
+          ignoreCase: false,
           type: "natural",
           internalPattern: ["#/**"],
           sortSideEffects: true,

@@ -15,8 +15,8 @@ import {
   getModName,
 } from "../useCanModerate";
 import useIsAdmin from "../useIsAdmin";
-import { ModlogItemType } from "./helpers";
 import ModlogItemMoreActions from "./ModlogItemMoreActions";
+import { ModlogItemType } from "./helpers";
 import addCommunity from "./types/addCommunity";
 import addInstance from "./types/addInstance";
 import banFromCommunity from "./types/banFromCommunity";

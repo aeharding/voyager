@@ -32,8 +32,8 @@ import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { receivedComments } from "../commentSlice";
-import { CommentsContext } from "./CommentsContext";
 import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
+import { CommentsContext } from "./CommentsContext";
 import LoadParentComments from "./LoadParentComments";
 
 const ScrollViewContainer = styled.div`

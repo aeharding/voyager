@@ -3,11 +3,11 @@ import { styled } from "@linaria/react";
 import { personCircleOutline } from "ionicons/icons";
 import { useCallback, useContext, useMemo } from "react";
 
+import { PageContext } from "#/features/auth/PageContext";
 import {
   accountsListEmptySelector,
   userHandleSelector,
 } from "#/features/auth/authSelectors";
-import { PageContext } from "#/features/auth/PageContext";
 import { getProfileTabLabel } from "#/features/settings/general/other/ProfileTabLabel";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppSelector } from "#/store";

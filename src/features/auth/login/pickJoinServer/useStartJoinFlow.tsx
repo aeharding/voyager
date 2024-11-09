@@ -2,8 +2,8 @@ import { useIonAlert } from "@ionic/react";
 import { GetSiteResponse } from "lemmy-js-client";
 import { MutableRefObject } from "react";
 
-import { requestJoinSiteData } from "#/features/auth/login/join/joinSlice";
 import Legal from "#/features/auth/login/join/Legal";
+import { requestJoinSiteData } from "#/features/auth/login/join/joinSlice";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
 

@@ -22,9 +22,9 @@ import { setPostRead } from "#/features/post/postSlice";
 import { getSafeArea, isAndroid, isNative } from "#/helpers/device";
 import { useAppDispatch } from "#/store";
 
+import type GalleryMedia from "./GalleryMedia";
 import GalleryPostActions from "./actions/GalleryPostActions";
 import ImageMoreActions from "./actions/ImageMoreActions";
-import type GalleryMedia from "./GalleryMedia";
 
 const MAX_IMAGE_WIDTH = 4000;
 

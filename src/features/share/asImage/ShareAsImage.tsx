@@ -25,9 +25,9 @@ import { getImageSrc } from "#/services/lemmy";
 import { webviewServerUrl } from "#/services/nativeFetch";
 
 import AddRemoveButtons from "./AddRemoveButtons";
-import includeStyleProperties from "./includeStyleProperties";
 import { ShareAsImageData } from "./ShareAsImageModal";
 import Watermark from "./Watermark";
+import includeStyleProperties from "./includeStyleProperties";
 
 const Container = styled.div`
   --bottom-padding: max(

@@ -26,12 +26,12 @@ import DatabaseErrorModal from "#/features/settings/root/DatabaseErrorModal";
 import ShareAsImageModal, {
   ShareAsImageData,
 } from "#/features/share/asImage/ShareAsImageModal";
-import { CommentReplyItem } from "#/features/shared/markdown/editing/modal/contents/CommentReplyPage";
-import { NewPrivateMessage } from "#/features/shared/markdown/editing/modal/contents/PrivateMessagePage";
+import SelectTextModal from "#/features/shared/SelectTextModal";
 import GenericMarkdownEditorModal, {
   MarkdownEditorData,
 } from "#/features/shared/markdown/editing/modal/GenericMarkdownEditorModal";
-import SelectTextModal from "#/features/shared/SelectTextModal";
+import { CommentReplyItem } from "#/features/shared/markdown/editing/modal/contents/CommentReplyPage";
+import { NewPrivateMessage } from "#/features/shared/markdown/editing/modal/contents/PrivateMessagePage";
 import UserTagModal from "#/features/tags/UserTagModal";
 import { useAppDispatch, useAppSelector } from "#/store";
 

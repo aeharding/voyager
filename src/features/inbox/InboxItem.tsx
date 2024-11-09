@@ -28,8 +28,8 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import InboxItemMoreActions, {
   InboxItemMoreActionsHandle,
 } from "./InboxItemMoreActions";
-import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
 import VoteArrow from "./VoteArrow";
+import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
 
 const labelStyles = css`
   display: inline-flex;

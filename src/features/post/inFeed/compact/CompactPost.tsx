@@ -3,10 +3,10 @@ import { megaphone } from "ionicons/icons";
 import { useContext, useMemo } from "react";
 
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
-import CommunityLink from "#/features/labels/links/CommunityLink";
-import PersonLink from "#/features/labels/links/PersonLink";
 import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
 import Save from "#/features/labels/Save";
+import CommunityLink from "#/features/labels/links/CommunityLink";
+import PersonLink from "#/features/labels/links/PersonLink";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "#/features/moderation/ModeratableItem";
@@ -15,8 +15,8 @@ import CompactCrosspost from "#/features/post/crosspost/CompactCrosspost";
 import { AnnouncementIcon } from "#/features/post/detail/PostHeader";
 import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
-import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { VoteButton } from "#/features/post/shared/VoteButton";
+import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import { maxWidthCss } from "#/features/shared/AppContent";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import { isUrlImage, parseUrlForDisplay } from "#/helpers/url";

@@ -1,7 +1,7 @@
 import { IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
 
-import { ListHeader } from "#/features/settings/shared/formatting";
 import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { ListHeader } from "#/features/settings/shared/formatting";
 import {
   OCompactThumbnailPositionType,
   OCompactThumbnailSizeType,

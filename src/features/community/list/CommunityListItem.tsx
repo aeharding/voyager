@@ -23,12 +23,12 @@ import {
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import { ToggleIcon } from "../ToggleIcon";
 import {
   addFavorite,
   followCommunity,
   removeFavorite,
 } from "../communitySlice";
-import { ToggleIcon } from "../ToggleIcon";
 import { HIDE_ALPHABET_JUMP } from "./AlphabetJump";
 import { Content } from "./ResolvedCommunitiesList";
 
