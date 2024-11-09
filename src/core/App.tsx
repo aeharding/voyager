@@ -17,12 +17,38 @@ import { StoreProvider } from "#/store";
 
 import AppCrash from "./AppCrash";
 import GlobalStyles from "./GlobalStyles";
-import IonAppContents from "./IonAppContents";
 import { TabContextProvider } from "./TabContext";
 
-/* Setup global app lifecycle listeners */
+// preserve lexical order
+import TabbedRoutes from "#/routes/TabbedRoutes";
+
+import Auth from "./Auth";
+import Listeners from "./listeners";
+
+// Setup global app lifecycle listeners
 import "./listeners";
-import "./styles";
+
+// Core CSS required for Ionic components to work properly
+import "@ionic/react/css/core.css";
+
+// Basic CSS for apps built with Ionic */
+import "@ionic/react/css/normalize.css";
+import "@ionic/react/css/structure.css";
+import "@ionic/react/css/typography.css";
+
+// Optional CSS utils that can be commented out
+import "@ionic/react/css/display.css";
+import "@ionic/react/css/flex-utils.css";
+import "@ionic/react/css/float-elements.css";
+import "@ionic/react/css/padding.css";
+import "@ionic/react/css/text-alignment.css";
+import "@ionic/react/css/text-transformation.css";
+
+// Allow Ionic palette to override custom styles
+import "./theme/variables";
+
+// Define after ./theme/variables to override it
+import "@ionic/react/css/palettes/dark.class.css";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
@@ -56,7 +82,11 @@ export default function App() {
                     <OptimizedRouterProvider>
                       <TabContextProvider>
                         <IonApp>
-                          <IonAppContents />
+                          <Auth>
+                            <TabbedRoutes>
+                              <Listeners />
+                            </TabbedRoutes>
+                          </Auth>
                         </IonApp>
                       </TabContextProvider>
                     </OptimizedRouterProvider>
