@@ -1,4 +1,4 @@
-import { pickBy, without } from "es-toolkit";
+import { pickBy, without, zipObject } from "es-toolkit";
 
 import { getAllObjectValuesDeep } from "#/helpers/object";
 import { db } from "#/services/db";
@@ -39,18 +39,15 @@ export async function createBackup(): Promise<Backup> {
 
   const dexieExport = JSON.parse(await dexieBlob.text());
 
+  const keys = getAllObjectValuesDeep(LOCALSTORAGE_KEYS);
+
   return {
     ...BASE_BACKUP_JSON,
     created: new Date().toISOString(),
     dexie: dexieExport,
     localStorage: pickBy(
       // pick: remove null/undefined
-      Object.assign(
-        {},
-        ...getAllObjectValuesDeep(LOCALSTORAGE_KEYS).map((key) => ({
-          [key]: get(key),
-        })),
-      ),
+      zipObject(keys, keys.map(get)),
       (p) => p != null,
     ),
   };
