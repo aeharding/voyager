@@ -137,8 +137,8 @@ importers:
         specifier: ^7.4.0
         version: 7.4.0
       lemmy-js-client:
-        specifier: 0.20.0-alpha.17
-        version: 0.20.0-alpha.17
+        specifier: 0.20.0-alpha.18
+        version: 0.20.0-alpha.18
       mdast-util-gfm-autolink-literal-lemmy:
         specifier: ^3.0.0
         version: 3.0.0
@@ -3794,8 +3794,8 @@ packages:
   leek@0.0.24:
     resolution: {integrity: sha512-6PVFIYXxlYF0o6hrAsHtGpTmi06otkwNrMcmQ0K96SeSRHPREPa9J3nJZ1frliVH7XT0XFswoJFQoXsDukzGNQ==}
 
-  lemmy-js-client@0.20.0-alpha.17:
-    resolution: {integrity: sha512-4iZQtZNldhioTecSgi1LMR4E3uK5IcQ+EuWg4aAXmciOIHxPXPAHy7qSLuHqbzEiL1QP5G3MFwQnlVf/sJkFaQ==}
+  lemmy-js-client@0.20.0-alpha.18:
+    resolution: {integrity: sha512-oZy8DboTWfUar4mPWpi7SYrOEjTBJxkvd1e6QaVwoA5UhqQV1WhxEYbzrpi/gXnEokaVQ0i5sjtL/Y2PHMO3MQ==}
 
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -10065,7 +10065,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  lemmy-js-client@0.20.0-alpha.17: {}
+  lemmy-js-client@0.20.0-alpha.18: {}
 
   leven@3.1.0: {}
 
