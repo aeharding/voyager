@@ -29,7 +29,7 @@ import { setAccounts } from "./authSlice";
 
 type AccountSwitcherProps = {
   onDismiss: (data?: string, role?: string) => void;
-  onSelectAccount: (account: string) => void;
+  onSelectAccount: (account: string) => Promise<void> | void;
   showGuest?: boolean;
   activeHandle?: string;
 } & (
@@ -126,13 +126,20 @@ function AccountSwitcherContents({
           <IonRadioGroup
             value={selectedAccount}
             onIonChange={async (e) => {
-              setLoading(true);
-
               const old = selectedAccount;
               setSelectedAccount(e.target.value);
 
+              const selectionChangePromise = onSelectAccount(e.target.value);
+
+              if (!selectionChangePromise) {
+                onDismiss();
+                return;
+              }
+
+              setLoading(true);
+
               try {
-                await onSelectAccount(e.target.value);
+                await selectionChangePromise;
               } catch (error) {
                 setSelectedAccount(old);
                 throw error;
