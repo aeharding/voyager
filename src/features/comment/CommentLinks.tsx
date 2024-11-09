@@ -1,7 +1,7 @@
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import { styled } from "@linaria/react";
+import { uniqBy } from "es-toolkit";
 import { Text } from "mdast";
-import * as _ from "radashi";
 import { useMemo } from "react";
 import { defaultUrlTransform } from "react-markdown";
 import remarkParse from "remark-parse";
@@ -67,7 +67,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     });
 
     // Dedupe by url
-    links = _.unique(links, (l) => l.url);
+    links = uniqBy(links, ({ url }) => url);
 
     // e.g. `http://127.0.0.1:8080”`
     links = links.filter(({ url }) => defaultUrlTransform(url));

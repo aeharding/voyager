@@ -1,10 +1,10 @@
 import { StatusBar } from "@capacitor/status-bar";
+import { compact, noop } from "es-toolkit";
 import { PostView } from "lemmy-js-client";
 import type { PreparedPhotoSwipeOptions } from "photoswipe";
 import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
-import * as _ from "radashi";
 import React, {
   ComponentRef,
   createContext,
@@ -40,8 +40,9 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
-  open: () => {},
-  close: () => {},
+  // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
+  open: async () => {},
+  close: noop,
 });
 
 const galleryHashEnabled = isAndroid();
@@ -169,7 +170,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       instance.on("openingAnimationStart", () => {
         if (animationType !== "zoom") return;
 
-        _.sift([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
+        compact([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
           el.style.setProperty("visibility", "hidden"),
         );
       });
@@ -177,7 +178,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       const cleanupHideThumb = () => {
         if (animationType !== "zoom") return;
 
-        _.sift([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
+        compact([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
           el.style.removeProperty("visibility"),
         );
       };

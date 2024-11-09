@@ -1,3 +1,4 @@
+import { noop } from "es-toolkit";
 import { CommentView } from "lemmy-js-client";
 import { createContext } from "react";
 
@@ -9,8 +10,8 @@ interface ICommentsContext {
 }
 
 export const CommentsContext = createContext<ICommentsContext>({
-  refresh: () => {},
-  appendComments: () => {},
-  prependComments: () => {},
-  getComments: () => {},
+  refresh: noop,
+  appendComments: noop,
+  prependComments: noop,
+  getComments: noop,
 });

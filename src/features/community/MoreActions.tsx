@@ -1,4 +1,5 @@
 import { IonButton, useIonActionSheet } from "@ionic/react";
+import { compact } from "es-toolkit";
 import {
   createOutline,
   eyeOffOutline,
@@ -10,7 +11,6 @@ import {
   tabletPortraitOutline,
 } from "ionicons/icons";
 import { Community, CommunityView } from "lemmy-js-client";
-import * as _ from "radashi";
 
 import { useBuildTogglePostAppearanceButton } from "#/features/feed/SpecialFeedMoreActions";
 import useHidePosts from "#/features/feed/useHidePosts";
@@ -57,7 +57,7 @@ function MoreActionsWithCommunity({ community }: MoreActionsActionSheetProps) {
   function present() {
     presentActionSheet({
       cssClass: "left-align-buttons",
-      buttons: _.sift([
+      buttons: compact([
         {
           text: "Submit Post",
           cssClass: "detail",

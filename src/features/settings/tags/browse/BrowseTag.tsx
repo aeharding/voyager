@@ -6,7 +6,7 @@ import {
 } from "@ionic/react";
 import { IonItemOption } from "@ionic/react";
 import { styled } from "@linaria/react";
-import * as _ from "radashi";
+import { noop } from "es-toolkit";
 
 import SourceUrlButton from "#/features/tags/SourceUrlButton";
 import UserScore from "#/features/tags/UserScore";
@@ -49,7 +49,7 @@ export default function BrowseTag({ tag, remove }: BrowseTagProps) {
         </IonLabel>
         <StyledSourceUrlButton
           sourceUrl={tag.sourceUrl}
-          dismiss={_.noop}
+          dismiss={noop}
           slot="end"
           fill="clear"
         />

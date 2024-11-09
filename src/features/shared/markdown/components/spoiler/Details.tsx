@@ -1,5 +1,6 @@
 import { IonAccordion, IonAccordionGroup, IonItem } from "@ionic/react";
 import { styled } from "@linaria/react";
+import { noop } from "es-toolkit";
 import {
   ComponentProps,
   createContext,
@@ -112,5 +113,5 @@ interface SpoilerContextValue {
 }
 
 export const SpoilerContext = createContext<SpoilerContextValue>({
-  setLabel: () => {},
+  setLabel: noop,
 });

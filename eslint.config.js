@@ -67,6 +67,7 @@ export default tseslint.config(
         },
       ],
 
+      "no-empty-function": "warn",
       "no-nested-ternary": "warn",
       "no-unreachable": "warn",
       "linebreak-style": ["warn", "unix"],
@@ -82,12 +83,6 @@ export default tseslint.config(
         {
           selector: "TSEnumDeclaration",
           message: "Don't declare enums",
-        },
-        {
-          // https://github.com/eslint/eslint/issues/19105#issuecomment-2458833155
-          selector:
-            "ImportDeclaration[source.value='radashi'][specifiers.length=0], ImportDeclaration[source.value='radashi'] > :matches(ImportSpecifier, ImportDefaultSpecifier)",
-          message: "Use only `import * as _ from 'radashi'`",
         },
       ],
       "no-restricted-imports": [

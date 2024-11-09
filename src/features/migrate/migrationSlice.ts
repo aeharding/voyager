@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import * as _ from "radashi";
+import { uniq } from "es-toolkit";
 
 import { db } from "#/services/db";
 import { AppDispatch } from "#/store";
@@ -20,7 +20,7 @@ export const migrationSlice = createSlice({
       state.links = action.payload;
     },
     addMigrationLink: (state, action: PayloadAction<string>) => {
-      state.links = _.unique([action.payload, ...state.links]);
+      state.links = uniq([action.payload, ...state.links]);
       db.setSetting("migration_links", state.links);
     },
     removeMigrationLink: (state, action: PayloadAction<string>) => {

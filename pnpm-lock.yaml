@@ -127,6 +127,9 @@ importers:
       dexie-export-import:
         specifier: ^4.1.2
         version: 4.1.2(dexie@4.0.9)
+      es-toolkit:
+        specifier: ^1.26.1
+        version: 1.26.1
       history:
         specifier: ^4.10.1
         version: 4.10.1
@@ -160,9 +163,6 @@ importers:
       photoswipe:
         specifier: ^5.4.4
         version: 5.4.4
-      radashi:
-        specifier: ^12.2.0
-        version: 12.2.0
       react:
         specifier: 0.0.0-experimental-5c56b873-20241107
         version: 0.0.0-experimental-5c56b873-20241107
@@ -2783,6 +2783,9 @@ packages:
     resolution: {integrity: sha512-QCOllgZJtaUo9miYBcLChTUaHNjJF3PYs1VidD7AwiEj1kYxKeQTctLAezAOH5ZKRH0g2IgPn6KwB4IT8iRpvA==}
     engines: {node: '>= 0.4'}
 
+  es-toolkit@1.26.1:
+    resolution: {integrity: sha512-E3H14lHWk8JpupVpIRA1gfNF4r953abHTFW+X1Rp7zl7eG37ksuthfEA4FinyVF/Y807vzzfQS1nubeZk2LTVA==}
+
   esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
     engines: {node: '>=12'}
@@ -4581,10 +4584,6 @@ packages:
   quick-lru@4.0.1:
     resolution: {integrity: sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==}
     engines: {node: '>=8'}
-
-  radashi@12.2.0:
-    resolution: {integrity: sha512-LeYD1SabvzUss1csIqSx5nVjUn2tg8zZykSiadmAfF0fEdAL18sMdn9oFkzniy5WEdqSq249MnnIqK5eVzluVw==}
-    engines: {node: '>=16.0.0'}
 
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
@@ -8882,6 +8881,8 @@ snapshots:
       is-date-object: 1.0.5
       is-symbol: 1.0.4
 
+  es-toolkit@1.26.1: {}
+
   esbuild@0.21.5:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.21.5
@@ -11076,8 +11077,6 @@ snapshots:
   queue-microtask@1.2.3: {}
 
   quick-lru@4.0.1: {}
-
-  radashi@12.2.0: {}
 
   randombytes@2.1.0:
     dependencies:

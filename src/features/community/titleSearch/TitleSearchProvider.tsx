@@ -1,3 +1,4 @@
+import { noop } from "es-toolkit";
 import React, { createContext, useCallback, useMemo, useState } from "react";
 
 type TitleSearchContext = {
@@ -10,17 +11,17 @@ type TitleSearchContext = {
 };
 export const TitleSearchContext = createContext<TitleSearchContext>({
   search: "",
-  setSearch: () => {},
+  setSearch: noop,
   searching: false,
-  setSearching: () => {},
-  onSubmit: () => {},
-  setOnSubmit: () => {},
+  setSearching: noop,
+  onSubmit: noop,
+  setOnSubmit: noop,
 });
 
 export function TitleSearchProvider({ children }: React.PropsWithChildren) {
   const [search, setSearch] = useState("");
   const [searching, setSearching] = useState(false);
-  const [onSubmit, _setOnSubmit] = useState(() => () => {});
+  const [onSubmit, _setOnSubmit] = useState(() => noop);
   const setOnSubmit = useCallback(
     (fn: () => void) => _setOnSubmit(() => fn),
     [],

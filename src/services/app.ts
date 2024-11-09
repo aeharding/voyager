@@ -1,4 +1,4 @@
-import * as _ from "radashi";
+import { isEqual } from "es-toolkit";
 import React, { useEffect, useState } from "react";
 
 import { isNative } from "#/helpers/device";
@@ -16,7 +16,7 @@ export function getDefaultServer() {
 }
 
 export function defaultServersUntouched() {
-  return _.isEqual(DEFAULT_LEMMY_SERVERS, getCustomServers());
+  return isEqual(DEFAULT_LEMMY_SERVERS, getCustomServers());
 }
 
 async function getConfig() {

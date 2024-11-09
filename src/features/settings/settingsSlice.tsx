@@ -6,10 +6,12 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import Dexie from "dexie";
+import { cloneDeep, merge } from "es-toolkit";
 import { PostSortType } from "lemmy-js-client";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
+import { DeepPartial } from "#/helpers/typescript";
 import {
   AppThemeType,
   AutoplayMediaType,
@@ -153,10 +155,35 @@ interface SettingsState {
   };
 }
 
+export function getLocalStorageInitialState() {
+  return {
+    appearance: {
+      font: {
+        fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
+        useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
+      },
+      dark: {
+        usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
+        userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+        pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK),
+      },
+      deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
+      theme: get(LOCALSTORAGE_KEYS.THEME),
+    },
+  } as const;
+}
+
 /**
  * We continue using localstorage for specific items because indexeddb is slow
  * and we don't want to wait for it to load before rendering the app and cause flickering
  */
+export function buildInitialState(): SettingsState {
+  const localStorageInitialState: DeepPartial<SettingsState> =
+    getLocalStorageInitialState();
+
+  return merge(cloneDeep(initialState), localStorageInitialState);
+}
+
 export const initialState: SettingsState = {
   ready: false,
   databaseError: undefined,
@@ -279,7 +306,7 @@ export const defaultThreadCollapse = createSelector(
 
 export const appearanceSlice = createSlice({
   name: "appearance",
-  initialState,
+  initialState: buildInitialState(),
   extraReducers: (builder) => {
     builder.addCase(
       fetchSettingsFromDatabase.fulfilled,
@@ -568,7 +595,7 @@ export const appearanceSlice = createSlice({
     },
 
     resetSettings: () => ({
-      ...initialState,
+      ...buildInitialState(),
       ready: true,
     }),
 

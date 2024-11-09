@@ -1,3 +1,4 @@
+import { noop } from "es-toolkit";
 import React, {
   createContext,
   useCallback,
@@ -13,7 +14,7 @@ type BeforeInstallPromptContextType = {
 export const BeforeInstallPromptContext =
   createContext<BeforeInstallPromptContextType>({
     event: null,
-    clearEvent: () => {},
+    clearEvent: noop,
   });
 
 export default function BeforeInstallPromptProvider({

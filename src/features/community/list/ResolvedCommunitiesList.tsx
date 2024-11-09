@@ -7,9 +7,9 @@ import {
   IonList,
 } from "@ionic/react";
 import { styled } from "@linaria/react";
+import { sortBy } from "es-toolkit";
 import { earth, home, people, shieldCheckmark } from "ionicons/icons";
 import { Community } from "lemmy-js-client";
-import * as _ from "radashi";
 import { memo, useMemo, useRef } from "react";
 import { VList, VListHandle } from "virtua";
 
@@ -98,7 +98,7 @@ function ResolvedCommunitiesList({
   );
 
   const communitiesGroupedByLetter = useMemo(() => {
-    return _.alphabetical(
+    return sortBy(
       Object.entries(
         communities.reduce<Record<string, Community[]>>((acc, community) => {
           const firstLetter = /[0-9]/.test(community.name[0]!)
@@ -111,7 +111,7 @@ function ResolvedCommunitiesList({
           return acc;
         }, {}),
       ),
-      ([letter]) => (letter === "#" ? "\uffff" : letter), // sort # at bottom
+      [([letter]) => (letter === "#" ? "\uffff" : letter)], // sort # at bottom
     );
   }, [communities]);
 

@@ -8,8 +8,8 @@ import {
 } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
+import { startCase } from "es-toolkit";
 import { arrowDownOutline, arrowUpOutline } from "ionicons/icons";
-import * as _ from "radashi";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
 import { OVotesThemeType } from "#/services/db";
@@ -84,7 +84,7 @@ export default function VotesTheme() {
                 `}
               >
                 <VotesContainer>
-                  <IonLabel>{_.title(label)}</IonLabel>
+                  <IonLabel>{startCase(label)}</IonLabel>
                   <Votes>
                     <Vote bgColor={VOTE_COLORS.UPVOTE[value]}>
                       <IonIcon icon={arrowUpOutline} />

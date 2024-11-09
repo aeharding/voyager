@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ApplicationContext } from "capacitor-application-context";
+import { uniqBy } from "es-toolkit";
 import { Register } from "lemmy-js-client";
-import * as _ from "radashi";
 
 import { resetComments } from "#/features/comment/commentSlice";
 import { resetCommunities } from "#/features/community/communitySlice";
@@ -87,7 +87,7 @@ export const authSlice = createSlice({
         );
       }
 
-      const accounts = _.unique(
+      const accounts = uniqBy(
         [action.payload, ...cleanedPreviousAccounts],
         (c) => c.handle,
       );

@@ -7,6 +7,7 @@ import {
   IonToggle,
 } from "@ionic/react";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import { startCase } from "es-toolkit";
 import {
   arrowDownOutline,
   arrowUndoOutline,
@@ -17,7 +18,6 @@ import {
   eyeOffOutline,
   mailUnreadOutline,
 } from "ionicons/icons";
-import * as _ from "radashi";
 import { useState } from "react";
 
 import SettingSelector from "#/features/settings/shared/SettingSelector";
@@ -211,7 +211,7 @@ function SwipeList({
   );
 
   function getSelectedLabel(option: string): string {
-    return option === "collapse-to-top" ? "Collapse Top" : _.title(option);
+    return option === "collapse-to-top" ? "Collapse Top" : startCase(option);
   }
 
   return (

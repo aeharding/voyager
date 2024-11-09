@@ -6,6 +6,7 @@ import {
   IonIcon,
 } from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
+import { startCase } from "es-toolkit";
 import {
   earthOutline,
   homeOutline,
@@ -13,7 +14,6 @@ import {
   shieldCheckmarkOutline,
 } from "ionicons/icons";
 import { ListingType } from "lemmy-js-client";
-import * as _ from "radashi";
 import { useContext, useState } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -28,7 +28,7 @@ export const LISTING_TYPES = [
 
 const BUTTONS: ActionSheetButton<ListingType>[] = LISTING_TYPES.map(
   (listingType) => ({
-    text: _.title(listingType),
+    text: startCase(listingType),
     data: listingType,
     icon: getListingTypeIcon(listingType),
   }),

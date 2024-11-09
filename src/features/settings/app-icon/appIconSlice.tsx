@@ -1,6 +1,6 @@
 import { AppIcon as CapAppIcon } from "@capacitor-community/app-icon";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import * as _ from "radashi";
+import { without } from "es-toolkit";
 
 import { isAndroid, isNative } from "#/helpers/device";
 import { AppDispatch } from "#/store";
@@ -51,7 +51,7 @@ export const updateAppIcon =
     if (name === "default") {
       CapAppIcon.reset({
         suppressNotification: false,
-        disable: _.diff(APP_ICONS, ["default"]),
+        disable: without(APP_ICONS, "default"),
       });
       return;
     }
@@ -60,7 +60,7 @@ export const updateAppIcon =
       // iOS needed cache busting at some point due to moving Alternate App Icons around (thus `_v2`)
       name: isAndroid() ? name : `${name}_v2`,
       suppressNotification: false,
-      disable: _.diff(APP_ICONS, [name, "default"]),
+      disable: without(APP_ICONS, name, "default"),
     });
   };
 

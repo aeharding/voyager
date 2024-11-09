@@ -1,4 +1,5 @@
 import { IonModal, useIonActionSheet } from "@ionic/react";
+import { noop } from "es-toolkit";
 import React, {
   createContext,
   useContext,
@@ -199,4 +200,4 @@ const useUnload = (fn: (e: BeforeUnloadEvent) => void) => {
 export const DynamicDismissableModalContext = createContext<{
   dismiss: () => void;
   setCanDismiss: (canDismiss: boolean) => void;
-}>({ dismiss: () => {}, setCanDismiss: () => {} });
+}>({ dismiss: noop, setCanDismiss: noop });

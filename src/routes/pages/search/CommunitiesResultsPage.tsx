@@ -5,8 +5,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { compact } from "es-toolkit";
 import { CommunityView, LemmyHttp, ListingType } from "lemmy-js-client";
-import * as _ from "radashi";
 import { useCallback, useState } from "react";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
@@ -40,7 +40,7 @@ export default function CommunitiesResultsPage({
   const fetchFn: FetchFn<CommunityView> = useCallback(
     async (pageData) => {
       if (isFirstPage(pageData) && search?.includes("@")) {
-        return _.sift([await findExactCommunity(search, client)]);
+        return compact([await findExactCommunity(search, client)]);
       }
 
       const response = await (search

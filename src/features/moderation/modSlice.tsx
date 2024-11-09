@@ -1,7 +1,7 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { isBefore, subSeconds } from "date-fns";
+import { groupBy } from "es-toolkit";
 import { CommentReport, PostReport } from "lemmy-js-client";
-import * as _ from "radashi";
 
 import { clientSelector, jwtSelector } from "#/features/auth/authSelectors";
 import { AppDispatch, RootState } from "#/store";
@@ -72,14 +72,14 @@ export const { resetMod } = modSlice.actions;
 export const reportsByCommentIdSelector = createSelector(
   [(state: RootState) => state.mod.commentReports],
   (reports) => {
-    return _.group(reports, (r) => r.comment_id);
+    return groupBy(reports, (r) => r.comment_id);
   },
 );
 
 export const reportsByPostIdSelector = createSelector(
   [(state: RootState) => state.mod.postReports],
   (reports) => {
-    return _.group(reports, (r) => r.post_id);
+    return groupBy(reports, (r) => r.post_id);
   },
 );
 

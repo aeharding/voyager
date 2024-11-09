@@ -1,4 +1,4 @@
-import * as _ from "radashi";
+import { compact, uniqBy } from "es-toolkit";
 import { useMemo } from "react";
 
 import { useAppSelector } from "#/store";
@@ -16,8 +16,8 @@ export default function LoggedInCommunitiesList(props: CommunitiesListProps) {
   );
 
   const communities = useMemo(() => {
-    const allCommunities = _.unique(
-      _.sift([
+    const allCommunities = uniqBy(
+      compact([
         ...(follows || []).map((f) => f.community),
         ...Object.values(communityByHandle).map((c) => c?.community),
       ]),

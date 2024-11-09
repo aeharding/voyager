@@ -3,7 +3,7 @@ import {
   IonRefresherContent,
   RefresherCustomEvent,
 } from "@ionic/react";
-import * as _ from "radashi";
+import { differenceBy } from "es-toolkit";
 import React, {
   Fragment,
   createContext,
@@ -187,11 +187,9 @@ export default function Feed<I>({
         setItems(filteredNewPageItems);
       } else {
         setItems((existingItems) => {
-          const newItems = _.diff(
-            filteredNewPageItems.slice(),
-            existingItems,
-            getIndex,
-          );
+          const newItems = getIndex
+            ? differenceBy(filteredNewPageItems, existingItems, getIndex)
+            : filteredNewPageItems;
 
           return [...existingItems, ...newItems];
         });

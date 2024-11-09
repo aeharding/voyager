@@ -19,12 +19,12 @@ import {
 } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
+import { compact, uniqBy } from "es-toolkit";
 import {
   ellipsisHorizontalCircleOutline,
   ellipsisVertical,
 } from "ionicons/icons";
 import { GetSiteResponse } from "lemmy-js-client";
-import * as _ from "radashi";
 import {
   useCallback,
   useContext,
@@ -158,7 +158,7 @@ export default function PickJoinServer() {
       ? [normalize(customInstance), ...matches]
       : matches;
 
-    return _.unique(all, ({ url }) => url);
+    return uniqBy(all, ({ url }) => url);
   }, [customInstance, matchingInstances, category]);
 
   const customSearchHostnameInvalid = useMemo(
@@ -242,7 +242,7 @@ export default function PickJoinServer() {
     );
 
     presentActionSheet({
-      buttons: _.sift([
+      buttons: compact([
         {
           text: `Join ${selectedUrl}`,
           handler: () => {

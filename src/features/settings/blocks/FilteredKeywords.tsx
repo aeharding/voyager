@@ -7,7 +7,7 @@ import {
   IonList,
   useIonAlert,
 } from "@ionic/react";
-import * as _ from "radashi";
+import { uniq, without } from "es-toolkit";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
 import { RemoveItemButton } from "#/features/shared/ListEditor";
@@ -23,7 +23,7 @@ export default function FilteredKeywords() {
   );
 
   async function remove(keyword: string) {
-    dispatch(updateFilteredKeywords(_.diff(filteredKeywords, [keyword])));
+    dispatch(updateFilteredKeywords(without(filteredKeywords, keyword)));
   }
 
   async function add() {
@@ -37,7 +37,7 @@ export default function FilteredKeywords() {
 
             dispatch(
               updateFilteredKeywords(
-                _.unique([...filteredKeywords, keyword.trim()]),
+                uniq([...filteredKeywords, keyword.trim()]),
               ),
             );
           },
