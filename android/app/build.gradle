@@ -31,6 +31,11 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    dependenciesInfo {
+        // https://github.com/aeharding/voyager/issues/1677
+        includeInApk = false
+        includeInBundle = false
+    }
 }
 
 repositories {
