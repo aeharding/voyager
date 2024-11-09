@@ -24,6 +24,7 @@ describe("findLoneImage", () => {
     expect(findLoneImage('![test](url "emoji-test")')).toEqual({
       url: "url",
       altText: "test",
+      title: "emoji-test",
     });
   });
 
@@ -44,6 +45,7 @@ describe("findLoneImage", () => {
     ).toEqual({
       url: "https://example.com/image.jpg",
       altText: "alt text",
+      title: "normal title",
     });
   });
 

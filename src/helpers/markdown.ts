@@ -7,7 +7,7 @@ import customRemarkGfm from "#/features/shared/markdown/customRemarkGfm";
 
 export function findLoneImage(
   markdown: string,
-): { url: string; altText?: string } | null {
+): { url: string; altText?: string; title?: string } | null {
   // Regular expression pattern to match an image markdown syntax
   const imagePattern = /!\[(.*?)\]\((.*?)(?:\s+"(.*?)")?\)/;
 
@@ -27,7 +27,7 @@ export function findLoneImage(
     const hasAdditionalContent = remainingContent.trim().length > 0;
 
     if (!hasAdditionalContent && url) {
-      return { url, altText };
+      return { url, altText, title };
     }
   }
 
