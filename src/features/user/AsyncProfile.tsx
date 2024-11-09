@@ -7,9 +7,9 @@ import {
 import { styled } from "@linaria/react";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import {
-  experimental_useEffectEvent as useEffectEvent,
   useCallback,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useState,
 } from "react";
 

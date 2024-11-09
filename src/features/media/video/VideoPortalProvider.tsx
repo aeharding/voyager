@@ -2,10 +2,10 @@ import { useIonViewWillEnter } from "@ionic/react";
 import { noop } from "es-toolkit";
 import {
   createContext,
-  experimental_useEffectEvent as useEffectEvent,
   useCallback,
   useContext,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useId,
   useMemo,
   useRef,

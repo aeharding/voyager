@@ -30,9 +30,9 @@ import {
 import useCommentModActions from "#/features/moderation/useCommentModActions";
 import { getShareIcon } from "#/helpers/device";
 import {
-  canModify as isCommentMutable,
   getHandle,
   getRemoteHandle,
+  canModify as isCommentMutable,
   share,
 } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";

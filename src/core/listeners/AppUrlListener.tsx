@@ -1,7 +1,7 @@
 import { App } from "@capacitor/app";
 import {
-  experimental_useEffectEvent as useEffectEvent,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useRef,
 } from "react";
 

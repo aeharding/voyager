@@ -4,9 +4,9 @@ import { styled } from "@linaria/react";
 import { compact, differenceBy, sortBy, uniqBy } from "es-toolkit";
 import { CommentSortType, CommentView } from "lemmy-js-client";
 import React, {
-  experimental_useEffectEvent as useEffectEvent,
   useCallback,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useImperativeHandle,
   useMemo,
   useRef,
