@@ -75,6 +75,7 @@ export default tseslint.config(
       "no-empty-function": "warn",
       "no-nested-ternary": "warn",
       "no-unreachable": "warn",
+      "object-shorthand": "warn",
       "linebreak-style": ["warn", "unix"],
       eqeqeq: ["warn", "smart"],
       "no-console": [

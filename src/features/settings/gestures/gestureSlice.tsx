@@ -56,7 +56,7 @@ const initialState: GestureState = {
 
 export const gestureSlice = createSlice({
   name: "gesture",
-  initialState: initialState,
+  initialState,
   extraReducers: (builder) => {
     builder.addCase(
       fetchGesturesFromDatabase.fulfilled,
