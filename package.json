@@ -83,7 +83,7 @@
     "es-toolkit": "^1.26.1",
     "history": "^4.10.1",
     "ionicons": "^7.4.0",
-    "lemmy-js-client": "0.20.0-alpha.17",
+    "lemmy-js-client": "0.20.0-alpha.18",
     "mdast-util-gfm-autolink-literal-lemmy": "^3.0.0",
     "mdast-util-gfm-strikethrough": "^2.0.0",
     "mdast-util-gfm-table": "^2.0.0",
