@@ -4,9 +4,7 @@ import { noop } from "es-toolkit";
 import {
   ComponentProps,
   createContext,
-  useCallback,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -67,8 +65,6 @@ export default function Details({ children, node, id }: DetailsProps) {
   const [label, setLabel] = useState<React.ReactNode | undefined>();
   const dispatch = useAppDispatch();
 
-  const value = useMemo(() => ({ setLabel }), []);
-
   useLayoutEffect(() => {
     const accordionGroup = accordionGroupRef.current;
     if (!accordionGroup) return;
@@ -78,22 +74,19 @@ export default function Details({ children, node, id }: DetailsProps) {
     accordionGroup.value = isOpen ? "open" : undefined;
   }, [id, node]);
 
-  const onChange = useCallback<
-    NonNullable<ComponentProps<typeof IonAccordionGroup>["onIonChange"]>
-  >(
-    (e) => {
-      dispatch(
-        updateSpoilerState({
-          id: getSpoilerId(id, node),
-          isOpen: e.detail.value === "open",
-        }),
-      );
-    },
-    [dispatch, node, id],
-  );
+  const onChange: NonNullable<
+    ComponentProps<typeof IonAccordionGroup>["onIonChange"]
+  > = (e) => {
+    dispatch(
+      updateSpoilerState({
+        id: getSpoilerId(id, node),
+        isOpen: e.detail.value === "open",
+      }),
+    );
+  };
 
   return (
-    <SpoilerContext.Provider value={value}>
+    <SpoilerContext.Provider value={{ setLabel }}>
       <StyledIonAccordionGroup ref={accordionGroupRef} onIonChange={onChange}>
         <StyledIonAccordion value="open">
           <HeaderItem slot="header" onClick={(e) => e.stopPropagation()}>

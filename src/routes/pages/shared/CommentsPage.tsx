@@ -6,7 +6,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { ListingType } from "lemmy-js-client";
-import { memo, useCallback } from "react";
+import { useCallback } from "react";
 
 import { getFeedUrlName } from "#/features/community/mod/ModActions";
 import { FetchFn } from "#/features/feed/Feed";
@@ -30,7 +30,7 @@ type CommentsPageProps =
       communityName: string;
     };
 
-function CommentsPage(props: CommentsPageProps) {
+export default function CommentsPage(props: CommentsPageProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
@@ -85,5 +85,3 @@ function CommentsPage(props: CommentsPageProps) {
     </FeedContextProvider>
   );
 }
-
-export default memo(CommentsPage);

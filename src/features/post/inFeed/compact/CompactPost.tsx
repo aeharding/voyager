@@ -1,6 +1,6 @@
 import { styled } from "@linaria/react";
 import { megaphone } from "ionicons/icons";
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
@@ -171,15 +171,11 @@ export default function CompactPost({ post }: PostProps) {
   const hasBeenRead: boolean =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
-  const nsfw = useMemo(() => isNsfw(post), [post]);
 
-  const [domain] = useMemo(
-    () =>
-      post.post.url && !isUrlImage(post.post.url, post.post.url_content_type)
-        ? parseUrlForDisplay(post.post.url)
-        : [],
-    [post],
-  );
+  const [domain] =
+    post.post.url && !isUrlImage(post.post.url, post.post.url_content_type)
+      ? parseUrlForDisplay(post.post.url)
+      : [];
 
   return (
     <ModeratableItem itemView={post}>
@@ -208,7 +204,7 @@ export default function CompactPost({ post }: PostProps) {
                   </Domain>{" "}
                 </>
               )}
-              {nsfw && <Nsfw />}
+              {isNsfw(post) && <Nsfw />}
             </Title>
             <Aside isRead={hasBeenRead}>
               <From>

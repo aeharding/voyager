@@ -6,7 +6,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { Community, Person } from "lemmy-js-client";
-import { memo, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useParams } from "react-router";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
@@ -42,27 +42,19 @@ export default function ModlogPage() {
   return <GlobalModlog />;
 }
 
-const GlobalModlog = memo(function GlobalModlog() {
+function GlobalModlog() {
   return <Modlog />;
-});
+}
 
-const ModlogByCommunityName = memo(function ModlogByCommunityName({
-  communityName,
-}: {
-  communityName: string;
-}) {
+function ModlogByCommunityName({ communityName }: { communityName: string }) {
   const community = useFetchCommunity(communityName);
 
   if (!community) return <CenteredSpinner />;
 
   return <Modlog community={community.community} />;
-});
+}
 
-const ModlogByUserHandle = memo(function ModlogByUserHandle({
-  handle,
-}: {
-  handle: string;
-}) {
+function ModlogByUserHandle({ handle }: { handle: string }) {
   const dispatch = useAppDispatch();
   const user = useAppSelector(
     (state) => state.user.userByHandle[handle.toLowerCase()],
@@ -77,7 +69,7 @@ const ModlogByUserHandle = memo(function ModlogByUserHandle({
   if (!user) return <CenteredSpinner />;
 
   return <Modlog user={user} />;
-});
+}
 
 interface ModlogProps {
   community?: Community;

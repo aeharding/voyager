@@ -2,7 +2,7 @@ import { IonIcon } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { chevronForward } from "ionicons/icons";
-import { MouseEvent, useEffect, useMemo, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 
 import { LinkData } from "#/features/comment/CommentLinks";
 import Url from "#/features/shared/Url";
@@ -156,21 +156,17 @@ export default function Link({
 
   const [error, setError] = useState(false);
 
-  const linkType = useMemo(
-    () => determineObjectTypeFromUrl(url) ?? determineTypeFromUrl(url),
-    [url, determineObjectTypeFromUrl],
-  );
-  const isImage = useMemo(() => isUrlImage(url, undefined), [url]);
+  const linkType = determineObjectTypeFromUrl(url) ?? determineTypeFromUrl(url);
 
-  const handleLinkClick = (e: MouseEvent) => {
+  function handleLinkClick(e: MouseEvent) {
     e.stopPropagation();
 
     if (preventOnClickNavigationBug(e)) return;
 
     onClick?.(e);
-  };
+  }
 
-  const thumbnail = useMemo(() => {
+  const thumbnail = (() => {
     if (lemmyThubmnail) return lemmyThubmnail;
 
     if (!thumbnailinatorEnabled) return;
@@ -187,7 +183,7 @@ export default function Link({
     }
 
     return thumbnailinatorResult;
-  }, [lemmyThubmnail, thumbnailinatorResult, thumbnailinatorEnabled]);
+  })();
 
   useEffect(() => {
     if (thumbnail === TRANSPARENT_PIXEL && !thumbnailinatorResult) {
@@ -195,8 +191,8 @@ export default function Link({
     }
   }, [dispatch, thumbnail, thumbnailinatorResult, url]);
 
-  const compactIcon = useMemo(() => {
-    if (commentType === "image" || isImage)
+  function buildCompactIcon() {
+    if (commentType === "image" || isUrlImage(url, undefined))
       return <ThumbnailImg src={getImageSrc(url, { size: 50 })} />;
 
     if (linkType || !compact || !thumbnail)
@@ -207,7 +203,7 @@ export default function Link({
         src={typeof thumbnail === "string" ? thumbnail : thumbnail.sm}
       />
     );
-  }, [commentType, compact, isImage, linkType, thumbnail, url]);
+  }
 
   return (
     <Container
@@ -225,7 +221,7 @@ export default function Link({
         />
       )}
       <Bottom small={small || (!compact && !!thumbnail)}>
-        {compactIcon}
+        {buildCompactIcon()}
         <UrlContainer>
           <Text>
             <PlaintextMarkdown>{text}</PlaintextMarkdown>

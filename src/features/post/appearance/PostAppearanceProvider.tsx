@@ -1,12 +1,5 @@
 import { noop } from "es-toolkit";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import { AnyFeed, serializeFeedName } from "#/features/feed/helpers";
 import {
@@ -73,33 +66,27 @@ export default function PostAppearanceProvider({
     rememberCommunityPostAppearance,
   ]);
 
-  const setPostAppearance = useCallback(
-    (postAppearance: PostAppearanceType) => {
-      if (rememberCommunityPostAppearance) {
-        if (feed) {
-          dispatch(
-            setPostAppearanceReducer({
-              feed,
-              postAppearance,
-            }),
-          );
-        } // else - don't persist
-      } else {
-        dispatch(setGlobalPostAppearanceReducer(postAppearance));
-      }
+  function setPostAppearance(postAppearance: PostAppearanceType) {
+    if (rememberCommunityPostAppearance) {
+      if (feed) {
+        dispatch(
+          setPostAppearanceReducer({
+            feed,
+            postAppearance,
+          }),
+        );
+      } // else - don't persist
+    } else {
+      dispatch(setGlobalPostAppearanceReducer(postAppearance));
+    }
 
-      return _setPostAppearance(postAppearance);
-    },
-    [dispatch, feed, rememberCommunityPostAppearance],
-  );
-
-  const value = useMemo(
-    () => ({ postAppearance, setPostAppearance }),
-    [postAppearance, setPostAppearance],
-  );
+    return _setPostAppearance(postAppearance);
+  }
 
   return (
-    <PostAppearanceContext.Provider value={value}>
+    <PostAppearanceContext.Provider
+      value={{ postAppearance, setPostAppearance }}
+    >
       {children}
     </PostAppearanceContext.Provider>
   );

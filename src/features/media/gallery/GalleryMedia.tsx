@@ -6,7 +6,6 @@ import {
   MouseEvent,
   useCallback,
   useContext,
-  useMemo,
 } from "react";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
@@ -35,12 +34,10 @@ export default function GalleryMedia({
   onClick: _onClick,
   ...props
 }: GalleryMediaProps) {
-  const isGif = useMemo(
-    () =>
-      props.src &&
-      isUrlPotentialAnimatedImage(props.src, post?.post.url_content_type),
-    [props.src, post],
-  );
+  const isGif =
+    props.src &&
+    isUrlPotentialAnimatedImage(props.src, post?.post.url_content_type);
+
   const shouldAutoplay = useShouldAutoplay();
 
   const { open } = useContext(GalleryContext);

@@ -4,7 +4,6 @@ import {
   shieldOutline,
 } from "ionicons/icons";
 import { Community, CommunityModeratorView, Person } from "lemmy-js-client";
-import { useMemo } from "react";
 
 import {
   isAdminSelector,
@@ -29,10 +28,7 @@ export default function useCanModerate(
   const isAdmin = useAppSelector(isAdminSelector);
   const myPerson = useAppSelector(userPersonSelector);
 
-  return useMemo(
-    () => canModerateWith(community, isAdmin, myPerson, moderates),
-    [moderates, community, isAdmin, myPerson],
-  );
+  return canModerateWith(community, isAdmin, myPerson, moderates);
 }
 
 /**

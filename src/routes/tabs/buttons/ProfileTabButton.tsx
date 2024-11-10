@@ -1,7 +1,7 @@
 import { IonIcon, IonLabel } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { personCircleOutline } from "ionicons/icons";
-import { useCallback, useContext, useMemo } from "react";
+import { useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import {
@@ -34,12 +34,13 @@ function ProfileTabButton(props: TabButtonProps) {
     (state) => state.settings.appearance.general.profileLabel,
   );
 
-  const profileTabLabel = useMemo(
-    () => getProfileTabLabel(profileLabelType, userHandle, connectedInstance),
-    [profileLabelType, userHandle, connectedInstance],
+  const profileTabLabel = getProfileTabLabel(
+    profileLabelType,
+    userHandle,
+    connectedInstance,
   );
 
-  const onBeforeBackAction = useCallback(() => {
+  function onBeforeBackAction() {
     const pathname = router.getRouteInfo()?.pathname;
     if (!pathname) return;
 
@@ -51,15 +52,15 @@ function ProfileTabButton(props: TabButtonProps) {
         presentLoginIfNeeded();
       }
     }
-  }, [accountsListEmpty, presentAccountSwitcher, presentLoginIfNeeded, router]);
+  }
 
-  const onLongPressOverride = useCallback(() => {
+  function onLongPressOverride() {
     if (!accountsListEmpty) {
       presentAccountSwitcher();
     } else {
       presentLoginIfNeeded();
     }
-  }, [accountsListEmpty, presentAccountSwitcher, presentLoginIfNeeded]);
+  }
 
   return (
     <SharedTabButton

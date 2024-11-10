@@ -1,5 +1,4 @@
 import { styled } from "@linaria/react";
-import { useMemo } from "react";
 
 import { parseUrlForDisplay } from "#/helpers/url";
 
@@ -12,10 +11,7 @@ interface UrlProps {
 }
 
 export default function Url({ children }: UrlProps) {
-  const [domain, rest] = useMemo(
-    () => parseUrlForDisplay(children),
-    [children],
-  );
+  const [domain, rest] = parseUrlForDisplay(children);
 
   if (!domain || !rest) return;
 

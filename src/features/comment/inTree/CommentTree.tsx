@@ -1,4 +1,4 @@
-import React, { RefObject, useContext, useMemo } from "react";
+import React, { RefObject, useContext } from "react";
 
 import { AppContext, Page } from "#/features/auth/AppContext";
 import { getOffsetTop, scrollIntoView } from "#/helpers/dom";
@@ -42,7 +42,7 @@ export default function CommentTree({
   const { activePageRef } = useContext(AppContext);
 
   // Comment context chains don't show missing for parents
-  const showMissing = useMemo(() => {
+  const showMissing = (() => {
     if (!highlightedCommentId) return true;
 
     if (
@@ -53,7 +53,7 @@ export default function CommentTree({
       return true;
 
     return false;
-  }, [comment.comment_view.comment.path, highlightedCommentId]);
+  })();
 
   function toggleCollapsed() {
     dispatch(toggleCommentCollapseState(comment.comment_view.comment.id));

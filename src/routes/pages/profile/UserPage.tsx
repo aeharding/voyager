@@ -5,7 +5,6 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { memo } from "react";
 import { useParams } from "react-router";
 
 import {
@@ -30,9 +29,7 @@ export default function UserPage() {
   return <UserPageContent handle={handle} />;
 }
 
-const UserPageContent = memo(function UserPageContent({
-  handle,
-}: UserPageProps) {
+function UserPageContent({ handle }: UserPageProps) {
   const myUsername = useAppSelector(usernameSelector);
   const myHandle = useAppSelector(userHandleSelector);
   const isSelf = handle === myUsername || handle === myHandle;
@@ -62,4 +59,4 @@ const UserPageContent = memo(function UserPageContent({
       </FeedContent>
     </IonPage>
   );
-});
+}

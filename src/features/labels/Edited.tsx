@@ -2,7 +2,7 @@ import { useIonAlert } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { pencil } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
-import { MouseEvent, useMemo } from "react";
+import { MouseEvent } from "react";
 
 import Stat from "#/features/post/detail/Stat";
 import { PlainButton } from "#/features/shared/PlainButton";
@@ -29,7 +29,7 @@ export default function Edited({ item, showDate, className }: EditedProps) {
 
   const edited = "comment" in item ? item.comment.updated : item.post.updated;
 
-  const editedLabelIfNeeded = useMemo(() => {
+  const editedLabelIfNeeded = (() => {
     if (!edited) return;
     if (!showDate) return;
 
@@ -39,7 +39,7 @@ export default function Edited({ item, showDate, className }: EditedProps) {
     if (createdLabel === editedLabel) return;
 
     return editedLabel;
-  }, [edited, item.counts.published, showDate]);
+  })();
 
   if (!edited) return;
 

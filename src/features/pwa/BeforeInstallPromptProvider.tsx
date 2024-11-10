@@ -1,11 +1,5 @@
 import { noop } from "es-toolkit";
-import React, {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 interface BeforeInstallPromptContextType {
   event: BeforeInstallPromptEvent | null;
@@ -24,13 +18,10 @@ export default function BeforeInstallPromptProvider({
   const [beforeInstallPromptEvent, setBeforeInstallPromptEvent] =
     useState<BeforeInstallPromptEvent | null>(null);
 
-  const handleBeforeInstallPrompt = useCallback(
-    (event: BeforeInstallPromptEvent) => {
-      event.preventDefault();
-      setBeforeInstallPromptEvent(event);
-    },
-    [],
-  );
+  function handleBeforeInstallPrompt(event: BeforeInstallPromptEvent) {
+    event.preventDefault();
+    setBeforeInstallPromptEvent(event);
+  }
 
   useEffect(() => {
     const handleBeforeInstallPromptEvent = (
@@ -50,19 +41,16 @@ export default function BeforeInstallPromptProvider({
         handleBeforeInstallPromptEvent as never,
       );
     };
-  }, [handleBeforeInstallPrompt]);
-
-  const clearEvent = useCallback(() => {
-    setBeforeInstallPromptEvent(null);
   }, []);
 
-  const value = useMemo(
-    () => ({ event: beforeInstallPromptEvent, clearEvent }),
-    [beforeInstallPromptEvent, clearEvent],
-  );
+  function clearEvent() {
+    setBeforeInstallPromptEvent(null);
+  }
 
   return (
-    <BeforeInstallPromptContext.Provider value={value}>
+    <BeforeInstallPromptContext.Provider
+      value={{ event: beforeInstallPromptEvent, clearEvent }}
+    >
       {children}
     </BeforeInstallPromptContext.Provider>
   );
