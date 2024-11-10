@@ -15,7 +15,6 @@ import { PostSortType } from "lemmy-js-client";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
-import { DeepPartial } from "#/helpers/typescript";
 import {
   ALL_GLOBAL_SETTINGS,
   AppThemeType,
@@ -71,7 +70,7 @@ export {
   OCompactThumbnailPositionType,
 } from "#/services/db";
 
-interface SettingsState {
+export interface SettingsState {
   ready: boolean;
   databaseError: Error | undefined;
   appearance: {
@@ -165,20 +164,7 @@ interface SettingsState {
   };
 }
 
-/**
- * We continue using localstorage for specific items because indexeddb is slow
- * and we don't want to wait for it to load before rendering the app and cause flickering
- */
-export function buildInitialStateWithLocalStorage(): SettingsState {
-  const localStorageInitialState: DeepPartial<SettingsState> =
-    getLocalStorageInitialState();
-
-  return produce(initialState, (draft) => {
-    merge(draft, localStorageInitialState);
-  });
-}
-
-const initialState: SettingsState = {
+const baseState: SettingsState = {
   ready: false,
 
   databaseError: undefined,
@@ -274,36 +260,22 @@ const initialState: SettingsState = {
   },
 };
 
-export const defaultCommentDepthSelector = createSelector(
-  [
-    (state: RootState) =>
-      state.settings.general.comments.collapseCommentThreads,
-  ],
-  (collapseCommentThreads): number => {
-    switch (collapseCommentThreads) {
-      case OCommentThreadCollapse.RootOnly:
-      case OCommentThreadCollapse.All:
-        return 1;
-      case OCommentThreadCollapse.Never:
-        return MAX_DEFAULT_COMMENT_DEPTH;
-    }
-  },
-);
+/**
+ * We continue using localstorage for specific items because indexeddb is slow
+ * and we don't want to wait for it to load before rendering the app and cause flickering
+ */
+export function buildInitialStateWithLocalStorage(): SettingsState {
+  return produce(baseState, (draft) => {
+    merge(draft, getLocalStorageInitialState());
+  });
+}
 
-export const defaultThreadCollapse = createSelector(
-  [
-    (state: RootState) =>
-      state.settings.general.comments.collapseCommentThreads,
-  ],
-  (collapseCommentThreads): string => {
-    return collapseCommentThreads;
-  },
-);
+export const initialState = buildInitialStateWithLocalStorage();
 
-export const appearanceSlice = createSlice({
-  name: "appearance",
+export const settingsSlice = createSlice({
+  name: "settings",
 
-  initialState: buildInitialStateWithLocalStorage(),
+  initialState,
 
   extraReducers: (builder) => {
     builder.addCase(
@@ -625,7 +597,7 @@ export const getBlurNsfw =
       user_handle: userHandle,
     });
 
-    dispatch(setNsfwBlur(blurNsfw ?? initialState.appearance.posts.blurNsfw));
+    dispatch(setNsfwBlur(blurNsfw ?? baseState.appearance.posts.blurNsfw));
   };
 
 export const getFilteredKeywords =
@@ -637,7 +609,7 @@ export const getFilteredKeywords =
     });
 
     dispatch(
-      setFilteredKeywords(filteredKeywords ?? initialState.blocks.keywords),
+      setFilteredKeywords(filteredKeywords ?? baseState.blocks.keywords),
     );
   };
 
@@ -650,7 +622,7 @@ export const getFilteredWebsites =
     });
 
     dispatch(
-      setFilteredWebsites(filteredWebsites ?? initialState.blocks.websites),
+      setFilteredWebsites(filteredWebsites ?? baseState.blocks.websites),
     );
   };
 
@@ -683,7 +655,7 @@ export const updateDefaultFeed =
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const userHandle = getState().auth.accountData?.activeHandle;
 
-    dispatch(setDefaultFeed(defaultFeed ?? initialState.general.defaultFeed));
+    dispatch(setDefaultFeed(defaultFeed ?? baseState.general.defaultFeed));
 
     db.setSetting("default_feed", defaultFeed, {
       user_handle: userHandle,
@@ -717,24 +689,13 @@ export const updateFilteredWebsites =
 export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
-    const result = db.transaction("r", db.settings, async () => {
-      const settings = zipObject(
+    let settings;
+
+    try {
+      settings = zipObject(
         ALL_GLOBAL_SETTINGS,
         await db.getSettings(ALL_GLOBAL_SETTINGS),
       ) as unknown as GlobalSettingValueTypes;
-
-      const state = thunkApi.getState() as RootState;
-
-      return produce(state.settings, (draft) => {
-        merge(draft, {
-          ready: true,
-          ...hydrateStateWithGlobalSettings(settings),
-        });
-      });
-    });
-
-    try {
-      return await result;
     } catch (error) {
       if (error instanceof Dexie.MissingAPIError) {
         thunkApi.dispatch(setDatabaseError(error));
@@ -745,6 +706,41 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 
       throw error;
     }
+
+    const state = thunkApi.getState() as RootState;
+
+    return produce(state.settings, (draft) => {
+      merge(draft, {
+        ready: true,
+        ...hydrateStateWithGlobalSettings(settings),
+      });
+    });
+  },
+);
+
+export const defaultCommentDepthSelector = createSelector(
+  [
+    (state: RootState) =>
+      state.settings.general.comments.collapseCommentThreads,
+  ],
+  (collapseCommentThreads): number => {
+    switch (collapseCommentThreads) {
+      case OCommentThreadCollapse.RootOnly:
+      case OCommentThreadCollapse.All:
+        return 1;
+      case OCommentThreadCollapse.Never:
+        return MAX_DEFAULT_COMMENT_DEPTH;
+    }
+  },
+);
+
+export const defaultThreadCollapse = createSelector(
+  [
+    (state: RootState) =>
+      state.settings.general.comments.collapseCommentThreads,
+  ],
+  (collapseCommentThreads): string => {
+    return collapseCommentThreads;
   },
 );
 
@@ -812,9 +808,9 @@ export const {
   setUseSystemFontSize,
   setVoteDisplayMode,
   setVotesTheme,
-} = appearanceSlice.actions;
+} = settingsSlice.actions;
 
-export default appearanceSlice.reducer;
+export default settingsSlice.reducer;
 
 /**
  * Hydrates the state with the global settings from the database.

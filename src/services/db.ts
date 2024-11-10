@@ -906,10 +906,15 @@ export class WefwefDB extends Dexie {
   /**
    * Convenience method for app startup
    */
-  getSettings<T extends keyof SettingValueTypes>(keys: T[]) {
-    return this.transaction("r", this.settings, async () => {
-      return await this.settings.bulkGet(keys);
-    });
+  async getSettings<T extends keyof SettingValueTypes>(keys: T[]) {
+    const result = await this.settings
+      .where(CompoundKeys.settings.key_and_user_handle_and_community)
+      .anyOf(keys.map((key) => [key, "", ""]))
+      .toArray();
+
+    const settingsMap = new Map(result.map((item) => [item.key, item.value]));
+
+    return keys.map((k) => settingsMap.get(k));
   }
 
   async setSetting<T extends keyof SettingValueTypes>(

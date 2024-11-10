@@ -7,6 +7,10 @@
  * So, those critical settings are stored here.
  */
 
+import { DeepPartial } from "#/helpers/typescript";
+
+import type { SettingsState } from "./settingsSlice";
+
 export const LOCALSTORAGE_KEYS = {
   FONT: {
     FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
@@ -32,7 +36,7 @@ export function set(key: string, value: unknown) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-export function getLocalStorageInitialState() {
+export function getLocalStorageInitialState(): DeepPartial<SettingsState> {
   return {
     appearance: {
       dark: {

@@ -8,7 +8,7 @@ import React, {
   useLayoutEffect,
 } from "react";
 
-import { buildInitialStateWithLocalStorage as buildInitialSettingsStateWithLocalStorage } from "#/features/settings/settingsSlice";
+import { initialState as initialSettingsState } from "#/features/settings/settingsSlice";
 import { isNative } from "#/helpers/device";
 import useSystemDarkMode, {
   DARK_MEDIA_SELECTOR,
@@ -65,16 +65,13 @@ function updateDocumentTheme(
   }
 }
 
-const initialSettingsStateWithLocalStorage =
-  buildInitialSettingsStateWithLocalStorage();
-
 // Prevent flash of white content and repaint before react component setup
 updateDocumentTheme(
-  initialSettingsStateWithLocalStorage.appearance.dark.usingSystemDarkMode
+  initialSettingsState.appearance.dark.usingSystemDarkMode
     ? window.matchMedia(DARK_MEDIA_SELECTOR).matches
-    : initialSettingsStateWithLocalStorage.appearance.dark.userDarkMode,
-  initialSettingsStateWithLocalStorage.appearance.dark.pureBlack,
-  initialSettingsStateWithLocalStorage.appearance.theme,
+    : initialSettingsState.appearance.dark.userDarkMode,
+  initialSettingsState.appearance.dark.pureBlack,
+  initialSettingsState.appearance.theme,
 );
 
 const fixedDeviceFontCss = css`
