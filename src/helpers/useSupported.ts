@@ -34,7 +34,7 @@ const featureVersionSupported = {
   /**
    * https://github.com/LemmyNet/lemmy/issues/5183
    */
-  "Random community API": "0.19.6",
+  "Random community API": "0.20.0",
 } as const;
 
 type Feature = keyof typeof featureVersionSupported;
