@@ -1,5 +1,7 @@
 import { IonList } from "@ionic/react";
+import { styled } from "@linaria/react";
 
+import emptyStateIconStyles from "#/routes/pages/shared/emptyStateIconStyles";
 import { useAppSelector } from "#/store";
 
 import Browse from "./Browse";
@@ -8,7 +10,11 @@ import HideInstance from "./HideInstance";
 import ResetTags from "./Reset";
 import StoreSource from "./StoreSource";
 import TrackVotes from "./TrackVotes";
-import UserTagsPromo from "./UserTagsPromo";
+import TagSvg from "./tag.svg?react";
+
+const StyledTagSvg = styled(TagSvg)`
+  margin-top: 16px;
+`;
 
 export default function TagsSettings() {
   const userTagsEnabled = useAppSelector(
@@ -33,7 +39,7 @@ export default function TagsSettings() {
           </IonList>
         </>
       ) : (
-        <UserTagsPromo />
+        <StyledTagSvg className={emptyStateIconStyles} />
       )}
     </>
   );
