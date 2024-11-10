@@ -1,10 +1,11 @@
+import { readFileSync } from "fs";
+
 import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react";
 import wyw from "@wyw-in-js/vite";
-import { readFileSync } from "fs";
-import { join, resolve } from "path";
 import { VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
+import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
 import compilerOptions from "./compilerOptions";
@@ -23,6 +24,7 @@ const manifest = JSON.parse(readFileSync("./manifest.json", "utf-8"));
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    tsconfigPaths(),
     react({
       babel: {
         plugins: [["babel-plugin-react-compiler", compilerOptions]],
@@ -60,14 +62,6 @@ export default defineConfig({
       modernPolyfills: ["es.array.at", "es.object.has-own"],
     }),
   ],
-  resolve: {
-    alias: [
-      {
-        find: /#\/(.*)/,
-        replacement: join(resolve(import.meta.dirname, "src/"), "$1"),
-      },
-    ],
-  },
   // TODO: Outdated clients trying to access stale codesplit js chucks
   // break. This breaks iOS transitions.
   // Put everything into one chunk for now.
