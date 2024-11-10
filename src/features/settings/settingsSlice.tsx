@@ -55,7 +55,6 @@ import { AppDispatch, RootState } from "#/store";
 
 import {
   LOCALSTORAGE_KEYS,
-  get,
   getLocalStorageInitialState,
   set,
 } from "./syncStorage";
@@ -174,7 +173,7 @@ export function buildInitialState(): SettingsState {
   return merge(cloneDeep(initialState), localStorageInitialState);
 }
 
-export const initialState: SettingsState = {
+const initialState: SettingsState = {
   ready: false,
 
   databaseError: undefined,
@@ -188,15 +187,15 @@ export const initialState: SettingsState = {
       thumbnailsPosition: OCompactThumbnailPositionType.Left,
     },
     dark: {
-      pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK) ?? true,
+      pureBlack: true,
       quickSwitch: true,
-      userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE) ?? false,
-      usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM) ?? true,
+      userDarkMode: false,
+      usingSystemDarkMode: true,
     },
-    deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE) ?? "ios",
+    deviceMode: "ios",
     font: {
-      fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER) ?? 1,
-      useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM) ?? false,
+      fontSizeMultiplier: 1,
+      useSystemFontSize: false,
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
@@ -216,7 +215,7 @@ export const initialState: SettingsState = {
       subscribedIcon: OShowSubscribedIcon.Never,
       type: OPostAppearanceType.Large,
     },
-    theme: get(LOCALSTORAGE_KEYS.THEME) ?? "default",
+    theme: "default",
     votesTheme: "lemmy",
     voting: {
       voteDisplayMode: OVoteDisplayMode.Total,
