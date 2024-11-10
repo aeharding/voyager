@@ -1,14 +1,13 @@
-import { readFileSync } from "fs";
-
 import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react";
 import wyw from "@wyw-in-js/vite";
-import { VitePWA } from "vite-plugin-pwa";
+import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
 import compilerOptions from "./compilerOptions";
+import manifest from "./manifest.json" with { type: "json" };
 
 const IGNORED_ROLLUP_WARNINGS = [
   // https://github.com/Anber/wyw-in-js/issues/62
@@ -18,8 +17,6 @@ const IGNORED_ROLLUP_WARNINGS = [
   // https://github.com/vitejs/vite/blob/fe30349d350ef08bccd56404ccc3e6d6e0a2e156/packages/vite/rollup.config.ts#L71
   "Circular dependency",
 ];
-
-const manifest = JSON.parse(readFileSync("./manifest.json", "utf-8"));
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -44,7 +41,7 @@ export default defineConfig({
       },
       registerType: "prompt",
       manifestFilename: "manifest.json",
-      manifest,
+      manifest: manifest as ManifestOptions, // https://github.com/microsoft/TypeScript/issues/32063
       workbox: {
         maximumFileSizeToCacheInBytes: 2097152 * 2,
         runtimeCaching: [
