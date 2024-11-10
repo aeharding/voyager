@@ -7,7 +7,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
 import compilerOptions from "./compilerOptions";
-import manifest from "./manifest.json" with { type: "json" };
+import manifest from "./manifest.json";
 
 const IGNORED_ROLLUP_WARNINGS = [
   // https://github.com/Anber/wyw-in-js/issues/62
