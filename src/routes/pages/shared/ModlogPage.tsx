@@ -6,7 +6,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { Community, Person } from "lemmy-js-client";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
@@ -80,35 +80,32 @@ function Modlog({ community, user }: ModlogProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
 
-  const fetchFn: FetchFn<ModlogItemType> = useCallback(
-    async (pageData, ...rest) => {
-      const logs = await client.getModlog(
-        {
-          ...pageData,
-          limit: LIMIT,
-          community_id: community?.id,
-          other_person_id: user?.id,
-        },
-        ...rest,
-      );
+  const fetchFn: FetchFn<ModlogItemType> = async (pageData, ...rest) => {
+    const logs = await client.getModlog(
+      {
+        ...pageData,
+        limit: LIMIT,
+        community_id: community?.id,
+        other_person_id: user?.id,
+      },
+      ...rest,
+    );
 
-      return Object.values(logs)
-        .reduce<ModlogItemType[]>((acc, current) => acc.concat(current), [])
-        .sort((a, b) => Date.parse(getLogDate(b)) - Date.parse(getLogDate(a)));
-    },
-    [client, community, user],
-  );
+    return Object.values(logs)
+      .reduce<ModlogItemType[]>((acc, current) => acc.concat(current), [])
+      .sort((a, b) => Date.parse(getLogDate(b)) - Date.parse(getLogDate(a)));
+  };
 
-  const renderItemContent = useCallback((item: ModlogItemType) => {
+  function renderItemContent(item: ModlogItemType) {
     return <ModlogItem item={item} />;
-  }, []);
+  }
 
-  const title = (() => {
+  function buildTitle() {
     if (community) return getHandle(community);
     if (user) return getHandle(user);
 
     return "Mod";
-  })();
+  }
 
   return (
     <FeedContextProvider>
@@ -122,7 +119,7 @@ function Modlog({ community, user }: ModlogProps) {
                 )}
               />
             </IonButtons>
-            <IonTitle>{title} Logs</IonTitle>
+            <IonTitle>{buildTitle()} Logs</IonTitle>
           </IonToolbar>
         </AppHeader>
         <FeedContent>

@@ -8,7 +8,7 @@ import {
   eyeOffOutline,
 } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
-import { ComponentProps, useCallback } from "react";
+import { ComponentProps } from "react";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { FetchFn } from "#/features/feed/Feed";
@@ -45,24 +45,21 @@ export default function Profile({ person, onPull }: ProfileProps) {
 
   const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData, ...rest) => {
-      const response = await client.getPersonDetails(
-        {
-          ...pageData,
-          limit: LIMIT,
-          username: getHandle(person.person_view.person),
-          sort: "New",
-        },
-        ...rest,
-      );
-      return [...response.posts, ...response.comments].sort(
-        (a, b) =>
-          getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
-      );
-    },
-    [person, client],
-  );
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    const response = await client.getPersonDetails(
+      {
+        ...pageData,
+        limit: LIMIT,
+        username: getHandle(person.person_view.person),
+        sort: "New",
+      },
+      ...rest,
+    );
+    return [...response.posts, ...response.comments].sort(
+      (a, b) =>
+        getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
+    );
+  };
 
   const header = (
     <MaxWidthContainer>

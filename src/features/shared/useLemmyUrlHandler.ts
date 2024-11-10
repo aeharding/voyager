@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { MouseEvent } from "react";
 
 import { knownInstancesSelector } from "#/features/instances/instancesSlice";
@@ -61,181 +60,151 @@ export default function useLemmyUrlHandler() {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
 
-  const handleCommunityClickIfNeeded = useCallback(
-    (url: URL, e?: MouseEvent) => {
-      const matchedCommunityHandle = matchLemmyCommunity(url.pathname);
+  function handleCommunityClickIfNeeded(url: URL, e?: MouseEvent) {
+    const matchedCommunityHandle = matchLemmyCommunity(url.pathname);
 
-      if (!matchedCommunityHandle) return;
-      const [communityName, domain] = matchedCommunityHandle;
+    if (!matchedCommunityHandle) return;
+    const [communityName, domain] = matchedCommunityHandle;
 
-      e?.preventDefault();
-      e?.stopPropagation();
+    e?.preventDefault();
+    e?.stopPropagation();
 
-      if (
-        (!domain && url.hostname === connectedInstance) ||
-        (domain === url.hostname && domain === connectedInstance)
-      ) {
-        router.push(buildGeneralBrowseLink(`/c/${communityName}`));
-        return true;
-      }
-
-      router.push(
-        buildGeneralBrowseLink(`/c/${communityName}@${domain ?? url.hostname}`),
-      );
-
+    if (
+      (!domain && url.hostname === connectedInstance) ||
+      (domain === url.hostname && domain === connectedInstance)
+    ) {
+      router.push(buildGeneralBrowseLink(`/c/${communityName}`));
       return true;
-    },
-    [buildGeneralBrowseLink, connectedInstance, router],
-  );
+    }
 
-  const handleUserClickIfNeeded = useCallback(
-    (url: URL, e?: MouseEvent) => {
-      const matchedUserHandle = matchLemmyUser(url.pathname);
+    router.push(
+      buildGeneralBrowseLink(`/c/${communityName}@${domain ?? url.hostname}`),
+    );
 
-      if (!matchedUserHandle) return;
-      const [userName, domain] = matchedUserHandle;
+    return true;
+  }
 
-      e?.preventDefault();
-      e?.stopPropagation();
+  function handleUserClickIfNeeded(url: URL, e?: MouseEvent) {
+    const matchedUserHandle = matchLemmyUser(url.pathname);
 
-      if (
-        (!domain && url.hostname === connectedInstance) ||
-        (domain === url.hostname && domain === connectedInstance)
-      ) {
-        navigateToUser(userName);
-        return true;
-      }
+    if (!matchedUserHandle) return;
+    const [userName, domain] = matchedUserHandle;
 
-      navigateToUser(`${userName}@${domain ?? url.hostname}`);
+    e?.preventDefault();
+    e?.stopPropagation();
 
+    if (
+      (!domain && url.hostname === connectedInstance) ||
+      (domain === url.hostname && domain === connectedInstance)
+    ) {
+      navigateToUser(userName);
       return true;
-    },
-    [connectedInstance, navigateToUser],
-  );
+    }
 
-  const handleObjectIfNeeded = useCallback(
-    async (
-      url: URL,
-      e?: MouseEvent,
-    ): Promise<"already-there" | "not-found" | "success"> => {
-      const cachedResolvedObject = objectByUrl[url.toString()];
-      if (cachedResolvedObject === "couldnt_find_object") return "not-found";
+    navigateToUser(`${userName}@${domain ?? url.hostname}`);
 
-      e?.preventDefault();
-      e?.stopPropagation();
+    return true;
+  }
 
-      let object = cachedResolvedObject;
+  async function handleObjectIfNeeded(
+    url: URL,
+    e?: MouseEvent,
+  ): Promise<"already-there" | "not-found" | "success"> {
+    const cachedResolvedObject = objectByUrl[url.toString()];
+    if (cachedResolvedObject === "couldnt_find_object") return "not-found";
 
-      if (!object) {
-        try {
-          object = await dispatch(resolveObject(url.toString()));
-        } catch (error) {
-          if (
-            // TODO START lemmy 0.19 and less support
-            isLemmyError(error, "couldnt_find_object" as never) ||
-            isLemmyError(error, "couldnt_find_post" as never) ||
-            isLemmyError(error, "couldnt_find_comment" as never) ||
-            isLemmyError(error, "couldnt_find_person" as never) ||
-            isLemmyError(error, "couldnt_find_community" as never) ||
-            // TODO END
-            isLemmyError(error, "not_found")
-          ) {
-            presentToast({
-              message: `Could not find ${getObjectName(
-                url.pathname,
-              )} on your instance. Try again to open in browser.`,
-              duration: 3500,
-              color: "warning",
-            });
-          }
+    e?.preventDefault();
+    e?.stopPropagation();
 
-          throw error;
-        }
-      }
+    let object = cachedResolvedObject;
 
-      if (object.post) {
-        return navigateToPost(object.post);
-      } else if (object.community) {
-        return navigateToCommunity(object.community);
-      } else if (object.person) {
-        return navigateToUser(object.person);
-      } else if (object.comment) {
-        return navigateToComment(object.comment);
-      }
-
-      return "not-found";
-    },
-    [
-      dispatch,
-      navigateToComment,
-      navigateToCommunity,
-      navigateToPost,
-      navigateToUser,
-      objectByUrl,
-      presentToast,
-    ],
-  );
-
-  const getUrl = useCallback(
-    (link: string) => {
+    if (!object) {
       try {
-        return new URL(link, connectedInstanceUrl);
+        object = await dispatch(resolveObject(url.toString()));
       } catch (error) {
-        console.error("Error parsing url", error);
+        if (
+          // TODO START lemmy 0.19 and less support
+          isLemmyError(error, "couldnt_find_object" as never) ||
+          isLemmyError(error, "couldnt_find_post" as never) ||
+          isLemmyError(error, "couldnt_find_comment" as never) ||
+          isLemmyError(error, "couldnt_find_person" as never) ||
+          isLemmyError(error, "couldnt_find_community" as never) ||
+          // TODO END
+          isLemmyError(error, "not_found")
+        ) {
+          presentToast({
+            message: `Could not find ${getObjectName(
+              url.pathname,
+            )} on your instance. Try again to open in browser.`,
+            duration: 3500,
+            color: "warning",
+          });
+        }
+
+        throw error;
       }
-    },
-    [connectedInstanceUrl],
-  );
+    }
 
-  const determineObjectTypeFromUrl = useCallback(
-    (link: string): LemmyObjectType | undefined => {
-      const url = getUrl(link);
+    if (object.post) {
+      return navigateToPost(object.post);
+    } else if (object.community) {
+      return navigateToCommunity(object.community);
+    } else if (object.person) {
+      return navigateToUser(object.person);
+    } else if (object.comment) {
+      return navigateToComment(object.comment);
+    }
 
-      if (!url) return;
+    return "not-found";
+  }
 
-      if (matchLemmyCommunity(url.pathname)) return "community";
+  function getUrl(link: string) {
+    try {
+      return new URL(link, connectedInstanceUrl);
+    } catch (error) {
+      console.error("Error parsing url", error);
+    }
+  }
 
-      if (!knownInstances.includes(url.hostname)) return;
+  function determineObjectTypeFromUrl(
+    link: string,
+  ): LemmyObjectType | undefined {
+    const url = getUrl(link);
 
-      if (POST_PATH.test(url.pathname)) return "post";
-      if (COMMENT_PATH.test(url.pathname)) return "comment";
-      if (COMMENT_VIA_POST_PATH.test(url.pathname)) return "comment";
-      if (USER_PATH.test(url.pathname)) return "user";
-    },
-    [getUrl, knownInstances],
-  );
+    if (!url) return;
 
-  const redirectToLemmyObjectIfNeeded = useCallback(
-    async (
-      link: string,
-      e?: MouseEvent,
+    if (matchLemmyCommunity(url.pathname)) return "community";
 
-      /**
-       * If its a known Lemmy link, bypass checking link domain against known instances list
-       * (this helps with new instances that aren't well federated yet)
-       */
-      forceResolveObject = false,
-    ): Promise<"not-found" | "already-there" | "success"> => {
-      const url = getUrl(normalizeObjectUrl(link));
+    if (!knownInstances.includes(url.hostname)) return;
 
-      if (!url) return "not-found";
-      if (!forceResolveObject && !knownInstances.includes(url.hostname))
-        return "not-found"; // If non-lemmy domain, return
+    if (POST_PATH.test(url.pathname)) return "post";
+    if (COMMENT_PATH.test(url.pathname)) return "comment";
+    if (COMMENT_VIA_POST_PATH.test(url.pathname)) return "comment";
+    if (USER_PATH.test(url.pathname)) return "user";
+  }
 
-      if (handleCommunityClickIfNeeded(url, e)) return "success";
-      if (handleUserClickIfNeeded(url, e)) return "success";
-      if (!isPotentialObjectPath(url.pathname)) return "not-found";
+  async function redirectToLemmyObjectIfNeeded(
+    link: string,
+    e?: MouseEvent,
 
-      return handleObjectIfNeeded(url, e);
-    },
-    [
-      getUrl,
-      handleCommunityClickIfNeeded,
-      handleUserClickIfNeeded,
-      handleObjectIfNeeded,
-      knownInstances,
-    ],
-  );
+    /**
+     * If its a known Lemmy link, bypass checking link domain against known instances list
+     * (this helps with new instances that aren't well federated yet)
+     */
+    forceResolveObject = false,
+  ): Promise<"not-found" | "already-there" | "success"> {
+    const url = getUrl(normalizeObjectUrl(link));
+
+    if (!url) return "not-found";
+    if (!forceResolveObject && !knownInstances.includes(url.hostname))
+      return "not-found"; // If non-lemmy domain, return
+
+    if (handleCommunityClickIfNeeded(url, e)) return "success";
+    if (handleUserClickIfNeeded(url, e)) return "success";
+    if (!isPotentialObjectPath(url.pathname)) return "not-found";
+
+    return handleObjectIfNeeded(url, e);
+  }
 
   return {
     determineObjectTypeFromUrl,

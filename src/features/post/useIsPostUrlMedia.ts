@@ -1,5 +1,4 @@
 import { PostView } from "lemmy-js-client";
-import { useCallback } from "react";
 
 import { isRedgif } from "#/features/media/external/redgifs/helpers";
 import { findUrlMediaType } from "#/helpers/url";
@@ -10,18 +9,15 @@ export default function useIsPostUrlMedia() {
     (state) => state.settings.appearance.posts.embedExternalMedia,
   );
 
-  return useCallback(
-    (post: PostView) => {
-      const url = post.post.url;
+  return function isPostUrlMedia(post: PostView) {
+    const url = post.post.url;
 
-      if (!url) return false;
+    if (!url) return false;
 
-      if (embedExternalMedia) {
-        if (isRedgif(url)) return true;
-      }
+    if (embedExternalMedia) {
+      if (isRedgif(url)) return true;
+    }
 
-      return !!findUrlMediaType(url, post.post.url_content_type);
-    },
-    [embedExternalMedia],
-  );
+    return !!findUrlMediaType(url, post.post.url_content_type);
+  };
 }

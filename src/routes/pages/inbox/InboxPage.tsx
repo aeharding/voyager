@@ -5,7 +5,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { FetchFn } from "#/features/feed/Feed";
@@ -40,60 +40,57 @@ export default function InboxPage({ showRead }: InboxPageProps) {
 
   useSetActivePage(pageRef);
 
-  const fetchFn: FetchFn<InboxItemView> = useCallback(
-    async (pageData, ...rest) => {
-      if (!myUserId) return [];
+  const fetchFn: FetchFn<InboxItemView> = async (pageData, ...rest) => {
+    if (!myUserId) return [];
 
-      const params = {
-        limit: 50,
-        ...pageData,
-        unread_only: !showRead,
-      };
+    const params = {
+      limit: 50,
+      ...pageData,
+      unread_only: !showRead,
+    };
 
-      const [replies, mentions, privateMessages] = await Promise.all([
-        client.getReplies(
-          {
-            ...params,
-            sort: "New",
-          },
-          ...rest,
-        ),
-        client.getPersonMentions(
-          {
-            ...params,
-            sort: "New",
-          },
-          ...rest,
-        ),
-        client.getPrivateMessages(params, ...rest),
-      ]);
+    const [replies, mentions, privateMessages] = await Promise.all([
+      client.getReplies(
+        {
+          ...params,
+          sort: "New",
+        },
+        ...rest,
+      ),
+      client.getPersonMentions(
+        {
+          ...params,
+          sort: "New",
+        },
+        ...rest,
+      ),
+      client.getPrivateMessages(params, ...rest),
+    ]);
 
-      const everything = [
-        ...replies.replies,
-        ...mentions.mentions,
-        ...privateMessages.private_messages.filter(
-          (message) =>
-            message.creator.id !== myUserId ||
-            message.creator.id === message.recipient.id, // if you message yourself, show it (lemmy returns as a notification)
-        ),
-      ].sort(
-        (a, b) =>
-          Date.parse(getInboxItemPublished(b)) -
-          Date.parse(getInboxItemPublished(a)),
-      );
+    const everything = [
+      ...replies.replies,
+      ...mentions.mentions,
+      ...privateMessages.private_messages.filter(
+        (message) =>
+          message.creator.id !== myUserId ||
+          message.creator.id === message.recipient.id, // if you message yourself, show it (lemmy returns as a notification)
+      ),
+    ].sort(
+      (a, b) =>
+        Date.parse(getInboxItemPublished(b)) -
+        Date.parse(getInboxItemPublished(a)),
+    );
 
-      dispatch(receivedInboxItems(everything));
-      dispatch(
-        receivedUsers([
-          ...everything.map(({ creator }) => creator),
-          ...everything.map(({ recipient }) => recipient),
-        ]),
-      );
+    dispatch(receivedInboxItems(everything));
+    dispatch(
+      receivedUsers([
+        ...everything.map(({ creator }) => creator),
+        ...everything.map(({ recipient }) => recipient),
+      ]),
+    );
 
-      return everything;
-    },
-    [client, dispatch, myUserId, showRead],
-  );
+    return everything;
+  };
 
   return (
     <IonPage ref={pageRef}>

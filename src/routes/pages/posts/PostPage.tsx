@@ -11,7 +11,7 @@ import {
   RefresherCustomEvent,
 } from "@ionic/react";
 import { styled } from "@linaria/react";
-import React, { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useRef } from "react";
 import { useParams } from "react-router";
 
@@ -101,29 +101,12 @@ function PostPageContent({
     dispatch(getPost(+id));
   }, [post, client, dispatch, id]);
 
-  const refresh = useCallback(
-    async (event: RefresherCustomEvent) => {
-      // TODO replace with await when React Compiler doesn't bail
-      return dispatch(getPost(+id)).finally(() => {
-        event.detail.complete();
-      });
-    },
-    [dispatch, id],
-  );
-
-  const buildWithRefresher = useCallback(
-    (content: React.ReactNode) => {
-      return (
-        <>
-          <IonRefresher slot="fixed" onIonRefresh={refresh}>
-            <IonRefresherContent />
-          </IonRefresher>
-          {content}
-        </>
-      );
-    },
-    [refresh],
-  );
+  async function refresh(event: RefresherCustomEvent) {
+    // TODO replace with await when React Compiler doesn't bail
+    return dispatch(getPost(+id)).finally(() => {
+      event.detail.complete();
+    });
+  }
 
   function renderPost() {
     if (!post) return <CenteredSpinner />;
@@ -132,8 +115,13 @@ function PostPageContent({
       post.post.deleted || // post marked deleted from lemmy
       postDeletedById[post.post.id] // deleted by user recently
     )
-      return buildWithRefresher(
-        <div className="ion-padding ion-text-center">Post not found</div>,
+      return (
+        <>
+          <IonRefresher slot="fixed" onIonRefresh={refresh}>
+            <IonRefresherContent />
+          </IonRefresher>
+          <div className="ion-padding ion-text-center">Post not found</div>
+        </>
       );
 
     if (!sort) return;

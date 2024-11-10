@@ -7,7 +7,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { compact } from "es-toolkit";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 import { useParams } from "react-router";
 
 import { userHandleSelector } from "#/features/auth/authSelectors";
@@ -43,60 +43,55 @@ export default function ProfileFeedHiddenPostsPage() {
   const lastPageNumberRef = useRef(1);
   const lastPageItemsRef = useRef<IPostMetadata[]>([]);
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData, ...rest) => {
-      // Trigger rerender when this changes
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      postHiddenById;
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    postHiddenById; // eslint-disable-line @typescript-eslint/no-unused-expressions -- Trigger rerender when this changes
 
-      if (!handle) return [];
-      if (!("page" in pageData)) return [];
-      const { page } = pageData;
+    if (!handle) return [];
+    if (!("page" in pageData)) return [];
+    const { page } = pageData;
 
-      const hiddenPostMetadatas = await db.getHiddenPostMetadatasPaginated(
-        handle,
-        page,
-        LIMIT,
-        // If we're switching to the next page then we can pass the last page's
-        // items to the db so that it can use them to determine the next page's
-        // items. This is a performance optimization. If we're jumping to a
-        // random page then we can't do this. Normally this shouldn't happen
-        // because we're only ever fetching the next page. But just in case...
-        lastPageNumberRef.current + 1 === page
-          ? lastPageItemsRef.current
-          : undefined,
-      );
+    const hiddenPostMetadatas = await db.getHiddenPostMetadatasPaginated(
+      handle,
+      page,
+      LIMIT,
+      // If we're switching to the next page then we can pass the last page's
+      // items to the db so that it can use them to determine the next page's
+      // items. This is a performance optimization. If we're jumping to a
+      // random page then we can't do this. Normally this shouldn't happen
+      // because we're only ever fetching the next page. But just in case...
+      lastPageNumberRef.current + 1 === page
+        ? lastPageItemsRef.current
+        : undefined,
+    );
 
-      lastPageNumberRef.current = page;
-      lastPageItemsRef.current = hiddenPostMetadatas;
+    lastPageNumberRef.current = page;
+    lastPageItemsRef.current = hiddenPostMetadatas;
 
-      const postIds = hiddenPostMetadatas.map((metadata) => metadata.post_id);
+    const postIds = hiddenPostMetadatas.map((metadata) => metadata.post_id);
 
-      const result = await Promise.all(
-        postIds.map(async (postId) => {
-          const potentialPost = store.getState().post.postById[postId];
-          if (typeof potentialPost === "object") return potentialPost;
+    const result = await Promise.all(
+      postIds.map(async (postId) => {
+        const potentialPost = store.getState().post.postById[postId];
+        if (typeof potentialPost === "object") return potentialPost;
 
-          try {
-            return await client.getPost({ id: postId }, ...rest);
-          } catch (error) {
-            if (
-              isLemmyError(error, "couldnt_find_post" as never) ||
-              isLemmyError(error, "not_found")
-            )
-              return;
+        try {
+          return await client.getPost({ id: postId }, ...rest);
+        } catch (error) {
+          if (
+            isLemmyError(error, "couldnt_find_post" as never) ||
+            isLemmyError(error, "not_found")
+          )
+            return;
 
-            throw error;
-          }
-        }),
-      );
+          throw error;
+        }
+      }),
+    );
 
-      return compact(result).map((post) =>
-        "post_view" in post ? post.post_view : post,
-      );
-    },
-    [client, handle, postHiddenById],
-  );
+    return compact(result).map((post) =>
+      "post_view" in post ? post.post_view : post,
+    );
+  };
 
   return (
     <IonPage>

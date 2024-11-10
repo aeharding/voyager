@@ -1,5 +1,4 @@
 import { CommunityView } from "lemmy-js-client";
-import { useCallback } from "react";
 
 import CommunitySummary from "#/features/community/CommunitySummary";
 
@@ -9,14 +8,13 @@ interface PostCommentFeed
   extends Omit<FeedProps<CommunityView>, "renderItemContent"> {}
 
 export default function CommunityFeed({ ...rest }: PostCommentFeed) {
-  const renderItemContent = useCallback(
-    (community: CommunityView) => <CommunitySummary community={community} />,
-    [],
-  );
-
   return (
     <Feed renderItemContent={renderItemContent} getIndex={getIndex} {...rest} />
   );
+}
+
+function renderItemContent(community: CommunityView) {
+  return <CommunitySummary community={community} />;
 }
 
 const getIndex = (item: CommunityView) => item.community.id;

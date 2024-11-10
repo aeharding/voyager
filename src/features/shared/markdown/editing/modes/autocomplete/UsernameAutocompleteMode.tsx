@@ -1,5 +1,4 @@
 import { Person } from "lemmy-js-client";
-import { useCallback } from "react";
 
 import { getRemoteHandle } from "#/helpers/lemmy";
 import useClient from "#/helpers/useClient";
@@ -11,24 +10,21 @@ import GenericAutocompleteMode, {
 export default function UsernameAutocompleteMode(props: AutocompleteModeProps) {
   const client = useClient();
 
-  const fetchFn = useCallback(
-    async (q: string) => {
-      const { users } = await client.search({
-        q,
-        type_: "Users",
-        sort: "TopAll",
-      });
+  async function fetchFn(q: string) {
+    const { users } = await client.search({
+      q,
+      type_: "Users",
+      sort: "TopAll",
+    });
 
-      return users.map((u) => u.person);
-    },
-    [client],
-  );
-
-  const buildMd = useCallback((item: Person) => {
-    return `[@${getRemoteHandle(item)}](${item.actor_id})`;
-  }, []);
+    return users.map((u) => u.person);
+  }
 
   return (
     <GenericAutocompleteMode buildMd={buildMd} fetchFn={fetchFn} {...props} />
   );
+}
+
+function buildMd(item: Person) {
+  return `[@${getRemoteHandle(item)}](${item.actor_id})`;
 }

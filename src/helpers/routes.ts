@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 
 import { TabContext } from "#/core/TabContext";
 import { TabNameContext } from "#/routes/common/Route";
@@ -18,16 +18,11 @@ export function useBuildGeneralBrowseLink() {
     tabNameRef.current = tabName;
   });
 
-  const buildGeneralBrowseLink = useCallback(
-    (path: string) => {
-      const tab = tabNameRef.current || tabRef?.current;
-      // /settings/lemmy.world is invalid. Posts tab is special case
-      if (tab !== "posts" && (!path || path === "/")) return `/${tab}`;
+  return function buildGeneralBrowseLink(path: string) {
+    const tab = tabNameRef.current || tabRef?.current;
+    // /settings/lemmy.world is invalid. Posts tab is special case
+    if (tab !== "posts" && (!path || path === "/")) return `/${tab}`;
 
-      return `/${tab}/${connectedInstance}${path}`;
-    },
-    [connectedInstance, tabRef],
-  );
-
-  return buildGeneralBrowseLink;
+    return `/${tab}/${connectedInstance}${path}`;
+  };
 }

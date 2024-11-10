@@ -1,12 +1,6 @@
 import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
-import {
-  ComponentProps,
-  HTMLProps,
-  MouseEvent,
-  useCallback,
-  useContext,
-} from "react";
+import { ComponentProps, HTMLProps, MouseEvent, useContext } from "react";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
@@ -43,33 +37,30 @@ export default function GalleryMedia({
   const { open } = useContext(GalleryContext);
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
-  const onClick = useCallback(
-    (e: MouseEvent) => {
-      if (!props.src) return;
+  function onClick(e: MouseEvent) {
+    if (!props.src) return;
 
-      if (
-        !(
-          e.currentTarget instanceof HTMLImageElement ||
-          e.currentTarget instanceof HTMLCanvasElement
-        )
+    if (
+      !(
+        e.currentTarget instanceof HTMLImageElement ||
+        e.currentTarget instanceof HTMLCanvasElement
       )
-        return;
+    )
+      return;
 
-      if (e.target instanceof HTMLElement && e.target.closest("a")) return;
+    if (e.target instanceof HTMLElement && e.target.closest("a")) return;
 
-      open(e.currentTarget, props.src, post, animationType);
+    open(e.currentTarget, props.src, post, animationType);
 
-      // marking read happens after the gallery has finished animating
-      // so that the post doesn't rerender before it's fully hidden
+    // marking read happens after the gallery has finished animating
+    // so that the post doesn't rerender before it's fully hidden
 
-      // but autohiding doesn't rerender anything, and is context-sensitive,
-      // so just do it now
-      if (post) autohidePostIfNeeded(post);
+    // but autohiding doesn't rerender anything, and is context-sensitive,
+    // so just do it now
+    if (post) autohidePostIfNeeded(post);
 
-      _onClick?.(e);
-    },
-    [_onClick, animationType, autohidePostIfNeeded, open, post, props.src],
-  );
+    _onClick?.(e);
+  }
 
   if (isGif && !shouldAutoplay) {
     return (

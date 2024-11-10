@@ -1,6 +1,6 @@
 import { useIonViewDidEnter } from "@ionic/react";
 import { CommentSortType, PostView } from "lemmy-js-client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Comments, { CommentsHandle } from "#/features/comment/inTree/Comments";
 import JumpFab from "#/features/comment/inTree/JumpFab";
@@ -46,10 +46,9 @@ export default function PostDetail({
     setIonViewEntered(true);
   });
 
-  const onHeight = useCallback(
-    (height: number) => setViewAllCommentsSpace(height),
-    [],
-  );
+  function onHeight(height: number) {
+    setViewAllCommentsSpace(height);
+  }
 
   const bottomPadding: number = (() => {
     if (commentPath) {

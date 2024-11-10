@@ -13,7 +13,7 @@ import {
   PostReportView,
   PostView,
 } from "lemmy-js-client";
-import { createContext, memo, useCallback, useContext } from "react";
+import { createContext, useContext } from "react";
 import { useParams } from "react-router";
 
 import useFetchCommunity from "#/features/community/useFetchCommunity";
@@ -47,84 +47,77 @@ export default function ModqueuePage() {
   return <ModqueueByCommunityName communityName={community} />;
 }
 
-const GlobalModqueue = memo(function GlobalModqueue() {
+function GlobalModqueue() {
   return <ModqueueByCommunity />;
-});
+}
 
-const ModqueueByCommunityName = memo(function ModqueueByCommunityName({
-  communityName,
-}: {
-  communityName: string;
-}) {
+function ModqueueByCommunityName({ communityName }: { communityName: string }) {
   const community = useFetchCommunity(communityName);
 
   if (!community) return <CenteredSpinner />;
 
   return <ModqueueByCommunity community={community.community} />;
-});
+}
 
 function ModqueueByCommunity({ community }: { community?: Community }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const dispatch = useAppDispatch();
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData, ...rest) => {
-      const [{ comment_reports }, { post_reports }] = await Promise.all([
-        client.listCommentReports(
-          {
-            ...pageData,
-            limit: LIMIT,
-            community_id: community?.id,
-            unresolved_only: true,
-          },
-          ...rest,
-        ),
-        client.listPostReports(
-          {
-            ...pageData,
-            limit: LIMIT,
-            community_id: community?.id,
-            unresolved_only: true,
-          },
-          ...rest,
-        ),
-      ]);
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    const [{ comment_reports }, { post_reports }] = await Promise.all([
+      client.listCommentReports(
+        {
+          ...pageData,
+          limit: LIMIT,
+          community_id: community?.id,
+          unresolved_only: true,
+        },
+        ...rest,
+      ),
+      client.listPostReports(
+        {
+          ...pageData,
+          limit: LIMIT,
+          community_id: community?.id,
+          unresolved_only: true,
+        },
+        ...rest,
+      ),
+    ]);
 
-      let needsSync = isFirstPage(pageData);
+    let needsSync = isFirstPage(pageData);
 
-      const reportsByCommentId = reportsByCommentIdSelector(store.getState());
-      const reportsByPostId = reportsByPostIdSelector(store.getState());
+    const reportsByCommentId = reportsByCommentIdSelector(store.getState());
+    const reportsByPostId = reportsByPostIdSelector(store.getState());
 
-      for (const report of comment_reports) {
-        if (!reportsByCommentId[report.comment.id]) {
-          needsSync = true;
-        }
+    for (const report of comment_reports) {
+      if (!reportsByCommentId[report.comment.id]) {
+        needsSync = true;
       }
-      for (const report of post_reports) {
-        if (!reportsByPostId[report.post.id]) {
-          needsSync = true;
-        }
+    }
+    for (const report of post_reports) {
+      if (!reportsByPostId[report.post.id]) {
+        needsSync = true;
       }
+    }
 
-      if (needsSync) {
-        await dispatch(syncReports(true));
-      }
+    if (needsSync) {
+      await dispatch(syncReports(true));
+    }
 
-      const comments = await uniqBy(comment_reports, (r) => r.comment.id).map(
-        convertCommentReportToComment,
-      );
-      const posts = await uniqBy(post_reports, (r) => r.post.id).map(
-        convertPostReportToPost,
-      );
+    const comments = await uniqBy(comment_reports, (r) => r.comment.id).map(
+      convertCommentReportToComment,
+    );
+    const posts = await uniqBy(post_reports, (r) => r.post.id).map(
+      convertPostReportToPost,
+    );
 
-      return [...comments, ...posts].sort(
-        (a, b) =>
-          getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
-      );
-    },
-    [client, community, dispatch],
-  );
+    return [...comments, ...posts].sort(
+      (a, b) =>
+        getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
+    );
+  };
 
   return (
     <FeedContextProvider>
@@ -174,6 +167,7 @@ function convertPostReportToPost(postReport: PostReportView): PostView {
     banned_from_community: false,
   };
 }
+
 function convertCommentReportToComment(
   commentReport: CommentReportView,
 ): CommentView {

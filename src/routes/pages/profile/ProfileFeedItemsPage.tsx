@@ -6,7 +6,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { GetComments, GetPosts } from "lemmy-js-client";
-import { useCallback } from "react";
 import { useParams } from "react-router";
 
 import { FetchFn } from "#/features/feed/Feed";
@@ -30,44 +29,41 @@ export default function ProfileFeedItemsPage({
   const { handle } = useParams<{ handle: string }>();
   const client = useClient();
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData, ...rest) => {
-      if (type === "Upvoted" || type === "Downvoted") {
-        const requestPayload: GetPosts & GetComments = {
-          ...pageData,
-          limit: Math.floor(LIMIT / 2),
-          sort: "New",
-          liked_only: type === "Upvoted",
-          disliked_only: type === "Downvoted",
-          show_read: true,
-        };
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    if (type === "Upvoted" || type === "Downvoted") {
+      const requestPayload: GetPosts & GetComments = {
+        ...pageData,
+        limit: Math.floor(LIMIT / 2),
+        sort: "New",
+        liked_only: type === "Upvoted",
+        disliked_only: type === "Downvoted",
+        show_read: true,
+      };
 
-        const [{ posts }, { comments }] = await Promise.all([
-          client.getPosts(requestPayload, ...rest),
-          client.getComments(requestPayload, ...rest),
-        ]);
+      const [{ posts }, { comments }] = await Promise.all([
+        client.getPosts(requestPayload, ...rest),
+        client.getComments(requestPayload, ...rest),
+      ]);
 
-        return [...comments, ...posts].sort(sortPostCommentByPublished);
-      }
-      const { comments, posts } = await client.getPersonDetails(
-        {
-          ...pageData,
-          limit: LIMIT,
-          username: handle,
-          sort: "New",
-          saved_only: type === "Saved",
-        },
-        ...rest,
-      );
+      return [...comments, ...posts].sort(sortPostCommentByPublished);
+    }
+    const { comments, posts } = await client.getPersonDetails(
+      {
+        ...pageData,
+        limit: LIMIT,
+        username: handle,
+        sort: "New",
+        saved_only: type === "Saved",
+      },
+      ...rest,
+    );
 
-      if (type === "Saved") {
-        return [...comments, ...posts].sort(sortPostCommentByPublished);
-      }
+    if (type === "Saved") {
+      return [...comments, ...posts].sort(sortPostCommentByPublished);
+    }
 
-      return type === "Comments" ? comments : posts;
-    },
-    [client, handle, type],
-  );
+    return type === "Comments" ? comments : posts;
+  };
 
   return (
     <IonPage>

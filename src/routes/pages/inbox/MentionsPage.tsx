@@ -6,7 +6,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { PersonMentionView } from "lemmy-js-client";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { FetchFn } from "#/features/feed/Feed";
@@ -27,24 +27,21 @@ export default function MentionsPage() {
 
   useSetActivePage(pageRef);
 
-  const fetchFn: FetchFn<PersonMentionView> = useCallback(
-    async (pageData, ...rest) => {
-      const response = await client.getPersonMentions(
-        {
-          ...pageData,
-          limit: LIMIT,
-          sort: "New",
-          unread_only: false,
-        },
-        ...rest,
-      );
+  const fetchFn: FetchFn<PersonMentionView> = async (pageData, ...rest) => {
+    const response = await client.getPersonMentions(
+      {
+        ...pageData,
+        limit: LIMIT,
+        sort: "New",
+        unread_only: false,
+      },
+      ...rest,
+    );
 
-      dispatch(receivedInboxItems(response.mentions));
+    dispatch(receivedInboxItems(response.mentions));
 
-      return response.mentions;
-    },
-    [client, dispatch],
-  );
+    return response.mentions;
+  };
 
   return (
     <IonPage ref={pageRef}>

@@ -6,7 +6,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { CommentReplyView } from "lemmy-js-client";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { FetchFn } from "#/features/feed/Feed";
@@ -30,30 +30,27 @@ export default function RepliesPage({ type }: RepliesPageProps) {
 
   useSetActivePage(pageRef);
 
-  const fetchFn: FetchFn<CommentReplyView> = useCallback(
-    async (pageData, ...rest) => {
-      // TODO - actually paginate properly if Lemmy implements
-      // reply pagination filtering by comment and post
-      const response = await client.getReplies(
-        {
-          ...pageData,
-          limit: 50,
-          sort: "New",
-          unread_only: false,
-        },
-        ...rest,
-      );
+  const fetchFn: FetchFn<CommentReplyView> = async (pageData, ...rest) => {
+    // TODO - actually paginate properly if Lemmy implements
+    // reply pagination filtering by comment and post
+    const response = await client.getReplies(
+      {
+        ...pageData,
+        limit: 50,
+        sort: "New",
+        unread_only: false,
+      },
+      ...rest,
+    );
 
-      const replies = response.replies.filter((reply) =>
-        type === "Post" ? isPostReply(reply) : !isPostReply(reply),
-      );
+    const replies = response.replies.filter((reply) =>
+      type === "Post" ? isPostReply(reply) : !isPostReply(reply),
+    );
 
-      dispatch(receivedInboxItems(replies));
+    dispatch(receivedInboxItems(replies));
 
-      return replies;
-    },
-    [client, dispatch, type],
-  );
+    return replies;
+  };
 
   return (
     <IonPage ref={pageRef}>

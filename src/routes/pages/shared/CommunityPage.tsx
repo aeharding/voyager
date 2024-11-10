@@ -8,14 +8,7 @@ import {
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { noop } from "es-toolkit";
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { Redirect, useParams } from "react-router";
 
 import MoreActions from "#/features/community/MoreActions";
@@ -178,25 +171,22 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
 
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData, ...rest) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      fetchFnLastUpdated;
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- fetchFn relies on fetchFnLastUpdated for updates
+    fetchFnLastUpdated;
 
-      const { posts, next_page } = await client.getPosts(
-        {
-          ...pageData,
-          limit: LIMIT,
-          community_name: community,
-          sort,
-          show_read: true,
-        },
-        ...rest,
-      );
-      return { data: posts, next_page };
-    },
-    [client, community, sort, fetchFnLastUpdated],
-  );
+    const { posts, next_page } = await client.getPosts(
+      {
+        ...pageData,
+        limit: LIMIT,
+        community_name: community,
+        sort,
+        show_read: true,
+      },
+      ...rest,
+    );
+    return { data: posts, next_page };
+  };
 
   const onPull = async () => {
     const search = Object.fromEntries([
@@ -209,28 +199,22 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
     if (foundRandom) return false;
   };
 
-  const feedSearchContextValue = useMemo(() => ({ setScrolledPastSearch }), []);
-
   // Force update when loaded, because mod button may appear (and title may need to shrink)
   useEffect(() => {
     appTitleRef.current?.updateLayout();
   }, [communityView]);
 
-  const header = useMemo(
-    () =>
-      !searchOpen ? (
-        <HeaderContainer>
-          <CommunitySearchbar
-            placeholder={`Search c/${community}`}
-            onFocus={() => {
-              setSearchOpen(true);
-              searchbarRef.current?.setFocus();
-            }}
-          />
-        </HeaderContainer>
-      ) : undefined,
-    [community, searchOpen],
-  );
+  const header = !searchOpen ? (
+    <HeaderContainer>
+      <CommunitySearchbar
+        placeholder={`Search c/${community}`}
+        onFocus={() => {
+          setSearchOpen(true);
+          searchbarRef.current?.setFocus();
+        }}
+      />
+    </HeaderContainer>
+  ) : undefined;
 
   if (community.includes("@") && community.split("@")[1] === actor)
     return (
@@ -244,7 +228,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
     if (!sort) return <CenteredSpinner />;
 
     return (
-      <FeedSearchContext.Provider value={feedSearchContextValue}>
+      <FeedSearchContext.Provider value={{ setScrolledPastSearch }}>
         <PageTypeContext.Provider value="community">
           <WaitUntilPostAppearanceResolved>
             <PostCommentFeed

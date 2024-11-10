@@ -1,6 +1,11 @@
 import { useIonViewDidEnter } from "@ionic/react";
 import { styled } from "@linaria/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  experimental_useEffectEvent as useEffectEvent,
+  useRef,
+  useState,
+} from "react";
 
 import { isInstalled } from "#/helpers/device";
 import { pageTransitionAnimateBackOnly } from "#/helpers/ionic";
@@ -46,7 +51,7 @@ export default function InitialPageRedirectBootstrapper({
    * Important: must access refs, cannot access state hooks
    * (for calls via `useIonViewDidEnter`)
    */
-  const redirectIfNeeded = useCallback(() => {
+  function redirectIfNeeded() {
     const to = toRef.current;
     const bootstrapped = bootstrappedRef.current;
 
@@ -74,7 +79,7 @@ export default function InitialPageRedirectBootstrapper({
 
       setBootstrapped(true);
     });
-  }, [router]);
+  }
 
   useIonViewDidEnter(() => {
     viewEnteredRef.current = true;
@@ -90,11 +95,13 @@ export default function InitialPageRedirectBootstrapper({
     if (bootstrapped) dispatch(appIsReadyToAcceptDeepLinks());
   }, [bootstrapped, dispatch]);
 
+  const redirectIfNeededEvent = useEffectEvent(redirectIfNeeded);
+
   useEffect(() => {
     toRef.current = to;
 
-    redirectIfNeeded();
-  }, [to, redirectIfNeeded]);
+    redirectIfNeededEvent();
+  }, [to]);
 
   if (!isInstalled() || bootstrapped) return null;
 

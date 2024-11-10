@@ -1,5 +1,5 @@
 import { noop } from "es-toolkit";
-import React, { createContext, useCallback, useState } from "react";
+import React, { createContext, useState } from "react";
 
 interface TitleSearchContext {
   search: string;
@@ -23,10 +23,9 @@ export function TitleSearchProvider({ children }: React.PropsWithChildren) {
   const [search, setSearch] = useState("");
   const [searching, setSearching] = useState(false);
   const [onSubmit, _setOnSubmit] = useState(() => noop);
-  const setOnSubmit = useCallback(
-    (fn: () => void) => _setOnSubmit(() => fn),
-    [],
-  );
+  function setOnSubmit(fn: () => void) {
+    return _setOnSubmit(() => fn);
+  }
 
   return (
     <TitleSearchContext.Provider

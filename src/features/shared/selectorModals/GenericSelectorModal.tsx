@@ -14,7 +14,11 @@ import {
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { close } from "ionicons/icons";
-import { useCallback, useEffect, useState } from "react";
+import {
+  useEffect,
+  experimental_useEffectEvent as useEffectEvent,
+  useState,
+} from "react";
 import { VList } from "virtua";
 
 import AppHeader from "../AppHeader";
@@ -58,16 +62,15 @@ export default function GenericSelectorModal<I>({
 }: GenericSelectorModalProps<I>) {
   const [items, setItems] = useState<I[]>([]);
 
-  const query = useCallback(
-    async (q: string) => {
-      setItems(await search(q));
-    },
-    [search],
-  );
+  async function query(q: string) {
+    setItems(await search(q));
+  }
+
+  const queryEvent = useEffectEvent(query);
 
   useEffect(() => {
-    query("");
-  }, [query]);
+    queryEvent("");
+  }, []);
 
   return (
     <IonPage>

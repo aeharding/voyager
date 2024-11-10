@@ -6,7 +6,7 @@ import {
   removeCircleOutline,
 } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
-import { useCallback, useContext } from "react";
+import { useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { usernameSelector } from "#/features/auth/authSelectors";
@@ -43,92 +43,80 @@ export default function usePresentUserActions() {
     (state) => state.settings.tags.enabled,
   );
 
-  return useCallback(
-    (user: Person, options?: PresentUserActionsOptions) => {
-      const state = store.getState();
+  return (user: Person, options?: PresentUserActionsOptions) => {
+    const state = store.getState();
 
-      const isCurrentUser = usernameSelector(state) === getHandle(user);
+    const isCurrentUser = usernameSelector(state) === getHandle(user);
 
-      const blocks = state.site.response?.my_user?.person_blocks;
-      const isBlocked = blocks?.some(
-        (b) =>
-          getHandle(
-            "target" in b
-              ? (b.target as Person) // TODO lemmy v0.19 and less support
-              : b,
-          ) === getHandle(user),
-      );
+    const blocks = state.site.response?.my_user?.person_blocks;
+    const isBlocked = blocks?.some(
+      (b) =>
+        getHandle(
+          "target" in b
+            ? (b.target as Person) // TODO lemmy v0.19 and less support
+            : b,
+        ) === getHandle(user),
+    );
 
-      presentActionSheet({
-        cssClass: "left-align-buttons",
-        buttons: compact([
-          ...(options?.prependButtons ?? []),
-          !isCurrentUser &&
-            !options?.hideMessageButton && {
-              text: "Send Message",
-              data: "message",
-              icon: mailOutline,
-              handler: () => {
-                if (presentLoginIfNeeded()) return;
-
-                router.push(
-                  // intent=send - SendMessageBox uses to determine focus
-                  buildGeneralBrowseLink(
-                    `/u/${getHandle(user)}/message?intent=send`,
-                  ),
-                );
-              },
-            },
-          !isCurrentUser && {
-            text: !isBlocked ? "Block User" : "Unblock User",
-            data: "block",
-            role: !isBlocked ? "destructive" : undefined,
-            icon: removeCircleOutline,
+    presentActionSheet({
+      cssClass: "left-align-buttons",
+      buttons: compact([
+        ...(options?.prependButtons ?? []),
+        !isCurrentUser &&
+          !options?.hideMessageButton && {
+            text: "Send Message",
+            data: "message",
+            icon: mailOutline,
             handler: () => {
-              (async () => {
-                if (presentLoginIfNeeded()) return;
-                if (!user) return;
+              if (presentLoginIfNeeded()) return;
 
-                try {
-                  await dispatch(blockUser(!isBlocked, user.id));
-                } catch (error) {
-                  presentToast({
-                    color: "danger",
-                    message: getBlockUserErrorMessage(error, user),
-                  });
-
-                  throw error;
-                }
-
-                presentToast(buildBlocked(!isBlocked, getHandle(user)));
-              })();
+              router.push(
+                // intent=send - SendMessageBox uses to determine focus
+                buildGeneralBrowseLink(
+                  `/u/${getHandle(user)}/message?intent=send`,
+                ),
+              );
             },
           },
-          userTagsEnabled && {
-            text: "Edit Tag",
-            icon: pricetagOutline,
-            handler: async () => {
+        !isCurrentUser && {
+          text: !isBlocked ? "Block User" : "Unblock User",
+          data: "block",
+          role: !isBlocked ? "destructive" : undefined,
+          icon: removeCircleOutline,
+          handler: () => {
+            (async () => {
+              if (presentLoginIfNeeded()) return;
               if (!user) return;
 
-              presentUserTag(user, options?.sourceUrl);
-            },
+              try {
+                await dispatch(blockUser(!isBlocked, user.id));
+              } catch (error) {
+                presentToast({
+                  color: "danger",
+                  message: getBlockUserErrorMessage(error, user),
+                });
+
+                throw error;
+              }
+
+              presentToast(buildBlocked(!isBlocked, getHandle(user)));
+            })();
           },
-          {
-            text: "Cancel",
-            role: "cancel",
+        },
+        userTagsEnabled && {
+          text: "Edit Tag",
+          icon: pricetagOutline,
+          handler: async () => {
+            if (!user) return;
+
+            presentUserTag(user, options?.sourceUrl);
           },
-        ]),
-      });
-    },
-    [
-      presentActionSheet,
-      presentLoginIfNeeded,
-      router,
-      buildGeneralBrowseLink,
-      presentToast,
-      dispatch,
-      presentUserTag,
-      userTagsEnabled,
-    ],
-  );
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ]),
+    });
+  };
 }
