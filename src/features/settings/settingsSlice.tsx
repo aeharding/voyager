@@ -173,9 +173,9 @@ export function buildInitialStateWithLocalStorage(): SettingsState {
   const localStorageInitialState: DeepPartial<SettingsState> =
     getLocalStorageInitialState();
 
-  return produce(initialState, (draft) =>
-    merge(draft, localStorageInitialState),
-  );
+  return produce(initialState, (draft) => {
+    merge(draft, localStorageInitialState);
+  });
 }
 
 const initialState: SettingsState = {
