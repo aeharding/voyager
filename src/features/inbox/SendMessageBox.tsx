@@ -3,14 +3,7 @@ import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { resize, send as sendIcon } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
-import {
-  KeyboardEvent,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
@@ -103,7 +96,7 @@ export default function SendMessageBox({
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const send = useCallback(async () => {
+  async function send() {
     setLoading(true);
 
     let message;
@@ -125,17 +118,14 @@ export default function SendMessageBox({
     setValue("");
 
     scrollToBottom?.();
-  }, [client, dispatch, presentToast, recipient, value, scrollToBottom]);
+  }
 
-  const onKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLTextAreaElement>) => {
-      if (!e.ctrlKey && !e.metaKey) return;
-      if (e.key !== "Enter") return;
+  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (!e.ctrlKey && !e.metaKey) return;
+    if (e.key !== "Enter") return;
 
-      send();
-    },
-    [send],
-  );
+    send();
+  }
 
   useEffect(() => {
     const search = Object.fromEntries([

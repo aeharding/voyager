@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import Feed, { FetchFn } from "#/features/feed/Feed";
 import { removeTag } from "#/features/tags/userTagSlice";
@@ -18,23 +18,20 @@ export default function BrowseTags({ filter }: BrowseTagsProps) {
     {},
   );
 
-  const fetchFn: FetchFn<UserTagType> = useCallback(
-    async (pageData) => {
-      if (!("page" in pageData)) return [];
+  const fetchFn: FetchFn<UserTagType> = async (pageData) => {
+    if (!("page" in pageData)) return [];
 
-      const result = await db.getUserTagsPaginated(
-        pageData.page,
-        LIMIT,
-        filter === "tagged",
-      );
+    const result = await db.getUserTagsPaginated(
+      pageData.page,
+      LIMIT,
+      filter === "tagged",
+    );
 
-      // Reset removed state on refresh
-      if (pageData.page === 1) setRemovedByHandle({});
+    // Reset removed state on refresh
+    if (pageData.page === 1) setRemovedByHandle({});
 
-      return result;
-    },
-    [filter],
-  );
+    return result;
+  };
 
   function filterFn(tag: UserTagType) {
     return !removedByHandle[tag.handle];

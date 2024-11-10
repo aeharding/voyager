@@ -1,6 +1,5 @@
 import { IonBackButton, IonButtons, IonPage, IonToolbar } from "@ionic/react";
 import { ListingType } from "lemmy-js-client";
-import { useCallback } from "react";
 
 import { followIdsSelector } from "#/features/auth/siteSlice";
 import ModActions from "#/features/community/mod/ModActions";
@@ -60,39 +59,33 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   const filterSubscribed =
     noSubscribedInFeed && (type === "All" || type === "Local");
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData, ...rest) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      fetchFnLastUpdated;
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- fetchFn relies on fetchFnLastUpdated for updates
+    fetchFnLastUpdated;
 
-      const { posts, next_page } = await client.getPosts(
-        {
-          ...pageData,
-          limit: LIMIT,
-          sort,
-          type_: type,
-          show_read: true,
-        },
-        ...rest,
-      );
+    const { posts, next_page } = await client.getPosts(
+      {
+        ...pageData,
+        limit: LIMIT,
+        sort,
+        type_: type,
+        show_read: true,
+      },
+      ...rest,
+    );
 
-      return { data: posts, next_page };
-    },
-    [client, sort, type, fetchFnLastUpdated],
-  );
+    return { data: posts, next_page };
+  };
 
-  const filterSubscribedFn = useCallback(
-    (item: PostCommentItem) => {
-      if (item.post.featured_community || item.post.featured_local) return true;
+  function filterSubscribedFn(item: PostCommentItem) {
+    if (item.post.featured_community || item.post.featured_local) return true;
 
-      const potentialCommunity = communityByHandle[getHandle(item.community)];
-      if (potentialCommunity)
-        return potentialCommunity.subscribed === "NotSubscribed";
+    const potentialCommunity = communityByHandle[getHandle(item.community)];
+    if (potentialCommunity)
+      return potentialCommunity.subscribed === "NotSubscribed";
 
-      return !followIds.includes(item.community.id);
-    },
-    [followIds, communityByHandle],
-  );
+    return !followIds.includes(item.community.id);
+  }
 
   const feed = (() => {
     // We need the site response to know follows in order to filter

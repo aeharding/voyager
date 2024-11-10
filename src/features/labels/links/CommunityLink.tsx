@@ -9,7 +9,7 @@ import {
   tabletPortraitOutline,
 } from "ionicons/icons";
 import { Community, SubscribedType } from "lemmy-js-client";
-import { createContext, useCallback, useContext } from "react";
+import { createContext, useContext } from "react";
 import { LongPressOptions, useLongPress } from "use-long-press";
 
 import useCommunityActions from "#/features/community/useCommunityActions";
@@ -80,7 +80,7 @@ export default function CommunityLink({
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
     useCommunityActions(community, subscribed);
 
-  const onCommunityLinkLongPress = useCallback(() => {
+  function onCommunityLinkLongPress() {
     stopIonicTapClick();
     present({
       cssClass: "left-align-buttons",
@@ -114,7 +114,7 @@ export default function CommunityLink({
         },
       ],
     });
-  }, [block, isBlocked, isSubscribed, present, sidebar, subscribe]);
+  }
 
   const bind = useLongPress(onCommunityLinkLongPress, {
     cancelOnMovement: 15,

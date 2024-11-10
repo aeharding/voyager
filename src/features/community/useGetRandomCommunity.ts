@@ -1,5 +1,4 @@
 import { sample, sortBy } from "es-toolkit";
-import { useCallback } from "react";
 
 import { clientSelector } from "#/features/auth/authSelectors";
 import { pageTransitionAnimateBackOnly } from "#/helpers/ionic";
@@ -17,7 +16,7 @@ export default function useGetRandomCommunity() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const presentToast = useAppToast();
 
-  return useCallback(async () => {
+  return async () => {
     const totalCommunitiesCount =
       store.getState().site.response?.site_view.counts.communities;
     if (!totalCommunitiesCount) return;
@@ -65,5 +64,5 @@ export default function useGetRandomCommunity() {
     );
 
     return true;
-  }, [buildGeneralBrowseLink, router, presentToast]);
+  };
 }

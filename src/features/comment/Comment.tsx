@@ -2,7 +2,7 @@ import { IonItem } from "@ionic/react";
 import { cx } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { CommentView } from "lemmy-js-client";
-import React, { MouseEvent, useCallback, useRef } from "react";
+import React, { MouseEvent, useRef } from "react";
 import AnimateHeight from "react-animate-height";
 import { useLongPress } from "use-long-press";
 
@@ -98,10 +98,10 @@ export default function Comment({
 
   const collapsed = cannotCollapse ? false : _collapsed;
 
-  const onCommentLongPress = useCallback(() => {
+  function onCommentLongPress() {
     commentEllipsisHandleRef.current?.present();
     stopIonicTapClick();
-  }, []);
+  }
 
   const bind = useLongPress(onCommentLongPress, {
     threshold: 800,

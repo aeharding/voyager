@@ -7,7 +7,7 @@ import {
 } from "@ionic/react";
 import { compact } from "es-toolkit";
 import { CommunityView, LemmyHttp, ListingType } from "lemmy-js-client";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import CommunityFeed from "#/features/feed/CommunityFeed";
 import { FetchFn, isFirstPage } from "#/features/feed/Feed";
@@ -37,38 +37,35 @@ export default function CommunitiesResultsPage({
   );
   const [listingType, setListingType] = useState<ListingType>("All");
 
-  const fetchFn: FetchFn<CommunityView> = useCallback(
-    async (pageData, ...rest) => {
-      if (isFirstPage(pageData) && search?.includes("@")) {
-        return compact([await findExactCommunity(search, client)]);
-      }
+  const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
+    if (isFirstPage(pageData) && search?.includes("@")) {
+      return compact([await findExactCommunity(search, client)]);
+    }
 
-      const response = await (search
-        ? client.search(
-            {
-              limit: LIMIT,
-              q: search,
-              type_: "Communities",
-              listing_type: listingType,
-              ...pageData,
-              sort,
-            },
-            ...rest,
-          )
-        : client.listCommunities(
-            {
-              limit: LIMIT,
-              type_: listingType,
-              ...pageData,
-              sort,
-            },
-            ...rest,
-          ));
+    const response = await (search
+      ? client.search(
+          {
+            limit: LIMIT,
+            q: search,
+            type_: "Communities",
+            listing_type: listingType,
+            ...pageData,
+            sort,
+          },
+          ...rest,
+        )
+      : client.listCommunities(
+          {
+            limit: LIMIT,
+            type_: listingType,
+            ...pageData,
+            sort,
+          },
+          ...rest,
+        ));
 
-      return response.communities;
-    },
-    [client, search, sort, listingType],
-  );
+    return response.communities;
+  };
 
   return (
     <IonPage>

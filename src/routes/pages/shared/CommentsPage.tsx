@@ -6,7 +6,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { ListingType } from "lemmy-js-client";
-import { useCallback } from "react";
 
 import { getFeedUrlName } from "#/features/community/mod/ModActions";
 import { FetchFn } from "#/features/feed/Feed";
@@ -38,22 +37,19 @@ export default function CommentsPage(props: CommentsPageProps) {
   const communityNameIfAvailable =
     "communityName" in props ? props.communityName : undefined;
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData, ...rest) => {
-      const { comments } = await client.getComments(
-        {
-          ...pageData,
-          limit: LIMIT,
-          community_name: communityNameIfAvailable,
-          type_: "type" in props ? props.type : undefined,
-          sort: "New",
-        },
-        ...rest,
-      );
-      return comments;
-    },
-    [client, props, communityNameIfAvailable],
-  );
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    const { comments } = await client.getComments(
+      {
+        ...pageData,
+        limit: LIMIT,
+        community_name: communityNameIfAvailable,
+        type_: "type" in props ? props.type : undefined,
+        sort: "New",
+      },
+      ...rest,
+    );
+    return comments;
+  };
 
   const feedName = (() => {
     if ("communityName" in props) return props.communityName;
