@@ -31,3 +31,21 @@ export function get(key: string): any {
 export function set(key: string, value: unknown) {
   localStorage.setItem(key, JSON.stringify(value));
 }
+
+export function getLocalStorageInitialState() {
+  return {
+    appearance: {
+      dark: {
+        pureBlack: get(LOCALSTORAGE_KEYS.DARK.PURE_BLACK),
+        userDarkMode: get(LOCALSTORAGE_KEYS.DARK.USER_MODE),
+        usingSystemDarkMode: get(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM),
+      },
+      deviceMode: get(LOCALSTORAGE_KEYS.DEVICE_MODE),
+      font: {
+        fontSizeMultiplier: get(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER),
+        useSystemFontSize: get(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM),
+      },
+      theme: get(LOCALSTORAGE_KEYS.THEME),
+    },
+  } as const;
+}
