@@ -10,7 +10,6 @@ import { styled } from "@linaria/react";
 import { noop } from "es-toolkit";
 import {
   createContext,
-  memo,
   useCallback,
   useEffect,
   useMemo,
@@ -143,10 +142,7 @@ export default function CommunityPage() {
   return <CommunityPageContent community={community} actor={actor} />;
 }
 
-const CommunityPageContent = memo(function CommunityPageContent({
-  community,
-  actor,
-}: CommunityPageParams) {
+function CommunityPageContent({ community, actor }: CommunityPageParams) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [scrolledPastSearch, setScrolledPastSearch] = useState(false);
   const [_searchOpen, setSearchOpen] = useState(false);
@@ -349,7 +345,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
       </PostAppearanceProvider>
     </FeedContextProvider>
   );
-});
+}
 
 interface IFeedSearchContext {
   setScrolledPastSearch: (scrolled: boolean) => void;

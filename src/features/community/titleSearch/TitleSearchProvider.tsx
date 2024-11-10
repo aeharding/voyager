@@ -1,5 +1,5 @@
 import { noop } from "es-toolkit";
-import React, { createContext, useCallback, useMemo, useState } from "react";
+import React, { createContext, useCallback, useState } from "react";
 
 interface TitleSearchContext {
   search: string;
@@ -28,20 +28,17 @@ export function TitleSearchProvider({ children }: React.PropsWithChildren) {
     [],
   );
 
-  const value = useMemo(
-    () => ({
-      search,
-      setSearch,
-      searching,
-      setSearching,
-      onSubmit,
-      setOnSubmit,
-    }),
-    [onSubmit, search, searching, setOnSubmit],
-  );
-
   return (
-    <TitleSearchContext.Provider value={value}>
+    <TitleSearchContext.Provider
+      value={{
+        search,
+        setSearch,
+        searching,
+        setSearching,
+        onSubmit,
+        setOnSubmit,
+      }}
+    >
       {children}
     </TitleSearchContext.Provider>
   );

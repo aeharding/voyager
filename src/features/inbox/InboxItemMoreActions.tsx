@@ -1,6 +1,5 @@
 import { styled } from "@linaria/react";
 import { mailOutline, mailUnreadOutline } from "ionicons/icons";
-import { useMemo } from "react";
 
 import MoreActions from "#/features/comment/CommentEllipsis";
 import { PlainButton } from "#/features/shared/PlainButton";
@@ -34,16 +33,13 @@ export default function InboxItemMoreActions({
   );
   const isRead = readByInboxItemId[getInboxItemId(item)];
 
-  const markReadAction = useMemo(
-    () => ({
-      text: isRead ? "Mark Unread" : "Mark Read",
-      icon: isRead ? mailUnreadOutline : mailOutline,
-      handler: () => {
-        dispatch(markRead(item, !isRead));
-      },
-    }),
-    [dispatch, isRead, item],
-  );
+  const markReadAction = {
+    text: isRead ? "Mark Unread" : "Mark Read",
+    icon: isRead ? mailUnreadOutline : mailOutline,
+    handler: () => {
+      dispatch(markRead(item, !isRead));
+    },
+  };
 
   return (
     <StyledPlainButton>

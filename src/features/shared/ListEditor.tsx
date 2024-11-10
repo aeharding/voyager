@@ -2,23 +2,15 @@ import { IonButton, IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
 import { noop } from "es-toolkit";
 import { checkmark, ellipsisVertical, removeCircle } from "ionicons/icons";
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, useContext, useRef, useState } from "react";
 
 import { isIosTheme } from "#/helpers/device";
 
 export function ListEditorProvider({ children }: React.PropsWithChildren) {
   const [editing, setEditing] = useState(false);
 
-  const value = useMemo(() => ({ editing, setEditing }), [editing]);
-
   return (
-    <ListEditorContext.Provider value={value}>
+    <ListEditorContext.Provider value={{ editing, setEditing }}>
       {children}
     </ListEditorContext.Provider>
   );

@@ -6,7 +6,9 @@ import { TabContext } from "#/core/TabContext";
 
 import ActorRedirect from "./ActorRedirect";
 
-export default function Route({ children, ...props }: RouteProps) {
+type AppRouteProps = Omit<RouteProps, "children"> & React.PropsWithChildren;
+
+export default function Route({ children, ...props }: AppRouteProps) {
   const { tabRef } = useContext(TabContext);
   const [tabName] = useState(() => tabRef?.current ?? "");
 

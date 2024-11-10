@@ -1,5 +1,4 @@
 import { PostView } from "lemmy-js-client";
-import { useMemo } from "react";
 
 import { findLoneImage } from "#/helpers/markdown";
 import { findUrlMediaType } from "#/helpers/url";
@@ -11,10 +10,7 @@ import { IMAGE_FAILED } from "./large/imageSlice";
 export default function usePostSrc(post: PostView): string | undefined {
   const thumbnailIsFullsize = useSupported("Fullsize thumbnails");
 
-  const src = useMemo(
-    () => getPostMedia(post, thumbnailIsFullsize),
-    [post, thumbnailIsFullsize],
-  );
+  const src = getPostMedia(post, thumbnailIsFullsize);
   const primaryFailed = useAppSelector(
     (state) => src && state.image.loadedBySrc[src[0]] === IMAGE_FAILED,
   );

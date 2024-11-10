@@ -1,4 +1,4 @@
-import { ComponentProps, ComponentRef, useMemo } from "react";
+import { ComponentProps, ComponentRef } from "react";
 
 import { PlayerProps } from "#/features/media/video/Player";
 import Video from "#/features/media/video/Video";
@@ -16,10 +16,7 @@ export interface MediaProps
 }
 
 export default function Media({ nativeControls, src, ...props }: MediaProps) {
-  const isVideo = useMemo(
-    () => src && isUrlVideo(src, props.post?.post.url_content_type),
-    [src, props.post],
-  );
+  const isVideo = src && isUrlVideo(src, props.post?.post.url_content_type);
 
   if (isVideo)
     return (

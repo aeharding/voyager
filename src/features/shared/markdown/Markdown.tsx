@@ -1,6 +1,5 @@
 import spoiler from "@aeharding/remark-lemmy-spoiler";
 import { css, cx } from "@linaria/core";
-import { useMemo } from "react";
 import ReactMarkdown, { Options as ReactMarkdownOptions } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import superSub from "remark-supersub-lemmy";
@@ -107,31 +106,29 @@ export default function Markdown({
     <ReactMarkdown
       {...props}
       className={cx(props.className, markdownCss)}
-      components={useMemo(
-        () => ({
-          img: (props) => (
-            <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />
-          ),
-          table: Table,
-          a: disableInternalLinkRouting
-            ? (props) => (
-                <InAppExternalLink
-                  {...props}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              )
-            : (props) => <LinkInterceptor {...props} />,
-          summary: Summary,
-          details: (props) => <Details {...props} id={id} />,
-          ...props.components,
-        }),
-        [disableInternalLinkRouting, id, props.components],
-      )}
-      remarkPlugins={useMemo(
-        () => [[customRemarkGfm, { connectedInstance }], superSub, spoiler],
-        [connectedInstance],
-      )}
+      components={{
+        img: (props) => (
+          <MarkdownImg {...props} onClick={(e) => e.stopPropagation()} />
+        ),
+        table: Table,
+        a: disableInternalLinkRouting
+          ? (props) => (
+              <InAppExternalLink
+                {...props}
+                target="_blank"
+                rel="noopener noreferrer"
+              />
+            )
+          : (props) => <LinkInterceptor {...props} />,
+        summary: Summary,
+        details: (props) => <Details {...props} id={id} />,
+        ...props.components,
+      }}
+      remarkPlugins={[
+        [customRemarkGfm, { connectedInstance }],
+        superSub,
+        spoiler,
+      ]}
       rehypePlugins={rehypePlugins}
     />
   );

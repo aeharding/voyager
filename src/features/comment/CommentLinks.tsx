@@ -2,7 +2,6 @@ import spoiler from "@aeharding/remark-lemmy-spoiler";
 import { styled } from "@linaria/react";
 import { uniqBy } from "es-toolkit";
 import { Text } from "mdast";
-import { useMemo } from "react";
 import { defaultUrlTransform } from "react-markdown";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
@@ -37,7 +36,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     (state) => state.auth.connectedInstance,
   );
 
-  const links = useMemo(() => {
+  const links = (() => {
     const connectedInstanceUrl = buildBaseLemmyUrl(connectedInstance);
 
     // Initialize a unified processor with the remark-parse parser
@@ -76,7 +75,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     links = links.slice(0, 4);
 
     return links.map((link, index) => <CommentLink link={link} key={index} />);
-  }, [connectedInstance, markdown, showCommentImages]);
+  })();
 
   if (!links.length) return;
 

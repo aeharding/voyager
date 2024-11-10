@@ -1,5 +1,5 @@
 import { compact, uniqBy } from "es-toolkit";
-import { useMemo } from "react";
+import { CommunityFollowerView, CommunityView } from "lemmy-js-client";
 
 import { useAppSelector } from "#/store";
 
@@ -15,23 +15,31 @@ export default function LoggedInCommunitiesList(props: CommunitiesListProps) {
     (state) => state.community.communityByHandle,
   );
 
-  const communities = useMemo(() => {
-    const allCommunities = uniqBy(
-      compact([
-        ...(follows || []).map((f) => f.community),
-        ...Object.values(communityByHandle).map((c) => c?.community),
-      ]),
-      (c) => c.id,
-    );
+  return (
+    <ResolvedCommunitiesList
+      {...props}
+      communities={buildCommunities(follows, communityByHandle)}
+    />
+  );
+}
 
-    const unsubscribedCommunityIds = Object.values(communityByHandle)
-      .filter((response) => response?.subscribed === "NotSubscribed")
-      .map((c) => c?.community.id);
+function buildCommunities(
+  follows: CommunityFollowerView[] | undefined,
+  communityByHandle: Record<string, CommunityView>,
+) {
+  const allCommunities = uniqBy(
+    compact([
+      ...(follows || []).map((f) => f.community),
+      ...Object.values(communityByHandle).map((c) => c?.community),
+    ]),
+    (c) => c.id,
+  );
 
-    return allCommunities.filter(
-      (community) => !unsubscribedCommunityIds.includes(community.id),
-    );
-  }, [follows, communityByHandle]);
+  const unsubscribedCommunityIds = Object.values(communityByHandle)
+    .filter((response) => response?.subscribed === "NotSubscribed")
+    .map((c) => c?.community.id);
 
-  return <ResolvedCommunitiesList {...props} communities={communities} />;
+  return allCommunities.filter(
+    (community) => !unsubscribedCommunityIds.includes(community.id),
+  );
 }

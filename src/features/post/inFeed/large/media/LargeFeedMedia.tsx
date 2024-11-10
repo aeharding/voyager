@@ -1,5 +1,5 @@
 import { styled } from "@linaria/react";
-import { CSSProperties, useMemo } from "react";
+import { CSSProperties } from "react";
 
 import Media, { MediaProps } from "#/features/media/gallery/Media";
 import useLatch from "#/helpers/useLatch";
@@ -45,18 +45,18 @@ export default function LargeFeedMedia({
    */
   const aspectRatio = useLatch(currentAspectRatio);
 
-  const placeholderState = (() => {
+  function buildPlaceholderState() {
     if (aspectRatio === IMAGE_FAILED) return "error";
     if (!aspectRatio) return "loading";
 
     return "loaded";
-  })();
+  }
 
-  const style: CSSProperties | undefined = useMemo(() => {
+  function buildStyle(): CSSProperties {
     if (!aspectRatio || aspectRatio === IMAGE_FAILED) return { opacity: 0 };
 
     return { aspectRatio };
-  }, [aspectRatio]);
+  }
 
   const loaded = !!aspectRatio && aspectRatio > 0;
 
@@ -64,13 +64,13 @@ export default function LargeFeedMedia({
     <MediaPlaceholder
       className={className}
       style={baseStyle}
-      state={placeholderState}
+      state={buildPlaceholderState()}
       defaultAspectRatio={defaultAspectRatio}
     >
       <StyledPostMedia
         {...props}
         src={src}
-        style={style}
+        style={buildStyle()}
         ref={mediaRef}
         autoPlay={!blur}
         onError={() => {

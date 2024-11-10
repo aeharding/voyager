@@ -5,7 +5,6 @@ import {
   PostView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import { useCallback, useMemo } from "react";
 
 import { getInboxItemId, markRead } from "#/features/inbox/inboxSlice";
 import useAppToast from "#/helpers/useAppToast";
@@ -36,11 +35,11 @@ export function useSharedInboxActions(item: SlideableItem) {
     (state) => state.inbox.readByInboxItemId,
   );
 
-  const isRead = useMemo(() => {
-    return isInboxItem(item) ? readByInboxItemId[getInboxItemId(item)] : false;
-  }, [item, readByInboxItemId]);
+  const isRead = isInboxItem(item)
+    ? readByInboxItemId[getInboxItemId(item)]
+    : false;
 
-  const markUnread = useCallback(async () => {
+  async function markUnread() {
     if (!isInboxItem(item)) return;
 
     try {
@@ -52,7 +51,7 @@ export function useSharedInboxActions(item: SlideableItem) {
       });
       throw error;
     }
-  }, [dispatch, presentToast, item, isRead]);
+  }
 
   return { markUnread, isRead };
 }
