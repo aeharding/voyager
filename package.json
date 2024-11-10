@@ -64,7 +64,7 @@
     "@ionic/react-router": "8.4.0",
     "@linaria/core": "^6.2.0",
     "@linaria/react": "^6.2.1",
-    "@mantine/hooks": "^7.13.4",
+    "@mantine/hooks": "^7.13.5",
     "@reduxjs/toolkit": "^2.3.0",
     "capacitor-android-nav-mode": "^1.0.0",
     "capacitor-application-context": "^1.0.0",
@@ -91,7 +91,7 @@
     "micromark-extension-gfm-strikethrough": "^2.1.0",
     "micromark-extension-gfm-table": "^2.1.0",
     "micromark-util-combine-extensions": "^2.0.0",
-    "modern-screenshot": "^4.5.1",
+    "modern-screenshot": "^4.5.2",
     "photoswipe": "^5.4.4",
     "react": "0.0.0-experimental-5c56b873-20241107",
     "react-animate-height": "^3.2.3",
@@ -115,7 +115,7 @@
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "use-long-press": "^3.2.0",
-    "virtua": "^0.36.2"
+    "virtua": "^0.36.3"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.25.9",
