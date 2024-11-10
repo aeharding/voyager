@@ -5,7 +5,14 @@ import { CommentSortType, PostSortType } from "lemmy-js-client";
 import { lemmyVersionSelector } from "#/features/auth/siteSlice";
 import { useAppSelector } from "#/store";
 
+/**
+ * What version was support removed?
+ */
 const SUPPORTED_ON_OLDER_EXCLUSIVE = ">";
+
+/**
+ * What version was support added?
+ */
 const SUPPORTED_ON_NEWER_INCLUSIVE = "<=";
 
 const memoizedCompare = memoize(
@@ -16,11 +23,17 @@ const memoizedCompare = memoize(
 );
 
 /**
- * What Lemmy version was support added?
+ * Default: `SUPPORTED_ON_NEWER_INCLUSIVE` (what version was support added?)
  */
 const featureVersionSupported = {
-  // https://github.com/LemmyNet/lemmy-ui/issues/2796
+  /**
+   * https://github.com/LemmyNet/lemmy-ui/issues/2796
+   */
   "Fullsize thumbnails": ["0.19.6", SUPPORTED_ON_OLDER_EXCLUSIVE],
+
+  /**
+   * https://github.com/LemmyNet/lemmy/issues/5183
+   */
   "Random community API": "0.19.6",
 } as const;
 
