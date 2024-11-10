@@ -11,6 +11,7 @@ import {
 
 import { COMMENT_SORTS } from "#/features/comment/CommentSort";
 import { ALL_POST_SORTS } from "#/features/feed/PostSort";
+import { arrayOfAll } from "#/helpers/array";
 
 export interface IPostMetadata {
   post_id: number;
@@ -320,7 +321,10 @@ export interface UserTag {
   sourceUrl?: string;
 }
 
-export interface SettingValueTypes {
+/**
+ * Global settings, loaded once at startup
+ */
+export interface GlobalSettingValueTypes {
   always_show_author: boolean;
   always_use_reader_mode: boolean;
   auto_hide_read: boolean;
@@ -334,32 +338,20 @@ export interface SettingValueTypes {
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_thumbnail_size: CompactThumbnailSizeType;
   default_comment_sort: CommentDefaultSort;
-  default_comment_sort_by_feed: CommentDefaultSort;
-  default_feed: DefaultFeedType;
   default_post_sort: PostSortType;
-  default_post_sort_by_feed: PostSortType;
   disable_auto_hide_in_communities: boolean;
-  disable_left_swipes: boolean;
   disable_marking_posts_read: boolean;
-  disable_right_swipes: boolean;
   embed_crossposts: boolean;
   embed_external_media: boolean;
   enable_haptic_feedback: boolean;
-  favorite_communities: string[];
   filtered_keywords: string[];
   filtered_websites: string[];
-  gesture_swipe_comment: SwipeActions;
-  gesture_swipe_inbox: SwipeActions;
-  gesture_swipe_post: SwipeActions;
-  has_presented_block_nsfw_tip: boolean;
   highlight_new_account: boolean;
   infinite_scrolling: boolean;
   jump_button_position: JumpButtonPositionType;
   large_show_voting_buttons: boolean;
   link_handler: LinkHandlerType;
-  long_swipe_trigger_point: LongSwipeTriggerPointType;
   mark_read_on_scroll: boolean;
-  migration_links: string[];
   no_subscribed_in_feed: boolean;
   post_appearance_type: PostAppearanceType;
   prefer_native_apps: boolean;
@@ -387,6 +379,84 @@ export interface SettingValueTypes {
   vote_display_mode: VoteDisplayMode;
   votes_theme: VotesThemeType;
 }
+
+/**
+ * Dynamic settings, can change per community and/or user
+ */
+interface DynamicSettingValueTypes {
+  default_comment_sort_by_feed: CommentDefaultSort;
+  default_feed: DefaultFeedType;
+  default_post_sort_by_feed: PostSortType;
+  disable_left_swipes: boolean;
+  disable_right_swipes: boolean;
+  favorite_communities: string[];
+  gesture_swipe_comment: SwipeActions;
+  gesture_swipe_inbox: SwipeActions;
+  gesture_swipe_post: SwipeActions;
+  has_presented_block_nsfw_tip: boolean;
+  long_swipe_trigger_point: LongSwipeTriggerPointType;
+  migration_links: string[];
+}
+
+export interface SettingValueTypes
+  extends GlobalSettingValueTypes,
+    DynamicSettingValueTypes {}
+
+export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
+  "always_show_author",
+  "always_use_reader_mode",
+  "auto_hide_read",
+  "autoplay_media",
+  "blur_nsfw",
+  "collapse_comment_threads",
+  "comments_theme",
+  "community_at_top",
+  "compact_show_self_post_thumbnails",
+  "compact_show_voting_buttons",
+  "compact_thumbnail_position_type",
+  "compact_thumbnail_size",
+  "default_comment_sort",
+  "default_post_sort",
+  "disable_auto_hide_in_communities",
+  "disable_marking_posts_read",
+  "embed_crossposts",
+  "embed_external_media",
+  "enable_haptic_feedback",
+  "filtered_keywords",
+  "filtered_websites",
+  "highlight_new_account",
+  "infinite_scrolling",
+  "jump_button_position",
+  "large_show_voting_buttons",
+  "link_handler",
+  "mark_read_on_scroll",
+  "no_subscribed_in_feed",
+  "post_appearance_type",
+  "prefer_native_apps",
+  "profile_label",
+  "quick_switch_dark_mode",
+  "remember_community_comment_sort",
+  "remember_community_post_sort",
+  "remember_post_appearance_type",
+  "show_collapsed_comment",
+  "show_comment_images",
+  "show_community_icons",
+  "show_hidden_in_communities",
+  "show_hide_read_button",
+  "show_jump_button",
+  "subscribed_icon",
+  "tags_enabled",
+  "tags_hide_instance",
+  "tags_save_source",
+  "tags_track_votes",
+  "tap_to_collapse",
+  "thumbnailinator_enabled",
+  "touch_friendly_links",
+  "upvote_on_save",
+  "user_instance_url_display",
+  "vote_display_mode",
+  "votes_theme",
+]);
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {
   key: T;
@@ -830,6 +900,15 @@ export class WefwefDB extends Dexie {
       }
 
       return setting.value as SettingValueTypes[T];
+    });
+  }
+
+  /**
+   * Convenience method for app startup
+   */
+  getSettings<T extends keyof SettingValueTypes>(keys: T[]) {
+    return this.transaction("r", this.settings, async () => {
+      return await this.settings.bulkGet(keys);
     });
   }
 

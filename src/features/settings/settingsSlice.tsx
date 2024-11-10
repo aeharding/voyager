@@ -9,13 +9,15 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import Dexie from "dexie";
-import { cloneDeep, merge } from "es-toolkit";
+import { merge, zipObject } from "es-toolkit";
+import { produce } from "immer";
 import { PostSortType } from "lemmy-js-client";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
 import {
+  ALL_GLOBAL_SETTINGS,
   AppThemeType,
   AutoplayMediaType,
   CommentDefaultSort,
@@ -24,6 +26,7 @@ import {
   CompactThumbnailPositionType,
   CompactThumbnailSizeType,
   DefaultFeedType,
+  GlobalSettingValueTypes,
   InstanceUrlDisplayMode,
   JumpButtonPositionType,
   LinkHandlerType,
@@ -166,11 +169,13 @@ interface SettingsState {
  * We continue using localstorage for specific items because indexeddb is slow
  * and we don't want to wait for it to load before rendering the app and cause flickering
  */
-export function buildInitialState(): SettingsState {
+export function buildInitialStateWithLocalStorage(): SettingsState {
   const localStorageInitialState: DeepPartial<SettingsState> =
     getLocalStorageInitialState();
 
-  return merge(cloneDeep(initialState), localStorageInitialState);
+  return produce(initialState, (draft) =>
+    merge(draft, localStorageInitialState),
+  );
 }
 
 const initialState: SettingsState = {
@@ -298,7 +303,7 @@ export const defaultThreadCollapse = createSelector(
 export const appearanceSlice = createSlice({
   name: "appearance",
 
-  initialState: buildInitialState(),
+  initialState: buildInitialStateWithLocalStorage(),
 
   extraReducers: (builder) => {
     builder.addCase(
@@ -590,7 +595,7 @@ export const appearanceSlice = createSlice({
     },
 
     resetSettings: () => ({
-      ...buildInitialState(),
+      ...buildInitialStateWithLocalStorage(),
       ready: true,
     }),
 
@@ -713,244 +718,19 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
   "appearance/fetchSettingsFromDatabase",
   async (_, thunkApi) => {
     const result = db.transaction("r", db.settings, async () => {
-      const always_show_author = await db.getSetting("always_show_author"),
-        always_use_reader_mode = await db.getSetting("always_use_reader_mode"),
-        auto_hide_read = await db.getSetting("auto_hide_read"),
-        autoplay_media = await db.getSetting("autoplay_media"),
-        blur_nsfw = await db.getSetting("blur_nsfw"),
-        collapse_comment_threads = await db.getSetting(
-          "collapse_comment_threads",
-        ),
-        comments_theme = await db.getSetting("comments_theme"),
-        community_at_top = await db.getSetting("community_at_top"),
-        compact_show_self_post_thumbnails = await db.getSetting(
-          "compact_show_self_post_thumbnails",
-        ),
-        compact_show_voting_buttons = await db.getSetting(
-          "compact_show_voting_buttons",
-        ),
-        compact_thumbnail_position_type = await db.getSetting(
-          "compact_thumbnail_position_type",
-        ),
-        compact_thumbnail_size = await db.getSetting("compact_thumbnail_size"),
-        default_comment_sort = await db.getSetting("default_comment_sort"),
-        default_post_sort = await db.getSetting("default_post_sort"),
-        disable_auto_hide_in_communities = await db.getSetting(
-          "disable_auto_hide_in_communities",
-        ),
-        disable_marking_posts_read = await db.getSetting(
-          "disable_marking_posts_read",
-        ),
-        embed_crossposts = await db.getSetting("embed_crossposts"),
-        embed_external_media = await db.getSetting("embed_external_media"),
-        enable_haptic_feedback = await db.getSetting("enable_haptic_feedback"),
-        filtered_keywords = await db.getSetting("filtered_keywords"),
-        filtered_websites = await db.getSetting("filtered_websites"),
-        highlight_new_account = await db.getSetting("highlight_new_account"),
-        infinite_scrolling = await db.getSetting("infinite_scrolling"),
-        jump_button_position = await db.getSetting("jump_button_position"),
-        large_show_voting_buttons = await db.getSetting(
-          "large_show_voting_buttons",
-        ),
-        link_handler = await db.getSetting("link_handler"),
-        mark_read_on_scroll = await db.getSetting("mark_read_on_scroll"),
-        no_subscribed_in_feed = await db.getSetting("no_subscribed_in_feed"),
-        post_appearance_type = await db.getSetting("post_appearance_type"),
-        prefer_native_apps = await db.getSetting("prefer_native_apps"),
-        profile_label = await db.getSetting("profile_label"),
-        quick_switch_dark_mode = await db.getSetting("quick_switch_dark_mode"),
-        remember_community_comment_sort = await db.getSetting(
-          "remember_community_comment_sort",
-        ),
-        remember_community_post_sort = await db.getSetting(
-          "remember_community_post_sort",
-        ),
-        remember_post_appearance_type = await db.getSetting(
-          "remember_post_appearance_type",
-        ),
-        show_collapsed_comment = await db.getSetting("show_collapsed_comment"),
-        show_comment_images = await db.getSetting("show_comment_images"),
-        show_community_icons = await db.getSetting("show_community_icons"),
-        show_hidden_in_communities = await db.getSetting(
-          "show_hidden_in_communities",
-        ),
-        show_hide_read_button = await db.getSetting("show_hide_read_button"),
-        show_jump_button = await db.getSetting("show_jump_button"),
-        subscribed_icon = await db.getSetting("subscribed_icon"),
-        tags_enabled = await db.getSetting("tags_enabled"),
-        tags_hide_instance = await db.getSetting("tags_hide_instance"),
-        tags_save_source = await db.getSetting("tags_save_source"),
-        tags_track_votes = await db.getSetting("tags_track_votes"),
-        tap_to_collapse = await db.getSetting("tap_to_collapse"),
-        thumbnailinator_enabled = await db.getSetting(
-          "thumbnailinator_enabled",
-        ),
-        touch_friendly_links = await db.getSetting("touch_friendly_links"),
-        upvote_on_save = await db.getSetting("upvote_on_save"),
-        user_instance_url_display = await db.getSetting(
-          "user_instance_url_display",
-        ),
-        vote_display_mode = await db.getSetting("vote_display_mode"),
-        votes_theme = await db.getSetting("votes_theme");
+      const settings = zipObject(
+        ALL_GLOBAL_SETTINGS,
+        await db.getSettings(ALL_GLOBAL_SETTINGS),
+      ) as unknown as GlobalSettingValueTypes;
 
       const state = thunkApi.getState() as RootState;
 
-      return {
-        ...state.settings,
-        ready: true,
-
-        appearance: {
-          ...state.settings.appearance,
-          commentsTheme:
-            comments_theme ?? initialState.appearance.commentsTheme,
-          compact: {
-            showSelfPostThumbnails:
-              compact_show_self_post_thumbnails ??
-              initialState.appearance.compact.showSelfPostThumbnails,
-            showVotingButtons:
-              compact_show_voting_buttons ??
-              initialState.appearance.compact.showVotingButtons,
-            thumbnailSize:
-              compact_thumbnail_size ??
-              initialState.appearance.compact.thumbnailSize,
-            thumbnailsPosition:
-              compact_thumbnail_position_type ??
-              initialState.appearance.compact.thumbnailsPosition,
-          },
-          dark: {
-            ...state.settings.appearance.dark,
-            quickSwitch:
-              quick_switch_dark_mode ??
-              initialState.appearance.dark.quickSwitch,
-          },
-          general: {
-            profileLabel:
-              profile_label ?? initialState.appearance.general.profileLabel,
-            userInstanceUrlDisplay:
-              user_instance_url_display ??
-              initialState.appearance.general.userInstanceUrlDisplay,
-          },
-          large: {
-            showVotingButtons:
-              large_show_voting_buttons ??
-              initialState.appearance.large.showVotingButtons,
-          },
-          posts: {
-            alwaysShowAuthor:
-              always_show_author ??
-              initialState.appearance.posts.alwaysShowAuthor,
-            blurNsfw: blur_nsfw ?? initialState.appearance.posts.blurNsfw,
-            communityAtTop:
-              community_at_top ?? initialState.appearance.posts.communityAtTop,
-            embedCrossposts:
-              embed_crossposts ?? initialState.appearance.posts.embedCrossposts,
-            embedExternalMedia:
-              embed_external_media ??
-              initialState.appearance.posts.embedExternalMedia,
-            rememberType:
-              remember_post_appearance_type ??
-              initialState.appearance.posts.rememberType,
-            showCommunityIcons:
-              show_community_icons ??
-              initialState.appearance.posts.showCommunityIcons,
-            subscribedIcon:
-              subscribed_icon ?? initialState.appearance.posts.subscribedIcon,
-            type: post_appearance_type ?? initialState.appearance.posts.type,
-          },
-          votesTheme: votes_theme ?? initialState.appearance.votesTheme,
-          voting: {
-            voteDisplayMode:
-              vote_display_mode ??
-              initialState.appearance.voting.voteDisplayMode,
-          },
-        },
-        blocks: {
-          keywords: filtered_keywords ?? initialState.blocks.keywords,
-          websites: filtered_websites ?? initialState.blocks.websites,
-        },
-        general: {
-          comments: {
-            collapseCommentThreads:
-              collapse_comment_threads ??
-              initialState.general.comments.collapseCommentThreads,
-            highlightNewAccount:
-              highlight_new_account ??
-              initialState.general.comments.highlightNewAccount,
-            jumpButtonPosition:
-              jump_button_position ??
-              initialState.general.comments.jumpButtonPosition,
-            rememberCommunitySort:
-              remember_community_comment_sort ??
-              initialState.general.comments.rememberCommunitySort,
-            showCollapsed:
-              show_collapsed_comment ??
-              initialState.general.comments.showCollapsed,
-            showCommentImages:
-              show_comment_images ??
-              initialState.general.comments.showCommentImages,
-            showJumpButton:
-              show_jump_button ?? initialState.general.comments.showJumpButton,
-            sort: default_comment_sort ?? initialState.general.comments.sort,
-            tapToCollapse:
-              tap_to_collapse ?? initialState.general.comments.tapToCollapse,
-            touchFriendlyLinks:
-              touch_friendly_links ??
-              initialState.general.comments.touchFriendlyLinks,
-          },
-          defaultFeed: initialState.general.defaultFeed,
-          enableHapticFeedback:
-            enable_haptic_feedback ?? initialState.general.enableHapticFeedback,
-          linkHandler: link_handler ?? initialState.general.linkHandler,
-          noSubscribedInFeed:
-            no_subscribed_in_feed ?? initialState.general.noSubscribedInFeed,
-          posts: {
-            autoHideRead:
-              auto_hide_read ?? initialState.general.posts.autoHideRead,
-            autoplayMedia:
-              autoplay_media ?? initialState.general.posts.autoplayMedia,
-            disableAutoHideInCommunities:
-              disable_auto_hide_in_communities ??
-              initialState.general.posts.disableAutoHideInCommunities,
-            disableMarkingRead:
-              disable_marking_posts_read ??
-              initialState.general.posts.disableMarkingRead,
-            infiniteScrolling:
-              infinite_scrolling ??
-              initialState.general.posts.infiniteScrolling,
-            markReadOnScroll:
-              mark_read_on_scroll ??
-              initialState.general.posts.markReadOnScroll,
-            rememberCommunitySort:
-              remember_community_post_sort ??
-              initialState.general.posts.rememberCommunitySort,
-            showHiddenInCommunities:
-              show_hidden_in_communities ??
-              initialState.general.posts.showHiddenInCommunities,
-            showHideReadButton:
-              show_hide_read_button ??
-              initialState.general.posts.showHideReadButton,
-            sort: default_post_sort ?? initialState.general.posts.sort,
-            upvoteOnSave:
-              upvote_on_save ?? initialState.general.posts.upvoteOnSave,
-          },
-          preferNativeApps:
-            prefer_native_apps ?? initialState.general.preferNativeApps,
-          safari: {
-            alwaysUseReaderMode:
-              always_use_reader_mode ??
-              initialState.general.safari.alwaysUseReaderMode,
-          },
-          thumbnailinatorEnabled:
-            thumbnailinator_enabled ??
-            initialState.general.thumbnailinatorEnabled,
-        },
-        tags: {
-          enabled: tags_enabled ?? initialState.tags.enabled,
-          hideInstance: tags_hide_instance ?? initialState.tags.hideInstance,
-          saveSource: tags_save_source ?? initialState.tags.saveSource,
-          trackVotes: tags_track_votes ?? initialState.tags.trackVotes,
-        },
-      };
+      return produce(state.settings, (draft) => {
+        merge(draft, {
+          ready: true,
+          ...hydrateStateWithGlobalSettings(settings),
+        });
+      });
     });
 
     try {
@@ -1035,3 +815,95 @@ export const {
 } = appearanceSlice.actions;
 
 export default appearanceSlice.reducer;
+
+/**
+ * Hydrates the state with the global settings from the database.
+ *
+ * For user settings, please see `store.tsx` -> `SetupStore` -> `afterSetup`.
+ *
+ * @param settings - The global settings from the database.
+ * @returns The hydrated state.
+ */
+function hydrateStateWithGlobalSettings(settings: GlobalSettingValueTypes) {
+  return {
+    appearance: {
+      commentsTheme: settings.comments_theme,
+      compact: {
+        showSelfPostThumbnails: settings.compact_show_self_post_thumbnails,
+        showVotingButtons: settings.compact_show_voting_buttons,
+        thumbnailSize: settings.compact_thumbnail_size,
+        thumbnailsPosition: settings.compact_thumbnail_position_type,
+      },
+      dark: {
+        quickSwitch: settings.quick_switch_dark_mode,
+      },
+      general: {
+        profileLabel: settings.profile_label,
+        userInstanceUrlDisplay: settings.user_instance_url_display,
+      },
+      large: {
+        showVotingButtons: settings.large_show_voting_buttons,
+      },
+      posts: {
+        alwaysShowAuthor: settings.always_show_author,
+        blurNsfw: settings.blur_nsfw,
+        communityAtTop: settings.community_at_top,
+        embedCrossposts: settings.embed_crossposts,
+        embedExternalMedia: settings.embed_external_media,
+        rememberType: settings.remember_post_appearance_type,
+        showCommunityIcons: settings.show_community_icons,
+        subscribedIcon: settings.subscribed_icon,
+        type: settings.post_appearance_type,
+      },
+      votesTheme: settings.votes_theme,
+      voting: {
+        voteDisplayMode: settings.vote_display_mode,
+      },
+    },
+    blocks: {
+      keywords: settings.filtered_keywords,
+      websites: settings.filtered_websites,
+    },
+    general: {
+      comments: {
+        collapseCommentThreads: settings.collapse_comment_threads,
+        highlightNewAccount: settings.highlight_new_account,
+        jumpButtonPosition: settings.jump_button_position,
+        rememberCommunitySort: settings.remember_community_comment_sort,
+        showCollapsed: settings.show_collapsed_comment,
+        showCommentImages: settings.show_comment_images,
+        showJumpButton: settings.show_jump_button,
+        sort: settings.default_comment_sort,
+        tapToCollapse: settings.tap_to_collapse,
+        touchFriendlyLinks: settings.touch_friendly_links,
+      },
+      enableHapticFeedback: settings.enable_haptic_feedback,
+      linkHandler: settings.link_handler,
+      noSubscribedInFeed: settings.no_subscribed_in_feed,
+      posts: {
+        autoHideRead: settings.auto_hide_read,
+        autoplayMedia: settings.autoplay_media,
+        disableAutoHideInCommunities: settings.disable_auto_hide_in_communities,
+        disableMarkingRead: settings.disable_marking_posts_read,
+        infiniteScrolling: settings.infinite_scrolling,
+        markReadOnScroll: settings.mark_read_on_scroll,
+        rememberCommunitySort: settings.remember_community_post_sort,
+        showHiddenInCommunities: settings.show_hidden_in_communities,
+        showHideReadButton: settings.show_hide_read_button,
+        sort: settings.default_post_sort,
+        upvoteOnSave: settings.upvote_on_save,
+      },
+      preferNativeApps: settings.prefer_native_apps,
+      safari: {
+        alwaysUseReaderMode: settings.always_use_reader_mode,
+      },
+      thumbnailinatorEnabled: settings.thumbnailinator_enabled,
+    },
+    tags: {
+      enabled: settings.tags_enabled,
+      hideInstance: settings.tags_hide_instance,
+      saveSource: settings.tags_save_source,
+      trackVotes: settings.tags_track_votes,
+    },
+  };
+}
