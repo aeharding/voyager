@@ -21,6 +21,7 @@ const memoizedCompare = memoize(
 const featureVersionSupported = {
   // https://github.com/LemmyNet/lemmy-ui/issues/2796
   "Fullsize thumbnails": ["0.19.6", SUPPORTED_ON_OLDER_EXCLUSIVE],
+  "Random community API": "0.19.6",
 } as const;
 
 type Feature = keyof typeof featureVersionSupported;
