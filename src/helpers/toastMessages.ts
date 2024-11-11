@@ -221,7 +221,7 @@ export const messageSent: AppToastOptions = {
 
 export const alreadyHere: AppToastOptions = {
   ...shortSuccessDefaults,
-  message: "You're already here!",
+  message: "You’re already here!",
 };
 
 export const photoSaved: AppToastOptions = {
@@ -244,7 +244,7 @@ export const migrateParseError: AppToastOptions = {
 
 export const replyStubError: AppToastOptions = {
   ...shortFailDefaults,
-  message: "You can't reply to a removed comment",
+  message: "You can’t reply to a removed comment",
   color: "warning",
 };
 
@@ -289,6 +289,6 @@ export const deepLinkFailed: AppToastOptions = {
 };
 
 export const privateMessageSendFailed: AppToastOptions = {
-  message: `Message failed to send. Please try again`,
+  message: "Message failed to send. Please try again",
   color: "danger",
 };
