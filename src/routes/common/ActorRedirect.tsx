@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect } from "react";
 import { useLocation } from "react-router";
 
 import { isInstalled } from "#/helpers/device";
@@ -22,12 +22,7 @@ function ActorRedirectEnabled({ children }: React.PropsWithChildren) {
   const ionViewIsVisible = useIonViewIsVisible();
   const router = useOptimizedIonRouter();
 
-  const fixedForPathname = useRef("");
-
   useLayoutEffect(() => {
-    if (fixedForPathname.current === location.pathname) {
-      return;
-    }
     if (!ionViewIsVisible) return;
 
     const [first, second, _wrongActor, ...urlEnd] =
@@ -38,8 +33,6 @@ function ActorRedirectEnabled({ children }: React.PropsWithChildren) {
 
     if (!connectedInstance || !_wrongActor) return;
     if (connectedInstance === _wrongActor) return;
-
-    fixedForPathname.current = location.pathname;
 
     requestAnimationFrame(() => {
       router.push(
