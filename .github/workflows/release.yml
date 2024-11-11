@@ -44,6 +44,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - run: corepack enable
+
       - name: Run trapeze (update iOS and Android version/code)
         run: pnpm exec trapeze run trapeze.yaml
         env:
