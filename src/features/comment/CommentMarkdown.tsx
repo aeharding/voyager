@@ -1,8 +1,7 @@
-import { useMemo } from "react";
-import { useAppSelector } from "../../store";
-import InAppExternalLink from "../shared/InAppExternalLink";
-import Markdown, { MarkdownProps } from "../shared/markdown/Markdown";
-import MarkdownImg from "../shared/markdown/MarkdownImg";
+import InAppExternalLink from "#/features/shared/InAppExternalLink";
+import Markdown, { MarkdownProps } from "#/features/shared/markdown/Markdown";
+import MarkdownImg from "#/features/shared/markdown/MarkdownImg";
+import { useAppSelector } from "#/store";
 
 interface CommentMarkdownProps extends Omit<MarkdownProps, "components"> {
   id: string;
@@ -16,27 +15,24 @@ export default function CommentMarkdown(props: CommentMarkdownProps) {
   return (
     <Markdown
       {...props}
-      components={useMemo(
-        () => ({
-          img: (props) =>
-            !showCommentImages ? (
-              <InAppExternalLink
-                href={props.src}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {props.alt || "Image"}
-              </InAppExternalLink>
-            ) : (
-              <MarkdownImg
-                small
-                {...props}
-                onClick={(e) => e.stopPropagation()}
-              />
-            ),
-        }),
-        [showCommentImages],
-      )}
+      components={{
+        img: (props) =>
+          !showCommentImages ? (
+            <InAppExternalLink
+              href={props.src}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {props.alt || "Image"}
+            </InAppExternalLink>
+          ) : (
+            <MarkdownImg
+              small
+              {...props}
+              onClick={(e) => e.stopPropagation()}
+            />
+          ),
+      }}
     />
   );
 }

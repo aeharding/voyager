@@ -1,21 +1,23 @@
+import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { PrivateMessageView } from "lemmy-js-client";
-import { useAppDispatch, useAppSelector } from "../../../store";
 import {
   useCallback,
   useContext,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
-import useClient from "../../../helpers/useClient";
-import { getInboxCounts, receivedMessages } from "../inboxSlice";
-import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
-import { PageContext } from "../../auth/PageContext";
 import { useLongPress } from "use-long-press";
-import Markdown from "../../shared/markdown/Markdown";
-import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
+
+import { PageContext } from "#/features/auth/PageContext";
+import Markdown from "#/features/shared/markdown/Markdown";
+import useClient from "#/helpers/useClient";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { getInboxCounts, receivedMessages } from "../inboxSlice";
 
 const Container = styled.div<{ first: boolean }>`
   position: relative; /* Setup a relative container for our pseudo elements */

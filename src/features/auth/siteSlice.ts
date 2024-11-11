@@ -1,13 +1,15 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
 import { GetSiteResponse } from "lemmy-js-client";
-import { AppDispatch, RootState } from "../../store";
+
+import { getRemoteHandle } from "#/helpers/lemmy";
+import { customBackOff } from "#/services/lemmy";
+import { AppDispatch, RootState } from "#/store";
+
 import {
   clientSelector,
-  userHandleSelector,
   handleSelector,
+  userHandleSelector,
 } from "./authSelectors";
-import { getRemoteHandle } from "../../helpers/lemmy";
-import { customBackOff } from "../../services/lemmy";
 
 interface SiteState {
   failedAttempt: number;
@@ -53,6 +55,7 @@ export const isAdminSelector = (state: RootState) =>
   state.site.response?.my_user?.local_user_view.local_user.admin;
 
 export const isDownvoteEnabledSelector = (state: RootState) =>
+  // @ts-expect-error TODO required changes for lemmy v0.20.0 https://github.com/aeharding/voyager/issues/1683
   state.site.response?.site_view.local_site.enable_downvotes !== false;
 
 export const localUserSelector = (state: RootState) =>

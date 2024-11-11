@@ -1,4 +1,3 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   IonAvatar,
   IonBackButton,
@@ -15,24 +14,24 @@ import {
   IonToolbar,
   useIonActionSheet,
 } from "@ionic/react";
-import useAppToast from "../../../../helpers/useAppToast";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { addGuestInstance, login } from "../../authSlice";
-import {
-  getLoginErrorMessage,
-  isLemmyError,
-} from "../../../../helpers/lemmyErrors";
-import Totp from "./Totp";
-import { DynamicDismissableModalContext } from "../../../shared/DynamicDismissableModal";
-import InAppExternalLink from "../../../shared/InAppExternalLink";
-import { HelperText } from "../../../settings/shared/formatting";
-import { buildBaseLemmyUrl, getImageSrc } from "../../../../services/lemmy";
-import { loginSuccess } from "../../../../helpers/toastMessages";
-import lemmyLogo from "../lemmyLogo.svg";
 import { styled } from "@linaria/react";
-import { VOYAGER_TERMS } from "../../../../helpers/voyager";
+import { useContext, useEffect, useRef, useState } from "react";
+
+import { HelperText } from "#/features/settings/shared/formatting";
+import AppHeader from "#/features/shared/AppHeader";
+import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+import InAppExternalLink from "#/features/shared/InAppExternalLink";
+import { getLoginErrorMessage, isLemmyError } from "#/helpers/lemmyErrors";
+import { loginSuccess } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { VOYAGER_TERMS } from "#/helpers/voyager";
+import { buildBaseLemmyUrl, getImageSrc } from "#/services/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { getInstanceFromHandle } from "../../authSelectors";
-import AppHeader from "../../../shared/AppHeader";
+import { addGuestInstance, login } from "../../authSlice";
+import lemmyLogo from "../lemmyLogo.svg";
+import Totp from "./Totp";
 
 const SiteImg = styled.img`
   object-fit: contain;

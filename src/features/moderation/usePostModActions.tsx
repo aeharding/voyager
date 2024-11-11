@@ -1,6 +1,5 @@
 import { useIonActionSheet, useIonAlert } from "@ionic/react";
-import { getCanModerate } from "./useCanModerate";
-import { CommentReport, PostReport, PostView } from "lemmy-js-client";
+import { compact, groupBy } from "es-toolkit";
 import {
   checkmarkCircleOutline,
   hammerOutline,
@@ -9,24 +8,31 @@ import {
   megaphoneOutline,
   trashOutline,
 } from "ionicons/icons";
-import store, { useAppDispatch } from "../../store";
-import { modLockPost, modRemovePost, modStickyPost } from "../post/postSlice";
+import { CommentReport, PostReport, PostView } from "lemmy-js-client";
+import { useCallback, useContext } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { trashEllipse } from "#/features/icons";
+import {
+  modLockPost,
+  modRemovePost,
+  modStickyPost,
+} from "#/features/post/postSlice";
+import { banUser } from "#/features/user/userSlice";
 import {
   buildBanFailed,
   buildBanned,
   buildLocked,
   buildStickied,
   postApproved,
-  postRemoved,
+  postRemovedMod,
   postRestored,
-} from "../../helpers/toastMessages";
-import useAppToast from "../../helpers/useAppToast";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import store, { useAppDispatch } from "#/store";
+
 import { reportsByPostIdSelector, resolvePostReport } from "./modSlice";
-import { compact, groupBy, values } from "lodash";
-import { useCallback, useContext } from "react";
-import { PageContext } from "../auth/PageContext";
-import { banUser } from "../user/userSlice";
-import { trashEllipse } from "../icons";
+import { getCanModerate } from "./useCanModerate";
 
 export default function usePostModActions(post: PostView) {
   const dispatch = useAppDispatch();
@@ -74,7 +80,7 @@ export default function usePostModActions(post: PostView) {
                 (async () => {
                   await dispatch(modRemovePost(post.post.id, true));
 
-                  presentToast(postRemoved);
+                  presentToast(postRemovedMod);
                 })();
               },
             }
@@ -103,7 +109,7 @@ export default function usePostModActions(post: PostView) {
                     (async () => {
                       await dispatch(modRemovePost(post.post.id, true, reason));
 
-                      presentToast(postRemoved);
+                      presentToast(postRemovedMod);
                     })();
                   },
                 },
@@ -196,11 +202,13 @@ export function stringifyReports(
 ): string | undefined {
   if (!reports?.length) return;
 
-  return values(groupBy(reports, (r) => r.reason))
+  return Object.values(groupBy(reports, (r) => r.reason))
     .map(
       (reports) =>
-        `${reports.length} report${reports.length === 1 ? "" : "s"}: “${
-          reports[0]!.reason
+        // ! assertion is safe because we immediately call Object.values on _.group
+        // https://github.com/radashi-org/radashi/issues/287#issuecomment-2460593221
+        `${reports!.length} report${reports!.length === 1 ? "" : "s"}: “${
+          reports![0]!.reason // group will always have one item
         }”`,
     )
     .join("\n");

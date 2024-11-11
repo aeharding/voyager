@@ -1,17 +1,19 @@
 import { IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
-import { useAppSelector, useAppDispatch } from "../../../store";
-import {
-  setCompactShowSelfPostThumbnails,
-  setCompactThumbnailSize,
-  setCompactShowVotingButtons,
-  setThumbnailPosition,
-} from "../settingsSlice";
+
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { ListHeader } from "#/features/settings/shared/formatting";
 import {
   OCompactThumbnailPositionType,
   OCompactThumbnailSizeType,
-} from "../../../services/db";
-import { ListHeader } from "../shared/formatting";
-import SettingSelector from "../shared/SettingSelector";
+} from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import {
+  setCompactShowSelfPostThumbnails,
+  setCompactShowVotingButtons,
+  setCompactThumbnailSize,
+  setThumbnailPosition,
+} from "../settingsSlice";
 
 export default function CompactSettings() {
   const dispatch = useAppDispatch();

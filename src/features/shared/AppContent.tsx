@@ -1,6 +1,5 @@
 import { IonContent } from "@ionic/react";
 import { styled } from "@linaria/react";
-import React from "react";
 
 export const maxWidthCss = `
   width: 100%;
@@ -18,12 +17,11 @@ export default function AppContent({
   scrollY,
   className,
   fullscreen = false,
-}: {
-  children: React.ReactNode;
+}: React.PropsWithChildren<{
   scrollY?: boolean;
   className?: string;
   fullscreen?: boolean;
-}) {
+}>) {
   return (
     <IonContent
       style={{ width: "100%" }}

@@ -1,16 +1,18 @@
+import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
 import { IonActionSheet, IonAlert } from "@ionic/react";
 import { CommentView, PostView, PrivateMessageView } from "lemmy-js-client";
 import { useImperativeHandle, useState } from "react";
-import useClient from "../../helpers/useClient";
-import { IonAlertCustomEvent, OverlayEventDetail } from "@ionic/core";
-import useAppToast from "../../helpers/useAppToast";
-import { isLemmyError } from "../../helpers/lemmyErrors";
+
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import { buildReported } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
 
 export type ReportableItem = CommentView | PostView | PrivateMessageView;
 
-export type ReportHandle = {
+export interface ReportHandle {
   present: (item: ReportableItem) => void;
-};
+}
 
 export default function Report({
   ref,
@@ -77,9 +79,7 @@ export default function Report({
       throw error;
     }
 
-    presentToast({
-      message: `${type} reported!`,
-    });
+    if (type) presentToast(buildReported(type));
   }
 
   const submitCustomReason = async function (

@@ -1,14 +1,16 @@
-import ModeratableItemBanner, {
-  ItemModStateType,
-  useItemModState,
-  getModStateBackgroundColor,
-} from "./banner/ModeratableItemBanner";
+import { styled } from "@linaria/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import { ReactNode, createContext, useContext } from "react";
+
+import { isPost } from "#/helpers/lemmy";
+import { useAppSelector } from "#/store";
+
+import ModeratableItemBanner, {
+  ItemModStateType,
+  getModStateBackgroundColor,
+  useItemModState,
+} from "./banner/ModeratableItemBanner";
 import useCanModerate from "./useCanModerate";
-import { useAppSelector } from "../../store";
-import { styled } from "@linaria/react";
-import { isPost } from "../../helpers/lemmy";
 
 const ModeratableItemContainer = styled.div<{
   modState?: ItemModStateType;

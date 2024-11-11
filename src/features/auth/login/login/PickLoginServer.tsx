@@ -1,10 +1,3 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
 import {
   IonBackButton,
   IonButton,
@@ -18,21 +11,24 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { VList, VListHandle } from "virtua";
 import { styled } from "@linaria/react";
-import { LOGIN_SERVERS } from "../data/servers";
-import { getClient } from "../../../../services/lemmy";
-import Login from "./Login";
-import useAppToast from "../../../../helpers/useAppToast";
-import { isValidHostname, stripProtocol } from "../../../../helpers/url";
+import { uniq } from "es-toolkit";
 import { GetSiteResponse } from "lemmy-js-client";
-import { uniq } from "lodash";
-import { getCustomServers } from "../../../../services/app";
-import AppHeader from "../../../shared/AppHeader";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { VList, VListHandle } from "virtua";
+
+import { LOGIN_SERVERS } from "#/features/auth/login/data/servers";
+import AppHeader from "#/features/shared/AppHeader";
 import {
   MINIMUM_LEMMY_VERSION,
   isMinimumSupportedLemmyVersion,
-} from "../../../../helpers/lemmy";
+} from "#/helpers/lemmy";
+import { isValidHostname, stripProtocol } from "#/helpers/url";
+import useAppToast from "#/helpers/useAppToast";
+import { getCustomServers } from "#/services/app";
+import { getClient } from "#/services/lemmy";
+
+import Login from "./Login";
 
 const Container = styled.div`
   height: 100%;

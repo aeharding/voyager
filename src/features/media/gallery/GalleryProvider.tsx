@@ -1,5 +1,10 @@
-const MAX_IMAGE_WIDTH = 4000;
-
+import { StatusBar } from "@capacitor/status-bar";
+import { compact, noop } from "es-toolkit";
+import { PostView } from "lemmy-js-client";
+import type { PreparedPhotoSwipeOptions } from "photoswipe";
+import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
+import PhotoSwipeLightbox from "photoswipe/lightbox";
+import "photoswipe/style.css";
 import React, {
   ComponentRef,
   createContext,
@@ -9,25 +14,19 @@ import React, {
   useRef,
   useState,
 } from "react";
-import GalleryPostActions from "./actions/GalleryPostActions";
 import { createPortal } from "react-dom";
-import { PostView } from "lemmy-js-client";
-import { getSafeArea, isAndroid, isNative } from "../../../helpers/device";
-
 import { useLocation } from "react-router";
-import { StatusBar } from "@capacitor/status-bar";
-import { setPostRead } from "../../post/postSlice";
-import { useAppDispatch } from "../../../store";
+
+import { findBlurOverlayContainer } from "#/features/post/inFeed/large/media/BlurOverlayMessage";
+import { setPostRead } from "#/features/post/postSlice";
+import { getSafeArea, isAndroid, isNative } from "#/helpers/device";
+import { useAppDispatch } from "#/store";
+
 import type GalleryMedia from "./GalleryMedia";
+import GalleryPostActions from "./actions/GalleryPostActions";
 import ImageMoreActions from "./actions/ImageMoreActions";
 
-import type { PreparedPhotoSwipeOptions } from "photoswipe";
-import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
-import PhotoSwipeLightbox from "photoswipe/lightbox";
-
-import "photoswipe/style.css";
-import { findBlurOverlayContainer } from "../../post/inFeed/large/media/BlurOverlayMessage";
-import { compact } from "lodash";
+const MAX_IMAGE_WIDTH = 4000;
 
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
@@ -41,20 +40,17 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
-  open: () => {},
-  close: () => {},
+  // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
+  open: async () => {},
+  close: noop,
 });
 
 const galleryHashEnabled = isAndroid();
 const OPEN_HASH = "galleryOpen";
 
-interface GalleryProviderProps {
-  children: React.ReactNode;
-}
-
 type ThumbEl = ComponentRef<typeof GalleryMedia>;
 
-export default function GalleryProvider({ children }: GalleryProviderProps) {
+export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const dispatch = useAppDispatch();
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null,

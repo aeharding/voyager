@@ -1,8 +1,10 @@
 import { styled } from "@linaria/react";
-import { isNative } from "../../../../helpers/device";
+
+import { isNative } from "#/helpers/device";
+
+import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
 import { BottomContainer, BottomContainerActions } from "./shared";
-import AltText from "./AltText";
 
 const TopContainer = styled.div`
   position: absolute;

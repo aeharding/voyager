@@ -1,10 +1,5 @@
 import { useIonActionSheet, useIonAlert } from "@ionic/react";
-import store, { useAppDispatch } from "../../store";
-import { useCallback, useContext, useMemo, useState } from "react";
-import useAppToast from "../../helpers/useAppToast";
-import { CommentView } from "lemmy-js-client";
-import { localUserSelector } from "../auth/siteSlice";
-import { getCanModerate } from "./useCanModerate";
+import { compact } from "es-toolkit";
 import {
   checkmarkCircleOutline,
   colorWandOutline,
@@ -12,24 +7,31 @@ import {
   shieldCheckmarkOutline,
   trashOutline,
 } from "ionicons/icons";
+import { CommentView } from "lemmy-js-client";
+import { useCallback, useContext, useMemo, useState } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { localUserSelector } from "#/features/auth/siteSlice";
+import {
+  modDistinguishComment,
+  modNukeCommentChain,
+  modRemoveComment,
+} from "#/features/comment/commentSlice";
+import { trashEllipse } from "#/features/icons";
+import { banUser } from "#/features/user/userSlice";
 import {
   buildBanFailed,
   buildBanned,
   commentApproved,
   commentDistinguished,
-  commentRemoved,
-} from "../../helpers/toastMessages";
-import {
-  modDistinguishComment,
-  modNukeCommentChain,
-  modRemoveComment,
-} from "../comment/commentSlice";
-import { stringifyReports } from "./usePostModActions";
+  commentRemovedMod,
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import store, { useAppDispatch } from "#/store";
+
 import { reportsByCommentIdSelector, resolveCommentReport } from "./modSlice";
-import { banUser } from "../user/userSlice";
-import { PageContext } from "../auth/PageContext";
-import { compact } from "lodash";
-import { trashEllipse } from "../icons";
+import { getCanModerate } from "./useCanModerate";
+import { stringifyReports } from "./usePostModActions";
 
 export default function useCommentModActions(commentView: CommentView) {
   const dispatch = useAppDispatch();
@@ -101,7 +103,7 @@ export default function useCommentModActions(commentView: CommentView) {
                 (async () => {
                   await dispatch(modRemoveComment(comment.id, true));
 
-                  presentToast(commentRemoved);
+                  presentToast(commentRemovedMod);
                 })();
               },
             }
@@ -132,7 +134,7 @@ export default function useCommentModActions(commentView: CommentView) {
                         modRemoveComment(comment.id, true, reason),
                       );
 
-                      presentToast(commentRemoved);
+                      presentToast(commentRemovedMod);
                     })();
                   },
                 },

@@ -1,9 +1,11 @@
-import { ComponentProps } from "react";
-import LargeFeedMedia from "./LargeFeedMedia";
-import LargeFeedRedgifMedia from "../../../../media/external/redgifs/LargeFeedRedgifMedia";
-import { isRedgif } from "../../../../media/external/redgifs/helpers";
 import { PostView } from "lemmy-js-client";
+import { ComponentProps } from "react";
+
+import LargeFeedRedgifMedia from "#/features/media/external/redgifs/LargeFeedRedgifMedia";
+import { isRedgif } from "#/features/media/external/redgifs/helpers";
+
 import usePostSrc from "../../usePostSrc";
+import LargeFeedMedia from "./LargeFeedMedia";
 
 export default function LargeFeedPostMedia(
   props: Omit<ComponentProps<typeof LargeFeedMedia>, "src"> & {

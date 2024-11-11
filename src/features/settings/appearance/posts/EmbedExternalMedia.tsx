@@ -1,9 +1,10 @@
 import { IonItem, IonToggle } from "@ionic/react";
 
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { platformSupportsRedgif } from "#/features/media/external/redgifs/helpers";
+import { resetRedgifs } from "#/features/media/external/redgifs/redgifsSlice";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setEmbedExternalMedia } from "../../settingsSlice";
-import { resetRedgifs } from "../../../media/external/redgifs/redgifsSlice";
-import { platformSupportsRedgif } from "../../../media/external/redgifs/helpers";
 
 export default function EmbedExternalMedia() {
   const dispatch = useAppDispatch();

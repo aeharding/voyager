@@ -6,13 +6,14 @@ import {
   IonSpinner,
   IonText,
 } from "@ionic/react";
-import { useCallback, useEffect, useImperativeHandle, useState } from "react";
-import { getClient } from "../../../../services/lemmy";
-import { GetCaptchaResponse, Register } from "lemmy-js-client";
 import { styled } from "@linaria/react";
 import { refresh, volumeHigh, volumeHighOutline } from "ionicons/icons";
-import { b64ToBlob } from "../../../../helpers/blob";
-import { PlainButton } from "../../../shared/PlainButton";
+import { GetCaptchaResponse, Register } from "lemmy-js-client";
+import { useCallback, useEffect, useImperativeHandle, useState } from "react";
+
+import { PlainButton } from "#/features/shared/PlainButton";
+import { b64ToBlob } from "#/helpers/blob";
+import { getClient } from "#/services/lemmy";
 
 const CaptchaIonList = styled(IonList)`
   position: relative;

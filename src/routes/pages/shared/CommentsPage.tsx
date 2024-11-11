@@ -5,20 +5,21 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { FetchFn } from "../../../features/feed/Feed";
-import { memo, useCallback } from "react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import useClient from "../../../helpers/useClient";
-import { LIMIT } from "../../../services/lemmy";
+import { ListingType } from "lemmy-js-client";
+
+import { getFeedUrlName } from "#/features/community/mod/ModActions";
+import { FetchFn } from "#/features/feed/Feed";
+import FeedContextProvider from "#/features/feed/FeedContext";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import FeedContextProvider from "../../../features/feed/FeedContext";
+} from "#/features/feed/PostCommentFeed";
+import AppHeader from "#/features/shared/AppHeader";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { LIMIT } from "#/services/lemmy";
+
 import FeedContent from "./FeedContent";
-import { ListingType } from "lemmy-js-client";
 import { listingTypeTitle } from "./SpecialFeedPage";
-import { getFeedUrlName } from "../../../features/community/mod/ModActions";
-import AppHeader from "../../../features/shared/AppHeader";
 
 type CommentsPageProps =
   | {
@@ -28,7 +29,7 @@ type CommentsPageProps =
       communityName: string;
     };
 
-function CommentsPage(props: CommentsPageProps) {
+export default function CommentsPage(props: CommentsPageProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   const client = useClient();
@@ -36,19 +37,19 @@ function CommentsPage(props: CommentsPageProps) {
   const communityNameIfAvailable =
     "communityName" in props ? props.communityName : undefined;
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
-      const { comments } = await client.getComments({
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    const { comments } = await client.getComments(
+      {
         ...pageData,
         limit: LIMIT,
         community_name: communityNameIfAvailable,
         type_: "type" in props ? props.type : undefined,
         sort: "New",
-      });
-      return comments;
-    },
-    [client, props, communityNameIfAvailable],
-  );
+      },
+      ...rest,
+    );
+    return comments;
+  };
 
   const feedName = (() => {
     if ("communityName" in props) return props.communityName;
@@ -80,5 +81,3 @@ function CommentsPage(props: CommentsPageProps) {
     </FeedContextProvider>
   );
 }
-
-export default memo(CommentsPage);

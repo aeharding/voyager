@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import {
   IonBackButton,
   IonButtons,
@@ -6,7 +5,9 @@ import {
   IonText,
   IonToolbar,
 } from "@ionic/react";
-import AppHeader from "../../shared/AppHeader";
+import { styled } from "@linaria/react";
+
+import AppHeader from "#/features/shared/AppHeader";
 
 const HelpIonContent = styled(IonContent)`
   line-height: 1.4;

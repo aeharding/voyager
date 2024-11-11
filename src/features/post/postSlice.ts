@@ -1,14 +1,20 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PostView } from "lemmy-js-client";
-import { AppDispatch, RootState } from "../../store";
+
 import {
   clientSelector,
-  userHandleSelector,
   jwtSelector,
-} from "../auth/authSelectors";
-import { IPostMetadata, db } from "../../services/db";
-import { isLemmyError } from "../../helpers/lemmyErrors";
-import { resolvePostReport } from "../moderation/modSlice";
+  userHandleSelector,
+} from "#/features/auth/authSelectors";
+import { resolvePostReport } from "#/features/moderation/modSlice";
+import {
+  fetchTagsForHandles,
+  updateTagVotes,
+} from "#/features/tags/userTagSlice";
+import { getRemoteHandle } from "#/helpers/lemmy";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import { IPostMetadata, db } from "#/services/db";
+import { AppDispatch, RootState } from "#/store";
 
 interface PostHiddenData {
   /**
@@ -222,6 +228,10 @@ export const receivedPosts = createAsyncThunk(
       postHiddenById[postMetadata.post_id] = !!postMetadata.hidden;
     }
 
+    thunkAPI.dispatch(
+      fetchTagsForHandles(posts.map((c) => getRemoteHandle(c.creator))),
+    );
+
     return {
       posts,
       postHiddenById,
@@ -244,14 +254,15 @@ export const {
 export default postSlice.reducer;
 
 export const savePost =
-  (postId: number, save: boolean) =>
+  (post: PostView, save: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const postId = post.post.id;
     const oldSaved = getState().post.postSavedById[postId];
 
     const { upvoteOnSave } = getState().settings.general.posts;
 
     if (upvoteOnSave && save) {
-      dispatch(voteOnPost(postId, 1));
+      dispatch(voteOnPost(post, 1));
     }
 
     dispatch(updatePostSaved({ postId, saved: save }));
@@ -296,13 +307,23 @@ export const setPostHidden =
   };
 
 export const voteOnPost =
-  (postId: number, vote: 1 | -1 | 0) =>
+  (post: PostView, vote: 1 | -1 | 0) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const postId = post.post.id;
+
     const oldVote = getState().post.postVotesById[postId];
 
     dispatch(updatePostVote({ postId, vote }));
 
     dispatch(setPostRead(postId));
+
+    dispatch(
+      updateTagVotes({
+        handle: getRemoteHandle(post.creator),
+        oldVote,
+        newVote: vote,
+      }),
+    );
 
     try {
       await clientSelector(getState())?.likePost({
@@ -311,6 +332,15 @@ export const voteOnPost =
       });
     } catch (error) {
       dispatch(updatePostVote({ postId, vote: oldVote }));
+
+      dispatch(
+        updateTagVotes({
+          handle: getRemoteHandle(post.creator),
+          oldVote: vote,
+          newVote: oldVote,
+        }),
+      );
+
       throw error;
     }
   };

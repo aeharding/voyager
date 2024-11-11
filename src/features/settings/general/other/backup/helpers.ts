@@ -1,6 +1,8 @@
-import { pickBy, without } from "lodash";
-import { db } from "../../../../../services/db";
-import { getAllObjectValuesDeep } from "../../../../../helpers/object";
+import { pickBy, without, zipObject } from "es-toolkit";
+
+import { getAllObjectValuesDeep } from "#/helpers/object";
+import { db } from "#/services/db";
+
 import { LOCALSTORAGE_KEYS, get, set } from "../../../syncStorage";
 
 const BASE_BACKUP_JSON = {
@@ -37,18 +39,15 @@ export async function createBackup(): Promise<Backup> {
 
   const dexieExport = JSON.parse(await dexieBlob.text());
 
+  const keys = getAllObjectValuesDeep(LOCALSTORAGE_KEYS);
+
   return {
     ...BASE_BACKUP_JSON,
     created: new Date().toISOString(),
     dexie: dexieExport,
     localStorage: pickBy(
-      // pickBy: remove null/undefined
-      Object.assign(
-        {},
-        ...getAllObjectValuesDeep(LOCALSTORAGE_KEYS).map((key) => ({
-          [key]: get(key),
-        })),
-      ),
+      // pick: remove null/undefined
+      zipObject(keys, keys.map(get)),
       (p) => p != null,
     ),
   };

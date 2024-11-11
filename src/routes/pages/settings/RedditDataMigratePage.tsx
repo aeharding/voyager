@@ -5,11 +5,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
 import { useRef } from "react";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import MigrateList from "../../../features/migrate/MigrateList";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import MigrateList from "#/features/migrate/MigrateList";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
 
 export default function RedditMigratePage() {
   const pageRef = useRef<HTMLElement>(null);

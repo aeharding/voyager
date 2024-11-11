@@ -1,18 +1,20 @@
+import { Share } from "@capacitor/share";
 import { IonButton, useIonActionSheet } from "@ionic/react";
 import { eyeOffOutline, imageOutline, listOutline } from "ionicons/icons";
-import useHidePosts from "./useHidePosts";
-import HeaderEllipsisIcon from "../shared/HeaderEllipsisIcon";
-import { Share } from "@capacitor/share";
 import { ListingType } from "lemmy-js-client";
-import store from "../../store";
-import { urlSelector } from "../auth/authSelectors";
-import { OPostAppearanceType } from "../settings/settingsSlice";
+
+import { urlSelector } from "#/features/auth/authSelectors";
 import {
   usePostAppearance,
   useSetPostAppearance,
-} from "../post/appearance/PostAppearanceProvider";
-import { getShareIcon } from "../../helpers/device";
-import { buildBaseLemmyUrl } from "../../services/lemmy";
+} from "#/features/post/appearance/PostAppearanceProvider";
+import { OPostAppearanceType } from "#/features/settings/settingsSlice";
+import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
+import { getShareIcon } from "#/helpers/device";
+import { buildBaseLemmyUrl } from "#/services/lemmy";
+import store from "#/store";
+
+import useHidePosts from "./useHidePosts";
 
 interface SpecialFeedMoreActionsProps {
   type: ListingType;

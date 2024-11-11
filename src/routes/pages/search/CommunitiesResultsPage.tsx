@@ -5,20 +5,21 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useCallback, useState } from "react";
-import { FetchFn, isFirstPage } from "../../../features/feed/Feed";
-import useClient from "../../../helpers/useClient";
-import { LIMIT } from "../../../services/lemmy";
-import PostSort from "../../../features/feed/PostSort";
+import { compact } from "es-toolkit";
 import { CommunityView, LemmyHttp, ListingType } from "lemmy-js-client";
-import CommunityFeed from "../../../features/feed/CommunityFeed";
-import { isLemmyError } from "../../../helpers/lemmyErrors";
-import useFeedSort from "../../../features/feed/sort/useFeedSort";
-import { compact } from "lodash";
-import AppHeader from "../../../features/shared/AppHeader";
-import ListingTypeFilter from "../../../features/feed/ListingType";
-import FeedContent from "../shared/FeedContent";
+import { useState } from "react";
+
+import CommunityFeed from "#/features/feed/CommunityFeed";
+import { FetchFn, isFirstPage } from "#/features/feed/Feed";
+import ListingTypeFilter from "#/features/feed/ListingType";
+import PostSort from "#/features/feed/PostSort";
+import useFeedSort from "#/features/feed/sort/useFeedSort";
+import AppHeader from "#/features/shared/AppHeader";
+import { isLemmyError } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { LIMIT } from "#/services/lemmy";
 
 interface CommunitiesResultsPageProps {
   search?: string;
@@ -36,32 +37,35 @@ export default function CommunitiesResultsPage({
   );
   const [listingType, setListingType] = useState<ListingType>("All");
 
-  const fetchFn: FetchFn<CommunityView> = useCallback(
-    async (pageData) => {
-      if (isFirstPage(pageData) && search?.includes("@")) {
-        return compact([await findExactCommunity(search, client)]);
-      }
+  const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
+    if (isFirstPage(pageData) && search?.includes("@")) {
+      return compact([await findExactCommunity(search, client)]);
+    }
 
-      const response = await (search
-        ? client.search({
+    const response = await (search
+      ? client.search(
+          {
             limit: LIMIT,
             q: search,
             type_: "Communities",
             listing_type: listingType,
             ...pageData,
             sort,
-          })
-        : client.listCommunities({
+          },
+          ...rest,
+        )
+      : client.listCommunities(
+          {
             limit: LIMIT,
             type_: listingType,
             ...pageData,
             sort,
-          }));
+          },
+          ...rest,
+        ));
 
-      return response.communities;
-    },
-    [client, search, sort, listingType],
-  );
+    return response.communities;
+  };
 
   return (
     <IonPage>

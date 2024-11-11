@@ -1,7 +1,9 @@
 import { IonLabel, IonList } from "@ionic/react";
-import { ListHeader } from "../../shared/formatting";
-import ShowUserInstance from "./ShowUserInstance";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+
 import DisplayVotes from "./DisplayVotes";
+import ShowUserInstance from "./ShowUserInstance";
 
 export default function Other() {
   return (

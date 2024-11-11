@@ -1,3 +1,5 @@
+import { css } from "@linaria/core";
+import { CommentView, PostView } from "lemmy-js-client";
 import {
   ReactElement,
   useCallback,
@@ -5,26 +7,26 @@ import {
   useEffect,
   useRef,
 } from "react";
-import Feed, { FeedProps, FetchFn } from "./Feed";
-import FeedComment from "../comment/inFeed/FeedComment";
-import { CommentView, PostView } from "lemmy-js-client";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { css } from "@linaria/core";
+
+import { receivedComments } from "#/features/comment/commentSlice";
+import FeedComment from "#/features/comment/inFeed/FeedComment";
+import CommentHr from "#/features/comment/inTree/CommentHr";
+import Post from "#/features/post/inFeed/Post";
 import {
   postHiddenByIdSelector,
   receivedPosts,
   setPostRead,
-} from "../post/postSlice";
-import { receivedComments } from "../comment/commentSlice";
-import Post from "../post/inFeed/Post";
-import CommentHr from "../comment/inTree/CommentHr";
-import { FeedContext } from "./FeedContext";
+} from "#/features/post/postSlice";
 import {
   isComment,
   isPost,
   postHasFilteredKeywords,
   postHasFilteredWebsite,
-} from "../../helpers/lemmy";
+} from "#/helpers/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import Feed, { FeedProps, FetchFn } from "./Feed";
+import { FeedContext } from "./FeedContext";
 import { useAutohidePostIfNeeded } from "./PageTypeContext";
 
 export type PostCommentItem = PostView | CommentView;
@@ -117,8 +119,8 @@ export default function PostCommentFeed({
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (page) => {
-      const result = await _fetchFn(page);
+    async (page, signal) => {
+      const result = await _fetchFn(page, signal);
 
       const items = Array.isArray(result) ? result : result.data;
 

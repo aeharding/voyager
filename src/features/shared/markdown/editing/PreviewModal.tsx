@@ -7,12 +7,14 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import Markdown from "../Markdown";
-import CommentMarkdown from "../../../comment/CommentMarkdown";
-import AppHeader from "../../AppHeader";
-import { useId } from "react";
-import { isIosTheme } from "../../../../helpers/device";
 import { arrowBackSharp } from "ionicons/icons";
+import { useId } from "react";
+
+import CommentMarkdown from "#/features/comment/CommentMarkdown";
+import { isIosTheme } from "#/helpers/device";
+
+import AppHeader from "../../AppHeader";
+import Markdown from "../Markdown";
 
 interface PreviewModalProps {
   text: string;

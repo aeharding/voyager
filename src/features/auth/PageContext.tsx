@@ -1,15 +1,6 @@
 import { useIonModal } from "@ionic/react";
-import React, {
-  RefObject,
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { changeAccount } from "../auth/authSlice";
+import { css } from "@linaria/core";
+import { noop } from "es-toolkit";
 import {
   Comment,
   CommentView,
@@ -18,22 +9,35 @@ import {
   PostView,
   PrivateMessageView,
 } from "lemmy-js-client";
-import Report, { ReportHandle, ReportableItem } from "../report/Report";
-import PostEditorModal from "../post/new/PostEditorModal";
-import SelectTextModal from "../shared/SelectTextModal";
+import React, {
+  RefObject,
+  createContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import { changeAccount } from "#/features/auth/authSlice";
+import BanUserModal from "#/features/moderation/ban/BanUserModal";
+import CreateCrosspostDialog from "#/features/post/crosspost/create/CreateCrosspostDialog";
+import PostEditorModal from "#/features/post/new/PostEditorModal";
+import Report, { ReportHandle, ReportableItem } from "#/features/report/Report";
+import DatabaseErrorModal from "#/features/settings/root/DatabaseErrorModal";
 import ShareAsImageModal, {
   ShareAsImageData,
-} from "../share/asImage/ShareAsImageModal";
-import AccountSwitcher from "./AccountSwitcher";
-import { jwtSelector } from "./authSelectors";
-import BanUserModal from "../moderation/ban/BanUserModal";
-import CreateCrosspostDialog from "../post/crosspost/create/CreateCrosspostDialog";
-import LoginModal from "./login/LoginModal";
+} from "#/features/share/asImage/ShareAsImageModal";
+import SelectTextModal from "#/features/shared/SelectTextModal";
 import GenericMarkdownEditorModal, {
   MarkdownEditorData,
-} from "../shared/markdown/editing/modal/GenericMarkdownEditorModal";
-import { NewPrivateMessage } from "../shared/markdown/editing/modal/contents/PrivateMessagePage";
-import { CommentReplyItem } from "../shared/markdown/editing/modal/contents/CommentReplyPage";
+} from "#/features/shared/markdown/editing/modal/GenericMarkdownEditorModal";
+import { CommentReplyItem } from "#/features/shared/markdown/editing/modal/contents/CommentReplyPage";
+import { NewPrivateMessage } from "#/features/shared/markdown/editing/modal/contents/PrivateMessagePage";
+import UserTagModal from "#/features/tags/UserTagModal";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import AccountSwitcher from "./AccountSwitcher";
+import { jwtSelector } from "./authSelectors";
+import LoginModal from "./login/LoginModal";
 
 export interface BanUserPayload {
   user: Person;
@@ -89,6 +93,10 @@ interface IPageContext {
   presentBanUser: (payload: BanUserPayload) => void;
 
   presentCreateCrosspost: (post: PostView) => void;
+
+  presentUserTag: (person: Person, sourceUrl?: string) => void;
+
+  presentDatabaseErrorModal: (automatic?: boolean) => void;
 }
 
 export const PageContext = createContext<IPageContext>({
@@ -97,18 +105,19 @@ export const PageContext = createContext<IPageContext>({
   presentCommentEdit: async () => undefined,
   presentCommentReply: async () => undefined,
   presentPrivateMessageCompose: async () => undefined,
-  presentReport: () => {},
-  presentPostEditor: () => {},
-  presentSelectText: () => {},
-  presentShareAsImage: () => {},
-  presentAccountSwitcher: () => {},
-  presentBanUser: () => {},
-  presentCreateCrosspost: () => {},
+  presentReport: noop,
+  presentPostEditor: noop,
+  presentSelectText: noop,
+  presentShareAsImage: noop,
+  presentAccountSwitcher: noop,
+  presentBanUser: noop,
+  presentCreateCrosspost: noop,
+  presentUserTag: noop,
+  presentDatabaseErrorModal: noop,
 });
 
-interface PageContextProvider {
+interface PageContextProvider extends React.PropsWithChildren {
   value: Pick<IPageContext, "pageRef">;
-  children: React.ReactNode;
 }
 
 export function PageContextProvider({ value, children }: PageContextProvider) {
@@ -126,53 +135,69 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     },
   );
 
+  const didDatabaseModalOpenRef = useRef(false);
+  const [_presentDatabaseErrorModal] = useIonModal(DatabaseErrorModal);
+
+  const presentDatabaseErrorModal = (automatic = false) => {
+    if (didDatabaseModalOpenRef.current && automatic) return;
+    didDatabaseModalOpenRef.current = true;
+
+    _presentDatabaseErrorModal({
+      initialBreakpoint: 1,
+      breakpoints: [0, 1],
+      cssClass: css`
+        --height: auto;
+      `,
+    });
+  };
+
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
-  const presentLoginIfNeeded = useCallback(() => {
+  const presentLoginIfNeeded = () => {
     if (jwt) return false;
 
     setIsLoginOpen(true);
     return true;
-  }, [jwt]);
+  };
 
-  const presentShareAsImage = useCallback(
-    (post: PostView, comment?: CommentView, comments?: CommentView[]) => {
+  const presentShareAsImage = (
+    post: PostView,
+    comment?: CommentView,
+    comments?: CommentView[],
+  ) => {
+    shareAsImageDataRef.current = {
+      post,
+    };
+    if (comment && comments) {
       shareAsImageDataRef.current = {
-        post,
+        ...shareAsImageDataRef.current,
+        comment,
+        comments,
       };
-      if (comment && comments) {
-        shareAsImageDataRef.current = {
-          ...shareAsImageDataRef.current,
-          comment,
-          comments,
-        };
-      }
-      presentShareAsImageModal({
-        cssClass: "save-as-image-modal",
-        initialBreakpoint: 1,
-        breakpoints: [0, 1],
-        handle: false,
-      });
-    },
-    [presentShareAsImageModal],
-  );
+    }
+    presentShareAsImageModal({
+      cssClass: "save-as-image-modal",
+      initialBreakpoint: 1,
+      breakpoints: [0, 1],
+      handle: false,
+    });
+  };
 
   // Markdown editor start
   const [markdownEditorData, setMarkdownEditorData] = useState<
     MarkdownEditorData | undefined
   >();
   const [isMarkdownEditorOpen, setIsMarkdownEditorOpen] = useState(false);
-  const presentMarkdownEditor = useCallback(
-    <T extends MarkdownEditorData>(data: Omit<T, "onSubmit">) =>
-      new Promise<Parameters<T["onSubmit"]>[0]>((resolve) => {
-        setMarkdownEditorData({
-          ...data,
-          onSubmit: resolve,
-        } as T);
-        setIsMarkdownEditorOpen(true);
-      }),
-    [],
-  );
+  const presentMarkdownEditor = <T extends MarkdownEditorData>(
+    data: Omit<T, "onSubmit">,
+  ) =>
+    new Promise<Parameters<T["onSubmit"]>[0]>((resolve) => {
+      setMarkdownEditorData({
+        ...data,
+        onSubmit: resolve,
+      } as T);
+      setIsMarkdownEditorOpen(true);
+    });
 
   useEffect(() => {
     if (isMarkdownEditorOpen) return;
@@ -183,69 +208,69 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     return;
   }, [isMarkdownEditorOpen, markdownEditorData]);
 
-  const presentPrivateMessageCompose = useCallback<
-    IPageContext["presentPrivateMessageCompose"]
-  >(
+  const presentPrivateMessageCompose: IPageContext["presentPrivateMessageCompose"] =
     (item) =>
       presentMarkdownEditor({
         type: "PRIVATE_MESSAGE",
         item,
-      }) as ReturnType<IPageContext["presentPrivateMessageCompose"]>,
-    [presentMarkdownEditor],
-  );
+      }) as ReturnType<IPageContext["presentPrivateMessageCompose"]>;
 
-  const presentCommentEdit = useCallback<IPageContext["presentCommentEdit"]>(
-    (item) =>
-      presentMarkdownEditor({
-        type: "COMMENT_EDIT",
-        item,
-      }) as ReturnType<IPageContext["presentCommentEdit"]>,
-    [presentMarkdownEditor],
-  );
+  const presentCommentEdit: IPageContext["presentCommentEdit"] = (item) =>
+    presentMarkdownEditor({
+      type: "COMMENT_EDIT",
+      item,
+    }) as ReturnType<IPageContext["presentCommentEdit"]>;
 
-  const presentCommentReply = useCallback<IPageContext["presentCommentReply"]>(
-    (item) =>
-      presentMarkdownEditor({
-        type: "COMMENT_REPLY",
-        item,
-      }) as ReturnType<IPageContext["presentCommentReply"]>,
-    [presentMarkdownEditor],
-  );
+  const presentCommentReply: IPageContext["presentCommentReply"] = (item) =>
+    presentMarkdownEditor({
+      type: "COMMENT_REPLY",
+      item,
+    }) as ReturnType<IPageContext["presentCommentReply"]>;
   // Markdown editor end
 
   // Edit/new post start
   const [postItem, setPostItem] = useState<PostView | string | undefined>();
   const [isPostOpen, setIsPostOpen] = useState(false);
-  const presentPostEditor = useCallback(
-    (postOrCommunity: PostView | string) => {
-      setPostItem(postOrCommunity);
-      setIsPostOpen(true);
-    },
-    [],
-  );
+  const presentPostEditor = (postOrCommunity: PostView | string) => {
+    setPostItem(postOrCommunity);
+    setIsPostOpen(true);
+  };
   // Edit/new post end
 
   // Select text start
   const [selectTextItem, setSelectTextItem] = useState<string | undefined>();
   const [isSelectTextOpen, setIsSelectTextOpen] = useState(false);
-  const presentSelectText = useCallback((text: string) => {
+  const presentSelectText = (text: string) => {
     setSelectTextItem(text);
     setIsSelectTextOpen(true);
-  }, []);
+  };
   // Select text end
 
   // Ban user start
   const [banItem, setBanItem] = useState<BanUserPayload | undefined>();
   const [isBanUserOpen, setIsBanUserOpen] = useState(false);
-  const presentBanUser = useCallback((banUserPayload: BanUserPayload) => {
+  const presentBanUser = (banUserPayload: BanUserPayload) => {
     setBanItem(banUserPayload);
     setIsBanUserOpen(true);
-  }, []);
+  };
   // Ban user end
 
-  const presentReport = useCallback((item: ReportableItem) => {
+  // User tag start
+  const [userTagPerson, setUserTagPerson] = useState<Person | undefined>();
+  const [userTagSourceUrl, setUserTagSourceUrl] = useState<
+    string | undefined
+  >();
+  const [isUserTagOpen, setIsUserTagOpen] = useState(false);
+  const presentUserTag = (person: Person, sourceUrl?: string) => {
+    setUserTagPerson(person);
+    setUserTagSourceUrl(sourceUrl);
+    setIsUserTagOpen(true);
+  };
+  // User tag end
+
+  const presentReport = (item: ReportableItem) => {
     reportRef.current?.present(item);
-  }, []);
+  };
 
   const [presentAccountSwitcherModal, onDismissAccountSwitcher] = useIonModal(
     AccountSwitcher,
@@ -260,9 +285,9 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     },
   );
 
-  const presentAccountSwitcher = useCallback(() => {
+  const presentAccountSwitcher = () => {
     presentAccountSwitcherModal({ cssClass: "small" });
-  }, [presentAccountSwitcherModal]);
+  };
 
   const [crosspost, setCrosspost] = useState<PostView | undefined>();
   const [presentCrosspost, onDismissCrosspost] = useIonModal(
@@ -274,47 +299,30 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
     },
   );
 
-  const presentCreateCrosspost = useCallback(
-    (post: PostView) => {
-      setCrosspost(post);
-      presentCrosspost({ cssClass: "transparent-scroll dark" });
-    },
-    [presentCrosspost],
-  );
-
-  const currentValue = useMemo(
-    () => ({
-      ...value,
-      presentLoginIfNeeded,
-      presentPrivateMessageCompose,
-      presentCommentEdit,
-      presentCommentReply,
-      presentReport,
-      presentPostEditor,
-      presentSelectText,
-      presentShareAsImage,
-      presentAccountSwitcher,
-      presentBanUser,
-      presentCreateCrosspost,
-    }),
-    [
-      presentPrivateMessageCompose,
-      presentCommentEdit,
-      presentCommentReply,
-      presentLoginIfNeeded,
-      presentPostEditor,
-      presentReport,
-      presentSelectText,
-      presentShareAsImage,
-      presentAccountSwitcher,
-      presentBanUser,
-      presentCreateCrosspost,
-      value,
-    ],
-  );
+  const presentCreateCrosspost = (post: PostView) => {
+    setCrosspost(post);
+    presentCrosspost({ cssClass: "transparent-scroll dark" });
+  };
 
   return (
-    <PageContext.Provider value={currentValue}>
+    <PageContext.Provider
+      value={{
+        ...value,
+        presentLoginIfNeeded,
+        presentPrivateMessageCompose,
+        presentCommentEdit,
+        presentCommentReply,
+        presentReport,
+        presentPostEditor,
+        presentSelectText,
+        presentShareAsImage,
+        presentAccountSwitcher,
+        presentBanUser,
+        presentCreateCrosspost,
+        presentUserTag,
+        presentDatabaseErrorModal,
+      }}
+    >
       {children}
 
       <LoginModal isOpen={isLoginOpen} setIsOpen={setIsLoginOpen} />
@@ -338,6 +346,12 @@ export function PageContextProvider({ value, children }: PageContextProvider) {
         text={selectTextItem!}
         isOpen={isSelectTextOpen}
         setIsOpen={setIsSelectTextOpen}
+      />
+      <UserTagModal
+        person={userTagPerson!}
+        sourceUrl={userTagSourceUrl!}
+        isOpen={isUserTagOpen}
+        setIsOpen={setIsUserTagOpen}
       />
     </PageContext.Provider>
   );

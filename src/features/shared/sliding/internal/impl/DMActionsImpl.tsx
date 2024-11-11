@@ -1,10 +1,13 @@
+import { noop } from "es-toolkit";
 import { ComponentProps, useContext } from "react";
-import store, { useAppDispatch } from "../../../../../store";
-import { PageContext } from "../../../../auth/PageContext";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { markRead, syncMessages } from "#/features/inbox/inboxSlice";
+import { useSharedInboxActions } from "#/features/shared/sliding/internal/shared";
+import store, { useAppDispatch } from "#/store";
+
 import type { BaseSlidingDM } from "../../BaseSliding";
-import { useSharedInboxActions } from "../shared";
 import GenericBaseSliding from "../GenericBaseSliding";
-import { markRead, syncMessages } from "../../../../inbox/inboxSlice";
 
 export default function DMActionsImpl({
   item,
@@ -36,11 +39,12 @@ export default function DMActionsImpl({
         await dispatch(markRead(item, true));
         dispatch(syncMessages());
       }}
-      collapse={() => {}}
-      collapseRootComment={() => {}}
+      collapse={noop}
+      collapseRootComment={noop}
+      // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
       save={async () => {}}
       isHidden={false}
-      shareTrigger={() => {}}
+      shareTrigger={noop}
       isSaved={false}
       {...shared}
       {...rest}

@@ -1,6 +1,8 @@
-import { isAppleDeviceInstallable, isNative } from "../../../../helpers/device";
 import { IonLabel, IonList } from "@ionic/react";
-import { ListHeader } from "../../shared/formatting";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { isAppleDeviceInstallable, isNative } from "#/helpers/device";
+
 import AlwaysUseReaderMode from "./AlwaysUseReaderMode";
 
 export default function Safari() {

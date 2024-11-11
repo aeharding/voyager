@@ -5,18 +5,20 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch } from "../../../store";
-import useClient from "../../../helpers/useClient";
-import { LIMIT } from "../../../services/lemmy";
-import { FetchFn } from "../../../features/feed/Feed";
-import { useCallback, useRef } from "react";
 import { PersonMentionView } from "lemmy-js-client";
-import InboxFeed from "../../../features/feed/InboxFeed";
-import { receivedInboxItems } from "../../../features/inbox/inboxSlice";
+import { useRef } from "react";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { FetchFn } from "#/features/feed/Feed";
+import InboxFeed from "#/features/feed/InboxFeed";
+import { receivedInboxItems } from "#/features/inbox/inboxSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { LIMIT } from "#/services/lemmy";
+import { useAppDispatch } from "#/store";
+
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
-import FeedContent from "../shared/FeedContent";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import AppHeader from "../../../features/shared/AppHeader";
 
 export default function MentionsPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -25,21 +27,21 @@ export default function MentionsPage() {
 
   useSetActivePage(pageRef);
 
-  const fetchFn: FetchFn<PersonMentionView> = useCallback(
-    async (pageData) => {
-      const response = await client.getPersonMentions({
+  const fetchFn: FetchFn<PersonMentionView> = async (pageData, ...rest) => {
+    const response = await client.getPersonMentions(
+      {
         ...pageData,
         limit: LIMIT,
         sort: "New",
         unread_only: false,
-      });
+      },
+      ...rest,
+    );
 
-      dispatch(receivedInboxItems(response.mentions));
+    dispatch(receivedInboxItems(response.mentions));
 
-      return response.mentions;
-    },
-    [client, dispatch],
-  );
+    return response.mentions;
+  };
 
   return (
     <IonPage ref={pageRef}>

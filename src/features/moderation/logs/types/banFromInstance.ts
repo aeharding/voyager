@@ -1,9 +1,11 @@
-import { ModBanView } from "lemmy-js-client";
-import { LogEntryData } from "../ModlogItem";
-import { getHandle, getItemActorName } from "../../../../helpers/lemmy";
-import { buildBaseData, getAdminRole } from "./shared";
-import { buildUserLink } from "../../../../helpers/appLinkBuilder";
 import { ban, refresh } from "ionicons/icons";
+import { ModBanView } from "lemmy-js-client";
+
+import { buildUserLink } from "#/helpers/appLinkBuilder";
+import { getHandle, getItemActorName } from "#/helpers/lemmy";
+
+import { LogEntryData } from "../ModlogItem";
+import { buildBaseData, getAdminRole } from "./shared";
 
 export default function banFromInstance(item: ModBanView): LogEntryData {
   return {

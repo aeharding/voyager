@@ -1,9 +1,10 @@
 import { Comment, CommentView, PrivateMessageView } from "lemmy-js-client";
+
 import { DynamicDismissableModal } from "../../../DynamicDismissableModal";
+import CommentEditPage from "./contents/CommentEditPage";
 import CommentReplyPage, {
   CommentReplyItem,
 } from "./contents/CommentReplyPage";
-import CommentEditPage from "./contents/CommentEditPage";
 import PrivateMessagePage, {
   NewPrivateMessage,
 } from "./contents/PrivateMessagePage";

@@ -1,8 +1,10 @@
-import { Community, Post } from "lemmy-js-client";
-import { getHandle } from "../../helpers/lemmy";
-import { Link } from "react-router-dom";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
 import { styled } from "@linaria/react";
+import { Community, Post } from "lemmy-js-client";
+import { Link } from "react-router-dom";
+
+import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 const ContainerLink = styled(Link)`
   padding: 6px 12px;
@@ -50,7 +52,9 @@ export default function PostContext({ post, community }: PostContextProps) {
         `/c/${getHandle(community)}/comments/${post.id}`,
       )}
     >
-      <Name>{post.name}</Name>
+      <Name>
+        <InlineMarkdown>{post.name}</InlineMarkdown>
+      </Name>
       <CommunityName>{getHandle(community)}</CommunityName>
     </ContainerLink>
   );

@@ -5,17 +5,19 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppDispatch } from "../../../store";
-import useClient from "../../../helpers/useClient";
-import { FetchFn } from "../../../features/feed/Feed";
-import { useCallback, useRef } from "react";
 import { CommentReplyView } from "lemmy-js-client";
-import InboxFeed from "../../../features/feed/InboxFeed";
-import { receivedInboxItems } from "../../../features/inbox/inboxSlice";
+import { useRef } from "react";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { FetchFn } from "#/features/feed/Feed";
+import InboxFeed from "#/features/feed/InboxFeed";
+import { receivedInboxItems } from "#/features/inbox/inboxSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { useAppDispatch } from "#/store";
+
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
-import FeedContent from "../shared/FeedContent";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import AppHeader from "../../../features/shared/AppHeader";
 
 interface RepliesPageProps {
   type: "Comment" | "Post";
@@ -28,27 +30,27 @@ export default function RepliesPage({ type }: RepliesPageProps) {
 
   useSetActivePage(pageRef);
 
-  const fetchFn: FetchFn<CommentReplyView> = useCallback(
-    async (pageData) => {
-      // TODO - actually paginate properly if Lemmy implements
-      // reply pagination filtering by comment and post
-      const response = await client.getReplies({
+  const fetchFn: FetchFn<CommentReplyView> = async (pageData, ...rest) => {
+    // TODO - actually paginate properly if Lemmy implements
+    // reply pagination filtering by comment and post
+    const response = await client.getReplies(
+      {
         ...pageData,
         limit: 50,
         sort: "New",
         unread_only: false,
-      });
+      },
+      ...rest,
+    );
 
-      const replies = response.replies.filter((reply) =>
-        type === "Post" ? isPostReply(reply) : !isPostReply(reply),
-      );
+    const replies = response.replies.filter((reply) =>
+      type === "Post" ? isPostReply(reply) : !isPostReply(reply),
+    );
 
-      dispatch(receivedInboxItems(replies));
+    dispatch(receivedInboxItems(replies));
 
-      return replies;
-    },
-    [client, dispatch, type],
-  );
+    return replies;
+  };
 
   return (
     <IonPage ref={pageRef}>

@@ -1,7 +1,8 @@
-import { OTapToCollapseType } from "../../../../services/db";
-import { useAppSelector } from "../../../../store";
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { OTapToCollapseType } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import { setTapToCollapse } from "../../settingsSlice";
-import SettingSelector from "../../shared/SettingSelector";
 
 export default function TapToCollapse() {
   const { tapToCollapse } = useAppSelector(

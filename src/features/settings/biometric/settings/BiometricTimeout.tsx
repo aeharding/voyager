@@ -1,5 +1,6 @@
-import { useAppSelector } from "../../../../store";
-import SettingSelector from "../../shared/SettingSelector";
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { useAppSelector } from "#/store";
+
 import { setBiometricsTimeoutInSeconds } from "../biometricSlice";
 
 const OBiometricTimeoutType = {

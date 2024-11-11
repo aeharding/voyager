@@ -1,22 +1,24 @@
 import { IonIcon } from "@ionic/react";
 import { checkmarkCircleOutline, trashOutline } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
-import { useAppDispatch } from "../../store";
-import { modRemoveComment } from "../comment/commentSlice";
-import { modRemovePost } from "../post/postSlice";
-import useAppToast from "../../helpers/useAppToast";
+
+import { modRemoveComment } from "#/features/comment/commentSlice";
+import { ActionButton } from "#/features/post/actions/ActionButton";
+import { modRemovePost } from "#/features/post/postSlice";
+import { isPost } from "#/helpers/lemmy";
 import {
   commentApproved,
-  commentRemoved,
+  commentRemovedMod,
   commentRestored,
   postApproved,
-  postRemoved,
+  postRemovedMod,
   postRestored,
-} from "../../helpers/toastMessages";
-import useCanModerate, { getModColor } from "./useCanModerate";
-import { ActionButton } from "../post/actions/ActionButton";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch } from "#/store";
+
 import { resolveCommentReport, resolvePostReport } from "./modSlice";
-import { isPost } from "../../helpers/lemmy";
+import useCanModerate, { getModColor } from "./useCanModerate";
 
 interface ModqueueItemActionsProps {
   item: PostView | CommentView;
@@ -40,7 +42,8 @@ export default function ModqueueItemActions({
       const action = isPost(item) ? resolvePostReport : resolveCommentReport;
       await dispatch(action(id));
 
-      if (remove) presentToast(isPost(item) ? postRemoved : commentRemoved);
+      if (remove)
+        presentToast(isPost(item) ? postRemovedMod : commentRemovedMod);
       else presentToast(isPost(item) ? postApproved : commentApproved);
 
       return;
@@ -52,8 +55,8 @@ export default function ModqueueItemActions({
 
     const toastMessage = (() => {
       if (remove) {
-        if (isPost(item)) return postRemoved;
-        else return commentRemoved;
+        if (isPost(item)) return postRemovedMod;
+        else return commentRemovedMod;
       } else {
         if (isPost(item)) return postRestored;
         else return commentRestored;

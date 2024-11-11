@@ -1,8 +1,10 @@
-import { useCallback, useContext } from "react";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useContext } from "react";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { hidePosts } from "#/features/post/postSlice";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { FeedContext } from "./FeedContext";
-import { AppContext } from "../auth/AppContext";
-import { hidePosts } from "../post/postSlice";
 
 export default function useHidePosts() {
   const dispatch = useAppDispatch();
@@ -10,7 +12,7 @@ export default function useHidePosts() {
   const { activePageRef } = useContext(AppContext);
   const postReadById = useAppSelector((state) => state.post.postReadById);
 
-  const onHide = useCallback(async () => {
+  return async function onHide() {
     if (!activePageRef?.current?.current) return;
     if (!("scrollToIndex" in activePageRef.current.current)) return;
 
@@ -25,7 +27,5 @@ export default function useHidePosts() {
     await dispatch(hidePosts(toHide));
 
     activePageRef.current.current.scrollToIndex(0);
-  }, [activePageRef, dispatch, itemsRefRef, postReadById]);
-
-  return onHide;
+  };
 }

@@ -1,13 +1,15 @@
-import { CommentNodeI } from "../../../helpers/lemmy";
-import React, { RefObject, useContext, useMemo } from "react";
-import CommentHr from "./CommentHr";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import React, { RefObject, useContext } from "react";
+
+import { AppContext, Page } from "#/features/auth/AppContext";
+import { getOffsetTop, scrollIntoView } from "#/helpers/dom";
+import { CommentNodeI } from "#/helpers/lemmy";
+import { OTapToCollapseType } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { toggleCommentCollapseState } from "../commentSlice";
 import CommentExpander from "./CommentExpander";
-import { OTapToCollapseType } from "../../../services/db";
-import { getOffsetTop, scrollIntoView } from "../../../helpers/dom";
+import CommentHr from "./CommentHr";
 import ContinueThread from "./ContinueThread";
-import { AppContext, Page } from "../../auth/AppContext";
 import FullyCollapsibleComment from "./FullyCollapsibleComment";
 
 export const MAX_COMMENT_DEPTH = 10;
@@ -40,7 +42,7 @@ export default function CommentTree({
   const { activePageRef } = useContext(AppContext);
 
   // Comment context chains don't show missing for parents
-  const showMissing = useMemo(() => {
+  const showMissing = (() => {
     if (!highlightedCommentId) return true;
 
     if (
@@ -51,7 +53,7 @@ export default function CommentTree({
       return true;
 
     return false;
-  }, [comment.comment_view.comment.path, highlightedCommentId]);
+  })();
 
   function toggleCollapsed() {
     dispatch(toggleCommentCollapseState(comment.comment_view.comment.id));

@@ -15,8 +15,11 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["vite-plugin-svgr/client", "jest"],
-    "noUncheckedIndexedAccess": true
+    "types": ["vite-plugin-svgr/client"],
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "#/*": ["./src/*"]
+    }
   },
   "include": ["src"]
 }

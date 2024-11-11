@@ -1,8 +1,10 @@
-import { startCase } from "lodash";
-import { OShowSubscribedIcon } from "../../../../services/db";
-import { useAppSelector } from "../../../../store";
+import { startCase } from "es-toolkit";
+
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { OShowSubscribedIcon } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import { setSubscribedIcon } from "../../settingsSlice";
-import SettingSelector from "../../shared/SettingSelector";
 
 export default function SubscribedIcon() {
   const subscribedIcon = useAppSelector(

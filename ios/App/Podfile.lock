@@ -53,7 +53,7 @@ DEPENDENCIES:
   - "CapacitorCordova (from `../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/.pnpm/@capacitor+filesystem@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/filesystem`)"
   - "CapacitorHaptics (from `../../node_modules/.pnpm/@capacitor+haptics@6.0.1_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.1.2/node_modules/@capacitor/haptics`)"
-  - "CapacitorKeyboard (from `../../node_modules/.pnpm/@capacitor+keyboard@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/keyboard`)"
+  - "CapacitorKeyboard (from `../../node_modules/.pnpm/@capacitor+keyboard@6.0.2_patch_hash=2ihcxo2fu55l7b6g5u7feswwlm_@capacitor+core@6.1.2/node_modules/@capacitor/keyboard`)"
   - "CapacitorLaunchNative (from `../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-launch-native`)"
   - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/network`)"
   - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.2/node_modules/capacitor-plugin-safe-area`)"
@@ -90,7 +90,7 @@ EXTERNAL SOURCES:
   CapacitorHaptics:
     :path: "../../node_modules/.pnpm/@capacitor+haptics@6.0.1_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.1.2/node_modules/@capacitor/haptics"
   CapacitorKeyboard:
-    :path: "../../node_modules/.pnpm/@capacitor+keyboard@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/keyboard"
+    :path: "../../node_modules/.pnpm/@capacitor+keyboard@6.0.2_patch_hash=2ihcxo2fu55l7b6g5u7feswwlm_@capacitor+core@6.1.2/node_modules/@capacitor/keyboard"
   CapacitorLaunchNative:
     :path: "../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-launch-native"
   CapacitorNetwork:
@@ -128,6 +128,6 @@ SPEC CHECKSUMS:
   CapacitorTips: 2087733aea06ec041b210085395ca934c8554907
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: d6642cc2d1bb1e1c0cbeb8c6b21a091b24db78c6
+PODFILE CHECKSUM: 4bb941cdad3a08d4337f1a3589da9a7a0f40fd60
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.16.2

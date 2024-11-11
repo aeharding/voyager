@@ -1,34 +1,33 @@
-import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+import { cx } from "@linaria/core";
+import { styled } from "@linaria/react";
 import { Person } from "lemmy-js-client";
-import { renderHandle } from "../Handle";
-import store, { useAppDispatch, useAppSelector } from "../../../store";
-import { OInstanceUrlDisplayMode } from "../../../services/db";
-import AgeBadge from "./AgeBadge";
 import { useCallback, useContext } from "react";
-import { ShareImageContext } from "../../share/asImage/ShareAsImage";
+import { LongPressOptions, useLongPress } from "use-long-press";
+
+import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
+import UserScore from "#/features/tags/UserScore";
+import UserTag from "#/features/tags/UserTag";
+import usePresentUserActions, {
+  PresentUserActionsOptions,
+} from "#/features/user/usePresentUserActions";
 import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
-} from "../../../helpers/ionic";
-import { styled } from "@linaria/react";
+} from "#/helpers/ionic";
+import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { OInstanceUrlDisplayMode } from "#/services/db";
+import { useAppSelector } from "#/store";
+
+import { renderHandle } from "../Handle";
+import AgeBadge from "./AgeBadge";
 import { LinkContainer, StyledLink, hideCss } from "./shared";
-import { cx } from "@linaria/core";
-import { LongPressOptions, useLongPress } from "use-long-press";
-import { ActionSheetOptions, useIonActionSheet } from "@ionic/react";
-import { removeCircleOutline } from "ionicons/icons";
-import { blockUser } from "../../user/userSlice";
-import useAppToast from "../../../helpers/useAppToast";
-import { buildBlocked } from "../../../helpers/toastMessages";
-import { getBlockUserErrorMessage } from "../../../helpers/lemmyErrors";
-import { userHandleSelector } from "../../auth/authSelectors";
-import { compact } from "lodash";
 
 const Prefix = styled.span`
   font-weight: normal;
 `;
 
-interface PersonLinkProps {
+interface PersonLinkProps extends Pick<PresentUserActionsOptions, "sourceUrl"> {
   person: Person;
   opId?: number;
   distinguished?: boolean;
@@ -36,11 +35,10 @@ interface PersonLinkProps {
   prefix?: string;
   showBadge?: boolean;
   disableInstanceClick?: boolean;
+  showTag?: boolean;
 
   className?: string;
 }
-
-type Button = ActionSheetOptions["buttons"][number];
 
 export default function PersonLink({
   person,
@@ -50,60 +48,33 @@ export default function PersonLink({
   showInstanceWhenRemote,
   prefix,
   showBadge = true,
+  showTag = true,
   disableInstanceClick,
+  sourceUrl,
 }: PersonLinkProps) {
-  const presentToast = useAppToast();
-  const [presentActionSheet] = useIonActionSheet();
-  const dispatch = useAppDispatch();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const isAdmin = useAppSelector((state) => state.site.response?.admins)?.some(
     (admin) => admin.person.actor_id === person.actor_id,
   );
   const { hideUsernames } = useContext(ShareImageContext);
+  const presentUserActions = usePresentUserActions();
+
+  const tag = useAppSelector(
+    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
+  );
+  const tagsEnabled = useAppSelector((state) => state.settings.tags.enabled);
+  const trackVotesEnabled = useAppSelector(
+    (state) => state.settings.tags.trackVotes,
+  );
+  const hideInstance = useAppSelector(
+    (state) => state.settings.tags.enabled && state.settings.tags.hideInstance,
+  );
 
   const onCommunityLinkLongPress = useCallback(() => {
-    const state = store.getState();
-    const currentUserHandle = userHandleSelector(state);
-    const blocks = state.site.response?.my_user?.person_blocks;
-    const isBlocked = blocks?.some(
-      (b) =>
-        // TODO b.target for 0.19 and less support
-        getHandle("target" in b ? (b.target as Person) : b) ===
-        getHandle(person),
-    );
-
     stopIonicTapClick();
 
-    const isCurrentUser = currentUserHandle === getRemoteHandle(person);
-
-    const buttons = compact<Button>([
-      !isCurrentUser && {
-        text: `${isBlocked ? "Unblock" : "Block"} User`,
-        icon: removeCircleOutline,
-        role: "destructive",
-        handler: () => {
-          (async () => {
-            try {
-              await dispatch(blockUser(!isBlocked, person.id));
-            } catch (error) {
-              presentToast({
-                color: "danger",
-                message: getBlockUserErrorMessage(error, person),
-              });
-              throw error;
-            }
-
-            presentToast(buildBlocked(!isBlocked, getHandle(person)));
-          })();
-        },
-      },
-      {
-        text: "Cancel",
-        role: "cancel",
-      },
-    ]);
-    presentActionSheet({ cssClass: "left-align-buttons", buttons });
-  }, [person, presentActionSheet, presentToast, dispatch]);
+    presentUserActions(person, { sourceUrl });
+  }, [presentUserActions, person, sourceUrl]);
 
   const bind = useLongPress(onCommunityLinkLongPress, {
     cancelOnMovement: 15,
@@ -126,8 +97,16 @@ export default function PersonLink({
     color = "var(--ion-color-tertiary-tint)";
   else if (opId && person.id === opId) color = "var(--ion-color-primary-fixed)";
 
+  const tagText = typeof tag === "object" ? tag.text : undefined;
+
+  const shouldHideInstanceWithTagText = tagText && hideInstance;
+  const shouldShowInstanceByDefault =
+    showInstanceWhenRemote || forceInstanceUrl;
+
   const [handle, instance] = renderHandle({
-    showInstanceWhenRemote: showInstanceWhenRemote || forceInstanceUrl,
+    showInstanceWhenRemote: shouldHideInstanceWithTagText
+      ? false
+      : shouldShowInstanceByDefault,
     item: person,
   });
 
@@ -138,6 +117,12 @@ export default function PersonLink({
         <>
           {person.bot_account && " 🤖"}
           <AgeBadge published={person.published} />
+        </>
+      )}
+      {showTag && tagsEnabled && (
+        <>
+          {trackVotesEnabled && <UserScore person={person} prefix=" " />}
+          <UserTag person={person} prefix=" " />
         </>
       )}
     </>

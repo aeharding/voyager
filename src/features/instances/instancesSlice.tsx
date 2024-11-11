@@ -1,9 +1,10 @@
 import { PayloadAction, createSelector, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../store";
-import { clientSelector, urlSelector } from "../auth/authSelectors";
 import { FederatedInstances } from "lemmy-js-client";
-import { db } from "../../services/db";
-import { customBackOff } from "../../services/lemmy";
+
+import { clientSelector, urlSelector } from "#/features/auth/authSelectors";
+import { db } from "#/services/db";
+import { customBackOff } from "#/services/lemmy";
+import { AppDispatch, RootState } from "#/store";
 
 interface InstancesState {
   knownInstances: "pending" | FederatedInstances | undefined;

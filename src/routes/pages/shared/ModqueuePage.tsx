@@ -5,11 +5,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { FetchFn, isFirstPage } from "../../../features/feed/Feed";
-import { createContext, memo, useCallback, useContext } from "react";
-import useClient from "../../../helpers/useClient";
-import FeedContextProvider from "../../../features/feed/FeedContext";
-import FeedContent from "./FeedContent";
+import { uniqBy } from "es-toolkit";
 import {
   CommentReportView,
   CommentView,
@@ -17,25 +13,31 @@ import {
   PostReportView,
   PostView,
 } from "lemmy-js-client";
-import useFetchCommunity from "../../../features/community/useFetchCommunity";
+import { createContext, useContext } from "react";
 import { useParams } from "react-router";
-import { getHandle } from "../../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { buildCommunityLink } from "../../../helpers/appLinkBuilder";
+
+import useFetchCommunity from "#/features/community/useFetchCommunity";
+import { FetchFn, isFirstPage } from "#/features/feed/Feed";
+import FeedContextProvider from "#/features/feed/FeedContext";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import { getPostCommentItemCreatedDate } from "../../../features/user/Profile";
-import { uniqBy } from "lodash";
-import store, { useAppDispatch } from "../../../store";
+} from "#/features/feed/PostCommentFeed";
 import {
   reportsByCommentIdSelector,
   reportsByPostIdSelector,
   syncReports,
-} from "../../../features/moderation/modSlice";
-import { LIMIT } from "../../../services/lemmy";
-import AppHeader from "../../../features/shared/AppHeader";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+} from "#/features/moderation/modSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { getPostCommentItemCreatedDate } from "#/features/user/Profile";
+import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { LIMIT } from "#/services/lemmy";
+import store, { useAppDispatch } from "#/store";
+
+import FeedContent from "./FeedContent";
 
 export default function ModqueuePage() {
   const { community } = useParams<{ community?: string }>();
@@ -45,78 +47,77 @@ export default function ModqueuePage() {
   return <ModqueueByCommunityName communityName={community} />;
 }
 
-const GlobalModqueue = memo(function GlobalModqueue() {
+function GlobalModqueue() {
   return <ModqueueByCommunity />;
-});
+}
 
-const ModqueueByCommunityName = memo(function ModqueueByCommunityName({
-  communityName,
-}: {
-  communityName: string;
-}) {
+function ModqueueByCommunityName({ communityName }: { communityName: string }) {
   const community = useFetchCommunity(communityName);
 
   if (!community) return <CenteredSpinner />;
 
   return <ModqueueByCommunity community={community.community} />;
-});
+}
 
 function ModqueueByCommunity({ community }: { community?: Community }) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const dispatch = useAppDispatch();
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
-      const [{ comment_reports }, { post_reports }] = await Promise.all([
-        client.listCommentReports({
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    const [{ comment_reports }, { post_reports }] = await Promise.all([
+      client.listCommentReports(
+        {
           ...pageData,
           limit: LIMIT,
           community_id: community?.id,
           unresolved_only: true,
-        }),
-        client.listPostReports({
+        },
+        ...rest,
+      ),
+      client.listPostReports(
+        {
           ...pageData,
           limit: LIMIT,
           community_id: community?.id,
           unresolved_only: true,
-        }),
-      ]);
+        },
+        ...rest,
+      ),
+    ]);
 
-      let needsSync = isFirstPage(pageData);
+    let needsSync = isFirstPage(pageData);
 
-      const reportsByCommentId = reportsByCommentIdSelector(store.getState());
-      const reportsByPostId = reportsByPostIdSelector(store.getState());
+    const reportsByCommentId = reportsByCommentIdSelector(store.getState());
+    const reportsByPostId = reportsByPostIdSelector(store.getState());
 
-      for (const report of comment_reports) {
-        if (!reportsByCommentId[report.comment.id]) {
-          needsSync = true;
-        }
+    for (const report of comment_reports) {
+      if (!reportsByCommentId[report.comment.id]) {
+        needsSync = true;
       }
-      for (const report of post_reports) {
-        if (!reportsByPostId[report.post.id]) {
-          needsSync = true;
-        }
+    }
+    for (const report of post_reports) {
+      if (!reportsByPostId[report.post.id]) {
+        needsSync = true;
       }
+    }
 
-      if (needsSync) {
-        await dispatch(syncReports(true));
-      }
+    if (needsSync) {
+      await dispatch(syncReports(true));
+    }
 
-      const comments = await uniqBy(comment_reports, (r) => r.comment.id).map(
-        convertCommentReportToComment,
-      );
-      const posts = await uniqBy(post_reports, (r) => r.post.id).map(
-        convertPostReportToPost,
-      );
+    const comments = await uniqBy(comment_reports, (r) => r.comment.id).map(
+      convertCommentReportToComment,
+    );
+    const posts = await uniqBy(post_reports, (r) => r.post.id).map(
+      convertPostReportToPost,
+    );
 
-      return [...comments, ...posts].sort(
-        (a, b) =>
-          getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
-      );
-    },
-    [client, community, dispatch],
-  );
+    return [...comments, ...posts].sort(
+      (a, b) =>
+        getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
+    );
+  };
 
   return (
     <FeedContextProvider>
@@ -166,6 +167,7 @@ function convertPostReportToPost(postReport: PostReportView): PostView {
     banned_from_community: false,
   };
 }
+
 function convertCommentReportToComment(
   commentReport: CommentReportView,
 ): CommentView {

@@ -1,6 +1,7 @@
+import { isEqual } from "es-toolkit";
 import React, { useEffect, useState } from "react";
-import { isNative } from "../helpers/device";
-import { isEqual } from "lodash";
+
+import { isNative } from "#/helpers/device";
 
 const DEFAULT_LEMMY_SERVERS = getCustomDefaultServers() ?? ["lemmy.world"];
 
@@ -55,7 +56,8 @@ export default function ConfigProvider({ children }: ConfigProviderProps) {
 }
 
 function getCustomDefaultServers() {
-  const serversList = import.meta.env.VITE_CUSTOM_LEMMY_SERVERS;
+  const serversList: string | undefined = import.meta.env
+    .VITE_CUSTOM_LEMMY_SERVERS;
 
   if (!serversList) return;
 

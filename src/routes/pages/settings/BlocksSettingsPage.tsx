@@ -7,28 +7,29 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
-import { useAppSelector } from "../../../store";
-import { userHandleSelector } from "../../../features/auth/authSelectors";
-import FilterNsfw from "../../../features/settings/blocks/FilterNsfw";
-import BlockedCommunities from "../../../features/settings/blocks/BlockedCommunities";
-import BlockedUsers from "../../../features/settings/blocks/BlockedUsers";
-import FilteredKeywords from "../../../features/settings/blocks/FilteredKeywords";
-import BlockedInstances from "../../../features/settings/blocks/BlockedInstances";
 import { useRef } from "react";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import { localUserSelector } from "../../../features/auth/siteSlice";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { userHandleSelector } from "#/features/auth/authSelectors";
+import { localUserSelector } from "#/features/auth/siteSlice";
+import BlockedCommunities from "#/features/settings/blocks/BlockedCommunities";
+import BlockedInstances from "#/features/settings/blocks/BlockedInstances";
+import BlockedUsers from "#/features/settings/blocks/BlockedUsers";
+import FilterNsfw from "#/features/settings/blocks/FilterNsfw";
+import FilteredKeywords from "#/features/settings/blocks/FilteredKeywords";
+import FilteredWebsites from "#/features/settings/blocks/FilteredWebsites";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import {
   ListEditButton,
   ListEditorProvider,
-} from "../../../features/shared/ListEditor";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+} from "#/features/shared/ListEditor";
 import {
   TitleContainer,
   UsernameIonText,
-} from "../../../features/shared/markdown/editing/modal/contents/CommentReplyPage";
-import FilteredWebsites from "../../../features/settings/blocks/FilteredWebsites";
+} from "#/features/shared/markdown/editing/modal/contents/CommentReplyPage";
+import { useAppSelector } from "#/store";
 
 export default function BlocksSettingsPage() {
   const pageRef = useRef<HTMLElement>(null);

@@ -1,3 +1,4 @@
+import { IonActionSheetCustomEvent, OverlayEventDetail } from "@ionic/core";
 import {
   IonActionSheet,
   IonItem,
@@ -5,53 +6,54 @@ import {
   IonList,
   IonToggle,
 } from "@ionic/react";
-import { ListHeader } from "../shared/formatting";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import {
-  OSwipeActionPost,
-  OSwipeActionComment,
-  SwipeAction,
-  SwipeActions,
-  OSwipeActionInbox,
-  OSwipeActionAll,
-  OLongSwipeTriggerPointType,
-} from "../../../services/db";
-import SettingSelector from "../shared/SettingSelector";
-import {
-  setPostSwipeActionFarEnd,
-  setPostSwipeActionFarStart,
-  setPostSwipeActionEnd,
-  setPostSwipeActionStart,
-  setCommentSwipeActionFarEnd,
-  setCommentSwipeActionFarStart,
-  setCommentSwipeActionEnd,
-  setCommentSwipeActionStart,
-  setInboxSwipeActionFarEnd,
-  setInboxSwipeActionFarStart,
-  setInboxSwipeActionEnd,
-  setInboxSwipeActionStart,
-  setAllSwipesToDefault,
-  setDisableLeftSwipes,
-  setDisableRightSwipes,
-  setLongSwipeTriggerPoint,
-} from "./gestureSlice";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
-import { startCase } from "lodash";
-import { useState } from "react";
-import { IonActionSheetCustomEvent, OverlayEventDetail } from "@ionic/core";
-import ShortSwipeSvg from "./swipeShort.svg?react";
-import LongSwipeSvg from "./swipeLong.svg?react";
+import { startCase } from "es-toolkit";
 import {
   arrowDownOutline,
   arrowUndoOutline,
   arrowUpOutline,
   bookmarkOutline,
   chevronCollapseOutline,
+  chevronDownOutline,
   eyeOffOutline,
   mailUnreadOutline,
-  chevronDownOutline,
 } from "ionicons/icons";
-import { getShareIcon, isNative } from "../../../helpers/device";
+import { useState } from "react";
+
+import SettingSelector from "#/features/settings/shared/SettingSelector";
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { getShareIcon, isNative } from "#/helpers/device";
+import {
+  OLongSwipeTriggerPointType,
+  OSwipeActionAll,
+  OSwipeActionComment,
+  OSwipeActionInbox,
+  OSwipeActionPost,
+  SwipeAction,
+  SwipeActions,
+} from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import {
+  setAllSwipesToDefault,
+  setCommentSwipeActionEnd,
+  setCommentSwipeActionFarEnd,
+  setCommentSwipeActionFarStart,
+  setCommentSwipeActionStart,
+  setDisableLeftSwipes,
+  setDisableRightSwipes,
+  setInboxSwipeActionEnd,
+  setInboxSwipeActionFarEnd,
+  setInboxSwipeActionFarStart,
+  setInboxSwipeActionStart,
+  setLongSwipeTriggerPoint,
+  setPostSwipeActionEnd,
+  setPostSwipeActionFarEnd,
+  setPostSwipeActionFarStart,
+  setPostSwipeActionStart,
+} from "./gestureSlice";
+import LongSwipeSvg from "./swipeLong.svg?react";
+import ShortSwipeSvg from "./swipeShort.svg?react";
 
 export default function SwipeSettings() {
   const [open, setOpen] = useState(false);

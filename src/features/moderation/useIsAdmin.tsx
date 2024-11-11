@@ -1,6 +1,7 @@
 import { Person } from "lemmy-js-client";
-import { useAppSelector } from "../../store";
-import { isAdminSelector } from "../auth/siteSlice";
+
+import { isAdminSelector } from "#/features/auth/siteSlice";
+import { useAppSelector } from "#/store";
 
 export default function useIsAdmin(person?: Person) {
   return useAppSelector(

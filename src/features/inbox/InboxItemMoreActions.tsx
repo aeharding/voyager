@@ -1,12 +1,13 @@
-import { mailOutline, mailUnreadOutline } from "ionicons/icons";
-import { InboxItemView } from "./InboxItem";
-import MoreActions from "../comment/CommentEllipsis";
-import { useMemo } from "react";
 import { styled } from "@linaria/react";
-import { PlainButton } from "../shared/PlainButton";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { getInboxItemId, markRead } from "./inboxSlice";
+import { mailOutline, mailUnreadOutline } from "ionicons/icons";
+
+import MoreActions from "#/features/comment/CommentEllipsis";
+import { PlainButton } from "#/features/shared/PlainButton";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { InboxItemView } from "./InboxItem";
 import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
+import { getInboxItemId, markRead } from "./inboxSlice";
 
 const StyledPlainButton = styled(PlainButton)`
   font-size: 1.12em;
@@ -18,9 +19,9 @@ interface InboxItemMoreActionsProps {
   ref: React.RefObject<InboxItemMoreActionsHandle>;
 }
 
-export type InboxItemMoreActionsHandle = {
+export interface InboxItemMoreActionsHandle {
   present: () => void;
-};
+}
 
 export default function InboxItemMoreActions({
   item,
@@ -32,16 +33,13 @@ export default function InboxItemMoreActions({
   );
   const isRead = readByInboxItemId[getInboxItemId(item)];
 
-  const markReadAction = useMemo(
-    () => ({
-      text: isRead ? "Mark Unread" : "Mark Read",
-      icon: isRead ? mailUnreadOutline : mailOutline,
-      handler: () => {
-        dispatch(markRead(item, !isRead));
-      },
-    }),
-    [dispatch, isRead, item],
-  );
+  const markReadAction = {
+    text: isRead ? "Mark Unread" : "Mark Read",
+    icon: isRead ? mailUnreadOutline : mailOutline,
+    handler: () => {
+      dispatch(markRead(item, !isRead));
+    },
+  };
 
   return (
     <StyledPlainButton>

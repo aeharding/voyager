@@ -1,8 +1,14 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../store";
-import { clientSelector } from "../auth/authSelectors";
 import { Comment, CommentView } from "lemmy-js-client";
-import { resolveCommentReport } from "../moderation/modSlice";
+
+import { clientSelector } from "#/features/auth/authSelectors";
+import { resolveCommentReport } from "#/features/moderation/modSlice";
+import {
+  fetchTagsForHandles,
+  updateTagVotes,
+} from "#/features/tags/userTagSlice";
+import { getRemoteHandle } from "#/helpers/lemmy";
+import { AppDispatch, RootState } from "#/store";
 
 interface CommentState {
   commentCollapsedById: Record<string, boolean>;
@@ -76,7 +82,6 @@ export const commentSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-  receivedComments,
   mutatedComment,
   toggleCommentCollapseState,
   updateCommentVote,
@@ -87,11 +92,20 @@ export const {
 export default commentSlice.reducer;
 
 export const voteOnComment =
-  (commentId: number, vote: 1 | -1 | 0) =>
+  (comment: CommentView, vote: 1 | -1 | 0) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const commentId = comment.comment.id;
     const oldVote = getState().comment.commentVotesById[commentId];
 
     dispatch(updateCommentVote({ commentId, vote }));
+
+    dispatch(
+      updateTagVotes({
+        handle: getRemoteHandle(comment.creator),
+        oldVote,
+        newVote: vote,
+      }),
+    );
 
     try {
       await clientSelector(getState())?.likeComment({
@@ -101,13 +115,22 @@ export const voteOnComment =
     } catch (error) {
       dispatch(updateCommentVote({ commentId, vote: oldVote }));
 
+      dispatch(
+        updateTagVotes({
+          handle: getRemoteHandle(comment.creator),
+          oldVote: vote,
+          newVote: oldVote,
+        }),
+      );
+
       throw error;
     }
   };
 
 export const saveComment =
-  (commentId: number, save: boolean) =>
+  (comment: CommentView, save: boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
+    const commentId = comment.comment.id;
     const oldSaved = getState().comment.commentSavedById[commentId];
 
     dispatch(updateCommentSaved({ commentId, saved: save }));
@@ -200,4 +223,12 @@ export const modDistinguishComment =
     });
 
     dispatch(mutatedComment(response.comment_view));
+  };
+
+export const receivedComments =
+  (comments: CommentView[]) => async (dispatch: AppDispatch) => {
+    dispatch(commentSlice.actions.receivedComments(comments));
+    dispatch(
+      fetchTagsForHandles(comments.map((c) => getRemoteHandle(c.creator))),
+    );
   };

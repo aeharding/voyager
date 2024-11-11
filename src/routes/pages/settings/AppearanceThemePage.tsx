@@ -5,11 +5,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
-import Theme from "../../../features/settings/appearance/themes/Theme";
-import { useSetActivePage } from "../../../features/auth/AppContext";
 import { useRef } from "react";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import Theme from "#/features/settings/appearance/themes/Theme";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
 
 export default function AppearanceThemePage() {
   const pageRef = useRef<HTMLElement>(null);

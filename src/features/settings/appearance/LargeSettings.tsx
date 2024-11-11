@@ -1,7 +1,9 @@
 import { IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
-import { useAppSelector, useAppDispatch } from "../../../store";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setLargeShowVotingButtons } from "../settingsSlice";
-import { ListHeader } from "../shared/formatting";
 
 export default function LargeSettings() {
   const dispatch = useAppDispatch();

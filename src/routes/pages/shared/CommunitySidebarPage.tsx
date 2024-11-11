@@ -6,15 +6,16 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useParams } from "react-router";
-import { useAppDispatch, useAppSelector } from "../../../store";
 import { memo, useEffect, useRef } from "react";
-import { getCommunity } from "../../../features/community/communitySlice";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import Sidebar from "../../../features/sidebar/Sidebar";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import AppHeader from "../../../features/shared/AppHeader";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+import { useParams } from "react-router";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { getCommunity } from "#/features/community/communitySlice";
+import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import Sidebar from "#/features/sidebar/Sidebar";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 interface CommunitySidebarPageProps {
   community: string;

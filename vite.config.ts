@@ -1,20 +1,30 @@
-import react from "@vitejs/plugin-react";
-import { defineConfig } from "vitest/config";
-import { VitePWA } from "vite-plugin-pwa";
-import svgr from "vite-plugin-svgr";
 import legacy from "@vitejs/plugin-legacy";
+import react from "@vitejs/plugin-react";
 import wyw from "@wyw-in-js/vite";
+import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
+import svgr from "vite-plugin-svgr";
+import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vitest/config";
 
-import { readFileSync } from "fs";
+import compilerOptions from "./compilerOptions";
+import manifest from "./manifest.json";
 
-const manifest = JSON.parse(readFileSync("./manifest.json", "utf-8"));
+const IGNORED_ROLLUP_WARNINGS = [
+  // https://github.com/Anber/wyw-in-js/issues/62
+  "contains an annotation that Rollup cannot interpret due to the position of the comment",
+  "The comment will be removed to avoid issues.",
+
+  // https://github.com/vitejs/vite/blob/fe30349d350ef08bccd56404ccc3e6d6e0a2e156/packages/vite/rollup.config.ts#L71
+  "Circular dependency",
+];
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    tsconfigPaths(),
     react({
       babel: {
-        plugins: ["babel-plugin-react-compiler"],
+        plugins: [["babel-plugin-react-compiler", compilerOptions]],
       },
     }),
     wyw({
@@ -31,7 +41,7 @@ export default defineConfig({
       },
       registerType: "prompt",
       manifestFilename: "manifest.json",
-      manifest,
+      manifest: manifest as ManifestOptions, // https://github.com/microsoft/TypeScript/issues/32063
       workbox: {
         maximumFileSizeToCacheInBytes: 2097152 * 2,
         runtimeCaching: [
@@ -55,6 +65,13 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 5_000,
     rollupOptions: {
+      onwarn: (log, handler) => {
+        for (const msg in IGNORED_ROLLUP_WARNINGS) {
+          if (log.message.includes(msg)) return;
+        }
+
+        handler(log);
+      },
       output: {
         manualChunks: () => "index.js",
 

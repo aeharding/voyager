@@ -1,19 +1,22 @@
+import { IonButton, IonIcon } from "@ionic/react";
+import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
-import { MaxWidthContainer } from "../shared/AppContent";
+import { resize, send as sendIcon } from "ionicons/icons";
+import { Person } from "lemmy-js-client";
+import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
 import TextareaAutosize, {
   TextareaAutosizeProps,
 } from "react-textarea-autosize";
-import { IonButton, IonIcon } from "@ionic/react";
-import { KeyboardEvent, useCallback, useContext, useState } from "react";
-import useClient from "../../helpers/useClient";
-import useAppToast from "../../helpers/useAppToast";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { MaxWidthContainer } from "#/features/shared/AppContent";
+import { privateMessageSendFailed } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppDispatch } from "#/store";
+
 import { receivedMessages } from "./inboxSlice";
-import { useAppDispatch } from "../../store";
-import { resize, send as sendIcon } from "ionicons/icons";
-import { privateMessageSendFailed } from "../../helpers/toastMessages";
-import { css } from "@linaria/core";
-import { PageContext } from "../auth/PageContext";
-import { Person } from "lemmy-js-client";
 
 const MaxSizeContainer = styled(MaxWidthContainer)`
   height: 100%;
@@ -83,6 +86,7 @@ export default function SendMessageBox({
   onHeightChange,
   scrollToBottom,
 }: SendMessageBoxProps) {
+  const router = useOptimizedIonRouter();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState("");
@@ -90,7 +94,9 @@ export default function SendMessageBox({
   const presentToast = useAppToast();
   const { presentPrivateMessageCompose } = useContext(PageContext);
 
-  const send = useCallback(async () => {
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  async function send() {
     setLoading(true);
 
     let message;
@@ -112,17 +118,27 @@ export default function SendMessageBox({
     setValue("");
 
     scrollToBottom?.();
-  }, [client, dispatch, presentToast, recipient, value, scrollToBottom]);
+  }
 
-  const onKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLTextAreaElement>) => {
-      if (!e.ctrlKey && !e.metaKey) return;
-      if (e.key !== "Enter") return;
+  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (!e.ctrlKey && !e.metaKey) return;
+    if (e.key !== "Enter") return;
 
-      send();
-    },
-    [send],
-  );
+    send();
+  }
+
+  useEffect(() => {
+    const search = Object.fromEntries([
+      ...new URLSearchParams(router.getRouteInfo()?.search),
+    ]);
+
+    // only focus input if user intends to send a message
+    if (search.intent !== "send") return;
+
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+  }, [router]);
 
   return (
     <SendContainer>
@@ -147,13 +163,13 @@ export default function SendMessageBox({
             <IonIcon
               icon={resize}
               slot="icon-only"
-              onClick={send}
               className={css`
                 transform: scale(1.1);
               `}
             />
           </IconButton>
           <Input
+            ref={inputRef}
             disabled={loading}
             placeholder="Message"
             onChange={(e) => setValue(e.target.value)}
@@ -162,6 +178,9 @@ export default function SendMessageBox({
             maxRows={5}
             onKeyDown={onKeyDown}
             onHeightChange={onHeightChange}
+            onFocus={(e) => {
+              e.stopPropagation();
+            }}
           />
           <IconButton
             disabled={!value.trim() || loading}

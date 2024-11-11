@@ -1,22 +1,22 @@
-import { useAppSelector } from "../store";
+import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
+import { StatusBar, Style } from "@capacitor/status-bar";
+import { css } from "@linaria/core";
 import React, {
   createContext,
   useContext,
   useEffect,
   useLayoutEffect,
 } from "react";
-import { StatusBar, Style } from "@capacitor/status-bar";
-import { isNative } from "../helpers/device";
-import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
+
+import { initialState as initialSettingsState } from "#/features/settings/settingsSlice";
+import { isNative } from "#/helpers/device";
 import useSystemDarkMode, {
   DARK_MEDIA_SELECTOR,
-} from "../helpers/useSystemDarkMode";
-import { css } from "@linaria/core";
-import { getThemeByStyle } from "./theme/AppThemes";
+} from "#/helpers/useSystemDarkMode";
+import { AppThemeType } from "#/services/db";
+import { useAppSelector } from "#/store";
 
-import "./theme/variables";
-import { AppThemeType } from "../services/db";
-import { stateWithLocalstorageItems as initialCriticalSettingsState } from "../features/settings/settingsSlice";
+import { getThemeByStyle } from "./theme/AppThemes";
 
 export const DARK_CLASSNAME = "ion-palette-dark";
 export const PURE_BLACK_CLASSNAME = "theme-pure-black";
@@ -67,22 +67,18 @@ function updateDocumentTheme(
 
 // Prevent flash of white content and repaint before react component setup
 updateDocumentTheme(
-  initialCriticalSettingsState.appearance.dark.usingSystemDarkMode
+  initialSettingsState.appearance.dark.usingSystemDarkMode
     ? window.matchMedia(DARK_MEDIA_SELECTOR).matches
-    : initialCriticalSettingsState.appearance.dark.userDarkMode,
-  initialCriticalSettingsState.appearance.dark.pureBlack,
-  initialCriticalSettingsState.appearance.theme,
+    : initialSettingsState.appearance.dark.userDarkMode,
+  initialSettingsState.appearance.dark.pureBlack,
+  initialSettingsState.appearance.theme,
 );
 
 const fixedDeviceFontCss = css`
   --ion-dynamic-font: initial;
 `;
 
-interface GlobalStylesProps {
-  children: React.ReactNode;
-}
-
-export default function GlobalStyles({ children }: GlobalStylesProps) {
+export default function GlobalStyles({ children }: React.PropsWithChildren) {
   const isDark = useComputeIsDark();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
     (state) => state.settings.appearance.font,

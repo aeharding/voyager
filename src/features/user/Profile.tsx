@@ -1,6 +1,4 @@
-import React, { ComponentProps, useCallback } from "react";
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
-import Scores from "./Scores";
 import {
   albumsOutline,
   arrowDown,
@@ -10,26 +8,27 @@ import {
   eyeOffOutline,
 } from "ionicons/icons";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import { getHandle, getRemoteHandle, isPost } from "../../helpers/lemmy";
-import { MaxWidthContainer } from "../shared/AppContent";
-import { FetchFn } from "../feed/Feed";
-import useClient from "../../helpers/useClient";
-import { LIMIT } from "../../services/lemmy";
-import { useAppSelector } from "../../store";
-import PostCommentFeed, { PostCommentItem } from "../feed/PostCommentFeed";
-import { userHandleSelector } from "../auth/authSelectors";
+import { ComponentProps } from "react";
+
+import { userHandleSelector } from "#/features/auth/authSelectors";
+import { FetchFn } from "#/features/feed/Feed";
+import PostCommentFeed, {
+  PostCommentItem,
+} from "#/features/feed/PostCommentFeed";
 import {
   getModColor,
   getModIcon,
   getModName,
-} from "../moderation/useCanModerate";
-import useModZoneActions from "../moderation/useModZoneActions";
-import { styled } from "@linaria/react";
+} from "#/features/moderation/useCanModerate";
+import useModZoneActions from "#/features/moderation/useModZoneActions";
+import { MaxWidthContainer } from "#/features/shared/AppContent";
+import { getHandle, getRemoteHandle, isPost } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { LIMIT } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
 
-export const SettingLabel = styled(IonLabel)`
-  margin-left: 16px;
-`;
+import Scores from "./Scores";
 
 interface ProfileProps
   extends Pick<ComponentProps<typeof PostCommentFeed>, "onPull"> {
@@ -46,21 +45,21 @@ export default function Profile({ person, onPull }: ProfileProps) {
 
   const isSelf = getRemoteHandle(person.person_view.person) === myHandle;
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
-      const response = await client.getPersonDetails({
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    const response = await client.getPersonDetails(
+      {
         ...pageData,
         limit: LIMIT,
         username: getHandle(person.person_view.person),
         sort: "New",
-      });
-      return [...response.posts, ...response.comments].sort(
-        (a, b) =>
-          getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
-      );
-    },
-    [person, client],
-  );
+      },
+      ...rest,
+    );
+    return [...response.posts, ...response.comments].sort(
+      (a, b) =>
+        getPostCommentItemCreatedDate(b) - getPostCommentItemCreatedDate(a),
+    );
+  };
 
   const header = (
     <MaxWidthContainer>
@@ -74,16 +73,16 @@ export default function Profile({ person, onPull }: ProfileProps) {
             `/u/${getHandle(person.person_view.person)}/posts`,
           )}
         >
-          <IonIcon icon={albumsOutline} color="primary" />{" "}
-          <SettingLabel>Posts</SettingLabel>
+          <IonIcon icon={albumsOutline} color="primary" slot="start" />{" "}
+          <IonLabel className="ion-text-nowrap">Posts</IonLabel>
         </IonItem>
         <IonItem
           routerLink={buildGeneralBrowseLink(
             `/u/${getHandle(person.person_view.person)}/comments`,
           )}
         >
-          <IonIcon icon={chatbubbleOutline} color="primary" />{" "}
-          <SettingLabel>Comments</SettingLabel>
+          <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />{" "}
+          <IonLabel className="ion-text-nowrap">Comments</IonLabel>
         </IonItem>
         {isSelf && (
           <>
@@ -92,32 +91,32 @@ export default function Profile({ person, onPull }: ProfileProps) {
                 `/u/${getHandle(person.person_view.person)}/saved`,
               )}
             >
-              <IonIcon icon={bookmarkOutline} color="primary" />{" "}
-              <SettingLabel>Saved</SettingLabel>
+              <IonIcon icon={bookmarkOutline} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Saved</IonLabel>
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/upvoted`,
               )}
             >
-              <IonIcon icon={arrowUp} color="primary" />{" "}
-              <SettingLabel>Upvoted</SettingLabel>
+              <IonIcon icon={arrowUp} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Upvoted</IonLabel>
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/downvoted`,
               )}
             >
-              <IonIcon icon={arrowDown} color="primary" />{" "}
-              <SettingLabel>Downvoted</SettingLabel>
+              <IonIcon icon={arrowDown} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Downvoted</IonLabel>
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(
                 `/u/${getHandle(person.person_view.person)}/hidden`,
               )}
             >
-              <IonIcon icon={eyeOffOutline} color="primary" />{" "}
-              <SettingLabel>Hidden</SettingLabel>
+              <IonIcon icon={eyeOffOutline} color="primary" slot="start" />{" "}
+              <IonLabel className="ion-text-nowrap">Hidden</IonLabel>
             </IonItem>
           </>
         )}
@@ -125,8 +124,14 @@ export default function Profile({ person, onPull }: ProfileProps) {
       {isSelf && role && (
         <IonList inset>
           <IonItem detail onClick={presentModZoneActions}>
-            <IonIcon icon={getModIcon(role)} color={getModColor(role)} />{" "}
-            <SettingLabel>{getModName(role)} Zone</SettingLabel>
+            <IonIcon
+              icon={getModIcon(role)}
+              color={getModColor(role)}
+              slot="start"
+            />{" "}
+            <IonLabel className="ion-text-nowrap">
+              {getModName(role)} Zone
+            </IonLabel>
           </IonItem>
         </IonList>
       )}

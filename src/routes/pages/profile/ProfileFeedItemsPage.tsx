@@ -1,30 +1,23 @@
-import { useCallback } from "react";
 import {
-  IonLabel,
-  IonPage,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonBackButton,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
-import useClient from "../../../helpers/useClient";
-import { LIMIT } from "../../../services/lemmy";
-import { FetchFn } from "../../../features/feed/Feed";
+import { GetComments, GetPosts } from "lemmy-js-client";
 import { useParams } from "react-router";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
+
+import { FetchFn } from "#/features/feed/Feed";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import FeedContent from "../shared/FeedContent";
-import { GetComments, GetPosts } from "lemmy-js-client";
-import { styled } from "@linaria/react";
-import { sortPostCommentByPublished } from "../../../helpers/lemmy";
-import AppHeader from "../../../features/shared/AppHeader";
-
-export const SettingLabel = styled(IonLabel)`
-  margin-left: 16px;
-  flex-grow: initial !important;
-`;
+} from "#/features/feed/PostCommentFeed";
+import AppHeader from "#/features/shared/AppHeader";
+import { sortPostCommentByPublished } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import FeedContent from "#/routes/pages/shared/FeedContent";
+import { LIMIT } from "#/services/lemmy";
 
 interface ProfileFeedItemsPageProps {
   type: "Comments" | "Posts" | "Saved" | "Upvoted" | "Downvoted";
@@ -36,40 +29,41 @@ export default function ProfileFeedItemsPage({
   const { handle } = useParams<{ handle: string }>();
   const client = useClient();
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
-      if (type === "Upvoted" || type === "Downvoted") {
-        const requestPayload: GetPosts & GetComments = {
-          ...pageData,
-          limit: Math.floor(LIMIT / 2),
-          sort: "New",
-          liked_only: type === "Upvoted",
-          disliked_only: type === "Downvoted",
-        };
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    if (type === "Upvoted" || type === "Downvoted") {
+      const requestPayload: GetPosts & GetComments = {
+        ...pageData,
+        limit: Math.floor(LIMIT / 2),
+        sort: "New",
+        liked_only: type === "Upvoted",
+        disliked_only: type === "Downvoted",
+        show_read: true,
+      };
 
-        const [{ posts }, { comments }] = await Promise.all([
-          client.getPosts(requestPayload),
-          client.getComments(requestPayload),
-        ]);
+      const [{ posts }, { comments }] = await Promise.all([
+        client.getPosts(requestPayload, ...rest),
+        client.getComments(requestPayload, ...rest),
+      ]);
 
-        return [...comments, ...posts].sort(sortPostCommentByPublished);
-      }
-      const { comments, posts } = await client.getPersonDetails({
+      return [...comments, ...posts].sort(sortPostCommentByPublished);
+    }
+    const { comments, posts } = await client.getPersonDetails(
+      {
         ...pageData,
         limit: LIMIT,
         username: handle,
         sort: "New",
         saved_only: type === "Saved",
-      });
+      },
+      ...rest,
+    );
 
-      if (type === "Saved") {
-        return [...comments, ...posts].sort(sortPostCommentByPublished);
-      }
+    if (type === "Saved") {
+      return [...comments, ...posts].sort(sortPostCommentByPublished);
+    }
 
-      return type === "Comments" ? comments : posts;
-    },
-    [client, handle, type],
-  );
+    return type === "Comments" ? comments : posts;
+  };
 
   return (
     <IonPage>

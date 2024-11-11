@@ -1,9 +1,11 @@
-import { ModFeaturePostView } from "lemmy-js-client";
-import { LogEntryData } from "../ModlogItem";
-import { getHandle } from "../../../../helpers/lemmy";
-import { buildBaseData, buildPostMessage } from "./shared";
-import { buildPostLink } from "../../../../helpers/appLinkBuilder";
 import { megaphone, volumeOff } from "ionicons/icons";
+import { ModFeaturePostView } from "lemmy-js-client";
+
+import { buildPostLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+
+import { LogEntryData } from "../ModlogItem";
+import { buildBaseData, buildPostMessage } from "./shared";
 
 export default function featurePost(item: ModFeaturePostView): LogEntryData {
   return {

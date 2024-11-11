@@ -1,8 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { db } from "../../../services/db";
-import { AppDispatch, useAppDispatch, useAppSelector } from "../../../store";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { useCallback, useEffect } from "react";
-import { DeepPartial } from "../../../helpers/deepPartial";
+
+import { DeepPartial } from "#/helpers/deepPartial";
+import { db } from "#/services/db";
+
+import { AppDispatch, useAppDispatch, useAppSelector } from "../../../store";
 import { defaultPreferences } from "./DefaultPreferences";
 
 export interface ShareAsImagePreferences {

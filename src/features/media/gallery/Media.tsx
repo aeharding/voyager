@@ -1,8 +1,10 @@
-import { isUrlVideo } from "../../../helpers/url";
-import { PlayerProps } from "../video/Player";
-import { ComponentProps, ComponentRef, useMemo } from "react";
+import { ComponentProps, ComponentRef } from "react";
+
+import { PlayerProps } from "#/features/media/video/Player";
+import Video from "#/features/media/video/Video";
+import { isUrlVideo } from "#/helpers/url";
+
 import GalleryMedia, { GalleryMediaProps } from "./GalleryMedia";
-import Video from "../video/Video";
 
 export interface MediaProps
   extends Omit<GalleryMediaProps & PlayerProps, "src" | "ref"> {
@@ -14,7 +16,7 @@ export interface MediaProps
 }
 
 export default function Media({ nativeControls, src, ...props }: MediaProps) {
-  const isVideo = useMemo(() => src && isUrlVideo(src), [src]);
+  const isVideo = src && isUrlVideo(src, props.post?.post.url_content_type);
 
   if (isVideo)
     return (

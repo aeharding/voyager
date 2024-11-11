@@ -1,10 +1,12 @@
-import { styled } from "@linaria/react";
 import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { heart } from "ionicons/icons";
-import InAppProducts from "./inAppPurchase/InAppProducts";
+
+import FloatingDialog from "#/helpers/FloatingDialog";
+import { isNative } from "#/helpers/device";
+
 import ExternalSponsorOptions from "./ExternalSponsorOptions";
-import { isNative } from "../../helpers/device";
-import FloatingDialog from "../../helpers/FloatingDialog";
+import InAppProducts from "./inAppPurchase/InAppProducts";
 
 const Heart = styled.div`
   font-size: 3em;

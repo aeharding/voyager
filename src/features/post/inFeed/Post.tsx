@@ -1,33 +1,35 @@
+import { IonItem } from "@ionic/react";
+import { cx } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
-import LargePost from "./large/LargePost";
-import store, { useAppDispatch, useAppSelector } from "../../../store";
-import CompactPost from "./compact/CompactPost";
-import SlidingVote from "../../shared/sliding/SlidingPostVote";
-import { IonItem } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { getHandle } from "../../../helpers/lemmy";
 import {
   memo,
   useCallback,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
-import { hidePost, unhidePost } from "../postSlice";
 import AnimateHeight from "react-animate-height";
-import { useAutohidePostIfNeeded } from "../../feed/PageTypeContext";
 import { useLongPress } from "use-long-press";
-import usePostActions from "../shared/usePostActions";
-import { filterEvents } from "../../../helpers/longPress";
+
+import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
+import { usePostAppearance } from "#/features/post/appearance/PostAppearanceProvider";
+import usePostActions from "#/features/post/shared/usePostActions";
+import SlidingVote from "#/features/shared/sliding/SlidingPostVote";
+import { isTouchDevice } from "#/helpers/device";
 import {
-  stopIonicTapClick,
   preventOnClickNavigationBug,
-} from "../../../helpers/ionic";
-import { cx } from "@linaria/core";
-import { isTouchDevice } from "../../../helpers/device";
-import { usePostAppearance } from "../appearance/PostAppearanceProvider";
+  stopIonicTapClick,
+} from "#/helpers/ionic";
+import { getHandle } from "#/helpers/lemmy";
+import { filterEvents } from "#/helpers/longPress";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import store, { useAppDispatch, useAppSelector } from "#/store";
+
+import { hidePost, unhidePost } from "../postSlice";
+import CompactPost from "./compact/CompactPost";
+import LargePost from "./large/LargePost";
 
 const CustomIonItem = styled(IonItem)`
   --padding-start: 0;
@@ -73,7 +75,6 @@ function Post(props: PostProps) {
     }
   };
 
-  // eslint-disable-next-line react-compiler/react-compiler
   const onFinishHideEvent = useEffectEvent(onFinishHide);
 
   useEffect(() => {
@@ -125,7 +126,6 @@ function Post(props: PostProps) {
         className={props.className}
         onHide={() => setShouldHide(true)}
       >
-        {/* href=undefined: Prevent drag failure on firefox */}
         <CustomIonItem
           mode="ios" // Use iOS style activatable tap highlight
           className={cx(isTouchDevice() && "ion-activatable")}
@@ -143,6 +143,7 @@ function Post(props: PostProps) {
             // and doesn't cause rerender, so do it now.
             autohidePostIfNeeded(props.post);
           }}
+          // href=undefined: Prevent drag failure on firefox
           href={undefined}
           ref={targetIntersectionRef}
           {...bind()}

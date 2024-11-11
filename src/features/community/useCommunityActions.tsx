@@ -1,32 +1,34 @@
-import { Community, SubscribedType } from "lemmy-js-client";
-import { useCallback, useContext, useMemo } from "react";
-import { PageContext } from "../auth/PageContext";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { checkIsMod, getHandle } from "../../helpers/lemmy";
+import { Share } from "@capacitor/share";
 import { useIonActionSheet } from "@ionic/react";
+import { Community, SubscribedType } from "lemmy-js-client";
+import { useContext } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
 import {
   isAdminSelector,
   localUserSelector,
   showNsfw,
-} from "../auth/siteSlice";
-import {
-  addFavorite,
-  blockCommunity,
-  followCommunity,
-  removeFavorite,
-} from "./communitySlice";
+} from "#/features/auth/siteSlice";
+import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
   allNSFWHidden,
   buildBlocked,
   buildFavorited,
   buildProblemSubscribing,
   buildSuccessSubscribing,
-} from "../../helpers/toastMessages";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
-import useAppToast from "../../helpers/useAppToast";
-import { db } from "../../services/db";
-import { Share } from "@capacitor/share";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { db } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import {
+  addFavorite,
+  blockCommunity,
+  followCommunity,
+  removeFavorite,
+} from "./communitySlice";
 
 /**
  *
@@ -41,7 +43,8 @@ export default function useCommunityActions(
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 
-  const communityHandle = getHandle(community);
+  // useGetHandle as signal to react compiler to optimize
+  const communityHandle = useGetHandle(community);
 
   const subscribedSourceOfTruth = useAppSelector((state) =>
     state.community.communityByHandle[communityHandle]
@@ -70,24 +73,19 @@ export default function useCommunityActions(
     (state) => state.community.communityByHandle[communityHandle]?.blocked,
   );
 
-  const canPost = useMemo(() => {
+  const canPost = (() => {
     const isMod = site ? checkIsMod(communityHandle, site) : false;
 
-    const canPost = !community.posting_restricted_to_mods || isMod || isAdmin;
-
-    return canPost;
-  }, [community, communityHandle, isAdmin, site]);
+    return !community.posting_restricted_to_mods || isMod || isAdmin;
+  })();
 
   const favoriteCommunities = useAppSelector(
     (state) => state.community.favorites,
   );
 
-  const isFavorite = useMemo(
-    () => favoriteCommunities.includes(communityHandle),
-    [favoriteCommunities, communityHandle],
-  );
+  const isFavorite = favoriteCommunities.includes(communityHandle);
 
-  const post = useCallback(() => {
+  const post = () => {
     if (presentLoginIfNeeded()) return;
 
     if (!canPost) {
@@ -100,34 +98,21 @@ export default function useCommunityActions(
     }
 
     presentPostEditor(communityHandle);
-  }, [
-    canPost,
-    communityHandle,
-    presentLoginIfNeeded,
-    presentPostEditor,
-    presentToast,
-  ]);
+  };
 
-  const subscribe = useCallback(async () => {
+  const subscribe = async () => {
     if (presentLoginIfNeeded()) return;
 
     try {
       await dispatch(followCommunity(!isSubscribed, communityId));
-      presentToast(buildSuccessSubscribing(isSubscribed, communityHandle));
+      presentToast(buildSuccessSubscribing(isSubscribed));
     } catch (error) {
-      presentToast(buildProblemSubscribing(isSubscribed, communityHandle));
+      presentToast(buildProblemSubscribing(isSubscribed));
       throw error;
     }
-  }, [
-    communityHandle,
-    communityId,
-    dispatch,
-    isSubscribed,
-    presentLoginIfNeeded,
-    presentToast,
-  ]);
+  };
 
-  const favorite = useCallback(() => {
+  const favorite = () => {
     if (presentLoginIfNeeded()) return;
 
     if (!isFavorite) {
@@ -136,16 +121,10 @@ export default function useCommunityActions(
       dispatch(removeFavorite(communityHandle));
     }
 
-    presentToast(buildFavorited(isFavorite, communityHandle));
-  }, [
-    communityHandle,
-    dispatch,
-    isFavorite,
-    presentLoginIfNeeded,
-    presentToast,
-  ]);
+    presentToast(buildFavorited(isFavorite));
+  };
 
-  const block = useCallback(async () => {
+  const block = async () => {
     if (typeof communityId !== "number") return;
 
     async function _block() {
@@ -182,7 +161,7 @@ export default function useCommunityActions(
             handler: () => {
               (async () => {
                 await _block();
-                presentToast(buildBlocked(!isBlocked, communityHandle));
+                presentToast(buildBlocked(!isBlocked));
               })();
             },
           },
@@ -196,61 +175,37 @@ export default function useCommunityActions(
       db.setSetting("has_presented_block_nsfw_tip", true);
     } else {
       await _block();
-      presentToast(buildBlocked(!isBlocked, communityHandle));
+      presentToast(buildBlocked(!isBlocked));
     }
-  }, [
-    communityHandle,
-    communityId,
-    dispatch,
-    isBlocked,
-    isNsfw,
-    localUser,
-    presentActionSheet,
-    presentToast,
-  ]);
+  };
 
-  const modlog = useCallback(() => {
+  const modlog = () => {
     router.push(buildGeneralBrowseLink(`/c/${communityHandle}/log`));
-  }, [buildGeneralBrowseLink, communityHandle, router]);
+  };
 
-  const sidebar = useCallback(() => {
+  const sidebar = () => {
     router.push(buildGeneralBrowseLink(`/c/${communityHandle}/sidebar`));
-  }, [buildGeneralBrowseLink, communityHandle, router]);
+  };
 
-  const view = useCallback(() => {
+  const view = () => {
     router.push(buildGeneralBrowseLink(`/c/${communityHandle}`));
-  }, [buildGeneralBrowseLink, communityHandle, router]);
+  };
 
-  const share = useCallback(() => {
+  const share = () => {
     Share.share({ url: community.actor_id });
-  }, [community]);
+  };
 
-  return useMemo(
-    () => ({
-      isSubscribed,
-      isBlocked,
-      isFavorite,
-      post,
-      subscribe,
-      favorite,
-      block,
-      modlog,
-      sidebar,
-      view,
-      share,
-    }),
-    [
-      block,
-      favorite,
-      isBlocked,
-      isFavorite,
-      isSubscribed,
-      modlog,
-      post,
-      share,
-      sidebar,
-      subscribe,
-      view,
-    ],
-  );
+  return {
+    isSubscribed,
+    isBlocked,
+    isFavorite,
+    post,
+    subscribe,
+    favorite,
+    block,
+    modlog,
+    sidebar,
+    view,
+    share,
+  };
 }

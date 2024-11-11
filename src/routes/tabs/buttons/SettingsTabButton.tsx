@@ -1,10 +1,12 @@
 import { IonBadge, IonIcon, IonLabel } from "@ionic/react";
-import { useContext } from "react";
-import SharedTabButton, { TabButtonProps } from "./shared";
 import { cog } from "ionicons/icons";
-import { useAppSelector } from "../../../store";
-import { UpdateContext } from "../../pages/settings/update/UpdateContext";
-import useShouldInstall from "../../../features/pwa/useShouldInstall";
+import { useContext } from "react";
+
+import useShouldInstall from "#/features/pwa/useShouldInstall";
+import { UpdateContext } from "#/routes/pages/settings/update/UpdateContext";
+import { useAppSelector } from "#/store";
+
+import SharedTabButton, { TabButtonProps } from "./shared";
 
 function SettingsTabButton(props: TabButtonProps) {
   const databaseError = useAppSelector((state) => state.settings.databaseError);

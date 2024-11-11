@@ -1,10 +1,10 @@
-import React from "react";
 import { CommentView } from "lemmy-js-client";
-import { useAppSelector } from "../../../store";
+
+import { useAppSelector } from "#/store";
+
 import { BaseSlidingVote } from "./BaseSliding";
 
-interface SlidingVoteProps {
-  children: React.ReactNode;
+interface SlidingVoteProps extends React.PropsWithChildren {
   className?: string;
   item: CommentView;
   rootIndex: number | undefined;

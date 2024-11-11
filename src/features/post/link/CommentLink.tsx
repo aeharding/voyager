@@ -1,4 +1,5 @@
-import { LinkData } from "../../comment/CommentLinks";
+import { LinkData } from "#/features/comment/CommentLinks";
+
 import Link from "./Link";
 
 interface CommentLinkProps {

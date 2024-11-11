@@ -1,4 +1,4 @@
-import { concat, uniq } from "lodash";
+import { uniq } from "es-toolkit";
 
 /**
  * 🚨 Want to add a server to this list?
@@ -89,6 +89,7 @@ export const SERVERS_BY_CATEGORY = {
     "psychedelia.ink",
     "ani.social",
     "vegantheoryclub.org",
+    "lemmy.vg",
   ],
   activism: ["rblind.com", "badatbeing.social", "slrpnk.net"],
   lgbt: ["femboys.bar", "lemmy.blahaj.zone"],
@@ -97,7 +98,7 @@ export const SERVERS_BY_CATEGORY = {
 };
 
 export const WHITELISTED_SERVERS = uniq(
-  concat(...Object.values(SERVERS_BY_CATEGORY)),
+  Object.values(SERVERS_BY_CATEGORY).flat(),
 );
 
 const ADDITIONAL_LOGIN_INSTANCES = [

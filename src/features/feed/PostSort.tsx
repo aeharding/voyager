@@ -5,6 +5,7 @@ import {
   useIonActionSheet,
 } from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
+import { startCase } from "es-toolkit";
 import {
   arrowUpCircleOutline,
   barChartOutline,
@@ -18,10 +19,13 @@ import {
   trendingUpOutline,
   trophyOutline,
 } from "ionicons/icons";
+import { PostSortType } from "lemmy-js-client";
 import { useContext } from "react";
-import { startCase } from "lodash";
-import { scrollUpIfNeeded } from "../../helpers/scrollUpIfNeeded";
-import { AppContext } from "../auth/AppContext";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { arrayOfAll } from "#/helpers/array";
+import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
+
 import {
   calendarNineMonths,
   calendarSingleDay,
@@ -33,8 +37,6 @@ import {
   clockBadgeSix,
   clockBadgeTwelve,
 } from "../icons";
-import { arrayOfAll } from "../../helpers/array";
-import { PostSortType } from "lemmy-js-client";
 
 type ExtendedSortType = PostSortType | "Top";
 

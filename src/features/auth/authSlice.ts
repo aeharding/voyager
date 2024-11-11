@@ -1,29 +1,31 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "../../store";
-import { getRemoteHandle, parseLemmyJWT } from "../../helpers/lemmy";
-import { resetPosts } from "../post/postSlice";
-import { getClient } from "../../services/lemmy";
-import { resetComments } from "../comment/commentSlice";
-import { resetUsers } from "../user/userSlice";
-import { resetInbox } from "../inbox/inboxSlice";
-import { differenceWith, uniqBy } from "lodash";
-import { resetCommunities } from "../community/communitySlice";
 import { ApplicationContext } from "capacitor-application-context";
-import { resetInstances } from "../instances/instancesSlice";
-import { resetResolve } from "../resolve/resolveSlice";
-import { resetMod } from "../moderation/modSlice";
+import { uniqBy } from "es-toolkit";
+import { Register } from "lemmy-js-client";
+
+import { resetComments } from "#/features/comment/commentSlice";
+import { resetCommunities } from "#/features/community/communitySlice";
+import { resetInbox } from "#/features/inbox/inboxSlice";
+import { resetInstances } from "#/features/instances/instancesSlice";
+import { resetMod } from "#/features/moderation/modSlice";
+import { resetPosts } from "#/features/post/postSlice";
+import { resetResolve } from "#/features/resolve/resolveSlice";
+import { setDefaultFeed } from "#/features/settings/settingsSlice";
+import { resetUsers } from "#/features/user/userSlice";
+import { getRemoteHandle, parseLemmyJWT } from "#/helpers/lemmy";
+import { getDefaultServer } from "#/services/app";
+import { getClient } from "#/services/lemmy";
+import { AppDispatch, RootState } from "#/store";
+
 import { getInstanceFromHandle, instanceSelector } from "./authSelectors";
 import { receivedSite, resetSite } from "./siteSlice";
-import { Register } from "lemmy-js-client";
-import { setDefaultFeed } from "../settings/settingsSlice";
-import { getDefaultServer } from "../../services/app";
 
 const MULTI_ACCOUNT_STORAGE_NAME = "credentials";
 
 /**
  * DO NOT CHANGE this type. It is persisted.
  */
-export type Credential = {
+export interface Credential {
   jwt?: string;
 
   /**
@@ -32,12 +34,12 @@ export type Credential = {
    * e.g. `aeharding@lemmy.world` or `lemmy.world`
    */
   handle: string;
-};
+}
 
 /**
  * DO NOT CHANGE this type. It is persisted.
  */
-type CredentialStoragePayload = {
+interface CredentialStoragePayload {
   accounts: Credential[];
 
   /**
@@ -46,7 +48,7 @@ type CredentialStoragePayload = {
    * e.g. `aeharding@lemmy.world` or `lemmy.world`
    */
   activeHandle: string;
-};
+}
 
 interface AuthState {
   accountData: CredentialStoragePayload | undefined;
@@ -80,10 +82,8 @@ export const authSlice = createSlice({
         cleanedPreviousAccounts = [action.payload];
       } else {
         // Remove guest accounts for this instance when logging in
-        cleanedPreviousAccounts = differenceWith(
-          state.accountData.accounts,
-          [getInstanceFromHandle(action.payload.handle)],
-          (a, b) => a.handle === b,
+        cleanedPreviousAccounts = state.accountData.accounts.filter(
+          (a) => a.handle !== getInstanceFromHandle(action.payload.handle),
         );
       }
 
@@ -102,10 +102,8 @@ export const authSlice = createSlice({
     removeAccount: (state, action: PayloadAction<string>) => {
       if (!state.accountData) return;
 
-      const accounts = differenceWith(
-        state.accountData.accounts,
-        [action.payload],
-        (a, b) => a.handle === b,
+      const accounts = state.accountData.accounts.filter(
+        (a) => a.handle !== action.payload,
       );
 
       const nextAccount = accounts[0];
@@ -137,17 +135,15 @@ export const authSlice = createSlice({
 
       updateCredentialsStorage(state.accountData);
     },
-
-    reset: (state) => {
-      return initialState(state.connectedInstance);
-    },
-
     updateConnectedInstance(state, action: PayloadAction<string>) {
       if (import.meta.env.VITE__TEST_MODE) {
         state.connectedInstance = getDefaultServer();
         return;
       }
       state.connectedInstance = action.payload;
+    },
+    reset: (state) => {
+      return initialState(state.connectedInstance);
     },
   },
 });
@@ -158,8 +154,8 @@ export const {
   removeAccount,
   setPrimaryAccount,
   setAccounts,
-  reset,
   updateConnectedInstance,
+  reset,
 } = authSlice.actions;
 
 export default authSlice.reducer;

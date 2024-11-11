@@ -1,9 +1,10 @@
 import { IonIcon } from "@ionic/react";
-import { chevronForward } from "ionicons/icons";
-import { Link, useParams } from "react-router-dom";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { useCallback, useEffect, useRef } from "react";
 import { styled } from "@linaria/react";
+import { chevronForward } from "ionicons/icons";
+import { useCallback, useEffect, useRef } from "react";
+import { Link, useParams } from "react-router-dom";
+
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 const ContainerLink = styled(Link)`
   position: absolute;

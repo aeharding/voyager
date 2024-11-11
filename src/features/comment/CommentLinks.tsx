@@ -1,16 +1,16 @@
-import { useMemo } from "react";
+import spoiler from "@aeharding/remark-lemmy-spoiler";
+import { styled } from "@linaria/react";
+import { uniqBy } from "es-toolkit";
+import { Text } from "mdast";
+import { defaultUrlTransform } from "react-markdown";
+import remarkParse from "remark-parse";
 import { unified } from "unified";
 import { SKIP, visit } from "unist-util-visit";
-import remarkParse from "remark-parse";
-import CommentLink from "../post/link/CommentLink";
-import { styled } from "@linaria/react";
-import customRemarkGfm from "../shared/markdown/customRemarkGfm";
-import { useAppSelector } from "../../store";
-import { Text } from "mdast";
-import { uniqBy } from "lodash";
-import spoiler from "@aeharding/remark-lemmy-spoiler";
-import { buildBaseLemmyUrl } from "../../services/lemmy";
-import { defaultUrlTransform } from "react-markdown";
+
+import CommentLink from "#/features/post/link/CommentLink";
+import customRemarkGfm from "#/features/shared/markdown/customRemarkGfm";
+import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
 
 const Container = styled.div`
   display: flex;
@@ -35,9 +35,10 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
-  const connectedInstanceUrl = buildBaseLemmyUrl(connectedInstance);
 
-  const links = useMemo(() => {
+  const links = (() => {
+    const connectedInstanceUrl = buildBaseLemmyUrl(connectedInstance);
+
     // Initialize a unified processor with the remark-parse parser
     // and parse the Markdown content
     const processor = unified()
@@ -65,7 +66,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     });
 
     // Dedupe by url
-    links = uniqBy(links, (l) => l.url);
+    links = uniqBy(links, ({ url }) => url);
 
     // e.g. `http://127.0.0.1:8080”`
     links = links.filter(({ url }) => defaultUrlTransform(url));
@@ -73,16 +74,10 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
     // Max 4 links
     links = links.slice(0, 4);
 
-    return links;
-  }, [connectedInstance, markdown, showCommentImages, connectedInstanceUrl]);
+    return links.map((link, index) => <CommentLink link={link} key={index} />);
+  })();
 
   if (!links.length) return;
 
-  return (
-    <Container>
-      {links.map((link, index) => (
-        <CommentLink link={link} key={index} />
-      ))}
-    </Container>
-  );
+  return <Container>{links}</Container>;
 }

@@ -5,48 +5,46 @@ import {
   IonSearchbar,
   IonToolbar,
 } from "@ionic/react";
-import { FetchFn } from "../../../features/feed/Feed";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
+import { noop } from "es-toolkit";
+import { createContext, useEffect, useRef, useState } from "react";
 import { Redirect, useParams } from "react-router";
-import PostSort from "../../../features/feed/PostSort";
-import MoreActions from "../../../features/community/MoreActions";
-import {
-  createContext,
-  memo,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import useClient from "../../../helpers/useClient";
-import { LIMIT } from "../../../services/lemmy";
+
+import MoreActions from "#/features/community/MoreActions";
+import ModActions from "#/features/community/mod/ModActions";
+import CommunitySearchResults from "#/features/community/search/CommunitySearchResults";
+import TitleSearch from "#/features/community/titleSearch/TitleSearch";
+import { TitleSearchProvider } from "#/features/community/titleSearch/TitleSearchProvider";
+import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResults";
+import useFetchCommunity from "#/features/community/useFetchCommunity";
+import useGetRandomCommunity from "#/features/community/useGetRandomCommunity";
+import { FetchFn } from "#/features/feed/Feed";
+import FeedContextProvider from "#/features/feed/FeedContext";
+import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import PostCommentFeed, {
   PostCommentItem,
-} from "../../../features/feed/PostCommentFeed";
-import TitleSearch from "../../../features/community/titleSearch/TitleSearch";
-import TitleSearchResults from "../../../features/community/titleSearch/TitleSearchResults";
-import { TitleSearchProvider } from "../../../features/community/titleSearch/TitleSearchProvider";
-import FeedContent from "./FeedContent";
-import FeedContextProvider from "../../../features/feed/FeedContext";
-import PostFabs from "../../../features/feed/postFabs/PostFabs";
-import useFetchCommunity from "../../../features/community/useFetchCommunity";
-import CommunitySearchResults from "../../../features/community/search/CommunitySearchResults";
-import { getSortDuration } from "../../../features/feed/endItems/EndPost";
-import ModActions from "../../../features/community/mod/ModActions";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import useFeedSort from "../../../features/feed/sort/useFeedSort";
-import { getRemoteHandleFromHandle } from "../../../helpers/lemmy";
-import { useAppSelector } from "../../../store";
-import { PageTypeContext } from "../../../features/feed/PageTypeContext";
-import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
-import AppHeader from "../../../features/shared/AppHeader";
-import useGetRandomCommunity from "../../../features/community/useGetRandomCommunity";
+} from "#/features/feed/PostCommentFeed";
+import PostSort from "#/features/feed/PostSort";
+import { getSortDuration } from "#/features/feed/endItems/EndPost";
+import PostFabs from "#/features/feed/postFabs/PostFabs";
+import useFeedSort from "#/features/feed/sort/useFeedSort";
+import useFeedUpdate from "#/features/feed/useFeedUpdate";
 import PostAppearanceProvider, {
   WaitUntilPostAppearanceResolved,
-} from "../../../features/post/appearance/PostAppearanceProvider";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
-import useFeedUpdate from "../../../features/feed/useFeedUpdate";
+} from "#/features/post/appearance/PostAppearanceProvider";
+import AppHeader from "#/features/shared/AppHeader";
+import { AppTitleHandle } from "#/features/shared/AppTitle";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import DocumentTitle from "#/features/shared/DocumentTitle";
+import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useClient from "#/helpers/useClient";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { LIMIT } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
+
+import FeedContent from "./FeedContent";
 
 const StyledFeedContent = styled(FeedContent)`
   .ios & {
@@ -137,16 +135,15 @@ export default function CommunityPage() {
   return <CommunityPageContent community={community} actor={actor} />;
 }
 
-const CommunityPageContent = memo(function CommunityPageContent({
-  community,
-  actor,
-}: CommunityPageParams) {
+function CommunityPageContent({ community, actor }: CommunityPageParams) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [scrolledPastSearch, setScrolledPastSearch] = useState(false);
   const [_searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useOptimizedIonRouter();
   const getRandomCommunity = useGetRandomCommunity();
+
+  const appTitleRef = useRef<AppTitleHandle>(null);
 
   const searchOpen = searchQuery || _searchOpen;
 
@@ -174,21 +171,22 @@ const CommunityPageContent = memo(function CommunityPageContent({
 
   const searchbarRef = useRef<HTMLIonSearchbarElement>(null);
 
-  const fetchFn: FetchFn<PostCommentItem> = useCallback(
-    async (pageData) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      fetchFnLastUpdated;
+  const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- fetchFn relies on fetchFnLastUpdated for updates
+    fetchFnLastUpdated;
 
-      const { posts, next_page } = await client.getPosts({
+    const { posts, next_page } = await client.getPosts(
+      {
         ...pageData,
         limit: LIMIT,
         community_name: community,
         sort,
-      });
-      return { data: posts, next_page };
-    },
-    [client, community, sort, fetchFnLastUpdated],
-  );
+        show_read: true,
+      },
+      ...rest,
+    );
+    return { data: posts, next_page };
+  };
 
   const onPull = async () => {
     const search = Object.fromEntries([
@@ -201,23 +199,22 @@ const CommunityPageContent = memo(function CommunityPageContent({
     if (foundRandom) return false;
   };
 
-  const feedSearchContextValue = useMemo(() => ({ setScrolledPastSearch }), []);
+  // Force update when loaded, because mod button may appear (and title may need to shrink)
+  useEffect(() => {
+    appTitleRef.current?.updateLayout();
+  }, [communityView]);
 
-  const header = useMemo(
-    () =>
-      !searchOpen ? (
-        <HeaderContainer>
-          <CommunitySearchbar
-            placeholder={`Search c/${community}`}
-            onFocus={() => {
-              setSearchOpen(true);
-              searchbarRef.current?.setFocus();
-            }}
-          />
-        </HeaderContainer>
-      ) : undefined,
-    [community, searchOpen],
-  );
+  const header = !searchOpen ? (
+    <HeaderContainer>
+      <CommunitySearchbar
+        placeholder={`Search c/${community}`}
+        onFocus={() => {
+          setSearchOpen(true);
+          searchbarRef.current?.setFocus();
+        }}
+      />
+    </HeaderContainer>
+  ) : undefined;
 
   if (community.includes("@") && community.split("@")[1] === actor)
     return (
@@ -231,7 +228,7 @@ const CommunityPageContent = memo(function CommunityPageContent({
     if (!sort) return <CenteredSpinner />;
 
     return (
-      <FeedSearchContext.Provider value={feedSearchContextValue}>
+      <FeedSearchContext.Provider value={{ setScrolledPastSearch }}>
         <PageTypeContext.Provider value="community">
           <WaitUntilPostAppearanceResolved>
             <PostCommentFeed
@@ -277,7 +274,12 @@ const CommunityPageContent = memo(function CommunityPageContent({
                         defaultHref={buildGeneralBrowseLink("/")}
                       />
                     </IonButtons>
-                    <TitleSearch name={community}>
+                    {communityView && (
+                      <DocumentTitle>
+                        {communityView.community.title}
+                      </DocumentTitle>
+                    )}
+                    <TitleSearch name={community} ref={appTitleRef}>
                       <IonButtons slot="end">
                         <ModActions
                           community={communityView}
@@ -327,12 +329,12 @@ const CommunityPageContent = memo(function CommunityPageContent({
       </PostAppearanceProvider>
     </FeedContextProvider>
   );
-});
+}
 
 interface IFeedSearchContext {
   setScrolledPastSearch: (scrolled: boolean) => void;
 }
 
 export const FeedSearchContext = createContext<IFeedSearchContext>({
-  setScrolledPastSearch: () => {},
+  setScrolledPastSearch: noop,
 });

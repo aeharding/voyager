@@ -1,9 +1,11 @@
-import React, { useCallback, useMemo } from "react";
+import { styled } from "@linaria/react";
+import React from "react";
+
+import { buildBaseLemmyUrl } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
+
 import InAppExternalLink from "../InAppExternalLink";
 import useLemmyUrlHandler from "../useLemmyUrlHandler";
-import { useAppSelector } from "../../../store";
-import { styled } from "@linaria/react";
-import { buildBaseLemmyUrl } from "../../../services/lemmy";
 
 const LinkInterceptor = styled(LinkInterceptorUnstyled)`
   -webkit-touch-callout: default;
@@ -29,7 +31,7 @@ function LinkInterceptorUnstyled({
   );
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
 
-  const absoluteHref = useMemo(() => {
+  const absoluteHref = (() => {
     if (!props.href) return;
 
     try {
@@ -37,20 +39,17 @@ function LinkInterceptorUnstyled({
     } catch (_) {
       return;
     }
-  }, [connectedInstanceUrl, props.href]);
+  })();
 
-  const onClick = useCallback(
-    async (e: React.MouseEvent<HTMLAnchorElement>) => {
-      _onClick?.(e);
+  async function onClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    _onClick?.(e);
 
-      if (!props.href) return;
-      if (e.metaKey || e.ctrlKey) return;
-      if (e.defaultPrevented) return;
+    if (!props.href) return;
+    if (e.metaKey || e.ctrlKey) return;
+    if (e.defaultPrevented) return;
 
-      redirectToLemmyObjectIfNeeded(props.href, e, forceResolveObject);
-    },
-    [props.href, redirectToLemmyObjectIfNeeded, _onClick, forceResolveObject],
-  );
+    redirectToLemmyObjectIfNeeded(props.href, e, forceResolveObject);
+  }
 
   // Sometimes markdown thinks things are URLs that aren't URLs
   if (!absoluteHref) return props.children;

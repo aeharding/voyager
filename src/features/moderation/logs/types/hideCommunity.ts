@@ -1,9 +1,11 @@
-import { ModHideCommunityView } from "lemmy-js-client";
-import { LogEntryData } from "../ModlogItem";
-import { getHandle } from "../../../../helpers/lemmy";
-import { buildBaseData, getAdminRole } from "./shared";
-import { buildCommunityLink } from "../../../../helpers/appLinkBuilder";
 import { eye, eyeOff } from "ionicons/icons";
+import { ModHideCommunityView } from "lemmy-js-client";
+
+import { buildCommunityLink } from "#/helpers/appLinkBuilder";
+import { getHandle } from "#/helpers/lemmy";
+
+import { LogEntryData } from "../ModlogItem";
+import { buildBaseData, getAdminRole } from "./shared";
 
 export default function hideCommunity(
   item: ModHideCommunityView,

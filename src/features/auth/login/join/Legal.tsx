@@ -10,13 +10,15 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useAppSelector } from "../../../../store";
-import Markdown from "../../../shared/markdown/Markdown";
-import Question from "./Question";
+
+import AppHeader from "#/features/shared/AppHeader";
+import { useInterceptHrefWithInAppBrowserIfNeeded } from "#/features/shared/InAppExternalLink";
+import Markdown from "#/features/shared/markdown/Markdown";
+import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
+import { useAppSelector } from "#/store";
+
 import Join from "./Join";
-import { useInterceptHrefWithInAppBrowserIfNeeded } from "../../../shared/InAppExternalLink";
-import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "../../../../helpers/voyager";
-import AppHeader from "../../../shared/AppHeader";
+import Question from "./Question";
 
 export default function Legal() {
   const { url, site } = useAppSelector((state) => state.join);

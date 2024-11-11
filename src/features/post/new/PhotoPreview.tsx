@@ -1,5 +1,5 @@
-import { styled } from "@linaria/react";
 import { IonSpinner } from "@ionic/react";
+import { styled } from "@linaria/react";
 
 const Container = styled.div`
   position: relative;

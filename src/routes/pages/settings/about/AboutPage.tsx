@@ -2,15 +2,13 @@ import {
   IonBackButton,
   IonButtons,
   IonIcon,
+  IonLabel,
   IonList,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
-import AppDetails from "./AppDetails";
-import { SettingLabel } from "../../../../features/user/Profile";
-import { IconBg } from "../SettingsPage";
+import { shuffle } from "es-toolkit";
 import {
   bug,
   handLeft,
@@ -22,17 +20,21 @@ import {
   sparkles,
   thumbsUp,
 } from "ionicons/icons";
-import { useAppSelector } from "../../../../store";
-import compliments from "./compliments.txt?raw";
-import { shuffle } from "lodash";
-import useAppToast from "../../../../helpers/useAppToast";
 import { useRef } from "react";
-import AppContent from "../../../../features/shared/AppContent";
-import { IonItemInAppExternalLink } from "../../../../features/shared/InAppExternalLink";
-import { isAndroid, isNative } from "../../../../helpers/device";
-import { useSetActivePage } from "../../../../features/auth/AppContext";
-import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "../../../../helpers/voyager";
-import AppHeader from "../../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import { IonItemInAppExternalLink } from "#/features/shared/InAppExternalLink";
+import { isAndroid, isNative } from "#/helpers/device";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useAppToast from "#/helpers/useAppToast";
+import { VOYAGER_PRIVACY, VOYAGER_TERMS } from "#/helpers/voyager";
+import { useAppSelector } from "#/store";
+
+import { IconBg } from "../SettingsPage";
+import AppDetails from "./AppDetails";
+import compliments from "./compliments.txt?raw";
 
 export default function AboutPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -74,10 +76,10 @@ export default function AboutPage() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <IconBg color="color(display-p3 1 0 0)">
+        <IconBg color="color(display-p3 1 0 0)" slot="start">
           <IonIcon icon={heart} />
         </IconBg>
-        <SettingLabel>Rate Voyager</SettingLabel>
+        <IonLabel>Rate Voyager</IonLabel>
       </IonItemInAppExternalLink>
     );
   })();
@@ -104,19 +106,19 @@ export default function AboutPage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <IconBg color="color(display-p3 0.7 0 1)" size="0.8">
+            <IconBg color="color(display-p3 0.7 0 1)" size="0.8" slot="start">
               <IonIcon icon={sparkles} />
             </IconBg>
-            <SettingLabel>What&apos;s new</SettingLabel>
+            <IonLabel>What&apos;s new</IonLabel>
           </IonItemInAppExternalLink>
           <IonItemInAppExternalLink
             routerLink={buildGeneralBrowseLink(`/c/${appCommunityHandle}`)}
             detail
           >
-            <IconBg color="color(display-p3 0 0.8 0.3)">
+            <IconBg color="color(display-p3 0 0.8 0.3)" slot="start">
               <IonIcon icon={people} />
             </IconBg>
-            <SettingLabel>VoyagerApp Community</SettingLabel>
+            <IonLabel>VoyagerApp Community</IonLabel>
           </IonItemInAppExternalLink>
           <IonItemInAppExternalLink
             detail
@@ -124,10 +126,10 @@ export default function AboutPage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <IconBg color="#563acc">
+            <IconBg color="#563acc" slot="start">
               <IonIcon icon={logoMastodon} />
             </IconBg>
-            <SettingLabel>@alex@harding.dev</SettingLabel>
+            <IonLabel>@alex@harding.dev</IonLabel>
           </IonItemInAppExternalLink>
           <IonItemInAppExternalLink
             detail
@@ -135,10 +137,10 @@ export default function AboutPage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <IconBg color="#0e7afe">
+            <IconBg color="#0e7afe" slot="start">
               <IonIcon icon={lockClosed} />
             </IconBg>
-            <SettingLabel>Privacy Policy</SettingLabel>
+            <IonLabel>Privacy Policy</IonLabel>
           </IonItemInAppExternalLink>
           <IonItemInAppExternalLink
             detail
@@ -146,17 +148,17 @@ export default function AboutPage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <IconBg color="#8e8700">
+            <IconBg color="#8e8700" slot="start">
               <IonIcon icon={handLeft} />
             </IconBg>
-            <SettingLabel>Terms of Use</SettingLabel>
+            <IonLabel>Terms of Use</IonLabel>
           </IonItemInAppExternalLink>
           {rateVoyager}
           <IonItemInAppExternalLink detail routerLink="/settings/about/thanks">
-            <IconBg color="color(display-p3 0.1 0.6 0.1)">
+            <IconBg color="color(display-p3 0.1 0.6 0.1)" slot="start">
               <IonIcon icon={thumbsUp} />
             </IconBg>
-            <SettingLabel>Thanks To</SettingLabel>
+            <IonLabel>Thanks To</IonLabel>
           </IonItemInAppExternalLink>
           <IonItemInAppExternalLink
             detail
@@ -164,16 +166,16 @@ export default function AboutPage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <IconBg color="color(display-p3 0.5 0.7 0.1)">
+            <IconBg color="color(display-p3 0.5 0.7 0.1)" slot="start">
               <IonIcon icon={bug} />
             </IconBg>
-            <SettingLabel>Bug Tracker</SettingLabel>
+            <IonLabel>Bug Tracker</IonLabel>
           </IonItemInAppExternalLink>
           <IonItemInAppExternalLink detail onClick={getCompliment}>
-            <IconBg color="color(display-p3 1 0.1 0.6)" size="1.1">
+            <IconBg color="color(display-p3 1 0.1 0.6)" size="1.1" slot="start">
               <IonIcon icon={happy} />
             </IconBg>
-            <SettingLabel>Get a Compliment</SettingLabel>
+            <IonLabel>Get a Compliment</IonLabel>
           </IonItemInAppExternalLink>
         </IonList>
       </AppContent>

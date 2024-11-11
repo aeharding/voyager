@@ -1,17 +1,14 @@
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 
 export default function useFeedUpdate() {
   const [fetchFnLastUpdated, setFetchFnLastUpdated] = useState(0);
 
-  const notifyFeedUpdated = useCallback(() => {
+  function notifyFeedUpdated() {
     setFetchFnLastUpdated(Date.now());
-  }, []);
+  }
 
-  return useMemo(
-    () => ({
-      notifyFeedUpdated,
-      fetchFnLastUpdated,
-    }),
-    [notifyFeedUpdated, fetchFnLastUpdated],
-  );
+  return {
+    notifyFeedUpdated,
+    fetchFnLastUpdated,
+  };
 }

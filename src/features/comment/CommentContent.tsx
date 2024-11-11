@@ -1,8 +1,9 @@
 import { Comment, Post } from "lemmy-js-client";
-import { useMemo } from "react";
-import CommentMarkdown from "./CommentMarkdown";
+
+import { useAppSelector } from "#/store";
+
 import CommentLinks from "./CommentLinks";
-import { useAppSelector } from "../../store";
+import CommentMarkdown from "./CommentMarkdown";
 
 interface CommentContentProps {
   item: Comment | Post;
@@ -19,22 +20,16 @@ export default function CommentContent({
     (state) => state.settings.general.comments.touchFriendlyLinks,
   );
 
-  const content = useMemo(() => {
-    return (
-      <>
-        <CommentMarkdown className={mdClassName} id={item.ap_id}>
-          {"content" in item ? item.content : (item.body ?? item.name)}
-        </CommentMarkdown>
-        {showTouchFriendlyLinks && touchFriendlyLinks && (
-          <CommentLinks
-            markdown={
-              "content" in item ? item.content : (item.body ?? item.name)
-            }
-          />
-        )}
-      </>
-    );
-  }, [item, showTouchFriendlyLinks, touchFriendlyLinks, mdClassName]);
-
-  return content;
+  return (
+    <>
+      <CommentMarkdown className={mdClassName} id={item.ap_id}>
+        {"content" in item ? item.content : (item.body ?? item.name)}
+      </CommentMarkdown>
+      {showTouchFriendlyLinks && touchFriendlyLinks && (
+        <CommentLinks
+          markdown={"content" in item ? item.content : (item.body ?? item.name)}
+        />
+      )}
+    </>
+  );
 }

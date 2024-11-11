@@ -1,11 +1,11 @@
-import { ComponentProps } from "react";
-import { LongPressCallback, useLongPress } from "use-long-press";
-import store from "../../store";
-import { setUserDarkMode } from "../settings/settingsSlice";
-
 // eslint-disable-next-line no-restricted-imports
 import { IonHeader } from "@ionic/react";
-import { onFinishStopClick } from "../../helpers/longPress";
+import { ComponentProps } from "react";
+import { LongPressCallback, useLongPress } from "use-long-press";
+
+import { setUserDarkMode } from "#/features/settings/settingsSlice";
+import { onFinishStopClick } from "#/helpers/longPress";
+import store from "#/store";
 
 export default function AppHeader(props: ComponentProps<typeof IonHeader>) {
   if (props.collapse) return <IonHeader {...props} />;

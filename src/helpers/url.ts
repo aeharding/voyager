@@ -53,7 +53,12 @@ export function getPotentialImageProxyPathname(
 
 const imageExtensions = ["jpeg", "png", "gif", "jpg", "webp", "jxl", "avif"];
 
-export function isUrlImage(url: string): boolean {
+export function isUrlImage(
+  url: string,
+  contentType: string | undefined,
+): boolean {
+  if (contentType?.startsWith("image/")) return true;
+
   const pathname = getPotentialImageProxyPathname(url);
 
   if (!pathname) return false;
@@ -63,9 +68,18 @@ export function isUrlImage(url: string): boolean {
   );
 }
 
-const animatedImageExtensions = ["gif", "webp", "jxl", "avif"];
+const animatedImageExtensions = ["gif", "webp", "jxl", "avif", "apng"];
+const animatedImageContentTypes = animatedImageExtensions.map(
+  (extension) => `image/${extension}`,
+);
 
-export function isUrlPotentialAnimatedImage(url: string): boolean {
+export function isUrlPotentialAnimatedImage(
+  url: string,
+  contentType: string | undefined,
+): boolean {
+  if (contentType && animatedImageContentTypes.includes(contentType))
+    return true;
+
   const pathname = getPotentialImageProxyPathname(url);
 
   if (!pathname) return false;
@@ -77,7 +91,12 @@ export function isUrlPotentialAnimatedImage(url: string): boolean {
 
 const videoExtensions = ["mp4", "webm", "gifv"];
 
-export function isUrlVideo(url: string): boolean {
+export function isUrlVideo(
+  url: string,
+  contentType: string | undefined,
+): boolean {
+  if (contentType?.startsWith("video/")) return true;
+
   const pathname = getPotentialImageProxyPathname(url);
   if (!pathname) return false;
 
@@ -86,10 +105,12 @@ export function isUrlVideo(url: string): boolean {
   );
 }
 
-export function findUrlMediaType(url: string): "video" | "image" | undefined {
-  if (isUrlImage(url)) return "image";
-
-  if (isUrlVideo(url)) return "video";
+export function findUrlMediaType(
+  url: string,
+  contentType: string | undefined, // not available on older lemmy instances <0.19.6?
+): "video" | "image" | undefined {
+  if (isUrlImage(url, contentType)) return "image";
+  if (isUrlVideo(url, contentType)) return "video";
 }
 
 // https://github.com/miguelmota/is-valid-hostname

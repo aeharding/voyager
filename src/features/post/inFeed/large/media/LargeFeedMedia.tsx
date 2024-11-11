@@ -1,13 +1,15 @@
-import Media, { MediaProps } from "../../../../media/gallery/Media";
-import { CSSProperties, useMemo } from "react";
+import { styled } from "@linaria/react";
+import { CSSProperties } from "react";
+
+import Media, { MediaProps } from "#/features/media/gallery/Media";
+import useLatch from "#/helpers/useLatch";
+import { useAppDispatch } from "#/store";
+
+import { IMAGE_FAILED, imageFailed, imageLoaded } from "../imageSlice";
 import useMediaLoadObserver, {
   getTargetDimensions,
 } from "../useMediaLoadObserver";
-import { IMAGE_FAILED, imageFailed, imageLoaded } from "../imageSlice";
-import { useAppDispatch } from "../../../../../store";
 import BlurOverlay from "./BlurOverlay";
-import useLatch from "../../../../../helpers/useLatch";
-import { styled } from "@linaria/react";
 import MediaPlaceholder from "./MediaPlaceholder";
 
 export const StyledPostMedia = styled(Media)`
@@ -43,18 +45,18 @@ export default function LargeFeedMedia({
    */
   const aspectRatio = useLatch(currentAspectRatio);
 
-  const placeholderState = (() => {
+  function buildPlaceholderState() {
     if (aspectRatio === IMAGE_FAILED) return "error";
     if (!aspectRatio) return "loading";
 
     return "loaded";
-  })();
+  }
 
-  const style: CSSProperties | undefined = useMemo(() => {
+  function buildStyle(): CSSProperties {
     if (!aspectRatio || aspectRatio === IMAGE_FAILED) return { opacity: 0 };
 
     return { aspectRatio };
-  }, [aspectRatio]);
+  }
 
   const loaded = !!aspectRatio && aspectRatio > 0;
 
@@ -62,13 +64,13 @@ export default function LargeFeedMedia({
     <MediaPlaceholder
       className={className}
       style={baseStyle}
-      state={placeholderState}
+      state={buildPlaceholderState()}
       defaultAspectRatio={defaultAspectRatio}
     >
       <StyledPostMedia
         {...props}
         src={src}
-        style={style}
+        style={buildStyle()}
         ref={mediaRef}
         autoPlay={!blur}
         onError={() => {

@@ -1,10 +1,11 @@
+import { css, cx } from "@linaria/core";
 import { useMemo } from "react";
-import { isUrlVideo } from "../../../helpers/url";
-import Player from "../../media/video/Player";
+
 import GalleryMedia, {
   GalleryMediaProps,
-} from "../../media/gallery/GalleryMedia";
-import { css, cx } from "@linaria/core";
+} from "#/features/media/gallery/GalleryMedia";
+import Player from "#/features/media/video/Player";
+import { isUrlVideo } from "#/helpers/url";
 
 const smallStyles = css`
   max-height: 200px;
@@ -20,7 +21,7 @@ interface MarkdownImgProps extends Omit<GalleryMediaProps, "ref"> {
 export default function MarkdownImg({ small, ...props }: MarkdownImgProps) {
   const sharedStyles = small ? smallStyles : undefined;
   const isVideo = useMemo(
-    () => props.src && isUrlVideo(props.src),
+    () => props.src && isUrlVideo(props.src, undefined),
     [props.src],
   );
 

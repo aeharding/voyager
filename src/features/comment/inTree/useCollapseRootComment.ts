@@ -1,8 +1,10 @@
 import { CommentView } from "lemmy-js-client";
-import { useCallback, useContext } from "react";
+import { useContext } from "react";
+
+import { AppContext } from "#/features/auth/AppContext";
+import { useAppDispatch } from "#/store";
+
 import { toggleCommentCollapseState } from "../commentSlice";
-import { useAppDispatch } from "../../../store";
-import { AppContext } from "../../auth/AppContext";
 
 export default function useCollapseRootComment(
   item: CommentView | undefined,
@@ -11,7 +13,7 @@ export default function useCollapseRootComment(
   const dispatch = useAppDispatch();
   const { activePageRef } = useContext(AppContext);
 
-  return useCallback(() => {
+  return function collapseRootComment() {
     if (!item || !rootIndex) return;
 
     const rootCommentId = +item.comment.path.split(".")[1]!;
@@ -24,5 +26,5 @@ export default function useCollapseRootComment(
     currentActivePage.scrollToIndex(rootIndex, {
       smooth: true,
     });
-  }, [activePageRef, dispatch, item, rootIndex]);
+  };
 }

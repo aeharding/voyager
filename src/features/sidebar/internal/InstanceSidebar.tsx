@@ -1,8 +1,10 @@
-import { useAppDispatch, useAppSelector } from "../../../store";
-import GenericSidebar from "./GenericSidebar";
 import { IonBadge, IonRefresher, IonRefresherContent } from "@ionic/react";
-import { getSite, lemmyVersionSelector } from "../../auth/siteSlice";
-import { CenteredSpinner } from "../../shared/CenteredSpinner";
+
+import { getSite, lemmyVersionSelector } from "#/features/auth/siteSlice";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import GenericSidebar from "./GenericSidebar";
 
 export default function InstanceSidebar() {
   const dispatch = useAppDispatch();

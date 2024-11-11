@@ -5,15 +5,17 @@ import {
   IonRadio,
   IonRadioGroup,
 } from "@ionic/react";
-import { ListHeader } from "../../../shared/formatting";
-import { OCommentsThemeType } from "../../../../../services/db";
-import COMMENT_THEMES from "./values";
-import Color from "./Color";
-import { styled } from "@linaria/react";
 import { css } from "@linaria/core";
-import { useAppDispatch, useAppSelector } from "../../../../../store";
+import { styled } from "@linaria/react";
+import { startCase } from "es-toolkit";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { OCommentsThemeType } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import { setCommentsTheme } from "../../../settingsSlice";
-import { startCase } from "lodash";
+import Color from "./Color";
+import COMMENT_THEMES from "./values";
 
 const ColorsContainer = styled.div`
   display: flex;

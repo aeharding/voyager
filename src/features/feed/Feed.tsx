@@ -1,30 +1,34 @@
+import {
+  IonRefresher,
+  IonRefresherContent,
+  RefresherCustomEvent,
+} from "@ionic/react";
+import { differenceBy } from "es-toolkit";
 import React, {
   Fragment,
   createContext,
   useCallback,
   useContext,
   useEffect,
+  experimental_useEffectEvent as useEffectEvent,
   useMemo,
   useRef,
   useState,
-  experimental_useEffectEvent as useEffectEvent,
 } from "react";
-import {
-  IonRefresher,
-  IonRefresherContent,
-  RefresherCustomEvent,
-} from "@ionic/react";
-import { LIMIT as DEFAULT_LIMIT } from "../../services/lemmy";
-import { pullAllBy } from "lodash";
-import { useSetActivePage } from "../auth/AppContext";
-import EndPost, { EndPostProps } from "./endItems/EndPost";
-import { isSafariFeedHackEnabled } from "../../routes/pages/shared/FeedContent";
-import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import { VList, VListHandle } from "virtua";
-import { FeedSearchContext } from "../../routes/pages/shared/CommunityPage";
-import { useAppSelector } from "../../store";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { FeedSearchContext } from "#/routes/pages/shared/CommunityPage";
+import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
+import { LIMIT as DEFAULT_LIMIT } from "#/services/lemmy";
+import { useAppSelector } from "#/store";
+
+import EndPost, { EndPostProps } from "./endItems/EndPost";
+import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import FetchMore from "./endItems/FetchMore";
-import { CenteredSpinner } from "../shared/CenteredSpinner";
+
+const ABORT_REASON_UNMOUNT = "unmount";
 
 type PageData =
   | {
@@ -34,7 +38,10 @@ type PageData =
       page_cursor: string;
     };
 
-export type FetchFn<I> = (pageData: PageData) => Promise<FetchFnResult<I>>;
+export type FetchFn<I> = (
+  pageData: PageData,
+  options?: Pick<RequestInit, "signal">,
+) => Promise<FetchFnResult<I>>;
 
 type FetchFnResult<I> = I[] | { data: I[]; next_page?: string };
 
@@ -105,8 +112,7 @@ export default function Feed<I>({
   // Loading needs to be initially `undefined` so that IonRefresher is
   // never initially rendered, which breaks pull to refresh on Android
   // See: https://github.com/aeharding/voyager/issues/718
-  const [loading, _setLoading] = useState<boolean | undefined>(undefined);
-  const loadingRef = useRef(false);
+  const [loading, setLoading] = useState<boolean | undefined>(undefined);
 
   const [isListAtTop, setIsListAtTop] = useState(true);
 
@@ -132,19 +138,19 @@ export default function Feed<I>({
     [filterFn, items],
   );
 
-  function setLoading(loading: boolean) {
-    _setLoading(loading);
-    loadingRef.current = loading;
-  }
-
   function setAtEnd(atEnd: boolean) {
     _setAtEnd(atEnd);
     atEndRef.current = atEnd;
   }
 
+  const abortControllerRef = useRef<AbortController>();
+
   const fetchMore = useCallback(
     async (refresh = false) => {
-      if (loadingRef.current) return;
+      // previous request must be done before subsequent fetching (existence of abort controller)
+      if (abortControllerRef.current) return;
+
+      // Don't fetch more if we're at the end of the feed (unless refreshing)
       if (atEndRef.current && !refresh) return;
 
       setLoading(true);
@@ -157,22 +163,39 @@ export default function Feed<I>({
         return page;
       })();
 
-      let newPageItems: I[];
+      let result;
+
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
 
       try {
-        const result = await fetchFn(withPageData(currentPage));
-        if (Array.isArray(result)) newPageItems = result;
-        else {
-          newPageItems = result.data;
-          if (result.next_page) currentPage = result.next_page;
-        }
+        result = await fetchFn(withPageData(currentPage), {
+          signal: abortController.signal,
+        });
       } catch (error) {
-        setLoadFailed(true);
+        // Aborted requests are expected. Silently return to avoid spamming console with DOM errors
+        // Also don't set loading to false, component will unmount
+        if (
+          abortController.signal.aborted &&
+          abortController.signal.reason === ABORT_REASON_UNMOUNT
+        )
+          return;
 
-        throw error;
-      } finally {
         setLoading(false);
+        setLoadFailed(true);
+        throw error;
       }
+
+      let newPageItems;
+
+      if (Array.isArray(result)) newPageItems = result;
+      else {
+        newPageItems = result.data;
+        if (result.next_page) currentPage = result.next_page;
+      }
+
+      abortControllerRef.current = undefined;
+      setLoading(false);
 
       const filteredNewPageItems = filterOnRxFn
         ? newPageItems.filter(filterOnRxFn)
@@ -185,11 +208,9 @@ export default function Feed<I>({
         setItems(filteredNewPageItems);
       } else {
         setItems((existingItems) => {
-          const newItems = pullAllBy(
-            filteredNewPageItems.slice(),
-            existingItems,
-            getIndex,
-          );
+          const newItems = getIndex
+            ? differenceBy(filteredNewPageItems, existingItems, getIndex)
+            : filteredNewPageItems;
 
           return [...existingItems, ...newItems];
         });
@@ -209,6 +230,13 @@ export default function Feed<I>({
     },
     [fetchFn, page, getIndex, filterOnRxFn],
   );
+
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort(ABORT_REASON_UNMOUNT);
+      abortControllerRef.current = undefined;
+    };
+  }, []);
 
   useEffect(() => {
     if (!itemsRef) return;

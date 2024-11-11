@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { resolveObject } from "../resolve/resolveSlice";
-import Post from "../post/inFeed/Post";
-import FeedComment from "../comment/inFeed/FeedComment";
 import { styled } from "@linaria/react";
-import { InFeedContext } from "../feed/Feed";
-import { useDebounceValue } from "usehooks-ts";
-import { CenteredSpinner } from "../shared/CenteredSpinner";
+import { useDebouncedValue } from "@mantine/hooks";
+import { useEffect, useState } from "react";
+
+import FeedComment from "#/features/comment/inFeed/FeedComment";
+import { InFeedContext } from "#/features/feed/Feed";
+import Post from "#/features/post/inFeed/Post";
+import { resolveObject } from "#/features/resolve/resolveSlice";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 const StyledCenteredSpinner = styled(CenteredSpinner)`
   margin-top: 60px;
@@ -20,7 +21,7 @@ export default function AutoResolvePostComment({
   url: userInputUrl,
 }: AutoResolvePostCommentProps) {
   const dispatch = useAppDispatch();
-  const [url] = useDebounceValue(userInputUrl, 500);
+  const [url] = useDebouncedValue(userInputUrl, 500);
   const object = useAppSelector((state) => state.resolve.objectByUrl[url]);
   const [error, setError] = useState(false);
 

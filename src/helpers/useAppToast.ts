@@ -1,9 +1,11 @@
+import { NotificationType } from "@capacitor/haptics";
+// eslint-disable-next-line no-restricted-imports
 import { useIonToast } from "@ionic/react";
+import { useCallback } from "react";
+
+import { isNative } from "./device";
 import { baseToastOptions } from "./toast";
 import useHapticFeedback from "./useHapticFeedback";
-import { isNative } from "./device";
-import { NotificationType } from "@capacitor/haptics";
-import { useCallback } from "react";
 
 export interface AppToastOptions {
   message: string;

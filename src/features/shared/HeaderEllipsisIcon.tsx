@@ -1,7 +1,8 @@
 import { IonIcon } from "@ionic/react";
 import { ellipsisHorizontal, ellipsisVertical } from "ionicons/icons";
 import { ComponentProps } from "react";
-import { isIosTheme } from "../../helpers/device";
+
+import { isIosTheme } from "#/helpers/device";
 
 export default function HeaderEllipsisIcon(
   props: ComponentProps<typeof IonIcon>,

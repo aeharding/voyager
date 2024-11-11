@@ -1,22 +1,20 @@
 import { IonIcon, IonLabel } from "@ionic/react";
-import { useAppSelector } from "../../../store";
-import {
-  instanceSelector,
-  jwtSelector,
-} from "../../../features/auth/authSelectors";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import SharedTabButton, { TabButtonProps } from "./shared";
-import { getDefaultServer } from "../../../services/app";
 import { telescope } from "ionicons/icons";
-import { openTitleSearch } from "../../../features/community/titleSearch/TitleSearch";
-import { useCallback } from "react";
+
+import { instanceSelector, jwtSelector } from "#/features/auth/authSelectors";
+import { openTitleSearch } from "#/features/community/titleSearch/TitleSearch";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { getDefaultServer } from "#/services/app";
+import { useAppSelector } from "#/store";
+
+import SharedTabButton, { TabButtonProps } from "./shared";
 
 function PostsTabButton(props: TabButtonProps) {
   const router = useOptimizedIonRouter();
   const selectedInstance = useAppSelector(instanceSelector);
   const jwt = useAppSelector(jwtSelector);
 
-  const customBackAction = useCallback(() => {
+  function customBackAction() {
     const pathname = router.getRouteInfo()?.pathname;
     if (!pathname) return;
 
@@ -46,7 +44,7 @@ function PostsTabButton(props: TabButtonProps) {
         "back",
       );
     }
-  }, [jwt, router, selectedInstance]);
+  }
 
   return (
     <SharedTabButton

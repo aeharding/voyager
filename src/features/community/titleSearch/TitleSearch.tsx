@@ -1,11 +1,13 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
 import { chevronDown, close } from "ionicons/icons";
 import React, { useContext, useEffect, useRef } from "react";
+
+import AppTitle, { AppTitleHandle } from "#/features/shared/AppTitle";
+import { isIosTheme } from "#/helpers/device";
+import { findCurrentPage } from "#/helpers/ionic";
+
 import { TitleSearchContext } from "./TitleSearchProvider";
-import { styled } from "@linaria/react";
-import { isIosTheme } from "../../../helpers/device";
-import { findCurrentPage } from "../../../helpers/ionic";
-import AppTitle from "../../shared/AppTitle";
 
 const TitleContents = styled.span`
   display: inline-flex;
@@ -62,12 +64,13 @@ export function openTitleSearch() {
     ?.click();
 }
 
-interface TitleSearchProps {
+interface TitleSearchProps extends React.PropsWithChildren {
   name: string;
-  children: React.ReactNode;
+
+  ref?: React.RefObject<AppTitleHandle>;
 }
 
-export default function TitleSearch({ name, children }: TitleSearchProps) {
+export default function TitleSearch({ name, children, ref }: TitleSearchProps) {
   const { setSearch, searching, setSearching, onSubmit } =
     useContext(TitleSearchContext);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -93,7 +96,7 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
   if (searching) {
     return (
       <>
-        <AppTitle>
+        <AppTitle appRef={ref}>
           <StyledInput
             ref={searchRef}
             placeholder="Community..."
@@ -124,7 +127,7 @@ export default function TitleSearch({ name, children }: TitleSearchProps) {
 
   return (
     <>
-      <AppTitle fullPadding={75}>
+      <AppTitle fullPadding={75} appRef={ref}>
         <TitleContents ref={titleRef} className={TITLE_CLASS}>
           <span>{name}</span> <DropdownIcon icon={chevronDown} />
         </TitleContents>

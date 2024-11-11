@@ -1,38 +1,27 @@
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
+import { noop } from "es-toolkit";
+import React, { createContext, useEffect, useState } from "react";
 
-type BeforeInstallPromptContextType = {
+interface BeforeInstallPromptContextType {
   event: BeforeInstallPromptEvent | null;
   clearEvent: () => void;
-};
+}
+
 export const BeforeInstallPromptContext =
   createContext<BeforeInstallPromptContextType>({
     event: null,
-    clearEvent: () => {},
+    clearEvent: noop,
   });
-
-interface BeforeInstallPromptProviderProps {
-  children: React.ReactNode;
-}
 
 export default function BeforeInstallPromptProvider({
   children,
-}: BeforeInstallPromptProviderProps) {
+}: React.PropsWithChildren) {
   const [beforeInstallPromptEvent, setBeforeInstallPromptEvent] =
     useState<BeforeInstallPromptEvent | null>(null);
 
-  const handleBeforeInstallPrompt = useCallback(
-    (event: BeforeInstallPromptEvent) => {
-      event.preventDefault();
-      setBeforeInstallPromptEvent(event);
-    },
-    [],
-  );
+  function handleBeforeInstallPrompt(event: BeforeInstallPromptEvent) {
+    event.preventDefault();
+    setBeforeInstallPromptEvent(event);
+  }
 
   useEffect(() => {
     const handleBeforeInstallPromptEvent = (
@@ -52,19 +41,16 @@ export default function BeforeInstallPromptProvider({
         handleBeforeInstallPromptEvent as never,
       );
     };
-  }, [handleBeforeInstallPrompt]);
-
-  const clearEvent = useCallback(() => {
-    setBeforeInstallPromptEvent(null);
   }, []);
 
-  const value = useMemo(
-    () => ({ event: beforeInstallPromptEvent, clearEvent }),
-    [beforeInstallPromptEvent, clearEvent],
-  );
+  function clearEvent() {
+    setBeforeInstallPromptEvent(null);
+  }
 
   return (
-    <BeforeInstallPromptContext.Provider value={value}>
+    <BeforeInstallPromptContext.Provider
+      value={{ event: beforeInstallPromptEvent, clearEvent }}
+    >
       {children}
     </BeforeInstallPromptContext.Provider>
   );

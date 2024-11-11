@@ -1,5 +1,3 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import AppHeader from "../../../features/shared/AppHeader";
 import {
   IonBackButton,
   IonButtons,
@@ -10,9 +8,12 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import useGetRandomCommunity from "../../../features/community/useGetRandomCommunity";
-import { FailedMessage } from "../../../features/user/AsyncProfile";
-import { CenteredSpinner } from "../../../features/shared/CenteredSpinner";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+import useGetRandomCommunity from "#/features/community/useGetRandomCommunity";
+import AppHeader from "#/features/shared/AppHeader";
+import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { FailedMessage } from "#/features/user/AsyncProfile";
 
 export default function RandomCommunityPage() {
   const pushed = useRef(false);

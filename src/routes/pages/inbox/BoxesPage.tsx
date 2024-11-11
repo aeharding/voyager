@@ -1,14 +1,13 @@
 import {
   IonIcon,
   IonItem,
+  IonLabel,
   IonList,
   IonPage,
   IonTitle,
   IonToolbar,
   useIonViewWillEnter,
 } from "@ionic/react";
-import AppContent from "../../../features/shared/AppContent";
-import { SettingLabel } from "../../../features/user/Profile";
 import {
   albumsOutline,
   chatbubbleOutline,
@@ -17,13 +16,15 @@ import {
   mail,
   personCircleOutline,
 } from "ionicons/icons";
-import { useAppDispatch } from "../../../store";
-import { getInboxCounts } from "../../../features/inbox/inboxSlice";
 import { MouseEvent, useContext, useRef } from "react";
-import { PageContext } from "../../../features/auth/PageContext";
-import { useSetActivePage } from "../../../features/auth/AppContext";
-import BoxesRedirectBootstrapper from "../../../features/inbox/BoxesRedirectBootstrapper";
-import AppHeader from "../../../features/shared/AppHeader";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { PageContext } from "#/features/auth/PageContext";
+import BoxesRedirectBootstrapper from "#/features/inbox/BoxesRedirectBootstrapper";
+import { getInboxCounts } from "#/features/inbox/inboxSlice";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
+import { useAppDispatch } from "#/store";
 
 export default function BoxesPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -59,12 +60,12 @@ export default function BoxesPage() {
 
           <IonList inset color="primary">
             <IonItem routerLink="/inbox/all" onClick={interceptIfLoggedOut}>
-              <IonIcon icon={fileTray} color="primary" />
-              <SettingLabel>Inbox (All)</SettingLabel>
+              <IonIcon icon={fileTray} color="primary" slot="start" />
+              <IonLabel className="ion-text-nowrap">Inbox (All)</IonLabel>
             </IonItem>
             <IonItem routerLink="/inbox/unread" onClick={interceptIfLoggedOut}>
-              <IonIcon icon={ellipseOutline} color="primary" />
-              <SettingLabel>Unread</SettingLabel>
+              <IonIcon icon={ellipseOutline} color="primary" slot="start" />
+              <IonLabel className="ion-text-nowrap">Unread</IonLabel>
             </IonItem>
           </IonList>
 
@@ -73,22 +74,26 @@ export default function BoxesPage() {
               routerLink="/inbox/post-replies"
               onClick={interceptIfLoggedOut}
             >
-              <IonIcon icon={albumsOutline} color="primary" />
-              <SettingLabel>Post Replies</SettingLabel>
+              <IonIcon icon={albumsOutline} color="primary" slot="start" />
+              <IonLabel className="ion-text-nowrap">Post Replies</IonLabel>
             </IonItem>
             <IonItem
               routerLink="/inbox/comment-replies"
               onClick={interceptIfLoggedOut}
             >
-              <IonIcon icon={chatbubbleOutline} color="primary" />
-              <SettingLabel>Comment Replies</SettingLabel>
+              <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />
+              <IonLabel className="ion-text-nowrap">Comment Replies</IonLabel>
             </IonItem>
             <IonItem
               routerLink="/inbox/mentions"
               onClick={interceptIfLoggedOut}
             >
-              <IonIcon icon={personCircleOutline} color="primary" />
-              <SettingLabel>Mentions</SettingLabel>
+              <IonIcon
+                icon={personCircleOutline}
+                color="primary"
+                slot="start"
+              />
+              <IonLabel className="ion-text-nowrap">Mentions</IonLabel>
             </IonItem>
           </IonList>
 
@@ -97,8 +102,8 @@ export default function BoxesPage() {
               routerLink="/inbox/messages"
               onClick={interceptIfLoggedOut}
             >
-              <IonIcon icon={mail} color="primary" />
-              <SettingLabel>Messages</SettingLabel>
+              <IonIcon icon={mail} color="primary" slot="start" />
+              <IonLabel className="ion-text-nowrap">Messages</IonLabel>
             </IonItem>
           </IonList>
         </AppContent>

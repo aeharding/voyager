@@ -1,16 +1,18 @@
 import { IonIcon, IonLabel } from "@ionic/react";
-import { useCallback, useContext, useMemo } from "react";
-import { useAppSelector } from "../../../store";
-import SharedTabButton, { TabButtonProps } from "./shared";
+import { styled } from "@linaria/react";
 import { personCircleOutline } from "ionicons/icons";
-import { PageContext } from "../../../features/auth/PageContext";
+import { useContext } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
 import {
   accountsListEmptySelector,
   userHandleSelector,
-} from "../../../features/auth/authSelectors";
-import { getProfileTabLabel } from "../../../features/settings/general/other/ProfileTabLabel";
-import { styled } from "@linaria/react";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
+} from "#/features/auth/authSelectors";
+import { getProfileTabLabel } from "#/features/settings/general/other/ProfileTabLabel";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppSelector } from "#/store";
+
+import SharedTabButton, { TabButtonProps } from "./shared";
 
 const ProfileLabel = styled(IonLabel)`
   max-width: 20vw;
@@ -32,12 +34,13 @@ function ProfileTabButton(props: TabButtonProps) {
     (state) => state.settings.appearance.general.profileLabel,
   );
 
-  const profileTabLabel = useMemo(
-    () => getProfileTabLabel(profileLabelType, userHandle, connectedInstance),
-    [profileLabelType, userHandle, connectedInstance],
+  const profileTabLabel = getProfileTabLabel(
+    profileLabelType,
+    userHandle,
+    connectedInstance,
   );
 
-  const onBeforeBackAction = useCallback(() => {
+  function onBeforeBackAction() {
     const pathname = router.getRouteInfo()?.pathname;
     if (!pathname) return;
 
@@ -49,15 +52,15 @@ function ProfileTabButton(props: TabButtonProps) {
         presentLoginIfNeeded();
       }
     }
-  }, [accountsListEmpty, presentAccountSwitcher, presentLoginIfNeeded, router]);
+  }
 
-  const onLongPressOverride = useCallback(() => {
+  function onLongPressOverride() {
     if (!accountsListEmpty) {
       presentAccountSwitcher();
     } else {
       presentLoginIfNeeded();
     }
-  }, [accountsListEmpty, presentAccountSwitcher, presentLoginIfNeeded]);
+  }
 
   return (
     <SharedTabButton

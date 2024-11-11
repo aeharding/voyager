@@ -1,27 +1,30 @@
-import { PersonAggregates } from "lemmy-js-client";
-import { formatNumber } from "../../helpers/number";
-import Ago from "../labels/Ago";
 import { useIonAlert } from "@ionic/react";
-import { formatDistanceToNowStrict } from "date-fns";
 import { styled } from "@linaria/react";
+import { formatDistanceToNowStrict } from "date-fns";
+import { PersonAggregates } from "lemmy-js-client";
+
+import Ago from "#/features/labels/Ago";
+import { formatNumber } from "#/helpers/number";
 
 const Container = styled.div`
   display: flex;
   justify-content: space-evenly;
-  gap: 3rem;
-  margin: 1.5rem 3rem;
+  gap: 12px;
+  margin: 24px 24px;
 `;
 
 const Score = styled.div`
-  text-align: center;
-  font-size: 1.3rem;
+  font-size: min(1.3rem, 52px);
+
   font-weight: 600;
+  text-align: center;
   cursor: pointer;
 
   aside {
+    font-size: min(0.8rem, 32px);
+
     margin-top: 0.35rem;
     opacity: 0.5;
-    font-size: 0.8rem;
     font-weight: 500;
   }
 `;

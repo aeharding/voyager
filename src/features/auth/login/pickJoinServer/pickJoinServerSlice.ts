@@ -1,11 +1,11 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { AppDispatch } from "../../../../store";
-import * as lemmyverse from "../../../../services/lemmyverse";
-import { intersectionWith, sortBy, uniq } from "lodash";
-import { WHITELISTED_SERVERS } from "../data/servers";
-import { getCustomServers } from "../../../../services/app";
-import { buildPrioritizeAndSortFn } from "../../../../helpers/array";
-import { isMinimumSupportedLemmyVersion } from "../../../../helpers/lemmy";
+
+import { WHITELISTED_SERVERS } from "#/features/auth/login/data/servers";
+import { buildPrioritizeAndSortFn } from "#/helpers/array";
+import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
+import { getCustomServers } from "#/services/app";
+import * as lemmyverse from "#/services/lemmyverse";
+import { AppDispatch } from "#/store";
 
 interface PickJoinServerState {
   instances: lemmyverse.LVInstance[] | undefined;
@@ -30,14 +30,16 @@ const { received } = pickJoinServerSlice.actions;
 export const getInstances = () => async (dispatch: AppDispatch) => {
   const instances = await lemmyverse.getFullList();
 
-  const serverWhitelist = uniq([...getCustomServers(), ...WHITELISTED_SERVERS]);
+  const serverWhitelist = [
+    ...new Set([...getCustomServers(), ...WHITELISTED_SERVERS]),
+  ];
 
-  const unorderedInstances = sortBy(
-    intersectionWith(instances, serverWhitelist, (a, b) => a.baseurl === b),
-    (instance) => -instance.trust.score,
-  ).filter(
-    (server) => server.open && isMinimumSupportedLemmyVersion(server.version),
-  );
+  const unorderedInstances = instances
+    .filter(({ baseurl }) => serverWhitelist.includes(baseurl))
+    .sort((a, b) => b.trust.score - a.trust.score)
+    .filter(
+      (server) => server.open && isMinimumSupportedLemmyVersion(server.version),
+    );
 
   const customSortFn = buildPrioritizeAndSortFn(
     getCustomServers(),

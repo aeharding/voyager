@@ -7,12 +7,19 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
+import { css } from "@linaria/core";
+import { styled } from "@linaria/react";
 import {
   addOutline,
   checkmarkCircleOutline,
   chevronBack,
 } from "ionicons/icons";
-import AppContent from "../../../features/shared/AppContent";
+import { useContext, useRef, useState } from "react";
+
+import { useSetActivePage } from "#/features/auth/AppContext";
+import { BeforeInstallPromptContext } from "#/features/pwa/BeforeInstallPromptProvider";
+import AppContent from "#/features/shared/AppContent";
+import AppHeader from "#/features/shared/AppHeader";
 import {
   getShareIcon,
   isAndroid,
@@ -20,14 +27,9 @@ import {
   isInstallable,
   isInstalled,
   ua,
-} from "../../../helpers/device";
-import { useContext, useRef, useState } from "react";
-import { BeforeInstallPromptContext } from "../../../features/pwa/BeforeInstallPromptProvider";
-import { useSetActivePage } from "../../../features/auth/AppContext";
+} from "#/helpers/device";
+
 import AppDetails from "./about/AppDetails";
-import { styled } from "@linaria/react";
-import { css } from "@linaria/core";
-import AppHeader from "../../../features/shared/AppHeader";
 
 const Container = styled.div`
   line-height: 1.5;

@@ -1,6 +1,7 @@
 import { IonItem, IonLabel, IonList } from "@ionic/react";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import { MaxWidthContainer } from "../../shared/AppContent";
+
+import { MaxWidthContainer } from "#/features/shared/AppContent";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 interface CommunitySearchResultsProps {
   community: string;

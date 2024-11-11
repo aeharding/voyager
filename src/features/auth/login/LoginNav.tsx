@@ -1,9 +1,11 @@
-import { IonNav, IonSpinner } from "@ionic/react";
-import Welcome from "./welcome/Welcome";
-import { styled } from "@linaria/react";
-import { useCallback, useContext, useState } from "react";
 import { IonNavCustomEvent } from "@ionic/core";
-import { DynamicDismissableModalContext } from "../../shared/DynamicDismissableModal";
+import { IonNav, IonSpinner } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { useContext, useState } from "react";
+
+import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+
+import Welcome from "./welcome/Welcome";
 
 export const Spinner = styled(IonSpinner)`
   width: 1.5rem;
@@ -13,6 +15,7 @@ export const Centered = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  line-height: 1;
 
   .ios & {
     justify-content: center;
@@ -37,14 +40,11 @@ export default function LoginNav() {
 
   const { setCanDismiss } = useContext(DynamicDismissableModalContext);
 
-  const onIonNavDidChange = useCallback(
-    async (event: IonNavCustomEvent<void>) => {
-      if ((await event.target.getLength()) === 1) {
-        setCanDismiss(true);
-      }
-    },
-    [setCanDismiss],
-  );
+  async function onIonNavDidChange(event: IonNavCustomEvent<void>) {
+    if ((await event.target.getLength()) === 1) {
+      setCanDismiss(true);
+    }
+  }
 
   return (
     <IonNav

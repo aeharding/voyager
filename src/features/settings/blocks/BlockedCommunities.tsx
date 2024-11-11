@@ -7,13 +7,14 @@ import {
   IonList,
   IonLoading,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { useState } from "react";
-import { getHandle } from "../../../helpers/lemmy";
 import { Community, CommunityView } from "lemmy-js-client";
-import { blockCommunity } from "../../community/communitySlice";
-import { ListHeader } from "../shared/formatting";
-import { RemoveItemButton } from "../../shared/ListEditor";
+import { useState } from "react";
+
+import { blockCommunity } from "#/features/community/communitySlice";
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { RemoveItemButton } from "#/features/shared/ListEditor";
+import { getHandle } from "#/helpers/lemmy";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 /**
  * TODO remove - Lemmy 0.19 returned communityView. v0.20 returns community.

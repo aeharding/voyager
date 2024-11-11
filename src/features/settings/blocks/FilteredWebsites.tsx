@@ -7,14 +7,16 @@ import {
   IonList,
   useIonAlert,
 } from "@ionic/react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { ListHeader } from "../shared/formatting";
-import { updateFilteredWebsites } from "../settingsSlice";
-import { uniq, without } from "lodash";
-import { RemoveItemButton } from "../../shared/ListEditor";
-import { parseUrl } from "../../../helpers/url";
-import useAppToast from "../../../helpers/useAppToast";
+import { uniq, without } from "es-toolkit";
 import { close } from "ionicons/icons";
+
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { RemoveItemButton } from "#/features/shared/ListEditor";
+import { parseUrl } from "#/helpers/url";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { updateFilteredWebsites } from "../settingsSlice";
 
 export default function FilteredWebsites() {
   const [presentAlert] = useIonAlert();

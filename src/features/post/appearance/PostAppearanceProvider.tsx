@@ -1,25 +1,20 @@
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { noop } from "es-toolkit";
+import { createContext, useContext, useEffect, useState } from "react";
+
+import { AnyFeed, serializeFeedName } from "#/features/feed/helpers";
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+  PostAppearanceType,
+  setPostAppearance as setGlobalPostAppearanceReducer,
+} from "#/features/settings/settingsSlice";
+import { useAppDispatch, useAppSelector } from "#/store";
+
 import {
   getPostAppearance,
   setPostAppeartance as setPostAppearanceReducer,
 } from "./appearanceSlice";
-import {
-  PostAppearanceType,
-  setPostAppearance as setGlobalPostAppearanceReducer,
-} from "../../settings/settingsSlice";
-import { AnyFeed, serializeFeedName } from "../../feed/helpers";
 
-interface PostAppearanceProviderProps {
+interface PostAppearanceProviderProps extends React.PropsWithChildren {
   feed?: AnyFeed;
-  children: React.ReactNode;
 }
 
 export default function PostAppearanceProvider({
@@ -71,33 +66,27 @@ export default function PostAppearanceProvider({
     rememberCommunityPostAppearance,
   ]);
 
-  const setPostAppearance = useCallback(
-    (postAppearance: PostAppearanceType) => {
-      if (rememberCommunityPostAppearance) {
-        if (feed) {
-          dispatch(
-            setPostAppearanceReducer({
-              feed,
-              postAppearance,
-            }),
-          );
-        } // else - don't persist
-      } else {
-        dispatch(setGlobalPostAppearanceReducer(postAppearance));
-      }
+  function setPostAppearance(postAppearance: PostAppearanceType) {
+    if (rememberCommunityPostAppearance) {
+      if (feed) {
+        dispatch(
+          setPostAppearanceReducer({
+            feed,
+            postAppearance,
+          }),
+        );
+      } // else - don't persist
+    } else {
+      dispatch(setGlobalPostAppearanceReducer(postAppearance));
+    }
 
-      return _setPostAppearance(postAppearance);
-    },
-    [dispatch, feed, rememberCommunityPostAppearance],
-  );
-
-  const value = useMemo(
-    () => ({ postAppearance, setPostAppearance }),
-    [postAppearance, setPostAppearance],
-  );
+    return _setPostAppearance(postAppearance);
+  }
 
   return (
-    <PostAppearanceContext.Provider value={value}>
+    <PostAppearanceContext.Provider
+      value={{ postAppearance, setPostAppearance }}
+    >
       {children}
     </PostAppearanceContext.Provider>
   );
@@ -110,7 +99,7 @@ interface ContextValue {
 
 const PostAppearanceContext = createContext<ContextValue>({
   postAppearance: undefined,
-  setPostAppearance: () => {},
+  setPostAppearance: noop,
 });
 
 export function usePostAppearance() {
@@ -128,9 +117,7 @@ export function useSetPostAppearance() {
 
 export function WaitUntilPostAppearanceResolved({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: React.PropsWithChildren) {
   if (!useContext(PostAppearanceContext).postAppearance) return;
 
   return children;

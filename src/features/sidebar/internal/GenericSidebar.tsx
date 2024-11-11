@@ -1,11 +1,12 @@
 import { styled } from "@linaria/react";
 import { CommunityAggregates, Person, SiteAggregates } from "lemmy-js-client";
-import React from "react";
-import Markdown from "../../shared/markdown/Markdown";
+
+import LargeFeedMedia from "#/features/post/inFeed/large/media/LargeFeedMedia";
+import { MaxWidthContainer } from "#/features/shared/AppContent";
+import Markdown from "#/features/shared/markdown/Markdown";
+
 import SidebarCounts from "./SidebarCounts";
 import SidebarOwners from "./SidebarOwners";
-import LargeFeedMedia from "../../post/inFeed/large/media/LargeFeedMedia";
-import { MaxWidthContainer } from "../../shared/AppContent";
 
 const Container = styled.div`
   line-height: 1.5;

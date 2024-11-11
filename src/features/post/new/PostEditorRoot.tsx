@@ -1,46 +1,52 @@
-import { styled } from "@linaria/react";
 import {
-  IonButtons,
   IonButton,
+  IonButtons,
   IonContent,
-  IonToolbar,
-  IonTitle,
-  IonText,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonNavLink,
   IonSegment,
   IonSegmentButton,
-  IonItem,
-  IonList,
-  IonInput,
-  IonLabel,
-  IonIcon,
-  IonNavLink,
+  IonText,
+  IonTitle,
   IonToggle,
+  IonToolbar,
   useIonAlert,
 } from "@ionic/react";
-import { useEffect, useMemo, useState } from "react";
-import useClient from "../../../helpers/useClient";
-import { useAppDispatch } from "../../../store";
-import { Centered, Spinner } from "../../auth/login/LoginNav";
-import { startCase } from "lodash";
-import { getHandle, getRemoteHandle } from "../../../helpers/lemmy";
-import { accessibility, cameraOutline, checkmark } from "ionicons/icons";
-import { PostEditorProps } from "./PostEditor";
-import NewPostText from "./NewPostText";
-import { useBuildGeneralBrowseLink } from "../../../helpers/routes";
-import PhotoPreview from "./PhotoPreview";
-import { receivedPosts } from "../postSlice";
-import useAppToast from "../../../helpers/useAppToast";
-import { isUrlImage, isValidUrl } from "../../../helpers/url";
-import { problemFetchingTitle } from "../../../helpers/toastMessages";
-import { useOptimizedIonRouter } from "../../../helpers/useOptimizedIonRouter";
-import { isAndroid } from "../../../helpers/device";
 import { css } from "@linaria/core";
-import AppHeader from "../../shared/AppHeader";
+import { styled } from "@linaria/react";
+import { startCase } from "es-toolkit";
+import { accessibility, cameraOutline } from "ionicons/icons";
+import { Post } from "lemmy-js-client";
+import { useEffect, useMemo, useState } from "react";
+
+import { Centered, Spinner } from "#/features/auth/login/LoginNav";
+import AppHeader from "#/features/shared/AppHeader";
 import {
   deletePendingImageUploads,
   uploadImage,
-} from "../../shared/markdown/editing/uploadImageSlice";
-import { Post } from "lemmy-js-client";
+} from "#/features/shared/markdown/editing/uploadImageSlice";
+import { isAndroid } from "#/helpers/device";
+import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import {
+  postCreated,
+  postEdited,
+  problemFetchingTitle,
+} from "#/helpers/toastMessages";
+import { isUrlImage, isValidUrl } from "#/helpers/url";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { useAppDispatch } from "#/store";
+
+import { receivedPosts } from "../postSlice";
+import NewPostText from "./NewPostText";
+import PhotoPreview from "./PhotoPreview";
+import { PostEditorProps } from "./PostEditor";
 
 const Container = styled.div`
   position: absolute;
@@ -107,7 +113,9 @@ export default function PostEditorRoot({
   const existingPost = "existingPost" in props ? props.existingPost : undefined;
 
   const isImage = useMemo(
-    () => existingPost?.post.url && isUrlImage(existingPost.post.url),
+    () =>
+      existingPost?.post.url &&
+      isUrlImage(existingPost.post.url, existingPost.post.url_content_type),
     [existingPost],
   );
 
@@ -295,14 +303,7 @@ export default function PostEditorRoot({
 
     dispatch(receivedPosts([postResponse.post_view]));
 
-    presentToast({
-      message: existingPost ? "Post edited!" : "Post created!",
-      color: "primary",
-      position: "top",
-      centerText: true,
-      fullscreen: true,
-      icon: checkmark,
-    });
+    presentToast(existingPost ? postEdited : postCreated);
 
     setCanDismiss(true);
 

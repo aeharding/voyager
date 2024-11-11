@@ -6,15 +6,17 @@ import {
   IonRadioGroup,
   useIonAlert,
 } from "@ionic/react";
-import { ListHeader } from "../../../shared/formatting";
-import AppThemePreview from "./AppThemePreview";
-import { AppThemeType, OAppThemeType } from "../../../../../services/db";
-import { useAppDispatch, useAppSelector } from "../../../../../store";
-import { setTheme } from "../../../settingsSlice";
-import { getTheme } from "../../../../../core/theme/AppThemes";
-import { capitalize } from "lodash";
 import { styled } from "@linaria/react";
-import { useIsDark } from "../../../../../core/GlobalStyles";
+import { capitalize } from "es-toolkit";
+
+import { useIsDark } from "#/core/GlobalStyles";
+import { getTheme } from "#/core/theme/AppThemes";
+import { ListHeader } from "#/features/settings/shared/formatting";
+import { AppThemeType, OAppThemeType } from "#/services/db";
+import { useAppDispatch, useAppSelector } from "#/store";
+
+import { setTheme } from "../../../settingsSlice";
+import AppThemePreview from "./AppThemePreview";
 
 const Description = styled.div`
   font-size: 0.76em;

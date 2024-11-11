@@ -1,14 +1,15 @@
 import { App } from "@capacitor/app";
 import {
   useEffect,
-  useRef,
   experimental_useEffectEvent as useEffectEvent,
+  useRef,
 } from "react";
-import useLemmyUrlHandler from "../../features/shared/useLemmyUrlHandler";
-import { useAppSelector } from "../../store";
-import useAppToast from "../../helpers/useAppToast";
-import { deepLinkFailed } from "../../helpers/toastMessages";
-import { normalizeObjectUrl } from "../../features/resolve/resolveSlice";
+
+import { normalizeObjectUrl } from "#/features/resolve/resolveSlice";
+import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
+import { deepLinkFailed } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useAppSelector } from "#/store";
 
 export default function AppUrlListener() {
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
@@ -37,18 +38,21 @@ export default function AppUrlListener() {
 
     // wait for router to get into a good state before pushing
     // (needed for pushing user profiles from app startup)
-    const resolved = await redirectToLemmyObjectIfNeeded(url);
+    const result = await redirectToLemmyObjectIfNeeded(url);
 
-    if (!resolved) presentToast(deepLinkFailed);
+    if (result === "not-found") presentToast(deepLinkFailed);
   };
 
-  // eslint-disable-next-line react-compiler/react-compiler
   const onAppUrlEvent = useEffectEvent(onAppUrl);
 
   useEffect(() => {
     App.addListener("appUrlOpen", (event) => {
       onAppUrlEvent(normalizeObjectUrl(event.url));
     });
+
+    return () => {
+      App.removeAllListeners();
+    };
   }, []);
 
   useEffect(() => {

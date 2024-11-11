@@ -1,4 +1,5 @@
 import { ActionSheetOptions, useIonActionSheet } from "@ionic/react";
+import { compact } from "es-toolkit";
 import {
   arrowDownOutline,
   arrowUndoOutline,
@@ -18,33 +19,39 @@ import {
   PersonMentionView,
 } from "lemmy-js-client";
 import { useCallback, useContext, useMemo } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { userHandleSelector } from "#/features/auth/authSelectors";
+import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
+import {
+  getCanModerate,
+  getModIcon,
+} from "#/features/moderation/useCanModerate";
+import useCommentModActions from "#/features/moderation/useCommentModActions";
+import { getShareIcon } from "#/helpers/device";
 import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
   share,
-} from "../../helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "../../helpers/routes";
+} from "#/helpers/lemmy";
+import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
+  commentDeleteFailed,
+  commentDeleted,
   postLocked,
   saveError,
   saveSuccess,
-} from "../../helpers/toastMessages";
-import store, { useAppDispatch } from "../../store";
-import { PageContext } from "../auth/PageContext";
-import { userHandleSelector } from "../auth/authSelectors";
-import { CommentsContext } from "./inTree/CommentsContext";
-import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
-import useCollapseRootComment from "./inTree/useCollapseRootComment";
-import useAppToast from "../../helpers/useAppToast";
-import { getCanModerate, getModIcon } from "../moderation/useCanModerate";
-import useCommentModActions from "../moderation/useCommentModActions";
-import { useOptimizedIonRouter } from "../../helpers/useOptimizedIonRouter";
-import { isDownvoteEnabledSelector } from "../auth/siteSlice";
-import { compact } from "lodash";
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import store, { useAppDispatch } from "#/store";
+
 import { isStubComment } from "./CommentHeader";
-import { getVoteErrorMessage } from "../../helpers/lemmyErrors";
-import { getShareIcon } from "../../helpers/device";
+import { deleteComment, saveComment, voteOnComment } from "./commentSlice";
+import { CommentsContext } from "./inTree/CommentsContext";
+import useCollapseRootComment from "./inTree/useCollapseRootComment";
 
 export interface CommentActionsProps {
   comment: CommentView | PersonMentionView | CommentReplyView;
@@ -123,7 +130,9 @@ export default function useCommentActions({
               if (presentLoginIfNeeded()) return;
 
               try {
-                await dispatch(voteOnComment(comment.id, myVote === 1 ? 0 : 1));
+                await dispatch(
+                  voteOnComment(commentView, myVote === 1 ? 0 : 1),
+                );
               } catch (error) {
                 presentToast({
                   color: "danger",
@@ -145,7 +154,7 @@ export default function useCommentActions({
 
                   try {
                     await dispatch(
-                      voteOnComment(comment.id, myVote === -1 ? 0 : -1),
+                      voteOnComment(commentView, myVote === -1 ? 0 : -1),
                     );
                   } catch (error) {
                     presentToast({
@@ -167,7 +176,7 @@ export default function useCommentActions({
               if (presentLoginIfNeeded()) return;
 
               try {
-                await dispatch(saveComment(comment.id, !mySaved));
+                await dispatch(saveComment(commentView, !mySaved));
 
                 if (!mySaved) presentToast(saveSuccess);
               } catch (error) {
@@ -201,19 +210,12 @@ export default function useCommentActions({
                           try {
                             await dispatch(deleteComment(comment.id));
                           } catch (error) {
-                            presentToast({
-                              message:
-                                "Problem deleting comment. Please try again.",
-                              color: "danger",
-                            });
+                            presentToast(commentDeleteFailed);
 
                             throw error;
                           }
 
-                          presentToast({
-                            message: "Comment deleted!",
-                            color: "primary",
-                          });
+                          presentToast(commentDeleted);
                         })();
                       },
                     },

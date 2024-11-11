@@ -1,7 +1,3 @@
-import { useContext, useMemo } from "react";
-import { SwipeAction, SwipeActions } from "../../../../services/db";
-import { PageContext } from "../../../auth/PageContext";
-import { useAppSelector } from "../../../../store";
 import {
   arrowDownSharp,
   arrowUndo,
@@ -17,8 +13,14 @@ import {
   mailUnread,
   share as shareIcon,
 } from "ionicons/icons";
+import { useContext, useMemo } from "react";
+
+import { PageContext } from "#/features/auth/PageContext";
+import { VOTE_COLORS } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
+import { SwipeAction, SwipeActions } from "#/services/db";
+import { useAppSelector } from "#/store";
+
 import SlidingItem, { ActionList, SlidingItemAction } from "../SlidingItem";
-import { VOTE_COLORS } from "../../../settings/appearance/themes/votesTheme/VotesTheme";
 
 export interface GenericBaseSlidingProps {
   currentVote: 1 | -1 | 0 | undefined;

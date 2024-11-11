@@ -1,25 +1,27 @@
 import {
-  IonButtons,
   IonButton,
-  IonToolbar,
-  IonTitle,
+  IonButtons,
   IonIcon,
+  IonTitle,
+  IonToolbar,
 } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { arrowBackSharp, send } from "ionicons/icons";
 import { Person, PrivateMessageView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
-import { arrowBackSharp, send } from "ionicons/icons";
-import { DismissableProps } from "../../../../DynamicDismissableModal";
-import { useAppDispatch } from "../../../../../../store";
-import useAppToast from "../../../../../../helpers/useAppToast";
-import AppHeader from "../../../../AppHeader";
-import { isIosTheme } from "../../../../../../helpers/device";
-import { Centered, Spinner } from "../../../../../auth/login/LoginNav";
+
+import { Centered, Spinner } from "#/features/auth/login/LoginNav";
+import { receivedMessages } from "#/features/inbox/inboxSlice";
+import AppHeader from "#/features/shared/AppHeader";
+import { DismissableProps } from "#/features/shared/DynamicDismissableModal";
+import { isIosTheme } from "#/helpers/device";
+import { getHandle } from "#/helpers/lemmy";
+import { messageSent, privateMessageSendFailed } from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+import useClient from "#/helpers/useClient";
+import { useAppDispatch } from "#/store";
+
 import CommentEditorContent from "./CommentEditorContent";
-import useClient from "../../../../../../helpers/useClient";
-import { privateMessageSendFailed } from "../../../../../../helpers/toastMessages";
-import { receivedMessages } from "../../../../../inbox/inboxSlice";
-import { getHandle } from "../../../../../../helpers/lemmy";
-import { styled } from "@linaria/react";
 
 const Title = styled.span`
   overflow: hidden;
@@ -32,7 +34,7 @@ const Title = styled.span`
  * e.g. post or comment replying to,
  * but not necessarily DMs)
  */
-export type NewPrivateMessage = {
+export interface NewPrivateMessage {
   private_message: {
     recipient: Person;
   };
@@ -41,7 +43,7 @@ export type NewPrivateMessage = {
    * Prefilled content
    */
   value?: string;
-};
+}
 
 type CommentEditingProps = Omit<DismissableProps, "dismiss"> & {
   dismiss: (reply?: PrivateMessageView | undefined) => void;
@@ -84,13 +86,7 @@ export default function PrivateMessagePage({
       setLoading(false);
     }
 
-    presentToast({
-      message: "Message sent!",
-      color: "primary",
-      position: "top",
-      centerText: true,
-      fullscreen: true,
-    });
+    presentToast(messageSent);
 
     setCanDismiss(true);
     dismiss(message.private_message_view);

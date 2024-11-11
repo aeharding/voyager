@@ -1,4 +1,5 @@
 import { CommunityView } from "lemmy-js-client";
+
 import CommunitySidebar from "./internal/CommunitySidebar";
 import InstanceSidebar from "./internal/InstanceSidebar";
 

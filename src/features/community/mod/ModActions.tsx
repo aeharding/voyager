@@ -1,10 +1,11 @@
 import { IonButton, IonIcon } from "@ionic/react";
-import { MouseEvent } from "react";
-import { getModColor, getModIcon } from "../../moderation/useCanModerate";
 import { ListingType } from "lemmy-js-client";
+import { MouseEvent } from "react";
+
+import { getModColor, getModIcon } from "#/features/moderation/useCanModerate";
 import useModZoneActions, {
   UseModZoneActionsProps,
-} from "../../moderation/useModZoneActions";
+} from "#/features/moderation/useModZoneActions";
 
 export default function ModActions(props: UseModZoneActionsProps) {
   const { present: presentModZoneActions, role } = useModZoneActions(props);

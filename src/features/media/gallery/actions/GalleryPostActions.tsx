@@ -1,28 +1,27 @@
-import { IonIcon } from "@ionic/react";
-import { VoteButton } from "../../../post/shared/VoteButton";
-import { PostView } from "lemmy-js-client";
-import { chatbubbleOutline } from "ionicons/icons";
-import { useAppSelector } from "../../../../store";
-import { useBuildGeneralBrowseLink } from "../../../../helpers/routes";
-import MoreActions from "../../../post/shared/MoreActions";
-import {
-  calculateTotalScore,
-  calculateSeparateScore,
-} from "../../../../helpers/vote";
-import { useLocation } from "react-router";
-import React, { useContext } from "react";
-import { GalleryContext } from "../GalleryProvider";
-import { OVoteDisplayMode } from "../../../../services/db";
-import { getShareIcon, isNative } from "../../../../helpers/device";
-import GalleryActions from "./GalleryActions";
-import { StashMedia } from "capacitor-stash-media";
 import { Share } from "@capacitor/share";
-import useAppToast from "../../../../helpers/useAppToast";
-import { useOptimizedIonRouter } from "../../../../helpers/useOptimizedIonRouter";
-import { InFeedContext } from "../../../feed/Feed";
-import { buildPostLink } from "../../../../helpers/appLinkBuilder";
+import { IonIcon } from "@ionic/react";
 import { styled } from "@linaria/react";
+import { StashMedia } from "capacitor-stash-media";
+import { chatbubbleOutline } from "ionicons/icons";
+import { PostView } from "lemmy-js-client";
+import React, { useContext } from "react";
+import { useLocation } from "react-router";
+
+import { InFeedContext } from "#/features/feed/Feed";
+import MoreActions from "#/features/post/shared/MoreActions";
+import { VoteButton } from "#/features/post/shared/VoteButton";
+import { buildPostLink } from "#/helpers/appLinkBuilder";
+import { getShareIcon, isNative } from "#/helpers/device";
+import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import useAppToast from "#/helpers/useAppToast";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
+import { calculateSeparateScore, calculateTotalScore } from "#/helpers/vote";
+import { OVoteDisplayMode } from "#/services/db";
+import { useAppSelector } from "#/store";
+
+import { GalleryContext } from "../GalleryProvider";
 import AltText from "./AltText";
+import GalleryActions from "./GalleryActions";
 import { BottomContainer, BottomContainerActions } from "./shared";
 
 const Container = styled.div`
@@ -134,9 +133,9 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
 
       return (
         <Section>
-          <VoteButton type="up" postId={post.post.id} />
+          <VoteButton type="up" post={post} />
           <Amount>{score}</Amount>
-          <VoteButton type="down" postId={post.post.id} />
+          <VoteButton type="down" post={post} />
         </Section>
       );
     }
@@ -148,9 +147,9 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
 
       return (
         <Section>
-          <VoteButton type="up" postId={post.post.id} />
+          <VoteButton type="up" post={post} />
           <Amount>{upvotes}</Amount>
-          <VoteButton type="down" postId={post.post.id} />
+          <VoteButton type="down" post={post} />
           <Amount>{downvotes}</Amount>
         </Section>
       );
@@ -158,8 +157,8 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
     case OVoteDisplayMode.Hide:
       return (
         <Section>
-          <VoteButton type="up" postId={post.post.id} />
-          <VoteButton type="down" postId={post.post.id} />
+          <VoteButton type="up" post={post} />
+          <VoteButton type="down" post={post} />
         </Section>
       );
   }
