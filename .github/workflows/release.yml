@@ -11,8 +11,10 @@ env:
 
 jobs:
   validate_version:
-    name: Update version and push
+    name: Validate version
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_current_version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
