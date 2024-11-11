@@ -905,6 +905,11 @@ export class WefwefDB extends Dexie {
 
   /**
    * Convenience method for app startup
+   *
+   * @returns The resulting array will always have the same length as the given array of keys.
+   * Every position in the given key array will correspond to the same position in the array of results.
+   *
+   * `undefined` will be returned for those keys that do not exist in the database.
    */
   async getSettings<T extends keyof SettingValueTypes>(keys: T[]) {
     const result = await this.settings

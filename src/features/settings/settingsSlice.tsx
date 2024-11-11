@@ -15,6 +15,7 @@ import { PostSortType } from "lemmy-js-client";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
+import { DeepPartial } from "#/helpers/typescript";
 import {
   ALL_GLOBAL_SETTINGS,
   AppThemeType,
@@ -695,7 +696,7 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
       settings = zipObject(
         ALL_GLOBAL_SETTINGS,
         await db.getSettings(ALL_GLOBAL_SETTINGS),
-      ) as unknown as GlobalSettingValueTypes;
+      ) as unknown as Partial<GlobalSettingValueTypes>;
     } catch (error) {
       if (error instanceof Dexie.MissingAPIError) {
         thunkApi.dispatch(setDatabaseError(error));
@@ -711,8 +712,8 @@ export const fetchSettingsFromDatabase = createAsyncThunk<SettingsState>(
 
     return produce(state.settings, (draft) => {
       merge(draft, {
-        ready: true,
         ...hydrateStateWithGlobalSettings(settings),
+        ready: true,
       });
     });
   },
@@ -820,7 +821,9 @@ export default settingsSlice.reducer;
  * @param settings - The global settings from the database.
  * @returns The hydrated state.
  */
-function hydrateStateWithGlobalSettings(settings: GlobalSettingValueTypes) {
+function hydrateStateWithGlobalSettings(
+  settings: Partial<GlobalSettingValueTypes>,
+): DeepPartial<SettingsState> {
   return {
     appearance: {
       commentsTheme: settings.comments_theme,
