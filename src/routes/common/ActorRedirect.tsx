@@ -1,7 +1,9 @@
-import { Redirect, useLocation, useParams } from "react-router";
+import { useLayoutEffect, useRef } from "react";
+import { useLocation } from "react-router";
 
 import { isInstalled } from "#/helpers/device";
 import useIonViewIsVisible from "#/helpers/useIonViewIsVisible";
+import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppSelector } from "#/store";
 
 export const usingActorRedirect = !isInstalled();
@@ -13,28 +15,48 @@ export default function ActorRedirect({ children }: React.PropsWithChildren) {
 }
 
 function ActorRedirectEnabled({ children }: React.PropsWithChildren) {
-  const { actor } = useParams<{ actor: string }>();
   const connectedInstance = useAppSelector(
     (state) => state.auth.connectedInstance,
   );
   const location = useLocation();
   const ionViewIsVisible = useIonViewIsVisible();
+  const router = useOptimizedIonRouter();
 
-  if (!ionViewIsVisible) return children;
-  if (!connectedInstance || !actor) return children;
-  if (connectedInstance === actor) return children;
+  const fixedForPathname = useRef("");
 
-  const [first, second, _wrongActor, ...urlEnd] = location.pathname.split("/");
+  useLayoutEffect(() => {
+    if (fixedForPathname.current === location.pathname) {
+      return;
+    }
+    if (!ionViewIsVisible) return;
 
-  // no need to redirect if url doesn't have actor
-  if (!_wrongActor || !isPotentialActor(_wrongActor)) return children;
+    const [first, second, _wrongActor, ...urlEnd] =
+      location.pathname.split("/");
 
-  return (
-    <Redirect
-      to={[first, second, connectedInstance, ...urlEnd].join("/")}
-      push={false}
-    />
-  );
+    // no need to redirect if url doesn't have actor
+    if (!_wrongActor || !isPotentialActor(_wrongActor)) return;
+
+    if (!connectedInstance || !_wrongActor) return;
+    if (connectedInstance === _wrongActor) return;
+
+    fixedForPathname.current = location.pathname;
+
+    requestAnimationFrame(() => {
+      router.push(
+        [first, second, connectedInstance, ...urlEnd].join("/"),
+        "root",
+        "replace",
+      );
+    });
+  }, [
+    children,
+    connectedInstance,
+    ionViewIsVisible,
+    location.pathname,
+    router,
+  ]);
+
+  return children;
 }
 
 function isPotentialActor(host: string) {
