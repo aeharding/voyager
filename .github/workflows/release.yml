@@ -5,25 +5,14 @@ on:
     branches:
       - inherit # todo remove, can't workflow_dispatch from branch
 
-  workflow_call:
-    inputs:
-      release_branch_prefix:
-        description: "Release branch prefix (e.g. `test-release`)"
-        default: "test-release"
-        type: string
-      tag_prefix:
-        description: "Tag prefix (e.g. `test-`)"
-        default: "test-"
-        type: string
-
   workflow_dispatch:
     inputs:
       release_branch_prefix:
         description: "Release branch prefix (e.g. `test-release`)"
-        default: ""
+        default: "test-release"
       tag_prefix:
         description: "Tag prefix (e.g. `test-`)"
-        default: ""
+        default: "test-"
 
 jobs:
   validate_version:
