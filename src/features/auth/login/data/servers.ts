@@ -89,6 +89,7 @@ export const SERVERS_BY_CATEGORY = {
     "psychedelia.ink",
     "ani.social",
     "vegantheoryclub.org",
+    "lemmy.vg",
   ],
   activism: ["rblind.com", "badatbeing.social", "slrpnk.net"],
   lgbt: ["femboys.bar", "lemmy.blahaj.zone"],
