@@ -96,16 +96,37 @@ pnpm test
 
 ### 🚀 Releasing
 
-To release a new version:
-
-```sh
-BUILD=123; npx release-it
-```
-
-Make sure the build number is incremental. This is used for F-droid.
-
 Voyager uses Github Actions for Apple App Store and Android Play Store builds, where logs may be inspected.
 
 **Voyager's Android and iOS builds are reproducible**! In fact, [F-droid independently builds Voyager](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/app.vger.voyager.yml) and verifies the same compiled APK is provided in Github Releases.
 
 Note: F-droid and Github Releases binaries are built with `BUILD_FOSS_ONLY=true`. This removes all nonfree dependencies, currently just Google Play in-app purchases.
+
+#### Start the release process
+
+1. Make sure the version is incremented. Increment in `package.json` and push (if necessary)
+2. Trigger the `release` workflow in Github Actions from the relevant commit
+
+> [!TIP]
+> Shorthand: `pnpm release` (relies on [`gh`](https://cli.github.com))
+
+#### The `release` workflow will:
+
+1. Set the build number to the current Github run number (and detect the version from `package.json`)
+2. Commit the version bump
+3. Create a release branch (e.g. `release/1.0.0`)
+4. Tag the release (e.g. `1.0.0`)
+5. As a side-effect of tagging, trigger the `build_release` workflow
+
+#### The `build_release` workflow will:
+
+1. Build web app — `Voyager-Web-<version>.zip`
+2. Build non-FOSS Google Play Android — **no artifact**
+3. Build iOS artifact — `Voyager-iOS-<version>.ipa`
+4. Build FOSS-only Android — `Voyager-Android-<version>.apk`
+5. Upload to the Apple App Store and Google Play Store
+6. Create a Github Release with the artifacts
+
+#### several_days_later_spongebob_meme.jpg
+
+In a few days, F-droid will scan the repo for new tags and [independently build](https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/app.vger.voyager.yml) the FOSS-only Android native app. It will verify reproducibility against Github Releases, and then publish the app.

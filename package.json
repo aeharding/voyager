@@ -7,7 +7,7 @@
   "packageManager": "pnpm@9.12.2+sha512.22721b3a11f81661ae1ec68ce1a7b879425a1ca5b991c975b074ac220b187ce56c708fe5db69f4c962c989452eee76c82877f4ee80f474cebd61ee13461b6228",
   "scripts": {
     "dev": "vite",
-    "ionic:build:before": "./prebuild.sh",
+    "ionic:build:before": "./scripts/prebuild.sh",
     "build": "pnpm ionic:build:before && vite build",
     "postinstall": "cap telemetry off && ionic config set -g telemetry false",
     "preview": "vite preview",
@@ -21,7 +21,8 @@
     "generate:splash": "pnpm generate:splash:dark && pnpm generate:splash:light",
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
     "upgrade:packageManager": "corepack use pnpm@latest",
-    "upgrade:react": "pnpm i --save react@experimental react-dom@experimental babel-plugin-react-compiler@experimental eslint-plugin-react-compiler@experimental eslint-plugin-react-hooks@experimental"
+    "upgrade:react": "pnpm i --save react@experimental react-dom@experimental babel-plugin-react-compiler@experimental eslint-plugin-react-compiler@experimental eslint-plugin-react-hooks@experimental",
+    "release": "gh workflow run release.yml"
   },
   "pnpm": {
     "overrides": {
@@ -72,7 +73,6 @@
     "capacitor-clear-cache": "^1.0.1",
     "capacitor-launch-native": "^1.0.0",
     "capacitor-plugin-safe-area": "^3.0.3",
-    "capacitor-set-version": "^2.2.0",
     "capacitor-stash-media": "^2.0.1",
     "capacitor-tips": "^1.0.0",
     "colorjs.io": "^0.5.2",
@@ -125,6 +125,7 @@
     "@eslint/js": "^9.14.0",
     "@ionic/cli": "^7.2.0",
     "@playwright/test": "^1.48.2",
+    "@trapezedev/configure": "^7.0.10",
     "@types/history": "^4.7.11",
     "@types/mdast": "^4.0.4",
     "@types/node": "^22.9.0",
@@ -147,7 +148,6 @@
     "mdast-util-lemmy-spoiler": "^2.0.0",
     "prettier": "^3.3.3",
     "pwa-asset-generator": "^6.4.0",
-    "release-it": "^17.10.0",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.13.0",
     "vite": "^5.4.10",

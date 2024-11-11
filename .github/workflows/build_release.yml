@@ -3,19 +3,20 @@ name: Build Apps, Deploy Web and Create Release
 on:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
+      - "(test-)?[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   build_web:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
+
+      - run: corepack enable
 
       - name: 📦 Install dependencies
         run: pnpm install  --frozen-lockfile
@@ -24,6 +25,7 @@ jobs:
         run: pnpm build
 
       - name: Upload dist bundle to S3
+        if: github.ref_name != 'test*'
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --acl public-read --follow-symlinks --delete
@@ -44,33 +46,44 @@ jobs:
           path: Voyager-Web-${{ github.ref_name }}.zip
 
   build_ios:
+    environment: deploy
     runs-on: macos-latest
     concurrency:
       group: "build_ios"
       cancel-in-progress: true
     steps:
-      - uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: latest-stable
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
+
       - name: Install Fastlane
         run: |
           gem install bundler
           bundle install
+
       - run: corepack enable
+
       - run: pnpm i --frozen-lockfile
+
       - name: Build (Ionic)
         run: pnpm exec ionic cap sync
         env:
           CI_PLATFORM: ios
+
       - name: Deploy to TestFlight
+        if: github.ref_name != 'test*'
         run: |
           echo "$APP_STORE_CONNECT_KEY" > authkey.json
           bundle exec fastlane deploy
@@ -80,6 +93,7 @@ jobs:
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
           APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
           COMMIT_MSG: ${{ github.event.commits[0].message }}
+
       - name: Upload iOS IPA as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -88,21 +102,24 @@ jobs:
 
   build_android:
     runs-on: ubuntu-latest
-    concurrency:
-      group: "build_android"
-      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
+
       - run: corepack enable
+
       - run: pnpm i --frozen-lockfile
+
       - name: Build (Ionic)
         run: pnpm exec ionic cap sync
         env:
           BUILD_FOSS_ONLY: 1
           CI_PLATFORM: android
+
       - name: Set up JDK 11
         uses: actions/setup-java@v4
         with:
@@ -111,13 +128,11 @@ jobs:
           cache: gradle
       - name: Build (Android)
         run: |
-          echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
           cd android
           ./gradlew assembleRelease
-        env:
-          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
       - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ github.ref_name }}.apk
+
       - name: Send to Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -125,44 +140,56 @@ jobs:
           path: Voyager-Android-${{ github.ref_name }}.apk
 
   build_android_play:
+    environment: deploy
     runs-on: ubuntu-latest
     concurrency:
       group: "build_android_play"
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
+
       - name: Install Fastlane
         run: |
           gem install bundler
           bundle install
+
       - run: corepack enable
+
       - run: pnpm i --frozen-lockfile
+
       - name: Build (Ionic)
         run: pnpm exec ionic cap sync
         env:
           CI_PLATFORM: android
+
       - name: Set up JDK 11
         uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "corretto"
           cache: gradle
+
       - name: Build (Android)
         run: |
           echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+
       - name: Setup service account
         run: echo $GOOGLE_SERVICE_ACCOUNT | base64 --decode > android/pc-api.json
         env:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+
       - name: Run Fastlane
         run: bundle exec fastlane android deploy
         env:
@@ -170,6 +197,7 @@ jobs:
 
   create_release:
     needs: [build_web, build_ios, build_android_play, build_android]
+    if: github.ref_name != 'test*'
     runs-on: ubuntu-latest
 
     permissions:

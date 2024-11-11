@@ -1,0 +1,10 @@
+vars:
+  APP_VERSION:
+  APP_BUILD:
+platforms:
+  android:
+    versionName: $APP_VERSION
+    versionCode: $APP_BUILD
+  ios:
+    version: $APP_VERSION
+    buildNumber: $APP_BUILD
