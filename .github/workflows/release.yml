@@ -46,6 +46,9 @@ jobs:
 
       - run: corepack enable
 
+      - name: 📦 Install dependencies
+        run: pnpm install  --frozen-lockfile
+
       - name: Run trapeze (update iOS and Android version/code)
         run: pnpm exec trapeze run trapeze.yaml
         env:
