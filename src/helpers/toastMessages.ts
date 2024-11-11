@@ -16,7 +16,7 @@ const shortSuccessDefaults: Omit<AppToastOptions, "message"> = {
   centerText: true,
 };
 
-const showModSuccessDefaults: Omit<AppToastOptions, "message"> = {
+const shortModSuccessDefaults: Omit<AppToastOptions, "message"> = {
   ...shortSuccessDefaults,
   color: "success",
 };
@@ -89,14 +89,14 @@ export const postLocked: AppToastOptions = {
 
 export function buildLocked(locked: boolean): AppToastOptions {
   return {
-    ...showModSuccessDefaults,
+    ...shortModSuccessDefaults,
     message: `${locked ? "Locked" : "Unlocked"} post!`,
   };
 }
 
 export function buildStickied(stickied: boolean): AppToastOptions {
   return {
-    ...showModSuccessDefaults,
+    ...shortModSuccessDefaults,
     message: `${stickied ? "Stickied" : "Unstickied"} post!`,
   };
 }
@@ -127,43 +127,43 @@ export const commentDeleteFailed: AppToastOptions = {
 };
 
 export const postRemovedMod: AppToastOptions = {
-  ...showModSuccessDefaults,
+  ...shortModSuccessDefaults,
   message: "Post removed!",
 };
 
 export const postApproved: AppToastOptions = {
-  ...showModSuccessDefaults,
+  ...shortModSuccessDefaults,
   message: "Post approved!",
 };
 
 export const postRestored: AppToastOptions = {
-  ...showModSuccessDefaults,
+  ...shortModSuccessDefaults,
   message: "Post restored!",
 };
 
 export const commentRemovedMod: AppToastOptions = {
-  ...showModSuccessDefaults,
+  ...shortModSuccessDefaults,
   message: "Comment removed!",
 };
 
 export const commentApproved: AppToastOptions = {
-  ...showModSuccessDefaults,
+  ...shortModSuccessDefaults,
   message: "Comment approved!",
 };
 
 export const commentRestored: AppToastOptions = {
-  ...showModSuccessDefaults,
+  ...shortModSuccessDefaults,
   message: "Comment restored!",
 };
 
 export const commentDistinguished: AppToastOptions = {
-  ...showModSuccessDefaults,
+  ...shortModSuccessDefaults,
   message: "Comment distinguished",
 };
 
 export function buildBanned(banned: boolean): AppToastOptions {
   return {
-    ...showModSuccessDefaults,
+    ...shortModSuccessDefaults,
     message: banned ? "Banned user" : "Unbanned user",
     fullscreen: true,
   };
