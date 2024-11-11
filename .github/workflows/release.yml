@@ -5,14 +5,9 @@ on:
     branches:
       - inherit # todo remove, can't workflow_dispatch from branch
 
-  workflow_dispatch:
-    inputs:
-      release_branch_prefix:
-        description: "Release branch prefix (e.g. `test-release`)"
-        default: "test-release"
-      tag_prefix:
-        description: "Tag prefix (e.g. `test-`)"
-        default: "test-"
+env:
+  TAG_PREFIX: test-
+  RELEASE_BRANCH_PREFIX: test-release
 
 jobs:
   validate_version:
@@ -34,7 +29,7 @@ jobs:
       - name: Verify provided version not already released
         run: |
           git fetch --tags
-          TAG_NAME="${{ inputs.tag_prefix }}${{ steps.get_current_version.outputs.version }}"
+          TAG_NAME="$TAG_PREFIX${{ steps.get_current_version.outputs.version }}"
           if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
             echo "Error: Tag $TAG_NAME already exists"
             exit 1
@@ -65,11 +60,11 @@ jobs:
 
       - name: Commit and push release
         run: |
-          git checkout -b ${{ inputs.release_branch_prefix }}/${{ needs.validate_version.outputs.version }}
+          git checkout -b $RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}
           git config --global user.email "voyager.ci.noreply@harding.dev"
           git config --global user.name "Voyager CI"
           git add .
           git commit -m "Release ${{ needs.validate_version.outputs.version }} (${{ github.run_number }})"
-          git tag ${{ inputs.tag_prefix }}${{ needs.validate_version.outputs.version }}
+          git tag $TAG_PREFIX${{ needs.validate_version.outputs.version }}
           git push origin HEAD
           git push --tags
