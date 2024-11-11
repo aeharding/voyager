@@ -83,6 +83,7 @@
     "es-toolkit": "^1.26.1",
     "eslint-plugin-perfectionist": "^3.9.1",
     "history": "^4.10.1",
+    "immer": "^10.1.1",
     "ionicons": "^7.4.0",
     "lemmy-js-client": "0.20.0-alpha.18",
     "mdast-util-gfm-autolink-literal-lemmy": "^3.0.0",

@@ -117,14 +117,16 @@ function SetupStore() {
       return;
     }
 
+    // Load initial settings from DB into the store
+    // Only runs once at startup!
     Promise.all([
-      // Load initial settings from DB into the store
       store.dispatch(fetchSettingsFromDatabase()),
       store.dispatch(fetchGesturesFromDatabase()),
       store.dispatch(fetchAppIcon()),
       store.dispatch(initializeBiometricSliceDataIfNeeded()),
     ]).finally(afterSetup);
 
+    // Runs after every active account change
     function afterSetup() {
       needsSetupRef.current = false;
       dispatch(getFavoriteCommunities());

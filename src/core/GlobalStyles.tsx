@@ -8,7 +8,7 @@ import React, {
   useLayoutEffect,
 } from "react";
 
-import { buildInitialState as buildInitialSettingsState } from "#/features/settings/settingsSlice";
+import { initialState as initialSettingsState } from "#/features/settings/settingsSlice";
 import { isNative } from "#/helpers/device";
 import useSystemDarkMode, {
   DARK_MEDIA_SELECTOR,
@@ -64,8 +64,6 @@ function updateDocumentTheme(
     documentClasses.remove(DARK_CLASSNAME);
   }
 }
-
-const initialSettingsState = buildInitialSettingsState();
 
 // Prevent flash of white content and repaint before react component setup
 updateDocumentTheme(
