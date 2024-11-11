@@ -70,9 +70,9 @@ export default function CommunityListItem({
 
     try {
       await dispatch(followCommunity(false, community.id));
-      presentToast(buildSuccessSubscribing(true, getHandle(community)));
+      presentToast(buildSuccessSubscribing(true));
     } catch (error) {
-      presentToast(buildProblemSubscribing(true, getHandle(community)));
+      presentToast(buildProblemSubscribing(true));
       throw error;
     }
   }
@@ -83,7 +83,7 @@ export default function CommunityListItem({
 
     dispatch(removeFavorite(communityHandle));
 
-    presentToast(buildFavorited(isFavorite, communityHandle));
+    presentToast(buildFavorited(isFavorite));
   }
 
   const slideActions = (() => {

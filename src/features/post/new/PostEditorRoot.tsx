@@ -19,7 +19,7 @@ import {
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { startCase } from "es-toolkit";
-import { accessibility, cameraOutline, checkmark } from "ionicons/icons";
+import { accessibility, cameraOutline } from "ionicons/icons";
 import { Post } from "lemmy-js-client";
 import { useEffect, useMemo, useState } from "react";
 
@@ -32,7 +32,11 @@ import {
 import { isAndroid } from "#/helpers/device";
 import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { problemFetchingTitle } from "#/helpers/toastMessages";
+import {
+  postCreated,
+  postEdited,
+  problemFetchingTitle,
+} from "#/helpers/toastMessages";
 import { isUrlImage, isValidUrl } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
@@ -299,14 +303,7 @@ export default function PostEditorRoot({
 
     dispatch(receivedPosts([postResponse.post_view]));
 
-    presentToast({
-      message: existingPost ? "Post edited!" : "Post created!",
-      color: "primary",
-      position: "top",
-      centerText: true,
-      fullscreen: true,
-      icon: checkmark,
-    });
+    presentToast(existingPost ? postEdited : postCreated);
 
     setCanDismiss(true);
 

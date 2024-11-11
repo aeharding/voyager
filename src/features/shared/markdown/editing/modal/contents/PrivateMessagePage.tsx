@@ -16,7 +16,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { DismissableProps } from "#/features/shared/DynamicDismissableModal";
 import { isIosTheme } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
-import { privateMessageSendFailed } from "#/helpers/toastMessages";
+import { messageSent, privateMessageSendFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import { useAppDispatch } from "#/store";
@@ -86,13 +86,7 @@ export default function PrivateMessagePage({
       setLoading(false);
     }
 
-    presentToast({
-      message: "Message sent!",
-      color: "primary",
-      position: "top",
-      centerText: true,
-      fullscreen: true,
-    });
+    presentToast(messageSent);
 
     setCanDismiss(true);
     dismiss(message.private_message_view);

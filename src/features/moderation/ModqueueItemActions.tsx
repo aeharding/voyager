@@ -8,10 +8,10 @@ import { modRemovePost } from "#/features/post/postSlice";
 import { isPost } from "#/helpers/lemmy";
 import {
   commentApproved,
-  commentRemoved,
+  commentRemovedMod,
   commentRestored,
   postApproved,
-  postRemoved,
+  postRemovedMod,
   postRestored,
 } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
@@ -42,7 +42,8 @@ export default function ModqueueItemActions({
       const action = isPost(item) ? resolvePostReport : resolveCommentReport;
       await dispatch(action(id));
 
-      if (remove) presentToast(isPost(item) ? postRemoved : commentRemoved);
+      if (remove)
+        presentToast(isPost(item) ? postRemovedMod : commentRemovedMod);
       else presentToast(isPost(item) ? postApproved : commentApproved);
 
       return;
@@ -54,8 +55,8 @@ export default function ModqueueItemActions({
 
     const toastMessage = (() => {
       if (remove) {
-        if (isPost(item)) return postRemoved;
-        else return commentRemoved;
+        if (isPost(item)) return postRemovedMod;
+        else return commentRemovedMod;
       } else {
         if (isPost(item)) return postRestored;
         else return commentRestored;

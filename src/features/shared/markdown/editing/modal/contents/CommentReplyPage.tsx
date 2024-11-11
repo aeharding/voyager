@@ -27,6 +27,7 @@ import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import { receivedComments } from "#/features/comment/commentSlice";
 import { isIosTheme } from "#/helpers/device";
 import { isLemmyError } from "#/helpers/lemmyErrors";
+import { commentPosted } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import { getClient } from "#/services/lemmy";
@@ -216,13 +217,7 @@ export default function CommentReplyPage({
     }
 
     if (!silentError) {
-      presentToast({
-        message: "Comment posted!",
-        color: "primary",
-        position: "top",
-        centerText: true,
-        fullscreen: true,
-      });
+      presentToast(commentPosted);
     }
 
     if (reply) dispatch(receivedComments([reply]));

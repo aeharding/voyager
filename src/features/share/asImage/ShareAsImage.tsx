@@ -221,7 +221,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       setBlob(() => blob ?? undefined);
     } catch (error) {
       presentToast({
-        message: "Error rendering image.",
+        message: "Error rendering image",
       });
 
       throw error;

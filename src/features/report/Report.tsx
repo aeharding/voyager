@@ -4,6 +4,7 @@ import { CommentView, PostView, PrivateMessageView } from "lemmy-js-client";
 import { useImperativeHandle, useState } from "react";
 
 import { isLemmyError } from "#/helpers/lemmyErrors";
+import { buildReported } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 
@@ -78,9 +79,7 @@ export default function Report({
       throw error;
     }
 
-    presentToast({
-      message: `${type} reported!`,
-    });
+    if (type) presentToast(buildReported(type));
   }
 
   const submitCustomReason = async function (
