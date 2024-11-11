@@ -10,9 +10,11 @@ on:
       release_branch_prefix:
         description: "Release branch prefix (e.g. `test-release`)"
         default: "test-release"
+        type: string
       tag_prefix:
         description: "Tag prefix (e.g. `test-`)"
         default: "test-"
+        type: string
 
   workflow_dispatch:
     inputs:
