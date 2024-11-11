@@ -25,7 +25,7 @@ import {
   buildLocked,
   buildStickied,
   postApproved,
-  postRemoved,
+  postRemovedMod,
   postRestored,
 } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
@@ -80,7 +80,7 @@ export default function usePostModActions(post: PostView) {
                 (async () => {
                   await dispatch(modRemovePost(post.post.id, true));
 
-                  presentToast(postRemoved);
+                  presentToast(postRemovedMod);
                 })();
               },
             }
@@ -109,7 +109,7 @@ export default function usePostModActions(post: PostView) {
                     (async () => {
                       await dispatch(modRemovePost(post.post.id, true, reason));
 
-                      presentToast(postRemoved);
+                      presentToast(postRemovedMod);
                     })();
                   },
                 },

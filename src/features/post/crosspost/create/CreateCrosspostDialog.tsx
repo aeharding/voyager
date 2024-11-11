@@ -10,7 +10,6 @@ import {
 } from "@ionic/react";
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
-import { checkmark } from "ionicons/icons";
 import { CommunityView, PostView } from "lemmy-js-client";
 import { useContext, useEffect, useState } from "react";
 
@@ -21,6 +20,7 @@ import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { isNative } from "#/helpers/device";
 import { buildCrosspostBody, getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { crosspostFailed, crosspostSuccess } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
@@ -129,11 +129,7 @@ export default function CreateCrosspostDialog({
         community_id: community.community.id,
       });
     } catch (error) {
-      presentToast({
-        message: "Failed to create crosspost",
-        color: "danger",
-        centerText: true,
-      });
+      presentToast(crosspostFailed);
       throw error;
     } finally {
       setLoading(false);
@@ -152,14 +148,7 @@ export default function CreateCrosspostDialog({
 
     onDismiss();
 
-    presentToast({
-      message: "Crossposted!",
-      color: "primary",
-      position: "top",
-      centerText: true,
-      fullscreen: true,
-      icon: checkmark,
-    });
+    presentToast(crosspostSuccess);
   }
 
   return (

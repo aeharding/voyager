@@ -99,7 +99,7 @@ export default function usePresentUserActions() {
                 throw error;
               }
 
-              presentToast(buildBlocked(!isBlocked, getHandle(user)));
+              presentToast(buildBlocked(!isBlocked));
             })();
           },
         },
