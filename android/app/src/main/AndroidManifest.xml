@@ -32,7 +32,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
+                <data android:scheme="https" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -111,7 +111,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
+                <data android:scheme="https" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -190,7 +190,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
+                <data android:scheme="https" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -269,7 +269,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
+                <data android:scheme="https" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -348,7 +348,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
+                <data android:scheme="https" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -427,7 +427,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
+                <data android:scheme="https" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -506,7 +506,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
+                <data android:scheme="https" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />
@@ -585,7 +585,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
+                <data android:scheme="https" />
                 <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
                 <data android:host="ani.social" />
                 <data android:host="aussie.zone" />

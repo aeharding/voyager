@@ -26,8 +26,9 @@ COPY patches ./patches
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy all source files
-COPY prebuild.sh disable_in_app_purchases.sh index.html vite.config.ts manifest.json tsconfig.json compilerOptions.js ./
+COPY index.html vite.config.ts manifest.json tsconfig.json compilerOptions.js ./
 COPY public ./public
+COPY scripts ./scripts
 COPY src ./src
 
 # Build
@@ -39,7 +40,7 @@ FROM docker.io/library/nginx AS runner
 
 ARG UID=911 GID=911
 
-COPY generate_config.sh /docker-entrypoint.d/generate_config.sh
+COPY scripts/docker_generate_config.sh /docker-entrypoint.d/generate_config.sh
 
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 

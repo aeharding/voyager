@@ -1,0 +1,100 @@
+name: Cut a release
+
+on:
+  workflow_dispatch:
+  # -- TESTING ONLY --
+  # push:
+  #   branches:
+  #     - inherit # todo remove, can't workflow_dispatch from branch
+
+env:
+  APP_BUILD_OFFSET: 300
+  TAG_PREFIX: # test-
+  RELEASE_BRANCH_PREFIX: # test-release
+
+jobs:
+  app_build_number:
+    name: Calculate app build number
+    runs-on: ubuntu-latest
+    steps:
+      - id: calculate
+        run: |
+          APP_BUILD=$((${{ github.run_number }} + $APP_BUILD_OFFSET))
+          echo "app_build=$APP_BUILD" >> $GITHUB_OUTPUT
+          echo Current build number: $APP_BUILD
+    outputs:
+      app_build: ${{ steps.calculate.outputs.app_build }}
+
+  validate_version:
+    needs: app_build_number
+    name: Validate version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_current_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Get current version from package.json
+        id: get_current_version
+        run: |
+          CURRENT_APP_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$CURRENT_APP_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Verify provided version not already released
+        run: |
+          git fetch --tags
+          TAG_NAME="$TAG_PREFIX${{ steps.get_current_version.outputs.version }}"
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "Error: Tag $TAG_NAME already exists"
+            exit 1
+          fi
+
+  push_release:
+    needs: [validate_version, app_build_number]
+    name: Add version to apps, push release branch and tag
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false # Don't clobber the PAT below
+
+      - run: corepack enable
+
+      - name: 📦 Install dependencies
+        run: pnpm install  --frozen-lockfile
+
+      - name: Run trapeze (update iOS and Android version/code)
+        run: pnpm exec trapeze run trapeze.yaml -y
+        env:
+          APP_BUILD: ${{ needs.app_build_number.outputs.app_build }}
+          APP_VERSION: ${{ needs.validate_version.outputs.version }}
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@cb9bde2e2525e640591a934b1fd28eef1dcaf5e5 # v6.2.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Commit and push release
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+        # Github doesn't trigger subsequent workflows unless push with a PAT
+        run: |
+          git remote set-url origin "https://${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git checkout -b "$RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}"
+          git config --global user.email "voyager.ci.noreply@harding.dev"
+          git config --global user.name "Voyager CI"
+          git add .
+          git commit -S -m "Release ${{ needs.validate_version.outputs.version }} (${{ needs.app_build_number.outputs.app_build }})"
+          TAG_NAME="${TAG_PREFIX}${{ needs.validate_version.outputs.version }}"
+          echo "Creating tag: $TAG_NAME"
+          git tag "$TAG_NAME"
+          git push origin "$RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}"
+          git push origin "$TAG_NAME"
