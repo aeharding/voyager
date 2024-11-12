@@ -39,7 +39,6 @@ jobs:
 
   push_release:
     needs: validate_version
-    environment: deploy
     name: Add version to apps, push release branch and tag
     runs-on: ubuntu-latest
 

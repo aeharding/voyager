@@ -200,7 +200,7 @@ jobs:
 
   create_release:
     needs: [build_web, build_ios, build_android_play, build_android]
-    if: github.ref_name != 'test*'
+    if: startsWith(github.ref_name, 'test-') != true
     runs-on: ubuntu-latest
 
     permissions:
