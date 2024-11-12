@@ -36,7 +36,7 @@ platform :ios do
       output_name: ENV['ios_output']
     )
     # Only upload if not testing gitub actions workflow
-    if ENV['GITHUB_REF_NAME'] != 'test*'
+    if !ENV['GITHUB_REF_NAME'].start_with?('test-')
       upload_to_testflight(
         ipa: ENV['ios_output'],
         app_identifier: ENV['app_identifier'],
@@ -61,7 +61,7 @@ platform :android do
       build_type: 'Release'
     )
     # Only upload if not testing gitub actions workflow
-    if ENV['GITHUB_REF_NAME'] != 'test*'
+    if !ENV['GITHUB_REF_NAME'].start_with?('test-')
       upload_to_play_store(
         package_name: ENV['app_identifier'],
         release_status: 'draft',

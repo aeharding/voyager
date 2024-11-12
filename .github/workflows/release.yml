@@ -5,9 +5,6 @@ on:
     branches:
       - inherit # todo remove, can't workflow_dispatch from branch
 
-permissions:
-  contents: write
-
 env:
   TAG_PREFIX: test-
   RELEASE_BRANCH_PREFIX: test-release
