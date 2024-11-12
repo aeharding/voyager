@@ -92,9 +92,9 @@ jobs:
           git config --global user.email "voyager.ci.noreply@harding.dev"
           git config --global user.name "Voyager CI"
           git add .
-          git commit -S -m "Release ${{ needs.validate_version.outputs.version }} (${{ needs.app_build_number.outputs.app_build }})"
+          git commit -S -m "release: ${{ needs.validate_version.outputs.version }} (${{ needs.app_build_number.outputs.app_build }})"
           TAG_NAME="${TAG_PREFIX}${{ needs.validate_version.outputs.version }}"
           echo "Creating tag: $TAG_NAME"
-          git tag "$TAG_NAME"
+          git tag -s "$TAG_NAME"
           git push origin "$RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}"
           git push origin "$TAG_NAME"
