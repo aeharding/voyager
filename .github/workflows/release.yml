@@ -72,7 +72,8 @@ jobs:
           git config --global user.name "Voyager CI"
           git add .
           git commit -m "Release ${{ needs.validate_version.outputs.version }} (${{ github.run_number }})"
-          echo $TAG_PREFIX${{ needs.validate_version.outputs.version }}
-          git tag $TAG_PREFIX${{ needs.validate_version.outputs.version }}
+          TAG_NAME="$TAG_PREFIX${{ steps.get_current_version.outputs.version }}"
+          echo $TAG_NAME
+          git tag $TAG_NAME
           git push origin HEAD
-          git push --tags
+          git push origin tag $TAG_NAME
