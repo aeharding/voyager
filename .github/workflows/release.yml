@@ -1,3 +1,5 @@
+name: release
+
 on:
   workflow_dispatch:
   # -- TESTING ONLY --

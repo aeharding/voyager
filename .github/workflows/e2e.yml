@@ -1,3 +1,5 @@
+name: e2e
+
 on: workflow_dispatch
 jobs:
   playwright:

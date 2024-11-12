@@ -1,3 +1,5 @@
+name: build_release
+
 on:
   push:
     tags:
