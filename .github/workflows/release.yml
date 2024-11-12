@@ -65,8 +65,7 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - uses: actions/checkout@v4
-        name: Commit and push release
+      - name: Commit and push release
         run: |
           git checkout -b $RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}
           git config --global user.email "voyager.ci.noreply@harding.dev"
