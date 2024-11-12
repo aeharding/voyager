@@ -69,7 +69,11 @@ jobs:
           git_commit_gpgsign: true
 
       - name: Commit and push release
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+        # Github doesn't trigger subsequent workflows unless pushing with my PAT
         run: |
+          git remote set-url origin "https://${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git checkout -b "$RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}"
           git config --global user.email "voyager.ci.noreply@harding.dev"
           git config --global user.name "Voyager CI"
