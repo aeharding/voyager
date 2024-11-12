@@ -13,14 +13,14 @@ env:
 jobs:
   app_build_number:
     steps:
-      - name: Set build number
+      - name: Export app build number
         id: calculate
         run: |
           APP_BUILD=$((${{ github.run_number }} + $APP_BUILD_OFFSET))
           echo "app_build=$APP_BUILD" >> $GITHUB_OUTPUT
           echo Current build number: $APP_BUILD
-        outputs:
-          app_build: ${{ steps.calculate.outputs.app_build }}
+    outputs:
+      app_build: ${{ steps.calculate.outputs.app_build }}
 
   validate_version:
     needs: app_build_number
@@ -89,7 +89,7 @@ jobs:
           git config --global user.email "voyager.ci.noreply@harding.dev"
           git config --global user.name "Voyager CI"
           git add .
-          git commit -S -m "Release ${{ needs.validate_version.outputs.version }} (${{ github.run_number }})"
+          git commit -S -m "Release ${{ needs.validate_version.outputs.version }} (${{ needs.app_build_number.outputs.app_build }})"
           TAG_NAME="${TAG_PREFIX}${{ needs.validate_version.outputs.version }}"
           echo "Creating tag: $TAG_NAME"
           git tag "$TAG_NAME"
