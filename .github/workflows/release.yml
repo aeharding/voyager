@@ -10,7 +10,7 @@ on:
 env:
   APP_BUILD_OFFSET: 300
   TAG_PREFIX: # test-
-  RELEASE_BRANCH_PREFIX: # test-release
+  RELEASE_BRANCH_PREFIX: release # test-release
 
 jobs:
   app_build_number:
