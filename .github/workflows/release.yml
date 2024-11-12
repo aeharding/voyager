@@ -72,6 +72,10 @@ jobs:
           git config --global user.name "Voyager CI"
           git add .
           git commit -S -m "Release ${{ needs.validate_version.outputs.version }} (${{ github.run_number }})"
+          echo tag prefix
+          echo $TAG_PREFIX
+          echo tag name
+          echo ${{ needs.validate_version.outputs.version }}
           TAG_NAME="$TAG_PREFIX${{ needs.validate_version.outputs.version }}"
           echo $TAG_NAME
           git tag $TAG_NAME
