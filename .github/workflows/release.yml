@@ -6,11 +6,24 @@ on:
       - inherit # todo remove, can't workflow_dispatch from branch
 
 env:
+  APP_BUILD_OFFSET: 300
   TAG_PREFIX: test-
   RELEASE_BRANCH_PREFIX: test-release
 
 jobs:
+  app_build_number:
+    steps:
+      - name: Set build number
+        id: calculate
+        run: |
+          APP_BUILD=$((${{ github.run_number }} + $APP_BUILD_OFFSET))
+          echo "app_build=$APP_BUILD" >> $GITHUB_OUTPUT
+          echo Current build number: $APP_BUILD
+        outputs:
+          app_build: ${{ steps.calculate.outputs.app_build }}
+
   validate_version:
+    needs: app_build_number
     name: Validate version
     runs-on: ubuntu-latest
     outputs:
@@ -38,7 +51,7 @@ jobs:
           fi
 
   push_release:
-    needs: validate_version
+    needs: [validate_version, app_build_number]
     name: Add version to apps, push release branch and tag
     runs-on: ubuntu-latest
 
@@ -55,7 +68,7 @@ jobs:
       - name: Run trapeze (update iOS and Android version/code)
         run: pnpm exec trapeze run trapeze.yaml -y
         env:
-          APP_BUILD: ${{ github.run_number }}
+          APP_BUILD: ${{ needs.app_build_number.outputs.app_build }}
           APP_VERSION: ${{ needs.validate_version.outputs.version }}
 
       - name: Import GPG key
