@@ -12,9 +12,10 @@ env:
 
 jobs:
   app_build_number:
+    name: Calculate app build number
+    runs-on: ubuntu-latest
     steps:
-      - name: Export app build number
-        id: calculate
+      - id: calculate
         run: |
           APP_BUILD=$((${{ github.run_number }} + $APP_BUILD_OFFSET))
           echo "app_build=$APP_BUILD" >> $GITHUB_OUTPUT
