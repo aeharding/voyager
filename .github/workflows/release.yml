@@ -52,7 +52,7 @@ jobs:
         run: pnpm install  --frozen-lockfile
 
       - name: Run trapeze (update iOS and Android version/code)
-        run: pnpm exec trapeze run trapeze.yaml
+        run: pnpm exec trapeze run trapeze.yaml -y
         env:
           APP_BUILD: ${{ github.run_number }}
           APP_VERSION: ${{ needs.validate_version.outputs.version }}
