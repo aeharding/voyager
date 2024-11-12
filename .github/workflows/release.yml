@@ -49,7 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          persist-credentials: false # Don't clobber the PAT below
 
       - run: corepack enable
 
@@ -73,7 +73,7 @@ jobs:
       - name: Commit and push release
         env:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-        # Github doesn't trigger subsequent workflows unless pushing with my PAT
+        # Github doesn't trigger subsequent workflows unless push with a PAT
         run: |
           git remote set-url origin "https://${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git checkout -b "$RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}"
