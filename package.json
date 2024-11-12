@@ -22,7 +22,7 @@
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
     "upgrade:packageManager": "corepack use pnpm@latest",
     "upgrade:react": "pnpm i --save react@experimental react-dom@experimental babel-plugin-react-compiler@experimental eslint-plugin-react-compiler@experimental eslint-plugin-react-hooks@experimental",
-    "release": "gh workflow run release.yml"
+    "release": "./scripts/release.sh"
   },
   "pnpm": {
     "overrides": {
