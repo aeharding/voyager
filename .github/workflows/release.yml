@@ -1,5 +1,3 @@
-name: Cut a release
-
 on:
   workflow_dispatch:
   # -- TESTING ONLY --
@@ -14,7 +12,6 @@ env:
 
 jobs:
   app_build_number:
-    name: Calculate app build number
     runs-on: ubuntu-latest
     steps:
       - id: calculate
@@ -27,7 +24,6 @@ jobs:
 
   validate_version:
     needs: app_build_number
-    name: Validate version
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get_current_version.outputs.version }}
@@ -55,7 +51,6 @@ jobs:
 
   push_release:
     needs: [validate_version, app_build_number]
-    name: Add version to apps, push release branch and tag
     runs-on: ubuntu-latest
 
     steps:

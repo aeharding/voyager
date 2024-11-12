@@ -1,5 +1,3 @@
-name: Semantic pull request
-
 on:
   pull_request_target:
     types:
@@ -11,7 +9,6 @@ jobs:
   main:
     if: github.repository == 'aeharding/voyager'
     runs-on: ubuntu-latest
-    name: Semantic Pull Request
     steps:
       - name: Validate PR title
         uses: amannn/action-semantic-pull-request@v5

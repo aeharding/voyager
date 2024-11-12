@@ -1,5 +1,3 @@
-name: Build and deploy
-
 on:
   push:
     tags:
