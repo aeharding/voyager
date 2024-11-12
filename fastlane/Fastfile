@@ -41,8 +41,10 @@ platform :ios do
         ipa: ENV['ios_output'],
         app_identifier: ENV['app_identifier'],
         api_key_path: "authkey.json",
-        skip_waiting_for_build_processing: true,
-        changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}, msg #{ENV['COMMIT_MSG']}"
+        distribute_external: true,
+        groups: ["Public Testers"], # want to join? https://testflight.apple.com/join/nWLw1MBM
+        changelog: "Upload from GitHub Actions, ref #{ENV['GITHUB_REF']}, sha #{ENV['GITHUB_SHA']}, msg #{ENV['COMMIT_MSG']}",
+        reject_build_waiting_for_review: true,
       )
     end
   end
@@ -64,9 +66,9 @@ platform :android do
     if !ENV['GITHUB_REF_NAME'].start_with?('test-')
       upload_to_play_store(
         package_name: ENV['app_identifier'],
-        release_status: 'draft',
-        json_key: ENV['google_service_account_path'],
         aab: Actions.lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+        json_key: ENV['google_service_account_path'],
+        track: 'beta',
         skip_upload_apk: true,
         skip_upload_metadata: true,
         skip_upload_images: true,

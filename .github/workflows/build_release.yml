@@ -1,10 +1,12 @@
-name: Build, deploy and release
+name: build_release
 
 on:
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
       - "test-[0-9]+.[0-9]+.[0-9]+"
+    branches:
+      - "main"
 
 jobs:
   build_web:
@@ -200,7 +202,7 @@ jobs:
 
   create_release:
     needs: [build_web, build_ios, build_android_play, build_android]
-    if: startsWith(github.ref_name, 'test-') != true
+    if: startsWith(github.ref_name, 'test-') != true && startsWith(github.event.ref, 'refs/tags/')
     runs-on: ubuntu-latest
 
     permissions:

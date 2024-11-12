@@ -1,4 +1,5 @@
-name: build & push docker container
+name: docker
+
 on:
   push:
     branches:

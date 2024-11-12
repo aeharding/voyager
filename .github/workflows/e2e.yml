@@ -1,8 +1,8 @@
-name: Run e2e tests
+name: e2e
+
 on: workflow_dispatch
 jobs:
   playwright:
-    name: Run Playwright tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
