@@ -1,14 +1,16 @@
-name: Build Apps, Deploy Web and Create Release
+name: Cut a release
 
 on:
-  push:
-    branches:
-      - inherit # todo remove, can't workflow_dispatch from branch
+  workflow_dispatch:
+  # -- TESTING ONLY --
+  # push:
+  #   branches:
+  #     - inherit # todo remove, can't workflow_dispatch from branch
 
 env:
   APP_BUILD_OFFSET: 300
-  TAG_PREFIX: test-
-  RELEASE_BRANCH_PREFIX: test-release
+  TAG_PREFIX: # test-
+  RELEASE_BRANCH_PREFIX: # test-release
 
 jobs:
   app_build_number:
