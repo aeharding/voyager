@@ -1,12 +1,14 @@
 name: build_release
 
 on:
+  workflow_call: # for beta releases from main - release.yml / dispatch_beta_release
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
       - "test-[0-9]+.[0-9]+.[0-9]+"
-    branches:
-      - "main"
+
+env:
+  ARTIFACT_LABEL: ${{ github.ref == 'refs/heads/main' && github.sha || github.ref_name }}
 
 jobs:
   build_web:
@@ -29,7 +31,7 @@ jobs:
         run: pnpm build
 
       - name: Upload dist bundle to S3
-        if: github.ref_name != 'test*'
+        if: startsWith(github.ref_name, 'test-') != true && startsWith(github.ref, 'refs/tags/')
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --acl public-read --follow-symlinks --delete
@@ -41,13 +43,13 @@ jobs:
 
       - name: Compress artifacts
         run: |
-          zip -r Voyager-Web-${{ github.ref_name }}.zip dist
+          zip -r Voyager-Web-${ARTIFACT_LABEL}.zip dist
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Web-${{ github.ref_name }}.zip
-          path: Voyager-Web-${{ github.ref_name }}.zip
+          name: Voyager-Web-${ARTIFACT_LABEL}.zip
+          path: Voyager-Web-${ARTIFACT_LABEL}.zip
 
   build_ios:
     environment: deploy
@@ -57,6 +59,12 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download bumped version artifacts
+        if: github.event.workflow_call
+        uses: actions/download-artifact@v4
+        with:
+          name: trapeze-artifacts
 
       - uses: actions/setup-node@v4
         with:
@@ -86,7 +94,6 @@ jobs:
           CI_PLATFORM: ios
 
       - name: Deploy to TestFlight
-        if: github.ref_name != 'test*'
         run: |
           echo "$APP_STORE_CONNECT_KEY" > authkey.json
           bundle exec fastlane deploy
@@ -100,13 +107,19 @@ jobs:
       - name: Upload iOS IPA as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-iOS-${{ github.ref_name }}.ipa
-          path: Voyager-iOS-${{ github.ref_name }}.ipa
+          name: Voyager-iOS-${ARTIFACT_LABEL}.ipa
+          path: Voyager-iOS-${ARTIFACT_LABEL}.ipa
 
   build_android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download bumped version artifacts
+        if: github.event.workflow_call
+        uses: actions/download-artifact@v4
+        with:
+          name: trapeze-artifacts
 
       - uses: actions/setup-node@v4
         with:
@@ -142,8 +155,8 @@ jobs:
       - name: Send to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Android-${{ github.ref_name }}.apk
-          path: Voyager-Android-${{ github.ref_name }}.apk
+          name: Voyager-Android-${ARTIFACT_LABEL}.apk
+          path: Voyager-Android-${ARTIFACT_LABEL}.apk
 
   build_android_play:
     environment: deploy
@@ -153,6 +166,12 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download bumped version artifacts
+        if: github.event.workflow_call
+        uses: actions/download-artifact@v4
+        with:
+          name: trapeze-artifacts
 
       - uses: actions/setup-node@v4
         with:
@@ -202,7 +221,7 @@ jobs:
 
   create_release:
     needs: [build_web, build_ios, build_android_play, build_android]
-    if: startsWith(github.ref_name, 'test-') != true && startsWith(github.event.ref, 'refs/tags/')
+    if: startsWith(github.ref_name, 'test-') != true && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
 
     permissions:
@@ -212,19 +231,19 @@ jobs:
       - name: Download dist artifacts
         uses: actions/download-artifact@v4
         with:
-          name: Voyager-Web-${{ github.ref_name }}.zip
+          name: Voyager-Web-${{ env.ARTIFACT_LABEL }}.zip
           path: artifacts/web
 
       - name: Download iOS Artifact
         uses: actions/download-artifact@v4
         with:
-          name: Voyager-iOS-${{ github.ref_name }}.ipa
+          name: Voyager-iOS-${{ env.ARTIFACT_LABEL }}.ipa
           path: artifacts/ios
 
       - name: Download Android Artifact
         uses: actions/download-artifact@v4
         with:
-          name: Voyager-Android-${{ github.ref_name }}.apk
+          name: Voyager-Android-${{ env.ARTIFACT_LABEL }}.apk
           path: artifacts/android
 
       - name: Release

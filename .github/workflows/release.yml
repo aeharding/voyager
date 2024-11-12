@@ -2,6 +2,10 @@ name: release
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - "main"
+
   # -- TESTING ONLY --
   # push:
   #   branches:
@@ -51,7 +55,7 @@ jobs:
             exit 1
           fi
 
-  push_release:
+  bump_src:
     needs: [validate_version, app_build_number]
     runs-on: ubuntu-latest
 
@@ -70,6 +74,31 @@ jobs:
         env:
           APP_BUILD: ${{ needs.app_build_number.outputs.app_build }}
           APP_VERSION: ${{ needs.validate_version.outputs.version }}
+
+      - name: Upload bumped version artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: trapeze-artifacts
+          retention-days: 1
+          path: |
+            android
+            ios
+
+  dispatch_beta_release:
+    if: github.ref_name == 'main'
+    needs: bump_src
+    uses: aeharding/voyager/.github/workflows/build_release.yml@main
+
+  push_release:
+    needs: bump_src
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref_name, 'test-') != true && startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Download bumped version artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: trapeze-artifacts
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@cb9bde2e2525e640591a934b1fd28eef1dcaf5e5 # v6.2.0
