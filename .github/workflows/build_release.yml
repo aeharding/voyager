@@ -9,6 +9,8 @@ on:
 jobs:
   build_web:
     runs-on: ubuntu-latest
+    concurrency:
+      group: "build_web"
     steps:
       - uses: actions/checkout@v4
 
@@ -126,8 +128,12 @@ jobs:
           cache: gradle
       - name: Build (Android)
         run: |
+          echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
           cd android
           ./gradlew assembleRelease
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
       - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ github.ref_name }}.apk
 
