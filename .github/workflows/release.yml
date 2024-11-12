@@ -65,15 +65,16 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: Commit and push release
+      - uses: actions/checkout@v4
+        name: Commit and push release
         run: |
           git checkout -b $RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}
           git config --global user.email "voyager.ci.noreply@harding.dev"
           git config --global user.name "Voyager CI"
           git add .
-          git commit -m "Release ${{ needs.validate_version.outputs.version }} (${{ github.run_number }})"
-          TAG_NAME="$TAG_PREFIX${{ steps.get_current_version.outputs.version }}"
+          git commit -S -m "Release ${{ needs.validate_version.outputs.version }} (${{ github.run_number }})"
+          TAG_NAME="$TAG_PREFIX${{ needs.validate_version.outputs.version }}"
           echo $TAG_NAME
           git tag $TAG_NAME
-          git push origin HEAD
+          git push
           git push origin tag $TAG_NAME
