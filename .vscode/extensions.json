@@ -2,6 +2,7 @@
   "recommendations": [
     "ionic.ionic",
     "esbenp.prettier-vscode",
-    "styled-components.vscode-styled-components"
+    "styled-components.vscode-styled-components",
+    "github.vscode-github-actions"
   ]
 }

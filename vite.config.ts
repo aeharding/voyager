@@ -89,6 +89,8 @@ export default defineConfig({
   },
   define: {
     APP_VERSION: JSON.stringify(process.env.npm_package_version),
+    APP_BUILD: process.env.APP_BUILD && JSON.stringify(process.env.APP_BUILD),
+    APP_GIT_REF: JSON.stringify(process.env.APP_GIT_REF),
     BUILD_FOSS_ONLY: !!process.env.BUILD_FOSS_ONLY,
   },
   test: {
