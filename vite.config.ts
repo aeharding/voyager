@@ -1,7 +1,6 @@
 import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react";
 import wyw from "@wyw-in-js/vite";
-import { omitBy } from "es-toolkit";
 import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
@@ -88,16 +87,12 @@ export default defineConfig({
       },
     },
   },
-  // vite panics on empty strings
-  define: omitBy(
-    {
-      APP_VERSION: JSON.stringify(process.env.npm_package_version),
-      APP_BUILD: process.env.APP_BUILD && JSON.stringify(process.env.APP_BUILD),
-      APP_GIT_REF: JSON.stringify(process.env.APP_GIT_REF),
-      BUILD_FOSS_ONLY: !!process.env.BUILD_FOSS_ONLY,
-    },
-    (v) => !v,
-  ),
+  define: {
+    APP_VERSION: JSON.stringify(process.env.npm_package_version),
+    APP_BUILD: JSON.stringify(process.env.APP_BUILD ?? ""),
+    APP_GIT_REF: JSON.stringify(process.env.APP_GIT_REF ?? ""),
+    BUILD_FOSS_ONLY: !!process.env.BUILD_FOSS_ONLY,
+  },
   test: {
     exclude: ["**/e2e/**", "**/node_modules/**"],
     globals: true,
