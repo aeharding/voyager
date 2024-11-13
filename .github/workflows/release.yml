@@ -132,6 +132,6 @@ jobs:
           git commit -S -m "release: ${{ needs.app_version.outputs.app_version }} (${{ needs.app_build.outputs.app_build }})"
           TAG_NAME="${{ needs.app_version.outputs.app_version }}"
           echo "Creating tag: $TAG_NAME"
-          git tag "$TAG_NAME"
+          git tag -s "$TAG_NAME" -m "release: ${{ needs.app_version.outputs.app_version }} (${{ needs.app_build.outputs.app_build }})"
           git push origin "release/${{ needs.app_version.outputs.app_version }}"
           git push origin "$TAG_NAME"
