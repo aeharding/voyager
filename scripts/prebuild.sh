@@ -1,11 +1,11 @@
 #!/bin/sh
 
-SETUP_SCRIPT="./disable_in_app_purchases.sh"
+SETUP_SCRIPT="./scripts/disable_in_app_purchases.sh"
 
 # Check if the environment variable BUILD_FOSS_ONLY is set
 if [ ! -z "$BUILD_FOSS_ONLY" ]; then
     # Run the setup script
-    bash "$SETUP_SCRIPT"
+    sh "$SETUP_SCRIPT"
 
     echo "In-app purchases disabled."
 else
