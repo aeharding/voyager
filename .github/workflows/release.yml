@@ -29,6 +29,7 @@ jobs:
       app_build: ${{ steps.calculate.outputs.app_build }}
 
   validate_version:
+    if: github.ref_name != 'main'
     needs: app_build_number
     runs-on: ubuntu-latest
     outputs:
@@ -88,6 +89,8 @@ jobs:
     if: github.ref_name == 'main'
     needs: bump_src
     uses: ./.github/workflows/build_release.yml
+    with:
+      needs_trapeze_artifacts: true
     permissions:
       contents: write # needed for create_release, even though it won't be called
 
