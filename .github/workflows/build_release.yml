@@ -17,11 +17,12 @@ env:
   APP_GIT_REF: ${{ inputs.is_main_build && github.sha || github.ref_name }}
   APP_BUILD: ${{ inputs.app_build }}
 
+concurrency:
+  group: release
+
 jobs:
   build_web:
     runs-on: ubuntu-latest
-    concurrency:
-      group: "build_web"
     steps:
       - uses: actions/checkout@v4
 
@@ -61,9 +62,6 @@ jobs:
   build_ios:
     environment: deploy
     runs-on: macos-latest
-    concurrency:
-      group: "build_ios"
-      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
 
@@ -168,9 +166,6 @@ jobs:
   build_android_play:
     environment: deploy
     runs-on: ubuntu-latest
-    concurrency:
-      group: "build_android_play"
-      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
 

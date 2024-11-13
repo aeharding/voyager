@@ -18,6 +18,9 @@ on:
 env:
   APP_BUILD_OFFSET: 300
 
+concurrency:
+  group: release
+
 jobs:
   app_build:
     runs-on: ubuntu-latest
