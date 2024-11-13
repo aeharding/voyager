@@ -14,6 +14,7 @@
     "isolatedModules": true,
     "allowJs": false,
     "resolveJsonModule": true,
+    "esModuleInterop": true, // for photoswipe
 
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,

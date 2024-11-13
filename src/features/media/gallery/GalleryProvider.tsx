@@ -1,8 +1,7 @@
 import { StatusBar } from "@capacitor/status-bar";
 import { compact, noop } from "es-toolkit";
 import { PostView } from "lemmy-js-client";
-import type { PreparedPhotoSwipeOptions } from "photoswipe";
-import type ZoomLevel from "photoswipe/dist/types/slide/zoom-level";
+import type { PreparedPhotoSwipeOptions, ZoomLevelOption } from "photoswipe";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
 import React, {
@@ -40,7 +39,7 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
-  // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
+  // eslint-disable-next-line no-empty-function
   open: async () => {},
   close: noop,
 });
@@ -159,7 +158,11 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         },
       });
 
-      let zoomLevel: ZoomLevel;
+      // ZoomLevel is not directly exported from photoswipe
+      let zoomLevel: Parameters<
+        Extract<ZoomLevelOption, (...args: never) => unknown>
+      >[0];
+
       let currZoomLevel = 0;
 
       instance.on("zoomLevelsUpdate", (e) => {

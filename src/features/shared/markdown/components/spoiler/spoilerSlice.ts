@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import type { Element } from "react-markdown/lib";
+import type { ExtraProps } from "react-markdown";
 
 interface NetworkState {
   byId: Record<string, boolean>;
@@ -33,7 +33,7 @@ export default spoilerSlice.reducer;
 
 export function getSpoilerId(
   markdownItemId: string,
-  node: Element | undefined,
+  node: NonNullable<ExtraProps["node"]> | undefined,
 ) {
   return `${markdownItemId}__${node?.position?.start.offset ?? 0}`;
 }

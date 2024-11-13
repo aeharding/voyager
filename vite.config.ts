@@ -6,7 +6,9 @@ import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
 
-import compilerOptions from "./compilerOptions";
+// @ts-expect-error -- Waiting for stable typescript eslint config
+// https://eslint.org/docs/latest/use/configure/configuration-files#typescript-configuration-files
+import compilerOptions from "./compilerOptions.js";
 import manifest from "./manifest.json";
 
 const IGNORED_ROLLUP_WARNINGS = [
