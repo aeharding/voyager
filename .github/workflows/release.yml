@@ -17,7 +17,7 @@ env:
   RELEASE_BRANCH_PREFIX: release # test-release
 
 jobs:
-  app_build_number:
+  app_build:
     runs-on: ubuntu-latest
     steps:
       - id: calculate
@@ -28,11 +28,10 @@ jobs:
     outputs:
       app_build: ${{ steps.calculate.outputs.app_build }}
 
-  validate_version:
-    needs: app_build_number
+  app_version:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.get_current_version.outputs.version }}
+      app_version: ${{ steps.app_version.outputs.app_version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -41,23 +40,23 @@ jobs:
           node-version: 22
 
       - name: Get current version from package.json
-        id: get_current_version
+        id: app_version
         run: |
           CURRENT_APP_VERSION=$(node -p "require('./package.json').version")
-          echo "version=$CURRENT_APP_VERSION" >> $GITHUB_OUTPUT
+          echo "app_version=$CURRENT_APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: Verify provided version not already released
         if: github.ref_name != 'main'
         run: |
           git fetch --tags
-          TAG_NAME="$TAG_PREFIX${{ steps.get_current_version.outputs.version }}"
+          TAG_NAME="$TAG_PREFIX${{ steps.app_version.outputs.app_version }}"
           if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
             echo "Error: Tag $TAG_NAME already exists"
             exit 1
           fi
 
   bump_src:
-    needs: [app_build_number, validate_version]
+    needs: [app_build, app_version]
     runs-on: ubuntu-latest
 
     steps:
@@ -71,8 +70,8 @@ jobs:
       - name: Run trapeze (update iOS and Android version/code)
         run: pnpm exec trapeze run trapeze.yaml -y
         env:
-          APP_BUILD: ${{ needs.app_build_number.outputs.app_build }}
-          APP_VERSION: ${{ needs.validate_version.outputs.version }}
+          APP_BUILD: ${{ needs.app_build.outputs.app_build }}
+          APP_VERSION: ${{ needs.app_version.outputs.app_version }}
 
       - name: Upload bumped version artifacts
         uses: actions/upload-artifact@v4
@@ -94,7 +93,7 @@ jobs:
       contents: write # needed for create_release, even though it won't be called
 
   push_release:
-    needs: [bump_src, validate_version]
+    needs: [bump_src, app_build, app_version]
     runs-on: ubuntu-latest
     if: startsWith(github.ref_name, 'test-') != true && startsWith(github.ref, 'refs/tags/')
 
@@ -122,13 +121,13 @@ jobs:
         # Github doesn't trigger subsequent workflows unless push with a PAT
         run: |
           git remote set-url origin "https://${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git checkout -b "$RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}"
+          git checkout -b "$RELEASE_BRANCH_PREFIX/${{ needs.app_version.outputs.app_version }}"
           git config --global user.email "voyager.ci.noreply@harding.dev"
           git config --global user.name "Voyager CI"
           git add .
-          git commit -S -m "release: ${{ needs.validate_version.outputs.version }} (${{ needs.app_build_number.outputs.app_build }})"
-          TAG_NAME="${TAG_PREFIX}${{ needs.validate_version.outputs.version }}"
+          git commit -S -m "release: ${{ needs.app_version.outputs.app_version }} (${{ needs.app_build.outputs.app_build }})"
+          TAG_NAME="${TAG_PREFIX}${{ needs.app_version.outputs.app_version }}"
           echo "Creating tag: $TAG_NAME"
           git tag -s "$TAG_NAME"
-          git push origin "$RELEASE_BRANCH_PREFIX/${{ needs.validate_version.outputs.version }}"
+          git push origin "$RELEASE_BRANCH_PREFIX/${{ needs.app_version.outputs.app_version }}"
           git push origin "$TAG_NAME"
