@@ -6,13 +6,16 @@ on:
       is_main_build:
         type: boolean
         required: true
+      app_build:
+        type: string
+        required: true
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
-      - "test-[0-9]+.[0-9]+.[0-9]+"
 
 env:
-  ARTIFACT_LABEL: ${{ inputs.is_main_build && github.sha || github.ref_name }}
+  APP_GIT_REF: ${{ inputs.is_main_build && github.sha || github.ref_name }}
+  APP_BUILD: ${{ inputs.app_build }}
 
 jobs:
   build_web:
@@ -35,7 +38,7 @@ jobs:
         run: pnpm build
 
       - name: Upload dist bundle to S3
-        if: startsWith(github.ref_name, 'test-') != true && startsWith(github.ref, 'refs/tags/')
+        if: inputs.is_main_build != true
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
           args: --acl public-read --follow-symlinks --delete
@@ -47,13 +50,13 @@ jobs:
 
       - name: Compress artifacts
         run: |
-          zip -r Voyager-Web-$ARTIFACT_LABEL.zip dist
+          zip -r Voyager-Web-$APP_GIT_REF.zip dist
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Web-${{ env.ARTIFACT_LABEL }}.zip
-          path: Voyager-Web-${{ env.ARTIFACT_LABEL }}.zip
+          name: Voyager-Web-${{ env.APP_GIT_REF }}.zip
+          path: Voyager-Web-${{ env.APP_GIT_REF }}.zip
 
   build_ios:
     environment: deploy
@@ -111,8 +114,8 @@ jobs:
       - name: Upload iOS IPA as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-iOS-${{ env.ARTIFACT_LABEL }}.ipa
-          path: Voyager-iOS-${{ env.ARTIFACT_LABEL }}.ipa
+          name: Voyager-iOS-${{ env.APP_GIT_REF }}.ipa
+          path: Voyager-iOS-${{ env.APP_GIT_REF }}.ipa
 
   build_android:
     runs-on: ubuntu-latest
@@ -154,13 +157,13 @@ jobs:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
-      - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ env.ARTIFACT_LABEL }}.apk
+      - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ env.APP_GIT_REF }}.apk
 
       - name: Send to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Android-${{ env.ARTIFACT_LABEL }}.apk
-          path: Voyager-Android-${{ env.ARTIFACT_LABEL }}.apk
+          name: Voyager-Android-${{ env.APP_GIT_REF }}.apk
+          path: Voyager-Android-${{ env.APP_GIT_REF }}.apk
 
   build_android_play:
     environment: deploy
@@ -225,7 +228,7 @@ jobs:
 
   create_release:
     needs: [build_web, build_ios, build_android_play, build_android]
-    if: startsWith(github.ref_name, 'test-') != true && startsWith(github.ref, 'refs/tags/')
+    if: inputs.is_main_build != true
     runs-on: ubuntu-latest
 
     permissions:
@@ -235,19 +238,19 @@ jobs:
       - name: Download dist artifacts
         uses: actions/download-artifact@v4
         with:
-          name: Voyager-Web-${{ env.ARTIFACT_LABEL }}.zip
+          name: Voyager-Web-${{ env.APP_GIT_REF }}.zip
           path: artifacts/web
 
       - name: Download iOS Artifact
         uses: actions/download-artifact@v4
         with:
-          name: Voyager-iOS-${{ env.ARTIFACT_LABEL }}.ipa
+          name: Voyager-iOS-${{ env.APP_GIT_REF }}.ipa
           path: artifacts/ios
 
       - name: Download Android Artifact
         uses: actions/download-artifact@v4
         with:
-          name: Voyager-Android-${{ env.ARTIFACT_LABEL }}.apk
+          name: Voyager-Android-${{ env.APP_GIT_REF }}.apk
           path: artifacts/android
 
       - name: Release

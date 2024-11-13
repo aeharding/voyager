@@ -1,3 +1,4 @@
+import { IonText } from "@ionic/react";
 import { styled } from "@linaria/react";
 
 const AppContainer = styled.div`
@@ -21,12 +22,24 @@ const AppContainer = styled.div`
   }
 `;
 
+const buildInfo = (() => {
+  if (import.meta.env.DEV) return <IonText color="danger">Development</IonText>;
+
+  if (APP_BUILD)
+    return (
+      <IonText color="warning">
+        Beta Track — [{APP_BUILD}] {APP_GIT_REF.slice(0, 7)}
+      </IonText>
+    );
+})();
+
 export default function AppDetails() {
   return (
     <AppContainer>
       <img src="/logo.png" alt="" />
       <div>
         Voyager {APP_VERSION}
+        {buildInfo && <aside>{buildInfo}</aside>}
         <aside>by Alexander Harding</aside>
       </div>
     </AppContainer>
