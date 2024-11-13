@@ -9,9 +9,9 @@ import {
   PostSortType,
 } from "lemmy-js-client";
 
-import { COMMENT_SORTS } from "#/features/comment/CommentSort";
-import { ALL_POST_SORTS } from "#/features/feed/PostSort";
-import { arrayOfAll } from "#/helpers/array";
+import { COMMENT_SORTS } from "#/features/comment/CommentSort.js";
+import { ALL_POST_SORTS } from "#/features/feed/PostSort.js";
+import { arrayOfAll } from "#/helpers/array.js";
 
 export interface IPostMetadata {
   post_id: number;

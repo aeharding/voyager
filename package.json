@@ -24,6 +24,9 @@
     "upgrade:react": "pnpm i --save react@experimental react-dom@experimental babel-plugin-react-compiler@experimental eslint-plugin-react-compiler@experimental eslint-plugin-react-hooks@experimental",
     "release": "./scripts/release.sh"
   },
+  "imports": {
+    "#/*": "./src/*"
+  },
   "pnpm": {
     "overrides": {
       "@ionic/core": "npm:voyager-ionic-core@8.4.0"
