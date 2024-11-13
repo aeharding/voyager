@@ -29,7 +29,6 @@ jobs:
       app_build: ${{ steps.calculate.outputs.app_build }}
 
   validate_version:
-    if: github.ref_name != 'main'
     needs: app_build_number
     runs-on: ubuntu-latest
     outputs:
@@ -48,6 +47,7 @@ jobs:
           echo "version=$CURRENT_APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: Verify provided version not already released
+        if: github.ref_name != 'main'
         run: |
           git fetch --tags
           TAG_NAME="$TAG_PREFIX${{ steps.get_current_version.outputs.version }}"
@@ -57,7 +57,7 @@ jobs:
           fi
 
   bump_src:
-    needs: app_build_number
+    needs: [app_build_number, validate_version]
     runs-on: ubuntu-latest
 
     steps:
