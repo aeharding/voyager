@@ -2,19 +2,14 @@
   "compilerOptions": {
     "target": "ESNext",
 
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "resolvePackageJsonImports": true,
 
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "allowJs": false,
-    "resolveJsonModule": true,
-    "esModuleInterop": true, // for photoswipe
 
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
