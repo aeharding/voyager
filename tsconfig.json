@@ -1,25 +1,28 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
+    "target": "esnext",
+
+    "module": "esnext",
+    "moduleResolution": "bundler",
+
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "types": ["vite-plugin-svgr/client"],
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "allowJs": false,
+
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
     "noUncheckedIndexedAccess": true,
+
+    "jsx": "react-jsx",
+
     "paths": {
+      // duplicate of package.json[imports]
+      // typescript doesn't support this same syntax in package.json with
+      // module resolution set to bundler, despite it working fine in esbuild/vite...
+      // https://github.com/microsoft/TypeScript/issues/55337 (╯°□°）╯︵ ┻━┻
       "#/*": ["./src/*"]
     }
-  },
-  "include": ["src"]
+  }
 }
