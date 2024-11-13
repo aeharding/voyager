@@ -87,7 +87,9 @@ jobs:
   dispatch_beta_release:
     if: github.ref_name == 'main'
     needs: bump_src
-    uses: aeharding/voyager/.github/workflows/build_release.yml@main
+    uses: ./.github/workflows/build_release.yml@main
+    permissions:
+      contents: write # needed for create_release, even though it won't be called
 
   push_release:
     needs: bump_src
