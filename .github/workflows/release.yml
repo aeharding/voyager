@@ -57,13 +57,11 @@ jobs:
           fi
 
   bump_src:
-    needs: [validate_version, app_build_number]
+    needs: app_build_number
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: false # Don't clobber the PAT below
 
       - run: corepack enable
 
@@ -95,11 +93,15 @@ jobs:
       contents: write # needed for create_release, even though it won't be called
 
   push_release:
-    needs: bump_src
+    needs: [bump_src, validate_version]
     runs-on: ubuntu-latest
     if: startsWith(github.ref_name, 'test-') != true && startsWith(github.ref, 'refs/tags/')
 
     steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false # Don't clobber the PAT below
+
       - name: Download bumped version artifacts
         uses: actions/download-artifact@v4
         with:
