@@ -11,6 +11,7 @@ import {
 
 import { COMMENT_SORTS } from "#/features/comment/CommentSort";
 import { ALL_POST_SORTS } from "#/features/feed/PostSort";
+import { ShareAsImagePreferences } from "#/features/share/asImage/ShareAsImagePreferences";
 import { arrayOfAll } from "#/helpers/array";
 
 export interface IPostMetadata {
@@ -360,6 +361,7 @@ export interface GlobalSettingValueTypes {
   remember_community_comment_sort: boolean;
   remember_community_post_sort: boolean;
   remember_post_appearance_type: boolean;
+  share_as_image_preferences: ShareAsImagePreferences;
   show_collapsed_comment: boolean;
   show_comment_images: boolean;
   show_community_icons: boolean;
@@ -456,6 +458,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "user_instance_url_display",
   "vote_display_mode",
   "votes_theme",
+  "share_as_image_preferences",
 ]);
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

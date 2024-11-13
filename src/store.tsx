@@ -49,6 +49,7 @@ import settingsSlice, {
   getFilteredKeywords,
   getFilteredWebsites,
 } from "./features/settings/settingsSlice";
+import ShareAsImagePreferencesSlice from "./features/share/asImage/ShareAsImagePreferences";
 import spoilerSlice from "./features/shared/markdown/components/spoiler/spoilerSlice";
 import uploadImageSlice from "./features/shared/markdown/editing/uploadImageSlice";
 import userTagSlice from "./features/tags/userTagSlice";
@@ -77,6 +78,7 @@ const store = configureStore({
     redgifs: redgifsSlice,
     resolve: resolveSlice,
     settings: settingsSlice,
+    shareAsImagePreferences: ShareAsImagePreferencesSlice,
     site: siteSlice,
     spoiler: spoilerSlice,
     thumbnail: thumbnailSlice,
