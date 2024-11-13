@@ -16,7 +16,6 @@
     "noUncheckedIndexedAccess": true,
 
     "jsx": "react-jsx",
-    "types": ["vite-plugin-svgr/client"],
 
     "paths": {
       // duplicate of package.json[imports]
