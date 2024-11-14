@@ -85,6 +85,7 @@
     "dexie-export-import": "^4.1.2",
     "es-toolkit": "^1.26.1",
     "eslint-plugin-perfectionist": "^3.9.1",
+    "framer-motion": "^11.11.15",
     "history": "^4.10.1",
     "immer": "^10.1.1",
     "ionicons": "^7.4.0",

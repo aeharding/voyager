@@ -1,53 +1,47 @@
 import { NotificationType } from "@capacitor/haptics";
-// eslint-disable-next-line no-restricted-imports
-import { useIonToast } from "@ionic/react";
-import { createContext, useContext, useRef } from "react";
+import { Color } from "@ionic/core";
+import { IonIcon } from "@ionic/react";
+import { styled } from "@linaria/react";
+import { MouseEvent, createContext, useContext, useRef } from "react";
+
+import Toast, { ToastHandler } from "#/features/shared/toast/Toast";
 
 import { isNative } from "./device";
-import { baseToastOptions } from "./toast";
 import useHapticFeedback from "./useHapticFeedback";
+
+const Icon = styled(IonIcon)`
+  font-size: 22px;
+`;
+
+const Message = styled.div`
+  font-weight: 500;
+`;
 
 export interface AppToastOptions {
   message: string;
   color?: Color;
-  position?: "top" | "bottom";
+  position?: "top" | "bottom"; // todo
   icon?: string;
-  centerText?: boolean;
-  fullscreen?: boolean;
+  centerText?: boolean; // todo
+  fullscreen?: boolean; // todo
   duration?: number;
-  onClick?: (e: MouseEvent, dismiss: ReturnType<typeof useIonToast>[1]) => void;
+  onClick?: (e: MouseEvent, dismiss: () => void) => void;
 }
-
-type Color = "success" | "warning" | "danger" | "primary";
 
 export default function useAppToast() {
   return useContext(AppToastContext);
 }
 
-function useSingletonAppToast() {
-  const [presentIonToast, dismissIonToast] = useIonToast();
+export function AppToastProvider({ children }: React.PropsWithChildren) {
   const vibrate = useHapticFeedback();
-
-  const toastIsPresentedRef = useRef(false);
-  const queuedToastRef = useRef<AppToastOptions>();
-
-  return present;
-
-  function onDidDismiss() {
-    toastIsPresentedRef.current = false;
-
-    requestAnimationFrame(() => {
-      if (queuedToastRef.current) {
-        present(queuedToastRef.current);
-        queuedToastRef.current = undefined;
-      }
-    });
-  }
+  const toastRef = useRef<ToastHandler>(null);
+  const openRef = useRef(false);
+  const queuedOptionsRef = useRef<AppToastOptions>();
 
   async function present(options: AppToastOptions) {
-    if (toastIsPresentedRef.current) {
-      queuedToastRef.current = options;
-      dismissIonToast();
+    if (openRef.current) {
+      queuedOptionsRef.current = options;
+      closeHandler();
       return;
     }
 
@@ -55,8 +49,8 @@ function useSingletonAppToast() {
       vibrate({
         type: (() => {
           switch (options.color) {
+            default:
             case "primary":
-            case undefined:
             case "success":
               return NotificationType.Success;
             case "warning":
@@ -67,41 +61,46 @@ function useSingletonAppToast() {
         })(),
       });
 
-    toastIsPresentedRef.current = true;
+    const content = (
+      <>
+        {options.icon && <Icon icon={options.icon} />}
+        <Message>{options.message}</Message>
+      </>
+    );
 
-    presentIonToast({
-      message: options.message,
-      color: options.color ?? "primary",
-      icon: options.icon,
-      swipeGesture: "vertical",
-      cssClass: options.centerText ? "center" : "",
-      onDidDismiss,
-      ...baseToastOptions(
-        options.position ?? "bottom",
-        !options.fullscreen,
-        options.duration,
-      ),
-      htmlAttributes: options.onClick
-        ? {
-            onClick(e: MouseEvent) {
-              options.onClick!(e, dismissIonToast);
-            },
-          }
-        : undefined,
+    openRef.current = true;
+
+    toastRef.current?.open({
+      ...options,
+      content,
+      onClick: (e) => options?.onClick?.(e, closeHandler),
     });
   }
-}
 
-export function AppToastProvider({ children }: React.PropsWithChildren) {
+  function closeHandler() {
+    toastRef.current?.close();
+  }
+
+  function onClose() {
+    openRef.current = false;
+
+    if (queuedOptionsRef.current) {
+      const queuedOptions = queuedOptionsRef.current;
+      queuedOptionsRef.current = undefined;
+      present(queuedOptions);
+    }
+  }
+
   return (
-    <AppToastContext.Provider value={useSingletonAppToast()}>
+    <AppToastContext.Provider value={present}>
+      <Toast ref={toastRef} onClose={onClose} />
       {children}
     </AppToastContext.Provider>
   );
 }
 
-const AppToastContext = createContext<ReturnType<typeof useSingletonAppToast>>(
-  async () => {
-    // noop
-  },
-);
+type PresentFn = (options: AppToastOptions) => Promise<void>;
+
+const AppToastContext = createContext<PresentFn>(async () => {
+  // noop
+});
