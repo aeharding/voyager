@@ -15,12 +15,13 @@ export interface AppToastOptions {
   centerText?: boolean;
   fullscreen?: boolean;
   duration?: number;
+  onClick?: (e: MouseEvent, dismiss: ReturnType<typeof useIonToast>[1]) => void;
 }
 
 type Color = "success" | "warning" | "danger" | "primary";
 
 export default function useAppToast() {
-  const [present] = useIonToast();
+  const [present, dismiss] = useIonToast();
   const vibrate = useHapticFeedback();
 
   return useCallback(
@@ -52,8 +53,15 @@ export default function useAppToast() {
           !options.fullscreen,
           options.duration,
         ),
+        htmlAttributes: options.onClick
+          ? {
+              onClick(e: MouseEvent) {
+                options.onClick!(e, dismiss);
+              },
+            }
+          : undefined,
       });
     },
-    [present, vibrate],
+    [present, vibrate, dismiss],
   );
 }
