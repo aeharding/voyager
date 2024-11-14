@@ -160,6 +160,9 @@ importers:
       modern-screenshot:
         specifier: ^4.5.5
         version: 4.5.5
+      motion:
+        specifier: ^11.15.0
+        version: 11.15.0(react-dom@0.0.0-experimental-4dff0e62-20241213(react@0.0.0-experimental-4dff0e62-20241213))(react@0.0.0-experimental-4dff0e62-20241213)
       photoswipe:
         specifier: ^5.4.4
         version: 5.4.4
@@ -3209,6 +3212,20 @@ packages:
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
 
+  framer-motion@11.15.0:
+    resolution: {integrity: sha512-MLk8IvZntxOMg7lDBLw2qgTHHv664bYoYmnFTmE0Gm/FW67aOJk0WM3ctMcG+Xhcv+vh5uyyXwxvxhSeJzSe+w==}
+    peerDependencies:
+      '@emotion/is-prop-valid': '*'
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@emotion/is-prop-valid':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+
   fs-constants@1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
 
@@ -4559,6 +4576,26 @@ packages:
     resolution: {integrity: sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==}
     engines: {node: '>=0.10.0'}
 
+  motion-dom@11.14.3:
+    resolution: {integrity: sha512-lW+D2wBy5vxLJi6aCP0xyxTxlTfiu+b+zcpVbGVFUxotwThqhdpPRSmX8xztAgtZMPMeU0WGVn/k1w4I+TbPqA==}
+
+  motion-utils@11.14.3:
+    resolution: {integrity: sha512-Xg+8xnqIJTpr0L/cidfTTBFkvRw26ZtGGuIhA94J9PQ2p4mEa06Xx7QVYZH0BP+EpMSaDlu+q0I0mmvwADPsaQ==}
+
+  motion@11.15.0:
+    resolution: {integrity: sha512-iZ7dwADQJWGsqsSkBhNHdI2LyYWU+hA1Nhy357wCLZq1yHxGImgt3l7Yv0HT/WOskcYDq9nxdedyl4zUv7UFFw==}
+    peerDependencies:
+      '@emotion/is-prop-valid': '*'
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@emotion/is-prop-valid':
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
 
@@ -5053,7 +5090,6 @@ packages:
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
     deprecated: |-
       You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
-
       (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
 
   qs@6.13.1:
@@ -9986,6 +10022,15 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
+  framer-motion@11.15.0(react-dom@0.0.0-experimental-4dff0e62-20241213(react@0.0.0-experimental-4dff0e62-20241213))(react@0.0.0-experimental-4dff0e62-20241213):
+    dependencies:
+      motion-dom: 11.14.3
+      motion-utils: 11.14.3
+      tslib: 2.8.1
+    optionalDependencies:
+      react: 0.0.0-experimental-4dff0e62-20241213
+      react-dom: 0.0.0-experimental-4dff0e62-20241213(react@0.0.0-experimental-4dff0e62-20241213)
+
   fs-constants@1.0.0: {}
 
   fs-extra@9.1.0:
@@ -11576,6 +11621,18 @@ snapshots:
   modern-screenshot@4.5.5: {}
 
   modify-values@1.0.1: {}
+
+  motion-dom@11.14.3: {}
+
+  motion-utils@11.14.3: {}
+
+  motion@11.15.0(react-dom@0.0.0-experimental-4dff0e62-20241213(react@0.0.0-experimental-4dff0e62-20241213))(react@0.0.0-experimental-4dff0e62-20241213):
+    dependencies:
+      framer-motion: 11.15.0(react-dom@0.0.0-experimental-4dff0e62-20241213(react@0.0.0-experimental-4dff0e62-20241213))(react@0.0.0-experimental-4dff0e62-20241213)
+      tslib: 2.8.1
+    optionalDependencies:
+      react: 0.0.0-experimental-4dff0e62-20241213
+      react-dom: 0.0.0-experimental-4dff0e62-20241213(react@0.0.0-experimental-4dff0e62-20241213)
 
   ms@2.0.0: {}
 
