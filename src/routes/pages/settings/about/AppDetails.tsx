@@ -25,7 +25,8 @@ const AppContainer = styled.div`
 const buildInfo = (() => {
   if (import.meta.env.DEV) return <IonText color="danger">Development</IonText>;
 
-  if (APP_BUILD)
+  // If the app version is different from the git ref (tag), it's a pre-release
+  if (APP_GIT_REF !== APP_VERSION)
     return (
       <IonText color="warning">
         Beta Track — [{APP_BUILD}] {APP_GIT_REF.slice(0, 7)}

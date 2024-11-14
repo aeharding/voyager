@@ -15,14 +15,33 @@ on:
 
 env:
   APP_GIT_REF: ${{ inputs.is_main_build && github.sha || github.ref_name }}
-  APP_BUILD: ${{ inputs.app_build }}
 
 concurrency:
   group: release
 
 jobs:
-  build_web:
+  # get app build env from git commit message
+  app_build:
     runs-on: ubuntu-latest
+    env:
+      COMMIT_MSG: ${{ github.event.head_commit.message }}
+    steps:
+      - if: inputs.is_main_build != true
+        run: |
+          # get app build in parentheses from commit message
+          APP_BUILD=$(echo "$COMMIT_MSG" | sed -n 's/.*(\([0-9]*\)).*/\1/p')
+          # verify app_build is a number
+          if echo "$APP_BUILD" | grep -qE '^[0-9]+$'; then
+            echo "app_build=$APP_BUILD" >> $GITHUB_OUTPUT
+          fi
+    outputs:
+      app_build: ${{ inputs.app_build || steps.app_build.outputs.app_build }}
+
+  build_web:
+    needs: app_build
+    runs-on: ubuntu-latest
+    env:
+      APP_BUILD: ${{ needs.app_build.outputs.app_build }}
     steps:
       - uses: actions/checkout@v4
 
@@ -45,7 +64,7 @@ jobs:
           args: --acl public-read --follow-symlinks --delete
         env:
           SOURCE_DIR: dist
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_S3_BUCKET: ${{ inputs.is_main_build && 'beta.vger.app' || 'vger.app'}}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -60,8 +79,11 @@ jobs:
           path: Voyager-Web-${{ env.APP_GIT_REF }}.zip
 
   build_ios:
+    needs: app_build
     environment: deploy
     runs-on: macos-latest
+    env:
+      APP_BUILD: ${{ needs.app_build.outputs.app_build }}
     steps:
       - uses: actions/checkout@v4
 
@@ -116,7 +138,10 @@ jobs:
           path: Voyager-iOS-${{ env.APP_GIT_REF }}.ipa
 
   build_android:
+    needs: app_build
     runs-on: ubuntu-latest
+    env:
+      APP_BUILD: ${{ needs.app_build.outputs.app_build }}
     steps:
       - uses: actions/checkout@v4
 
@@ -164,8 +189,11 @@ jobs:
           path: Voyager-Android-${{ env.APP_GIT_REF }}.apk
 
   build_android_play:
+    needs: app_build
     environment: deploy
     runs-on: ubuntu-latest
+    env:
+      APP_BUILD: ${{ needs.app_build.outputs.app_build }}
     steps:
       - uses: actions/checkout@v4
 
