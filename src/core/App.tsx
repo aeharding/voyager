@@ -47,6 +47,7 @@ import {
   getDeviceMode,
   isInstalled,
 } from "#/helpers/device";
+import { AppToastProvider } from "#/helpers/useAppToast";
 import { OptimizedRouterProvider } from "#/helpers/useOptimizedIonRouter";
 import Router from "#/routes/common/Router";
 import { UpdateContextProvider } from "#/routes/pages/settings/update/UpdateContext";
@@ -97,13 +98,15 @@ export default function App() {
                   <Router>
                     <OptimizedRouterProvider>
                       <TabContextProvider>
-                        <IonApp>
-                          <Auth>
-                            <TabbedRoutes>
-                              <Listeners />
-                            </TabbedRoutes>
-                          </Auth>
-                        </IonApp>
+                        <AppToastProvider>
+                          <IonApp>
+                            <Auth>
+                              <TabbedRoutes>
+                                <Listeners />
+                              </TabbedRoutes>
+                            </Auth>
+                          </IonApp>
+                        </AppToastProvider>
                       </TabContextProvider>
                     </OptimizedRouterProvider>
                   </Router>
