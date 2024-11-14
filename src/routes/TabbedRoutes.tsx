@@ -85,7 +85,13 @@ function InnerTabbedRoutes({
     if (pathnameSections <= 1) return;
 
     function push() {
-      router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+      // TODO requestAnimationFrame workaround added for regression caused in react 19 upgrades,
+      // broke right after eda26916b56ca0593f4711516a3ef3048f75fbb6. needs investigation
+      // repro: be completely logged out. restart app. login. go to a post, go back,
+      // repeat navigations, see issue
+      requestAnimationFrame(() => {
+        router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+      });
     }
 
     // have to wait for the ActorRedirect to do its thing, so it doesn't get clobbered
