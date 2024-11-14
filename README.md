@@ -103,8 +103,9 @@ However, if you prefer using the Progressive Web App, there are a number of folk
 
 Voyager maintains a beta track continuously deployed from every commit to [`refs/heads/main`](https://github.com/aeharding/voyager/commits/main)). **The beta build may break at any time.**
 
-- [iOS Testflight](https://testflight.apple.com/join/nWLw1MBM)
-- [Google Play Open Testing](https://play.google.com/apps/testing/app.vger.voyager)
+- [iOS – Testflight](https://testflight.apple.com/join/nWLw1MBM)
+- [Android – Google Play Open Testing](https://play.google.com/apps/testing/app.vger.voyager)
+- [Web App – beta.vger.app](https://beta.vger.app)
 
 ### Self-Host
 
