@@ -44,9 +44,9 @@ jobs:
       - name: Get current version from package.json
         id: app_version
         run: |
-          CURRENT_APP_VERSION=$(node -p "require('./package.json').version")
-          echo "app_version=$CURRENT_APP_VERSION" >> $GITHUB_OUTPUT
-          echo "current app version: $CURRENT_APP_VERSION"
+          APP_VERSION=$(node -p "require('./package.json').version")
+          echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "current app version: $APP_VERSION"
 
       - name: Verify provided version not already released
         if: inputs.release_behavior == 'publish_release'

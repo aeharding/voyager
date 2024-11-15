@@ -59,7 +59,14 @@ export default defineConfig({
       modernPolyfills: ["es.array.at", "es.object.has-own"],
     }),
   ],
-  envPrefix: ["VITE_", "APP_", "BUILD_FOSS_ONLY"],
+  envPrefix: [
+    "VITE_",
+    "BUILD_FOSS_ONLY",
+    // Keep these explicit. Do not simplify to `APP_`.
+    "APP_BUILD",
+    "APP_VERSION",
+    "APP_GIT_REF",
+  ],
   // TODO: Outdated clients trying to access stale codesplit js chucks
   // break. This breaks iOS transitions.
   // Put everything into one chunk for now.

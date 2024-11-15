@@ -11,7 +11,7 @@ on:
       - "[0-9]+.[0-9]+.[0-9]+"
 
 env:
-  APP_GIT_REF: ${{ inputs.is_main_build && github.sha || github.ref_name }}
+  BUILD_LABEL: ${{ inputs.is_main_build && github.sha || github.ref_name }}
 
 concurrency:
   group: release
@@ -52,13 +52,13 @@ jobs:
 
       - name: Compress artifacts
         run: |
-          zip -r Voyager-Web-$APP_GIT_REF.zip dist
+          zip -r Voyager-Web-$BUILD_LABEL.zip dist
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Web-${{ env.APP_GIT_REF }}.zip
-          path: Voyager-Web-${{ env.APP_GIT_REF }}.zip
+          name: Voyager-Web-${{ env.BUILD_LABEL }}.zip
+          path: Voyager-Web-${{ env.BUILD_LABEL }}.zip
 
   build_ios:
     environment: deploy
@@ -113,8 +113,8 @@ jobs:
       - name: Upload iOS IPA as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-iOS-${{ env.APP_GIT_REF }}.ipa
-          path: Voyager-iOS-${{ env.APP_GIT_REF }}.ipa
+          name: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
+          path: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
 
   build_android:
     runs-on: ubuntu-latest
@@ -156,13 +156,13 @@ jobs:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
-      - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ env.APP_GIT_REF }}.apk
+      - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ env.BUILD_LABEL }}.apk
 
       - name: Send to Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Voyager-Android-${{ env.APP_GIT_REF }}.apk
-          path: Voyager-Android-${{ env.APP_GIT_REF }}.apk
+          name: Voyager-Android-${{ env.BUILD_LABEL }}.apk
+          path: Voyager-Android-${{ env.BUILD_LABEL }}.apk
 
   build_android_play:
     environment: deploy
@@ -234,19 +234,19 @@ jobs:
       - name: Download dist artifacts
         uses: actions/download-artifact@v4
         with:
-          name: Voyager-Web-${{ env.APP_GIT_REF }}.zip
+          name: Voyager-Web-${{ env.BUILD_LABEL }}.zip
           path: artifacts/web
 
       - name: Download iOS Artifact
         uses: actions/download-artifact@v4
         with:
-          name: Voyager-iOS-${{ env.APP_GIT_REF }}.ipa
+          name: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
           path: artifacts/ios
 
       - name: Download Android Artifact
         uses: actions/download-artifact@v4
         with:
-          name: Voyager-Android-${{ env.APP_GIT_REF }}.apk
+          name: Voyager-Android-${{ env.BUILD_LABEL }}.apk
           path: artifacts/android
 
         # https://github.com/softprops/action-gh-release/pull/372#issuecomment-1642643937

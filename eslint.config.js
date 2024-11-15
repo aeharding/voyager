@@ -35,16 +35,6 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/**"],
-
-    languageOptions: {
-      globals: {
-        APP_VERSION: true,
-        BUILD_FOSS_ONLY: true,
-      },
-    },
-  },
-  {
     plugins: {
       perfectionist: perfectionistPlugin,
     },

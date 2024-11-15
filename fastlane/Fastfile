@@ -17,7 +17,7 @@ default_platform(:ios)
 
 ENV['app_identifier'] = 'app.vger.voyager'
 ENV['app_name_sanitized'] = 'App'
-ENV['ios_output'] = "Voyager-iOS-#{ENV['APP_GIT_REF']}.ipa"
+ENV['ios_output'] = "Voyager-iOS-#{ENV['BUILD_LABEL']}.ipa"
 
 platform :ios do
 	before_all do
