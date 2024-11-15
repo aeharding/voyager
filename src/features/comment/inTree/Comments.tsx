@@ -16,6 +16,7 @@ import { VList, VListHandle } from "virtua";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
+import { useRangeChange } from "#/features/feed/useRangeChange";
 import { getPost } from "#/features/post/postSlice";
 import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
 import { scrollIntoView, useScrollIntoViewWorkaround } from "#/helpers/dom";
@@ -490,6 +491,12 @@ export default function Comments({
     [allComments, bottomPadding, header, renderFooter],
   );
 
+  const onScroll = useRangeChange(virtuaRef, (start, end) => {
+    if (end + 10 > allComments.length && !loadFailed) {
+      fetchComments();
+    }
+  });
+
   return (
     <CommentsContext.Provider value={commentsContextValue}>
       <IonRefresher
@@ -512,12 +519,8 @@ export default function Comments({
             // @ts-expect-error Virtua types not updated for forwardRef-less components
             item={IndexedVirtuaItem}
             overscan={1}
-            onRangeChange={(start, end) => {
-              if (end + 10 > allComments.length && !loadFailed) {
-                fetchComments();
-              }
-            }}
             onScroll={(offset) => {
+              onScroll();
               setIsListAtTop(offset < 6);
             }}
           >

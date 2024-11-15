@@ -233,8 +233,8 @@ importers:
         specifier: ^3.2.0
         version: 3.2.0(react@0.0.0-experimental-b01722d5-20241114)
       virtua:
-        specifier: ^0.36.3
-        version: 0.36.3(react-dom@0.0.0-experimental-b01722d5-20241114(react@0.0.0-experimental-b01722d5-20241114))(react@0.0.0-experimental-b01722d5-20241114)
+        specifier: ^0.37.0
+        version: 0.37.0(react-dom@0.0.0-experimental-b01722d5-20241114(react@0.0.0-experimental-b01722d5-20241114))(react@0.0.0-experimental-b01722d5-20241114)
     devDependencies:
       '@babel/preset-react':
         specifier: ^7.25.9
@@ -5858,8 +5858,8 @@ packages:
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
 
-  virtua@0.36.3:
-    resolution: {integrity: sha512-W5LovCjIJPT7plfka9r6XZIlsHxNbEyw9m9uTKdlB+R9+AoldsT+RFVW2/iVqHU8pmHv8csc3yw25A77OD5wwg==}
+  virtua@0.37.0:
+    resolution: {integrity: sha512-SNVvEj4aNYgc1ayey29M8f3PtrmTlD+i8GRyrKH4u6fZLoEIX8I+0IhK3F4Ro6AxV19t+UhEVtrwBf5fY/NSdg==}
     peerDependencies:
       react: '>=16.14.0'
       react-dom: '>=16.14.0'
@@ -12826,7 +12826,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  virtua@0.36.3(react-dom@0.0.0-experimental-b01722d5-20241114(react@0.0.0-experimental-b01722d5-20241114))(react@0.0.0-experimental-b01722d5-20241114):
+  virtua@0.37.0(react-dom@0.0.0-experimental-b01722d5-20241114(react@0.0.0-experimental-b01722d5-20241114))(react@0.0.0-experimental-b01722d5-20241114):
     optionalDependencies:
       react: 0.0.0-experimental-b01722d5-20241114
       react-dom: 0.0.0-experimental-b01722d5-20241114(react@0.0.0-experimental-b01722d5-20241114)
