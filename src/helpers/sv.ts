@@ -1,6 +1,4 @@
-import { Falsey } from "lodash";
-
-type CssVariables = Falsey | Record<string, unknown>;
+type CssVariables = undefined | null | "" | 0 | false | Record<string, unknown>;
 
 export default function sv(variables: CssVariables) {
   if (!variables) return {};
