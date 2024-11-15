@@ -78,11 +78,9 @@ jobs:
 
       - name: Add build metadata
         run: |
-          echo """
-            APP_VERSION=${{ needs.app_version.outputs.app_version }}
-            APP_BUILD=${{ needs.app_build.outputs.app_build }}
-            APP_GIT_REF=${{ inputs.release_behavior != 'publish_release' && github.sha || needs.app_version.outputs.app_version }}
-          """ > .env
+          echo """APP_VERSION=${{ needs.app_version.outputs.app_version }}
+          APP_BUILD=${{ needs.app_build.outputs.app_build }}
+          APP_GIT_REF=${{ inputs.release_behavior != 'publish_release' && github.sha || needs.app_version.outputs.app_version }}""" > .env
           echo "wrote .env:"
           cat .env
 
@@ -106,7 +104,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-data
-          path: ${{ steps.determine_changes.outputs.files }}
+          path: |
+            ${{ steps.determine_changes.outputs.files }}
           include-hidden-files: true # needed for .env
 
   dispatch_beta_release:
