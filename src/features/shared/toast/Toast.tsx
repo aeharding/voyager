@@ -3,7 +3,7 @@ import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { useTimeout } from "@mantine/hooks";
 import { noop } from "es-toolkit";
-import { motion, useAnimate, useMotionValue } from "framer-motion";
+import { motion, useAnimate, useMotionValue } from "motion/react";
 import {
   MouseEvent,
   useEffect,
@@ -14,8 +14,14 @@ import {
 import { createPortal } from "react-dom";
 
 const Container = styled.div`
+  --top-offset: 44px;
+
+  html.md & {
+    --top-offset: 56px;
+  }
+
   position: absolute;
-  top: calc(44px + var(--ion-safe-area-top, 0px));
+  top: calc(var(--top-offset) + var(--ion-safe-area-top, 0px));
   left: 0;
   right: 0;
   width: 100%;
@@ -45,6 +51,10 @@ const ToastContent = styled.div`
   justify-content: center;
 
   gap: 8px;
+
+  html.md & {
+    border-radius: 4px;
+  }
 `;
 
 export interface ToastHandler {
