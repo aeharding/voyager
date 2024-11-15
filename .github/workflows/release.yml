@@ -102,7 +102,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-data
-          path: ${{ steps.determine_changes.outputs.files }}
+          path: |
+            ${{ steps.determine_changes.outputs.files }}
           include-hidden-files: true # needed for .env
 
   dispatch_beta_release:
