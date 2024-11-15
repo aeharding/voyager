@@ -50,6 +50,8 @@ import "./theme/variables";
 // Define after ./theme/variables to override it
 import "@ionic/react/css/palettes/dark.class.css";
 
+import { AppToastProvider } from "#/helpers/useAppToast";
+
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
   let navMode;
@@ -81,13 +83,15 @@ export default function App() {
                   <Router>
                     <OptimizedRouterProvider>
                       <TabContextProvider>
-                        <IonApp>
-                          <Auth>
-                            <TabbedRoutes>
-                              <Listeners />
-                            </TabbedRoutes>
-                          </Auth>
-                        </IonApp>
+                        <AppToastProvider>
+                          <IonApp>
+                            <Auth>
+                              <TabbedRoutes>
+                                <Listeners />
+                              </TabbedRoutes>
+                            </Auth>
+                          </IonApp>
+                        </AppToastProvider>
                       </TabContextProvider>
                     </OptimizedRouterProvider>
                   </Router>
