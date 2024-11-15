@@ -2,7 +2,7 @@
   "name": "voyager",
   "description": "A progressive webapp Lemmy client",
   "private": true,
-  "version": "2.19.2",
+  "version": "2.19.3",
   "type": "module",
   "packageManager": "pnpm@9.12.2+sha512.22721b3a11f81661ae1ec68ce1a7b879425a1ca5b991c975b074ac220b187ce56c708fe5db69f4c962c989452eee76c82877f4ee80f474cebd61ee13461b6228",
   "scripts": {
@@ -22,7 +22,7 @@
     "capacitor:copy:before": "rm -rf $CAPACITOR_WEB_DIR/splash && rm -rf $CAPACITOR_WEB_DIR/screenshots",
     "upgrade:packageManager": "corepack use pnpm@latest",
     "upgrade:react": "pnpm i --save react@experimental react-dom@experimental babel-plugin-react-compiler@experimental eslint-plugin-react-compiler@experimental eslint-plugin-react-hooks@experimental",
-    "release": "./scripts/release.sh"
+    "release": "release-it"
   },
   "imports": {
     "#/*": "./src/*"
@@ -151,6 +151,7 @@
     "mdast-util-lemmy-spoiler": "^2.0.0",
     "prettier": "^3.3.3",
     "pwa-asset-generator": "^6.4.0",
+    "release-it": "^17.10.0",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.13.0",
     "vite": "^5.4.10",

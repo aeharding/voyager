@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/release-it@17/schema/release-it.json",
+  "git": {
+    "commitMessage": "release: bump version to ${version}",
+    "tag": false
+  },
+  "npm": {
+    "publish": false
+  },
+  "hooks": {
+    "after:release": "echo 'Version successfully bumped - but release not cut' && ./scripts/release.sh"
+  }
+}
