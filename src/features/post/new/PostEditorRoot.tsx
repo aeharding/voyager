@@ -47,47 +47,7 @@ import { receivedPosts } from "../postSlice";
 import NewPostText from "./NewPostText";
 import PhotoPreview from "./PhotoPreview";
 import { PostEditorProps } from "./PostEditor";
-
-const Container = styled.div`
-  position: absolute;
-  inset: 0;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-const IonInputTitle = styled(IonInput)`
-  .input-bottom {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 0;
-    border: 0;
-    padding-top: 0;
-  }
-
-  .native-wrapper {
-    margin-right: 2rem;
-  }
-`;
-
-const PostingIn = styled.div`
-  font-size: 0.875em;
-  margin: 0.5rem 0;
-  text-align: center;
-  color: var(--ion-color-medium);
-`;
-
-const CameraIcon = styled(IonIcon)`
-  margin: -0.2em 0; // TODO negative margin, bad alex
-  font-size: 1.5em;
-
-  margin-right: 0.5rem;
-`;
-
-const HiddenInput = styled.input`
-  display: none;
-`;
+import styles from "./postEditorRoot.module.css";
 
 type PostType = "photo" | "link" | "text";
 
@@ -441,10 +401,11 @@ export default function PostEditorRoot({
         </IonToolbar>
       </AppHeader>
       <IonContent>
-        <Container>
+        <div className={styles.container}>
           <IonList>
             <IonItem>
-              <IonInputTitle
+              <IonInput
+                className={styles.ionInputTitle}
                 value={title}
                 clearInput
                 onIonInput={(e) => setTitle(e.detail.value ?? "")}
@@ -476,13 +437,18 @@ export default function PostEditorRoot({
                 <label htmlFor="photo-upload-post">
                   <IonItem>
                     <IonLabel color="primary">
-                      <CameraIcon icon={cameraOutline} /> Choose Photo
+                      <IonIcon
+                        className={styles.cameraIcon}
+                        icon={cameraOutline}
+                      />{" "}
+                      Choose Photo
                     </IonLabel>
 
-                    <HiddenInput
+                    <input
                       type="file"
                       accept="image/*"
                       id="photo-upload-post"
+                      className={styles.hiddenInput}
                       onInput={(e) => {
                         const image = (e.target as HTMLInputElement).files?.[0];
                         if (!image) return;
@@ -555,8 +521,10 @@ export default function PostEditorRoot({
             </IonNavLink>
           </IonList>
 
-          <PostingIn>Posting in {getRemoteHandle(community)}</PostingIn>
-        </Container>
+          <div className={styles.postingIn}>
+            Posting in {getRemoteHandle(community)}
+          </div>
+        </div>
       </IonContent>
     </>
   );

@@ -73,6 +73,7 @@ export default defineConfig({
   // break. This breaks iOS transitions.
   // Put everything into one chunk for now.
   build: {
+    cssMinify: "lightningcss",
     chunkSizeWarningLimit: 5_000,
     rollupOptions: {
       onwarn: (log, handler) => {

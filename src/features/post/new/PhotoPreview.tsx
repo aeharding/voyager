@@ -1,18 +1,14 @@
 import { IonSpinner } from "@ionic/react";
+import { cx } from "@linaria/core";
 import { styled } from "@linaria/react";
+
+import styles from "./photoPreview.module.css";
 
 const Container = styled.div`
   position: relative;
 `;
 
-const Img = styled.img<{ loadingImage: boolean }>`
-  max-width: 100px;
-  max-height: 100px;
-  padding: 1rem;
-
-  filter: ${({ loadingImage }) =>
-    loadingImage ? "blur(5px) brightness(0.5)" : "none"};
-`;
+const Img = styled.img<{ loadingImage: boolean }>``;
 
 const OverlaySpinner = styled(IonSpinner)`
   position: absolute;
@@ -34,7 +30,12 @@ export default function PhotoPreview({
 }: PhotoPreviewProps) {
   return (
     <Container>
-      <Img src={src} onClick={onClick} loadingImage={loading} />
+      <Img
+        src={src}
+        onClick={onClick}
+        loadingImage={loading}
+        className={cx(styles.img, loading && styles.loadingImage)}
+      />
       {loading && <OverlaySpinner />}
     </Container>
   );
