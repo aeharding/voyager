@@ -27,6 +27,7 @@ import { useAppSelector } from "#/store";
 import EndPost, { EndPostProps } from "./endItems/EndPost";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import FetchMore from "./endItems/FetchMore";
+import { useRangeChange } from "./useRangeChange";
 
 const ABORT_REASON_UNMOUNT = "unmount";
 
@@ -258,6 +259,35 @@ export default function Feed<I>({
 
   useSetActivePage(virtuaHandle);
 
+  const onScroll = useRangeChange(
+    virtuaHandle,
+    function onRangeChange(start, end) {
+      if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
+
+      // if scrolled down
+      const startOffset = header ? 1 : 0; // header counts as item to VList
+      if (
+        scrollingRef.current &&
+        start > startOffset &&
+        start > startRangeRef.current
+      ) {
+        // emit what was removed
+        onRemovedFromTop?.(
+          filteredItems.slice(
+            startRangeRef.current - startOffset,
+            start - startOffset,
+          ),
+        );
+      }
+
+      startRangeRef.current = start;
+
+      if (end + 10 > filteredItems.length && !loadFailed && infiniteScrolling) {
+        fetchMore();
+      }
+    },
+  );
+
   const fetchMoreEvent = useEffectEvent(fetchMore);
 
   useEffect(() => {
@@ -330,38 +360,11 @@ export default function Feed<I>({
             scrollingRef.current = false;
           }}
           onScroll={(offset) => {
+            onScroll();
+
             scrollingRef.current = true;
             setIsListAtTop(offset < 10);
             setScrolledPastSearch(offset > 40);
-          }}
-          onRangeChange={(start, end) => {
-            if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
-
-            // if scrolled down
-            const startOffset = header ? 1 : 0; // header counts as item to VList
-            if (
-              scrollingRef.current &&
-              start > startOffset &&
-              start > startRangeRef.current
-            ) {
-              // emit what was removed
-              onRemovedFromTop?.(
-                filteredItems.slice(
-                  startRangeRef.current - startOffset,
-                  start - startOffset,
-                ),
-              );
-            }
-
-            startRangeRef.current = start;
-
-            if (
-              end + 10 > filteredItems.length &&
-              !loadFailed &&
-              infiniteScrolling
-            ) {
-              fetchMore();
-            }
           }}
           /* Large posts reflow with image load, so mount to dom a bit sooner */
           overscan={1}
