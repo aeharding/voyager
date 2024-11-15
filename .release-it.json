@@ -7,8 +7,5 @@
   },
   "npm": {
     "publish": false
-  },
-  "hooks": {
-    "after:release": "echo 'Version successfully bumped - but release not cut' && ./scripts/release.sh"
   }
 }

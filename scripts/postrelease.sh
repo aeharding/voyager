@@ -1,4 +1,4 @@
-read -p "Would you like to cut a release? " -n 1 -r
+read -p "Would you like to cut a release? [Y/n] " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
