@@ -94,18 +94,15 @@ jobs:
           echo "all modifications:"
           git --no-pager diff HEAD
 
-          {
-            echo 'files<<EOF'
-            git --no-pager diff HEAD --name-only
-            echo EOF
-          } >> "$GITHUB_ENV"
+          echo 'files<<EOF' >> $GITHUB_ENV
+          git --no-pager diff HEAD --name-only >> $GITHUB_ENV
+          echo EOF >> $GITHUB_ENV
 
       - name: Upload bumped version artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-data
-          path: |
-            ${{ steps.determine_changes.outputs.files }}
+          path: ${{ steps.determine_changes.outputs.files }}
           include-hidden-files: true # needed for .env
 
   dispatch_beta_release:
