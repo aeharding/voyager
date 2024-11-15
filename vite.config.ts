@@ -59,6 +59,14 @@ export default defineConfig({
       modernPolyfills: ["es.array.at", "es.object.has-own"],
     }),
   ],
+  envPrefix: [
+    "VITE_",
+    "BUILD_FOSS_ONLY",
+    // Keep these explicit. Do not simplify to `APP_`.
+    "APP_BUILD",
+    "APP_VERSION",
+    "APP_GIT_REF",
+  ],
   // TODO: Outdated clients trying to access stale codesplit js chucks
   // break. This breaks iOS transitions.
   // Put everything into one chunk for now.
@@ -86,12 +94,6 @@ export default defineConfig({
           : {}),
       },
     },
-  },
-  define: {
-    APP_VERSION: JSON.stringify(process.env.npm_package_version),
-    APP_BUILD: JSON.stringify(process.env.APP_BUILD ?? ""),
-    APP_GIT_REF: JSON.stringify(process.env.APP_GIT_REF ?? ""),
-    BUILD_FOSS_ONLY: !!process.env.BUILD_FOSS_ONLY,
   },
   test: {
     exclude: ["**/e2e/**", "**/node_modules/**"],

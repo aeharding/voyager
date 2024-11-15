@@ -7,7 +7,7 @@ import { LOCALSTORAGE_KEYS, get, set } from "../../../syncStorage";
 
 const BASE_BACKUP_JSON = {
   voyagerBackupVersion: 1,
-  voyagerAppVersion: APP_VERSION,
+  voyagerAppVersion: import.meta.env.APP_VERSION,
 } as const;
 
 type Backup = typeof BASE_BACKUP_JSON & {

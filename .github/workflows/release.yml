@@ -26,7 +26,7 @@ jobs:
         run: |
           APP_BUILD=$((${{ github.run_number }} + $APP_BUILD_OFFSET))
           echo "app_build=$APP_BUILD" >> $GITHUB_OUTPUT
-          echo Current build number: $APP_BUILD
+          echo "App build number: \`$APP_BUILD\`" >> $GITHUB_STEP_SUMMARY
     outputs:
       app_build: ${{ steps.calculate.outputs.app_build }}
 
@@ -44,8 +44,9 @@ jobs:
       - name: Get current version from package.json
         id: app_version
         run: |
-          CURRENT_APP_VERSION=$(node -p "require('./package.json').version")
-          echo "app_version=$CURRENT_APP_VERSION" >> $GITHUB_OUTPUT
+          APP_VERSION=$(node -p "require('./package.json').version")
+          echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "current app version: $APP_VERSION"
 
       - name: Verify provided version not already released
         if: inputs.release_behavior == 'publish_release'
@@ -75,14 +76,38 @@ jobs:
           APP_BUILD: ${{ needs.app_build.outputs.app_build }}
           APP_VERSION: ${{ needs.app_version.outputs.app_version }}
 
+      - name: Add build metadata
+        run: |
+          echo """
+            APP_BUILD=${{ needs.app_build.outputs.app_build }}
+            APP_GIT_REF=${{ inputs.release_behavior != 'publish_release' && github.sha || needs.app_version.outputs.app_version }}
+            APP_VERSION=${{ needs.app_version.outputs.app_version }}
+          """ > .env
+          echo "wrote .env:"
+          cat .env
+
+      - name: Determine changed files
+        id: determine_changes
+        run: |
+          git add .
+          echo "will upload the following files:"
+          git --no-pager diff HEAD --name-only
+
+          echo "all modifications:"
+          git --no-pager diff HEAD
+
+          {
+            echo 'files<<EOF'
+            git --no-pager diff HEAD --name-only
+            echo EOF
+          } >> "$GITHUB_ENV"
+
       - name: Upload bumped version artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: trapeze-artifacts
-          retention-days: 3
-          path: |
-            android
-            ios
+          name: release-data
+          path: ${{ steps.determine_changes.outputs.files }}
+          include-hidden-files: true # needed for .env
 
   dispatch_beta_release:
     if: inputs.release_behavior != 'publish_release'
@@ -108,7 +133,7 @@ jobs:
       - name: Download bumped version artifacts
         uses: actions/download-artifact@v4
         with:
-          name: trapeze-artifacts
+          name: release-data
 
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@cb9bde2e2525e640591a934b1fd28eef1dcaf5e5 # v6.2.0
@@ -125,7 +150,6 @@ jobs:
         # Github doesn't trigger subsequent workflows unless push with a PAT
         run: |
           git remote set-url origin "https://${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git checkout -b "release/${{ needs.app_version.outputs.app_version }}"
           git config --global user.email "voyager.ci.noreply@harding.dev"
           git config --global user.name "Voyager CI"
           git add .
@@ -133,5 +157,4 @@ jobs:
           TAG_NAME="${{ needs.app_version.outputs.app_version }}"
           echo "Creating tag: $TAG_NAME"
           git tag -s "$TAG_NAME" -m "release: ${{ needs.app_version.outputs.app_version }} (${{ needs.app_build.outputs.app_build }})"
-          git push origin "release/${{ needs.app_version.outputs.app_version }}"
           git push origin "$TAG_NAME"
