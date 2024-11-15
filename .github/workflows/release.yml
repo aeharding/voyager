@@ -79,9 +79,9 @@ jobs:
       - name: Add build metadata
         run: |
           echo """
+            APP_VERSION=${{ needs.app_version.outputs.app_version }}
             APP_BUILD=${{ needs.app_build.outputs.app_build }}
             APP_GIT_REF=${{ inputs.release_behavior != 'publish_release' && github.sha || needs.app_version.outputs.app_version }}
-            APP_VERSION=${{ needs.app_version.outputs.app_version }}
           """ > .env
           echo "wrote .env:"
           cat .env
@@ -111,11 +111,10 @@ jobs:
 
   dispatch_beta_release:
     if: inputs.release_behavior != 'publish_release'
-    needs: [app_build, bump_src]
+    needs: [bump_src]
     uses: ./.github/workflows/build_release.yml
     with:
       is_main_build: true
-      app_build: ${{ needs.app_build.outputs.app_build }}
     secrets: inherit
     permissions:
       contents: write # needed for create_release, even though it won't be called
