@@ -26,10 +26,11 @@ const buildInfo = (() => {
   if (import.meta.env.DEV) return <IonText color="danger">Development</IonText>;
 
   // If the app version is different from the git ref (tag), it's a pre-release
-  if (APP_GIT_REF !== APP_VERSION)
+  if (import.meta.env.APP_GIT_REF !== import.meta.env.APP_VERSION)
     return (
       <IonText color="warning">
-        Beta Track — [{APP_BUILD}] {APP_GIT_REF.slice(0, 7)}
+        Beta Track — [{import.meta.env.APP_BUILD}]{" "}
+        {import.meta.env.APP_GIT_REF.slice(0, 7)}
       </IonText>
     );
 })();
@@ -39,7 +40,7 @@ export default function AppDetails() {
     <AppContainer>
       <img src="/logo.png" alt="" />
       <div>
-        Voyager {APP_VERSION}
+        Voyager {import.meta.env.APP_VERSION}
         {buildInfo && <aside>{buildInfo}</aside>}
         <aside>by Alexander Harding</aside>
       </div>

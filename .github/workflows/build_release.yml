@@ -6,9 +6,6 @@ on:
       is_main_build:
         type: boolean
         required: true
-      app_build:
-        type: string
-        required: true
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
@@ -20,30 +17,16 @@ concurrency:
   group: release
 
 jobs:
-  # get app build env from git commit message
-  app_build:
-    runs-on: ubuntu-latest
-    env:
-      COMMIT_MSG: ${{ github.event.head_commit.message }}
-    steps:
-      - if: inputs.is_main_build != true
-        run: |
-          # get app build in parentheses from commit message
-          APP_BUILD=$(echo "$COMMIT_MSG" | sed -n 's/.*(\([0-9]*\)).*/\1/p')
-          # verify app_build is a number
-          if echo "$APP_BUILD" | grep -qE '^[0-9]+$'; then
-            echo "app_build=$APP_BUILD" >> $GITHUB_OUTPUT
-          fi
-    outputs:
-      app_build: ${{ inputs.app_build || steps.app_build.outputs.app_build }}
-
   build_web:
-    needs: app_build
     runs-on: ubuntu-latest
-    env:
-      APP_BUILD: ${{ needs.app_build.outputs.app_build }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Download bumped version artifacts
+        if: inputs.is_main_build
+        uses: actions/download-artifact@v4
+        with:
+          name: release-data
 
       - uses: actions/setup-node@v4
         with:
@@ -78,11 +61,8 @@ jobs:
           path: Voyager-Web-${{ env.APP_GIT_REF }}.zip
 
   build_ios:
-    needs: app_build
     environment: deploy
     runs-on: macos-15
-    env:
-      APP_BUILD: ${{ needs.app_build.outputs.app_build }}
     steps:
       - uses: actions/checkout@v4
 
@@ -90,7 +70,7 @@ jobs:
         if: inputs.is_main_build
         uses: actions/download-artifact@v4
         with:
-          name: trapeze-artifacts
+          name: release-data
 
       - uses: actions/setup-node@v4
         with:
@@ -137,10 +117,7 @@ jobs:
           path: Voyager-iOS-${{ env.APP_GIT_REF }}.ipa
 
   build_android:
-    needs: app_build
     runs-on: ubuntu-latest
-    env:
-      APP_BUILD: ${{ needs.app_build.outputs.app_build }}
     steps:
       - uses: actions/checkout@v4
 
@@ -148,7 +125,7 @@ jobs:
         if: inputs.is_main_build
         uses: actions/download-artifact@v4
         with:
-          name: trapeze-artifacts
+          name: release-data
 
       - uses: actions/setup-node@v4
         with:
@@ -188,11 +165,8 @@ jobs:
           path: Voyager-Android-${{ env.APP_GIT_REF }}.apk
 
   build_android_play:
-    needs: app_build
     environment: deploy
     runs-on: ubuntu-latest
-    env:
-      APP_BUILD: ${{ needs.app_build.outputs.app_build }}
     steps:
       - uses: actions/checkout@v4
 
@@ -200,7 +174,7 @@ jobs:
         if: inputs.is_main_build
         uses: actions/download-artifact@v4
         with:
-          name: trapeze-artifacts
+          name: release-data
 
       - uses: actions/setup-node@v4
         with:
@@ -275,10 +249,15 @@ jobs:
           name: Voyager-Android-${{ env.APP_GIT_REF }}.apk
           path: artifacts/android
 
+        # https://github.com/softprops/action-gh-release/pull/372#issuecomment-1642643937
+      - name: Changelog
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@a57c1b7c90e56d9c8b26a6ed5d1eed159369e117 # v5.0.0
+
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@01570a1f39cb168c169c802c3bceb9e93fb10974 # v2.1.0
         with:
-          generate_release_notes: true
+          body: ${{ steps.build_changelog.outputs.changelog }}
           files: |
             artifacts/ios/*
             artifacts/android/*

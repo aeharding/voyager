@@ -60,7 +60,7 @@ export default function TipDialog({ onDismiss }: TipProps) {
         Your support means a lot!
       </Description>
       <Tips>
-        {BUILD_FOSS_ONLY || !isNative() ? (
+        {import.meta.env.BUILD_FOSS_ONLY || !isNative() ? (
           <ExternalSponsorOptions />
         ) : (
           <InAppProducts />

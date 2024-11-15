@@ -108,7 +108,7 @@ export default function UpdateAppPage() {
               <IonItem>
                 <IonLabel>Current version</IonLabel>
                 <IonLabel slot="end" color="medium">
-                  {APP_VERSION}
+                  {import.meta.env.APP_VERSION}
                 </IonLabel>
               </IonItem>
               <IonItem
