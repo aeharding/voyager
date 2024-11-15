@@ -1,6 +1,12 @@
 .container {
+  --top-offset: 44px;
+
+  html:global(.md) & {
+    --top-offset: 56px;
+  }
+
   position: absolute;
-  top: calc(44px + var(--ion-safe-area-top, 0px));
+  top: calc(var(--top-offset) + var(--ion-safe-area-top, 0px));
   left: 0;
   right: 0;
   width: 100%;
@@ -30,4 +36,8 @@
   justify-content: center;
 
   gap: 8px;
+
+  html:global(.md) & {
+    border-radius: 4px;
+  }
 }
