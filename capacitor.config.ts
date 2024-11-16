@@ -13,6 +13,9 @@ const config: CapacitorConfig = {
       resize: KeyboardResize.Ionic,
       resizeOnFullScreen: true,
     },
+    SplashScreen: {
+      launchShowDuration: 3_000,
+    },
   },
 };
 
