@@ -11,10 +11,10 @@ export function useRangeChange(
 
   return useThrottledCallback(function onScroll() {
     const virtuaHandle = virtuaHandleRef.current;
-
     if (!virtuaHandle) return;
-    const startIndex = virtuaHandle.startIndex;
-    const endIndex = virtuaHandle.endIndex;
+
+    const startIndex = virtuaHandle.findStartIndex();
+    const endIndex = virtuaHandle.findEndIndex();
 
     if (
       startIndex !== startIndexRef.current ||
