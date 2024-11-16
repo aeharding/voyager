@@ -19,6 +19,7 @@ def capacitor_pods
   pod 'CapacitorKeyboard', :path => '../../node_modules/.pnpm/@capacitor+keyboard@6.0.2_patch_hash=2ihcxo2fu55l7b6g5u7feswwlm_@capacitor+core@6.1.2/node_modules/@capacitor/keyboard'
   pod 'CapacitorNetwork', :path => '../../node_modules/.pnpm/@capacitor+network@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/network'
   pod 'CapacitorShare', :path => '../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share'
+  pod 'CapacitorSplashScreen', :path => '../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen'
   pod 'CapacitorStatusBar', :path => '../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar'
   pod 'CapacitorAndroidNavMode', :path => '../../node_modules/.pnpm/capacitor-android-nav-mode@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-android-nav-mode'
   pod 'CapacitorApplicationContext', :path => '../../node_modules/.pnpm/capacitor-application-context@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-application-context'

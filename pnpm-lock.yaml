@@ -58,6 +58,9 @@ importers:
       '@capacitor/share':
         specifier: ^6.0.2
         version: 6.0.2(@capacitor/core@6.1.2)
+      '@capacitor/splash-screen':
+        specifier: ^6.0.2
+        version: 6.0.2(@capacitor/core@6.1.2)
       '@capacitor/status-bar':
         specifier: ^6.0.1
         version: 6.0.1(@capacitor/core@6.1.2)
@@ -992,6 +995,11 @@ packages:
 
   '@capacitor/share@6.0.2':
     resolution: {integrity: sha512-qQIeyjzFB1VgP4ojyNg2O98TCigDWLKZ5melVMSVeDO0YQov5OeammsVgaCGSzvYBPSgyOwX41QvcDWG4yHN1A==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  '@capacitor/splash-screen@6.0.2':
+    resolution: {integrity: sha512-WC0KYZ+ev15up03xs4fTnoTKwBVUSxXsKKQr/8XAncvi/nAG8qrpanW8OlavSC5zF5e1IZZDLsI2GSv0SkZ7VQ==}
     peerDependencies:
       '@capacitor/core': ^6.0.0
 
@@ -7118,6 +7126,10 @@ snapshots:
       '@capacitor/core': 6.1.2
 
   '@capacitor/share@6.0.2(@capacitor/core@6.1.2)':
+    dependencies:
+      '@capacitor/core': 6.1.2
+
+  '@capacitor/splash-screen@6.0.2(@capacitor/core@6.1.2)':
     dependencies:
       '@capacitor/core': 6.1.2
 

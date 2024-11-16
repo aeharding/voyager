@@ -1,3 +1,4 @@
+import { SplashScreen } from "@capacitor/splash-screen";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
 import { useContext, useEffect, useMemo, useRef } from "react";
@@ -35,6 +36,12 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   const pageRef = useRef<RouterOutletRef>(null);
 
   const pageContextValue = useMemo(() => ({ pageRef }), []);
+
+  useEffect(() => {
+    if (!ready) return;
+
+    SplashScreen.hide();
+  }, [ready]);
 
   if (!ready) return;
 

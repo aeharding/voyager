@@ -30,6 +30,8 @@ PODS:
     - Capacitor
   - CapacitorShare (6.0.2):
     - Capacitor
+  - CapacitorSplashScreen (6.0.2):
+    - Capacitor
   - CapacitorStashMedia (2.0.1):
     - Capacitor
     - SDWebImage
@@ -58,6 +60,7 @@ DEPENDENCIES:
   - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/network`)"
   - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.2/node_modules/capacitor-plugin-safe-area`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share`)"
+  - "CapacitorSplashScreen (from `../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen`)"
   - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.1.2/node_modules/capacitor-stash-media`)"
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar`)"
   - "CapacitorTips (from `../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-tips`)"
@@ -99,6 +102,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.2/node_modules/capacitor-plugin-safe-area"
   CapacitorShare:
     :path: "../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share"
+  CapacitorSplashScreen:
+    :path: "../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen"
   CapacitorStashMedia:
     :path: "../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.1.2/node_modules/capacitor-stash-media"
   CapacitorStatusBar:
@@ -123,11 +128,12 @@ SPEC CHECKSUMS:
   CapacitorNetwork: 8796cf1f1104a00b289957b6150b7c60e1c2a8d3
   CapacitorPluginSafeArea: e1eca7f70974f0e270d96f70cd0a5f51523164b1
   CapacitorShare: 591ae4693d85686ceb590db8e8b44aa014ec6490
+  CapacitorSplashScreen: 250df9ef8014fac5c7c1fd231f0f8b1d8f0b5624
   CapacitorStashMedia: 10aa96dc5f874c4c27642528a4c327c46792abf2
   CapacitorStatusBar: b81d4fb5d4e0064c712018071b3ab4b810b39a63
   CapacitorTips: 2087733aea06ec041b210085395ca934c8554907
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
 
-PODFILE CHECKSUM: 4bb941cdad3a08d4337f1a3589da9a7a0f40fd60
+PODFILE CHECKSUM: 4c9660cfea3867fdae44143cfbe378717ec31aa0
 
 COCOAPODS: 1.16.2
