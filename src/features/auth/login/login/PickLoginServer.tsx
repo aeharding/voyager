@@ -164,7 +164,7 @@ export default function PickLoginServer() {
 
           <IonSearchbar
             ref={searchbarRef}
-            enterkeyhint="go"
+            enterkeyhint="next"
             placeholder="Enter URL or search for your server"
             inputMode="url"
             onKeyDown={(e) => {

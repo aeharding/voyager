@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Centered } from "#/features/auth/login/LoginNav";
 import PersonLink from "#/features/labels/links/PersonLink";
 import AppHeader from "#/features/shared/AppHeader";
+import { blurOnEnter } from "#/helpers/dom";
 import { getRemoteHandle } from "#/helpers/lemmy";
 
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -44,8 +45,12 @@ const UserText = styled(IonText)`
 `;
 
 const ColorIonInput = styled(IonInput)`
-  .native-wrapper {
+  .native-input {
     max-width: 42px;
+  }
+
+  .input-clear-icon {
+    margin: 0 0 0 auto;
   }
 
   && input {
@@ -174,6 +179,12 @@ function UserTagModalContents({
               clearInput
               placeholder="Private user note"
               value={tag.text}
+              inputMode="text"
+              autocapitalize="on"
+              autocorrect="on"
+              spellCheck
+              enterKeyHint="done"
+              onKeyDown={blurOnEnter}
               onIonInput={(e) => {
                 setTag((tag) => {
                   const newTag = { ...tag, text: e.detail.value ?? "" };
@@ -191,9 +202,9 @@ function UserTagModalContents({
           <IonItem>
             <ColorIonInput
               label="Color"
-              // TODO add Ionic support for color input
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              type={"color" as any}
+              // @ts-expect-error -- add Ionic support for color input
+              type="color"
+              clearInput
               value={tag.color}
               onIonInput={(e) => {
                 setTag((tag) => {
