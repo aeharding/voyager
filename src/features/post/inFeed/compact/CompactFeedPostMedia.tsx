@@ -1,7 +1,7 @@
 import { PostView } from "lemmy-js-client";
 import { ComponentProps } from "react";
 
-import Media from "#/features/media/gallery/Media";
+import Media from "#/features/media/Media";
 
 import usePostSrc from "../usePostSrc";
 

@@ -1,9 +1,8 @@
 import { ComponentRef, useEffect, useRef } from "react";
 
-import type Media from "#/features/media/gallery/Media";
+import type Media from "#/features/media/Media";
+import { imageLoaded } from "#/features/media/imageSlice";
 import { useAppDispatch, useAppSelector } from "#/store";
-
-import { imageLoaded } from "./imageSlice";
 
 export default function useMediaLoadObserver(src: string | undefined) {
   const dispatch = useAppDispatch();

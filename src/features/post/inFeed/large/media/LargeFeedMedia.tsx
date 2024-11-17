@@ -1,18 +1,12 @@
-import { styled } from "@linaria/react";
-import { CSSProperties } from "react";
+import { css } from "@linaria/core";
 
-import Media, { MediaProps } from "#/features/media/gallery/Media";
-import useLatch from "#/helpers/useLatch";
-import { useAppDispatch } from "#/store";
+import StableSizeMedia, {
+  StableSizeMediaProps,
+} from "#/features/media/StableSizeMedia";
 
-import { IMAGE_FAILED, imageFailed, imageLoaded } from "../imageSlice";
-import useMediaLoadObserver, {
-  getTargetDimensions,
-} from "../useMediaLoadObserver";
 import BlurOverlay from "./BlurOverlay";
-import MediaPlaceholder from "./MediaPlaceholder";
 
-export const StyledPostMedia = styled(Media)`
+export const fullWidthPostStyles = css`
   display: flex;
   width: 100%;
   max-width: none;
@@ -23,81 +17,19 @@ export const StyledPostMedia = styled(Media)`
   min-height: 0;
 `;
 
-export default function LargeFeedMedia({
-  src,
-  blur,
-  className,
-  style: baseStyle,
-  defaultAspectRatio,
-  ...props
-}: Omit<MediaProps, "ref"> & {
+interface LargeFeedMediaProps extends StableSizeMediaProps {
   blur?: boolean;
-  defaultAspectRatio?: number;
-}) {
-  const dispatch = useAppDispatch();
-  const [mediaRef, currentAspectRatio] = useMediaLoadObserver(src);
+}
 
-  /**
-   * Cross posts have different image thumbnail url when loaded, so prevent resizing by latching
-   *
-   * If the new image is different size (or errors), it will be properly updated then
-   * (IMAGE_FAILED is truthy)
-   */
-  const aspectRatio = useLatch(currentAspectRatio);
-
-  function buildPlaceholderState() {
-    if (aspectRatio === IMAGE_FAILED) return "error";
-    if (!aspectRatio) return "loading";
-
-    return "loaded";
-  }
-
-  function buildStyle(): CSSProperties {
-    if (!aspectRatio || aspectRatio === IMAGE_FAILED) return { opacity: 0 };
-
-    return { aspectRatio };
-  }
-
-  const loaded = !!aspectRatio && aspectRatio > 0;
-
+export default function LargeFeedMedia({
+  blur,
+  ...props
+}: LargeFeedMediaProps) {
   const contents = (
-    <MediaPlaceholder
-      className={className}
-      style={baseStyle}
-      state={buildPlaceholderState()}
-      defaultAspectRatio={defaultAspectRatio}
-    >
-      <StyledPostMedia
-        {...props}
-        src={src}
-        style={buildStyle()}
-        ref={mediaRef}
-        autoPlay={!blur}
-        onError={() => {
-          if (src) dispatch(imageFailed(src));
-        }}
-        // useMediaLoadObserver fires if image is partially loaded.
-        // but sometimes a Safari quirk doesn't fire the resize handler.
-        // this catches those edge cases.
-        //
-        // TLDR Image loading should still work with this function commented out!
-        onLoad={(event) => {
-          if (!src) return;
-          if (loaded) return;
-
-          const dimensions = getTargetDimensions(
-            event.target as HTMLImageElement,
-          );
-          if (!dimensions) return;
-          const { width, height } = dimensions;
-
-          dispatch(imageLoaded({ src, aspectRatio: width / height }));
-        }}
-      />
-    </MediaPlaceholder>
+    <StableSizeMedia {...props} nativeElmClassName={fullWidthPostStyles} />
   );
 
   if (!blur) return contents; // optimization
 
-  return <BlurOverlay blur={blur && loaded}>{contents}</BlurOverlay>;
+  return <BlurOverlay blur={blur /*&& loaded*/}>{contents}</BlurOverlay>;
 }

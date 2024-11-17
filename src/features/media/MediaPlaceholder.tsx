@@ -4,12 +4,8 @@ import { styled } from "@linaria/react";
 import { imageOutline } from "ionicons/icons";
 import { HTMLAttributes } from "react";
 
-import { StyledPostMedia } from "./LargeFeedMedia";
-
-const PlaceholderContainer = styled.div<{ defaultAspectRatio: number }>`
+const PlaceholderContainer = styled.span<{ defaultAspectRatio: number }>`
   display: flex;
-
-  background: var(--lightroom-bg);
 
   &.not-loaded {
     align-items: center;
@@ -18,7 +14,7 @@ const PlaceholderContainer = styled.div<{ defaultAspectRatio: number }>`
     aspect-ratio: ${({ defaultAspectRatio }) => defaultAspectRatio};
     position: relative;
 
-    ${StyledPostMedia} {
+    .media {
       position: absolute;
       top: 0;
       left: 0;
@@ -31,8 +27,9 @@ const LoadingIonIcon = styled(IonIcon)`
   font-size: 24px;
 `;
 
-const Error = styled.div`
+const Error = styled.span`
   opacity: 0.5;
+  padding: 16px;
 `;
 
 type State = "loading" | "loaded" | "error" | "custom";

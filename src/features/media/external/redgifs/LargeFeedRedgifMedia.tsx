@@ -3,8 +3,8 @@ import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 import { ComponentProps, useEffect } from "react";
 
+import MediaPlaceholder from "#/features/media/MediaPlaceholder";
 import LargeFeedMedia from "#/features/post/inFeed/large/media/LargeFeedMedia";
-import MediaPlaceholder from "#/features/post/inFeed/large/media/MediaPlaceholder";
 import { setEmbedExternalMedia } from "#/features/settings/settingsSlice";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { useAppDispatch, useAppSelector } from "#/store";

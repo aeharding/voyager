@@ -4,7 +4,7 @@ import { PlayerProps } from "#/features/media/video/Player";
 import Video from "#/features/media/video/Video";
 import { isUrlVideo } from "#/helpers/url";
 
-import GalleryMedia, { GalleryMediaProps } from "./GalleryMedia";
+import GalleryMedia, { GalleryMediaProps } from "./gallery/GalleryMedia";
 
 export interface MediaProps
   extends Omit<GalleryMediaProps & PlayerProps, "src" | "ref"> {
