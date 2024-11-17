@@ -30,7 +30,7 @@ export default function PostLink({ post, ...props }: PostLinkProps) {
   return (
     <Link
       {...props}
-      onClick={() => {
+      onClickCompleted={() => {
         dispatch(setPostRead(post.post.id));
         autohidePostIfNeeded(post);
       }}

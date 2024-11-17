@@ -8,9 +8,6 @@ project(':capacitor-community-app-icon').projectDir = new File('../node_modules/
 include ':capacitor-app'
 project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacitor+app@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/app/android')
 
-include ':capacitor-browser'
-project(':capacitor-browser').projectDir = new File('../node_modules/.pnpm/@capacitor+browser@6.0.3_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.2/node_modules/@capacitor/browser/android')
-
 include ':capacitor-filesystem'
 project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/filesystem/android')
 
@@ -25,6 +22,9 @@ project(':capacitor-network').projectDir = new File('../node_modules/.pnpm/@capa
 
 include ':capacitor-share'
 project(':capacitor-share').projectDir = new File('../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share/android')
+
+include ':capacitor-splash-screen'
+project(':capacitor-splash-screen').projectDir = new File('../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen/android')
 
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar/android')
@@ -46,6 +46,9 @@ project(':capacitor-launch-native').projectDir = new File('../node_modules/.pnpm
 
 include ':capacitor-plugin-safe-area'
 project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.2/node_modules/capacitor-plugin-safe-area/android')
+
+include ':capacitor-reader'
+project(':capacitor-reader').projectDir = new File('../node_modules/.pnpm/capacitor-reader@0.1.0_@capacitor+core@6.1.2/node_modules/capacitor-reader/android')
 
 include ':capacitor-stash-media'
 project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.1.2/node_modules/capacitor-stash-media/android')

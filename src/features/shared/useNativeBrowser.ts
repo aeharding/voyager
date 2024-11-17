@@ -1,8 +1,11 @@
-import { Browser } from "@capacitor/browser";
 import { LaunchNative } from "capacitor-launch-native";
+import { Reader } from "capacitor-reader";
 
 import { useIsDark } from "#/core/GlobalStyles";
-import { notifyStatusTapThatBrowserWasOpened } from "#/core/listeners/statusTap";
+import {
+  notifyStatusTapThatBrowserWasClosed,
+  notifyStatusTapThatBrowserWasOpened,
+} from "#/core/listeners/statusTap";
 import { isAndroid } from "#/helpers/device";
 import { useAppSelector } from "#/store";
 
@@ -43,11 +46,17 @@ export default function useNativeBrowser() {
       if (completed) return;
     }
 
-    Browser.open({
-      url: href,
-      toolbarColor,
-      entersReaderIfAvailable: alwaysUseReaderMode,
-    });
     notifyStatusTapThatBrowserWasOpened();
+
+    try {
+      await Reader.open({
+        url: href,
+        toolbarColor,
+        entersReaderIfAvailable: alwaysUseReaderMode,
+      });
+    } catch (e) {
+      notifyStatusTapThatBrowserWasClosed();
+      throw e;
+    }
   };
 }

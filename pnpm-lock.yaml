@@ -8,9 +8,6 @@ overrides:
   '@ionic/core': npm:voyager-ionic-core@8.4.0
 
 patchedDependencies:
-  '@capacitor/browser':
-    hash: 33x6bihgpnt6i5jbwxndhs4p3q
-    path: patches/@capacitor__browser@6.0.3.patch
   '@capacitor/haptics':
     hash: isktf3ewuigcwl72katxy46idi
     path: patches/@capacitor__haptics@6.0.1.patch
@@ -34,9 +31,6 @@ importers:
       '@capacitor/app':
         specifier: ^6.0.1
         version: 6.0.1(@capacitor/core@6.1.2)
-      '@capacitor/browser':
-        specifier: ^6.0.3
-        version: 6.0.3(patch_hash=33x6bihgpnt6i5jbwxndhs4p3q)(@capacitor/core@6.1.2)
       '@capacitor/core':
         specifier: ^6.1.2
         version: 6.1.2
@@ -106,6 +100,9 @@ importers:
       capacitor-plugin-safe-area:
         specifier: ^3.0.3
         version: 3.0.3(@capacitor/core@6.1.2)
+      capacitor-reader:
+        specifier: ^0.1.0
+        version: 0.1.0(@capacitor/core@6.1.2)
       capacitor-stash-media:
         specifier: ^2.0.1
         version: 2.0.1(@capacitor/core@6.1.2)
@@ -952,11 +949,6 @@ packages:
 
   '@capacitor/app@6.0.1':
     resolution: {integrity: sha512-0kXbOl7LPPMFVcAii3u/7Ps0DvXlr7dtHT97r9J1faDlgdQLQUvtGp48tjvFm48gqHI0aOPRJnTBr5JXW4ETYg==}
-    peerDependencies:
-      '@capacitor/core': ^6.0.0
-
-  '@capacitor/browser@6.0.3':
-    resolution: {integrity: sha512-V5/ViE+fy3rW+6w0L2du4747/hivBcI/5OGOKi01U9YdFvOWbiiGL+qetq1QdkANEqvYd4yoCeXZL2GyGySn5g==}
     peerDependencies:
       '@capacitor/core': ^6.0.0
 
@@ -2313,6 +2305,11 @@ packages:
 
   capacitor-plugin-safe-area@3.0.3:
     resolution: {integrity: sha512-pDM8GQIDC9xxKLZxoO4rrshDuzZqQo6jq7Ni18cYdp2JwmLvlhTYRrvriPAicY1En59UAZ574sIvGlgUBLH3Yw==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  capacitor-reader@0.1.0:
+    resolution: {integrity: sha512-RMPiOQCHOdMOP6rUrL6m80JOdxohzyrR9bdberh5NNtJxEteTQNqimenUM+0lV9eYrx1ncieNzKYxh9zTvrmcA==}
     peerDependencies:
       '@capacitor/core': ^6.0.0
 
@@ -7074,10 +7071,6 @@ snapshots:
     dependencies:
       '@capacitor/core': 6.1.2
 
-  '@capacitor/browser@6.0.3(patch_hash=33x6bihgpnt6i5jbwxndhs4p3q)(@capacitor/core@6.1.2)':
-    dependencies:
-      '@capacitor/core': 6.1.2
-
   '@capacitor/cli@6.1.2':
     dependencies:
       '@ionic/cli-framework-output': 2.2.8
@@ -8691,6 +8684,10 @@ snapshots:
       '@capacitor/core': 6.1.2
 
   capacitor-plugin-safe-area@3.0.3(@capacitor/core@6.1.2):
+    dependencies:
+      '@capacitor/core': 6.1.2
+
+  capacitor-reader@0.1.0(@capacitor/core@6.1.2):
     dependencies:
       '@capacitor/core': 6.1.2
 
