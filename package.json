@@ -32,7 +32,6 @@
       "@ionic/core": "npm:voyager-ionic-core@8.4.0"
     },
     "patchedDependencies": {
-      "@capacitor/browser": "patches/@capacitor__browser@6.0.3.patch",
       "@capacitor/haptics": "patches/@capacitor__haptics@6.0.1.patch",
       "@capacitor/keyboard": "patches/@capacitor__keyboard@6.0.2.patch"
     },
@@ -53,7 +52,6 @@
     "@capacitor-community/app-icon": "^5.0.0",
     "@capacitor/android": "^6.1.2",
     "@capacitor/app": "^6.0.1",
-    "@capacitor/browser": "^6.0.3",
     "@capacitor/core": "^6.1.2",
     "@capacitor/filesystem": "^6.0.1",
     "@capacitor/haptics": "^6.0.1",
@@ -77,6 +75,7 @@
     "capacitor-clear-cache": "^1.0.1",
     "capacitor-launch-native": "^1.0.0",
     "capacitor-plugin-safe-area": "^3.0.3",
+    "capacitor-reader": "^0.1.0",
     "capacitor-stash-media": "^2.0.1",
     "capacitor-tips": "^1.0.0",
     "colorjs.io": "^0.5.2",

@@ -129,7 +129,9 @@ interface EmbedProps {
 
   blur?: boolean;
   className?: string;
+
   onClick?: (e: MouseEvent) => void;
+  onClickCompleted?: () => void;
 
   commentType?: LinkData["type"];
 }
@@ -142,6 +144,7 @@ export default function Link({
   blur,
   className,
   onClick,
+  onClickCompleted,
   small,
   commentType,
 }: EmbedProps) {
@@ -210,6 +213,7 @@ export default function Link({
       className={className}
       href={url}
       onClick={handleLinkClick}
+      onClickCompleted={onClickCompleted}
       draggable="false"
     >
       {!compact && thumbnail && !error && (

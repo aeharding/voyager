@@ -13,7 +13,6 @@ def capacitor_pods
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios'
   pod 'CapacitorCommunityAppIcon', :path => '../../node_modules/.pnpm/@capacitor-community+app-icon@5.0.0_@capacitor+core@6.1.2/node_modules/@capacitor-community/app-icon'
   pod 'CapacitorApp', :path => '../../node_modules/.pnpm/@capacitor+app@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/app'
-  pod 'CapacitorBrowser', :path => '../../node_modules/.pnpm/@capacitor+browser@6.0.3_patch_hash=33x6bihgpnt6i5jbwxndhs4p3q_@capacitor+core@6.1.2/node_modules/@capacitor/browser'
   pod 'CapacitorFilesystem', :path => '../../node_modules/.pnpm/@capacitor+filesystem@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/filesystem'
   pod 'CapacitorHaptics', :path => '../../node_modules/.pnpm/@capacitor+haptics@6.0.1_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.1.2/node_modules/@capacitor/haptics'
   pod 'CapacitorKeyboard', :path => '../../node_modules/.pnpm/@capacitor+keyboard@6.0.2_patch_hash=2ihcxo2fu55l7b6g5u7feswwlm_@capacitor+core@6.1.2/node_modules/@capacitor/keyboard'
@@ -27,6 +26,7 @@ def capacitor_pods
   pod 'CapacitorClearCache', :path => '../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.1.2/node_modules/capacitor-clear-cache'
   pod 'CapacitorLaunchNative', :path => '../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-launch-native'
   pod 'CapacitorPluginSafeArea', :path => '../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.2/node_modules/capacitor-plugin-safe-area'
+  pod 'CapacitorReader', :path => '../../node_modules/.pnpm/capacitor-reader@0.1.0_@capacitor+core@6.1.2/node_modules/capacitor-reader'
   pod 'CapacitorStashMedia', :path => '../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.1.2/node_modules/capacitor-stash-media'
   pod 'CapacitorTips', :path => '../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-tips'
 end

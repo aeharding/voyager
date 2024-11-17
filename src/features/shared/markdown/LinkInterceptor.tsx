@@ -4,7 +4,7 @@ import React from "react";
 import { buildBaseLemmyUrl } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
-import InAppExternalLink from "../InAppExternalLink";
+import InAppExternalLink, { AdditionalLinkProps } from "../InAppExternalLink";
 import useLemmyUrlHandler from "../useLemmyUrlHandler";
 
 const LinkInterceptor = styled(LinkInterceptorUnstyled)`
@@ -19,10 +19,11 @@ type LinkInterceptorUnstyledProps = React.JSX.IntrinsicElements["a"] & {
    * This helps on new instances that aren't fully federated.
    */
   forceResolveObject?: boolean;
-};
+} & AdditionalLinkProps;
 
 function LinkInterceptorUnstyled({
   onClick: _onClick,
+  onClickCompleted,
   forceResolveObject,
   ...props
 }: LinkInterceptorUnstyledProps) {
@@ -60,6 +61,7 @@ function LinkInterceptorUnstyled({
       target="_blank"
       rel="noopener noreferrer"
       onClick={onClick}
+      onClickCompleted={onClickCompleted}
       href={absoluteHref}
     />
   );
