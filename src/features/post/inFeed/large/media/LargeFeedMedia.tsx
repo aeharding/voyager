@@ -1,8 +1,6 @@
 import { css } from "@linaria/core";
 
-import StableSizeMedia, {
-  StableSizeMediaProps,
-} from "#/features/media/StableSizeMedia";
+import InlineMedia, { InlineMediaProps } from "#/features/media/InlineMedia";
 
 import BlurOverlay from "./BlurOverlay";
 
@@ -17,7 +15,7 @@ export const fullWidthPostStyles = css`
   min-height: 0;
 `;
 
-interface LargeFeedMediaProps extends StableSizeMediaProps {
+interface LargeFeedMediaProps extends InlineMediaProps {
   blur?: boolean;
 }
 
@@ -26,7 +24,7 @@ export default function LargeFeedMedia({
   ...props
 }: LargeFeedMediaProps) {
   const contents = (
-    <StableSizeMedia {...props} nativeElmClassName={fullWidthPostStyles} />
+    <InlineMedia {...props} mediaClassName={fullWidthPostStyles} />
   );
 
   if (!blur) return contents; // optimization

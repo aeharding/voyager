@@ -11,19 +11,19 @@ import useMediaLoadObserver, {
   getTargetDimensions,
 } from "./useMediaLoadObserver";
 
-export type StableSizeMediaProps = Omit<MediaProps, "ref"> & {
+export type InlineMediaProps = Omit<MediaProps, "ref"> & {
   defaultAspectRatio?: number;
-  nativeElmClassName?: string;
+  mediaClassName?: string;
 };
 
-export default function StableSizeMedia({
+export default function InlineMedia({
   src,
   className,
   style: baseStyle,
   defaultAspectRatio,
-  nativeElmClassName,
+  mediaClassName,
   ...props
-}: StableSizeMediaProps) {
+}: InlineMediaProps) {
   const dispatch = useAppDispatch();
   const [mediaRef, currentAspectRatio] = useMediaLoadObserver(src);
 
@@ -60,10 +60,9 @@ export default function StableSizeMedia({
       <Media
         {...props}
         src={src}
-        className={cx("media", nativeElmClassName)}
+        className={cx("media", mediaClassName)}
         style={buildStyle()}
         ref={mediaRef}
-        autoPlay={!blur}
         onError={() => {
           if (src) dispatch(imageFailed(src));
         }}

@@ -24,6 +24,7 @@ export default function LargeFeedPostMedia(
       <LargeFeedRedgifMedia
         url={props.post.post.url}
         alt={props.post.post.alt_text}
+        autoPlay={!props.blur}
         {...props}
       />
     );
@@ -33,6 +34,7 @@ export default function LargeFeedPostMedia(
       <LargeFeedMedia
         {...props}
         src={src}
+        autoPlay={!props.blur}
         alt={props.post.post.alt_text}
         className={lightboxStyles}
       />

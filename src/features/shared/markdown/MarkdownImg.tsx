@@ -1,6 +1,6 @@
 import { css, cx } from "@linaria/core";
 
-import StableSizeMedia from "#/features/media/StableSizeMedia";
+import InlineMedia from "#/features/media/InlineMedia";
 import { GalleryMediaProps } from "#/features/media/gallery/GalleryMedia";
 
 const smallStyles = css`
@@ -33,10 +33,10 @@ export default function MarkdownImg({
   if (!src) return;
 
   return (
-    <StableSizeMedia
+    <InlineMedia
       {...props}
       src={src}
-      nativeElmClassName={cx(sharedStyles, props.className)}
+      mediaClassName={cx(sharedStyles, props.className)}
       className={mediaStyles}
       animationType="zoom"
     />
