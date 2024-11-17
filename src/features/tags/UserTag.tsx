@@ -12,7 +12,8 @@ const TagContainer = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
 
-  background: var(--bg, var(--lightroom-bg));
+  background: var(--lightroom-bg);
+  color: var(--ion-color-medium);
 
   border-radius: 4px;
   padding: 0 4px;
@@ -85,8 +86,7 @@ function SyncUserTag({ tag }: SyncUserTagProps) {
       style={
         tag.color
           ? {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ["--bg" as any]: tag.color,
+              background: tag.color,
               color: getTextColorFor(tag.color),
             }
           : undefined

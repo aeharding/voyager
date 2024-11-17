@@ -43,6 +43,7 @@ import Login from "#/features/auth/login/login/Login";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import { isIosTheme } from "#/helpers/device";
+import { blurOnEnter } from "#/helpers/dom";
 import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import { defaultServersUntouched, getCustomServers } from "#/services/app";
@@ -349,13 +350,9 @@ export default function PickJoinServer() {
           <StyledIonSearchbar
             value={search}
             onIonInput={(e) => setSearch(e.detail.value || "")}
-            onKeyDown={(e) => {
-              if (e.key !== "Enter") return;
-
-              if (e.target instanceof HTMLElement) e.target.blur();
-            }}
+            onKeyDown={blurOnEnter}
             inputMode="url"
-            enterkeyhint="go"
+            enterkeyhint="done"
           />
           <Filters
             hasRecommended={hasRecommended}
