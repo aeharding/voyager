@@ -138,7 +138,7 @@ jobs:
       - name: Build (Ionic)
         run: pnpm exec ionic cap sync
         env:
-          BUILD_FOSS_ONLY: 1
+          BUILD_FOSS_ONLY: true
           CI_PLATFORM: android
 
       - name: Set up JDK 11
