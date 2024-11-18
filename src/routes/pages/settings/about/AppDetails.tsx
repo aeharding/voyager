@@ -1,5 +1,6 @@
-import { IonText } from "@ionic/react";
 import { styled } from "@linaria/react";
+
+import AppVersionInfo from "./AppVersionInfo";
 
 const AppContainer = styled.div`
   display: flex;
@@ -22,26 +23,12 @@ const AppContainer = styled.div`
   }
 `;
 
-const buildInfo = (() => {
-  if (import.meta.env.DEV) return <IonText color="danger">Development</IonText>;
-
-  // If the app version is different from the git ref (tag), it's a pre-release
-  if (import.meta.env.APP_GIT_REF !== import.meta.env.APP_VERSION)
-    return (
-      <IonText color="warning">
-        Beta Track — [{import.meta.env.APP_BUILD}]{" "}
-        {import.meta.env.APP_GIT_REF.slice(0, 7)}
-      </IonText>
-    );
-})();
-
 export default function AppDetails() {
   return (
     <AppContainer>
       <img src="/logo.png" alt="" />
       <div>
-        Voyager {import.meta.env.APP_VERSION}
-        {buildInfo && <aside>{buildInfo}</aside>}
+        Voyager <AppVersionInfo betaPrefix="Beta Track" betaAs="aside" />
         <aside>by Alexander Harding</aside>
       </div>
     </AppContainer>

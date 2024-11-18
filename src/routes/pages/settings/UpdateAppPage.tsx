@@ -23,6 +23,7 @@ import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
 import { ua } from "#/helpers/device";
 import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
 
+import AppVersionInfo from "./about/AppVersionInfo";
 import { UpdateContext } from "./update/UpdateContext";
 
 const UpToDateText = styled.div`
@@ -108,7 +109,7 @@ export default function UpdateAppPage() {
               <IonItem>
                 <IonLabel>Current version</IonLabel>
                 <IonLabel slot="end" color="medium">
-                  {import.meta.env.APP_VERSION}
+                  <AppVersionInfo />
                 </IonLabel>
               </IonItem>
               <IonItem
