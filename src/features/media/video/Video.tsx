@@ -6,7 +6,7 @@ import Player from "./Player";
 import { useVideoPortalNode } from "./VideoPortalProvider";
 
 export interface VideoProps extends Omit<PlayerProps, "ref"> {
-  ref: React.RefObject<HTMLVideoElement>;
+  ref: React.RefObject<HTMLVideoElement | undefined>;
   shouldPortal?: boolean;
 }
 
@@ -17,7 +17,9 @@ export default function Video(props: VideoProps) {
 }
 
 function UnportaledVideo(props: VideoProps) {
-  return <Player {...props} />;
+  return (
+    <Player {...props} ref={props.ref as React.RefObject<HTMLVideoElement>} />
+  );
 }
 
 function PortaledVideo({ src, ref, ...props }: VideoProps) {
