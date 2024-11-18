@@ -4,6 +4,8 @@ import { styled } from "@linaria/react";
 import { imageOutline } from "ionicons/icons";
 import { HTMLAttributes } from "react";
 
+import { MEDIA_EL_CLASSNAME } from "./InlineMedia";
+
 const PlaceholderContainer = styled.span<{ defaultAspectRatio: number }>`
   display: flex;
 
@@ -14,7 +16,7 @@ const PlaceholderContainer = styled.span<{ defaultAspectRatio: number }>`
     aspect-ratio: ${({ defaultAspectRatio }) => defaultAspectRatio};
     position: relative;
 
-    .media {
+    .${MEDIA_EL_CLASSNAME} {
       position: absolute;
       top: 0;
       left: 0;

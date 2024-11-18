@@ -17,6 +17,8 @@ export type InlineMediaProps = Omit<MediaProps, "ref"> & {
   mediaClassName?: string;
 };
 
+export const MEDIA_EL_CLASSNAME = "media";
+
 export default function InlineMedia({
   src,
   className,
@@ -59,7 +61,7 @@ export default function InlineMedia({
       <Media
         {...props}
         src={src}
-        className={cx("media", mediaClassName)}
+        className={cx(MEDIA_EL_CLASSNAME, mediaClassName)}
         style={buildStyle()}
         ref={mediaRef}
         onError={() => {
