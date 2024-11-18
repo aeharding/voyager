@@ -2,14 +2,25 @@ import { useImperativeHandle } from "react";
 import * as portals from "react-reverse-portal";
 
 import type { PlayerProps } from "./Player";
-import type Player from "./Player";
+import Player from "./Player";
 import { useVideoPortalNode } from "./VideoPortalProvider";
 
 export interface VideoProps extends Omit<PlayerProps, "ref"> {
-  ref: React.RefObject<HTMLVideoElement | undefined>;
+  ref: React.RefObject<HTMLVideoElement>;
+  shouldPortal?: boolean;
 }
 
-export default function Video({ src, ref, ...props }: VideoProps) {
+export default function Video(props: VideoProps) {
+  const VideoComponent = props.shouldPortal ? PortaledVideo : UnportaledVideo;
+
+  return <VideoComponent {...props} />;
+}
+
+function UnportaledVideo(props: VideoProps) {
+  return <Player {...props} />;
+}
+
+function PortaledVideo({ src, ref, ...props }: VideoProps) {
   const portalNode = useVideoPortalNode(src);
 
   useImperativeHandle(

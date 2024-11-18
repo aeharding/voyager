@@ -40,6 +40,9 @@ export default function MarkdownImg({
       mediaClassName={cx(sharedStyles, props.className)}
       className={mediaStyles}
       animationType="zoom"
+      progress={false}
+      volume={false}
+      shouldPortal={false}
     />
   );
 }

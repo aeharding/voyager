@@ -1,13 +1,12 @@
 import { ComponentProps, ComponentRef } from "react";
 
-import { PlayerProps } from "#/features/media/video/Player";
-import Video from "#/features/media/video/Video";
+import Video, { VideoProps } from "#/features/media/video/Video";
 import { isUrlVideo } from "#/helpers/url";
 
 import GalleryMedia, { GalleryMediaProps } from "./gallery/GalleryMedia";
 
 export interface MediaProps
-  extends Omit<GalleryMediaProps & PlayerProps, "src" | "ref"> {
+  extends Omit<GalleryMediaProps & VideoProps, "src" | "ref"> {
   src: string;
 
   ref?: React.RefObject<
