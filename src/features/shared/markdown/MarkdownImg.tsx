@@ -9,6 +9,7 @@ const smallStyles = css`
 
 const mediaStyles = css`
   display: inline-flex;
+  vertical-align: middle;
 
   &.not-loaded {
     height: 200px;
