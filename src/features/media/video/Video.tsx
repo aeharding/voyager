@@ -22,8 +22,8 @@ export default function Video({ src, ref, ...props }: VideoProps) {
     <div style={props.style} className={props.className}>
       {portalNode ? (
         <portals.OutPortal<typeof Player>
-          node={portalNode}
           {...props}
+          node={portalNode}
           src={src}
         />
       ) : undefined}
