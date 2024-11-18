@@ -1,11 +1,10 @@
 import { PostView } from "lemmy-js-client";
 
+import { IMAGE_FAILED } from "#/features/media/imageSlice";
 import { findLoneImage } from "#/helpers/markdown";
 import { findUrlMediaType } from "#/helpers/url";
 import useSupported from "#/helpers/useSupported";
 import { useAppSelector } from "#/store";
-
-import { IMAGE_FAILED } from "./large/imageSlice";
 
 export default function usePostSrc(post: PostView): string | undefined {
   const thumbnailIsFullsize = useSupported("Fullsize thumbnails");

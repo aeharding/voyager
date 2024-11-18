@@ -65,10 +65,6 @@ const markdownCss = css`
       margin: 0;
     }
   }
-
-  img {
-    vertical-align: middle;
-  }
 `;
 
 // TODO - remove never when upgrading to rehypeHighlight v7

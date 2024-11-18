@@ -1,6 +1,10 @@
 import { css } from "@linaria/core";
 import { styled } from "@linaria/react";
 
+import useAspectRatio, {
+  isLoadedAspectRatio,
+} from "#/features/media/useAspectRatio";
+
 import BlurOverlayMessage from "./BlurOverlayMessage";
 
 const BlurContainer = styled.div`
@@ -15,10 +19,15 @@ const blurCss = css`
 `;
 
 interface BlurOverlayProps extends React.PropsWithChildren {
-  blur: boolean;
+  src: string;
 }
 
-export default function BlurOverlay({ blur, children }: BlurOverlayProps) {
+export default function BlurOverlay({ src, children }: BlurOverlayProps) {
+  const aspectRatio = useAspectRatio(src);
+
+  // Only blur if image is displayed (loaded)
+  const blur = !!isLoadedAspectRatio(aspectRatio);
+
   return (
     <BlurContainer>
       <div className={blur ? blurCss : undefined}>{children}</div>
