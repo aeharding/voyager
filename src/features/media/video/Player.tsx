@@ -222,6 +222,7 @@ export default function Player({
           setProgress(e.target.currentTime / e.target.duration);
         }}
         aria-label={rest.alt}
+        crossOrigin="anonymous"
       />
       {showProgress && progress !== undefined && <Progress value={progress} />}
       {!nativeControls && (

@@ -2,13 +2,13 @@ import { ComponentRef, useEffect, useRef } from "react";
 
 import type Media from "#/features/media/Media";
 import { imageLoaded } from "#/features/media/imageSlice";
-import { useAppDispatch, useAppSelector } from "#/store";
+import { useAppDispatch } from "#/store";
+
+import useAspectRatio, { isLoadedAspectRatio } from "./useAspectRatio";
 
 export default function useMediaLoadObserver(src: string | undefined) {
   const dispatch = useAppDispatch();
-  const aspectRatio = useAppSelector((state) =>
-    src ? state.image.loadedBySrc[src] : undefined,
-  );
+  const aspectRatio = useAspectRatio(src);
   const mediaRef = useRef<ComponentRef<typeof Media>>(null);
   const resizeObserverRef = useRef<ResizeObserver | undefined>();
 
@@ -18,7 +18,7 @@ export default function useMediaLoadObserver(src: string | undefined) {
     function setupObserver() {
       if (destroyed) return;
 
-      if (aspectRatio && aspectRatio > 0) return;
+      if (isLoadedAspectRatio(aspectRatio)) return;
       if (!src) return;
       if (!mediaRef.current) {
         // react-reverse-portal refs can take some time to setup. Try again on next paint

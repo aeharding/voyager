@@ -7,6 +7,7 @@ import { useAppDispatch } from "#/store";
 
 import MediaPlaceholder from "./MediaPlaceholder";
 import { IMAGE_FAILED, imageFailed, imageLoaded } from "./imageSlice";
+import { isLoadedAspectRatio } from "./useAspectRatio";
 import useMediaLoadObserver, {
   getTargetDimensions,
 } from "./useMediaLoadObserver";
@@ -48,8 +49,6 @@ export default function InlineMedia({
     return { aspectRatio };
   }
 
-  const loaded = !!aspectRatio && aspectRatio > 0;
-
   return (
     <MediaPlaceholder
       className={className}
@@ -73,7 +72,7 @@ export default function InlineMedia({
         // TLDR Image loading should still work with this function commented out!
         onLoad={(event) => {
           if (!src) return;
-          if (loaded) return;
+          if (isLoadedAspectRatio(aspectRatio)) return;
 
           const dimensions = getTargetDimensions(
             event.target as HTMLImageElement,

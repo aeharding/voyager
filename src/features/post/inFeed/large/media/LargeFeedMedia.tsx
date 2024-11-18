@@ -27,7 +27,7 @@ export default function LargeFeedMedia({
     <InlineMedia {...props} mediaClassName={fullWidthPostStyles} />
   );
 
-  if (!blur) return contents; // optimization
+  if (!blur) return contents;
 
-  return <BlurOverlay blur={blur /*&& loaded*/}>{contents}</BlurOverlay>;
+  return <BlurOverlay src={props.src}>{contents}</BlurOverlay>;
 }
