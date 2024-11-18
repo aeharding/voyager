@@ -12,7 +12,7 @@ const mediaStyles = css`
 
   &.not-loaded {
     height: 200px;
-    border: 1px solid rgba(100, 100, 100, 0.2);
+    border: 1px solid rgba(var(--ion-color-dark-rgb), 0.15);
   }
 `;
 
