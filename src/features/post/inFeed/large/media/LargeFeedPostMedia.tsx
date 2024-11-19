@@ -25,6 +25,7 @@ export default function LargeFeedPostMedia(
         url={props.post.post.url}
         alt={props.post.post.alt_text}
         autoPlay={!props.blur}
+        shouldPortal
         {...props}
       />
     );
@@ -37,6 +38,7 @@ export default function LargeFeedPostMedia(
         autoPlay={!props.blur}
         alt={props.post.post.alt_text}
         className={lightboxStyles}
+        shouldPortal
       />
     );
 }
