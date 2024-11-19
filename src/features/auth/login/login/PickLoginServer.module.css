@@ -1,0 +1,12 @@
+.container {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  flex: 1;
+
+  --ion-item-background: none;
+}

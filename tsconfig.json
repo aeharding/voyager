@@ -17,8 +17,6 @@
 
     "jsx": "react-jsx",
 
-    "plugins": [{ "name": "typescript-plugin-css-modules" }],
-
     "paths": {
       // duplicate of package.json[imports]
       // typescript doesn't support this same syntax in package.json with

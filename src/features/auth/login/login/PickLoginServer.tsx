@@ -11,7 +11,6 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { uniq } from "es-toolkit";
 import { GetSiteResponse } from "lemmy-js-client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -29,19 +28,7 @@ import { getCustomServers } from "#/services/app";
 import { getClient } from "#/services/lemmy";
 
 import Login from "./Login";
-
-const Container = styled.div`
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-const StyledIonList = styled(IonList)`
-  flex: 1;
-
-  --ion-item-background: none;
-`;
+import styles from "./PickLoginServer.module.css";
 
 export default function PickLoginServer() {
   const presentToast = useAppToast();
@@ -155,7 +142,7 @@ export default function PickLoginServer() {
         </IonToolbar>
       </AppHeader>
       <IonContent scrollY={false}>
-        <Container ref={ref}>
+        <div className={styles.container} ref={ref}>
           <div className="ion-padding">
             <IonText color="medium">
               Pick the server you created your account on
@@ -206,7 +193,7 @@ export default function PickLoginServer() {
             }}
           />
 
-          <StyledIonList>
+          <IonList className={styles.list}>
             <VList
               count={instances.length}
               ref={vHandle}
@@ -229,8 +216,8 @@ export default function PickLoginServer() {
                 );
               }}
             </VList>
-          </StyledIonList>
-        </Container>
+          </IonList>
+        </div>
       </IonContent>
     </>
   );

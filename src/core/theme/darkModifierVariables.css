@@ -1,0 +1,70 @@
+html.ion-palette-dark {
+  &:not(.theme-pure-black) {
+    &.ios {
+      body {
+        --ion-background-color: #22252f;
+        --ion-background-color-rgb: 34, 37, 47;
+        --ion-tab-bar-background: rgba(0, 0, 0, 0.2);
+        --ion-toolbar-border-color: #444;
+
+        ion-tab-bar {
+          --ion-tab-bar-background: var(--ion-background-color);
+          --ion-tab-bar-border-color: #444;
+        }
+      }
+    }
+
+    &.md {
+      body {
+        --ion-background-color: #1e1e1e;
+        --ion-background-color-rgb: 18, 18, 18;
+
+        --ion-text-color: #ffffff;
+        --ion-text-color-rgb: 255, 255, 255;
+
+        --ion-border-color: #222222;
+
+        --ion-item-background: #1e1e1e;
+
+        --ion-toolbar-background: #1f1f1f;
+
+        --ion-tab-bar-background: #1f1f1f;
+
+        --ion-card-background: #1e1e1e;
+      }
+    }
+  }
+
+  &.theme-pure-black {
+    &.ios {
+      body {
+        --ion-background-color: #000000;
+        --ion-background-color-rgb: 0, 0, 0;
+      }
+    }
+
+    &:not(.theme-has-custom-background) {
+      &.md {
+        body {
+          --ion-item-background: black;
+          --ion-toolbar-background: #121212;
+          --ion-tab-bar-background: #121212;
+        }
+      }
+    }
+
+    &.md {
+      body {
+        --ion-background-color: black;
+        --ion-background-color-rgb: 18, 18, 18;
+
+        --ion-text-color: #ffffff;
+        --ion-text-color-rgb: 255, 255, 255;
+
+        --ion-border-color: #222222;
+
+        --ion-card-background: black;
+      }
+    }
+  }
+}

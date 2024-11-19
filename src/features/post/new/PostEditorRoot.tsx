@@ -17,7 +17,6 @@ import {
   useIonAlert,
 } from "@ionic/react";
 import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { startCase } from "es-toolkit";
 import { accessibility, cameraOutline } from "ionicons/icons";
 import { Post } from "lemmy-js-client";

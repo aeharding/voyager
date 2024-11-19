@@ -44,11 +44,22 @@ import "@ionic/react/css/padding.css";
 import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 
-// Allow Ionic palette to override custom styles
-import "./theme/variables";
+// Override Ionic variables
+import "./theme/variables.css";
+// Light mode
+import "./theme/lightVariables.css";
+// Dark mode
+import "./theme/darkVariables.css";
+// Dark mode modifier
+import "./theme/darkModifierVariables.css";
 
 // Define after ./theme/variables to override it
 import "@ionic/react/css/palettes/dark.class.css";
+
+// CSS imports
+import "./syntaxHighlights.css";
+// Global CSS overrides
+import "./globalCssOverrides.css";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {

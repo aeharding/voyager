@@ -14,7 +14,6 @@ import {
   IonToolbar,
   useIonActionSheet,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { HelperText } from "#/features/settings/shared/formatting";
@@ -31,11 +30,8 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import { getInstanceFromHandle } from "../../authSelectors";
 import { addGuestInstance, login } from "../../authSlice";
 import lemmyLogo from "../lemmyLogo.svg";
+import styles from "./Login.module.css";
 import Totp from "./Totp";
-
-const SiteImg = styled.img`
-  object-fit: contain;
-`;
 
 interface LoginProps {
   url: string;
@@ -167,7 +163,8 @@ export default function Login({ url, siteIcon }: LoginProps) {
           >
             <IonChip outline>
               <IonAvatar>
-                <SiteImg
+                <img
+                  className={styles.siteIconImg}
                   src={
                     siteIcon
                       ? getImageSrc(siteIcon, {

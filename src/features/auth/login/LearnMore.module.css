@@ -1,0 +1,25 @@
+.content {
+  line-height: 1.4;
+}
+
+.list {
+  li:not(:last-of-type) {
+    margin-bottom: 1rem;
+  }
+}
+
+.compare {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: space-around;
+
+  line-height: 1.5;
+
+  margin: 1rem 0;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+  }
+}

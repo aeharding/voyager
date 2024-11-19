@@ -1,0 +1,34 @@
+html:not(.ion-palette-dark) {
+  &:root {
+    --ion-color-primary: var(--app-primary);
+    --ion-color-primary-fixed: #3880ff; /* always blue always blue! */
+
+    ion-item {
+      /* default ionic light mode opacity is too harsh */
+      --background-activated-opacity: 0.06;
+    }
+
+    &.ios .grey-bg {
+      --ion-background-color: var(--ion-background-color-step-50, #f2f2f7);
+
+      ion-header {
+        --opacity: 0;
+      }
+      ion-modal ion-content {
+        --background: #fff;
+      }
+      ion-item {
+        --ion-background-color: #fff;
+      }
+      ion-item-sliding {
+        background: #fff;
+      }
+    }
+
+    &.theme-has-custom-background {
+      ion-router-outlet .grey-bg ion-list.list-inset ion-item {
+        --background: var(--app-background);
+      }
+    }
+  }
+}
