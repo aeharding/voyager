@@ -13,7 +13,6 @@ import { styled } from "@linaria/react";
 import { Person } from "lemmy-js-client";
 import { useState } from "react";
 
-import { Centered } from "#/features/auth/login/LoginNav";
 import PersonLink from "#/features/labels/links/PersonLink";
 import AppHeader from "#/features/shared/AppHeader";
 import { blurOnEnter } from "#/helpers/dom";
@@ -144,14 +143,14 @@ function UserTagModalContents({
             />
           </IonButtons>
           <IonTitle>
-            <Centered>
+            <div className="multiline-title">
               <div>
                 <IonText>User Tag</IonText>
                 <div>
                   <UserText color="medium">{getRemoteHandle(person)}</UserText>
                 </div>
               </div>
-            </Centered>
+            </div>
           </IonTitle>
           <IonButtons slot="end">
             <IonButton

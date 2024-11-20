@@ -2,6 +2,7 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
+  IonSpinner,
   IonText,
   IonTitle,
   IonToolbar,
@@ -23,7 +24,6 @@ import {
   loggedInAccountsSelector,
   userHandleSelector,
 } from "#/features/auth/authSelectors";
-import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import { receivedComments } from "#/features/comment/commentSlice";
 import { isIosTheme } from "#/helpers/device";
 import { isLemmyError } from "#/helpers/lemmyErrors";
@@ -244,7 +244,7 @@ export default function CommentReplyPage({
             </IonButton>
           </IonButtons>
           <IonTitle>
-            <Centered>
+            <div className="multiline-title">
               <TitleContainer
                 onClick={() => {
                   if (accounts?.length === 1) return;
@@ -265,20 +265,27 @@ export default function CommentReplyPage({
                     {selectedAccount}
                   </UsernameIonText>
                 </div>
-              </TitleContainer>{" "}
-              {loading && <Spinner color="dark" />}
-            </Centered>
+              </TitleContainer>
+            </div>
           </IonTitle>
           <IonButtons slot="end">
-            <IonButton
-              strong
-              type="submit"
-              disabled={isSubmitDisabled}
-              color={isSubmitDisabled ? "medium" : undefined}
-              onClick={submit}
-            >
-              {isIosTheme() ? "Post" : <IonIcon icon={send} slot="icon-only" />}
-            </IonButton>
+            {loading ? (
+              <IonSpinner />
+            ) : (
+              <IonButton
+                strong
+                type="submit"
+                disabled={isSubmitDisabled}
+                color={isSubmitDisabled ? "medium" : undefined}
+                onClick={submit}
+              >
+                {isIosTheme() ? (
+                  "Post"
+                ) : (
+                  <IonIcon icon={send} slot="icon-only" />
+                )}
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
       </AppHeader>

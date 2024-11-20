@@ -5,6 +5,7 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonSpinner,
   IonTextarea,
   IonTitle,
   IonToggle,
@@ -16,7 +17,6 @@ import { addDays } from "date-fns";
 import { useEffect, useState } from "react";
 
 import { BanUserPayload } from "#/features/auth/PageContext";
-import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import { preventPhotoswipeGalleryFocusTrap } from "#/features/media/gallery/GalleryImg";
 import AddRemoveButtons from "#/features/share/asImage/AddRemoveButtons";
 import AppHeader from "#/features/shared/AppHeader";
@@ -25,11 +25,6 @@ import { getHandle } from "#/helpers/lemmy";
 import { buildBanFailed, buildBanned } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
-
-const Title = styled.span`
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
 
 const DaysValues = styled.div`
   display: flex;
@@ -124,23 +119,15 @@ export default function BanUser({
           <IonButtons slot="start">
             <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
-          <IonTitle>
-            <Centered>
-              <Title>
-                Ban {getHandle(user)} {loading && <Spinner color="dark" />}
-              </Title>
-            </Centered>
-          </IonTitle>
+          <IonTitle>Ban {getHandle(user)}</IonTitle>
           <IonButtons slot="end">
-            <IonButton
-              strong
-              type="submit"
-              color="danger"
-              onClick={submit}
-              disabled={loading}
-            >
-              Ban
-            </IonButton>
+            {loading ? (
+              <IonSpinner />
+            ) : (
+              <IonButton strong type="submit" color="danger" onClick={submit}>
+                Ban
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
       </AppHeader>

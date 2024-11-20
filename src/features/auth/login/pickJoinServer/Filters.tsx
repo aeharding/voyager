@@ -1,33 +1,11 @@
 import { IonChip } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 
 import {
   SERVERS_BY_CATEGORY,
   ServerCategory,
 } from "#/features/auth/login/data/servers";
 
-const Container = styled.div`
-  display: flex;
-
-  overflow: auto;
-
-  padding-left: 8px;
-  padding-right: 8px;
-
-  > * {
-    flex-shrink: 0;
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const selectedChipStyles = css`
-  --background: var(--ion-color-primary);
-  --color: var(--ion-color-primary-contrast);
-`;
+import styles from "./filters.module.css";
 const CATEGORIES = Object.keys(SERVERS_BY_CATEGORY) as ServerCategory[];
 
 interface FiltersProps {
@@ -42,7 +20,8 @@ export default function Filters({
   setCategory,
 }: FiltersProps) {
   return (
-    <Container
+    <div
+      className={styles.container}
       onTouchMoveCapture={(e) => {
         // Prevent page swipes
         e.stopPropagation();
@@ -52,7 +31,7 @@ export default function Filters({
       {hasRecommended && (
         <IonChip
           className={
-            category === "recommended" ? selectedChipStyles : undefined
+            category === "recommended" ? styles.selectedChip : undefined
           }
           outline={category !== "recommended"}
           onClick={() => setCategory("recommended")}
@@ -62,7 +41,7 @@ export default function Filters({
       )}
       {CATEGORIES.map((c) => (
         <IonChip
-          className={category === c ? selectedChipStyles : undefined}
+          className={category === c ? styles.selectedChip : undefined}
           key={c}
           outline={category !== c}
           onClick={() => setCategory(c)}
@@ -70,6 +49,6 @@ export default function Filters({
           {c}
         </IonChip>
       ))}
-    </Container>
+    </div>
   );
 }

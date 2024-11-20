@@ -3,6 +3,7 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
+  IonSpinner,
   IonText,
   IonTitle,
   IonToolbar,
@@ -10,7 +11,6 @@ import {
 import { send } from "ionicons/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import AppHeader from "#/features/shared/AppHeader";
 import Editor from "#/features/shared/markdown/editing/Editor";
 import { MarkdownEditorIonContent } from "#/features/shared/markdown/editing/MarkdownToolbar";
@@ -58,21 +58,24 @@ export default function NewPostText({
           <IonButtons slot="start">
             <IonBackButton disabled={loading} />
           </IonButtons>
-          <IonTitle>
-            <Centered>
-              <IonText>Post Text</IonText>
-              {loading && <Spinner color="dark" />}
-            </Centered>
-          </IonTitle>
+          <IonTitle>Post Text</IonTitle>
           <IonButtons slot="end">
-            <IonButton
-              strong
-              type="submit"
-              onClick={submit}
-              disabled={isSubmitDisabled}
-            >
-              {isIosTheme() ? "Post" : <IonIcon icon={send} slot="icon-only" />}
-            </IonButton>
+            {loading ? (
+              <IonSpinner />
+            ) : (
+              <IonButton
+                strong
+                type="submit"
+                onClick={submit}
+                disabled={isSubmitDisabled}
+              >
+                {isIosTheme() ? (
+                  "Post"
+                ) : (
+                  <IonIcon icon={send} slot="icon-only" />
+                )}
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
       </AppHeader>

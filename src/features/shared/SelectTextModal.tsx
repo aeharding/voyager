@@ -12,7 +12,6 @@ import { copyOutline } from "ionicons/icons";
 import { useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
-import { Centered } from "#/features/auth/login/LoginNav";
 import { isTouchDevice } from "#/helpers/device";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import {
@@ -103,9 +102,7 @@ export default function SelectTextModal({
               <IonIcon icon={copyOutline} />
             </IonButton>
           </IonButtons>
-          <IonTitle>
-            <Centered>Select Text</Centered>
-          </IonTitle>
+          <IonTitle>Select Text</IonTitle>
           <IonButtons slot="end">
             <IonButton
               onClick={() => {

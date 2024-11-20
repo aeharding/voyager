@@ -2,6 +2,7 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -10,7 +11,6 @@ import { arrowBackSharp, send } from "ionicons/icons";
 import { Person, PrivateMessageView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 
-import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import { receivedMessages } from "#/features/inbox/inboxSlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { DismissableProps } from "#/features/shared/DynamicDismissableModal";
@@ -106,22 +106,25 @@ export default function PrivateMessagePage({
               )}
             </IonButton>
           </IonButtons>
-          <IonTitle>
-            <Centered>
-              <Title>To {getHandle(item.private_message.recipient)}</Title>
-              {loading && <Spinner color="dark" />}
-            </Centered>
-          </IonTitle>
+          <IonTitle>To {getHandle(item.private_message.recipient)}</IonTitle>
           <IonButtons slot="end">
-            <IonButton
-              strong
-              type="submit"
-              disabled={isSubmitDisabled}
-              color={isSubmitDisabled ? "medium" : undefined}
-              onClick={submit}
-            >
-              {isIosTheme() ? "Send" : <IonIcon icon={send} slot="icon-only" />}
-            </IonButton>
+            {loading ? (
+              <IonSpinner />
+            ) : (
+              <IonButton
+                strong
+                type="submit"
+                disabled={isSubmitDisabled}
+                color={isSubmitDisabled ? "medium" : undefined}
+                onClick={submit}
+              >
+                {isIosTheme() ? (
+                  "Send"
+                ) : (
+                  <IonIcon icon={send} slot="icon-only" />
+                )}
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
       </AppHeader>

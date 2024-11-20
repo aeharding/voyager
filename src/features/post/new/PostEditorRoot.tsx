@@ -10,6 +10,7 @@ import {
   IonNavLink,
   IonSegment,
   IonSegmentButton,
+  IonSpinner,
   IonText,
   IonTitle,
   IonToggle,
@@ -22,7 +23,6 @@ import { accessibility, cameraOutline } from "ionicons/icons";
 import { Post } from "lemmy-js-client";
 import { useEffect, useMemo, useState } from "react";
 
-import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import AppHeader from "#/features/shared/AppHeader";
 import {
   deletePendingImageUploads,
@@ -366,23 +366,22 @@ export default function PostEditorRoot({
             <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>
-            <Centered>
-              <IonText>
-                {existingPost ? "Edit Post" : <>{startCase(postType)} Post</>}
-              </IonText>
-              {loading && <Spinner color="dark" />}
-            </Centered>
+            {existingPost ? "Edit Post" : <>{startCase(postType)} Post</>}
           </IonTitle>
           <IonButtons slot="end">
-            <IonButton
-              color={postButtonDisabled ? "medium" : undefined}
-              strong
-              type="submit"
-              disabled={postButtonDisabled}
-              onClick={submit}
-            >
-              {existingPost ? "Save" : "Post"}
-            </IonButton>
+            {loading ? (
+              <IonSpinner />
+            ) : (
+              <IonButton
+                color={postButtonDisabled ? "medium" : undefined}
+                strong
+                type="submit"
+                disabled={postButtonDisabled}
+                onClick={submit}
+              >
+                {existingPost ? "Save" : "Post"}
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
         <IonToolbar>

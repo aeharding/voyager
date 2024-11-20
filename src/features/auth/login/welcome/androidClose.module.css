@@ -1,0 +1,5 @@
+.android-ion-buttons {
+  .ios & {
+    display: none;
+  }
+}
