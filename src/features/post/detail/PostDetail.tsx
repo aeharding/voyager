@@ -16,6 +16,8 @@ interface PostDetailProps {
 
   commentPath: string | undefined;
   threadCommentId: string | undefined;
+
+  virtual: boolean;
 }
 
 export default function PostDetail({
@@ -23,6 +25,7 @@ export default function PostDetail({
   sort,
   commentPath,
   threadCommentId,
+  virtual,
 }: PostDetailProps) {
   const dispatch = useAppDispatch();
   const { showJumpButton, jumpButtonPosition } = useAppSelector(
@@ -71,6 +74,7 @@ export default function PostDetail({
   return (
     <>
       <Comments
+        virtual={virtual}
         ref={commentsRef}
         header={
           <PostHeader

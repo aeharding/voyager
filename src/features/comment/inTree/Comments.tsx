@@ -36,6 +36,7 @@ import { receivedComments } from "../commentSlice";
 import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { CommentsContext } from "./CommentsContext";
 import LoadParentComments from "./LoadParentComments";
+import CommentSearchProvider from "./search/CommentSearch";
 
 const ScrollViewContainer = styled.div`
   width: 100%;
@@ -84,6 +85,8 @@ interface CommentsProps {
   bottomPadding?: number;
 
   ref: React.RefObject<CommentsHandle>;
+
+  virtual: boolean;
 }
 
 export default function Comments({
@@ -94,6 +97,7 @@ export default function Comments({
   bottomPadding,
   threadCommentId,
   ref,
+  virtual,
 }: CommentsProps) {
   const dispatch = useAppDispatch();
   const [page, setPage] = useState(0);
@@ -112,23 +116,15 @@ export default function Comments({
   const scrollViewContainerRef = useRef<HTMLDivElement>(null);
   const virtuaRef = useRef<VListHandle>(null);
 
-  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
-    commentPath,
-    threadCommentId,
-  );
-
   const preservePositionFromBottomInScrollView =
-    usePreservePositionFromBottomInScrollView(
-      scrollViewContainerRef,
-      !virtualEnabled,
-    );
+    usePreservePositionFromBottomInScrollView(scrollViewContainerRef, !virtual);
 
   function setLoading(loading: boolean) {
     _setLoading(loading);
     loadingRef.current = loading;
   }
 
-  useSetActivePage(virtuaRef, virtualEnabled);
+  useSetActivePage(virtuaRef, virtual);
 
   const [maxContext, setMaxContext] = useState(
     getCommentContextDepthForPath(commentPath),
@@ -507,28 +503,30 @@ export default function Comments({
         <IonRefresherContent />
       </IonRefresher>
       <ScrollViewContainer ref={scrollViewContainerRef}>
-        {virtualEnabled ? (
-          <VList
-            className={
-              isSafariFeedHackEnabled
-                ? "virtual-scroller"
-                : "ion-content-scroll-host virtual-scroller"
-            }
-            ref={virtuaRef}
-            style={{ height: "100%" }}
-            // @ts-expect-error Virtua types not updated for forwardRef-less components
-            item={IndexedVirtuaItem}
-            overscan={1}
-            onScroll={(offset) => {
-              onScroll();
-              setIsListAtTop(offset < 6);
-            }}
-          >
-            {...content}
-          </VList>
-        ) : (
-          <>{...content}</>
-        )}
+        <CommentSearchProvider>
+          {virtual ? (
+            <VList
+              className={
+                isSafariFeedHackEnabled
+                  ? "virtual-scroller"
+                  : "ion-content-scroll-host virtual-scroller"
+              }
+              ref={virtuaRef}
+              style={{ height: "100%" }}
+              // @ts-expect-error Virtua types not updated for forwardRef-less components
+              item={IndexedVirtuaItem}
+              overscan={1}
+              onScroll={(offset) => {
+                onScroll();
+                setIsListAtTop(offset < 6);
+              }}
+            >
+              {...content}
+            </VList>
+          ) : (
+            <>{...content}</>
+          )}
+        </CommentSearchProvider>
       </ScrollViewContainer>
     </CommentsContext.Provider>
   );

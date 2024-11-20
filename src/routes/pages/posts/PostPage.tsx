@@ -85,15 +85,16 @@ function PostPageContent({
   const postIfFound = typeof post === "object" ? post : undefined;
 
   const pageRef = useRef<HTMLElement>(null);
-  const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
-    commentPath,
-    threadCommentId,
-  );
+  // const virtual = postDetailPageHasVirtualScrollEnabled(
+  //   commentPath,
+  //   threadCommentId,
+  // );
+  const virtual = false;
 
   // TODO This is gets quite hacky when dynamically using virtual scroll view.
   // pageRef should probably be refactored
-  useSetActivePage(pageRef, !virtualEnabled);
-  const Content = virtualEnabled ? FeedContent : IonContent;
+  useSetActivePage(pageRef, !virtual);
+  const Content = virtual ? FeedContent : IonContent;
 
   useEffect(() => {
     if (post) return;
@@ -130,6 +131,7 @@ function PostPageContent({
       <>
         <DocumentTitle>{post.post.name}</DocumentTitle>
         <PostDetail
+          virtual={virtual}
           post={post}
           sort={sort}
           commentPath={commentPath}

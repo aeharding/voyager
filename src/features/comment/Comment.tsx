@@ -112,7 +112,7 @@ export default function Comment({
   return (
     <SlidingNestedCommentVote
       item={commentView}
-      className={className}
+      className={cx(className, "comment")}
       rootIndex={rootIndex}
       collapsed={!!collapsed}
     >
