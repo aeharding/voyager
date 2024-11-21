@@ -114,6 +114,7 @@ jobs:
     secrets: inherit
     permissions:
       contents: write # needed for create_release, even though it won't be called
+      packages: write # docker release
 
   push_release:
     needs: [bump_src, app_build, app_version]
