@@ -17,8 +17,8 @@ import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
 import { VoteButton } from "#/features/post/shared/VoteButton";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
-import { maxWidthCss } from "#/features/shared/AppContent";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import sharedStyles from "#/features/shared/shared.module.css";
 import { isUrlImage, parseUrlForDisplay } from "#/helpers/url";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
@@ -43,8 +43,6 @@ const Contents = styled.div`
   line-height: 1.15;
 
   position: relative;
-
-  ${maxWidthCss}
 `;
 
 const Content = styled.div`
@@ -182,7 +180,7 @@ export default function CompactPost({ post }: PostProps) {
       <Container>
         <ModeratableItemBannerOutlet />
 
-        <Contents>
+        <Contents className={sharedStyles.maxWidth}>
           {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
           <Content>
             {(inModqueue || showCommunityAtTop) && !inCommunityFeed && (

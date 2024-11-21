@@ -1,5 +1,4 @@
-import { IonIcon } from "@ionic/react";
-import { styled } from "@linaria/react";
+import { IonIcon, IonItem } from "@ionic/react";
 import { chevronForward } from "ionicons/icons";
 import AnimateHeight from "react-animate-height";
 import { useParams } from "react-router";
@@ -9,21 +8,9 @@ import { PositionedContainer } from "#/features/comment/elements/PositionedConta
 import { CommentNodeI } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
-import { CustomIonItem } from "../Comment";
+import commentStyles from "../Comment.module.css";
 import CommentHr from "./CommentHr";
-
-const MoreRepliesBlock = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-
-  color: var(--ion-color-primary);
-`;
-
-const ChevronIcon = styled(IonIcon)`
-  font-size: 1rem;
-`;
+import styles from "./ContinueThread.module.css";
 
 interface CommentExpanderProps {
   depth: number;
@@ -47,7 +34,8 @@ export default function ContinueThread({
   return (
     <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
       <CommentHr depth={depth} />
-      <CustomIonItem
+      <IonItem
+        className={commentStyles.commentItem}
         detail={false}
         routerLink={buildGeneralBrowseLink(
           `/c/${community}/comments/${postId}/thread/${comment.comment_view.comment.id}`,
@@ -57,13 +45,13 @@ export default function ContinueThread({
           depth={absoluteDepth === depth ? depth || 0 : (depth || 0) + 1}
         >
           <CommentContainer depth={absoluteDepth ?? depth ?? 0}>
-            <MoreRepliesBlock>
+            <div className={styles.moreRepliesBlock}>
               Continue Thread...
-              <ChevronIcon icon={chevronForward} />
-            </MoreRepliesBlock>
+              <IonIcon icon={chevronForward} className={styles.chevronIcon} />
+            </div>
           </CommentContainer>
         </PositionedContainer>
-      </CustomIonItem>
+      </IonItem>
     </AnimateHeight>
   );
 }

@@ -1,14 +1,21 @@
-.multiline-title {
+.multilineTitle {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   line-height: 1;
 
-  .ios & {
+  :global(.ios) & {
     justify-content: center;
   }
 
   ion-spinner {
     flex-shrink: 0;
   }
+}
+
+.maxWidth {
+  width: 100%;
+  max-width: 700px;
+  margin-right: auto;
+  margin-left: auto;
 }

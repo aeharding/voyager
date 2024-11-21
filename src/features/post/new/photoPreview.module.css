@@ -7,7 +7,7 @@
   max-height: 100px;
   padding: 1rem;
 
-  &.loadingImage {
+  &:global(.loadingImage) {
     filter: blur(5px) brightness(0.5);
   }
 }

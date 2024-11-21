@@ -1,6 +1,5 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
-import { cx } from "@linaria/core";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { useContext, useEffect } from "react";
@@ -15,13 +14,13 @@ import {
 } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
 import "#/features/shared/bounce.css";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
-import sv from "#/helpers/sv";
+import { cx, sv } from "#/helpers/css";
 import useAppToast from "#/helpers/useAppToast";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { voteOnPost } from "../postSlice";
-import styles from "./voteButton.module.css";
+import styles from "./VoteButton.module.css";
 
 interface VoteButtonProps {
   type: "down" | "up";

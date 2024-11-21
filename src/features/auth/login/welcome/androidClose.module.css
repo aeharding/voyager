@@ -1,5 +1,5 @@
-.android-ion-buttons {
-  .ios & {
+.androidIonButtons {
+  :global(.ios) & {
     display: none;
   }
 }

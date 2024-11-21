@@ -1,0 +1,33 @@
+.container {
+  --line-height: 15px;
+
+  position: absolute;
+  right: env(safe-area-inset-right);
+  z-index: 1;
+
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  flex-direction: column;
+
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--ion-color-primary);
+  text-align: center;
+
+  padding-left: 6px;
+  padding-right: 3px;
+
+  white-space: pre;
+  line-height: var(--line-height);
+
+  ion-icon {
+    height: var(--line-height);
+  }
+
+  /* Hide alphabet jump query DO NOT MODIFY unless also changing everywhere else */
+  @media (max-height: 600px) and (orientation: landscape) {
+    display: none;
+  }
+}

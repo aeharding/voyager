@@ -1,0 +1,12 @@
+.moreRepliesBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  color: var(--ion-color-primary);
+}
+
+.chevronIcon {
+  font-size: 1rem;
+}

@@ -1,0 +1,10 @@
+.toggleIcon {
+  @media (max-width: 725px) {
+    margin-right: 8px;
+  }
+
+  /* Hide alphabet jump query DO NOT MODIFY unless also changing everywhere else */
+  @media (max-height: 600px) and (orientation: landscape) {
+    margin-right: 0;
+  }
+}

@@ -22,6 +22,8 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import SourceUrlButton from "./SourceUrlButton";
 import { generateNewTag, updateTag } from "./userTagSlice";
 
+import shared from "#/features/shared/shared.module.css";
+
 const TagIonModal = styled(IonModal)`
   --height: auto;
 `;
@@ -143,7 +145,7 @@ function UserTagModalContents({
             />
           </IonButtons>
           <IonTitle>
-            <div className="multiline-title">
+            <div className={shared.multilineTitle}>
               <div>
                 <IonText>User Tag</IonText>
                 <div>

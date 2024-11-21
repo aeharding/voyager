@@ -1,16 +1,14 @@
 import { IonContent } from "@ionic/react";
-import { styled } from "@linaria/react";
 
-export const maxWidthCss = `
-  width: 100%;
-  max-width: 700px;
-  margin-right: auto;
-  margin-left: auto;
-`;
+import { cx } from "#/helpers/css";
 
-export const MaxWidthContainer = styled.div`
-  ${maxWidthCss}
-`;
+import sharedStyles from "./shared.module.css";
+
+export function MaxWidthContainer(props: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div {...props} className={cx(sharedStyles.maxWidth, props.className)} />
+  );
+}
 
 export default function AppContent({
   children,

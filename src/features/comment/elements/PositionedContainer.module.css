@@ -1,0 +1,14 @@
+.positionedContainer {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
+  position: relative;
+
+  padding: 8px 12px;
+
+  @media (hover: none) {
+    padding-top: 0.65em;
+    padding-bottom: 0.65em;
+  }
+
+  padding-left: calc(12px + max(0px, calc(calc(var(--sv-depth) - 1) * 10px)));
+}

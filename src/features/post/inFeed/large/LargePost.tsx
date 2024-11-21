@@ -16,8 +16,8 @@ import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
 import { VoteButton } from "#/features/post/shared/VoteButton";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
-import { maxWidthCss } from "#/features/shared/AppContent";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import sharedStyles from "#/features/shared/shared.module.css";
 import { AnnouncementIcon } from "#/routes/pages/posts/PostPage";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
@@ -34,8 +34,6 @@ const Container = styled.div`
   padding: 12px;
 
   position: relative;
-
-  ${maxWidthCss}
 `;
 
 const Header = styled.div`
@@ -118,7 +116,7 @@ export default function LargePost({ post }: PostProps) {
 
   return (
     <ModeratableItem itemView={post}>
-      <Container>
+      <Container className={sharedStyles.maxWidth}>
         <ModeratableItemBannerOutlet />
 
         <Header>

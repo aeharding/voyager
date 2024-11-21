@@ -2,7 +2,7 @@ import { IonSpinner } from "@ionic/react";
 import { cx } from "@linaria/core";
 import { styled } from "@linaria/react";
 
-import styles from "./photoPreview.module.css";
+import styles from "./PhotoPreview.module.css";
 
 const Container = styled.div`
   position: relative;

@@ -21,9 +21,10 @@ import PostLink from "#/features/post/link/PostLink";
 import { togglePostCollapse } from "#/features/post/postSlice";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import useIsPostUrlMedia from "#/features/post/useIsPostUrlMedia";
-import { maxWidthCss } from "#/features/shared/AppContent";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import Markdown from "#/features/shared/markdown/Markdown";
+import sharedStyles from "#/features/shared/shared.module.css";
+import { cx } from "#/helpers/css";
 import { findIonContentScrollView } from "#/helpers/ionic";
 import { findLoneImage } from "#/helpers/markdown";
 import { postLocked } from "#/helpers/toastMessages";
@@ -40,8 +41,6 @@ const BorderlessIonItem = styled(IonItem)`
 
   --inner-border-width: 0 0 1px 0;
   --background: none; // TODO is this OK?
-
-  ${maxWidthCss}
 `;
 
 const LightboxMedia = styled(LargeFeedPostMedia)`
@@ -235,7 +234,7 @@ export default function PostHeader({
   return (
     <ModeratableItem itemView={post}>
       <BorderlessIonItem
-        className={className}
+        className={cx(className, sharedStyles.maxWidth)}
         onClick={(e) => {
           if (e.target instanceof HTMLAnchorElement) return;
 
@@ -285,7 +284,7 @@ export default function PostHeader({
         </Container>
       </BorderlessIonItem>
       {showPostActions && (
-        <BorderlessIonItem>
+        <BorderlessIonItem className={sharedStyles.maxWidth}>
           <PostActions
             post={post}
             onReply={async () => {

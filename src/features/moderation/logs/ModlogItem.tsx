@@ -4,7 +4,7 @@ import { styled } from "@linaria/react";
 import { timerOutline } from "ionicons/icons";
 
 import Ago from "#/features/labels/Ago";
-import { maxWidthCss } from "#/features/shared/AppContent";
+import sharedStyles from "#/features/shared/shared.module.css";
 import { isTouchDevice } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
@@ -36,8 +36,6 @@ import transferCommunity from "./types/transferCommunity";
 const Container = styled.div`
   display: flex;
   gap: 1rem;
-
-  ${maxWidthCss}
 
   padding: 0.5rem 0;
 
@@ -200,12 +198,15 @@ export function ModlogItem({ item }: ModLogItemProps) {
   return (
     <IonItem
       mode="ios" // Use iOS style activatable tap highlight
-      className={cx(isTouchDevice() && "ion-activatable", maxWidthCss)}
+      className={cx(
+        isTouchDevice() && "ion-activatable",
+        sharedStyles.maxWidth,
+      )}
       href={undefined}
       routerLink={link ? buildGeneralBrowseLink(link) : undefined}
       detail={false}
     >
-      <Container>
+      <Container className={sharedStyles.maxWidth}>
         <StartContent>
           <TypeIcon icon={icon} />
         </StartContent>

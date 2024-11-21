@@ -4,7 +4,7 @@ import { useContext } from "react";
 
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 
-import styles from "./androidClose.module.css";
+import styles from "./AndroidClose.module.css";
 
 export default function AndroidClose() {
   const { dismiss } = useContext(DynamicDismissableModalContext);

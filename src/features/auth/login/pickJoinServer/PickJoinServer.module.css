@@ -4,6 +4,8 @@
 }
 
 .empty {
+  composes: spacing;
+
   color: var(--ion-color-medium);
   text-align: center;
 }

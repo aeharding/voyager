@@ -1,5 +1,4 @@
 import { IonContent, IonTitle, IonToolbar } from "@ionic/react";
-import { styled } from "@linaria/react";
 
 import AppHeader from "#/features/shared/AppHeader";
 
@@ -7,39 +6,7 @@ import AndroidClose from "./AndroidClose";
 import Buttons from "./Buttons";
 import BaseSvg from "./assets/base.svg?react";
 
-// slot attribute not allowed for some reason??
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyComponent = any;
-
-const StyledIonContent = styled(IonContent)`
-  &::part(scroll) {
-    z-index: 1;
-
-    display: flex;
-    flex-direction: column;
-  }
-
-  --background: linear-gradient(0deg, #bfd5ff, #e3edff 33%, #ffff);
-
-  .ion-palette-dark & {
-    --background: linear-gradient(0deg, #001233ff, #000a1c 33%, #0000);
-  }
-`;
-
-const StyledBaseSvg = styled(BaseSvg)`
-  opacity: 0.4;
-  margin: 0 -2rem;
-  position: absolute;
-  bottom: 0;
-
-  pointer-events: none;
-
-  filter: brightness(2.7);
-
-  .ion-palette-dark & {
-    filter: none;
-  }
-` as AnyComponent;
+import styles from "./Welcome.module.css";
 
 export default function Welcome() {
   return (
@@ -51,17 +18,17 @@ export default function Welcome() {
           <AndroidClose />
         </IonToolbar>
       </AppHeader>
-      <StyledIonContent fullscreen>
+      <IonContent className={styles.content} fullscreen>
         <AppHeader collapse="condense">
           <IonToolbar color=" ">
             <IonTitle size="large">Welcome.</IonTitle>
           </IonToolbar>
         </AppHeader>
 
-        <StyledBaseSvg slot="fixed" />
+        <BaseSvg className={styles.baseSvg} />
 
         <Buttons />
-      </StyledIonContent>
+      </IonContent>
     </>
   );
 }

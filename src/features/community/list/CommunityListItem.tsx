@@ -4,7 +4,6 @@ import {
   IonItemOptions,
   IonItemSliding,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { star } from "ionicons/icons";
 import { Community } from "lemmy-js-client";
 import { useMemo } from "react";
@@ -29,18 +28,8 @@ import {
   followCommunity,
   removeFavorite,
 } from "../communitySlice";
-import { HIDE_ALPHABET_JUMP } from "./AlphabetJump";
-import { Content } from "./ResolvedCommunitiesList";
-
-const StyledToggleIcon = styled(ToggleIcon)`
-  @media (max-width: 725px) {
-    margin-right: 8px;
-  }
-
-  @media ${HIDE_ALPHABET_JUMP} {
-    margin-right: 0;
-  }
-`;
+import styles from "./CommunityListItem.module.css";
+import listStyles from "./ResolvedCommunitiesList.module.css";
 
 export default function CommunityListItem({
   community,
@@ -118,10 +107,10 @@ export default function CommunityListItem({
         detail={false}
         {...attributedPreventOnClickNavigationBug}
       >
-        <Content>
+        <div className={listStyles.content}>
           <ItemIcon item={community} size={28} />
           {handle}
-        </Content>
+        </div>
         {loggedIn && (
           <ActionButton
             slot="end"
@@ -136,7 +125,11 @@ export default function CommunityListItem({
               }
             }}
           >
-            <StyledToggleIcon icon={star} selected={isFavorite} />
+            <ToggleIcon
+              className={styles.toggleIcon}
+              icon={star}
+              selected={isFavorite}
+            />
           </ActionButton>
         )}
       </IonItem>

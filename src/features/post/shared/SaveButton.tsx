@@ -12,7 +12,8 @@ import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { savePost } from "../postSlice";
-import styles from "./saveButton.module.css";
+
+import styles from "./SaveButton.module.css";
 
 interface SaveButtonProps {
   post: PostView;

@@ -14,7 +14,7 @@ import CommentMarkdown from "#/features/comment/CommentMarkdown";
 import Ago from "#/features/labels/Ago";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
-import { maxWidthCss } from "#/features/shared/AppContent";
+import sharedStyles from "#/features/shared/shared.module.css";
 import SlidingInbox from "#/features/shared/sliding/SlidingInbox";
 import { isTouchDevice } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
@@ -44,8 +44,6 @@ const labelStyles = css`
 `;
 
 const Hr = styled.div`
-  ${maxWidthCss}
-
   position: relative;
   height: 1px;
 
@@ -78,8 +76,6 @@ const itemUnreadCss = css`
 const Container = styled.div`
   display: flex;
   gap: var(--padding-start);
-
-  ${maxWidthCss}
 
   padding: 0.5rem 0;
 
@@ -301,7 +297,7 @@ export default function InboxItem({ item }: InboxItemProps) {
       onClick={markRead}
       {...bind()}
     >
-      <Container>
+      <Container className={sharedStyles.maxWidth}>
         <StartContent>
           <TypeIcon icon={getIcon()} />
           <VoteArrow vote={vote} />
@@ -328,7 +324,7 @@ export default function InboxItem({ item }: InboxItemProps) {
   return (
     <>
       <SlidingInbox item={item}>{contents}</SlidingInbox>
-      <Hr />
+      <Hr className={sharedStyles.maxWidth} />
     </>
   );
 }

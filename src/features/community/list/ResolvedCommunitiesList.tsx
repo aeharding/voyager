@@ -6,7 +6,6 @@ import {
   IonLabel,
   IonList,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { sortBy } from "es-toolkit";
 import { earth, home, people, shieldCheckmark } from "ionicons/icons";
 import { Community } from "lemmy-js-client";
@@ -14,7 +13,8 @@ import { memo, useMemo, useRef } from "react";
 import { VList, VListHandle } from "virtua";
 
 import { jwtSelector } from "#/features/auth/authSelectors";
-import { maxWidthCss } from "#/features/shared/AppContent";
+import sharedStyles from "#/features/shared/shared.module.css";
+import { cx } from "#/helpers/css";
 import { attributedPreventOnClickNavigationBug } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -22,49 +22,8 @@ import { useAppSelector } from "#/store";
 
 import AlphabetJump from "./AlphabetJump";
 import CommunityListItem from "./CommunityListItem";
+import styles from "./ResolvedCommunitiesList.module.css";
 import useShowModeratorFeed from "./useShowModeratorFeed";
-
-const SubIcon = styled(IonIcon)<{ color: string }>`
-  border-radius: 50%;
-  padding: 6px;
-  width: 1rem;
-  height: 1rem;
-
-  background: ${({ color }) => color};
-  --ion-color-base: white;
-`;
-
-export const Content = styled.div`
-  margin: 0.7rem 0;
-
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-
-  aside {
-    margin-top: 0.2rem;
-    color: var(--ion-color-medium);
-    font-size: 0.8em;
-  }
-`;
-
-const StyledIonList = styled(IonList)`
-  height: 100%;
-`;
-
-const StyledVList = styled(VList)`
-  height: 100%;
-
-  &::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-  }
-
-  ion-item-group {
-    ${maxWidthCss}
-  }
-`;
 
 interface CommunitiesListParams {
   actor: string;
@@ -117,26 +76,33 @@ function ResolvedCommunitiesList({
 
   return (
     <>
-      <StyledIonList>
-        <StyledVList
+      <IonList className={styles.ionList}>
+        <VList
           ref={virtuaRef}
           overscan={1}
-          className="ion-content-scroll-host virtual-scroller"
+          className={cx(
+            styles.vList,
+            "ion-content-scroll-host virtual-scroller",
+          )}
         >
-          <IonItemGroup key="list">
+          <IonItemGroup key="list" className={sharedStyles.maxWidth}>
             {jwt && (
               <IonItem
                 routerLink={buildGeneralBrowseLink(`/home`)}
                 detail={false}
                 {...attributedPreventOnClickNavigationBug}
               >
-                <Content>
-                  <SubIcon icon={home} color="red" />
+                <div className={styles.content}>
+                  <IonIcon
+                    className={styles.subIcon}
+                    icon={home}
+                    style={{ background: "red" }}
+                  />
                   <div>
                     Home
                     <aside>Posts from subscriptions</aside>
                   </div>
-                </Content>
+                </div>
               </IonItem>
             )}
             <IonItem
@@ -144,12 +110,16 @@ function ResolvedCommunitiesList({
               detail={false}
               {...attributedPreventOnClickNavigationBug}
             >
-              <Content>
-                <SubIcon icon={earth} color="#009dff" />
+              <div className={styles.content}>
+                <IonIcon
+                  className={styles.subIcon}
+                  icon={earth}
+                  style={{ background: "#009dff" }}
+                />
                 <div>
                   All<aside>Posts across all federated communities</aside>
                 </div>
-              </Content>
+              </div>
             </IonItem>
             <IonItem
               routerLink={buildGeneralBrowseLink(`/local`)}
@@ -157,12 +127,16 @@ function ResolvedCommunitiesList({
               lines={showModeratorFeed ? "inset" : "none"}
               {...attributedPreventOnClickNavigationBug}
             >
-              <Content>
-                <SubIcon icon={people} color="#00f100" />
+              <div className={styles.content}>
+                <IonIcon
+                  className={styles.subIcon}
+                  icon={people}
+                  style={{ background: "#00f100" }}
+                />
                 <div>
                   Local<aside>Posts from communities on {actor}</aside>
                 </div>
-              </Content>
+              </div>
             </IonItem>
             {showModeratorFeed && (
               <IonItem
@@ -171,19 +145,23 @@ function ResolvedCommunitiesList({
                 lines="none"
                 {...attributedPreventOnClickNavigationBug}
               >
-                <Content>
-                  <SubIcon icon={shieldCheckmark} color="#464646" />
+                <div className={styles.content}>
+                  <IonIcon
+                    className={styles.subIcon}
+                    icon={shieldCheckmark}
+                    style={{ background: "#464646" }}
+                  />
                   <div>
                     Moderator Posts
                     <aside>Posts from moderated communities</aside>
                   </div>
-                </Content>
+                </div>
               </IonItem>
             )}
           </IonItemGroup>
 
           {favoritesAsCommunitiesIfFound.length > 0 && (
-            <IonItemGroup key="favorites">
+            <IonItemGroup key="favorites" className={sharedStyles.maxWidth}>
               <IonItemDivider sticky>
                 <IonLabel>Favorites</IonLabel>
               </IonItemDivider>
@@ -200,7 +178,7 @@ function ResolvedCommunitiesList({
           )}
 
           {moderates?.length ? (
-            <IonItemGroup key="moderates">
+            <IonItemGroup key="moderates" className={sharedStyles.maxWidth}>
               <IonItemDivider sticky>
                 <IonLabel>Moderator</IonLabel>
               </IonItemDivider>
@@ -217,7 +195,7 @@ function ResolvedCommunitiesList({
             ""
           )}
           {communitiesGroupedByLetter.map(([letter, communities]) => (
-            <IonItemGroup key={letter}>
+            <IonItemGroup key={letter} className={sharedStyles.maxWidth}>
               <IonItemDivider sticky>
                 <IonLabel>{letter}</IonLabel>
               </IonItemDivider>
@@ -231,8 +209,8 @@ function ResolvedCommunitiesList({
               ))}
             </IonItemGroup>
           ))}
-        </StyledVList>
-      </StyledIonList>
+        </VList>
+      </IonList>
 
       <AlphabetJump
         virtuaRef={virtuaRef}

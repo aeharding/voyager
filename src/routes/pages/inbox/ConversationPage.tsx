@@ -7,7 +7,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { PrivateMessageView } from "lemmy-js-client";
 import {
   useCallback,
@@ -30,7 +29,6 @@ import SendMessageBox from "#/features/inbox/SendMessageBox";
 import { syncMessages } from "#/features/inbox/inboxSlice";
 import Message from "#/features/inbox/messages/Message";
 import { StyledLink } from "#/features/labels/links/shared";
-import { maxWidthCss } from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
 import { getUser } from "#/features/user/userSlice";
@@ -40,24 +38,11 @@ import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-const containerCss = css`
-  ${maxWidthCss}
+import styles from "./ConversationPage.module.css";
 
-  height: 100%;
-  height: 100%;
-
-  font-size: 0.9rem;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-const FlexItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 0 16px !important;
-`;
+function FlexItem(props: React.HTMLAttributes<HTMLDivElement>) {
+  return <div {...props} className={styles.flexItem} />;
+}
 
 function useMessages(
   allMessages: PrivateMessageView[],
@@ -171,7 +156,7 @@ export default function ConversationPage() {
     if (typeof myUserId === "number" && them)
       return (
         <VList
-          className={containerCss}
+          className={styles.container}
           ref={ref}
           style={{ flex: 1 }}
           reverse

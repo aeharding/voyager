@@ -17,7 +17,6 @@ import {
   IonToolbar,
   useIonActionSheet,
 } from "@ionic/react";
-import { cx } from "@linaria/core";
 import { compact, uniqBy } from "es-toolkit";
 import {
   ellipsisHorizontalCircleOutline,
@@ -41,6 +40,7 @@ import {
 import Login from "#/features/auth/login/login/Login";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
+import { cx } from "#/helpers/css";
 import { isIosTheme } from "#/helpers/device";
 import { blurOnEnter } from "#/helpers/dom";
 import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
@@ -271,7 +271,7 @@ export default function PickJoinServer() {
     if (loading || loadingInstances)
       return <IonSpinner className={styles.spacing} />;
 
-    return <div className={cx(styles.empty, styles.spacing)}>No results</div>;
+    return <div className={styles.empty}>No results</div>;
   })();
 
   return (

@@ -37,6 +37,8 @@ import AppHeader from "../../../../AppHeader";
 import CommentEditorContent from "./CommentEditorContent";
 import ItemReplyingTo from "./ItemReplyingTo";
 
+import shared from "#/features/shared/shared.module.css";
+
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;
   font-weight: normal;
@@ -244,7 +246,7 @@ export default function CommentReplyPage({
             </IonButton>
           </IonButtons>
           <IonTitle>
-            <div className="multiline-title">
+            <div className={shared.multilineTitle}>
               <TitleContainer
                 onClick={() => {
                   if (accounts?.length === 1) return;

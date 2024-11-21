@@ -5,9 +5,9 @@ import {
   IonText,
   IonToolbar,
 } from "@ionic/react";
-import { cx } from "@linaria/core";
 
 import AppHeader from "#/features/shared/AppHeader";
+import { cx } from "#/helpers/css";
 
 import styles from "./LearnMore.module.css";
 

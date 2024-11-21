@@ -5,7 +5,8 @@ import {
   ServerCategory,
 } from "#/features/auth/login/data/servers";
 
-import styles from "./filters.module.css";
+import styles from "./Filters.module.css";
+
 const CATEGORIES = Object.keys(SERVERS_BY_CATEGORY) as ServerCategory[];
 
 interface FiltersProps {

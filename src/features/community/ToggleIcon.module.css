@@ -1,0 +1,11 @@
+.base {
+  font-size: 24px;
+}
+
+.selected {
+  color: var(--ion-color-primary);
+}
+
+.unselected {
+  opacity: 0.08;
+}
