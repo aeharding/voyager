@@ -17,6 +17,14 @@ concurrency:
   group: release
 
 jobs:
+  build_docker:
+    uses: ./.github/workflows/docker.yml
+    with:
+      is_main_build: ${{ inputs.is_main_build }}
+    permissions:
+      contents: read
+      packages: write
+
   build_web:
     runs-on: ubuntu-latest
     steps:
@@ -223,7 +231,12 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
   create_release:
-    needs: [build_web, build_ios, build_android_play, build_android]
+    needs:
+      - build_web
+      - build_ios
+      - build_android_play
+      - build_android
+      - build_docker
     if: inputs.is_main_build != true
     runs-on: ubuntu-latest
 

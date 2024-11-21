@@ -20,7 +20,7 @@ FROM base AS builder
 RUN apk add --no-cache git
 
 # Prepare build deps
-COPY package.json pnpm-lock.yaml .npmrc ./
+COPY package.json pnpm-lock.yaml .npmrc .env ./
 COPY patches ./patches
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
