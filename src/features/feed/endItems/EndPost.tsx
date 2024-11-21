@@ -1,16 +1,6 @@
-import { styled } from "@linaria/react";
 import { CommentSortType, PostSortType } from "lemmy-js-client";
 
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 3rem 3rem 4rem;
-  font-size: 0.875em;
-  align-items: center;
-  justify-content: center;
-  color: var(--ion-color-medium);
-`;
+import styles from "./EndPost.module.css";
 
 export interface EndPostProps {
   empty: boolean | undefined;
@@ -47,7 +37,7 @@ export default function EndPost({
     return <>You&apos;ve reached the end!</>;
   }
 
-  return <Container>{renderError()}</Container>;
+  return <div className={styles.container}>{renderError()}</div>;
 }
 
 export function getSortDuration(
