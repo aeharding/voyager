@@ -24,6 +24,10 @@ RUN apk add --no-cache git
 COPY package.json pnpm-lock.yaml .npmrc .en[v] ./
 COPY patches ./patches
 
+# Add APP_VERSION to .env if it doesn't already exist
+RUN grep -q 'APP_VERSION=' .env || \
+    echo "APP_VERSION=`node -p \"require('./package.json').version\"`" >> .env
+
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy all source files

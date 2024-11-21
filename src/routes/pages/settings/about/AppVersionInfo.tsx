@@ -21,11 +21,12 @@ export default function AppVersionInfo({
 }
 
 function BetaInfo({ verbose }: AppVersionInfoProps) {
-  if (import.meta.env.DEV || !import.meta.env.APP_GIT_REF)
-    return <IonText color="danger">Development</IonText>;
+  if (import.meta.env.DEV) return <IonText color="danger">Development</IonText>;
+
+  if (!import.meta.env.APP_GIT_REF) return;
 
   // e.g. pull request build
-  if (!import.meta.env.APP_BUILD && import.meta.env.APP_GIT_REF) {
+  if (!import.meta.env.APP_BUILD) {
     return (
       <IonText color="danger">
         {import.meta.env.APP_GIT_REF.slice(0, 7)}
