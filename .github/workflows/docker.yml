@@ -29,6 +29,12 @@ jobs:
         with:
           name: release-data
 
+      # If not main build, create .env file with APP_GIT_REF
+      - name: Create .env file
+        if: inputs.is_main_build != true
+        run: |
+          echo "APP_GIT_REF=${{ github.sha }}" >> .env
+
       - name: Docker meta
         id: metal
         uses: docker/metadata-action@v5

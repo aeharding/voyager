@@ -28,7 +28,7 @@ export default function AppDetails() {
     <AppContainer>
       <img src="/logo.png" alt="" />
       <div>
-        Voyager <AppVersionInfo betaPrefix="Beta Track" betaAs="aside" />
+        Voyager <AppVersionInfo verbose betaAs="aside" />
         <aside>by Alexander Harding</aside>
       </div>
     </AppContainer>
