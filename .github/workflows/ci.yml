@@ -37,3 +37,6 @@ jobs:
 
       - name: 💪 Type check
         run: pnpm test:typecheck
+
+      - name: 📦 Build
+        run: pnpm build
