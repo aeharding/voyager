@@ -15,6 +15,18 @@ export function sv(variables: CssVariables) {
   return style;
 }
 
-export function cx(...classes: (string | Falsey)[]) {
-  return classes.filter(Boolean).join(" ");
+// https://github.com/jalalazimi/classwind/blob/main/src/index.ts
+export function cx(...args: (string | Falsey)[]) {
+  let result = "";
+  const len = args.length;
+
+  for (let i = 0; i < len; i++) {
+    const className = args[i];
+
+    if (!className) continue;
+
+    result = (result && (result += " ")) + className;
+  }
+
+  return result;
 }
