@@ -51,3 +51,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.button {
+  composes: plainButton from "#/features/shared/shared.module.css";
+}

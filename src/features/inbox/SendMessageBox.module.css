@@ -1,0 +1,64 @@
+.maxSizeContainer {
+  height: 100%;
+}
+
+.sendContainer {
+  position: relative;
+
+  padding: 0.5rem;
+}
+
+.inputContainer {
+  position: relative;
+
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.input {
+  border: 1px solid
+    var(
+      --ion-tab-bar-border-color,
+      var(
+        --ion-border-color,
+        var(
+          --ion-color-step-150,
+          var(--ion-background-color-step-150, rgba(0, 0, 0, 0.2))
+        )
+      )
+    );
+  border-radius: 1rem;
+
+  /* Exact px measurements to prevent */
+  /* pixel rounding browser inconsistencies */
+  padding: 8px 12px;
+  line-height: 18px;
+  font-size: 16px;
+  margin: 0;
+
+  background: var(--ion-background-color);
+  color: var(--ion-text-color);
+  outline: none;
+
+  width: 100%;
+  resize: none;
+  appearance: none;
+}
+
+.iconButton {
+  margin: 0;
+  min-height: 36px;
+
+  ion-icon {
+    font-size: 22px;
+  }
+}
+
+.resizeIcon {
+  transform: scale(1.1);
+}
+
+.sendIcon {
+  transform: rotate(270deg);
+}

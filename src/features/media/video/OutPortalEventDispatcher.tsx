@@ -1,11 +1,6 @@
-import { styled } from "@linaria/react";
 import React, { MouseEvent, useEffect, useRef } from "react";
 
-const Container = styled.div`
-  flex: 1;
-  display: flex;
-  width: 100%;
-`;
+import styles from "./OutPortalEventDispatcher.module.css";
 
 export interface OutPortalEventDispatcherProps extends React.PropsWithChildren {
   onClick?: (e: MouseEvent) => boolean | void;
@@ -65,5 +60,9 @@ export default function OutPortalEventDispatcher({
     };
   }, [eventsToPropagateViaOutPortal]);
 
-  return <Container ref={containerRef}>{children}</Container>;
+  return (
+    <div ref={containerRef} className={styles.container}>
+      {children}
+    </div>
+  );
 }

@@ -1,11 +1,12 @@
-import { cx } from "@linaria/core";
 import { CSSProperties } from "react";
 
 import Media, { MediaProps } from "#/features/media/Media";
+import { cx } from "#/helpers/css";
 import useLatch from "#/helpers/useLatch";
 import { useAppDispatch } from "#/store";
 
 import MediaPlaceholder from "./MediaPlaceholder";
+import mediaPlaceholderStyles from "./MediaPlaceholder.module.css";
 import { IMAGE_FAILED, imageFailed, imageLoaded } from "./imageSlice";
 import { isLoadedAspectRatio } from "./useAspectRatio";
 import useMediaLoadObserver, {
@@ -16,8 +17,6 @@ export type InlineMediaProps = Omit<MediaProps, "ref"> & {
   defaultAspectRatio?: number;
   mediaClassName?: string;
 };
-
-export const MEDIA_EL_CLASSNAME = "media";
 
 export default function InlineMedia({
   src,
@@ -61,7 +60,7 @@ export default function InlineMedia({
       <Media
         {...props}
         src={src}
-        className={cx(MEDIA_EL_CLASSNAME, mediaClassName)}
+        className={cx(mediaPlaceholderStyles.media, mediaClassName)}
         style={buildStyle()}
         ref={mediaRef}
         onError={() => {

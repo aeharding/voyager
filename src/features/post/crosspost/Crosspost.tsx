@@ -1,71 +1,13 @@
 import { IonIcon, IonSkeletonText } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { arrowUpSharp, chatbubbleOutline, repeat } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 
 import LargePostContents from "#/features/post/inFeed/large/LargePostContents";
+import { cx } from "#/helpers/css";
 import { formatNumber } from "#/helpers/number";
 
+import styles from "./Crosspost.module.css";
 import CrosspostContainer from "./CrosspostContainer";
-
-const StyledCrosspostContainer = styled(CrosspostContainer)`
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  border-radius: 0.5rem;
-  overflow: hidden;
-
-  color: inherit;
-  text-decoration: none;
-  -webkit-touch-callout: default;
-
-  background: var(--lightroom-bg);
-  padding: 8px 12px;
-`;
-
-const Title = styled.div`
-  font-size: 0.925em;
-`;
-
-const titleReadCss = css`
-  color: var(--read-color);
-`;
-
-const Bottom = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 0.8em;
-
-  gap: 6px;
-
-  color: var(--ion-color-text-aside);
-`;
-
-const bottomReadCss = css`
-  color: var(--read-color-medium);
-`;
-
-const Stat = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 3px;
-`;
-
-const CrosspostIcon = styled(IonIcon)`
-  font-size: 1.5rem;
-`;
-
-const CommunityIonSkeletonText = styled(IonSkeletonText)`
-  width: 90px;
-`;
-
-const StatIonSkeletonText = styled(IonSkeletonText)`
-  width: 16px;
-`;
 
 interface CrosspostProps {
   post: PostView;
@@ -75,43 +17,57 @@ interface CrosspostProps {
 
 export default function Crosspost(props: CrosspostProps) {
   return (
-    <StyledCrosspostContainer el="div" {...props}>
+    <CrosspostContainer
+      {...props}
+      el="div"
+      className={cx(styles.container, props.className)}
+    >
       {({ crosspost, hasBeenRead }) => (
         <>
           {crosspost ? (
-            <Title className={hasBeenRead ? titleReadCss : undefined}>
+            <div
+              className={cx(
+                styles.title,
+                hasBeenRead ? styles.titleRead : undefined,
+              )}
+            >
               {crosspost.post.name}
-            </Title>
+            </div>
           ) : (
             <IonSkeletonText />
           )}
           <LargePostContents post={crosspost ?? props.post} />
-          <Bottom className={hasBeenRead ? bottomReadCss : undefined}>
-            <CrosspostIcon icon={repeat} />
+          <div
+            className={cx(
+              styles.bottom,
+              hasBeenRead ? styles.bottomRead : undefined,
+            )}
+          >
+            <IonIcon className={styles.crosspostIcon} icon={repeat} />
             {crosspost ? (
               crosspost.community.title
             ) : (
-              <CommunityIonSkeletonText />
+              <IonSkeletonText className={styles.communityIonSkeletonText} />
             )}
-            <Stat>
+            <div className={styles.stat}>
               <IonIcon icon={arrowUpSharp} />{" "}
               {crosspost ? (
                 formatNumber(crosspost.counts.score)
               ) : (
-                <StatIonSkeletonText />
+                <IonSkeletonText className={styles.statIonSkeletonText} />
               )}
-            </Stat>
-            <Stat>
+            </div>
+            <div className={styles.stat}>
               <IonIcon icon={chatbubbleOutline} />{" "}
               {crosspost ? (
                 formatNumber(crosspost.counts.comments)
               ) : (
-                <StatIonSkeletonText />
+                <IonSkeletonText className={styles.statIonSkeletonText} />
               )}
-            </Stat>
-          </Bottom>
+            </div>
+          </div>
         </>
       )}
-    </StyledCrosspostContainer>
+    </CrosspostContainer>
   );
 }

@@ -1,0 +1,7 @@
+.newAccountBadge {
+  color: #d9a900;
+
+  :global(.ion-palette-dark) & {
+    color: gold;
+  }
+}

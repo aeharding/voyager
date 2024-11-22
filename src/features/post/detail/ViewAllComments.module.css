@@ -1,0 +1,38 @@
+.link {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 700px;
+  width: calc(100vw - 1rem);
+  background: var(--ion-color-primary);
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  border-radius: 0.75rem;
+
+  display: flex;
+  align-items: center;
+
+  font-size: 0.85em;
+
+  z-index: 100;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  aside {
+    opacity: 0.65;
+    font-weight: 400;
+    font-size: 0.95em;
+  }
+}
+
+.chevron {
+  margin-left: auto;
+  font-size: 1.5rem;
+}

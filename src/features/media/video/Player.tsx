@@ -1,5 +1,4 @@
 import { IonIcon } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import {
   CSSProperties,
@@ -14,90 +13,11 @@ import {
 import { useInView } from "react-intersection-observer";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
-import { PlainButton } from "#/features/shared/PlainButton";
+import { cx } from "#/helpers/css";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { getVideoSrcForUrl } from "#/helpers/url";
 
-const Container = styled.div`
-  position: relative;
-  overflow: hidden;
-
-  display: flex;
-`;
-
-const sharedProgressBarCss = `
-  background: rgba(0, 0, 0, 0.0045);
-  backdrop-filter: blur(30px);
-`;
-
-const Progress = styled.progress`
-  position: absolute;
-  bottom: -6px;
-  right: 0;
-  left: 0;
-  width: 100%;
-  appearance: none;
-  height: 12px;
-  transform: translate3d(0, 0, 0);
-
-  background: none;
-  border: 0;
-
-  &::-webkit-progress-bar {
-    ${sharedProgressBarCss}
-  }
-
-  @supports selector(::-moz-progress-bar) {
-    ${sharedProgressBarCss}
-  }
-
-  &::-moz-progress-bar {
-    background: rgba(255, 255, 255, 0.3);
-  }
-
-  &::-webkit-progress-value {
-    background: rgba(255, 255, 255, 0.3);
-  }
-`;
-
-const VideoEl = styled.video`
-  flex: 1;
-
-  width: 100%;
-  object-fit: contain;
-
-  overflow: hidden;
-`;
-
-const VolumeButton = styled(PlainButton)`
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  padding: 14px;
-  font-size: 26px;
-
-  color: #aaa;
-
-  svg {
-    filter: blur(10px) invert(80%);
-  }
-`;
-
-const PlayOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 80px;
-
-  color: #fff;
-
-  background: rgba(0, 0, 0, 0.1);
-`;
+import styles from "./Player.module.css";
 
 export interface PlayerProps {
   src: string;
@@ -191,9 +111,10 @@ export default function Player({
   }, [inView, pause, resume]);
 
   return (
-    <Container className={className}>
-      <VideoEl
+    <div className={cx(styles.container, className)}>
+      <video
         {...rest}
+        className={styles.videoEl}
         ref={setRefs}
         src={`${src}#t=0.001`}
         loop
@@ -223,11 +144,14 @@ export default function Player({
         }}
         aria-label={rest.alt}
       />
-      {showProgress && progress !== undefined && <Progress value={progress} />}
+      {showProgress && progress !== undefined && (
+        <progress className={styles.progress} value={progress} />
+      )}
       {!nativeControls && (
         <>
           {!showBigPlayButton && volume && (
-            <VolumeButton
+            <button
+              className={styles.volumeButton}
               onClick={(e) => {
                 setMuted(!muted);
                 if (videoRef.current) videoRef.current.muted = !muted;
@@ -241,10 +165,11 @@ export default function Player({
               }}
             >
               <IonIcon icon={muted ? volumeOff : volumeHigh} />
-            </VolumeButton>
+            </button>
           )}
           {showBigPlayButton && (
-            <PlayOverlay
+            <div
+              className={styles.playOverlay}
               onClick={(e) => {
                 e.preventDefault(); // reverse-portal
                 e.stopPropagation(); // video in comments
@@ -253,10 +178,10 @@ export default function Player({
               }}
             >
               <IonIcon icon={play} />
-            </PlayOverlay>
+            </div>
           )}
         </>
       )}
-    </Container>
+    </div>
   );
 }

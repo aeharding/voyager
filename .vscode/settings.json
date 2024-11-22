@@ -6,5 +6,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "eslint.codeActionsOnSave.rules": ["perfectionist/*"]
+  "eslint.codeActionsOnSave.rules": ["perfectionist/*"],
+  "css.lint.validProperties": ["composes"],
+  "css.lint.vendorPrefix": "ignore"
 }

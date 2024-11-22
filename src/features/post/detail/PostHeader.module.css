@@ -1,0 +1,75 @@
+.borderlessIonItem {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
+  --padding-start: 0;
+  --inner-padding-end: 0;
+
+  --inner-border-width: 0 0 1px 0;
+  --background: none; /* TODO is this OK? */
+}
+
+.lightboxMedia {
+  -webkit-touch-callout: default;
+
+  width: 100%;
+  object-fit: contain;
+}
+
+.markdown {
+  margin: 0 0 15px 0;
+
+  img {
+    display: block;
+    max-width: 100%;
+    max-height: 50vh;
+    object-fit: contain;
+    object-position: 0%;
+  }
+
+  table img {
+    display: inline-block;
+  }
+}
+
+.postLink {
+  margin: 0 0 12px;
+}
+
+.crosspost {
+  margin: 0 0 12px;
+}
+
+.container {
+  width: 100%;
+}
+
+.postDeets {
+  margin: 12px;
+  font-size: 0.9375em;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  font-size: 1.125rem;
+  margin-bottom: 12px;
+}
+
+.by {
+  font-size: 0.875em;
+
+  margin-bottom: 5px;
+  color: var(--ion-color-text-aside);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}

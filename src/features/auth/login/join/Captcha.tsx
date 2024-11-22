@@ -10,7 +10,6 @@ import { refresh, volumeHigh, volumeHighOutline } from "ionicons/icons";
 import { GetCaptchaResponse, Register } from "lemmy-js-client";
 import { useCallback, useEffect, useImperativeHandle, useState } from "react";
 
-import { PlainButton } from "#/features/shared/PlainButton";
 import { b64ToBlob } from "#/helpers/blob";
 import { getClient } from "#/services/lemmy";
 
@@ -110,7 +109,8 @@ export default function Captcha({ url, ref }: CaptchaProps) {
         )}
 
         <div className={styles.actions}>
-          <PlainButton
+          <button
+            className={styles.button}
             aria-label="Refresh captcha"
             onClick={() => {
               if (loading || playing) return;
@@ -119,13 +119,17 @@ export default function Captcha({ url, ref }: CaptchaProps) {
             }}
           >
             <IonIcon icon={refresh} color="primary" />
-          </PlainButton>
-          <PlainButton aria-label="Play captcha audio" onClick={play}>
+          </button>
+          <button
+            className={styles.button}
+            aria-label="Play captcha audio"
+            onClick={play}
+          >
             <IonIcon
               icon={playing ? volumeHigh : volumeHighOutline}
               color="primary"
             />
-          </PlainButton>
+          </button>
         </div>
 
         {loading && (

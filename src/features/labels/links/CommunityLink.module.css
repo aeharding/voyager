@@ -1,0 +1,18 @@
+.itemIcon {
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+.subscribedIcon {
+  color: var(--ion-color-primary);
+  vertical-align: middle;
+
+  margin-bottom: 1px;
+  margin-left: 2px;
+
+  opacity: 0.4;
+
+  :global(.ion-palette-dark) & {
+    opacity: 0.5;
+  }
+}

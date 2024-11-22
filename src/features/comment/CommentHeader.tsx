@@ -10,7 +10,7 @@ import PersonLink from "#/features/labels/links/PersonLink";
 import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
 import { ModeratorRole } from "#/features/moderation/useCanModerate";
 import { ActionButton } from "#/features/post/actions/ActionButton";
-import { ActionsContainer } from "#/features/post/inFeed/compact/CompactPost";
+import ActionsContainer from "#/features/post/actions/ActionsContainer";
 import UserScore from "#/features/tags/UserScore";
 import UserTag from "#/features/tags/UserTag";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";

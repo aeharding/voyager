@@ -1,6 +1,4 @@
 import { IonIcon, useIonActionSheet } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { compact } from "es-toolkit";
 import {
   ellipsisHorizontal,
@@ -8,16 +6,12 @@ import {
   personOutline,
 } from "ionicons/icons";
 
-import { PlainButton } from "#/features/shared/PlainButton";
 import { getHandle } from "#/helpers/lemmy";
 import useAppNavigation from "#/helpers/useAppNavigation";
 
 import { ModeratorRole, getModIcon } from "../useCanModerate";
+import styles from "./ModlogItemMoreActions.module.css";
 import { ModlogItemType } from "./helpers";
-
-const EllipsisIcon = styled(IonIcon)`
-  font-size: 1.2rem;
-`;
 
 interface ModlogItemMoreActions {
   item: ModlogItemType;
@@ -85,18 +79,15 @@ export default function ModlogItemMoreActions({
   }
 
   return (
-    <PlainButton
-      className={css`
-        margin: -6px 0; // prevent size from breaking line height
-      `}
-    >
-      <EllipsisIcon
+    <button className={styles.button}>
+      <IonIcon
+        className={styles.ellipsisIcon}
         icon={ellipsisHorizontal}
         onClick={(e) => {
           e.stopPropagation();
           presentMoreActions();
         }}
       />
-    </PlainButton>
+    </button>
   );
 }

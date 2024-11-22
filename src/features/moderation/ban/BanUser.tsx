@@ -12,7 +12,6 @@ import {
   IonToolbar,
   useIonActionSheet,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { addDays } from "date-fns";
 import { useEffect, useState } from "react";
 
@@ -26,16 +25,7 @@ import { buildBanFailed, buildBanned } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
 
-const DaysValues = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-`;
-
-const BanTextContainer = styled.div`
-  font-size: 0.925em;
-  margin: 0 32px 32px;
-`;
+import styles from "./BanUser.module.css";
 
 interface BanUserProps {
   dismiss: () => void;
@@ -153,7 +143,7 @@ export default function BanUser({
           {!permanent && (
             <IonItem>
               <IonLabel>Days</IonLabel>
-              <DaysValues slot="end">
+              <div className={styles.daysValues} slot="end">
                 <strong>{days}</strong>
                 <AddRemoveButtons
                   addDisabled={days > 999}
@@ -161,7 +151,7 @@ export default function BanUser({
                   onAdd={() => setDays((days) => days + 1)}
                   onRemove={() => setDays((days) => days - 1)}
                 />
-              </DaysValues>
+              </div>
             </IonItem>
           )}
           <IonItem>
@@ -174,9 +164,9 @@ export default function BanUser({
           </IonItem>
         </IonList>
 
-        <BanTextContainer>
+        <div className={styles.banTextContainer}>
           <IonLabel color="medium">{text}</IonLabel>
-        </BanTextContainer>
+        </div>
       </IonContent>
     </>
   );

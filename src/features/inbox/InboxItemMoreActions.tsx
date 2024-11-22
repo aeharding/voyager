@@ -1,17 +1,12 @@
-import { styled } from "@linaria/react";
 import { mailOutline, mailUnreadOutline } from "ionicons/icons";
 
 import MoreActions from "#/features/comment/CommentEllipsis";
-import { PlainButton } from "#/features/shared/PlainButton";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { InboxItemView } from "./InboxItem";
+import styles from "./InboxItemMoreActions.module.css";
 import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
 import { getInboxItemId, markRead } from "./inboxSlice";
-
-const StyledPlainButton = styled(PlainButton)`
-  font-size: 1.12em;
-`;
 
 interface InboxItemMoreActionsProps {
   item: InboxItemView;
@@ -42,7 +37,7 @@ export default function InboxItemMoreActions({
   };
 
   return (
-    <StyledPlainButton>
+    <button className={styles.button}>
       {"person_mention" in item || "comment_reply" in item ? (
         <MoreActions
           comment={item}
@@ -57,6 +52,6 @@ export default function InboxItemMoreActions({
           ref={ref}
         />
       )}
-    </StyledPlainButton>
+    </button>
   );
 }

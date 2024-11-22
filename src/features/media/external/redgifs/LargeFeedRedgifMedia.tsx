@@ -1,6 +1,4 @@
 import { IonButton, IonText } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { ComponentProps, useEffect } from "react";
 
 import MediaPlaceholder from "#/features/media/MediaPlaceholder";
@@ -9,19 +7,13 @@ import { setEmbedExternalMedia } from "#/features/settings/settingsSlice";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import styles from "./LargeFeedRedgifMedia.module.css";
 import {
   enable,
   getVideoSrc,
   initializeIfNeeded,
   validTokenSelector,
 } from "./redgifsSlice";
-
-const EnableWarningContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  text-align: center;
-`;
 
 interface RedgifProps
   extends Omit<ComponentProps<typeof LargeFeedMedia>, "src"> {
@@ -45,12 +37,8 @@ export default function LargeFeedRedgifMedia({ url, ...rest }: RedgifProps) {
   if (status === "needs-enable")
     return (
       <MediaPlaceholder state="custom">
-        <EnableWarningContainer>
-          <IonText
-            className={css`
-              margin-bottom: 16px;
-            `}
-          >
+        <div className={styles.enableWarningContainer}>
+          <IonText className="ion-margin-bottom">
             Embed videos from <strong>redgifs.com</strong>?
           </IonText>
           <IonButton
@@ -75,7 +63,7 @@ export default function LargeFeedRedgifMedia({ url, ...rest }: RedgifProps) {
           >
             Never embed external media
           </IonButton>
-        </EnableWarningContainer>
+        </div>
       </MediaPlaceholder>
     );
 

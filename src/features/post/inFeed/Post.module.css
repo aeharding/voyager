@@ -1,0 +1,8 @@
+.item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+
+  --border-width: 0;
+  --border-style: none;
+  --background-hover: none;
+}

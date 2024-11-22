@@ -1,38 +1,10 @@
 import { IonIcon } from "@ionic/react";
-import { cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { imageOutline } from "ionicons/icons";
 import { HTMLAttributes } from "react";
 
-import { MEDIA_EL_CLASSNAME } from "./InlineMedia";
+import { cx, sv } from "#/helpers/css";
 
-const PlaceholderContainer = styled.span<{ defaultAspectRatio: number }>`
-  display: flex;
-
-  &.not-loaded {
-    align-items: center;
-    justify-content: center;
-
-    aspect-ratio: ${({ defaultAspectRatio }) => defaultAspectRatio};
-    position: relative;
-
-    .${MEDIA_EL_CLASSNAME} {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-  }
-`;
-
-const LoadingIonIcon = styled(IonIcon)`
-  opacity: 0.5;
-  font-size: 24px;
-`;
-
-const Error = styled.span`
-  opacity: 0.5;
-  padding: 16px;
-`;
+import styles from "./MediaPlaceholder.module.css";
 
 type State = "loading" | "loaded" | "error" | "custom";
 
@@ -52,9 +24,9 @@ export default function MediaPlaceholder({
   function renderIcon() {
     switch (state) {
       case "loading":
-        return <LoadingIonIcon icon={imageOutline} />;
+        return <IonIcon className={styles.loadingIcon} icon={imageOutline} />;
       case "error":
-        return <Error>failed to load media 😢</Error>;
+        return <span className={styles.error}>failed to load media 😢</span>;
       case "custom":
       case "loaded":
         return;
@@ -62,13 +34,17 @@ export default function MediaPlaceholder({
   }
 
   return (
-    <PlaceholderContainer
-      className={cx(className, state !== "loaded" && "not-loaded")}
-      defaultAspectRatio={defaultAspectRatio}
+    <span
       {...rest}
+      className={cx(
+        styles.placeholderContainer,
+        className,
+        state !== "loaded" && "not-loaded",
+      )}
+      style={{ ...rest.style, ...sv({ defaultAspectRatio }) }}
     >
       {children}
       {renderIcon()}
-    </PlaceholderContainer>
+    </span>
   );
 }

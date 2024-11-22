@@ -22,11 +22,11 @@ export default function LargeFeedPostMedia(
   if (props.post.post.url && isRedgif(props.post.post.url))
     return (
       <LargeFeedRedgifMedia
+        {...props}
         url={props.post.post.url}
         alt={props.post.post.alt_text}
         autoPlay={!props.blur}
         shouldPortal
-        {...props}
       />
     );
 

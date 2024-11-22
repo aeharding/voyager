@@ -1,15 +1,10 @@
-import { styled } from "@linaria/react";
 import { Community, Person } from "lemmy-js-client";
 
 import FakeIcon from "#/features/shared/FakeIcon";
+import { cx } from "#/helpers/css";
 import { getImageSrc } from "#/services/lemmy";
 
-const SubImgIcon = styled.img<{ size: number }>`
-  width: ${({ size }) => size}px;
-  height: ${({ size }) => size}px;
-  border-radius: 50%;
-  object-fit: cover;
-`;
+import styles from "./ItemIcon.module.css";
 
 interface ItemIconProps {
   item: Community | Person | string;
@@ -35,12 +30,12 @@ export default function ItemIcon({
 
   if (icon)
     return (
-      <SubImgIcon
+      <img
+        style={{ width: `${size}px`, height: `${size}px` }}
         src={getImageSrc(icon, {
           size,
         })}
-        size={size}
-        className={className}
+        className={cx(styles.subImgIcon, className)}
         slot={slot}
       />
     );

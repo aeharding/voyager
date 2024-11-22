@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 1.5em;
+
+  max-width: 600px;
+  width: 100%;
+}
+
+.section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.amount {
+  font-size: 1rem;
+}

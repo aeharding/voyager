@@ -1,5 +1,4 @@
 import { styled } from "@linaria/react";
-import { megaphone } from "ionicons/icons";
 import { useContext } from "react";
 
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
@@ -12,13 +11,13 @@ import ModeratableItem, {
 } from "#/features/moderation/ModeratableItem";
 import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
 import Crosspost from "#/features/post/crosspost/Crosspost";
+import AnnouncementIcon from "#/features/post/detail/AnnouncementIcon";
 import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
 import { VoteButton } from "#/features/post/shared/VoteButton";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import sharedStyles from "#/features/shared/shared.module.css";
-import { AnnouncementIcon } from "#/routes/pages/posts/PostPage";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
 
@@ -145,7 +144,7 @@ export default function LargePost({ post }: PostProps) {
           <LeftDetails isRead={hasBeenRead}>
             <CommunityName>
               {post.post.featured_community || post.post.featured_local ? (
-                <AnnouncementIcon icon={megaphone} />
+                <AnnouncementIcon />
               ) : undefined}
               {inCommunityFeed ? (
                 <PersonLink

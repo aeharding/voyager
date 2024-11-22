@@ -1,0 +1,27 @@
+.linkContainer {
+  display: inline;
+
+  font-weight: 500;
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  position: relative;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.hide {
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--ion-background-color-step-150, #ccc);
+  }
+}

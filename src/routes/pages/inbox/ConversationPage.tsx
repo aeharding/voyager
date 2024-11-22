@@ -18,6 +18,7 @@ import {
   useState,
 } from "react";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { CustomItemComponent, VList, VListHandle } from "virtua";
 
 import { TabContext } from "#/core/TabContext";
@@ -28,7 +29,7 @@ import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
 import SendMessageBox from "#/features/inbox/SendMessageBox";
 import { syncMessages } from "#/features/inbox/inboxSlice";
 import Message from "#/features/inbox/messages/Message";
-import { StyledLink } from "#/features/labels/links/shared";
+import sharedStyles from "#/features/labels/links/shared.module.css";
 import AppHeader from "#/features/shared/AppHeader";
 import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
 import { getUser } from "#/features/user/userSlice";
@@ -212,9 +213,12 @@ export default function ConversationPage() {
               padding-inline-end: 120px;
             `}
           >
-            <StyledLink to={buildGeneralBrowseLink(`/u/${handle}`)}>
+            <Link
+              className={sharedStyles.link}
+              to={buildGeneralBrowseLink(`/u/${handle}`)}
+            >
               {handle}
-            </StyledLink>
+            </Link>
           </IonTitle>
 
           <IonButtons slot="end">

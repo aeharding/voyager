@@ -13,8 +13,8 @@ import {
   bgColorToVariable,
 } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
 import "#/features/shared/bounce.css";
-import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import { cx, sv } from "#/helpers/css";
+import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import useAppToast from "#/helpers/useAppToast";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useAppDispatch, useAppSelector } from "#/store";

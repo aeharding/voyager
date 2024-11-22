@@ -1,0 +1,80 @@
+.container {
+  position: relative; /* Setup a relative container for our pseudo elements */
+  max-width: min(75%, 400px);
+  padding: 10px 15px;
+  line-height: 1.3;
+  word-wrap: break-word; /* Make sure the text wraps to multiple lines if long */
+
+  font-size: 1rem;
+
+  --border-radius: 20px;
+
+  border-radius: var(--border-radius);
+
+  --bg: var(--ion-background-color);
+  --sentColor: var(--ion-color-primary);
+  --receiveColor: #eee;
+
+  :global(.ion-palette-dark) & {
+    --receiveColor: var(--ion-color-medium);
+  }
+
+  &:before {
+    width: 20px;
+  }
+
+  &:after {
+    width: 26px;
+    background-color: var(--bg); /* All tails have the same bg cutout */
+  }
+
+  a {
+    color: white;
+  }
+
+  &:before,
+  &:after {
+    position: absolute;
+    bottom: 0;
+    height: var(
+      --border-radius
+    ); /* height of our bubble "tail" - should match the border-radius above */
+    content: "";
+  }
+
+  margin-bottom: 15px;
+}
+
+.sent {
+  align-self: flex-end;
+  color: white;
+  background: var(--sentColor);
+
+  &:before {
+    right: -7px;
+    background-color: var(--sentColor);
+    border-bottom-left-radius: 16px 14px;
+  }
+
+  &:after {
+    right: -26px;
+    border-bottom-left-radius: 10px;
+  }
+}
+
+.received {
+  align-self: flex-start;
+  color: black;
+  background: var(--receiveColor);
+
+  &:before {
+    left: -7px;
+    background-color: var(--receiveColor);
+    border-bottom-right-radius: 16px 14px;
+  }
+
+  &:after {
+    left: -26px;
+    border-bottom-right-radius: 10px;
+  }
+}

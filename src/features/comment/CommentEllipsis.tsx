@@ -4,9 +4,8 @@ import { useContext, useImperativeHandle } from "react";
 
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
 
-import useCommentActions, { CommentActionsProps } from "./useCommentActions";
-
 import styles from "./CommentEllipsis.module.css";
+import useCommentActions, { CommentActionsProps } from "./useCommentActions";
 
 export type CommentEllipsisHandle = Pick<
   ReturnType<typeof useCommentActions>,

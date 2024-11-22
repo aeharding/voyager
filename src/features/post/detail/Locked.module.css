@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin-top: 8px;
+  padding-top: 8px;
+  margin-bottom: -8px;
+
+  border-top: 1px solid
+    var(
+      --ion-item-border-color,
+      var(--ion-border-color, var(--ion-background-color-step-250, #c8c7cc))
+    );
+}
+
+.lockIcon {
+  font-size: 32px;
+  margin-left: 8px;
+}
+
+.description {
+  font-size: 0.8725rem;
+  font-weight: 500;
+  color: var(--ion-color-medium);
+
+  aside {
+    font-size: 0.8125rem;
+    font-weight: normal;
+    opacity: 0.8;
+  }
+}

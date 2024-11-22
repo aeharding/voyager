@@ -1,6 +1,4 @@
 import { IonButton, IonIcon } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { resize, send as sendIcon } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
 import { KeyboardEvent, useContext, useEffect, useRef, useState } from "react";
@@ -16,64 +14,8 @@ import useClient from "#/helpers/useClient";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch } from "#/store";
 
+import styles from "./SendMessageBox.module.css";
 import { receivedMessages } from "./inboxSlice";
-
-const MaxSizeContainer = styled(MaxWidthContainer)`
-  height: 100%;
-`;
-
-const SendContainer = styled.div`
-  position: relative;
-
-  padding: 0.5rem;
-`;
-
-const InputContainer = styled.div`
-  position: relative;
-
-  display: flex;
-  align-items: flex-end;
-  gap: 4px;
-`;
-
-const Input = styled(TextareaAutosize)`
-  border: 1px solid
-    var(
-      --ion-tab-bar-border-color,
-      var(
-        --ion-border-color,
-        var(
-          --ion-color-step-150,
-          var(--ion-background-color-step-150, rgba(0, 0, 0, 0.2))
-        )
-      )
-    );
-  border-radius: 1rem;
-
-  // Exact px measurements to prevent
-  // pixel rounding browser inconsistencies
-  padding: 8px 12px;
-  line-height: 18px;
-  font-size: 16px;
-  margin: 0;
-
-  background: var(--ion-background-color);
-  color: var(--ion-text-color);
-  outline: none;
-
-  width: 100%;
-  resize: none;
-  appearance: none;
-`;
-
-const IconButton = styled(IonButton)`
-  margin: 0;
-  min-height: 36px;
-
-  ion-icon {
-    font-size: 22px;
-  }
-`;
 
 interface SendMessageBoxProps {
   recipient: Person;
@@ -141,10 +83,11 @@ export default function SendMessageBox({
   }, [router]);
 
   return (
-    <SendContainer>
-      <MaxSizeContainer>
-        <InputContainer>
-          <IconButton
+    <div className={styles.sendContainer}>
+      <MaxWidthContainer className={styles.maxSizeContainer}>
+        <div className={styles.inputContainer}>
+          <IonButton
+            className={styles.iconButton}
             shape="round"
             fill="clear"
             onClick={async () => {
@@ -163,12 +106,11 @@ export default function SendMessageBox({
             <IonIcon
               icon={resize}
               slot="icon-only"
-              className={css`
-                transform: scale(1.1);
-              `}
+              className={styles.resizeIcon}
             />
-          </IconButton>
-          <Input
+          </IonButton>
+          <TextareaAutosize
+            className={styles.input}
             ref={inputRef}
             disabled={loading}
             placeholder="Message"
@@ -182,7 +124,8 @@ export default function SendMessageBox({
               e.stopPropagation();
             }}
           />
-          <IconButton
+          <IonButton
+            className={styles.iconButton}
             disabled={!value.trim() || loading}
             shape="round"
             fill="clear"
@@ -192,13 +135,11 @@ export default function SendMessageBox({
             <IonIcon
               icon={sendIcon}
               slot="icon-only"
-              className={css`
-                transform: rotate(270deg);
-              `}
+              className={styles.sendIcon}
             />
-          </IconButton>
-        </InputContainer>
-      </MaxSizeContainer>
-    </SendContainer>
+          </IonButton>
+        </div>
+      </MaxWidthContainer>
+    </div>
   );
 }

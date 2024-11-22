@@ -15,14 +15,13 @@ import { useState } from "react";
 
 import PersonLink from "#/features/labels/links/PersonLink";
 import AppHeader from "#/features/shared/AppHeader";
+import shared from "#/features/shared/shared.module.css";
 import { blurOnEnter } from "#/helpers/dom";
 import { getRemoteHandle } from "#/helpers/lemmy";
 
 import { useAppDispatch, useAppSelector } from "../../store";
 import SourceUrlButton from "./SourceUrlButton";
 import { generateNewTag, updateTag } from "./userTagSlice";
-
-import shared from "#/features/shared/shared.module.css";
 
 const TagIonModal = styled(IonModal)`
   --height: auto;

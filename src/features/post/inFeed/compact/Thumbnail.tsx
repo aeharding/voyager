@@ -1,6 +1,4 @@
 import { IonIcon } from "@ionic/react";
-import { css, cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { link, linkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { MouseEvent, useCallback, useMemo } from "react";
@@ -8,6 +6,7 @@ import { MouseEvent, useCallback, useMemo } from "react";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";
 import InAppExternalLink from "#/features/shared/InAppExternalLink";
+import { cx } from "#/helpers/css";
 import { findLoneImage } from "#/helpers/markdown";
 import { isUrlImage } from "#/helpers/url";
 import {
@@ -19,6 +18,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setPostRead } from "../../postSlice";
 import CompactFeedPostMedia from "./CompactFeedPostMedia";
+import styles from "./Thumbnail.module.css";
 import SelfSvg from "./self.svg?react";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {
@@ -33,59 +33,6 @@ function getWidthForSize(size: CompactThumbnailSizeType): number {
       return 90;
   }
 }
-
-const sharedContainerCss = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  flex: 0 0 auto;
-
-  aspect-ratio: 1;
-  background: var(--ion-color-light);
-  border-radius: 8px;
-
-  position: relative;
-
-  overflow: hidden;
-  color: inherit;
-
-  svg {
-    width: 60%;
-    opacity: 0.5;
-  }
-`;
-
-const LinkIcon = styled(IonIcon)`
-  position: absolute;
-  bottom: 3px;
-  right: 3px;
-  padding: 2px;
-  font-size: 14px;
-  color: #444;
-
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  opacity: 0.9;
-`;
-
-const FullsizeIcon = styled(IonIcon)`
-  font-size: 2.5em;
-  opacity: 0.3;
-`;
-
-const imgCss = css`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-`;
-
-const blurImgCss = css`
-  filter: blur(6px);
-
-  // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-  transform: translate3d(0, 0, 0);
-`;
 
 interface ImgProps {
   post: PostView;
@@ -134,20 +81,20 @@ export default function Thumbnail({ post }: ImgProps) {
           <>
             <img
               src={getImageSrc(post.post.thumbnail_url, { size: 100 })}
-              className={cx(imgCss, nsfw && blurImgCss)}
+              className={cx(styles.img, nsfw && styles.blurImg)}
             />
-            <LinkIcon icon={linkOutline} />
+            <IonIcon className={styles.linkIcon} icon={linkOutline} />
           </>
         );
 
-      return <FullsizeIcon icon={link} />;
+      return <IonIcon className={styles.fullsizeIcon} icon={link} />;
     }
 
     if (postImageSrc) {
       return (
         <CompactFeedPostMedia
           post={post}
-          className={cx(imgCss, nsfw && blurImgCss)}
+          className={cx(styles.img, nsfw && styles.blurImg)}
         />
       );
     }
@@ -170,7 +117,7 @@ export default function Thumbnail({ post }: ImgProps) {
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleLinkClick}
-        className={sharedContainerCss}
+        className={styles.container}
         style={style}
       >
         {contents}
@@ -178,7 +125,7 @@ export default function Thumbnail({ post }: ImgProps) {
     );
 
   return (
-    <div className={sharedContainerCss} style={style}>
+    <div className={styles.container} style={style}>
       {contents}
     </div>
   );

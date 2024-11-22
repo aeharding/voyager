@@ -40,7 +40,6 @@ import {
 import Login from "#/features/auth/login/login/Login";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
-import { cx } from "#/helpers/css";
 import { isIosTheme } from "#/helpers/device";
 import { blurOnEnter } from "#/helpers/dom";
 import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";

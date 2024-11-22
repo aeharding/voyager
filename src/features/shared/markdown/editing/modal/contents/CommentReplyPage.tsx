@@ -25,6 +25,7 @@ import {
   userHandleSelector,
 } from "#/features/auth/authSelectors";
 import { receivedComments } from "#/features/comment/commentSlice";
+import shared from "#/features/shared/shared.module.css";
 import { isIosTheme } from "#/helpers/device";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { commentPosted } from "#/helpers/toastMessages";
@@ -36,8 +37,6 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import AppHeader from "../../../../AppHeader";
 import CommentEditorContent from "./CommentEditorContent";
 import ItemReplyingTo from "./ItemReplyingTo";
-
-import shared from "#/features/shared/shared.module.css";
 
 export const UsernameIonText = styled(IonText)`
   font-size: 0.7em;

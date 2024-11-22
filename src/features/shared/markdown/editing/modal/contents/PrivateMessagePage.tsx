@@ -6,7 +6,6 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { arrowBackSharp, send } from "ionicons/icons";
 import { Person, PrivateMessageView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
@@ -22,11 +21,6 @@ import useClient from "#/helpers/useClient";
 import { useAppDispatch } from "#/store";
 
 import CommentEditorContent from "./CommentEditorContent";
-
-const Title = styled.span`
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
 
 /**
  * Special case to compose a private message
