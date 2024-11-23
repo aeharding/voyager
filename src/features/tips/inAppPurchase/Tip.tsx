@@ -58,7 +58,7 @@ export default function Tip({ product }: TipProps) {
           {product.priceString}
         </span>
         <IonSpinner
-          className={cx(styles.hiddenSpinner, !loading && styles.visible)}
+          className={cx(styles.hiddenSpinner, loading && styles.visible)}
         />
       </IonButton>
     </div>
