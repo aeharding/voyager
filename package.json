@@ -145,7 +145,6 @@
     "eslint-plugin-react-hooks": "0.0.0-experimental-b01722d5-20241114",
     "eslint-plugin-vitest": "^0.5.4",
     "jsdom": "^25.0.1",
-    "lightningcss": "^1.28.1",
     "mdast-util-lemmy-spoiler": "^2.0.0",
     "postcss": "^8.4.49",
     "prettier": "^3.3.3",
