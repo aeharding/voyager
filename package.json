@@ -154,7 +154,6 @@
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.14.0",
     "vite": "^5.4.11",
-    "vite-css-modules": "^1.5.2",
     "vite-plugin-pwa": "^0.21.0",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^2.1.5"
