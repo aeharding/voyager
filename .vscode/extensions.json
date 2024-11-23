@@ -2,7 +2,6 @@
   "recommendations": [
     "ionic.ionic",
     "esbenp.prettier-vscode",
-    "styled-components.vscode-styled-components", // TODO remove
     "github.vscode-github-actions",
     "clinyong.vscode-css-modules"
   ]

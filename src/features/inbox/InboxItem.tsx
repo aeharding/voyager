@@ -200,7 +200,7 @@ export default function InboxItem({ item }: InboxItemProps) {
           <VoteArrow vote={vote} />
         </div>
         <div className={styles.content}>
-          <div className={styles.header}>{renderHeader()}</div>
+          <div>{renderHeader()}</div>
           <div className={styles.body}>
             <CommentMarkdown id={getItemId(item)}>
               {renderContents()}
