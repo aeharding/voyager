@@ -73,6 +73,9 @@ export default defineConfig({
       },
     },
   },
+  esbuild: {
+    logOverride: { "unsupported-css-nesting": "silent" },
+  },
   test: {
     exclude: ["**/e2e/**", "**/node_modules/**"],
     globals: true,

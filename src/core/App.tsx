@@ -1,33 +1,3 @@
-import { IonApp, setupIonicReact } from "@ionic/react";
-import { NavModes } from "capacitor-android-nav-mode";
-import { ErrorBoundary } from "react-error-boundary";
-
-import { AppContextProvider } from "#/features/auth/AppContext";
-import BeforeInstallPromptProvider from "#/features/pwa/BeforeInstallPromptProvider";
-import {
-  getAndroidNavMode,
-  getDeviceMode,
-  isInstalled,
-} from "#/helpers/device";
-import { OptimizedRouterProvider } from "#/helpers/useOptimizedIonRouter";
-import Router from "#/routes/common/Router";
-import { UpdateContextProvider } from "#/routes/pages/settings/update/UpdateContext";
-import ConfigProvider from "#/services/app";
-import { StoreProvider } from "#/store";
-
-import AppCrash from "./AppCrash";
-import GlobalStyles from "./GlobalStyles";
-import { TabContextProvider } from "./TabContext";
-
-// preserve lexical order
-import TabbedRoutes from "#/routes/TabbedRoutes";
-
-import Auth from "./Auth";
-import Listeners from "./listeners";
-
-// Setup global app lifecycle listeners
-import "./listeners";
-
 // Core CSS required for Ionic components to work properly
 import "@ionic/react/css/core.css";
 
@@ -60,6 +30,37 @@ import "@ionic/react/css/palettes/dark.class.css";
 import "./syntaxHighlights.css";
 // Global CSS overrides
 import "./globalCssOverrides.css";
+
+// Rest of imports after css
+import { IonApp, setupIonicReact } from "@ionic/react";
+import { NavModes } from "capacitor-android-nav-mode";
+import { ErrorBoundary } from "react-error-boundary";
+
+import { AppContextProvider } from "#/features/auth/AppContext";
+import BeforeInstallPromptProvider from "#/features/pwa/BeforeInstallPromptProvider";
+import {
+  getAndroidNavMode,
+  getDeviceMode,
+  isInstalled,
+} from "#/helpers/device";
+import { OptimizedRouterProvider } from "#/helpers/useOptimizedIonRouter";
+import Router from "#/routes/common/Router";
+import { UpdateContextProvider } from "#/routes/pages/settings/update/UpdateContext";
+import ConfigProvider from "#/services/app";
+import { StoreProvider } from "#/store";
+
+import AppCrash from "./AppCrash";
+import GlobalStyles from "./GlobalStyles";
+import { TabContextProvider } from "./TabContext";
+
+// preserve lexical order
+import TabbedRoutes from "#/routes/TabbedRoutes";
+
+import Auth from "./Auth";
+import Listeners from "./listeners";
+
+// Setup global app lifecycle listeners
+import "./listeners";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {
