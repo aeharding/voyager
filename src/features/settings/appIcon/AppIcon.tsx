@@ -8,28 +8,12 @@ import {
   IonText,
   IonThumbnail,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 
 import { isAndroid } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import styles from "./AppIcon.module.css";
 import { APP_ICONS, AppIcon, updateAppIcon } from "./appIconSlice";
-
-const StyledIonThumbnail = styled(IonThumbnail)`
-  margin: 1rem 1rem 1rem 0;
-
-  --size: 4.75em;
-`;
-
-const Img = styled.img`
-  border-radius: 1em;
-`;
-
-const H2 = styled.h2`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-`;
 
 export default function AppIconComponent() {
   const dispatch = useAppDispatch();
@@ -44,18 +28,22 @@ export default function AppIconComponent() {
       <IonList inset>
         {APP_ICONS.map((icon) => (
           <IonItem key={icon}>
-            <StyledIonThumbnail slot="start" onClick={() => selectIcon(icon)}>
-              <Img src={getIconSrc(icon)} />
-            </StyledIonThumbnail>
+            <IonThumbnail
+              className={styles.thumbnail}
+              slot="start"
+              onClick={() => selectIcon(icon)}
+            >
+              <img src={getIconSrc(icon)} className={styles.img} />
+            </IonThumbnail>
 
             <IonRadio value={icon}>
               <IonLabel>
-                <H2 className="ion-text-wrap">
+                <h2 className={styles.h2}>
                   {getIconName(icon)}{" "}
                   {isIconThemed(icon) && (
                     <IonBadge color="medium">Themed</IonBadge>
                   )}
-                </H2>
+                </h2>
                 <p className="ion-text-wrap">
                   <IonText color="medium">
                     {getIconAuthor(icon)}{" "}

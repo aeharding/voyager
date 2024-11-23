@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 
@@ -9,9 +8,7 @@ import { resolveObject } from "#/features/resolve/resolveSlice";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-const StyledCenteredSpinner = styled(CenteredSpinner)`
-  margin-top: 60px;
-`;
+import styles from "./AutoResolvePostComment.module.css";
 
 interface AutoResolvePostCommentProps {
   url: string;
@@ -42,7 +39,7 @@ export default function AutoResolvePostComment({
   }, [url, dispatch]);
 
   if (object === "couldnt_find_object" || error) return null;
-  if (!object) return <StyledCenteredSpinner />;
+  if (!object) return <CenteredSpinner className={styles.spinner} />;
 
   if (object.post)
     return (

@@ -1,0 +1,6 @@
+.description {
+  composes: ion-text-wrap from global;
+
+  font-size: 0.76em;
+  color: var(--ion-color-medium);
+}

@@ -1,0 +1,5 @@
+.sourceUrlButton {
+  ion-icon {
+    font-size: min(1.6em, 30px);
+  }
+}

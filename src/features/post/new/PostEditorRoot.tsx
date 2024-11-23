@@ -17,7 +17,6 @@ import {
   IonToolbar,
   useIonAlert,
 } from "@ionic/react";
-import { css } from "@linaria/core";
 import { startCase } from "es-toolkit";
 import { accessibility, cameraOutline } from "ionicons/icons";
 import { Post } from "lemmy-js-client";
@@ -386,9 +385,7 @@ export default function PostEditorRoot({
         </IonToolbar>
         <IonToolbar>
           <IonSegment
-            className={css`
-              width: 100%;
-            `}
+            className={styles.segment}
             value={postType}
             onIonChange={(e) => setPostType(e.target.value as PostType)}
           >

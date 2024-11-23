@@ -1,0 +1,19 @@
+.range {
+  --bar-background: var(--ion-color-medium);
+
+  ::part(tick) {
+    background: var(--ion-color-medium);
+  }
+}
+
+.a {
+  padding: 0 6px;
+  font-weight: 500;
+  font-size: 1.3em;
+}
+
+.aSmall {
+  composes: a;
+
+  font-size: 0.8em;
+}

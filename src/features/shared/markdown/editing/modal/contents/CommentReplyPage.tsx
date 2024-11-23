@@ -3,12 +3,9 @@ import {
   IonButtons,
   IonIcon,
   IonSpinner,
-  IonText,
-  IonTitle,
   IonToolbar,
   useIonModal,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { arrowBackSharp, send } from "ionicons/icons";
 import {
   CommentReplyView,
@@ -25,7 +22,7 @@ import {
   userHandleSelector,
 } from "#/features/auth/authSelectors";
 import { receivedComments } from "#/features/comment/commentSlice";
-import shared from "#/features/shared/shared.module.css";
+import MultilineTitle from "#/features/shared/MultilineTitle";
 import { isIosTheme } from "#/helpers/device";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { commentPosted } from "#/helpers/toastMessages";
@@ -37,15 +34,6 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import AppHeader from "../../../../AppHeader";
 import CommentEditorContent from "./CommentEditorContent";
 import ItemReplyingTo from "./ItemReplyingTo";
-
-export const UsernameIonText = styled(IonText)`
-  font-size: 0.7em;
-  font-weight: normal;
-`;
-
-export const TitleContainer = styled.div`
-  line-height: 1;
-`;
 
 export type CommentReplyItem =
   | CommentView
@@ -244,31 +232,23 @@ export default function CommentReplyPage({
               )}
             </IonButton>
           </IonButtons>
-          <IonTitle>
-            <div className={shared.multilineTitle}>
-              <TitleContainer
-                onClick={() => {
-                  if (accounts?.length === 1) return;
+          <MultilineTitle
+            subheader={selectedAccount}
+            onClick={() => {
+              if (accounts?.length === 1) return;
 
-                  presentAccountSwitcher({
-                    cssClass: "small",
-                    onDidDismiss: () => {
-                      requestAnimationFrame(() => {
-                        textareaRef.current?.focus();
-                      });
-                    },
+              presentAccountSwitcher({
+                cssClass: "small",
+                onDidDismiss: () => {
+                  requestAnimationFrame(() => {
+                    textareaRef.current?.focus();
                   });
-                }}
-              >
-                <IonText>New Comment</IonText>
-                <div>
-                  <UsernameIonText color="medium">
-                    {selectedAccount}
-                  </UsernameIonText>
-                </div>
-              </TitleContainer>
-            </div>
-          </IonTitle>
+                },
+              });
+            }}
+          >
+            New Comment
+          </MultilineTitle>
           <IonButtons slot="end">
             {loading ? (
               <IonSpinner />

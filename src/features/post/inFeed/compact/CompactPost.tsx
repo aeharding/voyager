@@ -17,7 +17,7 @@ import MoreModActions from "#/features/post/shared/MoreModAction";
 import { VoteButton } from "#/features/post/shared/VoteButton";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
-import { sv } from "#/helpers/css";
+import { cx, sv } from "#/helpers/css";
 import { isUrlImage, parseUrlForDisplay } from "#/helpers/url";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
@@ -58,10 +58,7 @@ export default function CompactPost({ post }: PostProps) {
 
   return (
     <ModeratableItem itemView={post}>
-      <div
-        className={styles.container}
-        style={sv({ color: hasBeenRead ? "var(--read-color)" : "inherit" })}
-      >
+      <div className={cx(styles.container, hasBeenRead && styles.read)}>
         <ModeratableItemBannerOutlet />
 
         <div className={styles.contents}>

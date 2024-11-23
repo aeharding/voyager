@@ -1,0 +1,52 @@
+.markdown {
+  @media (max-width: 700px) {
+    ul,
+    ol {
+      padding-left: 28px;
+    }
+  }
+
+  code {
+    white-space: pre-wrap;
+  }
+
+  code:not(:global(.hljs)) {
+    background: var(--lightroom-bg);
+    border-radius: 4px;
+    padding: 1px 3px;
+    color: rgba(var(--ion-color-dark-rgb), 0.9);
+  }
+
+  pre {
+    background: var(--lightroom-bg);
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 0.9375em;
+  }
+
+  blockquote {
+    padding-left: 0.5rem;
+    border-left: 3px solid
+      var(--ion-border-color, var(--ion-background-color-step-250, #c8c7cc));
+    margin-left: 0;
+  }
+
+  hr {
+    background-color: var(
+      --ion-border-color,
+      var(--ion-background-color-step-250, #c8c7cc)
+    );
+
+    min-width: min(100%, 100px);
+    width: 80%;
+
+    height: 2px;
+  }
+
+  ol,
+  ul {
+    li > p:first-child:last-child {
+      margin: 0;
+    }
+  }
+}

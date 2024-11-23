@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { Community } from "lemmy-js-client";
 import { useEffect, useState } from "react";
@@ -6,26 +5,7 @@ import { useEffect, useState } from "react";
 import { getHandle } from "#/helpers/lemmy";
 
 import { SharedModeProps as GenericModeProps } from "../DefaultMode";
-
-const Container = styled.div`
-  display: flex;
-  gap: 16px;
-  padding: 0 16px;
-  overflow: auto;
-  height: 100%;
-`;
-
-const Item = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  white-space: nowrap;
-`;
-
-const EmptyItem = styled(Item)`
-  color: var(--ion-color-medium);
-`;
+import styles from "./GenericAutocompleteMode.module.css";
 
 export interface AutocompleteModeProps extends GenericModeProps {
   match: string;
@@ -85,16 +65,22 @@ export default function GenericAutocompleteMode<
   }
 
   return (
-    <Container>
+    <div className={styles.container}>
       {items.length ? (
         items.map((item) => (
-          <Item key={item.id} onClick={() => select(item)}>
+          <div
+            className={styles.item}
+            key={item.id}
+            onClick={() => select(item)}
+          >
             {getHandle(item)}
-          </Item>
+          </div>
         ))
       ) : (
-        <EmptyItem>{match ? "No results" : "Type for suggestions"}</EmptyItem>
+        <div className={styles.emptyItem}>
+          {match ? "No results" : "Type for suggestions"}
+        </div>
       )}
-    </Container>
+    </div>
   );
 }

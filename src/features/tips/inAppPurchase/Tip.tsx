@@ -1,53 +1,12 @@
 import { IonButton, IonSpinner } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { Product } from "capacitor-tips";
 import { useState } from "react";
 
+import { cx } from "#/helpers/css";
 import useAppToast from "#/helpers/useAppToast";
 
+import styles from "./Tip.module.css";
 import useInAppPurchase from "./useInAppPurchase";
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  width: 100%;
-`;
-
-const transitionStyle = `
-  transition: opacity 250ms linear;
-`;
-
-const StyledIonButton = styled(IonButton)`
-  position: relative;
-`;
-
-const Contents = styled.span`
-  opacity: 1;
-
-  ${transitionStyle}
-`;
-
-const hideCss = css`
-  opacity: 0;
-`;
-
-const HiddenIonSpinner = styled(IonSpinner)`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  opacity: 0;
-
-  ${transitionStyle}
-`;
-
-const visibleCss = css`
-  opacity: 1;
-`;
 
 interface TipProps {
   product: Product;
@@ -88,17 +47,20 @@ export default function Tip({ product }: TipProps) {
   }
 
   return (
-    <Container>
+    <div className={styles.container}>
       <div>{product.description}</div>
-      <StyledIonButton
+      <IonButton
+        className={styles.button}
         onClick={tip}
         style={loading ? { pointerEvents: "none" } : undefined}
       >
-        <Contents className={loading ? hideCss : undefined}>
+        <span className={cx(styles.contents, loading && styles.hide)}>
           {product.priceString}
-        </Contents>
-        <HiddenIonSpinner className={loading ? visibleCss : undefined} />
-      </StyledIonButton>
-    </Container>
+        </span>
+        <IonSpinner
+          className={cx(styles.hiddenSpinner, !loading && styles.visible)}
+        />
+      </IonButton>
+    </div>
   );
 }

@@ -1,0 +1,27 @@
+.container {
+  padding: 16px;
+  background: var(--lightroom-bg);
+  font-size: 0.875em;
+
+  a {
+    color: inherit !important;
+    pointer-events: none;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ion-color-medium);
+  font-size: 0.875em;
+  margin-bottom: 8px;
+}
+
+.ago {
+  margin-left: auto;
+}
+
+.commentContentWrapper {
+  user-select: text;
+}

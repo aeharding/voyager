@@ -4,8 +4,6 @@ import {
   useIonAlert,
   useIonModal,
 } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import {
   codeSlashOutline,
   ellipsisHorizontal,
@@ -37,20 +35,8 @@ import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
 import PreviewModal from "../PreviewModal";
 import useEditorHelpers from "../useEditorHelpers";
 import useUploadImage from "../useUploadImage";
+import styles from "./DefaultMode.module.css";
 import textFaces from "./textFaces.txt?raw";
-
-const Button = styled.button`
-  padding: 0;
-  font-size: 1.5rem;
-
-  appearance: none;
-  background: none;
-  border: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 export interface SharedModeProps {
   type: "comment" | "post";
@@ -350,14 +336,15 @@ export default function DefaultMode({
 
       <markdown-toolbar for={TOOLBAR_TARGET_ID}>
         <label htmlFor="photo-upload-toolbar">
-          <Button as="div" onClick={() => textareaRef.current?.focus()}>
+          <button
+            className={styles.button}
+            onClick={() => textareaRef.current?.focus()}
+          >
             <IonIcon icon={image} color="primary" />
-          </Button>
+          </button>
 
           <input
-            className={css`
-              display: none;
-            `}
+            className="ion-hide"
             type="file"
             accept="image/*"
             id="photo-upload-toolbar"
@@ -371,27 +358,27 @@ export default function DefaultMode({
             }}
           />
         </label>
-        <Button onClick={presentLinkInput}>
+        <button className={styles.button} onClick={presentLinkInput}>
           <IonIcon icon={link} color="primary" />
-        </Button>
+        </button>
         <md-bold>
-          <Button>
+          <button className={styles.button}>
             <IonIcon icon={bold} color="primary" />
-          </Button>
+          </button>
         </md-bold>
         <md-italic>
-          <Button>
+          <button className={styles.button}>
             <IonIcon icon={italic} color="primary" />
-          </Button>
+          </button>
         </md-italic>
         <md-quote>
-          <Button onClickCapture={onQuote}>
+          <button className={styles.button} onClickCapture={onQuote}>
             <IonIcon icon={quote} color="primary" />
-          </Button>
+          </button>
         </md-quote>
-        <Button onClick={presentMoreOptions}>
+        <button className={styles.button} onClick={presentMoreOptions}>
           <IonIcon icon={ellipsisHorizontal} color="primary" />
-        </Button>
+        </button>
       </markdown-toolbar>
     </>
   );

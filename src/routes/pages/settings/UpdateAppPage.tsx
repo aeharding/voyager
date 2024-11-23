@@ -10,6 +10,7 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -19,7 +20,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
-import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
+import sharedStyles from "#/features/shared/shared.module.css";
 import { ua } from "#/helpers/device";
 import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
 
@@ -131,7 +132,9 @@ export default function UpdateAppPage() {
             )}
           </MaxWidthContainer>
 
-          {status === "loading" && <PageContentIonSpinner />}
+          {status === "loading" && (
+            <IonSpinner className={sharedStyles.pageSpinner} />
+          )}
           {status === "not-enabled" && (
             <UpToDateText>Not installed.</UpToDateText>
           )}

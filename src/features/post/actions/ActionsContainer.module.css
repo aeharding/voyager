@@ -9,7 +9,7 @@
     padding: 6px 3px;
     margin: -10px -3px;
 
-    &.large {
+    &:global(.large) {
       font-size: 1.6em;
     }
   }

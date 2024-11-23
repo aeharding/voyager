@@ -8,7 +8,7 @@ import {
 import { useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
-import AppIcon from "#/features/settings/app-icon/AppIcon";
+import AppIcon from "#/features/settings/appIcon/AppIcon";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 

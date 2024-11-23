@@ -20,7 +20,7 @@
   color: var(--ion-color-text-aside);
 
   /* Special class applied by CrosspostContainer when contents is read */
-  &.read {
+  &:global(.read) {
     color: var(--read-color-medium);
   }
 }

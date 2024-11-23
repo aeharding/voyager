@@ -30,7 +30,9 @@
 .title {
   font-size: 0.9375em;
 
-  color: var(--sv-color);
+  .read & {
+    color: var(--read-color);
+  }
 }
 
 .aside {
@@ -41,7 +43,9 @@
 
   font-size: 0.8em;
 
-  color: var(--sv-color);
+  .read & {
+    color: var(--read-color);
+  }
 }
 
 .from {

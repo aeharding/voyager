@@ -1,0 +1,81 @@
+.container {
+  --bottom-padding: max(
+    var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0)),
+    16px
+  );
+
+  --top-space: 50px;
+
+  @media (max-height: 650px) {
+    --top-space: 0px;
+  }
+
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
+
+  max-height: calc(
+    100vh - var(--ion-safe-area-top, env(safe-area-inset-top, 0)) -
+      var(--top-space)
+  );
+
+  padding: 0 16px var(--bottom-padding);
+}
+
+.sharedImg {
+  min-height: 0;
+  max-height: 100%;
+  justify-self: center;
+  max-width: 100%;
+
+  filter: var(--share-img-drop-shadow);
+
+  :global(.ios) & {
+    border-radius: 8px;
+  }
+
+  :global(.md) & {
+    margin-top: 16px;
+  }
+}
+
+.placeholderImg {
+  composes: sharedImg;
+
+  background: white;
+
+  :global(.ion-palette-dark) & {
+    background: black;
+  }
+
+  height: 80px;
+  width: 80%;
+}
+
+.previewImg {
+  composes: sharedImg;
+}
+
+.list {
+  &:global(.list-ios.list-inset) {
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+  }
+}
+
+.parentCommentValues {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.commentSnapshotContainer {
+  background: var(--ion-item-background, var(--ion-background-color, #fff));
+}
+
+.postCommentSpacer {
+  height: 6px;
+}
+
+.hideBottomBorder {
+  --inner-border-width: 0 0 0 0;
+}

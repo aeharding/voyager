@@ -1,16 +1,19 @@
-import { IonButtons, IonIcon, IonTitle } from "@ionic/react";
-import { styled } from "@linaria/react";
+import {
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import { close } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
 import { MutableRefObject, useEffect, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
-import {
-  CloseButton,
-  TransparentIonToolbar,
-} from "#/features/shared/selectorModals/GenericSelectorModal";
+import sharedStyles from "#/features/shared/shared.module.css";
 
 import ShareAsImage from "./ShareAsImage";
+import styles from "./ShareAsImageModal.module.css";
 
 export type ShareAsImageData =
   | {
@@ -27,10 +30,6 @@ interface SelectTextProps {
   onDismiss: () => void;
 }
 
-const Content = styled.div`
-  background: var(--ion-background-color-step-50, #f2f2f7);
-`;
-
 export default function ShareAsImageModal({
   dataRef,
   onDismiss,
@@ -42,24 +41,28 @@ export default function ShareAsImageModal({
   }, [dataRef]);
 
   return (
-    <Content>
+    <div className={styles.content}>
       {data && (
         <ShareAsImage
           data={data}
           header={
             <AppHeader>
-              <TransparentIonToolbar>
+              <IonToolbar className={sharedStyles.transparentIonToolbar}>
                 <IonButtons slot="end">
-                  <CloseButton color="medium" onClick={() => onDismiss()}>
+                  <IonButton
+                    className={sharedStyles.closeButton}
+                    color="medium"
+                    onClick={() => onDismiss()}
+                  >
                     <IonIcon icon={close} />
-                  </CloseButton>
+                  </IonButton>
                 </IonButtons>
                 <IonTitle>Preview</IonTitle>
-              </TransparentIonToolbar>
+              </IonToolbar>
             </AppHeader>
           }
         />
       )}
-    </Content>
+    </div>
   );
 }

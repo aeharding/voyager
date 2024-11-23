@@ -38,3 +38,7 @@
 .hiddenInput {
   display: none;
 }
+
+.segment {
+  width: 100%;
+}

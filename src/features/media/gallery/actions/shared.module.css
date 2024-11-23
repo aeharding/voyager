@@ -1,6 +1,4 @@
-import { styled } from "@linaria/react";
-
-export const BottomContainer = styled.div`
+.bottomContainer {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -11,9 +9,9 @@ export const BottomContainer = styled.div`
   align-items: center;
 
   --topPadding: 4rem;
-`;
+}
 
-export const BottomContainerActions = styled.div<{ withBg: boolean }>`
+.bottomContainerActions {
   width: 100%;
 
   padding: 1rem;
@@ -23,11 +21,14 @@ export const BottomContainerActions = styled.div<{ withBg: boolean }>`
   );
 
   color: white;
-  background: ${({ withBg }) =>
-    withBg ? "linear-gradient(0deg, rgba(0, 0, 0, 1), transparent)" : "none"};
+  background: none;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-`;
+}
+
+.withBg {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 1), transparent);
+}

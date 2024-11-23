@@ -3,6 +3,7 @@ import {
   IonButtons,
   IonFooter,
   IonPage,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -29,9 +30,9 @@ import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
 import SendMessageBox from "#/features/inbox/SendMessageBox";
 import { syncMessages } from "#/features/inbox/inboxSlice";
 import Message from "#/features/inbox/messages/Message";
-import sharedStyles from "#/features/labels/links/shared.module.css";
+import sharedLabelStyles from "#/features/labels/links/shared.module.css";
 import AppHeader from "#/features/shared/AppHeader";
-import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
+import sharedStyles from "#/features/shared/shared.module.css";
 import { getUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -185,7 +186,7 @@ export default function ConversationPage() {
         </VList>
       );
 
-    return <PageContentIonSpinner />;
+    return <IonSpinner className={sharedStyles.pageSpinner} />;
   })();
 
   const backText = (() => {
@@ -214,7 +215,7 @@ export default function ConversationPage() {
             `}
           >
             <Link
-              className={sharedStyles.link}
+              className={sharedLabelStyles.link}
               to={buildGeneralBrowseLink(`/u/${handle}`)}
             >
               {handle}

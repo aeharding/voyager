@@ -25,6 +25,11 @@
   font-size: 42px;
 }
 
+.title,
+.description {
+  display: none;
+}
+
 .showIfTaller {
   @container (min-height: 150px) {
     display: block;
@@ -38,8 +43,6 @@
   font-weight: 600;
 
   margin-top: 8px;
-
-  display: none;
 }
 
 .description {
@@ -47,6 +50,4 @@
 
   font-size: 0.875em;
   opacity: 0.7;
-
-  display: none;
 }

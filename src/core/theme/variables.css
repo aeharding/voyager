@@ -92,6 +92,8 @@
 
   --ion-color-reddit-upvote: #ff5c01;
 
+  --markdown-toolbar-height: 50px;
+
   &.theme-has-custom-background {
     &.ios body,
     &.md body {

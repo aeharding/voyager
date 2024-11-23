@@ -28,7 +28,7 @@ import { useSetActivePage } from "#/features/auth/AppContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
 import { gesture } from "#/features/icons";
 import useShouldInstall from "#/features/pwa/useShouldInstall";
-import { getIconSrc } from "#/features/settings/app-icon/AppIcon";
+import { getIconSrc } from "#/features/settings/appIcon/AppIcon";
 import BiometricIcon from "#/features/settings/biometric/BiometricIcon";
 import BiometricTitle from "#/features/settings/biometric/BiometricTitle";
 import {

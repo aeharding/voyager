@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import { useContext } from "react";
 
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
@@ -17,73 +16,14 @@ import MoreModActions from "#/features/post/shared/MoreModAction";
 import { VoteButton } from "#/features/post/shared/VoteButton";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
-import sharedStyles from "#/features/shared/shared.module.css";
+import { cx } from "#/helpers/css";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
 
 import { PostProps } from "../Post";
 import PreviewStats from "../PreviewStats";
+import styles from "./LargePost.module.css";
 import LargePostContents from "./LargePostContents";
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 12px;
-  padding: 12px;
-
-  position: relative;
-`;
-
-const Header = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`;
-
-const Title = styled.div<{ isRead: boolean }>`
-  color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
-`;
-
-const Details = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  font-size: 0.8em;
-  color: var(--ion-color-text-aside);
-`;
-
-const LeftDetails = styled.div<{ isRead: boolean }>`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  min-width: 0;
-
-  color: ${({ isRead }) => (isRead ? "var(--read-color-medium)" : "inherit")};
-`;
-
-const RightDetails = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 1.5rem;
-
-  > * {
-    padding: 0.5rem !important;
-  }
-`;
-
-const CommunityName = styled.span`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  // when show community at top and not showing author, avoid gap
-  &:empty {
-    display: none;
-  }
-`;
 
 export default function LargePost({ post }: PostProps) {
   const showVotingButtons = useAppSelector(
@@ -115,34 +55,34 @@ export default function LargePost({ post }: PostProps) {
 
   return (
     <ModeratableItem itemView={post}>
-      <Container className={sharedStyles.maxWidth}>
+      <div className={cx(styles.container, hasBeenRead && styles.read)}>
         <ModeratableItemBannerOutlet />
 
-        <Header>
+        <div className={styles.header}>
           {showCommunityAtTop && !inCommunityFeed && (
-            <Details>
-              <LeftDetails isRead={hasBeenRead}>
+            <div className={styles.details}>
+              <div className={styles.leftDetails}>
                 <CommunityLink
                   community={post.community}
                   subscribed={post.subscribed}
                   showInstanceWhenRemote
                   tinyIcon
                 />
-              </LeftDetails>
-            </Details>
+              </div>
+            </div>
           )}
 
-          <Title isRead={hasBeenRead}>
+          <div className={styles.title}>
             <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
             {isNsfw(post) && <Nsfw />}
-          </Title>
-        </Header>
+          </div>
+        </div>
 
         {renderPostBody()}
 
-        <Details>
-          <LeftDetails isRead={hasBeenRead}>
-            <CommunityName>
+        <div className={styles.details}>
+          <div className={styles.leftDetails}>
+            <span className={styles.communityName}>
               {post.post.featured_community || post.post.featured_local ? (
                 <AnnouncementIcon />
               ) : undefined}
@@ -179,12 +119,12 @@ export default function LargePost({ post }: PostProps) {
                   )}
                 </>
               )}
-            </CommunityName>
+            </span>
 
             <PreviewStats post={post} />
-          </LeftDetails>
+          </div>
           {(showVotingButtons || inModqueue) && (
-            <RightDetails>
+            <div className={styles.rightDetails}>
               {inModqueue && <ModqueueItemActions item={post} />}
               <MoreActions post={post} />
               {!inModqueue && (
@@ -194,12 +134,12 @@ export default function LargePost({ post }: PostProps) {
                   <VoteButton type="down" post={post} />
                 </>
               )}
-            </RightDetails>
+            </div>
           )}
-        </Details>
+        </div>
 
         <Save type="post" id={post.post.id} />
-      </Container>
+      </div>
     </ModeratableItem>
   );
 }
