@@ -10,38 +10,22 @@ import {
   IonPage,
   IonRefresher,
   IonRefresherContent,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { useContext, useEffect, useRef, useState } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
-import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
+import sharedStyles from "#/features/shared/shared.module.css";
 import { ua } from "#/helpers/device";
 import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
 
+import styles from "./UpdateAppPage.module.css";
 import AppVersionInfo from "./about/AppVersionInfo";
 import { UpdateContext } from "./update/UpdateContext";
-
-const UpToDateText = styled.div`
-  margin: auto;
-  text-align: center;
-
-  padding: 5rem 1rem;
-
-  color: var(--ion-color-medium);
-`;
-
-const Container = styled.div`
-  height: 100%;
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-`;
 
 export default function UpdateAppPage() {
   const pageRef = useRef<HTMLElement>(null);
@@ -103,7 +87,7 @@ export default function UpdateAppPage() {
         >
           <IonRefresherContent />
         </IonRefresher>
-        <Container>
+        <div className={styles.container}>
           <MaxWidthContainer>
             <IonList inset color="primary">
               <IonItem>
@@ -131,22 +115,24 @@ export default function UpdateAppPage() {
             )}
           </MaxWidthContainer>
 
-          {status === "loading" && <PageContentIonSpinner />}
+          {status === "loading" && (
+            <IonSpinner className={sharedStyles.pageSpinner} />
+          )}
           {status === "not-enabled" && (
-            <UpToDateText>Not installed.</UpToDateText>
+            <div className={styles.upToDateText}>Not installed.</div>
           )}
           {status === "error" && (
-            <UpToDateText>
+            <div className={styles.upToDateText}>
               Error checking for updates.
               <br />
               <br />
               Are you connected to the internet?
-            </UpToDateText>
+            </div>
           )}
           {status === "current" && (
-            <UpToDateText>Voyager is up to date</UpToDateText>
+            <div className={styles.upToDateText}>Voyager is up to date</div>
           )}
-        </Container>
+        </div>
       </IonContent>
     </IonPage>
   );

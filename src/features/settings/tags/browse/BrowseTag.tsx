@@ -5,7 +5,6 @@ import {
   IonLabel,
 } from "@ionic/react";
 import { IonItemOption } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { noop } from "es-toolkit";
 
 import SourceUrlButton from "#/features/tags/SourceUrlButton";
@@ -14,11 +13,7 @@ import UserTag from "#/features/tags/UserTag";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { UserTag as UserTagType } from "#/services/db";
 
-const StyledSourceUrlButton = styled(SourceUrlButton)`
-  ion-icon {
-    font-size: min(1.6em, 30px);
-  }
-`;
+import styles from "./BrowseTag.module.css";
 
 interface BrowseTagProps {
   tag: UserTagType;
@@ -47,7 +42,8 @@ export default function BrowseTag({ tag, remove }: BrowseTagProps) {
           {username}
           <wbr />@{instance} <UserScore tag={tag} /> <UserTag tag={tag} />{" "}
         </IonLabel>
-        <StyledSourceUrlButton
+        <SourceUrlButton
+          className={styles.sourceUrlButton}
           sourceUrl={tag.sourceUrl}
           dismiss={noop}
           slot="end"

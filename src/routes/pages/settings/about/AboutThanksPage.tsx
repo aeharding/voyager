@@ -46,10 +46,6 @@ const links = [
     href: "https://vitejs.dev",
   },
   {
-    label: "Linaria",
-    href: "https://linaria.dev",
-  },
-  {
     label: "React",
     href: "https://react.dev",
   },

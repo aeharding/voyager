@@ -1,0 +1,52 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  aspect-ratio: 1;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+
+  position: relative;
+
+  overflow: hidden;
+  color: inherit;
+
+  svg {
+    width: 60%;
+    opacity: 0.5;
+  }
+}
+
+.linkIcon {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  padding: 2px;
+  font-size: 14px;
+  color: #444;
+
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  opacity: 0.9;
+}
+
+.fullsizeIcon {
+  font-size: 2.5em;
+  opacity: 0.3;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blurImg {
+  filter: blur(6px);
+
+  /* https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari */
+  transform: translate3d(0, 0, 0);
+}

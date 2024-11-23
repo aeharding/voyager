@@ -1,0 +1,12 @@
+.listHeader {
+  font-size: 0.8em;
+  margin: 32px 0 -8px 32px;
+  text-transform: uppercase;
+  color: var(--ion-color-medium);
+}
+
+.helperText {
+  margin: 0 32px;
+  font-size: 0.875em;
+  color: var(--ion-color-medium);
+}

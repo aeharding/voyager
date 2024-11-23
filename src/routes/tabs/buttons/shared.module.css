@@ -1,0 +1,8 @@
+/* reverts https://github.com/ionic-team/ionic-framework/pull/28754 */
+.tabButton {
+  &:global(.ios.tab-has-label) {
+    ion-icon {
+      font-size: 30px;
+    }
+  }
+}

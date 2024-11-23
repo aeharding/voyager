@@ -1,6 +1,4 @@
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { PrivateMessageView } from "lemmy-js-client";
 import {
   useCallback,
@@ -14,93 +12,12 @@ import { useLongPress } from "use-long-press";
 
 import { PageContext } from "#/features/auth/PageContext";
 import Markdown from "#/features/shared/markdown/Markdown";
+import { cx } from "#/helpers/css";
 import useClient from "#/helpers/useClient";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { getInboxCounts, receivedMessages } from "../inboxSlice";
-
-const Container = styled.div<{ first: boolean }>`
-  position: relative; /* Setup a relative container for our pseudo elements */
-  max-width: min(75%, 400px);
-  padding: 10px 15px;
-  line-height: 1.3;
-  word-wrap: break-word; /* Make sure the text wraps to multiple lines if long */
-
-  font-size: 1rem;
-
-  --border-radius: 20px;
-
-  border-radius: var(--border-radius);
-
-  --bg: var(--ion-background-color);
-  --sentColor: var(--ion-color-primary);
-  --receiveColor: #eee;
-
-  .ion-palette-dark & {
-    --receiveColor: var(--ion-color-medium);
-  }
-
-  &:before {
-    width: 20px;
-  }
-
-  &:after {
-    width: 26px;
-    background-color: var(--bg); /* All tails have the same bg cutout */
-  }
-
-  a {
-    color: white;
-  }
-
-  &:before,
-  &:after {
-    position: absolute;
-    bottom: 0;
-    height: var(
-      --border-radius
-    ); /* height of our bubble "tail" - should match the border-radius above */
-    content: "";
-  }
-
-  margin-bottom: 15px;
-
-  margin-top: ${({ first }) => (first ? "15px" : "0")};
-`;
-
-const sentCss = css`
-  align-self: flex-end;
-  color: white;
-  background: var(--sentColor);
-
-  &:before {
-    right: -7px;
-    background-color: var(--sentColor);
-    border-bottom-left-radius: 16px 14px;
-  }
-
-  &:after {
-    right: -26px;
-    border-bottom-left-radius: 10px;
-  }
-`;
-
-const receivedCss = css`
-  align-self: flex-start;
-  color: black;
-  background: var(--receiveColor);
-
-  &:before {
-    left: -7px;
-    background-color: var(--receiveColor);
-    border-bottom-right-radius: 16px 14px;
-  }
-
-  &:after {
-    left: -26px;
-    border-bottom-right-radius: 10px;
-  }
-`;
+import styles from "./Message.module.css";
 
 interface MessageProps {
   message: PrivateMessageView;
@@ -166,9 +83,12 @@ export default function Message({ message, first }: MessageProps) {
   }, [focused, message, thisIsMyMessage, thisIsASelfMessage]);
 
   return (
-    <Container
-      first={!!first}
-      className={thisIsMyMessage ? sentCss : receivedCss}
+    <div
+      style={{ marginTop: first ? "15px" : "0" }}
+      className={cx(
+        styles.container,
+        thisIsMyMessage ? styles.sent : styles.received,
+      )}
       ref={containerRef}
       {...bind()}
     >
@@ -178,6 +98,6 @@ export default function Message({ message, first }: MessageProps) {
       >
         {message.private_message.content}
       </Markdown>
-    </Container>
+    </div>
   );
 }

@@ -1,16 +1,7 @@
-import { styled } from "@linaria/react";
-
 import { DynamicDismissableModal } from "#/features/shared/DynamicDismissableModal";
 
+import styles from "./LoginModal.module.css";
 import LoginNav from "./LoginNav";
-
-const StyledDynamicDismissableModal = styled(DynamicDismissableModal)`
-  --max-width: 500px;
-
-  @media (min-width: 600px) {
-    --max-height: 750px;
-  }
-`;
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -22,8 +13,12 @@ export default function LoginModal({
   setIsOpen,
 }: Readonly<LoginModalProps>) {
   return (
-    <StyledDynamicDismissableModal isOpen={isOpen} setIsOpen={setIsOpen}>
+    <DynamicDismissableModal
+      className={styles.modal}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+    >
       <LoginNav />
-    </StyledDynamicDismissableModal>
+    </DynamicDismissableModal>
   );
 }

@@ -1,6 +1,4 @@
 import { IonIcon, useIonActionSheet } from "@ionic/react";
-import { cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import {
   heart,
   heartDislikeOutline,
@@ -10,11 +8,13 @@ import {
 } from "ionicons/icons";
 import { Community, SubscribedType } from "lemmy-js-client";
 import { createContext, useContext } from "react";
+import { Link } from "react-router-dom";
 import { LongPressOptions, useLongPress } from "use-long-press";
 
 import useCommunityActions from "#/features/community/useCommunityActions";
 import ItemIcon from "#/features/labels/img/ItemIcon";
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
+import { cx } from "#/helpers/css";
 import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
@@ -25,26 +25,8 @@ import { OShowSubscribedIcon } from "#/services/db";
 import { useAppSelector } from "#/store";
 
 import { renderHandle } from "../Handle";
-import { LinkContainer, StyledLink, hideCss } from "./shared";
-
-const StyledItemIcon = styled(ItemIcon)`
-  margin-right: 0.4rem;
-  vertical-align: middle;
-`;
-
-const SubscribedIcon = styled(IonIcon)`
-  color: var(--ion-color-primary);
-  vertical-align: middle;
-
-  margin-bottom: 1px;
-  margin-left: 2px;
-
-  opacity: 0.4;
-
-  .ion-palette-dark & {
-    opacity: 0.5;
-  }
-`;
+import styles from "./CommunityLink.module.css";
+import sharedStyles from "./shared.module.css";
 
 interface CommunityLinkProps {
   community: Community;
@@ -131,17 +113,22 @@ export default function CommunityLink({
     <>
       {instance}
       {showSubscribed && !hideSubscribed && isSubscribed && (
-        <SubscribedIcon icon={heart} />
+        <IonIcon icon={heart} className={styles.subscribedIcon} />
       )}
     </>
   );
 
   return (
-    <LinkContainer
+    <span
       {...bind()}
-      className={cx(className, hideCommunity ? hideCss : undefined)}
+      className={cx(
+        sharedStyles.linkContainer,
+        className,
+        hideCommunity ? sharedStyles.hide : undefined,
+      )}
     >
-      <StyledLink
+      <Link
+        className={sharedStyles.link}
         to={buildGeneralBrowseLink(`/c/${handle}`)}
         onClick={(e) => {
           e.stopPropagation();
@@ -150,14 +137,18 @@ export default function CommunityLink({
         draggable={false}
       >
         {showCommunityIcons && !hideCommunity && !hideIcon && (
-          <StyledItemIcon item={community} size={tinyIcon ? 16 : 24} />
+          <ItemIcon
+            item={community}
+            size={tinyIcon ? 16 : 24}
+            className={styles.itemIcon}
+          />
         )}
 
         {name}
         {!disableInstanceClick && end}
-      </StyledLink>
+      </Link>
       {disableInstanceClick && end}
-    </LinkContainer>
+    </span>
   );
 }
 

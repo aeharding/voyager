@@ -1,0 +1,15 @@
+.sharedBanner {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  font-size: 0.875rem;
+
+  padding: 6px 0;
+  border-radius: 6px;
+
+  text-align: center;
+}

@@ -1,4 +1,3 @@
-import { css } from "@linaria/core";
 import { CommentView, PostView } from "lemmy-js-client";
 import {
   ReactElement,
@@ -28,12 +27,9 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import Feed, { FeedProps, FetchFn } from "./Feed";
 import { FeedContext } from "./FeedContext";
 import { useAutohidePostIfNeeded } from "./PageTypeContext";
+import styles from "./PostCommentFeed.module.css";
 
 export type PostCommentItem = PostView | CommentView;
-
-const thickBorderCss = css`
-  border-bottom: 8px solid var(--thick-separator-color);
-`;
 
 interface PostCommentFeed
   extends Omit<FeedProps<PostCommentItem>, "renderItemContent"> {
@@ -90,7 +86,7 @@ export default function PostCommentFeed({
       case "compact":
         return undefined;
       case "large":
-        return thickBorderCss;
+        return styles.thickBottomBorder;
     }
   })();
 

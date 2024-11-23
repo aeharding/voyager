@@ -2,7 +2,6 @@ import {
   IonBackButton,
   IonButtons,
   IonContent,
-  IonIcon,
   IonPage,
   IonRefresher,
   IonRefresherContent,
@@ -10,7 +9,6 @@ import {
   IonToolbar,
   RefresherCustomEvent,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { useParams } from "react-router";
@@ -31,13 +29,6 @@ import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
-
-export const AnnouncementIcon = styled(IonIcon)`
-  font-size: 1.1rem;
-  margin-right: 5px;
-  vertical-align: middle;
-  color: var(--ion-color-success);
-`;
 
 interface PostPageParams {
   id: string;

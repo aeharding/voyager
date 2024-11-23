@@ -1,17 +1,6 @@
-import { styled } from "@linaria/react";
+import { cx } from "#/helpers/css";
 
-const FakeIconContainer = styled.div<{ bg: string; size: number }>`
-  width: ${({ size }) => size}px;
-  height: ${({ size }) => size}px;
-  border-radius: 50%;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: ${({ bg }) => bg};
-  color: white;
-`;
+import styles from "./FakeIcon.module.css";
 
 interface FakeIconProps {
   seed: string | number;
@@ -28,15 +17,20 @@ export default function FakeIcon({
   name,
   slot,
 }: FakeIconProps) {
+  const cssSize = `${size ?? 20}px`;
+
   return (
-    <FakeIconContainer
-      bg={generateRandomColor(seed)}
-      size={size ?? 20}
-      className={className}
+    <div
+      style={{
+        backgroundColor: generateRandomColor(seed),
+        width: cssSize,
+        height: cssSize,
+      }}
+      className={cx(className, styles.container)}
       slot={slot}
     >
       {name.slice(0, 1).toUpperCase()}
-    </FakeIconContainer>
+    </div>
   );
 }
 

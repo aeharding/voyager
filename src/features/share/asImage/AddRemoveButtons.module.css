@@ -1,0 +1,14 @@
+.button {
+  --padding-start: 5px;
+  --padding-end: 5px;
+  --height: 20px;
+
+  color: inherit;
+}
+
+.container {
+  display: inline-flex;
+
+  background: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.088);
+  border-radius: 6px;
+}

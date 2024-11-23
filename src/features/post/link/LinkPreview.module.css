@@ -1,0 +1,12 @@
+.linkIcon {
+  width: 26px;
+  height: 30px;
+  box-sizing: content-box;
+
+  padding-right: var(--gap);
+  margin-right: 2px;
+  border-right: 1px solid rgba(160, 160, 160, 0.7);
+
+  font-size: 26px;
+  opacity: 0.7;
+}

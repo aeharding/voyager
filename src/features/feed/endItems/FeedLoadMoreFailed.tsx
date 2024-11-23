@@ -1,4 +1,4 @@
-import { Container } from "./EndPost";
+import endPostStyles from "./EndPost.module.css";
 
 interface FeedLoadMoreFailedProps {
   fetchMore: () => void;
@@ -12,8 +12,8 @@ export default function FeedLoadMoreFailed({
   pluralType = "posts",
 }: FeedLoadMoreFailedProps) {
   return (
-    <Container onClick={() => fetchMore()}>
+    <div onClick={() => fetchMore()} className={endPostStyles.container}>
       Failed to load more {pluralType}. {loading ? "Loading..." : "Try again?"}
-    </Container>
+    </div>
   );
 }

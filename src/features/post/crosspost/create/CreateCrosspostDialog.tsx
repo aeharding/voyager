@@ -8,8 +8,6 @@ import {
   IonText,
   useIonModal,
 } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { CommunityView, PostView } from "lemmy-js-client";
 import { useContext, useEffect, useState } from "react";
 
@@ -28,50 +26,7 @@ import { useAppDispatch } from "#/store";
 
 import { receivedPosts } from "../../postSlice";
 import Crosspost from "../Crosspost";
-
-const Title = styled.div`
-  font-size: 1.1em;
-  line-height: 1rem;
-  font-weight: bold;
-`;
-
-const PillIonInput = styled(IonInput)`
-  --padding-start: 12px;
-  --padding-end: 12px;
-
-  border-radius: 0.5rem;
-  background: var(--ion-item-background, var(--ion-background-color, #fff));
-`;
-
-const ReadonlyCrosspost = styled(Crosspost)`
-  pointer-events: none;
-
-  background: var(--ion-item-background, var(--ion-background-color, #fff));
-`;
-
-const PillIonButton = styled(IonButton)`
-  width: 100%;
-  --border-radius: 0.5rem;
-`;
-
-const PillIonList = styled(IonList)`
-  width: 100%;
-
-  && {
-    margin: 0;
-  }
-`;
-
-const LoadingIonSpinner = styled(IonSpinner)`
-  margin-left: 16px;
-`;
-
-const CommunitySelectorContents = styled.div`
-  display: flex;
-  gap: 8px;
-  justify-content: space-between;
-  width: 100%;
-`;
+import styles from "./CreateCrosspostDialog.module.css";
 
 interface CreateCrosspostDialogProps {
   onDismiss: () => void;
@@ -153,9 +108,10 @@ export default function CreateCrosspostDialog({
 
   return (
     <FloatingDialog onDismiss={onDismiss}>
-      <Title>Crosspost</Title>
+      <div className={styles.title}>Crosspost</div>
 
-      <PillIonInput
+      <IonInput
+        className={styles.pillIonInput}
         aria-label="Title"
         placeholder="Title"
         value={title}
@@ -181,34 +137,35 @@ export default function CreateCrosspostDialog({
             </IonButton>
           )}
         </div>
-      </PillIonInput>
-      <ReadonlyCrosspost post={post} url={post.post.ap_id} />
-      <PillIonList inset>
+      </IonInput>
+      <Crosspost
+        className={styles.readonlyCrosspost}
+        post={post}
+        url={post.post.ap_id}
+      />
+      <IonList inset className={styles.pillIonList}>
         <IonItem
           onClick={() => presentCommunitySelectorModal({ cssClass: "small" })}
         >
-          <CommunitySelectorContents>
+          <div className={styles.communitySelectorContents}>
             <div>Community</div>
             <IonText
               color={!community ? "medium" : undefined}
-              className={css`
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-              `}
+              className={styles.ellipsis}
             >
               {community ? getHandle(community.community) : "None"}
             </IonText>
-          </CommunitySelectorContents>
+          </div>
         </IonItem>
-      </PillIonList>
-      <PillIonButton
+      </IonList>
+      <IonButton
+        className={styles.pillIonButton}
         color={canPost ? "primary" : "dark"}
         disabled={!canPost || loading}
         onClick={submit}
       >
-        Crosspost{loading && <LoadingIonSpinner />}
-      </PillIonButton>
+        Crosspost{loading && <IonSpinner className="ion-margin-start" />}
+      </IonButton>
     </FloatingDialog>
   );
 }

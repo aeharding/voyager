@@ -1,0 +1,21 @@
+.hrContainer {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+
+  padding-left: calc(0.5rem + calc(calc(var(--sv-depth) - 1) * 10px));
+}
+
+.hr {
+  flex: 1;
+  height: 1px;
+  background-color: var(
+    --ion-item-border-color,
+    var(--ion-border-color, var(--ion-background-color-step-250, #c8c7cc))
+  );
+  width: 100%;
+  margin: 0;
+}

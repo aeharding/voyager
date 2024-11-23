@@ -1,0 +1,38 @@
+.subIcon {
+  border-radius: 50%;
+  padding: 6px;
+  width: 1rem;
+  height: 1rem;
+
+  --ion-color-base: white;
+
+  /* Background color set in style */
+}
+
+.content {
+  margin: 0.7rem 0;
+
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  aside {
+    margin-top: 0.2rem;
+    color: var(--ion-color-medium);
+    font-size: 0.8em;
+  }
+}
+
+.ionList {
+  height: 100%;
+}
+
+.vList {
+  height: 100%;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}

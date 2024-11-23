@@ -1,6 +1,4 @@
-import { IonIcon, IonItem } from "@ionic/react";
-import { styled } from "@linaria/react";
-import { megaphone } from "ionicons/icons";
+import { IonItem } from "@ionic/react";
 import { CommentView, PostView } from "lemmy-js-client";
 import { useCallback, useContext, useMemo, useRef } from "react";
 import AnimateHeight from "react-animate-height";
@@ -21,9 +19,9 @@ import PostLink from "#/features/post/link/PostLink";
 import { togglePostCollapse } from "#/features/post/postSlice";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
 import useIsPostUrlMedia from "#/features/post/useIsPostUrlMedia";
-import { maxWidthCss } from "#/features/shared/AppContent";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import Markdown from "#/features/shared/markdown/Markdown";
+import { cx } from "#/helpers/css";
 import { findIonContentScrollView } from "#/helpers/ionic";
 import { findLoneImage } from "#/helpers/markdown";
 import { postLocked } from "#/helpers/toastMessages";
@@ -31,91 +29,10 @@ import useAppToast from "#/helpers/useAppToast";
 import { OTapToCollapseType } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import AnnouncementIcon from "./AnnouncementIcon";
 import Locked from "./Locked";
+import styles from "./PostHeader.module.css";
 import Stats from "./Stats";
-
-const BorderlessIonItem = styled(IonItem)`
-  --padding-start: 0;
-  --inner-padding-end: 0;
-
-  --inner-border-width: 0 0 1px 0;
-  --background: none; // TODO is this OK?
-
-  ${maxWidthCss}
-`;
-
-const LightboxMedia = styled(LargeFeedPostMedia)`
-  -webkit-touch-callout: default;
-
-  width: 100%;
-  object-fit: contain;
-`;
-
-const StyledMarkdown = styled(Markdown)`
-  margin: 0 0 15px 0;
-
-  img {
-    display: block;
-    max-width: 100%;
-    max-height: 50vh;
-    object-fit: contain;
-    object-position: 0%;
-  }
-
-  table img {
-    display: inline-block;
-  }
-`;
-
-const StyledPostLink = styled(PostLink)`
-  margin: 0 0 12px;
-`;
-
-const StyledCrosspost = styled(Crosspost)`
-  margin: 0 0 12px;
-`;
-
-const Container = styled.div`
-  width: 100%;
-`;
-
-const PostDeets = styled.div`
-  margin: 12px;
-  font-size: 0.9375em;
-
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-export const AnnouncementIcon = styled(IonIcon)`
-  font-size: 1.1rem;
-  margin-right: 5px;
-  vertical-align: middle;
-  color: var(--ion-color-success);
-`;
-
-const Title = styled.div`
-  font-size: 1.125rem;
-  margin-bottom: 12px;
-`;
-
-const By = styled.div`
-  font-size: 0.875em;
-
-  margin-bottom: 5px;
-  color: var(--ion-color-text-aside);
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const TextContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-`;
 
 interface PostHeaderProps {
   post: PostView;
@@ -192,7 +109,8 @@ export default function PostHeader({
 
     if (urlIsMedia || markdownLoneImage) {
       return (
-        <LightboxMedia
+        <LargeFeedPostMedia
+          className={styles.lightboxMedia}
           blur={false}
           post={post}
           nativeControls
@@ -209,7 +127,13 @@ export default function PostHeader({
     if (!post) return;
 
     if (crosspostUrl) {
-      return <StyledCrosspost post={post} url={crosspostUrl} />;
+      return (
+        <Crosspost
+          className={styles.crosspost}
+          post={post}
+          url={crosspostUrl}
+        />
+      );
     }
 
     const usedLoneImage = markdownLoneImage && !urlIsMedia;
@@ -218,15 +142,18 @@ export default function PostHeader({
       return (
         <>
           {post.post.url && !urlIsMedia && <PostLink post={post} />}
-          <StyledMarkdown className="collapse-md-margins" id={post.post.ap_id}>
+          <Markdown
+            className={cx(styles.markdown, "collapse-md-margins")}
+            id={post.post.ap_id}
+          >
             {post.post.body}
-          </StyledMarkdown>
+          </Markdown>
         </>
       );
     }
 
     if (post.post.url && !urlIsMedia) {
-      return <StyledPostLink post={post} />;
+      return <PostLink className={styles.postLink} post={post} />;
     }
   }, [post, crosspostUrl, markdownLoneImage, urlIsMedia]);
 
@@ -234,8 +161,8 @@ export default function PostHeader({
 
   return (
     <ModeratableItem itemView={post}>
-      <BorderlessIonItem
-        className={className}
+      <IonItem
+        className={cx(styles.borderlessIonItem, className)}
         onClick={(e) => {
           if (e.target instanceof HTMLAnchorElement) return;
 
@@ -249,23 +176,25 @@ export default function PostHeader({
           scrollToTitle();
         }}
       >
-        <Container>
+        <div className={styles.container}>
           {showPostText && !crosspostUrl && renderMedia()}
-          <PostDeets>
+          <div className={styles.postDeets}>
             <ModeratableItemBannerOutlet />
             <div>
-              <Title ref={titleRef}>
+              <div className={styles.title} ref={titleRef}>
                 <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
                 {isNsfw(post) && <Nsfw />}
-              </Title>
+              </div>
               {showPostText && text && (
                 <AnimateHeight duration={200} height={collapsed ? 0 : "auto"}>
-                  <TextContent slot="content">{text}</TextContent>
+                  <div className={styles.textContent} slot="content">
+                    {text}
+                  </div>
                 </AnimateHeight>
               )}
-              <By>
+              <div className={styles.by}>
                 {post.post.featured_community || post.post.featured_local ? (
-                  <AnnouncementIcon icon={megaphone} />
+                  <AnnouncementIcon />
                 ) : undefined}
                 <CommunityLink
                   community={post.community}
@@ -277,15 +206,15 @@ export default function PostHeader({
                   prefix="by"
                   sourceUrl={post.post.ap_id}
                 />
-              </By>
+              </div>
               <Stats post={post} />
               {post.post.locked && <Locked />}
             </div>
-          </PostDeets>
-        </Container>
-      </BorderlessIonItem>
+          </div>
+        </div>
+      </IonItem>
       {showPostActions && (
-        <BorderlessIonItem>
+        <IonItem className={styles.borderlessIonItem}>
           <PostActions
             post={post}
             onReply={async () => {
@@ -303,7 +232,7 @@ export default function PostHeader({
               if (reply) onPrependComment?.(reply);
             }}
           />
-        </BorderlessIonItem>
+        </IonItem>
       )}
     </ModeratableItem>
   );

@@ -1,0 +1,68 @@
+.maxWidth {
+  width: 100%;
+  max-width: 700px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* https://gist.github.com/MoOx/9137295 */
+.plainButton {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+
+  background: transparent;
+
+  /* inherit font & color from ancestor */
+  color: inherit;
+  font: inherit;
+
+  /* Normalize line-height. Cannot be changed from normal in Firefox 4+. */
+  line-height: normal;
+
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable input types in iOS */
+  -webkit-appearance: none;
+  appearance: none;
+
+  display: inline-flex;
+}
+
+/* TODO move transparentIonToolbar and closeButton to separate file/component */
+.transparentIonToolbar {
+  --background: none;
+  --border-width: 0 !important;
+}
+.closeButton {
+  border-radius: 50%;
+  background: rgba(180, 180, 180, 0.2);
+}
+
+.pageSpinner {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pageFailedMessage {
+  margin-top: 25vh;
+  text-align: center;
+  color: var(--ion-color-medium);
+}
+
+.emptyStateIcon {
+  opacity: 0.1;
+  width: 300px;
+  height: 300px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+
+  flex-shrink: 0;
+}

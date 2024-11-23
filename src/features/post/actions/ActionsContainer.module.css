@@ -1,0 +1,18 @@
+.actionsContainer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  > button {
+    font-size: 1.2em;
+
+    padding: 6px 3px;
+    margin: -10px -3px;
+
+    &:global(.large) {
+      font-size: 1.6em;
+    }
+  }
+
+  white-space: nowrap;
+}

@@ -1,0 +1,34 @@
+.bottomContainer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  --topPadding: 4rem;
+}
+
+.bottomContainerActions {
+  width: 100%;
+
+  padding: 1rem;
+  padding-top: var(--topPadding);
+  padding-bottom: calc(
+    1rem + var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0))
+  );
+
+  color: white;
+  background: none;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.withBg {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 1), transparent);
+}

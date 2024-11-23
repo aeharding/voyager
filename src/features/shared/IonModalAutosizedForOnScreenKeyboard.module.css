@@ -1,0 +1,10 @@
+.pwaIonModal {
+  /* Capacitor inside native web view resizes for on-screen keyboard, so we don't need bespoke layout management */
+  ion-content::part(scroll) {
+    max-height: calc(var(--sv-viewportHeight) * 1px);
+  }
+
+  ion-content .fixedToolbarContainer {
+    max-height: calc(var(--sv-viewportHeight) * 1px);
+  }
+}

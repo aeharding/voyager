@@ -1,9 +1,16 @@
 import { IonSpinner } from "@ionic/react";
-import { styled } from "@linaria/react";
 
-export const CenteredSpinner = styled(IonSpinner)`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-`;
+import { cx } from "#/helpers/css";
+
+import styles from "./CenteredSpinner.module.css";
+
+export function CenteredSpinner(
+  props: React.ComponentProps<typeof IonSpinner>,
+) {
+  return (
+    <IonSpinner
+      {...props}
+      className={cx(props.className, styles.centeredSpinner)}
+    />
+  );
+}

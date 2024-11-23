@@ -1,8 +1,6 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonItemSlidingCustomEvent, ItemSlidingCustomEvent } from "@ionic/core";
 import { IonItemOption, IonItemOptions, IonItemSliding } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import React, {
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
@@ -10,55 +8,13 @@ import React, {
   useState,
 } from "react";
 
+import { cx } from "#/helpers/css";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { OLongSwipeTriggerPointType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
-import { bounceAnimation } from "../animations";
 import ActionContents from "./ActionContents";
-
-const StyledIonItemSliding = styled(IonItemSliding)`
-  overflow: initial; // sticky
-
-  --ion-item-border-color: transparent;
-`;
-
-const StyledIonItemOption = styled(IonItemOption)`
-  width: 100%;
-  align-items: flex-end;
-
-  // ensure subpixel rounding never causes background color to show through
-  margin-bottom: 0.5px;
-  margin-top: 0.5px;
-`;
-
-const OptionContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  width: min(60px, 11vw);
-
-  opacity: 0.5;
-
-  position: sticky;
-  top: 0;
-  bottom: 0;
-
-  .item-options-start & {
-    margin-right: auto;
-  }
-
-  .item-options-end & {
-    margin-left: auto;
-  }
-`;
-
-const optionContainerActiveCss = css`
-  opacity: 1;
-
-  ${bounceAnimation}
-`;
+import styles from "./SlidingItem.module.css";
 
 export interface SlidingItemAction {
   /**
@@ -267,16 +223,17 @@ export default function SlidingItem({
 
     return (
       <IonItemOptions side="start">
-        <StyledIonItemOption color={startActionColor}>
-          <OptionContainer
-            className={
-              activeItemIndex < 0 ? optionContainerActiveCss : undefined
-            }
+        <IonItemOption className={styles.itemOption} color={startActionColor}>
+          <div
+            className={cx(
+              styles.optionContainer,
+              activeItemIndex < 0 ? styles.optionContainerActive : undefined,
+            )}
             slot="top"
           >
             <ActionContents action={startAction} />
-          </OptionContainer>
-        </StyledIonItemOption>
+          </div>
+        </IonItemOption>
       </IonItemOptions>
     );
   })();
@@ -288,32 +245,33 @@ export default function SlidingItem({
 
     return (
       <IonItemOptions side="end">
-        <StyledIonItemOption color={endActionColor}>
-          <OptionContainer
-            className={
-              activeItemIndex > 0 ? optionContainerActiveCss : undefined
-            }
+        <IonItemOption className={styles.itemOption} color={endActionColor}>
+          <div
+            className={cx(
+              styles.optionContainer,
+              activeItemIndex > 0 ? styles.optionContainerActive : undefined,
+            )}
             slot="top"
           >
             <ActionContents action={endAction} />
-          </OptionContainer>
-        </StyledIonItemOption>
+          </div>
+        </IonItemOption>
       </IonItemOptions>
     );
   })();
 
   return (
-    <StyledIonItemSliding
+    <IonItemSliding
+      className={cx(styles.slidingItem, className)}
       onIonDrag={onIonDrag}
       onTouchStart={onDragStart}
       onMouseDown={onDragStart}
-      className={className}
     >
       {startItems}
 
       {endItems}
 
       {children}
-    </StyledIonItemSliding>
+    </IonItemSliding>
   );
 }

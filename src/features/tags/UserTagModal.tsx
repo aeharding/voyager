@@ -5,85 +5,21 @@ import {
   IonItem,
   IonList,
   IonModal,
-  IonText,
-  IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { Person } from "lemmy-js-client";
 import { useState } from "react";
 
-import { Centered } from "#/features/auth/login/LoginNav";
 import PersonLink from "#/features/labels/links/PersonLink";
 import AppHeader from "#/features/shared/AppHeader";
+import MultilineTitle from "#/features/shared/MultilineTitle";
 import { blurOnEnter } from "#/helpers/dom";
 import { getRemoteHandle } from "#/helpers/lemmy";
 
 import { useAppDispatch, useAppSelector } from "../../store";
 import SourceUrlButton from "./SourceUrlButton";
+import styles from "./UserTagModal.module.css";
 import { generateNewTag, updateTag } from "./userTagSlice";
-
-const TagIonModal = styled(IonModal)`
-  --height: auto;
-`;
-
-const Header = styled.div`
-  font-size: 0.8em;
-  margin: 8px 32px -8px 32px;
-  color: var(--ion-color-medium);
-`;
-
-const PreviewIonItem = styled(IonItem)`
-  pointer-events: none;
-
-  font-size: 0.8em;
-`;
-
-const UserText = styled(IonText)`
-  font-size: 0.7em;
-  font-weight: normal;
-`;
-
-const ColorIonInput = styled(IonInput)`
-  .native-input {
-    max-width: 42px;
-  }
-
-  .input-clear-icon {
-    margin: 0 0 0 auto;
-  }
-
-  && input {
-    appearance: none;
-    border-radius: 4px;
-    height: 25px;
-    border: 1px solid
-      var(
-        --ion-item-border-color,
-        var(
-          --ion-border-color,
-          var(
-            --ion-color-step-250,
-            var(--ion-background-color-step-250, #c8c7cc)
-          )
-        )
-      );
-  }
-
-  ::-moz-color-swatch,
-  ::-webkit-color-swatch {
-    border-style: none;
-  }
-
-  ::-webkit-color-swatch-wrapper {
-    padding: 0;
-  }
-`;
-
-const Contents = styled.div`
-  // can't use ion-content with auto height ion-modal
-  margin-bottom: var(--ion-safe-area-bottom);
-`;
 
 interface UserTagModalProps {
   person: Person;
@@ -94,7 +30,8 @@ interface UserTagModalProps {
 
 export default function UserTagModal(props: UserTagModalProps) {
   return (
-    <TagIonModal
+    <IonModal
+      className={styles.tagModal}
       isOpen={props.isOpen}
       onDidDismiss={() => {
         props.setIsOpen(false);
@@ -104,7 +41,7 @@ export default function UserTagModal(props: UserTagModalProps) {
       autoFocus
     >
       <UserTagModalContents {...props} />
-    </TagIonModal>
+    </IonModal>
   );
 }
 
@@ -143,16 +80,11 @@ function UserTagModalContents({
               dismiss={() => setIsOpen(false)}
             />
           </IonButtons>
-          <IonTitle>
-            <Centered>
-              <div>
-                <IonText>User Tag</IonText>
-                <div>
-                  <UserText color="medium">{getRemoteHandle(person)}</UserText>
-                </div>
-              </div>
-            </Centered>
-          </IonTitle>
+
+          <MultilineTitle subheader={getRemoteHandle(person)}>
+            User Tag
+          </MultilineTitle>
+
           <IonButtons slot="end">
             <IonButton
               onClick={() => {
@@ -164,14 +96,14 @@ function UserTagModalContents({
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <Contents>
-        <Header>Preview</Header>
+      <div className={styles.contents}>
+        <div className={styles.header}>Preview</div>
         <IonList inset>
-          <PreviewIonItem>
+          <IonItem className={styles.previewItem}>
             <PersonLink person={person} />
-          </PreviewIonItem>
+          </IonItem>
         </IonList>
-        <Header>Private tag data</Header>
+        <div className={styles.header}>Private tag data</div>
         <IonList inset>
           <IonItem>
             <IonInput
@@ -200,7 +132,8 @@ function UserTagModalContents({
             />
           </IonItem>
           <IonItem>
-            <ColorIonInput
+            <IonInput
+              className={styles.colorInput}
               label="Color"
               // @ts-expect-error -- add Ionic support for color input
               type="color"
@@ -273,7 +206,7 @@ function UserTagModalContents({
             </>
           )}
         </IonList>
-      </Contents>
+      </div>
     </>
   );
 }

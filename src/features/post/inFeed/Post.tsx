@@ -1,6 +1,4 @@
 import { IonItem } from "@ionic/react";
-import { cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
 import {
   memo,
@@ -17,6 +15,7 @@ import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { usePostAppearance } from "#/features/post/appearance/PostAppearanceProvider";
 import usePostActions from "#/features/post/shared/usePostActions";
 import SlidingVote from "#/features/shared/sliding/SlidingPostVote";
+import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
 import {
   preventOnClickNavigationBug,
@@ -28,17 +27,9 @@ import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import { hidePost, unhidePost } from "../postSlice";
+import styles from "./Post.module.css";
 import CompactPost from "./compact/CompactPost";
 import LargePost from "./large/LargePost";
-
-const CustomIonItem = styled(IonItem)`
-  --padding-start: 0;
-  --inner-padding-end: 0;
-
-  --border-width: 0;
-  --border-style: none;
-  --background-hover: none;
-`;
 
 export interface PostProps {
   post: PostView;
@@ -126,9 +117,9 @@ function Post(props: PostProps) {
         className={props.className}
         onHide={() => setShouldHide(true)}
       >
-        <CustomIonItem
+        <IonItem
           mode="ios" // Use iOS style activatable tap highlight
-          className={cx(isTouchDevice() && "ion-activatable")}
+          className={cx(styles.item, isTouchDevice() && "ion-activatable")}
           detail={false}
           routerLink={buildGeneralBrowseLink(
             `/c/${getHandle(props.post.community)}/comments/${
@@ -149,7 +140,7 @@ function Post(props: PostProps) {
           {...bind()}
         >
           {postBody}
-        </CustomIonItem>
+        </IonItem>
       </SlidingVote>
     </AnimateHeight>
   );

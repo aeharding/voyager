@@ -1,0 +1,5 @@
+.androidIonButtons {
+  :global(.ios) & {
+    display: none;
+  }
+}

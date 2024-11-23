@@ -1,0 +1,10 @@
+.daysValues {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.banTextContainer {
+  font-size: 0.925em;
+  margin: 0 32px 32px;
+}

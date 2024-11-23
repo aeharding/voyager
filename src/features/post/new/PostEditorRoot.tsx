@@ -10,20 +10,18 @@ import {
   IonNavLink,
   IonSegment,
   IonSegmentButton,
+  IonSpinner,
   IonText,
   IonTitle,
   IonToggle,
   IonToolbar,
   useIonAlert,
 } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { startCase } from "es-toolkit";
 import { accessibility, cameraOutline } from "ionicons/icons";
 import { Post } from "lemmy-js-client";
 import { useEffect, useMemo, useState } from "react";
 
-import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import AppHeader from "#/features/shared/AppHeader";
 import {
   deletePendingImageUploads,
@@ -47,47 +45,7 @@ import { receivedPosts } from "../postSlice";
 import NewPostText from "./NewPostText";
 import PhotoPreview from "./PhotoPreview";
 import { PostEditorProps } from "./PostEditor";
-
-const Container = styled.div`
-  position: absolute;
-  inset: 0;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-const IonInputTitle = styled(IonInput)`
-  .input-bottom {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 0;
-    border: 0;
-    padding-top: 0;
-  }
-
-  .native-wrapper {
-    margin-right: 2rem;
-  }
-`;
-
-const PostingIn = styled.div`
-  font-size: 0.875em;
-  margin: 0.5rem 0;
-  text-align: center;
-  color: var(--ion-color-medium);
-`;
-
-const CameraIcon = styled(IonIcon)`
-  margin: -0.2em 0; // TODO negative margin, bad alex
-  font-size: 1.5em;
-
-  margin-right: 0.5rem;
-`;
-
-const HiddenInput = styled.input`
-  display: none;
-`;
+import styles from "./PostEditorRoot.module.css";
 
 type PostType = "photo" | "link" | "text";
 
@@ -407,30 +365,27 @@ export default function PostEditorRoot({
             <IonButton onClick={() => dismiss()}>Cancel</IonButton>
           </IonButtons>
           <IonTitle>
-            <Centered>
-              <IonText>
-                {existingPost ? "Edit Post" : <>{startCase(postType)} Post</>}
-              </IonText>
-              {loading && <Spinner color="dark" />}
-            </Centered>
+            {existingPost ? "Edit Post" : <>{startCase(postType)} Post</>}
           </IonTitle>
           <IonButtons slot="end">
-            <IonButton
-              color={postButtonDisabled ? "medium" : undefined}
-              strong
-              type="submit"
-              disabled={postButtonDisabled}
-              onClick={submit}
-            >
-              {existingPost ? "Save" : "Post"}
-            </IonButton>
+            {loading ? (
+              <IonSpinner />
+            ) : (
+              <IonButton
+                color={postButtonDisabled ? "medium" : undefined}
+                strong
+                type="submit"
+                disabled={postButtonDisabled}
+                onClick={submit}
+              >
+                {existingPost ? "Save" : "Post"}
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
         <IonToolbar>
           <IonSegment
-            className={css`
-              width: 100%;
-            `}
+            className={styles.segment}
             value={postType}
             onIonChange={(e) => setPostType(e.target.value as PostType)}
           >
@@ -441,10 +396,11 @@ export default function PostEditorRoot({
         </IonToolbar>
       </AppHeader>
       <IonContent>
-        <Container>
+        <div className={styles.container}>
           <IonList>
             <IonItem>
-              <IonInputTitle
+              <IonInput
+                className={styles.ionInputTitle}
                 value={title}
                 clearInput
                 onIonInput={(e) => setTitle(e.detail.value ?? "")}
@@ -476,13 +432,18 @@ export default function PostEditorRoot({
                 <label htmlFor="photo-upload-post">
                   <IonItem>
                     <IonLabel color="primary">
-                      <CameraIcon icon={cameraOutline} /> Choose Photo
+                      <IonIcon
+                        className={styles.cameraIcon}
+                        icon={cameraOutline}
+                      />{" "}
+                      Choose Photo
                     </IonLabel>
 
-                    <HiddenInput
+                    <input
                       type="file"
                       accept="image/*"
                       id="photo-upload-post"
+                      className={styles.hiddenInput}
                       onInput={(e) => {
                         const image = (e.target as HTMLInputElement).files?.[0];
                         if (!image) return;
@@ -555,8 +516,10 @@ export default function PostEditorRoot({
             </IonNavLink>
           </IonList>
 
-          <PostingIn>Posting in {getRemoteHandle(community)}</PostingIn>
-        </Container>
+          <div className={styles.postingIn}>
+            Posting in {getRemoteHandle(community)}
+          </div>
+        </div>
       </IonContent>
     </>
   );

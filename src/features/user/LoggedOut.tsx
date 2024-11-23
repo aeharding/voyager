@@ -1,22 +1,14 @@
 import { IonButton, IonText } from "@ionic/react";
-import { css, cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { accountsListEmptySelector } from "#/features/auth/authSelectors";
 import AppContent from "#/features/shared/AppContent";
-import emptyStateIconStyles from "#/routes/pages/shared/emptyStateIconStyles";
+import sharedStyles from "#/features/shared/shared.module.css";
 import { useAppSelector } from "#/store";
 
+import styles from "./LoggedOut.module.css";
 import IncognitoSvg from "./incognito.svg?react";
-
-const StyledAppContent = styled(AppContent)`
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-`;
 
 export default function LoggedOut() {
   const connectedInstance = useAppSelector(
@@ -28,17 +20,10 @@ export default function LoggedOut() {
     useContext(PageContext);
 
   return (
-    <StyledAppContent>
+    <AppContent className={styles.content}>
       <div>
         <IonText color="medium">
-          <p
-            className={cx(
-              "ion-padding",
-              css`
-                font-size: 0.875em;
-              `,
-            )}
-          >
+          <p className={styles.message}>
             You are browsing <strong>{connectedInstance}</strong> as a guest.
             Log in to vote, comment and post!
           </p>
@@ -65,7 +50,7 @@ export default function LoggedOut() {
           </IonButton>
         )}
       </div>
-      <IncognitoSvg className={emptyStateIconStyles} />
-    </StyledAppContent>
+      <IncognitoSvg className={sharedStyles.emptyStateIcon} />
+    </AppContent>
   );
 }

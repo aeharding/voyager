@@ -1,0 +1,7 @@
+.icon {
+  /* Vote icons are tall and narrow, but svg container is square.
+   * This creates visually inconsistent padding.
+   * So fudge it so it looks better next to more square icons
+   */
+  margin: 0 -2px;
+}

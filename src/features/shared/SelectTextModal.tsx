@@ -7,12 +7,10 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { copyOutline } from "ionicons/icons";
 import { useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
-import { Centered } from "#/features/auth/login/LoginNav";
 import { isTouchDevice } from "#/helpers/device";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import {
@@ -22,40 +20,7 @@ import {
 import useAppToast from "#/helpers/useAppToast";
 
 import AppHeader from "./AppHeader";
-
-const Container = styled.div`
-  min-height: 100%;
-
-  display: flex;
-
-  html.ios:not(.ion-palette-dark) & {
-    background: var(--ion-item-background);
-  }
-`;
-
-const sharedSelectStyles = `
-  padding: 8px;
-  width: calc(100% - 16px);
-
-  user-select: text;
-
-  margin-bottom: var(--ion-safe-area-bottom, env(safe-area-inset-bottom));
-`;
-
-const InvisibleTextarea = styled(TextareaAutosize)`
-  all: unset;
-  white-space: pre-wrap;
-  width: 100%;
-
-  ${sharedSelectStyles}
-`;
-
-const Selectable = styled.div`
-  user-select: text;
-  white-space: pre-wrap;
-
-  ${sharedSelectStyles}
-`;
+import styles from "./SelectTextModal.module.css";
 
 interface SelectTextProps {
   text: string;
@@ -103,9 +68,7 @@ export default function SelectTextModal({
               <IonIcon icon={copyOutline} />
             </IonButton>
           </IonButtons>
-          <IonTitle>
-            <Centered>Select Text</Centered>
-          </IonTitle>
+          <IonTitle>Select Text</IonTitle>
           <IonButtons slot="end">
             <IonButton
               onClick={() => {
@@ -118,13 +81,17 @@ export default function SelectTextModal({
         </IonToolbar>
       </AppHeader>
       <IonContent>
-        <Container>
+        <div className={styles.container}>
           {touch ? (
-            <Selectable {...preventModalSwipeOnTextSelection}>
+            <div
+              {...preventModalSwipeOnTextSelection}
+              className={styles.selectable}
+            >
               {text}
-            </Selectable>
+            </div>
           ) : (
-            <InvisibleTextarea
+            <TextareaAutosize
+              className={styles.invisibleTextarea}
               ref={textareaRef}
               onMouseMove={(e) => e.stopPropagation()}
               onClick={() => {
@@ -145,7 +112,7 @@ export default function SelectTextModal({
               value={text}
             />
           )}
-        </Container>
+        </div>
       </IonContent>
     </IonModal>
   );

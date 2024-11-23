@@ -1,0 +1,12 @@
+.icon {
+  position: relative;
+  display: inline-flex;
+  height: 40px;
+  width: auto;
+  stroke: var(--ion-color-primary);
+  fill: var(--ion-color-primary);
+}
+
+.iconMirrored {
+  transform: scaleX(-1);
+}

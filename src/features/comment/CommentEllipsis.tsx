@@ -1,15 +1,11 @@
 import { IonIcon, IonLoading } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { ellipsisHorizontal } from "ionicons/icons";
 import { useContext, useImperativeHandle } from "react";
 
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
 
+import styles from "./CommentEllipsis.module.css";
 import useCommentActions, { CommentActionsProps } from "./useCommentActions";
-
-const StyledIonIcon = styled(IonIcon)`
-  font-size: 1.2em;
-`;
 
 export type CommentEllipsisHandle = Pick<
   ReturnType<typeof useCommentActions>,
@@ -40,7 +36,8 @@ export default function CommentEllipsis({
   return (
     <>
       <IonLoading isOpen={loading} />
-      <StyledIonIcon
+      <IonIcon
+        className={styles.icon}
         icon={ellipsisHorizontal}
         onClick={(e) => {
           present();

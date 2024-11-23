@@ -4,24 +4,13 @@ import {
   OverlayEventDetail,
 } from "@ionic/core";
 import { IonActionSheet, IonItem, IonLabel } from "@ionic/react";
-import { css, cx } from "@linaria/core";
 import { startCase } from "es-toolkit";
 import React, { useState } from "react";
 
+import { cx } from "#/helpers/css";
 import { Dispatchable, useAppDispatch } from "#/store";
 
-const iconCss = css`
-  position: relative;
-  display: inline-flex;
-  height: 40px;
-  width: auto;
-  stroke: var(--ion-color-primary);
-  fill: var(--ion-color-primary);
-`;
-
-const iconMirrorCss = css`
-  transform: scaleX(-1);
-`;
+import styles from "./SettingSelector.module.css";
 
 export interface SettingSelectorProps<T, O extends Record<string, T>> {
   title: string;
@@ -77,7 +66,7 @@ export default function SettingSelector<
     >
       {Icon && (
         <Icon
-          className={cx(iconCss, iconMirrored && iconMirrorCss)}
+          className={cx(styles.icon, iconMirrored && styles.iconMirrored)}
           slot="start"
         />
       )}

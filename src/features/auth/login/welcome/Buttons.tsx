@@ -1,5 +1,4 @@
 import { IonButton, IonNavLink, IonSpinner } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { useRef } from "react";
 
 import PickLoginServer from "#/features/auth/login/login/PickLoginServer";
@@ -8,48 +7,7 @@ import useStartJoinFlow from "#/features/auth/login/pickJoinServer/useStartJoinF
 import { useAppSelector } from "#/store";
 
 import LearnMore from "../LearnMore";
-
-const TopSpacer = styled.div`
-  flex: 10;
-`;
-
-const BottomSpacer = styled.div`
-  flex: 7;
-`;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  gap: 0.5rem;
-  margin: 2rem;
-
-  margin-top: auto;
-`;
-
-const Or = styled.div`
-  font-size: 0.8em;
-  position: relative;
-
-  display: flex;
-  gap: 6px;
-
-  margin: 6px 0 -6px;
-
-  hr {
-    flex: 1;
-    background: var(--ion-color-medium);
-    opacity: 0.6;
-  }
-`;
-
-const ButtonLine = styled.div`
-  display: flex;
-
-  > * {
-    flex: 1;
-  }
-`;
+import styles from "./Buttons.module.css";
 
 export default function Buttons() {
   const loadingJoin = useAppSelector((state) => state.join.loading);
@@ -61,8 +19,8 @@ export default function Buttons() {
 
   return (
     <>
-      <TopSpacer />
-      <Container ref={ref}>
+      <div className={styles.topSpacer} />
+      <div className={styles.container} ref={ref}>
         <IonButton
           expand="block"
           onClick={() => startJoinFlow(connectedInstance)}
@@ -75,13 +33,13 @@ export default function Buttons() {
             Pick another server
           </IonButton>
         </IonNavLink>
-        <Or>
+        <div className={styles.or}>
           <hr />
           OR
           <hr />
-        </Or>
+        </div>
 
-        <ButtonLine>
+        <div className={styles.buttonLine}>
           <IonNavLink component={() => <LearnMore />}>
             <IonButton fill="clear" color="dark" expand="block">
               Learn More
@@ -92,9 +50,9 @@ export default function Buttons() {
               Log In
             </IonButton>
           </IonNavLink>
-        </ButtonLine>
-      </Container>
-      <BottomSpacer />
+        </div>
+      </div>
+      <div className={styles.bottomSpacer} />
     </>
   );
 }

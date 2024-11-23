@@ -1,0 +1,27 @@
+.container {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
+  height: 100%;
+  height: 100%;
+
+  font-size: 0.9rem;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.flexItem {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0 16px !important;
+}
+
+.footer {
+  background: var(--ion-background-color);
+}
+
+.title {
+  padding-inline-start: 120px !important;
+  padding-inline-end: 120px;
+}

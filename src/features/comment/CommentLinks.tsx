@@ -1,5 +1,4 @@
 import spoiler from "@aeharding/remark-lemmy-spoiler";
-import { styled } from "@linaria/react";
 import { uniqBy } from "es-toolkit";
 import { Text } from "mdast";
 import { defaultUrlTransform } from "react-markdown";
@@ -12,11 +11,7 @@ import customRemarkGfm from "#/features/shared/markdown/customRemarkGfm";
 import { buildBaseLemmyUrl } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
+import styles from "./CommentLinks.module.css";
 
 export interface LinkData {
   type: "link" | "image";
@@ -79,5 +74,5 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
 
   if (!links.length) return;
 
-  return <Container>{links}</Container>;
+  return <div className={styles.container}>{links}</div>;
 }

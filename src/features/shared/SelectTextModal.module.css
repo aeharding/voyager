@@ -1,0 +1,33 @@
+.container {
+  min-height: 100%;
+
+  display: flex;
+
+  html:global(.ios:not(.ion-palette-dark)) & {
+    background: var(--ion-item-background);
+  }
+}
+
+.sharedSelect {
+  padding: 8px;
+  width: calc(100% - 16px);
+
+  user-select: text;
+
+  margin-bottom: var(--ion-safe-area-bottom, env(safe-area-inset-bottom));
+}
+
+.invisibleTextarea {
+  all: unset;
+  white-space: pre-wrap;
+  width: 100%;
+
+  composes: sharedSelect;
+}
+
+.selectable {
+  user-select: text;
+  white-space: pre-wrap;
+
+  composes: sharedSelect;
+}

@@ -1,6 +1,5 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { compact } from "es-toolkit";
 import { ellipseOutline, menuOutline, star } from "ionicons/icons";
 import { MouseEvent, RefObject, TouchEvent, useMemo, useRef } from "react";
@@ -8,6 +7,8 @@ import { VListHandle } from "virtua";
 
 import { findCurrentPage } from "#/helpers/ionic";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
+
+import styles from "./AlphabetJump.module.css";
 
 const alphabetUpperCase = Array.from({ length: 26 }, (_, i) =>
   String.fromCharCode(65 + i),
@@ -49,42 +50,6 @@ const SIMPLIFIED_SECTIONS = SECTIONS.reduce<typeof SECTIONS>(
   },
   [],
 );
-
-export const HIDE_ALPHABET_JUMP =
-  "(max-height: 600px) and (orientation: landscape)" as const;
-
-const Container = styled.div`
-  --line-height: 15px;
-
-  position: absolute;
-  right: env(safe-area-inset-right);
-  z-index: 1;
-
-  top: 50%;
-  transform: translateY(-50%);
-
-  display: flex;
-  flex-direction: column;
-
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--ion-color-primary);
-  text-align: center;
-
-  padding-left: 6px;
-  padding-right: 3px;
-
-  white-space: pre;
-  line-height: var(--line-height);
-
-  ion-icon {
-    height: var(--line-height);
-  }
-
-  @media ${HIDE_ALPHABET_JUMP} {
-    display: none;
-  }
-`;
 
 interface AlphabetJumpProps {
   virtuaRef: RefObject<VListHandle>;
@@ -158,7 +123,8 @@ export default function AlphabetJump({
   };
 
   return (
-    <Container
+    <div
+      className={styles.container}
       ref={containerRef}
       onTouchMove={onDrag}
       onTouchStart={(e) => {
@@ -174,7 +140,7 @@ export default function AlphabetJump({
       slot="fixed"
     >
       {SIMPLIFIED_SECTIONS}
-    </Container>
+    </div>
   );
 }
 

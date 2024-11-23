@@ -1,0 +1,25 @@
+.iconBg {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    width: 20px;
+    height: 20px;
+
+    transform: scale(var(--sv-scale));
+  }
+
+  border-radius: 50%;
+  background-color: var(--sv-color);
+  color: white;
+}
+
+.appIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+}

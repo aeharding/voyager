@@ -1,0 +1,17 @@
+.thumbnail {
+  margin: 1rem 1rem 1rem 0;
+
+  --size: 4.75em;
+}
+
+.img {
+  border-radius: 1em;
+}
+
+.h2 {
+  composes: ion-text-wrap from global;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

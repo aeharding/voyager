@@ -1,0 +1,22 @@
+.commentItem {
+  scroll-margin-bottom: 35vh;
+
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --border-style: none;
+  --min-height: 0;
+}
+
+.content {
+  padding-top: 0.35em;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+
+  @media (hover: none) {
+    padding-top: 0.45em;
+  }
+
+  line-height: 1.25;
+}

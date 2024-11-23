@@ -1,59 +1,14 @@
 import { IonButton, IonButtons, IonIcon } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { chevronDown, close } from "ionicons/icons";
 import React, { useContext, useEffect, useRef } from "react";
 
 import AppTitle, { AppTitleHandle } from "#/features/shared/AppTitle";
+import { cx } from "#/helpers/css";
 import { isIosTheme } from "#/helpers/device";
 import { findCurrentPage } from "#/helpers/ionic";
 
+import styles from "./TitleSearch.module.css";
 import { TitleSearchContext } from "./TitleSearchProvider";
-
-const TitleContents = styled.span`
-  display: inline-flex;
-  align-items: center;
-
-  .ios & {
-    justify-content: center;
-  }
-
-  gap: 0.25rem;
-
-  width: 100%;
-
-  span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-`;
-
-const StyledInput = styled.input`
-  max-width: 115px;
-  margin: auto;
-  background: none;
-  border: 0;
-  font-weight: normal;
-  width: 100%;
-  text-align: inherit;
-  outline: none;
-
-  && {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  .searchbar-search-icon {
-    display: none;
-    width: 0;
-    height: 0;
-  }
-
-  --background: none;
-`;
-
-const DropdownIcon = styled(IonIcon)`
-  flex-shrink: 0;
-`;
 
 const TITLE_CLASS = "title-search-opener";
 
@@ -97,7 +52,8 @@ export default function TitleSearch({ name, children, ref }: TitleSearchProps) {
     return (
       <>
         <AppTitle appRef={ref}>
-          <StyledInput
+          <input
+            className={styles.input}
             ref={searchRef}
             placeholder="Community..."
             onChange={(e) => setSearch(e.target.value || "")}
@@ -128,9 +84,10 @@ export default function TitleSearch({ name, children, ref }: TitleSearchProps) {
   return (
     <>
       <AppTitle fullPadding={75} appRef={ref}>
-        <TitleContents ref={titleRef} className={TITLE_CLASS}>
-          <span>{name}</span> <DropdownIcon icon={chevronDown} />
-        </TitleContents>
+        <span ref={titleRef} className={cx(styles.titleContents, TITLE_CLASS)}>
+          <span>{name}</span>{" "}
+          <IonIcon className={styles.dropdownIcon} icon={chevronDown} />
+        </span>
       </AppTitle>
       {children}
     </>

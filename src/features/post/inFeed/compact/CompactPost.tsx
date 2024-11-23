@@ -1,5 +1,3 @@
-import { styled } from "@linaria/react";
-import { megaphone } from "ionicons/icons";
 import { useContext } from "react";
 
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
@@ -11,142 +9,23 @@ import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "#/features/moderation/ModeratableItem";
 import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
+import ActionsContainer from "#/features/post/actions/ActionsContainer";
 import CompactCrosspost from "#/features/post/crosspost/CompactCrosspost";
-import { AnnouncementIcon } from "#/features/post/detail/PostHeader";
+import AnnouncementIcon from "#/features/post/detail/AnnouncementIcon";
 import MoreActions from "#/features/post/shared/MoreActions";
 import MoreModActions from "#/features/post/shared/MoreModAction";
 import { VoteButton } from "#/features/post/shared/VoteButton";
 import useCrosspostUrl from "#/features/post/shared/useCrosspostUrl";
-import { maxWidthCss } from "#/features/shared/AppContent";
 import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
+import { cx, sv } from "#/helpers/css";
 import { isUrlImage, parseUrlForDisplay } from "#/helpers/url";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
 
 import { PostProps } from "../Post";
 import PreviewStats from "../PreviewStats";
+import styles from "./CompactPost.module.css";
 import Thumbnail from "./Thumbnail";
-
-const Container = styled.div`
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  gap: 12px;
-`;
-
-const Contents = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  line-height: 1.15;
-
-  position: relative;
-
-  ${maxWidthCss}
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  min-width: 0;
-  flex: 1;
-`;
-
-const Title = styled.span<{ isRead: boolean }>`
-  font-size: 0.9375em;
-
-  color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
-`;
-
-const Aside = styled.div<{ isRead: boolean }>`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-
-  color: var(--ion-color-text-aside);
-  font-size: 0.8em;
-
-  color: ${({ isRead }) => (isRead ? "var(--read-color)" : "inherit")};
-`;
-
-const From = styled.div`
-  white-space: nowrap;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  &:empty {
-    display: none;
-  }
-`;
-
-export const ActionsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  > button {
-    font-size: 1.2em;
-
-    padding: 6px 3px;
-    margin: -10px -3px;
-
-    &.large {
-      font-size: 1.6em;
-    }
-  }
-
-  white-space: nowrap;
-`;
-
-const actionButtonStyles = `
-  margin: -0.5rem;
-  padding: 0.5rem;
-
-  color: var(--ion-color-text-aside);
-`;
-
-const StyledMoreActions = styled(MoreActions)`
-  font-size: 1.3rem;
-
-  ${actionButtonStyles}
-`;
-
-const StyledModActions = styled(MoreModActions)`
-  font-size: 1.1em;
-
-  ${actionButtonStyles}
-`;
-
-const EndDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  font-size: 1.2rem;
-
-  color: var(--ion-color-text-aside);
-
-  margin-left: auto;
-`;
-
-const Domain = styled.span`
-  white-space: nowrap;
-
-  font-size: 0.9em;
-  opacity: 0.8;
-
-  display: inline-flex;
-  max-width: 100%;
-
-  span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-`;
 
 export default function CompactPost({ post }: PostProps) {
   const alwaysShowAuthor = useAppSelector(
@@ -179,37 +58,37 @@ export default function CompactPost({ post }: PostProps) {
 
   return (
     <ModeratableItem itemView={post}>
-      <Container>
+      <div className={cx(styles.container, hasBeenRead && styles.read)}>
         <ModeratableItemBannerOutlet />
 
-        <Contents>
+        <div className={styles.contents}>
           {compactThumbnailPositionType === "left" && <Thumbnail post={post} />}
-          <Content>
+          <div className={styles.content}>
             {(inModqueue || showCommunityAtTop) && !inCommunityFeed && (
-              <Aside isRead={false}>
+              <div className={styles.aside} style={sv({ color: "inherit" })}>
                 <CommunityLink
                   community={post.community}
                   subscribed={post.subscribed}
                   showInstanceWhenRemote
                   tinyIcon
                 />
-              </Aside>
+              </div>
             )}
-            <Title isRead={hasBeenRead}>
+            <span className={styles.title}>
               <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
               {domain && (
                 <>
-                  <Domain>
+                  <span className={styles.domain}>
                     (<span>{domain}</span>)
-                  </Domain>{" "}
+                  </span>{" "}
                 </>
               )}
               {isNsfw(post) && <Nsfw />}
-            </Title>
-            <Aside isRead={hasBeenRead}>
-              <From>
+            </span>
+            <div className={styles.aside}>
+              <div className={styles.from}>
                 {post.post.featured_community || post.post.featured_local ? (
-                  <AnnouncementIcon icon={megaphone} />
+                  <AnnouncementIcon />
                 ) : undefined}
                 {inCommunityFeed || inModqueue ? (
                   <PersonLink
@@ -239,35 +118,39 @@ export default function CompactPost({ post }: PostProps) {
                     )}
                   </>
                 )}
-              </From>
+              </div>
               <ActionsContainer>
                 <PreviewStats post={post} />
                 {inModqueue ? (
                   <ModqueueItemActions item={post} />
                 ) : (
-                  <StyledModActions post={post} solidIcon />
+                  <MoreModActions
+                    className={styles.styledModActions}
+                    post={post}
+                    solidIcon
+                  />
                 )}
-                <StyledMoreActions post={post} />
+                <MoreActions className={styles.styledMoreActions} post={post} />
               </ActionsContainer>
-            </Aside>
+            </div>
             {crosspostUrl && (
               <div>
                 <CompactCrosspost post={post} url={crosspostUrl} />
               </div>
             )}
-          </Content>
+          </div>
           {compactThumbnailPositionType === "right" && (
             <Thumbnail post={post} />
           )}
           {compactShowVotingButtons === true && (
-            <EndDetails>
+            <div className={styles.endDetails}>
               <VoteButton type="up" post={post} />
               <VoteButton type="down" post={post} />
-            </EndDetails>
+            </div>
           )}
           <Save type="post" id={post.post.id} />
-        </Contents>
-      </Container>
+        </div>
+      </div>
     </ModeratableItem>
   );
 }

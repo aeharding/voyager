@@ -11,8 +11,6 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { close } from "ionicons/icons";
 import {
   useEffect,
@@ -21,27 +19,10 @@ import {
 } from "react";
 import { VList } from "virtua";
 
+import sharedStyles from "#/features/shared/shared.module.css";
+
 import AppHeader from "../AppHeader";
-
-export const TransparentIonToolbar = styled(IonToolbar)`
-  --background: none;
-  --border-width: 0 !important;
-`;
-
-export const CloseButton = styled(IonButton)`
-  border-radius: 50%;
-  background: rgba(180, 180, 180, 0.2);
-`;
-
-const StyledIonSearchbar = styled(IonSearchbar)`
-  padding-top: 0;
-  padding-bottom: 0;
-  height: 40px;
-`;
-
-const StyledIonList = styled(IonList)`
-  --ion-item-background: none;
-`;
+import styles from "./GenericSelectorModal.module.css";
 
 interface GenericSelectorModalProps<I> {
   search: (query: string) => Promise<I[]>;
@@ -75,15 +56,20 @@ export default function GenericSelectorModal<I>({
   return (
     <IonPage>
       <AppHeader>
-        <TransparentIonToolbar>
+        <IonToolbar className={sharedStyles.transparentIonToolbar}>
           <IonButtons slot="end">
-            <CloseButton color="medium" onClick={() => onDismiss()}>
+            <IonButton
+              className={sharedStyles.closeButton}
+              color="medium"
+              onClick={() => onDismiss()}
+            >
               <IonIcon icon={close} />
-            </CloseButton>
+            </IonButton>
           </IonButtons>
           <IonTitle>{itemPlural}</IonTitle>
-        </TransparentIonToolbar>
-        <StyledIonSearchbar
+        </IonToolbar>
+        <IonSearchbar
+          className={styles.searchbar}
           placeholder={`${itemSingular} name`}
           debounce={500}
           enterkeyhint="go"
@@ -94,11 +80,7 @@ export default function GenericSelectorModal<I>({
         />
       </AppHeader>
       <IonContent>
-        <StyledIonList
-          className={css`
-            height: 100%;
-          `}
-        >
+        <IonList className={styles.list}>
           <VList count={items.length}>
             {(i) => {
               const item = items[i]!;
@@ -110,7 +92,7 @@ export default function GenericSelectorModal<I>({
               );
             }}
           </VList>
-        </StyledIonList>
+        </IonList>
       </IonContent>
     </IonPage>
   );

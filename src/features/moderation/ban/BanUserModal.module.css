@@ -1,0 +1,3 @@
+.modPrimaryColor {
+  --ion-color-primary: var(--ion-color-success);
+}

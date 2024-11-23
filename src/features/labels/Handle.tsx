@@ -1,12 +1,8 @@
-import { styled } from "@linaria/react";
 import { Person } from "lemmy-js-client";
 
 import { getItemActorName } from "#/helpers/lemmy";
 
-const Aside = styled.aside`
-  display: inline;
-  opacity: 0.7;
-`;
+import styles from "./Handle.module.css";
 
 interface HandleProps {
   showInstanceWhenRemote?: boolean;
@@ -19,8 +15,11 @@ export default function Handle(props: HandleProps) {
 
 export function renderHandle({ showInstanceWhenRemote, item }: HandleProps) {
   if (showInstanceWhenRemote && !item.local)
-    // eslint-disable-next-line react/jsx-key
-    return [item.name, <Aside>@{getItemActorName(item)}</Aside>];
+    return [
+      item.name,
+      // eslint-disable-next-line react/jsx-key
+      <aside className={styles.aside}>@{getItemActorName(item)}</aside>,
+    ];
 
   return [item.name];
 }

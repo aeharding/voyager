@@ -1,24 +1,10 @@
 import { IonItem, IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
-import { styled } from "@linaria/react";
 
 import { HelperText, ListHeader } from "#/features/settings/shared/formatting";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
-
-const Range = styled(IonRange)`
-  --bar-background: var(--ion-color-medium);
-
-  ::part(tick) {
-    background: var(--ion-color-medium);
-  }
-`;
-
-const A = styled.div<{ small?: boolean }>`
-  padding: 0 6px;
-  font-weight: 500;
-  font-size: ${({ small }) => (small ? "0.8em" : "1.3em")};
-`;
+import styles from "./TextSize.module.css";
 
 const MAX_REGULAR_FONT_ADJUSTMENT = 1.6;
 const MIN_LARGER_FONT_ADJUSTMENT = 2;
@@ -59,7 +45,8 @@ export default function TextSize() {
           </IonToggle>
         </IonItem>
         <IonItem>
-          <Range
+          <IonRange
+            className={styles.range}
             disabled={useSystemFontSize}
             ticks
             snaps
@@ -69,11 +56,13 @@ export default function TextSize() {
               dispatch(setFontSizeMultiplier(e.detail.value as number));
             }}
           >
-            <A slot="start" small>
+            <div className={styles.aSmall} slot="start">
               A
-            </A>
-            <A slot="end">A</A>
-          </Range>
+            </div>
+            <div className={styles.a} slot="end">
+              A
+            </div>
+          </IonRange>
         </IonItem>
         {fontSizeMultiplier >= 1.4 && (
           <IonItem>

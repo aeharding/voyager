@@ -1,0 +1,100 @@
+.container {
+  display: flex;
+  flex-direction: column;
+
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  color: inherit;
+  text-decoration: none;
+  -webkit-touch-callout: default;
+
+  :global(.cross-post) & {
+    border: 1px solid rgba(var(--ion-color-dark-rgb), 0.15);
+    border-bottom-right-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+  }
+}
+
+.img {
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+
+  object-fit: cover;
+}
+
+.thumbnailImg {
+  margin: calc(-1 * var(--top-padding)) 0 calc(-1 * var(--top-padding))
+    calc(-1 * var(--start-padding));
+  height: var(--height);
+  aspect-ratio: 0.85;
+  width: auto;
+  object-fit: cover;
+}
+
+.blurImg {
+  filter: blur(40px);
+
+  /* https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari */
+  transform: translate3d(0, 0, 0);
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+
+  --height: 55px;
+
+  --gap: 10px;
+
+  --start-padding: 10px;
+  --top-padding: 8px;
+
+  &.small {
+    --height: 55px;
+    --gap: 8px;
+    --start-padding: 8px;
+    --top-padding: 4px;
+  }
+
+  min-height: var(--height);
+  gap: var(--gap);
+  padding: var(--top-padding) var(--start-padding);
+
+  color: var(--ion-color-medium);
+  background: var(--lightroom-bg);
+
+  @media (min-width: 700px) {
+    --gap: 16px;
+    --start-padding: 16px;
+  }
+
+  :global(.cross-post) & {
+    background: none;
+  }
+}
+
+.text {
+  color: var(--ion-text-color);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.urlContainer {
+  flex: 1;
+  font-size: 0.875em;
+
+  margin-right: -0.5rem; /* fudge it closer */
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevronIcon {
+  font-size: 20px;
+  opacity: 0.4;
+  margin: 0 -3px;
+}

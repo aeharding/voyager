@@ -1,0 +1,41 @@
+.topSpacer {
+  flex: 10;
+}
+
+.bottomSpacer {
+  flex: 7;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.5rem;
+  margin: 2rem;
+
+  margin-top: auto;
+}
+
+.or {
+  font-size: 0.8em;
+  position: relative;
+
+  display: flex;
+  gap: 6px;
+
+  margin: 6px 0 -6px;
+
+  hr {
+    flex: 1;
+    background: var(--ion-color-medium);
+    opacity: 0.6;
+  }
+}
+
+.buttonLine {
+  display: flex;
+
+  > * {
+    flex: 1;
+  }
+}

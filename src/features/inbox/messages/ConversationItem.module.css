@@ -1,0 +1,79 @@
+.itemIcon {
+  margin: 0.75rem 0;
+}
+
+.messageContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.messageLine {
+  display: flex;
+  gap: 0.3rem;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.personLabel {
+  flex: 1;
+
+  font-size: 1rem;
+  margin: 0;
+  min-width: 0;
+
+  display: inline;
+  margin-right: auto;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.openDetails {
+  flex: 0;
+
+  font-size: 0.875em;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  color: var(--ion-color-medium);
+}
+
+.messagePreview {
+  --line-height: 1.3rem;
+  --num-lines: 2;
+
+  height: 2.5rem;
+  line-height: var(--line-height);
+  font-size: 0.875em;
+  height: calc(var(--line-height) * var(--num-lines));
+
+  color: var(--ion-color-medium);
+
+  display: -webkit-box;
+  -webkit-line-clamp: var(--num-lines);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 0.25rem;
+  transform: translateY(-50%);
+
+  background: var(--ion-color-primary);
+
+  --size: 8px;
+
+  border-radius: calc(var(--size) / 2);
+
+  width: var(--size);
+  height: var(--size);
+}

@@ -1,6 +1,5 @@
 import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { css } from "@linaria/core";
 import React, {
   createContext,
   useContext,
@@ -16,6 +15,7 @@ import useSystemDarkMode, {
 import { AppThemeType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
+import styles from "./GlobalStyles.module.css";
 import { getThemeByStyle } from "./theme/AppThemes";
 
 export const DARK_CLASSNAME = "ion-palette-dark";
@@ -74,10 +74,6 @@ updateDocumentTheme(
   initialSettingsState.appearance.theme,
 );
 
-const fixedDeviceFontCss = css`
-  --ion-dynamic-font: initial;
-`;
-
 export default function GlobalStyles({ children }: React.PropsWithChildren) {
   const isDark = useComputeIsDark();
   const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
@@ -97,10 +93,10 @@ export default function GlobalStyles({ children }: React.PropsWithChildren) {
 
   useLayoutEffect(() => {
     if (useSystemFontSize) {
-      document.documentElement.classList.remove(fixedDeviceFontCss);
+      document.documentElement.classList.remove(styles.fixedDeviceFont!);
       document.documentElement.style.fontSize = "";
     } else {
-      document.documentElement.classList.add(fixedDeviceFontCss);
+      document.documentElement.classList.add(styles.fixedDeviceFont!);
       document.documentElement.style.fontSize = `${fontSizeMultiplier}rem`;
     }
   }, [useSystemFontSize, fontSizeMultiplier]);

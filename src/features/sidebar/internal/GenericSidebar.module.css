@@ -1,0 +1,16 @@
+.container {
+  composes: ion-padding-start ion-padding-end ion-padding-top from global;
+
+  line-height: 1.5;
+}
+
+.bannerImg {
+  margin-top: calc(var(--padding-top) * -1);
+  margin-left: calc(var(--padding-start) * -1);
+  margin-right: calc(var(--padding-end) * -1);
+  width: calc(100% + var(--padding-start) + var(--padding-end));
+  max-width: initial;
+
+  max-height: 300px;
+  object-fit: cover;
+}

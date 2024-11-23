@@ -1,27 +1,12 @@
-import { styled } from "@linaria/react";
 import { CommunityAggregates, Person, SiteAggregates } from "lemmy-js-client";
 
 import LargeFeedMedia from "#/features/post/inFeed/large/media/LargeFeedMedia";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import Markdown from "#/features/shared/markdown/Markdown";
 
+import styles from "./GenericSidebar.module.css";
 import SidebarCounts from "./SidebarCounts";
 import SidebarOwners from "./SidebarOwners";
-
-const Container = styled.div`
-  line-height: 1.5;
-`;
-
-const BannerImg = styled(LargeFeedMedia)`
-  margin-top: calc(var(--padding-top) * -1);
-  margin-left: calc(var(--padding-start) * -1);
-  margin-right: calc(var(--padding-end) * -1);
-  width: calc(100% + var(--padding-start) + var(--padding-end));
-  max-width: initial;
-
-  max-height: 300px;
-  object-fit: cover;
-`;
 
 interface GenericSidebarProps {
   sidebar: string;
@@ -46,9 +31,10 @@ export default function GenericSidebar({
 }: GenericSidebarProps) {
   return (
     <MaxWidthContainer>
-      <Container className="ion-padding-start ion-padding-end ion-padding-top">
+      <div className={styles.container}>
         {banner && (
-          <BannerImg
+          <LargeFeedMedia
+            className={styles.bannerImg}
             src={banner}
             alt={`Banner for ${name}`}
             defaultAspectRatio={2.5}
@@ -57,7 +43,7 @@ export default function GenericSidebar({
         <Markdown id={id}>{sidebar}</Markdown>
         <SidebarCounts counts={counts} />
         {extraBadges}
-      </Container>
+      </div>
       <SidebarOwners
         people={people}
         type={type === "community" ? "mods" : "admins"}

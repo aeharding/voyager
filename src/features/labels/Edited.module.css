@@ -1,0 +1,8 @@
+.edited {
+  display: flex;
+  align-items: center;
+  gap: inherit;
+
+  margin: -3px;
+  padding: 3px;
+}

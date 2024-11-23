@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.votes {
+  display: flex;
+  gap: 6px;
+  margin: 0 6px;
+}
+
+.vote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+
+  color: white;
+}
+
+.radio {
+  &::part(label) {
+    flex: 1;
+  }
+}

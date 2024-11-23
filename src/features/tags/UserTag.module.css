@@ -1,0 +1,13 @@
+.tagContainer {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  background: var(--lightroom-bg);
+  color: var(--ion-color-medium);
+
+  border-radius: 4px;
+  padding: 0 4px;
+
+  min-width: 0; /* when contained in flexbox */
+}

@@ -1,6 +1,5 @@
 import { Share } from "@capacitor/share";
 import { IonIcon } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { StashMedia } from "capacitor-stash-media";
 import { chatbubbleOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
@@ -22,28 +21,8 @@ import { useAppSelector } from "#/store";
 import { GalleryContext } from "../GalleryProvider";
 import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
+import styles from "./GalleryPostActions.module.css";
 import { BottomContainer, BottomContainerActions } from "./shared";
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  font-size: 1.5em;
-
-  max-width: 600px;
-  width: 100%;
-`;
-
-const Section = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const Amount = styled.div`
-  font-size: 1rem;
-`;
-
 interface GalleryPostActionsProps {
   post: PostView;
   imgSrc: string;
@@ -88,7 +67,7 @@ export default function GalleryPostActions({
     <BottomContainer>
       <AltText alt={alt} />
       <BottomContainerActions withBg>
-        <Container onClick={(e) => e.stopPropagation()}>
+        <div className={styles.container} onClick={(e) => e.stopPropagation()}>
           <Voting post={post} imgSrc={imgSrc} />
           <div
             onClick={() => {
@@ -101,10 +80,10 @@ export default function GalleryPostActions({
               if (!location.pathname.startsWith(link)) router.push(link);
             }}
           >
-            <Section>
+            <div className={styles.section}>
               <IonIcon icon={chatbubbleOutline} />
-              <Amount>{post.counts.comments}</Amount>
-            </Section>
+              <div className={styles.amount}>{post.counts.comments}</div>
+            </div>
           </div>
           <IonIcon icon={getShareIcon()} onClick={shareImage} />
           {isNative() ? (
@@ -114,7 +93,7 @@ export default function GalleryPostActions({
               <MoreActions post={post} />
             </InFeedContext.Provider>
           )}
-        </Container>
+        </div>
       </BottomContainerActions>
     </BottomContainer>
   );
@@ -132,11 +111,11 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
       const score = calculateTotalScore(post, postVotesById);
 
       return (
-        <Section>
+        <div className={styles.section}>
           <VoteButton type="up" post={post} />
-          <Amount>{score}</Amount>
+          <div className={styles.amount}>{score}</div>
           <VoteButton type="down" post={post} />
-        </Section>
+        </div>
       );
     }
     case OVoteDisplayMode.Separate: {
@@ -146,20 +125,20 @@ function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
       );
 
       return (
-        <Section>
+        <div className={styles.section}>
           <VoteButton type="up" post={post} />
-          <Amount>{upvotes}</Amount>
+          <div className={styles.amount}>{upvotes}</div>
           <VoteButton type="down" post={post} />
-          <Amount>{downvotes}</Amount>
-        </Section>
+          <div className={styles.amount}>{downvotes}</div>
+        </div>
       );
     }
     case OVoteDisplayMode.Hide:
       return (
-        <Section>
+        <div className={styles.section}>
           <VoteButton type="up" post={post} />
           <VoteButton type="down" post={post} />
-        </Section>
+        </div>
       );
   }
 }

@@ -1,33 +1,11 @@
 import { useIonAlert } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { formatDistanceToNowStrict } from "date-fns";
 import { PersonAggregates } from "lemmy-js-client";
 
 import Ago from "#/features/labels/Ago";
 import { formatNumber } from "#/helpers/number";
 
-const Container = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-  gap: 12px;
-  margin: 24px 24px;
-`;
-
-const Score = styled.div`
-  font-size: min(1.3rem, 52px);
-
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-
-  aside {
-    font-size: min(0.8rem, 32px);
-
-    margin-top: 0.35rem;
-    opacity: 0.5;
-    font-weight: 500;
-  }
-`;
+import styles from "./Scores.module.css";
 
 interface ScoreProps {
   aggregates: PersonAggregates;
@@ -69,24 +47,27 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
 
   return (
     <>
-      <Container>
-        <Score
+      <div className={styles.container}>
+        <div
+          className={styles.score}
           onClick={() => {
             showScoreAlert("comment");
           }}
         >
           {formatNumber(aggregates.comment_count)}
           <aside>Comment count</aside>
-        </Score>
-        <Score
+        </div>
+        <div
+          className={styles.score}
           onClick={() => {
             showScoreAlert("post");
           }}
         >
           {formatNumber(aggregates.post_count)}
           <aside>Post count</aside>
-        </Score>
-        <Score
+        </div>
+        <div
+          className={styles.score}
           onClick={() => {
             present({
               header: `Account is ${relativeDate} old`,
@@ -97,8 +78,8 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
         >
           <Ago date={accountCreated} />
           <aside>Account age</aside>
-        </Score>
-      </Container>
+        </div>
+      </div>
     </>
   );
 }

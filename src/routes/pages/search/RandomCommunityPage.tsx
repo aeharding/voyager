@@ -13,7 +13,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import useGetRandomCommunity from "#/features/community/useGetRandomCommunity";
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
-import { FailedMessage } from "#/features/user/AsyncProfile";
+import sharedStyles from "#/features/shared/shared.module.css";
 
 export default function RandomCommunityPage() {
   const pushed = useRef(false);
@@ -55,7 +55,7 @@ export default function RandomCommunityPage() {
         >
           <IonRefresherContent />
         </IonRefresher>
-        <FailedMessage>Failed to load :(</FailedMessage>
+        <div className={sharedStyles.pageFailedMessage}>Failed to load :(</div>
       </>
     );
   }

@@ -1,10 +1,9 @@
 import { IonIcon, IonItem } from "@ionic/react";
-import { cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { timerOutline } from "ionicons/icons";
 
 import Ago from "#/features/labels/Ago";
-import { maxWidthCss } from "#/features/shared/AppContent";
+import sharedStyles from "#/features/shared/shared.module.css";
+import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
@@ -15,6 +14,7 @@ import {
   getModName,
 } from "../useCanModerate";
 import useIsAdmin from "../useIsAdmin";
+import styles from "./ModlogItem.module.css";
 import ModlogItemMoreActions from "./ModlogItemMoreActions";
 import { ModlogItemType } from "./helpers";
 import addCommunity from "./types/addCommunity";
@@ -32,85 +32,6 @@ import removeComment from "./types/removeComment";
 import removeCommunity from "./types/removeCommunity";
 import removePost from "./types/removePost";
 import transferCommunity from "./types/transferCommunity";
-
-const Container = styled.div`
-  display: flex;
-  gap: 1rem;
-
-  ${maxWidthCss}
-
-  padding: 0.5rem 0;
-
-  font-size: 0.875em;
-
-  strong {
-    font-weight: 500;
-  }
-`;
-
-const StartContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  ion-icon {
-    width: 1lh;
-    height: 1lh;
-  }
-`;
-
-const TypeIcon = styled(IonIcon)`
-  color: var(--ion-color-medium2);
-`;
-
-const Content = styled.div`
-  flex: 1;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-
-  aside {
-    margin-left: auto;
-
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    color: var(--ion-color-medium2);
-  }
-`;
-
-const Body = styled.div`
-  color: var(--ion-color-medium);
-  padding: 0.5rem 0;
-`;
-
-const Footer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  aside {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    color: var(--ion-color-medium2);
-  }
-`;
-
-const Title = styled.div``;
-const Reason = styled.div``;
-const By = styled.div<{ color: string }>`
-  display: flex;
-  justify-content: right;
-  align-items: center;
-  gap: 6px;
-  padding: 0.5rem 0;
-  color: ${({ color }) => `var(--ion-color-${color}-shade)`};
-`;
 
 interface ModLogItemProps {
   item: ModlogItemType;
@@ -200,38 +121,44 @@ export function ModlogItem({ item }: ModLogItemProps) {
   return (
     <IonItem
       mode="ios" // Use iOS style activatable tap highlight
-      className={cx(isTouchDevice() && "ion-activatable", maxWidthCss)}
+      className={cx(
+        isTouchDevice() && "ion-activatable",
+        sharedStyles.maxWidth,
+      )}
       href={undefined}
       routerLink={link ? buildGeneralBrowseLink(link) : undefined}
       detail={false}
     >
-      <Container>
-        <StartContent>
-          <TypeIcon icon={icon} />
-        </StartContent>
-        <Content>
-          <Header>
-            <Title>{title}</Title>
+      <div className={styles.container}>
+        <div className={styles.startContent}>
+          <IonIcon icon={icon} className={styles.typeIcon} />
+        </div>
+        <div className={styles.content}>
+          <div className={styles.header}>
+            <div>{title}</div>
             <aside>
               <ModlogItemMoreActions item={item} role={role} />
               <Ago date={when} />
             </aside>
-          </Header>
-          <Body>{message}</Body>
-          {reason && <Reason>Reason: {reason}</Reason>}
-          <Footer>
-            <By color={getModColor(role)}>
+          </div>
+          <div className={styles.body}>{message}</div>
+          {reason && <div>Reason: {reason}</div>}
+          <div className={styles.footer}>
+            <div
+              className={styles.by}
+              style={{ color: `var(--ion-color-${getModColor(role)}-shade)` }}
+            >
               <IonIcon icon={getModIcon(role)} />
               {by ? by : getModName(role)}
-            </By>
+            </div>
             {expires && (
               <aside>
                 <IonIcon icon={timerOutline} /> <Ago date={expires} />
               </aside>
             )}
-          </Footer>
-        </Content>
-      </Container>
+          </div>
+        </div>
+      </div>
     </IonItem>
   );
 }

@@ -1,0 +1,33 @@
+.container {
+  margin: 36px auto;
+  background: var(--ion-background-color, #fff);
+  border-radius: 16px;
+  max-width: 320px;
+
+  position: relative;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 16px;
+}
+
+.closeButton {
+  border-radius: 50%;
+  background: rgba(180, 180, 180, 0.2);
+
+  appearance: none;
+  padding: 5px;
+  color: var(--ion-color-medium);
+
+  display: flex;
+
+  position: absolute;
+  right: 8px;
+  top: 8px;
+
+  font-size: 1.3em;
+}

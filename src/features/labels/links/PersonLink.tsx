@@ -1,7 +1,6 @@
-import { cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { Person } from "lemmy-js-client";
 import { useCallback, useContext } from "react";
+import { Link } from "react-router-dom";
 import { LongPressOptions, useLongPress } from "use-long-press";
 
 import { ShareImageContext } from "#/features/share/asImage/ShareAsImage";
@@ -10,6 +9,7 @@ import UserTag from "#/features/tags/UserTag";
 import usePresentUserActions, {
   PresentUserActionsOptions,
 } from "#/features/user/usePresentUserActions";
+import { cx } from "#/helpers/css";
 import {
   preventOnClickNavigationBug,
   stopIonicTapClick,
@@ -21,11 +21,8 @@ import { useAppSelector } from "#/store";
 
 import { renderHandle } from "../Handle";
 import AgeBadge from "./AgeBadge";
-import { LinkContainer, StyledLink, hideCss } from "./shared";
-
-const Prefix = styled.span`
-  font-weight: normal;
-`;
+import styles from "./PersonLink.module.css";
+import sharedStyles from "./shared.module.css";
 
 interface PersonLinkProps extends Pick<PresentUserActionsOptions, "sourceUrl"> {
   person: Person;
@@ -129,12 +126,17 @@ export default function PersonLink({
   );
 
   return (
-    <LinkContainer
+    <span
       {...bind()}
-      className={cx(className, hideUsernames ? hideCss : undefined)}
+      className={cx(
+        sharedStyles.linkContainer,
+        className,
+        hideUsernames ? sharedStyles.hide : undefined,
+      )}
       style={{ color }}
     >
-      <StyledLink
+      <Link
+        className={sharedStyles.link}
         to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
         onClick={(e) => {
           e.stopPropagation();
@@ -144,14 +146,14 @@ export default function PersonLink({
       >
         {prefix ? (
           <>
-            <Prefix>{prefix}</Prefix>{" "}
+            <span className={styles.prefix}>{prefix}</span>{" "}
           </>
         ) : undefined}
         {handle}
         {!disableInstanceClick && end}
-      </StyledLink>
+      </Link>
       {disableInstanceClick && end}
-    </LinkContainer>
+    </span>
   );
 }
 

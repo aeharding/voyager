@@ -1,22 +1,12 @@
-import { styled } from "@linaria/react";
 import { PostView } from "lemmy-js-client";
 
 import { getItemActorName } from "#/helpers/lemmy";
 import { OPostBlurNsfw, PostBlurNsfwType } from "#/services/db";
 
-const Container = styled.span`
-  font-size: 0.8rem;
-  vertical-align: middle;
-  padding: 2px 4px;
-  border-radius: 8px;
-  margin-left: 4px;
-  background: #ff0000;
-  background: color(display-p3 1 0 0);
-  color: white;
-`;
+import styles from "./Nsfw.module.css";
 
 export default function Nsfw() {
-  return <Container>NSFW</Container>;
+  return <span className={styles.container}>NSFW</span>;
 }
 
 const NSFW_INSTANCES = ["lemmynsfw.com"];

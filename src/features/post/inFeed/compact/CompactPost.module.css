@@ -1,0 +1,104 @@
+.container {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 12px;
+}
+
+.contents {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.15;
+
+  position: relative;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  min-width: 0;
+  flex: 1;
+}
+
+.title {
+  font-size: 0.9375em;
+
+  .read & {
+    color: var(--read-color);
+  }
+}
+
+.aside {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  font-size: 0.8em;
+
+  .read & {
+    color: var(--read-color);
+  }
+}
+
+.from {
+  white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.actionButtonStyles {
+  margin: -0.5rem;
+  padding: 0.5rem;
+
+  color: var(--ion-color-text-aside);
+}
+
+.styledMoreActions {
+  composes: actionButtonStyles;
+
+  font-size: 1.3rem;
+}
+
+.styledModActions {
+  composes: actionButtonStyles;
+
+  font-size: 1.1em;
+}
+
+.endDetails {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2rem;
+
+  color: var(--ion-color-text-aside);
+
+  margin-left: auto;
+}
+
+.domain {
+  white-space: nowrap;
+
+  font-size: 0.9em;
+  opacity: 0.8;
+
+  display: inline-flex;
+  max-width: 100%;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

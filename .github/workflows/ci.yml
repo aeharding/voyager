@@ -35,5 +35,11 @@ jobs:
       - name: 📝 Prettier formatting
         run: pnpm lint:formatting
 
+      - name: 📝 Generate CSS types
+        run: pnpm test:generatecsstypes
+
       - name: 💪 Type check
         run: pnpm test:typecheck
+
+      - name: 📦 Build
+        run: pnpm build

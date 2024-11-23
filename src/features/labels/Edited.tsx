@@ -1,22 +1,12 @@
 import { useIonAlert } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { pencil } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
 import { MouseEvent } from "react";
 
 import Stat from "#/features/post/detail/Stat";
-import { PlainButton } from "#/features/shared/PlainButton";
 
 import { formatRelative } from "./Ago";
-
-const EditedStat = styled(Stat)`
-  display: flex;
-  align-items: center;
-  gap: inherit;
-
-  margin: -3px;
-  padding: 3px;
-`;
+import styles from "./Edited.module.css";
 
 interface EditedProps {
   item: PostView | CommentView;
@@ -58,13 +48,14 @@ export default function Edited({ item, showDate, className }: EditedProps) {
   }
 
   return (
-    <EditedStat
-      statEl={PlainButton}
+    <Stat
+      className={styles.edited}
+      button
       onClick={presentEdited}
       icon={pencil}
       iconClassName={className}
     >
       {editedLabelIfNeeded}
-    </EditedStat>
+    </Stat>
   );
 }

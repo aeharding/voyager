@@ -1,0 +1,46 @@
+.spacing {
+  margin: 2.5rem 0;
+  width: 100%;
+}
+
+.empty {
+  composes: spacing;
+
+  color: var(--ion-color-medium);
+  text-align: center;
+}
+
+.serverThumbnail {
+  --size: 32px;
+  --border-radius: 6px;
+  margin: 16px 16px 16px 0;
+  pointer-events: none;
+}
+
+.serverItem {
+  --background: none;
+}
+
+.serverImg {
+  object-fit: contain;
+}
+
+.nextMessage {
+  font-size: 0.8em;
+}
+
+.searchbar {
+  padding-bottom: 5px !important;
+  min-height: 40px !important;
+}
+
+.filtersToolbar {
+  --ion-safe-area-left: -8px;
+  --ion-safe-area-right: -8px;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.optionsButton {
+  font-size: 16px;
+}

@@ -1,15 +1,12 @@
-import { styled } from "@linaria/react";
 import React from "react";
 
+import { cx } from "#/helpers/css";
 import { buildBaseLemmyUrl } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
 import InAppExternalLink, { AdditionalLinkProps } from "../InAppExternalLink";
 import useLemmyUrlHandler from "../useLemmyUrlHandler";
-
-const LinkInterceptor = styled(LinkInterceptorUnstyled)`
-  -webkit-touch-callout: default;
-`;
+import styles from "./LinkInterceptor.module.css";
 
 type LinkInterceptorUnstyledProps = React.JSX.IntrinsicElements["a"] & {
   el?: "div";
@@ -21,7 +18,7 @@ type LinkInterceptorUnstyledProps = React.JSX.IntrinsicElements["a"] & {
   forceResolveObject?: boolean;
 } & AdditionalLinkProps;
 
-function LinkInterceptorUnstyled({
+export default function LinkInterceptor({
   onClick: _onClick,
   onClickCompleted,
   forceResolveObject,
@@ -58,6 +55,7 @@ function LinkInterceptorUnstyled({
   return (
     <InAppExternalLink
       {...props}
+      className={cx(props.className, styles.link)}
       target="_blank"
       rel="noopener noreferrer"
       onClick={onClick}
@@ -66,5 +64,3 @@ function LinkInterceptorUnstyled({
     />
   );
 }
-
-export default LinkInterceptor;

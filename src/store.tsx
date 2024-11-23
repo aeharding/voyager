@@ -35,7 +35,7 @@ import postSlice from "./features/post/postSlice";
 import resolveSlice from "./features/resolve/resolveSlice";
 import appIconSlice, {
   fetchAppIcon,
-} from "./features/settings/app-icon/appIconSlice";
+} from "./features/settings/appIcon/appIconSlice";
 import biometricSlice, {
   initializeBiometricSliceDataIfNeeded,
 } from "./features/settings/biometric/biometricSlice";

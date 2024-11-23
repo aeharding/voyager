@@ -1,61 +1,32 @@
-import { styled } from "@linaria/react";
-import { ComponentProps } from "react";
-
 import COMMENT_THEMES from "#/features/settings/appearance/themes/commentsTheme/values";
-import { CommentsThemeType } from "#/services/db";
+import { sv } from "#/helpers/css";
 import { useAppSelector } from "#/store";
 
-interface ContainerProps {
+import styles from "./CommentContainer.module.css";
+
+interface ContainerProps extends React.PropsWithChildren {
   depth: number;
   hidden?: boolean;
-  themeName: CommentsThemeType;
 }
 
-const Container = styled.div<ContainerProps>`
-  display: flex;
-
-  position: relative;
-  width: 100%;
-
-  gap: 12px;
-
-  font-size: 0.9375em;
-
-  display: flex;
-  flex-direction: column;
-
-  padding-left: ${({ depth }) => (depth > 0 ? "1em" : 0)};
-
-  &:before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    filter: none;
-
-    .ion-palette-dark & {
-      filter: brightness(0.7);
-    }
-
-    background: ${({ themeName, depth }) =>
-      depth
-        ? COMMENT_THEMES[themeName][
-            (depth - 1) % COMMENT_THEMES[themeName].length
-          ]!
-        : "none"};
-
-    opacity: ${({ hidden }) => (hidden ? 0 : 1)};
-  }
-`;
-
-export default function CommentContainer(
-  props: Omit<ComponentProps<typeof Container>, "themeName">,
-) {
+export default function CommentContainer(props: ContainerProps) {
   const commentsTheme = useAppSelector(
     (state) => state.settings.appearance.commentsTheme,
   );
 
-  return <Container {...props} themeName={commentsTheme} />;
+  return (
+    <div
+      {...props}
+      className={styles.container}
+      style={sv({
+        depth: props.depth > 0 ? "1em" : 0,
+        background: props.depth
+          ? COMMENT_THEMES[commentsTheme][
+              (props.depth - 1) % COMMENT_THEMES[commentsTheme].length
+            ]!
+          : "none",
+        opacity: props.hidden ? 0 : 1,
+      })}
+    />
+  );
 }

@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import { useMergedRef } from "@mantine/hooks";
 import {
   ClipboardEvent,
@@ -10,53 +9,20 @@ import {
   useRef,
 } from "react";
 
+import { cx } from "#/helpers/css";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import { htmlToMarkdown } from "#/helpers/markdown";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
 
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
-import MarkdownToolbar, {
-  TOOLBAR_HEIGHT,
-  TOOLBAR_TARGET_ID,
-} from "./MarkdownToolbar";
+import styles from "./Editor.module.css";
+import MarkdownToolbar, { TOOLBAR_TARGET_ID } from "./MarkdownToolbar";
 import useEditorHelpers from "./useEditorHelpers";
 import useUploadImage from "./useUploadImage";
 
 const ORDERED_LIST_REGEX = /^(\d)\. /;
 const UNORDERED_LIST_REGEX = /^(-|\*|\+) /;
-
-export const Container = styled.div<{ keyboardOpen: boolean }>`
-  min-height: 100%;
-
-  display: flex;
-  flex-direction: column;
-
-  padding-bottom: ${TOOLBAR_HEIGHT};
-
-  html.ios:not(.ion-palette-dark) & {
-    background: var(--ion-item-background);
-  }
-
-  @media screen and (max-width: 767px) {
-    padding-bottom: ${({ keyboardOpen }) =>
-      keyboardOpen
-        ? TOOLBAR_HEIGHT
-        : `calc(${TOOLBAR_HEIGHT} + var(--ion-safe-area-bottom, env(safe-area-inset-bottom)))`};
-  }
-`;
-
-export const Textarea = styled(TextareaAutosizedForOnScreenKeyboard)`
-  border: 0;
-  background: none;
-  resize: none;
-  outline: 0;
-  padding: 16px;
-
-  min-height: 200px;
-
-  flex: 1 0 auto;
-`;
 
 export interface EditorProps {
   text: string;
@@ -205,9 +171,12 @@ export default function Editor({
   return (
     <>
       {uploadImageJsx}
-      <Container keyboardOpen={keyboardOpen}>
-        <Textarea
+      <div
+        className={cx(styles.container, keyboardOpen && styles.keyboardOpen)}
+      >
+        <TextareaAutosizedForOnScreenKeyboard
           {...preventModalSwipeOnTextSelection}
+          className={styles.textarea}
           ref={useMergedRef(textareaRef, ref)}
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -236,7 +205,7 @@ export default function Editor({
           onDragOver={onDragOver}
         />
         {children}
-      </Container>
+      </div>
 
       <MarkdownToolbar
         slot="fixed"

@@ -1,21 +1,7 @@
 import { IonButton, IonIcon } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { addOutline, removeOutline } from "ionicons/icons";
 
-const Button = styled(IonButton)`
-  --padding-start: 5px;
-  --padding-end: 5px;
-  --height: 20px;
-
-  color: inherit;
-`;
-
-const Container = styled.div`
-  display: inline-flex;
-
-  background: rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.088);
-  border-radius: 6px;
-`;
+import styles from "./AddRemoveButtons.module.css";
 
 interface AddRemoveButtonsProps {
   onAdd: () => void;
@@ -31,13 +17,18 @@ export default function AddRemoveButtons({
   removeDisabled,
 }: AddRemoveButtonsProps) {
   return (
-    <Container>
-      <Button onClick={onRemove} disabled={removeDisabled} color=" ">
+    <div className={styles.container}>
+      <IonButton
+        onClick={onRemove}
+        disabled={removeDisabled}
+        color=" "
+        className={styles.button}
+      >
         <IonIcon icon={removeOutline} />
-      </Button>
-      <Button onClick={onAdd} disabled={addDisabled} color=" ">
+      </IonButton>
+      <IonButton onClick={onAdd} disabled={addDisabled} color=" ">
         <IonIcon icon={addOutline} />
-      </Button>
-    </Container>
+      </IonButton>
+    </div>
   );
 }

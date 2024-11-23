@@ -4,7 +4,6 @@ import {
   IonSpinner,
   useIonAlert,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { GetPersonDetailsResponse } from "lemmy-js-client";
 import {
   useCallback,
@@ -13,25 +12,13 @@ import {
   useState,
 } from "react";
 
+import sharedStyles from "#/features/shared/shared.module.css";
 import Profile from "#/features/user/Profile";
 import { getUser } from "#/features/user/userSlice";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch } from "#/store";
-
-export const PageContentIonSpinner = styled(IonSpinner)`
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-`;
-
-export const FailedMessage = styled.div`
-  margin-top: 25vh;
-  text-align: center;
-  color: var(--ion-color-medium);
-`;
 
 interface AsyncProfileProps {
   handle: string;
@@ -81,7 +68,7 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
     if (handle) loadEvent();
   }, [handle]);
 
-  if (!person) return <PageContentIonSpinner />;
+  if (!person) return <IonSpinner className={sharedStyles.pageSpinner} />;
 
   if (person === "failed")
     return (
@@ -98,7 +85,9 @@ export default function AsyncProfile({ handle }: AsyncProfileProps) {
         >
           <IonRefresherContent />
         </IonRefresher>
-        <FailedMessage>failed to load user profile 😢</FailedMessage>
+        <div className={sharedStyles.pageFailedMessage}>
+          failed to load user profile 😢
+        </div>
       </>
     );
 

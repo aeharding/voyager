@@ -3,11 +3,10 @@ import {
   IonButtons,
   IonFooter,
   IonPage,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { PrivateMessageView } from "lemmy-js-client";
 import {
   useCallback,
@@ -19,6 +18,7 @@ import {
   useState,
 } from "react";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { CustomItemComponent, VList, VListHandle } from "virtua";
 
 import { TabContext } from "#/core/TabContext";
@@ -29,10 +29,9 @@ import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
 import SendMessageBox from "#/features/inbox/SendMessageBox";
 import { syncMessages } from "#/features/inbox/inboxSlice";
 import Message from "#/features/inbox/messages/Message";
-import { StyledLink } from "#/features/labels/links/shared";
-import { maxWidthCss } from "#/features/shared/AppContent";
+import sharedLabelStyles from "#/features/labels/links/shared.module.css";
 import AppHeader from "#/features/shared/AppHeader";
-import { PageContentIonSpinner } from "#/features/user/AsyncProfile";
+import sharedStyles from "#/features/shared/shared.module.css";
 import { getUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -40,24 +39,11 @@ import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-const containerCss = css`
-  ${maxWidthCss}
+import styles from "./ConversationPage.module.css";
 
-  height: 100%;
-  height: 100%;
-
-  font-size: 0.9rem;
-
-  display: flex;
-  flex-direction: column;
-`;
-
-const FlexItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 0 16px !important;
-`;
+function FlexItem(props: React.HTMLAttributes<HTMLDivElement>) {
+  return <div {...props} className={styles.flexItem} />;
+}
 
 function useMessages(
   allMessages: PrivateMessageView[],
@@ -171,7 +157,7 @@ export default function ConversationPage() {
     if (typeof myUserId === "number" && them)
       return (
         <VList
-          className={containerCss}
+          className={styles.container}
           ref={ref}
           style={{ flex: 1 }}
           reverse
@@ -199,7 +185,7 @@ export default function ConversationPage() {
         </VList>
       );
 
-    return <PageContentIonSpinner />;
+    return <IonSpinner className={sharedStyles.pageSpinner} />;
   })();
 
   const backText = (() => {
@@ -221,15 +207,13 @@ export default function ConversationPage() {
             <IonBackButton defaultHref="/inbox/messages" text={backText} />
           </IonButtons>
 
-          <IonTitle
-            className={css`
-              padding-inline-start: 120px !important;
-              padding-inline-end: 120px;
-            `}
-          >
-            <StyledLink to={buildGeneralBrowseLink(`/u/${handle}`)}>
+          <IonTitle className={styles.title}>
+            <Link
+              className={sharedLabelStyles.link}
+              to={buildGeneralBrowseLink(`/u/${handle}`)}
+            >
               {handle}
-            </StyledLink>
+            </Link>
           </IonTitle>
 
           <IonButtons slot="end">
@@ -239,11 +223,7 @@ export default function ConversationPage() {
       </AppHeader>
       <FeedContent>{content}</FeedContent>
       {them && (
-        <IonFooter
-          className={css`
-            background: var(--ion-background-color);
-          `}
-        >
+        <IonFooter className={styles.footer}>
           <SendMessageBox
             recipient={them}
             onHeightChange={scrollIfNeeded}

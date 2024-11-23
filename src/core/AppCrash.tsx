@@ -1,5 +1,4 @@
 import { IonButton, IonIcon, IonLabel } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { logoGithub } from "ionicons/icons";
 import { FallbackProps } from "react-error-boundary";
 
@@ -9,30 +8,7 @@ import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
 import { memoryHistory } from "#/routes/common/Router";
 import store from "#/store";
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  text-align: center;
-  padding: 8px;
-
-  position: absolute;
-  inset: 0;
-
-  overflow: auto;
-
-  padding-top: max(env(safe-area-inset-top), 8px);
-  padding-right: max(env(safe-area-inset-right), 8px);
-  padding-bottom: max(env(safe-area-inset-bottom), 8px);
-  padding-left: max(env(safe-area-inset-left), 8px);
-
-  color: var(--ion-text-color);
-`;
-
-const Title = styled.h2``;
-
-const Description = styled.div``;
+import styles from "./AppCrash.module.css";
 
 export default function AppCrash({ error }: FallbackProps) {
   // Don't use useLocation/useAppSelector, because they are not available
@@ -90,12 +66,12 @@ Error: \`\`${error}\`\`
   }
 
   return (
-    <Container>
-      <Title>🫣 Gah! Voyager crashed!</Title>
-      <Description>
+    <div className={styles.container}>
+      <h2>🫣 Gah! Voyager crashed!</h2>
+      <div>
         Voyager does not collect any data, so we would appreciate you
         voluntarily submitting this crash for us to investigate.
-      </Description>
+      </div>
       <IonButton
         href={generateTruncatedCrashUrl(crashData)}
         target="_blank"
@@ -108,15 +84,15 @@ Error: \`\`${error}\`\`
 
       <hr />
 
-      <Description>
+      <div>
         You can also try reloading the app to see if that solves the issue.
         {isNative() ? " Check the app store for an update, too." : ""}
-      </Description>
+      </div>
       <IonButton onClick={unloadServiceWorkerAndRefresh}>Reload app</IonButton>
 
       <hr />
 
-      <Description>
+      <div>
         If this crash is affecting many people, you can probably learn more{" "}
         <a
           href="https://lemmy.world/c/voyagerapp"
@@ -126,13 +102,13 @@ Error: \`\`${error}\`\`
           at Voyager&apos;s Lemmy community
         </a>
         .
-      </Description>
+      </div>
 
-      <Description>As a last resort, try clearing all app data.</Description>
+      <div>As a last resort, try clearing all app data.</div>
       <IonButton color="danger" onClick={clearData}>
         Clear app data
       </IonButton>
-    </Container>
+    </div>
   );
 }
 

@@ -1,0 +1,71 @@
+.markdownEditorIonContent {
+  &::part(scroll) {
+    scroll-padding: 20px 0 calc(20px + var(--markdown-toolbar-height));
+  }
+}
+
+.toolbarContainer {
+  composes: fixedToolbarContainer from "#/features/shared/IonModalAutosizedForOnScreenKeyboard.module.css";
+
+  height: 100%;
+  width: 100%;
+
+  pointer-events: none;
+}
+
+.toolbar {
+  pointer-events: all;
+
+  position: absolute;
+  bottom: 0;
+
+  height: var(--markdown-toolbar-height);
+
+  @media screen and (max-width: 767px) {
+    height: calc(
+      var(--markdown-toolbar-height) +
+        var(--ion-safe-area-bottom, env(safe-area-inset-bottom))
+    );
+    padding-bottom: var(--ion-safe-area-bottom, env(safe-area-inset-bottom));
+
+    &.keyboardOpen {
+      height: var(--markdown-toolbar-height);
+      padding-bottom: 0;
+    }
+  }
+
+  width: 100%;
+  border-top: 1px solid var(--ion-item-border-color);
+
+  background: var(--ion-item-background, #fff);
+
+  :global(.ion-palette-dark) & {
+    background: var(--ion-background-color);
+  }
+
+  markdown-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    height: 100%;
+
+    > * {
+      flex: 1;
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      button {
+        height: 100%;
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}

@@ -1,6 +1,4 @@
 import { IonIcon } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { chevronForward } from "ionicons/icons";
 import { MouseEvent, useEffect, useState } from "react";
 
@@ -9,111 +7,18 @@ import Url from "#/features/shared/Url";
 import LinkInterceptor from "#/features/shared/markdown/LinkInterceptor";
 import PlaintextMarkdown from "#/features/shared/markdown/PlaintextMarkdown";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
+import { cx } from "#/helpers/css";
 import { preventOnClickNavigationBug } from "#/helpers/ionic";
 import { determineTypeFromUrl, isUrlImage } from "#/helpers/url";
 import { getImageSrc } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import styles from "./Link.module.css";
 import LinkPreview from "./LinkPreview";
 import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
 
 const TRANSPARENT_PIXEL =
   'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
-
-const Container = styled(LinkInterceptor)`
-  display: flex;
-  flex-direction: column;
-
-  border-radius: 0.5rem;
-  overflow: hidden;
-
-  color: inherit;
-  text-decoration: none;
-  -webkit-touch-callout: default;
-
-  .cross-post & {
-    border: 1px solid rgba(var(--ion-color-dark-rgb), 0.15);
-    border-bottom-right-radius: 0.5rem;
-    border-bottom-left-radius: 0.5rem;
-  }
-`;
-
-const Img = styled.img`
-  min-height: 0;
-  aspect-ratio: 16 / 9;
-
-  object-fit: cover;
-`;
-
-const ThumbnailImg = styled.img`
-  margin: calc(-1 * var(--top-padding)) 0 calc(-1 * var(--top-padding))
-    calc(-1 * var(--start-padding));
-  height: var(--height);
-  aspect-ratio: 0.85;
-  width: auto;
-  object-fit: cover;
-`;
-
-const blurImgCss = css`
-  filter: blur(40px);
-
-  // https://graffino.com/til/CjT2jrcLHP-how-to-fix-filter-blur-performance-issue-in-safari
-  transform: translate3d(0, 0, 0);
-`;
-
-const Bottom = styled.div<{ small?: boolean }>`
-  display: flex;
-  align-items: center;
-
-  --height: ${({ small }) => (small ? "50px" : "55px")};
-  min-height: var(--height);
-
-  --gap: ${({ small }) => (small ? "8px" : "10px")};
-
-  gap: var(--gap);
-
-  --start-padding: ${({ small }) => (small ? "8px" : "10px")};
-  --top-padding: ${({ small }) => (small ? "4px" : "8px")};
-
-  padding: var(--top-padding) var(--start-padding);
-
-  color: var(--ion-color-medium);
-  background: var(--lightroom-bg);
-
-  @media (min-width: 700px) {
-    --gap: 16px;
-    --start-padding: 16px;
-  }
-
-  .cross-post & {
-    background: none;
-  }
-`;
-
-const Text = styled.div`
-  color: var(--ion-text-color);
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const UrlContainer = styled.div`
-  flex: 1;
-  font-size: 0.875em;
-
-  margin-right: -0.5rem; // fudge it closer
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const ChevronIcon = styled(IonIcon)`
-  font-size: 20px;
-  opacity: 0.4;
-  margin: 0 -3px;
-`;
 
 interface EmbedProps {
   url: string;
@@ -196,44 +101,52 @@ export default function Link({
 
   function buildCompactIcon() {
     if (commentType === "image" || isUrlImage(url, undefined))
-      return <ThumbnailImg src={getImageSrc(url, { size: 50 })} />;
+      return (
+        <img
+          className={styles.thumbnailImg}
+          src={getImageSrc(url, { size: 50 })}
+        />
+      );
 
     if (linkType || !compact || !thumbnail)
       return <LinkPreview type={linkType} />;
 
     return (
-      <ThumbnailImg
+      <img
+        className={styles.thumbnailImg}
         src={typeof thumbnail === "string" ? thumbnail : thumbnail.sm}
       />
     );
   }
 
+  const isSmall = small || (!compact && !!thumbnail);
+
   return (
-    <Container
-      className={className}
+    <LinkInterceptor
+      className={cx(styles.container, className)}
       href={url}
       onClick={handleLinkClick}
       onClickCompleted={onClickCompleted}
       draggable="false"
     >
       {!compact && thumbnail && !error && (
-        <Img
+        <img
           src={typeof thumbnail === "string" ? thumbnail : thumbnail.lg}
           draggable="false"
-          className={blur ? blurImgCss : undefined}
+          className={cx(styles.img, blur && styles.blurImg)}
           onError={() => setError(true)}
         />
       )}
-      <Bottom small={small || (!compact && !!thumbnail)}>
+      <div className={cx(styles.bottom, isSmall && styles.small)}>
         {buildCompactIcon()}
-        <UrlContainer>
-          <Text>
+        <div className={styles.urlContainer}>
+          <div className={styles.text}>
             <PlaintextMarkdown>{text}</PlaintextMarkdown>
-          </Text>
+          </div>
           <Url>{url}</Url>
-        </UrlContainer>
-        <ChevronIcon icon={chevronForward} />
-      </Bottom>
-    </Container>
+        </div>
+        <IonIcon icon={chevronForward} className={styles.chevronIcon} />
+      </div>
+    </LinkInterceptor>
   );
 }

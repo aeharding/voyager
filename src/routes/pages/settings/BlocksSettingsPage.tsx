@@ -3,8 +3,6 @@ import {
   IonButtons,
   IonContent,
   IonPage,
-  IonText,
-  IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { useRef } from "react";
@@ -25,10 +23,7 @@ import {
   ListEditButton,
   ListEditorProvider,
 } from "#/features/shared/ListEditor";
-import {
-  TitleContainer,
-  UsernameIonText,
-} from "#/features/shared/markdown/editing/modal/contents/CommentReplyPage";
+import MultilineTitle from "#/features/shared/MultilineTitle";
 import { useAppSelector } from "#/store";
 
 export default function BlocksSettingsPage() {
@@ -75,14 +70,10 @@ export default function BlocksSettingsPage() {
             <IonBackButton defaultHref="/settings" text="Settings" />
           </IonButtons>
 
-          <IonTitle>
-            <TitleContainer>
-              <IonText>Filters & Blocks</IonText>
-              <div>
-                <UsernameIonText color="medium">{userHandle}</UsernameIonText>
-              </div>
-            </TitleContainer>{" "}
-          </IonTitle>
+          <MultilineTitle subheader={userHandle}>
+            Filters & Blocks
+          </MultilineTitle>
+
           <IonButtons slot="end">
             {hasBlocks ? <ListEditButton /> : null}
           </IonButtons>

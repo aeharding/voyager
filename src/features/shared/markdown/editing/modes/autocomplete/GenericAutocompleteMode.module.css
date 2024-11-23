@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  gap: 16px;
+  padding: 0 16px;
+  overflow: auto;
+  height: 100%;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
+}
+
+.emptyItem {
+  composes: item;
+
+  color: var(--ion-color-medium);
+}

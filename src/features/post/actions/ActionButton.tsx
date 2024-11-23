@@ -1,15 +1,9 @@
-import { styled } from "@linaria/react";
+import { ButtonHTMLAttributes } from "react";
 
-export const ActionButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+import { cx } from "#/helpers/css";
 
-  background: inherit;
-  font-size: inherit;
-  color: inherit;
+import styles from "./ActionButton.module.css";
 
-  padding: 0.35rem;
-
-  border-radius: 8px;
-`;
+export function ActionButton(props: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return <button {...props} className={cx(styles.button, props.className)} />;
+}

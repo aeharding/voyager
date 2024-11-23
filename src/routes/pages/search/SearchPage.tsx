@@ -1,5 +1,4 @@
 import { IonPage, IonSearchbar, IonToolbar } from "@ionic/react";
-import { css, cx } from "@linaria/core";
 import { createRef, useRef, useState } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
@@ -11,7 +10,7 @@ import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { findCurrentPage } from "#/helpers/ionic";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
-const SEARCH_EL_CLASSNAME = "search-page-searchbar";
+import styles from "./SearchPage.module.css";
 
 /**
  * Focuses on the search bar input element.
@@ -19,7 +18,7 @@ const SEARCH_EL_CLASSNAME = "search-page-searchbar";
 export const focusSearchBar = () =>
   findCurrentPage()
     ?.closest(".ion-page")
-    ?.querySelector<HTMLIonSearchbarElement>(`.${SEARCH_EL_CLASSNAME}`)
+    ?.querySelector<HTMLIonSearchbarElement>(`.${styles.searchbar}`)
     ?.setFocus();
 
 export default function SearchPage() {
@@ -59,13 +58,7 @@ export default function SearchPage() {
               autocapitalize="on"
               showCancelButton={search ? "always" : "focus"}
               showClearButton={search ? "always" : "never"}
-              className={cx(
-                SEARCH_EL_CLASSNAME,
-                css`
-                  padding-top: 0 !important;
-                  padding-bottom: 0 !important;
-                `,
-              )}
+              className={styles.searchbar}
               value={search}
               onIonInput={(e) => setSearch(e.detail.value ?? "")}
               enterkeyhint="search"
