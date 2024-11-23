@@ -1,6 +1,5 @@
 import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react";
-import { patchCssModules } from "vite-css-modules";
 import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
 import { defineConfig } from "vitest/config";
@@ -13,7 +12,6 @@ import manifest from "./manifest.json";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    patchCssModules(),
     react({
       babel: {
         plugins: [["babel-plugin-react-compiler", compilerOptions]],
