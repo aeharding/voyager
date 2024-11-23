@@ -61,6 +61,9 @@ export default defineConfig({
     "APP_VERSION",
     "APP_GIT_REF",
   ],
+  css: {
+    transformer: "lightningcss",
+  },
   // TODO: Outdated clients trying to access stale codesplit js chucks
   // break. This breaks iOS transitions.
   // Put everything into one chunk for now.
