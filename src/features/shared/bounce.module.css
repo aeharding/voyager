@@ -1,5 +1,5 @@
-body {
-  --bounce-animation: bounce 175ms linear;
+.bounce {
+  animation: bounce 175ms linear;
 }
 
 @keyframes bounce {

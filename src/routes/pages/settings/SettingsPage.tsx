@@ -9,7 +9,6 @@ import {
   IonToolbar,
   useIonModal,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { useDocumentVisibility } from "@mantine/hooks";
 import {
   apps,
@@ -22,7 +21,7 @@ import {
   pricetag,
   reloadCircle,
 } from "ionicons/icons";
-import { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
@@ -39,36 +38,30 @@ import DatabaseErrorItem from "#/features/settings/root/DatabaseErrorItem";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import TipDialog from "#/features/tips/TipDialog";
+import { sv } from "#/helpers/css";
 import { isAppleDeviceInstalledToHomescreen, isNative } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import styles from "./SettingsPage.module.css";
 import { UpdateContext } from "./update/UpdateContext";
 
-export const IconBg = styled.div<{ color: string; size?: string }>`
-  width: 30px;
-  height: 30px;
+interface IconBgProps extends React.PropsWithChildren {
+  color: string;
+  size?: string;
+  slot?: string;
+}
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ion-icon {
-    width: 20px;
-    height: 20px;
-
-    transform: scale(${({ size }) => size || 1});
-  }
-
-  border-radius: 50%;
-  background-color: ${({ color }) => color};
-  color: white;
-`;
-
-const AppIcon = styled.img`
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-`;
+export function IconBg({ color, size, children, slot }: IconBgProps) {
+  return (
+    <div
+      className={styles.iconBg}
+      style={sv({ color, scale: size })}
+      slot={slot}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function SettingsPage() {
   const databaseError = useAppSelector((state) => state.settings.databaseError);
@@ -173,7 +166,11 @@ export default function SettingsPage() {
 
           {isNative() && (
             <IonItem routerLink="/settings/app-icon">
-              <AppIcon src={getIconSrc(icon)} slot="start" />
+              <img
+                src={getIconSrc(icon)}
+                slot="start"
+                className={styles.appIcon}
+              />
               <IonLabel className="ion-text-nowrap">App Icon</IonLabel>
             </IonItem>
           )}

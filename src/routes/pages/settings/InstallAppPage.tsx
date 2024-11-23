@@ -7,8 +7,6 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import {
   addOutline,
   checkmarkCircleOutline,
@@ -29,48 +27,8 @@ import {
   ua,
 } from "#/helpers/device";
 
+import styles from "./InstallAppPage.module.css";
 import AppDetails from "./about/AppDetails";
-
-const Container = styled.div`
-  line-height: 1.5;
-`;
-
-const BadgeContainer = styled.div`
-  display: grid;
-  grid-template-rows: 50px;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px 0;
-  height: auto;
-
-  a {
-    display: flex;
-  }
-
-  @media (max-width: 360px) {
-    grid-template-columns: 1fr;
-    gap: 20px 0;
-  }
-
-  @media (min-width: 800px) {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-  }
-`;
-
-const BadgeItem = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const BadgeImg = styled.img`
-  height: 45px;
-`;
-
-const H3 = styled.h3`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
 
 const ANDROID_APP_BADGES = [
   {
@@ -109,17 +67,17 @@ export default function InstallAppPage() {
   const nativeBadges = (
     <>
       {relevantBadges.map(({ src, href }) => (
-        <BadgeItem key={src}>
+        <div className={styles.badgeItem} key={src}>
           <a href={href} target="_blank" rel="noopener noreferrer">
-            <BadgeImg src={src} />
+            <img className={styles.badgeImg} src={src} />
           </a>
-        </BadgeItem>
+        </div>
       ))}
     </>
   );
 
   const howToGetAppTitle = (
-    <H3>
+    <h3 className={styles.h3}>
       {showInstallwebAppDirections && (
         <IonIcon
           icon={chevronBack}
@@ -127,15 +85,16 @@ export default function InstallAppPage() {
         />
       )}{" "}
       How to get the App
-    </H3>
+    </h3>
   );
 
-  const badges = <BadgeContainer>{nativeBadges}</BadgeContainer>;
+  const badges = <div className={styles.badgeContainer}>{nativeBadges}</div>;
   const badgesWithWeb = (
-    <BadgeContainer>
+    <div className={styles.badgeContainer}>
       {nativeBadges}
-      <BadgeItem>
-        <BadgeImg
+      <div className={styles.badgeItem}>
+        <img
+          className={styles.badgeImg}
           src="/badges/pwa.svg"
           alt=""
           onClick={async () => {
@@ -151,8 +110,8 @@ export default function InstallAppPage() {
             }
           }}
         />
-      </BadgeItem>
-    </BadgeContainer>
+      </div>
+    </div>
   );
 
   function renderGuidance() {
@@ -251,11 +210,7 @@ export default function InstallAppPage() {
           <ol>
             <li>
               Visit{" "}
-              <span
-                className={css`
-                  text-decoration: underline;
-                `}
-              >
+              <span className={styles.installLink}>
                 https://vger.app/settings/install
               </span>{" "}
               from your phone or tablet.
@@ -283,11 +238,11 @@ export default function InstallAppPage() {
         </IonToolbar>
       </AppHeader>
       <AppContent scrollY>
-        <Container className="ion-padding">
+        <div className={styles.container}>
           <AppDetails />
 
           {renderGuidance()}
-        </Container>
+        </div>
       </AppContent>
     </IonPage>
   );

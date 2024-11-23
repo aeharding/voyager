@@ -1,0 +1,16 @@
+.upToDateText {
+  margin: auto;
+  text-align: center;
+
+  padding: 5rem 1rem;
+
+  color: var(--ion-color-medium);
+}
+
+.container {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+}

@@ -16,3 +16,12 @@
   overflow: hidden;
   padding: 0 16px !important;
 }
+
+.footer {
+  background: var(--ion-background-color);
+}
+
+.title {
+  padding-inline-start: 120px !important;
+  padding-inline-end: 120px;
+}

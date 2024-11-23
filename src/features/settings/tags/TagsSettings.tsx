@@ -1,7 +1,7 @@
 import { IonList } from "@ionic/react";
 
+import sharedStyles from "#/features/shared/shared.module.css";
 import { cx } from "#/helpers/css";
-import emptyStateIconStyles from "#/routes/pages/shared/emptyStateIconStyles";
 import { useAppSelector } from "#/store";
 
 import Browse from "./Browse";
@@ -35,7 +35,7 @@ export default function TagsSettings() {
           </IonList>
         </>
       ) : (
-        <TagSvg className={cx(emptyStateIconStyles, "ion-margin-top")} />
+        <TagSvg className={cx(sharedStyles.emptyStateIcon, "ion-margin-top")} />
       )}
     </>
   );

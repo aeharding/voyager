@@ -1,5 +1,4 @@
 import { IonIcon, IonLabel } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { personCircleOutline } from "ionicons/icons";
 import { useContext } from "react";
 
@@ -12,11 +11,8 @@ import { getProfileTabLabel } from "#/features/settings/general/other/ProfileTab
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppSelector } from "#/store";
 
+import styles from "./ProfileTabButton.module.css";
 import SharedTabButton, { TabButtonProps } from "./shared";
-
-const ProfileLabel = styled(IonLabel)`
-  max-width: 20vw;
-`;
 
 function ProfileTabButton(props: TabButtonProps) {
   const router = useOptimizedIonRouter();
@@ -69,7 +65,7 @@ function ProfileTabButton(props: TabButtonProps) {
       onLongPressOverride={onLongPressOverride}
     >
       <IonIcon aria-hidden="true" icon={personCircleOutline} />
-      <ProfileLabel>{profileTabLabel}</ProfileLabel>
+      <IonLabel className={styles.profileLabel}>{profileTabLabel}</IonLabel>
     </SharedTabButton>
   );
 }

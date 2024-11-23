@@ -12,7 +12,6 @@ import {
   VOTE_COLORS,
   bgColorToVariable,
 } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
-import "#/features/shared/bounce.css";
 import { cx, sv } from "#/helpers/css";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import useAppToast from "#/helpers/useAppToast";

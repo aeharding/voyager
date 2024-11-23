@@ -1,0 +1,46 @@
+.container {
+  composes: ion-padding from global;
+
+  line-height: 1.5;
+}
+
+.badgeContainer {
+  display: grid;
+  grid-template-rows: 50px;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 0;
+  height: auto;
+
+  a {
+    display: flex;
+  }
+
+  @media (max-width: 360px) {
+    grid-template-columns: 1fr;
+    gap: 20px 0;
+  }
+
+  @media (min-width: 800px) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+.badgeItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.badgeImg {
+  height: 45px;
+}
+
+.h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.installLink {
+  text-decoration: underline;
+}

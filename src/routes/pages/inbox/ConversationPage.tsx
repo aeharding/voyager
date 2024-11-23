@@ -7,7 +7,6 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { css } from "@linaria/core";
 import { PrivateMessageView } from "lemmy-js-client";
 import {
   useCallback,
@@ -208,12 +207,7 @@ export default function ConversationPage() {
             <IonBackButton defaultHref="/inbox/messages" text={backText} />
           </IonButtons>
 
-          <IonTitle
-            className={css`
-              padding-inline-start: 120px !important;
-              padding-inline-end: 120px;
-            `}
-          >
+          <IonTitle className={styles.title}>
             <Link
               className={sharedLabelStyles.link}
               to={buildGeneralBrowseLink(`/u/${handle}`)}
@@ -229,11 +223,7 @@ export default function ConversationPage() {
       </AppHeader>
       <FeedContent>{content}</FeedContent>
       {them && (
-        <IonFooter
-          className={css`
-            background: var(--ion-background-color);
-          `}
-        >
+        <IonFooter className={styles.footer}>
           <SendMessageBox
             recipient={them}
             onHeightChange={scrollIfNeeded}

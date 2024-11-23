@@ -1,6 +1,5 @@
 import legacy from "@vitejs/plugin-legacy";
 import react from "@vitejs/plugin-react";
-import wyw from "@wyw-in-js/vite";
 import { patchCssModules } from "vite-css-modules";
 import { ManifestOptions, VitePWA } from "vite-plugin-pwa";
 import svgr from "vite-plugin-svgr";
@@ -27,13 +26,6 @@ export default defineConfig({
     react({
       babel: {
         plugins: [["babel-plugin-react-compiler", compilerOptions]],
-      },
-    }),
-    wyw({
-      displayName: process.env.NODE_ENV === "development",
-      include: ["**/*.{ts,tsx}"],
-      babelOptions: {
-        presets: ["@babel/preset-typescript", "@babel/preset-react"],
       },
     }),
     svgr(),

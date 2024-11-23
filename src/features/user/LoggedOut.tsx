@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { PageContext } from "#/features/auth/PageContext";
 import { accountsListEmptySelector } from "#/features/auth/authSelectors";
 import AppContent from "#/features/shared/AppContent";
-import emptyStateIconStyles from "#/routes/pages/shared/emptyStateIconStyles";
+import sharedStyles from "#/features/shared/shared.module.css";
 import { useAppSelector } from "#/store";
 
 import styles from "./LoggedOut.module.css";
@@ -50,7 +50,7 @@ export default function LoggedOut() {
           </IonButton>
         )}
       </div>
-      <IncognitoSvg className={emptyStateIconStyles} />
+      <IncognitoSvg className={sharedStyles.emptyStateIcon} />
     </AppContent>
   );
 }
