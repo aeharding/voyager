@@ -3,6 +3,7 @@ import { ComponentProps } from "react";
 
 import LargeFeedRedgifMedia from "#/features/media/external/redgifs/LargeFeedRedgifMedia";
 import { isRedgif } from "#/features/media/external/redgifs/helpers";
+import { cx } from "#/helpers/css";
 
 import usePostSrc from "../../usePostSrc";
 import LargeFeedMedia from "./LargeFeedMedia";
@@ -33,7 +34,7 @@ export default function LargeFeedPostMedia(
         src={src}
         autoPlay={!props.blur}
         alt={props.post.post.alt_text}
-        className={styles.lightbox}
+        className={cx(styles.lightbox, props.className)}
         shouldPortal
       />
     );
