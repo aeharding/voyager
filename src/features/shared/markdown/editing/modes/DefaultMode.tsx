@@ -336,12 +336,18 @@ export default function DefaultMode({
 
       <markdown-toolbar for={TOOLBAR_TARGET_ID}>
         <label htmlFor="photo-upload-toolbar">
-          <button
+          <div
+            // Needs to be div for label click propagation
+            role="button"
+            aria-label="Upload image"
             className={styles.button}
-            onClick={() => textareaRef.current?.focus()}
+            onClick={() => {
+              textareaRef.current?.focus();
+              return true;
+            }}
           >
             <IonIcon icon={image} color="primary" />
-          </button>
+          </div>
 
           <input
             className="ion-hide"
