@@ -50,7 +50,7 @@ export default function CommentHeader({
   );
 
   function renderActions() {
-    if (inModqueue) return <ModqueueItemActions item={commentView} />;
+    if (inModqueue) return <ModqueueItemActions itemView={commentView} />;
 
     if (canModerate)
       return <ModActions comment={commentView} role={canModerate} />;

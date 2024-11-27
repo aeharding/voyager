@@ -27,7 +27,7 @@ export default function RemovedBanner({ itemView }: RemovedBannerProps) {
         handler: () => {
           (async () => {
             if (isPost(itemView)) {
-              dispatch(modRemovePost(itemView.post.id, false));
+              dispatch(modRemovePost(itemView.post, false));
               presentToast(postApproved);
             } else {
               await dispatch(modRemoveComment(itemView.comment, false));

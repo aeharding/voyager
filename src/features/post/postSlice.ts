@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PostView } from "lemmy-js-client";
+import { Post, PostView } from "lemmy-js-client";
 
 import {
   clientSelector,
@@ -410,16 +410,16 @@ export const postHiddenByIdSelector = (state: RootState) => {
 };
 
 export const modRemovePost =
-  (postId: number, removed: boolean, reason?: string) =>
+  (post: Post, removed: boolean, reason?: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const response = await clientSelector(getState())?.removePost({
-      post_id: postId,
+      post_id: post.id,
       removed,
       reason,
     });
 
     dispatch(receivedPosts([response.post_view]));
-    await dispatch(resolvePostReport(postId));
+    await dispatch(resolvePostReport(post.id));
   };
 
 export const modLockPost =

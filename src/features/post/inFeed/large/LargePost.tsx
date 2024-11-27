@@ -126,7 +126,7 @@ export default function LargePost({ post }: PostProps) {
           </div>
           {(showVotingButtons || inModqueue) && (
             <div className={styles.rightDetails}>
-              {inModqueue && <ModqueueItemActions item={post} />}
+              {inModqueue && <ModqueueItemActions itemView={post} />}
               <MoreActions post={post} />
               {!inModqueue && (
                 <>
