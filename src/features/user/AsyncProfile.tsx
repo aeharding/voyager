@@ -12,13 +12,14 @@ import {
   useState,
 } from "react";
 
-import sharedStyles from "#/features/shared/shared.module.css";
 import Profile from "#/features/user/Profile";
 import { getUser } from "#/features/user/userSlice";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch } from "#/store";
+
+import sharedStyles from "#/features/shared/shared.module.css";
 
 interface AsyncProfileProps {
   handle: string;

@@ -4,9 +4,10 @@ import LargeFeedMedia from "#/features/post/inFeed/large/media/LargeFeedMedia";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import Markdown from "#/features/shared/markdown/Markdown";
 
-import styles from "./GenericSidebar.module.css";
 import SidebarCounts from "./SidebarCounts";
 import SidebarOwners from "./SidebarOwners";
+
+import styles from "./GenericSidebar.module.css";
 
 interface GenericSidebarProps {
   sidebar: string;

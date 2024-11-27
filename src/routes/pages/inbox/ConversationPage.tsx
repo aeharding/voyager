@@ -29,9 +29,7 @@ import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
 import { syncMessages } from "#/features/inbox/inboxSlice";
 import Message from "#/features/inbox/messages/Message";
 import SendMessageBox from "#/features/inbox/SendMessageBox";
-import sharedLabelStyles from "#/features/labels/links/shared.module.css";
 import AppHeader from "#/features/shared/AppHeader";
-import sharedStyles from "#/features/shared/shared.module.css";
 import { getUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -39,6 +37,8 @@ import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import sharedLabelStyles from "#/features/labels/links/shared.module.css";
+import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./ConversationPage.module.css";
 
 function FlexItem(props: React.HTMLAttributes<HTMLDivElement>) {

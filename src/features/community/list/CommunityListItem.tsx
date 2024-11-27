@@ -28,6 +28,7 @@ import {
   removeFavorite,
 } from "../communitySlice";
 import { ToggleIcon } from "../ToggleIcon";
+
 import styles from "./CommunityListItem.module.css";
 import listStyles from "./ResolvedCommunitiesList.module.css";
 

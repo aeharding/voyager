@@ -109,8 +109,8 @@ export default tseslint.config(
         {
           newlinesBetween: "always",
           partitionByComment: true,
-          ignoreCase: false,
           type: "natural",
+          ignoreCase: false,
           internalPattern: Object.keys(packageJson.imports).map((i) =>
             i.endsWith("*") ? `${i}.+` : i,
           ),
@@ -120,7 +120,13 @@ export default tseslint.config(
             "external",
             "internal",
             ["parent", "sibling", "index"],
+            "css-modules",
           ],
+          customGroups: {
+            value: {
+              ["css-modules"]: ["\\.module\\.css$"],
+            },
+          },
         },
       ],
 

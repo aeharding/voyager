@@ -45,6 +45,7 @@ import { receivedPosts } from "../postSlice";
 import NewPostText from "./NewPostText";
 import PhotoPreview from "./PhotoPreview";
 import { PostEditorProps } from "./PostEditor";
+
 import styles from "./PostEditorRoot.module.css";
 
 type PostType = "photo" | "link" | "text";

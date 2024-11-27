@@ -15,6 +15,7 @@ import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch } from "#/store";
 
 import { receivedMessages } from "./inboxSlice";
+
 import styles from "./SendMessageBox.module.css";
 
 interface SendMessageBoxProps {

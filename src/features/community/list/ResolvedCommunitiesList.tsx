@@ -13,7 +13,6 @@ import { memo, useMemo, useRef } from "react";
 import { VList, VListHandle } from "virtua";
 
 import { jwtSelector } from "#/features/auth/authSelectors";
-import sharedStyles from "#/features/shared/shared.module.css";
 import { cx } from "#/helpers/css";
 import { attributedPreventOnClickNavigationBug } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
@@ -22,8 +21,10 @@ import { useAppSelector } from "#/store";
 
 import AlphabetJump from "./AlphabetJump";
 import CommunityListItem from "./CommunityListItem";
-import styles from "./ResolvedCommunitiesList.module.css";
 import useShowModeratorFeed from "./useShowModeratorFeed";
+
+import sharedStyles from "#/features/shared/shared.module.css";
+import styles from "./ResolvedCommunitiesList.module.css";
 
 interface CommunitiesListParams {
   actor: string;

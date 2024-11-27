@@ -2,8 +2,9 @@ import { isNative } from "#/helpers/device";
 
 import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
-import styles from "./ImageMoreActions.module.css";
 import { BottomContainer, BottomContainerActions } from "./shared";
+
+import styles from "./ImageMoreActions.module.css";
 
 interface ImageMoreActionsProps {
   imgSrc: string;

@@ -24,8 +24,9 @@ import { useAppSelector } from "#/store";
 
 import { PostProps } from "../Post";
 import PreviewStats from "../PreviewStats";
-import styles from "./CompactPost.module.css";
 import Thumbnail from "./Thumbnail";
+
+import styles from "./CompactPost.module.css";
 
 export default function CompactPost({ post }: PostProps) {
   const alwaysShowAuthor = useAppSelector(

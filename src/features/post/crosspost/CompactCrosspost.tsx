@@ -5,8 +5,9 @@ import { PostView } from "lemmy-js-client";
 import { cx } from "#/helpers/css";
 import { formatNumber } from "#/helpers/number";
 
-import styles from "./CompactCrosspost.module.css";
 import CrosspostContainer from "./CrosspostContainer";
+
+import styles from "./CompactCrosspost.module.css";
 
 interface CrosspostProps {
   post: PostView;

@@ -8,6 +8,7 @@ import { getShareIcon } from "#/helpers/device";
 import { share } from "#/helpers/lemmy";
 
 import { ActionButton } from "./ActionButton";
+
 import styles from "./PostActions.module.css";
 
 interface PostActionsProps {

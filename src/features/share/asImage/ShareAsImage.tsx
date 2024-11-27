@@ -25,9 +25,10 @@ import { webviewServerUrl } from "#/services/nativeFetch";
 
 import AddRemoveButtons from "./AddRemoveButtons";
 import includeStyleProperties from "./includeStyleProperties";
-import styles from "./ShareAsImage.module.css";
 import { ShareAsImageData } from "./ShareAsImageModal";
 import Watermark from "./Watermark";
+
+import styles from "./ShareAsImage.module.css";
 
 const domToBlobOptions: DomToBlobOptions = {
   scale: 4,

@@ -28,6 +28,7 @@ import { getCustomServers } from "#/services/app";
 import { getClient } from "#/services/lemmy";
 
 import Login from "./Login";
+
 import styles from "./PickLoginServer.module.css";
 
 export default function PickLoginServer() {

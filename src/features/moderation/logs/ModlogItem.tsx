@@ -2,7 +2,6 @@ import { IonIcon, IonItem } from "@ionic/react";
 import { timerOutline } from "ionicons/icons";
 
 import Ago from "#/features/labels/Ago";
-import sharedStyles from "#/features/shared/shared.module.css";
 import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -15,7 +14,6 @@ import {
 } from "../useCanModerate";
 import useIsAdmin from "../useIsAdmin";
 import { ModlogItemType } from "./helpers";
-import styles from "./ModlogItem.module.css";
 import ModlogItemMoreActions from "./ModlogItemMoreActions";
 import addCommunity from "./types/addCommunity";
 import addInstance from "./types/addInstance";
@@ -32,6 +30,9 @@ import removeComment from "./types/removeComment";
 import removeCommunity from "./types/removeCommunity";
 import removePost from "./types/removePost";
 import transferCommunity from "./types/transferCommunity";
+
+import sharedStyles from "#/features/shared/shared.module.css";
+import styles from "./ModlogItem.module.css";
 
 interface ModLogItemProps {
   item: ModlogItemType;

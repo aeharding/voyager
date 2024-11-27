@@ -4,10 +4,11 @@ import { useContext } from "react";
 import { accountsListEmptySelector } from "#/features/auth/authSelectors";
 import { PageContext } from "#/features/auth/PageContext";
 import AppContent from "#/features/shared/AppContent";
-import sharedStyles from "#/features/shared/shared.module.css";
 import { useAppSelector } from "#/store";
 
 import IncognitoSvg from "./incognito.svg?react";
+
+import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./LoggedOut.module.css";
 
 export default function LoggedOut() {

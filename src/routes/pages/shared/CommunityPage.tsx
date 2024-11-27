@@ -43,8 +43,9 @@ import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { LIMIT } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
-import styles from "./CommunityPage.module.css";
 import FeedContent from "./FeedContent";
+
+import styles from "./CommunityPage.module.css";
 interface CommunityPageParams {
   community: string;
   actor: string;

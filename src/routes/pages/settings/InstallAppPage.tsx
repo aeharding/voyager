@@ -28,6 +28,7 @@ import {
 } from "#/helpers/device";
 
 import AppDetails from "./about/AppDetails";
+
 import styles from "./InstallAppPage.module.css";
 
 const ANDROID_APP_BADGES = [

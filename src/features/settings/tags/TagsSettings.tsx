@@ -1,6 +1,5 @@
 import { IonList } from "@ionic/react";
 
-import sharedStyles from "#/features/shared/shared.module.css";
 import { cx } from "#/helpers/css";
 import { useAppSelector } from "#/store";
 
@@ -11,6 +10,8 @@ import ResetTags from "./Reset";
 import StoreSource from "./StoreSource";
 import TagSvg from "./tag.svg?react";
 import TrackVotes from "./TrackVotes";
+
+import sharedStyles from "#/features/shared/shared.module.css";
 
 export default function TagsSettings() {
   const userTagsEnabled = useAppSelector(

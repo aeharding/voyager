@@ -1,6 +1,7 @@
 import InlineMedia, { InlineMediaProps } from "#/features/media/InlineMedia";
 
 import BlurOverlay from "./BlurOverlay";
+
 import styles from "./LargeFeedMedia.module.css";
 
 interface LargeFeedMediaProps extends InlineMediaProps {

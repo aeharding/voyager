@@ -14,6 +14,7 @@ import { OVotesThemeType } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setVotesTheme } from "../../../settingsSlice";
+
 import styles from "./VotesTheme.module.css";
 
 export const VOTE_COLORS = {

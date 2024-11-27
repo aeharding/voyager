@@ -11,6 +11,7 @@ import useAppNavigation from "#/helpers/useAppNavigation";
 
 import { getModIcon, ModeratorRole } from "../useCanModerate";
 import { ModlogItemType } from "./helpers";
+
 import styles from "./ModlogItemMoreActions.module.css";
 
 interface ModlogItemMoreActions {

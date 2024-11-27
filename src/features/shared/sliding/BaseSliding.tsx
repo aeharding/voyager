@@ -5,10 +5,11 @@ import { cx } from "#/helpers/css";
 import { SwipeActions } from "#/services/db";
 import { useAppSelector } from "#/store";
 
-import styles from "./BaseSliding.module.css";
 import DMActionsImpl from "./internal/impl/DMActionsImpl";
 import { VotableActionsImpl } from "./internal/impl/VotableActionsImpl";
 import { SlideableVoteItem } from "./internal/shared";
+
+import styles from "./BaseSliding.module.css";
 
 interface BaseSlidingVoteProps extends React.PropsWithChildren {
   className?: string;

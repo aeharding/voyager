@@ -7,11 +7,12 @@ import { useAppDispatch } from "#/store";
 
 import { IMAGE_FAILED, imageFailed, imageLoaded } from "./imageSlice";
 import MediaPlaceholder from "./MediaPlaceholder";
-import mediaPlaceholderStyles from "./MediaPlaceholder.module.css";
 import { isLoadedAspectRatio } from "./useAspectRatio";
 import useMediaLoadObserver, {
   getTargetDimensions,
 } from "./useMediaLoadObserver";
+
+import mediaPlaceholderStyles from "./MediaPlaceholder.module.css";
 
 export type InlineMediaProps = Omit<MediaProps, "ref"> & {
   defaultAspectRatio?: number;

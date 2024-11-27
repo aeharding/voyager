@@ -22,8 +22,9 @@ import { useAppSelector } from "#/store";
 
 import { PostProps } from "../Post";
 import PreviewStats from "../PreviewStats";
-import styles from "./LargePost.module.css";
 import LargePostContents from "./LargePostContents";
+
+import styles from "./LargePost.module.css";
 
 export default function LargePost({ post }: PostProps) {
   const showVotingButtons = useAppSelector(

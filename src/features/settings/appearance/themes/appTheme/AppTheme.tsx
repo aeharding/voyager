@@ -15,8 +15,9 @@ import { AppThemeType, OAppThemeType } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setTheme } from "../../../settingsSlice";
-import styles from "./AppTheme.module.css";
 import AppThemePreview from "./AppThemePreview";
+
+import styles from "./AppTheme.module.css";
 
 export default function AppTheme() {
   const theme = useAppSelector((state) => state.settings.appearance.theme);

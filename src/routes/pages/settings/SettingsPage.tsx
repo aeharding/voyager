@@ -42,8 +42,9 @@ import { sv } from "#/helpers/css";
 import { isAppleDeviceInstalledToHomescreen, isNative } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import styles from "./SettingsPage.module.css";
 import { UpdateContext } from "./update/UpdateContext";
+
+import styles from "./SettingsPage.module.css";
 
 interface IconBgProps extends React.PropsWithChildren {
   color: string;

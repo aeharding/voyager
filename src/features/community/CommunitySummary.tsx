@@ -11,9 +11,10 @@ import { cx } from "#/helpers/css";
 import { formatNumber } from "#/helpers/number";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
-import styles from "./CommunitySummary.module.css";
 import { ToggleIcon } from "./ToggleIcon";
 import useCommunityActions from "./useCommunityActions";
+
+import styles from "./CommunitySummary.module.css";
 
 interface CommunitySummaryProps {
   community: CommunityView;

@@ -6,6 +6,7 @@ import { useAppSelector } from "#/store";
 
 import InAppExternalLink, { AdditionalLinkProps } from "../InAppExternalLink";
 import useLemmyUrlHandler from "../useLemmyUrlHandler";
+
 import styles from "./LinkInterceptor.module.css";
 
 type LinkInterceptorUnstyledProps = React.JSX.IntrinsicElements["a"] & {

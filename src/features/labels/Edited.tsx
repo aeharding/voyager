@@ -6,6 +6,7 @@ import { MouseEvent } from "react";
 import Stat from "#/features/post/detail/Stat";
 
 import { formatRelative } from "./Ago";
+
 import styles from "./Edited.module.css";
 
 interface EditedProps {

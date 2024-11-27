@@ -19,6 +19,7 @@ import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { voteOnPost } from "../postSlice";
+
 import styles from "./VoteButton.module.css";
 
 interface VoteButtonProps {

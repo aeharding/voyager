@@ -19,6 +19,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import { setPostRead } from "../../postSlice";
 import CompactFeedPostMedia from "./CompactFeedPostMedia";
 import SelfSvg from "./self.svg?react";
+
 import styles from "./Thumbnail.module.css";
 
 function getWidthForSize(size: CompactThumbnailSizeType): number {

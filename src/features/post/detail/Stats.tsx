@@ -7,8 +7,9 @@ import Vote from "#/features/labels/Vote";
 import { cx } from "#/helpers/css";
 
 import Stat from "./Stat";
-import styles from "./Stats.module.css";
 import TimeStat from "./TimeStat";
+
+import styles from "./Stats.module.css";
 
 interface StatsProps {
   post: PostView;

@@ -12,8 +12,9 @@ import Summary from "./components/spoiler/Summary";
 import Table from "./components/Table";
 import customRemarkGfm from "./customRemarkGfm";
 import LinkInterceptor from "./LinkInterceptor";
-import styles from "./Markdown.module.css";
 import MarkdownImg from "./MarkdownImg";
+
+import styles from "./Markdown.module.css";
 
 // TODO - remove never when upgrading to rehypeHighlight v7
 // TODO - ignoreMissing not needed in v7

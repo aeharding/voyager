@@ -4,8 +4,9 @@ import { chevronUp } from "ionicons/icons";
 import CommentContainer from "#/features/comment/elements/CommentContainer";
 import { PositionedContainer } from "#/features/comment/elements/PositionedContainer";
 
-import commentStyles from "../Comment.module.css";
 import CommentHr from "./CommentHr";
+
+import commentStyles from "../Comment.module.css";
 import styles from "./LoadParentComments.module.css";
 
 interface LoadParentCommentsProps {

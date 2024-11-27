@@ -16,11 +16,12 @@ import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import commentStyles from "../Comment.module.css";
 import { receivedComments } from "../commentSlice";
-import styles from "./CommentExpander.module.css";
 import CommentHr from "./CommentHr";
 import { CommentsContext } from "./CommentsContext";
+
+import commentStyles from "../Comment.module.css";
+import styles from "./CommentExpander.module.css";
 
 interface CommentExpanderProps {
   depth: number;

@@ -13,9 +13,10 @@ import { determineTypeFromUrl, isUrlImage } from "#/helpers/url";
 import { getImageSrc } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import styles from "./Link.module.css";
 import LinkPreview from "./LinkPreview";
 import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
+
+import styles from "./Link.module.css";
 
 const TRANSPARENT_PIXEL =
   'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';

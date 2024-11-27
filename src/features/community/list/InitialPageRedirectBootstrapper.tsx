@@ -12,6 +12,7 @@ import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch } from "#/store";
 
 import { appIsReadyToAcceptDeepLinks } from "./deepLinkReadySlice";
+
 import styles from "./InitialPageRedirectBootstrapper.module.css";
 
 interface InitialPageRedirectBootstrapperProps {

@@ -19,9 +19,9 @@ import {
 } from "react";
 import { VList } from "virtua";
 
-import sharedStyles from "#/features/shared/shared.module.css";
-
 import AppHeader from "../AppHeader";
+
+import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./GenericSelectorModal.module.css";
 
 interface GenericSelectorModalProps<I> {

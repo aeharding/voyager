@@ -31,8 +31,9 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import AnnouncementIcon from "./AnnouncementIcon";
 import Locked from "./Locked";
-import styles from "./PostHeader.module.css";
 import Stats from "./Stats";
+
+import styles from "./PostHeader.module.css";
 
 interface PostHeaderProps {
   post: PostView;

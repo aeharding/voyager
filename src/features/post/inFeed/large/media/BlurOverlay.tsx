@@ -2,8 +2,9 @@ import useAspectRatio, {
   isLoadedAspectRatio,
 } from "#/features/media/useAspectRatio";
 
-import styles from "./BlurOverlay.module.css";
 import BlurOverlayMessage from "./BlurOverlayMessage";
+
+import styles from "./BlurOverlay.module.css";
 
 interface BlurOverlayProps extends React.PropsWithChildren {
   src: string;

@@ -16,10 +16,11 @@ import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 import useTextRecovery from "#/helpers/useTextRecovery";
 
 import TextareaAutosizedForOnScreenKeyboard from "../../TextareaAutosizedForOnScreenKeyboard";
-import styles from "./Editor.module.css";
 import MarkdownToolbar, { TOOLBAR_TARGET_ID } from "./MarkdownToolbar";
 import useEditorHelpers from "./useEditorHelpers";
 import useUploadImage from "./useUploadImage";
+
+import styles from "./Editor.module.css";
 
 const ORDERED_LIST_REGEX = /^(\d)\. /;
 const UNORDERED_LIST_REGEX = /^(-|\*|\+) /;

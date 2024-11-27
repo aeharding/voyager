@@ -14,6 +14,7 @@ import { OLongSwipeTriggerPointType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
 import ActionContents from "./ActionContents";
+
 import styles from "./SlidingItem.module.css";
 
 export interface SlidingItemAction {

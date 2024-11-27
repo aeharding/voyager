@@ -1,5 +1,6 @@
-import styles from "./AppDetails.module.css";
 import AppVersionInfo from "./AppVersionInfo";
+
+import styles from "./AppDetails.module.css";
 
 export default function AppDetails() {
   return (

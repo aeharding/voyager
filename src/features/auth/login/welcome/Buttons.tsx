@@ -7,6 +7,7 @@ import useStartJoinFlow from "#/features/auth/login/pickJoinServer/useStartJoinF
 import { useAppSelector } from "#/store";
 
 import LearnMore from "../LearnMore";
+
 import styles from "./Buttons.module.css";
 
 export default function Buttons() {

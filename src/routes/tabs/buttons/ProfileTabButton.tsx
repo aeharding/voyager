@@ -11,8 +11,9 @@ import { getProfileTabLabel } from "#/features/settings/general/other/ProfileTab
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppSelector } from "#/store";
 
-import styles from "./ProfileTabButton.module.css";
 import SharedTabButton, { TabButtonProps } from "./shared";
+
+import styles from "./ProfileTabButton.module.css";
 
 function ProfileTabButton(props: TabButtonProps) {
   const router = useOptimizedIonRouter();

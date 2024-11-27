@@ -16,6 +16,7 @@ import useAppNavigation from "#/helpers/useAppNavigation";
 import store, { useAppDispatch } from "#/store";
 
 import { markRead, syncMessages } from "./inboxSlice";
+
 import styles from "./PrivateMessageMoreActions.module.css";
 
 interface PrivateMessageMoreActionsHandle {

@@ -17,8 +17,9 @@ import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
 
 import CommentEllipsis, { CommentEllipsisHandle } from "./CommentEllipsis";
-import styles from "./CommentHeader.module.css";
 import ModActions from "./ModActions";
+
+import styles from "./CommentHeader.module.css";
 
 interface CommentHeaderProps {
   canModerate: ModeratorRole | undefined;

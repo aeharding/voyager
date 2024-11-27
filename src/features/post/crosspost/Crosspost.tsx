@@ -6,8 +6,9 @@ import LargePostContents from "#/features/post/inFeed/large/LargePostContents";
 import { cx } from "#/helpers/css";
 import { formatNumber } from "#/helpers/number";
 
-import styles from "./Crosspost.module.css";
 import CrosspostContainer from "./CrosspostContainer";
+
+import styles from "./Crosspost.module.css";
 
 interface CrosspostProps {
   post: PostView;
