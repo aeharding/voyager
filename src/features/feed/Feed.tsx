@@ -149,7 +149,11 @@ export default function Feed<I>({
   const fetchMore = useCallback(
     async (refresh = false) => {
       // previous request must be done before subsequent fetching (existence of abort controller)
-      if (abortControllerRef.current) return;
+      if (
+        abortControllerRef.current &&
+        !abortControllerRef.current?.signal.aborted
+      )
+        return;
 
       // Don't fetch more if we're at the end of the feed (unless refreshing)
       if (atEndRef.current && !refresh) return;
@@ -185,6 +189,9 @@ export default function Feed<I>({
         setLoading(false);
         setLoadFailed(true);
         throw error;
+      } finally {
+        if (abortControllerRef.current === abortController)
+          abortControllerRef.current = undefined;
       }
 
       let newPageItems;
@@ -195,7 +202,6 @@ export default function Feed<I>({
         if (result.next_page) currentPage = result.next_page;
       }
 
-      abortControllerRef.current = undefined;
       setLoading(false);
 
       const filteredNewPageItems = filterOnRxFn
@@ -235,7 +241,6 @@ export default function Feed<I>({
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort(ABORT_REASON_UNMOUNT);
-      abortControllerRef.current = undefined;
     };
   }, []);
 
