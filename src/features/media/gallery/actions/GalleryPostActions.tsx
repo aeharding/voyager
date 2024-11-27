@@ -24,6 +24,7 @@ import GalleryActions from "./GalleryActions";
 import { BottomContainer, BottomContainerActions } from "./shared";
 
 import styles from "./GalleryPostActions.module.css";
+
 interface GalleryPostActionsProps {
   post: PostView;
   imgSrc: string;

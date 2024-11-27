@@ -111,9 +111,7 @@ export default tseslint.config(
           partitionByComment: true,
           type: "natural",
           ignoreCase: false,
-          internalPattern: Object.keys(packageJson.imports).map((i) =>
-            i.endsWith("*") ? `${i}.+` : i,
-          ),
+          tsconfigRootDir: ".",
           sortSideEffects: true,
           groups: [
             "builtin",

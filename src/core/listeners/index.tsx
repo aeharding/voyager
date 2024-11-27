@@ -1,10 +1,12 @@
 import { TextRecoveryStartupPrompt } from "#/helpers/useTextRecovery";
 
 import AndroidBackButton from "./AndroidBackButton";
-import "./androidSafeArea";
 import AppUrlListener from "./AppUrlListener";
 import DatabaseErrorListener from "./DatabaseErrorListener";
 import HapticsListener from "./HapticsListener";
+
+// Listeners
+import "./androidSafeArea";
 import "./ionActivatable";
 import "./network/listener";
 import "./statusTap";
