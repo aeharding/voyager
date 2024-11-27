@@ -10,7 +10,6 @@ import vitestPlugin from "eslint-plugin-vitest";
 import tseslint from "typescript-eslint";
 
 import compilerOptions from "./compilerOptions.js";
-import packageJson from "./package.json" with { type: "json" };
 
 export default tseslint.config(
   eslint.configs.recommended,
