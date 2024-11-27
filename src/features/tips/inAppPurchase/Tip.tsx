@@ -5,8 +5,9 @@ import { useState } from "react";
 import { cx } from "#/helpers/css";
 import useAppToast from "#/helpers/useAppToast";
 
-import styles from "./Tip.module.css";
 import useInAppPurchase from "./useInAppPurchase";
+
+import styles from "./Tip.module.css";
 
 interface TipProps {
   product: Product;

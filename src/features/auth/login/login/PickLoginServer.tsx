@@ -19,8 +19,8 @@ import { VList, VListHandle } from "virtua";
 import { LOGIN_SERVERS } from "#/features/auth/login/data/servers";
 import AppHeader from "#/features/shared/AppHeader";
 import {
-  MINIMUM_LEMMY_VERSION,
   isMinimumSupportedLemmyVersion,
+  MINIMUM_LEMMY_VERSION,
 } from "#/helpers/lemmy";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import useAppToast from "#/helpers/useAppToast";
@@ -28,6 +28,7 @@ import { getCustomServers } from "#/services/app";
 import { getClient } from "#/services/lemmy";
 
 import Login from "./Login";
+
 import styles from "./PickLoginServer.module.css";
 
 export default function PickLoginServer() {

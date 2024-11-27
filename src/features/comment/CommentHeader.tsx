@@ -5,8 +5,8 @@ import { RefObject } from "react";
 
 import Ago from "#/features/labels/Ago";
 import Edited from "#/features/labels/Edited";
-import Vote from "#/features/labels/Vote";
 import PersonLink from "#/features/labels/links/PersonLink";
+import Vote from "#/features/labels/Vote";
 import ModqueueItemActions from "#/features/moderation/ModqueueItemActions";
 import { ModeratorRole } from "#/features/moderation/useCanModerate";
 import { ActionButton } from "#/features/post/actions/ActionButton";
@@ -17,8 +17,9 @@ import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
 
 import CommentEllipsis, { CommentEllipsisHandle } from "./CommentEllipsis";
-import styles from "./CommentHeader.module.css";
 import ModActions from "./ModActions";
+
+import styles from "./CommentHeader.module.css";
 
 interface CommentHeaderProps {
   canModerate: ModeratorRole | undefined;

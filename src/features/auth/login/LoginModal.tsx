@@ -1,7 +1,8 @@
 import { DynamicDismissableModal } from "#/features/shared/DynamicDismissableModal";
 
-import styles from "./LoginModal.module.css";
 import LoginNav from "./LoginNav";
+
+import styles from "./LoginModal.module.css";
 
 interface LoginModalProps {
   isOpen: boolean;

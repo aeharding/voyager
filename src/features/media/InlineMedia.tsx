@@ -5,13 +5,14 @@ import { cx } from "#/helpers/css";
 import useLatch from "#/helpers/useLatch";
 import { useAppDispatch } from "#/store";
 
-import MediaPlaceholder from "./MediaPlaceholder";
-import mediaPlaceholderStyles from "./MediaPlaceholder.module.css";
 import { IMAGE_FAILED, imageFailed, imageLoaded } from "./imageSlice";
+import MediaPlaceholder from "./MediaPlaceholder";
 import { isLoadedAspectRatio } from "./useAspectRatio";
 import useMediaLoadObserver, {
   getTargetDimensions,
 } from "./useMediaLoadObserver";
+
+import mediaPlaceholderStyles from "./MediaPlaceholder.module.css";
 
 export type InlineMediaProps = Omit<MediaProps, "ref"> & {
   defaultAspectRatio?: number;

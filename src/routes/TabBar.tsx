@@ -1,12 +1,13 @@
 import { IonTabBar } from "@ionic/react";
 import { ComponentProps, useRef } from "react";
 
-import styles from "./TabBar.module.css";
 import InboxTabButton from "./tabs/buttons/InboxTabButton";
 import PostsTabButton from "./tabs/buttons/PostsTabButton";
 import ProfileTabButton from "./tabs/buttons/ProfileTabButton";
 import SearchTabButton from "./tabs/buttons/SearchTabButton";
 import SettingsTabButton from "./tabs/buttons/SettingsTabButton";
+
+import styles from "./TabBar.module.css";
 
 /**
  * Ionic checks `isTabBar` for custom IonTabBar components.

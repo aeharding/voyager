@@ -14,8 +14,9 @@ import useClient from "#/helpers/useClient";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch } from "#/store";
 
-import styles from "./SendMessageBox.module.css";
 import { receivedMessages } from "./inboxSlice";
+
+import styles from "./SendMessageBox.module.css";
 
 interface SendMessageBoxProps {
   recipient: Person;

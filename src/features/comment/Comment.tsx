@@ -18,12 +18,13 @@ import {
 import { filterEvents } from "#/helpers/longPress";
 import { useAppSelector } from "#/store";
 
-import styles from "./Comment.module.css";
 import CommentContent from "./CommentContent";
 import { CommentEllipsisHandle } from "./CommentEllipsis";
 import CommentHeader, { isStubComment } from "./CommentHeader";
 import CommentContainer from "./elements/CommentContainer";
 import { PositionedContainer } from "./elements/PositionedContainer";
+
+import styles from "./Comment.module.css";
 
 interface CommentProps {
   comment: CommentView;

@@ -18,8 +18,9 @@ import { getRemoteHandle } from "#/helpers/lemmy";
 
 import { useAppDispatch, useAppSelector } from "../../store";
 import SourceUrlButton from "./SourceUrlButton";
-import styles from "./UserTagModal.module.css";
 import { generateNewTag, updateTag } from "./userTagSlice";
+
+import styles from "./UserTagModal.module.css";
 
 interface UserTagModalProps {
   person: Person;

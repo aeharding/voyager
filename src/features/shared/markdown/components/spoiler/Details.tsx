@@ -11,8 +11,9 @@ import { ExtraProps } from "react-markdown";
 
 import store, { useAppDispatch } from "#/store";
 
-import styles from "./Details.module.css";
 import { getSpoilerId, updateSpoilerState } from "./spoilerSlice";
+
+import styles from "./Details.module.css";
 
 type DetailsProps = JSX.IntrinsicElements["details"] &
   ExtraProps & {

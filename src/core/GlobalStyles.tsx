@@ -15,8 +15,9 @@ import useSystemDarkMode, {
 import { AppThemeType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
-import styles from "./GlobalStyles.module.css";
 import { getThemeByStyle } from "./theme/AppThemes";
+
+import styles from "./GlobalStyles.module.css";
 
 export const DARK_CLASSNAME = "ion-palette-dark";
 export const PURE_BLACK_CLASSNAME = "theme-pure-black";

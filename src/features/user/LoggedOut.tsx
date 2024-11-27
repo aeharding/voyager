@@ -1,14 +1,15 @@
 import { IonButton, IonText } from "@ionic/react";
 import { useContext } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
 import { accountsListEmptySelector } from "#/features/auth/authSelectors";
+import { PageContext } from "#/features/auth/PageContext";
 import AppContent from "#/features/shared/AppContent";
-import sharedStyles from "#/features/shared/shared.module.css";
 import { useAppSelector } from "#/store";
 
-import styles from "./LoggedOut.module.css";
 import IncognitoSvg from "./incognito.svg?react";
+
+import sharedStyles from "#/features/shared/shared.module.css";
+import styles from "./LoggedOut.module.css";
 
 export default function LoggedOut() {
   const connectedInstance = useAppSelector(

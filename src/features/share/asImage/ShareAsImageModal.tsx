@@ -10,9 +10,10 @@ import { CommentView, PostView } from "lemmy-js-client";
 import { MutableRefObject, useEffect, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
-import sharedStyles from "#/features/shared/shared.module.css";
 
 import ShareAsImage from "./ShareAsImage";
+
+import sharedStyles from "#/features/shared/shared.module.css";
 import styles from "./ShareAsImageModal.module.css";
 
 export type ShareAsImageData =

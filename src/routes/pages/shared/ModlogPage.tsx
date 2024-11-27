@@ -12,12 +12,12 @@ import { useParams } from "react-router";
 import useFetchCommunity from "#/features/community/useFetchCommunity";
 import Feed, { FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
-import { ModlogItem } from "#/features/moderation/logs/ModlogItem";
 import {
-  ModlogItemType,
   getLogDate,
   getLogIndex,
+  ModlogItemType,
 } from "#/features/moderation/logs/helpers";
+import { ModlogItem } from "#/features/moderation/logs/ModlogItem";
 import AppHeader from "#/features/shared/AppHeader";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import { getUser } from "#/features/user/userSlice";

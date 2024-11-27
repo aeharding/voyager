@@ -11,8 +11,9 @@ import { pageTransitionAnimateBackOnly } from "#/helpers/ionic";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch } from "#/store";
 
-import styles from "./InitialPageRedirectBootstrapper.module.css";
 import { appIsReadyToAcceptDeepLinks } from "./deepLinkReadySlice";
+
+import styles from "./InitialPageRedirectBootstrapper.module.css";
 
 interface InitialPageRedirectBootstrapperProps {
   to: string | undefined;

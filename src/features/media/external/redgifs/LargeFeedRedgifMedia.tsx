@@ -7,13 +7,14 @@ import { setEmbedExternalMedia } from "#/features/settings/settingsSlice";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import styles from "./LargeFeedRedgifMedia.module.css";
 import {
   enable,
   getVideoSrc,
   initializeIfNeeded,
   validTokenSelector,
 } from "./redgifsSlice";
+
+import styles from "./LargeFeedRedgifMedia.module.css";
 
 interface RedgifProps
   extends Omit<ComponentProps<typeof LargeFeedMedia>, "src"> {

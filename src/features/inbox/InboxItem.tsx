@@ -23,12 +23,13 @@ import useAppToast from "#/helpers/useAppToast";
 import { isPostReply } from "#/routes/pages/inbox/RepliesPage";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import styles from "./InboxItem.module.css";
 import InboxItemMoreActions, {
   InboxItemMoreActionsHandle,
 } from "./InboxItemMoreActions";
-import VoteArrow from "./VoteArrow";
 import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
+import VoteArrow from "./VoteArrow";
+
+import styles from "./InboxItem.module.css";
 
 export type InboxItemView =
   | PersonMentionView

@@ -19,6 +19,7 @@ import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppSelector } from "#/store";
 
 import { TitleSearchContext } from "./TitleSearchProvider";
+
 import styles from "./TitleSearchResults.module.css";
 
 const SPECIAL_FEEDS = [

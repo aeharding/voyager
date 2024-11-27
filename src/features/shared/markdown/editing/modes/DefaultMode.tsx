@@ -35,8 +35,9 @@ import { TOOLBAR_TARGET_ID } from "../MarkdownToolbar";
 import PreviewModal from "../PreviewModal";
 import useEditorHelpers from "../useEditorHelpers";
 import useUploadImage from "../useUploadImage";
-import styles from "./DefaultMode.module.css";
 import textFaces from "./textFaces.txt?raw";
+
+import styles from "./DefaultMode.module.css";
 
 export interface SharedModeProps {
   type: "comment" | "post";

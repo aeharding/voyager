@@ -11,11 +11,11 @@ import {
 import { CommunityView } from "lemmy-js-client";
 import { useContext } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
 import {
   handleSelector,
   loggedInSelector,
 } from "#/features/auth/authSelectors";
+import { PageContext } from "#/features/auth/PageContext";
 import SettingSelector from "#/features/settings/shared/SettingSelector";
 import CommunitySelectorModal from "#/features/shared/selectorModals/CommunitySelectorModal";
 import { getHandle } from "#/helpers/lemmy";

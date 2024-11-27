@@ -5,9 +5,9 @@ import AnimateHeight from "react-animate-height";
 
 import { AppContext } from "#/features/auth/AppContext";
 import { PageContext } from "#/features/auth/PageContext";
-import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
+import Nsfw, { isNsfw } from "#/features/labels/Nsfw";
 import ModeratableItem, {
   ModeratableItemBannerOutlet,
 } from "#/features/moderation/ModeratableItem";
@@ -31,8 +31,9 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import AnnouncementIcon from "./AnnouncementIcon";
 import Locked from "./Locked";
-import styles from "./PostHeader.module.css";
 import Stats from "./Stats";
+
+import styles from "./PostHeader.module.css";
 
 interface PostHeaderProps {
   post: PostView;

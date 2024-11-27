@@ -16,8 +16,9 @@ import { calculateSeparateScore, calculateTotalScore } from "#/helpers/vote";
 import { OVoteDisplayMode } from "#/services/db";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import styles from "./Vote.module.css";
 import VoteStat from "./VoteStat";
+
+import styles from "./Vote.module.css";
 interface VoteProps {
   item: PostView | CommentView;
   className?: string;

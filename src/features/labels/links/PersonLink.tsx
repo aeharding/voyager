@@ -21,6 +21,7 @@ import { useAppSelector } from "#/store";
 
 import { renderHandle } from "../Handle";
 import AgeBadge from "./AgeBadge";
+
 import styles from "./PersonLink.module.css";
 import sharedStyles from "./shared.module.css";
 

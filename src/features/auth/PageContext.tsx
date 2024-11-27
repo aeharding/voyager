@@ -9,8 +9,8 @@ import {
   PrivateMessageView,
 } from "lemmy-js-client";
 import React, {
-  RefObject,
   createContext,
+  RefObject,
   useEffect,
   useRef,
   useState,
@@ -20,24 +20,25 @@ import { changeAccount } from "#/features/auth/authSlice";
 import BanUserModal from "#/features/moderation/ban/BanUserModal";
 import CreateCrosspostDialog from "#/features/post/crosspost/create/CreateCrosspostDialog";
 import PostEditorModal from "#/features/post/new/PostEditorModal";
-import Report, { ReportHandle, ReportableItem } from "#/features/report/Report";
+import Report, { ReportableItem, ReportHandle } from "#/features/report/Report";
 import DatabaseErrorModal from "#/features/settings/root/DatabaseErrorModal";
 import ShareAsImageModal, {
   ShareAsImageData,
 } from "#/features/share/asImage/ShareAsImageModal";
-import SelectTextModal from "#/features/shared/SelectTextModal";
+import { CommentReplyItem } from "#/features/shared/markdown/editing/modal/contents/CommentReplyPage";
+import { NewPrivateMessage } from "#/features/shared/markdown/editing/modal/contents/PrivateMessagePage";
 import GenericMarkdownEditorModal, {
   MarkdownEditorData,
 } from "#/features/shared/markdown/editing/modal/GenericMarkdownEditorModal";
-import { CommentReplyItem } from "#/features/shared/markdown/editing/modal/contents/CommentReplyPage";
-import { NewPrivateMessage } from "#/features/shared/markdown/editing/modal/contents/PrivateMessagePage";
+import SelectTextModal from "#/features/shared/SelectTextModal";
 import UserTagModal from "#/features/tags/UserTagModal";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import AccountSwitcher from "./AccountSwitcher";
-import styles from "./PageContext.module.css";
 import { jwtSelector } from "./authSelectors";
 import LoginModal from "./login/LoginModal";
+
+import styles from "./PageContext.module.css";
 
 export interface BanUserPayload {
   user: Person;

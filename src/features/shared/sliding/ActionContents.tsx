@@ -3,8 +3,9 @@ import { bookmark, mailUnread } from "ionicons/icons";
 
 import { sv } from "#/helpers/css";
 
-import styles from "./ActionContents.module.css";
 import { SlidingItemAction } from "./SlidingItem";
+
+import styles from "./ActionContents.module.css";
 
 const custom_slash_lengths: Record<string, number> = {
   [bookmark]: 35,

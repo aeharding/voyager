@@ -30,8 +30,9 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import { getInstanceFromHandle } from "../../authSelectors";
 import { addGuestInstance, login } from "../../authSlice";
 import lemmyLogo from "../lemmyLogo.svg";
-import styles from "./Login.module.css";
 import Totp from "./Totp";
+
+import styles from "./Login.module.css";
 
 interface LoginProps {
   url: string;

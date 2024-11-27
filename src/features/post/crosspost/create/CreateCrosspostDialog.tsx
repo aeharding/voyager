@@ -13,9 +13,9 @@ import { useContext, useEffect, useState } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import CommunitySelectorModal from "#/features/shared/selectorModals/CommunitySelectorModal";
-import FloatingDialog from "#/helpers/FloatingDialog";
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { isNative } from "#/helpers/device";
+import FloatingDialog from "#/helpers/FloatingDialog";
 import { buildCrosspostBody, getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { crosspostFailed, crosspostSuccess } from "#/helpers/toastMessages";
@@ -26,6 +26,7 @@ import { useAppDispatch } from "#/store";
 
 import { receivedPosts } from "../../postSlice";
 import Crosspost from "../Crosspost";
+
 import styles from "./CreateCrosspostDialog.module.css";
 
 interface CreateCrosspostDialogProps {

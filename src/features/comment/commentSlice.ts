@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Comment, CommentView } from "lemmy-js-client";
 
 import { clientSelector } from "#/features/auth/authSelectors";

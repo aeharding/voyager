@@ -1,5 +1,5 @@
 import { ConnectionType, Network } from "@capacitor/network";
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface NetworkState {
   connectionType: ConnectionType;

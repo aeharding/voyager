@@ -1,6 +1,7 @@
 import { timeOutline } from "ionicons/icons";
 
 import Stat from "./Stat";
+
 import styles from "./TimeStat.module.css";
 
 export default function TimeStat(

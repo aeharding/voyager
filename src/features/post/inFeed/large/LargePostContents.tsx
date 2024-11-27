@@ -10,8 +10,9 @@ import { findLoneImage } from "#/helpers/markdown";
 import { useAppSelector } from "#/store";
 
 import useIsPostUrlMedia from "../../useIsPostUrlMedia";
-import styles from "./LargePostContents.module.css";
 import LargeFeedPostMedia from "./media/LargeFeedPostMedia";
+
+import styles from "./LargePostContents.module.css";
 
 // This is needed to hide NSFW messaging, etc when image is open
 export const LARGE_POST_MEDIA_CONTAINER_CLASSNAME =

@@ -12,8 +12,9 @@ import {
 import { isAndroid } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import styles from "./AppIcon.module.css";
 import { APP_ICONS, AppIcon, updateAppIcon } from "./appIconSlice";
+
+import styles from "./AppIcon.module.css";
 
 export default function AppIconComponent() {
   const dispatch = useAppDispatch();

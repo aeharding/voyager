@@ -15,8 +15,9 @@ import { getHandle } from "#/helpers/lemmy";
 import useAppNavigation from "#/helpers/useAppNavigation";
 import store, { useAppDispatch } from "#/store";
 
-import styles from "./PrivateMessageMoreActions.module.css";
 import { markRead, syncMessages } from "./inboxSlice";
+
+import styles from "./PrivateMessageMoreActions.module.css";
 
 interface PrivateMessageMoreActionsHandle {
   present: () => void;

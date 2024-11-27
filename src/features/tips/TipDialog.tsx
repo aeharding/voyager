@@ -1,12 +1,13 @@
 import { IonIcon } from "@ionic/react";
 import { heart } from "ionicons/icons";
 
-import FloatingDialog from "#/helpers/FloatingDialog";
 import { isNative } from "#/helpers/device";
+import FloatingDialog from "#/helpers/FloatingDialog";
 
 import ExternalSponsorOptions from "./ExternalSponsorOptions";
-import styles from "./TipDialog.module.css";
 import InAppProducts from "./inAppPurchase/InAppProducts";
+
+import styles from "./TipDialog.module.css";
 
 interface TipProps {
   onDismiss: (data?: string, role?: string) => void;

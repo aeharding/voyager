@@ -1,7 +1,7 @@
 import { ComponentRef, useEffect, useRef } from "react";
 
-import type Media from "#/features/media/Media";
 import { imageLoaded } from "#/features/media/imageSlice";
+import type Media from "#/features/media/Media";
 import { useAppDispatch } from "#/store";
 
 import useAspectRatio, { isLoadedAspectRatio } from "./useAspectRatio";

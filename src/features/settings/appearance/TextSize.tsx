@@ -4,6 +4,7 @@ import { HelperText, ListHeader } from "#/features/settings/shared/formatting";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
+
 import styles from "./TextSize.module.css";
 
 const MAX_REGULAR_FONT_ADJUSTMENT = 1.6;

@@ -1,7 +1,7 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { AnyFeed, serializeFeedName } from "#/features/feed/helpers";
-import { PostAppearanceType, db } from "#/services/db";
+import { db, PostAppearanceType } from "#/services/db";
 
 interface PostAppearanceState {
   /**

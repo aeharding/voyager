@@ -1,8 +1,8 @@
 import { IonIcon } from "@ionic/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import {
-  CSSProperties,
   ChangeEvent,
+  CSSProperties,
   useCallback,
   useEffect,
   useImperativeHandle,

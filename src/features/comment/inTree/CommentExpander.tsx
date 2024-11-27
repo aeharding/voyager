@@ -7,8 +7,8 @@ import AnimateHeight from "react-animate-height";
 import CommentContainer from "#/features/comment/elements/CommentContainer";
 import { PositionedContainer } from "#/features/comment/elements/PositionedContainer";
 import {
-  OCommentThreadCollapse,
   defaultThreadCollapse,
+  OCommentThreadCollapse,
 } from "#/features/settings/settingsSlice";
 import { cx } from "#/helpers/css";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
@@ -16,11 +16,12 @@ import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import commentStyles from "../Comment.module.css";
 import { receivedComments } from "../commentSlice";
-import styles from "./CommentExpander.module.css";
 import CommentHr from "./CommentHr";
 import { CommentsContext } from "./CommentsContext";
+
+import commentStyles from "../Comment.module.css";
+import styles from "./CommentExpander.module.css";
 
 interface CommentExpanderProps {
   depth: number;

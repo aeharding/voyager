@@ -27,9 +27,10 @@ import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import store, { useAppDispatch, useAppSelector } from "#/store";
 
 import { hidePost, unhidePost } from "../postSlice";
-import styles from "./Post.module.css";
 import CompactPost from "./compact/CompactPost";
 import LargePost from "./large/LargePost";
+
+import styles from "./Post.module.css";
 
 export interface PostProps {
   post: PostView;

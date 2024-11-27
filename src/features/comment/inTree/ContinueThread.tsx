@@ -8,8 +8,9 @@ import { PositionedContainer } from "#/features/comment/elements/PositionedConta
 import { CommentNodeI } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
-import commentStyles from "../Comment.module.css";
 import CommentHr from "./CommentHr";
+
+import commentStyles from "../Comment.module.css";
 import styles from "./ContinueThread.module.css";
 
 interface CommentExpanderProps {

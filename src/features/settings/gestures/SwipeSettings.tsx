@@ -20,8 +20,8 @@ import {
 } from "ionicons/icons";
 import { useState } from "react";
 
-import SettingSelector from "#/features/settings/shared/SettingSelector";
 import { ListHeader } from "#/features/settings/shared/formatting";
+import SettingSelector from "#/features/settings/shared/SettingSelector";
 import { getShareIcon, isNative } from "#/helpers/device";
 import {
   OLongSwipeTriggerPointType,

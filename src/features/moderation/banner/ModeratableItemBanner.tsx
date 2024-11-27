@@ -7,9 +7,10 @@ import {
   reportsByCommentIdSelector,
   reportsByPostIdSelector,
 } from "../modSlice";
-import styles from "./ModeratableItemBanner.module.css";
 import RemovedBanner from "./RemovedBanner";
 import ReportBanner from "./ReportBanner";
+
+import styles from "./ModeratableItemBanner.module.css";
 
 export const ItemModState = {
   None: 0,

@@ -27,8 +27,9 @@ import {
   ua,
 } from "#/helpers/device";
 
-import styles from "./InstallAppPage.module.css";
 import AppDetails from "./about/AppDetails";
+
+import styles from "./InstallAppPage.module.css";
 
 const ANDROID_APP_BADGES = [
   {

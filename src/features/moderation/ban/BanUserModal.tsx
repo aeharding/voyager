@@ -2,6 +2,7 @@ import { BanUserPayload } from "#/features/auth/PageContext";
 import { DynamicDismissableModal } from "#/features/shared/DynamicDismissableModal";
 
 import BanUser from "./BanUser";
+
 import styles from "./BanUserModal.module.css";
 
 interface BanUserModalProps {

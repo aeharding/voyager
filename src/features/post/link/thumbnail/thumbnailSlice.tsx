@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "#/store";
 
-import { Thumbnail, determineThumbnail } from "./thumbnailinator";
+import { determineThumbnail, Thumbnail } from "./thumbnailinator";
 
 interface ThumbnailState {
   thumbnailSrcByUrl: Record<string, "pending" | "failed" | "none" | Thumbnail>;

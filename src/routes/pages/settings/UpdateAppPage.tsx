@@ -19,13 +19,14 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useSetActivePage } from "#/features/auth/AppContext";
 import { MaxWidthContainer } from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
-import sharedStyles from "#/features/shared/shared.module.css";
 import { ua } from "#/helpers/device";
 import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
 
-import styles from "./UpdateAppPage.module.css";
 import AppVersionInfo from "./about/AppVersionInfo";
 import { UpdateContext } from "./update/UpdateContext";
+
+import sharedStyles from "#/features/shared/shared.module.css";
+import styles from "./UpdateAppPage.module.css";
 
 export default function UpdateAppPage() {
   const pageRef = useRef<HTMLElement>(null);

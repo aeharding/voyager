@@ -7,13 +7,14 @@ import { cx } from "#/helpers/css";
 import { useAppSelector } from "#/store";
 
 import InAppExternalLink from "../InAppExternalLink";
-import LinkInterceptor from "./LinkInterceptor";
-import styles from "./Markdown.module.css";
-import MarkdownImg from "./MarkdownImg";
-import Table from "./components/Table";
 import Details from "./components/spoiler/Details";
 import Summary from "./components/spoiler/Summary";
+import Table from "./components/Table";
 import customRemarkGfm from "./customRemarkGfm";
+import LinkInterceptor from "./LinkInterceptor";
+import MarkdownImg from "./MarkdownImg";
+
+import styles from "./Markdown.module.css";
 
 // TODO - remove never when upgrading to rehypeHighlight v7
 // TODO - ignoreMissing not needed in v7

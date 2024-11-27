@@ -1,4 +1,4 @@
-require_relative '../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios/scripts/pods_helpers'
+require_relative '../../node_modules/.pnpm/@capacitor+ios@6.2.0_@capacitor+core@6.2.0/node_modules/@capacitor/ios/scripts/pods_helpers'
 
 platform :ios, '13.0'
 use_frameworks!
@@ -9,26 +9,26 @@ use_frameworks!
 install! 'cocoapods', :disable_input_output_paths => true
 
 def capacitor_pods
-  pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios'
-  pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios'
-  pod 'CapacitorCommunityAppIcon', :path => '../../node_modules/.pnpm/@capacitor-community+app-icon@5.0.0_@capacitor+core@6.1.2/node_modules/@capacitor-community/app-icon'
-  pod 'CapacitorApp', :path => '../../node_modules/.pnpm/@capacitor+app@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/app'
-  pod 'CapacitorFilesystem', :path => '../../node_modules/.pnpm/@capacitor+filesystem@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/filesystem'
-  pod 'CapacitorHaptics', :path => '../../node_modules/.pnpm/@capacitor+haptics@6.0.1_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.1.2/node_modules/@capacitor/haptics'
-  pod 'CapacitorKeyboard', :path => '../../node_modules/.pnpm/@capacitor+keyboard@6.0.2_patch_hash=2ihcxo2fu55l7b6g5u7feswwlm_@capacitor+core@6.1.2/node_modules/@capacitor/keyboard'
-  pod 'CapacitorNetwork', :path => '../../node_modules/.pnpm/@capacitor+network@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/network'
-  pod 'CapacitorShare', :path => '../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share'
-  pod 'CapacitorSplashScreen', :path => '../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen'
-  pod 'CapacitorStatusBar', :path => '../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar'
-  pod 'CapacitorAndroidNavMode', :path => '../../node_modules/.pnpm/capacitor-android-nav-mode@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-android-nav-mode'
-  pod 'CapacitorApplicationContext', :path => '../../node_modules/.pnpm/capacitor-application-context@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-application-context'
-  pod 'CapacitorBiometricLock', :path => '../../node_modules/.pnpm/capacitor-biometric-lock@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-biometric-lock'
-  pod 'CapacitorClearCache', :path => '../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.1.2/node_modules/capacitor-clear-cache'
-  pod 'CapacitorLaunchNative', :path => '../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-launch-native'
-  pod 'CapacitorPluginSafeArea', :path => '../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.1.2/node_modules/capacitor-plugin-safe-area'
-  pod 'CapacitorReader', :path => '../../node_modules/.pnpm/capacitor-reader@0.1.0_@capacitor+core@6.1.2/node_modules/capacitor-reader'
-  pod 'CapacitorStashMedia', :path => '../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.1.2/node_modules/capacitor-stash-media'
-  pod 'CapacitorTips', :path => '../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.1.2/node_modules/capacitor-tips'
+  pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@6.2.0_@capacitor+core@6.2.0/node_modules/@capacitor/ios'
+  pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@6.2.0_@capacitor+core@6.2.0/node_modules/@capacitor/ios'
+  pod 'CapacitorCommunityAppIcon', :path => '../../node_modules/.pnpm/@capacitor-community+app-icon@5.0.0_@capacitor+core@6.2.0/node_modules/@capacitor-community/app-icon'
+  pod 'CapacitorApp', :path => '../../node_modules/.pnpm/@capacitor+app@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/app'
+  pod 'CapacitorFilesystem', :path => '../../node_modules/.pnpm/@capacitor+filesystem@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/filesystem'
+  pod 'CapacitorHaptics', :path => '../../node_modules/.pnpm/@capacitor+haptics@6.0.2_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.2.0/node_modules/@capacitor/haptics'
+  pod 'CapacitorKeyboard', :path => '../../node_modules/.pnpm/@capacitor+keyboard@6.0.3_patch_hash=2ihcxo2fu55l7b6g5u7feswwlm_@capacitor+core@6.2.0/node_modules/@capacitor/keyboard'
+  pod 'CapacitorNetwork', :path => '../../node_modules/.pnpm/@capacitor+network@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/network'
+  pod 'CapacitorShare', :path => '../../node_modules/.pnpm/@capacitor+share@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/share'
+  pod 'CapacitorSplashScreen', :path => '../../node_modules/.pnpm/@capacitor+splash-screen@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/splash-screen'
+  pod 'CapacitorStatusBar', :path => '../../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/status-bar'
+  pod 'CapacitorAndroidNavMode', :path => '../../node_modules/.pnpm/capacitor-android-nav-mode@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-android-nav-mode'
+  pod 'CapacitorApplicationContext', :path => '../../node_modules/.pnpm/capacitor-application-context@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-application-context'
+  pod 'CapacitorBiometricLock', :path => '../../node_modules/.pnpm/capacitor-biometric-lock@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-biometric-lock'
+  pod 'CapacitorClearCache', :path => '../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.2.0/node_modules/capacitor-clear-cache'
+  pod 'CapacitorLaunchNative', :path => '../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-launch-native'
+  pod 'CapacitorPluginSafeArea', :path => '../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.2.0/node_modules/capacitor-plugin-safe-area'
+  pod 'CapacitorReader', :path => '../../node_modules/.pnpm/capacitor-reader@0.2.0_@capacitor+core@6.2.0/node_modules/capacitor-reader'
+  pod 'CapacitorStashMedia', :path => '../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media'
+  pod 'CapacitorTips', :path => '../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-tips'
 end
 
 target 'App' do

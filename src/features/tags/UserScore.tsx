@@ -6,8 +6,9 @@ import { formatNumber } from "#/helpers/number";
 import { UserTag } from "#/services/db";
 
 import { useAppSelector } from "../../store";
-import styles from "./UserScore.module.css";
 import { getVoteWeightColor } from "./voteColor";
+
+import styles from "./UserScore.module.css";
 
 type UserScoreProps =
   | SyncUserScoreProps

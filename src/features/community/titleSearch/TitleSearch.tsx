@@ -7,8 +7,9 @@ import { cx } from "#/helpers/css";
 import { isIosTheme } from "#/helpers/device";
 import { findCurrentPage } from "#/helpers/ionic";
 
-import styles from "./TitleSearch.module.css";
 import { TitleSearchContext } from "./TitleSearchProvider";
+
+import styles from "./TitleSearch.module.css";
 
 const TITLE_CLASS = "title-search-opener";
 

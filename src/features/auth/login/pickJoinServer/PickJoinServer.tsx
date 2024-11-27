@@ -34,8 +34,8 @@ import {
 import { VList } from "virtua";
 
 import {
-  SERVERS_BY_CATEGORY,
   ServerCategory,
+  SERVERS_BY_CATEGORY,
 } from "#/features/auth/login/data/servers";
 import Login from "#/features/auth/login/login/Login";
 import AppHeader from "#/features/shared/AppHeader";
@@ -53,9 +53,10 @@ import { getInstanceFromHandle } from "../../authSelectors";
 import { addGuestInstance } from "../../authSlice";
 import lemmyLogo from "../lemmyLogo.svg";
 import Filters from "./Filters";
-import styles from "./PickJoinServer.module.css";
 import { getInstances } from "./pickJoinServerSlice";
 import useStartJoinFlow from "./useStartJoinFlow";
+
+import styles from "./PickJoinServer.module.css";
 
 export default function PickJoinServer() {
   const [presentActionSheet] = useIonActionSheet();

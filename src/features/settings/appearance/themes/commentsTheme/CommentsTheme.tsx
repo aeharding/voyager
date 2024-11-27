@@ -13,8 +13,9 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import { setCommentsTheme } from "../../../settingsSlice";
 import Color from "./Color";
-import styles from "./CommentsTheme.module.css";
 import COMMENT_THEMES from "./values";
+
+import styles from "./CommentsTheme.module.css";
 
 export default function CommentsTheme() {
   const dispatch = useAppDispatch();

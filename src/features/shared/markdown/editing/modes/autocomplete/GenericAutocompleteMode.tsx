@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getHandle } from "#/helpers/lemmy";
 
 import { SharedModeProps as GenericModeProps } from "../DefaultMode";
+
 import styles from "./GenericAutocompleteMode.module.css";
 
 export interface AutocompleteModeProps extends GenericModeProps {

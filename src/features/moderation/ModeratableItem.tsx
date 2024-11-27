@@ -1,12 +1,12 @@
 import { CommentView, PostView } from "lemmy-js-client";
-import { ReactNode, createContext, useContext } from "react";
+import { createContext, ReactNode, useContext } from "react";
 
 import { isPost } from "#/helpers/lemmy";
 import { useAppSelector } from "#/store";
 
 import ModeratableItemBanner, {
-  ItemModStateType,
   getModStateBackgroundColor,
+  ItemModStateType,
   useItemModState,
 } from "./banner/ModeratableItemBanner";
 import useCanModerate from "./useCanModerate";

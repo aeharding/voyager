@@ -17,8 +17,9 @@ import { blockUser } from "#/features/user/userSlice";
 import { getHandle } from "#/helpers/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import styles from "./ConversationItem.module.css";
 import Time from "./Time";
+
+import styles from "./ConversationItem.module.css";
 
 interface ConversationItemProps {
   messages: PrivateMessageView[];

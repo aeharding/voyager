@@ -3,9 +3,9 @@ import { chevronForward } from "ionicons/icons";
 import { MouseEvent, useEffect, useState } from "react";
 
 import { LinkData } from "#/features/comment/CommentLinks";
-import Url from "#/features/shared/Url";
 import LinkInterceptor from "#/features/shared/markdown/LinkInterceptor";
 import PlaintextMarkdown from "#/features/shared/markdown/PlaintextMarkdown";
+import Url from "#/features/shared/Url";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { cx } from "#/helpers/css";
 import { preventOnClickNavigationBug } from "#/helpers/ionic";
@@ -13,9 +13,10 @@ import { determineTypeFromUrl, isUrlImage } from "#/helpers/url";
 import { getImageSrc } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import styles from "./Link.module.css";
 import LinkPreview from "./LinkPreview";
 import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
+
+import styles from "./Link.module.css";
 
 const TRANSPARENT_PIXEL =
   'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';

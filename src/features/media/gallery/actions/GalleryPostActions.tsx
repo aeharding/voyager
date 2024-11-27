@@ -21,8 +21,10 @@ import { useAppSelector } from "#/store";
 import { GalleryContext } from "../GalleryProvider";
 import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
-import styles from "./GalleryPostActions.module.css";
 import { BottomContainer, BottomContainerActions } from "./shared";
+
+import styles from "./GalleryPostActions.module.css";
+
 interface GalleryPostActionsProps {
   post: PostView;
   imgSrc: string;

@@ -9,9 +9,10 @@ import {
 import { getHandle } from "#/helpers/lemmy";
 import useAppNavigation from "#/helpers/useAppNavigation";
 
-import { ModeratorRole, getModIcon } from "../useCanModerate";
-import styles from "./ModlogItemMoreActions.module.css";
+import { getModIcon, ModeratorRole } from "../useCanModerate";
 import { ModlogItemType } from "./helpers";
+
+import styles from "./ModlogItemMoreActions.module.css";
 
 interface ModlogItemMoreActions {
   item: ModlogItemType;
