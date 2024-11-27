@@ -78,7 +78,7 @@ export default function usePostModActions(post: PostView) {
               icon: trashOutline,
               handler: () => {
                 (async () => {
-                  await dispatch(modRemovePost(post.post.id, true));
+                  await dispatch(modRemovePost(post.post, true));
 
                   presentToast(postRemovedMod);
                 })();
@@ -89,7 +89,7 @@ export default function usePostModActions(post: PostView) {
               icon: checkmarkCircleOutline,
               handler: () => {
                 (async () => {
-                  await dispatch(modRemovePost(post.post.id, false));
+                  await dispatch(modRemovePost(post.post, false));
 
                   presentToast(postRestored);
                 })();
@@ -107,7 +107,7 @@ export default function usePostModActions(post: PostView) {
                   cssClass: "mod",
                   handler: ({ reason }) => {
                     (async () => {
-                      await dispatch(modRemovePost(post.post.id, true, reason));
+                      await dispatch(modRemovePost(post.post, true, reason));
 
                       presentToast(postRemovedMod);
                     })();

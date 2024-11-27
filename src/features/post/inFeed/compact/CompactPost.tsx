@@ -123,7 +123,7 @@ export default function CompactPost({ post }: PostProps) {
               <ActionsContainer>
                 <PreviewStats post={post} />
                 {inModqueue ? (
-                  <ModqueueItemActions item={post} />
+                  <ModqueueItemActions itemView={post} />
                 ) : (
                   <MoreModActions
                     className={styles.styledModActions}
