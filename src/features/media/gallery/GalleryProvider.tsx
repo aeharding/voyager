@@ -3,7 +3,6 @@ import { compact, noop } from "es-toolkit";
 import { PostView } from "lemmy-js-client";
 import type { PreparedPhotoSwipeOptions, ZoomLevelOption } from "photoswipe";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
-import "photoswipe/style.css";
 import React, {
   ComponentRef,
   createContext,

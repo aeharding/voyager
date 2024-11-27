@@ -28,6 +28,10 @@ import "@ionic/react/css/palettes/dark.class.css";
 
 // CSS imports
 import "./syntaxHighlights.css";
+
+// PhotoSwipe (before global overrides)
+import "photoswipe/style.css";
+
 // Global CSS overrides
 import "./globalCssOverrides.css";
 
