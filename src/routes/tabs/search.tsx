@@ -2,9 +2,9 @@
 import Route from "#/routes/common/Route";
 import CommunitiesResultsPage from "#/routes/pages/search/CommunitiesResultsPage";
 import RandomCommunityPage from "#/routes/pages/search/RandomCommunityPage";
-import SearchPage from "#/routes/pages/search/SearchPage";
 import SearchCommunitiesPage from "#/routes/pages/search/results/SearchCommunitiesPage";
 import SearchPostsResultsPage from "#/routes/pages/search/results/SearchFeedResultsPage";
+import SearchPage from "#/routes/pages/search/SearchPage";
 
 export default [
   <Route exact path="/search">

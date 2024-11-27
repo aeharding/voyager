@@ -9,8 +9,8 @@ import React, {
 } from "react";
 import { Prompt, useLocation } from "react-router";
 
-import { PageContext } from "#/features/auth/PageContext";
 import { instanceSelector } from "#/features/auth/authSelectors";
+import { PageContext } from "#/features/auth/PageContext";
 import { isNative } from "#/helpers/device";
 import useStateRef from "#/helpers/useStateRef";
 import { clearRecoveredText } from "#/helpers/useTextRecovery";

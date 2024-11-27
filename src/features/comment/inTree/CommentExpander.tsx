@@ -7,8 +7,8 @@ import AnimateHeight from "react-animate-height";
 import CommentContainer from "#/features/comment/elements/CommentContainer";
 import { PositionedContainer } from "#/features/comment/elements/PositionedContainer";
 import {
-  OCommentThreadCollapse,
   defaultThreadCollapse,
+  OCommentThreadCollapse,
 } from "#/features/settings/settingsSlice";
 import { cx } from "#/helpers/css";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";

@@ -9,8 +9,8 @@ import { PageContext } from "#/features/auth/PageContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import {
-  VOTE_COLORS,
   bgColorToVariable,
+  VOTE_COLORS,
 } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
 import { cx, sv } from "#/helpers/css";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";

@@ -3,9 +3,9 @@ import { IonContent, IonTitle, IonToolbar } from "@ionic/react";
 import AppHeader from "#/features/shared/AppHeader";
 
 import AndroidClose from "./AndroidClose";
+import BaseSvg from "./assets/base.svg?react";
 import Buttons from "./Buttons";
 import styles from "./Welcome.module.css";
-import BaseSvg from "./assets/base.svg?react";
 
 export default function Welcome() {
   return (

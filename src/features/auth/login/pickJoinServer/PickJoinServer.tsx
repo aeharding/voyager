@@ -34,8 +34,8 @@ import {
 import { VList } from "virtua";
 
 import {
-  SERVERS_BY_CATEGORY,
   ServerCategory,
+  SERVERS_BY_CATEGORY,
 } from "#/features/auth/login/data/servers";
 import Login from "#/features/auth/login/login/Login";
 import AppHeader from "#/features/shared/AppHeader";

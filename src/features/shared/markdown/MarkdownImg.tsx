@@ -1,5 +1,5 @@
-import InlineMedia from "#/features/media/InlineMedia";
 import { GalleryMediaProps } from "#/features/media/gallery/GalleryMedia";
+import InlineMedia from "#/features/media/InlineMedia";
 import { cx } from "#/helpers/css";
 
 import styles from "./MarkdownImg.module.css";

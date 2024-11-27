@@ -1,8 +1,8 @@
 import { IonChip } from "@ionic/react";
 
 import {
-  SERVERS_BY_CATEGORY,
   ServerCategory,
+  SERVERS_BY_CATEGORY,
 } from "#/features/auth/login/data/servers";
 
 import styles from "./Filters.module.css";

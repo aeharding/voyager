@@ -1,28 +1,12 @@
 // Core CSS required for Ionic components to work properly
 import "@ionic/react/css/core.css";
-
-// Basic CSS for apps built with Ionic */
-import "@ionic/react/css/normalize.css";
-import "@ionic/react/css/structure.css";
-import "@ionic/react/css/typography.css";
-
 // Optional CSS utils that can be commented out
 import "@ionic/react/css/display.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/float-elements.css";
+// Basic CSS for apps built with Ionic */
+import "@ionic/react/css/normalize.css";
 import "@ionic/react/css/padding.css";
-import "@ionic/react/css/text-alignment.css";
-import "@ionic/react/css/text-transformation.css";
-
-// Override Ionic variables
-import "./theme/variables.css";
-// Light mode
-import "./theme/lightVariables.css";
-// Dark mode
-import "./theme/darkVariables.css";
-// Dark mode modifier
-import "./theme/darkModifierVariables.css";
-
 // Define after ./theme/variables to override it
 import "@ionic/react/css/palettes/dark.class.css";
 
@@ -50,21 +34,30 @@ import {
 import { OptimizedRouterProvider } from "#/helpers/useOptimizedIonRouter";
 import Router from "#/routes/common/Router";
 import { UpdateContextProvider } from "#/routes/pages/settings/update/UpdateContext";
+// preserve lexical order
+import TabbedRoutes from "#/routes/TabbedRoutes";
 import ConfigProvider from "#/services/app";
 import { StoreProvider } from "#/store";
 
 import AppCrash from "./AppCrash";
-import GlobalStyles from "./GlobalStyles";
-import { TabContextProvider } from "./TabContext";
-
-// preserve lexical order
-import TabbedRoutes from "#/routes/TabbedRoutes";
-
 import Auth from "./Auth";
+// Global CSS overrides
+import "./globalCssOverrides.css";
+import GlobalStyles from "./GlobalStyles";
 import Listeners from "./listeners";
-
 // Setup global app lifecycle listeners
 import "./listeners";
+// CSS imports
+import "./syntaxHighlights.css";
+import { TabContextProvider } from "./TabContext";
+// Dark mode modifier
+import "./theme/darkModifierVariables.css";
+// Dark mode
+import "./theme/darkVariables.css";
+// Light mode
+import "./theme/lightVariables.css";
+// Override Ionic variables
+import "./theme/variables.css";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {

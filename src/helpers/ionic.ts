@@ -1,8 +1,8 @@
 import {
-  TransitionOptions,
   createAnimation,
   iosTransitionAnimation,
   mdTransitionAnimation,
+  TransitionOptions,
 } from "@ionic/core";
 import { MouseEvent, TouchEvent } from "react";
 

@@ -20,8 +20,8 @@ import {
 } from "lemmy-js-client";
 import { useCallback, useContext, useMemo } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
+import { PageContext } from "#/features/auth/PageContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import {
   getCanModerate,
@@ -38,8 +38,8 @@ import {
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
-  commentDeleteFailed,
   commentDeleted,
+  commentDeleteFailed,
   postLocked,
   saveError,
   saveSuccess,

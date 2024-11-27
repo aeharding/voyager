@@ -108,10 +108,11 @@ export default tseslint.config(
         "warn",
         {
           newlinesBetween: "always",
+          partitionByComment: true,
           ignoreCase: false,
           type: "natural",
           internalPattern: Object.keys(packageJson.imports).map((i) =>
-            i.endsWith("*") ? `${i}*` : i,
+            i.endsWith("*") ? `${i}.+` : i,
           ),
           sortSideEffects: true,
           groups: [

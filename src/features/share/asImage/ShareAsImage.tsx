@@ -2,10 +2,10 @@ import { CapacitorHttp } from "@capacitor/core";
 import { Directory, Filesystem } from "@capacitor/filesystem";
 import { Share } from "@capacitor/share";
 import { IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
-import { Options as DomToBlobOptions, domToBlob } from "modern-screenshot";
+import { domToBlob, Options as DomToBlobOptions } from "modern-screenshot";
 import {
-  ReactNode,
   createContext,
+  ReactNode,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -24,10 +24,10 @@ import { getImageSrc } from "#/services/lemmy";
 import { webviewServerUrl } from "#/services/nativeFetch";
 
 import AddRemoveButtons from "./AddRemoveButtons";
+import includeStyleProperties from "./includeStyleProperties";
 import styles from "./ShareAsImage.module.css";
 import { ShareAsImageData } from "./ShareAsImageModal";
 import Watermark from "./Watermark";
-import includeStyleProperties from "./includeStyleProperties";
 
 const domToBlobOptions: DomToBlobOptions = {
   scale: 4,

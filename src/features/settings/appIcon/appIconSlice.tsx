@@ -1,5 +1,5 @@
 import { AppIcon as CapAppIcon } from "@capacitor-community/app-icon";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { without } from "es-toolkit";
 
 import { isAndroid, isNative } from "#/helpers/device";

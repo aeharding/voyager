@@ -8,15 +8,15 @@ import { isTouchDevice } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 import {
-  ModeratorRole,
   getModColor,
   getModIcon,
   getModName,
+  ModeratorRole,
 } from "../useCanModerate";
 import useIsAdmin from "../useIsAdmin";
+import { ModlogItemType } from "./helpers";
 import styles from "./ModlogItem.module.css";
 import ModlogItemMoreActions from "./ModlogItemMoreActions";
-import { ModlogItemType } from "./helpers";
 import addCommunity from "./types/addCommunity";
 import addInstance from "./types/addInstance";
 import banFromCommunity from "./types/banFromCommunity";

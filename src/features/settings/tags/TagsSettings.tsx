@@ -9,8 +9,8 @@ import Enabled from "./Enabled";
 import HideInstance from "./HideInstance";
 import ResetTags from "./Reset";
 import StoreSource from "./StoreSource";
-import TrackVotes from "./TrackVotes";
 import TagSvg from "./tag.svg?react";
+import TrackVotes from "./TrackVotes";
 
 export default function TagsSettings() {
   const userTagsEnabled = useAppSelector(

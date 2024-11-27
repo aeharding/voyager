@@ -4,9 +4,9 @@ import { useContext } from "react";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import useCanModerate, {
-  ModeratorRole,
   getModColor,
   getModIcon,
+  ModeratorRole,
 } from "#/features/moderation/useCanModerate";
 import usePostModActions from "#/features/moderation/usePostModActions";
 import { ActionButton } from "#/features/post/actions/ActionButton";

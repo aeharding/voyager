@@ -6,9 +6,9 @@ import { cx } from "#/helpers/css";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
 import styles from "./MarkdownToolbar.module.css";
-import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
 import CommunityAutocomplete from "./modes/autocomplete/CommunityAutocompleteMode";
 import UsernameAutocompleteMode from "./modes/autocomplete/UsernameAutocompleteMode";
+import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
 

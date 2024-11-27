@@ -6,17 +6,17 @@ import ModActions from "#/features/community/mod/ModActions";
 import TitleSearch from "#/features/community/titleSearch/TitleSearch";
 import { TitleSearchProvider } from "#/features/community/titleSearch/TitleSearchProvider";
 import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResults";
+import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import { FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
-import PostSort from "#/features/feed/PostSort";
-import SpecialFeedMoreActions from "#/features/feed/SpecialFeedMoreActions";
-import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import PostFabs from "#/features/feed/postFabs/PostFabs";
+import PostSort from "#/features/feed/PostSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
+import SpecialFeedMoreActions from "#/features/feed/SpecialFeedMoreActions";
 import useFeedUpdate from "#/features/feed/useFeedUpdate";
 import { ShowSubscribedIconContext } from "#/features/labels/links/CommunityLink";
 import PostAppearanceProvider, {

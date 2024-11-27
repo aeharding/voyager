@@ -23,9 +23,9 @@ import sharedStyles from "#/features/shared/shared.module.css";
 import { ua } from "#/helpers/device";
 import { unloadServiceWorkerAndRefresh } from "#/helpers/serviceWorker";
 
-import styles from "./UpdateAppPage.module.css";
 import AppVersionInfo from "./about/AppVersionInfo";
 import { UpdateContext } from "./update/UpdateContext";
+import styles from "./UpdateAppPage.module.css";
 
 export default function UpdateAppPage() {
   const pageRef = useRef<HTMLElement>(null);

@@ -32,9 +32,9 @@ import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { receivedComments } from "../commentSlice";
-import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import styles from "./Comments.module.css";
 import { CommentsContext } from "./CommentsContext";
+import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import LoadParentComments from "./LoadParentComments";
 
 const MAX_COMMENT_PATH_CONTEXT_DEPTH = 2;

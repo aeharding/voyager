@@ -5,9 +5,9 @@ import { cx } from "#/helpers/css";
 import useLatch from "#/helpers/useLatch";
 import { useAppDispatch } from "#/store";
 
+import { IMAGE_FAILED, imageFailed, imageLoaded } from "./imageSlice";
 import MediaPlaceholder from "./MediaPlaceholder";
 import mediaPlaceholderStyles from "./MediaPlaceholder.module.css";
-import { IMAGE_FAILED, imageFailed, imageLoaded } from "./imageSlice";
 import { isLoadedAspectRatio } from "./useAspectRatio";
 import useMediaLoadObserver, {
   getTargetDimensions,

@@ -5,8 +5,8 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import { InboxItemView } from "./InboxItem";
 import styles from "./InboxItemMoreActions.module.css";
-import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
 import { getInboxItemId, markRead } from "./inboxSlice";
+import PrivateMessageMoreActions from "./PrivateMessageMoreActions";
 
 interface InboxItemMoreActionsProps {
   item: InboxItemView;
