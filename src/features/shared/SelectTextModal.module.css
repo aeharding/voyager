@@ -9,25 +9,29 @@
 }
 
 .sharedSelect {
+  /* Override `all: unset` specificity by setting default below .invisibleTextarea */
+}
+
+.invisibleTextarea {
+  composes: sharedSelect;
+
+  all: unset;
+  white-space: pre-wrap;
+  width: 100%;
+}
+
+.selectable {
+  composes: sharedSelect;
+
+  user-select: text;
+  white-space: pre-wrap;
+}
+
+.sharedSelect {
   padding: 8px;
   width: calc(100% - 16px);
 
   user-select: text;
 
   margin-bottom: var(--ion-safe-area-bottom, env(safe-area-inset-bottom));
-}
-
-.invisibleTextarea {
-  all: unset;
-  white-space: pre-wrap;
-  width: 100%;
-
-  composes: sharedSelect;
-}
-
-.selectable {
-  user-select: text;
-  white-space: pre-wrap;
-
-  composes: sharedSelect;
 }
