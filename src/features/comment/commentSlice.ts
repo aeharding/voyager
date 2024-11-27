@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Comment, CommentView } from "lemmy-js-client";
 
 import { clientSelector } from "#/features/auth/authSelectors";
@@ -10,11 +10,14 @@ import {
 import { getRemoteHandle } from "#/helpers/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
+export const LOADING_CONTENT = -1;
+
 interface CommentState {
   commentCollapsedById: Record<string, boolean>;
   commentVotesById: Record<string, 1 | -1 | 0 | undefined>;
   commentSavedById: Record<string, boolean | undefined>;
   commentById: Record<string, Comment>;
+  commentContentById: Record<number, string | typeof LOADING_CONTENT>;
 }
 
 const initialState: CommentState = {
@@ -25,6 +28,9 @@ const initialState: CommentState = {
    * surgical changes received after user edits or deletes comment
    */
   commentById: {},
+
+  // https://github.com/LemmyNet/lemmy/issues/5230
+  commentContentById: {},
 };
 
 export const commentSlice = createSlice({
@@ -76,7 +82,22 @@ export const commentSlice = createSlice({
     ) => {
       state.commentSavedById[action.payload.commentId] = action.payload.saved;
     },
+    setCommentContent: (state, action: PayloadAction<Comment>) => {
+      state.commentContentById[action.payload.id] = action.payload.content;
+    },
     resetComments: () => initialState,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCommentContent.fulfilled, (state, action) => {
+        state.commentContentById[action.meta.arg] = action.payload ?? "";
+      })
+      .addCase(getCommentContent.pending, (state, action) => {
+        state.commentContentById[action.meta.arg] = LOADING_CONTENT;
+      })
+      .addCase(getCommentContent.rejected, (state, action) => {
+        state.commentContentById[action.meta.arg] = "";
+      });
   },
 });
 
@@ -87,6 +108,7 @@ export const {
   updateCommentVote,
   updateCommentSaved,
   resetComments,
+  setCommentContent,
 } = commentSlice.actions;
 
 export default commentSlice.reducer;
@@ -172,16 +194,17 @@ export const editComment =
   };
 
 export const modRemoveComment =
-  (commentId: number, removed: boolean, reason?: string) =>
+  (comment: Comment, removed: boolean, reason?: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const response = await clientSelector(getState())?.removeComment({
-      comment_id: commentId,
+      comment_id: comment.id,
       removed,
       reason,
     });
 
+    dispatch(setCommentContent(comment));
     dispatch(mutatedComment(response.comment_view));
-    await dispatch(resolveCommentReport(commentId));
+    await dispatch(resolveCommentReport(comment.id));
   };
 
 export const modNukeCommentChain =
@@ -232,3 +255,25 @@ export const receivedComments =
       fetchTagsForHandles(comments.map((c) => getRemoteHandle(c.creator))),
     );
   };
+
+export const getCommentContent = createAsyncThunk(
+  "comment/getCommentContent",
+  async (commentId: number, thunkAPI) => {
+    const rootState = thunkAPI.getState() as RootState;
+    const client = clientSelector(rootState);
+
+    const log = await client.getModlog({ comment_id: commentId });
+
+    return log.removed_comments[0]?.comment.content;
+  },
+  {
+    condition: (commentId, { getState }) => {
+      const state = getState() as RootState;
+
+      if (state.comment.commentContentById[commentId] === undefined)
+        return true;
+
+      return false;
+    },
+  },
+);

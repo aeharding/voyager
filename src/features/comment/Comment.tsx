@@ -147,6 +147,7 @@ export default function Comment({
                           item={comment}
                           showTouchFriendlyLinks={!context}
                           mdClassName="collapse-md-margins"
+                          canModerate={canModerate}
                         />
                       )}
                       {context}

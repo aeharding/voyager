@@ -83,7 +83,7 @@ export default function useModZoneActions(props: UseModZoneActionsProps) {
         //       icon: shieldCheckmarkOutline,
         //       handler: () => {
         //         (async () => {
-        //           // await dispatch(modRemoveComment(comment.id, false));
+        //           // await dispatch(modRemoveComment(comment, false));
         //           // presentToast(commentApproved);
         //         })();
         //       },

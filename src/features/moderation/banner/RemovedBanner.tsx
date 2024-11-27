@@ -30,7 +30,7 @@ export default function RemovedBanner({ itemView }: RemovedBannerProps) {
               dispatch(modRemovePost(itemView.post.id, false));
               presentToast(postApproved);
             } else {
-              await dispatch(modRemoveComment(itemView.comment.id, false));
+              await dispatch(modRemoveComment(itemView.comment, false));
               presentToast(commentApproved);
             }
           })();

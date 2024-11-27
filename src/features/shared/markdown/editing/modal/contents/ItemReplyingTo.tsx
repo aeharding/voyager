@@ -6,6 +6,7 @@ import CommentContent from "#/features/comment/CommentContent";
 import Ago from "#/features/labels/Ago";
 import Edited from "#/features/labels/Edited";
 import Vote from "#/features/labels/Vote";
+import useCanModerate from "#/features/moderation/useCanModerate";
 import { preventModalSwipeOnTextSelection } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
 
@@ -16,6 +17,7 @@ interface ItemReplyingToProps {
 }
 
 export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
+  const canModerate = useCanModerate(item.community);
   const payload = "comment" in item ? item.comment : item.post;
 
   return (
@@ -30,7 +32,11 @@ export default function ItemReplyingTo({ item }: ItemReplyingToProps) {
         {...preventModalSwipeOnTextSelection}
         className={styles.commentContentWrapper}
       >
-        <CommentContent item={payload} showTouchFriendlyLinks={false} />
+        <CommentContent
+          item={payload}
+          showTouchFriendlyLinks={false}
+          canModerate={canModerate}
+        />
       </div>
     </div>
   );

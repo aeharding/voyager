@@ -101,7 +101,7 @@ export default function useCommentModActions(commentView: CommentView) {
               icon: trashOutline,
               handler: () => {
                 (async () => {
-                  await dispatch(modRemoveComment(comment.id, true));
+                  await dispatch(modRemoveComment(comment, true));
 
                   presentToast(commentRemovedMod);
                 })();
@@ -112,7 +112,7 @@ export default function useCommentModActions(commentView: CommentView) {
               icon: checkmarkCircleOutline,
               handler: () => {
                 (async () => {
-                  await dispatch(modRemoveComment(comment.id, false));
+                  await dispatch(modRemoveComment(comment, false));
 
                   presentToast(commentApproved);
                 })();
@@ -130,9 +130,7 @@ export default function useCommentModActions(commentView: CommentView) {
                   cssClass: "mod",
                   handler: ({ reason }) => {
                     (async () => {
-                      await dispatch(
-                        modRemoveComment(comment.id, true, reason),
-                      );
+                      await dispatch(modRemoveComment(comment, true, reason));
 
                       presentToast(commentRemovedMod);
                     })();
