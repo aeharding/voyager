@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UploadImageResponse } from "lemmy-js-client";
 
-import { clientSelector } from "#/features/auth/authSelectors";
+import { clientSelector, urlSelector } from "#/features/auth/authSelectors";
 import { _uploadImage } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
@@ -44,9 +44,11 @@ export default uploadImageSlice.reducer;
 
 export const uploadImage =
   (image: File) => async (dispatch: AppDispatch, getState: () => RootState) => {
-    const client = clientSelector(getState());
+    const state = getState();
+    const client = clientSelector(state);
+    const url = urlSelector(state);
 
-    const response = await _uploadImage(client, image);
+    const response = await _uploadImage(url, client, image);
 
     dispatch(onUploadedImage(response));
 
