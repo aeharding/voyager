@@ -53,10 +53,11 @@
   top: 0;
   right: 0;
 
-  padding: 14px;
-  font-size: 26px;
-
-  color: #aaa;
+  && {
+    padding: 14px;
+    font-size: 26px;
+    color: #aaa;
+  }
 
   svg {
     filter: blur(10px) invert(80%);
