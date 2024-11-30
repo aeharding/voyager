@@ -10,7 +10,7 @@
 }
 
 .personLink {
-  && {
+  &.personLink {
     color: var(--ion-text-color);
   }
 
