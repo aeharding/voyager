@@ -21,7 +21,7 @@ import { isNative } from "#/helpers/device";
 import { buildCommentsTree, getDepthFromComment } from "#/helpers/lemmy";
 import useAppToast from "#/helpers/useAppToast";
 import { getImageSrc } from "#/services/lemmy";
-import { webviewServerUrl } from "#/services/nativeFetch";
+import { getServerUrl } from "#/services/nativeFetch";
 
 import AddRemoveButtons from "./AddRemoveButtons";
 import includeStyleProperties from "./includeStyleProperties";
@@ -45,7 +45,8 @@ const domToBlobOptions: DomToBlobOptions = {
   fetchFn: isNative()
     ? async (url) => {
         // Pass through relative URLs to browser fetching
-        if (url.startsWith(`${webviewServerUrl}/`)) {
+        // !: running in native environment
+        if (url.startsWith(`${getServerUrl!()}/`)) {
           return false;
         }
 

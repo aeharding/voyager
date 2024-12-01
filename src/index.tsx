@@ -1,3 +1,7 @@
+// Side effect: Remove capacitor shim before anything else
+import "./services/nativeFetch";
+
+// Then import the rest
 import React from "react";
 import { createRoot } from "react-dom/client";
 
