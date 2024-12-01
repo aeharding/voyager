@@ -49,10 +49,17 @@ export const problemFetchingTitle: AppToastOptions = {
   color: "warning",
 };
 
-export function buildBlocked(blocked: boolean): AppToastOptions {
+export function buildBlockedUser(blocked: boolean): AppToastOptions {
   return {
     ...shortSuccessDefaults,
     message: `User ${blocked ? "blocked" : "unblocked"}!`,
+  };
+}
+
+export function buildBlockedCommunity(blocked: boolean): AppToastOptions {
+  return {
+    ...shortSuccessDefaults,
+    message: `Community ${blocked ? "blocked" : "unblocked"}!`,
   };
 }
 

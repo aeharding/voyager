@@ -13,7 +13,7 @@ import { PageContext } from "#/features/auth/PageContext";
 import { getHandle } from "#/helpers/lemmy";
 import { getBlockUserErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { buildBlocked } from "#/helpers/toastMessages";
+import { buildBlockedUser } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import store, { useAppDispatch, useAppSelector } from "#/store";
@@ -99,7 +99,7 @@ export default function usePresentUserActions() {
                 throw error;
               }
 
-              presentToast(buildBlocked(!isBlocked));
+              presentToast(buildBlockedUser(!isBlocked));
             })();
           },
         },
