@@ -13,7 +13,7 @@ import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
   allNSFWHidden,
-  buildBlocked,
+  buildBlockedCommunity,
   buildFavorited,
   buildProblemSubscribing,
   buildSuccessSubscribing,
@@ -161,7 +161,7 @@ export default function useCommunityActions(
             handler: () => {
               (async () => {
                 await _block();
-                presentToast(buildBlocked(!isBlocked));
+                presentToast(buildBlockedCommunity(!isBlocked));
               })();
             },
           },
@@ -175,7 +175,7 @@ export default function useCommunityActions(
       db.setSetting("has_presented_block_nsfw_tip", true);
     } else {
       await _block();
-      presentToast(buildBlocked(!isBlocked));
+      presentToast(buildBlockedCommunity(!isBlocked));
     }
   };
 
