@@ -16,6 +16,10 @@ const config: CapacitorConfig = {
     SplashScreen: {
       launchShowDuration: 3_000,
     },
+    CapacitorHttp: {
+      // Global shim is reverted in nativeFetch.ts
+      enabled: true,
+    },
   },
 };
 
