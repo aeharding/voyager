@@ -22,7 +22,7 @@ import styles from "./Player.module.css";
 export interface PlayerProps {
   src: string;
 
-  nativeControls?: boolean;
+  controls?: boolean;
   progress?: boolean;
   volume?: boolean;
   autoPlay?: boolean;
@@ -36,9 +36,9 @@ export interface PlayerProps {
 
 export default function Player({
   src: potentialSrc,
-  nativeControls,
+  controls,
   className,
-  progress: showProgress = !nativeControls,
+  progress: showProgress = !controls,
   volume = true,
   autoPlay: videoAllowedToAutoplay = true,
   ref,
@@ -137,7 +137,7 @@ export default function Player({
           setMuted(!!videoRef.current?.muted);
         }}
         autoPlay={false}
-        controls={nativeControls}
+        controls={controls}
         onTimeUpdate={(e: ChangeEvent<HTMLVideoElement>) => {
           if (!showProgress) return;
           setProgress(e.target.currentTime / e.target.duration);
@@ -147,7 +147,7 @@ export default function Player({
       {showProgress && progress !== undefined && (
         <progress className={styles.progress} value={progress} />
       )}
-      {!nativeControls && (
+      {!controls && (
         <>
           {!showBigPlayButton && volume && (
             <button

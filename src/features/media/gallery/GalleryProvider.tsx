@@ -13,8 +13,10 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import * as portals from "react-reverse-portal";
 import { useLocation } from "react-router";
 
+import { useVideoPortalNode } from "#/features/media/video/VideoPortalProvider";
 import { findBlurOverlayContainer } from "#/features/post/inFeed/large/media/BlurOverlayMessage";
 import { setPostRead } from "#/features/post/postSlice";
 import { getSafeArea, isAndroid, isNative } from "#/helpers/device";
@@ -29,7 +31,7 @@ const MAX_IMAGE_WIDTH = 4000;
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
   open: (
-    img: HTMLImageElement | HTMLCanvasElement,
+    img: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
     src: string,
     post?: PostView,
     animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
@@ -54,10 +56,16 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
     null,
   );
   const thumbElRef = useRef<ThumbEl>();
-  const imgSrcRef = useRef("");
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
+
+  const [videoContainer, setVideoContainer] = useState<HTMLElement | null>(
+    null,
+  );
+
+  const [videoSrc, setVideoSrc] = useState("");
+  const portalNode = useVideoPortalNode(videoSrc);
 
   useEffect(() => {
     return () => {
@@ -91,7 +99,6 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       if (lightboxRef.current) return;
 
       thumbElRef.current = thumbEl;
-      imgSrcRef.current = src;
       setPost(post);
 
       if (thumbEl instanceof HTMLImageElement) {
@@ -105,18 +112,35 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
           animationType = "fade";
       }
 
+      const width = (() => {
+        switch (true) {
+          case thumbEl instanceof HTMLImageElement:
+            return thumbEl.naturalWidth;
+          case thumbEl instanceof HTMLVideoElement:
+            return thumbEl.videoWidth;
+          default:
+            return thumbEl.width;
+        }
+      })();
+
+      const height = (() => {
+        switch (true) {
+          case thumbEl instanceof HTMLImageElement:
+            return thumbEl.naturalHeight;
+          case thumbEl instanceof HTMLVideoElement:
+            return thumbEl.videoHeight;
+          default:
+            return thumbEl.height;
+        }
+      })();
+
       const instance = new PhotoSwipeLightbox({
         dataSource: [
           {
-            src,
-            height:
-              thumbEl instanceof HTMLImageElement
-                ? thumbEl.naturalHeight
-                : thumbEl.height,
-            width:
-              thumbEl instanceof HTMLImageElement
-                ? thumbEl.naturalWidth
-                : thumbEl.width,
+            src: thumbEl instanceof HTMLVideoElement ? undefined : src,
+            videoSrc: thumbEl instanceof HTMLVideoElement ? src : undefined,
+            height,
+            width,
             alt: getAlt(thumbEl),
           },
         ],
@@ -157,6 +181,22 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         },
       });
 
+      // use <picture> instead of <img>
+      instance.on("contentAppend", (e) => {
+        const { content } = e;
+
+        if (thumbEl instanceof HTMLVideoElement) {
+          content.element = document.createElement("div");
+
+          setVideoSrc(src);
+          setVideoContainer(content.element);
+
+          content.state = "loaded";
+
+          content.onLoaded();
+        }
+      });
+
       // ZoomLevel is not directly exported from photoswipe
       let zoomLevel: Parameters<
         Extract<ZoomLevelOption, (...args: never) => unknown>
@@ -170,6 +210,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       });
 
       instance.on("openingAnimationStart", () => {
+        if (thumbEl instanceof HTMLVideoElement) return; // videos portal
         if (animationType !== "zoom") return;
 
         compact([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
@@ -178,6 +219,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       });
 
       const cleanupHideThumb = () => {
+        if (thumbEl instanceof HTMLVideoElement) return; // videos portal
         if (animationType !== "zoom") return;
 
         compact([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
@@ -333,6 +375,11 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
 
       window.addEventListener("popstate", closeGalleryOnHistoryPopState);
 
+      instance.on("close", () => {
+        setVideoSrc("");
+        setVideoContainer(null);
+      });
+
       instance.on("destroy", () => {
         cleanupHideThumb();
         setPost(undefined);
@@ -367,18 +414,25 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
             thumbElRef.current && (
               <GalleryPostActions
                 post={post}
-                imgSrc={imgSrcRef.current}
+                imgSrc={videoSrc}
                 alt={getAlt(thumbElRef.current)}
               />
             )
           ) : (
             <ImageMoreActions
-              imgSrc={imgSrcRef.current}
+              imgSrc={videoSrc}
               alt={getAlt(thumbElRef.current)}
             />
           ),
           actionContainer,
         )}
+
+      {videoContainer !== null && portalNode
+        ? createPortal(
+            <portals.OutPortal node={portalNode} src={videoSrc} autoPlay />,
+            videoContainer,
+          )
+        : undefined}
 
       {children}
     </GalleryContext.Provider>
@@ -394,7 +448,7 @@ function getHashValue(): string {
 }
 
 function getAlt(
-  thumbEl: HTMLImageElement | HTMLCanvasElement | undefined,
+  thumbEl: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | undefined,
 ): string | undefined {
   if (!thumbEl) return;
 

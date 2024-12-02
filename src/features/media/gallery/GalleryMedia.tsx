@@ -4,8 +4,9 @@ import { ComponentProps, HTMLProps, MouseEvent, useContext } from "react";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
-import { isUrlPotentialAnimatedImage } from "#/helpers/url";
+import { isUrlPotentialAnimatedImage, isUrlVideo } from "#/helpers/url";
 
+import Video from "../video/Video";
 import GalleryGif from "./GalleryGif";
 import GalleryImg from "./GalleryImg";
 import { GalleryContext } from "./GalleryProvider";
@@ -19,15 +20,25 @@ export interface GalleryMediaProps
   animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"];
   onClick?: (e: MouseEvent) => boolean | void;
 
-  ref?: React.Ref<HTMLImageElement> | React.Ref<HTMLCanvasElement>;
+  ref?:
+    | React.Ref<HTMLImageElement>
+    | React.Ref<HTMLCanvasElement>
+    | React.Ref<HTMLVideoElement>;
 }
 
 export default function GalleryMedia({
   post,
   animationType,
   onClick: _onClick,
+  controls,
+  shouldPortal,
+  volume,
+  progress,
   ...props
 }: GalleryMediaProps) {
+  const isVideo =
+    props.src && isUrlVideo(props.src, post?.post.url_content_type);
+
   const isGif =
     props.src &&
     isUrlPotentialAnimatedImage(props.src, post?.post.url_content_type);
@@ -43,12 +54,15 @@ export default function GalleryMedia({
     if (
       !(
         e.currentTarget instanceof HTMLImageElement ||
-        e.currentTarget instanceof HTMLCanvasElement
+        e.currentTarget instanceof HTMLCanvasElement ||
+        e.currentTarget instanceof HTMLVideoElement
       )
     )
       return;
 
     if (e.target instanceof HTMLElement && e.target.closest("a")) return;
+
+    e.preventDefault();
 
     open(e.currentTarget, props.src, post, animationType);
 
@@ -61,6 +75,19 @@ export default function GalleryMedia({
 
     _onClick?.(e);
   }
+
+  if (isVideo)
+    return (
+      <Video
+        {...props}
+        controls={controls}
+        shouldPortal={shouldPortal}
+        volume={volume}
+        progress={progress}
+        ref={props.ref as ComponentProps<typeof Video>["ref"]}
+        onClick={onClick}
+      />
+    );
 
   if (isGif && !shouldAutoplay) {
     return (
