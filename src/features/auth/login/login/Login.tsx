@@ -24,15 +24,13 @@ import { getLoginErrorMessage, isLemmyError } from "#/helpers/lemmyErrors";
 import { loginSuccess } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { VOYAGER_TERMS } from "#/helpers/voyager";
-import { buildBaseLemmyUrl, getImageSrc } from "#/services/lemmy";
+import { buildBaseLemmyUrl } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { getInstanceFromHandle } from "../../authSelectors";
 import { addGuestInstance, login } from "../../authSlice";
-import lemmyLogo from "../lemmyLogo.svg";
+import LoginAvatarImg from "./LoginAvatarImg";
 import Totp from "./Totp";
-
-import styles from "./Login.module.css";
 
 interface LoginProps {
   url: string;
@@ -164,16 +162,7 @@ export default function Login({ url, siteIcon }: LoginProps) {
           >
             <IonChip outline>
               <IonAvatar>
-                <img
-                  className={styles.siteIconImg}
-                  src={
-                    siteIcon
-                      ? getImageSrc(siteIcon, {
-                          size: 24,
-                        })
-                      : lemmyLogo
-                  }
-                />
+                <LoginAvatarImg src={siteIcon} />
               </IonAvatar>
               <IonLabel>{url}</IonLabel>
             </IonChip>
