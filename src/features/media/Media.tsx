@@ -14,7 +14,15 @@ export interface MediaProps
   >;
 }
 
-export default function Media({ nativeControls, src, ...props }: MediaProps) {
+export default function Media({
+  nativeControls,
+  src,
+  shouldPortal,
+  animationType,
+  volume,
+  progress,
+  ...props
+}: MediaProps) {
   const isVideo = src && isUrlVideo(src, props.post?.post.url_content_type);
 
   if (isVideo)
@@ -22,6 +30,9 @@ export default function Media({ nativeControls, src, ...props }: MediaProps) {
       <Video
         {...props}
         nativeControls={nativeControls}
+        shouldPortal={shouldPortal}
+        volume={volume}
+        progress={progress}
         ref={props.ref as ComponentProps<typeof Video>["ref"]}
         src={src}
       />
@@ -30,6 +41,7 @@ export default function Media({ nativeControls, src, ...props }: MediaProps) {
   return (
     <GalleryMedia
       {...props}
+      animationType={animationType}
       ref={props.ref as ComponentProps<typeof GalleryMedia>["ref"]}
       src={src}
     />

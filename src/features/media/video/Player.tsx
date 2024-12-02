@@ -111,7 +111,7 @@ export default function Player({
   }, [inView, pause, resume]);
 
   return (
-    <div className={cx(styles.container, className)}>
+    <span className={cx(styles.container, className)}>
       <video
         {...rest}
         className={styles.videoEl}
@@ -168,7 +168,7 @@ export default function Player({
             </button>
           )}
           {showBigPlayButton && (
-            <div
+            <span
               className={styles.playOverlay}
               onClick={(e) => {
                 e.preventDefault(); // reverse-portal
@@ -178,10 +178,10 @@ export default function Player({
               }}
             >
               <IonIcon icon={play} />
-            </div>
+            </span>
           )}
         </>
       )}
-    </div>
+    </span>
   );
 }

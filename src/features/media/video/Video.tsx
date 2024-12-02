@@ -10,8 +10,8 @@ export interface VideoProps extends Omit<PlayerProps, "ref"> {
   shouldPortal?: boolean;
 }
 
-export default function Video(props: VideoProps) {
-  const VideoComponent = props.shouldPortal ? PortaledVideo : UnportaledVideo;
+export default function Video({ shouldPortal, ...props }: VideoProps) {
+  const VideoComponent = shouldPortal ? PortaledVideo : UnportaledVideo;
 
   return <VideoComponent {...props} />;
 }
