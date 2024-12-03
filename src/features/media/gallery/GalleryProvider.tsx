@@ -40,7 +40,6 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
-  // eslint-disable-next-line no-empty-function
   open: async () => {},
   close: noop,
 });
@@ -147,6 +146,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         showHideAnimationType: animationType ?? "fade",
         zoom: false,
         bgOpacity: 1,
+        preloadFirstSlide: false,
         // Put in ion-app element so share IonActionSheet is on top
         appendToEl: document.querySelector("ion-app")!,
         paddingFn: () => getSafeArea(),
@@ -181,19 +181,46 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         },
       });
 
+      instance.on("contentLoad", (e) => {
+        if (thumbEl instanceof HTMLVideoElement) {
+          e.preventDefault();
+
+          e.content.element = document.createElement("div");
+          e.content.type = "image"; // allow zoom
+
+          e.content.state = "loaded";
+          e.content.onLoaded();
+        }
+      });
+
+      instance.addFilter("useContentPlaceholder", (useContentPlaceholder) => {
+        if (thumbEl instanceof HTMLVideoElement) return false;
+
+        return useContentPlaceholder;
+      });
+
       // use <picture> instead of <img>
       instance.on("contentAppend", (e) => {
         const { content } = e;
 
         if (thumbEl instanceof HTMLVideoElement) {
-          content.element = document.createElement("div");
+          e.preventDefault();
 
           setVideoSrc(src);
-          setVideoContainer(content.element);
+          setVideoContainer(content.element!);
 
-          content.state = "loaded";
+          content.slide!.container.appendChild(content.element!);
+        }
+      });
 
-          content.onLoaded();
+      instance.on("contentRemove", (e) => {
+        const { content } = e;
+        if (
+          thumbEl instanceof HTMLVideoElement &&
+          content.element!.parentNode
+        ) {
+          e.preventDefault();
+          content.element!.remove();
         }
       });
 
