@@ -16,6 +16,7 @@ import { createPortal } from "react-dom";
 import * as portals from "react-reverse-portal";
 import { useLocation } from "react-router";
 
+import Player from "#/features/media/video/Player";
 import { useVideoPortalNode } from "#/features/media/video/VideoPortalProvider";
 import { findBlurOverlayContainer } from "#/features/post/inFeed/large/media/BlurOverlayMessage";
 import { setPostRead } from "#/features/post/postSlice";
@@ -40,6 +41,7 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
+  // eslint-disable-next-line no-empty-function
   open: async () => {},
   close: noop,
 });
@@ -146,7 +148,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         showHideAnimationType: animationType ?? "fade",
         zoom: false,
         bgOpacity: 1,
-        preloadFirstSlide: false,
+        showAnimationDuration: thumbEl instanceof HTMLVideoElement ? 0 : 333,
         // Put in ion-app element so share IonActionSheet is on top
         appendToEl: document.querySelector("ion-app")!,
         paddingFn: () => getSafeArea(),
@@ -186,11 +188,15 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
           e.preventDefault();
 
           e.content.element = document.createElement("div");
-          e.content.type = "image"; // allow zoom
+          e.content.type = "video"; // allow zoom
 
           e.content.state = "loaded";
           e.content.onLoaded();
         }
+      });
+
+      instance.addFilter("isContentZoomable", (isContentZoomable, content) => {
+        return isContentZoomable || content.type === "video";
       });
 
       instance.addFilter("useContentPlaceholder", (useContentPlaceholder) => {
@@ -456,7 +462,14 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
 
       {videoContainer !== null && portalNode
         ? createPortal(
-            <portals.OutPortal node={portalNode} src={videoSrc} autoPlay />,
+            <portals.OutPortal<typeof Player>
+              node={portalNode}
+              src={videoSrc}
+              pauseWhenNotInView={false}
+              controls={false}
+              progress={false}
+              volume={false}
+            />,
             videoContainer,
           )
         : undefined}

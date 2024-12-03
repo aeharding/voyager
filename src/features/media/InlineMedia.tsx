@@ -63,7 +63,7 @@ export default function InlineMedia({
         src={src}
         className={cx(mediaPlaceholderStyles.media, mediaClassName)}
         style={buildStyle()}
-        ref={mediaRef}
+        ref={mediaRef as React.Ref<HTMLImageElement>}
         onError={() => {
           if (src) dispatch(imageFailed(src));
         }}

@@ -3,6 +3,8 @@
   overflow: hidden;
 
   display: flex;
+
+  width: 100%; /* needed for iOS zoom in photoswipe */
 }
 
 .progress {

@@ -1,5 +1,5 @@
 import { useIonViewWillEnter } from "@ionic/react";
-import { last, noop } from "es-toolkit";
+import { last, noop, without } from "es-toolkit";
 import {
   createContext,
   useContext,
@@ -33,8 +33,9 @@ export default function VideoPortalProvider({
         ...videoRefs,
         [src]: {
           ...potentialExisting,
+          // most recently used (currently playing location) is last
           sourceUids: [
-            ...potentialExisting.sourceUids.filter((id) => id !== sourceUid),
+            ...without(potentialExisting.sourceUids, sourceUid),
             sourceUid,
           ],
         },
@@ -61,15 +62,18 @@ export default function VideoPortalProvider({
   function cleanupPortalNodeForSrcIfNeeded(src: string, sourceUid: string) {
     const videoRefs = videoRefsRef.current;
 
+    const videoRef = videoRefs[src];
+
+    if (!videoRef) return;
+
     // Portal was handed off to another OutPortal.
     // Some other portal outlet is controlling, so not responsible for cleanup
-    if (
-      videoRefs[src]?.sourceUids &&
-      last(videoRefs[src]?.sourceUids) !== sourceUid
-    )
-      return;
+    if (videoRef.sourceUids && last(videoRef.sourceUids) !== sourceUid) return;
 
-    if (videoRefs[src]?.sourceUids.length === 1) {
+    if (
+      videoRef.sourceUids.length === 1 &&
+      videoRef.sourceUids[0] === sourceUid
+    ) {
       setVideoRefs((videoRefs) => {
         const updatedVideoRefs = { ...videoRefs };
         delete updatedVideoRefs[src];
@@ -79,9 +83,8 @@ export default function VideoPortalProvider({
       setVideoRefs((videoRefs) => ({
         ...videoRefs,
         [src]: {
-          ...videoRefs[src],
-          sourceUids:
-            videoRefs[src]?.sourceUids?.filter((id) => id !== sourceUid) ?? [],
+          ...videoRef,
+          sourceUids: without(videoRef.sourceUids, sourceUid),
         },
       }));
     }

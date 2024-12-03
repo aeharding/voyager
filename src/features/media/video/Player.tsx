@@ -19,7 +19,7 @@ import { getVideoSrcForUrl } from "#/helpers/url";
 
 import styles from "./Player.module.css";
 
-export interface PlayerProps {
+export interface PlayerProps extends React.HTMLProps<HTMLElement> {
   src: string;
 
   controls?: boolean;
@@ -31,6 +31,8 @@ export interface PlayerProps {
   style?: CSSProperties;
   alt?: string;
 
+  pauseWhenNotInView?: boolean;
+
   ref?: React.RefObject<HTMLVideoElement>;
 }
 
@@ -41,6 +43,7 @@ export default function Player({
   progress: showProgress = !controls,
   volume = true,
   autoPlay: videoAllowedToAutoplay = true,
+  pauseWhenNotInView = true,
   ref,
   ...rest
 }: PlayerProps) {
@@ -102,13 +105,18 @@ export default function Player({
 
   useEffect(() => {
     if (!videoRef.current) return;
+    if (!pauseWhenNotInView) {
+      if (autoPlay) resume();
+
+      return;
+    }
 
     if (inView) {
       resume();
     } else {
       pause();
     }
-  }, [inView, pause, resume]);
+  }, [inView, pause, resume, pauseWhenNotInView, autoPlay]);
 
   return (
     <span className={cx(styles.container, className)}>

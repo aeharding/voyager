@@ -134,7 +134,7 @@ export const getVideoSrc = createAsyncThunk(
 export const initializeIfNeeded = createAsyncThunk(
   "redgifs/initialize",
   async (_, { dispatch }) => {
-    const providerData = await db.getProvider("redgifs");
+    const providerData = (await db.getProvider("redgifs")) as RedgifsProvider;
 
     if (!providerData) return;
 

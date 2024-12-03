@@ -1,18 +1,17 @@
 import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
-import { ComponentProps, HTMLProps, MouseEvent, useContext } from "react";
+import { ComponentProps, MouseEvent, useContext } from "react";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
+import Video, { VideoProps } from "#/features/media/video/Video";
 import { isUrlPotentialAnimatedImage, isUrlVideo } from "#/helpers/url";
 
-import Video from "../video/Video";
 import GalleryGif from "./GalleryGif";
 import GalleryImg from "./GalleryImg";
 import { GalleryContext } from "./GalleryProvider";
 
-export interface GalleryMediaProps
-  extends Omit<HTMLProps<HTMLImageElement>, "ref" | "onClick"> {
+export interface GalleryMediaProps extends Omit<VideoProps, "ref" | "src"> {
   src?: string;
   alt?: string;
   className?: string;
@@ -80,6 +79,7 @@ export default function GalleryMedia({
     return (
       <Video
         {...props}
+        src={props.src!}
         controls={controls}
         shouldPortal={shouldPortal}
         volume={volume}
