@@ -10,6 +10,8 @@
 
   /* from media/gallery/actions/shared.ts */
   margin-bottom: calc(calc(-1 * var(--topPadding)) + 1rem);
+
+  color: white;
 }
 
 .dynamicHeightBg {
