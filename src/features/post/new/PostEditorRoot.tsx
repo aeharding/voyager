@@ -339,9 +339,11 @@ export default function PostEditorRoot({
       message: "Add an accessible caption",
       inputs: [
         {
+          type: "textarea",
           value: altText,
-          placeholder: "Fluffy fur blankets the feline...",
+          placeholder: "Fluffy fur blankets the feline",
           name: "altText",
+          attributes: { rows: 3 },
         },
       ],
       buttons: [

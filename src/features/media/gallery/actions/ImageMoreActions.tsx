@@ -25,7 +25,7 @@ export default function ImageMoreActions({
       {alt && (
         <BottomContainer>
           <AltText alt={alt} />
-          <BottomContainerActions withBg={false} />
+          <BottomContainerActions withBg={!!alt} />
         </BottomContainer>
       )}
     </>
