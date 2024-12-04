@@ -14,7 +14,7 @@ export default function AltText({ alt }: AltTextProps) {
   if (!alt) return;
 
   return (
-    <div className={styles.container}>
+    <div className={cx("alt-text", styles.container)}>
       <div
         className={styles.text}
         onClick={() => setShouldClampAltText((v) => !v)}

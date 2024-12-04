@@ -124,6 +124,11 @@ ion-alert.preserve-newlines {
   display: none;
 }
 
+.pswp__hide-on-close {
+  /* Photoswipe `will-change: opacity` breaks alt text backdrop-filter (when opened) */
+  will-change: auto !important;
+}
+
 ion-action-sheet .detail::before {
   content: "";
   z-index: 1;
