@@ -13,4 +13,4 @@ else
     echo "This means $version hasn't been released yet."
 fi
 
-./scripts/postrelease.sh
+./scripts/release.sh
