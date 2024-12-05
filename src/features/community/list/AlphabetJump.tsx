@@ -22,7 +22,9 @@ const SpecialSection = {
 
 type SpecialSectionType = (typeof SpecialSection)[keyof typeof SpecialSection];
 
-type JumpItem = SpecialSectionType | string;
+type JumpValue = SpecialSectionType | string;
+
+type JumpItem = [JumpValue, number];
 
 const SECTIONS = [
   <IonIcon icon={menuOutline} key={0} />,
@@ -51,18 +53,27 @@ const SIMPLIFIED_SECTIONS = SECTIONS.reduce<typeof SECTIONS>(
   [],
 );
 
+const LOOKUP: Record<string, SpecialSectionType> = {
+  Moderator: SpecialSection.Moderated,
+  Favorites: SpecialSection.Favorited,
+} as const;
+
+function mapSeparatorsToJumpSections(
+  separators: { label: string; index: number }[],
+): JumpItem[] {
+  return compact(
+    separators.map(({ label, index }) => [LOOKUP[label] ?? label, index]),
+  );
+}
+
 interface AlphabetJumpProps {
   virtuaRef: RefObject<VListHandle>;
-  hasModerated: boolean;
-  hasFavorited: boolean;
-  letters: string[];
+  separators: { label: string; index: number }[];
 }
 
 export default function AlphabetJump({
   virtuaRef,
-  hasFavorited,
-  hasModerated,
-  letters,
+  separators,
 }: AlphabetJumpProps) {
   const containerElTopRef = useRef<DOMRect | undefined>();
   const scrollViewRef = useRef<HTMLElement | undefined>();
@@ -70,21 +81,18 @@ export default function AlphabetJump({
   const jumpTableLookup = useMemo(
     () =>
       buildJumpToTable(
-        compact([
-          SpecialSection.Home,
-          hasFavorited ? SpecialSection.Favorited : undefined,
-          hasModerated ? SpecialSection.Moderated : undefined,
-          ...letters,
-        ]),
-        compact([
-          SpecialSection.Home,
-          SpecialSection.Favorited,
-          SpecialSection.Moderated,
-          ...alphabetUpperCase,
-          "#",
-        ]),
+        compact(mapSeparatorsToJumpSections(separators)),
+        compact(
+          [
+            SpecialSection.Home,
+            SpecialSection.Favorited,
+            SpecialSection.Moderated,
+            ...alphabetUpperCase,
+            "#",
+          ].map((value, index) => [value, index]),
+        ),
       ),
-    [hasFavorited, hasModerated, letters],
+    [separators],
   );
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -150,8 +158,8 @@ function buildJumpToTable(partial: JumpItem[], all: JumpItem[]): number[] {
   let lastFound = 0;
 
   for (let i = 0; i < all.length; i++) {
-    const foundIndex = partial.findIndex((p) => p === all[i]);
-    if (foundIndex !== -1) lastFound = foundIndex;
+    const foundItem = partial.find((p) => p[0] === all[i]![0]);
+    if (foundItem) lastFound = foundItem[1];
     jumpToTable.push(lastFound);
   }
 

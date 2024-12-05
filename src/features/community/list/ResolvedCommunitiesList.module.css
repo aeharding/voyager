@@ -23,11 +23,11 @@
   }
 }
 
-.ionList {
-  height: 100%;
-}
-
-.vList {
+.virtualizerScrollView {
+  display: block;
+  overflow-y: auto;
+  contain: strict;
+  width: 100%;
   height: 100%;
 
   &::-webkit-scrollbar {

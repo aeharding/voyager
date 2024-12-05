@@ -26,21 +26,27 @@ import {
   addFavorite,
   followCommunity,
   removeFavorite,
-} from "../communitySlice";
-import { ToggleIcon } from "../ToggleIcon";
+} from "../../communitySlice";
+import { ToggleIcon } from "../../ToggleIcon";
 
+import listStyles from "../ResolvedCommunitiesList.module.css";
 import styles from "./CommunityListItem.module.css";
-import listStyles from "./ResolvedCommunitiesList.module.css";
+
+interface CommunityListItemProps {
+  community: Community | string;
+  favorites?: string[];
+  removeAction: "follow" | "favorite" | "none";
+  line: boolean | undefined;
+  className?: string;
+}
 
 export default function CommunityListItem({
   community,
   favorites,
   removeAction,
-}: {
-  community: Community | string;
-  favorites?: string[];
-  removeAction: "follow" | "favorite" | "none";
-}) {
+  line,
+  className,
+}: CommunityListItemProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
@@ -104,9 +110,11 @@ export default function CommunityListItem({
   return (
     <IonItemSliding>
       <IonItem
+        {...attributedPreventOnClickNavigationBug}
         routerLink={buildGeneralBrowseLink(`/c/${handle}`)}
         detail={false}
-        {...attributedPreventOnClickNavigationBug}
+        lines={line ? "inset" : "none"}
+        className={className}
       >
         <div className={listStyles.content}>
           <ItemIcon item={community} size={28} />
