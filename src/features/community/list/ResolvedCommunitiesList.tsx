@@ -4,7 +4,9 @@ import { Community } from "lemmy-js-client";
 import {
   createContext,
   memo,
+  useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -22,6 +24,8 @@ import Item from "./Item";
 import useShowModeratorFeed from "./useShowModeratorFeed";
 
 import styles from "./ResolvedCommunitiesList.module.css";
+
+const OVERSCAN_AMOUNT = 3;
 
 interface SeparatorItem {
   type: "separator";
@@ -62,6 +66,7 @@ function ResolvedCommunitiesList({
   const jwt = useAppSelector(jwtSelector);
 
   const virtuaRef = useRef<VListHandle>(null);
+  const [shift, setShift] = useState(false);
 
   const moderates = useAppSelector(
     (state) => state.site.response?.my_user?.moderates,
@@ -98,7 +103,7 @@ function ResolvedCommunitiesList({
     );
   }, [communities]);
 
-  const items: ItemType[] = useMemo(() => {
+  const { items, throughFavoritesCount } = useMemo(() => {
     const favoriteItems: (FavoriteItem | SeparatorItem)[] = favorites?.length
       ? [
           { type: "separator", value: "Favorites" },
@@ -124,15 +129,26 @@ function ResolvedCommunitiesList({
       ],
     );
 
-    return compact([
+    const upThroughFavorites: ItemType[] = compact([
       jwt && { type: "home" },
       { type: "all" },
       { type: "local" },
       showModeratorFeed && { type: "mod" },
       ...favoriteItems,
+    ]);
+
+    const throughFavoritesCount = upThroughFavorites.length;
+
+    const items: ItemType[] = compact([
+      ...upThroughFavorites,
       ...modItems,
       ...alphabetItems,
     ]);
+
+    return {
+      items,
+      throughFavoritesCount,
+    };
   }, [
     communitiesGroupedByLetter,
     favorites?.length,
@@ -154,28 +170,45 @@ function ResolvedCommunitiesList({
 
   const [activeIndex, setActiveIndex] = useState(-1);
 
+  const updateActiveIndex = useCallback(() => {
+    if (!virtuaRef.current) return;
+    const start = virtuaRef.current.findStartIndex();
+    const activeStickyIndex =
+      [...stickyIndexes].reverse().find((index) => start >= index) ?? -1;
+    setActiveIndex(activeStickyIndex);
+  }, [stickyIndexes]);
+
+  useEffect(() => {
+    updateActiveIndex();
+  }, [updateActiveIndex]);
+
   return (
     <StickyIndexContext.Provider value={activeIndex}>
       <div
         className={cx(
-          styles.scroller,
+          styles.virtualizerScrollView,
           isSafariFeedHackEnabled
             ? "virtual-scroller"
             : "ion-content-scroll-host virtual-scroller",
         )}
       >
         <Virtualizer
+          shift={shift}
           ref={virtuaRef}
-          overscan={3}
+          overscan={OVERSCAN_AMOUNT}
           onScroll={(offset) => {
             onListAtTopChange?.(offset < 10);
 
-            if (!virtuaRef.current) return;
-            const start = virtuaRef.current.findStartIndex();
-            const activeStickyIndex =
-              [...stickyIndexes].reverse().find((index) => start >= index) ??
-              -1;
-            setActiveIndex(activeStickyIndex);
+            if (virtuaRef.current) {
+              setShift(
+                virtuaRef.current.findStartIndex() >
+                  throughFavoritesCount + OVERSCAN_AMOUNT, // overscan
+              );
+            } else {
+              setShift(false);
+            }
+
+            updateActiveIndex();
           }}
           // @ts-expect-error Virtua types not correct
           as={IonList}
