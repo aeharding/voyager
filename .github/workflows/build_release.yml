@@ -20,7 +20,7 @@ jobs:
   build_docker:
     uses: ./.github/workflows/docker.yml
     with:
-      is_main_build: ${{ inputs.is_main_build }}
+      is_main_build: ${{ inputs.is_main_build || false }}
     permissions:
       contents: read
       packages: write
