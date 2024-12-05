@@ -23,11 +23,8 @@
   }
 }
 
-.ionList {
-  height: 100%;
-}
-
-.vList {
+.scroller {
+  overflow-y: scroll;
   height: 100%;
 
   &::-webkit-scrollbar {
