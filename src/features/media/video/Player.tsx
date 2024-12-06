@@ -34,6 +34,7 @@ export interface PlayerProps extends React.HTMLProps<HTMLElement> {
   pauseWhenNotInView?: boolean;
 
   ref?: React.RefObject<HTMLVideoElement>;
+  videoRef?: React.RefObject<HTMLVideoElement>;
 }
 
 export default function Player({
@@ -45,10 +46,10 @@ export default function Player({
   autoPlay: videoAllowedToAutoplay = true,
   pauseWhenNotInView = true,
   ref,
+  videoRef: _videoRef,
   ...rest
 }: PlayerProps) {
   const videoRef = useRef<HTMLVideoElement>();
-
   const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(false);
 
@@ -61,6 +62,13 @@ export default function Player({
   const src = useMemo(() => getVideoSrcForUrl(potentialSrc), [potentialSrc]);
 
   useImperativeHandle(ref, () => videoRef.current as HTMLVideoElement, []);
+
+  // When portaled, need a way to access the player ref
+  useImperativeHandle(
+    _videoRef,
+    () => videoRef.current as HTMLVideoElement,
+    [],
+  );
 
   const [inViewRef, inView] = useInView({
     threshold: 0.5,

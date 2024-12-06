@@ -41,7 +41,6 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
-  // eslint-disable-next-line no-empty-function
   open: async () => {},
   close: noop,
 });
@@ -58,6 +57,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   );
   const thumbElRef = useRef<ThumbEl>();
   const [post, setPost] = useState<PostView>();
+  const [isVideo, setIsVideo] = useState(false);
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
 
@@ -67,6 +67,8 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
 
   const [videoSrc, setVideoSrc] = useState("");
   const portalNode = useVideoPortalNode(videoSrc);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     return () => {
@@ -209,10 +211,12 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       instance.on("contentAppend", (e) => {
         const { content } = e;
 
+        setVideoSrc(src);
+
         if (thumbEl instanceof HTMLVideoElement) {
           e.preventDefault();
 
-          setVideoSrc(src);
+          setIsVideo(true);
           setVideoContainer(content.element!);
 
           content.slide!.container.appendChild(content.element!);
@@ -410,6 +414,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
 
       instance.on("close", () => {
         setVideoSrc("");
+        setIsVideo(false);
         setVideoContainer(null);
       });
 
@@ -447,14 +452,17 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
             thumbElRef.current && (
               <GalleryPostActions
                 post={post}
-                imgSrc={videoSrc}
+                src={videoSrc}
                 alt={getAlt(thumbElRef.current)}
+                isVideo={isVideo}
+                videoRef={videoRef}
               />
             )
           ) : (
             <ImageMoreActions
               imgSrc={videoSrc}
               alt={getAlt(thumbElRef.current)}
+              videoRef={videoRef}
             />
           ),
           actionContainer,
@@ -463,6 +471,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       {videoContainer !== null && portalNode
         ? createPortal(
             <portals.OutPortal<typeof Player>
+              videoRef={videoRef}
               node={portalNode}
               src={videoSrc}
               pauseWhenNotInView={false}

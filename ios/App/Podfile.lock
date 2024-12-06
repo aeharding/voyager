@@ -39,9 +39,9 @@ PODS:
     - Capacitor
   - CapacitorTips (1.0.0):
     - Capacitor
-  - SDWebImage (5.18.7):
-    - SDWebImage/Core (= 5.18.7)
-  - SDWebImage/Core (5.18.7)
+  - SDWebImage (5.20.0):
+    - SDWebImage/Core (= 5.20.0)
+  - SDWebImage/Core (5.20.0)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/.pnpm/@capacitor+ios@6.2.0_@capacitor+core@6.2.0/node_modules/@capacitor/ios`)"
@@ -61,7 +61,7 @@ DEPENDENCIES:
   - "CapacitorReader (from `../../node_modules/.pnpm/capacitor-reader@0.2.0_@capacitor+core@6.2.0/node_modules/capacitor-reader`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/.pnpm/@capacitor+splash-screen@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/splash-screen`)"
-  - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media`)"
+  - CapacitorStashMedia (from `../../../capacitor-stash-media`)
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/status-bar`)"
   - "CapacitorTips (from `../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-tips`)"
 
@@ -105,7 +105,7 @@ EXTERNAL SOURCES:
   CapacitorSplashScreen:
     :path: "../../node_modules/.pnpm/@capacitor+splash-screen@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/splash-screen"
   CapacitorStashMedia:
-    :path: "../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media"
+    :path: "../../../capacitor-stash-media"
   CapacitorStatusBar:
     :path: "../../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/status-bar"
   CapacitorTips:
@@ -132,8 +132,8 @@ SPEC CHECKSUMS:
   CapacitorStashMedia: 10aa96dc5f874c4c27642528a4c327c46792abf2
   CapacitorStatusBar: 3b9ac7d0684770522c532d1158a1434512ab1477
   CapacitorTips: 2087733aea06ec041b210085395ca934c8554907
-  SDWebImage: f9258c58221ed854cfa0e2b80ee4033710b1c6d3
+  SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
 
-PODFILE CHECKSUM: 810e83271706ad233eac03b47e2284efbdcfc205
+PODFILE CHECKSUM: 095fb6bc4cfa620d894c9a6c3321dd14f0a18f85
 
 COCOAPODS: 1.16.2
