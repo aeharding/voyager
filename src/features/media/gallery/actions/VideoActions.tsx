@@ -2,6 +2,7 @@ import { IonButton, IonIcon, IonRange } from "@ionic/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import { pause } from "ionicons/icons";
 import React, {
+  useContext,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useRef,
@@ -9,6 +10,8 @@ import React, {
 } from "react";
 
 import { pip } from "#/features/icons";
+
+import { GalleryContext } from "../GalleryProvider";
 
 import styles from "./VideoActions.module.css";
 
@@ -47,6 +50,7 @@ export default function VideoActionsLoader({ videoRef }: VideoActionsProps) {
 }
 
 function VideoActions({ videoRef }: VideoActionsProps) {
+  const { close } = useContext(GalleryContext);
   const setupEvent = useEffectEvent(setup);
   const teardownEvent = useEffectEvent(teardown);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -181,9 +185,10 @@ function VideoActions({ videoRef }: VideoActionsProps) {
     }
   }
 
-  function requestPip() {
+  async function requestPip() {
     if (videoRef.current) {
-      videoRef.current.requestPictureInPicture();
+      await videoRef.current.requestPictureInPicture();
+      close();
     }
   }
 

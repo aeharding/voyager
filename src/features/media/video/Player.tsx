@@ -54,6 +54,7 @@ export default function Player({
   const videoRef = useRef<HTMLVideoElement>();
   const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(false);
+  const isInPipRef = useRef(false);
 
   const shouldAppAutoplay = useShouldAutoplay();
   const autoPlay = shouldAppAutoplay && videoAllowedToAutoplay;
@@ -92,6 +93,7 @@ export default function Player({
   const pause = useCallback(() => {
     if (!videoRef.current) return;
     if (userPaused) return;
+    if (isInPipRef.current) return;
 
     wantedToPlayRef.current = false;
 
@@ -107,6 +109,7 @@ export default function Player({
   const resume = useCallback(() => {
     if (!videoRef.current) return;
     if (userPaused) return;
+    if (isInPipRef.current) return;
 
     videoRef.current.play();
     wantedToPlayRef.current = true;
@@ -127,6 +130,24 @@ export default function Player({
       pause();
     }
   }, [inView, pause, resume, pauseWhenNotInView, autoPlay]);
+
+  useEffect(() => {
+    function enterPip() {
+      isInPipRef.current = true;
+    }
+
+    function leavePip() {
+      isInPipRef.current = false;
+    }
+
+    videoRef.current?.addEventListener("enterpictureinpicture", enterPip);
+    videoRef.current?.addEventListener("leavepictureinpicture", leavePip);
+
+    return () => {
+      videoRef.current?.removeEventListener("enterpictureinpicture", enterPip);
+      videoRef.current?.removeEventListener("leavepictureinpicture", leavePip);
+    };
+  }, []);
 
   return (
     <span className={cx(styles.container, className)}>
