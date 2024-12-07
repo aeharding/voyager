@@ -22,19 +22,24 @@ import { GalleryContext } from "../GalleryProvider";
 import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
 import { BottomContainer, BottomContainerActions } from "./shared";
+import VideoActions from "./VideoActions";
 
 import styles from "./GalleryPostActions.module.css";
 
 interface GalleryPostActionsProps {
   post: PostView;
-  imgSrc: string;
+  src: string;
   alt?: string;
+  isVideo?: boolean;
+  videoRef?: React.RefObject<HTMLVideoElement>;
 }
 
 export default function GalleryPostActions({
   post,
-  imgSrc,
+  src,
   alt,
+  isVideo,
+  videoRef,
 }: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useOptimizedIonRouter();
@@ -44,13 +49,13 @@ export default function GalleryPostActions({
 
   async function shareImage() {
     if (!isNative()) {
-      Share.share({ url: imgSrc });
+      Share.share({ url: src });
       return;
     }
 
     try {
       await StashMedia.shareImage({
-        url: imgSrc,
+        url: src,
         title: post.post.name,
       });
     } catch (error) {
@@ -68,9 +73,10 @@ export default function GalleryPostActions({
   return (
     <BottomContainer>
       <AltText alt={alt} />
+      {isVideo && videoRef && <VideoActions videoRef={videoRef} />}
       <BottomContainerActions withBg>
         <div className={styles.container} onClick={(e) => e.stopPropagation()}>
-          <Voting post={post} imgSrc={imgSrc} />
+          <Voting post={post} src={src} />
           <div
             onClick={() => {
               close();
@@ -89,7 +95,7 @@ export default function GalleryPostActions({
           </div>
           <IonIcon icon={getShareIcon()} onClick={shareImage} />
           {isNative() ? (
-            <GalleryActions post={post} imgSrc={imgSrc} />
+            <GalleryActions post={post} src={src} isVideo={isVideo} />
           ) : (
             <InFeedContext.Provider value={true}>
               <MoreActions post={post} />

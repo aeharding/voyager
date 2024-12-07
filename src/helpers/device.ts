@@ -16,6 +16,18 @@ export const isNative = memoize(() => {
   return Capacitor.isNativePlatform();
 });
 
+/**
+ * Run `VITE_FORCE_NO_CORS=true` in dev to test with following command to disable CORS for easier testing
+ *
+ * ```
+ * /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --disable-site-isolation-trials --disable-web-security --user-data-dir="~/tmp"
+ * ```
+ */
+export function canBypassCors() {
+  if (import.meta.env.VITE_FORCE_NO_CORS) return true;
+  return isNative();
+}
+
 export function isInstalled(): boolean {
   return isNative() || window.matchMedia("(display-mode: standalone)").matches;
 }

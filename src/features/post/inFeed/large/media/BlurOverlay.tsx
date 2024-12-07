@@ -7,7 +7,7 @@ import BlurOverlayMessage from "./BlurOverlayMessage";
 import styles from "./BlurOverlay.module.css";
 
 interface BlurOverlayProps extends React.PropsWithChildren {
-  src: string;
+  src: string | undefined;
 }
 
 export default function BlurOverlay({ src, children }: BlurOverlayProps) {

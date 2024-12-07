@@ -75,7 +75,7 @@
     "capacitor-launch-native": "^1.0.0",
     "capacitor-plugin-safe-area": "^3.0.3",
     "capacitor-reader": "^0.2.0",
-    "capacitor-stash-media": "^2.0.1",
+    "capacitor-stash-media": "link:../capacitor-stash-media",
     "capacitor-tips": "^1.0.0",
     "colorjs.io": "^0.5.2",
     "compare-versions": "^6.1.1",
