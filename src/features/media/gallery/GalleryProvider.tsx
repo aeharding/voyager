@@ -41,6 +41,7 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
+  // eslint-disable-next-line no-empty-function
   open: async () => {},
   close: noop,
 });
@@ -69,6 +70,34 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const portalNode = useVideoPortalNode(videoSrc);
 
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [wasPlayingBeforeScrub, setWasPlayingBeforeScrub] = useState(false);
+
+  const handleScrubStart = useCallback(() => {
+    if (videoRef.current) {
+      setWasPlayingBeforeScrub(!videoRef.current.paused);
+      videoRef.current.pause();
+    }
+  }, []);
+
+  const handleScrubEnd = useCallback(() => {
+    if (videoRef.current && wasPlayingBeforeScrub) {
+      videoRef.current.play();
+    }
+  }, [wasPlayingBeforeScrub]);
+
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    videoElement.addEventListener("scrubstart", handleScrubStart);
+    videoElement.addEventListener("scrubend", handleScrubEnd);
+
+    return () => {
+      videoElement.removeEventListener("scrubstart", handleScrubStart);
+      videoElement.removeEventListener("scrubend", handleScrubEnd);
+    };
+  }, [handleScrubStart, handleScrubEnd]);
 
   useEffect(() => {
     return () => {
@@ -331,6 +360,14 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         });
       });
 
+      instance.on("verticalDrag", () => {
+        queueMicrotask(() => {
+          instance.pswp?.gestures.pswp.element?.classList.remove(
+            "pswp--ui-visible",
+          );
+        });
+      });
+
       // -----------------------------
       // Android back button logic start
       const getHistoryState = () => {
@@ -478,6 +515,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
               controls={false}
               progress={false}
               volume={false}
+              allowShowPlayButton={false}
             />,
             videoContainer,
           )

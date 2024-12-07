@@ -1,5 +1,5 @@
 import { IonButton, IonIcon, IonRange } from "@ionic/react";
-import { play } from "ionicons/icons";
+import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import { pause } from "ionicons/icons";
 import React, {
   useEffect,
@@ -7,6 +7,8 @@ import React, {
   useRef,
   useState,
 } from "react";
+
+import { pip } from "#/features/icons";
 
 import styles from "./VideoActions.module.css";
 
@@ -50,6 +52,8 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [wasPlayingBeforeScrub, setWasPlayingBeforeScrub] = useState(false);
 
   useEffect(() => {
     setupEvent();
@@ -60,6 +64,7 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   useEffect(() => {
     if (videoRef.current) {
       setIsPlaying(!videoRef.current.paused);
+      setIsMuted(videoRef.current.muted);
     }
   }, [videoRef]);
 
@@ -68,6 +73,7 @@ function VideoActions({ videoRef }: VideoActionsProps) {
       videoRef.current.addEventListener("timeupdate", handleTimeUpdate);
       videoRef.current.addEventListener("play", handlePlay);
       videoRef.current.addEventListener("pause", handlePause);
+      videoRef.current.addEventListener("volumechange", handleVolumeChange);
     }
   }
 
@@ -76,6 +82,7 @@ function VideoActions({ videoRef }: VideoActionsProps) {
       videoRef.current.removeEventListener("timeupdate", handleTimeUpdate);
       videoRef.current.removeEventListener("play", handlePlay);
       videoRef.current.removeEventListener("pause", handlePause);
+      videoRef.current.removeEventListener("volumechange", handleVolumeChange);
     }
   }
 
@@ -95,6 +102,10 @@ function VideoActions({ videoRef }: VideoActionsProps) {
     setIsPlaying(false);
   }
 
+  function handleVolumeChange() {
+    setIsMuted(videoRef.current?.muted ?? false);
+  }
+
   function togglePlayPause() {
     if (videoRef.current) {
       if (isPlaying) {
@@ -106,11 +117,25 @@ function VideoActions({ videoRef }: VideoActionsProps) {
     }
   }
 
+  function toggleMute() {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  }
+
   function handleMouseDown() {
+    if (videoRef.current) {
+      setWasPlayingBeforeScrub(!videoRef.current.paused);
+      videoRef.current.pause();
+    }
     setIsDragging(true);
   }
 
   function handleMouseUp() {
+    if (wasPlayingBeforeScrub && videoRef.current) {
+      videoRef.current.play();
+    }
     setIsDragging(false);
   }
 
@@ -128,10 +153,17 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   }
 
   function handleTouchStart() {
+    if (videoRef.current) {
+      setWasPlayingBeforeScrub(!videoRef.current.paused);
+      videoRef.current.pause();
+    }
     setIsDragging(true);
   }
 
   function handleTouchEnd() {
+    if (wasPlayingBeforeScrub && videoRef.current) {
+      videoRef.current.play();
+    }
     setIsDragging(false);
   }
 
@@ -149,14 +181,32 @@ function VideoActions({ videoRef }: VideoActionsProps) {
     }
   }
 
+  function requestPip() {
+    if (videoRef.current) {
+      videoRef.current.requestPictureInPicture();
+    }
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.buttons}>
+        <IonButton fill="clear" color="dark" onClick={requestPip}>
+          <IonIcon size="large" slot="icon-only" icon={pip} />
+        </IonButton>
+        <div />
         <IonButton fill="clear" color="dark" onClick={togglePlayPause}>
           <IonIcon
             size="large"
             slot="icon-only"
-            icon={isPlaying ? pause : play}
+            icon={isPlaying || wasPlayingBeforeScrub ? pause : play}
+          />
+        </IonButton>
+        <div />
+        <IonButton fill="clear" color="dark" onClick={toggleMute}>
+          <IonIcon
+            size="large"
+            slot="icon-only"
+            icon={isMuted ? volumeOff : volumeHigh}
           />
         </IonButton>
       </div>

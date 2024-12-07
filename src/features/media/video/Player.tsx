@@ -32,6 +32,7 @@ export interface PlayerProps extends React.HTMLProps<HTMLElement> {
   alt?: string;
 
   pauseWhenNotInView?: boolean;
+  allowShowPlayButton?: boolean;
 
   ref?: React.RefObject<HTMLVideoElement>;
   videoRef?: React.RefObject<HTMLVideoElement>;
@@ -45,6 +46,7 @@ export default function Player({
   volume = true,
   autoPlay: videoAllowedToAutoplay = true,
   pauseWhenNotInView = true,
+  allowShowPlayButton = true,
   ref,
   videoRef: _videoRef,
   ...rest
@@ -75,7 +77,7 @@ export default function Player({
   });
   const [progress, setProgress] = useState<number | undefined>(undefined);
 
-  const showBigPlayButton = userPaused && !playing;
+  const showBigPlayButton = userPaused && !playing && allowShowPlayButton;
 
   const setRefs = useCallback(
     (node: HTMLVideoElement) => {
