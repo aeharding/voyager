@@ -1,6 +1,8 @@
 import { PostView } from "lemmy-js-client";
 import { ComponentProps } from "react";
 
+import { isLoops } from "#/features/media/external/loops/helpers";
+import LargeFeedLoopsMedia from "#/features/media/external/loops/LargeFeedLoopsMedia";
 import { isRedgif } from "#/features/media/external/redgifs/helpers";
 import LargeFeedRedgifMedia from "#/features/media/external/redgifs/LargeFeedRedgifMedia";
 import { cx } from "#/helpers/css";
@@ -17,16 +19,32 @@ export default function LargeFeedPostMedia(
 ) {
   const src = usePostSrc(props.post);
 
-  if (props.post.post.url && isRedgif(props.post.post.url))
-    return (
-      <LargeFeedRedgifMedia
-        {...props}
-        url={props.post.post.url}
-        alt={props.post.post.alt_text}
-        autoPlay={!props.blur}
-        shouldPortal
-      />
-    );
+  if (props.post.post.url) {
+    switch (true) {
+      case isLoops(props.post.post.url):
+        return (
+          <LargeFeedLoopsMedia
+            {...props}
+            url={props.post.post.url}
+            alt={props.post.post.alt_text}
+            autoPlay={!props.blur}
+            className={cx(styles.lightbox, props.className)}
+            shouldPortal
+          />
+        );
+      case isRedgif(props.post.post.url):
+        return (
+          <LargeFeedRedgifMedia
+            {...props}
+            url={props.post.post.url}
+            alt={props.post.post.alt_text}
+            autoPlay={!props.blur}
+            className={cx(styles.lightbox, props.className)}
+            shouldPortal
+          />
+        );
+    }
+  }
 
   if (src)
     return (

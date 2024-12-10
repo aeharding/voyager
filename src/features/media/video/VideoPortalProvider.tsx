@@ -1,5 +1,5 @@
 import { useIonViewWillEnter } from "@ionic/react";
-import { noop } from "es-toolkit";
+import { last, noop, without } from "es-toolkit";
 import {
   createContext,
   useContext,
@@ -29,18 +29,23 @@ export default function VideoPortalProvider({
 
     const potentialExisting = videoRefs[src];
     if (potentialExisting) {
-      if (potentialExisting.sourceUid !== sourceUid) {
-        setVideoRefs((videoRefs) => ({
-          ...videoRefs,
-          [src]: { ...potentialExisting, sourceUid },
-        }));
-      }
+      setVideoRefs((videoRefs) => ({
+        ...videoRefs,
+        [src]: {
+          ...potentialExisting,
+          // most recently used (currently playing location) is last
+          sourceUids: [
+            ...without(potentialExisting.sourceUids, sourceUid),
+            sourceUid,
+          ],
+        },
+      }));
 
       return potentialExisting.portalNode;
     }
 
     const newRef = {
-      sourceUid,
+      sourceUids: [sourceUid],
       portalNode: portals.createHtmlPortalNode({
         attributes: { style: "flex:1;display:flex;width:100%" },
       }),
@@ -57,15 +62,32 @@ export default function VideoPortalProvider({
   function cleanupPortalNodeForSrcIfNeeded(src: string, sourceUid: string) {
     const videoRefs = videoRefsRef.current;
 
+    const videoRef = videoRefs[src];
+
+    if (!videoRef) return;
+
     // Portal was handed off to another OutPortal.
     // Some other portal outlet is controlling, so not responsible for cleanup
-    if (videoRefs[src]?.sourceUid !== sourceUid) return;
+    if (videoRef.sourceUids && last(videoRef.sourceUids) !== sourceUid) return;
 
-    setVideoRefs((videoRefs) => {
-      const updatedVideoRefs = { ...videoRefs };
-      delete updatedVideoRefs[src];
-      return updatedVideoRefs;
-    });
+    if (
+      videoRef.sourceUids.length === 1 &&
+      videoRef.sourceUids[0] === sourceUid
+    ) {
+      setVideoRefs((videoRefs) => {
+        const updatedVideoRefs = { ...videoRefs };
+        delete updatedVideoRefs[src];
+        return updatedVideoRefs;
+      });
+    } else {
+      setVideoRefs((videoRefs) => ({
+        ...videoRefs,
+        [src]: {
+          ...videoRef,
+          sourceUids: without(videoRef.sourceUids, sourceUid),
+        },
+      }));
+    }
   }
 
   return (
@@ -89,7 +111,7 @@ export default function VideoPortalProvider({
 type VideoRefs = Record<
   string,
   {
-    sourceUid: string;
+    sourceUids: string[];
     portalNode: PortalNode;
   }
 >;
@@ -113,7 +135,8 @@ const VideoPortalContext = createContext<VideoPortalContextState>({
   cleanupPortalNodeForSrcIfNeeded: noop,
 });
 
-export function useVideoPortalNode(src: string): PortalNode | void {
+export function useVideoPortalNode(src: string | undefined): PortalNode | void {
+  const previousSrcRef = useRef<string | undefined>(src);
   const sourceUid = useId();
 
   const { getPortalNodeForSrc, cleanupPortalNodeForSrcIfNeeded, videoRefs } =
@@ -124,28 +147,36 @@ export function useVideoPortalNode(src: string): PortalNode | void {
 
   const getPortalNodeEvent = useEffectEvent(() => {
     if (destroyed.current) return;
+    if (!src) return;
 
     getPortalNodeForSrc(src, sourceUid);
   });
 
   const cleanupPortalNodeIfNeededEvent = useEffectEvent(() => {
     destroyed.current = true;
-    cleanupPortalNodeForSrcIfNeeded(src, sourceUid);
+    if (!previousSrcRef.current) return;
+    cleanupPortalNodeForSrcIfNeeded(previousSrcRef.current, sourceUid);
   });
 
   useEffect(() => {
+    previousSrcRef.current = src;
     destroyed.current = false;
     getPortalNodeEvent();
 
     return cleanupPortalNodeIfNeededEvent;
-  }, []);
+  }, [src]);
 
   useIonViewWillEnter(() => {
     getPortalNodeEvent();
   });
 
+  if (!src) return;
+
   const potentialVideoRef = videoRefs[src];
 
-  if (potentialVideoRef?.sourceUid === sourceUid)
+  if (
+    potentialVideoRef?.sourceUids &&
+    last(potentialVideoRef?.sourceUids) === sourceUid
+  )
     return potentialVideoRef.portalNode;
 }

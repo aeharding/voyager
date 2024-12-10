@@ -13,8 +13,11 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import * as portals from "react-reverse-portal";
 import { useLocation } from "react-router";
 
+import Player from "#/features/media/video/Player";
+import { useVideoPortalNode } from "#/features/media/video/VideoPortalProvider";
 import { findBlurOverlayContainer } from "#/features/post/inFeed/large/media/BlurOverlayMessage";
 import { setPostRead } from "#/features/post/postSlice";
 import { getSafeArea, isAndroid, isNative } from "#/helpers/device";
@@ -29,7 +32,7 @@ const MAX_IMAGE_WIDTH = 4000;
 interface IGalleryContext {
   // used for determining whether page needs to be scrolled up first
   open: (
-    img: HTMLImageElement | HTMLCanvasElement,
+    img: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
     src: string,
     post?: PostView,
     animationType?: PreparedPhotoSwipeOptions["showHideAnimationType"],
@@ -54,10 +57,47 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
     null,
   );
   const thumbElRef = useRef<ThumbEl>();
-  const imgSrcRef = useRef("");
   const [post, setPost] = useState<PostView>();
+  const [isVideo, setIsVideo] = useState(false);
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
+
+  const [videoContainer, setVideoContainer] = useState<HTMLElement | null>(
+    null,
+  );
+
+  const [videoSrc, setVideoSrc] = useState("");
+  const portalNode = useVideoPortalNode(videoSrc);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [wasPlayingBeforeScrub, setWasPlayingBeforeScrub] = useState(false);
+
+  const handleScrubStart = useCallback(() => {
+    if (videoRef.current) {
+      setWasPlayingBeforeScrub(!videoRef.current.paused);
+      videoRef.current.pause();
+    }
+  }, []);
+
+  const handleScrubEnd = useCallback(() => {
+    if (videoRef.current && wasPlayingBeforeScrub) {
+      videoRef.current.play();
+    }
+  }, [wasPlayingBeforeScrub]);
+
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    videoElement.addEventListener("scrubstart", handleScrubStart);
+    videoElement.addEventListener("scrubend", handleScrubEnd);
+
+    return () => {
+      videoElement.removeEventListener("scrubstart", handleScrubStart);
+      videoElement.removeEventListener("scrubend", handleScrubEnd);
+    };
+  }, [handleScrubStart, handleScrubEnd]);
 
   useEffect(() => {
     return () => {
@@ -91,7 +131,6 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       if (lightboxRef.current) return;
 
       thumbElRef.current = thumbEl;
-      imgSrcRef.current = src;
       setPost(post);
 
       if (thumbEl instanceof HTMLImageElement) {
@@ -105,24 +144,42 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
           animationType = "fade";
       }
 
+      const width = (() => {
+        switch (true) {
+          case thumbEl instanceof HTMLImageElement:
+            return thumbEl.naturalWidth;
+          case thumbEl instanceof HTMLVideoElement:
+            return thumbEl.videoWidth;
+          default:
+            return thumbEl.width;
+        }
+      })();
+
+      const height = (() => {
+        switch (true) {
+          case thumbEl instanceof HTMLImageElement:
+            return thumbEl.naturalHeight;
+          case thumbEl instanceof HTMLVideoElement:
+            return thumbEl.videoHeight;
+          default:
+            return thumbEl.height;
+        }
+      })();
+
       const instance = new PhotoSwipeLightbox({
         dataSource: [
           {
-            src,
-            height:
-              thumbEl instanceof HTMLImageElement
-                ? thumbEl.naturalHeight
-                : thumbEl.height,
-            width:
-              thumbEl instanceof HTMLImageElement
-                ? thumbEl.naturalWidth
-                : thumbEl.width,
+            src: thumbEl instanceof HTMLVideoElement ? undefined : src,
+            videoSrc: thumbEl instanceof HTMLVideoElement ? src : undefined,
+            height,
+            width,
             alt: getAlt(thumbEl),
           },
         ],
         showHideAnimationType: animationType ?? "fade",
         zoom: false,
         bgOpacity: 1,
+        showAnimationDuration: thumbEl instanceof HTMLVideoElement ? 0 : 333,
         // Put in ion-app element so share IonActionSheet is on top
         appendToEl: document.querySelector("ion-app")!,
         paddingFn: () => getSafeArea(),
@@ -157,6 +214,55 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         },
       });
 
+      instance.on("contentLoad", (e) => {
+        if (thumbEl instanceof HTMLVideoElement) {
+          e.preventDefault();
+
+          e.content.element = document.createElement("div");
+          e.content.type = "video"; // allow zoom
+
+          e.content.state = "loaded";
+          e.content.onLoaded();
+        }
+      });
+
+      instance.addFilter("isContentZoomable", (isContentZoomable, content) => {
+        return isContentZoomable || content.type === "video";
+      });
+
+      instance.addFilter("useContentPlaceholder", (useContentPlaceholder) => {
+        if (thumbEl instanceof HTMLVideoElement) return false;
+
+        return useContentPlaceholder;
+      });
+
+      // use <picture> instead of <img>
+      instance.on("contentAppend", (e) => {
+        const { content } = e;
+
+        setVideoSrc(src);
+
+        if (thumbEl instanceof HTMLVideoElement) {
+          e.preventDefault();
+
+          setIsVideo(true);
+          setVideoContainer(content.element!);
+
+          content.slide!.container.appendChild(content.element!);
+        }
+      });
+
+      instance.on("contentRemove", (e) => {
+        const { content } = e;
+        if (
+          thumbEl instanceof HTMLVideoElement &&
+          content.element!.parentNode
+        ) {
+          e.preventDefault();
+          content.element!.remove();
+        }
+      });
+
       // ZoomLevel is not directly exported from photoswipe
       let zoomLevel: Parameters<
         Extract<ZoomLevelOption, (...args: never) => unknown>
@@ -170,6 +276,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       });
 
       instance.on("openingAnimationStart", () => {
+        if (thumbEl instanceof HTMLVideoElement) return; // videos portal
         if (animationType !== "zoom") return;
 
         compact([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
@@ -178,6 +285,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       });
 
       const cleanupHideThumb = () => {
+        if (thumbEl instanceof HTMLVideoElement) return; // videos portal
         if (animationType !== "zoom") return;
 
         compact([thumbEl, findBlurOverlayContainer(thumbEl)]).forEach((el) =>
@@ -249,6 +357,14 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
           onInit: (el) => {
             setActionContainer(el);
           },
+        });
+      });
+
+      instance.on("verticalDrag", () => {
+        queueMicrotask(() => {
+          instance.pswp?.gestures.pswp.element?.classList.remove(
+            "pswp--ui-visible",
+          );
         });
       });
 
@@ -333,6 +449,12 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
 
       window.addEventListener("popstate", closeGalleryOnHistoryPopState);
 
+      instance.on("close", () => {
+        setVideoSrc("");
+        setIsVideo(false);
+        setVideoContainer(null);
+      });
+
       instance.on("destroy", () => {
         cleanupHideThumb();
         setPost(undefined);
@@ -367,18 +489,37 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
             thumbElRef.current && (
               <GalleryPostActions
                 post={post}
-                imgSrc={imgSrcRef.current}
+                src={videoSrc}
                 alt={getAlt(thumbElRef.current)}
+                isVideo={isVideo}
+                videoRef={videoRef}
               />
             )
           ) : (
             <ImageMoreActions
-              imgSrc={imgSrcRef.current}
+              imgSrc={videoSrc}
               alt={getAlt(thumbElRef.current)}
+              videoRef={videoRef}
             />
           ),
           actionContainer,
         )}
+
+      {videoContainer !== null && portalNode
+        ? createPortal(
+            <portals.OutPortal<typeof Player>
+              videoRef={videoRef}
+              node={portalNode}
+              src={videoSrc}
+              pauseWhenNotInView={false}
+              controls={false}
+              progress={false}
+              volume={false}
+              allowShowPlayButton={false}
+            />,
+            videoContainer,
+          )
+        : undefined}
 
       {children}
     </GalleryContext.Provider>
@@ -394,7 +535,7 @@ function getHashValue(): string {
 }
 
 function getAlt(
-  thumbEl: HTMLImageElement | HTMLCanvasElement | undefined,
+  thumbEl: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | undefined,
 ): string | undefined {
   if (!thumbEl) return;
 

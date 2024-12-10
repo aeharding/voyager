@@ -33,10 +33,15 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 interface GalleryActionsProps {
   post?: PostView;
-  imgSrc: string;
+  src: string;
+  isVideo?: boolean;
 }
 
-export default function GalleryActions({ post, imgSrc }: GalleryActionsProps) {
+export default function GalleryActions({
+  post,
+  src,
+  isVideo,
+}: GalleryActionsProps) {
   const router = useOptimizedIonRouter();
   const openNativeBrowser = useNativeBrowser();
   const [presentActionSheet] = useIonActionSheet();
@@ -56,63 +61,94 @@ export default function GalleryActions({ post, imgSrc }: GalleryActionsProps) {
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: compact([
-        {
-          text: "Share",
-          icon: getShareIcon(),
-          handler: () => {
-            (async () => {
-              if (!isNative()) {
-                Share.share({ url: imgSrc });
-                return;
-              }
+        isVideo
+          ? {
+              text: "Share Link",
+              icon: getShareIcon(),
+              handler: () => {
+                Share.share({ url: post?.post.ap_id });
+              },
+            }
+          : {
+              text: "Share",
+              icon: getShareIcon(),
+              handler: () => {
+                (async () => {
+                  if (!isNative()) {
+                    Share.share({ url: src });
+                    return;
+                  }
 
-              try {
-                await StashMedia.shareImage({
-                  url: imgSrc,
-                  title: post ? post.post.name : "Image",
-                });
-              } catch (error) {
-                presentToast({
-                  message: "Error sharing photo",
-                  color: "danger",
-                  position: "top",
-                  fullscreen: true,
-                });
+                  try {
+                    await StashMedia.shareImage({
+                      url: src,
+                      title: post ? post.post.name : "Image",
+                    });
+                  } catch (error) {
+                    presentToast({
+                      message: "Error sharing photo",
+                      color: "danger",
+                      position: "top",
+                      fullscreen: true,
+                    });
 
-                throw error;
-              }
-            })();
-          },
-        },
-        {
-          text: "Save Image",
-          icon: downloadOutline,
-          handler: () => {
-            (async () => {
-              try {
-                await StashMedia.savePhoto({ url: imgSrc });
-              } catch (error) {
-                presentToast({
-                  message: "Error saving photo to device",
-                  color: "danger",
-                  position: "top",
-                  fullscreen: true,
-                });
+                    throw error;
+                  }
+                })();
+              },
+            },
+        isVideo
+          ? {
+              text: "Save Video",
+              icon: downloadOutline,
+              handler: () => {
+                (async () => {
+                  try {
+                    await StashMedia.saveVideo({ url: src });
+                  } catch (error) {
+                    presentToast({
+                      message: "Error saving video to device",
+                      color: "danger",
+                      position: "top",
+                      fullscreen: true,
+                    });
 
-                throw error;
-              }
+                    throw error;
+                  }
 
-              presentToast(photoSaved);
-            })();
-          },
-        },
-        {
+                  presentToast(photoSaved);
+                })();
+              },
+            }
+          : {
+              text: "Save Image",
+              icon: downloadOutline,
+              handler: () => {
+                (async () => {
+                  try {
+                    await StashMedia.savePhoto({ url: src });
+                  } catch (error) {
+                    presentToast({
+                      message: "Error saving photo to device",
+                      color: "danger",
+                      position: "top",
+                      fullscreen: true,
+                    });
+
+                    throw error;
+                  }
+
+                  presentToast(photoSaved);
+                })();
+              },
+            },
+        !isVideo && {
           text: "Copy Image",
           icon: copyOutline,
           handler: () => {
             (async () => {
               try {
-                await StashMedia.copyPhotoToClipboard({ url: imgSrc });
+                await StashMedia.copyPhotoToClipboard({ url: src });
               } catch (error) {
                 presentToast({
                   message: "Error copying photo to clipboard",
