@@ -204,7 +204,10 @@ export default function PostEditorRoot({
       errorMessage = "Please add a title to your post.";
     } else if (title.length < 3) {
       errorMessage = "Post title must contain at least three characters.";
-    } else if (postType === "link" && (!url || !validUrl(url))) {
+    } else if (
+      postType === "link" &&
+      (!url || !isValidUrl(url, { allowRelative: false }))
+    ) {
       errorMessage =
         "Please add a valid URL to your post (start with https://).";
     } else if (postType === "photo" && !photoUrl) {
@@ -526,14 +529,4 @@ export default function PostEditorRoot({
       </IonContent>
     </>
   );
-}
-
-function validUrl(url: string): boolean {
-  try {
-    new URL(url);
-  } catch (_) {
-    return false;
-  }
-
-  return true;
 }
