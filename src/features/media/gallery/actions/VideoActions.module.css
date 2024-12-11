@@ -19,3 +19,7 @@
   --knob-size: 18px;
   --knob-background: #ccc;
 }
+
+.skipIcon {
+  width: 24px;
+}

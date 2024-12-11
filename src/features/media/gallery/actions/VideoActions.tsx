@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 
-import { pip } from "#/features/icons";
+import { back, forward, pip } from "#/features/icons";
 
 import { GalleryContext } from "../GalleryProvider";
 
@@ -198,7 +198,19 @@ function VideoActions({ videoRef }: VideoActionsProps) {
         <IonButton fill="clear" color="dark" onClick={requestPip}>
           <IonIcon size="large" slot="icon-only" icon={pip} />
         </IonButton>
+
         <div />
+        <div />
+
+        <IonButton fill="clear" color="dark" onClick={() => {}}>
+          <IonIcon
+            size="large"
+            slot="icon-only"
+            icon={back}
+            className={styles.skipIcon}
+          />
+        </IonButton>
+
         <IonButton fill="clear" color="dark" onClick={togglePlayPause}>
           <IonIcon
             size="large"
@@ -206,7 +218,19 @@ function VideoActions({ videoRef }: VideoActionsProps) {
             icon={isPlaying || wasPlayingBeforeScrub ? pause : play}
           />
         </IonButton>
+
+        <IonButton fill="clear" color="dark" onClick={() => {}}>
+          <IonIcon
+            size="large"
+            slot="icon-only"
+            icon={forward}
+            className={styles.skipIcon}
+          />
+        </IonButton>
+
         <div />
+        <div />
+
         <IonButton fill="clear" color="dark" onClick={toggleMute}>
           <IonIcon
             size="large"
