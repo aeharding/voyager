@@ -8,6 +8,9 @@ overrides:
   '@ionic/core': npm:voyager-ionic-core@8.4.1
 
 patchedDependencies:
+  '@capacitor/android':
+    hash: a7fuehdtpweg2aifrflzmu363i
+    path: patches/@capacitor__android.patch
   '@capacitor/haptics':
     hash: isktf3ewuigcwl72katxy46idi
     path: patches/@capacitor__haptics@6.0.1.patch
@@ -27,7 +30,7 @@ importers:
         version: 5.0.0(@capacitor/core@6.2.0)
       '@capacitor/android':
         specifier: ^6.2.0
-        version: 6.2.0(@capacitor/core@6.2.0)
+        version: 6.2.0(patch_hash=a7fuehdtpweg2aifrflzmu363i)(@capacitor/core@6.2.0)
       '@capacitor/app':
         specifier: ^6.0.2
         version: 6.0.2(@capacitor/core@6.2.0)
@@ -7159,7 +7162,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 6.2.0
 
-  '@capacitor/android@6.2.0(@capacitor/core@6.2.0)':
+  '@capacitor/android@6.2.0(patch_hash=a7fuehdtpweg2aifrflzmu363i)(@capacitor/core@6.2.0)':
     dependencies:
       '@capacitor/core': 6.2.0
 
