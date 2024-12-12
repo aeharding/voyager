@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 
 import Media, { MediaProps } from "#/features/media/Media";
 import { cx } from "#/helpers/css";
@@ -38,6 +38,23 @@ export default function InlineMedia({
    */
   const aspectRatio = useLatch(currentAspectRatio);
 
+  // Workaround. useMediaLoadObserver won't fire if a new image is loaded (in Safari)
+  // because we have already forced its dimensions (via latching aspect ratio)
+  //
+  // This causes issues like https://github.com/aeharding/voyager/issues/1770
+  //
+  // For now, assume that a swapped image will have the same dimensions
+  //
+  // In the future, useMediaLoadObserver should render the image somewhere
+  // in the document root separate from the image rendered by InlineMedia
+  useEffect(() => {
+    // If we have a src, and the latched aspect ratio is being used, update the store
+    // (src has changed)
+    if (src && aspectRatio && !currentAspectRatio) {
+      dispatch(imageLoaded({ src, aspectRatio }));
+    }
+  }, [src, aspectRatio, currentAspectRatio, dispatch]);
+
   function buildPlaceholderState() {
     if (aspectRatio === IMAGE_FAILED) return "error";
     if (!aspectRatio) return "loading";
@@ -74,7 +91,7 @@ export default function InlineMedia({
         // TLDR Image loading should still work with this function commented out!
         onLoad={(event) => {
           if (!src) return;
-          if (isLoadedAspectRatio(aspectRatio)) return;
+          if (isLoadedAspectRatio(currentAspectRatio)) return;
 
           const dimensions = getTargetDimensions(
             event.target as HTMLImageElement,

@@ -16,15 +16,9 @@ export default function useMediaLoadObserver(src: string | undefined) {
     let destroyed = false;
 
     function setupObserver() {
-      if (destroyed) return;
-
-      if (isLoadedAspectRatio(aspectRatio)) return;
       if (!src) return;
-      if (!mediaRef.current) {
-        // react-reverse-portal refs can take some time to setup. Try again on next paint
-        requestAnimationFrame(setupObserver);
-        return;
-      }
+      if (isLoadedAspectRatio(aspectRatio)) return;
+      if (!mediaRef.current) return;
 
       const handleResize = (entries: ResizeObserverEntry[]) => {
         for (const entry of entries) {
@@ -45,7 +39,33 @@ export default function useMediaLoadObserver(src: string | undefined) {
       resizeObserverRef.current.observe(mediaRef.current);
     }
 
-    setupObserver();
+    function setup() {
+      if (destroyed) return;
+
+      if (!src) return;
+      if (isLoadedAspectRatio(aspectRatio)) return;
+      if (!mediaRef.current) {
+        // react-reverse-portal refs can take some time to setup. Try again on next paint
+        requestAnimationFrame(setup);
+        return;
+      }
+
+      const dimensions = getTargetDimensions(mediaRef.current);
+
+      if (dimensions) {
+        dispatch(
+          imageLoaded({
+            src,
+            aspectRatio: dimensions.width / dimensions.height,
+          }),
+        );
+        return; // found dimensions synchronously, no need to setup observer
+      }
+
+      setupObserver();
+    }
+
+    setup();
 
     return () => {
       destroyed = true;
