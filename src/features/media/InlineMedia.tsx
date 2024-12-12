@@ -2,7 +2,6 @@ import { CSSProperties } from "react";
 
 import Media, { MediaProps } from "#/features/media/Media";
 import { cx } from "#/helpers/css";
-import useLatch from "#/helpers/useLatch";
 import { useAppDispatch } from "#/store";
 
 import { IMAGE_FAILED, imageFailed, imageLoaded } from "./imageSlice";
@@ -28,15 +27,7 @@ export default function InlineMedia({
   ...props
 }: InlineMediaProps) {
   const dispatch = useAppDispatch();
-  const [mediaRef, currentAspectRatio] = useMediaLoadObserver(src);
-
-  /**
-   * Cross posts have different image thumbnail url when loaded, so prevent resizing by latching
-   *
-   * If the new image is different size (or errors), it will be properly updated then
-   * (IMAGE_FAILED is truthy)
-   */
-  const aspectRatio = useLatch(currentAspectRatio);
+  const [mediaRef, aspectRatio] = useMediaLoadObserver(src);
 
   function buildPlaceholderState() {
     if (aspectRatio === IMAGE_FAILED) return "error";
