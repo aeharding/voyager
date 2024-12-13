@@ -1,0 +1,13 @@
+diff --git a/capacitor/src/main/java/com/getcapacitor/Bridge.java b/capacitor/src/main/java/com/getcapacitor/Bridge.java
+index 594146a0f8fc2903fd255c0b864db97d94ebfb1b..4f13ca78a4051e3b1bc5cd5d3de0e8a99aa44728 100644
+--- a/capacitor/src/main/java/com/getcapacitor/Bridge.java
++++ b/capacitor/src/main/java/com/getcapacitor/Bridge.java
+@@ -417,7 +417,7 @@ public class Bridge {
+             PackageManager pm = getContext().getPackageManager();
+             PackageInfo pInfo = InternalUtils.getPackageInfo(pm, getContext().getPackageName());
+             versionCode = Integer.toString((int) PackageInfoCompat.getLongVersionCode(pInfo));
+-            versionName = pInfo.versionName;
++            if (pInfo.versionName != null) versionName = pInfo.versionName;
+         } catch (Exception ex) {
+             Logger.error("Unable to get package info", ex);
+         }
