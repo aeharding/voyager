@@ -1,9 +1,5 @@
 import { CustomItemComponentProps } from "virtua";
 
-interface IndexedVirtuaItemProps extends CustomItemComponentProps {
-  ref: React.RefObject<HTMLDivElement>;
-}
-
 /**
  * Add data-index to each item for programmatic scrolling
  */
@@ -12,7 +8,7 @@ export function IndexedVirtuaItem({
   index,
   style,
   ref,
-}: IndexedVirtuaItemProps) {
+}: CustomItemComponentProps) {
   return (
     <div ref={ref} style={style} data-index={index}>
       {children}
