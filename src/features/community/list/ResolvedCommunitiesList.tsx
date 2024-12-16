@@ -11,7 +11,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { CustomItemComponentProps, Virtualizer, VListHandle } from "virtua";
+import {
+  CustomContainerComponent,
+  CustomItemComponentProps,
+  Virtualizer,
+  VListHandle,
+} from "virtua";
 
 import { jwtSelector } from "#/features/auth/authSelectors";
 import { cx } from "#/helpers/css";
@@ -210,10 +215,8 @@ function ResolvedCommunitiesList({
 
             updateActiveIndex();
           }}
-          // @ts-expect-error Virtua types not correct
-          as={IonList}
+          as={IonList as CustomContainerComponent}
           keepMounted={activeIndex >= 0 ? [activeIndex] : []}
-          // @ts-expect-error Virtua types not correct
           item={StickyItem}
         >
           {items.map((item, index) => (
