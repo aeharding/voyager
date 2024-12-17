@@ -44,8 +44,7 @@
         "react-router",
         "react-router-dom",
         "@types/react-router",
-        "@types/react-router-dom",
-        "rehype-highlight"
+        "@types/react-router-dom"
       ]
     }
   },
@@ -109,7 +108,7 @@
     "react-router-dom": "^5.3.4",
     "react-textarea-autosize": "^8.5.6",
     "react-transition-state": "^2.2.0",
-    "rehype-highlight": "^6.0.0",
+    "rehype-highlight": "^7.0.1",
     "rehype-parse": "^9.0.1",
     "rehype-remark": "^10.0.0",
     "remark-parse": "^11.0.0",
