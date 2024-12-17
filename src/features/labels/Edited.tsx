@@ -24,8 +24,8 @@ export default function Edited({ item, showDate, className }: EditedProps) {
     if (!edited) return;
     if (!showDate) return;
 
-    const createdLabel = formatRelative(item.counts.published);
-    const editedLabel = formatRelative(edited);
+    const createdLabel = formatRelative(new Date(item.counts.published));
+    const editedLabel = formatRelative(new Date(edited));
 
     if (createdLabel === editedLabel) return;
 
@@ -42,7 +42,7 @@ export default function Edited({ item, showDate, className }: EditedProps) {
     const date = new Date(edited);
 
     present({
-      header: `Edited ${formatRelative(edited)} Ago`,
+      header: `Edited ${formatRelative(date)} Ago`,
       message: `Last edited on ${date.toDateString()} at ${date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`,
       buttons: ["OK"],
     });
