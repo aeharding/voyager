@@ -98,8 +98,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3(@capacitor/core@6.2.0)
       capacitor-reader:
-        specifier: ^0.2.0
-        version: 0.2.0(@capacitor/core@6.2.0)
+        specifier: ^0.3.0
+        version: 0.3.0(@capacitor/core@6.2.0)
       capacitor-stash-media:
         specifier: ^2.0.1
         version: 2.0.1(@capacitor/core@6.2.0)
@@ -2305,8 +2305,8 @@ packages:
     peerDependencies:
       '@capacitor/core': ^6.0.0
 
-  capacitor-reader@0.2.0:
-    resolution: {integrity: sha512-lzqp/suT/Vq3Wx7Ks5T9zg7GxpYnBpBG9LamxV5u3hR89mY2LU+GbeDmj4II4ATKFOhZZaon2rnHiBXY7V9VAw==}
+  capacitor-reader@0.3.0:
+    resolution: {integrity: sha512-MXRevn+nXo592cveuZYwVSSZdlYdfUNzYCHo4uUJP3ffwZJki7ASoodfT6cgClv57Cxu7wiNbzb0jramiF98cQ==}
     peerDependencies:
       '@capacitor/core': ^6.0.0
 
@@ -8760,7 +8760,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 6.2.0
 
-  capacitor-reader@0.2.0(@capacitor/core@6.2.0):
+  capacitor-reader@0.3.0(@capacitor/core@6.2.0):
     dependencies:
       '@capacitor/core': 6.2.0
 
