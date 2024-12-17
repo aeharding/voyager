@@ -29,7 +29,7 @@ export function formatRelative(
     case "verbose": {
       distance = formatDuration(duration, {
         delimiter: ", ",
-        format: ["years", "months", "days"],
+        format: getFormatVerbose(duration),
       });
       break;
     }
@@ -66,7 +66,9 @@ export function formatRelative(
   return distance;
 }
 
-function getFormatShort(duration: Duration): (keyof Duration)[] {
+function getFormatShort(
+  duration: Duration,
+): [keyof Duration, ...(keyof Duration)[]] {
   if (duration.years) return ["years", "months"];
   if (duration.months) return ["months"];
   if (duration.days) return ["days"];
@@ -77,7 +79,15 @@ function getFormatShort(duration: Duration): (keyof Duration)[] {
 }
 
 function getFormatUltrashort(duration: Duration): (keyof Duration)[] {
-  if (duration.years) return ["years"];
+  return [getFormatShort(duration)[0]];
+}
 
-  return getFormatShort(duration);
+function getFormatVerbose(duration: Duration): (keyof Duration)[] {
+  if (duration.years) return ["years", "months"];
+  if (duration.months) return ["months", "days"];
+  if (duration.days) return ["days", "hours"];
+  if (duration.hours) return ["hours", "minutes"];
+  if (duration.minutes) return ["minutes", "seconds"];
+
+  return ["years", "months", "days", "hours", "minutes", "seconds"];
 }
