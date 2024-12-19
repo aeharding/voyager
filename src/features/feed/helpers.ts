@@ -6,7 +6,9 @@ type InternalFeedType =
   | "PostsSearch"
   | "CommentsSearch"
   | "CommunitiesSearch"
-  | "CommunitiesExplore";
+  | "CommunitiesExplore"
+  | "ProfilePosts"
+  | "ProfileComments";
 
 export type AnyFeed =
   | {
