@@ -80,32 +80,32 @@ importers:
         specifier: ^2.5.0
         version: 2.5.0(react-redux@9.2.0(@types/react@18.3.16)(react@0.0.0-experimental-4dff0e62-20241213)(redux@5.0.1))(react@0.0.0-experimental-4dff0e62-20241213)
       capacitor-android-nav-mode:
-        specifier: link:../capacitor-android-nav-mode
-        version: link:../capacitor-android-nav-mode
+        specifier: ^1.1.1
+        version: 1.1.1(@capacitor/core@6.2.0)
       capacitor-application-context:
-        specifier: link:../capacitor-application-context
-        version: link:../capacitor-application-context
+        specifier: ^1.1.1
+        version: 1.1.1(@capacitor/core@6.2.0)
       capacitor-biometric-lock:
-        specifier: link:../capacitor-biometric-lock
-        version: link:../capacitor-biometric-lock
+        specifier: ^1.1.1
+        version: 1.1.1(@capacitor/core@6.2.0)
       capacitor-clear-cache:
-        specifier: link:../capacitor-clear-cache
-        version: link:../capacitor-clear-cache
+        specifier: ^1.1.1
+        version: 1.1.1(@capacitor/core@6.2.0)
       capacitor-launch-native:
-        specifier: link:../capacitor-launch-native
-        version: link:../capacitor-launch-native
+        specifier: ^1.1.1
+        version: 1.1.1(@capacitor/core@6.2.0)
       capacitor-plugin-safe-area:
-        specifier: link:../capacitor-plugin-safe-area
-        version: link:../capacitor-plugin-safe-area
+        specifier: ^3.0.3
+        version: 3.0.3(@capacitor/core@6.2.0)
       capacitor-reader:
-        specifier: link:../capacitor-reader
-        version: link:../capacitor-reader
+        specifier: ^0.3.0
+        version: 0.3.0(@capacitor/core@6.2.0)
       capacitor-stash-media:
-        specifier: link:../capacitor-stash-media
-        version: link:../capacitor-stash-media
+        specifier: ^2.1.1
+        version: 2.1.1(@capacitor/core@6.2.0)
       capacitor-tips:
-        specifier: link:../capacitor-tips
-        version: link:../capacitor-tips
+        specifier: ^1.1.1
+        version: 1.1.1(@capacitor/core@6.2.0)
       colorjs.io:
         specifier: ^0.5.2
         version: 0.5.2
@@ -2270,6 +2270,51 @@ packages:
   caniuse-lite@1.0.30001688:
     resolution: {integrity: sha512-Nmqpru91cuABu/DTCXbM2NSRHzM2uVHfPnhJ/1zEAJx/ILBRVmz3pzH4N7DZqbdG0gWClsCC05Oj0mJ/1AWMbA==}
 
+  capacitor-android-nav-mode@1.1.1:
+    resolution: {integrity: sha512-B0/jsHR4PbZo7Fjl31UAJdKVofQmCbBW8XjeXyR52Ny4bt4QilL4Shzvx8gTBi3XDvnwT06CXafcY8HBUsGfCw==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  capacitor-application-context@1.1.1:
+    resolution: {integrity: sha512-DQ0FvAOAuy8/gImesD8JEJdk5tFW281j9TV6YsImb2DfPMK+8SQZlzS+vp8YxpWGHwSrtppaAC+9BNUc45mboQ==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  capacitor-biometric-lock@1.1.1:
+    resolution: {integrity: sha512-foUUzBXrHAtxjGTpPZmVTj6iuL8oqVZ+kIDZlScE+lDPMSKDAb0J/cQZRkAuN+8aoyq/W2nBSQjGmIn3+umlVw==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  capacitor-clear-cache@1.1.1:
+    resolution: {integrity: sha512-dh8u6xm+y8HrZhl3YCFtOKPmdgq6WTrteJVxQIfWSncBBc7Be6DJQsaRxay4NszHgMwv2BU1cLdlCWn9lBVqSA==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  capacitor-launch-native@1.1.1:
+    resolution: {integrity: sha512-nSjR1q5ApeVG1FDdzrK7yR1pyfklXb6n/ps6PGAzV8qdOx1aOF6MqM7wdj/810z2/fPWu0EMifAfguYdEH0TRA==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  capacitor-plugin-safe-area@3.0.3:
+    resolution: {integrity: sha512-pDM8GQIDC9xxKLZxoO4rrshDuzZqQo6jq7Ni18cYdp2JwmLvlhTYRrvriPAicY1En59UAZ574sIvGlgUBLH3Yw==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  capacitor-reader@0.3.0:
+    resolution: {integrity: sha512-MXRevn+nXo592cveuZYwVSSZdlYdfUNzYCHo4uUJP3ffwZJki7ASoodfT6cgClv57Cxu7wiNbzb0jramiF98cQ==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  capacitor-stash-media@2.1.1:
+    resolution: {integrity: sha512-JwGIvgG10RMdmiwvv6hX9fLlxrxHirZMnbHQOG0EbUjG7dnQh1ItE1LJ52q3KWVOgL33+nrPvUVUAUuguqKi8Q==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
+  capacitor-tips@1.1.1:
+    resolution: {integrity: sha512-0G+8/d8T3nrrf3h6YOsR4KTF9IhLUg8gu96itI/1ckbBnuleDsAOoJ7jSAAz1FvHq1Om5rZCxWmyVuGkByYCzA==}
+    peerDependencies:
+      '@capacitor/core': ^6.0.0
+
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
 
@@ -2322,8 +2367,8 @@ packages:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
 
-  chokidar@4.0.2:
-    resolution: {integrity: sha512-/b57FK+bblSU+dfewfFe0rT1YjVDfOmeLQwCAuC+vwvgLkXboATqqmy+Ipux6JrF6L5joe5CBnFOw+gLWH6yKg==}
+  chokidar@4.0.3:
+    resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
 
   chownr@1.1.4:
@@ -5197,6 +5242,11 @@ packages:
   resolve-pathname@3.0.0:
     resolution: {integrity: sha512-C7rARubxI8bXFNB/hqcp/4iUeIXJhJZvFPFPiSPRnhU5UPxzMFIl+2E6yY6c4k9giDJAhtV+enfA+G89N6Csng==}
 
+  resolve@1.22.10:
+    resolution: {integrity: sha512-NPRy+/ncIMeDlTAsuqwKIiferiawhefFJtkNSW0qZJEqMEb+qBt/77B/jGeeek+F0uOeN05CDa6HXbbIgtVX4w==}
+    engines: {node: '>= 0.4'}
+    hasBin: true
+
   resolve@1.22.9:
     resolution: {integrity: sha512-QxrmX1DzraFIi9PxdG5VkRfRwIgjwyud+z/iBwfRRrVmHc+P9Q7u2lSSpQ6bjr2gy5lrqIiU9vb6iAeGf2400A==}
     hasBin: true
@@ -7791,7 +7841,7 @@ snapshots:
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
       is-module: 1.0.0
-      resolve: 1.22.9
+      resolve: 1.22.10
     optionalDependencies:
       rollup: 2.79.2
 
@@ -8682,6 +8732,42 @@ snapshots:
 
   caniuse-lite@1.0.30001688: {}
 
+  capacitor-android-nav-mode@1.1.1(@capacitor/core@6.2.0):
+    dependencies:
+      '@capacitor/core': 6.2.0
+
+  capacitor-application-context@1.1.1(@capacitor/core@6.2.0):
+    dependencies:
+      '@capacitor/core': 6.2.0
+
+  capacitor-biometric-lock@1.1.1(@capacitor/core@6.2.0):
+    dependencies:
+      '@capacitor/core': 6.2.0
+
+  capacitor-clear-cache@1.1.1(@capacitor/core@6.2.0):
+    dependencies:
+      '@capacitor/core': 6.2.0
+
+  capacitor-launch-native@1.1.1(@capacitor/core@6.2.0):
+    dependencies:
+      '@capacitor/core': 6.2.0
+
+  capacitor-plugin-safe-area@3.0.3(@capacitor/core@6.2.0):
+    dependencies:
+      '@capacitor/core': 6.2.0
+
+  capacitor-reader@0.3.0(@capacitor/core@6.2.0):
+    dependencies:
+      '@capacitor/core': 6.2.0
+
+  capacitor-stash-media@2.1.1(@capacitor/core@6.2.0):
+    dependencies:
+      '@capacitor/core': 6.2.0
+
+  capacitor-tips@1.1.1(@capacitor/core@6.2.0):
+    dependencies:
+      '@capacitor/core': 6.2.0
+
   ccount@2.0.1: {}
 
   chai@5.1.2:
@@ -8752,7 +8838,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  chokidar@4.0.2:
+  chokidar@4.0.3:
     dependencies:
       readdirp: 4.0.2
     optional: true
@@ -12158,6 +12244,12 @@ snapshots:
 
   resolve-pathname@3.0.0: {}
 
+  resolve@1.22.10:
+    dependencies:
+      is-core-module: 2.16.0
+      path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
+
   resolve@1.22.9:
     dependencies:
       is-core-module: 2.16.0
@@ -12265,7 +12357,7 @@ snapshots:
 
   sass@1.81.0:
     dependencies:
-      chokidar: 4.0.2
+      chokidar: 4.0.3
       immutable: 5.0.3
       source-map-js: 1.2.1
     optionalDependencies:
