@@ -23,10 +23,8 @@ interface IUpdateContext {
 }
 
 export const UpdateContext = createContext<IUpdateContext>({
-  // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
-  checkForUpdates: async () => {},
-  // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
-  updateServiceWorker: async () => {},
+  checkForUpdates: asyncNoop,
+  updateServiceWorker: asyncNoop,
 
   status: "loading",
 });

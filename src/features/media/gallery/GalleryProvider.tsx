@@ -38,8 +38,7 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
-  // eslint-disable-next-line no-empty-function
-  open: async () => {},
+  open: asyncNoop,
   close: noop,
 });
 
