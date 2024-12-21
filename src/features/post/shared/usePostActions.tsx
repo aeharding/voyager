@@ -6,7 +6,6 @@ import {
   arrowUpOutline,
   bookmarkOutline,
   cameraOutline,
-  checkmark,
   eyeOffOutline,
   eyeOutline,
   flagOutline,
@@ -20,8 +19,8 @@ import {
 import { PostView } from "lemmy-js-client";
 import { useCallback, useContext } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
+import { PageContext } from "#/features/auth/PageContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { InFeedContext } from "#/features/feed/Feed";
 import {
@@ -39,6 +38,10 @@ import {
 } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import {
+  postDeleted as postDeletedToast,
+  postDeleteFailed,
+} from "#/helpers/toastMessages";
 import { postLocked, saveError, saveSuccess } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
@@ -166,14 +169,15 @@ export default function usePostActions(post: PostView) {
                   role: "destructive",
                   handler: () => {
                     (async () => {
-                      await dispatch(deletePost(post.post.id));
+                      try {
+                        await dispatch(deletePost(post.post.id));
+                      } catch (error) {
+                        presentToast(postDeleteFailed);
 
-                      presentToast({
-                        message: "Post deleted",
-                        color: "success",
-                        centerText: true,
-                        icon: checkmark,
-                      });
+                        throw error;
+                      }
+
+                      presentToast(postDeletedToast);
                     })();
                   },
                 },

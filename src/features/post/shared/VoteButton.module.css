@@ -1,0 +1,8 @@
+.active {
+  color: var(--ion-color-primary-contrast);
+  background: var(--sv-background);
+}
+
+.entering {
+  composes: bounce from "#/features/shared/bounce.module.css";
+}

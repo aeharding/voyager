@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.colors {
+  display: flex;
+  gap: 6px;
+  margin: 0 6px;
+
+  :global(.ion-palette-dark) & {
+    opacity: 0.7;
+  }
+}
+
+.radio {
+  &::part(label) {
+    flex: 1;
+  }
+}

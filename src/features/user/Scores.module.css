@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 12px;
+  margin: 24px 24px;
+}
+
+.score {
+  font-size: min(1.3rem, 52px);
+
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+
+  aside {
+    font-size: min(0.8rem, 32px);
+
+    margin-top: 0.35rem;
+    opacity: 0.5;
+    font-weight: 500;
+  }
+}

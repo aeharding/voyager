@@ -1,0 +1,40 @@
+.accordionGroup {
+  margin: 1em -12px;
+}
+
+.headerItem {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+
+  font-size: inherit;
+  font-weight: 600;
+
+  --background: none;
+  --background-hover: none;
+
+  strong {
+    /* Differentiate from already bold title in header */
+    font-weight: 900;
+  }
+}
+
+.accordion {
+  background: none;
+
+  [slot="content"] {
+    padding: 1em 12px;
+
+    background: transparent;
+
+    img {
+      max-height: none;
+    }
+  }
+
+  :global(.ion-accordion-toggle-icon) {
+    color: var(--ion-color-medium2);
+    font-size: 1.45em;
+  }
+}

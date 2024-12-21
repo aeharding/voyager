@@ -1,4 +1,3 @@
-import { checkmark } from "ionicons/icons";
 import {
   CommentView,
   Community,
@@ -11,6 +10,7 @@ import {
 import { buildCommunityLink } from "./appLinkBuilder";
 import { getHandle } from "./lemmy";
 import { useBuildGeneralBrowseLink } from "./routes";
+import { alreadyHere } from "./toastMessages";
 import useAppToast from "./useAppToast";
 import { useOptimizedIonRouter } from "./useOptimizedIonRouter";
 
@@ -21,12 +21,7 @@ export default function useAppNavigation() {
 
   function pushRouteIfNeeded(route: string) {
     if (router.getRouteInfo()?.pathname === route) {
-      presentToast({
-        message: "You're already here!",
-        position: "top",
-        centerText: true,
-        icon: checkmark,
-      });
+      presentToast(alreadyHere);
       return "already-there";
     }
 

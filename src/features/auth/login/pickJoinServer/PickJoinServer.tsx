@@ -17,8 +17,6 @@ import {
   IonToolbar,
   useIonActionSheet,
 } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { compact, uniqBy } from "es-toolkit";
 import {
   ellipsisHorizontalCircleOutline,
@@ -36,13 +34,14 @@ import {
 import { VList } from "virtua";
 
 import {
-  SERVERS_BY_CATEGORY,
   ServerCategory,
+  SERVERS_BY_CATEGORY,
 } from "#/features/auth/login/data/servers";
 import Login from "#/features/auth/login/login/Login";
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import { isIosTheme } from "#/helpers/device";
+import { blurOnEnter } from "#/helpers/dom";
 import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import { defaultServersUntouched, getCustomServers } from "#/services/app";
@@ -57,52 +56,7 @@ import Filters from "./Filters";
 import { getInstances } from "./pickJoinServerSlice";
 import useStartJoinFlow from "./useStartJoinFlow";
 
-const spacing = `
-  margin: 2.5rem 0;
-  width: 100%;
-`;
-
-const SpacedSpinner = styled(IonSpinner)`
-  ${spacing}
-`;
-
-const Empty = styled.div`
-  ${spacing}
-
-  color: var(--ion-color-medium);
-  text-align: center;
-`;
-
-const ServerThumbnail = styled(IonThumbnail)`
-  --size: 32px;
-  --border-radius: 6px;
-  margin: 16px 16px 16px 0;
-  pointer-events: none;
-`;
-
-const ServerItem = styled(IonItem)`
-  --background: none;
-`;
-
-const NextMessage = styled.p`
-  font-size: 0.8em;
-`;
-
-const ServerImg = styled.img`
-  object-fit: contain;
-`;
-
-const StyledIonSearchbar = styled(IonSearchbar)`
-  padding-bottom: 5px !important;
-  min-height: 40px !important;
-`;
-
-const FiltersToolbar = styled(IonToolbar)`
-  --ion-safe-area-left: -8px;
-  --ion-safe-area-right: -8px;
-  --padding-start: 0;
-  --padding-end: 0;
-`;
+import styles from "./PickJoinServer.module.css";
 
 export default function PickJoinServer() {
   const [presentActionSheet] = useIonActionSheet();
@@ -294,28 +248,30 @@ export default function PickJoinServer() {
             const { url, icon, description } = allInstances[i]!;
 
             return (
-              <ServerItem key={url}>
-                <ServerThumbnail slot="start">
-                  <ServerImg
+              <IonItem className={styles.serverItem} key={url}>
+                <IonThumbnail className={styles.serverThumbnail} slot="start">
+                  <img
+                    className={styles.serverImg}
                     src={icon ? getImageSrc(icon, { size: 32 }) : lemmyLogo}
                   />
-                </ServerThumbnail>
+                </IonThumbnail>
                 <IonRadio value={url}>
                   <IonLabel>
                     <h2>{url}</h2>
                     <p className="ion-text-wrap">{description}</p>
                   </IonLabel>
                 </IonRadio>
-              </ServerItem>
+              </IonItem>
             );
           }}
         </VList>
       );
     }
 
-    if (loading || loadingInstances) return <SpacedSpinner />;
+    if (loading || loadingInstances)
+      return <IonSpinner className={styles.spacing} />;
 
-    return <Empty>No results</Empty>;
+    return <div className={styles.empty}>No results</div>;
   })();
 
   return (
@@ -330,9 +286,7 @@ export default function PickJoinServer() {
             <IonButton
               color="dark"
               onClick={presentOptions}
-              className={css`
-                font-size: 16px;
-              `}
+              className={styles.optionsButton}
             >
               <IonIcon
                 icon={
@@ -345,24 +299,21 @@ export default function PickJoinServer() {
             </IonButton>
           </IonButtons>
         </IonToolbar>
-        <FiltersToolbar>
-          <StyledIonSearchbar
+        <IonToolbar className={styles.filtersToolbar}>
+          <IonSearchbar
+            className={styles.searchbar}
             value={search}
             onIonInput={(e) => setSearch(e.detail.value || "")}
-            onKeyDown={(e) => {
-              if (e.key !== "Enter") return;
-
-              if (e.target instanceof HTMLElement) e.target.blur();
-            }}
+            onKeyDown={blurOnEnter}
             inputMode="url"
-            enterkeyhint="go"
+            enterkeyhint="done"
           />
           <Filters
             hasRecommended={hasRecommended}
             category={category}
             setCategory={setCategory}
           />
-        </FiltersToolbar>
+        </IonToolbar>
       </AppHeader>
       <IonContent ref={contentRef} scrollY={false}>
         <IonRadioGroup
@@ -384,10 +335,10 @@ export default function PickJoinServer() {
             {submitting ? <IonSpinner /> : "Next"}
           </IonButton>
           <IonText color="medium">
-            <NextMessage>
+            <p className={styles.nextMessage}>
               We&lsquo;ll pick a server for you if you don&lsquo;t make a
               selection.
-            </NextMessage>
+            </p>
           </IonText>
         </IonToolbar>
       </IonFooter>

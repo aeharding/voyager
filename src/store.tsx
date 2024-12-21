@@ -26,16 +26,16 @@ import instancesSlice, {
   getInstances,
 } from "./features/instances/instancesSlice";
 import redgifsSlice from "./features/media/external/redgifs/redgifsSlice";
+import imageSlice from "./features/media/imageSlice";
 import migrationSlice from "./features/migrate/migrationSlice";
 import modSlice from "./features/moderation/modSlice";
 import postAppearanceSlice from "./features/post/appearance/appearanceSlice";
-import imageSlice from "./features/post/inFeed/large/imageSlice";
 import thumbnailSlice from "./features/post/link/thumbnail/thumbnailSlice";
 import postSlice from "./features/post/postSlice";
 import resolveSlice from "./features/resolve/resolveSlice";
 import appIconSlice, {
   fetchAppIcon,
-} from "./features/settings/app-icon/appIconSlice";
+} from "./features/settings/appIcon/appIconSlice";
 import biometricSlice, {
   initializeBiometricSliceDataIfNeeded,
 } from "./features/settings/biometric/biometricSlice";

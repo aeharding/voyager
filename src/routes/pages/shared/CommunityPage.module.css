@@ -1,0 +1,77 @@
+.feedContent {
+  :global(.ios) & {
+    --background: var(
+      --ion-toolbar-background,
+      var(--ion-background-color-step-50, #f7f7f7)
+    );
+  }
+}
+
+/* This isn't great... but it works
+and I can't find a better solution 🤷‍♂️ */
+.fixedBg {
+  :global(.ios) & {
+    position: absolute;
+    inset: 0;
+    background: var(
+      --ion-toolbar-background,
+      var(--ion-background-color-step-50, #f7f7f7)
+    );
+    z-index: -2;
+  }
+}
+
+.toolbar {
+  :global(.ios) & {
+    /* Weird ionic glitch where adding
+    absolutely positioned searchbar to header misaligns buttons */
+    ion-buttons {
+      margin: auto;
+    }
+  }
+}
+
+.toolbarHideBorder {
+  --border-color: transparent;
+}
+
+.headerSearchbar {
+  position: absolute;
+  inset: 0;
+
+  padding-top: 5px !important;
+
+  &:global(.md) {
+    padding-top: 0 !important;
+    padding-left: 0;
+    padding-right: 0;
+
+    --box-shadow: none;
+  }
+}
+
+.searchbarHide {
+  opacity: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+
+.headerContainer {
+  background: var(
+    --ion-toolbar-background,
+    var(--ion-background-color-step-50, #f7f7f7)
+  );
+}
+
+.communitySearchbar {
+  padding-top: 0;
+
+  &:global(.md) {
+    padding-left: 0;
+    padding-right: 0;
+
+    --box-shadow: none;
+  }
+
+  min-height: 0;
+}

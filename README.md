@@ -99,6 +99,14 @@ However, if you prefer using the Progressive Web App, there are a number of folk
 
 > **Note**: Community deployments are **NOT** maintained by the Voyager team. They may not be synced with Voyager's source code. Please do your own research about the host servers before using them.
 
+### Beta Testing
+
+Voyager maintains a beta track continuously deployed from every commit to [`refs/heads/main`](https://github.com/aeharding/voyager/commits/main)). **The beta build may break at any time.**
+
+- [iOS – Testflight](https://testflight.apple.com/join/nWLw1MBM)
+- [Android – Google Play Open Testing](https://play.google.com/apps/testing/app.vger.voyager)
+- [Web App – beta.vger.app](https://beta.vger.app)
+
 ### Self-Host
 
 There are two ways you can run Voyager as a PWA in a production environment. The recommended method is using **docker**. We also support a **traditional** deployment method without docker. Read below to see how to get each method set up.

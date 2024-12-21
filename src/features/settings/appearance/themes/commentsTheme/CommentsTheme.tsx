@@ -5,8 +5,6 @@ import {
   IonRadio,
   IonRadioGroup,
 } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { startCase } from "es-toolkit";
 
 import { ListHeader } from "#/features/settings/shared/formatting";
@@ -17,21 +15,7 @@ import { setCommentsTheme } from "../../../settingsSlice";
 import Color from "./Color";
 import COMMENT_THEMES from "./values";
 
-const ColorsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Colors = styled.div`
-  display: flex;
-  gap: 6px;
-  margin: 0 6px;
-
-  .ion-palette-dark & {
-    opacity: 0.7;
-  }
-`;
+import styles from "./CommentsTheme.module.css";
 
 export default function CommentsTheme() {
   const dispatch = useAppDispatch();
@@ -53,22 +37,15 @@ export default function CommentsTheme() {
         <IonList inset>
           {Object.entries(OCommentsThemeType).map(([label, value]) => (
             <IonItem key={value}>
-              <IonRadio
-                value={value}
-                className={css`
-                  &::part(label) {
-                    flex: 1;
-                  }
-                `}
-              >
-                <ColorsContainer>
+              <IonRadio value={value} className={styles.radio}>
+                <div className={styles.container}>
                   <IonLabel>{startCase(label)}</IonLabel>
-                  <Colors>
+                  <div className={styles.colors}>
                     {COMMENT_THEMES[value].map((color, index) => (
                       <Color key={index} color={color} />
                     ))}
-                  </Colors>
-                </ColorsContainer>
+                  </div>
+                </div>
               </IonRadio>
             </IonItem>
           ))}

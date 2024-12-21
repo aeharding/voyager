@@ -3,11 +3,11 @@ import { pickBy, without, zipObject } from "es-toolkit";
 import { getAllObjectValuesDeep } from "#/helpers/object";
 import { db } from "#/services/db";
 
-import { LOCALSTORAGE_KEYS, get, set } from "../../../syncStorage";
+import { get, LOCALSTORAGE_KEYS, set } from "../../../syncStorage";
 
 const BASE_BACKUP_JSON = {
   voyagerBackupVersion: 1,
-  voyagerAppVersion: APP_VERSION,
+  voyagerAppVersion: import.meta.env.APP_VERSION,
 } as const;
 
 type Backup = typeof BASE_BACKUP_JSON & {

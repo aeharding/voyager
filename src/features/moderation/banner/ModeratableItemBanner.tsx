@@ -1,7 +1,6 @@
-import { styled } from "@linaria/react";
 import { Comment, CommentView, Post, PostView } from "lemmy-js-client";
 
-import { maxWidthCss } from "#/features/shared/AppContent";
+import { cx } from "#/helpers/css";
 import { useAppSelector } from "#/store";
 
 import {
@@ -11,6 +10,8 @@ import {
 import RemovedBanner from "./RemovedBanner";
 import ReportBanner from "./ReportBanner";
 
+import styles from "./ModeratableItemBanner.module.css";
+
 export const ItemModState = {
   None: 0,
   Flagged: 1,
@@ -19,26 +20,22 @@ export const ItemModState = {
 
 export type ItemModStateType = (typeof ItemModState)[keyof typeof ItemModState];
 
-export const Banner = styled.div<{
+interface BannerProps extends React.HTMLAttributes<HTMLDivElement> {
   modState: typeof ItemModState.Flagged | typeof ItemModState.RemovedByMod;
-}>`
-  ${maxWidthCss}
+}
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  font-size: 0.875rem;
-
-  padding: 6px 0;
-  border-radius: 6px;
-
-  text-align: center;
-
-  background: ${({ modState }) => getModStateBannerBgColor(modState)!};
-  color: ${({ modState }) => getModStateBannerColor(modState)!};
-`;
+export function Banner({ modState, ...props }: BannerProps) {
+  return (
+    <div
+      {...props}
+      className={cx(styles.sharedBanner, props.className)}
+      style={{
+        background: getModStateBannerBgColor(modState),
+        color: getModStateBannerColor(modState),
+      }}
+    />
+  );
+}
 
 interface RemovedByBannerProps {
   modState: ItemModStateType;

@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ResolveObjectResponse } from "lemmy-js-client";
 
 import { clientSelector } from "#/features/auth/authSelectors";
@@ -8,9 +8,9 @@ import { receivedPosts } from "#/features/post/postSlice";
 import {
   COMMENT_PATH,
   COMMENT_VIA_POST_PATH,
-  POST_PATH,
   matchLemmyCommunity,
   matchLemmyUser,
+  POST_PATH,
 } from "#/features/shared/useLemmyUrlHandler";
 import { receivedUsers } from "#/features/user/userSlice";
 import { isLemmyError } from "#/helpers/lemmyErrors";

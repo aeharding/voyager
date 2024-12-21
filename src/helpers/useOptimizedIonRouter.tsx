@@ -1,7 +1,7 @@
-import { UseIonRouterResult, useIonRouter } from "@ionic/react";
+import { useIonRouter, UseIonRouterResult } from "@ionic/react";
 import {
-  MutableRefObject,
   createContext,
+  MutableRefObject,
   useContext,
   useEffect,
   useMemo,

@@ -1,5 +1,11 @@
 {
-  "hooks": {
-    "before:bump": "npx capacitor-set-version -v ${version} -b $BUILD"
+  "$schema": "https://unpkg.com/release-it@17/schema/release-it.json",
+  "git": {
+    "commitMessage": "chore: bump version to ${version}",
+    "tag": false,
+    "getLatestTagFromAllRefs": true
+  },
+  "npm": {
+    "publish": false
   }
 }

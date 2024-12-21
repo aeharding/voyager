@@ -2,12 +2,10 @@ import { CapacitorHttp } from "@capacitor/core";
 import { Directory, Filesystem } from "@capacitor/filesystem";
 import { Share } from "@capacitor/share";
 import { IonButton, IonItem, IonLabel, IonList, IonToggle } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
-import { Options as DomToBlobOptions, domToBlob } from "modern-screenshot";
+import { domToBlob, Options as DomToBlobOptions } from "modern-screenshot";
 import {
-  ReactNode,
   createContext,
+  ReactNode,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -18,99 +16,19 @@ import { createPortal } from "react-dom";
 import CommentTree from "#/features/comment/inTree/CommentTree";
 import PostHeader from "#/features/post/detail/PostHeader";
 import { blobToDataURL, blobToString } from "#/helpers/blob";
+import { cx } from "#/helpers/css";
 import { isNative } from "#/helpers/device";
 import { buildCommentsTree, getDepthFromComment } from "#/helpers/lemmy";
 import useAppToast from "#/helpers/useAppToast";
 import { getImageSrc } from "#/services/lemmy";
-import { webviewServerUrl } from "#/services/nativeFetch";
+import { getServerUrl } from "#/services/nativeFetch";
 
 import AddRemoveButtons from "./AddRemoveButtons";
+import includeStyleProperties from "./includeStyleProperties";
 import { ShareAsImageData } from "./ShareAsImageModal";
 import Watermark from "./Watermark";
-import includeStyleProperties from "./includeStyleProperties";
 
-const Container = styled.div`
-  --bottom-padding: max(
-    var(--ion-safe-area-bottom, env(safe-area-inset-bottom, 0)),
-    16px
-  );
-
-  --top-space: 50px;
-
-  @media (max-height: 650px) {
-    --top-space: 0px;
-  }
-
-  display: grid;
-  grid-template-rows: max-content 1fr max-content;
-
-  max-height: calc(
-    100vh - var(--ion-safe-area-top, env(safe-area-inset-top, 0)) - var(
-        --top-space
-      )
-  );
-
-  padding: 0 16px var(--bottom-padding);
-`;
-
-const sharedImgCss = `
-  min-height: 0;
-  max-height: 100%;
-  justify-self: center;
-  max-width: 100%;
-
-  filter: var(--share-img-drop-shadow);
-
-  .ios & {
-    border-radius: 8px;
-  }
-
-  .md & {
-    margin-top: 16px;
-  }
-`;
-
-const PlaceholderImg = styled.div`
-  ${sharedImgCss}
-
-  background: white;
-
-  .ion-palette-dark & {
-    background: black;
-  }
-
-  height: 80px;
-  width: 80%;
-`;
-
-const PreviewImg = styled.img`
-  ${sharedImgCss}
-`;
-
-const StyledIonList = styled(IonList)`
-  &.list-ios.list-inset {
-    margin-inline-start: 0;
-    margin-inline-end: 0;
-  }
-`;
-
-const ParentCommentValues = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-`;
-
-const CommentSnapshotContainer = styled.div`
-  background: var(--ion-item-background, var(--ion-background-color, #fff));
-`;
-
-const PostCommentSpacer = styled.div`
-  height: 6px;
-`;
-
-const hideBottomBorderCss = css`
-  --inner-border-width: 0 0 0 0;
-`;
+import styles from "./ShareAsImage.module.css";
 
 const domToBlobOptions: DomToBlobOptions = {
   scale: 4,
@@ -127,7 +45,8 @@ const domToBlobOptions: DomToBlobOptions = {
   fetchFn: isNative()
     ? async (url) => {
         // Pass through relative URLs to browser fetching
-        if (url.startsWith(`${webviewServerUrl}/`)) {
+        // !: running in native environment
+        if (url.startsWith(`${getServerUrl!()}/`)) {
           return false;
         }
 
@@ -221,7 +140,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
       setBlob(() => blob ?? undefined);
     } catch (error) {
       presentToast({
-        message: "Error rendering image.",
+        message: "Error rendering image",
       });
 
       throw error;
@@ -280,12 +199,13 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
   }
 
   return (
-    <Container>
+    <div className={styles.container}>
       {header}
       {!imageSrc ? (
-        <PlaceholderImg />
+        <div className={styles.placeholderImg} />
       ) : (
-        <PreviewImg
+        <img
+          className={styles.previewImg}
           draggable={false}
           src={imageSrc}
           onLoad={(e) => {
@@ -306,7 +226,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
         />
       )}
 
-      <StyledIonList inset lines="full">
+      <IonList className={styles.list} inset lines="full">
         {"comment" in data && (
           <>
             <IonItem>
@@ -331,7 +251,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             {!!getDepthFromComment(data.comment.comment) && (
               <IonItem>
                 <IonLabel>Parent Comments</IonLabel>
-                <ParentCommentValues slot="end">
+                <div className={styles.parentCommentValues} slot="end">
                   <strong>
                     {(getDepthFromComment(data.comment.comment) ?? 0) -
                       minDepth}
@@ -344,7 +264,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                     onAdd={() => setMinDepth((minDepth) => minDepth - 1)}
                     onRemove={() => setMinDepth((minDepth) => minDepth + 1)}
                   />
-                </ParentCommentValues>
+                </div>
               </IonItem>
             )}
           </>
@@ -375,19 +295,19 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             Watermark
           </IonToggle>
         </IonItem>
-      </StyledIonList>
+      </IonList>
       <IonButton onClick={onShare}>
         {isNative() || "canShare" in navigator ? "Share" : "Download"}
       </IonButton>
 
       {createPortal(
-        <CommentSnapshotContainer className="inner">
+        <div className={cx(styles.commentSnapshotContainer, "inner")}>
           <ShareImageContext.Provider
             value={{ capturing: true, hideUsernames, hideCommunity }}
           >
             {includePostDetails && (
               <PostHeader
-                className={!("comment" in data) ? hideBottomBorderCss : ""}
+                className={!("comment" in data) ? styles.hideBottomBorder : ""}
                 post={data.post}
                 showPostText={includePostText}
                 showPostActions={false}
@@ -396,7 +316,9 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             )}
             {"comment" in data && (
               <>
-                {includePostDetails && <PostCommentSpacer />}
+                {includePostDetails && (
+                  <div className={styles.postCommentSpacer} />
+                )}
                 <CommentTree
                   comment={commentNode[0]!}
                   first
@@ -407,10 +329,10 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
             )}
           </ShareImageContext.Provider>
           {watermark && <Watermark />}
-        </CommentSnapshotContainer>,
+        </div>,
         shareAsImageRenderRoot,
       )}
-    </Container>
+    </div>
   );
 }
 

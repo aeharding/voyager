@@ -1,6 +1,4 @@
 import { IonItem } from "@ionic/react";
-import { cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { CommentView } from "lemmy-js-client";
 import React, { MouseEvent, useRef } from "react";
 import AnimateHeight from "react-animate-height";
@@ -11,6 +9,7 @@ import { ModeratableItemBannerOutlet } from "#/features/moderation/ModeratableIt
 import ModeratableItem from "#/features/moderation/ModeratableItem";
 import useCanModerate from "#/features/moderation/useCanModerate";
 import SlidingNestedCommentVote from "#/features/shared/sliding/SlidingNestedCommentVote";
+import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
 import {
   preventOnClickNavigationBug,
@@ -25,28 +24,7 @@ import CommentHeader, { isStubComment } from "./CommentHeader";
 import CommentContainer from "./elements/CommentContainer";
 import { PositionedContainer } from "./elements/PositionedContainer";
 
-export const CustomIonItem = styled(IonItem)`
-  scroll-margin-bottom: 35vh;
-
-  --padding-start: 0;
-  --inner-padding-end: 0;
-  --border-style: none;
-  --min-height: 0;
-`;
-
-const Content = styled.div`
-  padding-top: 0.35em;
-
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-
-  @media (hover: none) {
-    padding-top: 0.45em;
-  }
-
-  line-height: 1.25;
-`;
+import styles from "./Comment.module.css";
 
 interface CommentProps {
   comment: CommentView;
@@ -116,9 +94,10 @@ export default function Comment({
       rootIndex={rootIndex}
       collapsed={!!collapsed}
     >
-      <CustomIonItem
+      <IonItem
         mode="ios" // Use iOS style activatable tap highlight
         className={cx(
+          styles.commentItem,
           !cannotCollapse && isTouchDevice() && "ion-activatable",
           `comment-${comment.id}`,
         )}
@@ -156,7 +135,8 @@ export default function Comment({
                   height={!showCollapsedComment && collapsed ? 0 : "auto"}
                 >
                   {!stub || context ? (
-                    <Content
+                    <div
+                      className={styles.content}
                       onClick={(e) => {
                         if (!(e.target instanceof HTMLElement)) return;
                         if (e.target.nodeName === "A") e.stopPropagation();
@@ -167,10 +147,11 @@ export default function Comment({
                           item={comment}
                           showTouchFriendlyLinks={!context}
                           mdClassName="collapse-md-margins"
+                          canModerate={canModerate}
                         />
                       )}
                       {context}
-                    </Content>
+                    </div>
                   ) : undefined}
                 </AnimateHeight>
               </div>
@@ -178,7 +159,7 @@ export default function Comment({
             <Save type="comment" id={commentView.comment.id} />
           </PositionedContainer>
         </ModeratableItem>
-      </CustomIonItem>
+      </IonItem>
     </SlidingNestedCommentVote>
   );
 }

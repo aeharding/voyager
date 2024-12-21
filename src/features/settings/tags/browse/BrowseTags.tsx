@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import Feed, { FetchFn } from "#/features/feed/Feed";
 import { removeTag } from "#/features/tags/userTagSlice";
-import { UserTag as UserTagType, db } from "#/services/db";
+import { db, UserTag as UserTagType } from "#/services/db";
 import { LIMIT } from "#/services/lemmy";
 import { useAppDispatch } from "#/store";
 

@@ -1,35 +1,35 @@
 import { IonIcon } from "@ionic/react";
-import { css, cx } from "@linaria/core";
 
-const baseClass = css`
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-`;
+import { cx } from "#/helpers/css";
 
-const baseIconClass = css`
-  font-size: 1.2em;
-`;
+import sharedStyles from "#/features/shared/shared.module.css";
+import styles from "./Stat.module.css";
 
-interface StatProps extends React.HTMLAttributes<HTMLDivElement> {
-  statEl?: JSX.ElementType;
+interface StatProps
+  extends React.HTMLAttributes<HTMLDivElement & HTMLButtonElement> {
+  button?: boolean;
   icon: string;
   iconClassName?: string;
   children?: React.ReactNode;
 }
 
 export default function Stat({
-  statEl: Container = "div", // Pass PlainButton when interactive
+  button,
   icon,
   iconClassName,
   className,
   children,
   ...rest
 }: StatProps) {
+  const El = button ? "button" : "div";
+
   return (
-    <Container {...rest} className={cx(className, baseClass)}>
-      <IonIcon icon={icon} className={cx(iconClassName, baseIconClass)} />
+    <El
+      {...rest}
+      className={cx(className, styles.base, button && sharedStyles.plainButton)}
+    >
+      <IonIcon icon={icon} className={cx(iconClassName, styles.baseIcon)} />
       {children}
-    </Container>
+    </El>
   );
 }

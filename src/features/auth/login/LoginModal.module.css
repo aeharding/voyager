@@ -1,0 +1,7 @@
+.modal {
+  --max-width: 500px;
+
+  @media (min-width: 600px) {
+    --max-height: 750px;
+  }
+}

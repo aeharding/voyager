@@ -1,0 +1,156 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_behavior:
+        description: "If publish_release, will create a release and publish it to the release branch. If push_beta, will create a beta build and push it to the beta track."
+        required: true
+        default: "publish_release"
+        type: choice
+        options:
+          - publish_release
+          - push_beta
+  push:
+    branches:
+      - "main"
+
+env:
+  APP_BUILD_OFFSET: 300
+
+jobs:
+  app_build:
+    runs-on: ubuntu-latest
+    steps:
+      - id: calculate
+        run: |
+          APP_BUILD=$((${{ github.run_number }} + $APP_BUILD_OFFSET))
+          echo "app_build=$APP_BUILD" >> $GITHUB_OUTPUT
+          echo "App build number: \`$APP_BUILD\`" >> $GITHUB_STEP_SUMMARY
+    outputs:
+      app_build: ${{ steps.calculate.outputs.app_build }}
+
+  app_version:
+    runs-on: ubuntu-latest
+    outputs:
+      app_version: ${{ steps.app_version.outputs.app_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Get current version from package.json
+        id: app_version
+        run: |
+          APP_VERSION=$(node -p "require('./package.json').version")
+          echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "current app version: $APP_VERSION"
+
+      - name: Verify provided version not already released
+        if: inputs.release_behavior == 'publish_release'
+        run: |
+          git fetch --tags
+          TAG_NAME="${{ steps.app_version.outputs.app_version }}"
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "Error: Tag $TAG_NAME already exists"
+            exit 1
+          fi
+
+  bump_src:
+    needs: [app_build, app_version]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: corepack enable
+
+      - name: 📦 Install dependencies
+        run: pnpm install  --frozen-lockfile
+
+      - name: Run trapeze (update iOS and Android version/code)
+        run: pnpm exec trapeze run trapeze.yaml -y
+        env:
+          APP_BUILD: ${{ needs.app_build.outputs.app_build }}
+          APP_VERSION: ${{ needs.app_version.outputs.app_version }}
+
+      - name: Add build metadata
+        run: |
+          echo """APP_VERSION=${{ needs.app_version.outputs.app_version }}
+          APP_BUILD=${{ needs.app_build.outputs.app_build }}
+          APP_GIT_REF=${{ inputs.release_behavior != 'publish_release' && github.sha || needs.app_version.outputs.app_version }}""" > .env
+          echo "wrote .env:"
+          cat .env
+
+      - name: Determine changed files
+        id: determine_changes
+        run: |
+          git add .
+          echo "will upload the following files:"
+          git --no-pager diff HEAD --name-only
+
+          echo "all modifications:"
+          git --no-pager diff HEAD
+
+          echo 'files<<EOF' >> $GITHUB_OUTPUT
+          git --no-pager diff HEAD --name-only >> $GITHUB_OUTPUT
+          echo EOF >> $GITHUB_OUTPUT
+
+      - name: Upload bumped version artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-data
+          path: ${{ steps.determine_changes.outputs.files }}
+          include-hidden-files: true # needed for .env
+
+  dispatch_beta_release:
+    if: inputs.release_behavior != 'publish_release'
+    needs: [bump_src]
+    uses: ./.github/workflows/build_release.yml
+    with:
+      is_main_build: true
+    secrets: inherit
+    permissions:
+      contents: write # needed for create_release, even though it won't be called
+      packages: write # docker release
+
+  push_release:
+    needs: [bump_src, app_build, app_version]
+    runs-on: ubuntu-latest
+    if: inputs.release_behavior == 'publish_release'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false # Don't clobber the PAT below
+
+      - name: Download bumped version artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release-data
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@cb9bde2e2525e640591a934b1fd28eef1dcaf5e5 # v6.2.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+
+      - name: Commit and push release
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+        # Github doesn't trigger subsequent workflows unless push with a PAT
+        run: |
+          git remote set-url origin "https://${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git config --global user.email "voyager.ci.noreply@harding.dev"
+          git config --global user.name "Voyager CI"
+          git add .
+          git commit -S -m "release: ${{ needs.app_version.outputs.app_version }} (${{ needs.app_build.outputs.app_build }})"
+          TAG_NAME="${{ needs.app_version.outputs.app_version }}"
+          echo "Creating tag: $TAG_NAME"
+          git tag -s "$TAG_NAME" -m "release: ${{ needs.app_version.outputs.app_version }} (${{ needs.app_build.outputs.app_build }})"
+          git push origin "$TAG_NAME"

@@ -1,0 +1,28 @@
+.moreRepliesBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  color: var(--ion-color-primary);
+
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.chevronIcon {
+  font-size: 1rem;
+}
+
+.spinner {
+  width: 1.25rem;
+  opacity: 0.6;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

@@ -34,16 +34,6 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/**"],
-
-    languageOptions: {
-      globals: {
-        APP_VERSION: true,
-        BUILD_FOSS_ONLY: true,
-      },
-    },
-  },
-  {
     plugins: {
       perfectionist: perfectionistPlugin,
     },
@@ -117,16 +107,23 @@ export default tseslint.config(
         "warn",
         {
           newlinesBetween: "always",
-          ignoreCase: false,
+          partitionByComment: true,
           type: "natural",
-          internalPattern: ["#/**"],
+          ignoreCase: false,
+          tsconfigRootDir: ".",
           sortSideEffects: true,
           groups: [
             "builtin",
             "external",
             "internal",
             ["parent", "sibling", "index"],
+            "css-modules",
           ],
+          customGroups: {
+            value: {
+              ["css-modules"]: ["\\.module\\.css$"],
+            },
+          },
         },
       ],
 

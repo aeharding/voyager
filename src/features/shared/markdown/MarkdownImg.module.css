@@ -1,0 +1,13 @@
+.small {
+  max-height: 200px;
+}
+
+.media {
+  display: inline-flex;
+  vertical-align: middle;
+
+  &:global(.not-loaded) {
+    height: 200px;
+    border: 1px solid rgba(var(--ion-color-dark-rgb), 0.15);
+  }
+}

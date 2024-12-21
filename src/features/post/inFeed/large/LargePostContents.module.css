@@ -1,0 +1,26 @@
+.body {
+  font-size: 0.8em;
+  line-height: 1.25;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.read {
+  color: var(--read-color-medium);
+}
+
+.unread {
+  opacity: 0.6;
+}
+
+.imageContainer {
+  overflow: hidden;
+  margin: 0 -12px;
+}

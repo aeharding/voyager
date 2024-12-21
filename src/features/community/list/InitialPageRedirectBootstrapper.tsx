@@ -1,5 +1,4 @@
 import { useIonViewDidEnter } from "@ionic/react";
-import { styled } from "@linaria/react";
 import {
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
@@ -14,12 +13,7 @@ import { useAppDispatch } from "#/store";
 
 import { appIsReadyToAcceptDeepLinks } from "./deepLinkReadySlice";
 
-const LoadingOverlay = styled.div`
-  background: var(--ion-background-color);
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-`;
+import styles from "./InitialPageRedirectBootstrapper.module.css";
 
 interface InitialPageRedirectBootstrapperProps {
   to: string | undefined;
@@ -105,5 +99,5 @@ export default function InitialPageRedirectBootstrapper({
 
   if (!isInstalled() || bootstrapped) return null;
 
-  return <LoadingOverlay />;
+  return <div className={styles.loadingOverlay} />;
 }

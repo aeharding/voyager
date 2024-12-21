@@ -1,0 +1,45 @@
+.item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}
+
+.rightContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.communityLink {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contents {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.stats {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+}
+
+.description {
+  font-size: 0.875em;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

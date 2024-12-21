@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import { Person } from "lemmy-js-client";
 
 import { useIsDark } from "#/core/GlobalStyles";
@@ -9,9 +8,7 @@ import { UserTag } from "#/services/db";
 import { useAppSelector } from "../../store";
 import { getVoteWeightColor } from "./voteColor";
 
-const ScoreContainer = styled.span`
-  color: var(--ion-color-medium2);
-`;
+import styles from "./UserScore.module.css";
 
 type UserScoreProps =
   | SyncUserScoreProps
@@ -79,7 +76,8 @@ function SyncUserScore({ tag, prefix }: SyncUserScoreProps) {
   return (
     <>
       {prefix}
-      <ScoreContainer
+      <span
+        className={styles.scoreContainer}
         style={{
           [isDark ? "color" : "background"]: getVoteWeightColor(
             tag,
@@ -89,7 +87,7 @@ function SyncUserScore({ tag, prefix }: SyncUserScoreProps) {
       >
         [{score > 0 ? "+" : ""}
         {formatNumber(score)}]
-      </ScoreContainer>
+      </span>
     </>
   );
 }

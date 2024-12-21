@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  justify-content: space-around;
+  color: var(--ion-color-primary);
+  font-size: 1.5em;
+
+  width: 100%;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

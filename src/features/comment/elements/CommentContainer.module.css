@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+
+  position: relative;
+  width: 100%;
+
+  gap: 12px;
+
+  font-size: 0.9375em;
+
+  display: flex;
+  flex-direction: column;
+
+  padding-left: var(--sv-depth);
+
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    filter: none;
+
+    background: var(--sv-background);
+
+    opacity: var(--sv-opacity);
+  }
+
+  /*
+   * CSS footgun:
+   * https://stackoverflow.com/q/79206240/1319878
+   * https://github.com/microsoft/TypeScript/issues/49753
+   */
+  :global(.ion-palette-dark) &:before {
+    filter: brightness(0.7);
+  }
+}

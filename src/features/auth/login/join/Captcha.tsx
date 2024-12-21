@@ -6,68 +6,14 @@ import {
   IonSpinner,
   IonText,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { refresh, volumeHigh, volumeHighOutline } from "ionicons/icons";
 import { GetCaptchaResponse, Register } from "lemmy-js-client";
 import { useCallback, useEffect, useImperativeHandle, useState } from "react";
 
-import { PlainButton } from "#/features/shared/PlainButton";
 import { b64ToBlob } from "#/helpers/blob";
 import { getClient } from "#/services/lemmy";
 
-const CaptchaIonList = styled(IonList)`
-  position: relative;
-
-  height: 100px;
-`;
-
-const CaptchaIonItem = styled(IonItem)`
-  --background: none;
-`;
-
-const CaptchaImg = styled.img`
-  margin: 0 auto;
-  height: 100px;
-`;
-
-const CaptchaBg = styled.img`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  filter: blur(20px);
-`;
-
-const Actions = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 1.3rem;
-  padding: 12px;
-
-  z-index: 1;
-
-  display: flex;
-  gap: 12px;
-
-  background: rgba(0, 0, 0, 0.4);
-  border-bottom-left-radius: 12px;
-`;
-
-const SpinnerContainer = styled.div`
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-
-  z-index: 1;
-`;
-
-const Spinner = styled(IonSpinner)`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
+import styles from "./Captcha.module.css";
 
 export interface CaptchaHandle {
   getResult: () => Pick<Register, "captcha_answer" | "captcha_uuid">;
@@ -145,21 +91,26 @@ export default function Captcha({ url, ref }: CaptchaProps) {
 
   return (
     <>
-      <CaptchaIonList inset>
+      <IonList inset className={styles.list}>
         {captcha?.ok && (
           <>
-            <CaptchaBg src={`data:image/png;base64,${captcha.ok.png}`} />
-            <CaptchaIonItem>
-              <CaptchaImg
+            <img
+              className={styles.bg}
+              src={`data:image/png;base64,${captcha.ok.png}`}
+            />
+            <IonItem className={styles.item}>
+              <img
+                className={styles.img}
                 src={`data:image/png;base64,${captcha.ok.png}`}
                 alt="Captcha image"
               />
-            </CaptchaIonItem>
+            </IonItem>
           </>
         )}
 
-        <Actions>
-          <PlainButton
+        <div className={styles.actions}>
+          <button
+            className={styles.button}
             aria-label="Refresh captcha"
             onClick={() => {
               if (loading || playing) return;
@@ -168,21 +119,25 @@ export default function Captcha({ url, ref }: CaptchaProps) {
             }}
           >
             <IonIcon icon={refresh} color="primary" />
-          </PlainButton>
-          <PlainButton aria-label="Play captcha audio" onClick={play}>
+          </button>
+          <button
+            className={styles.button}
+            aria-label="Play captcha audio"
+            onClick={play}
+          >
             <IonIcon
               icon={playing ? volumeHigh : volumeHighOutline}
               color="primary"
             />
-          </PlainButton>
-        </Actions>
+          </button>
+        </div>
 
         {loading && (
-          <SpinnerContainer>
-            <Spinner />
-          </SpinnerContainer>
+          <div className={styles.spinnerContainer}>
+            <IonSpinner className={styles.spinner} />
+          </div>
         )}
-      </CaptchaIonList>
+      </IonList>
       <IonList inset>
         <IonItem>
           <IonInput

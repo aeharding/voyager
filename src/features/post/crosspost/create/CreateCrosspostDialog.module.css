@@ -1,0 +1,45 @@
+.title {
+  font-size: 1.1em;
+  line-height: 1rem;
+  font-weight: bold;
+}
+
+.pillIonInput {
+  --padding-start: 12px;
+  --padding-end: 12px;
+
+  border-radius: 0.5rem;
+  background: var(--ion-item-background, var(--ion-background-color, #fff));
+}
+
+.readonlyCrosspost {
+  pointer-events: none;
+
+  background: var(--ion-item-background, var(--ion-background-color, #fff));
+}
+
+.pillIonButton {
+  width: 100%;
+  --border-radius: 0.5rem;
+}
+
+.pillIonList {
+  width: 100%;
+
+  &.pillIonList {
+    margin: 0;
+  }
+}
+
+.communitySelectorContents {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

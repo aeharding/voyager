@@ -1,84 +1,77 @@
-import {
-  IonIcon,
-  IonItem,
-  IonItemDivider,
-  IonItemGroup,
-  IonLabel,
-  IonList,
-} from "@ionic/react";
-import { styled } from "@linaria/react";
-import { sortBy } from "es-toolkit";
-import { earth, home, people, shieldCheckmark } from "ionicons/icons";
+import { IonList } from "@ionic/react";
+import { compact, sortBy } from "es-toolkit";
 import { Community } from "lemmy-js-client";
-import { memo, useMemo, useRef } from "react";
-import { VList, VListHandle } from "virtua";
+import {
+  createContext,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  CustomContainerComponent,
+  CustomItemComponentProps,
+  Virtualizer,
+  VListHandle,
+} from "virtua";
 
 import { jwtSelector } from "#/features/auth/authSelectors";
-import { maxWidthCss } from "#/features/shared/AppContent";
-import { attributedPreventOnClickNavigationBug } from "#/helpers/ionic";
+import { cx } from "#/helpers/css";
 import { getHandle } from "#/helpers/lemmy";
-import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppSelector } from "#/store";
 
 import AlphabetJump from "./AlphabetJump";
-import CommunityListItem from "./CommunityListItem";
+import Item from "./Item";
 import useShowModeratorFeed from "./useShowModeratorFeed";
 
-const SubIcon = styled(IonIcon)<{ color: string }>`
-  border-radius: 50%;
-  padding: 6px;
-  width: 1rem;
-  height: 1rem;
+import styles from "./ResolvedCommunitiesList.module.css";
 
-  background: ${({ color }) => color};
-  --ion-color-base: white;
-`;
+const OVERSCAN_AMOUNT = 3;
 
-export const Content = styled.div`
-  margin: 0.7rem 0;
+interface SeparatorItem {
+  type: "separator";
+  value: string;
+}
 
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+interface SpecialItem {
+  type: "home" | "all" | "local" | "mod";
+}
 
-  aside {
-    margin-top: 0.2rem;
-    color: var(--ion-color-medium);
-    font-size: 0.8em;
-  }
-`;
+interface CommunityItem {
+  type: "community";
+  value: Community;
+}
 
-const StyledIonList = styled(IonList)`
-  height: 100%;
-`;
+interface FavoriteItem {
+  type: "favorite";
+  value: string | Community;
+}
 
-const StyledVList = styled(VList)`
-  height: 100%;
-
-  &::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-  }
-
-  ion-item-group {
-    ${maxWidthCss}
-  }
-`;
+export type ItemType =
+  | SeparatorItem
+  | SpecialItem
+  | CommunityItem
+  | FavoriteItem;
 
 interface CommunitiesListParams {
   actor: string;
   communities: Community[];
+  onListAtTopChange?: (isAtTop: boolean) => void;
 }
 
 function ResolvedCommunitiesList({
   actor,
   communities,
+  onListAtTopChange,
 }: CommunitiesListParams) {
-  const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const jwt = useAppSelector(jwtSelector);
 
   const virtuaRef = useRef<VListHandle>(null);
+  const [shift, setShift] = useState(false);
 
   const moderates = useAppSelector(
     (state) => state.site.response?.my_user?.moderates,
@@ -115,133 +108,156 @@ function ResolvedCommunitiesList({
     );
   }, [communities]);
 
+  const { items, throughFavoritesCount } = useMemo(() => {
+    const favoriteItems: (FavoriteItem | SeparatorItem)[] = favorites?.length
+      ? [
+          { type: "separator", value: "Favorites" },
+          ...favoritesAsCommunitiesIfFound.map(
+            (c) => ({ type: "favorite", value: c }) as const,
+          ),
+        ]
+      : [];
+
+    const modItems = moderates?.length
+      ? [
+          { type: "separator", value: "Moderator" } as const,
+          ...moderates.map(
+            (c) => ({ type: "community", value: c.community }) as const,
+          ),
+        ]
+      : [];
+
+    const alphabetItems = communitiesGroupedByLetter.flatMap(
+      ([letter, communities]) => [
+        { type: "separator", value: letter } as const,
+        ...communities.map((c) => ({ type: "community", value: c }) as const),
+      ],
+    );
+
+    const upThroughFavorites: ItemType[] = compact([
+      jwt && { type: "home" },
+      { type: "all" },
+      { type: "local" },
+      showModeratorFeed && { type: "mod" },
+      ...favoriteItems,
+    ]);
+
+    const throughFavoritesCount = upThroughFavorites.length;
+
+    const items: ItemType[] = compact([
+      ...upThroughFavorites,
+      ...modItems,
+      ...alphabetItems,
+    ]);
+
+    return {
+      items,
+      throughFavoritesCount,
+    };
+  }, [
+    communitiesGroupedByLetter,
+    favorites?.length,
+    favoritesAsCommunitiesIfFound,
+    jwt,
+    moderates,
+    showModeratorFeed,
+  ]);
+
+  const stickyIndexes = useMemo(() => {
+    const indexes = new Set<number>();
+    for (const [index, item] of items.entries()) {
+      if ("type" in item && item.type === "separator") {
+        indexes.add(index);
+      }
+    }
+    return indexes;
+  }, [items]);
+
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const updateActiveIndex = useCallback(() => {
+    if (!virtuaRef.current) return;
+    const start = virtuaRef.current.findStartIndex();
+    const activeStickyIndex =
+      [...stickyIndexes].reverse().find((index) => start >= index) ?? -1;
+    setActiveIndex(activeStickyIndex);
+  }, [stickyIndexes]);
+
+  useEffect(() => {
+    updateActiveIndex();
+  }, [updateActiveIndex]);
+
   return (
-    <>
-      <StyledIonList>
-        <StyledVList
+    <StickyIndexContext.Provider value={activeIndex}>
+      <div
+        className={cx(
+          styles.virtualizerScrollView,
+          isSafariFeedHackEnabled
+            ? "virtual-scroller"
+            : "ion-content-scroll-host virtual-scroller",
+        )}
+      >
+        <Virtualizer
+          shift={shift}
           ref={virtuaRef}
-          overscan={1}
-          className="ion-content-scroll-host virtual-scroller"
+          overscan={OVERSCAN_AMOUNT}
+          onScroll={(offset) => {
+            onListAtTopChange?.(offset < 10);
+
+            if (virtuaRef.current) {
+              setShift(
+                virtuaRef.current.findStartIndex() >
+                  throughFavoritesCount + OVERSCAN_AMOUNT, // overscan
+              );
+            } else {
+              setShift(false);
+            }
+
+            updateActiveIndex();
+          }}
+          as={IonList as CustomContainerComponent}
+          keepMounted={activeIndex >= 0 ? [activeIndex] : []}
+          item={StickyItem}
         >
-          <IonItemGroup key="list">
-            {jwt && (
-              <IonItem
-                routerLink={buildGeneralBrowseLink(`/home`)}
-                detail={false}
-                {...attributedPreventOnClickNavigationBug}
-              >
-                <Content>
-                  <SubIcon icon={home} color="red" />
-                  <div>
-                    Home
-                    <aside>Posts from subscriptions</aside>
-                  </div>
-                </Content>
-              </IonItem>
-            )}
-            <IonItem
-              routerLink={buildGeneralBrowseLink(`/all`)}
-              detail={false}
-              {...attributedPreventOnClickNavigationBug}
-            >
-              <Content>
-                <SubIcon icon={earth} color="#009dff" />
-                <div>
-                  All<aside>Posts across all federated communities</aside>
-                </div>
-              </Content>
-            </IonItem>
-            <IonItem
-              routerLink={buildGeneralBrowseLink(`/local`)}
-              detail={false}
-              lines={showModeratorFeed ? "inset" : "none"}
-              {...attributedPreventOnClickNavigationBug}
-            >
-              <Content>
-                <SubIcon icon={people} color="#00f100" />
-                <div>
-                  Local<aside>Posts from communities on {actor}</aside>
-                </div>
-              </Content>
-            </IonItem>
-            {showModeratorFeed && (
-              <IonItem
-                routerLink={buildGeneralBrowseLink(`/mod`)}
-                detail={false}
-                lines="none"
-                {...attributedPreventOnClickNavigationBug}
-              >
-                <Content>
-                  <SubIcon icon={shieldCheckmark} color="#464646" />
-                  <div>
-                    Moderator Posts
-                    <aside>Posts from moderated communities</aside>
-                  </div>
-                </Content>
-              </IonItem>
-            )}
-          </IonItemGroup>
-
-          {favoritesAsCommunitiesIfFound.length > 0 && (
-            <IonItemGroup key="favorites">
-              <IonItemDivider sticky>
-                <IonLabel>Favorites</IonLabel>
-              </IonItemDivider>
-
-              {favoritesAsCommunitiesIfFound.map((favorite) => (
-                <CommunityListItem
-                  key={typeof favorite === "string" ? favorite : favorite.id}
-                  community={favorite}
-                  favorites={favorites}
-                  removeAction="favorite"
-                />
-              ))}
-            </IonItemGroup>
-          )}
-
-          {moderates?.length ? (
-            <IonItemGroup key="moderates">
-              <IonItemDivider sticky>
-                <IonLabel>Moderator</IonLabel>
-              </IonItemDivider>
-              {moderates.map(({ community }) => (
-                <CommunityListItem
-                  key={community.id}
-                  community={community}
-                  favorites={favorites}
-                  removeAction="none"
-                />
-              ))}
-            </IonItemGroup>
-          ) : (
-            ""
-          )}
-          {communitiesGroupedByLetter.map(([letter, communities]) => (
-            <IonItemGroup key={letter}>
-              <IonItemDivider sticky>
-                <IonLabel>{letter}</IonLabel>
-              </IonItemDivider>
-              {communities.map((community) => (
-                <CommunityListItem
-                  key={community.id}
-                  community={community}
-                  favorites={favorites}
-                  removeAction="follow"
-                />
-              ))}
-            </IonItemGroup>
+          {items.map((item, index) => (
+            <Item
+              item={item}
+              key={index}
+              actor={actor}
+              line={items[index + 1] && items[index + 1]!.type !== "separator"}
+            />
           ))}
-        </StyledVList>
-      </StyledIonList>
+        </Virtualizer>
+      </div>
 
       <AlphabetJump
         virtuaRef={virtuaRef}
-        hasFavorited={!!favoritesAsCommunitiesIfFound.length}
-        hasModerated={!!moderates?.length}
-        letters={communitiesGroupedByLetter.map(([letter]) => letter)}
+        separators={compact(
+          items.map((item, index) =>
+            item.type === "separator" ? { label: item.value, index } : null,
+          ),
+        )}
       />
-    </>
+    </StickyIndexContext.Provider>
   );
 }
 
 export default memo(ResolvedCommunitiesList);
+
+const StickyIndexContext = createContext(-1);
+function StickyItem({ style, index, ...props }: CustomItemComponentProps) {
+  const activeIndex = useContext(StickyIndexContext);
+  return (
+    <div
+      {...props}
+      style={{
+        ...style,
+        ...(activeIndex === index && {
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+        }),
+      }}
+    />
+  );
+}

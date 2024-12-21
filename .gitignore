@@ -41,3 +41,5 @@ fly.toml
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+*.css.d.ts

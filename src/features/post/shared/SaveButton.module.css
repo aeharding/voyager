@@ -1,0 +1,4 @@
+.button {
+  background: var(--ion-color-success);
+  color: var(--ion-color-primary-contrast);
+}

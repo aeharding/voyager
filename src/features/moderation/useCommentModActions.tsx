@@ -24,7 +24,7 @@ import {
   buildBanned,
   commentApproved,
   commentDistinguished,
-  commentRemoved,
+  commentRemovedMod,
 } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import store, { useAppDispatch } from "#/store";
@@ -101,9 +101,9 @@ export default function useCommentModActions(commentView: CommentView) {
               icon: trashOutline,
               handler: () => {
                 (async () => {
-                  await dispatch(modRemoveComment(comment.id, true));
+                  await dispatch(modRemoveComment(comment, true));
 
-                  presentToast(commentRemoved);
+                  presentToast(commentRemovedMod);
                 })();
               },
             }
@@ -112,7 +112,7 @@ export default function useCommentModActions(commentView: CommentView) {
               icon: checkmarkCircleOutline,
               handler: () => {
                 (async () => {
-                  await dispatch(modRemoveComment(comment.id, false));
+                  await dispatch(modRemoveComment(comment, false));
 
                   presentToast(commentApproved);
                 })();
@@ -130,11 +130,9 @@ export default function useCommentModActions(commentView: CommentView) {
                   cssClass: "mod",
                   handler: ({ reason }) => {
                     (async () => {
-                      await dispatch(
-                        modRemoveComment(comment.id, true, reason),
-                      );
+                      await dispatch(modRemoveComment(comment, true, reason));
 
-                      presentToast(commentRemoved);
+                      presentToast(commentRemovedMod);
                     })();
                   },
                 },

@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { WHITELISTED_SERVERS } from "#/features/auth/login/data/servers";
 import { buildPrioritizeAndSortFn } from "#/helpers/array";

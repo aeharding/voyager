@@ -1,22 +1,22 @@
-import { styled } from "@linaria/react";
+import React from "react";
 
-import { maxWidthCss } from "#/features/shared/AppContent";
+import { sv } from "#/helpers/css";
 
-export const PositionedContainer = styled.div<{
+import styles from "./PositionedContainer.module.css";
+
+interface PositionedContainerProps extends React.PropsWithChildren {
   depth: number;
-}>`
-  position: relative;
+}
 
-  ${maxWidthCss}
-
-  padding: 8px 12px;
-
-  @media (hover: none) {
-    padding-top: 0.65em;
-    padding-bottom: 0.65em;
-  }
-
-  padding-left: calc(
-    12px + max(0px, calc(calc(${({ depth }) => depth} - 1) * 10px))
+export function PositionedContainer({
+  depth,
+  ...props
+}: PositionedContainerProps) {
+  return (
+    <div
+      {...props}
+      className={styles.positionedContainer}
+      style={sv({ depth })}
+    />
   );
-`;
+}

@@ -1,0 +1,42 @@
+.slidingItem {
+  overflow: initial; /* sticky */
+
+  --ion-item-border-color: transparent;
+}
+
+.itemOption {
+  width: 100%;
+  align-items: flex-end;
+
+  /* ensure subpixel rounding never causes background color to show through */
+  margin-bottom: 0.5px;
+  margin-top: 0.5px;
+}
+
+.optionContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  width: min(60px, 11vw);
+
+  opacity: 0.5;
+
+  position: sticky;
+  top: 0;
+  bottom: 0;
+
+  :global(.item-options-start) & {
+    margin-right: auto;
+  }
+
+  :global(.item-options-end) & {
+    margin-left: auto;
+  }
+}
+
+.optionContainerActive {
+  composes: bounce from "#/features/shared/bounce.module.css";
+
+  opacity: 1;
+}

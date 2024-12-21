@@ -5,29 +5,27 @@ import {
   IonSearchbar,
   IonToolbar,
 } from "@ionic/react";
-import { css } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { noop } from "es-toolkit";
 import { createContext, useEffect, useRef, useState } from "react";
 import { Redirect, useParams } from "react-router";
 
-import MoreActions from "#/features/community/MoreActions";
 import ModActions from "#/features/community/mod/ModActions";
+import MoreActions from "#/features/community/MoreActions";
 import CommunitySearchResults from "#/features/community/search/CommunitySearchResults";
 import TitleSearch from "#/features/community/titleSearch/TitleSearch";
 import { TitleSearchProvider } from "#/features/community/titleSearch/TitleSearchProvider";
 import TitleSearchResults from "#/features/community/titleSearch/TitleSearchResults";
 import useFetchCommunity from "#/features/community/useFetchCommunity";
 import useGetRandomCommunity from "#/features/community/useGetRandomCommunity";
+import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import { FetchFn } from "#/features/feed/Feed";
 import FeedContextProvider from "#/features/feed/FeedContext";
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
-import PostSort from "#/features/feed/PostSort";
-import { getSortDuration } from "#/features/feed/endItems/EndPost";
 import PostFabs from "#/features/feed/postFabs/PostFabs";
+import PostSort from "#/features/feed/PostSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
 import useFeedUpdate from "#/features/feed/useFeedUpdate";
 import PostAppearanceProvider, {
@@ -37,6 +35,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { AppTitleHandle } from "#/features/shared/AppTitle";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
 import DocumentTitle from "#/features/shared/DocumentTitle";
+import { cx } from "#/helpers/css";
 import { getRemoteHandleFromHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import useClient from "#/helpers/useClient";
@@ -46,84 +45,7 @@ import { useAppSelector } from "#/store";
 
 import FeedContent from "./FeedContent";
 
-const StyledFeedContent = styled(FeedContent)`
-  .ios & {
-    --background: var(
-      --ion-toolbar-background,
-      var(--ion-background-color-step-50, #f7f7f7)
-    );
-  }
-`;
-
-// This isn't great... but it works
-// and I can't find a better solution 🤷‍♂️
-const FixedBg = styled.div`
-  .ios & {
-    position: absolute;
-    inset: 0;
-    background: var(
-      --ion-toolbar-background,
-      var(--ion-background-color-step-50, #f7f7f7)
-    );
-    z-index: -2;
-  }
-`;
-
-const StyledIonToolbar = styled(IonToolbar)`
-  .ios & {
-    // Weird ionic glitch where adding
-    // absolutely positioned searchbar to header misaligns buttons
-    ion-buttons {
-      margin: auto;
-    }
-  }
-`;
-
-const ionToolbarHideBorderCss = css`
-  --border-color: transparent;
-`;
-
-const HeaderIonSearchbar = styled(IonSearchbar)`
-  position: absolute;
-  inset: 0;
-
-  padding-top: 5px !important;
-
-  &.md {
-    padding-top: 0 !important;
-    padding-left: 0;
-    padding-right: 0;
-
-    --box-shadow: none;
-  }
-`;
-
-const ionSearchbarHideCss = css`
-  opacity: 0 !important;
-  z-index: -1 !important;
-  pointer-events: none !important;
-`;
-
-const HeaderContainer = styled.div`
-  background: var(
-    --ion-toolbar-background,
-    var(--ion-background-color-step-50, #f7f7f7)
-  );
-`;
-
-const CommunitySearchbar = styled(IonSearchbar)`
-  padding-top: 0;
-
-  &.md {
-    padding-left: 0;
-    padding-right: 0;
-
-    --box-shadow: none;
-  }
-
-  min-height: 0;
-`;
-
+import styles from "./CommunityPage.module.css";
 interface CommunityPageParams {
   community: string;
   actor: string;
@@ -205,15 +127,16 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
   }, [communityView]);
 
   const header = !searchOpen ? (
-    <HeaderContainer>
-      <CommunitySearchbar
+    <div className={styles.headerContainer}>
+      <IonSearchbar
+        className={styles.communitySearchbar}
         placeholder={`Search c/${community}`}
         onFocus={() => {
           setSearchOpen(true);
           searchbarRef.current?.setFocus();
         }}
       />
-    </HeaderContainer>
+    </div>
   ) : undefined;
 
   if (community.includes("@") && community.split("@")[1] === actor)
@@ -260,12 +183,13 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
         <TitleSearchProvider>
           <IonPage className={searchOpen ? "grey-bg" : ""}>
             <AppHeader>
-              <StyledIonToolbar
-                className={
+              <IonToolbar
+                className={cx(
+                  styles.toolbar,
                   !searchOpen && !scrolledPastSearch
-                    ? ionToolbarHideBorderCss
-                    : undefined
-                }
+                    ? styles.toolbarHideBorder
+                    : undefined,
+                )}
               >
                 {!searchOpen && (
                   <>
@@ -292,11 +216,14 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
                   </>
                 )}
 
-                <HeaderIonSearchbar
+                <IonSearchbar
                   placeholder={`Search c/${community}`}
                   ref={searchbarRef}
                   onBlur={() => setSearchOpen(false)}
-                  className={!searchOpen ? ionSearchbarHideCss : undefined}
+                  className={cx(
+                    styles.headerSearchbar,
+                    !searchOpen ? styles.searchbarHide : undefined,
+                  )}
                   showCancelButton="always"
                   showClearButton="never"
                   autocapitalize="on"
@@ -314,16 +241,16 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
                     );
                   }}
                 />
-              </StyledIonToolbar>
+              </IonToolbar>
             </AppHeader>
-            <StyledFeedContent>
+            <FeedContent className={styles.feedContent}>
               {renderFeed()}
               <TitleSearchResults />
               {!showHiddenInCommunities && (
                 <PostFabs forceRefresh={notifyFeedUpdated} />
               )}
-              <FixedBg slot="fixed" />
-            </StyledFeedContent>
+              <div className={styles.fixedBg} slot="fixed" />
+            </FeedContent>
           </IonPage>
         </TitleSearchProvider>
       </PostAppearanceProvider>

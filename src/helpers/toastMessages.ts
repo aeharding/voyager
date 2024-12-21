@@ -2,6 +2,25 @@ import { checkmark, close } from "ionicons/icons";
 
 import { AppToastOptions } from "./useAppToast";
 
+const shortFailDefaults: Omit<AppToastOptions, "message"> = {
+  color: "danger",
+  position: "top",
+  icon: close,
+  centerText: true,
+};
+
+const shortSuccessDefaults: Omit<AppToastOptions, "message"> = {
+  color: "primary",
+  position: "top",
+  icon: checkmark,
+  centerText: true,
+};
+
+const shortModSuccessDefaults: Omit<AppToastOptions, "message"> = {
+  ...shortSuccessDefaults,
+  color: "success",
+};
+
 export const downvotesDisabled: AppToastOptions = {
   message: "Downvotes have been disabled by your server admins.",
   color: "warning",
@@ -30,170 +49,198 @@ export const problemFetchingTitle: AppToastOptions = {
   color: "warning",
 };
 
-export function buildBlocked(
-  blocked: boolean,
-  handle: string,
-): AppToastOptions {
+export function buildBlockedUser(blocked: boolean): AppToastOptions {
   return {
-    message: `${handle} has been ${blocked ? "blocked" : "unblocked"}`,
-    color: "success",
+    ...shortSuccessDefaults,
+    message: `User ${blocked ? "blocked" : "unblocked"}!`,
+  };
+}
+
+export function buildBlockedCommunity(blocked: boolean): AppToastOptions {
+  return {
+    ...shortSuccessDefaults,
+    message: `Community ${blocked ? "blocked" : "unblocked"}!`,
   };
 }
 
 export function buildProblemSubscribing(
   isSubscribed: boolean,
-  community: string,
 ): AppToastOptions {
   return {
-    message: `Problem ${
-      isSubscribed ? "unsubscribing from" : "subscribing to"
-    } c/${community}. Please try again.`,
-    color: "danger",
+    ...shortFailDefaults,
+    message: `Failed to ${isSubscribed ? "unsubscribe" : "subscribe"}`,
   };
 }
 
 export function buildSuccessSubscribing(
   isSubscribed: boolean,
-  community: string,
 ): AppToastOptions {
   return {
-    message: `${
-      isSubscribed ? "Unsubscribed from" : "Subscribed to"
-    } c/${community}.`,
-    color: "success",
+    ...shortSuccessDefaults,
+    message: isSubscribed ? "Unsubscribed!" : "Subscribed!",
   };
 }
 
-export function buildFavorited(
-  favorited: boolean,
-  community: string,
-): AppToastOptions {
+export function buildFavorited(favorited: boolean): AppToastOptions {
   return {
-    message: `${favorited ? "Unfavorited" : "Favorited"} c/${community}.`,
-    position: "bottom",
-    color: "success",
+    ...shortSuccessDefaults,
+    message: `${favorited ? "Unfavorited" : "Favorited"} community!`,
   };
 }
 
 export const postLocked: AppToastOptions = {
+  ...shortFailDefaults,
   message: "Post locked by moderator",
   color: "warning",
-  position: "top",
-  icon: close,
-  centerText: true,
 };
 
 export function buildLocked(locked: boolean): AppToastOptions {
   return {
-    message: `${locked ? "Locked" : "Unlocked"} post`,
-    color: "success",
-    centerText: true,
-    icon: checkmark,
+    ...shortModSuccessDefaults,
+    message: `${locked ? "Locked" : "Unlocked"} post!`,
   };
 }
 
 export function buildStickied(stickied: boolean): AppToastOptions {
   return {
-    message: `${stickied ? "Stickied" : "Unstickied"} post`,
-    color: "success",
-    centerText: true,
-    icon: checkmark,
+    ...shortModSuccessDefaults,
+    message: `${stickied ? "Stickied" : "Unstickied"} post!`,
   };
 }
 
-export const postRemoved: AppToastOptions = {
-  message: "Post removed",
-  color: "success",
-  centerText: true,
-  icon: checkmark,
+export const postDeleted: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Post deleted!",
+};
+
+export const postDeleteFailed: AppToastOptions = {
+  ...shortFailDefaults,
+  message: "Problem deleting post",
+};
+
+export const commentPosted: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Comment posted!",
+};
+
+export const commentDeleted: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Comment deleted!",
+};
+
+export const commentDeleteFailed: AppToastOptions = {
+  ...shortFailDefaults,
+  message: "Problem deleting comment",
+};
+
+export const postRemovedMod: AppToastOptions = {
+  ...shortModSuccessDefaults,
+  message: "Post removed!",
 };
 
 export const postApproved: AppToastOptions = {
-  message: "Post approved",
-  color: "success",
-  centerText: true,
-  icon: checkmark,
+  ...shortModSuccessDefaults,
+  message: "Post approved!",
 };
 
 export const postRestored: AppToastOptions = {
-  message: "Post restored",
-  color: "success",
-  centerText: true,
-  icon: checkmark,
+  ...shortModSuccessDefaults,
+  message: "Post restored!",
 };
 
-export const commentRemoved: AppToastOptions = {
-  message: "Comment removed",
-  color: "success",
-  centerText: true,
-  icon: checkmark,
+export const commentRemovedMod: AppToastOptions = {
+  ...shortModSuccessDefaults,
+  message: "Comment removed!",
 };
 
 export const commentApproved: AppToastOptions = {
-  message: "Comment approved",
-  color: "success",
-  centerText: true,
-  icon: checkmark,
+  ...shortModSuccessDefaults,
+  message: "Comment approved!",
 };
 
 export const commentRestored: AppToastOptions = {
-  message: "Comment restored",
-  color: "success",
-  centerText: true,
-  icon: checkmark,
+  ...shortModSuccessDefaults,
+  message: "Comment restored!",
 };
 
 export const commentDistinguished: AppToastOptions = {
+  ...shortModSuccessDefaults,
   message: "Comment distinguished",
-  color: "success",
-  centerText: true,
-  icon: checkmark,
 };
 
 export function buildBanned(banned: boolean): AppToastOptions {
   return {
+    ...shortModSuccessDefaults,
     message: banned ? "Banned user" : "Unbanned user",
-    position: "top",
-    color: "success",
     fullscreen: true,
-    centerText: true,
-    icon: checkmark,
   };
 }
 
 export function buildBanFailed(banned: boolean): AppToastOptions {
   return {
+    ...shortFailDefaults,
     message: `Failed to ${banned ? "ban user" : "unban user"}`,
-    position: "top",
-    color: "danger",
     fullscreen: true,
-    centerText: true,
   };
 }
 
 export const loginSuccess: AppToastOptions = {
-  message: "Login successful",
-  color: "success",
-  centerText: true,
-  icon: checkmark,
+  ...shortSuccessDefaults,
+  message: "Logged in!",
+};
+
+export const crosspostSuccess: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Crossposted!",
+};
+
+export const crosspostFailed: AppToastOptions = {
+  ...shortFailDefaults,
+  message: "Failed to create crosspost",
+};
+
+export function buildReported(type: string): AppToastOptions {
+  return {
+    ...shortSuccessDefaults,
+    message: `${type} reported!`,
+  };
+}
+
+export const commentEdited: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Comment edited!",
+};
+
+export const postCreated: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Post created!",
+};
+
+export const postEdited: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Post edited!",
+};
+
+export const messageSent: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Message sent!",
+};
+
+export const alreadyHere: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "You’re already here!",
 };
 
 export const photoSaved: AppToastOptions = {
-  message: "Photo saved",
-  position: "top",
-  color: "success",
+  ...shortSuccessDefaults,
+  message: "Photo saved!",
   fullscreen: true,
-  centerText: true,
-  icon: checkmark,
 };
 
 export const photoCopied: AppToastOptions = {
-  message: "Photo copied to clipboard",
-  position: "top",
-  color: "success",
+  ...shortSuccessDefaults,
+  message: "Photo copied to clipboard!",
   fullscreen: true,
-  centerText: true,
-  icon: checkmark,
 };
 
 export const migrateParseError: AppToastOptions = {
@@ -203,53 +250,41 @@ export const migrateParseError: AppToastOptions = {
 };
 
 export const replyStubError: AppToastOptions = {
-  message: "You can't reply to a removed comment",
+  ...shortFailDefaults,
+  message: "You can’t reply to a removed comment",
   color: "warning",
-  position: "top",
-  centerText: true,
-  icon: close,
 };
 
 export const randomCommunityFailed: AppToastOptions = {
+  ...shortFailDefaults,
   message: "Failed to find random community",
   color: "warning",
-  position: "top",
-  centerText: true,
-  icon: close,
 };
 
 export const copyClipboardSuccess: AppToastOptions = {
-  message: "Text copied",
-  position: "bottom",
-  color: "success",
+  ...shortSuccessDefaults,
+  message: "Text copied!",
   fullscreen: true,
-  centerText: true,
-  icon: checkmark,
+  position: "bottom",
 };
 
 export const copyClipboardFailed: AppToastOptions = {
+  ...shortFailDefaults,
   message: "Failed to copy text",
   color: "warning",
   position: "bottom",
   fullscreen: true,
-  centerText: true,
-  icon: close,
 };
 
 export const cacheClearSuccess: AppToastOptions = {
+  ...shortSuccessDefaults,
   message: "Cache cleared!",
-  position: "bottom",
-  color: "success",
-  centerText: true,
-  icon: checkmark,
 };
 
 export const cacheClearFailed: AppToastOptions = {
+  ...shortFailDefaults,
   message: "Failed to clear cache",
   color: "warning",
-  position: "bottom",
-  centerText: true,
-  icon: close,
 };
 
 export const deepLinkFailed: AppToastOptions = {
@@ -261,6 +296,6 @@ export const deepLinkFailed: AppToastOptions = {
 };
 
 export const privateMessageSendFailed: AppToastOptions = {
-  message: `Message failed to send. Please try again`,
+  message: "Message failed to send. Please try again",
   color: "danger",
 };

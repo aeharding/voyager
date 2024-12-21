@@ -1,5 +1,4 @@
 import { ActionSheetButton, IonIcon } from "@ionic/react";
-import { styled } from "@linaria/react";
 import {
   arrowUndoOutline,
   ellipsisHorizontal,
@@ -18,9 +17,7 @@ import store, { useAppDispatch } from "#/store";
 
 import { markRead, syncMessages } from "./inboxSlice";
 
-const StyledIonIcon = styled(IonIcon)`
-  font-size: 1.2em;
-`;
+import styles from "./PrivateMessageMoreActions.module.css";
 
 interface PrivateMessageMoreActionsHandle {
   present: () => void;
@@ -113,7 +110,8 @@ export default function PrivateMessageMoreActions({
   );
 
   return (
-    <StyledIonIcon
+    <IonIcon
+      className={styles.icon}
       icon={ellipsisHorizontal}
       onClick={(e) => {
         e.stopPropagation();

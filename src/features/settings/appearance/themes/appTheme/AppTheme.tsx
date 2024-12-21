@@ -6,7 +6,6 @@ import {
   IonRadioGroup,
   useIonAlert,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { capitalize } from "es-toolkit";
 
 import { useIsDark } from "#/core/GlobalStyles";
@@ -18,10 +17,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import { setTheme } from "../../../settingsSlice";
 import AppThemePreview from "./AppThemePreview";
 
-const Description = styled.div`
-  font-size: 0.76em;
-  color: var(--ion-color-medium);
-`;
+import styles from "./AppTheme.module.css";
 
 export default function AppTheme() {
   const theme = useAppSelector((state) => state.settings.appearance.theme);
@@ -62,9 +58,9 @@ export default function AppTheme() {
               <IonRadio value={theme}>
                 <IonLabel>
                   <div>{getThemeName(theme)}</div>
-                  <Description className="ion-text-wrap">
+                  <div className={styles.description}>
                     {getThemeDescription(theme)}
-                  </Description>
+                  </div>
                 </IonLabel>
               </IonRadio>
             </IonItem>

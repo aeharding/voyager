@@ -1,0 +1,9 @@
+.base {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.baseIcon {
+  font-size: 1.2em;
+}

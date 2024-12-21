@@ -1,0 +1,11 @@
+.searchbar {
+  padding-top: 0;
+  padding-bottom: 0;
+  height: 40px;
+}
+
+.list {
+  --ion-item-background: none;
+
+  height: 100%;
+}

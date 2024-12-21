@@ -2,12 +2,10 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
-  IonText,
-  IonTitle,
+  IonSpinner,
   IonToolbar,
   useIonModal,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { arrowBackSharp, send } from "ionicons/icons";
 import {
   CommentReplyView,
@@ -23,10 +21,11 @@ import {
   loggedInAccountsSelector,
   userHandleSelector,
 } from "#/features/auth/authSelectors";
-import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import { receivedComments } from "#/features/comment/commentSlice";
+import MultilineTitle from "#/features/shared/MultilineTitle";
 import { isIosTheme } from "#/helpers/device";
 import { isLemmyError } from "#/helpers/lemmyErrors";
+import { commentPosted } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import { getClient } from "#/services/lemmy";
@@ -35,15 +34,6 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import AppHeader from "../../../../AppHeader";
 import CommentEditorContent from "./CommentEditorContent";
 import ItemReplyingTo from "./ItemReplyingTo";
-
-export const UsernameIonText = styled(IonText)`
-  font-size: 0.7em;
-  font-weight: normal;
-`;
-
-export const TitleContainer = styled.div`
-  line-height: 1;
-`;
 
 export type CommentReplyItem =
   | CommentView
@@ -216,13 +206,7 @@ export default function CommentReplyPage({
     }
 
     if (!silentError) {
-      presentToast({
-        message: "Comment posted!",
-        color: "primary",
-        position: "top",
-        centerText: true,
-        fullscreen: true,
-      });
+      presentToast(commentPosted);
     }
 
     if (reply) dispatch(receivedComments([reply]));
@@ -248,42 +232,41 @@ export default function CommentReplyPage({
               )}
             </IonButton>
           </IonButtons>
-          <IonTitle>
-            <Centered>
-              <TitleContainer
-                onClick={() => {
-                  if (accounts?.length === 1) return;
+          <MultilineTitle
+            subheader={selectedAccount}
+            onClick={() => {
+              if (accounts?.length === 1) return;
 
-                  presentAccountSwitcher({
-                    cssClass: "small",
-                    onDidDismiss: () => {
-                      requestAnimationFrame(() => {
-                        textareaRef.current?.focus();
-                      });
-                    },
+              presentAccountSwitcher({
+                cssClass: "small",
+                onDidDismiss: () => {
+                  requestAnimationFrame(() => {
+                    textareaRef.current?.focus();
                   });
-                }}
-              >
-                <IonText>New Comment</IonText>
-                <div>
-                  <UsernameIonText color="medium">
-                    {selectedAccount}
-                  </UsernameIonText>
-                </div>
-              </TitleContainer>{" "}
-              {loading && <Spinner color="dark" />}
-            </Centered>
-          </IonTitle>
+                },
+              });
+            }}
+          >
+            New Comment
+          </MultilineTitle>
           <IonButtons slot="end">
-            <IonButton
-              strong
-              type="submit"
-              disabled={isSubmitDisabled}
-              color={isSubmitDisabled ? "medium" : undefined}
-              onClick={submit}
-            >
-              {isIosTheme() ? "Post" : <IonIcon icon={send} slot="icon-only" />}
-            </IonButton>
+            {loading ? (
+              <IonSpinner />
+            ) : (
+              <IonButton
+                strong
+                type="submit"
+                disabled={isSubmitDisabled}
+                color={isSubmitDisabled ? "medium" : undefined}
+                onClick={submit}
+              >
+                {isIosTheme() ? (
+                  "Post"
+                ) : (
+                  <IonIcon icon={send} slot="icon-only" />
+                )}
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
       </AppHeader>

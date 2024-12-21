@@ -1,0 +1,45 @@
+.titleContents {
+  display: inline-flex;
+  align-items: center;
+
+  :global(.ios) & {
+    justify-content: center;
+  }
+
+  gap: 0.25rem;
+
+  width: 100%;
+
+  span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.input {
+  max-width: 115px;
+  margin: auto;
+  background: none;
+  border: 0;
+  font-weight: normal;
+  width: 100%;
+  text-align: inherit;
+  outline: none;
+
+  &.input {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  :global(.searchbar-search-icon) {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  --background: none;
+}
+
+.dropdownIcon {
+  flex-shrink: 0;
+}

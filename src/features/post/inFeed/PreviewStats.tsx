@@ -4,9 +4,10 @@ import { PostView } from "lemmy-js-client";
 import Ago from "#/features/labels/Ago";
 import Vote from "#/features/labels/Vote";
 import Stat from "#/features/post/detail/Stat";
-import { sharedStatsClass } from "#/features/post/detail/Stats";
 import TimeStat from "#/features/post/detail/TimeStat";
 import { formatNumber } from "#/helpers/number";
+
+import styles from "./PreviewStats.module.css";
 
 interface PreviewStatsProps {
   post: PostView;
@@ -14,7 +15,7 @@ interface PreviewStatsProps {
 
 export default function PreviewStats({ post }: PreviewStatsProps) {
   return (
-    <div className={sharedStatsClass}>
+    <div className={styles.container}>
       <Vote item={post} />
       <Stat icon={chatbubbleOutline}>{formatNumber(post.counts.comments)}</Stat>
       <TimeStat>

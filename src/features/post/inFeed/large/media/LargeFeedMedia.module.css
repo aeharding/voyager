@@ -1,0 +1,10 @@
+.fullWidthPost {
+  display: flex;
+  width: 100%;
+  max-width: none;
+  max-height: max(100vh, 1000px);
+  object-fit: contain;
+  -webkit-touch-callout: default;
+
+  min-height: 0;
+}

@@ -1,0 +1,23 @@
+.multilineTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1;
+
+  :global(.ios) & {
+    justify-content: center;
+  }
+
+  ion-spinner {
+    flex-shrink: 0;
+  }
+}
+
+.subheaderText {
+  font-size: 0.7em;
+  font-weight: normal;
+}
+
+.titleContainer {
+  line-height: 1;
+}

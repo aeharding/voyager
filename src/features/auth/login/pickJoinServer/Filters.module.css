@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+
+  overflow: auto;
+
+  padding-left: 8px;
+  padding-right: 8px;
+
+  > * {
+    flex-shrink: 0;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.selectedChip {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
+}

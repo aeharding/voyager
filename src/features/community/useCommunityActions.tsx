@@ -13,7 +13,7 @@ import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
   allNSFWHidden,
-  buildBlocked,
+  buildBlockedCommunity,
   buildFavorited,
   buildProblemSubscribing,
   buildSuccessSubscribing,
@@ -105,9 +105,9 @@ export default function useCommunityActions(
 
     try {
       await dispatch(followCommunity(!isSubscribed, communityId));
-      presentToast(buildSuccessSubscribing(isSubscribed, communityHandle));
+      presentToast(buildSuccessSubscribing(isSubscribed));
     } catch (error) {
-      presentToast(buildProblemSubscribing(isSubscribed, communityHandle));
+      presentToast(buildProblemSubscribing(isSubscribed));
       throw error;
     }
   };
@@ -121,7 +121,7 @@ export default function useCommunityActions(
       dispatch(removeFavorite(communityHandle));
     }
 
-    presentToast(buildFavorited(isFavorite, communityHandle));
+    presentToast(buildFavorited(isFavorite));
   };
 
   const block = async () => {
@@ -161,7 +161,7 @@ export default function useCommunityActions(
             handler: () => {
               (async () => {
                 await _block();
-                presentToast(buildBlocked(!isBlocked, communityHandle));
+                presentToast(buildBlockedCommunity(!isBlocked));
               })();
             },
           },
@@ -175,7 +175,7 @@ export default function useCommunityActions(
       db.setSetting("has_presented_block_nsfw_tip", true);
     } else {
       await _block();
-      presentToast(buildBlocked(!isBlocked, communityHandle));
+      presentToast(buildBlockedCommunity(!isBlocked));
     }
   };
 

@@ -1,0 +1,14 @@
+.marker {
+  position: absolute;
+  right: 0;
+  bottom: 1px; /* Match bottom edge of sliding options, which is slightly inset */
+
+  --size: 18px;
+
+  width: 0;
+  height: 0;
+  border-left: var(--size) solid transparent;
+  border-right: 0 solid transparent;
+
+  border-bottom: var(--size) solid var(--ion-color-success);
+}

@@ -8,10 +8,10 @@ import { modRemovePost } from "#/features/post/postSlice";
 import { isPost } from "#/helpers/lemmy";
 import {
   commentApproved,
-  commentRemoved,
+  commentRemovedMod,
   commentRestored,
   postApproved,
-  postRemoved,
+  postRemovedMod,
   postRestored,
 } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
@@ -21,43 +21,43 @@ import { resolveCommentReport, resolvePostReport } from "./modSlice";
 import useCanModerate, { getModColor } from "./useCanModerate";
 
 interface ModqueueItemActionsProps {
-  item: PostView | CommentView;
+  itemView: PostView | CommentView;
 }
 
 export default function ModqueueItemActions({
-  item,
+  itemView,
 }: ModqueueItemActionsProps) {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
-  const canModerate = useCanModerate(item.community);
+  const canModerate = useCanModerate(itemView.community);
 
   async function modRemoveItem(remove: boolean) {
-    const id = isPost(item) ? item.post.id : item.comment.id;
-    const isAlreadyRemoved = isPost(item)
-      ? item.post.removed
-      : item.comment.removed;
+    const item = isPost(itemView) ? itemView.post : itemView.comment;
+    const isAlreadyRemoved = item.removed;
 
     // If removal status already in the state you want, just resolve reports
     if (remove === isAlreadyRemoved) {
-      const action = isPost(item) ? resolvePostReport : resolveCommentReport;
-      await dispatch(action(id));
+      const action = isPost(itemView)
+        ? resolvePostReport
+        : resolveCommentReport;
+      await dispatch(action(item.id));
 
-      if (remove) presentToast(isPost(item) ? postRemoved : commentRemoved);
-      else presentToast(isPost(item) ? postApproved : commentApproved);
+      if (remove)
+        presentToast(isPost(itemView) ? postRemovedMod : commentRemovedMod);
+      else presentToast(isPost(itemView) ? postApproved : commentApproved);
 
       return;
     }
 
-    const action = isPost(item) ? modRemovePost : modRemoveComment;
-
-    await dispatch(action(id, remove));
+    if (isPost(itemView)) await dispatch(modRemovePost(itemView.post, remove));
+    else await dispatch(modRemoveComment(itemView.comment, remove));
 
     const toastMessage = (() => {
       if (remove) {
-        if (isPost(item)) return postRemoved;
-        else return commentRemoved;
+        if (isPost(itemView)) return postRemovedMod;
+        else return commentRemovedMod;
       } else {
-        if (isPost(item)) return postRestored;
+        if (isPost(itemView)) return postRestored;
         else return commentRestored;
       }
     })();

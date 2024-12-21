@@ -1,5 +1,4 @@
 import { IonItem, IonList } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { compact, sortBy, uniqBy } from "es-toolkit";
 import { Community, CommunityView } from "lemmy-js-client";
@@ -21,58 +20,7 @@ import { useAppSelector } from "#/store";
 
 import { TitleSearchContext } from "./TitleSearchProvider";
 
-const Backdrop = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100;
-
-  background: rgba(0, 0, 0, 0.2);
-
-  .ion-palette-dark & {
-    background: rgba(0, 0, 0, 0.7);
-  }
-
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-`;
-
-const KeyboardContent = styled.div`
-  display: flex;
-
-  transition: max-height 150ms ease-out;
-`;
-
-const Contents = styled.div`
-  --background: var(--ion-background-color);
-
-  .ion-palette-dark & {
-    --background: var(--ion-background-color-step-100);
-  }
-
-  background: var(--background);
-  width: 100%;
-  max-width: 500px;
-  width: calc(100vw - 2rem);
-  min-height: 175px;
-  max-height: 450px;
-  overflow: auto;
-  margin: 1rem;
-  border-radius: 0.5rem;
-
-  overscroll-behavior: contain;
-
-  ion-item {
-    --ion-item-background: var(--ion-background-color);
-
-    .ion-palette-dark & {
-      --ion-item-background: var(--ion-background-color-step-100);
-    }
-  }
-`;
+import styles from "./TitleSearchResults.module.css";
 
 const SPECIAL_FEEDS = [
   {
@@ -251,12 +199,17 @@ export default function TitleSearchResults() {
   if (!searching) return null;
 
   return (
-    <Backdrop onClick={() => setSearching(false)} slot="fixed">
-      <KeyboardContent
+    <div
+      className={styles.backdrop}
+      onClick={() => setSearching(false)}
+      slot="fixed"
+    >
+      <div
+        className={styles.keyboardContent}
         ref={contentRef}
         style={{ maxHeight: `${viewportHeight}px` }}
       >
-        <Contents onClick={(e) => e.stopPropagation()}>
+        <div className={styles.contents} onClick={(e) => e.stopPropagation()}>
           <IonList>
             {results.map((c) => (
               <IonItem
@@ -272,9 +225,9 @@ export default function TitleSearchResults() {
               </IonItem>
             ))}
           </IonList>
-        </Contents>
-      </KeyboardContent>
-    </Backdrop>
+        </div>
+      </div>
+    </div>
   );
 }
 

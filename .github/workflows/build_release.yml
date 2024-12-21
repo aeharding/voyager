@@ -1,0 +1,277 @@
+name: build_release
+
+on:
+  workflow_call: # for beta releases from main - release.yml / dispatch_beta_release
+    inputs:
+      is_main_build:
+        type: boolean
+        required: true
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+env:
+  BUILD_LABEL: ${{ inputs.is_main_build && github.sha || github.ref_name }}
+
+concurrency:
+  group: release
+
+jobs:
+  build_docker:
+    uses: ./.github/workflows/docker.yml
+    with:
+      is_main_build: ${{ inputs.is_main_build || false }}
+    permissions:
+      contents: read
+      packages: write
+
+  build_web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download bumped version artifacts
+        if: inputs.is_main_build
+        uses: actions/download-artifact@v4
+        with:
+          name: release-data
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: corepack enable
+
+      - name: 📦 Install dependencies
+        run: pnpm install  --frozen-lockfile
+
+      - name: Build dist bundle
+        run: pnpm build
+
+      - name: Upload dist bundle to S3
+        uses: jakejarvis/s3-sync-action@v0.5.1
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          SOURCE_DIR: dist
+          AWS_S3_BUCKET: ${{ inputs.is_main_build && 'beta.vger.app' || 'vger.app'}}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Compress artifacts
+        run: |
+          zip -r Voyager-Web-$BUILD_LABEL.zip dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Voyager-Web-${{ env.BUILD_LABEL }}.zip
+          path: Voyager-Web-${{ env.BUILD_LABEL }}.zip
+
+  build_ios:
+    environment: deploy
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download bumped version artifacts
+        if: inputs.is_main_build
+        uses: actions/download-artifact@v4
+        with:
+          name: release-data
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
+        with:
+          xcode-version: latest-stable
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Install Fastlane
+        run: |
+          gem install bundler
+          bundle install
+
+      - run: corepack enable
+
+      - run: pnpm i --frozen-lockfile
+
+      - name: Build (Ionic)
+        run: pnpm exec ionic cap sync
+        env:
+          CI_PLATFORM: ios
+
+      - name: Deploy to TestFlight
+        run: |
+          echo "$APP_STORE_CONNECT_KEY" > authkey.json
+          bundle exec fastlane deploy
+        env:
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+          COMMIT_MSG: ${{ github.event.commits[0].message }}
+
+      - name: Upload iOS IPA as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
+          path: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
+
+  build_android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download bumped version artifacts
+        if: inputs.is_main_build
+        uses: actions/download-artifact@v4
+        with:
+          name: release-data
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: corepack enable
+
+      - run: pnpm i --frozen-lockfile
+
+      - name: Build (Ionic)
+        run: pnpm exec ionic cap sync
+        env:
+          BUILD_FOSS_ONLY: true
+          CI_PLATFORM: android
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "corretto"
+          cache: gradle
+      - name: Build (Android)
+        run: |
+          echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
+          cd android
+          ./gradlew assembleRelease
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+      - run: mv android/app/build/outputs/apk/release/app-release.apk Voyager-Android-${{ env.BUILD_LABEL }}.apk
+
+      - name: Send to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Voyager-Android-${{ env.BUILD_LABEL }}.apk
+          path: Voyager-Android-${{ env.BUILD_LABEL }}.apk
+
+  build_android_play:
+    environment: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download bumped version artifacts
+        if: inputs.is_main_build
+        uses: actions/download-artifact@v4
+        with:
+          name: release-data
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: Install Fastlane
+        run: |
+          gem install bundler
+          bundle install
+
+      - run: corepack enable
+
+      - run: pnpm i --frozen-lockfile
+
+      - name: Build (Ionic)
+        run: pnpm exec ionic cap sync
+        env:
+          CI_PLATFORM: android
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "corretto"
+          cache: gradle
+
+      - name: Build (Android)
+        run: |
+          echo $ANDROID_KEYSTORE | base64 --decode > android/app/release-ci.keystore
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+
+      - name: Setup service account
+        run: echo $GOOGLE_SERVICE_ACCOUNT | base64 --decode > android/pc-api.json
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+
+      - name: Run Fastlane
+        run: bundle exec fastlane android deploy
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+
+  create_release:
+    needs:
+      - build_web
+      - build_ios
+      - build_android_play
+      - build_android
+      - build_docker
+    if: inputs.is_main_build != true
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: Voyager-Web-${{ env.BUILD_LABEL }}.zip
+          path: artifacts/web
+
+      - name: Download iOS Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Voyager-iOS-${{ env.BUILD_LABEL }}.ipa
+          path: artifacts/ios
+
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Voyager-Android-${{ env.BUILD_LABEL }}.apk
+          path: artifacts/android
+
+        # https://github.com/softprops/action-gh-release/pull/372#issuecomment-1642643937
+      - name: Changelog
+        id: build_changelog
+        uses: mikepenz/release-changelog-builder-action@a57c1b7c90e56d9c8b26a6ed5d1eed159369e117 # v5.0.0
+
+      - name: Release
+        uses: softprops/action-gh-release@01570a1f39cb168c169c802c3bceb9e93fb10974 # v2.1.0
+        with:
+          body: ${{ steps.build_changelog.outputs.changelog }}
+          files: |
+            artifacts/ios/*
+            artifacts/android/*
+            artifacts/web/*

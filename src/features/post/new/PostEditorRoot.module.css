@@ -1,0 +1,44 @@
+.container {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.ionInputTitle {
+  :global(.input-bottom) {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+    border: 0;
+    padding-top: 0;
+  }
+
+  :global(.native-wrapper) {
+    margin-right: 2rem;
+  }
+}
+
+.postingIn {
+  font-size: 0.875em;
+  margin: 0.5rem 0;
+  text-align: center;
+  color: var(--ion-color-medium);
+}
+
+.cameraIcon {
+  margin: -0.2em 0; /* TODO negative margin, bad alex */
+  font-size: 1.5em;
+
+  margin-right: 0.5rem;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.segment {
+  width: 100%;
+}

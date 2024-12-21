@@ -1,6 +1,5 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
-import { css } from "@linaria/core";
 import { bookmarkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
 import { MouseEvent, useContext } from "react";
@@ -14,10 +13,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import { savePost } from "../postSlice";
 
-const savedButtonCss = css`
-  background: var(--ion-color-success);
-  color: var(--ion-color-primary-contrast);
-`;
+import styles from "./SaveButton.module.css";
 
 interface SaveButtonProps {
   post: PostView;
@@ -52,7 +48,7 @@ export function SaveButton({ post }: SaveButtonProps) {
 
   return (
     <ActionButton
-      className={mySaved ? savedButtonCss : undefined}
+      className={mySaved ? styles.button : undefined}
       onClick={onSavePost}
     >
       <IonIcon icon={bookmarkOutline} />

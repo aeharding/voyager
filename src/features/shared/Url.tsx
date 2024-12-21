@@ -1,10 +1,4 @@
-import { styled } from "@linaria/react";
-
 import { parseUrlForDisplay } from "#/helpers/url";
-
-const Rest = styled.span`
-  opacity: 0.6;
-`;
 
 interface UrlProps {
   children: string;
@@ -18,7 +12,7 @@ export default function Url({ children }: UrlProps) {
   return (
     <>
       {domain}
-      {rest !== "/" ? <Rest>{rest}</Rest> : ""}
+      {rest !== "/" ? <span style={{ opacity: 0.6 }}>{rest}</span> : ""}
     </>
   );
 }

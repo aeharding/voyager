@@ -20,14 +20,20 @@ FROM base AS builder
 RUN apk add --no-cache git
 
 # Prepare build deps
-COPY package.json pnpm-lock.yaml .npmrc ./
+# Copy .env conditionally https://stackoverflow.com/a/31532674/1319878
+COPY package.json pnpm-lock.yaml .npmrc .en[v] ./
 COPY patches ./patches
+
+# Add APP_VERSION to .env if it doesn't already exist
+RUN grep -q 'APP_VERSION=' .env || \
+    echo "APP_VERSION=`node -p \"require('./package.json').version\"`" >> .env
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy all source files
-COPY prebuild.sh disable_in_app_purchases.sh index.html vite.config.ts manifest.json tsconfig.json compilerOptions.js ./
+COPY index.html vite.config.ts manifest.json tsconfig.json compilerOptions.js ./
 COPY public ./public
+COPY scripts ./scripts
 COPY src ./src
 
 # Build
@@ -39,7 +45,7 @@ FROM docker.io/library/nginx AS runner
 
 ARG UID=911 GID=911
 
-COPY generate_config.sh /docker-entrypoint.d/generate_config.sh
+COPY scripts/docker_generate_config.sh /docker-entrypoint.d/generate_config.sh
 
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 

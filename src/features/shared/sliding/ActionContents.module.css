@@ -1,0 +1,19 @@
+.icon {
+  margin-block: 24px;
+
+  color: white;
+
+  &::after {
+    content: var(--sv-slash);
+    position: absolute;
+    height: var(--sv-slashHeight);
+    width: 3px;
+    background: white;
+    font-size: 1.7em;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    transform-origin: center;
+    box-shadow: 0 0 0 2px var(--sv-bgColorVar);
+  }
+}

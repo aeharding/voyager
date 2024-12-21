@@ -5,8 +5,8 @@ import {
 } from "@ionic/react";
 import { differenceBy } from "es-toolkit";
 import React, {
-  Fragment,
   createContext,
+  Fragment,
   useCallback,
   useContext,
   useEffect,
@@ -27,6 +27,7 @@ import { useAppSelector } from "#/store";
 import EndPost, { EndPostProps } from "./endItems/EndPost";
 import FeedLoadMoreFailed from "./endItems/FeedLoadMoreFailed";
 import FetchMore from "./endItems/FetchMore";
+import { useRangeChange } from "./useRangeChange";
 
 const ABORT_REASON_UNMOUNT = "unmount";
 
@@ -148,7 +149,11 @@ export default function Feed<I>({
   const fetchMore = useCallback(
     async (refresh = false) => {
       // previous request must be done before subsequent fetching (existence of abort controller)
-      if (abortControllerRef.current) return;
+      if (
+        abortControllerRef.current &&
+        !abortControllerRef.current?.signal.aborted
+      )
+        return;
 
       // Don't fetch more if we're at the end of the feed (unless refreshing)
       if (atEndRef.current && !refresh) return;
@@ -184,6 +189,9 @@ export default function Feed<I>({
         setLoading(false);
         setLoadFailed(true);
         throw error;
+      } finally {
+        if (abortControllerRef.current === abortController)
+          abortControllerRef.current = undefined;
       }
 
       let newPageItems;
@@ -194,7 +202,6 @@ export default function Feed<I>({
         if (result.next_page) currentPage = result.next_page;
       }
 
-      abortControllerRef.current = undefined;
       setLoading(false);
 
       const filteredNewPageItems = filterOnRxFn
@@ -234,7 +241,6 @@ export default function Feed<I>({
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort(ABORT_REASON_UNMOUNT);
-      abortControllerRef.current = undefined;
     };
   }, []);
 
@@ -257,6 +263,35 @@ export default function Feed<I>({
   const virtuaHandle = useRef<VListHandle>(null);
 
   useSetActivePage(virtuaHandle);
+
+  const onScroll = useRangeChange(
+    virtuaHandle,
+    function onRangeChange(start, end) {
+      if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
+
+      // if scrolled down
+      const startOffset = header ? 1 : 0; // header counts as item to VList
+      if (
+        scrollingRef.current &&
+        start > startOffset &&
+        start > startRangeRef.current
+      ) {
+        // emit what was removed
+        onRemovedFromTop?.(
+          filteredItems.slice(
+            startRangeRef.current - startOffset,
+            start - startOffset,
+          ),
+        );
+      }
+
+      startRangeRef.current = start;
+
+      if (end + 10 > filteredItems.length && !loadFailed && infiniteScrolling) {
+        fetchMore();
+      }
+    },
+  );
 
   const fetchMoreEvent = useEffectEvent(fetchMore);
 
@@ -330,38 +365,11 @@ export default function Feed<I>({
             scrollingRef.current = false;
           }}
           onScroll={(offset) => {
+            onScroll();
+
             scrollingRef.current = true;
             setIsListAtTop(offset < 10);
             setScrolledPastSearch(offset > 40);
-          }}
-          onRangeChange={(start, end) => {
-            if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
-
-            // if scrolled down
-            const startOffset = header ? 1 : 0; // header counts as item to VList
-            if (
-              scrollingRef.current &&
-              start > startOffset &&
-              start > startRangeRef.current
-            ) {
-              // emit what was removed
-              onRemovedFromTop?.(
-                filteredItems.slice(
-                  startRangeRef.current - startOffset,
-                  start - startOffset,
-                ),
-              );
-            }
-
-            startRangeRef.current = start;
-
-            if (
-              end + 10 > filteredItems.length &&
-              !loadFailed &&
-              infiniteScrolling
-            ) {
-              fetchMore();
-            }
           }}
           /* Large posts reflow with image load, so mount to dom a bit sooner */
           overscan={1}

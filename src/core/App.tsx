@@ -1,3 +1,41 @@
+// Core CSS required for Ionic components to work properly
+import "@ionic/react/css/core.css";
+
+// Basic CSS for apps built with Ionic */
+import "@ionic/react/css/normalize.css";
+import "@ionic/react/css/structure.css";
+import "@ionic/react/css/typography.css";
+
+// Optional CSS utils that can be commented out
+import "@ionic/react/css/display.css";
+import "@ionic/react/css/flex-utils.css";
+import "@ionic/react/css/float-elements.css";
+import "@ionic/react/css/padding.css";
+import "@ionic/react/css/text-alignment.css";
+import "@ionic/react/css/text-transformation.css";
+
+// Override Ionic variables
+import "./theme/variables.css";
+// Light mode
+import "./theme/lightVariables.css";
+// Dark mode
+import "./theme/darkVariables.css";
+// Dark mode modifier
+import "./theme/darkModifierVariables.css";
+
+// Define after ./theme/variables to override it
+import "@ionic/react/css/palettes/dark.class.css";
+
+// CSS imports
+import "./syntaxHighlights.css";
+
+// PhotoSwipe (before global overrides)
+import "photoswipe/style.css";
+
+// Global CSS overrides
+import "./globalCssOverrides.css";
+
+// Rest of imports after css
 import { IonApp, setupIonicReact } from "@ionic/react";
 import { NavModes } from "capacitor-android-nav-mode";
 import { ErrorBoundary } from "react-error-boundary";
@@ -27,28 +65,6 @@ import Listeners from "./listeners";
 
 // Setup global app lifecycle listeners
 import "./listeners";
-
-// Core CSS required for Ionic components to work properly
-import "@ionic/react/css/core.css";
-
-// Basic CSS for apps built with Ionic */
-import "@ionic/react/css/normalize.css";
-import "@ionic/react/css/structure.css";
-import "@ionic/react/css/typography.css";
-
-// Optional CSS utils that can be commented out
-import "@ionic/react/css/display.css";
-import "@ionic/react/css/flex-utils.css";
-import "@ionic/react/css/float-elements.css";
-import "@ionic/react/css/padding.css";
-import "@ionic/react/css/text-alignment.css";
-import "@ionic/react/css/text-transformation.css";
-
-// Allow Ionic palette to override custom styles
-import "./theme/variables";
-
-// Define after ./theme/variables to override it
-import "@ionic/react/css/palettes/dark.class.css";
 
 // index.tsx ensures android nav mode resolves before app is rendered
 (async () => {

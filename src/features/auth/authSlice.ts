@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ApplicationContext } from "capacitor-application-context";
 import { uniqBy } from "es-toolkit";
 import { Register } from "lemmy-js-client";
@@ -304,7 +304,7 @@ updateApplicationContextIfNeeded(getCredentialsFromStorage());
 function updateApplicationContextIfNeeded(
   accounts: CredentialStoragePayload | undefined,
 ) {
-  const DEFAULT_INSTANCE = "lemmy.world";
+  const DEFAULT_INSTANCE = "lemm.ee";
 
   const connectedInstance = (() => {
     if (!accounts) return DEFAULT_INSTANCE;

@@ -1,11 +1,12 @@
+import { SplashScreen } from "@capacitor/splash-screen";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
 import { useContext, useEffect, useMemo, useRef } from "react";
 import { Redirect } from "react-router-dom";
 
 import { TabContext } from "#/core/TabContext";
-import { PageContextProvider } from "#/features/auth/PageContext";
 import { instanceSelector } from "#/features/auth/authSelectors";
+import { PageContextProvider } from "#/features/auth/PageContext";
 import GalleryProvider from "#/features/media/gallery/GalleryProvider";
 import VideoPortalProvider from "#/features/media/video/VideoPortalProvider";
 import { isInstalled } from "#/helpers/device";
@@ -14,9 +15,9 @@ import { getDefaultServer } from "#/services/app";
 import { DefaultFeedType, ODefaultFeedType } from "#/services/db";
 import { useAppSelector } from "#/store";
 
-import TabBar from "./TabBar";
 import { usingActorRedirect } from "./common/ActorRedirect";
 import Route from "./common/Route";
+import TabBar from "./TabBar";
 import general from "./tabs/general";
 import inbox from "./tabs/inbox";
 import buildPostsRoutes from "./tabs/posts";
@@ -35,6 +36,12 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   const pageRef = useRef<RouterOutletRef>(null);
 
   const pageContextValue = useMemo(() => ({ pageRef }), []);
+
+  useEffect(() => {
+    if (!ready) return;
+
+    SplashScreen.hide();
+  }, [ready]);
 
   if (!ready) return;
 
@@ -85,7 +92,13 @@ function InnerTabbedRoutes({
     if (pathnameSections <= 1) return;
 
     function push() {
-      router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+      // TODO requestAnimationFrame workaround added for regression caused in react 19 upgrades,
+      // broke right after eda26916b56ca0593f4711516a3ef3048f75fbb6. needs investigation
+      // repro: be completely logged out. restart app. login. go to a post, go back,
+      // repeat navigations, see issue
+      requestAnimationFrame(() => {
+        router.push(`/${tabRef?.current || "posts"}`, "none", "push");
+      });
     }
 
     // have to wait for the ActorRedirect to do its thing, so it doesn't get clobbered

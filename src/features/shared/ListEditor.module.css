@@ -1,0 +1,13 @@
+.removeIcon {
+  position: relative;
+  font-size: 1.6rem;
+
+  &:after {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border-radius: 50%;
+    background: white;
+  }
+}

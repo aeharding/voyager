@@ -27,20 +27,47 @@ export function getClient(url: string, jwt?: string): LemmyHttp {
 
 export const LIMIT = 50;
 
+interface CustomLimit {
+  maxFileSize: number;
+  maxWidth: number;
+  maxHeight: number;
+}
+
+const CUSTOM_LIMITS: Record<string, CustomLimit> = {
+  ["lemm.ee"]: {
+    maxFileSize: 490_000, // 490 kB
+    maxWidth: 1200,
+    maxHeight: 1200,
+  },
+};
+
+// Lemmy default is 1MB
+const DEFAULT_LIMIT: CustomLimit = {
+  maxFileSize: 990_000, // 990 kB
+  maxWidth: 1500,
+  maxHeight: 1500,
+};
+
 /**
  * upload image, compressing before upload if needed
  *
  * @returns relative pictrs URL
  */
-export async function _uploadImage(client: LemmyHttp, image: File) {
+export async function _uploadImage(
+  instance: string,
+  client: LemmyHttp,
+  image: File,
+) {
   let compressedImageIfNeeded;
+
+  const limits = CUSTOM_LIMITS[instance] ?? DEFAULT_LIMIT;
 
   try {
     compressedImageIfNeeded = await reduceFileSize(
       image,
-      990_000, // 990 kB - Lemmy's default limit is 1MB
-      1500,
-      1500,
+      limits.maxFileSize,
+      limits.maxWidth,
+      limits.maxHeight,
       0.85,
     );
   } catch (error) {
@@ -53,8 +80,8 @@ export async function _uploadImage(client: LemmyHttp, image: File) {
   });
 
   // lemm.ee uses response.message for error messages (e.g. account too new)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (!response.url) throw new Error(response.msg ?? (response as any).message);
+  if (!response.url)
+    throw new Error(response.msg ?? (response as unknown as Error).message);
 
   return response;
 }

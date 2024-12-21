@@ -1,6 +1,5 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonTabButton } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { useCallback, useContext, useMemo } from "react";
 import { LongPressReactEvents, useLongPress } from "use-long-press";
 
@@ -9,14 +8,7 @@ import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
 import useHapticFeedback from "#/helpers/useHapticFeedback";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
-// reverts https://github.com/ionic-team/ionic-framework/pull/28754
-const StyledIonTabButton = styled(IonTabButton)`
-  &.ios.tab-has-label {
-    ion-icon {
-      font-size: 30px;
-    }
-  }
-`;
+import styles from "./shared.module.css";
 
 export interface TabButtonProps {
   /**
@@ -135,8 +127,13 @@ export default function SharedTabButton({
   const longPressBind = useLongPress(onLongPress, tabLongPressSettings);
 
   return (
-    <StyledIonTabButton onClick={onDefaultClick} {...longPressBind()} {...rest}>
+    <IonTabButton
+      onClick={onDefaultClick}
+      className={styles.tabButton}
+      {...longPressBind()}
+      {...rest}
+    >
       {children}
-    </StyledIonTabButton>
+    </IonTabButton>
   );
 }

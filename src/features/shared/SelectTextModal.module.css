@@ -1,0 +1,37 @@
+.container {
+  min-height: 100%;
+
+  display: flex;
+
+  html:global(.ios:not(.ion-palette-dark)) & {
+    background: var(--ion-item-background);
+  }
+}
+
+.sharedSelect {
+  /* Override `all: unset` specificity by setting default below .invisibleTextarea */
+}
+
+.invisibleTextarea {
+  composes: sharedSelect;
+
+  all: unset;
+  white-space: pre-wrap;
+  width: 100%;
+}
+
+.selectable {
+  composes: sharedSelect;
+
+  user-select: text;
+  white-space: pre-wrap;
+}
+
+.sharedSelect {
+  padding: 8px;
+  width: calc(100% - 16px);
+
+  user-select: text;
+
+  margin-bottom: var(--ion-safe-area-bottom, env(safe-area-inset-bottom));
+}

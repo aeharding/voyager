@@ -1,84 +1,23 @@
 import "@github/markdown-toolbar-element";
 import { IonContent } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { cx } from "#/helpers/css";
 import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
-import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
 import CommunityAutocomplete from "./modes/autocomplete/CommunityAutocompleteMode";
 import UsernameAutocompleteMode from "./modes/autocomplete/UsernameAutocompleteMode";
+import DefaultMode, { SharedModeProps } from "./modes/DefaultMode";
+
+import styles from "./MarkdownToolbar.module.css";
 
 export const TOOLBAR_TARGET_ID = "toolbar-target";
-export const TOOLBAR_HEIGHT = "50px";
 
-export const MarkdownEditorIonContent = styled(IonContent)`
-  &::part(scroll) {
-    scroll-padding: 20px 0 calc(20px + ${TOOLBAR_HEIGHT});
-  }
-`;
-
-const ToolbarContainer = styled.div`
-  height: 100%;
-  width: 100%;
-
-  pointer-events: none;
-`;
-
-const Toolbar = styled.div<{ keyboardOpen: boolean }>`
-  pointer-events: all;
-
-  position: absolute;
-  bottom: 0;
-
-  height: ${TOOLBAR_HEIGHT};
-
-  @media screen and (max-width: 767px) {
-    height: ${({ keyboardOpen }) =>
-      !keyboardOpen
-        ? `calc(${TOOLBAR_HEIGHT} + var(--ion-safe-area-bottom, env(safe-area-inset-bottom)))`
-        : TOOLBAR_HEIGHT};
-    padding-bottom: ${({ keyboardOpen }) =>
-      !keyboardOpen
-        ? "var(--ion-safe-area-bottom, env(safe-area-inset-bottom))"
-        : 0};
-  }
-
-  width: 100%;
-  border-top: 1px solid var(--ion-item-border-color);
-
-  background: var(--ion-item-background, #fff);
-
-  .ion-palette-dark & {
-    background: var(--ion-background-color);
-  }
-
-  markdown-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-
-    height: 100%;
-
-    > * {
-      flex: 1;
-      height: 100%;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      button {
-        height: 100%;
-        width: 100%;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-    }
-  }
-`;
+export function MarkdownEditorIonContent(
+  props: Omit<React.ComponentProps<typeof IonContent>, "className">,
+) {
+  return <IonContent {...props} className={styles.markdownEditorIonContent} />;
+}
 
 type MarkdownToolbarMode =
   | {
@@ -181,11 +120,14 @@ export default function MarkdownToolbar({
 
   return (
     <>
-      <ToolbarContainer className="fixed-toolbar-container" slot={slot}>
-        <Toolbar keyboardOpen={keyboardOpen} ref={toolbarRef}>
+      <div className={styles.toolbarContainer} slot={slot}>
+        <div
+          className={cx(styles.toolbar, keyboardOpen && styles.keyboardOpen)}
+          ref={toolbarRef}
+        >
           {toolbar}
-        </Toolbar>
-      </ToolbarContainer>
+        </div>
+      </div>
     </>
   );
 }

@@ -13,6 +13,17 @@ const config: CapacitorConfig = {
       resize: KeyboardResize.Ionic,
       resizeOnFullScreen: true,
     },
+    SplashScreen: {
+      launchShowDuration: 3_000,
+
+      // Important: Without this, the status bar color is grey in light mode
+      // https://github.com/ionic-team/capacitor-plugins/issues/1160
+      launchFadeOutDuration: 0,
+    },
+    CapacitorHttp: {
+      // Global shim is reverted in nativeFetch.ts
+      enabled: true,
+    },
   },
 };
 

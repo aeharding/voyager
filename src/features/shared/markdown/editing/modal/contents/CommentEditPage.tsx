@@ -2,6 +2,7 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
@@ -9,9 +10,9 @@ import { arrowBackSharp, send } from "ionicons/icons";
 import { Comment, CommentView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 
-import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import { editComment } from "#/features/comment/commentSlice";
 import { isIosTheme } from "#/helpers/device";
+import { commentEdited } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
 
@@ -61,13 +62,7 @@ export default function CommentEditPage({
       setLoading(false);
     }
 
-    presentToast({
-      message: "Comment edited!",
-      color: "primary",
-      position: "top",
-      centerText: true,
-      fullscreen: true,
-    });
+    presentToast(commentEdited);
 
     setCanDismiss(true);
     dismiss(comment);
@@ -86,22 +81,25 @@ export default function CommentEditPage({
               )}
             </IonButton>
           </IonButtons>
-          <IonTitle>
-            <Centered>
-              Edit Comment
-              {loading && <Spinner color="dark" />}
-            </Centered>
-          </IonTitle>
+          <IonTitle>Edit Comment</IonTitle>
           <IonButtons slot="end">
-            <IonButton
-              strong
-              type="submit"
-              disabled={isSubmitDisabled}
-              color={isSubmitDisabled ? "medium" : undefined}
-              onClick={submit}
-            >
-              {isIosTheme() ? "Save" : <IonIcon icon={send} slot="icon-only" />}
-            </IonButton>
+            {loading ? (
+              <IonSpinner />
+            ) : (
+              <IonButton
+                strong
+                type="submit"
+                disabled={isSubmitDisabled}
+                color={isSubmitDisabled ? "medium" : undefined}
+                onClick={submit}
+              >
+                {isIosTheme() ? (
+                  "Save"
+                ) : (
+                  <IonIcon icon={send} slot="icon-only" />
+                )}
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
       </AppHeader>

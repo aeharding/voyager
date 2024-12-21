@@ -1,0 +1,31 @@
+.placeholderContainer {
+  display: flex;
+
+  /* Sometimes the <img> natural size is loaded, but the media cannot be played */
+  overflow: hidden;
+
+  &:global(.not-loaded) {
+    align-items: center;
+    justify-content: center;
+
+    aspect-ratio: var(--sv-defaultAspectRatio);
+    position: relative;
+
+    .media {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+}
+
+.loadingIcon {
+  opacity: 0.5;
+  opacity: 0.5;
+  font-size: 24px;
+}
+
+.error {
+  opacity: 0.5;
+  padding: 16px;
+}

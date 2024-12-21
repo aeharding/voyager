@@ -1,0 +1,52 @@
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  max-width: 100%;
+
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  color: inherit;
+  text-decoration: none;
+  -webkit-touch-callout: default;
+
+  background: rgba(var(--ion-color-light-rgb), 0.5);
+  padding: 3px 9px;
+
+  font-size: 0.8em;
+
+  color: var(--ion-color-text-aside);
+
+  /* Special class applied by CrosspostContainer when contents is read */
+  &:global(.read) {
+    color: var(--read-color-medium);
+  }
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.crosspostIcon {
+  font-size: 1.5rem;
+}
+
+.communityTitle {
+  min-width: 20px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.communityIonSkeletonText {
+  width: 90px;
+}
+
+.statIonSkeletonText {
+  width: 16px;
+}

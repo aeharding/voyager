@@ -1,0 +1,52 @@
+.backdrop {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+
+  background: rgba(0, 0, 0, 0.2);
+
+  :global(.ion-palette-dark) & {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.keyboardContent {
+  display: flex;
+
+  transition: max-height 150ms ease-out;
+}
+
+.contents {
+  --background: var(--ion-background-color);
+
+  :global(.ion-palette-dark) & {
+    --background: var(--ion-background-color-step-100);
+  }
+
+  background: var(--background);
+  width: 100%;
+  max-width: 500px;
+  width: calc(100vw - 2rem);
+  min-height: 175px;
+  max-height: 450px;
+  overflow: auto;
+  margin: 1rem;
+  border-radius: 0.5rem;
+
+  overscroll-behavior: contain;
+
+  ion-item {
+    --ion-item-background: var(--ion-background-color);
+
+    :global(.ion-palette-dark) & {
+      --ion-item-background: var(--ion-background-color-step-100);
+    }
+  }
+}

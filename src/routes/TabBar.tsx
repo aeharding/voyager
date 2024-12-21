@@ -1,5 +1,4 @@
 import { IonTabBar } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { ComponentProps, useRef } from "react";
 
 import InboxTabButton from "./tabs/buttons/InboxTabButton";
@@ -8,39 +7,19 @@ import ProfileTabButton from "./tabs/buttons/ProfileTabButton";
 import SearchTabButton from "./tabs/buttons/SearchTabButton";
 import SettingsTabButton from "./tabs/buttons/SettingsTabButton";
 
-const StyledIonTabBar = styled(IonTabBar)`
-  @media (orientation: landscape) and (max-height: 450px) {
-    height: 36px;
-
-    ion-badge {
-      inset-inline-start: calc(70% + 6px);
-
-      &.md {
-        inset-inline-start: calc(75% + 6px);
-      }
-    }
-
-    ion-tab-button {
-      flex-direction: row;
-
-      > ion-label {
-        margin-bottom: 0;
-      }
-
-      > ion-icon {
-        font-size: 22px !important;
-        margin-right: 5px;
-      }
-    }
-  }
-`;
+import styles from "./TabBar.module.css";
 
 /**
  * Ionic checks `isTabBar` for custom IonTabBar components.
  */
 TabBar.isTabBar = true;
 
-export default function TabBar(props: ComponentProps<typeof IonTabBar>) {
+export default function TabBar(
+  props: Omit<
+    ComponentProps<typeof IonTabBar>,
+    "className" | "onClick" | "onTouchEnd"
+  >,
+) {
   const longPressedRef = useRef(false);
 
   const resetLongPress = () => {
@@ -52,8 +31,9 @@ export default function TabBar(props: ComponentProps<typeof IonTabBar>) {
   };
 
   return (
-    <StyledIonTabBar
+    <IonTabBar
       {...props}
+      className={styles.tabBar}
       onClick={resetLongPress}
       onTouchEnd={(e) => {
         // stop keyboard closing when search input has text on search tab press up
@@ -65,6 +45,6 @@ export default function TabBar(props: ComponentProps<typeof IonTabBar>) {
       <ProfileTabButton tab="profile" href="/profile" {...sharedTabProps} />
       <SearchTabButton tab="search" href="/search" {...sharedTabProps} />
       <SettingsTabButton tab="settings" href="/settings" {...sharedTabProps} />
-    </StyledIonTabBar>
+    </IonTabBar>
   );
 }

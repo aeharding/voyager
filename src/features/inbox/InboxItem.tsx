@@ -1,6 +1,4 @@
 import { IonIcon, IonItem } from "@ionic/react";
-import { css, cx } from "@linaria/core";
-import { styled } from "@linaria/react";
 import { albums, chatbubble, mail, personCircle } from "ionicons/icons";
 import {
   CommentReplyView,
@@ -14,8 +12,8 @@ import CommentMarkdown from "#/features/comment/CommentMarkdown";
 import Ago from "#/features/labels/Ago";
 import CommunityLink from "#/features/labels/links/CommunityLink";
 import PersonLink from "#/features/labels/links/PersonLink";
-import { maxWidthCss } from "#/features/shared/AppContent";
 import SlidingInbox from "#/features/shared/sliding/SlidingInbox";
+import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { getHandle } from "#/helpers/lemmy";
@@ -28,115 +26,10 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import InboxItemMoreActions, {
   InboxItemMoreActionsHandle,
 } from "./InboxItemMoreActions";
-import VoteArrow from "./VoteArrow";
 import { getInboxItemId, markRead as markReadAction } from "./inboxSlice";
+import VoteArrow from "./VoteArrow";
 
-const labelStyles = css`
-  display: inline-flex;
-  max-width: 100%;
-
-  font-weight: 500;
-
-  a {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-`;
-
-const Hr = styled.div`
-  ${maxWidthCss}
-
-  position: relative;
-  height: 1px;
-
-  &::after {
-    content: "";
-    position: absolute;
-
-    --right-offset: calc(23px + 1lh);
-
-    width: calc(100% - var(--right-offset));
-    left: var(--right-offset);
-    top: 0;
-    border-bottom: 1px solid
-      var(
-        --ion-item-border-color,
-        var(--ion-border-color, var(--ion-background-color-step-250, #c8c7cc))
-      );
-  }
-`;
-
-const StyledIonItem = styled(IonItem)`
-  --ion-item-border-color: transparent;
-  --padding-start: 12px;
-`;
-
-const itemUnreadCss = css`
-  --background: var(--unread-item-background-color);
-`;
-
-const Container = styled.div`
-  display: flex;
-  gap: var(--padding-start);
-
-  ${maxWidthCss}
-
-  padding: 0.5rem 0;
-
-  font-size: 0.875em;
-
-  strong {
-    font-weight: 500;
-  }
-`;
-
-const StartContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--padding-start);
-
-  ion-icon {
-    width: 1lh;
-    height: 1lh;
-  }
-`;
-
-const TypeIcon = styled(IonIcon)`
-  color: var(--ion-color-medium2);
-`;
-
-const Content = styled.div`
-  flex: 1;
-  min-width: 0;
-`;
-
-const Header = styled.div``;
-
-const Body = styled.div`
-  color: var(--ion-color-medium);
-`;
-
-const Footer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  color: var(--ion-color-medium);
-
-  > div {
-    min-width: 0;
-  }
-
-  > aside {
-    margin-left: auto;
-
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    color: var(--ion-color-medium2);
-  }
-`;
+import styles from "./InboxItem.module.css";
 
 export type InboxItemView =
   | PersonMentionView
@@ -213,7 +106,7 @@ export default function InboxItem({ item }: InboxItemProps) {
         <>
           <PersonLink
             person={item.creator}
-            className={labelStyles}
+            className={styles.label}
             showBadge={false}
             sourceUrl={getSourceUrl()}
           />{" "}
@@ -222,7 +115,7 @@ export default function InboxItem({ item }: InboxItemProps) {
             community={item.community}
             subscribed={item.subscribed}
             hideIcon
-            className={labelStyles}
+            className={styles.label}
           />
         </>
       );
@@ -289,10 +182,11 @@ export default function InboxItem({ item }: InboxItemProps) {
   });
 
   const contents = (
-    <StyledIonItem
+    <IonItem
       mode="ios" // Use iOS style activatable tap highlight
       className={cx(
-        !read && itemUnreadCss,
+        styles.item,
+        !read && styles.itemUnread,
         isTouchDevice() && "ion-activatable",
       )}
       routerLink={getLink()}
@@ -301,34 +195,34 @@ export default function InboxItem({ item }: InboxItemProps) {
       onClick={markRead}
       {...bind()}
     >
-      <Container>
-        <StartContent>
-          <TypeIcon icon={getIcon()} />
+      <div className={styles.container}>
+        <div className={styles.startContent}>
+          <IonIcon className={styles.typeIcon} icon={getIcon()} />
           <VoteArrow vote={vote} />
-        </StartContent>
-        <Content>
-          <Header>{renderHeader()}</Header>
-          <Body>
+        </div>
+        <div className={styles.content}>
+          <div>{renderHeader()}</div>
+          <div className={styles.body}>
             <CommentMarkdown id={getItemId(item)}>
               {renderContents()}
             </CommentMarkdown>
-          </Body>
-          <Footer>
+          </div>
+          <div className={styles.footer}>
             <div>{renderFooterDetails()}</div>
             <aside>
               <InboxItemMoreActions item={item} ref={ellipsisHandleRef} />
               <Ago date={getDate()} />
             </aside>
-          </Footer>
-        </Content>
-      </Container>
-    </StyledIonItem>
+          </div>
+        </div>
+      </div>
+    </IonItem>
   );
 
   return (
     <>
       <SlidingInbox item={item}>{contents}</SlidingInbox>
-      <Hr />
+      <div className={styles.hr} />
     </>
   );
 }

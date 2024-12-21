@@ -1,22 +1,13 @@
 import { useIonAlert } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { pencil } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
 import { MouseEvent } from "react";
 
 import Stat from "#/features/post/detail/Stat";
-import { PlainButton } from "#/features/shared/PlainButton";
 
 import { formatRelative } from "./Ago";
 
-const EditedStat = styled(Stat)`
-  display: flex;
-  align-items: center;
-  gap: inherit;
-
-  margin: -3px;
-  padding: 3px;
-`;
+import styles from "./Edited.module.css";
 
 interface EditedProps {
   item: PostView | CommentView;
@@ -33,8 +24,8 @@ export default function Edited({ item, showDate, className }: EditedProps) {
     if (!edited) return;
     if (!showDate) return;
 
-    const createdLabel = formatRelative(item.counts.published);
-    const editedLabel = formatRelative(edited);
+    const createdLabel = formatRelative(new Date(item.counts.published));
+    const editedLabel = formatRelative(new Date(edited));
 
     if (createdLabel === editedLabel) return;
 
@@ -51,20 +42,21 @@ export default function Edited({ item, showDate, className }: EditedProps) {
     const date = new Date(edited);
 
     present({
-      header: `Edited ${formatRelative(edited)} Ago`,
+      header: `Edited ${formatRelative(date)} Ago`,
       message: `Last edited on ${date.toDateString()} at ${date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`,
       buttons: ["OK"],
     });
   }
 
   return (
-    <EditedStat
-      statEl={PlainButton}
+    <Stat
+      className={styles.edited}
+      button
       onClick={presentEdited}
       icon={pencil}
       iconClassName={className}
     >
       {editedLabelIfNeeded}
-    </EditedStat>
+    </Stat>
   );
 }

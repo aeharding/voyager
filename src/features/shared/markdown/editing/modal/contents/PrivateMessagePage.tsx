@@ -2,31 +2,25 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
+  IonSpinner,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { arrowBackSharp, send } from "ionicons/icons";
 import { Person, PrivateMessageView } from "lemmy-js-client";
 import { useEffect, useState } from "react";
 
-import { Centered, Spinner } from "#/features/auth/login/LoginNav";
 import { receivedMessages } from "#/features/inbox/inboxSlice";
 import AppHeader from "#/features/shared/AppHeader";
 import { DismissableProps } from "#/features/shared/DynamicDismissableModal";
 import { isIosTheme } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
-import { privateMessageSendFailed } from "#/helpers/toastMessages";
+import { messageSent, privateMessageSendFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import useClient from "#/helpers/useClient";
 import { useAppDispatch } from "#/store";
 
 import CommentEditorContent from "./CommentEditorContent";
-
-const Title = styled.span`
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
 
 /**
  * Special case to compose a private message
@@ -86,13 +80,7 @@ export default function PrivateMessagePage({
       setLoading(false);
     }
 
-    presentToast({
-      message: "Message sent!",
-      color: "primary",
-      position: "top",
-      centerText: true,
-      fullscreen: true,
-    });
+    presentToast(messageSent);
 
     setCanDismiss(true);
     dismiss(message.private_message_view);
@@ -112,22 +100,25 @@ export default function PrivateMessagePage({
               )}
             </IonButton>
           </IonButtons>
-          <IonTitle>
-            <Centered>
-              <Title>To {getHandle(item.private_message.recipient)}</Title>
-              {loading && <Spinner color="dark" />}
-            </Centered>
-          </IonTitle>
+          <IonTitle>To {getHandle(item.private_message.recipient)}</IonTitle>
           <IonButtons slot="end">
-            <IonButton
-              strong
-              type="submit"
-              disabled={isSubmitDisabled}
-              color={isSubmitDisabled ? "medium" : undefined}
-              onClick={submit}
-            >
-              {isIosTheme() ? "Send" : <IonIcon icon={send} slot="icon-only" />}
-            </IonButton>
+            {loading ? (
+              <IonSpinner />
+            ) : (
+              <IonButton
+                strong
+                type="submit"
+                disabled={isSubmitDisabled}
+                color={isSubmitDisabled ? "medium" : undefined}
+                onClick={submit}
+              >
+                {isIosTheme() ? (
+                  "Send"
+                ) : (
+                  <IonIcon icon={send} slot="icon-only" />
+                )}
+              </IonButton>
+            )}
           </IonButtons>
         </IonToolbar>
       </AppHeader>

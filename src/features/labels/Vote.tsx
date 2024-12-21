@@ -1,5 +1,4 @@
 import { ImpactStyle } from "@capacitor/haptics";
-import { css } from "@linaria/core";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
 import React, { useContext } from "react";
@@ -8,7 +7,6 @@ import { PageContext } from "#/features/auth/PageContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import { voteOnComment } from "#/features/comment/commentSlice";
 import { voteOnPost } from "#/features/post/postSlice";
-import { PlainButton } from "#/features/shared/PlainButton";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import { formatNumber } from "#/helpers/number";
 import { downvotesDisabled } from "#/helpers/toastMessages";
@@ -20,13 +18,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import VoteStat from "./VoteStat";
 
-const iconClass = css`
-  // Vote icons are tall and narrow, but svg container is square.
-  // This creates visually inconsistent padding.
-  // So fudge it so it looks better next to more square icons
-  margin: 0 -2px;
-`;
-
+import styles from "./Vote.module.css";
 interface VoteProps {
   item: PostView | CommentView;
   className?: string;
@@ -94,10 +86,10 @@ export default function Vote({
       return (
         <>
           <VoteStat
-            statEl={PlainButton}
+            button
             icon={arrowUpSharp}
             className={className}
-            iconClassName={iconClass}
+            iconClassName={styles.icon}
             currentVote={myVote}
             voteRepresented={1}
             onClick={async (e) => {
@@ -107,10 +99,10 @@ export default function Vote({
             {formatNumber(upvotes)}
           </VoteStat>
           <VoteStat
-            statEl={PlainButton}
+            button
             icon={arrowDownSharp}
             className={className}
-            iconClassName={iconClass}
+            iconClassName={styles.icon}
             currentVote={myVote}
             voteRepresented={-1}
             onClick={async (e) => {
@@ -125,10 +117,10 @@ export default function Vote({
     case OVoteDisplayMode.Hide:
       return (
         <VoteStat
-          statEl={PlainButton}
+          button
           icon={myVote === -1 ? arrowDownSharp : arrowUpSharp}
           className={className}
-          iconClassName={iconClass}
+          iconClassName={styles.icon}
           currentVote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);
@@ -140,10 +132,10 @@ export default function Vote({
       const score = calculateTotalScore(item, votesById);
       return (
         <VoteStat
-          statEl={PlainButton}
+          button
           icon={myVote === -1 ? arrowDownSharp : arrowUpSharp}
           className={className}
-          iconClassName={iconClass}
+          iconClassName={styles.icon}
           currentVote={myVote}
           onClick={async (e) => {
             await onVote(e, myVote ? 0 : 1);

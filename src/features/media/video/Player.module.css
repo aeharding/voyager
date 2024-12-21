@@ -1,0 +1,80 @@
+.container {
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+}
+
+.progress {
+  position: absolute;
+  bottom: -6px;
+  right: 0;
+  left: 0;
+  width: 100%;
+  appearance: none;
+  height: 12px;
+  transform: translate3d(0, 0, 0);
+
+  background: none;
+  border: 0;
+
+  &::-webkit-progress-bar {
+    background: rgba(0, 0, 0, 0.0045);
+    backdrop-filter: blur(30px);
+  }
+
+  @supports selector(::-moz-progress-bar) {
+    background: rgba(0, 0, 0, 0.0045);
+    backdrop-filter: blur(30px);
+  }
+
+  &::-moz-progress-bar {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  &::-webkit-progress-value {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.videoEl {
+  flex: 1;
+
+  width: 100%;
+  object-fit: contain;
+
+  overflow: hidden;
+}
+
+.volumeButton {
+  composes: plainButton from "#/features/shared/shared.module.css";
+
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  &.volumeButton {
+    padding: 14px;
+    font-size: 26px;
+    color: #aaa;
+  }
+
+  svg {
+    filter: blur(10px) invert(80%);
+  }
+}
+
+.playOverlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 80px;
+
+  color: #fff;
+
+  background: rgba(0, 0, 0, 0.1);
+}

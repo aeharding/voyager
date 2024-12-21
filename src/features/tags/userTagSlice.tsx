@@ -1,7 +1,7 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { uniq } from "es-toolkit";
 
-import { UserTag, db } from "#/services/db";
+import { db, UserTag } from "#/services/db";
 
 import { AppDispatch, RootState } from "../../store";
 

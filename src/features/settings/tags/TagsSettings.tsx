@@ -1,7 +1,6 @@
 import { IonList } from "@ionic/react";
-import { styled } from "@linaria/react";
 
-import emptyStateIconStyles from "#/routes/pages/shared/emptyStateIconStyles";
+import { cx } from "#/helpers/css";
 import { useAppSelector } from "#/store";
 
 import Browse from "./Browse";
@@ -9,12 +8,10 @@ import Enabled from "./Enabled";
 import HideInstance from "./HideInstance";
 import ResetTags from "./Reset";
 import StoreSource from "./StoreSource";
-import TrackVotes from "./TrackVotes";
 import TagSvg from "./tag.svg?react";
+import TrackVotes from "./TrackVotes";
 
-const StyledTagSvg = styled(TagSvg)`
-  margin-top: 16px;
-`;
+import sharedStyles from "#/features/shared/shared.module.css";
 
 export default function TagsSettings() {
   const userTagsEnabled = useAppSelector(
@@ -39,7 +36,7 @@ export default function TagsSettings() {
           </IonList>
         </>
       ) : (
-        <StyledTagSvg className={emptyStateIconStyles} />
+        <TagSvg className={cx(sharedStyles.emptyStateIcon, "ion-margin-top")} />
       )}
     </>
   );

@@ -1,24 +1,27 @@
-import { styled } from "@linaria/react";
 import { CommentView, PostView } from "lemmy-js-client";
-import { ReactNode, createContext, useContext } from "react";
+import { createContext, ReactNode, useContext } from "react";
 
 import { isPost } from "#/helpers/lemmy";
 import { useAppSelector } from "#/store";
 
 import ModeratableItemBanner, {
-  ItemModStateType,
   getModStateBackgroundColor,
+  ItemModStateType,
   useItemModState,
 } from "./banner/ModeratableItemBanner";
 import useCanModerate from "./useCanModerate";
 
-const ModeratableItemContainer = styled.div<{
+interface ModeratableItemContainerProps extends React.ComponentProps<"div"> {
   modState?: ItemModStateType;
   highlighted?: boolean;
-}>`
-  width: 100%;
+}
 
-  background: ${({ modState, highlighted }) => {
+function ModeratableItemContainer({
+  modState,
+  highlighted,
+  ...props
+}: ModeratableItemContainerProps) {
+  const background = (() => {
     const color =
       modState !== undefined ? getModStateBackgroundColor(modState) : undefined;
 
@@ -27,8 +30,15 @@ const ModeratableItemContainer = styled.div<{
     if (highlighted) return "var(--ion-color-light)";
 
     return "none";
-  }};
-`;
+  })();
+
+  const styles = {
+    width: "100%",
+    background,
+  };
+
+  return <div {...props} style={styles} />;
+}
 
 interface ModeratableItemProps {
   itemView: PostView | CommentView;

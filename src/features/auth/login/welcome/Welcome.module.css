@@ -1,0 +1,29 @@
+.content {
+  &::part(scroll) {
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  --background: linear-gradient(0deg, #bfd5ff, #e3edff 33%, #ffff);
+
+  :global(.ion-palette-dark) & {
+    --background: linear-gradient(0deg, #001233ff, #000a1c 33%, #0000);
+  }
+}
+
+.baseSvg {
+  opacity: 0.4;
+  margin: 0 -2rem;
+  position: absolute;
+  bottom: 0;
+
+  pointer-events: none;
+
+  filter: brightness(2.7);
+
+  :global(.ion-palette-dark) & {
+    filter: none;
+  }
+}

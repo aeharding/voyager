@@ -1,9 +1,11 @@
 /* eslint-disable react/jsx-key */
 import Route from "#/routes/common/Route";
 import SearchCommunitiesPage from "#/routes/pages/search/results/SearchCommunitiesPage";
-import AppIconPage from "#/routes/pages/settings/AppIconPage";
+import AboutPage from "#/routes/pages/settings/about/AboutPage";
+import AboutThanksPage from "#/routes/pages/settings/about/AboutThanksPage";
 import AppearancePage from "#/routes/pages/settings/AppearancePage";
 import AppearanceThemePage from "#/routes/pages/settings/AppearanceThemePage";
+import AppIconPage from "#/routes/pages/settings/AppIconPage";
 import BiometricPage from "#/routes/pages/settings/BiometricPage";
 import BlocksSettingsPage from "#/routes/pages/settings/BlocksSettingsPage";
 import BrowseTagsPage from "#/routes/pages/settings/BrowseTagsPage";
@@ -17,8 +19,6 @@ import RedditMigrateSubsListPage from "#/routes/pages/settings/RedditMigrateSubs
 import SettingsPage from "#/routes/pages/settings/SettingsPage";
 import TagsSettingsPage from "#/routes/pages/settings/TagsSettingsPage";
 import UpdateAppPage from "#/routes/pages/settings/UpdateAppPage";
-import AboutPage from "#/routes/pages/settings/about/AboutPage";
-import AboutThanksPage from "#/routes/pages/settings/about/AboutThanksPage";
 
 export default [
   <Route exact path="/settings">

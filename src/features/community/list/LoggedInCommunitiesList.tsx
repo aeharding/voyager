@@ -1,25 +1,48 @@
+import { IonRefresher, IonRefresherContent } from "@ionic/react";
 import { compact, uniqBy } from "es-toolkit";
 import { CommunityFollowerView, CommunityView } from "lemmy-js-client";
+import { useState } from "react";
 
-import { useAppSelector } from "#/store";
+import { getSite } from "#/features/auth/siteSlice";
+import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 import { CommunitiesListProps } from "./CommunitiesList";
 import ResolvedCommunitiesList from "./ResolvedCommunitiesList";
 
 export default function LoggedInCommunitiesList(props: CommunitiesListProps) {
+  const dispatch = useAppDispatch();
   const follows = useAppSelector(
     (state) => state.site.response?.my_user?.follows,
   );
-
   const communityByHandle = useAppSelector(
     (state) => state.community.communityByHandle,
   );
 
+  const [isListAtTop, setIsListAtTop] = useState(true);
+
+  async function refresh() {
+    await dispatch(getSite());
+  }
+
   return (
-    <ResolvedCommunitiesList
-      {...props}
-      communities={buildCommunities(follows, communityByHandle)}
-    />
+    <>
+      <IonRefresher
+        slot="fixed"
+        onIonRefresh={(e) => {
+          refresh().finally(() => e.detail.complete());
+        }}
+        disabled={isSafariFeedHackEnabled && !isListAtTop}
+      >
+        <IonRefresherContent />
+      </IonRefresher>
+
+      <ResolvedCommunitiesList
+        {...props}
+        communities={buildCommunities(follows, communityByHandle)}
+        onListAtTopChange={setIsListAtTop}
+      />
+    </>
   );
 }
 

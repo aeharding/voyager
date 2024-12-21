@@ -1,0 +1,35 @@
+.container {
+  min-height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding-bottom: var(--markdown-toolbar-height);
+
+  html:global(.ios:not(.ion-palette-dark)) & {
+    background: var(--ion-item-background);
+  }
+
+  @media screen and (max-width: 767px) {
+    padding-bottom: calc(
+      var(--markdown-toolbar-height) +
+        var(--ion-safe-area-bottom, env(safe-area-inset-bottom))
+    );
+
+    &.keyboardOpen {
+      padding-bottom: var(--markdown-toolbar-height);
+    }
+  }
+}
+
+.textarea {
+  border: 0;
+  background: none;
+  resize: none;
+  outline: 0;
+  padding: 16px;
+
+  min-height: 200px;
+
+  flex: 1 0 auto;
+}

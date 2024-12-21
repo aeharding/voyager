@@ -1,9 +1,9 @@
 import CompactSettings from "./CompactSettings";
 import LargeSettings from "./LargeSettings";
-import TextSize from "./TextSize";
-import ThemesButton from "./ThemesButton";
 import Other from "./other/Other";
 import Posts from "./posts/Posts";
+import TextSize from "./TextSize";
+import ThemesButton from "./ThemesButton";
 
 export default function AppearanceSettings() {
   return (

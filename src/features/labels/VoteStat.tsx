@@ -2,8 +2,8 @@ import { ComponentProps } from "react";
 
 import Stat from "#/features/post/detail/Stat";
 import {
-  VOTE_COLORS,
   bgColorToVariable,
+  VOTE_COLORS,
 } from "#/features/settings/appearance/themes/votesTheme/VotesTheme";
 import { VotesThemeType } from "#/services/db";
 import { useAppSelector } from "#/store";

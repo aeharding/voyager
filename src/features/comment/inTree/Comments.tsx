@@ -1,6 +1,5 @@
 import { RefresherCustomEvent } from "@ionic/core";
 import { IonRefresher, IonRefresherContent, IonSpinner } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { compact, differenceBy, sortBy, uniqBy } from "es-toolkit";
 import { CommentSortType, CommentView } from "lemmy-js-client";
 import React, {
@@ -16,6 +15,7 @@ import { VList, VListHandle } from "virtua";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
+import { useRangeChange } from "#/features/feed/useRangeChange";
 import { getPost } from "#/features/post/postSlice";
 import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
 import { scrollIntoView, useScrollIntoViewWorkaround } from "#/helpers/dom";
@@ -32,40 +32,11 @@ import { isSafariFeedHackEnabled } from "#/routes/pages/shared/FeedContent";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import { receivedComments } from "../commentSlice";
-import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import { CommentsContext } from "./CommentsContext";
+import CommentTree, { MAX_COMMENT_DEPTH } from "./CommentTree";
 import LoadParentComments from "./LoadParentComments";
 
-const ScrollViewContainer = styled.div`
-  width: 100%;
-  height: 100%;
-`;
-
-const centerCss = `
-  position: relative;
-  padding: 4rem 0 4rem;
-  left: 50%;
-  transform: translateX(-50%);
-`;
-
-const StyledIonSpinner = styled(IonSpinner)`
-  ${centerCss}
-  opacity: 0.7;
-`;
-
-const Empty = styled.div`
-  ${centerCss}
-
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  text-align: center;
-
-  aside {
-    color: var(--ion-color-medium);
-    font-size: 0.8em;
-  }
-`;
+import styles from "./Comments.module.css";
 
 const MAX_COMMENT_PATH_CONTEXT_DEPTH = 2;
 
@@ -452,14 +423,15 @@ export default function Comments({
         />
       );
 
-    if (loading && !comments.length) return <StyledIonSpinner />;
+    if (loading && !comments.length)
+      return <IonSpinner className={styles.spinner} />;
 
     if (!comments.length)
       return (
-        <Empty>
+        <div className={styles.empty}>
           <div>No Comments</div>
           <aside>It&apos;s quiet... too quiet...</aside>
-        </Empty>
+        </div>
       );
   }, [comments.length, fetchComments, loadFailed, loading]);
 
@@ -490,6 +462,12 @@ export default function Comments({
     [allComments, bottomPadding, header, renderFooter],
   );
 
+  const onScroll = useRangeChange(virtuaRef, (start, end) => {
+    if (end + 10 > allComments.length && !loadFailed) {
+      fetchComments();
+    }
+  });
+
   return (
     <CommentsContext.Provider value={commentsContextValue}>
       <IonRefresher
@@ -499,7 +477,7 @@ export default function Comments({
       >
         <IonRefresherContent />
       </IonRefresher>
-      <ScrollViewContainer ref={scrollViewContainerRef}>
+      <div className={styles.scrollViewContainer} ref={scrollViewContainerRef}>
         {virtualEnabled ? (
           <VList
             className={
@@ -509,15 +487,10 @@ export default function Comments({
             }
             ref={virtuaRef}
             style={{ height: "100%" }}
-            // @ts-expect-error Virtua types not updated for forwardRef-less components
             item={IndexedVirtuaItem}
             overscan={1}
-            onRangeChange={(start, end) => {
-              if (end + 10 > allComments.length && !loadFailed) {
-                fetchComments();
-              }
-            }}
             onScroll={(offset) => {
+              onScroll();
               setIsListAtTop(offset < 6);
             }}
           >
@@ -526,7 +499,7 @@ export default function Comments({
         ) : (
           <>{...content}</>
         )}
-      </ScrollViewContainer>
+      </div>
     </CommentsContext.Provider>
   );
 }

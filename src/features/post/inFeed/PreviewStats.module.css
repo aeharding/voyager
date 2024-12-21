@@ -1,0 +1,3 @@
+.container {
+  composes: sharedStatsClass from "#/features/post/detail/Stats.module.css";
+}

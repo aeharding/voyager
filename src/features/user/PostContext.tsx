@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import { Community, Post } from "lemmy-js-client";
 import { Link } from "react-router-dom";
 
@@ -6,35 +5,7 @@ import InlineMarkdown from "#/features/shared/markdown/InlineMarkdown";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
-const ContainerLink = styled(Link)`
-  padding: 6px 12px;
-
-  background: var(
-    --ion-tab-bar-background,
-    var(--ion-background-color-step-50, #f7f7f7)
-  );
-  color: var(--ion-color-dark);
-  border-radius: 6px;
-
-  font-size: 0.95em;
-
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-
-  text-decoration: none;
-`;
-
-const Name = styled.div`
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
-
-const CommunityName = styled.div`
-  opacity: 0.7;
-`;
+import styles from "./PostContext.module.css";
 
 interface PostContextProps {
   post: Post;
@@ -45,17 +16,18 @@ export default function PostContext({ post, community }: PostContextProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
   return (
-    <ContainerLink
+    <Link
+      className={styles.link}
       onClick={(e) => e.stopPropagation()}
       draggable={false}
       to={buildGeneralBrowseLink(
         `/c/${getHandle(community)}/comments/${post.id}`,
       )}
     >
-      <Name>
+      <div className={styles.name}>
         <InlineMarkdown>{post.name}</InlineMarkdown>
-      </Name>
-      <CommunityName>{getHandle(community)}</CommunityName>
-    </ContainerLink>
+      </div>
+      <div className={styles.communityName}>{getHandle(community)}</div>
+    </Link>
   );
 }

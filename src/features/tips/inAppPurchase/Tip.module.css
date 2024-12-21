@@ -1,0 +1,40 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+.transitionStyle {
+  transition: opacity 250ms linear;
+}
+
+.button {
+  position: relative;
+}
+
+.contents {
+  composes: transitionStyle;
+
+  opacity: 1;
+}
+
+.hide {
+  opacity: 0;
+}
+
+.hiddenSpinner {
+  composes: transitionStyle;
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
+}

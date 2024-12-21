@@ -7,7 +7,6 @@ import {
   IonLoading,
   useIonAlert,
 } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { chevronForwardOutline } from "ionicons/icons";
 import { PrivateMessageView } from "lemmy-js-client";
 import { useState } from "react";
@@ -20,85 +19,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import Time from "./Time";
 
-const StyledItemIcon = styled(ItemIcon)`
-  margin: 0.75rem 0;
-`;
-
-const MessageContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin: 0.5rem 0;
-
-  width: 100%;
-  min-width: 0;
-`;
-
-const MessageLine = styled.div`
-  display: flex;
-  gap: 0.3rem;
-  min-width: 0;
-  white-space: nowrap;
-`;
-
-const PersonLabel = styled.h3`
-  flex: 1;
-
-  font-size: 1rem;
-  margin: 0;
-  min-width: 0;
-
-  display: inline;
-  margin-right: auto;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const OpenDetails = styled.span`
-  flex: 0;
-
-  font-size: 0.875em;
-
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-
-  color: var(--ion-color-medium);
-`;
-
-const MessagePreview = styled.div`
-  --line-height: 1.3rem;
-  --num-lines: 2;
-
-  height: 2.5rem;
-  line-height: var(--line-height);
-  font-size: 0.875em;
-  height: calc(var(--line-height) * var(--num-lines));
-
-  color: var(--ion-color-medium);
-
-  display: -webkit-box;
-  -webkit-line-clamp: var(--num-lines);
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
-
-const Dot = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 0.25rem;
-  transform: translateY(-50%);
-
-  background: var(--ion-color-primary);
-
-  --size: 8px;
-
-  border-radius: calc(var(--size) / 2);
-
-  width: var(--size);
-  height: var(--size);
-`;
+import styles from "./ConversationItem.module.css";
 
 interface ConversationItemProps {
   messages: PrivateMessageView[];
@@ -193,25 +114,25 @@ export default function ConversationItem({ messages }: ConversationItemProps) {
           detail={false}
         >
           <div slot="start">
-            {unread ? <Dot /> : ""}
-            <StyledItemIcon item={person} size={44} />
+            {unread ? <div className={styles.dot} /> : ""}
+            <ItemIcon item={person} size={44} className={styles.itemIcon} />
           </div>
-          <MessageContent>
-            <MessageLine>
-              <PersonLabel>
+          <div className={styles.messageContent}>
+            <div className={styles.messageLine}>
+              <h3 className={styles.personLabel}>
                 {person.display_name ?? getHandle(person)}
-              </PersonLabel>
-              <OpenDetails>
+              </h3>
+              <span className={styles.openDetails}>
                 <span>
                   <Time date={previewMsg.private_message.published} />
                 </span>
                 <IonIcon icon={chevronForwardOutline} />
-              </OpenDetails>
-            </MessageLine>
-            <MessagePreview color="medium">
+              </span>
+            </div>
+            <div className={styles.messagePreview}>
               {previewMsg.private_message.content}
-            </MessagePreview>
-          </MessageContent>
+            </div>
+          </div>
         </IonItem>
       </IonItemSliding>
     </>

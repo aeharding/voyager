@@ -12,7 +12,7 @@ test("load community posts", async ({ page }) => {
 
   await expect(page).toHaveTitle("Voyager for Lemmy");
 
-  await expect(page.getByText(posts[0].post.name)).toBeVisible();
+  await expect(page.getByText(posts[0]!.post.name)).toBeVisible();
 });
 
 test("navigate to post on click", async ({ page }) => {
@@ -22,7 +22,7 @@ test("navigate to post on click", async ({ page }) => {
 
   await page.goto("/");
 
-  await page.getByText(posts[0].post.name).click();
+  await page.getByText(posts[0]!.post.name).click();
 
   await expect(page).toHaveURL(
     "/posts/lemmy.world/c/community_1@test.lemmy/comments/999",

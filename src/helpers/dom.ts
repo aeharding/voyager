@@ -1,3 +1,5 @@
+import { KeyboardEvent } from "react";
+
 import { ua } from "./device";
 
 export const useScrollIntoViewWorkaround = ua.getEngine().name === "WebKit";
@@ -137,4 +139,10 @@ export function getSelectionHtml(selection: Selection): string {
   }
 
   return html;
+}
+
+export function blurOnEnter(e: KeyboardEvent) {
+  if (e.key !== "Enter") return;
+
+  if (e.target instanceof HTMLElement) e.target.blur();
 }

@@ -1,16 +1,9 @@
-import { styled } from "@linaria/react";
 import { useMemo } from "react";
 
 import { calculateIsCakeDay, calculateNewAccount } from "#/helpers/date";
 import { useAppSelector } from "#/store";
 
-const NewAccountBadge = styled.span`
-  color: #d9a900;
-
-  .ion-palette-dark & {
-    color: gold;
-  }
-`;
+import styles from "./AppBadge.module.css";
 
 interface AgeBadgeProps {
   published: string;
@@ -42,10 +35,10 @@ export default function AgeBadge({ published }: AgeBadgeProps) {
       if (!highlightNewAccount) return;
 
       return (
-        <NewAccountBadge>
+        <span className={styles.newAccountBadge}>
           {" "}
           👶 {formatDaysOld(ageBadgeData.days)}
-        </NewAccountBadge>
+        </span>
       );
     }
   }

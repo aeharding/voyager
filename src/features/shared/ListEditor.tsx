@@ -1,10 +1,11 @@
 import { IonButton, IonIcon } from "@ionic/react";
-import { styled } from "@linaria/react";
 import { noop } from "es-toolkit";
 import { checkmark, ellipsisVertical, removeCircle } from "ionicons/icons";
 import React, { createContext, useContext, useRef, useState } from "react";
 
 import { isIosTheme } from "#/helpers/device";
+
+import styles from "./ListEditor.module.css";
 
 export function ListEditorProvider({ children }: React.PropsWithChildren) {
   const [editing, setEditing] = useState(false);
@@ -56,20 +57,6 @@ export function ListEditButton() {
   );
 }
 
-const RemoveIcon = styled(IonIcon)`
-  position: relative;
-  font-size: 1.6rem;
-
-  &:after {
-    z-index: -1;
-    content: "";
-    position: absolute;
-    inset: 5px;
-    border-radius: 50%;
-    background: white;
-  }
-`;
-
 export function RemoveItemButton() {
   const { editing } = useContext(ListEditorContext);
   const ref = useRef<HTMLIonButtonElement>(null);
@@ -90,7 +77,12 @@ export function RemoveItemButton() {
         slider.open("end");
       }}
     >
-      <RemoveIcon icon={removeCircle} color="danger" slot="icon-only" />
+      <IonIcon
+        icon={removeCircle}
+        color="danger"
+        slot="icon-only"
+        className={styles.removeIcon}
+      />
     </IonButton>
   );
 }

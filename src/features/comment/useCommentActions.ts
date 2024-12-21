@@ -20,8 +20,8 @@ import {
 } from "lemmy-js-client";
 import { useCallback, useContext, useMemo } from "react";
 
-import { PageContext } from "#/features/auth/PageContext";
 import { userHandleSelector } from "#/features/auth/authSelectors";
+import { PageContext } from "#/features/auth/PageContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
 import {
   getCanModerate,
@@ -37,7 +37,13 @@ import {
 } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
-import { postLocked, saveError, saveSuccess } from "#/helpers/toastMessages";
+import {
+  commentDeleted,
+  commentDeleteFailed,
+  postLocked,
+  saveError,
+  saveSuccess,
+} from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import store, { useAppDispatch } from "#/store";
@@ -204,19 +210,12 @@ export default function useCommentActions({
                           try {
                             await dispatch(deleteComment(comment.id));
                           } catch (error) {
-                            presentToast({
-                              message:
-                                "Problem deleting comment. Please try again.",
-                              color: "danger",
-                            });
+                            presentToast(commentDeleteFailed);
 
                             throw error;
                           }
 
-                          presentToast({
-                            message: "Comment deleted!",
-                            color: "primary",
-                          });
+                          presentToast(commentDeleted);
                         })();
                       },
                     },

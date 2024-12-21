@@ -1,4 +1,4 @@
-import { Browser } from "@capacitor/browser";
+import { Reader } from "capacitor-reader";
 import { useEffect } from "react";
 import { useLocation } from "react-router";
 
@@ -15,8 +15,12 @@ export function notifyStatusTapThatBrowserWasOpened() {
   browserOpen = true;
 }
 
-Browser.addListener("browserFinished", () => {
+export function notifyStatusTapThatBrowserWasClosed() {
   browserOpen = false;
+}
+
+Reader.addListener("browserFinished", () => {
+  notifyStatusTapThatBrowserWasClosed();
 });
 
 // statusTap is a capacitor (native app), iOS-only event

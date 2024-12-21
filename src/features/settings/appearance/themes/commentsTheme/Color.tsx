@@ -1,8 +1,11 @@
-import { styled } from "@linaria/react";
+import styles from "./Color.module.css";
 
-export default styled.div<{ color: string }>`
-  width: 10px;
-  height: 10px;
-  border-radius: 5px;
-  background-color: ${({ color }) => color};
-`;
+interface ColorProps {
+  color: string;
+}
+
+export default function Color({ color }: ColorProps) {
+  return (
+    <div className={styles.container} style={{ backgroundColor: color }} />
+  );
+}

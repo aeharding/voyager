@@ -1,4 +1,3 @@
-import { styled } from "@linaria/react";
 import { Person } from "lemmy-js-client";
 import React from "react";
 
@@ -7,18 +6,7 @@ import { getRemoteHandle } from "#/helpers/lemmy";
 import type { UserTag } from "#/services/db";
 import { useAppSelector } from "#/store";
 
-const TagContainer = styled.span`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  background: var(--bg, var(--lightroom-bg));
-
-  border-radius: 4px;
-  padding: 0 4px;
-
-  min-width: 0; // when contained in flexbox
-`;
+import styles from "./UserTag.module.css";
 
 type UserTagProps =
   | SyncUserTagProps
@@ -81,18 +69,18 @@ function SyncUserTag({ tag }: SyncUserTagProps) {
   if (!tag.text) return;
 
   return (
-    <TagContainer
+    <span
+      className={styles.tagContainer}
       style={
         tag.color
           ? {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ["--bg" as any]: tag.color,
+              background: tag.color,
               color: getTextColorFor(tag.color),
             }
           : undefined
       }
     >
       {tag.text}
-    </TagContainer>
+    </span>
   );
 }

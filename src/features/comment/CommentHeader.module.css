@@ -1,0 +1,53 @@
+.header {
+  display: flex;
+  align-items: center;
+
+  font-size: 0.875em;
+
+  gap: 0.5em;
+
+  color: var(--ion-color-medium2);
+}
+
+.personLink {
+  &.personLink {
+    color: var(--ion-text-color);
+  }
+
+  min-width: 0;
+  overflow: hidden;
+}
+
+.commentVote {
+  /* Increase tap target */
+  padding: 6px 3px;
+  margin: -6px -3px;
+}
+
+.collapsedIcon {
+  font-size: 1.2em;
+}
+
+.amountCollapsed {
+  font-size: 0.875em;
+  padding: 2px 8px;
+  margin: -4px 0;
+  border-radius: 16px;
+  color: var(--ion-color-medium);
+  background: var(--lightroom-bg);
+}
+
+.deletedLabel {
+  font-style: italic;
+  color: var(--ion-color-medium);
+
+  min-width: 0;
+  overflow: hidden;
+}
+
+.spacer {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+}

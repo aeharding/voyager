@@ -1,0 +1,7 @@
+.button {
+  composes: plainButton from "#/features/shared/shared.module.css";
+
+  &.button {
+    font-size: 1.12em;
+  }
+}
