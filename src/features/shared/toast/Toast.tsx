@@ -11,6 +11,8 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
+import { cx } from "#/helpers/css";
+
 import styles from "./Toast.module.css";
 
 export interface ToastHandler {
@@ -29,6 +31,7 @@ interface OpenToastOptions {
   onClick?: (e: MouseEvent) => void;
   fullscreen?: boolean;
   color?: Color;
+  position?: "top" | "bottom";
 }
 
 export default function Toast({ ref, onClose }: ToastProps) {
@@ -40,6 +43,7 @@ export default function Toast({ ref, onClose }: ToastProps) {
   const { start, clear } = useTimeout(handleClose, options?.duration ?? 3_000);
 
   const onCloseEvent = useEffectEvent(onClose ?? noop);
+  const isBottom = options?.position === "bottom";
 
   useEffect(() => {
     if (open) {
@@ -59,7 +63,9 @@ export default function Toast({ ref, onClose }: ToastProps) {
 
     const yStart = typeof y.get() === "number" ? y.get() : 0;
 
-    const yEnd = -scope.current.clientHeight;
+    const yEnd = isBottom
+      ? scope.current.clientHeight
+      : -scope.current.clientHeight;
 
     await animate(scope.current, { y: [yStart, yEnd] }, { ease: "easeOut" });
     setOpen(false);
@@ -75,16 +81,24 @@ export default function Toast({ ref, onClose }: ToastProps) {
   const color = options?.color ?? "primary";
 
   return createPortal(
-    <div className={styles.container}>
+    <div
+      className={cx(
+        styles.container,
+        options?.fullscreen && styles.fullscreen,
+        isBottom && styles.bottom,
+      )}
+    >
       <motion.div
         ref={scope}
         className={styles.toast}
-        initial={{ y: "-100%" }}
+        initial={{ y: isBottom ? "100%" : "-100%" }}
         animate={{ y: "0%" }}
         style={{ y }}
         transition={{ ease: "easeInOut" }}
         onDragEnd={() => {
-          if (y.get() < -10) {
+          if (!isBottom && y.get() < -10) {
+            handleClose();
+          } else if (isBottom && y.get() > 10) {
             handleClose();
           } else {
             start();
@@ -93,7 +107,9 @@ export default function Toast({ ref, onClose }: ToastProps) {
         onDragStart={clear}
         drag="y"
         dragConstraints={{ top: 0, bottom: 0 }}
-        dragElastic={{ top: 0.5, bottom: 0 }}
+        dragElastic={
+          isBottom ? { top: 0, bottom: 0.5 } : { top: 0.5, bottom: 0 }
+        }
       >
         <div
           className={styles.toastContent}
@@ -109,6 +125,8 @@ export default function Toast({ ref, onClose }: ToastProps) {
         </div>
       </motion.div>
     </div>,
-    document.querySelector("ion-router-outlet")!,
+    options?.fullscreen
+      ? document.body
+      : document.querySelector("ion-router-outlet")!,
   );
 }

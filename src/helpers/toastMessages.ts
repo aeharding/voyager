@@ -7,14 +7,12 @@ const shortFailDefaults: Omit<AppToastOptions, "message"> = {
   color: "danger",
   position: "top",
   icon: close,
-  centerText: true,
 };
 
 const shortSuccessDefaults: Omit<AppToastOptions, "message"> = {
   color: "primary",
   position: "top",
   icon: checkmark,
-  centerText: true,
 };
 
 const shortModSuccessDefaults: Omit<AppToastOptions, "message"> = {
@@ -32,7 +30,6 @@ export const saveSuccess: AppToastOptions = {
   color: "primary",
   position: "top",
   icon: checkmark,
-  centerText: true,
 };
 
 export const saveError: AppToastOptions = {

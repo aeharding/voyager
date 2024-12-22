@@ -1,29 +1,21 @@
 import { NotificationType } from "@capacitor/haptics";
 import { Color } from "@ionic/core";
 import { IonIcon } from "@ionic/react";
-import { styled } from "@linaria/react";
-import { MouseEvent, createContext, useContext, useRef } from "react";
+import { createContext, MouseEvent, useContext, useRef } from "react";
 
 import Toast, { ToastHandler } from "#/features/shared/toast/Toast";
 
 import { isNative } from "./device";
 import useHapticFeedback from "./useHapticFeedback";
 
-const Icon = styled(IonIcon)`
-  font-size: 22px;
-`;
-
-const Message = styled.div`
-  font-weight: 500;
-`;
+import styles from "./useAppToast.module.css";
 
 export interface AppToastOptions {
   message: string;
   color?: Color;
-  position?: "top" | "bottom"; // todo
+  position?: "top" | "bottom";
   icon?: string;
-  centerText?: boolean; // todo
-  fullscreen?: boolean; // todo
+  fullscreen?: boolean;
   duration?: number;
   onClick?: (e: MouseEvent, dismiss: () => void) => void;
 }
@@ -63,8 +55,10 @@ export function AppToastProvider({ children }: React.PropsWithChildren) {
 
     const content = (
       <>
-        {options.icon && <Icon icon={options.icon} />}
-        <Message>{options.message}</Message>
+        {options.icon && (
+          <IonIcon icon={options.icon} className={styles.icon} />
+        )}
+        <div className={styles.message}>{options.message}</div>
       </>
     );
 
