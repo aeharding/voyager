@@ -1,12 +1,5 @@
 .container {
-  --top-offset: 44px;
-
-  html:global(.md) & {
-    --top-offset: 56px;
-  }
-
   position: absolute;
-  top: calc(var(--top-offset) + var(--ion-safe-area-top, 0px));
   left: 0;
   right: 0;
   width: 100%;
@@ -14,6 +7,25 @@
   overflow: hidden;
 
   pointer-events: none;
+
+  --top-offset: 44px;
+
+  html:global(.md) & {
+    --top-offset: 56px;
+    --bottom-offset: 56px;
+  }
+
+  &.fullscreen {
+    --top-offset: 0 !important;
+    top: 0;
+  }
+
+  top: calc(var(--top-offset) + var(--ion-safe-area-top, 0px));
+
+  &.bottom {
+    top: auto;
+    bottom: 0;
+  }
 }
 
 .toast {
@@ -24,12 +36,26 @@
   left: 0;
   right: 0;
   z-index: 200;
+
+  .bottom & {
+    top: initial;
+    bottom: 0;
+  }
+
+  .fullscreen & {
+    padding-top: var(--ion-safe-area-top, 0px);
+  }
+
+  .bottom.fullscreen & {
+    padding-top: 0;
+    padding-bottom: var(--ion-safe-area-bottom, 0px);
+  }
 }
 
 .toastContent {
-  height: 50px;
   border-radius: 16px;
   margin: 8px;
+  padding: 12px;
 
   display: flex;
   align-items: center;

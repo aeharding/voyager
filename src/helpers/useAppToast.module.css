@@ -1,0 +1,8 @@
+.icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.message {
+  font-weight: 500;
+}
