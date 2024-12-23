@@ -255,19 +255,6 @@ ion-fab.fab-vertical-top {
   overflow: hidden;
 }
 
-ion-toast {
-  font-weight: 600;
-  --height: 45px;
-}
-
-/* Center toast message and icon */
-ion-toast.center::part(container) {
-  display: inline-flex;
-  transform: translateX(-50%);
-  left: 50%;
-  position: relative;
-}
-
 /* Make header buttons closer together (room for mod button) */
 .sc-ion-buttons-ios-s ion-button {
   margin: 0;
