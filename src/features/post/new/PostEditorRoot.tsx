@@ -27,11 +27,12 @@ import {
   deletePendingImageUploads,
   uploadImage,
 } from "#/features/shared/markdown/editing/uploadImageSlice";
+import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { isAndroid } from "#/helpers/device";
-import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
+import { getRemoteHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
-  postCreated,
+  buildPostCreated,
   postEdited,
   problemFetchingTitle,
 } from "#/helpers/toastMessages";
@@ -265,20 +266,26 @@ export default function PostEditorRoot({
 
     dispatch(receivedPosts([postResponse.post_view]));
 
-    presentToast(existingPost ? postEdited : postCreated);
+    if (existingPost) presentToast(postEdited);
+    else
+      presentToast(
+        buildPostCreated((e, dismiss) => {
+          router.push(
+            buildGeneralBrowseLink(
+              buildPostLink(
+                postResponse.post_view.community,
+                postResponse.post_view.post,
+              ),
+            ),
+          );
+
+          dismiss();
+        }),
+      );
 
     setCanDismiss(true);
 
     dismiss();
-
-    if (!existingPost)
-      router.push(
-        buildGeneralBrowseLink(
-          `/c/${getHandle(community)}/comments/${
-            postResponse.post_view.post.id
-          }`,
-        ),
-      );
   }
 
   async function receivedImage(image: File) {

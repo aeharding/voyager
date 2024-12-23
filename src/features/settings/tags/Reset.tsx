@@ -25,7 +25,6 @@ export default function ResetTags() {
               presentToast({
                 message: "User tags reset",
                 color: "success",
-                centerText: true,
               });
             })();
           },
