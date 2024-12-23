@@ -26,7 +26,7 @@ def capacitor_pods
   pod 'CapacitorClearCache', :path => '../../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.2.0/node_modules/capacitor-clear-cache'
   pod 'CapacitorLaunchNative', :path => '../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-launch-native'
   pod 'CapacitorPluginSafeArea', :path => '../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.2.0/node_modules/capacitor-plugin-safe-area'
-  pod 'CapacitorReader', :path => '../../node_modules/.pnpm/capacitor-reader@0.2.0_@capacitor+core@6.2.0/node_modules/capacitor-reader'
+  pod 'CapacitorReader', :path => '../../node_modules/.pnpm/capacitor-reader@0.3.0_@capacitor+core@6.2.0/node_modules/capacitor-reader'
   pod 'CapacitorStashMedia', :path => '../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media'
   pod 'CapacitorTips', :path => '../../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-tips'
 end

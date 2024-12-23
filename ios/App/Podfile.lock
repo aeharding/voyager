@@ -26,7 +26,7 @@ PODS:
     - Capacitor
   - CapacitorPluginSafeArea (3.0.3):
     - Capacitor
-  - CapacitorReader (0.2.0):
+  - CapacitorReader (0.3.0):
     - Capacitor
   - CapacitorShare (6.0.3):
     - Capacitor
@@ -58,7 +58,7 @@ DEPENDENCIES:
   - "CapacitorLaunchNative (from `../../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-launch-native`)"
   - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/network`)"
   - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.2.0/node_modules/capacitor-plugin-safe-area`)"
-  - "CapacitorReader (from `../../node_modules/.pnpm/capacitor-reader@0.2.0_@capacitor+core@6.2.0/node_modules/capacitor-reader`)"
+  - "CapacitorReader (from `../../node_modules/.pnpm/capacitor-reader@0.3.0_@capacitor+core@6.2.0/node_modules/capacitor-reader`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/.pnpm/@capacitor+splash-screen@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/splash-screen`)"
   - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media`)"
@@ -99,7 +99,7 @@ EXTERNAL SOURCES:
   CapacitorPluginSafeArea:
     :path: "../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.2.0/node_modules/capacitor-plugin-safe-area"
   CapacitorReader:
-    :path: "../../node_modules/.pnpm/capacitor-reader@0.2.0_@capacitor+core@6.2.0/node_modules/capacitor-reader"
+    :path: "../../node_modules/.pnpm/capacitor-reader@0.3.0_@capacitor+core@6.2.0/node_modules/capacitor-reader"
   CapacitorShare:
     :path: "../../node_modules/.pnpm/@capacitor+share@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/share"
   CapacitorSplashScreen:
@@ -126,7 +126,7 @@ SPEC CHECKSUMS:
   CapacitorLaunchNative: 6508ec892ad035d5556658c10cc3b55bfbb7929d
   CapacitorNetwork: da96b5fff8d05b67f4658503aabb22f65bda2c0f
   CapacitorPluginSafeArea: e1eca7f70974f0e270d96f70cd0a5f51523164b1
-  CapacitorReader: 03775fab36b94587953bafcaa7131ade10cbf391
+  CapacitorReader: 5f2c81961166ad9341424aeae0e25b4115fafeaa
   CapacitorShare: 7af6ca761ce62030e8e9fbd2eb82416f5ceced38
   CapacitorSplashScreen: 68893659d77b5f82d753b3a70475082845e3039c
   CapacitorStashMedia: 10aa96dc5f874c4c27642528a4c327c46792abf2
@@ -134,6 +134,6 @@ SPEC CHECKSUMS:
   CapacitorTips: 2087733aea06ec041b210085395ca934c8554907
   SDWebImage: f9258c58221ed854cfa0e2b80ee4033710b1c6d3
 
-PODFILE CHECKSUM: 810e83271706ad233eac03b47e2284efbdcfc205
+PODFILE CHECKSUM: f8c9e2e5019140f5c73954cbfccfad7f8537322d
 
 COCOAPODS: 1.16.2
