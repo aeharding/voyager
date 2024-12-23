@@ -41,8 +41,7 @@ export default function DMActionsImpl({
       }}
       collapse={noop}
       collapseRootComment={noop}
-      // eslint-disable-next-line no-empty-function -- https://github.com/toss/es-toolkit/issues/636
-      save={async () => {}}
+      save={asyncNoop}
       isHidden={false}
       shareTrigger={noop}
       isSaved={false}
