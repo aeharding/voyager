@@ -12,7 +12,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/ionic-team/capacitor-swift-pm.git", exact: "6.2.0"),
-        .package(name: "CapacitorCommunityAppIcon", path: "../../../../app-icon"),
+        .package(name: "CapacitorCommunityAppIcon", path: "../../../node_modules/.pnpm/@capacitor-community+app-icon@https+++codeload.github.com+aeharding+app-icon+tar.gz+648b174d6_pgn7xugfns7qdg3hg5wemsat2a/node_modules/@capacitor-community/app-icon"),
         .package(name: "CapacitorApp", path: "../../../node_modules/.pnpm/@capacitor+app@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/app"),
         .package(name: "CapacitorFilesystem", path: "../../../node_modules/.pnpm/@capacitor+filesystem@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/filesystem"),
         .package(name: "CapacitorHaptics", path: "../../../node_modules/.pnpm/@capacitor+haptics@6.0.2_patch_hash=isktf3ewuigcwl72katxy46idi_@capacitor+core@6.2.0/node_modules/@capacitor/haptics"),
@@ -26,8 +26,8 @@ let package = Package(
         .package(name: "CapacitorBiometricLock", path: "../../../node_modules/.pnpm/capacitor-biometric-lock@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-biometric-lock"),
         .package(name: "CapacitorClearCache", path: "../../../node_modules/.pnpm/capacitor-clear-cache@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-clear-cache"),
         .package(name: "CapacitorLaunchNative", path: "../../../node_modules/.pnpm/capacitor-launch-native@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-launch-native"),
-        .package(name: "CapacitorPluginSafeArea", path: "../../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.2.0/node_modules/capacitor-plugin-safe-area"),
-        .package(name: "CapacitorReader", path: "../../../node_modules/.pnpm/capacitor-reader@0.3.0_@capacitor+core@6.2.0/node_modules/capacitor-reader"),
+        .package(name: "CapacitorPluginSafeArea", path: "../../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.4_@capacitor+core@6.2.0/node_modules/capacitor-plugin-safe-area"),
+        .package(name: "CapacitorReader", path: "../../../node_modules/.pnpm/capacitor-reader@0.3.1_@capacitor+core@6.2.0/node_modules/capacitor-reader"),
         .package(name: "CapacitorStashMedia", path: "../../../node_modules/.pnpm/capacitor-stash-media@2.1.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media"),
         .package(name: "CapacitorTips", path: "../../../node_modules/.pnpm/capacitor-tips@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-tips")
     ],
