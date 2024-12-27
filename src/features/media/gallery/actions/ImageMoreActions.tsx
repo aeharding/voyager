@@ -1,4 +1,5 @@
 import { isNative } from "#/helpers/device";
+import { useAppSelector } from "#/store";
 
 import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
@@ -15,6 +16,10 @@ export default function ImageMoreActions({
   imgSrc,
   alt,
 }: ImageMoreActionsProps) {
+  const hideAltText = useAppSelector(
+    (state) => state.settings.general.media.hideAltText,
+  );
+
   return (
     <>
       {isNative() && (
@@ -22,10 +27,10 @@ export default function ImageMoreActions({
           <GalleryActions imgSrc={imgSrc} />
         </div>
       )}
-      {alt && (
+      {alt && !hideAltText && (
         <BottomContainer>
           <AltText alt={alt} />
-          <BottomContainerActions withBg={!!alt} />
+          <BottomContainerActions withBg />
         </BottomContainer>
       )}
     </>

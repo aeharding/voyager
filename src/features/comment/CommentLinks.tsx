@@ -8,6 +8,7 @@ import { SKIP, visit } from "unist-util-visit";
 
 import CommentLink from "#/features/post/link/CommentLink";
 import customRemarkGfm from "#/features/shared/markdown/customRemarkGfm";
+import { parseUrl } from "#/helpers/url";
 import { buildBaseLemmyUrl } from "#/services/lemmy";
 import { useAppSelector } from "#/store";
 
@@ -54,7 +55,7 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
         links.push({
           type: node.type,
           // normalize relative links
-          url: new URL(node.url, connectedInstanceUrl).href,
+          url: parseUrl(node.url, connectedInstanceUrl)?.href ?? node.url,
           text:
             "children" in node ? (node.children[0] as Text)?.value : undefined,
         });
