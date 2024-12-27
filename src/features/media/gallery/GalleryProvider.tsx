@@ -1,5 +1,5 @@
 import { StatusBar } from "@capacitor/status-bar";
-import { compact, noop } from "es-toolkit";
+import { asyncNoop, compact, noop } from "es-toolkit";
 import { PostView } from "lemmy-js-client";
 import type { PreparedPhotoSwipeOptions, ZoomLevelOption } from "photoswipe";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
@@ -38,8 +38,7 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
-  // eslint-disable-next-line no-empty-function
-  open: async () => {},
+  open: asyncNoop,
   close: noop,
 });
 
