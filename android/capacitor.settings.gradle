@@ -3,7 +3,7 @@ include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/.pnpm/@capacitor+android@6.2.0_patch_hash=a7fuehdtpweg2aifrflzmu363i_@capacitor+core@6.2.0/node_modules/@capacitor/android/capacitor')
 
 include ':capacitor-community-app-icon'
-project(':capacitor-community-app-icon').projectDir = new File('../../app-icon/android')
+project(':capacitor-community-app-icon').projectDir = new File('../node_modules/.pnpm/@capacitor-community+app-icon@5.0.0_@capacitor+core@6.2.0/node_modules/@capacitor-community/app-icon/android')
 
 include ':capacitor-app'
 project(':capacitor-app').projectDir = new File('../node_modules/.pnpm/@capacitor+app@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/app/android')
@@ -30,19 +30,19 @@ include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/status-bar/android')
 
 include ':capacitor-android-nav-mode'
-project(':capacitor-android-nav-mode').projectDir = new File('../node_modules/.pnpm/capacitor-android-nav-mode@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-android-nav-mode/android')
+project(':capacitor-android-nav-mode').projectDir = new File('../node_modules/.pnpm/capacitor-android-nav-mode@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-android-nav-mode/android')
 
 include ':capacitor-application-context'
-project(':capacitor-application-context').projectDir = new File('../node_modules/.pnpm/capacitor-application-context@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-application-context/android')
+project(':capacitor-application-context').projectDir = new File('../node_modules/.pnpm/capacitor-application-context@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-application-context/android')
 
 include ':capacitor-biometric-lock'
-project(':capacitor-biometric-lock').projectDir = new File('../node_modules/.pnpm/capacitor-biometric-lock@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-biometric-lock/android')
+project(':capacitor-biometric-lock').projectDir = new File('../node_modules/.pnpm/capacitor-biometric-lock@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-biometric-lock/android')
 
 include ':capacitor-clear-cache'
-project(':capacitor-clear-cache').projectDir = new File('../node_modules/.pnpm/capacitor-clear-cache@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-clear-cache/android')
+project(':capacitor-clear-cache').projectDir = new File('../node_modules/.pnpm/capacitor-clear-cache@1.0.1_@capacitor+core@6.2.0/node_modules/capacitor-clear-cache/android')
 
 include ':capacitor-launch-native'
-project(':capacitor-launch-native').projectDir = new File('../node_modules/.pnpm/capacitor-launch-native@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-launch-native/android')
+project(':capacitor-launch-native').projectDir = new File('../node_modules/.pnpm/capacitor-launch-native@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-launch-native/android')
 
 include ':capacitor-plugin-safe-area'
 project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.3_@capacitor+core@6.2.0/node_modules/capacitor-plugin-safe-area/android')
@@ -51,7 +51,7 @@ include ':capacitor-reader'
 project(':capacitor-reader').projectDir = new File('../node_modules/.pnpm/capacitor-reader@0.3.0_@capacitor+core@6.2.0/node_modules/capacitor-reader/android')
 
 include ':capacitor-stash-media'
-project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@2.1.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media/android')
+project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@2.0.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media/android')
 
 include ':capacitor-tips'
-project(':capacitor-tips').projectDir = new File('../node_modules/.pnpm/capacitor-tips@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-tips/android')
+project(':capacitor-tips').projectDir = new File('../node_modules/.pnpm/capacitor-tips@1.0.0_@capacitor+core@6.2.0/node_modules/capacitor-tips/android')
