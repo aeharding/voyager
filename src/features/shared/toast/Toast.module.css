@@ -29,6 +29,8 @@
 }
 
 .toast {
+  composes: maxWidth from "#/features/shared/shared.module.css";
+
   pointer-events: auto;
 
   position: absolute;
