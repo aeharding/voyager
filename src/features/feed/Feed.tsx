@@ -138,12 +138,6 @@ export default function Feed<I>({
     [filterFn, items],
   );
 
-  const filteredItemsRef = useRef(filteredItems);
-
-  useEffect(() => {
-    filteredItemsRef.current = filteredItems;
-  }, [filteredItems]);
-
   function setAtEnd(atEnd: boolean) {
     _setAtEnd(atEnd);
     atEndRef.current = atEnd;
@@ -288,7 +282,7 @@ export default function Feed<I>({
     if (start > startOffset && start > startRangeRef.current) {
       // emit what was removed
       onRemovedFromTop?.(
-        filteredItemsRef.current.slice(
+        filteredItems.slice(
           startRangeRef.current - startOffset,
           start - startOffset,
         ),
