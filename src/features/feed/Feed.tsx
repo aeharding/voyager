@@ -125,7 +125,6 @@ export default function Feed<I>({
   const { setScrolledPastSearch } = useContext(FeedSearchContext);
 
   const startRangeRef = useRef(0);
-  const scrollingRef = useRef(false);
 
   const infiniteScrolling = useAppSelector(
     (state) => state.settings.general.posts.infiniteScrolling,
@@ -267,31 +266,31 @@ export default function Feed<I>({
   const onScroll = useRangeChange(
     virtuaHandle,
     function onRangeChange(start, end) {
-      if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
-
-      // if scrolled down
-      const startOffset = header ? 1 : 0; // header counts as item to VList
-      if (
-        scrollingRef.current &&
-        start > startOffset &&
-        start > startRangeRef.current
-      ) {
-        // emit what was removed
-        onRemovedFromTop?.(
-          filteredItems.slice(
-            startRangeRef.current - startOffset,
-            start - startOffset,
-          ),
-        );
-      }
-
-      startRangeRef.current = start;
+      updateReadPosts(start, end);
 
       if (end + 10 > filteredItems.length && !loadFailed && infiniteScrolling) {
         fetchMore();
       }
     },
   );
+
+  function updateReadPosts(start: number, end: number) {
+    if (start < 0 || end < 0 || (!start && !end)) return; // no items rendered
+
+    // if scrolled down
+    const startOffset = header ? 1 : 0; // header counts as item to VList
+    if (start > startOffset && start > startRangeRef.current) {
+      // emit what was removed
+      onRemovedFromTop?.(
+        filteredItems.slice(
+          startRangeRef.current - startOffset,
+          start - startOffset,
+        ),
+      );
+    }
+
+    startRangeRef.current = start;
+  }
 
   const fetchMoreEvent = useEffectEvent(fetchMore);
 
@@ -361,13 +360,9 @@ export default function Feed<I>({
           }
           ref={virtuaHandle}
           style={{ height: "100%" }}
-          onScrollEnd={() => {
-            scrollingRef.current = false;
-          }}
           onScroll={(offset) => {
             onScroll();
 
-            scrollingRef.current = true;
             setIsListAtTop(offset < 10);
             setScrolledPastSearch(offset > 40);
           }}
