@@ -360,11 +360,6 @@ export default function Feed<I>({
           }
           ref={virtuaHandle}
           style={{ height: "100%" }}
-          onScrollEnd={() => {
-            const virtua = virtuaHandle.current;
-            if (!virtua) return;
-            updateReadPosts(virtua.findStartIndex(), virtua.findEndIndex());
-          }}
           onScroll={(offset) => {
             onScroll();
 
