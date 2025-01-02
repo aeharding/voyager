@@ -1,19 +1,18 @@
 import { checkmark, close } from "ionicons/icons";
 
+import { DEFAULT_TOAST_DURATION } from "./toast";
 import { AppToastOptions } from "./useAppToast";
 
 const shortFailDefaults: Omit<AppToastOptions, "message"> = {
   color: "danger",
   position: "top",
   icon: close,
-  centerText: true,
 };
 
 const shortSuccessDefaults: Omit<AppToastOptions, "message"> = {
   color: "primary",
   position: "top",
   icon: checkmark,
-  centerText: true,
 };
 
 const shortModSuccessDefaults: Omit<AppToastOptions, "message"> = {
@@ -31,7 +30,6 @@ export const saveSuccess: AppToastOptions = {
   color: "primary",
   position: "top",
   icon: checkmark,
-  centerText: true,
 };
 
 export const saveError: AppToastOptions = {
@@ -211,10 +209,16 @@ export const commentEdited: AppToastOptions = {
   message: "Comment edited!",
 };
 
-export const postCreated: AppToastOptions = {
-  ...shortSuccessDefaults,
-  message: "Post created!",
-};
+export function buildPostCreated(
+  onClick: AppToastOptions["onClick"],
+): AppToastOptions {
+  return {
+    ...shortSuccessDefaults,
+    onClick,
+    duration: DEFAULT_TOAST_DURATION * 1.5,
+    message: "Posted! Tap to view.",
+  };
+}
 
 export const postEdited: AppToastOptions = {
   ...shortSuccessDefaults,

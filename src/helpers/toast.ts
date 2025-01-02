@@ -1,9 +1,11 @@
 import { ToastOptions } from "@ionic/core";
 
+export const DEFAULT_TOAST_DURATION = 3_000;
+
 export function baseToastOptions(
   position: "top" | "bottom",
   presentAlongsideAppBars = true,
-  duration = 3000,
+  duration = DEFAULT_TOAST_DURATION,
 ): ToastOptions {
   switch (position) {
     case "bottom":
