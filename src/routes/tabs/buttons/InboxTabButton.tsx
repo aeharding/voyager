@@ -9,10 +9,7 @@ import SharedTabButton, { TabButtonProps } from "./shared";
 
 function InboxTabButton(props: TabButtonProps) {
   const totalUnread = useAppSelector(totalUnreadSelector);
-  const formattedTotalUnread =
-    totalUnread >= 10_000
-      ? formatNumber(totalUnread)
-      : totalUnread.toLocaleString();
+  const formattedTotalUnread = formatNumber(totalUnread, 10_000);
   const length = getBadgeLength(formattedTotalUnread);
 
   return (
