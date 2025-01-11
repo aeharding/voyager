@@ -28,7 +28,7 @@ export function buildUserLinkFromHandle(handle: string): string {
 }
 
 // React router will unwrap encoding once, but we need it to stay encoded
-// Search examples: "%" "?,=,/,&,:"
+// Search examples: "%" "?,=,/,&,:" "%20"
 function escapeSearchQuery(search: string): string {
   return encodeURIComponent(encodeURIComponent(search));
 }
