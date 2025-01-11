@@ -24,7 +24,9 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
 
   const searchURI = encodeURIComponent(search);
 
-  const sanitizedUser = search.replace(/|\/|#|\?|\\/g, "").replace(/^@/, "");
+  const sanitizedUserURI = encodeURIComponent(
+    search.replace(/|\/|#|\?|\\/g, "").replace(/^@/, ""),
+  );
 
   const type = useMemo(
     () => determineObjectTypeFromUrl(search),
@@ -62,7 +64,7 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
             Communities with “{search}”
           </IonLabel>
         </IonItem>
-        <IonItem routerLink={buildGeneralBrowseLink(`/u/${sanitizedUser}`)}>
+        <IonItem routerLink={buildGeneralBrowseLink(`/u/${sanitizedUserURI}`)}>
           <IonIcon icon={personOutline} color="primary" slot="start" />
           <IonLabel className="ion-text-nowrap">Go to User “{search}”</IonLabel>
         </IonItem>

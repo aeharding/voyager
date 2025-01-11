@@ -31,7 +31,7 @@ export default function SearchFeedResultsPage({
   type,
 }: SearchPostsResultsProps) {
   const dispatch = useAppDispatch();
-  const { search: _encodedSearch, community } = useParams<{
+  const { search, community } = useParams<{
     search: string;
     community: string | undefined;
   }>();
@@ -40,8 +40,6 @@ export default function SearchFeedResultsPage({
   const [sort, setSort] = useFeedSort("posts", {
     internal: `${type}Search`,
   });
-
-  const search = decodeURIComponent(_encodedSearch);
 
   const fetchFn: FetchFn<PostCommentItem> = async (pageData, ...rest) => {
     const response = await client.search(
