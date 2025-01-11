@@ -20,5 +20,27 @@ export function buildCommentLink(
 }
 
 export function buildUserLink(user: Person): string {
-  return `/u/${getHandle(user)}`;
+  return buildUserLinkFromHandle(getHandle(user));
+}
+
+export function buildUserLinkFromHandle(handle: string): string {
+  return `/u/${handle}`;
+}
+
+// React router will unwrap encoding once, but we need it to stay encoded
+// Search examples: "%" "?,=,/,&,:" "%20"
+function escapeSearchQuery(search: string): string {
+  return encodeURIComponent(encodeURIComponent(search));
+}
+
+export function buildSearchPostsLink(search: string): string {
+  return `/search/posts/${escapeSearchQuery(search)}`;
+}
+
+export function buildSearchCommentsLink(search: string): string {
+  return `/search/comments/${escapeSearchQuery(search)}`;
+}
+
+export function buildSearchCommunitiesLink(search: string): string {
+  return `/search/communities/${escapeSearchQuery(search)}`;
 }

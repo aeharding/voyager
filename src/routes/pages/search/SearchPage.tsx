@@ -7,6 +7,7 @@ import SearchOptions from "#/features/search/SearchOptions";
 import AppContent from "#/features/shared/AppContent";
 import AppHeader from "#/features/shared/AppHeader";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
+import { buildSearchPostsLink } from "#/helpers/appLinkBuilder";
 import { findCurrentPage } from "#/helpers/ionic";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 
@@ -49,7 +50,7 @@ export default function SearchPage() {
 
               const el = await searchBarRef.current?.getInputElement();
               el?.blur();
-              router.push(`/search/posts/${encodeURIComponent(search)}`);
+              router.push(buildSearchPostsLink(search));
             }}
           >
             <IonSearchbar
