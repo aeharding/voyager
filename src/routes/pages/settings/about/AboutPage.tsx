@@ -57,7 +57,6 @@ export default function AboutPage() {
     presentToast({
       message: messages.current[messageIndex.current]!,
       color: "success",
-      centerText: true,
     });
     messageIndex.current = (messageIndex.current + 1) % messages.current.length;
   }

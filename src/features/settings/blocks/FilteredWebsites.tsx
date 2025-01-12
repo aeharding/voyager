@@ -50,7 +50,6 @@ export default function FilteredWebsites() {
               presentToast({
                 message: "Invalid website",
                 color: "danger",
-                centerText: true,
                 icon: close,
               });
               return false;
