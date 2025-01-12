@@ -51,14 +51,23 @@ export default function CommentLinks({ markdown }: CommentLinksProps) {
       // don't show links within spoilers
       if (node.type === "details") return SKIP;
 
-      if (node.type === "link" || (!showCommentImages && node.type === "image"))
-        links.push({
-          type: node.type,
-          // normalize relative links
-          url: parseUrl(node.url, connectedInstanceUrl)?.href ?? node.url,
-          text:
-            "children" in node ? (node.children[0] as Text)?.value : undefined,
-        });
+      if (
+        node.type === "link" ||
+        (!showCommentImages && node.type === "image")
+      ) {
+        const url = parseUrl(node.url, connectedInstanceUrl)?.href;
+
+        if (url)
+          links.push({
+            type: node.type,
+            // normalize relative links
+            url,
+            text:
+              "children" in node
+                ? (node.children[0] as Text)?.value
+                : undefined,
+          });
+      }
     });
 
     // Dedupe by url
