@@ -30,6 +30,9 @@
 .title {
   font-size: 0.9375em;
 
+  /* Prevent zalgo */
+  overflow: hidden;
+
   .read & {
     color: var(--read-color);
   }
