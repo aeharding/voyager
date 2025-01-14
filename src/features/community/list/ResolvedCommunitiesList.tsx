@@ -216,7 +216,9 @@ function ResolvedCommunitiesList({
             updateActiveIndex();
           }}
           as={IonList as CustomContainerComponent}
-          keepMounted={activeIndex >= 0 ? [activeIndex] : []}
+          keepMounted={
+            activeIndex >= 0 && activeIndex < items.length ? [activeIndex] : []
+          }
           item={StickyItem}
         >
           {items.map((item, index) => (
