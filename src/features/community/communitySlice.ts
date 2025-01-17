@@ -30,8 +30,9 @@ export const communitySlice = createSlice({
   initialState,
   reducers: {
     receivedCommunity: (state, action: PayloadAction<CommunityView>) => {
-      state.communityByHandle[getHandle(action.payload.community)] =
-        action.payload;
+      state.communityByHandle[
+        getHandle(action.payload.community).toLowerCase()
+      ] = action.payload;
     },
     recievedTrendingCommunities: (
       state,
@@ -49,8 +50,9 @@ export const communitySlice = createSlice({
     ) => {
       const handle = getHandle(action.payload.community_view.community);
 
-      state.communityByHandle[handle] = action.payload.community_view;
-      state.modsByHandle[handle] = action.payload.moderators;
+      state.communityByHandle[handle.toLowerCase()] =
+        action.payload.community_view;
+      state.modsByHandle[handle.toLowerCase()] = action.payload.moderators;
     },
   },
 });

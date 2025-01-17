@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 export default function useFetchCommunity(communityHandle: string) {
   const dispatch = useAppDispatch();
   const community = useAppSelector(
-    (state) => state.community.communityByHandle[communityHandle],
+    (state) => state.community.communityByHandle[communityHandle.toLowerCase()],
   );
 
   useEffect(() => {
