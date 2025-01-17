@@ -80,7 +80,8 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
   function filterSubscribedFn(item: PostCommentItem) {
     if (item.post.featured_community || item.post.featured_local) return true;
 
-    const potentialCommunity = communityByHandle[getHandle(item.community)];
+    const potentialCommunity =
+      communityByHandle[getHandle(item.community).toLowerCase()];
     if (potentialCommunity)
       return potentialCommunity.subscribed === "NotSubscribed";
 

@@ -35,7 +35,7 @@ const CommunitySidebarPageContent = memo(function CommunitySidebarPageContent({
   const dispatch = useAppDispatch();
 
   const communityView = useAppSelector(
-    (state) => state.community.communityByHandle[community],
+    (state) => state.community.communityByHandle[community.toLowerCase()],
   );
   const mods = useAppSelector(
     (state) => state.community.modsByHandle[community],
