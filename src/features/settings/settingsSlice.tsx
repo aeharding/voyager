@@ -136,6 +136,7 @@ export interface SettingsState {
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
       showHiddenInCommunities: boolean;
+      neverShowReadPosts: boolean;
       autoHideRead: boolean;
       disableAutoHideInCommunities: boolean;
       infiniteScrolling: boolean;
@@ -249,6 +250,7 @@ const baseState: SettingsState = {
       disableMarkingRead: false,
       infiniteScrolling: true,
       markReadOnScroll: false,
+      neverShowReadPosts: false,
       rememberCommunitySort: false,
       showHiddenInCommunities: false,
       showHideReadButton: false,
@@ -428,6 +430,11 @@ export const settingsSlice = createSlice({
       state.general.posts.markReadOnScroll = action.payload;
 
       db.setSetting("mark_read_on_scroll", action.payload);
+    },
+    setNeverShowReadPosts(state, action: PayloadAction<boolean>) {
+      state.general.posts.neverShowReadPosts = action.payload;
+
+      db.setSetting("never_show_read_posts", action.payload);
     },
     setNoSubscribedInFeed(state, action: PayloadAction<boolean>) {
       state.general.noSubscribedInFeed = action.payload;
@@ -792,6 +799,7 @@ export const {
   setLargeShowVotingButtons,
   setLinkHandler,
   setMarkPostsReadOnScroll,
+  setNeverShowReadPosts,
   setNoSubscribedInFeed,
   setNsfwBlur,
   setPostAppearance,
@@ -908,6 +916,7 @@ function hydrateStateWithGlobalSettings(
         disableMarkingRead: settings.disable_marking_posts_read,
         infiniteScrolling: settings.infinite_scrolling,
         markReadOnScroll: settings.mark_read_on_scroll,
+        neverShowReadPosts: settings.never_show_read_posts,
         rememberCommunitySort: settings.remember_community_post_sort,
         showHiddenInCommunities: settings.show_hidden_in_communities,
         showHideReadButton: settings.show_hide_read_button,

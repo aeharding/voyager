@@ -7,6 +7,7 @@ import AutoHideRead from "./autoHide/AutoHideRead";
 import DisableInCommunities from "./autoHide/DisableInCommunities";
 import DisableMarkingRead from "./DisableMarkingRead";
 import MarkReadOnScroll from "./MarkReadOnScroll";
+import NeverShowReadPosts from "./NeverShowReadPosts";
 import ShowHiddenInCommunities from "./ShowHiddenInCommunities";
 import ShowHideReadButton from "./ShowHideReadButton";
 
@@ -24,6 +25,7 @@ export default function HidingSettings() {
             <MarkReadOnScroll />
             <ShowHideReadButton />
             <ShowHiddenInCommunities />
+            <NeverShowReadPosts />
           </>
         )}
       </IonList>
