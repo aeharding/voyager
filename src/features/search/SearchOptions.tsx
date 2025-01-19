@@ -28,7 +28,9 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
   const { determineObjectTypeFromUrl, redirectToLemmyObjectIfNeeded } =
     useLemmyUrlHandler();
 
-  const sanitizedUserURI = search.replace(/|\/|#|\?|\\/g, "").replace(/^@/, "");
+  const sanitizedUserURI = search
+    .replace(/\/|#|\?|\\|%/g, "")
+    .replace(/^@/, "");
 
   const type = useMemo(
     () => determineObjectTypeFromUrl(search),
@@ -69,7 +71,7 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
 
         <IonItem
           routerLink={buildGeneralBrowseLink(
-            buildUserLinkFromHandle(encodeURIComponent(sanitizedUserURI)),
+            buildUserLinkFromHandle(sanitizedUserURI),
           )}
         >
           <IonIcon icon={personOutline} color="primary" slot="start" />
