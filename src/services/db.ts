@@ -353,6 +353,7 @@ export interface GlobalSettingValueTypes {
   large_show_voting_buttons: boolean;
   link_handler: LinkHandlerType;
   mark_read_on_scroll: boolean;
+  never_show_read_posts: boolean;
   no_subscribed_in_feed: boolean;
   post_appearance_type: PostAppearanceType;
   prefer_native_apps: boolean;
@@ -457,6 +458,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "upvote_on_save",
   "user_instance_url_display",
   "vote_display_mode",
+  "never_show_read_posts",
   "votes_theme",
   "hide_alt_text",
   "show_controls_on_open",
