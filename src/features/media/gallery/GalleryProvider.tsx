@@ -6,6 +6,7 @@ import PhotoSwipeLightbox from "photoswipe/lightbox";
 import React, {
   ComponentRef,
   createContext,
+  MouseEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -20,7 +21,7 @@ import Player from "#/features/media/video/Player";
 import { useVideoPortalNode } from "#/features/media/video/VideoPortalProvider";
 import { findBlurOverlayContainer } from "#/features/post/inFeed/large/media/BlurOverlayMessage";
 import { setPostRead } from "#/features/post/postSlice";
-import { getSafeArea, isAndroid, isNative } from "#/helpers/device";
+import { getSafeArea, isAndroid, isNative, ua } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import GalleryPostActions from "./actions/GalleryPostActions";
@@ -61,13 +62,13 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   );
   const thumbElRef = useRef<ThumbEl>();
   const [post, setPost] = useState<PostView>();
-  const [isVideo, setIsVideo] = useState(false);
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
 
   const [videoContainer, setVideoContainer] = useState<HTMLElement | null>(
     null,
   );
+  const isVideo = !!videoContainer;
 
   const [videoSrc, setVideoSrc] = useState("");
   const portalNode = useVideoPortalNode(videoSrc);
@@ -75,6 +76,14 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const [wasPlayingBeforeScrub, setWasPlayingBeforeScrub] = useState(false);
+
+  const currZoomLevelRef = useRef(0);
+
+  // ZoomLevel is not directly exported from photoswipe
+  const zoomLevelRef =
+    useRef<
+      Parameters<Extract<ZoomLevelOption, (...args: never) => unknown>>[0]
+    >();
 
   const handleScrubStart = useCallback(() => {
     if (videoRef.current) {
@@ -127,6 +136,44 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
 
     lightboxRef.current.pswp?.close();
   }, []);
+
+  function onMediaClick(e: MouseEvent) {
+    if (ua.getEngine().name === "WebKit") return; // Also fired for touches on iOS
+    if (
+      e.nativeEvent instanceof PointerEvent &&
+      e.nativeEvent.pointerType === "touch"
+    )
+      return; // Touches are properly forwarded from video reverse portal
+    if (!lightboxRef.current) return;
+
+    const clickActionEvent = new CustomEvent("click", { cancelable: true });
+    onImageClickAction(clickActionEvent);
+
+    if (clickActionEvent.defaultPrevented) return;
+
+    lightboxRef.current.pswp?.gestures.pswp.element?.classList.toggle(
+      "pswp--ui-visible",
+    );
+  }
+
+  function onImageClickAction(e: Event) {
+    if (!lightboxRef.current) return;
+
+    const instance = lightboxRef.current;
+
+    const showingControls =
+      instance.pswp?.gestures.pswp.element?.classList.contains(
+        "pswp--ui-visible",
+      );
+
+    if (
+      !showingControls &&
+      currZoomLevelRef.current === zoomLevelRef.current?.initial
+    ) {
+      instance.pswp?.gestures.pswp.element?.classList.add("pswp--ui-visible");
+      e.preventDefault();
+    }
+  }
 
   const open = useCallback(
     (
@@ -243,16 +290,14 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         return useContentPlaceholder;
       });
 
-      // use <picture> instead of <img>
+      // use <video> instead of <img> if it's a video
       instance.on("contentAppend", (e) => {
         const { content } = e;
-
-        setVideoSrc(src);
 
         if (thumbEl instanceof HTMLVideoElement) {
           e.preventDefault();
 
-          setIsVideo(true);
+          setVideoSrc(src);
           setVideoContainer(content.element!);
 
           content.slide!.container.appendChild(content.element!);
@@ -270,16 +315,12 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         }
       });
 
-      // ZoomLevel is not directly exported from photoswipe
-      let zoomLevel: Parameters<
-        Extract<ZoomLevelOption, (...args: never) => unknown>
-      >[0];
-
-      let currZoomLevel = 0;
+      currZoomLevelRef.current = 0;
 
       instance.on("zoomLevelsUpdate", (e) => {
-        zoomLevel = e.zoomLevels;
-        if (!currZoomLevel) currZoomLevel = e.zoomLevels.min;
+        zoomLevelRef.current = e.zoomLevels;
+        if (!currZoomLevelRef.current)
+          currZoomLevelRef.current = e.zoomLevels.min;
       });
 
       instance.on("openingAnimationStart", () => {
@@ -303,9 +344,12 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       instance.on("closingAnimationEnd", cleanupHideThumb);
 
       instance.on("tapAction", () => {
-        if (currZoomLevel !== zoomLevel.min) {
+        const zoomLevel = zoomLevelRef.current;
+        if (!zoomLevel) throw new Error("Zoom level not set");
+
+        if (currZoomLevelRef.current !== zoomLevel.min) {
           instance.pswp?.zoomTo(zoomLevel.min, undefined, 300);
-          currZoomLevel = zoomLevel.min;
+          currZoomLevelRef.current = zoomLevel.min;
 
           // queueMicrotask, otherwise will be overwritten by internal photoswipe ui toggle
           queueMicrotask(() => onZoomChange());
@@ -313,19 +357,22 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       });
 
       instance.on("zoomPanUpdate", (e) => {
-        currZoomLevel = e.slide.currZoomLevel;
+        currZoomLevelRef.current = e.slide.currZoomLevel;
 
         onZoomChange();
       });
 
       instance.on("beforeZoomTo", (e) => {
-        currZoomLevel = e.destZoomLevel;
+        currZoomLevelRef.current = e.destZoomLevel;
 
         onZoomChange();
       });
 
       function onZoomChange() {
-        if (currZoomLevel <= zoomLevel.min) {
+        const zoomLevel = zoomLevelRef.current;
+        if (!zoomLevel) throw new Error("Zoom level not set");
+
+        if (currZoomLevelRef.current <= zoomLevel.min) {
           instance.pswp?.gestures.pswp.element?.classList.add(
             "pswp--ui-visible",
           );
@@ -359,17 +406,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       });
 
       instance.on("imageClickAction", (e) => {
-        const showingControls =
-          instance.pswp?.gestures.pswp.element?.classList.contains(
-            "pswp--ui-visible",
-          );
-
-        if (!showingControls && currZoomLevel === zoomLevel.initial) {
-          instance.pswp?.gestures.pswp.element?.classList.add(
-            "pswp--ui-visible",
-          );
-          e.preventDefault();
-        }
+        onImageClickAction(e as unknown as Event);
       });
 
       function preventControlsIfNeeded() {
@@ -488,7 +525,6 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
 
       instance.on("close", () => {
         setVideoSrc("");
-        setIsVideo(false);
         setVideoContainer(null);
       });
 
@@ -553,6 +589,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
               progress={false}
               volume={false}
               allowShowPlayButton={false}
+              onClick={onMediaClick}
             />,
             videoContainer,
           )

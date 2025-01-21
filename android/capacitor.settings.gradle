@@ -51,7 +51,7 @@ include ':capacitor-reader'
 project(':capacitor-reader').projectDir = new File('../node_modules/.pnpm/capacitor-reader@0.3.1_@capacitor+core@6.2.0/node_modules/capacitor-reader/android')
 
 include ':capacitor-stash-media'
-project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@2.1.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media/android')
+project(':capacitor-stash-media').projectDir = new File('../../capacitor-stash-media/android')
 
 include ':capacitor-tips'
 project(':capacitor-tips').projectDir = new File('../node_modules/.pnpm/capacitor-tips@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-tips/android')

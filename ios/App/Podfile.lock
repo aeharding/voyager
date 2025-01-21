@@ -61,7 +61,7 @@ DEPENDENCIES:
   - "CapacitorReader (from `../../node_modules/.pnpm/capacitor-reader@0.3.1_@capacitor+core@6.2.0/node_modules/capacitor-reader`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/.pnpm/@capacitor+splash-screen@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/splash-screen`)"
-  - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@2.1.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media`)"
+  - CapacitorStashMedia (from `../../../capacitor-stash-media`)
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/status-bar`)"
   - "CapacitorTips (from `../../node_modules/.pnpm/capacitor-tips@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-tips`)"
 
@@ -105,7 +105,7 @@ EXTERNAL SOURCES:
   CapacitorSplashScreen:
     :path: "../../node_modules/.pnpm/@capacitor+splash-screen@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/splash-screen"
   CapacitorStashMedia:
-    :path: "../../node_modules/.pnpm/capacitor-stash-media@2.1.1_@capacitor+core@6.2.0/node_modules/capacitor-stash-media"
+    :path: "../../../capacitor-stash-media"
   CapacitorStatusBar:
     :path: "../../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/status-bar"
   CapacitorTips:
@@ -134,6 +134,6 @@ SPEC CHECKSUMS:
   CapacitorTips: 606fd67dfdbc7d74a3568da580b3ad019fd4501b
   SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
 
-PODFILE CHECKSUM: 058d6f9b1cb40aa045ace40485f53af22aff164a
+PODFILE CHECKSUM: 97abf345ba1b145339d2a194643e8b3c5474b62e
 
 COCOAPODS: 1.16.2

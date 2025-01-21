@@ -115,6 +115,7 @@ function VideoActions({ videoRef }: VideoActionsProps) {
 
   function handlePlay() {
     setIsPlaying(true);
+    setWasPlayingBeforeScrub(false);
   }
 
   function handlePause() {

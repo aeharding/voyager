@@ -26,6 +26,7 @@ import {
   photoSaved,
   saveError,
   saveSuccess,
+  videoSaved,
 } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
@@ -116,7 +117,7 @@ export default function GalleryActions({
                     throw error;
                   }
 
-                  presentToast(photoSaved);
+                  presentToast(videoSaved);
                 })();
               },
             }
