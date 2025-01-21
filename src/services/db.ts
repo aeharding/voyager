@@ -301,9 +301,8 @@ interface ProviderData<Name extends string, Data> {
 }
 
 export type RedgifsProvider = ProviderData<"redgifs", { token: string }>;
-export type LoopsProvider = ProviderData<"loops", {}>;
 
-type ProvidersData = RedgifsProvider | LoopsProvider;
+type ProvidersData = RedgifsProvider;
 
 export interface UserTag {
   handle: string;

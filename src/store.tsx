@@ -25,7 +25,6 @@ import inboxSlice from "./features/inbox/inboxSlice";
 import instancesSlice, {
   getInstances,
 } from "./features/instances/instancesSlice";
-import loopsSlice from "./features/media/external/loops/loopsSlice";
 import redgifsSlice from "./features/media/external/redgifs/redgifsSlice";
 import imageSlice from "./features/media/imageSlice";
 import migrationSlice from "./features/migrate/migrationSlice";
@@ -69,7 +68,6 @@ const store = configureStore({
     inbox: inboxSlice,
     instances: instancesSlice,
     join: joinSlice,
-    loops: loopsSlice,
     migration: migrationSlice,
     mod: modSlice,
     network: networkSlice,
