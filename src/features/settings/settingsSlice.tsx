@@ -146,6 +146,10 @@ export interface SettingsState {
     safari: {
       alwaysUseReaderMode: boolean;
     };
+    media: {
+      hideAltText: boolean;
+      showControlsOnOpen: boolean;
+    };
     enableHapticFeedback: boolean;
     linkHandler: LinkHandlerType;
     preferNativeApps: boolean;
@@ -233,6 +237,10 @@ const baseState: SettingsState = {
     defaultFeed: undefined,
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
+    media: {
+      hideAltText: false,
+      showControlsOnOpen: true,
+    },
     noSubscribedInFeed: false,
     posts: {
       autoHideRead: false,
@@ -387,6 +395,10 @@ export const settingsSlice = createSlice({
       state.appearance.font.fontSizeMultiplier = action.payload;
       set(LOCALSTORAGE_KEYS.FONT.FONT_SIZE_MULTIPLIER, action.payload);
     },
+    setHideAltText(state, action: PayloadAction<boolean>) {
+      state.general.media.hideAltText = action.payload;
+      db.setSetting("hide_alt_text", action.payload);
+    },
     setHighlightNewAccount(state, action: PayloadAction<boolean>) {
       state.general.comments.highlightNewAccount = action.payload;
       db.setSetting("highlight_new_account", action.payload);
@@ -471,6 +483,10 @@ export const settingsSlice = createSlice({
     setShowCommunityIcons(state, action: PayloadAction<boolean>) {
       state.appearance.posts.showCommunityIcons = action.payload;
       db.setSetting("show_community_icons", action.payload);
+    },
+    setShowControlsOnOpen(state, action: PayloadAction<boolean>) {
+      state.general.media.showControlsOnOpen = action.payload;
+      db.setSetting("show_controls_on_open", action.payload);
     },
     setShowHiddenInCommunities(state, action: PayloadAction<boolean>) {
       state.general.posts.showHiddenInCommunities = action.payload;
@@ -769,6 +785,7 @@ export const {
   setFilteredKeywords,
   setFilteredWebsites,
   setFontSizeMultiplier,
+  setHideAltText,
   setHighlightNewAccount,
   setInfiniteScrolling,
   setJumpButtonPosition,
@@ -788,6 +805,7 @@ export const {
   setShowCollapsedComment,
   setShowCommentImages,
   setShowCommunityIcons,
+  setShowControlsOnOpen,
   setShowHiddenInCommunities,
   setShowHideReadButton,
   setShowJumpButton,
@@ -878,6 +896,10 @@ function hydrateStateWithGlobalSettings(
       },
       enableHapticFeedback: settings.enable_haptic_feedback,
       linkHandler: settings.link_handler,
+      media: {
+        hideAltText: settings.hide_alt_text,
+        showControlsOnOpen: settings.show_controls_on_open,
+      },
       noSubscribedInFeed: settings.no_subscribed_in_feed,
       posts: {
         autoHideRead: settings.auto_hide_read,

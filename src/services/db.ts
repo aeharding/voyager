@@ -347,6 +347,7 @@ export interface GlobalSettingValueTypes {
   enable_haptic_feedback: boolean;
   filtered_keywords: string[];
   filtered_websites: string[];
+  hide_alt_text: boolean;
   highlight_new_account: boolean;
   infinite_scrolling: boolean;
   jump_button_position: JumpButtonPositionType;
@@ -364,6 +365,7 @@ export interface GlobalSettingValueTypes {
   show_collapsed_comment: boolean;
   show_comment_images: boolean;
   show_community_icons: boolean;
+  show_controls_on_open: boolean;
   show_hidden_in_communities: boolean;
   show_hide_read_button: boolean;
   show_jump_button: boolean;
@@ -457,6 +459,8 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "user_instance_url_display",
   "vote_display_mode",
   "votes_theme",
+  "hide_alt_text",
+  "show_controls_on_open",
 ]);
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

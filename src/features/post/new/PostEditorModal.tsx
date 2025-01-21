@@ -23,7 +23,7 @@ export default function PostEditorModal({
   const editOrCreateProps =
     typeof postOrCommunity === "string"
       ? {
-          community: communityByHandle[postOrCommunity],
+          community: communityByHandle[postOrCommunity.toLowerCase()],
         }
       : {
           existingPost: postOrCommunity,

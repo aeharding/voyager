@@ -1,5 +1,5 @@
 import { StatusBar } from "@capacitor/status-bar";
-import { compact, noop } from "es-toolkit";
+import { asyncNoop, compact, noop } from "es-toolkit";
 import { PostView } from "lemmy-js-client";
 import type { PreparedPhotoSwipeOptions, ZoomLevelOption } from "photoswipe";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
@@ -21,7 +21,7 @@ import { useVideoPortalNode } from "#/features/media/video/VideoPortalProvider";
 import { findBlurOverlayContainer } from "#/features/post/inFeed/large/media/BlurOverlayMessage";
 import { setPostRead } from "#/features/post/postSlice";
 import { getSafeArea, isAndroid, isNative } from "#/helpers/device";
-import { useAppDispatch } from "#/store";
+import { useAppDispatch, useAppSelector } from "#/store";
 
 import GalleryPostActions from "./actions/GalleryPostActions";
 import ImageMoreActions from "./actions/ImageMoreActions";
@@ -41,8 +41,7 @@ interface IGalleryContext {
 }
 
 export const GalleryContext = createContext<IGalleryContext>({
-  // eslint-disable-next-line no-empty-function
-  open: async () => {},
+  open: asyncNoop,
   close: noop,
 });
 
@@ -53,6 +52,10 @@ type ThumbEl = ComponentRef<typeof GalleryMedia>;
 
 export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const dispatch = useAppDispatch();
+  const showControlsOnOpen = useAppSelector(
+    (state) => state.settings.general.media.showControlsOnOpen,
+  );
+  const showControlsOnOpenRef = useRef(showControlsOnOpen);
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null,
   );
@@ -98,6 +101,10 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       videoElement.removeEventListener("scrubend", handleScrubEnd);
     };
   }, [handleScrubStart, handleScrubEnd]);
+
+  useEffect(() => {
+    showControlsOnOpenRef.current = showControlsOnOpen;
+  }, [showControlsOnOpen]);
 
   useEffect(() => {
     return () => {
@@ -338,14 +345,42 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
       });
 
       instance.on("openingAnimationEnd", () => {
+        preventControlsIfNeeded();
+
         if (!post) return;
 
         dispatch(setPostRead(post.post.id));
       });
 
       instance.on("openingAnimationStart", () => {
+        preventControlsIfNeeded();
+
         if (isNative()) StatusBar.hide();
       });
+
+      instance.on("imageClickAction", (e) => {
+        const showingControls =
+          instance.pswp?.gestures.pswp.element?.classList.contains(
+            "pswp--ui-visible",
+          );
+
+        if (!showingControls && currZoomLevel === zoomLevel.initial) {
+          instance.pswp?.gestures.pswp.element?.classList.add(
+            "pswp--ui-visible",
+          );
+          e.preventDefault();
+        }
+      });
+
+      function preventControlsIfNeeded() {
+        if (showControlsOnOpenRef.current) return;
+
+        queueMicrotask(() => {
+          instance.pswp?.gestures.pswp.element?.classList.remove(
+            "pswp--ui-visible",
+          );
+        });
+      }
 
       instance.on("close", () => {
         if (isNative()) StatusBar.show();
@@ -355,6 +390,8 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         instance.pswp?.ui?.registerElement({
           appendTo: "root",
           onInit: (el) => {
+            preventControlsIfNeeded();
+
             setActionContainer(el);
           },
         });

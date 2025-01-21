@@ -26,9 +26,9 @@ export function getPathname(url: string): string | undefined {
   }
 }
 
-export function parseUrl(url: string): URL | undefined {
+export function parseUrl(url: string, baseUrl?: string): URL | undefined {
   try {
-    return new URL(url);
+    return new URL(url, baseUrl);
   } catch {
     return;
   }

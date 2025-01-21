@@ -2,8 +2,11 @@
 import Route from "#/routes/common/Route";
 import ConversationPage from "#/routes/pages/inbox/ConversationPage";
 import PostDetail from "#/routes/pages/posts/PostPage";
+import ProfileFeedCommentsPage from "#/routes/pages/profile/ProfileFeedCommentsPage";
 import ProfileFeedHiddenPostsPage from "#/routes/pages/profile/ProfileFeedHiddenPostsPage";
-import ProfileFeedItemsPage from "#/routes/pages/profile/ProfileFeedItemsPage";
+import ProfileFeedPostsPage from "#/routes/pages/profile/ProfileFeedPostsPage";
+import ProfileFeedSavedPage from "#/routes/pages/profile/ProfileFeedSavedPage";
+import ProfileFeedVotedPage from "#/routes/pages/profile/ProfileFeedVotedPage";
 import UserPage from "#/routes/pages/profile/UserPage";
 import SearchFeedResultsPage from "#/routes/pages/search/results/SearchFeedResultsPage";
 import CommentsPage from "#/routes/pages/shared/CommentsPage";
@@ -74,22 +77,22 @@ export default [
     <UserPage />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/posts">
-    <ProfileFeedItemsPage type="Posts" />
+    <ProfileFeedPostsPage />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/comments">
-    <ProfileFeedItemsPage type="Comments" />
+    <ProfileFeedCommentsPage />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/saved">
-    <ProfileFeedItemsPage type="Saved" />
+    <ProfileFeedSavedPage />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/hidden">
     <ProfileFeedHiddenPostsPage />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/upvoted">
-    <ProfileFeedItemsPage type="Upvoted" />
+    <ProfileFeedVotedPage type="Upvoted" />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/downvoted">
-    <ProfileFeedItemsPage type="Downvoted" />
+    <ProfileFeedVotedPage type="Downvoted" />
   </Route>,
   <Route exact path="/:tab/:actor/u/:handle/message">
     <ConversationPage />

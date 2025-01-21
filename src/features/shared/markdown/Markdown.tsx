@@ -16,13 +16,6 @@ import MarkdownImg from "./MarkdownImg";
 
 import styles from "./Markdown.module.css";
 
-// TODO - remove never when upgrading to rehypeHighlight v7
-// TODO - ignoreMissing not needed in v7
-// Waiting on leak fix - https://github.com/remarkjs/react-markdown/issues/791
-const rehypePlugins: import("unified").PluggableList = [
-  [rehypeHighlight as never, { detect: true, ignoreMissing: true }],
-];
-
 export interface MarkdownProps
   extends Omit<ReactMarkdownOptions, "remarkPlugins"> {
   className?: string;
@@ -74,7 +67,7 @@ export default function Markdown({
         superSub,
         spoiler,
       ]}
-      rehypePlugins={rehypePlugins}
+      rehypePlugins={[[rehypeHighlight, { detect: true }]]}
     />
   );
 }

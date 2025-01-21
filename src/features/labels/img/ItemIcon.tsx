@@ -1,4 +1,5 @@
 import { Community, Person } from "lemmy-js-client";
+import { useState } from "react";
 
 import FakeIcon from "#/features/shared/FakeIcon";
 import { cx } from "#/helpers/css";
@@ -19,6 +20,8 @@ export default function ItemIcon({
   className,
   slot,
 }: ItemIconProps) {
+  const [failed, setFailed] = useState(false);
+
   size = size ?? 28;
 
   if (typeof item === "string")
@@ -28,13 +31,16 @@ export default function ItemIcon({
 
   const icon = "posting_restricted_to_mods" in item ? item.icon : item.avatar;
 
-  if (icon)
+  if (icon && !failed)
     return (
       <img
         style={{ width: `${size}px`, height: `${size}px` }}
         src={getImageSrc(icon, {
           size,
         })}
+        onError={() => {
+          setFailed(true);
+        }}
         className={cx(styles.subImgIcon, className)}
         slot={slot}
       />

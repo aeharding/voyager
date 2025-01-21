@@ -17,6 +17,9 @@
 }
 
 .title {
+  /* Prevent zalgo */
+  overflow: hidden;
+
   .read & {
     color: var(--read-color);
   }

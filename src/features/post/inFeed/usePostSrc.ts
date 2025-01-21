@@ -6,7 +6,9 @@ import { findUrlMediaType } from "#/helpers/url";
 import useSupported from "#/helpers/useSupported";
 import { useAppSelector } from "#/store";
 
-export default function usePostSrc(post: PostView): string | undefined {
+export default function usePostSrc(
+  post: PostView | undefined,
+): string | undefined {
   const thumbnailIsFullsize = useSupported("Fullsize thumbnails");
 
   const src = getPostMedia(post, thumbnailIsFullsize);
@@ -22,9 +24,11 @@ export default function usePostSrc(post: PostView): string | undefined {
 }
 
 function getPostMedia(
-  post: PostView,
+  post: PostView | undefined,
   thumbnailIsFullsize: boolean,
 ): [string] | [string, string] | undefined {
+  if (!post) return;
+
   if (post.post.url) {
     const isUrlMedia = findUrlMediaType(
       post.post.url,

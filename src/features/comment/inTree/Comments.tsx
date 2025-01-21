@@ -487,7 +487,6 @@ export default function Comments({
             }
             ref={virtuaRef}
             style={{ height: "100%" }}
-            // @ts-expect-error Virtua types not updated for forwardRef-less components
             item={IndexedVirtuaItem}
             overscan={1}
             onScroll={(offset) => {

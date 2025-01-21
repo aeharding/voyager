@@ -27,11 +27,12 @@ import {
   deletePendingImageUploads,
   uploadImage,
 } from "#/features/shared/markdown/editing/uploadImageSlice";
+import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { isAndroid } from "#/helpers/device";
-import { getHandle, getRemoteHandle } from "#/helpers/lemmy";
+import { getRemoteHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
-  postCreated,
+  buildPostCreated,
   postEdited,
   problemFetchingTitle,
 } from "#/helpers/toastMessages";
@@ -204,7 +205,10 @@ export default function PostEditorRoot({
       errorMessage = "Please add a title to your post.";
     } else if (title.length < 3) {
       errorMessage = "Post title must contain at least three characters.";
-    } else if (postType === "link" && (!url || !validUrl(url))) {
+    } else if (
+      postType === "link" &&
+      (!url || !isValidUrl(url, { allowRelative: false }))
+    ) {
       errorMessage =
         "Please add a valid URL to your post (start with https://).";
     } else if (postType === "photo" && !photoUrl) {
@@ -262,20 +266,26 @@ export default function PostEditorRoot({
 
     dispatch(receivedPosts([postResponse.post_view]));
 
-    presentToast(existingPost ? postEdited : postCreated);
+    if (existingPost) presentToast(postEdited);
+    else
+      presentToast(
+        buildPostCreated((e, dismiss) => {
+          router.push(
+            buildGeneralBrowseLink(
+              buildPostLink(
+                postResponse.post_view.community,
+                postResponse.post_view.post,
+              ),
+            ),
+          );
+
+          dismiss();
+        }),
+      );
 
     setCanDismiss(true);
 
     dismiss();
-
-    if (!existingPost)
-      router.push(
-        buildGeneralBrowseLink(
-          `/c/${getHandle(community)}/comments/${
-            postResponse.post_view.post.id
-          }`,
-        ),
-      );
   }
 
   async function receivedImage(image: File) {
@@ -526,14 +536,4 @@ export default function PostEditorRoot({
       </IonContent>
     </>
   );
-}
-
-function validUrl(url: string): boolean {
-  try {
-    new URL(url);
-  } catch (_) {
-    return false;
-  }
-
-  return true;
 }

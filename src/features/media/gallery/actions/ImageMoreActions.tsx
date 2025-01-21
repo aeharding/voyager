@@ -1,4 +1,5 @@
 import { isNative } from "#/helpers/device";
+import { useAppSelector } from "#/store";
 
 import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
@@ -18,6 +19,10 @@ export default function ImageMoreActions({
   alt,
   videoRef,
 }: ImageMoreActionsProps) {
+  const hideAltText = useAppSelector(
+    (state) => state.settings.general.media.hideAltText,
+  );
+
   return (
     <>
       {isNative() && (
@@ -25,11 +30,11 @@ export default function ImageMoreActions({
           <GalleryActions src={imgSrc} />
         </div>
       )}
-      {alt && (
+      {alt && !hideAltText && (
         <BottomContainer>
           <AltText alt={alt} />
           {videoRef && <VideoActions videoRef={videoRef} />}
-          <BottomContainerActions withBg={!!alt} />
+          <BottomContainerActions withBg />
         </BottomContainer>
       )}
     </>

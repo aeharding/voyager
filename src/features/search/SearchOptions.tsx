@@ -9,6 +9,12 @@ import {
 import { useMemo } from "react";
 
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
+import {
+  buildSearchCommentsLink,
+  buildSearchCommunitiesLink,
+  buildSearchPostsLink,
+  buildUserLinkFromHandle,
+} from "#/helpers/appLinkBuilder";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
 import AutoResolvePostComment from "./AutoResolvePostComment";
@@ -22,9 +28,9 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
   const { determineObjectTypeFromUrl, redirectToLemmyObjectIfNeeded } =
     useLemmyUrlHandler();
 
-  const searchURI = encodeURIComponent(search);
-
-  const sanitizedUser = search.replace(/|\/|#|\?|\\/g, "").replace(/^@/, "");
+  const sanitizedUserURI = search
+    .replace(/\/|#|\?|\\|%/g, "")
+    .replace(/^@/, "");
 
   const type = useMemo(
     () => determineObjectTypeFromUrl(search),
@@ -46,23 +52,28 @@ export default function SearchOptions({ search }: SearchOptionsProps) {
             <IonLabel>Visit {type}</IonLabel>
           </IonItem>
         )}
-        <IonItem routerLink={`/search/posts/${searchURI}`}>
+        <IonItem routerLink={buildSearchPostsLink(search)}>
           <IonIcon icon={albumsOutline} color="primary" slot="start" />
           <IonLabel className="ion-text-nowrap">Posts with “{search}”</IonLabel>
         </IonItem>
-        <IonItem routerLink={`/search/comments/${searchURI}`}>
+        <IonItem routerLink={buildSearchCommentsLink(search)}>
           <IonIcon icon={chatbubbleOutline} color="primary" slot="start" />
           <IonLabel className="ion-text-nowrap">
             Comments with “{search}”
           </IonLabel>
         </IonItem>
-        <IonItem routerLink={`/search/communities/${searchURI}`}>
+        <IonItem routerLink={buildSearchCommunitiesLink(search)}>
           <IonIcon icon={searchOutline} color="primary" slot="start" />
           <IonLabel className="ion-text-nowrap">
             Communities with “{search}”
           </IonLabel>
         </IonItem>
-        <IonItem routerLink={buildGeneralBrowseLink(`/u/${sanitizedUser}`)}>
+
+        <IonItem
+          routerLink={buildGeneralBrowseLink(
+            buildUserLinkFromHandle(sanitizedUserURI),
+          )}
+        >
           <IonIcon icon={personOutline} color="primary" slot="start" />
           <IonLabel className="ion-text-nowrap">Go to User “{search}”</IonLabel>
         </IonItem>
