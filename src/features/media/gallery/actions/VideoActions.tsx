@@ -67,13 +67,6 @@ function VideoActions({ videoRef }: VideoActionsProps) {
     return teardownEvent;
   }, []);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      setIsPlaying(!videoRef.current.paused);
-      setIsMuted(videoRef.current.muted);
-    }
-  }, [videoRef]);
-
   function setup() {
     if (videoRef.current) {
       videoRef.current.addEventListener("timeupdate", handleTimeUpdate);
@@ -81,6 +74,9 @@ function VideoActions({ videoRef }: VideoActionsProps) {
       videoRef.current.addEventListener("pause", handlePause);
       videoRef.current.addEventListener("volumechange", handleVolumeChange);
       videoRef.current.addEventListener("durationchange", handleDurationChange);
+
+      setIsPlaying(!videoRef.current.paused);
+      setIsMuted(videoRef.current.muted);
 
       handleDurationChange();
     }
@@ -217,7 +213,11 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   return (
     <div className={styles.container}>
       <div className={styles.buttons}>
-        <IonButton fill="clear" color="dark" onClick={requestPip}>
+        <IonButton
+          fill="clear"
+          className={styles.playerButton}
+          onClick={requestPip}
+        >
           <IonIcon size="large" slot="icon-only" icon={pip} />
         </IonButton>
 
@@ -225,7 +225,11 @@ function VideoActions({ videoRef }: VideoActionsProps) {
         <div />
 
         {canSkip15Seconds && (
-          <IonButton fill="clear" color="dark" onClick={() => skip(-15)}>
+          <IonButton
+            fill="clear"
+            className={styles.playerButton}
+            onClick={() => skip(-15)}
+          >
             <IonIcon
               size="large"
               slot="icon-only"
@@ -235,16 +239,26 @@ function VideoActions({ videoRef }: VideoActionsProps) {
           </IonButton>
         )}
 
-        <IonButton fill="clear" color="dark" onClick={togglePlayPause}>
+        <IonButton
+          fill="clear"
+          className={styles.playerButton}
+          onClick={togglePlayPause}
+        >
           <IonIcon
             size="large"
             slot="icon-only"
+            // For some reason, Chrome Webview requires a rerender for icon to update??
+            key={isPlaying || wasPlayingBeforeScrub ? "pause" : "play"}
             icon={isPlaying || wasPlayingBeforeScrub ? pause : play}
           />
         </IonButton>
 
         {canSkip15Seconds && (
-          <IonButton fill="clear" color="dark" onClick={() => skip(15)}>
+          <IonButton
+            fill="clear"
+            className={styles.playerButton}
+            onClick={() => skip(15)}
+          >
             <IonIcon
               size="large"
               slot="icon-only"
@@ -257,7 +271,11 @@ function VideoActions({ videoRef }: VideoActionsProps) {
         <div />
         <div />
 
-        <IonButton fill="clear" color="dark" onClick={toggleMute}>
+        <IonButton
+          fill="clear"
+          className={styles.playerButton}
+          onClick={toggleMute}
+        >
           <IonIcon
             size="large"
             slot="icon-only"
