@@ -59,6 +59,8 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   const [isMuted, setIsMuted] = useState(false);
   const [wasPlayingBeforeScrub, setWasPlayingBeforeScrub] = useState(false);
 
+  const [canSkip15Seconds, setCanSkip15Seconds] = useState(true);
+
   useEffect(() => {
     setupEvent();
 
@@ -78,6 +80,9 @@ function VideoActions({ videoRef }: VideoActionsProps) {
       videoRef.current.addEventListener("play", handlePlay);
       videoRef.current.addEventListener("pause", handlePause);
       videoRef.current.addEventListener("volumechange", handleVolumeChange);
+      videoRef.current.addEventListener("durationchange", handleDurationChange);
+
+      handleDurationChange();
     }
   }
 
@@ -87,15 +92,25 @@ function VideoActions({ videoRef }: VideoActionsProps) {
       videoRef.current.removeEventListener("play", handlePlay);
       videoRef.current.removeEventListener("pause", handlePause);
       videoRef.current.removeEventListener("volumechange", handleVolumeChange);
+      videoRef.current.removeEventListener(
+        "durationchange",
+        handleDurationChange,
+      );
     }
   }
 
   function handleTimeUpdate() {
-    if (videoRef.current) {
-      const currentTime = videoRef.current.currentTime;
-      const duration = videoRef.current.duration;
-      setProgress((currentTime / duration) * 100);
-    }
+    if (!videoRef.current) return;
+
+    const currentTime = videoRef.current.currentTime;
+    const duration = videoRef.current.duration;
+    setProgress((currentTime / duration) * 100);
+  }
+
+  function handleDurationChange() {
+    if (!videoRef.current) return;
+
+    setCanSkip15Seconds(videoRef.current.duration > 15);
   }
 
   function handlePlay() {
@@ -186,10 +201,16 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   }
 
   async function requestPip() {
-    if (videoRef.current) {
-      await videoRef.current.requestPictureInPicture();
-      close();
-    }
+    if (!videoRef.current) return;
+
+    await videoRef.current.requestPictureInPicture();
+    close();
+  }
+
+  function skip(seconds: number) {
+    if (!videoRef.current) return;
+
+    videoRef.current.currentTime += seconds;
   }
 
   return (
@@ -202,14 +223,16 @@ function VideoActions({ videoRef }: VideoActionsProps) {
         <div />
         <div />
 
-        <IonButton fill="clear" color="dark" onClick={() => {}}>
-          <IonIcon
-            size="large"
-            slot="icon-only"
-            icon={back}
-            className={styles.skipIcon}
-          />
-        </IonButton>
+        {canSkip15Seconds && (
+          <IonButton fill="clear" color="dark" onClick={() => skip(-15)}>
+            <IonIcon
+              size="large"
+              slot="icon-only"
+              icon={back}
+              className={styles.skipIcon}
+            />
+          </IonButton>
+        )}
 
         <IonButton fill="clear" color="dark" onClick={togglePlayPause}>
           <IonIcon
@@ -219,14 +242,16 @@ function VideoActions({ videoRef }: VideoActionsProps) {
           />
         </IonButton>
 
-        <IonButton fill="clear" color="dark" onClick={() => {}}>
-          <IonIcon
-            size="large"
-            slot="icon-only"
-            icon={forward}
-            className={styles.skipIcon}
-          />
-        </IonButton>
+        {canSkip15Seconds && (
+          <IonButton fill="clear" color="dark" onClick={() => skip(15)}>
+            <IonIcon
+              size="large"
+              slot="icon-only"
+              icon={forward}
+              className={styles.skipIcon}
+            />
+          </IonButton>
+        )}
 
         <div />
         <div />
