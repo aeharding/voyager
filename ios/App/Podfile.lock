@@ -32,7 +32,7 @@ PODS:
     - Capacitor
   - CapacitorSplashScreen (6.0.3):
     - Capacitor
-  - CapacitorStashMedia (2.1.1):
+  - CapacitorStashMedia (2.2.0):
     - Capacitor
     - SDWebImage
   - CapacitorStatusBar (6.0.2):
@@ -61,7 +61,7 @@ DEPENDENCIES:
   - "CapacitorReader (from `../../node_modules/.pnpm/capacitor-reader@0.3.1_@capacitor+core@6.2.0/node_modules/capacitor-reader`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/.pnpm/@capacitor+splash-screen@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/splash-screen`)"
-  - CapacitorStashMedia (from `../../../capacitor-stash-media`)
+  - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@2.2.0_@capacitor+core@6.2.0/node_modules/capacitor-stash-media`)"
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/status-bar`)"
   - "CapacitorTips (from `../../node_modules/.pnpm/capacitor-tips@1.1.1_@capacitor+core@6.2.0/node_modules/capacitor-tips`)"
 
@@ -105,7 +105,7 @@ EXTERNAL SOURCES:
   CapacitorSplashScreen:
     :path: "../../node_modules/.pnpm/@capacitor+splash-screen@6.0.3_@capacitor+core@6.2.0/node_modules/@capacitor/splash-screen"
   CapacitorStashMedia:
-    :path: "../../../capacitor-stash-media"
+    :path: "../../node_modules/.pnpm/capacitor-stash-media@2.2.0_@capacitor+core@6.2.0/node_modules/capacitor-stash-media"
   CapacitorStatusBar:
     :path: "../../node_modules/.pnpm/@capacitor+status-bar@6.0.2_@capacitor+core@6.2.0/node_modules/@capacitor/status-bar"
   CapacitorTips:
@@ -129,11 +129,11 @@ SPEC CHECKSUMS:
   CapacitorReader: a40128af9e1db017df748ab1c186870aee0bd5bf
   CapacitorShare: 7af6ca761ce62030e8e9fbd2eb82416f5ceced38
   CapacitorSplashScreen: 68893659d77b5f82d753b3a70475082845e3039c
-  CapacitorStashMedia: dc7a9876e725540001f5239cc36c15ee6cb9e061
+  CapacitorStashMedia: 2ed9a543c8a0471b42067a97d9e62cd90d1a99f7
   CapacitorStatusBar: 3b9ac7d0684770522c532d1158a1434512ab1477
   CapacitorTips: 606fd67dfdbc7d74a3568da580b3ad019fd4501b
   SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
 
-PODFILE CHECKSUM: 97abf345ba1b145339d2a194643e8b3c5474b62e
+PODFILE CHECKSUM: 68200e74145345ce78359b45d8b32a893ec856d6
 
 COCOAPODS: 1.16.2

@@ -66,10 +66,6 @@ export default function VideoPortalProvider({
 
     if (!videoRef) return;
 
-    // Portal was handed off to another OutPortal.
-    // Some other portal outlet is controlling, so not responsible for cleanup
-    if (videoRef.sourceUids && last(videoRef.sourceUids) !== sourceUid) return;
-
     if (
       videoRef.sourceUids.length === 1 &&
       videoRef.sourceUids[0] === sourceUid
