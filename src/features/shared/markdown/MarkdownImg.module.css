@@ -10,4 +10,12 @@
     height: 200px;
     border: 1px solid rgba(var(--ion-color-dark-rgb), 0.15);
   }
+
+  /* Lemmy emojis set the title like this: "emoji emoji_name" */
+  img {
+    &[title^="emoji "],
+    &[title="emoji"] {
+      max-height: 40px;
+    }
+  }
 }
