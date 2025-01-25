@@ -59,8 +59,6 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   const [isMuted, setIsMuted] = useState(false);
   const [wasPlayingBeforeScrub, setWasPlayingBeforeScrub] = useState(false);
 
-  const [canSkip15Seconds, setCanSkip15Seconds] = useState(true);
-
   useEffect(() => {
     setupEvent();
 
@@ -73,12 +71,9 @@ function VideoActions({ videoRef }: VideoActionsProps) {
       videoRef.current.addEventListener("play", handlePlay);
       videoRef.current.addEventListener("pause", handlePause);
       videoRef.current.addEventListener("volumechange", handleVolumeChange);
-      videoRef.current.addEventListener("durationchange", handleDurationChange);
 
       setIsPlaying(!videoRef.current.paused);
       setIsMuted(videoRef.current.muted);
-
-      handleDurationChange();
     }
   }
 
@@ -88,10 +83,6 @@ function VideoActions({ videoRef }: VideoActionsProps) {
       videoRef.current.removeEventListener("play", handlePlay);
       videoRef.current.removeEventListener("pause", handlePause);
       videoRef.current.removeEventListener("volumechange", handleVolumeChange);
-      videoRef.current.removeEventListener(
-        "durationchange",
-        handleDurationChange,
-      );
     }
   }
 
@@ -101,12 +92,6 @@ function VideoActions({ videoRef }: VideoActionsProps) {
     const currentTime = videoRef.current.currentTime;
     const duration = videoRef.current.duration;
     setProgress((currentTime / duration) * 100);
-  }
-
-  function handleDurationChange() {
-    if (!videoRef.current) return;
-
-    setCanSkip15Seconds(videoRef.current.duration > 15);
   }
 
   function handlePlay() {
@@ -213,31 +198,33 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   return (
     <div className={styles.container}>
       <div className={styles.buttons}>
-        <IonButton
-          fill="clear"
-          className={styles.playerButton}
-          onClick={requestPip}
-        >
-          <IonIcon size="large" slot="icon-only" icon={pip} />
-        </IonButton>
-
-        <div />
-        <div />
-
-        {canSkip15Seconds && (
+        {document.pictureInPictureEnabled ? (
           <IonButton
             fill="clear"
             className={styles.playerButton}
-            onClick={() => skip(-15)}
+            onClick={requestPip}
           >
-            <IonIcon
-              size="large"
-              slot="icon-only"
-              icon={back}
-              className={styles.skipIcon}
-            />
+            <IonIcon size="large" slot="icon-only" icon={pip} />
           </IonButton>
+        ) : (
+          <div className={styles.buttonPlaceholder} />
         )}
+
+        <div />
+        <div />
+
+        <IonButton
+          fill="clear"
+          className={styles.playerButton}
+          onClick={() => skip(-15)}
+        >
+          <IonIcon
+            size="large"
+            slot="icon-only"
+            icon={back}
+            className={styles.skipIcon}
+          />
+        </IonButton>
 
         <IonButton
           fill="clear"
@@ -253,20 +240,18 @@ function VideoActions({ videoRef }: VideoActionsProps) {
           />
         </IonButton>
 
-        {canSkip15Seconds && (
-          <IonButton
-            fill="clear"
-            className={styles.playerButton}
-            onClick={() => skip(15)}
-          >
-            <IonIcon
-              size="large"
-              slot="icon-only"
-              icon={forward}
-              className={styles.skipIcon}
-            />
-          </IonButton>
-        )}
+        <IonButton
+          fill="clear"
+          className={styles.playerButton}
+          onClick={() => skip(15)}
+        >
+          <IonIcon
+            size="large"
+            slot="icon-only"
+            icon={forward}
+            className={styles.skipIcon}
+          />
+        </IonButton>
 
         <div />
         <div />

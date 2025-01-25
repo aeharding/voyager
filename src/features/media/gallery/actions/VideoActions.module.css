@@ -27,3 +27,7 @@
 .playerButton {
   color: white;
 }
+
+.buttonPlaceholder {
+  width: 36px;
+}
