@@ -353,10 +353,10 @@ export function isMinimumSupportedLemmyVersion(version: string) {
   return compare(version, MINIMUM_LEMMY_VERSION, ">=");
 }
 
-export function buildLocalPostLink(instance: string, id: number) {
+export function buildLemmyPostLink(instance: string, id: number) {
   return `https://${instance}/post/${id}`;
 }
 
-export function buildLocalCommentLink(instance: string, id: number) {
+export function buildLemmyCommentLink(instance: string, id: number) {
   return `https://${instance}/comment/${id}`;
 }

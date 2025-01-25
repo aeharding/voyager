@@ -4,8 +4,8 @@ import { CommentView, PostView } from "lemmy-js-client";
 
 import { isNative } from "#/helpers/device";
 import {
-  buildLocalCommentLink,
-  buildLocalPostLink,
+  buildLemmyCommentLink,
+  buildLemmyPostLink,
   isPost,
 } from "#/helpers/lemmy";
 import { shareUrl } from "#/helpers/share";
@@ -49,8 +49,8 @@ export function useSharePostComment(itemView: PostView | CommentView) {
   async function shareInstance(instance: string) {
     const item = isPost(itemView) ? itemView.post : itemView.comment;
     const buildLink = isPost(itemView)
-      ? buildLocalPostLink
-      : buildLocalCommentLink;
+      ? buildLemmyPostLink
+      : buildLemmyCommentLink;
 
     // not in switch because React Compiler complains:
     // Todo: (BuildHIR::node.lowerReorderableExpression) Expression type `OptionalMemberExpression` cannot be safely reordered (57:57)
@@ -79,7 +79,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
 
           const _resolvedPost = resolvedPost;
 
-          const url = buildLocalPostLink(instance, _resolvedPost.post.id);
+          const url = buildLemmyPostLink(instance, _resolvedPost.post.id);
 
           shareFromUrl(url);
         } else {
@@ -90,7 +90,7 @@ export function useSharePostComment(itemView: PostView | CommentView) {
 
           const _resolvedComment = resolvedComment;
 
-          const url = buildLocalCommentLink(
+          const url = buildLemmyCommentLink(
             instance,
             _resolvedComment.comment.id,
           );
