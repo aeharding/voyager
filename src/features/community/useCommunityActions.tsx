@@ -1,4 +1,3 @@
-import { Share } from "@capacitor/share";
 import { useIonActionSheet } from "@ionic/react";
 import { Community, SubscribedType } from "lemmy-js-client";
 import { useContext } from "react";
@@ -11,6 +10,7 @@ import {
 } from "#/features/auth/siteSlice";
 import { checkIsMod, getHandle as useGetHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { shareUrl } from "#/helpers/share";
 import {
   allNSFWHidden,
   buildBlockedCommunity,
@@ -192,7 +192,7 @@ export default function useCommunityActions(
   };
 
   const share = () => {
-    Share.share({ url: community.actor_id });
+    shareUrl(community.actor_id);
   };
 
   return {

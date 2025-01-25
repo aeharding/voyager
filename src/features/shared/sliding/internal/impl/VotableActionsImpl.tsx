@@ -14,12 +14,12 @@ import { scrollCommentIntoViewIfNeeded } from "#/features/comment/inTree/Comment
 import useCollapseRootComment from "#/features/comment/inTree/useCollapseRootComment";
 import { markRead } from "#/features/inbox/inboxSlice";
 import { getCanModerate } from "#/features/moderation/useCanModerate";
+import { useSharePostComment } from "#/features/post/actions/useSharePostComment";
 import { savePost, voteOnPost } from "#/features/post/postSlice";
 import {
   isInboxItem,
   useSharedInboxActions,
 } from "#/features/shared/sliding/internal/shared";
-import { share } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
   postLocked,
@@ -48,6 +48,7 @@ export function VotableActionsImpl({
   const dispatch = useAppDispatch();
 
   const shared = useSharedInboxActions(item);
+  const { share } = useSharePostComment(item);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const commentVotesById = useAppSelector(
@@ -172,13 +173,9 @@ export function VotableActionsImpl({
     [dispatch, isPost, item, activePageRef],
   );
 
-  const shareTrigger = useCallback(async () => {
-    share(isPost ? item.post : item.comment);
-  }, [isPost, item]);
-
   return (
     <GenericBaseSliding
-      shareTrigger={shareTrigger}
+      shareTrigger={share}
       collapse={collapse}
       collapseRootComment={collapseRootComment}
       save={save}

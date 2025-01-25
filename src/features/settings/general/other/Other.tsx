@@ -10,6 +10,7 @@ import LinkHandler from "./LinkHandler";
 import NoSubscribedInFeed from "./NoSubscribedInFeed";
 import OpenNativeApps from "./OpenNativeApps";
 import ProfileTabLabel from "./ProfileTabLabel";
+import Share from "./Share";
 import Thumbnailinator from "./Thumbnailinator";
 
 export default function Other() {
@@ -25,6 +26,7 @@ export default function Other() {
         <ProfileTabLabel />
         <Haptics />
         <NoSubscribedInFeed />
+        <Share />
         <Thumbnailinator />
         <ClearCache />
         <BackupSettings />

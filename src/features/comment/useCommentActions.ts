@@ -28,12 +28,12 @@ import {
   getModIcon,
 } from "#/features/moderation/useCanModerate";
 import useCommentModActions from "#/features/moderation/useCommentModActions";
+import { useSharePostComment } from "#/features/post/actions/useSharePostComment";
 import { getShareIcon } from "#/helpers/device";
 import {
   getHandle,
   getRemoteHandle,
   canModify as isCommentMutable,
-  share,
 } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
@@ -71,6 +71,7 @@ export default function useCommentActions({
   const [presentActionSheet] = useIonActionSheet();
   const [presentSecondaryActionSheet] = useIonActionSheet();
   const collapseRootComment = useCollapseRootComment(commentView, rootIndex);
+  const { share } = useSharePostComment(commentView);
 
   const router = useOptimizedIonRouter();
 
@@ -266,7 +267,7 @@ export default function useCommentActions({
           text: "Share",
           icon: getShareIcon(),
           handler: () => {
-            share(comment);
+            share();
           },
         },
         rootIndex !== undefined && {
@@ -321,6 +322,7 @@ export default function useCommentActions({
     presentToast,
     rootIndex,
     router,
+    share,
   ]);
 
   return useMemo(() => ({ loading, present }), [loading, present]);
