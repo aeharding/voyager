@@ -52,9 +52,13 @@ export function useSharePostComment(itemView: PostView | CommentView) {
       ? buildLocalPostLink
       : buildLocalCommentLink;
 
+    // not in switch because React Compiler complains:
+    // Todo: (BuildHIR::node.lowerReorderableExpression) Expression type `OptionalMemberExpression` cannot be safely reordered (57:57)
+    const apHostname = parseUrl(item.ap_id)?.hostname;
+
     switch (instance) {
       // optimization: sync way to get link at ap_id instance
-      case parseUrl(item.ap_id)?.hostname: {
+      case apHostname: {
         return shareFromUrl(item.ap_id);
       }
       // optimization: sync way to get link at connectedInstance

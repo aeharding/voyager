@@ -5,7 +5,7 @@ import { LongPressCallbackReason, useLongPress } from "use-long-press";
 import { getShareIcon } from "#/helpers/device";
 
 import { ActionButton } from "./ActionButton";
-import { useSharePostComment } from "./useSharePostComment";
+import { useSharePostComment } from "../../shared/useSharePostComment";
 
 interface ShareButtonProps {
   post: PostView;
