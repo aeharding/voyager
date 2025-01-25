@@ -28,8 +28,8 @@ import {
   getModIcon,
 } from "#/features/moderation/useCanModerate";
 import usePostModActions from "#/features/moderation/usePostModActions";
-import { useSharePostComment } from "#/features/shared/useSharePostComment";
 import { resolveObject } from "#/features/resolve/resolveSlice";
+import { useSharePostComment } from "#/features/shared/useSharePostComment";
 import { getShareIcon } from "#/helpers/device";
 import { getCrosspostUrl, getHandle, getRemoteHandle } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";

@@ -14,12 +14,12 @@ import { scrollCommentIntoViewIfNeeded } from "#/features/comment/inTree/Comment
 import useCollapseRootComment from "#/features/comment/inTree/useCollapseRootComment";
 import { markRead } from "#/features/inbox/inboxSlice";
 import { getCanModerate } from "#/features/moderation/useCanModerate";
-import { useSharePostComment } from "#/features/shared/useSharePostComment";
 import { savePost, voteOnPost } from "#/features/post/postSlice";
 import {
   isInboxItem,
   useSharedInboxActions,
 } from "#/features/shared/sliding/internal/shared";
+import { useSharePostComment } from "#/features/shared/useSharePostComment";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
   postLocked,

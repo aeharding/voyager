@@ -2,10 +2,10 @@ import { IonIcon } from "@ionic/react";
 import { PostView } from "lemmy-js-client";
 import { LongPressCallbackReason, useLongPress } from "use-long-press";
 
+import { useSharePostComment } from "#/features/shared/useSharePostComment";
 import { getShareIcon } from "#/helpers/device";
 
 import { ActionButton } from "./ActionButton";
-import { useSharePostComment } from "../../shared/useSharePostComment";
 
 interface ShareButtonProps {
   post: PostView;
