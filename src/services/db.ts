@@ -321,6 +321,18 @@ export interface UserTag {
   sourceUrl?: string;
 }
 
+export const OPostCommentShareType = {
+  Local: "local",
+  Community: "community",
+  ApId: "ap-id",
+  Ask: "ask",
+} as const;
+
+export type PostCommentShareType =
+  (typeof OPostCommentShareType)[keyof typeof OPostCommentShareType];
+
+/**
+
 /**
  * Global settings, loaded once at startup
  */
@@ -339,6 +351,7 @@ export interface GlobalSettingValueTypes {
   compact_thumbnail_size: CompactThumbnailSizeType;
   default_comment_sort: CommentDefaultSort;
   default_post_sort: PostSortType;
+  default_share: PostCommentShareType;
   disable_auto_hide_in_communities: boolean;
   disable_marking_posts_read: boolean;
   embed_crossposts: boolean;
@@ -462,6 +475,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "votes_theme",
   "hide_alt_text",
   "show_controls_on_open",
+  "default_share",
 ]);
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

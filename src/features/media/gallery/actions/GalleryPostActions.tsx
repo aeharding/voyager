@@ -1,4 +1,3 @@
-import { Share } from "@capacitor/share";
 import { IonIcon } from "@ionic/react";
 import { StashMedia } from "capacitor-stash-media";
 import { chatbubbleOutline } from "ionicons/icons";
@@ -12,6 +11,7 @@ import { VoteButton } from "#/features/post/shared/VoteButton";
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { getShareIcon, isNative } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { shareUrl } from "#/helpers/share";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { calculateSeparateScore, calculateTotalScore } from "#/helpers/vote";
@@ -44,7 +44,7 @@ export default function GalleryPostActions({
 
   async function shareImage() {
     if (!isNative()) {
-      Share.share({ url: imgSrc });
+      shareUrl(imgSrc);
       return;
     }
 

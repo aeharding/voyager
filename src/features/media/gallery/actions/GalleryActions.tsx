@@ -1,4 +1,3 @@
-import { Share } from "@capacitor/share";
 import { IonIcon, useIonActionSheet } from "@ionic/react";
 import { StashMedia } from "capacitor-stash-media";
 import { compact } from "es-toolkit";
@@ -21,6 +20,7 @@ import useNativeBrowser from "#/features/shared/useNativeBrowser";
 import { getShareIcon, isNative } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { shareUrl } from "#/helpers/share";
 import {
   photoCopied,
   photoSaved,
@@ -62,7 +62,7 @@ export default function GalleryActions({ post, imgSrc }: GalleryActionsProps) {
           handler: () => {
             (async () => {
               if (!isNative()) {
-                Share.share({ url: imgSrc });
+                shareUrl(imgSrc);
                 return;
               }
 

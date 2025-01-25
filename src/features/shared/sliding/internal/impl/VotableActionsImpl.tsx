@@ -19,7 +19,7 @@ import {
   isInboxItem,
   useSharedInboxActions,
 } from "#/features/shared/sliding/internal/shared";
-import { share } from "#/helpers/lemmy";
+import { useSharePostComment } from "#/features/shared/useSharePostComment";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import {
   postLocked,
@@ -48,6 +48,7 @@ export function VotableActionsImpl({
   const dispatch = useAppDispatch();
 
   const shared = useSharedInboxActions(item);
+  const { share } = useSharePostComment(item);
 
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
   const commentVotesById = useAppSelector(
@@ -172,13 +173,9 @@ export function VotableActionsImpl({
     [dispatch, isPost, item, activePageRef],
   );
 
-  const shareTrigger = useCallback(async () => {
-    share(isPost ? item.post : item.comment);
-  }, [isPost, item]);
-
   return (
     <GenericBaseSliding
-      shareTrigger={shareTrigger}
+      shareTrigger={share}
       collapse={collapse}
       collapseRootComment={collapseRootComment}
       save={save}

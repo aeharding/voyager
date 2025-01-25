@@ -29,13 +29,9 @@ import {
 } from "#/features/moderation/useCanModerate";
 import usePostModActions from "#/features/moderation/usePostModActions";
 import { resolveObject } from "#/features/resolve/resolveSlice";
+import { useSharePostComment } from "#/features/shared/useSharePostComment";
 import { getShareIcon } from "#/helpers/device";
-import {
-  getCrosspostUrl,
-  getHandle,
-  getRemoteHandle,
-  share,
-} from "#/helpers/lemmy";
+import { getCrosspostUrl, getHandle, getRemoteHandle } from "#/helpers/lemmy";
 import { getVoteErrorMessage } from "#/helpers/lemmyErrors";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import {
@@ -62,6 +58,7 @@ export default function usePostActions(post: PostView) {
   const presentToast = useAppToast();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const dispatch = useAppDispatch();
+  const { share } = useSharePostComment(post);
 
   const router = useOptimizedIonRouter();
 
@@ -253,7 +250,7 @@ export default function usePostActions(post: PostView) {
           data: "share",
           icon: getShareIcon(),
           handler: () => {
-            share(post.post);
+            share();
           },
         },
         {
@@ -326,5 +323,6 @@ export default function usePostActions(post: PostView) {
     presentToast,
     router,
     inFeed,
+    share,
   ]);
 }
