@@ -30,28 +30,28 @@ include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../node_modules/.pnpm/@capacitor+status-bar@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/status-bar/android')
 
 include ':capacitor-android-nav-mode'
-project(':capacitor-android-nav-mode').projectDir = new File('../node_modules/.pnpm/capacitor-android-nav-mode@1.1.1_@capacitor+core@7.0.1/node_modules/capacitor-android-nav-mode/android')
+project(':capacitor-android-nav-mode').projectDir = new File('../node_modules/.pnpm/capacitor-android-nav-mode@2.0.0_@capacitor+core@7.0.1/node_modules/capacitor-android-nav-mode/android')
 
 include ':capacitor-application-context'
-project(':capacitor-application-context').projectDir = new File('../node_modules/.pnpm/capacitor-application-context@1.1.1_@capacitor+core@7.0.1/node_modules/capacitor-application-context/android')
+project(':capacitor-application-context').projectDir = new File('../node_modules/.pnpm/capacitor-application-context@2.0.0_@capacitor+core@7.0.1/node_modules/capacitor-application-context/android')
 
 include ':capacitor-biometric-lock'
-project(':capacitor-biometric-lock').projectDir = new File('../node_modules/.pnpm/capacitor-biometric-lock@1.1.1_@capacitor+core@7.0.1/node_modules/capacitor-biometric-lock/android')
+project(':capacitor-biometric-lock').projectDir = new File('../node_modules/.pnpm/capacitor-biometric-lock@2.0.0_@capacitor+core@7.0.1/node_modules/capacitor-biometric-lock/android')
 
 include ':capacitor-clear-cache'
-project(':capacitor-clear-cache').projectDir = new File('../node_modules/.pnpm/capacitor-clear-cache@1.1.1_@capacitor+core@7.0.1/node_modules/capacitor-clear-cache/android')
+project(':capacitor-clear-cache').projectDir = new File('../node_modules/.pnpm/capacitor-clear-cache@2.0.0_@capacitor+core@7.0.1/node_modules/capacitor-clear-cache/android')
 
 include ':capacitor-launch-native'
-project(':capacitor-launch-native').projectDir = new File('../node_modules/.pnpm/capacitor-launch-native@1.1.1_@capacitor+core@7.0.1/node_modules/capacitor-launch-native/android')
+project(':capacitor-launch-native').projectDir = new File('../node_modules/.pnpm/capacitor-launch-native@2.0.0_@capacitor+core@7.0.1/node_modules/capacitor-launch-native/android')
 
 include ':capacitor-plugin-safe-area'
 project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.4_@capacitor+core@7.0.1/node_modules/capacitor-plugin-safe-area/android')
 
 include ':capacitor-reader'
-project(':capacitor-reader').projectDir = new File('../node_modules/.pnpm/capacitor-reader@0.4.0_@capacitor+core@7.0.1/node_modules/capacitor-reader/android')
+project(':capacitor-reader').projectDir = new File('../node_modules/.pnpm/capacitor-reader@1.0.0_@capacitor+core@7.0.1/node_modules/capacitor-reader/android')
 
 include ':capacitor-stash-media'
-project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@2.2.0_@capacitor+core@7.0.1/node_modules/capacitor-stash-media/android')
+project(':capacitor-stash-media').projectDir = new File('../node_modules/.pnpm/capacitor-stash-media@3.0.0_@capacitor+core@7.0.1/node_modules/capacitor-stash-media/android')
 
 include ':capacitor-tips'
-project(':capacitor-tips').projectDir = new File('../node_modules/.pnpm/capacitor-tips@1.1.1_@capacitor+core@7.0.1/node_modules/capacitor-tips/android')
+project(':capacitor-tips').projectDir = new File('../node_modules/.pnpm/capacitor-tips@2.0.0_@capacitor+core@7.0.1/node_modules/capacitor-tips/android')
