@@ -100,6 +100,9 @@ importers:
       capacitor-reader:
         specifier: ^1.0.0
         version: 1.0.0(@capacitor/core@7.0.1)
+      capacitor-share-safari:
+        specifier: ^0.1.0
+        version: 0.1.0(@capacitor/core@7.0.1)
       capacitor-stash-media:
         specifier: ^3.0.0
         version: 3.0.0(@capacitor/core@7.0.1)
@@ -2409,6 +2412,11 @@ packages:
 
   capacitor-reader@1.0.0:
     resolution: {integrity: sha512-Fu213zl7nsH2PK+fsj9Z7eRxlTIKp3onB8tQjofHGf31RU3ufSnk6VjH0C7tixbwTsWSOB18kaxsSypBOgs12w==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
+  capacitor-share-safari@0.1.0:
+    resolution: {integrity: sha512-NDsjJqWfZeXpx5sCgmIRjF6fENxT4icTCbfhwfbL8Fbq7qUB8aANFqeANF3ylDpzJQ25OFnl3l3f6xquwVFfrQ==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -9020,6 +9028,10 @@ snapshots:
       '@capacitor/core': 7.0.1
 
   capacitor-reader@1.0.0(@capacitor/core@7.0.1):
+    dependencies:
+      '@capacitor/core': 7.0.1
+
+  capacitor-share-safari@0.1.0(@capacitor/core@7.0.1):
     dependencies:
       '@capacitor/core': 7.0.1
 

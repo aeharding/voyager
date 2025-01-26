@@ -30,6 +30,8 @@ PODS:
     - Capacitor
   - CapacitorShare (7.0.0):
     - Capacitor
+  - CapacitorShareSafari (0.1.0):
+    - Capacitor
   - CapacitorSplashScreen (7.0.0):
     - Capacitor
   - CapacitorStashMedia (3.0.0):
@@ -60,6 +62,7 @@ DEPENDENCIES:
   - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.4_@capacitor+core@7.0.1/node_modules/capacitor-plugin-safe-area`)"
   - "CapacitorReader (from `../../node_modules/.pnpm/capacitor-reader@1.0.0_@capacitor+core@7.0.1/node_modules/capacitor-reader`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/share`)"
+  - "CapacitorShareSafari (from `../../node_modules/.pnpm/capacitor-share-safari@0.1.0_@capacitor+core@7.0.1/node_modules/capacitor-share-safari`)"
   - "CapacitorSplashScreen (from `../../node_modules/.pnpm/@capacitor+splash-screen@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/splash-screen`)"
   - "CapacitorStashMedia (from `../../node_modules/.pnpm/capacitor-stash-media@3.0.0_@capacitor+core@7.0.1/node_modules/capacitor-stash-media`)"
   - "CapacitorStatusBar (from `../../node_modules/.pnpm/@capacitor+status-bar@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/status-bar`)"
@@ -102,6 +105,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/.pnpm/capacitor-reader@1.0.0_@capacitor+core@7.0.1/node_modules/capacitor-reader"
   CapacitorShare:
     :path: "../../node_modules/.pnpm/@capacitor+share@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/share"
+  CapacitorShareSafari:
+    :path: "../../node_modules/.pnpm/capacitor-share-safari@0.1.0_@capacitor+core@7.0.1/node_modules/capacitor-share-safari"
   CapacitorSplashScreen:
     :path: "../../node_modules/.pnpm/@capacitor+splash-screen@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/splash-screen"
   CapacitorStashMedia:
@@ -128,12 +133,13 @@ SPEC CHECKSUMS:
   CapacitorPluginSafeArea: 237b6023aa7c3c1d4b245c12f73ae02e55093a50
   CapacitorReader: cd48c0fbe7cde85e54a4a4aa1a1eaacba34ff22d
   CapacitorShare: 2fcf1758cd07e0558f6aed40d7437bf8a3a42297
+  CapacitorShareSafari: 1508890212f9b066d876d34fa5e6ad04ab5c4d89
   CapacitorSplashScreen: f4e58cc02aafd91c7cbaf32a3d1b44d02a115125
   CapacitorStashMedia: c756231a667036641a0dfb653b0f085af742c8ec
   CapacitorStatusBar: 438e90beeeefa8276b24e6c5991cb02dd13e51bf
   CapacitorTips: 7bc348d2ab0d64dc906b57e0dd6f6d15473ba26e
   SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
 
-PODFILE CHECKSUM: 31bef1c1882da5dbd04856fb66852339213a3340
+PODFILE CHECKSUM: 6ec0b7359321952fff35657ae33eeb6db8bdf3e2
 
 COCOAPODS: 1.16.2
