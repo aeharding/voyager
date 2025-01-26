@@ -149,10 +149,10 @@ jobs:
           BUILD_FOSS_ONLY: true
           CI_PLATFORM: android
 
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: "17"
+          java-version: "21"
           distribution: "corretto"
           cache: gradle
       - name: Build (Android)
@@ -207,10 +207,10 @@ jobs:
         env:
           CI_PLATFORM: android
 
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: "17"
+          java-version: "21"
           distribution: "corretto"
           cache: gradle
 
