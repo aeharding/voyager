@@ -25,6 +25,7 @@ dependencies {
     implementation project(':capacitor-launch-native')
     implementation project(':capacitor-plugin-safe-area')
     implementation project(':capacitor-reader')
+    implementation project(':capacitor-share-safari')
     implementation project(':capacitor-stash-media')
     implementation project(':capacitor-tips')
 
