@@ -73,5 +73,6 @@ function getSkipTables() {
   return without(
     db.tables.map((t) => t.name),
     "settings",
+    "userTags",
   );
 }
