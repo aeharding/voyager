@@ -11,11 +11,7 @@ import { deepLinkFailed } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppSelector } from "#/store";
 
-const PENDING_APP_URL_STORAGE_KEY = "app-url";
-
-App.addListener("appUrlOpen", (event) => {
-  localStorage.setItem(PENDING_APP_URL_STORAGE_KEY, event.url);
-});
+const PREVIOUS_APP_URL_STORAGE_KEY = "previous-app-url";
 
 export default function AppUrlListener() {
   const presentToast = useAppToast();
@@ -28,7 +24,7 @@ export default function AppUrlListener() {
   );
   const deepLinkReady = useAppSelector((state) => state.deepLinkReady.ready);
 
-  const pendingResolveRef = useRef(false);
+  const appUrlFromEventRef = useRef<string>();
 
   const notReady =
     !knownInstances ||
@@ -36,45 +32,43 @@ export default function AppUrlListener() {
     !connectedInstance ||
     !deepLinkReady;
 
-  const onAppUrlIfNeeded = async (potentialUrl?: string) => {
+  const onAppUrlIfNeeded = async () => {
     // wait for router to get into a good state before pushing
     // (needed for pushing user profiles from app startup)
     if (notReady) return;
-    if (pendingResolveRef.current) return;
 
-    const launchUrlResult = await App.getLaunchUrl();
+    // If appUrl received from explicit event, redirect to it
+    if (appUrlFromEventRef.current) {
+      redirectTo(appUrlFromEventRef.current);
+      appUrlFromEventRef.current = undefined;
+      return;
+    }
 
-    const url =
-      launchUrlResult?.url ||
-      localStorage.getItem(PENDING_APP_URL_STORAGE_KEY) ||
-      potentialUrl;
+    const url = (await App.getLaunchUrl())?.url;
 
     if (!url) return;
 
-    localStorage.removeItem(PENDING_APP_URL_STORAGE_KEY);
+    // If appUrl received from launch, redirect to it if it's not stale
+    // (the appUrl could be stale if web process was killed, but native wrapper wasn't)
+    if (url === localStorage.getItem(PREVIOUS_APP_URL_STORAGE_KEY)) return;
 
-    pendingResolveRef.current = true;
+    redirectTo(url);
+  };
 
-    let result;
-
-    try {
-      result = await redirectToLemmyObjectIfNeeded(normalizeObjectUrl(url));
-    } finally {
-      // Give app time to reload if there are database issues
-      setTimeout(() => {
-        pendingResolveRef.current = false;
-        localStorage.removeItem(PENDING_APP_URL_STORAGE_KEY);
-      }, 1_000);
-    }
+  async function redirectTo(url: string) {
+    const result = await redirectToLemmyObjectIfNeeded(normalizeObjectUrl(url));
 
     if (result === "not-found") presentToast(deepLinkFailed);
-  };
+
+    localStorage.setItem(PREVIOUS_APP_URL_STORAGE_KEY, url);
+  }
 
   const onAppUrlIfNeededEvent = useEffectEvent(onAppUrlIfNeeded);
 
   useEffect(() => {
     const listener = App.addListener("appUrlOpen", (event) => {
-      onAppUrlIfNeededEvent(event.url);
+      appUrlFromEventRef.current = event.url;
+      onAppUrlIfNeededEvent();
     });
 
     return () => {
