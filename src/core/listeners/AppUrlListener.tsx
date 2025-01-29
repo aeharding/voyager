@@ -42,8 +42,12 @@ export default function AppUrlListener() {
     if (notReady) return;
     if (pendingResolveRef.current) return;
 
+    const launchUrlResult = await App.getLaunchUrl();
+
     const url =
-      localStorage.getItem(PENDING_APP_URL_STORAGE_KEY) || potentialUrl;
+      launchUrlResult?.url ||
+      localStorage.getItem(PENDING_APP_URL_STORAGE_KEY) ||
+      potentialUrl;
 
     if (!url) return;
 
@@ -56,8 +60,11 @@ export default function AppUrlListener() {
     try {
       result = await redirectToLemmyObjectIfNeeded(normalizeObjectUrl(url));
     } finally {
-      pendingResolveRef.current = false;
-      localStorage.removeItem(PENDING_APP_URL_STORAGE_KEY);
+      // Give app time to reload if there are database issues
+      setTimeout(() => {
+        pendingResolveRef.current = false;
+        localStorage.removeItem(PENDING_APP_URL_STORAGE_KEY);
+      }, 1_000);
     }
 
     if (result === "not-found") presentToast(deepLinkFailed);
