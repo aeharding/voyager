@@ -62,6 +62,10 @@ extension URL {
   var iceCubesAppDeepLink: URL {
     var components = URLComponents(url: self, resolvingAgainstBaseURL: false)!
     components.scheme = "vger"
+
+    // Add a timestamp so the app can check if the deep link is stale or not
+    components.queryItems = (components.queryItems ?? []) + [URLQueryItem(name: "t", value: String(Int(Date().timeIntervalSince1970)))]
+
     return components.url!
   }
 }
