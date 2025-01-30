@@ -7,7 +7,6 @@ import HapticsListener from "./HapticsListener";
 
 // Listeners
 import "./androidSafeArea";
-import "./db";
 import "./ionActivatable";
 import "./network/listener";
 import "./statusTap";
