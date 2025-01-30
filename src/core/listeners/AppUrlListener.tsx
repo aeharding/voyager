@@ -13,6 +13,13 @@ import { useAppSelector } from "#/store";
 
 const PREVIOUS_APP_URL_STORAGE_KEY = "previous-app-url";
 
+(async () => {
+  const response = await App.getLaunchUrl();
+
+  // If normal startup, remove previous app url
+  if (!response?.url) localStorage.removeItem(PREVIOUS_APP_URL_STORAGE_KEY);
+})();
+
 export default function AppUrlListener() {
   const presentToast = useAppToast();
   const { redirectToLemmyObjectIfNeeded } = useLemmyUrlHandler();
