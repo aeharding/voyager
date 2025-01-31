@@ -1,6 +1,7 @@
 import { GalleryMediaProps } from "#/features/media/gallery/GalleryMedia";
 import InlineMedia from "#/features/media/InlineMedia";
 import { cx } from "#/helpers/css";
+import { forceSecureUrl } from "#/helpers/url";
 
 import styles from "./MarkdownImg.module.css";
 
@@ -23,7 +24,7 @@ export default function MarkdownImg({
   return (
     <InlineMedia
       {...props}
-      src={src}
+      src={forceSecureUrl(src)}
       mediaClassName={cx(sharedStyles, props.className)}
       className={styles.media}
       animationType="zoom"

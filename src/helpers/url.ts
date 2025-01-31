@@ -201,3 +201,10 @@ export function parseUrlForDisplay(url: string): string[] {
 export function determineTypeFromUrl(url: string): "mail" | undefined {
   return url.startsWith("mailto:") ? "mail" : undefined;
 }
+
+export function forceSecureUrl(url: string): string;
+export function forceSecureUrl(url: string | undefined): string | undefined {
+  if (!url) return url;
+  if (url.startsWith("http://")) return url.replace(/^http:\/\//, "https://");
+  return url;
+}

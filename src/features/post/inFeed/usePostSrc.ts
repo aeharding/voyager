@@ -2,7 +2,7 @@ import { PostView } from "lemmy-js-client";
 
 import { IMAGE_FAILED } from "#/features/media/imageSlice";
 import { findLoneImage } from "#/helpers/markdown";
-import { findUrlMediaType } from "#/helpers/url";
+import { findUrlMediaType, forceSecureUrl } from "#/helpers/url";
 import useSupported from "#/helpers/useSupported";
 import { useAppSelector } from "#/store";
 
@@ -24,6 +24,15 @@ export default function usePostSrc(
 }
 
 function getPostMedia(
+  post: PostView | undefined,
+  thumbnailIsFullsize: boolean,
+): [string] | [string, string] | undefined {
+  return getMixedContentPostMedia(post, thumbnailIsFullsize)?.map(
+    forceSecureUrl,
+  ) as [string] | [string, string] | undefined;
+}
+
+function getMixedContentPostMedia(
   post: PostView | undefined,
   thumbnailIsFullsize: boolean,
 ): [string] | [string, string] | undefined {
