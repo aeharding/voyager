@@ -71,7 +71,6 @@ export default function Question() {
           <IonItem>
             <IonTextarea
               labelPlacement="stacked"
-              placeholder="lemmy in"
               autoGrow
               onIonInput={(e) => {
                 setAnswer(e.detail.value || "");
