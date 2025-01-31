@@ -24,11 +24,18 @@ if (isNative() && isAppleDeviceInstallable()) {
     try {
       await Dexie.exists("WefwefDB");
     } catch (error) {
+      if (!(error instanceof Error)) throw error;
+      if (error.name !== "UnknownError") throw error;
+      if (
+        !error.message.includes(
+          "Connection to Indexed Database server lost. Refresh the page to try again",
+        )
+      )
+        throw error;
+
       console.info("Failed database integrity check!", error);
 
       localStorage.setItem(DB_CLOSED_STORAGE_KEY, Date.now().toString());
-      localStorage.setItem("ERRNAME", (error as Error).name);
-      localStorage.setItem("ERRMESSAGE", (error as Error).message);
 
       window.location.reload();
 
