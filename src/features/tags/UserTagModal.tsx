@@ -51,36 +51,14 @@ function UserTagModalContents({
   sourceUrl,
   setIsOpen,
 }: UserTagModalProps) {
-  const dispatch = useAppDispatch();
-  const foundTag = useAppSelector(
-    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
-  );
   const trackVotesEnabled = useAppSelector(
     (state) => state.settings.tags.trackVotes,
   );
   const saveSource = useAppSelector((state) => state.settings.tags.saveSource);
 
-  function getCurrentValidatedTag() {
-    return typeof foundTag === "object"
-      ? foundTag
-      : generateNewTag(getRemoteHandle(person));
-  }
-
-  const tagChangedRef = useRef(false);
-  const [tag, _setTag] = useState(getCurrentValidatedTag);
-  function setTag(...parameters: Parameters<typeof _setTag>) {
-    _setTag(...parameters);
-    tagChangedRef.current = true;
-  }
-
+  const [tag, setTag] = useDbTag(person);
   const [upvotes, setUpvotes] = useState(`${tag.upvotes}`);
   const [downvotes, setDownvotes] = useState(`${tag.downvotes}`);
-
-  useEffect(() => {
-    if (!tagChangedRef.current) return;
-
-    dispatch(updateTag(tag));
-  }, [dispatch, tag]);
 
   return (
     <>
@@ -88,7 +66,7 @@ function UserTagModalContents({
         <IonToolbar>
           <IonButtons slot="start">
             <SourceUrlButton
-              sourceUrl={getCurrentValidatedTag()?.sourceUrl}
+              sourceUrl={tag.sourceUrl}
               dismiss={() => setIsOpen(false)}
             />
           </IonButtons>
@@ -217,4 +195,32 @@ function UserTagModalContents({
       </div>
     </>
   );
+}
+
+function useDbTag(person: Person) {
+  const dispatch = useAppDispatch();
+  const foundTag = useAppSelector(
+    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
+  );
+
+  function getCurrentValidatedTag() {
+    return typeof foundTag === "object"
+      ? foundTag
+      : generateNewTag(getRemoteHandle(person));
+  }
+
+  const tagChangedRef = useRef(false);
+  const [tag, _setTag] = useState(getCurrentValidatedTag);
+  function setTag(...parameters: Parameters<typeof _setTag>) {
+    _setTag(...parameters);
+    tagChangedRef.current = true;
+  }
+
+  useEffect(() => {
+    if (!tagChangedRef.current) return;
+
+    dispatch(updateTag(tag));
+  }, [dispatch, tag]);
+
+  return [tag, setTag] as const;
 }
