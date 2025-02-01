@@ -8,7 +8,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { Person } from "lemmy-js-client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import PersonLink from "#/features/labels/links/PersonLink";
 import AppHeader from "#/features/shared/AppHeader";
@@ -66,10 +66,21 @@ function UserTagModalContents({
       : generateNewTag(getRemoteHandle(person));
   }
 
-  const [tag, setTag] = useState(getCurrentValidatedTag);
+  const tagChangedRef = useRef(false);
+  const [tag, _setTag] = useState(getCurrentValidatedTag);
+  function setTag(...parameters: Parameters<typeof _setTag>) {
+    _setTag(...parameters);
+    tagChangedRef.current = true;
+  }
 
   const [upvotes, setUpvotes] = useState(`${tag.upvotes}`);
   const [downvotes, setDownvotes] = useState(`${tag.downvotes}`);
+
+  useEffect(() => {
+    if (!tagChangedRef.current) return;
+
+    dispatch(updateTag(tag));
+  }, [dispatch, tag]);
 
   return (
     <>
@@ -126,7 +137,6 @@ function UserTagModalContents({
                   if (!tag.text && newTag.text && sourceUrl && saveSource)
                     newTag.sourceUrl = sourceUrl;
 
-                  dispatch(updateTag(newTag));
                   return newTag;
                 });
               }}
@@ -146,7 +156,6 @@ function UserTagModalContents({
                     ...tag,
                     color: e.detail.value ?? undefined,
                   };
-                  dispatch(updateTag(newTag));
                   return newTag;
                 });
               }}
@@ -170,7 +179,6 @@ function UserTagModalContents({
                         ...tag,
                         upvotes: +upvotes,
                       };
-                      queueMicrotask(() => dispatch(updateTag(newTag)));
                       return newTag;
                     });
                   }}
@@ -195,7 +203,6 @@ function UserTagModalContents({
                         ...tag,
                         downvotes: +downvotes,
                       };
-                      queueMicrotask(() => dispatch(updateTag(newTag)));
                       return newTag;
                     });
                   }}
