@@ -13,8 +13,10 @@ import { useEffect, useRef, useState } from "react";
 import PersonLink from "#/features/labels/links/PersonLink";
 import AppHeader from "#/features/shared/AppHeader";
 import MultilineTitle from "#/features/shared/MultilineTitle";
+import { cx } from "#/helpers/css";
 import { blurOnEnter } from "#/helpers/dom";
 import { getRemoteHandle } from "#/helpers/lemmy";
+import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
 import { useAppDispatch, useAppSelector } from "../../store";
 import SourceUrlButton from "./SourceUrlButton";
@@ -51,6 +53,8 @@ function UserTagModalContents({
   sourceUrl,
   setIsOpen,
 }: UserTagModalProps) {
+  const keyboardOpen = useKeyboardOpen();
+
   const trackVotesEnabled = useAppSelector(
     (state) => state.settings.tags.trackVotes,
   );
@@ -86,7 +90,7 @@ function UserTagModalContents({
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <div className={styles.contents}>
+      <div className={cx(styles.contents, keyboardOpen && styles.keyboardOpen)}>
         <div className={styles.header}>Preview</div>
         <IonList inset>
           <IonItem className={styles.previewItem}>
