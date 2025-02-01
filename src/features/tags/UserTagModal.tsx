@@ -56,7 +56,7 @@ function UserTagModalContents({
   );
   const saveSource = useAppSelector((state) => state.settings.tags.saveSource);
 
-  const [tag, setTag] = useDbTag(person);
+  const [tag, setTag] = useStoredTag(person);
   const [upvotes, setUpvotes] = useState(`${tag.upvotes}`);
   const [downvotes, setDownvotes] = useState(`${tag.downvotes}`);
 
@@ -197,7 +197,7 @@ function UserTagModalContents({
   );
 }
 
-function useDbTag(person: Person) {
+function useStoredTag(person: Person) {
   const dispatch = useAppDispatch();
   const foundTag = useAppSelector(
     (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
