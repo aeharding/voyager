@@ -40,6 +40,7 @@ jobs:
         with:
           node-version: 22
 
+      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
       - run: corepack enable
 
       - name: 📦 Install dependencies
@@ -98,6 +99,7 @@ jobs:
           gem install bundler
           bundle install
 
+      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
       - run: corepack enable
 
       - run: pnpm i --frozen-lockfile
@@ -139,6 +141,7 @@ jobs:
         with:
           node-version: 22
 
+      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
       - run: corepack enable
 
       - run: pnpm i --frozen-lockfile
@@ -198,6 +201,7 @@ jobs:
           gem install bundler
           bundle install
 
+      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
       - run: corepack enable
 
       - run: pnpm i --frozen-lockfile

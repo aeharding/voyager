@@ -17,6 +17,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
       - run: corepack enable
       - uses: actions/setup-node@v4
         with:
