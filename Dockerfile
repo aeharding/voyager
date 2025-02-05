@@ -9,7 +9,8 @@ ENV PATH="$PNPM_HOME:$PATH"
 ENV BUILD_FOSS_ONLY=true
 
 # enable corepack & set network-timeout
-RUN npm i -g corepack@0.31.0 && corepack enable && \
+RUN npm i -g corepack@0.31.0 && \
+  corepack enable && \
   pnpm config set network-timeout 300000
 
 
