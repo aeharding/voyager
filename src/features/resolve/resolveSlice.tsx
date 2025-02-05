@@ -13,6 +13,7 @@ import {
   POST_PATH,
 } from "#/features/shared/useLemmyUrlHandler";
 import { receivedUsers } from "#/features/user/userSlice";
+import { getApId } from "#/helpers/lemmy";
 import { isLemmyError } from "#/helpers/lemmyErrors";
 import { getClient } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
@@ -172,7 +173,7 @@ async function findFedilink(url: string): Promise<string | undefined> {
       },
     );
 
-    return response.person_view.person.actor_id;
+    return getApId(response.person_view.person);
   } else if (matchLemmyCommunity(pathname)) {
     const [community, communityHostname] = matchLemmyCommunity(pathname)!;
 
@@ -182,7 +183,7 @@ async function findFedilink(url: string): Promise<string | undefined> {
       name: community,
     });
 
-    return response.community_view.community.actor_id;
+    return getApId(response.community_view.community);
   }
 }
 

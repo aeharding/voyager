@@ -2,6 +2,7 @@ import { IonBadge, IonRefresher, IonRefresherContent } from "@ionic/react";
 
 import { getSite, lemmyVersionSelector } from "#/features/auth/siteSlice";
 import { CenteredSpinner } from "#/features/shared/CenteredSpinner";
+import { getApId } from "#/helpers/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import GenericSidebar from "./GenericSidebar";
@@ -38,8 +39,8 @@ export default function InstanceSidebar() {
         counts={counts}
         extraBadges={<IonBadge color="dark">v{lemmyVersion}</IonBadge>}
         banner={site.banner}
-        name={site.actor_id}
-        id={site.actor_id}
+        name={getApId(site)}
+        id={getApId(site)}
       />
     </>
   );
