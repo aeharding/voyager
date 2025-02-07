@@ -23,34 +23,24 @@ import useClient from "#/helpers/useClient";
 import FeedContent from "#/routes/pages/shared/FeedContent";
 import { LIMIT } from "#/services/lemmy";
 
-interface CommunitiesResultsPageProps {
-  search: string;
-}
+import { CommunitySort } from "./results/CommunitySort";
 
-export default function CommunitiesResultsPage({
-  search,
-}: CommunitiesResultsPageProps) {
+export default function CommunitiesExplorePage() {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const client = useClient();
   const [sort, setSort] = useFeedSort(
-    "search",
-    { internal: search ? "CommunitiesSearch" : "CommunitiesExplore" },
+    "communities",
+    { internal: "CommunitiesExplore" },
     "TopAll",
   );
-  const sortParams = useFeedSortParams("search", sort);
+  const sortParams = useFeedSortParams("communities", sort);
   const [listingType, setListingType] = useState<ListingType>("All");
 
   const fetchFn: FetchFn<CommunityView> = async (pageData, ...rest) => {
-    if (isFirstPage(pageData) && search?.includes("@")) {
-      return compact([await findExactCommunity(search, client)]);
-    }
-
-    const response = await client.search(
+    const response = await client.listCommunities(
       {
         limit: LIMIT,
-        q: search,
-        type_: "Communities",
-        listing_type: listingType,
+        type_: listingType,
         ...pageData,
         ...sortParams,
       },
@@ -73,14 +63,14 @@ export default function CommunitiesResultsPage({
             />
           </IonButtons>
 
-          <IonTitle>{search ? <>“{search}”</> : "Communities"}</IonTitle>
+          <IonTitle>Communities</IonTitle>
 
           <IonButtons slot="end">
             <ListingTypeFilter
               listingType={listingType}
               setListingType={setListingType}
             />
-            <SearchSort sort={sort} setSort={setSort} />
+            <CommunitySort sort={sort} setSort={setSort} />
           </IonButtons>
         </IonToolbar>
       </AppHeader>
@@ -89,23 +79,4 @@ export default function CommunitiesResultsPage({
       </FeedContent>
     </IonPage>
   );
-}
-
-async function findExactCommunity(
-  name: string,
-  client: LemmyHttp,
-): Promise<CommunityView | undefined> {
-  const sanitizedName = name.startsWith("!") ? name.slice(1) : name;
-
-  try {
-    return (await client.getCommunity({ name: sanitizedName })).community_view;
-  } catch (error) {
-    if (
-      isLemmyError(error, "couldnt_find_community" as never) || // TODO lemmy 0.19 and less support
-      isLemmyError(error, "not_found")
-    )
-      return;
-
-    throw error;
-  }
 }

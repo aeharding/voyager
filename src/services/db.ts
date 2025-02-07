@@ -10,8 +10,10 @@ import {
 } from "lemmy-js-client";
 
 import { COMMENT_SORTS } from "#/features/comment/CommentSort.js";
-import { ALL_POST_SORTS } from "#/features/feed/PostSort.js";
+import { ALL_POST_SORTS } from "#/features/feed/sort/PostSort.js";
+import { SearchSortType } from "#/features/feed/sort/SearchSort";
 import { arrayOfAll } from "#/helpers/array.js";
+import { CommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 
 export interface IPostMetadata {
   post_id: number;
@@ -350,7 +352,9 @@ export interface GlobalSettingValueTypes {
   compact_thumbnail_position_type: CompactThumbnailPositionType;
   compact_thumbnail_size: CompactThumbnailSizeType;
   default_comment_sort: CommentDefaultSort;
+  default_community_sort_by_feed: CommunitySortType;
   default_post_sort: PostSortType;
+  default_search_sort_by_feed: SearchSortType;
   default_share: PostCommentShareType;
   disable_auto_hide_in_communities: boolean;
   disable_marking_posts_read: boolean;
@@ -476,6 +480,8 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "hide_alt_text",
   "show_controls_on_open",
   "default_share",
+  "default_search_sort_by_feed",
+  "default_community_sort_by_feed",
 ]);
 
 export interface ISettingItem<T extends keyof SettingValueTypes> {

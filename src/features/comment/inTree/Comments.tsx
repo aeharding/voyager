@@ -15,6 +15,7 @@ import { VList, VListHandle } from "virtua";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import FeedLoadMoreFailed from "#/features/feed/endItems/FeedLoadMoreFailed";
+import { useFeedSortParams } from "#/features/feed/sort/useFeedSort";
 import { useRangeChange } from "#/features/feed/useRangeChange";
 import { getPost } from "#/features/post/postSlice";
 import { defaultCommentDepthSelector } from "#/features/settings/settingsSlice";
@@ -81,6 +82,8 @@ export default function Comments({
 
   const scrollViewContainerRef = useRef<HTMLDivElement>(null);
   const virtuaRef = useRef<VListHandle>(null);
+
+  const sortParams = useFeedSortParams("comments", sort);
 
   const virtualEnabled = postDetailPageHasVirtualScrollEnabled(
     commentPath,
@@ -237,7 +240,7 @@ export default function Comments({
           post_id: reqPostId,
           parent_id: parentCommentId,
           limit: 10,
-          sort,
+          ...sortParams,
           type_: "All",
 
           max_depth: maxDepth,
@@ -295,7 +298,7 @@ export default function Comments({
       parentCommentId,
       postId,
       presentToast,
-      sort,
+      sortParams,
     ],
   );
 
