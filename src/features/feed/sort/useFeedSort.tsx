@@ -235,48 +235,48 @@ type TopTime =
 
 function convertTopToLemmyParams(sort: `Top${TopTime}`): {
   sort: "Top";
-  time?: Time;
+  time_range_seconds?: number;
 } {
   if (sort === "TopAll") return { sort: "Top" };
 
-  let time: Time;
+  let seconds: number; // in seconds
 
   switch (sort) {
     case "TopDay":
-      time = "day";
+      seconds = 86400;
       break;
     case "TopWeek":
-      time = "week";
+      seconds = 604800;
       break;
     case "TopMonth":
-      time = "month";
+      seconds = 2592000;
       break;
     case "TopYear":
-      time = "year";
+      seconds = 31536000;
       break;
     case "TopHour":
-      time = "hour";
+      seconds = 3600;
       break;
     case "TopNineMonths":
-      time = "nine_months";
+      seconds = 2147483647;
       break;
     case "TopSixHour":
-      time = "six_hours";
+      seconds = 21600;
       break;
     case "TopSixMonths":
-      time = "six_months";
+      seconds = 15811200;
       break;
     case "TopThreeMonths":
-      time = "three_months";
+      seconds = 7776000;
       break;
     case "TopTwelveHour":
-      time = "twelve_hours";
+      seconds = 43200;
       break;
     default:
       throw new Error(`Invalid sort: ${sort}`);
   }
 
-  return { sort: "Top", time };
+  return { sort: "Top", time_range_seconds: seconds };
 }
 
 function convertCommunitySortToLemmyParams(sort: CommunitySortType): {
