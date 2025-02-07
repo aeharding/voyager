@@ -9,6 +9,8 @@ import React, {
 } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
+import { isNative } from "#/helpers/device";
+
 type UpdateStatus =
   | "not-enabled"
   | "loading"
@@ -31,6 +33,14 @@ export const UpdateContext = createContext<IUpdateContext>({
 });
 
 export function UpdateContextProvider({ children }: React.PropsWithChildren) {
+  if (isNative()) return children;
+
+  return (
+    <EnabledUpdateContextProvider>{children}</EnabledUpdateContextProvider>
+  );
+}
+
+function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
   const [status, setStatus] = useState<UpdateStatus>("not-enabled");
   const documentState = useDocumentVisibility();
 
