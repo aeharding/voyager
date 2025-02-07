@@ -42,7 +42,7 @@ import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 import { isIosTheme } from "#/helpers/device";
 import { blurOnEnter } from "#/helpers/dom";
-import { isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
+import { getApId, isMinimumSupportedLemmyVersion } from "#/helpers/lemmy";
 import { isValidHostname, stripProtocol } from "#/helpers/url";
 import { defaultServersUntouched, getCustomServers } from "#/services/app";
 import { getClient, getImageSrc } from "#/services/lemmy";
@@ -144,7 +144,7 @@ export default function PickJoinServer() {
 
     // User changed search before request resolved
     if (
-      site.site_view.site.actor_id !==
+      getApId(site.site_view.site) !==
       `https://${searchHostname.toLowerCase()}/`
     )
       return;
@@ -364,7 +364,7 @@ function normalize(instance: GetSiteResponse | LVInstance): Instance {
   }
 
   return {
-    url: new URL(instance.site_view.site.actor_id).hostname,
+    url: new URL(getApId(instance.site_view.site)).hostname,
     icon: instance.site_view.site.icon,
     description: instance.site_view.site.description,
     open: instance.site_view.local_site.registration_mode === "Open",
