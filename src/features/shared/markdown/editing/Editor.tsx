@@ -106,7 +106,7 @@ export default function Editor({
   }
 
   async function onReceivedImage(image: File) {
-    const markdown = await uploadImage(image);
+    const markdown = await uploadImage(image, true);
 
     textareaRef.current?.focus();
     insertBlock(markdown);
