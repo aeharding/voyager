@@ -20,14 +20,14 @@ const sortOptions: SortOptions<PostSortType> = [
       "TopNineMonths",
       "TopYear",
       "TopAll",
-    ] as const,
+    ],
   },
   "New",
   "Controversial",
   "Scaled",
   "MostComments",
   "NewComments",
-] as const;
+];
 
 export const ALL_POST_SORTS = arrayOfAll<PostSortType>()([
   "Active",

@@ -48,7 +48,7 @@ type RootSortOption<S> = SelectableSortOption<S> | ChildrenSortOption<S>;
 interface ChildrenSortOption<S, C = SelectableSortOption<S>>
   extends ActionSheetButton {
   label: string;
-  children: C[];
+  children: readonly C[];
 }
 
 interface SelectableSortOption<S> extends ActionSheetButton {
