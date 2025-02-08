@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CommentSortType, PostSortType } from "lemmy-js-client";
 
+import { CommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 import { db } from "#/services/db";
 import { RootState } from "#/store";
 
 import { AnyFeed, serializeFeedName } from "../helpers";
+import { SearchSortType } from "./SearchSort";
 
 interface PostSortState {
   /**
@@ -13,6 +15,8 @@ interface PostSortState {
   sortByContextByFeedName: {
     posts: Record<string, PostSortType | null>;
     comments: Record<string, CommentSortType | null>;
+    search: Record<string, SearchSortType | null>;
+    communities: Record<string, CommunitySortType | null>;
   };
 }
 
@@ -20,6 +24,8 @@ const initialState: PostSortState = {
   sortByContextByFeedName: {
     posts: {},
     comments: {},
+    search: {},
+    communities: {},
   },
 };
 
@@ -33,6 +39,11 @@ export type SetSortActionPayload =
       feed: AnyFeed;
       sort: CommentSortType;
       context: "comments";
+    }
+  | {
+      feed: AnyFeed;
+      sort: SearchSortType;
+      context: "search";
     };
 
 export const feedSortSlice = createSlice({
@@ -74,7 +85,7 @@ export const getFeedSort = createAsyncThunk(
     context,
   }: {
     feed: AnyFeed;
-    context: "posts" | "comments";
+    context: "posts" | "comments" | "search" | "communities";
   }) => {
     const feedName = serializeFeedName(feed);
     const sort =
@@ -91,17 +102,26 @@ export const getFeedSort = createAsyncThunk(
 );
 
 export const getFeedSortSelectorBuilder =
-  (feed: AnyFeed | undefined, context: "posts" | "comments") =>
+  (
+    feed: AnyFeed | undefined,
+    context: "posts" | "comments" | "search" | "communities",
+  ) =>
   (state: RootState) =>
     feed
       ? state.feedSort.sortByContextByFeedName[context][serializeFeedName(feed)]
       : null;
 
-function getDefaultSortSettingForContext(context: "posts" | "comments") {
+function getDefaultSortSettingForContext(
+  context: "posts" | "comments" | "search" | "communities",
+) {
   switch (context) {
     case "comments":
       return "default_comment_sort_by_feed";
     case "posts":
       return "default_post_sort_by_feed";
+    case "search":
+      return "default_search_sort_by_feed";
+    case "communities":
+      return "default_community_sort_by_feed";
   }
 }
