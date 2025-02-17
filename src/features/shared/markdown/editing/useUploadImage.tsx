@@ -4,12 +4,14 @@ import { useState } from "react";
 import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
 
+import { useTemporarySelectedAccount } from "./modal/contents/TemporarySelectedAccountContext";
 import { uploadImage } from "./uploadImageSlice";
 
 export default function useUploadImage() {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
   const [imageUploading, setImageUploading] = useState(false);
+  const { account } = useTemporarySelectedAccount();
 
   return {
     jsx: <IonLoading isOpen={imageUploading} message="Uploading image..." />,
@@ -19,7 +21,7 @@ export default function useUploadImage() {
       let imageUrl: string;
 
       try {
-        imageUrl = await dispatch(uploadImage(image));
+        imageUrl = await dispatch(uploadImage(image, account));
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Unknown error";
