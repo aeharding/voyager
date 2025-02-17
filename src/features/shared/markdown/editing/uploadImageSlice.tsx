@@ -1,12 +1,26 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UploadImageResponse } from "lemmy-js-client";
 
-import { clientSelector, urlSelector } from "#/features/auth/authSelectors";
-import { _uploadImage } from "#/services/lemmy";
+import {
+  activeAccount,
+  getInstanceFromHandle,
+} from "#/features/auth/authSelectors";
+import { Credential } from "#/features/auth/authSlice";
+import { _uploadImage, getClient } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
+/**
+ * Uploaded images can be from multiple instances. For example,
+ * switch accounts in comment modal and then upload an image.
+ *
+ * So we need to keep track of the account/instance the image belongs to.
+ */
+interface Image extends UploadImageResponse {
+  _handle: string;
+}
+
 interface UploadImageState {
-  pendingSubmitImages: UploadImageResponse[];
+  pendingSubmitImages: Image[];
 }
 
 const initialState: UploadImageState = {
@@ -17,13 +31,13 @@ export const uploadImageSlice = createSlice({
   name: "uploadImage",
   initialState,
   reducers: {
-    onUploadedImage: (state, action: PayloadAction<UploadImageResponse>) => {
+    onUploadedImage: (state, action: PayloadAction<Image>) => {
       state.pendingSubmitImages.push(action.payload);
     },
     onHandledPendingImages: (
       state,
       // if undefined, everything is handled
-      action: PayloadAction<UploadImageResponse[] | undefined>,
+      action: PayloadAction<Image[] | undefined>,
     ) => {
       if (!action.payload) {
         state.pendingSubmitImages = [];
@@ -43,14 +57,19 @@ export const { onUploadedImage, onHandledPendingImages } =
 export default uploadImageSlice.reducer;
 
 export const uploadImage =
-  (image: File) => async (dispatch: AppDispatch, getState: () => RootState) => {
+  (image: File, _account?: Credential) =>
+  async (dispatch: AppDispatch, getState: () => RootState) => {
     const state = getState();
-    const client = clientSelector(state);
-    const url = urlSelector(state);
+    const account = _account ?? activeAccount(state);
 
-    const response = await _uploadImage(url, client, image);
+    if (!account) throw new Error("Account is not valid/signed in");
 
-    dispatch(onUploadedImage(response));
+    const instance = getInstanceFromHandle(account.handle);
+    const client = getClient(instance, account.jwt);
+
+    const response = await _uploadImage(instance, client, image);
+
+    dispatch(onUploadedImage({ ...response, _handle: account.handle }));
 
     return response.url!;
   };
@@ -58,8 +77,6 @@ export const uploadImage =
 export const deletePendingImageUploads =
   (exceptUrl?: string) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const client = clientSelector(getState());
-
     const toRemove = getState().uploadImage.pendingSubmitImages.filter(
       (img) => {
         if (exceptUrl && img.url === exceptUrl) return false;
@@ -73,6 +90,17 @@ export const deletePendingImageUploads =
         toRemove.map(async (img) => {
           const file = img.files?.[0];
           if (!file) return;
+
+          const account = getState().auth.accountData?.accounts.find(
+            ({ handle }) => handle === img._handle,
+          );
+
+          if (!account) return;
+
+          const client = getClient(
+            getInstanceFromHandle(account.handle),
+            account.jwt,
+          );
 
           await client.deleteImage({
             token: file.delete_token,
