@@ -51,7 +51,7 @@ export default function Editor({
 
   const { insertBlock } = useEditorHelpers(textareaRef);
 
-  const { uploadImage, jsx: uploadImageJsx } = useUploadImage();
+  const { uploadImage, jsx: uploadImageJsx } = useUploadImage("body");
 
   useTextRecovery(text, setText, !canRecoverText);
 

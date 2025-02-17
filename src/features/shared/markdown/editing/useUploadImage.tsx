@@ -5,9 +5,9 @@ import useAppToast from "#/helpers/useAppToast";
 import { useAppDispatch } from "#/store";
 
 import { useTemporarySelectedAccount } from "./modal/contents/TemporarySelectedAccountContext";
-import { uploadImage } from "./uploadImageSlice";
+import { uploadImage, UploadImageContext } from "./uploadImageSlice";
 
-export default function useUploadImage() {
+export default function useUploadImage(context: UploadImageContext) {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
   const [imageUploading, setImageUploading] = useState(false);
@@ -21,7 +21,7 @@ export default function useUploadImage() {
       let imageUrl: string;
 
       try {
-        imageUrl = await dispatch(uploadImage(image, account));
+        imageUrl = await dispatch(uploadImage(image, context, account));
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Unknown error";
