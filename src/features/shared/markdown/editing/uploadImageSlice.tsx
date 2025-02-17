@@ -9,6 +9,8 @@ import { Credential } from "#/features/auth/authSlice";
 import { _uploadImage, getClient } from "#/services/lemmy";
 import { AppDispatch, RootState } from "#/store";
 
+export type UploadImageContext = "body" | "post-content";
+
 /**
  * Uploaded images can be from multiple instances. For example,
  * switch accounts in comment modal and then upload an image.
@@ -17,6 +19,7 @@ import { AppDispatch, RootState } from "#/store";
  */
 interface Image extends UploadImageResponse {
   _handle: string;
+  _context: UploadImageContext;
 }
 
 interface UploadImageState {
@@ -57,7 +60,7 @@ export const { onUploadedImage, onHandledPendingImages } =
 export default uploadImageSlice.reducer;
 
 export const uploadImage =
-  (image: File, _account?: Credential) =>
+  (image: File, context: UploadImageContext, _account?: Credential) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
     const state = getState();
     const account = _account ?? activeAccount(state);
@@ -69,21 +72,22 @@ export const uploadImage =
 
     const response = await _uploadImage(instance, client, image);
 
-    dispatch(onUploadedImage({ ...response, _handle: account.handle }));
+    dispatch(
+      onUploadedImage({
+        ...response,
+        _handle: account.handle,
+        _context: context,
+      }),
+    );
 
     return response.url!;
   };
 
 export const deletePendingImageUploads =
-  (exceptUrl?: string) =>
+  (filter?: (img: Image) => boolean) =>
   async (dispatch: AppDispatch, getState: () => RootState) => {
-    const toRemove = getState().uploadImage.pendingSubmitImages.filter(
-      (img) => {
-        if (exceptUrl && img.url === exceptUrl) return false;
-
-        return true;
-      },
-    );
+    const images = getState().uploadImage.pendingSubmitImages;
+    const toRemove = filter ? images.filter(filter) : images;
 
     try {
       await Promise.all(

@@ -65,7 +65,7 @@ export default function DefaultMode({
     text,
   });
 
-  const { uploadImage, jsx } = useUploadImage();
+  const { uploadImage, jsx } = useUploadImage("body");
 
   const {
     insertBlock,
