@@ -354,6 +354,7 @@ export interface GlobalSettingValueTypes {
   default_share: PostCommentShareType;
   disable_auto_hide_in_communities: boolean;
   disable_marking_posts_read: boolean;
+  downvoted_collapsed_by_default: boolean;
   embed_crossposts: boolean;
   embed_external_media: boolean;
   enable_haptic_feedback: boolean;
@@ -376,7 +377,6 @@ export interface GlobalSettingValueTypes {
   remember_community_post_sort: boolean;
   remember_post_appearance_type: boolean;
   show_collapsed_comment: boolean;
-  downvoted_collapsed_by_default: boolean;
   show_comment_images: boolean;
   show_community_icons: boolean;
   show_controls_on_open: boolean;

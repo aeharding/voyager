@@ -229,11 +229,11 @@ const baseState: SettingsState = {
   general: {
     comments: {
       collapseCommentThreads: OCommentThreadCollapse.Never,
+      downvotedCollapsedByDefault: false,
       highlightNewAccount: true,
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
       rememberCommunitySort: false,
       showCollapsed: false,
-      downvotedCollapsedByDefault: false,
       showCommentImages: true,
       showJumpButton: false,
       sort: OCommentDefaultSort.Hot,
@@ -382,6 +382,10 @@ export const settingsSlice = createSlice({
       state.general.posts.disableMarkingRead = action.payload;
       db.setSetting("disable_marking_posts_read", action.payload);
     },
+    setDownvotedCollapsedByDefault(state, action: PayloadAction<boolean>) {
+      state.general.comments.downvotedCollapsedByDefault = action.payload;
+      db.setSetting("downvoted_collapsed_by_default", action.payload);
+    },
     setEmbedCrossposts(state, action: PayloadAction<boolean>) {
       state.appearance.posts.embedCrossposts = action.payload;
       db.setSetting("embed_crossposts", action.payload);
@@ -492,10 +496,6 @@ export const settingsSlice = createSlice({
     setShowCollapsedComment(state, action: PayloadAction<boolean>) {
       state.general.comments.showCollapsed = action.payload;
       db.setSetting("show_collapsed_comment", action.payload);
-    },
-    setDownvotedCollapsedByDefault(state, action: PayloadAction<boolean>) {
-      state.general.comments.downvotedCollapsedByDefault = action.payload;
-      db.setSetting("downvoted_collapsed_by_default", action.payload);
     },
     setShowCommentImages(state, action: PayloadAction<boolean>) {
       state.general.comments.showCommentImages = action.payload;
@@ -801,6 +801,7 @@ export const {
   setDeviceMode,
   setDisableAutoHideInCommunities,
   setDisableMarkingPostsRead,
+  setDownvotedCollapsedByDefault,
   setEmbedCrossposts,
   setEmbedExternalMedia,
   setEnableHapticFeedback,
@@ -826,7 +827,6 @@ export const {
   setRememberCommunityPostSort,
   setRememberPostAppearance,
   setShowCollapsedComment,
-  setDownvotedCollapsedByDefault,
   setShowCommentImages,
   setShowCommunityIcons,
   setShowControlsOnOpen,
@@ -908,6 +908,7 @@ function hydrateStateWithGlobalSettings(
     general: {
       comments: {
         collapseCommentThreads: settings.collapse_comment_threads,
+        downvotedCollapsedByDefault: settings.downvoted_collapsed_by_default,
         highlightNewAccount: settings.highlight_new_account,
         jumpButtonPosition: settings.jump_button_position,
         rememberCommunitySort: settings.remember_community_comment_sort,
@@ -917,7 +918,6 @@ function hydrateStateWithGlobalSettings(
         sort: settings.default_comment_sort,
         tapToCollapse: settings.tap_to_collapse,
         touchFriendlyLinks: settings.touch_friendly_links,
-        downvotedCollapsedByDefault: settings.downvoted_collapsed_by_default,
       },
       defaultShare: settings.default_share,
       enableHapticFeedback: settings.enable_haptic_feedback,

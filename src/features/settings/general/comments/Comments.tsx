@@ -3,8 +3,8 @@ import { IonLabel, IonList } from "@ionic/react";
 import { ListHeader } from "#/features/settings/shared/formatting";
 
 import CollapsedByDefault from "./CollapsedByDefault";
-import DownvotedCollapsedByDefault from "./DownvotedCollapsedByDefault";
 import DefaultSort from "./DefaultSort";
+import DownvotedCollapsedByDefault from "./DownvotedCollapsedByDefault";
 import HighlightNewAccount from "./HighlightNewAccount";
 import JumpButtonPosition from "./JumpButtonPosition";
 import RememberCommunityCommentSort from "./RememberCommunityCommentSort";
