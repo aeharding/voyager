@@ -121,6 +121,7 @@ export interface SettingsState {
   };
   general: {
     comments: {
+      downvotedCollapsedByDefault: boolean;
       collapseCommentThreads: CommentThreadCollapse;
       tapToCollapse: TapToCollapseType;
       sort: CommentDefaultSort;
@@ -232,6 +233,7 @@ const baseState: SettingsState = {
       jumpButtonPosition: OJumpButtonPositionType.RightBottom,
       rememberCommunitySort: false,
       showCollapsed: false,
+      downvotedCollapsedByDefault: false,
       showCommentImages: true,
       showJumpButton: false,
       sort: OCommentDefaultSort.Hot,
@@ -490,6 +492,10 @@ export const settingsSlice = createSlice({
     setShowCollapsedComment(state, action: PayloadAction<boolean>) {
       state.general.comments.showCollapsed = action.payload;
       db.setSetting("show_collapsed_comment", action.payload);
+    },
+    setDownvotedCollapsedByDefault(state, action: PayloadAction<boolean>) {
+      state.general.comments.downvotedCollapsedByDefault = action.payload;
+      db.setSetting("downvoted_collapsed_by_default", action.payload);
     },
     setShowCommentImages(state, action: PayloadAction<boolean>) {
       state.general.comments.showCommentImages = action.payload;
@@ -820,6 +826,7 @@ export const {
   setRememberCommunityPostSort,
   setRememberPostAppearance,
   setShowCollapsedComment,
+  setDownvotedCollapsedByDefault,
   setShowCommentImages,
   setShowCommunityIcons,
   setShowControlsOnOpen,
@@ -910,6 +917,7 @@ function hydrateStateWithGlobalSettings(
         sort: settings.default_comment_sort,
         tapToCollapse: settings.tap_to_collapse,
         touchFriendlyLinks: settings.touch_friendly_links,
+        downvotedCollapsedByDefault: settings.downvoted_collapsed_by_default,
       },
       defaultShare: settings.default_share,
       enableHapticFeedback: settings.enable_haptic_feedback,

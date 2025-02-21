@@ -376,6 +376,7 @@ export interface GlobalSettingValueTypes {
   remember_community_post_sort: boolean;
   remember_post_appearance_type: boolean;
   show_collapsed_comment: boolean;
+  downvoted_collapsed_by_default: boolean;
   show_comment_images: boolean;
   show_community_icons: boolean;
   show_controls_on_open: boolean;
@@ -455,6 +456,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "remember_community_post_sort",
   "remember_post_appearance_type",
   "show_collapsed_comment",
+  "downvoted_collapsed_by_default",
   "show_comment_images",
   "show_community_icons",
   "show_hidden_in_communities",
@@ -676,6 +678,10 @@ export class WefwefDB extends Dexie {
         ++,
         &handle
       `,
+    });
+
+    this.version(10).upgrade(async () => {
+      await this.setSetting("downvoted_collapsed_by_default", false);
     });
   }
 
