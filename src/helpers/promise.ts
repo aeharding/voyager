@@ -8,5 +8,6 @@ export function isPromiseResolvedByPaint(
         resolve(false);
       });
     }),
-  ]);
+    // If promise rejected, it's still resolved by paint
+  ]).catch(() => true);
 }
