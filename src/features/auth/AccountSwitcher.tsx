@@ -30,7 +30,7 @@ import { setAccounts } from "./authSlice";
 
 type AccountSwitcherProps = {
   onDismiss: (data?: string, role?: string) => void;
-  onSelectAccount: (account: string) => Promise<void>;
+  onSelectAccount: ((account: string) => Promise<void>) | void;
   showGuest?: boolean;
   activeHandle?: string;
 } & (
@@ -130,10 +130,13 @@ function AccountSwitcherContents({
               const old = selectedAccount;
               setSelectedAccount(e.target.value);
 
-              const selectionChangePromise = onSelectAccount(e.target.value);
+              const selectionChangePromise = onSelectAccount?.(e.target.value);
 
               // Bail on rendering the loading indicator
-              if (await isPromiseResolvedByPaint(selectionChangePromise)) {
+              if (
+                !selectionChangePromise ||
+                (await isPromiseResolvedByPaint(selectionChangePromise))
+              ) {
                 onDismiss();
                 return;
               }
