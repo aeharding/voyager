@@ -60,7 +60,7 @@ export function TemporarySelectedAccountProvider({
       onDismiss: (data?: string, role?: string) =>
         onDismissAccountSwitcher(data, role),
       onSelectAccount: async (account: string) => {
-        onSelectAccount(account);
+        await onSelectAccount(account);
 
         setSelectedAccountHandle(account);
       },
