@@ -22,6 +22,9 @@ public class MainActivity extends BridgeActivity {
         // and add it to the safe area insets. The native plugin is used to get this info.
         // See https://bugs.chromium.org/p/chromium/issues/detail?id=1094366
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(false);
+            getWindow().setStatusBarColor(0);
+            getWindow().setNavigationBarColor(0);
             getWindow().setNavigationBarContrastEnforced(true);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // On older versions of android setDecorFitsSystemWindows doesn't exist yet, but it can
