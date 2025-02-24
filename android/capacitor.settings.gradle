@@ -45,7 +45,7 @@ include ':capacitor-launch-native'
 project(':capacitor-launch-native').projectDir = new File('../node_modules/.pnpm/capacitor-launch-native@2.0.0_@capacitor+core@7.0.1/node_modules/capacitor-launch-native/android')
 
 include ':capacitor-plugin-safe-area'
-project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.4_@capacitor+core@7.0.1/node_modules/capacitor-plugin-safe-area/android')
+project(':capacitor-plugin-safe-area').projectDir = new File('../node_modules/.pnpm/capacitor-plugin-safe-area@4.0.0_@capacitor+core@7.0.1/node_modules/capacitor-plugin-safe-area/android')
 
 include ':capacitor-reader'
 project(':capacitor-reader').projectDir = new File('../node_modules/.pnpm/capacitor-reader@1.0.0_@capacitor+core@7.0.1/node_modules/capacitor-reader/android')

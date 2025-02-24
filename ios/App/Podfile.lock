@@ -24,7 +24,7 @@ PODS:
     - Capacitor
   - CapacitorNetwork (7.0.0):
     - Capacitor
-  - CapacitorPluginSafeArea (3.0.4):
+  - CapacitorPluginSafeArea (4.0.0):
     - Capacitor
   - CapacitorReader (1.0.0):
     - Capacitor
@@ -59,7 +59,7 @@ DEPENDENCIES:
   - "CapacitorKeyboard (from `../../node_modules/.pnpm/@capacitor+keyboard@7.0.0_patch_hash=a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f7_7fa9f73596a3c66c6ad827db199ae4cb/node_modules/@capacitor/keyboard`)"
   - "CapacitorLaunchNative (from `../../node_modules/.pnpm/capacitor-launch-native@2.0.0_@capacitor+core@7.0.1/node_modules/capacitor-launch-native`)"
   - "CapacitorNetwork (from `../../node_modules/.pnpm/@capacitor+network@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/network`)"
-  - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.4_@capacitor+core@7.0.1/node_modules/capacitor-plugin-safe-area`)"
+  - "CapacitorPluginSafeArea (from `../../node_modules/.pnpm/capacitor-plugin-safe-area@4.0.0_@capacitor+core@7.0.1/node_modules/capacitor-plugin-safe-area`)"
   - "CapacitorReader (from `../../node_modules/.pnpm/capacitor-reader@1.0.0_@capacitor+core@7.0.1/node_modules/capacitor-reader`)"
   - "CapacitorShare (from `../../node_modules/.pnpm/@capacitor+share@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/share`)"
   - "CapacitorShareSafari (from `../../node_modules/.pnpm/capacitor-share-safari@0.1.1_@capacitor+core@7.0.1/node_modules/capacitor-share-safari`)"
@@ -100,7 +100,7 @@ EXTERNAL SOURCES:
   CapacitorNetwork:
     :path: "../../node_modules/.pnpm/@capacitor+network@7.0.0_@capacitor+core@7.0.1/node_modules/@capacitor/network"
   CapacitorPluginSafeArea:
-    :path: "../../node_modules/.pnpm/capacitor-plugin-safe-area@3.0.4_@capacitor+core@7.0.1/node_modules/capacitor-plugin-safe-area"
+    :path: "../../node_modules/.pnpm/capacitor-plugin-safe-area@4.0.0_@capacitor+core@7.0.1/node_modules/capacitor-plugin-safe-area"
   CapacitorReader:
     :path: "../../node_modules/.pnpm/capacitor-reader@1.0.0_@capacitor+core@7.0.1/node_modules/capacitor-reader"
   CapacitorShare:
@@ -130,7 +130,7 @@ SPEC CHECKSUMS:
   CapacitorKeyboard: 4db71e694e7afb5d7c0be09b05495c19f7d6c914
   CapacitorLaunchNative: f240ccd104744333a31a2e214c2c03d2b7ecb1da
   CapacitorNetwork: 30c2e78a0ed32530656cb426c8ee6c2caec10dbf
-  CapacitorPluginSafeArea: f096bc36693251a7e55fc3571487dd337c0ddb6a
+  CapacitorPluginSafeArea: 22031c3436269ca80fac90ec2c94bc7c1e59a81d
   CapacitorReader: bd547466c545e7349229ac9caa0a380512e95b3f
   CapacitorShare: d94c53d7656f1ce8f6712ae8d19ab0c18a69259f
   CapacitorShareSafari: a93db1a2ae68b956283b9b868ca9a7c474af52bd
@@ -140,6 +140,6 @@ SPEC CHECKSUMS:
   CapacitorTips: 26a439aa3145c67a72a2d0659f900021530992e4
   SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
 
-PODFILE CHECKSUM: 04e7a50c02fae1c848933ee7d1599ac8ad116956
+PODFILE CHECKSUM: 0f98b0510c91eb287d3e3ac90d457265201020ee
 
 COCOAPODS: 1.16.2
