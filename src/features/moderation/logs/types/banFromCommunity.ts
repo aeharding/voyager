@@ -15,7 +15,7 @@ export default function banFromCommunity(
     title: `${
       item.mod_ban_from_community.banned ? "Banned" : "Unbanned"
     } User from Community`,
-    by: item.moderator ? getHandle(item.moderator) : undefined,
+    by: item.moderator,
     message: `${getHandle(item.banned_person)} from ${getHandle(
       item.community,
     )}`,

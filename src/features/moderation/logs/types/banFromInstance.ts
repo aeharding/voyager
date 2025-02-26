@@ -11,7 +11,7 @@ export default function banFromInstance(item: ModBanView): LogEntryData {
   return {
     icon: item.mod_ban.banned ? ban : refresh,
     title: `${item.mod_ban.banned ? "Banned" : "Unbanned"} User`,
-    by: item.moderator ? getHandle(item.moderator) : undefined,
+    by: item.moderator,
     role: getAdminRole(item.moderator),
     message:
       getHandle(item.banned_person) +
