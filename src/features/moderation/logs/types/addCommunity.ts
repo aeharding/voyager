@@ -11,7 +11,7 @@ export default function addCommunity(item: ModAddCommunityView): LogEntryData {
   return {
     icon: item.mod_add_community.removed ? shieldHalf : shieldCheckmark,
     title: `${item.mod_add_community.removed ? "Removed" : "Added"} Mod`,
-    by: item.moderator ? getHandle(item.moderator) : undefined,
+    by: item.moderator,
     role: getAdminRole(item.moderator),
     message: `${getHandle(item.modded_person)} ${
       item.mod_add_community.removed ? "from" : "to"
