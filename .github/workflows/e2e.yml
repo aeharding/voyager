@@ -6,22 +6,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm i -g corepack@0.31.0 # ಠ_ಠ https://github.com/nodejs/corepack/issues/612
-      - run: corepack enable
+
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
       - name: Build project
         run: pnpm build
         env:
           VITE_FORCE_LEMMY_INSECURE: 1
           VITE_CUSTOM_LEMMY_SERVERS: localhost:8536
           VITE__TEST_MODE: 1
+
       - name: Install Playwright dependencies
         run: npx playwright install --with-deps
+
       - name: Run Playwright tests
         run: |
           docker compose -f e2e/ci/docker-compose.yml up -d
