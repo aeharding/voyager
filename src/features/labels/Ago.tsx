@@ -4,25 +4,48 @@ import { round } from "es-toolkit";
 import { formatDistanceShort } from "./formatDistanceShort";
 
 interface AgoProps {
+  /** @default now */
+  to?: string;
   date: string;
+
   as?: "ultrashort" | "short" | "verbose";
   shorthand?: boolean;
+
   className?: string;
 }
 
-export default function Ago({ date, className, as = "ultrashort" }: AgoProps) {
-  return (
-    <span className={className}>{formatRelative(new Date(date), as)}</span>
-  );
+export default function Ago({
+  date: dateStr,
+  className,
+  as = "ultrashort",
+  to: toStr,
+}: AgoProps) {
+  const to = toStr ? new Date(toStr) : new Date();
+  const date = new Date(dateStr);
+
+  const duration = intervalToDuration({ start: date, end: to });
+
+  return <span className={className}>{formatRelative(duration, as)}</span>;
 }
 
-export function formatRelative(
+export function formatRelativeToNow(
   date: Date,
+  ...args: Parameters<typeof formatRelative> extends [unknown, ...infer Rest]
+    ? Rest
+    : never
+) {
+  const duration = intervalToDuration({
+    start: date,
+    end: new Date(),
+  });
+
+  return formatRelative(duration, ...args);
+}
+
+function formatRelative(
+  duration: Duration,
   as: AgoProps["as"] = "ultrashort",
 ): string {
-  const now = new Date();
-  const duration = intervalToDuration({ start: date, end: now });
-
   let distance: string;
 
   switch (as) {

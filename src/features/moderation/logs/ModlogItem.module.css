@@ -68,3 +68,7 @@
     color: var(--ion-color-medium2);
   }
 }
+
+.agoIcon {
+  font-size: 1.2em;
+}
