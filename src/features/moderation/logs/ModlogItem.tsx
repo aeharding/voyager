@@ -123,7 +123,7 @@ export function ModlogItem({ item }: ModLogItemProps) {
     return role_ ?? "mod";
   })();
 
-  const ellipsisHandleRef = useRef<ModlogItemMoreActionsHandle>(null);
+  const ellipsisHandleRef = useRef<ModlogItemMoreActionsHandle>(undefined);
 
   const onCommentLongPress = useCallback(() => {
     ellipsisHandleRef.current?.present();

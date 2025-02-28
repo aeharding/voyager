@@ -1,6 +1,6 @@
 import { IonAccordion, IonAccordionGroup, IonItem } from "@ionic/react";
 import { noop } from "es-toolkit";
-import {
+import React, {
   ComponentProps,
   createContext,
   useLayoutEffect,
@@ -15,7 +15,7 @@ import { getSpoilerId, updateSpoilerState } from "./spoilerSlice";
 
 import styles from "./Details.module.css";
 
-type DetailsProps = JSX.IntrinsicElements["details"] &
+type DetailsProps = React.JSX.IntrinsicElements["details"] &
   ExtraProps & {
     id: string;
   };
@@ -46,7 +46,7 @@ export default function Details({ children, node, id }: DetailsProps) {
   };
 
   return (
-    <SpoilerContext.Provider value={{ setLabel }}>
+    <SpoilerContext value={{ setLabel }}>
       <IonAccordionGroup
         className={styles.accordionGroup}
         ref={accordionGroupRef}
@@ -65,7 +65,7 @@ export default function Details({ children, node, id }: DetailsProps) {
           </div>
         </IonAccordion>
       </IonAccordionGroup>
-    </SpoilerContext.Provider>
+    </SpoilerContext>
   );
 }
 

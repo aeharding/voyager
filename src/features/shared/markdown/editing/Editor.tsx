@@ -34,7 +34,7 @@ export interface EditorProps {
 
   children?: React.ReactNode;
 
-  ref?: React.RefObject<HTMLTextAreaElement>;
+  ref?: React.RefObject<HTMLTextAreaElement | null>;
 }
 
 export default function Editor({
@@ -47,7 +47,7 @@ export default function Editor({
   ref,
 }: EditorProps) {
   const keyboardOpen = useKeyboardOpen();
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(undefined);
 
   const { insertBlock } = useEditorHelpers(textareaRef);
 

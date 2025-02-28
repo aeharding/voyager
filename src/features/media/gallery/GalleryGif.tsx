@@ -12,8 +12,8 @@ export default function GalleryGif({
   ref,
   ...props
 }: GalleryGifProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const syntheticImgRef = useRef<HTMLImageElement>();
+  const canvasRef = useRef<HTMLCanvasElement>(undefined);
+  const syntheticImgRef = useRef<HTMLImageElement>(undefined);
 
   const loaded = useRef(false);
 

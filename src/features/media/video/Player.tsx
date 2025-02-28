@@ -44,7 +44,7 @@ export default function Player({
   ref,
   ...rest
 }: PlayerProps) {
-  const videoRef = useRef<HTMLVideoElement>();
+  const videoRef = useRef<HTMLVideoElement>(undefined);
 
   const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(false);

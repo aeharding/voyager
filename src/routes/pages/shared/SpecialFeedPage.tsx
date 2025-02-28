@@ -95,10 +95,8 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
     if (!sort) return <CenteredSpinner />;
 
     return (
-      <ShowSubscribedIconContext.Provider
-        value={type === "All" || type === "Local"}
-      >
-        <PageTypeContext.Provider value="special-feed">
+      <ShowSubscribedIconContext value={type === "All" || type === "Local"}>
+        <PageTypeContext value="special-feed">
           <WaitUntilPostAppearanceResolved>
             <PostCommentFeed
               fetchFn={fetchFn}
@@ -106,8 +104,8 @@ export default function SpecialFeedPage({ type }: SpecialFeedProps) {
               filterOnRxFn={filterSubscribed ? filterSubscribedFn : undefined}
             />
           </WaitUntilPostAppearanceResolved>
-        </PageTypeContext.Provider>
-      </ShowSubscribedIconContext.Provider>
+        </PageTypeContext>
+      </ShowSubscribedIconContext>
     );
   })();
 

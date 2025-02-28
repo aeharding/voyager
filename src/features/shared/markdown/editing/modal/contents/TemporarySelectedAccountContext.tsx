@@ -68,7 +68,7 @@ export function TemporarySelectedAccountProvider({
   );
 
   return (
-    <TemporarySelectedAccountContext.Provider
+    <TemporarySelectedAccountContext
       value={{
         account: selectedAccount,
         accountClient: selectedAccountClient,
@@ -83,6 +83,6 @@ export function TemporarySelectedAccountProvider({
       }}
     >
       {children}
-    </TemporarySelectedAccountContext.Provider>
+    </TemporarySelectedAccountContext>
   );
 }

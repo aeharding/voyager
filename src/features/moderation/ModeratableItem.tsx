@@ -83,11 +83,11 @@ export default function ModeratableItem({
   );
 
   return (
-    <ModeratableItemContext.Provider value={{ banner }}>
+    <ModeratableItemContext value={{ banner }}>
       <ModeratableItemContainer modState={modState}>
         {children}
       </ModeratableItemContainer>
-    </ModeratableItemContext.Provider>
+    </ModeratableItemContext>
   );
 }
 
