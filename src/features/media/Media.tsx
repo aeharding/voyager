@@ -9,7 +9,7 @@ export interface MediaProps
   extends Omit<GalleryMediaProps & VideoProps, "src" | "ref"> {
   src: string;
 
-  ref?: React.RefObject<
+  ref?: React.Ref<
     ComponentRef<typeof GalleryMedia> | ComponentRef<typeof Video>
   >;
 }

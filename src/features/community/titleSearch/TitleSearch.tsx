@@ -23,7 +23,7 @@ export function openTitleSearch() {
 interface TitleSearchProps extends React.PropsWithChildren {
   name: string;
 
-  ref?: React.RefObject<AppTitleHandle>;
+  ref?: React.RefObject<AppTitleHandle | undefined>;
 }
 
 export default function TitleSearch({ name, children, ref }: TitleSearchProps) {

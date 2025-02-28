@@ -91,9 +91,9 @@ export default function GalleryPostActions({
           {isNative() ? (
             <GalleryActions post={post} imgSrc={imgSrc} />
           ) : (
-            <InFeedContext.Provider value={true}>
+            <InFeedContext value={true}>
               <MoreActions post={post} />
-            </InFeedContext.Provider>
+            </InFeedContext>
           )}
         </div>
       </BottomContainerActions>

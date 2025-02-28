@@ -21,7 +21,7 @@ export interface ToastHandler {
 }
 
 interface ToastProps extends React.PropsWithChildren {
-  ref: React.RefObject<ToastHandler>;
+  ref: React.RefObject<ToastHandler | undefined>;
   onClose?: () => void;
 }
 

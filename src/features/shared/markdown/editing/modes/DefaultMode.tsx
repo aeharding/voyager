@@ -42,7 +42,7 @@ import styles from "./DefaultMode.module.css";
 export interface SharedModeProps {
   type: "comment" | "post";
   text: string;
-  textareaRef: RefObject<HTMLTextAreaElement>;
+  textareaRef: RefObject<HTMLTextAreaElement | undefined>;
 }
 
 interface DefaultModeProps extends SharedModeProps {

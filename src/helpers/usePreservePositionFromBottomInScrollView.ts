@@ -20,8 +20,8 @@ export default function usePreservePositionFromBottomInScrollView(
   elRef: MutableRefObject<HTMLElement | null>,
   enabled: boolean,
 ) {
-  const saveTopOffsetRef = useRef<undefined | number>();
-  const resizeObserverRef = useRef<ResizeObserver | undefined>();
+  const saveTopOffsetRef = useRef<number>(undefined);
+  const resizeObserverRef = useRef<ResizeObserver>(undefined);
 
   const enabledRef = useRef(enabled);
 

@@ -58,7 +58,7 @@ export default function CommentReplyPage(props: CommentReplyPageProps) {
 
   const comment = "comment" in props.item ? props.item.comment : undefined;
 
-  const resolvedRef = useRef<ResolveObjectResponse | undefined>();
+  const resolvedRef = useRef<ResolveObjectResponse>(undefined);
 
   const accounts = useAppSelector(loggedInAccountsSelector);
   const userHandle = useAppSelector(userHandleSelector);

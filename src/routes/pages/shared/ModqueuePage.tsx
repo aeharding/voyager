@@ -137,13 +137,13 @@ function ModqueueByCommunity({ community }: { community?: Community }) {
           </IonToolbar>
         </AppHeader>
         <FeedContent>
-          <ModqueueContext.Provider value={true}>
+          <ModqueueContext value={true}>
             <PostCommentFeed
               fetchFn={fetchFn}
               filterHiddenPosts={false}
               filterKeywordsAndWebsites={false}
             />
-          </ModqueueContext.Provider>
+          </ModqueueContext>
         </FeedContent>
       </IonPage>
     </FeedContextProvider>

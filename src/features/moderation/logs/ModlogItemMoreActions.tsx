@@ -18,7 +18,7 @@ import styles from "./ModlogItemMoreActions.module.css";
 interface ModlogItemMoreActions {
   item: ModlogItemType;
   role: ModeratorRole;
-  ref: React.RefObject<ModlogItemMoreActionsHandle>;
+  ref: React.RefObject<ModlogItemMoreActionsHandle | undefined>;
 }
 
 export interface ModlogItemMoreActionsHandle {

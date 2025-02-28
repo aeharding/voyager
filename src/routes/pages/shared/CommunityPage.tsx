@@ -65,7 +65,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
   const router = useOptimizedIonRouter();
   const getRandomCommunity = useGetRandomCommunity();
 
-  const appTitleRef = useRef<AppTitleHandle>(null);
+  const appTitleRef = useRef<AppTitleHandle>(undefined);
 
   const searchOpen = searchQuery || _searchOpen;
 
@@ -151,8 +151,8 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
     if (!sort) return <CenteredSpinner />;
 
     return (
-      <FeedSearchContext.Provider value={{ setScrolledPastSearch }}>
-        <PageTypeContext.Provider value="community">
+      <FeedSearchContext value={{ setScrolledPastSearch }}>
+        <PageTypeContext value="community">
           <WaitUntilPostAppearanceResolved>
             <PostCommentFeed
               fetchFn={fetchFn}
@@ -163,8 +163,8 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
               onPull={onPull}
             />
           </WaitUntilPostAppearanceResolved>
-        </PageTypeContext.Provider>
-      </FeedSearchContext.Provider>
+        </PageTypeContext>
+      </FeedSearchContext>
     );
   })();
 

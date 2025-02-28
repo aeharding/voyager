@@ -84,11 +84,9 @@ export default function PostAppearanceProvider({
   }
 
   return (
-    <PostAppearanceContext.Provider
-      value={{ postAppearance, setPostAppearance }}
-    >
+    <PostAppearanceContext value={{ postAppearance, setPostAppearance }}>
       {children}
-    </PostAppearanceContext.Provider>
+    </PostAppearanceContext>
   );
 }
 

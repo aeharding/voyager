@@ -44,7 +44,7 @@ function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
   const [status, setStatus] = useState<UpdateStatus>("not-enabled");
   const documentState = useDocumentVisibility();
 
-  const registration = useRef<ServiceWorkerRegistration>();
+  const registration = useRef<ServiceWorkerRegistration>(undefined);
 
   const registerSW = useRegisterSW({
     onRegistered(r) {
@@ -99,7 +99,7 @@ function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <UpdateContext.Provider
+    <UpdateContext
       value={{
         status,
         checkForUpdates,
@@ -107,6 +107,6 @@ function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
       }}
     >
       {children}
-    </UpdateContext.Provider>
+    </UpdateContext>
   );
 }

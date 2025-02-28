@@ -17,7 +17,7 @@ export interface ReportHandle {
 export default function Report({
   ref,
 }: {
-  ref: React.RefObject<ReportHandle>;
+  ref: React.RefObject<ReportHandle | undefined>;
 }) {
   const presentToast = useAppToast();
   const [item, setItem] = useState<ReportableItem | undefined>();
