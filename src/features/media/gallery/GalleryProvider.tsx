@@ -406,12 +406,14 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
                 post={post}
                 imgSrc={imgSrcRef.current}
                 alt={getAlt(thumbElRef.current)}
+                title={thumbElRef.current?.title}
               />
             )
           ) : (
             <ImageMoreActions
               imgSrc={imgSrcRef.current}
               alt={getAlt(thumbElRef.current)}
+              title={thumbElRef.current?.title}
             />
           ),
           actionContainer,

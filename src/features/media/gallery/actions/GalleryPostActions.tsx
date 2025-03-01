@@ -25,16 +25,16 @@ import { BottomContainer, BottomContainerActions } from "./shared";
 
 import styles from "./GalleryPostActions.module.css";
 
-interface GalleryPostActionsProps {
+interface GalleryPostActionsProps extends React.ComponentProps<typeof AltText> {
   post: PostView;
   imgSrc: string;
-  alt?: string;
 }
 
 export default function GalleryPostActions({
   post,
   imgSrc,
   alt,
+  title,
 }: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useOptimizedIonRouter();
@@ -67,7 +67,7 @@ export default function GalleryPostActions({
 
   return (
     <BottomContainer>
-      <AltText alt={alt} />
+      <AltText alt={alt} title={title} />
       <BottomContainerActions withBg>
         <div className={styles.container} onClick={(e) => e.stopPropagation()}>
           <Voting post={post} imgSrc={imgSrc} />
