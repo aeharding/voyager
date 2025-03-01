@@ -34,7 +34,7 @@ export default function GalleryPostActions({
   post,
   imgSrc,
   alt,
-  title: hover,
+  title,
 }: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useOptimizedIonRouter();
@@ -67,7 +67,7 @@ export default function GalleryPostActions({
 
   return (
     <BottomContainer>
-      <AltText alt={alt} title={hover} />
+      <AltText alt={alt} title={title} />
       <BottomContainerActions withBg>
         <div className={styles.container} onClick={(e) => e.stopPropagation()}>
           <Voting post={post} imgSrc={imgSrc} />
