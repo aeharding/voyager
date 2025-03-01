@@ -7,14 +7,14 @@ import { BottomContainer, BottomContainerActions } from "./shared";
 
 import styles from "./ImageMoreActions.module.css";
 
-interface ImageMoreActionsProps {
+interface ImageMoreActionsProps extends React.ComponentProps<typeof AltText> {
   imgSrc: string;
-  alt?: string;
 }
 
 export default function ImageMoreActions({
   imgSrc,
   alt,
+  title,
 }: ImageMoreActionsProps) {
   const hideAltText = useAppSelector(
     (state) => state.settings.general.media.hideAltText,
@@ -29,7 +29,7 @@ export default function ImageMoreActions({
       )}
       {alt && !hideAltText && (
         <BottomContainer>
-          <AltText alt={alt} />
+          <AltText alt={alt} title={title} />
           <BottomContainerActions withBg />
         </BottomContainer>
       )}
