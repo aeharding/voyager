@@ -80,6 +80,7 @@ export interface SettingsState {
     font: {
       fontSizeMultiplier: number;
       useSystemFontSize: boolean;
+      accommodateLargeText: boolean;
     };
     general: {
       userInstanceUrlDisplay: InstanceUrlDisplayMode;
@@ -196,6 +197,7 @@ const baseState: SettingsState = {
     font: {
       fontSizeMultiplier: 1,
       useSystemFontSize: false,
+      accommodateLargeText: false,
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
@@ -846,6 +848,7 @@ export const {
   setUserInstanceUrlDisplay,
   setUseSystemDarkMode,
   setUseSystemFontSize,
+  setAccommodateLargeText,
   setVoteDisplayMode,
   setVotesTheme,
 } = settingsSlice.actions;

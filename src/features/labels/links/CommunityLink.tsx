@@ -55,9 +55,15 @@ export default function CommunityLink({
 
   const handle = getHandle(community);
   const { hideCommunity } = useContext(ShareImageContext);
+
   const showCommunityIcons = useAppSelector(
     (state) => state.settings.appearance.posts.showCommunityIcons,
   );
+
+  const accommodateLargeText = useAppSelector(
+    (state) => state.settings.appearance.font.accommodateLargeText,
+  );
+
   const showSubscribed = useShowSubscribedIcon();
 
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
@@ -119,7 +125,7 @@ export default function CommunityLink({
     </>
   );
 
-  if(true) {
+  if(accommodateLargeText === true) {
 
     return (
 

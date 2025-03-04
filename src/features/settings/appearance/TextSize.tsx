@@ -3,7 +3,9 @@ import { IonItem, IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { HelperText, ListHeader } from "#/features/settings/shared/formatting";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import { setFontSizeMultiplier, setUseSystemFontSize } from "../settingsSlice";
+import {    setFontSizeMultiplier, 
+            setUseSystemFontSize, 
+            setAccommodateLargeText } from "../settingsSlice";
 
 import styles from "./TextSize.module.css";
 
@@ -91,7 +93,7 @@ export default function TextSize() {
               dispatch(setAccommodateLargeText(e.detail.checked))
             }
           >
-            Accommodate Large Text
+            <span class="ion-text-wrap">Accommodate Large Text</span>
           </IonToggle>
         </IonItem>
 
