@@ -10,9 +10,36 @@
   position: relative;
 }
 
+.linkContainerParentLarge {
+  display:          flex;
+  flex-wrap:        wrap;
+  flex-direction:   row;
+}
+
+.linkContainerChildLarge {
+
+  flex: 1;
+
+  white-space:      pre-wrap;
+  overflow-wrap:    break-word;
+  word-break:       break-all;
+  word-wrap:        break-word;
+
+}
+
+
 .link {
   text-decoration: none;
   color: inherit;
+}
+
+.linkLarge {
+
+  white-space:      pre-wrap;
+  overflow-wrap:    break-word;
+  word-break:       break-all;
+
+
 }
 
 .hide {

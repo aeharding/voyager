@@ -12,7 +12,7 @@ const MIN_LARGER_FONT_ADJUSTMENT = 2;
 
 export default function TextSize() {
   const dispatch = useAppDispatch();
-  const { fontSizeMultiplier, useSystemFontSize } = useAppSelector(
+  const { fontSizeMultiplier, useSystemFontSize, accommodateLargeText  } = useAppSelector(
     (state) => state.settings.appearance.font,
   );
 
@@ -83,6 +83,18 @@ export default function TextSize() {
             </IonToggle>
           </IonItem>
         )}
+
+        <IonItem>
+          <IonToggle
+            checked={accommodateLargeText}
+            onIonChange={(e) =>
+              dispatch(setAccommodateLargeText(e.detail.checked))
+            }
+          >
+            Accommodate Large Text
+          </IonToggle>
+        </IonItem>
+
       </IonList>
       <HelperText>Default is two ticks from the left.</HelperText>
     </>

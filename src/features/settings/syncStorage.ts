@@ -15,6 +15,7 @@ export const LOCALSTORAGE_KEYS = {
   FONT: {
     FONT_SIZE_MULTIPLIER: "appearance--font-size-multiplier",
     USE_SYSTEM: "appearance--font-use-system",
+    ACCOMMODATE_LARGE_TEXT: "appearance--accommodate-large-text",
   },
   DARK: {
     USE_SYSTEM: "appearance--dark-use-system",
