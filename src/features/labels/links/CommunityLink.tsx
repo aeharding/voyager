@@ -64,6 +64,10 @@ export default function CommunityLink({
     (state) => state.settings.appearance.font.accommodateLargeText,
   );
 
+  const communityAtTop = useAppSelector(
+    (state) => state.settings.appearance.posts.communityAtTop,
+  );
+
   const showSubscribed = useShowSubscribedIcon();
 
   const { isSubscribed, isBlocked, subscribe, block, sidebar } =
@@ -125,7 +129,7 @@ export default function CommunityLink({
     </>
   );
 
-  if(accommodateLargeText === true) {
+  if(accommodateLargeText && communityAtTop) {
 
     return (
 

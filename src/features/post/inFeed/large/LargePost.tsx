@@ -36,6 +36,11 @@ export default function LargePost({ post }: PostProps) {
   const showCommunityAtTop = useAppSelector(
     (state) => state.settings.appearance.posts.communityAtTop,
   );
+
+  const accommodateLargeText = useAppSelector(
+    (state) => state.settings.appearance.font.accommodateLargeText,
+  );
+
   const hasBeenRead =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
@@ -54,6 +59,14 @@ export default function LargePost({ post }: PostProps) {
     return <LargePostContents post={post} />;
   }
 
+  if(accommodateLargeText) {
+    styles.detailsApplied       = styles.detailsLarge;
+    styles.rightDetailsApplied  = styles.rightDetailsLarge;
+  } else {
+    styles.detailsApplied       = styles.details;
+    styles.rightDetailsApplied  = styles.rightDetails;
+  }
+
   return (
     <ModeratableItem itemView={post}>
       <div className={cx(styles.container, hasBeenRead && styles.read)}>
@@ -61,7 +74,7 @@ export default function LargePost({ post }: PostProps) {
 
         <div className={styles.header}>
           {showCommunityAtTop && !inCommunityFeed && (
-            <div className={styles.details}>
+            <div className={styles.detailsApplied}>
               <div className={styles.leftDetails}>
                 <CommunityLink
                   community={post.community}
@@ -81,7 +94,7 @@ export default function LargePost({ post }: PostProps) {
 
         {renderPostBody()}
 
-        <div className={styles.details}>
+        <div className={styles.detailsApplied}>
           <div className={styles.leftDetails}>
             <span className={styles.communityName}>
               {post.post.featured_community || post.post.featured_local ? (
@@ -124,8 +137,9 @@ export default function LargePost({ post }: PostProps) {
 
             <PreviewStats post={post} />
           </div>
+
           {(showVotingButtons || inModqueue) && (
-            <div className={styles.rightDetails}>
+            <div className={styles.rightDetailsApplied}>
               {inModqueue && <ModqueueItemActions itemView={post} />}
               <MoreActions post={post} />
               {!inModqueue && (

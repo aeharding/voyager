@@ -34,6 +34,12 @@
   color: var(--ion-color-text-aside);
 }
 
+.detailsLarge {
+  display:          flex;
+  flex-wrap:        wrap;
+  flex-direction:   column;
+}
+
 .leftDetails {
   display: flex;
   flex-direction: column;
@@ -55,6 +61,20 @@
     padding: 0.5rem !important;
   }
 }
+
+.rightDetailsLarge {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+
+  > * {
+    padding: 0.5rem !important;
+  }
+
+  margin-left: auto;
+  margin-right: 0;
+}
+
 
 .communityName {
   overflow: hidden;
