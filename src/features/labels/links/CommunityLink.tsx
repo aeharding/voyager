@@ -135,7 +135,7 @@ export default function CommunityLink({
 
         <div className={sharedStyles.linkContainerParentLarge}>
 
-            <div className={styles.linkContainerChildLarge}>
+            <div> 
                 {showCommunityIcons && !hideCommunity && !hideIcon && (
                     <ItemIcon
                         item={community}
@@ -143,7 +143,6 @@ export default function CommunityLink({
                         className={styles.itemIcon}
                     />
                 )}
-
             </div>
 
             <div className={sharedStyles.linkContainerChildLarge}>
