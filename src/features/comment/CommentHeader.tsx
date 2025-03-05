@@ -156,7 +156,10 @@ export default function CommentHeader({
               </div>
 
               <div className={styles.divChildLarge}>
-                    <Vote className={styles.commentVote} item={commentView} />
+                    <Vote 
+                        className={styles.commentVote} 
+                        item={commentView} 
+                        spacer={true} />
                     <Edited item={commentView} />
                     <div className={styles.spacer}>
                       {tagsEnabled && <UserTag person={commentView.creator} />}
