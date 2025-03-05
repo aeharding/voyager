@@ -49,6 +49,10 @@ export default function CommentHeader({
     (state) => state.settings.tags.trackVotes,
   );
 
+  const accommodateLargeText = useAppSelector(
+    (state) => state.settings.appearance.font.accommodateLargeText,
+  );
+
   function renderActions() {
     if (inModqueue) return <ModqueueItemActions itemView={commentView} />;
 
@@ -128,7 +132,47 @@ export default function CommentHeader({
           </>
         );
       default:
+
+        if(accommodateLargeText) {
+
+          return (
+            <div className={styles.divContainerLarge}>
+
+              <div className={styles.divChildLarge}>
+
+                <PersonLink
+                      className={styles.personLink}
+                      person={commentView.creator}
+                      opId={commentView.post.creator_id}
+                      distinguished={comment.distinguished}
+                      showBadge={!context}
+                      showTag={false}
+                      sourceUrl={commentView.comment.ap_id}
+                    />
+                    {tagsEnabled && trackVotesEnabled && (
+                      <UserScore person={commentView.creator} />
+                    )}
+
+              </div>
+
+              <div className={styles.divChildLarge}>
+                    <Vote className={styles.commentVote} item={commentView} />
+                    <Edited item={commentView} />
+                    <div className={styles.spacer}>
+                      {tagsEnabled && <UserTag person={commentView.creator} />}
+                    </div>
+
+                    {renderAside(comment.published)}
+              </div>
+
+            </div>
+
+          );
+
+        }
+
         return (
+
           <>
             <PersonLink
               className={styles.personLink}
@@ -142,6 +186,7 @@ export default function CommentHeader({
             {tagsEnabled && trackVotesEnabled && (
               <UserScore person={commentView.creator} />
             )}
+
             <Vote className={styles.commentVote} item={commentView} />
             <Edited item={commentView} />
             <div className={styles.spacer}>
@@ -149,6 +194,7 @@ export default function CommentHeader({
             </div>
             {renderAside(comment.published)}
           </>
+
         );
     }
   })();

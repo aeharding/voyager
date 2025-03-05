@@ -67,6 +67,113 @@ export default function LargePost({ post }: PostProps) {
     styles.rightDetailsApplied  = styles.rightDetails;
   }
 
+
+  if(accommodateLargeText) {
+
+    return (
+
+        <ModeratableItem itemView={post}>
+
+            <div className={cx(styles.container, hasBeenRead && styles.read)}>
+                <ModeratableItemBannerOutlet />
+
+                <div className={styles.header}>
+                  {showCommunityAtTop && !inCommunityFeed && (
+                    <div className={styles.detailsApplied}>
+                      <div className={styles.leftDetails}>
+                        <CommunityLink
+                          community={post.community}
+                          subscribed={post.subscribed}
+                          showInstanceWhenRemote
+                          tinyIcon
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={styles.title}>
+                    <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+                    {isNsfw(post) && <Nsfw />}
+                  </div>
+                </div>
+
+                {renderPostBody()}
+
+                <div className={styles.detailsApplied}>
+                  <div className={styles.leftDetails}>
+                    <div className={styles.communityName}>
+                      {post.post.featured_community || post.post.featured_local ? (
+                        <AnnouncementIcon />
+                      ) : undefined}
+                      {inCommunityFeed ? (
+                        <PersonLink
+                          person={post.creator}
+                          showInstanceWhenRemote
+                          prefix="by"
+                          disableInstanceClick
+                          sourceUrl={post.post.ap_id}
+                        />
+                      ) : (
+                        <>
+                          {!showCommunityAtTop && (
+                            <CommunityLink
+                              community={post.community}
+                              subscribed={post.subscribed}
+                              disableInstanceClick
+                              showInstanceWhenRemote={
+                                !showVotingButtons || !alwaysShowAuthor
+                              }
+                            />
+                          )}
+                          {alwaysShowAuthor && (
+                            <>
+                              {" "}
+                              <PersonLink
+                                person={post.creator}
+                                prefix="by"
+                                disableInstanceClick
+                                sourceUrl={post.post.ap_id}
+                              />
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    <PreviewStats post={post} />
+                  </div>
+
+
+                  <div className={styles.rightDetailsApplied}>
+
+                    {(showVotingButtons || inModqueue) && (
+                      <div className={styles.rightDetailsApplied}>
+                        {inModqueue && <ModqueueItemActions itemView={post} />}
+                        <MoreActions post={post} />
+                        {!inModqueue && (
+                          <>
+                            <MoreModActions post={post} />
+                            <VoteButton type="up" post={post} />
+                            <VoteButton type="down" post={post} />
+                          </>
+                        )}
+                      </div>
+                    )}
+
+                  </div>
+
+                </div>
+
+                <Save type="post" id={post.post.id} />
+            </div>
+
+        </ModeratableItem>
+
+    );
+
+  }
+
+
   return (
     <ModeratableItem itemView={post}>
       <div className={cx(styles.container, hasBeenRead && styles.read)}>
@@ -74,7 +181,7 @@ export default function LargePost({ post }: PostProps) {
 
         <div className={styles.header}>
           {showCommunityAtTop && !inCommunityFeed && (
-            <div className={styles.detailsApplied}>
+            <div className={styles.details}>
               <div className={styles.leftDetails}>
                 <CommunityLink
                   community={post.community}
@@ -94,7 +201,7 @@ export default function LargePost({ post }: PostProps) {
 
         {renderPostBody()}
 
-        <div className={styles.detailsApplied}>
+        <div className={styles.details}>
           <div className={styles.leftDetails}>
             <span className={styles.communityName}>
               {post.post.featured_community || post.post.featured_local ? (
@@ -139,7 +246,7 @@ export default function LargePost({ post }: PostProps) {
           </div>
 
           {(showVotingButtons || inModqueue) && (
-            <div className={styles.rightDetailsApplied}>
+            <div className={styles.rightDetails}>
               {inModqueue && <ModqueueItemActions itemView={post} />}
               <MoreActions post={post} />
               {!inModqueue && (

@@ -51,3 +51,15 @@
   overflow: hidden;
   display: flex;
 }
+
+.divContainerLarge {
+  display:          flex;
+  flex-direction:   column;
+}
+
+.divChildLarge {
+  flex: 1;
+  display:          flex;
+  flex-direction:   row;
+}
+
