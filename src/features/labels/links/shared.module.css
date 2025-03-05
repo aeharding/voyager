@@ -11,6 +11,7 @@
 }
 
 .linkContainerParentLarge {
+
   display:          flex;
   flex-wrap:        wrap;
   flex-direction:   row;
@@ -19,6 +20,8 @@
 .linkContainerChildLarge {
 
   flex: 1;
+
+  font-weight:      200;
 
   white-space:      pre-wrap;
   overflow-wrap:    break-word;
