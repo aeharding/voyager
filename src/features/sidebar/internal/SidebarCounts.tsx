@@ -12,11 +12,15 @@ export default function SidebarCounts({ counts }: SidebarCountsProps) {
     <>
       {"subscribers" in counts ? (
         <>
-          <IonBadge>{formatNumber(counts.subscribers)} subscribers</IonBadge>{" "}
+          <IonBadge>
+            {formatNumber(counts.subscribers)} subscribers
+          </IonBadge>{" "}
         </>
       ) : (
         <>
-          <IonBadge>{formatNumber(counts.communities)} communities</IonBadge>{" "}
+          <IonBadge>
+            {formatNumber(counts.communities)} communities
+          </IonBadge>{" "}
         </>
       )}
       <IonBadge color="danger">{formatNumber(counts.posts)} posts</IonBadge>{" "}

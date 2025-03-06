@@ -9,7 +9,8 @@ export default function Share() {
 
   return (
     <SettingSelector
-      title="Share link instance"
+      title="Share Link Instance"
+      openTitle="Share Link Lemmy Instance"
       selected={share}
       setSelected={setDefaultShare}
       options={OPostCommentShareType}

@@ -14,7 +14,7 @@ export type CommentEllipsisHandle = Pick<
 >;
 
 interface CommentEllipsisProps extends CommentActionsProps {
-  ref: React.RefObject<CommentEllipsisHandle>;
+  ref: React.RefObject<CommentEllipsisHandle | undefined>;
 }
 
 export default function CommentEllipsis({

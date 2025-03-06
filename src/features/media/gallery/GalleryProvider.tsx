@@ -56,7 +56,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null,
   );
-  const thumbElRef = useRef<ThumbEl>();
+  const thumbElRef = useRef<ThumbEl>(undefined);
   const imgSrcRef = useRef("");
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
@@ -397,7 +397,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const value = useMemo(() => ({ open, close }), [close, open]);
 
   return (
-    <GalleryContext.Provider value={value}>
+    <GalleryContext value={value}>
       {actionContainer !== null &&
         createPortal(
           post ? (
@@ -406,19 +406,21 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
                 post={post}
                 imgSrc={imgSrcRef.current}
                 alt={getAlt(thumbElRef.current)}
+                title={thumbElRef.current?.title}
               />
             )
           ) : (
             <ImageMoreActions
               imgSrc={imgSrcRef.current}
               alt={getAlt(thumbElRef.current)}
+              title={thumbElRef.current?.title}
             />
           ),
           actionContainer,
         )}
 
       {children}
-    </GalleryContext.Provider>
+    </GalleryContext>
   );
 }
 

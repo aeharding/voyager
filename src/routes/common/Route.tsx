@@ -20,9 +20,9 @@ export default function Route({ children, ...props }: AppRouteProps) {
   })();
 
   return (
-    <TabNameContext.Provider value={tabName}>
+    <TabNameContext value={tabName}>
       <ReactRoute {...props}>{content}</ReactRoute>
-    </TabNameContext.Provider>
+    </TabNameContext>
   );
 }
 

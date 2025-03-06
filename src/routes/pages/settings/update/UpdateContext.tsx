@@ -9,6 +9,8 @@ import React, {
 } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
+import { isNative } from "#/helpers/device";
+
 type UpdateStatus =
   | "not-enabled"
   | "loading"
@@ -31,10 +33,18 @@ export const UpdateContext = createContext<IUpdateContext>({
 });
 
 export function UpdateContextProvider({ children }: React.PropsWithChildren) {
+  if (isNative()) return children;
+
+  return (
+    <EnabledUpdateContextProvider>{children}</EnabledUpdateContextProvider>
+  );
+}
+
+function EnabledUpdateContextProvider({ children }: React.PropsWithChildren) {
   const [status, setStatus] = useState<UpdateStatus>("not-enabled");
   const documentState = useDocumentVisibility();
 
-  const registration = useRef<ServiceWorkerRegistration>();
+  const registration = useRef<ServiceWorkerRegistration>(undefined);
 
   const registerSW = useRegisterSW({
     onRegistered(r) {
@@ -89,7 +99,7 @@ export function UpdateContextProvider({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <UpdateContext.Provider
+    <UpdateContext
       value={{
         status,
         checkForUpdates,
@@ -97,6 +107,6 @@ export function UpdateContextProvider({ children }: React.PropsWithChildren) {
       }}
     >
       {children}
-    </UpdateContext.Provider>
+    </UpdateContext>
   );
 }

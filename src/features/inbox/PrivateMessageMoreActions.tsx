@@ -27,7 +27,7 @@ interface PrivateMessageMoreActionsProps {
   item: PrivateMessageView;
   markReadAction: ActionSheetButton;
 
-  ref: React.RefObject<PrivateMessageMoreActionsHandle>;
+  ref: React.RefObject<PrivateMessageMoreActionsHandle | undefined>;
 }
 
 export default function PrivateMessageMoreActions({

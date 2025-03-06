@@ -21,16 +21,16 @@ export const FeedContext = createContext<IFeedContext>({
 export default function FeedContextProvider({
   children,
 }: React.PropsWithChildren) {
-  const itemsRef = useRef<ItemsRef | undefined>();
+  const itemsRef = useRef<ItemsRef>(undefined);
 
   return (
-    <FeedContext.Provider
+    <FeedContext
       value={{
         setItemsRef: (ref) => (itemsRef.current = ref),
         itemsRefRef: itemsRef,
       }}
     >
       {children}
-    </FeedContext.Provider>
+    </FeedContext>
   );
 }

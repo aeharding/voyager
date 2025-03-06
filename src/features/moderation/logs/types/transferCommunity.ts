@@ -13,7 +13,7 @@ export default function transferCommunity(
   return {
     icon: swapHorizontal,
     title: "Transferred Community",
-    by: item.moderator ? getHandle(item.moderator) : undefined,
+    by: item.moderator,
     message: `${getHandle(item.community)} to ${getHandle(item.modded_person)}`,
     link: buildCommunityLink(item.community),
     ...buildBaseData(item.mod_transfer_community),

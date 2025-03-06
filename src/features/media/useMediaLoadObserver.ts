@@ -10,7 +10,7 @@ export default function useMediaLoadObserver(src: string | undefined) {
   const dispatch = useAppDispatch();
   const aspectRatio = useAspectRatio(src);
   const mediaRef = useRef<ComponentRef<typeof Media>>(null);
-  const resizeObserverRef = useRef<ResizeObserver | undefined>();
+  const resizeObserverRef = useRef<ResizeObserver>(undefined);
 
   useEffect(() => {
     let destroyed = false;

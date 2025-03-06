@@ -53,7 +53,7 @@ interface CommentsProps {
   sort: CommentSortType;
   bottomPadding?: number;
 
-  ref: React.RefObject<CommentsHandle>;
+  ref: React.RefObject<CommentsHandle | undefined>;
 }
 
 export default function Comments({
@@ -469,7 +469,7 @@ export default function Comments({
   });
 
   return (
-    <CommentsContext.Provider value={commentsContextValue}>
+    <CommentsContext value={commentsContextValue}>
       <IonRefresher
         slot="fixed"
         onIonRefresh={handleRefresh}
@@ -500,7 +500,7 @@ export default function Comments({
           <>{...content}</>
         )}
       </div>
-    </CommentsContext.Provider>
+    </CommentsContext>
   );
 }
 

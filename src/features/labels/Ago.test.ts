@@ -1,9 +1,9 @@
 import { subDays, subMinutes, subMonths, subSeconds, subYears } from "date-fns";
 import { describe, expect, it } from "vitest";
 
-import { formatRelative } from "./Ago";
+import { formatRelativeToNow } from "./Ago";
 
-describe("formatRelative Function", () => {
+describe("formatRelativeToNow Function", () => {
   const currentTime = {
     date: new Date(),
     expected: {
@@ -82,17 +82,17 @@ describe("formatRelative Function", () => {
 
   testCases.forEach(({ name, date, expected }) => {
     it(`should format ${name} correctly in ultrashort format`, () => {
-      const result = formatRelative(date, "ultrashort");
+      const result = formatRelativeToNow(date, "ultrashort");
       expect(result).toBe(expected.ultrashort);
     });
 
     it(`should format ${name} correctly in short format`, () => {
-      const result = formatRelative(date, "short");
+      const result = formatRelativeToNow(date, "short");
       expect(result).toBe(expected.short);
     });
 
     it(`should format ${name} correctly in verbose format`, () => {
-      const result = formatRelative(date, "verbose");
+      const result = formatRelativeToNow(date, "verbose");
       expect(result).toBe(expected.verbose);
     });
   });

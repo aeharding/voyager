@@ -28,7 +28,7 @@ export function TitleSearchProvider({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <TitleSearchContext.Provider
+    <TitleSearchContext
       value={{
         search,
         setSearch,
@@ -39,6 +39,6 @@ export function TitleSearchProvider({ children }: React.PropsWithChildren) {
       }}
     >
       {children}
-    </TitleSearchContext.Provider>
+    </TitleSearchContext>
   );
 }

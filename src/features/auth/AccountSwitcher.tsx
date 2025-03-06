@@ -21,6 +21,7 @@ import {
   ListEditorProvider,
 } from "#/features/shared/ListEditor";
 import { moveItem } from "#/helpers/array";
+import { isPromiseResolvedByPaint } from "#/helpers/promise";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import Account from "./Account";
@@ -29,7 +30,7 @@ import { setAccounts } from "./authSlice";
 
 type AccountSwitcherProps = {
   onDismiss: (data?: string, role?: string) => void;
-  onSelectAccount: (account: string) => Promise<void> | void;
+  onSelectAccount: ((account: string) => Promise<void>) | void;
   showGuest?: boolean;
   activeHandle?: string;
 } & (
@@ -129,9 +130,13 @@ function AccountSwitcherContents({
               const old = selectedAccount;
               setSelectedAccount(e.target.value);
 
-              const selectionChangePromise = onSelectAccount(e.target.value);
+              const selectionChangePromise = onSelectAccount?.(e.target.value);
 
-              if (!selectionChangePromise) {
+              // Bail on rendering the loading indicator
+              if (
+                !selectionChangePromise ||
+                (await isPromiseResolvedByPaint(selectionChangePromise))
+              ) {
                 onDismiss();
                 return;
               }

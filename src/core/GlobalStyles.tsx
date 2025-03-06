@@ -119,7 +119,7 @@ export default function GlobalStyles({ children }: React.PropsWithChildren) {
     Keyboard.setStyle({ style: keyboardStyle });
   }, [isDark, usingSystemDarkMode]);
 
-  return <DarkContext.Provider value={isDark}>{children}</DarkContext.Provider>;
+  return <DarkContext value={isDark}>{children}</DarkContext>;
 }
 
 function useComputeIsDark(): boolean {

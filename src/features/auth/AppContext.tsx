@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import { VListHandle } from "virtua";
 
-export type Page = RefObject<VListHandle | HTMLElement>;
+export type Page = RefObject<VListHandle | HTMLElement | null>;
 
 interface IAppContext {
   // used for determining whether page needs to be scrolled up first
@@ -23,17 +23,17 @@ export const AppContext = createContext<IAppContext>({
 });
 
 export function AppContextProvider({ children }: React.PropsWithChildren) {
-  const activePageRef = useRef<Page>();
+  const activePageRef = useRef<Page>(undefined);
 
   return (
-    <AppContext.Provider
+    <AppContext
       value={{
         activePageRef,
         setActivePage: (page: Page) => (activePageRef.current = page),
       }}
     >
       {children}
-    </AppContext.Provider>
+    </AppContext>
   );
 }
 

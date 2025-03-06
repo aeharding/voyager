@@ -4,7 +4,6 @@ import {
   IonIcon,
   IonSpinner,
   IonToolbar,
-  useIonModal,
 } from "@ionic/react";
 import { arrowBackSharp, send } from "ionicons/icons";
 import {
@@ -14,10 +13,10 @@ import {
   PostView,
   ResolveObjectResponse,
 } from "lemmy-js-client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 
-import AccountSwitcher from "#/features/auth/AccountSwitcher";
 import {
+  getInstanceFromHandle,
   loggedInAccountsSelector,
   userHandleSelector,
 } from "#/features/auth/authSelectors";
@@ -34,6 +33,10 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import AppHeader from "../../../../AppHeader";
 import CommentEditorContent from "./CommentEditorContent";
 import ItemReplyingTo from "./ItemReplyingTo";
+import {
+  TemporarySelectedAccountProvider,
+  useTemporarySelectedAccount,
+} from "./TemporarySelectedAccountContext";
 
 export type CommentReplyItem =
   | CommentView
@@ -50,11 +53,69 @@ interface CommentReplyPageProps {
 /**
  * New comment replying to something
  */
-export default function CommentReplyPage({
+export default function CommentReplyPage(props: CommentReplyPageProps) {
+  const presentToast = useAppToast();
+
+  const comment = "comment" in props.item ? props.item.comment : undefined;
+
+  const resolvedRef = useRef<ResolveObjectResponse>(undefined);
+
+  const accounts = useAppSelector(loggedInAccountsSelector);
+  const userHandle = useAppSelector(userHandleSelector);
+
+  async function onSelectAccount(account: string) {
+    // Switching back to local account
+    if (account === userHandle) {
+      resolvedRef.current = undefined;
+      return;
+    }
+
+    // Using a remote account
+    const accountJwt = accounts?.find(({ handle }) => handle === account)?.jwt;
+
+    if (!accountJwt) throw new Error("Error switching accounts");
+
+    const instance = getInstanceFromHandle(account);
+    const client = getClient(instance, accountJwt);
+
+    // Lookup the comment from the perspective of the remote instance.
+    // The remote instance may not know about the thing we're trying to comment on.
+    // Also, IDs are not the same between instances.
+    try {
+      resolvedRef.current = await client.resolveObject({
+        q: comment?.ap_id ?? props.item.post.ap_id,
+      });
+    } catch (error) {
+      presentToast({
+        message: `This ${
+          comment ? "comment" : "post"
+        } does not exist on ${instance}.`,
+        color: "warning",
+        position: "top",
+        fullscreen: true,
+      });
+
+      throw error;
+    }
+  }
+
+  return (
+    <TemporarySelectedAccountProvider onSelectAccount={onSelectAccount}>
+      <CommentReplyPageWithAccount {...props} resolvedRef={resolvedRef} />
+    </TemporarySelectedAccountProvider>
+  );
+}
+
+interface CommentReplyPageContentProps extends CommentReplyPageProps {
+  resolvedRef: MutableRefObject<ResolveObjectResponse | undefined>;
+}
+
+function CommentReplyPageWithAccount({
   dismiss,
   setCanDismiss,
   item,
-}: CommentReplyPageProps) {
+  resolvedRef,
+}: CommentReplyPageContentProps) {
   const comment = "comment" in item ? item.comment : undefined;
 
   const dispatch = useAppDispatch();
@@ -64,76 +125,13 @@ export default function CommentReplyPage({
   const [loading, setLoading] = useState(false);
   const isSubmitDisabled = !replyContent.trim() || loading;
 
+  const { account, accountClient, presentAccountSwitcher } =
+    useTemporarySelectedAccount();
+
   const userHandle = useAppSelector(userHandleSelector);
-  const [selectedAccount, setSelectedAccount] = useState(userHandle);
-
-  const isUsingAppAccount = selectedAccount === userHandle;
-
-  const accounts = useAppSelector(loggedInAccountsSelector);
-  const resolvedRef = useRef<ResolveObjectResponse | undefined>();
-  const selectedAccountJwt = accounts?.find(
-    ({ handle }) => handle === selectedAccount,
-  )?.jwt;
-  const selectedAccountClient = useMemo(() => {
-    if (!selectedAccount) return;
-
-    const instance = selectedAccount.split("@")[1]!;
-
-    return getClient(instance, selectedAccountJwt);
-  }, [selectedAccount, selectedAccountJwt]);
+  const isUsingAppAccount = account?.handle === userHandle;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const [presentAccountSwitcher, onDismissAccountSwitcher] = useIonModal(
-    AccountSwitcher,
-    {
-      allowEdit: false,
-      showGuest: false,
-      activeHandle: selectedAccount,
-      onDismiss: (data?: string, role?: string) =>
-        onDismissAccountSwitcher(data, role),
-      onSelectAccount: async (account: string) => {
-        // Switching back to local account
-        if (account === userHandle) {
-          resolvedRef.current = undefined;
-          setSelectedAccount(account);
-          return;
-        }
-
-        // Using a remote account
-        const accountJwt = accounts?.find(
-          ({ handle }) => handle === account,
-        )?.jwt;
-
-        if (!accountJwt) throw new Error("Error switching accounts");
-
-        const instance = account.split("@")[1]!;
-        const client = getClient(instance, accountJwt);
-
-        // Lookup the comment from the perspective of the remote instance.
-        // The remote instance may not know about the thing we're trying to comment on.
-        // Also, IDs are not the same between instances.
-        try {
-          resolvedRef.current = await client.resolveObject({
-            q: comment?.ap_id ?? item.post.ap_id,
-          });
-        } catch (error) {
-          presentToast({
-            message: `This ${
-              comment ? "comment" : "post"
-            } does not exist on ${instance}.`,
-            color: "warning",
-            position: "top",
-            fullscreen: true,
-          });
-
-          throw error;
-        }
-
-        setSelectedAccount(account);
-      },
-    },
-  );
 
   async function submit() {
     if (isSubmitDisabled) return;
@@ -158,11 +156,10 @@ export default function CommentReplyPage({
           resolvedRef.current?.post?.post.id;
 
         if (!postId) throw new Error("Post not found.");
-        if (!selectedAccountClient)
-          throw new Error("Unexpected error occurred.");
+        if (!accountClient) throw new Error("Unexpected error occurred.");
 
         // Post comment to selected remote instance
-        const remoteComment = await selectedAccountClient.createComment({
+        const remoteComment = await accountClient.createComment({
           content: replyContent,
           parent_id: resolvedRef.current?.comment?.comment.id,
           post_id: postId,
@@ -233,17 +230,12 @@ export default function CommentReplyPage({
             </IonButton>
           </IonButtons>
           <MultilineTitle
-            subheader={selectedAccount}
+            subheader={account?.handle}
             onClick={() => {
-              if (accounts?.length === 1) return;
-
-              presentAccountSwitcher({
-                cssClass: "small",
-                onDidDismiss: () => {
-                  requestAnimationFrame(() => {
-                    textareaRef.current?.focus();
-                  });
-                },
+              presentAccountSwitcher(() => {
+                requestAnimationFrame(() => {
+                  textareaRef.current?.focus();
+                });
               });
             }}
           >

@@ -245,7 +245,13 @@ export default function PickJoinServer() {
       return (
         <VList count={allInstances.length} className="ion-content-scroll-host">
           {(i) => {
-            const { url, icon, description } = allInstances[i]!;
+            const instance = allInstances[i];
+
+            // Edge case/race with refreshing instances
+            // https://github.com/aeharding/voyager/issues/1854
+            if (!instance) return <div />;
+
+            const { url, icon, description } = instance;
 
             return (
               <IonItem className={styles.serverItem} key={url}>

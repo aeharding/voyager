@@ -26,9 +26,9 @@ export default function useAppToast() {
 
 export function AppToastProvider({ children }: React.PropsWithChildren) {
   const vibrate = useHapticFeedback();
-  const toastRef = useRef<ToastHandler>(null);
+  const toastRef = useRef<ToastHandler>(undefined);
   const openRef = useRef(false);
-  const queuedOptionsRef = useRef<AppToastOptions>();
+  const queuedOptionsRef = useRef<AppToastOptions>(undefined);
 
   async function present(options: AppToastOptions) {
     if (openRef.current) {
@@ -86,10 +86,10 @@ export function AppToastProvider({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <AppToastContext.Provider value={present}>
+    <AppToastContext value={present}>
       <Toast ref={toastRef} onClose={onClose} />
       {children}
-    </AppToastContext.Provider>
+    </AppToastContext>
   );
 }
 
