@@ -3,8 +3,9 @@ import { IonItem, IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { HelperText, ListHeader } from "#/features/settings/shared/formatting";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import {    setFontSizeMultiplier, 
+import {    
             setAccommodateLargeText,
+            setFontSizeMultiplier, 
             setUseSystemFontSize } from "../settingsSlice";
 
 import styles from "./TextSize.module.css";

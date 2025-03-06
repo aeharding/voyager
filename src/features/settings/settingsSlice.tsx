@@ -195,8 +195,8 @@ const baseState: SettingsState = {
     },
     deviceMode: "ios",
     font: {
-      fontSizeMultiplier: 1,
       accommodateLargeText: false,
+      fontSizeMultiplier: 1,
       useSystemFontSize: false,
     },
     general: {
@@ -583,13 +583,13 @@ export const settingsSlice = createSlice({
       state.appearance.general.userInstanceUrlDisplay = action.payload;
       db.setSetting("user_instance_url_display", action.payload);
     },
-    setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
-      state.appearance.dark.usingSystemDarkMode = action.payload;
-      set(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
-    },
     setAccommodateLargeText(state, action: PayloadAction<boolean>) {
       state.appearance.font.accommodateLargeText = action.payload;
       set(LOCALSTORAGE_KEYS.FONT.ACCOMMODATE_LARGE_TEXT, action.payload);
+    },
+    setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
+      state.appearance.dark.usingSystemDarkMode = action.payload;
+      set(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
     },
     setUseSystemFontSize(state, action: PayloadAction<boolean>) {
       state.appearance.font.useSystemFontSize = action.payload;
@@ -842,12 +842,12 @@ export const {
   setThumbnailinatorEnabled,
   setThumbnailPosition,
   settingsReady,
+  setAccommodateLargeText,
   setTouchFriendlyLinks,
   setUpvoteOnSave,
   setUserDarkMode,
   setUserInstanceUrlDisplay,
   setUseSystemDarkMode,
-  setAccommodateLargeText,
   setUseSystemFontSize,
   setVoteDisplayMode,
   setVotesTheme,
