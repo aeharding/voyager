@@ -93,7 +93,7 @@ export default function TextSize() {
               dispatch(setAccommodateLargeText(e.detail.checked))
             }
           >
-            <span class="ion-text-wrap">Accommodate Large Text</span>
+            <span className="ion-text-wrap">Accommodate Large Text</span>
           </IonToggle>
         </IonItem>
 
