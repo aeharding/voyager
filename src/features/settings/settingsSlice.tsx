@@ -302,6 +302,12 @@ export const settingsSlice = createSlice({
   },
 
   reducers: {
+
+    setAccommodateLargeText(state, action: PayloadAction<boolean>) {
+      state.appearance.font.accommodateLargeText = action.payload;
+      set(LOCALSTORAGE_KEYS.FONT.ACCOMMODATE_LARGE_TEXT, action.payload);
+    },
+
     setDatabaseError(state, action: PayloadAction<Error>) {
       state.databaseError = action.payload;
     },
@@ -583,10 +589,6 @@ export const settingsSlice = createSlice({
       state.appearance.general.userInstanceUrlDisplay = action.payload;
       db.setSetting("user_instance_url_display", action.payload);
     },
-    setAccommodateLargeText(state, action: PayloadAction<boolean>) {
-      state.appearance.font.accommodateLargeText = action.payload;
-      set(LOCALSTORAGE_KEYS.FONT.ACCOMMODATE_LARGE_TEXT, action.payload);
-    },
     setUseSystemDarkMode(state, action: PayloadAction<boolean>) {
       state.appearance.dark.usingSystemDarkMode = action.payload;
       set(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
@@ -783,6 +785,7 @@ export const defaultThreadCollapse = createSelector(
 );
 
 export const {
+  setAccommodateLargeText,
   setAlwaysShowAuthor,
   setAlwaysUseReaderMode,
   setAutoHideRead,
@@ -842,7 +845,6 @@ export const {
   setThumbnailinatorEnabled,
   setThumbnailPosition,
   settingsReady,
-  setAccommodateLargeText,
   setTouchFriendlyLinks,
   setUpvoteOnSave,
   setUserDarkMode,
