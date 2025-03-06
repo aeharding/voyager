@@ -73,7 +73,7 @@ export default function PostCommentFeed({
   );
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
-  const itemsRef = useRef<PostCommentItem[]>();
+  const itemsRef = useRef<PostCommentItem[]>(undefined);
 
   const { setItemsRef } = useContext(FeedContext);
 

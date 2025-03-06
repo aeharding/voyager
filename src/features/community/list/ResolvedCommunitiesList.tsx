@@ -188,7 +188,7 @@ function ResolvedCommunitiesList({
   }, [updateActiveIndex]);
 
   return (
-    <StickyIndexContext.Provider value={activeIndex}>
+    <StickyIndexContext value={activeIndex}>
       <div
         className={cx(
           styles.virtualizerScrollView,
@@ -240,7 +240,7 @@ function ResolvedCommunitiesList({
           ),
         )}
       />
-    </StickyIndexContext.Provider>
+    </StickyIndexContext>
   );
 }
 

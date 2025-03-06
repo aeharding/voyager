@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { VListHandle } from "virtua";
 
 export function useRangeChange(
-  virtuaHandleRef: React.RefObject<VListHandle>,
+  virtuaHandleRef: React.RefObject<VListHandle | null>,
   onRangeChange: (startIndex: number, endIndex: number) => void,
 ) {
   const startIndexRef = useRef(-1);

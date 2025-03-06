@@ -31,7 +31,7 @@ export default function AppUrlListener() {
   );
   const deepLinkReady = useAppSelector((state) => state.deepLinkReady.ready);
 
-  const appUrlFromEventRef = useRef<string>();
+  const appUrlFromEventRef = useRef<string>(undefined);
 
   const notReady =
     !knownInstances ||

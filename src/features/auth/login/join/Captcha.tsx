@@ -21,7 +21,7 @@ export interface CaptchaHandle {
 
 interface CaptchaProps {
   url: string;
-  ref: React.RefObject<CaptchaHandle>;
+  ref: React.RefObject<CaptchaHandle | undefined>;
 }
 
 export default function Captcha({ url, ref }: CaptchaProps) {

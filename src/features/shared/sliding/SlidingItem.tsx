@@ -70,7 +70,7 @@ export default function SlidingItem({
   className,
   children,
 }: SlidingItemProps) {
-  const dragRef = useRef<ItemSlidingCustomEvent | undefined>();
+  const dragRef = useRef<ItemSlidingCustomEvent>(undefined);
   const [activeItemIndex, setActiveItemIndex] = useState<0 | 1 | 2 | -1 | -2>(
     0,
   );

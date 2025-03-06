@@ -42,7 +42,5 @@ function TabContextProviderInternals({
     tabRef.current = tab;
   }, [tab]);
 
-  return (
-    <TabContext.Provider value={{ tabRef }}>{children}</TabContext.Provider>
-  );
+  return <TabContext value={{ tabRef }}>{children}</TabContext>;
 }

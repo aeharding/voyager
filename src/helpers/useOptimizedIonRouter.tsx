@@ -40,7 +40,7 @@ export function useOptimizedIonRouter() {
 
 export function OptimizedRouterProvider({ children }: React.PropsWithChildren) {
   const router = useIonRouter();
-  const routerRef = useRef<UseIonRouterResult>();
+  const routerRef = useRef<UseIonRouterResult>(undefined);
 
   useEffect(() => {
     routerRef.current = router;
@@ -49,8 +49,6 @@ export function OptimizedRouterProvider({ children }: React.PropsWithChildren) {
   const value = useMemo(() => ({ routerRef }), []);
 
   return (
-    <OptimizedRouterContext.Provider value={value}>
-      {children}
-    </OptimizedRouterContext.Provider>
+    <OptimizedRouterContext value={value}>{children}</OptimizedRouterContext>
   );
 }

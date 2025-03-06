@@ -1,20 +1,24 @@
 import { IonIcon, IonItem } from "@ionic/react";
 import { timerOutline } from "ionicons/icons";
+import { Person } from "lemmy-js-client";
+import { useCallback } from "react";
+import { useRef } from "react";
+import { useLongPress } from "use-long-press";
 
 import Ago from "#/features/labels/Ago";
 import { cx } from "#/helpers/css";
 import { isTouchDevice } from "#/helpers/device";
+import { stopIonicTapClick } from "#/helpers/ionic";
+import { filterEvents } from "#/helpers/longPress";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 
-import {
-  getModColor,
-  getModIcon,
-  getModName,
-  ModeratorRole,
-} from "../useCanModerate";
+import { ModeratorRole } from "../useCanModerate";
 import useIsAdmin from "../useIsAdmin";
 import { ModlogItemType } from "./helpers";
-import ModlogItemMoreActions from "./ModlogItemMoreActions";
+import ModlogItemMoreActions, {
+  ModlogItemMoreActionsHandle,
+} from "./ModlogItemMoreActions";
+import ModRolePersonLink from "./ModRolePersonLink";
 import addCommunity from "./types/addCommunity";
 import addInstance from "./types/addInstance";
 import banFromCommunity from "./types/banFromCommunity";
@@ -45,7 +49,7 @@ export interface LogEntryData {
   message?: string;
   reason?: string;
   expires?: string;
-  by?: string;
+  by?: Person;
   role?: ModeratorRole;
   link?: string;
 }
@@ -119,6 +123,19 @@ export function ModlogItem({ item }: ModLogItemProps) {
     return role_ ?? "mod";
   })();
 
+  const ellipsisHandleRef = useRef<ModlogItemMoreActionsHandle>(undefined);
+
+  const onCommentLongPress = useCallback(() => {
+    ellipsisHandleRef.current?.present();
+    stopIonicTapClick();
+  }, []);
+
+  const bind = useLongPress(onCommentLongPress, {
+    threshold: 800,
+    cancelOnMovement: 15,
+    filterEvents,
+  });
+
   return (
     <IonItem
       mode="ios" // Use iOS style activatable tap highlight
@@ -129,6 +146,7 @@ export function ModlogItem({ item }: ModLogItemProps) {
       href={undefined}
       routerLink={link ? buildGeneralBrowseLink(link) : undefined}
       detail={false}
+      {...bind()}
     >
       <div className={styles.container}>
         <div className={styles.startContent}>
@@ -138,23 +156,22 @@ export function ModlogItem({ item }: ModLogItemProps) {
           <div className={styles.header}>
             <div>{title}</div>
             <aside>
-              <ModlogItemMoreActions item={item} role={role} />
+              <ModlogItemMoreActions
+                item={item}
+                role={role}
+                ref={ellipsisHandleRef}
+              />
               <Ago date={when} />
             </aside>
           </div>
           <div className={styles.body}>{message}</div>
           {reason && <div>Reason: {reason}</div>}
           <div className={styles.footer}>
-            <div
-              className={styles.by}
-              style={{ color: `var(--ion-color-${getModColor(role)}-shade)` }}
-            >
-              <IonIcon icon={getModIcon(role)} />
-              {by ? by : getModName(role)}
-            </div>
+            {by && <ModRolePersonLink role={role} person={by} />}
             {expires && (
               <aside>
-                <IonIcon icon={timerOutline} /> <Ago date={expires} />
+                <IonIcon icon={timerOutline} className={styles.agoIcon} />{" "}
+                <Ago date={when} to={expires} />
               </aside>
             )}
           </div>

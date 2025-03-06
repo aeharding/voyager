@@ -28,7 +28,7 @@ interface CommentHeaderProps {
   context: React.ReactNode;
   collapsed: boolean | undefined;
   rootIndex: number | undefined;
-  commentEllipsisHandleRef: RefObject<CommentEllipsisHandle>;
+  commentEllipsisHandleRef: RefObject<CommentEllipsisHandle | undefined>;
 }
 
 export default function CommentHeader({

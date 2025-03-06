@@ -42,7 +42,7 @@ import styles from "./DefaultMode.module.css";
 export interface SharedModeProps {
   type: "comment" | "post";
   text: string;
-  textareaRef: RefObject<HTMLTextAreaElement>;
+  textareaRef: RefObject<HTMLTextAreaElement | undefined>;
 }
 
 interface DefaultModeProps extends SharedModeProps {
@@ -65,7 +65,7 @@ export default function DefaultMode({
     text,
   });
 
-  const { uploadImage, jsx } = useUploadImage();
+  const { uploadImage, jsx } = useUploadImage("body");
 
   const {
     insertBlock,

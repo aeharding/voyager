@@ -36,11 +36,12 @@ jobs:
         with:
           name: release-data
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - run: corepack enable
+          cache: pnpm
 
       - name: 📦 Install dependencies
         run: pnpm install  --frozen-lockfile
@@ -80,9 +81,12 @@ jobs:
         with:
           name: release-data
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
 
       - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
         with:
@@ -97,8 +101,6 @@ jobs:
         run: |
           gem install bundler
           bundle install
-
-      - run: corepack enable
 
       - run: pnpm i --frozen-lockfile
 
@@ -135,11 +137,12 @@ jobs:
         with:
           name: release-data
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - run: corepack enable
+          cache: pnpm
 
       - run: pnpm i --frozen-lockfile
 
@@ -184,9 +187,12 @@ jobs:
         with:
           name: release-data
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -197,8 +203,6 @@ jobs:
         run: |
           gem install bundler
           bundle install
-
-      - run: corepack enable
 
       - run: pnpm i --frozen-lockfile
 

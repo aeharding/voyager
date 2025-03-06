@@ -71,7 +71,11 @@ export default function InitialPageRedirectBootstrapper({
         pageTransitionAnimateBackOnly,
       );
 
-      setBootstrapped(true);
+      // router.push paints on next rAF, so show content then
+      // to prevent flicker
+      requestAnimationFrame(() => {
+        setBootstrapped(true);
+      });
     });
   }
 

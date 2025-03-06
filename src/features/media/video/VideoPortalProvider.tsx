@@ -69,7 +69,7 @@ export default function VideoPortalProvider({
   }
 
   return (
-    <VideoPortalContext.Provider
+    <VideoPortalContext
       value={{
         videoRefs,
         getPortalNodeForSrc,
@@ -82,7 +82,7 @@ export default function VideoPortalProvider({
           <PortaledPlayer src={src} />
         </portals.InPortal>
       ))}
-    </VideoPortalContext.Provider>
+    </VideoPortalContext>
   );
 }
 

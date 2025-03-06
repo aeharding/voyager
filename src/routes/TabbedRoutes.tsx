@@ -62,7 +62,7 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
 function InnerTabbedRoutes({
   ref: pageRef,
 }: {
-  ref: React.RefObject<RouterOutletRef>;
+  ref: React.RefObject<RouterOutletRef | null>;
 }) {
   const defaultFeed = useAppSelector(
     (state) => state.settings.general.defaultFeed,

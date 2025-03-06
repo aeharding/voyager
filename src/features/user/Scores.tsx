@@ -1,7 +1,7 @@
 import { useIonAlert } from "@ionic/react";
 import { PersonAggregates } from "lemmy-js-client";
 
-import Ago, { formatRelative } from "#/features/labels/Ago";
+import Ago, { formatRelativeToNow } from "#/features/labels/Ago";
 import { formatNumber } from "#/helpers/number";
 
 import styles from "./Scores.module.css";
@@ -66,7 +66,7 @@ export default function Scores({ aggregates, accountCreated }: ScoreProps) {
           className={styles.score}
           onClick={() => {
             present({
-              header: `Account is ${formatRelative(creationDate, "verbose")} old`,
+              header: `Account is ${formatRelativeToNow(creationDate, "verbose")} old`,
               message: `Created on ${creationDate.toDateString()} at ${creationDate.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`,
               buttons: [{ text: "OK" }],
             });

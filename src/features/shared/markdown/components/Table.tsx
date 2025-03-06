@@ -1,10 +1,10 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { ExtraProps } from "react-markdown";
 
 import styles from "./Table.module.css";
 
 export default function Table(
-  props: JSX.IntrinsicElements["table"] & ExtraProps,
+  props: React.JSX.IntrinsicElements["table"] & ExtraProps,
 ) {
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
 

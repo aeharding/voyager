@@ -143,7 +143,7 @@ export default function Feed<I>({
     atEndRef.current = atEnd;
   }
 
-  const abortControllerRef = useRef<AbortController>();
+  const abortControllerRef = useRef<AbortController>(undefined);
 
   const fetchMore = useCallback(
     async (refresh = false) => {
@@ -351,7 +351,7 @@ export default function Feed<I>({
         <IonRefresherContent />
       </IonRefresher>
 
-      <InFeedContext.Provider value={true}>
+      <InFeedContext value={true}>
         <VList
           className={
             isSafariFeedHackEnabled
@@ -377,7 +377,7 @@ export default function Feed<I>({
           ))}
           {footer}
         </VList>
-      </InFeedContext.Provider>
+      </InFeedContext>
     </>
   );
 }
