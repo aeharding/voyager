@@ -130,38 +130,33 @@ export default function PersonLink({
     </>
   );
 
-  if(accommodateLargeText) {
+  if (accommodateLargeText) {
     return (
+      <div className={sharedStyles.linkContainerParentLarge}>
+        <div></div>
 
-        <div className={sharedStyles.linkContainerParentLarge}>
+        <div className={sharedStyles.linkContainerChildLarge}>
+          <Link
+            className={sharedStyles.link}
+            to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              preventOnClickNavigationBug(e);
+            }}
+            draggable={false}
+          >
+            {prefix ? (
+              <>
+                <span className={styles.prefix}>{prefix}</span>{" "}
+              </>
+            ) : undefined}
 
-            <div>
-            </div>
-
-            <div className={sharedStyles.linkContainerChildLarge}>
-       
-                <Link
-                    className={sharedStyles.link}
-                    to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
-                    onClick={(e) => {
-                    e.stopPropagation();
-                    preventOnClickNavigationBug(e);
-                    }}
-                    draggable={false}
-                >
-                    {prefix ? (
-                    <>
-                        <span className={styles.prefix}>{prefix}</span>{" "}
-                    </>
-                    ) : undefined}
-        
-                    {handle}
-                    {!disableInstanceClick && end}
-                </Link>
-                {disableInstanceClick && end}
-            </div>
+            {handle}
+            {!disableInstanceClick && end}
+          </Link>
+          {disableInstanceClick && end}
         </div>
-  
+      </div>
     );
   }
 

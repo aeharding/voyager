@@ -129,48 +129,37 @@ export default function CommunityLink({
     </>
   );
 
-  if(accommodateLargeText && communityAtTop) {
-
+  if (accommodateLargeText && communityAtTop) {
     return (
-
-        <div className={sharedStyles.linkContainerParentLarge}>
-
-            <div> 
-                {showCommunityIcons && !hideCommunity && !hideIcon && (
-                    <ItemIcon
-                        item={community}
-                        size={tinyIcon ? 16 : 24}
-                        className={styles.itemIcon}
-                    />
-                )}
-            </div>
-
-            <div className={sharedStyles.linkContainerChildLarge}>
-
-                <Link
-                    className={sharedStyles.link}
-                    to={buildGeneralBrowseLink(`/c/${handle}`)}
-                    onClick={(e) => {
-                    e.stopPropagation();
-                    preventOnClickNavigationBug(e);
-                    }}
-                    draggable={false}
-                >
-
-                    {name}
-
-                    {!disableInstanceClick && end}
-
-                </Link>
-
-            </div>
-
+      <div className={sharedStyles.linkContainerParentLarge}>
+        <div>
+          {showCommunityIcons && !hideCommunity && !hideIcon && (
+            <ItemIcon
+              item={community}
+              size={tinyIcon ? 16 : 24}
+              className={styles.itemIcon}
+            />
+          )}
         </div>
 
+        <div className={sharedStyles.linkContainerChildLarge}>
+          <Link
+            className={sharedStyles.link}
+            to={buildGeneralBrowseLink(`/c/${handle}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              preventOnClickNavigationBug(e);
+            }}
+            draggable={false}
+          >
+            {name}
+
+            {!disableInstanceClick && end}
+          </Link>
+        </div>
+      </div>
     );
-
   }
-
 
   return (
     <span

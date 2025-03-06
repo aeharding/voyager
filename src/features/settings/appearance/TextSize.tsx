@@ -3,10 +3,11 @@ import { IonItem, IonLabel, IonList, IonRange, IonToggle } from "@ionic/react";
 import { HelperText, ListHeader } from "#/features/settings/shared/formatting";
 import { useAppDispatch, useAppSelector } from "#/store";
 
-import {    
-            setAccommodateLargeText,
-            setFontSizeMultiplier, 
-            setUseSystemFontSize } from "../settingsSlice";
+import {
+  setAccommodateLargeText,
+  setFontSizeMultiplier,
+  setUseSystemFontSize,
+} from "../settingsSlice";
 
 import styles from "./TextSize.module.css";
 
@@ -15,9 +16,8 @@ const MIN_LARGER_FONT_ADJUSTMENT = 2;
 
 export default function TextSize() {
   const dispatch = useAppDispatch();
-  const { fontSizeMultiplier, useSystemFontSize, accommodateLargeText  } = useAppSelector(
-    (state) => state.settings.appearance.font,
-  );
+  const { fontSizeMultiplier, useSystemFontSize, accommodateLargeText } =
+    useAppSelector((state) => state.settings.appearance.font);
 
   const ranges =
     fontSizeMultiplier <= MAX_REGULAR_FONT_ADJUSTMENT
@@ -97,7 +97,6 @@ export default function TextSize() {
             <span className="ion-text-wrap">Accommodate Large Text</span>
           </IonToggle>
         </IonItem>
-
       </IonList>
       <HelperText>Default is two ticks from the left.</HelperText>
     </>

@@ -102,10 +102,7 @@ export default function Vote({
             {formatNumber(upvotes)}
           </VoteStat>
 
-          {spacer && (
-            <div className={styles.spacer}>
-            </div>
-          )}
+          {spacer && <div className={styles.spacer}></div>}
 
           <VoteStat
             button
@@ -120,12 +117,8 @@ export default function Vote({
           >
             {formatNumber(downvotes)}
           </VoteStat>
-          
-          {spacer && (
-            <div className={styles.spacer}>
-            </div>
-          )}
 
+          {spacer && <div className={styles.spacer}></div>}
         </>
       );
     }
@@ -158,13 +151,8 @@ export default function Vote({
         >
           {formatNumber(score)}
 
-          {spacer && (
-            <div className={styles.spacer}>
-            </div>
-          )}
-
+          {spacer && <div className={styles.spacer}></div>}
         </VoteStat>
-
       );
     }
   }

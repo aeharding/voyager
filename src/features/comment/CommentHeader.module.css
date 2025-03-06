@@ -53,13 +53,12 @@
 }
 
 .divContainerLarge {
-  display:          flex;
-  flex-direction:   column;
+  display: flex;
+  flex-direction: column;
 }
 
 .divChildLarge {
   flex: 1;
-  display:          flex;
-  flex-direction:   row;
+  display: flex;
+  flex-direction: row;
 }
-

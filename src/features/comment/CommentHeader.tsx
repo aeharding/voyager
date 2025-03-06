@@ -132,50 +132,42 @@ export default function CommentHeader({
           </>
         );
       default:
-
-        if(accommodateLargeText) {
-
+        if (accommodateLargeText) {
           return (
             <div className={styles.divContainerLarge}>
-
               <div className={styles.divChildLarge}>
-
                 <PersonLink
-                      className={styles.personLink}
-                      person={commentView.creator}
-                      opId={commentView.post.creator_id}
-                      distinguished={comment.distinguished}
-                      showBadge={!context}
-                      showTag={false}
-                      sourceUrl={commentView.comment.ap_id}
-                    />
-                    {tagsEnabled && trackVotesEnabled && (
-                      <UserScore person={commentView.creator} />
-                    )}
-
+                  className={styles.personLink}
+                  person={commentView.creator}
+                  opId={commentView.post.creator_id}
+                  distinguished={comment.distinguished}
+                  showBadge={!context}
+                  showTag={false}
+                  sourceUrl={commentView.comment.ap_id}
+                />
+                {tagsEnabled && trackVotesEnabled && (
+                  <UserScore person={commentView.creator} />
+                )}
               </div>
 
               <div className={styles.divChildLarge}>
-                    <Vote 
-                        className={styles.commentVote} 
-                        item={commentView} 
-                        spacer={true} />
-                    <Edited item={commentView} />
-                    <div className={styles.spacer}>
-                      {tagsEnabled && <UserTag person={commentView.creator} />}
-                    </div>
+                <Vote
+                  className={styles.commentVote}
+                  item={commentView}
+                  spacer={true}
+                />
+                <Edited item={commentView} />
+                <div className={styles.spacer}>
+                  {tagsEnabled && <UserTag person={commentView.creator} />}
+                </div>
 
-                    {renderAside(comment.published)}
+                {renderAside(comment.published)}
               </div>
-
             </div>
-
           );
-
         }
 
         return (
-
           <>
             <PersonLink
               className={styles.personLink}
@@ -197,7 +189,6 @@ export default function CommentHeader({
             </div>
             {renderAside(comment.published)}
           </>
-
         );
     }
   })();

@@ -35,11 +35,11 @@
 }
 
 .detailsLarge {
-  width:            100%;
-  display:          flex;
-  flex-wrap:        nowrap;
-  flex-direction:   column;
-  align-items:      right;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: right;
 }
 
 .leftDetails {
@@ -65,11 +65,10 @@
 }
 
 .rightDetailsLarge {
-  display:      flex;
-  align-items:  right;
-  margin-left:  auto;
+  display: flex;
+  align-items: right;
+  margin-left: auto;
 }
-
 
 .communityName {
   overflow: hidden;

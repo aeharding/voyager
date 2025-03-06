@@ -11,25 +11,21 @@
 }
 
 .linkContainerParentLarge {
-
-  display:          flex;
-  flex-wrap:        wrap;
-  flex-direction:   row;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
 }
 
 .linkContainerChildLarge {
-
   flex: 1;
 
-  font-weight:      300;
+  font-weight: 300;
 
-  white-space:      pre-wrap;
-  overflow-wrap:    break-word;
-  word-break:       break-all;
-  word-wrap:        break-word;
-
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  word-wrap: break-word;
 }
-
 
 .link {
   text-decoration: none;

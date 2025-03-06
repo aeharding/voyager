@@ -59,112 +59,100 @@ export default function LargePost({ post }: PostProps) {
     return <LargePostContents post={post} />;
   }
 
-
-  if(accommodateLargeText) {
-
+  if (accommodateLargeText) {
     return (
+      <ModeratableItem itemView={post}>
+        <div className={cx(styles.container, hasBeenRead && styles.read)}>
+          <ModeratableItemBannerOutlet />
 
-        <ModeratableItem itemView={post}>
-
-            <div className={cx(styles.container, hasBeenRead && styles.read)}>
-                <ModeratableItemBannerOutlet />
-
-                <div className={styles.header}>
-                  {showCommunityAtTop && !inCommunityFeed && (
-                    <div className={styles.detailsLarge}>
-                      <div className={styles.leftDetails}>
-                        <CommunityLink
-                          community={post.community}
-                          subscribed={post.subscribed}
-                          showInstanceWhenRemote
-                          tinyIcon
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  <div className={styles.title}>
-                    <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
-                    {isNsfw(post) && <Nsfw />}
-                  </div>
+          <div className={styles.header}>
+            {showCommunityAtTop && !inCommunityFeed && (
+              <div className={styles.detailsLarge}>
+                <div className={styles.leftDetails}>
+                  <CommunityLink
+                    community={post.community}
+                    subscribed={post.subscribed}
+                    showInstanceWhenRemote
+                    tinyIcon
+                  />
                 </div>
+              </div>
+            )}
 
-                {renderPostBody()}
+            <div className={styles.title}>
+              <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+              {isNsfw(post) && <Nsfw />}
+            </div>
+          </div>
 
-                <div className={styles.detailsLarge}>
-                  <div className={styles.leftDetails}>
-                    <div className={styles.communityName}>
-                      {post.post.featured_community || post.post.featured_local ? (
-                        <AnnouncementIcon />
-                      ) : undefined}
-                      {inCommunityFeed ? (
+          {renderPostBody()}
+
+          <div className={styles.detailsLarge}>
+            <div className={styles.leftDetails}>
+              <div className={styles.communityName}>
+                {post.post.featured_community || post.post.featured_local ? (
+                  <AnnouncementIcon />
+                ) : undefined}
+                {inCommunityFeed ? (
+                  <PersonLink
+                    person={post.creator}
+                    showInstanceWhenRemote
+                    prefix="by"
+                    disableInstanceClick
+                    sourceUrl={post.post.ap_id}
+                  />
+                ) : (
+                  <>
+                    {!showCommunityAtTop && (
+                      <CommunityLink
+                        community={post.community}
+                        subscribed={post.subscribed}
+                        disableInstanceClick
+                        showInstanceWhenRemote={
+                          !showVotingButtons || !alwaysShowAuthor
+                        }
+                      />
+                    )}
+                    {alwaysShowAuthor && (
+                      <>
+                        {" "}
                         <PersonLink
                           person={post.creator}
-                          showInstanceWhenRemote
                           prefix="by"
                           disableInstanceClick
                           sourceUrl={post.post.ap_id}
                         />
-                      ) : (
-                        <>
-                          {!showCommunityAtTop && (
-                            <CommunityLink
-                              community={post.community}
-                              subscribed={post.subscribed}
-                              disableInstanceClick
-                              showInstanceWhenRemote={
-                                !showVotingButtons || !alwaysShowAuthor
-                              }
-                            />
-                          )}
-                          {alwaysShowAuthor && (
-                            <>
-                              {" "}
-                              <PersonLink
-                                person={post.creator}
-                                prefix="by"
-                                disableInstanceClick
-                                sourceUrl={post.post.ap_id}
-                              />
-                            </>
-                          )}
-                        </>
-                      )}
-                    </div>
-
-                    <PreviewStats post={post} />
-                  </div>
-
-
-                  <div className={styles.rightDetailsLarge}>
-
-                    {(showVotingButtons || inModqueue) && (
-                      <div className={styles.rightDetailsLarge}>
-                        {inModqueue && <ModqueueItemActions itemView={post} />}
-                        <MoreActions post={post} />
-                        {!inModqueue && (
-                          <>
-                            <MoreModActions post={post} />
-                            <VoteButton type="up" post={post} />
-                            <VoteButton type="down" post={post} />
-                          </>
-                        )}
-                      </div>
+                      </>
                     )}
+                  </>
+                )}
+              </div>
 
-                  </div>
-
-                </div>
-
-                <Save type="post" id={post.post.id} />
+              <PreviewStats post={post} />
             </div>
 
-        </ModeratableItem>
+            <div className={styles.rightDetailsLarge}>
+              {(showVotingButtons || inModqueue) && (
+                <div className={styles.rightDetailsLarge}>
+                  {inModqueue && <ModqueueItemActions itemView={post} />}
+                  <MoreActions post={post} />
+                  {!inModqueue && (
+                    <>
+                      <MoreModActions post={post} />
+                      <VoteButton type="up" post={post} />
+                      <VoteButton type="down" post={post} />
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
 
+          <Save type="post" id={post.post.id} />
+        </div>
+      </ModeratableItem>
     );
-
   }
-
 
   return (
     <ModeratableItem itemView={post}>

@@ -302,7 +302,6 @@ export const settingsSlice = createSlice({
   },
 
   reducers: {
-
     setAccommodateLargeText(state, action: PayloadAction<boolean>) {
       state.appearance.font.accommodateLargeText = action.payload;
       set(LOCALSTORAGE_KEYS.FONT.ACCOMMODATE_LARGE_TEXT, action.payload);
