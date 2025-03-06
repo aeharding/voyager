@@ -354,6 +354,7 @@ export interface GlobalSettingValueTypes {
   default_share: PostCommentShareType;
   disable_auto_hide_in_communities: boolean;
   disable_marking_posts_read: boolean;
+  downvoted_collapsed_by_default: boolean;
   embed_crossposts: boolean;
   embed_external_media: boolean;
   enable_haptic_feedback: boolean;
@@ -455,6 +456,7 @@ export const ALL_GLOBAL_SETTINGS = arrayOfAll<keyof GlobalSettingValueTypes>()([
   "remember_community_post_sort",
   "remember_post_appearance_type",
   "show_collapsed_comment",
+  "downvoted_collapsed_by_default",
   "show_comment_images",
   "show_community_icons",
   "show_hidden_in_communities",
@@ -676,6 +678,10 @@ export class WefwefDB extends Dexie {
         ++,
         &handle
       `,
+    });
+
+    this.version(10).upgrade(async () => {
+      await this.setSetting("downvoted_collapsed_by_default", false);
     });
   }
 
