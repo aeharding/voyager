@@ -4,8 +4,8 @@ import { HelperText, ListHeader } from "#/features/settings/shared/formatting";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import {    setFontSizeMultiplier, 
-            setUseSystemFontSize, 
-            setAccommodateLargeText } from "../settingsSlice";
+            setAccommodateLargeText,
+            setUseSystemFontSize } from "../settingsSlice";
 
 import styles from "./TextSize.module.css";
 

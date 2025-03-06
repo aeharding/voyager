@@ -196,8 +196,8 @@ const baseState: SettingsState = {
     deviceMode: "ios",
     font: {
       fontSizeMultiplier: 1,
-      useSystemFontSize: false,
       accommodateLargeText: false,
+      useSystemFontSize: false,
     },
     general: {
       profileLabel: OProfileLabelType.Instance,
@@ -587,13 +587,13 @@ export const settingsSlice = createSlice({
       state.appearance.dark.usingSystemDarkMode = action.payload;
       set(LOCALSTORAGE_KEYS.DARK.USE_SYSTEM, action.payload);
     },
-    setUseSystemFontSize(state, action: PayloadAction<boolean>) {
-      state.appearance.font.useSystemFontSize = action.payload;
-      set(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM, action.payload);
-    },
     setAccommodateLargeText(state, action: PayloadAction<boolean>) {
       state.appearance.font.accommodateLargeText = action.payload;
       set(LOCALSTORAGE_KEYS.FONT.ACCOMMODATE_LARGE_TEXT, action.payload);
+    },
+    setUseSystemFontSize(state, action: PayloadAction<boolean>) {
+      state.appearance.font.useSystemFontSize = action.payload;
+      set(LOCALSTORAGE_KEYS.FONT.USE_SYSTEM, action.payload);
     },
     setVoteDisplayMode(state, action: PayloadAction<VoteDisplayMode>) {
       state.appearance.voting.voteDisplayMode = action.payload;
@@ -847,8 +847,8 @@ export const {
   setUserDarkMode,
   setUserInstanceUrlDisplay,
   setUseSystemDarkMode,
-  setUseSystemFontSize,
   setAccommodateLargeText,
+  setUseSystemFontSize,
   setVoteDisplayMode,
   setVotesTheme,
 } = settingsSlice.actions;

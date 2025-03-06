@@ -38,10 +38,6 @@ export default function Vote({
       : state.post.postVotesById,
   );
 
-  const accommodateLargeText = useAppSelector(
-    (state) => state.settings.appearance.font.accommodateLargeText,
-  );          
-
   const id = "comment" in item ? item.comment.id : item.post.id;
 
   const myVote = votesById[id] ?? (item.my_vote as -1 | 0 | 1 | undefined) ?? 0;
