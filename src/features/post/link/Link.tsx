@@ -94,6 +94,10 @@ export default function Link({
     return thumbnailinatorResult;
   })();
 
+  function onError() {
+    setError(true);
+  }
+
   useEffect(() => {
     if (thumbnail === TRANSPARENT_PIXEL && !thumbnailinatorResult) {
       dispatch(fetchThumbnail(url));
@@ -101,11 +105,14 @@ export default function Link({
   }, [dispatch, thumbnail, thumbnailinatorResult, url]);
 
   function buildCompactIcon() {
+    if (error) return <LinkPreview type={linkType} />;
+
     if (commentType === "image" || isUrlImage(url, undefined))
       return (
         <img
           className={styles.thumbnailImg}
           src={getImageSrc(url, { size: 50 })}
+          onError={onError}
         />
       );
 
@@ -116,6 +123,7 @@ export default function Link({
       <img
         className={styles.thumbnailImg}
         src={typeof thumbnail === "string" ? thumbnail : thumbnail.sm}
+        onError={onError}
       />
     );
   }
@@ -135,7 +143,7 @@ export default function Link({
           src={typeof thumbnail === "string" ? thumbnail : thumbnail.lg}
           draggable="false"
           className={cx(styles.img, blur && styles.blurImg)}
-          onError={() => setError(true)}
+          onError={onError}
         />
       )}
       <div className={cx(styles.bottom, isSmall && styles.small)}>
