@@ -59,14 +59,6 @@ export default function LargePost({ post }: PostProps) {
     return <LargePostContents post={post} />;
   }
 
-  if(accommodateLargeText) {
-    styles.detailsApplied       = styles.detailsLarge;
-    styles.rightDetailsApplied  = styles.rightDetailsLarge;
-  } else {
-    styles.detailsApplied       = styles.details;
-    styles.rightDetailsApplied  = styles.rightDetails;
-  }
-
 
   if(accommodateLargeText) {
 
@@ -79,7 +71,7 @@ export default function LargePost({ post }: PostProps) {
 
                 <div className={styles.header}>
                   {showCommunityAtTop && !inCommunityFeed && (
-                    <div className={styles.detailsApplied}>
+                    <div className={styles.detailsLarge}>
                       <div className={styles.leftDetails}>
                         <CommunityLink
                           community={post.community}
@@ -99,7 +91,7 @@ export default function LargePost({ post }: PostProps) {
 
                 {renderPostBody()}
 
-                <div className={styles.detailsApplied}>
+                <div className={styles.detailsLarge}>
                   <div className={styles.leftDetails}>
                     <div className={styles.communityName}>
                       {post.post.featured_community || post.post.featured_local ? (
@@ -144,10 +136,10 @@ export default function LargePost({ post }: PostProps) {
                   </div>
 
 
-                  <div className={styles.rightDetailsApplied}>
+                  <div className={styles.rightDetailsLarge}>
 
                     {(showVotingButtons || inModqueue) && (
-                      <div className={styles.rightDetailsApplied}>
+                      <div className={styles.rightDetailsLarge}>
                         {inModqueue && <ModqueueItemActions itemView={post} />}
                         <MoreActions post={post} />
                         {!inModqueue && (
