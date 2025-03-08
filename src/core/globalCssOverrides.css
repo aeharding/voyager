@@ -310,3 +310,46 @@ ion-modal.save-as-image-modal {
     margin-bottom: 0;
   }
 }
+
+/* Start: Landscape modal with open keyboard */
+
+/* The "floating"/tablet modal styles activate at >= 768px width */
+/* https://github.com/ionic-team/ionic-framework/blob/322319397ca46bafda7ca0d2e3fb4cc554432d6a/core/src/components/modal/utils.ts#L66 */
+@media (min-width: 768px) {
+  /* The effective app height (capacitor subtracts the keyboard height)
+     is set on the ion-app element.
+     This also works for PWAs, essentially short circuiting to
+     app height == viewport height */
+  ion-app {
+    container: app / size;
+  }
+
+  body {
+    /* Ionic sets --ion-safe-area-top to 0 for the modal component */
+    --base-ion-safe-area-top: var(--ion-safe-area-top);
+  }
+
+  /* landscape tablets */
+  @container app (height < 650px) {
+    ion-modal.modal-card.show-modal {
+      --top-layout-padding: 20px;
+      --height: calc(
+        100% - var(--top-layout-padding) - var(--base-ion-safe-area-top)
+      );
+      align-items: flex-end;
+
+      &::part(content) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+  }
+
+  /* landscape phones */
+  @container app (height < 200px) {
+    ion-modal.modal-card.show-modal {
+      --top-layout-padding: 0px;
+    }
+  }
+}
+/* End: Landscape modal with open keyboard */
