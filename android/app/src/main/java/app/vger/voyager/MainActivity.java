@@ -59,13 +59,7 @@ public class MainActivity extends BridgeActivity {
                 return;
             }
 
-            Uri uri = Uri.parse(potentialUrl);
-
-            // Add a timestamp to the URL to let app know it is not stale
-            Uri.Builder uriBuilder = uri.buildUpon();
-            long currentTime = System.currentTimeMillis() / 1000L;
-            uriBuilder.appendQueryParameter("t", String.valueOf(currentTime));
-            newIntent.setData(uriBuilder.build());
+            newIntent.setData(Uri.parse(potentialUrl));
 
             bridge.onNewIntent(newIntent);
         }
