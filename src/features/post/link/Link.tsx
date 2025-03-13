@@ -9,7 +9,11 @@ import Url from "#/features/shared/Url";
 import useLemmyUrlHandler from "#/features/shared/useLemmyUrlHandler";
 import { cx } from "#/helpers/css";
 import { preventOnClickNavigationBug } from "#/helpers/ionic";
-import { determineTypeFromUrl, isUrlImage } from "#/helpers/url";
+import {
+  determineTypeFromUrl,
+  forceSecureUrl,
+  isUrlImage,
+} from "#/helpers/url";
 import { getImageSrc } from "#/services/lemmy";
 import { useAppDispatch, useAppSelector } from "#/store";
 
@@ -111,7 +115,7 @@ export default function Link({
       return (
         <img
           className={styles.thumbnailImg}
-          src={getImageSrc(url, { size: 50 })}
+          src={getImageSrc(forceSecureUrl(url), { size: 50 })}
           onError={onError}
         />
       );
@@ -122,7 +126,9 @@ export default function Link({
     return (
       <img
         className={styles.thumbnailImg}
-        src={typeof thumbnail === "string" ? thumbnail : thumbnail.sm}
+        src={forceSecureUrl(
+          typeof thumbnail === "string" ? thumbnail : thumbnail.sm,
+        )}
         onError={onError}
       />
     );
@@ -140,7 +146,9 @@ export default function Link({
     >
       {!compact && thumbnail && !error && (
         <img
-          src={typeof thumbnail === "string" ? thumbnail : thumbnail.lg}
+          src={forceSecureUrl(
+            typeof thumbnail === "string" ? thumbnail : thumbnail.lg,
+          )}
           draggable="false"
           className={cx(styles.img, blur && styles.blurImg)}
           onError={onError}
