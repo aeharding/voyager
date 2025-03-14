@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ionic/core': npm:voyager-ionic-core@8.4.3
+  '@ionic/core': npm:voyager-ionic-core@8.5.0
 
 patchedDependencies:
   '@capacitor/android':
@@ -65,14 +65,14 @@ importers:
         specifier: ^2.2.3
         version: 2.2.3
       '@ionic/core':
-        specifier: npm:voyager-ionic-core@8.4.3
-        version: voyager-ionic-core@8.4.3
+        specifier: npm:voyager-ionic-core@8.5.0
+        version: voyager-ionic-core@8.5.0
       '@ionic/react':
-        specifier: 8.4.4-dev.11740669619.1b5165be
-        version: 8.4.4-dev.11740669619.1b5165be(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)
+        specifier: 8.5.0
+        version: 8.5.0(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)
       '@ionic/react-router':
-        specifier: 8.4.4-dev.11740669619.1b5165be
-        version: 8.4.4-dev.11740669619.1b5165be(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react-router-dom@5.3.4(react@0.0.0-experimental-6aa8254b-20250312))(react-router@5.3.4(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)
+        specifier: 8.5.0
+        version: 8.5.0(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react-router-dom@5.3.4(react@0.0.0-experimental-6aa8254b-20250312))(react-router@5.3.4(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)
       '@mantine/hooks':
         specifier: ^7.17.1
         version: 7.17.1(react@0.0.0-experimental-6aa8254b-20250312)
@@ -1332,16 +1332,16 @@ packages:
     engines: {node: '>=16.0.0'}
     hasBin: true
 
-  '@ionic/react-router@8.4.4-dev.11740669619.1b5165be':
-    resolution: {integrity: sha512-R5y9NKGnJpsuOtx6dZuQUs4HoMPbT7T6sKf5I4XU99i1tVjmS5Cg9G6mP3loG+khIfH2C4GSLPNotlA1dqt5tA==}
+  '@ionic/react-router@8.5.0':
+    resolution: {integrity: sha512-fX2F6wiMIzqSwhZsby+euA3yOYsIabHbZ1J3nbktb5PEtyLS7b0mVjAqAQjH4q5VClCvU7srbFd0TAwOb6CMAQ==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
       react-router: ^5.0.1
       react-router-dom: ^5.0.1
 
-  '@ionic/react@8.4.4-dev.11740669619.1b5165be':
-    resolution: {integrity: sha512-x4Doj7BYJ5QdE/iyJK35wKh/MvnRMXog4opsttiOJ14gCu9opA4yVppuFK7YAX8DIpzlHkCMCqSpM9lnU542wQ==}
+  '@ionic/react@8.5.0':
+    resolution: {integrity: sha512-MpcPU2cm/c8v+lq0j+iZkruB+M31GP2YuxFU0ikTZwuJpVtKLzq3IDyqor0FvIo5kojaginn6r0n3hhmSrf1nw==}
     peerDependencies:
       react: '>=16.8.6'
       react-dom: '>=16.8.6'
@@ -6421,8 +6421,8 @@ packages:
       jsdom:
         optional: true
 
-  voyager-ionic-core@8.4.3:
-    resolution: {integrity: sha512-ZU+tnjFOF/KMXaz4hyFgQJGxpcJjDnGCJh4q+5s04lIVEJepjqN6pLW5NTb16PYUrGdxouEAS8Nd7zOoCaXAUQ==}
+  voyager-ionic-core@8.5.0:
+    resolution: {integrity: sha512-Zp/XNl61CjoFwLqxshwDoo5VeKRoaR1bWuUflQTYLliCdwWQywvhtiiYOiI4oib/iIKxMkaR+xQJ9WMAafnAwQ==}
 
   w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
@@ -7849,18 +7849,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ionic/react-router@8.4.4-dev.11740669619.1b5165be(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react-router-dom@5.3.4(react@0.0.0-experimental-6aa8254b-20250312))(react-router@5.3.4(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)':
+  '@ionic/react-router@8.5.0(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react-router-dom@5.3.4(react@0.0.0-experimental-6aa8254b-20250312))(react-router@5.3.4(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)':
     dependencies:
-      '@ionic/react': 8.4.4-dev.11740669619.1b5165be(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)
+      '@ionic/react': 8.5.0(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)
       react: 0.0.0-experimental-6aa8254b-20250312
       react-dom: 0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312)
       react-router: 5.3.4(react@0.0.0-experimental-6aa8254b-20250312)
       react-router-dom: 5.3.4(react@0.0.0-experimental-6aa8254b-20250312)
       tslib: 2.8.1
 
-  '@ionic/react@8.4.4-dev.11740669619.1b5165be(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)':
+  '@ionic/react@8.5.0(react-dom@0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312))(react@0.0.0-experimental-6aa8254b-20250312)':
     dependencies:
-      '@ionic/core': voyager-ionic-core@8.4.3
+      '@ionic/core': voyager-ionic-core@8.5.0
       ionicons: 7.4.0
       react: 0.0.0-experimental-6aa8254b-20250312
       react-dom: 0.0.0-experimental-6aa8254b-20250312(react@0.0.0-experimental-6aa8254b-20250312)
@@ -13715,7 +13715,7 @@ snapshots:
       - tsx
       - yaml
 
-  voyager-ionic-core@8.4.3:
+  voyager-ionic-core@8.5.0:
     dependencies:
       '@stencil/core': 4.20.0
       ionicons: 7.4.0
