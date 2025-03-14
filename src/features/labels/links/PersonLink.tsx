@@ -70,6 +70,10 @@ export default function PersonLink({
     (state) => state.settings.tags.enabled && state.settings.tags.hideInstance,
   );
 
+  const accommodateLargeText = useAppSelector(
+    (state) => state.settings.appearance.font.accommodateLargeText,
+  );
+
   const onCommunityLinkLongPress = useCallback(() => {
     stopIonicTapClick();
 
@@ -128,6 +132,36 @@ export default function PersonLink({
       )}
     </>
   );
+
+  if (accommodateLargeText) {
+    return (
+      <div className={sharedStyles.linkContainerParentLarge}>
+        <div></div>
+
+        <div className={sharedStyles.linkContainerChildLarge}>
+          <Link
+            className={sharedStyles.link}
+            to={buildGeneralBrowseLink(`/u/${getHandle(person)}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              preventOnClickNavigationBug(e);
+            }}
+            draggable={false}
+          >
+            {prefix ? (
+              <>
+                <span className={styles.prefix}>{prefix}</span>{" "}
+              </>
+            ) : undefined}
+
+            {handle}
+            {!disableInstanceClick && end}
+          </Link>
+          {disableInstanceClick && end}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <span
