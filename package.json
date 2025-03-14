@@ -30,7 +30,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@ionic/core": "npm:voyager-ionic-core@8.4.3"
+      "@ionic/core": "npm:voyager-ionic-core@8.5.0"
     },
     "patchedDependencies": {
       "@capacitor/haptics": "patches/@capacitor__haptics@6.0.1.patch",
@@ -63,9 +63,9 @@
     "@capacitor/splash-screen": "^7.0.0",
     "@capacitor/status-bar": "^7.0.0",
     "@github/markdown-toolbar-element": "^2.2.3",
-    "@ionic/core": "npm:voyager-ionic-core@8.4.3",
-    "@ionic/react": "8.4.4-dev.11740669619.1b5165be",
-    "@ionic/react-router": "8.4.4-dev.11740669619.1b5165be",
+    "@ionic/core": "npm:voyager-ionic-core@8.5.0",
+    "@ionic/react": "8.5.0",
+    "@ionic/react-router": "8.5.0",
     "@mantine/hooks": "^7.17.1",
     "@reduxjs/toolkit": "^2.6.1",
     "capacitor-android-nav-mode": "^2.0.0",
