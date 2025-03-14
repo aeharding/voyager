@@ -25,8 +25,10 @@ import PostCommentFeed, {
   PostCommentItem,
 } from "#/features/feed/PostCommentFeed";
 import PostFabs from "#/features/feed/postFabs/PostFabs";
-import PostSort from "#/features/feed/PostSort";
-import useFeedSort from "#/features/feed/sort/useFeedSort";
+import { PostSort } from "#/features/feed/sort/PostSort";
+import useFeedSort, {
+  useFeedSortParams,
+} from "#/features/feed/sort/useFeedSort";
 import useFeedUpdate from "#/features/feed/useFeedUpdate";
 import PostAppearanceProvider, {
   WaitUntilPostAppearanceResolved,
@@ -88,6 +90,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
   };
 
   const [sort, setSort] = useFeedSort("posts", postFeed);
+  const sortParams = useFeedSortParams("posts", sort);
 
   const communityView = useFetchCommunity(community);
 
@@ -102,7 +105,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
         ...pageData,
         limit: LIMIT,
         community_name: community,
-        sort,
+        ...sortParams,
         show_read: true,
       },
       ...rest,
