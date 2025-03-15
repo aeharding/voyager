@@ -4,7 +4,7 @@
 
   font-size: 0.875em;
 
-  gap: 0.5em;
+  gap: 6px;
 
   color: var(--ion-color-medium2);
 }
@@ -16,7 +16,7 @@
 
   a {
     display: flex;
-    gap: 0.5em;
+    gap: 6px;
   }
 
   min-width: 0;
