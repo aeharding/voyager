@@ -27,6 +27,9 @@ jobs:
 
   build_web:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # aws
     steps:
       - uses: actions/checkout@v4
 
@@ -49,15 +52,15 @@ jobs:
       - name: Build dist bundle
         run: pnpm build
 
-      - name: Upload dist bundle to S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          SOURCE_DIR: dist
-          AWS_S3_BUCKET: ${{ inputs.is_main_build && 'beta.vger.app' || 'vger.app'}}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: us-east-1
+
+      - name: Upload dist bundle to S3
+        run: |
+          aws s3 sync dist/ s3://${{ inputs.is_main_build && 'beta.vger.app' || 'vger.app'}}/ --delete
 
       - name: Compress artifacts
         run: |
