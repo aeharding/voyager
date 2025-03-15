@@ -111,9 +111,8 @@ export default function PersonLink({
     item: person,
   });
 
-  const end = (
+  const suffix = (
     <>
-      {instance}
       {showBadge && (
         <>
           {person.bot_account && " 🤖"}
@@ -153,10 +152,24 @@ export default function PersonLink({
             <span className={styles.prefix}>{prefix}</span>{" "}
           </>
         ) : undefined}
-        {handle}
-        {!disableInstanceClick && end}
+        {!disableInstanceClick ? (
+          <>
+            <span className={styles.shrinkable}>
+              {handle}
+              {instance}
+            </span>
+            {suffix}
+          </>
+        ) : (
+          handle
+        )}
       </Link>
-      {disableInstanceClick && end}
+      {disableInstanceClick && (
+        <span className={styles.shrinkable}>
+          {instance}
+          {suffix}
+        </span>
+      )}
     </span>
   );
 }

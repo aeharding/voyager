@@ -1,13 +1,12 @@
 .linkContainer {
+  position: relative;
   display: inline;
 
   font-weight: 500;
   white-space: nowrap;
 
-  text-overflow: ellipsis;
   overflow: hidden;
-
-  position: relative;
+  text-overflow: ellipsis;
 }
 
 .link {
