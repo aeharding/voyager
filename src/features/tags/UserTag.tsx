@@ -90,7 +90,11 @@ function SyncUserTag({ tag, children }: SyncUserTagProps) {
 
     e.stopPropagation();
 
-    present(tag.text!);
+    present({
+      header: "Flair",
+      message: tag.text!,
+      buttons: ["OK"],
+    });
   }
 
   // don't know until tapped if it is ellipsed (not reactive),

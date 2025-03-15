@@ -22,6 +22,8 @@ import ModActions from "./ModActions";
 
 import styles from "./CommentHeader.module.css";
 
+const MAX_TAG_LENGTH_WITHOUT_CUTOFF = 6;
+
 interface CommentHeaderProps {
   canModerate: ModeratorRole | undefined;
   commentView: CommentView;
@@ -152,8 +154,9 @@ export default function CommentHeader({
                     <div
                       className={cx(
                         styles.spacer,
-                        styles.hasTag,
-                        (props.tag.text?.length || 0) < 6 &&
+                        styles.spacerWithTag,
+                        (props.tag.text?.length || 0) <
+                          MAX_TAG_LENGTH_WITHOUT_CUTOFF &&
                           styles.noShrinkSpacer,
                       )}
                     >

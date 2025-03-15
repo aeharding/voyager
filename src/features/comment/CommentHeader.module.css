@@ -55,7 +55,7 @@
   overflow: hidden;
   display: flex;
 
-  &.hasTag {
+  &.spacerWithTag {
     min-width: 3.3ch;
   }
 
