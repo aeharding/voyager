@@ -15,7 +15,6 @@
   }
 
   min-width: 0;
-  overflow: hidden;
 }
 
 .commentVote {
@@ -50,4 +49,12 @@
   min-width: 0;
   overflow: hidden;
   display: flex;
+
+  &.hasTag {
+    min-width: 3ch;
+  }
+
+  &.noShrinkSpacer {
+    min-width: fit-content;
+  }
 }

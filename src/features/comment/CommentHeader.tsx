@@ -13,6 +13,7 @@ import { ActionButton } from "#/features/post/actions/ActionButton";
 import ActionsContainer from "#/features/post/actions/ActionsContainer";
 import UserScore from "#/features/tags/UserScore";
 import UserTag from "#/features/tags/UserTag";
+import { cx } from "#/helpers/css";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
 
@@ -144,9 +145,26 @@ export default function CommentHeader({
             )}
             <Vote className={styles.commentVote} item={commentView} />
             <Edited item={commentView} />
-            <div className={styles.spacer}>
-              {tagsEnabled && <UserTag person={commentView.creator} />}
-            </div>
+            {tagsEnabled && (
+              <UserTag person={commentView.creator}>
+                {(props) =>
+                  props ? (
+                    <div
+                      className={cx(
+                        styles.spacer,
+                        styles.hasTag,
+                        (props.tag.text?.length || 0) < 5 &&
+                          styles.noShrinkSpacer,
+                      )}
+                    >
+                      {props.el}
+                    </div>
+                  ) : (
+                    <div className={styles.spacer} />
+                  )
+                }
+              </UserTag>
+            )}
             {renderAside(comment.published)}
           </>
         );

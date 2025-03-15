@@ -1,28 +1,34 @@
+import { useIonAlert } from "@ionic/react";
 import { Person } from "lemmy-js-client";
 import React from "react";
 
 import { getTextColorFor } from "#/helpers/color";
+import { stopIonicTapClick } from "#/helpers/ionic";
 import { getRemoteHandle } from "#/helpers/lemmy";
 import type { UserTag } from "#/services/db";
 import { useAppSelector } from "#/store";
 
 import styles from "./UserTag.module.css";
 
-type UserTagProps =
-  | SyncUserTagProps
-  | {
-      person: Person;
-    };
-
 interface BaseUserTagProps {
   prefix?: React.ReactNode;
-  person?: Person;
+  children?: (props?: { el: React.ReactNode; tag: UserTag }) => React.ReactNode;
 }
+
+interface SyncUserTagProps extends BaseUserTagProps {
+  tag: UserTag;
+}
+
+interface AsyncUserTagProps extends BaseUserTagProps {
+  person: Person;
+}
+
+type UserTagProps = SyncUserTagProps | AsyncUserTagProps;
 
 export default function UserTag(props: UserTagProps) {
   function renderFallback() {
-    if (!("tag" in props)) return;
-    return <SyncUserTag tag={props.tag} />;
+    if (!("tag" in props)) return props.children?.();
+    return <SyncUserTag tag={props.tag}>{props.children}</SyncUserTag>;
   }
 
   const remoteHandle =
@@ -33,7 +39,9 @@ export default function UserTag(props: UserTagProps) {
       {...props}
       renderFallback={renderFallback}
       remoteHandle={remoteHandle}
-    />
+    >
+      {props.children}
+    </StoreUserTag>
   );
 }
 
@@ -46,6 +54,7 @@ function StoreUserTag({
   remoteHandle,
   renderFallback,
   prefix,
+  children,
 }: StoreUserTagProps) {
   const tag = useAppSelector(
     (state) => state.userTag.tagByRemoteHandle[remoteHandle],
@@ -56,19 +65,45 @@ function StoreUserTag({
   return (
     <>
       {prefix}
-      <SyncUserTag tag={tag} />
+      <SyncUserTag tag={tag}>{children}</SyncUserTag>
     </>
   );
 }
 
-interface SyncUserTagProps extends BaseUserTagProps {
-  tag: UserTag;
-}
+function SyncUserTag({ tag, children }: SyncUserTagProps) {
+  const [present] = useIonAlert();
 
-function SyncUserTag({ tag }: SyncUserTagProps) {
   if (!tag.text) return;
 
-  return (
+  function isEllipsed(
+    e: React.TouchEvent<HTMLSpanElement> | React.MouseEvent<HTMLSpanElement>,
+  ) {
+    return (
+      e.target instanceof HTMLElement &&
+      e.target.offsetWidth < e.target.scrollWidth
+    );
+  }
+
+  // if tag is ellipsed, show via alert on tap
+  function onTagClick(e: React.MouseEvent<HTMLSpanElement>) {
+    if (!isEllipsed(e)) return;
+
+    e.stopPropagation();
+
+    present(tag.text!);
+  }
+
+  // don't know until tapped if it is ellipsed (not reactive),
+  // so can't change element to a button when ellipsed
+  function _stopIonicTapClick(
+    e: React.TouchEvent<HTMLSpanElement> | React.MouseEvent<HTMLSpanElement>,
+  ) {
+    if (!isEllipsed(e)) return;
+
+    stopIonicTapClick();
+  }
+
+  const el = (
     <span
       className={styles.tagContainer}
       style={
@@ -79,8 +114,18 @@ function SyncUserTag({ tag }: SyncUserTagProps) {
             }
           : undefined
       }
+      onTouchStart={_stopIonicTapClick}
+      onMouseDown={_stopIonicTapClick}
+      onClick={onTagClick}
     >
       {tag.text}
     </span>
   );
+
+  if (!children) return el;
+
+  return children({
+    el,
+    tag,
+  });
 }
