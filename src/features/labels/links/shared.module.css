@@ -4,14 +4,14 @@
 
   font-weight: 500;
   white-space: nowrap;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .link {
   text-decoration: none;
   color: inherit;
-
-  display: flex;
-  gap: 0.5em;
 }
 
 .hide {

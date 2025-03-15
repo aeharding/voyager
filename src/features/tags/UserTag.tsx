@@ -73,7 +73,7 @@ function StoreUserTag({
 function SyncUserTag({ tag, children }: SyncUserTagProps) {
   const [present] = useIonAlert();
 
-  if (!tag.text) return;
+  if (!tag.text) return children?.();
 
   function isEllipsed(
     e: React.TouchEvent<HTMLSpanElement> | React.MouseEvent<HTMLSpanElement>,

@@ -145,7 +145,7 @@ export default function CommentHeader({
             )}
             <Vote className={styles.commentVote} item={commentView} />
             <Edited item={commentView} />
-            {tagsEnabled && (
+            {tagsEnabled ? (
               <UserTag person={commentView.creator}>
                 {(props) =>
                   props ? (
@@ -153,7 +153,7 @@ export default function CommentHeader({
                       className={cx(
                         styles.spacer,
                         styles.hasTag,
-                        (props.tag.text?.length || 0) < 5 &&
+                        (props.tag.text?.length || 0) < 6 &&
                           styles.noShrinkSpacer,
                       )}
                     >
@@ -164,6 +164,8 @@ export default function CommentHeader({
                   )
                 }
               </UserTag>
+            ) : (
+              <div className={styles.spacer} />
             )}
             {renderAside(comment.published)}
           </>
