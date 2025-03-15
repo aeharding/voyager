@@ -85,7 +85,7 @@ function SyncUserTag({ tag, children }: SyncUserTagProps) {
   }
 
   // if tag is ellipsed, show via alert on tap
-  function onTagClick(e: React.MouseEvent<HTMLSpanElement>) {
+  function onClick(e: React.MouseEvent<HTMLSpanElement>) {
     if (!isEllipsed(e)) return;
 
     e.stopPropagation();
@@ -99,7 +99,7 @@ function SyncUserTag({ tag, children }: SyncUserTagProps) {
 
   // don't know until tapped if it is ellipsed (not reactive),
   // so can't change element to a button when ellipsed
-  function _stopIonicTapClick(
+  function onInteractionStart(
     e: React.TouchEvent<HTMLSpanElement> | React.MouseEvent<HTMLSpanElement>,
   ) {
     if (!isEllipsed(e)) return;
@@ -118,9 +118,9 @@ function SyncUserTag({ tag, children }: SyncUserTagProps) {
             }
           : undefined
       }
-      onTouchStart={_stopIonicTapClick}
-      onMouseDown={_stopIonicTapClick}
-      onClick={onTagClick}
+      onTouchStart={onInteractionStart}
+      onMouseDown={onInteractionStart}
+      onClick={onClick}
     >
       {tag.text}
     </span>
