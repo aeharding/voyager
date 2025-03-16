@@ -33,9 +33,9 @@
       "@ionic/core": "npm:voyager-ionic-core@8.5.0"
     },
     "patchedDependencies": {
-      "@capacitor/haptics": "patches/@capacitor__haptics@6.0.1.patch",
-      "@capacitor/keyboard": "patches/@capacitor__keyboard@6.0.2.patch",
-      "@capacitor/android": "patches/@capacitor__android.patch"
+      "@capacitor/keyboard": "patches/@capacitor__keyboard.patch",
+      "@capacitor/android": "patches/@capacitor__android.patch",
+      "@capacitor/haptics": "patches/@capacitor__haptics.patch"
     },
     "updateConfig": {
       "ignoreDependencies": [

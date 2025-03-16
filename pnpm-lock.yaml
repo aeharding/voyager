@@ -12,11 +12,11 @@ patchedDependencies:
     hash: dca4cd0644bfe52632f4d81f97b9ddc5ddcd67caae25988a52f9014428029ab6
     path: patches/@capacitor__android.patch
   '@capacitor/haptics':
-    hash: daa342ffd526f01bd99bc1242d366ebc0d25fc5ec30939e5be0046b277a0d4fc
-    path: patches/@capacitor__haptics@6.0.1.patch
+    hash: 181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0
+    path: patches/@capacitor__haptics.patch
   '@capacitor/keyboard':
     hash: a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f71586ecd0859f11
-    path: patches/@capacitor__keyboard@6.0.2.patch
+    path: patches/@capacitor__keyboard.patch
 
 importers:
 
@@ -42,7 +42,7 @@ importers:
         version: 7.0.0(@capacitor/core@7.1.0)
       '@capacitor/haptics':
         specifier: ^7.0.0
-        version: 7.0.0(patch_hash=daa342ffd526f01bd99bc1242d366ebc0d25fc5ec30939e5be0046b277a0d4fc)(@capacitor/core@7.1.0)
+        version: 7.0.0(patch_hash=181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0)(@capacitor/core@7.1.0)
       '@capacitor/ios':
         specifier: ^7.1.0
         version: 7.1.0(@capacitor/core@7.1.0)
@@ -7475,7 +7475,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 7.1.0
 
-  '@capacitor/haptics@7.0.0(patch_hash=daa342ffd526f01bd99bc1242d366ebc0d25fc5ec30939e5be0046b277a0d4fc)(@capacitor/core@7.1.0)':
+  '@capacitor/haptics@7.0.0(patch_hash=181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed165e46498812e0)(@capacitor/core@7.1.0)':
     dependencies:
       '@capacitor/core': 7.1.0
 
