@@ -14,8 +14,10 @@ import { produce } from "immer";
 import { PostSortType } from "lemmy-js-client";
 
 import { loggedInSelector } from "#/features/auth/authSelectors";
+import { SearchSortType } from "#/features/feed/sort/SearchSort";
 import { MAX_DEFAULT_COMMENT_DEPTH } from "#/helpers/lemmy";
 import { DeepPartial } from "#/helpers/typescript";
+import { CommunitySortType } from "#/routes/pages/search/results/CommunitySort";
 import {
   ALL_GLOBAL_SETTINGS,
   AppThemeType,
@@ -146,6 +148,14 @@ export interface SettingsState {
       rememberCommunitySort: boolean;
       autoplayMedia: AutoplayMediaType;
     };
+    search: {
+      sort: SearchSortType;
+      rememberCommunitySort: boolean;
+    };
+    communities: {
+      sort: CommunitySortType;
+      rememberCommunitySort: boolean;
+    };
     safari: {
       alwaysUseReaderMode: boolean;
     };
@@ -238,6 +248,10 @@ const baseState: SettingsState = {
       tapToCollapse: OTapToCollapseType.Both,
       touchFriendlyLinks: true,
     },
+    communities: {
+      rememberCommunitySort: false,
+      sort: "Active",
+    },
     defaultFeed: undefined,
     defaultShare: OPostCommentShareType.Local,
     enableHapticFeedback: true,
@@ -264,6 +278,10 @@ const baseState: SettingsState = {
     preferNativeApps: true,
     safari: {
       alwaysUseReaderMode: false,
+    },
+    search: {
+      rememberCommunitySort: false,
+      sort: "Top",
     },
     thumbnailinatorEnabled: true,
   },
