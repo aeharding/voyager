@@ -74,6 +74,8 @@ function VideoActions({ videoRef }: VideoActionsProps) {
 
       setIsPlaying(!videoRef.current.paused);
       setIsMuted(videoRef.current.muted);
+
+      handleTimeUpdate();
     }
   }
 

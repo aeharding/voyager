@@ -1,19 +1,24 @@
 import { useImperativeHandle } from "react";
-import * as portals from "react-reverse-portal";
 
 import type { PlayerProps } from "./Player";
 import Player from "./Player";
+import { OutPortalPlayer } from "./PortaledPlayer";
 import { useVideoPortalNode } from "./VideoPortalProvider";
 
 export interface VideoProps extends Omit<PlayerProps, "ref"> {
   ref: React.RefObject<HTMLVideoElement | undefined>;
-  shouldPortal?: boolean;
+
+  /**
+   * A unique identifier to track a specific video
+   * as it is portaled around the app
+   */
+  portalWithMediaId?: string;
 }
 
-export default function Video({ shouldPortal, ...props }: VideoProps) {
-  const VideoComponent = shouldPortal ? PortaledVideo : UnportaledVideo;
+export default function Video({ portalWithMediaId, ...props }: VideoProps) {
+  if (!portalWithMediaId) return <UnportaledVideo {...props} />;
 
-  return <VideoComponent {...props} />;
+  return <PortaledVideo {...props} portalWithMediaId={portalWithMediaId} />;
 }
 
 function UnportaledVideo(props: VideoProps) {
@@ -22,8 +27,16 @@ function UnportaledVideo(props: VideoProps) {
   );
 }
 
-function PortaledVideo({ src, ref, ...props }: VideoProps) {
-  const portalNode = useVideoPortalNode(src);
+// portalWithMediaId is required
+type PortaledVideoProps = Omit<VideoProps, "portalWithMediaId"> &
+  Required<Pick<VideoProps, "portalWithMediaId">>;
+
+function PortaledVideo({
+  ref,
+  portalWithMediaId,
+  ...props
+}: PortaledVideoProps) {
+  const portalNode = useVideoPortalNode(portalWithMediaId);
 
   useImperativeHandle(
     ref,
@@ -34,11 +47,7 @@ function PortaledVideo({ src, ref, ...props }: VideoProps) {
   return (
     <div style={props.style} className={props.className}>
       {portalNode ? (
-        <portals.OutPortal<typeof Player>
-          {...props}
-          node={portalNode}
-          src={src}
-        />
+        <OutPortalPlayer {...props} node={portalNode} />
       ) : undefined}
     </div>
   );

@@ -1,3 +1,5 @@
+import * as portals from "react-reverse-portal";
+
 import OutPortalEventDispatcher, {
   OutPortalEventDispatcherProps,
 } from "./OutPortalEventDispatcher";
@@ -24,16 +26,21 @@ const eventsToPropagateViaOutPortal: OutPortalEventDispatcherProps["eventsToProp
     "touchcancel",
   ];
 
+// OutPortalPlayer will pass the player props
+interface PortaledPlayerProps {}
+
 /**
  * Need to wrap with EventCatcher to propagate events,
  * but also need props to be set on <Player />
  */
-export default function PortaledPlayer(props: PlayerProps) {
+export default function PortaledPlayer(props: PortaledPlayerProps) {
   return (
     <OutPortalEventDispatcher
       eventsToPropagateViaOutPortal={eventsToPropagateViaOutPortal}
     >
-      <Player {...props} />
+      <Player {...(props as PlayerProps)} />
     </OutPortalEventDispatcher>
   );
 }
+
+export const OutPortalPlayer = portals.OutPortal<typeof Player>;

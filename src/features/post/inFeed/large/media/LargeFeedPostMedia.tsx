@@ -27,7 +27,7 @@ export default function LargeFeedPostMedia(
             alt={props.post.post.alt_text}
             autoPlay={!props.blur}
             className={cx(styles.lightbox, props.className)}
-            shouldPortal
+            portalWithMediaId={`${props.post.post.id}`}
           />
         );
     }
@@ -41,7 +41,7 @@ export default function LargeFeedPostMedia(
         autoPlay={!props.blur}
         alt={props.post.post.alt_text}
         className={cx(styles.lightbox, props.className)}
-        shouldPortal
+        portalWithMediaId={`${props.post.post.id}`}
       />
     );
 }

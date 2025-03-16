@@ -14,10 +14,9 @@ import React, {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-import * as portals from "react-reverse-portal";
 import { useLocation } from "react-router";
 
-import Player from "#/features/media/video/Player";
+import { OutPortalPlayer } from "#/features/media/video/PortaledPlayer";
 import { useVideoPortalNode } from "#/features/media/video/VideoPortalProvider";
 import { findBlurOverlayContainer } from "#/features/post/inFeed/large/media/BlurOverlayMessage";
 import { setPostRead } from "#/features/post/postSlice";
@@ -71,7 +70,9 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const isVideo = !!videoContainer;
 
   const [videoSrc, setVideoSrc] = useState("");
-  const portalNode = useVideoPortalNode(videoSrc);
+  const portalNode = useVideoPortalNode(
+    videoSrc ? `${post!.post.id}` : undefined,
+  );
 
   const videoRef = useRef<HTMLVideoElement>(undefined);
 
@@ -582,7 +583,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
 
       {videoContainer !== null && portalNode
         ? createPortal(
-            <portals.OutPortal<typeof Player>
+            <OutPortalPlayer
               videoRef={videoRef}
               node={portalNode}
               src={videoSrc}

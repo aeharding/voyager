@@ -24,19 +24,22 @@ export default function VideoPortalProvider({
     videoRefsRef.current = videoRefs;
   }, [videoRefs]);
 
-  const getPortalNodeForSrc: GetPortalNodeForSrc = (src, sourceUid) => {
+  const getPortalNodeForMediaId: GetPortalNodeForMediaId = (
+    mediaId,
+    outPortalUid,
+  ) => {
     const videoRefs = videoRefsRef.current;
 
-    const potentialExisting = videoRefs[src];
+    const potentialExisting = videoRefs[mediaId];
     if (potentialExisting) {
       setVideoRefs((videoRefs) => ({
         ...videoRefs,
-        [src]: {
+        [mediaId]: {
           ...potentialExisting,
           // most recently used (currently playing location) is last
-          sourceUids: [
-            ...without(potentialExisting.sourceUids, sourceUid),
-            sourceUid,
+          outPortalUids: [
+            ...without(potentialExisting.outPortalUids, outPortalUid),
+            outPortalUid,
           ],
         },
       }));
@@ -45,7 +48,7 @@ export default function VideoPortalProvider({
     }
 
     const newRef = {
-      sourceUids: [sourceUid],
+      outPortalUids: [outPortalUid],
       portalNode: portals.createHtmlPortalNode({
         attributes: { style: "flex:1;display:flex;width:100%" },
       }),
@@ -53,34 +56,37 @@ export default function VideoPortalProvider({
 
     setVideoRefs((videoRefs) => ({
       ...videoRefs,
-      [src]: newRef,
+      [mediaId]: newRef,
     }));
 
     return newRef.portalNode;
   };
 
-  function cleanupPortalNodeForSrcIfNeeded(src: string, sourceUid: string) {
+  function cleanupPortalNodeForMediaIdIfNeeded(
+    mediaId: string,
+    sourceUid: string,
+  ) {
     const videoRefs = videoRefsRef.current;
 
-    const videoRef = videoRefs[src];
+    const videoRef = videoRefs[mediaId];
 
     if (!videoRef) return;
 
     if (
-      videoRef.sourceUids.length === 1 &&
-      videoRef.sourceUids[0] === sourceUid
+      videoRef.outPortalUids.length === 1 &&
+      videoRef.outPortalUids[0] === sourceUid
     ) {
       setVideoRefs((videoRefs) => {
         const updatedVideoRefs = { ...videoRefs };
-        delete updatedVideoRefs[src];
+        delete updatedVideoRefs[mediaId];
         return updatedVideoRefs;
       });
     } else {
       setVideoRefs((videoRefs) => ({
         ...videoRefs,
-        [src]: {
+        [mediaId]: {
           ...videoRef,
-          sourceUids: without(videoRef.sourceUids, sourceUid),
+          outPortalUids: without(videoRef.outPortalUids, sourceUid),
         },
       }));
     }
@@ -90,14 +96,14 @@ export default function VideoPortalProvider({
     <VideoPortalContext
       value={{
         videoRefs,
-        getPortalNodeForSrc,
-        cleanupPortalNodeForSrcIfNeeded,
+        getPortalNodeForMediaId,
+        cleanupPortalNodeForMediaIdIfNeeded,
       }}
     >
       {children}
-      {Object.entries(videoRefs).map(([src, { portalNode }]) => (
-        <portals.InPortal node={portalNode} key={src}>
-          <PortaledPlayer src={src} />
+      {Object.entries(videoRefs).map(([mediaId, { portalNode }]) => (
+        <portals.InPortal node={portalNode} key={mediaId}>
+          <PortaledPlayer /> {/* InPortal will pass props from OutPortal */}
         </portals.InPortal>
       ))}
     </VideoPortalContext>
@@ -107,7 +113,7 @@ export default function VideoPortalProvider({
 type VideoRefs = Record<
   string,
   {
-    sourceUids: string[];
+    outPortalUids: string[];
     portalNode: PortalNode;
   }
 >;
@@ -116,63 +122,74 @@ type PortalNode = portals.HtmlPortalNode<typeof Player>;
 
 interface VideoPortalContextState {
   videoRefs: VideoRefs;
-  getPortalNodeForSrc: GetPortalNodeForSrc;
-  cleanupPortalNodeForSrcIfNeeded: (src: string, sourceUid: string) => void;
+  getPortalNodeForMediaId: GetPortalNodeForMediaId;
+  cleanupPortalNodeForMediaIdIfNeeded: (
+    mediaId: string,
+    sourceUid: string,
+  ) => void;
 }
 
-type GetPortalNodeForSrc = (
-  src: string,
-  sourceUid: string,
+type GetPortalNodeForMediaId = (
+  mediaId: string,
+  outPortalUid: string,
 ) => PortalNode | void;
 
 const VideoPortalContext = createContext<VideoPortalContextState>({
   videoRefs: {},
-  getPortalNodeForSrc: noop,
-  cleanupPortalNodeForSrcIfNeeded: noop,
+  getPortalNodeForMediaId: noop,
+  cleanupPortalNodeForMediaIdIfNeeded: noop,
 });
 
-export function useVideoPortalNode(src: string | undefined): PortalNode | void {
-  const previousSrcRef = useRef<string | undefined>(src);
-  const sourceUid = useId();
+export function useVideoPortalNode(
+  mediaId: string | undefined,
+): PortalNode | void {
+  const previousMediaIdRef = useRef<string | undefined>(mediaId);
+  const outPortalUid = useId();
 
-  const { getPortalNodeForSrc, cleanupPortalNodeForSrcIfNeeded, videoRefs } =
-    useContext(VideoPortalContext);
+  const {
+    getPortalNodeForMediaId,
+    cleanupPortalNodeForMediaIdIfNeeded,
+    videoRefs,
+  } = useContext(VideoPortalContext);
 
   // Sometimes useIonViewWillEnter fires after element is already destroyed
   const destroyed = useRef(false);
 
   const getPortalNodeEvent = useEffectEvent(() => {
     if (destroyed.current) return;
-    if (!src) return;
+    if (!mediaId) return;
 
-    getPortalNodeForSrc(src, sourceUid);
+    getPortalNodeForMediaId(mediaId, outPortalUid);
   });
 
   const cleanupPortalNodeIfNeededEvent = useEffectEvent(() => {
     destroyed.current = true;
-    if (!previousSrcRef.current) return;
-    cleanupPortalNodeForSrcIfNeeded(previousSrcRef.current, sourceUid);
+    if (!previousMediaIdRef.current) return;
+    cleanupPortalNodeForMediaIdIfNeeded(
+      previousMediaIdRef.current,
+      outPortalUid,
+    );
   });
 
   useEffect(() => {
-    previousSrcRef.current = src;
+    previousMediaIdRef.current = mediaId;
     destroyed.current = false;
     getPortalNodeEvent();
 
     return cleanupPortalNodeIfNeededEvent;
-  }, [src]);
+  }, [mediaId]);
 
   useIonViewWillEnter(() => {
     getPortalNodeEvent();
   });
 
-  if (!src) return;
+  if (!mediaId) return;
 
-  const potentialVideoRef = videoRefs[src];
+  const potentialVideoRef = videoRefs[mediaId];
 
   if (
-    potentialVideoRef?.sourceUids &&
-    last(potentialVideoRef?.sourceUids) === sourceUid
+    potentialVideoRef?.outPortalUids &&
+    last(potentialVideoRef?.outPortalUids) === outPortalUid
   )
     return potentialVideoRef.portalNode;
 }

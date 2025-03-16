@@ -30,7 +30,7 @@ export default function GalleryMedia({
   animationType,
   onClick: _onClick,
   controls,
-  shouldPortal,
+  portalWithMediaId,
   volume,
   progress,
   ...props
@@ -81,7 +81,7 @@ export default function GalleryMedia({
         {...props}
         src={props.src!}
         controls={controls}
-        shouldPortal={shouldPortal}
+        portalWithMediaId={portalWithMediaId}
         volume={volume}
         progress={progress}
         ref={props.ref as ComponentProps<typeof Video>["ref"]}
