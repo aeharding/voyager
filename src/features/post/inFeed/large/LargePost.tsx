@@ -36,6 +36,11 @@ export default function LargePost({ post }: PostProps) {
   const showCommunityAtTop = useAppSelector(
     (state) => state.settings.appearance.posts.communityAtTop,
   );
+
+  const accommodateLargeText = useAppSelector(
+    (state) => state.settings.appearance.font.accommodateLargeText,
+  );
+
   const hasBeenRead =
     useAppSelector((state) => state.post.postReadById[post.post.id]) ||
     post.read;
@@ -52,6 +57,101 @@ export default function LargePost({ post }: PostProps) {
     }
 
     return <LargePostContents post={post} />;
+  }
+
+  if (accommodateLargeText) {
+    return (
+      <ModeratableItem itemView={post}>
+        <div className={cx(styles.container, hasBeenRead && styles.read)}>
+          <ModeratableItemBannerOutlet />
+
+          <div className={styles.header}>
+            {showCommunityAtTop && !inCommunityFeed && (
+              <div className={styles.detailsLarge}>
+                <div className={styles.leftDetails}>
+                  <CommunityLink
+                    community={post.community}
+                    subscribed={post.subscribed}
+                    showInstanceWhenRemote
+                    tinyIcon
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className={styles.title}>
+              <InlineMarkdown>{post.post.name}</InlineMarkdown>{" "}
+              {isNsfw(post) && <Nsfw />}
+            </div>
+          </div>
+
+          {renderPostBody()}
+
+          <div className={styles.detailsLarge}>
+            <div className={styles.leftDetails}>
+              <div className={styles.communityName}>
+                {post.post.featured_community || post.post.featured_local ? (
+                  <AnnouncementIcon />
+                ) : undefined}
+                {inCommunityFeed ? (
+                  <PersonLink
+                    person={post.creator}
+                    showInstanceWhenRemote
+                    prefix="by"
+                    disableInstanceClick
+                    sourceUrl={post.post.ap_id}
+                  />
+                ) : (
+                  <>
+                    {!showCommunityAtTop && (
+                      <CommunityLink
+                        community={post.community}
+                        subscribed={post.subscribed}
+                        disableInstanceClick
+                        showInstanceWhenRemote={
+                          !showVotingButtons || !alwaysShowAuthor
+                        }
+                      />
+                    )}
+                    {alwaysShowAuthor && (
+                      <>
+                        {" "}
+                        <PersonLink
+                          person={post.creator}
+                          prefix="by"
+                          disableInstanceClick
+                          sourceUrl={post.post.ap_id}
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+
+              <PreviewStats post={post} />
+            </div>
+
+            <div className={styles.rightDetailsLarge}>
+              {(showVotingButtons || inModqueue) && (
+                <div className={styles.rightDetailsLarge}>
+                  {inModqueue && <ModqueueItemActions itemView={post} />}
+                  <MoreActions post={post} />
+                  {!inModqueue && (
+                    <>
+                      <MoreModActions post={post} />
+                      <VoteButton type="up" post={post} />
+                      <VoteButton type="down" post={post} />
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <Save type="post" id={post.post.id} />
+        </div>
+      </ModeratableItem>
+    );
   }
 
   return (
@@ -124,6 +224,7 @@ export default function LargePost({ post }: PostProps) {
 
             <PreviewStats post={post} />
           </div>
+
           {(showVotingButtons || inModqueue) && (
             <div className={styles.rightDetails}>
               {inModqueue && <ModqueueItemActions itemView={post} />}

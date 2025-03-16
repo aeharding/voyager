@@ -22,11 +22,13 @@ import styles from "./Vote.module.css";
 interface VoteProps {
   item: PostView | CommentView;
   className?: string;
+  spacer?: boolean;
 }
 
 export default function Vote({
   item,
   className,
+  spacer,
 }: VoteProps): React.ReactElement {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
@@ -35,6 +37,7 @@ export default function Vote({
       ? state.comment.commentVotesById
       : state.post.postVotesById,
   );
+
   const id = "comment" in item ? item.comment.id : item.post.id;
 
   const myVote = votesById[id] ?? (item.my_vote as -1 | 0 | 1 | undefined) ?? 0;
@@ -98,6 +101,9 @@ export default function Vote({
           >
             {formatNumber(upvotes)}
           </VoteStat>
+
+          {spacer && <div className={styles.spacer}></div>}
+
           <VoteStat
             button
             icon={arrowDownSharp}
@@ -111,6 +117,8 @@ export default function Vote({
           >
             {formatNumber(downvotes)}
           </VoteStat>
+
+          {spacer && <div className={styles.spacer}></div>}
         </>
       );
     }
@@ -142,6 +150,8 @@ export default function Vote({
           }}
         >
           {formatNumber(score)}
+
+          {spacer && <div className={styles.spacer}></div>}
         </VoteStat>
       );
     }
