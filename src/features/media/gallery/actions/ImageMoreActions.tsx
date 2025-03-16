@@ -10,7 +10,7 @@ import styles from "./ImageMoreActions.module.css";
 
 interface ImageMoreActionsProps extends React.ComponentProps<typeof AltText> {
   imgSrc: string;
-  videoRef?: React.RefObject<HTMLVideoElement>;
+  videoRef?: React.RefObject<HTMLVideoElement | undefined>;
 }
 
 export default function ImageMoreActions({

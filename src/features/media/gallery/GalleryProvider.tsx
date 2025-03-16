@@ -61,7 +61,6 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
     null,
   );
   const thumbElRef = useRef<ThumbEl>(undefined);
-  const imgSrcRef = useRef("");
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
@@ -74,7 +73,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const [videoSrc, setVideoSrc] = useState("");
   const portalNode = useVideoPortalNode(videoSrc);
 
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(undefined);
 
   const [wasPlayingBeforeScrub, setWasPlayingBeforeScrub] = useState(false);
 

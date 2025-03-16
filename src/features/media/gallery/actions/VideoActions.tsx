@@ -16,7 +16,7 @@ import { GalleryContext } from "../GalleryProvider";
 import styles from "./VideoActions.module.css";
 
 interface VideoActionsProps {
-  videoRef: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement | undefined>;
 }
 
 export default function VideoActionsLoader({ videoRef }: VideoActionsProps) {

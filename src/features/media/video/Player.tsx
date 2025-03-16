@@ -35,7 +35,7 @@ export interface PlayerProps extends React.HTMLProps<HTMLElement> {
   allowShowPlayButton?: boolean;
 
   ref?: React.RefObject<HTMLVideoElement>;
-  videoRef?: React.RefObject<HTMLVideoElement>;
+  videoRef?: React.RefObject<HTMLVideoElement | undefined>;
 }
 
 export default function Player({

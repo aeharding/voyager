@@ -31,8 +31,7 @@ interface GalleryPostActionsProps extends React.ComponentProps<typeof AltText> {
   src: string;
   alt?: string;
   isVideo?: boolean;
-  videoRef?: React.RefObject<HTMLVideoElement>;
-  imgSrc: string;
+  videoRef?: React.RefObject<HTMLVideoElement | undefined>;
 }
 
 export default function GalleryPostActions({
@@ -78,7 +77,7 @@ export default function GalleryPostActions({
       {isVideo && videoRef && <VideoActions videoRef={videoRef} />}
       <BottomContainerActions withBg>
         <div className={styles.container} onClick={(e) => e.stopPropagation()}>
-          <Voting post={post} src={src} />
+          <Voting post={post} />
           <div
             onClick={() => {
               close();
@@ -109,7 +108,9 @@ export default function GalleryPostActions({
   );
 }
 
-function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
+function Voting({
+  post,
+}: Pick<GalleryPostActionsProps, "post">): React.ReactElement {
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
 
   const voteDisplayMode = useAppSelector(
