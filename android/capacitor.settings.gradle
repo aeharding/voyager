@@ -12,7 +12,7 @@ include ':capacitor-filesystem'
 project(':capacitor-filesystem').projectDir = new File('../node_modules/.pnpm/@capacitor+filesystem@7.0.0_@capacitor+core@7.1.0/node_modules/@capacitor/filesystem/android')
 
 include ':capacitor-haptics'
-project(':capacitor-haptics').projectDir = new File('../node_modules/.pnpm/@capacitor+haptics@7.0.0_patch_hash=daa342ffd526f01bd99bc1242d366ebc0d25fc5ec30939e5be0_9a833db52490431678b90fa57c6429da/node_modules/@capacitor/haptics/android')
+project(':capacitor-haptics').projectDir = new File('../node_modules/.pnpm/@capacitor+haptics@7.0.0_patch_hash=181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed1_3abfbaaef4ccd4a342380c797942e359/node_modules/@capacitor/haptics/android')
 
 include ':capacitor-keyboard'
 project(':capacitor-keyboard').projectDir = new File('../node_modules/.pnpm/@capacitor+keyboard@7.0.0_patch_hash=a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f7_f8b8d2bac1c32e0486c378ed79848fff/node_modules/@capacitor/keyboard/android')

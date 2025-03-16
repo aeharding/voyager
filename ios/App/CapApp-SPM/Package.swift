@@ -15,7 +15,7 @@ let package = Package(
         .package(name: "CapacitorCommunityAppIcon", path: "../../../node_modules/.pnpm/@capacitor-community+app-icon@6.0.0_@capacitor+core@7.1.0/node_modules/@capacitor-community/app-icon"),
         .package(name: "CapacitorApp", path: "../../../node_modules/.pnpm/@capacitor+app@7.0.0_@capacitor+core@7.1.0/node_modules/@capacitor/app"),
         .package(name: "CapacitorFilesystem", path: "../../../node_modules/.pnpm/@capacitor+filesystem@7.0.0_@capacitor+core@7.1.0/node_modules/@capacitor/filesystem"),
-        .package(name: "CapacitorHaptics", path: "../../../node_modules/.pnpm/@capacitor+haptics@7.0.0_patch_hash=daa342ffd526f01bd99bc1242d366ebc0d25fc5ec30939e5be0_9a833db52490431678b90fa57c6429da/node_modules/@capacitor/haptics"),
+        .package(name: "CapacitorHaptics", path: "../../../node_modules/.pnpm/@capacitor+haptics@7.0.0_patch_hash=181ec43efd13c6c40fd4856e855e5eb795ffff6f9f13bb23ed1_3abfbaaef4ccd4a342380c797942e359/node_modules/@capacitor/haptics"),
         .package(name: "CapacitorKeyboard", path: "../../../node_modules/.pnpm/@capacitor+keyboard@7.0.0_patch_hash=a9b910edbb5059e863b0b44c347168d2bf0b0a421868be03f7_f8b8d2bac1c32e0486c378ed79848fff/node_modules/@capacitor/keyboard"),
         .package(name: "CapacitorNetwork", path: "../../../node_modules/.pnpm/@capacitor+network@7.0.0_@capacitor+core@7.1.0/node_modules/@capacitor/network"),
         .package(name: "CapacitorShare", path: "../../../node_modules/.pnpm/@capacitor+share@7.0.0_@capacitor+core@7.1.0/node_modules/@capacitor/share"),
