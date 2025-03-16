@@ -42,12 +42,14 @@ import {
   OLinkHandlerType,
   OPostAppearanceType,
   OPostBlurNsfw,
+  OPostCommentShareType,
   OProfileLabelType,
   OShowSubscribedIcon,
   OTapToCollapseType,
   OVoteDisplayMode,
   PostAppearanceType,
   PostBlurNsfwType,
+  PostCommentShareType,
   ProfileLabelType,
   ShowSubscribedIcon,
   TapToCollapseType,
@@ -136,6 +138,7 @@ export interface SettingsState {
       markReadOnScroll: boolean;
       showHideReadButton: boolean;
       showHiddenInCommunities: boolean;
+      neverShowReadPosts: boolean;
       autoHideRead: boolean;
       disableAutoHideInCommunities: boolean;
       infiniteScrolling: boolean;
@@ -156,6 +159,7 @@ export interface SettingsState {
     defaultFeed: DefaultFeedType | undefined;
     noSubscribedInFeed: boolean;
     thumbnailinatorEnabled: boolean;
+    defaultShare: PostCommentShareType;
   };
   tags: {
     enabled: boolean;
@@ -235,6 +239,7 @@ const baseState: SettingsState = {
       touchFriendlyLinks: true,
     },
     defaultFeed: undefined,
+    defaultShare: OPostCommentShareType.Local,
     enableHapticFeedback: true,
     linkHandler: OLinkHandlerType.InApp,
     media: {
@@ -249,6 +254,7 @@ const baseState: SettingsState = {
       disableMarkingRead: false,
       infiniteScrolling: true,
       markReadOnScroll: false,
+      neverShowReadPosts: false,
       rememberCommunitySort: false,
       showHiddenInCommunities: false,
       showHideReadButton: false,
@@ -356,6 +362,10 @@ export const settingsSlice = createSlice({
       state.general.posts.sort = action.payload;
       db.setSetting("default_post_sort", action.payload);
     },
+    setDefaultShare(state, action: PayloadAction<PostCommentShareType>) {
+      state.general.defaultShare = action.payload;
+      db.setSetting("default_share", action.payload);
+    },
     setDeviceMode(state, action: PayloadAction<Mode>) {
       state.appearance.deviceMode = action.payload;
 
@@ -428,6 +438,11 @@ export const settingsSlice = createSlice({
       state.general.posts.markReadOnScroll = action.payload;
 
       db.setSetting("mark_read_on_scroll", action.payload);
+    },
+    setNeverShowReadPosts(state, action: PayloadAction<boolean>) {
+      state.general.posts.neverShowReadPosts = action.payload;
+
+      db.setSetting("never_show_read_posts", action.payload);
     },
     setNoSubscribedInFeed(state, action: PayloadAction<boolean>) {
       state.general.noSubscribedInFeed = action.payload;
@@ -776,6 +791,7 @@ export const {
   setDefaultCommentSort,
   setDefaultFeed,
   setDefaultPostSort,
+  setDefaultShare,
   setDeviceMode,
   setDisableAutoHideInCommunities,
   setDisableMarkingPostsRead,
@@ -792,6 +808,7 @@ export const {
   setLargeShowVotingButtons,
   setLinkHandler,
   setMarkPostsReadOnScroll,
+  setNeverShowReadPosts,
   setNoSubscribedInFeed,
   setNsfwBlur,
   setPostAppearance,
@@ -894,6 +911,7 @@ function hydrateStateWithGlobalSettings(
         tapToCollapse: settings.tap_to_collapse,
         touchFriendlyLinks: settings.touch_friendly_links,
       },
+      defaultShare: settings.default_share,
       enableHapticFeedback: settings.enable_haptic_feedback,
       linkHandler: settings.link_handler,
       media: {
@@ -908,6 +926,7 @@ function hydrateStateWithGlobalSettings(
         disableMarkingRead: settings.disable_marking_posts_read,
         infiniteScrolling: settings.infinite_scrolling,
         markReadOnScroll: settings.mark_read_on_scroll,
+        neverShowReadPosts: settings.never_show_read_posts,
         rememberCommunitySort: settings.remember_community_post_sort,
         showHiddenInCommunities: settings.show_hidden_in_communities,
         showHideReadButton: settings.show_hide_read_button,

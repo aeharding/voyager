@@ -15,9 +15,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
-  // @ts-expect-error Malformed types
   reactPlugin.configs.flat.recommended,
-  // @ts-expect-error Malformed types
   reactPlugin.configs.flat["jsx-runtime"],
   {
     // TODO replace with https://github.com/facebook/react/pull/30774

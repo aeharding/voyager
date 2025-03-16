@@ -68,9 +68,12 @@ export default function PostCommentFeed({
   const markReadOnScroll = useAppSelector(
     (state) => state.settings.general.posts.markReadOnScroll,
   );
+  const neverShowReadPosts = useAppSelector(
+    (state) => state.settings.general.posts.neverShowReadPosts,
+  );
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
-  const itemsRef = useRef<PostCommentItem[]>();
+  const itemsRef = useRef<PostCommentItem[]>(undefined);
 
   const { setItemsRef } = useContext(FeedContext);
 
@@ -179,18 +182,23 @@ export default function PostCommentFeed({
   const filterOnRxFn = useCallback(
     (item: PostCommentItem) => {
       const postHidden = postHiddenById[item.post.id];
-      if (filterHiddenPosts && postHidden?.hidden) return false;
+      if (isPost(item)) {
+        if (filterHiddenPosts && postHidden?.hidden) return false;
 
-      // Filter removed from community/special feed pages for mods
-      if (filterHiddenPosts && item.post.removed) {
-        return false;
+        // Ignore neverShowReadPosts on hidden posts page (and profile, etc)
+        if (filterHiddenPosts && neverShowReadPosts && item.read) return false;
+
+        // Filter removed from community/special feed pages for mods
+        if (filterHiddenPosts && item.post.removed) {
+          return false;
+        }
       }
 
       if (_filterOnRxFn) return _filterOnRxFn(item);
 
       return true;
     },
-    [filterHiddenPosts, postHiddenById, _filterOnRxFn],
+    [filterHiddenPosts, postHiddenById, _filterOnRxFn, neverShowReadPosts],
   );
 
   const getIndex = useCallback(

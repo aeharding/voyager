@@ -175,11 +175,9 @@ export function DynamicDismissableModal({
           }
         }}
       >
-        <DynamicDismissableModalContext.Provider
-          value={{ dismiss, setCanDismiss }}
-        >
+        <DynamicDismissableModalContext value={{ dismiss, setCanDismiss }}>
           {content}
-        </DynamicDismissableModalContext.Provider>
+        </DynamicDismissableModalContext>
       </Modal>
     </>
   );

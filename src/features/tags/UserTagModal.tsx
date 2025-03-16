@@ -8,13 +8,15 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { Person } from "lemmy-js-client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import PersonLink from "#/features/labels/links/PersonLink";
 import AppHeader from "#/features/shared/AppHeader";
 import MultilineTitle from "#/features/shared/MultilineTitle";
+import { cx } from "#/helpers/css";
 import { blurOnEnter } from "#/helpers/dom";
 import { getRemoteHandle } from "#/helpers/lemmy";
+import useKeyboardOpen from "#/helpers/useKeyboardOpen";
 
 import { useAppDispatch, useAppSelector } from "../../store";
 import SourceUrlButton from "./SourceUrlButton";
@@ -51,23 +53,14 @@ function UserTagModalContents({
   sourceUrl,
   setIsOpen,
 }: UserTagModalProps) {
-  const dispatch = useAppDispatch();
-  const foundTag = useAppSelector(
-    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
-  );
+  const keyboardOpen = useKeyboardOpen();
+
   const trackVotesEnabled = useAppSelector(
     (state) => state.settings.tags.trackVotes,
   );
   const saveSource = useAppSelector((state) => state.settings.tags.saveSource);
 
-  function getCurrentValidatedTag() {
-    return typeof foundTag === "object"
-      ? foundTag
-      : generateNewTag(getRemoteHandle(person));
-  }
-
-  const [tag, setTag] = useState(getCurrentValidatedTag);
-
+  const [tag, setTag] = useStoredTag(person);
   const [upvotes, setUpvotes] = useState(`${tag.upvotes}`);
   const [downvotes, setDownvotes] = useState(`${tag.downvotes}`);
 
@@ -77,7 +70,7 @@ function UserTagModalContents({
         <IonToolbar>
           <IonButtons slot="start">
             <SourceUrlButton
-              sourceUrl={getCurrentValidatedTag()?.sourceUrl}
+              sourceUrl={tag.sourceUrl}
               dismiss={() => setIsOpen(false)}
             />
           </IonButtons>
@@ -97,7 +90,7 @@ function UserTagModalContents({
           </IonButtons>
         </IonToolbar>
       </AppHeader>
-      <div className={styles.contents}>
+      <div className={cx(styles.contents, keyboardOpen && styles.keyboardOpen)}>
         <div className={styles.header}>Preview</div>
         <IonList inset>
           <IonItem className={styles.previewItem}>
@@ -126,7 +119,6 @@ function UserTagModalContents({
                   if (!tag.text && newTag.text && sourceUrl && saveSource)
                     newTag.sourceUrl = sourceUrl;
 
-                  dispatch(updateTag(newTag));
                   return newTag;
                 });
               }}
@@ -146,7 +138,6 @@ function UserTagModalContents({
                     ...tag,
                     color: e.detail.value ?? undefined,
                   };
-                  dispatch(updateTag(newTag));
                   return newTag;
                 });
               }}
@@ -170,7 +161,6 @@ function UserTagModalContents({
                         ...tag,
                         upvotes: +upvotes,
                       };
-                      queueMicrotask(() => dispatch(updateTag(newTag)));
                       return newTag;
                     });
                   }}
@@ -195,7 +185,6 @@ function UserTagModalContents({
                         ...tag,
                         downvotes: +downvotes,
                       };
-                      queueMicrotask(() => dispatch(updateTag(newTag)));
                       return newTag;
                     });
                   }}
@@ -210,4 +199,32 @@ function UserTagModalContents({
       </div>
     </>
   );
+}
+
+function useStoredTag(person: Person) {
+  const dispatch = useAppDispatch();
+  const foundTag = useAppSelector(
+    (state) => state.userTag.tagByRemoteHandle[getRemoteHandle(person)],
+  );
+
+  function getCurrentValidatedTag() {
+    return typeof foundTag === "object"
+      ? foundTag
+      : generateNewTag(getRemoteHandle(person));
+  }
+
+  const tagChangedRef = useRef(false);
+  const [tag, _setTag] = useState(getCurrentValidatedTag);
+  function setTag(...parameters: Parameters<typeof _setTag>) {
+    _setTag(...parameters);
+    tagChangedRef.current = true;
+  }
+
+  useEffect(() => {
+    if (!tagChangedRef.current) return;
+
+    dispatch(updateTag(tag));
+  }, [dispatch, tag]);
+
+  return [tag, setTag] as const;
 }

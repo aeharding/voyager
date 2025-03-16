@@ -27,10 +27,11 @@ import sharedStyles from "./shared.module.css";
 
 interface PersonLinkProps extends Pick<PresentUserActionsOptions, "sourceUrl"> {
   person: Person;
+  color?: string;
   opId?: number;
   distinguished?: boolean;
   showInstanceWhenRemote?: boolean;
-  prefix?: string;
+  prefix?: React.ReactNode;
   showBadge?: boolean;
   disableInstanceClick?: boolean;
   showTag?: boolean;
@@ -43,6 +44,7 @@ export default function PersonLink({
   opId,
   distinguished,
   className,
+  color: _color,
   showInstanceWhenRemote,
   prefix,
   showBadge = true,
@@ -86,7 +88,8 @@ export default function PersonLink({
 
   let color: string | undefined;
 
-  if (isAdmin) color = "var(--ion-color-danger)";
+  if (_color) color = _color;
+  else if (isAdmin) color = "var(--ion-color-danger)";
   else if (distinguished) color = "var(--ion-color-success)";
   else if (
     person.actor_id === "https://lemmy.world/u/aeharding" ||
@@ -108,9 +111,8 @@ export default function PersonLink({
     item: person,
   });
 
-  const end = (
+  const suffix = (
     <>
-      {instance}
       {showBadge && (
         <>
           {person.bot_account && " 🤖"}
@@ -150,10 +152,24 @@ export default function PersonLink({
             <span className={styles.prefix}>{prefix}</span>{" "}
           </>
         ) : undefined}
-        {handle}
-        {!disableInstanceClick && end}
+        {!disableInstanceClick ? (
+          <>
+            <span className={styles.shrinkable}>
+              {handle}
+              {instance}
+            </span>
+            {suffix}
+          </>
+        ) : (
+          handle
+        )}
       </Link>
-      {disableInstanceClick && end}
+      {disableInstanceClick && (
+        <span className={styles.shrinkable}>
+          {instance}
+          {suffix}
+        </span>
+      )}
     </span>
   );
 }

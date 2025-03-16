@@ -298,7 +298,7 @@ export default function PostEditorRoot({
     if (isAndroid()) await new Promise((resolve) => setTimeout(resolve, 250));
 
     try {
-      imageUrl = await dispatch(uploadImage(image));
+      imageUrl = await dispatch(uploadImage(image, "post-content"));
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
 
@@ -314,7 +314,13 @@ export default function PostEditorRoot({
       setPhotoUploading(false);
     }
 
-    dispatch(deletePendingImageUploads(imageUrl));
+    dispatch(
+      deletePendingImageUploads((img) => {
+        if (img._context !== "post-content") return false;
+
+        return img.url !== imageUrl;
+      }),
+    );
 
     setPhotoUrl(imageUrl);
   }

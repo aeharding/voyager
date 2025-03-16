@@ -11,9 +11,9 @@ export function ListEditorProvider({ children }: React.PropsWithChildren) {
   const [editing, setEditing] = useState(false);
 
   return (
-    <ListEditorContext.Provider value={{ editing, setEditing }}>
+    <ListEditorContext value={{ editing, setEditing }}>
       {children}
-    </ListEditorContext.Provider>
+    </ListEditorContext>
   );
 }
 

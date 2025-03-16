@@ -1,4 +1,3 @@
-import { Share } from "@capacitor/share";
 import { compare } from "compare-versions";
 import {
   Comment,
@@ -242,10 +241,6 @@ export function getFlattenedChildren(comment: CommentNodeI): CommentView[] {
   return flattenedChildren;
 }
 
-export function share(item: Post | Comment) {
-  return Share.share({ url: item.ap_id });
-}
-
 export function postHasFilteredKeywords(
   post: Post,
   keywords: string[],
@@ -356,4 +351,12 @@ export const MINIMUM_LEMMY_VERSION = "0.19.0";
 
 export function isMinimumSupportedLemmyVersion(version: string) {
   return compare(version, MINIMUM_LEMMY_VERSION, ">=");
+}
+
+export function buildLemmyPostLink(instance: string, id: number) {
+  return `https://${instance}/post/${id}`;
+}
+
+export function buildLemmyCommentLink(instance: string, id: number) {
+  return `https://${instance}/comment/${id}`;
 }

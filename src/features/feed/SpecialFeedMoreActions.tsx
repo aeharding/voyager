@@ -1,4 +1,3 @@
-import { Share } from "@capacitor/share";
 import { IonButton, useIonActionSheet } from "@ionic/react";
 import { eyeOffOutline, imageOutline, listOutline } from "ionicons/icons";
 import { ListingType } from "lemmy-js-client";
@@ -11,6 +10,7 @@ import {
 import { OPostAppearanceType } from "#/features/settings/settingsSlice";
 import HeaderEllipsisIcon from "#/features/shared/HeaderEllipsisIcon";
 import { getShareIcon } from "#/helpers/device";
+import { shareUrl } from "#/helpers/share";
 import { buildBaseLemmyUrl } from "#/services/lemmy";
 import store from "#/store";
 
@@ -45,9 +45,7 @@ export default function SpecialFeedMoreActions({
           handler: () => {
             const url = buildBaseLemmyUrl(urlSelector(store.getState()));
 
-            Share.share({
-              url: `${url}?dataType=Post&listingType=${type}`,
-            });
+            shareUrl(`${url}?dataType=Post&listingType=${type}`);
           },
         },
         {

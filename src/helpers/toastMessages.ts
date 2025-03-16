@@ -182,6 +182,20 @@ export function buildBanFailed(banned: boolean): AppToastOptions {
   };
 }
 
+export function buildResolvePostFailed(instance: string): AppToastOptions {
+  return {
+    ...shortFailDefaults,
+    message: `Failed to resolve post on ${instance}`,
+  };
+}
+
+export function buildResolveCommentFailed(instance: string): AppToastOptions {
+  return {
+    ...shortFailDefaults,
+    message: `Failed to resolve comment on ${instance}`,
+  };
+}
+
 export const loginSuccess: AppToastOptions = {
   ...shortSuccessDefaults,
   message: "Logged in!",

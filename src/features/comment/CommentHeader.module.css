@@ -4,7 +4,7 @@
 
   font-size: 0.875em;
 
-  gap: 0.5em;
+  gap: 6px;
 
   color: var(--ion-color-medium2);
 }
@@ -14,8 +14,12 @@
     color: var(--ion-text-color);
   }
 
+  a {
+    display: flex;
+    gap: 6px;
+  }
+
   min-width: 0;
-  overflow: hidden;
 }
 
 .commentVote {
@@ -50,4 +54,12 @@
   min-width: 0;
   overflow: hidden;
   display: flex;
+
+  &.spacerWithTag {
+    min-width: 3.3ch;
+  }
+
+  &.noShrinkSpacer {
+    min-width: fit-content;
+  }
 }

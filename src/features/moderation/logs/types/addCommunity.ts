@@ -9,12 +9,12 @@ import { buildBaseData, getAdminRole } from "./shared";
 
 export default function addCommunity(item: ModAddCommunityView): LogEntryData {
   return {
-    icon: item.mod_add_community.removed ? shieldCheckmark : shieldHalf,
-    title: `${item.mod_add_community.removed ? "Added" : "Removed"} Mod`,
-    by: item.moderator ? getHandle(item.moderator) : undefined,
+    icon: item.mod_add_community.removed ? shieldHalf : shieldCheckmark,
+    title: `${item.mod_add_community.removed ? "Removed" : "Added"} Mod`,
+    by: item.moderator,
     role: getAdminRole(item.moderator),
     message: `${getHandle(item.modded_person)} ${
-      item.mod_add_community.removed ? "to" : "from"
+      item.mod_add_community.removed ? "from" : "to"
     } ${getHandle(item.community)}`,
     link: buildUserLink(item.modded_person),
     ...buildBaseData(item.mod_add_community),

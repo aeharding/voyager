@@ -60,7 +60,8 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const [actionContainer, setActionContainer] = useState<HTMLElement | null>(
     null,
   );
-  const thumbElRef = useRef<ThumbEl>();
+  const thumbElRef = useRef<ThumbEl>(undefined);
+  const imgSrcRef = useRef("");
   const [post, setPost] = useState<PostView>();
   const lightboxRef = useRef<PhotoSwipeLightbox | null>(null);
   const location = useLocation();
@@ -83,7 +84,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const zoomLevelRef =
     useRef<
       Parameters<Extract<ZoomLevelOption, (...args: never) => unknown>>[0]
-    >();
+    >(undefined);
 
   const handleScrubStart = useCallback(() => {
     if (videoRef.current) {
@@ -555,7 +556,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
   const value = useMemo(() => ({ open, close }), [close, open]);
 
   return (
-    <GalleryContext.Provider value={value}>
+    <GalleryContext value={value}>
       {actionContainer !== null &&
         createPortal(
           post ? (
@@ -566,6 +567,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
                 alt={getAlt(thumbElRef.current)}
                 isVideo={isVideo}
                 videoRef={videoRef}
+                title={thumbElRef.current?.title}
               />
             )
           ) : (
@@ -573,6 +575,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
               imgSrc={videoSrc}
               alt={getAlt(thumbElRef.current)}
               videoRef={videoRef}
+              title={thumbElRef.current?.title}
             />
           ),
           actionContainer,
@@ -596,7 +599,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
         : undefined}
 
       {children}
-    </GalleryContext.Provider>
+    </GalleryContext>
   );
 }
 

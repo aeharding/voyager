@@ -13,6 +13,7 @@ import { ActionButton } from "#/features/post/actions/ActionButton";
 import ActionsContainer from "#/features/post/actions/ActionsContainer";
 import UserScore from "#/features/tags/UserScore";
 import UserTag from "#/features/tags/UserTag";
+import { cx } from "#/helpers/css";
 import { useInModqueue } from "#/routes/pages/shared/ModqueuePage";
 import { useAppSelector } from "#/store";
 
@@ -21,6 +22,8 @@ import ModActions from "./ModActions";
 
 import styles from "./CommentHeader.module.css";
 
+const MAX_TAG_LENGTH_WITHOUT_CUTOFF = 6;
+
 interface CommentHeaderProps {
   canModerate: ModeratorRole | undefined;
   commentView: CommentView;
@@ -28,7 +31,7 @@ interface CommentHeaderProps {
   context: React.ReactNode;
   collapsed: boolean | undefined;
   rootIndex: number | undefined;
-  commentEllipsisHandleRef: RefObject<CommentEllipsisHandle>;
+  commentEllipsisHandleRef: RefObject<CommentEllipsisHandle | undefined>;
 }
 
 export default function CommentHeader({
@@ -144,9 +147,29 @@ export default function CommentHeader({
             )}
             <Vote className={styles.commentVote} item={commentView} />
             <Edited item={commentView} />
-            <div className={styles.spacer}>
-              {tagsEnabled && <UserTag person={commentView.creator} />}
-            </div>
+            {tagsEnabled ? (
+              <UserTag person={commentView.creator}>
+                {(props) =>
+                  props ? (
+                    <div
+                      className={cx(
+                        styles.spacer,
+                        styles.spacerWithTag,
+                        (props.tag.text?.length || 0) <
+                          MAX_TAG_LENGTH_WITHOUT_CUTOFF &&
+                          styles.noShrinkSpacer,
+                      )}
+                    >
+                      {props.el}
+                    </div>
+                  ) : (
+                    <div className={styles.spacer} />
+                  )
+                }
+              </UserTag>
+            ) : (
+              <div className={styles.spacer} />
+            )}
             {renderAside(comment.published)}
           </>
         );

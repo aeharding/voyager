@@ -168,7 +168,7 @@ export default function InboxItem({ item }: InboxItemProps) {
 
   const read = !!readByInboxItemId[getInboxItemId(item)];
 
-  const ellipsisHandleRef = useRef<InboxItemMoreActionsHandle>(null);
+  const ellipsisHandleRef = useRef<InboxItemMoreActionsHandle>(undefined);
 
   const onCommentLongPress = useCallback(() => {
     ellipsisHandleRef.current?.present();

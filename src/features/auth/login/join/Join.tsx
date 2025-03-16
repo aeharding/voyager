@@ -49,7 +49,7 @@ export default function Join({ answer }: JoinProps) {
   const [email, setEmail] = useState("");
   const [honeypot, setHoneypot] = useState("");
 
-  const captchaRef = useRef<CaptchaHandle>(null);
+  const captchaRef = useRef<CaptchaHandle>(undefined);
 
   useEffect(() => {
     setTimeout(() => {

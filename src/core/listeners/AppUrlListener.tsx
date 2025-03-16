@@ -21,7 +21,7 @@ export default function AppUrlListener() {
   );
   const deepLinkReady = useAppSelector((state) => state.deepLinkReady.ready);
 
-  const appUrlToOpen = useRef<string | undefined>();
+  const appUrlToOpen = useRef<string>(undefined);
   const presentToast = useAppToast();
 
   const notReady =

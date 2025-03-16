@@ -1,4 +1,3 @@
-import { Share } from "@capacitor/share";
 import { IonIcon } from "@ionic/react";
 import { StashMedia } from "capacitor-stash-media";
 import { chatbubbleOutline } from "ionicons/icons";
@@ -12,6 +11,7 @@ import { VoteButton } from "#/features/post/shared/VoteButton";
 import { buildPostLink } from "#/helpers/appLinkBuilder";
 import { getShareIcon, isNative } from "#/helpers/device";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
+import { shareUrl } from "#/helpers/share";
 import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { calculateSeparateScore, calculateTotalScore } from "#/helpers/vote";
@@ -26,12 +26,13 @@ import VideoActions from "./VideoActions";
 
 import styles from "./GalleryPostActions.module.css";
 
-interface GalleryPostActionsProps {
+interface GalleryPostActionsProps extends React.ComponentProps<typeof AltText> {
   post: PostView;
   src: string;
   alt?: string;
   isVideo?: boolean;
   videoRef?: React.RefObject<HTMLVideoElement>;
+  imgSrc: string;
 }
 
 export default function GalleryPostActions({
@@ -40,6 +41,7 @@ export default function GalleryPostActions({
   alt,
   isVideo,
   videoRef,
+  title,
 }: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const router = useOptimizedIonRouter();
@@ -49,7 +51,7 @@ export default function GalleryPostActions({
 
   async function shareImage() {
     if (!isNative()) {
-      Share.share({ url: src });
+      shareUrl(src);
       return;
     }
 
@@ -72,7 +74,7 @@ export default function GalleryPostActions({
 
   return (
     <BottomContainer>
-      <AltText alt={alt} />
+      <AltText alt={alt} title={title} />
       {isVideo && videoRef && <VideoActions videoRef={videoRef} />}
       <BottomContainerActions withBg>
         <div className={styles.container} onClick={(e) => e.stopPropagation()}>
@@ -97,9 +99,9 @@ export default function GalleryPostActions({
           {isNative() ? (
             <GalleryActions post={post} src={src} isVideo={isVideo} />
           ) : (
-            <InFeedContext.Provider value={true}>
+            <InFeedContext value={true}>
               <MoreActions post={post} />
-            </InFeedContext.Provider>
+            </InFeedContext>
           )}
         </div>
       </BottomContainerActions>

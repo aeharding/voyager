@@ -21,7 +21,7 @@ interface AppTitleProps extends ComponentProps<typeof IonTitle> {
    */
   fullPadding?: number;
 
-  appRef?: React.RefObject<AppTitleHandle>;
+  appRef?: React.RefObject<AppTitleHandle | undefined>;
 }
 
 export default isIosTheme() ? IosAppTitle : IonTitle;

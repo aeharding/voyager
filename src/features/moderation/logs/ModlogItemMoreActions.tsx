@@ -5,6 +5,7 @@ import {
   peopleOutline,
   personOutline,
 } from "ionicons/icons";
+import { useCallback, useImperativeHandle } from "react";
 
 import { getHandle } from "#/helpers/lemmy";
 import useAppNavigation from "#/helpers/useAppNavigation";
@@ -17,11 +18,17 @@ import styles from "./ModlogItemMoreActions.module.css";
 interface ModlogItemMoreActions {
   item: ModlogItemType;
   role: ModeratorRole;
+  ref: React.RefObject<ModlogItemMoreActionsHandle | undefined>;
+}
+
+export interface ModlogItemMoreActionsHandle {
+  present: () => void;
 }
 
 export default function ModlogItemMoreActions({
   item,
   role,
+  ref,
 }: ModlogItemMoreActions) {
   const { navigateToCommunity, navigateToUser } = useAppNavigation();
   const [presentActionSheet] = useIonActionSheet();
@@ -39,7 +46,7 @@ export default function ModlogItemMoreActions({
     if ("admin" in item) return item.admin;
   })();
 
-  function presentMoreActions() {
+  const present = useCallback(() => {
     presentActionSheet({
       cssClass: "left-align-buttons",
       buttons: compact([
@@ -77,7 +84,23 @@ export default function ModlogItemMoreActions({
         },
       ]),
     });
-  }
+  }, [
+    community,
+    moderator,
+    navigateToCommunity,
+    navigateToUser,
+    person,
+    presentActionSheet,
+    role,
+  ]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      present,
+    }),
+    [present],
+  );
 
   return (
     <button className={styles.button}>
@@ -86,7 +109,7 @@ export default function ModlogItemMoreActions({
         icon={ellipsisHorizontal}
         onClick={(e) => {
           e.stopPropagation();
-          presentMoreActions();
+          present();
         }}
       />
     </button>

@@ -5,6 +5,14 @@ import { reduceFileSize } from "#/helpers/imageCompress";
 
 import nativeFetch from "./nativeFetch";
 
+const usingNativeFetch = isNative();
+
+const BASE_HEADERS = usingNativeFetch
+  ? {
+      ["User-Agent"]: "VoyagerApp/1.0",
+    }
+  : undefined;
+
 export function buildBaseLemmyUrl(url: string): string {
   if (import.meta.env.VITE_FORCE_LEMMY_INSECURE) {
     return `http://${url}`;
@@ -15,13 +23,14 @@ export function buildBaseLemmyUrl(url: string): string {
 
 export function getClient(url: string, jwt?: string): LemmyHttp {
   return new LemmyHttp(buildBaseLemmyUrl(url), {
-    fetchFunction: isNative() ? nativeFetch : fetch.bind(globalThis),
+    fetchFunction: usingNativeFetch ? nativeFetch : fetch.bind(globalThis),
     headers: jwt
       ? {
+          ...BASE_HEADERS,
           Authorization: `Bearer ${jwt}`,
           ["Cache-Control"]: "no-cache", // otherwise may get back cached site response (despite JWT)
         }
-      : undefined,
+      : BASE_HEADERS,
   });
 }
 

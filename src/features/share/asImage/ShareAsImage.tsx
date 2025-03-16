@@ -302,7 +302,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
 
       {createPortal(
         <div className={cx(styles.commentSnapshotContainer, "inner")}>
-          <ShareImageContext.Provider
+          <ShareImageContext
             value={{ capturing: true, hideUsernames, hideCommunity }}
           >
             {includePostDetails && (
@@ -327,7 +327,7 @@ export default function ShareAsImage({ data, header }: ShareAsImageProps) {
                 />
               </>
             )}
-          </ShareImageContext.Provider>
+          </ShareImageContext>
           {watermark && <Watermark />}
         </div>,
         shareAsImageRenderRoot,

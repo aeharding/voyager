@@ -12,7 +12,7 @@ import styles from "./InboxItemMoreActions.module.css";
 interface InboxItemMoreActionsProps {
   item: InboxItemView;
 
-  ref: React.RefObject<InboxItemMoreActionsHandle>;
+  ref: React.RefObject<InboxItemMoreActionsHandle | undefined>;
 }
 
 export interface InboxItemMoreActionsHandle {

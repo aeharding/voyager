@@ -1,8 +1,9 @@
+import { subDays, subMinutes, subMonths, subSeconds, subYears } from "date-fns";
 import { describe, expect, it } from "vitest";
 
-import { formatRelative } from "./Ago";
+import { formatRelativeToNow } from "./Ago";
 
-describe("formatRelative Function", () => {
+describe("formatRelativeToNow Function", () => {
   const currentTime = {
     date: new Date(),
     expected: {
@@ -13,11 +14,7 @@ describe("formatRelative Function", () => {
   };
 
   const oneMonthAgo = {
-    date: (() => {
-      const date = new Date();
-      date.setMonth(date.getMonth() - 1);
-      return date;
-    })(),
+    date: subMonths(new Date(), 1),
     expected: {
       ultrashort: "1mo",
       short: "1mo",
@@ -26,12 +23,7 @@ describe("formatRelative Function", () => {
   };
 
   const oneYearTwoMonthsAgo = {
-    date: (() => {
-      const date = new Date();
-      date.setFullYear(date.getFullYear() - 1);
-      date.setMonth(date.getMonth() - 2);
-      return date;
-    })(),
+    date: subMonths(subYears(new Date(), 1), 2),
     expected: {
       ultrashort: "1.2y",
       short: "1y 2mo",
@@ -40,11 +32,7 @@ describe("formatRelative Function", () => {
   };
 
   const fortyFiveMinutesAgo = {
-    date: (() => {
-      const date = new Date();
-      date.setMinutes(date.getMinutes() - 45);
-      return date;
-    })(),
+    date: subMinutes(new Date(), 45),
     expected: {
       ultrashort: "45m",
       short: "45m",
@@ -53,12 +41,7 @@ describe("formatRelative Function", () => {
   };
 
   const fortyFiveMinutesFiftyNineSecondsAgo = {
-    date: (() => {
-      const date = new Date();
-      date.setMinutes(date.getMinutes() - 45);
-      date.setSeconds(date.getSeconds() - 59);
-      return date;
-    })(),
+    date: subSeconds(subMinutes(new Date(), 45), 59),
     expected: {
       ultrashort: "45m",
       short: "45m",
@@ -67,11 +50,7 @@ describe("formatRelative Function", () => {
   };
 
   const oneYearAgo = {
-    date: (() => {
-      const date = new Date();
-      date.setFullYear(date.getFullYear() - 1);
-      return date;
-    })(),
+    date: subYears(new Date(), 1),
     expected: {
       ultrashort: "1y",
       short: "1y",
@@ -80,11 +59,7 @@ describe("formatRelative Function", () => {
   };
 
   const tenDaysAgo = {
-    date: (() => {
-      const date = new Date();
-      date.setDate(date.getDate() - 10);
-      return date;
-    })(),
+    date: subDays(new Date(), 10),
     expected: {
       ultrashort: "10d",
       short: "10d",
@@ -107,17 +82,17 @@ describe("formatRelative Function", () => {
 
   testCases.forEach(({ name, date, expected }) => {
     it(`should format ${name} correctly in ultrashort format`, () => {
-      const result = formatRelative(date, "ultrashort");
+      const result = formatRelativeToNow(date, "ultrashort");
       expect(result).toBe(expected.ultrashort);
     });
 
     it(`should format ${name} correctly in short format`, () => {
-      const result = formatRelative(date, "short");
+      const result = formatRelativeToNow(date, "short");
       expect(result).toBe(expected.short);
     });
 
     it(`should format ${name} correctly in verbose format`, () => {
-      const result = formatRelative(date, "verbose");
+      const result = formatRelativeToNow(date, "verbose");
       expect(result).toBe(expected.verbose);
     });
   });

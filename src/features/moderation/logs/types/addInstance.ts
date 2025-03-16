@@ -9,9 +9,9 @@ import { buildBaseData, getAdminRole } from "./shared";
 
 export default function addInstance(item: ModAddView): LogEntryData {
   return {
-    icon: item.mod_add.removed ? shieldCheckmark : shieldHalf,
-    title: `${item.mod_add.removed ? "Added" : "Removed"} Admin`,
-    by: item.moderator ? getHandle(item.moderator) : undefined,
+    icon: item.mod_add.removed ? shieldHalf : shieldCheckmark,
+    title: `${item.mod_add.removed ? "Removed" : "Added"} Admin`,
+    by: item.moderator,
     role: getAdminRole(item.moderator),
     message: getHandle(item.modded_person),
     link: buildUserLink(item.modded_person),

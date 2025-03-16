@@ -8,9 +8,8 @@ import VideoActions from "./VideoActions";
 
 import styles from "./ImageMoreActions.module.css";
 
-interface ImageMoreActionsProps {
+interface ImageMoreActionsProps extends React.ComponentProps<typeof AltText> {
   imgSrc: string;
-  alt?: string;
   videoRef?: React.RefObject<HTMLVideoElement>;
 }
 
@@ -18,10 +17,14 @@ export default function ImageMoreActions({
   imgSrc,
   alt,
   videoRef,
+  title,
 }: ImageMoreActionsProps) {
   const hideAltText = useAppSelector(
     (state) => state.settings.general.media.hideAltText,
   );
+
+  const hasAlt = !!alt && !hideAltText;
+  const hasVideo = !!videoRef;
 
   return (
     <>
@@ -30,10 +33,10 @@ export default function ImageMoreActions({
           <GalleryActions src={imgSrc} />
         </div>
       )}
-      {alt && !hideAltText && (
+      {(hasAlt || hasVideo) && (
         <BottomContainer>
-          <AltText alt={alt} />
-          {videoRef && <VideoActions videoRef={videoRef} />}
+          {hasAlt && <AltText alt={alt} title={title} />}
+          {hasVideo && <VideoActions videoRef={videoRef} />}
           <BottomContainerActions withBg />
         </BottomContainer>
       )}

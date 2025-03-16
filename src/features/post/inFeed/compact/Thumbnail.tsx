@@ -8,7 +8,7 @@ import { isNsfwBlurred } from "#/features/labels/Nsfw";
 import InAppExternalLink from "#/features/shared/InAppExternalLink";
 import { cx } from "#/helpers/css";
 import { findLoneImage } from "#/helpers/markdown";
-import { isUrlImage } from "#/helpers/url";
+import { forceSecureUrl, isUrlImage } from "#/helpers/url";
 import {
   CompactThumbnailSizeType,
   OCompactThumbnailSizeType,
@@ -81,7 +81,9 @@ export default function Thumbnail({ post }: ImgProps) {
         return (
           <>
             <img
-              src={getImageSrc(post.post.thumbnail_url, { size: 100 })}
+              src={getImageSrc(forceSecureUrl(post.post.thumbnail_url), {
+                size: 100,
+              })}
               className={cx(styles.img, nsfw && styles.blurImg)}
             />
             <IonIcon className={styles.linkIcon} icon={linkOutline} />
