@@ -9,12 +9,12 @@ import VideoActions from "./VideoActions";
 import styles from "./ImageMoreActions.module.css";
 
 interface ImageMoreActionsProps extends React.ComponentProps<typeof AltText> {
-  imgSrc: string;
+  src: string;
   videoRef?: React.RefObject<HTMLVideoElement | undefined>;
 }
 
 export default function ImageMoreActions({
-  imgSrc,
+  src,
   alt,
   videoRef,
   title,
@@ -30,7 +30,7 @@ export default function ImageMoreActions({
     <>
       {isNative() && (
         <div className={styles.topContainer}>
-          <GalleryActions src={imgSrc} />
+          <GalleryActions src={src} />
         </div>
       )}
       {(hasAlt || hasVideo) && (

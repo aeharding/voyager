@@ -1,31 +1,28 @@
 .container {
-  width: calc(100% - 48px);
-  max-width: 500px;
-  padding: 8px 16px;
-  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
 
-  backdrop-filter: blur(24px) brightness(0.7) saturate(1.2);
+  width: 100%;
+  max-width: 500px;
+  padding: 0 24px 1rem;
+
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .buttons {
   display: flex;
   justify-content: space-between;
 
-  opacity: 0.8;
-}
-
-.range {
-  --bar-background: rgba(255, 255, 255, 0.3);
-  --knob-size: 18px;
-  --knob-background: #ccc;
-}
-
-.skipIcon {
-  width: 24px;
+  margin: 0 -4px;
 }
 
 .playerButton {
-  color: white;
+  composes: plainButton from "#/features/shared/shared.module.css";
+
+  ion-icon {
+    font-size: 26px;
+  }
 }
 
 .buttonPlaceholder {

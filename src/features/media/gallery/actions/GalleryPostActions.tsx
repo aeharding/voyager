@@ -30,7 +30,6 @@ interface GalleryPostActionsProps extends React.ComponentProps<typeof AltText> {
   post: PostView;
   src: string;
   alt?: string;
-  isVideo?: boolean;
   videoRef?: React.RefObject<HTMLVideoElement | undefined>;
 }
 
@@ -38,7 +37,6 @@ export default function GalleryPostActions({
   post,
   src,
   alt,
-  isVideo,
   videoRef,
   title,
 }: GalleryPostActionsProps) {
@@ -74,7 +72,7 @@ export default function GalleryPostActions({
   return (
     <BottomContainer>
       <AltText alt={alt} title={title} />
-      {isVideo && videoRef && <VideoActions videoRef={videoRef} />}
+      {videoRef && <VideoActions videoRef={videoRef} />}
       <BottomContainerActions withBg>
         <div className={styles.container} onClick={(e) => e.stopPropagation()}>
           <Voting post={post} />
@@ -96,7 +94,7 @@ export default function GalleryPostActions({
           </div>
           <IonIcon icon={getShareIcon()} onClick={shareImage} />
           {isNative() ? (
-            <GalleryActions post={post} src={src} isVideo={isVideo} />
+            <GalleryActions post={post} src={src} isVideo={!!videoRef} />
           ) : (
             <InFeedContext value={true}>
               <MoreActions post={post} />

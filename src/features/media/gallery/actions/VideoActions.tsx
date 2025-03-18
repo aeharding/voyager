@@ -1,4 +1,4 @@
-import { IonButton, IonIcon, IonRange } from "@ionic/react";
+import { IonButton, IonIcon } from "@ionic/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import { pause } from "ionicons/icons";
 import React, {
@@ -9,9 +9,10 @@ import React, {
   useState,
 } from "react";
 
-import { back, forward, pip } from "#/features/icons";
+import { pip } from "#/features/icons";
 
 import { GalleryContext } from "../GalleryProvider";
+import VideoActionsProgress from "./VideoActionsProgress";
 
 import styles from "./VideoActions.module.css";
 
@@ -58,7 +59,7 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [wasPlayingBeforeScrub, setWasPlayingBeforeScrub] = useState(false);
-
+  const [duration, setDuration] = useState(0);
   useEffect(() => {
     setupEvent();
 
@@ -91,9 +92,8 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   function handleTimeUpdate() {
     if (!videoRef.current) return;
 
-    const currentTime = videoRef.current.currentTime;
-    const duration = videoRef.current.duration;
-    setProgress((currentTime / duration) * 100);
+    setProgress(videoRef.current.currentTime);
+    setDuration(videoRef.current.duration);
   }
 
   function handlePlay() {
@@ -200,86 +200,25 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   return (
     <div className={styles.container}>
       <div className={styles.buttons}>
-        {document.pictureInPictureEnabled ? (
-          <IonButton
-            fill="clear"
-            className={styles.playerButton}
-            onClick={requestPip}
-          >
-            <IonIcon size="large" slot="icon-only" icon={pip} />
-          </IonButton>
-        ) : (
-          <div className={styles.buttonPlaceholder} />
-        )}
-
-        <div />
-        <div />
-
-        <IonButton
-          fill="clear"
-          className={styles.playerButton}
-          onClick={() => skip(-15)}
-        >
+        <button className={styles.playerButton} onClick={togglePlayPause}>
           <IonIcon
-            size="large"
-            slot="icon-only"
-            icon={back}
-            className={styles.skipIcon}
-          />
-        </IonButton>
-
-        <IonButton
-          fill="clear"
-          className={styles.playerButton}
-          onClick={togglePlayPause}
-        >
-          <IonIcon
-            size="large"
             slot="icon-only"
             // For some reason, Chrome Webview requires a rerender for icon to update??
             key={isPlaying || wasPlayingBeforeScrub ? "pause" : "play"}
             icon={isPlaying || wasPlayingBeforeScrub ? pause : play}
           />
-        </IonButton>
+        </button>
 
-        <IonButton
-          fill="clear"
-          className={styles.playerButton}
-          onClick={() => skip(15)}
-        >
-          <IonIcon
-            size="large"
-            slot="icon-only"
-            icon={forward}
-            className={styles.skipIcon}
-          />
-        </IonButton>
-
-        <div />
-        <div />
-
-        <IonButton
-          fill="clear"
-          className={styles.playerButton}
-          onClick={toggleMute}
-        >
-          <IonIcon
-            size="large"
-            slot="icon-only"
-            icon={isMuted ? volumeOff : volumeHigh}
-          />
-        </IonButton>
+        <button className={styles.playerButton} onClick={toggleMute}>
+          <IonIcon slot="icon-only" icon={isMuted ? volumeOff : volumeHigh} />
+        </button>
       </div>
-      <div
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onTouchMove={handleTouchMove}
-      >
-        <IonRange value={progress} min={0} max={100} className={styles.range} />
-      </div>
+
+      <VideoActionsProgress
+        value={progress}
+        duration={duration}
+        onValueChange={() => {}}
+      />
     </div>
   );
 }

@@ -1,0 +1,65 @@
+.container {
+  position: relative;
+
+  width: 100%;
+
+  --base-height: 7px;
+  --expanded-height: calc(var(--base-height) + 6px);
+
+  height: var(--base-height);
+
+  /* Increased touch target */
+  &::after {
+    --height: 36px;
+
+    content: "";
+    position: absolute;
+    width: 100%;
+    top: calc(var(--height) / 4); /* Skew mostly down (more space) */
+    left: 0;
+    height: var(--height);
+    transform: translateY(-50%);
+  }
+}
+
+.progress {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  border: 0;
+  height: var(--base-height);
+  width: 100%;
+  transition: height 250ms ease-in-out;
+
+  appearance: none;
+
+  .container:active & {
+    height: var(--expanded-height);
+  }
+
+  &::-webkit-progress-bar {
+    background: rgba(100, 100, 100, 0.5);
+  }
+
+  &::-webkit-progress-value {
+    /* css color inherit doesn't work in chrome/safari?? */
+    background: rgba(255, 255, 255, 0.8);
+  }
+
+  &,
+  &::-webkit-progress-bar,
+  &::-webkit-progress-value {
+    border-radius: calc(var(--expanded-height) / 2);
+  }
+
+  @supports (-moz-appearance: none) {
+    background: rgba(100, 100, 100, 0.5);
+  }
+
+  &::-moz-progress-bar,
+  &::-webkit-progress-value {
+    background-color: currentColor;
+  }
+}
