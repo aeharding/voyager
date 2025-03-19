@@ -19,3 +19,4 @@ export { default as subscript } from "./svg/subscript.svg";
 export { default as strikethrough } from "./svg/strikethrough.svg";
 export { default as trashEllipse } from "./svg/trashEllipse.svg";
 export { default as pip } from "./svg/pip.svg";
+export { default as airplay } from "./svg/airplay.svg";

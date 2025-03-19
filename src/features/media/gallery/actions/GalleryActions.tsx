@@ -14,7 +14,7 @@ import { PostView } from "lemmy-js-client";
 import { useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
-import { pip } from "#/features/icons";
+import { airplay, pip } from "#/features/icons";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import { savePost } from "#/features/post/postSlice";
 import useNativeBrowser from "#/features/shared/useNativeBrowser";
@@ -109,7 +109,7 @@ export default function GalleryActions({
             },
             ua.getEngine().name === "WebKit" && {
               text: "Airplay",
-              icon: pip,
+              icon: airplay,
               handler: () => {
                 (async () => {
                   if (!videoRef.current) return;
