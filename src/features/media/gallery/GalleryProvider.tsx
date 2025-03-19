@@ -24,7 +24,7 @@ import { getSafeArea, isAndroid, isNative, ua } from "#/helpers/device";
 import { useAppDispatch, useAppSelector } from "#/store";
 
 import GalleryPostActions from "./actions/GalleryPostActions";
-import ImageMoreActions from "./actions/ImageMoreActions";
+import MediaMoreActions from "./actions/ImageMoreActions";
 import type GalleryMedia from "./GalleryMedia";
 
 const MAX_IMAGE_WIDTH = 4000;
@@ -570,7 +570,7 @@ export default function GalleryProvider({ children }: React.PropsWithChildren) {
               />
             )
           ) : (
-            <ImageMoreActions
+            <MediaMoreActions
               src={src}
               alt={getAlt(thumbElRef.current)}
               videoRef={isVideo ? videoRef : undefined}

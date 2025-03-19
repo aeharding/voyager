@@ -1,17 +1,13 @@
-import { IonButton, IonIcon } from "@ionic/react";
+import { IonIcon } from "@ionic/react";
 import { play, volumeHigh, volumeOff } from "ionicons/icons";
 import { pause } from "ionicons/icons";
 import React, {
-  useContext,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useRef,
   useState,
 } from "react";
 
-import { pip } from "#/features/icons";
-
-import { GalleryContext } from "../GalleryProvider";
 import VideoActionsProgress from "./VideoActionsProgress";
 
 import styles from "./VideoActions.module.css";
@@ -51,15 +47,14 @@ export default function VideoActionsLoader({ videoRef }: VideoActionsProps) {
 }
 
 function VideoActions({ videoRef }: VideoActionsProps) {
-  const { close } = useContext(GalleryContext);
   const setupEvent = useEffectEvent(setup);
   const teardownEvent = useEffectEvent(teardown);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [wasPlayingBeforeScrub, setWasPlayingBeforeScrub] = useState(false);
   const [duration, setDuration] = useState(0);
+
   useEffect(() => {
     setupEvent();
 
@@ -92,7 +87,7 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   function handleTimeUpdate() {
     if (!videoRef.current) return;
 
-    setProgress(videoRef.current.currentTime);
+    setCurrentTime(videoRef.current.currentTime);
     setDuration(videoRef.current.duration);
   }
 
@@ -127,74 +122,25 @@ function VideoActions({ videoRef }: VideoActionsProps) {
     }
   }
 
-  function handleMouseDown() {
-    if (videoRef.current) {
-      setWasPlayingBeforeScrub(!videoRef.current.paused);
-      videoRef.current.pause();
-    }
-    setIsDragging(true);
-  }
-
-  function handleMouseUp() {
-    if (wasPlayingBeforeScrub && videoRef.current) {
-      videoRef.current.play();
-    }
-    setIsDragging(false);
-  }
-
-  function handleMouseMove(
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  ) {
-    if (isDragging && videoRef.current) {
-      const progressBar = event.currentTarget;
-      const rect = progressBar.getBoundingClientRect();
-      const offsetX = event.clientX - rect.left;
-      const newTime = (offsetX / rect.width) * videoRef.current.duration;
-      videoRef.current.currentTime = newTime;
-      setProgress((newTime / videoRef.current.duration) * 100);
-    }
-  }
-
-  function handleTouchStart() {
-    if (videoRef.current) {
-      setWasPlayingBeforeScrub(!videoRef.current.paused);
-      videoRef.current.pause();
-    }
-    setIsDragging(true);
-  }
-
-  function handleTouchEnd() {
-    if (wasPlayingBeforeScrub && videoRef.current) {
-      videoRef.current.play();
-    }
-    setIsDragging(false);
-  }
-
-  function handleTouchMove(event: React.TouchEvent<HTMLDivElement>) {
-    if (isDragging && videoRef.current) {
-      const touch = event.touches[0];
-      if (touch) {
-        const progressBar = event.currentTarget;
-        const rect = progressBar.getBoundingClientRect();
-        const offsetX = touch.clientX - rect.left;
-        const newTime = (offsetX / rect.width) * videoRef.current.duration;
-        videoRef.current.currentTime = newTime;
-        setProgress((newTime / videoRef.current.duration) * 100);
-      }
-    }
-  }
-
-  async function requestPip() {
+  function onScrubStart() {
     if (!videoRef.current) return;
 
-    await videoRef.current.requestPictureInPicture();
-    close();
+    setWasPlayingBeforeScrub(!videoRef.current.paused);
+    videoRef.current.pause();
   }
 
-  function skip(seconds: number) {
+  function onScrub(value: number) {
     if (!videoRef.current) return;
 
-    videoRef.current.currentTime += seconds;
+    videoRef.current.currentTime = value;
+    setCurrentTime(value);
+  }
+
+  function onScrubEnd() {
+    if (!videoRef.current) return;
+    if (!wasPlayingBeforeScrub) return;
+
+    videoRef.current.play();
   }
 
   return (
@@ -215,9 +161,11 @@ function VideoActions({ videoRef }: VideoActionsProps) {
       </div>
 
       <VideoActionsProgress
-        value={progress}
+        value={currentTime}
         duration={duration}
-        onValueChange={() => {}}
+        onStart={onScrubStart}
+        onValueChange={onScrub}
+        onEnd={onScrubEnd}
       />
     </div>
   );

@@ -94,7 +94,7 @@ export default function GalleryPostActions({
           </div>
           <IonIcon icon={getShareIcon()} onClick={shareImage} />
           {isNative() ? (
-            <GalleryActions post={post} src={src} isVideo={!!videoRef} />
+            <GalleryActions post={post} src={src} videoRef={videoRef} />
           ) : (
             <InFeedContext value={true}>
               <MoreActions post={post} />

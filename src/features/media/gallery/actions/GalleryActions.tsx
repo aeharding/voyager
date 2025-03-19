@@ -1,4 +1,4 @@
-import { IonIcon, useIonActionSheet } from "@ionic/react";
+import { ActionSheetButton, IonIcon, useIonActionSheet } from "@ionic/react";
 import { StashMedia } from "capacitor-stash-media";
 import { compact } from "es-toolkit";
 import {
@@ -14,10 +14,11 @@ import { PostView } from "lemmy-js-client";
 import { useContext } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
+import { pip } from "#/features/icons";
 import { ActionButton } from "#/features/post/actions/ActionButton";
 import { savePost } from "#/features/post/postSlice";
 import useNativeBrowser from "#/features/shared/useNativeBrowser";
-import { getShareIcon, isNative } from "#/helpers/device";
+import { getShareIcon, isNative, ua } from "#/helpers/device";
 import { getHandle } from "#/helpers/lemmy";
 import { useBuildGeneralBrowseLink } from "#/helpers/routes";
 import { shareUrl } from "#/helpers/share";
@@ -32,17 +33,20 @@ import useAppToast from "#/helpers/useAppToast";
 import { useOptimizedIonRouter } from "#/helpers/useOptimizedIonRouter";
 import { useAppDispatch, useAppSelector } from "#/store";
 
+import { GalleryContext } from "../GalleryProvider";
+
 interface GalleryActionsProps {
   post?: PostView;
   src: string;
-  isVideo?: boolean;
+  videoRef?: React.RefObject<HTMLVideoElement | undefined>;
 }
 
 export default function GalleryActions({
   post,
   src,
-  isVideo,
+  videoRef,
 }: GalleryActionsProps) {
+  const { close } = useContext(GalleryContext);
   const router = useOptimizedIonRouter();
   const openNativeBrowser = useNativeBrowser();
   const [presentActionSheet] = useIonActionSheet();
@@ -59,18 +63,65 @@ export default function GalleryActions({
       ? (postSavedById[post.post.id] ?? post.saved)
       : undefined;
 
-    presentActionSheet({
-      cssClass: "left-align-buttons",
-      buttons: compact([
-        isVideo
-          ? {
+    const mediaActions: ActionSheetButton[] = compact(
+      videoRef
+        ? [
+            {
               text: "Share Link",
               icon: getShareIcon(),
               handler: () => {
                 shareUrl(post!.post.ap_id);
               },
-            }
-          : {
+            },
+            {
+              text: "Save Video",
+              icon: downloadOutline,
+              handler: () => {
+                (async () => {
+                  try {
+                    await StashMedia.saveVideo({ url: src });
+                  } catch (error) {
+                    presentToast({
+                      message: "Error saving video to device",
+                      color: "danger",
+                      position: "top",
+                      fullscreen: true,
+                    });
+
+                    throw error;
+                  }
+
+                  presentToast(videoSaved);
+                })();
+              },
+            },
+            {
+              text: "Picture in Picture",
+              icon: pip,
+              handler: () => {
+                (async () => {
+                  if (!videoRef.current) return;
+
+                  await videoRef.current.requestPictureInPicture();
+                  close();
+                })();
+              },
+            },
+            ua.getEngine().name === "WebKit" && {
+              text: "Airplay",
+              icon: pip,
+              handler: () => {
+                (async () => {
+                  if (!videoRef.current) return;
+
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  (videoRef.current as any).webkitShowPlaybackTargetPicker();
+                })();
+              },
+            },
+          ]
+        : [
+            {
               text: "Share",
               icon: getShareIcon(),
               handler: () => {
@@ -98,30 +149,7 @@ export default function GalleryActions({
                 })();
               },
             },
-        isVideo
-          ? {
-              text: "Save Video",
-              icon: downloadOutline,
-              handler: () => {
-                (async () => {
-                  try {
-                    await StashMedia.saveVideo({ url: src });
-                  } catch (error) {
-                    presentToast({
-                      message: "Error saving video to device",
-                      color: "danger",
-                      position: "top",
-                      fullscreen: true,
-                    });
-
-                    throw error;
-                  }
-
-                  presentToast(videoSaved);
-                })();
-              },
-            }
-          : {
+            {
               text: "Save Image",
               icon: downloadOutline,
               handler: () => {
@@ -143,28 +171,35 @@ export default function GalleryActions({
                 })();
               },
             },
-        !isVideo && {
-          text: "Copy Image",
-          icon: copyOutline,
-          handler: () => {
-            (async () => {
-              try {
-                await StashMedia.copyPhotoToClipboard({ url: src });
-              } catch (error) {
-                presentToast({
-                  message: "Error copying photo to clipboard",
-                  color: "danger",
-                  position: "top",
-                  fullscreen: true,
-                });
+            {
+              text: "Copy Image",
+              icon: copyOutline,
+              handler: () => {
+                (async () => {
+                  try {
+                    await StashMedia.copyPhotoToClipboard({ url: src });
+                  } catch (error) {
+                    presentToast({
+                      message: "Error copying photo to clipboard",
+                      color: "danger",
+                      position: "top",
+                      fullscreen: true,
+                    });
 
-                throw error;
-              }
+                    throw error;
+                  }
 
-              presentToast(photoCopied);
-            })();
-          },
-        },
+                  presentToast(photoCopied);
+                })();
+              },
+            },
+          ],
+    );
+
+    presentActionSheet({
+      cssClass: "left-align-buttons",
+      buttons: compact([
+        ...mediaActions,
         post && {
           text: "Open in Browser",
           icon: earthOutline,
