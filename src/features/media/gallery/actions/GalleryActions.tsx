@@ -95,7 +95,7 @@ export default function GalleryActions({
                 })();
               },
             },
-            {
+            document.pictureInPictureEnabled && {
               text: "Picture in Picture",
               icon: pip,
               handler: () => {

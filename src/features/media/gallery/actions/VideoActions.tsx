@@ -62,26 +62,26 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   }, []);
 
   function setup() {
-    if (videoRef.current) {
-      videoRef.current.addEventListener("timeupdate", handleTimeUpdate);
-      videoRef.current.addEventListener("play", handlePlay);
-      videoRef.current.addEventListener("pause", handlePause);
-      videoRef.current.addEventListener("volumechange", handleVolumeChange);
+    if (!videoRef.current) return;
 
-      setIsPlaying(!videoRef.current.paused);
-      setIsMuted(videoRef.current.muted);
+    videoRef.current.addEventListener("timeupdate", handleTimeUpdate);
+    videoRef.current.addEventListener("play", handlePlay);
+    videoRef.current.addEventListener("pause", handlePause);
+    videoRef.current.addEventListener("volumechange", handleVolumeChange);
 
-      handleTimeUpdate();
-    }
+    setIsPlaying(!videoRef.current.paused);
+    setIsMuted(videoRef.current.muted);
+
+    handleTimeUpdate();
   }
 
   function teardown() {
-    if (videoRef.current) {
-      videoRef.current.removeEventListener("timeupdate", handleTimeUpdate);
-      videoRef.current.removeEventListener("play", handlePlay);
-      videoRef.current.removeEventListener("pause", handlePause);
-      videoRef.current.removeEventListener("volumechange", handleVolumeChange);
-    }
+    if (!videoRef.current) return;
+
+    videoRef.current.removeEventListener("timeupdate", handleTimeUpdate);
+    videoRef.current.removeEventListener("play", handlePlay);
+    videoRef.current.removeEventListener("pause", handlePause);
+    videoRef.current.removeEventListener("volumechange", handleVolumeChange);
   }
 
   function handleTimeUpdate() {
@@ -101,25 +101,27 @@ function VideoActions({ videoRef }: VideoActionsProps) {
   }
 
   function handleVolumeChange() {
-    setIsMuted(videoRef.current?.muted ?? false);
+    if (!videoRef.current) return;
+
+    setIsMuted(videoRef.current.muted);
   }
 
   function togglePlayPause() {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
+    if (!videoRef.current) return;
+
+    if (isPlaying) {
+      videoRef.current.pause();
+    } else {
+      videoRef.current.play();
     }
+    setIsPlaying(!isPlaying);
   }
 
   function toggleMute() {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
+    if (!videoRef.current) return;
+
+    videoRef.current.muted = !isMuted;
+    setIsMuted(!isMuted);
   }
 
   function onScrubStart() {
@@ -156,7 +158,12 @@ function VideoActions({ videoRef }: VideoActionsProps) {
         </button>
 
         <button className={styles.playerButton} onClick={toggleMute}>
-          <IonIcon slot="icon-only" icon={isMuted ? volumeOff : volumeHigh} />
+          <IonIcon
+            slot="icon-only"
+            // For some reason, Chrome Webview requires a rerender for icon to update??
+            key={`${isMuted}`}
+            icon={isMuted ? volumeOff : volumeHigh}
+          />
         </button>
       </div>
 
