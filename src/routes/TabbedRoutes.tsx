@@ -48,13 +48,15 @@ export default function TabbedRoutes({ children }: React.PropsWithChildren) {
   return (
     <PageContextProvider value={pageContextValue}>
       {children}
-      <GalleryProvider>
-        <InnerTabbedRoutes
-          ref={pageRef}
-          // Rebuild routing on instance change
-          key={selectedInstance ?? getDefaultServer()}
-        />
-      </GalleryProvider>
+      <VideoPortalProvider>
+        <GalleryProvider>
+          <InnerTabbedRoutes
+            ref={pageRef}
+            // Rebuild routing on instance change
+            key={selectedInstance ?? getDefaultServer()}
+          />
+        </GalleryProvider>
+      </VideoPortalProvider>
     </PageContextProvider>
   );
 }
@@ -119,42 +121,40 @@ function InnerTabbedRoutes({
   })();
 
   return (
-    <VideoPortalProvider>
-      <IonTabs>
-        <IonRouterOutlet ref={pageRef}>
-          <Route exact path="/">
-            {defaultFeed ? (
-              <Redirect
-                to={`/posts/${
-                  selectedInstance ?? getDefaultServer()
-                }${redirectRoute}`}
-                push={false}
-              />
-            ) : (
-              ""
-            )}
-          </Route>
+    <IonTabs>
+      <IonRouterOutlet ref={pageRef}>
+        <Route exact path="/">
+          {defaultFeed ? (
+            <Redirect
+              to={`/posts/${
+                selectedInstance ?? getDefaultServer()
+              }${redirectRoute}`}
+              push={false}
+            />
+          ) : (
+            ""
+          )}
+        </Route>
 
-          {...buildPostsRoutes({
-            defaultFeed,
-            redirectRoute,
-            selectedInstance,
-          })}
+        {...buildPostsRoutes({
+          defaultFeed,
+          redirectRoute,
+          selectedInstance,
+        })}
 
-          {...inbox}
+        {...inbox}
 
-          {...profile}
+        {...profile}
 
-          {...search}
+        {...search}
 
-          {...settings}
+        {...settings}
 
-          {...general}
-        </IonRouterOutlet>
+        {...general}
+      </IonRouterOutlet>
 
-        <TabBar slot="bottom" />
-      </IonTabs>
-    </VideoPortalProvider>
+      <TabBar slot="bottom" />
+    </IonTabs>
   );
 }
 

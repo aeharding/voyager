@@ -17,16 +17,21 @@ export default function LargeFeedPostMedia(
 ) {
   const src = usePostSrc(props.post);
 
-  if (props.post.post.url && isRedgif(props.post.post.url))
-    return (
-      <LargeFeedRedgifMedia
-        {...props}
-        url={props.post.post.url}
-        alt={props.post.post.alt_text}
-        autoPlay={!props.blur}
-        shouldPortal
-      />
-    );
+  if (props.post.post.url) {
+    switch (true) {
+      case isRedgif(props.post.post.url):
+        return (
+          <LargeFeedRedgifMedia
+            {...props}
+            url={props.post.post.url}
+            alt={props.post.post.alt_text}
+            autoPlay={!props.blur}
+            className={cx(styles.lightbox, props.className)}
+            portalWithMediaId={`${props.post.post.id}`}
+          />
+        );
+    }
+  }
 
   if (src)
     return (
@@ -36,7 +41,7 @@ export default function LargeFeedPostMedia(
         autoPlay={!props.blur}
         alt={props.post.post.alt_text}
         className={cx(styles.lightbox, props.className)}
-        shouldPortal
+        portalWithMediaId={`${props.post.post.id}`}
       />
     );
 }

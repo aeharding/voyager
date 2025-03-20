@@ -114,7 +114,6 @@ export default function PostHeader({
           className={styles.lightboxMedia}
           blur={false}
           post={post}
-          nativeControls
           onClick={(e) => {
             e.preventDefault(); // prevent OutPortalEventDispatcher dispatch
           }}

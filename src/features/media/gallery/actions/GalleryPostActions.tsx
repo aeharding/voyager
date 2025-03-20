@@ -22,18 +22,22 @@ import { GalleryContext } from "../GalleryProvider";
 import AltText from "./AltText";
 import GalleryActions from "./GalleryActions";
 import { BottomContainer, BottomContainerActions } from "./shared";
+import VideoActions from "./VideoActions";
 
 import styles from "./GalleryPostActions.module.css";
 
 interface GalleryPostActionsProps extends React.ComponentProps<typeof AltText> {
   post: PostView;
-  imgSrc: string;
+  src: string;
+  alt?: string;
+  videoRef?: React.RefObject<HTMLVideoElement | undefined>;
 }
 
 export default function GalleryPostActions({
   post,
-  imgSrc,
+  src,
   alt,
+  videoRef,
   title,
 }: GalleryPostActionsProps) {
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
@@ -44,13 +48,13 @@ export default function GalleryPostActions({
 
   async function shareImage() {
     if (!isNative()) {
-      shareUrl(imgSrc);
+      shareUrl(src);
       return;
     }
 
     try {
       await StashMedia.shareImage({
-        url: imgSrc,
+        url: src,
         title: post.post.name,
       });
     } catch (error) {
@@ -68,9 +72,10 @@ export default function GalleryPostActions({
   return (
     <BottomContainer>
       <AltText alt={alt} title={title} />
+      {videoRef && <VideoActions videoRef={videoRef} />}
       <BottomContainerActions withBg>
         <div className={styles.container} onClick={(e) => e.stopPropagation()}>
-          <Voting post={post} imgSrc={imgSrc} />
+          <Voting post={post} />
           <div
             onClick={() => {
               close();
@@ -89,7 +94,7 @@ export default function GalleryPostActions({
           </div>
           <IonIcon icon={getShareIcon()} onClick={shareImage} />
           {isNative() ? (
-            <GalleryActions post={post} imgSrc={imgSrc} />
+            <GalleryActions post={post} src={src} videoRef={videoRef} />
           ) : (
             <InFeedContext value={true}>
               <MoreActions post={post} />
@@ -101,7 +106,9 @@ export default function GalleryPostActions({
   );
 }
 
-function Voting({ post }: GalleryPostActionsProps): React.ReactElement {
+function Voting({
+  post,
+}: Pick<GalleryPostActionsProps, "post">): React.ReactElement {
   const postVotesById = useAppSelector((state) => state.post.postVotesById);
 
   const voteDisplayMode = useAppSelector(

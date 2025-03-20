@@ -255,6 +255,12 @@ export const photoSaved: AppToastOptions = {
   fullscreen: true,
 };
 
+export const videoSaved: AppToastOptions = {
+  ...shortSuccessDefaults,
+  message: "Video saved!",
+  fullscreen: true,
+};
+
 export const photoCopied: AppToastOptions = {
   ...shortSuccessDefaults,
   message: "Photo copied to clipboard!",
