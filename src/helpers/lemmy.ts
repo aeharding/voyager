@@ -34,7 +34,7 @@ export const MAX_DEFAULT_COMMENT_DEPTH = 6;
  * @param item Community, Person, etc
  */
 export function getItemActorName(item: Pick<Community, "actor_id">) {
-  return new URL(item.actor_id).hostname;
+  return new URL(getApId(item)).hostname;
 }
 
 export function checkIsMod(communityHandle: string, site: GetSiteResponse) {
@@ -359,4 +359,24 @@ export function buildLemmyPostLink(instance: string, id: number) {
 
 export function buildLemmyCommentLink(instance: string, id: number) {
   return `https://${instance}/comment/${id}`;
+}
+
+/**
+ * This is needed for a migration to lemmy v1
+ *
+ * After Voyager requires v1, this function can be removed
+ */
+export function getApId(obj: { actor_id: string }): string;
+export function getApId(obj: { ap_id: string }): string;
+export function getApId(
+  obj: { actor_id: string } | undefined,
+): string | undefined;
+export function getApId(obj: { ap_id: string } | undefined): string | undefined;
+export function getApId(obj: undefined): undefined;
+export function getApId(
+  obj: { ap_id?: string } | { actor_id?: string } | undefined,
+): string | undefined {
+  if (!obj) return;
+  if ("ap_id" in obj) return obj.ap_id;
+  if ("actor_id" in obj) return obj.actor_id;
 }
