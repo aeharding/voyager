@@ -1,7 +1,7 @@
 import { useIonModal } from "@ionic/react";
 import { noop } from "es-toolkit";
 import { LemmyHttp } from "lemmy-js-client";
-import { createContext, useContext, useState } from "react";
+import { createContext, use, useState } from "react";
 
 import AccountSwitcher from "#/features/auth/AccountSwitcher";
 import {
@@ -23,7 +23,7 @@ const TemporarySelectedAccountContext = createContext<{
 });
 
 export function useTemporarySelectedAccount() {
-  return useContext(TemporarySelectedAccountContext);
+  return use(TemporarySelectedAccountContext);
 }
 
 export function TemporarySelectedAccountProvider({

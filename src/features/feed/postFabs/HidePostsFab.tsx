@@ -1,6 +1,6 @@
 import { IonFab, IonFabButton, IonIcon } from "@ionic/react";
 import { eyeOffOutline } from "ionicons/icons";
-import { useContext } from "react";
+import { use } from "react";
 import { LongPressCallbackReason, useLongPress } from "use-long-press";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -16,7 +16,7 @@ interface HidePostsFabProps {
 export default function HidePostsFab({ forceRefresh }: HidePostsFabProps) {
   const hidePosts = useHidePosts();
   const resetHiddenPosts = useResetHiddenPosts();
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
 
   const bind = useLongPress(
     () => {

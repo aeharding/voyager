@@ -7,8 +7,8 @@ import { differenceBy } from "es-toolkit";
 import React, {
   createContext,
   Fragment,
+  use,
   useCallback,
-  useContext,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useMemo,
@@ -122,7 +122,7 @@ export default function Feed<I>({
 
   const [loadFailed, setLoadFailed] = useState(false);
 
-  const { setScrolledPastSearch } = useContext(FeedSearchContext);
+  const { setScrolledPastSearch } = use(FeedSearchContext);
 
   const startRangeRef = useRef(0);
 

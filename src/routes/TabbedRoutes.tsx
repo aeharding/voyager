@@ -1,7 +1,7 @@
 import { SplashScreen } from "@capacitor/splash-screen";
 import { IonRouterOutletCustomEvent } from "@ionic/core";
 import { IonRouterOutlet, IonTabs } from "@ionic/react";
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { use, useEffect, useMemo, useRef } from "react";
 import { Redirect } from "react-router-dom";
 
 import { TabContext } from "#/core/TabContext";
@@ -72,7 +72,7 @@ function InnerTabbedRoutes({
   const selectedInstance = useAppSelector(instanceSelector);
 
   const router = useOptimizedIonRouter();
-  const { tabRef } = useContext(TabContext);
+  const { tabRef } = use(TabContext);
 
   // Reset route on initialize, if needed
   // (reset when it doesn't make sense breaks ionic react router)

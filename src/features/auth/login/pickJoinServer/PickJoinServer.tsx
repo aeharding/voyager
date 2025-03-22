@@ -23,14 +23,7 @@ import {
   ellipsisVertical,
 } from "ionicons/icons";
 import { GetSiteResponse } from "lemmy-js-client";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VList } from "virtua";
 
 import {
@@ -61,7 +54,7 @@ import styles from "./PickJoinServer.module.css";
 export default function PickJoinServer() {
   const [presentActionSheet] = useIonActionSheet();
 
-  const { dismiss, setCanDismiss } = useContext(DynamicDismissableModalContext);
+  const { dismiss, setCanDismiss } = use(DynamicDismissableModalContext);
 
   const dispatch = useAppDispatch();
   const connectedInstance = useAppSelector(

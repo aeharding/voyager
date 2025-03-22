@@ -1,11 +1,5 @@
 import { CommentView, PostView } from "lemmy-js-client";
-import {
-  ReactElement,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import { ReactElement, use, useCallback, useEffect, useRef } from "react";
 
 import { receivedComments } from "#/features/comment/commentSlice";
 import FeedComment from "#/features/comment/inFeed/FeedComment";
@@ -75,7 +69,7 @@ export default function PostCommentFeed({
 
   const itemsRef = useRef<PostCommentItem[]>(undefined);
 
-  const { setItemsRef } = useContext(FeedContext);
+  const { setItemsRef } = use(FeedContext);
 
   useEffect(() => {
     setItemsRef(itemsRef);

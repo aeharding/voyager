@@ -11,7 +11,7 @@ import {
   personOutline,
 } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { airplay, pip } from "#/features/icons";
@@ -46,13 +46,13 @@ export default function GalleryActions({
   src,
   videoRef,
 }: GalleryActionsProps) {
-  const { close } = useContext(GalleryContext);
+  const { close } = use(GalleryContext);
   const router = useOptimizedIonRouter();
   const openNativeBrowser = useNativeBrowser();
   const [presentActionSheet] = useIonActionSheet();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
 
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = use(PageContext);
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
 

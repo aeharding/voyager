@@ -1,4 +1,4 @@
-import React, { RefObject, useContext } from "react";
+import React, { RefObject, use } from "react";
 
 import { AppContext, Page } from "#/features/auth/AppContext";
 import { getOffsetTop, scrollIntoView } from "#/helpers/dom";
@@ -39,7 +39,7 @@ export default function CommentTree({
   const tapToCollapse = useAppSelector(
     (state) => state.settings.general.comments.tapToCollapse,
   );
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
 
   // Comment context chains don't show missing for parents
   const showMissing = (() => {

@@ -2,7 +2,7 @@ import { useIonRouter, UseIonRouterResult } from "@ionic/react";
 import {
   createContext,
   MutableRefObject,
-  useContext,
+  use,
   useEffect,
   useMemo,
   useRef,
@@ -22,7 +22,7 @@ const OptimizedRouterContext = createContext<IOptimizedRouterContext>({
 });
 
 export function useOptimizedIonRouter() {
-  const context = useContext(OptimizedRouterContext);
+  const context = use(OptimizedRouterContext);
 
   return useMemo(
     () => ({

@@ -2,7 +2,7 @@ import { ImpactStyle } from "@capacitor/haptics";
 import { IonIcon } from "@ionic/react";
 import { bookmarkOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import { MouseEvent, useContext } from "react";
+import { MouseEvent, use } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { ActionButton } from "#/features/post/actions/ActionButton";
@@ -22,7 +22,7 @@ interface SaveButtonProps {
 export function SaveButton({ post }: SaveButtonProps) {
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = use(PageContext);
   const vibrate = useHapticFeedback();
 
   const postSavedById = useAppSelector((state) => state.post.postSavedById);

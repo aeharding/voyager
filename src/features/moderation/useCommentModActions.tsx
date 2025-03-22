@@ -8,7 +8,7 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { CommentView } from "lemmy-js-client";
-import { useCallback, useContext, useMemo, useState } from "react";
+import { use, useCallback, useMemo, useState } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { localUserSelector } from "#/features/auth/siteSlice";
@@ -38,7 +38,7 @@ export default function useCommentModActions(commentView: CommentView) {
   const [presentAlert] = useIonAlert();
   const [presentActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
-  const { presentBanUser } = useContext(PageContext);
+  const { presentBanUser } = use(PageContext);
 
   const [loading, setLoading] = useState(false);
 

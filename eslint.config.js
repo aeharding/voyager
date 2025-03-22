@@ -99,6 +99,11 @@ export default tseslint.config(
               importNames: ["forwardRef"],
               message: "Please use ref prop directly.",
             },
+            {
+              name: "react",
+              importNames: ["useContext"],
+              message: "Please use use() instead.",
+            },
           ],
           patterns: [
             {

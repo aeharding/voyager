@@ -1,6 +1,6 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonTabButton } from "@ionic/react";
-import { useCallback, useContext, useMemo } from "react";
+import { use, useCallback, useMemo } from "react";
 import { LongPressReactEvents, useLongPress } from "use-long-press";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -48,7 +48,7 @@ export default function SharedTabButton({
 }: TabButtonProps) {
   const vibrate = useHapticFeedback();
   const router = useOptimizedIonRouter();
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
 
   const defaultHref = `/${rest.tab}`;
 

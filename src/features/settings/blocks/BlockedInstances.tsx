@@ -9,7 +9,7 @@ import {
   useIonModal,
 } from "@ionic/react";
 import { Instance } from "lemmy-js-client";
-import { useContext, useState } from "react";
+import { use, useState } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { blockInstance } from "#/features/auth/siteSlice";
@@ -38,7 +38,7 @@ export default function BlockedInstances() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
-  const { pageRef } = useContext(PageContext);
+  const { pageRef } = use(PageContext);
   const [presentInstanceSelectorModal, onDismiss] = useIonModal(
     InstanceSelectorModal,
     {

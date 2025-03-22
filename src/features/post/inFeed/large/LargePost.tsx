@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { use } from "react";
 
 import { PageTypeContext } from "#/features/feed/PageTypeContext";
 import CommunityLink from "#/features/labels/links/CommunityLink";
@@ -44,7 +44,7 @@ export default function LargePost({ post }: PostProps) {
 
   const inModqueue = useInModqueue();
 
-  const inCommunityFeed = useContext(PageTypeContext) === "community";
+  const inCommunityFeed = use(PageTypeContext) === "community";
 
   function renderPostBody() {
     if (crosspostUrl) {

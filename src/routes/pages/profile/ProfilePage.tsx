@@ -7,7 +7,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { swapHorizontalSharp } from "ionicons/icons";
-import { useContext, useRef } from "react";
+import { use, useRef } from "react";
 
 import { useSetActivePage } from "#/features/auth/AppContext";
 import {
@@ -35,7 +35,7 @@ export default function ProfilePage() {
   );
   const loggedIn = useAppSelector(loggedInSelector);
 
-  const { presentAccountSwitcher } = useContext(PageContext);
+  const { presentAccountSwitcher } = use(PageContext);
 
   useSetActivePage(pageRef, !handle);
 

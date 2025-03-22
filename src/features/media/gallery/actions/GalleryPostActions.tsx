@@ -2,7 +2,7 @@ import { IonIcon } from "@ionic/react";
 import { StashMedia } from "capacitor-stash-media";
 import { chatbubbleOutline } from "ionicons/icons";
 import { PostView } from "lemmy-js-client";
-import React, { useContext } from "react";
+import React, { use } from "react";
 import { useLocation } from "react-router";
 
 import { InFeedContext } from "#/features/feed/Feed";
@@ -44,7 +44,7 @@ export default function GalleryPostActions({
   const router = useOptimizedIonRouter();
   const location = useLocation();
   const presentToast = useAppToast();
-  const { close } = useContext(GalleryContext);
+  const { close } = use(GalleryContext);
 
   async function shareImage() {
     if (!isNative()) {

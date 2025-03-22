@@ -9,8 +9,8 @@ import {
 } from "@ionic/react";
 import { PrivateMessageView } from "lemmy-js-client";
 import {
+  use,
   useCallback,
-  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -77,7 +77,7 @@ export default function ConversationPage() {
     (state) =>
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,
   );
-  const tabContext = useContext(TabContext);
+  const tabContext = use(TabContext);
   const [tab, setTab] = useState<string | undefined>();
   const { handle } = useParams<{ handle: string }>();
   const userByHandle = useAppSelector((state) => state.user.userByHandle);

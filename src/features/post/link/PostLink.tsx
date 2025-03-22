@@ -1,5 +1,5 @@
 import { PostView } from "lemmy-js-client";
-import { ComponentProps, useContext } from "react";
+import { ComponentProps, use } from "react";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
@@ -18,7 +18,7 @@ export default function PostLink({ post, ...props }: PostLinkProps) {
   const dispatch = useAppDispatch();
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
-  const inFeed = useContext(InFeedContext);
+  const inFeed = use(InFeedContext);
   const blurNsfw = useAppSelector(
     (state) => state.settings.appearance.posts.blurNsfw,
   );

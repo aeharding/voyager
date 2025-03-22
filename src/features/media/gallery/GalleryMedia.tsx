@@ -1,6 +1,6 @@
 import { PostView } from "lemmy-js-client";
 import { PreparedPhotoSwipeOptions } from "photoswipe";
-import { ComponentProps, MouseEvent, useContext } from "react";
+import { ComponentProps, MouseEvent, use } from "react";
 
 import useShouldAutoplay from "#/core/listeners/network/useShouldAutoplay";
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
@@ -44,7 +44,7 @@ export default function GalleryMedia({
 
   const shouldAutoplay = useShouldAutoplay();
 
-  const { open } = useContext(GalleryContext);
+  const { open } = use(GalleryContext);
   const autohidePostIfNeeded = useAutohidePostIfNeeded();
 
   function onClick(e: MouseEvent) {

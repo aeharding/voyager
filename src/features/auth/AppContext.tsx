@@ -1,12 +1,6 @@
 import { useIonViewDidEnter } from "@ionic/react";
 import { noop } from "es-toolkit";
-import React, {
-  createContext,
-  RefObject,
-  useContext,
-  useEffect,
-  useRef,
-} from "react";
+import React, { createContext, RefObject, use, useEffect, useRef } from "react";
 import { VListHandle } from "virtua";
 
 export type Page = RefObject<VListHandle | HTMLElement | null>;
@@ -38,7 +32,7 @@ export function AppContextProvider({ children }: React.PropsWithChildren) {
 }
 
 export function useSetActivePage(page?: Page, enabled = true) {
-  const { activePageRef, setActivePage } = useContext(AppContext);
+  const { activePageRef, setActivePage } = use(AppContext);
 
   useEffect(() => {
     if (!enabled) return;
