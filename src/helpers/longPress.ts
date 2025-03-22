@@ -57,7 +57,7 @@ const filterSafariCallout: LongPressOptions["filterEvents"] = (e) => {
 export const filterEvents: LongPressOptions["filterEvents"] = (e) => {
   if (!filterDragScrollbar(e)) return false;
   if (!filterSafariCallout(e)) return false;
-  if (isRecentLongPressFire()) return false; // should be last, assumes event will fire unless cancelled within function
+  if (isRecentLongPressFire()) return false; // should be last, assumes event will fire unless cancelled within isRecentLongPressFire
 
   return true;
 };
