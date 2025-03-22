@@ -7,6 +7,7 @@ import { shouldOpenWithInAppBrowser } from "#/features/shared/InAppExternalLink"
 import useNativeBrowser from "#/features/shared/useNativeBrowser";
 import { getShareIcon, isNative } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
+import { filterEvents } from "#/helpers/longPress";
 import { shareUrl } from "#/helpers/share";
 import {
   copyClipboardFailed,
@@ -81,6 +82,7 @@ export default function usePostLinkLongPress(url: string | undefined) {
   }
 
   return useLongPress(onLinkLongPress, {
+    filterEvents,
     cancelOnMovement: 15,
     onStart: (e) => {
       e.preventDefault();
