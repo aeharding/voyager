@@ -12,7 +12,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
-import { useContext, useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
 import {
@@ -79,7 +79,7 @@ function AccountSwitcherContents({
     _activeHandle ?? appActiveHandle,
   );
 
-  const { editing } = useContext(ListEditorContext);
+  const { editing } = use(ListEditorContext);
 
   useEffect(() => {
     setSelectedAccount(_activeHandle ?? appActiveHandle);

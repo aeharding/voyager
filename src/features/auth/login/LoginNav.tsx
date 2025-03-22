@@ -1,6 +1,6 @@
 import { IonNavCustomEvent } from "@ionic/core";
 import { IonNav } from "@ionic/react";
-import { useContext, useState } from "react";
+import { use, useState } from "react";
 
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
 
@@ -18,7 +18,7 @@ export default function LoginNav() {
       },
   );
 
-  const { setCanDismiss } = useContext(DynamicDismissableModalContext);
+  const { setCanDismiss } = use(DynamicDismissableModalContext);
 
   async function onIonNavDidChange(event: IonNavCustomEvent<void>) {
     if ((await event.target.getLength()) === 1) {

@@ -1,8 +1,8 @@
 import { useIonViewDidLeave, useIonViewWillEnter } from "@ionic/react";
 import { PrivateMessageView } from "lemmy-js-client";
 import {
+  use,
   useCallback,
-  useContext,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useRef,
@@ -27,7 +27,7 @@ interface MessageProps {
 
 export default function Message({ message, first }: MessageProps) {
   const dispatch = useAppDispatch();
-  const { presentReport } = useContext(PageContext);
+  const { presentReport } = use(PageContext);
   const myUserId = useAppSelector(
     (state) =>
       state.site.response?.my_user?.local_user_view?.local_user?.person_id,

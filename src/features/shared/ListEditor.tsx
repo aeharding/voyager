@@ -1,7 +1,7 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { noop } from "es-toolkit";
 import { checkmark, ellipsisVertical, removeCircle } from "ionicons/icons";
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, { createContext, use, useRef, useState } from "react";
 
 import { isIosTheme } from "#/helpers/device";
 
@@ -28,7 +28,7 @@ export const ListEditorContext = createContext<ListEditorContextValue>({
 });
 
 export function ListEditButton() {
-  const { editing, setEditing } = useContext(ListEditorContext);
+  const { editing, setEditing } = use(ListEditorContext);
 
   return (
     <IonButton
@@ -58,7 +58,7 @@ export function ListEditButton() {
 }
 
 export function RemoveItemButton() {
-  const { editing } = useContext(ListEditorContext);
+  const { editing } = use(ListEditorContext);
   const ref = useRef<HTMLIonButtonElement>(null);
 
   if (!editing) return;

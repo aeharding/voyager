@@ -2,7 +2,7 @@ import { useIonViewWillEnter } from "@ionic/react";
 import { last, noop, without } from "es-toolkit";
 import {
   createContext,
-  useContext,
+  use,
   useEffect,
   experimental_useEffectEvent as useEffectEvent,
   useId,
@@ -150,7 +150,7 @@ export function useVideoPortalNode(
     getPortalNodeForMediaId,
     cleanupPortalNodeForMediaIdIfNeeded,
     videoRefs,
-  } = useContext(VideoPortalContext);
+  } = use(VideoPortalContext);
 
   // Sometimes useIonViewWillEnter fires after element is already destroyed
   const destroyed = useRef(false);

@@ -1,5 +1,5 @@
 import { CommentView, PostView } from "lemmy-js-client";
-import { ComponentProps, useCallback, useContext, useMemo } from "react";
+import { ComponentProps, use, useCallback, useMemo } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
 import { PageContext } from "#/features/auth/PageContext";
@@ -39,10 +39,10 @@ export function VotableActionsImpl({
   rootIndex,
   ...rest
 }: ComponentProps<typeof BaseSlidingVote>) {
-  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
-  const { prependComments } = useContext(CommentsContext);
+  const { presentLoginIfNeeded, presentCommentReply } = use(PageContext);
+  const { prependComments } = use(CommentsContext);
 
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
 
   const presentToast = useAppToast();
   const dispatch = useAppDispatch();

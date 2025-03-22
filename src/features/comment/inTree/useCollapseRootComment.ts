@@ -1,5 +1,5 @@
 import { CommentView } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
 import { useAppDispatch } from "#/store";
@@ -11,7 +11,7 @@ export default function useCollapseRootComment(
   rootIndex: number | undefined,
 ) {
   const dispatch = useAppDispatch();
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
 
   return function collapseRootComment() {
     if (!item || !rootIndex) return;

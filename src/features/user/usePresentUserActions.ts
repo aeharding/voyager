@@ -6,7 +6,7 @@ import {
   removeCircleOutline,
 } from "ionicons/icons";
 import { Person } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
 import { usernameSelector } from "#/features/auth/authSelectors";
 import { PageContext } from "#/features/auth/PageContext";
@@ -34,11 +34,11 @@ export interface PresentUserActionsOptions {
 export default function usePresentUserActions() {
   const dispatch = useAppDispatch();
   const presentToast = useAppToast();
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = use(PageContext);
   const router = useOptimizedIonRouter();
   const buildGeneralBrowseLink = useBuildGeneralBrowseLink();
   const [presentActionSheet] = useIonActionSheet();
-  const { presentUserTag } = useContext(PageContext);
+  const { presentUserTag } = use(PageContext);
   const userTagsEnabled = useAppSelector(
     (state) => state.settings.tags.enabled,
   );

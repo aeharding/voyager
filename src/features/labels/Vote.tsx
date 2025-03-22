@@ -1,7 +1,7 @@
 import { ImpactStyle } from "@capacitor/haptics";
 import { arrowDownSharp, arrowUpSharp } from "ionicons/icons";
 import { CommentView, PostView } from "lemmy-js-client";
-import React, { useContext } from "react";
+import React, { use } from "react";
 
 import { PageContext } from "#/features/auth/PageContext";
 import { isDownvoteEnabledSelector } from "#/features/auth/siteSlice";
@@ -40,7 +40,7 @@ export default function Vote({
   const myVote = votesById[id] ?? (item.my_vote as -1 | 0 | 1 | undefined) ?? 0;
   const canDownvote = useAppSelector(isDownvoteEnabledSelector);
 
-  const { presentLoginIfNeeded } = useContext(PageContext);
+  const { presentLoginIfNeeded } = use(PageContext);
   const vibrate = useHapticFeedback();
 
   async function onVote(e: React.MouseEvent, vote: 0 | 1 | -1) {

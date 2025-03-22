@@ -11,7 +11,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useContext, useState } from "react";
+import { use, useState } from "react";
 
 import AppHeader from "#/features/shared/AppHeader";
 import { DynamicDismissableModalContext } from "#/features/shared/DynamicDismissableModal";
@@ -22,7 +22,7 @@ import Join from "./Join";
 
 export default function Question() {
   const { site, url } = useAppSelector((state) => state.join);
-  const { setCanDismiss } = useContext(DynamicDismissableModalContext);
+  const { setCanDismiss } = use(DynamicDismissableModalContext);
   const [answer, setAnswer] = useState("");
 
   return (

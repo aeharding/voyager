@@ -1,6 +1,6 @@
 import { IonItem } from "@ionic/react";
 import { CommentView, PostView } from "lemmy-js-client";
-import { useCallback, useContext, useMemo, useRef } from "react";
+import { use, useCallback, useMemo, useRef } from "react";
 import AnimateHeight from "react-animate-height";
 
 import { AppContext } from "#/features/auth/AppContext";
@@ -60,8 +60,8 @@ export default function PostHeader({
     (state) => !!state.post.postCollapsedById[post.post.id],
   );
   const titleRef = useRef<HTMLDivElement>(null);
-  const { presentLoginIfNeeded, presentCommentReply } = useContext(PageContext);
-  const { activePageRef } = useContext(AppContext);
+  const { presentLoginIfNeeded, presentCommentReply } = use(PageContext);
+  const { activePageRef } = use(AppContext);
 
   const crosspostUrl = useCrosspostUrl(post);
 

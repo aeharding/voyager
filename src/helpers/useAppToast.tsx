@@ -1,7 +1,7 @@
 import { NotificationType } from "@capacitor/haptics";
 import { Color } from "@ionic/core";
 import { IonIcon } from "@ionic/react";
-import { createContext, MouseEvent, useContext, useRef } from "react";
+import { createContext, MouseEvent, use, useRef } from "react";
 
 import Toast, { ToastHandler } from "#/features/shared/toast/Toast";
 
@@ -21,7 +21,7 @@ export interface AppToastOptions {
 }
 
 export default function useAppToast() {
-  return useContext(AppToastContext);
+  return use(AppToastContext);
 }
 
 export function AppToastProvider({ children }: React.PropsWithChildren) {

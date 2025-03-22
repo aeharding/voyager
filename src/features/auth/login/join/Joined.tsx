@@ -9,7 +9,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useContext, useEffect, useRef } from "react";
+import { use, useEffect, useRef } from "react";
 
 import Login from "#/features/auth/login/login/Login";
 import AppHeader from "#/features/shared/AppHeader";
@@ -23,7 +23,7 @@ interface JoinedProps {
 
 export default function Joined({ verifyEmailSent }: JoinedProps) {
   const vibrate = useHapticFeedback();
-  const { setCanDismiss } = useContext(DynamicDismissableModalContext);
+  const { setCanDismiss } = use(DynamicDismissableModalContext);
   const { url, site } = useAppSelector((state) => state.join);
   const vibratedRef = useRef(false);
 

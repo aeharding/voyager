@@ -1,5 +1,5 @@
 import { PostView } from "lemmy-js-client";
-import { createContext, useContext } from "react";
+import { createContext, use } from "react";
 
 import { setPostHidden } from "#/features/post/postSlice";
 import { useAppDispatch, useAppSelector } from "#/store";
@@ -15,7 +15,7 @@ export const PageTypeContext = createContext<PageTypeContextValue>(undefined);
  */
 export function useAutohidePostIfNeeded() {
   const dispatch = useAppDispatch();
-  const pageType = useContext(PageTypeContext);
+  const pageType = use(PageTypeContext);
   const disableAutoHideInCommunities = useAppSelector(
     (state) => state.settings.general.posts.disableAutoHideInCommunities,
   );

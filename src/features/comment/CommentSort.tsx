@@ -15,7 +15,7 @@ import {
   timeOutline,
 } from "ionicons/icons";
 import { CommentSortType } from "lemmy-js-client";
-import { useContext, useState } from "react";
+import { use, useState } from "react";
 
 import { AppContext } from "#/features/auth/AppContext";
 import { scrollUpIfNeeded } from "#/helpers/scrollUpIfNeeded";
@@ -43,7 +43,7 @@ interface CommentSortProps {
 
 export default function CommentSort({ sort, setSort }: CommentSortProps) {
   const [open, setOpen] = useState(false);
-  const { activePageRef } = useContext(AppContext);
+  const { activePageRef } = use(AppContext);
 
   if (!sort) return;
 

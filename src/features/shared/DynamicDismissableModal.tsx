@@ -1,12 +1,6 @@
 import { IonModal, useIonActionSheet } from "@ionic/react";
 import { noop } from "es-toolkit";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, use, useEffect, useRef, useState } from "react";
 import { Prompt, useLocation } from "react-router";
 
 import { instanceSelector } from "#/features/auth/authSelectors";
@@ -49,7 +43,7 @@ export function DynamicDismissableModal({
   textRecovery,
 }: DynamicDismissableModalProps) {
   const dispatch = useAppDispatch();
-  const pageContext = useContext(PageContext);
+  const pageContext = use(PageContext);
   const location = useLocation();
   const selectedInstance = useAppSelector(
     instanceSelector ?? ((state) => state.auth.connectedInstance),

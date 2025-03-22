@@ -1,6 +1,6 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { PostView } from "lemmy-js-client";
-import { useContext } from "react";
+import { use } from "react";
 
 import { InFeedContext } from "#/features/feed/Feed";
 import useCanModerate, {
@@ -31,7 +31,7 @@ interface ActionsProps extends MoreActionsProps {
 
 function Actions({ post, solidIcon, className, role }: ActionsProps) {
   const presentPostModActions = usePostModActions(post);
-  const inFeed = useContext(InFeedContext);
+  const inFeed = use(InFeedContext);
   const Button = inFeed ? ActionButton : IonButton;
 
   return (

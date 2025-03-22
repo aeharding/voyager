@@ -1,5 +1,5 @@
 import { Person } from "lemmy-js-client";
-import { useCallback, useContext } from "react";
+import { use, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { LongPressOptions, useLongPress } from "use-long-press";
 
@@ -56,7 +56,7 @@ export default function PersonLink({
   const isAdmin = useAppSelector((state) => state.site.response?.admins)?.some(
     (admin) => admin.person.actor_id === person.actor_id,
   );
-  const { hideUsernames } = useContext(ShareImageContext);
+  const { hideUsernames } = use(ShareImageContext);
   const presentUserActions = usePresentUserActions();
 
   const tag = useAppSelector(
