@@ -3,7 +3,7 @@ import React, { HTMLProps, MouseEvent, MouseEventHandler } from "react";
 
 import { isNative } from "#/helpers/device";
 import { OLinkHandlerType } from "#/services/db";
-import { useAppSelector } from "#/store";
+import store from "#/store";
 
 import useNativeBrowser from "./useNativeBrowser";
 
@@ -65,9 +65,6 @@ function useOnClick(
 }
 
 export function useInterceptHrefWithInAppBrowserIfNeeded() {
-  const linkHandler = useAppSelector(
-    (state) => state.settings.general.linkHandler,
-  );
   const openNativeBrowser = useNativeBrowser();
 
   async function handler(
@@ -79,12 +76,7 @@ export function useInterceptHrefWithInAppBrowserIfNeeded() {
 
     if (e.defaultPrevented) return;
 
-    if (!href) return;
-
-    // mailto should be handled directly by web view to launch mail app
-    if (href.toLowerCase().startsWith("mailto:")) return;
-
-    if (isNative() && linkHandler === OLinkHandlerType.InApp) {
+    if (href && shouldOpenWithInAppBrowser(href)) {
       e.preventDefault();
       e.stopPropagation();
       await openNativeBrowser(href);
@@ -99,4 +91,15 @@ export function useInterceptHrefWithInAppBrowserIfNeeded() {
     (e: MouseEvent) => {
       handler(e, href, onClick).finally(onClickCompleted);
     };
+}
+
+export function shouldOpenWithInAppBrowser(url: string | undefined) {
+  if (!url) return false;
+
+  // mailto should be handled directly by web view to launch mail app
+  if (url.toLowerCase().startsWith("mailto:")) return false;
+
+  const linkHandler = store.getState().settings.general.linkHandler;
+
+  return isNative() && linkHandler === OLinkHandlerType.InApp;
 }

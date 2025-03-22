@@ -5,7 +5,6 @@ import { MouseEvent, useCallback, useMemo } from "react";
 
 import { useAutohidePostIfNeeded } from "#/features/feed/PageTypeContext";
 import { isNsfwBlurred } from "#/features/labels/Nsfw";
-import InAppExternalLink from "#/features/shared/InAppExternalLink";
 import { cx } from "#/helpers/css";
 import { findLoneImage } from "#/helpers/markdown";
 import { forceSecureUrl, isUrlImage } from "#/helpers/url";
@@ -19,6 +18,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 import { setPostRead } from "../../postSlice";
 import CompactFeedPostMedia from "./CompactFeedPostMedia";
 import SelfSvg from "./self.svg?react";
+import ThumbnailLink from "./ThumbnailLink";
 
 import styles from "./Thumbnail.module.css";
 
@@ -115,7 +115,7 @@ export default function Thumbnail({ post }: ImgProps) {
 
   if (isLink)
     return (
-      <InAppExternalLink
+      <ThumbnailLink
         href={post.post.url}
         target="_blank"
         rel="noopener noreferrer"
@@ -124,7 +124,7 @@ export default function Thumbnail({ post }: ImgProps) {
         style={style}
       >
         {contents}
-      </InAppExternalLink>
+      </ThumbnailLink>
     );
 
   return (

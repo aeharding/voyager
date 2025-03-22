@@ -19,6 +19,7 @@ import { useAppDispatch, useAppSelector } from "#/store";
 
 import LinkPreview from "./LinkPreview";
 import { fetchThumbnail } from "./thumbnail/thumbnailSlice";
+import usePostLinkLongPress from "./usePostLinkLongPress";
 
 import styles from "./Link.module.css";
 
@@ -71,8 +72,15 @@ export default function Link({
 
   const linkType = determineObjectTypeFromUrl(url) ?? determineTypeFromUrl(url);
 
+  const { bind, isLongPressingRef } = usePostLinkLongPress(url);
+
   function handleLinkClick(e: MouseEvent) {
     e.stopPropagation();
+
+    if (isLongPressingRef.current) {
+      e.preventDefault();
+      return;
+    }
 
     if (preventOnClickNavigationBug(e)) return;
 
@@ -143,6 +151,7 @@ export default function Link({
       onClick={handleLinkClick}
       onClickCompleted={onClickCompleted}
       draggable="false"
+      {...bind()}
     >
       {!compact && thumbnail && !error && (
         <img

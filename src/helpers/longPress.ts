@@ -2,6 +2,18 @@ import { LongPressOptions, LongPressReactEvents } from "use-long-press";
 
 import { isAppleDeviceInstallable } from "./device";
 
+let lastLongPressFired = 0;
+
+/**
+ * Hack to ignore nested parent long press events from triggering
+ */
+function isRecentLongPressFire() {
+  const now = Date.now();
+  const diff = now - lastLongPressFired;
+  lastLongPressFired = now;
+  return diff < 200;
+}
+
 const filterDragScrollbar: LongPressOptions["filterEvents"] = (e) => {
   // Allow user to drag scrollbar
   if ("clientX" in e) {
@@ -45,6 +57,7 @@ const filterSafariCallout: LongPressOptions["filterEvents"] = (e) => {
 export const filterEvents: LongPressOptions["filterEvents"] = (e) => {
   if (!filterDragScrollbar(e)) return false;
   if (!filterSafariCallout(e)) return false;
+  if (isRecentLongPressFire()) return false; // should be last, assumes event will fire unless cancelled within function
 
   return true;
 };

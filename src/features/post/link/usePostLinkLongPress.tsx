@@ -1,0 +1,101 @@
+import { useIonActionSheet } from "@ionic/react";
+import { compact } from "es-toolkit";
+import { copyOutline, earthOutline } from "ionicons/icons";
+import { useRef } from "react";
+import { useLongPress } from "use-long-press";
+
+import { shouldOpenWithInAppBrowser } from "#/features/shared/InAppExternalLink";
+import useNativeBrowser from "#/features/shared/useNativeBrowser";
+import { getShareIcon, isNative } from "#/helpers/device";
+import { stopIonicTapClick } from "#/helpers/ionic";
+import { filterEvents } from "#/helpers/longPress";
+import { shareUrl } from "#/helpers/share";
+import {
+  copyClipboardFailed,
+  copyClipboardSuccess,
+} from "#/helpers/toastMessages";
+import useAppToast from "#/helpers/useAppToast";
+
+export default function usePostLinkLongPress(url: string | undefined) {
+  const openNativeBrowser = useNativeBrowser();
+  const [presentActionSheet] = useIonActionSheet();
+  const presentToast = useAppToast();
+
+  const isLongPressingRef = useRef(false);
+
+  function onLinkLongPress() {
+    stopIonicTapClick();
+
+    const _url = url;
+    if (!_url) return;
+
+    presentActionSheet({
+      header: url,
+      cssClass: "left-align-buttons",
+      buttons: compact([
+        {
+          icon: copyOutline,
+          text: "Copy link",
+          handler: () => {
+            (async () => {
+              try {
+                await navigator.clipboard.writeText(_url);
+              } catch (error) {
+                presentToast({
+                  ...copyClipboardFailed,
+                  fullscreen: false,
+                  position: "top",
+                });
+                throw error;
+              }
+
+              presentToast({
+                ...copyClipboardSuccess,
+                fullscreen: false,
+                position: "top",
+              });
+            })();
+          },
+        },
+        {
+          icon: earthOutline,
+          text: "Open in browser",
+          handler: () => {
+            if (shouldOpenWithInAppBrowser(url)) {
+              openNativeBrowser(url);
+
+              return;
+            }
+            window.open(_url, "_blank");
+          },
+        },
+        ("share" in navigator || isNative()) && {
+          icon: getShareIcon(),
+          text: "Share link",
+          handler: () => {
+            shareUrl(_url);
+          },
+        },
+        {
+          text: "Cancel",
+          role: "cancel",
+        },
+      ]),
+    });
+  }
+
+  const bind = useLongPress(onLinkLongPress, {
+    threshold: 800,
+    cancelOnMovement: 15,
+    filterEvents,
+    onFinish: () => {
+      isLongPressingRef.current = true;
+
+      requestAnimationFrame(() => {
+        isLongPressingRef.current = false;
+      });
+    },
+  });
+
+  return { bind, isLongPressingRef } as const;
+}
