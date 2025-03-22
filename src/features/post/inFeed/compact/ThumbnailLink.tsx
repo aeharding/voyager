@@ -6,7 +6,7 @@ import InAppExternalLink from "#/features/shared/InAppExternalLink";
 export default function ThumbnailLink(
   props: ComponentProps<typeof InAppExternalLink>,
 ) {
-  const { bind } = usePostLinkLongPress(props.href);
+  const bind = usePostLinkLongPress(props.href);
 
   return <InAppExternalLink {...props} {...bind()} />;
 }

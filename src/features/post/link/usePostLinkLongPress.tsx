@@ -1,14 +1,12 @@
 import { useIonActionSheet } from "@ionic/react";
 import { compact } from "es-toolkit";
 import { copyOutline, earthOutline } from "ionicons/icons";
-import { useRef } from "react";
 import { useLongPress } from "use-long-press";
 
 import { shouldOpenWithInAppBrowser } from "#/features/shared/InAppExternalLink";
 import useNativeBrowser from "#/features/shared/useNativeBrowser";
 import { getShareIcon, isNative } from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
-import { filterEvents } from "#/helpers/longPress";
 import { shareUrl } from "#/helpers/share";
 import {
   copyClipboardFailed,
@@ -20,8 +18,6 @@ export default function usePostLinkLongPress(url: string | undefined) {
   const openNativeBrowser = useNativeBrowser();
   const [presentActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
-
-  const isLongPressingRef = useRef(false);
 
   function onLinkLongPress() {
     stopIonicTapClick();
@@ -84,18 +80,11 @@ export default function usePostLinkLongPress(url: string | undefined) {
     });
   }
 
-  const bind = useLongPress(onLinkLongPress, {
-    threshold: 800,
+  return useLongPress(onLinkLongPress, {
     cancelOnMovement: 15,
-    filterEvents,
-    onFinish: () => {
-      isLongPressingRef.current = true;
-
-      requestAnimationFrame(() => {
-        isLongPressingRef.current = false;
-      });
+    onStart: (e) => {
+      e.preventDefault();
+      e.stopPropagation();
     },
   });
-
-  return { bind, isLongPressingRef } as const;
 }

@@ -72,15 +72,10 @@ export default function Link({
 
   const linkType = determineObjectTypeFromUrl(url) ?? determineTypeFromUrl(url);
 
-  const { bind, isLongPressingRef } = usePostLinkLongPress(url);
+  const bind = usePostLinkLongPress(url);
 
   function handleLinkClick(e: MouseEvent) {
     e.stopPropagation();
-
-    if (isLongPressingRef.current) {
-      e.preventDefault();
-      return;
-    }
 
     if (preventOnClickNavigationBug(e)) return;
 
