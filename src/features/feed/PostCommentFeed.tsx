@@ -4,6 +4,7 @@ import { ReactElement, use, useCallback, useEffect, useRef } from "react";
 import { receivedComments } from "#/features/comment/commentSlice";
 import FeedComment from "#/features/comment/inFeed/FeedComment";
 import CommentHr from "#/features/comment/inTree/CommentHr";
+import { usePostAppearance } from "#/features/post/appearance/PostAppearanceProvider";
 import Post from "#/features/post/inFeed/Post";
 import {
   postHiddenByIdSelector,
@@ -44,9 +45,7 @@ export default function PostCommentFeed({
   ...rest
 }: PostCommentFeed) {
   const dispatch = useAppDispatch();
-  const postAppearanceType = useAppSelector(
-    (state) => state.settings.appearance.posts.type,
-  );
+  const postAppearance = usePostAppearance();
   const postHiddenById = useAppSelector(postHiddenByIdSelector);
   const postDeletedById = useAppSelector((state) => state.post.postDeletedById);
   const filteredKeywords = useAppSelector(
@@ -80,7 +79,7 @@ export default function PostCommentFeed({
   }, [setItemsRef]);
 
   const borderCss = (() => {
-    switch (postAppearanceType) {
+    switch (postAppearance) {
       case "compact":
         return undefined;
       case "large":
@@ -99,7 +98,7 @@ export default function PostCommentFeed({
 
   const renderItemContent = useCallback(
     (item: PostCommentItem) => {
-      if (postAppearanceType === "compact")
+      if (postAppearance === "compact")
         return (
           <>
             {renderItem(item)}
@@ -109,7 +108,7 @@ export default function PostCommentFeed({
 
       return renderItem(item);
     },
-    [postAppearanceType, renderItem],
+    [postAppearance, renderItem],
   );
 
   const fetchFn: FetchFn<PostCommentItem> = useCallback(
