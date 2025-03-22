@@ -65,9 +65,9 @@ function useLinkLongPressAndroid(url: string | undefined) {
           handler: () => {
             if (shouldOpenWithInAppBrowser(url)) {
               openNativeBrowser(url);
-
               return;
             }
+
             window.open(_url, "_blank");
           },
         },

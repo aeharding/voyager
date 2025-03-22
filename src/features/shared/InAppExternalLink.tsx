@@ -30,6 +30,7 @@ export default function InAppExternalLink({
 }: InAppExternalLinkProps) {
   const onClick = useOnClick(href, _onClick, onClickCompleted);
   const bind = useLinkLongPress(href);
+
   if ("el" in rest && rest.el) {
     const El = rest.el;
 
