@@ -5,6 +5,7 @@ import { isNative } from "#/helpers/device";
 import { OLinkHandlerType } from "#/services/db";
 import store from "#/store";
 
+import useLinkLongPress from "./useLinkLongPress";
 import useNativeBrowser from "./useNativeBrowser";
 
 export interface AdditionalLinkProps {
@@ -28,14 +29,14 @@ export default function InAppExternalLink({
   ...rest
 }: InAppExternalLinkProps) {
   const onClick = useOnClick(href, _onClick, onClickCompleted);
-
+  const bind = useLinkLongPress(href);
   if ("el" in rest && rest.el) {
     const El = rest.el;
 
-    return <El onClick={onClick} {...rest} />;
+    return <El onClick={onClick} {...bind()} {...rest} />;
   }
 
-  return <a href={href} onClick={onClick} {...rest} />;
+  return <a href={href} onClick={onClick} {...bind()} {...rest} />;
 }
 
 export function IonItemInAppExternalLink({
@@ -45,8 +46,9 @@ export function IonItemInAppExternalLink({
   ...rest
 }: React.ComponentProps<typeof IonItem> & AdditionalLinkProps) {
   const onClick = useOnClick(href, _onClick, onClickCompleted);
+  const bind = useLinkLongPress(href);
 
-  return <IonItem href={href} onClick={onClick} {...rest} />;
+  return <IonItem href={href} onClick={onClick} {...bind()} {...rest} />;
 }
 
 function useOnClick(

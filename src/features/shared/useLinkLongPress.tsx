@@ -1,11 +1,16 @@
 import { useIonActionSheet } from "@ionic/react";
-import { compact } from "es-toolkit";
+import { compact, noop } from "es-toolkit";
 import { copyOutline, earthOutline } from "ionicons/icons";
 import { useLongPress } from "use-long-press";
 
 import { shouldOpenWithInAppBrowser } from "#/features/shared/InAppExternalLink";
 import useNativeBrowser from "#/features/shared/useNativeBrowser";
-import { getShareIcon, isNative } from "#/helpers/device";
+import {
+  getShareIcon,
+  isAndroid,
+  isNative,
+  isTouchDevice,
+} from "#/helpers/device";
 import { stopIonicTapClick } from "#/helpers/ionic";
 import { filterEvents } from "#/helpers/longPress";
 import { shareUrl } from "#/helpers/share";
@@ -15,7 +20,7 @@ import {
 } from "#/helpers/toastMessages";
 import useAppToast from "#/helpers/useAppToast";
 
-export default function usePostLinkLongPress(url: string | undefined) {
+function useLinkLongPressAndroid(url: string | undefined) {
   const openNativeBrowser = useNativeBrowser();
   const [presentActionSheet] = useIonActionSheet();
   const presentToast = useAppToast();
@@ -90,3 +95,14 @@ export default function usePostLinkLongPress(url: string | undefined) {
     },
   });
 }
+
+// stub when unsupported
+const useLinkLongPressNoop = () => {
+  return noop;
+};
+
+// android as PWA or in browser has long press for links
+// however android capacitor webview doesn't. Also desktop doesn't.
+export default (isAndroid() && isNative()) || !isTouchDevice()
+  ? useLinkLongPressAndroid
+  : useLinkLongPressNoop;
