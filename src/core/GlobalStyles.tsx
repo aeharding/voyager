@@ -1,11 +1,6 @@
 import { Keyboard, KeyboardStyle } from "@capacitor/keyboard";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-} from "react";
+import React, { createContext, useEffect, useLayoutEffect } from "react";
 
 import { initialState as initialSettingsState } from "#/features/settings/settingsSlice";
 import { isNative } from "#/helpers/device";
@@ -132,9 +127,4 @@ function useComputeIsDark(): boolean {
   return usingSystemDarkMode ? systemDarkMode : userDarkMode;
 }
 
-// Cached
-export function useIsDark() {
-  return useContext(DarkContext);
-}
-
-const DarkContext = createContext(false);
+export const DarkContext = createContext(false);

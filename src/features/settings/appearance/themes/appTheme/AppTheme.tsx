@@ -7,8 +7,9 @@ import {
   useIonAlert,
 } from "@ionic/react";
 import { capitalize } from "es-toolkit";
+import { use } from "react";
 
-import { useIsDark } from "#/core/GlobalStyles";
+import { DarkContext } from "#/core/GlobalStyles";
 import { getTheme } from "#/core/theme/AppThemes";
 import { ListHeader } from "#/features/settings/shared/formatting";
 import { AppThemeType, OAppThemeType } from "#/services/db";
@@ -20,10 +21,11 @@ import AppThemePreview from "./AppThemePreview";
 import styles from "./AppTheme.module.css";
 
 export default function AppTheme() {
-  const theme = useAppSelector((state) => state.settings.appearance.theme);
-  const isDark = useIsDark();
   const dispatch = useAppDispatch();
   const [presentAlert] = useIonAlert();
+
+  const theme = useAppSelector((state) => state.settings.appearance.theme);
+  const isDark = use(DarkContext);
 
   function onChangeTheme(themeName: AppThemeType) {
     dispatch(setTheme(themeName));

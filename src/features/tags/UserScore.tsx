@@ -1,6 +1,7 @@
 import { Person } from "lemmy-js-client";
+import { use } from "react";
 
-import { useIsDark } from "#/core/GlobalStyles";
+import { DarkContext } from "#/core/GlobalStyles";
 import { getRemoteHandle } from "#/helpers/lemmy";
 import { formatNumber } from "#/helpers/number";
 import { UserTag } from "#/services/db";
@@ -68,10 +69,10 @@ interface SyncUserScoreProps extends BaseUserScoreProps {
 }
 
 function SyncUserScore({ tag, prefix }: SyncUserScoreProps) {
-  const isDark = useIsDark();
-
   const score = tag.upvotes - tag.downvotes;
   if (score === 0) return;
+
+  const isDark = use(DarkContext);
 
   return (
     <>

@@ -1,7 +1,8 @@
 import { LaunchNative } from "capacitor-launch-native";
 import { Reader } from "capacitor-reader";
+import { use } from "react";
 
-import { useIsDark } from "#/core/GlobalStyles";
+import { DarkContext } from "#/core/GlobalStyles";
 import {
   notifyStatusTapThatBrowserWasClosed,
   notifyStatusTapThatBrowserWasOpened,
@@ -10,7 +11,7 @@ import { isAndroid } from "#/helpers/device";
 import store from "#/store";
 
 export default function useNativeBrowser() {
-  const isDark = useIsDark();
+  const isDark = use(DarkContext);
 
   return async function openNativeBrowser(href: string) {
     const state = store.getState();
