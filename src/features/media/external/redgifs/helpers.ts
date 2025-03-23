@@ -1,7 +1,7 @@
 import { canBypassCors } from "#/helpers/device";
 
 export const redgifUrlRegex =
-  /^https?:\/\/(?:www\.|v3\.)?redgifs.com\/watch\/([a-z]+)/;
+  /^https?:\/\/(?:www\.|v3\.)?redgifs.com\/watch\/([a-z0-9]+)/;
 
 export function platformSupportsRedgif() {
   return canBypassCors();

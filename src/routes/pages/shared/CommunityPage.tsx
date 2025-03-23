@@ -27,6 +27,7 @@ import PostCommentFeed, {
 import PostFabs from "#/features/feed/postFabs/PostFabs";
 import PostSort from "#/features/feed/PostSort";
 import useFeedSort from "#/features/feed/sort/useFeedSort";
+import useCommonPostFeedParams from "#/features/feed/useCommonPostFeedParams";
 import useFeedUpdate from "#/features/feed/useFeedUpdate";
 import PostAppearanceProvider, {
   WaitUntilPostAppearanceResolved,
@@ -64,6 +65,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useOptimizedIonRouter();
   const getRandomCommunity = useGetRandomCommunity();
+  const commonPostFeedParams = useCommonPostFeedParams();
 
   const appTitleRef = useRef<AppTitleHandle>(undefined);
 
@@ -100,6 +102,7 @@ function CommunityPageContent({ community, actor }: CommunityPageParams) {
     const { posts, next_page } = await client.getPosts(
       {
         ...pageData,
+        ...commonPostFeedParams,
         limit: LIMIT,
         community_name: community,
         sort,

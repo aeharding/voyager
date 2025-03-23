@@ -26,6 +26,7 @@ export default function LargeFeedPostMedia(
             url={props.post.post.url}
             alt={props.post.post.alt_text}
             autoPlay={!props.blur}
+            disableInlineInteraction={props.blur}
             className={cx(styles.lightbox, props.className)}
             portalWithMediaId={`${props.post.post.id}`}
           />
@@ -39,6 +40,7 @@ export default function LargeFeedPostMedia(
         {...props}
         src={src}
         autoPlay={!props.blur}
+        disableInlineInteraction={props.blur}
         alt={props.post.post.alt_text}
         className={cx(styles.lightbox, props.className)}
         portalWithMediaId={`${props.post.post.id}`}
